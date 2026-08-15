@@ -5,18 +5,22 @@ import type {
   RunHistoryTransientExecutionRow,
   TeamMemberTreeRow,
   TeamTreeNode,
-} from '~/stores/runHistoryTypes';
-import { createTeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
+} from './runHistoryTypes';
 
-const indexStableRows = (rows: readonly TeamMemberTreeRow[], target = new Map<string, TeamMemberTreeRow>()): Map<string, TeamMemberTreeRow> => {
-  rows.forEach((row) => { target.set(row.memberAddress, row); indexStableRows(row.children, target); });
-  return target;
-};
-const flattenStableRows = (rows: readonly TeamMemberTreeRow[], depth = 0): RunHistoryStableExecutionRow[] => rows.flatMap((row) => [{
+const stableRowKey = (row: TeamMemberTreeRow): string => row.kind === 'agent'
+  ? `agent:${row.agentRunId}`
+  : `team:${row.teamRunIdForNode}`;
+
+const flattenStableRows = (
+  rows: readonly TeamMemberTreeRow[],
+  depth = 0,
+): RunHistoryStableExecutionRow[] => rows.flatMap((row) => [{
   kind: 'stable_member' as const,
+  rowKey: stableRowKey(row),
   teamRunId: row.teamRunId,
   memberAddress: row.memberAddress,
-  executionAddress: createTeamExecutionAddress({ rootTeamRunId: row.teamRunId, memberAddress: row.memberAddress }),
+  agentRunId: row.agentRunId ?? null,
+  teamRunIdForNode: row.teamRunIdForNode ?? null,
   memberKind: row.kind,
   displayName: row.displayName || row.memberAddress,
   depth,
@@ -24,34 +28,69 @@ const flattenStableRows = (rows: readonly TeamMemberTreeRow[], depth = 0): RunHi
   row,
 }, ...flattenStableRows(row.children, depth + 1)]);
 
-export const buildRunHistoryTeamExecutionRows = (team: TeamTreeNode, context?: AgentTeamContext | null): RunHistoryTeamExecutionRow[] => {
+export const buildRunHistoryTeamExecutionRows = (
+  team: TeamTreeNode,
+  context?: AgentTeamContext | null,
+): RunHistoryTeamExecutionRow[] => {
   const stableSource = team.rootTeam.children.length > 0 ? team.rootTeam.children : team.members;
   if (!context) return flattenStableRows(stableSource);
-  const stableByAddress = indexStableRows(stableSource);
-  return context.executions.listNavigationRows().flatMap((execution): RunHistoryTeamExecutionRow[] => {
-    const topology = context.topology.getNode(execution.executionAddress.memberAddress);
-    if (!topology) return [];
-    if (execution.kind === 'persistent_agent' || execution.kind === 'persistent_team') {
-      const stable = stableByAddress.get(execution.executionAddress.memberAddress);
-      if (!stable) return [];
+  const rootTeamRunId = context.view.getRootTeamRunId();
+  if (team.teamRunId !== rootTeamRunId) {
+    throw new Error(`Team history root '${team.teamRunId}' does not match execution root '${rootTeamRunId}'.`);
+  }
+  const navigationRows = context.view.listNavigationRows();
+  const rootRowKey = `team:${rootTeamRunId}`;
+  const rootRows = navigationRows.filter((row) => row.key === rootRowKey);
+  const rootRow = rootRows[0];
+  if (
+    rootRows.length !== 1
+    || rootRow?.kind !== 'configured_team'
+    || rootRow.teamRunId !== rootTeamRunId
+    || rootRow.address !== '/'
+    || rootRow.depth !== 0
+    || rootRow.parentKey !== null
+  ) {
+    throw new Error(`Team history execution root '${rootTeamRunId}' is invalid.`);
+  }
+  const descendantRows = navigationRows.filter((row) => row !== rootRow);
+  const parentRowKeys = new Set(descendantRows.flatMap((row) => row.parentKey ? [row.parentKey] : []));
+  const stableByKey = new Map(flattenStableRows(stableSource).map((row) => [row.rowKey, row]));
+  return descendantRows.flatMap((execution): RunHistoryTeamExecutionRow[] => {
+    if (execution.depth < 1) {
+      throw new Error(`Team history descendant '${execution.key}' is outside execution root '${rootTeamRunId}'.`);
+    }
+    const depth = execution.depth - 1;
+    const hasChildren = execution.expandable || parentRowKeys.has(execution.key);
+    const stable = stableByKey.get(execution.key);
+    if (execution.kind === 'configured_agent' || execution.kind === 'configured_team') {
+      if (!stable) {
+        throw new Error(`Configured Team history row '${execution.key}' is absent from root '${rootTeamRunId}'.`);
+      }
       return [{
-        kind: 'stable_member', teamRunId: stable.teamRunId, memberAddress: stable.memberAddress,
-        executionAddress: execution.executionAddress, memberKind: stable.kind,
-        displayName: stable.displayName || execution.displayName, depth: execution.depth,
-        hasChildren: execution.hasChildren || stable.children.length > 0, row: stable,
+        ...stable,
+        displayName: execution.displayName || stable.displayName,
+        depth,
+        hasChildren: hasChildren || stable.hasChildren,
       }];
     }
+    const transientKind = execution.kind === 'task_agent'
+      ? 'task_agent'
+      : execution.kind === 'task_team'
+        ? 'task_team'
+        : 'task_team_child';
     const transient: RunHistoryTransientExecutionRow = {
       kind: 'transient_execution',
-      transientKind: execution.kind === 'task_agent' ? 'task_agent' : execution.kind === 'task_team' ? 'task_team' : 'task_team_child',
-      teamRunId: context.executions.getRootTeamRunId(),
-      memberAddress: execution.executionAddress.memberAddress,
-      executionAddress: execution.executionAddress,
-      memberKind: topology.kind,
+      transientKind,
+      rowKey: execution.key,
+      teamRunId: context.view.getRootTeamRunId(),
+      memberAddress: execution.address,
+      agentRunId: execution.agentRunId,
+      teamRunIdForNode: execution.teamRunId,
+      memberKind: execution.agentRunId ? 'agent' : 'agent_team',
       displayName: execution.displayName,
       currentStatus: execution.currentStatus,
-      depth: execution.depth,
-      hasChildren: execution.hasChildren,
+      depth,
+      hasChildren,
     };
     return [transient];
   });

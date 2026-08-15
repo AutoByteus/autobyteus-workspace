@@ -1,0 +1,169 @@
+{
+  "schemaVersion": 1,
+  "createdAt": "2026-08-14T10:00:00.000Z",
+  "archivedAt": null,
+  "applicationBinding": null,
+  "handoffs": [
+    {
+      "from": "/product_manager",
+      "to": "/architecture/architect",
+      "rules": [
+        "The requirements are ready for architecture design."
+      ]
+    }
+  ],
+  "rootTeam": {
+    "teamDefinitionId": "team-def-software-engineering",
+    "teamDefinitionName": "Software Engineering",
+    "teamRunId": "team-run-root",
+    "coordinatorAddress": "/product_manager",
+    "members": [
+      {
+        "address": "/product_manager",
+        "agentDefinitionId": "agent-def-product-manager",
+        "role": "Product manager",
+        "description": null,
+        "agentRunId": "agent-run-product-manager",
+        "platformAgentRunId": null,
+        "launchConfiguration": {
+          "runtimeKind": "AUTOBYTEUS",
+          "llmModelIdentifier": "gpt-5.6-luna",
+          "llmConfig": null,
+          "autoExecuteTools": false,
+          "skillAccessMode": "PRELOADED_ONLY",
+          "workspaceRootPath": "/workspace/software-engineering"
+        }
+      },
+      {
+        "address": "/architecture",
+        "teamDefinitionId": "team-def-architecture",
+        "role": "Architecture",
+        "description": null,
+        "teamRunId": "team-run-architecture",
+        "coordinatorAddress": "/architecture/architect",
+        "members": [
+          {
+            "address": "/architecture/architect",
+            "agentDefinitionId": "agent-def-architect",
+            "role": "Architect",
+            "description": null,
+            "agentRunId": "agent-run-architect",
+            "platformAgentRunId": null,
+            "launchConfiguration": {
+              "runtimeKind": "CLAUDE",
+              "llmModelIdentifier": "claude-sonnet-4-5",
+              "llmConfig": null,
+              "autoExecuteTools": false,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/workspace/software-engineering"
+            }
+          },
+          {
+            "address": "/architecture/reviewer",
+            "agentDefinitionId": "agent-def-reviewer",
+            "role": "Architecture reviewer",
+            "description": null,
+            "agentRunId": "agent-run-reviewer",
+            "platformAgentRunId": null,
+            "launchConfiguration": {
+              "runtimeKind": "CODEX",
+              "llmModelIdentifier": "gpt-5.6-luna",
+              "llmConfig": null,
+              "autoExecuteTools": false,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/workspace/software-engineering"
+            }
+          }
+        ],
+        "taskExecutions": []
+      },
+      {
+        "address": "/qa",
+        "teamDefinitionId": "team-def-qa",
+        "role": "Quality assurance",
+        "description": null,
+        "teamRunId": "team-run-qa",
+        "coordinatorAddress": "/qa/qa_lead",
+        "members": [
+          {
+            "address": "/qa/qa_lead",
+            "agentDefinitionId": "agent-def-qa-lead",
+            "role": "QA lead",
+            "description": null,
+            "agentRunId": "agent-run-qa-lead",
+            "platformAgentRunId": null,
+            "launchConfiguration": {
+              "runtimeKind": "AUTOBYTEUS",
+              "llmModelIdentifier": "gpt-5.6-luna",
+              "llmConfig": null,
+              "autoExecuteTools": false,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/workspace/software-engineering"
+            }
+          },
+          {
+            "address": "/qa/tester",
+            "agentDefinitionId": "agent-def-tester",
+            "role": "QA tester",
+            "description": null,
+            "agentRunId": "agent-run-tester",
+            "platformAgentRunId": null,
+            "launchConfiguration": {
+              "runtimeKind": "CODEX",
+              "llmModelIdentifier": "gpt-5.6-luna",
+              "llmConfig": null,
+              "autoExecuteTools": false,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/workspace/software-engineering"
+            }
+          },
+          {
+            "address": "/qa/automation",
+            "teamDefinitionId": "team-def-automation",
+            "role": "Automation testing",
+            "description": null,
+            "teamRunId": "team-run-automation",
+            "coordinatorAddress": "/qa/automation/automation_lead",
+            "members": [
+              {
+                "address": "/qa/automation/automation_lead",
+                "agentDefinitionId": "agent-def-automation-lead",
+                "role": "Automation lead",
+                "description": null,
+                "agentRunId": "agent-run-automation-lead",
+                "platformAgentRunId": null,
+                "launchConfiguration": {
+                  "runtimeKind": "CODEX",
+                  "llmModelIdentifier": "gpt-5.6-luna",
+                  "llmConfig": null,
+                  "autoExecuteTools": false,
+                  "skillAccessMode": "PRELOADED_ONLY",
+                  "workspaceRootPath": "/workspace/software-engineering"
+                }
+              },
+              {
+                "address": "/qa/automation/tester",
+                "agentDefinitionId": "agent-def-automation-tester",
+                "role": "Automation tester",
+                "description": null,
+                "agentRunId": "agent-run-automation-tester",
+                "platformAgentRunId": null,
+                "launchConfiguration": {
+                  "runtimeKind": "CLAUDE",
+                  "llmModelIdentifier": "claude-sonnet-4-5",
+                  "llmConfig": null,
+                  "autoExecuteTools": false,
+                  "skillAccessMode": "PRELOADED_ONLY",
+                  "workspaceRootPath": "/workspace/software-engineering"
+                }
+              }
+            ],
+            "taskExecutions": []
+          }
+        ],
+        "taskExecutions": []
+      }
+    ],
+    "taskExecutions": []
+  }
+}

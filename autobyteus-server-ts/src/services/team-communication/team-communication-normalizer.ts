@@ -5,10 +5,6 @@ import {
   type TeamCommunicationReferenceFileType,
 } from "./team-communication-types.js";
 import {
-  createTeamExecutionAddress,
-  type TeamExecutionAddress,
-} from "../../agent-team-execution/domain/team-execution-address.js";
-import {
   buildTeamCommunicationMessageId,
   buildTeamCommunicationReferenceId,
   normalizeTeamCommunicationReferencePath,
@@ -22,24 +18,6 @@ const asRecord = (value: unknown): Record<string, unknown> | null =>
   value && typeof value === "object" && !Array.isArray(value) ? value as Record<string, unknown> : null;
 const text = (value: unknown): string | null =>
   typeof value === "string" && value.trim() ? value.trim() : null;
-const exactKeys = (record: Record<string, unknown>, keys: readonly string[]): boolean =>
-  Object.keys(record).length === keys.length && keys.every((key) => Object.hasOwn(record, key));
-
-const parseAddress = (value: unknown): TeamExecutionAddress | null => {
-  const record = asRecord(value);
-  if (!record || !exactKeys(record, ["rootTeamRunId", "taskTeamRunIds", "memberAddress", "taskAgentRunId"])) return null;
-  if (!Array.isArray(record.taskTeamRunIds) || !record.taskTeamRunIds.every((id) => typeof id === "string")) return null;
-  if (record.taskAgentRunId !== null && typeof record.taskAgentRunId !== "string") return null;
-  try {
-    return createTeamExecutionAddress({
-      rootTeamRunId: record.rootTeamRunId as string,
-      taskTeamRunIds: record.taskTeamRunIds as string[],
-      memberAddress: record.memberAddress as string,
-      taskAgentRunId: record.taskAgentRunId as string | null,
-    });
-  } catch { return null; }
-};
-
 export const inferTeamCommunicationReferenceFileType = (filePath: string): TeamCommunicationReferenceFileType => {
   const lower = filePath.toLowerCase();
   if (/\.(png|jpg|jpeg|gif|webp|svg)$/.test(lower)) return "image";
@@ -88,16 +66,16 @@ export const normalizeTeamCommunicationMessage = (
   options: { teamRunId?: string | null; timestampFallback?: string } = {},
 ): TeamCommunicationMessage | null => {
   const teamRunId = text(raw.teamRunId) ?? text(options.teamRunId);
-  const senderAddress = parseAddress(raw.senderAddress);
-  const receiverAddress = parseAddress(raw.receiverAddress);
-  if (!teamRunId || !senderAddress || !receiverAddress || typeof raw.content !== "string") return null;
+  const senderAgentRunId = text(raw.senderAgentRunId);
+  const receiverAgentRunId = text(raw.receiverAgentRunId);
+  if (!teamRunId || !senderAgentRunId || !receiverAgentRunId || typeof raw.content !== "string") return null;
   const createdAt = text(raw.createdAt) ?? options.timestampFallback ?? new Date().toISOString();
   const messageType = text(raw.messageType) ?? "agent_message";
   const messageId = text(raw.messageId) ?? buildTeamCommunicationMessageId({
-    teamRunId, senderAddress, receiverAddress, messageType, content: raw.content, createdAt,
+    teamRunId, senderAgentRunId, receiverAgentRunId, messageType, content: raw.content, createdAt,
   });
   return {
-    messageId, senderAddress, receiverAddress, content: raw.content, messageType, createdAt,
+    messageId, senderAgentRunId, receiverAgentRunId, content: raw.content, messageType, createdAt,
     referenceFiles: normalizeReferenceFiles(raw.referenceFileEntries ?? raw.referenceFiles ?? [], {
       teamRunId, messageId, timestamp: createdAt,
     }),

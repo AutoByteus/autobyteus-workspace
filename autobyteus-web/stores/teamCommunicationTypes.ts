@@ -1,8 +1,6 @@
-import type { TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
+import type { TeamCommunicationMessageDto, TeamReferenceFileDto } from '@autobyteus/team-stream-contracts';
 
-export type TeamCommunicationReferenceFileType = 'file' | 'image' | 'audio' | 'video' | 'pdf' | 'csv' | 'excel' | 'other';
-export type TeamCommunicationDirection = 'sent' | 'received';
-
+export type TeamCommunicationReferenceFileType = TeamReferenceFileDto['type'];
 export interface TeamCommunicationReferenceFile {
   referenceId: string;
   path: string;
@@ -11,33 +9,21 @@ export interface TeamCommunicationReferenceFile {
   updatedAt: string;
 }
 
-export interface TeamCommunicationMessage {
+export type TeamCommunicationDirection = 'sent' | 'received';
+export interface TeamCommunicationPerspectiveMessage {
   messageId: string;
-  senderAddress: TeamExecutionAddress;
-  receiverAddress: TeamExecutionAddress;
+  senderAgentRunId: string;
+  receiverAgentRunId: string;
   content: string;
   messageType: string;
   createdAt: string;
   referenceFiles: TeamCommunicationReferenceFile[];
-}
-
-export interface TeamCommunicationPerspectiveMessage extends TeamCommunicationMessage {
   direction: TeamCommunicationDirection;
-  counterpartAddress: TeamExecutionAddress;
-  counterpartKey: string;
+  counterpartAgentRunId: string;
   counterpartLabel: string;
-  message: TeamCommunicationMessage;
-}
-
-export interface TeamCommunicationPerspectiveGroup {
-  counterpartAddress: TeamExecutionAddress;
-  counterpartKey: string;
-  counterpartLabel: string;
-  messages: TeamCommunicationPerspectiveMessage[];
+  message: TeamCommunicationMessageDto;
 }
 
 export interface TeamCommunicationPerspective {
-  sentGroups: TeamCommunicationPerspectiveGroup[];
-  receivedGroups: TeamCommunicationPerspectiveGroup[];
   messages: TeamCommunicationPerspectiveMessage[];
 }

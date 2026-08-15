@@ -12,17 +12,8 @@ import type {
   PendingInterruptCommand,
 } from './protocol';
 import { dispatchAgentStreamMessage } from './agentStreamMessageProjector';
-import { handleTeamCommunicationMessage } from './handlers';
 import { getActiveRemoteAccessCredential } from '~/utils/remoteAccess/authorizedTransport';
 import { buildAuthenticatedWebSocketUrl } from '~/utils/remoteAccess/websocketAuth';
-import { getApolloClient } from '~/utils/apolloClient';
-import { scheduleTaskDelegationRecordsRefresh } from '~/services/runHydration/taskDelegationHydrationService';
-import { mapCompleteTeamTaskProjectionSnapshot } from '~/services/teamExecution/teamTaskProjectionMapper';
-import {
-  createTeamExecutionAddress,
-  sameTeamExecutionAddress,
-  type TeamExecutionAddress,
-} from '~/types/agent/TeamExecutionAddress';
 import { drainPendingInterruptTransportFailures, tryAdmitInterruptCommand } from './interruptCommandAdmission';
 import { TeamToolApprovalTargetTracker } from './TeamToolApprovalTargetTracker';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
@@ -32,11 +23,7 @@ import {
   createTeamSendMessage,
   createTeamToolDecisionMessage,
 } from './teamClientMessageFactory';
-import {
-  fromTeamExecutionAddressDto,
-  toAgentProjectionMessage,
-  toTeamCommunicationProjectionPayload,
-} from './teamStreamDtoAdapters';
+import { toAgentProjectionMessage } from './teamStreamDtoAdapters';
 
 export interface TeamStreamingServiceOptions {
   wsClient?: IWebSocketClient;
@@ -44,7 +31,7 @@ export interface TeamStreamingServiceOptions {
   onInterruptCommandTransportFailure?: (failure: InterruptCommandTransportFailure) => void;
 }
 
-export interface TeamInterruptGenerationTarget { executionAddress: TeamExecutionAddress }
+export interface TeamInterruptGenerationTarget { agentRunId: string }
 
 export class TeamStreamingService {
   private readonly wsClient: IWebSocketClient;
@@ -55,6 +42,7 @@ export class TeamStreamingService {
   private readonly approvalTracker = new TeamToolApprovalTargetTracker();
   private teamContext: AgentTeamContext | null = null;
   private teamRunId: string | null = null;
+  private connectedRootAccepted = false;
   private applicationReady = false;
 
   constructor(wsEndpoint: string, options: TeamStreamingServiceOptions = {}) {
@@ -70,17 +58,16 @@ export class TeamStreamingService {
 
   connect(teamRunId: string, teamContext: AgentTeamContext): void {
     const normalized = teamRunId.trim();
-    if (!normalized || normalized !== teamContext.executions.getRootTeamRunId()) throw new Error('Team stream root identity mismatch.');
+    if (!normalized || normalized !== teamContext.view.getRootTeamRunId()) throw new Error('Team stream root identity mismatch.');
     this.attachContext(teamContext);
     this.teamRunId = normalized;
+    this.connectedRootAccepted = false;
     this.applicationReady = false;
     this.wsClient.on('onMessage', this.handleMessage);
     this.wsClient.on('onConnect', this.handleConnect);
     this.wsClient.on('onDisconnect', this.handleDisconnect);
     this.wsClient.on('onError', this.handleError);
-    const baseUrl = `${this.wsEndpoint}/${normalized}`;
-    const credential = getActiveRemoteAccessCredential();
-    this.wsClient.connect(credential ? buildAuthenticatedWebSocketUrl(baseUrl, credential) : baseUrl);
+    this.connectTransport(normalized);
   }
 
   disconnect(): void {
@@ -92,14 +79,16 @@ export class TeamStreamingService {
     this.wsClient.disconnect();
     this.teamContext = null;
     this.teamRunId = null;
+    this.connectedRootAccepted = false;
     this.applicationReady = false;
     this.approvalTracker.clear();
   }
 
-  sendMessage(content: string, executionAddress: TeamExecutionAddress, contextFilePaths: string[] = [], imageUrls: string[] = [], identity: { messageId?: string; dedupeKey?: string } = {}): void {
+  sendMessage(content: string, agentRunId: string, contextFilePaths: string[] = [], imageUrls: string[] = [], identity: { messageId?: string; dedupeKey?: string } = {}): void {
+    this.requireCurrentAgentRun(agentRunId);
     const messageId = identity.messageId?.trim() || crypto.randomUUID();
     const dedupeKey = identity.dedupeKey?.trim() || messageId;
-    this.wsClient.send(serializeTeamStreamClientMessage(createTeamSendMessage({ content, executionAddress, contextFilePaths, imageUrls, messageId, dedupeKey })));
+    this.wsClient.send(serializeTeamStreamClientMessage(createTeamSendMessage({ content, agentRunId, contextFilePaths, imageUrls, messageId, dedupeKey })));
   }
 
   approveTool(invocationId: string, target?: ToolApprovalTarget | null, reason?: string): void {
@@ -112,39 +101,52 @@ export class TeamStreamingService {
 
   private sendToolDecision(decision: 'APPROVE_TOOL' | 'DENY_TOOL', invocationId: string, target?: ToolApprovalTarget | null, reason?: string): void {
     const resolved = this.approvalTracker.resolveTarget(invocationId, target);
-    if (!resolved) throw new Error(`No exact Team execution target is registered for tool invocation '${invocationId}'.`);
-    this.wsClient.send(serializeTeamStreamClientMessage(createTeamToolDecisionMessage({ decision, invocationId, executionAddress: resolved.executionAddress, reason })));
+    if (!resolved) throw new Error(`No exact AgentRun target is registered for tool invocation '${invocationId}'.`);
+    this.requireCurrentAgentRun(resolved.agentRunId);
+    this.wsClient.send(serializeTeamStreamClientMessage(createTeamToolDecisionMessage({ decision, invocationId, agentRunId: resolved.agentRunId, reason })));
     this.approvalTracker.complete(invocationId);
   }
 
   interruptGeneration(commandId: string, target: TeamInterruptGenerationTarget): boolean {
     const normalizedCommandId = commandId.trim();
-    const executionAddress = createTeamExecutionAddress(target.executionAddress);
+    const agentRunId = this.requireCurrentAgentRun(target.agentRunId);
+    const rootTeamRunId = this.teamContext!.view.getRootTeamRunId();
     const entry: PendingInterruptCommand = {
       commandId: normalizedCommandId,
-      target: { target_kind: 'team_member', team_run_id: executionAddress.rootTeamRunId, execution_address: executionAddress },
+      target: { target_kind: 'team_member', team_run_id: rootTeamRunId, agent_run_id: agentRunId },
     };
     return tryAdmitInterruptCommand({
       pending: this.pendingInterruptCommands,
       entry,
       getConnectionState: () => this.wsClient.state,
-      send: () => this.wsClient.send(serializeTeamStreamClientMessage(createTeamInterruptMessage({ commandId: normalizedCommandId, executionAddress }))),
+      send: () => this.wsClient.send(serializeTeamStreamClientMessage(createTeamInterruptMessage({ commandId: normalizedCommandId, agentRunId }))),
       onTransportFailure: this.onInterruptCommandTransportFailure,
     });
   }
 
+  private connectTransport(teamRunId: string): void {
+    const baseUrl = `${this.wsEndpoint}/${teamRunId}`;
+    const credential = getActiveRemoteAccessCredential();
+    this.wsClient.connect(credential ? buildAuthenticatedWebSocketUrl(baseUrl, credential) : baseUrl);
+  }
+
+  private requireCurrentAgentRun(value: string): string {
+    const agentRunId = value.trim();
+    if (!agentRunId || !this.teamContext?.view.hasAgentRun(agentRunId)) {
+      throw new Error(`AgentRun '${agentRunId}' is not part of the current Team execution.`);
+    }
+    return agentRunId;
+  }
+
   private handleMessage = (raw: string): void => {
     if (!this.teamContext || !this.teamRunId) return;
-    try {
-      const message = parseTeamStreamServerMessage(raw);
-      this.dispatchMessage(message, this.teamContext);
-    } catch (error) {
-      console.error('Rejected invalid Team WebSocket message:', error);
-    }
+    try { this.dispatchMessage(parseTeamStreamServerMessage(raw), this.teamContext); }
+    catch (error) { console.error('Rejected invalid Team WebSocket message:', error); }
   };
 
   private handleConnect = (): void => { console.log('Team WebSocket transport connected'); };
   private handleDisconnect = (reason?: string): void => {
+    this.connectedRootAccepted = false;
     this.applicationReady = false;
     this.drainPendingInterruptCommands(reason || 'Interrupt result was lost because the stream disconnected.');
   };
@@ -152,9 +154,8 @@ export class TeamStreamingService {
 
   private handleInterruptAck(message: Extract<TeamStreamServerMessage, { type: 'AGENT_COMMAND_ACK' }>): void {
     const pending = this.pendingInterruptCommands.get(message.payload.command_id);
-    if (!pending || pending.target.target_kind !== 'team_member') return;
-    const executionAddress = fromTeamExecutionAddressDto(message.payload.execution_address);
-    if (!pending.target.execution_address || !sameTeamExecutionAddress(pending.target.execution_address, executionAddress)) return;
+    if (!pending || pending.target.target_kind !== 'team_member'
+      || pending.target.agent_run_id !== message.payload.agent_run_id) return;
     this.pendingInterruptCommands.delete(message.payload.command_id);
     const target = pending.target;
     this.onInterruptCommandResult(message.payload.state === 'accepted'
@@ -162,64 +163,56 @@ export class TeamStreamingService {
       : { command_type: 'INTERRUPT_GENERATION', command_id: message.payload.command_id, state: message.payload.state, code: message.payload.code, message: message.payload.message, target });
   }
 
-  private refreshTasks(context: AgentTeamContext): void {
-    const rootTeamRunId = context.executions.getRootTeamRunId();
-    scheduleTaskDelegationRecordsRefresh({
-      client: getApolloClient(), teamRunId: rootTeamRunId,
-      admitRecords: (records) => {
-        const result = context.executions.reconcileTaskSnapshot(mapCompleteTeamTaskProjectionSnapshot({
-          expectedRootTeamRunId: rootTeamRunId, topology: context.topology, records,
-        }));
-        if (result.disposition === 'rejected') {
-          throw new Error(`Rejected refreshed Team task snapshot (${result.code}): ${result.message}`);
-        }
-      },
-      onRejected: (error) => console.warn(`Rejected Team task refresh for '${rootTeamRunId}'`, error),
-    });
-  }
-
   private dispatchMessage(message: TeamStreamServerMessage, context: AgentTeamContext): void {
-    switch (message.type) {
-      case 'CONNECTED': this.applicationReady = true; return;
-      case 'TEAM_RUN_LIFECYCLE': {
-        const result = context.executions.setRootTeamActive(message.payload.is_active);
-        if (result.disposition === 'applied') useRunHistoryStore().applyRunNavigationEffect({
-          kind: 'team_run', teamRunId: context.executions.getRootTeamRunId(), isActive: message.payload.is_active,
-        }, { kind: 'PRESENTATION' });
-        return;
-      }
-      case 'AGENT_COMMAND_ACK': this.handleInterruptAck(message); return;
-      case 'TEAM_COMMUNICATION_MESSAGE': handleTeamCommunicationMessage(toTeamCommunicationProjectionPayload(message.payload)); return;
-      case 'ERROR':
-        if (message.payload.agent_execution === null) {
-          console.error(`Team stream protocol error (${message.payload.code}): ${message.payload.message}`);
-          return;
-        }
-        break;
-      default: break;
+    if (message.type === 'CONNECTED') {
+      if (message.payload.root_team_run_id !== context.view.getRootTeamRunId()) throw new Error('Connected Team stream root mismatch.');
+      this.connectedRootAccepted = true;
+      this.applicationReady = false;
+      return;
     }
-
-    const result = context.executions.applyExecutionMessage(message);
+    if (message.type === 'TEAM_RUN_LIFECYCLE') {
+      const result = context.view.setRootTeamActive(message.payload.is_active);
+      if (result.disposition === 'applied') useRunHistoryStore().applyRunNavigationEffect({
+        kind: 'team_run', teamRunId: context.view.getRootTeamRunId(), isActive: message.payload.is_active,
+      }, { kind: 'PRESENTATION' });
+      return;
+    }
+    if (message.type === 'TEAM_EXECUTION_VIEW_SNAPSHOT') {
+      if (!this.connectedRootAccepted) throw new Error('Team snapshot arrived before the exact connected root was admitted.');
+      const result = context.view.applySnapshot(message);
+      if (result.disposition === 'rejected') throw new Error(`${result.code}: ${result.message}`);
+      this.applicationReady = true;
+      return;
+    }
+    if (message.type === 'AGENT_COMMAND_ACK') {
+      this.handleInterruptAck(message);
+      return;
+    }
+    const result = context.view.applyMessage(message);
     if (result.disposition === 'rejected') {
       console.warn(`Rejected Team execution message (${result.code}): ${result.message}`);
       return;
     }
     for (const effect of result.effects) {
-      if (effect.kind === 'refresh_task_records') {
-        this.refreshTasks(context);
-        continue;
+      if (effect.kind === 'snapshot_refresh_required') {
+        this.applicationReady = false;
+        this.connectedRootAccepted = false;
+        this.wsClient.disconnect();
+        this.connectTransport(context.view.getRootTeamRunId());
+      } else if (effect.kind === 'record_team_token_usage') {
+        useTokenUsageMeterStore().applyTeamTokenUsage(context.view.getRootTeamRunId(), effect.agentRunId, effect.details);
+      } else if (effect.kind === 'dispatch_agent') {
+        const agentContext = context.view.getAgentContext(effect.agentRunId);
+        if (!agentContext) continue;
+        this.approvalTracker.track(effect.message);
+        dispatchAgentStreamMessage(toAgentProjectionMessage(effect.message, effect.agentRunId), {
+          kind: 'team_member',
+          context: agentContext,
+          teamRunId: context.view.getRootTeamRunId(),
+          agentRunId: effect.agentRunId,
+          memberAddress: context.view.getMemberAddress(effect.agentRunId)!,
+        });
       }
-      if (effect.kind === 'record_team_token_usage') {
-        useTokenUsageMeterStore().applyTeamTokenUsage(effect.executionAddress, effect.details);
-        continue;
-      }
-      const agentContext = context.executions.getAgentContext(effect.executionAddress);
-      if (!agentContext) continue;
-      this.approvalTracker.track(effect.message);
-      dispatchAgentStreamMessage(toAgentProjectionMessage(effect.message, agentContext.state.runId), {
-        kind: 'team_member', context: agentContext,
-        teamRunId: context.executions.getRootTeamRunId(), executionAddress: effect.executionAddress,
-      });
     }
   }
 

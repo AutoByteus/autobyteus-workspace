@@ -144,7 +144,7 @@ describe('WorkspaceAdaptiveLayout', () => {
 
   it('renders AgentWorkspaceView when agent is selected', async () => {
     const wrapper = await mountComponent({
-      agentSelection: { selectedType: 'agent', selectedRunId: '123' },
+      agentSelection: { subject: { kind: 'agent_run', runId: '123' } },
       workspaceCenterView: { mode: 'chat' },
     });
 
@@ -155,7 +155,7 @@ describe('WorkspaceAdaptiveLayout', () => {
 
   it('renders TeamWorkspaceView when team is selected', async () => {
     const wrapper = await mountComponent({
-      agentSelection: { selectedType: 'team', selectedRunId: '456' },
+      agentSelection: { subject: { kind: 'team_run', rootTeamRunId: '456' } },
       workspaceCenterView: { mode: 'chat' },
     });
 
@@ -166,7 +166,7 @@ describe('WorkspaceAdaptiveLayout', () => {
 
   it('renders RunConfigPanel when no selection and pending agent config exists', async () => {
     const wrapper = await mountComponent({
-      agentSelection: { selectedType: null, selectedRunId: null },
+      agentSelection: { subject: null },
       workspaceCenterView: { mode: 'chat' },
       agentRunConfig: {
         config: {
@@ -186,7 +186,7 @@ describe('WorkspaceAdaptiveLayout', () => {
 
   it('renders placeholder when nothing is selected and no pending config exists', async () => {
     const wrapper = await mountComponent({
-      agentSelection: { selectedType: null, selectedRunId: null },
+      agentSelection: { subject: null },
       workspaceCenterView: { mode: 'chat' },
       agentRunConfig: { config: null },
       teamRunConfig: { config: null },
@@ -199,7 +199,7 @@ describe('WorkspaceAdaptiveLayout', () => {
 
   it('keeps the adaptive root and center/right split shrink-safe', async () => {
     const wrapper = await mountComponent({
-      agentSelection: { selectedType: 'team', selectedRunId: '456' },
+      agentSelection: { subject: { kind: 'team_run', rootTeamRunId: '456' } },
       workspaceCenterView: { mode: 'chat' },
     });
 
@@ -218,7 +218,7 @@ describe('WorkspaceAdaptiveLayout', () => {
 
   it('keeps the center content shell clipped instead of making it an outer scroll owner', async () => {
     const wrapper = await mountComponent({
-      agentSelection: { selectedType: 'agent', selectedRunId: '123' },
+      agentSelection: { subject: { kind: 'agent_run', runId: '123' } },
       workspaceCenterView: { mode: 'chat' },
     });
 
@@ -232,7 +232,7 @@ describe('WorkspaceAdaptiveLayout', () => {
     setViewport(800, 700);
     const wrapper = await mountComponent(
       {
-        agentSelection: { selectedType: 'team', selectedRunId: 'responsive-yield' },
+        agentSelection: { subject: { kind: 'team_run', rootTeamRunId: 'responsive-yield' } },
         workspaceCenterView: { mode: 'chat' },
       },
       { rightPanelResizeIntent: 'user-sized' },
@@ -252,7 +252,7 @@ describe('WorkspaceAdaptiveLayout', () => {
     dispatchMouseUp();
 
     const wrapper = await mountComponent({
-      agentSelection: { selectedType: 'team', selectedRunId: 'resize-bound' },
+      agentSelection: { subject: { kind: 'team_run', rootTeamRunId: 'resize-bound' } },
       workspaceCenterView: { mode: 'chat' },
     });
 
@@ -278,7 +278,7 @@ describe('WorkspaceAdaptiveLayout', () => {
     dispatchMouseUp();
 
     const wrapper = await mountComponent({
-      agentSelection: { selectedType: 'team', selectedRunId: 'left-collapse-resize' },
+      agentSelection: { subject: { kind: 'team_run', rootTeamRunId: 'left-collapse-resize' } },
       workspaceCenterView: { mode: 'chat' },
     });
 
@@ -291,7 +291,7 @@ describe('WorkspaceAdaptiveLayout', () => {
 
   it('renders RunConfigPanel for selected run when config view mode is active', async () => {
     const wrapper = await mountComponent({
-      agentSelection: { selectedType: 'agent', selectedRunId: '123' },
+      agentSelection: { subject: { kind: 'agent_run', runId: '123' } },
       workspaceCenterView: { mode: 'config' },
     });
 
@@ -302,7 +302,7 @@ describe('WorkspaceAdaptiveLayout', () => {
 
   it('shows a center loading overlay while a historical run is opening', async () => {
     const wrapper = await mountComponent({
-      agentSelection: { selectedType: 'team', selectedRunId: '456' },
+      agentSelection: { subject: { kind: 'team_run', rootTeamRunId: '456' } },
       workspaceCenterView: { mode: 'chat' },
       runHistory: { openingRun: true },
     });
@@ -314,7 +314,7 @@ describe('WorkspaceAdaptiveLayout', () => {
   it('uses a visible consuming right strip without header or top navigation controls', async () => {
     setViewport(700, 700);
     const wrapper = await mountComponent({
-      agentSelection: { selectedType: 'agent', selectedRunId: '123' },
+      agentSelection: { subject: { kind: 'agent_run', runId: '123' } },
       workspaceCenterView: { mode: 'chat' },
     });
 
@@ -329,7 +329,7 @@ describe('WorkspaceAdaptiveLayout', () => {
     mockClientHeight = 768;
 
     const wrapper = await mountComponent({
-      agentSelection: { selectedType: 'team', selectedRunId: '456' },
+      agentSelection: { subject: { kind: 'team_run', rootTeamRunId: '456' } },
       workspaceCenterView: { mode: 'chat' },
     });
 
@@ -341,7 +341,7 @@ describe('WorkspaceAdaptiveLayout', () => {
   it('switches right tools to a consuming strip before adapting the left panel at constrained widths', async () => {
     setViewport(700, 700);
     const wrapper = await mountComponent({
-      agentSelection: { selectedType: 'team', selectedRunId: '456' },
+      agentSelection: { subject: { kind: 'team_run', rootTeamRunId: '456' } },
       workspaceCenterView: { mode: 'chat' },
     });
 
@@ -357,7 +357,7 @@ describe('WorkspaceAdaptiveLayout', () => {
     useRightPanel().setRightPanelVisible(false);
 
     const wrapper = await mountComponent({
-      agentSelection: { selectedType: 'team', selectedRunId: 'run-strip' },
+      agentSelection: { subject: { kind: 'team_run', rootTeamRunId: 'run-strip' } },
       workspaceCenterView: { mode: 'chat' },
     });
 
@@ -378,7 +378,7 @@ describe('WorkspaceAdaptiveLayout', () => {
     rightPanel.setRightPanelVisible(false);
 
     const wrapper = await mountComponent({
-      agentSelection: { selectedType: 'team', selectedRunId: 'wide-hidden-strip' },
+      agentSelection: { subject: { kind: 'team_run', rootTeamRunId: 'wide-hidden-strip' } },
       workspaceCenterView: { mode: 'chat' },
     });
 
@@ -397,7 +397,7 @@ describe('WorkspaceAdaptiveLayout', () => {
   it('uses the consuming right strip as the sole narrow reopen affordance', async () => {
     setViewport(700, 700);
     const wrapper = await mountComponent({
-      agentSelection: { selectedType: 'team', selectedRunId: 'run-drawer' },
+      agentSelection: { subject: { kind: 'team_run', rootTeamRunId: 'run-drawer' } },
       workspaceCenterView: { mode: 'chat' },
     });
 
@@ -447,7 +447,7 @@ describe('WorkspaceAdaptiveLayout', () => {
     useLeftPanel().setLeftPanelVisible(false);
 
     const wrapper = await mountComponent({
-      agentSelection: { selectedType: 'team', selectedRunId: '456' },
+      agentSelection: { subject: { kind: 'team_run', rootTeamRunId: '456' } },
       workspaceCenterView: { mode: 'chat' },
     });
 
@@ -457,7 +457,7 @@ describe('WorkspaceAdaptiveLayout', () => {
 
   it('opens the existing primary navigation route from the wide empty state', async () => {
     const wrapper = await mountComponent({
-      agentSelection: { selectedType: null, selectedRunId: null },
+      agentSelection: { subject: null },
       workspaceCenterView: { mode: 'chat' },
       agentRunConfig: { config: null },
       teamRunConfig: { config: null },
@@ -472,7 +472,7 @@ describe('WorkspaceAdaptiveLayout', () => {
   it('opens the left drawer for empty-state selection at constrained widths', async () => {
     setViewport(700, 700);
     const wrapper = await mountComponent({
-      agentSelection: { selectedType: null, selectedRunId: null },
+      agentSelection: { subject: null },
       workspaceCenterView: { mode: 'chat' },
       agentRunConfig: { config: null },
       teamRunConfig: { config: null },
@@ -493,7 +493,7 @@ describe('WorkspaceAdaptiveLayout', () => {
 
     try {
       const wrapper = await mountComponent({
-        agentSelection: { selectedType: null, selectedRunId: null },
+        agentSelection: { subject: null },
         workspaceCenterView: { mode: 'chat' },
         agentRunConfig: { config: null },
         teamRunConfig: { config: null },
@@ -513,7 +513,7 @@ describe('WorkspaceAdaptiveLayout', () => {
   it('opens right tools from the strip while preserving selection', async () => {
     setViewport(700, 700);
     const wrapper = await mountComponent({
-      agentSelection: { selectedType: 'team', selectedRunId: 'run-2' },
+      agentSelection: { subject: { kind: 'team_run', rootTeamRunId: 'run-2' } },
       workspaceCenterView: { mode: 'chat' },
     });
 
@@ -530,7 +530,7 @@ describe('WorkspaceAdaptiveLayout', () => {
   it('keeps left and right transient drawers independently open', async () => {
     setViewport(700, 700);
     const wrapper = await mountComponent({
-      agentSelection: { selectedType: null, selectedRunId: null },
+      agentSelection: { subject: null },
       workspaceCenterView: { mode: 'chat' },
       agentRunConfig: { config: null },
       teamRunConfig: { config: null },
@@ -549,7 +549,7 @@ describe('WorkspaceAdaptiveLayout', () => {
   it('keeps the left drawer independent when opened after right tools', async () => {
     setViewport(700, 700);
     const wrapper = await mountComponent({
-      agentSelection: { selectedType: null, selectedRunId: null },
+      agentSelection: { subject: null },
       workspaceCenterView: { mode: 'chat' },
       agentRunConfig: { config: null },
       teamRunConfig: { config: null },

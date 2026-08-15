@@ -7,10 +7,6 @@ import type {
 } from "../domain/models.js";
 import type { ChannelRunOutputDeliveryProvider } from "../providers/channel-run-output-delivery-provider.js";
 import { getProviderProxySet } from "../providers/provider-proxy-set.js";
-import {
-  createTeamExecutionAddress,
-  serializeTeamExecutionAddress,
-} from "../../agent-team-execution/domain/team-execution-address.js";
 
 export type BuildChannelRunOutputDeliveryKeyInput = {
   bindingId: string;
@@ -166,9 +162,7 @@ const normalizeTarget = (target: ChannelRunOutputTarget): ChannelRunOutputTarget
   return {
     targetType: "TEAM",
     teamRunId: normalizeRequiredString(target.teamRunId, "target.teamRunId"),
-    entryExecutionAddress: target.entryExecutionAddress
-      ? createTeamExecutionAddress(target.entryExecutionAddress)
-      : null,
+    entryAgentRunId: normalizeNullableString(target.entryAgentRunId),
   };
 };
 
@@ -181,11 +175,11 @@ const normalizeDeliveryKeyTarget = (
       agentRunId: target.agentRunId,
     };
   }
-  if (!target.entryExecutionAddress) throw new Error("Team output delivery keys require entryExecutionAddress.");
+  if (!target.entryAgentRunId) throw new Error("Team output delivery keys require entryAgentRunId.");
   return {
     targetType: "TEAM",
     teamRunId: target.teamRunId,
-    entryExecutionAddress: serializeTeamExecutionAddress(target.entryExecutionAddress),
+    entryAgentRunId: target.entryAgentRunId,
   };
 };
 

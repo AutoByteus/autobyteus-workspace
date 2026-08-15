@@ -1,0 +1,61 @@
+{
+  "teamRunId": "utd_root_team_api_rev_006_1786811621320_1f008e62b9074f86bc0f0afbbf84a4a2",
+  "agentRunId": "utd_coordinator_api_rev_006_1786811621320_2cfef3946df74a37bcf3fd288e4ffa90",
+  "durationMs": 68103,
+  "sent": true,
+  "terminalAt": null,
+  "websocketError": null,
+  "messageCount": 37,
+  "typeCounts": {
+    "CONNECTED": 1,
+    "TEAM_EXECUTION_VIEW_SNAPSHOT": 1,
+    "TEAM_RUN_LIFECYCLE": 1,
+    "MEMBER_INPUT_MESSAGE": 2,
+    "TURN_STARTED": 1,
+    "SEGMENT_START": 4,
+    "SEGMENT_CONTENT": 7,
+    "TOKEN_USAGE_UPDATED": 8,
+    "SEGMENT_END": 4,
+    "TOOL_EXECUTION_STARTED": 2,
+    "TASK_DELEGATION_EVENT": 4,
+    "TOOL_EXECUTION_SUCCEEDED": 2
+  },
+  "tasks": [
+    {
+      "taskId": "task_81d06ddae57847b092fb72ceb6963f47",
+      "delegatorAgentRunId": "utd_coordinator_api_rev_006_1786811621320_2cfef3946df74a37bcf3fd288e4ffa90",
+      "recipientAddress": "/worker",
+      "targetAgentRunId": "utd_worker_api_rev_006_1786811621320_376116ee10334c0287de418653c056d6",
+      "targetTeamRunId": null,
+      "status": "accepted",
+      "description": "Return E2E_DIRECT_TASK_RESULT_42",
+      "createdAt": "2026-08-15T16:34:20.469Z",
+      "referenceFiles": [],
+      "updates": [
+        {
+          "kind": "submission",
+          "submissionId": "submission_8e2cd1a193c74ef68c39001e6cc77614",
+          "reviewId": null,
+          "interruptionId": null,
+          "reviewedSubmissionId": null,
+          "decision": null,
+          "content": "E2E_DIRECT_TASK_RESULT_42",
+          "createdAt": "2026-08-15T16:34:27.917Z",
+          "referenceFiles": []
+        },
+        {
+          "kind": "review",
+          "submissionId": null,
+          "reviewId": "review_ab7443b94a5d4f79843d5e5987da952b",
+          "interruptionId": null,
+          "reviewedSubmissionId": "submission_8e2cd1a193c74ef68c39001e6cc77614",
+          "decision": "accept",
+          "content": null,
+          "createdAt": "2026-08-15T16:35:21.291Z",
+          "referenceFiles": []
+        }
+      ]
+    }
+  ],
+  "communications": []
+}

@@ -34,6 +34,15 @@ const nullableObject = (value: unknown, label: string): JsonRecord | null => {
   return structuredClone(value as JsonRecord);
 };
 
+const requiredNullableObjectField = (
+  source: JsonRecord,
+  fieldName: string,
+  label: string,
+): JsonRecord | null => {
+  if (!(fieldName in source)) throw new Error(`${label} is required.`);
+  return nullableObject(source[fieldName], label);
+};
+
 const normalizeRoute = (value: string): string => value
   .trim()
   .replace(/\\/g, "/")
@@ -108,8 +117,9 @@ const convertFlatAgent = (value: unknown, index: number): JsonRecord => {
     skillAccessMode: requireSkillAccessMode(member.skillAccessMode, `${label}.skillAccessMode`),
     llmConfig: nullableObject(member.llmConfig, `${label}.llmConfig`),
     workspaceRootPath: nullableText(member.workspaceRootPath, `${label}.workspaceRootPath`),
-    applicationExecutionContext: nullableObject(
-      member.applicationExecutionContext,
+    applicationExecutionContext: requiredNullableObjectField(
+      member,
+      "applicationExecutionContext",
       `${label}.applicationExecutionContext`,
     ),
   };

@@ -2,7 +2,6 @@ import { useWorkspaceStore } from '~/stores/workspace';
 import { useAgentContextsStore } from '~/stores/agentContextsStore';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import type { AgentStatus } from '~/types/agent/AgentStatus';
-import { sameTeamExecutionAddress, type TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 import type { RunHistoryWorkspaceGroup } from './runHistoryTypes';
 import type { RunNavigationEffect } from '~/services/agentStreaming/agentStreamMutationEffects';
 import {
@@ -59,10 +58,10 @@ export const applyRunNavigationEffectForStore = (
 export const applyRunNavigationTeamFocusForStore = (
   store: RunHistoryNavigationStoreState,
   teamRunId: string,
-  executionAddress: TeamExecutionAddress,
+  agentRunId: string,
 ): boolean => {
   const result = applyRunNavigationTeamFocusToProjection(
-    ensureProjection(store), teamRunId, executionAddress,
+    ensureProjection(store), teamRunId, agentRunId,
   );
   if (!result.changed) return false;
   store.navigationProjection = result.state;
@@ -73,14 +72,14 @@ export const applyRunNavigationTeamFocusForStore = (
 export const focusTeamMemberAndEnsureHydratedForStore = async (
   store: RunHistoryNavigationStoreState,
   teamRunId: string,
-  executionAddress: TeamExecutionAddress,
+  agentRunId: string,
 ): Promise<boolean> => {
   const teamStore = useAgentTeamContextsStore();
   const context = teamStore.getTeamContextById(teamRunId);
-  if (!context || executionAddress.rootTeamRunId !== teamRunId) return false;
-  await teamStore.focusMemberAndEnsureHydrated(teamRunId, executionAddress);
-  if (!sameTeamExecutionAddress(context.executions.getFocusedAddress(), executionAddress)) return false;
-  return applyRunNavigationTeamFocusForStore(store, teamRunId, executionAddress);
+  if (!context || context.view.getRootTeamRunId() !== teamRunId) return false;
+  const result = context.view.focusAgent(agentRunId);
+  if (result.disposition === 'rejected' || context.view.getFocusedAgentRunId() !== agentRunId) return false;
+  return applyRunNavigationTeamFocusForStore(store, teamRunId, agentRunId);
 };
 
 export const standaloneNavigationTarget = (input: {

@@ -194,7 +194,7 @@ describe("Codex reasoning block conversion", () => {
       item: { type: "mcpToolCall", id: "tool-1", tool: "demo", status: "completed" },
     }],
     ["result-first file log", CodexThreadEventName.ITEM_FILE_CHANGE_OUTPUT_DELTA, { turnId: "turn-1", invocation_id: "tool-1", delta: "changed" }],
-    ["result-first raw log", CodexThreadEventName.RAW_RESPONSE_ITEM_COMPLETED, { turnId: "turn-1", item: { type: "functionCallOutput", call_id: "tool-1", output: "done" } }],
+    ["result-first raw log", CodexThreadEventName.RAW_RESPONSE_ITEM_COMPLETED, { turnId: "turn-1", item: { type: "functionCallOutput", call_id: "tool-1", name: "demo", output: "done" } }],
     ["turn completion", CodexThreadEventName.TURN_COMPLETED, { turnId: "turn-1" }],
     ["turn start", CodexThreadEventName.TURN_STARTED, { turnId: "turn-1" }],
     ["terminal error", CodexThreadEventName.ERROR, { message: "failed" }],

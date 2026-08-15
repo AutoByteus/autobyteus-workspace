@@ -1,0 +1,356 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+
+stdout | tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:4704) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts > MigrateNativeWorkingContextSnapshotsV5Migration > converts standalone v4 with absent lineage, exact active provenance, exact cleanup, and idempotence
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+
+stdout | tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts > MigrateNativeWorkingContextSnapshotsV5Migration > uses memberRunId as team snapshot identity and publishes an empty strict v5 with warnings when nothing survives
+DEBUG native-team {
+  "status": "SUCCEEDED",
+  "summary": {
+    "scannedCount": 0,
+    "migratedCount": 0,
+    "skippedCount": 0,
+    "failedCount": 0,
+    "details": []
+  },
+  "errorMessage": null
+}
+
+ ✓ tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts > MigrateNativeWorkingContextSnapshotsV5Migration > converts standalone v4 with absent lineage, exact active provenance, exact cleanup, and idempotence 18ms
+ ✓ tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts > MigrateNativeWorkingContextSnapshotsV5Migration > converts standalone v4 with zero-byte lineage, exact active provenance, exact cleanup, and idempotence 11ms
+ × tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts > MigrateNativeWorkingContextSnapshotsV5Migration > uses memberRunId as team snapshot identity and publishes an empty strict v5 with warnings when nothing survives 10ms
+   → expected 'SUCCEEDED' to be 'SUCCEEDED_WITH_WARNINGS' // Object.is equality
+ ✓ tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts > MigrateNativeWorkingContextSnapshotsV5Migration > skips any nonempty-lineage location before snapshot inspection or cleanup 4ms
+ ✓ tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts > MigrateNativeWorkingContextSnapshotsV5Migration > retains equivalent current-v5 bytes while cleaning obsolete files and rejects identity conflict without mutation 9ms
+ ✓ tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts > MigrateNativeWorkingContextSnapshotsV5Migration > runs the default prerequisite class order through the ordinary runner and preserves a raw-1-backed direct upgrade 14ms
+stdout | tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:4707) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts > RemoveExternalRuntimeWorkingContextSnapshotsMigration > removes only exact standalone and recursive team Codex/Claude snapshots and is idempotent
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+
+stdout | tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts > RemoveExternalRuntimeWorkingContextSnapshotsMigration > removes only exact standalone and recursive team Codex/Claude snapshots and is idempotent
+DEBUG external-team {
+  "status": "SUCCEEDED",
+  "summary": {
+    "scannedCount": 12,
+    "migratedCount": 3,
+    "skippedCount": 9,
+    "failedCount": 0,
+    "details": [
+      {
+        "itemId": "agents/unclassified-run:metadata",
+        "filePath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/external-snapshot-cleanup-rbLWmE/agents/unclassified-run/run_metadata.json",
+        "status": "SKIPPED",
+        "message": "Standalone run has no current metadata and was not classified."
+      },
+      {
+        "itemId": "agent_teams/team-run/child-team/grandchild-team/deep-codex",
+        "filePath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/external-snapshot-cleanup-rbLWmE/agent_teams/team-run/child-team/grandchild-team/deep-codex/working_context_snapshot.json",
+        "status": "SKIPPED",
+        "message": "Snapshot belongs to a native or unsupported runtime and was preserved."
+      },
+      {
+        "itemId": "agent_teams/team-run/child-team/nested-claude",
+        "filePath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/external-snapshot-cleanup-rbLWmE/agent_teams/team-run/child-team/nested-claude/working_context_snapshot.json",
+        "status": "SKIPPED",
+        "message": "Snapshot belongs to a native or unsupported runtime and was preserved."
+      },
+      {
+        "itemId": "agent_teams/team-run/native-member",
+        "filePath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/external-snapshot-cleanup-rbLWmE/agent_teams/team-run/native-member/working_context_snapshot.json",
+        "status": "SKIPPED",
+        "message": "Snapshot belongs to a native or unsupported runtime and was preserved."
+      },
+      {
+        "itemId": "agent_teams/team-run/root-codex",
+        "filePath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/external-snapshot-cleanup-rbLWmE/agent_teams/team-run/root-codex/working_context_snapshot.json",
+        "status": "SKIPPED",
+        "message": "Snapshot belongs to a native or unsupported runtime and was preserved."
+      },
+      {
+        "itemId": "agents/claude-run",
+        "filePath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/external-snapshot-cleanup-rbLWmE/agents/claude-run/working_context_snapshot.json",
+        "status": "MIGRATED",
+        "message": "Removed duplicate external runtime WorkingContext snapshot."
+      },
+      {
+        "itemId": "agents/codex-run",
+        "filePath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/external-snapshot-cleanup-rbLWmE/agents/codex-run/working_context_snapshot.json",
+        "status": "MIGRATED",
+        "message": "Removed duplicate external runtime WorkingContext snapshot."
+      },
+      {
+        "itemId": "agents/future-run",
+        "filePath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/external-snapshot-cleanup-rbLWmE/agents/future-run/working_context_snapshot.json",
+        "status": "SKIPPED",
+        "message": "Snapshot belongs to a native or unsupported runtime and was preserved."
+      },
+      {
+        "itemId": "agents/native-run",
+        "filePath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/external-snapshot-cleanup-rbLWmE/agents/native-run/working_context_snapshot.json",
+        "status": "SKIPPED",
+        "message": "Snapshot belongs to a native or unsupported runtime and was preserved."
+      },
+      {
+        "itemId": "agents/path-injection-run",
+        "filePath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/external-snapshot-cleanup-rbLWmE/agents/path-injection-run/working_context_snapshot.json",
+        "status": "MIGRATED",
+        "message": "Removed duplicate external runtime WorkingContext snapshot."
+      },
+      {
+        "itemId": "agent_teams/team-run/root-codex/tasks/unclassified-task-run/working_context_snapshot.json",
+        "filePath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/external-snapshot-cleanup-rbLWmE/agent_teams/team-run/root-codex/tasks/unclassified-task-run/working_context_snapshot.json",
+        "status": "SKIPPED",
+        "message": "Snapshot has no exact current metadata-derived external runtime classification."
+      },
+      {
+        "itemId": "agents/unclassified-run/working_context_snapshot.json",
+        "filePath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/external-snapshot-cleanup-rbLWmE/agents/unclassified-run/working_context_snapshot.json",
+        "status": "SKIPPED",
+        "message": "Snapshot has no exact current metadata-derived external runtime classification."
+      }
+    ]
+  },
+  "errorMessage": null
+}
+
+stderr | tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts > RemoveExternalRuntimeWorkingContextSnapshotsMigration > preserves snapshots when metadata is invalid or mismatched and reports actionable failures
+Failed reading run metadata for invalid-run: SyntaxError: Expected property name or '}' in JSON at position 1 (line 1 column 2)
+
+stderr | tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts > RemoveExternalRuntimeWorkingContextSnapshotsMigration > reports a failed unlink, retains stale generic inspection with independent raws, and removes it on retry
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/external-snapshot-cleanup-xT4rmH/agents/codex-unlink-failure/working_context_snapshot.json
+
+ × tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts > RemoveExternalRuntimeWorkingContextSnapshotsMigration > removes only exact standalone and recursive team Codex/Claude snapshots and is idempotent 27ms
+   → expected 3 to be 6 // Object.is equality
+ ✓ tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts > RemoveExternalRuntimeWorkingContextSnapshotsMigration > does not traverse directory symlinks and unlinks only the eligible snapshot symlink, not its target 4ms
+ ✓ tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts > RemoveExternalRuntimeWorkingContextSnapshotsMigration > preserves snapshots when metadata is invalid or mismatched and reports actionable failures 5ms
+ ✓ tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts > RemoveExternalRuntimeWorkingContextSnapshotsMigration > reports a failed unlink, retains stale generic inspection with independent raws, and removes it on retry 11ms
+stdout | tests/unit/app-data-migrations/team-run-metadata-member-tree-migration.test.ts > TeamRunMetadataMemberTreeMigration > converts legacy flat memberMetadata to canonical memberTree and creates a backup
+DEBUG metadata-first {
+  "status": "FAILED",
+  "summary": {
+    "scannedCount": 1,
+    "migratedCount": 0,
+    "skippedCount": 0,
+    "failedCount": 1,
+    "details": [
+      {
+        "itemId": "team-legacy",
+        "filePath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-migration-test-rQ7jge/agent_teams/team-legacy/team_run_metadata.json",
+        "status": "FAILED",
+        "message": "TeamRun metadata.rootTeam.children[0] has unsupported or missing field(s)."
+      }
+    ]
+  },
+  "errorMessage": "1 team metadata file(s) could not be migrated."
+}
+
+ × tests/unit/app-data-migrations/team-run-metadata-member-tree-migration.test.ts > TeamRunMetadataMemberTreeMigration > converts legacy flat memberMetadata to canonical memberTree and creates a backup 9ms
+   → expected 'FAILED' to be 'SUCCEEDED' // Object.is equality
+ × tests/unit/app-data-migrations/team-run-metadata-member-tree-migration.test.ts > TeamRunMetadataMemberTreeMigration > skips current memberTree metadata idempotently 3ms
+   → expected 'FAILED' to be 'SUCCEEDED' // Object.is equality
+ × tests/unit/app-data-migrations/team-run-metadata-member-tree-migration.test.ts > TeamRunMetadataMemberTreeMigration > records partial failures without blocking other files 13ms
+   → expected 'FAILED' to be 'SUCCEEDED_WITH_WARNINGS' // Object.is equality
+ ✓ tests/unit/app-data-migrations/team-run-metadata-member-tree-migration.test.ts > TeamRunMetadataMemberTreeMigration > fails legacy flat metadata with nested route/path instead of guessing topology 2ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts > MigrateNativeWorkingContextSnapshotsV5Migration > uses memberRunId as team snapshot identity and publishes an empty strict v5 with warnings when nothing survives
+AssertionError: expected 'SUCCEEDED' to be 'SUCCEEDED_WITH_WARNINGS' // Object.is equality
+
+Expected: "SUCCEEDED_WITH_WARNINGS"
+Received: "SUCCEEDED"
+
+ ❯ tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts:276:27
+    274|     console.log("DEBUG native-team", JSON.stringify(result, null, 2));
+    275| 
+    276|     expect(result.status).toBe("SUCCEEDED_WITH_WARNINGS");
+       |                           ^
+    277|     expect(result.summary.details).toEqual(expect.arrayContaining([
+    278|       expect.objectContaining({
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts > RemoveExternalRuntimeWorkingContextSnapshotsMigration > removes only exact standalone and recursive team Codex/Claude snapshots and is idempotent
+AssertionError: expected 3 to be 6 // Object.is equality
+
+- Expected
++ Received
+
+- 6
++ 3
+
+ ❯ tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts:233:41
+    231| 
+    232|     expect(first.status).toBe("SUCCEEDED");
+    233|     expect(first.summary.migratedCount).toBe(6);
+       |                                         ^
+    234|     for (const runDir of [
+    235|       standaloneDir("codex-run"),
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  tests/unit/app-data-migrations/team-run-metadata-member-tree-migration.test.ts > TeamRunMetadataMemberTreeMigration > converts legacy flat memberMetadata to canonical memberTree and creates a backup
+AssertionError: expected 'FAILED' to be 'SUCCEEDED' // Object.is equality
+
+Expected: "SUCCEEDED"
+Received: "FAILED"
+
+ ❯ tests/unit/app-data-migrations/team-run-metadata-member-tree-migration.test.ts:93:27
+     91|     console.log("DEBUG metadata-first", JSON.stringify(result, null, 2…
+     92| 
+     93|     expect(result.status).toBe("SUCCEEDED");
+       |                           ^
+     94|     expect(result.summary.migratedCount).toBe(1);
+     95|     const converted = JSON.parse(await fs.readFile(metadataPath, "utf-…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  tests/unit/app-data-migrations/team-run-metadata-member-tree-migration.test.ts > TeamRunMetadataMemberTreeMigration > skips current memberTree metadata idempotently
+AssertionError: expected 'FAILED' to be 'SUCCEEDED' // Object.is equality
+
+Expected: "SUCCEEDED"
+Received: "FAILED"
+
+ ❯ tests/unit/app-data-migrations/team-run-metadata-member-tree-migration.test.ts:113:27
+    111|     const result = await new TeamRunMetadataMemberTreeMigration(tempDi…
+    112| 
+    113|     expect(result.status).toBe("SUCCEEDED");
+       |                           ^
+    114|     expect(result.summary.scannedCount).toBe(1);
+    115|     expect(result.summary.skippedCount).toBe(1);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+ FAIL  tests/unit/app-data-migrations/team-run-metadata-member-tree-migration.test.ts > TeamRunMetadataMemberTreeMigration > records partial failures without blocking other files
+AssertionError: expected 'FAILED' to be 'SUCCEEDED_WITH_WARNINGS' // Object.is equality
+
+Expected: "SUCCEEDED_WITH_WARNINGS"
+Received: "FAILED"
+
+ ❯ tests/unit/app-data-migrations/team-run-metadata-member-tree-migration.test.ts:129:27
+    127|     const result = await new TeamRunMetadataMemberTreeMigration(tempDi…
+    128| 
+    129|     expect(result.status).toBe("SUCCEEDED_WITH_WARNINGS");
+       |                           ^
+    130|     expect(result.summary.migratedCount).toBe(1);
+    131|     expect(result.summary.failedCount).toBe(1);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯
+
+
+ Test Files  3 failed (3)
+      Tests  5 failed | 9 passed (14)
+   Start at  13:20:35
+   Duration  6.45s (transform 3.30s, setup 19ms, import 5.50s, tests 143ms, environment 0ms)
+

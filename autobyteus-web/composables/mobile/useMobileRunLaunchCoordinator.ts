@@ -10,7 +10,6 @@ import { useMobileWorkStore } from '~/stores/mobileWorkStore';
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
 import { useWorkspaceStore } from '~/stores/workspace';
 import type { MobileWorkContext } from '~/types/mobileWork';
-import type { TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 
 export type MobileRunCreationDraft =
   | {
@@ -136,24 +135,24 @@ export function useMobileRunLaunchCoordinator() {
     return definition;
   }
 
-  async function ensureValidLeafTeamFocus(teamRunId: string): Promise<TeamExecutionAddress> {
+  async function ensureValidLeafTeamFocus(teamRunId: string): Promise<string> {
     const team = teamContextsStore.getTeamContextById(teamRunId);
     if (!team) {
       throw new Error('Created team run is not available.');
     }
 
-    const currentFocus = team.executions.getFocusedAddress();
-    if (team.executions.getAgentContext(currentFocus)) {
+    const currentFocus = team.view.getFocusedAgentRunId();
+    if (team.view.getAgentContext(currentFocus)) {
       mobileWorkStore.rememberFocusedTeamMember(teamRunId, currentFocus);
       return currentFocus;
     }
 
-    const fallback = team.executions.listAgentContextEntries()[0]?.executionAddress;
+    const fallback = team.view.listAgentContextEntries()[0]?.agentRunId;
     if (!fallback) {
       throw new Error('This team has no focusable member for mobile Chat.');
     }
     await runHistoryStore.focusTeamMemberAndEnsureHydrated(teamRunId, fallback);
-    const focused = teamContextsStore.getTeamContextById(teamRunId)?.executions.getFocusedAddress() ?? fallback;
+    const focused = teamContextsStore.getTeamContextById(teamRunId)?.view.getFocusedAgentRunId() ?? fallback;
     mobileWorkStore.rememberFocusedTeamMember(teamRunId, focused);
     return focused;
   }
@@ -207,7 +206,7 @@ export function useMobileRunLaunchCoordinator() {
     if (!launchDraft) throw new Error('Team launch draft is unavailable.');
     const launched = await teamRunStore.launchDraft(launchDraft);
     const teamRunId = launched.rootTeamRunId;
-    const focusedExecutionAddress = await ensureValidLeafTeamFocus(teamRunId);
+    const focusedAgentRunId = await ensureValidLeafTeamFocus(teamRunId);
     mobileWorkStore.moveDraftAttachmentsToPendingTeamRun(teamRunId);
 
     return {
@@ -218,7 +217,7 @@ export function useMobileRunLaunchCoordinator() {
         title: definition.name,
         summary: 'New team run',
         workspaceRootPath: workspaceRootPath(workspaceStore, draft.workspaceId),
-        focusedExecutionAddress,
+        focusedAgentRunId,
         isActive: true,
         lastActivityAt: new Date().toISOString(),
         statusLabel: 'Ready',

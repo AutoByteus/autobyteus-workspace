@@ -37,9 +37,9 @@ export const buildAgentRunMessageSenderContext = (input: {
     senderRunId,
     senderName:
       normalizeOptional(input.senderName) ??
-      normalizeOptional(memberTeamContext ? getAgentTeamAddressBasename(memberTeamContext.memberAddress) : null) ??
+      normalizeOptional(memberTeamContext ? getAgentTeamAddressBasename(memberTeamContext.identity.memberAddress) : null) ??
       senderRunId,
-    runtimeKind: input.runtimeKind ?? memberTeamContext?.teamBackendKind ?? null,
+    runtimeKind: input.runtimeKind ?? null,
     memberTeamContext,
   };
 };

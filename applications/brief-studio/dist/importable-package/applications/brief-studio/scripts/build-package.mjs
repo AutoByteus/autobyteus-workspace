@@ -274,8 +274,8 @@ const writeBackendBundleManifest = async (targetApplicationRoot) => {
       semver: ">=22 <23",
     },
     sdkCompatibility: {
-      backendDefinitionContractVersion: "5",
-      frontendSdkContractVersion: "5",
+      backendDefinitionContractVersion: "6",
+      frontendSdkContractVersion: "6",
     },
     supportedExposures: {
       queries: false,

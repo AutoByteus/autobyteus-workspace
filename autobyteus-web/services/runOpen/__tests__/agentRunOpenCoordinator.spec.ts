@@ -14,6 +14,7 @@ const {
   patchConfigOnlyMock,
   upsertProjectionContextMock,
   getRunMock,
+  isAgentStreamReadyMock,
 } = vi.hoisted(() => ({
   loadRunContextHydrationPayloadMock: vi.fn(),
   hydrateActivitiesFromProjectionMock: vi.fn(),
@@ -27,6 +28,7 @@ const {
   patchConfigOnlyMock: vi.fn(),
   upsertProjectionContextMock: vi.fn(),
   getRunMock: vi.fn(),
+  isAgentStreamReadyMock: vi.fn(),
 }));
 
 vi.mock('~/services/runHydration/runContextHydrationService', () => ({
@@ -72,12 +74,14 @@ vi.mock('~/stores/agentRunStore', () => ({
   useAgentRunStore: () => ({
     connectToAgentStream: connectToAgentStreamMock,
     disconnectAgentStream: disconnectAgentStreamMock,
+    isAgentStreamReady: isAgentStreamReadyMock,
   }),
 }));
 
 describe('openAgentRun', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    isAgentStreamReadyMock.mockReturnValue(false);
     upsertProjectionContextMock.mockImplementation(({ runId, conversation }) => ({
       state: { runId, conversation },
       conversation,
@@ -85,8 +89,8 @@ describe('openAgentRun', () => {
   });
 
   it('preserves live activities while merging file changes into an active subscribed context', async () => {
+    isAgentStreamReadyMock.mockReturnValue(true);
     getRunMock.mockReturnValue({
-      isSubscribed: true,
       state: {
         runId: 'run-1',
         conversation: { id: 'run-1', messages: [], createdAt: '', updatedAt: '' },

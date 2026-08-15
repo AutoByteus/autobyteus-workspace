@@ -3,12 +3,12 @@ import {
   type TeamStreamClientMessage,
   type TeamStreamServerMessage,
 } from "@autobyteus/team-stream-contracts";
-import type { TeamRun } from "../../agent-team-execution/domain/team-run.js";
+import type { RootTeamRun } from "../../agent-team-execution/domain/root-team-run.js";
 import {
-  parseCommandExecutionAddress,
+  parseCommandAgentRunId,
   TEAM_COMMAND_INVALID_TARGET_CODE,
   TEAM_COMMAND_INVALID_TARGET_MESSAGE,
-} from "./team-execution-address-command-parser.js";
+} from "./team-agent-run-command-parser.js";
 import type { AgentStreamServerMessageSink } from "./websocket-egress/agent-stream-websocket-egress.js";
 
 type Payload = Extract<
@@ -20,9 +20,9 @@ export const handleTeamInterruptGenerationCommand = async (input: {
   teamRunId: string;
   payload: Payload;
   sink: AgentStreamServerMessageSink<TeamStreamServerMessage> | null;
-  activeRun: TeamRun | null;
+  activeRun: RootTeamRun | null;
 }): Promise<void> => {
-  const address = parseCommandExecutionAddress(input.payload, input.teamRunId);
+  const agentRunId = parseCommandAgentRunId(input.payload);
   const reject = (code: string, message: string, state: "rejected" | "failed" = "rejected") =>
     input.sink?.send(parseTeamStreamServerMessage({
       type: "AGENT_COMMAND_ACK",
@@ -32,10 +32,10 @@ export const handleTeamInterruptGenerationCommand = async (input: {
         state,
         code,
         message,
-        execution_address: input.payload.execution_address,
+        agent_run_id: input.payload.agent_run_id,
       },
     }));
-  if (!address) {
+  if (!agentRunId) {
     reject(TEAM_COMMAND_INVALID_TARGET_CODE, TEAM_COMMAND_INVALID_TARGET_MESSAGE);
     return;
   }
@@ -44,7 +44,7 @@ export const handleTeamInterruptGenerationCommand = async (input: {
     return;
   }
   try {
-    const result = await input.activeRun.executeMemberCommand(address, { kind: "interrupt" });
+    const result = await input.activeRun.executeAgentCommand(agentRunId, { kind: "interrupt" });
     if (!result.accepted) {
       reject(
         result.code?.trim() || "RUNTIME_REJECTED",
@@ -59,7 +59,7 @@ export const handleTeamInterruptGenerationCommand = async (input: {
         command_type: "INTERRUPT_GENERATION",
         command_id: input.payload.command_id,
         state: "accepted",
-        execution_address: input.payload.execution_address,
+        agent_run_id: input.payload.agent_run_id,
       },
     }));
   } catch (error) {

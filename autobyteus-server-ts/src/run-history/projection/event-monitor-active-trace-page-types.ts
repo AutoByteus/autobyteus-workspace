@@ -29,7 +29,7 @@ export interface EventMonitorToolSummaryArgs {
 }
 
 export interface EventMonitorApprovalTarget {
-  executionAddress: import("../../agent-team-execution/domain/team-execution-address.js").TeamExecutionAddress;
+  agentRunId: string;
 }
 
 interface VisualBase { visualId: string; eventId: string; kindOrdinal: number }

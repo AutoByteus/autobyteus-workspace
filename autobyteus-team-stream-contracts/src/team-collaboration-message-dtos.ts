@@ -1,23 +1,21 @@
 import { z } from "zod";
 import { nonEmptyStringSchema } from "./schema-helpers.js";
-import { teamExecutionAddressDtoSchema } from "./team-execution-address-dto.js";
+import { agentTeamAddressDtoSchema } from "./team-execution-view-dtos.js";
+import { teamReferenceFileDtoSchema } from "./team-reference-file-dto.js";
 
-export const teamCommunicationReferenceFileDtoSchema = z.object({
-  reference_id: nonEmptyStringSchema,
-  path: nonEmptyStringSchema,
-  type: nonEmptyStringSchema,
+export const teamCommunicationMessageDtoSchema = z.object({
+  message_id: nonEmptyStringSchema,
+  sender_agent_run_id: nonEmptyStringSchema,
+  receiver_agent_run_id: nonEmptyStringSchema,
+  content: z.string(),
+  message_type: nonEmptyStringSchema,
+  reference_files: z.array(teamReferenceFileDtoSchema),
   created_at: nonEmptyStringSchema,
-  updated_at: nonEmptyStringSchema,
 }).strict();
 
 export const teamCommunicationMessagePayloadSchema = z.object({
-  message_id: nonEmptyStringSchema,
-  sender_address: teamExecutionAddressDtoSchema,
-  receiver_address: teamExecutionAddressDtoSchema,
-  content: z.string(),
-  message_type: nonEmptyStringSchema,
-  reference_files: z.array(teamCommunicationReferenceFileDtoSchema),
-  created_at: nonEmptyStringSchema,
+  change_sequence: z.number().int().positive(),
+  message: teamCommunicationMessageDtoSchema,
 }).strict();
 
 export const teamMemberInputContextFileDtoSchema = z.object({
@@ -26,19 +24,21 @@ export const teamMemberInputContextFileDtoSchema = z.object({
 }).strict();
 
 export const teamMemberInputMessagePayloadSchema = z.object({
-  execution_address: teamExecutionAddressDtoSchema,
+  change_sequence: z.number().int().positive(),
+  recipient_agent_run_id: nonEmptyStringSchema,
   message_id: nonEmptyStringSchema,
   dedupe_key: nonEmptyStringSchema,
   content: z.string(),
   input_origin: z.enum(["user_message", "inter_agent_delivery"]),
   received_at: nonEmptyStringSchema,
   context_file_paths: z.array(teamMemberInputContextFileDtoSchema),
-  sender_address: teamExecutionAddressDtoSchema.nullable(),
+  sender_agent_run_id: nonEmptyStringSchema.nullable(),
   parent_communication_message_id: nonEmptyStringSchema.nullable(),
 }).strict();
 
 export const teamExternalUserMessagePayloadSchema = z.object({
-  execution_address: teamExecutionAddressDtoSchema,
+  agent_run_id: nonEmptyStringSchema,
+  member_address: agentTeamAddressDtoSchema,
   content: z.string(),
   received_at: nonEmptyStringSchema,
   provider: nonEmptyStringSchema,
@@ -50,6 +50,7 @@ export const teamExternalUserMessagePayloadSchema = z.object({
   context_file_paths: z.array(teamMemberInputContextFileDtoSchema),
 }).strict();
 
+export type TeamCommunicationMessageDto = Readonly<z.infer<typeof teamCommunicationMessageDtoSchema>>;
 export type TeamCommunicationMessagePayload = Readonly<z.infer<typeof teamCommunicationMessagePayloadSchema>>;
 export type TeamMemberInputMessagePayload = Readonly<z.infer<typeof teamMemberInputMessagePayloadSchema>>;
 export type TeamExternalUserMessagePayload = Readonly<z.infer<typeof teamExternalUserMessagePayloadSchema>>;

@@ -302,14 +302,13 @@ export class CodexThreadBootstrapper {
       owner: memberTeamContext
         ? {
             runId: input.runContext.runId,
-            executionAddress: memberTeamContext.executionAddress,
-            agentRunId: memberTeamContext.agentRunId,
-            displayName: getAgentTeamAddressBasename(memberTeamContext.memberAddress),
+            teamIdentity: memberTeamContext.identity,
+            displayName: getAgentTeamAddressBasename(memberTeamContext.identity.memberAddress),
           }
         : { runId: input.runContext.runId },
       sender: buildAgentRunMessageSenderContext({
         senderRunId: input.runContext.runId,
-        senderName: (memberTeamContext ? getAgentTeamAddressBasename(memberTeamContext.memberAddress) : null) ?? input.runContext.config.agentDefinitionId,
+        senderName: (memberTeamContext ? getAgentTeamAddressBasename(memberTeamContext.identity.memberAddress) : null) ?? input.runContext.config.agentDefinitionId,
         runtimeKind: input.runContext.config.runtimeKind,
         memberTeamContext: memberTeamContext ?? null,
       }),

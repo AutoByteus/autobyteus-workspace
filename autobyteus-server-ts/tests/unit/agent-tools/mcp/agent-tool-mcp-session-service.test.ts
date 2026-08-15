@@ -187,7 +187,7 @@ describe("AgentToolMcpSessionService", () => {
     const registry = new AgentToolMcpSessionRegistry({ now: () => now });
     const service = buildService(registry);
     const created = service.createAgentToolMcpSession({
-      owner: { runId: "run-3", agentRunId: "member-run-3" },
+      owner: { runId: "member-run-3" },
       sender: buildSender(),
       runtimeExposure: buildRuntimeAgentToolExposure([SEND_MESSAGE_TO_TOOL_NAME]),
     });
@@ -208,12 +208,12 @@ describe("AgentToolMcpSessionService", () => {
     });
 
     const second = service.createAgentToolMcpSession({
-      owner: { runId: "run-3", agentRunId: "member-run-3" },
+      owner: { runId: "member-run-3" },
       sender: buildSender(),
       runtimeExposure: buildRuntimeAgentToolExposure([SEND_MESSAGE_TO_TOOL_NAME]),
     });
     const nonMatching = service.createAgentToolMcpSession({
-      owner: { runId: "run-3", agentRunId: "member-run-other" },
+      owner: { runId: "member-run-other" },
       sender: buildSender(),
       runtimeExposure: buildRuntimeAgentToolExposure([SEND_MESSAGE_TO_TOOL_NAME]),
     });

@@ -2,17 +2,16 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
 import { defineComponent, nextTick } from 'vue';
+import type { TeamStreamServerMessage } from '@autobyteus/team-stream-contracts';
 import TeamOverviewPanel from '../TeamOverviewPanel.vue';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
-import { useTeamCommunicationStore } from '~/stores/teamCommunicationStore';
-import { createTeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 import {
+  applyTestTeamMessage,
   buildTestTeamContext,
-  reconcileTestTaskSnapshot,
   testAgentNode,
   testSubTeamNode,
-  testTaskProjection,
+  testTaskRecord,
 } from '~/test-support/currentTeamTestFixtures';
 
 const labels: Record<string, string> = {
@@ -27,23 +26,17 @@ const labels: Record<string, string> = {
 
 const TeamCommunicationPanelStub = defineComponent({
   name: 'TeamCommunicationPanel',
-  props: ['teamRunId', 'focusedAddress'],
+  props: ['teamContext', 'focusedAgentRunId'],
   template: '<div data-test="team-communication-panel" />',
 });
 
-const stable = (teamRunId: string, memberAddress: string) => createTeamExecutionAddress({ rootTeamRunId: teamRunId, memberAddress });
-const task = (teamRunId: string, taskId: string) => testTaskProjection({
+const task = (taskId: string, targetAgentRunId = `${taskId}-run`) => testTaskRecord({
   taskId,
-  executionAddress: createTeamExecutionAddress({
-    rootTeamRunId: teamRunId,
-    memberAddress: '/implementation_engineer',
-    taskAgentRunId: `${taskId}-run`,
-  }),
-  senderAddress: stable(teamRunId, '/implementation_engineer'),
-  content: 'Implement the requested change.',
+  delegatorAgentRunId: 'impl-run',
+  recipientAddress: '/implementation_engineer',
+  target: { agentRunId: targetAgentRunId },
+  description: 'Implement the requested change.',
   createdAt: `2026-08-10T12:00:0${taskId.endsWith('1') ? '1' : '2'}.000Z`,
-  startedAt: `2026-08-10T12:00:0${taskId.endsWith('1') ? '1' : '2'}.000Z`,
-  updatedAt: `2026-08-10T12:00:0${taskId.endsWith('1') ? '1' : '2'}.000Z`,
 });
 
 const seedActiveTeam = (input: { taskIds?: string[]; teamRunId?: string } = {}) => {
@@ -56,21 +49,17 @@ const seedActiveTeam = (input: { taskIds?: string[]; teamRunId?: string } = {}) 
       testAgentNode('/code_reviewer', { agentRunId: 'review-run' }),
     ],
     coordinatorAddress: '/implementation_engineer',
-    focusedExecutionAddress: stable(teamRunId, '/implementation_engineer'),
+    focusedAgentRunId: 'impl-run',
     isActive: false,
-    tasks: (input.taskIds ?? []).map((taskId) => task(teamRunId, taskId)),
+    tasks: (input.taskIds ?? []).map((taskId) => task(taskId)),
+    messages: [{
+      message_id: 'message-1', sender_agent_run_id: 'impl-run', receiver_agent_run_id: 'review-run',
+      content: 'Please review this.', message_type: 'handoff', created_at: '2026-04-12T10:00:00.000Z',
+      reference_files: [],
+    }],
   });
   useAgentTeamContextsStore().addTeamContext(team);
   useAgentSelectionStore().setRunSelection(teamRunId, 'team');
-  useTeamCommunicationStore().replaceProjection(teamRunId, [{
-    messageId: 'message-1',
-    senderAddress: stable(teamRunId, '/implementation_engineer'),
-    receiverAddress: stable(teamRunId, '/code_reviewer'),
-    content: 'Please review this.',
-    messageType: 'handoff',
-    createdAt: '2026-04-12T10:00:00.000Z',
-    referenceFiles: [],
-  }]);
   return team;
 };
 
@@ -85,20 +74,17 @@ const seedNestedTeam = () => {
       ], { teamRunId: 'build-squad-run', coordinatorAddress: '/BuildSquad/review_lead' }),
     ],
     coordinatorAddress: '/program_manager',
-    focusedExecutionAddress: stable('team-subteam', '/BuildSquad/review_lead'),
+    focusedAgentRunId: 'review-run',
     isActive: false,
+    messages: [{
+      message_id: 'message-to-review-lead', sender_agent_run_id: 'pm-run', receiver_agent_run_id: 'review-run',
+      content: 'Please coordinate this build.', message_type: 'assignment',
+      created_at: '2026-04-12T10:00:00.000Z', reference_files: [],
+    }],
   });
   useAgentTeamContextsStore().addTeamContext(team);
   useAgentSelectionStore().setRunSelection('team-subteam', 'team');
-  useTeamCommunicationStore().replaceProjection('team-subteam', [{
-    messageId: 'message-to-review-lead',
-    senderAddress: stable('team-subteam', '/program_manager'),
-    receiverAddress: stable('team-subteam', '/BuildSquad/review_lead'),
-    content: 'Please coordinate this build.',
-    messageType: 'assignment',
-    createdAt: '2026-04-12T10:00:00.000Z',
-    referenceFiles: [],
-  }]);
+  return team;
 };
 
 const mountSubject = () => mount(TeamOverviewPanel, {
@@ -137,51 +123,44 @@ describe('TeamOverviewPanel current execution aggregate', () => {
     expect(tasksVisible(wrapper)).toBe(false);
   });
 
-  it('opens Tasks immediately for a retained aggregate task projection', () => {
+  it('opens Tasks immediately for a current retained task record', () => {
     seedActiveTeam({ taskIds: ['task_0001'] });
     const wrapper = mountSubject();
     expect(wrapper.get('[data-test="team-delegated-tasks-header"]').text()).toContain('1 task');
     expect(tasksVisible(wrapper)).toBe(true);
   });
 
-  it('opens Tasks when a complete snapshot adds a task while mounted', async () => {
+  it('opens Tasks when a current sequenced activation is applied while mounted', async () => {
     const wrapper = mountSubject();
     const team = useAgentTeamContextsStore().activeTeamContext!;
-    expect(reconcileTestTaskSnapshot(team, [task('team-1', 'task_0001')]).disposition).toBe('applied');
+    const record = task('task_0001');
+    const message: Extract<TeamStreamServerMessage, { type: 'TASK_DELEGATION_EVENT' }> = {
+      type: 'TASK_DELEGATION_EVENT',
+      payload: {
+        event_type: 'TASK_AGENT_ACTIVATED', change_sequence: 1, parent_team_run_id: 'team-1',
+        execution: {
+          kind: 'task_agent', address: '/implementation_engineer', agent_run_id: 'task_0001-run',
+          platform_agent_run_id: null, started_at: record.created_at, settled_at: null,
+        },
+        task: record,
+      },
+    };
+    expect(applyTestTeamMessage(team, message).disposition).toBe('applied');
     await nextTick();
     expect(wrapper.get('[data-test="team-delegated-tasks-header"]').text()).toContain('1 task');
     expect(tasksVisible(wrapper)).toBe(true);
   });
 
-  it('preserves manual collapse for an unchanged snapshot but reopens for a new task identity', async () => {
-    seedActiveTeam({ taskIds: ['task_0001'] });
+  it('resets Messages open and preserves exact run-based communication focus when selection changes', async () => {
     const wrapper = mountSubject();
     await wrapper.get('[data-test="team-delegated-tasks-header"]').trigger('click');
-    const team = useAgentTeamContextsStore().activeTeamContext!;
-    expect(reconcileTestTaskSnapshot(team, [task('team-1', 'task_0001')]).disposition).toBe('unchanged');
-    await nextTick();
-    expect(tasksVisible(wrapper)).toBe(false);
-    expect(reconcileTestTaskSnapshot(team, [task('team-1', 'task_0001'), task('team-1', 'task_0002')]).disposition).toBe('applied');
-    await nextTick();
-    expect(wrapper.get('[data-test="team-delegated-tasks-header"]').text()).toContain('2 tasks');
-    expect(tasksVisible(wrapper)).toBe(true);
-  });
-
-  it('resets Messages open when selection changes to a taskless TeamRun', async () => {
-    const wrapper = mountSubject();
-    await wrapper.get('[data-test="team-delegated-tasks-header"]').trigger('click');
-    seedNestedTeam();
+    const nested = seedNestedTeam();
     await nextTick();
     expect(messagesVisible(wrapper)).toBe(true);
     expect(tasksVisible(wrapper)).toBe(false);
-    expect(wrapper.getComponent({ name: 'TeamCommunicationPanel' }).props('teamRunId')).toBe('team-subteam');
-  });
-
-  it('passes the exact focused nested Agent address rather than a Team alias', () => {
-    seedNestedTeam();
-    const wrapper = mountSubject();
+    const panel = wrapper.getComponent({ name: 'TeamCommunicationPanel' });
+    expect(panel.props('teamContext')).toBe(nested);
+    expect(panel.props('focusedAgentRunId')).toBe('review-run');
     expect(wrapper.get('[data-test="team-messages-header"]').text()).toContain('1 Messages');
-    expect(wrapper.getComponent({ name: 'TeamCommunicationPanel' }).props('focusedAddress'))
-      .toEqual(stable('team-subteam', '/BuildSquad/review_lead'));
   });
 });

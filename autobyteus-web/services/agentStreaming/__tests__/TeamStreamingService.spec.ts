@@ -1,57 +1,26 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AgentStatus } from '~/types/agent/AgentStatus';
-import {
-  createTeamExecutionAddress,
-  toTeamExecutionAddressDto,
-  type TeamExecutionAddress,
-} from '~/types/agent/TeamExecutionAddress';
 import { TeamStreamingService } from '../TeamStreamingService';
 import {
-  buildCurrentTaskExecutionTeam,
-  currentTaskExecutionRootTeamRunId,
-  taskTeamCoordinatorAddress,
-  taskTeamEvent,
-} from './currentTaskExecutionFixture';
+  buildTestTeamContext,
+  testAgentNode,
+  testTaskRecord,
+} from '~/test-support/currentTeamTestFixtures';
 
-const {
-  handleBrowserToolExecutionSucceededMock,
-  upsertTeamCommunicationMessageMock,
-  runHistoryStoreMock,
-} = vi.hoisted(() => ({
+const { handleBrowserToolExecutionSucceededMock, runHistoryStoreMock } = vi.hoisted(() => ({
   handleBrowserToolExecutionSucceededMock: vi.fn(),
-  upsertTeamCommunicationMessageMock: vi.fn(),
   runHistoryStoreMock: { applyRunNavigationEffect: vi.fn() },
 }));
 
 vi.mock('../browser/browserToolExecutionSucceededHandler', () => ({
   handleBrowserToolExecutionSucceeded: handleBrowserToolExecutionSucceededMock,
 }));
-vi.mock('~/stores/teamCommunicationStore', () => ({
-  useTeamCommunicationStore: () => ({ upsertFromBackendPayload: upsertTeamCommunicationMessageMock }),
-}));
 vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => runHistoryStoreMock }));
 
-const teacherAddress = () => createTeamExecutionAddress({
-  rootTeamRunId: currentTaskExecutionRootTeamRunId,
-  memberAddress: '/Teacher',
-});
-
-const studentAddress = (taskTeamRunIds: readonly string[] = []) => createTeamExecutionAddress({
-  rootTeamRunId: currentTaskExecutionRootTeamRunId,
-  taskTeamRunIds,
-  memberAddress: '/StudentStudyGroup/student_one',
-});
-
-const persistentBinding = (address: TeamExecutionAddress) => ({
-  kind: 'persistent_agent',
-  execution_address: toTeamExecutionAddressDto(address),
-});
-
-const taskTeamBinding = (address: TeamExecutionAddress, agentRunId = 'task-team-student-one-run') => ({
-  kind: 'task_team_agent',
-  execution_address: toTeamExecutionAddressDto(address),
-  agent_run_id: agentRunId,
-});
+const rootTeamRunId = 'classroom-run';
+const teacherRunId = 'teacher-run';
+const persistentStudentRunId = 'persistent-student-run';
+const taskStudentRunId = 'task-student-run';
 
 const createHarness = () => {
   const callbacks = new Map<string, (payload?: any) => void>();
@@ -63,181 +32,264 @@ const createHarness = () => {
     on: vi.fn((event: string, callback: (payload?: any) => void) => callbacks.set(event, callback)),
     off: vi.fn(),
   } as any;
+  const team = buildTestTeamContext({
+    teamRunId: rootTeamRunId,
+    coordinatorAddress: '/Teacher',
+    rootChildren: [
+      testAgentNode('/Teacher', { agentRunId: teacherRunId, displayName: 'Teacher' }),
+      testAgentNode('/Student', { agentRunId: persistentStudentRunId, displayName: 'Student' }),
+    ],
+    tasks: [testTaskRecord({
+      taskId: 'task-student-1',
+      delegatorAgentRunId: teacherRunId,
+      recipientAddress: '/Student',
+      target: { agentRunId: taskStudentRunId },
+      description: 'Solve the delegated problem.',
+    })],
+  });
   const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient });
-  const team = buildCurrentTaskExecutionTeam();
-  service.connect(team.executions.getRootTeamRunId(), team);
-  const teacher = team.executions.getAgentContext(teacherAddress())!;
-  return { callbacks, service, team, teacher, wsClient };
+  service.connect(rootTeamRunId, team);
+  return { callbacks, service, team, wsClient };
 };
 
-const emit = (callbacks: Map<string, (payload?: any) => void>, type: string, payload: Record<string, unknown>) =>
-  callbacks.get('onMessage')?.(JSON.stringify({ type, payload }));
+const emit = (
+  callbacks: Map<string, (payload?: any) => void>,
+  type: string,
+  payload: Record<string, unknown>,
+) => callbacks.get('onMessage')?.(JSON.stringify({ type, payload }));
 
-describe('TeamStreamingService current rooted event dispatch', () => {
+const snapshotPayload = (team: ReturnType<typeof buildTestTeamContext>) => ({
+  root_team_run_id: rootTeamRunId,
+  base_change_sequence: team.view.getChangeSequence(),
+  execution_tree: team.view.getExecutionTree(),
+  tasks: team.view.listTaskHistoryRows().map((row) => row.task),
+  messages: team.view.listCommunicationMessages(),
+  agent_statuses: team.view.listAgentContextEntries().map((entry) => ({
+    agent_run_id: entry.agentRunId,
+    member_address: entry.memberAddress,
+    status: 'idle',
+    trigger: null,
+    tool_name: null,
+    error_message: null,
+    error_details: null,
+  })),
+});
+
+const statusPayload = (changeSequence: number, agentRunId: string, status: string) => ({
+  change_sequence: changeSequence,
+  agent_run_id: agentRunId,
+  status,
+  trigger: null,
+  tool_name: null,
+  error_message: null,
+  error_details: null,
+});
+
+describe('TeamStreamingService current AgentRun event dispatch', () => {
   beforeEach(() => vi.clearAllMocks());
 
-  it('keeps WebSocket readiness separate from backend Team lifecycle', () => {
+  it('becomes ready only after the exact connected root and complete authoritative snapshot', () => {
     const { callbacks, service, team } = createHarness();
     expect(service.isReady).toBe(false);
-    expect(team.executions.isRootTeamActive()).toBe(true);
 
     callbacks.get('onConnect')?.();
     expect(service.isReady).toBe(false);
-    emit(callbacks, 'CONNECTED', { session_id: 'team-session-1' });
+    emit(callbacks, 'CONNECTED', { session_id: 'team-session-1', root_team_run_id: rootTeamRunId });
+    expect(service.isReady).toBe(false);
+    emit(callbacks, 'TEAM_EXECUTION_VIEW_SNAPSHOT', snapshotPayload(team));
     expect(service.isReady).toBe(true);
 
     emit(callbacks, 'TEAM_RUN_LIFECYCLE', { is_active: false });
-    expect(team.executions.isRootTeamActive()).toBe(false);
+    expect(team.view.isRootTeamActive()).toBe(false);
     expect(runHistoryStoreMock.applyRunNavigationEffect).toHaveBeenCalledWith({
-      kind: 'team_run', teamRunId: currentTaskExecutionRootTeamRunId, isActive: false,
+      kind: 'team_run', teamRunId: rootTeamRunId, isActive: false,
     }, { kind: 'PRESENTATION' });
 
     callbacks.get('onDisconnect')?.('closed');
     expect(service.isReady).toBe(false);
-    expect(team.executions.isRootTeamActive()).toBe(false);
+    expect(team.view.isRootTeamActive()).toBe(false);
   });
 
-  it('projects status and content only through the exact persistent execution binding', () => {
-    const { callbacks, teacher, team } = createHarness();
-    const student = team.executions.getAgentContext(studentAddress())!;
-
-    emit(callbacks, 'AGENT_STATUS', {
-      agent_execution: persistentBinding(teacherAddress()),
-      status: 'running', trigger: null, tool_name: null, error_message: null, error_details: null,
-    });
-    emit(callbacks, 'SEGMENT_CONTENT', {
-      agent_execution: persistentBinding(teacherAddress()),
-      segment_id: 'segment-teacher', turn_id: 'turn-1', segment_type: 'text', delta: 'Exact teacher output',
-    });
-
-    expect(teacher.state.currentStatus).toBe(AgentStatus.Running);
-    expect(teacher.state.conversation.messages[0]?.segments[0]).toMatchObject({ content: 'Exact teacher output' });
-    expect(student.state.conversation.messages).toHaveLength(0);
-  });
-
-  it('rejects an identity-less legacy Agent event instead of using the focused execution', () => {
-    const { callbacks, teacher } = createHarness();
+  it('rejects a foreign connected root and cannot admit its snapshot', () => {
+    const { callbacks, service, team } = createHarness();
     const error = vi.spyOn(console, 'error').mockImplementation(() => undefined);
 
-    emit(callbacks, 'AGENT_STATUS', {
-      status: 'running', trigger: null, tool_name: null, error_message: null, error_details: null,
-    });
+    emit(callbacks, 'CONNECTED', { session_id: 'foreign-session', root_team_run_id: 'foreign-root' });
+    emit(callbacks, 'TEAM_EXECUTION_VIEW_SNAPSHOT', snapshotPayload(team));
 
-    expect(teacher.state.currentStatus).not.toBe(AgentStatus.Running);
+    expect(service.isReady).toBe(false);
     expect(error).toHaveBeenCalledWith('Rejected invalid Team WebSocket message:', expect.anything());
     error.mockRestore();
   });
 
-  it('mirrors an exact external user message into only its addressed conversation', () => {
-    const { callbacks, teacher, team } = createHarness();
-    const student = team.executions.getAgentContext(studentAddress())!;
+  it('projects status and segment content only into the exact persistent AgentRun', () => {
+    const { callbacks, team } = createHarness();
+    const teacher = team.view.getAgentContext(teacherRunId)!;
+    const persistentStudent = team.view.getAgentContext(persistentStudentRunId)!;
+    const taskStudent = team.view.getAgentContext(taskStudentRunId)!;
+
+    emit(callbacks, 'AGENT_STATUS', statusPayload(1, teacherRunId, 'running'));
+    emit(callbacks, 'SEGMENT_START', {
+      change_sequence: 2,
+      agent_run_id: teacherRunId,
+      segment_id: 'teacher-segment',
+      turn_id: 'turn-1',
+      segment_type: 'text',
+      metadata: null,
+    });
+    emit(callbacks, 'SEGMENT_CONTENT', {
+      change_sequence: 3,
+      agent_run_id: teacherRunId,
+      segment_id: 'teacher-segment',
+      turn_id: 'turn-1',
+      segment_type: 'text',
+      delta: 'Exact teacher output',
+    });
+
+    expect(teacher.state.currentStatus).toBe(AgentStatus.Running);
+    expect(teacher.state.conversation.messages[0]?.segments[0]).toMatchObject({
+      content: 'Exact teacher output',
+    });
+    expect(persistentStudent.state.conversation.messages).toHaveLength(0);
+    expect(taskStudent.state.conversation.messages).toHaveLength(0);
+  });
+
+  it('rejects a legacy identity-less Agent event instead of using the focused AgentRun', () => {
+    const { callbacks, team } = createHarness();
+    const teacher = team.view.getAgentContext(teacherRunId)!;
+    const error = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+
+    emit(callbacks, 'AGENT_STATUS', {
+      change_sequence: 1,
+      status: 'running',
+      trigger: null,
+      tool_name: null,
+      error_message: null,
+      error_details: null,
+    });
+
+    expect(teacher.state.currentStatus).not.toBe(AgentStatus.Running);
+    expect(team.view.getChangeSequence()).toBe(0);
+    expect(error).toHaveBeenCalledWith('Rejected invalid Team WebSocket message:', expect.anything());
+    error.mockRestore();
+  });
+
+  it('projects an external user message only when AgentRun and logical member placement agree', () => {
+    const { callbacks, team } = createHarness();
+    const teacher = team.view.getAgentContext(teacherRunId)!;
+    const persistentStudent = team.view.getAgentContext(persistentStudentRunId)!;
+
     emit(callbacks, 'EXTERNAL_USER_MESSAGE', {
-      execution_address: toTeamExecutionAddressDto(teacherAddress()),
+      agent_run_id: teacherRunId,
+      member_address: '/Teacher',
       content: 'hello from telegram',
       received_at: '2026-08-11T00:01:00.000Z',
-      provider: 'telegram', transport: 'telegram', account_id: 'account-1', peer_id: 'peer-1',
-      thread_id: null, external_message_id: 'external-1', context_file_paths: [],
+      provider: 'telegram',
+      transport: 'telegram',
+      account_id: 'account-1',
+      peer_id: 'peer-1',
+      thread_id: null,
+      external_message_id: 'external-1',
+      context_file_paths: [],
     });
+
     expect(teacher.state.conversation.messages.at(-1)).toMatchObject({
       type: 'user', text: 'hello from telegram',
-    });
-    expect(student.state.conversation.messages).toHaveLength(0);
-  });
-
-  it('routes successful tool execution through the browser-owned handler at the exact execution', () => {
-    const { callbacks } = createHarness();
-    emit(callbacks, 'TOOL_EXECUTION_SUCCEEDED', {
-      agent_execution: persistentBinding(teacherAddress()),
-      invocation_id: 'call-1', tool_name: 'open_tab', turn_id: 'turn-1', arguments: null,
-      result: { tab_id: 'browser-session-1', url: 'https://example.com' },
-    });
-    expect(handleBrowserToolExecutionSucceededMock).toHaveBeenCalledWith(expect.objectContaining({
-      invocation_id: 'call-1', tool_name: 'open_tab',
-      result: { tab_id: 'browser-session-1', url: 'https://example.com' },
-    }));
-  });
-
-  it('projects MEMBER_INPUT only into the exact persistent receiver', () => {
-    const { callbacks, teacher, team } = createHarness();
-    const address = studentAddress();
-    const student = team.executions.getAgentContext(address)!;
-    emit(callbacks, 'MEMBER_INPUT_MESSAGE', {
-      execution_address: toTeamExecutionAddressDto(address),
-      message_id: 'member-input-1',
-      dedupe_key: 'member-input:root-team-run-1:member-input-1',
-      content: 'You received a message from sender name: Teacher\nmessage:\nPlease solve this.',
-      input_origin: 'inter_agent_delivery', received_at: '2026-08-11T00:02:00.000Z',
-      context_file_paths: [], sender_address: toTeamExecutionAddressDto(teacherAddress()),
-      parent_communication_message_id: 'team-message-1',
-    });
-    expect(student.state.conversation.messages.at(-1)).toMatchObject({
-      type: 'user', messageId: 'member-input-1', text: expect.stringContaining('Please solve this.'),
-    });
-    expect(teacher.state.conversation.messages).toHaveLength(0);
-  });
-
-  it('materializes and routes MEMBER_INPUT only into the exact task-Team Agent binding', () => {
-    const { callbacks, team } = createHarness();
-    emit(callbacks, taskTeamEvent().type, taskTeamEvent().payload);
-    const address = taskTeamCoordinatorAddress();
-    emit(callbacks, 'AGENT_STATUS', {
-      agent_execution: taskTeamBinding(address),
-      status: 'running', trigger: null, tool_name: null, error_message: null, error_details: null,
-    });
-    const taskTeamStudent = team.executions.getAgentContext(address)!;
-    const persistentStudent = team.executions.getAgentContext(studentAddress())!;
-
-    emit(callbacks, 'MEMBER_INPUT_MESSAGE', {
-      execution_address: toTeamExecutionAddressDto(address),
-      message_id: 'member-input-task-team-1', dedupe_key: 'member-input:task-team:1',
-      content: 'TASK_TEAM_PEER_REPLY', input_origin: 'inter_agent_delivery',
-      received_at: '2026-08-11T00:03:00.000Z', context_file_paths: [],
-      sender_address: toTeamExecutionAddressDto(createTeamExecutionAddress({
-        rootTeamRunId: currentTaskExecutionRootTeamRunId,
-        taskTeamRunIds: address.taskTeamRunIds,
-        memberAddress: '/StudentStudyGroup/student_two',
-      })),
-      parent_communication_message_id: 'team-message-task-team-1',
-    });
-
-    expect(taskTeamStudent.state.conversation.messages.at(-1)).toMatchObject({
-      type: 'user', messageId: 'member-input-task-team-1', text: 'TASK_TEAM_PEER_REPLY',
     });
     expect(persistentStudent.state.conversation.messages).toHaveLength(0);
   });
 
-  it('rejects removed recipient-address fallback data before any member mutation', () => {
+  it('routes successful tool execution through the browser owner for the exact AgentRun', () => {
+    const { callbacks } = createHarness();
+    emit(callbacks, 'TOOL_EXECUTION_SUCCEEDED', {
+      change_sequence: 1,
+      agent_run_id: teacherRunId,
+      invocation_id: 'call-1',
+      tool_name: 'open_tab',
+      turn_id: 'turn-1',
+      arguments: null,
+      result: { tab_id: 'browser-session-1', url: 'https://example.com' },
+    });
+    expect(handleBrowserToolExecutionSucceededMock).toHaveBeenCalledWith(expect.objectContaining({
+      invocation_id: 'call-1',
+      tool_name: 'open_tab',
+      result: { tab_id: 'browser-session-1', url: 'https://example.com' },
+    }));
+  });
+
+  it('projects MEMBER_INPUT into the exact task AgentRun without persistent substitution', () => {
     const { callbacks, team } = createHarness();
-    const address = studentAddress();
-    const student = team.executions.getAgentContext(address)!;
+    const taskStudent = team.view.getAgentContext(taskStudentRunId)!;
+    const persistentStudent = team.view.getAgentContext(persistentStudentRunId)!;
+    const teacher = team.view.getAgentContext(teacherRunId)!;
+
+    emit(callbacks, 'MEMBER_INPUT_MESSAGE', {
+      change_sequence: 1,
+      recipient_agent_run_id: taskStudentRunId,
+      message_id: 'member-input-1',
+      dedupe_key: 'member-input:1',
+      content: 'TASK_SCOPED_PEER_MESSAGE',
+      input_origin: 'inter_agent_delivery',
+      received_at: '2026-08-11T00:02:00.000Z',
+      context_file_paths: [],
+      sender_agent_run_id: teacherRunId,
+      parent_communication_message_id: 'team-message-1',
+    });
+
+    expect(taskStudent.state.conversation.messages.at(-1)).toMatchObject({
+      type: 'user', messageId: 'member-input-1', text: 'TASK_SCOPED_PEER_MESSAGE',
+    });
+    expect(persistentStudent.state.conversation.messages).toHaveLength(0);
+    expect(teacher.state.conversation.messages).toHaveLength(0);
+  });
+
+  it('rejects removed recipient-address fallback before any AgentRun mutation', () => {
+    const { callbacks, team } = createHarness();
+    const taskStudent = team.view.getAgentContext(taskStudentRunId)!;
     const error = vi.spyOn(console, 'error').mockImplementation(() => undefined);
 
     emit(callbacks, 'MEMBER_INPUT_MESSAGE', {
-      message_id: 'member-input-missing-execution', dedupe_key: 'member-input:legacy',
-      content: 'must not use recipient identity as fallback', input_origin: 'inter_agent_delivery',
-      received_at: '2026-08-11T00:04:00.000Z', context_file_paths: [],
-      sender_address: null, parent_communication_message_id: null,
-      recipient_address: toTeamExecutionAddressDto(address),
+      change_sequence: 1,
+      recipient_address: '/Student',
+      message_id: 'member-input-legacy',
+      dedupe_key: 'member-input:legacy',
+      content: 'must not use address fallback',
+      input_origin: 'inter_agent_delivery',
+      received_at: '2026-08-11T00:03:00.000Z',
+      context_file_paths: [],
+      sender_agent_run_id: teacherRunId,
+      parent_communication_message_id: null,
     });
 
-    expect(student.state.conversation.messages).toHaveLength(0);
+    expect(taskStudent.state.conversation.messages).toHaveLength(0);
+    expect(team.view.getChangeSequence()).toBe(0);
     expect(error).toHaveBeenCalledWith('Rejected invalid Team WebSocket message:', expect.anything());
     error.mockRestore();
   });
 
-  it('forwards the exact snake-case Team communication projection to the store', () => {
-    const { callbacks } = createHarness();
-    const receiver = studentAddress(['task-team-outer']);
+  it('adds the exact public Team communication record to the authoritative view once', () => {
+    const { callbacks, team } = createHarness();
     emit(callbacks, 'TEAM_COMMUNICATION_MESSAGE', {
-      message_id: 'team-message-1', sender_address: toTeamExecutionAddressDto(teacherAddress()),
-      receiver_address: toTeamExecutionAddressDto(receiver), content: 'Coordinate the task Team.',
-      message_type: 'assignment', created_at: '2026-08-11T00:05:00.000Z', reference_files: [],
+      change_sequence: 1,
+      message: {
+        message_id: 'team-message-1',
+        sender_agent_run_id: teacherRunId,
+        receiver_agent_run_id: taskStudentRunId,
+        content: 'Coordinate the delegated task.',
+        message_type: 'peer_message',
+        created_at: '2026-08-11T00:04:00.000Z',
+        reference_files: [],
+      },
     });
-    expect(upsertTeamCommunicationMessageMock).toHaveBeenCalledWith({
-      messageId: 'team-message-1', teamRunId: currentTaskExecutionRootTeamRunId,
-      senderAddress: teacherAddress(), receiverAddress: receiver,
-      content: 'Coordinate the task Team.', messageType: 'assignment',
-      createdAt: '2026-08-11T00:05:00.000Z', referenceFiles: [],
-    });
+
+    expect(team.view.listCommunicationMessages()).toEqual([{
+      message_id: 'team-message-1',
+      sender_agent_run_id: teacherRunId,
+      receiver_agent_run_id: taskStudentRunId,
+      content: 'Coordinate the delegated task.',
+      message_type: 'peer_message',
+      created_at: '2026-08-11T00:04:00.000Z',
+      reference_files: [],
+    }]);
   });
 });

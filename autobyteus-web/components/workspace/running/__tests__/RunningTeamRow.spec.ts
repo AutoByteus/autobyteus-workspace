@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest';
 import { mount } from '@vue/test-utils';
 import RunningTeamRow from '../RunningTeamRow.vue';
 import { AgentStatus } from '~/types/agent/AgentStatus';
-import { createTeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures';
 
 const buildTeamContext = () => {
@@ -10,7 +9,7 @@ const buildTeamContext = () => {
   return buildTestTeamContext({
     teamRunId: 'team-running-row-1',
     coordinatorAddress: '/coordinator',
-    focusedExecutionAddress: createTeamExecutionAddress({ rootTeamRunId: teamRunId, memberAddress: '/worker' }),
+    focusedAgentRunId: 'worker-run',
     rootChildren: [
       testAgentNode('/coordinator', { displayName: 'Coordinator', agentRunId: 'coordinator-run', currentStatus: AgentStatus.Running }),
       testAgentNode('/worker', { displayName: 'Worker', agentRunId: 'worker-run', currentStatus: AgentStatus.Initializing }),
@@ -22,7 +21,6 @@ const mountRow = (teamRun = buildTeamContext()) => mount(RunningTeamRow, {
   props: {
     teamRun: teamRun as any,
     isSelected: true,
-    coordinatorAddress: '/coordinator',
   },
   global: {
     mocks: {
@@ -55,7 +53,7 @@ describe('RunningTeamRow', () => {
     expect(dot.classes()).toContain('bg-blue-500');
     expect(wrapper.find('.delete-btn').exists()).toBe(true);
 
-    expect(teamRun.executions.setRootTeamActive(false).disposition).toBe('applied');
+    expect(teamRun.view.setRootTeamActive(false).disposition).toBe('applied');
     await wrapper.setProps({ teamRun });
 
     expect(dot.attributes()).toMatchObject({
@@ -67,50 +65,17 @@ describe('RunningTeamRow', () => {
     expect(wrapper.find('.delete-btn').exists()).toBe(true);
   });
 
-  it('filters initializing task-only logical members from active running rows', () => {
+  it('renders every current focusable AgentRun and marks the exact focused run', () => {
     const wrapper = mountRow();
 
     const rows = wrapper.findAll('.member-row');
-    expect(rows.map((row) => row.attributes('data-address'))).toEqual(['/coordinator']);
-    expect(rows[0].attributes('data-focused')).toBe('false');
-    expect(wrapper.text()).not.toContain('Worker');
+    expect(rows.map((row) => row.attributes('data-address'))).toEqual(['/coordinator', '/worker']);
+    expect(rows.map((row) => row.attributes('data-focused'))).toEqual(['false', 'true']);
   });
 
-  it('keeps logical members with direct conversation history visible in the running sidebar', () => {
-    const teamRun = buildTeamContext();
-    const worker = teamRun.executions.getAgentContext(createTeamExecutionAddress({
-      rootTeamRunId: teamRun.executions.getRootTeamRunId(),
-      memberAddress: '/worker',
-    }))!;
-    worker.state.conversation.messages.push({
-      type: 'user',
-      text: 'direct member message',
-      timestamp: new Date('2026-05-31T00:00:00.000Z'),
-    });
-
-    const wrapper = mountRow(teamRun);
-
-    expect(wrapper.findAll('.member-row').map((row) => row.attributes('data-address'))).toEqual([
-      '/coordinator',
-      '/worker',
-    ]);
-  });
-
-  it('does not keep a logical worker visible when its only conversation is a task-agent work packet', () => {
-    const teamRun = buildTeamContext();
-    const worker = teamRun.executions.getAgentContext(createTeamExecutionAddress({
-      rootTeamRunId: teamRun.executions.getRootTeamRunId(),
-      memberAddress: '/worker',
-    }))!;
-    worker.state.currentStatus = AgentStatus.Initializing;
-    worker.state.conversation.messages.push({
-      type: 'user',
-      text: 'You have been activated as task agent task_0001. Task-agent run: worker-task-run.',
-      timestamp: new Date('2026-05-31T00:00:00.000Z'),
-    } as any);
-
-    const wrapper = mountRow(teamRun);
-
-    expect(wrapper.findAll('.member-row').map((row) => row.attributes('data-address'))).toEqual(['/coordinator']);
+  it('emits the exact focused AgentRun id rather than a logical route', async () => {
+    const wrapper = mountRow();
+    await wrapper.findAll('.member-row')[1]!.trigger('click');
+    expect(wrapper.emitted('select-member')).toEqual([['team-running-row-1', 'worker-run']]);
   });
 });

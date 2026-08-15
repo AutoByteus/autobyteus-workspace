@@ -9,7 +9,7 @@ import type {
   AgentRunInputRejectionCode,
 } from "./agent-run-input-contract.js";
 
-type EntryState = "queued" | "claimed" | "forwarded" | "terminal";
+type EntryState = "reserved" | "committed" | "queued" | "claimed" | "forwarded" | "terminal";
 type InputTerminal =
   | { kind: "completed"; turnId: string | null }
   | { kind: "interrupted"; turnId: string | null }
@@ -62,6 +62,7 @@ const safeNotify = (
 
 export class AgentRunInputAdmissionState {
   private readonly entries: InputEntry[] = [];
+  private readonly quiescenceWaiters = new Set<() => void>();
   private nextSequence = 1;
   private accepting = true;
   private activeClaim: InputEntry | null = null;
@@ -86,25 +87,73 @@ export class AgentRunInputAdmissionState {
       };
     }
 
+    const reservation = this.reserve(message, observer, runtimeAvailable);
+    if (!reservation.accepted) return reservation;
+    this.commitReservation(reservation.entrySequence);
+    this.releaseReservation(reservation.entrySequence);
+    return reservation;
+  }
+
+  reserve(
+    message: AgentInputUserMessage,
+    observer: AgentRunInputLifecycleObserver | null,
+    runtimeAvailable: boolean,
+  ): AgentRunInputAdmission {
+    if (!this.accepting || !runtimeAvailable) {
+      return {
+        accepted: false,
+        code: "AGENT_RUN_NOT_ACCEPTING_INPUT",
+        message: "AgentRun is not accepting input.",
+      };
+    }
+    if (!message || !requiredString(message.content)) {
+      return {
+        accepted: false,
+        code: "AGENT_RUN_INPUT_INVALID",
+        message: "AgentRun input content must be a non-empty string.",
+      };
+    }
+
     const entry: InputEntry = {
       sequence: this.nextSequence++,
       message,
       observer,
-      state: "queued",
+      state: "reserved",
       dispatchKind: null,
       associatedTurnId: null,
       observedTurnId: null,
       pendingTerminal: null,
     };
     this.entries.push(entry);
-    safeNotify(entry.observer, { kind: "admitted" });
     return { accepted: true, entrySequence: entry.sequence };
   }
 
+  commitReservation(entrySequence: number): boolean {
+    const entry = this.entries.find((candidate) => candidate.sequence === entrySequence);
+    if (!entry || entry.state !== "reserved") return false;
+    entry.state = "committed";
+    safeNotify(entry.observer, { kind: "admitted" });
+    return true;
+  }
+
+  releaseReservation(entrySequence: number): boolean {
+    const entry = this.entries.find((candidate) => candidate.sequence === entrySequence);
+    if (!entry || entry.state !== "committed") return false;
+    entry.state = "queued";
+    return true;
+  }
+
+  cancelReservation(entrySequence: number): boolean {
+    const entry = this.entries.find((candidate) => candidate.sequence === entrySequence);
+    if (!entry || entry.state !== "reserved") return false;
+    this.removeEntry(entry);
+    return true;
+  }
+
   claimNext(selection: AgentRunInputSelection): AgentRunInputDispatchClaim | null {
-    if (!this.accepting || this.activeClaim) return null;
-    const entry = this.entries.find((candidate) => candidate.state === "queued");
-    if (!entry || selection.hasPendingTurnStart) return null;
+    if (this.activeClaim) return null;
+    const entry = this.entries.find((candidate) => candidate.state !== "terminal");
+    if (!entry || entry.state !== "queued" || selection.hasPendingTurnStart) return null;
 
     let dispatch: AgentRunBackendInputDispatch;
     if (selection.activeTurn.kind === "NONE") {
@@ -262,6 +311,7 @@ export class AgentRunInputAdmissionState {
       });
     }
     this.activeClaim = null;
+    this.resolveQuiescenceWaitersIfReady();
   }
 
   quiesce(): void {
@@ -273,21 +323,15 @@ export class AgentRunInputAdmissionState {
   }
 
   settleAcceptedTermination(): void {
-    for (const entry of [...this.entries]) {
-      if (entry.state === "queued") {
-        safeNotify(entry.observer, {
-          kind: "cancelled",
-          code: "AGENT_RUN_TERMINATED_BEFORE_INPUT_FORWARD",
-        });
-        this.removeEntry(entry);
-      } else if (entry.state === "forwarded") {
-        this.finishEntry(entry, {
-          kind: "interrupted",
-          turnId: entry.associatedTurnId,
-        });
-      }
+    if (!this.isQuiescent()) {
+      throw new Error("AgentRun termination cannot settle while submitted input remains unresolved.");
     }
     this.activeClaim = null;
+  }
+
+  waitForQuiescence(): Promise<void> {
+    if (this.isQuiescent()) return Promise.resolve();
+    return new Promise((resolve) => this.quiescenceWaiters.add(resolve));
   }
 
   get queuedEntryCount(): number {
@@ -299,7 +343,10 @@ export class AgentRunInputAdmissionState {
   }
 
   private clearClaim(entry: InputEntry): void {
-    if (this.activeClaim === entry) this.activeClaim = null;
+    if (this.activeClaim === entry) {
+      this.activeClaim = null;
+      this.resolveQuiescenceWaitersIfReady();
+    }
   }
 
   private terminalMatchesEntry(entry: InputEntry, turnId: string | null): boolean {
@@ -347,5 +394,17 @@ export class AgentRunInputAdmissionState {
   private removeEntry(entry: InputEntry): void {
     const index = this.entries.indexOf(entry);
     if (index >= 0) this.entries.splice(index, 1);
+    this.resolveQuiescenceWaitersIfReady();
+  }
+
+  private isQuiescent(): boolean {
+    return this.entries.length === 0 && this.activeClaim === null;
+  }
+
+  private resolveQuiescenceWaitersIfReady(): void {
+    if (!this.isQuiescent()) return;
+    const waiters = [...this.quiescenceWaiters];
+    this.quiescenceWaiters.clear();
+    waiters.forEach((resolve) => resolve());
   }
 }

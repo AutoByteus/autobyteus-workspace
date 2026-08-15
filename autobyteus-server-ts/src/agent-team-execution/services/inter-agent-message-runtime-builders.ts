@@ -29,7 +29,7 @@ export const buildRecipientVisibleInterAgentMessageContent = (
   const sender = request.sender.participant;
   const files = references(request.referenceFiles);
   const fileBlock = files.length ? `\n\nReference files:\n${files.map((path) => `- ${path}`).join("\n")}` : "";
-  return `You received a message from sender name: ${sender.displayName}, sender id: ${sender.agentRunId}\nmessage:\n${request.content}${fileBlock}`;
+  return `You received a message from sender name: ${sender.displayName}, sender id: ${sender.identity.agentRunId}\nmessage:\n${request.content}${fileBlock}`;
 };
 
 export const buildInterAgentDeliveryInputMessage = (
@@ -38,15 +38,15 @@ export const buildInterAgentDeliveryInputMessage = (
   const files = references(request.referenceFiles);
   const visibleContent = buildRecipientVisibleInterAgentMessageContent(request);
   const messageId = request.recipientInputMessageId?.trim() || buildTeamMemberInputMessageId({
-    teamRunId: request.rootTeamRunId,
-    executionAddress: request.receiverAddress,
+    rootTeamRunId: request.rootTeamRunId,
+    recipientAgentRunId: request.receiverIdentity.agentRunId,
     content: visibleContent,
     receivedAt: request.parentCommunicationMessageId ?? "",
     parentCommunicationMessageId: request.parentCommunicationMessageId,
   });
   const dedupeKey = request.recipientInputDedupeKey?.trim() || buildTeamMemberInputDedupeKey({
-    teamRunId: request.rootTeamRunId,
-    executionAddress: request.receiverAddress,
+    rootTeamRunId: request.rootTeamRunId,
+    recipientAgentRunId: request.receiverIdentity.agentRunId,
     messageId,
   });
   return new AgentInputUserMessage(visibleContent, SenderType.AGENT, null, {
@@ -54,10 +54,10 @@ export const buildInterAgentDeliveryInputMessage = (
     recipient_input_message_id: messageId,
     dedupe_key: dedupeKey,
     input_origin: "inter_agent_delivery",
-    sender_agent_id: request.sender.participant.agentRunId,
+    sender_agent_id: request.sender.participant.identity.agentRunId,
     sender_agent_name: request.sender.participant.displayName,
-    sender_execution_address: request.senderAddress,
-    receiver_execution_address: request.receiverAddress,
+    sender_member_address: request.senderIdentity.memberAddress,
+    receiver_member_address: request.receiverIdentity.memberAddress,
     original_message_type: messageType(request.messageType),
     team_run_id: request.rootTeamRunId,
     ...(request.parentCommunicationMessageId ? { parent_communication_message_id: request.parentCommunicationMessageId } : {}),

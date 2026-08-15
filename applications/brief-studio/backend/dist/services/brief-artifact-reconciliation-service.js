@@ -29,12 +29,7 @@ const resolveProducerForRun = (binding, runId) => {
         return null;
     }
     return {
-        executionAddress: {
-            rootTeamRunId: binding.runtime.teamRunId,
-            taskTeamRunIds: [],
-            memberAddress: member.memberAddress,
-            taskAgentRunId: null,
-        },
+        agentRunId: member.agentRunId,
         displayName: member.displayName,
         runtimeKind: member.runtimeKind,
     };
@@ -103,12 +98,18 @@ export const createBriefArtifactReconciliationService = (context) => ({
         }
     },
     async projectArtifactRevision(input) {
-        if (!input.producer?.executionAddress.memberAddress) {
-            throw new Error("Brief Studio artifact projection requires producer.executionAddress.memberAddress.");
+        if (!input.producer?.agentRunId) {
+            throw new Error("Brief Studio artifact projection requires producer.agentRunId.");
         }
         const producer = input.producer;
+        const producerMemberAddress = input.binding.runtime.subject === "TEAM_RUN"
+            ? input.binding.runtime.members.find((member) => member.agentRunId === producer.agentRunId)?.memberAddress ?? null
+            : null;
+        if (!producerMemberAddress) {
+            throw new Error(`Brief Studio binding does not contain producer AgentRun '${producer.agentRunId}'.`);
+        }
         const briefId = createRunBindingCorrelationService(context).resolveBriefIdForBinding(input.binding);
-        const pathRule = resolveBriefArtifactPathRule(producer.executionAddress.memberAddress, input.path);
+        const pathRule = resolveBriefArtifactPathRule(producerMemberAddress, input.path);
         const body = await requireRevisionText(context, {
             runId: input.runId,
             revisionId: input.revisionId,
@@ -131,7 +132,7 @@ export const createBriefArtifactReconciliationService = (context) => ({
                 artifactKind: pathRule.artifactKind,
                 publicationKind: pathRule.publicationKind,
                 path: input.path,
-                producerMemberAddress: producer.executionAddress.memberAddress,
+                producerMemberAddress,
                 publishedAt: input.publishedAt,
                 projectedAt,
             })) {
@@ -146,7 +147,7 @@ export const createBriefArtifactReconciliationService = (context) => ({
                 path: input.path,
                 description: input.description ?? null,
                 body,
-                producerMemberAddress: producer.executionAddress.memberAddress,
+                producerMemberAddress,
                 updatedAt: input.publishedAt,
             });
             briefRepository.upsertProjectedBrief({

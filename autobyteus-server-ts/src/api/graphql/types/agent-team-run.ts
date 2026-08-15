@@ -10,11 +10,6 @@ import {
 import { GraphQLJSON } from "graphql-scalars";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { getTeamRunService } from "../../../agent-team-execution/services/team-run-service.js";
-import {
-  LEGACY_TEAM_RUN_METADATA_UPGRADE_REQUIRED_MESSAGE,
-  isLegacyTeamRunMetadataUpgradeRequiredError,
-  isUnsupportedLegacyTeamRunMetadataError,
-} from "../../../run-history/store/team-run-metadata-store.js";
 
 registerEnumType(SkillAccessMode, {
   name: "SkillAccessModeEnum",
@@ -156,10 +151,7 @@ export class AgentTeamRunResolver {
       logger.error(`Error restoring agent team run with ID ${teamRunId}: ${String(error)}`);
       return {
         success: false,
-        message: isUnsupportedLegacyTeamRunMetadataError(error) ||
-          isLegacyTeamRunMetadataUpgradeRequiredError(error)
-          ? LEGACY_TEAM_RUN_METADATA_UPGRADE_REQUIRED_MESSAGE
-          : String(error),
+        message: String(error),
         teamRunId: null,
       };
     }

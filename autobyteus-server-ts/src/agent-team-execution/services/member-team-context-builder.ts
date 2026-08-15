@@ -1,11 +1,10 @@
 import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
 import type { InterAgentMessageDeliveryHandler } from "../domain/inter-agent-message-delivery.js";
 import { MemberCollaborationContext } from "../domain/member-collaboration-context.js";
-import { createMemberLogicalAddressContext } from "../domain/member-logical-address-context.js";
 import { MemberTeamContext } from "../domain/member-team-context.js";
 import type { TeamRunAgentNode } from "../domain/team-run-config.js";
 import type { TeamRunContext } from "../domain/team-run-context.js";
-import type { TeamExecutionAddress } from "../domain/team-execution-address.js";
+import { createTeamMemberExecutionIdentity } from "../domain/team-member-execution-identity.js";
 
 export class MemberTeamContextBuilder {
   private readonly summaryCache = new Map<string, Promise<{ name: string; instruction: string | null }>>();
@@ -18,54 +17,22 @@ export class MemberTeamContextBuilder {
     teamContext: TeamRunContext<unknown>;
     agentNode: TeamRunAgentNode;
     deliverInterAgentMessage?: InterAgentMessageDeliveryHandler | null;
-    taskId?: string | null;
   }): Promise<MemberTeamContext> {
-    const team = input.teamContext.index.getTeam(input.teamContext.teamAddress);
-    if (!team) throw new Error(`Missing Team node '${input.teamContext.teamAddress}'.`);
-    const addressing = createMemberLogicalAddressContext({
-      rootTeamRunId: input.teamContext.config.rootTeam.teamRunId,
-      memberAddress: input.agentNode.address,
-    });
     const collaboration = new MemberCollaborationContext({
-      addressing,
-      outgoingHandoffs: input.teamContext.config.handoffs.filter(
+      outgoingHandoffs: input.teamContext.handoffs.filter(
         (handoff) => handoff.from === input.agentNode.address,
       ),
       deliverInterAgentMessage: input.deliverInterAgentMessage ?? null,
     });
-    const summary = await this.resolveSummary(team.teamDefinitionId);
-    const runtime = input.teamContext.runtimeContext;
-    const teamExecutionAddress = runtime && typeof runtime === "object" &&
-      "teamExecutionAddress" in runtime
-      ? (runtime as { teamExecutionAddress: {
-          rootTeamRunId: string;
-          taskTeamRunIds: readonly string[];
-        } }).teamExecutionAddress
-      : {
-          rootTeamRunId: input.teamContext.config.rootTeam.teamRunId,
-          taskTeamRunIds: input.teamContext.taskTeamRunIds,
-        };
+    const summary = await this.resolveSummary(input.teamContext.teamNode.teamDefinitionId);
     return new MemberTeamContext({
-      teamRunId: team.teamRunId,
-      teamDefinitionId: team.teamDefinitionId,
-      teamName: summary.name,
-      teamBackendKind: input.teamContext.teamBackendKind,
-      teamAddress: team.address,
-      memberAddress: input.agentNode.address,
-      agentRunId: input.agentNode.agentRunId,
-      runtimeKind: input.agentNode.runtimeKind,
-      coordinatorAddress: team.coordinatorAddress,
-      teamInstruction: summary.instruction,
-      collaboration,
-      executionAddress: {
-        ...teamExecutionAddress,
+      identity: createTeamMemberExecutionIdentity({
+        rootTeamRunId: input.teamContext.rootTeamRunId,
         memberAddress: input.agentNode.address,
-        taskAgentRunId: input.teamContext.runtimeContext && typeof input.teamContext.runtimeContext === "object" &&
-          "teamExecutionAddress" in input.teamContext.runtimeContext
-          ? (input.teamContext.runtimeContext as { teamExecutionAddress: TeamExecutionAddress }).teamExecutionAddress.taskAgentRunId
-          : null,
-      },
-      taskId: input.taskId ?? null,
+        agentRunId: input.agentNode.agentRunId,
+      }),
+      authoredTeamInstruction: summary.instruction,
+      collaboration,
     });
   }
 

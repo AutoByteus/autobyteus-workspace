@@ -12,15 +12,14 @@ import {
   TeamRunEventSourceType,
   type TeamRunEvent,
 } from "../../agent-team-execution/domain/team-run-event.js";
-import type { TeamExecutionAddress } from "../../agent-team-execution/domain/team-execution-address.js";
 
 export type ParsedChannelOutputEvent = {
   eventType: AgentRunEventType;
   statusHint: string | null;
   errorEvidence: AgentRunErrorEvidence | null;
   agentRunId: string;
+  memberAddress: string | null;
   teamRunId: string | null;
-  executionAddress: TeamExecutionAddress | null;
   turnId: string | null;
   text: string | null;
   textKind: ChannelOutputEventTextKind | null;
@@ -40,8 +39,8 @@ export const parseDirectChannelOutputEvent = (
     statusHint: event.statusHint ?? null,
     errorEvidence: resolveAgentRunErrorEvidence(event),
     agentRunId: event.runId,
+    memberAddress: null,
     teamRunId: null,
-    executionAddress: null,
     turnId: resolveAgentRunEventTurnId(event),
     text: text.text,
     textKind: text.kind,
@@ -49,13 +48,15 @@ export const parseDirectChannelOutputEvent = (
 };
 
 export const parseTeamChannelOutputEvent = (
-  event: unknown,
+  input: unknown,
 ): ParsedChannelOutputEvent | null => {
+  const event = input && typeof input === "object" && "event" in input
+    ? (input as { event: unknown }).event
+    : input;
   if (!isTeamAgentEvent(event)) {
     return null;
   }
   const payload = event.payload;
-  const address = event.execution.executionAddress;
   const text = payload.eventType === "SEGMENT_CONTENT"
     && payload.details.segmentType === "text"
     ? { text: payload.details.delta, kind: "STREAM_FRAGMENT" as const }
@@ -77,11 +78,9 @@ export const parseTeamChannelOutputEvent = (
               : null
           : null
       : null,
-    agentRunId: event.execution.kind === "task_team_agent"
-      ? event.execution.agentRunId
-      : address.taskAgentRunId ?? address.memberAddress,
-    teamRunId: address.rootTeamRunId,
-    executionAddress: address,
+    agentRunId: event.execution.agentRunId,
+    memberAddress: event.execution.memberAddress,
+    teamRunId: event.execution.rootTeamRunId,
     turnId,
     text: text.text,
     textKind: text.kind,

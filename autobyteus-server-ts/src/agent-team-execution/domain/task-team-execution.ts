@@ -1,12 +1,14 @@
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
-import type { TeamExecutionAddress } from "./team-execution-address.js";
-import type { TeamRunAgentTeamNode, TeamRunConfig } from "./team-run-config.js";
+import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
+import type { TeamRunAgentTeamNode } from "./team-run-config.js";
+import type { CollaborationHandoff } from "../../agent-collaboration/domain/collaboration-handoff.js";
 
-/** Runtime-start input. Concrete identity is carried only by receiver/config. */
-export type StartTaskTeamExecutionRequest = Readonly<{
+/** Exact local preparation input selected by the root task owner. */
+export type PrepareTaskTeamInput = Readonly<{
   taskId: string;
-  receiver: TeamExecutionAddress;
-  config: TeamRunConfig;
+  address: AgentTeamAddress;
+  teamRunId: string;
+  handoffs: readonly CollaborationHandoff[];
   teamNode: TeamRunAgentTeamNode;
   message: AgentInputUserMessage;
 }>;

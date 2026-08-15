@@ -1,8 +1,3 @@
-import {
-  serializeTeamExecutionAddress,
-  type TeamExecutionAddress,
-} from '~/types/agent/TeamExecutionAddress';
-
 export type MobileTaskTab = 'chat' | 'runs' | 'files' | 'artifacts' | 'activity';
 
 export type MobileFilePreviewRequest = {
@@ -38,7 +33,7 @@ export type MobileWorkContext =
       title: string;
       summary: string;
       workspaceRootPath: string;
-      focusedExecutionAddress: TeamExecutionAddress;
+      focusedAgentRunId: string;
       isActive: boolean;
       lastActivityAt: string;
       statusLabel: string;
@@ -109,7 +104,7 @@ export function mobileWorkContextKey(context: MobileWorkContext): string {
     case 'agent-run':
       return `agent-run:${context.runId}`;
     case 'team-run':
-      return `team-run:${context.teamRunId}:${serializeTeamExecutionAddress(context.focusedExecutionAddress)}`;
+      return `team-run:${context.teamRunId}:${context.focusedAgentRunId}`;
     case 'agent-definition':
       return `agent-definition:${context.agentDefinitionId}`;
     case 'team-definition':

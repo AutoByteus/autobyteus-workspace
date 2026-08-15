@@ -8,7 +8,6 @@ import {
   normalizeRootPath,
 } from './runHistoryReadModel';
 import { buildRunHistoryTeamExecutionRows } from './runHistoryTeamExecutionRows';
-import { serializeTeamExecutionAddress, type TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 
 export interface RunHistoryAgentNavigationAncestry {
   workspaceId: string;
@@ -41,8 +40,11 @@ export interface RunHistoryNavigationProjectionBuildInput {
   teamContexts: AgentTeamContext[];
 }
 
-export const runHistoryMemberIndexKey = (teamRunId: string, address: TeamExecutionAddress): string =>
-  `${teamRunId}\u0000${serializeTeamExecutionAddress(address)}`;
+export const runHistoryExecutionRowIndexKey = (teamRunId: string, rowKey: string): string =>
+  `${teamRunId}\u0000${rowKey}`;
+
+export const runHistoryMemberIndexKey = (teamRunId: string, agentRunId: string): string =>
+  runHistoryExecutionRowIndexKey(teamRunId, `agent:${agentRunId.trim()}`);
 
 const teamDefinitionGroupKey = (
   team: TeamTreeNode,
@@ -110,12 +112,12 @@ export const buildRunHistoryNavigationProjection = (
     teamContexts: input.teamContexts,
     workspacesById: input.workspacesById,
   });
-  const teamContextById = new Map(input.teamContexts.map((context) => [context.executions.getRootTeamRunId(), context]));
+  const teamContextById = new Map(input.teamContexts.map((context) => [context.view.getRootTeamRunId(), context]));
   const completedTeamNodes = builtTeamNodes.map((team) => {
     const context = teamContextById.get(team.teamRunId) ?? null;
     const focused = {
       ...team,
-      focusedExecutionAddress: context?.executions.getFocusedAddress() ?? team.focusedExecutionAddress,
+      focusedAgentRunId: context?.view.getFocusedAgentRunId() ?? team.focusedAgentRunId,
     };
     return { ...focused, executionRows: buildRunHistoryTeamExecutionRows(focused, context) };
   });
@@ -160,13 +162,12 @@ export const buildRunHistoryNavigationProjection = (
     }
     const expandableAncestorByDepth: Array<string | undefined> = [];
     team.executionRows.forEach((row, rowIndex) => {
-      const identity = runHistoryMemberIndexKey(team.teamRunId, row.executionAddress);
-      const executionKey = serializeTeamExecutionAddress(row.executionAddress);
+      const identity = runHistoryExecutionRowIndexKey(team.teamRunId, row.rowKey);
       memberIndexByIdentity[identity] = rowIndex;
       memberAncestorExecutionKeysByIdentity[identity] = expandableAncestorByDepth
         .slice(0, row.depth)
         .filter((key): key is string => Boolean(key));
-      expandableAncestorByDepth[row.depth] = row.hasChildren ? executionKey : undefined;
+      expandableAncestorByDepth[row.depth] = row.hasChildren ? row.rowKey : undefined;
       expandableAncestorByDepth.length = row.depth + 1;
     });
     builtTeamNodesByWorkspaceRoot[team.workspaceRootPath] = [...rows, team];

@@ -12,6 +12,7 @@ import {
   buildDirectAgentRunInterAgentEvent,
   buildDirectAgentRunMessageId,
 } from "./global-agent-run-message-runtime-builders.js";
+import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
 
 export type GlobalAgentRunMessageDeliveryInput = {
   sender: AgentRunMessageSenderContext;
@@ -56,6 +57,7 @@ export class GlobalAgentRunMessageRouter {
   constructor(private readonly deps: {
     agentRunManager?: ActiveRunLookup;
     grantRegistry?: DirectAgentRunMessageGrantRegistry;
+    teamRunManager?: Pick<AgentTeamRunManager, "getTeamRun">;
   } = {}) {}
 
   async deliver(input: GlobalAgentRunMessageDeliveryInput): Promise<AgentOperationResult> {
@@ -96,6 +98,43 @@ export class GlobalAgentRunMessageRouter {
       } satisfies AgentOperationResult;
       this.recordGrantUsage(grantDecision.kind === "allowed" ? grantDecision.grant : null, {
         ...result,
+        senderRunId: input.sender.senderRunId,
+        targetAgentRunId,
+        messageType,
+        referenceFiles,
+      });
+      return result;
+    }
+
+    const senderTeam = input.sender.memberTeamContext;
+    const targetTeam = targetRun.config.memberTeamContext;
+    if (
+      senderTeam &&
+      targetTeam &&
+      senderTeam.identity.rootTeamRunId === targetTeam.identity.rootTeamRunId
+    ) {
+      const root = this.teamRunManager.getTeamRun(senderTeam.identity.rootTeamRunId);
+      const result = root
+        ? await root.deliverExactAgentMessage({
+            sender: Object.freeze({
+              kind: "agent",
+              identity: senderTeam.identity,
+              displayName: input.sender.senderName,
+            }),
+            targetAgentRunId,
+            content,
+            messageType,
+            referenceFiles,
+          })
+        : {
+            accepted: false,
+            code: "TEAM_RUN_NOT_ACTIVE",
+            message: `RootTeamRun '${senderTeam.identity.rootTeamRunId}' is not active.`,
+          } satisfies AgentOperationResult;
+      this.recordGrantUsage(grantDecision.kind === "allowed" ? grantDecision.grant : null, {
+        accepted: result.accepted,
+        code: result.code ?? (result.accepted ? "DELIVERED" : "TARGET_AGENT_RUN_REJECTED_INPUT"),
+        message: result.message ?? null,
         senderRunId: input.sender.senderRunId,
         targetAgentRunId,
         messageType,
@@ -195,6 +234,10 @@ export class GlobalAgentRunMessageRouter {
 
   private get grantRegistry(): DirectAgentRunMessageGrantRegistry {
     return this.deps.grantRegistry ?? getDirectAgentRunMessageGrantRegistry();
+  }
+
+  private get teamRunManager(): Pick<AgentTeamRunManager, "getTeamRun"> {
+    return this.deps.teamRunManager ?? AgentTeamRunManager.getInstance();
   }
 }
 

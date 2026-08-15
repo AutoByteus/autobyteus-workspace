@@ -478,62 +478,87 @@ describe("AgentRun input admission", () => {
     expect(harness.backend.interrupt).toHaveBeenCalledWith(null);
   });
 
-  it("cancels waiting admitted input once on accepted termination", async () => {
+  it("keeps an earlier reservation intact until its owner commits and the released input terminates", async () => {
+    const dispatch = createDeferred<AgentRunBackendInputDispatchResult>();
     const lifecycle: AgentRunInputLifecycle[] = [];
     const harness = createHarness({
-      snapshot: {
-        availability: "active",
-        phase: "running",
-        currentTurn: { kind: "IDENTIFIED", turnId: "turn-active" },
-      },
+      dispatchUserInput: vi.fn().mockReturnValue(dispatch.promise),
     });
-    await harness.run.postUserMessage(new AgentInputUserMessage("queued"), {
+    const reservationResult = await harness.run.reserveUserMessage(new AgentInputUserMessage("reserved"), {
       lifecycleObserver: (fact) => lifecycle.push(fact),
     });
+    if (!reservationResult.reserved) throw new Error("Expected reservation.");
 
-    await expect(harness.run.terminate()).resolves.toEqual({ accepted: true });
-    expect(lifecycle).toEqual([
-      { kind: "admitted" },
-      { kind: "cancelled", code: "AGENT_RUN_TERMINATED_BEFORE_INPUT_FORWARD" },
+    const preparation = harness.run.prepareTermination();
+    await Promise.resolve();
+    expect(harness.backend.dispatchUserInput).not.toHaveBeenCalled();
+    expect(harness.backend.terminate).not.toHaveBeenCalled();
+
+    reservationResult.reservation.commit().release();
+    await vi.waitFor(() => expect(harness.backend.dispatchUserInput).toHaveBeenCalledOnce());
+    dispatch.resolve({ forwarded: true, turnId: "turn-reserved" });
+    await vi.waitFor(() => expect(lifecycle).toContainEqual({
+      kind: "forwarded", dispatchKind: "start_turn", turnId: "turn-reserved",
+    }));
+    harness.setSnapshot({ availability: "active", phase: "running", currentTurn: { kind: "IDENTIFIED", turnId: "turn-reserved" } });
+    await harness.getSourceListener()?.([
+      event(harness.run.runId, AgentRunEventType.TURN_STARTED, { turn_id: "turn-reserved" }),
     ]);
-    await expect(harness.run.postUserMessage(new AgentInputUserMessage("late"))).resolves.toMatchObject({
+    harness.setSnapshot({ availability: "active", phase: "idle", currentTurn: { kind: "NONE" } });
+    await harness.getSourceListener()?.([
+      event(harness.run.runId, AgentRunEventType.TURN_COMPLETED, { turn_id: "turn-reserved" }),
+    ]);
+
+    const prepared = await preparation;
+    expect(lifecycle).toContainEqual({ kind: "completed", turnId: "turn-reserved" });
+    expect(lifecycle.some((fact) => fact.kind === "cancelled")).toBe(false);
+    expect(harness.backend.terminate).not.toHaveBeenCalled();
+    prepared.cancel();
+    await expect(harness.run.postUserMessage(new AgentInputUserMessage("after cancel"))).resolves.toMatchObject({ accepted: true });
+  });
+
+  it("keeps quiescence pending until an earlier reservation owner cancels", async () => {
+    const harness = createHarness();
+    const reservationResult = await harness.run.reserveUserMessage(
+      new AgentInputUserMessage("reserved then cancelled"),
+    );
+    if (!reservationResult.reserved) throw new Error("Expected reservation.");
+
+    const preparation = harness.run.prepareTermination();
+    await Promise.resolve();
+    expect(harness.backend.dispatchUserInput).not.toHaveBeenCalled();
+    expect(harness.backend.terminate).not.toHaveBeenCalled();
+
+    reservationResult.reservation.cancel();
+    const prepared = await preparation;
+    expect(harness.backend.dispatchUserInput).not.toHaveBeenCalled();
+    prepared.cancel();
+    await expect(harness.run.postUserMessage(new AgentInputUserMessage("after cancellation")))
+      .resolves.toMatchObject({ accepted: true });
+  });
+
+  it("keeps admission closed after committed provider termination rejects", async () => {
+    const terminate = vi.fn().mockResolvedValue({ accepted: false, code: "BUSY" });
+    const harness = createHarness({ terminate });
+    await expect(harness.run.terminate()).resolves.toEqual({ accepted: false, code: "BUSY" });
+    await expect(harness.run.postUserMessage(new AgentInputUserMessage("second"))).resolves.toMatchObject({
       accepted: false,
       code: "AGENT_RUN_NOT_ACCEPTING_INPUT",
     });
+    expect(terminate).toHaveBeenCalledOnce();
   });
 
-  it("reopens a rejected termination without losing queued order", async () => {
-    const terminate = vi.fn().mockResolvedValue({ accepted: false, code: "BUSY" });
-    const harness = createHarness({
-      snapshot: {
-        availability: "active",
-        phase: "running",
-        currentTurn: { kind: "IDENTIFIED", turnId: "turn-active" },
-      },
-      terminate,
-    });
-    await harness.run.postUserMessage(new AgentInputUserMessage("queued"));
-    await expect(harness.run.terminate()).resolves.toEqual({ accepted: false, code: "BUSY" });
-    await expect(harness.run.postUserMessage(new AgentInputUserMessage("second"))).resolves.toMatchObject({
-      accepted: true,
-    });
-
-    harness.setSnapshot({ availability: "active", phase: "idle", currentTurn: { kind: "NONE" } });
-    await harness.getSourceListener()?.([
-      event(harness.run.runId, AgentRunEventType.TURN_INTERRUPTED, { turn_id: "turn-active" }),
-    ]);
-    await vi.waitFor(() => expect(harness.backend.dispatchUserInput).toHaveBeenCalledTimes(1));
-    expect((harness.backend.dispatchUserInput.mock.calls[0]?.[0] as AgentRunBackendInputDispatch).message.content)
-      .toBe("queued");
-  });
-
-  it("waits for a claimed dispatch before accepted termination and cancels the queued tail", async () => {
-    const dispatch = createDeferred<AgentRunBackendInputDispatchResult>();
+  it("drains claimed and queued inputs in FIFO order before provider termination", async () => {
+    const firstDispatch = createDeferred<AgentRunBackendInputDispatchResult>();
+    const secondDispatch = createDeferred<AgentRunBackendInputDispatchResult>();
     const firstLifecycle: AgentRunInputLifecycle[] = [];
     const secondLifecycle: AgentRunInputLifecycle[] = [];
     const terminate = vi.fn().mockResolvedValue({ accepted: true });
+    const dispatchUserInput = vi.fn()
+      .mockReturnValueOnce(firstDispatch.promise)
+      .mockReturnValueOnce(secondDispatch.promise);
     const harness = createHarness({
-      dispatchUserInput: vi.fn().mockReturnValue(dispatch.promise),
+      dispatchUserInput,
       terminate,
     });
     await harness.run.postUserMessage(new AgentInputUserMessage("claimed"), {
@@ -546,18 +571,37 @@ describe("AgentRun input admission", () => {
     const termination = harness.run.terminate();
     await Promise.resolve();
     expect(terminate).not.toHaveBeenCalled();
-    dispatch.resolve({ forwarded: true, turnId: "turn-1" });
+    firstDispatch.resolve({ forwarded: true, turnId: "turn-1" });
+    await vi.waitFor(() => expect(firstLifecycle).toContainEqual({
+      kind: "forwarded", dispatchKind: "start_turn", turnId: "turn-1",
+    }));
+    harness.setSnapshot({ availability: "active", phase: "running", currentTurn: { kind: "IDENTIFIED", turnId: "turn-1" } });
+    await harness.getSourceListener()?.([
+      event(harness.run.runId, AgentRunEventType.TURN_STARTED, { turn_id: "turn-1" }),
+    ]);
+    harness.setSnapshot({ availability: "active", phase: "idle", currentTurn: { kind: "NONE" } });
+    await harness.getSourceListener()?.([
+      event(harness.run.runId, AgentRunEventType.TURN_COMPLETED, { turn_id: "turn-1" }),
+    ]);
+    await vi.waitFor(() => expect(dispatchUserInput).toHaveBeenCalledTimes(2));
+    secondDispatch.resolve({ forwarded: true, turnId: "turn-2" });
+    await vi.waitFor(() => expect(secondLifecycle).toContainEqual({
+      kind: "forwarded", dispatchKind: "start_turn", turnId: "turn-2",
+    }));
+    harness.setSnapshot({ availability: "active", phase: "running", currentTurn: { kind: "IDENTIFIED", turnId: "turn-2" } });
+    await harness.getSourceListener()?.([
+      event(harness.run.runId, AgentRunEventType.TURN_STARTED, { turn_id: "turn-2" }),
+    ]);
+    harness.setSnapshot({ availability: "active", phase: "idle", currentTurn: { kind: "NONE" } });
+    await harness.getSourceListener()?.([
+      event(harness.run.runId, AgentRunEventType.TURN_COMPLETED, { turn_id: "turn-2" }),
+    ]);
     await expect(termination).resolves.toEqual({ accepted: true });
 
     expect(terminate).toHaveBeenCalledOnce();
-    expect(firstLifecycle).toContainEqual({
-      kind: "interrupted",
-      turnId: "turn-1",
-    });
-    expect(secondLifecycle).toEqual([
-      { kind: "admitted" },
-      { kind: "cancelled", code: "AGENT_RUN_TERMINATED_BEFORE_INPUT_FORWARD" },
-    ]);
+    expect(firstLifecycle).toContainEqual({ kind: "completed", turnId: "turn-1" });
+    expect(secondLifecycle).toContainEqual({ kind: "completed", turnId: "turn-2" });
+    expect([...firstLifecycle, ...secondLifecycle].some((fact) => fact.kind === "cancelled")).toBe(false);
   });
 
   it("fails retained input once and closes admission on a runtime-global terminal error", async () => {

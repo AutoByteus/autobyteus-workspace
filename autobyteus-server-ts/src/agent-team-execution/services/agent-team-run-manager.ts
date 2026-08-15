@@ -1,304 +1,239 @@
-import { TeamRun } from "../domain/team-run.js";
-import { TeamRunConfig } from "../domain/team-run-config.js";
-import { TeamRunContext, type RuntimeTeamRunContext } from "../domain/team-run-context.js";
-import type { MixedTeamRunContext } from "../backends/mixed/mixed-team-run-context.js";
-import type { TeamRunEventListener, TeamRunEventUnsubscribe } from "../domain/team-run-event.js";
+import { appConfigProvider } from "../../config/app-config-provider.js";
+import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
+import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
+import { TeamRunExecutionTreeStore } from "../../run-history/store/team-run-execution-tree-store.js";
+import { TeamRunStatePackageLoader } from "../../run-history/services/team-run-state-package-loader.js";
+import { TeamCommunicationV1Store } from "../../services/team-communication/team-communication-v1-store.js";
 import { AgentTeamTerminationError } from "../errors.js";
-import {
-  getMixedTeamRunBackendFactory,
-  type MixedTeamRunBackendFactory,
-} from "../backends/mixed/mixed-team-run-backend-factory.js";
-import { TeamBackendKind } from "../domain/team-backend-kind.js";
-import {
-  TeamCommunicationService,
-  getTeamCommunicationService,
-} from "../../services/team-communication/team-communication-service.js";
-import {
-  RunFileChangeService,
-  getRunFileChangeService,
-} from "../../services/run-file-changes/run-file-change-service.js";
-import { getTaskDelegationRunRegistry } from "../task-delegation/task-delegation-run-registry.js";
-import type {
-  TeamRunLifecycleListener,
-  TeamRunLifecycleSnapshot,
-  TeamRunLifecycleUnsubscribe,
-} from "../domain/team-run-lifecycle.js";
+import { getMixedTeamRunBackendFactory, type MixedTeamRunBackendFactory } from "../backends/mixed/mixed-team-run-backend-factory.js";
+import { RootTeamRun } from "../domain/root-team-run.js";
+import { TeamRun } from "../domain/team-run.js";
+import type { TeamRunConfig } from "../domain/team-run-config.js";
+import type { TeamRunEvent } from "../domain/team-run-event.js";
+import type { TeamRunLifecycleListener, TeamRunLifecycleSnapshot, TeamRunLifecycleUnsubscribe } from "../domain/team-run-lifecycle.js";
+import { TeamRunEventPublisher, type RootEventListener } from "./team-run-event-publisher.js";
+import { buildInitialTeamRunExecutionTree, buildTeamRunConfigFromExecutionTree } from "./team-run-execution-tree-builder.js";
+import { TeamRunPersistenceCoordinator } from "./team-run-persistence-coordinator.js";
+import { TaskDelegationRecordsV1Store } from "../task-delegation/records/task-delegation-records-v1-store.js";
+import type { TaskDelegationRecordsSnapshot } from "../task-delegation/task-delegation-record-v1.js";
+import type { TeamCommunicationMessagesSnapshot } from "../../services/team-communication/team-communication-v1-types.js";
+import { TeamRunV1PackageCatalog } from "../../run-history/services/team-run-v1-package-catalog.js";
 
-const logger = {
-  info: (...args: unknown[]) => console.info(...args),
-  warn: (...args: unknown[]) => console.warn(...args),
-  error: (...args: unknown[]) => console.error(...args),
-};
-
-const normalizeRequiredRunId = (value: string, fieldName: string): string => {
+const required = (value: string, field: string): string => {
   const normalized = value.trim();
-  if (!normalized) {
-    throw new Error(`${fieldName} is required.`);
-  }
+  if (!normalized) throw new Error(`${field} is required.`);
   return normalized;
 };
 
-type AgentTeamRunManagerOptions = {
+type AgentTeamRunManagerOptions = Readonly<{
+  memoryDir?: string;
   mixedTeamRunBackendFactory?: MixedTeamRunBackendFactory;
-  teamCommunicationService?: TeamCommunicationService;
-  runFileChangeService?: RunFileChangeService;
-};
+  executionTreeStore?: TeamRunExecutionTreeStore;
+  taskRecordsStore?: TaskDelegationRecordsV1Store;
+  communicationStore?: TeamCommunicationV1Store;
+}>;
 
+/** Process-wide catalog and lifecycle owner for root executions only. */
 export class AgentTeamRunManager {
   private static instance: AgentTeamRunManager | null = null;
-  private readonly mixedTeamRunBackendFactory: MixedTeamRunBackendFactory;
-  private readonly teamCommunicationService: TeamCommunicationService;
-  private readonly runFileChangeService: RunFileChangeService;
-  private activeRuns = new Map<string, TeamRun>();
-  private readonly teamCommunicationUnsubscribers = new Map<string, () => void>();
-  private readonly runFileChangeUnsubscribers = new Map<string, () => void>();
-  private readonly lifecycleListenersByRunId = new Map<
-    string,
-    Set<TeamRunLifecycleListener>
-  >();
+  private readonly memoryLayout: AgentMemoryLayout;
+  private readonly factory: MixedTeamRunBackendFactory;
+  private readonly executionTreeStore: TeamRunExecutionTreeStore;
+  private readonly taskRecordsStore: TaskDelegationRecordsV1Store;
+  private readonly communicationStore: TeamCommunicationV1Store;
+  private readonly packageCatalog: TeamRunV1PackageCatalog;
+  private readonly activeRoots = new Map<string, RootTeamRun>();
+  private readonly lifecycleListeners = new Map<string, Set<TeamRunLifecycleListener>>();
 
   static getInstance(options: AgentTeamRunManagerOptions = {}): AgentTeamRunManager {
-    if (!AgentTeamRunManager.instance) {
-      AgentTeamRunManager.instance = new AgentTeamRunManager(options);
-    }
-    return AgentTeamRunManager.instance;
+    return AgentTeamRunManager.instance ??= new AgentTeamRunManager(options);
   }
 
   constructor(options: AgentTeamRunManagerOptions = {}) {
-    this.mixedTeamRunBackendFactory =
-      options.mixedTeamRunBackendFactory ?? getMixedTeamRunBackendFactory();
-    this.teamCommunicationService =
-      options.teamCommunicationService ?? getTeamCommunicationService();
-    this.runFileChangeService =
-      options.runFileChangeService ?? getRunFileChangeService();
-    logger.info("AgentTeamRunManager initialized with MixedTeamManager-only team execution.");
+    const memoryDir = options.memoryDir ?? appConfigProvider.config.getMemoryDir();
+    this.memoryLayout = new AgentMemoryLayout(memoryDir);
+    this.packageCatalog = new TeamRunV1PackageCatalog(memoryDir);
+    this.factory = options.mixedTeamRunBackendFactory ?? getMixedTeamRunBackendFactory();
+    this.executionTreeStore = options.executionTreeStore ?? new TeamRunExecutionTreeStore();
+    this.taskRecordsStore = options.taskRecordsStore ?? new TaskDelegationRecordsV1Store();
+    this.communicationStore = options.communicationStore ?? new TeamCommunicationV1Store();
   }
 
-  async createTeamRun(input: TeamRunConfig, teamRunId: string): Promise<TeamRun> {
-    const normalizedTeamRunId = normalizeRequiredRunId(teamRunId, "teamRunId");
-    const config = this.withMixedBackendKind(input);
-    const backend = await this.mixedTeamRunBackendFactory.createBackend(config, normalizedTeamRunId);
-    const activeRun = new TeamRun({
-      context: backend.getTeamRunContext(),
-      backend,
+  async createTeamRun(input: {
+    config: TeamRunConfig;
+    teamDefinitionName: string;
+  }): Promise<RootTeamRun> {
+    const rootTeamRunId = required(input.config.rootTeam.teamRunId, "rootTeamRunId");
+    if (this.getTeamRun(rootTeamRunId)) throw new Error(`RootTeamRun '${rootTeamRunId}' is already active.`);
+    const tree = buildInitialTeamRunExecutionTree({
+      config: input.config,
+      teamDefinitionName: required(input.teamDefinitionName, "teamDefinitionName"),
     });
-    this.registerActiveRun(activeRun);
-    logger.info(`Successfully created mixed team run '${activeRun.teamRunId}'.`);
-    return activeRun;
+    const tasks: TaskDelegationRecordsSnapshot = Object.freeze({
+      schemaVersion: 1,
+      rootTeamRunId,
+      records: Object.freeze([]),
+    });
+    const messages: TeamCommunicationMessagesSnapshot = Object.freeze({
+      schemaVersion: 1,
+      rootTeamRunId,
+      messages: Object.freeze([]),
+    });
+    const teamMemoryDir = this.teamMemoryDir(rootTeamRunId);
+    await this.requireCommitted(this.executionTreeStore.write(teamMemoryDir, tree), "execution tree");
+    await this.requireCommitted(this.taskRecordsStore.write(teamMemoryDir, tasks), "task records");
+    await this.requireCommitted(this.communicationStore.write(teamMemoryDir, messages), "communication messages");
+    this.packageCatalog.admit(rootTeamRunId);
+    const root = await this.materializeRoot({ config: input.config, tree, tasks, messages, teamMemoryDir });
+    this.register(root);
+    return root;
   }
 
-  async restoreTeamRun(
-    context: TeamRunContext<RuntimeTeamRunContext>,
-  ): Promise<TeamRun> {
-    if (!context.runtimeContext) {
-      throw new Error(`Team run '${context.teamRunId}' restore requires a mixed runtime context.`);
+  async restoreTeamRun(rootTeamRunIdInput: string): Promise<RootTeamRun> {
+    const rootTeamRunId = required(rootTeamRunIdInput, "rootTeamRunId");
+    if (this.getTeamRun(rootTeamRunId)) throw new Error(`RootTeamRun '${rootTeamRunId}' is already active.`);
+    if (this.packageCatalog.isInitialized() && !this.packageCatalog.isAdmitted(rootTeamRunId)) {
+      throw new Error(`TEAM_RUN_STATE_PACKAGE_NOT_CATALOGED: TeamRun '${rootTeamRunId}' is not an admitted V1 package.`);
     }
-    const mixedContext = new TeamRunContext<MixedTeamRunContext>({
-      teamRunId: context.teamRunId,
-      teamAddress: context.teamAddress,
-      taskTeamRunIds: context.taskTeamRunIds,
-      teamBackendKind: TeamBackendKind.MIXED,
-      config: this.withMixedBackendKind(context.config),
-      index: context.index,
-      runtimeContext: context.runtimeContext,
+    const teamMemoryDir = this.teamMemoryDir(rootTeamRunId);
+    const loaded = await new TeamRunStatePackageLoader({
+      executionTreeStore: this.executionTreeStore,
+      taskRecordsStore: this.taskRecordsStore,
+      communicationStore: this.communicationStore,
+    }).loadAndRepair({ teamMemoryDir, rootTeamRunId });
+    if (!loaded.loaded) throw new Error(`${loaded.code}: ${loaded.message}`);
+    const config = buildTeamRunConfigFromExecutionTree(loaded.state.executionTree);
+    const root = await this.materializeRoot({
+      config,
+      tree: loaded.state.executionTree,
+      tasks: loaded.state.taskRecords,
+      messages: loaded.state.communicationMessages,
+      teamMemoryDir,
     });
-    const backend = await this.mixedTeamRunBackendFactory.restoreBackend(mixedContext);
-    const activeRun = new TeamRun({
-      context: mixedContext,
-      backend,
-    });
-    this.registerActiveRun(activeRun);
-    logger.info(`Successfully restored mixed team run '${activeRun.teamRunId}'.`);
-    return activeRun;
+    this.register(root);
+    return root;
   }
 
-  getTeamRun(teamRunId: string): TeamRun | null {
-    const normalizedTeamRunId = normalizeRequiredRunId(teamRunId, "teamRunId");
-    const activeRun = this.activeRuns.get(normalizedTeamRunId) ?? null;
-    if (!activeRun) {
+  getTeamRun(rootTeamRunIdInput: string): RootTeamRun | null {
+    const rootTeamRunId = required(rootTeamRunIdInput, "rootTeamRunId");
+    const root = this.activeRoots.get(rootTeamRunId) ?? null;
+    if (!root?.isActive()) {
+      if (root) this.unregister(rootTeamRunId, root);
       return null;
     }
-    if (!activeRun.isActive()) {
-      this.unregisterActiveRun(normalizedTeamRunId, activeRun);
-      return null;
-    }
-    return activeRun;
+    return root;
   }
 
-  getActiveRun(teamRunId: string): TeamRun | null {
-    return this.getTeamRun(teamRunId);
+  getActiveRun(rootTeamRunId: string): RootTeamRun | null { return this.getTeamRun(rootTeamRunId); }
+  listActiveRuns(): string[] { return [...this.activeRoots.keys()].filter((id) => this.getTeamRun(id)); }
+
+  getLifecycleSnapshot(rootTeamRunId: string): TeamRunLifecycleSnapshot {
+    const teamRunId = required(rootTeamRunId, "rootTeamRunId");
+    return { teamRunId, isActive: this.getTeamRun(teamRunId) !== null };
   }
 
-  listActiveRuns(): string[] {
-    const activeRunIds: string[] = [];
-    for (const teamRunId of this.activeRuns.keys()) {
-      if (this.getActiveRun(teamRunId)) {
-        activeRunIds.push(teamRunId);
-      }
-    }
-    return activeRunIds;
-  }
-
-  getLifecycleSnapshot(teamRunId: string): TeamRunLifecycleSnapshot {
-    const normalizedTeamRunId = normalizeRequiredRunId(teamRunId, "teamRunId");
-    return {
-      teamRunId: normalizedTeamRunId,
-      isActive: this.getActiveRun(normalizedTeamRunId) !== null,
-    };
-  }
-
-  subscribeToLifecycle(
-    teamRunId: string,
-    listener: TeamRunLifecycleListener,
-  ): TeamRunLifecycleUnsubscribe {
-    const normalizedTeamRunId = normalizeRequiredRunId(teamRunId, "teamRunId");
-    let listeners = this.lifecycleListenersByRunId.get(normalizedTeamRunId);
-    if (!listeners) {
-      listeners = new Set<TeamRunLifecycleListener>();
-      this.lifecycleListenersByRunId.set(normalizedTeamRunId, listeners);
-    }
+  subscribeToLifecycle(rootTeamRunId: string, listener: TeamRunLifecycleListener): TeamRunLifecycleUnsubscribe {
+    const teamRunId = required(rootTeamRunId, "rootTeamRunId");
+    const listeners = this.lifecycleListeners.get(teamRunId) ?? new Set<TeamRunLifecycleListener>();
     listeners.add(listener);
+    this.lifecycleListeners.set(teamRunId, listeners);
     return () => {
-      const current = this.lifecycleListenersByRunId.get(normalizedTeamRunId);
-      current?.delete(listener);
-      if (current?.size === 0) {
-        this.lifecycleListenersByRunId.delete(normalizedTeamRunId);
-      }
+      listeners.delete(listener);
+      if (!listeners.size) this.lifecycleListeners.delete(teamRunId);
     };
   }
 
-  private registerActiveRun(run: TeamRun): void {
-    if (!run.isActive()) {
-      throw new Error(`Cannot register inactive team run '${run.teamRunId}'.`);
-    }
-    const teamRunId = normalizeRequiredRunId(run.teamRunId, "teamRunId");
-    this.transitionActiveRun({ teamRunId, nextRun: run });
+  subscribeToEvents(rootTeamRunId: string, listener: RootEventListener<TeamRunEvent>): (() => void) | null {
+    return this.getTeamRun(rootTeamRunId)?.subscribeToEvents(listener) ?? null;
   }
 
-  private unregisterActiveRun(
-    teamRunId: string,
-    expectedRun: TeamRun | null = null,
-  ): boolean {
-    return this.transitionActiveRun({ teamRunId, nextRun: null, expectedRun });
-  }
-
-  private transitionActiveRun(input: {
-    teamRunId: string;
-    nextRun: TeamRun | null;
-    expectedRun?: TeamRun | null;
-  }): boolean {
-    const current = this.activeRuns.get(input.teamRunId) ?? null;
-    if (input.expectedRun && current !== input.expectedRun) {
-      return false;
-    }
-    if (current === input.nextRun) {
-      return current !== null;
-    }
-    if (!current && !input.nextRun) {
-      return false;
-    }
-
-    const wasActive = current !== null;
-    this.unregisterTeamCommunication(input.teamRunId);
-    this.unregisterRunFileChanges(input.teamRunId);
-    if (current) {
-      getTaskDelegationRunRegistry().detach(input.teamRunId);
-    }
-
-    if (input.nextRun) {
-      this.activeRuns.set(input.teamRunId, input.nextRun);
-      this.teamCommunicationUnsubscribers.set(
-        input.teamRunId,
-        this.teamCommunicationService.attachToTeamRun(input.nextRun),
-      );
-      this.runFileChangeUnsubscribers.set(
-        input.teamRunId,
-        this.runFileChangeService.attachToTeamRun(input.nextRun),
-      );
-    } else {
-      this.activeRuns.delete(input.teamRunId);
-    }
-
-    const isActive = input.nextRun !== null;
-    if (wasActive !== isActive) {
-      this.notifyLifecycle({ teamRunId: input.teamRunId, isActive });
-    }
-    return true;
-  }
-
-  private notifyLifecycle(snapshot: TeamRunLifecycleSnapshot): void {
-    const listeners = [
-      ...(this.lifecycleListenersByRunId.get(snapshot.teamRunId) ?? []),
-    ];
-    for (const listener of listeners) {
-      try {
-        listener({ ...snapshot });
-      } catch (error) {
-        logger.error(
-          `AgentTeamRunManager lifecycle listener failed for '${snapshot.teamRunId}': ${String(error)}`,
-        );
-      }
-    }
-  }
-
-  private unregisterTeamCommunication(teamRunId: string): void {
-    const unsubscribe = this.teamCommunicationUnsubscribers.get(teamRunId);
-    if (!unsubscribe) {
-      return;
-    }
-    this.teamCommunicationUnsubscribers.delete(teamRunId);
-    unsubscribe();
-  }
-
-  private unregisterRunFileChanges(teamRunId: string): void {
-    const unsubscribe = this.runFileChangeUnsubscribers.get(teamRunId);
-    if (!unsubscribe) {
-      return;
-    }
-    this.runFileChangeUnsubscribers.delete(teamRunId);
-    unsubscribe();
-  }
-
-  async terminateTeamRun(teamRunId: string): Promise<boolean> {
+  async terminateTeamRun(rootTeamRunIdInput: string): Promise<boolean> {
+    const rootTeamRunId = required(rootTeamRunIdInput, "rootTeamRunId");
     try {
-      const normalizedTeamRunId = normalizeRequiredRunId(teamRunId, "teamRunId");
-      const activeRun = this.getActiveRun(normalizedTeamRunId);
-      if (activeRun) {
-        const result = await activeRun.terminate();
-        if (!result.accepted) {
-          return false;
-        }
-        return this.unregisterActiveRun(normalizedTeamRunId, activeRun);
-      }
-      return false;
+      const root = this.getTeamRun(rootTeamRunId);
+      if (!root) return false;
+      const result = await root.terminate();
+      if (!result.accepted) return false;
+      return this.unregister(rootTeamRunId, root) || !this.activeRoots.has(rootTeamRunId);
     } catch (error) {
-      logger.error(`Failed to terminate team run '${teamRunId}': ${String(error)}`);
       throw new AgentTeamTerminationError(String(error));
     }
   }
 
-  subscribeToEvents(
-    teamRunId: string,
-    listener: TeamRunEventListener,
-  ): TeamRunEventUnsubscribe | null {
-    const activeRun = this.getTeamRun(teamRunId);
-    if (!activeRun) {
-      logger.warn(
-        `AgentTeamRunManager: Attempted to subscribe to non-existent team run '${teamRunId}'.`,
-      );
-      return null;
-    }
-    return activeRun.subscribeToEvents(listener);
+  private async materializeRoot(input: {
+    config: TeamRunConfig;
+    tree: import("../domain/team-run-execution-tree.js").TeamRunExecutionTreeSnapshot;
+    tasks: TaskDelegationRecordsSnapshot;
+    messages: TeamCommunicationMessagesSnapshot;
+    teamMemoryDir: string;
+  }): Promise<RootTeamRun> {
+    const publisher = new TeamRunEventPublisher<TeamRunEvent>();
+    let root: RootTeamRun | null = null;
+    const callbacks = {
+      publish: (event: TeamRunEvent) => publisher.publish(event),
+      deliverInterAgentMessage: (intent: import("../domain/inter-agent-message-delivery.js").InterAgentMessageDeliveryIntent) => {
+        if (!root) return Promise.resolve({ accepted: false, code: "TEAM_ROOT_NOT_BOUND", message: "RootTeamRun construction is incomplete." });
+        return root.deliverInterAgentMessage(intent);
+      },
+    };
+    const backend = await this.factory.createBackend(input.config, input.tree.rootTeam.teamRunId, callbacks);
+    const rootRun = new TeamRun(backend.getTeamRunContext(), backend);
+    const persistence = new TeamRunPersistenceCoordinator({
+      rootTeamRunId: input.tree.rootTeam.teamRunId,
+      teamMemoryDir: input.teamMemoryDir,
+      executionTreeStore: this.executionTreeStore,
+      taskRecordsStore: this.taskRecordsStore,
+      communicationStore: this.communicationStore,
+      enterPersistenceFailStop: () => root?.enterPersistenceFailStop(),
+    });
+    root = new RootTeamRun({
+      rootRun,
+      config: input.config,
+      tree: input.tree,
+      tasks: input.tasks,
+      messages: input.messages,
+      persistence,
+      publisher,
+      onTerminated: () => {
+        if (root) this.unregister(input.tree.rootTeam.teamRunId, root);
+      },
+    });
+    return root;
   }
 
-  private withMixedBackendKind(config: TeamRunConfig): TeamRunConfig {
-    if (config.teamBackendKind === TeamBackendKind.MIXED) {
-      return config;
+  private register(root: RootTeamRun): void {
+    if (!root.isActive() || this.activeRoots.has(root.teamRunId)) {
+      throw new Error(`Cannot register RootTeamRun '${root.teamRunId}'.`);
     }
-    return new TeamRunConfig({
-      teamBackendKind: TeamBackendKind.MIXED,
-      rootTeam: config.rootTeam,
-      handoffs: config.handoffs,
-    });
+    this.activeRoots.set(root.teamRunId, root);
+    this.notify({ teamRunId: root.teamRunId, isActive: true });
+  }
+
+  private unregister(rootTeamRunId: string, expected: RootTeamRun): boolean {
+    if (this.activeRoots.get(rootTeamRunId) !== expected) return false;
+    this.activeRoots.delete(rootTeamRunId);
+    this.notify({ teamRunId: rootTeamRunId, isActive: false });
+    return true;
+  }
+
+  private notify(snapshot: TeamRunLifecycleSnapshot): void {
+    for (const listener of [...(this.lifecycleListeners.get(snapshot.teamRunId) ?? [])]) {
+      try { listener(snapshot); } catch (error) { console.error("RootTeamRun lifecycle listener failed:", error); }
+    }
+  }
+
+  private teamMemoryDir(rootTeamRunId: string): string {
+    return this.memoryLayout.getTeamDirPath({ rootTeamRunId, ancestorTeamRunIds: [] });
+  }
+
+  private async requireCommitted(
+    write: Promise<import("../../run-history/store/team-run-file-commit-writer.js").TeamRunFileWriteResult>,
+    label: string,
+  ): Promise<void> {
+    const result = await write;
+    if (result.outcome === "committed") return;
+    throw new Error(`Initial TeamRun ${label} did not commit (${result.outcome}).`);
   }
 }
+
+export const getAgentTeamRunManager = (): AgentTeamRunManager => AgentTeamRunManager.getInstance();

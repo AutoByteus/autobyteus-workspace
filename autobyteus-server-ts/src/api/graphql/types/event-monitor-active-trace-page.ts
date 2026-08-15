@@ -1,5 +1,4 @@
 import { createUnionType, Field, Float, ID, Int, ObjectType } from "type-graphql";
-import { GraphQLJSON } from "graphql-scalars";
 
 @ObjectType("EventMonitorActiveTraceAttachment")
 class EventMonitorActiveTraceAttachmentObject {
@@ -30,7 +29,7 @@ class EventMonitorToolSummaryArgsObject {
 
 @ObjectType("EventMonitorApprovalTarget")
 class EventMonitorApprovalTargetObject {
-  @Field(() => GraphQLJSON) executionAddress!: unknown;
+  @Field(() => ID) agentRunId!: string;
 }
 
 @ObjectType("EventMonitorUserVisual")

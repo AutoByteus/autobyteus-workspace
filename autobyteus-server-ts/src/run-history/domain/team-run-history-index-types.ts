@@ -4,7 +4,7 @@ import type {
   TeamRunIndexFileRecord,
   TeamRunIndexRowRecord,
 } from "../store/team-run-history-index-record-types.js";
-import type { TeamRunAgentTeamNode } from "../../agent-team-execution/domain/team-run-config.js";
+import type { TeamRunExecutionTreeDto } from "@autobyteus/team-stream-contracts";
 
 export type TeamRunIndexRow = TeamRunIndexRowRecord;
 
@@ -36,5 +36,5 @@ export interface TeamRunHistoryItem {
   terminatedAt: string | null;
   isActive: boolean;
   members: TeamRunMemberHistoryItem[];
-  rootTeam: TeamRunAgentTeamNode;
+  rootTeam: TeamRunExecutionTreeDto["root_team"];
 }

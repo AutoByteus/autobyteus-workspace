@@ -1,0 +1,8 @@
+owned ports before cleanup
+COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    64435 normy   23u  IPv4 0x950f81bcbdeb4101      0t0  TCP 127.0.0.1:60311 (LISTEN)
+COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    66362 normy   13u  IPv4 0x6af113e6c73ebd9a      0t0  TCP 127.0.0.1:31311 (LISTEN)
+protected ports observation only
+operational_action=NONE
+protected_process_action=NONE

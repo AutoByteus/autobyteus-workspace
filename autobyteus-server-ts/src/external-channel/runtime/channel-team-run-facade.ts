@@ -1,7 +1,6 @@
 import type { ExternalMessageEnvelope } from "autobyteus-ts/external-channel/external-message-envelope.js";
 import { assertAgentTeamAddress, getAgentTeamAddressBasename, type AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
-import { createTeamExecutionAddress, type TeamExecutionAddress } from "../../agent-team-execution/domain/team-execution-address.js";
-import type { TeamRun } from "../../agent-team-execution/domain/team-run.js";
+import type { RootTeamRun } from "../../agent-team-execution/domain/root-team-run.js";
 import { getTeamRunService, type TeamRunService } from "../../agent-team-execution/services/team-run-service.js";
 import { getTeamLiveMessagePublisher, type TeamLiveMessagePublisher } from "../../services/agent-streaming/team-live-message-publisher.js";
 import type { ChannelBinding } from "../domain/models.js";
@@ -39,32 +38,29 @@ export class ChannelTeamRunFacade {
       const directTurnId = result.turnId?.trim() || null;
       const directAgentRunId = result.agentRunId?.trim() || null;
       const captured = directTurnId && directAgentRunId
-        ? (capture.dispose(), { turnId: directTurnId, executionAddress: createTeamExecutionAddress({ rootTeamRunId: run.config.rootTeam.teamRunId, memberAddress: target }) })
+        ? (capture.dispose(), { turnId: directTurnId, agentRunId: directAgentRunId })
         : await capture.promise;
       const turnId = captured?.turnId ?? directTurnId;
-      if (!turnId || !captured?.executionAddress) throw new Error(`Team run '${teamRunId}' accepted external channel dispatch without authoritative execution/turn correlation.`);
+      const agentRunId = captured?.agentRunId ?? directAgentRunId;
+      if (!turnId || !agentRunId) throw new Error(`Team run '${teamRunId}' accepted external channel dispatch without authoritative execution/turn correlation.`);
       await this.teams.recordRunActivity(run, { summary: envelope.content });
-      const agentRunId = directAgentRunId ?? this.agentRunId(run, captured.executionAddress.memberAddress);
       try {
         this.publisher.publishExternalUserMessage({
           teamRunId,
           envelope,
-          executionAddress: captured.executionAddress,
-          displayName: getAgentTeamAddressBasename(captured.executionAddress.memberAddress),
           agentRunId,
+          memberAddress: run.getAgentExecution(agentRunId)?.identity.memberAddress ?? target,
+          displayName: getAgentTeamAddressBasename(run.getAgentExecution(agentRunId)?.identity.memberAddress ?? target),
         });
       } catch (error) { console.warn(`Team run '${teamRunId}': failed to publish external input to the live stream.`, error); }
-      return { dispatchTargetType: "TEAM", teamRunId, executionAddress: captured.executionAddress, turnId, dispatchedAt: new Date() };
+      return { dispatchTargetType: "TEAM", teamRunId, agentRunId, turnId, dispatchedAt: new Date() };
     });
   }
 
-  private targetAddress(binding: ChannelBinding, run: TeamRun): AgentTeamAddress {
+  private targetAddress(binding: ChannelBinding, run: RootTeamRun): AgentTeamAddress {
     if (binding.targetMemberAddress) return assertAgentTeamAddress(binding.targetMemberAddress);
-    const coordinator = run.context.index.getTeam(run.context.teamAddress)?.coordinatorAddress;
+    const coordinator = run.getAgentExecution(run.getCoordinatorAgentRunId())?.identity.memberAddress;
     if (!coordinator) throw new Error(`Team run '${run.teamRunId}' has no coordinator.`);
     return coordinator;
-  }
-  private agentRunId(run: TeamRun, address: AgentTeamAddress): string | null {
-    return run.context.index.getAgent(address)?.agentRunId ?? null;
   }
 }

@@ -19,7 +19,7 @@ import {
   type TeamRunAgentTeamNode,
   type TeamRunNode,
 } from "../domain/team-run-config.js";
-import { createTeamExecutionAddress } from "../domain/team-execution-address.js";
+import type { TeamRunApplicationBinding } from "../domain/team-run-config.js";
 
 export type TeamAgentLaunchInput = Omit<TeamAgentLaunchSettings, "memberAddress" | "agentDefinitionId"> & {
   memberAddress: string;
@@ -52,6 +52,7 @@ export class TeamDefinitionTopologyPlanner {
     teamDefinitionId: string;
     teamRunId: string;
     memberConfigs: readonly TeamAgentLaunchInput[];
+    applicationBinding?: TeamRunApplicationBinding | null;
   }): Promise<TeamDefinitionTopologyPlan> {
     const teamDefinitionId = required(input.teamDefinitionId, "teamDefinitionId");
     const definition = await this.teamDefinitionService.getDefinitionById(teamDefinitionId);
@@ -69,7 +70,7 @@ export class TeamDefinitionTopologyPlanner {
       if (settingsByAddress.has(address)) throw new Error(`Duplicate launch settings for '${address}'.`);
       settingsByAddress.set(address, launch);
     }
-    const rootTeam = await this.compileTeamNode(graph, createAgentTeamAddress([]), input.teamRunId, input.teamRunId, settingsByAddress);
+    const rootTeam = await this.compileTeamNode(graph, createAgentTeamAddress([]), input.teamRunId, settingsByAddress);
     if (settingsByAddress.size !== projectAgentLaunchSettings(rootTeam).length) {
       const known = new Set(projectAgentLaunchSettings(rootTeam).map((item) => item.memberAddress));
       const extra = [...settingsByAddress.keys()].filter((address) => !known.has(address));
@@ -79,6 +80,7 @@ export class TeamDefinitionTopologyPlanner {
       teamBackendKind: TeamBackendKind.MIXED,
       rootTeam,
       handoffs: new TeamHandoffCompiler().compile(graph),
+      applicationBinding: input.applicationBinding ?? null,
     });
     return Object.freeze({
       teamDefinitionName: definition.name,
@@ -119,7 +121,6 @@ export class TeamDefinitionTopologyPlanner {
     graph: ResolvedTeamDefinitionGraph,
     address: AgentTeamAddress,
     teamRunId: string,
-    rootTeamRunId: string,
     settingsByAddress: ReadonlyMap<AgentTeamAddress, TeamAgentLaunchInput>,
   ): Promise<TeamRunAgentTeamNode> {
     const placement = address === "/" ? {} : { role: null, description: null };
@@ -130,13 +131,12 @@ export class TeamDefinitionTopologyPlanner {
       teamRunId: required(teamRunId, `teamRunId at '${address}'`),
       coordinatorAddress: createAgentTeamAddress(graph.coordinator.absolutePath),
       ...placement,
-      children: await Promise.all(graph.members.map((member) => this.compileMember(member, rootTeamRunId, settingsByAddress))),
+      children: await Promise.all(graph.members.map((member) => this.compileMember(member, settingsByAddress))),
     };
   }
 
   private async compileMember(
     member: ResolvedTeamDefinitionMember,
-    rootTeamRunId: string,
     settingsByAddress: ReadonlyMap<AgentTeamAddress, TeamAgentLaunchInput>,
   ): Promise<TeamRunNode> {
     const address = createAgentTeamAddress(member.absolutePath);
@@ -145,7 +145,6 @@ export class TeamDefinitionTopologyPlanner {
         member.team,
         address,
         generateTeamRunIdForDefinitionName(member.team.definition.name),
-        rootTeamRunId,
         settingsByAddress,
       );
     }
@@ -169,13 +168,6 @@ export class TeamDefinitionTopologyPlanner {
       autoExecuteTools: launch.autoExecuteTools,
       skillAccessMode: launch.skillAccessMode,
       workspaceRootPath: launch.workspaceRootPath,
-      applicationExecutionContext: launch.applicationExecutionContext ? {
-        ...launch.applicationExecutionContext,
-        producer: {
-          ...launch.applicationExecutionContext.producer,
-          executionAddress: createTeamExecutionAddress({ rootTeamRunId, memberAddress: address }),
-        },
-      } : null,
     };
   }
 }

@@ -1,0 +1,165 @@
+status	path	exists
+M 	autobyteus-server-ts/tests/fixtures/current-team-run-fixtures.ts	true
+M 	autobyteus-server-ts/tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts	true
+M 	autobyteus-server-ts/tests/integration/agent-team-execution/mixed-team-run-backend-factory.integration.test.ts	true
+M 	autobyteus-server-ts/tests/integration/agent-team-execution/mixed-team-run-backend.integration.test.ts	true
+M 	autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts	true
+M 	autobyteus-server-ts/tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts	true
+M 	autobyteus-server-ts/tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts	true
+M 	autobyteus-server-ts/tests/integration/agent-team-execution/team-run-service.integration.test.ts	true
+M 	autobyteus-server-ts/tests/unit/agent-collaboration/collaboration-logical-address.test.ts	true
+M 	autobyteus-server-ts/tests/unit/agent-execution/agent-run.test.ts	true
+ M	autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts	true
+ M	autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-runtime-tool-exposure.test.ts	true
+ M	autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts	true
+ M	autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-ordered-tool-boundary-tracker.test.ts	true
+ M	autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts	true
+??	autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts	true
+M 	autobyteus-server-ts/tests/unit/agent-execution/prompt/carpenter-prompt-composer.test.ts	true
+M 	autobyteus-server-ts/tests/unit/agent-memory/agent-memory-layout.test.ts	true
+M 	autobyteus-server-ts/tests/unit/agent-memory/agent-memory-location-service.test.ts	true
+M 	autobyteus-server-ts/tests/unit/agent-memory/team-memory-explorer-service.test.ts	true
+M 	autobyteus-server-ts/tests/unit/agent-team-execution/agent-team-run-manager-lifecycle.test.ts	true
+D 	autobyteus-server-ts/tests/unit/agent-team-execution/backends/mixed/conversation-target/mixed-conversation-target-router.test.ts	false
+M 	autobyteus-server-ts/tests/unit/agent-team-execution/inter-agent-message-delivery-intent-builder.test.ts	true
+M 	autobyteus-server-ts/tests/unit/agent-team-execution/inter-agent-message-delivery.test.ts	true
+M 	autobyteus-server-ts/tests/unit/agent-team-execution/inter-agent-message-router-claude-input-admission.test.ts	true
+M 	autobyteus-server-ts/tests/unit/agent-team-execution/inter-agent-message-runtime-builders.test.ts	true
+MM	autobyteus-server-ts/tests/unit/agent-team-execution/member-collaboration-instruction-provider-parity.test.ts	true
+M 	autobyteus-server-ts/tests/unit/agent-team-execution/member-team-context-builder.test.ts	true
+M 	autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-agent-tools-mcp-cleanup.test.ts	true
+M 	autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-memory-invariant.test.ts	true
+M 	autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-task-notification-projection.test.ts	true
+M 	autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-termination.test.ts	true
+M 	autobyteus-server-ts/tests/unit/agent-team-execution/mixed-sub-team-member-handle.test.ts	true
+D 	autobyteus-server-ts/tests/unit/agent-team-execution/mixed-task-team-member-handle-termination.test.ts	false
+D 	autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-event-bridge.test.ts	false
+M 	autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-manager.test.ts	true
+M 	autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-member-registry-task-agent-memory.test.ts	true
+M 	autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-run-backend-factory.test.ts	true
+M 	autobyteus-server-ts/tests/unit/agent-team-execution/services/team-member-input-event-builder.test.ts	true
+D 	autobyteus-server-ts/tests/unit/agent-team-execution/sub-team-active-run-directory.test.ts	false
+D 	autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-address-builder.test.ts	false
+??	autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-command-queue.test.ts	true
+??	autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-current-invariants.test.ts	true
+D 	autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-records-service.test.ts	false
+M 	autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-reference-content-service.test.ts	true
+D 	autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-reference-file.test.ts	false
+D 	autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-service.test.ts	false
+D 	autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-settlement-coordinator.test.ts	false
+D 	autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-target-mapper.test.ts	false
+D 	autobyteus-server-ts/tests/unit/agent-team-execution/task-team-active-run-directory.test.ts	false
+D 	autobyteus-server-ts/tests/unit/agent-team-execution/task-team-settlement-coordinator.test.ts	false
+M 	autobyteus-server-ts/tests/unit/agent-team-execution/team-command-start-status.test.ts	true
+D 	autobyteus-server-ts/tests/unit/agent-team-execution/team-logical-placement-resolver.test.ts	false
+M 	autobyteus-server-ts/tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts	true
+D 	autobyteus-server-ts/tests/unit/agent-team-execution/team-member-delivery-coordinator.test.ts	false
+D 	autobyteus-server-ts/tests/unit/agent-team-execution/team-run-launch-identity-assignment.test.ts	false
+D 	autobyteus-server-ts/tests/unit/agent-team-execution/team-run-metadata-mapper.test.ts	false
+??	autobyteus-server-ts/tests/unit/agent-team-execution/team-run-persistence-coordinator.test.ts	true
+D 	autobyteus-server-ts/tests/unit/agent-team-execution/team-run-runtime-context-support.test.ts	false
+M 	autobyteus-server-ts/tests/unit/agent-team-execution/team-run-service.test.ts	true
+M 	autobyteus-server-ts/tests/unit/agent-team-execution/team-run.test.ts	true
+ M	autobyteus-server-ts/tests/unit/agent-tools/mcp/agent-tool-mcp-session-service.test.ts	true
+ M	autobyteus-server-ts/tests/unit/agent-tools/task-delegation/task-delegation-autobyteus-context.test.ts	true
+M 	autobyteus-server-ts/tests/unit/agent-tools/task-delegation/task-delegation-runtime-descriptions.test.ts	true
+ M	autobyteus-server-ts/tests/unit/agent-tools/task-delegation/task-delegation-tool-run-router.test.ts	true
+ M	autobyteus-server-ts/tests/unit/agent-tools/team-communication/get-handoff-rules.test.ts	true
+ M	autobyteus-server-ts/tests/unit/agent-tools/team-communication/send-message-to.test.ts	true
+ M	autobyteus-server-ts/tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts	true
+ M	autobyteus-server-ts/tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts	true
+ M	autobyteus-server-ts/tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts	true
+??	autobyteus-server-ts/tests/unit/app-data-migrations/team-run-execution-tree-v1-app-data-migration.test.ts	true
+ M	autobyteus-server-ts/tests/unit/app-data-migrations/team-run-metadata-member-tree-migration.test.ts	true
+M 	autobyteus-server-ts/tests/unit/run-history/services/run-file-change-projection-service.test.ts	true
+M 	autobyteus-server-ts/tests/unit/run-history/services/team-run-history-catalog-service.test.ts	true
+M 	autobyteus-server-ts/tests/unit/run-history/services/team-run-history-service.test.ts	true
+D 	autobyteus-server-ts/tests/unit/run-history/services/team-run-metadata-flattener.test.ts	false
+D 	autobyteus-server-ts/tests/unit/run-history/store/team-run-metadata-store.test.ts	false
+M 	autobyteus-server-ts/tests/unit/run-history/team-member-run-view-projection-service.test.ts	true
+??	autobyteus-server-ts/tests/unit/run-history/team-run-file-commit-writer.test.ts	true
+D 	autobyteus-server-ts/tests/unit/run-history/team-run-metadata-service.test.ts	false
+??	autobyteus-server-ts/tests/unit/run-history/team-run-v1-package-schema.test.ts	true
+M 	autobyteus-server-ts/tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts	true
+D 	autobyteus-server-ts/tests/unit/services/agent-streaming/team-conversation-target-address-parser.test.ts	false
+??	autobyteus-server-ts/tests/unit/services/agent-streaming/team-execution-view-projector.test.ts	true
+M 	autobyteus-server-ts/tests/unit/services/agent-streaming/team-live-message-publisher.test.ts	true
+D 	autobyteus-server-ts/tests/unit/services/agent-streaming/team-run-event-websocket-message-mapper.test.ts	false
+D 	autobyteus-server-ts/tests/unit/services/agent-streaming/team-runtime-snapshot-service.test.ts	false
+??	autobyteus-server-ts/tests/unit/services/team-communication/team-communication-message-append-plan-current.test.ts	true
+ M	autobyteus-server-ts/tests/unit/services/team-communication/team-communication-service.test.ts	true
+??	autobyteus-server-ts/tests/unit/token-usage/token-usage-execution-identity-migration-repository.test.ts	true
+ M	autobyteus-web/components/agentInput/__tests__/AgentUserInputTextArea.focusedInterrupt.e2e.spec.ts	true
+ M	autobyteus-web/components/agentInput/__tests__/ContextFilePathInputArea.spec.ts	true
+ M	autobyteus-web/components/applications/__tests__/ApplicationLaunchSetupPanel.spec.ts	true
+ M	autobyteus-web/components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts	true
+ M	autobyteus-web/components/memory/__tests__/AgentTeamMemoryDetail.spec.ts	true
+ M	autobyteus-web/components/memory/__tests__/MemoryHome.spec.ts	true
+ M	autobyteus-web/components/memory/__tests__/MemoryInspector.spec.ts	true
+ M	autobyteus-web/components/mobile/__tests__/MobileArtifacts.spec.ts	true
+ M	autobyteus-web/components/mobile/__tests__/MobileContextSelectionRegression.spec.ts	true
+ M	autobyteus-web/components/mobile/__tests__/MobileTeamMessages.spec.ts	true
+ M	autobyteus-web/components/settings/__tests__/CodexFullAccessCard.spec.ts	true
+ M	autobyteus-web/components/workspace/config/__tests__/MemberOverrideItem.spec.ts	true
+ M	autobyteus-web/components/workspace/config/__tests__/RunConfigPanel.spec.ts	true
+ M	autobyteus-web/components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts	true
+ M	autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts	true
+ M	autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts	true
+ M	autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts	true
+ M	autobyteus-web/components/workspace/running/__tests__/RunningAgentsPanel.spec.ts	true
+ M	autobyteus-web/components/workspace/running/__tests__/RunningTeamGroup.spec.ts	true
+ M	autobyteus-web/components/workspace/running/__tests__/RunningTeamRow.spec.ts	true
+ M	autobyteus-web/components/workspace/skill-improvement/__tests__/SkillImprovementComposerCta.spec.ts	true
+ M	autobyteus-web/components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts	true
+ M	autobyteus-web/components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts	true
+ M	autobyteus-web/components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts	true
+ M	autobyteus-web/components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts	true
+ M	autobyteus-web/components/workspace/team/__tests__/TeamOverviewPanel.spec.ts	true
+ M	autobyteus-web/components/workspace/team/__tests__/TeamWorkspaceView.spec.ts	true
+ M	autobyteus-web/components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts	true
+ M	autobyteus-web/composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts	true
+ M	autobyteus-web/composables/__tests__/useWorkspaceHistoryTreeState.spec.ts	true
+ M	autobyteus-web/composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts	true
+ M	autobyteus-web/composables/mobile/__tests__/useMobileWorkCatalog.spec.ts	true
+ M	autobyteus-web/composables/workspace/__tests__/useWorkspaceRouteSelection.spec.ts	true
+ M	autobyteus-web/graphql/queries/__tests__/runHistoryQueries.spec.ts	true
+ M	autobyteus-web/pages/__tests__/memory.spec.ts	true
+ M	autobyteus-web/services/agentStreaming/__tests__/AgentStreamingService.spec.ts	true
+ M	autobyteus-web/services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts	true
+ M	autobyteus-web/services/agentStreaming/__tests__/TeamStreamingService.spec.ts	true
+ D	autobyteus-web/services/agentStreaming/__tests__/teamStreamMemberContextResolver.spec.ts	false
+ D	autobyteus-web/services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts	false
+ M	autobyteus-web/services/agentStreaming/handlers/__tests__/toolLifecycleParsers.spec.ts	true
+ M	autobyteus-web/services/eventMonitor/__tests__/recentEventMonitorPresentationWitness.spec.ts	true
+ M	autobyteus-web/services/runHydration/__tests__/taskDelegationGraphqlDtoProjection.spec.ts	true
+ M	autobyteus-web/services/runHydration/__tests__/teamCommunicationHydrationService.spec.ts	true
+ M	autobyteus-web/services/runHydration/__tests__/teamRunContextHydrationService.spec.ts	true
+ M	autobyteus-web/services/runOpen/__tests__/agentRunOpenCoordinator.integration.spec.ts	true
+ M	autobyteus-web/services/runOpen/__tests__/agentRunOpenCoordinator.spec.ts	true
+ M	autobyteus-web/services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts	true
+ M	autobyteus-web/services/runRecovery/__tests__/activeRunRecoveryCoordinator.spec.ts	true
+D 	autobyteus-web/services/teamExecution/__tests__/teamExecutionState.task-lifecycle.spec.ts	false
+??	autobyteus-web/services/teamExecution/__tests__/teamExecutionViewState.spec.ts	true
+ M	autobyteus-web/services/workspace/__tests__/workspaceNavigationService.spec.ts	true
+ M	autobyteus-web/stores/__tests__/activeContextStore.spec.ts	true
+ M	autobyteus-web/stores/__tests__/agentRunStore.spec.ts	true
+ M	autobyteus-web/stores/__tests__/agentTeamContextsStore.spec.ts	true
+ M	autobyteus-web/stores/__tests__/agentTeamRunStore.spec.ts	true
+ M	autobyteus-web/stores/__tests__/mobileWorkStore.spec.ts	true
+D 	autobyteus-web/stores/__tests__/runHistoryMetadata.spec.ts	false
+ M	autobyteus-web/stores/__tests__/runHistoryNavigationProjection.spec.ts	true
+ M	autobyteus-web/stores/__tests__/runHistoryStore.spec.ts	true
+ M	autobyteus-web/stores/__tests__/runHistoryTeamExecutionRows.spec.ts	true
+D 	autobyteus-web/stores/__tests__/runHistoryTeamMemberProjectionHydrator.spec.ts	false
+ M	autobyteus-web/stores/__tests__/runHistoryTeamRows.spec.ts	true
+D 	autobyteus-web/stores/__tests__/teamCommunicationStore.spec.ts	false
+ M	autobyteus-web/stores/__tests__/tokenUsageMeterStore.spec.ts	true
+ M	autobyteus-web/stores/__tests__/tokenUsageStatistics.spec.ts	true
+ M	autobyteus-web/tests/integration/workspace-history-draft-send.integration.test.ts	true
+ M	autobyteus-web/tests/stores/memoryInspectorStore.test.ts	true
+ M	autobyteus-web/types/agent/__tests__/AgentContext.spec.ts	true
+D 	autobyteus-web/utils/__tests__/teamActiveExecutionMembers.spec.ts	false
+D 	autobyteus-web/utils/__tests__/teamConversationTargetAddress.spec.ts	false
+ M	autobyteus-web/utils/__tests__/teamDelegatedTaskEntries.spec.ts	true
+ M	autobyteus-web/utils/__tests__/teamRunConfigUtils.spec.ts	true
+ M	autobyteus-web/utils/__tests__/toolCardPresentation.spec.ts	true

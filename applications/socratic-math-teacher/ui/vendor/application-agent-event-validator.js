@@ -1,14 +1,7 @@
 const isRecord = (value) => Boolean(value) && typeof value === "object" && !Array.isArray(value);
 const isString = (value) => typeof value === "string";
 const isNullableString = (value) => value === null || isString(value);
-const isStringArray = (value) => Array.isArray(value) && value.every(isString);
-const isCanonicalAddress = (value) => typeof value === "string" && /^\/(?:[^/]+(?:\/[^/]+)*)?$/.test(value);
-const isTeamExecutionAddress = (value) => exact(value, {
-    rootTeamRunId: (runId) => typeof runId === "string" && runId.trim().length > 0,
-    taskTeamRunIds: (runIds) => isStringArray(runIds) && runIds.every((runId) => runId.trim().length > 0),
-    memberAddress: isCanonicalAddress,
-    taskAgentRunId: isNullableString,
-});
+const isNonEmptyString = (value) => typeof value === "string" && value.trim().length > 0;
 const isOneOf = (...allowed) => (value) => typeof value === "string" && allowed.includes(value);
 const exact = (value, shape) => {
     if (!isRecord(value))
@@ -29,11 +22,11 @@ export const isApplicationAgentTargetAddress = (value) => {
         return exact(target, { kind: isOneOf("AGENT_TEAM_RUN") });
     return target.kind === "AGENT_TEAM_MEMBER" && exact(target, {
         kind: isOneOf("AGENT_TEAM_MEMBER"),
-        memberAddress: isCanonicalAddress,
+        agentRunId: isNonEmptyString,
     });
 };
 const isProducer = (value) => exact(value, {
-    executionAddress: isTeamExecutionAddress,
+    agentRunId: isNonEmptyString,
     displayName: isNullableString,
     runtimeKind: isOneOf("AGENT", "AGENT_TEAM_MEMBER"),
 });

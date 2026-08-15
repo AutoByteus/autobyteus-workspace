@@ -5,17 +5,14 @@ import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useTokenUsageMeterStore } from '~/stores/tokenUsageMeterStore';
 import {
   buildTokenUsageTeamMemberIdentities,
-  resolveFocusedTeamExecutionAddress,
+  resolveFocusedTeamAgentRunId,
   type TokenUsageTeamMemberIdentity,
 } from '~/composables/tokenUsageTeamMemberRows';
 import type { TokenUsageRunSummary } from '~/types/tokenUsageMeter';
-import {
-  serializeTeamExecutionAddress,
-  type TeamExecutionAddress,
-} from '~/types/agent/TeamExecutionAddress';
 
 export interface TokenUsageTeamMemberRow {
-  executionAddress: TeamExecutionAddress;
+  agentRunId: string;
+  memberAddress: string;
   displayName: string;
   isFocused: boolean;
   summary: TokenUsageRunSummary | null;
@@ -27,7 +24,7 @@ const fetchErrorMessage = (error: unknown): string => (
   error instanceof Error ? error.message : String(error || 'Unknown token usage loading error')
 );
 
-const memberFetchKey = (executionAddress: TeamExecutionAddress): string => serializeTeamExecutionAddress(executionAddress);
+const memberFetchKey = (agentRunId: string): string => agentRunId;
 
 export function useTokenUsageWorkspaceScope() {
   const selectionStore = useAgentSelectionStore();
@@ -45,35 +42,35 @@ export function useTokenUsageWorkspaceScope() {
 
   const isTeamContext = computed(() => selectionStore.selectedType === 'team');
   const activeTeamContext = computed(() => isTeamContext.value ? teamContextsStore.activeTeamContext : null);
-  const activeTeamRunId = computed(() => activeTeamContext.value?.executions.getRootTeamRunId() ?? null);
+  const activeTeamRunId = computed(() => activeTeamContext.value?.view.getRootTeamRunId() ?? null);
   const activeRunId = computed(() => activeContextStore.activeAgentContext?.state.runId ?? null);
   const selectedAgentRunId = computed(() => (
     selectionStore.selectedType === 'agent' ? activeRunId.value : null
   ));
 
-  const focusedExecutionAddress = computed(() => resolveFocusedTeamExecutionAddress(activeTeamContext.value));
+  const focusedAgentRunId = computed(() => resolveFocusedTeamAgentRunId(activeTeamContext.value));
 
   const teamMemberIdentities = computed<TokenUsageTeamMemberIdentity[]>(() => buildTokenUsageTeamMemberIdentities({
     team: activeTeamContext.value,
-    focusedExecutionAddress: focusedExecutionAddress.value,
+    focusedAgentRunId: focusedAgentRunId.value,
   }));
 
   const teamMemberIdentityKey = computed(() => teamMemberIdentities.value
     .map((identity) => [
       activeTeamRunId.value || '',
-      serializeTeamExecutionAddress(identity.executionAddress),
+      identity.agentRunId,
       identity.isFocused ? 'focused' : '',
     ].join(':'))
     .join('|'));
 
   const getMemberSummary = (identity: TokenUsageTeamMemberIdentity): TokenUsageRunSummary | null => {
-    return meterStore.getTeamExecutionSummary(identity.executionAddress)
-      ?? memberSummaryByKey[memberFetchKey(identity.executionAddress)]
+    return meterStore.getTeamAgentSummary(identity.agentRunId)
+      ?? memberSummaryByKey[memberFetchKey(identity.agentRunId)]
       ?? null;
   };
 
   const teamRows = computed<TokenUsageTeamMemberRow[]>(() => teamMemberIdentities.value.map((identity) => {
-    const key = memberFetchKey(identity.executionAddress);
+    const key = memberFetchKey(identity.agentRunId);
     return {
       ...identity,
       summary: getMemberSummary(identity),
@@ -151,7 +148,7 @@ export function useTokenUsageWorkspaceScope() {
 
   const hydrateTeamMemberSummary = async (identity: TokenUsageTeamMemberIdentity): Promise<void> => {
     const teamRunId = activeTeamRunId.value;
-    const key = memberFetchKey(identity.executionAddress);
+    const key = memberFetchKey(identity.agentRunId);
     if (memberLoadingByKey[key] || getMemberSummary(identity)) {
       return;
     }
@@ -165,7 +162,7 @@ export function useTokenUsageWorkspaceScope() {
         try {
           summary = await meterStore.fetchTeamMemberSummary({
             teamRunId,
-            executionAddress: identity.executionAddress,
+            agentRunId: identity.agentRunId,
           });
         } catch (error) {
           finalError = error;

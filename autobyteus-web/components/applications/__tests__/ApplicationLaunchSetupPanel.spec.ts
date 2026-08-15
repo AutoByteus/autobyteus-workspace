@@ -82,15 +82,15 @@ const ApplicationExecutionResourceSlotEditorStub = defineComponent({
           },
           memberProfiles: [
             {
-              memberRouteKey: 'researcher',
-              memberName: 'researcher',
+              memberAddress: '/researcher',
+              displayName: 'researcher',
               agentDefinitionId: 'bundle-agent__researcher',
               runtimeKind: '',
               llmModelIdentifier: '',
             },
             {
-              memberRouteKey: 'writer',
-              memberName: 'writer',
+              memberAddress: '/writer',
+              displayName: 'writer',
               agentDefinitionId: 'bundle-agent__writer',
               runtimeKind: 'lmstudio',
               llmModelIdentifier: 'qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234',
@@ -224,13 +224,13 @@ describe('ApplicationLaunchSetupPanel', () => {
             },
             memberProfiles: [
               {
-                memberRouteKey: 'researcher',
-                memberName: 'researcher',
+                memberAddress: '/researcher',
+                displayName: 'researcher',
                 agentDefinitionId: 'bundle-agent__researcher',
               },
               {
-                memberRouteKey: 'writer',
-                memberName: 'writer',
+                memberAddress: '/writer',
+                displayName: 'writer',
                 agentDefinitionId: 'bundle-agent__writer',
                 runtimeKind: 'lmstudio',
                 llmModelIdentifier: 'qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234',
@@ -298,13 +298,13 @@ describe('ApplicationLaunchSetupPanel', () => {
         },
         memberProfiles: [
           {
-            memberRouteKey: 'researcher',
-            memberName: 'researcher',
+            memberAddress: '/researcher',
+            displayName: 'researcher',
             agentDefinitionId: 'bundle-agent__researcher',
           },
           {
-            memberRouteKey: 'writer',
-            memberName: 'writer',
+            memberAddress: '/writer',
+            displayName: 'writer',
             agentDefinitionId: 'bundle-agent__writer',
             runtimeKind: 'lmstudio',
             llmModelIdentifier: 'qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234',

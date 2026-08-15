@@ -1,0 +1,47 @@
+{
+  "teamRunId": "classroom_simulation_team_4d50b4ab18db415ab00c87d2abe13c4b",
+  "agentRunId": "student_135504b9bf9846d39acbcc29f1369a9a",
+  "durationMs": 300041,
+  "sent": true,
+  "terminalAt": null,
+  "websocketError": "timeout after 300000ms",
+  "messageCount": 3,
+  "typeCounts": {
+    "CONNECTED": 1,
+    "TEAM_EXECUTION_VIEW_SNAPSHOT": 1,
+    "TEAM_RUN_LIFECYCLE": 1
+  },
+  "tasks": [
+    {
+      "taskId": "task_563258be71814f66bcf16599614cf47e",
+      "delegatorAgentRunId": "professor_e6f3f6ce5c0147fd95ed0444016c35cb",
+      "recipientAddress": "/student",
+      "targetAgentRunId": "student_135504b9bf9846d39acbcc29f1369a9a",
+      "targetTeamRunId": null,
+      "status": "active",
+      "description": "Solve 19 + 23, show concise arithmetic, and submit the result to the delegator.",
+      "createdAt": "2026-08-15T15:25:03.783Z",
+      "referenceFiles": [],
+      "updates": []
+    }
+  ],
+  "communications": [
+    {
+      "messageId": "teammsg_ufdZuzDyprp4RV5ZLsNOEhqlmbGHnsRz",
+      "senderAgentRunId": "student_135504b9bf9846d39acbcc29f1369a9a",
+      "receiverAgentRunId": "professor_e6f3f6ce5c0147fd95ed0444016c35cb",
+      "content": "I solved the addition concisely. The answer is in /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-005/live/workspaces/classroom-autobyteus/classroom-runs/addition-19-23/student-answer.md.",
+      "messageType": "answer",
+      "createdAt": "2026-08-15T15:25:09.184Z",
+      "referenceFiles": [
+        {
+          "referenceId": "fe93fc0690efe30b90fa71063ba581e4f69c33de83d85a484b1a8a4e0910f886",
+          "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-005/live/workspaces/classroom-autobyteus/classroom-runs/addition-19-23/student-answer.md",
+          "type": "file",
+          "createdAt": "2026-08-15T15:25:09.184Z",
+          "updatedAt": "2026-08-15T15:25:09.184Z"
+        }
+      ]
+    }
+  ]
+}

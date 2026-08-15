@@ -1,6 +1,5 @@
 import type { TeamMemberFocusTarget, TeamMemberTreeRow, TeamTreeNode } from '~/stores/runHistoryTypes';
 import type { RunTreeRow } from '~/utils/runTreeProjection';
-import { createTeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 
 interface RunHistorySelectionStoreLike {
   selectTreeRun: (row: RunTreeRow | TeamMemberFocusTarget) => Promise<void>;
@@ -11,7 +10,7 @@ interface RunHistorySelectionStoreLike {
 }
 
 interface SelectionStoreLike {
-  selectedType: 'agent' | 'team' | null;
+  selectedType: 'agent' | 'team' | 'team_draft' | null;
   selectedRunId: string | null;
   selectRun: (runId: string, type: 'agent' | 'team') => void;
 }
@@ -24,7 +23,7 @@ export const useWorkspaceHistorySelectionActions = (params: {
   expandTeamMemberAncestors?: (
     workspaceId: string,
     teamRunId: string,
-    executionAddress: TeamMemberFocusTarget['executionAddress'],
+    agentRunId: string,
   ) => boolean;
   emitRunSelected: (payload: { type: 'agent' | 'team'; runId: string }) => void;
   emitRunCreated: (payload: { type: 'agent'; definitionId: string }) => void;
@@ -33,18 +32,16 @@ export const useWorkspaceHistorySelectionActions = (params: {
     rows.flatMap((row) => [row, ...flattenTeamRows(row.children)]);
 
   const resolveTeamTargetMember = (team: TeamTreeNode): TeamMemberTreeRow | null => {
-    const focusedMemberKey = team.focusedExecutionAddress.memberAddress;
+    const focusedAgentRunId = team.focusedAgentRunId;
     const rows = flattenTeamRows(team.rootTeam.children.length > 0 ? team.rootTeam.children : team.members);
-    if (focusedMemberKey) {
-      const focusedMember = rows.find((member) =>
-        member.memberAddress === focusedMemberKey,
-      );
+    if (focusedAgentRunId) {
+      const focusedMember = rows.find((member) => member.agentRunId === focusedAgentRunId);
       if (focusedMember) {
         return focusedMember;
       }
     }
 
-    return rows[0] ?? null;
+    return rows.find((row) => row.agentRunId) ?? null;
   };
 
   const onSelectRun = async (run: RunTreeRow): Promise<void> => {
@@ -75,17 +72,14 @@ export const useWorkspaceHistorySelectionActions = (params: {
       return;
     }
 
-    const targetAddress = createTeamExecutionAddress({
-      rootTeamRunId: targetMember.teamRunId,
-      memberAddress: targetMember.memberAddress,
-    });
-    params.expandTeamMemberAncestors?.(workspaceId, team.teamRunId, targetAddress);
+    if (!targetMember.agentRunId) return;
+    params.expandTeamMemberAncestors?.(workspaceId, team.teamRunId, targetMember.agentRunId);
 
     try {
       await params.runHistoryStore.selectTreeRun({
         teamRunId: targetMember.teamRunId,
         memberAddress: targetMember.memberAddress,
-        executionAddress: targetAddress,
+        agentRunId: targetMember.agentRunId,
       });
       params.selectionStore.selectRun(team.teamRunId, 'team');
       params.emitRunSelected({ type: 'team', runId: team.teamRunId });
@@ -100,7 +94,7 @@ export const useWorkspaceHistorySelectionActions = (params: {
   ): Promise<void> => {
     try {
       params.setTeamExpanded(member.teamRunId, true);
-      params.expandTeamMemberAncestors?.(workspaceId, member.teamRunId, member.executionAddress);
+      params.expandTeamMemberAncestors?.(workspaceId, member.teamRunId, member.agentRunId);
       await params.runHistoryStore.selectTreeRun(member);
       params.emitRunSelected({ type: 'team', runId: member.teamRunId });
     } catch (error) {

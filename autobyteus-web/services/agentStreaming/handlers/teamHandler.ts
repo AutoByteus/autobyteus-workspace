@@ -2,15 +2,13 @@
  * Team-specific event handlers.
  * 
  * Layer 3 of the agent streaming architecture - handles team-only events:
- * INTER_AGENT_MESSAGE, TEAM_COMMUNICATION_MESSAGE
+ * INTER_AGENT_MESSAGE
  */
 
 import type { AgentContext } from '~/types/agent/AgentContext';
 import type { InterAgentMessageSegment } from '~/types/segments';
 import type { InterAgentMessagePayload } from '../protocol/messageTypes';
-import type { TeamCommunicationProjectionPayload } from '~/stores/teamCommunicationStore';
 import { findOrCreateAIMessage } from './segmentHandler';
-import { useTeamCommunicationStore } from '~/stores/teamCommunicationStore';
 
 /**
  * Handle INTER_AGENT_MESSAGE event.
@@ -53,13 +51,4 @@ export function handleInterAgentMessage(
   
   aiMessage.segments.push(segment);
   return true;
-}
-
-/**
- * Handle TEAM_COMMUNICATION_MESSAGE event.
- */
-export function handleTeamCommunicationMessage(
-  payload: TeamCommunicationProjectionPayload,
-): void {
-  useTeamCommunicationStore().upsertFromBackendPayload(payload);
 }

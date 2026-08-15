@@ -9,7 +9,6 @@ import type {
   ToolLogPayload,
 } from '../protocol/messageTypes';
 import type { ToolApprovalTarget } from '~/types/segments';
-import { parseTeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 
 export interface ParsedToolLifecycleBase {
   invocationId: string;
@@ -92,13 +91,6 @@ const normalizeArguments = (value: unknown): Record<string, any> => {
     }
   }
   return {};
-};
-
-export const parseToolApprovalTarget = (payload: {
-  execution_address?: unknown;
-}): ToolApprovalTarget | null => {
-  if (!payload.execution_address) return null;
-  try { return { executionAddress: parseTeamExecutionAddress(payload.execution_address) }; } catch { return null; }
 };
 
 const parseBase = (

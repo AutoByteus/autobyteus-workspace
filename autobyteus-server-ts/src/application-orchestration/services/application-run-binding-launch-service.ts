@@ -9,14 +9,13 @@ import type {
   ApplicationTeamMemberLaunchConfig,
   ApplicationTeamRunLaunch,
 } from "@autobyteus/application-sdk-contracts";
-import { getAgentTeamAddressBasename, type AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
-import { createTeamExecutionAddress } from "../../agent-team-execution/domain/team-execution-address.js";
-import type { TeamRunAgentNode } from "../../agent-team-execution/domain/team-run-config.js";
+import { getAgentTeamAddressBasename } from "../../agent-collaboration/domain/agent-team-address.js";
+import type { ConfiguredAgentExecution, ConfiguredMemberExecution } from "../../agent-team-execution/domain/team-run-execution-tree.js";
 import { TeamRunService, getTeamRunService, type TeamRunMemberConfigInput } from "../../agent-team-execution/services/team-run-service.js";
 import { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import { AgentRunService, getAgentRunService } from "../../agent-execution/services/agent-run-service.js";
 import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
-import type { ApplicationAgentBindingRecord, ApplicationExecutionContext } from "../domain/models.js";
+import type { ApplicationAgentBindingRecord } from "../domain/models.js";
 import { ApplicationRunBindingStore } from "../stores/application-run-binding-store.js";
 import { ApplicationRunLookupStore } from "../stores/application-run-lookup-store.js";
 import { ApplicationExecutionResourceResolver, type ResolvedApplicationExecutionResource } from "./application-execution-resource-resolver.js";
@@ -30,12 +29,13 @@ const skillMode = (value: SkillAccessMode | string | null | undefined): SkillAcc
 const collectRunIds = (binding: ApplicationAgentBindingRecord): string[] => binding.runtime.subject === "AGENT_RUN"
   ? [binding.runtime.agentRunId]
   : [binding.runtime.teamRunId, ...binding.runtime.members.map((member) => member.agentRunId)];
-const leafAgents = (root: import("../../agent-team-execution/domain/team-run-config.js").TeamRunAgentTeamNode): TeamRunAgentNode[] => {
-  const result: TeamRunAgentNode[] = [];
-  const visit = (node: import("../../agent-team-execution/domain/team-run-config.js").TeamRunNode): void => {
-    if (node.kind === "agent") result.push(node); else node.children.forEach(visit);
-  };
-  root.children.forEach(visit); return result;
+const configuredAgents = (members: readonly ConfiguredMemberExecution[]): ConfiguredAgentExecution[] => {
+  const result: ConfiguredAgentExecution[] = [];
+  for (const member of members) {
+    if ("agentRunId" in member) result.push(member);
+    else result.push(...configuredAgents(member.members));
+  }
+  return result;
 };
 
 export class ApplicationRunBindingLaunchService {
@@ -73,11 +73,6 @@ export class ApplicationRunBindingLaunchService {
   private async startAgent(seed: { applicationId: string; bindingId: string; launchRequestId: string }, ref: ApplicationExecutionResourceRef, resource: ResolvedApplicationExecutionResource, launch: ApplicationAgentRunLaunch): Promise<ApplicationAgentBindingRecord> {
     const definition = await this.definitions.getAgentDefinitionById(resource.definitionId);
     const displayName = definition?.name?.trim() || resource.name;
-    const context: ApplicationExecutionContext = {
-      applicationId: seed.applicationId,
-      bindingId: seed.bindingId,
-      producer: { executionAddress: createTeamExecutionAddress({ rootTeamRunId: seed.bindingId, memberAddress: "/" }), displayName, runtimeKind: "AGENT" },
-    };
     const run = await this.agents.createAgentRun({
       agentDefinitionId: resource.definitionId,
       workspaceRootPath: launch.workspaceRootPath,
@@ -87,7 +82,12 @@ export class ApplicationRunBindingLaunchService {
       llmConfig: launch.llmConfig ?? null,
       skillAccessMode: skillMode(launch.skillAccessMode),
       runtimeKind: launch.runtimeKind ?? RuntimeKind.AUTOBYTEUS,
-      applicationExecutionContext: context,
+      applicationBinding: {
+        applicationId: seed.applicationId,
+        bindingId: seed.bindingId,
+        displayName,
+        runtimeKind: "AGENT",
+      },
     });
     const now = new Date().toISOString();
     const binding: ApplicationAgentBindingRecord = {
@@ -110,12 +110,13 @@ export class ApplicationRunBindingLaunchService {
           llmConfig: launch.launchPreset.llmConfig ?? null,
         } })
       : launch.memberConfigs.map((config) => this.explicitConfig(config));
-    const withContexts = configs.map((config) => ({
-      ...config,
-      applicationExecutionContext: this.teamContext(seed, teamRunId, config.memberAddress),
-    }));
-    const teamRun = await this.teams.createTeamRun({ teamDefinitionId: resource.definitionId, teamRunId, memberConfigs: withContexts });
-    const members: ApplicationAgentTeamBindingMember[] = leafAgents(teamRun.config.rootTeam).map((node) => ({
+    const teamRun = await this.teams.createTeamRun({
+      teamDefinitionId: resource.definitionId,
+      teamRunId,
+      memberConfigs: configs,
+      applicationBinding: { applicationId: seed.applicationId, bindingId: seed.bindingId },
+    });
+    const members: ApplicationAgentTeamBindingMember[] = configuredAgents(teamRun.getExecutionTreeSnapshot().rootTeam.members).map((node) => ({
       memberAddress: node.address,
       displayName: getAgentTeamAddressBasename(node.address) ?? node.address,
       agentRunId: node.agentRunId,
@@ -140,19 +141,6 @@ export class ApplicationRunBindingLaunchService {
       workspaceRootPath: input.workspaceRootPath?.trim() || null,
       llmConfig: input.llmConfig ?? null,
       runtimeKind: input.runtimeKind ?? RuntimeKind.AUTOBYTEUS,
-      applicationExecutionContext: null,
-    };
-  }
-
-  private teamContext(seed: { applicationId: string; bindingId: string }, teamRunId: string, memberAddress: string): ApplicationExecutionContext {
-    return {
-      applicationId: seed.applicationId,
-      bindingId: seed.bindingId,
-      producer: {
-        executionAddress: createTeamExecutionAddress({ rootTeamRunId: teamRunId, memberAddress }),
-        displayName: getAgentTeamAddressBasename(memberAddress as AgentTeamAddress),
-        runtimeKind: "AGENT_TEAM_MEMBER",
-      },
     };
   }
 

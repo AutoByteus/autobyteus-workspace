@@ -31,6 +31,7 @@ import { CodexThreadEventName } from "./codex-thread-event-name.js";
 import { CodexOrderedToolBoundaryTracker } from "./codex-ordered-tool-boundary-tracker.js";
 import type { CodexReasoningLifecycleAction } from "./codex-reasoning-block-tracker.js";
 import { serializeCodexItemEventPayload } from "../agent-tools-mcp/codex-agent-tools-mcp-event-payload.js";
+import { normalizeCodexAgentToolsToolNameForEvent } from "../agent-tools-mcp/codex-agent-tools-mcp-materializer.js";
 import {
   deriveCodexAgentRunStatusHint,
   resolveCodexAgentRunEventStatusHint,
@@ -50,6 +51,20 @@ type RuntimeRunReference = {
   threadId: string | null;
   metadata: Record<string, unknown> | null;
 };
+
+const correlatedToolEventTypes = new Set<AgentRunEventType>([
+  AgentRunEventType.TOOL_APPROVAL_REQUESTED,
+  AgentRunEventType.TOOL_APPROVED,
+  AgentRunEventType.TOOL_DENIED,
+  AgentRunEventType.TOOL_EXECUTION_STARTED,
+  AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+  AgentRunEventType.TOOL_EXECUTION_FAILED,
+  AgentRunEventType.TOOL_EXECUTION_INTERRUPTED,
+  AgentRunEventType.TOOL_LOG,
+]);
+
+const exactText = (value: unknown): string | null =>
+  typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
 
 export const buildCodexAgentRunRuntimeReference = (
   runId: string,
@@ -173,6 +188,7 @@ export class CodexThreadEventConverter {
       ),
     resolveItemType: (payload) => this.itemEventPayloadParser.resolveItemType(payload),
     resolveInvocationId: (payload) => this.itemEventPayloadParser.resolveInvocationId(payload),
+    resolveToolName: (payload) => this.resolveRawResponseToolName(payload),
     resolveLogEntry: (payload) => this.itemEventPayloadParser.resolveLogEntry(payload),
     closeReasoningBlocksForBoundary: (codexEventName, payload) =>
       this.closeReasoningBlocksForBoundary(codexEventName, payload),
@@ -201,7 +217,9 @@ export class CodexThreadEventConverter {
     logRawCodexThreadEventDetails(this.runId, this.rawCodexEventSequence, event);
 
     try {
-      return this.convertAdmittedEvent(codexEventName, payload);
+      const converted = this.convertAdmittedEvent(codexEventName, payload);
+      this.observeToolLifecycleCorrelation(converted);
+      return converted;
     } catch (error) {
       if (error instanceof CodexSegmentSourcePayloadRejected) return [];
       throw error;
@@ -253,6 +271,36 @@ export class CodexThreadEventConverter {
     const turnId = this.itemEventPayloadParser.resolveTurnId(payload);
     if (turnId) this.orderedToolBoundaryTracker.clearForTurn(turnId);
     else this.orderedToolBoundaryTracker.clearAll();
+  }
+
+  private resolveRawResponseToolName(payload: JsonObject): string | null {
+    const directToolName = normalizeCodexAgentToolsToolNameForEvent(
+      this.itemEventPayloadParser.resolveToolName(payload),
+    );
+    if (directToolName) {
+      return directToolName;
+    }
+    return this.orderedToolBoundaryTracker.resolveToolName(
+      this.itemEventPayloadParser.resolveTurnId(payload),
+      this.itemEventPayloadParser.resolveInvocationId(payload),
+    );
+  }
+
+  private observeToolLifecycleCorrelation(events: readonly AgentRunEvent[]): void {
+    for (const event of events) {
+      if (!correlatedToolEventTypes.has(event.eventType)) continue;
+      const turnId = exactText(event.payload.turn_id ?? event.payload.turnId);
+      const invocationId = exactText(
+        event.payload.invocation_id ?? event.payload.tool_invocation_id,
+      );
+      const toolName = exactText(event.payload.tool_name);
+      if (!turnId || !invocationId || !toolName) continue;
+      this.orderedToolBoundaryTracker.markOrderedToolCreated(
+        turnId,
+        invocationId,
+        toolName,
+      );
+    }
   }
 
   private closeReasoningBlocksForBoundary(

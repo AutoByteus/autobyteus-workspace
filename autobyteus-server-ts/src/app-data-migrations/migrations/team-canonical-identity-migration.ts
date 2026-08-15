@@ -1,6 +1,6 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import { normalizeTaskDelegationRecordsFile } from "../../agent-team-execution/task-delegation/records/task-delegation-records-normalizer.js";
+import { normalizePredecessorTaskDelegationRecordsFile } from "../predecessor-task-delegation-records.js";
 import type {
   AppDataMigrationDefinition,
   AppDataMigrationExecutionResult,
@@ -102,7 +102,7 @@ export class TeamCanonicalIdentityMigration implements AppDataMigrationDefinitio
       optional: true,
       convert: (value) => {
         const converted = convertTaskDelegationFile(value, teamRunId);
-        return normalizeTaskDelegationRecordsFile(converted, { teamRunId });
+        return normalizePredecessorTaskDelegationRecordsFile(converted, { teamRunId });
       },
       details,
     });

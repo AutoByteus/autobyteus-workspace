@@ -1,0 +1,236 @@
+import { describe, expect, it } from 'vitest';
+import type {
+  TaskDelegationRecordDto,
+  TaskExecutionDto,
+  TeamRunExecutionTreeDto,
+  TeamStreamServerMessage,
+} from '@autobyteus/team-stream-contracts';
+import { AgentContext } from '~/types/agent/AgentContext';
+import { AgentRunState } from '~/types/agent/AgentRunState';
+import { AgentStatus } from '~/types/agent/AgentStatus';
+import type { AgentTeamAddress } from '~/types/agent/AgentTeamAddress';
+import type { TeamRunConfig } from '~/types/agent/TeamRunConfig';
+import { createTeamExecutionViewState } from '../teamExecutionViewState';
+
+const createdAt = '2026-08-14T12:00:00.000Z';
+const launch = {
+  runtime_kind: 'AUTOBYTEUS' as const,
+  llm_model_identifier: 'provider:model',
+  llm_config: null,
+  auto_execute_tools: false,
+  skill_access_mode: 'PRELOADED_ONLY',
+  workspace_root_path: null,
+};
+
+const tree = (): TeamRunExecutionTreeDto => ({
+  schema_version: 1,
+  created_at: createdAt,
+  archived_at: null,
+  application_binding: null,
+  handoffs: [{ from: '/Teacher', to: '/StudentStudyGroup', rules: ['Delegate study work.'] }],
+  root_team: {
+    team_definition_id: 'classroom-definition',
+    team_definition_name: 'Classroom',
+    team_run_id: 'root-team-1',
+    coordinator_address: '/Teacher',
+    members: [
+      {
+        kind: 'configured_agent', address: '/Teacher', agent_definition_id: 'teacher-definition',
+        role: 'Teacher', description: null, agent_run_id: 'teacher-run', platform_agent_run_id: null,
+        launch_configuration: launch,
+      },
+      {
+        kind: 'configured_team', address: '/StudentStudyGroup', team_definition_id: 'study-definition',
+        role: 'Study group', description: null, team_run_id: 'study-team-persistent',
+        coordinator_address: '/StudentStudyGroup/Coordinator', task_executions: [],
+        members: [
+          {
+            kind: 'configured_agent', address: '/StudentStudyGroup/Coordinator', agent_definition_id: 'coordinator-definition',
+            role: 'Coordinator', description: null, agent_run_id: 'coordinator-run', platform_agent_run_id: null,
+            launch_configuration: launch,
+          },
+          {
+            kind: 'configured_agent', address: '/StudentStudyGroup/Student', agent_definition_id: 'student-definition',
+            role: 'Student', description: null, agent_run_id: 'student-run', platform_agent_run_id: null,
+            launch_configuration: launch,
+          },
+        ],
+      },
+    ],
+    task_executions: [],
+  },
+});
+
+const context = (agentRunId: string, address: AgentTeamAddress): AgentContext => {
+  const conversation = {
+    id: agentRunId,
+    messages: [],
+    createdAt,
+    updatedAt: createdAt,
+    agentDefinitionId: `${address}-definition`,
+    agentName: address.split('/').at(-1) ?? address,
+    llmModelIdentifier: 'provider:model',
+  };
+  const state = new AgentRunState(agentRunId, conversation);
+  state.currentStatus = AgentStatus.Offline;
+  return new AgentContext({
+    agentDefinitionId: `${address}-definition`,
+    agentDefinitionName: address.split('/').at(-1) ?? address,
+    llmModelIdentifier: 'provider:model', runtimeKind: 'autobyteus', workspaceId: null,
+    workspaceMetadata: null, autoExecuteTools: false, skillAccessMode: 'PRELOADED_ONLY', isLocked: true,
+  }, state);
+};
+
+const config = (): TeamRunConfig => ({
+  teamDefinitionId: 'classroom-definition', teamDefinitionName: 'Classroom', runtimeKind: 'autobyteus',
+  workspaceId: null, workspaceMetadata: null, llmModelIdentifier: 'provider:model', llmConfig: null,
+  autoExecuteTools: false, skillAccessMode: 'PRELOADED_ONLY', memberOverrides: {}, isLocked: true,
+});
+
+const task = (input: {
+  taskId: string;
+  delegatorAgentRunId: string;
+  recipientAddress: AgentTeamAddress;
+  execution: TaskDelegationRecordDto['task_execution'];
+  status?: TaskDelegationRecordDto['status'];
+}): TaskDelegationRecordDto => ({
+  task_id: input.taskId,
+  delegator_agent_run_id: input.delegatorAgentRunId,
+  recipient_address: input.recipientAddress,
+  task_execution: input.execution,
+  description: `Complete ${input.taskId}`,
+  reference_files: [],
+  status: input.status ?? 'active',
+  updates: [],
+  created_at: createdAt,
+});
+
+const createState = () => {
+  const initialTree = tree();
+  const initial = [
+    ['teacher-run', '/Teacher'],
+    ['coordinator-run', '/StudentStudyGroup/Coordinator'],
+    ['student-run', '/StudentStudyGroup/Student'],
+  ] as const;
+  return createTeamExecutionViewState({
+    rootTeamRunId: 'root-team-1', rootActive: true, executionTree: initialTree,
+    tasks: [], messages: [], configuration: config(), initialFocusedAgentRunId: 'teacher-run',
+    agentContexts: initial.map(([agentRunId, memberAddress]) => ({
+      agentRunId, memberAddress, agentContext: context(agentRunId, memberAddress),
+    })),
+    createAgentContext: (agentRunId, address) => context(agentRunId, address),
+  });
+};
+
+const taskEvent = (payload: Extract<TeamStreamServerMessage, { type: 'TASK_DELEGATION_EVENT' }>['payload']):
+Extract<TeamStreamServerMessage, { type: 'TASK_DELEGATION_EVENT' }> => ({
+  type: 'TASK_DELEGATION_EVENT', payload,
+});
+
+const expectApplied = (result: ReturnType<ReturnType<typeof createState>['applyMessage']>): void => {
+  if (result.disposition === 'rejected') throw new Error(`${result.code}: ${result.message}`);
+  expect(result.disposition).toBe('applied');
+};
+
+describe('TeamExecutionViewState', () => {
+  it('materializes fresh task-Team and nested task-Agent identities without replacing configured placement', () => {
+    const state = createState();
+    const taskTeamExecution: TaskExecutionDto = {
+      kind: 'task_team', address: '/StudentStudyGroup', team_run_id: 'study-team-task-1',
+      started_at: createdAt, settled_at: null, task_executions: [],
+      members: [
+        { kind: 'task_team_agent', address: '/StudentStudyGroup/Coordinator', agent_run_id: 'task-coordinator-run', platform_agent_run_id: null },
+        { kind: 'task_team_agent', address: '/StudentStudyGroup/Student', agent_run_id: 'task-student-run', platform_agent_run_id: null },
+      ],
+    };
+    const taskTeamResult = state.applyMessage(taskEvent({
+      event_type: 'TASK_TEAM_ACTIVATED', change_sequence: 1, parent_team_run_id: 'root-team-1',
+      execution: taskTeamExecution, task: task({
+        taskId: 'task-team-1', delegatorAgentRunId: 'teacher-run', recipientAddress: '/StudentStudyGroup',
+        execution: { team_run_id: 'study-team-task-1' },
+      }),
+    }));
+    expectApplied(taskTeamResult);
+
+    expect(state.hasAgentRun('coordinator-run')).toBe(true);
+    expect(state.hasAgentRun('task-coordinator-run')).toBe(true);
+    expect(state.getMemberAddress('task-coordinator-run')).toBe('/StudentStudyGroup/Coordinator');
+    expect(state.listNavigationRows().find((row) => row.teamRunId === 'study-team-task-1')).toMatchObject({
+      displayName: 'Task: Complete task-team-1', focusable: false,
+    });
+
+    const nestedTask = task({
+      taskId: 'nested-agent-task', delegatorAgentRunId: 'task-coordinator-run',
+      recipientAddress: '/StudentStudyGroup/Student', execution: { agent_run_id: 'nested-student-run' },
+    });
+    const activationResult = state.applyMessage(taskEvent({
+      event_type: 'TASK_AGENT_ACTIVATED', change_sequence: 2, parent_team_run_id: 'study-team-task-1',
+      execution: {
+        kind: 'task_agent', address: '/StudentStudyGroup/Student', agent_run_id: 'nested-student-run',
+        platform_agent_run_id: null, started_at: createdAt, settled_at: null,
+      },
+      task: nestedTask,
+    }));
+    expect(activationResult).toMatchObject({ disposition: 'applied' });
+    expect(state.getAgentContext('nested-student-run')?.state.runId).toBe('nested-student-run');
+    expect(state.listTaskHistoryRows().map((row) => row.task.task_id)).toEqual(['task-team-1', 'nested-agent-task']);
+  });
+
+  it('keeps accepted history visible until the exact execution settlement and then repairs focus', () => {
+    const state = createState();
+    const active = task({
+      taskId: 'task-agent-1', delegatorAgentRunId: 'teacher-run', recipientAddress: '/StudentStudyGroup/Student',
+      execution: { agent_run_id: 'task-student-run' },
+    });
+    const activationResult = state.applyMessage(taskEvent({
+      event_type: 'TASK_AGENT_ACTIVATED', change_sequence: 1, parent_team_run_id: 'study-team-persistent',
+      execution: {
+        kind: 'task_agent', address: '/StudentStudyGroup/Student', agent_run_id: 'task-student-run',
+        platform_agent_run_id: null, started_at: createdAt, settled_at: null,
+      }, task: active,
+    }));
+    expectApplied(activationResult);
+    expect(state.focusAgent('task-student-run').disposition).toBe('applied');
+
+    const accepted = { ...active, status: 'accepted' as const };
+    expect(state.applyMessage(taskEvent({
+      event_type: 'TASK_CHANGED', change_sequence: 2, task: accepted,
+    })).disposition).toBe('applied');
+    expect(state.listNavigationRows().some((row) => row.agentRunId === 'task-student-run')).toBe(true);
+
+    expect(state.applyMessage(taskEvent({
+      event_type: 'TASK_EXECUTION_SETTLED', change_sequence: 3,
+      execution: { agent_run_id: 'task-student-run' }, task: accepted, settled_at: '2026-08-14T12:05:00.000Z',
+    })).disposition).toBe('applied');
+    expect(state.listNavigationRows().some((row) => row.agentRunId === 'task-student-run')).toBe(false);
+    expect(state.getFocusedAgentRunId()).toBe('teacher-run');
+    expect(state.listTaskHistoryRows()[0]?.task.status).toBe('accepted');
+  });
+
+  it('rejects sequence gaps and invalid snapshots without partially replacing authoritative state', () => {
+    const state = createState();
+    const beforeTree = state.getExecutionTree();
+    const gap = state.applyMessage(taskEvent({
+      event_type: 'TASK_CHANGED', change_sequence: 2,
+      task: task({
+        taskId: 'unseen', delegatorAgentRunId: 'teacher-run', recipientAddress: '/StudentStudyGroup/Student',
+        execution: { agent_run_id: 'unseen-run' },
+      }),
+    }));
+    expect(gap).toMatchObject({ disposition: 'rejected', code: 'TEAM_EXECUTION_CHANGE_SEQUENCE_GAP' });
+    expect(state.needsSnapshotRefresh()).toBe(true);
+
+    const invalidSnapshot = {
+      type: 'TEAM_EXECUTION_VIEW_SNAPSHOT' as const,
+      payload: {
+        root_team_run_id: 'foreign-root', base_change_sequence: 9, execution_tree: beforeTree,
+        tasks: [], messages: [], agent_statuses: [],
+      },
+    };
+    expect(state.applySnapshot(invalidSnapshot)).toMatchObject({
+      disposition: 'rejected', code: 'TEAM_EXECUTION_ROOT_MISMATCH',
+    });
+    expect(state.getExecutionTree()).toEqual(beforeTree);
+    expect(state.getChangeSequence()).toBe(0);
+  });
+});

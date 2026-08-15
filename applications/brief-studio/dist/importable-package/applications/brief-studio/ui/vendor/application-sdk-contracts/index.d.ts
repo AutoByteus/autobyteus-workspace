@@ -10,10 +10,9 @@ export * from "./application-agent-events.js";
 export * from "./application-agent-communication.js";
 export * from "./application-agent-target-url.js";
 export * from "./application-websockets.js";
-export * from "./team-execution-address.js";
 export declare const APPLICATION_BACKEND_BUNDLE_CONTRACT_VERSION_V1: "1";
-export declare const APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V5: "5";
-export declare const APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V5: "5";
+export declare const APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V6: "6";
+export declare const APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V6: "6";
 export declare const APPLICATION_EVENT_DELIVERY_SEMANTICS: "AT_LEAST_ONCE";
 export type ApplicationRouteMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE" | "HEAD" | "OPTIONS";
 export type ApplicationSkillAccessMode = "PRELOADED_ONLY" | "NONE";
@@ -36,8 +35,8 @@ export type ApplicationBackendBundleManifestV1 = {
         semver: string;
     };
     sdkCompatibility: {
-        backendDefinitionContractVersion: typeof APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V5;
-        frontendSdkContractVersion: typeof APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V5;
+        backendDefinitionContractVersion: typeof APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V6;
+        frontendSdkContractVersion: typeof APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V6;
     };
     supportedExposures: ApplicationBackendSupportedExposures;
     migrationsDir?: string | null;
@@ -229,7 +228,7 @@ export type ApplicationRouteDefinition = {
     handler: ApplicationRouteHandler;
 };
 export type ApplicationBackendDefinition = {
-    definitionContractVersion: typeof APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V5;
+    definitionContractVersion: typeof APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V6;
     lifecycle?: {
         onStart?: ApplicationLifecycleHook;
         onStop?: ApplicationLifecycleHook;

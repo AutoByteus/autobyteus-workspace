@@ -62,8 +62,8 @@ import { useMobileFocusedRunIdentity } from '~/composables/mobile/useMobileFocus
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
-import { useTeamCommunicationStore } from '~/stores/teamCommunicationStore';
 import type { MobileWorkContext } from '~/types/mobileWork';
+import { projectTeamCommunicationPerspective } from '~/utils/teamCommunication/teamCommunicationPerspective';
 
 const props = defineProps<{
   context: MobileWorkContext | null;
@@ -78,7 +78,6 @@ type ActivityFilter = 'messages' | 'activity';
 const activityStore = useAgentActivityStore();
 const selectionStore = useAgentSelectionStore();
 const teamContextsStore = useAgentTeamContextsStore();
-const teamCommunicationStore = useTeamCommunicationStore();
 const activeFilter = ref<ActivityFilter>('messages');
 const showTeamMessages = ref(false);
 
@@ -93,10 +92,11 @@ const hasTeamContext = computed(() => Boolean(activeTeamContext.value || props.c
 const teamMessages = computed(() => {
   const team = activeTeamContext.value;
   if (!team) return [];
-  return teamCommunicationStore.getPerspectiveForAddress(
-    team.executions.getRootTeamRunId(),
-    team.executions.getFocusedAddress(),
-  ).messages;
+  return projectTeamCommunicationPerspective({
+    view: team.view,
+    messages: team.view.listCommunicationMessages(),
+    focusedAgentRunId: team.view.getFocusedAgentRunId(),
+  }).messages;
 });
 const runActivities = computed(() => focusedRunId.value ? activityStore.getActivities(focusedRunId.value) : []);
 const filters = computed(() => [

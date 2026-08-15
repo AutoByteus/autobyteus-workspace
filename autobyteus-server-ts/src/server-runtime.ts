@@ -52,6 +52,7 @@ import { getSecretVaultRuntime } from "./secret-management/secret-vault-runtime.
 import { registerProvisionedSearchTool } from "./agent-tools/search/register-search-tool.js";
 import { stopDefaultAgentRunEventPipeline } from "./agent-execution/events/default-agent-run-event-pipeline.js";
 import { configureFileToolDeniedPaths } from "autobyteus-ts/tools/file/workspace-path-utils.js";
+import { TeamRunV1PackageCatalog } from "./run-history/services/team-run-v1-package-catalog.js";
 
 const logger = createServerLogger("server.runtime");
 
@@ -191,6 +192,7 @@ export async function startConfiguredServer(options: ServerOptions): Promise<voi
 
   try {
     const statuses = await getAppDataMigrationRunner().runPending();
+    await new TeamRunV1PackageCatalog(appConfigProvider.config.getMemoryDir()).rebuild();
     const canonicalStatus = statuses.find(
       (status) => status.migrationId === TEAM_CANONICAL_IDENTITY_MIGRATION_ID,
     );

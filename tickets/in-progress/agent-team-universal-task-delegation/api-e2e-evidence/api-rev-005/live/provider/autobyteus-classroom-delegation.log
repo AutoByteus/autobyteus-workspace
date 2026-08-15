@@ -1,0 +1,24 @@
+{
+  "teamRunId": "classroom_simulation_team_3f163762ea344e6d8ddd89393a53a208",
+  "agentRunId": "professor_901fb9899c2a4b11883934db3cc86836",
+  "durationMs": 13564,
+  "sent": true,
+  "terminalAt": {
+    "type": "TURN_COMPLETED",
+    "atMs": 1553
+  },
+  "websocketError": null,
+  "messageCount": 8,
+  "typeCounts": {
+    "CONNECTED": 1,
+    "TEAM_EXECUTION_VIEW_SNAPSHOT": 1,
+    "TEAM_RUN_LIFECYCLE": 1,
+    "MEMBER_INPUT_MESSAGE": 1,
+    "TURN_STARTED": 1,
+    "ERROR": 1,
+    "ASSISTANT_COMPLETE": 1,
+    "TURN_COMPLETED": 1
+  },
+  "tasks": [],
+  "communications": []
+}

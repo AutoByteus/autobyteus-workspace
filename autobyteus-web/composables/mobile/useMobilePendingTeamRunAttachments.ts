@@ -2,7 +2,6 @@ import { computed, ref, watch, type Ref } from 'vue';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useMobileWorkStore } from '~/stores/mobileWorkStore';
 import type { MobileWorkContext } from '~/types/mobileWork';
-import { createTeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 
 export function useMobilePendingTeamRunAttachments(contextRef: Ref<MobileWorkContext | null>) {
   const teamContextsStore = useAgentTeamContextsStore();
@@ -24,9 +23,9 @@ export function useMobilePendingTeamRunAttachments(contextRef: Ref<MobileWorkCon
     },
   );
 
-  async function flushPendingTeamRunAttachmentsToFocusedMember(teamRunId: string, memberAddress: string): Promise<void> {
+  async function flushPendingTeamRunAttachmentsToFocusedMember(teamRunId: string, agentRunId: string): Promise<void> {
     const normalizedTeamRunId = teamRunId.trim();
-    const normalizedMemberAddress = memberAddress.trim();
+    const normalizedAgentRunId = agentRunId.trim();
     const attachments = mobileWorkStore.getPendingTeamRunAttachments(normalizedTeamRunId);
     if (attachments.length === 0) {
       error.value = null;
@@ -39,13 +38,8 @@ export function useMobilePendingTeamRunAttachments(contextRef: Ref<MobileWorkCon
       throw new Error(error.value);
     }
 
-    const focusedNode = teamContext.topology.getNode(normalizedMemberAddress);
-    const focusedAddress = createTeamExecutionAddress({
-      ...teamContext.executions.getFocusedAddress(),
-      memberAddress: normalizedMemberAddress,
-    });
-    const focusedMember = teamContext.executions.getAgentContext(focusedAddress);
-    if (!focusedNode || focusedNode.kind !== 'agent' || !focusedMember) {
+    const focusedMember = teamContext.view.getAgentContext(normalizedAgentRunId);
+    if (!focusedMember) {
       error.value = 'Choose a team member before sending with pending context files.';
       throw new Error(error.value);
     }
@@ -67,8 +61,8 @@ export function useMobilePendingTeamRunAttachments(contextRef: Ref<MobileWorkCon
     }
 
     const teamContext = teamContextsStore.getTeamContextById(context.teamRunId);
-    const focusedMemberAddress = teamContext?.executions.getFocusedAddress().memberAddress || context.focusedExecutionAddress.memberAddress;
-    await flushPendingTeamRunAttachmentsToFocusedMember(context.teamRunId, focusedMemberAddress);
+    const focusedAgentRunId = teamContext?.view.getFocusedAgentRunId() || context.focusedAgentRunId;
+    await flushPendingTeamRunAttachmentsToFocusedMember(context.teamRunId, focusedAgentRunId);
   }
 
   return {

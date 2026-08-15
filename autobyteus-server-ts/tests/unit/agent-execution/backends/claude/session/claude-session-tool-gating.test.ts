@@ -248,7 +248,7 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
       expect.objectContaining({
         prompt: "hello",
         systemPrompt: expect.stringContaining(
-          "Bare names, `../`, and backslashes are invalid.",
+          "Relative addresses, bare names, `../`, backslashes, and the structural root `/` itself are not valid recipients.",
         ),
         allowedTools: [
           "get_handoff_rules",
@@ -276,12 +276,11 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
 
     expect(createAgentToolMcpSession).toHaveBeenCalledWith(
       expect.objectContaining({
-        owner: {
+        owner: expect.objectContaining({
           runId: "run-1",
-          executionAddress: memberTeamContext.executionAddress,
-          agentRunId: "run-1",
+          teamIdentity: memberTeamContext.identity,
           displayName: "Professor",
-        },
+        }),
         sender: expect.objectContaining({
           senderRunId: "run-1",
           senderName: "Professor",
@@ -463,7 +462,7 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
       expect.objectContaining({
         prompt: "hello",
         systemPrompt: expect.stringContaining(
-          "`delegate_task` uses the same address format",
+          "Use `delegate_task` with `recipient_address` to create a fresh dedicated task execution",
         ),
         allowedTools: [
           "delegate_task",

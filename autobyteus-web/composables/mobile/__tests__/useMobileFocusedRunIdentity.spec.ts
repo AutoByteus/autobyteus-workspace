@@ -11,7 +11,6 @@ import { DEFAULT_AGENT_RUNTIME_KIND, type AgentRunConfig } from '~/types/agent/A
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import type { Conversation } from '~/types/conversation';
 import type { MobileWorkContext } from '~/types/mobileWork';
-import { createTeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures';
 
 function makeAgentRunConfig(agentDefinitionId = 'agent-1'): AgentRunConfig {
@@ -65,20 +64,20 @@ function seedTeamRun(): AgentTeamContext {
     teamDefinitionId: 'team-1',
     teamDefinitionName: 'Software Team',
     coordinatorAddress: leadNode.address,
-    focusedExecutionAddress: createTeamExecutionAddress({ rootTeamRunId: 'team-run-1', memberAddress: leadNode.address }),
+    focusedAgentRunId: 'lead-run',
     rootChildren: [leadNode, reviewerNode],
     isActive: false,
     contexts: [
-      { executionAddress: createTeamExecutionAddress({ rootTeamRunId: 'team-run-1', memberAddress: leadNode.address }), context: makeAgentContext('lead-run') },
-      { executionAddress: createTeamExecutionAddress({ rootTeamRunId: 'team-run-1', memberAddress: reviewerNode.address }), context: makeAgentContext('reviewer-run') },
+      { agentRunId: 'lead-run', context: makeAgentContext('lead-run') },
+      { agentRunId: 'reviewer-run', context: makeAgentContext('reviewer-run') },
     ],
   });
-  useAgentTeamContextsStore().teams.set(context.executions.getRootTeamRunId(), context);
-  useAgentSelectionStore().selectRunWithoutShellNavigation(context.executions.getRootTeamRunId(), 'team');
+  useAgentTeamContextsStore().addTeamContext(context);
+  useAgentSelectionStore().selectRunWithoutShellNavigation(context.view.getRootTeamRunId(), 'team');
   return context;
 }
 
-function makeTeamRunMobileContext(focusedMemberAddress = '/lead'): MobileWorkContext {
+function makeTeamRunMobileContext(focusedAgentRunId = 'lead-run'): MobileWorkContext {
   return {
     kind: 'team-run',
     teamRunId: 'team-run-1',
@@ -86,10 +85,7 @@ function makeTeamRunMobileContext(focusedMemberAddress = '/lead'): MobileWorkCon
     title: 'Software Team',
     summary: 'Existing team run',
     workspaceRootPath: '/Users/normy/project',
-    focusedExecutionAddress: createTeamExecutionAddress({
-      rootTeamRunId: 'team-run-1',
-      memberAddress: focusedMemberAddress,
-    }),
+    focusedAgentRunId,
     isActive: true,
     lastActivityAt: '2026-05-18T16:00:00.000Z',
     statusLabel: 'Running',
@@ -139,29 +135,29 @@ describe('useMobileFocusedRunIdentity', () => {
 
   it('resolves the focused leaf member run for selected team contexts', () => {
     const team = seedTeamRun();
-    const context = ref<MobileWorkContext | null>(makeTeamRunMobileContext('/lead'));
+    const context = ref<MobileWorkContext | null>(makeTeamRunMobileContext('lead-run'));
 
     const { focusedRunId } = useMobileFocusedRunIdentity(context);
 
     expect(focusedRunId.value).toBe('lead-run');
 
-    expect(team.executions.focus(createTeamExecutionAddress({ rootTeamRunId: 'team-run-1', memberAddress: '/reviewer' })).disposition)
+    expect(team.view.focusAgent('reviewer-run').disposition)
       .toBe('applied');
-    context.value = makeTeamRunMobileContext('/reviewer');
+    context.value = makeTeamRunMobileContext('reviewer-run');
 
     expect(focusedRunId.value).toBe('reviewer-run');
   });
 
   it('rejects team contexts when selected team or focused route is stale', () => {
     const team = seedTeamRun();
-    const context = ref<MobileWorkContext | null>(makeTeamRunMobileContext('/lead'));
+    const context = ref<MobileWorkContext | null>(makeTeamRunMobileContext('lead-run'));
     const { focusedRunId } = useMobileFocusedRunIdentity(context);
 
     useAgentSelectionStore().selectRunWithoutShellNavigation('other-team-run', 'team');
     expect(focusedRunId.value).toBe('');
 
     useAgentSelectionStore().selectRunWithoutShellNavigation('team-run-1', 'team');
-    expect(team.executions.focus(createTeamExecutionAddress({ rootTeamRunId: 'team-run-1', memberAddress: '/reviewer' })).disposition)
+    expect(team.view.focusAgent('reviewer-run').disposition)
       .toBe('applied');
     expect(focusedRunId.value).toBe('');
   });

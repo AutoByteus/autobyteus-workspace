@@ -5,7 +5,6 @@ import {
 } from '~/services/eventMonitor/recentEventMonitorMutationCoordinator';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import { resolveFirstUserMessageSummary } from '~/utils/runTreeSummary';
-import type { TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 
 export interface BeginLocalUserSubmissionOptions {
   text: string;
@@ -18,7 +17,7 @@ export type LocalUserSubmissionNavigationTarget =
   | {
       kind: 'team_member';
       teamRunId: string;
-      executionAddress: TeamExecutionAddress;
+      agentRunId: string;
     };
 
 export interface LocalUserSubmissionHandle {

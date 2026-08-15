@@ -1,0 +1,41 @@
+API-REV-004 source-cycle audit
+HEAD 8a0494e8b55a3debc7acbee7b61d286d5311d1a8
+
+Observed built stack:
+Failed to start server: RangeError: Maximum call stack size exceeded
+    at new AgentToolMcpSessionService (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/dist/agent-tools/mcp/agent-tool-mcp-session-service.js:19:16)
+    at AgentToolMcpSessionService.getInstance (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/dist/agent-tools/mcp/agent-tool-mcp-session-service.js:12:51)
+    at getAgentToolMcpSessionService (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/dist/agent-tools/mcp/agent-tool-mcp-session-service.js:78:79)
+    at new CodexThreadBootstrapper (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/dist/agent-execution/backends/codex/backend/codex-thread-bootstrapper.js:95:318)
+    at getCodexThreadBootstrapper (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/dist/agent-execution/backends/codex/backend/codex-thread-bootstrapper.js:240:41)
+    at new CodexAgentRunBackendFactory (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/dist/agent-execution/backends/codex/backend/codex-agent-run-backend-factory.js:10:79)
+    at getCodexAgentRunBackendFactory (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/dist/agent-execution/backends/codex/backend/codex-agent-run-backend-factory.js:57:45)
+    at new AgentRunManager (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/dist/agent-execution/services/agent-run-manager.js:52:44)
+    at AgentRunManager.getInstance (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/dist/agent-execution/services/agent-run-manager.js:44:40)
+    at new AgentRunIdentityAllocator (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/dist/agent-execution/services/agent-run-identity-allocator.js:36:75)
+
+Source ownership chain:
+41:      AgentToolMcpSessionService.instance = new AgentToolMcpSessionService();
+52:    this.catalog = deps.catalog ?? getAgentToolMcpCatalog();
+16:import { buildDefaultAgentToolMcpAdapterProviders } from "./providers/default-agent-tool-mcp-adapter-providers.js";
+59:      AgentToolMcpCatalog.instance = new AgentToolMcpCatalog();
+80:    const adapters = input.adapters ?? (input.providers ?? buildDefaultAgentToolMcpAdapterProviders())
+14:  new TaskDelegationToolsMcpAdapterProvider(),
+4:  getTaskDelegationToolService,
+27:    private readonly taskDelegationToolService: TaskDelegationToolService = getTaskDelegationToolService(),
+18:  constructor(private readonly router = new TaskDelegationToolRunRouter()) {}
+3:import { getTeamRunService, type TeamRunService } from "../../agent-team-execution/services/team-run-service.js";
+8:  constructor(private readonly teamRunService: TeamRunService = getTeamRunService()) {}
+65:    this.identityAllocator = options.agentRunIdentityAllocator ?? new AgentRunIdentityAllocator({
+55:    this.agentRunManager = options.agentRunManager ?? AgentRunManager.getInstance();
+11:  getCodexAgentRunBackendFactory,
+85:      options.codexBackendFactory ?? getCodexAgentRunBackendFactory();
+8:  getCodexThreadBootstrapper,
+25:    threadBootstrapper: CodexThreadBootstrapper = getCodexThreadBootstrapper(),
+52:  getAgentToolMcpSessionService,
+187:    agentToolMcpSessionService: AgentToolMcpSessionService = getAgentToolMcpSessionService(),
+
+Temporary built-artifact diagnostic hygiene:
+tracked diff for autobyteus-server-ts/dist/app.js: NONE
+Production source edits by API/E2E for this diagnostic: NONE
+Compatibility/fallback/retry added by API/E2E: NONE

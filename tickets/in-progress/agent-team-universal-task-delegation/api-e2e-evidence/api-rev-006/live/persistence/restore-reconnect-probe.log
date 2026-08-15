@@ -1,0 +1,35 @@
+{
+  "pass": true,
+  "results": [
+    {
+      "label": "codex",
+      "teamRunId": "utd_root_team_api_rev_006_1786811621320_dba28e5c40cb4d2ba2c561c4b21b86a6",
+      "restore": {
+        "success": true,
+        "message": "Agent team run restored successfully.",
+        "teamRunId": "utd_root_team_api_rev_006_1786811621320_dba28e5c40cb4d2ba2c561c4b21b86a6"
+      },
+      "snapshotFrames": 1,
+      "isActive": true,
+      "tasks": 1,
+      "messages": 0,
+      "statuses": [
+        "accepted"
+      ]
+    },
+    {
+      "label": "classroom",
+      "teamRunId": "classroom_simulation_team_61ecc73703324acfa1f63394c2727d5a",
+      "restore": {
+        "success": true,
+        "message": "Agent team run restored successfully.",
+        "teamRunId": "classroom_simulation_team_61ecc73703324acfa1f63394c2727d5a"
+      },
+      "snapshotFrames": 1,
+      "isActive": true,
+      "tasks": 0,
+      "messages": 2,
+      "statuses": []
+    }
+  ]
+}

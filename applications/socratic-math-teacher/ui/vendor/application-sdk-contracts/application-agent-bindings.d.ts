@@ -1,5 +1,4 @@
 import type { ApplicationExecutionResourceRef } from "./execution-resources.js";
-import type { ApplicationTeamExecutionAddress } from "./team-execution-address.js";
 export type ApplicationAgentBindingStatus = "ATTACHED" | "TERMINATING" | "TERMINATED" | "FAILED" | "ORPHANED";
 type ApplicationAgentBindingFields = {
     bindingId: string;
@@ -43,7 +42,7 @@ export type ApplicationAgentTarget = {
     kind: "AGENT_TEAM_RUN";
 } | {
     kind: "AGENT_TEAM_MEMBER";
-    memberAddress: string;
+    agentRunId: string;
 };
 export type ApplicationAgentTargetAddress = {
     bindingId: string;
@@ -62,9 +61,14 @@ export type ApplicationAgentInput = {
 };
 export type ApplicationExecutionProducerRuntimeKind = "AGENT" | "AGENT_TEAM_MEMBER";
 export type ApplicationExecutionProducer = {
-    executionAddress: ApplicationTeamExecutionAddress;
+    agentRunId: string;
     displayName: string | null;
     runtimeKind: ApplicationExecutionProducerRuntimeKind;
 };
+export type ApplicationExecutionContext = Readonly<{
+    applicationId: string;
+    bindingId: string;
+    producer: ApplicationExecutionProducer;
+}>;
 export {};
 //# sourceMappingURL=application-agent-bindings.d.ts.map

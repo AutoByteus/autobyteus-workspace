@@ -44,7 +44,7 @@ describe("autobyteus runtime tool exposure", () => {
     ]);
   });
 
-  it("keeps the automatic team pair additive to the native baseline", () => {
+  it("keeps the automatic team collaboration trio additive to the native baseline", () => {
     const exposure = resolveAutoByteusRuntimeAgentToolExposure(
       { toolNames: [] },
       { teamBackendKind: TeamBackendKind.MIXED } as any,
@@ -55,6 +55,7 @@ describe("autobyteus runtime tool exposure", () => {
       "read_file",
       "edit_file",
       "write_file",
+      "get_handoff_rules",
       "send_message_to",
       "delegate_task",
     ]);

@@ -1,0 +1,201 @@
+API-F-004 source-origin audit
+HEAD:
+8a0494e8b55a3debc7acbee7b61d286d5311d1a8
+
+Approved UI contract excerpts:
+49:1. The navigation projector places the live task Agent underneath its canonical logical Agent placement.
+158:- A placement with no task executions shows only its persistent execution; no empty `Tasks` subgroup is rendered.
+
+Execution selector root emission:
+   150	    agentRunId: string;
+   151	    depth: number;
+   152	    parentKey: string | null;
+   153	    task?: TaskDelegationRecordDto | null;
+   154	    coordinatorAddress?: AgentTeamAddress | null;
+   155	  }): void => {
+   156	    const label = inputAgent.task ? taskLabel(inputAgent.task.description) : memberAddressBasename(inputAgent.address);
+   157	    rows.push(Object.freeze({
+   158	      key: agentRowKey(inputAgent.agentRunId), kind: inputAgent.kind, address: inputAgent.address,
+   159	      displayName: label, accessibleName: inputAgent.task ? `Task: ${inputAgent.task.description.trim().replace(/\s+/g, ' ')}` : label,
+   160	      depth: inputAgent.depth, parentKey: inputAgent.parentKey, agentRunId: inputAgent.agentRunId,
+   161	      teamRunId: null, taskId: inputAgent.task?.task_id ?? null,
+   162	      taskStatus: inputAgent.task?.status ?? null, currentStatus: status(inputAgent.agentRunId),
+   163	      focusable: true, expandable: false, coordinator: inputAgent.coordinatorAddress === inputAgent.address,
+   164	    }));
+   165	  };
+   166	  const addTask = (task: TaskExecutionDto, depth: number, parentKey: string): void => {
+   167	    if (task.settled_at) return;
+   168	    if (task.kind === 'task_agent') {
+   169	      const record = tasksByAgent.get(task.agent_run_id);
+   170	      if (record) addAgent({ kind: 'task_agent', address: task.address, agentRunId: task.agent_run_id, depth, parentKey, task: record });
+   171	      return;
+   172	    }
+   173	    const record = tasksByTeam.get(task.team_run_id);
+   174	    if (!record) return;
+   175	    addTaskTeam(task, record, depth, parentKey);
+   176	  };
+   177	  const addTaskMembers = (
+   178	    members: readonly TaskTeamMemberExecutionDto[],
+   179	    tasks: readonly TaskExecutionDto[],
+   180	    depth: number,
+   181	    parentKey: string,
+   182	    coordinatorAddress: AgentTeamAddress,
+   183	  ): void => {
+   184	    for (const member of members) {
+   185	      if (member.kind === 'task_team_agent') {
+   186	        addAgent({ kind: 'task_team_agent', address: member.address, agentRunId: member.agent_run_id, depth, parentKey, coordinatorAddress });
+   187	      } else {
+   188	        const key = teamRowKey(member.team_run_id);
+   189	        rows.push(Object.freeze({
+   190	          key, kind: 'task_team_member', address: member.address,
+   191	          displayName: memberAddressBasename(member.address), accessibleName: memberAddressBasename(member.address),
+   192	          depth, parentKey, agentRunId: null, teamRunId: member.team_run_id, taskId: null,
+   193	          taskStatus: null, currentStatus: null, focusable: false,
+   194	          expandable: member.members.length > 0 || member.task_executions.length > 0, coordinator: false,
+   195	        }));
+   196	        addTaskMembers(member.members, member.task_executions, depth + 1, key, coordinatorAddress);
+   197	      }
+   198	      tasks.filter((task) => task.address === member.address).forEach((task) => addTask(task, depth + 1, member.kind === 'task_team_agent' ? agentRowKey(member.agent_run_id) : teamRowKey(member.team_run_id)));
+   199	    }
+   200	    tasks.filter((task) => !members.some((member) => member.address === task.address))
+   201	      .forEach((task) => addTask(task, depth, parentKey));
+   202	  };
+   203	  const addTaskTeam = (
+   204	    team: TaskTeamExecutionDto,
+   205	    task: TaskDelegationRecordDto,
+   206	    depth: number,
+   207	    parentKey: string,
+   208	  ): void => {
+   209	    const key = teamRowKey(team.team_run_id);
+   210	    const coordinatorAddress = configuredTeamAtAddress(input.tree, team.address)?.coordinator_address ?? team.address;
+   211	    rows.push(Object.freeze({
+   212	      key, kind: 'task_team', address: team.address,
+   213	      displayName: taskLabel(task.description), accessibleName: `Task: ${task.description.trim().replace(/\s+/g, ' ')}`,
+   214	      depth, parentKey, agentRunId: null, teamRunId: team.team_run_id, taskId: task.task_id,
+   215	      taskStatus: task.status, currentStatus: null, focusable: false,
+   216	      expandable: team.members.length > 0 || team.task_executions.length > 0, coordinator: false,
+   217	    }));
+   218	    addTaskMembers(team.members, team.task_executions, depth + 1, key, coordinatorAddress);
+   219	  };
+   220	  const addConfiguredTeam = (
+   221	    team: ConfiguredTeamExecutionDto | TeamRunExecutionTreeDto['root_team'],
+   222	    depth: number,
+   223	    parentKey: string | null,
+   224	    isRoot: boolean,
+   225	  ): void => {
+   226	    const key = teamRowKey(team.team_run_id);
+   227	    rows.push(Object.freeze({
+   228	      key, kind: 'configured_team', address: isRoot ? '/' : (team as ConfiguredTeamExecutionDto).address,
+   229	      displayName: isRoot ? input.tree.root_team.team_definition_name : memberAddressBasename((team as ConfiguredTeamExecutionDto).address),
+   230	      accessibleName: isRoot ? input.tree.root_team.team_definition_name : memberAddressBasename((team as ConfiguredTeamExecutionDto).address),
+   231	      depth, parentKey, agentRunId: null, teamRunId: team.team_run_id, taskId: null,
+   232	      taskStatus: null, currentStatus: null, focusable: false,
+   233	      expandable: team.members.length > 0 || team.task_executions.length > 0, coordinator: false,
+   234	    }));
+   235	    for (const member of team.members) {
+   236	      if (member.kind === 'configured_agent') {
+   237	        addAgent({ kind: 'configured_agent', address: member.address, agentRunId: member.agent_run_id, depth: depth + 1, parentKey: key, coordinatorAddress: team.coordinator_address });
+   238	      } else addConfiguredTeam(member, depth + 1, key, false);
+   239	      const placementKey = member.kind === 'configured_agent' ? agentRowKey(member.agent_run_id) : teamRowKey(member.team_run_id);
+   240	      team.task_executions
+   241	        .filter((task) => task.address === member.address)
+   242	        .forEach((task) => addTask(task, depth + 2, placementKey));
+   243	    }
+   244	    team.task_executions
+   245	      .filter((task) => !team.members.some((member) => member.address === task.address))
+   246	      .forEach((task) => addTask(task, depth + 1, key));
+   247	  };
+   248	  addConfiguredTeam(input.tree.root_team, 0, null, true);
+   249	  return Object.freeze(rows);
+   250	};
+   251	
+   252	const configuredTeamAtAddress = (
+   253	  tree: TeamRunExecutionTreeDto,
+   254	  address: AgentTeamAddress,
+   255	): ConfiguredTeamExecutionDto | null => {
+   256	  const visit = (members: readonly ConfiguredMemberExecutionDto[]): ConfiguredTeamExecutionDto | null => {
+   257	    for (const member of members) {
+   258	      if (member.kind !== 'configured_team') continue;
+   259	      if (member.address === address) return member;
+   260	      const nested = visit(member.members);
+   261	      if (nested) return nested;
+   262	    }
+   263	    return null;
+   264	  };
+   265	  return visit(tree.root_team.members);
+   266	};
+
+History row reconciliation:
+     1	import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
+     2	import type {
+     3	  RunHistoryStableExecutionRow,
+     4	  RunHistoryTeamExecutionRow,
+     5	  RunHistoryTransientExecutionRow,
+     6	  TeamMemberTreeRow,
+     7	  TeamTreeNode,
+     8	} from './runHistoryTypes';
+     9	
+    10	const stableRowKey = (row: TeamMemberTreeRow): string => row.kind === 'agent'
+    11	  ? `agent:${row.agentRunId}`
+    12	  : `team:${row.teamRunIdForNode}`;
+    13	
+    14	const flattenStableRows = (
+    15	  rows: readonly TeamMemberTreeRow[],
+    16	  depth = 0,
+    17	): RunHistoryStableExecutionRow[] => rows.flatMap((row) => [{
+    18	  kind: 'stable_member' as const,
+    19	  rowKey: stableRowKey(row),
+    20	  teamRunId: row.teamRunId,
+    21	  memberAddress: row.memberAddress,
+    22	  agentRunId: row.agentRunId ?? null,
+    23	  teamRunIdForNode: row.teamRunIdForNode ?? null,
+    24	  memberKind: row.kind,
+    25	  displayName: row.displayName || row.memberAddress,
+    26	  depth,
+    27	  hasChildren: row.children.length > 0,
+    28	  row,
+    29	}, ...flattenStableRows(row.children, depth + 1)]);
+    30	
+    31	export const buildRunHistoryTeamExecutionRows = (
+    32	  team: TeamTreeNode,
+    33	  context?: AgentTeamContext | null,
+    34	): RunHistoryTeamExecutionRow[] => {
+    35	  const stableSource = team.rootTeam.children.length > 0 ? team.rootTeam.children : team.members;
+    36	  if (!context) return flattenStableRows(stableSource);
+    37	  const stableByKey = new Map(flattenStableRows(stableSource).map((row) => [row.rowKey, row]));
+    38	  return context.view.listNavigationRows().flatMap((execution): RunHistoryTeamExecutionRow[] => {
+    39	    const stable = stableByKey.get(execution.key);
+    40	    if (stable && (execution.kind === 'configured_agent' || execution.kind === 'configured_team')) {
+    41	      return [{
+    42	        ...stable,
+    43	        displayName: execution.displayName || stable.displayName,
+    44	        depth: execution.depth,
+    45	        hasChildren: execution.expandable || stable.hasChildren,
+    46	      }];
+    47	    }
+    48	    const transient: RunHistoryTransientExecutionRow = {
+    49	      kind: 'transient_execution',
+    50	      transientKind: execution.kind === 'task_agent'
+    51	        ? 'task_agent'
+    52	        : execution.kind === 'task_team'
+    53	          ? 'task_team'
+    54	          : 'task_team_child',
+    55	      rowKey: execution.key,
+    56	      teamRunId: context.view.getRootTeamRunId(),
+    57	      memberAddress: execution.address,
+    58	      agentRunId: execution.agentRunId,
+    59	      teamRunIdForNode: execution.teamRunId,
+    60	      memberKind: execution.agentRunId ? 'agent' : 'agent_team',
+    61	      displayName: execution.displayName,
+    62	      currentStatus: execution.currentStatus,
+    63	      depth: execution.depth,
+    64	      hasChildren: execution.expandable,
+    65	    };
+    66	    return [transient];
+    67	  });
+    68	};
+
+Component transient classification:
+
+No legacy symbols in focused test:
+PASS

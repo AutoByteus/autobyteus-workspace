@@ -4,7 +4,7 @@ import { useTokenUsageMeterStore } from '../tokenUsageMeterStore';
 import { handleTokenUsageUpdated } from '~/services/agentStreaming/handlers/tokenUsageHandler';
 import { getApolloClient } from '~/utils/apolloClient';
 import type { AgentContext } from '~/types/agent/AgentContext';
-import type { TokenUsageRunSummary, TokenUsageUpdatedPayload } from '~/types/tokenUsageMeter';
+import type { TeamTokenUsageDetails, TokenUsageRunSummary, TokenUsageUpdatedPayload } from '~/types/tokenUsageMeter';
 
 vi.mock('~/utils/apolloClient', () => ({
   getApolloClient: vi.fn(),
@@ -74,9 +74,6 @@ const buildPayload = (overrides: Partial<TokenUsageUpdatedPayload> = {}): TokenU
 const buildSummary = (overrides: Partial<TokenUsageRunSummary> = {}): TokenUsageRunSummary => ({
   runId: 'summary-run-1',
   rootTeamRunId: null,
-  executionAddress: null,
-  memberAgentRunId: null,
-  memberRouteKey: null,
   agentDefinitionId: 'agent-definition-1',
   workspaceId: 'workspace-1',
   grossInputTokens: 300,
@@ -128,6 +125,24 @@ const buildSummary = (overrides: Partial<TokenUsageRunSummary> = {}): TokenUsage
   ...overrides,
 });
 
+const buildTeamPayload = (
+  agentRunId: string,
+  overrides: Partial<TeamTokenUsageDetails> = {},
+): TeamTokenUsageDetails => {
+  const standalone = buildPayload();
+  const { run_id: _runId, runtime_kind: _runtimeKind, ...shared } = standalone;
+  return {
+    ...shared,
+    change_sequence: 1,
+    agent_run_id: agentRunId,
+    turn_id: null,
+    llm_call_id: null,
+    model_value: null,
+    quality_flags: [],
+    ...overrides,
+  } as TeamTokenUsageDetails;
+};
+
 describe('tokenUsageMeterStore', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
@@ -165,15 +180,12 @@ describe('tokenUsageMeterStore', () => {
   it('aggregates member events into team summary and reports mixed priced/unpriced status', () => {
     const store = useTokenUsageMeterStore();
 
-    store.applyTokenUsageUpdated(buildPayload({
+    store.applyTeamTokenUsage('team-run-1', 'member-run-1', buildTeamPayload('member-run-1', {
       usage_event_id: 'team-priced-event',
       idempotency_key: 'team-priced-key',
-      run_id: 'member-run-1',
-      root_team_run_id: 'team-run-1',
-      member_agent_run_id: 'member-run-1',
-      execution_address: { segments: [{ kind: 'member', memberRouteKey: 'worker' }] },
-      member_route_key: 'worker',
       meter_delta_input_tokens: 40,
+      standard_input_tokens: 40,
+      cache_miss_input_tokens: 40,
       meter_delta_output_tokens: 10,
       meter_delta_total_tokens: 50,
       estimated_api_input_cost: 0.001,
@@ -182,15 +194,12 @@ describe('tokenUsageMeterStore', () => {
       api_cost_status: 'estimated',
     }));
 
-    store.applyTokenUsageUpdated(buildPayload({
+    store.applyTeamTokenUsage('team-run-1', 'member-run-2', buildTeamPayload('member-run-2', {
       usage_event_id: 'team-unpriced-event',
       idempotency_key: 'team-unpriced-key',
-      run_id: 'member-run-2',
-      root_team_run_id: 'team-run-1',
-      member_agent_run_id: 'member-run-2',
-      execution_address: { segments: [{ kind: 'member', memberRouteKey: 'reviewer' }] },
-      member_route_key: 'reviewer',
       meter_delta_input_tokens: 20,
+      standard_input_tokens: 20,
+      cache_miss_input_tokens: 20,
       meter_delta_output_tokens: 5,
       meter_delta_total_tokens: 25,
       estimated_api_input_cost: null,
@@ -201,18 +210,18 @@ describe('tokenUsageMeterStore', () => {
       model_identifier: 'unknown-model',
     }));
 
-    expect(store.getRunSummary('member-run-1')).toMatchObject({
+    expect(store.getTeamAgentSummary('member-run-1')).toMatchObject({
       totalTokens: 50,
       estimatedApiTotalCost: 0.002,
       apiCostStatus: 'estimated',
     });
-    expect(store.getRunSummary('member-run-2')).toMatchObject({
+    expect(store.getTeamAgentSummary('member-run-2')).toMatchObject({
       totalTokens: 25,
       estimatedApiTotalCost: null,
       apiCostStatus: 'price_missing',
     });
     expect(store.getTeamSummary('team-run-1')).toMatchObject({
-      runId: 'team-run-1',
+      runId: null,
       grossInputTokens: 60,
       standardInputTokens: 60,
       outputTokens: 15,
@@ -251,7 +260,7 @@ describe('tokenUsageMeterStore', () => {
       fetchPolicy: 'network-only',
     }));
     expect(fetchedSummary).toMatchObject({
-      runId: 'team-run-1',
+      runId: 'backend-member-run-id',
       rootTeamRunId: 'team-run-1',
       grossInputTokens: 900,
       outputTokens: 90,
@@ -274,13 +283,9 @@ describe('tokenUsageMeterStore', () => {
       usageReportCount: 9,
     }));
 
-    store.applyTokenUsageUpdated(buildPayload({
+    store.applyTeamTokenUsage('team-run-1', 'member-run-3', buildTeamPayload('member-run-3', {
       usage_event_id: 'post-ledger-live-event',
       idempotency_key: 'post-ledger-live-key',
-      run_id: 'member-run-3',
-      root_team_run_id: 'team-run-1',
-      member_agent_run_id: 'member-run-3',
-      member_route_key: 'api_e2e_engineer',
       meter_delta_input_tokens: 10,
       meter_delta_output_tokens: 2,
       meter_delta_total_tokens: 12,
@@ -290,7 +295,7 @@ describe('tokenUsageMeterStore', () => {
     }));
 
     expect(store.getTeamSummary('team-run-1')).toMatchObject({
-      runId: 'team-run-1',
+      runId: 'backend-member-run-id',
       rootTeamRunId: 'team-run-1',
       grossInputTokens: 910,
       outputTokens: 92,
@@ -306,8 +311,6 @@ describe('tokenUsageMeterStore', () => {
     const memberSummary = buildSummary({
       runId: 'member-run-1',
       rootTeamRunId: 'team-run-1',
-      memberAgentRunId: 'member-run-1',
-      memberRouteKey: 'solution_designer',
       grossInputTokens: 100,
       outputTokens: 10,
       totalTokens: 110,
@@ -326,8 +329,7 @@ describe('tokenUsageMeterStore', () => {
 
     await store.fetchTeamMemberSummary({
       teamRunId: 'team-run-1',
-      memberAgentRunId: 'member-run-1',
-      memberRouteKey: 'solution_designer',
+      agentRunId: 'member-run-1',
     });
 
     expect(store.getRunSummary('member-run-1')).toMatchObject({ totalTokens: 110 });

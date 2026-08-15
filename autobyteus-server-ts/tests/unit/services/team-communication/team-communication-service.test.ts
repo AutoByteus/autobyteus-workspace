@@ -1,245 +1,153 @@
-import fs from "node:fs/promises";
-import os from "node:os";
-import path from "node:path";
-import { afterEach, describe, expect, it } from "vitest";
-import { AgentRunEventType, type AgentRunEvent } from "../../../../src/agent-execution/domain/agent-run-event.js";
-import { TeamRunEventSourceType, type TeamRunEvent } from "../../../../src/agent-team-execution/domain/team-run-event.js";
+import { describe, expect, it, vi } from "vitest";
+import { buildDeliveryEndpointForParticipant } from "../../../../src/agent-team-execution/domain/inter-agent-message-delivery.js";
+import type { TeamMemberExecutionIdentity } from "../../../../src/agent-team-execution/domain/team-member-execution-identity.js";
 import type { TeamRun } from "../../../../src/agent-team-execution/domain/team-run.js";
+import { TeamRunEventSourceType } from "../../../../src/agent-team-execution/domain/team-run-event.js";
+import type { PreparedTeamMessageAppend } from "../../../../src/agent-team-execution/services/team-run-persistence-contract.js";
 import { TeamCommunicationService } from "../../../../src/services/team-communication/team-communication-service.js";
 
-const waitForCondition = async (
-  predicate: () => boolean | Promise<boolean>,
-  timeoutMs = 2000,
-): Promise<void> => {
-  const deadline = Date.now() + timeoutMs;
-  let lastValue = false;
-  while (Date.now() < deadline) {
-    lastValue = await predicate();
-    if (lastValue) {
-      return;
+const rootTeamRunId = "root-team-run";
+const senderIdentity: TeamMemberExecutionIdentity = Object.freeze({
+  rootTeamRunId,
+  memberAddress: "/sender",
+  agentRunId: "sender-run",
+});
+const receiverIdentity: TeamMemberExecutionIdentity = Object.freeze({
+  rootTeamRunId,
+  memberAddress: "/squad/receiver",
+  agentRunId: "receiver-run",
+});
+
+const sender = buildDeliveryEndpointForParticipant(Object.freeze({
+  kind: "agent" as const,
+  identity: senderIdentity,
+  displayName: "sender",
+}));
+
+const buildHarness = (input: {
+  currentAgent?: (identity: TeamMemberExecutionIdentity) => boolean;
+  commit?: (plan: PreparedTeamMessageAppend) => Promise<
+    | { outcome: "committed" }
+    | { outcome: "conflict"; code: "TEAM_MESSAGE_COMMIT_CONFLICT"; message: string }
+  >;
+} = {}) => {
+  const cancel = vi.fn();
+  const release = vi.fn();
+  const reservationCommit = vi.fn(() => Object.freeze({ release }));
+  const reserveDirectAgentInput = vi.fn(async () => ({
+    reserved: true as const,
+    reservation: Object.freeze({ agentRunId: receiverIdentity.agentRunId, cancel, commit: reservationCommit }),
+  }));
+  const publish = vi.fn();
+  const replaceSnapshot = vi.fn();
+  const commit = vi.fn(input.commit ?? (async (plan: PreparedTeamMessageAppend) => {
+    const prepared = plan.prepareAgainstCurrent();
+    if (!prepared.prepared) {
+      return { outcome: "conflict" as const, code: prepared.code, message: prepared.message };
     }
-    await new Promise((resolve) => setTimeout(resolve, 10));
-  }
-  expect(lastValue).toBe(true);
+    prepared.commit.commitAfterDurability();
+    return { outcome: "committed" as const };
+  }));
+  const service = new TeamCommunicationService({
+    rootTeamRunId,
+    initial: Object.freeze({ schemaVersion: 1 as const, rootTeamRunId, messages: Object.freeze([]) }),
+    isCurrentAgent: input.currentAgent ?? (() => true),
+    requireContainingTeamRun: vi.fn(async () => ({ reserveDirectAgentInput }) as unknown as TeamRun),
+    commit,
+    publish,
+    replaceSnapshot,
+  });
+  return { service, cancel, release, reservationCommit, reserveDirectAgentInput, publish, replaceSnapshot, commit };
 };
 
+const intent = (overrides: Record<string, unknown> = {}) => ({
+  rootTeamRunId,
+  sender,
+  recipientAddress: "/squad/receiver",
+  content: "Please review the attached report.",
+  messageType: "handoff",
+  referenceFiles: ["/tmp/report.md"],
+  ...overrides,
+});
+
 describe("TeamCommunicationService", () => {
-  const tempDirs: string[] = [];
+  it("commits one root-owned message and only then releases exact receiver input", async () => {
+    const harness = buildHarness();
 
-  const memberAddress = (memberRouteKey: string) => ({
-    segments: [{ kind: "member" as const, memberRouteKey }],
-  });
+    await expect(harness.service.deliver({
+      intent: intent(),
+      receiverIdentity,
+      receiverDisplayName: "receiver",
+    })).resolves.toEqual({ accepted: true, agentRunId: "receiver-run", displayName: "receiver" });
 
-  const taskTeamChildAddress = (
-    sourceTeamRouteKey: string,
-    taskTeamRunId: string,
-    memberRouteKey: string,
-  ) => ({
-    segments: [
-      { kind: "member" as const, memberRouteKey: sourceTeamRouteKey },
-      { kind: "task_team" as const, taskTeamRunId },
-      { kind: "member" as const, memberRouteKey },
-    ],
-  });
-
-  const createTempDir = async (): Promise<string> => {
-    const dir = await fs.mkdtemp(path.join(os.tmpdir(), "team-communication-service-"));
-    tempDirs.push(dir);
-    return dir;
-  };
-
-  const createFakeTeamRun = (teamRunId: string) => {
-    let listener: ((event: TeamRunEvent) => void) | null = null;
-    const teamRun = {
-      runId: teamRunId,
-      subscribeToEvents(callback: (event: TeamRunEvent) => void) {
-        listener = callback;
-        return () => {
-          listener = null;
-        };
-      },
-    } as unknown as TeamRun;
-
-    return {
-      teamRun,
-      emit(agentEvent: AgentRunEvent) {
-        listener?.({
-          eventSourceType: TeamRunEventSourceType.AGENT,
-          teamRunId,
-          data: {
-            runtimeKind: "codex_app_server",
-            memberName: "receiver",
-            memberRunId: agentEvent.runId,
-            agentEvent,
-          },
-        } as TeamRunEvent);
-      },
-      emitTeamEvent(event: TeamRunEvent) {
-        listener?.(event);
-      },
-    };
-  };
-
-  afterEach(async () => {
-    await Promise.all(tempDirs.splice(0).map((dir) => fs.rm(dir, { recursive: true, force: true })));
-  });
-
-  it("persists address-first team communication messages with child reference files by message id", async () => {
-    const memoryDir = await createTempDir();
-    const service = new TeamCommunicationService({ memoryDir });
-    const { teamRun, emit } = createFakeTeamRun("team-1");
-    const unsubscribe = service.attachToTeamRun(teamRun);
-
-    emit({
-      eventType: AgentRunEventType.TEAM_COMMUNICATION_MESSAGE,
-      runId: "receiver-run-1",
-      payload: {
-        messageId: "message-1",
-        teamRunId: "team-1",
-        senderAddress: memberAddress("sender"),
-        receiverAddress: memberAddress("receiver"),
-        content: "Please review the attached report.",
-        messageType: "handoff",
-        referenceFiles: [
-          {
-            referenceId: "ref-1",
-            path: "/tmp/report.md",
-            type: "file",
-            createdAt: "2026-04-08T00:00:00.000Z",
-            updatedAt: "2026-04-08T00:00:00.000Z",
-          },
-        ],
-        createdAt: "2026-04-08T00:00:00.000Z",
-      },
-      statusHint: null,
-    });
-
-    const projectionPath = path.join(
-      memoryDir,
-      "agent_teams",
-      "team-1",
-      "team_communication_messages.json",
+    expect(harness.reserveDirectAgentInput).toHaveBeenCalledWith(
+      "receiver-run",
+      expect.objectContaining({
+        content: expect.stringContaining("Please review the attached report."),
+        metadata: expect.objectContaining({
+          team_run_id: rootTeamRunId,
+          sender_agent_id: "sender-run",
+          receiver_member_address: "/squad/receiver",
+          reference_files: ["/tmp/report.md"],
+        }),
+      }),
     );
-    await waitForCondition(async () => {
-      try {
-        return (await fs.readFile(projectionPath, "utf-8")).includes("message-1");
-      } catch {
-        return false;
-      }
-    });
-
-    unsubscribe();
-
-    const projection = JSON.parse(await fs.readFile(projectionPath, "utf-8"));
-    expect(projection).toEqual(expect.objectContaining({ teamRunId: "team-1" }));
-    expect(projection.messages).toEqual([
-      expect.objectContaining({
-        messageId: "message-1",
-        senderAddress: memberAddress("sender"),
-        receiverAddress: memberAddress("receiver"),
+    expect(harness.commit).toHaveBeenCalledOnce();
+    expect(harness.reservationCommit).toHaveBeenCalledOnce();
+    expect(harness.release).toHaveBeenCalledOnce();
+    expect(harness.cancel).not.toHaveBeenCalled();
+    expect(harness.service.getSnapshot()).toMatchObject({
+      schemaVersion: 1,
+      rootTeamRunId,
+      messages: [{
+        senderAgentRunId: "sender-run",
+        receiverAgentRunId: "receiver-run",
         content: "Please review the attached report.",
         messageType: "handoff",
-        referenceFiles: [expect.objectContaining({ referenceId: "ref-1", path: "/tmp/report.md" })],
-      }),
-    ]);
-    expect(projection.messages[0]).not.toHaveProperty("teamRunId");
-    expect(projection.messages[0]).not.toHaveProperty("senderRunId");
-    expect(projection.messages[0]).not.toHaveProperty("receiverRunId");
-    expect(projection.messages[0]).not.toHaveProperty("updatedAt");
-  });
-
-  it("does not derive references by scanning natural message content", async () => {
-    const memoryDir = await createTempDir();
-    const service = new TeamCommunicationService({ memoryDir });
-    const { teamRun, emit } = createFakeTeamRun("team-1");
-    service.attachToTeamRun(teamRun);
-
-    emit({
-      eventType: AgentRunEventType.TEAM_COMMUNICATION_MESSAGE,
-      runId: "receiver-run-1",
-      payload: {
-        messageId: "message-with-prose-path",
-        teamRunId: "team-1",
-        senderAddress: memberAddress("sender"),
-        receiverAddress: memberAddress("receiver"),
-        content: "The prose may mention /tmp/not-an-artifact.md, but reference_files is the only source.",
-        messageType: "handoff",
-        createdAt: "2026-04-08T00:00:00.000Z",
-      },
-      statusHint: null,
+        referenceFiles: ["/tmp/report.md"],
+      }],
     });
-
-    const projection = await service.getProjectionForTeamRun(teamRun);
-    expect(projection.messages).toEqual([
-      expect.objectContaining({
-        messageId: "message-with-prose-path",
-        referenceFiles: [],
-      }),
+    expect(harness.replaceSnapshot).toHaveBeenCalledWith(harness.service.getSnapshot());
+    expect(harness.publish.mock.calls.map(([event]) => event.eventSourceType)).toEqual([
+      TeamRunEventSourceType.COMMUNICATION,
+      TeamRunEventSourceType.MEMBER_INPUT,
     ]);
   });
 
-  it("persists canonical communication events by sender and receiver addresses", async () => {
-    const memoryDir = await createTempDir();
-    const service = new TeamCommunicationService({ memoryDir });
-    const { teamRun, emitTeamEvent } = createFakeTeamRun("team-1");
-    service.attachToTeamRun(teamRun);
+  it("rejects a self target before reservation or persistence", async () => {
+    const harness = buildHarness();
 
-    emitTeamEvent({
-      eventSourceType: TeamRunEventSourceType.COMMUNICATION,
-      teamRunId: "team-1",
-      sourcePath: ["program_manager"],
-      data: {
-        messageId: "message-task-team-child",
-        teamRunId: "team-1",
-        senderAddress: memberAddress("program_manager"),
-        receiverAddress: taskTeamChildAddress("BuildSquad", "task-team-run-1", "review_lead"),
-        content: "Please coordinate this build.",
-        messageType: "assignment",
-        referenceFiles: [],
-        createdAt: "2026-04-08T00:00:01.000Z",
-      },
-    });
-
-    const projection = await service.getProjectionForTeamRun(teamRun);
-    expect(projection.messages).toEqual([
-      expect.objectContaining({
-        messageId: "message-task-team-child",
-        senderAddress: memberAddress("program_manager"),
-        receiverAddress: taskTeamChildAddress("BuildSquad", "task-team-run-1", "review_lead"),
-      }),
-    ]);
+    await expect(harness.service.deliver({
+      intent: intent({ recipientAddress: "/sender" }),
+      receiverIdentity: senderIdentity,
+      receiverDisplayName: "sender",
+    })).resolves.toMatchObject({ accepted: false, code: "COLLABORATION_SELF_TARGET_REJECTED" });
+    expect(harness.reserveDirectAgentInput).not.toHaveBeenCalled();
+    expect(harness.commit).not.toHaveBeenCalled();
   });
 
-  it("keys bridged child communication projections by the outer parent team run", async () => {
-    const memoryDir = await createTempDir();
-    const service = new TeamCommunicationService({ memoryDir });
-    const { teamRun, emitTeamEvent } = createFakeTeamRun("team-parent");
-    service.attachToTeamRun(teamRun);
+  it("rejects stale execution identity before reserving receiver input", async () => {
+    const harness = buildHarness({ currentAgent: (identity) => identity.agentRunId !== "receiver-run" });
 
-    emitTeamEvent({
-      eventSourceType: TeamRunEventSourceType.COMMUNICATION,
-      teamRunId: "team-parent",
-      sourcePath: ["BuildSquad", "review_lead"],
-      data: {
-        messageId: "message-child-internal",
-        teamRunId: "team-child",
-        senderAddress: taskTeamChildAddress("BuildSquad", "task-team-run-1", "review_lead"),
-        receiverAddress: taskTeamChildAddress("BuildSquad", "task-team-run-1", "qa_specialist"),
-        content: "Please test this.",
-        messageType: "child_internal",
-        referenceFiles: [],
-        createdAt: "2026-04-08T00:00:02.000Z",
-      },
-    });
+    await expect(harness.service.deliver({
+      intent: intent(),
+      receiverIdentity,
+      receiverDisplayName: "receiver",
+    })).resolves.toMatchObject({ accepted: false, code: "COLLABORATION_CONTEXT_REQUIRED" });
+    expect(harness.reserveDirectAgentInput).not.toHaveBeenCalled();
+  });
 
-    const parentProjection = await service.getProjectionForTeamRun(teamRun);
-    expect(parentProjection).toEqual(expect.objectContaining({ teamRunId: "team-parent" }));
-    expect(parentProjection.messages).toEqual([
-      expect.objectContaining({
-        messageId: "message-child-internal",
-        senderAddress: taskTeamChildAddress("BuildSquad", "task-team-run-1", "review_lead"),
-        receiverAddress: taskTeamChildAddress("BuildSquad", "task-team-run-1", "qa_specialist"),
-      }),
-    ]);
+  it("closes admission without fallback and leaves the V1 snapshot unchanged", async () => {
+    const harness = buildHarness();
+    harness.service.closeAdmission();
+
+    await expect(harness.service.deliver({
+      intent: intent(),
+      receiverIdentity,
+      receiverDisplayName: "receiver",
+    })).resolves.toMatchObject({ accepted: false, code: "TEAM_RUN_NOT_ACCEPTING_MESSAGES" });
+    expect(harness.service.getSnapshot().messages).toEqual([]);
+    expect(harness.reserveDirectAgentInput).not.toHaveBeenCalled();
+    expect(harness.commit).not.toHaveBeenCalled();
   });
 });

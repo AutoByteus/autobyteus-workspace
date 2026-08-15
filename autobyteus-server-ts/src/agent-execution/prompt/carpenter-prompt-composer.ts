@@ -34,7 +34,7 @@ const buildSharedCarpenterPromptSections = (
 
   const sections: string[] = [renderAgentIdentitySection(input.agentDefinition)];
   if (input.memberTeamContext) {
-    const teamInstruction = renderTeamInstructionSection(input.memberTeamContext.teamInstruction);
+    const teamInstruction = renderTeamInstructionSection(input.memberTeamContext.authoredTeamInstruction);
     if (teamInstruction) {
       sections.push(teamInstruction);
     }

@@ -8,11 +8,11 @@ import {
 import {
   serializeTeamExecutionAddress,
   type TeamExecutionAddress,
-} from "../../agent-team-execution/domain/team-execution-address.js";
+} from "../legacy/team-execution-address.js";
 import {
   TASK_DELEGATION_RECORDS_FILE_NAME,
 } from "../../agent-team-execution/task-delegation/task-delegation-record.js";
-import { normalizeTaskDelegationRecordsFile } from "../../agent-team-execution/task-delegation/records/task-delegation-records-normalizer.js";
+import { normalizePredecessorTaskDelegationRecordsFile } from "../predecessor-task-delegation-records.js";
 
 export type TokenUsageTaskTeamRunIndexEntry = Readonly<{
   rootTeamRunId: string;
@@ -119,7 +119,7 @@ export const buildTokenUsageTaskTeamRunIndex = async (
     }
 
     try {
-      const recordsFile = normalizeTaskDelegationRecordsFile(raw, {
+      const recordsFile = normalizePredecessorTaskDelegationRecordsFile(raw, {
         teamRunId: candidate.rootTeamRunId,
       });
       for (const record of recordsFile.records) {

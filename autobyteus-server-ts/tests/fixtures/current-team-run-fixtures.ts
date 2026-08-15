@@ -13,7 +13,8 @@ import {
   type TeamRunAgentTeamNode,
   type TeamRunNode,
 } from "../../src/agent-team-execution/domain/team-run-config.js";
-import { createTeamExecutionAddress } from "../../src/agent-team-execution/domain/team-execution-address.js";
+import type { TeamRunExecutionTreeSnapshot } from "../../src/agent-team-execution/domain/team-run-execution-tree.js";
+import { buildInitialTeamRunExecutionTree } from "../../src/agent-team-execution/services/team-run-execution-tree-builder.js";
 import { RuntimeKind } from "../../src/runtime-management/runtime-kind-enum.js";
 
 export const testAgentNode = (
@@ -86,52 +87,37 @@ export const testTeamRunConfig = (input: {
 
 export const testMemberTeamContext = (input: {
   memberAddress?: string;
-  teamAddress?: string;
-  coordinatorAddress?: string;
   rootTeamRunId?: string;
-  teamRunId?: string;
-  teamDefinitionId?: string;
   agentRunId?: string;
-  runtimeKind?: RuntimeKind;
-  taskTeamRunIds?: readonly string[];
   deliverInterAgentMessage?: MemberCollaborationContext["deliverInterAgentMessage"];
   outgoingHandoffs?: MemberCollaborationContext["outgoingHandoffs"];
   teamInstruction?: string | null;
-  taskAgentRunId?: string | null;
-  taskId?: string | null;
 } = {}): MemberTeamContext => {
   const memberAddress = assertAgentTeamAddress(input.memberAddress ?? "/coordinator");
-  const teamAddress = assertAgentTeamAddress(input.teamAddress ?? "/");
-  const coordinatorAddress = assertAgentTeamAddress(input.coordinatorAddress ?? memberAddress);
   const rootTeamRunId = input.rootTeamRunId ?? "root-team-run";
   const agentRunId = input.agentRunId ?? `run-${getAgentTeamAddressBasename(memberAddress) ?? "agent"}`;
   return new MemberTeamContext({
-    teamRunId: input.teamRunId ?? rootTeamRunId,
-    teamDefinitionId: input.teamDefinitionId ?? "root-team-definition",
-    teamName: getAgentTeamAddressBasename(teamAddress) ?? "Root Team",
-    teamBackendKind: TeamBackendKind.MIXED,
-    teamAddress,
-    memberAddress,
-    agentRunId,
-    runtimeKind: input.runtimeKind ?? RuntimeKind.AUTOBYTEUS,
-    coordinatorAddress,
-    teamInstruction: input.teamInstruction ?? null,
+    identity: { rootTeamRunId, memberAddress, agentRunId },
+    authoredTeamInstruction: input.teamInstruction ?? null,
     collaboration: new MemberCollaborationContext({
-      addressing: {
-        rootTeamRunId,
-        memberAddress,
-      },
       outgoingHandoffs: input.outgoingHandoffs,
       deliverInterAgentMessage: input.deliverInterAgentMessage,
     }),
-    executionAddress: createTeamExecutionAddress({
-      rootTeamRunId,
-      taskTeamRunIds: input.taskTeamRunIds ?? [],
-      memberAddress,
-      taskAgentRunId: input.taskAgentRunId ?? null,
-    }),
-    taskId: input.taskId ?? null,
   });
 };
 
 export const address = (value: string): AgentTeamAddress => assertAgentTeamAddress(value);
+
+/** Current strict V1 execution-tree fixture derived through the production builder. */
+export const testExecutionTree = (input: {
+  children: readonly TeamRunNode[];
+  coordinatorAddress: string;
+  rootTeamRunId?: string;
+  rootTeamDefinitionId?: string;
+  teamDefinitionName?: string;
+  createdAt?: string;
+}): TeamRunExecutionTreeSnapshot => buildInitialTeamRunExecutionTree({
+  config: testTeamRunConfig(input),
+  teamDefinitionName: input.teamDefinitionName ?? "Test Team",
+  createdAt: input.createdAt ?? "2026-08-15T00:00:00.000Z",
+});

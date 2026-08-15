@@ -1,151 +1,79 @@
 import { describe, expect, it, vi } from "vitest";
-import type { TeamRun } from "../../../src/agent-team-execution/domain/team-run.js";
+import type { RootTeamRun } from "../../../src/agent-team-execution/domain/root-team-run.js";
 import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
 
-const createManager = () => {
-  const teamCommunicationService = {
-    attachToTeamRun: vi.fn(() => vi.fn()),
-  };
-  const runFileChangeService = {
-    attachToTeamRun: vi.fn(() => vi.fn()),
-  };
-  const manager = new AgentTeamRunManager({
-    mixedTeamRunBackendFactory: {} as never,
-    teamCommunicationService: teamCommunicationService as never,
-    runFileChangeService: runFileChangeService as never,
-  });
-  return { manager, teamCommunicationService, runFileChangeService };
-};
+const createManager = () => new AgentTeamRunManager({
+  memoryDir: "/tmp/api-e2e-agent-team-run-manager",
+  mixedTeamRunBackendFactory: {} as never,
+});
 
-const createRun = (input: {
-  runId?: string;
+const createRoot = (input: {
+  teamRunId?: string;
   active?: () => boolean;
   terminate?: () => Promise<{ accepted: boolean; code?: string; message?: string }>;
 } = {}) => ({
-  runId: input.runId ?? "team-run-1",
+  teamRunId: input.teamRunId ?? "team-run-1",
   isActive: input.active ?? (() => true),
   terminate: vi.fn(input.terminate ?? (async () => ({ accepted: true }))),
-}) as unknown as TeamRun;
+}) as unknown as RootTeamRun;
 
-const register = (manager: AgentTeamRunManager, run: TeamRun): void => {
-  (manager as any).registerActiveRun(run);
+const register = (manager: AgentTeamRunManager, root: RootTeamRun): void => {
+  (manager as unknown as { register(root: RootTeamRun): void }).register(root);
 };
+const unregister = (manager: AgentTeamRunManager, id: string, root: RootTeamRun): boolean =>
+  (manager as unknown as { unregister(id: string, root: RootTeamRun): boolean }).unregister(id, root);
 
-const unregister = (
-  manager: AgentTeamRunManager,
-  teamRunId: string,
-  expectedRun: TeamRun,
-): boolean => (manager as any).unregisterActiveRun(teamRunId, expectedRun);
-
-describe("AgentTeamRunManager lifecycle", () => {
-  it("publishes active after registration and inactive only after accepted termination", async () => {
-    const { manager } = createManager();
+describe("AgentTeamRunManager root lifecycle", () => {
+  it("publishes active after root registration and inactive only after accepted termination", async () => {
+    const manager = createManager();
     const lifecycle: Array<{ teamRunId: string; isActive: boolean }> = [];
     manager.subscribeToLifecycle("team-run-1", (snapshot) => lifecycle.push(snapshot));
-    const run = createRun();
+    const root = createRoot();
 
-    register(manager, run);
-    expect(manager.getLifecycleSnapshot("team-run-1")).toEqual({
-      teamRunId: "team-run-1",
-      isActive: true,
-    });
-    expect(lifecycle).toEqual([{ teamRunId: "team-run-1", isActive: true }]);
-
+    register(manager, root);
+    expect(manager.getActiveRun("team-run-1")).toBe(root);
     await expect(manager.terminateTeamRun("team-run-1")).resolves.toBe(true);
-    expect(run.terminate).toHaveBeenCalledTimes(1);
-    expect(manager.getLifecycleSnapshot("team-run-1")).toEqual({
-      teamRunId: "team-run-1",
-      isActive: false,
-    });
+    expect(root.terminate).toHaveBeenCalledTimes(1);
     expect(lifecycle).toEqual([
       { teamRunId: "team-run-1", isActive: true },
       { teamRunId: "team-run-1", isActive: false },
     ]);
   });
 
-  it("keeps lifecycle active when backend termination is rejected", async () => {
-    const { manager } = createManager();
-    const lifecycle = vi.fn();
-    manager.subscribeToLifecycle("team-run-1", lifecycle);
-    const run = createRun({
-      terminate: async () => ({
-        accepted: false,
-        code: "ACTIVE_TERMINATION_FAILED",
-        message: "member refused termination",
-      }),
-    });
-    register(manager, run);
-    lifecycle.mockClear();
+  it("keeps the exact root active when termination is rejected", async () => {
+    const manager = createManager();
+    const root = createRoot({ terminate: async () => ({ accepted: false, code: "ACTIVE_WORK" }) });
+    register(manager, root);
 
     await expect(manager.terminateTeamRun("team-run-1")).resolves.toBe(false);
-
-    expect(manager.getLifecycleSnapshot("team-run-1").isActive).toBe(true);
-    expect(lifecycle).not.toHaveBeenCalled();
+    expect(manager.getActiveRun("team-run-1")).toBe(root);
   });
 
-  it("replaces an active run without lifecycle flicker and rejects stale unregister", () => {
-    const { manager } = createManager();
-    const lifecycle = vi.fn();
-    manager.subscribeToLifecycle("team-run-1", lifecycle);
-    const staleRun = createRun();
-    const replacementRun = createRun();
+  it("rejects duplicate root registration and makes exact unregister idempotent", () => {
+    const manager = createManager();
+    const root = createRoot();
+    register(manager, root);
 
-    register(manager, staleRun);
-    lifecycle.mockClear();
-    register(manager, replacementRun);
-
-    expect(lifecycle).not.toHaveBeenCalled();
-    expect(unregister(manager, "team-run-1", staleRun)).toBe(false);
-    expect(manager.getActiveRun("team-run-1")).toBe(replacementRun);
-    expect(manager.getLifecycleSnapshot("team-run-1").isActive).toBe(true);
+    expect(() => register(manager, createRoot())).toThrow("Cannot register RootTeamRun 'team-run-1'.");
+    expect(unregister(manager, "team-run-1", createRoot())).toBe(false);
+    expect(unregister(manager, "team-run-1", root)).toBe(true);
+    expect(unregister(manager, "team-run-1", root)).toBe(false);
   });
 
-  it("routes stale-backend detection through the same idempotent inactive transition", () => {
-    const { manager } = createManager();
-    const lifecycle = vi.fn();
-    let isBackendActive = true;
-    const run = createRun({ active: () => isBackendActive });
-    manager.subscribeToLifecycle("team-run-1", lifecycle);
-    register(manager, run);
-    lifecycle.mockClear();
+  it("removes an inactive root once and isolates lifecycle listener failures", () => {
+    const manager = createManager();
+    const healthy = vi.fn();
+    let active = true;
+    const root = createRoot({ active: () => active });
+    manager.subscribeToLifecycle("team-run-1", () => { throw new Error("listener failure"); });
+    manager.subscribeToLifecycle("team-run-1", healthy);
 
-    isBackendActive = false;
-
-    expect(manager.getLifecycleSnapshot("team-run-1")).toEqual({
-      teamRunId: "team-run-1",
-      isActive: false,
-    });
-    expect(lifecycle).toHaveBeenCalledTimes(1);
-    expect(lifecycle).toHaveBeenCalledWith({ teamRunId: "team-run-1", isActive: false });
-    expect(manager.getLifecycleSnapshot("team-run-1").isActive).toBe(false);
-    expect(lifecycle).toHaveBeenCalledTimes(1);
-  });
-
-  it("rejects inactive backends before registration", () => {
-    const { manager } = createManager();
-    const lifecycle = vi.fn();
-    manager.subscribeToLifecycle("team-run-1", lifecycle);
-
-    expect(() => register(manager, createRun({ active: () => false }))).toThrow(
-      "Cannot register inactive team run 'team-run-1'.",
-    );
-    expect(manager.getLifecycleSnapshot("team-run-1").isActive).toBe(false);
-    expect(lifecycle).not.toHaveBeenCalled();
-  });
-
-  it("makes unregister idempotent and isolates lifecycle listener failures", () => {
-    const { manager } = createManager();
-    const healthyListener = vi.fn();
-    manager.subscribeToLifecycle("team-run-1", () => {
-      throw new Error("listener failure");
-    });
-    manager.subscribeToLifecycle("team-run-1", healthyListener);
-    const run = createRun();
-
-    expect(() => register(manager, run)).not.toThrow();
-    expect(healthyListener).toHaveBeenCalledWith({ teamRunId: "team-run-1", isActive: true });
-    expect(unregister(manager, "team-run-1", run)).toBe(true);
-    expect(unregister(manager, "team-run-1", run)).toBe(false);
-    expect(manager.getLifecycleSnapshot("team-run-1").isActive).toBe(false);
+    expect(() => register(manager, root)).not.toThrow();
+    healthy.mockClear();
+    active = false;
+    expect(manager.getActiveRun("team-run-1")).toBeNull();
+    expect(manager.getActiveRun("team-run-1")).toBeNull();
+    expect(healthy).toHaveBeenCalledTimes(1);
+    expect(healthy).toHaveBeenCalledWith({ teamRunId: "team-run-1", isActive: false });
   });
 });

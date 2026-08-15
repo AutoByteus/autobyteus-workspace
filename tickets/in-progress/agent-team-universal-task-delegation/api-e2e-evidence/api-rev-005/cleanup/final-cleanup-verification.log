@@ -1,0 +1,12 @@
+API-REV-005 final cleanup verification 2026-08-15T15:56:05Z
+owned ports
+protected ports (observation only; no process action)
+owned paths
+ABSENT autobyteus-server-ts/tests/.tmp/api-rev-005-live-20260815-1
+ABSENT autobyteus-server-ts/db/api-rev-005-live-20260815-1.db
+ABSENT autobyteus-server-ts/db/api-rev-005-live-20260815-1.db.secret.key
+ABSENT autobyteus-server-ts/db/api-rev-005-live-20260815-1.db-wal
+ABSENT autobyteus-server-ts/db/api-rev-005-live-20260815-1.db-shm
+ABSENT autobyteus-server-ts/db/api-rev-005-live-20260815-1.db-journal
+operational database action NONE
+protected port process action NONE

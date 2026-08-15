@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "createdAt": "2026-08-15T15:50:41.755Z",
+  "archivedAt": null,
+  "applicationBinding": null,
+  "handoffs": [],
+  "rootTeam": {
+    "teamDefinitionId": "utd-root-team-api-rev-005-1786807916040",
+    "teamDefinitionName": "utd_root_team_api_rev_005_1786807916040",
+    "teamRunId": "utd_root_team_api_rev_005_1786807916040_b1d790907c98417c8ec7fab33fdcf7f6",
+    "coordinatorAddress": "/coordinator",
+    "members": [
+      {
+        "address": "/coordinator",
+        "agentDefinitionId": "utd-coordinator-api-rev-005-1786807916040",
+        "role": null,
+        "description": null,
+        "agentRunId": "utd_coordinator_api_rev_005_1786807916040_494c6e6aed49484ab5dd69e2560c1213",
+        "platformAgentRunId": null,
+        "launchConfiguration": {
+          "runtimeKind": "CLAUDE",
+          "llmModelIdentifier": "sonnet",
+          "llmConfig": null,
+          "autoExecuteTools": true,
+          "skillAccessMode": "NONE",
+          "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-005/live/workspaces/api_rev_005_1786807916040"
+        }
+      },
+      {
+        "address": "/worker",
+        "agentDefinitionId": "utd-worker-api-rev-005-1786807916040",
+        "role": null,
+        "description": null,
+        "agentRunId": "utd_worker_api_rev_005_1786807916040_99820273e2644e92aaf613291fe9340c",
+        "platformAgentRunId": null,
+        "launchConfiguration": {
+          "runtimeKind": "CLAUDE",
+          "llmModelIdentifier": "sonnet",
+          "llmConfig": null,
+          "autoExecuteTools": true,
+          "skillAccessMode": "NONE",
+          "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-005/live/workspaces/api_rev_005_1786807916040"
+        }
+      },
+      {
+        "address": "/lab",
+        "teamDefinitionId": "utd-child-team-api-rev-005-1786807916040",
+        "role": null,
+        "description": null,
+        "teamRunId": "utd_child_team_api_rev_005_1786807916040_d07586b9b15142f1b797f7624fa36b81",
+        "coordinatorAddress": "/lab/lead",
+        "members": [
+          {
+            "address": "/lab/lead",
+            "agentDefinitionId": "utd-nested-coordinator-api-rev-005-1786807916040",
+            "role": null,
+            "description": null,
+            "agentRunId": "utd_nested_coordinator_api_rev_005_1786807916040_e64cf813ecc340aeb468ed64808c33ae",
+            "platformAgentRunId": null,
+            "launchConfiguration": {
+              "runtimeKind": "CLAUDE",
+              "llmModelIdentifier": "sonnet",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "skillAccessMode": "NONE",
+              "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-005/live/workspaces/api_rev_005_1786807916040"
+            }
+          },
+          {
+            "address": "/lab/researcher",
+            "agentDefinitionId": "utd-nested-worker-api-rev-005-1786807916040",
+            "role": null,
+            "description": null,
+            "agentRunId": "utd_nested_worker_api_rev_005_1786807916040_0ca72a1a90c3441dafa541a522c95ea5",
+            "platformAgentRunId": null,
+            "launchConfiguration": {
+              "runtimeKind": "CLAUDE",
+              "llmModelIdentifier": "sonnet",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "skillAccessMode": "NONE",
+              "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-005/live/workspaces/api_rev_005_1786807916040"
+            }
+          }
+        ],
+        "taskExecutions": []
+      }
+    ],
+    "taskExecutions": [
+      {
+        "address": "/worker",
+        "agentRunId": "utd_worker_api_rev_005_1786807916040_7c2fe67444c641d68e7b197b8ca052a0",
+        "platformAgentRunId": null,
+        "startedAt": "2026-08-15T15:53:14.297Z",
+        "settledAt": "2026-08-15T15:53:19.792Z"
+      }
+    ]
+  }
+}

@@ -1,0 +1,428 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+
+stdout | tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:794) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts > MigrateNativeWorkingContextSnapshotsV5Migration > converts standalone v4 with absent lineage, exact active provenance, exact cleanup, and idempotence
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+
+ ❯ tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts (6 tests | 1 failed) 92ms
+     ✓ converts standalone v4 with absent lineage, exact active provenance, exact cleanup, and idempotence 22ms
+     ✓ converts standalone v4 with zero-byte lineage, exact active provenance, exact cleanup, and idempotence 13ms
+     × uses memberRunId as team snapshot identity and publishes an empty strict v5 with warnings when nothing survives 11ms
+     ✓ skips any nonempty-lineage location before snapshot inspection or cleanup 5ms
+     ✓ retains equivalent current-v5 bytes while cleaning obsolete files and rejects identity conflict without mutation 20ms
+     ✓ runs the default prerequisite class order through the ordinary runner and preserves a raw-1-backed direct upgrade 19ms
+stdout | tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:801) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts > RemoveExternalRuntimeWorkingContextSnapshotsMigration > removes only exact standalone and recursive team Codex/Claude snapshots and is idempotent
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+
+stderr | tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts > RemoveExternalRuntimeWorkingContextSnapshotsMigration > preserves snapshots when metadata is invalid or mismatched and reports actionable failures
+Failed reading run metadata for invalid-run: SyntaxError: Expected property name or '}' in JSON at position 1 (line 1 column 2)
+
+stderr | tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts > RemoveExternalRuntimeWorkingContextSnapshotsMigration > reports a failed unlink, retains stale generic inspection with independent raws, and removes it on retry
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/external-snapshot-cleanup-U6cu4W/agents/codex-unlink-failure/working_context_snapshot.json
+
+ ❯ tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts (4 tests | 1 failed) 56ms
+     × removes only exact standalone and recursive team Codex/Claude snapshots and is idempotent 28ms
+     ✓ does not traverse directory symlinks and unlinks only the eligible snapshot symlink, not its target 11ms
+     ✓ preserves snapshots when metadata is invalid or mismatched and reports actionable failures 5ms
+     ✓ reports a failed unlink, retains stale generic inspection with independent raws, and removes it on retry 10ms
+ ❯ tests/unit/app-data-migrations/team-run-metadata-member-tree-migration.test.ts (4 tests | 3 failed) 38ms
+     × converts legacy flat memberMetadata to canonical memberTree and creates a backup 14ms
+     × skips current memberTree metadata idempotently 5ms
+     × records partial failures without blocking other files 16ms
+     ✓ fails legacy flat metadata with nested route/path instead of guessing topology 3ms
+stdout | tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:804) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts > RawTraceActiveFileNameMigration > registers external cleanup then both raw-layout prerequisites before native snapshot conversion
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+
+ ✓ tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts (3 tests) 22ms
+stdout | tests/unit/agent-tools/mcp/agent-tool-mcp-session-service.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:808) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/agent-tools/mcp/agent-tool-mcp-session-service.test.ts (7 tests) 10ms
+stdout | tests/unit/agent-tools/team-communication/send-message-to.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:810) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/agent-tools/team-communication/send-message-to.test.ts > AutoByteus server-owned send_message_to > routes a hierarchical recipient_address through Team delivery and returns canonical JSON
+Successfully registered tool definition: 'send_message_to'
+
+ ❯ tests/unit/agent-tools/team-communication/send-message-to.test.ts (6 tests | 1 failed) 13ms
+     × routes a hierarchical recipient_address through Team delivery and returns canonical JSON 9ms
+     ✓ preserves exact-run operation codes unchanged in the public envelope 1ms
+     ✓ exposes a typed Team placement rejection without provider rewording 1ms
+     ✓ rejects recipient_address for a non-Team sender with all envelope fields 1ms
+     ✓ keeps AutoByteus and MCP 'accepted' envelopes byte-for-byte equivalent 1ms
+     ✓ keeps AutoByteus and MCP 'rejected' envelopes byte-for-byte equivalent 0ms
+ ✓ tests/unit/agent-tools/task-delegation/task-delegation-autobyteus-context.test.ts (4 tests) 4ms
+ ❯ tests/unit/services/team-communication/team-communication-service.test.ts (4 tests | 1 failed) 13ms
+     × commits one root-owned message and only then releases exact receiver input 10ms
+     ✓ rejects a self target before reservation or persistence 1ms
+     ✓ rejects stale execution identity before reserving receiver input 0ms
+     ✓ closes admission without fallback and leaves the V1 snapshot unchanged 1ms
+stdout | tests/unit/agent-tools/team-communication/get-handoff-rules.test.ts > get_handoff_rules > returns only the bound sender's ordered outgoing handoffs in canonical AutoByteus JSON
+Successfully registered tool definition: 'get_handoff_rules'
+
+ ✓ tests/unit/agent-tools/team-communication/get-handoff-rules.test.ts (5 tests) 5ms
+stdout | tests/unit/agent-tools/task-delegation/task-delegation-tool-run-router.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:814) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/agent-tools/task-delegation/task-delegation-tool-run-router.test.ts (3 tests) 5ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts > MigrateNativeWorkingContextSnapshotsV5Migration > uses memberRunId as team snapshot identity and publishes an empty strict v5 with warnings when nothing survives
+AssertionError: expected 'SUCCEEDED' to be 'SUCCEEDED_WITH_WARNINGS' // Object.is equality
+
+Expected: "SUCCEEDED_WITH_WARNINGS"
+Received: "SUCCEEDED"
+
+ ❯ tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts:265:27
+    263|     const result = await new MigrateNativeWorkingContextSnapshotsV5Mig…
+    264| 
+    265|     expect(result.status).toBe("SUCCEEDED_WITH_WARNINGS");
+       |                           ^
+    266|     expect(result.summary.details).toEqual(expect.arrayContaining([
+    267|       expect.objectContaining({
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯
+
+ FAIL  tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts > RemoveExternalRuntimeWorkingContextSnapshotsMigration > removes only exact standalone and recursive team Codex/Claude snapshots and is idempotent
+AssertionError: expected 3 to be 6 // Object.is equality
+
+- Expected
++ Received
+
+- 6
++ 3
+
+ ❯ tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts:221:41
+    219| 
+    220|     expect(first.status).toBe("SUCCEEDED");
+    221|     expect(first.summary.migratedCount).toBe(6);
+       |                                         ^
+    222|     for (const runDir of [
+    223|       standaloneDir("codex-run"),
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯
+
+ FAIL  tests/unit/app-data-migrations/team-run-metadata-member-tree-migration.test.ts > TeamRunMetadataMemberTreeMigration > converts legacy flat memberMetadata to canonical memberTree and creates a backup
+AssertionError: expected 'FAILED' to be 'SUCCEEDED' // Object.is equality
+
+Expected: "SUCCEEDED"
+Received: "FAILED"
+
+ ❯ tests/unit/app-data-migrations/team-run-metadata-member-tree-migration.test.ts:92:27
+     90|     const result = await new TeamRunMetadataMemberTreeMigration(tempDi…
+     91| 
+     92|     expect(result.status).toBe("SUCCEEDED");
+       |                           ^
+     93|     expect(result.summary.migratedCount).toBe(1);
+     94|     const converted = JSON.parse(await fs.readFile(metadataPath, "utf-…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/7]⎯
+
+ FAIL  tests/unit/app-data-migrations/team-run-metadata-member-tree-migration.test.ts > TeamRunMetadataMemberTreeMigration > skips current memberTree metadata idempotently
+AssertionError: expected 'FAILED' to be 'SUCCEEDED' // Object.is equality
+
+Expected: "SUCCEEDED"
+Received: "FAILED"
+
+ ❯ tests/unit/app-data-migrations/team-run-metadata-member-tree-migration.test.ts:112:27
+    110|     const result = await new TeamRunMetadataMemberTreeMigration(tempDi…
+    111| 
+    112|     expect(result.status).toBe("SUCCEEDED");
+       |                           ^
+    113|     expect(result.summary.scannedCount).toBe(1);
+    114|     expect(result.summary.skippedCount).toBe(1);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/7]⎯
+
+ FAIL  tests/unit/app-data-migrations/team-run-metadata-member-tree-migration.test.ts > TeamRunMetadataMemberTreeMigration > records partial failures without blocking other files
+AssertionError: expected 'FAILED' to be 'SUCCEEDED_WITH_WARNINGS' // Object.is equality
+
+Expected: "SUCCEEDED_WITH_WARNINGS"
+Received: "FAILED"
+
+ ❯ tests/unit/app-data-migrations/team-run-metadata-member-tree-migration.test.ts:128:27
+    126|     const result = await new TeamRunMetadataMemberTreeMigration(tempDi…
+    127| 
+    128|     expect(result.status).toBe("SUCCEEDED_WITH_WARNINGS");
+       |                           ^
+    129|     expect(result.summary.migratedCount).toBe(1);
+    130|     expect(result.summary.failedCount).toBe(1);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/7]⎯
+
+ FAIL  tests/unit/agent-tools/team-communication/send-message-to.test.ts > AutoByteus server-owned send_message_to > routes a hierarchical recipient_address through Team delivery and returns canonical JSON
+AssertionError: expected "vi.fn()" to be called with arguments: [ ObjectContaining{…} ]
+
+Received: 
+
+  1st vi.fn() call:
+
+  [
+-   ObjectContaining {
+-     "callerAddressing": ObjectContaining {
+-       "memberAddress": "/professor",
+-     },
++   {
+      "content": "Please review this handoff.",
+      "messageType": "handoff",
+      "recipientAddress": "./research_team/research_lead",
++     "referenceFiles": [],
+      "rootTeamRunId": "team-run-1",
++     "sender": {
++       "participant": {
++         "displayName": "professor",
++         "identity": {
++           "agentRunId": "run-professor",
++           "memberAddress": "/professor",
++           "rootTeamRunId": "team-run-1",
++         },
++         "kind": "agent",
++       },
++     },
+    },
+  ]
+
+
+Number of calls: 1
+
+ ❯ tests/unit/agent-tools/team-communication/send-message-to.test.ts:78:38
+     76|     });
+     77|     expect(globalRouter.deliver).not.toHaveBeenCalled();
+     78|     expect(deliverInterAgentMessage).toHaveBeenCalledWith(expect.objec…
+       |                                      ^
+     79|       rootTeamRunId: "team-run-1",
+     80|       recipientAddress: "./research_team/research_lead",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/7]⎯
+
+ FAIL  tests/unit/services/team-communication/team-communication-service.test.ts > TeamCommunicationService > commits one root-owned message and only then releases exact receiver input
+AssertionError: expected "vi.fn()" to be called with arguments: [ 'receiver-run', ObjectContaining{…} ]
+
+Received: 
+
+  1st vi.fn() call:
+
+  [
+    "receiver-run",
+-   ObjectContaining {
+-     "content": "Please review the attached report.",
++   AgentInputUserMessage {
++     "content": "You received a message from sender name: sender, sender id: sender-run
++ message:
++ Please review the attached report.
++
++ Reference files:
++ - /tmp/report.md",
++     "contextFiles": null,
++     "metadata": {
++       "dedupe_key": "member_input:root-team-run:receiver-run:memberinput_z9KWUe9MUK64bb3PO7xpBdMbNzshLUN1",
++       "input_origin": "inter_agent_delivery",
++       "message_id": "memberinput_z9KWUe9MUK64bb3PO7xpBdMbNzshLUN1",
++       "original_message_type": "handoff",
++       "parent_communication_message_id": "teammsg__9R26tBX4hjp2u6vRVIHm6PxdmrXQ36b",
++       "receiver_member_address": "/squad/receiver",
++       "recipient_input_message_id": "memberinput_z9KWUe9MUK64bb3PO7xpBdMbNzshLUN1",
++       "reference_files": [
++         "/tmp/report.md",
++       ],
++       "sender_agent_id": "sender-run",
++       "sender_agent_name": "sender",
++       "sender_member_address": "/sender",
++       "team_run_id": "root-team-run",
++     },
++     "senderType": "agent",
+    },
+  ]
+
+
+Number of calls: 1
+
+ ❯ tests/unit/services/team-communication/team-communication-service.test.ts:83:45
+     81|     })).resolves.toEqual({ accepted: true, agentRunId: "receiver-run",…
+     82| 
+     83|     expect(harness.reserveDirectAgentInput).toHaveBeenCalledWith(
+       |                                             ^
+     84|       "receiver-run",
+     85|       expect.objectContaining({ content: "Please review the attached r…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/7]⎯
+
+
+ Test Files  5 failed | 5 passed (10)
+      Tests  7 failed | 39 passed (46)
+   Start at  13:17:00
+   Duration  12.59s (transform 4.03s, setup 52ms, import 10.70s, tests 258ms, environment 1ms)
+

@@ -28,36 +28,13 @@
       </div>
     </div>
 
-    <div v-if="activeTeamContext" class="flex-grow min-h-0 flex flex-col">
-      <div class="flex-grow min-h-0">
+    <div v-if="activeTeamContext" class="flex min-h-0 flex-grow flex-col">
+      <div class="min-h-0 flex-grow">
         <AgentTeamEventMonitor>
           <template #composerContext>
             <SkillImprovementComposerCta :target="teamMemberSkillImprovementTarget" />
           </template>
         </AgentTeamEventMonitor>
-      </div>
-
-      <div v-if="showSharedComposer" class="border-t border-gray-200 bg-white px-4 py-3">
-        <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">{{ $t('workspace.components.workspace.team.TeamWorkspaceView.replying_to') }}<span class="text-gray-800">{{ composerTargetTitle }}</span>
-        </p>
-        <SkillImprovementComposerCta :target="teamMemberSkillImprovementTarget" />
-        <AgentUserInputForm v-if="focusedMemberContext" />
-        <form v-else class="space-y-2" @submit.prevent="sendSubteamMessage">
-          <textarea
-            v-model="subteamDraft"
-            class="min-h-[88px] w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
-            :placeholder="$t('workspace.components.workspace.team.TeamWorkspaceView.send_subteam_placeholder')"
-          />
-          <div class="flex justify-end">
-            <button
-              type="submit"
-              class="rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
-              :disabled="!subteamDraft.trim() || isSendingSubteamDraft"
-            >
-              {{ $t('workspace.components.workspace.team.TeamWorkspaceView.send_to_subteam') }}
-            </button>
-          </div>
-        </form>
       </div>
     </div>
 
@@ -76,11 +53,9 @@ import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
 import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
-import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useWorkspaceCenterViewStore } from '~/stores/workspaceCenterViewStore';
 import { useTeamMemberPresentation } from '~/composables/useTeamMemberPresentation';
-import AgentUserInputForm from '~/components/agentInput/AgentUserInputForm.vue';
 import AgentStatusDisplay from '~/components/workspace/agent/AgentStatusDisplay.vue';
 import AgentTeamEventMonitor from '~/components/workspace/team/AgentTeamEventMonitor.vue';
 import SkillImprovementComposerCta from '~/components/workspace/skill-improvement/SkillImprovementComposerCta.vue';
@@ -89,38 +64,19 @@ import WorkspaceHeaderActions from '~/components/workspace/common/WorkspaceHeade
 import { buildEditableTeamRunSeed } from '~/composables/useDefinitionLaunchDefaults';
 
 const teamContextsStore = useAgentTeamContextsStore();
-const teamRunStore = useAgentTeamRunStore();
 const agentDefinitionStore = useAgentDefinitionStore();
 const teamRunConfigStore = useTeamRunConfigStore();
 const agentRunConfigStore = useAgentRunConfigStore();
 const selectionStore = useAgentSelectionStore();
 const workspaceCenterViewStore = useWorkspaceCenterViewStore();
 const headerAvatarLoadError = ref(false);
-const subteamDraft = ref('');
-const isSendingSubteamDraft = ref(false);
 const { getMemberAvatarUrl, getMemberDisplayName, getMemberInitials } = useTeamMemberPresentation();
 const RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID = 'autobyteus-retrospective-skill-improver';
 
 const activeTeamContext = computed(() => teamContextsStore.activeTeamContext);
-const focusedExecutionAddress = computed(() => activeTeamContext.value?.executions.getFocusedAddress() ?? null);
-const focusedMemberContext = computed(() => {
-  const team = activeTeamContext.value;
-  const address = focusedExecutionAddress.value;
-  return team && address ? team.executions.getAgentContext(address) : null;
-});
-const focusedMemberNode = computed(() => {
-  const team = activeTeamContext.value;
-  const address = focusedExecutionAddress.value;
-  return team && address ? team.topology.getNode(address.memberAddress) : null;
-});
-const rosterFocusedMemberContext = focusedMemberContext;
-const rosterFocusedMemberNode = focusedMemberNode;
-
-const showSharedComposer = computed(() => focusedMemberNode.value?.kind === 'agent_team');
-
-const headerStatus = computed(() => {
-  return rosterFocusedMemberContext.value?.state.currentStatus ?? null;
-});
+const focusedMemberContext = computed(() => activeTeamContext.value?.view.getFocusedAgentContext() ?? null);
+const focusedMemberAddress = computed(() => activeTeamContext.value?.view.getFocusedMemberAddress() ?? '');
+const headerStatus = computed(() => focusedMemberContext.value?.state.currentStatus ?? null);
 
 const headerTitle = computed(() => {
   const team = activeTeamContext.value;
@@ -128,27 +84,11 @@ const headerTitle = computed(() => {
     return '';
   }
 
-  const focusedMemberAddress = focusedExecutionAddress.value?.memberAddress ?? '';
-  if (!focusedMemberAddress) {
-    return team.topology.teamDefinitionName || 'Team';
+  if (!focusedMemberAddress.value) {
+    return team.view.getTeamDefinitionName() || 'Team';
   }
-
-  return rosterFocusedMemberNode.value?.displayName
-    || getMemberDisplayName(focusedMemberAddress, rosterFocusedMemberContext.value)
-    || team.topology.teamDefinitionName
-    || 'Team';
-});
-
-const composerTargetTitle = computed(() => {
-  const team = activeTeamContext.value;
-  const target = focusedMemberNode.value;
-  if (!team || !target) {
-    return headerTitle.value;
-  }
-
-  return target.displayName
-    || getMemberDisplayName(target.address, focusedMemberContext.value)
-    || team.topology.teamDefinitionName
+  return getMemberDisplayName(focusedMemberAddress.value, focusedMemberContext.value)
+    || team.view.getTeamDefinitionName()
     || 'Team';
 });
 
@@ -160,7 +100,7 @@ const teamMemberSkillImprovementTarget = computed<SkillImprovementComposerCtaTar
   }
   return {
     kind: 'team-member',
-    teamRunId: team.executions.getRootTeamRunId(),
+    teamRunId: team.view.getRootTeamRunId(),
     agentRunId: member.state.runId,
     isHelperRun:
       member.config.agentDefinitionId === RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID ||
@@ -169,13 +109,10 @@ const teamMemberSkillImprovementTarget = computed<SkillImprovementComposerCtaTar
 });
 
 const headerAvatarUrl = computed(() => {
-  const team = activeTeamContext.value;
-  const focusedMemberAddress = focusedExecutionAddress.value?.memberAddress ?? '';
-  if (!team || !focusedMemberAddress || rosterFocusedMemberNode.value?.kind === 'agent_team') {
+  if (!activeTeamContext.value || !focusedMemberAddress.value || !focusedMemberContext.value) {
     return '';
   }
-
-  return getMemberAvatarUrl(focusedMemberAddress, rosterFocusedMemberContext.value);
+  return getMemberAvatarUrl(focusedMemberAddress.value, focusedMemberContext.value);
 });
 
 const showHeaderAvatarImage = computed(() => Boolean(headerAvatarUrl.value) && !headerAvatarLoadError.value);
@@ -185,24 +122,9 @@ watch(headerAvatarUrl, () => {
   headerAvatarLoadError.value = false;
 });
 
-const sendSubteamMessage = async () => {
-  const text = subteamDraft.value.trim();
-  if (!text) {
-    return;
-  }
-  isSendingSubteamDraft.value = true;
-  try {
-    await teamRunStore.sendMessageToFocusedMember(text, []);
-    subteamDraft.value = '';
-  } finally {
-    isSendingSubteamDraft.value = false;
-  }
-};
-
 const createNewTeamRun = () => {
   if (!activeTeamContext.value) return;
-
-  teamRunConfigStore.setConfig(buildEditableTeamRunSeed(activeTeamContext.value.topology.getConfigurationView()));
+  teamRunConfigStore.setConfig(buildEditableTeamRunSeed(activeTeamContext.value.view.getConfigurationView()));
   agentRunConfigStore.clearConfig();
   selectionStore.clearSelection();
 };

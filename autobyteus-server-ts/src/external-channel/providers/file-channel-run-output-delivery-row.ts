@@ -13,10 +13,6 @@ import type {
   ChannelRunOutputTarget,
 } from "../domain/models.js";
 import { normalizeNullableString, parseDate } from "../../persistence/file/store-utils.js";
-import {
-  createTeamExecutionAddress,
-  type TeamExecutionAddress,
-} from "../../agent-team-execution/domain/team-execution-address.js";
 
 export type ChannelRunOutputTargetRow =
   | {
@@ -26,7 +22,7 @@ export type ChannelRunOutputTargetRow =
   | {
       targetType: "TEAM";
       teamRunId: string;
-      entryExecutionAddress: TeamExecutionAddress | null;
+      entryAgentRunId: string | null;
     };
 
 export type ChannelRunOutputDeliveryRow = {
@@ -85,9 +81,7 @@ export const targetToRow = (
     : {
         targetType: "TEAM",
         teamRunId: target.teamRunId,
-        entryExecutionAddress: target.entryExecutionAddress
-          ? createTeamExecutionAddress(target.entryExecutionAddress)
-          : null,
+        entryAgentRunId: target.entryAgentRunId,
       };
 
 export const rowToTarget = (
@@ -101,9 +95,7 @@ export const rowToTarget = (
     : {
         targetType: "TEAM",
         teamRunId: target.teamRunId,
-        entryExecutionAddress: target.entryExecutionAddress
-          ? createTeamExecutionAddress(target.entryExecutionAddress)
-          : null,
+        entryAgentRunId: target.entryAgentRunId,
       };
 
 export const toRecord = (

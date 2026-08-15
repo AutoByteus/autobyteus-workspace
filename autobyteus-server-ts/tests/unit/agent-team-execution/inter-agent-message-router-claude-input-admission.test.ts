@@ -14,48 +14,35 @@ import { buildClaudeSessionConfig } from "../../../src/agent-execution/backends/
 import { ClaudeSessionMessageCache } from "../../../src/agent-execution/backends/claude/session/claude-session-message-cache.js";
 import { ClaudeSessionToolUseCoordinator } from "../../../src/agent-execution/backends/claude/session/claude-session-tool-use-coordinator.js";
 import type { ResolvedInterAgentMessageDeliveryRequest } from "../../../src/agent-team-execution/domain/inter-agent-message-delivery.js";
-import { createTeamExecutionAddress } from "../../../src/agent-team-execution/domain/team-execution-address.js";
+import { assertAgentTeamAddress } from "../../../src/agent-collaboration/domain/agent-team-address.js";
 import { InterAgentMessageRouter } from "../../../src/agent-team-execution/services/inter-agent-message-router.js";
 
 const buildRequest = (): ResolvedInterAgentMessageDeliveryRequest => {
-  const senderAddress = createTeamExecutionAddress({
+  const senderIdentity = {
     rootTeamRunId: "team-root",
-    taskTeamRunIds: ["task-team-1"],
-    memberAddress: "/Classroom/StudentTwo",
-    taskAgentRunId: "student-two-task-run",
-  });
-  const receiverAddress = createTeamExecutionAddress({
+    memberAddress: assertAgentTeamAddress("/Classroom/StudentTwo"),
+    agentRunId: "student-two-task-run",
+  };
+  const receiverIdentity = {
     rootTeamRunId: "team-root",
-    taskTeamRunIds: ["task-team-1"],
-    memberAddress: "/Classroom/StudentOne",
-    taskAgentRunId: "student-one-task-run",
-  });
+    memberAddress: assertAgentTeamAddress("/Classroom/StudentOne"),
+    agentRunId: "student-one-task-run",
+  };
   return {
     rootTeamRunId: "team-root",
-    callerAddressing: {
-      rootTeamRunId: "team-root",
-      memberAddress: senderAddress.memberAddress,
-    },
     sender: { participant: {
       kind: "agent",
-      executionAddress: senderAddress,
-      agentRunId: "student-two-task-run",
+      identity: senderIdentity,
       displayName: "Student Two",
-      runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
     } },
-    recipientAddress: receiverAddress.memberAddress,
+    recipientAddress: receiverIdentity.memberAddress,
     recipient: { participant: {
       kind: "agent",
-      executionAddress: receiverAddress,
-      agentRunId: "student-one-task-run",
+      identity: receiverIdentity,
       displayName: "Student One",
-      runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
     } },
-    senderAddress,
-    receiverAddress,
-    resolvedTargetKind: "task_agent_run",
-    targetAgentRunId: "student-one-task-run",
-    taskId: "task-peer-reply",
+    senderIdentity,
+    receiverIdentity,
     content: "The delegated analysis is complete.",
     messageType: "agent_message",
     referenceFiles: [],
@@ -128,6 +115,18 @@ describe("InterAgentMessageRouter Claude input admission", () => {
           new Map(),
           () => undefined,
         ),
+        agentToolMcpSessionService: {
+          createAgentToolMcpSession: vi.fn(() => ({
+            session: {},
+            descriptor: {
+              name: "autobyteus_agent_tools",
+              transport: "streamable_http",
+              serverUrl: "http://127.0.0.1:3000/mcp/agent-tools/claude-input-test",
+              headers: { Authorization: "Bearer test-only" },
+              enabledTools: [],
+            },
+          })),
+        } as never,
         isRunSessionActive: () => true,
         terminateRunSession: vi.fn(async () => undefined),
       },

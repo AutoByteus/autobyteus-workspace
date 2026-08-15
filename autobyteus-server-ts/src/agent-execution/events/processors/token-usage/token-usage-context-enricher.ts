@@ -29,8 +29,7 @@ export class TokenUsageContextEnricher {
       workspace_id: config.workspaceId ?? payload.workspace_id,
       runtime_kind: config.runtimeKind,
       model_identifier: payload.model_identifier ?? config.llmModelIdentifier,
-      execution_address: memberContext?.executionAddress ?? payload.execution_address,
-      task_id: memberContext?.taskId ?? payload.task_id,
+      root_team_run_id: memberContext?.identity.rootTeamRunId ?? payload.root_team_run_id,
       quality_flags: Array.from(qualityFlags),
     };
   }

@@ -5,14 +5,16 @@ import type {
 import { buildTokenUsageRunSummary } from "../projections/token-usage-run-summary-adapter.js";
 import { SqlTokenUsageLedgerRepository } from "../repositories/sql/token-usage-ledger-repository.js";
 import { TokenUsageDisplayFieldCapturer } from "./token-usage-display-field-capturer.js";
-import type { TeamExecutionAddress } from "../../agent-team-execution/domain/team-execution-address.js";
-import { serializeTeamExecutionAddress } from "../../agent-team-execution/domain/team-execution-address.js";
+import {
+  TokenUsageExecutionIdentityMigrationRepository,
+  type TokenUsageExecutionIdentityEvidenceRow,
+} from "../repositories/sql/token-usage-execution-identity-migration-repository.js";
 
 const hasMissingDisplayField = (event: TokenUsageUpdatedPayload): boolean => (
-  event.execution_address
+  event.root_team_run_id
     ? !event.team_name ||
       !event.run_created_at ||
-      Boolean(event.execution_address && !event.member_display_name)
+      Boolean(event.root_team_run_id && !event.member_display_name)
     : !event.agent_name || !event.run_created_at
 );
 
@@ -31,7 +33,20 @@ export class TokenUsageLedgerStore {
   constructor(
     private readonly repository = new SqlTokenUsageLedgerRepository(),
     private readonly displayFieldCapturer = new TokenUsageDisplayFieldCapturer(),
+    private readonly identityMigration = new TokenUsageExecutionIdentityMigrationRepository(),
   ) {}
+
+  listExecutionIdentityMigrationEvidence(): Promise<TokenUsageExecutionIdentityEvidenceRow[]> {
+    return this.identityMigration.listEvidence();
+  }
+
+  migrateExecutionIdentity(): Promise<{ migratedRows: number; alreadyCurrent: boolean }> {
+    return this.identityMigration.migrateToExactRunIdentity();
+  }
+
+  disconnectExecutionIdentityMigration(): Promise<void> {
+    return this.identityMigration.disconnect();
+  }
 
   async appendTokenUsageEvent(payload: TokenUsageUpdatedPayload): Promise<TokenUsageUpdatedPayload> {
     const capturedPayload = await this.displayFieldCapturer.capture(payload);
@@ -60,14 +75,12 @@ export class TokenUsageLedgerStore {
 
   async getTeamMemberSummary(input: {
     rootTeamRunId: string;
-    executionAddress: TeamExecutionAddress;
+    agentRunId: string;
   }): Promise<TokenUsageRunSummaryPayload> {
-    const events = (await this.repository.listEventsByTeamRunId(input.rootTeamRunId)).filter((event) => {
-      return !!event.execution_address &&
-        serializeTeamExecutionAddress(event.execution_address) === serializeTeamExecutionAddress(input.executionAddress);
-    });
+    const events = (await this.repository.listEventsByTeamRunId(input.rootTeamRunId))
+      .filter((event) => event.run_id === input.agentRunId);
     return buildTokenUsageRunSummary({
-      runId: events[0]?.run_id ?? input.rootTeamRunId,
+      runId: input.agentRunId,
       events,
     });
   }

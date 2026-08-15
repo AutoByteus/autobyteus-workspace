@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import {
-  APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V5,
+  APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V6,
   APPLICATION_MANIFEST_VERSION_V4,
   type ApplicationManifestV4,
   type ApplicationExecutionResourceSlotDeclaration,
@@ -442,9 +442,9 @@ export const parseApplicationManifest = (
     ui.frontendSdkContractVersion,
     "ui.frontendSdkContractVersion",
   );
-  if (frontendSdkContractVersion !== APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V5) {
+  if (frontendSdkContractVersion !== APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V6) {
     throw new ApplicationManifestParseError(
-      `Application manifest '${manifestPath}' declares ui.frontendSdkContractVersion '${frontendSdkContractVersion}', but '${APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V5}' is required. Rebuild or reinstall the application with the current AutoByteus application SDKs.`,
+      `Application manifest '${manifestPath}' declares ui.frontendSdkContractVersion '${frontendSdkContractVersion}', but '${APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V6}' is required. Rebuild or reinstall the application with the current AutoByteus application SDKs.`,
     );
   }
 

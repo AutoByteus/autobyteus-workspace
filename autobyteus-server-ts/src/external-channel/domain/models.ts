@@ -3,7 +3,6 @@ import type { ExternalChannelTransport } from "autobyteus-ts/external-channel/ch
 import type { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
-import type { TeamExecutionAddress } from "../../agent-team-execution/domain/team-execution-address.js";
 
 export type ChannelBindingTargetType = "AGENT" | "TEAM";
 
@@ -153,7 +152,7 @@ export type ChannelStandaloneRunOutputTarget = {
 export type ChannelTeamRunOutputTarget = {
   targetType: "TEAM";
   teamRunId: string;
-  entryExecutionAddress: TeamExecutionAddress | null;
+  entryAgentRunId: string | null;
 };
 
 export type ChannelRunOutputTarget =

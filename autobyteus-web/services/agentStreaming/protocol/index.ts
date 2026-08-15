@@ -35,7 +35,6 @@ export type {
   FileChangePayload,
   ErrorPayload,
   SendMessagePayload,
-  InterruptGenerationPayload,
   ToolActionPayload,
 } from './messageTypes';
 

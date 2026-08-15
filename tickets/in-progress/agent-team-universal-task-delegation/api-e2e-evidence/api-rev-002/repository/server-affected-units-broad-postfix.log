@@ -1,0 +1,2628 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+
+(node:25663) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/app-data-migrations/custom-provider-readable-id-app-data-migration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/app-data-migrations/custom-provider-readable-id-app-data-migration.test.ts (10 tests) 1131ms
+ ✓ tests/unit/agent-memory/memory-layout-cleanup-regression.test.ts (1 test) 204ms
+ ✓ tests/unit/run-history/services/agent-run-history-catalog-service.test.ts (10 tests) 227ms
+stdout | tests/unit/run-history/services/team-run-history-catalog-service.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:25676) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/run-history/services/team-run-history-catalog-service.test.ts (4 tests) 156ms
+ ✓ tests/unit/app-data-migrations/token-usage-canonical-execution-address-migration.test.ts (5 tests) 136ms
+ ✓ tests/unit/app-data-migrations/run-history-index-v2-migration.test.ts (3 tests) 62ms
+stdout | tests/unit/agent-team-execution/mixed-team-member-registry-task-agent-memory.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:25693) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/agent-team-execution/mixed-team-member-registry-task-agent-memory.test.ts > MixedTaskAgentExecutionRegistry task-agent memory > prepares a fresh task Agent in the root plus exact AgentRun memory scope and releases work only after commit
+[2026-08-15T11:53:56.582Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-15T11:53:56.582Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/unit/agent-team-execution/mixed-team-member-registry-task-agent-memory.test.ts > MixedTaskAgentExecutionRegistry task-agent memory > prepares a fresh task Agent in the root plus exact AgentRun memory scope and releases work only after commit
+[2026-08-15T11:53:56.597Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 30 items.
+
+ ✓ tests/unit/agent-team-execution/mixed-team-member-registry-task-agent-memory.test.ts (1 test) 74ms
+stdout | tests/unit/agent-memory/team-memory-explorer-service.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:25703) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/agent-memory/team-memory-explorer-service.test.ts > TeamMemoryExplorerService current V1 tree > groups stored V1 roots by Team definition and exact configured Agent address
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+
+ ✓ tests/unit/agent-memory/team-memory-explorer-service.test.ts (2 tests) 97ms
+ ✓ tests/unit/agent-memory/agent-memory-explorer-service.test.ts (3 tests) 68ms
+stdout | tests/unit/app-data-migrations/custom-provider-v1-app-data-migration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/app-data-migrations/custom-provider-v1-app-data-migration.test.ts (6 tests) 83ms
+stdout | tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:25717) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts > MixedTeamManager exact direct AgentRun routing > routes configured post/approval/interrupt only to the exact AgentRun ID
+[2026-08-15T11:54:00.005Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-15T11:54:00.005Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts > MixedTeamManager exact direct AgentRun routing > routes configured post/approval/interrupt only to the exact AgentRun ID
+[2026-08-15T11:54:00.022Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 30 items.
+
+ ✓ tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts (3 tests) 79ms
+stdout | tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:25720) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts > MigrateNativeWorkingContextSnapshotsV5Migration > converts standalone v4 with absent lineage, exact active provenance, exact cleanup, and idempotence
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+
+ ✓ tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts (6 tests) 68ms
+stdout | tests/unit/agent-memory/agent-run-memory-recorder.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:25726) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stderr | tests/unit/agent-memory/agent-run-memory-recorder.test.ts > AgentRunMemoryRecorder > records forwarded commands and normalized events without a stream subscriber
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-run-memory-recorder-xtHIBN/working_context_snapshot.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-run-memory-recorder-xtHIBN/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/agent-run-memory-recorder.test.ts > AgentRunMemoryRecorder > records canonical route-backed send_message_to tool traces with MCP content result shape
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-run-memory-recorder-22Gqhy/working_context_snapshot.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-run-memory-recorder-22Gqhy/working_context_snapshot.json
+
+ ✓ tests/unit/agent-memory/agent-run-memory-recorder.test.ts (5 tests) 67ms
+stdout | tests/unit/agent-team-execution/task-delegation-current-invariants.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:25733) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/agent-team-execution/task-delegation-current-invariants.test.ts (8 tests) 65ms
+ ✓ tests/unit/app-data-migrations/raw-trace-rotation-layout-migration.test.ts (6 tests) 59ms
+stdout | tests/unit/agent-team-execution/mixed-team-manager.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:25740) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/agent-team-execution/mixed-team-manager.test.ts (4 tests) 61ms
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > persists run-owned reasoning closure exactly once before the next tool
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-HSRaJm/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > rejects segment lifecycle without an exact turn instead of inventing a fallback turn
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-xWsmtA/working_context_snapshot.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-xWsmtA/raw_traces_active.jsonl
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > persists one trace for adjacent reasoning deltas and a new trace after a tool boundary
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-Ic2t3Y/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > tolerates lifecycle-before-command ordering and flushes text and reasoning on turn completion
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-wEtcvf/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > persists open reasoning before a following tool call without duplicating later flushes
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-iGmWza/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > persists open reasoning before an inferred tool call from a terminal tool result
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-u0kFfc/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > keeps reasoning open across a matching result and flushes one trace at the next tool
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-NrGbQr/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > preserves post-card reasoning when authoritative call arguments arrive only at result
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-DmwpbW/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > keeps reasoning open across matching TOOL_EXECUTION_FAILED updates
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-FDBLb2/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > keeps reasoning open across matching TOOL_DENIED updates
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-MstFwH/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > persists open reasoning before assistant text without requiring turn completion
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-sSeFfS/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > persists open reasoning before assistant complete output
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-r2ofNe/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > does not substitute an active turn when forwarded input lacks its exact turn identity
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-FZlMCi/working_context_snapshot.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-FZlMCi/raw_traces_active.jsonl
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > records tool traces once from lifecycle events when matching tool segments are present
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-YEzgdO/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > preserves assistant-tool-assistant raw trace order from distinct text segment ids
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-XA4Yib/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > does not create a fallback turn for a segment without exact turn identity
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-v9dfTz/working_context_snapshot.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-v9dfTz/raw_traces_active.jsonl
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > ignores provider compaction/status payloads without local raw-trace pruning
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-AeGBty/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > writes provider compaction markers and rotates settled active traces into segmented archives
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-FRF9fV/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > dedupes replayed provider boundaries without dropping post-boundary active records
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-Dio1Kq/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > retries rotation from an existing provider boundary marker when no complete segment exists
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-0M8Xot/working_context_snapshot.json
+
+ ✓ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts (21 tests) 54ms
+stdout | tests/unit/agent-team-execution/inter-agent-message-router-claude-input-admission.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:25750) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/agent-team-execution/inter-agent-message-router-claude-input-admission.test.ts > InterAgentMessageRouter Claude input admission > accepts one active task-peer reply and starts it once after the current Claude turn terminates
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+
+ ✓ tests/unit/agent-team-execution/inter-agent-message-router-claude-input-admission.test.ts (1 test) 58ms
+stdout | tests/unit/app-data-migrations/team-run-history-index-v2-migration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:25752) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/app-data-migrations/team-run-history-index-v2-migration.test.ts (2 tests) 58ms
+stdout | tests/unit/agent-memory/agent-memory-location-service.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:25754) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/agent-memory/agent-memory-location-service.test.ts > AgentMemoryLocationService current V1 tree > derives configured and task Agent memory from exact root, physical Team ancestry, and AgentRun IDs
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+
+ ✓ tests/unit/agent-memory/agent-memory-location-service.test.ts (3 tests) 51ms
+ ✓ tests/unit/run-history/store/agent-run-metadata-store.test.ts (2 tests) 26ms
+stdout | tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:25758) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts > RemoveExternalRuntimeWorkingContextSnapshotsMigration > removes only exact standalone and recursive team Codex/Claude snapshots and is idempotent
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+
+stderr | tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts > RemoveExternalRuntimeWorkingContextSnapshotsMigration > preserves snapshots when metadata is invalid or mismatched and reports actionable failures
+Failed reading run metadata for invalid-run: SyntaxError: Expected property name or '}' in JSON at position 1 (line 1 column 2)
+
+stderr | tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts > RemoveExternalRuntimeWorkingContextSnapshotsMigration > reports a failed unlink, retains stale generic inspection with independent raws, and removes it on retry
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/external-snapshot-cleanup-e3S5MY/agents/codex-unlink-failure/working_context_snapshot.json
+
+ ✓ tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts (4 tests) 61ms
+ ✓ tests/unit/agent-team-execution/team-definition-topology-planner.test.ts (4 tests) 7ms
+stderr | tests/unit/run-history/services/agent-run-view-projection-service.test.ts > AgentRunViewProjectionService > keeps Codex projection empty when local replay history is missing
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-projection-service-QNAMme/agents/run-codex-missing-local/raw_traces_active.jsonl
+
+stderr | tests/unit/run-history/services/agent-run-view-projection-service.test.ts > AgentRunViewProjectionService > returns deterministic empty projection when the local replay provider fails
+[AgentRunViewProjectionService] local replay projection failed for run 'run-local-provider-fails' (autobyteus): Error: local replay failed
+
+ ✓ tests/unit/run-history/services/agent-run-view-projection-service.test.ts (8 tests) 51ms
+ ✓ tests/unit/token-usage/token-usage-execution-identity-migration-repository.test.ts (2 tests) 39ms
+ ✓ tests/unit/app-data-migrations/team-run-metadata-member-tree-migration.test.ts (4 tests) 28ms
+ ✓ tests/unit/run-history/team-run-file-commit-writer.test.ts (2 tests) 31ms
+ ✓ tests/unit/run-history/services/team-run-history-index-service.test.ts (1 test) 17ms
+stderr | tests/unit/run-history/store/agent-run-history-index-store.test.ts > AgentRunHistoryIndexStore > does not treat legacy V1 status rows as a normal source catalog
+Invalid run history index file format: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-run-history-index-store-nm1Kcl/run_history_index.json
+
+stderr | tests/unit/run-history/store/agent-run-history-index-store.test.ts > AgentRunHistoryIndexStore > does not treat a file-level version wrapper as the standalone source catalog
+Invalid run history index file format: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-run-history-index-store-YsbzYx/run_history_index.json
+
+stderr | tests/unit/run-history/store/agent-run-history-index-store.test.ts > AgentRunHistoryIndexStore > rejects plain V2 rows that the catalog cannot normalize
+Invalid run history index file format: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-run-history-index-store-MCeoNP/run_history_index.json
+
+ ✓ tests/unit/run-history/store/agent-run-history-index-store.test.ts (5 tests) 26ms
+ ✓ tests/unit/app-data-migrations/remove-global-skill-discovery-mode-migration.test.ts (1 test) 27ms
+ ✓ tests/unit/agent-memory/runtime-tool-trace-sequencer.test.ts (10 tests) 27ms
+stdout | tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:25772) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts > RawTraceActiveFileNameMigration > registers external cleanup then both raw-layout prerequisites before native snapshot conversion
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+
+ ✓ tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts (3 tests) 20ms
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:25774) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > connects with one atomic V1 snapshot before lifecycle changes
+Created agent session 88040190-e00d-4a89-9a8c-1eebeb741aa2 for run team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > connects with one atomic V1 snapshot before lifecycle changes
+Agent Team WebSocket connected: session=88040190-e00d-4a89-9a8c-1eebeb741aa2, run=team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > connects with one atomic V1 snapshot before lifecycle changes
+Closed agent session 88040190-e00d-4a89-9a8c-1eebeb741aa2
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > streams sequenced current events after the snapshot barrier
+Created agent session b4894daf-7044-4f7d-a680-1841f65d48fc for run team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > streams sequenced current events after the snapshot barrier
+Agent Team WebSocket connected: session=b4894daf-7044-4f7d-a680-1841f65d48fc, run=team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > streams sequenced current events after the snapshot barrier
+Closed agent session b4894daf-7044-4f7d-a680-1841f65d48fc
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > routes SEND_MESSAGE by the exact concrete AgentRun ID and records activity once
+Created agent session 42ed2e76-2274-4193-84fd-a5b01f3206e3 for run team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > routes SEND_MESSAGE by the exact concrete AgentRun ID and records activity once
+Agent Team WebSocket connected: session=42ed2e76-2274-4193-84fd-a5b01f3206e3, run=team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > routes SEND_MESSAGE by the exact concrete AgentRun ID and records activity once
+Closed agent session 42ed2e76-2274-4193-84fd-a5b01f3206e3
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > reports exact-target rejection without persistent or address fallback
+Created agent session 851597a2-2a4e-4595-b3a7-e42d33eadbe7 for run team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > reports exact-target rejection without persistent or address fallback
+Agent Team WebSocket connected: session=851597a2-2a4e-4595-b3a7-e42d33eadbe7, run=team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > reports exact-target rejection without persistent or address fallback
+Closed agent session 851597a2-2a4e-4595-b3a7-e42d33eadbe7
+
+ ✓ tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts (5 tests) 23ms
+ ✓ tests/unit/run-history/services/agent-run-history-index-service.test.ts (1 test) 24ms
+ ✓ tests/unit/run-history/team-member-run-view-projection-service.import.test.ts (1 test) 21ms
+stderr | tests/unit/run-history/store/team-run-history-index-store.test.ts > TeamRunHistoryIndexStore > rejects wrappers and legacy live-status rows as the normal source catalog
+Invalid team run history index format: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-run-history-index-store-E0jjOJ/team_run_history_index.json
+
+stderr | tests/unit/run-history/store/team-run-history-index-store.test.ts > TeamRunHistoryIndexStore > rejects plain rows with invalid team run identities
+Invalid team run history index format: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-run-history-index-store-WQaeEv/team_run_history_index.json
+
+ ✓ tests/unit/run-history/store/team-run-history-index-store.test.ts (3 tests) 26ms
+ ✓ tests/unit/run-history/projection/local-memory-run-view-projection-provider.test.ts (6 tests) 22ms
+stdout | tests/unit/app-data-migrations/team-run-execution-tree-v1-app-data-migration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:25783) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/app-data-migrations/team-run-execution-tree-v1-app-data-migration.test.ts (2 tests) 20ms
+stderr | tests/unit/agent-memory/agent-memory-service.test.ts > AgentMemoryService > applies raw trace limits
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-yrsrFo/agents/agent-456/working_context_snapshot.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-yrsrFo/agents/agent-456/episodic.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-yrsrFo/agents/agent-456/semantic.jsonl
+
+stderr | tests/unit/agent-memory/agent-memory-service.test.ts > AgentMemoryService > reads archive segments plus active traces as the complete corpus
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-5wEBCO/agents/agent-archive/working_context_snapshot.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-5wEBCO/agents/agent-archive/episodic.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-5wEBCO/agents/agent-archive/semantic.jsonl
+
+stderr | tests/unit/agent-memory/agent-memory-service.test.ts > AgentMemoryService > lists raw trace files active first and reads only the selected segment filename
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-xS98hk/agents/agent-segments/working_context_snapshot.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-xS98hk/agents/agent-segments/episodic.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-xS98hk/agents/agent-segments/semantic.jsonl
+
+stderr | tests/unit/agent-memory/agent-memory-service.test.ts > AgentMemoryService > falls back to the default raw trace file for invalid selected filenames
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-ifbNyn/agents/agent-invalid-file/working_context_snapshot.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-ifbNyn/agents/agent-invalid-file/episodic.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-ifbNyn/agents/agent-invalid-file/semantic.jsonl
+
+stderr | tests/unit/agent-memory/agent-memory-service.test.ts > AgentMemoryService > does not create a missing run directory for includeArchive raw-trace reads
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-sDsgqH/agents/missing-run/working_context_snapshot.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-sDsgqH/agents/missing-run/episodic.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-sDsgqH/agents/missing-run/semantic.jsonl
+
+ ✓ tests/unit/agent-memory/agent-memory-service.test.ts (7 tests) 20ms
+stdout | tests/unit/app-data-migrations/team-communication-projection-address-migration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:25786) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/app-data-migrations/team-communication-projection-address-migration.test.ts > TeamCommunicationProjectionAddressMigration > is registered as a startup-required app-data migration
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+
+ ✓ tests/unit/app-data-migrations/team-communication-projection-address-migration.test.ts (4 tests) 25ms
+stdout | tests/unit/services/agent-streaming/agent-stream-handler.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:25788) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > connects to a run identity and sends CONNECTED plus projected status without restoring runtime
+Created agent session 6899f036-b641-4a2f-8e46-443c99cd8d75 for run agent-123
+Agent WebSocket connected: session=6899f036-b641-4a2f-8e46-443c99cd8d75, run=agent-123
+
+stdout | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > connects to run events through the AgentRun subject for active runtime-managed runs
+Created agent session 1b771ac1-5d8c-4cd3-93e4-96ce57ecd0f4 for run runtime-run-1
+Agent WebSocket connected: session=1b771ac1-5d8c-4cd3-93e4-96ce57ecd0f4, run=runtime-run-1
+
+stdout | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > maps Codex AgentRunEvents directly to websocket messages for single-agent runs
+Created agent session 9bf7a115-b26f-4147-bcad-8aec510781eb for run runtime-run-2
+Agent WebSocket connected: session=9bf7a115-b26f-4147-bcad-8aec510781eb, run=runtime-run-2
+
+stdout | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > maps turn lifecycle AgentRunEvents directly to websocket messages
+Created agent session 05d335ee-2ae6-4058-af9c-636f6597061a for run runtime-run-3
+Agent WebSocket connected: session=05d335ee-2ae6-4058-af9c-636f6597061a, run=runtime-run-3
+
+stdout | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > registers the websocket connection for run-scoped live message broadcasts
+Created agent session cd219eaf-b136-4bbb-a7b7-a94ac5d13ffa for run agent-123
+Agent WebSocket connected: session=cd219eaf-b136-4bbb-a7b7-a94ac5d13ffa, run=agent-123
+
+stdout | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > publishes terminal offline status to an already-connected websocket when a run terminates
+Created agent session b440778b-b2c3-4f19-aab3-04e054c2cf60 for run run-terminate-1
+Agent WebSocket connected: session=b440778b-b2c3-4f19-aab3-04e054c2cf60, run=run-terminate-1
+
+stdout | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > handles SEND_MESSAGE through the command coordinator and returns an ACK
+Created agent session d8c5b8d0-e913-4d06-aec5-f5f8fa939dcc for run agent-123
+Agent WebSocket connected: session=d8c5b8d0-e913-4d06-aec5-f5f8fa939dcc, run=agent-123
+
+stdout | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > defers runtime binding on identity-only connect until SEND_MESSAGE activates through the coordinator
+Created agent session f95abaef-90c1-4210-bcc4-98836a58dfcb for run agent-123
+Agent WebSocket connected: session=f95abaef-90c1-4210-bcc4-98836a58dfcb, run=agent-123
+
+stdout | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > keeps interrupt-generation active-only and does not activate a stopped agent run
+Created agent session ce69b501-0307-4e1c-a4b6-78c8806d8f60 for run agent-123
+Agent WebSocket connected: session=ce69b501-0307-4e1c-a4b6-78c8806d8f60, run=agent-123
+
+stderr | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > keeps interrupt-generation active-only and does not activate a stopped agent run
+INTERRUPT_GENERATION rejected for missing agent run agent-123.
+
+stdout | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > returns exactly one same-socket acknowledgement for an accepted interrupt
+Created agent session f3b0a829-057a-4334-9973-7d06bfd19ab0 for run agent-123
+Agent WebSocket connected: session=f3b0a829-057a-4334-9973-7d06bfd19ab0, run=agent-123
+
+stdout | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > rejects an empty interrupt command id before runtime execution
+Created agent session d1dec398-f998-468b-a546-9d1e69ec750c for run agent-123
+Agent WebSocket connected: session=d1dec398-f998-468b-a546-9d1e69ec750c, run=agent-123
+
+stdout | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > maps interrupt provider failures without emitting lifecycle status
+Created agent session 3567837f-4440-4947-9e22-d8952015c438 for run agent-123
+Agent WebSocket connected: session=3567837f-4440-4947-9e22-d8952015c438, run=agent-123
+
+stderr | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > maps interrupt provider failures without emitting lifecycle status
+INTERRUPT_GENERATION rejected for agent run agent-123: [PROVIDER_REJECTED] Cannot interrupt now.
+
+stdout | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > handles tool approvals for active sessions
+Created agent session d022bd67-6e34-45fa-bd1a-d0bae7d4b2b7 for run agent-123
+Agent WebSocket connected: session=d022bd67-6e34-45fa-bd1a-d0bae7d4b2b7, run=agent-123
+
+stderr | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > ignores messages for unknown sessions
+Message for unknown session: missing
+
+ ✓ tests/unit/services/agent-streaming/agent-stream-handler.test.ts (18 tests) 17ms
+stderr | tests/unit/agent-memory/external-runtime-memory-writer.test.ts > ExternalRuntimeMemoryWriter > writes exact normalized raw fields without creating a WorkingContext snapshot
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/external-runtime-memory-writer-PdJfGD/working_context_snapshot.json
+
+ ✓ tests/unit/agent-memory/external-runtime-memory-writer.test.ts (3 tests) 82ms
+stdout | tests/unit/app-data-migrations/app-data-migration-runner.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:25790) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/app-data-migrations/app-data-migration-runner.test.ts (7 tests) 17ms
+ ✓ tests/unit/run-history/projection/codex-run-view-projection-provider.test.ts (8 tests) 18ms
+ ✓ tests/unit/services/agent-streaming/agent-stream-websocket-egress.test.ts (31 tests) 15ms
+ ✓ tests/unit/run-history/team-run-v1-package-schema.test.ts (6 tests) 12ms
+stdout | tests/unit/app-data-migrations/custom-provider-migration-name-snapshot.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/app-data-migrations/custom-provider-migration-name-snapshot.test.ts (2 tests) 14ms
+ ✓ tests/unit/token-usage/projections/token-usage-unit-price-summary.test.ts (4 tests) 14ms
+stderr | tests/unit/agent-memory/memory-file-store.test.ts > MemoryFileStore > returns null for missing or invalid JSON
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/memory-store-s8hJ4z/missing.json
+Failed to decode JSON file /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/memory-store-s8hJ4z/bad.json: SyntaxError: Expected property name or '}' in JSON at position 1 (line 1 column 2)
+
+stderr | tests/unit/agent-memory/memory-file-store.test.ts > MemoryFileStore > reads JSONL and skips malformed lines
+Skipping malformed JSONL line in /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/memory-store-Ysl1Ql/agents/agent/raw_traces_active.jsonl: SyntaxError: Expected property name or '}' in JSON at position 1 (line 1 column 2)
+
+stderr | tests/unit/agent-memory/memory-file-store.test.ts > MemoryFileStore > returns empty array for missing JSONL
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/memory-store-79YzDK/missing.jsonl
+
+ ✓ tests/unit/agent-memory/memory-file-store.test.ts (8 tests) 11ms
+stdout | tests/unit/run-history/services/published-artifact-projection-service.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:26106) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/run-history/services/published-artifact-projection-service.test.ts (1 test) 13ms
+stdout | tests/unit/agent-tools/mcp/agent-tool-mcp-session-service.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:26109) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/agent-tools/mcp/agent-tool-mcp-session-service.test.ts (7 tests) 9ms
+stdout | tests/unit/agent-team-execution/mixed-agent-member-handle-task-notification-projection.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:26112) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/agent-team-execution/mixed-agent-member-handle-task-notification-projection.test.ts > MixedAgentMemberHandle task-delegation notification projection > projects accepted stamped task-delegation system messages as one local system notification without member-input echo
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+
+ ✓ tests/unit/agent-team-execution/mixed-agent-member-handle-task-notification-projection.test.ts (3 tests) 12ms
+stdout | tests/unit/agent-team-execution/agent-team-run-manager-lifecycle.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:26117) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stderr | tests/unit/agent-team-execution/agent-team-run-manager-lifecycle.test.ts > AgentTeamRunManager root lifecycle > removes an inactive root once and isolates lifecycle listener failures
+RootTeamRun lifecycle listener failed: Error: listener failure
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/tests/unit/agent-team-execution/agent-team-run-manager-lifecycle.test.ts:68:62
+    at AgentTeamRunManager.notify (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts:221:13)
+    at AgentTeamRunManager.register (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts:209:10)
+    at register (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/tests/unit/agent-team-execution/agent-team-run-manager-lifecycle.test.ts:21:65)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/tests/unit/agent-team-execution/agent-team-run-manager-lifecycle.test.ts:71:18
+    at Proxy.assertThrows (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/node_modules/.pnpm/chai@6.2.2/node_modules/chai/index.js:2798:5)
+    at Proxy.methodWrapper (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/node_modules/.pnpm/chai@6.2.2/node_modules/chai/index.js:1700:25)
+    at Proxy.<anonymous> (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/node_modules/.pnpm/@vitest+expect@4.0.18/node_modules/@vitest/expect/dist/index.js:1149:12)
+    at Proxy.overwritingMethodWrapper (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/node_modules/.pnpm/chai@6.2.2/node_modules/chai/index.js:1750:33)
+    at Proxy.<anonymous> (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/node_modules/.pnpm/@vitest+expect@4.0.18/node_modules/@vitest/expect/dist/index.js:1485:16)
+RootTeamRun lifecycle listener failed: Error: listener failure
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/tests/unit/agent-team-execution/agent-team-run-manager-lifecycle.test.ts:68:62
+    at AgentTeamRunManager.notify (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts:221:13)
+    at AgentTeamRunManager.unregister (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts:215:10)
+    at AgentTeamRunManager.getTeamRun (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts:121:22)
+    at AgentTeamRunManager.getActiveRun (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts:127:73)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/tests/unit/agent-team-execution/agent-team-run-manager-lifecycle.test.ts:74:20
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:145:11
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:26
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:1243:20
+    at new Promise (<anonymous>)
+
+ ✓ tests/unit/agent-team-execution/agent-team-run-manager-lifecycle.test.ts (4 tests) 9ms
+ ✓ tests/unit/services/agent-streaming/team-execution-view-projector.test.ts (4 tests) 13ms
+stdout | tests/unit/agent-tools/team-communication/send-message-to.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:26119) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/agent-tools/team-communication/send-message-to.test.ts > AutoByteus server-owned send_message_to > routes a hierarchical recipient_address through Team delivery and returns canonical JSON
+Successfully registered tool definition: 'send_message_to'
+
+ ✓ tests/unit/agent-tools/team-communication/send-message-to.test.ts (6 tests) 9ms
+stdout | tests/unit/agent-team-execution/team-run-service.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:26121) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/agent-team-execution/team-run-service.test.ts > TeamRunService current root lifecycle > returns an active RootTeamRun without attempting restore
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+
+ ✓ tests/unit/agent-team-execution/team-run-service.test.ts (5 tests) 10ms
+ ✓ tests/unit/services/team-communication/team-communication-service.test.ts (4 tests) 9ms
+ ✓ tests/unit/agent-memory/agent-memory-layout.test.ts (4 tests) 8ms
+stdout | tests/unit/agent-team-execution/task-delegation-reference-content-service.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:26125) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/agent-team-execution/task-delegation-reference-content-service.test.ts (4 tests) 11ms
+stdout | tests/unit/agent-tools/mcp/agent-tool-mcp-catalog.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:26127) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/agent-tools/mcp/agent-tool-mcp-catalog.test.ts > AgentToolMcpCatalog > resolves configured supported tools across families with browser and team availability gates
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+
+stderr | tests/unit/agent-tools/mcp/agent-tool-mcp-catalog.test.ts > AgentToolMcpCatalog configured MCP bridge > keeps built-in adapter names authoritative when a configured MCP tool collides
+Configured MCP tool 'send_message_to' was not exposed because it collides with a protected Agent Tools MCP adapter.
+
+stderr | tests/unit/agent-tools/mcp/agent-tool-mcp-catalog.test.ts > AgentToolMcpCatalog configured MCP bridge > resolves configured MCP calls through a registry-backed adapter
+Tool 'FakeConfiguredMcpTool' does not define an argument schema but received arguments: {"sql":"select 1"}.
+
+ ✓ tests/unit/agent-tools/mcp/agent-tool-mcp-catalog.test.ts (8 tests) 10ms
+stdout | tests/unit/run-history/services/run-file-change-projection-service.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:26130) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/run-history/services/run-file-change-projection-service.test.ts (5 tests) 8ms
+stdout | tests/unit/agent-team-execution/mixed-agent-member-handle-memory-invariant.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:26133) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/agent-team-execution/mixed-agent-member-handle-memory-invariant.test.ts > MixedAgentMemberHandle memory location > derives a direct member memory directory solely from root TeamRun and AgentRun identity
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+
+ ✓ tests/unit/agent-team-execution/mixed-agent-member-handle-memory-invariant.test.ts (2 tests) 9ms
+stdout | tests/unit/agent-team-execution/mixed-agent-member-handle-termination.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:26135) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/agent-team-execution/mixed-agent-member-handle-termination.test.ts > MixedAgentMemberHandle termination > keeps a local active run attached when active termination is rejected
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+
+ ✓ tests/unit/agent-team-execution/mixed-agent-member-handle-termination.test.ts (2 tests) 8ms
+stdout | tests/unit/token-usage/projections/token-usage-snapshot-delta-normalizer.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:26450) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/token-usage/projections/token-usage-snapshot-delta-normalizer.test.ts (5 tests) 8ms
+stdout | tests/unit/services/agent-streaming/agent-session-manager.test.ts > AgentSessionManager > creates sessions successfully
+Created agent session s1 for run agent-123
+
+stdout | tests/unit/services/agent-streaming/agent-session-manager.test.ts > AgentSessionManager > throws when creating a duplicate session
+Created agent session s1 for run agent-123
+
+stdout | tests/unit/services/agent-streaming/agent-session-manager.test.ts > AgentSessionManager > allows multiple sessions for the same agent
+Created agent session s1 for run agent-123
+Created agent session s2 for run agent-123
+
+stdout | tests/unit/services/agent-streaming/agent-session-manager.test.ts > AgentSessionManager > retrieves sessions by ID
+Created agent session s1 for run agent-123
+
+stdout | tests/unit/services/agent-streaming/agent-session-manager.test.ts > AgentSessionManager > retrieves sessions for an agent
+Created agent session s1 for run agent-1
+Created agent session s2 for run agent-1
+Created agent session s3 for run agent-2
+
+stdout | tests/unit/services/agent-streaming/agent-session-manager.test.ts > AgentSessionManager > closes sessions and removes them
+Created agent session s1 for run agent-123
+Closed agent session s1
+
+stdout | tests/unit/services/agent-streaming/agent-session-manager.test.ts > AgentSessionManager > closes all sessions for an agent
+Created agent session s1 for run agent-1
+Created agent session s2 for run agent-1
+Created agent session s3 for run agent-2
+Closed agent session s1
+Closed agent session s2
+
+stdout | tests/unit/services/agent-streaming/agent-session-manager.test.ts > AgentSessionManager > closes all sessions
+Created agent session s1 for run agent-1
+Created agent session s2 for run agent-2
+Closed agent session s1
+Closed agent session s2
+
+stdout | tests/unit/services/agent-streaming/agent-session-manager.test.ts > AgentSessionManager > lists active sessions
+Created agent session s1 for run agent-1
+Created agent session s2 for run agent-2
+
+ ✓ tests/unit/services/agent-streaming/agent-session-manager.test.ts (11 tests) 7ms
+stdout | tests/unit/app-data-migrations/token-usage-provider-name-snapshot-backfill-migration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/app-data-migrations/token-usage-provider-name-snapshot-backfill-migration.test.ts (5 tests) 8ms
+ ✓ tests/unit/agent-team-execution/team-run-persistence-coordinator.test.ts (4 tests) 6ms
+stdout | tests/unit/services/team-communication/team-communication-content-service.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:26457) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stderr | tests/unit/services/team-communication/team-communication-content-service.test.ts > TeamCommunicationContentService > returns not-found when the message-owned reference does not exist
+[team-communication] content resolve failure teamRunId=team-1 messageId=missing-message referenceId=ref-1 reason=REFERENCE_NOT_FOUND
+
+ ✓ tests/unit/services/team-communication/team-communication-content-service.test.ts (2 tests) 7ms
+stdout | tests/unit/token-usage/pricing/token-cost-calculator.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/token-usage/pricing/token-cost-calculator.test.ts (8 tests) 6ms
+ ✓ tests/unit/services/agent-streaming/agent-run-event-message-mapper.test.ts (6 tests) 4ms
+stdout | tests/unit/agent-tools/task-delegation/task-delegation-runtime-descriptions.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:26468) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/agent-tools/task-delegation/task-delegation-runtime-descriptions.test.ts (5 tests) 5ms
+stdout | tests/unit/run-history/services/team-run-history-service.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:26775) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/run-history/services/team-run-history-service.test.ts (5 tests) 6ms
+stdout | tests/unit/run-history/team-member-run-view-projection-service.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:26780) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/run-history/team-member-run-view-projection-service.test.ts > TeamMemberRunViewProjectionService exact AgentRun identity > resolves and projects a member by root TeamRun plus concrete AgentRun ID
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+
+ ✓ tests/unit/run-history/team-member-run-view-projection-service.test.ts (4 tests) 7ms
+ ✓ tests/unit/agent-team-execution/mixed-sub-team-member-handle.test.ts (4 tests) 5ms
+stdout | tests/unit/run-history/services/agent-run-history-service.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:26782) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/run-history/services/agent-run-history-service.test.ts (5 tests) 7ms
+stdout | tests/unit/token-usage/pricing/token-price-config-provider.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/token-usage/pricing/token-price-config-provider.test.ts (4 tests) 7ms
+stdout | tests/unit/agent-tools/team-communication/get-handoff-rules.test.ts > get_handoff_rules > returns only the bound sender's ordered outgoing handoffs in canonical AutoByteus JSON
+Successfully registered tool definition: 'get_handoff_rules'
+
+ ✓ tests/unit/agent-tools/team-communication/get-handoff-rules.test.ts (5 tests) 5ms
+ ✓ tests/unit/run-history/projection/raw-trace-to-historical-replay-events.test.ts (6 tests) 6ms
+stdout | tests/unit/agent-tools/task-delegation/task-delegation-tool-run-router.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:26793) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/agent-tools/task-delegation/task-delegation-tool-run-router.test.ts (3 tests) 4ms
+stdout | tests/unit/agent-team-execution/member-team-context-builder.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:26794) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/agent-team-execution/member-team-context-builder.test.ts (4 tests) 7ms
+ ✓ tests/unit/run-history/services/workspace-run-history-service.test.ts (4 tests) 5ms
+ ✓ tests/unit/run-history/projection/claude-run-view-projection-provider.test.ts (2 tests) 6ms
+ ✓ tests/unit/services/agent-streaming/team-live-message-publisher.test.ts (1 test) 5ms
+stderr | tests/unit/agent-team-execution/send-message-to-tool-argument-parser.test.ts > send-message-to-tool-argument-parser > fails malformed reference_files before delivery
+[agent-communication] invalid reference_files validation toolName=send_message_to index=0 reason=path must be absolute
+
+stderr | tests/unit/agent-team-execution/send-message-to-tool-argument-parser.test.ts > send-message-to-tool-argument-parser > rejects absolute-looking reference_files containing URL protocol markers before delivery
+[agent-communication] invalid reference_files validation toolName=send_message_to index=0 reason=path must be a local filesystem path, not a URL or protocol path
+
+ ✓ tests/unit/agent-team-execution/send-message-to-tool-argument-parser.test.ts (6 tests) 5ms
+stdout | tests/unit/app-data-migrations/custom-provider-readable-id-prerequisite-guard.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:27104) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/app-data-migrations/custom-provider-readable-id-prerequisite-guard.test.ts > CustomProviderReadableIdPrerequisiteGuard > keeps every exact prerequisite before readable identity and readable identity final
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+
+ ✓ tests/unit/app-data-migrations/custom-provider-readable-id-prerequisite-guard.test.ts (3 tests) 9ms
+ ✓ tests/unit/agent-team-execution/member-collaboration-instruction-provider-parity.test.ts (2 tests) 4ms
+ ✓ tests/unit/agent-team-execution/task-delegation-command-queue.test.ts (3 tests) 4ms
+ ✓ tests/unit/services/agent-streaming/agent-live-message-publisher.test.ts (1 test) 3ms
+ ✓ tests/unit/agent-team-execution/team-run.test.ts (3 tests) 5ms
+ ✓ tests/unit/agent-tools/task-delegation/task-delegation-autobyteus-context.test.ts (4 tests) 4ms
+ ✓ tests/unit/agent-team-execution/team-run-config-localization.test.ts (4 tests) 5ms
+ ✓ tests/unit/run-history/projection/event-monitor-active-trace-page-projection.test.ts (4 tests) 5ms
+ ✓ tests/unit/agent-team-execution/inter-agent-message-delivery-intent-builder.test.ts (1 test) 3ms
+ ✓ tests/unit/agent-team-execution/inter-agent-message-runtime-builders.test.ts (4 tests) 4ms
+ ✓ tests/unit/agent-tools/mcp/mcp-effective-tool-result-projector.test.ts (10 tests) 5ms
+ ✓ tests/unit/app-data-migrations/token-usage-custom-provider-model-value-backfill-migration.test.ts (3 tests) 4ms
+stdout | tests/unit/agent-team-execution/mixed-team-run-backend-factory.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:27118) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/agent-team-execution/mixed-team-run-backend-factory.test.ts (1 test) 5ms
+ ✓ tests/unit/services/agent-streaming/payload-serialization.test.ts (4 tests) 4ms
+ ✓ tests/unit/run-history/projection/active-trace-event-page-policy.test.ts (2 tests) 4ms
+stdout | tests/unit/agent-team-execution/mixed-agent-member-handle-agent-tools-mcp-cleanup.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:27122) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/agent-team-execution/mixed-agent-member-handle-agent-tools-mcp-cleanup.test.ts (1 test) 3ms
+ ✓ tests/unit/run-history/projection/recent-run-projection-policy.test.ts (1 test) 3ms
+ ✓ tests/unit/agent-team-execution/team-command-start-status.test.ts (3 tests) 4ms
+ ✓ tests/unit/agent-memory/raw-trace-record-normalizer.test.ts (3 tests) 3ms
+ ✓ tests/unit/token-usage/projections/token-usage-model-display-projection.test.ts (4 tests) 4ms
+stdout | tests/unit/services/agent-streaming/agent-session.test.ts > AgentSession > connects and reports connected state
+AgentSession s1 connected to run agent-1
+
+stdout | tests/unit/services/agent-streaming/agent-session.test.ts > AgentSession > prevents connecting a closed session
+AgentSession s2 closed
+
+stdout | tests/unit/services/agent-streaming/agent-session.test.ts > AgentSession > closes and resets connected state
+AgentSession s3 connected to run agent-3
+AgentSession s3 closed
+
+ ✓ tests/unit/services/agent-streaming/agent-session.test.ts (3 tests) 3ms
+ ✓ tests/unit/services/agent-streaming/agent-stream-broadcaster.test.ts (2 tests) 3ms
+ ✓ tests/unit/run-history/agent-run-metadata-service.test.ts (2 tests) 3ms
+ ✓ tests/unit/agent-team-execution/inter-agent-message-delivery.test.ts (2 tests) 3ms
+ ✓ tests/unit/services/team-communication/team-communication-message-append-plan-current.test.ts (1 test) 2ms
+ ✓ tests/unit/run-history/services/agent-run-history-identity.test.ts (2 tests) 2ms
+ ✓ tests/unit/agent-team-execution/team-run-id.test.ts (3 tests) 2ms
+ ✓ tests/unit/agent-team-execution/services/team-member-input-event-builder.test.ts (1 test) 2ms
+
+ Test Files  112 passed (112)
+      Tests  501 passed (501)
+   Start at  13:53:47
+   Duration  67.46s (transform 4.80s, setup 447ms, import 50.57s, tests 3.97s, environment 10ms)
+
+_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+stdout | tests/e2e/secret-management/custom-provider-readable-id-startup-migration.e2e.test.ts > custom-provider readable identity actual startup lifecycle > keeps collision selectors unchanged while removing both trusted old secrets after empty V3
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Database migrations completed successfully.
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "readable-running-gate-25677-1786794841326-e4b4bfab42b37.db" at "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/db/readable-running-gate-25677-1786794841326-e4b4bfab42b37.db"
+
+SQLite database readable-running-gate-25677-1786794841326-e4b4bfab42b37.db created at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/db/readable-running-gate-25677-1786794841326-e4b4bfab42b37.db
+
+21 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+stdout | tests/e2e/secret-management/custom-provider-readable-id-startup-migration.e2e.test.ts > custom-provider readable identity actual startup lifecycle > blocks a fresh recent RUNNING record, then converges through the ordinary stale retry
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Database migrations completed successfully.
+
+ ❯ tests/e2e/secret-management/custom-provider-readable-id-startup-migration.e2e.test.ts (4 tests | 4 failed) 11472ms
+     × takes V1 through secretless staging and exact selector transition to empty V3 across restart 2005ms
+     × orders the real multiversion transition, preserves token identity, and restores selectors through same-name recreation 2718ms
+     × keeps collision selectors unchanged while removing both trusted old secrets after empty V3 3260ms
+     × blocks a fresh recent RUNNING record, then converges through the ordinary stale retry 3489ms
+stdout | tests/unit/agent-packages/agent-package-service.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:25745) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/agent-packages/agent-package-service.test.ts (11 tests) 198ms
+stdout | tests/e2e/media/server-owned-media-tools.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:25751) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stderr | tests/e2e/media/server-owned-media-tools.e2e.test.ts > server-owned media tools API/E2E boundary > executes the four canonical media tools through the AutoByteus local registry and writes output files
+Attempted to unregister tool 'generate_image', but it was not found in the registry.
+Attempted to unregister tool 'edit_image', but it was not found in the registry.
+Attempted to unregister tool 'generate_speech', but it was not found in the registry.
+Attempted to unregister tool 'generate_video', but it was not found in the registry.
+
+stdout | tests/e2e/media/server-owned-media-tools.e2e.test.ts > server-owned media tools API/E2E boundary > executes the four canonical media tools through the AutoByteus local registry and writes output files
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+stdout | tests/e2e/media/server-owned-media-tools.e2e.test.ts > server-owned media tools API/E2E boundary > executes the four canonical media tools through the AutoByteus local registry and writes output files
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/e2e/media/server-owned-media-tools.e2e.test.ts > server-owned media tools API/E2E boundary > executes the four canonical media tools through the AutoByteus local registry and writes output files
+Successfully unregistered tool definition: 'generate_image'
+Successfully unregistered tool definition: 'edit_image'
+Successfully unregistered tool definition: 'generate_speech'
+Successfully unregistered tool definition: 'generate_video'
+
+stderr | tests/e2e/media/server-owned-media-tools.e2e.test.ts > server-owned media tools API/E2E boundary > revokes a cancelled image publication lease and suppresses a late provider completion
+Attempted to unregister tool 'generate_image', but it was not found in the registry.
+Attempted to unregister tool 'edit_image', but it was not found in the registry.
+Attempted to unregister tool 'generate_speech', but it was not found in the registry.
+Attempted to unregister tool 'generate_video', but it was not found in the registry.
+
+stdout | tests/e2e/media/server-owned-media-tools.e2e.test.ts > server-owned media tools API/E2E boundary > revokes a cancelled image publication lease and suppresses a late provider completion
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+stdout | tests/e2e/media/server-owned-media-tools.e2e.test.ts > server-owned media tools API/E2E boundary > revokes a cancelled image publication lease and suppresses a late provider completion
+Successfully unregistered tool definition: 'generate_image'
+Successfully unregistered tool definition: 'edit_image'
+Successfully unregistered tool definition: 'generate_speech'
+Successfully unregistered tool definition: 'generate_video'
+
+stderr | tests/e2e/media/server-owned-media-tools.e2e.test.ts > server-owned media tools API/E2E boundary > applies default media model setting changes to future AutoByteus schemas and invocations
+Attempted to unregister tool 'generate_image', but it was not found in the registry.
+Attempted to unregister tool 'edit_image', but it was not found in the registry.
+Attempted to unregister tool 'generate_speech', but it was not found in the registry.
+Attempted to unregister tool 'generate_video', but it was not found in the registry.
+
+stdout | tests/e2e/media/server-owned-media-tools.e2e.test.ts > server-owned media tools API/E2E boundary > applies default media model setting changes to future AutoByteus schemas and invocations
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+stdout | tests/e2e/media/server-owned-media-tools.e2e.test.ts > server-owned media tools API/E2E boundary > applies default media model setting changes to future AutoByteus schemas and invocations
+Successfully unregistered tool definition: 'generate_image'
+Successfully unregistered tool definition: 'edit_image'
+Successfully unregistered tool definition: 'generate_speech'
+Successfully unregistered tool definition: 'generate_video'
+
+stderr | tests/e2e/media/server-owned-media-tools.e2e.test.ts > server-owned media tools API/E2E boundary > exposes nested speech and video generation_config schemas through the GraphQL tools query
+Attempted to unregister tool 'generate_image', but it was not found in the registry.
+Attempted to unregister tool 'edit_image', but it was not found in the registry.
+Attempted to unregister tool 'generate_speech', but it was not found in the registry.
+Attempted to unregister tool 'generate_video', but it was not found in the registry.
+
+stdout | tests/e2e/media/server-owned-media-tools.e2e.test.ts > server-owned media tools API/E2E boundary > exposes nested speech and video generation_config schemas through the GraphQL tools query
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+stdout | tests/e2e/media/server-owned-media-tools.e2e.test.ts > server-owned media tools API/E2E boundary > exposes nested speech and video generation_config schemas through the GraphQL tools query
+Successfully unregistered tool definition: 'generate_image'
+Successfully unregistered tool definition: 'edit_image'
+Successfully unregistered tool definition: 'generate_speech'
+Successfully unregistered tool definition: 'generate_video'
+
+stderr | tests/e2e/media/server-owned-media-tools.e2e.test.ts > server-owned media tools API/E2E boundary > exposes video model catalog rows through the GraphQL provider query
+Attempted to unregister tool 'generate_image', but it was not found in the registry.
+Attempted to unregister tool 'edit_image', but it was not found in the registry.
+Attempted to unregister tool 'generate_speech', but it was not found in the registry.
+Attempted to unregister tool 'generate_video', but it was not found in the registry.
+
+stderr | tests/e2e/media/server-owned-media-tools.e2e.test.ts > server-owned media tools API/E2E boundary > exposes video model catalog rows through the GraphQL provider query
+Attempted to unregister tool 'generate_image', but it was not found in the registry.
+Attempted to unregister tool 'edit_image', but it was not found in the registry.
+Attempted to unregister tool 'generate_speech', but it was not found in the registry.
+Attempted to unregister tool 'generate_video', but it was not found in the registry.
+
+stderr | tests/e2e/media/server-owned-media-tools.e2e.test.ts > server-owned media tools API/E2E boundary > normalizes media input paths consistently for workspace, external absolute, file URL, URL/data URI, missing, non-file, and traversal references
+Attempted to unregister tool 'generate_image', but it was not found in the registry.
+Attempted to unregister tool 'edit_image', but it was not found in the registry.
+Attempted to unregister tool 'generate_speech', but it was not found in the registry.
+Attempted to unregister tool 'generate_video', but it was not found in the registry.
+
+stderr | tests/e2e/media/server-owned-media-tools.e2e.test.ts > server-owned media tools API/E2E boundary > normalizes media input paths consistently for workspace, external absolute, file URL, URL/data URI, missing, non-file, and traversal references
+Attempted to unregister tool 'generate_image', but it was not found in the registry.
+Attempted to unregister tool 'edit_image', but it was not found in the registry.
+Attempted to unregister tool 'generate_speech', but it was not found in the registry.
+Attempted to unregister tool 'generate_video', but it was not found in the registry.
+
+ ❯ tests/e2e/media/server-owned-media-tools.e2e.test.ts (6 tests | 1 failed) 84ms
+     ✓ executes the four canonical media tools through the AutoByteus local registry and writes output files 14ms
+     ✓ revokes a cancelled image publication lease and suppresses a late provider completion 4ms
+     ✓ applies default media model setting changes to future AutoByteus schemas and invocations 6ms
+     ✓ exposes nested speech and video generation_config schemas through the GraphQL tools query 4ms
+     × exposes video model catalog rows through the GraphQL provider query 4ms
+     ✓ normalizes media input paths consistently for workspace, external absolute, file URL, URL/data URI, missing, non-file, and traversal references 2ms
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:25755) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ↓ tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts (1 test | 1 skipped)
+stdout | tests/integration/agent/agent-websocket.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:25762) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > connects to an inactive identity without restore, then publishes initializing before slow restore and SEND_MESSAGE ACK
+Agent websocket attached for run agent-e2e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > connects to an inactive identity without restore, then publishes initializing before slow restore and SEND_MESSAGE ACK
+Created agent session a482b6fb-133a-4d00-9455-d5c66f91c507 for run agent-e2e
+Agent WebSocket connected: session=a482b6fb-133a-4d00-9455-d5c66f91c507, run=agent-e2e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > does not downgrade an already-running standalone send to initializing
+Closed agent session a482b6fb-133a-4d00-9455-d5c66f91c507
+Agent WebSocket disconnected: a482b6fb-133a-4d00-9455-d5c66f91c507
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > does not downgrade an already-running standalone send to initializing
+Agent websocket attached for run agent-e2e
+Created agent session 032e8280-947e-4151-97f4-7556a4769e6d for run agent-e2e
+Agent WebSocket connected: session=032e8280-947e-4151-97f4-7556a4769e6d, run=agent-e2e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > activates a prepared identity through SEND_MESSAGE rather than websocket connect
+Closed agent session 032e8280-947e-4151-97f4-7556a4769e6d
+Agent WebSocket disconnected: 032e8280-947e-4151-97f4-7556a4769e6d
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > activates a prepared identity through SEND_MESSAGE rather than websocket connect
+Agent websocket attached for run agent-e2e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > activates a prepared identity through SEND_MESSAGE rather than websocket connect
+Created agent session 1528702c-dfbb-4f5e-ad68-e037b09d19b1 for run agent-e2e
+Agent WebSocket connected: session=1528702c-dfbb-4f5e-ad68-e037b09d19b1, run=agent-e2e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > returns duplicate and busy ACKs for same and different in-flight command ids
+Closed agent session 1528702c-dfbb-4f5e-ad68-e037b09d19b1
+Agent WebSocket disconnected: 1528702c-dfbb-4f5e-ad68-e037b09d19b1
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > returns duplicate and busy ACKs for same and different in-flight command ids
+Agent websocket attached for run agent-e2e
+Created agent session ad0f31cc-ca8b-460f-9c42-f39762239588 for run agent-e2e
+Agent WebSocket connected: session=ad0f31cc-ca8b-460f-9c42-f39762239588, run=agent-e2e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > publishes error status and failed ACK when prepared activation fails
+Closed agent session ad0f31cc-ca8b-460f-9c42-f39762239588
+Agent WebSocket disconnected: ad0f31cc-ca8b-460f-9c42-f39762239588
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > publishes error status and failed ACK when prepared activation fails
+Agent websocket attached for run agent-e2e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > publishes error status and failed ACK when prepared activation fails
+Created agent session 19ee2d75-50eb-4d9d-9970-728bf15063e7 for run agent-e2e
+Agent WebSocket connected: session=19ee2d75-50eb-4d9d-9970-728bf15063e7, run=agent-e2e
+
+stderr | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > publishes error status and failed ACK when prepared activation fails
+SEND_MESSAGE command not accepted for agent run agent-e2e: [ACTIVATION_FAILED] activation exploded
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > returns exact same-socket interrupt acknowledgements without publishing lifecycle state
+Closed agent session 19ee2d75-50eb-4d9d-9970-728bf15063e7
+Agent WebSocket disconnected: 19ee2d75-50eb-4d9d-9970-728bf15063e7
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > returns exact same-socket interrupt acknowledgements without publishing lifecycle state
+Agent websocket attached for run agent-interrupt-ack
+Created agent session 01e0bba0-cc74-4460-81bb-1c5971599e07 for run agent-interrupt-ack
+Agent WebSocket connected: session=01e0bba0-cc74-4460-81bb-1c5971599e07, run=agent-interrupt-ack
+
+stderr | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > returns exact same-socket interrupt acknowledgements without publishing lifecycle state
+INTERRUPT_GENERATION rejected for agent run agent-interrupt-ack: [NO_ACTIVE_TURN] The provider has no active turn to interrupt.
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > keeps non-SEND commands active-only after identity-only connect
+Closed agent session 01e0bba0-cc74-4460-81bb-1c5971599e07
+Agent WebSocket disconnected: 01e0bba0-cc74-4460-81bb-1c5971599e07
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > keeps non-SEND commands active-only after identity-only connect
+Agent websocket attached for run agent-e2e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > keeps non-SEND commands active-only after identity-only connect
+Created agent session 7ed3d576-d2d2-4d11-afc9-57f9890582eb for run agent-e2e
+Agent WebSocket connected: session=7ed3d576-d2d2-4d11-afc9-57f9890582eb, run=agent-e2e
+
+stderr | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > keeps non-SEND commands active-only after identity-only connect
+INTERRUPT_GENERATION rejected for missing agent run agent-e2e.
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > returns SESSION_NOT_READY when command arrives before connect handshake
+Closed agent session 7ed3d576-d2d2-4d11-afc9-57f9890582eb
+Agent WebSocket disconnected: 7ed3d576-d2d2-4d11-afc9-57f9890582eb
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > returns SESSION_NOT_READY when command arrives before connect handshake
+Agent websocket attached for run any-agent
+
+ ❯ tests/integration/agent/agent-websocket.integration.test.ts (8 tests | 2 failed) 2215ms
+     × connects to an inactive identity without restore, then publishes initializing before slow restore and SEND_MESSAGE ACK 59ms
+     ✓ does not downgrade an already-running standalone send to initializing 20ms
+     ✓ activates a prepared identity through SEND_MESSAGE rather than websocket connect 26ms
+     × returns duplicate and busy ACKs for same and different in-flight command ids 2031ms
+     ✓ publishes error status and failed ACK when prepared activation fails 17ms
+     ✓ returns exact same-socket interrupt acknowledgements without publishing lifecycle state 28ms
+     ✓ keeps non-SEND commands active-only after identity-only connect 17ms
+     ✓ returns SESSION_NOT_READY when command arrives before connect handshake 15ms
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:25773) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists workspaces
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-GM0YlZ/test_ws_root
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-GM0YlZ/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists workspaces
+Created and registered workspace ID: agent_ws_5f9b2034f4bf619f0796027dc2970392c5a20dc5fbcaa83520681a55563f5d59
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists workspaces
+Creating temp workspace at: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/temp_workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/temp_workspace.
+Initialized TempWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists workspaces
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-15T11:54:14.326Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists workspaces
+Closing FileSystemWorkspace agent_ws_5f9b2034f4bf619f0796027dc2970392c5a20dc5fbcaa83520681a55563f5d59
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists workspaces
+Closing FileSystemWorkspace temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > removes a registered workspace from visibility, preserves files, and re-adds the same root
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-Y9sEMp/test_ws_root
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-Y9sEMp/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > removes a registered workspace from visibility, preserves files, and re-adds the same root
+Created and registered workspace ID: agent_ws_db92f6f9203018db9ac1f236905755ffc8b7813a7adb9ba1ee47c9114a43c307
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > removes a registered workspace from visibility, preserves files, and re-adds the same root
+GraphQL mutation to remove registered workspace
+
+stderr | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > removes a registered workspace from visibility, preserves files, and re-adds the same root
+Unexpected error removing workspace: RangeError: Maximum call stack size exceeded
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > removes a registered workspace from visibility, preserves files, and re-adds the same root
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-GM0YlZ/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > removes a registered workspace from visibility, preserves files, and re-adds the same root
+Closing FileSystemWorkspace agent_ws_db92f6f9203018db9ac1f236905755ffc8b7813a7adb9ba1ee47c9114a43c307
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > keeps a workspace registered when removeWorkspace is blocked by an active standalone run
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-iRDlb5/test_ws_root
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-iRDlb5/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > keeps a workspace registered when removeWorkspace is blocked by an active standalone run
+Created and registered workspace ID: agent_ws_00b8ab529963b61cc5a5fda72ec7a0343ec3b278c9efe3c2feb6877f996f4c97
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > keeps a workspace registered when removeWorkspace is blocked by an active standalone run
+GraphQL mutation to remove registered workspace
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > keeps a workspace registered when removeWorkspace is blocked by an active standalone run
+Creating temp workspace at: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/temp_workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/temp_workspace.
+Initialized TempWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > keeps a workspace registered when removeWorkspace is blocked by an active standalone run
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-GM0YlZ/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-Y9sEMp/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > keeps a workspace registered when removeWorkspace is blocked by an active standalone run
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-GM0YlZ/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-Y9sEMp/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > keeps a workspace registered when removeWorkspace is blocked by an active standalone run
+Closing FileSystemWorkspace agent_ws_00b8ab529963b61cc5a5fda72ec7a0343ec3b278c9efe3c2feb6877f996f4c97
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > keeps a workspace registered when removeWorkspace is blocked by an active standalone run
+Closing FileSystemWorkspace temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > returns workspace metadata from createWorkspace without acquiring file explorer
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-HU6F49/test_ws_root
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-HU6F49/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > returns workspace metadata from createWorkspace without acquiring file explorer
+Created and registered workspace ID: agent_ws_a757d2eb0cb1e88cd3cd269b76ed34084f8c1bf42271159143d930d80071ca04
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > returns workspace metadata from createWorkspace without acquiring file explorer
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-GM0YlZ/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-iRDlb5/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-Y9sEMp/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > returns workspace metadata from createWorkspace without acquiring file explorer
+Closing FileSystemWorkspace agent_ws_a757d2eb0cb1e88cd3cd269b76ed34084f8c1bf42271159143d930d80071ca04
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > resolves deterministic workspace metadata without initializing the workspace
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-EqkVSH/test_ws_root
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-EqkVSH/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > resolves deterministic workspace metadata without initializing the workspace
+Created and registered workspace ID: agent_ws_c58b1b6a79ccc9fdd1674147556a5a50c38ba7c572162cc62d5c98dfe3ec03a1
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > resolves deterministic workspace metadata without initializing the workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-GM0YlZ/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-HU6F49/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-iRDlb5/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-Y9sEMp/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > resolves deterministic workspace metadata without initializing the workspace
+Closing FileSystemWorkspace agent_ws_c58b1b6a79ccc9fdd1674147556a5a50c38ba7c572162cc62d5c98dfe3ec03a1
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists the temp workspace with the backend-selected app-data-relative path
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-dr8lxa/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-dr8lxa/server-data/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-dr8lxa/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists the temp workspace with the backend-selected app-data-relative path
+Closing FileSystemWorkspace temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > lists only temp_ws_default for the configured temp root and cleans duplicate persisted filesystem entries
+Removed 1 persisted filesystem registry entry for the configured temp workspace root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > lists only temp_ws_default for the configured temp root and cleans duplicate persisted filesystem entries
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-ZEBbWU/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-ZEBbWU/server-data/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-ZEBbWU/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > lists only temp_ws_default for the configured temp root and cleans duplicate persisted filesystem entries
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-ZEBbWU/regular_ws.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > lists only temp_ws_default for the configured temp root and cleans duplicate persisted filesystem entries
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-ZEBbWU/regular_ws.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > lists only temp_ws_default for the configured temp root and cleans duplicate persisted filesystem entries
+Closing FileSystemWorkspace temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > resolves createWorkspace for the configured temp root to temp_ws_default without persisting a filesystem entry
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-PXaYc5/server-data/temp_workspace/.
+Resolved configured temp workspace root to TempWorkspace.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > resolves createWorkspace for the configured temp root to temp_ws_default without persisting a filesystem entry
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-PXaYc5/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-PXaYc5/server-data/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-PXaYc5/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > resolves createWorkspace for the configured temp root to temp_ws_default without persisting a filesystem entry
+Closing FileSystemWorkspace temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > preserves a seeded registry when GraphQL workspace listing and creation overlap
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-YsQ86T/created-during-list
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-YsQ86T/created-during-list.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > preserves a seeded registry when GraphQL workspace listing and creation overlap
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-YsQ86T/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-YsQ86T/server-data/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-YsQ86T/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > preserves a seeded registry when GraphQL workspace listing and creation overlap
+Created and registered workspace ID: agent_ws_f42e89de13bf670d4f389de0724df3a2163a7497bacafbf1fdd9448b36d338d1
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > preserves a seeded registry when GraphQL workspace listing and creation overlap
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-YsQ86T/existing-a.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-YsQ86T/existing-b.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-YsQ86T/existing-c.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > preserves a seeded registry when GraphQL workspace listing and creation overlap
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-YsQ86T/existing-a.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-YsQ86T/existing-b.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-YsQ86T/existing-c.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > preserves a seeded registry when GraphQL workspace listing and creation overlap
+Closing FileSystemWorkspace agent_ws_f42e89de13bf670d4f389de0724df3a2163a7497bacafbf1fdd9448b36d338d1
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > preserves a seeded registry when GraphQL workspace listing and creation overlap
+Closing FileSystemWorkspace temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > rejects removing the default temp workspace
+GraphQL mutation to remove registered workspace
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > rejects removing the default temp workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-EqkVSH/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-GM0YlZ/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-HU6F49/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-iRDlb5/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-Y9sEMp/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists the temp workspace using the configured relative override under app data dir
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-TyZjEX/server-data
+Config file not found in new data directory: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-TyZjEX/server-data/.env
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists the temp workspace using the configured relative override under app data dir
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-TyZjEX/server-data/isolated-temp-workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-TyZjEX/server-data/isolated-temp-workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-TyZjEX/server-data/isolated-temp-workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists the temp workspace using the configured relative override under app data dir
+Closing FileSystemWorkspace temp_ws_default
+
+ ❯ tests/e2e/workspaces/workspaces-graphql.e2e.test.ts (11 tests | 1 failed) 150ms
+     ✓ creates and lists workspaces 18ms
+     × removes a registered workspace from visibility, preserves files, and re-adds the same root 23ms
+     ✓ keeps a workspace registered when removeWorkspace is blocked by an active standalone run 13ms
+     ✓ returns workspace metadata from createWorkspace without acquiring file explorer 15ms
+     ✓ resolves deterministic workspace metadata without initializing the workspace 10ms
+     ✓ creates and lists the temp workspace with the backend-selected app-data-relative path 2ms
+     ✓ lists only temp_ws_default for the configured temp root and cleans duplicate persisted filesystem entries 5ms
+     ✓ resolves createWorkspace for the configured temp root to temp_ws_default without persisting a filesystem entry 3ms
+     ✓ preserves a seeded registry when GraphQL workspace listing and creation overlap 5ms
+     ✓ rejects removing the default temp workspace 2ms
+     ✓ creates and lists the temp workspace using the configured relative override under app data dir 2ms
+stdout | tests/e2e/runtime/context-file-storage-runtime.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:25775) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ↓ tests/e2e/runtime/context-file-storage-runtime.e2e.test.ts (2 tests | 2 skipped)
+stdout | tests/integration/run-history/memory-layout-and-projection.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:25784) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/integration/run-history/memory-layout-and-projection.integration.test.ts (0 test)
+stdout | tests/skill-improvement/skill-improvement-service.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:25787) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/skill-improvement/skill-improvement-service.integration.test.ts (6 tests) 1035ms
+     ✓ refreshes work traces before each improver trigger and reuses the improver run on later clicks  311ms
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:25792) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ↓ tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts (3 tests | 3 skipped)
+stdout | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:25797) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts (5 tests) 418ms
+stdout | tests/e2e/token-usage/token-usage-legacy-path-columns-drop-startup.e2e.test.ts > token usage legacy path column drop startup E2E
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/token-usage-legacy-drop-e2e-Mu1Toc
+AppConfig instance created.
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/token-usage-legacy-drop-e2e-Mu1Toc/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/token-usage-legacy-drop-e2e-Mu1Toc/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/token-usage-legacy-drop-e2e-Mu1Toc/.env -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/token-usage-legacy-drop-e2e-Mu1Toc
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/token-usage-legacy-drop-e2e-Mu1Toc/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/token-usage-legacy-drop-e2e-Mu1Toc/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/token-usage-legacy-drop-e2e-Mu1Toc/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/token-usage-legacy-drop-e2e-Mu1Toc/memory
+============================================================
+AppConfig initialization completed successfully
+
+ ❯ tests/e2e/token-usage/token-usage-legacy-path-columns-drop-startup.e2e.test.ts (2 tests | 2 skipped) 175ms
+     ↓ records a clear failure and leaves schema unchanged when the backfill prerequisite has not succeeded
+     ↓ runs backfill before the guarded contract drop, preserves token data, and keeps GraphQL statistics working
+ ❯ tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts (0 test)
+stdout | tests/e2e/memory-sync/memory-sync-api.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:26110) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/memory-sync/memory-sync-api.e2e.test.ts > Memory Sync public API and imported memory e2e
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-memory-sync-api-a9r6YT
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-memory-sync-api-a9r6YT/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-memory-sync-api-a9r6YT/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-memory-sync-api-a9r6YT/.env -- tip: ⚙️  enable debug logging with { debug: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:37654
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:37654
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-memory-sync-api-a9r6YT
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-memory-sync-api-a9r6YT/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-memory-sync-api-a9r6YT/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-memory-sync-api-a9r6YT/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-memory-sync-api-a9r6YT/memory
+============================================================
+AppConfig initialization completed successfully
+
+ ✓ tests/e2e/memory-sync/memory-sync-api.e2e.test.ts (1 test) 298ms
+stdout | tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:26116) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts > Agent definitions GraphQL e2e > creates, updates, lists templates, and deletes agent definitions
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+
+stdout | tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts > Agent definitions GraphQL e2e > creates, updates, lists templates, and deletes agent definitions
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts > Agent definitions GraphQL e2e > creates, updates, lists templates, and deletes agent definitions
+Agent Definition created successfully with ID: agent-agent-def-1786794867132-24dfeb71d9c59
+
+stdout | tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts > Agent definitions GraphQL e2e > creates, updates, lists templates, and deletes agent definitions
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts > Agent definitions GraphQL e2e > creates, updates, lists templates, and deletes agent definitions
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts > Agent definitions GraphQL e2e > creates, updates, lists templates, and deletes agent definitions
+Agent definition cache populated with 48 items.
+
+stdout | tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts > Agent definitions GraphQL e2e > creates, updates, lists templates, and deletes agent definitions
+In-memory cache: Updated agent definition with ID agent-agent-def-1786794867132-24dfeb71d9c59.
+
+stdout | tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts > Agent definitions GraphQL e2e > creates, updates, lists templates, and deletes agent definitions
+Agent Definition with ID agent-agent-def-1786794867132-24dfeb71d9c59 updated successfully.
+
+stdout | tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts > Agent definitions GraphQL e2e > creates, updates, lists templates, and deletes agent definitions
+In-memory cache: Removed agent definition with ID agent-agent-def-1786794867132-24dfeb71d9c59.
+
+stdout | tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts > Agent definitions GraphQL e2e > creates, updates, lists templates, and deletes agent definitions
+Agent Definition with ID agent-agent-def-1786794867132-24dfeb71d9c59 deleted successfully.
+
+stdout | tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts > Agent definitions GraphQL e2e > lists and updates team-local agent definitions with ownership metadata
+Agent Definition with ID team-local-agent:team_team_local_agent_1786794867255_997de81038c43:agent_team_local_agent_1786794867255_997de81038c43 updated successfully.
+
+stderr | tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts > Agent definitions GraphQL e2e > lists and updates team-local agent definitions with ownership metadata
+Error deleting agent definition with ID team-local-agent:team_team_local_agent_1786794867255_997de81038c43:agent_team_local_agent_1786794867255_997de81038c43: Error: Deleting non-shared agent definitions is not supported.
+
+ ✓ tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts (7 tests) 336ms
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:26120) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ↓ tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.integration.test.ts (4 tests | 4 skipped)
+stdout | tests/e2e/token-usage/token-usage-unit-prices-graphql.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:26122) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/token-usage/token-usage-unit-prices-graphql.e2e.test.ts > token usage unit-price GraphQL hydration
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/e2e/token-usage/token-usage-unit-prices-graphql.e2e.test.ts > token usage unit-price GraphQL hydration > exposes display-safe unit prices on hydrated run, team, member, and aggregate statistics summaries
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+
+ ❯ tests/e2e/token-usage/token-usage-unit-prices-graphql.e2e.test.ts (1 test | 1 failed) 99ms
+     × exposes display-safe unit prices on hydrated run, team, member, and aggregate statistics summaries 32ms
+stdout | tests/e2e/external-channel/external-channel-setup-graphql.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:26126) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/external-channel/external-channel-setup-graphql.e2e.test.ts > External channel setup GraphQL e2e > exposes setup capability query
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/external-channel/external-channel-setup-graphql.e2e.test.ts > External channel setup GraphQL e2e > supports upsert/list/delete binding setup lifecycle with targetAgentDefinitionId and launchPreset
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+
+stdout | tests/e2e/external-channel/external-channel-setup-graphql.e2e.test.ts > External channel setup GraphQL e2e > supports upsert/list/delete binding setup lifecycle with targetAgentDefinitionId and launchPreset
+Agent Definition created successfully with ID: external-channel-agent-66fd807b-67bf-4058-9009-835f7a82c2ec
+
+stdout | tests/e2e/external-channel/external-channel-setup-graphql.e2e.test.ts > External channel setup GraphQL e2e > supports upsert/list/delete binding setup lifecycle with targetAgentDefinitionId and launchPreset
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/external-channel/external-channel-setup-graphql.e2e.test.ts > External channel setup GraphQL e2e > supports upsert/list/delete binding setup lifecycle with targetAgentDefinitionId and launchPreset
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/e2e/external-channel/external-channel-setup-graphql.e2e.test.ts > External channel setup GraphQL e2e > supports upsert/list/delete binding setup lifecycle with targetAgentDefinitionId and launchPreset
+Agent definition cache populated with 48 items.
+
+stdout | tests/e2e/external-channel/external-channel-setup-graphql.e2e.test.ts > External channel setup GraphQL e2e > rejects unsupported provider/transport combinations during upsert
+In-memory cache: Added new agent definition with ID external-channel-agent-71221b6a-7dbb-4d1d-a4c4-eb1f75416171.
+
+stdout | tests/e2e/external-channel/external-channel-setup-graphql.e2e.test.ts > External channel setup GraphQL e2e > rejects unsupported provider/transport combinations during upsert
+Agent Definition created successfully with ID: external-channel-agent-71221b6a-7dbb-4d1d-a4c4-eb1f75416171
+
+stdout | tests/e2e/external-channel/external-channel-setup-graphql.e2e.test.ts > External channel setup GraphQL e2e > accepts supported provider/transport binding combinations with launch presets
+In-memory cache: Added new agent definition with ID external-channel-agent-37de1b68-f4ab-452d-9437-d2c939c8e514.
+
+stdout | tests/e2e/external-channel/external-channel-setup-graphql.e2e.test.ts > External channel setup GraphQL e2e > accepts supported provider/transport binding combinations with launch presets
+Agent Definition created successfully with ID: external-channel-agent-37de1b68-f4ab-452d-9437-d2c939c8e514
+
+stdout | tests/e2e/external-channel/external-channel-setup-graphql.e2e.test.ts > External channel setup GraphQL e2e > lists team definition options and supports TEAM binding lifecycle
+In-memory cache: Added new agent definition with ID external-channel-agent-2814ed7c-3505-41ae-9c35-786e2b7b5bca.
+
+stdout | tests/e2e/external-channel/external-channel-setup-graphql.e2e.test.ts > External channel setup GraphQL e2e > lists team definition options and supports TEAM binding lifecycle
+Agent Definition created successfully with ID: external-channel-agent-2814ed7c-3505-41ae-9c35-786e2b7b5bca
+
+stdout | tests/e2e/external-channel/external-channel-setup-graphql.e2e.test.ts > External channel setup GraphQL e2e > lists team definition options and supports TEAM binding lifecycle
+[2026-08-15T11:54:31.808Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/external-channel/external-channel-setup-graphql.e2e.test.ts > External channel setup GraphQL e2e > lists team definition options and supports TEAM binding lifecycle
+Agent Team Definition created successfully with ID: telegram-team-9d2c8794-dd6b-4bde-92ac-892bac9b6d8d
+
+stdout | tests/e2e/external-channel/external-channel-setup-graphql.e2e.test.ts > External channel setup GraphQL e2e > lists team definition options and supports TEAM binding lifecycle
+[2026-08-15T11:54:31.824Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/external-channel/external-channel-setup-graphql.e2e.test.ts > External channel setup GraphQL e2e > lists team definition options and supports TEAM binding lifecycle
+[2026-08-15T11:54:31.837Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 31 items.
+
+stdout | tests/e2e/external-channel/external-channel-setup-graphql.e2e.test.ts > External channel setup GraphQL e2e > rejects malformed Discord peerId with typed field-aware error
+In-memory cache: Added new agent definition with ID external-channel-agent-a026e445-1c3a-4e8e-b323-b9f856b11550.
+
+stdout | tests/e2e/external-channel/external-channel-setup-graphql.e2e.test.ts > External channel setup GraphQL e2e > rejects malformed Discord peerId with typed field-aware error
+Agent Definition created successfully with ID: external-channel-agent-a026e445-1c3a-4e8e-b323-b9f856b11550
+
+ ✓ tests/e2e/external-channel/external-channel-setup-graphql.e2e.test.ts (8 tests) 313ms
+(node:26129) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/app-data-migrations/custom-provider-readable-id-app-data-migration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/app-data-migrations/custom-provider-readable-id-app-data-migration.test.ts (10 tests) 1092ms
+stdout | tests/unit/agent-execution/agent-run.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:26134) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/agent-execution/agent-run.test.ts (22 tests) 689ms
+stdout | tests/e2e/llm-management/qwen-configuration-lifecycle-graphql.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:26451) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/e2e/llm-management/qwen-configuration-lifecycle-graphql.e2e.test.ts (1 test | 1 failed) 1810ms
+     × commits one probed pair durably, compensates failures, restarts, and routes every exact Qwen model 1809ms
+stdout | tests/skill-improvement/skill-improvement-improver-session-service.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:26466) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/skill-improvement/skill-improvement-improver-session-service.test.ts (5 tests) 35ms
+stdout | tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:26478) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ↓ tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts (2 tests | 2 skipped)
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:26779) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > projects only autobyteus status transitions to a real standalone socket while preserving canonical companions
+Agent websocket attached for run run-autobyteus
+Created agent session 936b547b-06c3-43a5-803d-963302a29250 for run run-autobyteus
+Agent WebSocket connected: session=936b547b-06c3-43a5-803d-963302a29250, run=run-autobyteus
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > projects only codex_app_server status transitions to a real standalone socket while preserving canonical companions
+Closed agent session 936b547b-06c3-43a5-803d-963302a29250
+Agent WebSocket disconnected: 936b547b-06c3-43a5-803d-963302a29250
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > projects only codex_app_server status transitions to a real standalone socket while preserving canonical companions
+Agent websocket attached for run run-codex_app_server
+Created agent session 84f512d6-9b8d-44e5-9fff-633cc90db654 for run run-codex_app_server
+Agent WebSocket connected: session=84f512d6-9b8d-44e5-9fff-633cc90db654, run=run-codex_app_server
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > projects only claude_agent_sdk status transitions to a real standalone socket while preserving canonical companions
+Closed agent session 84f512d6-9b8d-44e5-9fff-633cc90db654
+Agent WebSocket disconnected: 84f512d6-9b8d-44e5-9fff-633cc90db654
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > projects only claude_agent_sdk status transitions to a real standalone socket while preserving canonical companions
+Agent websocket attached for run run-claude_agent_sdk
+Created agent session 6471ff89-8b00-44d3-9eb8-f5d14c3591ed for run run-claude_agent_sdk
+Agent WebSocket connected: session=6471ff89-8b00-44d3-9eb8-f5d14c3591ed, run=run-claude_agent_sdk
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > coalesces a representative fine-grained canonical stream into one default-window content frame
+Closed agent session 6471ff89-8b00-44d3-9eb8-f5d14c3591ed
+Agent WebSocket disconnected: 6471ff89-8b00-44d3-9eb8-f5d14c3591ed
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > coalesces a representative fine-grained canonical stream into one default-window content frame
+Agent websocket attached for run run-default-window-rate
+Created agent session 1ef5f694-8db2-4f17-ba96-60e08bd280f6 for run run-default-window-rate
+Agent WebSocket connected: session=1ef5f694-8db2-4f17-ba96-60e08bd280f6, run=run-default-window-rate
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > uses a changed interval only for the active socket's next newly opened window
+Closed agent session 1ef5f694-8db2-4f17-ba96-60e08bd280f6
+Agent WebSocket disconnected: 1ef5f694-8db2-4f17-ba96-60e08bd280f6
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > uses a changed interval only for the active socket's next newly opened window
+Agent websocket attached for run run-live-interval-change
+Created agent session c679c07e-8a62-40e3-9db3-351e999492ef for run run-live-interval-change
+Agent WebSocket connected: session=c679c07e-8a62-40e3-9db3-351e999492ef, run=run-live-interval-change
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > keeps late A observable and preserves B across delayed A activity/terminal events and reconnect
+Closed agent session c679c07e-8a62-40e3-9db3-351e999492ef
+Agent WebSocket disconnected: c679c07e-8a62-40e3-9db3-351e999492ef
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > keeps late A observable and preserves B across delayed A activity/terminal events and reconnect
+Agent websocket attached for run run-retired-turn-ordering
+Created agent session 433873dc-c626-4c19-ba8e-e44627d863c0 for run run-retired-turn-ordering
+Agent WebSocket connected: session=433873dc-c626-4c19-ba8e-e44627d863c0, run=run-retired-turn-ordering
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > keeps diagnostic errors running, terminalizes the current turn to error, then publishes offline on termination
+Closed agent session 433873dc-c626-4c19-ba8e-e44627d863c0
+Agent WebSocket disconnected: 433873dc-c626-4c19-ba8e-e44627d863c0
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > keeps diagnostic errors running, terminalizes the current turn to error, then publishes offline on termination
+Agent websocket attached for run run-error-contract
+Created agent session a91cfda7-e589-443d-8f1b-217dbfa50066 for run run-error-contract
+Agent WebSocket connected: session=a91cfda7-e589-443d-8f1b-217dbfa50066, run=run-error-contract
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts
+Closed agent session a91cfda7-e589-443d-8f1b-217dbfa50066
+Agent WebSocket disconnected: a91cfda7-e589-443d-8f1b-217dbfa50066
+
+ ❯ tests/integration/agent/agent-status-websocket.integration.test.ts (7 tests | 6 failed) 1449ms
+     × projects only autobyteus status transitions to a real standalone socket while preserving canonical companions 48ms
+     × projects only codex_app_server status transitions to a real standalone socket while preserving canonical companions 20ms
+     × projects only claude_agent_sdk status transitions to a real standalone socket while preserving canonical companions 17ms
+     × coalesces a representative fine-grained canonical stream into one default-window content frame 659ms
+     × uses a changed interval only for the active socket's next newly opened window 658ms
+     × keeps late A observable and preserves B across delayed A activity/terminal events and reconnect 18ms
+     ✓ keeps diagnostic errors running, terminalizes the current turn to error, then publishes offline on termination 28ms
+(node:26783) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/application-backend/application-backend-rest-ws.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/application-backend/application-backend-rest-ws.integration.test.ts > Application backend REST/WS integration > starts the app worker through the REST boundary and streams backend notifications over websocket
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+Initialized server settings service with 20 predefined settings
+
+ ❯ tests/integration/application-backend/application-backend-rest-ws.integration.test.ts (2 tests | 2 failed) 226ms
+     × starts the app worker through the REST boundary and streams backend notifications over websocket 153ms
+     × keeps the REST boundary app-scoped by taking application identity from the route, not the body 72ms
+stdout | tests/e2e/memory/memory-view-graphql.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:26791) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/memory/memory-view-graphql.e2e.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+
+stdout | tests/e2e/memory/memory-view-graphql.e2e.test.ts > Memory view GraphQL e2e
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-memory-view-TuMhdL
+Config file not found in new data directory: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-memory-view-TuMhdL/.env
+
+stderr | tests/e2e/memory/memory-view-graphql.e2e.test.ts > Memory view GraphQL e2e > returns absent external WorkingContext after success, retained stale content after failure, independent raws, and native content
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-memory-view-TuMhdL/memory/agents/external-working-context-absent/working_context_snapshot.json
+
+ ✓ tests/e2e/memory/memory-view-graphql.e2e.test.ts (5 tests) 83ms
+stdout | tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:26795) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)

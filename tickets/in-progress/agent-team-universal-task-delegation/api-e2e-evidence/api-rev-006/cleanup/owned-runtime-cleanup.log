@@ -1,0 +1,14 @@
+runtime_target /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/tests/.tmp/api-rev-006-live-20260815-1
+runtime_exists_before True
+runtime_exists_after False
+candidate /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/db/api-rev-006-live-20260815-1.db exists_before True
+exists_after False
+candidate /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/db/api-rev-006-live-20260815-1.db.secret.key exists_before True
+exists_after False
+candidate /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/db/api-rev-006-live-20260815-1.db-journal exists_before False
+exists_after False
+candidate /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/db/api-rev-006-live-20260815-1.db-wal exists_before False
+exists_after False
+candidate /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/db/api-rev-006-live-20260815-1.db-shm exists_before False
+exists_after False
+RESULT=PASS

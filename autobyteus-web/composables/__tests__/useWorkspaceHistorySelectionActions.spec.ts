@@ -1,6 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
 import { AgentStatus } from '~/types/agent/AgentStatus';
-import { createTeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 import { useWorkspaceHistorySelectionActions } from '../useWorkspaceHistorySelectionActions';
 import type { TeamMemberTreeRow, TeamTreeNode } from '~/stores/runHistoryTypes';
 
@@ -23,10 +22,10 @@ const buildTeamMemberRow = (
   ...overrides,
 });
 
-const buildTeamNode = (focusedMemberAddress: string): TeamTreeNode => {
-  const programManager = buildTeamMemberRow('/program_manager');
-  const buildReviewLead = buildTeamMemberRow('/BuildSquad/review_lead');
-  const auditReviewLead = buildTeamMemberRow('/AuditSquad/review_lead');
+const buildTeamNode = (focusedAgentRunId: string): TeamTreeNode => {
+  const programManager = buildTeamMemberRow('/program_manager', { agentRunId: 'program-manager-run' });
+  const buildReviewLead = buildTeamMemberRow('/BuildSquad/review_lead', { agentRunId: 'build-review-lead-run' });
+  const auditReviewLead = buildTeamMemberRow('/AuditSquad/review_lead', { agentRunId: 'audit-review-lead-run' });
   const buildSquad = buildTeamMemberRow('/BuildSquad', {
     kind: 'agent_team',
     agentRunId: null,
@@ -62,10 +61,7 @@ const buildTeamNode = (focusedMemberAddress: string): TeamTreeNode => {
     lastActivityAt: '2026-05-17T00:00:00.000Z',
     isActive: false,
     deleteLifecycle: 'READY',
-    focusedExecutionAddress: createTeamExecutionAddress({
-      rootTeamRunId: 'team-1',
-      memberAddress: focusedMemberAddress,
-    }),
+    focusedAgentRunId,
     rootTeam,
     members: [programManager, buildSquad, buildReviewLead, auditSquad, auditReviewLead],
     executionRows: [],
@@ -91,18 +87,18 @@ const buildActions = () => {
   };
 };
 
-describe('useWorkspaceHistorySelectionActions current rooted addresses', () => {
-  it('does not resolve focused Team history selection by a duplicate bare member name', async () => {
+describe('useWorkspaceHistorySelectionActions current AgentRun identity', () => {
+  it('does not resolve focused Team history selection by a stale non-AgentRun selector', async () => {
     const { actions, runHistoryStore } = buildActions();
-    await actions.onSelectTeam(buildTeamNode('/review_lead'));
+    await actions.onSelectTeam(buildTeamNode('review_lead'));
     expect(runHistoryStore.selectTreeRun).toHaveBeenCalledWith(
       expect.objectContaining({ memberAddress: '/program_manager' }),
     );
   });
 
-  it('resolves focused Team history selection by its exact nested member address', async () => {
+  it('resolves focused Team history selection by its exact nested AgentRun id', async () => {
     const { actions, runHistoryStore } = buildActions();
-    await actions.onSelectTeam(buildTeamNode('/BuildSquad/review_lead'));
+    await actions.onSelectTeam(buildTeamNode('build-review-lead-run'));
     expect(runHistoryStore.selectTreeRun).toHaveBeenCalledWith(
       expect.objectContaining({ memberAddress: '/BuildSquad/review_lead' }),
     );

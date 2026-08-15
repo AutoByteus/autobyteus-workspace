@@ -1,69 +1,31 @@
-import {
-  createMemberLogicalAddressContext,
-  type MemberLogicalAddressContext,
-} from "../../agent-team-execution/domain/member-logical-address-context.js";
-import { createTeamExecutionAddress, type TeamExecutionAddress } from "../../agent-team-execution/domain/team-execution-address.js";
+import { createTeamMemberExecutionIdentity } from "../../agent-team-execution/domain/team-member-execution-identity.js";
 import { TaskDelegationError } from "../../agent-team-execution/task-delegation/task-delegation-record.js";
-import { assertAgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import type { TaskDelegationToolContext } from "./task-delegation-tool-contract.js";
 
-type NativeTeamContext = {
-  teamRunId?: unknown;
-  teamDefinitionId?: unknown;
-  teamName?: unknown;
-  memberAddress?: unknown;
-  agentRunId?: unknown;
-  coordinatorAddress?: unknown;
-  executionAddress?: TeamExecutionAddress | null;
-  addressing?: unknown;
-  taskId?: unknown;
-};
-export type NativeTaskDelegationToolExecutionContext = {
-  customData?: { teamContext?: NativeTeamContext };
-};
-const required = (value: unknown, field: string): string => {
-  const normalized = typeof value === "string" ? value.trim() : "";
-  if (!normalized) throw new TaskDelegationError("TEAM_RUN_CONTEXT_REQUIRED", `Task delegation tools require ${field} in team context.`);
-  return normalized;
-};
-const optional = (value: unknown): string | null => typeof value === "string" && value.trim() ? value.trim() : null;
-
-const buildNativeAddressing = (value: unknown): MemberLogicalAddressContext => {
-  if (!value || typeof value !== "object" || Array.isArray(value)) {
-    throw new TaskDelegationError("TEAM_RUN_CONTEXT_REQUIRED", "Task delegation tools require an active Team collaboration context.");
+type NativeTeamContext = { rootTeamRunId?: unknown; memberAddress?: unknown; agentRunId?: unknown };
+export type NativeTaskDelegationToolExecutionContext = { customData?: { teamContext?: NativeTeamContext } };
+const text = (value: unknown, field: string): string => {
+  if (typeof value !== "string" || !value.trim()) {
+    throw new TaskDelegationError("TEAM_RUN_CONTEXT_REQUIRED", `Task delegation requires ${field} in Team context.`);
   }
-  const keys = Object.keys(value).sort();
-  if (keys.length !== 2 || keys[0] !== "memberAddress" || keys[1] !== "rootTeamRunId") {
-    throw new TaskDelegationError(
-      "TEAM_RUN_CONTEXT_REQUIRED",
-      "Task delegation Team addressing accepts only rootTeamRunId and memberAddress.",
-    );
-  }
-  const addressing = value as Record<string, unknown>;
-  return createMemberLogicalAddressContext({
-    rootTeamRunId: required(addressing.rootTeamRunId, "addressing.rootTeamRunId"),
-    memberAddress: required(addressing.memberAddress, "addressing.memberAddress"),
-  });
+  return value;
 };
 
 export const buildTaskDelegationToolContextFromNativeContext = (
   context: NativeTaskDelegationToolExecutionContext,
 ): TaskDelegationToolContext => {
   const team = context.customData?.teamContext;
-  if (!team || !team.executionAddress) {
-    throw new TaskDelegationError("TEAM_RUN_CONTEXT_REQUIRED", "Task delegation tools require an active Team collaboration context.");
+  if (!team) throw new TaskDelegationError("TEAM_RUN_CONTEXT_REQUIRED", "Task delegation requires an active Team context.");
+  const keys = Object.keys(team).sort();
+  const expected = ["agentRunId", "memberAddress", "rootTeamRunId"];
+  if (keys.length !== expected.length || keys.some((key, index) => key !== expected[index])) {
+    throw new TaskDelegationError("TEAM_RUN_CONTEXT_REQUIRED", "Task delegation Team context accepts only rootTeamRunId, memberAddress, and agentRunId.");
   }
-  const addressing = buildNativeAddressing(team.addressing);
-  return {
-    teamRunId: required(team.teamRunId, "teamRunId"),
-    teamDefinitionId: optional(team.teamDefinitionId),
-    teamName: optional(team.teamName),
-    caller: {
-      executionAddress: createTeamExecutionAddress(team.executionAddress),
-      agentRunId: required(team.agentRunId, "agentRunId"),
-      taskId: optional(team.taskId),
-    },
-    coordinatorAddress: optional(team.coordinatorAddress) ? assertAgentTeamAddress(optional(team.coordinatorAddress)!) : null,
-    addressing,
-  };
+  return Object.freeze({
+    identity: createTeamMemberExecutionIdentity({
+      rootTeamRunId: text(team.rootTeamRunId, "rootTeamRunId"),
+      memberAddress: text(team.memberAddress, "memberAddress"),
+      agentRunId: text(team.agentRunId, "agentRunId"),
+    }),
+  });
 };

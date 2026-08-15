@@ -1,0 +1,1508 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | localization/messages/__tests__/zhCnGlossaryConsistency.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/running/__tests__/RunningAgentsPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/MemberOverrideItem.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/skill-improvement/__tests__/SkillImprovementComposerCta.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentRunStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/CodexFullAccessCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/running/__tests__/RunningAgentsPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/agentRunStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/MemberOverrideItem.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/CodexFullAccessCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | localization/messages/__tests__/zhCnGlossaryConsistency.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/skill-improvement/__tests__/SkillImprovementComposerCta.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/RunConfigPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ localization/messages/__tests__/zhCnGlossaryConsistency.spec.ts (2 tests | 1 failed) 52ms
+   ✓ zh-CN glossary consistency > keeps shared agent and team terminology aligned with the approved glossary 1ms
+   × zh-CN glossary consistency > does not retain deprecated glossary in the swept shared-product catalogs 50ms
+     → expected 'settings:settings.components.settings…' not to contain '代理'
+stderr | components/workspace/config/__tests__/MemberOverrideItem.spec.ts > MemberOverrideItem > renders concise member override copy
+[Vue warn]: Missing required prop: "memberAddress" 
+  at <MemberOverrideItem memberName="Reviewer" memberRouteKey="reviewer" agentDefinitionId="agent-reviewer"  ... > 
+  at <VTUROOT>
+
+stderr | stores/__tests__/agentRunStore.spec.ts > agentRunStore > publishes the authoritative Error status with exact navigation when preparation fails
+Error sending user input: Error: preparation failed
+    at Proxy.sendUserInputAndSubscribe (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web/stores/agentRunStore.ts:189:19)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web/stores/__tests__/agentRunStore.spec.ts:253:9
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+stderr | components/workspace/config/__tests__/MemberOverrideItem.spec.ts > MemberOverrideItem > renders a blocking warning when a runtime override breaks inherited global model availability
+[Vue warn]: Missing required prop: "memberAddress" 
+  at <MemberOverrideItem memberName="Reviewer" memberRouteKey="reviewer" agentDefinitionId="agent-reviewer"  ... > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/MemberOverrideItem.spec.ts > MemberOverrideItem > emits a resolving explicit model override for an unresolved runtime override
+[Vue warn]: Missing required prop: "memberAddress" 
+  at <MemberOverrideItem memberName="Reviewer" memberRouteKey="reviewer" agentDefinitionId="agent-reviewer"  ... > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/MemberOverrideItem.spec.ts > MemberOverrideItem > clears stale explicit member llmConfig when the explicit model changes
+[Vue warn]: Missing required prop: "memberAddress" 
+  at <MemberOverrideItem memberName="Reviewer" memberRouteKey="reviewer" agentDefinitionId="agent-reviewer"  ... > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/MemberOverrideItem.spec.ts > MemberOverrideItem > drops an incompatible explicit model when the runtime override changes
+[Vue warn]: Missing required prop: "memberAddress" 
+  at <MemberOverrideItem memberName="Reviewer" memberRouteKey="reviewer" agentDefinitionId="agent-reviewer"  ... > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/MemberOverrideItem.spec.ts > MemberOverrideItem > clears stale member-only llmConfig when invalid explicit model cleanup falls back to the inherited global runtime
+[Vue warn]: Missing required prop: "memberAddress" 
+  at <MemberOverrideItem memberName="Reviewer" memberRouteKey="reviewer" agentDefinitionId="agent-reviewer"  ... > 
+  at <VTUROOT>
+
+ ❯ components/workspace/skill-improvement/__tests__/SkillImprovementComposerCta.spec.ts (6 tests | 1 failed) 58ms
+   ✓ SkillImprovementComposerCta > is hidden when the global capability is disabled 9ms
+   ✓ SkillImprovementComposerCta > starts standalone Skill Improvement from an eligible composer CTA 27ms
+   ✓ SkillImprovementComposerCta > hides an ineligible composer CTA without showing technical reasons 4ms
+   ✓ SkillImprovementComposerCta > uses generic copy if an eligible run becomes ineligible at start time 7ms
+   ✓ SkillImprovementComposerCta > hides for the Retrospective Skill Improver helper run 2ms
+   × SkillImprovementComposerCta > starts team-member Skill Improvement with member-scoped copy 8ms
+     → Unable to get [data-test="skill-improvement-composer-cta"] within: <!--v-if-->
+stderr | components/workspace/config/__tests__/MemberOverrideItem.spec.ts > MemberOverrideItem > clears stale member-only llmConfig when effective runtime changes invalidate the explicit model
+[Vue warn]: Missing required prop: "memberAddress" 
+  at <MemberOverrideItem memberName="Reviewer" memberRouteKey="reviewer" agentDefinitionId="agent-reviewer"  ... > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/MemberOverrideItem.spec.ts > MemberOverrideItem > feeds cleaned inherited-global fallback rows into readiness and materialization without stale config
+[Vue warn]: Missing required prop: "memberAddress" 
+  at <MemberOverrideItem memberName="Reviewer" memberRouteKey="reviewer" agentDefinitionId="agent-reviewer"  ... > 
+  at <VTUROOT>
+
+stderr | stores/__tests__/agentRunStore.spec.ts > agentRunStore > terminateRun should not teardown local runtime when persisted termination fails
+Error terminating run 'run-1': Error: failure
+    at Proxy.terminateRun (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web/stores/agentRunStore.ts:404:17)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web/stores/__tests__/agentRunStore.spec.ts:449:24
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+stderr | components/workspace/config/__tests__/MemberOverrideItem.spec.ts > MemberOverrideItem > passes missing historical config state into member model config display
+[Vue warn]: Missing required prop: "memberAddress" 
+  at <MemberOverrideItem memberName="Reviewer" memberRouteKey="reviewer" agentDefinitionId="agent-reviewer"  ... > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/MemberOverrideItem.spec.ts > MemberOverrideItem > keeps inherited effort-only reasoning compact until expanded and displays the schema default
+[Vue warn]: Missing required prop: "memberAddress" 
+  at <MemberOverrideItem memberName="Reviewer" memberRouteKey="reviewer" agentDefinitionId="agent-reviewer"  ... > 
+  at <VTUROOT>
+
+stderr | stores/__tests__/agentRunStore.spec.ts > agentRunStore > closeAgent should keep context when backend termination fails
+Error terminating run 'run-1': Error: failure
+    at Proxy.terminateRun (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web/stores/agentRunStore.ts:404:17)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at Proxy.closeAgent (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web/stores/agentRunStore.ts:428:28)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web/stores/__tests__/agentRunStore.spec.ts:505:9
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+stderr | components/workspace/config/__tests__/MemberOverrideItem.spec.ts > MemberOverrideItem > keeps compact advanced collapsed when inherited global thinking-on model changes
+[Vue warn]: Missing required prop: "memberAddress" 
+  at <MemberOverrideItem memberName="Reviewer" memberRouteKey="reviewer" agentDefinitionId="agent-reviewer"  ... > 
+  at <VTUROOT>
+
+ ❯ stores/__tests__/agentRunStore.spec.ts (17 tests | 1 failed) 36ms
+   ✓ agentRunStore > sendUserInputAndSubscribe should handle new agent flow 8ms
+   ✓ agentRunStore > publishes the authoritative Error status with exact navigation when preparation fails 6ms
+   ✓ agentRunStore > retains mixed unsupported metadata locally while sending only executable agent attachments 2ms
+   ✓ agentRunStore > sendUserInputAndSubscribe omits stale Skill Improvement launch overrides when preparing a new run 2ms
+   ✓ agentRunStore > acknowledges a new agent send locally before backend creation resolves 1ms
+   ✓ agentRunStore > sendUserInputAndSubscribe should apply fallback model for new agent when missing 1ms
+   ✓ agentRunStore > sendUserInputAndSubscribe should throw when no model is available anywhere 1ms
+   ✓ agentRunStore > sendUserInputAndSubscribe should throw if no agent selected 0ms
+   ✓ agentRunStore > sendUserInputAndSubscribe should send persisted inactive runs without frontend restore 1ms
+   × agentRunStore > closeAgent should disconnect and remove context 2ms
+     → expected true to be false // Object.is equality
+   ✓ agentRunStore > disconnectAgentStream tears down socket state without removing the context 2ms
+   ✓ agentRunStore > terminateRun should not teardown local runtime when persisted termination fails 1ms
+   ✓ agentRunStore > terminateRun should teardown local runtime and mark history inactive on success 1ms
+   ✓ agentRunStore > terminateRun should teardown local runtime and skip backend for temp runs 1ms
+   ✓ agentRunStore > closeAgent should keep context when backend termination fails 4ms
+   ✓ agentRunStore > interruptGeneration should signal the active stream without clearing submission pending optimistically 1ms
+   ✓ agentRunStore > shows one result toast without fabricating lifecycle or transcript state 1ms
+stderr | components/workspace/config/__tests__/MemberOverrideItem.spec.ts > MemberOverrideItem > opens compact advanced for an explicit member model selection whose effective thinking is on
+[Vue warn]: Missing required prop: "memberAddress" 
+  at <MemberOverrideItem memberName="Reviewer" memberRouteKey="reviewer" agentDefinitionId="agent-reviewer"  ... > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/MemberOverrideItem.spec.ts > MemberOverrideItem > opens compact advanced for an explicit member runtime selection to an effective-on model
+[Vue warn]: Missing required prop: "memberAddress" 
+  at <MemberOverrideItem memberName="Reviewer" memberRouteKey="reviewer" agentDefinitionId="agent-reviewer"  ... > 
+  at <VTUROOT>
+
+ ❯ components/workspace/config/__tests__/MemberOverrideItem.spec.ts (15 tests | 13 failed) 44ms
+   × MemberOverrideItem > renders concise member override copy 13ms
+     → Cannot read properties of undefined (reading 'replace')
+   × MemberOverrideItem > renders a blocking warning when a runtime override breaks inherited global model availability 4ms
+     → Cannot read properties of undefined (reading 'replace')
+   × MemberOverrideItem > emits a resolving explicit model override for an unresolved runtime override 2ms
+     → Cannot read properties of undefined (reading 'replace')
+   × MemberOverrideItem > clears stale explicit member llmConfig when the explicit model changes 2ms
+     → Cannot read properties of undefined (reading 'replace')
+   × MemberOverrideItem > drops an incompatible explicit model when the runtime override changes 2ms
+     → Cannot read properties of undefined (reading 'replace')
+   × MemberOverrideItem > clears stale member-only llmConfig when invalid explicit model cleanup falls back to the inherited global runtime 1ms
+     → Cannot read properties of undefined (reading 'replace')
+   × MemberOverrideItem > clears stale member-only llmConfig when effective runtime changes invalidate the explicit model 2ms
+     → Cannot read properties of undefined (reading 'replace')
+   × MemberOverrideItem > feeds cleaned inherited-global fallback rows into readiness and materialization without stale config 3ms
+     → Cannot read properties of undefined (reading 'replace')
+   ✓ MemberOverrideItem > serializes team workspace root path from workspace metadata for launch inputs 2ms
+   ✓ MemberOverrideItem > blocks filesystem workspace metadata team launch readiness when the root path is missing 0ms
+   × MemberOverrideItem > passes missing historical config state into member model config display 2ms
+     → Cannot read properties of undefined (reading 'replace')
+   × MemberOverrideItem > keeps inherited effort-only reasoning compact until expanded and displays the schema default 1ms
+     → Cannot read properties of undefined (reading 'replace')
+   × MemberOverrideItem > keeps compact advanced collapsed when inherited global thinking-on model changes 2ms
+     → Cannot read properties of undefined (reading 'replace')
+   × MemberOverrideItem > opens compact advanced for an explicit member model selection whose effective thinking is on 5ms
+     → Cannot read properties of undefined (reading 'replace')
+   × MemberOverrideItem > opens compact advanced for an explicit member runtime selection to an effective-on model 1ms
+     → Cannot read properties of undefined (reading 'replace')
+ ❯ components/settings/__tests__/CodexFullAccessCard.spec.ts (10 tests | 1 failed) 85ms
+   × CodexFullAccessCard > renders one full-access toggle without exposing the three runtime modes as Basic choices 27ms
+     → expected 'Codex full accessControl whether non-…' to contain 'Applies to new sessions.'
+   ✓ CodexFullAccessCard > initializes checked state for absent setting 9ms
+   ✓ CodexFullAccessCard > initializes checked state for invalid setting 5ms
+   ✓ CodexFullAccessCard > initializes checked state for workspace-write setting 7ms
+   ✓ CodexFullAccessCard > initializes checked state for read-only setting 3ms
+   ✓ CodexFullAccessCard > initializes checked state for danger-full-access setting 4ms
+   ✓ CodexFullAccessCard > initializes checked state for trimmed danger-full-access setting 4ms
+   ✓ CodexFullAccessCard > preserves an in-flight local toggle when settings refresh from the store 11ms
+   ✓ CodexFullAccessCard > auto-saves danger-full-access when the toggle is turned on 9ms
+   ✓ CodexFullAccessCard > auto-saves workspace-write when the toggle is turned off 7ms
+ ❯ components/workspace/running/__tests__/RunningAgentsPanel.spec.ts (4 tests | 1 failed) 73ms
+   ✓ RunningAgentsPanel > should render agent groups correctly 23ms
+   ✓ RunningAgentsPanel > should select an agent runContext when emitted from group 11ms
+   ✓ RunningAgentsPanel > should prepare new run config from definition 16ms
+   × RunningAgentsPanel > prefers the selected same-definition run when preparing a new agent run config 23ms
+     → expected { agentDefinitionId: 'def-1', …(4) } to deeply equal ObjectContaining{…}
+ ❯ components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts (9 tests | 3 failed) 150ms
+   ✓ TokenUsageMeterPanel > renders the approved Token Meter hierarchy with server-owned component values 45ms
+   ✓ TokenUsageMeterPanel > shows prompt usage and an explicit unavailable context limit without a fake denominator 12ms
+   ✓ TokenUsageMeterPanel > expands calculation details with server-provided unit prices and thinking included copy 17ms
+   ✓ TokenUsageMeterPanel > shows server-provided generic cache-write tokens, price, and cost in both disclosure levels 17ms
+   ✓ TokenUsageMeterPanel > omits the thinking-token subline when no reasoning tokens are present 18ms
+   ✓ TokenUsageMeterPanel > shows varies-by-call calculation details for mixed pricing without a fake unit price 15ms
+   × TokenUsageMeterPanel > uses the focused team member as primary and keeps aggregate usage only in the Team section 8ms
+     → Cannot read properties of undefined (reading 'getFocusedAgentRunId')
+   × TokenUsageMeterPanel > hydrates the team aggregate when only a partial live team summary exists 10ms
+     → Cannot read properties of undefined (reading 'getFocusedAgentRunId')
+   × TokenUsageMeterPanel > shows an unavailable focus state instead of falling back to the team aggregate when focus is not a leaf run 7ms
+     → Cannot read properties of undefined (reading 'getFocusedAgentRunId')
+ ❯ components/workspace/config/__tests__/RunConfigPanel.spec.ts (17 tests | 1 failed) 178ms
+   ✓ RunConfigPanel > renders placeholder when nothing selected 8ms
+   ✓ RunConfigPanel > renders Agent Form when Agent Template set 10ms
+   ✓ RunConfigPanel > renders Team Form when Team Template set 14ms
+   ✓ RunConfigPanel > triggers team run on button click when launch readiness passes 9ms
+   ✓ RunConfigPanel > renders the selected draft read-only and rejects duplicate launch/edit/workspace actions while its owner reports pending 10ms
+   ✓ RunConfigPanel > loads a pending New workspace path before creating an agent run 6ms
+   ✓ RunConfigPanel > blocks agent run creation when pending New workspace loading fails 8ms
+   ✓ RunConfigPanel > allows Run Agent with a non-empty pending New path even before it is preloaded 5ms
+   ✓ RunConfigPanel > loads a pending New workspace path before creating a team run 12ms
+   ✓ RunConfigPanel > disables team run and shows the blocking message when mixed-runtime readiness fails 18ms
+   ✓ RunConfigPanel > disables team run when workspace is missing 7ms
+   ✓ RunConfigPanel > disables agent run when workspace is missing 7ms
+   ✓ RunConfigPanel > keeps draft agent configuration editable for workspace selection events 13ms
+   ✓ RunConfigPanel > keeps draft team configuration editable for workspace selection events 8ms
+   ✓ RunConfigPanel > returns to event view from selection-mode config header action 32ms
+   ✓ RunConfigPanel > passes read-only mode to selected existing run configuration and ignores workspace edit events 4ms
+   × RunConfigPanel > passes read-only mode to selected existing team configuration and ignores workspace edit events 7ms
+     → Cannot read properties of undefined (reading 'getConfigurationView')
+ ❯ components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts (25 tests | 7 failed) 454ms
+   × WorkspaceAdaptiveLayout > renders AgentWorkspaceView when agent is selected 26ms
+     → expected false to be true // Object.is equality
+   × WorkspaceAdaptiveLayout > renders TeamWorkspaceView when team is selected 10ms
+     → expected false to be true // Object.is equality
+   ✓ WorkspaceAdaptiveLayout > renders RunConfigPanel when no selection and pending agent config exists 7ms
+   ✓ WorkspaceAdaptiveLayout > renders placeholder when nothing is selected and no pending config exists 6ms
+   ✓ WorkspaceAdaptiveLayout > keeps the adaptive root and center/right split shrink-safe 15ms
+   ✓ WorkspaceAdaptiveLayout > keeps the center content shell clipped instead of making it an outer scroll owner 7ms
+   ✓ WorkspaceAdaptiveLayout > renders the responsive-yield center floor while retaining a user-sized intent 31ms
+   ✓ WorkspaceAdaptiveLayout > keeps the docked right panel visible when a drag reaches the center-preserving bound 14ms
+   ✓ WorkspaceAdaptiveLayout > keeps the user-sized right dock after collapsing the left panel at the compact boundary 32ms
+   × WorkspaceAdaptiveLayout > renders RunConfigPanel for selected run when config view mode is active 4ms
+     → expected false to be true // Object.is equality
+   × WorkspaceAdaptiveLayout > shows a center loading overlay while a historical run is opening 7ms
+     → expected false to be true // Object.is equality
+   ✓ WorkspaceAdaptiveLayout > uses a visible consuming right strip without header or top navigation controls 20ms
+   ✓ WorkspaceAdaptiveLayout > keeps the left navigation docked at 1024 while right tools yield 5ms
+   ✓ WorkspaceAdaptiveLayout > switches right tools to a consuming strip before adapting the left panel at constrained widths 54ms
+   × WorkspaceAdaptiveLayout > uses the right strip as the sole reopen affordance for a user-hidden right panel 53ms
+     → expected null to be 'run-strip' // Object.is equality
+   ✓ WorkspaceAdaptiveLayout > re-docks a fitting wide hidden-panel strip and restores the preference 82ms
+   × WorkspaceAdaptiveLayout > uses the consuming right strip as the sole narrow reopen affordance 5ms
+     → expected null to be 'run-drawer' // Object.is equality
+   ✓ WorkspaceAdaptiveLayout > keeps right-strip ownership separate from generic surface controls 4ms
+   ✓ WorkspaceAdaptiveLayout > does not render semantic triggers after a wide manual left collapse 9ms
+   ✓ WorkspaceAdaptiveLayout > opens the existing primary navigation route from the wide empty state 16ms
+   ✓ WorkspaceAdaptiveLayout > opens the left drawer for empty-state selection at constrained widths 6ms
+   ✓ WorkspaceAdaptiveLayout > opens run history without replacing the empty-state selection context 14ms
+   × WorkspaceAdaptiveLayout > opens right tools from the strip while preserving selection 4ms
+     → expected null to be 'run-2' // Object.is equality
+   ✓ WorkspaceAdaptiveLayout > keeps left and right transient drawers independently open 9ms
+   ✓ WorkspaceAdaptiveLayout > keeps the left drawer independent when opened after right tools 9ms
+stderr | components/applications/__tests__/ApplicationLaunchSetupPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/tokenUsageStatistics.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | graphql/queries/__tests__/runHistoryQueries.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/workspace/__tests__/workspaceNavigationService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | types/agent/__tests__/AgentContext.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/__tests__/teamRunConfigUtils.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/tokenUsageMeterStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/eventMonitor/__tests__/recentEventMonitorPresentationWitness.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/applications/__tests__/ApplicationLaunchSetupPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | graphql/queries/__tests__/runHistoryQueries.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | composables/workspace/__tests__/useWorkspaceRouteSelection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/workspace/__tests__/workspaceNavigationService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ graphql/queries/__tests__/runHistoryQueries.spec.ts (5 tests | 3 failed) 21ms
+   × Event Monitor active-trace page queries > exposes only explicit standalone/team subject identity and an opaque cursor 10ms
+     → expected '\n  query GetTeamMemberEventMonitorAc…' to contain '$memberAddress: String!'
+   ✓ GetRunFileChanges query > requests inline content for live buffered file-change hydration without legacy artifact ids 0ms
+   ✓ ListWorkspaceRunHistory query > uses V2 standalone and team history catalog shapes without persisted live fields 1ms
+   × GetTeamCommunicationMessages query > requests address-first sender and receiver fields without removed flat participant identity 6ms
+     → expected '\n  query GetTeamCommunicationMessage…' to contain 'senderAddress'
+   × GetTaskDelegationRecords query > requests durable address-first task records with updates and references 1ms
+     → expected '\n  query GetTaskDelegationRecords($t…' to contain 'senderAddress'
+stdout | stores/__tests__/tokenUsageStatistics.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | types/agent/__tests__/AgentContext.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ services/workspace/__tests__/workspaceNavigationService.spec.ts (5 tests | 3 failed) 14ms
+   ✓ workspaceNavigationService > builds and parses agent execution routes 1ms
+   × workspaceNavigationService > builds and parses team execution routes with member focus 7ms
+     → expected { kind: 'team', …(2) } to deeply equal { kind: 'team', …(2) }
+   × workspaceNavigationService > strips workspace execution query params without disturbing others 1ms
+     → expected { …(2) } to deeply equal { preserved: 'value' }
+   ✓ workspaceNavigationService > routes agent execution links through the agent open coordinator 1ms
+   × workspaceNavigationService > routes team execution links through the team open coordinator 2ms
+     → expected "spy" to be called with arguments: [ { teamRunId: 'team-run-1', …(3) } ]
+
+Received: 
+
+  1st spy call:
+
+  [
+    {
++     "agentRunId": undefined,
+      "ensureWorkspaceByRootPath": [Function spy],
+-     "memberAddress": "/writer",
+      "resolveWorkspaceMetadataByRootPath": [Function spy],
+      "teamRunId": "team-run-1",
+    },
+  ]
+
+
+Number of calls: 1
+
+ ❯ types/agent/__tests__/AgentContext.spec.ts (2 tests | 1 failed) 6ms
+   × AgentContext > should initialize correctly 5ms
+     → expected undefined to be false // Object.is equality
+   ✓ AgentContext > should provide access to conversation via getter 0ms
+stderr | stores/__tests__/tokenUsageStatistics.spec.ts > tokenUsageStatistics store > stores GraphQL errors and leaves loading state clean
+Failed to fetch token usage statistics: Error: task query failed
+    at Proxy.fetchStatistics (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web/stores/tokenUsageStatistics.ts:202:17)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web/stores/__tests__/tokenUsageStatistics.spec.ts:196:5
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+ ❯ stores/__tests__/tokenUsageStatistics.spec.ts (2 tests | 1 failed) 24ms
+   × tokenUsageStatistics store > fetches task and model statistics without a range-mode variable and normalizes rows 21ms
+     → expected { …(14) } to match object { memberRouteKey: 'designer', …(3) }
+(12 matching properties omitted from actual)
+   ✓ tokenUsageStatistics store > stores GraphQL errors and leaves loading state clean 2ms
+stdout | utils/__tests__/teamRunConfigUtils.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/tokenUsageMeterStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ utils/__tests__/teamRunConfigUtils.spec.ts (8 tests | 4 failed) 54ms
+   ✓ teamRunConfigUtils > treats only property presence as an explicit member llmConfig override 1ms
+   ✓ teamRunConfigUtils > resolves effective member config from explicit override or global fallback 1ms
+   ✓ teamRunConfigUtils > compares model configs independent of key order 40ms
+   ✓ teamRunConfigUtils > treats explicit null llmConfig as a meaningful member override 3ms
+   × teamRunConfigUtils > reconstructs global defaults and only keeps divergent overrides from member metadata 4ms
+     → (0 , reconstructTeamRunConfigFromMetadata) is not a function
+   × teamRunConfigUtils > reconstructs member runtime overrides when one member runtime differs from the dominant team runtime 3ms
+     → (0 , reconstructTeamRunConfigFromMetadata) is not a function
+   × teamRunConfigUtils > does not synthesize member override keys from bare member names 1ms
+     → (0 , reconstructTeamRunConfigFromMetadata) is not a function
+   × teamRunConfigUtils > reconstructs a coherent default runtime/model/config tuple for mixed metadata and stays launch-ready 0ms
+     → (0 , reconstructTeamRunConfigFromMetadata) is not a function
+stderr | components/applications/__tests__/ApplicationLaunchSetupPanel.spec.ts > ApplicationLaunchSetupPanel > loads host-managed setup and saves launchProfile payloads without starting a run
+[Vue warn]: Unhandled error during execution of component update 
+  at <ApplicationLaunchSetupPanel applicationId="bundle-app__pkg__brief-studio" presentation="panel" ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+ ❯ components/applications/__tests__/ApplicationLaunchSetupPanel.spec.ts (2 tests | 1 failed) 41ms
+   × ApplicationLaunchSetupPanel > loads host-managed setup and saves launchProfile payloads without starting a run 27ms
+     → Cannot read properties of undefined (reading 'localeCompare')
+   ✓ ApplicationLaunchSetupPanel > mounts the real execution-resource slot editor with available resources from the parent 12ms
+stdout | services/eventMonitor/__tests__/recentEventMonitorPresentationWitness.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ stores/__tests__/tokenUsageMeterStore.spec.ts (11 tests | 4 failed) 25ms
+   ✓ tokenUsageMeterStore > applies live usage events idempotently and uses the active context run id when omitted 3ms
+   × tokenUsageMeterStore > aggregates member events into team summary and reports mixed priced/unpriced status 7ms
+     → expected null to match object { runId: 'team-run-1', …(8) }
+   × tokenUsageMeterStore > marks fetched team summaries ledger-backed and keys them by requested team run id 6ms
+     → expected { …(45) } to match object { runId: 'team-run-1', …(4) }
+(47 matching properties omitted from actual)
+   × tokenUsageMeterStore > preserves ledger-backed team readiness when later live deltas extend the team total 2ms
+     → expected { …(45) } to match object { runId: 'team-run-1', …(5) }
+(46 matching properties omitted from actual)
+   × tokenUsageMeterStore > does not seed the team aggregate cache from member summary writes 2ms
+     → Cannot read properties of undefined (reading 'trim')
+   ✓ tokenUsageMeterStore > aggregates Codex runtime reasoning and context fields from live usage events 1ms
+   ✓ tokenUsageMeterStore > clears aggregate costs when live events mix currencies 1ms
+   ✓ tokenUsageMeterStore > marks live unit prices as mixed only when positive-token component prices differ 1ms
+   ✓ tokenUsageMeterStore > keeps live event unit prices aligned with equivalent hydrated summaries 1ms
+   ✓ tokenUsageMeterStore > keeps GPT-5.6 generic cache-write accounting aligned across live and hydrated summaries 0ms
+   ✓ tokenUsageMeterStore > lets ledger-backed reload summaries replace provisional live summaries 0ms
+ ❯ services/eventMonitor/__tests__/recentEventMonitorPresentationWitness.spec.ts (35 tests | 1 failed) 40ms
+   ✓ recent Event Monitor presentation witness > covers every central visual kind in exact presentation order with retained usage 3ms
+   ✓ recent Event Monitor presentation witness > detects a rendered or retained-interaction change in user text 1ms
+   ✓ recent Event Monitor presentation witness > detects a rendered or retained-interaction change in attachment identity 0ms
+   ✓ recent Event Monitor presentation witness > detects a rendered or retained-interaction change in attachment kind 0ms
+   ✓ recent Event Monitor presentation witness > detects a rendered or retained-interaction change in attachment locator 0ms
+   ✓ recent Event Monitor presentation witness > detects a rendered or retained-interaction change in attachment label 0ms
+   ✓ recent Event Monitor presentation witness > detects a rendered or retained-interaction change in attachment type 0ms
+   ✓ recent Event Monitor presentation witness > detects a rendered or retained-interaction change in text content 0ms
+   ✓ recent Event Monitor presentation witness > detects a rendered or retained-interaction change in thinking content 0ms
+   ✓ recent Event Monitor presentation witness > detects a rendered or retained-interaction change in tool summary 0ms
+   ✓ recent Event Monitor presentation witness > detects a rendered or retained-interaction change in tool status 0ms
+   ✓ recent Event Monitor presentation witness > detects a rendered or retained-interaction change in tool error 0ms
+   × recent Event Monitor presentation witness > detects a rendered or retained-interaction change in tool approval target 4ms
+     → expected true to be false // Object.is equality
+   ✓ recent Event Monitor presentation witness > detects a rendered or retained-interaction change in terminal command 0ms
+   ✓ recent Event Monitor presentation witness > detects a rendered or retained-interaction change in write path 0ms
+   ✓ recent Event Monitor presentation witness > detects a rendered or retained-interaction change in edit path 8ms
+   ✓ recent Event Monitor presentation witness > detects a rendered or retained-interaction change in system notification 0ms
+   ✓ recent Event Monitor presentation witness > detects a rendered or retained-interaction change in inter-agent sender 0ms
+   ✓ recent Event Monitor presentation witness > detects a rendered or retained-interaction change in inter-agent content 6ms
+   ✓ recent Event Monitor presentation witness > detects a rendered or retained-interaction change in inter-agent type 1ms
+   ✓ recent Event Monitor presentation witness > detects a rendered or retained-interaction change in inter-agent recipient 0ms
+   ✓ recent Event Monitor presentation witness > detects a rendered or retained-interaction change in media type 0ms
+   ✓ recent Event Monitor presentation witness > detects a rendered or retained-interaction change in media URL order 1ms
+   ✓ recent Event Monitor presentation witness > detects a rendered or retained-interaction change in error message 0ms
+   ✓ recent Event Monitor presentation witness > detects a rendered or retained-interaction change in error details 8ms
+   ✓ recent Event Monitor presentation witness > detects a rendered or retained-interaction change in row usage 0ms
+   ✓ recent Event Monitor presentation witness > detects a rendered or retained-interaction change in compaction phase 0ms
+   ✓ recent Event Monitor presentation witness > detects a rendered or retained-interaction change in compaction message 0ms
+   ✓ recent Event Monitor presentation witness > detects a rendered or retained-interaction change in compaction turn 0ms
+   ✓ recent Event Monitor presentation witness > detects a rendered or retained-interaction change in compaction raw traces 0ms
+   ✓ recent Event Monitor presentation witness > detects a rendered or retained-interaction change in compaction facts 0ms
+   ✓ recent Event Monitor presentation witness > detects a rendered or retained-interaction change in compaction provider 0ms
+   ✓ recent Event Monitor presentation witness > ignores Activity-only tool detail and other explicitly non-rendered fields 0ms
+   ✓ recent Event Monitor presentation witness > treats equal semantic object replacement as equal and detects membership/order changes 0ms
+   ✓ recent Event Monitor presentation witness > does not recursively traverse unused arguments, results, or logs 5ms
+stdout | composables/workspace/__tests__/useWorkspaceRouteSelection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ composables/workspace/__tests__/useWorkspaceRouteSelection.spec.ts (1 test | 1 failed) 17ms
+   × useWorkspaceRouteSelection > opens a team execution link from the workspace route and clears the query 17ms
+     → expected "spy" to be called with arguments: [ { kind: 'team', …(2) } ]
+
+Received: 
+
+  1st spy call:
+
+  [
+    {
++     "agentRunId": null,
+      "kind": "team",
+-     "memberRouteKey": "writer",
+      "teamRunId": "team-run-1",
+    },
+  ]
+
+
+Number of calls: 1
+
+stderr | services/runOpen/__tests__/agentRunOpenCoordinator.integration.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/running/__tests__/RunningTeamGroup.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | tests/integration/workspace-history-draft-send.integration.test.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/__tests__/toolCardPresentation.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/runOpen/__tests__/agentRunOpenCoordinator.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/runRecovery/__tests__/activeRunRecoveryCoordinator.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/runOpen/__tests__/agentRunOpenCoordinator.integration.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ services/runOpen/__tests__/agentRunOpenCoordinator.integration.spec.ts (1 test | 1 failed) 7ms
+   × openAgentRun integration with real agent context store > clears stale interrupt permission when an existing subscribed run is reopened as inactive/offline 6ms
+     → agentRunStore.isAgentStreamReady is not a function
+stdout | components/workspace/running/__tests__/RunningTeamGroup.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ components/workspace/running/__tests__/RunningTeamGroup.spec.ts (4 tests | 4 failed) 15ms
+   × RunningTeamGroup > renders header and runs 7ms
+     → Cannot read properties of undefined (reading 'isRootTeamActive')
+   × RunningTeamGroup > summarizes only child isActive and turns gray after the last active run settles 2ms
+     → Cannot read properties of undefined (reading 'isRootTeamActive')
+   × RunningTeamGroup > toggles expansion 2ms
+     → Cannot read properties of undefined (reading 'isRootTeamActive')
+   × RunningTeamGroup > emits create event 3ms
+     → Cannot read properties of undefined (reading 'isRootTeamActive')
+stdout | tests/integration/workspace-history-draft-send.integration.test.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/__tests__/toolCardPresentation.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ utils/__tests__/toolCardPresentation.spec.ts (3 tests | 1 failed) 11ms
+   ✓ toolCardPresentation > maps statuses by the indicator visual and interaction equivalence classes 2ms
+   ✓ toolCardPresentation > uses the terminal command fallback without hiding other argument summaries when the fallback is empty 1ms
+   × toolCardPresentation > exposes approval target primitives only while the inline action is rendered 6ms
+     → expected [ 'search', 'awaiting-approval', …(6) ] to include 'member-a'
+ ❯ tests/integration/workspace-history-draft-send.integration.test.ts (1 test | 1 failed) 7ms
+   × workspace history + draft send integration > supports tree-plus draft creation and first send promotion with a resolved model 6ms
+     → Workspace '/tmp/workspace-a' reference could not be resolved.
+stdout | services/runRecovery/__tests__/activeRunRecoveryCoordinator.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/runOpen/__tests__/agentRunOpenCoordinator.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ services/runRecovery/__tests__/activeRunRecoveryCoordinator.spec.ts (2 tests | 2 failed) 5ms
+   × recoverActiveRunsFromHistory > preserves subscribed live member statuses while recovering root team activity 4ms
+     → agentTeamRunStore.isTeamStreamReady is not a function
+   × recoverActiveRunsFromHistory > preserves backend-granted single-agent interrupt permission during active recovery 1ms
+     → agentRunStore.isAgentStreamReady is not a function
+ ❯ services/runOpen/__tests__/agentRunOpenCoordinator.spec.ts (2 tests | 2 failed) 6ms
+   × openAgentRun > preserves live activities while merging file changes into an active subscribed context 3ms
+     → agentRunStore.isAgentStreamReady is not a function
+   × openAgentRun > hydrates projected activities when reopening a historical run from projection 1ms
+     → agentRunStore.isAgentStreamReady is not a function
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 59 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  stores/__tests__/agentRunStore.spec.ts > agentRunStore > closeAgent should disconnect and remove context
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ stores/__tests__/agentRunStore.spec.ts:416:47
+    414|         
+    415|         expect(mockDisconnect).toHaveBeenCalled();
+    416|         expect(mockAgentContext.isSubscribed).toBe(false);
+       |                                               ^
+    417|         expect(mockContextsStore.removeRun).toHaveBeenCalledWith('agen…
+    418|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/59]⎯
+
+ FAIL  stores/__tests__/tokenUsageMeterStore.spec.ts > tokenUsageMeterStore > aggregates member events into team summary and reports mixed priced/unpriced status
+AssertionError: expected null to match object { runId: 'team-run-1', …(8) }
+
+- Expected: 
+{
+  "apiCostStatus": "mixed",
+  "estimatedApiTotalCost": 0.002,
+  "grossInputTokens": 60,
+  "outputTokens": 15,
+  "runId": "team-run-1",
+  "standardInputTokens": 60,
+  "totalTokens": 75,
+  "unitPrices": {
+    "output": {
+      "pricePerMillion": 30,
+      "status": "partial_missing",
+    },
+    "standardInput": {
+      "pricePerMillion": 5,
+      "status": "partial_missing",
+    },
+  },
+  "usageReportCount": 2,
+}
+
++ Received: 
+null
+
+ ❯ stores/__tests__/tokenUsageMeterStore.spec.ts:214:48
+    212|       apiCostStatus: 'price_missing',
+    213|     });
+    214|     expect(store.getTeamSummary('team-run-1')).toMatchObject({
+       |                                                ^
+    215|       runId: 'team-run-1',
+    216|       grossInputTokens: 60,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/59]⎯
+
+ FAIL  stores/__tests__/tokenUsageMeterStore.spec.ts > tokenUsageMeterStore > marks fetched team summaries ledger-backed and keys them by requested team run id
+AssertionError: expected { …(45) } to match object { runId: 'team-run-1', …(4) }
+(47 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "grossInputTokens": 900,
+    "outputTokens": 90,
+    "rootTeamRunId": "team-run-1",
+-   "runId": "team-run-1",
++   "runId": "backend-member-run-id",
+    "totalTokens": 990,
+  }
+
+ ❯ stores/__tests__/tokenUsageMeterStore.spec.ts:253:28
+    251|       fetchPolicy: 'network-only',
+    252|     }));
+    253|     expect(fetchedSummary).toMatchObject({
+       |                            ^
+    254|       runId: 'team-run-1',
+    255|       rootTeamRunId: 'team-run-1',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/59]⎯
+
+ FAIL  stores/__tests__/tokenUsageMeterStore.spec.ts > tokenUsageMeterStore > preserves ledger-backed team readiness when later live deltas extend the team total
+AssertionError: expected { …(45) } to match object { runId: 'team-run-1', …(5) }
+(46 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "grossInputTokens": 910,
+-   "outputTokens": 92,
++   "grossInputTokens": 900,
++   "outputTokens": 90,
+    "rootTeamRunId": "team-run-1",
+-   "runId": "team-run-1",
+-   "totalTokens": 1002,
+-   "usageReportCount": 10,
++   "runId": "backend-member-run-id",
++   "totalTokens": 990,
++   "usageReportCount": 9,
+  }
+
+ ❯ stores/__tests__/tokenUsageMeterStore.spec.ts:292:48
+    290|     }));
+    291| 
+    292|     expect(store.getTeamSummary('team-run-1')).toMatchObject({
+       |                                                ^
+    293|       runId: 'team-run-1',
+    294|       rootTeamRunId: 'team-run-1',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/59]⎯
+
+ FAIL  stores/__tests__/tokenUsageMeterStore.spec.ts > tokenUsageMeterStore > does not seed the team aggregate cache from member summary writes
+TypeError: Cannot read properties of undefined (reading 'trim')
+ ❯ Proxy.fetchTeamMemberSummary stores/tokenUsageMeterStore.ts:324:41
+    322|   async function fetchTeamMemberSummary(input: { teamRunId: string; ag…
+    323|     const teamRunId = input.teamRunId.trim();
+    324|     const agentRunId = input.agentRunId.trim();
+       |                                         ^
+    325|     if (!teamRunId || !agentRunId) return null;
+    326|     const client = getApolloClient();
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ stores/__tests__/tokenUsageMeterStore.spec.ts:327:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/59]⎯
+
+ FAIL  stores/__tests__/tokenUsageStatistics.spec.ts > tokenUsageStatistics store > fetches task and model statistics without a range-mode variable and normalizes rows
+AssertionError: expected { …(14) } to match object { memberRouteKey: 'designer', …(3) }
+(12 matching properties omitted from actual)
+
+- Expected
++ Received
+
+@@ -2,8 +2,6 @@
+    "aggregate": ObjectContaining {
+      "estimatedApiTotalCost": 0.4,
+      "usageReportCount": 1,
+    },
+    "displayName": "designer",
+-   "memberAgentRunId": "member-designer",
+-   "memberRouteKey": "designer",
+  }
+
+ ❯ stores/__tests__/tokenUsageStatistics.spec.ts:158:47
+    156|       }),
+    157|     });
+    158|     expect(store.getTaskRows[0]!.children[0]).toMatchObject({
+       |                                               ^
+    159|       memberRouteKey: 'designer',
+    160|       memberAgentRunId: 'member-designer',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/59]⎯
+
+ FAIL  tests/integration/workspace-history-draft-send.integration.test.ts > workspace history + draft send integration > supports tree-plus draft creation and first send promotion with a resolved model
+Error: Workspace '/tmp/workspace-a' reference could not be resolved.
+ ❯ createDraftRunForHistoryStore stores/runHistoryDraftActions.ts:34:33
+     32|   if (!workspaceId) throw new Error(`Workspace '${options.workspaceRoo…
+     33|   const workspaceMetadata = await store.resolveWorkspaceMetadataByRoot…
+     34|   if (!workspaceMetadata) throw new Error(`Workspace '${options.worksp…
+       |                                 ^
+     35| 
+     36|   const agentRunConfigStore = useAgentRunConfigStore();
+ ❯ Proxy.createDraftRun stores/runHistoryStore.ts:130:7
+ ❯ tests/integration/workspace-history-draft-send.integration.test.ts:128:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/59]⎯
+
+ FAIL  utils/__tests__/teamRunConfigUtils.spec.ts > teamRunConfigUtils > reconstructs global defaults and only keeps divergent overrides from member metadata
+TypeError: (0 , reconstructTeamRunConfigFromMetadata) is not a function
+ ❯ utils/__tests__/teamRunConfigUtils.spec.ts:111:20
+    109| 
+    110|   it('reconstructs global defaults and only keeps divergent overrides …
+    111|     const config = reconstructTeamRunConfigFromMetadata({
+       |                    ^
+    112|       metadata: teamMetadata({
+    113|         teamRunId: 'team-1',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/59]⎯
+
+ FAIL  utils/__tests__/teamRunConfigUtils.spec.ts > teamRunConfigUtils > reconstructs member runtime overrides when one member runtime differs from the dominant team runtime
+TypeError: (0 , reconstructTeamRunConfigFromMetadata) is not a function
+ ❯ utils/__tests__/teamRunConfigUtils.spec.ts:177:20
+    175| 
+    176|   it('reconstructs member runtime overrides when one member runtime di…
+    177|     const config = reconstructTeamRunConfigFromMetadata({
+       |                    ^
+    178|       metadata: teamMetadata({
+    179|         teamRunId: 'team-2',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/59]⎯
+
+ FAIL  utils/__tests__/teamRunConfigUtils.spec.ts > teamRunConfigUtils > does not synthesize member override keys from bare member names
+TypeError: (0 , reconstructTeamRunConfigFromMetadata) is not a function
+ ❯ utils/__tests__/teamRunConfigUtils.spec.ts:227:20
+    225| 
+    226|   it('does not synthesize member override keys from bare member names'…
+    227|     const config = reconstructTeamRunConfigFromMetadata({
+       |                    ^
+    228|       metadata: teamMetadata({
+    229|         teamRunId: 'team-duplicate-leaf',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/59]⎯
+
+ FAIL  utils/__tests__/teamRunConfigUtils.spec.ts > teamRunConfigUtils > reconstructs a coherent default runtime/model/config tuple for mixed metadata and stays launch-ready
+TypeError: (0 , reconstructTeamRunConfigFromMetadata) is not a function
+ ❯ utils/__tests__/teamRunConfigUtils.spec.ts:289:20
+    287| 
+    288|   it('reconstructs a coherent default runtime/model/config tuple for m…
+    289|     const config = reconstructTeamRunConfigFromMetadata({
+       |                    ^
+    290|       metadata: teamMetadata({
+    291|         teamRunId: 'team-3',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/59]⎯
+
+ FAIL  utils/__tests__/toolCardPresentation.spec.ts > toolCardPresentation > exposes approval target primitives only while the inline action is rendered
+AssertionError: expected [ 'search', 'awaiting-approval', …(6) ] to include 'member-a'
+ ❯ utils/__tests__/toolCardPresentation.spec.ts:66:60
+     64| 
+     65|     expect(awaiting.approvalTarget).toEqual(target);
+     66|     expect(getToolCardPresentationWitnessValues(awaiting)).toContain('…
+       |                                                            ^
+     67|     expect(approved.approvalTarget).toBeNull();
+     68|     expect(approved.approvalTargetPrimitives).toEqual([]);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/59]⎯
+
+ FAIL  components/applications/__tests__/ApplicationLaunchSetupPanel.spec.ts > ApplicationLaunchSetupPanel > loads host-managed setup and saves launchProfile payloads without starting a run
+TypeError: Cannot read properties of undefined (reading 'localeCompare')
+ ❯ utils/application/applicationLaunchProfile.ts:272:49
+    270|           : {}),
+    271|       }))
+    272|       .sort((left, right) => left.memberAddress.localeCompare(right.me…
+       |                                                 ^
+    273|   }
+    274| }
+ ❯ buildTeamLaunchProfile utils/application/applicationLaunchProfile.ts:272:8
+ ❯ buildLaunchProfile utils/application/applicationLaunchProfile.ts:284:7
+ ❯ normalizeDraft utils/application/applicationLaunchProfile.ts:292:31
+ ❯ hasUnsavedDraftChanges utils/application/applicationLaunchProfile.ts:303:25
+ ❯ utils/application/applicationSetupGate.ts:58:61
+ ❯ wrappedFn ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:907:19
+ ❯ apply ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:915:27
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/59]⎯
+
+ FAIL  components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts > WorkspaceAdaptiveLayout > renders AgentWorkspaceView when agent is selected
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts:151:50
+    149|     });
+    150| 
+    151|     expect(wrapper.find('.agent-view').exists()).toBe(true);
+       |                                                  ^
+    152|     expect(wrapper.find('.team-view').exists()).toBe(false);
+    153|     expect(wrapper.find('.run-config-view').exists()).toBe(false);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/59]⎯
+
+ FAIL  components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts > WorkspaceAdaptiveLayout > renders TeamWorkspaceView when team is selected
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts:162:49
+    160|     });
+    161| 
+    162|     expect(wrapper.find('.team-view').exists()).toBe(true);
+       |                                                 ^
+    163|     expect(wrapper.find('.agent-view').exists()).toBe(false);
+    164|     expect(wrapper.find('.run-config-view').exists()).toBe(false);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/59]⎯
+
+ FAIL  components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts > WorkspaceAdaptiveLayout > renders RunConfigPanel for selected run when config view mode is active
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts:298:55
+    296|     });
+    297| 
+    298|     expect(wrapper.find('.run-config-view').exists()).toBe(true);
+       |                                                       ^
+    299|     expect(wrapper.find('.agent-view').exists()).toBe(false);
+    300|     expect(wrapper.find('.team-view').exists()).toBe(false);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/59]⎯
+
+ FAIL  components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts > WorkspaceAdaptiveLayout > shows a center loading overlay while a historical run is opening
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts:310:49
+    308|     });
+    309| 
+    310|     expect(wrapper.find('.team-view').exists()).toBe(true);
+       |                                                 ^
+    311|     expect(wrapper.find('workspace-center-loading-overlay-stub').exist…
+    312|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/59]⎯
+
+ FAIL  components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts > WorkspaceAdaptiveLayout > uses the right strip as the sole reopen affordance for a user-hidden right panel
+AssertionError: expected null to be 'run-strip' // Object.is equality
+
+- Expected: 
+"run-strip"
+
++ Received: 
+null
+
+ ❯ components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts:372:62
+    370|     expect(wrapper.find('[data-test="workspace-right-tool-drawer"]').e…
+    371|     expect(wrapper.find('[data-test="workspace-right-tool-strip"]').ex…
+    372|     expect((wrapper.vm as any).selectionStore.selectedRunId).toBe('run…
+       |                                                              ^
+    373|   });
+    374| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/59]⎯
+
+ FAIL  components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts > WorkspaceAdaptiveLayout > uses the consuming right strip as the sole narrow reopen affordance
+AssertionError: expected null to be 'run-drawer' // Object.is equality
+
+- Expected: 
+"run-drawer"
+
++ Received: 
+null
+
+ ❯ components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts:412:62
+    410|     expect(wrapper.find('[data-test="workspace-right-tool-drawer"]').e…
+    411|     expect(wrapper.find('[data-test="workspace-right-tool-strip"]').ex…
+    412|     expect((wrapper.vm as any).selectionStore.selectedRunId).toBe('run…
+       |                                                              ^
+    413|   });
+    414| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/59]⎯
+
+ FAIL  components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts > WorkspaceAdaptiveLayout > opens right tools from the strip while preserving selection
+AssertionError: expected null to be 'run-2' // Object.is equality
+
+- Expected: 
+"run-2"
+
++ Received: 
+null
+
+ ❯ components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts:521:62
+    519| 
+    520|     expect(wrapper.find('[data-test="workspace-semantic-surface-trigge…
+    521|     expect((wrapper.vm as any).selectionStore.selectedRunId).toBe('run…
+       |                                                              ^
+    522| 
+    523|     await wrapper.get('[data-test="workspace-right-tool-strip"]').trig…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/59]⎯
+
+ FAIL  components/settings/__tests__/CodexFullAccessCard.spec.ts > CodexFullAccessCard > renders one full-access toggle without exposing the three runtime modes as Basic choices
+AssertionError: expected 'Codex full accessControl whether non-…' to contain 'Applies to new sessions.'
+
+Expected: "Applies to new sessions."
+Received: "Codex full accessControl whether non-auto-approved Codex sessions run without filesystem sandboxing.Allow full filesystem accessWarning: Runs with danger-full-access. Use only when you trust the task.Allow full filesystem accessApplies to new non-auto-approved sessions. Auto approve tools is high-trust and grants effective full access for that run."
+
+ ❯ components/settings/__tests__/CodexFullAccessCard.spec.ts:66:28
+     64|     expect(wrapper.text()).toContain('Allow full filesystem access')
+     65|     expect(wrapper.text()).toContain('danger-full-access')
+     66|     expect(wrapper.text()).toContain('Applies to new sessions.')
+       |                            ^
+     67|     expect(wrapper.find('[data-testid="codex-full-access-toggle"]').at…
+     68|     expect(wrapper.find('[data-testid="codex-full-access-save"]').exis…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/59]⎯
+
+ FAIL  composables/workspace/__tests__/useWorkspaceRouteSelection.spec.ts > useWorkspaceRouteSelection > opens a team execution link from the workspace route and clears the query
+AssertionError: expected "spy" to be called with arguments: [ { kind: 'team', …(2) } ]
+
+Received: 
+
+  1st spy call:
+
+  [
+    {
++     "agentRunId": null,
+      "kind": "team",
+-     "memberRouteKey": "writer",
+      "teamRunId": "team-run-1",
+    },
+  ]
+
+
+Number of calls: 1
+
+ ❯ composables/workspace/__tests__/useWorkspaceRouteSelection.spec.ts:62:44
+     60|     await flushPromises()
+     61| 
+     62|     expect(openWorkspaceExecutionLinkMock).toHaveBeenCalledWith({
+       |                                            ^
+     63|       kind: 'team',
+     64|       teamRunId: 'team-run-1',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/59]⎯
+
+ FAIL  graphql/queries/__tests__/runHistoryQueries.spec.ts > Event Monitor active-trace page queries > exposes only explicit standalone/team subject identity and an opaque cursor
+AssertionError: expected '\n  query GetTeamMemberEventMonitorAc…' to contain '$memberAddress: String!'
+
+- Expected
++ Received
+
+- $memberAddress: String!
++
++   query GetTeamMemberEventMonitorActiveTracePage(
++     $teamRunId: String!, $agentRunId: String!, $beforeCursor: String
++   ) {
++     getTeamMemberEventMonitorActiveTracePage(
++       teamRunId: $teamRunId, agentRunId: $agentRunId, beforeCursor: $beforeCursor
++     ) {
++       ...EventMonitorActiveTracePageFields
++     }
++   }
++   
++   fragment EventMonitorActiveTracePageFields on EventMonitorActiveTracePage {
++     beforeCursor
++     hasEarlier
++     loadedEarlierCount
++     activeGeneration
++     cursorStatus
++     events {
++       eventId
++       turnGroupId
++       occurredAtMs
++       visuals {
++         ... on EventMonitorUserVisual {
++           kind visualId eventId kindOrdinal text
++           attachments { attachmentId mediaType locator }
++         }
++         ... on EventMonitorAssistantTextVisual { kind visualId eventId kindOrdinal content }
++         ... on EventMonitorThinkingVisual { kind visualId eventId kindOrdinal content }
++         ... on EventMonitorToolCardVisual {
++           kind visualId eventId kindOrdinal invocationId cardKind toolName statusKey errorMessage
++           summaryArgs {
++             path file_path filepath filename target_path command cmd script query prompt url message text title name raw
++           }
++           approvalTarget {
++             agentRunId
++           }
++         }
++         ... on EventMonitorMediaVisual { kind visualId eventId kindOrdinal mediaType urls }
++         ... on EventMonitorCompactionVisual {
++           kind visualId eventId kindOrdinal activityId phase message turnId rawTraceCount semanticFactCount provider
++         }
++       }
++     }
++   }
++
++
+
+ ❯ graphql/queries/__tests__/runHistoryQueries.spec.ts:17:24
+     15|     expect(runSource).toContain('$runId: String!');
+     16|     expect(teamSource).toContain('$teamRunId: String!');
+     17|     expect(teamSource).toContain('$memberAddress: String!');
+       |                        ^
+     18|     expect(teamSource).not.toContain('memberRouteKey');
+     19|     for (const source of [runSource, teamSource]) {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[23/59]⎯
+
+ FAIL  graphql/queries/__tests__/runHistoryQueries.spec.ts > GetTeamCommunicationMessages query > requests address-first sender and receiver fields without removed flat participant identity
+AssertionError: expected '\n  query GetTeamCommunicationMessage…' to contain 'senderAddress'
+
+- Expected
++ Received
+
+- senderAddress
++
++   query GetTeamCommunicationMessages($teamRunId: String!) {
++     getTeamCommunicationMessages(teamRunId: $teamRunId) {
++       messageId
++       senderAgentRunId
++       receiverAgentRunId
++       content
++       messageType
++       createdAt
++       referenceFiles {
++         referenceId
++         path
++         type
++         createdAt
++         updatedAt
++       }
++     }
++   }
++
+
+ ❯ graphql/queries/__tests__/runHistoryQueries.spec.ts:65:20
+     63| 
+     64|     expect(source).toContain('getTeamCommunicationMessages');
+     65|     expect(source).toContain('senderAddress');
+       |                    ^
+     66|     expect(source).toContain('receiverAddress');
+     67|     expect(source).toContain('rootTeamRunId');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[24/59]⎯
+
+ FAIL  graphql/queries/__tests__/runHistoryQueries.spec.ts > GetTaskDelegationRecords query > requests durable address-first task records with updates and references
+AssertionError: expected '\n  query GetTaskDelegationRecords($t…' to contain 'senderAddress'
+
+- Expected
++ Received
+
+- senderAddress
++
++   query GetTaskDelegationRecords($teamRunId: String!) {
++     getTaskDelegationRecords(teamRunId: $teamRunId) {
++       taskId
++       delegatorAgentRunId
++       recipientAddress
++       targetAgentRunId
++       targetTeamRunId
++       status
++       description
++       referenceFiles {
++         referenceId
++         path
++         type
++         createdAt
++         updatedAt
++       }
++       updates {
++         kind
++         submissionId
++         reviewId
++         interruptionId
++         reviewedSubmissionId
++         decision
++         content
++         referenceFiles {
++           referenceId
++           path
++           type
++           createdAt
++           updatedAt
++         }
++         createdAt
++       }
++       createdAt
++     }
++   }
++
+
+ ❯ graphql/queries/__tests__/runHistoryQueries.spec.ts:87:20
+     85|     expect(source).toContain('taskId');
+     86|     expect(source).toContain('status');
+     87|     expect(source).toContain('senderAddress');
+       |                    ^
+     88|     expect(source).toContain('receiverAddress');
+     89|     expect(source).toContain('receiverTargetKind');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[25/59]⎯
+
+ FAIL  localization/messages/__tests__/zhCnGlossaryConsistency.spec.ts > zh-CN glossary consistency > does not retain deprecated glossary in the swept shared-product catalogs
+AssertionError: expected 'settings:settings.components.settings…' not to contain '代理'
+
+Expected: "代理"
+Received: "settings:settings.components.settings.TokenUsageStatistics.noTaskUsage:该日期范围内没有找到代理或团队用量。"
+
+ ❯ localization/messages/__tests__/zhCnGlossaryConsistency.spec.ts:48:56
+     46|       for (const [key, value] of Object.entries(catalog)) {
+     47|         for (const term of deprecatedGlossary) {
+     48|           expect(`${catalogName}:${key}:${value}`).not.toContain(term);
+       |                                                        ^
+     49|         }
+     50|       }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[26/59]⎯
+
+ FAIL  services/eventMonitor/__tests__/recentEventMonitorPresentationWitness.spec.ts > recent Event Monitor presentation witness > detects a rendered or retained-interaction change in tool approval target
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ services/eventMonitor/__tests__/recentEventMonitorPresentationWitness.spec.ts:142:104
+    140|     const afterItems = buildItems();
+    141|     mutate(afterItems as any[]);
+    142|     expect(areRecentEventMonitorPresentationWitnessesEqual(witness(bef…
+       |                                                                                                        ^
+    143|   });
+    144| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[27/59]⎯
+
+ FAIL  services/runOpen/__tests__/agentRunOpenCoordinator.integration.spec.ts > openAgentRun integration with real agent context store > clears stale interrupt permission when an existing subscribed run is reopened as inactive/offline
+TypeError: agentRunStore.isAgentStreamReady is not a function
+ ❯ Module.openAgentRun services/runOpen/agentRunOpenCoordinator.ts:42:41
+     40|   const existingContext = agentContextsStore.getRun(input.runId);
+     41|   const agentRunStore = useAgentRunStore();
+     42|   const streamConnected = agentRunStore.isAgentStreamReady(input.runId…
+       |                                         ^
+     43|   const shouldTreatAsLive = resumeConfig.isActive;
+     44|   const strategy = decideRunOpenStrategy({
+ ❯ services/runOpen/__tests__/agentRunOpenCoordinator.integration.spec.ts:124:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[28/59]⎯
+
+ FAIL  services/runOpen/__tests__/agentRunOpenCoordinator.spec.ts > openAgentRun > preserves live activities while merging file changes into an active subscribed context
+TypeError: agentRunStore.isAgentStreamReady is not a function
+ ❯ Module.openAgentRun services/runOpen/agentRunOpenCoordinator.ts:42:41
+     40|   const existingContext = agentContextsStore.getRun(input.runId);
+     41|   const agentRunStore = useAgentRunStore();
+     42|   const streamConnected = agentRunStore.isAgentStreamReady(input.runId…
+       |                                         ^
+     43|   const shouldTreatAsLive = resumeConfig.isActive;
+     44|   const strategy = decideRunOpenStrategy({
+ ❯ services/runOpen/__tests__/agentRunOpenCoordinator.spec.ts:134:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[29/59]⎯
+
+ FAIL  services/runOpen/__tests__/agentRunOpenCoordinator.spec.ts > openAgentRun > hydrates projected activities when reopening a historical run from projection
+TypeError: agentRunStore.isAgentStreamReady is not a function
+ ❯ Module.openAgentRun services/runOpen/agentRunOpenCoordinator.ts:42:41
+     40|   const existingContext = agentContextsStore.getRun(input.runId);
+     41|   const agentRunStore = useAgentRunStore();
+     42|   const streamConnected = agentRunStore.isAgentStreamReady(input.runId…
+       |                                         ^
+     43|   const shouldTreatAsLive = resumeConfig.isActive;
+     44|   const strategy = decideRunOpenStrategy({
+ ❯ services/runOpen/__tests__/agentRunOpenCoordinator.spec.ts:183:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[30/59]⎯
+
+ FAIL  services/runRecovery/__tests__/activeRunRecoveryCoordinator.spec.ts > recoverActiveRunsFromHistory > preserves subscribed live member statuses while recovering root team activity
+TypeError: agentTeamRunStore.isTeamStreamReady is not a function
+ ❯ Module.recoverActiveRunsFromHistory services/runRecovery/activeRunRecoveryCoordinator.ts:113:49
+    111|     const existingTeamContext = teamContextsStore.getTeamContextById(t…
+    112|     if (existingTeamContext) {
+    113|       const streamConnected = agentTeamRunStore.isTeamStreamReady(team…
+       |                                                 ^
+    114|       applyTeamHistoryStatusToExistingContext(existingTeamContext, tea…
+    115| 
+ ❯ services/runRecovery/__tests__/activeRunRecoveryCoordinator.spec.ts:133:11
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[31/59]⎯
+
+ FAIL  services/runRecovery/__tests__/activeRunRecoveryCoordinator.spec.ts > recoverActiveRunsFromHistory > preserves backend-granted single-agent interrupt permission during active recovery
+TypeError: agentRunStore.isAgentStreamReady is not a function
+ ❯ Module.recoverActiveRunsFromHistory services/runRecovery/activeRunRecoveryCoordinator.ts:86:45
+     84|     if (existingContext) {
+     85|       existingContext.config.isLocked = true;
+     86|       const streamConnected = agentRunStore.isAgentStreamReady(runId);
+       |                                             ^
+     87|       applyActiveRuntimePlaceholder(existingContext, { preserveExistin…
+     88| 
+ ❯ services/runRecovery/__tests__/activeRunRecoveryCoordinator.spec.ts:161:11
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[32/59]⎯
+
+ FAIL  services/workspace/__tests__/workspaceNavigationService.spec.ts > workspaceNavigationService > builds and parses team execution routes with member focus
+AssertionError: expected { kind: 'team', …(2) } to deeply equal { kind: 'team', …(2) }
+
+- Expected
++ Received
+
+  {
++   "agentRunId": null,
+    "kind": "team",
+-   "memberAddress": "/writer",
+    "teamRunId": "team-run-1",
+  }
+
+ ❯ services/workspace/__tests__/workspaceNavigationService.spec.ts:66:85
+     64|     })
+     65| 
+     66|     expect(parseWorkspaceExecutionLinkQuery((route as any).query as Lo…
+       |                                                                                     ^
+     67|       kind: 'team',
+     68|       teamRunId: 'team-run-1',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[33/59]⎯
+
+ FAIL  services/workspace/__tests__/workspaceNavigationService.spec.ts > workspaceNavigationService > strips workspace execution query params without disturbing others
+AssertionError: expected { …(2) } to deeply equal { preserved: 'value' }
+
+- Expected
++ Received
+
+  {
+    "preserved": "value",
++   "workspaceExecutionMemberAddress": "/writer",
+  }
+
+ ❯ services/workspace/__tests__/workspaceNavigationService.spec.ts:80:9
+     78|       workspaceExecutionMemberAddress: '/writer',
+     79|       preserved: 'value',
+     80|     })).toEqual({
+       |         ^
+     81|       preserved: 'value',
+     82|     })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[34/59]⎯
+
+ FAIL  services/workspace/__tests__/workspaceNavigationService.spec.ts > workspaceNavigationService > routes team execution links through the team open coordinator
+AssertionError: expected "spy" to be called with arguments: [ { teamRunId: 'team-run-1', …(3) } ]
+
+Received: 
+
+  1st spy call:
+
+  [
+    {
++     "agentRunId": undefined,
+      "ensureWorkspaceByRootPath": [Function spy],
+-     "memberAddress": "/writer",
+      "resolveWorkspaceMetadataByRootPath": [Function spy],
+      "teamRunId": "team-run-1",
+    },
+  ]
+
+
+Number of calls: 1
+
+ ❯ services/workspace/__tests__/workspaceNavigationService.spec.ts:107:29
+    105|     })
+    106| 
+    107|     expect(openTeamRunMock).toHaveBeenCalledWith({
+       |                             ^
+    108|       teamRunId: 'team-run-1',
+    109|       memberAddress: '/writer',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[35/59]⎯
+
+ FAIL  types/agent/__tests__/AgentContext.spec.ts > AgentContext > should initialize correctly
+AssertionError: expected undefined to be false // Object.is equality
+
+- Expected: 
+false
+
++ Received: 
+undefined
+
+ ❯ types/agent/__tests__/AgentContext.spec.ts:38:38
+     36|         expect(context.contextFilePaths).toEqual([]);
+     37|         expect(context.submissionPending).toBe(false);
+     38|         expect(context.isSubscribed).toBe(false);
+       |                                      ^
+     39|     });
+     40| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[36/59]⎯
+
+ FAIL  components/workspace/config/__tests__/MemberOverrideItem.spec.ts > MemberOverrideItem > renders concise member override copy
+ FAIL  components/workspace/config/__tests__/MemberOverrideItem.spec.ts > MemberOverrideItem > renders a blocking warning when a runtime override breaks inherited global model availability
+ FAIL  components/workspace/config/__tests__/MemberOverrideItem.spec.ts > MemberOverrideItem > emits a resolving explicit model override for an unresolved runtime override
+ FAIL  components/workspace/config/__tests__/MemberOverrideItem.spec.ts > MemberOverrideItem > clears stale explicit member llmConfig when the explicit model changes
+ FAIL  components/workspace/config/__tests__/MemberOverrideItem.spec.ts > MemberOverrideItem > drops an incompatible explicit model when the runtime override changes
+ FAIL  components/workspace/config/__tests__/MemberOverrideItem.spec.ts > MemberOverrideItem > clears stale member-only llmConfig when invalid explicit model cleanup falls back to the inherited global runtime
+ FAIL  components/workspace/config/__tests__/MemberOverrideItem.spec.ts > MemberOverrideItem > clears stale member-only llmConfig when effective runtime changes invalidate the explicit model
+ FAIL  components/workspace/config/__tests__/MemberOverrideItem.spec.ts > MemberOverrideItem > feeds cleaned inherited-global fallback rows into readiness and materialization without stale config
+ FAIL  components/workspace/config/__tests__/MemberOverrideItem.spec.ts > MemberOverrideItem > passes missing historical config state into member model config display
+ FAIL  components/workspace/config/__tests__/MemberOverrideItem.spec.ts > MemberOverrideItem > keeps inherited effort-only reasoning compact until expanded and displays the schema default
+ FAIL  components/workspace/config/__tests__/MemberOverrideItem.spec.ts > MemberOverrideItem > keeps compact advanced collapsed when inherited global thinking-on model changes
+ FAIL  components/workspace/config/__tests__/MemberOverrideItem.spec.ts > MemberOverrideItem > opens compact advanced for an explicit member model selection whose effective thinking is on
+ FAIL  components/workspace/config/__tests__/MemberOverrideItem.spec.ts > MemberOverrideItem > opens compact advanced for an explicit member runtime selection to an effective-on model
+TypeError: Cannot read properties of undefined (reading 'replace')
+ ❯ ComputedRefImpl.fn components/workspace/config/MemberOverrideItem.vue:154:58
+    152| 
+    153| const storedRuntimeOverrideValue = computed(() => props.override?.runt…
+    154| const inputIdSuffix = computed(() => props.memberAddress.replace(/[^a-…
+       |                                                          ^
+    155| const explicitModelIdentifier = computed(() => props.override?.llmMode…
+    156| const memberAdvancedExplicitlyExpanded = ref(false)
+ ❯ refreshComputed ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:397:28
+ ❯ ComputedRefImpl.get value [as value] ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1711:5
+ ❯ unref ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1536:45
+ ❯ Object.get ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1542:64
+ ❯ Proxy._sfc_render components/workspace/config/MemberOverrideItem.vue:26:34
+ ❯ renderComponentRoot ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:4499:16
+ ❯ ReactiveEffect.componentUpdateFn [as fn] ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:6007:46
+ ❯ ReactiveEffect.run ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:243:19
+ ❯ setupRenderEffect ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:6142:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[37/59]⎯
+
+ FAIL  components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > passes read-only mode to selected existing team configuration and ignores workspace edit events
+TypeError: Cannot read properties of undefined (reading 'getConfigurationView')
+ ❯ components/workspace/config/__tests__/RunConfigPanel.spec.ts:712:58
+    710|       },
+    711|     })
+    712|     const topologyConfiguration = activeContext.topology.getConfigurat…
+       |                                                          ^
+    713|     contextStore.activeTeamContext = activeContext
+    714| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[38/59]⎯
+
+ FAIL  components/workspace/running/__tests__/RunningAgentsPanel.spec.ts > RunningAgentsPanel > prefers the selected same-definition run when preparing a new agent run config
+AssertionError: expected { agentDefinitionId: 'def-1', …(4) } to deeply equal ObjectContaining{…}
+
+- Expected
++ Received
+
+- ObjectContaining {
++ {
++   "agentDefinitionId": "def-1",
++   "agentDefinitionName": "Test Agent",
+    "isLocked": false,
+    "llmConfig": {
+-     "nested": {
+-       "values": [
+-         "xhigh",
+-       ],
++     "reasoning_effort": "low",
+    },
+-     "reasoning_effort": "xhigh",
+-   },
+-   "llmModelIdentifier": "model-selected",
++   "llmModelIdentifier": "model-first",
+  }
+
+ ❯ components/workspace/running/__tests__/RunningAgentsPanel.spec.ts:126:18
+    124| 
+    125|     const seed = (configStore.setAgentConfig as any).mock.calls.at(-1)…
+    126|     expect(seed).toEqual(expect.objectContaining({
+       |                  ^
+    127|       llmModelIdentifier: 'model-selected',
+    128|       isLocked: false,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[39/59]⎯
+
+ FAIL  components/workspace/running/__tests__/RunningTeamGroup.spec.ts > RunningTeamGroup > renders header and runs
+ FAIL  components/workspace/running/__tests__/RunningTeamGroup.spec.ts > RunningTeamGroup > summarizes only child isActive and turns gray after the last active run settles
+ FAIL  components/workspace/running/__tests__/RunningTeamGroup.spec.ts > RunningTeamGroup > toggles expansion
+ FAIL  components/workspace/running/__tests__/RunningTeamGroup.spec.ts > RunningTeamGroup > emits create event
+TypeError: Cannot read properties of undefined (reading 'isRootTeamActive')
+ ❯ components/workspace/running/RunningTeamGroup.vue:69:72
+     67| 
+     68| const isExpanded = ref(true);
+     69| const hasActiveRuns = computed(() => props.runs.some((run) => run.view…
+       |                                                                        ^
+     70| const toggleExpand = (): void => { isExpanded.value = !isExpanded.valu…
+     71| </script>
+ ❯ wrappedFn ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:907:19
+ ❯ apply ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:915:27
+ ❯ Proxy.some ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:858:12
+ ❯ ComputedRefImpl.fn components/workspace/running/RunningTeamGroup.vue:69:49
+ ❯ refreshComputed ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:397:28
+ ❯ ComputedRefImpl.get value [as value] ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1711:5
+ ❯ unref ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1536:45
+ ❯ Object.get ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1542:64
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[40/59]⎯
+
+ FAIL  components/workspace/skill-improvement/__tests__/SkillImprovementComposerCta.spec.ts > SkillImprovementComposerCta > starts team-member Skill Improvement with member-scoped copy
+Error: Unable to get [data-test="skill-improvement-composer-cta"] within: <!--v-if-->
+ ❯ VueWrapper.BaseWrapper.get ../node_modules/.pnpm/@vue+test-utils@2.4.6/node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7279:15
+    7277|             return result;
+    7278|         }
+    7279|         throw new Error("Unable to get ".concat(selector, " within: ")…
+       |               ^
+    7280|     };
+    7281|     BaseWrapper.prototype.getComponent = function (selector) {
+ ❯ components/workspace/skill-improvement/__tests__/SkillImprovementComposerCta.spec.ts:231:28
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[41/59]⎯
+
+ FAIL  components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts > TokenUsageMeterPanel > uses the focused team member as primary and keeps aggregate usage only in the Team section
+ FAIL  components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts > TokenUsageMeterPanel > hydrates the team aggregate when only a partial live team summary exists
+ FAIL  components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts > TokenUsageMeterPanel > shows an unavailable focus state instead of falling back to the team aggregate when focus is not a leaf run
+TypeError: Cannot read properties of undefined (reading 'getFocusedAgentRunId')
+ ❯ resolveFocusedTeamAgentRunId composables/tokenUsageTeamMemberRows.ts:12:32
+     10| export const resolveFocusedTeamAgentRunId = (team: AgentTeamContext | …
+     11|   if (!team) return null;
+     12|   const agentRunId = team.view.getFocusedAgentRunId();
+       |                                ^
+     13|   return team.view.getAgentContext(agentRunId) ? agentRunId : null;
+     14| };
+ ❯ ComputedRefImpl.fn composables/useTokenUsageWorkspaceScope.ts:51:44
+ ❯ refreshComputed ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:397:28
+ ❯ ComputedRefImpl.get value [as value] ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1711:5
+ ❯ ComputedRefImpl.fn composables/useTokenUsageWorkspaceScope.ts:55:42
+ ❯ refreshComputed ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:397:28
+ ❯ ComputedRefImpl.get value [as value] ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1711:5
+ ❯ ComputedRefImpl.fn composables/useTokenUsageWorkspaceScope.ts:58:69
+ ❯ refreshComputed ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:397:28
+ ❯ ComputedRefImpl.get value [as value] ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1711:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[42/59]⎯
+
+
+ Test Files  24 failed (24)
+      Tests  59 failed | 130 passed (189)
+   Start at  15:39:19
+   Duration  16.38s (transform 5.95s, setup 105.70s, collect 8.49s, tests 1.42s, environment 10.29s, prepare 6.08s)
+

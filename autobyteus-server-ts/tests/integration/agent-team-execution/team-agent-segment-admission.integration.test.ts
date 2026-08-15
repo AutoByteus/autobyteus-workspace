@@ -17,7 +17,6 @@ import {
 } from "../../../src/agent-execution/domain/agent-run-event.js";
 import type { AgentRuntimeLifecycleSnapshot } from "../../../src/agent-execution/domain/agent-runtime-lifecycle-snapshot.js";
 import { createTeamAgentExecutionBinding } from "../../../src/agent-team-execution/domain/team-agent-execution-binding.js";
-import { createTeamExecutionAddress } from "../../../src/agent-team-execution/domain/team-execution-address.js";
 import { TeamRunEventSourceType } from "../../../src/agent-team-execution/domain/team-run-event.js";
 import { TeamAgentEventAdapter } from "../../../src/agent-team-execution/services/team-agent-event-adapter.js";
 import { ApplicationAgentStreamEventProjector } from "../../../src/application-agent-streaming/services/application-agent-stream-event-projector.js";
@@ -31,14 +30,9 @@ import { AgentRunEventMessageMapper } from "../../../src/services/agent-streamin
 import { projectTeamAgentEventMessage } from "../../../src/services/agent-streaming/team-agent-event-websocket-projector.js";
 
 const runId = "teacher-agent-run";
-const executionAddress = createTeamExecutionAddress({
-  rootTeamRunId: "root-team-run",
-  taskTeamRunIds: [],
-  memberAddress: "/Teacher",
-  taskAgentRunId: null,
-});
 const execution = createTeamAgentExecutionBinding({
-  executionAddress,
+  rootTeamRunId: "root-team-run",
+  memberAddress: "/Teacher",
   agentRunId: runId,
 });
 
@@ -207,7 +201,7 @@ describe("AgentRun-owned Team segment lifecycle", () => {
       }),
     ]);
 
-    const adapter = new TeamAgentEventAdapter(() => executionAddress);
+    const adapter = new TeamAgentEventAdapter(() => execution);
     const admitted = canonical.map((event) => adapter.adapt(event));
     expect(admitted.every((result) => result.kind === "publish")).toBe(true);
     const teamEvents = admitted.map((result) => {
@@ -238,7 +232,7 @@ describe("AgentRun-owned Team segment lifecycle", () => {
       },
     ]);
 
-    const teamWire = teamEvents.map((event) => projectTeamAgentEventMessage(execution, event));
+    const teamWire = teamEvents.map((event, index) => projectTeamAgentEventMessage(execution, event, index + 1));
     expect(teamWire.map((message) => message.payload)).toEqual([
       expect.objectContaining({ segment_id: "segment-1", turn_id: "turn-1", segment_type: "text" }),
       expect.objectContaining({ segment_id: "segment-1", turn_id: "turn-1", segment_type: "text", delta: "visible content" }),
@@ -309,17 +303,12 @@ describe("AgentRun-owned Team segment lifecycle", () => {
       null,
     );
 
-    const nestedExecutionAddress = createTeamExecutionAddress({
-      rootTeamRunId: "root-team-run",
-      taskTeamRunIds: ["outer-task-team-run", "inner-task-team-run"],
-      memberAddress: "/StudentStudyGroup/student_one",
-      taskAgentRunId: null,
-    });
-    const nestedAdapter = new TeamAgentEventAdapter(() => nestedExecutionAddress);
     const nestedExecution = createTeamAgentExecutionBinding({
-      executionAddress: nestedExecutionAddress,
+      rootTeamRunId: "root-team-run",
+      memberAddress: "/StudentStudyGroup/student_one",
       agentRunId: runId,
     });
+    const nestedAdapter = new TeamAgentEventAdapter(() => nestedExecution);
     const teamCollector = new ChannelRunOutputEventCollector();
     const teamFinal = observed.reduce<ReturnType<ChannelRunOutputEventCollector["processEvent"]>>(
       (final, event) => {
@@ -553,7 +542,7 @@ describe("AgentRun-owned Team segment lifecycle", () => {
       delta: "must reject",
     });
 
-    expect(new TeamAgentEventAdapter(() => executionAddress).adapt(internalEvent)).toEqual({
+    expect(new TeamAgentEventAdapter(() => execution).adapt(internalEvent)).toEqual({
       kind: "rejected",
       code: "TEAM_AGENT_EVENT_ADMISSION_FAILED",
       message: "Rejected SEGMENT_CONTENT: segment payload contains unsupported fields",

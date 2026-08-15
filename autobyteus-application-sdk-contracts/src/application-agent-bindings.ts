@@ -1,5 +1,4 @@
 import type { ApplicationExecutionResourceRef } from "./execution-resources.js";
-import type { ApplicationTeamExecutionAddress } from "./team-execution-address.js";
 
 export type ApplicationAgentBindingStatus =
   | "ATTACHED"
@@ -52,7 +51,7 @@ export type ApplicationAgentBindingListFilter = {
 export type ApplicationAgentTarget =
   | { kind: "AGENT_RUN" }
   | { kind: "AGENT_TEAM_RUN" }
-  | { kind: "AGENT_TEAM_MEMBER"; memberAddress: string };
+  | { kind: "AGENT_TEAM_MEMBER"; agentRunId: string };
 
 export type ApplicationAgentTargetAddress = {
   bindingId: string;
@@ -75,7 +74,7 @@ export type ApplicationAgentInput = {
 export type ApplicationExecutionProducerRuntimeKind = "AGENT" | "AGENT_TEAM_MEMBER";
 
 export type ApplicationExecutionProducer = {
-  executionAddress: ApplicationTeamExecutionAddress;
+  agentRunId: string;
   displayName: string | null;
   runtimeKind: ApplicationExecutionProducerRuntimeKind;
 };

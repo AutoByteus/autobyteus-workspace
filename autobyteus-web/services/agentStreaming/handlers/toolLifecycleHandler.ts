@@ -94,7 +94,6 @@ const createSyntheticToolSegment = (
 
   const segment = createSegmentFromPayload({
     id: invocationId,
-    turn_id: turnId,
     segment_type: segmentType,
     metadata,
   });

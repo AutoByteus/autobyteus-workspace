@@ -1,0 +1,1 @@
+{"version":3,"file":"application-root-validator.d.ts","sourceRoot":"","sources":["../../src/validation/application-root-validator.ts"],"names":[],"mappings":"AAOA,OAAO,EAAmB,KAAK,oBAAoB,EAAE,MAAM,wBAAwB,CAAC;AAwEpF,eAAO,MAAM,uBAAuB,GAAU,OAAO;IACnD,WAAW,EAAE,MAAM,CAAC;IACpB,kBAAkB,EAAE,MAAM,CAAC;IAC3B,WAAW,EAAE,oBAAoB,EAAE,CAAC;CACrC,KAAG,OAAO,CAAC,IAAI,CAsDf,CAAC"}

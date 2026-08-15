@@ -14,7 +14,7 @@ export const buildDelegateTaskParameterSchema = (): ParameterSchema => new Param
   new ParameterDefinition({
     name: "recipient_address",
     type: ParameterType.STRING,
-    description: "Rooted logical Agent-or-Team address using /... or immediate-Team-relative ./... syntax. The resolved target must be a direct child of the caller's immediate Team.",
+    description: "Exact canonical absolute non-root address beginning with '/' for any mounted Agent or AgentTeam in the same rooted AgentTeam. Relative, bare, traversal, backslash, and root-only forms are invalid.",
     required: true,
   }),
   new ParameterDefinition({

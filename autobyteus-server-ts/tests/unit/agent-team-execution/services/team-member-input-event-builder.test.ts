@@ -39,7 +39,7 @@ describe("buildTeamMemberInputEventPayload", () => {
     expect(payload.contextFilePaths).toEqual([
       {
         path: imageLocator,
-        type: "Image",
+        type: "image",
       },
     ]);
   });

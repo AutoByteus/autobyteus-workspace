@@ -1,25 +1,13 @@
 import type { TokenUsageUpdatedPayload } from "../../agent-execution/domain/agent-run-token-usage.js";
-import { createTeamExecutionAddress } from "../../agent-team-execution/domain/team-execution-address.js";
-import type { TokenUsageExecutionAddress } from "../domain/execution-address.js";
-import { hashedTokenUsageExecutionAddressKey } from "../domain/execution-address.js";
-import type { TokenUsageCreatedTimeSource, TokenUsageTaskStatisticsRow, TokenUsageTaskStatisticsRowKind } from "../domain/statistics-models.js";
+import type { TokenUsageCreatedTimeSource, TokenUsageTaskStatisticsRow } from "../domain/statistics-models.js";
 import { buildTokenUsageModelDisplayEntries, EMPTY_TOKEN_USAGE_MODEL_DISPLAY_CONTEXT, type TokenUsageModelDisplayContext } from "../projections/token-usage-model-display-projection.js";
 import { buildTokenUsageCostSummaryAggregate } from "../projections/token-usage-cost-summary-aggregate.js";
-import { getAgentTeamAddressBasename } from "../../agent-collaboration/domain/agent-team-address.js";
 
 type EventGroups = Map<string, TokenUsageUpdatedPayload[]>;
-type ExecutionNode = {
-  key: string;
-  rowKind: Exclude<TokenUsageTaskStatisticsRowKind, "TEAM_RUN" | "AGENT_RUN">;
-  address: TokenUsageExecutionAddress;
-  events: TokenUsageUpdatedPayload[];
-  children: Map<string, ExecutionNode>;
-};
 const UNKNOWN_AGENT_LABEL = "Unknown agent run";
 const UNKNOWN_TEAM_LABEL = "Unknown team run";
 const compact = (value: string | null | undefined): string | null => value?.trim() || null;
 const ordered = (events: TokenUsageUpdatedPayload[]) => [...events].sort((a, b) => a.observed_at.localeCompare(b.observed_at) || a.usage_event_id.localeCompare(b.usage_event_id));
-const latest = (events: TokenUsageUpdatedPayload[]) => events.reduce<TokenUsageUpdatedPayload | null>((a, b) => !a || b.observed_at >= a.observed_at ? b : a, null);
 const first = (events: TokenUsageUpdatedPayload[], pick: (event: TokenUsageUpdatedPayload) => string | null | undefined) => {
   for (const event of ordered(events)) { const value = compact(pick(event)); if (value) return value; }
   return null;
@@ -37,79 +25,45 @@ const displayFields = (events: TokenUsageUpdatedPayload[], context: TokenUsageMo
   const entries = buildTokenUsageModelDisplayEntries(events, context);
   return { models: entries.map((entry) => entry.modelIdentifier), modelDisplayNames: entries.map((entry) => entry.modelDisplayName) };
 };
-const node = (rowKind: ExecutionNode["rowKind"], address: TokenUsageExecutionAddress): ExecutionNode => ({
-  key: hashedTokenUsageExecutionAddressKey(address), rowKind, address, events: [], children: new Map(),
-});
-const hierarchy = (address: TokenUsageExecutionAddress): ExecutionNode[] => {
-  const output = [node("MEMBER_RUN", createTeamExecutionAddress({
-    rootTeamRunId: address.rootTeamRunId, memberAddress: address.memberAddress,
-  }))];
-  address.taskTeamRunIds.forEach((_taskTeamRunId, index) => output.push(node("TASK_TEAM_RUN", createTeamExecutionAddress({
-    rootTeamRunId: address.rootTeamRunId,
-    taskTeamRunIds: address.taskTeamRunIds.slice(0, index + 1),
-    memberAddress: address.memberAddress,
-  }))));
-  if (address.taskAgentRunId) output.push(node("TASK_AGENT_RUN", address));
-  return output;
-};
 
+/** Token usage groups by exact run IDs only; execution topology remains owned by the Team execution tree. */
 export class TokenUsageTaskStatisticsTreeBuilder {
   buildRows(records: TokenUsageUpdatedPayload[], context: TokenUsageModelDisplayContext = EMPTY_TOKEN_USAGE_MODEL_DISPLAY_CONTEXT): TokenUsageTaskStatisticsRow[] {
     const teams: EventGroups = new Map();
-    const agents: EventGroups = new Map();
-    records.forEach((record) => record.execution_address
-      ? push(teams, record.execution_address.rootTeamRunId, record)
-      : push(agents, record.run_id, record));
+    const standalone: EventGroups = new Map();
+    records.forEach((record) => record.root_team_run_id
+      ? push(teams, record.root_team_run_id, record)
+      : push(standalone, record.run_id, record));
     return sortRows([
-      ...[...teams].map(([runId, events]) => this.teamRow(runId, events, context)),
-      ...[...agents].map(([runId, events]) => this.agentRow(runId, events, context)),
+      ...[...teams].map(([rootTeamRunId, events]) => this.teamRow(rootTeamRunId, events, context)),
+      ...[...standalone].map(([runId, events]) => this.runRow(runId, null, events, context, "AGENT_RUN")),
     ]);
   }
 
-  private agentRow(runId: string, events: TokenUsageUpdatedPayload[], context: TokenUsageModelDisplayContext): TokenUsageTaskStatisticsRow {
-    return {
-      rowId: `agent:${runId}`, rowKind: "AGENT_RUN", runId, taskId: null, executionAddress: null,
-      displayName: first(events, (event) => event.agent_name) ?? latest(events)?.agent_definition_id ?? UNKNOWN_AGENT_LABEL,
-      summary: first(events, (event) => event.run_summary), ...created(events), ...displayFields(events, context),
-      runtimeKinds: buildTokenUsageCostSummaryAggregate(events).observed_runtime_kinds,
-      aggregate: buildTokenUsageCostSummaryAggregate(events), children: [],
-    };
-  }
-
-  private teamRow(teamRunId: string, events: TokenUsageUpdatedPayload[], context: TokenUsageModelDisplayContext): TokenUsageTaskStatisticsRow {
-    const rootChildren = new Map<string, ExecutionNode>();
-    for (const event of events) {
-      if (!event.execution_address) continue;
-      let children = rootChildren;
-      for (const identity of hierarchy(event.execution_address)) {
-        const current = children.get(identity.key) ?? identity;
-        current.events.push(event);
-        children.set(current.key, current);
-        children = current.children;
-      }
-    }
+  private teamRow(rootTeamRunId: string, events: TokenUsageUpdatedPayload[], context: TokenUsageModelDisplayContext): TokenUsageTaskStatisticsRow {
+    const runs: EventGroups = new Map();
+    events.forEach((event) => push(runs, event.run_id, event));
     const aggregate = buildTokenUsageCostSummaryAggregate(events);
     return {
-      rowId: `team:${teamRunId}`, rowKind: "TEAM_RUN", runId: null,
-      taskId: null, executionAddress: createTeamExecutionAddress({ rootTeamRunId: teamRunId, memberAddress: "/" }),
-      displayName: first(events, (event) => event.team_name) ?? UNKNOWN_TEAM_LABEL,
+      rowId: `team:${rootTeamRunId}`, rowKind: "TEAM_RUN", runId: null, rootTeamRunId,
+      taskId: null, displayName: first(events, (event) => event.team_name) ?? UNKNOWN_TEAM_LABEL,
       summary: first(events, (event) => event.run_summary), ...created(events), ...displayFields(events, context),
       runtimeKinds: aggregate.observed_runtime_kinds, aggregate,
-      children: sortRows([...rootChildren.values()].map((child) => this.executionRow(teamRunId, child, context))),
+      children: sortRows([...runs].map(([runId, rows]) => this.runRow(runId, rootTeamRunId, rows, context, "MEMBER_RUN"))),
     };
   }
 
-  private executionRow(teamRunId: string, current: ExecutionNode, context: TokenUsageModelDisplayContext): TokenUsageTaskStatisticsRow {
-    const aggregate = buildTokenUsageCostSummaryAggregate(current.events);
+  private runRow(runId: string, rootTeamRunId: string | null, events: TokenUsageUpdatedPayload[], context: TokenUsageModelDisplayContext, rowKind: "AGENT_RUN" | "MEMBER_RUN"): TokenUsageTaskStatisticsRow {
+    const aggregate = buildTokenUsageCostSummaryAggregate(events);
     return {
-      rowId: `team:${teamRunId}:address:${current.key}`, rowKind: current.rowKind,
-      runId: null,
-      taskId: first(current.events, (event) => event.task_id), executionAddress: current.address,
-      displayName: first(current.events, (event) => event.member_display_name) ??
-        getAgentTeamAddressBasename(current.address.memberAddress) ?? "Unknown member",
-      summary: null, ...created(current.events), ...displayFields(current.events, context),
-      runtimeKinds: aggregate.observed_runtime_kinds, aggregate,
-      children: sortRows([...current.children.values()].map((child) => this.executionRow(teamRunId, child, context))),
+      rowId: rootTeamRunId ? `team:${rootTeamRunId}:agent:${runId}` : `agent:${runId}`,
+      rowKind, runId, rootTeamRunId, taskId: first(events, (event) => event.task_id),
+      displayName: first(events, (event) => event.member_display_name) ?? first(events, (event) => event.agent_name) ?? latestDefinition(events) ?? UNKNOWN_AGENT_LABEL,
+      summary: first(events, (event) => event.run_summary), ...created(events), ...displayFields(events, context),
+      runtimeKinds: aggregate.observed_runtime_kinds, aggregate, children: [],
     };
   }
 }
+
+const latestDefinition = (events: TokenUsageUpdatedPayload[]): string | null =>
+  ordered(events).at(-1)?.agent_definition_id ?? null;

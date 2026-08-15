@@ -3,6 +3,7 @@ import { GraphQLJSON } from "graphql-scalars";
 import { getTeamRunHistoryService } from "../../../run-history/services/team-run-history-service.js";
 import { getTeamMemberRunViewProjectionService } from "../../../run-history/services/team-member-run-view-projection-service.js";
 import { EventMonitorActiveTracePageObject } from "./event-monitor-active-trace-page.js";
+import { projectExecutionTree } from "../../../services/agent-streaming/team-execution-view-projector.js";
 
 @ObjectType()
 class TeamRunResumeConfigPayload {
@@ -13,7 +14,7 @@ class TeamRunResumeConfigPayload {
   isActive!: boolean;
 
   @Field(() => GraphQLJSON)
-  metadata!: unknown;
+  executionTree!: unknown;
 }
 
 @ObjectType()
@@ -68,16 +69,16 @@ export class TeamRunHistoryResolver {
     return {
       teamRunId: config.teamRunId,
       isActive: config.isActive,
-      metadata: config.metadata,
+      executionTree: projectExecutionTree(config.executionTree),
     };
   }
 
   @Query(() => TeamMemberRunProjectionPayload)
   async getTeamMemberRunProjection(
     @Arg("teamRunId", () => String) teamRunId: string,
-    @Arg("memberAddress", () => String) memberAddress: string,
+    @Arg("agentRunId", () => String) agentRunId: string,
   ): Promise<TeamMemberRunProjectionPayload> {
-    const projection = await this.teamMemberRunProjectionService.getProjection(teamRunId, memberAddress);
+    const projection = await this.teamMemberRunProjectionService.getProjection(teamRunId, agentRunId);
     return {
       agentRunId: projection.agentRunId,
       conversation: projection.conversation,
@@ -91,10 +92,10 @@ export class TeamRunHistoryResolver {
   @Query(() => EventMonitorActiveTracePageObject)
   async getTeamMemberEventMonitorActiveTracePage(
     @Arg("teamRunId", () => String) teamRunId: string,
-    @Arg("memberAddress", () => String) memberAddress: string,
+    @Arg("agentRunId", () => String) agentRunId: string,
     @Arg("beforeCursor", () => String, { nullable: true }) beforeCursor?: string | null,
   ): Promise<EventMonitorActiveTracePageObject> {
-    return this.teamMemberRunProjectionService.getActiveTracePage(teamRunId, memberAddress, beforeCursor);
+    return this.teamMemberRunProjectionService.getActiveTracePage(teamRunId, agentRunId, beforeCursor);
   }
 
   @Mutation(() => DeleteStoredTeamRunMutationResult)

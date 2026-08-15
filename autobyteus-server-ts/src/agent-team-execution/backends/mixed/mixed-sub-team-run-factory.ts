@@ -1,47 +1,36 @@
 import { TeamRun } from "../../domain/team-run.js";
-import type { TeamRunAgentTeamNode, TeamRunConfig } from "../../domain/team-run-config.js";
+import type { TeamRunAgentTeamNode, TeamRunApplicationBinding } from "../../domain/team-run-config.js";
+import type { CollaborationHandoff } from "../../../agent-collaboration/domain/collaboration-handoff.js";
 import type { TeamRunContext } from "../../domain/team-run-context.js";
-import type { TeamManager } from "../team-manager.js";
 import { MixedTeamRunBackend } from "./mixed-team-run-backend.js";
-import type {
-  MixedParentBoundaryContext,
-  MixedTeamRunContext,
-} from "./mixed-team-run-context.js";
+import type { MixedTeamManager } from "./mixed-team-manager.js";
+import type { MixedTeamRunContext } from "./mixed-team-run-context.js";
 
 export type MixedSubTeamRunFactoryOptions = {
   buildContext: (input: {
-    config: TeamRunConfig;
-    teamRunId: string;
-    teamAddress: TeamRunAgentTeamNode["address"];
+    handoffs: readonly CollaborationHandoff[];
+    applicationBinding?: TeamRunApplicationBinding | null;
+    rootTeamRunId: string;
+    teamNode: TeamRunAgentTeamNode;
     restoreRuntimeContext?: MixedTeamRunContext | null;
-    parentBoundary?: MixedParentBoundaryContext | null;
-    taskId?: string | null;
-    taskTeamRunIds?: readonly string[] | null;
   }) => TeamRunContext<MixedTeamRunContext>;
-  createTeamManager: (context: TeamRunContext<MixedTeamRunContext>) => TeamManager;
+  createTeamManager: (context: TeamRunContext<MixedTeamRunContext>) => MixedTeamManager;
 };
 
 export class MixedSubTeamRunFactory {
   constructor(private readonly options: MixedSubTeamRunFactoryOptions) {}
 
   async createOrRestore(input: {
-    config: TeamRunConfig;
+    handoffs: readonly CollaborationHandoff[];
+    applicationBinding?: TeamRunApplicationBinding | null;
+    rootTeamRunId: string;
     teamNode: TeamRunAgentTeamNode;
     restoreRuntimeContext?: MixedTeamRunContext | null;
-    parentBoundary?: MixedParentBoundaryContext | null;
-    taskId?: string | null;
-    taskTeamRunIds?: readonly string[] | null;
   }): Promise<TeamRun> {
-    const context = this.options.buildContext({
-      config: input.config,
-      teamRunId: input.teamNode.teamRunId,
-      teamAddress: input.teamNode.address,
-      restoreRuntimeContext: input.restoreRuntimeContext ?? null,
-      parentBoundary: input.parentBoundary ?? null,
-      taskId: input.taskId ?? null,
-      taskTeamRunIds: input.taskTeamRunIds ?? null,
-    });
-    const backend = new MixedTeamRunBackend(context, this.options.createTeamManager(context));
-    return new TeamRun({ context, backend });
+    const context = this.options.buildContext(input);
+    return new TeamRun(
+      context,
+      new MixedTeamRunBackend(context, this.options.createTeamManager(context)),
+    );
   }
 }

@@ -1,5 +1,5 @@
 import { createAgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
-import { createTeamExecutionAddress, type TeamExecutionAddress } from "../../agent-team-execution/domain/team-execution-address.js";
+import { createTeamExecutionAddress, type TeamExecutionAddress } from "../legacy/team-execution-address.js";
 
 type Json = Record<string, unknown>;
 const object = (value: unknown, label: string): Json => {

@@ -1,0 +1,741 @@
+{
+  "teamRunId": "utd_root_team_api_rev_005_1786807916040_080a003b92c24e5881d906878a02a86d",
+  "agentRunId": "utd_coordinator_api_rev_005_1786807916040_58c7dabe28b1472dbe37f62c38a078b8",
+  "prompt": "Call delegate_task exactly once with recipient_address /worker and description Return E2E_DIRECT_TASK_RESULT_42 through submit_task_result. Do not call any other tool before delegate_task and do not solve the task yourself.",
+  "startedAt": "2026-08-15T15:39:17.947Z",
+  "durationMs": 17852,
+  "sent": true,
+  "terminalAt": {
+    "type": "TURN_COMPLETED",
+    "atMs": 5843
+  },
+  "websocketError": null,
+  "observations": [
+    {
+      "atMs": 23,
+      "type": "CONNECTED",
+      "agentRunId": null,
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": null
+    },
+    {
+      "atMs": 23,
+      "type": "TEAM_EXECUTION_VIEW_SNAPSHOT",
+      "agentRunId": null,
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": null
+    },
+    {
+      "atMs": 24,
+      "type": "TEAM_RUN_LIFECYCLE",
+      "agentRunId": null,
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": null
+    },
+    {
+      "atMs": 27,
+      "type": "MEMBER_INPUT_MESSAGE",
+      "agentRunId": null,
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": null
+    },
+    {
+      "atMs": 38,
+      "type": "TURN_STARTED",
+      "agentRunId": "utd_coordinator_api_rev_005_1786807916040_58c7dabe28b1472dbe37f62c38a078b8",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": null
+    },
+    {
+      "atMs": 3895,
+      "type": "SEGMENT_START",
+      "agentRunId": "utd_coordinator_api_rev_005_1786807916040_58c7dabe28b1472dbe37f62c38a078b8",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 3895,
+      "type": "TOOL_EXECUTION_STARTED",
+      "agentRunId": "utd_coordinator_api_rev_005_1786807916040_58c7dabe28b1472dbe37f62c38a078b8",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": "delegate_task"
+    },
+    {
+      "atMs": 3939,
+      "type": "TASK_DELEGATION_EVENT",
+      "agentRunId": null,
+      "status": null,
+      "code": null,
+      "taskEvent": "TASK_AGENT_ACTIVATED",
+      "taskId": "task_609df46513484ddbbd503bc3b31a3c90",
+      "segmentType": null,
+      "toolName": null
+    },
+    {
+      "atMs": 3951,
+      "type": "SEGMENT_END",
+      "agentRunId": "utd_coordinator_api_rev_005_1786807916040_58c7dabe28b1472dbe37f62c38a078b8",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": null
+    },
+    {
+      "atMs": 3952,
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "agentRunId": "utd_coordinator_api_rev_005_1786807916040_58c7dabe28b1472dbe37f62c38a078b8",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": "delegate_task"
+    },
+    {
+      "atMs": 5494,
+      "type": "SEGMENT_START",
+      "agentRunId": "utd_coordinator_api_rev_005_1786807916040_58c7dabe28b1472dbe37f62c38a078b8",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "text",
+      "toolName": null
+    },
+    {
+      "atMs": 5494,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "utd_coordinator_api_rev_005_1786807916040_58c7dabe28b1472dbe37f62c38a078b8",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "text",
+      "toolName": null
+    },
+    {
+      "atMs": 5494,
+      "type": "SEGMENT_END",
+      "agentRunId": "utd_coordinator_api_rev_005_1786807916040_58c7dabe28b1472dbe37f62c38a078b8",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": null
+    },
+    {
+      "atMs": 5509,
+      "type": "TOKEN_USAGE_UPDATED",
+      "agentRunId": "utd_coordinator_api_rev_005_1786807916040_58c7dabe28b1472dbe37f62c38a078b8",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": null
+    },
+    {
+      "atMs": 5843,
+      "type": "TURN_COMPLETED",
+      "agentRunId": "utd_coordinator_api_rev_005_1786807916040_58c7dabe28b1472dbe37f62c38a078b8",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": null
+    }
+  ],
+  "messages": [
+    {
+      "atMs": 23,
+      "message": {
+        "type": "CONNECTED",
+        "payload": {
+          "session_id": "f30fb885-073d-418e-9e59-ee8a8a115c45",
+          "root_team_run_id": "utd_root_team_api_rev_005_1786807916040_080a003b92c24e5881d906878a02a86d"
+        }
+      }
+    },
+    {
+      "atMs": 23,
+      "message": {
+        "type": "TEAM_EXECUTION_VIEW_SNAPSHOT",
+        "payload": {
+          "root_team_run_id": "utd_root_team_api_rev_005_1786807916040_080a003b92c24e5881d906878a02a86d",
+          "base_change_sequence": 0,
+          "execution_tree": {
+            "schema_version": 1,
+            "created_at": "2026-08-15T15:39:17.842Z",
+            "archived_at": null,
+            "application_binding": null,
+            "handoffs": [],
+            "root_team": {
+              "team_definition_id": "utd-root-team-api-rev-005-1786807916040",
+              "team_definition_name": "utd_root_team_api_rev_005_1786807916040",
+              "team_run_id": "utd_root_team_api_rev_005_1786807916040_080a003b92c24e5881d906878a02a86d",
+              "coordinator_address": "/coordinator",
+              "members": [
+                {
+                  "kind": "configured_agent",
+                  "address": "/coordinator",
+                  "agent_definition_id": "utd-coordinator-api-rev-005-1786807916040",
+                  "role": null,
+                  "description": null,
+                  "agent_run_id": "utd_coordinator_api_rev_005_1786807916040_58c7dabe28b1472dbe37f62c38a078b8",
+                  "platform_agent_run_id": null,
+                  "launch_configuration": {
+                    "runtime_kind": "CLAUDE",
+                    "llm_model_identifier": "sonnet",
+                    "llm_config": null,
+                    "auto_execute_tools": true,
+                    "skill_access_mode": "NONE",
+                    "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-005/live/workspaces/api_rev_005_1786807916040"
+                  }
+                },
+                {
+                  "kind": "configured_agent",
+                  "address": "/worker",
+                  "agent_definition_id": "utd-worker-api-rev-005-1786807916040",
+                  "role": null,
+                  "description": null,
+                  "agent_run_id": "utd_worker_api_rev_005_1786807916040_86cec5b250ce4db2a1fba7eec538c4c1",
+                  "platform_agent_run_id": null,
+                  "launch_configuration": {
+                    "runtime_kind": "CLAUDE",
+                    "llm_model_identifier": "sonnet",
+                    "llm_config": null,
+                    "auto_execute_tools": true,
+                    "skill_access_mode": "NONE",
+                    "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-005/live/workspaces/api_rev_005_1786807916040"
+                  }
+                },
+                {
+                  "kind": "configured_team",
+                  "address": "/lab",
+                  "team_definition_id": "utd-child-team-api-rev-005-1786807916040",
+                  "role": null,
+                  "description": null,
+                  "team_run_id": "utd_child_team_api_rev_005_1786807916040_9311d2b95bd1475599fcea61e9244974",
+                  "coordinator_address": "/lab/lead",
+                  "members": [
+                    {
+                      "kind": "configured_agent",
+                      "address": "/lab/lead",
+                      "agent_definition_id": "utd-nested-coordinator-api-rev-005-1786807916040",
+                      "role": null,
+                      "description": null,
+                      "agent_run_id": "utd_nested_coordinator_api_rev_005_1786807916040_38a8ed22aec047068f34a11e0acdf646",
+                      "platform_agent_run_id": null,
+                      "launch_configuration": {
+                        "runtime_kind": "CLAUDE",
+                        "llm_model_identifier": "sonnet",
+                        "llm_config": null,
+                        "auto_execute_tools": true,
+                        "skill_access_mode": "NONE",
+                        "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-005/live/workspaces/api_rev_005_1786807916040"
+                      }
+                    },
+                    {
+                      "kind": "configured_agent",
+                      "address": "/lab/researcher",
+                      "agent_definition_id": "utd-nested-worker-api-rev-005-1786807916040",
+                      "role": null,
+                      "description": null,
+                      "agent_run_id": "utd_nested_worker_api_rev_005_1786807916040_721ffb0776a148cf985525b3a6f4af72",
+                      "platform_agent_run_id": null,
+                      "launch_configuration": {
+                        "runtime_kind": "CLAUDE",
+                        "llm_model_identifier": "sonnet",
+                        "llm_config": null,
+                        "auto_execute_tools": true,
+                        "skill_access_mode": "NONE",
+                        "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-005/live/workspaces/api_rev_005_1786807916040"
+                      }
+                    }
+                  ],
+                  "task_executions": []
+                }
+              ],
+              "task_executions": []
+            }
+          },
+          "tasks": [],
+          "messages": [],
+          "agent_statuses": [
+            {
+              "agent_run_id": "utd_coordinator_api_rev_005_1786807916040_58c7dabe28b1472dbe37f62c38a078b8",
+              "member_address": "/coordinator",
+              "status": "offline",
+              "trigger": null,
+              "tool_name": null,
+              "error_message": null,
+              "error_details": null
+            },
+            {
+              "agent_run_id": "utd_worker_api_rev_005_1786807916040_86cec5b250ce4db2a1fba7eec538c4c1",
+              "member_address": "/worker",
+              "status": "offline",
+              "trigger": null,
+              "tool_name": null,
+              "error_message": null,
+              "error_details": null
+            },
+            {
+              "agent_run_id": "utd_nested_coordinator_api_rev_005_1786807916040_38a8ed22aec047068f34a11e0acdf646",
+              "member_address": "/lab/lead",
+              "status": "offline",
+              "trigger": null,
+              "tool_name": null,
+              "error_message": null,
+              "error_details": null
+            },
+            {
+              "agent_run_id": "utd_nested_worker_api_rev_005_1786807916040_721ffb0776a148cf985525b3a6f4af72",
+              "member_address": "/lab/researcher",
+              "status": "offline",
+              "trigger": null,
+              "tool_name": null,
+              "error_message": null,
+              "error_details": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "atMs": 24,
+      "message": {
+        "type": "TEAM_RUN_LIFECYCLE",
+        "payload": {
+          "is_active": true
+        }
+      }
+    },
+    {
+      "atMs": 27,
+      "message": {
+        "type": "MEMBER_INPUT_MESSAGE",
+        "payload": {
+          "change_sequence": 3,
+          "recipient_agent_run_id": "utd_coordinator_api_rev_005_1786807916040_58c7dabe28b1472dbe37f62c38a078b8",
+          "message_id": "api-rev-005-2fbf0f73-39f6-4e93-8233-4c543fd7a871",
+          "dedupe_key": "api-rev-005-e0e0a3f7-f22c-4bcc-af24-b4b10c95fa82",
+          "content": "Call delegate_task exactly once with recipient_address /worker and description Return E2E_DIRECT_TASK_RESULT_42 through submit_task_result. Do not call any other tool before delegate_task and do not solve the task yourself.",
+          "input_origin": "user_message",
+          "received_at": "2026-08-15T15:39:17.974Z",
+          "context_file_paths": [],
+          "sender_agent_run_id": null,
+          "parent_communication_message_id": null
+        }
+      }
+    },
+    {
+      "atMs": 38,
+      "message": {
+        "type": "TURN_STARTED",
+        "payload": {
+          "change_sequence": 5,
+          "agent_run_id": "utd_coordinator_api_rev_005_1786807916040_58c7dabe28b1472dbe37f62c38a078b8",
+          "turn_id": "utd_coordinator_api_rev_005_1786807916040_58c7dabe28b1472dbe37f62c38a078b8:turn:1786808357973"
+        }
+      }
+    },
+    {
+      "atMs": 3895,
+      "message": {
+        "type": "SEGMENT_START",
+        "payload": {
+          "change_sequence": 8,
+          "agent_run_id": "utd_coordinator_api_rev_005_1786807916040_58c7dabe28b1472dbe37f62c38a078b8",
+          "segment_id": "call_00_YlENBfWX5UPoCw5T9Fkm3374",
+          "turn_id": "utd_coordinator_api_rev_005_1786807916040_58c7dabe28b1472dbe37f62c38a078b8:turn:1786808357973",
+          "segment_type": "tool_call",
+          "metadata": {
+            "tool_name": "delegate_task",
+            "arguments": {
+              "recipient_address": "/worker",
+              "description": "Return E2E_DIRECT_TASK_RESULT_42 through submit_task_result."
+            }
+          }
+        }
+      }
+    },
+    {
+      "atMs": 3895,
+      "message": {
+        "type": "TOOL_EXECUTION_STARTED",
+        "payload": {
+          "change_sequence": 10,
+          "agent_run_id": "utd_coordinator_api_rev_005_1786807916040_58c7dabe28b1472dbe37f62c38a078b8",
+          "invocation_id": "call_00_YlENBfWX5UPoCw5T9Fkm3374",
+          "tool_name": "delegate_task",
+          "turn_id": "utd_coordinator_api_rev_005_1786807916040_58c7dabe28b1472dbe37f62c38a078b8:turn:1786808357973",
+          "arguments": {
+            "recipient_address": "/worker",
+            "description": "Return E2E_DIRECT_TASK_RESULT_42 through submit_task_result."
+          }
+        }
+      }
+    },
+    {
+      "atMs": 3939,
+      "message": {
+        "type": "TASK_DELEGATION_EVENT",
+        "payload": {
+          "event_type": "TASK_AGENT_ACTIVATED",
+          "change_sequence": 11,
+          "parent_team_run_id": "utd_root_team_api_rev_005_1786807916040_080a003b92c24e5881d906878a02a86d",
+          "execution": {
+            "kind": "task_agent",
+            "address": "/worker",
+            "agent_run_id": "utd_worker_api_rev_005_1786807916040_2ba18602d7cc4a4dacb06d450c10a502",
+            "platform_agent_run_id": null,
+            "started_at": "2026-08-15T15:39:21.849Z",
+            "settled_at": null
+          },
+          "task": {
+            "task_id": "task_609df46513484ddbbd503bc3b31a3c90",
+            "delegator_agent_run_id": "utd_coordinator_api_rev_005_1786807916040_58c7dabe28b1472dbe37f62c38a078b8",
+            "recipient_address": "/worker",
+            "task_execution": {
+              "agent_run_id": "utd_worker_api_rev_005_1786807916040_2ba18602d7cc4a4dacb06d450c10a502"
+            },
+            "description": "Return E2E_DIRECT_TASK_RESULT_42 through submit_task_result.",
+            "reference_files": [],
+            "status": "active",
+            "updates": [],
+            "created_at": "2026-08-15T15:39:21.849Z"
+          }
+        }
+      }
+    },
+    {
+      "atMs": 3951,
+      "message": {
+        "type": "SEGMENT_END",
+        "payload": {
+          "change_sequence": 13,
+          "agent_run_id": "utd_coordinator_api_rev_005_1786807916040_58c7dabe28b1472dbe37f62c38a078b8",
+          "segment_id": "call_00_YlENBfWX5UPoCw5T9Fkm3374",
+          "turn_id": "utd_coordinator_api_rev_005_1786807916040_58c7dabe28b1472dbe37f62c38a078b8:turn:1786808357973",
+          "metadata": {
+            "tool_name": "delegate_task",
+            "arguments": {
+              "recipient_address": "/worker",
+              "description": "Return E2E_DIRECT_TASK_RESULT_42 through submit_task_result."
+            },
+            "result": [
+              {
+                "type": "text",
+                "text": "{\n  \"task_id\": \"task_609df46513484ddbbd503bc3b31a3c90\",\n  \"status\": \"active\",\n  \"target_agent_run_id\": \"utd_worker_api_rev_005_1786807916040_2ba18602d7cc4a4dacb06d450c10a502\"\n}"
+              }
+            ]
+          },
+          "interrupted": false,
+          "reason": null,
+          "failed": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "atMs": 3952,
+      "message": {
+        "type": "TOOL_EXECUTION_SUCCEEDED",
+        "payload": {
+          "change_sequence": 15,
+          "agent_run_id": "utd_coordinator_api_rev_005_1786807916040_58c7dabe28b1472dbe37f62c38a078b8",
+          "invocation_id": "call_00_YlENBfWX5UPoCw5T9Fkm3374",
+          "tool_name": "delegate_task",
+          "turn_id": "utd_coordinator_api_rev_005_1786807916040_58c7dabe28b1472dbe37f62c38a078b8:turn:1786808357973",
+          "arguments": {
+            "recipient_address": "/worker",
+            "description": "Return E2E_DIRECT_TASK_RESULT_42 through submit_task_result."
+          },
+          "result": [
+            {
+              "type": "text",
+              "text": "{\n  \"task_id\": \"task_609df46513484ddbbd503bc3b31a3c90\",\n  \"status\": \"active\",\n  \"target_agent_run_id\": \"utd_worker_api_rev_005_1786807916040_2ba18602d7cc4a4dacb06d450c10a502\"\n}"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "atMs": 5494,
+      "message": {
+        "type": "SEGMENT_START",
+        "payload": {
+          "change_sequence": 17,
+          "agent_run_id": "utd_coordinator_api_rev_005_1786807916040_58c7dabe28b1472dbe37f62c38a078b8",
+          "segment_id": "utd_coordinator_api_rev_005_1786807916040_58c7dabe28b1472dbe37f62c38a078b8:turn:1786808357973:claude-text:2103fc6f-bc7f-4b88-8ded-99d6966df42b:0",
+          "turn_id": "utd_coordinator_api_rev_005_1786807916040_58c7dabe28b1472dbe37f62c38a078b8:turn:1786808357973",
+          "segment_type": "text",
+          "metadata": null
+        }
+      }
+    },
+    {
+      "atMs": 5494,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 19,
+          "agent_run_id": "utd_coordinator_api_rev_005_1786807916040_58c7dabe28b1472dbe37f62c38a078b8",
+          "segment_id": "utd_coordinator_api_rev_005_1786807916040_58c7dabe28b1472dbe37f62c38a078b8:turn:1786808357973:claude-text:2103fc6f-bc7f-4b88-8ded-99d6966df42b:0",
+          "turn_id": "utd_coordinator_api_rev_005_1786807916040_58c7dabe28b1472dbe37f62c38a078b8:turn:1786808357973",
+          "segment_type": "text",
+          "delta": "Delegated to /worker."
+        }
+      }
+    },
+    {
+      "atMs": 5494,
+      "message": {
+        "type": "SEGMENT_END",
+        "payload": {
+          "change_sequence": 21,
+          "agent_run_id": "utd_coordinator_api_rev_005_1786807916040_58c7dabe28b1472dbe37f62c38a078b8",
+          "segment_id": "utd_coordinator_api_rev_005_1786807916040_58c7dabe28b1472dbe37f62c38a078b8:turn:1786808357973:claude-text:2103fc6f-bc7f-4b88-8ded-99d6966df42b:0",
+          "turn_id": "utd_coordinator_api_rev_005_1786807916040_58c7dabe28b1472dbe37f62c38a078b8:turn:1786808357973",
+          "metadata": null,
+          "interrupted": false,
+          "reason": null,
+          "failed": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "atMs": 5509,
+      "message": {
+        "type": "TOKEN_USAGE_UPDATED",
+        "payload": {
+          "change_sequence": 23,
+          "agent_run_id": "utd_coordinator_api_rev_005_1786807916040_58c7dabe28b1472dbe37f62c38a078b8",
+          "usage_event_id": "c5688f68-e92d-427c-838c-dddaddc57b23",
+          "idempotency_key": "claude_sdk_usage:utd_coordinator_api_rev_005_1786807916040_58c7dabe28b1472dbe37f62c38a078b8:7f8df39d-5c08-4953-b7ec-b14fbc43f884:utd_coordinator_api_rev_005_1786807916040_58c7dabe28b1472dbe37f62c38a078b8:turn:1786808357973:deepseek-v4-flash:26696:150:26846",
+          "observed_at": "2026-08-15T15:39:23.448Z",
+          "turn_id": "utd_coordinator_api_rev_005_1786807916040_58c7dabe28b1472dbe37f62c38a078b8:turn:1786808357973",
+          "llm_call_id": null,
+          "model_provider": "ANTHROPIC",
+          "model_identifier": "deepseek-v4-flash",
+          "model_value": "deepseek-v4-flash",
+          "usage_scope": "per_turn",
+          "input_token_semantic": "base_excludes_cache",
+          "standard_input_tokens": 26696,
+          "cache_miss_input_tokens": 26696,
+          "cache_read_input_tokens": 26624,
+          "cache_creation_input_tokens": 0,
+          "cache_creation_5m_input_tokens": null,
+          "cache_creation_1h_input_tokens": null,
+          "cache_state": "positive",
+          "reasoning_output_tokens": 0,
+          "billable_output_tokens": 150,
+          "meter_delta_input_tokens": 53320,
+          "meter_delta_output_tokens": 150,
+          "meter_delta_total_tokens": 53470,
+          "input_price_per_million": null,
+          "output_price_per_million": null,
+          "cached_input_read_price_per_million": null,
+          "cached_input_write_price_per_million": null,
+          "cached_input_write_5m_price_per_million": null,
+          "cached_input_write_1h_price_per_million": null,
+          "estimated_api_input_cost": null,
+          "estimated_api_standard_input_cost": null,
+          "estimated_api_cache_read_input_cost": null,
+          "estimated_api_cache_creation_input_cost": null,
+          "estimated_api_cache_creation_5m_input_cost": null,
+          "estimated_api_cache_creation_1h_input_cost": null,
+          "estimated_api_output_cost": null,
+          "estimated_api_reasoning_output_cost": null,
+          "estimated_api_total_cost": null,
+          "currency": null,
+          "api_cost_status": "price_missing",
+          "missing_price_dimensions": [
+            "model_not_found"
+          ],
+          "pricing_policy_key": "autobyteus_model_catalog:ANTHROPIC:deepseek-v4-flash",
+          "selected_pricing_tier_id": null,
+          "latest_prompt_tokens": 53320,
+          "effective_context_window_tokens": 200000,
+          "context_window_usage_percent": 26.66,
+          "quality_flags": [
+            "claude_usage_model_usage_mismatch",
+            "model_identifier_differs_from_run_context"
+          ]
+        }
+      }
+    },
+    {
+      "atMs": 5843,
+      "message": {
+        "type": "TURN_COMPLETED",
+        "payload": {
+          "change_sequence": 24,
+          "agent_run_id": "utd_coordinator_api_rev_005_1786807916040_58c7dabe28b1472dbe37f62c38a078b8",
+          "turn_id": "utd_coordinator_api_rev_005_1786807916040_58c7dabe28b1472dbe37f62c38a078b8:turn:1786808357973",
+          "reason": null
+        }
+      }
+    }
+  ],
+  "finalSnapshot": {
+    "getTeamRunResumeConfig": {
+      "teamRunId": "utd_root_team_api_rev_005_1786807916040_080a003b92c24e5881d906878a02a86d",
+      "isActive": true,
+      "executionTree": {
+        "schema_version": 1,
+        "created_at": "2026-08-15T15:39:17.842Z",
+        "archived_at": null,
+        "application_binding": null,
+        "handoffs": [],
+        "root_team": {
+          "team_definition_id": "utd-root-team-api-rev-005-1786807916040",
+          "team_definition_name": "utd_root_team_api_rev_005_1786807916040",
+          "team_run_id": "utd_root_team_api_rev_005_1786807916040_080a003b92c24e5881d906878a02a86d",
+          "coordinator_address": "/coordinator",
+          "members": [
+            {
+              "kind": "configured_agent",
+              "address": "/coordinator",
+              "agent_definition_id": "utd-coordinator-api-rev-005-1786807916040",
+              "role": null,
+              "description": null,
+              "agent_run_id": "utd_coordinator_api_rev_005_1786807916040_58c7dabe28b1472dbe37f62c38a078b8",
+              "platform_agent_run_id": null,
+              "launch_configuration": {
+                "runtime_kind": "CLAUDE",
+                "llm_model_identifier": "sonnet",
+                "llm_config": null,
+                "auto_execute_tools": true,
+                "skill_access_mode": "NONE",
+                "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-005/live/workspaces/api_rev_005_1786807916040"
+              }
+            },
+            {
+              "kind": "configured_agent",
+              "address": "/worker",
+              "agent_definition_id": "utd-worker-api-rev-005-1786807916040",
+              "role": null,
+              "description": null,
+              "agent_run_id": "utd_worker_api_rev_005_1786807916040_86cec5b250ce4db2a1fba7eec538c4c1",
+              "platform_agent_run_id": null,
+              "launch_configuration": {
+                "runtime_kind": "CLAUDE",
+                "llm_model_identifier": "sonnet",
+                "llm_config": null,
+                "auto_execute_tools": true,
+                "skill_access_mode": "NONE",
+                "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-005/live/workspaces/api_rev_005_1786807916040"
+              }
+            },
+            {
+              "kind": "configured_team",
+              "address": "/lab",
+              "team_definition_id": "utd-child-team-api-rev-005-1786807916040",
+              "role": null,
+              "description": null,
+              "team_run_id": "utd_child_team_api_rev_005_1786807916040_9311d2b95bd1475599fcea61e9244974",
+              "coordinator_address": "/lab/lead",
+              "members": [
+                {
+                  "kind": "configured_agent",
+                  "address": "/lab/lead",
+                  "agent_definition_id": "utd-nested-coordinator-api-rev-005-1786807916040",
+                  "role": null,
+                  "description": null,
+                  "agent_run_id": "utd_nested_coordinator_api_rev_005_1786807916040_38a8ed22aec047068f34a11e0acdf646",
+                  "platform_agent_run_id": null,
+                  "launch_configuration": {
+                    "runtime_kind": "CLAUDE",
+                    "llm_model_identifier": "sonnet",
+                    "llm_config": null,
+                    "auto_execute_tools": true,
+                    "skill_access_mode": "NONE",
+                    "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-005/live/workspaces/api_rev_005_1786807916040"
+                  }
+                },
+                {
+                  "kind": "configured_agent",
+                  "address": "/lab/researcher",
+                  "agent_definition_id": "utd-nested-worker-api-rev-005-1786807916040",
+                  "role": null,
+                  "description": null,
+                  "agent_run_id": "utd_nested_worker_api_rev_005_1786807916040_721ffb0776a148cf985525b3a6f4af72",
+                  "platform_agent_run_id": null,
+                  "launch_configuration": {
+                    "runtime_kind": "CLAUDE",
+                    "llm_model_identifier": "sonnet",
+                    "llm_config": null,
+                    "auto_execute_tools": true,
+                    "skill_access_mode": "NONE",
+                    "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-005/live/workspaces/api_rev_005_1786807916040"
+                  }
+                }
+              ],
+              "task_executions": []
+            }
+          ],
+          "task_executions": [
+            {
+              "kind": "task_agent",
+              "address": "/worker",
+              "agent_run_id": "utd_worker_api_rev_005_1786807916040_2ba18602d7cc4a4dacb06d450c10a502",
+              "platform_agent_run_id": null,
+              "started_at": "2026-08-15T15:39:21.849Z",
+              "settled_at": null
+            }
+          ]
+        }
+      }
+    },
+    "getTaskDelegationRecords": [
+      {
+        "taskId": "task_609df46513484ddbbd503bc3b31a3c90",
+        "delegatorAgentRunId": "utd_coordinator_api_rev_005_1786807916040_58c7dabe28b1472dbe37f62c38a078b8",
+        "recipientAddress": "/worker",
+        "targetAgentRunId": "utd_worker_api_rev_005_1786807916040_2ba18602d7cc4a4dacb06d450c10a502",
+        "targetTeamRunId": null,
+        "status": "active",
+        "description": "Return E2E_DIRECT_TASK_RESULT_42 through submit_task_result.",
+        "createdAt": "2026-08-15T15:39:21.849Z",
+        "referenceFiles": [],
+        "updates": []
+      }
+    ],
+    "getTeamCommunicationMessages": []
+  }
+}

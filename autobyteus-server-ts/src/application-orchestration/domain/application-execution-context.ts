@@ -1,9 +1,4 @@
 import type { ApplicationExecutionContext } from "@autobyteus/application-sdk-contracts";
-import {
-  createTeamExecutionAddress,
-  serializeTeamExecutionAddress,
-  type TeamExecutionAddress,
-} from "../../agent-team-execution/domain/team-execution-address.js";
 
 const required = (value: string, field: string): string => {
   const normalized = value.trim();
@@ -13,12 +8,12 @@ const required = (value: string, field: string): string => {
 
 const clone = (
   context: ApplicationExecutionContext,
-  executionAddress: TeamExecutionAddress,
+  agentRunId: string,
 ): ApplicationExecutionContext => Object.freeze({
   applicationId: required(context.applicationId, "applicationId"),
   bindingId: required(context.bindingId, "bindingId"),
   producer: Object.freeze({
-    executionAddress: createTeamExecutionAddress(executionAddress),
+    agentRunId: required(agentRunId, "producer.agentRunId"),
     displayName: context.producer.displayName?.trim() || null,
     runtimeKind: context.producer.runtimeKind,
   }),
@@ -26,17 +21,16 @@ const clone = (
 
 export const assertPersistentApplicationExecutionContext = (
   context: ApplicationExecutionContext,
-  executionAddress: TeamExecutionAddress,
+  agentRunId: string,
 ): ApplicationExecutionContext => {
-  const actual = createTeamExecutionAddress(context.producer.executionAddress);
-  const expected = createTeamExecutionAddress(executionAddress);
-  if (serializeTeamExecutionAddress(actual) !== serializeTeamExecutionAddress(expected)) {
-    throw new Error("Persistent application producer execution address does not match the Team Agent execution being constructed.");
+  const expected = required(agentRunId, "agentRunId");
+  if (required(context.producer.agentRunId, "producer.agentRunId") !== expected) {
+    throw new Error("Persistent application producer AgentRun ID does not match the AgentRun being constructed.");
   }
   return clone(context, expected);
 };
 
 export const rebindApplicationExecutionContext = (
   context: ApplicationExecutionContext,
-  executionAddress: TeamExecutionAddress,
-): ApplicationExecutionContext => clone(context, executionAddress);
+  agentRunId: string,
+): ApplicationExecutionContext => clone(context, agentRunId);

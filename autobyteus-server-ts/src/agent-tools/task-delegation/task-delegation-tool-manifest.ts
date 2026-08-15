@@ -47,7 +47,7 @@ export const TASK_DELEGATION_TOOL_MANIFEST: TaskDelegationToolManifestEntry[] = 
   {
     name: DELEGATE_TASK_TOOL_NAME,
     description:
-      "Delegate one ready-to-run task using recipient_address with the same rooted /... or immediate-Team-relative ./... logical address grammar as send_message_to. The resolved Agent or Team must be a direct child of the caller's immediate Team. Provide complete task details in description and optional absolute local reference_files. Agent targets start one task-agent; Team targets start one task-scoped TeamRun through its real coordinator ingress.",
+      "Delegate one ready-to-run task to any mounted Agent or AgentTeam in the same rooted AgentTeam. recipient_address must be one exact canonical absolute non-root address beginning with '/'; relative, bare, traversal, and backslash forms are invalid. Provide complete task details in description and optional absolute local reference_files. Agent targets start one fresh task Agent; AgentTeam targets start one fresh task Team through its configured coordinator.",
     parameterSchema: buildTaskDelegationToolParameterSchema(DELEGATE_TASK_TOOL_NAME),
     parseInput: parseDelegateTaskInput,
     execute: (service, context, input) =>

@@ -1,0 +1,19 @@
+API-REV-001 handoff check 2026-08-15T10:22:46Z
+HEAD 3e121efb32462c314f4ef1c4e051f30d2f9b3e58
+temp_probe_present=no
+incident_sha256=574925aa4b0e0a1b570cb4a873734a671324617a7b6ab02c6528b790cf3d724b
+canonical_artifacts:
+PASS api-e2e-coverage-investigation.md
+PASS api-e2e-execution-coverage-report.md
+PASS api-e2e-revision-record.md
+source_conflict:
+autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-parameter-schemas.ts:17:    description: "Rooted logical Agent-or-Team address using /... or immediate-Team-relative ./... syntax. The resolved target must be a direct child of the caller's immediate Team.",
+autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-manifest.ts:50:      "Delegate one ready-to-run task to any mounted Agent or AgentTeam in the same rooted AgentTeam. recipient_address must be one exact canonical absolute non-root address beginning with '/'; relative, bare, traversal, and backslash forms are invalid. Provide complete task details in description and optional absolute local reference_files. Agent targets start one fresh task Agent; AgentTeam targets start one fresh task Team through its configured coordinator.",
+test_summary:
+tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-001/repository/api-utd-f001-delegate-schema-diagnostic.log:79: Test Files  1 passed (1)
+tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-001/repository/api-utd-f001-delegate-schema-diagnostic.log:80:      Tests  1 passed (1)
+tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-001/repository/server-agent-team-integration-current.log:264: Test Files  7 passed (7)
+tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-001/repository/server-agent-team-integration-current.log:265:      Tests  35 passed (35)
+tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-001/repository/server-affected-units-broad-round1.log:1438:⎯⎯⎯⎯⎯⎯ Failed Tests 30 ⎯⎯⎯⎯⎯⎯⎯
+tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-001/repository/server-affected-units-broad-round1.log:1925: Test Files  11 failed | 101 passed (112)
+tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-001/repository/server-affected-units-broad-round1.log:1926:      Tests  30 failed | 471 passed (501)

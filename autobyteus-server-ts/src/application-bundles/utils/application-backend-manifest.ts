@@ -2,8 +2,8 @@ import fs from "node:fs";
 import path from "node:path";
 import {
   APPLICATION_BACKEND_BUNDLE_CONTRACT_VERSION_V1,
-  APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V5,
-  APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V5,
+  APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V6,
+  APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V6,
   type ApplicationBackendBundleManifestV1,
 } from "@autobyteus/application-sdk-contracts";
 import type { ApplicationBackendBundle } from "../domain/models.js";
@@ -186,18 +186,18 @@ export const parseApplicationBackendManifest = (
     sdkCompatibility.backendDefinitionContractVersion,
     "sdkCompatibility.backendDefinitionContractVersion",
   );
-  if (backendDefinitionContractVersion !== APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V5) {
+  if (backendDefinitionContractVersion !== APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V6) {
     throw new ApplicationBackendManifestParseError(
-      `Backend bundle manifest '${manifestPath}' declares sdkCompatibility.backendDefinitionContractVersion '${backendDefinitionContractVersion}', but '${APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V5}' is required. Rebuild or reinstall the application with the current AutoByteus application SDKs.`,
+      `Backend bundle manifest '${manifestPath}' declares sdkCompatibility.backendDefinitionContractVersion '${backendDefinitionContractVersion}', but '${APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V6}' is required. Rebuild or reinstall the application with the current AutoByteus application SDKs.`,
     );
   }
   const frontendSdkContractVersion = normalizeRequiredString(
     sdkCompatibility.frontendSdkContractVersion,
     "sdkCompatibility.frontendSdkContractVersion",
   );
-  if (frontendSdkContractVersion !== APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V5) {
+  if (frontendSdkContractVersion !== APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V6) {
     throw new ApplicationBackendManifestParseError(
-      `Backend bundle manifest '${manifestPath}' declares sdkCompatibility.frontendSdkContractVersion '${frontendSdkContractVersion}', but '${APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V5}' is required. Rebuild or reinstall the application with the current AutoByteus application SDKs.`,
+      `Backend bundle manifest '${manifestPath}' declares sdkCompatibility.frontendSdkContractVersion '${frontendSdkContractVersion}', but '${APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V6}' is required. Rebuild or reinstall the application with the current AutoByteus application SDKs.`,
     );
   }
 
@@ -224,8 +224,8 @@ export const parseApplicationBackendManifest = (
       semver,
     },
     sdkCompatibility: {
-      backendDefinitionContractVersion: APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V5,
-      frontendSdkContractVersion: APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V5,
+      backendDefinitionContractVersion: APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V6,
+      frontendSdkContractVersion: APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V6,
     },
     supportedExposures: normalizeBooleanRecord(manifest.supportedExposures, "supportedExposures"),
     migrationsDirPath: migrationsDirRelativePath ? path.resolve(bundleRootPath, migrationsDirRelativePath) : null,

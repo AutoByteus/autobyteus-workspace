@@ -4,7 +4,6 @@ import type {
   ChannelOutputRoute,
   ChannelRunOutputTarget,
 } from "../domain/models.js";
-import { createTeamExecutionAddress } from "../../agent-team-execution/domain/team-execution-address.js";
 import type { DeliveryEventService } from "./delivery-event-service.js";
 import type { ChannelBindingService } from "./channel-binding-service.js";
 
@@ -218,9 +217,7 @@ const normalizeTarget = (target: ChannelRunOutputTarget): ChannelRunOutputTarget
   return {
     targetType: "TEAM",
     teamRunId: normalizeRequiredString(target.teamRunId, "target.teamRunId"),
-    entryExecutionAddress: target.entryExecutionAddress
-      ? createTeamExecutionAddress(target.entryExecutionAddress)
-      : null,
+    entryAgentRunId: normalizeOptionalString(target.entryAgentRunId),
   };
 };
 
@@ -242,7 +239,7 @@ const targetMetadata = (target: ChannelRunOutputTarget): Record<string, unknown>
   return {
     targetType: target.targetType,
     teamRunId: target.teamRunId,
-    entryExecutionAddress: target.entryExecutionAddress,
+    entryAgentRunId: target.entryAgentRunId,
   };
 };
 

@@ -1,15 +1,6 @@
-import type { TeamExecutionState } from '~/services/teamExecution/teamExecutionState';
-import type {
-  TeamTopologyAgentNode,
-  TeamTopologyAgentTeamNode,
-  TeamTopologyNode,
-  TeamTopologySnapshot,
-} from '~/services/teamExecution/teamTopologySnapshot';
+import type { TeamExecutionViewState } from '~/services/teamExecution/teamExecutionViewState';
 
-export type AgentTeamMemberNode = TeamTopologyAgentNode;
-export type SubTeamMemberNode = TeamTopologyAgentTeamNode;
-export type TeamMemberNode = TeamTopologyNode;
+/** The browser owns one exact concrete Team execution aggregate. */
 export interface AgentTeamContext {
-  readonly topology: TeamTopologySnapshot;
-  readonly executions: TeamExecutionState;
+  readonly view: TeamExecutionViewState;
 }

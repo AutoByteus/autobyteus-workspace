@@ -9,7 +9,7 @@ export type RuntimeEventSubscription = (
 
 export type TeamDispatchTurnCapture = {
   turnId: string;
-  executionAddress: import("../../agent-team-execution/domain/team-execution-address.js").TeamExecutionAddress;
+  agentRunId: string;
 };
 
 export const startDirectDispatchTurnCapture = (
@@ -39,16 +39,10 @@ export const startTeamDispatchTurnCapture = (
     if (!parsed || !parsed.turnId || parsed.eventType !== AgentRunEventType.TURN_STARTED) {
       return null;
     }
-    const executionAddress = parsed.executionAddress;
-    if (!executionAddress) return null;
-    if (normalizedTargetMemberAddress) {
-      if (executionAddress.memberAddress !== normalizedTargetMemberAddress) {
-        return null;
-      }
-    }
+    if (normalizedTargetMemberAddress && parsed.memberAddress !== normalizedTargetMemberAddress) return null;
     return {
       turnId: parsed.turnId,
-      executionAddress,
+      agentRunId: parsed.agentRunId,
     };
   });
 };

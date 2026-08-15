@@ -8,6 +8,6 @@ export const renderTeamCollaborationInstruction = (
     throw new Error("Team member context requires an active message-delivery binding.");
   }
   return renderMemberCollaborationInstruction({
-    addressing: context.collaboration.addressing,
+    memberAddress: context.identity.memberAddress,
   });
 };

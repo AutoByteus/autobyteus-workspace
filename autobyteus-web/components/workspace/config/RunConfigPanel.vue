@@ -125,7 +125,7 @@ const effectiveAgentConfig = computed((): AgentRunConfig | null => {
 
 const effectiveTeamConfig = computed((): TeamRunConfig | null => {
   if (selectionStore.isTeamSelected && selectionStore.selectedRunId) {
-    return teamContextsStore.activeTeamContext?.topology.getConfigurationView() ?? null
+    return teamContextsStore.activeTeamContext?.view.getConfigurationView() ?? null
   }
   if (!isSelectionMode.value && teamRunConfigStore.config?.teamDefinitionId) {
     return teamRunConfigStore.config

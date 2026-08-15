@@ -2,8 +2,8 @@ import { AgentStatus } from '~/types/agent/AgentStatus';
 import type { RunNavigationEffect } from '~/services/agentStreaming/agentStreamMutationEffects';
 import type { RunTreeWorkspaceNode } from '~/utils/runTreeProjection';
 import type { RunHistoryTeamExecutionRow, TeamTreeNode } from './runHistoryTypes';
-import { sameTeamExecutionAddress, type TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 import {
+  runHistoryExecutionRowIndexKey,
   runHistoryMemberIndexKey,
   type RunHistoryNavigationProjectionState,
 } from './runHistoryNavigationProjection';
@@ -13,7 +13,7 @@ export type RunNavigationTarget =
   | {
       kind: 'team_member';
       teamRunId: string;
-      executionAddress: TeamExecutionAddress;
+      agentRunId: string;
       currentStatus: AgentStatus;
       summary?: string;
     }
@@ -117,7 +117,7 @@ const patchTeamMember = (
     return replaceTeam(state, { ...team, lastActivityAt: effect.occurredAt });
   }
   const rowIndex = state.memberIndexByIdentity[
-    runHistoryMemberIndexKey(target.teamRunId, target.executionAddress)
+    runHistoryMemberIndexKey(target.teamRunId, target.agentRunId)
   ];
   const row = rowIndex === undefined ? null : team.executionRows[rowIndex] ?? null;
   const nextRow = row ? patchExecutionRowStatus(row, target.currentStatus) : null;
@@ -165,24 +165,24 @@ export const applyRunNavigationEffectToProjection = (
 export const applyRunNavigationTeamFocusToProjection = (
   state: RunHistoryNavigationProjectionState,
   teamRunId: string,
-  executionAddress: TeamExecutionAddress,
+  agentRunId: string,
 ): { state: RunHistoryNavigationProjectionState; changed: boolean } => {
   const index = state.teamIndexById[teamRunId];
   const team = index ? state.teamNodes[index.index] : null;
-  if (!team || sameTeamExecutionAddress(team.focusedExecutionAddress, executionAddress)) return { state, changed: false };
-  const next = replaceTeam(state, { ...team, focusedExecutionAddress: executionAddress });
+  if (!team || team.focusedAgentRunId === agentRunId) return { state, changed: false };
+  const next = replaceTeam(state, { ...team, focusedAgentRunId: agentRunId });
   return { state: next, changed: next !== state };
 };
 
 export const applyTaskExecutionRowPresentationToProjection = (
   state: RunHistoryNavigationProjectionState,
   teamRunId: string,
-  executionAddress: TeamExecutionAddress,
+  rowKey: string,
   changes: readonly TaskExecutionRowPresentationChange[],
 ): { state: RunHistoryNavigationProjectionState; changed: boolean } => {
   const teamIndex = state.teamIndexById[teamRunId];
   const team = teamIndex ? state.teamNodes[teamIndex.index] : null;
-  const rowIndex = state.memberIndexByIdentity[runHistoryMemberIndexKey(teamRunId, executionAddress)];
+  const rowIndex = state.memberIndexByIdentity[runHistoryExecutionRowIndexKey(teamRunId, rowKey)];
   const current = team && rowIndex !== undefined ? team.executionRows[rowIndex] : null;
   if (!team || rowIndex === undefined || !current) return { state, changed: false };
   let row = current;

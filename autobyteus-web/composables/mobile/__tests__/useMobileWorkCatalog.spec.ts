@@ -5,7 +5,6 @@ import { useMobileWorkStore } from '~/stores/mobileWorkStore';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import type { RunHistoryWorkspaceGroup } from '~/stores/runHistoryTypes';
 import { AgentStatus } from '~/types/agent/AgentStatus';
-import { createTeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 
 describe('useMobileWorkCatalog', () => {
   beforeEach(() => {
@@ -59,10 +58,7 @@ describe('useMobileWorkCatalog', () => {
       },
     ];
     useRunHistoryStore().workspaceGroups = workspaceGroups;
-    useMobileWorkStore().rememberFocusedTeamMember('team-run-1', createTeamExecutionAddress({
-      rootTeamRunId: 'team-run-1',
-      memberAddress: '/reviewer',
-    }));
+    useMobileWorkStore().rememberFocusedTeamMember('team-run-1', 'reviewer-run');
 
     const { recentWorkItems } = useMobileWorkCatalog();
 
@@ -73,10 +69,7 @@ describe('useMobileWorkCatalog', () => {
     if (item.context.kind === 'team-run') {
       expect(item.context.lastActivityAt).toBe(teamRun.createdAt);
       expect(item.context.statusLabel).toBe('Inactive');
-      expect(item.context.focusedExecutionAddress).toEqual(createTeamExecutionAddress({
-        rootTeamRunId: 'team-run-1',
-        memberAddress: '/reviewer',
-      }));
+      expect(item.context.focusedAgentRunId).toBe('reviewer-run');
     }
     expect('lastActivityAt' in teamRun).toBe(false);
     expect('lastKnownStatus' in teamRun).toBe(false);

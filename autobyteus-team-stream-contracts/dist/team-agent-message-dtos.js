@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { jsonValueSchema, nonEmptyStringSchema, nullableFiniteNumberSchema, nullableNonEmptyStringSchema, } from "./schema-helpers.js";
-import { teamAgentExecutionBindingDtoSchema, teamExecutionAddressDtoSchema } from "./team-execution-address-dto.js";
+import { teamMemberExecutionIdentityDtoSchema } from "./team-execution-view-dtos.js";
 const turnId = nullableNonEmptyStringSchema;
 export const teamAgentSegmentTypeSchema = z.enum([
     "text",
@@ -13,7 +13,8 @@ export const teamAgentSegmentTypeSchema = z.enum([
 ]);
 const segmentTurnId = nonEmptyStringSchema;
 const withExecution = (shape) => z.object({
-    agent_execution: teamAgentExecutionBindingDtoSchema,
+    change_sequence: z.number().int().positive(),
+    agent_run_id: nonEmptyStringSchema,
     ...shape,
 }).strict();
 const statusDetails = {
@@ -126,15 +127,15 @@ export const teamAgentPayloadSchemas = {
     TOOL_EXECUTION_INTERRUPTED: withExecution({ ...toolCore, arguments: jsonValueSchema.nullable(), reason: nonEmptyStringSchema }),
     TOOL_LOG: withExecution({ log_entry: z.string(), tool_invocation_id: nonEmptyStringSchema, tool_name: nonEmptyStringSchema, turn_id: turnId }),
     TODO_LIST_UPDATE: withExecution({ todos: z.array(z.object({ todo_id: nonEmptyStringSchema, description: z.string(), status: z.enum(["pending", "in_progress", "done"]) }).strict()) }),
-    SYSTEM_TASK_NOTIFICATION: withExecution({ sender: z.union([z.object({ kind: z.literal("system") }).strict(), z.object({ kind: z.literal("execution"), execution_address: teamExecutionAddressDtoSchema }).strict()]), content: z.string() }),
+    SYSTEM_TASK_NOTIFICATION: withExecution({ sender: z.union([z.object({ kind: z.literal("system") }).strict(), z.object({ kind: z.literal("execution"), identity: teamMemberExecutionIdentityDtoSchema }).strict()]), content: z.string() }),
     ARTIFACT_PERSISTED: withExecution({ artifact_id: nonEmptyStringSchema, path: nonEmptyStringSchema, artifact_type: nonEmptyStringSchema, status: z.literal("available"), description: z.string().nullable(), revision_id: nonEmptyStringSchema, created_at: nonEmptyStringSchema, updated_at: nonEmptyStringSchema }),
     FILE_CHANGE: withExecution({ file_change_id: nonEmptyStringSchema, path: nonEmptyStringSchema, file_type: nonEmptyStringSchema, status: nonEmptyStringSchema, source_tool: nonEmptyStringSchema, source_invocation_id: nullableNonEmptyStringSchema, content: z.string().nullable(), created_at: nonEmptyStringSchema, updated_at: nonEmptyStringSchema }),
 };
-const errorAgentExecutionSchema = z.union([teamAgentExecutionBindingDtoSchema, z.null()]);
 const errorCore = {
     code: nonEmptyStringSchema,
     message: z.string(),
-    agent_execution: errorAgentExecutionSchema,
+    change_sequence: z.number().int().positive().nullable(),
+    agent_run_id: nonEmptyStringSchema.nullable(),
 };
 export const teamAgentErrorPayloadSchema = z.union([
     z.object({
@@ -157,7 +158,7 @@ export const teamAgentErrorPayloadSchema = z.union([
     }).strict(),
 ]);
 export const teamInterruptCommandAckPayloadSchema = z.union([
-    z.object({ command_type: z.literal("INTERRUPT_GENERATION"), command_id: nonEmptyStringSchema, state: z.literal("accepted"), execution_address: teamExecutionAddressDtoSchema }).strict(),
-    z.object({ command_type: z.literal("INTERRUPT_GENERATION"), command_id: nonEmptyStringSchema, state: z.enum(["rejected", "failed"]), code: nonEmptyStringSchema, message: z.string(), execution_address: teamExecutionAddressDtoSchema }).strict(),
+    z.object({ command_type: z.literal("INTERRUPT_GENERATION"), command_id: nonEmptyStringSchema, state: z.literal("accepted"), agent_run_id: nonEmptyStringSchema }).strict(),
+    z.object({ command_type: z.literal("INTERRUPT_GENERATION"), command_id: nonEmptyStringSchema, state: z.enum(["rejected", "failed"]), code: nonEmptyStringSchema, message: z.string(), agent_run_id: nonEmptyStringSchema }).strict(),
 ]);
 //# sourceMappingURL=team-agent-message-dtos.js.map

@@ -1,16 +1,11 @@
 import {
-  createAgentTeamAddress,
+  assertAgentTeamAddress,
   getAgentTeamAddressSegments,
-  getParentAgentTeamAddress,
-  type AgentTeamAddress,
+  getAgentTeamAddressBasename,
 } from "../../agent-collaboration/domain/agent-team-address.js";
-import {
-  parseRecipientAddressExpression,
-  resolveRecipientAddressExpression,
-} from "../../agent-collaboration/domain/recipient-address-expression.js";
 import { CollaborationContractError } from "../../agent-collaboration/domain/collaboration-contract-error.js";
-import type { MemberLogicalAddressContext } from "../domain/member-logical-address-context.js";
-import type { TeamRunTreeIndex } from "./team-run-tree-index.js";
+import type { ConfiguredTeamExecution } from "../domain/team-run-execution-tree.js";
+import type { TeamExecutionIndex } from "./team-execution-index.js";
 import {
   createResolvedAgentRecipient,
   createResolvedAgentTeamRecipient,
@@ -19,52 +14,56 @@ import {
 
 export class TeamRecipientResolver {
   resolve(
-    index: TeamRunTreeIndex,
+    index: TeamExecutionIndex,
     recipientAddress: string,
-    caller: MemberLogicalAddressContext,
   ): ResolvedTeamRecipient {
-    const callerTeamAddress = getParentAgentTeamAddress(caller.memberAddress);
-    if (!callerTeamAddress) {
+    let address;
+    try {
+      address = assertAgentTeamAddress(recipientAddress);
+    } catch (error) {
+      if (error instanceof CollaborationContractError) throw error;
       throw new CollaborationContractError(
-        "COLLABORATION_CONTEXT_REQUIRED",
-        "The caller collaboration address must identify an Agent inside an AgentTeam.",
+        "COLLABORATION_ADDRESS_INVALID",
+        `Recipient address '${String(recipientAddress)}' is not canonical.`,
       );
     }
-    const address = resolveRecipientAddressExpression(
-      parseRecipientAddressExpression(recipientAddress),
-      callerTeamAddress,
-    );
+    if (!getAgentTeamAddressBasename(address)) {
+      throw new CollaborationContractError(
+        "COLLABORATION_ADDRESS_INVALID",
+        "The root AgentTeam is not a collaboration recipient; select one mounted Agent or non-root AgentTeam address.",
+      );
+    }
     this.assertTraversable(index, address);
-    const node = index.getNode(address);
+    const node = index.getConfiguredPlacement(address);
     if (!node) {
       throw new CollaborationContractError(
         "COLLABORATION_TARGET_NOT_FOUND",
         `Collaboration target '${address}' was not found.`,
       );
     }
-    return node.kind === "agent"
+    return "agentRunId" in node
       ? createResolvedAgentRecipient(node.address)
       : createResolvedAgentTeamRecipient({
           address: node.address,
-          coordinatorAddress: node.coordinatorAddress,
+          coordinatorAddress: (node as ConfiguredTeamExecution).coordinatorAddress,
         });
   }
 
   private assertTraversable(
-    index: TeamRunTreeIndex,
-    address: AgentTeamAddress,
+    index: TeamExecutionIndex,
+    address: string,
   ): void {
     const segments = getAgentTeamAddressSegments(address);
     for (let length = 1; length < segments.length; length += 1) {
-      const prefix = createAgentTeamAddress(segments.slice(0, length));
-      const node = index.getNode(prefix);
+      const prefix = `/${segments.slice(0, length).join("/")}`;
+      const node = index.getConfiguredPlacement(prefix);
       if (!node) {
         throw new CollaborationContractError(
           "COLLABORATION_TARGET_NOT_FOUND",
           `Collaboration target '${address}' was not found.`,
         );
       }
-      if (node.kind === "agent") {
+      if ("agentRunId" in node) {
         throw new CollaborationContractError(
           "COLLABORATION_TRAVERSAL_INVALID",
           `Collaboration address '${address}' uses Agent '${segments[length - 1]}' as an intermediate segment.`,

@@ -13,7 +13,6 @@ import { DEFAULT_AGENT_RUNTIME_KIND, type AgentRunConfig } from '~/types/agent/A
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import type { Conversation } from '~/types/conversation';
 import type { MobileWorkContext } from '~/types/mobileWork';
-import { createTeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures';
 
 let pinia: Pinia;
@@ -99,15 +98,15 @@ function seedActiveTeamRun(): AgentTeamContext {
     teamDefinitionName: 'Software Team',
     rootChildren: [leadNode, reviewerNode],
     coordinatorAddress: '/lead',
-    focusedExecutionAddress: createTeamExecutionAddress({ rootTeamRunId: 'team-run-1', memberAddress: '/lead' }),
+    focusedAgentRunId: 'lead-run',
     isActive: false,
   });
-  useAgentTeamContextsStore().teams.set(context.executions.getRootTeamRunId(), context);
-  useAgentSelectionStore().selectRunWithoutShellNavigation(context.executions.getRootTeamRunId(), 'team');
+  useAgentTeamContextsStore().addTeamContext(context);
+  useAgentSelectionStore().selectRunWithoutShellNavigation(context.view.getRootTeamRunId(), 'team');
   return context;
 }
 
-function makeTeamRunContext(memberAddress = '/lead'): MobileWorkContext {
+function makeTeamRunContext(focusedAgentRunId = 'lead-run'): MobileWorkContext {
   return {
     kind: 'team-run',
     teamRunId: 'team-run-1',
@@ -115,7 +114,7 @@ function makeTeamRunContext(memberAddress = '/lead'): MobileWorkContext {
     title: 'Software Team',
     summary: 'Existing team run',
     workspaceRootPath: '/Users/normy/project',
-    focusedExecutionAddress: createTeamExecutionAddress({ rootTeamRunId: 'team-run-1', memberAddress }),
+    focusedAgentRunId,
     isActive: true,
     lastActivityAt: '2026-05-18T16:00:00.000Z',
     statusLabel: 'Running',
@@ -204,14 +203,14 @@ describe('MobileArtifacts', () => {
       makeArtifact('reviewer-run', 'review/notes.md', '2026-05-18T16:02:00.000Z'),
     ]);
 
-    const wrapper = mountArtifacts(makeTeamRunContext('/lead'));
+    const wrapper = mountArtifacts(makeTeamRunContext('lead-run'));
 
     expect(wrapper.text()).toContain('plan.md');
     expect(wrapper.text()).not.toContain('notes.md');
 
-    expect(team.executions.focus(createTeamExecutionAddress({ rootTeamRunId: 'team-run-1', memberAddress: '/reviewer' })).disposition)
+    expect(team.view.focusAgent('reviewer-run').disposition)
       .toBe('applied');
-    await wrapper.setProps({ context: makeTeamRunContext('/reviewer') });
+    await wrapper.setProps({ context: makeTeamRunContext('reviewer-run') });
     await nextTick();
 
     expect(wrapper.text()).toContain('notes.md');

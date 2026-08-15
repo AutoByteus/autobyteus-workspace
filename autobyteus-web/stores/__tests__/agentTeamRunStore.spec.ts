@@ -6,10 +6,6 @@ import { useAgentSelectionStore } from '~/stores/agentSelectionStore'
 import { TeamStreamingService } from '~/services/agentStreaming'
 import { AgentStatus } from '~/types/agent/AgentStatus'
 import {
-  createTeamExecutionAddress,
-  type TeamExecutionAddress,
-} from '~/types/agent/TeamExecutionAddress'
-import {
   buildTestTeamContext,
   testAgentNode,
   testSubTeamNode,
@@ -127,17 +123,10 @@ vi.mock('~/stores/agentTeamDefinitionStore', () => ({
   }),
 }))
 
-const execution = (
-  rootTeamRunId: string,
-  memberAddress: string,
-  taskTeamRunIds: string[] = [],
-  taskAgentRunId: string | null = null,
-): TeamExecutionAddress => createTeamExecutionAddress({ rootTeamRunId, memberAddress, taskTeamRunIds, taskAgentRunId })
-
 const setActiveTeam = (team: AgentTeamContext): void => {
   teamContextsStoreMock.activeTeamContext = team
   teamContextsStoreMock.getTeamContextById.mockImplementation((rootTeamRunId: string) =>
-    rootTeamRunId === team.executions.getRootTeamRunId() ? team : undefined)
+    rootTeamRunId === team.view.getRootTeamRunId() ? team : undefined)
 }
 
 const twoMemberTeam = (input: {
@@ -161,7 +150,9 @@ const twoMemberTeam = (input: {
         currentStatus: AgentStatus.Idle,
       }),
     ],
-    focusedExecutionAddress: execution(teamRunId, input.focusedMemberAddress ?? '/worker'),
+    focusedAgentRunId: input.focusedMemberAddress === '/coordinator'
+      ? `${teamRunId}-coordinator-run`
+      : `${teamRunId}-worker-run`,
     isActive: input.isActive,
   })
 }
@@ -298,7 +289,7 @@ describe('agentTeamRunStore current rooted execution contract', () => {
   it('terminates once, disconnects, and preserves an offline context for history restore', async () => {
     const team = twoMemberTeam({ teamRunId: 'team-terminate' })
     setActiveTeam(team)
-    const worker = team.executions.getAgentContext(execution('team-terminate', '/worker'))!
+    const worker = team.view.getAgentContext('team-terminate-worker-run')!
     worker.submissionPending = true
     const store = useAgentTeamRunStore()
     store.connectToTeamStream('team-terminate')
@@ -311,7 +302,7 @@ describe('agentTeamRunStore current rooted execution contract', () => {
 
     expect(mockMutate).toHaveBeenCalledTimes(1)
     expect(mockDisconnect).toHaveBeenCalledTimes(1)
-    expect(team.executions.isRootTeamActive()).toBe(false)
+    expect(team.view.isRootTeamActive()).toBe(false)
     expect(worker.state.currentStatus).toBe(AgentStatus.Offline)
     expect(worker.submissionPending).toBe(false)
     expect(runHistoryStoreMock.markTeamAsInactive).toHaveBeenCalledWith('team-terminate')
@@ -327,7 +318,7 @@ describe('agentTeamRunStore current rooted execution contract', () => {
 
     expect(await useAgentTeamRunStore().terminateTeamRun('team-terminate-reject')).toBe(false)
 
-    expect(team.executions.isRootTeamActive()).toBe(true)
+    expect(team.view.isRootTeamActive()).toBe(true)
     expect(runHistoryStoreMock.markTeamAsInactive).not.toHaveBeenCalled()
   })
 
@@ -353,7 +344,7 @@ describe('agentTeamRunStore current rooted execution contract', () => {
 
     expect(mockSendMessage).toHaveBeenCalledWith(
       'inspect exact identity',
-      execution('team-send', '/worker'),
+      'team-send-worker-run',
       [],
       [],
       expect.objectContaining({
@@ -361,7 +352,7 @@ describe('agentTeamRunStore current rooted execution contract', () => {
         dedupeKey: expect.stringContaining('team-send'),
       }),
     )
-    const worker = team.executions.getAgentContext(execution('team-send', '/worker'))!
+    const worker = team.view.getAgentContext('team-send-worker-run')!
     expect(worker.state.conversation.messages.at(-1)).toMatchObject({ text: 'inspect exact identity' })
     expect(runHistoryStoreMock.markTeamAsActive).toHaveBeenCalledWith('team-send')
   })
@@ -381,12 +372,12 @@ describe('agentTeamRunStore current rooted execution contract', () => {
     expect(mockMutate).toHaveBeenCalledWith(expect.objectContaining({ variables: { teamRunId: 'team-restore' } }))
     expect(mockHydrateLiveTeamRunContext).toHaveBeenCalledWith(expect.objectContaining({
       teamRunId: 'team-restore',
-      memberAddress: '/worker',
+      agentRunId: 'team-restore-worker-run',
     }))
     expect(teamContextsStoreMock.addTeamContext).toHaveBeenCalledWith(hydrated)
     expect(mockSendMessage).toHaveBeenCalledWith(
       'restore then send',
-      execution('team-restore', '/worker'),
+      'team-restore-worker-run',
       [],
       [],
       expect.any(Object),
@@ -434,9 +425,9 @@ describe('agentTeamRunStore current rooted execution contract', () => {
       },
     }))
     expect(result.rootTeamRunId).toBe('team-nested-live')
-    expect(result.executionAddress).toEqual(execution('team-nested-live', '/BuildSquad/review_lead'))
-    expect(result.context.executions.getFocusedAddress()).toEqual(result.executionAddress)
-    expect(result.context.executions.getAgentContext(result.executionAddress)?.requirement).toBe('Review the exact launch.')
+    expect(result.agentRunId).toBe('review-run')
+    expect(result.context.view.getFocusedAgentRunId()).toBe('review-run')
+    expect(result.context.view.getAgentContext('review-run')?.requirement).toBe('Review the exact launch.')
     expect(configStore.selectedDraft).toBeNull()
     expect(configStore.hasInFlightLaunch).toBe(false)
     expect(useAgentSelectionStore().subject).toEqual({ kind: 'team_run', rootTeamRunId: 'team-nested-live' })
@@ -517,7 +508,7 @@ describe('agentTeamRunStore current rooted execution contract', () => {
 
     await useAgentTeamRunStore().sendMessageToFocusedMember('FIRST_SEND_EXACT', [])
 
-    const target = execution('team-nested-live', '/BuildSquad/review_lead')
+    const target = 'review-run'
     expect(mockMutate).toHaveBeenCalledTimes(1)
     expect(mockSendMessage).toHaveBeenCalledTimes(1)
     expect(mockSendMessage).toHaveBeenCalledWith(
@@ -527,10 +518,10 @@ describe('agentTeamRunStore current rooted execution contract', () => {
       [],
       expect.objectContaining({ dedupeKey: expect.stringContaining('team-nested-live') }),
     )
-    expect(hydrated.executions.getAgentContext(target)?.state.conversation.messages).toEqual([
+    expect(hydrated.view.getAgentContext(target)?.state.conversation.messages).toEqual([
       expect.objectContaining({ type: 'user', text: 'FIRST_SEND_EXACT' }),
     ])
-    expect(hydrated.executions.getAgentContext(target)?.requirement).toBe('')
+    expect(hydrated.view.getAgentContext(target)?.requirement).toBe('')
     expect(configStore.selectedDraft).toBeNull()
     expect(configStore.isDraftLaunchInFlight(draft.draftId)).toBe(false)
     expect(useAgentSelectionStore().subject).toEqual({ kind: 'team_run', rootTeamRunId: 'team-nested-live' })
@@ -541,7 +532,7 @@ describe('agentTeamRunStore current rooted execution contract', () => {
     setActiveTeam(team)
     const store = useAgentTeamRunStore()
     store.connectToTeamStream('team-approval')
-    const explicit = { executionAddress: execution('team-approval', '/worker', ['task-team-1']) }
+    const explicit = { agentRunId: 'team-approval-worker-run' }
 
     await store.postToolExecutionApproval('inv-default', true)
     await store.postToolExecutionApproval('inv-exact', false, 'no', explicit)
@@ -550,21 +541,19 @@ describe('agentTeamRunStore current rooted execution contract', () => {
     expect(mockDenyTool).toHaveBeenCalledWith('inv-exact', explicit, 'no')
   })
 
-  it('interrupts only an exact same-root execution address', () => {
+  it('interrupts only an AgentRun in the exact current Team execution', () => {
     const team = twoMemberTeam({ teamRunId: 'team-interrupt' })
     setActiveTeam(team)
     const store = useAgentTeamRunStore()
     store.connectToTeamStream('team-interrupt')
-    const target = execution('team-interrupt', '/worker', ['task-team-1'], 'task-agent-1')
-
     expect(store.interruptFocusedMemberGeneration({
       teamRunId: 'team-interrupt',
-      executionAddress: target,
+      agentRunId: 'team-interrupt-worker-run',
     })).toBe(true)
-    expect(mockInterruptGeneration).toHaveBeenCalledWith(expect.any(String), { executionAddress: target })
+    expect(mockInterruptGeneration).toHaveBeenCalledWith(expect.any(String), { agentRunId: 'team-interrupt-worker-run' })
     expect(store.interruptFocusedMemberGeneration({
       teamRunId: 'team-interrupt',
-      executionAddress: execution('foreign-root', '/worker'),
+      agentRunId: 'foreign-run',
     })).toBe(false)
     expect(mockInterruptGeneration).toHaveBeenCalledTimes(1)
   })

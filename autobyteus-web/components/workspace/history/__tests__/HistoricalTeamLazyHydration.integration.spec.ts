@@ -7,7 +7,7 @@ import TeamWorkspaceView from '../../team/TeamWorkspaceView.vue';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
-import { createTeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
+import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures';
 
 const flushPromises = async () => {
   await Promise.resolve();
@@ -46,6 +46,19 @@ const buildRootMetadata = () => ({
   ],
 });
 
+const buildCurrentExecutionTree = () => buildTestTeamContext({
+  teamRunId: 'team-1',
+  teamDefinitionId: 'team-def-1',
+  teamDefinitionName: 'Software Engineering Team',
+  coordinatorAddress: '/solution_designer',
+  rootChildren: [
+    testAgentNode('/solution_designer', { agentRunId: 'member-run-sd', agentDefinitionId: 'agent-sd', workspaceRootPath: '/ws/a' }),
+    testAgentNode('/architect_reviewer', { agentRunId: 'member-run-ar', agentDefinitionId: 'agent-ar', workspaceRootPath: '/ws/a' }),
+    testAgentNode('/code_reviewer', { agentRunId: 'member-run-cr', agentDefinitionId: 'agent-cr', workspaceRootPath: '/ws/a' }),
+  ],
+  isActive: false,
+}).view.getExecutionTree();
+
 const buildWorkspaceHistoryResponse = () => ({
   listWorkspaceRunHistory: [{
     workspaceRootPath: '/ws/a',
@@ -63,7 +76,7 @@ const buildWorkspaceHistoryResponse = () => ({
         summary: 'Build the demo fruit shop website',
         createdAt: '2026-01-01T00:05:00.000Z',
         isActive: false,
-        rootTeam: buildRootMetadata(),
+        rootTeam: buildCurrentExecutionTree().root_team,
         members: [
           { memberAddress: '/solution_designer', displayName: 'solution_designer', agentRunId: 'member-run-sd', status: 'idle', workspaceRootPath: '/ws/a' },
           { memberAddress: '/architect_reviewer', displayName: 'architect_reviewer', agentRunId: 'member-run-ar', status: 'idle', workspaceRootPath: '/ws/a' },
@@ -78,14 +91,7 @@ const buildTeamResumeConfigResponse = () => ({
   getTeamRunResumeConfig: {
     teamRunId: 'team-1',
     isActive: false,
-    metadata: {
-      schemaVersion: 3,
-      teamDefinitionName: 'Software Engineering Team',
-      createdAt: '2026-01-01T00:00:00.000Z',
-      archivedAt: null,
-      rootTeam: buildRootMetadata(),
-      handoffs: [],
-    },
+    executionTree: buildCurrentExecutionTree(),
   },
 });
 
@@ -95,9 +101,13 @@ const runIdByAddress: Record<string, string> = {
   '/code_reviewer': 'member-run-cr',
 };
 
-const buildProjectionResponse = (memberAddress: string) => ({
+const addressByRunId = Object.fromEntries(Object.entries(runIdByAddress).map(([address, runId]) => [runId, address]));
+
+const buildProjectionResponse = (agentRunId: string) => {
+  const memberAddress = addressByRunId[agentRunId] ?? '/unknown';
+  return ({
   getTeamMemberRunProjection: {
-    agentRunId: runIdByAddress[memberAddress],
+    agentRunId,
     summary: `${memberAddress.slice(1)} summary`,
     lastActivityAt: '2026-01-01T00:05:00.000Z',
     hasEarlierActiveTraceEvents: false,
@@ -107,7 +117,8 @@ const buildProjectionResponse = (memberAddress: string) => ({
     ],
     activities: [],
   },
-});
+  });
+};
 
 const {
   queryMock,
@@ -379,10 +390,10 @@ describe('Historical team lazy hydration integration', () => {
       }
 
       if (query === 'GetTeamMemberRunProjection') {
-        const memberAddress = String(variables?.memberAddress);
-        projectionCalls.push(memberAddress);
+        const agentRunId = String(variables?.agentRunId);
+        projectionCalls.push(agentRunId);
         return {
-          data: buildProjectionResponse(memberAddress),
+          data: buildProjectionResponse(agentRunId),
           errors: [],
         };
       }
@@ -420,16 +431,11 @@ describe('Historical team lazy hydration integration', () => {
 
     const hydratedTeam = teamContextsStore.getTeamContextById('team-1') as any;
     expect(hydratedTeam).toBeTruthy();
-    expect(hydratedTeam?.executions.getFocusedAddress()).toEqual(
-      createTeamExecutionAddress({ rootTeamRunId: 'team-1', memberAddress: '/solution_designer' }),
-    );
-    const memberAddress = (value: string) => createTeamExecutionAddress({
-      rootTeamRunId: 'team-1',
-      memberAddress: value,
-    });
-    expect(hydratedTeam?.executions.getAgentContext(memberAddress('/solution_designer'))?.state.conversation.messages.length).toBe(2);
-    expect(hydratedTeam?.executions.getAgentContext(memberAddress('/architect_reviewer'))?.state.conversation.messages.length).toBe(0);
-    expect(projectionCalls).toEqual(['/solution_designer']);
+    expect(hydratedTeam?.view.getFocusedAgentRunId()).toBe('member-run-sd');
+    expect(hydratedTeam?.view.getFocusedMemberAddress()).toBe('/solution_designer');
+    expect(hydratedTeam?.view.getAgentContext('member-run-sd')?.state.conversation.messages.length).toBe(2);
+    expect(hydratedTeam?.view.getAgentContext('member-run-ar')?.state.conversation.messages.length).toBe(2);
+    expect(projectionCalls.sort()).toEqual(['member-run-ar', 'member-run-cr', 'member-run-sd']);
     expect(resumeConfigCalls).toBe(1);
     expect(selectionStore.selectedType).toBe('team');
     expect(selectionStore.selectedRunId).toBe('team-1');
@@ -440,9 +446,9 @@ describe('Historical team lazy hydration integration', () => {
 
     const refocusedTeam = teamContextsStore.getTeamContextById('team-1') as any;
     expect(resumeConfigCalls).toBe(1);
-    expect(projectionCalls).toEqual(['/solution_designer', '/architect_reviewer']);
-    expect(refocusedTeam?.executions.getFocusedAddress().memberAddress).toBe('/architect_reviewer');
-    expect(refocusedTeam?.executions.getAgentContext(memberAddress('/architect_reviewer'))?.state.conversation.messages.length).toBe(2);
+    expect(projectionCalls.sort()).toEqual(['member-run-ar', 'member-run-cr', 'member-run-sd']);
+    expect(refocusedTeam?.view.getFocusedMemberAddress()).toBe('/architect_reviewer');
+    expect(refocusedTeam?.view.getAgentContext('member-run-ar')?.state.conversation.messages.length).toBe(2);
     expect(wrapper.find('h4').text()).toBe('architect_reviewer');
 
     wrapper.unmount();

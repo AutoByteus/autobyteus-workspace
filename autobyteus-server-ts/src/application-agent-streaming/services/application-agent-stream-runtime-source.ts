@@ -35,14 +35,14 @@ export class ApplicationAgentStreamRuntimeSource {
     const run = (this.dependencies.teamRunManager ?? AgentTeamRunManager.getInstance())
       .getActiveRun(descriptor.runtimeRunId);
     if (!run) throw runtimeNotActive();
-    const selectedAddress = descriptor.address.target.kind === "AGENT_TEAM_MEMBER"
-      ? descriptor.address.target.memberAddress
+    const selectedAgentRunId = descriptor.address.target.kind === "AGENT_TEAM_MEMBER"
+      ? descriptor.address.target.agentRunId
       : null;
-    return run.subscribeToEvents((event) => {
+    return run.subscribeToEvents(({ event }) => {
       try {
-        if (selectedAddress) {
+        if (selectedAgentRunId) {
           if (event.eventSourceType !== TeamRunEventSourceType.AGENT) return;
-          if (event.execution.executionAddress.memberAddress !== selectedAddress) return;
+          if (event.execution.agentRunId !== selectedAgentRunId) return;
         }
         const producer = event.eventSourceType === TeamRunEventSourceType.AGENT
           ? resolveTeamAgentProducer(descriptor, event.execution)
@@ -58,17 +58,7 @@ const resolveTeamAgentProducer = (
   descriptor: AuthorizedApplicationAgentTargetDescriptor,
   execution: TeamAgentExecutionBinding,
 ): ApplicationExecutionProducer | null => {
-  if (execution.kind !== "persistent_agent") {
-    const base = descriptor.producers.find((producer) =>
-      producer.executionAddress.memberAddress === execution.executionAddress.memberAddress,
-    );
-    return {
-      executionAddress: execution.executionAddress,
-      displayName: base?.displayName ?? null,
-      runtimeKind: "AGENT_TEAM_MEMBER",
-    };
-  }
   return descriptor.producers.find((producer) =>
-    producer.executionAddress.memberAddress === execution.executionAddress.memberAddress,
+    producer.agentRunId === execution.agentRunId,
   ) ?? null;
 };

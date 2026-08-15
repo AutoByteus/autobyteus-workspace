@@ -1,0 +1,16 @@
+CRR-016 review artifact audit
+scope_rows=164
+report_status=221:- Result: `Pass`
+report_current_id=15:- Current Code Review Revision ID: `CRR-016`
+check_rows=8
+finding_none=217:| None | N/A | No actionable test-code correctness, maintainability, isolation, stale-coverage, or requirement-proof defect was found in the 164-path package. | None | N/A |
+revision_index_rows=16
+revision_entry_headings=16
+crr016_index=24:| `CRR-016` | `api-e2e-test-review-report.md` | Successful API/E2E proportional test review / `API-REV-006` | Source Pass (`CRR-015`); no prior successful-test review | `Pass` | None |
+crr016_entry=448:### CRR-016 — API-REV-006 cumulative durable coverage passes proportional review
+unmerged=0
+default_test_db_residue=0
+manifest_tail:
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-006/repository/server-current-selection.txt: OK
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-006/repository/web-current-34.log: OK
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-006/repository/web-production-build.log: OK

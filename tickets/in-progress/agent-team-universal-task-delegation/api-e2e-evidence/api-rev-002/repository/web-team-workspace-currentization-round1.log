@@ -1,0 +1,69 @@
+
+> autobyteus@1.4.51 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run components/workspace/team/__tests__/TeamOverviewPanel.spec.ts components/workspace/team/__tests__/TeamWorkspaceView.spec.ts components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web
+
+stderr | components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamOverviewPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamOverviewPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ components/workspace/team/__tests__/TeamWorkspaceView.spec.ts (6 tests | 1 failed) 64ms
+   ✓ TeamWorkspaceView current aggregate > renders exact focused Agent identity, status, avatar, and composer target from the current view 30ms
+   ✓ TeamWorkspaceView current aggregate > renders a different exact focused AgentRun without coordinator substitution 7ms
+   × TeamWorkspaceView current aggregate > rejects an unresolved initial AgentRun focus instead of substituting another identity 8ms
+     → expected [Function] to throw error including 'Initial Team focus AgentRun \'missing…' but got 'Initial focused AgentRun is missing.'
+   ✓ TeamWorkspaceView current aggregate > opens selected Team configuration from the header action 3ms
+   ✓ TeamWorkspaceView current aggregate > seeds an editable new Team configuration without sharing nested LLM config state 12ms
+   ✓ TeamWorkspaceView current aggregate > keeps configured Team placement non-focusable while retaining its exact Agent child focus 3ms
+ ✓ components/workspace/team/__tests__/TeamOverviewPanel.spec.ts (5 tests) 86ms
+ ✓ components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts (2 tests) 86ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView current aggregate > rejects an unresolved initial AgentRun focus instead of substituting another identity
+AssertionError: expected [Function] to throw error including 'Initial Team focus AgentRun \'missing…' but got 'Initial focused AgentRun is missing.'
+
+Expected: "Initial Team focus AgentRun 'missing-run' is unavailable."
+Received: "Initial focused AgentRun is missing."
+
+ ❯ components/workspace/team/__tests__/TeamWorkspaceView.spec.ts:90:8
+     88|   it('rejects an unresolved initial AgentRun focus instead of substitu…
+     89|     expect(() => buildTeamContext({ focusedAgentRunId: 'missing-run' }…
+     90|       .toThrow("Initial Team focus AgentRun 'missing-run' is unavailab…
+       |        ^
+     91|   });
+     92| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 2 passed (3)
+      Tests  1 failed | 12 passed (13)
+   Start at  14:21:54
+   Duration  7.89s (transform 3.99s, setup 19.18s, collect 1.28s, tests 236ms, environment 1.04s, prepare 689ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

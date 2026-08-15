@@ -1,6 +1,5 @@
 import type { AgentStatusPayload } from './messageTypes';
 import type { ConnectionState } from '../transport';
-import type { TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 
 export interface SendMessageCommandAckPayload {
   command_type: 'SEND_MESSAGE';
@@ -33,7 +32,7 @@ export type InterruptCommandTarget =
   | {
       target_kind: 'team_member';
       team_run_id: string;
-      execution_address: TeamExecutionAddress | null;
+      agent_run_id: string;
     };
 
 export type InterruptGenerationCommandAckPayload =

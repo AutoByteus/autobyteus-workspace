@@ -1,5 +1,4 @@
 import type { TokenUsageApiCostStatus, TokenUsageCacheState } from '~/types/tokenUsageMeter';
-import type { TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 
 export type TokenUsageCreatedTimeSource = 'RUN_HISTORY' | 'FIRST_USAGE_OBSERVED';
 export type TokenUsageTaskRowKind = 'TEAM_RUN' | 'AGENT_RUN' | 'MEMBER_RUN' | 'TASK_TEAM_RUN' | 'TASK_AGENT_RUN';
@@ -46,7 +45,7 @@ export interface TokenUsageTaskStatisticsRow {
   rowKind: TokenUsageTaskRowKind;
   runId: string | null;
   taskId: string | null;
-  executionAddress: TeamExecutionAddress | null;
+  rootTeamRunId: string | null;
   displayName: string;
   summary: string | null;
   createdAt: string;

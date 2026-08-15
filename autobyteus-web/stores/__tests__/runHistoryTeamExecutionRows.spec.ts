@@ -1,15 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import {
-  createTeamExecutionAddress,
-  serializeTeamExecutionAddress,
-  toTeamExecutionAddressDto,
-} from '~/types/agent/TeamExecutionAddress';
-import {
   buildTestTeamContext,
   testAgentNode,
   testSubTeamNode,
-  testTaskProjection,
+  testTaskRecord,
 } from '~/test-support/currentTeamTestFixtures';
 import { buildRunHistoryTeamExecutionRows } from '../runHistoryTeamExecutionRows';
 
@@ -20,6 +15,7 @@ const stableRow = (memberAddress: string, children: any[] = [], overrides: Recor
   memberAddress,
   displayName: memberAddress.split('/').filter(Boolean).at(-1) ?? memberAddress,
   agentRunId: children.length ? null : `${memberAddress}-run`,
+  teamRunIdForNode: null,
   workspaceRootPath: '/workspace',
   summary: 'Team summary',
   lastActivityAt: '2026-06-30T00:00:00.000Z',
@@ -39,7 +35,7 @@ const historyTeam = (children: any[]) => ({
   lastActivityAt: '2026-06-30T00:00:00.000Z',
   isActive: true,
   deleteLifecycle: 'READY',
-  focusedExecutionAddress: createTeamExecutionAddress({ rootTeamRunId: ROOT, memberAddress: '/worker' }),
+  focusedAgentRunId: 'solution-designer-run',
   rootTeam: stableRow('/', children, {
     kind: 'agent_team',
     displayName: 'Root Team',
@@ -51,128 +47,66 @@ const historyTeam = (children: any[]) => ({
   executionRows: [],
 });
 
-describe('runHistoryTeamExecutionRows exact addresses', () => {
-  it('preserves live placement while separating stable and transient execution rows', () => {
+describe('runHistoryTeamExecutionRows current run identities', () => {
+  it('keeps configured rows stable and renders task Agent/Team executions as distinct run-ID rows', () => {
     const solution = testAgentNode('/solution_designer', { agentRunId: 'solution-designer-run' });
     const worker = testAgentNode('/worker', { agentRunId: 'worker-run' });
-    const reviewLead = testAgentNode('/SoftwareEngineeringTeam/review_lead', {
-      displayName: 'review_lead',
-      agentRunId: 'review-lead-run',
-    });
+    const reviewLead = testAgentNode('/SoftwareEngineeringTeam/review_lead', { agentRunId: 'review-lead-run' });
     const softwareTeam = testSubTeamNode('/SoftwareEngineeringTeam', [reviewLead], {
-      displayName: 'Software Engineering Team',
-      teamDefinitionId: 'software-team',
-      teamRunId: 'software-team-run',
-      coordinatorAddress: reviewLead.address,
+      teamDefinitionId: 'software-team', teamRunId: 'software-team-run', coordinatorAddress: reviewLead.address,
     });
-    const taskAgentAddress = createTeamExecutionAddress({
-      rootTeamRunId: ROOT,
-      memberAddress: worker.address,
-      taskAgentRunId: 'task-agent-run-1',
-    });
-    const taskTeamAddress = createTeamExecutionAddress({
-      rootTeamRunId: ROOT,
-      taskTeamRunIds: ['task-team-run-1'],
-      memberAddress: softwareTeam.address,
-    });
-    const taskTeamChildAddress = createTeamExecutionAddress({
-      rootTeamRunId: ROOT,
-      taskTeamRunIds: ['task-team-run-1'],
-      memberAddress: reviewLead.address,
-    });
-    const teamContext = buildTestTeamContext({
+    const context = buildTestTeamContext({
       teamRunId: ROOT,
       coordinatorAddress: solution.address,
       rootChildren: [solution, worker, softwareTeam],
       tasks: [
-        testTaskProjection({
-          taskId: 'task_0001',
-          executionAddress: taskAgentAddress,
-          senderAddress: createTeamExecutionAddress({ rootTeamRunId: ROOT, memberAddress: solution.address }),
-          content: 'This detail must stay out of Workspaces rows.',
-          referenceFiles: [{
-            referenceId: 'ref-1',
-            path: '/tmp/ref.md',
-            type: 'file',
-            createdAt: '2026-06-30T00:00:00.000Z',
-            updatedAt: '2026-06-30T00:00:00.000Z',
-          }],
+        testTaskRecord({
+          taskId: 'task-agent-1', delegatorAgentRunId: solution.agentRunId,
+          recipientAddress: worker.address, target: { agentRunId: 'task-agent-run-1' },
+          description: 'This detail stays outside Workspace rows.',
         }),
-        testTaskProjection({
-          taskId: 'task_0002',
-          executionAddress: taskTeamAddress,
-          senderAddress: createTeamExecutionAddress({ rootTeamRunId: ROOT, memberAddress: solution.address }),
-          content: 'Team task details stay on the right.',
+        testTaskRecord({
+          taskId: 'task-team-1', delegatorAgentRunId: solution.agentRunId,
+          recipientAddress: softwareTeam.address, target: { teamRunId: 'task-team-run-1' },
+          description: 'Review the implementation as a Team.',
         }),
       ],
-      executionMessages: [{
-        type: 'AGENT_STATUS',
-        payload: {
-          agent_execution: {
-            kind: 'task_team_agent',
-            execution_address: toTeamExecutionAddressDto(taskTeamChildAddress),
-            agent_run_id: 'task-team-review-lead-run',
-          },
-          status: 'running',
-          trigger: null,
-          tool_name: null,
-          error_message: null,
-          error_details: null,
-        },
-      }],
     });
-    teamContext.executions.getAgentContext(taskAgentAddress)!.state.currentStatus = AgentStatus.Running;
+    context.view.getAgentContext('task-agent-run-1')!.state.currentStatus = AgentStatus.Running;
     const stableChildren = [
-      stableRow(solution.address),
-      stableRow(worker.address),
-      stableRow(softwareTeam.address, [stableRow(reviewLead.address)], {
-        kind: 'agent_team',
-        displayName: 'Software Engineering Team',
-        teamDefinitionId: 'software-team',
-        teamRunIdForNode: 'software-team-run',
+      stableRow(solution.address, [], { agentRunId: solution.agentRunId }),
+      stableRow(worker.address, [], { agentRunId: worker.agentRunId }),
+      stableRow(softwareTeam.address, [stableRow(reviewLead.address, [], { agentRunId: reviewLead.agentRunId })], {
+        kind: 'agent_team', teamDefinitionId: 'software-team', teamRunIdForNode: 'software-team-run',
         coordinatorAddress: reviewLead.address,
       }),
     ];
 
-    const rows = buildRunHistoryTeamExecutionRows(historyTeam(stableChildren) as any, teamContext);
-    const rowKeys = rows.map((row) => `${row.kind}:${serializeTeamExecutionAddress(row.executionAddress)}`);
+    const rows = buildRunHistoryTeamExecutionRows(historyTeam(stableChildren) as any, context);
 
-    expect(rowKeys).toEqual([
-      `stable_member:${serializeTeamExecutionAddress(createTeamExecutionAddress({ rootTeamRunId: ROOT, memberAddress: solution.address }))}`,
-      `stable_member:${serializeTeamExecutionAddress(createTeamExecutionAddress({ rootTeamRunId: ROOT, memberAddress: worker.address }))}`,
-      `stable_member:${serializeTeamExecutionAddress(createTeamExecutionAddress({ rootTeamRunId: ROOT, memberAddress: softwareTeam.address }))}`,
-      `stable_member:${serializeTeamExecutionAddress(createTeamExecutionAddress({ rootTeamRunId: ROOT, memberAddress: reviewLead.address }))}`,
-      `transient_execution:${serializeTeamExecutionAddress(taskTeamAddress)}`,
-      `transient_execution:${serializeTeamExecutionAddress(taskTeamChildAddress)}`,
-      `transient_execution:${serializeTeamExecutionAddress(taskAgentAddress)}`,
+    expect(rows.filter((row) => row.kind === 'stable_member').map((row) => row.rowKey)).toEqual([
+      'agent:solution-designer-run', 'agent:worker-run', 'team:software-team-run', 'agent:review-lead-run',
     ]);
-    expect(rows.find((row) => row.executionAddress.taskAgentRunId === 'task-agent-run-1')).toMatchObject({
-      kind: 'transient_execution',
-      transientKind: 'task_agent',
-      depth: 1,
-      currentStatus: AgentStatus.Running,
+    expect(rows.find((row) => row.agentRunId === 'task-agent-run-1')).toMatchObject({
+      kind: 'transient_execution', transientKind: 'task_agent', currentStatus: AgentStatus.Running,
     });
-    expect(rows.find((row) => serializeTeamExecutionAddress(row.executionAddress) === serializeTeamExecutionAddress(taskTeamAddress)))
-      .toMatchObject({ kind: 'transient_execution', transientKind: 'task_team', depth: 1, hasChildren: true });
-    expect(rows.find((row) => serializeTeamExecutionAddress(row.executionAddress) === serializeTeamExecutionAddress(taskTeamChildAddress)))
-      .toMatchObject({ kind: 'transient_execution', transientKind: 'task_team_child', depth: 2 });
-    const transientRow = rows.find((row) => row.executionAddress.taskAgentRunId === 'task-agent-run-1') as any;
-    expect(transientRow.taskDescription).toBeUndefined();
-    expect(transientRow.taskReferenceFiles).toBeUndefined();
+    expect(rows.find((row) => row.teamRunIdForNode === 'task-team-run-1')).toMatchObject({
+      kind: 'transient_execution', transientKind: 'task_team', hasChildren: true,
+    });
+    expect(rows.find((row) => row.agentRunId === 'task-team-run-1:review-lead-run')).toMatchObject({
+      kind: 'transient_execution', transientKind: 'task_team_child', memberAddress: reviewLead.address,
+    });
+    expect(rows.every((row) => !('taskDescription' in row) && !('taskReferenceFiles' in row))).toBe(true);
   });
 
-  it('falls back to stable rooted rows only when no live context exists', () => {
+  it('falls back to configured rows only when no live context exists', () => {
     const worker = stableRow('/worker', [stableRow('/worker/reviewer')], {
-      kind: 'agent_team',
-      teamDefinitionId: 'worker-team',
-      teamRunIdForNode: 'worker-team-run',
+      kind: 'agent_team', teamDefinitionId: 'worker-team', teamRunIdForNode: 'worker-team-run',
       coordinatorAddress: '/worker/reviewer',
     });
     const rows = buildRunHistoryTeamExecutionRows(historyTeam([worker]) as any);
-
     expect(rows.map((row) => `${row.kind}:${row.memberAddress}:${row.depth}`)).toEqual([
-      'stable_member:/worker:0',
-      'stable_member:/worker/reviewer:1',
+      'stable_member:/worker:0', 'stable_member:/worker/reviewer:1',
     ]);
   });
 });

@@ -14,12 +14,6 @@ import type {
   TokenUsageUpdatedPayload,
 } from '~/types/tokenUsageMeter';
 import {
-  createTeamExecutionAddress,
-  sameTeamExecutionAddress,
-  serializeTeamExecutionAddress,
-  type TeamExecutionAddress,
-} from '~/types/agent/TeamExecutionAddress';
-import {
   emptyUnitPrices,
   forceMixedUnitPrices,
   mergeUnitPrices,
@@ -28,7 +22,7 @@ import {
 
 const emptySummary = (runId: string | null): TokenUsageRunSummary => ({
   runId,
-  executionAddress: null,
+  rootTeamRunId: null,
   agentDefinitionId: null,
   workspaceId: null,
   grossInputTokens: 0,
@@ -124,7 +118,7 @@ type UsageDelta = TokenUsageUpdatedPayload | TeamTokenUsageDetails;
 export const useTokenUsageMeterStore = defineStore('tokenUsageMeter', () => {
   const runSummaries = reactive<Record<string, TokenUsageRunSummary>>({});
   const teamSummaries = reactive<Record<string, TokenUsageRunSummary>>({});
-  const teamExecutionSummaries = reactive<Record<string, TokenUsageRunSummary>>({});
+  const teamAgentSummaries = reactive<Record<string, TokenUsageRunSummary>>({});
   const teamSummarySources = reactive<Record<string, TeamSummarySource>>({});
   const seenUsageKeys = reactive<Record<string, true>>({});
 
@@ -140,8 +134,9 @@ export const useTokenUsageMeterStore = defineStore('tokenUsageMeter', () => {
     return teamSummaries[teamRunId] ?? null;
   }
 
-  function getTeamExecutionSummary(executionAddress: TeamExecutionAddress | null | undefined): TokenUsageRunSummary | null {
-    return executionAddress ? teamExecutionSummaries[serializeTeamExecutionAddress(executionAddress)] ?? null : null;
+  function getTeamAgentSummary(agentRunId: string | null | undefined): TokenUsageRunSummary | null {
+    const id = agentRunId?.trim() || '';
+    return id ? teamAgentSummaries[id] ?? null : null;
   }
 
   function hasLedgerBackedTeamSummary(teamRunId: string | null | undefined): boolean {
@@ -174,7 +169,7 @@ export const useTokenUsageMeterStore = defineStore('tokenUsageMeter', () => {
   function applyToSummary(
     summary: TokenUsageRunSummary,
     payload: UsageDelta,
-    identity: Readonly<{ executionAddress?: TeamExecutionAddress | null }> = {},
+    identity: Readonly<{ rootTeamRunId?: string | null }> = {},
   ): TokenUsageRunSummary {
     const grossInputDelta = payload.meter_delta_input_tokens ?? 0;
     const outputDelta = payload.meter_delta_output_tokens ?? 0;
@@ -216,9 +211,9 @@ export const useTokenUsageMeterStore = defineStore('tokenUsageMeter', () => {
 
     return {
       ...summary,
-      executionAddress: identity.executionAddress
-        ?? ('execution_address' in payload ? payload.execution_address : null)
-        ?? summary.executionAddress,
+      rootTeamRunId: identity.rootTeamRunId
+        ?? ('root_team_run_id' in payload ? payload.root_team_run_id : null)
+        ?? summary.rootTeamRunId,
       agentDefinitionId: 'agent_definition_id' in payload
         ? payload.agent_definition_id ?? summary.agentDefinitionId
         : summary.agentDefinitionId,
@@ -279,25 +274,26 @@ export const useTokenUsageMeterStore = defineStore('tokenUsageMeter', () => {
     return true;
   }
 
-  function applyTeamTokenUsage(executionAddress: TeamExecutionAddress, details: TeamTokenUsageDetails): boolean {
-    const exactAddress = createTeamExecutionAddress(executionAddress);
+  function applyTeamTokenUsage(rootTeamRunId: string, agentRunId: string, details: TeamTokenUsageDetails): boolean {
+    const rootId = rootTeamRunId.trim();
+    const runId = agentRunId.trim();
+    if (!rootId || !runId || details.agent_run_id !== runId) return false;
     const seenKey = details.usage_event_id || details.idempotency_key;
     if (seenUsageKeys[seenKey]) return false;
     seenUsageKeys[seenKey] = true;
 
-    const executionKey = serializeTeamExecutionAddress(exactAddress);
-    teamExecutionSummaries[executionKey] = applyToSummary(
-      teamExecutionSummaries[executionKey] ?? emptySummary(null),
+    teamAgentSummaries[runId] = applyToSummary(
+      teamAgentSummaries[runId] ?? emptySummary(runId),
       details,
-      { executionAddress: exactAddress },
+      { rootTeamRunId: rootId },
     );
-    const rootTeamRunId = exactAddress.rootTeamRunId;
-    teamSummaries[rootTeamRunId] = applyToSummary(
-      teamSummaries[rootTeamRunId] ?? emptySummary(null),
+    teamSummaries[rootId] = applyToSummary(
+      teamSummaries[rootId] ?? emptySummary(null),
       details,
+      { rootTeamRunId: rootId },
     );
-    if (teamSummarySources[rootTeamRunId] !== 'ledger_backed') {
-      teamSummarySources[rootTeamRunId] = 'live_partial';
+    if (teamSummarySources[rootId] !== 'ledger_backed') {
+      teamSummarySources[rootId] = 'live_partial';
     }
     return true;
   }
@@ -323,41 +319,41 @@ export const useTokenUsageMeterStore = defineStore('tokenUsageMeter', () => {
     return upsertLedgerBackedTeamSummary(teamRunId, summary);
   }
 
-  async function fetchTeamMemberSummary(input: { teamRunId: string; executionAddress: TokenUsageRunSummary['executionAddress'] }): Promise<TokenUsageRunSummary | null> {
-    if (!input.executionAddress || input.executionAddress.rootTeamRunId !== input.teamRunId) return null;
-    const exactAddress = createTeamExecutionAddress(input.executionAddress);
+  async function fetchTeamMemberSummary(input: { teamRunId: string; agentRunId: string }): Promise<TokenUsageRunSummary | null> {
+    const teamRunId = input.teamRunId.trim();
+    const agentRunId = input.agentRunId.trim();
+    if (!teamRunId || !agentRunId) return null;
     const client = getApolloClient();
     const { data } = await client.query({
       query: GET_TEAM_MEMBER_TOKEN_USAGE_SUMMARY,
-      variables: { teamRunId: input.teamRunId, executionAddress: exactAddress },
+      variables: { teamRunId, agentRunId },
       fetchPolicy: 'network-only',
     });
     const summary = data?.getTeamMemberTokenUsageSummary as TokenUsageRunSummary | undefined;
     if (!summary) return null;
-    if (summary.executionAddress && !sameTeamExecutionAddress(summary.executionAddress, exactAddress)) {
-      throw new Error('Team member token summary returned a different execution address.');
+    if (summary.runId !== agentRunId || summary.rootTeamRunId !== teamRunId) {
+      throw new Error('Team member token summary returned a different run identity.');
     }
     const normalizedSummary = {
       ...summary,
-      executionAddress: exactAddress,
       unitPrices: unitPricesOrEmpty(summary.unitPrices),
     };
-    teamExecutionSummaries[serializeTeamExecutionAddress(exactAddress)] = normalizedSummary;
+    teamAgentSummaries[agentRunId] = normalizedSummary;
     return normalizedSummary;
   }
 
   const hasAnyUsage = computed(() => Object.keys(runSummaries).length > 0
     || Object.keys(teamSummaries).length > 0
-    || Object.keys(teamExecutionSummaries).length > 0);
+    || Object.keys(teamAgentSummaries).length > 0);
 
   return {
     runSummaries,
     teamSummaries,
-    teamExecutionSummaries,
+    teamAgentSummaries,
     hasAnyUsage,
     getRunSummary,
     getTeamSummary,
-    getTeamExecutionSummary,
+    getTeamAgentSummary,
     hasLedgerBackedTeamSummary,
     needsTeamRunSummaryHydration,
     upsertSummary,

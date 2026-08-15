@@ -24,7 +24,7 @@ export const buildTokenUsageRunSummary = (
 
   return {
     run_id: input.runId,
-    execution_address: latest?.execution_address ?? null,
+    root_team_run_id: latest?.root_team_run_id ?? null,
     agent_definition_id: latest?.agent_definition_id ?? null,
     workspace_id: latest?.workspace_id ?? null,
     gross_input_tokens: aggregate.gross_input_tokens,

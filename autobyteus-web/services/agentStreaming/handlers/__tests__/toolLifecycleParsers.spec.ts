@@ -7,7 +7,6 @@ import {
   parseToolExecutionStartedPayload,
   parseToolExecutionSucceededPayload,
   parseToolLogPayload,
-  parseToolApprovalTarget,
 } from '../toolLifecycleParsers';
 
 describe('toolLifecycleParsers', () => {
@@ -135,33 +134,19 @@ describe('toolLifecycleParsers', () => {
     });
   });
 
-  it('parses only an exact current Team execution address as an approval target', () => {
-    expect(
-      parseToolApprovalTarget({
-        execution_address: {
-          rootTeamRunId: 'root-team-run-1',
-          taskTeamRunIds: ['task-team-outer', 'task-team-inner'],
-          memberAddress: '/BuildSquad/review_lead',
-          taskAgentRunId: null,
-        },
-      }),
-    ).toEqual({
-      executionAddress: {
-        rootTeamRunId: 'root-team-run-1',
-        taskTeamRunIds: ['task-team-outer', 'task-team-inner'],
-        memberAddress: '/BuildSquad/review_lead',
-        taskAgentRunId: null,
-      },
-    });
-  });
-
-  it('does not reconstruct approval identity from retired route or task-run selectors', () => {
+  it('does not reconstruct a standalone approval target from Team or retired selectors', () => {
     expect(
       parseToolApprovalRequestedPayload({
         invocation_id: 'inv-legacy',
         tool_name: 'run_bash',
         turn_id: null,
         arguments: { command: 'pwd' },
+        execution_address: {
+          rootTeamRunId: 'root-team-run-1',
+          taskTeamRunIds: ['task-team-outer'],
+          memberAddress: '/BuildSquad/review_lead',
+          taskAgentRunId: null,
+        },
         member_route_key: 'worker',
         source_route_key: 'worker',
         task_agent_run_id: 'task-agent-run-1',
@@ -170,14 +155,5 @@ describe('toolLifecycleParsers', () => {
       invocationId: 'inv-legacy',
       approvalTarget: null,
     });
-    expect(parseToolApprovalTarget({
-      execution_address: {
-        rootTeamRunId: 'root-team-run-1',
-        taskTeamRunIds: [],
-        memberAddress: '/worker',
-        taskAgentRunId: 'task-agent-run-1',
-        memberRouteKey: 'worker',
-      },
-    })).toBeNull();
   });
 });

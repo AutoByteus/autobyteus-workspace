@@ -1,13 +1,14 @@
 import type { TeamStreamClientMessage } from '@autobyteus/team-stream-contracts';
-import type { TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
-import { createTeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
-import { toTeamExecutionAddressDto } from './teamStreamDtoAdapters';
 
-const exactAddress = (address: TeamExecutionAddress) => toTeamExecutionAddressDto(createTeamExecutionAddress(address));
+const runId = (value: string): string => {
+  const normalized = value.trim();
+  if (!normalized) throw new Error('A concrete AgentRun ID is required.');
+  return normalized;
+};
 
 export const createTeamSendMessage = (input: {
   content: string;
-  executionAddress: TeamExecutionAddress;
+  agentRunId: string;
   contextFilePaths?: readonly string[];
   imageUrls?: readonly string[];
   messageId: string;
@@ -18,7 +19,7 @@ export const createTeamSendMessage = (input: {
     content: input.content,
     context_file_paths: [...(input.contextFilePaths ?? [])],
     image_urls: [...(input.imageUrls ?? [])],
-    execution_address: exactAddress(input.executionAddress),
+    agent_run_id: runId(input.agentRunId),
     message_id: input.messageId,
     dedupe_key: input.dedupeKey,
   }),
@@ -26,22 +27,22 @@ export const createTeamSendMessage = (input: {
 
 export const createTeamInterruptMessage = (input: {
   commandId: string;
-  executionAddress: TeamExecutionAddress;
+  agentRunId: string;
 }): TeamStreamClientMessage => Object.freeze({
   type: 'INTERRUPT_GENERATION',
-  payload: Object.freeze({ command_id: input.commandId, execution_address: exactAddress(input.executionAddress) }),
+  payload: Object.freeze({ command_id: input.commandId, agent_run_id: runId(input.agentRunId) }),
 });
 
 export const createTeamToolDecisionMessage = (input: {
   decision: 'APPROVE_TOOL' | 'DENY_TOOL';
   invocationId: string;
-  executionAddress: TeamExecutionAddress;
+  agentRunId: string;
   reason?: string | null;
 }): TeamStreamClientMessage => Object.freeze({
   type: input.decision,
   payload: Object.freeze({
     invocation_id: input.invocationId,
-    execution_address: exactAddress(input.executionAddress),
+    agent_run_id: runId(input.agentRunId),
     reason: input.reason?.trim() || null,
   }),
 });

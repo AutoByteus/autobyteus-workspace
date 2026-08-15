@@ -1,64 +1,67 @@
-import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
-import type { MixedTeamRunContext } from "../backends/mixed/mixed-team-run-context.js";
-import type { TeamRunConfig } from "./team-run-config.js";
+import type { CollaborationHandoff } from "../../agent-collaboration/domain/collaboration-handoff.js";
 import type { TeamBackendKind } from "./team-backend-kind.js";
-import { TeamRunTreeIndex } from "../services/team-run-tree-index.js";
+import type { TeamRunAgentTeamNode, TeamRunApplicationBinding } from "./team-run-config.js";
+import type { MixedTeamRunContext } from "../backends/mixed/mixed-team-run-context.js";
 
 export interface TeamAgentMemberRuntimeContext {
   readonly kind: "agent";
-  readonly address: AgentTeamAddress;
+  readonly address: import("../../agent-collaboration/domain/agent-team-address.js").AgentTeamAddress;
   readonly agentRunId: string;
   getPlatformAgentRunId(): string | null;
 }
 
 export interface TeamSubTeamMemberRuntimeContext {
   readonly kind: "agent_team";
-  readonly address: AgentTeamAddress;
+  readonly address: import("../../agent-collaboration/domain/agent-team-address.js").AgentTeamAddress;
   readonly teamDefinitionId: string;
   readonly teamRunId: string;
   childRuntimeContext: RuntimeTeamRunContext | null;
   getPlatformAgentRunId(): null;
 }
 
-export type TeamMemberRuntimeContext =
-  | TeamAgentMemberRuntimeContext
-  | TeamSubTeamMemberRuntimeContext;
-
+export type TeamMemberRuntimeContext = TeamAgentMemberRuntimeContext | TeamSubTeamMemberRuntimeContext;
 export type RuntimeTeamRunContext = MixedTeamRunContext | null;
 
-export type TeamRunContextInput<TRuntimeContext> = {
-  teamRunId: string;
-  teamAddress: AgentTeamAddress;
-  taskTeamRunIds?: readonly string[] | null;
-  teamBackendKind: TeamBackendKind;
-  config: TeamRunConfig;
-  index?: TeamRunTreeIndex | null;
-  runtimeContext: TRuntimeContext;
-};
-
 export class TeamRunContext<TRuntimeContext = RuntimeTeamRunContext> {
+  readonly rootTeamRunId: string;
   readonly teamRunId: string;
-  readonly teamAddress: AgentTeamAddress;
-  readonly taskTeamRunIds: readonly string[];
   readonly teamBackendKind: TeamBackendKind;
-  readonly config: TeamRunConfig;
-  readonly index: TeamRunTreeIndex;
+  readonly teamNode: TeamRunAgentTeamNode;
+  readonly handoffs: readonly CollaborationHandoff[];
+  readonly applicationBinding: TeamRunApplicationBinding | null;
   readonly runtimeContext: TRuntimeContext;
 
-  constructor(input: TeamRunContextInput<TRuntimeContext>) {
-    this.teamRunId = input.teamRunId.trim();
-    if (!this.teamRunId) throw new Error("teamRunId is required.");
-    this.teamAddress = input.teamAddress;
-    this.taskTeamRunIds = Object.freeze([...(input.taskTeamRunIds ?? [])]);
-    this.teamBackendKind = input.teamBackendKind;
-    this.config = input.config;
-    this.index = input.index ?? new TeamRunTreeIndex(input.config.rootTeam);
-    if (!this.index.getTeam(this.teamAddress)) {
-      throw new Error(`TeamRun context address '${this.teamAddress}' is not an AgentTeam node.`);
+  constructor(input: {
+    rootTeamRunId: string;
+    teamRunId: string;
+    teamBackendKind: TeamBackendKind;
+    teamNode: TeamRunAgentTeamNode;
+    handoffs?: readonly CollaborationHandoff[] | null;
+    applicationBinding?: TeamRunApplicationBinding | null;
+    runtimeContext: TRuntimeContext;
+  }) {
+    this.rootTeamRunId = required(input.rootTeamRunId, "rootTeamRunId");
+    this.teamRunId = required(input.teamRunId, "teamRunId");
+    if (input.teamNode.teamRunId !== this.teamRunId) {
+      throw new Error(`Team node '${input.teamNode.address}' does not own TeamRun '${this.teamRunId}'.`);
     }
+    this.teamBackendKind = input.teamBackendKind;
+    this.teamNode = input.teamNode;
+    this.handoffs = Object.freeze([...(input.handoffs ?? [])]);
+    this.applicationBinding = input.applicationBinding
+      ? Object.freeze({ ...input.applicationBinding })
+      : null;
     this.runtimeContext = input.runtimeContext;
   }
+
+  get teamAddress() { return this.teamNode.address; }
 }
+
+const required = (value: string, field: string): string => {
+  const normalized = value.trim();
+  if (!normalized) throw new Error(`${field} is required.`);
+  return normalized;
+};
 
 export const getRuntimeMemberContexts = (
   runtimeContext: RuntimeTeamRunContext | null | undefined,
@@ -70,7 +73,6 @@ export const resolveRuntimeAgentContext = (
 ): TeamAgentMemberRuntimeContext | null => {
   if (!teamContext) return null;
   return getRuntimeMemberContexts(teamContext.runtimeContext as RuntimeTeamRunContext).find(
-    (context): context is TeamAgentMemberRuntimeContext =>
-      context.kind === "agent" && context.agentRunId === agentRunId,
+    (context): context is TeamAgentMemberRuntimeContext => context.kind === "agent" && context.agentRunId === agentRunId,
   ) ?? null;
 };

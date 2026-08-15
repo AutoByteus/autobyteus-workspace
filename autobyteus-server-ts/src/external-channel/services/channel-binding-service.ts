@@ -17,10 +17,6 @@ import { publishChannelBindingLifecycleEvent } from "./channel-binding-lifecycle
 import {
   resolveTeamBindingCurrentOutputIdentity,
 } from "./channel-team-output-target-identity.js";
-import {
-  createTeamExecutionAddress,
-  serializeTeamExecutionAddress,
-} from "../../agent-team-execution/domain/team-execution-address.js";
 
 export type ChannelBindingServiceOptions = {
   allowTransportFallback?: boolean;
@@ -154,9 +150,8 @@ export class ChannelBindingService {
     }
 
     const teamRun = await this.getTeamRunService().resolveTeamRun(target.teamRunId);
-    if (!teamRun || !target.entryExecutionAddress) return false;
-    const current = resolveTeamBindingCurrentOutputIdentity(binding, teamRun).executionAddress;
-    return !!current && serializeTeamExecutionAddress(current) === serializeTeamExecutionAddress(target.entryExecutionAddress);
+    if (!teamRun || !target.entryAgentRunId) return false;
+    return resolveTeamBindingCurrentOutputIdentity(binding, teamRun).entryAgentRunId === target.entryAgentRunId;
   }
 
   private getTeamRunService(): Pick<TeamRunService, "resolveTeamRun"> {
@@ -195,8 +190,6 @@ const normalizeOutputTarget = (
   return {
     targetType: "TEAM",
     teamRunId: normalizeRequiredString(target.teamRunId, "target.teamRunId"),
-    entryExecutionAddress: target.entryExecutionAddress
-      ? createTeamExecutionAddress(target.entryExecutionAddress)
-      : null,
+    entryAgentRunId: normalizeNullableString(target.entryAgentRunId),
   };
 };

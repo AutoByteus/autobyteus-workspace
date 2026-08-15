@@ -31,7 +31,7 @@ describe('MemoryInspector', () => {
   it('renders team breadcrumb context', () => {
     const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: true });
     const store = useMemoryInspectorStore();
-    store.target = { kind: 'team_member_run', teamDefinitionName: 'Alpha Team', teamRunId: 'team-1', memberRunId: 'member-1', memberName: 'Coordinator' };
+    store.target = { kind: 'team_member_run', teamDefinitionName: 'Alpha Team', teamRunId: 'team-1', agentRunId: 'member-1', memberAddress: '/coordinator', memberName: 'Coordinator' };
     const wrapper = mount(MemoryInspector, { global: { plugins: [pinia] } });
     expect(wrapper.text()).toContain('Agent Teams / Alpha Team / team-1 / Coordinator');
   });

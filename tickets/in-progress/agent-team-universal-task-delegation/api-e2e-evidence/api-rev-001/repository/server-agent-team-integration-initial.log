@@ -1,0 +1,266 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+
+ ❯ tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts (0 test)
+stdout | tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:80423) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts (0 test)
+ ❯ tests/integration/agent-team-execution/team-run-service.integration.test.ts (0 test)
+ ❯ tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts (0 test)
+stdout | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:80490) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts (0 test)
+ ❯ tests/integration/agent-team-execution/mixed-team-run-backend.integration.test.ts (0 test)
+stdout | tests/integration/agent-team-execution/mixed-team-run-backend-factory.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:80522) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/integration/agent-team-execution/mixed-team-run-backend-factory.integration.test.ts (3 tests | 3 failed) 5ms
+     × creates a backend with hydrated mixed member runtime context from TeamRunConfig 3ms
+     × rejects create when launch identity assignment did not preassign member IDs 1ms
+     × restores a backend from the provided mixed runtime context 1ms
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts [ tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts ]
+Error: Cannot find module '../../../src/agent-team-execution/domain/team-execution-address.js' imported from '/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts'
+ ❯ tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts:7:1
+      5| import { TeamBackendKind } from "../../../src/agent-team-execution/dom…
+      6| import { TeamRunContext } from "../../../src/agent-team-execution/doma…
+      7| import { createTeamExecutionAddress } from "../../../src/agent-team-ex…
+       | ^
+      8| import { AgentTeamRunManager } from "../../../src/agent-team-execution…
+      9| import { AgentTeamTerminationError } from "../../../src/agent-team-exe…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/9]⎯
+
+ FAIL  tests/integration/agent-team-execution/mixed-team-run-backend.integration.test.ts [ tests/integration/agent-team-execution/mixed-team-run-backend.integration.test.ts ]
+Error: Cannot find module '../../../src/agent-team-execution/domain/team-execution-address.js' imported from '/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/tests/integration/agent-team-execution/mixed-team-run-backend.integration.test.ts'
+ ❯ tests/integration/agent-team-execution/mixed-team-run-backend.integration.test.ts:8:1
+      6| import { TeamRunContext } from "../../../src/agent-team-execution/doma…
+      7| import { TeamRunEventSourceType, type TeamRunEvent, type TeamRunEventL…
+      8| import { createTeamExecutionAddress } from "../../../src/agent-team-ex…
+       | ^
+      9| import { createTeamAgentExecutionBinding } from "../../../src/agent-te…
+     10| import { RuntimeKind } from "../../../src/runtime-management/runtime-k…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/9]⎯
+
+ FAIL  tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts [ tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts ]
+Error: Cannot find module '../../../src/agent-team-execution/domain/team-execution-address.js' imported from '/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts'
+ ❯ tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts:21:1
+     19| import { TeamRun } from "../../../src/agent-team-execution/domain/team…
+     20| import { TeamRunContext } from "../../../src/agent-team-execution/doma…
+     21| import { createTeamExecutionAddress } from "../../../src/agent-team-ex…
+       | ^
+     22| import {
+     23|   TeamRunEventSourceType,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/9]⎯
+
+ FAIL  tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts [ tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts ]
+Error: Cannot find module '../../../src/agent-team-execution/domain/team-execution-address.js' imported from '/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts'
+ ❯ tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts:20:1
+     18| import type { AgentRuntimeLifecycleSnapshot } from "../../../src/agent…
+     19| import { createTeamAgentExecutionBinding } from "../../../src/agent-te…
+     20| import { createTeamExecutionAddress } from "../../../src/agent-team-ex…
+       | ^
+     21| import { TeamRunEventSourceType } from "../../../src/agent-team-execut…
+     22| import { TeamAgentEventAdapter } from "../../../src/agent-team-executi…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/9]⎯
+
+ FAIL  tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts [ tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts ]
+Error: Cannot find module '../../../src/agent-team-execution/domain/team-execution-address.js' imported from '/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts'
+ ❯ tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts:6:1
+      4| import { afterEach, describe, expect, it, vi } from "vitest";
+      5| import { registerAgentWebsocket } from "../../../src/api/websocket/age…
+      6| import { createTeamExecutionAddress } from "../../../src/agent-team-ex…
+       | ^
+      7| import { AgentTeamStreamHandler } from "../../../src/services/agent-st…
+      8| import { AgentSessionManager } from "../../../src/services/agent-strea…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/9]⎯
+
+ FAIL  tests/integration/agent-team-execution/team-run-service.integration.test.ts [ tests/integration/agent-team-execution/team-run-service.integration.test.ts ]
+Error: Cannot find module '../../../src/agent-team-execution/domain/team-execution-address.js' imported from '/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/tests/integration/agent-team-execution/team-run-service.integration.test.ts'
+ ❯ tests/integration/agent-team-execution/team-run-service.integration.test.ts:12:1
+     10| import type { TeamRunAgentNode } from "../../../src/agent-team-executi…
+     11| import { TeamRunContext } from "../../../src/agent-team-execution/doma…
+     12| import { createTeamExecutionAddress } from "../../../src/agent-team-ex…
+       | ^
+     13| import { TeamRunService } from "../../../src/agent-team-execution/serv…
+     14| import type { TeamRunMetadata } from "../../../src/run-history/store/t…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/9]⎯
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/agent-team-execution/mixed-team-run-backend-factory.integration.test.ts > MixedTeamRunBackendFactory integration > creates a backend with hydrated mixed member runtime context from TeamRunConfig
+TypeError: Cannot read properties of undefined (reading 'address')
+ ❯ cloneTeamRunNode src/agent-team-execution/domain/team-run-config.ts:83:47
+     81| 
+     82| export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
+     83|   const address = assertAgentTeamAddress(node.address);
+       |                                               ^
+     84|   if (node.kind === "agent") {
+     85|     if (address === "/") throw new Error("The root TeamRun node must b…
+ ❯ new TeamRunConfig src/agent-team-execution/domain/team-run-config.ts:176:21
+ ❯ createConfig tests/integration/agent-team-execution/mixed-team-run-backend-factory.integration.test.ts:24:3
+ ❯ tests/integration/agent-team-execution/mixed-team-run-backend-factory.integration.test.ts:71:49
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/9]⎯
+
+ FAIL  tests/integration/agent-team-execution/mixed-team-run-backend-factory.integration.test.ts > MixedTeamRunBackendFactory integration > rejects create when launch identity assignment did not preassign member IDs
+TypeError: Cannot read properties of undefined (reading 'address')
+ ❯ cloneTeamRunNode src/agent-team-execution/domain/team-run-config.ts:83:47
+     81| 
+     82| export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
+     83|   const address = assertAgentTeamAddress(node.address);
+       |                                               ^
+     84|   if (node.kind === "agent") {
+     85|     if (address === "/") throw new Error("The root TeamRun node must b…
+ ❯ new TeamRunConfig src/agent-team-execution/domain/team-run-config.ts:176:21
+ ❯ createConfig tests/integration/agent-team-execution/mixed-team-run-backend-factory.integration.test.ts:24:3
+ ❯ tests/integration/agent-team-execution/mixed-team-run-backend-factory.integration.test.ts:108:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/9]⎯
+
+ FAIL  tests/integration/agent-team-execution/mixed-team-run-backend-factory.integration.test.ts > MixedTeamRunBackendFactory integration > restores a backend from the provided mixed runtime context
+TypeError: Cannot read properties of undefined (reading 'address')
+ ❯ cloneTeamRunNode src/agent-team-execution/domain/team-run-config.ts:83:47
+     81| 
+     82| export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
+     83|   const address = assertAgentTeamAddress(node.address);
+       |                                               ^
+     84|   if (node.kind === "agent") {
+     85|     if (address === "/") throw new Error("The root TeamRun node must b…
+ ❯ new TeamRunConfig src/agent-team-execution/domain/team-run-config.ts:176:21
+ ❯ createConfig tests/integration/agent-team-execution/mixed-team-run-backend-factory.integration.test.ts:24:3
+ ❯ tests/integration/agent-team-execution/mixed-team-run-backend-factory.integration.test.ts:138:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/9]⎯
+
+
+ Test Files  7 failed (7)
+      Tests  3 failed (3)
+   Start at  12:02:40
+   Duration  7.79s (transform 3.30s, setup 37ms, import 829ms, tests 5ms, environment 0ms)
+

@@ -1,17 +1,47 @@
+import fs from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import type { TeamRunBackend } from "../../../src/agent-team-execution/backends/team-run-backend.js";
-import type { MixedTeamRunBackendFactory } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.js";
-import { MixedTeamRunContext } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-context.js";
+import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
+import { AgentRunIdentityAllocator } from "../../../src/agent-execution/services/agent-run-identity-allocator.js";
+import type {
+  MixedTeamRunBackendFactory,
+  MixedTeamRunCallbacks,
+} from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.js";
+import { MixedAgentMemberContext, MixedTeamRunContext } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-context.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
-import { createTeamExecutionAddress } from "../../../src/agent-team-execution/domain/team-execution-address.js";
 import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
-import { AgentTeamTerminationError } from "../../../src/agent-team-execution/errors.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { testAgentNode, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
 
-const createConfig = (memberRuntimeKinds: readonly RuntimeKind[]) => {
-  const children = memberRuntimeKinds.map((runtimeKind, index) => testAgentNode(
+const tempDirs: string[] = [];
+const createMemoryDir = async (): Promise<string> => {
+  const value = await fs.mkdtemp(path.join(os.tmpdir(), "agent-team-run-manager-current-"));
+  tempDirs.push(value);
+  return value;
+};
+
+const initializeTaskIdentityAllocator = (memoryDir: string): void => {
+  AgentRunIdentityAllocator.getInstance({
+    memoryDir,
+    agentDefinitionService: {
+      getAgentDefinitionById: async (id: string) => ({ id, name: id }) as never,
+    },
+    agentRunManager: { hasActiveRun: () => false },
+    agentRunMetadataService: { readMetadata: async () => null },
+    teamRunExecutionTreeLocationService: { containsRunId: async () => false },
+    createToken: () => "00000000000000000000000000000000",
+  });
+};
+
+afterEach(async () => {
+  vi.clearAllMocks();
+  await Promise.all(tempDirs.splice(0).map((dir) => fs.rm(dir, { recursive: true, force: true })));
+});
+
+const createConfig = (runtimeKinds: readonly RuntimeKind[]) => {
+  const children = runtimeKinds.map((runtimeKind, index) => testAgentNode(
     index === 0 ? "/Coordinator" : `/Member${index}`,
     {
       agentRunId: index === 0 ? "run-coordinator" : `run-member-${index}`,
@@ -26,170 +56,167 @@ const createConfig = (memberRuntimeKinds: readonly RuntimeKind[]) => {
   });
 };
 
-const createRuntimeContext = () => new MixedTeamRunContext({
-  memberContexts: [],
-  teamExecutionAddress: createTeamExecutionAddress({
-    rootTeamRunId: "team-runtime-root",
-    memberAddress: "/Coordinator",
-  }),
-});
-
-const createBackend = (input: {
-  teamRunId: string;
-  config?: ReturnType<typeof createConfig>;
+const createFactory = (input: {
   active?: boolean;
-  runtimeContext?: MixedTeamRunContext;
-}) => {
+  terminateResult?: { accepted: boolean; code?: string; message?: string };
+} = {}) => {
   const state = { active: input.active ?? true };
-  const config = input.config ?? createConfig([RuntimeKind.AUTOBYTEUS]);
-  const runtimeContext = input.runtimeContext ?? createRuntimeContext();
-  const context = new TeamRunContext({
-    teamRunId: input.teamRunId,
-    teamAddress: "/",
-    teamBackendKind: TeamBackendKind.MIXED,
-    config,
-    runtimeContext,
+  const callbacks: MixedTeamRunCallbacks[] = [];
+  const backends: Array<Record<string, unknown>> = [];
+  const createBackend = vi.fn(async (
+    config: ReturnType<typeof createConfig>,
+    teamRunId: string,
+    callback: MixedTeamRunCallbacks,
+  ) => {
+    callbacks.push(callback);
+    const runtimeContext = new MixedTeamRunContext({
+      memberContexts: config.rootTeam.children
+        .filter((node) => node.kind === "agent")
+        .map((node) => new MixedAgentMemberContext({
+          address: node.address,
+          agentRunId: node.agentRunId,
+          runtimeKind: node.runtimeKind,
+          platformAgentRunId: node.platformAgentRunId,
+        })),
+    });
+    const context = new TeamRunContext({
+      rootTeamRunId: teamRunId,
+      teamRunId,
+      teamBackendKind: TeamBackendKind.MIXED,
+      teamNode: config.rootTeam,
+      handoffs: config.handoffs,
+      applicationBinding: config.applicationBinding,
+      runtimeContext,
+    });
+    const backend = {
+      teamRunId,
+      teamBackendKind: TeamBackendKind.MIXED,
+      getTeamRunContext: () => context,
+      getRuntimeContext: () => runtimeContext,
+      isActive: () => state.active,
+      getLeafAgentStatusSnapshots: () => [],
+      hasOpenExecutionWork: () => false,
+      terminate: vi.fn(async () => {
+        const result = input.terminateResult ?? { accepted: true };
+        if (result.accepted) state.active = false;
+        return result;
+      }),
+    };
+    backends.push(backend);
+    return backend;
   });
-  const backend = {
-    teamRunId: input.teamRunId,
-    teamBackendKind: TeamBackendKind.MIXED,
-    getTeamRunContext: () => context,
-    getRuntimeContext: () => runtimeContext,
-    isActive: () => state.active,
-    getLeafAgentStatusSnapshots: () => [],
-    hasOpenExecutionWork: () => false,
-    subscribeToEvents: vi.fn(() => () => undefined),
-    postMessage: vi.fn().mockResolvedValue({ accepted: true }),
-    executeMemberCommand: vi.fn().mockResolvedValue({ accepted: true }),
-    deliverInterAgentMessage: vi.fn().mockResolvedValue({ accepted: true }),
-    deliverResolvedInterAgentMessage: vi.fn().mockResolvedValue({ accepted: true }),
-    resolveRecipient: vi.fn(),
-    approveToolInvocation: vi.fn().mockResolvedValue({ accepted: true }),
-    interruptMember: vi.fn().mockResolvedValue({ accepted: true }),
-    settleMember: vi.fn().mockResolvedValue({ accepted: true }),
-    startTaskAgentExecution: vi.fn().mockResolvedValue({ accepted: true }),
-    releaseTaskAgentExecutionWork: vi.fn(),
-    settleTaskAgentExecution: vi.fn().mockResolvedValue({ accepted: true }),
-    startTaskTeamExecution: vi.fn().mockResolvedValue({ accepted: true }),
-    markTaskTeamExecutionActive: vi.fn(),
-    releaseTaskTeamExecutionWork: vi.fn(),
-    postMessageToTaskTeamExecution: vi.fn().mockResolvedValue({ accepted: true }),
-    settleTaskTeamExecution: vi.fn().mockResolvedValue({ accepted: true }),
-    terminate: vi.fn().mockResolvedValue({ accepted: true }),
-    publishEvent: vi.fn(),
-    openTaskActivationEventLease: vi.fn(),
-    assertTaskActivationEventLeaseWithinBudget: vi.fn(),
-    commitTaskActivationEventLease: vi.fn(),
-    abortTaskActivationEventLease: vi.fn(),
-  } as unknown as TeamRunBackend & { getTeamRunContext(): TeamRunContext<MixedTeamRunContext> };
-  return { backend, state, context };
+  return {
+    factory: { createBackend } as unknown as MixedTeamRunBackendFactory,
+    createBackend,
+    callbacks,
+    backends,
+    state,
+  };
 };
 
-const createFactory = (created: ReturnType<typeof createBackend>): MixedTeamRunBackendFactory => ({
-  createBackend: vi.fn(async (config, teamRunId) => {
-    expect(config).toBe(created.context.config);
-    expect(teamRunId).toBe(created.context.teamRunId);
-    return created.backend;
-  }),
-  restoreBackend: vi.fn().mockResolvedValue(created.backend),
-} as unknown as MixedTeamRunBackendFactory);
-
-const createSidecars = () => ({
-  teamCommunicationService: { attachToTeamRun: vi.fn(() => vi.fn()) },
-  runFileChangeService: { attachToTeamRun: vi.fn(() => vi.fn()) },
-});
-
-afterEach(() => vi.clearAllMocks());
-
-describe("AgentTeamRunManager integration", () => {
+describe("AgentTeamRunManager strict V1 package integration", () => {
   it.each([
     [[RuntimeKind.AUTOBYTEUS]],
     [[RuntimeKind.CODEX_APP_SERVER]],
     [[RuntimeKind.CLAUDE_AGENT_SDK]],
     [[RuntimeKind.AUTOBYTEUS, RuntimeKind.CODEX_APP_SERVER, RuntimeKind.CLAUDE_AGENT_SDK]],
-  ] as const)("creates and registers a mixed TeamRun for runtime composition %j", async (runtimeKinds) => {
+  ] as const)("creates exactly one admitted root and the three-file V1 package for %j", async (runtimeKinds) => {
+    const memoryDir = await createMemoryDir();
+    initializeTaskIdentityAllocator(memoryDir);
     const config = createConfig(runtimeKinds);
-    const created = createBackend({ teamRunId: "team-runtime-root", config });
-    const factory = createFactory(created);
-    const sidecars = createSidecars();
-    const manager = new AgentTeamRunManager({
-      mixedTeamRunBackendFactory: factory,
-      teamCommunicationService: sidecars.teamCommunicationService as never,
-      runFileChangeService: sidecars.runFileChangeService as never,
-    });
+    const factory = createFactory();
+    const manager = new AgentTeamRunManager({ memoryDir, mixedTeamRunBackendFactory: factory.factory });
 
-    const run = await manager.createTeamRun(config, "team-runtime-root");
+    const run = await manager.createTeamRun({ config, teamDefinitionName: "Runtime Team" });
 
     expect(run.teamRunId).toBe("team-runtime-root");
-    expect(run.teamBackendKind).toBe(TeamBackendKind.MIXED);
-    expect(run.context.config.rootTeam.coordinatorAddress).toBe("/Coordinator");
     expect(manager.getActiveRun(run.teamRunId)).toBe(run);
     expect(manager.listActiveRuns()).toEqual([run.teamRunId]);
-    expect(factory.createBackend).toHaveBeenCalledWith(config, "team-runtime-root");
-    expect(sidecars.teamCommunicationService.attachToTeamRun).toHaveBeenCalledWith(run);
-    expect(sidecars.runFileChangeService.attachToTeamRun).toHaveBeenCalledWith(run);
-  });
-
-  it("restores through the mixed backend with the exact current context", async () => {
-    const config = createConfig([RuntimeKind.CODEX_APP_SERVER]);
-    const runtimeContext = createRuntimeContext();
-    const context = new TeamRunContext({
-      teamRunId: "team-runtime-root",
-      teamAddress: "/",
-      teamBackendKind: TeamBackendKind.MIXED,
-      config,
-      runtimeContext,
+    expect(factory.createBackend).toHaveBeenCalledWith(
+      expect.objectContaining({ rootTeam: config.rootTeam }),
+      "team-runtime-root",
+      expect.objectContaining({ publish: expect.any(Function), deliverInterAgentMessage: expect.any(Function) }),
+    );
+    const rootDir = new AgentMemoryLayout(memoryDir).getTeamDirPath({
+      rootTeamRunId: run.teamRunId,
+      ancestorTeamRunIds: [],
     });
-    const created = createBackend({ teamRunId: context.teamRunId, config, runtimeContext });
-    const factory = createFactory(created);
-    const manager = new AgentTeamRunManager({ mixedTeamRunBackendFactory: factory });
-
-    const run = await manager.restoreTeamRun(context);
-
-    expect(run.teamRunId).toBe(context.teamRunId);
-    expect(run.context).toMatchObject({ teamAddress: "/", config, runtimeContext });
-    expect(factory.restoreBackend).toHaveBeenCalledWith(expect.objectContaining({
-      teamRunId: context.teamRunId,
-      teamAddress: "/",
-      runtimeContext,
-    }));
+    await expect(fs.readdir(rootDir)).resolves.toEqual(expect.arrayContaining([
+      "team_run_execution_tree.json",
+      "task_delegation_records.json",
+      "team_communication_messages.json",
+    ]));
+    const entries = (await fs.readdir(rootDir)).filter((name) => name.endsWith(".json"));
+    expect(entries.sort()).toEqual([
+      "task_delegation_records.json",
+      "team_communication_messages.json",
+      "team_run_execution_tree.json",
+    ]);
+    const tree = JSON.parse(await fs.readFile(path.join(rootDir, "team_run_execution_tree.json"), "utf8"));
+    expect(tree).toMatchObject({
+      schemaVersion: 1,
+      rootTeam: {
+        teamRunId: run.teamRunId,
+        coordinatorAddress: "/Coordinator",
+      },
+    });
+    await expect(manager.createTeamRun({ config, teamDefinitionName: "Duplicate" })).rejects.toThrow(
+      "already active",
+    );
   });
 
-  it("routes the unchanged collaboration intent through the mixed backend", async () => {
+  it("restores the strict three-file package and rebuilds runtime context from current tree identity", async () => {
+    const memoryDir = await createMemoryDir();
+    initializeTaskIdentityAllocator(memoryDir);
     const config = createConfig([RuntimeKind.CODEX_APP_SERVER, RuntimeKind.CLAUDE_AGENT_SDK]);
-    const created = createBackend({ teamRunId: "team-runtime-root", config });
-    const manager = new AgentTeamRunManager({ mixedTeamRunBackendFactory: createFactory(created) });
-    const run = await manager.createTeamRun(config, "team-runtime-root");
-    const intent = {
-      recipientAddress: "/Member1",
-      caller: { rootTeamRunId: "team-runtime-root", memberAddress: "/Coordinator" },
-      content: "Please continue.",
-      messageType: "agent_message",
-    } as const;
+    const initialFactory = createFactory();
+    const initial = new AgentTeamRunManager({ memoryDir, mixedTeamRunBackendFactory: initialFactory.factory });
+    await initial.createTeamRun({ config, teamDefinitionName: "Restorable Team" });
+    initialFactory.state.active = false;
+    expect(initial.getTeamRun(config.rootTeam.teamRunId)).toBeNull();
 
-    await expect(run.deliverInterAgentMessage(intent)).resolves.toEqual({ accepted: true });
-    expect(created.backend.deliverInterAgentMessage).toHaveBeenCalledWith(intent);
+    const restoredFactory = createFactory();
+    const restoredManager = new AgentTeamRunManager({ memoryDir, mixedTeamRunBackendFactory: restoredFactory.factory });
+    const restored = await restoredManager.restoreTeamRun(config.rootTeam.teamRunId);
+
+    expect(restored.getExecutionTreeSnapshot()).toMatchObject({
+      schemaVersion: 1,
+      rootTeam: { teamRunId: config.rootTeam.teamRunId },
+    });
+    expect(restored.getTaskRecordsSnapshot()).toEqual({
+      schemaVersion: 1,
+      rootTeamRunId: config.rootTeam.teamRunId,
+      records: [],
+    });
+    expect(restored.getCommunicationSnapshot()).toEqual({
+      schemaVersion: 1,
+      rootTeamRunId: config.rootTeam.teamRunId,
+      messages: [],
+    });
+    expect(restoredFactory.createBackend).toHaveBeenCalledWith(
+      expect.objectContaining({ rootTeam: expect.objectContaining({ teamRunId: config.rootTeam.teamRunId }) }),
+      config.rootTeam.teamRunId,
+      expect.any(Object),
+    );
   });
 
-  it("evicts inactive TeamRuns when queried or listed", async () => {
-    const config = createConfig([RuntimeKind.CODEX_APP_SERVER]);
-    const created = createBackend({ teamRunId: "team-runtime-root", config });
-    const manager = new AgentTeamRunManager({ mixedTeamRunBackendFactory: createFactory(created) });
-    const run = await manager.createTeamRun(config, "team-runtime-root");
-    expect(manager.getActiveRun(run.teamRunId)).toBe(run);
-
-    created.state.active = false;
-    expect(manager.getTeamRun(run.teamRunId)).toBeNull();
-    expect(manager.listActiveRuns()).toEqual([]);
-  });
-
-  it("wraps backend termination failures", async () => {
+  it("emits root lifecycle transitions and unregisters only after accepted termination", async () => {
+    const memoryDir = await createMemoryDir();
+    initializeTaskIdentityAllocator(memoryDir);
     const config = createConfig([RuntimeKind.AUTOBYTEUS]);
-    const created = createBackend({ teamRunId: "team-runtime-root", config });
-    created.backend.terminate = vi.fn().mockRejectedValue(new Error("boom"));
-    const manager = new AgentTeamRunManager({ mixedTeamRunBackendFactory: createFactory(created) });
-    const run = await manager.createTeamRun(config, "team-runtime-root");
+    const factory = createFactory();
+    const manager = new AgentTeamRunManager({ memoryDir, mixedTeamRunBackendFactory: factory.factory });
+    const snapshots: Array<{ teamRunId: string; isActive: boolean }> = [];
+    manager.subscribeToLifecycle(config.rootTeam.teamRunId, (snapshot) => snapshots.push(snapshot));
 
-    await expect(manager.terminateTeamRun(run.teamRunId)).rejects.toBeInstanceOf(AgentTeamTerminationError);
+    await manager.createTeamRun({ config, teamDefinitionName: "Lifecycle Team" });
+    await expect(manager.terminateTeamRun(config.rootTeam.teamRunId)).resolves.toBe(true);
+
+    expect(snapshots).toEqual([
+      { teamRunId: config.rootTeam.teamRunId, isActive: true },
+      { teamRunId: config.rootTeam.teamRunId, isActive: false },
+    ]);
+    expect(manager.getTeamRun(config.rootTeam.teamRunId)).toBeNull();
+    await expect(manager.terminateTeamRun(config.rootTeam.teamRunId)).resolves.toBe(false);
   });
 });

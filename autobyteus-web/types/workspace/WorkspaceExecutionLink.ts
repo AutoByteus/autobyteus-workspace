@@ -6,5 +6,5 @@ export type WorkspaceExecutionLink =
   | {
       kind: 'team'
       teamRunId: string
-      memberAddress: string | null
+      agentRunId: string | null
     }

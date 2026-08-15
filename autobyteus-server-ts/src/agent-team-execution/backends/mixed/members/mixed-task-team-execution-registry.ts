@@ -1,140 +1,175 @@
-import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
-import type { AgentTeamAddress } from "../../../../agent-collaboration/domain/agent-team-address.js";
-import type { AgentOperationResult } from "../../../../agent-execution/domain/agent-operation-result.js";
-import type { StartTaskTeamExecutionRequest } from "../../../domain/task-team-execution.js";
+import type { PrepareTaskTeamInput } from "../../../domain/task-team-execution.js";
+import type { PreparedTaskExecution } from "../../../domain/prepared-task-execution.js";
+import type { PreparedTaskSettlement } from "../../../domain/prepared-task-settlement.js";
+import type { TeamRun } from "../../../domain/team-run.js";
 import type { TeamRunContext } from "../../../domain/team-run-context.js";
-import type { InterAgentMessageDeliveryIntent } from "../../../domain/inter-agent-message-delivery.js";
-import type { TaskTeamActiveRunDirectory } from "../../../task-delegation/task-team-active-run-directory.js";
+import type { TeamRunAgentTeamNode } from "../../../domain/team-run-config.js";
 import type { MixedSubTeamRunFactory } from "../mixed-sub-team-run-factory.js";
 import type { MixedTeamRunContext } from "../mixed-team-run-context.js";
-import { MixedTaskTeamMemberHandle } from "./mixed-task-team-member-handle.js";
-import type { MixedTeamEventPublish } from "./mixed-team-member-handle.js";
 
+type PreparedState = "preparing" | "sealed" | "committed" | "aborted";
+
+/** Direct task-Team mechanics for one TeamRun; root task policy stays outside. */
 export class MixedTaskTeamExecutionRegistry {
-  private readonly handles = new Map<string, MixedTaskTeamMemberHandle>();
-  private readonly pendingWork = new Map<string, AgentInputUserMessage>();
+  private readonly active = new Map<string, TeamRun>();
+  private readonly reserved = new Set<string>();
+  private readonly preparedTeamRuns = new Map<string, TeamRun>();
+  private readonly settling = new Set<string>();
 
   constructor(private readonly options: {
     teamContext: TeamRunContext<MixedTeamRunContext>;
     subTeamRunFactory: MixedSubTeamRunFactory;
-    taskTeamActiveRunDirectory: TaskTeamActiveRunDirectory;
-    publish: MixedTeamEventPublish;
-    deliverInterAgentMessage: (request: InterAgentMessageDeliveryIntent) => Promise<AgentOperationResult>;
   }) {}
 
-  listHandles(): MixedTaskTeamMemberHandle[] { return [...this.handles.values()]; }
+  listTeamRuns(): readonly TeamRun[] { return Object.freeze([...this.active.values()]); }
+  listPreparedTeamRuns(): readonly TeamRun[] { return Object.freeze([...this.preparedTeamRuns.values()]); }
+  get(teamRunId: string): TeamRun | null { return this.active.get(teamRunId) ?? null; }
 
-  async start(request: StartTaskTeamExecutionRequest): Promise<AgentOperationResult> {
-    const source = this.options.teamContext.index.getTeam(request.teamNode.address);
-    if (!source || source.coordinatorAddress !== request.teamNode.coordinatorAddress) {
-      return { accepted: false, code: "TARGET_TEAM_NOT_FOUND", message: `Task AgentTeam target '${request.teamNode.address}' was not found.` };
+  async prepare(input: PrepareTaskTeamInput): Promise<PreparedTaskExecution> {
+    const teamRunId = input.teamRunId.trim();
+    if (!teamRunId || input.address !== input.teamNode.address || input.teamNode.teamRunId !== teamRunId) {
+      throw new Error("Task Team preparation requires one exact placement and TeamRun ID.");
     }
-    const id = request.receiver.taskTeamRunIds.at(-1)?.trim() ?? "";
-    const expectedTaskTeamRunIds = [...this.options.teamContext.taskTeamRunIds, id];
-    if (
-      !request.taskId.trim() ||
-      !id ||
-      request.teamNode.teamRunId !== id ||
-      request.receiver.rootTeamRunId !== this.options.teamContext.config.rootTeam.teamRunId ||
-      request.receiver.memberAddress !== source.coordinatorAddress ||
-      request.receiver.taskAgentRunId !== null ||
-      request.receiver.taskTeamRunIds.length !== expectedTaskTeamRunIds.length ||
-      request.receiver.taskTeamRunIds.some((item, index) => item !== expectedTaskTeamRunIds[index])
-    ) {
-      return { accepted: false, code: "TASK_TEAM_IDENTITY_MISMATCH", message: `Task AgentTeam '${source.address}' receiver does not match its coordinator or task execution chain.` };
+    if (this.active.has(teamRunId) || this.reserved.has(teamRunId)) {
+      throw new Error(`Task TeamRun '${teamRunId}' is already active or reserved.`);
     }
-    const existing = this.handles.get(id);
-    if (existing?.isActive()) {
-      return { accepted: false, code: "TASK_TEAM_ALREADY_ACTIVE", message: `Task TeamRun '${id}' is already active.` };
-    }
-    existing?.dispose();
-    const handle = new MixedTaskTeamMemberHandle({
-      parentContext: this.options.teamContext,
-      request,
-      subTeamRunFactory: this.options.subTeamRunFactory,
-      taskTeamActiveRunDirectory: this.options.taskTeamActiveRunDirectory,
-      publish: this.options.publish,
-      deliverInterAgentMessage: this.options.deliverInterAgentMessage,
-    });
-    this.handles.set(id, handle);
-    this.pendingWork.set(id, request.message);
+    this.reserved.add(teamRunId);
+    let state: PreparedState = "preparing";
+    let root: TeamRun;
     try {
-      await handle.prepare();
-      return { accepted: true };
+      root = await this.options.subTeamRunFactory.createOrRestore({
+        handoffs: input.handoffs,
+        rootTeamRunId: this.options.teamContext.rootTeamRunId,
+        teamNode: input.teamNode,
+      });
+      this.preparedTeamRuns.set(teamRunId, root);
     } catch (error) {
-      await this.cleanup(id, handle);
+      this.reserved.delete(teamRunId);
       throw error;
     }
+    let preparedTeamRuns: TeamRun[];
+    try {
+      preparedTeamRuns = await this.materializeSubtree(root, input.teamNode);
+    } catch (error) {
+      this.reserved.delete(teamRunId);
+      this.preparedTeamRuns.delete(teamRunId);
+      await root.terminate();
+      throw error;
+    }
+    const coordinator = input.teamNode.children.find((node) =>
+      node.kind === "agent" && node.address === input.teamNode.coordinatorAddress,
+    );
+    if (!coordinator || coordinator.kind !== "agent") {
+      this.reserved.delete(teamRunId);
+      this.preparedTeamRuns.delete(teamRunId);
+      await root.terminate();
+      throw new Error(`Task TeamRun '${teamRunId}' has no exact coordinator binding.`);
+    }
+    return {
+      binding: Object.freeze({
+        kind: "team",
+        address: input.address,
+        teamRunId,
+        coordinatorAgentRunId: coordinator.agentRunId,
+      }),
+      preparedTeamRuns: Object.freeze(preparedTeamRuns),
+      sealForCommit: () => {
+        if (state !== "preparing" || !this.reserved.has(teamRunId)) throw new Error(`Task TeamRun '${teamRunId}' cannot be sealed.`);
+        state = "sealed";
+      },
+      commit: () => {
+        if (state !== "sealed" || !this.reserved.delete(teamRunId)) throw new Error(`Task TeamRun '${teamRunId}' is not sealed.`);
+        this.preparedTeamRuns.delete(teamRunId);
+        this.active.set(teamRunId, root);
+        state = "committed";
+        let released = false;
+        return Object.freeze({
+          releaseWork: () => {
+            if (released) return;
+            released = true;
+            queueMicrotask(() => { void root.postMessage(input.message, coordinator.agentRunId); });
+          },
+        });
+      },
+      abort: async () => {
+        if (state === "committed" || state === "aborted") return;
+        state = "aborted";
+        this.reserved.delete(teamRunId);
+        this.preparedTeamRuns.delete(teamRunId);
+        await root.terminate();
+      },
+    };
   }
 
-  markActive(taskTeamRunId: string): void {
-    if (!this.options.taskTeamActiveRunDirectory.markActive(taskTeamRunId)) {
-      throw new Error(`Prepared task TeamRun '${taskTeamRunId}' was not found.`);
+  async prepareSettlement(taskId: string, teamRunId: string): Promise<PreparedTaskSettlement | null> {
+    const run = this.active.get(teamRunId);
+    if (!run) return null;
+    if (this.settling.has(teamRunId)) throw new Error(`Task TeamRun '${teamRunId}' is already preparing settlement.`);
+    this.settling.add(teamRunId);
+    let local;
+    try {
+      local = await run.prepareTermination();
+    } catch (error) {
+      this.settling.delete(teamRunId);
+      throw error;
     }
-  }
+    if (this.active.get(teamRunId) !== run || run.hasOpenExecutionWork()) {
+      local.cancel();
+      this.settling.delete(teamRunId);
+      return null;
+    }
 
-  releaseWork(target: AgentTeamAddress, taskTeamRunId: string): void {
-    const id = taskTeamRunId.trim();
-    const handle = this.handles.get(id);
-    const message = this.pendingWork.get(id);
-    if (!handle || !message || handle.context.address !== target) {
-      throw new Error(`Prepared task TeamRun '${id}' was not found at '${target}'.`);
-    }
-    this.pendingWork.delete(id);
-    queueMicrotask(() => {
-      void handle.postMessage(message).then((result) => {
-        if (!result.accepted) void this.cleanup(id, handle);
-      }).catch(() => { void this.cleanup(id, handle); });
+    let state: "prepared" | "cancelled" | "committed" = "prepared";
+    let committed: ReturnType<PreparedTaskSettlement["commitAfterDurability"]> | null = null;
+    const prepared: PreparedTaskSettlement = Object.freeze({
+      taskId,
+      binding: Object.freeze({ kind: "team", address: run.context.teamNode.address, teamRunId, coordinatorAgentRunId: this.coordinatorAgentRunId(run) }),
+      cancelBeforeDurability: () => {
+        if (state !== "prepared") return;
+        state = "cancelled";
+        local.cancel();
+        this.settling.delete(teamRunId);
+      },
+      commitAfterDurability: () => {
+        if (state === "cancelled") throw new Error(`Task TeamRun '${teamRunId}' settlement was cancelled.`);
+        if (committed) return committed;
+        if (this.active.get(teamRunId) !== run) throw new Error(`Task TeamRun '${teamRunId}' changed before settlement commit.`);
+        state = "committed";
+        this.active.delete(teamRunId);
+        this.settling.delete(teamRunId);
+        const localCommit = local.commit();
+        committed = Object.freeze({ finishLocalTeardown: () => localCommit.finish() });
+        return committed;
+      },
     });
-  }
-
-  postMessage(address: AgentTeamAddress, taskTeamRunId: string, message: AgentInputUserMessage) {
-    const resolved = this.resolve(address, taskTeamRunId);
-    return "accepted" in resolved ? Promise.resolve(resolved) : resolved.postMessage(message);
-  }
-
-  async settle(address: AgentTeamAddress, taskTeamRunId: string) {
-    const resolved = this.resolve(address, taskTeamRunId);
-    if ("accepted" in resolved) return resolved;
-    const result = await resolved.terminate();
-    if (result.accepted) this.forget(taskTeamRunId);
-    return result;
-  }
-
-  approveToolInvocation(taskTeamRunId: string, target: AgentTeamAddress, invocationId: string, approved: boolean, reason: string | null = null, targetAgentRunId: string | null = null) {
-    const handle = this.handles.get(taskTeamRunId.trim());
-    return handle
-      ? handle.approveToolInvocation(target, invocationId, approved, reason, targetAgentRunId)
-      : Promise.resolve({ accepted: false, code: "TASK_TEAM_RUN_NOT_FOUND", message: `Task TeamRun '${taskTeamRunId}' was not found.` });
-  }
-
-  async terminateAll(): Promise<AgentOperationResult> {
-    for (const [id, handle] of this.handles) {
-      const result = await handle.terminate();
-      if (!result.accepted) return result;
-      this.forget(id);
-    }
-    return { accepted: true };
+    return prepared;
   }
 
   dispose(): void {
-    for (const handle of this.handles.values()) handle.dispose();
-    this.handles.clear();
-    this.pendingWork.clear();
+    this.active.clear();
+    this.reserved.clear();
+    this.preparedTeamRuns.clear();
+    this.settling.clear();
   }
 
-  private resolve(address: AgentTeamAddress, id: string): MixedTaskTeamMemberHandle | AgentOperationResult {
-    const handle = this.handles.get(id.trim());
-    if (!handle) return { accepted: false, code: "TASK_TEAM_RUN_NOT_FOUND", message: `Task TeamRun '${id}' was not found.` };
-    if (handle.context.address !== address) return { accepted: false, code: "TASK_TEAM_ADDRESS_MISMATCH", message: `Task TeamRun '${id}' is not at '${address}'.` };
-    return handle;
+  private coordinatorAgentRunId(run: TeamRun): string {
+    const node = run.context.teamNode;
+    const coordinator = node.children.find((child) =>
+      child.kind === "agent" && child.address === node.coordinatorAddress,
+    );
+    if (!coordinator || coordinator.kind !== "agent") {
+      throw new Error(`Task TeamRun '${run.teamRunId}' has no exact coordinator AgentRun.`);
+    }
+    return coordinator.agentRunId;
   }
 
-  private async cleanup(id: string, handle: MixedTaskTeamMemberHandle): Promise<void> {
-    try { await handle.terminate(); } catch { handle.dispose(); } finally { this.forget(id); }
-  }
-  private forget(id: string): void {
-    this.handles.delete(id.trim());
-    this.pendingWork.delete(id.trim());
+  private async materializeSubtree(root: TeamRun, node: TeamRunAgentTeamNode): Promise<TeamRun[]> {
+    const output = [root];
+    for (const child of node.children) {
+      if (child.kind !== "agent_team") continue;
+      const childRun = await root.getOrCreateConfiguredChildTeam(child.teamRunId);
+      output.push(...await this.materializeSubtree(childRun, child));
+    }
+    return output;
   }
 }

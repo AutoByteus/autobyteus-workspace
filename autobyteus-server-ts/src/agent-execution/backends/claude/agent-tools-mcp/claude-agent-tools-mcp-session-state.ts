@@ -33,7 +33,7 @@ export class ClaudeAgentToolsMcpSessionState {
         senderRunId: runContext.runId,
         senderName:
           (runContext.config.memberTeamContext
-            ? getAgentTeamAddressBasename(runContext.config.memberTeamContext.memberAddress)
+            ? getAgentTeamAddressBasename(runContext.config.memberTeamContext.identity.memberAddress)
             : null) ??
           runContext.config.agentDefinitionId,
         runtimeKind: runContext.config.runtimeKind,
@@ -63,8 +63,7 @@ const buildAgentToolsMcpOwnerIdentity = (
   }
   return {
     runId: runContext.runId,
-    executionAddress: memberTeamContext.executionAddress,
-    agentRunId: memberTeamContext.agentRunId,
-    displayName: getAgentTeamAddressBasename(memberTeamContext.memberAddress),
+    teamIdentity: memberTeamContext.identity,
+    displayName: getAgentTeamAddressBasename(memberTeamContext.identity.memberAddress),
   };
 };

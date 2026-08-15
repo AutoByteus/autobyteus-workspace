@@ -23,12 +23,9 @@ const createMemberTeamContext = (
     message?: string;
   }>,
 ) => testMemberTeamContext({
-  teamRunId: "team-run-1",
   rootTeamRunId: "team-run-1",
-  teamDefinitionId: "team-def-1",
   memberAddress: "/professor",
   agentRunId: "run-professor",
-  coordinatorAddress: "/professor",
   deliverInterAgentMessage,
 });
 
@@ -57,7 +54,7 @@ describe("AutoByteus server-owned send_message_to", () => {
     const { dispatcher, globalRouter } = createDispatcher();
     const tool = createBoundAutoByteusSendMessageToTool(
       buildAgentRunMessageSenderContext({
-        senderRunId: memberTeamContext.agentRunId,
+        senderRunId: memberTeamContext.identity.agentRunId,
         senderName: "professor",
         runtimeKind: RuntimeKind.AUTOBYTEUS,
         memberTeamContext,
@@ -66,7 +63,7 @@ describe("AutoByteus server-owned send_message_to", () => {
     );
 
     const result = parseEnvelope(await tool.execute({}, {
-      recipient_address: "./research_team/research_lead",
+      recipient_address: "/research_team/research_lead",
       content: "Please review this handoff.",
       message_type: "handoff",
     }));
@@ -74,14 +71,24 @@ describe("AutoByteus server-owned send_message_to", () => {
     expect(result).toEqual({
       accepted: true,
       code: "DELIVERED",
-      message: "Delivered message to ./research_team/research_lead.",
+      message: "Delivered message to /research_team/research_lead.",
       result: null,
     });
     expect(globalRouter.deliver).not.toHaveBeenCalled();
     expect(deliverInterAgentMessage).toHaveBeenCalledWith(expect.objectContaining({
       rootTeamRunId: "team-run-1",
-      recipientAddress: "./research_team/research_lead",
-      callerAddressing: expect.objectContaining({ memberAddress: "/professor" }),
+      recipientAddress: "/research_team/research_lead",
+      sender: {
+        participant: {
+          kind: "agent",
+          identity: {
+            rootTeamRunId: "team-run-1",
+            memberAddress: "/professor",
+            agentRunId: "run-professor",
+          },
+          displayName: "professor",
+        },
+      },
       content: "Please review this handoff.",
       messageType: "handoff",
     }));
@@ -134,7 +141,7 @@ describe("AutoByteus server-owned send_message_to", () => {
     const { dispatcher } = createDispatcher();
     const tool = createBoundAutoByteusSendMessageToTool(
       buildAgentRunMessageSenderContext({
-        senderRunId: memberTeamContext.agentRunId,
+        senderRunId: memberTeamContext.identity.agentRunId,
         senderName: "professor",
         runtimeKind: RuntimeKind.AUTOBYTEUS,
         memberTeamContext,
@@ -189,7 +196,7 @@ describe("AutoByteus server-owned send_message_to", () => {
     const deliverInterAgentMessage = vi.fn(async () => result);
     const memberTeamContext = createMemberTeamContext(deliverInterAgentMessage);
     const sender = buildAgentRunMessageSenderContext({
-      senderRunId: memberTeamContext.agentRunId,
+      senderRunId: memberTeamContext.identity.agentRunId,
       senderName: "professor",
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
       memberTeamContext,

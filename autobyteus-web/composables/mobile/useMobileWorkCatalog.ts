@@ -12,10 +12,6 @@ import type {
   MobileWorkListItem,
 } from '~/types/mobileWork';
 import type { RunHistoryItem, TeamRunHistoryItem } from '~/stores/runHistoryTypes';
-import {
-  createTeamExecutionAddress,
-  serializeTeamExecutionAddress,
-} from '~/types/agent/TeamExecutionAddress';
 
 const toStatusLabel = (value: string | null | undefined, isActive: boolean): string => {
   if (isActive) {
@@ -143,19 +139,13 @@ export function useMobileWorkCatalog() {
 
       for (const team of workspace.teamDefinitions) {
         for (const run of team.runs) {
-          const validMemberAddresses = new Set(run.members.map((member) => member.memberAddress).filter(Boolean));
-          const rememberedExecutionAddress = mobileWorkStore.getRememberedFocusedTeamMember(run.teamRunId);
-          const memberAddress = rememberedExecutionAddress
-            && rememberedExecutionAddress.rootTeamRunId === run.teamRunId
-            && validMemberAddresses.has(rememberedExecutionAddress.memberAddress)
-            ? rememberedExecutionAddress.memberAddress
-            : (run.coordinatorAddress && validMemberAddresses.has(run.coordinatorAddress)
-                ? run.coordinatorAddress
-                : (run.members[0]?.memberAddress || '/'));
-          const focusedExecutionAddress = createTeamExecutionAddress({
-            rootTeamRunId: run.teamRunId,
-            memberAddress,
-          });
+          const membersByAgentRunId = new Map(run.members.map((member) => [member.agentRunId, member]));
+          const rememberedAgentRunId = mobileWorkStore.getRememberedFocusedTeamMember(run.teamRunId);
+          const coordinatorAgentRunId = run.members.find((member) => member.memberAddress === run.coordinatorAddress)?.agentRunId ?? null;
+          const focusedAgentRunId = rememberedAgentRunId && membersByAgentRunId.has(rememberedAgentRunId)
+            ? rememberedAgentRunId
+            : coordinatorAgentRunId ?? run.members[0]?.agentRunId ?? '';
+          if (!focusedAgentRunId) continue;
           const context: MobileWorkContext = {
             kind: 'team-run',
             teamRunId: run.teamRunId,
@@ -163,13 +153,13 @@ export function useMobileWorkCatalog() {
             title: run.teamDefinitionName || team.teamDefinitionName || 'Team',
             summary: summarizeTeamRun(run),
             workspaceRootPath: workspace.workspaceRootPath,
-            focusedExecutionAddress,
+            focusedAgentRunId,
             isActive: run.isActive,
             lastActivityAt: run.createdAt,
             statusLabel: run.isActive ? 'Active' : 'Inactive',
           };
           items.push({
-            key: `team-run:${run.teamRunId}:${serializeTeamExecutionAddress(focusedExecutionAddress)}`,
+            key: `team-run:${run.teamRunId}:${focusedAgentRunId}`,
             label: context.title,
             detail: context.summary,
             meta: `${context.statusLabel} · ${workspace.workspaceName || workspace.workspaceRootPath || 'Workspace'}`,

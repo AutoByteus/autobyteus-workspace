@@ -1,0 +1,636 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Agent Team topology, executions, tasks, and messages</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f4f3ee;
+      --panel: #fffdf8;
+      --ink: #1e2725;
+      --muted: #66706d;
+      --line: #c9cfcb;
+      --topology: #11675f;
+      --topology-soft: #dcece8;
+      --execution: #9b4f19;
+      --execution-soft: #f7e7d8;
+      --task: #6b4bb8;
+      --task-soft: #ebe3fb;
+      --message: #1673c9;
+      --message-soft: #deefff;
+      --shadow: 0 14px 45px rgba(45, 55, 50, 0.10);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 10% 10%, rgba(17, 103, 95, 0.10), transparent 30rem),
+        radial-gradient(circle at 90% 0%, rgba(107, 75, 184, 0.10), transparent 28rem),
+        var(--bg);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    main {
+      width: min(1480px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 36px 0 54px;
+    }
+
+    h1, h2, h3, p { margin-top: 0; }
+
+    h1 {
+      max-width: 900px;
+      margin-bottom: 12px;
+      font-size: clamp(2rem, 4vw, 4.2rem);
+      line-height: 0.98;
+      letter-spacing: -0.055em;
+    }
+
+    .lede {
+      max-width: 850px;
+      color: var(--muted);
+      font-size: 1.05rem;
+      line-height: 1.65;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 26px 0 18px;
+    }
+
+    button {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255, 253, 248, 0.82);
+      color: var(--ink);
+      padding: 10px 15px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 120ms ease, background 120ms ease, border-color 120ms ease;
+    }
+
+    button:hover { transform: translateY(-1px); }
+    button:focus-visible { outline: 3px solid rgba(22, 115, 201, 0.28); outline-offset: 2px; }
+    button[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: white; }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(250px, 0.78fr) minmax(550px, 1.7fr) minmax(280px, 0.82fr);
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .panel {
+      border: 1px solid rgba(115, 125, 120, 0.22);
+      border-radius: 22px;
+      background: rgba(255, 253, 248, 0.88);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .panel-head {
+      padding: 20px 22px 16px;
+      border-bottom: 1px solid rgba(115, 125, 120, 0.16);
+    }
+
+    .eyebrow {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .panel h2 { margin-bottom: 5px; font-size: 1.12rem; }
+    .panel-head p { margin-bottom: 0; color: var(--muted); font-size: 0.88rem; line-height: 1.45; }
+
+    .authority-list { display: grid; gap: 10px; padding: 16px; }
+
+    .authority {
+      border: 1px solid var(--line);
+      border-left-width: 5px;
+      border-radius: 14px;
+      padding: 13px 14px;
+      background: #fff;
+    }
+
+    .authority.topology { border-left-color: var(--topology); }
+    .authority.execution { border-left-color: var(--execution); }
+    .authority.task { border-left-color: var(--task); }
+    .authority.message { border-left-color: var(--message); }
+    .authority h3 { margin-bottom: 5px; font-size: 0.93rem; }
+    .authority p { margin: 0; color: var(--muted); font-size: 0.79rem; line-height: 1.45; }
+    code { font-family: "SFMono-Regular", Consolas, monospace; }
+
+    .canvas {
+      position: relative;
+      min-height: 700px;
+      padding: 20px;
+      background-image:
+        linear-gradient(rgba(55, 65, 61, 0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(55, 65, 61, 0.035) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 14px;
+      margin-bottom: 18px;
+      color: var(--muted);
+      font-size: 0.76rem;
+    }
+
+    .legend span { display: inline-flex; align-items: center; gap: 7px; }
+    .swatch { width: 20px; height: 4px; border-radius: 3px; }
+    .swatch.topology { background: var(--topology); }
+    .swatch.execution { background: var(--execution); }
+    .swatch.task { background: var(--task); }
+    .swatch.message { background: var(--message); }
+
+    .tree,
+    .tree ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .tree ul {
+      position: relative;
+      margin-left: 25px;
+      padding-left: 27px;
+    }
+
+    .tree ul::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 20px;
+      left: 7px;
+      width: 2px;
+      background: var(--topology);
+      opacity: 0.38;
+    }
+
+    .tree li { position: relative; margin: 12px 0; }
+
+    .tree ul > li::before {
+      content: "";
+      position: absolute;
+      top: 29px;
+      left: -20px;
+      width: 20px;
+      height: 2px;
+      background: var(--topology);
+      opacity: 0.38;
+    }
+
+    .tree li.task-branch > ul::before,
+    .tree li.task-branch > ul > li::before {
+      background: var(--task);
+      opacity: 0.65;
+    }
+
+    .node {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 11px;
+      width: min(100%, 560px);
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      background: rgba(255, 255, 255, 0.96);
+      padding: 11px 12px;
+      text-align: left;
+      box-shadow: 0 7px 19px rgba(48, 57, 53, 0.06);
+    }
+
+    .node:hover { border-color: #88938f; }
+
+    .icon {
+      display: grid;
+      place-items: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: var(--topology-soft);
+      color: var(--topology);
+      font-size: 0.72rem;
+      font-weight: 900;
+    }
+
+    .node.task .icon { background: var(--task-soft); color: var(--task); }
+    .node.execution .icon { background: var(--execution-soft); color: var(--execution); }
+
+    .node-title { display: block; margin-bottom: 3px; font-size: 0.88rem; font-weight: 800; }
+    .node-meta { display: block; color: var(--muted); font-family: "SFMono-Regular", Consolas, monospace; font-size: 0.69rem; line-height: 1.4; overflow-wrap: anywhere; }
+
+    .badges { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 7px; }
+    .badge { border-radius: 999px; padding: 3px 7px; font-size: 0.61rem; font-weight: 850; letter-spacing: 0.03em; text-transform: uppercase; }
+    .badge.topology { color: var(--topology); background: var(--topology-soft); }
+    .badge.execution { color: var(--execution); background: var(--execution-soft); }
+    .badge.task { color: var(--task); background: var(--task-soft); }
+
+    .task-label {
+      display: inline-flex;
+      gap: 7px;
+      align-items: center;
+      margin: 3px 0 7px;
+      border-radius: 999px;
+      background: var(--task-soft);
+      color: var(--task);
+      padding: 5px 9px;
+      font-size: 0.7rem;
+      font-weight: 850;
+    }
+
+    .message-pulse {
+      display: none;
+      position: absolute;
+      z-index: 5;
+      top: 161px;
+      left: 34%;
+      width: 49%;
+      border-top: 3px dashed var(--message);
+      transform: rotate(18deg);
+      transform-origin: left center;
+      filter: drop-shadow(0 0 5px rgba(22, 115, 201, 0.45));
+    }
+
+    .message-pulse::after {
+      content: "message event → exact AgentRun";
+      position: absolute;
+      right: 0;
+      top: -30px;
+      border-radius: 999px;
+      background: var(--message-soft);
+      color: var(--message);
+      padding: 5px 9px;
+      font-size: 0.65rem;
+      font-weight: 850;
+      white-space: nowrap;
+      transform: rotate(-18deg);
+    }
+
+    body.show-message .message-pulse { display: block; animation: pulse 1.6s ease-in-out infinite; }
+    @keyframes pulse { 50% { opacity: 0.38; } }
+
+    body.topology-only .execution-only,
+    body.topology-only .task-only { display: none; }
+
+    body.hide-tasks .task-only { display: none; }
+
+    .inspector { padding: 17px; }
+    .inspector-card {
+      min-height: 290px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: #fff;
+      padding: 17px;
+    }
+    .inspector-card h3 { margin-bottom: 7px; font-size: 1rem; }
+    .inspector-card > p { color: var(--muted); font-size: 0.82rem; line-height: 1.5; }
+    .field { margin: 13px 0; }
+    .field dt { margin-bottom: 4px; color: var(--muted); font-size: 0.65rem; font-weight: 850; letter-spacing: 0.08em; text-transform: uppercase; }
+    .field dd { margin: 0; font-family: "SFMono-Regular", Consolas, monospace; font-size: 0.72rem; line-height: 1.45; overflow-wrap: anywhere; }
+
+    .rule {
+      margin-top: 15px;
+      border-radius: 13px;
+      background: #f0efea;
+      padding: 12px;
+      color: var(--muted);
+      font-size: 0.76rem;
+      line-height: 1.5;
+    }
+
+    .formula {
+      margin-top: 16px;
+      border: 1px solid rgba(115, 125, 120, 0.22);
+      border-radius: 22px;
+      background: var(--ink);
+      color: white;
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .formula h2 { margin-bottom: 12px; font-size: 1.15rem; }
+    .formula-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+    .formula-card { border: 1px solid rgba(255,255,255,0.16); border-radius: 14px; padding: 14px; }
+    .formula-card strong { display: block; margin-bottom: 5px; font-size: 0.82rem; }
+    .formula-card span { color: rgba(255,255,255,0.68); font-size: 0.74rem; line-height: 1.45; }
+    .formula-result { margin: 18px 0 0; color: rgba(255,255,255,0.78); font-family: "SFMono-Regular", Consolas, monospace; font-size: 0.83rem; }
+
+    @media (max-width: 1100px) {
+      .layout { grid-template-columns: 0.8fr 1.7fr; }
+      .layout > .panel:last-child { grid-column: 1 / -1; }
+      .inspector-card { min-height: auto; }
+    }
+
+    @media (max-width: 760px) {
+      main { width: min(100% - 20px, 700px); padding-top: 24px; }
+      .layout { grid-template-columns: 1fr; }
+      .layout > .panel:last-child { grid-column: auto; }
+      .canvas { min-height: auto; padding: 14px; }
+      .tree ul { margin-left: 9px; padding-left: 22px; }
+      .formula-grid { grid-template-columns: 1fr; }
+      .message-pulse { display: none !important; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <span class="eyebrow">Concept visualization · not a proposed storage schema</span>
+    <h1>One understandable view, three durable authorities.</h1>
+    <p class="lede">
+      The UI projects the rooted execution tree, delegated tasks, and communication records into one view because people understand work hierarchically.
+      The three stored authorities stay separate. A message is shown only as activity—it never becomes a structural edge.
+    </p>
+
+    <div class="controls" aria-label="Visualization controls">
+      <button type="button" data-mode="combined" aria-pressed="true">Combined projection</button>
+      <button type="button" data-mode="topology" aria-pressed="false">Configured tree only</button>
+      <button type="button" data-mode="executions" aria-pressed="false">Execution tree</button>
+      <button type="button" data-mode="message" aria-pressed="false">Show one message event</button>
+    </div>
+
+    <section class="layout">
+      <aside class="panel" aria-labelledby="authority-heading">
+        <div class="panel-head">
+          <span class="eyebrow">Underlying truth</span>
+          <h2 id="authority-heading">Separate authorities</h2>
+          <p>The display joins them; the domain does not collapse them.</p>
+        </div>
+        <div class="authority-list">
+          <article class="authority execution">
+            <h3>TeamRun execution tree</h3>
+            <p>Mounted logical placements, launch facts, concrete TeamRun and AgentRun identities, containment, and task-execution lifecycle.</p>
+          </article>
+          <article class="authority task">
+            <h3>Task ledger</h3>
+            <p>Delegator, recipient address, fresh assignee execution, status, result, and review.</p>
+          </article>
+          <article class="authority message">
+            <h3>Communication history</h3>
+            <p>Exact sending and receiving AgentRun IDs, content, type, references, and time. No structural link is stored.</p>
+          </article>
+        </div>
+      </aside>
+
+      <section class="panel" aria-labelledby="projection-heading">
+        <div class="panel-head">
+          <span class="eyebrow">User-facing projection</span>
+          <h2 id="projection-heading">Software Engineering Team</h2>
+          <p>Solid green branches are configured membership. Purple branches are task-created execution containment.</p>
+        </div>
+        <div class="canvas">
+          <div class="legend" aria-label="Legend">
+            <span><i class="swatch topology"></i> topology membership</span>
+            <span><i class="swatch execution"></i> concrete execution</span>
+            <span><i class="swatch task"></i> task execution + task-record overlay</span>
+            <span><i class="swatch message"></i> transient message</span>
+          </div>
+          <div class="message-pulse" aria-hidden="true"></div>
+          <ul class="tree">
+            <li>
+              <button class="node execution" data-node="root">
+                <span class="icon">TEAM</span>
+                <span>
+                  <span class="node-title">Software Engineering</span>
+                  <span class="node-meta">structural root / · not a recipient</span>
+                  <span class="badges">
+                    <span class="badge topology">topology</span>
+                    <span class="badge execution execution-only">TeamRun team-run-root</span>
+                  </span>
+                </span>
+              </button>
+              <ul>
+                <li>
+                  <button class="node execution" data-node="designer">
+                    <span class="icon">AGENT</span>
+                    <span>
+                      <span class="node-title">Solution Designer</span>
+                      <span class="node-meta">/solution_designer</span>
+                      <span class="badges">
+                        <span class="badge topology">role</span>
+                        <span class="badge execution execution-only">AgentRun agent-101</span>
+                      </span>
+                    </span>
+                  </button>
+                </li>
+                <li>
+                  <button class="node execution" data-node="backendTeam">
+                    <span class="icon">TEAM</span>
+                    <span>
+                      <span class="node-title">Backend Team</span>
+                      <span class="node-meta">/backend_team</span>
+                      <span class="badges">
+                        <span class="badge topology">role subtree</span>
+                        <span class="badge execution execution-only">TeamRun team-run-200</span>
+                      </span>
+                    </span>
+                  </button>
+                  <ul>
+                    <li>
+                      <button class="node execution" data-node="backendEngineer">
+                        <span class="icon">AGENT</span>
+                        <span>
+                          <span class="node-title">Backend Engineer</span>
+                          <span class="node-meta">/backend_team/backend_engineer</span>
+                          <span class="badges">
+                            <span class="badge topology">role</span>
+                            <span class="badge execution execution-only">AgentRun agent-202</span>
+                          </span>
+                        </span>
+                      </button>
+                    </li>
+                    <li class="task-branch task-only">
+                      <span class="task-label">Task task-401 · delegated by agent-101 · active</span>
+                      <button class="node task" data-node="taskAgent">
+                        <span class="icon">TASK</span>
+                        <span>
+                          <span class="node-title">Fresh Backend Engineer task execution</span>
+                          <span class="node-meta">/backend_team/backend_engineer</span>
+                          <span class="badges">
+                            <span class="badge task">task record overlay</span>
+                            <span class="badge execution">AgentRun agent-901</span>
+                          </span>
+                        </span>
+                      </button>
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  <button class="node execution" data-node="qaTeam">
+                    <span class="icon">TEAM</span>
+                    <span>
+                      <span class="node-title">QA Team</span>
+                      <span class="node-meta">/qa_team</span>
+                      <span class="badges">
+                        <span class="badge topology">role subtree</span>
+                        <span class="badge execution execution-only">TeamRun team-run-300</span>
+                      </span>
+                    </span>
+                  </button>
+                </li>
+                <li class="task-branch task-only">
+                  <span class="task-label">Task task-402 · delegated by agent-901 · active</span>
+                  <button class="node task" data-node="taskTeam">
+                    <span class="icon">TEAM</span>
+                    <span>
+                      <span class="node-title">Fresh QA Team task execution</span>
+                      <span class="node-meta">/qa_team</span>
+                      <span class="badges">
+                        <span class="badge task">task record overlay</span>
+                        <span class="badge execution">TeamRun task-team-902</span>
+                      </span>
+                    </span>
+                  </button>
+                  <ul>
+                    <li>
+                      <button class="node execution" data-node="taskCoordinator">
+                        <span class="icon">AGENT</span>
+                        <span>
+                          <span class="node-title">QA Coordinator</span>
+                          <span class="node-meta">/qa_team/qa_coordinator · AgentRun agent-903</span>
+                        </span>
+                      </button>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <aside class="panel" aria-labelledby="inspector-heading">
+        <div class="panel-head">
+          <span class="eyebrow">Selected item</span>
+          <h2 id="inspector-heading">Which authority owns it?</h2>
+          <p>Select any node in the projection.</p>
+        </div>
+        <div class="inspector">
+          <article class="inspector-card" id="inspector" aria-live="polite"></article>
+          <div class="rule">
+            <strong>Important:</strong> <code>address</code> identifies the logical placement. A fresh task execution has its own AgentRun or TeamRun identity. The UI joins those facts without changing either one.
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="formula">
+      <span class="eyebrow">Projection formula</span>
+      <h2>The UI reads three authorities; it does not create another domain model.</h2>
+      <div class="formula-grid">
+        <div class="formula-card"><strong>Execution tree</strong><span>What was mounted, instantiated, and contained?</span></div>
+        <div class="formula-card"><strong>Task ledger</strong><span>Why was the fresh execution created?</span></div>
+        <div class="formula-card"><strong>Communication history</strong><span>Which exact AgentRuns exchanged this message?</span></div>
+      </div>
+      <p class="formula-result">displayTree = project(executionTree, taskRecords, communicationRecords)</p>
+    </section>
+  </main>
+
+  <script>
+    const nodeDetails = {
+      root: {
+        title: "Root Team execution",
+        owner: "TeamRun execution tree",
+        identity: "team-run-root · structural root /",
+        explanation: "The root execution owns the complete mounted tree. The structural root slash is context, not an Agent-facing recipient."
+      },
+      designer: {
+        title: "Persistent Agent execution",
+        owner: "TeamRun execution tree",
+        identity: "/solution_designer · agent-101",
+        explanation: "The address identifies the configured placement. The AgentRun ID identifies this exact execution."
+      },
+      taskAgent: {
+        title: "Task Agent execution",
+        owner: "Task ledger + execution tree",
+        identity: "task-401 · agent-901",
+        explanation: "The task ledger records that agent-101 delegated task-401. The execution tree contains fresh agent-901 under Backend Team, the exact host selected from its recipient address."
+      },
+      taskTeam: {
+        title: "Task Team execution",
+        owner: "Task ledger + execution tree",
+        identity: "task-402 · task-team-902",
+        explanation: "A Team target produces a fresh TeamRun subtree under the target Team's logical parent. The task record links agent-901 to it; that work edge does not change execution containment."
+      },
+      taskCoordinator: {
+        title: "Task Team coordinator",
+        owner: "Task Team execution",
+        identity: "/qa_team/qa_coordinator · agent-903",
+        explanation: "This is the concrete communication and task-result ingress for the fresh QA Team execution."
+      },
+      backendTeam: {
+        title: "Persistent child Team",
+        owner: "TeamRun execution tree",
+        identity: "/backend_team · team-run-200",
+        explanation: "Its address is the configured placement; its TeamRun ID is the exact execution. Both are stored once in the execution tree."
+      },
+      backendEngineer: {
+        title: "Persistent Backend Engineer",
+        owner: "TeamRun execution tree",
+        identity: "/backend_team/backend_engineer · agent-202",
+        explanation: "A message to the canonical address resolves to this persistent AgentRun when it is the applicable live execution. A message to agent-202 targets it exactly."
+      },
+      qaTeam: {
+        title: "Persistent QA Team",
+        owner: "TeamRun execution tree",
+        identity: "/qa_team · team-run-300",
+        explanation: "This persistent Team and the task Team above share one logical Team definition but are different concrete executions."
+      }
+    };
+
+    const inspector = document.getElementById("inspector");
+
+    function selectNode(key) {
+      const detail = nodeDetails[key];
+      inspector.innerHTML = `
+        <span class="eyebrow">${detail.owner}</span>
+        <h3>${detail.title}</h3>
+        <p>${detail.explanation}</p>
+        <dl>
+          <div class="field"><dt>Identity shown</dt><dd>${detail.identity}</dd></div>
+        </dl>
+      `;
+    }
+
+    document.querySelectorAll("[data-node]").forEach((button) => {
+      button.addEventListener("click", () => selectNode(button.dataset.node));
+    });
+
+    document.querySelectorAll("[data-mode]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const mode = button.dataset.mode;
+        document.body.classList.remove("topology-only", "hide-tasks", "show-message");
+
+        if (mode === "topology") document.body.classList.add("topology-only");
+        if (mode === "executions") document.body.classList.add("hide-tasks");
+        if (mode === "message") document.body.classList.add("show-message");
+
+        document.querySelectorAll("[data-mode]").forEach((item) => item.setAttribute("aria-pressed", String(item === button)));
+      });
+    });
+
+    selectNode("taskAgent");
+  </script>
+</body>
+</html>

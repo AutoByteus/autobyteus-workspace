@@ -53,3 +53,17 @@ export type AgentRunInputLifecycleObserver = (fact: AgentRunInputLifecycle) => v
 export type AgentRunInputOptions = Readonly<{
   lifecycleObserver?: AgentRunInputLifecycleObserver;
 }>;
+
+export type CommittedAgentRunInput = Readonly<{
+  release(): void;
+}>;
+
+export type AgentRunInputReservation = Readonly<{
+  agentRunId: string;
+  commit(): CommittedAgentRunInput;
+  cancel(): void;
+}>;
+
+export type AgentRunInputReservationResult =
+  | Readonly<{ reserved: false; code: AgentRunInputRejectionCode; message: string }>
+  | Readonly<{ reserved: true; reservation: AgentRunInputReservation }>;

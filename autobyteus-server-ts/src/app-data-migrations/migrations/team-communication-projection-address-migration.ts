@@ -2,9 +2,9 @@ import fs from "node:fs/promises";
 import type { Dirent } from "node:fs";
 import path from "node:path";
 import { createAgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
-import { createTeamExecutionAddress, type TeamExecutionAddress } from "../../agent-team-execution/domain/team-execution-address.js";
+import { createTeamExecutionAddress, type TeamExecutionAddress } from "../legacy/team-execution-address.js";
 import { buildTeamCommunicationMessageId, buildTeamCommunicationReferenceId, normalizeTeamCommunicationReferencePath } from "../../services/team-communication/team-communication-identity.js";
-import type { TeamCommunicationMessage, TeamCommunicationProjection, TeamCommunicationReferenceFile, TeamCommunicationReferenceFileType } from "../../services/team-communication/team-communication-types.js";
+import type { TeamCommunicationReferenceFile, TeamCommunicationReferenceFileType } from "../../services/team-communication/team-communication-types.js";
 import type { AppDataMigrationDefinition, AppDataMigrationExecutionResult, AppDataMigrationItemDetail, AppDataMigrationSummary } from "../domain/app-data-migration-types.js";
 
 const MIGRATION_ID = "20260701_team_communication_projection_addresses";
@@ -14,6 +14,11 @@ const text = (value: unknown): string | null => typeof value === "string" && val
 const timestamp = (value: unknown): string | null => { const valueText = text(value); return valueText && !Number.isNaN(Date.parse(valueText)) ? new Date(valueText).toISOString() : null; };
 const pathParts = (value: unknown): string[] => Array.isArray(value) ? value.map(text).filter((item): item is string => !!item) : [];
 const exact = (record: Record<string, unknown>, keys: readonly string[]) => Object.keys(record).length === keys.length && keys.every((key) => Object.hasOwn(record, key));
+type MigratedAddressMessage = {
+  messageId: string; senderAddress: TeamExecutionAddress; receiverAddress: TeamExecutionAddress;
+  content: string; messageType: string; createdAt: string; referenceFiles: TeamCommunicationReferenceFile[];
+};
+type MigratedAddressProjection = { teamRunId: string; messages: MigratedAddressMessage[] };
 
 const currentAddress = (value: unknown): TeamExecutionAddress | null => {
   const record = asRecord(value);
@@ -87,7 +92,7 @@ const references = (message: Record<string, unknown>, rootTeamRunId: string, mes
   });
 };
 
-const convertMessage = (value: unknown, rootTeamRunId: string): TeamCommunicationMessage => {
+const convertMessage = (value: unknown, rootTeamRunId: string): MigratedAddressMessage => {
   const message = asRecord(value);
   if (!message || typeof message.content !== "string") throw new Error("Communication message content is required.");
   const senderAddress = legacyAddress(message, "sender", rootTeamRunId);
@@ -95,13 +100,11 @@ const convertMessage = (value: unknown, rootTeamRunId: string): TeamCommunicatio
   const createdAt = timestamp(message.createdAt ?? message.created_at ?? message.updatedAt ?? message.updated_at);
   if (!createdAt) throw new Error("Communication message createdAt is required.");
   const messageType = text(message.messageType ?? message.message_type) ?? "agent_message";
-  const messageId = text(message.messageId ?? message.message_id) ?? buildTeamCommunicationMessageId({
-    teamRunId: rootTeamRunId, senderAddress, receiverAddress, messageType, content: message.content, createdAt,
-  });
+  const messageId = text(message.messageId ?? message.message_id) ?? `teammsg_${rootTeamRunId}_${createdAt}`;
   return { messageId, senderAddress, receiverAddress, content: message.content, messageType, createdAt, referenceFiles: references(message, rootTeamRunId, messageId, createdAt) };
 };
 
-const convertProjection = (value: unknown, fallbackId: string): TeamCommunicationProjection => {
+const convertProjection = (value: unknown, fallbackId: string): MigratedAddressProjection => {
   const record = asRecord(value);
   if (!record || !Array.isArray(record.messages)) throw new Error("Communication projection is invalid.");
   const teamRunId = text(record.teamRunId) ?? fallbackId;

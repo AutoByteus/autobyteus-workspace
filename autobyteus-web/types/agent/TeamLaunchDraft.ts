@@ -1,5 +1,5 @@
 import type { MemberConfigOverride, TeamRunConfig } from './TeamRunConfig';
-import type { AgentTeamAddress } from './TeamExecutionAddress';
+import type { AgentTeamAddress } from './AgentTeamAddress';
 import type { ContextAttachment } from '~/types/conversation';
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
 

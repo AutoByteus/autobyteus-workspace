@@ -2,147 +2,97 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
-import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
-import { TeamRunHistoryCatalogService } from "../../../../src/run-history/services/team-run-history-catalog-service.js";
+import { AgentMemoryLayout } from "../../../../src/agent-memory/store/agent-memory-layout.js";
+import { resetTeamRunHistoryCatalogState, TeamRunHistoryCatalogService } from "../../../../src/run-history/services/team-run-history-catalog-service.js";
+import { TeamRunExecutionTreeStore } from "../../../../src/run-history/store/team-run-execution-tree-store.js";
 import { TeamRunHistoryIndexStore } from "../../../../src/run-history/store/team-run-history-index-store.js";
-import { TeamRunMetadataStore } from "../../../../src/run-history/store/team-run-metadata-store.js";
-import type { TeamRunMetadata } from "../../../../src/run-history/store/team-run-metadata-types.js";
+import { testAgentNode, testExecutionTree } from "../../../fixtures/current-team-run-fixtures.js";
 
-const buildMetadata = (teamRunId: string, overrides: Partial<TeamRunMetadata> = {}): TeamRunMetadata => ({
-  teamRunId,
-  teamDefinitionId: "team-def-1",
+const buildTree = (teamRunId = "team-1") => testExecutionTree({
+  rootTeamRunId: teamRunId,
+  rootTeamDefinitionId: "team-def-1",
   teamDefinitionName: "Team One",
-  coordinatorMemberRouteKey: "planner",
-  createdAt: "2026-03-26T10:00:00.000Z",
-  archivedAt: null,
-  memberTree: [
-    {
-      memberKind: "agent",
-      memberRouteKey: "planner",
-      memberPath: ["Planner"],
-      memberName: "Planner",
-      memberRunId: "planner-run",
-      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-      platformAgentRunId: null,
-      agentDefinitionId: "agent-def-1",
-      llmModelIdentifier: "model-1",
-      autoExecuteTools: false,
-      skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
-      llmConfig: null,
-      workspaceRootPath: "/tmp/workspace",
-      applicationExecutionContext: null,
-    },
-  ],
-  ...overrides,
+  coordinatorAddress: "/planner",
+  createdAt: "2026-08-15T10:00:00.000Z",
+  children: [testAgentNode("/planner", { agentRunId: "planner-run", workspaceRootPath: "/tmp/workspace" })],
 });
 
-describe("TeamRunHistoryCatalogService", () => {
+describe("TeamRunHistoryCatalogService current V1 tree", () => {
   let memoryDir: string;
+  let layout: AgentMemoryLayout;
+  const manager = { getActiveRun: vi.fn(() => null) };
 
   beforeEach(async () => {
-    memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "team-run-history-catalog-service-"));
+    memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "team-run-history-catalog-current-"));
+    layout = new AgentMemoryLayout(memoryDir);
+    resetTeamRunHistoryCatalogState(memoryDir);
+    manager.getActiveRun.mockReset().mockReturnValue(null);
   });
 
   afterEach(async () => {
+    resetTeamRunHistoryCatalogState(memoryDir);
     await fs.rm(memoryDir, { recursive: true, force: true });
   });
 
-  it("records team metadata and one V2 catalog row through the catalog boundary", async () => {
-    const service = new TeamRunHistoryCatalogService(memoryDir, {
-      teamRunManager: { getActiveRun: vi.fn().mockReturnValue(null) },
-    });
+  it("records one derived catalog row without creating a fourth Team state authority", async () => {
+    const tree = buildTree();
+    const service = new TeamRunHistoryCatalogService(memoryDir, { teamRunManager: manager });
+    await service.recordTeamRunCreated({ tree, summary: "initial summary" });
 
-    await service.recordTeamRunCreated({
+    await expect(new TeamRunHistoryIndexStore(memoryDir).listRows()).resolves.toEqual([{
       teamRunId: "team-1",
-      metadata: buildMetadata("team-1"),
-      summary: "initial summary",
-    });
-
-    await expect(new TeamRunHistoryIndexStore(memoryDir).listRows()).resolves.toEqual([
-      {
-        teamRunId: "team-1",
-        teamDefinitionId: "team-def-1",
-        teamDefinitionName: "Team One",
-        workspaceRootPath: "/tmp/workspace",
-        summary: "initial summary",
-        createdAt: "2026-03-26T10:00:00.000Z",
-        archivedAt: null,
-        terminatedAt: null,
-      },
-    ]);
-    const rawIndex = JSON.parse(await fs.readFile(path.join(memoryDir, "team_run_history_index.json"), "utf-8"));
-    expect(Array.isArray(rawIndex)).toBe(true);
-    const rawMetadata = JSON.parse(await fs.readFile(path.join(memoryDir, "agent_teams", "team-1", "team_run_metadata.json"), "utf-8"));
-    expect(rawMetadata).not.toHaveProperty("updatedAt");
-  });
-
-  it("updates first summary only and does not rewrite on ordinary later activity", async () => {
-    const indexStore = new TeamRunHistoryIndexStore(memoryDir);
-    const writeSpy = vi.spyOn(indexStore, "writeIndex");
-    const service = new TeamRunHistoryCatalogService(memoryDir, {
-      indexStore,
-      teamRunManager: { getActiveRun: vi.fn().mockReturnValue(null) },
-    });
-    await service.recordTeamRunCreated({ teamRunId: "team-1", metadata: buildMetadata("team-1") });
-    writeSpy.mockClear();
-
-    await service.recordTeamRunSummary({ teamRunId: "team-1", summary: "first" });
-    await service.recordTeamRunSummary({ teamRunId: "team-1", summary: "second" });
-
-    expect(writeSpy).toHaveBeenCalledTimes(1);
-    expect((await indexStore.getRow("team-1"))?.summary).toBe("first");
-  });
-
-  it("archives metadata and catalog row together behind the safe catalog boundary", async () => {
-    const service = new TeamRunHistoryCatalogService(memoryDir, {
-      teamRunManager: { getActiveRun: vi.fn().mockReturnValue(null) },
-    });
-    await service.recordTeamRunCreated({ teamRunId: "team-archive", metadata: buildMetadata("team-archive") });
-
-    const result = await service.archiveTeamRun("team-archive");
-
-    expect(result).toEqual({ success: true, message: "Team run 'team-archive' archived." });
-    expect((await new TeamRunHistoryIndexStore(memoryDir).getRow("team-archive"))?.archivedAt).toEqual(expect.any(String));
-    expect((await new TeamRunMetadataStore(memoryDir).readMetadata("team-archive"))?.archivedAt).toEqual(expect.any(String));
-  });
-
-  it("serializes metadata refreshes and preserves stable manifest/lifecycle metadata", async () => {
-    const service = new TeamRunHistoryCatalogService(memoryDir, {
-      teamRunManager: { getActiveRun: vi.fn().mockReturnValue(null) },
-    });
-    await service.recordTeamRunCreated({ teamRunId: "team-refresh", metadata: buildMetadata("team-refresh") });
-    await service.archiveTeamRun("team-refresh");
-
-    const archivedAt = (await new TeamRunMetadataStore(memoryDir).readMetadata("team-refresh"))?.archivedAt;
-    await service.refreshTeamRunMetadata({
-      teamRunId: "team-refresh",
-      metadata: buildMetadata("team-refresh", {
-        teamDefinitionId: "changed-def",
-        teamDefinitionName: "Changed Team",
-        createdAt: "2026-04-01T00:00:00.000Z",
-        archivedAt: null,
-      }),
-    });
-
-    await expect(new TeamRunMetadataStore(memoryDir).readMetadata("team-refresh")).resolves.toMatchObject({
-      teamRunId: "team-refresh",
       teamDefinitionId: "team-def-1",
       teamDefinitionName: "Team One",
-      createdAt: "2026-03-26T10:00:00.000Z",
-      archivedAt,
+      workspaceRootPath: "/tmp/workspace",
+      summary: "initial summary",
+      createdAt: "2026-08-15T10:00:00.000Z",
+      archivedAt: null,
+      terminatedAt: null,
+    }]);
+    await expect(fs.readdir(layout.getTeamDirPath({ rootTeamRunId: "team-1", ancestorTeamRunIds: [] })))
+      .rejects.toMatchObject({ code: "ENOENT" });
+  });
+
+  it("records the first summary only and serializes current lifecycle updates", async () => {
+    const service = new TeamRunHistoryCatalogService(memoryDir, { teamRunManager: manager });
+    await service.recordTeamRunCreated({ tree: buildTree() });
+    await Promise.all([
+      service.recordTeamRunSummary({ teamRunId: "team-1", summary: "first" }),
+      service.recordTeamRunSummary({ teamRunId: "team-1", summary: "second" }),
+    ]);
+    await service.recordTeamRunTerminated({ teamRunId: "team-1", terminatedAt: "2026-08-15T11:00:00.000Z" });
+    await expect(service.getCatalogRow("team-1")).resolves.toMatchObject({
+      summary: "first",
+      terminatedAt: "2026-08-15T11:00:00.000Z",
     });
   });
 
-  it("rejects unsafe delete identities before filesystem effects", async () => {
-    const service = new TeamRunHistoryCatalogService(memoryDir, {
-      teamRunManager: { getActiveRun: vi.fn().mockReturnValue(null) },
-    });
+  it("archives the exact V1 execution tree and derived catalog row together", async () => {
+    const tree = buildTree();
+    const rootDir = layout.getTeamDirPath({ rootTeamRunId: "team-1", ancestorTeamRunIds: [] });
+    await new TeamRunExecutionTreeStore().write(rootDir, tree);
+    const service = new TeamRunHistoryCatalogService(memoryDir, { teamRunManager: manager });
+    await service.recordTeamRunCreated({ tree });
 
-    await expect(service.deleteTeamRun("../outside")).resolves.toEqual({
-      success: false,
-      message: "Invalid team run ID path.",
-    });
-    await expect(fs.stat(path.join(memoryDir, "outside"))).rejects.toThrow();
+    await expect(service.archiveTeamRun("team-1")).resolves.toMatchObject({ success: true });
+    await expect(new TeamRunExecutionTreeStore().read(rootDir, "team-1"))
+      .resolves.toMatchObject({ archivedAt: expect.any(String) });
+    await expect(service.getCatalogRow("team-1")).resolves.toMatchObject({ archivedAt: expect.any(String) });
+  });
+
+  it("blocks active deletion and rejects unsafe identities before filesystem effects", async () => {
+    const tree = buildTree();
+    const rootDir = layout.getTeamDirPath({ rootTeamRunId: "team-1", ancestorTeamRunIds: [] });
+    await new TeamRunExecutionTreeStore().write(rootDir, tree);
+    const service = new TeamRunHistoryCatalogService(memoryDir, { teamRunManager: manager });
+    await service.recordTeamRunCreated({ tree });
+
+    manager.getActiveRun.mockReturnValue({});
+    await expect(service.deleteTeamRun("team-1")).resolves.toMatchObject({ success: false, message: expect.stringContaining("active") });
+    manager.getActiveRun.mockReturnValue(null);
+    await expect(service.deleteTeamRun("../escape")).resolves.toMatchObject({ success: false, message: expect.stringContaining("Invalid") });
+    await expect(fs.stat(rootDir)).resolves.toBeDefined();
+    await expect(service.deleteTeamRun("team-1")).resolves.toMatchObject({ success: true });
+    await expect(fs.stat(rootDir)).rejects.toMatchObject({ code: "ENOENT" });
   });
 });

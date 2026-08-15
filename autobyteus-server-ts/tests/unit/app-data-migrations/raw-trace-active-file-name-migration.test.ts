@@ -153,6 +153,6 @@ describe("RawTraceActiveFileNameMigration", () => {
       definitionIds.indexOf(RAW_TRACE_ROTATION_LAYOUT_MIGRATION_ID),
       definitionIds.indexOf(RAW_TRACE_ACTIVE_FILE_NAME_MIGRATION_ID),
       definitionIds.indexOf(MIGRATE_NATIVE_WORKING_CONTEXT_SNAPSHOTS_V5_MIGRATION_ID),
-    ]).toEqual([4, 5, 6, 7]);
+    ]).toEqual([5, 6, 7, 8]);
   });
 });

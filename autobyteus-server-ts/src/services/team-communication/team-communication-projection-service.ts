@@ -1,59 +1,41 @@
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
 import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
-import {
-  TeamRunMetadataService,
-  getTeamRunMetadataService,
-} from "../../run-history/services/team-run-metadata-service.js";
-import { normalizeTeamCommunicationProjection } from "./team-communication-normalizer.js";
-import {
-  TeamCommunicationProjectionStore,
-  getTeamCommunicationProjectionStore,
-} from "./team-communication-projection-store.js";
-import {
-  TeamCommunicationService,
-  getTeamCommunicationService,
-} from "./team-communication-service.js";
+import { TeamCommunicationV1Store } from "./team-communication-v1-store.js";
+import type { TeamCommunicationMessageV1 } from "./team-communication-v1-types.js";
 import type {
   TeamCommunicationMessage,
   TeamCommunicationProjection,
   TeamCommunicationReferenceFile,
+  TeamCommunicationReferenceFileType,
 } from "./team-communication-types.js";
+import { projectTeamReferenceFile } from "../../agent-team-execution/services/team-reference-file-projection.js";
 
-const normalizeRequiredString = (value: string, fieldName: string): string => {
+const required = (value: string, field: string): string => {
   const normalized = value.trim();
-  if (!normalized) {
-    throw new Error(`${fieldName} is required.`);
-  }
+  if (!normalized) throw new Error(`${field} is required.`);
   return normalized;
 };
 
+/** Read-only API projection over the current V1 message authority. */
 export class TeamCommunicationProjectionService {
-  private readonly teamRunManager: AgentTeamRunManager;
-  private readonly metadataService: TeamRunMetadataService;
-  private readonly projectionStore: TeamCommunicationProjectionStore;
-  private readonly activeCommunicationService: TeamCommunicationService;
-  private readonly teamLayout: AgentMemoryLayout;
+  private readonly manager: AgentTeamRunManager;
+  private readonly store: TeamCommunicationV1Store;
+  private readonly layout: AgentMemoryLayout;
 
   constructor(options: {
     teamRunManager?: AgentTeamRunManager;
-    metadataService?: TeamRunMetadataService;
-    projectionStore?: TeamCommunicationProjectionStore;
-    activeCommunicationService?: TeamCommunicationService;
+    communicationStore?: TeamCommunicationV1Store;
     memoryDir?: string;
   } = {}) {
-    this.teamRunManager = options.teamRunManager ?? AgentTeamRunManager.getInstance();
-    this.metadataService = options.metadataService ?? getTeamRunMetadataService();
-    this.projectionStore = options.projectionStore ?? getTeamCommunicationProjectionStore();
-    this.activeCommunicationService = options.activeCommunicationService ?? getTeamCommunicationService();
-    this.teamLayout = new AgentMemoryLayout(
-      options.memoryDir ?? appConfigProvider.config.getMemoryDir(),
-    );
+    const memoryDir = options.memoryDir ?? appConfigProvider.config.getMemoryDir();
+    this.manager = options.teamRunManager ?? AgentTeamRunManager.getInstance();
+    this.store = options.communicationStore ?? new TeamCommunicationV1Store();
+    this.layout = new AgentMemoryLayout(memoryDir);
   }
 
   async getTeamCommunicationMessages(teamRunId: string): Promise<TeamCommunicationMessage[]> {
-    const projection = await this.readProjection(teamRunId);
-    return projection.messages;
+    return (await this.readProjection(teamRunId)).messages;
   }
 
   async resolveReference(input: {
@@ -61,44 +43,38 @@ export class TeamCommunicationProjectionService {
     messageId: string;
     referenceId: string;
   }): Promise<{ message: TeamCommunicationMessage; reference: TeamCommunicationReferenceFile } | null> {
-    const messageId = normalizeRequiredString(input.messageId, "messageId");
-    const referenceId = normalizeRequiredString(input.referenceId, "referenceId");
-    const projection = await this.readProjection(input.teamRunId);
-    const message = projection.messages.find((entry) => entry.messageId === messageId) ?? null;
-    if (!message) {
-      return null;
-    }
-    const reference = message.referenceFiles.find((entry) => entry.referenceId === referenceId) ?? null;
-    return reference ? { message, reference } : null;
+    const message = (await this.readProjection(input.teamRunId)).messages
+      .find((entry) => entry.messageId === required(input.messageId, "messageId")) ?? null;
+    const reference = message?.referenceFiles
+      .find((entry) => entry.referenceId === required(input.referenceId, "referenceId")) ?? null;
+    return message && reference ? { message, reference } : null;
   }
 
   private async readProjection(teamRunId: string): Promise<TeamCommunicationProjection> {
-    const normalizedTeamRunId = normalizeRequiredString(teamRunId, "teamRunId");
-
-    const activeRun = this.teamRunManager.getTeamRun(normalizedTeamRunId);
-    if (activeRun) {
-      return this.activeCommunicationService.getProjectionForTeamRun(activeRun);
-    }
-
-    const metadata = await this.metadataService.readMetadata(normalizedTeamRunId);
-    if (!metadata) {
-      return { teamRunId: normalizedTeamRunId, messages: [] };
-    }
-
-    return normalizeTeamCommunicationProjection(
-      await this.projectionStore.readProjection(
-        this.teamLayout.getTeamDirPath({ rootTeamRunId: normalizedTeamRunId, ancestorTeamRunIds: [] }),
-      ),
-      { teamRunId: normalizedTeamRunId },
+    const rootTeamRunId = required(teamRunId, "teamRunId");
+    const active = this.manager.getTeamRun(rootTeamRunId);
+    const snapshot = active?.getCommunicationSnapshot() ?? await this.store.read(
+      this.layout.getTeamDirPath({ rootTeamRunId, ancestorTeamRunIds: [] }),
+      rootTeamRunId,
     );
+    return {
+      teamRunId: rootTeamRunId,
+      messages: (snapshot?.messages ?? []).map(projectMessage),
+    };
   }
 }
 
-let cachedProjectionService: TeamCommunicationProjectionService | null = null;
+const projectMessage = (message: TeamCommunicationMessageV1): TeamCommunicationMessage => ({
+  messageId: message.messageId,
+  senderAgentRunId: message.senderAgentRunId,
+  receiverAgentRunId: message.receiverAgentRunId,
+  content: message.content,
+  messageType: message.messageType,
+  createdAt: message.createdAt,
+  referenceFiles: message.referenceFiles.map((filePath) =>
+    projectTeamReferenceFile(message.messageId, filePath, message.createdAt)),
+});
 
-export const getTeamCommunicationProjectionService = (): TeamCommunicationProjectionService => {
-  if (!cachedProjectionService) {
-    cachedProjectionService = new TeamCommunicationProjectionService();
-  }
-  return cachedProjectionService;
-};
+let cachedProjectionService: TeamCommunicationProjectionService | null = null;
+export const getTeamCommunicationProjectionService = (): TeamCommunicationProjectionService =>
+  cachedProjectionService ??= new TeamCommunicationProjectionService();

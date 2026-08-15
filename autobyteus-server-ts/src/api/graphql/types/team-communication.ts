@@ -20,30 +20,15 @@ class TeamCommunicationReferenceFileObject {
 }
 
 @ObjectType()
-class TeamExecutionAddressObject {
-  @Field(() => String)
-  rootTeamRunId!: string;
-
-  @Field(() => [String])
-  taskTeamRunIds!: readonly string[];
-
-  @Field(() => String)
-  memberAddress!: string;
-
-  @Field(() => String, { nullable: true })
-  taskAgentRunId!: string | null;
-}
-
-@ObjectType()
 class TeamCommunicationMessageObject {
   @Field(() => String)
   messageId!: string;
 
-  @Field(() => TeamExecutionAddressObject)
-  senderAddress!: TeamExecutionAddressObject;
+  @Field(() => String)
+  senderAgentRunId!: string;
 
-  @Field(() => TeamExecutionAddressObject)
-  receiverAddress!: TeamExecutionAddressObject;
+  @Field(() => String)
+  receiverAgentRunId!: string;
 
   @Field(() => String)
   content!: string;

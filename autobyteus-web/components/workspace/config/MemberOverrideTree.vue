@@ -57,15 +57,15 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import type { MemberConfigOverride, TeamRunConfig } from '~/types/agent/TeamRunConfig';
-import type { TeamMemberNode } from '~/types/agent/AgentTeamContext';
+import type { TeamDefinitionMemberNode } from '~/utils/teamDefinitionMembers';
 import MemberOverrideItem from './MemberOverrideItem.vue';
 import {
   hasExplicitMemberLlmConfigOverride,
 } from '~/utils/teamRunConfigUtils';
 
 const props = defineProps<{
-  memberNodes: TeamMemberNode[];
-  config: TeamRunConfig;
+  memberNodes: readonly TeamDefinitionMemberNode[];
+  config: Readonly<TeamRunConfig>;
   globalRuntimeKind: string;
   globalLlmModel: string;
   globalLlmConfig?: Record<string, unknown> | null;

@@ -15,10 +15,10 @@ export const getApplicationAgentTargetUrlSegments = (address) => {
         return [bindingId, "targets", "agent-run"];
     if (address.target.kind === "AGENT_TEAM_RUN")
         return [bindingId, "targets", "agent-team-run"];
-    const memberAddress = address.target.memberAddress.trim();
-    if (!memberAddress.startsWith("/"))
-        throw new Error("Application agent memberAddress is required.");
-    return [bindingId, "targets", "agent-team-member", memberAddress];
+    const agentRunId = address.target.agentRunId.trim();
+    if (!agentRunId)
+        throw new Error("Application agent agentRunId is required.");
+    return [bindingId, "targets", "agent-team-member", agentRunId];
 };
 export const encodeApplicationAgentTargetUrl = (address) => `/${getApplicationAgentTargetUrlSegments(address).map(encodeURIComponent).join("/")}`;
 export const decodeApplicationAgentTargetUrl = (path) => {
@@ -39,9 +39,9 @@ export const decodeApplicationAgentTargetUrl = (path) => {
         return { bindingId, target: { kind: "AGENT_TEAM_RUN" } };
     }
     if (segments.length === 4 && segments[2] === "agent-team-member") {
-        const memberAddress = decodeSegment(segments[3]);
-        return memberAddress?.startsWith("/")
-            ? { bindingId, target: { kind: "AGENT_TEAM_MEMBER", memberAddress } }
+        const agentRunId = decodeSegment(segments[3]);
+        return agentRunId
+            ? { bindingId, target: { kind: "AGENT_TEAM_MEMBER", agentRunId } }
             : null;
     }
     return null;

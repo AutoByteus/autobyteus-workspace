@@ -1,228 +1,130 @@
-import path from "node:path";
 import fs from "node:fs/promises";
 import os from "node:os";
-import { afterEach, describe, expect, it } from "vitest";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
-import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import path from "node:path";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import type { TeamRunExecutionTreeSnapshot } from "../../../src/agent-team-execution/domain/team-run-execution-tree.js";
 import { AgentMemoryLocationService } from "../../../src/agent-memory/services/agent-memory-location-service.js";
 import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
-import type { TeamRunAgentMemberMetadata, TeamRunMetadata } from "../../../src/run-history/store/team-run-metadata-types.js";
-import { TeamRunMetadataStore } from "../../../src/run-history/store/team-run-metadata-store.js";
+import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-run-execution-tree-store.js";
+import { address, testAgentNode, testAgentTeamNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
 
-const memoryDir = "/tmp/agent-memory-location-service-test";
-const layout = new AgentMemoryLayout(memoryDir);
-const tempDirs = new Set<string>();
-
-const mkTempDir = async () => {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "agent-memory-location-service-"));
-  tempDirs.add(dir);
-  return dir;
-};
-
-afterEach(async () => {
-  await Promise.all([...tempDirs].map((dir) => fs.rm(dir, { recursive: true, force: true })));
-  tempDirs.clear();
+const withTaskAgent = (tree: TeamRunExecutionTreeSnapshot): TeamRunExecutionTreeSnapshot => ({
+  ...tree,
+  rootTeam: {
+    ...tree.rootTeam,
+    taskExecutions: [{
+      address: address("/writer"),
+      agentRunId: "task-writer-run",
+      platformAgentRunId: null,
+      startedAt: "2026-08-15T00:01:00.000Z",
+      settledAt: null,
+    }],
+  },
 });
 
-const agent = (
-  memberRouteKey: string,
-  memberPath: string[],
-  memberRunId: string,
-): TeamRunAgentMemberMetadata => ({
-  memberKind: "agent",
-  memberRouteKey,
-  memberPath,
-  memberName: memberPath.at(-1) ?? memberRouteKey,
-  memberRunId,
-  runtimeKind: RuntimeKind.AUTOBYTEUS,
-  platformAgentRunId: null,
-  agentDefinitionId: "agent-definition-1",
-  llmModelIdentifier: "model-1",
-  autoExecuteTools: false,
-  skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
-  llmConfig: null,
-  workspaceRootPath: null,
-});
+describe("AgentMemoryLocationService current V1 tree", () => {
+  let memoryDir: string;
+  let layout: AgentMemoryLayout;
 
-const metadata: TeamRunMetadata = {
-  teamRunId: "root-team-run",
-  teamDefinitionId: "team-definition-1",
-  teamDefinitionName: "Root Team",
-  coordinatorMemberRouteKey: "writer",
-  createdAt: "2026-06-11T00:00:00.000Z",
-  memberTree: [
-    agent("writer", ["writer"], "writer_historical_opaque_id"),
-    {
-      memberKind: "agent_team",
-      memberRouteKey: "ReviewSquad",
-      memberPath: ["ReviewSquad"],
-      memberName: "ReviewSquad",
-      memberRunId: "review-child-team-run",
-      role: null,
-      description: null,
-      teamDefinitionId: "review-team",
-      teamRunId: "review-child-team-run",
-      coordinatorMemberRouteKey: "ReviewSquad/reviewer",
-      memberTree: [
-        agent("ReviewSquad/reviewer", ["ReviewSquad", "reviewer"], "reviewer_opaque_id"),
-        {
-          memberKind: "agent_team",
-          memberRouteKey: "ReviewSquad/DeepSquad",
-          memberPath: ["ReviewSquad", "DeepSquad"],
-          memberName: "DeepSquad",
-          memberRunId: "deep-child-team-run",
-          role: null,
-          description: null,
-          teamDefinitionId: "deep-review-team",
-          teamRunId: "deep-child-team-run",
-          coordinatorMemberRouteKey: "ReviewSquad/DeepSquad/editor",
-          memberTree: [
-            agent("ReviewSquad/DeepSquad/editor", ["ReviewSquad", "DeepSquad", "editor"], "editor_opaque_id"),
-          ],
-        },
+  beforeEach(async () => {
+    memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "agent-memory-location-current-"));
+    layout = new AgentMemoryLayout(memoryDir);
+    const tree = withTaskAgent(testExecutionTree({
+      rootTeamRunId: "root-team-run",
+      rootTeamDefinitionId: "classroom",
+      coordinatorAddress: "/writer",
+      children: [
+        testAgentNode("/writer", { agentRunId: "writer-run" }),
+        testAgentTeamNode({
+          address: "/ReviewSquad",
+          coordinatorAddress: "/ReviewSquad/reviewer",
+          teamRunId: "review-team-run",
+          children: [testAgentNode("/ReviewSquad/reviewer", { agentRunId: "reviewer-run" })],
+        }),
       ],
-    },
-  ],
-};
+    }));
+    await new TeamRunExecutionTreeStore().write(
+      layout.getTeamDirPath({ rootTeamRunId: "root-team-run", ancestorTeamRunIds: [] }),
+      tree,
+    );
+  });
 
-describe("AgentMemoryLocationService", () => {
-  it("derives direct, nested, and deep team-member memory locations under the root team hierarchy", () => {
+  afterEach(async () => fs.rm(memoryDir, { recursive: true, force: true }));
+
+  it("derives configured and task Agent memory from exact root, physical Team ancestry, and AgentRun IDs", async () => {
     const service = new AgentMemoryLocationService({ memoryDir });
+    const locations = await service.listTeamMemberLocations({ teamRunId: "root-team-run" });
 
-    expect(service.listTeamMemberLocationsFromMetadata(metadata)).toEqual([
-      expect.objectContaining({
-        rootTeamRunId: "root-team-run",
-        teamRunPath: [],
-        memberRunId: "writer_historical_opaque_id",
-        memberRouteKey: "writer",
-        memoryDir: layout.getTeamAgentRunDirPath(
-          { rootTeamRunId: "root-team-run", teamRunPath: [] },
-          "writer_historical_opaque_id",
-        ),
-      }),
-      expect.objectContaining({
-        rootTeamRunId: "root-team-run",
-        teamRunPath: ["review-child-team-run"],
-        memberRunId: "reviewer_opaque_id",
-        memberRouteKey: "ReviewSquad/reviewer",
-        memoryDir: layout.getTeamAgentRunDirPath(
-          { rootTeamRunId: "root-team-run", teamRunPath: ["review-child-team-run"] },
-          "reviewer_opaque_id",
-        ),
-      }),
-      expect.objectContaining({
-        rootTeamRunId: "root-team-run",
-        teamRunPath: ["review-child-team-run", "deep-child-team-run"],
-        memberRunId: "editor_opaque_id",
-        memberRouteKey: "ReviewSquad/DeepSquad/editor",
-        memoryDir: layout.getTeamAgentRunDirPath(
-          { rootTeamRunId: "root-team-run", teamRunPath: ["review-child-team-run", "deep-child-team-run"] },
-          "editor_opaque_id",
-        ),
-      }),
+    expect(locations.map((item) => ({
+      address: item.memberAddress,
+      run: item.agentRunId,
+      ancestors: item.ancestorTeamRunIds,
+      configured: item.configuredPlacement !== null,
+      memoryDir: item.memoryDir,
+    }))).toEqual([
+      {
+        address: "/writer",
+        run: "writer-run",
+        ancestors: [],
+        configured: true,
+        memoryDir: path.join(memoryDir, "agent_teams", "root-team-run", "writer-run"),
+      },
+      {
+        address: "/ReviewSquad/reviewer",
+        run: "reviewer-run",
+        ancestors: ["review-team-run"],
+        configured: true,
+        memoryDir: path.join(memoryDir, "agent_teams", "root-team-run", "review-team-run", "reviewer-run"),
+      },
+      {
+        address: "/writer",
+        run: "task-writer-run",
+        ancestors: [],
+        configured: true,
+        memoryDir: path.join(memoryDir, "agent_teams", "root-team-run", "task-writer-run"),
+      },
     ]);
   });
 
-  it("resolves by route key, member path, or opaque member run id without generated-shape validation", () => {
+  it("resolves only one exact current address/run match while retaining its configured launch placement", async () => {
     const service = new AgentMemoryLocationService({ memoryDir });
 
-    expect(service.resolveTeamMemberLocationFromMetadata(metadata, { memberRouteKey: "ReviewSquad/reviewer" }))
-      .toMatchObject({
-        teamRunPath: ["review-child-team-run"],
-        memberRunId: "reviewer_opaque_id",
-      });
-    expect(service.resolveTeamMemberLocationFromMetadata(metadata, { memberRouteKey: "reviewer" }))
-      .toMatchObject({
-        teamRunPath: ["review-child-team-run"],
-        memberRunId: "reviewer_opaque_id",
-      });
-    expect(service.resolveTeamMemberLocationFromMetadata(metadata, { memberPath: ["ReviewSquad", "DeepSquad", "editor"] }))
-      .toMatchObject({
-        teamRunPath: ["review-child-team-run", "deep-child-team-run"],
-        memberRunId: "editor_opaque_id",
-      });
-    expect(service.resolveTeamMemberLocationFromMetadata(metadata, { memberRunId: "writer_historical_opaque_id" }))
-      .toMatchObject({
-        teamRunPath: [],
-        memberRouteKey: "writer",
-      });
+    await expect(service.resolveTeamMemberLocation({
+      teamRunId: "root-team-run",
+      memberAddress: "/ReviewSquad/reviewer",
+      agentRunId: "reviewer-run",
+    })).resolves.toMatchObject({
+      memberAddress: "/ReviewSquad/reviewer",
+      agentRunId: "reviewer-run",
+      ancestorTeamRunIds: ["review-team-run"],
+    });
+    await expect(service.resolveTeamMemberLocation({
+      teamRunId: "root-team-run",
+      memberAddress: "/writer",
+    })).resolves.toBeNull();
+    await expect(service.resolveTeamMemberLocation({
+      teamRunId: "root-team-run",
+      memberAddress: "/writer",
+      agentRunId: "missing",
+    })).resolves.toBeNull();
   });
 
-  it("scopes child-team lookups without adding a historical nested root-flat fallback", () => {
+  it("keeps standalone and Team memory identity separate", () => {
     const service = new AgentMemoryLocationService({ memoryDir });
-
-    const childTarget = service.resolveTeamMemberLocationFromMetadata(
-      metadata,
-      { memberRouteKey: "ReviewSquad/reviewer" },
-      "review-child-team-run",
-    );
-
-    expect(childTarget).toMatchObject({
+    expect(service.getStandaloneLocation({ agentRunId: "standalone-run" })).toEqual({
+      kind: "standalone",
+      agentRunId: "standalone-run",
+      memoryDir: path.join(memoryDir, "agents", "standalone-run"),
+    });
+    expect(service.getTeamAgentRunLocation({
       rootTeamRunId: "root-team-run",
-      teamRunPath: ["review-child-team-run"],
-      memberRunId: "reviewer_opaque_id",
-    });
-    expect(childTarget?.memoryDir).toBe(path.join(
-      memoryDir,
-      "agent_teams",
-      "root-team-run",
-      "review-child-team-run",
-      "reviewer_opaque_id",
-    ));
-    expect(childTarget?.memoryDir).not.toBe(path.join(
-      memoryDir,
-      "agent_teams",
-      "review-child-team-run",
-      "reviewer_opaque_id",
-    ));
-  });
-
-  it("uses the explicit memoryDir for metadata-backed readback lookups", async () => {
-    const explicitMemoryDir = await mkTempDir();
-    await new TeamRunMetadataStore(explicitMemoryDir).writeMetadata(metadata.teamRunId, metadata);
-    const service = new AgentMemoryLocationService({ memoryDir: explicitMemoryDir });
-
-    const location = await service.resolveTeamMemberLocation({
-      teamRunId: metadata.teamRunId,
-      memberRunId: "writer_historical_opaque_id",
-    });
-
-    expect(location).toMatchObject({
-      rootTeamRunId: metadata.teamRunId,
-      memberRunId: "writer_historical_opaque_id",
-      memoryDir: path.join(
-        explicitMemoryDir,
-        "agent_teams",
-        metadata.teamRunId,
-        "writer_historical_opaque_id",
-      ),
-    });
-  });
-
-  it("derives task-agent memory under the logical member team path with the task-agent run id as the leaf", () => {
-    const service = new AgentMemoryLocationService({ memoryDir });
-    const logicalMemberLocation = service.resolveTeamMemberLocationFromMetadata(
-      metadata,
-      { memberRouteKey: "ReviewSquad/reviewer" },
-    );
-    if (!logicalMemberLocation) {
-      throw new Error("Expected logical member location.");
-    }
-
-    expect(service.getTaskAgentLocation({
-      logicalMemberLocation,
-      taskAgentRunId: "task_agent_opaque_id",
-      logicalMemberRunId: logicalMemberLocation.memberRunId,
-      logicalMemberRouteKey: logicalMemberLocation.memberRouteKey,
+      ancestorTeamRunIds: ["review-team-run"],
+      agentRunId: "reviewer-run",
     })).toMatchObject({
+      kind: "team_agent_run",
       rootTeamRunId: "root-team-run",
-      teamRunPath: ["review-child-team-run"],
-      taskAgentRunId: "task_agent_opaque_id",
-      logicalMemberRunId: "reviewer_opaque_id",
-      memoryDir: layout.getTeamAgentRunDirPath(
-        { rootTeamRunId: "root-team-run", teamRunPath: ["review-child-team-run"] },
-        "task_agent_opaque_id",
-      ),
+      ancestorTeamRunIds: ["review-team-run"],
+      agentRunId: "reviewer-run",
     });
   });
 });

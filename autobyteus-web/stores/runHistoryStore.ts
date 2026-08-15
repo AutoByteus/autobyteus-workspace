@@ -45,10 +45,6 @@ import {
   refreshRunNavigationTopologyForStore,
 } from './runHistoryNavigationStoreActions';
 import { createDraftRunForHistoryStore } from './runHistoryDraftActions';
-import {
-  parseSerializedTeamExecutionAddress,
-  type TeamExecutionAddress,
-} from '~/types/agent/TeamExecutionAddress';
 
 const FALSE_EDITABLE_FIELDS: RunEditableFieldFlags = {
   llmModelIdentifier: false,
@@ -395,15 +391,15 @@ export const useRunHistoryStore = defineStore('runHistory', {
       return this.navigationProjection?.teamAncestryById[teamRunId] ?? null;
     },
 
-    getTeamMemberNavigationAncestorAddresses(
+    getTeamMemberNavigationAncestorRowKeys(
       teamRunId: string,
-      executionAddress: TeamExecutionAddress,
+      agentRunId: string,
     ): string[] {
       if (!this.navigationProjection) this.refreshRunNavigationTopology('lazy-member-ancestry-read');
       const keys = this.navigationProjection?.memberAncestorExecutionKeysByIdentity[
-        runHistoryMemberIndexKey(teamRunId, executionAddress)
+        runHistoryMemberIndexKey(teamRunId, agentRunId)
       ] ?? [];
-      return keys.map((key) => parseSerializedTeamExecutionAddress(key).memberAddress);
+      return [...keys];
     },
 
     refreshRunNavigationTopology(reason: string): void {
@@ -414,23 +410,23 @@ export const useRunHistoryStore = defineStore('runHistory', {
       return applyRunNavigationEffectForStore(this, target, effect);
     },
 
-    applyRunNavigationTeamFocus(teamRunId: string, executionAddress: TeamExecutionAddress): boolean {
-      return applyRunNavigationTeamFocusForStore(this, teamRunId, executionAddress);
+    applyRunNavigationTeamFocus(teamRunId: string, agentRunId: string): boolean {
+      return applyRunNavigationTeamFocusForStore(this, teamRunId, agentRunId);
     },
 
     async focusTeamMemberAndEnsureHydrated(
       teamRunId: string,
-      executionAddress: TeamExecutionAddress,
+      agentRunId: string,
     ): Promise<boolean> {
-      return focusTeamMemberAndEnsureHydratedForStore(this, teamRunId, executionAddress);
+      return focusTeamMemberAndEnsureHydratedForStore(this, teamRunId, agentRunId);
     },
 
     async openTeamMemberRun(
       teamRunId: string,
-      executionAddress: TeamExecutionAddress,
+      agentRunId: string,
       options: { selectionMode?: RunHistorySelectionMode } = {},
     ): Promise<void> {
-      await openTeamMemberRunFromHistory(this, teamRunId, executionAddress, options);
+      await openTeamMemberRunFromHistory(this, teamRunId, agentRunId, options);
       this.refreshRunNavigationTopology('team-open');
     },
 

@@ -52,7 +52,7 @@ describe('toolCardPresentation', () => {
   });
 
   it('exposes approval target primitives only while the inline action is rendered', () => {
-    const target = { memberRouteKey: 'member-a', memberPath: ['root', 'member-a'] };
+    const target = { agentRunId: 'member-run-a' };
     const awaiting = buildToolCardPresentation(toolSegment({
       status: 'awaiting-approval',
       approvalTarget: target,
@@ -63,7 +63,7 @@ describe('toolCardPresentation', () => {
     }));
 
     expect(awaiting.approvalTarget).toEqual(target);
-    expect(getToolCardPresentationWitnessValues(awaiting)).toContain('member-a');
+    expect(getToolCardPresentationWitnessValues(awaiting)).toContain('member-run-a');
     expect(approved.approvalTarget).toBeNull();
     expect(approved.approvalTargetPrimitives).toEqual([]);
   });

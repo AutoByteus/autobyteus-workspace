@@ -8,7 +8,7 @@ export type AcceptedAgentDispatch = {
 export type AcceptedTeamDispatch = {
   dispatchTargetType: "TEAM";
   teamRunId: string;
-  executionAddress: import("../../agent-team-execution/domain/team-execution-address.js").TeamExecutionAddress;
+  agentRunId: string;
   turnId: string;
   dispatchedAt: Date;
 };

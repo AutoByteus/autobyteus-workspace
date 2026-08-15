@@ -25,7 +25,6 @@ import {
   finalizeLocalSubmissionAttachments,
   type LocalUserSubmissionHandle,
 } from '~/services/runSubmission/localUserSubmission';
-import { createTeamExecutionAddress, serializeTeamExecutionAddress, type TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 import { buildClientInterruptCommandId, buildClientMessageId, showInterruptCommandResult, showInterruptTransportFailure } from '~/services/agentStreaming/teamRunCommandPresentation';
 import { hydrateLiveTeamRunContext } from '~/services/runHydration/teamRunContextHydrationService';
 import { ensureRunHistoryWorkspaceByRootPath, resolveRunHistoryWorkspaceMetadataByRootPath } from '~/stores/runHistoryLoadActions';
@@ -33,10 +32,11 @@ import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore';
 import type { TeamRunConfig } from '~/types/agent/TeamRunConfig';
 import type { TeamLaunchDraft } from '~/types/agent/TeamLaunchDraft';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
+import { findConfiguredAgentByAddress } from '~/services/teamExecution/teamExecutionTreeSelectors';
 
 const teamStreamingServices = new Map<string, TeamStreamingService>();
-const inputDedupeKey = (rootTeamRunId: string, executionKey: string, messageId: string) =>
-  `member_input:${rootTeamRunId}:${executionKey}:${messageId}`;
+const inputDedupeKey = (rootTeamRunId: string, agentRunId: string, messageId: string) =>
+  `member_input:${rootTeamRunId}:${agentRunId}:${messageId}`;
 const mutableConfig = (config: Readonly<TeamRunConfig>): TeamRunConfig => ({
   ...config,
   workspaceMetadata: config.workspaceMetadata ? { ...config.workspaceMetadata } : null,
@@ -46,18 +46,17 @@ const mutableConfig = (config: Readonly<TeamRunConfig>): TeamRunConfig => ({
 type CreatePayload = { createAgentTeamRun?: { success?: boolean; message?: string; teamRunId?: string | null } | null };
 type RestorePayload = { restoreAgentTeamRun?: { success?: boolean; message?: string; teamRunId?: string | null } | null };
 type TerminatePayload = { terminateAgentTeamRun?: { success?: boolean; message?: string } | null };
-export interface FocusedTeamMemberInterruptTarget { teamRunId: string; executionAddress: TeamExecutionAddress }
+export interface FocusedTeamMemberInterruptTarget { teamRunId: string; agentRunId: string }
 
 const cloneContextAttachment = (attachment: ContextAttachment): ContextAttachment => ({ ...attachment });
 
 const transferDraftPendingInputs = (
   draft: TeamLaunchDraft,
-  rootTeamRunId: string,
   context: AgentTeamContext,
 ): void => {
   const transfers = Object.entries(draft.pendingInputsByMemberAddress).map(([memberAddress, input]) => {
-    const executionAddress = createTeamExecutionAddress({ rootTeamRunId, memberAddress });
-    const memberContext = context.executions.getAgentContext(executionAddress);
+    const execution = findConfiguredAgentByAddress(context.view.getExecutionTree(), memberAddress);
+    const memberContext = execution ? context.view.getAgentContext(execution.agent_run_id) : null;
     if (!memberContext) throw new Error(`Draft input target '${memberAddress}' is not an exact launched Agent execution.`);
     if (memberContext.requirement || memberContext.contextFilePaths.length > 0 || memberContext.submissionPending) {
       throw new Error(`Launched Agent execution '${memberAddress}' already owns composer state.`);
@@ -85,7 +84,7 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
   actions: {
     connectToTeamStream(rootTeamRunId: string): TeamStreamingService | null {
       const context = useAgentTeamContextsStore().getTeamContextById(rootTeamRunId);
-      if (!context || context.executions.getRootTeamRunId() !== rootTeamRunId) return null;
+      if (!context || context.view.getRootTeamRunId() !== rootTeamRunId) return null;
       const existing = teamStreamingServices.get(rootTeamRunId);
       if (existing) {
         existing.attachContext(context);
@@ -119,15 +118,15 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
     },
     async terminateTeamRun(rootTeamRunId: string): Promise<boolean> {
       const team = useAgentTeamContextsStore().getTeamContextById(rootTeamRunId);
-      if (!rootTeamRunId.trim() || this.stopPendingTeamIds[rootTeamRunId] || (team && !team.executions.isRootTeamActive())) return false;
+      if (!rootTeamRunId.trim() || this.stopPendingTeamIds[rootTeamRunId] || (team && !team.view.isRootTeamActive())) return false;
       this.stopPendingTeamIds = { ...this.stopPendingTeamIds, [rootTeamRunId]: true };
       try {
         const { data, errors } = await getApolloClient().mutate<TerminatePayload>({ mutation: TerminateAgentTeamRun, variables: { teamRunId: rootTeamRunId } });
         if (errors?.length) throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '));
         if (!data?.terminateAgentTeamRun?.success) throw new Error(data?.terminateAgentTeamRun?.message || 'Team termination failed.');
         this.disconnectTeamStream(rootTeamRunId);
-        team?.executions.setRootTeamActive(false);
-        team?.executions.listAgentContextEntries().forEach(({ agentContext }) => {
+        team?.view.setRootTeamActive(false);
+        team?.view.listAgentContextEntries().forEach(({ agentContext }) => {
           applyOfflineOrTerminalCleanup(agentContext); useAgentActivityStore().clearActivities(agentContext.state.runId);
         });
         useRunHistoryStore().markTeamAsInactive(rootTeamRunId);
@@ -138,7 +137,7 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
     },
     async terminateActiveTeam() {
       const team = useAgentTeamContextsStore().activeTeamContext;
-      if (team) await this.terminateTeamRun(team.executions.getRootTeamRunId());
+      if (team) await this.terminateTeamRun(team.view.getRootTeamRunId());
     },
     async sendMessageToFocusedMember(text: string, contextAttachments: ContextAttachment[]) {
       const contexts = useAgentTeamContextsStore();
@@ -155,50 +154,50 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
         draft = drafts.selectedDraft;
         if (!draft || draft.draftId !== draftId) throw new Error('Selected Team launch draft changed before launch.');
       }
-      let rootTeamRunId: string | null = team?.executions.getRootTeamRunId() ?? null;
-      let target = team?.executions.getFocusedAddress() ?? null;
+      let rootTeamRunId: string | null = team?.view.getRootTeamRunId() ?? null;
+      let targetAgentRunId = team?.view.getFocusedAgentRunId() ?? null;
       let localSubmission: LocalUserSubmissionHandle | null = null;
       let draftOwnerId = draft?.draftId ?? rootTeamRunId;
       try {
         if (draft) {
           const launched = await this.launchDraft(draft);
           rootTeamRunId = launched.rootTeamRunId;
-          target = launched.executionAddress;
+          targetAgentRunId = launched.agentRunId;
           team = launched.context;
           draftOwnerId = draft.draftId;
-        } else if (team && rootTeamRunId && !team.executions.isRootTeamActive()) {
+        } else if (team && rootTeamRunId && !team.view.isRootTeamActive()) {
           const { data, errors } = await getApolloClient().mutate<RestorePayload>({ mutation: RestoreAgentTeamRun, variables: { teamRunId: rootTeamRunId } });
           if (errors?.length) throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '));
           if (!data?.restoreAgentTeamRun?.success) throw new Error(data?.restoreAgentTeamRun?.message || 'Team restore failed.');
-          const hydrated = await this.hydrateRun(rootTeamRunId, target?.memberAddress ?? null);
+          const hydrated = await this.hydrateRun(rootTeamRunId, { agentRunId: targetAgentRunId });
           contexts.addTeamContext(hydrated);
-          team = hydrated; target = hydrated.executions.getFocusedAddress();
+          team = hydrated; targetAgentRunId = hydrated.view.getFocusedAgentRunId();
         }
-        if (!team || !target || !rootTeamRunId || !draftOwnerId) throw new Error('Canonical Team execution was not created.');
-        team.executions.setRootTeamActive(true);
-        const member = team.executions.getAgentContext(target);
-        if (!member) throw new Error(`Focused Team execution '${target.memberAddress}' is not an Agent.`);
-        const executionKey = serializeTeamExecutionAddress(target);
+        if (!team || !targetAgentRunId || !rootTeamRunId || !draftOwnerId) throw new Error('Canonical Team execution was not created.');
+        team.view.setRootTeamActive(true);
+        const member = team.view.getAgentContext(targetAgentRunId);
+        const memberAddress = team.view.getMemberAddress(targetAgentRunId);
+        if (!member || !memberAddress) throw new Error(`Focused Team AgentRun '${targetAgentRunId}' is not available.`);
         localSubmission = beginLocalUserSubmission(member, {
           text, attachments: contextAttachments,
-          navigationTarget: { kind: 'team_member', teamRunId: rootTeamRunId, executionAddress: target },
+          navigationTarget: { kind: 'team_member', teamRunId: rootTeamRunId, agentRunId: targetAgentRunId },
         });
-        const draftOwner = buildTeamMemberDraftContextFileOwner(draftOwnerId, target.memberAddress);
+        const draftOwner = buildTeamMemberDraftContextFileOwner(draftOwnerId, memberAddress);
         const finalized = await useContextFileUploadStore().finalizeDraftAttachments({
           draftOwner,
-          finalOwner: buildTeamMemberFinalContextFileOwner(rootTeamRunId, target.memberAddress),
+          finalOwner: buildTeamMemberFinalContextFileOwner(rootTeamRunId, memberAddress),
           attachments: contextAttachments,
         });
         const plan = planContextAttachmentSubmission(finalized);
         const messageId = buildClientMessageId();
-        const dedupeKey = inputDedupeKey(rootTeamRunId, executionKey, messageId);
+        const dedupeKey = inputDedupeKey(rootTeamRunId, targetAgentRunId, messageId);
         localSubmission.message.messageId = messageId;
         localSubmission.message.dedupeKey = dedupeKey;
         finalizeLocalSubmissionAttachments(localSubmission, plan.retainedMessageAttachments);
         useRunHistoryStore().markTeamAsActive(rootTeamRunId);
         void useRunHistoryStore().refreshTreeQuietly();
         const service = await this.ensureTeamStreamConnected(rootTeamRunId);
-        service.sendMessage(text, target, plan.executable.contextFilePaths, plan.executable.imageUrls, { messageId, dedupeKey });
+        service.sendMessage(text, targetAgentRunId, plan.executable.contextFilePaths, plan.executable.imageUrls, { messageId, dedupeKey });
       } catch (error) {
         if (localSubmission) { failLocalSubmission(localSubmission, error); applyOfflineOrTerminalCleanup(localSubmission.context, AgentStatus.Error); return; }
         throw error;
@@ -207,19 +206,23 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
     async postToolExecutionApproval(invocationId: string, isApproved: boolean, reason: string | null = null, target: ToolApprovalTarget | null = null) {
       const team = useAgentTeamContextsStore().activeTeamContext;
       if (!team) return;
-      const service = teamStreamingServices.get(team.executions.getRootTeamRunId());
+      const service = teamStreamingServices.get(team.view.getRootTeamRunId());
       if (!service) return;
       isApproved ? service.approveTool(invocationId, target, reason || undefined) : service.denyTool(invocationId, target, reason || undefined);
     },
     interruptFocusedMemberGeneration(target: FocusedTeamMemberInterruptTarget): boolean {
-      const address = createTeamExecutionAddress(target.executionAddress);
-      if (address.rootTeamRunId !== target.teamRunId.trim()) return false;
-      return teamStreamingServices.get(target.teamRunId)?.interruptGeneration(buildClientInterruptCommandId(), { executionAddress: address }) ?? false;
+      const team = useAgentTeamContextsStore().getTeamContextById(target.teamRunId);
+      if (!team?.view.hasAgentRun(target.agentRunId)) return false;
+      return teamStreamingServices.get(target.teamRunId)?.interruptGeneration(
+        buildClientInterruptCommandId(),
+        { agentRunId: target.agentRunId },
+      ) ?? false;
     },
-    async hydrateRun(rootTeamRunId: string, memberAddress: string | null) {
+    async hydrateRun(rootTeamRunId: string, target: { agentRunId?: string | null; memberAddress?: string | null } = {}) {
       const payload = await hydrateLiveTeamRunContext({
         teamRunId: rootTeamRunId,
-        memberAddress,
+        agentRunId: target.agentRunId,
+        memberAddress: target.memberAddress,
         resolveWorkspaceMetadataByRootPath: resolveRunHistoryWorkspaceMetadataByRootPath,
         ensureWorkspaceByRootPath: ensureRunHistoryWorkspaceByRootPath,
       });
@@ -251,18 +254,18 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
         if (errors?.length) throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '));
         const result = data?.createAgentTeamRun;
         if (!result?.success || !result.teamRunId) throw new Error(result?.message || 'Team launch failed without a real TeamRun ID.');
-        const context = await this.hydrateRun(result.teamRunId, draft.focusedMemberAddress);
-        const executionAddress = createTeamExecutionAddress({ rootTeamRunId: result.teamRunId, memberAddress: draft.focusedMemberAddress });
-        if (!context.executions.hasExecution(executionAddress)) throw new Error(`Launched Team is missing '${draft.focusedMemberAddress}'.`);
-        const focusResult = context.executions.focus(executionAddress);
+        const context = await this.hydrateRun(result.teamRunId, { memberAddress: draft.focusedMemberAddress });
+        const execution = findConfiguredAgentByAddress(context.view.getExecutionTree(), draft.focusedMemberAddress);
+        if (!execution || !context.view.hasAgentRun(execution.agent_run_id)) throw new Error(`Launched Team is missing '${draft.focusedMemberAddress}'.`);
+        const focusResult = context.view.focusAgent(execution.agent_run_id);
         if (focusResult.disposition === 'rejected') throw new Error(focusResult.message);
-        transferDraftPendingInputs(draft, result.teamRunId, context);
+        transferDraftPendingInputs(draft, context);
         const contexts = useAgentTeamContextsStore();
         if (contexts.getTeamContextById(result.teamRunId)) throw new Error(`TeamRun '${result.teamRunId}' is already registered.`);
         contexts.addTeamContext(context);
         useAgentSelectionStore().promoteTeamDraftLaunch(draft.draftId, result.teamRunId);
         drafts.completeDraftLaunch(draft);
-        return { rootTeamRunId: result.teamRunId, executionAddress, context };
+        return { rootTeamRunId: result.teamRunId, agentRunId: execution.agent_run_id, context };
       } finally {
         drafts.releaseDraftLaunch(draft);
       }

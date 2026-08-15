@@ -1,0 +1,52 @@
+{
+  "teamRunId": "utd_root_team_api_rev_005_1786807916040_080a003b92c24e5881d906878a02a86d",
+  "agentRunId": "utd_coordinator_api_rev_005_1786807916040_58c7dabe28b1472dbe37f62c38a078b8",
+  "durationMs": 16505,
+  "sent": true,
+  "terminalAt": {
+    "type": "TURN_COMPLETED",
+    "atMs": 4497
+  },
+  "websocketError": null,
+  "messageCount": 17,
+  "typeCounts": {
+    "CONNECTED": 1,
+    "TEAM_EXECUTION_VIEW_SNAPSHOT": 1,
+    "TEAM_RUN_LIFECYCLE": 1,
+    "MEMBER_INPUT_MESSAGE": 2,
+    "TURN_STARTED": 2,
+    "SEGMENT_START": 2,
+    "TOOL_EXECUTION_STARTED": 1,
+    "TEAM_COMMUNICATION_MESSAGE": 1,
+    "SEGMENT_END": 2,
+    "TOOL_EXECUTION_SUCCEEDED": 1,
+    "SEGMENT_CONTENT": 1,
+    "TOKEN_USAGE_UPDATED": 1,
+    "TURN_COMPLETED": 1
+  },
+  "tasks": [
+    {
+      "taskId": "task_609df46513484ddbbd503bc3b31a3c90",
+      "delegatorAgentRunId": "utd_coordinator_api_rev_005_1786807916040_58c7dabe28b1472dbe37f62c38a078b8",
+      "recipientAddress": "/worker",
+      "targetAgentRunId": "utd_worker_api_rev_005_1786807916040_2ba18602d7cc4a4dacb06d450c10a502",
+      "targetTeamRunId": null,
+      "status": "active",
+      "description": "Return E2E_DIRECT_TASK_RESULT_42 through submit_task_result.",
+      "createdAt": "2026-08-15T15:39:21.849Z",
+      "referenceFiles": [],
+      "updates": []
+    }
+  ],
+  "communications": [
+    {
+      "messageId": "teammsg_nPeJ0uTR6gifoPMd2w7p654l0A318skY",
+      "senderAgentRunId": "utd_coordinator_api_rev_005_1786807916040_58c7dabe28b1472dbe37f62c38a078b8",
+      "receiverAgentRunId": "utd_worker_api_rev_005_1786807916040_86cec5b250ce4db2a1fba7eec538c4c1",
+      "content": "E2E_CLAUDE_MESSAGE",
+      "messageType": "api-e2e",
+      "createdAt": "2026-08-15T15:40:50.885Z",
+      "referenceFiles": []
+    }
+  ]
+}

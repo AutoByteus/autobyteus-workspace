@@ -107,7 +107,7 @@ export class AgentRunProvisioningService {
       preparedAt: preparedAt.toISOString(),
       preparedExpiresAt: preparedExpiresAt.toISOString(),
       startedAt: null,
-      applicationExecutionContext: preparedInput.applicationExecutionContext,
+      applicationExecutionContext: preparedRun.config.applicationExecutionContext,
     };
 
     await this.historyCatalogService.recordPreparedRun({
@@ -244,7 +244,7 @@ export class AgentRunProvisioningService {
     autoExecuteTools: boolean;
     llmConfig: Record<string, unknown> | null;
     skillAccessMode: SkillAccessMode;
-    applicationExecutionContext: ApplicationExecutionContext | null;
+    applicationBinding: CreateAgentRunInput["applicationBinding"];
   }> {
     if (!hasNonEmptyString(input.agentDefinitionId)) {
       throw new Error(`agentDefinitionId is required when ${action} a run.`);
@@ -278,7 +278,7 @@ export class AgentRunProvisioningService {
       autoExecuteTools: input.autoExecuteTools,
       llmConfig: input.llmConfig ?? null,
       skillAccessMode: resolveSkillAccessMode(input.skillAccessMode, 0),
-      applicationExecutionContext: input.applicationExecutionContext ?? null,
+      applicationBinding: input.applicationBinding ?? null,
     };
   }
 
@@ -290,7 +290,7 @@ export class AgentRunProvisioningService {
     autoExecuteTools: boolean;
     llmConfig: Record<string, unknown> | null;
     skillAccessMode: SkillAccessMode;
-    applicationExecutionContext: ApplicationExecutionContext | null;
+    applicationBinding: CreateAgentRunInput["applicationBinding"];
   }): Promise<{ runId: string; config: AgentRunConfig }> {
     const runId = await this.agentRunIdentityAllocator.allocateForAgentDefinition(input.agentDefinitionId);
     const memoryDir = this.memoryLayout.getStandaloneRunDirPath(runId);
@@ -305,7 +305,9 @@ export class AgentRunProvisioningService {
         memoryDir,
         llmConfig: input.llmConfig,
         skillAccessMode: input.skillAccessMode,
-        applicationExecutionContext: input.applicationExecutionContext,
+        applicationExecutionContext: input.applicationBinding
+          ? createApplicationExecutionContext(input.applicationBinding, runId)
+          : null,
       }),
     };
   }
@@ -327,3 +329,16 @@ export class AgentRunProvisioningService {
     return canonicalizeWorkspaceRootPath(appConfigProvider.config.getTempWorkspaceDir());
   }
 }
+
+const createApplicationExecutionContext = (
+  binding: NonNullable<CreateAgentRunInput["applicationBinding"]>,
+  agentRunId: string,
+): ApplicationExecutionContext => Object.freeze({
+  applicationId: normalizeRequiredRunId(binding.applicationId),
+  bindingId: normalizeRequiredRunId(binding.bindingId),
+  producer: Object.freeze({
+    agentRunId,
+    displayName: binding.displayName?.trim() || null,
+    runtimeKind: binding.runtimeKind,
+  }),
+});

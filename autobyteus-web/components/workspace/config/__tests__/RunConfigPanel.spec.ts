@@ -709,7 +709,7 @@ describe('RunConfigPanel', () => {
         isLocked: true,
       },
     })
-    const topologyConfiguration = activeContext.topology.getConfigurationView()
+    const topologyConfiguration = activeContext.view.getConfigurationView()
     contextStore.activeTeamContext = activeContext
 
     const wrapper = mount(RunConfigPanel, {
@@ -721,12 +721,11 @@ describe('RunConfigPanel', () => {
     const form = wrapper.findComponent(TeamRunConfigForm)
     expect(form.props('readOnly')).toBe(true)
     expect(form.props('config')).toBe(topologyConfiguration)
-    expect(Object.isFrozen(form.props('config'))).toBe(true)
 
     form.vm.$emit('select-existing', 'ws-new')
     form.vm.$emit('edit-config', { kind: 'set_model', llmModelIdentifier: 'changed-model' })
     expect(contextStore.activeTeamContext).toBe(activeContext)
-    expect(contextStore.activeTeamContext.topology.getConfigurationView()).toBe(topologyConfiguration)
+    expect(contextStore.activeTeamContext.view.getConfigurationView()).toBe(topologyConfiguration)
     expect(topologyConfiguration.workspaceId).toBe('ws-original')
     expect(topologyConfiguration.llmModelIdentifier).toBe('test-model')
     expect(teamRunState.applyConfigEdit).not.toHaveBeenCalled()

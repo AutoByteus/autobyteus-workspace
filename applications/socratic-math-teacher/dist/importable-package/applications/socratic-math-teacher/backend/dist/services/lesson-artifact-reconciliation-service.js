@@ -21,12 +21,7 @@ const resolveProducerForRun = (binding, runId) => {
         return null;
     }
     return {
-        executionAddress: {
-            rootTeamRunId: binding.runtime.teamRunId,
-            taskTeamRunIds: [],
-            memberAddress: member.memberAddress,
-            taskAgentRunId: null,
-        },
+        agentRunId: member.agentRunId,
         displayName: member.displayName,
         runtimeKind: member.runtimeKind,
     };

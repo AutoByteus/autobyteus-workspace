@@ -1,14 +1,5 @@
-import type { TeamExecutionAddress } from "../../agent-team-execution/domain/team-execution-address.js";
-
 export type TeamCommunicationReferenceFileType =
-  | "file"
-  | "image"
-  | "audio"
-  | "video"
-  | "pdf"
-  | "csv"
-  | "excel"
-  | "other";
+  | "file" | "image" | "audio" | "video" | "pdf" | "csv" | "excel" | "other";
 
 export interface TeamCommunicationReferenceFile {
   referenceId: string;
@@ -20,15 +11,12 @@ export interface TeamCommunicationReferenceFile {
 
 export interface TeamCommunicationMessage {
   messageId: string;
-  senderAddress: TeamExecutionAddress;
-  receiverAddress: TeamExecutionAddress;
+  senderAgentRunId: string;
+  receiverAgentRunId: string;
   content: string;
   messageType: string;
   createdAt: string;
   referenceFiles: TeamCommunicationReferenceFile[];
 }
 
-export interface TeamCommunicationProjection {
-  teamRunId: string;
-  messages: TeamCommunicationMessage[];
-}
+export interface TeamCommunicationProjection { teamRunId: string; messages: TeamCommunicationMessage[] }

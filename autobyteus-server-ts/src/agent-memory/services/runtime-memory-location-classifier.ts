@@ -2,7 +2,8 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { WORKING_CONTEXT_SNAPSHOT_FILE_NAME } from "autobyteus-ts/memory/store/memory-file-names.js";
 import { AgentRunMetadataStore } from "../../run-history/store/agent-run-metadata-store.js";
-import { TeamRunMetadataStore } from "../../run-history/store/team-run-metadata-store.js";
+import { getTeamRunExecutionTreePath } from "../../run-history/store/team-run-execution-tree-path.js";
+import { fromTeamRunRuntimeKind } from "../../agent-team-execution/domain/team-run-execution-tree.js";
 import {
   runtimeKindFromString,
   type RuntimeKind,
@@ -67,13 +68,11 @@ const pathExists = async (filePath: string): Promise<boolean> => {
 export class RuntimeMemoryLocationClassifier {
   private readonly layout: AgentMemoryLayout;
   private readonly runMetadataStore: AgentRunMetadataStore;
-  private readonly teamMetadataStore: TeamRunMetadataStore;
   private readonly locationService: AgentMemoryLocationService;
 
   constructor(private readonly memoryDir: string) {
     this.layout = new AgentMemoryLayout(memoryDir);
     this.runMetadataStore = new AgentRunMetadataStore(memoryDir);
-    this.teamMetadataStore = new TeamRunMetadataStore(memoryDir);
     this.locationService = new AgentMemoryLocationService({ memoryDir });
   }
 
@@ -150,25 +149,22 @@ export class RuntimeMemoryLocationClassifier {
     const rootDir = this.layout.getTeamRootDirPath();
     const teamRunIds = await this.listDirectories(rootDir, diagnostics);
     for (const teamRunId of teamRunIds) {
-      const metadataPath = this.teamMetadataStore.getMetadataPath(teamRunId);
+      const metadataPath = getTeamRunExecutionTreePath(
+        this.layout.getTeamDirPath({ rootTeamRunId: teamRunId, ancestorTeamRunIds: [] }),
+      );
       try {
-        const metadata = await this.teamMetadataStore.readMetadata(teamRunId);
-        if (!metadata) {
+        const exactLocations = await this.locationService.listTeamMemberLocations({ teamRunId });
+        if (exactLocations.length === 0) {
           diagnostics.push({
             itemId: `agent_teams/${teamRunId}:metadata`,
             filePath: metadataPath,
             status: "SKIPPED",
             reasonCode: "metadata_missing",
-            message: "Team run has no current metadata and was not classified.",
+            message: "Team run has no current execution tree or Agent executions and was not classified.",
           });
           continue;
         }
-        if (metadata.rootTeam.teamRunId !== teamRunId) {
-          throw new Error(
-            `Metadata teamRunId '${metadata.rootTeam.teamRunId}' does not match directory '${teamRunId}'.`,
-          );
-        }
-        for (const exact of this.locationService.listTeamMemberLocationsFromMetadata(metadata)) {
+        for (const exact of exactLocations) {
           this.registerLocation(locations, blockedPaths, diagnostics, {
             itemId: itemIdFor(this.memoryDir, exact.memoryDir),
             memoryDir: path.resolve(exact.memoryDir),
@@ -176,7 +172,9 @@ export class RuntimeMemoryLocationClassifier {
               exact.memoryDir,
               WORKING_CONTEXT_SNAPSHOT_FILE_NAME,
             ),
-            runtimeKind: runtimeKindFromString(exact.member.runtimeKind),
+            runtimeKind: exact.configuredPlacement
+              ? fromTeamRunRuntimeKind(exact.configuredPlacement.launchConfiguration.runtimeKind)
+              : null,
             snapshotAgentId: exact.agentRunId,
             subject: {
               kind: "team_member",
@@ -192,7 +190,7 @@ export class RuntimeMemoryLocationClassifier {
           filePath: metadataPath,
           status: "FAILED",
           reasonCode: "metadata_invalid",
-          message: `Could not classify team run metadata: ${messageFromError(error)}`,
+          message: `Could not classify TeamRun execution tree: ${messageFromError(error)}`,
         });
       }
     }

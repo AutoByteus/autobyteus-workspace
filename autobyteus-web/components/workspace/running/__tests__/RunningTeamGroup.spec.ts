@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
 import RunningTeamGroup from '../RunningTeamGroup.vue';
+import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures';
 
 describe('RunningTeamGroup', () => {
   const RunningTeamRowStub = {
@@ -9,10 +10,14 @@ describe('RunningTeamGroup', () => {
     props: ['teamRun', 'isSelected', 'coordinatorName'],
   };
 
-  const runs = [
-    { teamRunId: 'team-1', config: { teamDefinitionName: 'Team A' }, isActive: true, isSubscribed: false },
-    { teamRunId: 'team-2', config: { teamDefinitionName: 'Team A' }, isActive: false, isSubscribed: true }
-  ] as any;
+  const buildRun = (teamRunId: string, isActive: boolean) => buildTestTeamContext({
+    teamRunId,
+    teamDefinitionId: 'def-a',
+    teamDefinitionName: 'Team A',
+    rootChildren: [testAgentNode('/lead', { agentRunId: `${teamRunId}:lead` })],
+    isActive,
+  });
+  const runs = [buildRun('team-1', true), buildRun('team-2', false)];
 
   const mountGroup = (groupRuns = runs) => mount(RunningTeamGroup, {
     props: {
@@ -55,11 +60,10 @@ describe('RunningTeamGroup', () => {
     expect(dot.classes()).toContain('bg-blue-500');
 
     await wrapper.setProps({
-      runs: runs.map((run: any) => ({
-        ...run,
-        isActive: false,
-        isSubscribed: true,
-      })),
+      runs: runs.map((run) => {
+        run.view.setRootTeamActive(false);
+        return run;
+      }),
     });
 
     expect(dot.attributes()).toMatchObject({

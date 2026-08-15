@@ -7,7 +7,6 @@ import {
   type TeamAgentStatusDetails,
   type TeamAgentStatusSnapshot,
 } from "../domain/team-agent-status.js";
-import { serializeTeamExecutionAddress } from "../domain/team-execution-address.js";
 import type { TeamRunEvent } from "../domain/team-run-event.js";
 
 export class MemberCommandStatusOverlayStore {
@@ -29,7 +28,7 @@ export class MemberCommandStatusOverlayStore {
       errorMessage: input.errorMessage ?? null,
     });
     const snapshot = createTeamAgentStatusSnapshot({ execution: input.binding, details });
-    const key = serializeTeamExecutionAddress(input.binding.executionAddress);
+    const key = this.key(input.binding);
     this.statuses.set(key, details);
     try {
       this.options.publishEvent(createTeamAgentStatusEvent(snapshot));
@@ -44,7 +43,7 @@ export class MemberCommandStatusOverlayStore {
     binding: TeamAgentExecutionBinding;
     fallback: () => AgentStatusPayload;
   }): TeamAgentStatusSnapshot {
-    const overlay = this.statuses.get(serializeTeamExecutionAddress(input.binding.executionAddress));
+    const overlay = this.statuses.get(this.key(input.binding));
     if (overlay) return createTeamAgentStatusSnapshot({ execution: input.binding, details: overlay });
     const fallback = input.fallback();
     return createTeamAgentStatusSnapshot({
@@ -56,13 +55,13 @@ export class MemberCommandStatusOverlayStore {
   }
 
   clearAcceptedLiveStatus(binding: TeamAgentExecutionBinding): boolean {
-    const key = serializeTeamExecutionAddress(binding.executionAddress);
+    const key = this.key(binding);
     return this.statuses.delete(key);
   }
 
   applyMemberStatusOverlays(snapshots: readonly TeamAgentStatusSnapshot[]): TeamAgentStatusSnapshot[] {
     return snapshots.map((snapshot) => {
-      const overlay = this.statuses.get(serializeTeamExecutionAddress(snapshot.execution.executionAddress));
+      const overlay = this.statuses.get(this.key(snapshot.execution));
       return overlay
         ? createTeamAgentStatusSnapshot({ execution: snapshot.execution, details: overlay })
         : snapshot;
@@ -70,4 +69,8 @@ export class MemberCommandStatusOverlayStore {
   }
 
   clear(): void { this.statuses.clear(); }
+
+  private key(binding: TeamAgentExecutionBinding): string {
+    return `${binding.rootTeamRunId}\0${binding.agentRunId}\0${binding.memberAddress}`;
+  }
 }

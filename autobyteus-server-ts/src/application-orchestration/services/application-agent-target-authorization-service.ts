@@ -1,6 +1,4 @@
 import type { ApplicationAgentTargetAddress, ApplicationExecutionProducer } from "@autobyteus/application-sdk-contracts";
-import { assertAgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
-import { createTeamExecutionAddress } from "../../agent-team-execution/domain/team-execution-address.js";
 import type { ApplicationAgentBindingRecord } from "../domain/models.js";
 import { ApplicationRunBindingStore } from "../stores/application-run-binding-store.js";
 import { ApplicationAvailabilityService, getApplicationAvailabilityService } from "./application-availability-service.js";
@@ -28,19 +26,18 @@ const validateAddress = (address: ApplicationAgentTargetAddress): void => {
   if (!address || typeof address !== "object" || !exact(address, ["bindingId", "target"]) || !address.bindingId?.trim()) fail("TARGET_NOT_AVAILABLE");
   if (!address.target || typeof address.target !== "object") fail("INVALID_TARGET");
   if (address.target.kind === "AGENT_TEAM_MEMBER") {
-    if (!exact(address.target, ["kind", "memberAddress"])) fail("INVALID_TARGET");
-    try { assertAgentTeamAddress(address.target.memberAddress); } catch { fail("INVALID_TARGET"); }
+    if (!exact(address.target, ["kind", "agentRunId"]) || !address.target.agentRunId?.trim()) fail("INVALID_TARGET");
   } else if ((address.target.kind !== "AGENT_RUN" && address.target.kind !== "AGENT_TEAM_RUN") || !exact(address.target, ["kind"])) fail("INVALID_TARGET");
 };
 const producers = (binding: ApplicationAgentBindingRecord): ApplicationExecutionProducer[] => {
   if (binding.runtime.subject === "AGENT_RUN") return [{
-    executionAddress: createTeamExecutionAddress({ rootTeamRunId: binding.bindingId, memberAddress: "/" }),
+    agentRunId: binding.runtime.agentRunId,
     displayName: null,
     runtimeKind: "AGENT",
   }];
   const runtime = binding.runtime;
   return runtime.members.map((member) => ({
-    executionAddress: createTeamExecutionAddress({ rootTeamRunId: runtime.teamRunId, memberAddress: member.memberAddress }),
+    agentRunId: member.agentRunId,
     displayName: member.displayName,
     runtimeKind: member.runtimeKind,
   }));
@@ -78,11 +75,11 @@ export class ApplicationAgentTargetAuthorizationService {
     }
     if (address.target.kind === "AGENT_RUN") fail("INVALID_TARGET");
     const all = producers(binding);
-    const selectedAddress = address.target.kind === "AGENT_TEAM_MEMBER" ? address.target.memberAddress : null;
-    const selected = selectedAddress
-      ? all.filter((producer) => producer.executionAddress.memberAddress === selectedAddress)
+    const selectedAgentRunId = address.target.kind === "AGENT_TEAM_MEMBER" ? address.target.agentRunId : null;
+    const selected = selectedAgentRunId
+      ? all.filter((producer) => producer.agentRunId === selectedAgentRunId)
       : all;
-    if (selectedAddress && selected.length !== 1) fail("INVALID_TARGET");
+    if (selectedAgentRunId && selected.length !== 1) fail("INVALID_TARGET");
     return { applicationId, address: structuredClone(address), runtimeSubject: "TEAM_RUN", runtimeRunId: binding.runtime.teamRunId, producers: selected };
   }
 }

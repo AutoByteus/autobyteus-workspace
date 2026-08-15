@@ -3,7 +3,6 @@ import { useActiveContextStore } from '~/stores/activeContextStore';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import type { MobileWorkContext } from '~/types/mobileWork';
-import { sameTeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 
 export function useMobileFocusedRunIdentity(context: Ref<MobileWorkContext | null>) {
   const activeContextStore = useActiveContextStore();
@@ -30,11 +29,10 @@ export function useMobileFocusedRunIdentity(context: Ref<MobileWorkContext | nul
       }
 
       const team = teamContextsStore.getTeamContextById(currentContext.teamRunId);
-      if (!team || !sameTeamExecutionAddress(team.executions.getFocusedAddress(), currentContext.focusedExecutionAddress)) {
+      if (!team || team.view.getFocusedAgentRunId() !== currentContext.focusedAgentRunId) {
         return '';
       }
-
-      return team.executions.getAgentContext(currentContext.focusedExecutionAddress)?.state.runId || '';
+      return team.view.getAgentContext(currentContext.focusedAgentRunId)?.state.runId || '';
     }
 
     return '';

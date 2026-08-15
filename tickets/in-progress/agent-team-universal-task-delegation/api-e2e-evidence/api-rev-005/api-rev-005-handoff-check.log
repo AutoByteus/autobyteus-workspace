@@ -1,0 +1,33 @@
+API-REV-005 handoff check 2026-08-15T15:58:10Z
+HEAD=8a0494e8b55a3debc7acbee7b61d286d5311d1a8
+canonical artifacts
+PRESENT tickets/in-progress/agent-team-universal-task-delegation/api-e2e-coverage-investigation.md
+PRESENT tickets/in-progress/agent-team-universal-task-delegation/api-e2e-execution-coverage-report.md
+PRESENT tickets/in-progress/agent-team-universal-task-delegation/api-e2e-revision-record.md
+PRESENT tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-005/failure/api-f006-codex-team-tool-log-admission-analysis.md
+PRESENT tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-005/failure/api-f006-source-boundary-audit.log
+result markers
+12:- Latest authoritative API/E2E result: **Fail / 93.3%**
+13:- New finding: `API-F-006 / API-UTD-CODEX-EVENT-006`
+61:| mobile-equivalent UI | task hierarchy, messages/reference open-close | **Not Tested** — stopped at product failure | API-F-006 |
+62:| process reopen/restore/repair | stale task repair, stable accepted history/messages, no replay, browser refresh | **Not Tested** — stopped at product failure | API-F-006 |
+91:This directly passes AC-052 for the observed active task Agent. It does not authorize a claim that every UI function passes; nested task-Team browser expansion, mobile, accepted cleanup after refresh, and reopen/restore were stopped by API-F-006.
+93:## Failure — API-F-006 / API-UTD-CODEX-EVENT-006
+133:- Final overall confidence: `93.3%` (simple mean).
+151:| **Fail** | API-F-006 / API-UTD-CODEX-EVENT-006 |
+cleanup
+API-REV-005 final cleanup verification 2026-08-15T15:56:05Z
+owned ports
+protected ports (observation only; no process action)
+owned paths
+ABSENT autobyteus-server-ts/tests/.tmp/api-rev-005-live-20260815-1
+ABSENT autobyteus-server-ts/db/api-rev-005-live-20260815-1.db
+ABSENT autobyteus-server-ts/db/api-rev-005-live-20260815-1.db.secret.key
+ABSENT autobyteus-server-ts/db/api-rev-005-live-20260815-1.db-wal
+ABSENT autobyteus-server-ts/db/api-rev-005-live-20260815-1.db-shm
+ABSENT autobyteus-server-ts/db/api-rev-005-live-20260815-1.db-journal
+operational database action NONE
+protected port process action NONE
+unmerged=0
+operational database action NONE
+protected 60004/31004 process action NONE

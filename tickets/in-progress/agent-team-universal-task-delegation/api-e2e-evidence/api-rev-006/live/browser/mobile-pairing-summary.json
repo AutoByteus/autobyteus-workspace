@@ -1,0 +1,15 @@
+{
+  "settings": "enabled",
+  "sessionCreated": true,
+  "exchangeAccepted": true,
+  "serverBaseUrlHarnessOverride": "http://127.0.0.1:60311",
+  "credentialSha256": "9da765ad2b7452a206b5e147fbb132db46f34d3d1e4a08f1dd13fc2fb6b45d9f",
+  "device": {
+    "deviceId": "device_34277c331694c70dce9594b0db4a766d",
+    "displayName": "API-REV-006 Mobile Chrome",
+    "clientFacingBaseUrl": "https://api-rev-006.invalid",
+    "createdAt": "2026-08-15T16:43:28.481Z",
+    "lastSeenAt": null,
+    "revokedAt": null
+  }
+}

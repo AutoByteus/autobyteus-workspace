@@ -1,14 +1,14 @@
-import type { TeamRun } from "../../agent-team-execution/domain/team-run.js";
+import type { RootTeamRun } from "../../agent-team-execution/domain/root-team-run.js";
 import {
   parseTeamStreamServerMessage,
   type TeamStreamClientMessage,
   type TeamStreamServerMessage,
 } from "@autobyteus/team-stream-contracts";
 import {
-  parseCommandExecutionAddress,
+  parseCommandAgentRunId,
   TEAM_COMMAND_INVALID_TARGET_CODE,
   TEAM_COMMAND_INVALID_TARGET_MESSAGE,
-} from "./team-execution-address-command-parser.js";
+} from "./team-agent-run-command-parser.js";
 import type { AgentStreamServerMessageSink } from "./websocket-egress/agent-stream-websocket-egress.js";
 
 export type TeamToolApprovalSink = AgentStreamServerMessageSink<TeamStreamServerMessage> | null;
@@ -25,7 +25,7 @@ export const handleTeamToolApprovalCommand = async (input: {
   teamRunId: string;
   payload: TeamToolApprovalPayload;
   approved: boolean;
-  activeRun: TeamRun | null;
+  activeRun: RootTeamRun | null;
   sink: TeamToolApprovalSink;
 }): Promise<void> => {
   const invocationId = typeof input.payload.invocation_id === "string"
@@ -39,15 +39,16 @@ export const handleTeamToolApprovalCommand = async (input: {
     logger.warn(`TOOL_APPROVAL rejected for team run ${input.teamRunId}: active run not found.`);
     return;
   }
-  const address = parseCommandExecutionAddress(input.payload, input.teamRunId);
-  if (!address) {
+  const agentRunId = parseCommandAgentRunId(input.payload);
+  if (!agentRunId) {
     logger.warn(`TOOL_APPROVAL rejected for team run ${input.teamRunId}: ${TEAM_COMMAND_INVALID_TARGET_MESSAGE}`);
     input.sink?.send(parseTeamStreamServerMessage({
       type: "ERROR",
       payload: {
         code: TEAM_COMMAND_INVALID_TARGET_CODE,
         message: TEAM_COMMAND_INVALID_TARGET_MESSAGE,
-        agent_execution: null,
+        change_sequence: null,
+        agent_run_id: null,
         error_scope: null,
         error_effect: null,
         turn_id: null,
@@ -56,7 +57,7 @@ export const handleTeamToolApprovalCommand = async (input: {
     return;
   }
   const reason = typeof input.payload.reason === "string" ? input.payload.reason : null;
-  const result = await input.activeRun.executeMemberCommand(address, {
+  const result = await input.activeRun.executeAgentCommand(agentRunId, {
     kind: "approve_tool",
     invocationId,
     approved: input.approved,

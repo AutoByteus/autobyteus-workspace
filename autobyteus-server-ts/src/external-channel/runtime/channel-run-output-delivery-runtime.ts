@@ -3,7 +3,7 @@ import {
   AgentRunService,
   getAgentRunService,
 } from "../../agent-execution/services/agent-run-service.js";
-import type { TeamRun } from "../../agent-team-execution/domain/team-run.js";
+import type { RootTeamRun } from "../../agent-team-execution/domain/root-team-run.js";
 import {
   getTeamRunService,
   type TeamRunService,
@@ -185,7 +185,7 @@ export class ChannelRunOutputDeliveryRuntime {
     route: ChannelOutputRoute;
     target: ChannelRunOutputTarget;
     latestCorrelationMessageId: string | null;
-    resolvedTeamRun?: TeamRun;
+    resolvedTeamRun?: RootTeamRun;
   }): Promise<ChannelRunOutputLink | null> {
     if (input.target.targetType === "AGENT") {
       const run = await this.agentRunService.resolveAgentRun(input.target.agentRunId);
@@ -285,12 +285,13 @@ export class ChannelRunOutputDeliveryRuntime {
   }
 
   private async recoverReplyText(record: ChannelRunOutputDeliveryRecord): Promise<string | null> {
-    const agentRunId = record.target.targetType === "AGENT" ? record.target.agentRunId : null;
-    const executionAddress = record.target.targetType === "TEAM" ? record.target.entryExecutionAddress : null;
-    if (!agentRunId && !executionAddress) return null;
+    const agentRunId = record.target.targetType === "AGENT"
+      ? record.target.agentRunId
+      : record.target.entryAgentRunId;
+    if (!agentRunId) return null;
     return this.turnReplyRecoveryService.resolveReplyText({
       agentRunId,
-      executionAddress,
+      rootTeamRunId: record.target.targetType === "TEAM" ? record.target.teamRunId : null,
       turnId: record.turnId,
     });
   }
@@ -322,5 +323,5 @@ const routeFromBinding = (binding: ChannelBinding): ChannelOutputRoute => ({
 const subscribeAgent = (run: AgentRun, listener: (event: unknown) => void): (() => void) =>
   run.subscribeToEvents(listener);
 
-const subscribeTeam = (run: TeamRun, listener: (event: unknown) => void): (() => void) =>
-  run.subscribeToEvents(listener);
+const subscribeTeam = (run: RootTeamRun, listener: (event: unknown) => void): (() => void) =>
+  run.subscribeToEvents((event) => listener(event));

@@ -1,6 +1,6 @@
 import path from 'node:path';
 import {
-  APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V5,
+  APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V6,
   APPLICATION_MANIFEST_VERSION_V4,
 } from '@autobyteus/application-sdk-contracts';
 import { validateBackendManifestIfPresent } from './backend-manifest-validator.js';
@@ -32,7 +32,7 @@ const validateUiManifestSection = async (input: {
     fieldName: 'ui.entryHtml',
     requiredPrefix: 'ui/',
   });
-  pushVersionDiagnostic(input.diagnostics, input.ui.frontendSdkContractVersion, APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V5, 'ui.frontendSdkContractVersion');
+  pushVersionDiagnostic(input.diagnostics, input.ui.frontendSdkContractVersion, APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V6, 'ui.frontendSdkContractVersion');
   if (entryHtml) {
     await pushExistingPathDiagnostic({
       diagnostics: input.diagnostics,

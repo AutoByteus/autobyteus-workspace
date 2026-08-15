@@ -1,5 +1,5 @@
 import type { AgentTeamDefinition } from '~/stores/agentTeamDefinitionStore';
-import { memberAddressBasename, type AgentTeamAddress } from '~/types/agent/TeamExecutionAddress';
+import { memberAddressBasename, type AgentTeamAddress } from '~/types/agent/AgentTeamAddress';
 import { buildTeamLocalAgentDefinitionId, buildTeamLocalTeamDefinitionId } from '~/utils/teamLocalDefinitionId';
 
 export interface TeamDefinitionAgentNode {

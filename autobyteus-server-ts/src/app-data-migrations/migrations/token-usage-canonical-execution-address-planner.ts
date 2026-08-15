@@ -7,7 +7,7 @@ import {
   createTeamExecutionAddress,
   parseTeamExecutionAddress,
   type TeamExecutionAddress,
-} from "../../agent-team-execution/domain/team-execution-address.js";
+} from "../legacy/team-execution-address.js";
 import type { AppDataMigrationItemDetail } from "../domain/app-data-migration-types.js";
 import type {
   TokenUsageTaskTeamRunIndex,

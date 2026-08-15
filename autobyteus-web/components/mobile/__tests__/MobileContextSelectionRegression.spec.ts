@@ -34,10 +34,6 @@ import type { Conversation } from "~/types/conversation";
 import type { MobileWorkContext } from "~/types/mobileWork";
 import { createWorkspaceContextAttachment } from "~/utils/contextFiles/contextAttachmentModel";
 import {
-  createTeamExecutionAddress,
-  serializeTeamExecutionAddress,
-} from "~/types/agent/TeamExecutionAddress";
-import {
   buildTestTeamContext,
   testAgentNode,
   testSubTeamNode,
@@ -131,18 +127,17 @@ function seedActiveTeamRun(teamRunId = "team-run-1"): AgentTeamContext {
     teamRunId: "qa-team-run",
     coordinatorAddress: qaNode.address,
   });
-  const leadAddress = createTeamExecutionAddress({ rootTeamRunId: teamRunId, memberAddress: "/lead" });
   const context = buildTestTeamContext({
     teamRunId,
     teamDefinitionId: "team-1",
     teamDefinitionName: "Software Team",
     rootChildren: [leadNode, reviewerNode, qaTeam],
     coordinatorAddress: "/lead",
-    focusedExecutionAddress: leadAddress,
+    focusedAgentRunId: "lead-run",
     isActive: false,
   });
-  const rootTeamRunId = context.executions.getRootTeamRunId();
-  useAgentTeamContextsStore().teams.set(rootTeamRunId, context);
+  const rootTeamRunId = context.view.getRootTeamRunId();
+  useAgentTeamContextsStore().addTeamContext(context);
   useAgentSelectionStore().selectRunWithoutShellNavigation(
     rootTeamRunId,
     "team",
@@ -155,7 +150,7 @@ function seedActiveTeamRun(teamRunId = "team-run-1"): AgentTeamContext {
       title: "Software Team",
       summary: "Existing team run",
       workspaceRootPath: "/Users/normy/project",
-      focusedExecutionAddress: leadAddress,
+      focusedAgentRunId: "lead-run",
       isActive: true,
       lastActivityAt: "2026-05-18T16:00:00.000Z",
       statusLabel: "Running",
@@ -165,11 +160,8 @@ function seedActiveTeamRun(teamRunId = "team-run-1"): AgentTeamContext {
   return context;
 }
 
-const stableTeamAddress = (teamRunId: string, memberAddress: string) =>
-  createTeamExecutionAddress({ rootTeamRunId: teamRunId, memberAddress });
-
 const teamMemberContext = (team: AgentTeamContext, memberAddress: string) =>
-  team.executions.getAgentContext(stableTeamAddress(team.executions.getRootTeamRunId(), memberAddress));
+  team.view.listAgentContextEntries().find((entry) => entry.memberAddress === memberAddress)?.agentContext ?? null;
 
 function seedCatalog(): void {
   useAgentDefinitionStore().agentDefinitions = [
@@ -360,11 +352,8 @@ describe("mobile context selection stale-run regression", () => {
       teamMemberContext(teamContext, "/reviewer")?.contextFilePaths,
     ).toHaveLength(0);
 
-    await useAgentTeamContextsStore().focusMemberAndEnsureHydrated(
-      "team-run-1",
-      stableTeamAddress("team-run-1", "/reviewer"),
-    );
-    mobileWorkStore.updateFocusedTeamMember("team-run-1", stableTeamAddress("team-run-1", "/reviewer"));
+    expect(teamContext.view.focusAgent("reviewer-run").disposition).toBe("applied");
+    mobileWorkStore.updateFocusedTeamMember("team-run-1", "reviewer-run");
     contextRef.value = mobileWorkStore.currentContext;
     await tray.setProps({ context: contextRef.value });
 
@@ -391,7 +380,7 @@ describe("mobile context selection stale-run regression", () => {
     const mobileWorkStore = useMobileWorkStore();
     mobileWorkStore.updateFocusedTeamMember(
       "team-run-1",
-      stableTeamAddress("team-run-1", "/qa-team"),
+      "qa-team-run",
     );
     mobileWorkStore.addPendingTeamRunAttachment(
       "team-run-1",
@@ -481,15 +470,15 @@ describe("mobile context selection stale-run regression", () => {
     await reviewerOption!.trigger("click");
     await flushPromises();
 
-    expect(teamContext.executions.getFocusedAddress().memberAddress).toBe("/reviewer");
+    expect(teamContext.view.getFocusedMemberAddress()).toBe("/reviewer");
     const currentContext = useMobileWorkStore().currentContext;
     expect(currentContext?.kind).toBe("team-run");
     if (currentContext?.kind === "team-run") {
-      expect(currentContext.focusedExecutionAddress.memberAddress).toBe("/reviewer");
+      expect(currentContext.focusedAgentRunId).toBe("reviewer-run");
     }
     expect(
       useMobileWorkStore().getRememberedFocusedTeamMember("team-run-1"),
-    ).toEqual(stableTeamAddress("team-run-1", "/reviewer"));
+    ).toBe("reviewer-run");
   });
 
   it("hides existing-run target selector on Runs while keeping compact target controls on focused work tabs", async () => {
@@ -663,19 +652,19 @@ describe("mobile context selection stale-run regression", () => {
     ] as any;
 
     const mobileWorkStore = useMobileWorkStore();
-    mobileWorkStore.rememberFocusedTeamMember("team-run-1", stableTeamAddress("team-run-1", "/reviewer"));
+    mobileWorkStore.rememberFocusedTeamMember("team-run-1", "reviewer-run");
     const { recentWorkItems } = useMobileWorkCatalog();
     const rememberedContext = recentWorkItems.value[0]?.context;
     expect(rememberedContext?.kind).toBe("team-run");
     if (rememberedContext?.kind === "team-run") {
-      expect(rememberedContext.focusedExecutionAddress.memberAddress).toBe("/reviewer");
+      expect(rememberedContext.focusedAgentRunId).toBe("reviewer-run");
     }
 
-    mobileWorkStore.rememberFocusedTeamMember("team-run-1", stableTeamAddress("team-run-1", "/missing-member"));
+    mobileWorkStore.rememberFocusedTeamMember("team-run-1", "missing-run");
     const fallbackContext = recentWorkItems.value[0]?.context;
     expect(fallbackContext?.kind).toBe("team-run");
     if (fallbackContext?.kind === "team-run") {
-      expect(fallbackContext.focusedExecutionAddress.memberAddress).toBe("/lead");
+      expect(fallbackContext.focusedAgentRunId).toBe("lead-run");
     }
   });
 

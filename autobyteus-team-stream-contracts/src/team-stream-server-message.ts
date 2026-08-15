@@ -13,9 +13,24 @@ import {
 import { teamConnectedPayloadSchema, teamRunLifecyclePayloadSchema } from "./team-control-message-dtos.js";
 import { teamTaskDelegationPayloadSchema } from "./team-task-message-dtos.js";
 import { readonlyParsed } from "./schema-helpers.js";
+import {
+  teamAgentStatusDtoSchema,
+  teamRunExecutionTreeDtoSchema,
+} from "./team-execution-view-dtos.js";
+import { taskDelegationRecordDtoSchema } from "./team-task-message-dtos.js";
+import { teamCommunicationMessageDtoSchema } from "./team-collaboration-message-dtos.js";
 
 const message = <T extends string, P extends z.ZodTypeAny>(type: T, payload: P) =>
   z.object({ type: z.literal(type), payload }).strict();
+
+export const teamExecutionViewSnapshotPayloadSchema = z.object({
+  root_team_run_id: z.string().trim().min(1),
+  base_change_sequence: z.number().int().nonnegative(),
+  execution_tree: teamRunExecutionTreeDtoSchema,
+  tasks: z.array(taskDelegationRecordDtoSchema),
+  messages: z.array(teamCommunicationMessageDtoSchema),
+  agent_statuses: z.array(teamAgentStatusDtoSchema),
+}).strict();
 
 export const teamStreamServerMessageSchema = z.discriminatedUnion("type", [
   message("TURN_STARTED", teamAgentPayloadSchemas.TURN_STARTED),
@@ -42,6 +57,7 @@ export const teamStreamServerMessageSchema = z.discriminatedUnion("type", [
   message("FILE_CHANGE", teamAgentPayloadSchemas.FILE_CHANGE),
   z.object({ type: z.literal("CONNECTED"), payload: teamConnectedPayloadSchema }).strict(),
   z.object({ type: z.literal("TEAM_RUN_LIFECYCLE"), payload: teamRunLifecyclePayloadSchema }).strict(),
+  z.object({ type: z.literal("TEAM_EXECUTION_VIEW_SNAPSHOT"), payload: teamExecutionViewSnapshotPayloadSchema }).strict(),
   z.object({ type: z.literal("AGENT_COMMAND_ACK"), payload: teamInterruptCommandAckPayloadSchema }).strict(),
   z.object({ type: z.literal("TASK_DELEGATION_EVENT"), payload: teamTaskDelegationPayloadSchema }).strict(),
   z.object({ type: z.literal("TEAM_COMMUNICATION_MESSAGE"), payload: teamCommunicationMessagePayloadSchema }).strict(),
@@ -61,6 +77,7 @@ export type TeamStreamServerMessage =
   | TeamAgentServerMessage
   | Readonly<{ type: "CONNECTED"; payload: z.infer<typeof teamConnectedPayloadSchema> }>
   | Readonly<{ type: "TEAM_RUN_LIFECYCLE"; payload: z.infer<typeof teamRunLifecyclePayloadSchema> }>
+  | Readonly<{ type: "TEAM_EXECUTION_VIEW_SNAPSHOT"; payload: z.infer<typeof teamExecutionViewSnapshotPayloadSchema> }>
   | Readonly<{ type: "AGENT_COMMAND_ACK"; payload: z.infer<typeof teamInterruptCommandAckPayloadSchema> }>
   | Readonly<{ type: "TASK_DELEGATION_EVENT"; payload: z.infer<typeof teamTaskDelegationPayloadSchema> }>
   | Readonly<{ type: "TEAM_COMMUNICATION_MESSAGE"; payload: z.infer<typeof teamCommunicationMessagePayloadSchema> }>

@@ -1,8 +1,13 @@
 import { describe, expect, it, vi } from "vitest";
+
+const revokeAgentToolMcpSessionsForAgentRun = vi.hoisted(() => vi.fn());
+vi.mock("../../../src/agent-tools/mcp/agent-tool-mcp-session-service.js", () => ({
+  getAgentToolMcpSessionService: () => ({ revokeAgentToolMcpSessionsForAgentRun }),
+}));
+
 import { MixedAgentMemberHandle } from "../../../src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.js";
 import { MixedAgentMemberContext, MixedTeamRunContext } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-context.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
-import { createTeamExecutionAddress } from "../../../src/agent-team-execution/domain/team-execution-address.js";
 import type { TeamRunAgentNode } from "../../../src/agent-team-execution/domain/team-run-config.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
@@ -31,16 +36,13 @@ const buildHandle = (overrides: { platformAgentRunId?: string | null; agentRunMa
     platformAgentRunId: overrides.platformAgentRunId ?? null,
   });
   const teamContext = new TeamRunContext({
+    rootTeamRunId: "team-run-1",
     teamRunId: "team-run-1",
-    teamAddress: "/",
     teamBackendKind: TeamBackendKind.MIXED,
-    config: teamConfig,
+    teamNode: teamConfig.rootTeam,
+    handoffs: teamConfig.handoffs,
     runtimeContext: new MixedTeamRunContext({
       memberContexts: [memberContext],
-      teamExecutionAddress: createTeamExecutionAddress({
-        rootTeamRunId: "team-run-1",
-        memberAddress: config.address,
-      }),
     }),
   });
 
@@ -49,6 +51,7 @@ const buildHandle = (overrides: { platformAgentRunId?: string | null; agentRunMa
     context: memberContext,
     config,
     agentRunManager: overrides.agentRunManager as never,
+    memberTeamContextBuilder: { build: vi.fn(async () => null) } as never,
     publish: vi.fn(),
     notifyStatusChange: vi.fn(),
     deliverInterAgentMessage: vi.fn(),
@@ -70,32 +73,36 @@ describe("MixedAgentMemberHandle termination", () => {
 
     expect(agentRunManager.restoreAgentRunFromPlatformState).not.toHaveBeenCalled();
     expect(agentRunManager.createAgentRun).not.toHaveBeenCalled();
+    expect(revokeAgentToolMcpSessionsForAgentRun).toHaveBeenCalledWith("worker-run-1");
     expect(handle.isActive()).toBe(false);
   });
 
   it("keeps a local active run attached when active termination is rejected", async () => {
-    const handle = buildHandle();
+    const rejected = {
+      accepted: false as const,
+      code: "TERMINATION_REJECTED",
+      message: "still busy",
+    };
     const run = {
       runId: "worker-run-1",
       isActive: () => true,
       getPlatformAgentRunId: () => "platform-worker-run-1",
       getStatusSnapshot: () => ({ status: "running" }),
       subscribeToEvents: vi.fn(() => () => undefined),
-      terminate: vi.fn(async () => ({
-        accepted: false,
-        code: "TERMINATION_REJECTED",
-        message: "still busy",
+      postUserMessage: vi.fn(async () => ({ accepted: true as const })),
+      prepareTermination: vi.fn(async () => ({
+        cancel: vi.fn(),
+        commit: vi.fn(() => ({ finish: vi.fn(async () => rejected) })),
       })),
     };
-    handle.adoptExistingRun(run as never);
-
-    await expect(handle.terminate()).resolves.toEqual({
-      accepted: false,
-      code: "TERMINATION_REJECTED",
-      message: "still busy",
+    const handle = buildHandle({
+      agentRunManager: { createAgentRun: vi.fn(async () => run) },
     });
+    await handle.postMessage({ content: "initialize" } as never);
 
-    expect(run.terminate).toHaveBeenCalledTimes(1);
+    await expect(handle.terminate()).resolves.toEqual(rejected);
+
+    expect(run.prepareTermination).toHaveBeenCalledTimes(1);
     expect(handle.isActive()).toBe(true);
   });
 });

@@ -59,7 +59,7 @@ const showInterruptCommandResult = (ack: InterruptGenerationCommandAckPayload): 
   useToasts().addToast(localizationRuntime.translate('agents.store.interrupt.failed', {
     target: ack.target.target_kind === 'standalone_run'
       ? ack.target.run_id
-      : ack.target.execution_address?.memberAddress || ack.target.team_run_id,
+      : ack.target.agent_run_id,
     detail: ack.message,
   }), 'error');
 };
@@ -68,7 +68,7 @@ const showInterruptTransportFailure = (failure: InterruptCommandTransportFailure
   useToasts().addToast(localizationRuntime.translate('agents.store.interrupt.transportFailed', {
     target: failure.target.target_kind === 'standalone_run'
       ? failure.target.run_id
-      : failure.target.execution_address?.memberAddress || failure.target.team_run_id,
+      : failure.target.agent_run_id,
     detail: failure.reason.message,
   }), 'error');
 };

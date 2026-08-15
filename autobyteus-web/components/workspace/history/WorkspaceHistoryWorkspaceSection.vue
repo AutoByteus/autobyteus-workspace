@@ -282,7 +282,7 @@
               <div v-if="state.isTeamExpanded(team.teamRunId)" class="ml-3 space-y-0.5">
                 <template
                   v-for="displayRow in visibleTeamExecutionRows(team)"
-                  :key="`${displayRow.row.kind}:${serializeTeamExecutionAddress(displayRow.row.executionAddress)}`"
+                  :key="displayRow.row.rowKey"
                 >
                   <div
                     v-if="displayRow.row.kind === 'stable_member'"
@@ -305,15 +305,15 @@
                       data-test="workspace-team-member-disclosure"
                       :data-team-run-id="team.teamRunId"
                       :data-member-address="displayRow.row.memberAddress"
-                      :aria-expanded="state.isTeamMemberExpanded(workspaceNode.workspaceId, team.teamRunId, displayRow.row.memberAddress)"
-                      @click.stop="state.toggleTeamMember(workspaceNode.workspaceId, team.teamRunId, displayRow.row.memberAddress)"
+                      :aria-expanded="isTeamDisplayRowExpanded(team, displayRow.row)"
+                      @click.stop="toggleTeamDisplayRow(team, displayRow.row)"
                       @keydown.enter.stop
                       @keydown.space.stop
                     >
                       <Icon
                         icon="heroicons:chevron-down-20-solid"
                         class="h-3.5 w-3.5 transition-transform"
-                        :class="state.isTeamMemberExpanded(workspaceNode.workspaceId, team.teamRunId, displayRow.row.memberAddress) ? 'rotate-0' : '-rotate-90'"
+                        :class="isTeamDisplayRowExpanded(team, displayRow.row) ? 'rotate-0' : '-rotate-90'"
                         aria-hidden="true"
                       />
                     </button>
@@ -356,8 +356,8 @@
                     :is-selected="isSelectedTeamMember(team, displayRow.row)"
                     :has-children="displayRow.hasChildren"
                     :expanded="isTeamDisplayRowExpanded(team, displayRow.row)"
-                    @select="(row) => selectTeamDisplayRow(team, row)"
-                    @toggle="(row) => toggleTeamDisplayRow(team, row)"
+                    @select="(row: import('~/stores/runHistoryTypes').RunHistoryTransientExecutionRow) => selectTeamDisplayRow(team, row)"
+                    @toggle="(row: import('~/stores/runHistoryTypes').RunHistoryTransientExecutionRow) => toggleTeamDisplayRow(team, row)"
                   />
                 </template>
 
@@ -395,7 +395,6 @@ import type {
   TeamTreeNode,
 } from '~/stores/runHistoryTypes';
 import type { RunTreeWorkspaceNode } from '~/utils/runTreeProjection';
-import { sameTeamExecutionAddress, serializeTeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 
 const props = defineProps<{
   workspaceNode: RunTreeWorkspaceNode;
@@ -436,7 +435,7 @@ const isTeamDisplayRowExpanded = (
 ): boolean => props.state.isTeamMemberExpanded(
   props.workspaceNode.workspaceId,
   team.teamRunId,
-  row.kind === 'transient_execution' ? serializeTeamExecutionAddress(row.executionAddress) : row.memberAddress,
+  row.rowKey,
 );
 
 const toggleTeamDisplayRow = (
@@ -445,7 +444,7 @@ const toggleTeamDisplayRow = (
 ): void => props.state.toggleTeamMember(
   props.workspaceNode.workspaceId,
   team.teamRunId,
-  row.kind === 'transient_execution' ? serializeTeamExecutionAddress(row.executionAddress) : row.memberAddress,
+  row.rowKey,
 );
 
 const visibleTeamExecutionRows = (team: TeamTreeNode): VisibleTeamExecutionRow[] => {
@@ -476,17 +475,22 @@ const isSelectedTeamMember = (
   team: TeamTreeNode,
   row: RunHistoryTeamExecutionRow,
 ): boolean => props.state.isTeamRunSelected(team.teamRunId)
-  && sameTeamExecutionAddress(row.executionAddress, team.focusedExecutionAddress);
+  && row.agentRunId !== null
+  && row.agentRunId === team.focusedAgentRunId;
 
 const teamExecutionRowStyle = (row: RunHistoryTeamExecutionRow): Record<string, string> => ({ marginLeft: `${row.depth * 12}px` });
 
 const selectTeamDisplayRow = (
   team: TeamTreeNode,
   row: RunHistoryTeamExecutionRow,
-): Promise<void> | void => props.actions.onSelectTeamMember(
-  row,
-  props.workspaceNode.workspaceId,
-);
+): Promise<void> | void => {
+  if (!row.agentRunId) return;
+  return props.actions.onSelectTeamMember({
+    teamRunId: team.teamRunId,
+    memberAddress: row.memberAddress,
+    agentRunId: row.agentRunId,
+  }, props.workspaceNode.workspaceId);
+};
 
 const activateTeamDisplayRow = (
   team: TeamTreeNode,
@@ -494,6 +498,7 @@ const activateTeamDisplayRow = (
   hasChildren: boolean,
 ): Promise<void> | void => {
   if (hasChildren) toggleTeamDisplayRow(team, row);
+  if (!row.agentRunId) return;
   return selectTeamDisplayRow(team, row);
 };
 

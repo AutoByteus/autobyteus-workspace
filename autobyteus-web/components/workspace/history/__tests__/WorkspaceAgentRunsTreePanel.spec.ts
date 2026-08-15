@@ -55,12 +55,6 @@ const {
   addToastMock,
 } = vi.hoisted(() => {
   const exactAddress = (value: string): string => value.startsWith('/') ? value : `/${value}`;
-  const executionAddress = (teamRunId: string, memberAddress: string) => ({
-    rootTeamRunId: teamRunId,
-    taskTeamRunIds: [],
-    memberAddress,
-    taskAgentRunId: null,
-  });
   const buildCurrentMember = (member: any): any => {
     const memberAddress = exactAddress(member.memberAddress);
     const kind = member.kind ?? 'agent';
@@ -83,10 +77,12 @@ const {
     const members = (team.members ?? []).map(buildCurrentMember);
     const flattenRows = (rows: any[], depth = 0): any[] => rows.flatMap((row) => [{
       kind: 'stable_member',
+      rowKey: row.kind === 'agent' ? `agent:${row.agentRunId}` : `team:${row.teamRunIdForNode}`,
       teamRunId: team.teamRunId,
       memberKind: row.kind,
       memberAddress: row.memberAddress,
-      executionAddress: executionAddress(team.teamRunId, row.memberAddress),
+      agentRunId: row.agentRunId ?? null,
+      teamRunIdForNode: row.teamRunIdForNode ?? null,
       displayName: row.displayName,
       depth,
       hasChildren: row.children.length > 0,
@@ -94,10 +90,14 @@ const {
     }, ...flattenRows(row.children, depth + 1)]);
     return {
       ...team,
-      focusedExecutionAddress: team.focusedExecutionAddress ?? executionAddress(
-        team.teamRunId,
-        exactAddress(team.focusedAddress ?? team.coordinatorAddress ?? members[0]?.memberAddress ?? '/'),
-      ),
+      focusedAgentRunId: team.focusedAgentRunId
+        ?? members.flatMap((member: any): any[] => [member, ...(member.children ?? [])])
+          .find((member: any) => member.memberAddress === exactAddress(
+            team.focusedAddress ?? team.coordinatorAddress ?? members[0]?.memberAddress ?? '/',
+          ))?.agentRunId
+        ?? members.flatMap((member: any): any[] => [member, ...(member.children ?? [])])
+          .find((member: any) => member.agentRunId)?.agentRunId
+        ?? '',
       rootTeam: team.rootTeam ?? {
         teamRunId: team.teamRunId,
         kind: 'agent_team',
@@ -246,11 +246,11 @@ const {
         }
         return null;
       }),
-      getTeamMemberNavigationAncestorAddresses: vi.fn((teamRunId: string, targetAddress: any) => {
+      getTeamMemberNavigationAncestorRowKeys: vi.fn((teamRunId: string, agentRunId: string) => {
         const team = buildCurrentTeamNodes(Object.values(state.teamNodesByWorkspace).flat())
           .find((candidate) => candidate.teamRunId === teamRunId);
         const targetIndex = team?.executionRows.findIndex(
-          (row: any) => row.memberAddress === targetAddress.memberAddress,
+          (row: any) => row.agentRunId === agentRunId,
         ) ?? -1;
         if (!team || targetIndex < 0) return [];
         const ancestors: string[] = [];
@@ -258,7 +258,7 @@ const {
         for (let index = targetIndex - 1; index >= 0 && expectedDepth >= 0; index -= 1) {
           const row = team.executionRows[index];
           if (row.depth !== expectedDepth || !row.hasChildren) continue;
-          ancestors.unshift(row.memberAddress);
+          ancestors.unshift(row.rowKey);
           expectedDepth -= 1;
         }
         return ancestors;
@@ -892,7 +892,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     expect(runHistoryStoreMock.selectTreeRun).not.toHaveBeenCalled();
   });
 
-  it('toggles and selects a nested team row from the row body', async () => {
+  it('toggles a structural nested Team row without fabricating an Agent selection', async () => {
     seedNestedTeamRun();
 
     const wrapper = mountComponent();
@@ -906,18 +906,13 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     await flushPromises();
 
     expect(wrapper.find('[data-test="workspace-team-member-team-1-/engineering_org/implementation_engineer"]').exists()).toBe(true);
-    expect(runHistoryStoreMock.selectTreeRun).toHaveBeenCalledWith(
-      expect.objectContaining({
-        teamRunId: 'team-1',
-        memberAddress: '/engineering_org',
-      }),
-    );
+    expect(runHistoryStoreMock.selectTreeRun).not.toHaveBeenCalled();
 
     await wrapper.get('[data-test="workspace-team-member-team-1-/engineering_org"]').trigger('click');
     await flushPromises();
 
     expect(wrapper.find('[data-test="workspace-team-member-team-1-/engineering_org/implementation_engineer"]').exists()).toBe(false);
-    expect(runHistoryStoreMock.selectTreeRun).toHaveBeenCalledTimes(2);
+    expect(runHistoryStoreMock.selectTreeRun).not.toHaveBeenCalled();
   });
 
   it('keeps an expanded nested child visible after selecting it', async () => {
@@ -1260,12 +1255,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
       expect.objectContaining({
         teamRunId: 'team-1',
         memberAddress: '/solution_designer',
-        executionAddress: {
-          rootTeamRunId: 'team-1',
-          taskTeamRunIds: [],
-          memberAddress: '/solution_designer',
-          taskAgentRunId: null,
-        },
+        agentRunId: 'member-run-1',
       }),
     );
   });

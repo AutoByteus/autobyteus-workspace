@@ -1,14 +1,12 @@
 import { assertAgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
-import { createTeamExecutionAddress, type TeamExecutionAddress } from "../../agent-team-execution/domain/team-execution-address.js";
-import type { TeamRunAgentTeamNode, TeamRunNode } from "../../agent-team-execution/domain/team-run-config.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
-import { TeamRunMetadataService } from "../../run-history/services/team-run-metadata-service.js";
-import { TeamRunMemoryTopologyReader } from "../../run-history/services/team-run-memory-topology-reader.js";
-import type { TeamRunMetadata } from "../../run-history/store/team-run-metadata-types.js";
+import {
+  TeamRunExecutionTreeLocationService,
+  type LocatedTeamAgentExecution,
+} from "../../run-history/services/team-run-execution-tree-location-service.js";
 import type {
   AgentMemoryScope,
   StandaloneAgentMemoryLocation,
-  TaskAgentMemoryLocation,
   TeamAgentRunMemoryLocation,
   TeamMemberAgentMemoryLocation,
 } from "../domain/agent-memory-location.js";
@@ -22,35 +20,44 @@ const required = (value: string, fieldName: string): string => {
   return normalized;
 };
 
+/** Resolves current Team Agent memory locations from the authoritative V1 execution tree. */
 export class AgentMemoryLocationService {
   private readonly layout: AgentMemoryLayout;
-  private readonly topologyReader: Pick<TeamRunMemoryTopologyReader, "loadRootTeamMetadataForMemoryLocation">;
+  private readonly locations: TeamRunExecutionTreeLocationService;
 
   constructor(input: {
     layout?: AgentMemoryLayout;
-    topologyReader?: Pick<TeamRunMemoryTopologyReader, "loadRootTeamMetadataForMemoryLocation">;
+    locationService?: TeamRunExecutionTreeLocationService;
     memoryDir?: string;
   } = {}) {
     const memoryDir = input.memoryDir ?? appConfigProvider.config.getMemoryDir();
     this.layout = input.layout ?? new AgentMemoryLayout(memoryDir);
-    this.topologyReader = input.topologyReader ?? new TeamRunMemoryTopologyReader(new TeamRunMetadataService(memoryDir));
+    this.locations = input.locationService ?? new TeamRunExecutionTreeLocationService({ memoryDir });
   }
 
   getStandaloneLocation(input: { agentRunId: string; storedMemoryDir?: string | null }): StandaloneAgentMemoryLocation {
     const agentRunId = required(input.agentRunId, "agentRunId");
-    return { kind: "standalone", agentRunId, memoryDir: optional(input.storedMemoryDir) ?? this.layout.getStandaloneRunDirPath(agentRunId) };
+    return {
+      kind: "standalone",
+      agentRunId,
+      memoryDir: optional(input.storedMemoryDir) ?? this.layout.getStandaloneRunDirPath(agentRunId),
+    };
   }
 
   getTeamAgentRunLocation(input: AgentMemoryScope & { agentRunId: string }): TeamAgentRunMemoryLocation {
     const scope = this.normalizeScope(input);
     const agentRunId = required(input.agentRunId, "agentRunId");
-    return { kind: "team_agent_run", ...scope, agentRunId, memoryDir: this.layout.getTeamAgentRunDirPath(scope, agentRunId) };
+    return {
+      kind: "team_agent_run",
+      ...scope,
+      agentRunId,
+      memoryDir: this.layout.getTeamAgentRunDirPath(scope, agentRunId),
+    };
   }
 
   async listTeamMemberLocations(input: { teamRunId: string }): Promise<TeamMemberAgentMemoryLocation[]> {
     const teamRunId = required(input.teamRunId, "teamRunId");
-    const metadata = await this.topologyReader.loadRootTeamMetadataForMemoryLocation(teamRunId);
-    return metadata ? this.listTeamMemberLocationsFromMetadata(metadata).filter((item) => this.matchesTeam(item, teamRunId)) : [];
+    return (await this.locations.listAgents()).filter((item) => this.matchesTeam(item, teamRunId)).map(toMemoryLocation);
   }
 
   async resolveTeamMemberLocation(input: {
@@ -59,61 +66,13 @@ export class AgentMemoryLocationService {
     agentRunId?: string | null;
   }): Promise<TeamMemberAgentMemoryLocation | null> {
     const teamRunId = required(input.teamRunId, "teamRunId");
-    const metadata = await this.topologyReader.loadRootTeamMetadataForMemoryLocation(teamRunId);
-    return metadata ? this.resolveTeamMemberLocationFromMetadata(metadata, input, teamRunId) : null;
-  }
-
-  listTeamMemberLocationsFromMetadata(metadata: TeamRunMetadata): TeamMemberAgentMemoryLocation[] {
-    const locations: TeamMemberAgentMemoryLocation[] = [];
-    this.collect(metadata.rootTeam, { rootTeamRunId: metadata.rootTeam.teamRunId, ancestorTeamRunIds: [] }, locations);
-    return locations;
-  }
-
-  resolveTeamMemberLocationFromMetadata(
-    metadata: TeamRunMetadata,
-    input: { memberAddress?: string | null; agentRunId?: string | null },
-    teamRunId: string = metadata.rootTeam.teamRunId,
-  ): TeamMemberAgentMemoryLocation | null {
-    const candidates = this.listTeamMemberLocationsFromMetadata(metadata).filter((item) => this.matchesTeam(item, teamRunId));
     const agentRunId = optional(input.agentRunId);
-    if (agentRunId) return candidates.find((item) => item.agentRunId === agentRunId) ?? null;
-    const rawAddress = optional(input.memberAddress);
-    if (!rawAddress) return null;
-    const memberAddress = assertAgentTeamAddress(rawAddress);
-    return candidates.find((item) => item.memberAddress === memberAddress) ?? null;
-  }
-
-  getTaskAgentLocation(input: {
-    logicalMemberLocation: TeamMemberAgentMemoryLocation | TeamAgentRunMemoryLocation;
-    taskAgentRunId: string;
-    executionAddress: TeamExecutionAddress;
-  }): TaskAgentMemoryLocation {
-    const scope = this.normalizeScope(input.logicalMemberLocation);
-    const taskAgentRunId = required(input.taskAgentRunId, "taskAgentRunId");
-    return {
-      kind: "task_agent",
-      ...scope,
-      taskAgentRunId,
-      executionAddress: createTeamExecutionAddress(input.executionAddress),
-      memoryDir: this.layout.getTeamAgentRunDirPath(scope, taskAgentRunId),
-    };
-  }
-
-  private collect(team: TeamRunAgentTeamNode, scope: AgentMemoryScope, output: TeamMemberAgentMemoryLocation[]): void {
-    for (const node of team.children) {
-      if (node.kind === "agent") {
-        output.push({
-          kind: "team_member",
-          ...scope,
-          memberAddress: node.address,
-          agentRunId: node.agentRunId,
-          member: node,
-          memoryDir: this.layout.getTeamAgentRunDirPath(scope, node.agentRunId),
-        });
-      } else {
-        this.collect(node, { rootTeamRunId: scope.rootTeamRunId, ancestorTeamRunIds: [...scope.ancestorTeamRunIds, node.teamRunId] }, output);
-      }
-    }
+    const memberAddress = optional(input.memberAddress);
+    const candidates = (await this.locations.listAgents()).filter((item) => this.matchesTeam(item, teamRunId));
+    const matches = candidates.filter((item) =>
+      (!agentRunId || item.agentRunId === agentRunId) &&
+      (!memberAddress || item.memberAddress === assertAgentTeamAddress(memberAddress)));
+    return matches.length === 1 ? toMemoryLocation(matches[0]!) : null;
   }
 
   private normalizeScope(input: AgentMemoryScope): AgentMemoryScope {
@@ -123,10 +82,22 @@ export class AgentMemoryLocationService {
     };
   }
 
-  private matchesTeam(location: TeamMemberAgentMemoryLocation, teamRunId: string): boolean {
-    return location.rootTeamRunId === teamRunId || location.ancestorTeamRunIds.includes(teamRunId);
+  private matchesTeam(location: LocatedTeamAgentExecution, teamRunId: string): boolean {
+    return location.rootTeamRunId === teamRunId ||
+      location.containingTeamRunId === teamRunId ||
+      location.ancestorTeamRunIds.includes(teamRunId);
   }
 }
+
+const toMemoryLocation = (located: LocatedTeamAgentExecution): TeamMemberAgentMemoryLocation => ({
+  kind: "team_member",
+  rootTeamRunId: located.rootTeamRunId,
+  ancestorTeamRunIds: [...located.ancestorTeamRunIds],
+  memberAddress: located.memberAddress,
+  agentRunId: located.agentRunId,
+  configuredPlacement: located.configuredPlacement,
+  memoryDir: located.memoryDir,
+});
 
 let cached: AgentMemoryLocationService | null = null;
 export const getAgentMemoryLocationService = (): AgentMemoryLocationService => cached ??= new AgentMemoryLocationService();

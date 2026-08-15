@@ -9,15 +9,19 @@ import type {
 } from "../domain/app-data-migration-types.js";
 import { MemoryFileStore } from "../../agent-memory/store/memory-file-store.js";
 import type { TeamRunIndexRowRecord } from "../../run-history/store/team-run-history-index-record-types.js";
-import type { TeamRunMetadata } from "../../run-history/store/team-run-metadata-types.js";
-import { parseCurrentTeamRunMetadata } from "../../run-history/store/team-run-metadata-schema.js";
+import type { TeamRunMetadata } from "../legacy/team-run-metadata-types.js";
+import { parseCurrentTeamRunMetadata } from "../legacy/team-run-metadata-schema.js";
 import { TeamRunHistoryIndexStore } from "../../run-history/store/team-run-history-index-store.js";
 import { canonicalizeWorkspaceRootPath } from "../../run-history/utils/workspace-path-normalizer.js";
 import {
   getTeamRunLeafAgentMetadata,
   resolveTeamRunLeafAgentByAddress,
-} from "../../run-history/services/team-run-metadata-flattener.js";
-import { AgentMemoryLocationService } from "../../agent-memory/services/agent-memory-location-service.js";
+} from "../legacy/team-run-metadata-flattener.js";
+import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
+import type {
+  TeamRunAgentMemberMetadata,
+  TeamRunMemberMetadata,
+} from "../legacy/team-run-metadata-types.js";
 import { compactSummary, extractSummaryFromRawTraces } from "../../run-history/services/run-history-service-helpers.js";
 import { resetTeamRunHistoryCatalogState } from "../../run-history/services/team-run-history-catalog-service.js";
 
@@ -233,8 +237,7 @@ const memberPreparedTimestamps = async (
   metadata: TeamRunMetadata,
 ): Promise<string | null> => {
   const values: string[] = [];
-  const locationService = new AgentMemoryLocationService({ memoryDir });
-  for (const target of locationService.listTeamMemberLocationsFromMetadata(metadata)) {
+  for (const target of listPredecessorMemberLocations(memoryDir, metadata)) {
     const metadataPath = path.join(target.memoryDir, "run_metadata.json");
     const payload = asRecord(await readJson(metadataPath).catch(() => null));
     const value = timestamp(payload?.createdAt) ?? timestamp(payload?.preparedAt) ?? timestamp(payload?.startedAt);
@@ -279,13 +282,9 @@ const extractSummaryFromCoordinator = (
   memoryDir: string,
   metadata: TeamRunMetadata,
 ): string => {
-  const locationService = new AgentMemoryLocationService({ memoryDir });
-  const locations = locationService.listTeamMemberLocationsFromMetadata(metadata);
-  const coordinatorTarget = locationService.resolveTeamMemberLocationFromMetadata(
-    metadata,
-    { memberAddress: metadata.rootTeam.coordinatorAddress },
-    metadata.rootTeam.teamRunId,
-  ) ?? locations[0];
+  const locations = listPredecessorMemberLocations(memoryDir, metadata);
+  const coordinatorTarget = locations.find((target) =>
+    target.member.address === metadata.rootTeam.coordinatorAddress) ?? locations[0];
   if (!coordinatorTarget) {
     return "";
   }
@@ -297,6 +296,29 @@ const extractSummaryFromCoordinator = (
     memberStore.readRawTracesActive(path.basename(coordinatorTarget.memoryDir), 300),
     memberStore.readRawTracesArchive(path.basename(coordinatorTarget.memoryDir), 300),
   );
+};
+
+const listPredecessorMemberLocations = (
+  memoryDir: string,
+  metadata: TeamRunMetadata,
+): Array<{ member: TeamRunAgentMemberMetadata; memoryDir: string }> => {
+  const layout = new AgentMemoryLayout(memoryDir);
+  const output: Array<{ member: TeamRunAgentMemberMetadata; memoryDir: string }> = [];
+  const visit = (node: TeamRunMemberMetadata, ancestors: string[]): void => {
+    if (node.kind === "agent") {
+      output.push({
+        member: node,
+        memoryDir: layout.getTeamAgentRunDirPath({
+          rootTeamRunId: metadata.rootTeam.teamRunId,
+          ancestorTeamRunIds: ancestors,
+        }, node.agentRunId),
+      });
+      return;
+    }
+    node.children.forEach((child) => visit(child, [...ancestors, node.teamRunId]));
+  };
+  metadata.rootTeam.children.forEach((child) => visit(child, []));
+  return output;
 };
 
 const buildSummary = (details: AppDataMigrationItemDetail[]): AppDataMigrationSummary => ({

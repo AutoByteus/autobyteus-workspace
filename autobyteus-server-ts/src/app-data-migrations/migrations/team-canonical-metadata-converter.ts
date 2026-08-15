@@ -1,12 +1,18 @@
 import { createAgentTeamAddress, getParentAgentTeamAddress, type AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import { normalizeCollaborationHandoffs, type CollaborationHandoff } from "../../agent-collaboration/domain/collaboration-handoff.js";
-import { cloneTeamRunNode, type TeamRunAgentTeamNode, type TeamRunNode } from "../../agent-team-execution/domain/team-run-config.js";
-import { validateTeamRunMetadataPayload } from "../../run-history/store/team-run-metadata-schema.js";
-import type { TeamRunMetadata } from "../../run-history/store/team-run-metadata-types.js";
+import { validateTeamRunMetadataPayload } from "../legacy/team-run-metadata-schema.js";
+import type {
+  TeamRunAgentMemberMetadata,
+  TeamRunMemberMetadata,
+  TeamRunMetadata,
+  TeamRunSubTeamMemberMetadata,
+} from "../legacy/team-run-metadata-types.js";
 import {
   decodeFlatTeamRunMetadataToMemberTree,
   isLegacyFlatTeamRunMetadata,
 } from "./team-run-member-tree-prerequisite-converter.js";
+import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
+import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 
 const object = (value: unknown, label: string): Record<string, unknown> => {
   if (!value || typeof value !== "object" || Array.isArray(value)) throw new Error(`${label} must be an object.`);
@@ -35,6 +41,30 @@ const booleanValue = (value: unknown, label: string): boolean => {
   if (typeof value !== "boolean") throw new Error(`${label} must be boolean.`);
   return value;
 };
+const runtimeKindValue = (value: unknown, label: string): RuntimeKind => {
+  if (!Object.values(RuntimeKind).includes(value as RuntimeKind)) {
+    throw new Error(`${label} is unsupported.`);
+  }
+  return value as RuntimeKind;
+};
+const skillAccessModeValue = (value: unknown, label: string): SkillAccessMode => {
+  if (!Object.values(SkillAccessMode).includes(value as SkillAccessMode)) {
+    throw new Error(`${label} is unsupported.`);
+  }
+  return value as SkillAccessMode;
+};
+const applicationExecutionContext = (
+  record: Record<string, unknown>,
+  label: string,
+): Record<string, unknown> | null => {
+  if (!("applicationExecutionContext" in record)) {
+    throw new Error(`${label}.applicationExecutionContext is required.`);
+  }
+  return nullableObject(
+    record.applicationExecutionContext,
+    `${label}.applicationExecutionContext`,
+  );
+};
 const normalizedRoute = (value: unknown, label: string): string => text(value, label)
   .replace(/\\/g, "/")
   .replace(/\/{2,}/g, "/")
@@ -56,7 +86,11 @@ const roleAndDescription = (record: Record<string, unknown>, label: string) => (
   description: nullableText(record.description, `${label}.description`),
 });
 
-const convertNode = (value: unknown, expectedParent: AgentTeamAddress, label: string): TeamRunNode => {
+const convertNode = (
+  value: unknown,
+  expectedParent: AgentTeamAddress,
+  label: string,
+): TeamRunMemberMetadata => {
   const record = object(value, label);
   const address = addressFromLegacyPair(record.memberRouteKey, record.memberPath, label);
   // memberName is required historical display input, never a structural assertion.
@@ -65,24 +99,21 @@ const convertNode = (value: unknown, expectedParent: AgentTeamAddress, label: st
   const memberRunId = text(record.memberRunId, `${label}.memberRunId`);
   const common = roleAndDescription(record, label);
   if (record.memberKind === "agent") {
-    return cloneTeamRunNode({
+    return Object.freeze({
       kind: "agent",
       address,
       agentRunId: memberRunId,
       agentDefinitionId: text(record.agentDefinitionId, `${label}.agentDefinitionId`),
       platformAgentRunId: nullableText(record.platformAgentRunId, `${label}.platformAgentRunId`),
-      runtimeKind: text(record.runtimeKind, `${label}.runtimeKind`) as never,
+      runtimeKind: runtimeKindValue(record.runtimeKind, `${label}.runtimeKind`),
       llmModelIdentifier: text(record.llmModelIdentifier, `${label}.llmModelIdentifier`),
       autoExecuteTools: booleanValue(record.autoExecuteTools, `${label}.autoExecuteTools`),
-      skillAccessMode: record.skillAccessMode as never,
+      skillAccessMode: skillAccessModeValue(record.skillAccessMode, `${label}.skillAccessMode`),
       llmConfig: nullableObject(record.llmConfig, `${label}.llmConfig`),
       workspaceRootPath: nullableText(record.workspaceRootPath, `${label}.workspaceRootPath`),
-      applicationExecutionContext: nullableObject(
-        record.applicationExecutionContext,
-        `${label}.applicationExecutionContext`,
-      ) as never,
+      applicationExecutionContext: applicationExecutionContext(record, label),
       ...common,
-    });
+    } satisfies TeamRunAgentMemberMetadata);
   }
   if (record.memberKind !== "agent_team") throw new Error(`${label}.memberKind is unsupported.`);
   const teamRunId = text(record.teamRunId, `${label}.teamRunId`);
@@ -91,7 +122,7 @@ const convertNode = (value: unknown, expectedParent: AgentTeamAddress, label: st
   const coordinatorAddress = createAgentTeamAddress(coordinatorRoute.split("/"));
   if (getParentAgentTeamAddress(coordinatorAddress) !== address) throw new Error(`${label}.coordinatorMemberRouteKey is not direct.`);
   if (!Array.isArray(record.memberTree)) throw new Error(`${label}.memberTree must be an array.`);
-  return cloneTeamRunNode({
+  return Object.freeze({
     kind: "agent_team",
     address,
     teamDefinitionId: text(record.teamDefinitionId, `${label}.teamDefinitionId`),
@@ -99,7 +130,7 @@ const convertNode = (value: unknown, expectedParent: AgentTeamAddress, label: st
     coordinatorAddress,
     children: record.memberTree.map((child, index) => convertNode(child, address, `${label}.memberTree[${index}]`)),
     ...common,
-  });
+  } satisfies TeamRunSubTeamMemberMetadata);
 };
 
 const handoffAddress = (value: string, label: string): AgentTeamAddress => {
@@ -117,9 +148,9 @@ const convertHandoffs = (value: unknown, addresses: Set<string>): CollaborationH
     return { from, to, rules: [...handoff.rules] };
   });
 
-const collectAddresses = (root: TeamRunAgentTeamNode): Set<string> => {
+const collectAddresses = (root: TeamRunSubTeamMemberMetadata): Set<string> => {
   const result = new Set<string>();
-  const visit = (node: TeamRunNode): void => {
+  const visit = (node: TeamRunMemberMetadata): void => {
     result.add(node.address);
     if (node.kind === "agent_team") node.children.forEach(visit);
   };
@@ -139,16 +170,14 @@ export const convertLegacyTeamRunMetadata = (value: unknown, directoryTeamRunId:
   const coordinatorAddress = createAgentTeamAddress(rootCoordinatorRoute.split("/"));
   if (getParentAgentTeamAddress(coordinatorAddress) !== "/") throw new Error("Root coordinator must be a direct child of '/'.");
   if (!Array.isArray(record.memberTree)) throw new Error("memberTree must be an array.");
-  const rootTeam = cloneTeamRunNode({
+  const rootTeam = Object.freeze({
     kind: "agent_team",
     address: createAgentTeamAddress([]),
     teamDefinitionId: text(record.teamDefinitionId, "teamDefinitionId"),
     teamRunId,
     coordinatorAddress,
-    role: null,
-    description: null,
     children: record.memberTree.map((child, index) => convertNode(child, createAgentTeamAddress([]), `memberTree[${index}]`)),
-  }) as TeamRunAgentTeamNode;
+  } satisfies TeamRunSubTeamMemberMetadata);
   return validateTeamRunMetadataPayload({
     schemaVersion: 3,
     teamDefinitionName: text(record.teamDefinitionName, "teamDefinitionName"),

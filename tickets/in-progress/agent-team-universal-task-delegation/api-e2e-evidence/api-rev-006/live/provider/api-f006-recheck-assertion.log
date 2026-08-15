@@ -1,0 +1,8 @@
+API-UTD-CODEX-EVENT-006 current IR-010 assertion
+PASS coordinator TURN_COMPLETED observed
+PASS TEAM_AGENT_EVENT_ADMISSION_FAILED absent
+PASS exact /worker accepted once with exact submission and review
+TOOL_LOG frames:
+[]
+Error frames:
+[]

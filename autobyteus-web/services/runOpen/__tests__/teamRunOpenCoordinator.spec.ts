@@ -1,10 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { openTeamRun } from '~/services/runOpen/teamRunOpenCoordinator'
-import { createTeamExecutionAddress } from '~/types/agent/TeamExecutionAddress'
 import {
   buildTestTeamContext,
   testAgentNode,
-  testTaskProjection,
+  testTaskRecord,
 } from '~/test-support/currentTeamTestFixtures'
 
 const {
@@ -58,22 +57,17 @@ vi.mock('~/stores/teamRunConfigStore', () => ({
 }))
 
 const ROOT = 'team-1'
-const address = (
-  memberAddress: string,
-  taskTeamRunIds: string[] = [],
-  taskAgentRunId: string | null = null,
-) => createTeamExecutionAddress({ rootTeamRunId: ROOT, memberAddress, taskTeamRunIds, taskAgentRunId })
 
 const makeTeam = (input: {
-  focus?: ReturnType<typeof address>
+  focus?: string
   active?: boolean
-  tasks?: ReturnType<typeof testTaskProjection>[]
+  tasks?: ReturnType<typeof testTaskRecord>[]
 } = {}) => buildTestTeamContext({
   teamRunId: ROOT,
   teamDefinitionId: 'team-def-1',
   teamDefinitionName: 'Team',
   coordinatorAddress: '/member-a',
-  focusedExecutionAddress: input.focus ?? address('/member-a'),
+  focusedAgentRunId: input.focus ?? 'run-a',
   rootChildren: [
     testAgentNode('/member-a', { displayName: 'Member A', agentRunId: 'run-a' }),
     testAgentNode('/member-b', { displayName: 'Member B', agentRunId: 'run-b' }),
@@ -83,7 +77,10 @@ const makeTeam = (input: {
 })
 
 const hydration = (team: ReturnType<typeof makeTeam>) => ({
-  resumeConfig: { teamRunId: ROOT, isActive: team.executions.isRootTeamActive(), metadata: {} },
+  teamRunId: ROOT,
+  focusedAgentRunId: team.view.getFocusedAgentRunId(),
+  resumeConfig: { teamRunId: ROOT, isActive: team.view.isRootTeamActive(), executionTree: team.view.getExecutionTree() },
+  projectionByAgentRunId: new Map(),
   hydratedContext: team,
 })
 
@@ -91,8 +88,8 @@ describe('openTeamRun current exact execution identity', () => {
   beforeEach(() => vi.clearAllMocks())
 
   it('uses the existing exact focus as the hydration request and replaces it with the current projection', async () => {
-    const existing = makeTeam({ focus: address('/member-b') })
-    const hydrated = makeTeam({ focus: address('/member-b') })
+    const existing = makeTeam({ focus: 'run-b' })
+    const hydrated = makeTeam({ focus: 'run-b' })
     getTeamContextByIdMock.mockReturnValue(existing)
     hydrateLiveTeamRunContextMock.mockResolvedValue(hydration(hydrated))
 
@@ -104,10 +101,11 @@ describe('openTeamRun current exact execution identity', () => {
 
     expect(hydrateLiveTeamRunContextMock).toHaveBeenCalledWith(expect.objectContaining({
       teamRunId: ROOT,
-      memberAddress: '/member-b',
+      agentRunId: 'run-b',
     }))
     expect(addTeamContextMock).toHaveBeenCalledWith(hydrated)
-    expect(result.focusedExecutionAddress).toEqual(address('/member-b'))
+    expect(result.focusedAgentRunId).toBe('run-b')
+    expect(result.focusedMemberAddress).toBe('/member-b')
     expect(connectToTeamStreamMock).toHaveBeenCalledWith(ROOT)
   })
 
@@ -122,8 +120,8 @@ describe('openTeamRun current exact execution identity', () => {
       ensureWorkspaceByRootPath: vi.fn(),
     })
 
-    expect(hydrated.topology.rootTeam.children.map((node) => node.address)).toEqual(['/member-a', '/member-b'])
-    expect(hydrated.executions.hasExecution(address('/member-a'))).toBe(true)
+    expect(hydrated.view.getExecutionTree().root_team.members.map((node) => node.address)).toEqual(['/member-a', '/member-b'])
+    expect(hydrated.view.hasAgentRun('run-a')).toBe(true)
     expect(addTeamContextMock).toHaveBeenCalledWith(hydrated)
     expect(selectRunMock).toHaveBeenCalledWith(ROOT, 'team')
     expect(selectDraftMock).toHaveBeenCalledWith(null)
@@ -131,12 +129,12 @@ describe('openTeamRun current exact execution identity', () => {
   })
 
   it('preserves an exact requested task-Agent focus present in the hydrated execution state', async () => {
-    const taskAddress = address('/member-b', [], 'task-agent-run-1')
     const hydrated = makeTeam({
-      tasks: [testTaskProjection({
+      tasks: [testTaskRecord({
         taskId: 'task-1',
-        executionAddress: taskAddress,
-        senderAddress: address('/member-a'),
+        delegatorAgentRunId: 'run-a',
+        recipientAddress: '/member-b',
+        target: { agentRunId: 'task-agent-run-1' },
       })],
     })
     getTeamContextByIdMock.mockReturnValue(makeTeam())
@@ -144,30 +142,28 @@ describe('openTeamRun current exact execution identity', () => {
 
     const result = await openTeamRun({
       teamRunId: ROOT,
-      executionAddress: taskAddress,
+      agentRunId: 'task-agent-run-1',
       resolveWorkspaceMetadataByRootPath: vi.fn(),
       ensureWorkspaceByRootPath: vi.fn(),
     })
 
-    expect(hydrateLiveTeamRunContextMock).toHaveBeenCalledWith(expect.objectContaining({ memberAddress: '/member-b' }))
-    expect(hydrated.executions.getFocusedAddress()).toEqual(taskAddress)
-    expect(result.focusedExecutionAddress).toEqual(taskAddress)
+    expect(hydrateLiveTeamRunContextMock).toHaveBeenCalledWith(expect.objectContaining({ agentRunId: 'task-agent-run-1' }))
+    expect(hydrated.view.getFocusedAgentRunId()).toBe('task-agent-run-1')
+    expect(result.focusedAgentRunId).toBe('task-agent-run-1')
   })
 
-  it('falls back to the hydrated focus when a requested execution identity is absent', async () => {
-    const hydrated = makeTeam({ focus: address('/member-a') })
+  it('rejects an absent requested AgentRun without silently substituting another focus', async () => {
+    const hydrated = makeTeam({ focus: 'run-a' })
     getTeamContextByIdMock.mockReturnValue(makeTeam())
     hydrateLiveTeamRunContextMock.mockResolvedValue(hydration(hydrated))
 
-    const result = await openTeamRun({
+    await expect(openTeamRun({
       teamRunId: ROOT,
-      executionAddress: address('/missing-member'),
+      agentRunId: 'missing-run',
       resolveWorkspaceMetadataByRootPath: vi.fn(),
       ensureWorkspaceByRootPath: vi.fn(),
-    })
-
-    expect(result.focusedExecutionAddress).toEqual(address('/member-a'))
-    expect(hydrated.executions.getFocusedAddress()).toEqual(address('/member-a'))
+    })).rejects.toThrow("AgentRun 'missing-run' is not part of this Team execution.")
+    expect(hydrated.view.getFocusedAgentRunId()).toBe('run-a')
   })
 
   it('uses navigation-free mobile selection and leaves an inactive projection disconnected', async () => {

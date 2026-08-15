@@ -81,9 +81,9 @@ describe('memoryInspectorStore', () => {
     vi.mocked(getApolloClient).mockReturnValue({ query: queryMock } as any);
 
     const store = useMemoryInspectorStore();
-    await store.inspect({ kind: 'team_member_run', teamRunId: 'team-1', memberRunId: 'member-1', teamDefinitionName: 'Team', memberName: 'Lead' });
+    await store.inspect({ kind: 'team_member_run', teamRunId: 'team-1', agentRunId: 'member-1', memberAddress: '/lead', teamDefinitionName: 'Team', memberName: 'Lead' });
 
-    expect(queryMock.mock.calls[0][0].variables).toMatchObject({ teamRunId: 'team-1', memberRunId: 'member-1' });
+    expect(queryMock.mock.calls[0][0].variables).toMatchObject({ teamRunId: 'team-1', agentRunId: 'member-1' });
     expect(store.memoryView?.runId).toBe('member-1');
   });
 });

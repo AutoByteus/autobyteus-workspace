@@ -39,7 +39,7 @@ const agentSelectionStoreMock = reactive({
 
 const agentTeamContextsStoreMock = reactive({
   activeTeamContext: null as any,
-  activeExecutionFocusedMemberRouteKey: '',
+  activeExecutionFocusedMemberContext: null as MockAgentContext | null,
 });
 
 const contextFileUploadStoreMock = reactive({
@@ -130,7 +130,7 @@ describe('ContextFilePathInputArea', () => {
     selectContext(createContext('temp-agent-1'));
     agentSelectionStoreMock.selectedType = 'agent';
     agentTeamContextsStoreMock.activeTeamContext = null;
-    agentTeamContextsStoreMock.activeExecutionFocusedMemberRouteKey = '';
+    agentTeamContextsStoreMock.activeExecutionFocusedMemberContext = null;
     contextFileUploadStoreMock.isUploading = false;
     windowNodeContextStoreMock.isEmbeddedWindow = true;
     workspaceStoreMock.activeWorkspace = { workspaceId: 'ws-1' };
@@ -254,37 +254,12 @@ describe('ContextFilePathInputArea', () => {
     agentSelectionStoreMock.selectedType = 'team';
     agentContextsStoreMock.activeRun = null;
     agentTeamContextsStoreMock.activeTeamContext = {
-      teamRunId: 'team-1',
-      focusedMemberRouteKey: 'solution_designer',
-      focusedMemberName: 'solution_designer',
-      memberNodesByRouteKey: new Map([
-        ['solution_designer', {
-          memberKind: 'agent',
-          memberName: 'solution_designer',
-          displayName: 'solution_designer',
-          memberPath: ['solution_designer'],
-          memberRouteKey: 'solution_designer',
-          agentDefinitionId: 'solution-designer-agent',
-        }],
-        ['implementation_engineer', {
-          memberKind: 'agent',
-          memberName: 'implementation_engineer',
-          displayName: 'implementation_engineer',
-          memberPath: ['implementation_engineer'],
-          memberRouteKey: 'implementation_engineer',
-          agentDefinitionId: 'implementation-engineer-agent',
-        }],
-      ]),
-      leafAgentContextsByRouteKey: new Map([
-        ['solution_designer', solutionContext],
-        ['implementation_engineer', implementationContext],
-      ]),
-      members: new Map([
-        ['solution_designer', solutionContext],
-        ['implementation_engineer', implementationContext],
-      ]),
+      view: {
+        getRootTeamRunId: () => 'team-1',
+        getFocusedMemberAddress: () => '/solution_designer',
+      },
     };
-    agentTeamContextsStoreMock.activeExecutionFocusedMemberRouteKey = 'solution_designer';
+    agentTeamContextsStoreMock.activeExecutionFocusedMemberContext = solutionContext;
 
     const fetchMock = vi.fn().mockResolvedValue(
       new Response(new Blob(['image-bytes'], { type: 'image/png' }), {
@@ -335,8 +310,8 @@ describe('ContextFilePathInputArea', () => {
     expect(contextFileUploadStoreMock.uploadAttachment).toHaveBeenCalledWith({
       owner: {
         kind: 'team_member_draft',
-        draftTeamRunId: 'team-1',
-        memberRouteKey: 'solution_designer',
+        teamDraftId: 'team-1',
+        memberAddress: '/solution_designer',
       },
       file: expect.any(File),
     });

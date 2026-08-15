@@ -48,23 +48,19 @@ const applyTeamHistoryStatusToExistingContext = (
   teamRun: TeamRunHistoryItem,
   preserveCurrentMemberStatuses: boolean,
 ): void => {
-  const statusByKey = new Map(
-    teamRun.members
-      .map((member) => [member.memberAddress.trim(), member.status] as const)
-      .filter(([memberAddress]) => Boolean(memberAddress)),
-  );
   const statusByRunId = new Map(
     teamRun.members
       .map((member) => [member.agentRunId.trim(), member.status] as const)
       .filter(([agentRunId]) => Boolean(agentRunId)),
   );
 
-  existingTeamContext.executions.setRootTeamActive(teamRun.isActive);
-  existingTeamContext.executions.listAgentContextEntries().forEach(({ executionAddress, agentContext: memberContext }) => {
+  existingTeamContext.view.setRootTeamActive(teamRun.isActive);
+  existingTeamContext.view.listAgentContextEntries().forEach(({ agentRunId, memberAddress, agentContext: memberContext }) => {
     memberContext.config.isLocked = true;
-    const matchedStatus =
-      statusByKey.get(executionAddress.memberAddress) ||
-      statusByRunId.get(memberContext.state.runId);
+    const historyMember = teamRun.members.find((member) => member.agentRunId === agentRunId);
+    const matchedStatus = historyMember?.memberAddress === memberAddress
+      ? statusByRunId.get(agentRunId)
+      : undefined;
     applyMemberOrHistoryStatusSnapshot(
       memberContext,
       matchedStatus ? normalizeAgentRuntimeStatus(matchedStatus) : preserveCanonicalAgentStatus(memberContext.state.currentStatus),
@@ -126,7 +122,7 @@ export const recoverActiveRunsFromHistory = async (
     try {
       const result = await openTeamRun({
         teamRunId,
-        memberAddress: null,
+        agentRunId: null,
         resolveWorkspaceMetadataByRootPath: input.resolveWorkspaceMetadataByRootPath,
         ensureWorkspaceByRootPath: input.ensureWorkspaceByRootPath,
         selectRun: false,

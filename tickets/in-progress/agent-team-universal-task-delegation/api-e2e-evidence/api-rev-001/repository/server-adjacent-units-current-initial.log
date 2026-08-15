@@ -1,0 +1,934 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > persists run-owned reasoning closure exactly once before the next tool
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-BNLQ5P/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > rejects segment lifecycle without an exact turn instead of inventing a fallback turn
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-MtHkEy/working_context_snapshot.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-MtHkEy/raw_traces_active.jsonl
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > persists one trace for adjacent reasoning deltas and a new trace after a tool boundary
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-H1OnDU/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > tolerates lifecycle-before-command ordering and flushes text and reasoning on turn completion
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-91rstr/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > persists open reasoning before a following tool call without duplicating later flushes
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-QooqUH/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > persists open reasoning before an inferred tool call from a terminal tool result
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-sINZ9E/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > keeps reasoning open across a matching result and flushes one trace at the next tool
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-V4piXe/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > preserves post-card reasoning when authoritative call arguments arrive only at result
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-Rrp0Rk/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > keeps reasoning open across matching TOOL_EXECUTION_FAILED updates
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-YpfAjV/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > keeps reasoning open across matching TOOL_DENIED updates
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-AerpUL/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > persists open reasoning before assistant text without requiring turn completion
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-4dARuT/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > persists open reasoning before assistant complete output
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-G7Bwvp/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > does not substitute an active turn when forwarded input lacks its exact turn identity
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-o2pkd3/working_context_snapshot.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-o2pkd3/raw_traces_active.jsonl
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > records tool traces once from lifecycle events when matching tool segments are present
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-bIys1Z/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > preserves assistant-tool-assistant raw trace order from distinct text segment ids
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-9Ia75T/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > does not create a fallback turn for a segment without exact turn identity
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-kZ3oJr/working_context_snapshot.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-kZ3oJr/raw_traces_active.jsonl
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > ignores provider compaction/status payloads without local raw-trace pruning
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-2P1CTA/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > writes provider compaction markers and rotates settled active traces into segmented archives
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-LjpIOc/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > dedupes replayed provider boundaries without dropping post-boundary active records
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-4xgs6q/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > retries rotation from an existing provider boundary marker when no complete segment exists
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-k4Anib/working_context_snapshot.json
+
+ ✓ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts (21 tests) 48ms
+stdout | tests/unit/services/agent-streaming/agent-stream-handler.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:63935) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > connects to a run identity and sends CONNECTED plus projected status without restoring runtime
+Created agent session 67a433ef-4d47-4866-bb51-015d41d18579 for run agent-123
+Agent WebSocket connected: session=67a433ef-4d47-4866-bb51-015d41d18579, run=agent-123
+
+stdout | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > connects to run events through the AgentRun subject for active runtime-managed runs
+Created agent session 326caad5-55bf-4abe-8464-5f3519e20710 for run runtime-run-1
+Agent WebSocket connected: session=326caad5-55bf-4abe-8464-5f3519e20710, run=runtime-run-1
+
+stdout | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > maps Codex AgentRunEvents directly to websocket messages for single-agent runs
+Created agent session 30fc7884-c9af-43cb-8fa6-4f5b63a697ff for run runtime-run-2
+Agent WebSocket connected: session=30fc7884-c9af-43cb-8fa6-4f5b63a697ff, run=runtime-run-2
+
+stdout | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > maps turn lifecycle AgentRunEvents directly to websocket messages
+Created agent session 54afa7bc-9b4b-486c-ba98-6d6811773146 for run runtime-run-3
+Agent WebSocket connected: session=54afa7bc-9b4b-486c-ba98-6d6811773146, run=runtime-run-3
+
+stdout | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > registers the websocket connection for run-scoped live message broadcasts
+Created agent session 2c1676c8-b247-449f-ba23-461f52acf9e2 for run agent-123
+Agent WebSocket connected: session=2c1676c8-b247-449f-ba23-461f52acf9e2, run=agent-123
+
+stdout | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > publishes terminal offline status to an already-connected websocket when a run terminates
+Created agent session 19288b43-7fa1-4ebf-87de-7144286d4bcd for run run-terminate-1
+Agent WebSocket connected: session=19288b43-7fa1-4ebf-87de-7144286d4bcd, run=run-terminate-1
+
+stdout | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > handles SEND_MESSAGE through the command coordinator and returns an ACK
+Created agent session 7d367cab-b639-4048-acb9-6a10962a3a9e for run agent-123
+Agent WebSocket connected: session=7d367cab-b639-4048-acb9-6a10962a3a9e, run=agent-123
+
+stdout | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > defers runtime binding on identity-only connect until SEND_MESSAGE activates through the coordinator
+Created agent session 4cdabe9e-b391-465a-82b8-fca40523313a for run agent-123
+Agent WebSocket connected: session=4cdabe9e-b391-465a-82b8-fca40523313a, run=agent-123
+
+stdout | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > keeps interrupt-generation active-only and does not activate a stopped agent run
+Created agent session a018e748-b528-4258-88c2-ff70308a1f69 for run agent-123
+Agent WebSocket connected: session=a018e748-b528-4258-88c2-ff70308a1f69, run=agent-123
+
+stderr | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > keeps interrupt-generation active-only and does not activate a stopped agent run
+INTERRUPT_GENERATION rejected for missing agent run agent-123.
+
+stdout | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > returns exactly one same-socket acknowledgement for an accepted interrupt
+Created agent session a662ff37-2468-470c-ab9f-5ca14501db75 for run agent-123
+Agent WebSocket connected: session=a662ff37-2468-470c-ab9f-5ca14501db75, run=agent-123
+
+stdout | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > rejects an empty interrupt command id before runtime execution
+Created agent session dce26cb2-00dc-4286-8742-9446b964a257 for run agent-123
+Agent WebSocket connected: session=dce26cb2-00dc-4286-8742-9446b964a257, run=agent-123
+
+stdout | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > maps interrupt provider failures without emitting lifecycle status
+Created agent session cb3d6e07-d1da-430c-b14f-c008598eb823 for run agent-123
+Agent WebSocket connected: session=cb3d6e07-d1da-430c-b14f-c008598eb823, run=agent-123
+
+stderr | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > maps interrupt provider failures without emitting lifecycle status
+INTERRUPT_GENERATION rejected for agent run agent-123: [PROVIDER_REJECTED] Cannot interrupt now.
+
+stdout | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > handles tool approvals for active sessions
+Created agent session e80419b7-b738-485a-82d6-e725a3bf9c1e for run agent-123
+Agent WebSocket connected: session=e80419b7-b738-485a-82d6-e725a3bf9c1e, run=agent-123
+
+stderr | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > ignores messages for unknown sessions
+Message for unknown session: missing
+
+ ✓ tests/unit/services/agent-streaming/agent-stream-handler.test.ts (18 tests) 15ms
+stdout | tests/unit/run-history/services/run-file-change-projection-service.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:63936) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/run-history/services/run-file-change-projection-service.test.ts > RunFileChangeProjectionService > reads active runs from the authoritative run-file-change owner instead of projection storage
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+
+ ❯ tests/unit/run-history/services/run-file-change-projection-service.test.ts (7 tests | 4 failed) 22ms
+     ✓ reads active runs from the authoritative run-file-change owner instead of projection storage 4ms
+     ✓ canonicalizes persisted historical entries using the run workspace root 3ms
+     ✓ serves the fresh active-run entry before projection persistence completes 7ms
+     × reads active AutoByteus team-member projections through the run-file-change owner 4ms
+     × reads historical AutoByteus team-member projections from team metadata 2ms
+     × reads historical nested team-member projections from the hierarchical root team memory directory 1ms
+     × writes task-agent projections to the task-agent memory directory, not the template member directory 1ms
+ ✓ tests/unit/run-history/projection/codex-run-view-projection-provider.test.ts (8 tests) 13ms
+ ✓ tests/unit/agent-memory/runtime-tool-trace-sequencer.test.ts (10 tests) 22ms
+ ❯ tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts (0 test)
+stdout | tests/unit/run-history/team-member-run-view-projection-service.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:63940) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/run-history/team-member-run-view-projection-service.test.ts > TeamMemberRunViewProjectionService > resolves by memberRouteKey from recursive memberTree and delegates canonical projection
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+
+ ❯ tests/unit/run-history/team-member-run-view-projection-service.test.ts (8 tests | 8 failed) 11ms
+     × resolves by memberRouteKey from recursive memberTree and delegates canonical projection 4ms
+     × routes an explicit member page request with member-scoped cursor identity 2ms
+     × resolves nested leaf route keys from recursive memberTree 0ms
+     × rejects bare member names when duplicate nested leaves require route keys 3ms
+     × delegates member metadata through the unified local replay projection path 0ms
+     × throws when member binding is missing 1ms
+     × returns delegated Codex local replay projection with member memory metadata 0ms
+     × returns an empty projection when delegated projection is empty 0ms
+stderr | tests/unit/run-history/services/agent-run-view-projection-service.test.ts > AgentRunViewProjectionService > keeps Codex projection empty when local replay history is missing
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-projection-service-qrHKal/agents/run-codex-missing-local/raw_traces_active.jsonl
+
+stderr | tests/unit/run-history/services/agent-run-view-projection-service.test.ts > AgentRunViewProjectionService > returns deterministic empty projection when the local replay provider fails
+[AgentRunViewProjectionService] local replay projection failed for run 'run-local-provider-fails' (autobyteus): Error: local replay failed
+
+ ✓ tests/unit/run-history/services/agent-run-view-projection-service.test.ts (8 tests) 46ms
+ ✓ tests/unit/services/agent-streaming/agent-stream-websocket-egress.test.ts (31 tests) 14ms
+ ✓ tests/unit/run-history/services/agent-run-history-catalog-service.test.ts (10 tests) 192ms
+ ✓ tests/unit/run-history/projection/local-memory-run-view-projection-provider.test.ts (6 tests) 15ms
+stderr | tests/unit/agent-memory/agent-memory-service.test.ts > AgentMemoryService > applies raw trace limits
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-eaBU2n/agents/agent-456/working_context_snapshot.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-eaBU2n/agents/agent-456/episodic.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-eaBU2n/agents/agent-456/semantic.jsonl
+
+stderr | tests/unit/agent-memory/agent-memory-service.test.ts > AgentMemoryService > reads archive segments plus active traces as the complete corpus
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-JonQ25/agents/agent-archive/working_context_snapshot.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-JonQ25/agents/agent-archive/episodic.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-JonQ25/agents/agent-archive/semantic.jsonl
+
+stderr | tests/unit/agent-memory/agent-memory-service.test.ts > AgentMemoryService > lists raw trace files active first and reads only the selected segment filename
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-AupCDT/agents/agent-segments/working_context_snapshot.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-AupCDT/agents/agent-segments/episodic.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-AupCDT/agents/agent-segments/semantic.jsonl
+
+stderr | tests/unit/agent-memory/agent-memory-service.test.ts > AgentMemoryService > falls back to the default raw trace file for invalid selected filenames
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-527NLI/agents/agent-invalid-file/working_context_snapshot.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-527NLI/agents/agent-invalid-file/episodic.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-527NLI/agents/agent-invalid-file/semantic.jsonl
+
+stderr | tests/unit/agent-memory/agent-memory-service.test.ts > AgentMemoryService > does not create a missing run directory for includeArchive raw-trace reads
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-nfRVNB/agents/missing-run/working_context_snapshot.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-nfRVNB/agents/missing-run/episodic.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-nfRVNB/agents/missing-run/semantic.jsonl
+
+ ✓ tests/unit/agent-memory/agent-memory-service.test.ts (7 tests) 16ms
+stdout | tests/unit/run-history/services/agent-run-history-service.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:63946) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/run-history/services/agent-run-history-service.test.ts (5 tests) 6ms
+ ❯ tests/unit/run-history/services/team-run-history-service.test.ts (0 test)
+ ✓ tests/unit/run-history/services/workspace-run-history-service.test.ts (4 tests) 4ms
+stdout | tests/unit/agent-memory/agent-memory-location-service.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:63949) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/unit/agent-memory/agent-memory-location-service.test.ts (0 test)
+ ❯ tests/unit/services/agent-streaming/team-run-event-websocket-message-mapper.test.ts (0 test)
+stdout | tests/unit/agent-memory/agent-run-memory-recorder.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:63954) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stderr | tests/unit/agent-memory/agent-run-memory-recorder.test.ts > AgentRunMemoryRecorder > records forwarded commands and normalized events without a stream subscriber
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-run-memory-recorder-NAwcBn/working_context_snapshot.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-run-memory-recorder-NAwcBn/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/agent-run-memory-recorder.test.ts > AgentRunMemoryRecorder > records canonical route-backed send_message_to tool traces with MCP content result shape
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-run-memory-recorder-uGk2VL/working_context_snapshot.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-run-memory-recorder-uGk2VL/working_context_snapshot.json
+
+ ✓ tests/unit/agent-memory/agent-run-memory-recorder.test.ts (5 tests) 67ms
+ ✓ tests/unit/run-history/projection/raw-trace-to-historical-replay-events.test.ts (6 tests) 5ms
+stderr | tests/unit/agent-memory/external-runtime-memory-writer.test.ts > ExternalRuntimeMemoryWriter > writes exact normalized raw fields without creating a WorkingContext snapshot
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/external-runtime-memory-writer-eNfEiW/working_context_snapshot.json
+
+ ✓ tests/unit/agent-memory/external-runtime-memory-writer.test.ts (3 tests) 14ms
+stdout | tests/unit/run-history/services/team-run-history-catalog-service.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:63958) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/unit/run-history/services/team-run-history-catalog-service.test.ts (0 test)
+ ✓ tests/unit/services/agent-streaming/agent-run-event-message-mapper.test.ts (6 tests) 3ms
+stdout | tests/unit/agent-memory/team-memory-explorer-service.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:63960) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/unit/agent-memory/team-memory-explorer-service.test.ts (0 test)
+ ✓ tests/unit/run-history/store/agent-run-metadata-store.test.ts (2 tests) 145ms
+ ✓ tests/unit/token-usage/token-usage-execution-identity-migration-repository.test.ts (2 tests) 102ms
+stdout | tests/unit/run-history/services/published-artifact-projection-service.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:63967) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/run-history/services/published-artifact-projection-service.test.ts (1 test) 55ms
+ ✓ tests/unit/run-history/team-run-file-commit-writer.test.ts (2 tests) 71ms
+stdout | tests/unit/app-data-migrations/team-run-execution-tree-v1-app-data-migration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:63971) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/app-data-migrations/team-run-execution-tree-v1-app-data-migration.test.ts (2 tests) 58ms
+ ✓ tests/unit/run-history/projection/event-monitor-active-trace-page-projection.test.ts (4 tests) 4ms
+stderr | tests/unit/agent-memory/memory-file-store.test.ts > MemoryFileStore > returns null for missing or invalid JSON
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/memory-store-bxXCVj/missing.json
+Failed to decode JSON file /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/memory-store-bxXCVj/bad.json: SyntaxError: Expected property name or '}' in JSON at position 1 (line 1 column 2)
+
+stderr | tests/unit/agent-memory/memory-file-store.test.ts > MemoryFileStore > reads JSONL and skips malformed lines
+Skipping malformed JSONL line in /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/memory-store-raN7Bh/agents/agent/raw_traces_active.jsonl: SyntaxError: Expected property name or '}' in JSON at position 1 (line 1 column 2)
+
+stderr | tests/unit/agent-memory/memory-file-store.test.ts > MemoryFileStore > returns empty array for missing JSONL
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/memory-store-YVb48X/missing.jsonl
+
+ ✓ tests/unit/agent-memory/memory-file-store.test.ts (8 tests) 20ms
+stdout | tests/unit/services/agent-streaming/agent-session-manager.test.ts > AgentSessionManager > creates sessions successfully
+Created agent session s1 for run agent-123
+
+stdout | tests/unit/services/agent-streaming/agent-session-manager.test.ts > AgentSessionManager > throws when creating a duplicate session
+Created agent session s1 for run agent-123
+
+stdout | tests/unit/services/agent-streaming/agent-session-manager.test.ts > AgentSessionManager > allows multiple sessions for the same agent
+Created agent session s1 for run agent-123
+Created agent session s2 for run agent-123
+
+stdout | tests/unit/services/agent-streaming/agent-session-manager.test.ts > AgentSessionManager > retrieves sessions by ID
+Created agent session s1 for run agent-123
+
+stdout | tests/unit/services/agent-streaming/agent-session-manager.test.ts > AgentSessionManager > retrieves sessions for an agent
+Created agent session s1 for run agent-1
+Created agent session s2 for run agent-1
+Created agent session s3 for run agent-2
+
+stdout | tests/unit/services/agent-streaming/agent-session-manager.test.ts > AgentSessionManager > closes sessions and removes them
+Created agent session s1 for run agent-123
+Closed agent session s1
+
+stdout | tests/unit/services/agent-streaming/agent-session-manager.test.ts > AgentSessionManager > closes all sessions for an agent
+Created agent session s1 for run agent-1
+Created agent session s2 for run agent-1
+Created agent session s3 for run agent-2
+Closed agent session s1
+Closed agent session s2
+
+stdout | tests/unit/services/agent-streaming/agent-session-manager.test.ts > AgentSessionManager > closes all sessions
+Created agent session s1 for run agent-1
+Created agent session s2 for run agent-2
+Closed agent session s1
+Closed agent session s2
+
+stdout | tests/unit/services/agent-streaming/agent-session-manager.test.ts > AgentSessionManager > lists active sessions
+Created agent session s1 for run agent-1
+Created agent session s2 for run agent-2
+
+ ✓ tests/unit/services/agent-streaming/agent-session-manager.test.ts (11 tests) 6ms
+ ❯ tests/unit/services/agent-streaming/team-conversation-target-address-parser.test.ts (0 test)
+ ✓ tests/unit/agent-memory/agent-memory-explorer-service.test.ts (3 tests) 183ms
+stderr | tests/unit/run-history/store/agent-run-history-index-store.test.ts > AgentRunHistoryIndexStore > does not treat legacy V1 status rows as a normal source catalog
+Invalid run history index file format: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-run-history-index-store-xrIBUn/run_history_index.json
+
+stderr | tests/unit/run-history/store/agent-run-history-index-store.test.ts > AgentRunHistoryIndexStore > does not treat a file-level version wrapper as the standalone source catalog
+Invalid run history index file format: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-run-history-index-store-6QIUVQ/run_history_index.json
+
+stderr | tests/unit/run-history/store/agent-run-history-index-store.test.ts > AgentRunHistoryIndexStore > rejects plain V2 rows that the catalog cannot normalize
+Invalid run history index file format: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-run-history-index-store-fgEsKx/run_history_index.json
+
+ ✓ tests/unit/run-history/store/agent-run-history-index-store.test.ts (5 tests) 41ms
+ ✓ tests/unit/run-history/projection/claude-run-view-projection-provider.test.ts (2 tests) 5ms
+stderr | tests/unit/run-history/store/team-run-history-index-store.test.ts > TeamRunHistoryIndexStore > rejects wrappers and legacy live-status rows as the normal source catalog
+Invalid team run history index format: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-run-history-index-store-4SEVhy/team_run_history_index.json
+
+stderr | tests/unit/run-history/store/team-run-history-index-store.test.ts > TeamRunHistoryIndexStore > rejects plain rows with invalid team run identities
+Invalid team run history index format: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-run-history-index-store-afAzpK/team_run_history_index.json
+
+ ✓ tests/unit/run-history/store/team-run-history-index-store.test.ts (3 tests) 44ms
+ ✓ tests/unit/run-history/projection/active-trace-event-page-policy.test.ts (2 tests) 3ms
+ ✓ tests/unit/services/agent-streaming/agent-live-message-publisher.test.ts (1 test) 3ms
+ ❯ tests/unit/agent-memory/agent-memory-layout.test.ts (4 tests | 3 failed) 24ms
+     × composes standalone and team memory paths under the canonical roots 5ms
+     × creates standalone and hierarchical team-agent subtrees under canonical directories 3ms
+     × guards against path traversal in team path segments 8ms
+     ✓ guards against path traversal in standalone run segments 6ms
+ ✓ tests/unit/services/agent-streaming/agent-stream-broadcaster.test.ts (2 tests) 3ms
+ ✓ tests/unit/run-history/team-run-v1-package-schema.test.ts (6 tests) 36ms
+ ❯ tests/unit/services/agent-streaming/team-runtime-snapshot-service.test.ts (0 test)
+ ❯ tests/unit/services/agent-streaming/team-live-message-publisher.test.ts (1 test | 1 failed) 5ms
+     × publishes external user messages with canonical member route and path identity 5ms
+ ✓ tests/unit/run-history/team-member-run-view-projection-service.import.test.ts (1 test) 27ms
+ ✓ tests/unit/services/team-communication/team-communication-message-append-plan-current.test.ts (1 test) 4ms
+ ✓ tests/unit/run-history/agent-run-metadata-service.test.ts (2 tests) 3ms
+ ✓ tests/unit/run-history/services/agent-run-history-index-service.test.ts (1 test) 19ms
+ ✓ tests/unit/services/agent-streaming/payload-serialization.test.ts (4 tests) 3ms
+ ✓ tests/unit/run-history/services/team-run-history-index-service.test.ts (1 test) 22ms
+ ✓ tests/unit/agent-memory/raw-trace-record-normalizer.test.ts (3 tests) 2ms
+ ✓ tests/unit/agent-memory/memory-layout-cleanup-regression.test.ts (1 test) 1853ms
+     ✓ keeps removed run-specific layout symbols out of source and tests  1852ms
+ ✓ tests/unit/run-history/projection/recent-run-projection-policy.test.ts (1 test) 2ms
+ ✓ tests/unit/run-history/services/agent-run-history-identity.test.ts (2 tests) 2ms
+stdout | tests/unit/services/agent-streaming/agent-session.test.ts > AgentSession > connects and reports connected state
+AgentSession s1 connected to run agent-1
+
+stdout | tests/unit/services/agent-streaming/agent-session.test.ts > AgentSession > prevents connecting a closed session
+AgentSession s2 closed
+
+stdout | tests/unit/services/agent-streaming/agent-session.test.ts > AgentSession > closes and resets connected state
+AgentSession s3 connected to run agent-3
+AgentSession s3 closed
+
+ ✓ tests/unit/services/agent-streaming/agent-session.test.ts (3 tests) 5ms
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 8 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/agent-memory/agent-memory-location-service.test.ts [ tests/unit/agent-memory/agent-memory-location-service.test.ts ]
+Error: Cannot find module '../../../src/run-history/store/team-run-metadata-store.js' imported from '/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/tests/unit/agent-memory/agent-memory-location-service.test.ts'
+ ❯ tests/unit/agent-memory/agent-memory-location-service.test.ts:10:1
+      8| import { AgentMemoryLayout } from "../../../src/agent-memory/store/age…
+      9| import type { TeamRunAgentMemberMetadata, TeamRunMetadata } from "../.…
+     10| import { TeamRunMetadataStore } from "../../../src/run-history/store/t…
+       | ^
+     11| 
+     12| const memoryDir = "/tmp/agent-memory-location-service-test";
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/24]⎯
+
+ FAIL  tests/unit/agent-memory/team-memory-explorer-service.test.ts [ tests/unit/agent-memory/team-memory-explorer-service.test.ts ]
+Error: Cannot find module '../../../src/run-history/store/team-run-metadata-store.js' imported from '/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/tests/unit/agent-memory/team-memory-explorer-service.test.ts'
+ ❯ tests/unit/agent-memory/team-memory-explorer-service.test.ts:8:1
+      6| import { RuntimeKind } from "../../../src/runtime-management/runtime-k…
+      7| import { TeamMemoryExplorerService } from "../../../src/agent-memory/s…
+      8| import { TeamRunMetadataStore } from "../../../src/run-history/store/t…
+       | ^
+      9| 
+     10| const touch = (filePath: string, mtime: number) => {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/24]⎯
+
+ FAIL  tests/unit/run-history/services/team-run-history-catalog-service.test.ts [ tests/unit/run-history/services/team-run-history-catalog-service.test.ts ]
+Error: Cannot find module '../../../../src/run-history/store/team-run-metadata-store.js' imported from '/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/tests/unit/run-history/services/team-run-history-catalog-service.test.ts'
+ ❯ tests/unit/run-history/services/team-run-history-catalog-service.test.ts:9:1
+      7| import { TeamRunHistoryCatalogService } from "../../../../src/run-hist…
+      8| import { TeamRunHistoryIndexStore } from "../../../../src/run-history/…
+      9| import { TeamRunMetadataStore } from "../../../../src/run-history/stor…
+       | ^
+     10| import type { TeamRunMetadata } from "../../../../src/run-history/stor…
+     11| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/24]⎯
+
+ FAIL  tests/unit/run-history/services/team-run-history-service.test.ts [ tests/unit/run-history/services/team-run-history-service.test.ts ]
+Error: Cannot find module '../../../../src/run-history/store/team-run-metadata-store.js' imported from '/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/tests/unit/run-history/services/team-run-history-service.test.ts'
+ ❯ tests/unit/run-history/services/team-run-history-service.test.ts:5:1
+      3| import { RuntimeKind } from "../../../../src/runtime-management/runtim…
+      4| import type { TeamRunMetadata } from "../../../../src/run-history/stor…
+      5| import {
+       | ^
+      6|   LEGACY_TEAM_RUN_METADATA_UPGRADE_REQUIRED_MESSAGE,
+      7|   UnsupportedLegacyTeamRunMetadataError,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/24]⎯
+
+ FAIL  tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts [ tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts ]
+Error: Cannot find module '../../../../src/agent-team-execution/domain/team-execution-address.js' imported from '/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts'
+ ❯ tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts:3:1
+      1| import { afterEach, describe, expect, it, vi } from "vitest";
+      2| import { TeamRunEventSourceType } from "../../../../src/agent-team-exe…
+      3| import { createTeamExecutionAddress } from "../../../../src/agent-team…
+       | ^
+      4| import { createTeamAgentExecutionBinding } from "../../../../src/agent…
+      5| import { AgentTeamStreamHandler } from "../../../../src/services/agent…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/24]⎯
+
+ FAIL  tests/unit/services/agent-streaming/team-conversation-target-address-parser.test.ts [ tests/unit/services/agent-streaming/team-conversation-target-address-parser.test.ts ]
+Error: Cannot find module '../../../../src/services/agent-streaming/team-conversation-target-address-parser.js' imported from '/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/tests/unit/services/agent-streaming/team-conversation-target-address-parser.test.ts'
+ ❯ tests/unit/services/agent-streaming/team-conversation-target-address-parser.test.ts:2:1
+      1| import { describe, expect, it } from "vitest";
+      2| import { resolveSendMessageConversationTargetAddress } from "../../../…
+       | ^
+      3| 
+      4| describe("resolveSendMessageConversationTargetAddress", () => {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/24]⎯
+
+ FAIL  tests/unit/services/agent-streaming/team-run-event-websocket-message-mapper.test.ts [ tests/unit/services/agent-streaming/team-run-event-websocket-message-mapper.test.ts ]
+Error: Cannot find module '../../../../src/agent-team-execution/domain/team-execution-address.js' imported from '/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/tests/unit/services/agent-streaming/team-run-event-websocket-message-mapper.test.ts'
+ ❯ tests/unit/services/agent-streaming/team-run-event-websocket-message-mapper.test.ts:7:1
+      5|   type TeamRunMemberInputEventPayload,
+      6| } from "../../../../src/agent-team-execution/domain/team-run-event.js";
+      7| import { createTeamExecutionAddress } from "../../../../src/agent-team…
+       | ^
+      8| import { createTeamAgentExecutionBinding } from "../../../../src/agent…
+      9| import type { TeamAgentEvent } from "../../../../src/agent-team-execut…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/24]⎯
+
+ FAIL  tests/unit/services/agent-streaming/team-runtime-snapshot-service.test.ts [ tests/unit/services/agent-streaming/team-runtime-snapshot-service.test.ts ]
+Error: Cannot find module '../../../../src/agent-team-execution/domain/team-execution-address.js' imported from '/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/tests/unit/services/agent-streaming/team-runtime-snapshot-service.test.ts'
+ ❯ tests/unit/services/agent-streaming/team-runtime-snapshot-service.test.ts:7:1
+      5|   createTeamAgentStatusSnapshot,
+      6| } from "../../../../src/agent-team-execution/domain/team-agent-status.…
+      7| import { createTeamExecutionAddress } from "../../../../src/agent-team…
+       | ^
+      8| import type { TeamRun } from "../../../../src/agent-team-execution/dom…
+      9| import { TeamRuntimeSnapshotService } from "../../../../src/services/a…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/24]⎯
+
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 16 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/agent-memory/agent-memory-layout.test.ts > AgentMemoryLayout > composes standalone and team memory paths under the canonical roots
+TypeError: Cannot read properties of undefined (reading 'map')
+ ❯ AgentMemoryLayout.getTeamDirPath src/agent-memory/store/agent-memory-layout.ts:57:35
+     55|     const segments = [
+     56|       normalizePathSegment(scope.rootTeamRunId, "rootTeamRunId"),
+     57|       ...scope.ancestorTeamRunIds.map((segment, index) => normalizePat…
+       |                                   ^
+     58|     ];
+     59|     return resolveSafePath(this.teamRootDir, ...segments);
+ ❯ AgentMemoryLayout.getTeamAgentRunDirPath src/agent-memory/store/agent-memory-layout.ts:64:12
+ ❯ tests/unit/agent-memory/agent-memory-layout.test.ts:24:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/24]⎯
+
+ FAIL  tests/unit/agent-memory/agent-memory-layout.test.ts > AgentMemoryLayout > creates standalone and hierarchical team-agent subtrees under canonical directories
+TypeError: Cannot read properties of undefined (reading 'map')
+ ❯ AgentMemoryLayout.getTeamDirPath src/agent-memory/store/agent-memory-layout.ts:57:35
+     55|     const segments = [
+     56|       normalizePathSegment(scope.rootTeamRunId, "rootTeamRunId"),
+     57|       ...scope.ancestorTeamRunIds.map((segment, index) => normalizePat…
+       |                                   ^
+     58|     ];
+     59|     return resolveSafePath(this.teamRootDir, ...segments);
+ ❯ AgentMemoryLayout.getTeamAgentRunDirPath src/agent-memory/store/agent-memory-layout.ts:64:12
+ ❯ AgentMemoryLayout.ensureTeamAgentRunSubtree src/agent-memory/store/agent-memory-layout.ts:74:25
+ ❯ tests/unit/agent-memory/agent-memory-layout.test.ts:32:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/24]⎯
+
+ FAIL  tests/unit/agent-memory/agent-memory-layout.test.ts > AgentMemoryLayout > guards against path traversal in team path segments
+AssertionError: expected [Function] to throw error including 'teamRunPath[0] is invalid' but got 'Cannot read properties of undefined (…'
+
+Expected: "teamRunPath[0] is invalid"
+Received: "Cannot read properties of undefined (reading 'map')"
+
+ ❯ tests/unit/agent-memory/agent-memory-layout.test.ts:51:8
+     49|       { rootTeamRunId: "team-1", teamRunPath: ["../escape"] },
+     50|       "member-a",
+     51|     )).toThrow("teamRunPath[0] is invalid");
+       |        ^
+     52|   });
+     53| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/24]⎯
+
+ FAIL  tests/unit/run-history/team-member-run-view-projection-service.test.ts > TeamMemberRunViewProjectionService > resolves by memberRouteKey from recursive memberTree and delegates canonical projection
+Error: AgentRun 'professor' was not found in root TeamRun 'team-1'.
+ ❯ TeamMemberRunViewProjectionService.requireLocation src/run-history/services/team-member-run-view-projection-service.ts:71:13
+     69|     const location = await this.locations.findAgent({ agentRunId: run …
+     70|     if (!location || location.rootTeamRunId !== root) {
+     71|       throw new Error(`AgentRun '${run}' was not found in root TeamRun…
+       |             ^
+     72|     }
+     73|     if (!location.configuredPlacement) {
+ ❯ TeamMemberRunViewProjectionService.getProjection src/run-history/services/team-member-run-view-projection-service.ts:37:22
+ ❯ tests/unit/run-history/team-member-run-view-projection-service.test.ts:73:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/24]⎯
+
+ FAIL  tests/unit/run-history/team-member-run-view-projection-service.test.ts > TeamMemberRunViewProjectionService > routes an explicit member page request with member-scoped cursor identity
+AssertionError: promise rejected "Error: AgentRun 'professor' was not found…" instead of resolving
+ ❯ tests/unit/run-history/team-member-run-view-projection-service.test.ts:96:83
+     94|     });
+     95| 
+     96|     await expect(service.getActiveTracePage(" team-1 ", " professor ",…
+       |                                                                                   ^
+     97|     expect(getActiveTracePageFromMetadata).toHaveBeenCalledWith({
+     98|       runId: "member-1",
+
+Caused by: Error: AgentRun 'professor' was not found in root TeamRun 'team-1'.
+ ❯ TeamMemberRunViewProjectionService.requireLocation src/run-history/services/team-member-run-view-projection-service.ts:71:13
+ ❯ TeamMemberRunViewProjectionService.getActiveTracePage src/run-history/services/team-member-run-view-projection-service.ts:57:22
+ ❯ tests/unit/run-history/team-member-run-view-projection-service.test.ts:96:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/24]⎯
+
+ FAIL  tests/unit/run-history/team-member-run-view-projection-service.test.ts > TeamMemberRunViewProjectionService > resolves nested leaf route keys from recursive memberTree
+Error: AgentRun 'BuildSquad/review_lead' was not found in root TeamRun 'team-1'.
+ ❯ TeamMemberRunViewProjectionService.requireLocation src/run-history/services/team-member-run-view-projection-service.ts:71:13
+     69|     const location = await this.locations.findAgent({ agentRunId: run …
+     70|     if (!location || location.rootTeamRunId !== root) {
+     71|       throw new Error(`AgentRun '${run}' was not found in root TeamRun…
+       |             ^
+     72|     }
+     73|     if (!location.configuredPlacement) {
+ ❯ TeamMemberRunViewProjectionService.getProjection src/run-history/services/team-member-run-view-projection-service.ts:37:22
+ ❯ tests/unit/run-history/team-member-run-view-projection-service.test.ts:148:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/24]⎯
+
+ FAIL  tests/unit/run-history/team-member-run-view-projection-service.test.ts > TeamMemberRunViewProjectionService > rejects bare member names when duplicate nested leaves require route keys
+AssertionError: expected [Function] to throw error including 'Member route key \'review_lead\' not …' but got 'AgentRun \'review_lead\' was not foun…'
+
+Expected: "Member route key 'review_lead' not found for team run 'team-1'."
+Received: "AgentRun 'review_lead' was not found in root TeamRun 'team-1'."
+
+ ❯ tests/unit/run-history/team-member-run-view-projection-service.test.ts:214:5
+    212|     });
+    213| 
+    214|     await expect(service.getProjection("team-1", "review_lead")).rejec…
+       |     ^
+    215|       "Member route key 'review_lead' not found for team run 'team-1'.…
+    216|     );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/24]⎯
+
+ FAIL  tests/unit/run-history/team-member-run-view-projection-service.test.ts > TeamMemberRunViewProjectionService > delegates member metadata through the unified local replay projection path
+Error: AgentRun 'professor' was not found in root TeamRun 'team-1'.
+ ❯ TeamMemberRunViewProjectionService.requireLocation src/run-history/services/team-member-run-view-projection-service.ts:71:13
+     69|     const location = await this.locations.findAgent({ agentRunId: run …
+     70|     if (!location || location.rootTeamRunId !== root) {
+     71|       throw new Error(`AgentRun '${run}' was not found in root TeamRun…
+       |             ^
+     72|     }
+     73|     if (!location.configuredPlacement) {
+ ❯ TeamMemberRunViewProjectionService.getProjection src/run-history/services/team-member-run-view-projection-service.ts:37:22
+ ❯ tests/unit/run-history/team-member-run-view-projection-service.test.ts:249:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/24]⎯
+
+ FAIL  tests/unit/run-history/team-member-run-view-projection-service.test.ts > TeamMemberRunViewProjectionService > throws when member binding is missing
+AssertionError: expected [Function] to throw error including 'Member route key \'missing\' not foun…' but got 'AgentRun \'missing\' was not found in…'
+
+Expected: "Member route key 'missing' not found for team run 'team-1'."
+Received: "AgentRun 'missing' was not found in root TeamRun 'team-1'."
+
+ ❯ tests/unit/run-history/team-member-run-view-projection-service.test.ts:283:5
+    281|     });
+    282| 
+    283|     await expect(service.getProjection("team-1", "missing")).rejects.t…
+       |     ^
+    284|       "Member route key 'missing' not found for team run 'team-1'.",
+    285|     );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/24]⎯
+
+ FAIL  tests/unit/run-history/team-member-run-view-projection-service.test.ts > TeamMemberRunViewProjectionService > returns delegated Codex local replay projection with member memory metadata
+Error: AgentRun 'pong' was not found in root TeamRun 'team-1'.
+ ❯ TeamMemberRunViewProjectionService.requireLocation src/run-history/services/team-member-run-view-projection-service.ts:71:13
+     69|     const location = await this.locations.findAgent({ agentRunId: run …
+     70|     if (!location || location.rootTeamRunId !== root) {
+     71|       throw new Error(`AgentRun '${run}' was not found in root TeamRun…
+       |             ^
+     72|     }
+     73|     if (!location.configuredPlacement) {
+ ❯ TeamMemberRunViewProjectionService.getProjection src/run-history/services/team-member-run-view-projection-service.ts:37:22
+ ❯ tests/unit/run-history/team-member-run-view-projection-service.test.ts:317:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/24]⎯
+
+ FAIL  tests/unit/run-history/team-member-run-view-projection-service.test.ts > TeamMemberRunViewProjectionService > returns an empty projection when delegated projection is empty
+Error: AgentRun 'student' was not found in root TeamRun 'team-1'.
+ ❯ TeamMemberRunViewProjectionService.requireLocation src/run-history/services/team-member-run-view-projection-service.ts:71:13
+     69|     const location = await this.locations.findAgent({ agentRunId: run …
+     70|     if (!location || location.rootTeamRunId !== root) {
+     71|       throw new Error(`AgentRun '${run}' was not found in root TeamRun…
+       |             ^
+     72|     }
+     73|     if (!location.configuredPlacement) {
+ ❯ TeamMemberRunViewProjectionService.getProjection src/run-history/services/team-member-run-view-projection-service.ts:37:22
+ ❯ tests/unit/run-history/team-member-run-view-projection-service.test.ts:361:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/24]⎯
+
+ FAIL  tests/unit/run-history/services/run-file-change-projection-service.test.ts > RunFileChangeProjectionService > reads active AutoByteus team-member projections through the run-file-change owner
+TypeError: Cannot read properties of undefined (reading 'address')
+ ❯ cloneTeamRunNode src/agent-team-execution/domain/team-run-config.ts:83:47
+     81| 
+     82| export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
+     83|   const address = assertAgentTeamAddress(node.address);
+       |                                               ^
+     84|   if (node.kind === "agent") {
+     85|     if (address === "/") throw new Error("The root TeamRun node must b…
+ ❯ new TeamRunConfig src/agent-team-execution/domain/team-run-config.ts:176:21
+ ❯ tests/unit/run-history/services/run-file-change-projection-service.test.ts:277:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/24]⎯
+
+ FAIL  tests/unit/run-history/services/run-file-change-projection-service.test.ts > RunFileChangeProjectionService > reads historical AutoByteus team-member projections from team metadata
+AssertionError: expected "vi.fn()" to be called with arguments: [ Array(1) ]
+
+Number of calls: 0
+
+ ❯ tests/unit/run-history/services/run-file-change-projection-service.test.ts:432:44
+    430|     const resolved = await service.resolveEntry("student-run", "src/hi…
+    431| 
+    432|     expect(projectionStore.readProjection).toHaveBeenCalledWith(
+       |                                            ^
+    433|       path.join(memoryDir, "agent_teams", "team-history", "student-run…
+    434|     );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/24]⎯
+
+ FAIL  tests/unit/run-history/services/run-file-change-projection-service.test.ts > RunFileChangeProjectionService > reads historical nested team-member projections from the hierarchical root team memory directory
+AssertionError: expected "vi.fn()" to be called with arguments: [ Array(1) ]
+
+Number of calls: 0
+
+ ❯ tests/unit/run-history/services/run-file-change-projection-service.test.ts:511:44
+    509|     await service.getProjection("reviewer-run");
+    510| 
+    511|     expect(projectionStore.readProjection).toHaveBeenCalledWith(
+       |                                            ^
+    512|       path.join(memoryDir, "agent_teams", "root-team-history", "child-…
+    513|     );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/24]⎯
+
+ FAIL  tests/unit/run-history/services/run-file-change-projection-service.test.ts > RunFileChangeProjectionService > writes task-agent projections to the task-agent memory directory, not the template member directory
+TypeError: Cannot read properties of undefined (reading 'address')
+ ❯ cloneTeamRunNode src/agent-team-execution/domain/team-run-config.ts:83:47
+     81| 
+     82| export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
+     83|   const address = assertAgentTeamAddress(node.address);
+       |                                               ^
+     84|   if (node.kind === "agent") {
+     85|     if (address === "/") throw new Error("The root TeamRun node must b…
+ ❯ new TeamRunConfig src/agent-team-execution/domain/team-run-config.ts:176:21
+ ❯ tests/unit/run-history/services/run-file-change-projection-service.test.ts:535:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[23/24]⎯
+
+ FAIL  tests/unit/services/agent-streaming/team-live-message-publisher.test.ts > TeamLiveMessagePublisher > publishes external user messages with canonical member route and path identity
+ZodError: [
+  {
+    "expected": "string",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_run_id"
+    ],
+    "message": "Invalid input: expected string, received undefined"
+  },
+  {
+    "expected": "string",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "member_address"
+    ],
+    "message": "Invalid input: expected string, received undefined"
+  }
+]
+ ❯ parseTeamStreamServerMessage ../autobyteus-team-stream-contracts/src/team-stream-server-message.ts:90:55
+ ❯ createTeamExternalUserMessageServerMessage src/services/agent-streaming/external-user-message-server-message.ts:24:32
+     22|   memberAddress: AgentTeamAddress;
+     23|   agentRunId: string;
+     24| }): TeamStreamServerMessage => parseTeamStreamServerMessage({
+       |                                ^
+     25|   type: "EXTERNAL_USER_MESSAGE",
+     26|   payload: {
+ ❯ TeamLiveMessagePublisher.publishExternalUserMessage src/services/agent-streaming/team-live-message-publisher.ts:29:7
+ ❯ tests/unit/services/agent-streaming/team-live-message-publisher.test.ts:38:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[24/24]⎯
+
+
+ Test Files  12 failed | 42 passed (54)
+      Tests  16 failed | 228 passed (244)
+   Start at  11:55:02
+   Duration  26.76s (transform 3.45s, setup 394ms, import 13.56s, tests 3.26s, environment 4ms)
+

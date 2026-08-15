@@ -1,0 +1,19 @@
+import { startDevBootstrapServer } from '../dev-server/dev-bootstrap-server.js';
+import { parseCommandOptions, readBooleanFlag, readPortFlag, readStringFlag } from './command-options.js';
+export const runDevCommand = async (args) => {
+    const options = parseCommandOptions(args);
+    const server = await startDevBootstrapServer({
+        projectRoot: readStringFlag(options, 'project-root') ?? process.cwd(),
+        port: readPortFlag(options, 'port'),
+        applicationId: readStringFlag(options, 'application-id'),
+        backendBaseUrl: readStringFlag(options, 'backend-base-url'),
+        backendNotificationsUrl: readStringFlag(options, 'backend-notifications-url'),
+        backendWebSocketBaseUrl: readStringFlag(options, 'backend-websocket-base-url'),
+        agentCommunicationWebSocketBaseUrl: readStringFlag(options, 'agent-communication-websocket-base-url'),
+        mockBackend: readBooleanFlag(options, 'mock-backend'),
+    });
+    console.log(`AutoByteus application dev host: ${server.url}`);
+    console.log(`Local application id: ${server.session.localApplicationId}`);
+    console.log(`Bootstrap application id: ${server.session.applicationId}`);
+};
+//# sourceMappingURL=dev.js.map

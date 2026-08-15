@@ -10,13 +10,7 @@ import {
   getTeamRunHistoryCatalogService,
   type TeamRunHistoryCatalogService,
 } from "../../run-history/services/team-run-history-catalog-service.js";
-import {
-  getTeamRunMetadataService,
-  type TeamRunMetadataService,
-} from "../../run-history/services/team-run-metadata-service.js";
-import type { TeamRunMetadata } from "../../run-history/store/team-run-metadata-types.js";
-import { collectTeamRunAgentNodes } from "../../agent-team-execution/domain/team-run-config.js";
-import { getAgentTeamAddressBasename } from "../../agent-collaboration/domain/agent-team-address.js";
+import { TeamRunExecutionTreeLocationService } from "../../run-history/services/team-run-execution-tree-location-service.js";
 import type { TokenUsageUpdatedPayload } from "../../agent-execution/domain/agent-run-token-usage.js";
 
 const compactOptional = (value: string | null | undefined): string | null => {
@@ -31,24 +25,17 @@ const normalizeDateString = (value: string | null | undefined): string | null =>
   return Number.isNaN(parsed.getTime()) ? null : parsed.toISOString();
 };
 
-const findMember = (metadata: TeamRunMetadata | null, payload: TokenUsageUpdatedPayload) => {
-  if (!metadata) return null;
-  const members = collectTeamRunAgentNodes(metadata.rootTeam);
-  const address = payload.execution_address?.memberAddress ?? null;
-  return members.find((member) => Boolean(address && member.address === address)) ?? null;
-};
-
 export class TokenUsageDisplayFieldCapturer {
   constructor(private readonly dependencies: {
     agentCatalog?: Pick<AgentRunHistoryCatalogService, "getCatalogRow">;
     teamCatalog?: Pick<TeamRunHistoryCatalogService, "getCatalogRow">;
     agentMetadata?: Pick<AgentRunMetadataService, "readMetadata">;
-    teamMetadata?: Pick<TeamRunMetadataService, "readMetadata">;
+    executionTreeLocation?: Pick<TeamRunExecutionTreeLocationService, "findAgent">;
   } = {}) {}
 
   async capture(payload: TokenUsageUpdatedPayload): Promise<TokenUsageUpdatedPayload> {
-    return payload.execution_address
-      ? this.captureTeamUsage(payload, payload.execution_address.rootTeamRunId)
+    return payload.root_team_run_id
+      ? this.captureTeamUsage(payload, payload.root_team_run_id)
       : this.captureStandaloneUsage(payload);
   }
 
@@ -75,24 +62,24 @@ export class TokenUsageDisplayFieldCapturer {
     payload: TokenUsageUpdatedPayload,
     teamRunId: string,
   ): Promise<TokenUsageUpdatedPayload> {
-    const [catalogRow, metadata] = await Promise.all([
+    const [catalogRow, located] = await Promise.all([
       this.getTeamCatalog().getCatalogRow(teamRunId).catch(() => null),
-      this.getTeamMetadata().readMetadata(teamRunId).catch(() => null),
+      this.getExecutionTreeLocation().findAgent({ agentRunId: payload.run_id }).catch(() => null),
     ]);
-    const member = findMember(metadata, payload);
+    const tree = located?.rootTeamRunId === teamRunId ? located.tree : null;
 
     return {
       ...payload,
       team_name: compactOptional(payload.team_name) ??
         compactOptional(catalogRow?.teamDefinitionName) ??
-        compactOptional(metadata?.teamDefinitionName),
+        compactOptional(tree?.rootTeam.teamDefinitionName),
       agent_name: compactOptional(payload.agent_name),
       run_summary: compactOptional(payload.run_summary) ?? compactOptional(catalogRow?.summary),
       run_created_at: normalizeDateString(payload.run_created_at) ??
         normalizeDateString(catalogRow?.createdAt) ??
-        normalizeDateString(metadata?.createdAt),
+        normalizeDateString(tree?.createdAt),
       member_display_name: compactOptional(payload.member_display_name) ??
-        compactOptional(member ? getAgentTeamAddressBasename(member.address) : null),
+        compactOptional(located?.memberAddress),
     };
   }
 
@@ -108,7 +95,7 @@ export class TokenUsageDisplayFieldCapturer {
     return this.dependencies.agentMetadata ?? getAgentRunMetadataService();
   }
 
-  private getTeamMetadata(): Pick<TeamRunMetadataService, "readMetadata"> {
-    return this.dependencies.teamMetadata ?? getTeamRunMetadataService();
+  private getExecutionTreeLocation(): Pick<TeamRunExecutionTreeLocationService, "findAgent"> {
+    return this.dependencies.executionTreeLocation ?? new TeamRunExecutionTreeLocationService();
   }
 }

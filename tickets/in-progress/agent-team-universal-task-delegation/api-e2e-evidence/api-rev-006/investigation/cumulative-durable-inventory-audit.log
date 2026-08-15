@@ -1,0 +1,10 @@
+API-REV-006 cumulative durable inventory audit
+inventory_paths 164
+patch_paths 164
+missing_from_patch []
+extra_in_patch []
+reverse_apply_check:
+PASS
+diff_check:
+PASS
+RESULT=PASS

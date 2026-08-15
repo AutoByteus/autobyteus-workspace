@@ -255,18 +255,11 @@ describe("AutoByteusAgentRunBackendFactory", () => {
     expect(built.agentConfig.systemPrompt).toContain("## AgentTeam Collaboration");
     expect(built.agentConfig.systemPrompt).not.toContain("## Team Runtime");
     expect(built.agentConfig.systemPrompt).toContain("## Working Environment");
-    expect(built.agentConfig.initialCustomData?.teamContext).toEqual(
-      expect.objectContaining({
-        teamRunId: "team-1",
-        teamName: "Root Team",
-        memberAddress: "/professor",
-        agentRunId: "run-professor",
-        addressing: expect.objectContaining({
-          rootTeamRunId: "team-1",
-          memberAddress: "/professor",
-        }),
-      }),
-    );
+    expect(built.agentConfig.initialCustomData?.teamContext).toEqual({
+      rootTeamRunId: "team-1",
+      memberAddress: "/professor",
+      agentRunId: "run-professor",
+    });
     expect(built.agentConfig.initialCustomData?.teamContext).not.toHaveProperty("members");
     const removedNativeCommunicationField = ["communication", "Context"].join("");
     expect(built.agentConfig.initialCustomData?.teamContext).not.toHaveProperty(removedNativeCommunicationField);
@@ -336,9 +329,17 @@ describe("AutoByteusAgentRunBackendFactory", () => {
     ]);
     expect(built.agentConfig.systemPrompt).toContain("filesystem-like logical addresses");
     expect(built.agentConfig.systemPrompt).toContain("\n/professor\n");
-    expect(built.agentConfig.systemPrompt).toContain("`./architecture_reviewer`");
-    expect(built.agentConfig.systemPrompt).toContain("Bare names, `../`, and backslashes are invalid.");
-    expect(JSON.stringify(built.agentConfig.tools[0]?.definition)).toContain("target_agent_run_id");
+    expect(built.agentConfig.systemPrompt).toContain(
+      "Every Agent and nested AgentTeam is identified by one canonical absolute address beginning with `/`",
+    );
+    expect(built.agentConfig.systemPrompt).toContain(
+      "Relative addresses, bare names, `../`, backslashes, and the structural root `/` itself are not valid recipients.",
+    );
+    expect(built.agentConfig.systemPrompt).not.toContain("`./architecture_reviewer`");
+    const sendMessageTool = built.agentConfig.tools.find(
+      (tool: BaseTool) => tool.definition?.name === "send_message_to",
+    );
+    expect(JSON.stringify(sendMessageTool?.definition)).toContain("target_agent_run_id");
     expect(built.agentConfig.systemPrompt).not.toContain("roster recipients");
   });
 
@@ -461,7 +462,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
 
     await expect(
       sendMessageTool.execute({}, {
-        recipient_address: "./writer",
+        recipient_address: "/writer",
         content: "Please investigate.",
         message_type: "direct_message",
         reference_files: ["/tmp/server-reference.md"],
@@ -469,16 +470,19 @@ describe("AutoByteusAgentRunBackendFactory", () => {
     ).resolves.toBe('{"accepted":false,"code":"TARGET_MEMBER_NOT_FOUND","message":"Writer is unavailable.","result":null}');
     expect(deliverInterAgentMessage).toHaveBeenCalledWith(
       expect.objectContaining({
+        rootTeamRunId: "team-1",
         sender: expect.objectContaining({
           participant: expect.objectContaining({
             kind: "agent",
             displayName: "professor",
-            agentRunId: "run-professor",
-            executionAddress: expect.objectContaining({ memberAddress: "/professor" }),
+            identity: {
+              rootTeamRunId: "team-1",
+              memberAddress: "/professor",
+              agentRunId: "run-professor",
+            },
           }),
         }),
-        recipientAddress: "./writer",
-        callerAddressing: expect.objectContaining({ memberAddress: "/professor" }),
+        recipientAddress: "/writer",
         content: "Please investigate.",
         messageType: "direct_message",
         referenceFiles: ["/tmp/server-reference.md"],
@@ -540,15 +544,22 @@ describe("AutoByteusAgentRunBackendFactory", () => {
     );
 
     expect(built.agentConfig.tools.map((tool: BaseTool) => tool.definition?.name)).toEqual([
+      "run_bash",
+      "read_file",
+      "edit_file",
+      "write_file",
       "send_message_to",
       "get_handoff_rules",
       "delegate_task",
     ]);
     expect(built.agentConfig.systemPrompt).not.toContain("For logical Team recipients");
-    expect(JSON.stringify(built.agentConfig.tools[0]?.definition)).toContain("target_agent_run_id");
+    const sendMessageTool = built.agentConfig.tools.find(
+      (tool: BaseTool) => tool.definition?.name === "send_message_to",
+    );
+    expect(JSON.stringify(sendMessageTool?.definition)).toContain("target_agent_run_id");
   });
 
-  it("propagates the actual AutoByteus task Agent run and task ID into managed custom data and task delegation context", async () => {
+  it("propagates the exact AutoByteus task Agent execution identity through managed task delegation context", async () => {
     const taskAgentContext: TaskAgentContextFacts = {
       taskAgentRunId: "team-1__professor__task_0007",
       taskId: "task_0007",
@@ -606,17 +617,10 @@ describe("AutoByteusAgentRunBackendFactory", () => {
     );
 
     const managedTeamContext = built.agentConfig.initialCustomData?.teamContext as Record<string, unknown>;
-    expect(managedTeamContext).toMatchObject({
+    expect(managedTeamContext).toEqual({
+      rootTeamRunId: "team-1",
       memberAddress: "/professor",
       agentRunId: "team-1__professor__task_0007",
-      addressing: { rootTeamRunId: "team-1", memberAddress: "/professor" },
-      taskId: "task_0007",
-      executionAddress: {
-        rootTeamRunId: "team-1",
-        taskTeamRunIds: [],
-        memberAddress: "/professor",
-        taskAgentRunId: "team-1__professor__task_0007",
-      },
     });
 
     const delegationContext = buildTaskDelegationToolContextFromNativeContext({
@@ -624,15 +628,10 @@ describe("AutoByteusAgentRunBackendFactory", () => {
       customData: { teamContext: managedTeamContext },
     });
 
-    expect(delegationContext.caller).toMatchObject({
+    expect(delegationContext.identity).toEqual({
+      rootTeamRunId: "team-1",
+      memberAddress: "/professor",
       agentRunId: "team-1__professor__task_0007",
-      executionAddress: {
-        rootTeamRunId: "team-1",
-        taskTeamRunIds: [],
-        memberAddress: "/professor",
-        taskAgentRunId: "team-1__professor__task_0007",
-      },
-      taskId: "task_0007",
     });
   });
 

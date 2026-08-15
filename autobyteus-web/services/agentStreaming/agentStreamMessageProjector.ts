@@ -1,6 +1,6 @@
 import type { AgentContext } from '~/types/agent/AgentContext';
 import type { ServerMessage } from './protocol';
-import type { TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
+import type { AgentTeamAddress } from '~/types/agent/AgentTeamAddress';
 import {
   handleSegmentStart,
   handleSegmentContent,
@@ -45,7 +45,8 @@ export type AgentStreamProjectionTarget =
       kind: 'team_member';
       context: AgentContext;
       teamRunId: string;
-      executionAddress: TeamExecutionAddress;
+      agentRunId: string;
+      memberAddress: AgentTeamAddress;
     };
 
 const conversationResult = (
@@ -212,7 +213,7 @@ export const dispatchAgentStreamMessage = (
         : {
             kind: 'team_member',
             teamRunId: target.teamRunId,
-            executionAddress: target.executionAddress,
+            agentRunId: target.agentRunId,
             currentStatus,
           },
       effects.navigation,

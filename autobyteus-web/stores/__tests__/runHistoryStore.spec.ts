@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
 import { useRunHistoryStore } from '../runHistoryStore';
 import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures';
-import { createTeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 
 const buildWorkspaceHistoryGroup = (workspace: Record<string, any>): any => {
   const {
@@ -51,22 +50,28 @@ const buildWorkspaceHistoryGroup = (workspace: Record<string, any>): any => {
         createdAt: teamRun.createdAt ?? teamRun.lastActivityAt ?? '2026-01-01T00:00:00.000Z',
         members,
         rootTeam: teamRun.rootTeam ?? {
-          kind: 'agent_team',
-          address: '/',
-          displayName: teamRun.teamDefinitionName,
-          teamDefinitionId: teamRun.teamDefinitionId,
-          teamRunId: teamRun.teamRunId,
-          coordinatorAddress,
-          workspaceRootPath: teamRun.workspaceRootPath ?? null,
-          children: members.map((member: any) => ({
-            kind: 'agent',
+          team_definition_id: teamRun.teamDefinitionId,
+          team_definition_name: teamRun.teamDefinitionName,
+          team_run_id: teamRun.teamRunId,
+          coordinator_address: coordinatorAddress,
+          members: members.map((member: any) => ({
+            kind: 'configured_agent',
             address: member.memberAddress,
-            displayName: member.displayName,
-            agentRunId: member.agentRunId,
-            workspaceRootPath: member.workspaceRootPath ?? null,
-            currentStatus: member.status,
-            children: [],
+            agent_definition_id: member.agentDefinitionId ?? 'agent-def-1',
+            role: null,
+            description: null,
+            agent_run_id: member.agentRunId,
+            platform_agent_run_id: null,
+            launch_configuration: {
+              runtime_kind: 'AUTOBYTEUS',
+              llm_model_identifier: 'model-x',
+              llm_config: null,
+              auto_execute_tools: false,
+              skill_access_mode: 'NONE',
+              workspace_root_path: member.workspaceRootPath ?? teamRun.workspaceRootPath ?? null,
+            },
           })),
+          task_executions: [],
         },
       };
     }),
@@ -243,15 +248,15 @@ const {
         return Array.from(teams.values());
       },
       addTeamContext: vi.fn((context: any) => {
-        teams.set(context.executions.getRootTeamRunId(), context);
+        teams.set(context.view.getRootTeamRunId(), context);
       }),
       removeTeamContext: vi.fn((teamRunId: string) => {
         teams.delete(teamRunId);
       }),
       getTeamContextById: vi.fn((teamRunId: string) => teams.get(teamRunId)),
-      focusMemberAndEnsureHydrated: vi.fn(async (teamRunId: string, executionAddress: any) => {
+      focusMemberAndEnsureHydrated: vi.fn(async (teamRunId: string, agentRunId: string) => {
         const teamContext = teams.get(teamRunId);
-        if (teamContext?.executions.hasExecution(executionAddress)) teamContext.executions.focus(executionAddress);
+        teamContext?.view.focusAgent(agentRunId);
       }),
     },
     selectionStoreMock: selection,
@@ -424,10 +429,9 @@ describe('runHistoryStore', () => {
         teamDefinitionName: 'Team Alpha',
         rootChildren: [member],
         coordinatorAddress: member.address,
-        focusedExecutionAddress: createTeamExecutionAddress({ rootTeamRunId: teamRunId, memberAddress: member.address }),
+        focusedAgentRunId: member.agentRunId,
         workspaceRootPath: '/ws/a',
         isActive: true,
-        isSubscribed: false,
       });
       const metadata = buildTeamResumeMetadata({
         teamRunId,
@@ -439,7 +443,7 @@ describe('runHistoryStore', () => {
       });
       return {
         teamRunId,
-        focusedExecutionAddress: hydratedContext.executions.getFocusedAddress(),
+        focusedAgentRunId: hydratedContext.view.getFocusedAgentRunId(),
         resumeConfig: { teamRunId, isActive: true, metadata },
         hydratedContext,
         projectionByMemberAddress: new Map(),
@@ -630,15 +634,9 @@ describe('runHistoryStore', () => {
     expect(agentRunStoreMock.connectToAgentStream).toHaveBeenCalledWith('run-live-1');
     expect(hydrateLiveTeamRunContextMock).toHaveBeenCalledWith({
       teamRunId: 'team-live-1',
-      memberAddress: null,
+      agentRunId: 'member-run-live-1',
       resolveWorkspaceMetadataByRootPath: expect.any(Function),
       ensureWorkspaceByRootPath: expect.any(Function),
-      memberStatuses: [{
-        memberAddress: '/super_agent',
-        displayName: 'Super Agent',
-        agentRunId: 'member-run-live-1',
-        currentStatus: 'offline',
-      }],
     });
     expect(agentTeamRunStoreMock.connectToTeamStream).toHaveBeenCalledWith('team-live-1');
   });
@@ -681,12 +679,7 @@ describe('runHistoryStore', () => {
       isActive: true,
       configuration: { workspaceId: 'ws-b' },
     });
-    const activeTeamMemberContext = activeTeamContext.executions.getAgentContext(
-      createTeamExecutionAddress({
-        rootTeamRunId: activeTeamContext.executions.getRootTeamRunId(),
-        memberAddress: activeTeamNode.address,
-      }),
-    )!;
+    const activeTeamMemberContext = activeTeamContext.view.getAgentContext(activeTeamNode.agentRunId)!;
     activeTeamMemberContext.state.currentStatus = 'running' as any;
     agentContextsStoreMock.runs.set('run-b-active', activeAgentContext);
     teamContextsStoreMock.teams.set('team-b-active', activeTeamContext);
@@ -699,7 +692,7 @@ describe('runHistoryStore', () => {
     expect(agentRunStoreMock.disconnectAgentStream).not.toHaveBeenCalled();
     expect(agentTeamRunStoreMock.disconnectTeamStream).not.toHaveBeenCalled();
     expect(activeAgentContext.state.currentStatus).toBe('running');
-    expect(activeTeamContext.executions.isRootTeamActive()).toBe(true);
+    expect(activeTeamContext.view.isRootTeamActive()).toBe(true);
     expect(activeTeamMemberContext.state.currentStatus).toBe('running');
   });
 
@@ -953,12 +946,10 @@ describe('runHistoryStore', () => {
       isActive: true,
       configuration: { workspaceId: 'ws-1', isLocked: false },
     });
-    const liveMember = (memberAddress: string) => liveTeam.executions.getAgentContext(
-      createTeamExecutionAddress({ rootTeamRunId: liveTeam.executions.getRootTeamRunId(), memberAddress }),
-    )!;
-    liveMember(solution.address).state.currentStatus = 'offline' as any;
-    liveMember(implementation.address).state.currentStatus = 'idle' as any;
-    liveMember(review.address).state.currentStatus = 'running' as any;
+    const liveMember = (agentRunId: string) => liveTeam.view.getAgentContext(agentRunId)!;
+    liveMember(solution.agentRunId).state.currentStatus = 'offline' as any;
+    liveMember(implementation.agentRunId).state.currentStatus = 'idle' as any;
+    liveMember(review.agentRunId).state.currentStatus = 'running' as any;
     teamContextsStoreMock.teams.set('team-live-1', liveTeam);
     agentTeamRunStoreMock.isTeamStreamReady.mockImplementation((teamRunId: string) => teamRunId === 'team-live-1');
 
@@ -966,10 +957,10 @@ describe('runHistoryStore', () => {
     await store.fetchTree();
 
     const context = teamContextsStoreMock.teams.get('team-live-1');
-    expect(context.executions.isRootTeamActive()).toBe(true);
-    expect(liveMember('/solution_designer').state.currentStatus).toBe('offline');
-    expect(liveMember('/implementation_engineer').state.currentStatus).toBe('idle');
-    expect(liveMember('/code_reviewer').state.currentStatus).toBe('running');
+    expect(context.view.isRootTeamActive()).toBe(true);
+    expect(liveMember(solution.agentRunId).state.currentStatus).toBe('offline');
+    expect(liveMember(implementation.agentRunId).state.currentStatus).toBe('idle');
+    expect(liveMember(review.agentRunId).state.currentStatus).toBe('running');
     expect(agentTeamRunStoreMock.connectToTeamStream).not.toHaveBeenCalledWith('team-live-1');
 
     const teamNode = store.getTeamNodes().find((node) => node.teamRunId === 'team-live-1');

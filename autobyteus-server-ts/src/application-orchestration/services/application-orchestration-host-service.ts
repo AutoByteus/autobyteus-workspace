@@ -36,10 +36,6 @@ import {
   getPublishedArtifactProjectionService,
 } from "../../run-history/services/published-artifact-projection-service.js";
 import {
-  TeamRunMetadataService,
-  getTeamRunMetadataService,
-} from "../../run-history/services/team-run-metadata-service.js";
-import {
   AgentMemoryLocationService,
   getAgentMemoryLocationService,
 } from "../../agent-memory/services/agent-memory-location-service.js";
@@ -105,7 +101,6 @@ export class ApplicationOrchestrationHostService {
       runObserverService?: ApplicationRunObserverService;
       agentRunService?: AgentRunService;
       teamRunService?: TeamRunService;
-      teamRunMetadataService?: TeamRunMetadataService;
       ingressService?: ApplicationExecutionEventIngressService;
       publishedArtifactProjectionService?: PublishedArtifactProjectionService;
       memoryLocationService?: AgentMemoryLocationService;
@@ -160,10 +155,6 @@ export class ApplicationOrchestrationHostService {
 
   private get teamRunService(): TeamRunService {
     return this.dependencies.teamRunService ?? getTeamRunService();
-  }
-
-  private get teamRunMetadataService(): TeamRunMetadataService {
-    return this.dependencies.teamRunMetadataService ?? getTeamRunMetadataService();
   }
 
   private get ingressService(): ApplicationExecutionEventIngressService {
@@ -424,14 +415,10 @@ export class ApplicationOrchestrationHostService {
       return null;
     }
 
-    const metadata = await this.teamRunMetadataService.readMetadata(binding.runtime.teamRunId);
-    const target = metadata
-      ? this.memoryLocationService.resolveTeamMemberLocationFromMetadata(
-          metadata,
-          { agentRunId: runId },
-          binding.runtime.teamRunId,
-        )
-      : null;
+    const target = await this.memoryLocationService.resolveTeamMemberLocation({
+      teamRunId: binding.runtime.teamRunId,
+      agentRunId: runId,
+    });
     if (!target) {
       return null;
     }
@@ -489,13 +476,14 @@ export class ApplicationOrchestrationHostService {
     }
     const run = await this.teamRunService.resolveTeamRun(binding.runtime.teamRunId);
     if (!run) throw new Error(`Application runtime '${binding.runtime.teamRunId}' is not available.`);
-    const targetMemberAddress = address.target.kind === "AGENT_TEAM_MEMBER"
-      ? assertAgentTeamAddress(address.target.memberAddress)
+    const targetAgentRunId = address.target.kind === "AGENT_TEAM_MEMBER" ? address.target.agentRunId : null;
+    const targetMember = targetAgentRunId
+      ? binding.runtime.members.find((member) => member.agentRunId === targetAgentRunId) ?? null
       : null;
-    if (targetMemberAddress &&
-        !binding.runtime.members.some((member) => member.memberAddress === targetMemberAddress)) {
+    if (address.target.kind === "AGENT_TEAM_MEMBER" && !targetMember) {
       throw new Error("Application agent input target does not belong to the bound team runtime.");
     }
+    const targetMemberAddress = targetMember ? assertAgentTeamAddress(targetMember.memberAddress) : null;
     const result = await run.postMessage(message, targetMemberAddress);
     if (!result.accepted) throw new Error(result.message ?? "Application runtime rejected the input.");
   }

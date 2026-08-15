@@ -4,29 +4,28 @@ import {
 } from "@autobyteus/team-stream-contracts";
 import type { ExternalAttachment } from "autobyteus-ts/external-channel/external-attachment.js";
 import type { ExternalMessageEnvelope } from "autobyteus-ts/external-channel/external-message-envelope.js";
-import type { TeamExecutionAddress } from "../../agent-team-execution/domain/team-execution-address.js";
+import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import { ServerMessage, ServerMessageType } from "./models.js";
-import { projectTeamExecutionAddressDto } from "./team-agent-event-websocket-projector.js";
 
 export const createExternalUserMessageServerMessage = (input: {
   envelope: ExternalMessageEnvelope;
-  executionAddress?: TeamExecutionAddress | null;
   displayName?: string | null;
   agentRunId?: string | null;
 }): ServerMessage => new ServerMessage(ServerMessageType.EXTERNAL_USER_MESSAGE, {
   ...basePayload(input.envelope),
-  ...(input.executionAddress ? { execution_address: input.executionAddress } : {}),
   ...(input.displayName ? { agent_name: input.displayName } : {}),
   ...(input.agentRunId ? { agent_id: input.agentRunId } : {}),
 });
 
 export const createTeamExternalUserMessageServerMessage = (input: {
   envelope: ExternalMessageEnvelope;
-  executionAddress: TeamExecutionAddress;
+  memberAddress: AgentTeamAddress;
+  agentRunId: string;
 }): TeamStreamServerMessage => parseTeamStreamServerMessage({
   type: "EXTERNAL_USER_MESSAGE",
   payload: {
-    execution_address: projectTeamExecutionAddressDto(input.executionAddress),
+    member_address: input.memberAddress,
+    agent_run_id: input.agentRunId,
     ...basePayload(input.envelope),
   },
 });

@@ -92,7 +92,7 @@ export class AgentToolMcpSessionService {
     if (!normalizedAgentRunId) {
       return 0;
     }
-    return this.registry.revokeSessionsForOwner({ agentRunId: normalizedAgentRunId });
+    return this.registry.revokeSessionsForOwner({ runId: normalizedAgentRunId });
   }
 
   revokeAgentToolMcpSessionsForOwner(owner: Partial<AgentToolMcpSessionOwnerIdentity>): number {

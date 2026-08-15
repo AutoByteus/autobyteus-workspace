@@ -1,41 +1,6 @@
-import type { JsonValue, TeamStreamServerMessage } from '@autobyteus/team-stream-contracts';
+import type { JsonValue } from '@autobyteus/team-stream-contracts';
 import type { ServerMessage } from './protocol';
-import {
-  fromTeamExecutionAddressDto,
-  toTeamExecutionAddressDto,
-  type TeamExecutionAddress,
-} from '~/types/agent/TeamExecutionAddress';
-import type { TeamCommunicationProjectionPayload } from '~/stores/teamCommunicationStore';
-import type { TeamAgentStreamMessage } from '~/services/teamExecution/teamExecutionModels';
-
-export { fromTeamExecutionAddressDto, toTeamExecutionAddressDto };
-
-export const teamMessageExecutionAddress = (message: TeamStreamServerMessage): TeamExecutionAddress | null => {
-  if ('agent_execution' in message.payload && message.payload.agent_execution) {
-    return fromTeamExecutionAddressDto(message.payload.agent_execution.execution_address);
-  }
-  if ('execution_address' in message.payload) return fromTeamExecutionAddressDto(message.payload.execution_address);
-  return null;
-};
-
-export const toTeamCommunicationProjectionPayload = (
-  payload: Extract<TeamStreamServerMessage, { type: 'TEAM_COMMUNICATION_MESSAGE' }>['payload'],
-): TeamCommunicationProjectionPayload => ({
-  messageId: payload.message_id,
-  teamRunId: payload.sender_address.root_team_run_id,
-  senderAddress: fromTeamExecutionAddressDto(payload.sender_address),
-  receiverAddress: fromTeamExecutionAddressDto(payload.receiver_address),
-  content: payload.content,
-  messageType: payload.message_type,
-  createdAt: payload.created_at,
-  referenceFiles: payload.reference_files.map((reference) => ({
-    referenceId: reference.reference_id,
-    path: reference.path,
-    type: reference.type as TeamCommunicationProjectionPayload['referenceFiles'][number]['type'],
-    createdAt: reference.created_at,
-    updatedAt: reference.updated_at,
-  })),
-});
+import type { TeamAgentStreamMessage } from '~/services/teamExecution/teamExecutionViewModels';
 
 export type TeamAgentProjectionMessage = TeamAgentStreamMessage;
 
@@ -84,14 +49,37 @@ export const toAgentProjectionMessage = (message: TeamAgentProjectionMessage, ag
     case 'SEGMENT_END': return { type: message.type, payload: { id: message.payload.segment_id, turn_id: message.payload.turn_id, metadata: message.payload.metadata, interrupted: message.payload.interrupted, reason: message.payload.reason, failed: message.payload.failed, error: message.payload.error } };
     case 'ARTIFACT_PERSISTED': return { type: message.type, payload: { id: message.payload.artifact_id, runId: exactAgentRunId, path: message.payload.path, type: artifactType(message.payload.artifact_type), status: message.payload.status, description: message.payload.description, revisionId: message.payload.revision_id, createdAt: message.payload.created_at, updatedAt: message.payload.updated_at } };
     case 'FILE_CHANGE': return { type: message.type, payload: { id: message.payload.file_change_id, runId: exactAgentRunId, path: message.payload.path, type: artifactType(message.payload.file_type), status: fileStatus(message.payload.status), sourceTool: fileSourceTool(message.payload.source_tool), sourceInvocationId: message.payload.source_invocation_id, content: message.payload.content, createdAt: message.payload.created_at, updatedAt: message.payload.updated_at } };
-    case 'SYSTEM_TASK_NOTIFICATION': return { type: message.type, payload: { sender_id: message.payload.sender.kind === 'system' ? 'system' : message.payload.sender.execution_address.member_address, content: message.payload.content } };
+    case 'SYSTEM_TASK_NOTIFICATION': return { type: message.type, payload: { sender_id: message.payload.sender.kind === 'system' ? 'system' : message.payload.sender.identity.member_address, content: message.payload.content } };
     case 'EXTERNAL_USER_MESSAGE': return { type: message.type, payload: { content: message.payload.content, received_at: message.payload.received_at, provider: message.payload.provider, transport: message.payload.transport, account_id: message.payload.account_id, peer_id: message.payload.peer_id, thread_id: message.payload.thread_id, external_message_id: message.payload.external_message_id, context_file_paths: message.payload.context_file_paths } };
-    case 'MEMBER_INPUT_MESSAGE': return { type: message.type, payload: { message_id: message.payload.message_id, dedupe_key: message.payload.dedupe_key, content: message.payload.content, input_origin: message.payload.input_origin, received_at: message.payload.received_at, context_file_paths: message.payload.context_file_paths, sender_address: message.payload.sender_address ? fromTeamExecutionAddressDto(message.payload.sender_address) : null, parent_communication_message_id: message.payload.parent_communication_message_id, execution_address: fromTeamExecutionAddressDto(message.payload.execution_address) } };
-    case 'ERROR': return { type: message.type, payload: { code: message.payload.code, message: message.payload.message, error_scope: message.payload.error_scope, error_effect: message.payload.error_effect, turn_id: message.payload.turn_id } };
+    case 'MEMBER_INPUT_MESSAGE': return { type: message.type, payload: { message_id: message.payload.message_id, dedupe_key: message.payload.dedupe_key, content: message.payload.content, input_origin: message.payload.input_origin, received_at: message.payload.received_at, context_file_paths: message.payload.context_file_paths, sender_agent_run_id: message.payload.sender_agent_run_id, recipient_agent_run_id: message.payload.recipient_agent_run_id, parent_communication_message_id: message.payload.parent_communication_message_id } };
+    case 'ERROR': {
+      const common = { code: message.payload.code, message: message.payload.message };
+      if (message.payload.error_scope === null) {
+        return { type: message.type, payload: { ...common, error_scope: null, error_effect: null, turn_id: null } };
+      }
+      if (message.payload.error_scope === 'turn') {
+        const effect = message.payload.error_effect;
+        const turnId = message.payload.turn_id;
+        if ((effect !== 'diagnostic' && effect !== 'terminal') || typeof turnId !== 'string') {
+          throw new Error('Invalid Team Agent turn error projection.');
+        }
+        return { type: message.type, payload: {
+          ...common,
+          error_scope: 'turn',
+          error_effect: effect,
+          turn_id: turnId,
+        } };
+      }
+      return { type: message.type, payload: { ...common, error_scope: 'runtime', error_effect: 'terminal', turn_id: null } };
+    }
     case 'TURN_STARTED': return { type: message.type, payload: { turn_id: message.payload.turn_id } };
     case 'TURN_COMPLETED': return { type: message.type, payload: { turn_id: message.payload.turn_id, reason: message.payload.reason } };
     case 'TURN_INTERRUPTED': return { type: message.type, payload: { turn_id: message.payload.turn_id, reason: message.payload.reason } };
     case 'AGENT_STATUS': return { type: message.type, payload: { status: message.payload.status, trigger: message.payload.trigger, tool_name: message.payload.tool_name, error_message: message.payload.error_message, error_details: message.payload.error_details } };
+    case 'TOKEN_USAGE_UPDATED': {
+      const { change_sequence: _sequence, agent_run_id: _run, ...payload } = message.payload;
+      return { type: message.type, payload: { ...payload, run_id: exactAgentRunId } };
+    }
     case 'COMPACTION_STATUS': return { type: message.type, payload: { phase: compactionPhase(message.payload.phase), kind: message.payload.kind, status: message.payload.status, turn_id: message.payload.turn_id, compaction_operation_id: message.payload.compaction_operation_id, requested_turn_id: message.payload.requested_turn_id, execution_turn_id: message.payload.execution_turn_id, selected_block_count: message.payload.selected_block_count, compacted_block_count: message.payload.compacted_block_count, raw_trace_count: message.payload.raw_trace_count, semantic_fact_count: message.payload.semantic_fact_count, compaction_agent_definition_id: message.payload.compaction_agent_definition_id, compaction_agent_name: message.payload.compaction_agent_name, compaction_runtime_kind: message.payload.compaction_runtime_kind, compaction_model_identifier: message.payload.compaction_model_identifier, compaction_run_id: message.payload.compaction_run_id, compaction_task_id: message.payload.compaction_task_id, error_message: message.payload.error_message, provider: message.payload.provider, source_surface: message.payload.source_surface, boundary_key: message.payload.boundary_key, provider_event_id: message.payload.provider_event_id, provider_session_id: message.payload.provider_session_id, provider_thread_id: message.payload.provider_thread_id, provider_timestamp: message.payload.provider_timestamp, trigger: message.payload.trigger, pre_tokens: message.payload.pre_tokens, rotation_eligible: message.payload.rotation_eligible } };
     case 'ASSISTANT_COMPLETE': return { type: message.type, payload: { content: message.payload.content, reasoning: message.payload.reasoning, usage: jsonObject(message.payload.usage), image_urls: [...message.payload.image_urls], audio_urls: [...message.payload.audio_urls], video_urls: [...message.payload.video_urls] } };
     case 'TOOL_APPROVAL_REQUESTED': return { type: message.type, payload: { invocation_id: message.payload.invocation_id, tool_name: message.payload.tool_name, turn_id: message.payload.turn_id, arguments: requiredJsonObject(message.payload.arguments, 'Tool approval arguments') } };

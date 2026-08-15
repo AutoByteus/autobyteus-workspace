@@ -10,6 +10,7 @@ import { useAgentSelectionStore } from '../agentSelectionStore';
 import { useAgentTeamContextsStore } from '../agentTeamContextsStore';
 import { useAgentRunStore } from '../agentRunStore';
 import { useAgentTeamRunStore } from '../agentTeamRunStore';
+import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures';
 
 vi.mock('~/stores/workspaceCenterViewStore', () => ({
   useWorkspaceCenterViewStore: () => ({ showChat: vi.fn() }),
@@ -39,33 +40,21 @@ const createAgentContext = (runId: string): AgentContext => {
   return context;
 };
 
-const buildAgentNode = (memberRouteKey: string) => ({
-  memberKind: 'agent' as const,
-  memberName: memberRouteKey.split('/').at(-1) || memberRouteKey,
-  displayName: memberRouteKey.split('/').at(-1) || memberRouteKey,
-  memberPath: memberRouteKey.split('/'),
-  memberRouteKey,
-  agentDefinitionId: `def-${memberRouteKey}`,
-});
-
 const buildTeamContext = (
   members: Array<[string, AgentContext]>,
-  focusedMemberRouteKey: string,
-) => {
-  const memberTree = members.map(([memberRouteKey]) => buildAgentNode(memberRouteKey));
-  return {
-    teamRunId: 'team-1',
-    config: { teamDefinitionId: 'team-def-1' } as any,
-    memberTree,
-    memberNodesByRouteKey: new Map(memberTree.map((member) => [member.memberRouteKey, member])),
-    leafAgentContextsByRouteKey: new Map(members),
-    coordinatorMemberRouteKey: 'solution_designer',
-    historicalHydration: null,
-    focusedMemberRouteKey,
-    isActive: true,
-    isSubscribed: true,
-  };
-};
+  focusedAgentRunId: string,
+  isActive = true,
+) => buildTestTeamContext({
+  teamRunId: 'team-1',
+  teamDefinitionId: 'team-def-1',
+  rootChildren: members.map(([memberAddress, context]) => testAgentNode(
+    memberAddress.startsWith('/') ? memberAddress : `/${memberAddress}`,
+    { agentRunId: context.state.runId, currentStatus: context.state.currentStatus },
+  )),
+  contexts: members.map(([, context]) => ({ agentRunId: context.state.runId, context })),
+  focusedAgentRunId,
+  isActive,
+});
 
 describe('activeContextStore interrupt routing', () => {
   beforeEach(() => {
@@ -83,11 +72,11 @@ describe('activeContextStore interrupt routing', () => {
     teamContextsStore.addTeamContext(buildTeamContext([
       ['solution_designer', solutionDesigner],
       ['code_reviewer', codeReviewer],
-    ], 'solution_designer'));
+    ], solutionDesigner.state.runId));
     selectionStore.selectRun('team-1', 'team');
 
     expect(activeContextStore.activeAgentContext?.state.runId).toBe('team-1::solution_designer');
-    teamContextsStore.setFocusedMember('code_reviewer');
+    teamContextsStore.focusMember('team-1', codeReviewer.state.runId);
 
     const interruptFocusedMember = vi
       .spyOn(teamRunStore, 'interruptFocusedMemberGeneration')
@@ -98,8 +87,7 @@ describe('activeContextStore interrupt routing', () => {
     expect(result).toBe(true);
     expect(interruptFocusedMember).toHaveBeenCalledWith({
       teamRunId: 'team-1',
-      targetMemberRouteKey: 'code_reviewer',
-      targetMemberRunId: 'team-1::code_reviewer',
+      agentRunId: 'team-1::code_reviewer',
     });
   });
 
@@ -124,7 +112,7 @@ describe('activeContextStore interrupt routing', () => {
     expect(interruptTeam).not.toHaveBeenCalled();
   });
 
-  it('routes stale logical focus through the active-execution team target', () => {
+  it('routes only the exact focused AgentRun through the team target', () => {
     const selectionStore = useAgentSelectionStore();
     const teamContextsStore = useAgentTeamContextsStore();
     const teamRunStore = useAgentTeamRunStore();
@@ -133,11 +121,11 @@ describe('activeContextStore interrupt routing', () => {
 
     teamContextsStore.addTeamContext(buildTeamContext([
       ['solution_designer', solutionDesigner],
-    ], 'solution_designer'));
+    ], solutionDesigner.state.runId));
     selectionStore.selectRun('team-1', 'team');
 
     const activeTeam = teamContextsStore.activeTeamContext!;
-    activeTeam.focusedMemberRouteKey = 'missing_member';
+    activeTeam.view.focusAgent(solutionDesigner.state.runId);
     const interruptFocusedMember = vi
       .spyOn(teamRunStore, 'interruptFocusedMemberGeneration')
       .mockReturnValue(true);
@@ -146,8 +134,7 @@ describe('activeContextStore interrupt routing', () => {
     expect(activeContextStore.interruptGeneration()).toBe(true);
     expect(interruptFocusedMember).toHaveBeenCalledWith({
       teamRunId: 'team-1',
-      targetMemberRouteKey: 'solution_designer',
-      targetMemberRunId: 'team-1::solution_designer',
+      agentRunId: 'team-1::solution_designer',
     });
   });
 
@@ -164,14 +151,12 @@ describe('activeContextStore interrupt routing', () => {
       ...buildTeamContext([
         ['solution_designer', solutionDesigner],
         ['delivery_engineer', deliveryEngineer],
-      ], 'delivery_engineer'),
-      isActive: false,
-      isSubscribed: false,
+      ], deliveryEngineer.state.runId, false),
     });
     selectionStore.selectRun('team-1', 'team');
 
-    expect(teamContextsStore.activeTeamContext?.focusedMemberRouteKey).toBe('delivery_engineer');
-    expect(teamContextsStore.activeExecutionFocusedMemberRouteKey).toBe('solution_designer');
+    expect(teamContextsStore.activeTeamContext?.view.getFocusedMemberAddress()).toBe('/delivery_engineer');
+    expect(teamContextsStore.activeExecutionFocusedMemberAddress).toBe('/delivery_engineer');
     expect(activeContextStore.activeAgentContext?.state.runId).toBe('team-1::delivery_engineer');
   });
 });

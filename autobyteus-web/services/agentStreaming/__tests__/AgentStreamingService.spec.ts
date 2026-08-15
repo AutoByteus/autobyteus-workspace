@@ -74,14 +74,15 @@ describe('AgentStreamingService', () => {
         expect(clientMock.connect).toHaveBeenCalledWith(expect.stringContaining(agentRunId));
     });
 
-    it('tracks subscription state on connect and disconnect', () => {
-        (service as any).attachContext(mockAgentContext);
+    it('uses the transport as the sole connection-readiness authority', () => {
+        const clientMock = (service as any).wsClient;
+        clientMock.state = 'connected';
+        expect(service.connectionState).toBe('connected');
+        expect(service.isReady).toBe(true);
 
-        (service as any).handleConnect();
-        expect(mockAgentContext.isSubscribed).toBe(true);
-
-        (service as any).handleDisconnect('bye');
-        expect(mockAgentContext.isSubscribed).toBe(false);
+        clientMock.state = 'disconnected';
+        expect(service.connectionState).toBe('disconnected');
+        expect(service.isReady).toBe(false);
     });
 
     it('mirrors external user messages into the open conversation', () => {
@@ -224,7 +225,7 @@ describe('AgentStreamingService', () => {
         (service as any).handleDisconnect('network reset');
 
         expect(mockAgentContext.state.currentStatus).toBe(AgentStatus.Running);
-        expect(mockAgentContext.isSubscribed).toBe(false);
+        expect((service as any).context).toBe(mockAgentContext);
     });
 
     it('serializes and exactly matches an admitted standalone interrupt', () => {
@@ -485,7 +486,7 @@ describe('AgentStreamingService', () => {
         expect(mockConversation.messages[0].segments[0].content).toBe('hello world!');
         onMessage(JSON.stringify({
             type: 'SEGMENT_END',
-            payload: { id: 'segment-1', turn_id: 'turn-1', segment_type: 'text' },
+            payload: { id: 'segment-1', turn_id: 'turn-1' },
         }));
         expect(mockConversation.messages[0].segments[0].content).toBe('hello world!');
         expect(mockConversation.messages[0].segments[0]._streamSegmentIdentity.presentationComplete).toBe(true);
@@ -527,7 +528,6 @@ describe('AgentStreamingService', () => {
                 eventMonitorPresentationRevision: 0,
             },
             conversation: replacementConversation,
-            isSubscribed: true,
         };
         scheduledService.attachContext(replacementContext as any);
 
@@ -542,7 +542,7 @@ describe('AgentStreamingService', () => {
 
         expect(replacementConversation.messages[0].segments[0].content).toBe('new bytes');
         expect(replacementContext.state.eventMonitorPresentationRevision).toBe(1);
-        expect(replacementContext.isSubscribed).toBe(false);
+        expect((scheduledService as any).context).toBe(replacementContext);
     });
 
     it('does not revise the center presentation for supported tool log and result-only traffic', () => {

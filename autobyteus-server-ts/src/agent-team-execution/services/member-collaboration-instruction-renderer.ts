@@ -1,4 +1,4 @@
-import type { MemberLogicalAddressContext } from "../domain/member-logical-address-context.js";
+import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 
 const MEMBER_ADDRESS_PLACEHOLDER = "{{member_address}}";
 
@@ -7,34 +7,28 @@ const AGENT_TEAM_COLLABORATION_INSTRUCTION_TEMPLATE = [
   "",
   "AgentTeams use filesystem-like logical addresses. Think of an AgentTeam as a directory, an Agent inside it as a file, and a nested AgentTeam as a subdirectory. This analogy describes the Team structure and addressing model only; the addresses are not real filesystem paths.",
   "",
-  "An address beginning with `/` starts from the root AgentTeam. An address beginning with `./` starts from your immediate AgentTeam—the Team that directly contains you. Bare names, `../`, and backslashes are invalid.",
+  "Every Agent and nested AgentTeam is identified by one canonical absolute address beginning with `/` at the root AgentTeam. Copy that exact address when a tool asks for `recipient_address`. Relative addresses, bare names, `../`, backslashes, and the structural root `/` itself are not valid recipients.",
   "",
-  "Within this structure, your address is:",
+  "Your Agent address is:",
   "",
   MEMBER_ADDRESS_PLACEHOLDER,
   "",
-  "For example:",
-  "",
-  "- `./architecture_reviewer` identifies an Agent in your immediate AgentTeam.",
-  "- `./implementation_team` identifies a nested AgentTeam in your immediate AgentTeam.",
-  "- `/requirements_engineering/requirements_lead` identifies an Agent using an absolute address from the root AgentTeam.",
-  "",
-  "An AgentTeam address identifies the Team itself. Sending a message to that address delivers it to the Team's configured coordinator.",
+  "For example, `/requirements_engineering/requirements_lead` identifies one Agent, while `/requirements_engineering` identifies that AgentTeam. Sending a message to an AgentTeam address delivers it through that Team's configured coordinator.",
   "",
   "## AgentTeam Collaboration",
   "",
-  "Use `send_message_to` with `recipient_address` to send a message to an Agent or AgentTeam.",
+  "Use `send_message_to` with `recipient_address` to contact any mounted Agent or AgentTeam in your rooted AgentTeam. When you know an exact active AgentRun ID, you may instead use `target_agent_run_id` to contact that execution directly.",
   "",
-  "`delegate_task` uses the same address format, but its recipient must be a direct Agent or AgentTeam child of your immediate AgentTeam. Message delivery may address deeper or cross-branch recipients.",
+  "Use `delegate_task` with `recipient_address` to create a fresh dedicated task execution for any mounted Agent or AgentTeam in your rooted AgentTeam, except your own exact Agent address. An AgentTeam task starts a fresh Team execution through its configured coordinator.",
   "",
   "When you finish your work or are blocked, call `get_handoff_rules`. If a returned rule applies, notify its `recipient_address` using `send_message_to`. Combine applicable reasons for the same recipient and follow distinct recipients in their returned order. If no rule applies, finish normally.",
   "",
-  "Do not claim that a handoff was completed unless `send_message_to` confirms delivery.",
+  "Do not claim that a message or handoff was delivered unless `send_message_to` confirms delivery. Use `submit_task_result` and `review_task_result`—not ordinary message wording—for formal task lifecycle changes.",
 ].join("\n");
 
 export const renderMemberCollaborationInstruction = (input: {
-  addressing: MemberLogicalAddressContext;
+  memberAddress: AgentTeamAddress;
 }): string => AGENT_TEAM_COLLABORATION_INSTRUCTION_TEMPLATE.replace(
   MEMBER_ADDRESS_PLACEHOLDER,
-  () => input.addressing.memberAddress,
+  () => input.memberAddress,
 );

@@ -55,20 +55,20 @@ export const createApplicationAgentTeamTargetAddress = (
 
 export const createApplicationAgentTeamMemberTargetAddress = (
   binding: ApplicationAgentTeamBinding,
-  memberAddress: string,
+  agentRunId: string,
 ): ApplicationAgentTargetAddress => {
   const bindingId = requireBindingId(binding);
   requireRuntimeSubject(binding, "TEAM_RUN");
 
-  const normalizedMemberAddress = typeof memberAddress === "string" ? memberAddress.trim() : "";
-  if (!normalizedMemberAddress.startsWith("/")) {
-    throw new Error("Application agent-team member target requires canonical memberAddress.");
+  const normalizedAgentRunId = typeof agentRunId === "string" ? agentRunId.trim() : "";
+  if (!normalizedAgentRunId) {
+    throw new Error("Application agent-team member target requires agentRunId.");
   }
 
   const members = Array.isArray(binding.runtime.members) ? binding.runtime.members : [];
-  if (!members.some((member) => member?.memberAddress === normalizedMemberAddress)) {
+  if (!members.some((member) => member?.agentRunId === normalizedAgentRunId)) {
     throw new Error(
-      `Application agent-team binding '${bindingId}' does not contain memberAddress '${normalizedMemberAddress}'.`,
+      `Application agent-team binding '${bindingId}' does not contain agentRunId '${normalizedAgentRunId}'.`,
     );
   }
 
@@ -76,7 +76,7 @@ export const createApplicationAgentTeamMemberTargetAddress = (
     bindingId,
     target: {
       kind: "AGENT_TEAM_MEMBER",
-      memberAddress: normalizedMemberAddress,
+      agentRunId: normalizedAgentRunId,
     },
   };
 };

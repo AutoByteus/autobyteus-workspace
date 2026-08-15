@@ -77,8 +77,9 @@ describe("composeNativeAutoByteusPrompt", () => {
     });
 
     expect(prompt).toContain("## Team Instruction\n\n### Coordination");
-    expect(prompt).toContain("## AgentTeam Addressing");
-    expect(prompt).toContain("/worker");
+    expect(prompt).toContain("## AgentTeam Addressing\n\nAgentTeams use filesystem-like logical addresses.");
+    expect(prompt).toContain("Your Agent address is:\n\n/worker");
+    expect(prompt).toContain("Relative addresses, bare names, `../`, backslashes");
     expect(prompt).toContain("## AgentTeam Collaboration\n\nUse `send_message_to` with `recipient_address`");
     expect(prompt.indexOf("## Team Instruction")).toBeLessThan(prompt.indexOf("## AgentTeam Addressing"));
     expect(prompt.indexOf("## AgentTeam Addressing")).toBeLessThan(prompt.indexOf("## AgentTeam Collaboration"));

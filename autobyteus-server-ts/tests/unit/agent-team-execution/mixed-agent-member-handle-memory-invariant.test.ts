@@ -6,8 +6,7 @@ import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { MixedAgentMemberHandle } from "../../../src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.js";
 import { MixedAgentMemberContext, MixedTeamRunContext } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-context.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
-import { createTeamExecutionAddress } from "../../../src/agent-team-execution/domain/team-execution-address.js";
-import type { TeamRunAgentNode, TeamRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
+import type { TeamRunAgentNode, TeamRunAgentTeamNode, TeamRunConfig, TeamRunNode } from "../../../src/agent-team-execution/domain/team-run-config.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import {
@@ -40,6 +39,17 @@ const createHandle = (input: {
   node: TeamRunAgentNode;
   createAgentRun: ReturnType<typeof vi.fn>;
 }) => {
+  const findTeam = (node: TeamRunNode): TeamRunAgentTeamNode | null => {
+    if (node.kind === "agent") return null;
+    if (node.address === input.teamAddress) return node;
+    for (const child of node.children) {
+      const found = findTeam(child);
+      if (found) return found;
+    }
+    return null;
+  };
+  const teamNode = findTeam(input.config.rootTeam);
+  if (!teamNode) throw new Error(`missing Team node '${input.teamAddress}'`);
   const memberContext = new MixedAgentMemberContext({
     address: input.node.address,
     agentRunId: input.node.agentRunId,
@@ -47,17 +57,13 @@ const createHandle = (input: {
     platformAgentRunId: null,
   });
   const teamContext = new TeamRunContext({
+    rootTeamRunId: input.config.rootTeam.teamRunId,
     teamRunId: input.teamRunId,
-    teamAddress: input.teamAddress as never,
     teamBackendKind: TeamBackendKind.MIXED,
-    config: input.config,
+    teamNode,
+    handoffs: input.config.handoffs,
     runtimeContext: new MixedTeamRunContext({
       memberContexts: [memberContext],
-      teamExecutionAddress: createTeamExecutionAddress({
-        rootTeamRunId: input.config.rootTeam.teamRunId,
-        taskTeamRunIds: [],
-        memberAddress: input.node.address,
-      }),
     }),
   });
   return new MixedAgentMemberHandle({
@@ -68,11 +74,8 @@ const createHandle = (input: {
     memberTeamContextBuilder: {
       build: vi.fn(async () => testMemberTeamContext({
         rootTeamRunId: input.config.rootTeam.teamRunId,
-        teamRunId: input.teamRunId,
-        teamAddress: input.teamAddress,
         memberAddress: input.node.address,
         agentRunId: input.node.agentRunId,
-        runtimeKind: input.node.runtimeKind,
       })),
     } as never,
     publish: vi.fn(),
@@ -105,7 +108,7 @@ describe("MixedAgentMemberHandle memory location", () => {
     );
   });
 
-  it("includes exact physical ancestor TeamRun IDs for a nested member", async () => {
+  it("uses the root plus globally unique AgentRun identity for a nested configured member", async () => {
     const worker = testAgentNode("/sub_team/worker", {
       agentRunId: "nested-worker-run",
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
@@ -139,7 +142,7 @@ describe("MixedAgentMemberHandle memory location", () => {
         memoryDir: new AgentMemoryLayout(appConfigProvider.config.getMemoryDir())
           .getTeamAgentRunDirPath({
             rootTeamRunId: "root-run",
-            ancestorTeamRunIds: ["sub-team-run"],
+            ancestorTeamRunIds: [],
           }, "nested-worker-run"),
       }),
       "nested-worker-run",

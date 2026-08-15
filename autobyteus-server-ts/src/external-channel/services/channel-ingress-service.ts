@@ -7,7 +7,6 @@ import { ChannelRunFacade } from "../runtime/channel-run-facade.js";
 import { ChannelBindingService } from "./channel-binding-service.js";
 import { ChannelMessageReceiptService } from "./channel-message-receipt-service.js";
 import { ChannelThreadLockService } from "./channel-thread-lock-service.js";
-import { createTeamExecutionAddress } from "../../agent-team-execution/domain/team-execution-address.js";
 
 export type ChannelIngressDisposition = "ACCEPTED" | "UNBOUND" | "DUPLICATE";
 
@@ -269,7 +268,7 @@ const normalizeDispatchTarget = (
     dispatch: {
       dispatchTargetType: "TEAM",
       teamRunId,
-      executionAddress: createTeamExecutionAddress(dispatch.executionAddress),
+      agentRunId: dispatch.agentRunId,
       turnId: normalizeRequiredString(dispatch.turnId, "dispatch.turnId"),
       dispatchedAt,
     },
@@ -279,7 +278,7 @@ const normalizeDispatchTarget = (
 };
 
 const toRunOutputTarget = (
-  binding: ChannelBinding,
+  _binding: ChannelBinding,
   dispatch: ChannelRunDispatchResult,
 ): ChannelRunOutputTarget => {
   if (dispatch.dispatchTargetType === "AGENT") {
@@ -288,7 +287,7 @@ const toRunOutputTarget = (
   return {
     targetType: "TEAM",
     teamRunId: dispatch.teamRunId,
-    entryExecutionAddress: createTeamExecutionAddress(dispatch.executionAddress),
+    entryAgentRunId: dispatch.agentRunId,
   };
 };
 
@@ -307,9 +306,7 @@ const toRunOutputTargetFromReceipt = (
   return {
     targetType: "TEAM",
     teamRunId,
-    entryExecutionAddress: binding.targetMemberAddress
-      ? createTeamExecutionAddress({ rootTeamRunId: teamRunId, memberAddress: binding.targetMemberAddress })
-      : null,
+    entryAgentRunId: null,
   };
 };
 

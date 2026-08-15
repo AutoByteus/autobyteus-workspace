@@ -26,27 +26,18 @@ describe("inter-agent-message-delivery-intent-builder", () => {
     expect(result.intent).toEqual(expect.objectContaining({
       rootTeamRunId: "team-1",
       recipientAddress: "/unknown",
-      callerAddressing: expect.objectContaining({
-        rootTeamRunId: "team-1",
-        memberAddress: "/Sender",
-      }),
       content: "hello",
       messageType: "agent_message",
       referenceFiles: ["/tmp/reference.md"],
     }));
     expect(result.intent.sender.participant).toEqual({
       kind: "agent",
-      executionAddress: {
+      identity: {
         rootTeamRunId: "team-1",
-        taskTeamRunIds: [],
         memberAddress: "/Sender",
-        taskAgentRunId: null,
+        agentRunId: "run-sender",
       },
-      agentRunId: "run-sender",
       displayName: "Sender",
-      runtimeKind: "autobyteus",
-      platformAgentRunId: null,
-      taskId: null,
     });
     expect(result.intent).not.toHaveProperty("recipient");
     expect(result.intent).not.toHaveProperty("representedSubTeam");

@@ -1,0 +1,268 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+
+stdout | tests/integration/agent-team-execution/team-run-service.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:422) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/agent-team-execution/team-run-service.integration.test.ts > TeamRunService current recursive topology integration > projects one launch preset across every exact recursive Agent address
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+
+ ✓ tests/integration/agent-team-execution/team-run-service.integration.test.ts > TeamRunService current recursive topology integration > projects one launch preset across every exact recursive Agent address 3ms
+ ✓ tests/integration/agent-team-execution/team-run-service.integration.test.ts > TeamRunService current recursive topology integration > creates one rooted mixed-runtime recursive plan and records only the V1 execution tree 6ms
+ ✓ tests/integration/agent-team-execution/team-run-service.integration.test.ts > TeamRunService current recursive topology integration > restores only through the strict manager package reader and refreshes the catalog from its V1 tree 1ms
+ ✓ tests/integration/agent-team-execution/team-run-service.integration.test.ts > TeamRunService current recursive topology integration > terminates the newly materialized root if catalog creation fails 1ms
+ ✓ tests/integration/agent-team-execution/team-run-service.integration.test.ts > TeamRunService current recursive topology integration > records terminal history only when the manager accepts root termination 0ms
+stdout | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:426) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > current universal task-delegation tool lifecycle integration > persists delegate -> submit -> request revision -> resubmit -> accept through the three public tools 97ms
+ ✓ tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > current universal task-delegation tool lifecycle integration > lets a fresh task Agent delegate a nested sibling task and preserves exact review ownership 103ms
+ ✓ tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > current universal task-delegation tool lifecycle integration > materializes a fresh task AgentTeam and lets its concrete coordinator delegate inside that exact task TeamRun 123ms
+ ✓ tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > current universal task-delegation tool lifecycle integration > rejects self, root, missing, noncanonical, traversal, foreign, and relative targets before mutation 37ms
+ ✓ tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > current universal task-delegation tool lifecycle integration > validates absolute reference files before preparation and persists the exact accepted path 57ms
+stdout | tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:427) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict V1 package integration > creates exactly one admitted root and the three-file V1 package for ["autobyteus"] 51ms
+ ✓ tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict V1 package integration > creates exactly one admitted root and the three-file V1 package for ["codex_app_server"] 44ms
+ ✓ tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict V1 package integration > creates exactly one admitted root and the three-file V1 package for ["claude_agent_sdk"] 40ms
+ ✓ tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict V1 package integration > creates exactly one admitted root and the three-file V1 package for ["autobyteus","codex_app_server","claude_agent_sdk"] 40ms
+ ✓ tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict V1 package integration > restores the strict three-file package and rebuilds runtime context from current tree identity 37ms
+ ✓ tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict V1 package integration > emits root lifecycle transitions and unregisters only after accepted termination 32ms
+stdout | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:433) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > Team WebSocket exact AgentRun command integration > preserves persistent, task Agent, outer task-Team, and nested task-Team AgentRun targets
+Agent team websocket attached for team run team-run-1
+Created agent session cb4139b6-25fd-4545-aa13-dcdb0f23476a for run team-run-1
+
+stdout | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > Team WebSocket exact AgentRun command integration > preserves persistent, task Agent, outer task-Team, and nested task-Team AgentRun targets
+Agent Team WebSocket connected: session=cb4139b6-25fd-4545-aa13-dcdb0f23476a, run=team-run-1
+
+stdout | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > Team WebSocket exact AgentRun command integration > returns INVALID_TARGET for a stale exact AgentRun without retry or persistent substitution
+Closed agent session cb4139b6-25fd-4545-aa13-dcdb0f23476a
+
+stdout | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > Team WebSocket exact AgentRun command integration > returns INVALID_TARGET for a stale exact AgentRun without retry or persistent substitution
+Agent team websocket attached for team run team-run-1
+Created agent session b670b059-aaa6-4886-afb0-c18a4c000a51 for run team-run-1
+
+stdout | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > Team WebSocket exact AgentRun command integration > returns INVALID_TARGET for a stale exact AgentRun without retry or persistent substitution
+Agent Team WebSocket connected: session=b670b059-aaa6-4886-afb0-c18a4c000a51, run=team-run-1
+
+stdout | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > Team WebSocket exact AgentRun command integration > rejects a legacy selector at the strict WebSocket contract before root execution
+Closed agent session b670b059-aaa6-4886-afb0-c18a4c000a51
+
+stdout | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > Team WebSocket exact AgentRun command integration > rejects a legacy selector at the strict WebSocket contract before root execution
+Agent team websocket attached for team run team-run-1
+Created agent session 090f2565-cc25-40fd-9c95-276738eb18ca for run team-run-1
+
+stdout | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > Team WebSocket exact AgentRun command integration > rejects a legacy selector at the strict WebSocket contract before root execution
+Agent Team WebSocket connected: session=090f2565-cc25-40fd-9c95-276738eb18ca, run=team-run-1
+
+stderr | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > Team WebSocket exact AgentRun command integration > rejects a legacy selector at the strict WebSocket contract before root execution
+Error handling team message for 090f2565-cc25-40fd-9c95-276738eb18ca: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "member_route_key"
+    ],
+    "path": [
+      "payload"
+    ],
+    "message": "Unrecognized key: \"member_route_key\""
+  }
+]
+
+ ✓ tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > Team WebSocket exact AgentRun command integration > preserves persistent, task Agent, outer task-Team, and nested task-Team AgentRun targets 38ms
+ ✓ tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > Team WebSocket exact AgentRun command integration > returns INVALID_TARGET for a stale exact AgentRun without retry or persistent substitution 17ms
+stdout | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts
+Closed agent session 090f2565-cc25-40fd-9c95-276738eb18ca
+
+ ✓ tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > Team WebSocket exact AgentRun command integration > rejects a legacy selector at the strict WebSocket contract before root execution 106ms
+stdout | tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:434) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts > AgentRun-owned Team segment lifecycle > correlates a real AutoByteus native sequence before Team, standalone, and application projection 7ms
+ ✓ tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts > AgentRun-owned Team segment lifecycle > preserves exact Claude delta bytes once through direct and nested Team external collection 2ms
+ ✓ tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts > AgentRun-owned Team segment lifecycle > emits a diagnostic for missing identity and accepts a later valid sequence without generated identity 1ms
+ ✓ tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts > AgentRun-owned Team segment lifecycle > rejects content before start, then correlates the same exact identity after start 1ms
+ ✓ tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts > AgentRun-owned Team segment lifecycle > rejects conflicting type and preserves the original exact segment lifecycle 0ms
+ ✓ tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts > AgentRun-owned Team segment lifecycle > suppresses exact start/end replays and rejects content after terminal end 0ms
+ ✓ tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts > AgentRun-owned Team segment lifecycle > rejects source content carrying a surplus type instead of treating canonical output as source input 0ms
+ ✓ tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts > AgentRun-owned Team segment lifecycle > retires an ended turn and accepts a fresh exact segment on the next run-owned turn 0ms
+ ✓ tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts > AgentRun-owned Team segment lifecycle > rejects an internal snake_case alias without canonical id 0ms
+ ✓ tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts > AgentRun-owned Team segment lifecycle > rejects an internal camelCase alias without canonical id 0ms
+stdout | tests/integration/agent-team-execution/mixed-team-run-backend-factory.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:436) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/integration/agent-team-execution/mixed-team-run-backend-factory.integration.test.ts > MixedTeamRunBackendFactory current execution identity integration > hydrates exact AgentRun and configured child TeamRun contexts from the immutable TeamRunConfig 3ms
+ ✓ tests/integration/agent-team-execution/mixed-team-run-backend-factory.integration.test.ts > MixedTeamRunBackendFactory current execution identity integration > rejects a root allocation mismatch before manager construction 1ms
+ ✓ tests/integration/agent-team-execution/mixed-team-run-backend-factory.integration.test.ts > MixedTeamRunBackendFactory current execution identity integration > restores exact platform identities and nested runtime context without route/path reconstruction 1ms
+ ✓ tests/integration/agent-team-execution/mixed-team-run-backend.integration.test.ts > MixedTeamRunBackend exact local facade integration > exposes one concrete TeamRun identity and current runtime context 2ms
+ ✓ tests/integration/agent-team-execution/mixed-team-run-backend.integration.test.ts > MixedTeamRunBackend exact local facade integration > forwards direct input and commands by the unchanged exact AgentRun ID 1ms
+ ✓ tests/integration/agent-team-execution/mixed-team-run-backend.integration.test.ts > MixedTeamRunBackend exact local facade integration > forwards prepared task execution, settlement, and termination capabilities without alternate ownership 1ms
+
+ Test Files  7 passed (7)
+      Tests  35 passed (35)
+   Start at  12:15:05
+   Duration  9.63s (transform 2.82s, setup 27ms, import 7.75s, tests 861ms, environment 0ms)
+

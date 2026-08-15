@@ -356,7 +356,6 @@ function createSyntheticSegmentFromContent(
   const aiMessage = findOrCreateAIMessage(context);
   const segment = createSegmentFromPayload({
     id: segmentId,
-    turn_id: turnId,
     segment_type: segmentType,
   });
   setStreamSegmentIdentity(segment, turnId, segmentId, segmentType);

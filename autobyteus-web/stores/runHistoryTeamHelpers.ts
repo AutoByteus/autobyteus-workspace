@@ -2,23 +2,23 @@ import type { AgentContext } from '~/types/agent/AgentContext';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import type { TeamMemberTreeRow, TeamTreeNode, TeamRunHistoryItem } from '~/stores/runHistoryTypes';
 import { buildTeamRowsFromContext, buildTeamRowsFromHistoryItem, flattenTeamRows } from '~/stores/runHistoryTeamRows';
-import {
-  createTeamExecutionAddress,
-} from '~/types/agent/TeamExecutionAddress';
 
 const leafContexts = (teamContext: AgentTeamContext): readonly AgentContext[] =>
-  teamContext.executions.listAgentContextEntries().map((entry) => entry.agentContext);
+  teamContext.view.listAgentContextEntries().map((entry) => entry.agentContext);
 
 const persistentMemberContext = (teamContext: AgentTeamContext, memberAddress: string): AgentContext | null => {
   if (!memberAddress) return null;
-  return teamContext.executions.getAgentContext(createTeamExecutionAddress({
-    rootTeamRunId: teamContext.executions.getRootTeamRunId(),
-    memberAddress,
-  }));
+  const entry = teamContext.view.listAgentContextEntries().find(
+    (candidate) => candidate.memberAddress === memberAddress,
+  );
+  return entry?.agentContext ?? null;
 };
 
 export const summarizeTeamDraft = (teamContext: AgentTeamContext, draftSummaryPrefix: string): string => {
-  const coordinatorContext = persistentMemberContext(teamContext, teamContext.topology.rootTeam.coordinatorAddress);
+  const coordinatorContext = persistentMemberContext(
+    teamContext,
+    teamContext.view.getExecutionTree().root_team.coordinator_address,
+  );
   const firstCoordinatorUserMessage = coordinatorContext?.state.conversation.messages.find(
     (message) => message.type === 'user' && message.text?.trim().length > 0,
   );
@@ -29,7 +29,7 @@ export const summarizeTeamDraft = (teamContext: AgentTeamContext, draftSummaryPr
     );
     if (message?.type === 'user') return message.text.trim();
   }
-  return `${draftSummaryPrefix}${teamContext.topology.teamDefinitionName || 'Team'}`.trim();
+  return `${draftSummaryPrefix}${teamContext.view.getTeamDefinitionName() || 'Team'}`.trim();
 };
 
 export const resolveTeamLastActivityAt = (teamContext: AgentTeamContext): string => {
@@ -46,7 +46,7 @@ export const resolveTeamWorkspaceRootPathFromContext = (
   resolveWorkspaceRootPath: (workspaceId: string | null) => string,
   unassignedWorkspaceKey: string,
 ): string => {
-  const config = teamContext.topology.getConfigurationView();
+  const config = teamContext.view.getConfigurationView();
   const configured = config.workspaceMetadata?.workspaceRootPath
     || resolveWorkspaceRootPath(config.workspaceId);
   if (configured) return configured;
@@ -72,6 +72,7 @@ const rootDisplayRow = (params: {
   kind: 'agent_team',
   memberAddress: '/',
   displayName: params.displayName,
+  agentRunId: null,
   teamDefinitionId: params.teamDefinitionId,
   teamRunIdForNode: params.teamRunId,
   coordinatorAddress: params.coordinatorAddress,
@@ -105,6 +106,9 @@ export const buildTeamNodes = (params: {
     const members = flattenTeamRows(children);
     const memberAddress = members.some((member) => member.memberAddress === team.coordinatorAddress)
       ? team.coordinatorAddress : members[0]?.memberAddress || '/';
+    const focusedAgentRunId = members.find((member) => member.memberAddress === memberAddress)?.agentRunId
+      ?? members.find((member) => member.agentRunId)?.agentRunId
+      ?? '';
     const rootTeam = rootDisplayRow({
       teamRunId: team.teamRunId,
       displayName: team.teamDefinitionName || 'Team',
@@ -124,14 +128,14 @@ export const buildTeamNodes = (params: {
       lastActivityAt: team.createdAt,
       isActive: team.isActive,
       deleteLifecycle: 'READY',
-      focusedExecutionAddress: createTeamExecutionAddress({ rootTeamRunId: team.teamRunId, memberAddress }),
+      focusedAgentRunId,
       rootTeam,
       members,
       executionRows: [],
     });
   }
   for (const teamContext of params.teamContexts) {
-    const teamRunId = teamContext.executions.getRootTeamRunId();
+    const teamRunId = teamContext.view.getRootTeamRunId();
     const existing = nodesByTeamRunId.get(teamRunId);
     const workspaceRootPath = existing?.workspaceRootPath || params.resolveWorkspaceRootPathFromContext(teamContext);
     const summary = existing?.summary?.trim() || params.summarizeTeamDraft(teamContext);
@@ -140,15 +144,15 @@ export const buildTeamNodes = (params: {
     const members = flattenTeamRows(children);
     const rootTeam = rootDisplayRow({
       teamRunId,
-      displayName: teamContext.topology.rootTeam.displayName,
-      teamDefinitionId: teamContext.topology.rootTeam.teamDefinitionId,
-      coordinatorAddress: teamContext.topology.rootTeam.coordinatorAddress,
+      displayName: teamContext.view.getTeamDefinitionName(),
+      teamDefinitionId: teamContext.view.getExecutionTree().root_team.team_definition_id,
+      coordinatorAddress: teamContext.view.getExecutionTree().root_team.coordinator_address,
       summary,
       lastActivityAt,
-      isActive: teamContext.executions.isRootTeamActive(),
+      isActive: teamContext.view.isRootTeamActive(),
       children,
     });
-    const config = teamContext.topology.getConfigurationView();
+    const config = teamContext.view.getConfigurationView();
     nodesByTeamRunId.set(teamRunId, {
       teamRunId,
       teamDefinitionId: existing?.teamDefinitionId || config.teamDefinitionId || teamRunId,
@@ -156,9 +160,9 @@ export const buildTeamNodes = (params: {
       workspaceRootPath,
       summary,
       lastActivityAt,
-      isActive: teamContext.executions.isRootTeamActive(),
+      isActive: teamContext.view.isRootTeamActive(),
       deleteLifecycle: existing?.deleteLifecycle ?? 'READY',
-      focusedExecutionAddress: teamContext.executions.getFocusedAddress(),
+      focusedAgentRunId: teamContext.view.getFocusedAgentRunId(),
       rootTeam,
       members,
       executionRows: [],

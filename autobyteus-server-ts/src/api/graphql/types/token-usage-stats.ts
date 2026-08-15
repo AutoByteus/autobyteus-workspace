@@ -14,7 +14,6 @@ import type {
 } from "../../../token-usage/domain/statistics-models.js";
 import { TokenUsageLedgerStore } from "../../../token-usage/providers/token-usage-ledger-store.js";
 import { TokenUsageStatisticsProvider } from "../../../token-usage/providers/statistics-provider.js";
-import { normalizeTokenUsageExecutionAddress } from "../../../token-usage/domain/execution-address.js";
 
 @ObjectType()
 export class TokenUsageUnitPriceSummaryGraphql {
@@ -162,8 +161,8 @@ export class TokenUsageRunSummaryGraphql extends TokenUsageCostSummaryAggregateG
   @Field(() => String)
   runId!: string;
 
-  @Field(() => GraphQLJSON, { nullable: true })
-  executionAddress?: unknown | null;
+  @Field(() => String, { nullable: true })
+  rootTeamRunId?: string | null;
 
   @Field(() => String, { nullable: true })
   agentDefinitionId?: string | null;
@@ -204,8 +203,8 @@ export class TokenUsageTaskStatisticsRowGraphql {
   @Field(() => String, { nullable: true })
   taskId?: string | null;
 
-  @Field(() => GraphQLJSON, { nullable: true })
-  executionAddress?: unknown | null;
+  @Field(() => String, { nullable: true })
+  rootTeamRunId?: string | null;
 
   @Field(() => String)
   displayName!: string;
@@ -413,7 +412,7 @@ const summaryAggregate = (summary: TokenUsageRunSummaryPayload): TokenUsageCostS
 const toTokenUsageRunSummaryGraphql = (summary: TokenUsageRunSummaryPayload): TokenUsageRunSummaryGraphql => ({
   ...toTokenUsageCostSummaryAggregateGraphql(summaryAggregate(summary)),
   runId: summary.run_id,
-  executionAddress: summary.execution_address,
+  rootTeamRunId: summary.root_team_run_id,
   agentDefinitionId: summary.agent_definition_id,
   workspaceId: summary.workspace_id,
   latestPromptTokens: summary.latest_prompt_tokens,
@@ -429,7 +428,7 @@ const toTaskRow = (row: TokenUsageTaskStatisticsRow): TokenUsageTaskStatisticsRo
   rowKind: row.rowKind,
   runId: row.runId,
   taskId: row.taskId,
-  executionAddress: row.executionAddress,
+  rootTeamRunId: row.rootTeamRunId,
   displayName: row.displayName,
   summary: row.summary,
   createdAt: row.createdAt,
@@ -517,12 +516,12 @@ export class TokenUsageStatisticsResolver {
   @Query(() => TokenUsageRunSummaryGraphql)
   async getTeamMemberTokenUsageSummary(
     @Arg("teamRunId", () => String) teamRunId: string,
-    @Arg("executionAddress", () => GraphQLJSON) executionAddress: unknown,
+    @Arg("agentRunId", () => String) agentRunId: string,
   ): Promise<TokenUsageRunSummaryGraphql> {
     const store = new TokenUsageLedgerStore();
     return toTokenUsageRunSummaryGraphql(await store.getTeamMemberSummary({
       rootTeamRunId: teamRunId,
-      executionAddress: normalizeTokenUsageExecutionAddress(executionAddress) ?? (() => { throw new Error("executionAddress is invalid."); })(),
+      agentRunId,
     }));
   }
 }

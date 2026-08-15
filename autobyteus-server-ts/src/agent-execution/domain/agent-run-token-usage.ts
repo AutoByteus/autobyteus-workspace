@@ -6,8 +6,6 @@ import {
   type InputTokenSemantic,
 } from "../../token-usage/domain/token-usage-component-basis.js";
 import type { TokenUsageUnitPrices } from "../../token-usage/domain/token-usage-unit-price-summary.js";
-import type { TokenUsageExecutionAddress } from "../../token-usage/domain/execution-address.js";
-import { normalizeTokenUsageExecutionAddress } from "../../token-usage/domain/execution-address.js";
 
 export type TokenUsageScope = "per_call" | "per_turn" | "cumulative_snapshot";
 export type TokenUsageRuntimeKind = "autobyteus" | "codex_app_server" | "claude_agent_sdk" | string;
@@ -26,7 +24,7 @@ export type TokenUsageApiCostStatus =
 
 export interface TokenUsageRunSummaryPayload {
   run_id: string;
-  execution_address: TokenUsageExecutionAddress | null;
+  root_team_run_id: string | null;
   agent_definition_id: string | null;
   workspace_id: string | null;
   gross_input_tokens: number;
@@ -74,10 +72,10 @@ export interface TokenUsageUpdatedPayload {
   idempotency_key: string;
   observed_at: string;
   run_id: string;
+  root_team_run_id: string | null;
   turn_id: string | null;
   llm_call_id: string | null;
   call_sequence: number | null;
-  execution_address: TokenUsageExecutionAddress | null;
   agent_definition_id: string | null;
   workspace_id: string | null;
   task_id: string | null;
@@ -271,23 +269,15 @@ export const createTokenUsageUpdatedPayload = (input: {
     qualityFlags.add("provider_name_top_level_nested_conflict");
   }
   const providerName = topLevelProviderName ?? nestedProviderName;
-  const executionAddressSource = source.execution_address;
-  const executionAddress = executionAddressSource === undefined || executionAddressSource === null
-    ? null
-    : normalizeTokenUsageExecutionAddress(executionAddressSource);
-  if (executionAddressSource !== undefined && executionAddressSource !== null && !executionAddress) {
-    qualityFlags.add("execution_address_invalid");
-  }
-
   return {
     usage_event_id: usageEventId,
     idempotency_key: idempotencyKey,
     observed_at: observedAt,
     run_id: asString(source.run_id) ?? input.runId,
+    root_team_run_id: asString(source.root_team_run_id),
     turn_id: asString(source.turn_id),
     llm_call_id: asString(source.llm_call_id),
     call_sequence: asNonNegativeInt(source.call_sequence),
-    execution_address: executionAddress,
     agent_definition_id: asString(source.agent_definition_id),
     workspace_id: asString(source.workspace_id),
     task_id: asString(source.task_id),

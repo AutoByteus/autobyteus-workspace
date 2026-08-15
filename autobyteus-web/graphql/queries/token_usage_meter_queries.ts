@@ -3,7 +3,7 @@ import gql from 'graphql-tag';
 export const TOKEN_USAGE_RUN_SUMMARY_FIELDS = gql`
   fragment TokenUsageRunSummaryFields on TokenUsageRunSummaryGraphql {
     runId
-    executionAddress
+    rootTeamRunId
     agentDefinitionId
     workspaceId
     grossInputTokens
@@ -96,10 +96,10 @@ export const GET_TEAM_RUN_TOKEN_USAGE_SUMMARY = gql`
 
 export const GET_TEAM_MEMBER_TOKEN_USAGE_SUMMARY = gql`
   ${TOKEN_USAGE_RUN_SUMMARY_FIELDS}
-  query GetTeamMemberTokenUsageSummary($teamRunId: String!, $executionAddress: JSON!) {
+  query GetTeamMemberTokenUsageSummary($teamRunId: String!, $agentRunId: String!) {
     getTeamMemberTokenUsageSummary(
       teamRunId: $teamRunId,
-      executionAddress: $executionAddress
+      agentRunId: $agentRunId
     ) {
       ...TokenUsageRunSummaryFields
     }

@@ -11,10 +11,12 @@ import {
   type AgentRunInputDispatchClaim,
 } from "../input/agent-run-input-admission-state.js";
 import type {
+  AgentRunInputReservationResult,
   AgentRunBackendInputDispatchResult,
   AgentRunInputLifecycle,
   AgentRunInputOptions,
 } from "../input/agent-run-input-contract.js";
+import { createAgentRunInputReservation } from "../input/agent-run-input-reservation.js";
 import type { AgentRunContext } from "./agent-run-context.js";
 import {
   resolveAgentRunErrorEvidence,
@@ -22,7 +24,12 @@ import {
 import { resolveAgentRunEventTurnId } from "./agent-run-event-turn-id.js";
 import { AgentRunEventType, type AgentRunEvent } from "./agent-run-event.js";
 import type { AgentRunCommandObserver } from "./agent-run-command-observer.js";
+import { dispatchUserMessageForwarded } from "./agent-run-command-observer-dispatch.js";
 import type { AgentOperationResult } from "./agent-operation-result.js";
+import {
+  createPreparedAgentRunTermination,
+  type PreparedAgentRunTermination,
+} from "./prepared-agent-run-termination.js";
 import {
   buildAgentStatusPayload,
   type AgentApiStatus,
@@ -30,16 +37,13 @@ import {
 } from "./agent-status-payload.js";
 
 type AgentRunEventListener = (event: AgentRunEvent) => void;
-type ClaimedInputDispatch = {
-  claim: AgentRunInputDispatchClaim;
-  commandToken: number | null;
-};
+type ClaimedInputDispatch = { claim: AgentRunInputDispatchClaim; commandToken: number | null };
 
 type AgentRunInterruptReservation = {
   turnId: string | null;
   result: Promise<AgentOperationResult>;
-  resolve: (result: AgentOperationResult) => void;
-  reject: (error: unknown) => void;
+  resolve(result: AgentOperationResult): void;
+  reject(error: unknown): void;
 };
 
 type AgentRunInterruptDecision =
@@ -48,15 +52,11 @@ type AgentRunInterruptDecision =
   | { kind: "claimed"; reservation: AgentRunInterruptReservation };
 
 type AgentRunOptions = {
-  context: AgentRunContext<unknown | null>;
-  backend: AgentRunBackend;
+  context: AgentRunContext<unknown | null>; backend: AgentRunBackend;
   commandObservers?: AgentRunCommandObserver[];
 };
 
-const logger = {
-  error: (...args: unknown[]) => console.error(...args),
-  warn: (...args: unknown[]) => console.warn(...args),
-};
+const logger = console;
 
 export class AgentRun {
   readonly context: AgentRunContext<unknown | null>;
@@ -70,6 +70,9 @@ export class AgentRun {
   private readonly unsubscribeFromBackendSource: () => void;
   private activeInputDispatch: Promise<void> | null = null;
   private activeInterruptReservation: AgentRunInterruptReservation | null = null;
+  private preparingTermination: Promise<PreparedAgentRunTermination> | null = null;
+  private preparedTermination: PreparedAgentRunTermination | null = null;
+  private termination: Promise<AgentOperationResult> | null = null;
 
   constructor(options: AgentRunOptions) {
     this.context = options.context;
@@ -147,6 +150,33 @@ export class AgentRun {
     return { accepted: true, turnId: appendTurnId };
   }
 
+  async reserveUserMessage(
+    message: AgentInputUserMessage,
+    options: AgentRunInputOptions = {},
+  ): Promise<AgentRunInputReservationResult> {
+    const observer = this.composeInputObserver(message, options);
+    const admission = await this.dispatchQueue.enqueue(this.runId, () => {
+      this.lifecycleState.reconcileRuntimeSnapshot(this.backend.getLifecycleSnapshot());
+      return this.inputAdmissionState.reserve(message, observer, this.backend.isActive());
+    });
+    if (!admission.accepted) return { reserved: false, ...admission };
+
+    const entrySequence = admission.entrySequence;
+    return {
+      reserved: true,
+      reservation: createAgentRunInputReservation({
+        agentRunId: this.runId,
+        entrySequence,
+        commitEntry: () => this.inputAdmissionState.commitReservation(entrySequence),
+        releaseEntry: () => this.inputAdmissionState.releaseReservation(entrySequence),
+        cancelEntry: () => this.inputAdmissionState.cancelReservation(entrySequence),
+        eligibilityChanged: () => {
+          queueMicrotask(() => { void this.drainInputAfterLifecycleChange(); });
+        },
+      }),
+    };
+  }
+
   async approveToolInvocation(
     invocationId: string,
     approved: boolean,
@@ -165,32 +195,21 @@ export class AgentRun {
     return decision.reservation.result;
   }
 
-  async terminate() {
-    await this.dispatchQueue.enqueue(this.runId, () => this.inputAdmissionState.quiesce());
-    await this.waitForActiveInputDispatch();
+  prepareTermination(): Promise<PreparedAgentRunTermination> {
+    if (this.preparedTermination) return Promise.resolve(this.preparedTermination);
+    if (this.preparingTermination) return this.preparingTermination;
+    const preparation = this.prepareTerminationOnce();
+    this.preparingTermination = preparation;
+    void preparation.finally(() => {
+      if (this.preparingTermination === preparation) this.preparingTermination = null;
+    }).catch(() => undefined);
+    return preparation;
+  }
 
-    let result: AgentOperationResult;
-    try {
-      result = await this.backend.terminate();
-    } catch (error) {
-      await this.reopenInputAfterRejectedTermination();
-      throw error;
-    }
-    if (!result.accepted) {
-      await this.reopenInputAfterRejectedTermination();
-      return result;
-    }
-
-    await this.dispatchQueue.enqueue(this.runId, async () => {
-      this.inputAdmissionState.settleAcceptedTermination();
-      this.activeInterruptReservation = null;
-      this.lifecycleState.terminate();
-      this.segmentLifecycleState.releaseRun();
-      await getDefaultAgentRunEventPipeline().releaseRun(this.runId);
-      this.dispatchCanonicalStatus();
-    });
-    this.unsubscribeFromBackendSource();
-    return result;
+  async terminate(): Promise<AgentOperationResult> {
+    if (this.termination) return this.termination;
+    const prepared = await this.prepareTermination();
+    return prepared.commit().finish();
   }
 
   private async publishSourceEvents(events: readonly AgentRunEvent[]): Promise<void> {
@@ -439,43 +458,63 @@ export class AgentRun {
     message: AgentInputUserMessage,
     turnId: string | null,
   ): void {
-    if (this.commandObservers.length === 0) return;
-    const result: AgentOperationResult = {
-      accepted: true,
-      turnId,
-      platformAgentRunId: this.getPlatformAgentRunId(),
-    };
-    const payload = {
+    dispatchUserMessageForwarded({
+      observers: this.commandObservers,
       runId: this.runId,
       runtimeKind: this.runtimeKind,
       config: this.config,
       platformAgentRunId: this.getPlatformAgentRunId(),
       message,
-      result,
-      forwardedAt: new Date(),
-    };
-    for (const observer of this.commandObservers) {
-      try {
-        void Promise.resolve(observer.onUserMessageForwarded(payload)).catch((error: unknown) => {
-          logger.warn(
-            `[AgentRun] command observer failed for run '${this.runId}': ${String(error)}`,
-          );
-        });
-      } catch (error) {
-        logger.warn(
-          `[AgentRun] command observer failed for run '${this.runId}': ${String(error)}`,
-        );
-      }
-    }
+      turnId,
+      onError: (error) => logger.warn(
+        `[AgentRun] command observer failed for run '${this.runId}': ${String(error)}`,
+      ),
+    });
   }
 
   private async waitForActiveInputDispatch(): Promise<void> {
     while (this.activeInputDispatch) await this.activeInputDispatch;
   }
 
-  private async reopenInputAfterRejectedTermination(): Promise<void> {
-    await this.dispatchQueue.enqueue(this.runId, () => this.inputAdmissionState.reopen());
+  private async prepareTerminationOnce(): Promise<PreparedAgentRunTermination> {
+    await this.dispatchQueue.enqueue(this.runId, () => this.inputAdmissionState.quiesce());
     await this.drainInputAfterLifecycleChange();
+    await this.inputAdmissionState.waitForQuiescence();
+    await this.waitForActiveInputDispatch();
+
+    const prepared = createPreparedAgentRunTermination({
+      runId: this.runId,
+      cancelPrepared: () => {
+        this.inputAdmissionState.reopen();
+        if (this.preparedTermination === prepared) this.preparedTermination = null;
+        queueMicrotask(() => { void this.drainInputAfterLifecycleChange(); });
+      },
+      finishCommitted: () => this.finishCommittedTermination(),
+    });
+    this.preparedTermination = prepared;
+    return prepared;
+  }
+
+  private finishCommittedTermination(): Promise<AgentOperationResult> {
+    if (this.termination) return this.termination;
+    const termination = this.finishCommittedTerminationOnce();
+    this.termination = termination;
+    return termination;
+  }
+
+  private async finishCommittedTerminationOnce(): Promise<AgentOperationResult> {
+    const result = await this.backend.terminate();
+    if (!result.accepted) return result;
+    await this.dispatchQueue.enqueue(this.runId, async () => {
+      this.inputAdmissionState.settleAcceptedTermination();
+      this.activeInterruptReservation = null;
+      this.lifecycleState.terminate();
+      this.segmentLifecycleState.releaseRun();
+      await getDefaultAgentRunEventPipeline().releaseRun(this.runId);
+      this.dispatchCanonicalStatus();
+    });
+    this.unsubscribeFromBackendSource();
+    return result;
   }
 
   private dispatchCanonicalStatus(): void {

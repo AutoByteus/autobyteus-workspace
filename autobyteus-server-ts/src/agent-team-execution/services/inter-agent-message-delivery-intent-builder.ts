@@ -14,12 +14,8 @@ const buildSenderParticipant = (
   context: MemberTeamContext,
 ): InterAgentMessageParticipant => Object.freeze({
   kind: "agent",
-  executionAddress: context.executionAddress,
-  agentRunId: context.agentRunId,
-  displayName: getAgentTeamAddressBasename(context.memberAddress) ?? context.agentRunId,
-  runtimeKind: context.runtimeKind,
-  platformAgentRunId: null,
-  taskId: context.taskId,
+  identity: context.identity,
+  displayName: getAgentTeamAddressBasename(context.identity.memberAddress) ?? context.identity.agentRunId,
 });
 
 export const buildInterAgentMessageDeliveryIntent = (input: {
@@ -31,8 +27,7 @@ export const buildInterAgentMessageDeliveryIntent = (input: {
 }): InterAgentMessageDeliveryIntentBuildResult => ({
   ok: true,
   intent: {
-    rootTeamRunId: input.memberTeamContext.executionAddress.rootTeamRunId,
-    callerAddressing: input.memberTeamContext.collaboration.addressing,
+    rootTeamRunId: input.memberTeamContext.identity.rootTeamRunId,
     recipientAddress: input.recipientAddress,
     sender: buildDeliveryEndpointForParticipant(buildSenderParticipant(input.memberTeamContext)),
     content: input.content,

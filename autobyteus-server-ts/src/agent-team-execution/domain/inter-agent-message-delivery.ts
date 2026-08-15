@@ -1,16 +1,10 @@
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
-import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
-import type { MemberLogicalAddressContext } from "./member-logical-address-context.js";
-import type { TeamExecutionAddress } from "./team-execution-address.js";
+import type { TeamMemberExecutionIdentity } from "./team-member-execution-identity.js";
 
 export type InterAgentMessageParticipant = Readonly<{
   kind: "agent";
-  executionAddress: TeamExecutionAddress;
-  agentRunId: string;
+  identity: TeamMemberExecutionIdentity;
   displayName: string;
-  runtimeKind: RuntimeKind;
-  platformAgentRunId?: string | null;
-  taskId?: string | null;
 }>;
 
 export type InterAgentMessageDeliveryEndpoint = Readonly<{
@@ -19,7 +13,6 @@ export type InterAgentMessageDeliveryEndpoint = Readonly<{
 
 export interface InterAgentMessageDeliveryIntent {
   rootTeamRunId: string;
-  callerAddressing: MemberLogicalAddressContext;
   sender: InterAgentMessageDeliveryEndpoint;
   recipientAddress: string;
   content: string;
@@ -29,11 +22,8 @@ export interface InterAgentMessageDeliveryIntent {
 
 export interface ResolvedInterAgentMessageDeliveryRequest extends InterAgentMessageDeliveryIntent {
   recipient: InterAgentMessageDeliveryEndpoint;
-  senderAddress: TeamExecutionAddress;
-  receiverAddress: TeamExecutionAddress;
-  resolvedTargetKind: "logical_member" | "agent_run" | "task_agent_run";
-  targetAgentRunId: string;
-  taskId?: string | null;
+  senderIdentity: TeamMemberExecutionIdentity;
+  receiverIdentity: TeamMemberExecutionIdentity;
   parentCommunicationMessageId?: string | null;
   recipientInputMessageId?: string | null;
   recipientInputDedupeKey?: string | null;

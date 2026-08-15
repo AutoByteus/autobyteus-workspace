@@ -28,10 +28,7 @@ import {
 } from '~/services/runOpen/agentRunOpenCoordinator';
 import { hydrateLiveRunContext } from '~/services/runHydration/runContextHydrationService';
 import {
-  applyLiveTeamMemberStatusSnapshot,
   hydrateLiveTeamRunContext,
-  hydrateTeamMemberActivitiesFromProjection,
-  type TeamMemberLiveSnapshot,
 } from '~/services/runHydration/teamRunContextHydrationService';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
@@ -133,16 +130,6 @@ const listActiveTeamRuns = (
 ): TeamRunHistoryItem[] =>
   flattenWorkspaceTeamRuns(workspaceGroups).filter((teamRun) => teamRun.isActive);
 
-const buildMemberStatusSnapshotsFromHistory = (
-  teamRun: TeamRunHistoryItem,
-): TeamMemberLiveSnapshot[] =>
-  teamRun.members.map((member) => ({
-    memberAddress: member.memberAddress,
-    displayName: member.displayName,
-    agentRunId: member.agentRunId,
-    currentStatus: member.status,
-  }));
-
 export const reconcileDiscoveredActiveRuns = async (
   store: RunHistoryFetchStoreLike,
 ): Promise<void> => {
@@ -206,7 +193,7 @@ export const reconcileDiscoveredActiveRuns = async (
   }
 
   for (const teamContext of teamContextsStore.allTeamRuns) {
-    const rootTeamRunId = teamContext.executions.getRootTeamRunId();
+    const rootTeamRunId = teamContext.view.getRootTeamRunId();
     if (activeTeamRunIds.has(rootTeamRunId)) {
       continue;
     }
@@ -214,8 +201,8 @@ export const reconcileDiscoveredActiveRuns = async (
     if (agentTeamRunStore.isTeamStreamReady(rootTeamRunId)) {
       agentTeamRunStore.disconnectTeamStream(rootTeamRunId);
     }
-    teamContext.executions.setRootTeamActive(false);
-    teamContext.executions.listAgentContextEntries().forEach(({ agentContext }) => {
+    teamContext.view.setRootTeamActive(false);
+    teamContext.view.listAgentContextEntries().forEach(({ agentContext }) => {
       if (agentContext.state.currentStatus !== AgentStatus.Error) {
         applyOfflineOrTerminalCleanup(agentContext);
       } else {
@@ -225,18 +212,16 @@ export const reconcileDiscoveredActiveRuns = async (
   }
 
   for (const [teamRunId, activeTeamRun] of activeTeamRunById.entries()) {
-    const memberStatuses = buildMemberStatusSnapshotsFromHistory(activeTeamRun);
     const existingTeamContext = teamContextsStore.getTeamContextById(teamRunId);
     if (existingTeamContext) {
-      existingTeamContext.executions.setRootTeamActive(true);
+      existingTeamContext.view.setRootTeamActive(true);
       const streamConnected = agentTeamRunStore.isTeamStreamReady(teamRunId);
-      applyLiveTeamMemberStatusSnapshot(existingTeamContext, {
-        memberStatuses,
-      }, {
-        preserveCurrentStatus: streamConnected,
-      });
-      existingTeamContext.executions.listAgentContextEntries().forEach(({ agentContext }) => {
+      existingTeamContext.view.listAgentContextEntries().forEach(({ agentContext }) => {
         agentContext.config.isLocked = true;
+        applyActiveRuntimePlaceholder(agentContext, {
+          preserveExistingLive: true,
+          streamConnected,
+        });
       });
       if (!streamConnected) {
         agentTeamRunStore.connectToTeamStream(teamRunId);
@@ -247,17 +232,14 @@ export const reconcileDiscoveredActiveRuns = async (
     try {
       const result = await hydrateLiveTeamRunContext({
         teamRunId,
-        memberAddress: null,
+        agentRunId: activeTeamRun.members.find(
+          (member) => member.memberAddress === activeTeamRun.coordinatorAddress,
+        )?.agentRunId ?? null,
         resolveWorkspaceMetadataByRootPath: (rootPath: string) =>
           store.resolveWorkspaceMetadataByRootPath(rootPath),
         ensureWorkspaceByRootPath: (rootPath: string) => store.ensureWorkspaceByRootPath(rootPath),
-        memberStatuses,
       });
       teamContextsStore.addTeamContext(result.hydratedContext);
-      hydrateTeamMemberActivitiesFromProjection({
-        members: result.hydratedContext.executions.listAgentContextEntries(),
-        projectionByMemberAddress: result.projectionByMemberAddress,
-      });
       agentTeamRunStore.connectToTeamStream(teamRunId);
     } catch (error) {
       console.warn(`[runHistorySync] Failed to hydrate active team run '${teamRunId}'.`, error);

@@ -1,6 +1,6 @@
 import { pathToFileURL } from "node:url";
 import {
-  APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V5,
+  APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V6,
   type ApplicationBackendDefinition,
   type ApplicationBackendExposureSummary,
   type ApplicationStorageContext,
@@ -123,9 +123,9 @@ export class ApplicationBackendDefinitionLoader {
     const namespace = await import(pathToFileURL(input.entryModulePath).href);
     const definition = resolveDefinition(namespace as Record<string, unknown>);
     validateDefinitionShape(definition);
-    if (definition.definitionContractVersion !== APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V5) {
+    if (definition.definitionContractVersion !== APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V6) {
       throw new Error(
-        `Application '${input.applicationId}' backend entry '${input.entryModulePath}' exports definitionContractVersion '${String(definition.definitionContractVersion)}', but '${APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V5}' is required. Rebuild or reinstall the application with the current AutoByteus application SDKs.`,
+        `Application '${input.applicationId}' backend entry '${input.entryModulePath}' exports definitionContractVersion '${String(definition.definitionContractVersion)}', but '${APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V6}' is required. Rebuild or reinstall the application with the current AutoByteus application SDKs.`,
       );
     }
     validateExposures(definition, input.supportedExposures);

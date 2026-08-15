@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "createdAt": "2026-08-15T16:37:21.578Z",
+  "archivedAt": null,
+  "applicationBinding": null,
+  "handoffs": [],
+  "rootTeam": {
+    "teamDefinitionId": "classroom-simulation-team",
+    "teamDefinitionName": "Classroom Simulation Team",
+    "teamRunId": "classroom_simulation_team_61ecc73703324acfa1f63394c2727d5a",
+    "coordinatorAddress": "/professor",
+    "members": [
+      {
+        "address": "/professor",
+        "agentDefinitionId": "team-local-agent:classroom-simulation-team:professor",
+        "role": null,
+        "description": null,
+        "agentRunId": "professor_d20a8eb9349648278fb734160e4573da",
+        "platformAgentRunId": null,
+        "launchConfiguration": {
+          "runtimeKind": "AUTOBYTEUS",
+          "llmModelIdentifier": "gpt-5.6-luna",
+          "llmConfig": null,
+          "autoExecuteTools": true,
+          "skillAccessMode": "NONE",
+          "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-006/live/workspaces/classroom-api-rev-006"
+        }
+      },
+      {
+        "address": "/student",
+        "agentDefinitionId": "team-local-agent:classroom-simulation-team:student",
+        "role": null,
+        "description": null,
+        "agentRunId": "student_409c9bca6665430b91c7ea5da2894c62",
+        "platformAgentRunId": null,
+        "launchConfiguration": {
+          "runtimeKind": "AUTOBYTEUS",
+          "llmModelIdentifier": "gpt-5.6-luna",
+          "llmConfig": null,
+          "autoExecuteTools": true,
+          "skillAccessMode": "NONE",
+          "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-006/live/workspaces/classroom-api-rev-006"
+        }
+      }
+    ],
+    "taskExecutions": []
+  }
+}

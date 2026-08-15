@@ -1,31 +1,32 @@
 import {
   parseTeamStreamServerMessage,
-  type TeamAgentExecutionBindingDto,
-  type TeamExecutionAddressDto,
+  type TeamMemberExecutionIdentityDto,
   type TeamStreamServerMessage,
 } from "@autobyteus/team-stream-contracts";
 import type { TeamAgentEvent, TeamTokenUsageDetails } from "../../agent-team-execution/domain/team-agent-event.js";
 import type { TeamAgentExecutionBinding } from "../../agent-team-execution/domain/team-agent-execution-binding.js";
 import type { TeamAgentStatusSnapshot } from "../../agent-team-execution/domain/team-agent-status.js";
-import type { TeamExecutionAddress } from "../../agent-team-execution/domain/team-execution-address.js";
 
-export const projectTeamExecutionAddressDto = (
-  address: TeamExecutionAddress,
-): TeamExecutionAddressDto => ({
-  root_team_run_id: address.rootTeamRunId,
-  task_team_run_ids: [...address.taskTeamRunIds],
-  member_address: address.memberAddress,
-  task_agent_run_id: address.taskAgentRunId,
+export const projectTeamMemberExecutionIdentityDto = (
+  identity: TeamAgentExecutionBinding,
+): TeamMemberExecutionIdentityDto => Object.freeze({
+  agent_run_id: identity.agentRunId,
+  member_address: identity.memberAddress,
 });
 
-export const projectTeamAgentExecutionBindingDto = (
-  binding: TeamAgentExecutionBinding,
-): TeamAgentExecutionBindingDto => binding.kind === "task_team_agent"
-  ? Object.freeze({ kind: binding.kind, execution_address: projectTeamExecutionAddressDto(binding.executionAddress), agent_run_id: binding.agentRunId })
-  : Object.freeze({ kind: binding.kind, execution_address: projectTeamExecutionAddressDto(binding.executionAddress) });
+export const projectTeamAgentStatusDto = (snapshot: TeamAgentStatusSnapshot) => ({
+  agent_run_id: snapshot.execution.agentRunId,
+  member_address: snapshot.execution.memberAddress,
+  status: snapshot.details.status,
+  trigger: snapshot.details.trigger,
+  tool_name: snapshot.details.toolName,
+  error_message: snapshot.details.errorMessage,
+  error_details: snapshot.details.errorDetails,
+});
 
-const tokenPayload = (agent_execution: TeamAgentExecutionBindingDto, details: TeamTokenUsageDetails) => ({
-  agent_execution,
+const tokenPayload = (change_sequence: number, agent_run_id: string, details: TeamTokenUsageDetails) => ({
+  change_sequence,
+  agent_run_id,
   usage_event_id: details.usageEventId,
   idempotency_key: details.idempotencyKey,
   observed_at: details.observedAt,
@@ -74,38 +75,30 @@ const tokenPayload = (agent_execution: TeamAgentExecutionBindingDto, details: Te
   quality_flags: [...details.qualityFlags],
 });
 
-const withExecution = (execution: TeamAgentExecutionBinding) =>
-  projectTeamAgentExecutionBindingDto(execution);
-
 export const projectTeamAgentStatusMessage = (
   snapshot: TeamAgentStatusSnapshot,
+  changeSequence: number,
 ): TeamStreamServerMessage => parseTeamStreamServerMessage({
   type: "AGENT_STATUS",
-  payload: {
-    agent_execution: withExecution(snapshot.execution),
-    status: snapshot.details.status,
-    trigger: snapshot.details.trigger,
-    tool_name: snapshot.details.toolName,
-    error_message: snapshot.details.errorMessage,
-    error_details: snapshot.details.errorDetails,
-  },
+  payload: { change_sequence: changeSequence, ...projectTeamAgentStatusDto(snapshot) },
 });
 
 export const projectTeamAgentEventMessage = (
   execution: TeamAgentExecutionBinding,
   event: TeamAgentEvent,
+  changeSequence: number,
 ): TeamStreamServerMessage => {
-  const agent_execution = withExecution(execution);
+  const base = { change_sequence: changeSequence, agent_run_id: execution.agentRunId };
   switch (event.eventType) {
-    case "TURN_STARTED": return parseTeamStreamServerMessage({ type: event.eventType, payload: { agent_execution, turn_id: event.details.turnId } });
-    case "TURN_COMPLETED": return parseTeamStreamServerMessage({ type: event.eventType, payload: { agent_execution, turn_id: event.details.turnId, reason: event.details.reason } });
-    case "TURN_INTERRUPTED": return parseTeamStreamServerMessage({ type: event.eventType, payload: { agent_execution, turn_id: event.details.turnId, reason: event.details.reason } });
-    case "SEGMENT_START": return parseTeamStreamServerMessage({ type: event.eventType, payload: { agent_execution, segment_id: event.details.segmentId, turn_id: event.details.turnId, segment_type: event.details.segmentType, metadata: event.details.metadata } });
-    case "SEGMENT_CONTENT": return parseTeamStreamServerMessage({ type: event.eventType, payload: { agent_execution, segment_id: event.details.segmentId, turn_id: event.details.turnId, segment_type: event.details.segmentType, delta: event.details.delta } });
-    case "SEGMENT_END": return parseTeamStreamServerMessage({ type: event.eventType, payload: { agent_execution, segment_id: event.details.segmentId, turn_id: event.details.turnId, metadata: event.details.metadata, interrupted: event.details.interrupted, reason: event.details.reason, failed: event.details.failed, error: event.details.error } });
-    case "AGENT_STATUS": return projectTeamAgentStatusMessage({ execution, details: event.details, statusHint: event.statusHint });
+    case "TURN_STARTED": return parseTeamStreamServerMessage({ type: event.eventType, payload: { ...base, turn_id: event.details.turnId } });
+    case "TURN_COMPLETED": return parseTeamStreamServerMessage({ type: event.eventType, payload: { ...base, turn_id: event.details.turnId, reason: event.details.reason } });
+    case "TURN_INTERRUPTED": return parseTeamStreamServerMessage({ type: event.eventType, payload: { ...base, turn_id: event.details.turnId, reason: event.details.reason } });
+    case "SEGMENT_START": return parseTeamStreamServerMessage({ type: event.eventType, payload: { ...base, segment_id: event.details.segmentId, turn_id: event.details.turnId, segment_type: event.details.segmentType, metadata: event.details.metadata } });
+    case "SEGMENT_CONTENT": return parseTeamStreamServerMessage({ type: event.eventType, payload: { ...base, segment_id: event.details.segmentId, turn_id: event.details.turnId, segment_type: event.details.segmentType, delta: event.details.delta } });
+    case "SEGMENT_END": return parseTeamStreamServerMessage({ type: event.eventType, payload: { ...base, segment_id: event.details.segmentId, turn_id: event.details.turnId, metadata: event.details.metadata, interrupted: event.details.interrupted, reason: event.details.reason, failed: event.details.failed, error: event.details.error } });
+    case "AGENT_STATUS": return projectTeamAgentStatusMessage({ execution, details: event.details, statusHint: event.statusHint }, changeSequence);
     case "COMPACTION_STATUS": return parseTeamStreamServerMessage({ type: event.eventType, payload: {
-      agent_execution, phase: event.details.phase, kind: event.details.kind, status: event.details.status, turn_id: event.details.turnId,
+      ...base, phase: event.details.phase, kind: event.details.kind, status: event.details.status, turn_id: event.details.turnId,
       compaction_operation_id: event.details.compactionOperationId, requested_turn_id: event.details.requestedTurnId, execution_turn_id: event.details.executionTurnId,
       selected_block_count: event.details.selectedBlockCount, compacted_block_count: event.details.compactedBlockCount, raw_trace_count: event.details.rawTraceCount, semantic_fact_count: event.details.semanticFactCount,
       compaction_agent_definition_id: event.details.compactionAgentDefinitionId, compaction_agent_name: event.details.compactionAgentName, compaction_runtime_kind: event.details.compactionRuntimeKind,
@@ -114,20 +107,20 @@ export const projectTeamAgentEventMessage = (
       provider_event_id: event.details.providerEventId, provider_session_id: event.details.providerSessionId, provider_thread_id: event.details.providerThreadId,
       provider_timestamp: event.details.providerTimestamp, trigger: event.details.trigger, pre_tokens: event.details.preTokens, rotation_eligible: event.details.rotationEligible,
     } });
-    case "TOKEN_USAGE_UPDATED": return parseTeamStreamServerMessage({ type: event.eventType, payload: tokenPayload(agent_execution, event.details) });
-    case "ASSISTANT_COMPLETE": return parseTeamStreamServerMessage({ type: event.eventType, payload: { agent_execution, content: event.details.content, reasoning: event.details.reasoning, usage: event.details.usage, image_urls: [...event.details.imageUrls], audio_urls: [...event.details.audioUrls], video_urls: [...event.details.videoUrls] } });
-    case "TOOL_APPROVAL_REQUESTED": return parseTeamStreamServerMessage({ type: event.eventType, payload: { agent_execution, invocation_id: event.details.invocationId, tool_name: event.details.toolName, turn_id: event.details.turnId, arguments: event.details.arguments } });
-    case "TOOL_APPROVED": return parseTeamStreamServerMessage({ type: event.eventType, payload: { agent_execution, invocation_id: event.details.invocationId, tool_name: event.details.toolName, turn_id: event.details.turnId, reason: event.details.reason } });
-    case "TOOL_DENIED": return parseTeamStreamServerMessage({ type: event.eventType, payload: { agent_execution, invocation_id: event.details.invocationId, tool_name: event.details.toolName, turn_id: event.details.turnId, arguments: event.details.arguments, reason: event.details.reason, error: event.details.error } });
-    case "TOOL_EXECUTION_STARTED": return parseTeamStreamServerMessage({ type: event.eventType, payload: { agent_execution, invocation_id: event.details.invocationId, tool_name: event.details.toolName, turn_id: event.details.turnId, arguments: event.details.arguments } });
-    case "TOOL_EXECUTION_SUCCEEDED": return parseTeamStreamServerMessage({ type: event.eventType, payload: { agent_execution, invocation_id: event.details.invocationId, tool_name: event.details.toolName, turn_id: event.details.turnId, arguments: event.details.arguments, result: event.details.result } });
-    case "TOOL_EXECUTION_FAILED": return parseTeamStreamServerMessage({ type: event.eventType, payload: { agent_execution, invocation_id: event.details.invocationId, tool_name: event.details.toolName, turn_id: event.details.turnId, arguments: event.details.arguments, error: event.details.error } });
-    case "TOOL_EXECUTION_INTERRUPTED": return parseTeamStreamServerMessage({ type: event.eventType, payload: { agent_execution, invocation_id: event.details.invocationId, tool_name: event.details.toolName, turn_id: event.details.turnId, arguments: event.details.arguments, reason: event.details.reason } });
-    case "TOOL_LOG": return parseTeamStreamServerMessage({ type: event.eventType, payload: { agent_execution, log_entry: event.details.logEntry, tool_invocation_id: event.details.toolInvocationId, tool_name: event.details.toolName, turn_id: event.details.turnId } });
-    case "TODO_LIST_UPDATE": return parseTeamStreamServerMessage({ type: event.eventType, payload: { agent_execution, todos: event.details.todos.map((todo) => ({ todo_id: todo.todoId, description: todo.description, status: todo.status })) } });
-    case "SYSTEM_TASK_NOTIFICATION": return parseTeamStreamServerMessage({ type: event.eventType, payload: { agent_execution, sender: event.details.sender.kind === "system" ? { kind: "system" } : { kind: "execution", execution_address: projectTeamExecutionAddressDto(event.details.sender.executionAddress) }, content: event.details.content } });
-    case "ARTIFACT_PERSISTED": return parseTeamStreamServerMessage({ type: event.eventType, payload: { agent_execution, artifact_id: event.details.artifactId, path: event.details.path, artifact_type: event.details.artifactType, status: event.details.status, description: event.details.description, revision_id: event.details.revisionId, created_at: event.details.createdAt, updated_at: event.details.updatedAt } });
-    case "FILE_CHANGE": return parseTeamStreamServerMessage({ type: event.eventType, payload: { agent_execution, file_change_id: event.details.fileChangeId, path: event.details.path, file_type: event.details.fileType, status: event.details.status, source_tool: event.details.sourceTool, source_invocation_id: event.details.sourceInvocationId, content: event.details.content, created_at: event.details.createdAt, updated_at: event.details.updatedAt } });
-    case "ERROR": return parseTeamStreamServerMessage({ type: "ERROR", payload: { code: event.details.code, message: event.details.message, agent_execution, error_scope: event.details.errorScope, error_effect: event.details.errorEffect, turn_id: event.details.turnId } });
+    case "TOKEN_USAGE_UPDATED": return parseTeamStreamServerMessage({ type: event.eventType, payload: tokenPayload(changeSequence, execution.agentRunId, event.details) });
+    case "ASSISTANT_COMPLETE": return parseTeamStreamServerMessage({ type: event.eventType, payload: { ...base, content: event.details.content, reasoning: event.details.reasoning, usage: event.details.usage, image_urls: [...event.details.imageUrls], audio_urls: [...event.details.audioUrls], video_urls: [...event.details.videoUrls] } });
+    case "TOOL_APPROVAL_REQUESTED": return parseTeamStreamServerMessage({ type: event.eventType, payload: { ...base, invocation_id: event.details.invocationId, tool_name: event.details.toolName, turn_id: event.details.turnId, arguments: event.details.arguments } });
+    case "TOOL_APPROVED": return parseTeamStreamServerMessage({ type: event.eventType, payload: { ...base, invocation_id: event.details.invocationId, tool_name: event.details.toolName, turn_id: event.details.turnId, reason: event.details.reason } });
+    case "TOOL_DENIED": return parseTeamStreamServerMessage({ type: event.eventType, payload: { ...base, invocation_id: event.details.invocationId, tool_name: event.details.toolName, turn_id: event.details.turnId, arguments: event.details.arguments, reason: event.details.reason, error: event.details.error } });
+    case "TOOL_EXECUTION_STARTED": return parseTeamStreamServerMessage({ type: event.eventType, payload: { ...base, invocation_id: event.details.invocationId, tool_name: event.details.toolName, turn_id: event.details.turnId, arguments: event.details.arguments } });
+    case "TOOL_EXECUTION_SUCCEEDED": return parseTeamStreamServerMessage({ type: event.eventType, payload: { ...base, invocation_id: event.details.invocationId, tool_name: event.details.toolName, turn_id: event.details.turnId, arguments: event.details.arguments, result: event.details.result } });
+    case "TOOL_EXECUTION_FAILED": return parseTeamStreamServerMessage({ type: event.eventType, payload: { ...base, invocation_id: event.details.invocationId, tool_name: event.details.toolName, turn_id: event.details.turnId, arguments: event.details.arguments, error: event.details.error } });
+    case "TOOL_EXECUTION_INTERRUPTED": return parseTeamStreamServerMessage({ type: event.eventType, payload: { ...base, invocation_id: event.details.invocationId, tool_name: event.details.toolName, turn_id: event.details.turnId, arguments: event.details.arguments, reason: event.details.reason } });
+    case "TOOL_LOG": return parseTeamStreamServerMessage({ type: event.eventType, payload: { ...base, log_entry: event.details.logEntry, tool_invocation_id: event.details.toolInvocationId, tool_name: event.details.toolName, turn_id: event.details.turnId } });
+    case "TODO_LIST_UPDATE": return parseTeamStreamServerMessage({ type: event.eventType, payload: { ...base, todos: event.details.todos.map((todo) => ({ todo_id: todo.todoId, description: todo.description, status: todo.status })) } });
+    case "SYSTEM_TASK_NOTIFICATION": return parseTeamStreamServerMessage({ type: event.eventType, payload: { ...base, sender: event.details.sender.kind === "system" ? { kind: "system" } : { kind: "execution", identity: projectTeamMemberExecutionIdentityDto(event.details.sender.identity) }, content: event.details.content } });
+    case "ARTIFACT_PERSISTED": return parseTeamStreamServerMessage({ type: event.eventType, payload: { ...base, artifact_id: event.details.artifactId, path: event.details.path, artifact_type: event.details.artifactType, status: event.details.status, description: event.details.description, revision_id: event.details.revisionId, created_at: event.details.createdAt, updated_at: event.details.updatedAt } });
+    case "FILE_CHANGE": return parseTeamStreamServerMessage({ type: event.eventType, payload: { ...base, file_change_id: event.details.fileChangeId, path: event.details.path, file_type: event.details.fileType, status: event.details.status, source_tool: event.details.sourceTool, source_invocation_id: event.details.sourceInvocationId, content: event.details.content, created_at: event.details.createdAt, updated_at: event.details.updatedAt } });
+    case "ERROR": return parseTeamStreamServerMessage({ type: "ERROR", payload: { code: event.details.code, message: event.details.message, change_sequence: changeSequence, agent_run_id: execution.agentRunId, error_scope: event.details.errorScope, error_effect: event.details.errorEffect, turn_id: event.details.turnId } });
   }
 };

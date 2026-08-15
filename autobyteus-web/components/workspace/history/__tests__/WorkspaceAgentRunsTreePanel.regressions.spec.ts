@@ -21,12 +21,6 @@ const {
   addToastMock,
 } = vi.hoisted(() => {
   const exactAddress = (value: string): string => value.startsWith('/') ? value : `/${value}`;
-  const executionAddress = (teamRunId: string, memberAddress: string) => ({
-    rootTeamRunId: teamRunId,
-    taskTeamRunIds: [],
-    memberAddress,
-    taskAgentRunId: null,
-  });
   const buildCurrentMember = (member: any): any => {
     const memberAddress = exactAddress(member.memberAddress);
     const kind = member.kind ?? 'agent';
@@ -49,10 +43,12 @@ const {
     const members = (team.members ?? []).map(buildCurrentMember);
     const flattenRows = (rows: any[], depth = 0): any[] => rows.flatMap((row) => [{
       kind: 'stable_member',
+      rowKey: row.kind === 'agent' ? `agent:${row.agentRunId}` : `team:${row.teamRunIdForNode}`,
       teamRunId: team.teamRunId,
       memberKind: row.kind,
       memberAddress: row.memberAddress,
-      executionAddress: executionAddress(team.teamRunId, row.memberAddress),
+      agentRunId: row.agentRunId ?? null,
+      teamRunIdForNode: row.teamRunIdForNode ?? null,
       displayName: row.displayName,
       depth,
       hasChildren: row.children.length > 0,
@@ -60,10 +56,14 @@ const {
     }, ...flattenRows(row.children, depth + 1)]);
     return {
       ...team,
-      focusedExecutionAddress: team.focusedExecutionAddress ?? executionAddress(
-        team.teamRunId,
-        exactAddress(team.focusedAddress ?? team.coordinatorAddress ?? members[0]?.memberAddress ?? '/'),
-      ),
+      focusedAgentRunId: team.focusedAgentRunId
+        ?? members.flatMap((member: any): any[] => [member, ...(member.children ?? [])])
+          .find((member: any) => member.memberAddress === exactAddress(
+            team.focusedAddress ?? team.coordinatorAddress ?? members[0]?.memberAddress ?? '/',
+          ))?.agentRunId
+        ?? members.flatMap((member: any): any[] => [member, ...(member.children ?? [])])
+          .find((member: any) => member.agentRunId)?.agentRunId
+        ?? '',
       rootTeam: team.rootTeam ?? {
         teamRunId: team.teamRunId,
         kind: 'agent_team',
@@ -199,7 +199,7 @@ const {
         }
         return null;
       }),
-      getTeamMemberNavigationAncestorAddresses: vi.fn(() => []),
+      getTeamMemberNavigationAncestorRowKeys: vi.fn(() => []),
       formatRelativeTime: vi.fn((iso: string) => (iso.includes('01:00') ? 'now' : '4h')),
       selectTreeRun: vi.fn(),
       createDraftRun: vi.fn().mockResolvedValue('temp-2'),

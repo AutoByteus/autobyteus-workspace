@@ -13,7 +13,6 @@ import {
   MixedTeamRunContext,
 } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-context.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
-import { createTeamExecutionAddress } from "../../../src/agent-team-execution/domain/team-execution-address.js";
 import type { TeamRunAgentNode } from "../../../src/agent-team-execution/domain/team-run-config.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
 import {
@@ -105,16 +104,13 @@ const buildHandle = () => {
     platformAgentRunId: null,
   });
   const teamContext = new TeamRunContext({
+    rootTeamRunId: "team-run-1",
     teamRunId: "team-run-1",
-    teamAddress: "/",
     teamBackendKind: TeamBackendKind.MIXED,
-    config: teamConfig,
+    teamNode: teamConfig.rootTeam,
+    handoffs: teamConfig.handoffs,
     runtimeContext: new MixedTeamRunContext({
       memberContexts: [memberContext],
-      teamExecutionAddress: createTeamExecutionAddress({
-        rootTeamRunId: "team-run-1",
-        memberAddress: config.address,
-      }),
     }),
   });
   const publishedEvents: TeamRunEvent[] = [];
@@ -168,11 +164,9 @@ describe("MixedAgentMemberHandle task-delegation notification projection", () =>
     expect(agentNotificationEvents(publishedEvents)).toEqual([
       expect.objectContaining({
         execution: expect.objectContaining({
-          kind: "persistent_agent",
-          executionAddress: expect.objectContaining({
-            rootTeamRunId: "team-run-1",
-            memberAddress: "/worker",
-          }),
+          rootTeamRunId: "team-run-1",
+          memberAddress: "/worker",
+          agentRunId: "worker-run-1",
         }),
         payload: expect.objectContaining({
           eventType: AgentRunEventType.SYSTEM_TASK_NOTIFICATION,

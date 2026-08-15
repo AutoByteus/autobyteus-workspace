@@ -6,9 +6,8 @@ export * from "./application-agent-events.js";
 export * from "./application-agent-communication.js";
 export * from "./application-agent-target-url.js";
 export * from "./application-websockets.js";
-export * from "./team-execution-address.js";
 export const APPLICATION_BACKEND_BUNDLE_CONTRACT_VERSION_V1 = "1";
-export const APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V5 = "5";
-export const APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V5 = "5";
+export const APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V6 = "6";
+export const APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V6 = "6";
 export const APPLICATION_EVENT_DELIVERY_SEMANTICS = "AT_LEAST_ONCE";
 //# sourceMappingURL=index.js.map

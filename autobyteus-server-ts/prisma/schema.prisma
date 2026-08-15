@@ -15,10 +15,10 @@ model TokenUsageLedgerEvent {
   observedAt                           DateTime  @map("observed_at")
   persistedAt                          DateTime  @default(now()) @map("persisted_at")
   runId                                String    @map("run_id")
+  rootTeamRunId                        String?   @map("root_team_run_id")
   turnId                               String?   @map("turn_id")
   llmCallId                            String?   @map("llm_call_id")
   callSequence                         Int?      @map("call_sequence")
-  executionAddressJson                 String?   @map("execution_address_json")
   agentDefinitionId                    String?   @map("agent_definition_id")
   workspaceId                          String?   @map("workspace_id")
   taskId                               String?   @map("task_id")
@@ -86,6 +86,7 @@ model TokenUsageLedgerEvent {
   contextWindowUsagePercent            Float?    @map("context_window_usage_percent")
 
   @@index([runId, observedAt])
+  @@index([rootTeamRunId, observedAt])
   @@index([snapshotSeriesKey, runId, observedAt])
   @@map("token_usage_ledger_events")
 }

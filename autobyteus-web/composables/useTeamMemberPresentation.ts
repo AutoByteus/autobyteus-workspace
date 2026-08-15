@@ -73,14 +73,10 @@ export function useTeamMemberPresentation() {
     }
 
     const mapping: Record<string, string> = {};
-    team.executions.listAgentContextEntries().forEach(({ executionAddress, agentContext: memberContext }) => {
-      if (executionAddress.rootTeamRunId !== team.executions.getRootTeamRunId()) return;
-      const executionNode = team.topology.getNode(executionAddress.memberAddress);
-      if (!executionNode || executionNode.kind !== 'agent') return;
-      const agentRunId = memberContext.state.runId?.trim();
-      if (!agentRunId || (executionAddress.taskAgentRunId !== null && executionAddress.taskAgentRunId !== agentRunId) || mapping[agentRunId]) return;
-      mapping[agentRunId] = executionNode.displayName
-        || getMemberDisplayName(executionAddress.memberAddress, memberContext);
+    team.view.listAgentContextEntries().forEach(({ agentRunId, memberAddress, agentContext }) => {
+      const exactAgentRunId = agentRunId.trim();
+      if (!exactAgentRunId || exactAgentRunId !== agentContext.state.runId?.trim() || mapping[exactAgentRunId]) return;
+      mapping[exactAgentRunId] = getMemberDisplayName(memberAddress, agentContext);
     });
 
     return mapping;

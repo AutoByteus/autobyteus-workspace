@@ -14,6 +14,7 @@ export type CodexRawResponseEventConverterContext = {
   ) => AgentRunEvent;
   resolveItemType: (payload: JsonObject) => string | null;
   resolveInvocationId: (payload: JsonObject) => string | null;
+  resolveToolName: (payload: JsonObject) => string | null;
   resolveLogEntry: (payload: JsonObject) => string;
   closeReasoningBlocksForBoundary: (
     codexEventName: string,
@@ -49,9 +50,10 @@ export const convertCodexRawResponseEvent = (
   if (itemType !== "functioncalloutput") {
     return [];
   }
-  const invocationId = context.resolveInvocationId(payload);
+  const invocationId = context.resolveInvocationId(payload)?.trim() ?? "";
+  const toolName = context.resolveToolName(payload)?.trim() ?? "";
   const logEntry = context.resolveLogEntry(payload);
-  if (!logEntry) {
+  if (!invocationId || !toolName || !logEntry.trim()) {
     return [];
   }
   const reasoningEnds = context.classifyToolLifecycleUpdate(payload) === "result_first_creation"
@@ -62,7 +64,8 @@ export const convertCodexRawResponseEvent = (
     ...reasoningEnds,
     context.createEvent(codexEventName, AgentRunEventType.TOOL_LOG, {
       ...serializePayload(payload),
-      ...(invocationId ? { tool_invocation_id: invocationId } : {}),
+      tool_invocation_id: invocationId,
+      tool_name: toolName,
       log_entry: logEntry,
     }),
   ];

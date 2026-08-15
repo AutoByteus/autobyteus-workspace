@@ -24,8 +24,8 @@ New external custom applications should start with `@autobyteus/application-devk
 
 - `APPLICATION_MANIFEST_VERSION_V4`
 - `APPLICATION_BACKEND_BUNDLE_CONTRACT_VERSION_V1`
-- `APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V5`
-- `APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V5`
+- `APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V6`
+- `APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V6`
 - `APPLICATION_EVENT_DELIVERY_SEMANTICS` (`AT_LEAST_ONCE`)
 
 ## Main shared contracts
@@ -35,7 +35,7 @@ New external custom applications should start with `@autobyteus/application-devk
 - `ApplicationManifestV4`
   - `application.json`
   - requires `manifestVersion: "4"`
-  - requires `ui.frontendSdkContractVersion: "5"`
+  - requires `ui.frontendSdkContractVersion: "6"`
   - requires `backend.bundleManifest`
   - may declare app-consumable `executionResourceSlots[]` for host-managed saved setup
   - does **not** declare a singular launch-time `runtimeTarget`

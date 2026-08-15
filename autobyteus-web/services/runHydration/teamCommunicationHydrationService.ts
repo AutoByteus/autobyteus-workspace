@@ -1,15 +1,7 @@
-import type { GetTeamCommunicationMessagesQuery } from '~/generated/graphql';
+import type { TeamCommunicationMessageDto } from '@autobyteus/team-stream-contracts';
 import { GetTeamCommunicationMessages } from '~/graphql/queries/runHistoryQueries';
-import { useTeamCommunicationStore } from '~/stores/teamCommunicationStore';
-import type { TeamCommunicationMessage } from '~/stores/teamCommunicationTypes';
+import type { GetTeamCommunicationMessagesQuery } from '~/generated/graphql';
 import { projectTeamCommunicationMessageDtos } from './teamCommunicationGraphqlDtoProjection';
-
-export const hydrateTeamCommunicationMessages = (
-  teamRunId: string,
-  messages: TeamCommunicationMessage[],
-): void => {
-  useTeamCommunicationStore().replaceProjection(teamRunId, messages);
-};
 
 interface TeamCommunicationHydrationClient {
   query: <TData>(options: {
@@ -19,30 +11,15 @@ interface TeamCommunicationHydrationClient {
   }) => Promise<{ data?: TData; errors?: Array<{ message: string }> }>;
 }
 
-export const fetchAndHydrateTeamCommunicationForTeam = async (params: {
+export const fetchTeamCommunicationForTeam = async (params: {
   client: TeamCommunicationHydrationClient;
   teamRunId: string;
-}): Promise<void> => {
-  try {
-    const response = await params.client.query<GetTeamCommunicationMessagesQuery>({
-      query: GetTeamCommunicationMessages,
-      variables: {
-        teamRunId: params.teamRunId,
-      },
-      fetchPolicy: 'network-only',
-    });
-    if (response.errors && response.errors.length > 0) {
-      throw new Error(response.errors.map((error: { message: string }) => error.message).join(', '));
-    }
-    const messages = projectTeamCommunicationMessageDtos(
-      response.data?.getTeamCommunicationMessages ?? [],
-    );
-    hydrateTeamCommunicationMessages(params.teamRunId, messages);
-  } catch (error) {
-    console.warn(
-      `[runHistoryStore] Failed to fetch team communication messages for team '${params.teamRunId}'`,
-      error,
-    );
-    hydrateTeamCommunicationMessages(params.teamRunId, []);
-  }
+}): Promise<readonly TeamCommunicationMessageDto[]> => {
+  const response = await params.client.query<GetTeamCommunicationMessagesQuery>({
+    query: GetTeamCommunicationMessages,
+    variables: { teamRunId: params.teamRunId },
+    fetchPolicy: 'network-only',
+  });
+  if (response.errors?.length) throw new Error(response.errors.map((error) => error.message).join(', '));
+  return Object.freeze(projectTeamCommunicationMessageDtos(response.data?.getTeamCommunicationMessages));
 };

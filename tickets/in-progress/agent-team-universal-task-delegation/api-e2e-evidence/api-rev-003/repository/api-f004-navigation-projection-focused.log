@@ -1,0 +1,59 @@
+
+> autobyteus@1.4.51 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run stores/__tests__/runHistoryNavigationProjection.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web
+
+stderr | stores/__tests__/runHistoryNavigationProjection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/runHistoryNavigationProjection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ stores/__tests__/runHistoryNavigationProjection.spec.ts (6 tests | 1 failed) 23ms
+   × runHistoryNavigationProjection current exact execution identity > publishes stable and transient rows, exact focus/indexes, and reconciles equal branches 15ms
+     → expected [ …(3) ] to deeply equal [ …(2) ]
+   ✓ runHistoryNavigationProjection current exact execution identity > reuses an unrelated workspace Team bucket when one Team topology changes 3ms
+   ✓ runHistoryNavigationProjection current exact execution identity > patches only the indexed standalone branch and skips activity in the same minute bucket 1ms
+   ✓ runHistoryNavigationProjection current exact execution identity > applies tight task-row and exact-focus patches while equal/detail-free changes do no work 2ms
+   ✓ runHistoryNavigationProjection current exact execution identity > applies combined status, summary, and activity through one exact Team branch patch 1ms
+   ✓ runHistoryNavigationProjection current exact execution identity > patches the root Team lifecycle and no-ops an equal snapshot 0ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  stores/__tests__/runHistoryNavigationProjection.spec.ts > runHistoryNavigationProjection current exact execution identity > publishes stable and transient rows, exact focus/indexes, and reconciles equal branches
+AssertionError: expected [ …(3) ] to deeply equal [ …(2) ]
+
+- Expected
++ Received
+
+  [
++   "transient_execution:team:team-a",
+    "stable_member:agent:team-a-worker-run",
+    "transient_execution:agent:team-a-task-run",
+  ]
+
+ ❯ stores/__tests__/runHistoryNavigationProjection.spec.ts:100:74
+     98| 
+     99|     expect(team.focusedAgentRunId).toBe(taskAgentRunId('team-a'));
+    100|     expect(team.executionRows.map((row) => `${row.kind}:${row.rowKey}`…
+       |                                                                          ^
+    101|       `stable_member:agent:${stableAgentRunId('team-a')}`,
+    102|       `transient_execution:${taskRowKey('team-a')}`,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 5 passed (6)
+   Start at  14:37:38
+   Duration  4.15s (transform 2.36s, setup 3.65s, collect 39ms, tests 23ms, environment 124ms, prepare 131ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

@@ -55,14 +55,7 @@ const flattenApprovalTarget = (
   target: ToolApprovalTarget | null | undefined,
 ): ToolCardPresentationPrimitive[] => {
   if (!target) return [];
-  const address = target.executionAddress;
-  return [
-    'rootTeamRunId', address.rootTeamRunId,
-    'memberAddress', address.memberAddress,
-    'taskAgentRunId', address.taskAgentRunId,
-    'taskTeamRunIds', address.taskTeamRunIds.length,
-    ...address.taskTeamRunIds,
-  ];
+  return ['agentRunId', target.agentRunId];
 };
 
 export const buildEventMonitorPageToolCardPresentation = (

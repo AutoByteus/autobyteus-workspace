@@ -1,6 +1,5 @@
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
-import type { ApplicationExecutionContext } from "../../application-orchestration/domain/models.js";
 import type { TeamBackendKind } from "./team-backend-kind.js";
 import {
   appendAgentTeamAddress,
@@ -28,7 +27,6 @@ export type TeamRunAgentNode = Readonly<{
   autoExecuteTools: boolean;
   skillAccessMode: SkillAccessMode;
   workspaceRootPath: string | null;
-  applicationExecutionContext: ApplicationExecutionContext | null;
 }>;
 
 export type TeamRunAgentTeamNode = Readonly<{
@@ -53,7 +51,11 @@ export type TeamAgentLaunchSettings = Readonly<{
   workspaceRootPath: string | null;
   llmConfig: Readonly<Record<string, unknown>> | null;
   runtimeKind: RuntimeKind;
-  applicationExecutionContext: ApplicationExecutionContext | null;
+}>;
+
+export type TeamRunApplicationBinding = Readonly<{
+  applicationId: string;
+  bindingId: string;
 }>;
 
 const required = (value: string, fieldName: string): string => {
@@ -95,9 +97,6 @@ export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
       autoExecuteTools: Boolean(node.autoExecuteTools),
       skillAccessMode: node.skillAccessMode,
       workspaceRootPath: optional(node.workspaceRootPath),
-      applicationExecutionContext: node.applicationExecutionContext
-        ? freezeObjectGraph(structuredClone(node.applicationExecutionContext))
-        : null,
     });
   }
   const children = Object.freeze(node.children.map(cloneTeamRunNode));
@@ -158,7 +157,6 @@ export const projectAgentLaunchSettings = (
   workspaceRootPath: node.workspaceRootPath,
   llmConfig: node.llmConfig,
   runtimeKind: node.runtimeKind,
-  applicationExecutionContext: node.applicationExecutionContext,
 }));
 
 /** Immutable current-schema runtime aggregate. */
@@ -166,16 +164,24 @@ export class TeamRunConfig {
   readonly teamBackendKind: TeamBackendKind;
   readonly rootTeam: TeamRunAgentTeamNode;
   readonly handoffs: readonly CollaborationHandoff[];
+  readonly applicationBinding: TeamRunApplicationBinding | null;
 
   constructor(input: {
     teamBackendKind: TeamBackendKind;
     rootTeam: TeamRunAgentTeamNode;
     handoffs?: readonly CollaborationHandoff[] | null;
+    applicationBinding?: TeamRunApplicationBinding | null;
   }) {
     this.teamBackendKind = input.teamBackendKind;
     this.rootTeam = cloneTeamRunNode(input.rootTeam) as TeamRunAgentTeamNode;
     if (this.rootTeam.address !== "/") throw new Error("Root AgentTeam address must be '/'.");
     this.handoffs = Object.freeze(cloneCollaborationHandoffs(input.handoffs ?? []));
+    this.applicationBinding = input.applicationBinding
+      ? Object.freeze({
+          applicationId: required(input.applicationBinding.applicationId, "applicationBinding.applicationId"),
+          bindingId: required(input.applicationBinding.bindingId, "applicationBinding.bindingId"),
+        })
+      : null;
     Object.freeze(this);
   }
 }

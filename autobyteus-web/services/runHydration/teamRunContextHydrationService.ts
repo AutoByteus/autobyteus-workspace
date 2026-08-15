@@ -1,363 +1,217 @@
+import {
+  teamRunExecutionTreeDtoSchema,
+  type TeamRunExecutionTreeDto,
+} from '@autobyteus/team-stream-contracts';
 import { getApolloClient } from '~/utils/apolloClient';
 import { GetTeamMemberRunProjection, GetTeamRunResumeConfig } from '~/graphql/queries/runHistoryQueries';
+import type { AgentContext } from '~/types/agent/AgentContext';
+import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
+import type { AgentTeamAddress } from '~/types/agent/AgentTeamAddress';
+import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
 import type {
-  GetTeamRunResumeConfigQueryData,
   TeamMemberRunProjectionPayload,
-  TeamRunMetadataAgentMember,
-  TeamRunMetadataPayload,
   TeamRunResumeConfigPayload,
 } from '~/stores/runHistoryTypes';
-import { flattenTeamRunAgentMetadata, parseTeamRunMetadata, toTeamMemberKey } from '~/stores/runHistoryMetadata';
+import { createWorkspaceMetadata } from '~/utils/workspaceMetadata';
+import { buildConversationFromProjection } from './runProjectionConversation';
+import { hydrateActivitiesFromProjection } from './runProjectionActivityHydration';
+import { primeRecentEventMonitorBaseline, resetRecentEventMonitorBaseline } from '~/services/eventMonitor/recentEventMonitorMutationCoordinator';
+import { fetchTaskDelegationRecordsForTeam } from './taskDelegationHydrationService';
+import { fetchTeamCommunicationForTeam } from './teamCommunicationHydrationService';
+import { createTeamExecutionViewState } from '~/services/teamExecution/teamExecutionViewState';
 import {
-  applyProjectionToTeamMemberContext,
-  buildHistoricalTeamMemberContextShells,
-  buildLiveTeamMemberContexts,
-  fetchTeamMemberProjection,
-  fetchTeamMemberProjections,
-} from '~/stores/runHistoryTeamMemberProjectionHydrator';
-import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
-import { reconstructTeamRunConfigFromMetadata } from '~/utils/teamRunConfigUtils';
-import { fetchAndHydrateTeamCommunicationForTeam } from './teamCommunicationHydrationService';
+  createTeamAgentContext,
+  createTeamConfigurationView,
+} from '~/services/teamExecution/teamExecutionContextFactory';
 import {
-  fetchTaskDelegationRecordsForTeam,
-  hydrateTaskDelegationRecords,
-} from './taskDelegationHydrationService';
-import type { TaskDelegationRecord } from '~/stores/taskDelegationTypes';
-import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
-import {
-  applyLiveTeamMemberStatusSnapshot,
-  hydrateTeamMemberActivitiesFromProjection,
-} from './teamRunMemberStatusHydration';
-import type { TeamMemberLiveSnapshot } from './teamRunMemberStatusHydration';
-import { createTeamExecutionAddress, serializeTeamExecutionAddress, type TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
-import { mapCompleteTeamTaskProjectionSnapshot } from '~/services/teamExecution/teamTaskProjectionMapper';
-import { buildTeamRunFrontendProjection } from '~/services/teamExecution/teamRunFrontendProjectionBuilder';
-import { primeRecentEventMonitorBaseline } from '~/services/eventMonitor/recentEventMonitorMutationCoordinator';
-import type { TeamAgentContextEntry } from '~/services/teamExecution/teamExecutionModels';
-
-export { applyLiveTeamMemberStatusSnapshot, hydrateTeamMemberActivitiesFromProjection } from './teamRunMemberStatusHydration';
-export type { TeamMemberStatusSnapshotSet, TeamMemberLiveSnapshot } from './teamRunMemberStatusHydration';
-
-type TeamMemberProjectionLoadState = 'unloaded' | 'loading' | 'loaded' | 'error';
-interface HistoricalTeamHydrationState {
-  createdAt: string;
-  updatedAt: string;
-  memberMetadataByAddress: Record<string, TeamRunMetadataAgentMember>;
-  memberProjectionLoadStateByAddress: Record<string, TeamMemberProjectionLoadState>;
-  memberWorkspaceMetadatasByAddress: Record<string, WorkspaceMetadata>;
-}
+  collectExecutionAgents,
+  findConfiguredAgentByAddress,
+} from '~/services/teamExecution/teamExecutionTreeSelectors';
 
 export interface LoadTeamRunContextHydrationInput {
   teamRunId: string;
-  memberAddress?: string | null;
+  agentRunId?: string | null;
+  memberAddress?: AgentTeamAddress | null;
   resolveWorkspaceMetadataByRootPath: (rootPath: string) => Promise<WorkspaceMetadata | null>;
   ensureWorkspaceByRootPath?: (rootPath: string) => Promise<string | null>;
 }
 
 export interface TeamRunContextHydrationPayload {
   teamRunId: string;
-  focusedExecutionAddress: TeamExecutionAddress;
+  focusedAgentRunId: string;
   resumeConfig: TeamRunResumeConfigPayload;
   hydratedContext: AgentTeamContext;
-  projectionByMemberAddress: Map<string, TeamMemberRunProjectionPayload | null>;
+  projectionByAgentRunId: Map<string, TeamMemberRunProjectionPayload | null>;
 }
 
-interface LoadedTeamRunContextHydrationPayload extends Omit<TeamRunContextHydrationPayload, 'hydratedContext'> {
-  persistentAgentSeeds: readonly TeamAgentContextEntry[];
-  primaryWorkspaceMetadata: WorkspaceMetadata | null;
-  metadata: TeamRunMetadataPayload;
-  historicalHydration: HistoricalTeamHydrationState | null;
-  taskDelegationRecords: readonly TaskDelegationRecord[];
+interface ResumeGraphqlData {
+  getTeamRunResumeConfig: {
+    teamRunId: string;
+    isActive: boolean;
+    executionTree: unknown;
+  } | null;
 }
 
-const historicalMemberHydrationRequests = new Map<string, Promise<void>>();
-const historicalHydrationByRootTeamRunId = new Map<string, HistoricalTeamHydrationState>();
+interface ProjectionGraphqlData {
+  getTeamMemberRunProjection: TeamMemberRunProjectionPayload | null;
+}
 
-export const getHistoricalTeamMemberProjectionLoadState = (
-  rootTeamRunId: string,
-  memberAddress: string,
-): TeamMemberProjectionLoadState | null =>
-  historicalHydrationByRootTeamRunId.get(rootTeamRunId)?.memberProjectionLoadStateByAddress[memberAddress] ?? null;
-
-export const getHistoricalTeamHydrationUpdatedAt = (rootTeamRunId: string): string | null =>
-  historicalHydrationByRootTeamRunId.get(rootTeamRunId)?.updatedAt ?? null;
-const executionAddress = (teamRunId: string, memberAddress: string): TeamExecutionAddress =>
-  createTeamExecutionAddress({ rootTeamRunId: teamRunId, memberAddress });
-const executionKey = (teamRunId: string, memberAddress: string): string =>
-  serializeTeamExecutionAddress(executionAddress(teamRunId, memberAddress));
-
-const agentAddresses = (metadata: TeamRunMetadataPayload): string[] =>
-  flattenTeamRunAgentMetadata(metadata.rootTeam.children).map(toTeamMemberKey);
-
-const selectMemberAddress = (metadata: TeamRunMetadataPayload, requested?: string | null): string => {
-  const available = agentAddresses(metadata);
-  const candidate = requested?.trim() || '';
-  if (candidate && available.includes(candidate)) return candidate;
-  if (available.includes(metadata.rootTeam.coordinatorAddress)) return metadata.rootTeam.coordinatorAddress;
-  if (!available[0]) throw new Error(`Team '${metadata.rootTeam.teamRunId}' has no Agent members.`);
-  return available[0];
-};
-
-const selectPrimaryWorkspaceMetadata = (
-  byAddress: Record<string, WorkspaceMetadata>,
-  focusedMemberAddress: string,
-  coordinatorAddress: string,
-  fallback: WorkspaceMetadata | null,
-): WorkspaceMetadata | null => byAddress[focusedMemberAddress] ?? byAddress[coordinatorAddress] ?? fallback;
-
-const buildHistoricalHydrationState = (params: {
-  metadata: TeamRunMetadataPayload;
-  loadedMemberAddresses: string[];
-  erroredMemberAddresses?: string[];
-  memberWorkspaceMetadatasByAddress: Record<string, WorkspaceMetadata>;
-}): HistoricalTeamHydrationState => {
-  const loaded = new Set(params.loadedMemberAddresses);
-  const errored = new Set(params.erroredMemberAddresses ?? []);
-  const memberMetadataByAddress: HistoricalTeamHydrationState['memberMetadataByAddress'] = {};
-  const memberProjectionLoadStateByAddress: Record<string, TeamMemberProjectionLoadState> = {};
-  flattenTeamRunAgentMetadata(params.metadata.rootTeam.children).forEach((member) => {
-    memberMetadataByAddress[member.address] = member;
-    memberProjectionLoadStateByAddress[member.address] = loaded.has(member.address)
-      ? 'loaded'
-      : errored.has(member.address) ? 'error' : 'unloaded';
-  });
-  return {
-    createdAt: params.metadata.createdAt,
-    updatedAt: params.metadata.createdAt,
-    memberMetadataByAddress,
-    memberProjectionLoadStateByAddress,
-    memberWorkspaceMetadatasByAddress: params.memberWorkspaceMetadatasByAddress,
-  };
-};
-
-const buildHydratedTeamContext = (params: {
-  metadata: TeamRunMetadataPayload;
-  resumeConfig: TeamRunResumeConfigPayload;
-  persistentAgentSeeds: readonly TeamAgentContextEntry[];
-  focusedExecutionAddress: TeamExecutionAddress;
-  primaryWorkspaceMetadata: WorkspaceMetadata | null;
-  memberStatuses: TeamMemberLiveSnapshot[];
-  historicalHydration: HistoricalTeamHydrationState | null;
-  taskDelegationRecords: readonly TaskDelegationRecord[];
-}): AgentTeamContext => {
-  const teamRunId = params.metadata.rootTeam.teamRunId;
-  const configuration = reconstructTeamRunConfigFromMetadata({
-      metadata: params.metadata,
-      primaryWorkspaceMetadata: params.primaryWorkspaceMetadata,
-      isLocked: params.resumeConfig.isActive,
+const fetchProjection = async (
+  teamRunId: string,
+  agentRunId: string,
+): Promise<TeamMemberRunProjectionPayload | null> => {
+  try {
+    const response = await getApolloClient().query<ProjectionGraphqlData>({
+      query: GetTeamMemberRunProjection,
+      variables: { teamRunId, agentRunId },
+      fetchPolicy: 'network-only',
     });
-  const context = buildTeamRunFrontendProjection({
-    metadata: params.metadata,
-    configuration,
-    rootLifecycle: { isActive: params.resumeConfig.isActive },
-    initialFocusedMemberAddress: params.focusedExecutionAddress.memberAddress,
-    persistentAgentSeeds: params.persistentAgentSeeds.map((entry) => ({
-      memberAddress: entry.executionAddress.memberAddress,
-      agentContext: entry.agentContext,
-      runtime: { kind: params.resumeConfig.isActive ? 'loaded' : 'historical_unloaded' } as const,
-    })),
-  });
-  applyLiveTeamMemberStatusSnapshot(context, { memberStatuses: params.memberStatuses });
-  const taskReconciliation = context.executions.reconcileTaskSnapshot(mapCompleteTeamTaskProjectionSnapshot({
-    expectedRootTeamRunId: teamRunId,
-    topology: context.topology,
-    records: params.taskDelegationRecords,
-  }));
-  if (taskReconciliation.disposition === 'rejected') {
-    throw new Error(`Rejected hydrated Team task snapshot (${taskReconciliation.code}): ${taskReconciliation.message}`);
+    if (response.errors?.length) throw new Error(response.errors.map((error: { message: string }) => error.message).join(', '));
+    const projection = response.data?.getTeamMemberRunProjection ?? null;
+    if (projection && projection.agentRunId !== agentRunId) {
+      throw new Error(`Team member projection '${projection.agentRunId}' does not match '${agentRunId}'.`);
+    }
+    return projection;
+  } catch (error) {
+    console.warn(`[teamRunContextHydration] Failed to fetch AgentRun projection '${agentRunId}'.`, error);
+    return null;
   }
-  if (params.historicalHydration) historicalHydrationByRootTeamRunId.set(teamRunId, params.historicalHydration);
-  else historicalHydrationByRootTeamRunId.delete(teamRunId);
-  return context;
 };
 
-const fetchTeamOwnedRecords = async (teamRunId: string): Promise<readonly TaskDelegationRecord[]> => {
-  const client = getApolloClient();
-  const [, taskDelegationRecords] = await Promise.all([
-    fetchAndHydrateTeamCommunicationForTeam({ client, teamRunId }),
-    fetchTaskDelegationRecordsForTeam({ client, teamRunId }),
-  ]);
-  return taskDelegationRecords;
+const resolveWorkspaces = async (input: {
+  tree: TeamRunExecutionTreeDto;
+  isActive: boolean;
+  resolveWorkspaceMetadataByRootPath: LoadTeamRunContextHydrationInput['resolveWorkspaceMetadataByRootPath'];
+  ensureWorkspaceByRootPath?: LoadTeamRunContextHydrationInput['ensureWorkspaceByRootPath'];
+}): Promise<ReadonlyMap<AgentTeamAddress, WorkspaceMetadata>> => {
+  const result = new Map<AgentTeamAddress, WorkspaceMetadata>();
+  for (const agent of collectExecutionAgents(input.tree).filter((entry) => entry.configured)) {
+    const configured = findConfiguredAgentByAddress(input.tree, agent.address);
+    const rootPath = configured?.launch_configuration.workspace_root_path ?? null;
+    if (!rootPath || result.has(agent.address)) continue;
+    const workspaceId = input.isActive
+      ? await input.ensureWorkspaceByRootPath?.(rootPath) ?? null
+      : null;
+    const existing = await input.resolveWorkspaceMetadataByRootPath(rootPath);
+    const metadata = existing ?? (workspaceId ? createWorkspaceMetadata({ workspaceId, workspaceRootPath: rootPath }) : null);
+    if (metadata) result.set(agent.address, metadata);
+  }
+  return result;
 };
 
-const loadRuntimePayload = async (input: {
-  metadata: TeamRunMetadataPayload;
-  resumeConfig: TeamRunResumeConfigPayload;
-  requestedMemberAddress?: string | null;
-  resolveWorkspaceMetadataByRootPath: (rootPath: string) => Promise<WorkspaceMetadata | null>;
-  ensureWorkspaceByRootPath?: (rootPath: string) => Promise<string | null>;
-}): Promise<LoadedTeamRunContextHydrationPayload> => {
-  const teamRunId = input.metadata.rootTeam.teamRunId;
-  const focusedMemberAddress = selectMemberAddress(input.metadata, input.requestedMemberAddress);
-  const client = getApolloClient();
-  const projectionByMemberAddress = input.resumeConfig.isActive
-    ? await fetchTeamMemberProjections({ client, getTeamMemberRunProjectionQuery: GetTeamMemberRunProjection, teamRunId, metadata: input.metadata, toTeamMemberKey })
-    : new Map<string, TeamMemberRunProjectionPayload | null>();
-  if (!input.resumeConfig.isActive) {
-    const projection = await fetchTeamMemberProjection({ client, getTeamMemberRunProjectionQuery: GetTeamMemberRunProjection, teamRunId, memberAddress: focusedMemberAddress });
-    projectionByMemberAddress.set(focusedMemberAddress, projection);
-  }
-  const taskDelegationRecords = await fetchTeamOwnedRecords(teamRunId);
-
-  const contexts = input.resumeConfig.isActive
-    ? await buildLiveTeamMemberContexts({
-        teamRunId,
-        metadata: input.metadata,
-        isActive: true,
-        projectionByMemberAddress,
-        toTeamMemberKey,
-        activateWorkspaceByRootPath: input.ensureWorkspaceByRootPath!,
-        resolveWorkspaceMetadataByRootPath: input.resolveWorkspaceMetadataByRootPath,
-      })
-    : await buildHistoricalTeamMemberContextShells({
-        teamRunId,
-        metadata: input.metadata,
-        projectionByMemberAddress,
-        toTeamMemberKey,
-        resolveWorkspaceMetadataByRootPath: input.resolveWorkspaceMetadataByRootPath,
-      });
-  const focusedProjection = projectionByMemberAddress.get(focusedMemberAddress) ?? null;
-  const focusedMetadata = flattenTeamRunAgentMetadata(input.metadata.rootTeam.children)
-    .find((member) => member.address === focusedMemberAddress) ?? null;
-  if (!input.resumeConfig.isActive && focusedProjection && focusedMetadata) {
-    const memberContext = contexts.members.get(executionKey(teamRunId, focusedMemberAddress));
-    if (memberContext) applyProjectionToTeamMemberContext({
-      teamRunId,
-      metadata: input.metadata,
-      member: focusedMetadata,
-      projection: focusedProjection,
-      memberContext,
-      isActive: false,
-    });
-  }
-  const historicalHydration = input.resumeConfig.isActive ? null : buildHistoricalHydrationState({
-    metadata: input.metadata,
-    loadedMemberAddresses: focusedProjection ? [focusedMemberAddress] : [],
-    erroredMemberAddresses: focusedProjection ? [] : [focusedMemberAddress],
-    memberWorkspaceMetadatasByAddress: contexts.memberWorkspaceMetadatasByAddress,
-  });
-  const persistentAgentSeeds = flattenTeamRunAgentMetadata(input.metadata.rootTeam.children).map((member) => {
-    const address = executionAddress(teamRunId, member.address);
-    const agentContext = contexts.members.get(serializeTeamExecutionAddress(address));
-    if (!agentContext) throw new Error(`Missing hydrated Agent context for '${member.address}'.`);
-    return Object.freeze({ executionAddress: address, agentContext });
-  });
-  return {
-    teamRunId,
-    focusedExecutionAddress: executionAddress(teamRunId, focusedMemberAddress),
-    resumeConfig: input.resumeConfig,
-    persistentAgentSeeds: Object.freeze(persistentAgentSeeds),
-    primaryWorkspaceMetadata: selectPrimaryWorkspaceMetadata(
-      contexts.memberWorkspaceMetadatasByAddress,
-      focusedMemberAddress,
-      input.metadata.rootTeam.coordinatorAddress,
-      contexts.primaryWorkspaceMetadata,
-    ),
-    metadata: input.metadata,
-    historicalHydration,
-    taskDelegationRecords,
-    projectionByMemberAddress,
-  };
+const applyProjection = (input: {
+  tree: TeamRunExecutionTreeDto;
+  agentRunId: string;
+  address: AgentTeamAddress;
+  context: AgentContext;
+  projection: TeamMemberRunProjectionPayload | null;
+}): void => {
+  if (!input.projection) return;
+  const configured = findConfiguredAgentByAddress(input.tree, input.address);
+  if (!configured) throw new Error(`AgentRun '${input.agentRunId}' has no configured placement.`);
+  resetRecentEventMonitorBaseline(input.context);
+  input.context.state.conversation = buildConversationFromProjection(
+    input.agentRunId,
+    input.projection.conversation ?? [],
+    {
+      agentDefinitionId: configured.agent_definition_id,
+      agentName: input.address.split('/').at(-1) ?? input.address,
+      llmModelIdentifier: configured.launch_configuration.llm_model_identifier,
+    },
+  );
+  input.context.state.hasEarlierActiveTraceEvents = input.projection.hasEarlierActiveTraceEvents === true;
+  hydrateActivitiesFromProjection(input.agentRunId, input.projection.activities ?? []);
+  primeRecentEventMonitorBaseline(input.context);
 };
 
-export const loadTeamRunContextHydrationPayload = async (
+const selectInitialAgentRunId = (input: {
+  tree: TeamRunExecutionTreeDto;
+  requestedAgentRunId?: string | null;
+  requestedMemberAddress?: AgentTeamAddress | null;
+}): string => {
+  const agents = collectExecutionAgents(input.tree);
+  const requestedId = input.requestedAgentRunId?.trim() ?? '';
+  if (requestedId && agents.some((agent) => agent.agentRunId === requestedId)) return requestedId;
+  if (input.requestedMemberAddress) {
+    const configured = findConfiguredAgentByAddress(input.tree, input.requestedMemberAddress);
+    if (configured) return configured.agent_run_id;
+  }
+  const coordinator = findConfiguredAgentByAddress(input.tree, input.tree.root_team.coordinator_address);
+  if (!coordinator) throw new Error(`Team '${input.tree.root_team.team_run_id}' has no root coordinator Agent.`);
+  return coordinator.agent_run_id;
+};
+
+export const hydrateLiveTeamRunContext = async (
   input: LoadTeamRunContextHydrationInput,
-): Promise<LoadedTeamRunContextHydrationPayload> => {
-  const { data, errors } = await getApolloClient().query<GetTeamRunResumeConfigQueryData>({
+): Promise<TeamRunContextHydrationPayload> => {
+  const client = getApolloClient();
+  const response = await client.query<ResumeGraphqlData>({
     query: GetTeamRunResumeConfig,
     variables: { teamRunId: input.teamRunId },
     fetchPolicy: 'network-only',
   });
-  if (errors?.length) throw new Error(errors.map((error: { message: string }) => error.message).join(', '));
-  if (!data?.getTeamRunResumeConfig) throw new Error(`Team resume config payload missing for '${input.teamRunId}'.`);
-  const metadata = parseTeamRunMetadata(data.getTeamRunResumeConfig.metadata);
-  if (metadata.rootTeam.teamRunId !== input.teamRunId) throw new Error(`Team metadata root identity mismatch for '${input.teamRunId}'.`);
-  const resumeConfig: TeamRunResumeConfigPayload = {
-    teamRunId: metadata.rootTeam.teamRunId,
-    isActive: data.getTeamRunResumeConfig.isActive,
-    metadata,
-  };
-  if (resumeConfig.isActive && !input.ensureWorkspaceByRootPath) {
-    throw new Error(`Active team '${input.teamRunId}' requires workspace activation.`);
+  if (response.errors?.length) throw new Error(response.errors.map((error: { message: string }) => error.message).join(', '));
+  const raw = response.data?.getTeamRunResumeConfig;
+  if (!raw) throw new Error(`Team resume config payload missing for '${input.teamRunId}'.`);
+  const tree = teamRunExecutionTreeDtoSchema.parse(raw.executionTree);
+  if (raw.teamRunId !== input.teamRunId || tree.root_team.team_run_id !== input.teamRunId) {
+    throw new Error(`Team execution tree root identity mismatch for '${input.teamRunId}'.`);
   }
-  return loadRuntimePayload({
-    metadata,
-    resumeConfig,
+  if (raw.isActive && !input.ensureWorkspaceByRootPath) {
+    throw new Error(`Active Team '${input.teamRunId}' requires workspace activation.`);
+  }
+  const [tasks, messages, workspaces] = await Promise.all([
+    fetchTaskDelegationRecordsForTeam({ client, teamRunId: input.teamRunId }),
+    fetchTeamCommunicationForTeam({ client, teamRunId: input.teamRunId }),
+    resolveWorkspaces({
+      tree,
+      isActive: raw.isActive,
+      resolveWorkspaceMetadataByRootPath: input.resolveWorkspaceMetadataByRootPath,
+      ensureWorkspaceByRootPath: input.ensureWorkspaceByRootPath,
+    }),
+  ]);
+  const projectionByAgentRunId = new Map<string, TeamMemberRunProjectionPayload | null>();
+  await Promise.all(collectExecutionAgents(tree).map(async (agent) => {
+    projectionByAgentRunId.set(agent.agentRunId, await fetchProjection(input.teamRunId, agent.agentRunId));
+  }));
+  const contexts = collectExecutionAgents(tree).map((agent) => {
+    const context = createTeamAgentContext({
+      tree,
+      agentRunId: agent.agentRunId,
+      address: agent.address,
+      workspaceMetadata: workspaces.get(agent.address) ?? null,
+    });
+    if (!context) throw new Error(`No exact Agent context could be built for '${agent.agentRunId}'.`);
+    applyProjection({ tree, agentRunId: agent.agentRunId, address: agent.address, context, projection: projectionByAgentRunId.get(agent.agentRunId) ?? null });
+    return Object.freeze({ agentRunId: agent.agentRunId, memberAddress: agent.address, agentContext: context });
+  });
+  const initialFocusedAgentRunId = selectInitialAgentRunId({
+    tree,
+    requestedAgentRunId: input.agentRunId,
     requestedMemberAddress: input.memberAddress,
-    resolveWorkspaceMetadataByRootPath: input.resolveWorkspaceMetadataByRootPath,
-    ensureWorkspaceByRootPath: input.ensureWorkspaceByRootPath,
   });
-};
-
-export const hydrateLiveTeamRunContext = async (
-  input: LoadTeamRunContextHydrationInput & { memberStatuses?: TeamMemberLiveSnapshot[] },
-): Promise<TeamRunContextHydrationPayload> => {
-  const payload = await loadTeamRunContextHydrationPayload(input);
-  const hydratedContext = buildHydratedTeamContext({
-    metadata: payload.metadata,
-    resumeConfig: payload.resumeConfig,
-    persistentAgentSeeds: payload.persistentAgentSeeds,
-    focusedExecutionAddress: payload.focusedExecutionAddress,
-    primaryWorkspaceMetadata: payload.primaryWorkspaceMetadata,
-    memberStatuses: input.memberStatuses ?? [],
-    historicalHydration: payload.historicalHydration,
-    taskDelegationRecords: payload.taskDelegationRecords,
+  const view = createTeamExecutionViewState({
+    rootTeamRunId: input.teamRunId,
+    rootActive: raw.isActive,
+    executionTree: tree,
+    tasks,
+    messages,
+    configuration: createTeamConfigurationView({ tree, workspaceMetadataByAddress: workspaces }),
+    initialFocusedAgentRunId,
+    agentContexts: contexts,
+    createAgentContext: (agentRunId, address, currentTree) => createTeamAgentContext({
+      tree: currentTree,
+      agentRunId,
+      address,
+      workspaceMetadata: workspaces.get(address) ?? null,
+    }),
   });
-  hydrateTeamMemberActivitiesFromProjection({
-    members: hydratedContext.executions.listAgentContextEntries(),
-    projectionByMemberAddress: payload.projectionByMemberAddress,
-  });
-  hydratedContext.executions.listAgentContextEntries().forEach(({ agentContext }) => primeRecentEventMonitorBaseline(agentContext));
-  hydrateTaskDelegationRecords(payload.teamRunId, payload.taskDelegationRecords);
+  const hydratedContext = Object.freeze({ view });
   return {
-    teamRunId: payload.teamRunId,
-    focusedExecutionAddress: payload.focusedExecutionAddress,
-    resumeConfig: payload.resumeConfig,
-    projectionByMemberAddress: payload.projectionByMemberAddress,
+    teamRunId: input.teamRunId,
+    focusedAgentRunId: view.getFocusedAgentRunId(),
+    resumeConfig: { teamRunId: input.teamRunId, isActive: raw.isActive, executionTree: tree },
+    projectionByAgentRunId,
     hydratedContext,
   };
-};
-
-export const ensureHistoricalTeamMemberHydrated = async (params: {
-  teamContext: AgentTeamContext;
-  memberAddress: string;
-}): Promise<void> => {
-  const teamRunId = params.teamContext.executions.getRootTeamRunId();
-  const state = historicalHydrationByRootTeamRunId.get(teamRunId);
-  const memberAddress = params.memberAddress.trim();
-  if (!state || !memberAddress || state.memberProjectionLoadStateByAddress[memberAddress] === 'loaded') return;
-  const requestKey = `${teamRunId}::${memberAddress}`;
-  const pending = historicalMemberHydrationRequests.get(requestKey);
-  if (pending) return pending;
-  const member = state.memberMetadataByAddress[memberAddress];
-  const memberContext = params.teamContext.executions.getAgentContext(executionAddress(teamRunId, memberAddress));
-  if (!member || !memberContext) {
-    state.memberProjectionLoadStateByAddress[memberAddress] = 'error';
-    return;
-  }
-  state.memberProjectionLoadStateByAddress[memberAddress] = 'loading';
-  const request = (async () => {
-    const projection = await fetchTeamMemberProjection({
-      client: getApolloClient(),
-      getTeamMemberRunProjectionQuery: GetTeamMemberRunProjection,
-      teamRunId,
-      memberAddress,
-    });
-    if (!projection) {
-      state.memberProjectionLoadStateByAddress[memberAddress] = 'error';
-      return;
-    }
-    applyProjectionToTeamMemberContext({
-      teamRunId,
-      metadata: { createdAt: state.createdAt },
-      member,
-      projection,
-      memberContext,
-      isActive: false,
-    });
-    primeRecentEventMonitorBaseline(memberContext);
-    state.memberProjectionLoadStateByAddress[memberAddress] = 'loaded';
-  })();
-  historicalMemberHydrationRequests.set(requestKey, request);
-  try { await request; } finally { historicalMemberHydrationRequests.delete(requestKey); }
 };

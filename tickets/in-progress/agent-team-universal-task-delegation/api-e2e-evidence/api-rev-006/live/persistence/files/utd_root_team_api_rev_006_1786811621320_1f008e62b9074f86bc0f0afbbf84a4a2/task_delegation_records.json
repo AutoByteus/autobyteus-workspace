@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "rootTeamRunId": "utd_root_team_api_rev_006_1786811621320_1f008e62b9074f86bc0f0afbbf84a4a2",
+  "records": [
+    {
+      "taskId": "task_81d06ddae57847b092fb72ceb6963f47",
+      "delegatorAgentRunId": "utd_coordinator_api_rev_006_1786811621320_2cfef3946df74a37bcf3fd288e4ffa90",
+      "recipientAddress": "/worker",
+      "taskExecution": {
+        "agentRunId": "utd_worker_api_rev_006_1786811621320_376116ee10334c0287de418653c056d6"
+      },
+      "description": "Return E2E_DIRECT_TASK_RESULT_42",
+      "referenceFiles": [],
+      "status": "accepted",
+      "updates": [
+        {
+          "submissionId": "submission_8e2cd1a193c74ef68c39001e6cc77614",
+          "message": "E2E_DIRECT_TASK_RESULT_42",
+          "referenceFiles": [],
+          "createdAt": "2026-08-15T16:34:27.917Z"
+        },
+        {
+          "reviewId": "review_ab7443b94a5d4f79843d5e5987da952b",
+          "reviewedSubmissionId": "submission_8e2cd1a193c74ef68c39001e6cc77614",
+          "decision": "accept",
+          "comment": null,
+          "referenceFiles": [],
+          "createdAt": "2026-08-15T16:35:21.291Z"
+        }
+      ],
+      "createdAt": "2026-08-15T16:34:20.469Z"
+    }
+  ]
+}

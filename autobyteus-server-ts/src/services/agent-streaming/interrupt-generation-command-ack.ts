@@ -1,6 +1,5 @@
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import type { SendMessageCommandAckPayload } from "../../agent-execution/services/agent-run-command-types.js";
-import type { TeamExecutionAddress } from "../../agent-team-execution/domain/team-execution-address.js";
 
 export type InterruptCommandTarget =
   | {
@@ -10,7 +9,7 @@ export type InterruptCommandTarget =
   | {
       target_kind: "team_member";
       team_run_id: string;
-      execution_address: TeamExecutionAddress | null;
+      agent_run_id: string;
     };
 
 export type InterruptGenerationCommandAckPayload =

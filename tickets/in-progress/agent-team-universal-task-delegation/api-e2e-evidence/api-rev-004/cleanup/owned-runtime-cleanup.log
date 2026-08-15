@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "removedOwnedCandidates": {
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/tests/.tmp/api-rev-004-live-20260815-1": true,
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/db/api-rev-004-live-20260815-1.db": true,
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/db/api-rev-004-live-20260815-1.db.secret.key": true,
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/db/api-rev-004-live-20260815-1.db-wal": true,
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/db/api-rev-004-live-20260815-1.db-shm": true,
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/db/api-rev-004-live-20260815-1.db-journal": true
+  },
+  "operationalDatabaseAction": "NONE",
+  "protectedPortsAction": "NONE"
+}

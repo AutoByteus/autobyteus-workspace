@@ -4,16 +4,13 @@ import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
 import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
-import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import { hydrateLiveTeamRunContext } from '~/services/runHydration/teamRunContextHydrationService';
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
-import { createTeamExecutionAddress, type TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 
 export type TeamRunOpenSelectionMode = 'desktop' | 'mobile';
 export interface OpenTeamRunWithCoordinatorInput {
   teamRunId: string;
-  memberAddress?: string | null;
-  executionAddress?: TeamExecutionAddress | null;
+  agentRunId?: string | null;
   resolveWorkspaceMetadataByRootPath: (rootPath: string) => Promise<WorkspaceMetadata | null>;
   ensureWorkspaceByRootPath?: (rootPath: string) => Promise<string | null>;
   selectRun?: boolean;
@@ -21,31 +18,33 @@ export interface OpenTeamRunWithCoordinatorInput {
 }
 export interface OpenTeamRunWithCoordinatorResult {
   teamRunId: string;
-  focusedExecutionAddress: TeamExecutionAddress;
+  focusedAgentRunId: string;
+  focusedMemberAddress: string;
   resumeConfig: TeamRunResumeConfigPayload;
 }
 
-const requestedFocus = (input: OpenTeamRunWithCoordinatorInput, existing?: AgentTeamContext): TeamExecutionAddress | null => {
-  if (input.executionAddress?.rootTeamRunId === input.teamRunId) return createTeamExecutionAddress(input.executionAddress);
-  if (input.memberAddress) return createTeamExecutionAddress({ rootTeamRunId: input.teamRunId, memberAddress: input.memberAddress });
-  return existing?.executions.getFocusedAddress() ?? null;
-};
-
-export const openTeamRun = async (input: OpenTeamRunWithCoordinatorInput): Promise<OpenTeamRunWithCoordinatorResult> => {
+export const openTeamRun = async (
+  input: OpenTeamRunWithCoordinatorInput,
+): Promise<OpenTeamRunWithCoordinatorResult> => {
   const contexts = useAgentTeamContextsStore();
   const current = contexts.getTeamContextById(input.teamRunId);
-  const preferred = requestedFocus(input, current);
+  const preferredAgentRunId = input.agentRunId?.trim()
+    || current?.view.getFocusedAgentRunId()
+    || null;
   const runStore = useAgentTeamRunStore();
   const hydrated = await hydrateLiveTeamRunContext({
     ...input,
-    memberAddress: preferred?.memberAddress ?? input.memberAddress,
+    agentRunId: preferredAgentRunId,
   });
   const context = hydrated.hydratedContext;
-  const resumeConfig = hydrated.resumeConfig;
   contexts.addTeamContext(context);
 
-  if (preferred && context.executions.hasExecution(preferred)) context.executions.focus(preferred);
-  const focusedExecutionAddress = context.executions.getFocusedAddress();
+  if (preferredAgentRunId) {
+    const result = context.view.focusAgent(preferredAgentRunId);
+    if (result.disposition === 'rejected') throw new Error(result.message);
+  }
+  const focusedAgentRunId = context.view.getFocusedAgentRunId();
+  const focusedMemberAddress = context.view.getFocusedMemberAddress();
 
   if (input.selectRun !== false) {
     const selection = useAgentSelectionStore();
@@ -55,7 +54,12 @@ export const openTeamRun = async (input: OpenTeamRunWithCoordinatorInput): Promi
     useTeamRunConfigStore().selectDraft(null);
     useAgentRunConfigStore().clearConfig();
   }
-  if (context.executions.isRootTeamActive()) runStore.connectToTeamStream(input.teamRunId);
+  if (context.view.isRootTeamActive()) runStore.connectToTeamStream(input.teamRunId);
   else runStore.disconnectTeamStream(input.teamRunId);
-  return { teamRunId: input.teamRunId, focusedExecutionAddress, resumeConfig };
+  return {
+    teamRunId: input.teamRunId,
+    focusedAgentRunId,
+    focusedMemberAddress,
+    resumeConfig: hydrated.resumeConfig,
+  };
 };

@@ -36,7 +36,7 @@ export interface ToolInvocationLifecycle {
 }
 
 export interface ToolApprovalTarget {
-  executionAddress: import('~/types/agent/TeamExecutionAddress').TeamExecutionAddress;
+  agentRunId: string;
 }
 
 export interface AIResponseTextSegment {

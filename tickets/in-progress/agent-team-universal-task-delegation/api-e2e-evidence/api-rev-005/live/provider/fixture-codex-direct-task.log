@@ -1,0 +1,42 @@
+{
+  "teamRunId": "utd_root_team_api_rev_005_1786807916040_ba144d09043d4474b8a3ec1d69c31b72",
+  "agentRunId": "utd_coordinator_api_rev_005_1786807916040_27182aa100294bab8045c8125a33b848",
+  "durationMs": 36734,
+  "sent": true,
+  "terminalAt": {
+    "type": "TURN_COMPLETED",
+    "atMs": 24715
+  },
+  "websocketError": null,
+  "messageCount": 35,
+  "typeCounts": {
+    "CONNECTED": 1,
+    "TEAM_EXECUTION_VIEW_SNAPSHOT": 1,
+    "TEAM_RUN_LIFECYCLE": 1,
+    "MEMBER_INPUT_MESSAGE": 1,
+    "TURN_STARTED": 1,
+    "SEGMENT_START": 4,
+    "SEGMENT_CONTENT": 12,
+    "TOKEN_USAGE_UPDATED": 6,
+    "SEGMENT_END": 4,
+    "TOOL_EXECUTION_STARTED": 1,
+    "TASK_DELEGATION_EVENT": 1,
+    "TOOL_EXECUTION_SUCCEEDED": 1,
+    "TURN_COMPLETED": 1
+  },
+  "tasks": [
+    {
+      "taskId": "task_ab2a61c664e64111a100ae243122c4af",
+      "delegatorAgentRunId": "utd_coordinator_api_rev_005_1786807916040_27182aa100294bab8045c8125a33b848",
+      "recipientAddress": "/worker",
+      "targetAgentRunId": "utd_worker_api_rev_005_1786807916040_a4e9c8b125134412bfb98d5a99cb2725",
+      "targetTeamRunId": null,
+      "status": "active",
+      "description": "Return E2E_DIRECT_TASK_RESULT_42 through submit_task_result.",
+      "createdAt": "2026-08-15T15:38:14.662Z",
+      "referenceFiles": [],
+      "updates": []
+    }
+  ],
+  "communications": []
+}

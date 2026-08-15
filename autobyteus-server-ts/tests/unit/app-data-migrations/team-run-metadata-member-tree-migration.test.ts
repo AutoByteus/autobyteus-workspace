@@ -25,6 +25,7 @@ const legacyMetadata = (teamRunId: string) => ({
   createdAt: "2026-05-01T00:00:00.000Z",
   updatedAt: "2026-05-01T00:00:01.000Z",
   archivedAt: null,
+  handoffs: [],
   memberMetadata: [
     {
       memberRouteKey: "lead",
@@ -51,6 +52,7 @@ const currentMetadata = (teamRunId: string) => ({
   createdAt: "2026-05-01T00:00:00.000Z",
   updatedAt: "2026-05-01T00:00:01.000Z",
   archivedAt: null,
+  handoffs: [],
   memberTree: [
     {
       memberKind: "agent",
@@ -86,7 +88,6 @@ describe("TeamRunMetadataMemberTreeMigration", () => {
     const metadataPath = await writeMetadata("team-legacy", legacyMetadata("team-legacy"));
 
     const result = await new TeamRunMetadataMemberTreeMigration(tempDir).execute();
-
     expect(result.status).toBe("SUCCEEDED");
     expect(result.summary.migratedCount).toBe(1);
     const converted = JSON.parse(await fs.readFile(metadataPath, "utf-8"));

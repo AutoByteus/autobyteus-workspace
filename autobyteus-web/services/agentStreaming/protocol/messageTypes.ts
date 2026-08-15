@@ -23,7 +23,6 @@ import type { MemberInputMessagePayload } from './memberInputMessageTypes';
 export type { MemberInputMessageContextFilePathPayload, MemberInputMessagePayload } from './memberInputMessageTypes';
 export type { UserMessageContextFilePathPayload, UserMessageProjectionPayload } from './userMessagePayloadTypes';
 import type { TokenUsageUpdatedPayload as TokenUsageUpdatedPayloadBase } from '~/types/tokenUsageMeter';
-import type { TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 
 // ============================================================================
 // Server → Client Message Types
@@ -294,24 +293,17 @@ export interface SendMessagePayload {
   content: string;
   context_file_paths?: string[];
   image_urls?: string[];
-  execution_address?: TeamExecutionAddress;
   message_id?: string;
   dedupe_key?: string;
 }
 
 export interface ToolActionPayload {
   invocation_id: string;
-  execution_address?: TeamExecutionAddress;
   reason?: string;
 }
 
 export interface AgentInterruptGenerationPayload {
   command_id: string;
-}
-
-export interface InterruptGenerationPayload {
-  command_id: string;
-  execution_address: TeamExecutionAddress;
 }
 
 export type SendMessageClientMessage = {

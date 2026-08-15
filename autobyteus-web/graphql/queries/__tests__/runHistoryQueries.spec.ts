@@ -14,7 +14,7 @@ describe('Event Monitor active-trace page queries', () => {
     const teamSource = GetTeamMemberEventMonitorActiveTracePage.loc?.source.body ?? '';
     expect(runSource).toContain('$runId: String!');
     expect(teamSource).toContain('$teamRunId: String!');
-    expect(teamSource).toContain('$memberAddress: String!');
+    expect(teamSource).toContain('$agentRunId: String!');
     expect(teamSource).not.toContain('memberRouteKey');
     for (const source of [runSource, teamSource]) {
       expect(source).toContain('$beforeCursor: String');
@@ -58,18 +58,14 @@ describe('ListWorkspaceRunHistory query', () => {
 });
 
 describe('GetTeamCommunicationMessages query', () => {
-  it('requests address-first sender and receiver fields without removed flat participant identity', () => {
+  it('requests exact sender and receiver AgentRun identities without removed route identity', () => {
     const source = GetTeamCommunicationMessages.loc?.source.body ?? '';
 
     expect(source).toContain('getTeamCommunicationMessages');
-    expect(source).toContain('senderAddress');
-    expect(source).toContain('receiverAddress');
-    expect(source).toContain('rootTeamRunId');
-    expect(source).toContain('taskTeamRunIds');
-    expect(source).toContain('memberAddress');
-    expect(source).toContain('taskAgentRunId');
-    expect(source).not.toContain('senderRunId');
-    expect(source).not.toContain('receiverRunId');
+    expect(source).toContain('senderAgentRunId');
+    expect(source).toContain('receiverAgentRunId');
+    expect(source).not.toContain('senderAddress');
+    expect(source).not.toContain('receiverAddress');
     expect(source).not.toContain('senderMemberRouteKey');
     expect(source).not.toContain('receiverMemberRouteKey');
     expect(source).not.toContain('taskTeamScope');
@@ -78,25 +74,21 @@ describe('GetTeamCommunicationMessages query', () => {
 });
 
 describe('GetTaskDelegationRecords query', () => {
-  it('requests durable address-first task records with updates and references', () => {
+  it('requests durable exact delegator, recipient, target execution, updates, and references', () => {
     const source = GetTaskDelegationRecords.loc?.source.body ?? '';
 
     expect(source).toContain('getTaskDelegationRecords');
     expect(source).toContain('taskId');
     expect(source).toContain('status');
-    expect(source).toContain('senderAddress');
-    expect(source).toContain('receiverAddress');
-    expect(source).toContain('receiverTargetKind');
-    expect(source).toContain('taskRun');
+    expect(source).toContain('delegatorAgentRunId');
+    expect(source).toContain('recipientAddress');
+    expect(source).toContain('targetAgentRunId');
+    expect(source).toContain('targetTeamRunId');
     expect(source).toContain('updates');
     expect(source).toContain('submissionId');
     expect(source).toContain('reviewId');
     expect(source).toContain('reviewedSubmissionId');
     expect(source).toContain('referenceFiles');
-    expect(source).toContain('rootTeamRunId');
-    expect(source).toContain('taskTeamRunIds');
-    expect(source).toContain('memberAddress');
-    expect(source).toContain('taskAgentRunId');
     expect(source).not.toContain('pendingSubmissionId');
     expect(source).not.toContain('target {');
     expect(source).not.toContain('ingress');

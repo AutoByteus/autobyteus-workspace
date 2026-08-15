@@ -19,7 +19,7 @@ export const showInterruptCommandResult = (ack: InterruptGenerationCommandAckPay
   if (ack.state === 'accepted') return;
   useToasts().addToast(localizationRuntime.translate('agents.store.interrupt.failed', {
     target: ack.target.target_kind === 'team_member'
-      ? ack.target.execution_address?.memberAddress ?? ack.target.team_run_id
+      ? ack.target.agent_run_id
       : ack.target.run_id,
     detail: ack.message,
   }), 'error');
@@ -28,7 +28,7 @@ export const showInterruptCommandResult = (ack: InterruptGenerationCommandAckPay
 export const showInterruptTransportFailure = (failure: InterruptCommandTransportFailure): void => {
   useToasts().addToast(localizationRuntime.translate('agents.store.interrupt.transportFailed', {
     target: failure.target.target_kind === 'team_member'
-      ? failure.target.execution_address?.memberAddress ?? failure.target.team_run_id
+      ? failure.target.agent_run_id
       : failure.target.run_id,
     detail: failure.reason.message,
   }), 'error');

@@ -14,7 +14,7 @@ import {
   type TeamLaunchPendingInput,
 } from '~/types/agent/TeamLaunchDraft'
 import type { ContextAttachment } from '~/types/conversation'
-import type { AgentTeamAddress } from '~/types/agent/TeamExecutionAddress'
+import type { AgentTeamAddress } from '~/types/agent/AgentTeamAddress'
 import {
   evaluateTeamRunLaunchReadiness,
   type RuntimeModelCatalogs,

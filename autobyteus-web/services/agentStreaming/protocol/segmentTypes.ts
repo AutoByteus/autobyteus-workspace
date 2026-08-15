@@ -22,7 +22,9 @@ import type {
  * @param payload - The SEGMENT_START payload from backend
  * @returns A new segment object initialized with default values
  */
-export function createSegmentFromPayload(payload: SegmentStartPayload): AIResponseSegment {
+export function createSegmentFromPayload(
+  payload: Pick<SegmentStartPayload, 'id' | 'segment_type' | 'metadata'>,
+): AIResponseSegment {
   const { id, segment_type } = payload;
   const metadata = toSegmentMetadataRecord(payload.metadata);
 

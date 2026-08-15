@@ -4,20 +4,12 @@ import { MixedTeamRunBackend } from "../../../src/agent-team-execution/backends/
 import { MixedAgentMemberContext, MixedTeamRunContext } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-context.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
-import { TeamRunEventSourceType, type TeamRunEvent, type TeamRunEventListener } from "../../../src/agent-team-execution/domain/team-run-event.js";
-import { createTeamExecutionAddress } from "../../../src/agent-team-execution/domain/team-execution-address.js";
-import { createTeamAgentExecutionBinding } from "../../../src/agent-team-execution/domain/team-agent-execution-binding.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { testAgentNode, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
 
-const persistentAddress = createTeamExecutionAddress({
-  rootTeamRunId: "team-mixed-1",
-  memberAddress: "/Reviewer",
-});
-
-const createBackendContext = () => {
+const createHarness = () => {
   const coordinator = testAgentNode("/Coordinator", {
-    agentRunId: "coord-run",
+    agentRunId: "coordinator-run",
     runtimeKind: RuntimeKind.CODEX_APP_SERVER,
   });
   const reviewer = testAgentNode("/Reviewer", {
@@ -30,165 +22,90 @@ const createBackendContext = () => {
     coordinatorAddress: coordinator.address,
     children: [coordinator, reviewer],
   });
-  return new TeamRunContext({
-    teamRunId: "team-mixed-1",
-    teamAddress: "/",
-    teamBackendKind: TeamBackendKind.MIXED,
-    config,
-    runtimeContext: new MixedTeamRunContext({
-      teamExecutionAddress: createTeamExecutionAddress({
-        rootTeamRunId: "team-mixed-1",
-        memberAddress: "/Coordinator",
-      }),
-      memberContexts: [
-        new MixedAgentMemberContext({
-          address: coordinator.address,
-          agentRunId: coordinator.agentRunId,
-          runtimeKind: coordinator.runtimeKind,
-          platformAgentRunId: "thread-coord-1",
-        }),
-        new MixedAgentMemberContext({
-          address: reviewer.address,
-          agentRunId: reviewer.agentRunId,
-          runtimeKind: reviewer.runtimeKind,
-          platformAgentRunId: "session-reviewer-1",
-        }),
-      ],
-    }),
+  const runtimeContext = new MixedTeamRunContext({
+    memberContexts: [coordinator, reviewer].map((node) => new MixedAgentMemberContext({
+      address: node.address,
+      agentRunId: node.agentRunId,
+      runtimeKind: node.runtimeKind,
+      platformAgentRunId: node.runtimeKind === RuntimeKind.CODEX_APP_SERVER
+        ? "thread-coordinator"
+        : "session-reviewer",
+    })),
   });
-};
-
-const createManager = () => {
-  let active = true;
-  const listeners = new Set<TeamRunEventListener>();
-  return {
-    hasActiveMembers: vi.fn(() => active),
+  const context = new TeamRunContext({
+    rootTeamRunId: config.rootTeam.teamRunId,
+    teamRunId: config.rootTeam.teamRunId,
+    teamBackendKind: TeamBackendKind.MIXED,
+    teamNode: config.rootTeam,
+    handoffs: config.handoffs,
+    runtimeContext,
+  });
+  const manager = {
+    isActive: vi.fn(() => true),
     getLeafAgentStatusSnapshots: vi.fn(() => []),
     hasOpenExecutionWork: vi.fn(() => false),
-    postMessage: vi.fn().mockResolvedValue({ accepted: true }),
-    executeMemberCommand: vi.fn().mockResolvedValue({ accepted: true }),
-    deliverInterAgentMessage: vi.fn().mockResolvedValue({ accepted: true }),
-    deliverResolvedInterAgentMessage: vi.fn().mockResolvedValue({ accepted: true }),
-    resolveRecipient: vi.fn(),
-    approveToolInvocation: vi.fn().mockResolvedValue({ accepted: true }),
-    interruptMember: vi.fn().mockResolvedValue({ accepted: true }),
-    settleMember: vi.fn().mockResolvedValue({ accepted: true }),
-    startTaskAgentExecution: vi.fn().mockResolvedValue({ accepted: true }),
-    releaseTaskAgentExecutionWork: vi.fn(),
-    settleTaskAgentExecution: vi.fn().mockResolvedValue({ accepted: true }),
-    startTaskTeamExecution: vi.fn().mockResolvedValue({ accepted: true }),
-    markTaskTeamExecutionActive: vi.fn(),
-    releaseTaskTeamExecutionWork: vi.fn(),
-    postMessageToTaskTeamExecution: vi.fn().mockResolvedValue({ accepted: true }),
-    settleTaskTeamExecution: vi.fn().mockResolvedValue({ accepted: true }),
-    terminate: vi.fn().mockResolvedValue({ accepted: true }),
-    publishEvent: vi.fn(),
-    openTaskActivationEventLease: vi.fn(),
-    assertTaskActivationEventLeaseWithinBudget: vi.fn(),
-    commitTaskActivationEventLease: vi.fn(),
-    abortTaskActivationEventLease: vi.fn(),
-    subscribeToEvents: vi.fn((listener: TeamRunEventListener) => {
-      listeners.add(listener);
-      return () => listeners.delete(listener);
-    }),
-    emit(event: TeamRunEvent) {
-      listeners.forEach((listener) => listener(event));
-    },
-    setActive(value: boolean) { active = value; },
+    getOrCreateConfiguredChildTeam: vi.fn(),
+    reserveDirectAgentInput: vi.fn(),
+    deliverToDirectAgent: vi.fn(async () => ({ accepted: true })),
+    executeDirectAgentCommand: vi.fn(async () => ({ accepted: true })),
+    prepareTaskAgent: vi.fn(),
+    prepareTaskTeam: vi.fn(),
+    prepareDirectTaskSettlement: vi.fn(),
+    prepareTermination: vi.fn(),
+    terminate: vi.fn(async () => ({ accepted: true })),
   };
+  return { backend: new MixedTeamRunBackend(context, manager as never), context, manager };
 };
 
 afterEach(() => vi.clearAllMocks());
 
-describe("MixedTeamRunBackend integration", () => {
-  it("routes current exact-address operations through the Team manager", async () => {
-    const manager = createManager();
-    const context = createBackendContext();
-    const backend = new MixedTeamRunBackend(context, manager as never);
-    const userMessage = new AgentInputUserMessage("coordinate the mixed task");
-
+describe("MixedTeamRunBackend exact local facade integration", () => {
+  it("exposes one concrete TeamRun identity and current runtime context", () => {
+    const { backend, context, manager } = createHarness();
     expect(backend.teamRunId).toBe("team-mixed-1");
     expect(backend.teamBackendKind).toBe(TeamBackendKind.MIXED);
-    expect(backend.isActive()).toBe(true);
+    expect(backend.getTeamRunContext()).toBe(context);
     expect(backend.getRuntimeContext()).toBe(context.runtimeContext);
-    await expect(backend.postMessage(userMessage, "/Coordinator")).resolves.toEqual({ accepted: true });
-    expect(manager.postMessage).toHaveBeenCalledWith(userMessage, "/Coordinator", null);
-
-    const intent = {
-      recipientAddress: "/Reviewer",
-      caller: { rootTeamRunId: "team-mixed-1", memberAddress: "/Coordinator" },
-      content: "Please continue.",
-      messageType: "agent_message",
-    } as const;
-    await expect(backend.deliverInterAgentMessage(intent)).resolves.toEqual({ accepted: true });
-    expect(manager.deliverInterAgentMessage).toHaveBeenCalledWith(intent);
-
-    await expect(backend.approveToolInvocation("/Reviewer", "inv-1", true, "approved"))
-      .resolves.toEqual({ accepted: true });
-    expect(manager.approveToolInvocation).toHaveBeenCalledWith(
-      "/Reviewer", "inv-1", true, "approved", null, null,
-    );
-    await expect(backend.interruptMember("/Reviewer", "reviewer-run"))
-      .resolves.toEqual({ accepted: true });
-    expect(manager.interruptMember).toHaveBeenCalledWith("/Reviewer", "reviewer-run");
-    await expect(backend.executeMemberCommand(persistentAddress, { kind: "interrupt" }))
-      .resolves.toEqual({ accepted: true });
-    expect(manager.executeMemberCommand).toHaveBeenCalledWith(
-      persistentAddress,
-      { kind: "interrupt" },
-    );
+    expect(backend.isActive()).toBe(true);
+    expect(backend.getLeafAgentStatusSnapshots()).toEqual([]);
+    expect(backend.hasOpenExecutionWork()).toBe(false);
+    expect(manager.isActive).toHaveBeenCalledOnce();
   });
 
-  it("returns validation and inactive-run failures before effect", async () => {
-    const manager = createManager();
-    const backend = new MixedTeamRunBackend(createBackendContext(), manager as never);
+  it("forwards direct input and commands by the unchanged exact AgentRun ID", async () => {
+    const { backend, manager } = createHarness();
+    const message = AgentInputUserMessage.fromDict({ content: "Review this.", context_files: null });
+    const command = { kind: "post_message" as const, message };
 
-    await expect(backend.postMessage(new AgentInputUserMessage("hello"), null)).resolves.toMatchObject({
-      accepted: false,
-      code: "TARGET_MEMBER_REQUIRED",
-    });
-    expect(manager.postMessage).not.toHaveBeenCalled();
+    await expect(backend.deliverToDirectAgent("reviewer-run", message)).resolves.toEqual({ accepted: true });
+    await expect(backend.executeDirectAgentCommand("reviewer-run", command)).resolves.toEqual({ accepted: true });
 
-    manager.setActive(false);
-    await expect(backend.postMessage(new AgentInputUserMessage("hello"), "/Coordinator"))
-      .resolves.toMatchObject({ accepted: false, code: "RUN_NOT_FOUND" });
-    await expect(backend.deliverInterAgentMessage({} as never))
-      .resolves.toMatchObject({ accepted: false, code: "RUN_NOT_FOUND" });
-    await expect(backend.approveToolInvocation("/Reviewer", "inv-1", true))
-      .resolves.toMatchObject({ accepted: false, code: "RUN_NOT_FOUND" });
-    await expect(backend.interruptMember("/Reviewer", "reviewer-run"))
-      .resolves.toMatchObject({ accepted: false, code: "RUN_NOT_FOUND" });
-    expect(manager.postMessage).not.toHaveBeenCalled();
-    expect(manager.deliverInterAgentMessage).not.toHaveBeenCalled();
-    expect(manager.approveToolInvocation).not.toHaveBeenCalled();
-    expect(manager.interruptMember).not.toHaveBeenCalled();
+    expect(manager.deliverToDirectAgent).toHaveBeenCalledWith("reviewer-run", message);
+    expect(manager.executeDirectAgentCommand).toHaveBeenCalledWith("reviewer-run", command);
   });
 
-  it("forwards the current Agent event unchanged from the manager subscription", () => {
-    const manager = createManager();
-    const backend = new MixedTeamRunBackend(createBackendContext(), manager as never);
-    const observed: TeamRunEvent[] = [];
-    const unsubscribe = backend.subscribeToEvents((event) => observed.push(event));
-    const event: TeamRunEvent = {
-      eventSourceType: TeamRunEventSourceType.AGENT,
-      execution: createTeamAgentExecutionBinding({
-        executionAddress: createTeamExecutionAddress({
-          rootTeamRunId: "team-mixed-1",
-          memberAddress: "/Coordinator",
-        }),
-        agentRunId: "coord-run",
-      }),
-      payload: {
-        eventType: "SEGMENT_CONTENT",
-        details: { segmentId: "seg-1", turnId: "turn-1", segmentType: "text", delta: "hello" },
-        statusHint: null,
-      },
-    };
+  it("forwards prepared task execution, settlement, and termination capabilities without alternate ownership", async () => {
+    const { backend, manager } = createHarness();
+    const taskAgentInput = { taskId: "task-agent-1" } as never;
+    const taskTeamInput = { taskId: "task-team-1" } as never;
+    const preparedAgent = Object.freeze({ executionKind: "task_agent" });
+    const preparedTeam = Object.freeze({ executionKind: "task_agent_team" });
+    const preparedSettlement = Object.freeze({ taskId: "task-agent-1" });
+    const preparedTermination = Object.freeze({ commit: vi.fn(), cancel: vi.fn() });
+    manager.prepareTaskAgent.mockResolvedValue(preparedAgent);
+    manager.prepareTaskTeam.mockResolvedValue(preparedTeam);
+    manager.prepareDirectTaskSettlement.mockResolvedValue(preparedSettlement);
+    manager.prepareTermination.mockResolvedValue(preparedTermination);
 
-    manager.emit(event);
-    expect(observed).toEqual([event]);
-    unsubscribe();
-    manager.emit(event);
-    expect(observed).toEqual([event]);
+    await expect(backend.prepareTaskAgent(taskAgentInput)).resolves.toBe(preparedAgent);
+    await expect(backend.prepareTaskTeam(taskTeamInput)).resolves.toBe(preparedTeam);
+    await expect(backend.prepareDirectTaskSettlement("task-agent-1", { agentRunId: "task-agent-run" })).resolves.toBe(preparedSettlement);
+    await expect(backend.prepareTermination()).resolves.toBe(preparedTermination);
+    await expect(backend.terminate()).resolves.toEqual({ accepted: true });
+
+    expect(manager.prepareTaskAgent).toHaveBeenCalledWith(taskAgentInput);
+    expect(manager.prepareTaskTeam).toHaveBeenCalledWith(taskTeamInput);
+    expect(manager.prepareDirectTaskSettlement).toHaveBeenCalledWith("task-agent-1", { agentRunId: "task-agent-run" });
+    expect(manager.terminate).toHaveBeenCalledOnce();
   });
 });

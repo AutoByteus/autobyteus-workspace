@@ -5,12 +5,7 @@ export declare const teamStreamClientMessageSchema: z.ZodDiscriminatedUnion<[z.Z
         content: z.ZodString;
         context_file_paths: z.ZodArray<z.ZodString>;
         image_urls: z.ZodArray<z.ZodString>;
-        execution_address: z.ZodObject<{
-            root_team_run_id: z.ZodString;
-            task_team_run_ids: z.ZodArray<z.ZodString>;
-            member_address: z.ZodString;
-            task_agent_run_id: z.ZodNullable<z.ZodString>;
-        }, z.core.$strict>;
+        agent_run_id: z.ZodString;
         message_id: z.ZodString;
         dedupe_key: z.ZodString;
     }, z.core.$strict>;
@@ -18,35 +13,20 @@ export declare const teamStreamClientMessageSchema: z.ZodDiscriminatedUnion<[z.Z
     type: z.ZodLiteral<"INTERRUPT_GENERATION">;
     payload: z.ZodObject<{
         command_id: z.ZodString;
-        execution_address: z.ZodObject<{
-            root_team_run_id: z.ZodString;
-            task_team_run_ids: z.ZodArray<z.ZodString>;
-            member_address: z.ZodString;
-            task_agent_run_id: z.ZodNullable<z.ZodString>;
-        }, z.core.$strict>;
+        agent_run_id: z.ZodString;
     }, z.core.$strict>;
 }, z.core.$strict>, z.ZodObject<{
     type: z.ZodLiteral<"APPROVE_TOOL">;
     payload: z.ZodObject<{
         invocation_id: z.ZodString;
-        execution_address: z.ZodObject<{
-            root_team_run_id: z.ZodString;
-            task_team_run_ids: z.ZodArray<z.ZodString>;
-            member_address: z.ZodString;
-            task_agent_run_id: z.ZodNullable<z.ZodString>;
-        }, z.core.$strict>;
+        agent_run_id: z.ZodString;
         reason: z.ZodNullable<z.ZodString>;
     }, z.core.$strict>;
 }, z.core.$strict>, z.ZodObject<{
     type: z.ZodLiteral<"DENY_TOOL">;
     payload: z.ZodObject<{
         invocation_id: z.ZodString;
-        execution_address: z.ZodObject<{
-            root_team_run_id: z.ZodString;
-            task_team_run_ids: z.ZodArray<z.ZodString>;
-            member_address: z.ZodString;
-            task_agent_run_id: z.ZodNullable<z.ZodString>;
-        }, z.core.$strict>;
+        agent_run_id: z.ZodString;
         reason: z.ZodNullable<z.ZodString>;
     }, z.core.$strict>;
 }, z.core.$strict>], "type">;

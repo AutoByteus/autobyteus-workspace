@@ -1,5 +1,4 @@
 import { AgentRunEventType } from "../../agent-execution/domain/agent-run-event.js";
-import { serializeTeamExecutionAddress } from "../../agent-team-execution/domain/team-execution-address.js";
 import type { ChannelRunOutputTarget } from "../domain/models.js";
 import type { ParsedChannelOutputEvent } from "./channel-output-event-parser.js";
 
@@ -19,8 +18,8 @@ export class ChannelRunOutputEligibilityPolicy {
     if (target.targetType === "AGENT") {
       return !event.teamRunId && event.agentRunId === target.agentRunId ? { event, target } : null;
     }
-    if (event.teamRunId !== target.teamRunId || !target.entryExecutionAddress || !event.executionAddress) return null;
-    return serializeTeamExecutionAddress(event.executionAddress) === serializeTeamExecutionAddress(target.entryExecutionAddress)
+    if (event.teamRunId !== target.teamRunId || !target.entryAgentRunId) return null;
+    return event.agentRunId === target.entryAgentRunId
       ? { event, target }
       : null;
   }

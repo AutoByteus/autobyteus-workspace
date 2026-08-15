@@ -1,41 +1,18 @@
 import { describe, expect, it } from "vitest";
 import { buildAgentRunMessageSenderContext } from "../../../../src/agent-communication/domain/agent-run-message-sender.js";
 import { GetHandoffRulesService } from "../../../../src/agent-communication/services/get-handoff-rules-service.js";
-import { MemberCollaborationContext } from "../../../../src/agent-team-execution/domain/member-collaboration-context.js";
-import { createMemberLogicalAddressContext } from "../../../../src/agent-team-execution/domain/member-logical-address-context.js";
-import { MemberTeamContext } from "../../../../src/agent-team-execution/domain/member-team-context.js";
-import { TeamBackendKind } from "../../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { createBoundAutoByteusGetHandoffRulesTool } from "../../../../src/agent-tools/agent-communication/get-handoff-rules.js";
 import { GetHandoffRulesMcpAdapterProvider } from "../../../../src/agent-tools/mcp/providers/get-handoff-rules-mcp-adapter-provider.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
+import { testMemberTeamContext } from "../../../fixtures/current-team-run-fixtures.js";
 
-const buildContext = (handoffs: Array<{ from: string; to: string; rules: string[] }>) => {
-  const collaboration = new MemberCollaborationContext({
-    addressing: createMemberLogicalAddressContext({
-      rootTeamRunId: "root-run",
-      memberAddress: "/research_team/research_lead",
-    }),
-    outgoingHandoffs: handoffs,
-  });
-  return new MemberTeamContext({
-    teamRunId: "research-run",
-    teamDefinitionId: "research-team",
-    teamName: "Research team",
-    teamBackendKind: TeamBackendKind.MIXED,
-    teamAddress: "/research_team",
+const buildContext = (handoffs: Array<{ from: string; to: string; rules: string[] }>) =>
+  testMemberTeamContext({
+    rootTeamRunId: "root-run",
     memberAddress: "/research_team/research_lead",
     agentRunId: "run-research-lead",
-    runtimeKind: RuntimeKind.AUTOBYTEUS,
-    coordinatorAddress: "/research_team/research_lead",
-    collaboration,
-    executionAddress: {
-      rootTeamRunId: "root-run",
-      taskTeamRunIds: [],
-      memberAddress: "/research_team/research_lead",
-      taskAgentRunId: null,
-    },
+    outgoingHandoffs: handoffs,
   });
-};
 
 describe("get_handoff_rules", () => {
   it("returns only the bound sender's ordered outgoing handoffs in canonical AutoByteus JSON", async () => {
@@ -88,7 +65,7 @@ describe("get_handoff_rules", () => {
     const service = new GetHandoffRulesService();
     const memberTeamContext = buildContext([]);
     const sender = buildAgentRunMessageSenderContext({
-      senderRunId: memberTeamContext.agentRunId,
+      senderRunId: memberTeamContext.identity.agentRunId,
       senderName: "research_lead",
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
       memberTeamContext,

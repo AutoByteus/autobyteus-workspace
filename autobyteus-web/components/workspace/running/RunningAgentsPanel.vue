@@ -29,7 +29,6 @@
             :definition-name="group.definitionName"
             :runs="group.runs"
             :selected-run-id="selectedTeamRunId"
-            :coordinator-address="getCoordinatorAddress(group.runs[0] || null)"
             @create="createTeamRun"
             @select="selectTeamRun"
             @delete="deleteTeamRun"
@@ -56,8 +55,6 @@ import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
 import { buildEditableAgentRunSeed, buildEditableTeamRunSeed } from '~/composables/useDefinitionLaunchDefaults';
 import type { AgentContext } from '~/types/agent/AgentContext';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
-import type { TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
-import { getHistoricalTeamHydrationUpdatedAt } from '~/services/runHydration/teamRunContextHydrationService';
 import RunningAgentGroup from './RunningAgentGroup.vue';
 import RunningTeamGroup from './RunningTeamGroup.vue';
 
@@ -93,13 +90,13 @@ const agentGroups = computed(() => {
 const teamGroups = computed(() => {
   const grouped = new Map<string, AgentTeamContext[]>();
   for (const team of teamContextsStore.allTeamRuns) {
-    const defId = team.topology.rootTeam.teamDefinitionId;
+    const defId = team.view.getConfigurationView().teamDefinitionId;
     if (!grouped.has(defId)) grouped.set(defId, []);
     grouped.get(defId)!.push(team);
   }
   return Array.from(grouped.entries()).map(([definitionId, runs]) => ({
     definitionId,
-    definitionName: runs[0]?.topology.teamDefinitionName || 'Team',
+    definitionName: runs[0]?.view.getTeamDefinitionName() || 'Team',
     runs,
   }));
 });
@@ -149,16 +146,11 @@ const getSelectedTeamSourceForDefinition = (definitionId: string): AgentTeamCont
   }
 
   const selectedTeam = teamContextsStore.getTeamContextById(selectionStore.selectedRunId);
-  return selectedTeam?.topology.rootTeam.teamDefinitionId === definitionId ? selectedTeam : null;
+  return selectedTeam?.view.getConfigurationView().teamDefinitionId === definitionId ? selectedTeam : null;
 };
 
 const getTeamUpdatedAt = (team: AgentTeamContext): string | null | undefined => {
-  const historicalUpdatedAt = getHistoricalTeamHydrationUpdatedAt(team.executions.getRootTeamRunId());
-  if (historicalUpdatedAt) {
-    return historicalUpdatedAt;
-  }
-
-  return team.executions.listAgentContextEntries()
+  return team.view.listAgentContextEntries()
     .map(({ agentContext }) => agentContext.state.conversation?.updatedAt)
     .sort((left, right) => toTimestamp(right) - toTimestamp(left))[0] ?? null;
 };
@@ -195,7 +187,7 @@ const createTeamRun = (definitionId: string) => {
       : null);
 
   if (sourceTeam) {
-    teamRunConfigStore.setConfig(buildEditableTeamRunSeed(sourceTeam.topology.getConfigurationView()));
+    teamRunConfigStore.setConfig(buildEditableTeamRunSeed(sourceTeam.view.getConfigurationView()));
   } else {
     teamRunConfigStore.setTemplate(definition);
   }
@@ -215,14 +207,10 @@ const selectTeamRun = (runId: string) => {
   emit('run-selected', { type: 'team', runId });
 };
 
-const selectTeamMember = (teamRunId: string, executionAddress: TeamExecutionAddress) => {
+const selectTeamMember = (teamRunId: string, agentRunId: string) => {
   selectionStore.selectRun(teamRunId, 'team');
-  void runHistoryStore.focusTeamMemberAndEnsureHydrated(teamRunId, executionAddress);
+  void runHistoryStore.focusTeamMemberAndEnsureHydrated(teamRunId, agentRunId);
   emit('run-selected', { type: 'team', runId: teamRunId });
-};
-
-const getCoordinatorAddress = (team: AgentTeamContext | null): string | undefined => {
-  return team?.topology.rootTeam.coordinatorAddress || undefined;
 };
 
 const deleteAgentRun = async (runId: string) => {

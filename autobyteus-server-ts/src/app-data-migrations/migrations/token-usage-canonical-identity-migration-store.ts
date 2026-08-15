@@ -3,7 +3,7 @@ import { createConfiguredPrismaClient } from "../../config/prisma-client-factory
 import {
   parseTeamExecutionAddress,
   serializeTeamExecutionAddress,
-} from "../../agent-team-execution/domain/team-execution-address.js";
+} from "../legacy/team-execution-address.js";
 import type { RawTokenUsageLedgerBackfillRow } from "./token-usage-canonical-execution-address-planner.js";
 
 export type TokenUsageCanonicalIdentityUpdate = Readonly<{

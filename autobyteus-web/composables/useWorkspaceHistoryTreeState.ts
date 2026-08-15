@@ -6,7 +6,6 @@ import type {
   TeamTreeNode,
 } from '~/stores/runHistoryTypes';
 import type { RunTreeWorkspaceNode } from '~/utils/runTreeProjection';
-import type { TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 
 interface RunHistoryTreeStoreLike {
   selectedRunId: string | null;
@@ -23,9 +22,9 @@ interface RunHistoryTreeStoreLike {
     workspaceId: string;
     teamDefinitionGroupKey: string;
   } | null;
-  getTeamMemberNavigationAncestorAddresses: (
+  getTeamMemberNavigationAncestorRowKeys: (
     teamRunId: string,
-    executionAddress: TeamExecutionAddress,
+    agentRunId: string,
   ) => string[];
 }
 
@@ -122,13 +121,13 @@ export const useWorkspaceHistoryTreeState = (params: {
   const teamMemberKey = (
     workspaceId: string,
     teamRunId: string,
-    memberAddress: string,
+    rowKey: string,
   ): string => {
     const normalizedWorkspace = workspaceKey(workspaceId);
     const normalizedTeamRunId = teamRunId.trim();
-    const normalizedMemberAddress = memberAddress.trim();
-    return normalizedWorkspace && normalizedTeamRunId && normalizedMemberAddress
-      ? `${normalizedWorkspace}::team-member::${normalizedTeamRunId}::${normalizedMemberAddress}`
+    const normalizedRowKey = rowKey.trim();
+    return normalizedWorkspace && normalizedTeamRunId && normalizedRowKey
+      ? `${normalizedWorkspace}::team-member::${normalizedTeamRunId}::${normalizedRowKey}`
       : '';
   };
 
@@ -236,19 +235,19 @@ export const useWorkspaceHistoryTreeState = (params: {
   const isTeamMemberExpanded = (
     workspaceId: string,
     teamRunId: string,
-    memberAddress: string,
+    rowKey: string,
   ): boolean => {
-    const key = teamMemberKey(workspaceId, teamRunId, memberAddress);
+    const key = teamMemberKey(workspaceId, teamRunId, rowKey);
     return key ? expandedTeamMembers.value[key] ?? false : false;
   };
 
   const setTeamMemberExpanded = (
     workspaceId: string,
     teamRunId: string,
-    memberAddress: string,
+    rowKey: string,
     expanded: boolean,
   ): void => {
-    const key = teamMemberKey(workspaceId, teamRunId, memberAddress);
+    const key = teamMemberKey(workspaceId, teamRunId, rowKey);
     if (!key) {
       return;
     }
@@ -262,27 +261,27 @@ export const useWorkspaceHistoryTreeState = (params: {
   const toggleTeamMember = (
     workspaceId: string,
     teamRunId: string,
-    memberAddress: string,
+    rowKey: string,
   ): void => {
     setTeamMemberExpanded(
       workspaceId,
       teamRunId,
-      memberAddress,
-      !isTeamMemberExpanded(workspaceId, teamRunId, memberAddress),
+      rowKey,
+      !isTeamMemberExpanded(workspaceId, teamRunId, rowKey),
     );
   };
 
   const expandTeamMemberAncestors = (
     workspaceId: string,
     teamRunId: string,
-    executionAddress: TeamExecutionAddress,
+    agentRunId: string,
   ): boolean => {
-    const ancestorAddresses = params.runHistoryStore
-      .getTeamMemberNavigationAncestorAddresses(teamRunId, executionAddress);
-    for (const ancestorAddress of ancestorAddresses) {
-      setTeamMemberExpanded(workspaceId, teamRunId, ancestorAddress, true);
+    const ancestorRowKeys = params.runHistoryStore
+      .getTeamMemberNavigationAncestorRowKeys(teamRunId, agentRunId);
+    for (const ancestorRowKey of ancestorRowKeys) {
+      setTeamMemberExpanded(workspaceId, teamRunId, ancestorRowKey, true);
     }
-    return ancestorAddresses.length > 0;
+    return ancestorRowKeys.length > 0;
   };
 
   const revealAgentRunAncestry = (runId: string): boolean => {

@@ -84,7 +84,6 @@
 import { computed, ref, watch } from 'vue';
 import { Icon } from '@iconify/vue';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
-import type { TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 import { useHorizontalSplitResize } from '~/composables/useHorizontalSplitResize';
 import { deriveDelegatedTaskEntries, type DelegatedTaskEntry } from '~/utils/teamDelegatedTaskEntries';
 import TeamDelegatedTaskDetailPane from '~/components/workspace/team/TeamDelegatedTaskDetailPane.vue';
@@ -92,10 +91,10 @@ import TeamDelegatedTaskNavigator from '~/components/workspace/team/TeamDelegate
 
 const props = withDefaults(defineProps<{
   teamContext: AgentTeamContext;
-  focusedAddress?: TeamExecutionAddress | null;
+  focusedAgentRunId?: string | null;
   collapsed?: boolean;
 }>(), {
-  focusedAddress: undefined,
+  focusedAgentRunId: undefined,
   collapsed: false,
 });
 
@@ -112,10 +111,10 @@ const { paneWidth: leftPaneWidth, startResize } = useHorizontalSplitResize({
   maxWidth: 360,
 });
 
-const rootTeamRunId = computed(() => props.teamContext.executions.getRootTeamRunId());
+const rootTeamRunId = computed(() => props.teamContext.view.getRootTeamRunId());
 const delegatedTaskEntries = computed<DelegatedTaskEntry[]>(() => deriveDelegatedTaskEntries(
   props.teamContext,
-  props.focusedAddress,
+  props.focusedAgentRunId,
 ));
 const selectedEntry = computed(() => (
   delegatedTaskEntries.value.find((entry) => entry.entryKey === selectedEntryKey.value) ?? null

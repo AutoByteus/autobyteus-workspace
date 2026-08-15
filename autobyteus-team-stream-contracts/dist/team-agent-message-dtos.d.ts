@@ -10,121 +10,25 @@ export declare const teamAgentSegmentTypeSchema: z.ZodEnum<{
 }>;
 export declare const teamAgentPayloadSchemas: {
     readonly TURN_STARTED: z.ZodObject<{
-        agent_execution: z.ZodUnion<readonly [z.ZodObject<{
-            kind: z.ZodLiteral<"persistent_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-        }, z.core.$strict>, z.ZodObject<{
-            kind: z.ZodLiteral<"task_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-        }, z.core.$strict>, z.ZodObject<{
-            kind: z.ZodLiteral<"task_team_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-            agent_run_id: z.ZodString;
-        }, z.core.$strict>]>;
+        change_sequence: z.ZodNumber;
+        agent_run_id: z.ZodString;
         turn_id: z.ZodNullable<z.ZodString>;
     }, z.core.$strict>;
     readonly TURN_COMPLETED: z.ZodObject<{
-        agent_execution: z.ZodUnion<readonly [z.ZodObject<{
-            kind: z.ZodLiteral<"persistent_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-        }, z.core.$strict>, z.ZodObject<{
-            kind: z.ZodLiteral<"task_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-        }, z.core.$strict>, z.ZodObject<{
-            kind: z.ZodLiteral<"task_team_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-            agent_run_id: z.ZodString;
-        }, z.core.$strict>]>;
+        change_sequence: z.ZodNumber;
+        agent_run_id: z.ZodString;
         turn_id: z.ZodNullable<z.ZodString>;
         reason: z.ZodNullable<z.ZodString>;
     }, z.core.$strict>;
     readonly TURN_INTERRUPTED: z.ZodObject<{
-        agent_execution: z.ZodUnion<readonly [z.ZodObject<{
-            kind: z.ZodLiteral<"persistent_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-        }, z.core.$strict>, z.ZodObject<{
-            kind: z.ZodLiteral<"task_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-        }, z.core.$strict>, z.ZodObject<{
-            kind: z.ZodLiteral<"task_team_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-            agent_run_id: z.ZodString;
-        }, z.core.$strict>]>;
+        change_sequence: z.ZodNumber;
+        agent_run_id: z.ZodString;
         turn_id: z.ZodNullable<z.ZodString>;
         reason: z.ZodNullable<z.ZodString>;
     }, z.core.$strict>;
     readonly SEGMENT_START: z.ZodObject<{
-        agent_execution: z.ZodUnion<readonly [z.ZodObject<{
-            kind: z.ZodLiteral<"persistent_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-        }, z.core.$strict>, z.ZodObject<{
-            kind: z.ZodLiteral<"task_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-        }, z.core.$strict>, z.ZodObject<{
-            kind: z.ZodLiteral<"task_team_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-            agent_run_id: z.ZodString;
-        }, z.core.$strict>]>;
+        change_sequence: z.ZodNumber;
+        agent_run_id: z.ZodString;
         segment_id: z.ZodString;
         turn_id: z.ZodString;
         segment_type: z.ZodEnum<{
@@ -139,32 +43,8 @@ export declare const teamAgentPayloadSchemas: {
         metadata: z.ZodNullable<z.ZodType<import("./schema-helpers.js").JsonValue, unknown, z.core.$ZodTypeInternals<import("./schema-helpers.js").JsonValue, unknown>>>;
     }, z.core.$strict>;
     readonly SEGMENT_CONTENT: z.ZodObject<{
-        agent_execution: z.ZodUnion<readonly [z.ZodObject<{
-            kind: z.ZodLiteral<"persistent_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-        }, z.core.$strict>, z.ZodObject<{
-            kind: z.ZodLiteral<"task_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-        }, z.core.$strict>, z.ZodObject<{
-            kind: z.ZodLiteral<"task_team_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-            agent_run_id: z.ZodString;
-        }, z.core.$strict>]>;
+        change_sequence: z.ZodNumber;
+        agent_run_id: z.ZodString;
         segment_id: z.ZodString;
         turn_id: z.ZodString;
         segment_type: z.ZodEnum<{
@@ -179,32 +59,8 @@ export declare const teamAgentPayloadSchemas: {
         delta: z.ZodString;
     }, z.core.$strict>;
     readonly SEGMENT_END: z.ZodObject<{
-        agent_execution: z.ZodUnion<readonly [z.ZodObject<{
-            kind: z.ZodLiteral<"persistent_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-        }, z.core.$strict>, z.ZodObject<{
-            kind: z.ZodLiteral<"task_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-        }, z.core.$strict>, z.ZodObject<{
-            kind: z.ZodLiteral<"task_team_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-            agent_run_id: z.ZodString;
-        }, z.core.$strict>]>;
+        change_sequence: z.ZodNumber;
+        agent_run_id: z.ZodString;
         segment_id: z.ZodString;
         turn_id: z.ZodString;
         metadata: z.ZodNullable<z.ZodType<import("./schema-helpers.js").JsonValue, unknown, z.core.$ZodTypeInternals<import("./schema-helpers.js").JsonValue, unknown>>>;
@@ -214,32 +70,8 @@ export declare const teamAgentPayloadSchemas: {
         error: z.ZodNullable<z.ZodString>;
     }, z.core.$strict>;
     readonly AGENT_STATUS: z.ZodObject<{
-        agent_execution: z.ZodUnion<readonly [z.ZodObject<{
-            kind: z.ZodLiteral<"persistent_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-        }, z.core.$strict>, z.ZodObject<{
-            kind: z.ZodLiteral<"task_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-        }, z.core.$strict>, z.ZodObject<{
-            kind: z.ZodLiteral<"task_team_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-            agent_run_id: z.ZodString;
-        }, z.core.$strict>]>;
+        change_sequence: z.ZodNumber;
+        agent_run_id: z.ZodString;
         status: z.ZodEnum<{
             error: "error";
             offline: "offline";
@@ -253,32 +85,8 @@ export declare const teamAgentPayloadSchemas: {
         error_details: z.ZodNullable<z.ZodString>;
     }, z.core.$strict>;
     readonly COMPACTION_STATUS: z.ZodObject<{
-        agent_execution: z.ZodUnion<readonly [z.ZodObject<{
-            kind: z.ZodLiteral<"persistent_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-        }, z.core.$strict>, z.ZodObject<{
-            kind: z.ZodLiteral<"task_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-        }, z.core.$strict>, z.ZodObject<{
-            kind: z.ZodLiteral<"task_team_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-            agent_run_id: z.ZodString;
-        }, z.core.$strict>]>;
+        change_sequence: z.ZodNumber;
+        agent_run_id: z.ZodString;
         phase: z.ZodNullable<z.ZodString>;
         kind: z.ZodNullable<z.ZodString>;
         status: z.ZodNullable<z.ZodString>;
@@ -309,32 +117,8 @@ export declare const teamAgentPayloadSchemas: {
         rotation_eligible: z.ZodNullable<z.ZodBoolean>;
     }, z.core.$strict>;
     readonly TOKEN_USAGE_UPDATED: z.ZodObject<{
-        agent_execution: z.ZodUnion<readonly [z.ZodObject<{
-            kind: z.ZodLiteral<"persistent_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-        }, z.core.$strict>, z.ZodObject<{
-            kind: z.ZodLiteral<"task_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-        }, z.core.$strict>, z.ZodObject<{
-            kind: z.ZodLiteral<"task_team_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-            agent_run_id: z.ZodString;
-        }, z.core.$strict>]>;
+        change_sequence: z.ZodNumber;
+        agent_run_id: z.ZodString;
         usage_event_id: z.ZodString;
         idempotency_key: z.ZodString;
         observed_at: z.ZodString;
@@ -403,32 +187,8 @@ export declare const teamAgentPayloadSchemas: {
         quality_flags: z.ZodArray<z.ZodString>;
     }, z.core.$strict>;
     readonly ASSISTANT_COMPLETE: z.ZodObject<{
-        agent_execution: z.ZodUnion<readonly [z.ZodObject<{
-            kind: z.ZodLiteral<"persistent_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-        }, z.core.$strict>, z.ZodObject<{
-            kind: z.ZodLiteral<"task_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-        }, z.core.$strict>, z.ZodObject<{
-            kind: z.ZodLiteral<"task_team_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-            agent_run_id: z.ZodString;
-        }, z.core.$strict>]>;
+        change_sequence: z.ZodNumber;
+        agent_run_id: z.ZodString;
         content: z.ZodNullable<z.ZodString>;
         reasoning: z.ZodNullable<z.ZodString>;
         usage: z.ZodNullable<z.ZodType<import("./schema-helpers.js").JsonValue, unknown, z.core.$ZodTypeInternals<import("./schema-helpers.js").JsonValue, unknown>>>;
@@ -437,96 +197,24 @@ export declare const teamAgentPayloadSchemas: {
         video_urls: z.ZodArray<z.ZodString>;
     }, z.core.$strict>;
     readonly TOOL_APPROVAL_REQUESTED: z.ZodObject<{
-        agent_execution: z.ZodUnion<readonly [z.ZodObject<{
-            kind: z.ZodLiteral<"persistent_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-        }, z.core.$strict>, z.ZodObject<{
-            kind: z.ZodLiteral<"task_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-        }, z.core.$strict>, z.ZodObject<{
-            kind: z.ZodLiteral<"task_team_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-            agent_run_id: z.ZodString;
-        }, z.core.$strict>]>;
+        change_sequence: z.ZodNumber;
+        agent_run_id: z.ZodString;
         arguments: z.ZodType<import("./schema-helpers.js").JsonValue, unknown, z.core.$ZodTypeInternals<import("./schema-helpers.js").JsonValue, unknown>>;
         invocation_id: z.ZodString;
         tool_name: z.ZodString;
         turn_id: z.ZodNullable<z.ZodString>;
     }, z.core.$strict>;
     readonly TOOL_APPROVED: z.ZodObject<{
-        agent_execution: z.ZodUnion<readonly [z.ZodObject<{
-            kind: z.ZodLiteral<"persistent_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-        }, z.core.$strict>, z.ZodObject<{
-            kind: z.ZodLiteral<"task_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-        }, z.core.$strict>, z.ZodObject<{
-            kind: z.ZodLiteral<"task_team_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-            agent_run_id: z.ZodString;
-        }, z.core.$strict>]>;
+        change_sequence: z.ZodNumber;
+        agent_run_id: z.ZodString;
         reason: z.ZodNullable<z.ZodString>;
         invocation_id: z.ZodString;
         tool_name: z.ZodString;
         turn_id: z.ZodNullable<z.ZodString>;
     }, z.core.$strict>;
     readonly TOOL_DENIED: z.ZodObject<{
-        agent_execution: z.ZodUnion<readonly [z.ZodObject<{
-            kind: z.ZodLiteral<"persistent_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-        }, z.core.$strict>, z.ZodObject<{
-            kind: z.ZodLiteral<"task_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-        }, z.core.$strict>, z.ZodObject<{
-            kind: z.ZodLiteral<"task_team_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-            agent_run_id: z.ZodString;
-        }, z.core.$strict>]>;
+        change_sequence: z.ZodNumber;
+        agent_run_id: z.ZodString;
         arguments: z.ZodNullable<z.ZodType<import("./schema-helpers.js").JsonValue, unknown, z.core.$ZodTypeInternals<import("./schema-helpers.js").JsonValue, unknown>>>;
         reason: z.ZodNullable<z.ZodString>;
         error: z.ZodNullable<z.ZodString>;
@@ -535,64 +223,16 @@ export declare const teamAgentPayloadSchemas: {
         turn_id: z.ZodNullable<z.ZodString>;
     }, z.core.$strict>;
     readonly TOOL_EXECUTION_STARTED: z.ZodObject<{
-        agent_execution: z.ZodUnion<readonly [z.ZodObject<{
-            kind: z.ZodLiteral<"persistent_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-        }, z.core.$strict>, z.ZodObject<{
-            kind: z.ZodLiteral<"task_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-        }, z.core.$strict>, z.ZodObject<{
-            kind: z.ZodLiteral<"task_team_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-            agent_run_id: z.ZodString;
-        }, z.core.$strict>]>;
+        change_sequence: z.ZodNumber;
+        agent_run_id: z.ZodString;
         arguments: z.ZodNullable<z.ZodType<import("./schema-helpers.js").JsonValue, unknown, z.core.$ZodTypeInternals<import("./schema-helpers.js").JsonValue, unknown>>>;
         invocation_id: z.ZodString;
         tool_name: z.ZodString;
         turn_id: z.ZodNullable<z.ZodString>;
     }, z.core.$strict>;
     readonly TOOL_EXECUTION_SUCCEEDED: z.ZodObject<{
-        agent_execution: z.ZodUnion<readonly [z.ZodObject<{
-            kind: z.ZodLiteral<"persistent_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-        }, z.core.$strict>, z.ZodObject<{
-            kind: z.ZodLiteral<"task_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-        }, z.core.$strict>, z.ZodObject<{
-            kind: z.ZodLiteral<"task_team_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-            agent_run_id: z.ZodString;
-        }, z.core.$strict>]>;
+        change_sequence: z.ZodNumber;
+        agent_run_id: z.ZodString;
         arguments: z.ZodNullable<z.ZodType<import("./schema-helpers.js").JsonValue, unknown, z.core.$ZodTypeInternals<import("./schema-helpers.js").JsonValue, unknown>>>;
         result: z.ZodNullable<z.ZodType<import("./schema-helpers.js").JsonValue, unknown, z.core.$ZodTypeInternals<import("./schema-helpers.js").JsonValue, unknown>>>;
         invocation_id: z.ZodString;
@@ -600,32 +240,8 @@ export declare const teamAgentPayloadSchemas: {
         turn_id: z.ZodNullable<z.ZodString>;
     }, z.core.$strict>;
     readonly TOOL_EXECUTION_FAILED: z.ZodObject<{
-        agent_execution: z.ZodUnion<readonly [z.ZodObject<{
-            kind: z.ZodLiteral<"persistent_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-        }, z.core.$strict>, z.ZodObject<{
-            kind: z.ZodLiteral<"task_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-        }, z.core.$strict>, z.ZodObject<{
-            kind: z.ZodLiteral<"task_team_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-            agent_run_id: z.ZodString;
-        }, z.core.$strict>]>;
+        change_sequence: z.ZodNumber;
+        agent_run_id: z.ZodString;
         arguments: z.ZodNullable<z.ZodType<import("./schema-helpers.js").JsonValue, unknown, z.core.$ZodTypeInternals<import("./schema-helpers.js").JsonValue, unknown>>>;
         error: z.ZodString;
         invocation_id: z.ZodString;
@@ -633,32 +249,8 @@ export declare const teamAgentPayloadSchemas: {
         turn_id: z.ZodNullable<z.ZodString>;
     }, z.core.$strict>;
     readonly TOOL_EXECUTION_INTERRUPTED: z.ZodObject<{
-        agent_execution: z.ZodUnion<readonly [z.ZodObject<{
-            kind: z.ZodLiteral<"persistent_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-        }, z.core.$strict>, z.ZodObject<{
-            kind: z.ZodLiteral<"task_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-        }, z.core.$strict>, z.ZodObject<{
-            kind: z.ZodLiteral<"task_team_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-            agent_run_id: z.ZodString;
-        }, z.core.$strict>]>;
+        change_sequence: z.ZodNumber;
+        agent_run_id: z.ZodString;
         arguments: z.ZodNullable<z.ZodType<import("./schema-helpers.js").JsonValue, unknown, z.core.$ZodTypeInternals<import("./schema-helpers.js").JsonValue, unknown>>>;
         reason: z.ZodString;
         invocation_id: z.ZodString;
@@ -666,64 +258,16 @@ export declare const teamAgentPayloadSchemas: {
         turn_id: z.ZodNullable<z.ZodString>;
     }, z.core.$strict>;
     readonly TOOL_LOG: z.ZodObject<{
-        agent_execution: z.ZodUnion<readonly [z.ZodObject<{
-            kind: z.ZodLiteral<"persistent_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-        }, z.core.$strict>, z.ZodObject<{
-            kind: z.ZodLiteral<"task_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-        }, z.core.$strict>, z.ZodObject<{
-            kind: z.ZodLiteral<"task_team_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-            agent_run_id: z.ZodString;
-        }, z.core.$strict>]>;
+        change_sequence: z.ZodNumber;
+        agent_run_id: z.ZodString;
         log_entry: z.ZodString;
         tool_invocation_id: z.ZodString;
         tool_name: z.ZodString;
         turn_id: z.ZodNullable<z.ZodString>;
     }, z.core.$strict>;
     readonly TODO_LIST_UPDATE: z.ZodObject<{
-        agent_execution: z.ZodUnion<readonly [z.ZodObject<{
-            kind: z.ZodLiteral<"persistent_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-        }, z.core.$strict>, z.ZodObject<{
-            kind: z.ZodLiteral<"task_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-        }, z.core.$strict>, z.ZodObject<{
-            kind: z.ZodLiteral<"task_team_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-            agent_run_id: z.ZodString;
-        }, z.core.$strict>]>;
+        change_sequence: z.ZodNumber;
+        agent_run_id: z.ZodString;
         todos: z.ZodArray<z.ZodObject<{
             todo_id: z.ZodString;
             description: z.ZodString;
@@ -735,72 +279,22 @@ export declare const teamAgentPayloadSchemas: {
         }, z.core.$strict>>;
     }, z.core.$strict>;
     readonly SYSTEM_TASK_NOTIFICATION: z.ZodObject<{
-        agent_execution: z.ZodUnion<readonly [z.ZodObject<{
-            kind: z.ZodLiteral<"persistent_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-        }, z.core.$strict>, z.ZodObject<{
-            kind: z.ZodLiteral<"task_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-        }, z.core.$strict>, z.ZodObject<{
-            kind: z.ZodLiteral<"task_team_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-            agent_run_id: z.ZodString;
-        }, z.core.$strict>]>;
+        change_sequence: z.ZodNumber;
+        agent_run_id: z.ZodString;
         sender: z.ZodUnion<readonly [z.ZodObject<{
             kind: z.ZodLiteral<"system">;
         }, z.core.$strict>, z.ZodObject<{
             kind: z.ZodLiteral<"execution">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
+            identity: z.ZodObject<{
+                agent_run_id: z.ZodString;
                 member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
             }, z.core.$strict>;
         }, z.core.$strict>]>;
         content: z.ZodString;
     }, z.core.$strict>;
     readonly ARTIFACT_PERSISTED: z.ZodObject<{
-        agent_execution: z.ZodUnion<readonly [z.ZodObject<{
-            kind: z.ZodLiteral<"persistent_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-        }, z.core.$strict>, z.ZodObject<{
-            kind: z.ZodLiteral<"task_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-        }, z.core.$strict>, z.ZodObject<{
-            kind: z.ZodLiteral<"task_team_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-            agent_run_id: z.ZodString;
-        }, z.core.$strict>]>;
+        change_sequence: z.ZodNumber;
+        agent_run_id: z.ZodString;
         artifact_id: z.ZodString;
         path: z.ZodString;
         artifact_type: z.ZodString;
@@ -811,32 +305,8 @@ export declare const teamAgentPayloadSchemas: {
         updated_at: z.ZodString;
     }, z.core.$strict>;
     readonly FILE_CHANGE: z.ZodObject<{
-        agent_execution: z.ZodUnion<readonly [z.ZodObject<{
-            kind: z.ZodLiteral<"persistent_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-        }, z.core.$strict>, z.ZodObject<{
-            kind: z.ZodLiteral<"task_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-        }, z.core.$strict>, z.ZodObject<{
-            kind: z.ZodLiteral<"task_team_agent">;
-            execution_address: z.ZodObject<{
-                root_team_run_id: z.ZodString;
-                task_team_run_ids: z.ZodArray<z.ZodString>;
-                member_address: z.ZodString;
-                task_agent_run_id: z.ZodNullable<z.ZodString>;
-            }, z.core.$strict>;
-            agent_run_id: z.ZodString;
-        }, z.core.$strict>]>;
+        change_sequence: z.ZodNumber;
+        agent_run_id: z.ZodString;
         file_change_id: z.ZodString;
         path: z.ZodString;
         file_type: z.ZodString;
@@ -854,32 +324,8 @@ export declare const teamAgentErrorPayloadSchema: z.ZodUnion<readonly [z.ZodObje
     turn_id: z.ZodNull;
     code: z.ZodString;
     message: z.ZodString;
-    agent_execution: z.ZodUnion<readonly [z.ZodUnion<readonly [z.ZodObject<{
-        kind: z.ZodLiteral<"persistent_agent">;
-        execution_address: z.ZodObject<{
-            root_team_run_id: z.ZodString;
-            task_team_run_ids: z.ZodArray<z.ZodString>;
-            member_address: z.ZodString;
-            task_agent_run_id: z.ZodNullable<z.ZodString>;
-        }, z.core.$strict>;
-    }, z.core.$strict>, z.ZodObject<{
-        kind: z.ZodLiteral<"task_agent">;
-        execution_address: z.ZodObject<{
-            root_team_run_id: z.ZodString;
-            task_team_run_ids: z.ZodArray<z.ZodString>;
-            member_address: z.ZodString;
-            task_agent_run_id: z.ZodNullable<z.ZodString>;
-        }, z.core.$strict>;
-    }, z.core.$strict>, z.ZodObject<{
-        kind: z.ZodLiteral<"task_team_agent">;
-        execution_address: z.ZodObject<{
-            root_team_run_id: z.ZodString;
-            task_team_run_ids: z.ZodArray<z.ZodString>;
-            member_address: z.ZodString;
-            task_agent_run_id: z.ZodNullable<z.ZodString>;
-        }, z.core.$strict>;
-        agent_run_id: z.ZodString;
-    }, z.core.$strict>]>, z.ZodNull]>;
+    change_sequence: z.ZodNullable<z.ZodNumber>;
+    agent_run_id: z.ZodNullable<z.ZodString>;
 }, z.core.$strict>, z.ZodObject<{
     error_scope: z.ZodLiteral<"turn">;
     error_effect: z.ZodEnum<{
@@ -889,75 +335,22 @@ export declare const teamAgentErrorPayloadSchema: z.ZodUnion<readonly [z.ZodObje
     turn_id: z.ZodString;
     code: z.ZodString;
     message: z.ZodString;
-    agent_execution: z.ZodUnion<readonly [z.ZodUnion<readonly [z.ZodObject<{
-        kind: z.ZodLiteral<"persistent_agent">;
-        execution_address: z.ZodObject<{
-            root_team_run_id: z.ZodString;
-            task_team_run_ids: z.ZodArray<z.ZodString>;
-            member_address: z.ZodString;
-            task_agent_run_id: z.ZodNullable<z.ZodString>;
-        }, z.core.$strict>;
-    }, z.core.$strict>, z.ZodObject<{
-        kind: z.ZodLiteral<"task_agent">;
-        execution_address: z.ZodObject<{
-            root_team_run_id: z.ZodString;
-            task_team_run_ids: z.ZodArray<z.ZodString>;
-            member_address: z.ZodString;
-            task_agent_run_id: z.ZodNullable<z.ZodString>;
-        }, z.core.$strict>;
-    }, z.core.$strict>, z.ZodObject<{
-        kind: z.ZodLiteral<"task_team_agent">;
-        execution_address: z.ZodObject<{
-            root_team_run_id: z.ZodString;
-            task_team_run_ids: z.ZodArray<z.ZodString>;
-            member_address: z.ZodString;
-            task_agent_run_id: z.ZodNullable<z.ZodString>;
-        }, z.core.$strict>;
-        agent_run_id: z.ZodString;
-    }, z.core.$strict>]>, z.ZodNull]>;
+    change_sequence: z.ZodNullable<z.ZodNumber>;
+    agent_run_id: z.ZodNullable<z.ZodString>;
 }, z.core.$strict>, z.ZodObject<{
     error_scope: z.ZodLiteral<"runtime">;
     error_effect: z.ZodLiteral<"terminal">;
     turn_id: z.ZodNull;
     code: z.ZodString;
     message: z.ZodString;
-    agent_execution: z.ZodUnion<readonly [z.ZodUnion<readonly [z.ZodObject<{
-        kind: z.ZodLiteral<"persistent_agent">;
-        execution_address: z.ZodObject<{
-            root_team_run_id: z.ZodString;
-            task_team_run_ids: z.ZodArray<z.ZodString>;
-            member_address: z.ZodString;
-            task_agent_run_id: z.ZodNullable<z.ZodString>;
-        }, z.core.$strict>;
-    }, z.core.$strict>, z.ZodObject<{
-        kind: z.ZodLiteral<"task_agent">;
-        execution_address: z.ZodObject<{
-            root_team_run_id: z.ZodString;
-            task_team_run_ids: z.ZodArray<z.ZodString>;
-            member_address: z.ZodString;
-            task_agent_run_id: z.ZodNullable<z.ZodString>;
-        }, z.core.$strict>;
-    }, z.core.$strict>, z.ZodObject<{
-        kind: z.ZodLiteral<"task_team_agent">;
-        execution_address: z.ZodObject<{
-            root_team_run_id: z.ZodString;
-            task_team_run_ids: z.ZodArray<z.ZodString>;
-            member_address: z.ZodString;
-            task_agent_run_id: z.ZodNullable<z.ZodString>;
-        }, z.core.$strict>;
-        agent_run_id: z.ZodString;
-    }, z.core.$strict>]>, z.ZodNull]>;
+    change_sequence: z.ZodNullable<z.ZodNumber>;
+    agent_run_id: z.ZodNullable<z.ZodString>;
 }, z.core.$strict>]>;
 export declare const teamInterruptCommandAckPayloadSchema: z.ZodUnion<readonly [z.ZodObject<{
     command_type: z.ZodLiteral<"INTERRUPT_GENERATION">;
     command_id: z.ZodString;
     state: z.ZodLiteral<"accepted">;
-    execution_address: z.ZodObject<{
-        root_team_run_id: z.ZodString;
-        task_team_run_ids: z.ZodArray<z.ZodString>;
-        member_address: z.ZodString;
-        task_agent_run_id: z.ZodNullable<z.ZodString>;
-    }, z.core.$strict>;
+    agent_run_id: z.ZodString;
 }, z.core.$strict>, z.ZodObject<{
     command_type: z.ZodLiteral<"INTERRUPT_GENERATION">;
     command_id: z.ZodString;
@@ -967,12 +360,7 @@ export declare const teamInterruptCommandAckPayloadSchema: z.ZodUnion<readonly [
     }>;
     code: z.ZodString;
     message: z.ZodString;
-    execution_address: z.ZodObject<{
-        root_team_run_id: z.ZodString;
-        task_team_run_ids: z.ZodArray<z.ZodString>;
-        member_address: z.ZodString;
-        task_agent_run_id: z.ZodNullable<z.ZodString>;
-    }, z.core.$strict>;
+    agent_run_id: z.ZodString;
 }, z.core.$strict>]>;
 export type TeamAgentMessageType = keyof typeof teamAgentPayloadSchemas;
 export type TeamAgentPayload<T extends TeamAgentMessageType> = Readonly<z.infer<(typeof teamAgentPayloadSchemas)[T]>>;

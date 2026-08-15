@@ -153,7 +153,7 @@ const activeTracePageFields = gql`
             path file_path filepath filename target_path command cmd script query prompt url message text title name raw
           }
           approvalTarget {
-            executionAddress
+            agentRunId
           }
         }
         ... on EventMonitorMediaVisual { kind visualId eventId kindOrdinal mediaType urls }
@@ -176,10 +176,10 @@ export const GetRunEventMonitorActiveTracePage = gql`
 
 export const GetTeamMemberEventMonitorActiveTracePage = gql`
   query GetTeamMemberEventMonitorActiveTracePage(
-    $teamRunId: String!, $memberAddress: String!, $beforeCursor: String
+    $teamRunId: String!, $agentRunId: String!, $beforeCursor: String
   ) {
     getTeamMemberEventMonitorActiveTracePage(
-      teamRunId: $teamRunId, memberAddress: $memberAddress, beforeCursor: $beforeCursor
+      teamRunId: $teamRunId, agentRunId: $agentRunId, beforeCursor: $beforeCursor
     ) {
       ...EventMonitorActiveTracePageFields
     }
@@ -192,14 +192,14 @@ export const GetTeamRunResumeConfig = gql`
     getTeamRunResumeConfig(teamRunId: $teamRunId) {
       teamRunId
       isActive
-      metadata
+      executionTree
     }
   }
 `;
 
 export const GetTeamMemberRunProjection = gql`
-  query GetTeamMemberRunProjection($teamRunId: String!, $memberAddress: String!) {
-    getTeamMemberRunProjection(teamRunId: $teamRunId, memberAddress: $memberAddress) {
+  query GetTeamMemberRunProjection($teamRunId: String!, $agentRunId: String!) {
+    getTeamMemberRunProjection(teamRunId: $teamRunId, agentRunId: $agentRunId) {
       agentRunId
       summary
       lastActivityAt
@@ -215,12 +215,8 @@ export const GetTeamCommunicationMessages = gql`
   query GetTeamCommunicationMessages($teamRunId: String!) {
     getTeamCommunicationMessages(teamRunId: $teamRunId) {
       messageId
-      senderAddress {
-        rootTeamRunId taskTeamRunIds memberAddress taskAgentRunId
-      }
-      receiverAddress {
-        rootTeamRunId taskTeamRunIds memberAddress taskAgentRunId
-      }
+      senderAgentRunId
+      receiverAgentRunId
       content
       messageType
       createdAt
@@ -241,15 +237,12 @@ export const GetTaskDelegationRecords = gql`
   query GetTaskDelegationRecords($teamRunId: String!) {
     getTaskDelegationRecords(teamRunId: $teamRunId) {
       taskId
+      delegatorAgentRunId
+      recipientAddress
+      targetAgentRunId
+      targetTeamRunId
       status
-      senderAddress {
-        rootTeamRunId taskTeamRunIds memberAddress taskAgentRunId
-      }
-      receiverAddress {
-        rootTeamRunId taskTeamRunIds memberAddress taskAgentRunId
-      }
-      receiverTargetKind
-      content
+      description
       referenceFiles {
         referenceId
         path
@@ -257,24 +250,13 @@ export const GetTaskDelegationRecords = gql`
         createdAt
         updatedAt
       }
-      taskRun {
-        address {
-          rootTeamRunId taskTeamRunIds memberAddress taskAgentRunId
-        }
-        startedAt
-      }
       updates {
         kind
         submissionId
         reviewId
+        interruptionId
         reviewedSubmissionId
         decision
-        senderAddress {
-          rootTeamRunId taskTeamRunIds memberAddress taskAgentRunId
-        }
-        receiverAddress {
-          rootTeamRunId taskTeamRunIds memberAddress taskAgentRunId
-        }
         content
         referenceFiles {
           referenceId

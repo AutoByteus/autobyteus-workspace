@@ -7,7 +7,6 @@ import {
   getParentAgentTeamAddress,
   isAgentTeamAddressAncestor,
 } from "../../../src/agent-collaboration/domain/agent-team-address.js";
-import { resolveRecipientAddressExpression } from "../../../src/agent-collaboration/domain/recipient-address-expression.js";
 
 describe("canonical collaboration address derivation", () => {
   it("derives every structural view from one canonical absolute address", () => {
@@ -21,15 +20,6 @@ describe("canonical collaboration address derivation", () => {
     expect(getParentAgentTeamAddress(address)).toBe("/research_team");
     expect(isAgentTeamAddressAncestor("/research_team", address)).toBe(true);
     expect(isAgentTeamAddressAncestor(address, address)).toBe(false);
-  });
-
-  it("canonicalizes relative request expressions immediately against a derived Team address", () => {
-    expect(resolveRecipientAddressExpression("./field_team", assertAgentTeamAddress("/research_team"))).toBe(
-      "/research_team/field_team",
-    );
-    expect(resolveRecipientAddressExpression("/design_team/designer", assertAgentTeamAddress("/research_team"))).toBe(
-      "/design_team/designer",
-    );
   });
 
   it("preserves root derivations and rejects non-canonical stored identities", () => {

@@ -1,498 +1,528 @@
-import type { AgentRunIdentityAllocator } from "../../agent-execution/services/agent-run-identity-allocator.js";
-import type { TeamRun } from "../domain/team-run.js";
+import { randomUUID } from "node:crypto";
+import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
+import { SenderType } from "autobyteus-ts/agent/sender-type.js";
+import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
+import { AgentRunIdentityAllocator } from "../../agent-execution/services/agent-run-identity-allocator.js";
+import type { ResolvedTeamRecipient } from "../services/resolved-team-recipient.js";
+import { TeamExecutionScopeResolver } from "../services/team-execution-scope-resolver.js";
+import type { TeamExecutionIndex } from "../services/team-execution-index.js";
+import type { TeamRunResolver } from "../services/team-run-resolver.js";
 import {
-  getTaskAgentDirectory,
-  type TaskAgentDirectory,
-  type TaskAgentDirectoryEntry,
-} from "./task-agent-directory.js";
-import { getTaskTeamActiveRunDirectory, type TaskTeamActiveRunDirectory } from "./task-team-active-run-directory.js";
-import { TaskDelegationActivationCoordinator } from "./task-delegation-activation-coordinator.js";
-import { TaskDelegationAddressBuilder } from "./task-delegation-address-builder.js";
-import { TaskDelegationEventPublisher } from "./task-delegation-event-publisher.js";
-import { TaskDelegationInputResolver } from "./task-delegation-input-resolver.js";
-import { TaskDelegationLedger, type TaskResultSubmissionTransition } from "./task-delegation-ledger.js";
-import { TaskDelegationNotificationDispatcher } from "./task-delegation-notification-dispatcher.js";
+  TeamRunPersistenceFinalizationIndeterminateError,
+  type PreparedTaskMutationCommit, type PreparedTaskSettlementCommit,
+  type TaskMutationCommitResult, type TaskSettlementCommitResult,
+} from "../services/team-run-persistence-contract.js";
+import { addTaskExecutionToTree, settleTaskExecutionInTree } from "../services/team-run-execution-tree-mutator.js";
+import type { TeamMemberExecutionIdentity } from "../domain/team-member-execution-identity.js";
+import type { TeamRunExecutionTreeSnapshot } from "../domain/team-run-execution-tree.js";
+import type { TeamRun } from "../domain/team-run.js";
+import type { TeamRunAgentNode, TeamRunAgentTeamNode, TeamRunConfig, TeamRunNode } from "../domain/team-run-config.js";
+import { TeamRunEventSourceType, type TeamRunEvent } from "../domain/team-run-event.js";
+import { validateTaskDelegationRecordsV1Payload } from "./records/task-delegation-records-v1-schema.js";
+import type { TaskDelegationRecordV1, TaskDelegationRecordsSnapshot, TaskExecutionReference, TaskReview, TaskSubmission } from "./task-delegation-record-v1.js";
+import { TaskDelegationCommandQueue } from "./task-delegation-command-queue.js";
+import { taskActivatedEvent, taskReviewedEvent, taskSettledEvent, taskSubmittedEvent } from "./task-delegation-event-factory.js";
+import { buildTaskAssigneeWorkPacket, optionalTaskString, requireTaskString, validateTaskReferenceFiles } from "./task-delegation-input.js";
+import { hasOpenChildTask, orderTasksDeepestFirst } from "./task-delegation-ownership.js";
+import { projectTaskAgentExecution, projectTaskTeamExecution } from "./task-execution-tree-projection.js";
+import { TaskTeamRunIdentityFactory } from "./task-team-run-identity-factory.js";
 import {
   TaskDelegationError,
-  type DelegateTaskInput,
-  type DelegateTaskResult,
-  type ReviewTaskResultInput,
-  type ReviewTaskResultResult,
-  type SubmitTaskResultInput,
-  type SubmitTaskResultResult,
+  type DelegateTaskInput, type DelegateTaskResult, type ReviewTaskResultInput,
+  type ReviewTaskResultResult, type SubmitTaskResultInput, type SubmitTaskResultResult,
   type TaskDelegationContext,
-  type TaskDelegationNotificationDeliveryOutcome,
-  type TaskDelegationRecord,
-  type TaskDelegationReferenceFilePayload,
-  type TaskReferenceFile,
 } from "./task-delegation-record.js";
-import {
-  resolveTaskDelegationPersistenceScope,
-  type TaskDelegationPersistenceScope,
-} from "./task-delegation-persistence-scope.js";
-import { TaskDelegationSettlementCoordinator } from "./task-delegation-settlement-coordinator.js";
-import { TaskTeamSettlementCoordinator } from "./task-team-settlement-coordinator.js";
-import { getTaskDelegationRunRegistry, type TaskDelegationRunRegistry } from "./task-delegation-run-registry.js";
-import { normalizeTaskDelegationReferenceFiles } from "./task-delegation-reference-file.js";
-import {
-  getTaskDelegationRecordsService,
-  type TaskDelegationRecordsService,
-} from "./records/task-delegation-records-service.js";
-import type { ActiveTaskDelegationRecordEntry } from "./task-delegation-active-entry.js";
-import type { ResolvedTeamRecipient } from "../services/resolved-team-recipient.js";
-import { TaskDelegationTargetMapper } from "./task-delegation-target-mapper.js";
-import { serializeTeamExecutionAddress } from "../domain/team-execution-address.js";
 
-export type TaskDelegationServiceOptions = {
-  agentRunIdentityAllocator?: Pick<AgentRunIdentityAllocator, "allocateForAgentDefinition">;
-  taskTeamDirectory?: TaskTeamActiveRunDirectory;
-  runRegistry?: TaskDelegationRunRegistry;
-  recordsService?: TaskDelegationRecordsService;
-};
+type MutableState = { tree: TeamRunExecutionTreeSnapshot; tasks: TaskDelegationRecordsSnapshot };
 
+/** One root-scoped task lifecycle owner and sole task command FIFO. */
 export class TaskDelegationService {
-  private activationTail: Promise<void> = Promise.resolve();
-  private readonly ledger: TaskDelegationLedger;
-  private readonly taskAgentDirectory: TaskAgentDirectory;
-  private readonly taskTeamDirectory: TaskTeamActiveRunDirectory;
-  private readonly runRegistry: TaskDelegationRunRegistry;
-  private readonly activationCoordinator: TaskDelegationActivationCoordinator;
-  private readonly eventPublisher: TaskDelegationEventPublisher;
-  private readonly notificationDispatcher: TaskDelegationNotificationDispatcher;
-  private readonly inputResolver: TaskDelegationInputResolver;
-  private readonly settlementCoordinator: TaskDelegationSettlementCoordinator;
-  private readonly taskTeamSettlementCoordinator: TaskTeamSettlementCoordinator;
-  private readonly recordsService: TaskDelegationRecordsService;
-  private readonly persistenceScope: TaskDelegationPersistenceScope;
-  private readonly addressBuilder: TaskDelegationAddressBuilder;
-  private readonly targetMapper = new TaskDelegationTargetMapper();
+  private readonly queue = new TaskDelegationCommandQueue();
+  private currentTasks: TaskDelegationRecordsSnapshot;
+  private accepting = true;
+  private rootFailStopped = false;
+  private settlementSweepScheduled = false;
+  private readonly agentIds: Pick<AgentRunIdentityAllocator, "allocateForAgentDefinition">;
+  private readonly taskTeams: TaskTeamRunIdentityFactory;
 
-  constructor(
-    private readonly teamRun: TeamRun,
-    options: TaskDelegationServiceOptions = {},
-  ) {
-    this.persistenceScope = resolveTaskDelegationPersistenceScope(teamRun);
-    const runtimeContext = teamRun.getRuntimeContext() as import("../backends/mixed/mixed-team-run-context.js").MixedTeamRunContext;
-    this.addressBuilder = new TaskDelegationAddressBuilder(runtimeContext.teamExecutionAddress);
-    this.ledger = new TaskDelegationLedger(teamRun.teamRunId);
-    this.taskAgentDirectory = getTaskAgentDirectory(teamRun.config.rootTeam.teamRunId);
-    this.taskTeamDirectory = options.taskTeamDirectory ?? getTaskTeamActiveRunDirectory();
-    this.runRegistry = options.runRegistry ?? getTaskDelegationRunRegistry();
-    this.recordsService = options.recordsService ?? getTaskDelegationRecordsService();
-    this.activationCoordinator = new TaskDelegationActivationCoordinator(
-      this.ledger,
-      this.taskAgentDirectory,
-      undefined,
-      undefined,
-      options.agentRunIdentityAllocator,
-    );
-    this.eventPublisher = new TaskDelegationEventPublisher();
-    this.notificationDispatcher = new TaskDelegationNotificationDispatcher();
-    this.inputResolver = new TaskDelegationInputResolver(teamRun.teamRunId);
-    this.settlementCoordinator = new TaskDelegationSettlementCoordinator(
-      teamRun,
-      this.ledger,
-      this.taskAgentDirectory,
-      { coordinatorAddress: teamRun.context.index.getTeam(teamRun.context.teamAddress)?.coordinatorAddress ?? null },
-    );
-    this.taskTeamSettlementCoordinator = new TaskTeamSettlementCoordinator({
-      parentTeamRun: teamRun,
-      taskTeamDirectory: this.taskTeamDirectory,
-      runRegistry: this.runRegistry,
-    });
-    this.settlementCoordinator.attach();
+  constructor(private readonly options: {
+    rootTeamRunId: string;
+    config: TeamRunConfig;
+    initialTasks: TaskDelegationRecordsSnapshot;
+    getTree(): TeamRunExecutionTreeSnapshot;
+    getIndex(): TeamExecutionIndex;
+    isRootOpen(): boolean;
+    authorize(identity: TeamMemberExecutionIdentity): void;
+    requireTeamRun(teamRunId: string): Promise<TeamRun>;
+    teamRunResolver: TeamRunResolver;
+    commitTaskMutation(command: PreparedTaskMutationCommit): Promise<TaskMutationCommitResult>;
+    commitTaskSettlement(command: PreparedTaskSettlementCommit): Promise<TaskSettlementCommitResult>;
+    enterLifecycleFailStop(): void;
+    replaceState(state: MutableState): void;
+    publish(event: TeamRunEvent): void;
+    deliverSystemMessage(agentRunId: string, message: AgentInputUserMessage): Promise<AgentOperationResult>;
+    agentRunIdentityAllocator?: Pick<AgentRunIdentityAllocator, "allocateForAgentDefinition">;
+    taskTeamRunIdentityFactory?: TaskTeamRunIdentityFactory;
+  }) {
+    this.currentTasks = validateTaskDelegationRecordsV1Payload(options.initialTasks, options.rootTeamRunId);
+    this.agentIds = options.agentRunIdentityAllocator ?? AgentRunIdentityAllocator.getInstance();
+    this.taskTeams = options.taskTeamRunIdentityFactory ?? new TaskTeamRunIdentityFactory(this.agentIds);
   }
 
-  dispose(): void {
-    this.settlementCoordinator.detach();
-    this.taskTeamSettlementCoordinator.detach();
+  getSnapshot(): TaskDelegationRecordsSnapshot { return this.currentTasks; }
+  hasOpenWork(): boolean { return this.currentTasks.records.some((record) => record.status !== "accepted" && record.status !== "interrupted"); }
+  closeExternalAdmission(): void { this.accepting = false; this.queue.closeExternalAdmission(); }
+  enterRootFailStop(): void {
+    this.rootFailStopped = true; this.accepting = false;
+    this.settlementSweepScheduled = false; this.queue.enterRootFailStop();
   }
+  drain(): Promise<void> { return this.queue.drain(); }
 
-  hasOpenWork(): boolean {
-    return this.ledger.listEntries().some((entry) =>
-      entry.phase === "starting" || entry.record.status !== "accepted",
-    );
-  }
-
-  resolveTaskReference(input: {
-    taskId: string;
-    referenceId: string;
-  }): { record: TaskDelegationRecord; reference: TaskDelegationReferenceFilePayload } | null {
-    const taskId = input.taskId.trim();
-    const referenceId = input.referenceId.trim();
-    if (!taskId || !referenceId) return null;
-    const record = this.ledger.getRecord(taskId);
-    if (!record) return null;
-    const reference = record.referenceFiles
-      .find((candidate) => candidate.referenceId === referenceId) ?? null;
-    return reference ? { record, reference: { ...reference } } : null;
-  }
-
-  async delegateTask(
-    context: TaskDelegationContext,
-    input: DelegateTaskInput,
-    placement: ResolvedTeamRecipient,
-  ): Promise<DelegateTaskResult> {
-    this.assertTeamRunActive();
-    this.inputResolver.assertContext(context);
-    const activeTaskAgentRunId = this.assertActiveTaskAgentCaller(context);
-    const task = this.inputResolver.normalizeCreateInput(input);
-    const target = this.targetMapper.fromRecipient(
-      placement,
-      context.addressing,
-      this.teamRun.context,
-      context.caller,
-      activeTaskAgentRunId,
-    );
-    return this.enqueueActivation(async () => {
-      const taskId = await this.recordsService.reserveTaskId(this.persistenceScope);
-      const createInput = this.inputResolver.buildCreateInput(context, task, target, taskId);
-      const referenceFiles = this.normalizeReferenceFiles(createInput.task.reference_files);
-      this.ledger.createStartingEntry({
-        taskId: createInput.taskId,
-        persistenceScope: this.persistenceScope,
-        target: createInput.target,
-        reviewOwner: createInput.delegator,
-        senderAddress: this.addressBuilder.buildCallerAddress(context.caller),
-        receiverAddress: this.addressBuilder.buildTargetAddress(createInput.target),
-        receiverTargetKind: createInput.target.kind,
-        content: createInput.task.description,
-        referenceFiles,
-      });
-
-      let prepared: Awaited<ReturnType<TaskDelegationActivationCoordinator["prepareTask"]>> | null = null;
-      let lease: ReturnType<TeamRun["openTaskActivationEventLease"]> | null = null;
-      try {
-        prepared = await this.activationCoordinator.prepareTask(this.teamRun, taskId);
-        lease = this.teamRun.openTaskActivationEventLease(prepared.binding.executionAddress);
-        const startResult = await prepared.start();
-        if (!startResult.accepted) throw new Error(startResult.message?.trim() || "Task runtime rejected activation.");
-        this.teamRun.assertTaskActivationEventLeaseWithinBudget(lease);
-
-        const startingEntry = this.ledger.getStartingEntry(taskId);
-        if (!startingEntry?.boundExecution) throw new Error("Task activation did not bind an execution.");
-        const taskRunAddress = this.addressBuilder.buildTaskRunAddress(
-          startingEntry.boundExecution,
-          startingEntry.receiverAddress,
-        );
-        const staged = this.ledger.stageStartingEntry({
-          taskId,
-          taskRun: { address: taskRunAddress, startedAt: new Date().toISOString() },
-          receiverAddress: startingEntry.boundExecution.kind === "task_team"
-            ? this.addressBuilder.buildTaskTeamIngressAddress(
-                taskRunAddress,
-                startingEntry.target.kind === "agent_team"
-                  ? startingEntry.target.coordinatorAddress
-                  : startingEntry.receiverAddress.memberAddress,
-              )
-            : startingEntry.receiverAddress,
+  async shutdownAndSettle(reason: string): Promise<void> {
+    if (this.rootFailStopped) return this.drain();
+    this.closeExternalAdmission();
+    await this.drain();
+    const ordered = orderTasksDeepestFirst(this.currentTasks.records, this.options.getIndex());
+    for (const task of ordered) {
+      if (task.status === "active" || task.status === "awaiting_review") {
+        await this.interrupt(task.taskId, reason);
+      }
+    }
+    for (const task of ordered) {
+      const current = this.currentTasks.records.find((candidate) => candidate.taskId === task.taskId);
+      if (current?.status === "accepted" || current?.status === "interrupted") {
+        await this.queue.submitShutdown({
+          kind: "settle",
+          executeAtQueueHead: () => this.settleAtHead(current.taskId),
         });
-        await this.recordsService.persistActivationRecord(staged.persistenceScope, staged.record);
-        prepared.commit();
-        const activeEntry = this.ledger.commitStartingEntry(taskId, staged);
-        this.teamRun.commitTaskActivationEventLease(
-          lease,
-          this.eventPublisher.createActivatedEvent(activeEntry),
+      }
+    }
+    await this.drain();
+  }
+
+  onRootEvent(event: TeamRunEvent): void {
+    if (this.rootFailStopped || event.eventSourceType !== TeamRunEventSourceType.AGENT ||
+        event.payload.eventType !== "AGENT_STATUS" ||
+        (event.payload.details.status !== "idle" && event.payload.details.status !== "offline")) {
+      return;
+    }
+    this.scheduleTerminalSettlementSweep();
+  }
+
+  async delegateTask(context: TaskDelegationContext, input: DelegateTaskInput, placement: ResolvedTeamRecipient): Promise<DelegateTaskResult> {
+    this.assertExternal(context.identity);
+    const description = requireTaskString(input.description, "description");
+    const referenceFiles = await validateTaskReferenceFiles(input.reference_files ?? []);
+    const taskId = `task_${randomUUID().replace(/-/g, "")}`;
+    const startedAt = new Date().toISOString();
+    let prepared: import("../domain/prepared-task-execution.js").PreparedTaskExecution | null = null;
+    let reservation: import("../services/team-run-resolver.js").TeamRunRegistrationReservation | null = null;
+    try {
+      const currentIndex = this.options.getIndex();
+      const host = new TeamExecutionScopeResolver(currentIndex).resolveTargetOwner({
+        callerAgentRunId: context.identity.agentRunId,
+        recipientAddress: placement.address,
+      });
+      const hostRun = await this.options.requireTeamRun(host.teamRunId);
+      if (placement.kind === "agent") {
+        const source = findConfigNode(this.options.config.rootTeam, placement.address);
+        if (!source || source.kind !== "agent") throw new TaskDelegationError("TARGET_MEMBER_NOT_FOUND", `Agent '${placement.address}' was not found.`);
+        const agentRunId = await this.agentIds.allocateForAgentDefinition(source.agentDefinitionId);
+        prepared = await hostRun.prepareTaskAgent({
+          taskId,
+          address: placement.address,
+          agentRunId,
+          sourceNode: source,
+          message: buildTaskAssigneeWorkPacket({ delegator: context.identity, description, referenceFiles }),
+        });
+      } else {
+        const source = findConfigNode(this.options.config.rootTeam, placement.address);
+        if (!source || source.kind !== "agent_team") throw new TaskDelegationError("TARGET_MEMBER_NOT_FOUND", `AgentTeam '${placement.address}' was not found.`);
+        const materialized = await this.taskTeams.create({ source, taskId });
+        prepared = await hostRun.prepareTaskTeam({
+          taskId,
+          address: placement.address,
+          teamRunId: materialized.teamNode.teamRunId,
+          handoffs: this.options.config.handoffs,
+          teamNode: materialized.teamNode,
+          message: buildTaskAssigneeWorkPacket({ delegator: context.identity, description, referenceFiles }),
+        });
+        reservation = this.options.teamRunResolver.reserveTaskSubtree(prepared.preparedTeamRuns);
+      }
+      prepared.sealForCommit();
+      const exactPrepared = prepared;
+      const exactReservation = reservation;
+      return await this.queue.submit({
+        kind: "activate",
+        executeAtQueueHead: async () => this.activateAtHead({
+          context,
+          placement,
+          taskId,
+          description,
+          referenceFiles,
+          startedAt,
+          hostTeamRunId: host.teamRunId,
+          prepared: exactPrepared,
+          reservation: exactReservation,
+        }),
+      });
+    } catch (error) {
+      if (error instanceof TeamRunPersistenceFinalizationIndeterminateError) throw error;
+      reservation?.cancel();
+      if (prepared) await prepared.abort();
+      return { task_id: taskId, status: "not_started", message: errorMessage(error) };
+    }
+  }
+
+  async submitTaskResult(context: TaskDelegationContext, input: SubmitTaskResultInput): Promise<SubmitTaskResultResult> {
+    this.assertExternal(context.identity);
+    const message = requireTaskString(input.message, "message");
+    const referenceFiles = await validateTaskReferenceFiles(input.reference_files ?? []);
+    return this.queue.submit({
+      kind: "submit_result",
+      executeAtQueueHead: async () => this.submitAtHead(context.identity, message, referenceFiles),
+    });
+  }
+
+  async reviewTaskResult(context: TaskDelegationContext, input: ReviewTaskResultInput): Promise<ReviewTaskResultResult> {
+    this.assertExternal(context.identity);
+    const taskId = requireTaskString(input.task_id, "task_id");
+    if (input.decision !== "accept" && input.decision !== "request_revision") throw new TaskDelegationError("VALIDATION_ERROR", "decision is unsupported.");
+    const comment = input.decision === "request_revision"
+      ? requireTaskString(input.comment ?? "", "comment")
+      : optionalTaskString(input.comment);
+    const referenceFiles = await validateTaskReferenceFiles(input.reference_files ?? []);
+    return this.queue.submit({
+      kind: "review_result",
+      executeAtQueueHead: async () => this.reviewAtHead(context.identity, taskId, input.decision, comment, referenceFiles),
+    });
+  }
+
+  interrupt(taskId: string, reason: string): Promise<void> {
+    return this.queue.submitShutdown({
+      kind: "interrupt",
+      executeAtQueueHead: async () => {
+        await this.interruptAtHead(
+          requireTaskString(taskId, "taskId"),
+          requireTaskString(reason, "reason"),
         );
-        lease = null;
-        prepared.openWork();
-        return { task_id: activeEntry.record.taskId, status: "active" as const };
-      } catch (error) {
-        if (lease) {
-          try { this.teamRun.abortTaskActivationEventLease(lease); } catch { /* already closed */ }
+      },
+    });
+  }
+
+  settle(taskId: string): Promise<void> {
+    return this.queue.submitShutdown({
+      kind: "settle",
+      executeAtQueueHead: async () => { await this.settleAtHead(requireTaskString(taskId, "taskId")); },
+    });
+  }
+
+  private async activateAtHead(input: {
+    context: TaskDelegationContext;
+    placement: ResolvedTeamRecipient;
+    taskId: string;
+    description: string;
+    referenceFiles: readonly string[];
+    startedAt: string;
+    hostTeamRunId: string;
+    prepared: import("../domain/prepared-task-execution.js").PreparedTaskExecution;
+    reservation: import("../services/team-run-resolver.js").TeamRunRegistrationReservation | null;
+  }): Promise<DelegateTaskResult> {
+    try {
+      this.assertExternal(input.context.identity);
+      if (this.currentTasks.records.some((record) => record.taskId === input.taskId)) throw new Error(`Task '${input.taskId}' already exists.`);
+      const currentIndex = this.options.getIndex();
+      const expectedHost = new TeamExecutionScopeResolver(currentIndex).resolveTargetOwner({
+        callerAgentRunId: input.context.identity.agentRunId,
+        recipientAddress: input.placement.address,
+      });
+      if (expectedHost.teamRunId !== input.hostTeamRunId) throw new Error("Task host changed before activation commit.");
+      const execution = input.prepared.binding.kind === "agent"
+        ? projectTaskAgentExecution({ address: input.prepared.binding.address, agentRunId: input.prepared.binding.agentRunId, startedAt: input.startedAt })
+        : projectTaskTeamExecution({ node: requirePreparedTaskTeamNode(input.prepared, this.options.config.rootTeam), startedAt: input.startedAt });
+      const taskExecution: TaskExecutionReference = input.prepared.binding.kind === "agent"
+        ? Object.freeze({ agentRunId: input.prepared.binding.agentRunId })
+        : Object.freeze({ teamRunId: input.prepared.binding.teamRunId });
+      const nextTree = addTaskExecutionToTree({ tree: this.options.getTree(), ownerTeamRunId: input.hostTeamRunId, execution });
+      const record: TaskDelegationRecordV1 = Object.freeze({
+        taskId: input.taskId,
+        delegatorAgentRunId: input.context.identity.agentRunId,
+        recipientAddress: input.placement.address,
+        taskExecution,
+        description: input.description,
+        referenceFiles: Object.freeze([...input.referenceFiles]),
+        status: "active",
+        updates: Object.freeze([]),
+        createdAt: input.startedAt,
+      });
+      const nextTasks = validateTaskDelegationRecordsV1Payload({
+        ...this.currentTasks,
+        records: [...this.currentTasks.records, record],
+      }, this.options.rootTeamRunId);
+      let committedExecution: import("../domain/prepared-task-execution.js").CommittedTaskExecution | null = null;
+      const command: PreparedTaskMutationCommit = {
+        kind: "activation",
+        nextTree,
+        nextTasks,
+        activation: {
+          assertCommitReady: () => {
+            if (!this.options.isRootOpen()) throw new Error("Root TeamRun is not open.");
+            if (input.prepared.binding.kind === "team" && !input.reservation) throw new Error("Task TeamRun registration is not reserved.");
+          },
+          abortBeforeCommit: async () => { input.reservation?.cancel(); await input.prepared.abort(); },
+          commitAfterDurability: () => {
+            committedExecution = input.prepared.commit();
+            input.reservation?.commit();
+            this.currentTasks = nextTasks;
+            this.options.replaceState({ tree: nextTree, tasks: nextTasks });
+            this.options.publish(taskActivatedEvent(record));
+            committedExecution.releaseWork();
+          },
+        },
+      };
+      const result = await this.options.commitTaskMutation(command);
+      if (result.outcome !== "committed") {
+        if (result.outcome === "finalization_indeterminate") {
+          throw new TeamRunPersistenceFinalizationIndeterminateError(result.file, result.stage);
         }
-        if (prepared) {
-          try { await prepared.abort(); } catch { /* best-effort runtime cleanup */ }
-        }
-        this.ledger.discardStartingEntry(taskId);
-        return {
-          task_id: taskId,
-          status: "not_started" as const,
-          message: this.activationFailureMessage(error instanceof Error ? error.message : String(error)),
-        };
+        return { task_id: input.taskId, status: "not_started", message: result.cause.message };
+      }
+      return {
+        task_id: input.taskId,
+        status: "active",
+        target_agent_run_id: input.prepared.binding.kind === "agent"
+          ? input.prepared.binding.agentRunId
+          : input.prepared.binding.coordinatorAgentRunId,
+      };
+    } catch (error) {
+      if (error instanceof TeamRunPersistenceFinalizationIndeterminateError) throw error;
+      input.reservation?.cancel();
+      await input.prepared.abort();
+      return { task_id: input.taskId, status: "not_started", message: errorMessage(error) };
+    }
+  }
+
+  private async submitAtHead(identity: TeamMemberExecutionIdentity, message: string, referenceFiles: readonly string[]): Promise<SubmitTaskResultResult> {
+    this.options.authorize(identity);
+    const task = this.findAssignedTask(identity.agentRunId);
+    if (!task || task.status !== "active") throw new TaskDelegationError("TASK_NOT_ACTIVE", "The caller has no active assigned task.");
+    const submission: TaskSubmission = Object.freeze({
+      submissionId: `submission_${randomUUID().replace(/-/g, "")}`,
+      message,
+      referenceFiles: Object.freeze([...referenceFiles]),
+      createdAt: new Date().toISOString(),
+    });
+    const next = Object.freeze({ ...task, status: "awaiting_review" as const, updates: Object.freeze([...task.updates, submission]) });
+    await this.commitRecordTransition(task, next, taskSubmittedEvent(next, submission));
+    const warning = await this.notify(task.delegatorAgentRunId, `Task ${task.taskId} result submitted:\n${message}`);
+    return { task_id: task.taskId, status: "awaiting_review", ...(warning ? { message: warning } : {}) };
+  }
+
+  private async reviewAtHead(
+    identity: TeamMemberExecutionIdentity,
+    taskId: string,
+    decision: "accept" | "request_revision",
+    comment: string | null,
+    referenceFiles: readonly string[],
+  ): Promise<ReviewTaskResultResult> {
+    this.options.authorize(identity);
+    const task = this.requireTask(taskId);
+    if (task.delegatorAgentRunId !== identity.agentRunId) throw new TaskDelegationError("DELEGATOR_NOT_AUTHORIZED", `AgentRun '${identity.agentRunId}' is not the delegator for '${taskId}'.`);
+    if (task.status !== "awaiting_review") throw new TaskDelegationError("TASK_NOT_AWAITING_REVIEW", `Task '${taskId}' is not awaiting review.`);
+    const submission = [...task.updates].reverse().find((update): update is TaskSubmission => "submissionId" in update);
+    if (!submission) throw new Error(`Task '${taskId}' has no submission.`);
+    const review: TaskReview = Object.freeze({
+      reviewId: `review_${randomUUID().replace(/-/g, "")}`,
+      reviewedSubmissionId: submission.submissionId,
+      decision,
+      comment,
+      referenceFiles: Object.freeze([...referenceFiles]),
+      createdAt: new Date().toISOString(),
+    });
+    const status = decision === "accept" ? "accepted" as const : "active" as const;
+    const next = Object.freeze({ ...task, status, updates: Object.freeze([...task.updates, review]) });
+    await this.commitRecordTransition(task, next, taskReviewedEvent(next, review));
+    const targetAgentRunId = this.assigneeAgentRunId(next);
+    const warning = decision === "request_revision"
+      ? await this.notify(targetAgentRunId, `Task ${taskId} revision requested:\n${comment}`)
+      : null;
+    if (decision === "accept") this.scheduleTerminalSettlementSweep();
+    return decision === "accept"
+      ? { task_id: taskId, status: "accepted", ...(warning ? { message: warning } : {}) }
+      : { task_id: taskId, status: "active", ...(warning ? { message: warning } : {}) };
+  }
+
+  private async commitRecordTransition(previous: TaskDelegationRecordV1, next: TaskDelegationRecordV1, event: TeamRunEvent | null): Promise<void> {
+    const nextTasks = validateTaskDelegationRecordsV1Payload({
+      ...this.currentTasks,
+      records: this.currentTasks.records.map((record) => record.taskId === previous.taskId ? next : record),
+    }, this.options.rootTeamRunId);
+    const result = await this.options.commitTaskMutation({
+      kind: "record_transition",
+      nextTasks,
+      cancelBeforeDurability: () => undefined,
+      commitAfterDurability: () => {
+        this.currentTasks = nextTasks;
+        this.options.replaceState({ tree: this.options.getTree(), tasks: nextTasks });
+        if (event) this.options.publish(event);
+      },
+    });
+    assertCommitted(result, `Task '${previous.taskId}' transition`);
+  }
+
+  private async interruptAtHead(taskId: string, reason: string): Promise<void> {
+    const task = this.requireTask(taskId);
+    if (task.status === "accepted" || task.status === "interrupted") return;
+    const now = new Date().toISOString();
+    const interruption = Object.freeze({ interruptionId: `interrupt_${randomUUID().replace(/-/g, "")}`, reason, createdAt: now });
+    const next = Object.freeze({ ...task, status: "interrupted" as const, updates: Object.freeze([...task.updates, interruption]) });
+    await this.commitRecordTransition(task, next, null);
+    this.scheduleTerminalSettlementSweep();
+  }
+
+  private async settleAtHead(taskId: string): Promise<boolean> {
+    const task = this.requireTask(taskId);
+    if (task.status !== "accepted" && task.status !== "interrupted") throw new TaskDelegationError("TASK_NOT_SETTLEABLE", `Task '${taskId}' is not terminal.`);
+    const indexed = this.options.getIndex().getTaskExecution(task.taskExecution);
+    if (!indexed || indexed.source.settledAt) return true;
+    if (hasOpenChildTask(this.currentTasks.records, task, this.options.getIndex())) return false;
+    const owner = await this.options.requireTeamRun(indexed.ownerTeamRunId);
+    const prepared = await owner.prepareDirectTaskSettlement(task.taskId, task.taskExecution);
+    if (!prepared) return false;
+    const refreshed = this.options.getIndex().getTaskExecution(task.taskExecution);
+    if (!refreshed || refreshed.source.settledAt ||
+        refreshed.ownerTeamRunId !== indexed.ownerTeamRunId ||
+        refreshed.address !== prepared.binding.address ||
+        !sameTaskExecutionBinding(task.taskExecution, prepared.binding) ||
+        hasOpenChildTask(this.currentTasks.records, task, this.options.getIndex())) {
+      prepared.cancelBeforeDurability();
+      return !refreshed || Boolean(refreshed.source.settledAt);
+    }
+    const settledAt = new Date().toISOString();
+    const runId = "agentRunId" in task.taskExecution ? task.taskExecution.agentRunId : task.taskExecution.teamRunId;
+    const nextTree = settleTaskExecutionInTree({ tree: this.options.getTree(), taskExecutionRunId: runId, settledAt });
+    const result = await this.options.commitTaskSettlement({
+      nextTree,
+      settlement: prepared,
+      commitTreeAndEvent: () => {
+        this.options.replaceState({ tree: nextTree, tasks: this.currentTasks });
+        this.options.publish(taskSettledEvent(task, settledAt));
+      },
+    });
+    if (result.outcome === "not_committed") return false;
+    if (result.outcome === "finalization_indeterminate") {
+      throw new TeamRunPersistenceFinalizationIndeterminateError(result.file, result.stage);
+    }
+    try {
+      const cleanup = await result.settlement.finishLocalTeardown();
+      if (!cleanup.accepted) {
+        throw new TaskDelegationError(
+          "TASK_EXECUTION_SETTLEMENT_FAILED",
+          cleanup.message ?? `Task '${task.taskId}' execution cleanup was rejected.`,
+        );
+      }
+    } catch (error) {
+      this.options.enterLifecycleFailStop();
+      if (error instanceof TaskDelegationError) throw error;
+      throw new TaskDelegationError(
+        "TASK_EXECUTION_SETTLEMENT_FAILED",
+        `Task '${task.taskId}' execution cleanup failed: ${errorMessage(error)}`,
+      );
+    }
+    this.options.teamRunResolver.unregisterInactive();
+    this.scheduleTerminalSettlementSweep();
+    return true;
+  }
+
+  private scheduleTerminalSettlementSweep(): void {
+    if (this.rootFailStopped || this.settlementSweepScheduled) return;
+    this.settlementSweepScheduled = true;
+    queueMicrotask(() => {
+      this.settlementSweepScheduled = false;
+      if (this.rootFailStopped) return;
+      for (const task of this.currentTasks.records) {
+        if (task.status !== "accepted" && task.status !== "interrupted") continue;
+        void this.settle(task.taskId).catch((error) => {
+          console.error(`Task '${task.taskId}' settlement failed:`, error);
+        });
       }
     });
   }
 
-  async submitTaskResult(
-    context: TaskDelegationContext,
-    input: SubmitTaskResultInput,
-  ): Promise<SubmitTaskResultResult> {
-    return this.submitTaskAgentResult(context, input);
+  private findAssignedTask(agentRunId: string): TaskDelegationRecordV1 | null {
+    const matches = this.currentTasks.records.filter((task) => this.assigneeAgentRunId(task) === agentRunId && task.status !== "accepted" && task.status !== "interrupted");
+    if (matches.length > 1) throw new TaskDelegationError("TASK_CONTEXT_AMBIGUOUS", `AgentRun '${agentRunId}' owns multiple open tasks.`);
+    return matches[0] ?? null;
   }
 
-  async submitTaskAgentResult(
-    context: TaskDelegationContext,
-    input: SubmitTaskResultInput,
-  ): Promise<SubmitTaskResultResult> {
-    this.assertTeamRunActive();
-    this.inputResolver.assertContext(context);
-    const boundTaskAgentRunId = this.requireBoundTaskAgentRunId(context);
-    const taskId = this.resolveTaskAgentTaskId(context, boundTaskAgentRunId);
-    const message = this.normalizeRequiredMessage(input.message, "message");
-    const referenceFiles = this.normalizeReferenceFiles(input.reference_files);
-    const transition = this.ledger.submitResultFromTaskAgent({
-      taskId,
-      taskAgentRunId: boundTaskAgentRunId,
-      message,
-      referenceFiles,
-    });
-    return this.publishSubmissionTransition(transition);
+  private assigneeAgentRunId(task: TaskDelegationRecordV1): string {
+    if ("agentRunId" in task.taskExecution) return task.taskExecution.agentRunId;
+    const team = this.options.getIndex().requireTeam(task.taskExecution.teamRunId);
+    const coordinatorAddress = this.configuredCoordinator(task.recipientAddress);
+    const coordinator = this.options.getIndex().listDirectAgentExecutions(team.teamRunId).find((agent) => agent.address === coordinatorAddress);
+    if (!coordinator) throw new Error(`Task TeamRun '${team.teamRunId}' has no coordinator AgentRun.`);
+    return coordinator.agentRunId;
   }
 
-  async submitTaskTeamIngressResult(
-    context: TaskDelegationContext,
-    input: SubmitTaskResultInput,
-    taskId = context.caller.taskId ?? null,
-  ): Promise<SubmitTaskResultResult> {
-    this.assertTeamRunActive();
-    if (!taskId?.trim()) {
-      throw new TaskDelegationError("TASK_TEAM_CONTEXT_REQUIRED", "submit_task_result requires a bound task-team ingress context for team task results.");
-    }
-    if (context.caller.executionAddress.taskAgentRunId) {
-      throw new TaskDelegationError("TASK_TEAM_CONTEXT_REQUIRED", "Task-team ingress submission cannot be routed from a task-agent context.");
-    }
-    const chain = context.caller.executionAddress.taskTeamRunIds;
-    const taskTeamRunId = chain.at(-1) ?? null;
-    const parentTeamRunId = chain.length === 1
-      ? context.caller.executionAddress.rootTeamRunId
-      : chain.at(-2) ?? null;
-    const activeTeam = this.taskTeamDirectory.resolveActiveEntryByTaskTeamRunId(taskTeamRunId);
-    if (!taskTeamRunId || parentTeamRunId !== this.teamRun.teamRunId ||
-      !activeTeam || activeTeam.binding.taskId !== taskId ||
-      activeTeam.activeRun.teamRunId !== taskTeamRunId ||
-      activeTeam.activeRun.context.index.getTeam(activeTeam.binding.executionAddress.memberAddress)?.coordinatorAddress !== context.caller.executionAddress.memberAddress) {
-      throw new TaskDelegationError(
-        "TASK_TEAM_PARENT_RUN_MISMATCH",
-        `Task-team execution does not belong to parent TeamRun '${this.teamRun.teamRunId}'.`,
-      );
-    }
-    return this.submitTaskTeamResult(
-      input,
-      taskId,
-      taskTeamRunId,
-    );
+  private configuredCoordinator(address: string) {
+    const source = findConfigNode(this.options.config.rootTeam, address);
+    if (!source || source.kind !== "agent_team") throw new Error(`Configured Team '${address}' was not found.`);
+    return source.coordinatorAddress;
   }
 
-  async reviewTaskResult(
-    context: TaskDelegationContext,
-    input: ReviewTaskResultInput,
-  ): Promise<ReviewTaskResultResult> {
-    this.assertTeamRunActive();
-    this.inputResolver.assertContext(context);
-    const taskId = input.task_id.trim();
-    if (!taskId) throw new TaskDelegationError("VALIDATION_ERROR", "task_id is required for review_task_result.");
-    const existing = this.ledger.getRecordEntry(taskId);
-    if (!existing) throw new TaskDelegationError("TASK_NOT_FOUND", `Delegated task '${taskId}' was not found.`);
-    this.assertOriginalDelegator(context, existing);
-    const comment = input.decision === "request_revision"
-      ? this.normalizeRequiredMessage(input.comment ?? "", "comment")
-      : this.inputResolver.normalizeStatusMessage(input.comment ?? null);
-    const referenceFiles = this.normalizeReferenceFiles(input.reference_files);
-    const transition = this.ledger.reviewResult({
-      taskId,
-      decision: input.decision,
-      comment,
-      referenceFiles,
-      reviewer: context.caller,
-    });
-    const { entry: updatedEntry, review } = transition;
-    await this.persistLifecycleRecord(updatedEntry);
-    this.eventPublisher.publishResultReviewed({ teamRun: this.teamRun, entry: updatedEntry, review });
-
-    if (input.decision === "request_revision") {
-      const notificationOutcome = await this.notificationDispatcher.notifyRevisionRequested({ teamRun: this.teamRun, entry: updatedEntry, review });
-      this.logNotificationWarning(notificationOutcome);
-      const notificationMessage = this.notificationWarningMessage(notificationOutcome);
-      return {
-        task_id: updatedEntry.record.taskId,
-        status: "active",
-        ...(notificationMessage ? { message: notificationMessage } : {}),
-      };
-    }
-
-    if (updatedEntry.activeExecution.kind === "task_team") {
-      this.taskTeamSettlementCoordinator.requestSettlement(updatedEntry.activeExecution);
-    } else {
-      this.settlementCoordinator.requestSettlement(updatedEntry.activeExecution);
-    }
-    return {
-      task_id: updatedEntry.record.taskId,
-      status: "accepted",
-    };
+  private requireTask(taskId: string): TaskDelegationRecordV1 {
+    const task = this.currentTasks.records.find((record) => record.taskId === taskId);
+    if (!task) throw new TaskDelegationError("TASK_NOT_FOUND", `Task '${taskId}' was not found.`);
+    return task;
   }
 
-  private async submitTaskTeamResult(
-    input: SubmitTaskResultInput,
-    taskId: string,
-    taskTeamRunId: string,
-  ): Promise<SubmitTaskResultResult> {
-    const message = this.normalizeRequiredMessage(input.message, "message");
-    const referenceFiles = this.normalizeReferenceFiles(input.reference_files);
-    const transition = this.ledger.submitResultFromTaskTeam({ taskId, taskTeamRunId, message, referenceFiles });
-    return this.publishSubmissionTransition(transition);
+  private assertExternal(identity: TeamMemberExecutionIdentity): void {
+    if (!this.accepting || !this.options.isRootOpen()) throw new TaskDelegationError("TEAM_RUN_NOT_ACTIVE", `Root TeamRun '${this.options.rootTeamRunId}' is not accepting task commands.`);
+    this.options.authorize(identity);
   }
 
-  private async publishSubmissionTransition(
-    transition: TaskResultSubmissionTransition,
-  ): Promise<SubmitTaskResultResult> {
-    const { entry: updatedEntry, submission } = transition;
-    await this.persistLifecycleRecord(updatedEntry);
-    this.eventPublisher.publishResultSubmitted({ teamRun: this.teamRun, entry: updatedEntry, submission });
-    const notificationOutcome = await this.notificationDispatcher.notifyResultSubmitted({ teamRun: this.teamRun, entry: updatedEntry, submission });
-    this.logNotificationWarning(notificationOutcome);
-    const notificationMessage = this.notificationWarningMessage(notificationOutcome);
-    return {
-      task_id: updatedEntry.record.taskId,
-      status: "awaiting_review",
-      ...(notificationMessage ? { message: notificationMessage } : {}),
-    };
-  }
-
-  private async persistLifecycleRecord(entry: ActiveTaskDelegationRecordEntry): Promise<void> {
-    try {
-      await this.recordsService.persistRecord(entry.persistenceScope, entry.record);
-    } catch (error) {
-      console.warn("TaskDelegationService: failed to persist task delegation record", {
-        rootTeamRunId: entry.persistenceScope.rootTeamRunId,
-        currentTeamRunId: entry.persistenceScope.currentTeamRunId,
-        taskId: entry.record.taskId,
-        error: error instanceof Error ? error.message : String(error),
-      });
-    }
-  }
-
-  private normalizeReferenceFiles(referenceFiles: readonly string[] | undefined): TaskReferenceFile[] {
-    return normalizeTaskDelegationReferenceFiles(
-      this.inputResolver.normalizeReferenceFiles(referenceFiles),
-      new Date().toISOString(),
-    );
-  }
-
-  private assertTeamRunActive(): void {
-    if (!this.teamRun.isActive()) {
-      throw new TaskDelegationError("TEAM_RUN_NOT_ACTIVE", `TeamRun '${this.teamRun.teamRunId}' is not active.`);
-    }
-  }
-
-  private assertOriginalDelegator(context: TaskDelegationContext, entry: ActiveTaskDelegationRecordEntry): void {
-    const caller = context.caller;
-    const reviewOwner = entry.reviewOwner;
-    if (reviewOwner.executionAddress.memberAddress !== caller.executionAddress.memberAddress) {
-      throw new TaskDelegationError("DELEGATOR_NOT_AUTHORIZED", `Only task review owner '${reviewOwner.executionAddress.memberAddress}' may review delegated task '${entry.record.taskId}'.`);
-    }
-    if (reviewOwner.executionAddress.taskAgentRunId) {
-      this.assertTaskAgentDelegatorIdentity(context, entry);
-      return;
-    }
-    if (caller.executionAddress.taskAgentRunId) {
-      throw new TaskDelegationError("DELEGATOR_NOT_AUTHORIZED", `Task-agent caller is not the task review owner for delegated task '${entry.record.taskId}'.`);
-    }
-    if (
-      reviewOwner.agentRunId !== caller.agentRunId ||
-      serializeTeamExecutionAddress(reviewOwner.executionAddress) !==
-        serializeTeamExecutionAddress(caller.executionAddress)
-    ) {
-      throw new TaskDelegationError("DELEGATOR_NOT_AUTHORIZED", `Caller AgentRun '${caller.agentRunId}' is not the task review owner for delegated task '${entry.record.taskId}'.`);
-    }
-  }
-
-  private assertTaskAgentDelegatorIdentity(context: TaskDelegationContext, entry: ActiveTaskDelegationRecordEntry): void {
-    const caller = context.caller;
-    const expected = entry.reviewOwner;
-    const expectedRunId = expected.executionAddress.taskAgentRunId;
-    if (
-      !expectedRunId ||
-      caller.executionAddress.taskAgentRunId !== expectedRunId ||
-      caller.taskId !== expected.taskId ||
-      caller.agentRunId !== expectedRunId ||
-      serializeTeamExecutionAddress(caller.executionAddress) !==
-        serializeTeamExecutionAddress(expected.executionAddress)
-    ) {
-      throw new TaskDelegationError("DELEGATOR_NOT_AUTHORIZED", `Caller task-agent identity is not the task review owner for delegated task '${entry.record.taskId}'.`);
-    }
-    this.assertActiveTaskAgentCaller(context);
-  }
-
-  private requireBoundTaskAgentRunId(context: TaskDelegationContext): string {
-    const taskAgentRunId = context.caller.executionAddress.taskAgentRunId;
-    if (!taskAgentRunId) {
-      throw new TaskDelegationError("TASK_AGENT_CONTEXT_REQUIRED", "submit_task_result is available only to a bound task-agent or task-team ingress context.");
-    }
-    this.resolveActiveTaskAgentCallerEntry(context, taskAgentRunId, "submit task results");
-    return taskAgentRunId;
-  }
-
-  private assertActiveTaskAgentCaller(context: TaskDelegationContext): string | null {
-    const taskAgentRunId = context.caller.executionAddress.taskAgentRunId;
-    if (!taskAgentRunId) return null;
-    this.resolveActiveTaskAgentCallerEntry(context, taskAgentRunId, "perform task delegation actions");
-    return taskAgentRunId;
-  }
-
-  private resolveActiveTaskAgentCallerEntry(
-    context: TaskDelegationContext,
-    taskAgentRunId: string,
-    actionDescription: string,
-  ): TaskAgentDirectoryEntry {
-    if (this.taskAgentDirectory.isTaskAgentRunSettled(taskAgentRunId)) {
-      throw new TaskDelegationError("TASK_AGENT_SETTLED", `Task-agent run '${taskAgentRunId}' is settled and cannot ${actionDescription}.`);
-    }
-    const entry = this.taskAgentDirectory.resolveTaskAgentRunId(taskAgentRunId);
-    if (!entry) {
-      throw new TaskDelegationError("TASK_AGENT_NOT_ACTIVE", `Task-agent run '${taskAgentRunId}' is not an active task-agent for ${actionDescription}.`);
-    }
-    const caller = context.caller;
-    const rootTeamRunId = this.teamRun.config.rootTeam.teamRunId;
-    const execution = caller.executionAddress;
-    const authorized =
-      caller.agentRunId === taskAgentRunId &&
-      execution.taskAgentRunId === taskAgentRunId &&
-      entry.executionAddress.rootTeamRunId === rootTeamRunId &&
-      entry.taskId === caller.taskId &&
-      context.addressing.rootTeamRunId === rootTeamRunId &&
-      execution.rootTeamRunId === rootTeamRunId &&
-      context.addressing.memberAddress === entry.memberAddress &&
-      execution.memberAddress === entry.memberAddress &&
-      this.sameRunChain(execution.taskTeamRunIds, this.teamRun.context.taskTeamRunIds) &&
-      serializeTeamExecutionAddress(execution) ===
-        serializeTeamExecutionAddress(entry.executionAddress);
-    if (!authorized) {
-      throw new TaskDelegationError("TASK_AGENT_NOT_AUTHORIZED", `Task-agent run '${taskAgentRunId}' does not match its active task, member, or owning AgentTeam execution.`);
-    }
-    return entry;
-  }
-
-  private sameRunChain(actual: readonly string[], expected: readonly string[]): boolean {
-    return actual.length === expected.length && actual.every((id, index) => id === expected[index]);
-  }
-
-  private resolveTaskAgentTaskId(context: TaskDelegationContext, taskAgentRunId: string): string {
-    return this.resolveActiveTaskAgentCallerEntry(context, taskAgentRunId, "submit task results").taskId;
-  }
-
-  private normalizeRequiredMessage(value: string, fieldName: string): string {
-    const normalized = value.trim();
-    if (!normalized) throw new TaskDelegationError("VALIDATION_ERROR", `${fieldName} is required.`);
-    return normalized;
-  }
-
-  private logNotificationWarning(outcome: TaskDelegationNotificationDeliveryOutcome): void {
-    if (outcome.warning) console.warn("TaskDelegationService: task notification delivery failed", outcome.warning);
-  }
-
-  private activationFailureMessage(message: string | null | undefined): string {
-    return message?.trim() || "Task activation failed.";
-  }
-
-  private notificationWarningMessage(outcome: TaskDelegationNotificationDeliveryOutcome): string | null {
-    if (!outcome.warning) return null;
-    return outcome.warning.message.trim() || "Task notification delivery failed.";
-  }
-
-  private enqueueActivation<T>(operation: () => Promise<T>): Promise<T> {
-    const scheduled = this.activationTail.then(operation, operation);
-    this.activationTail = scheduled.then(() => undefined, () => undefined);
-    return scheduled;
+  private async notify(agentRunId: string, content: string): Promise<string | null> {
+    const result = await this.options.deliverSystemMessage(agentRunId, new AgentInputUserMessage(content, SenderType.SYSTEM));
+    return result.accepted ? null : `Task transition committed, but notification failed: ${result.message ?? result.code ?? "unknown error"}`;
   }
 }
+
+const errorMessage = (error: unknown): string => error instanceof Error ? error.message : String(error);
+
+const sameTaskExecutionBinding = (
+  reference: TaskExecutionReference,
+  binding: import("../domain/prepared-task-execution.js").TaskExecutionBinding,
+): boolean => binding.kind === "agent"
+  ? "agentRunId" in reference && reference.agentRunId === binding.agentRunId
+  : "teamRunId" in reference && reference.teamRunId === binding.teamRunId;
+
+const findConfigNode = (root: TeamRunAgentTeamNode, address: string): TeamRunNode | null => {
+  if (root.address === address) return root;
+  for (const child of root.children) {
+    if (child.address === address) return child;
+    if (child.kind === "agent_team") {
+      const nested = findConfigNode(child, address);
+      if (nested) return nested;
+    }
+  }
+  return null;
+};
+
+const requirePreparedTaskTeamNode = (
+  prepared: import("../domain/prepared-task-execution.js").PreparedTaskExecution,
+  root: TeamRunAgentTeamNode,
+): TeamRunAgentTeamNode => {
+  const binding = prepared.binding;
+  if (binding.kind !== "team") throw new Error("Prepared execution is not a Team.");
+  const source = findConfigNode(root, binding.address);
+  if (!source || source.kind !== "agent_team") throw new Error(`Configured Team '${binding.address}' was not found.`);
+  const preparedRoot = prepared.preparedTeamRuns.find((run) => run.teamRunId === binding.teamRunId);
+  if (!preparedRoot) throw new Error(`Prepared TeamRun '${binding.teamRunId}' was not found.`);
+  return preparedRoot.context.teamNode;
+};
+
+const assertCommitted = (result: TaskMutationCommitResult, label: string): void => {
+  if (result.outcome === "committed") return;
+  if (result.outcome === "not_committed") throw new TaskDelegationError("TASK_HISTORY_COMMIT_FAILED", `${label} was not committed: ${result.cause.message}`);
+  throw new TeamRunPersistenceFinalizationIndeterminateError(result.file, result.stage);
+};

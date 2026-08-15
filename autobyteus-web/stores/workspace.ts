@@ -424,7 +424,7 @@ export const useWorkspaceStore = defineStore('workspace', {
         const teamContext = teamContextsStore.activeTeamContext;
         const focusedConfig = teamContextsStore.activeExecutionFocusedMemberContext?.config
           || null;
-        const configuration = teamContext?.topology.getConfigurationView() ?? null;
+        const configuration = teamContext?.view.getConfigurationView() ?? null;
         metadata = focusedConfig?.workspaceMetadata || configuration?.workspaceMetadata || null;
         workspaceId = focusedConfig?.workspaceId || configuration?.workspaceId || null;
       } else {

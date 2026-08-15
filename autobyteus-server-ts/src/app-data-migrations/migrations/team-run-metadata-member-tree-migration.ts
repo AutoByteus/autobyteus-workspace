@@ -5,7 +5,7 @@ import type {
   AppDataMigrationItemDetail,
   AppDataMigrationSummary,
 } from "../domain/app-data-migration-types.js";
-import { TeamRunMetadataStore } from "../../run-history/store/team-run-metadata-store.js";
+import { TeamRunMetadataStore } from "../legacy/team-run-metadata-store.js";
 import {
   decodeFlatTeamRunMetadataToMemberTree,
   isLegacyFlatTeamRunMetadata,

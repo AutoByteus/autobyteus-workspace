@@ -3,9 +3,7 @@ import {
   type TokenUsageLedgerEvent as PrismaTokenUsageLedgerEvent,
 } from "@prisma/client";
 import { BaseRepository } from "repository_prisma";
-import { getPrismaClient } from "repository_prisma";
 import type { TokenUsageUpdatedPayload } from "../../../agent-execution/domain/agent-run-token-usage.js";
-import { normalizeTokenUsageExecutionAddress } from "../../domain/execution-address.js";
 import { isCacheState, isInputTokenSemantic } from "../../domain/token-usage-component-basis.js";
 
 const toJsonString = (value: unknown): string | null =>
@@ -42,10 +40,10 @@ const toCreateInput = (payload: TokenUsageUpdatedPayload): Prisma.TokenUsageLedg
   observedAt: normalizeDate(payload.observed_at),
   persistedAt: new Date(),
   runId: payload.run_id,
+  rootTeamRunId: payload.root_team_run_id,
   turnId: payload.turn_id,
   llmCallId: payload.llm_call_id,
   callSequence: payload.call_sequence,
-  executionAddressJson: toJsonString(payload.execution_address),
   agentDefinitionId: payload.agent_definition_id,
   workspaceId: payload.workspace_id,
   taskId: payload.task_id,
@@ -140,10 +138,10 @@ export const toDomainPayload = (record: PrismaTokenUsageLedgerEvent): TokenUsage
     idempotency_key: record.idempotencyKey,
     observed_at: record.observedAt.toISOString(),
     run_id: record.runId,
+    root_team_run_id: record.rootTeamRunId,
     turn_id: record.turnId,
     llm_call_id: record.llmCallId,
     call_sequence: record.callSequence,
-    execution_address: normalizeTokenUsageExecutionAddress(parseJson(record.executionAddressJson)),
     agent_definition_id: record.agentDefinitionId,
     workspace_id: record.workspaceId,
     task_id: record.taskId,
@@ -284,13 +282,8 @@ export class SqlTokenUsageLedgerRepository extends BaseRepository.forModel(
   async listEventsByTeamRunId(rootTeamRunId: string): Promise<TokenUsageUpdatedPayload[]> {
     const normalized = rootTeamRunId.trim();
     if (!normalized) return [];
-    const ids = await getPrismaClient().$queryRaw<{ id: number | bigint }[]>`
-      SELECT "id"
-      FROM "token_usage_ledger_events"
-      WHERE json_extract("execution_address_json", '$.rootTeamRunId') = ${normalized}
-      ORDER BY "observed_at" ASC, "id" ASC`;
     const records = await this.findMany({
-      where: { id: { in: ids.map((row) => Number(row.id)) } },
+      where: { rootTeamRunId: normalized },
       orderBy: [{ observedAt: "asc" }, { id: "asc" }],
     });
     return records.map(toDomainPayload);

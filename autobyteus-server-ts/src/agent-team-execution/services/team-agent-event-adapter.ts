@@ -6,7 +6,7 @@ import {
 } from "../../agent-execution/domain/agent-run-event.js";
 import type { TeamAgentEvent, TeamTokenUsageDetails } from "../domain/team-agent-event.js";
 import { createTeamAgentStatusDetails } from "../domain/team-agent-status.js";
-import type { TeamExecutionAddress } from "../domain/team-execution-address.js";
+import type { TeamMemberExecutionIdentity } from "../domain/team-member-execution-identity.js";
 import { isAgentSegmentType } from "../../agent-execution/domain/agent-segment.js";
 import { resolveAgentRunErrorEvidence } from "../../agent-execution/domain/agent-run-error-evidence.js";
 
@@ -15,7 +15,7 @@ export type TeamAgentEventAdaptationResult =
   | Readonly<{ kind: "filtered_collaboration_duplicate" }>
   | Readonly<{ kind: "rejected"; code: "TEAM_AGENT_EVENT_ADMISSION_FAILED"; message: string }>;
 
-export type ResolveExecutionAddressByAgentRunId = (agentRunId: string) => TeamExecutionAddress | null;
+export type ResolveTeamMemberIdentityByAgentRunId = (agentRunId: string) => TeamMemberExecutionIdentity | null;
 
 const raw = (payload: Record<string, unknown>, snake: string, camel?: string): unknown =>
   payload[snake] ?? (camel ? payload[camel] : undefined);
@@ -137,7 +137,7 @@ const token = (payload: Record<string, unknown>): TeamTokenUsageDetails => Objec
 });
 
 export class TeamAgentEventAdapter {
-  constructor(private readonly resolveExecutionAddressByAgentRunId: ResolveExecutionAddressByAgentRunId) {}
+  constructor(private readonly resolveIdentityByAgentRunId: ResolveTeamMemberIdentityByAgentRunId) {}
 
   adapt(event: AgentRunEvent): TeamAgentEventAdaptationResult {
     if (event.eventType === AgentRunEventType.INTER_AGENT_MESSAGE || event.eventType === AgentRunEventType.TEAM_COMMUNICATION_MESSAGE) {
@@ -225,7 +225,7 @@ export class TeamAgentEventAdapter {
       case AgentRunEventType.SYSTEM_TASK_NOTIFICATION: {
         const senderRunId = text(raw(p, "sender_run_id", "senderRunId"));
         const sender = senderRunId
-          ? (() => { const address = this.resolveExecutionAddressByAgentRunId(senderRunId); if (!address) throw new Error("sender_run_id does not resolve in the root TeamRun"); return Object.freeze({ kind: "execution" as const, executionAddress: address }); })()
+          ? (() => { const identity = this.resolveIdentityByAgentRunId(senderRunId); if (!identity) throw new Error("sender_run_id does not resolve in the root TeamRun"); return Object.freeze({ kind: "execution" as const, identity }); })()
           : Object.freeze({ kind: "system" as const });
         return correlated({ eventType: "SYSTEM_TASK_NOTIFICATION", details: { sender, content: stringValue(p.content) }, statusHint: hint });
       }

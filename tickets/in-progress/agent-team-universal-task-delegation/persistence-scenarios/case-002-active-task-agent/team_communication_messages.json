@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "rootTeamRunId": "team-run-root",
+  "messages": [
+    {
+      "messageId": "message-001",
+      "senderAgentRunId": "agent-run-product-manager",
+      "receiverAgentRunId": "task-agent-run-tester-001",
+      "content": "Please include the database migration path.",
+      "messageType": "agent_message",
+      "referenceFiles": [],
+      "createdAt": "2026-08-14T10:11:00.000Z"
+    }
+  ]
+}

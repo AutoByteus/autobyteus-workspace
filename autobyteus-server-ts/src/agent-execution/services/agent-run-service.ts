@@ -15,7 +15,7 @@ import {
 import {
   AgentRunHistoryCatalogService,
 } from "../../run-history/services/agent-run-history-catalog-service.js";
-import type { ApplicationExecutionContext } from "../../application-orchestration/domain/models.js";
+import type { ApplicationExecutionProducerRuntimeKind } from "@autobyteus/application-sdk-contracts";
 import type { ObservedRunLifecycleEvent } from "../../runtime-management/domain/observed-run-lifecycle-event.js";
 import { isAgentRunEvent } from "../domain/agent-run-event.js";
 import { AgentRunCanonicalFailureObserver } from "../events/agent-run-canonical-failure-observer.js";
@@ -31,7 +31,12 @@ export interface CreateAgentRunInput {
   llmConfig?: Record<string, unknown> | null;
   skillAccessMode: SkillAccessMode;
   runtimeKind: string;
-  applicationExecutionContext?: ApplicationExecutionContext | null;
+  applicationBinding?: {
+    applicationId: string;
+    bindingId: string;
+    displayName: string | null;
+    runtimeKind: ApplicationExecutionProducerRuntimeKind;
+  } | null;
 }
 
 export interface CreateAgentRunResult {
