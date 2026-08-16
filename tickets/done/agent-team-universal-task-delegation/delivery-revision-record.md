@@ -8,6 +8,7 @@
 | DR-002 | User corrected the branch topology and explicitly requested latest `origin/personal` integration into the surviving ticket worktree | DR-001 Blocked / incorrectly described `origin/personal` as the recorded base | Blocked — intentional `origin/personal` integration requires implementation-owned conflict resolution; original hierarchical worktree authorized for retirement | `delivery-integration-blocker.md`, `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/delivery-direction-correction-dr002.log`, `delivery-evidence/delivery-worktree-retirement-dr002.log` |
 | DR-003 | `CRR-022` Not Applicable over `API-REV-008` / `CRR-021` / `IR-014`, after DR-002 integration rework | DR-002 Blocked | Pass — tracked base and user-directed personal source are current and contained; docs synchronized; final handoff ready on user-verification hold | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `release-notes.md`, `delivery-evidence/delivery-*-dr003.log` |
 | DR-004 | User explicitly authorized branch-only finalization, archival, commit, and push | DR-003 ready for verification | Pass — final refs unchanged and contained; ticket authorized for archival and own-branch publication with no merge | `handoff-summary.md`, `release-deployment-report.md`, `release-notes.md`, `delivery-evidence/delivery-finalization-refresh-dr004.log` |
+| DR-005 | Completion of DR-004 own-branch publication | DR-004 ready to commit and push | Pass — ticket archived and same-name remote branch created; no merge, target-branch update, release, or deployment | `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/delivery-own-branch-push-dr005.log` |
 
 ## Revision Entries
 
@@ -61,3 +62,15 @@
 - Authorized repository action: archive the ticket under `tickets/done/agent-team-universal-task-delegation`, commit on the current ticket branch, and publish only `origin/codex/agent-team-universal-task-delegation`.
 - Explicit exclusions: do not merge, fast-forward, promote, or push `codex/agent-team-hierarchical-handoffs`; do not merge or push `personal`; do not release, deploy, tag, version, repair, roll back, or remove protected safety backups.
 - Completion record: actual commit/push results are recorded in DR-005 after publication.
+
+### DR-005 — Archived ticket published on its own branch
+
+- Trigger: completion of the user-authorized DR-004 branch-only finalization.
+- Archive result: `tickets/in-progress/agent-team-universal-task-delegation` was moved to `tickets/done/agent-team-universal-task-delegation` before the finalization commit.
+- Finalization commit: `6a8a208030e78b40ca1b602153a664389cde27d1` (`chore(delivery): finalize universal task delegation`) contains the archived ticket and DR-003/DR-004 final delivery package.
+- Initial publication result: `git push -u origin HEAD:refs/heads/codex/agent-team-universal-task-delegation` succeeded, created the same-name remote branch at the finalization commit, and changed the local upstream from the historical hierarchical branch to `origin/codex/agent-team-universal-task-delegation`.
+- Final publication record: this DR-005 record and its evidence are committed and pushed on the same ticket branch; the remote tip is verified against the local tip after that push.
+- Merge/target result: `NONE`. Delivery did not merge, fast-forward, promote, update, or push `codex/agent-team-hierarchical-handoffs` or `personal`.
+- Release/deployment result: `Not Applicable / not requested`. No version bump, tag, release, publication workflow, deployment, or rollout occurred.
+- Remote advisory disclosure: GitHub's push response reported 818 Dependabot vulnerability alerts on the repository default branch (`20 critical / 347 high / 385 moderate / 66 low`). This existing default-branch advisory was not evaluated or changed by ticket finalization.
+- Safety: operational database and `$HOME/.autobyteus` action `NONE`; protected `60004/31004` action `NONE`; rollback/repair action `NONE`; safety stash and all delivery backups remain retained.
