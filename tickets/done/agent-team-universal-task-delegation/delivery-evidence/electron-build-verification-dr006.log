@@ -1,0 +1,74 @@
+DR-006 local Electron build verification
+timestamp_utc=2026-08-16T03:40:03Z
+branch=codex/agent-team-universal-task-delegation
+head=5e76c7dbb002f29a4a755998d6f599a96f49af3b
+upstream=origin/codex/agent-team-universal-task-delegation
+upstream_head=5e76c7dbb002f29a4a755998d6f599a96f49af3b
+platform=Darwin
+architecture=arm64
+build_flavor=personal
+notarization=disabled
+timestamping=disabled
+signing=skipped (electron-builder reported identity explicitly null)
+documented_command_result=failed at electron-builder workspace dependency boundary
+documented_command_failure=autobyteus-team-stream-contracts/LICENSE resolved outside autobyteus-web
+local_workaround=temporarily materialized runtime-only team-stream-contracts plus zod under autobyteus-web/node_modules; original symlink restored
+workaround_packaging_result=pass
+
+--- artifact inventory ---
+-rw-r--r--@ 1 normy  staff   443M Aug 16 05:36 autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.dmg
+-rw-r--r--@ 1 normy  staff   473K Aug 16 05:36 autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.dmg.blockmap
+-rw-r--r--@ 1 normy  staff   437M Aug 16 05:38 autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.zip
+-rw-r--r--@ 1 normy  staff   461K Aug 16 05:38 autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.zip.blockmap
+-rw-r--r--@ 1 normy  staff   813B Aug 16 05:38 autobyteus-web/electron-dist/builder-debug.yml
+-rw-r--r--@ 1 normy  staff   555B Aug 16 05:38 autobyteus-web/electron-dist/latest-mac.yml
+
+--- app metadata ---
+1.4.52
+1.4.52
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus: Mach-O 64-bit executable arm64
+Non-fat file: autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus is architecture: arm64
+
+--- sha256 ---
+68522bc8e0008e4ea23c99a050fe70426b2c844b57486299e59f8f075929c27c  autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.dmg
+41b342cde923fd65cd907309dd3c1565522451a7876fb56368345fb6409f1026  autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.zip
+b7261b60080bcd5ac69c77a99c4f2e92b48e58cbaf76ae59d98c90d54369de27  autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.dmg.blockmap
+5d69be0c234da85569b28c84178215e1a2b5e0bb98b8d77c9a57a30b6c799056  autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.zip.blockmap
+
+--- dmg verification ---
+Prüfsumme für Protective Master Boot Record (MBR : 0) berechnen …
+Protective Master Boot Record (MBR :: Die überprüfte CRC32-Prüfsumme ist $4B34F5E9
+Prüfsumme für GPT Header (Primary GPT Header : 1) berechnen …
+ GPT Header (Primary GPT Header : 1): Die überprüfte CRC32-Prüfsumme ist $67BF7A1E
+Prüfsumme für GPT Partition Data (Primary GPT Table : 2) berechnen …
+GPT Partition Data (Primary GPT Tabl: Die überprüfte CRC32-Prüfsumme ist $08F42440
+Prüfsumme für  (Apple_Free : 3) berechnen …
+                    (Apple_Free : 3): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für disk image (Apple_APFS : 4) berechnen …
+         disk image (Apple_APFS : 4): Die überprüfte CRC32-Prüfsumme ist $59EBDD38
+Prüfsumme für  (Apple_Free : 5) berechnen …
+                    (Apple_Free : 5): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für GPT Partition Data (Backup GPT Table : 6) berechnen …
+GPT Partition Data (Backup GPT Table: Die überprüfte CRC32-Prüfsumme ist $08F42440
+Prüfsumme für GPT Header (Backup GPT Header : 7) berechnen …
+  GPT Header (Backup GPT Header : 7): Die überprüfte CRC32-Prüfsumme ist $2B6818C6
+Die überprüfte CRC32-Prüfsumme ist $DC991277
+hdiutil: verify: checksum of "autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.dmg" is VALID
+
+--- zip verification ---
+No errors detected in compressed data of autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.zip.
+
+--- packaged terminal runtime ---
+[terminal-runtime] node-pty root: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] ok: node-pty spawn probe
+
+--- workspace dependency restoration ---
+team-stream-contracts-link=../../../autobyteus-team-stream-contracts
+
+--- safety ---
+operational_database_action=NONE
+home_autobyteus_action=NONE
+protected_60004_31004_action=NONE
+application_launch_action=NONE

@@ -2,11 +2,12 @@
 
 ## Current Result
 
-- Delivery revision: `DR-005`
+- Delivery revision: `DR-006`
 - Integrated-state result: `Pass — current and integrated`
 - Documentation result: `Pass`
 - Final handoff: `User verified and authorized branch-only finalization`
 - Repository finalization: `Complete on current ticket branch only`
+- Local Electron test package: `Pass with temporary dependency materialization; documented clean build needs a packaging Local Fix`
 - Release/publication/deployment: `Not requested; not performed`
 
 ## Integration Record
@@ -52,6 +53,33 @@ release.
 The remote reported 818 existing Dependabot alerts on the repository default
 branch (`20 critical / 347 high / 385 moderate / 66 low`). This ticket did not
 evaluate or modify that advisory state.
+
+## Post-Finalization Local Electron Test Package
+
+At the user's request, delivery ran the README-documented macOS Electron build
+for the personal flavor with notarization and timestamping disabled. The full
+command passed all preparation, production build, renderer generation, and
+TypeScript stages, but `electron-builder` rejected the production workspace
+link for `@autobyteus/team-stream-contracts` because its `LICENSE` resolves
+outside the `autobyteus-web` app root.
+
+Delivery made no production-source fix. To provide a local test artifact,
+delivery temporarily materialized that ignored workspace dependency and its
+runtime `zod` dependency under `autobyteus-web/node_modules`, reran the package
+stage, and restored the original workspace symlink. The resulting unsigned,
+non-notarized macOS ARM64 v1.4.52 DMG and ZIP passed DMG/ZIP integrity checks,
+ARM64 executable inspection, and the packaged `node-pty` spawn probe. The app
+was not launched.
+
+The local artifacts are:
+
+- `autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.dmg`
+- `autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.zip`
+
+The repeatable README build remains classified `Local Fix — packaging` and
+should be corrected by `implementation_engineer` before claiming a clean-clone
+desktop packaging pass. DR-006 did not commit, push, merge, release, deploy,
+tag, or alter a version.
 
 ## Safety And Cleanup
 
