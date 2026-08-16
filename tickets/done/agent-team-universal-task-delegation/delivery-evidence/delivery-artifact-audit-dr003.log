@@ -1,0 +1,33 @@
+# DR-003 delivery artifact audit
+timestamp_utc=2026-08-15T22:18:11Z
+branch=codex/agent-team-universal-task-delegation
+head=dd439fcfc06b9a7bdc8b1f961d71e1ebd7ce2c39
+
+## Canonical outputs
+delivery-revision-record.md=present
+delivery-integration-blocker.md=present
+docs-sync-report.md=present
+handoff-summary.md=present
+release-deployment-report.md=present
+release-notes.md=present
+canonical_content=PASS
+
+## Integrated-state evidence
+integration_and_tree_identity=PASS
+
+## Working-tree classification
+delivery_dirty_paths_ticket_only=PASS
+
+## Formatting
+delivery_artifact_diff_check=PASS
+
+## Mandatory safety and disclosure
+incident_sha256=574925aa4b0e0a1b570cb4a873734a671324617a7b6ab02c6528b790cf3d724b
+operational_database_action=NONE
+home_autobyteus_action=NONE
+protected_60004_31004_action=NONE
+rollback_repair_action=NONE
+push_archive_release_deployment_action=NONE
+safety_and_disclosure=PASS
+
+RESULT=PASS_READY_FOR_USER_VERIFICATION

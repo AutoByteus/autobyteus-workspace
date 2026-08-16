@@ -1,0 +1,26 @@
+# DR-003 tracked-base and user-directed integration-source refresh
+timestamp_utc=2026-08-15T22:13:18Z
+branch=codex/agent-team-universal-task-delegation
+checkpoint_head=dd439fcfc06b9a7bdc8b1f961d71e1ebd7ce2c39
+tracked_base_ref=origin/codex/agent-team-hierarchical-handoffs
+tracked_base_before=3e121efb32462c314f4ef1c4e051f30d2f9b3e58
+personal_source_ref=origin/personal
+personal_source_before=acb8985930ccce49b632cdca22b92f5b237e35bf
+
+## Fetch
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch                codex/agent-team-hierarchical-handoffs -> FETCH_HEAD
+ * branch                personal   -> FETCH_HEAD
+fetch_status=0
+
+## Ref state after fetch
+tracked_base_after=3e121efb32462c314f4ef1c4e051f30d2f9b3e58
+personal_source_after=acb8985930ccce49b632cdca22b92f5b237e35bf
+head_vs_tracked_base_ahead_behind=48/0
+head_vs_personal_source_ahead_behind=114/0
+tracked_base_contained=true
+personal_source_contained=true
+operational_database_action=NONE
+home_autobyteus_action=NONE
+protected_60004_31004_action=NONE
+rollback_repair_action=NONE

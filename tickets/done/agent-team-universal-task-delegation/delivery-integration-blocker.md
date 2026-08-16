@@ -1,5 +1,9 @@
 # Delivery Integration Blocker — DR-002
 
+> **Resolved by DR-003.** IR-011–IR-014 completed the intentional personal
+> integration and follow-up corrections; CRR-021, API-REV-008, and CRR-022
+> clear the renewed gates. This file remains historical blocker evidence.
+
 ## Status
 
 - Result: `Blocked — Intentional Personal Integration / Local Fix`

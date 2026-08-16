@@ -1,0 +1,35 @@
+# DR-003 durable documentation validation
+timestamp_utc=2026-08-15T22:15:37Z
+source_head=03b91d079af71b996ab4cadfe985ca2b2fddf049
+delivery_checkpoint=dd439fcfc06b9a7bdc8b1f961d71e1ebd7ce2c39
+checkpoint_non_ticket_tree_exact=true
+
+## Feature-owned durable docs
+present=autobyteus-application-sdk-contracts/README.md
+present=autobyteus-server-ts/docs/modules/agent_artifacts.md
+present=autobyteus-server-ts/docs/modules/agent_communication.md
+present=autobyteus-server-ts/docs/modules/agent_team_execution.md
+feature_doc_contracts=PASS
+
+## Referenced current owners
+current_owner_existence=PASS
+
+## Retired-owner residue scan in current long-lived docs
+retired_owner_residue=ZERO
+
+## Explicit no-impact surfaces
+no_delivery_edit=README.md
+no_delivery_edit=autobyteus-server-ts/README.md
+no_delivery_edit=autobyteus-server-ts/docs/README.md
+no_delivery_edit=autobyteus-web/README.md
+no_delivery_edit=autobyteus-web/ARCHITECTURE.md
+no_delivery_edit=autobyteus-web/docs/electron_packaging.md
+Reason: these entry-point/packaging documents do not enumerate the replaced Team runtime identity/store or task lifecycle owners, and Electron behavior is renderer-equivalent and unchanged.
+
+## Safety
+operational_database_action=NONE
+home_autobyteus_action=NONE
+protected_60004_31004_action=NONE
+rollback_repair_action=NONE
+
+RESULT=PASS_NO_ADDITIONAL_DOC_EDIT_REQUIRED
