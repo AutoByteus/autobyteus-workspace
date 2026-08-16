@@ -34,6 +34,7 @@ export interface AppDataMigrationDefinition {
   displayName: string;
   description: string;
   requiredOnStartup: boolean;
+  prerequisiteMigrationIds?: readonly string[];
   execute(): Promise<AppDataMigrationExecutionResult>;
 }
 
@@ -89,5 +90,34 @@ export class AppDataMigrationDuplicateRunError extends Error {
   constructor(migrationId: string) {
     super(`App data migration '${migrationId}' is already running.`);
     this.name = "AppDataMigrationDuplicateRunError";
+  }
+}
+
+export type AppDataMigrationPrerequisiteStatus = Readonly<{
+  migrationId: string;
+  status: AppDataMigrationStatus;
+}>;
+
+export class AppDataMigrationPrerequisiteError extends Error {
+  readonly code = "APP_DATA_MIGRATION_PREREQUISITE_INCOMPLETE";
+
+  constructor(
+    readonly migrationId: string,
+    readonly incomplete: readonly AppDataMigrationPrerequisiteStatus[],
+  ) {
+    super(`App data migration '${migrationId}' has incomplete prerequisites.`);
+    this.name = "AppDataMigrationPrerequisiteError";
+  }
+
+  toJSON(): {
+    code: string;
+    migrationId: string;
+    prerequisites: readonly AppDataMigrationPrerequisiteStatus[];
+  } {
+    return {
+      code: this.code,
+      migrationId: this.migrationId,
+      prerequisites: this.incomplete,
+    };
   }
 }

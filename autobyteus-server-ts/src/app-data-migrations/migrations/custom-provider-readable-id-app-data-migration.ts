@@ -20,10 +20,11 @@ import {
   customProviderV2MigrationFileSchema,
   type CustomProviderV2MigrationFile,
 } from './custom-provider-migration-name-snapshot.js';
-import {
-  CustomProviderReadableIdPrerequisiteError,
-  CustomProviderReadableIdPrerequisiteGuard,
-} from './custom-provider-readable-id-prerequisite-guard.js';
+import { CUSTOM_PROVIDER_V1_APP_DATA_MIGRATION_ID } from './custom-provider-v1-app-data-migration.js';
+import { REMOVE_GLOBAL_SKILL_DISCOVERY_MODE_MIGRATION_ID } from './remove-global-skill-discovery-mode-migration.js';
+import { TEAM_RUN_METADATA_MEMBER_TREE_MIGRATION_ID } from './team-run-metadata-member-tree-migration.js';
+import { TOKEN_USAGE_PROVIDER_NAME_SNAPSHOT_BACKFILL_MIGRATION_ID } from './token-usage-provider-name-snapshot-backfill-migration.js';
+import { REMOVE_SELF_EVOLUTION_RUN_METADATA_MIGRATION_ID } from './remove-self-evolution-run-metadata-migration.js';
 import {
   CustomProviderReadableIdJsonSelectorMigrator,
   type CustomProviderReadableIdMapping,
@@ -33,6 +34,14 @@ import { CustomProviderReadableIdApplicationSelectorMigrator } from './custom-pr
 
 export const CUSTOM_PROVIDER_READABLE_ID_APP_DATA_MIGRATION_ID =
   '20260803_custom_provider_readable_identity';
+
+export const CUSTOM_PROVIDER_READABLE_ID_PREREQUISITE_IDS = [
+  CUSTOM_PROVIDER_V1_APP_DATA_MIGRATION_ID,
+  REMOVE_GLOBAL_SKILL_DISCOVERY_MODE_MIGRATION_ID,
+  TEAM_RUN_METADATA_MEMBER_TREE_MIGRATION_ID,
+  TOKEN_USAGE_PROVIDER_NAME_SNAPSHOT_BACKFILL_MIGRATION_ID,
+  REMOVE_SELF_EVOLUTION_RUN_METADATA_MIGRATION_ID,
+] as const;
 
 type FileIdentity = {
   device: number;
@@ -112,9 +121,6 @@ const selectorDetails = (
 }));
 
 const sanitizedFatal = (error: unknown): string => {
-  if (error instanceof CustomProviderReadableIdPrerequisiteError) {
-    return JSON.stringify(error.toJSON());
-  }
   if (error instanceof Error && /^CUSTOM_PROVIDER_READABLE_ID_[A-Z_]+$/.test(error.message)) {
     return error.message;
   }
@@ -126,6 +132,7 @@ export class CustomProviderReadableIdAppDataMigration implements AppDataMigratio
   readonly displayName = 'Custom provider readable identity reset';
   readonly description = 'Maps active UUID selectors, resets legacy providers, and removes old keys.';
   readonly requiredOnStartup = true;
+  readonly prerequisiteMigrationIds = CUSTOM_PROVIDER_READABLE_ID_PREREQUISITE_IDS;
 
   private readonly providerFilePath: string;
   private readonly jsonSelectors: CustomProviderReadableIdJsonSelectorMigrator;
@@ -133,8 +140,6 @@ export class CustomProviderReadableIdAppDataMigration implements AppDataMigratio
 
   constructor(
     private readonly appDataDir: string = appConfigProvider.config.getAppDataDir(),
-    private readonly prerequisiteGuard: CustomProviderReadableIdPrerequisiteGuard =
-      new CustomProviderReadableIdPrerequisiteGuard(),
     private readonly getSecretOwner: () => SecretRemovalOwner =
       () => getSecretVaultRuntime().requireService(),
     selectorRoots?: readonly string[],
@@ -159,10 +164,7 @@ export class CustomProviderReadableIdAppDataMigration implements AppDataMigratio
 
   async execute(): Promise<AppDataMigrationExecutionResult> {
     try {
-      return await withFilePathLock(this.providerFilePath, async () => {
-        await this.prerequisiteGuard.requireTerminalSuccess();
-        return this.executeLocked();
-      });
+      return await withFilePathLock(this.providerFilePath, () => this.executeLocked());
     } catch (error) {
       const code = sanitizedFatal(error);
       return toResult([detail('readable-provider-reset', 'FAILED', code)], code);

@@ -8,7 +8,7 @@ import { validateTeamCommunicationMessagesV1Payload } from "../../../src/service
 
 const scenarioRoot = path.resolve(
   process.cwd(),
-  "../tickets/in-progress/agent-team-universal-task-delegation/persistence-scenarios",
+  "tests/fixtures/app-data-migrations/team-run-execution-tree-v1",
 );
 
 const readJson = async (filePath: string): Promise<unknown> =>

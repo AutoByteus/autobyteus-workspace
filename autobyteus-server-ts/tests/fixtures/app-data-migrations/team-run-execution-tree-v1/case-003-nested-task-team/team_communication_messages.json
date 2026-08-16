@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "rootTeamRunId": "team-run-root",
+  "messages": [
+    {
+      "messageId": "message-010",
+      "senderAgentRunId": "nested-task-agent-run-001",
+      "receiverAgentRunId": "task-team-agent-run-qa-lead-001",
+      "content": "The browser run is complete; I submitted the formal result.",
+      "messageType": "agent_message",
+      "referenceFiles": [],
+      "createdAt": "2026-08-14T10:31:00.000Z"
+    }
+  ]
+}

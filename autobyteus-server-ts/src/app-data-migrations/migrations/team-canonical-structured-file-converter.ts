@@ -1,5 +1,5 @@
 import { createAgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
-import { createTeamExecutionAddress, type TeamExecutionAddress } from "../legacy/team-execution-address.js";
+import { normalizePredecessorTeamExecutionAddress } from "./team-execution-address-normalizer.js";
 
 type Json = Record<string, unknown>;
 const object = (value: unknown, label: string): Json => {
@@ -23,42 +23,11 @@ const legacyMemberAddress = (record: Json, label: string): string => {
   return createAgentTeamAddress(segments);
 };
 
-const exactExecutionAddress = (value: unknown): TeamExecutionAddress | null => {
-  const record = value && typeof value === "object" && !Array.isArray(value) ? value as Json : null;
-  if (!record || Object.keys(record).length !== 4 || !["rootTeamRunId", "taskTeamRunIds", "memberAddress", "taskAgentRunId"].every((key) => Object.hasOwn(record, key))) return null;
-  try { return createTeamExecutionAddress(record as never); } catch { return null; }
-};
-
-export const convertLegacyConversationAddress = (
-  value: unknown,
-  rootTeamRunId: string,
-  label: string,
-): TeamExecutionAddress => {
-  const current = exactExecutionAddress(value);
-  if (current) return current;
-  const record = object(value, label);
-  if (!Array.isArray(record.segments)) throw new Error(`${label}.segments must be an array.`);
-  let memberAddress: string | null = null;
-  let taskAgentRunId: string | null = null;
-  const taskTeamRunIds: string[] = [];
-  for (const [index, valueSegment] of record.segments.entries()) {
-    const segment = object(valueSegment, `${label}.segments[${index}]`);
-    if (segment.kind === "member") memberAddress = legacyMemberAddress(segment, `${label}.segments[${index}]`);
-    else if (segment.kind === "task_team") taskTeamRunIds.push(text(segment.taskTeamRunId, `${label}.segments[${index}].taskTeamRunId`));
-    else if (segment.kind === "task_agent") {
-      if (taskAgentRunId) throw new Error(`${label} has more than one task Agent segment.`);
-      taskAgentRunId = text(segment.taskAgentRunId, `${label}.segments[${index}].taskAgentRunId`);
-    } else throw new Error(`${label}.segments[${index}].kind is unsupported.`);
-  }
-  if (!memberAddress) throw new Error(`${label} has no member segment.`);
-  return createTeamExecutionAddress({ rootTeamRunId, taskTeamRunIds, memberAddress, taskAgentRunId });
-};
-
 const convertUpdate = (value: unknown, rootTeamRunId: string, label: string): Json => {
   const update = structuredClone(object(value, label));
   if (update.kind !== "submission" && update.kind !== "review") throw new Error(`${label}.kind is unsupported.`);
-  update.senderAddress = convertLegacyConversationAddress(update.senderAddress, rootTeamRunId, `${label}.senderAddress`);
-  update.receiverAddress = convertLegacyConversationAddress(update.receiverAddress, rootTeamRunId, `${label}.receiverAddress`);
+  update.senderAddress = normalizePredecessorTeamExecutionAddress(update.senderAddress, rootTeamRunId, `${label}.senderAddress`);
+  update.receiverAddress = normalizePredecessorTeamExecutionAddress(update.receiverAddress, rootTeamRunId, `${label}.receiverAddress`);
   return update;
 };
 
@@ -70,14 +39,14 @@ export const convertTaskDelegationFile = (value: unknown, directoryTeamRunId: st
   file.records = file.records.map((recordValue, index) => {
     const label = `records[${index}]`;
     const record = structuredClone(object(recordValue, label));
-    record.senderAddress = convertLegacyConversationAddress(record.senderAddress, teamRunId, `${label}.senderAddress`);
-    record.receiverAddress = convertLegacyConversationAddress(record.receiverAddress, teamRunId, `${label}.receiverAddress`);
+    record.senderAddress = normalizePredecessorTeamExecutionAddress(record.senderAddress, teamRunId, `${label}.senderAddress`);
+    record.receiverAddress = normalizePredecessorTeamExecutionAddress(record.receiverAddress, teamRunId, `${label}.receiverAddress`);
     if (record.receiverTargetKind === "member") record.receiverTargetKind = "agent";
     else if (record.receiverTargetKind === "team") record.receiverTargetKind = "agent_team";
     else if (record.receiverTargetKind !== "agent" && record.receiverTargetKind !== "agent_team") throw new Error(`${label}.receiverTargetKind is unsupported.`);
     if (record.taskRun !== null && record.taskRun !== undefined) {
       const taskRun = structuredClone(object(record.taskRun, `${label}.taskRun`));
-      taskRun.address = convertLegacyConversationAddress(taskRun.address, teamRunId, `${label}.taskRun.address`);
+      taskRun.address = normalizePredecessorTeamExecutionAddress(taskRun.address, teamRunId, `${label}.taskRun.address`);
       record.taskRun = taskRun;
     } else record.taskRun = null;
     if (!Array.isArray(record.updates)) throw new Error(`${label}.updates must be an array.`);

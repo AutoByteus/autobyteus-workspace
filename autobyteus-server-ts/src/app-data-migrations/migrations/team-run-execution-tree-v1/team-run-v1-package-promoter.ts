@@ -5,8 +5,8 @@ import { validateTeamCommunicationMessagesV1Payload } from "../../../services/te
 import { validateTeamRunStatePackage } from "../../../run-history/services/team-run-state-package-validator.js";
 import { validateTeamRunExecutionTreePayload } from "../../../run-history/store/team-run-execution-tree-schema.js";
 import type { PlannedTeamRunV1Package } from "./predecessor-team-run-planner.js";
+import { TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID } from "./team-run-execution-tree-v1-constants.js";
 
-const ID = "20260814_team_run_execution_tree_v1";
 const targetNames = {
   executionTree: "team_run_execution_tree.json",
   taskRecords: "task_delegation_records.json",
@@ -66,7 +66,7 @@ export class TeamRunV1PackagePromoter {
       copyIfPresent(input.sourceCommunicationPath, path.join(backupDir, "team_communication_messages.json")),
     ]);
     await writeSynced(path.join(backupDir, "manifest.json"), {
-      migrationId: ID,
+      migrationId: TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID,
       rootTeamRunId: input.rootTeamRunId,
       sourceRootDir: input.rootDir,
       backedUpAt: new Date().toISOString(),
@@ -75,7 +75,10 @@ export class TeamRunV1PackagePromoter {
 
     const staged = Object.fromEntries(Object.entries(targetNames).map(([key, name]) => [
       key,
-      path.join(input.rootDir, `.${name}.${ID}.${process.pid}.staged`),
+      path.join(
+        input.rootDir,
+        `.${name}.${TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID}.${process.pid}.staged`,
+      ),
     ])) as Record<keyof typeof targetNames, string>;
     try {
       await fs.mkdir(input.rootDir, { recursive: true });

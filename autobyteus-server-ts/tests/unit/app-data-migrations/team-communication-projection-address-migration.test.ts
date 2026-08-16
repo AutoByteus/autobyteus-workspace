@@ -139,6 +139,54 @@ describe("TeamCommunicationProjectionAddressMigration", () => {
     await expect(listBackups(projectionPath)).resolves.toHaveLength(0);
   });
 
+  it("converts stored released segment addresses through the shared normalizer", async () => {
+    const projectionPath = await writeProjection("team-segments", {
+      teamRunId: "team-segments",
+      messages: [
+        {
+          messageId: "message-segments",
+          senderAddress: {
+            segments: [
+              { kind: "member", memberPath: ["sender"] },
+              { kind: "task_team", taskTeamRunId: "task-team-1" },
+            ],
+          },
+          receiver_address: {
+            segments: [
+              { kind: "member", member_path: ["review", "receiver"], member_route_key: "review/receiver" },
+              { kind: "task_agent", task_agent_run_id: "task-agent-1" },
+            ],
+          },
+          content: "Released address evidence.",
+          messageType: "agent_message",
+          createdAt: "2026-04-08T00:00:00.000Z",
+          referenceFiles: [],
+        },
+      ],
+    });
+
+    const result = await new TeamCommunicationProjectionAddressMigration(memoryDir).execute();
+
+    expect(result.status).toBe("SUCCEEDED");
+    expect(result.summary).toMatchObject({ migratedCount: 1, failedCount: 0 });
+    const converted = await readJson(projectionPath);
+    expect((converted.messages as Record<string, unknown>[])[0]).toMatchObject({
+      senderAddress: {
+        rootTeamRunId: "team-segments",
+        taskTeamRunIds: ["task-team-1"],
+        memberAddress: "/sender",
+        taskAgentRunId: null,
+      },
+      receiverAddress: {
+        rootTeamRunId: "team-segments",
+        taskTeamRunIds: [],
+        memberAddress: "/review/receiver",
+        taskAgentRunId: "task-agent-1",
+      },
+    });
+    await expect(listBackups(projectionPath)).resolves.toHaveLength(1);
+  });
+
   it("reports unconvertible old flat files as failures without rewriting the original file", async () => {
     const original = {
       version: 1,
@@ -162,7 +210,35 @@ describe("TeamCommunicationProjectionAddressMigration", () => {
     expect(result.summary.details[0]).toMatchObject({
       itemId: "team-bad",
       status: "FAILED",
-      message: expect.stringContaining("receiver member address cannot be reconstructed"),
+      message: expect.stringContaining("receiverAddress.segments[0] member identity is missing"),
+    });
+    await expect(readJson(projectionPath)).resolves.toEqual(original);
+    await expect(listBackups(projectionPath)).resolves.toHaveLength(0);
+  });
+
+  it("rejects an exact address for another root without rewriting the source", async () => {
+    const original = {
+      teamRunId: "team-root",
+      messages: [
+        {
+          messageId: "message-root-mismatch",
+          senderAddress: executionAddress("other-root", "/sender"),
+          receiverAddress: executionAddress("team-root", "/receiver"),
+          content: "Wrong root.",
+          messageType: "agent_message",
+          createdAt: "2026-04-08T00:00:00.000Z",
+          referenceFiles: [],
+        },
+      ],
+    };
+    const projectionPath = await writeProjection("team-root", original);
+
+    const result = await new TeamCommunicationProjectionAddressMigration(memoryDir).execute();
+
+    expect(result.status).toBe("FAILED");
+    expect(result.summary.details[0]).toMatchObject({
+      status: "FAILED",
+      message: expect.stringContaining("does not match expected root 'team-root'"),
     });
     await expect(readJson(projectionPath)).resolves.toEqual(original);
     await expect(listBackups(projectionPath)).resolves.toHaveLength(0);

@@ -1,6 +1,4 @@
-import fs from "node:fs/promises";
 import path from "node:path";
-import { AgentMemoryLayout } from "../../../agent-memory/store/agent-memory-layout.js";
 import type { TeamRunExecutionTreeSnapshot } from "../../../agent-team-execution/domain/team-run-execution-tree.js";
 import type {
   AppDataMigrationDefinition,
@@ -8,19 +6,28 @@ import type {
   AppDataMigrationItemDetail,
   AppDataMigrationSummary,
 } from "../../domain/app-data-migration-types.js";
-import { TeamRunExecutionTreeStore } from "../../../run-history/store/team-run-execution-tree-store.js";
-import { TaskDelegationRecordsV1Store } from "../../../agent-team-execution/task-delegation/records/task-delegation-records-v1-store.js";
-import { TeamCommunicationV1Store } from "../../../services/team-communication/team-communication-v1-store.js";
-import { validateTeamRunStatePackage } from "../../../run-history/services/team-run-state-package-validator.js";
 import { TokenUsageLedgerStore } from "../../../token-usage/providers/token-usage-ledger-store.js";
 import type { TokenUsageExecutionIdentityEvidenceRow } from "../../../token-usage/repositories/sql/token-usage-execution-identity-migration-repository.js";
+import { TEAM_CANONICAL_IDENTITY_MIGRATION_ID } from "../team-canonical-identity-migration.js";
+import {
+  TeamRunMigrationStateClassifier,
+  type TeamRunMigrationState,
+} from "../team-run-migration-state-classifier.js";
 import { convertPredecessorExternalOutputDeliveries } from "./predecessor-external-output-converter.js";
-import { planPredecessorTeamRunV1Package } from "./predecessor-team-run-planner.js";
+import {
+  planPredecessorTeamRunV1Package,
+  type PlannedTeamRunV1Package,
+} from "./predecessor-team-run-planner.js";
+import { TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID } from "./team-run-execution-tree-v1-constants.js";
+import {
+  TeamRunPredecessorSourceResolver,
+  type TeamRunPredecessorSources,
+} from "./team-run-predecessor-source-resolver.js";
 import { TeamRunV1PackagePromoter } from "./team-run-v1-package-promoter.js";
+import { TeamRunHistoryIndexReconciler } from "./team-run-history-index-reconciler.js";
 
-export const TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID = "20260814_team_run_execution_tree_v1";
+export { TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID } from "./team-run-execution-tree-v1-constants.js";
 const message = (error: unknown): string => error instanceof Error ? error.message : String(error);
-const missing = (error: unknown): boolean => (error as NodeJS.ErrnoException | null)?.code === "ENOENT";
 const resultSummary = (details: AppDataMigrationItemDetail[]): AppDataMigrationSummary => ({
   scannedCount: details.length,
   migratedCount: details.filter((detail) => detail.status === "MIGRATED").length,
@@ -29,14 +36,18 @@ const resultSummary = (details: AppDataMigrationItemDetail[]): AppDataMigrationS
   details,
 });
 
-type SourcePaths = { taskRecordsPath: string; communicationPath: string };
+type PlannedPredecessorRoot = Readonly<{
+  state: Extract<TeamRunMigrationState, { kind: "PREDECESSOR" }>;
+  sources: TeamRunPredecessorSources;
+  package: PlannedTeamRunV1Package;
+}>;
 
 export class TeamRunExecutionTreeV1AppDataMigration implements AppDataMigrationDefinition {
   readonly id = TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID;
   readonly displayName = "TeamRun execution-tree V1 migration";
   readonly description = "Promotes released TeamRun/task/message/token/external state to the exact V1 rooted execution model.";
   readonly requiredOnStartup = true;
-  private readonly layout: AgentMemoryLayout;
+  readonly prerequisiteMigrationIds = Object.freeze([TEAM_CANONICAL_IDENTITY_MIGRATION_ID]);
   private readonly backupRoot: string;
 
   constructor(
@@ -45,7 +56,6 @@ export class TeamRunExecutionTreeV1AppDataMigration implements AppDataMigrationD
     private readonly tokenStore: Pick<TokenUsageLedgerStore,
       "listExecutionIdentityMigrationEvidence" | "migrateExecutionIdentity" | "disconnectExecutionIdentityMigration"> = new TokenUsageLedgerStore(),
   ) {
-    this.layout = new AgentMemoryLayout(memoryDir);
     this.backupRoot = path.join(appDataDir, "app-data-migration-backups", this.id);
   }
 
@@ -54,11 +64,15 @@ export class TeamRunExecutionTreeV1AppDataMigration implements AppDataMigrationD
     const trees = new Map<string, TeamRunExecutionTreeSnapshot>();
     try {
       const tokenRows = await this.tokenStore.listExecutionIdentityMigrationEvidence();
-      for (const rootTeamRunId of await this.listRootTeamRunIds()) {
-        await this.processRoot(rootTeamRunId, tokenRows, trees, details);
+      const plans = await this.preflightRoots(tokenRows, trees, details);
+      if (!details.some((detail) => detail.status === "FAILED")) {
+        for (const plan of plans) await this.promoteRoot(plan, trees, details);
       }
-      await this.convertTokenIdentity(details);
-      await this.convertExternalOutput(trees, details);
+      await this.reconcileTeamHistory(trees, details);
+      if (!details.some((detail) => detail.status === "FAILED")) {
+        await this.convertTokenIdentity(details);
+        await this.convertExternalOutput(trees, details);
+      }
     } catch (error) {
       details.push({ itemId: "migration:global", status: "FAILED", message: message(error) });
     } finally {
@@ -74,82 +88,87 @@ export class TeamRunExecutionTreeV1AppDataMigration implements AppDataMigrationD
     };
   }
 
-  private async processRoot(
-    rootTeamRunId: string,
+  private async preflightRoots(
     tokenRows: readonly TokenUsageExecutionIdentityEvidenceRow[],
     trees: Map<string, TeamRunExecutionTreeSnapshot>,
     details: AppDataMigrationItemDetail[],
-  ): Promise<void> {
-    const rootDir = this.layout.getTeamDirPath({ rootTeamRunId, ancestorTeamRunIds: [] });
-    const metadataPath = path.join(rootDir, "team_run_metadata.json");
-    const hasMetadata = await this.exists(metadataPath);
-    if (!hasMetadata) {
-      const current = await this.readCurrentPackage(rootTeamRunId, rootDir);
-      if (current) {
-        trees.set(rootTeamRunId, current);
-        details.push({ itemId: `team-root:${rootTeamRunId}`, filePath: rootDir, status: "SKIPPED", message: "Already a complete validated V1 package." });
-      } else {
-        details.push({ itemId: `team-root:${rootTeamRunId}`, filePath: rootDir, status: "SKIPPED", message: "Ignored non-predecessor incomplete TeamRun residue." });
+  ): Promise<readonly PlannedPredecessorRoot[]> {
+    const resolver = new TeamRunPredecessorSourceResolver(this.backupRoot);
+    const plans: PlannedPredecessorRoot[] = [];
+    for (const state of await new TeamRunMigrationStateClassifier(
+      this.memoryDir,
+    ).listAndClassifyRoots()) {
+      if (state.kind === "CURRENT_V1") {
+        trees.set(state.rootTeamRunId, state.package.executionTree);
+        details.push({
+          itemId: `team-root:${state.rootTeamRunId}`,
+          filePath: state.rootDir,
+          status: "SKIPPED",
+          message: "Already a complete validated V1 package.",
+        });
+        continue;
       }
-      return;
+      if (state.kind === "HISTORICAL_RESIDUE") {
+        details.push({
+          itemId: `team-root:${state.rootTeamRunId}`,
+          filePath: state.manifestPath,
+          status: "SKIPPED",
+          message: "Validated historical TeamRun residue has no V1 package to promote.",
+        });
+        continue;
+      }
+      if (state.kind === "INVALID") {
+        details.push({
+          itemId: `team-root:${state.rootTeamRunId}`,
+          filePath: state.evidencePath,
+          status: "FAILED",
+          message: state.reason,
+        });
+        continue;
+      }
+      try {
+        const sources = await resolver.resolve(state.rootTeamRunId, state.rootDir);
+        const packagePlan = await planPredecessorTeamRunV1Package({
+          rootTeamRunId: state.rootTeamRunId,
+          rootDir: state.rootDir,
+          metadataPath: state.metadataPath,
+          taskRecordsPath: sources.taskRecordsPath,
+          communicationPath: sources.communicationPath,
+          tokenRows: tokenRows.filter((row) => this.rowBelongsToRoot(row, state.rootTeamRunId)),
+        });
+        plans.push(Object.freeze({ state, sources, package: packagePlan }));
+      } catch (error) {
+        details.push({
+          itemId: `team-root:${state.rootTeamRunId}`,
+          filePath: state.rootDir,
+          status: "FAILED",
+          message: message(error),
+        });
+      }
     }
+    return Object.freeze(plans);
+  }
+
+  private async promoteRoot(
+    plan: PlannedPredecessorRoot,
+    trees: Map<string, TeamRunExecutionTreeSnapshot>,
+    details: AppDataMigrationItemDetail[],
+  ): Promise<void> {
+    const { state, sources } = plan;
     try {
-      const sources = await this.resolvePredecessorSources(rootTeamRunId, rootDir);
-      const packagePlan = await planPredecessorTeamRunV1Package({
-        rootTeamRunId,
-        rootDir,
-        metadataPath,
-        taskRecordsPath: sources.taskRecordsPath,
-        communicationPath: sources.communicationPath,
-        tokenRows: tokenRows.filter((row) => this.rowBelongsToRoot(row, rootTeamRunId)),
-      });
       const backupPath = await new TeamRunV1PackagePromoter(this.backupRoot).promote({
-        rootTeamRunId,
-        rootDir,
-        metadataPath,
+        rootTeamRunId: state.rootTeamRunId,
+        rootDir: state.rootDir,
+        metadataPath: state.metadataPath,
         sourceTaskRecordsPath: sources.taskRecordsPath,
         sourceCommunicationPath: sources.communicationPath,
-        package: packagePlan,
+        package: plan.package,
       });
-      trees.set(rootTeamRunId, packagePlan.executionTree);
-      details.push({ itemId: `team-root:${rootTeamRunId}`, filePath: rootDir, backupPath, status: "MIGRATED", message: "Promoted and revalidated complete TeamRun V1 package." });
+      trees.set(state.rootTeamRunId, plan.package.executionTree);
+      details.push({ itemId: `team-root:${state.rootTeamRunId}`, filePath: state.rootDir, backupPath, status: "MIGRATED", message: "Promoted and revalidated complete TeamRun V1 package." });
     } catch (error) {
-      details.push({ itemId: `team-root:${rootTeamRunId}`, filePath: rootDir, status: "FAILED", message: message(error) });
+      details.push({ itemId: `team-root:${state.rootTeamRunId}`, filePath: state.rootDir, status: "FAILED", message: message(error) });
     }
-  }
-
-  private async readCurrentPackage(rootTeamRunId: string, rootDir: string): Promise<TeamRunExecutionTreeSnapshot | null> {
-    try {
-      const [executionTree, taskRecords, communicationMessages] = await Promise.all([
-        new TeamRunExecutionTreeStore().read(rootDir, rootTeamRunId),
-        new TaskDelegationRecordsV1Store().read(rootDir, rootTeamRunId),
-        new TeamCommunicationV1Store().read(rootDir, rootTeamRunId),
-      ]);
-      if (!executionTree || !taskRecords || !communicationMessages) return null;
-      return validateTeamRunStatePackage({ executionTree, taskRecords, communicationMessages }).executionTree;
-    } catch { return null; }
-  }
-
-  private async resolvePredecessorSources(rootTeamRunId: string, rootDir: string): Promise<SourcePaths> {
-    const live = {
-      taskRecordsPath: path.join(rootDir, "task_delegation_records.json"),
-      communicationPath: path.join(rootDir, "team_communication_messages.json"),
-    };
-    if (!await this.exists(path.join(rootDir, "team_run_execution_tree.json"))) return live;
-    const rootBackups = path.join(this.backupRoot, rootTeamRunId);
-    let attempts: string[];
-    try { attempts = (await fs.readdir(rootBackups)).sort().reverse(); }
-    catch (error) { if (missing(error)) throw new Error("Partial target package has no protected predecessor backup."); throw error; }
-    for (const attempt of attempts) {
-      const directory = path.join(rootBackups, attempt);
-      if (await this.exists(path.join(directory, "manifest.json"))) {
-        return {
-          taskRecordsPath: path.join(directory, "task_delegation_records.json"),
-          communicationPath: path.join(directory, "team_communication_messages.json"),
-        };
-      }
-    }
-    throw new Error("Partial target package has no usable protected predecessor backup.");
   }
 
   private async convertTokenIdentity(details: AppDataMigrationItemDetail[]): Promise<void> {
@@ -162,6 +181,32 @@ export class TeamRunExecutionTreeV1AppDataMigration implements AppDataMigrationD
       });
     } catch (error) {
       details.push({ itemId: "token-usage:execution-identity-v1", status: "FAILED", message: `Token identity transaction rolled back: ${message(error)}` });
+    }
+  }
+
+  private async reconcileTeamHistory(
+    trees: ReadonlyMap<string, TeamRunExecutionTreeSnapshot>,
+    details: AppDataMigrationItemDetail[],
+  ): Promise<void> {
+    try {
+      const result = await new TeamRunHistoryIndexReconciler(
+        this.memoryDir,
+        this.backupRoot,
+      ).reconcile(trees);
+      details.push({
+        itemId: "team-history-index",
+        backupPath: result.backupPath ?? undefined,
+        status: result.changed ? "MIGRATED" : "SKIPPED",
+        message: result.changed
+          ? `Reconciled ${result.projectedCount} validated TeamRun history row(s).`
+          : `TeamRun history index already matches ${result.projectedCount} validated root(s).`,
+      });
+    } catch (error) {
+      details.push({
+        itemId: "team-history-index",
+        status: "FAILED",
+        message: `TeamRun history index reconciliation failed: ${message(error)}`,
+      });
     }
   }
 
@@ -183,17 +228,5 @@ export class TeamRunExecutionTreeV1AppDataMigration implements AppDataMigrationD
     if (!row.executionAddressJson) return false;
     try { return (JSON.parse(row.executionAddressJson) as { rootTeamRunId?: unknown }).rootTeamRunId === rootTeamRunId; }
     catch { return false; }
-  }
-
-  private async listRootTeamRunIds(): Promise<string[]> {
-    try {
-      return (await fs.readdir(this.layout.getTeamRootDirPath(), { withFileTypes: true }))
-        .filter((entry) => entry.isDirectory()).map((entry) => entry.name).sort();
-    } catch (error) { if (missing(error)) return []; throw error; }
-  }
-
-  private async exists(filePath: string): Promise<boolean> {
-    try { await fs.access(filePath); return true; }
-    catch (error) { if (missing(error)) return false; throw error; }
   }
 }

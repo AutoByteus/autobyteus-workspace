@@ -1,18 +1,16 @@
 import fs from "node:fs/promises";
-import type { Dirent } from "node:fs";
 import path from "node:path";
 import {
   isAgentTeamAddressAncestor,
   type AgentTeamAddress,
 } from "../../agent-collaboration/domain/agent-team-address.js";
-import {
-  serializeTeamExecutionAddress,
-  type TeamExecutionAddress,
-} from "../legacy/team-execution-address.js";
-import {
-  TASK_DELEGATION_RECORDS_FILE_NAME,
-} from "../../agent-team-execution/task-delegation/task-delegation-record.js";
+import type { TeamExecutionAddress } from "../legacy/team-execution-address.js";
 import { normalizePredecessorTaskDelegationRecordsFile } from "../predecessor-task-delegation-records.js";
+import {
+  TeamRunMigrationStateClassifier,
+  type TeamRunMigrationState,
+} from "./team-run-migration-state-classifier.js";
+import type { TeamRunPredecessorSourceResolver } from "./team-run-execution-tree-v1/team-run-predecessor-source-resolver.js";
 
 export type TokenUsageTaskTeamRunIndexEntry = Readonly<{
   rootTeamRunId: string;
@@ -39,27 +37,6 @@ const missing = (error: unknown): boolean =>
 const errorMessage = (error: unknown): string =>
   error instanceof Error ? error.message : String(error);
 
-const listRecordFiles = async (memoryDir: string): Promise<Array<{
-  rootTeamRunId: string;
-  filePath: string;
-}>> => {
-  const teamsRoot = path.join(memoryDir, "agent_teams");
-  let directories: Dirent[];
-  try {
-    directories = await fs.readdir(teamsRoot, { withFileTypes: true });
-  } catch (error) {
-    if (missing(error)) return [];
-    throw error;
-  }
-  return directories
-    .filter((entry) => entry.isDirectory())
-    .map((entry) => ({
-      rootTeamRunId: entry.name,
-      filePath: path.join(teamsRoot, entry.name, TASK_DELEGATION_RECORDS_FILE_NAME),
-    }))
-    .sort((left, right) => left.rootTeamRunId.localeCompare(right.rootTeamRunId));
-};
-
 const sameMapping = (
   left: TokenUsageTaskTeamRunIndexEntry,
   right: TokenUsageTaskTeamRunIndexEntry,
@@ -67,7 +44,7 @@ const sameMapping = (
   && left.teamAddress === right.teamAddress
   && JSON.stringify(left.taskTeamRunIds) === JSON.stringify(right.taskTeamRunIds);
 
-const taskTeamEntry = (input: {
+const predecessorTaskTeamEntry = (input: {
   rootTeamRunId: string;
   filePath: string;
   taskId: string;
@@ -97,79 +74,140 @@ const taskTeamEntry = (input: {
   });
 };
 
+const addEntry = (
+  next: TokenUsageTaskTeamRunIndexEntry,
+  entries: Map<string, TokenUsageTaskTeamRunIndexEntry>,
+  seen: Map<string, TokenUsageTaskTeamRunIndexEntry>,
+  issues: TokenUsageTaskTeamRunIndexIssue[],
+): void => {
+  const taskTeamRunId = next.taskTeamRunIds.at(-1)!;
+  const previous = seen.get(taskTeamRunId);
+  if (previous) {
+    entries.delete(taskTeamRunId);
+    issues.push({
+      itemId: `task-team-run:${taskTeamRunId}`,
+      filePath: next.sourceFilePath,
+      message: sameMapping(previous, next)
+        ? `Duplicate task TeamRun mapping '${taskTeamRunId}' appears in tasks '${previous.taskId}' and '${next.taskId}'.`
+        : `Conflicting task TeamRun mapping '${taskTeamRunId}' appears in tasks '${previous.taskId}' and '${next.taskId}'.`,
+    });
+    return;
+  }
+  seen.set(taskTeamRunId, next);
+  entries.set(taskTeamRunId, next);
+};
+
+const indexPredecessorState = async (
+  state: Extract<TeamRunMigrationState, { kind: "PREDECESSOR" }>,
+  sourceResolver: TeamRunPredecessorSourceResolver,
+  entries: Map<string, TokenUsageTaskTeamRunIndexEntry>,
+  seen: Map<string, TokenUsageTaskTeamRunIndexEntry>,
+  issues: TokenUsageTaskTeamRunIndexIssue[],
+): Promise<void> => {
+  let filePath = path.join(state.rootDir, "task_delegation_records.json");
+  let raw: unknown;
+  try {
+    const sources = await sourceResolver.resolve(state.rootTeamRunId, state.rootDir);
+    filePath = sources.taskRecordsPath;
+    raw = JSON.parse(await fs.readFile(filePath, "utf8")) as unknown;
+  } catch (error) {
+    if (missing(error)) return;
+    issues.push({
+      itemId: `task-records:${state.rootTeamRunId}`,
+      filePath,
+      message: `Cannot read predecessor task records: ${errorMessage(error)}`,
+    });
+    return;
+  }
+
+  try {
+    const recordsFile = normalizePredecessorTaskDelegationRecordsFile(raw, {
+      teamRunId: state.rootTeamRunId,
+    });
+    for (const record of recordsFile.records) {
+      if (record.receiverTargetKind !== "agent_team") continue;
+      if (!record.taskRun) {
+        issues.push({
+          itemId: `task-record:${recordsFile.teamRunId}:${record.taskId}`,
+          filePath,
+          message: `AgentTeam task '${record.taskId}' has no taskRun address, so its task TeamRun mapping is missing.`,
+        });
+        continue;
+      }
+      try {
+        addEntry(predecessorTaskTeamEntry({
+          rootTeamRunId: recordsFile.teamRunId,
+          filePath,
+          taskId: record.taskId,
+          address: record.taskRun.address,
+        }), entries, seen, issues);
+      } catch (error) {
+        issues.push({
+          itemId: `task-record:${recordsFile.teamRunId}:${record.taskId}`,
+          filePath,
+          message: `Invalid task TeamRun mapping for task '${record.taskId}': ${errorMessage(error)}`,
+        });
+      }
+    }
+  } catch (error) {
+    issues.push({
+      itemId: `task-records:${state.rootTeamRunId}`,
+      filePath,
+      message: `Predecessor task records are invalid: ${errorMessage(error)}`,
+    });
+  }
+};
+
+const indexCurrentState = (
+  state: Extract<TeamRunMigrationState, { kind: "CURRENT_V1" }>,
+  entries: Map<string, TokenUsageTaskTeamRunIndexEntry>,
+  seen: Map<string, TokenUsageTaskTeamRunIndexEntry>,
+  issues: TokenUsageTaskTeamRunIndexIssue[],
+): void => {
+  const sourceFilePath = path.join(state.rootDir, "task_delegation_records.json");
+  for (const record of state.package.taskRecords.records) {
+    const execution = state.package.index.getTaskExecution(record.taskExecution);
+    if (execution?.kind !== "team") continue;
+    const indexedTeam = state.package.index.requireTeam(execution.teamRunId);
+    const taskTeamRunIds = [...state.package.index.listTeamAncestorsDeepestFirst(
+      execution.teamRunId,
+    )]
+      .reverse()
+      .filter((team) => team.executionKind === "task")
+      .map((team) => team.teamRunId);
+    addEntry(Object.freeze({
+      rootTeamRunId: state.package.index.rootTeamRunId,
+      taskTeamRunIds: Object.freeze(taskTeamRunIds),
+      teamAddress: indexedTeam.address,
+      sourceFilePath,
+      taskId: record.taskId,
+    }), entries, seen, issues);
+  }
+};
+
 export const buildTokenUsageTaskTeamRunIndex = async (
   memoryDir: string,
+  sourceResolver: TeamRunPredecessorSourceResolver,
+  classifier: TeamRunMigrationStateClassifier = new TeamRunMigrationStateClassifier(memoryDir),
 ): Promise<TokenUsageTaskTeamRunIndex> => {
   const entries = new Map<string, TokenUsageTaskTeamRunIndexEntry>();
   const seen = new Map<string, TokenUsageTaskTeamRunIndexEntry>();
   const issues: TokenUsageTaskTeamRunIndexIssue[] = [];
 
-  for (const candidate of await listRecordFiles(memoryDir)) {
-    let raw: unknown;
-    try {
-      raw = JSON.parse(await fs.readFile(candidate.filePath, "utf8")) as unknown;
-    } catch (error) {
-      if (missing(error)) continue;
+  for (const state of await classifier.listAndClassifyRoots()) {
+    if (state.kind === "HISTORICAL_RESIDUE") continue;
+    if (state.kind === "INVALID") {
       issues.push({
-        itemId: `task-records:${candidate.rootTeamRunId}`,
-        filePath: candidate.filePath,
-        message: `Cannot read strict current task records: ${errorMessage(error)}`,
+        itemId: `team-root:${state.rootTeamRunId}`,
+        filePath: state.evidencePath,
+        message: `TeamRun root classification failed: ${state.reason}`,
       });
       continue;
     }
-
-    try {
-      const recordsFile = normalizePredecessorTaskDelegationRecordsFile(raw, {
-        teamRunId: candidate.rootTeamRunId,
-      });
-      for (const record of recordsFile.records) {
-        if (record.receiverTargetKind !== "agent_team") continue;
-        if (!record.taskRun) {
-          issues.push({
-            itemId: `task-record:${recordsFile.teamRunId}:${record.taskId}`,
-            filePath: candidate.filePath,
-            message: `AgentTeam task '${record.taskId}' has no taskRun address, so its task TeamRun mapping is missing.`,
-          });
-          continue;
-        }
-        let next: TokenUsageTaskTeamRunIndexEntry;
-        try {
-          next = taskTeamEntry({
-            rootTeamRunId: recordsFile.teamRunId,
-            filePath: candidate.filePath,
-            taskId: record.taskId,
-            address: record.taskRun.address,
-          });
-        } catch (error) {
-          issues.push({
-            itemId: `task-record:${recordsFile.teamRunId}:${record.taskId}`,
-            filePath: candidate.filePath,
-            message: `Invalid task TeamRun mapping for task '${record.taskId}': ${errorMessage(error)}`,
-          });
-          continue;
-        }
-        const taskTeamRunId = next.taskTeamRunIds.at(-1)!;
-        const previous = seen.get(taskTeamRunId);
-        if (previous) {
-          entries.delete(taskTeamRunId);
-          issues.push({
-            itemId: `task-team-run:${taskTeamRunId}`,
-            filePath: candidate.filePath,
-            message: sameMapping(previous, next)
-              ? `Duplicate task TeamRun mapping '${taskTeamRunId}' appears in tasks '${previous.taskId}' and '${next.taskId}'.`
-              : `Conflicting task TeamRun mapping '${taskTeamRunId}' appears in tasks '${previous.taskId}' and '${next.taskId}' (${serializeTeamExecutionAddress(record.taskRun.address)}).`,
-          });
-          continue;
-        }
-        seen.set(taskTeamRunId, next);
-        entries.set(taskTeamRunId, next);
-      }
-    } catch (error) {
-      issues.push({
-        itemId: `task-records:${candidate.rootTeamRunId}`,
-        filePath: candidate.filePath,
-        message: `Strict current task records are invalid: ${errorMessage(error)}`,
-      });
+    if (state.kind === "PREDECESSOR") {
+      await indexPredecessorState(state, sourceResolver, entries, seen, issues);
+    } else {
+      indexCurrentState(state, entries, seen, issues);
     }
   }
 

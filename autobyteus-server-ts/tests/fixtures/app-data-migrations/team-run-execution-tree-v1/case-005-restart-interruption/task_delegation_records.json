@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "rootTeamRunId": "team-run-root",
+  "records": [
+    {
+      "taskId": "task-030",
+      "delegatorAgentRunId": "agent-run-product-manager",
+      "recipientAddress": "/qa/tester",
+      "taskExecution": {
+        "agentRunId": "task-agent-run-tester-003"
+      },
+      "description": "Verify the nightly candidate.",
+      "referenceFiles": [],
+      "status": "interrupted",
+      "updates": [
+        {
+          "interruptionId": "task-030_interruption_0001",
+          "reason": "The server restarted before the task completed.",
+          "createdAt": "2026-08-14T12:05:00.000Z"
+        }
+      ],
+      "createdAt": "2026-08-14T12:00:00.000Z"
+    }
+  ]
+}

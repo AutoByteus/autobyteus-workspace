@@ -8,8 +8,8 @@ import type { TeamRunIndexRow } from "../domain/team-run-history-index-types.js"
 import type { TeamRunIndexRowRecord } from "../store/team-run-history-index-record-types.js";
 import { TeamRunExecutionTreeStore } from "../store/team-run-execution-tree-store.js";
 import { TeamRunHistoryIndexStore } from "../store/team-run-history-index-store.js";
-import { canonicalizeWorkspaceRootPath } from "../utils/workspace-path-normalizer.js";
 import { compactSummary } from "./run-history-service-helpers.js";
+import { projectTeamRunHistoryIndexRow } from "./team-run-history-index-row-projector.js";
 import { TeamRunV1PackageCatalog } from "./team-run-v1-package-catalog.js";
 
 type CatalogState = {
@@ -35,57 +35,17 @@ export const resetTeamRunHistoryCatalogState = (memoryDir: string): void => {
   states.delete(path.resolve(memoryDir));
 };
 
-const required = (value: string, field: string): string => {
-  const normalized = value.trim();
-  if (!normalized) throw new Error(`${field} cannot be empty.`);
-  return normalized;
-};
-const optional = (value: string | null | undefined): string | null => value?.trim() || null;
 const safeRunId = (value: string): string => {
-  const runId = required(value, "teamRunId");
+  const runId = value.trim();
+  if (!runId) throw new Error("teamRunId cannot be empty.");
   if (path.isAbsolute(runId) || /[\\/]/.test(runId) || runId === "." || runId === "..") {
     throw new Error("teamRunId must be a safe team run identity.");
   }
   return runId;
 };
-const workspaceFromTree = (tree: TeamRunExecutionTreeSnapshot): string | null => {
-  const visit = (members: TeamRunExecutionTreeSnapshot["rootTeam"]["members"]): string | null => {
-    for (const member of members) {
-      if ("agentRunId" in member) {
-        const workspace = member.launchConfiguration.workspaceRootPath;
-        if (workspace) return canonicalizeWorkspaceRootPath(workspace);
-      } else {
-        const nested = visit(member.members);
-        if (nested) return nested;
-      }
-    }
-    return null;
-  };
-  return visit(tree.rootTeam.members);
-};
 const normalizeRow = (row: TeamRunIndexRowRecord): TeamRunIndexRowRecord => ({
-  teamRunId: safeRunId(row.teamRunId),
-  teamDefinitionId: required(row.teamDefinitionId, "teamDefinitionId"),
-  teamDefinitionName: optional(row.teamDefinitionName) ?? required(row.teamDefinitionId, "teamDefinitionId"),
-  workspaceRootPath: row.workspaceRootPath ? canonicalizeWorkspaceRootPath(row.workspaceRootPath) : null,
+  ...row,
   summary: compactSummary(row.summary),
-  createdAt: required(row.createdAt, "createdAt"),
-  archivedAt: optional(row.archivedAt),
-  terminatedAt: optional(row.terminatedAt),
-});
-const rowFromTree = (
-  tree: TeamRunExecutionTreeSnapshot,
-  existing: TeamRunIndexRowRecord | null,
-  summary?: string | null,
-): TeamRunIndexRowRecord => normalizeRow({
-  teamRunId: tree.rootTeam.teamRunId,
-  teamDefinitionId: tree.rootTeam.teamDefinitionId,
-  teamDefinitionName: tree.rootTeam.teamDefinitionName,
-  workspaceRootPath: existing?.workspaceRootPath ?? workspaceFromTree(tree),
-  summary: existing?.summary || summary || "",
-  createdAt: existing?.createdAt ?? tree.createdAt,
-  archivedAt: tree.archivedAt,
-  terminatedAt: existing?.terminatedAt ?? null,
 });
 
 export interface TeamCatalogMutationResultMessage { success: boolean; message: string }
@@ -127,7 +87,7 @@ export class TeamRunHistoryCatalogService {
     summary?: string | null;
   }): Promise<void> {
     await this.enqueue(async () => {
-      const row = rowFromTree(input.tree, null, input.summary);
+      const row = projectTeamRunHistoryIndexRow({ tree: input.tree, recoveredSummary: input.summary });
       if (this.state.rows.has(row.teamRunId)) throw new Error(`Team run '${row.teamRunId}' already exists in team history.`);
       const rows = new Map(this.state.rows);
       rows.set(row.teamRunId, row);
@@ -141,7 +101,7 @@ export class TeamRunHistoryCatalogService {
       const current = this.state.rows.get(input.tree.rootTeam.teamRunId) ?? null;
       const rows = new Map(this.state.rows);
       rows.set(input.tree.rootTeam.teamRunId, normalizeRow({
-        ...rowFromTree(input.tree, current),
+        ...projectTeamRunHistoryIndexRow({ tree: input.tree, existingRow: current }),
         terminatedAt: null,
       }));
       await this.flush(rows);
@@ -202,7 +162,7 @@ export class TeamRunHistoryCatalogService {
       if (write.outcome !== "committed") return { success: false, message: `Team run archive change did not commit (${write.outcome}).` };
       const rows = new Map(this.state.rows);
       const current = rows.get(identity.teamRunId) ?? null;
-      rows.set(identity.teamRunId, rowFromTree(next, current));
+      rows.set(identity.teamRunId, projectTeamRunHistoryIndexRow({ tree: next, existingRow: current }));
       await this.flush(rows);
       this.state.rows = rows;
       return { success: true, message: `Team run '${identity.teamRunId}' ${archived ? "archived" : "unarchived"}.` };

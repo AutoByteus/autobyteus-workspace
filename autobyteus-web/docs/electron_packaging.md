@@ -462,6 +462,18 @@ npx ts-node build/scripts/build.ts
 `scripts/prepare-server.sh` / `scripts/prepare-server.mjs` build the Node server, deploy it into `resources/server`, and rebuild native modules (e.g., `node-pty`) for the Electron runtime. Native rebuilds use the direct `@electron/rebuild` dev dependency, exposed through the `electron-rebuild` CLI, and the scripts fail if that workspace-provided CLI is unavailable. Do not add a `pnpm dlx electron-rebuild` fallback: ad-hoc fallback installs can resolve a rebuild stack that is not reviewed with the pinned Electron ABI.
 The web project only calls the server packaging boundary; any shared server-side prerequisites remain owned by `autobyteus-server-ts` rather than being prepared directly from `autobyteus-web`.
 
+Renderer contract packages that Nuxt consumes only while generating the renderer
+belong in `devDependencies`, not the Electron production dependency graph. In
+particular, `@autobyteus/team-stream-contracts` must remain available as
+`workspace:*` for install/typecheck/generation but must not appear in
+`dependencies` or be imported by Electron main-process code. Otherwise server
+preparation can mistake its workspace link for an Electron runtime module and
+try to stage a package outside the web packaging boundary. The web boundary
+guard and its integration test enforce the manifest, root-lockfile, and Electron
+runtime-import sides of this rule before packaging. A successful package must
+leave the installed workspace link unchanged; the builder consumes generated
+renderer output rather than materializing that link into the Electron runtime.
+
 For macOS terminal packaging, every `node-pty` `spawn-helper` found under the staged server `node_modules` must be executable before the app is packed. The packaging hooks normalize all matching helper files rather than only one architecture-specific path, because `node-pty` may select `prebuilds/darwin-x64`, `prebuilds/darwin-arm64`, or a build directory depending on the packaged runtime. The runtime guard in `autobyteus-ts/src/tools/terminal/node-pty-bootstrap.ts` still repairs the selected helper at startup, but packaging should ship the selected helper already executable.
 
 `scripts/verify-packaged-terminal-runtime.mjs` is the release-time validator for this invariant. It checks the staged `resources/server` tree and the final `.app/Contents/Resources/server` tree for the target Darwin architecture, verifies that the selected and target `node-pty` helpers are executable, checks Darwin architecture tokens when the `file` tool is available, and runs a real `node-pty` spawn probe when the build host matches the target architecture.

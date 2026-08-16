@@ -12,6 +12,7 @@ import { validateTaskDelegationRecordsV1Payload } from "../../../agent-team-exec
 import { validateTeamCommunicationMessagesV1Payload } from "../../../services/team-communication/team-communication-v1-schema.js";
 import type { TeamCommunicationMessageV1, TeamCommunicationMessagesSnapshot } from "../../../services/team-communication/team-communication-v1-types.js";
 import { validateTeamRunStatePackage } from "../../../run-history/services/team-run-state-package-validator.js";
+import { normalizePredecessorTeamExecutionAddress } from "../team-execution-address-normalizer.js";
 import {
   addressKey, array, object, parseAddress, referencePaths, text,
   type JsonRecord, type TokenExecutionEvidence,
@@ -288,8 +289,24 @@ export const convertPredecessorTeamPackageSubjects = (input: {
     const row = object(raw, `messages[${position}]`);
     return Object.freeze({
       messageId: text(row.messageId, `messages[${position}].messageId`),
-      senderAgentRunId: resolveAgentRunId(parseAddress(row.senderAddress, `messages[${position}].senderAddress`), messageIndex, input.evidence),
-      receiverAgentRunId: resolveAgentRunId(parseAddress(row.receiverAddress, `messages[${position}].receiverAddress`), messageIndex, input.evidence),
+      senderAgentRunId: resolveAgentRunId(
+        normalizePredecessorTeamExecutionAddress(
+          row.senderAddress,
+          input.rootTeamRunId,
+          `messages[${position}].senderAddress`,
+        ),
+        messageIndex,
+        input.evidence,
+      ),
+      receiverAgentRunId: resolveAgentRunId(
+        normalizePredecessorTeamExecutionAddress(
+          row.receiverAddress,
+          input.rootTeamRunId,
+          `messages[${position}].receiverAddress`,
+        ),
+        messageIndex,
+        input.evidence,
+      ),
       content: typeof row.content === "string" ? row.content : "",
       messageType: typeof row.messageType === "string" && row.messageType.trim() ? row.messageType.trim() : "agent_message",
       referenceFiles: referencePaths(row.referenceFiles),

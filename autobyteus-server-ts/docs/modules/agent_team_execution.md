@@ -262,6 +262,69 @@ pipeline passes, or projection writes.
 - Accepted restored follow-up messages record activity without changing the
   stable opening/coordinator title.
 
+### Startup Transition To The Current TeamRun Package
+
+Current runtime readers consume one validated V1 package per root TeamRun:
+`team_run_execution_tree.json`, `task_delegation_records.json`, and
+`team_communication_messages.json`. Released predecessor interpretation stays
+inside required startup app-data migrations.
+
+The migration classifier uses positive authority evidence; missing
+`team_run_metadata.json` alone is not an error or a reason to skip blindly:
+
+- a regular `team_run_metadata.json` is an authoritative `PREDECESSOR`, including
+  an interrupted promotion where V1 targets already exist;
+- all three current files plus full cross-file validation are `CURRENT_V1`;
+- with neither predecessor nor current authority, a structurally valid
+  `team_run_manifest.json` matching the directory is `HISTORICAL_RESIDUE` and is
+  skipped without mutation; and
+- partial, malformed, or unrecognized roots are `INVALID`, preserve their bytes,
+  and keep the required migration failed for repair/retry.
+
+Canonical identity conversion and the execution-tree V1 promotion share this
+classifier. The V1 definition declares the canonical identity migration as a
+prerequisite, so it cannot create an attempt after canonical conversion fails.
+When predecessor metadata survives an interrupted V1 promotion, both migrations
+resolve task/message evidence from a matching protected V1 backup rather than
+parsing live target files as predecessor data. Normal restore and API paths do
+not implement a predecessor/current dual reader.
+
+Predecessor communication endpoints may contain either the exact four-field
+Team execution address or the released ordered `segments` representation. One
+migration-only execution-address normalizer owns this translation for canonical
+structured conversion, stored-address conversion in the older communication
+migration, and retryable V1 package planning. It validates the expected root,
+member path/route aliases, ordered task-Team ancestry, and optional task-Agent
+identity; a null optional alias is treated as absent, while contradictory,
+duplicate, malformed, or root-mismatched evidence fails with row/side context.
+The older migration's flat projection adapter remains local to that migration.
+
+Terminal success of the older communication and canonical migrations does not
+force them to rerun when V1 previously failed. Startup retries only the V1
+migration, resolves normalized endpoints to exact AgentRun IDs through the
+planned execution tree, validates every root first, and promotes the cohort only
+when all roots are valid. A failed preflight preserves predecessor files and
+backups; after success, later startup is a byte/path/backup/attempt no-op. The
+current V1 communication file contains AgentRun IDs only and runtime readers do
+not retain either predecessor address representation.
+
+Before `20260814_team_run_execution_tree_v1` can report success, it reconciles
+`team_run_history_index.json` from the complete validated current/promoted tree
+map. Every validated root produces exactly one Team history row; historical
+residue, invalid roots, and stale index-only roots are absent. The execution tree
+owns Team identity, definition, workspace, creation, and archive facts. Existing
+index rows may contribute only their summary and termination fields; if no
+summary exists, coordinator trace evidence may supply a best-effort title.
+
+The history store owns strict index parsing and the canonical index path. A
+missing index is treated as empty, but malformed rows fail the required migration
+without changing bytes. If a valid existing index must change, the reconciler
+creates a protected timestamped backup before the atomic replacement. Exact
+equivalence is a no-write/no-backup result, so later startup is idempotent.
+Normal catalog, GraphQL, and sidebar paths still consume only this current index;
+they do not scan `memory/agent_teams`, and Team members do not become standalone
+Agent history rows.
+
 ## TS Source
 
 - `src/agent-team-execution/domain/team-member-execution-identity.ts`
@@ -285,4 +348,10 @@ pipeline passes, or projection writes.
 - `src/agent-execution/shared/runtime-agent-tool-exposure.ts`
 - `src/services/agent-streaming/agent-team-stream-handler.ts`
 - `src/services/agent-streaming/team-agent-event-websocket-projector.ts`
+- `src/app-data-migrations/migrations/team-run-migration-state-classifier.ts`
+- `src/app-data-migrations/migrations/team-execution-address-normalizer.ts`
+- `src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-predecessor-source-resolver.ts`
+- `src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-history-index-reconciler.ts`
+- `src/run-history/services/team-run-history-index-row-projector.ts`
+- `src/run-history/store/team-run-history-index-store.ts`
 - `@autobyteus/team-stream-contracts`

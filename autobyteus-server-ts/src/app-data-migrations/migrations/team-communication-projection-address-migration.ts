@@ -1,18 +1,17 @@
 import fs from "node:fs/promises";
 import type { Dirent } from "node:fs";
 import path from "node:path";
-import { createAgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
-import { createTeamExecutionAddress, type TeamExecutionAddress } from "../legacy/team-execution-address.js";
+import type { TeamExecutionAddress } from "../legacy/team-execution-address.js";
 import { buildTeamCommunicationMessageId, buildTeamCommunicationReferenceId, normalizeTeamCommunicationReferencePath } from "../../services/team-communication/team-communication-identity.js";
 import type { TeamCommunicationReferenceFile, TeamCommunicationReferenceFileType } from "../../services/team-communication/team-communication-types.js";
 import type { AppDataMigrationDefinition, AppDataMigrationExecutionResult, AppDataMigrationItemDetail, AppDataMigrationSummary } from "../domain/app-data-migration-types.js";
+import { normalizePredecessorTeamExecutionAddress } from "./team-execution-address-normalizer.js";
 
 const MIGRATION_ID = "20260701_team_communication_projection_addresses";
 const FILE_NAME = "team_communication_messages.json";
 const asRecord = (value: unknown): Record<string, unknown> | null => value && typeof value === "object" && !Array.isArray(value) ? value as Record<string, unknown> : null;
 const text = (value: unknown): string | null => typeof value === "string" && value.trim() ? value.trim() : null;
 const timestamp = (value: unknown): string | null => { const valueText = text(value); return valueText && !Number.isNaN(Date.parse(valueText)) ? new Date(valueText).toISOString() : null; };
-const pathParts = (value: unknown): string[] => Array.isArray(value) ? value.map(text).filter((item): item is string => !!item) : [];
 const exact = (record: Record<string, unknown>, keys: readonly string[]) => Object.keys(record).length === keys.length && keys.every((key) => Object.hasOwn(record, key));
 type MigratedAddressMessage = {
   messageId: string; senderAddress: TeamExecutionAddress; receiverAddress: TeamExecutionAddress;
@@ -20,48 +19,25 @@ type MigratedAddressMessage = {
 };
 type MigratedAddressProjection = { teamRunId: string; messages: MigratedAddressMessage[] };
 
-const currentAddress = (value: unknown): TeamExecutionAddress | null => {
+const hasExactAddressShape = (value: unknown): boolean => {
   const record = asRecord(value);
-  if (!record || !exact(record, ["rootTeamRunId", "taskTeamRunIds", "memberAddress", "taskAgentRunId"])) return null;
-  try { return createTeamExecutionAddress(record as never); } catch { return null; }
+  return !!record && exact(record, ["rootTeamRunId", "taskTeamRunIds", "memberAddress", "taskAgentRunId"]);
 };
 
-const legacyAddress = (message: Record<string, unknown>, prefix: "sender" | "receiver", rootTeamRunId: string): TeamExecutionAddress => {
+const projectionAddress = (message: Record<string, unknown>, prefix: "sender" | "receiver", rootTeamRunId: string): TeamExecutionAddress => {
   const stored = message[`${prefix}Address`] ?? message[`${prefix}_address`];
-  const existing = currentAddress(stored);
-  if (existing) return existing;
-  const addressRecord = asRecord(stored);
-  const segments = Array.isArray(addressRecord?.segments) ? addressRecord!.segments : [];
-  let memberSegments: string[] = [];
-  const taskTeamRunIds: string[] = [];
-  let taskAgentRunId: string | null = null;
-  for (const raw of segments) {
-    const segment = asRecord(raw);
-    const kind = text(segment?.kind);
-    if (kind === "member") {
-      const parts = pathParts(segment?.memberPath ?? segment?.member_path);
-      const route = text(segment?.memberRouteKey ?? segment?.member_route_key);
-      memberSegments = parts.length ? parts : route?.split("/").filter(Boolean) ?? memberSegments;
-    } else if (kind === "task_team") {
-      const id = text(segment?.taskTeamRunId ?? segment?.task_team_run_id);
-      if (id) taskTeamRunIds.push(id);
-    } else if (kind === "task_agent") {
-      taskAgentRunId = text(segment?.taskAgentRunId ?? segment?.task_agent_run_id);
-    }
+  const label = `${prefix}Address`;
+  if (stored !== undefined && stored !== null) {
+    return normalizePredecessorTeamExecutionAddress(stored, rootTeamRunId, label);
   }
-  if (!memberSegments.length) {
-    const parts = pathParts(message[`${prefix}MemberPath`] ?? message[`${prefix}_member_path`]);
-    const route = text(message[`${prefix}MemberRouteKey`] ?? message[`${prefix}_member_route_key`]);
-    memberSegments = parts.length ? parts : route?.split("/").filter(Boolean) ?? [];
-    taskAgentRunId ??= text(message[`${prefix}TaskAgentRunId`] ?? message[`${prefix}_task_agent_run_id`]);
+  const memberPath = message[`${prefix}MemberPath`] ?? message[`${prefix}_member_path`];
+  const memberRouteKey = message[`${prefix}MemberRouteKey`] ?? message[`${prefix}_member_route_key`];
+  const taskAgentRunId = message[`${prefix}TaskAgentRunId`] ?? message[`${prefix}_task_agent_run_id`];
+  const segments: Record<string, unknown>[] = [{ kind: "member", memberPath, memberRouteKey }];
+  if (taskAgentRunId !== undefined && taskAgentRunId !== null) {
+    segments.push({ kind: "task_agent", taskAgentRunId });
   }
-  if (!memberSegments.length) throw new Error(`${prefix} member address cannot be reconstructed.`);
-  return createTeamExecutionAddress({
-    rootTeamRunId,
-    taskTeamRunIds,
-    memberAddress: createAgentTeamAddress(memberSegments),
-    taskAgentRunId,
-  });
+  return normalizePredecessorTeamExecutionAddress({ segments }, rootTeamRunId, label);
 };
 
 const referenceType = (filePath: string): TeamCommunicationReferenceFileType => {
@@ -95,8 +71,8 @@ const references = (message: Record<string, unknown>, rootTeamRunId: string, mes
 const convertMessage = (value: unknown, rootTeamRunId: string): MigratedAddressMessage => {
   const message = asRecord(value);
   if (!message || typeof message.content !== "string") throw new Error("Communication message content is required.");
-  const senderAddress = legacyAddress(message, "sender", rootTeamRunId);
-  const receiverAddress = legacyAddress(message, "receiver", rootTeamRunId);
+  const senderAddress = projectionAddress(message, "sender", rootTeamRunId);
+  const receiverAddress = projectionAddress(message, "receiver", rootTeamRunId);
   const createdAt = timestamp(message.createdAt ?? message.created_at ?? message.updatedAt ?? message.updated_at);
   if (!createdAt) throw new Error("Communication message createdAt is required.");
   const messageType = text(message.messageType ?? message.message_type) ?? "agent_message";
@@ -112,9 +88,17 @@ const convertProjection = (value: unknown, fallbackId: string): MigratedAddressP
 };
 const isCurrent = (value: unknown): boolean => {
   const record = asRecord(value);
-  return !!record && exact(record, ["teamRunId", "messages"]) && !!text(record.teamRunId) && Array.isArray(record.messages) && record.messages.every((value) => {
+  const rootTeamRunId = record ? text(record.teamRunId) : null;
+  return !!record && exact(record, ["teamRunId", "messages"]) && !!rootTeamRunId && Array.isArray(record.messages) && record.messages.every((value, index) => {
     const message = asRecord(value);
-    return !!message && !!currentAddress(message.senderAddress) && !!currentAddress(message.receiverAddress);
+    if (!message || !hasExactAddressShape(message.senderAddress) || !hasExactAddressShape(message.receiverAddress)) return false;
+    try {
+      normalizePredecessorTeamExecutionAddress(message.senderAddress, rootTeamRunId, `messages[${index}].senderAddress`);
+      normalizePredecessorTeamExecutionAddress(message.receiverAddress, rootTeamRunId, `messages[${index}].receiverAddress`);
+      return true;
+    } catch {
+      return false;
+    }
   });
 };
 const summary = (details: AppDataMigrationItemDetail[]): AppDataMigrationSummary => ({

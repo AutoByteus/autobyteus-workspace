@@ -9,7 +9,10 @@ import { validateTeamRunExecutionTreePayload } from "../../../../src/run-history
 import { validateTeamCommunicationMessagesV1Payload } from "../../../../src/services/team-communication/team-communication-v1-schema.js";
 import { projectSequencedTeamRunEvent, projectTeamExecutionViewSnapshot } from "../../../../src/services/agent-streaming/team-execution-view-projector.js";
 
-const scenarioDir = path.resolve(process.cwd(), "../tickets/in-progress/agent-team-universal-task-delegation/persistence-scenarios/case-003-nested-task-team");
+const scenarioDir = path.resolve(
+  process.cwd(),
+  "tests/fixtures/app-data-migrations/team-run-execution-tree-v1/case-003-nested-task-team",
+);
 const json = (name: string) => JSON.parse(fs.readFileSync(path.join(scenarioDir, name), "utf8")) as unknown;
 const tree = validateTeamRunExecutionTreePayload(json("team_run_execution_tree.json"), "team-run-root");
 const tasks = validateTaskDelegationRecordsV1Payload(json("task_delegation_records.json"), "team-run-root");

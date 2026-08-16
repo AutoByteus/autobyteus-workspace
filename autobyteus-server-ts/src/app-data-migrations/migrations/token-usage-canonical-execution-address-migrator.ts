@@ -1,3 +1,4 @@
+import path from "node:path";
 import { serializeTeamExecutionAddress } from "../legacy/team-execution-address.js";
 import type { AppDataMigrationItemDetail } from "../domain/app-data-migration-types.js";
 import {
@@ -9,6 +10,8 @@ import {
   type TokenUsageCanonicalIdentityUpdate,
 } from "./token-usage-canonical-identity-migration-store.js";
 import { buildTokenUsageTaskTeamRunIndex } from "./token-usage-task-team-run-index.js";
+import { TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID } from "./team-run-execution-tree-v1/team-run-execution-tree-v1-constants.js";
+import { TeamRunPredecessorSourceResolver } from "./team-run-execution-tree-v1/team-run-predecessor-source-resolver.js";
 
 const MAX_FAILED_BATCH_ROW_IDS = 20;
 
@@ -41,6 +44,7 @@ implements TokenUsageCanonicalExecutionAddressMigratorLike {
 
   constructor(
     private readonly memoryDir: string,
+    private readonly appDataDir: string,
     store?: TokenUsageCanonicalIdentityMigrationStore,
   ) {
     this.store = store ?? null;
@@ -54,7 +58,14 @@ implements TokenUsageCanonicalExecutionAddressMigratorLike {
     try {
       let taskTeamIndex;
       try {
-        taskTeamIndex = await buildTokenUsageTaskTeamRunIndex(this.memoryDir);
+        taskTeamIndex = await buildTokenUsageTaskTeamRunIndex(
+          this.memoryDir,
+          new TeamRunPredecessorSourceResolver(path.join(
+            this.appDataDir,
+            "app-data-migration-backups",
+            TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID,
+          )),
+        );
       } catch (error) {
         return [failedDetail(
           "token-usage:task-records:index",

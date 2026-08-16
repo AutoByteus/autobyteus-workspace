@@ -49,7 +49,6 @@
     "test:e2e:background-contention": "node tests/e2e/background-agent-renderer-contention-probe.mjs"
   },
   "dependencies": {
-    "@autobyteus/team-stream-contracts": "workspace:*",
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/vue-fontawesome": "^3.0.8",
@@ -88,6 +87,7 @@
   },
   "devDependencies": {
     "@autobyteus/application-sdk-contracts": "workspace:*",
+    "@autobyteus/team-stream-contracts": "workspace:*",
     "@electron/rebuild": "4.0.4",
     "@graphql-codegen/cli": "^5.0.2",
     "@graphql-codegen/typescript": "^4.0.9",

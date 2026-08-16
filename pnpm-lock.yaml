@@ -299,9 +299,6 @@ importers:
 
   autobyteus-web:
     dependencies:
-      '@autobyteus/team-stream-contracts':
-        specifier: workspace:*
-        version: link:../autobyteus-team-stream-contracts
       '@fortawesome/fontawesome-svg-core':
         specifier: ^6.7.2
         version: 6.7.2
@@ -411,6 +408,9 @@ importers:
       '@autobyteus/application-sdk-contracts':
         specifier: workspace:*
         version: link:../autobyteus-application-sdk-contracts
+      '@autobyteus/team-stream-contracts':
+        specifier: workspace:*
+        version: link:../autobyteus-team-stream-contracts
       '@electron/rebuild':
         specifier: 4.0.4
         version: 4.0.4

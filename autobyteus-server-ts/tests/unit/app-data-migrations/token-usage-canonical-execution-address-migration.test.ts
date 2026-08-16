@@ -77,6 +77,11 @@ const writeTaskRecordsFile = async (input: {
   );
   await fs.mkdir(path.dirname(recordsPath), { recursive: true });
   await fs.writeFile(
+    path.join(path.dirname(recordsPath), "team_run_metadata.json"),
+    "{}\n",
+    "utf-8",
+  );
+  await fs.writeFile(
     recordsPath,
     `${JSON.stringify({
       teamRunId: input.rootTeamRunId,
@@ -110,11 +115,6 @@ const parseAddress = (row: RawTokenUsageLedgerBackfillRow): unknown =>
 const detailText = (details: readonly { message: string }[]): string =>
   details.map((detail) => detail.message).join("\n");
 
-const emptyPlatformStateStore = {
-  listExistingPlatformDatabasePaths: () => [],
-  resolveApplicationIdForPlatformDatabasePath: () => null,
-};
-
 const TOKEN_USAGE_MIGRATION_SQL_FILES = Object.freeze([
   "20260624090000_add_token_usage_ledger_events/migration.sql",
   "20260625193000_token_usage_component_pricing_explainability/migration.sql",
@@ -145,6 +145,44 @@ const createIsolatedLegacyTokenDatabase = async (): Promise<{
 };
 
 describe("canonical token execution-address migration", () => {
+  it("derives task-Team mappings from a validated current V1 package", async () => {
+    const tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "token-current-v1-address-"));
+    const memoryDir = path.join(tempRoot, "memory");
+    const source = path.join(
+      process.cwd(),
+      "tests/fixtures/app-data-migrations/team-run-execution-tree-v1/case-003-nested-task-team",
+    );
+    const rootDir = path.join(memoryDir, "agent_teams", "team-run-root");
+    await fs.mkdir(rootDir, { recursive: true });
+    await Promise.all([
+      "team_run_execution_tree.json",
+      "task_delegation_records.json",
+      "team_communication_messages.json",
+    ].map((name) => fs.copyFile(path.join(source, name), path.join(rootDir, name))));
+    const rows = [tokenRow({
+      root_team_run_id: "task-team-run-qa-001",
+      member_route_key: "worker",
+    })];
+    const store = new InMemoryMigrationStore(rows);
+    try {
+      const details = await new TokenUsageCanonicalExecutionAddressMigrator(
+        memoryDir,
+        tempRoot,
+        store,
+      ).migrate();
+
+      expect(details.filter((detail) => detail.status === "FAILED")).toEqual([]);
+      expect(rows[0]!.root_team_run_id).toBe("team-run-root");
+      expect(parseAddress(rows[0]!)).toEqual(executionAddress(
+        "team-run-root",
+        "/qa/worker",
+        ["task-team-run-qa-001"],
+      ));
+    } finally {
+      await fs.rm(tempRoot, { recursive: true, force: true });
+    }
+  });
+
   it("reconstructs direct, task-Agent, and nested task-Team addresses and is exact-current idempotent", async () => {
     nextRowId = 1;
     const tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "token-canonical-address-"));
@@ -188,7 +226,11 @@ describe("canonical token execution-address migration", () => {
       ];
       const store = new InMemoryMigrationStore(rows);
 
-      const first = await new TokenUsageCanonicalExecutionAddressMigrator(memoryDir, store).migrate();
+      const first = await new TokenUsageCanonicalExecutionAddressMigrator(
+        memoryDir,
+        tempRoot,
+        store,
+      ).migrate();
 
       expect(first.filter((detail) => detail.status === "FAILED")).toEqual([]);
       expect(store.applyCanonicalTeamIdentityTransaction).toHaveBeenCalledTimes(1);
@@ -210,6 +252,7 @@ describe("canonical token execution-address migration", () => {
       const secondStore = new InMemoryMigrationStore(rows);
       const second = await new TokenUsageCanonicalExecutionAddressMigrator(
         memoryDir,
+        tempRoot,
         secondStore,
       ).migrate();
       expect(second.filter((detail) => detail.status === "FAILED")).toEqual([]);
@@ -229,6 +272,7 @@ describe("canonical token execution-address migration", () => {
 
     const details = await new TokenUsageCanonicalExecutionAddressMigrator(
       "/unused-memory-root",
+      "/unused-app-data-root",
       store,
     ).migrate();
 
@@ -242,6 +286,11 @@ describe("canonical token execution-address migration", () => {
     const tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "token-canonical-index-fail-"));
     const recordsPath = path.join(tempRoot, "memory", "agent_teams", "rootA", "task_delegation_records.json");
     await fs.mkdir(path.dirname(recordsPath), { recursive: true });
+    await fs.writeFile(
+      path.join(path.dirname(recordsPath), "team_run_metadata.json"),
+      "{}\n",
+      "utf-8",
+    );
     await fs.writeFile(recordsPath, "{not-json", "utf-8");
     const store = new InMemoryMigrationStore([
       tokenRow({ root_team_run_id: "rootA", member_route_key: "Teacher" }),
@@ -249,10 +298,11 @@ describe("canonical token execution-address migration", () => {
     try {
       const details = await new TokenUsageCanonicalExecutionAddressMigrator(
         path.join(tempRoot, "memory"),
+        tempRoot,
         store,
       ).migrate();
 
-      expect(detailText(details)).toContain("Cannot read strict current task records");
+      expect(detailText(details)).toContain("Cannot read predecessor task records");
       expect(store.listRows).not.toHaveBeenCalled();
       expect(store.applyCanonicalTeamIdentityTransaction).not.toHaveBeenCalled();
     } finally {
@@ -349,19 +399,31 @@ describe("canonical token execution-address migration", () => {
     const metadataPath = path.join(memoryDir, "agent_teams", "broken-root", "team_run_metadata.json");
     await fs.mkdir(path.dirname(metadataPath), { recursive: true });
     await fs.writeFile(metadataPath, JSON.stringify({ invalid: true }), "utf-8");
+    const validRoot = "valid-root";
+    const validDirectory = path.join(memoryDir, "agent_teams", validRoot);
+    const validPayload = JSON.parse(await fs.readFile(path.join(
+      process.cwd(),
+      "tests/fixtures/app-data-migrations/team-run-metadata-member-tree/legacy-flat-safe-team-run-metadata.json",
+    ), "utf8")) as Record<string, unknown>;
+    validPayload.teamRunId = validRoot;
+    await fs.mkdir(validDirectory, { recursive: true });
+    const validMetadataPath = path.join(validDirectory, "team_run_metadata.json");
+    const validBytes = JSON.stringify(validPayload, null, 2);
+    await fs.writeFile(validMetadataPath, validBytes, "utf8");
     const tokenMigrator = { migrate: vi.fn(async () => []) };
     try {
       const result = await new TeamCanonicalIdentityMigration(
         memoryDir,
         path.join(tempRoot, "app-data"),
-        emptyPlatformStateStore as never,
         tokenMigrator,
       ).execute();
 
       expect(result.status).toBe("FAILED");
       expect(tokenMigrator.migrate).not.toHaveBeenCalled();
+      await expect(fs.readFile(validMetadataPath, "utf8")).resolves.toBe(validBytes);
+      await expect(fs.readdir(validDirectory)).resolves.toEqual(["team_run_metadata.json"]);
       expect(detailText(result.summary.details)).toContain(
-        "Canonical token planning was not started because required TeamRun or task identity conversion failed",
+        "Canonical mutation and token planning were not started because TeamRun preflight failed",
       );
     } finally {
       await fs.rm(tempRoot, { recursive: true, force: true });

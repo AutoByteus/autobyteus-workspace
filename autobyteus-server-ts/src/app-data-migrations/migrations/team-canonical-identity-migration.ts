@@ -13,6 +13,15 @@ import {
   TokenUsageCanonicalExecutionAddressMigrator,
   type TokenUsageCanonicalExecutionAddressMigratorLike,
 } from "./token-usage-canonical-execution-address-migrator.js";
+import {
+  TeamRunMigrationStateClassifier,
+  type TeamRunMigrationState,
+} from "./team-run-migration-state-classifier.js";
+import { TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID } from "./team-run-execution-tree-v1/team-run-execution-tree-v1-constants.js";
+import {
+  TeamRunPredecessorSourceResolver,
+  type TeamRunPredecessorSources,
+} from "./team-run-execution-tree-v1/team-run-predecessor-source-resolver.js";
 
 const MIGRATION_ID = "20260801_team_canonical_identity";
 const json = (value: unknown): string => JSON.stringify(value, null, 2);
@@ -34,6 +43,29 @@ const summary = (details: AppDataMigrationItemDetail[]): AppDataMigrationSummary
   details,
 });
 
+type PlannedFile = Readonly<{
+  itemId: string;
+  filePath: string;
+  raw: unknown;
+  converted: unknown;
+}>;
+
+type PlannedPredecessorRoot = Readonly<{
+  state: Extract<TeamRunMigrationState, { kind: "PREDECESSOR" }>;
+  sources: TeamRunPredecessorSources;
+  metadata: PlannedFile;
+  taskRecords: PlannedFile | null;
+}>;
+
+const readOptionalJson = async (filePath: string): Promise<unknown | null> => {
+  try {
+    return JSON.parse(await fs.readFile(filePath, "utf8")) as unknown;
+  } catch (error) {
+    if (missing(error)) return null;
+    throw error;
+  }
+};
+
 export class TeamCanonicalIdentityMigration implements AppDataMigrationDefinition {
   readonly id = MIGRATION_ID;
   readonly displayName = "AgentTeam canonical identity migration";
@@ -48,31 +80,29 @@ export class TeamCanonicalIdentityMigration implements AppDataMigrationDefinitio
 
   async execute(): Promise<AppDataMigrationExecutionResult> {
     const details: AppDataMigrationItemDetail[] = [];
-    const teamRoot = path.join(this.memoryDir, "agent_teams");
-    let teamRunIds: string[] = [];
-    try {
-      teamRunIds = (await fs.readdir(teamRoot, { withFileTypes: true }))
-        .filter((entry) => entry.isDirectory()).map((entry) => entry.name).sort();
-    } catch (error) {
-      if (!missing(error)) throw error;
-    }
-    for (const teamRunId of teamRunIds) await this.migrateTeamFiles(teamRoot, teamRunId, details);
-    const teamIdentityFailed = details.some((detail) =>
-      detail.status === "FAILED"
-      && (detail.itemId.startsWith("team-metadata:") || detail.itemId.startsWith("task-records:"))
-    );
+    const plans = await this.preflightTeamRoots(details);
+    const teamIdentityFailed = details.some((detail) => detail.status === "FAILED");
     if (teamIdentityFailed) {
       details.push({
         itemId: "token-usage:team-identity-dependency",
         status: "FAILED",
-        message: "Canonical token planning was not started because required TeamRun or task identity conversion failed.",
+        message: "Canonical mutation and token planning were not started because TeamRun preflight failed.",
       });
     } else {
-      const tokenMigrator = this.suppliedTokenMigrator
-        ?? new TokenUsageCanonicalExecutionAddressMigrator(this.memoryDir);
-      details.push(...await tokenMigrator.migrate());
+      for (const plan of plans) await this.applyTeamRootPlan(plan, details);
+      if (details.some((detail) => detail.status === "FAILED")) {
+        details.push({
+          itemId: "token-usage:team-identity-dependency",
+          status: "FAILED",
+          message: "Canonical token planning was not started because TeamRun identity conversion failed.",
+        });
+      } else {
+        const tokenMigrator = this.suppliedTokenMigrator
+          ?? new TokenUsageCanonicalExecutionAddressMigrator(this.memoryDir, this.appDataDir);
+        details.push(...await tokenMigrator.migrate());
+        await this.migrateBindings(details);
+      }
     }
-    await this.migrateBindings(details);
     const resultSummary = summary(details);
     return {
       status: resultSummary.failedCount ? "FAILED" : "SUCCEEDED",
@@ -83,29 +113,133 @@ export class TeamCanonicalIdentityMigration implements AppDataMigrationDefinitio
     };
   }
 
-  private async migrateTeamFiles(
-    teamRoot: string,
-    teamRunId: string,
+  private async preflightTeamRoots(
+    details: AppDataMigrationItemDetail[],
+  ): Promise<readonly PlannedPredecessorRoot[]> {
+    const classifier = new TeamRunMigrationStateClassifier(this.memoryDir);
+    const resolver = new TeamRunPredecessorSourceResolver(path.join(
+      this.appDataDir,
+      "app-data-migration-backups",
+      TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID,
+    ));
+    const plans: PlannedPredecessorRoot[] = [];
+    for (const state of await classifier.listAndClassifyRoots()) {
+      if (state.kind === "CURRENT_V1") {
+        details.push({
+          itemId: `team-root:${state.rootTeamRunId}`,
+          filePath: state.rootDir,
+          status: "SKIPPED",
+          message: "Already a complete validated V1 package.",
+        });
+        continue;
+      }
+      if (state.kind === "HISTORICAL_RESIDUE") {
+        details.push({
+          itemId: `team-root:${state.rootTeamRunId}`,
+          filePath: state.manifestPath,
+          status: "SKIPPED",
+          message: "Validated historical TeamRun residue has no predecessor identity to convert.",
+        });
+        continue;
+      }
+      if (state.kind === "INVALID") {
+        details.push({
+          itemId: `team-root:${state.rootTeamRunId}`,
+          filePath: state.evidencePath,
+          status: "FAILED",
+          message: state.reason,
+        });
+        continue;
+      }
+      try {
+        const sources = await resolver.resolve(state.rootTeamRunId, state.rootDir);
+        const rawMetadata = JSON.parse(await fs.readFile(state.metadataPath, "utf8")) as unknown;
+        const metadata = Object.freeze({
+          itemId: `team-metadata:${state.rootTeamRunId}`,
+          filePath: state.metadataPath,
+          raw: rawMetadata,
+          converted: convertLegacyTeamRunMetadata(rawMetadata, state.rootTeamRunId),
+        });
+        const rawTaskRecords = await readOptionalJson(sources.taskRecordsPath);
+        const taskRecords = rawTaskRecords === null ? null : Object.freeze({
+          itemId: `task-records:${state.rootTeamRunId}`,
+          filePath: sources.taskRecordsPath,
+          raw: rawTaskRecords,
+          converted: normalizePredecessorTaskDelegationRecordsFile(
+            convertTaskDelegationFile(rawTaskRecords, state.rootTeamRunId),
+            { teamRunId: state.rootTeamRunId },
+          ),
+        });
+        if (
+          sources.provenance === "PROTECTED_V1_BACKUP"
+          && taskRecords
+          && JSON.stringify(taskRecords.raw) !== JSON.stringify(taskRecords.converted)
+        ) {
+          throw new Error(
+            "Protected predecessor task records are not already canonical and cannot be rewritten safely.",
+          );
+        }
+        plans.push(Object.freeze({ state, sources, metadata, taskRecords }));
+      } catch (error) {
+        details.push({
+          itemId: `team-root:${state.rootTeamRunId}`,
+          filePath: state.rootDir,
+          status: "FAILED",
+          message: message(error),
+        });
+      }
+    }
+    return Object.freeze(plans);
+  }
+
+  private async applyTeamRootPlan(
+    plan: PlannedPredecessorRoot,
     details: AppDataMigrationItemDetail[],
   ): Promise<void> {
-    const metadataPath = path.join(teamRoot, teamRunId, "team_run_metadata.json");
-    await this.migrateJsonFile({
-      itemId: `team-metadata:${teamRunId}`,
-      filePath: metadataPath,
-      convert: (value) => convertLegacyTeamRunMetadata(value, teamRunId),
-      details,
-    });
-    const taskPath = path.join(teamRoot, teamRunId, "task_delegation_records.json");
-    await this.migrateJsonFile({
-      itemId: `task-records:${teamRunId}`,
-      filePath: taskPath,
-      optional: true,
-      convert: (value) => {
-        const converted = convertTaskDelegationFile(value, teamRunId);
-        return normalizePredecessorTaskDelegationRecordsFile(converted, { teamRunId });
-      },
-      details,
-    });
+    await this.applyPlannedFile(plan.metadata, details);
+    if (!plan.taskRecords) return;
+    if (plan.sources.provenance === "PROTECTED_V1_BACKUP") {
+      details.push({
+        itemId: plan.taskRecords.itemId,
+        filePath: plan.taskRecords.filePath,
+        status: "SKIPPED",
+        message: "Validated protected canonical predecessor task records without rewriting backup evidence.",
+      });
+      return;
+    }
+    await this.applyPlannedFile(plan.taskRecords, details);
+  }
+
+  private async applyPlannedFile(
+    planned: PlannedFile,
+    details: AppDataMigrationItemDetail[],
+  ): Promise<void> {
+    if (JSON.stringify(planned.raw) === JSON.stringify(planned.converted)) {
+      details.push({
+        itemId: planned.itemId,
+        filePath: planned.filePath,
+        status: "SKIPPED",
+        message: "Already canonical.",
+      });
+      return;
+    }
+    try {
+      const backupPath = await backupAndReplace(planned.filePath, planned.converted);
+      details.push({
+        itemId: planned.itemId,
+        filePath: planned.filePath,
+        backupPath,
+        status: "MIGRATED",
+        message: "Converted and validated canonical identity.",
+      });
+    } catch (error) {
+      details.push({
+        itemId: planned.itemId,
+        filePath: planned.filePath,
+        status: "FAILED",
+        message: message(error),
+      });
+    }
   }
 
   private async migrateBindings(details: AppDataMigrationItemDetail[]): Promise<void> {

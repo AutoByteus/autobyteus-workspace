@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "rootTeamRunId": "team-run-root",
+  "records": [
+    {
+      "taskId": "task-001",
+      "delegatorAgentRunId": "agent-run-product-manager",
+      "recipientAddress": "/qa/tester",
+      "taskExecution": {
+        "agentRunId": "task-agent-run-tester-001"
+      },
+      "description": "Run the release acceptance checks.",
+      "referenceFiles": [
+        "/workspace/software-engineering/release-plan.md"
+      ],
+      "status": "active",
+      "updates": [],
+      "createdAt": "2026-08-14T10:10:00.000Z"
+    }
+  ]
+}

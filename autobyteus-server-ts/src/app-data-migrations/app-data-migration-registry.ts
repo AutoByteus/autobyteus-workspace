@@ -53,6 +53,7 @@ export class AppDataMigrationRegistry {
       new RunHistoryIndexV2AppDataMigration(appConfigProvider.config.getMemoryDir()),
       new CustomProviderReadableIdAppDataMigration(),
     ];
+    this.validateDefinitions();
   }
 
   listDefinitions(): AppDataMigrationDefinition[] {
@@ -62,6 +63,36 @@ export class AppDataMigrationRegistry {
   getDefinition(migrationId: string): AppDataMigrationDefinition | null {
     const normalized = migrationId.trim();
     return this.definitions.find((definition) => definition.id === normalized) ?? null;
+  }
+
+  private validateDefinitions(): void {
+    const seen = new Set<string>();
+    for (const definition of this.definitions) {
+      if (!definition.id.trim()) {
+        throw new Error("App data migration ID is required.");
+      }
+      if (seen.has(definition.id)) {
+        throw new Error(`Duplicate app data migration ID '${definition.id}'.`);
+      }
+      const uniquePrerequisites = new Set<string>();
+      for (const prerequisiteId of definition.prerequisiteMigrationIds ?? []) {
+        if (!prerequisiteId.trim()) {
+          throw new Error(`App data migration '${definition.id}' has an empty prerequisite ID.`);
+        }
+        if (uniquePrerequisites.has(prerequisiteId)) {
+          throw new Error(
+            `App data migration '${definition.id}' repeats prerequisite '${prerequisiteId}'.`,
+          );
+        }
+        if (!seen.has(prerequisiteId)) {
+          throw new Error(
+            `App data migration '${definition.id}' prerequisite '${prerequisiteId}' must be registered earlier.`,
+          );
+        }
+        uniquePrerequisites.add(prerequisiteId);
+      }
+      seen.add(definition.id);
+    }
   }
 }
 

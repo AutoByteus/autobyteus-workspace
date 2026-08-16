@@ -276,8 +276,12 @@ channel bindings, and Token Usage rows as one required migration family.
 
 For Token Usage the migration:
 
-1. Builds a strict task-Team index from the already-converted current task
-   records. Any ambiguous, conflicting, or incomplete index entry fails the
+1. Builds a strict task-Team index from the shared TeamRun migration-state
+   classifier. Predecessor roots use migration-only task records (or matching
+   protected predecessor backup evidence after an interrupted V1 promotion);
+   current V1 roots derive ordered task-Team ancestry from the validated
+   execution-tree package index; validated historical residue contributes no
+   mapping. Invalid, ambiguous, conflicting, or incomplete evidence fails the
    required migration; it is never guessed.
 2. Plans every Team token row as an exact `TeamExecutionAddress`. Direct member
    rows receive an empty task-Team lineage, task-Agent rows retain the exact

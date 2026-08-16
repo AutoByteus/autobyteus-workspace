@@ -11,7 +11,7 @@ import {
 const disposableDirectories: string[] = [];
 const scenarios = path.resolve(
   process.cwd(),
-  "../tickets/in-progress/agent-team-universal-task-delegation/persistence-scenarios",
+  "tests/fixtures/app-data-migrations/team-run-execution-tree-v1",
 );
 
 const createEnvironment = async (): Promise<{ memoryDir: string; appDataDir: string }> => {
