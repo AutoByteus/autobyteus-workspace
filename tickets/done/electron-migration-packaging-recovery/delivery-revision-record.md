@@ -7,6 +7,7 @@
 | `DR-001` | `CRR-003` proportional durable-test review passed after `API-REV-002` | N/A | Delivery package pass; explicit user-verification hold | `docs-sync.md`, `handoff-summary.md`, `release-deployment-report.md` |
 | `DR-002` | `CRR-006` passed after `API-REV-003` resolved `UV-001` | DR-001 delivery state later invalidated by user verification | Updated delivery package pass; explicit user-verification hold | `docs-sync.md`, `handoff-summary.md`, `release-deployment-report.md` |
 | `DR-003` | `CRR-008` passed after `API-REV-004` resolved `UV-002` | DR-002 later invalidated by incomplete operational Team history projection | Updated delivery package pass from recovered exact-base candidate; explicit user-verification hold | `docs-sync.md`, `handoff-summary.md`, `release-deployment-report.md` |
+| `DR-004` | Explicit user finalization instruction after AppImage and hardware-failure review | DR-003 verification hold | Ticket archived and repository finalization completed to the recorded base at `fa86df6d`; no release applicable | `workflow-state.md`, `handoff-summary.md`, `release-deployment-report.md` |
 
 ## Revision Entries
 
@@ -49,3 +50,13 @@
 - Storage incident: the assigned SSD twice lost its SATA device and aborted ext4 during build. Hash-verified recovery archives were applied over the exact base on the miniHDD and the 68-test affected set plus canonical build were rerun. This remains a machine hardware risk, not a code finding.
 - User/finalization state: verification not yet received; no commit, push, merge, release, deployment, archive, or cleanup.
 - Next action: user tests the recorded AppImage and confirms history visibility or reports a concrete failure.
+
+### DR-004 — Repository finalization
+
+- Trigger: explicit user instruction on 2026-08-16 to finalize the ticket to its recorded base branch.
+- Hardware observation: the user launch's Agent Definitions failure was classified from application and kernel evidence as SSD/SATA `EIO`, not a migration/package regression.
+- Archive: `tickets/done/electron-migration-packaging-recovery`.
+- Ticket branch: commit `fa86df6d63c8b1f60a73ce91a3bb814b6ced83f1` pushed to `origin/codex/electron-migration-packaging-recovery`.
+- Base branch: refreshed `origin/codex/agent-team-universal-task-delegation` remained `840fa0d`; conflict-free fast-forward and push completed to `fa86df6d`.
+- Release decision: no release, publication, tag, version bump, or deployment requested.
+- Cleanup: local ticket branch deleted, worktree metadata pruned, remote ticket branch retained, and the miniHDD clone left on the base branch to preserve the verified AppImage.
