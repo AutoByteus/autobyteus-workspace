@@ -9,90 +9,94 @@
 - Supplemental Task Artifacts Reviewed As Context:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix/runtime-reproduction-evidence.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix/claude-runtime-reproduction-evidence.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix/autobyteus-runtime-reproduction-evidence.md`
 - Solution Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix/solution-revision-record.md`
-- Relevant Solution Revision IDs: `SR-001`, `SR-002`, `SR-003`
+- Relevant Solution Revision IDs: `SR-001`, `SR-002`, `SR-003`, `SR-004`
 - Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix/design-review-report.md`
 - Architecture Review Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix/architecture-review-revision-record.md`
-- Relevant Architecture Review Revision IDs: `ARCH-REV-001`, `ARCH-REV-002`
+- Relevant Architecture Review Revision IDs: `ARCH-REV-001`, `ARCH-REV-002`, `ARCH-REV-003`
 - Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix/implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix/implementation-revision-record.md`
-- Relevant Implementation Revision IDs: `IR-001`
+- Relevant Implementation Revision IDs: `IR-001`, `IR-002`
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-001`
-- Current Review Round: 1
-- Trigger: Initial source/architecture review of commit `ddfb494e7df1647ebbeb44c77cfa77820f1acf17` on `codex/codex-runtime-thread-resume-fix`.
-- Prior Review Round Reviewed: N/A
-- Latest Authoritative Round: Round 1 / `CRR-001`
-- Coverage Investigation Reviewed (failure-origin entry point): N/A
-- Execution Coverage Report Reviewed (failure-origin entry point): N/A
-- API/E2E Revision Record Reviewed (failure-origin entry point): N/A
+- Current Code Review Revision ID: `CRR-002`
+- Current Review Round: 2
+- Trigger: `implementation_engineer` rework `IR-002` at commit `1d0452235a5d5fa1311c15e497f0115361414f4e`, addressing `CODE-FIND-001` and implementing the superseding SR-004 / ARCH-REV-003 native-continuity scope.
+- Prior Review Round Reviewed: Round 1 / `CRR-001` — Fail, `Local Fix`
+- Latest Authoritative Round: Round 2 / `CRR-002`
+- Coverage Investigation Reviewed: N/A
+- Execution Coverage Report Reviewed: N/A
+- API/E2E Revision Record Reviewed: N/A
 - Relevant API/E2E Revision IDs: N/A
-- Delivery Revision Record Reviewed (delivery re-entry only): N/A
+- Delivery Revision Record Reviewed: N/A
 - Relevant Delivery Revision IDs: N/A
 - Failing Scenario IDs: N/A
 - Exact Failing Commands / Execution Mode: N/A
-- Failure Evidence Paths: N/A — the temporary reviewer probe command and observed output are recorded in `CODE-FIND-001`.
+- Failure Evidence Paths: N/A
 
 ## Review Scope
 
-- Changed implementation and behavior reviewed: The complete source delta from base `2b0f8ea99296bb3f983c497d1f5c00a4d839f404` to `ddfb494e7df1647ebbeb44c77cfa77820f1acf17`, covering private AgentRun candidates, team binding durability, direct-task activation, standalone durability/admission, activity guarding, exact Codex restore, and Claude UUID lifecycle.
-- Files / areas reviewed: All 37 changed production TypeScript files under `autobyteus-server-ts/src`, their relevant unchanged callers/contracts, the affected execution-tree and runtime models, and the cumulative upstream artifact package.
-- Explicit exclusions: Raw retained browser images/logs were used through their canonical evidence summaries rather than re-running the pre-fix reproductions. API/E2E coverage maintenance and realistic post-fix execution remain downstream-owned. The separately excluded Electron/database migration issue was not reviewed.
+- Changed implementation and behavior reviewed: the complete cumulative source delta from base `2b0f8ea99` through `IR-002`, with re-review emphasis on external-only binding, root/configured/task materialization provenance, workspace activation, native same-run restoration, nested configured composition, and preservation of SR-003 candidate/durability/provider/standalone invariants.
+- Files / areas reviewed: all cumulative changed production files listed in the source audit; the complete `ddfb494e7..1d0452235` production/test delta; root command ingress, `RootTeamRun`, `TeamRunResolver`, mixed root/subteam/member factories and contexts, native/external candidate APIs, workspace and activity owners, root binding/task publication, provider lifecycle, and seven focused unit/narrow-integration files.
+- Reviewer checks: `pnpm exec tsc -p tsconfig.build.json --noEmit` passed; the seven claimed focused files passed 29/29 on reviewer rerun; cumulative `git diff --check` passed; built-module direct-handle and `TeamRunResolver` overlap probes reproduced `CODE-FIND-002` without modifying repository source.
+- Explicit exclusions: API/E2E coverage investigation and realistic browser/provider execution remain downstream-owned. The repository-wide test-typing TS6059 configuration issue and already-disclosed stale durable contracts are not reclassified by this source review.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Approved requirements basis understood: Yes. Provider-native identity must be durable before input, known identities must resume exactly or fail, local history remains independent, and native Autobyteus team runtimes must remain valid with a null provider binding.
-- Design-spec behavior map verified against the implementation: Partially. The Codex, Claude, root durability, candidate, activity, direct-task, and standalone paths are implemented substantially as reviewed. The native-neutral branch of `BEH-003` is contradicted by the handle implementation.
-- Design review report and round confirmed: Yes — `ARCH-REV-002` / round 2 passed the cumulative design after `ARCH-FIND-001` and `ARCH-FIND-002` were resolved.
+- Approved requirements basis understood: Yes — the cumulative approved scope is exact Codex/Claude provider continuation plus configured native working-context restoration, requested-workspace activation, external-only team bindings, configured-descendant restore inheritance, explicitly fresh task executions, and joined first-command readiness.
+- Design-spec behavior map verified against the implementation: Mostly. `CODE-FIND-001` is resolved, and the new native activation plan matches the reviewed design for a single materialized configured path. The configured-subteam composition boundary does not join overlapping materialization callers, so the supported overlap path can reject a command before it reaches the one agent-handle readiness promise.
+- Design review report and round confirmed: `ARCH-REV-003` Pass, including `PREM-ARCH-001` and `PREM-ARCH-004` reachability.
 - Behavior-basis status: `Contradicted`
-- Changed or newly discovered behavior, if any: None. The defect is against already-approved and explicitly preserved `BEH-003` behavior.
+- Changed or newly discovered behavior, if any: None. `CODE-FIND-002` contradicts already-approved overlap and configured-descendant behavior; it does not establish a new product behavior.
 - Remaining material ambiguity, if any: None.
 
-| Behavior ID | Current Status (`Confirmed`/`Contradicted`/`Unclear`/`Newly Discovered`) | Current Implementation Path And Lifecycle Evidence | Contradicting Or Newly Discovered Supported Behavior Evidence (Only When Applicable) |
+| Behavior ID | Current Status | Current Implementation Path And Lifecycle Evidence | Contradicting Or Newly Discovered Supported Behavior Evidence |
 | --- | --- | --- | --- |
-| `BEH-001` | Confirmed | Team command -> one `MixedAgentMemberHandle` readiness promise -> one private external candidate -> root lock-head binding commit -> synchronous publication; restore uses exact stored ID. | N/A |
-| `BEH-002` | Confirmed | Local memory/history remains separate; readiness failures project an agent `ERROR` plus rejected operation without rewriting history. | N/A |
-| `BEH-003` | Contradicted | Configured and direct-task handles stage/adopt any non-null `candidate.platformAgentRunId`; recursive root mutation and task-transaction integration are otherwise present. | Requirements lines 19, 63, 79, 98, and 114 preserve native null binding. `AutoByteusAgentRunBackend.getPlatformAgentRunId()` returns the local `runId` (`src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.ts:99-101`). `MixedAgentMemberHandle` adopts/stages every truthy candidate ID without checking external runtime (`:129-135`, `:227-235`). After persistence, the same handle selects strict platform restore from any truthy binding (`:217-225`), while `AgentRunManager` rejects `platformAgentRunId === runId` (`src/agent-execution/services/agent-run-manager.ts:113-120`). |
-| `BEH-004` | Confirmed | Standalone restore enters the one-flight activation owner, reconstructs exact external provider state, reconciles metadata, and publishes only afterward. Native standalone restore retains its native manager path. | N/A |
-| `BEH-005` | Confirmed | Null external team state is classified from active plus complete archived traces before a private create candidate is prepared. | N/A |
-| `BEH-006` | Confirmed | Prior-activity/null and unreadable activity fail before provider creation; Codex known-ID restore uses `thread/resume` only. | N/A |
-| `BEH-007` | Confirmed | Fresh Claude reserves one UUID, team root adopts before publication, SDK create uses `sessionId`, later queries use `resume`, and stream UUIDs confirm exactly. | N/A |
-| `BEH-008` | Confirmed | Standalone Claude uses one activation promise, persists the reserved UUID before publication/input, and restores through exact provider state. | N/A |
+| `BEH-001` | Confirmed | Configured external candidate -> root binding adoption -> lock-head durability -> synchronous publication; restored binding -> strict provider restore. | N/A |
+| `BEH-002` | Confirmed | Local history remains independent; external/native activation completes or rejects before first new input. | N/A |
+| `BEH-003` | Confirmed | `MixedTeamRunBackendFactory` discards native self-bindings, and `MixedAgentMemberHandle.createExternalBinding()` gates validation/adoption to external runtime kinds. Direct native tasks stage no binding. | N/A |
+| `BEH-004` | Confirmed | Standalone exact-ID metadata selection and strict private restoration remain under `StandaloneAgentRunActivationService`. | N/A |
+| `BEH-005` | Confirmed | Fresh external paths use the complete-corpus guard; restored native `none` selects new; no provider identity is invented. | N/A |
+| `BEH-006` | Confirmed | Known external restore is strict; prior activity plus null binding rejects; Codex has no resume-to-start fallback. | N/A |
+| `BEH-007` | Confirmed | Claude reserved UUID creation, exact subsequent/restored resume, root durability, and stream confirmation remain intact. | N/A |
+| `BEH-008` | Confirmed | Standalone one-flight still orders exact UUID metadata durability before publication/input. | N/A |
+| `BEH-009` | Contradicted | Root restore mode reaches configured descendants; a materialized native agent with activity selects generic same-run restore. However, `MixedSubTeamMemberHandle` has no in-flight materialization promise. | Two supported overlapping `SEND_MESSAGE` commands to an as-yet-unmaterialized configured nested member both create child `TeamRun` wrappers; `TeamRunResolver` registers one and rejects the other as already registered before the shared agent readiness path. See `CODE-FIND-002`, `PREM-ARCH-001`, and `PREM-ARCH-004`. |
+| `BEH-010` | Confirmed | Non-null roots call `WorkspaceManager.ensureWorkspaceByRootPath()` before context building, activity inspection, or candidate construction; the returned ID is used. | N/A |
 
 ## Structural / Design Checks
 
-| Check | Result (`Pass`/`Fail`) | Evidence | Required Action |
+| Check | Result | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | The refactor establishes the reviewed root, handle, manager-candidate, standalone, and provider lifecycle owners. | None beyond `CODE-FIND-001`. |
-| Implementation matches approved behavior-defining supplemental artifacts | Pass | Codex/Claude reproduction premises and provider identity contracts are reflected in exact resume and UUID lifecycle code. | None. |
-| Data-flow spine inventory clarity and preservation under shared principles | Fail | External spines are preserved, but native candidates enter the external binding/adoption and later strict-restore spine. | Resolve `CODE-FIND-001`; retain native null and native activation/restore routing. |
-| Ownership boundary preservation and clarity | Pass | Root owns durable team bindings; task activation owns staged pre-node bindings; standalone service owns metadata admission; manager owns candidate/registry lifecycle. | None. |
-| Off-spine concern clarity (off-spine concerns serve clear owners and stay off the main line) | Pass | Activity inspection, stores, provider adapters, event projection, and cleanup remain attached to explicit owners. | None. |
-| Existing capability/subsystem reuse check (no fresh helper where an existing subsystem should own it) | Pass | Existing persistence coordinator, tree mutator, metadata/catalog, and provider managers are extended; new files cover genuinely missing candidate, standalone, activity, and Claude lifecycle owners. | None. |
-| Reusable owned structures check (repeated structures extracted into the right owned file instead of copied across files) | Pass | `TeamAgentPlatformBinding`, `AgentRunActivationCandidate`, strict metadata state, and Claude discriminated binding are reused at their owning boundaries. | None. |
-| Shared-structure/data-model tightness check (no kitchen-sink base, no overlapping parallel shapes, specialization/composition used meaningfully) | Pass | New structures have one narrow meaning and no optional kitchen-sink representation. | None. |
-| Repeated coordination ownership check (shared policy has a clear owner instead of being repeated across callers) | Pass | One handle readiness promise and one standalone activation map replace duplicated coordination. | None. |
-| Empty indirection check (no pass-through-only boundary) | Pass | New candidate, standalone activation, and activity files each own concrete state or classification. | None. |
-| Scope-appropriate separation of concerns and file responsibility clarity | Pass | Manager/candidate, standalone activation/provisioning/facade, root/mutator/persistence, and Claude lifecycle/client responsibilities remain distinct. | None. |
-| Ownership-driven dependency check (no forbidden shortcuts or unjustified cycles) | Pass | Handles use the root acceptor rather than stores; standalone activation uses metadata/catalog and candidate APIs; provider code has no team/root dependency. | None. |
-| Authoritative Boundary Rule check (callers do not depend on both an outer owner and that owner's internal manager/repository/helper/lower-level concern) | Pass | No caller introduced mixed root/store, standalone/store bypass, or team/provider shortcut. | None. |
-| File placement check (file/folder path matches owning concern or explicitly justified shared boundary) | Pass | Added files are placed under agent execution, agent memory, team domain/task delegation, and Claude client/session owners. | None. |
-| Flat-vs-over-split layout judgment (layout is readable for the scope and not artificially fragmented) | Pass | The larger lifecycle changes are split by real state ownership without pass-through fragments. | None. |
-| Interface/API/query/command/service-method boundary clarity (one subject, one responsibility, explicit identity shape) | Fail | Interfaces are mostly explicit, but the team handle treats the generic backend `platformAgentRunId` as provider-native without applying the reviewed external-runtime eligibility rule. | Resolve `CODE-FIND-001` at the team handle boundary rather than broadening root/provider semantics. |
-| Naming quality and naming-to-responsibility alignment check (files, folders, APIs, types, functions, parameters, variables) | Pass | Candidate, binding, lifecycle, strict metadata, and lock-head mutation names align with responsibility. | None. |
-| No unjustified duplication of code / repeated structures in changed scope | Pass | Candidate cleanup/claim logic and activation ownership are centralized. | None. |
-| Patch-on-patch complexity control | Pass | Obsolete eager, refresh, fallback, placeholder, and rebinding paths were removed instead of wrapped. | None. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | Searches found no retained eager manager APIs, capture/refresh path, Codex fallback, Claude placeholder/rebinding/inference, or duplicate activation maps. | None. |
-| Relevant test scenarios and assertions are clear and requirement-aligned | Fail | The handoff's focused evidence does not cover the required native-null branch, and the reviewer probe falsifies it. Existing affected durable suites are also awaiting downstream coverage investigation. | Correct `CODE-FIND-001`; after source re-review, downstream coverage must include configured and direct-task native-null preservation plus restart behavior. |
-| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | No durable test file changed in this implementation round; current failures are disclosed for downstream classification rather than compatibility-patched. | Downstream coverage investigation remains required. |
-| No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | No new compatibility tests were added. Existing affected tests are explicitly disclosed and must be classified by `api_e2e_engineer`; source review does not infer their validity from failure alone. | Downstream coverage investigation remains required. |
-| API/E2E readiness for the next workflow stage | Fail | The native team preservation requirement is currently violated before API/E2E begins. | Return to `implementation_engineer`, then repeat source review before API/E2E. |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | Root provenance, workspace ownership, handle activation planning, native/external restore separation, and candidate publication follow SR-004/SR-003. | None |
+| Implementation matches approved behavior-defining supplemental artifacts | Pass | Native base/personal evidence is addressed by restore-mode propagation, workspace ensure, generic native restore, and external-only binding. | None |
+| Data-flow spine inventory clarity and preservation under shared principles | Fail | DS-012/DS-013 are clear for one resolved child, but nested configured materialization is not single-flight under the approved overlapping ingress path. | Resolve `CODE-FIND-002`. |
+| Ownership boundary preservation and clarity | Pass | Root, workspace, activity, candidate, provider, task, and standalone authorities remain separated; the missing join is local to the existing subteam-handle owner. | None beyond the local fix. |
+| Off-spine concern clarity | Pass | Workspace, activity parsing, provider protocol, cleanup, and event projection remain owned off the main line. | None |
+| Existing capability/subsystem reuse check | Pass | Existing WorkspaceManager, activity inspector, generic native restore, root persistence, and candidate lifecycle are reused. | None |
+| Reusable owned structures check | Pass | Activation mode, private plan, candidate, binding, and activity union remain tight and owned. | None |
+| Shared-structure/data-model tightness check | Pass | Runtime kind governs binding relevance; no persisted mode or widened binding DTO was introduced. | None |
+| Repeated coordination ownership check | Fail | Agent readiness is joined, but repeated configured-child materialization callers are not joined by `MixedSubTeamMemberHandle`. | Add one handle-owned in-flight child materialization promise. |
+| Empty indirection check | Pass | Explicit root create/restore and configured/fresh-task factory methods encode distinct subjects rather than pass-through aliases. | None |
+| Scope-appropriate separation of concerns and file responsibility clarity | Pass | Files align with the reviewed responsibility map; the 469-line member handle remains cohesive but near the hard limit. | Monitor only. |
+| Ownership-driven dependency check | Pass | No store/provider/standalone bypass or new cycle was found. | None |
+| Authoritative Boundary Rule check | Pass | Callers use RootTeamRun, WorkspaceManager, candidate APIs, and standalone activation owners rather than their internal stores/managers. | None |
+| File placement check | Pass | New mode, plan, errors, and factory changes reside in their owning capability folders. | None |
+| Flat-vs-over-split layout judgment | Pass | The changed layout is navigable and the removed generic factory eliminates conflicting abstraction. | None |
+| Interface/API/query/command/service-method boundary clarity | Pass | Create/restore, configured-child/fresh-task, generic-native/strict-external, and external binding interfaces have explicit subjects. | None |
+| Naming quality and naming-to-responsibility alignment check | Pass | `configuredMemberActivationMode`, `restore_native`, and the explicit factory method names match lifecycle meaning. | None |
+| No unjustified duplication of code / repeated structures in changed scope | Pass | No duplicated activation plan, workspace registry, or provider-binding structure was added. | None |
+| Patch-on-patch complexity control | Pass | The rework replaces ambiguous paths rather than layering a truthy-ID compatibility patch. | None |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | Ambiguous `createOrRestore`, restore runtime-context reconstruction, and unused generic TeamRun factory interface are removed; searches found no production references. | None |
+| Relevant test scenarios and assertions are clear and requirement-aligned | Fail | The 29 focused tests cover native null binding, workspace ordering, restore/new/failure, root mode, task freshness, and real native restore. The configured-subteam test is sequential only and misses supported overlapping materialization. | Add a latch-based nested/subteam overlap test through the resolver or equivalent production boundary. |
+| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | Current fixtures and focused native handle helper are coherent; source-size thresholds are not applied to tests. | None |
+| No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | Changed tests target current explicit contracts. Broader old-suite maintenance remains disclosed for coverage investigation. | None |
+| API/E2E readiness for the next workflow stage | Fail | A normal overlapping nested configured command can be rejected before candidate readiness, so source is not ready for downstream API/E2E sign-off. | Return to `implementation_engineer`, then source re-review. |
 
 ## Source File Size And Structure Audit (If Applicable)
 
-Effective-line counts exclude blank and line-comment-only lines. The delta trigger counts added plus deleted source lines against base `2b0f8ea99`; it is diagnostic, not an automatic failure.
+Effective-line counts exclude blank and line-comment-only lines. Delta is added plus deleted source lines against base `2b0f8ea99`; it is diagnostic, not an automatic failure.
 
-| Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
+| Source File | Effective Lines | `>500` | `>220` Delta | SoC / Ownership | Placement | Preliminary Classification | Required Action |
 | --- | ---: | --- | --- | --- | --- | --- | --- |
 | `agent-execution/backends/claude/backend/claude-agent-run-backend-factory.ts` | 76 | Pass | Pass | Pass | Pass | None | None |
 | `agent-execution/backends/claude/backend/claude-agent-run-context.ts` | 42 | Pass | Pass | Pass | Pass | None | None |
@@ -100,48 +104,52 @@ Effective-line counts exclude blank and line-comment-only lines. The delta trigg
 | `agent-execution/backends/claude/session/claude-session-manager.ts` | 161 | Pass | Pass | Pass | Pass | None | None |
 | `agent-execution/backends/claude/session/claude-session-message-cache.ts` | 39 | Pass | Pass | Pass | Pass | None | None |
 | `agent-execution/backends/claude/session/claude-session-state-input.ts` | 30 | Pass | Pass | Pass | Pass | None | None |
-| `agent-execution/backends/claude/session/claude-session.ts` | 488 | Pass | Pass | Pass — cohesive turn/session lifecycle, near hard limit but not expanded beyond it | Pass | Monitor only | Avoid unrelated growth. |
+| `agent-execution/backends/claude/session/claude-session.ts` | 488 | Pass | Pass | Pass — cohesive provider session lifecycle near limit | Pass | Monitor | Avoid unrelated growth. |
 | `agent-execution/backends/codex/thread/codex-thread-manager.ts` | 213 | Pass | Pass | Pass | Pass | None | None |
 | `agent-execution/errors.ts` | 45 | Pass | Pass | Pass | Pass | None | None |
 | `agent-execution/services/agent-run-activation-candidate.ts` | 66 | Pass | Pass | Pass | Pass | None | None |
 | `agent-execution/services/agent-run-command-coordinator.ts` | 271 | Pass | Pass | Pass | Pass | None | None |
-| `agent-execution/services/agent-run-manager.ts` | 372 | Pass | Triggered (482-line rewrite delta) — acceptable after extracting candidate and standalone policy | Pass | Pass | None | None |
+| `agent-execution/services/agent-run-manager.ts` | 372 | Pass | Triggered (482-line rewrite delta) | Pass after candidate/standalone extraction | Pass | None | None |
 | `agent-execution/services/agent-run-provisioning-service.ts` | 262 | Pass | Pass | Pass | Pass | None | None |
 | `agent-execution/services/agent-run-service.ts` | 257 | Pass | Pass | Pass | Pass | None | None |
-| `agent-execution/services/standalone-agent-run-activation-service.ts` | 251 | Pass | Triggered (271 added lines) — cohesive new durability/admission owner | Pass | Pass | None | None |
+| `agent-execution/services/standalone-agent-run-activation-service.ts` | 251 | Pass | Triggered (271 added) | Pass — cohesive durability/admission owner | Pass | None | None |
 | `agent-memory/services/agent-conversation-activity-inspector.ts` | 74 | Pass | Pass | Pass | Pass | None | None |
-| `agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts` | 394 | Pass | Pass | Fail — external provider eligibility is not applied before binding/adoption/restore | Pass | `Local Fix` / `CODE-FIND-001` | Gate provider binding and strict platform restore to external runtimes; preserve native null. |
-| `agent-team-execution/backends/mixed/members/mixed-configured-member-registry.ts` | 62 | Pass | Pass | Pass | Pass | None | None |
-| `agent-team-execution/backends/mixed/members/mixed-task-agent-execution-registry.ts` | 164 | Pass | Pass | Pass | Pass | None | None |
+| `agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts` | 469 | Pass | Triggered (306-line delta) | Pass — cohesive runtime-adaptation/readiness owner near limit | Pass | Monitor | Avoid unrelated growth. |
+| `agent-team-execution/backends/mixed/members/mixed-configured-member-registry.ts` | 63 | Pass | Pass | Pass | Pass | None | None |
+| `agent-team-execution/backends/mixed/members/mixed-sub-team-member-handle.ts` | 69 | Pass | Pass | Fail — no in-flight materialization join | Pass | `Local Fix` / `CODE-FIND-002` | Join concurrent child materialization. |
+| `agent-team-execution/backends/mixed/members/mixed-task-agent-execution-registry.ts` | 165 | Pass | Pass | Pass | Pass | None | None |
 | `agent-team-execution/backends/mixed/members/mixed-task-team-execution-registry.ts` | 166 | Pass | Pass | Pass | Pass | None | None |
+| `agent-team-execution/backends/mixed/mixed-sub-team-run-factory.ts` | 47 | Pass | Pass | Pass | Pass | None | None |
 | `agent-team-execution/backends/mixed/mixed-team-manager.ts` | 278 | Pass | Pass | Pass | Pass | None | None |
-| `agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts` | 121 | Pass | Pass | Pass | Pass | None | None |
-| `agent-team-execution/backends/mixed/mixed-team-run-context.ts` | 52 | Pass | Pass | Pass | Pass | None | None |
+| `agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts` | 129 | Pass | Pass | Pass | Pass | None | None |
+| `agent-team-execution/backends/mixed/mixed-team-run-context.ts` | 58 | Pass | Pass | Pass | Pass | None | None |
+| `agent-team-execution/backends/team-run-backend-factory.ts` | Removed | N/A | Pass | Pass — obsolete conflicting interface removed | Pass | Cleanup complete | None |
 | `agent-team-execution/domain/prepared-task-execution.ts` | 18 | Pass | Pass | Pass | Pass | None | None |
-| `agent-team-execution/domain/root-team-run.ts` | 448 | Pass | Pass | Pass — cohesive root boundary, near hard limit | Pass | Monitor only | Avoid unrelated growth. |
+| `agent-team-execution/domain/root-team-run.ts` | 448 | Pass | Pass | Pass — cohesive root boundary near limit | Pass | Monitor | Avoid unrelated growth. |
 | `agent-team-execution/domain/team-agent-platform-binding.ts` | 40 | Pass | Pass | Pass | Pass | None | None |
-| `agent-team-execution/services/agent-team-run-manager.ts` | 223 | Pass | Pass | Pass | Pass | None | None |
+| `agent-team-execution/errors.ts` | 34 | Pass | Pass | Pass | Pass | None | None |
+| `agent-team-execution/services/agent-team-run-manager.ts` | 235 | Pass | Pass | Pass | Pass | None | None |
 | `agent-team-execution/services/team-run-execution-tree-mutator.ts` | 203 | Pass | Pass | Pass | Pass | None | None |
 | `agent-team-execution/services/team-run-persistence-contract.ts` | 116 | Pass | Pass | Pass | Pass | None | None |
 | `agent-team-execution/services/team-run-persistence-coordinator.ts` | 202 | Pass | Pass | Pass | Pass | None | None |
 | `agent-team-execution/services/team-run-service.ts` | 194 | Pass | Pass | Pass | Pass | None | None |
 | `agent-team-execution/task-delegation/task-delegation-execution-resolution.ts` | 39 | Pass | Pass | Pass | Pass | None | None |
-| `agent-team-execution/task-delegation/task-delegation-service.ts` | 500 | Pass (not greater than 500) | Pass | Pass — cohesive task policy owner at limit | Pass | Monitor only | Avoid unrelated growth; split only along a real owner if it grows. |
+| `agent-team-execution/task-delegation/task-delegation-service.ts` | 500 | Pass (not greater than 500) | Pass | Pass — cohesive task policy owner at limit | Pass | Monitor | Split only along a real owner if it grows. |
 | `run-history/services/agent-run-metadata-service.ts` | 35 | Pass | Pass | Pass | Pass | None | None |
 | `run-history/store/agent-run-metadata-store.ts` | 113 | Pass | Pass | Pass | Pass | None | None |
-| `runtime-management/claude/client/claude-sdk-client.ts` | 453 | Pass | Pass | Pass — existing cohesive SDK adapter | Pass | Monitor only | Avoid unrelated growth. |
+| `runtime-management/claude/client/claude-sdk-client.ts` | 453 | Pass | Pass | Pass — cohesive SDK adapter near limit | Pass | Monitor | Avoid unrelated growth. |
 | `runtime-management/claude/client/claude-sdk-session-binding.ts` | 3 | Pass | Pass | Pass | Pass | None | None |
 
 ## Legacy / Backward-Compatibility Verdict
 
-| Check | Result (`Pass`/`Fail`) | Notes |
+| Check | Result | Notes |
 | --- | --- | --- |
-| No backward-compatibility mechanisms in changed scope | Pass | No version-specific or historical behavior branch was added. |
-| No legacy old-behavior retention in changed scope | Pass | Eager manager publication, late team refresh, Codex resume fallback, Claude placeholder/rebinding, and duplicate activation maps are removed. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | Source searches found no retained production references to the removed mechanisms. |
-| Approved persisted-data transition decision is followed without unnecessary migration work | Pass | Existing current-schema fields are used directly; no migration or dual schema path was introduced. |
-| No version-specific dual reads/writes or request-time old-shape fallback exists | Pass | Strict current-state reads and exact restore are used. |
-| Approved transition mechanics match the reviewed design, including migration safety only when required | Pass | Decision remains `Directly Usable — No Migration`; broken null/placeholder histories fail closed. |
+| No backward-compatibility mechanisms in changed scope | Pass | Runtime-kind-specific normal reading ignores an irrelevant native field; this is not a version branch or fallback. |
+| No legacy old-behavior retention in changed scope | Pass | Eager publication, late refresh, Codex fallback, Claude placeholder/rebinding, ambiguous subteam composition, and native truthy binding are removed. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | The unused generic TeamRun backend-factory interface and obsolete APIs have no production references. |
+| Approved persisted-data transition decision is followed without unnecessary migration work | Pass | Existing current-schema facts are used directly under `Directly Usable — No Migration`. |
+| No version-specific dual reads/writes or request-time old-shape fallback exists | Pass | No dual schema or native rewrite path was added. |
+| Approved transition mechanics match the reviewed design, including migration safety only when required | Pass | Valid external IDs remain exact; native self-ID fields are ignored by runtime semantics and new native bindings remain null. |
 
 ## Dead / Obsolete / Legacy Items Requiring Removal (Mandatory If Any Exist)
 
@@ -150,80 +158,83 @@ None.
 ## Docs-Impact Verdict
 
 - Docs impact: `No`
-- Why: The change repairs existing continuity guarantees and does not add a public API, configuration option, or supported workflow. Ticket/review artifacts already describe the operational behavior; delivery may still record no-impact against integrated state.
+- Why: The change repairs an existing continuity contract without adding a public API, option, or workflow. Ticket artifacts already describe the operational behavior.
 - Files or areas likely affected: N/A
 
 ## Material Premise Validation (Only When Needed)
 
 ### Upstream Design-Review Material-Premise Decisions
 
-| Premise ID | Current Status (`Confirmed`/`Reclassified`/`No Longer Relevant`) | Changed Evidence / Reason (Required For `Reclassified` Or `No Longer Relevant`) |
+| Premise ID | Current Status | Changed Evidence / Reason |
 | --- | --- | --- |
 | `PREM-ARCH-001` | Confirmed | N/A |
 | `PREM-ARCH-002` | Confirmed | N/A |
+| `PREM-ARCH-003` | Confirmed | N/A |
+| `PREM-ARCH-004` | Confirmed | N/A |
 
-No new or reclassified premise is required. `CODE-FIND-001` follows directly from approved `BEH-003`/`REQ-003`/`AC-005` and a supported native team execution path; it does not rely on a hypothetical failure state.
+No new or reclassified premise is required. `CODE-FIND-002` uses the independently supported overlapping `SEND_MESSAGE` path from `PREM-ARCH-001` and the configured-descendant path from `PREM-ARCH-004`.
 
 ## Review Scorecard (Mandatory)
 
-- Overall score (`/10`): 8.66
-- Overall score (`/100`): 86.6
-- Score calculation note: Simple average of the ten mandatory categories. The native preservation defect independently fails the review regardless of the average.
+- Overall score (`/10`): 8.89
+- Overall score (`/100`): 88.9
+- Score calculation note: Simple average of the ten categories. The supported nested-overlap defect independently fails review regardless of the average.
 
-| Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
+| Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | ---: | --- | --- | --- |
-| `1` | `Data-Flow Spine Inventory and Clarity` | 8.5 | External team, task, standalone, return/error, and candidate spines are implemented coherently. | Native team candidates are incorrectly routed into external provider binding and strict platform restore. | Keep native team execution on its null-binding/native lifecycle while external candidates alone enter binding adoption. |
-| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.2 | Root, task, manager, standalone, memory, and provider authorities are explicit and no store bypass was introduced. | The team handle applies the right root owner to the wrong runtime category. | Preserve the owner model while correcting runtime eligibility locally. |
-| `3` | `API / Interface / Query / Command Clarity` | 8.8 | Candidate, binding, strict metadata, and SDK interfaces are narrow and explicit. | `candidate.platformAgentRunId` is consumed as provider-native at the team boundary even though the native backend returns its local run ID through that generic interface. | Make the external-runtime eligibility rule explicit at handle binding/restore decisions. |
-| `4` | `Separation of Concerns and File Placement` | 9.1 | New owners are sensibly separated and placed; large files remain cohesive. | Several files are near size limits, but no current responsibility split is missing. | Keep future growth owner-driven; no immediate split required. |
-| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.1 | Binding, candidate, lifecycle, and strict-state shapes are tight and reusable. | The binding value intentionally lacks runtime type, so correct eligibility depends on the handle boundary. | Enforce eligibility at the handle without widening the root binding model. |
-| `6` | `Naming Quality and Local Readability` | 9.1 | Names align well with lifecycle and ownership; control flow is generally traceable. | Dense lifecycle files require careful reading but remain coherent. | Keep follow-up fix narrow and explicit. |
-| `7` | `API/E2E Readiness` | 7.5 | Build/type checks pass and most target paths are structurally ready. | A required preserved native path is already contradicted, and AC-005 native-null evidence is absent. | Fix and re-review before coverage investigation/execution advances. |
-| `8` | `Runtime Correctness And Behavioral Fidelity` | 7.0 | Codex/Claude exact continuation and durability mechanics align strongly with the reviewed behavior. | Native configured/direct-task activation persists the local run ID as a provider binding; restart then rejects that self-ID through strict restore. | Resolve `CODE-FIND-001` and prove native tree/context binding remains null across activation/restart. |
-| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.2 | Obsolete fallback, refresh, placeholder, and duplicated coordination paths are removed cleanly. | No material legacy weakness found. | None. |
-| `10` | `Cleanup Completeness` | 9.1 | Changed production searches and diffs show the intended obsolete paths removed. | Durable test cleanup/updates remain downstream-owned and unclassified. | Complete coverage investigation after source passes. |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 8.6 | External, native, task, standalone, and failure spines are otherwise coherent. | Configured-descendant materialization forks under overlap before the shared agent spine. | Join one child materialization at the configured subteam handle. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 8.8 | Major authorities remain explicit and correctly separated. | The subteam handle owns child materialization but does not own its in-flight coordination. | Add the missing handle-owned promise without widening the root or factory. |
+| `3` | `API / Interface / Query / Command Clarity` | 9.2 | Fresh/restore and configured/fresh-task interfaces are explicit; native/external candidate APIs remain distinct. | No material interface ambiguity remains. | None beyond preserving current shapes. |
+| `4` | `Separation of Concerns and File Placement` | 9.1 | The rework follows the reviewed file map and removes conflicting abstraction. | Several cohesive lifecycle files are near size limits. | Avoid unrelated growth. |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.2 | Mode, plan, candidate, binding, and runtime-kind semantics are tight. | No material data-model weakness found. | None. |
+| `6` | `Naming Quality and Local Readability` | 9.2 | Lifecycle and subject names make the new routing readable. | The large member handle remains dense but coherent. | Keep the local follow-up narrow. |
+| `7` | `API/E2E Readiness` | 8.4 | Production typing and 29 focused tests pass, including real native restore. | The nested overlap case is absent and currently rejects one supported command. | Add focused coverage and re-review before API/E2E. |
+| `8` | `Runtime Correctness And Behavioral Fidelity` | 8.2 | `CODE-FIND-001`, native restore, workspace ordering, and task freshness are correctly implemented. | Two first commands to an unmaterialized configured descendant can produce split TeamRun wrappers and one rejection. | Enforce one materialization result for all overlapping callers. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.3 | Obsolete fallback, placeholder, refresh, and ambiguous factory paths are cleanly removed. | No material legacy weakness found. | None. |
+| `10` | `Cleanup Completeness` | 8.9 | Intended obsolete source is removed and normal candidate cleanup remains sound. | The overlap race temporarily leaves distinct active child wrappers under resolver/handle ownership until teardown. | Prevent duplicate child construction rather than cleaning it after divergence. |
 
 ## Findings
 
-### `CODE-FIND-001` — Native team runtimes are persisted as external provider bindings and fail strict restore
+### `CODE-FIND-002` — Configured subteam materialization is not single-flight, so an overlapping first command is rejected
 
-- Severity: High
+- Severity: Medium
 - Classification: `Local Fix`
-- Affected approved behavior / requirements: `BEH-003`, `REQ-003`, `AC-005`; preserved native Autobyteus team behavior in requirements lines 11, 19, 63, 79, 92, 98, and 114.
-- Supported initiating trigger and forward production path: A user uses the existing team conversation surface to send a normal message to a configured Autobyteus member, or normal task delegation activates a direct Autobyteus task agent. `RootTeamRun.executeAgentCommand` / task preparation reaches `MixedAgentMemberHandle`; the AutoByteus backend reports `getPlatformAgentRunId() === local runId`; the handle stages or root-adopts that truthy value and publishes the run. After the supported full server restart/reopen operation, restored config carries the self-ID; the first message enters `prepareRestoreAgentRunFromPlatformState`, which rejects `platformAgentRunId === runId` as invalid before native execution can resume.
+- Affected approved behavior / requirements: `BEH-009`; `REQ-012`; `AC-019`; retained SR-003 joined-readiness contract; `PREM-ARCH-001` and `PREM-ARCH-004`.
+- Supported initiating trigger and forward production path: On the supported team-conversation surface, a user or normal system delivery sends two `SEND_MESSAGE` commands close together to an agent inside the same configured nested team before that child TeamRun is materialized. Each WebSocket command independently reaches `RootTeamRun.executeAgentCommand()` -> `requireContainingTeamRun()` -> `TeamRunResolver.requireConfigured()`. Both calls observe no registered child and call the same `MixedSubTeamMemberHandle.getOrCreateTeamRun()`. Because the handle stores only the completed `childRun`, each call invokes `materializeConfiguredChild()` and receives a different active wrapper. `TeamRunResolver.registerActive()` accepts the first and rejects the second as already registered, so the second normal command never reaches the configured agent's shared readiness/candidate promise.
 - Source evidence:
-  - `src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.ts:99-101` returns the local `runId` from `getPlatformAgentRunId()`.
-  - `src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts:129-135` stages any truthy candidate ID during direct-task preparation.
-  - `src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts:217-235` selects strict platform restoration for any truthy context binding and root-adopts any truthy candidate ID, without checking `isExternalProviderRuntimeKind`.
-  - `src/agent-execution/services/agent-run-manager.ts:113-120` rejects a persisted provider ID equal to the local run ID.
-- Reviewer execution evidence: `node /tmp/review-native-binding-probe.mjs` against the built modules produced `{"acceptedBinding":{"execution":{"rootTeamRunId":"root_probe","memberAddress":"/native_member","agentRunId":"native_probe_run"},"platformAgentRunId":"native_probe_run"},"contextBinding":"native_probe_run"}`. This demonstrates the production handle accepts and mirrors the native local ID as a team platform binding.
-- Material consequence: New configured and direct-task native team executions no longer retain null as required. Once physically persisted, their first post-restart activation is rejected as `PLATFORM_AGENT_RUN_BINDING_INVALID`, regressing a supported runtime that the change must preserve.
-- Required action: At the `MixedAgentMemberHandle` team lifecycle boundary, make provider-binding staging/adoption and strict platform-state restoration conditional on an external provider runtime. A native candidate's generic backend ID must not become `TeamAgentPlatformBinding` or the member-context/tree binding; native team activation must retain null and continue through its native lifecycle. Do not broaden root binding semantics or add a compatibility fallback. Provide focused implementation evidence for configured and direct-task native null preservation and post-restart readiness; durable coverage remains subject to the later coverage investigation.
-- Why proportionate: The reviewed architecture already places runtime adaptation in the handle and keeps the root provider-neutral. The correction is bounded to applying the approved runtime eligibility rule at that existing boundary.
+  - `src/services/agent-streaming/agent-team-stream-handler.ts:159-175` independently accepts and awaits each normal message.
+  - `src/agent-team-execution/services/team-run-resolver.ts:31-50` checks the active directory before awaiting child materialization, then registers the returned wrapper; lines 86-90 reject a different wrapper for the same TeamRun ID.
+  - `src/agent-team-execution/backends/mixed/members/mixed-sub-team-member-handle.ts:64-74` checks only completed `childRun`, awaits the factory, and has no in-flight promise to join callers.
+  - `tests/unit/agent-team-execution/mixed-sub-team-member-handle.test.ts` validates sequential reuse only; it does not latch overlapping calls.
+- Reviewer execution evidence: a built-module production-boundary probe invoked two concurrent `TeamRunResolver.requireConfigured("nested")` calls. Before resolution it observed `factoryCallsBeforeResolution: 2`; after resolving both wrappers, one call fulfilled and the other rejected with `TeamRun 'nested' is already registered.` A direct handle probe likewise produced two distinct promises and two distinct runs.
+- Material consequence: A supported overlapping first message to a configured descendant is dropped/rejected before native restore or input admission. The parent handle and root resolver can also temporarily reference different active child wrappers, weakening lifecycle/status coherence until root teardown.
+- Required action: Make `MixedSubTeamMemberHandle` join exactly one in-flight child materialization promise installed before the factory call, set `childRun`/`childRuntimeContext` once, and clear a failed attempt only when retry is safe. Add a latch-based test through `TeamRunResolver.requireConfigured()` or the equivalent production boundary proving two overlapping callers cause one factory call, receive the same TeamRun, avoid registration conflict, and proceed to one configured-agent readiness candidate.
+- Why proportionate: The reviewed design already assigns configured-child materialization to this handle and already approves joined readiness. The correction is bounded to enforcing that invariant at the existing owner; no new persisted state, root policy, or design change is needed.
 
 ## Classification
 
-`Local Fix` — the reviewed design is adequate; the defect is a bounded implementation error in team runtime eligibility/routing.
+`Local Fix` — the cumulative design is adequate; the remaining defect is a bounded missing single-flight at the existing configured-subteam materialization owner.
 
 ## Recommended Recipient
 
 `implementation_engineer`
 
-Implementation-owned correction must return through source review before API/E2E coverage investigation and execution.
+The source correction and focused overlap evidence must return through implementation review before API/E2E begins.
 
 ## Residual Risks
 
-- Existing focused unit suites contain intentionally obsolete contracts (handoff: 19 passed / 41 failed); `api_e2e_engineer` must classify and maintain durable coverage after source passes.
-- Historical external team null bindings and standalone Claude local-ID placeholders remain intentionally non-recoverable.
-- A durably reserved but not provider-materialized Claude UUID can fail exact resume after abrupt restart; fail-closed behavior is approved.
-- Cleanup uncertainty can leave an unused remote artifact, but the candidate claim/quarantine must keep it unpublished and prevent same-process replacement.
+- Existing focused durable suites still contain obsolete contracts and require downstream coverage classification after source passes.
+- Historical external null bindings, standalone Claude placeholders, and overwritten native snapshots remain intentionally non-recoverable.
+- Native activity with missing/corrupt working state and exact provider restore failures remain fail-closed by design.
+- Realistic isolated Codex, Claude, native AutoByteus, and standalone Claude restart coverage remains outstanding.
+- Cleanup uncertainty can retain an unpublished remote artifact under quarantine; no replacement may be admitted in-process.
 
 ## Latest Authoritative Result
 
 - Review Decision: **Fail**
 - Review Entry Point: `Implementation Review`
 - Material-Premise Gate (`Pass`/`Fail`/`Blocked`): `Pass`
-- Score Summary: `8.66/10` (`86.6/100`); API/E2E readiness and runtime fidelity are below the clean-pass threshold because of `CODE-FIND-001`.
-- Failure Origin (when applicable): N/A — initial implementation review.
+- Score Summary: `8.89/10` (`88.9/100`); API/E2E readiness and runtime fidelity remain below clean-pass threshold because of `CODE-FIND-002`.
+- Failure Origin (when applicable): N/A — implementation re-review.
 - Recommended Recipient (when applicable): `implementation_engineer`
-- Notes: The external Codex/Claude continuity architecture is substantially and cleanly implemented, but approved native-null preservation is contradicted. Do not advance to API/E2E until the local fix is re-reviewed.
+- Notes: `CODE-FIND-001` is resolved and the SR-004 native/external lifecycle is otherwise aligned. Do not advance to API/E2E until configured-subteam materialization joins supported overlapping callers and the local fix passes source re-review.

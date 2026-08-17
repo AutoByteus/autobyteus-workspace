@@ -19,17 +19,17 @@
 
 ## Current Implementation Summary
 
-The cumulative implementation preserves the SR-003 provider-durability architecture and adds SR-004 native restart continuity. Root creation and restoration now carry explicit process-local provenance into configured members and nested configured teams, while newly delegated task agents and teams are always fresh. Each member readiness attempt activates its persisted workspace before inspecting activity or constructing a candidate, then selects exactly one `new`, native local restore, or strict external restore plan. Native candidates use the generic same-run/same-memory restore path and never enter team platform-binding staging/adoption, even when their backend reports the local run ID. External Codex/Claude bindings remain root-owned and durable before synchronous publication; standalone one-flight, candidate claim, cleanup/quarantine, and exact provider semantics remain unchanged.
+The cumulative implementation preserves the SR-003 provider-durability architecture and adds SR-004 native restart continuity. Root creation and restoration now carry explicit process-local provenance into configured members and nested configured teams, while newly delegated task agents and teams are always fresh. Configured child-team handles now own one in-flight materialization promise, so overlapping first commands share the same child `TeamRun` before `TeamRunResolver` registration and then reach the configured agent's existing shared readiness candidate. A factory rejection before any child is returned is retryable; a failure after a child is returned stays attached rather than admitting an unverified replacement. Each agent readiness attempt activates its persisted workspace before inspecting activity or constructing a candidate, then selects exactly one `new`, native local restore, or strict external restore plan. Native candidates use the generic same-run/same-memory restore path and never enter team platform-binding staging/adoption, even when their backend reports the local run ID. External Codex/Claude bindings remain root-owned and durable before synchronous publication; standalone one-flight, candidate claim, cleanup/quarantine, and exact provider semantics remain unchanged.
 
 - Implementation cycle: `Rework`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix/implementation-revision-record.md`
-- Current implementation revision ID: `IR-002`
+- Current implementation revision ID: `IR-003`
 - Related solution revision IDs: `SR-001`, `SR-002`, `SR-003`, `SR-004`
 - Related architecture-review revision IDs: `ARCH-REV-001`, `ARCH-REV-002`, `ARCH-REV-003`
-- Related code-review revision IDs: `CRR-001`
+- Related code-review revision IDs: `CRR-001`, `CRR-002`
 - Related API/E2E revision IDs: N/A
 - Related delivery revision IDs: N/A
-- Triggering finding IDs: `CODE-FIND-001`; expanded approved behaviors `BEH-009`, `BEH-010`
+- Triggering finding IDs: `CODE-FIND-002` (`CODE-FIND-001` remains resolved); expanded approved behaviors `BEH-009`, `BEH-010`
 
 ## Reviewed Behavior Implementation Trace
 
@@ -43,14 +43,14 @@ The cumulative implementation preserves the SR-003 provider-durability architect
 | `BEH-006` | Treat broken null-binding history as explicit non-resumable context loss | Stable team binding/activity errors, one readiness failure event, rejected operation, and no provider candidate | Implemented; local history is not rewritten or guessed |
 | `BEH-007` | Preserve Claude team context with one preassigned immutable provider UUID | `ClaudeProviderSessionLifecycle`, `ClaudeSessionManager`, `ClaudeSession`, required `ClaudeSdkSessionBinding`, root binding acceptance before publication | Implemented create-once then exact-resume lifecycle with conflict/unconfirmed terminal failures |
 | `BEH-008` | Persist a standalone Claude UUID before live admission and join overlapping callers | `StandaloneAgentRunActivationService` one-flight + Claude UUID candidate + exact `recordRunStarted` reconciliation + synchronous publication | Implemented; unchanged prepared state is retryable only after confirmed abort, while uncertainty quarantines |
-| `BEH-009` | Restore a configured native member's prior working context after full TeamRun restart | `AgentTeamRunManager.restoreTeamRun` -> restored mixed context -> activity-selected `AgentRunManager.prepareRestoreAgentRun` -> native snapshot bootstrap -> publication | Implemented; same local run ID and memory directory are supplied, restore failure never falls back to fresh creation, and overlapping commands join one readiness attempt |
+| `BEH-009` | Restore a configured native member's prior working context after full TeamRun restart | `AgentTeamRunManager.restoreTeamRun` -> `TeamRunResolver` -> configured-child materialization single-flight -> restored mixed context -> configured-agent readiness single-flight -> activity-selected `AgentRunManager.prepareRestoreAgentRun` -> native snapshot bootstrap -> publication | Implemented; overlapping first commands receive the same configured child wrapper, avoid registration conflict, and join one agent candidate; same local run ID and memory directory are supplied and restore failure never falls back to fresh creation |
 | `BEH-010` | Reactivate persisted member workspaces before native create/restore | `MixedAgentMemberHandle.buildAgentRunConfig` -> `WorkspaceManager.ensureWorkspaceByRootPath` -> returned workspace ID -> plan/candidate | Implemented before activity/candidate work; a non-null root activation failure is normalized and cannot silently reach temp fallback |
 
 ## Key Files Or Areas
 
 - Candidate/admission ownership: `src/agent-execution/services/agent-run-activation-candidate.ts`, `agent-run-manager.ts`, `standalone-agent-run-activation-service.ts`, `agent-run-service.ts`, `agent-run-command-coordinator.ts`, `agent-run-provisioning-service.ts`
 - Team durability and readiness: `src/agent-team-execution/domain/team-agent-platform-binding.ts`, `root-team-run.ts`, `services/team-run-execution-tree-mutator.ts`, `team-run-persistence-{contract,coordinator}.ts`, and mixed member/registry composition
-- Native root/member materialization: `src/agent-team-execution/services/agent-team-run-manager.ts`, `backends/mixed/mixed-team-run-{context,backend-factory}.ts`, `mixed-sub-team-run-factory.ts`, and `members/mixed-agent-member-handle.ts`
+- Native root/member materialization: `src/agent-team-execution/services/agent-team-run-manager.ts`, `services/team-run-resolver.ts`, `backends/mixed/mixed-team-run-{context,backend-factory}.ts`, `mixed-sub-team-run-factory.ts`, and `members/mixed-{sub-team,agent}-member-handle.ts`
 - Direct-task atomic activation: `src/agent-team-execution/domain/prepared-task-execution.ts`, `task-delegation/task-delegation-service.ts`, `task-delegation-execution-resolution.ts`, `mixed-task-agent-execution-registry.ts`
 - Activity guard: `src/agent-memory/services/agent-conversation-activity-inspector.ts`
 - Provider exactness: `src/agent-execution/backends/codex/thread/codex-thread-manager.ts`; Claude session lifecycle/manager/session/backend and `src/runtime-management/claude/client/claude-sdk-{client,session-binding}.ts`
@@ -77,7 +77,7 @@ The cumulative implementation preserves the SR-003 provider-durability architect
 - Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): Refactor Needed Now
 - Implementation matched the reviewed assessment (`Yes`/`No`): Yes
 - If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): N/A
-- Evidence / notes: Identity/durability authority remains at root and standalone boundaries; root create/restore provenance now reaches configured composition; WorkspaceManager owns activation; the handle owns the exhaustive runtime plan; candidate publication remains separate from construction. No input gate, late refresh, persisted mode flag, or restore-to-create fallback was added.
+- Evidence / notes: Identity/durability authority remains at root and standalone boundaries; root create/restore provenance now reaches configured composition; WorkspaceManager owns activation; the agent handle owns the exhaustive runtime plan and the configured-subteam handle owns child materialization coordination; candidate publication remains separate from construction. No input gate, root-level materialization lock, late refresh, persisted mode flag, or restore-to-create fallback was added.
 
 ## Legacy / Compatibility Removal Check
 
@@ -104,6 +104,9 @@ No new dependency or environment variable was added. The final build regenerated
 
 ## Local Implementation Checks Run
 
+- Passed after `IR-003`: `pnpm exec tsc -p tsconfig.build.json --noEmit` in `autobyteus-server-ts`.
+- Passed after `IR-003`: `pnpm run build` in `autobyteus-server-ts`, including shared package builds, Prisma generation, server compilation, managed messaging asset copy, built-in agent bootstrap smoke, and sanitized built-module/bootstrap smoke without `DATABASE_URL`.
+- Passed after `IR-003`: eight focused unit/narrow integration files, 33 tests total. New latch-based production-boundary coverage starts two overlapping `TeamRunResolver.requireConfigured()` callers, holds configured-child materialization and agent candidate preparation independently, and proves one child factory call, the same child `TeamRun`, no resolver registration conflict, one agent readiness candidate/publication, and both accepted inputs. Handle-level checks additionally prove joined promise identity, retry after a pre-return factory rejection, and sticky failure after an invalid child was returned.
 - Passed after `IR-002`: `pnpm exec tsc -p tsconfig.build.json --noEmit` in `autobyteus-server-ts`.
 - Passed after `IR-002`: `pnpm run build` in `autobyteus-server-ts`, including shared package builds, Prisma generation, server compilation, managed messaging asset copy, built-in agent bootstrap smoke, and sanitized built-module/bootstrap smoke without `DATABASE_URL`.
 - Passed after `IR-002`: seven focused unit/narrow integration files, 29 tests total. These prove root fresh/restore provenance, configured nested inheritance, fresh task-team isolation, workspace-before-candidate ordering, overlapping native readiness, activity-selected native restore/new, no restore-to-create fallback, legacy native self-ID ignore, configured/direct-task native binding-null behavior, strict external restore preservation, and the real native backend's same-run create/terminate/restore path.
@@ -120,7 +123,7 @@ Not Applicable — this is a backend runtime, persistence, and provider-session 
 ## Downstream Coverage Hints / Suggested Scenarios
 
 - Replace eager manager tests with explicit candidate tests covering same-tick overlap conflict, private registry invisibility, hidden input surface, observer rollback, synchronous publication, joined abort, confirmed retry, and cleanup quarantine.
-- Add latch-based mixed-member overlap coverage proving one candidate/root adoption and the same readiness result for two first commands; verify one TeamRun `ERROR` plus rejected operations on continuation failure.
+- Extend the durable mixed-member overlap matrix beyond the new configured-subteam production-boundary unit case: prove one external candidate/root adoption for two first commands and verify one TeamRun `ERROR` plus rejected operations on continuation failure.
 - Cover recursive binding adoption for configured, nested configured, direct task-agent, task-team agent, idempotent same-value, compound-identity miss/duplicate, and different-value conflict.
 - Cover direct-task staging: candidate absent from active registry until both tree/task durability, staged binding in the same next tree, publication before work release, and fail-stop/quarantine on post-durability invariant failure.
 - Cover native root restart with physical V1 tree binding null before/after, exact working-snapshot append, no duplicate/reordered turns, native restore logs, and no valid-workspace temp fallback. Also cover restored native no-activity creation, unreadable activity, missing/corrupt snapshot failure, nested configured restore inheritance, and fresh delegated task-team isolation.

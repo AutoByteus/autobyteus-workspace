@@ -8,6 +8,7 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 | --- | --- | --- | --- | --- | --- |
 | `IR-001` | `architecture_reviewer`; `design-review-report.md`; `ARCH-REV-002` | N/A | Initial Baseline | `SR-001`, `SR-002`, `SR-003`; `ARCH-REV-001`, `ARCH-REV-002`; `CRR-*` N/A; `API-REV-*` N/A; `DR-*` N/A | Reviewed Codex/Claude continuity design implemented and locally build-validated; ready for source review |
 | `IR-002` | `code_reviewer` / `code-review-report.md` / `CRR-001`, then `architecture_reviewer` / `design-review-report.md` / `ARCH-REV-003` | `CODE-FIND-001`, `BEH-009`, `BEH-010` | Local Fix + Approved Scope Rework | `SR-001` through `SR-004`; `ARCH-REV-001` through `ARCH-REV-003`; `CRR-001`; `API-REV-*` N/A; `DR-*` N/A | External-only team binding corrected and approved native configured-member restart/workspace path implemented; ready for source re-review |
+| `IR-003` | `code_reviewer` / `code-review-report.md` / `CRR-002` | `CODE-FIND-002` | Local Fix | `SR-001` through `SR-004`; `ARCH-REV-001` through `ARCH-REV-003`; `CRR-001`, `CRR-002`; `API-REV-*` N/A; `DR-*` N/A | Configured-subteam materialization now joins overlapping resolver callers and preserves retry/quarantine ownership; ready for source re-review |
 
 ## Revision Entries
 
@@ -50,3 +51,23 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 - Local validation and result: Production TypeScript check passed; full server build and sanitized bootstrap smoke passed; seven focused unit/narrow integration files passed 29/29, including strict external restore preservation and the real native backend same-run restore; `git diff --check` passed; changed source effective-line scan passed with the largest changed handle at 469. Repository-wide test typing remains blocked by the pre-existing `tsconfig.json` `rootDir: src` plus included `tests` TS6059 issue. Broader durable coverage remains downstream-owned.
 - Next recipient or routing: `code_reviewer`
 - Remaining limitations or risks: Already-overwritten native snapshots and absent external IDs remain unrecoverable; corrupt/unreadable native state fails closed; legacy native self-ID fields are ignored but not rewritten; open delegated-task hydration across restart remains out of scope; API/E2E coverage investigation and realistic isolated Codex/Claude/native browser execution must wait for source re-review.
+
+### IR-003 — Configured-subteam materialization single-flight
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix/code-review-report.md`; implementation review round 2 / `CRR-002`
+- Triggering finding IDs: `CODE-FIND-002`
+- Classification: Local Fix
+- Prior authoritative result: Source re-review failed because overlapping first commands to an unmaterialized configured descendant could receive distinct child `TeamRun` wrappers; `TeamRunResolver` registered one and rejected the other before both callers reached the configured agent readiness single-flight.
+- Current authoritative result: `MixedSubTeamMemberHandle` now installs and returns one in-flight child materialization promise before calling the factory, publishes `childRun` and `childRuntimeContext` together after exact active-child validation, retries only a factory failure that returned no child, and retains a post-return validation failure rather than admitting an unverified replacement. Both overlapping resolver callers now register the same wrapper and proceed through one configured-agent candidate.
+- Related solution revision IDs: `SR-001`, `SR-002`, `SR-003`, `SR-004`
+- Related architecture-review revision IDs: `ARCH-REV-001`, `ARCH-REV-002`, `ARCH-REV-003`
+- Related code-review revision IDs: `CRR-001`, `CRR-002`
+- Related API/E2E revision IDs: N/A
+- Related delivery revision IDs: N/A
+- Why this baseline or implementation revision is recorded: Resolve the bounded missing in-flight coordination invariant at the existing configured-subteam owner without widening root binding, resolver, factory, or candidate semantics.
+- Approved behavior or requirement IDs affected: `BEH-009`; `REQ-012`; `AC-019`; retained SR-003 joined-readiness contract
+- Implementation delta: Added `materializationAttempt` and a retry-safety decision to `MixedSubTeamMemberHandle`, awaited pending materialization during termination preparation, and validated the exact active child before setting live handle/context state. Added direct latch/retry/sticky-failure tests plus a production-boundary test through real `TeamRunResolver`, mixed root/subteam composition, and configured-agent readiness.
+- Changed files or areas: `autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-sub-team-member-handle.ts`; `tests/unit/agent-team-execution/mixed-sub-team-member-handle.test.ts`; `tests/unit/agent-team-execution/team-run-resolver-configured-overlap.test.ts`; current handoff and review artifacts.
+- Local validation and result: Production TypeScript passed; full server build and sanitized bootstrap smoke passed; eight focused unit/narrow integration files passed 33/33. The new production-boundary latch test proves one child factory call, the same `TeamRun` for both resolver callers, no registration conflict, one native agent candidate/publication, and two accepted messages. Direct handle tests prove shared promise identity, safe retry after a pre-return factory rejection, and sticky failure once an invalid child has been returned. `git diff --check` and the changed-source effective-line guard passed.
+- Next recipient or routing: `code_reviewer`
+- Remaining limitations or risks: Broader durable coverage classification and realistic isolated Codex/Claude/native restart execution remain downstream-owned and must wait for source re-review; the pre-existing repository test-typecheck `rootDir` conflict is unchanged.
