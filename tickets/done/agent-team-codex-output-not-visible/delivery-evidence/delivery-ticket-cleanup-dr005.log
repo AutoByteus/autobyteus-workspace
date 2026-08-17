@@ -1,0 +1,19 @@
+DR-005 ticket worktree cleanup
+timestamp_utc=2026-08-17T09:48:58Z
+base_branch=codex/agent-team-universal-task-delegation
+base_head=1a28bf9c6428d3758b219bffc6a60b050f48d03f
+ticket_worktree=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible
+ticket_branch=codex/agent-team-codex-output-not-visible
+remote_ticket_branch_action=RETAIN
+origin_personal_action=NONE
+ticket_worktree_clean_before=PASS
+ticket_branch_contained_by_base=PASS
+worktree_remove=PASS
+worktree_prune=PASS
+Deleted branch codex/agent-team-codex-output-not-visible (was d8ce4d867).
+local_ticket_branch_delete=PASS
+remote_ticket_branch=d8ce4d8678637c2259a15a3950d9caaac6a7e05e
+remote_ticket_branch_retained=PASS
+operational_database_action=NONE
+protected_60004_31004_action=NONE
+result=PASS

@@ -74,5 +74,6 @@ change and renewed verification is not required.
 - Ticket publication: `origin/codex/agent-team-codex-output-not-visible` at the ticket commit
 - Base integration: clean fast-forward into `codex/agent-team-universal-task-delegation`
 - Base publication: `origin/codex/agent-team-universal-task-delegation` advanced to the ticket commit, followed only by the DR-004 completion-record commit
+- Local cleanup: the dedicated ticket worktree and local ticket branch were removed after final target verification; the remote ticket branch remains published at the archival commit
 - `personal` / `origin/personal`: action `NONE`
 - Release, deployment, tag, version bump, operational-data action, rollback, and repair: `NONE`
