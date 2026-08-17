@@ -235,6 +235,14 @@ Agent, task Agent, and task-Team Agent identities. `TeamAgentEventAdapter` maps
 the finite Agent event vocabulary into a correlated Team domain event and is
 stateless with respect to turn, segment, task, and runtime lifecycle.
 
+`FILE_CHANGE` admission follows the same strict boundary. The adapter accepts
+only the canonical `AgentRunFileChangePayload` keys, requires its `runId` to
+match the source `AgentRunEvent`, validates the finite artifact type, status,
+and source-tool values, and preserves `sourceInvocationId` as a required
+nullable field. It rejects legacy wire aliases, extra fields, invalid enum
+values, and cross-run payloads before the Team projector allocates or emits a
+wire event.
+
 Every Agent-originated Team wire message carries `agent_execution`. The strict
 wire projection contains no duplicate member path/name/run fields. Segment
 start/content carry required turn, exact ID, and the finite canonical type;
