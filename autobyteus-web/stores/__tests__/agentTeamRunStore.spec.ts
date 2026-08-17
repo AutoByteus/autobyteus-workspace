@@ -20,6 +20,8 @@ const {
   mockAttachContext,
   mockConnectionState,
   mockIsReady,
+  mockIsReopenRequired,
+  mockConnectCandidate,
   mockSendMessage,
   mockApproveTool,
   mockDenyTool,
@@ -38,6 +40,8 @@ const {
   mockAttachContext: vi.fn(),
   mockConnectionState: { value: 'connected' as 'connected' | 'disconnected' | 'connecting' | 'reconnecting' },
   mockIsReady: { value: true },
+  mockIsReopenRequired: { value: false },
+  mockConnectCandidate: vi.fn(),
   mockSendMessage: vi.fn(),
   mockApproveTool: vi.fn(),
   mockDenyTool: vi.fn(),
@@ -49,6 +53,7 @@ const {
     activeTeamContext: null as AgentTeamContext | null,
     getTeamContextById: vi.fn(),
     addTeamContext: vi.fn(),
+    replaceTeamContext: vi.fn(),
   },
   runHistoryStoreMock: {
     markTeamAsActive: vi.fn(),
@@ -75,7 +80,9 @@ vi.mock('~/services/agentStreaming', () => ({
     return {
       get connectionState() { return mockConnectionState.value },
       get isReady() { return mockIsReady.value },
+      get isReopenRequired() { return mockIsReopenRequired.value },
       connect: mockConnect,
+      connectCandidate: mockConnectCandidate,
       disconnect: mockDisconnect,
       attachContext: mockAttachContext,
       sendMessage: mockSendMessage,
@@ -245,6 +252,8 @@ describe('agentTeamRunStore current rooted execution contract', () => {
     vi.clearAllMocks()
     mockConnectionState.value = 'connected'
     mockIsReady.value = true
+    mockIsReopenRequired.value = false
+    mockConnectCandidate.mockResolvedValue(undefined)
     mockInterruptGeneration.mockReturnValue(true)
     mockServiceOptions.value = null
     teamContextsStoreMock.activeTeamContext = null
@@ -284,6 +293,77 @@ describe('agentTeamRunStore current rooted execution contract', () => {
 
     expect(TeamStreamingService).toHaveBeenCalledTimes(1)
     expect(mockAttachContext).toHaveBeenCalledWith(replacement)
+  })
+
+  it('latches one persistent recovery notice and blocks ordinary service reuse', () => {
+    const team = twoMemberTeam({ teamRunId: 'team-reopen-latched' })
+    setActiveTeam(team)
+    const store = useAgentTeamRunStore()
+    const service = store.connectToTeamStream('team-reopen-latched')
+    const options = mockServiceOptions.value as { onStreamRecoveryRequired(notice: unknown): void }
+    options.onStreamRecoveryRequired({
+      kind: 'team_stream_recovery_required', rootTeamRunId: 'team-reopen-latched',
+    })
+    mockIsReopenRequired.value = true
+    const replacement = twoMemberTeam({ teamRunId: 'team-reopen-latched' })
+    teamContextsStoreMock.getTeamContextById.mockReturnValue(replacement)
+
+    expect(store.connectToTeamStream('team-reopen-latched')).toBe(service)
+    expect(mockAttachContext).not.toHaveBeenCalledWith(replacement)
+    expect(mockConnect).toHaveBeenCalledTimes(1)
+    expect(store.getTeamStreamRecoveryNotice('team-reopen-latched')).toEqual({
+      kind: 'team_stream_recovery_required', rootTeamRunId: 'team-reopen-latched',
+    })
+  })
+
+  it('commits one ready recovery candidate over the unchanged failed entries', async () => {
+    const failed = twoMemberTeam({ teamRunId: 'team-recovery-commit' })
+    setActiveTeam(failed)
+    const store = useAgentTeamRunStore()
+    store.connectToTeamStream('team-recovery-commit')
+    ;(mockServiceOptions.value as { onStreamRecoveryRequired(notice: unknown): void }).onStreamRecoveryRequired({
+      kind: 'team_stream_recovery_required', rootTeamRunId: 'team-recovery-commit',
+    })
+    mockIsReopenRequired.value = true
+    const candidate = twoMemberTeam({ teamRunId: 'team-recovery-commit', focusedMemberAddress: '/coordinator' })
+
+    await expect(store.replaceFailedTeamStream({
+      rootTeamRunId: 'team-recovery-commit',
+      candidateContext: candidate,
+      expectedBaseChangeSequence: 14,
+    })).resolves.toBeTruthy()
+
+    expect(mockConnectCandidate).toHaveBeenCalledWith('team-recovery-commit', candidate, 14)
+    expect(teamContextsStoreMock.replaceTeamContext).toHaveBeenCalledWith(
+      'team-recovery-commit', failed, candidate,
+    )
+    expect(mockDisconnect).toHaveBeenCalledTimes(1)
+    expect(store.getTeamStreamRecoveryNotice('team-recovery-commit')).toBeNull()
+  })
+
+  it('preserves failed entries and notice when the candidate handshake rejects', async () => {
+    const failed = twoMemberTeam({ teamRunId: 'team-recovery-reject' })
+    setActiveTeam(failed)
+    const store = useAgentTeamRunStore()
+    store.connectToTeamStream('team-recovery-reject')
+    ;(mockServiceOptions.value as { onStreamRecoveryRequired(notice: unknown): void }).onStreamRecoveryRequired({
+      kind: 'team_stream_recovery_required', rootTeamRunId: 'team-recovery-reject',
+    })
+    mockIsReopenRequired.value = true
+    mockConnectCandidate.mockRejectedValueOnce(new Error('snapshot mismatch'))
+    const candidate = twoMemberTeam({ teamRunId: 'team-recovery-reject' })
+
+    await expect(store.replaceFailedTeamStream({
+      rootTeamRunId: 'team-recovery-reject',
+      candidateContext: candidate,
+      expectedBaseChangeSequence: 14,
+    })).rejects.toThrow('snapshot mismatch')
+
+    expect(teamContextsStoreMock.replaceTeamContext).not.toHaveBeenCalled()
+    expect(mockDisconnect).toHaveBeenCalledTimes(1)
+    expect(store.getTeamStreamRecoveryNotice('team-recovery-reject')).toEqual({
+      kind: 'team_stream_recovery_required', rootTeamRunId: 'team-recovery-reject',
+    })
   })
 
   it('terminates once, disconnects, and preserves an offline context for history restore', async () => {

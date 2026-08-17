@@ -58,7 +58,7 @@ export type TeamAgentStreamMessage = Exclude<TeamStreamServerMessage,
 export type TeamExecutionEffect =
   | Readonly<{ kind: 'dispatch_agent'; agentRunId: string; message: TeamAgentStreamMessage }>
   | Readonly<{ kind: 'record_team_token_usage'; agentRunId: string; details: TeamTokenUsageDetails }>
-  | Readonly<{ kind: 'snapshot_refresh_required' }>;
+  | Readonly<{ kind: 'team_stream_recovery_required' }>;
 
 export type TeamExecutionApplyResult =
   | Readonly<{ disposition: 'applied' | 'unchanged'; effects: readonly TeamExecutionEffect[] }>

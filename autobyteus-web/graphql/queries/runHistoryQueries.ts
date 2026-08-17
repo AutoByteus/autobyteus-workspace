@@ -197,6 +197,16 @@ export const GetTeamRunResumeConfig = gql`
   }
 `;
 
+export const GetTeamRunExecutionCheckpoint = gql`
+  query GetTeamRunExecutionCheckpoint($teamRunId: String!) {
+    getTeamRunExecutionCheckpoint(teamRunId: $teamRunId) {
+      rootTeamRunId
+      changeSequence
+      hasOpenExecutionWork
+    }
+  }
+`;
+
 export const GetTeamMemberRunProjection = gql`
   query GetTeamMemberRunProjection($teamRunId: String!, $agentRunId: String!) {
     getTeamMemberRunProjection(teamRunId: $teamRunId, agentRunId: $agentRunId) {

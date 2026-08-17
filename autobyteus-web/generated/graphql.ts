@@ -1715,6 +1715,7 @@ export type Query = {
   getTeamMemberRunProjection: TeamMemberRunProjectionPayload;
   getTeamMemberSkillImprovementEligibility: GraphqlSkillImprovementEligibility;
   getTeamMemberTokenUsageSummary: TokenUsageRunSummaryGraphql;
+  getTeamRunExecutionCheckpoint: TeamRunExecutionCheckpointPayload;
   getTeamRunResumeConfig: TeamRunResumeConfigPayload;
   getTeamRunTokenUsageSummary: TokenUsageRunSummaryGraphql;
   getWorkingContextCompactionStrategies: Array<WorkingContextCompactionStrategyOption>;
@@ -1903,6 +1904,11 @@ export type QueryGetTeamMemberSkillImprovementEligibilityArgs = {
 
 export type QueryGetTeamMemberTokenUsageSummaryArgs = {
   agentRunId: Scalars['String']['input'];
+  teamRunId: Scalars['String']['input'];
+};
+
+
+export type QueryGetTeamRunExecutionCheckpointArgs = {
   teamRunId: Scalars['String']['input'];
 };
 
@@ -2421,6 +2427,13 @@ export type TeamRunResumeConfigPayload = {
   executionTree: Scalars['JSON']['output'];
   isActive: Scalars['Boolean']['output'];
   teamRunId: Scalars['String']['output'];
+};
+
+export type TeamRunExecutionCheckpointPayload = {
+  __typename?: 'TeamRunExecutionCheckpointPayload';
+  changeSequence: Scalars['Int']['output'];
+  hasOpenExecutionWork: Scalars['Boolean']['output'];
+  rootTeamRunId: Scalars['String']['output'];
 };
 
 export type TerminateAgentRunResult = {
@@ -3579,6 +3592,13 @@ export type GetTeamRunResumeConfigQueryVariables = Exact<{
 
 
 export type GetTeamRunResumeConfigQuery = { __typename?: 'Query', getTeamRunResumeConfig: { __typename?: 'TeamRunResumeConfigPayload', teamRunId: string, isActive: boolean, executionTree: any } };
+
+export type GetTeamRunExecutionCheckpointQueryVariables = Exact<{
+  teamRunId: Scalars['String']['input'];
+}>;
+
+
+export type GetTeamRunExecutionCheckpointQuery = { __typename?: 'Query', getTeamRunExecutionCheckpoint: { __typename?: 'TeamRunExecutionCheckpointPayload', rootTeamRunId: string, changeSequence: number, hasOpenExecutionWork: boolean } };
 
 export type GetTeamMemberRunProjectionQueryVariables = Exact<{
   teamRunId: Scalars['String']['input'];
@@ -8435,6 +8455,29 @@ export function useGetTeamRunResumeConfigLazyQuery(variables?: GetTeamRunResumeC
   return VueApolloComposable.useLazyQuery<GetTeamRunResumeConfigQuery, GetTeamRunResumeConfigQueryVariables>(GetTeamRunResumeConfigDocument, variables, options);
 }
 export type GetTeamRunResumeConfigQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetTeamRunResumeConfigQuery, GetTeamRunResumeConfigQueryVariables>;
+export const GetTeamRunExecutionCheckpointDocument = gql`
+    query GetTeamRunExecutionCheckpoint($teamRunId: String!) {
+  getTeamRunExecutionCheckpoint(teamRunId: $teamRunId) {
+    rootTeamRunId
+    changeSequence
+    hasOpenExecutionWork
+  }
+}
+    `;
+
+/**
+ * __useGetTeamRunExecutionCheckpointQuery__
+ *
+ * To run a query within a Vue component, call `useGetTeamRunExecutionCheckpointQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTeamRunExecutionCheckpointQuery` returns an object from Apollo Client that contains result, loading and error properties.
+ */
+export function useGetTeamRunExecutionCheckpointQuery(variables: GetTeamRunExecutionCheckpointQueryVariables | VueCompositionApi.Ref<GetTeamRunExecutionCheckpointQueryVariables> | ReactiveFunction<GetTeamRunExecutionCheckpointQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetTeamRunExecutionCheckpointQuery, GetTeamRunExecutionCheckpointQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetTeamRunExecutionCheckpointQuery, GetTeamRunExecutionCheckpointQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetTeamRunExecutionCheckpointQuery, GetTeamRunExecutionCheckpointQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetTeamRunExecutionCheckpointQuery, GetTeamRunExecutionCheckpointQueryVariables>(GetTeamRunExecutionCheckpointDocument, variables, options);
+}
+export function useGetTeamRunExecutionCheckpointLazyQuery(variables?: GetTeamRunExecutionCheckpointQueryVariables | VueCompositionApi.Ref<GetTeamRunExecutionCheckpointQueryVariables> | ReactiveFunction<GetTeamRunExecutionCheckpointQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetTeamRunExecutionCheckpointQuery, GetTeamRunExecutionCheckpointQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetTeamRunExecutionCheckpointQuery, GetTeamRunExecutionCheckpointQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetTeamRunExecutionCheckpointQuery, GetTeamRunExecutionCheckpointQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetTeamRunExecutionCheckpointQuery, GetTeamRunExecutionCheckpointQueryVariables>(GetTeamRunExecutionCheckpointDocument, variables, options);
+}
+export type GetTeamRunExecutionCheckpointQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetTeamRunExecutionCheckpointQuery, GetTeamRunExecutionCheckpointQueryVariables>;
 export const GetTeamMemberRunProjectionDocument = gql`
     query GetTeamMemberRunProjection($teamRunId: String!, $agentRunId: String!) {
   getTeamMemberRunProjection(teamRunId: $teamRunId, agentRunId: $agentRunId) {

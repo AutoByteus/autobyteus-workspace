@@ -28,6 +28,14 @@
       </div>
     </div>
 
+    <div
+      v-if="streamRecoveryNotice"
+      role="alert"
+      class="mx-3 mt-3 rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-sm leading-5 text-amber-900 sm:mx-4"
+    >
+      {{ $t('workspace.components.workspace.team.TeamWorkspaceView.stream_recovery_required') }}
+    </div>
+
     <div v-if="activeTeamContext" class="flex min-h-0 flex-grow flex-col">
       <div class="min-h-0 flex-grow">
         <AgentTeamEventMonitor>
@@ -52,6 +60,7 @@ import { computed, onMounted, ref, watch } from 'vue';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
+import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
 import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useWorkspaceCenterViewStore } from '~/stores/workspaceCenterViewStore';
@@ -66,6 +75,7 @@ import { buildEditableTeamRunSeed } from '~/composables/useDefinitionLaunchDefau
 const teamContextsStore = useAgentTeamContextsStore();
 const agentDefinitionStore = useAgentDefinitionStore();
 const teamRunConfigStore = useTeamRunConfigStore();
+const agentTeamRunStore = useAgentTeamRunStore();
 const agentRunConfigStore = useAgentRunConfigStore();
 const selectionStore = useAgentSelectionStore();
 const workspaceCenterViewStore = useWorkspaceCenterViewStore();
@@ -74,6 +84,10 @@ const { getMemberAvatarUrl, getMemberDisplayName, getMemberInitials } = useTeamM
 const RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID = 'autobyteus-retrospective-skill-improver';
 
 const activeTeamContext = computed(() => teamContextsStore.activeTeamContext);
+const streamRecoveryNotice = computed(() => {
+  const rootTeamRunId = activeTeamContext.value?.view.getRootTeamRunId();
+  return rootTeamRunId ? agentTeamRunStore.getTeamStreamRecoveryNotice(rootTeamRunId) : null;
+});
 const focusedMemberContext = computed(() => activeTeamContext.value?.view.getFocusedAgentContext() ?? null);
 const focusedMemberAddress = computed(() => activeTeamContext.value?.view.getFocusedMemberAddress() ?? '');
 const headerStatus = computed(() => focusedMemberContext.value?.state.currentStatus ?? null);

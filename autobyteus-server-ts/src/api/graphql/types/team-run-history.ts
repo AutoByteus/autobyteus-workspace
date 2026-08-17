@@ -1,9 +1,10 @@
-import { Arg, Field, Mutation, ObjectType, Query, Resolver } from "type-graphql";
+import { Arg, Field, Int, Mutation, ObjectType, Query, Resolver } from "type-graphql";
 import { GraphQLJSON } from "graphql-scalars";
 import { getTeamRunHistoryService } from "../../../run-history/services/team-run-history-service.js";
 import { getTeamMemberRunViewProjectionService } from "../../../run-history/services/team-member-run-view-projection-service.js";
 import { EventMonitorActiveTracePageObject } from "./event-monitor-active-trace-page.js";
 import { projectExecutionTree } from "../../../services/agent-streaming/team-execution-view-projector.js";
+import { getAgentTeamRunManager } from "../../../agent-team-execution/services/agent-team-run-manager.js";
 
 @ObjectType()
 class TeamRunResumeConfigPayload {
@@ -36,6 +37,18 @@ class TeamMemberRunProjectionPayload {
 
   @Field(() => Boolean)
   hasEarlierActiveTraceEvents!: boolean;
+}
+
+@ObjectType()
+class TeamRunExecutionCheckpointPayload {
+  @Field(() => String)
+  rootTeamRunId!: string;
+
+  @Field(() => Int)
+  changeSequence!: number;
+
+  @Field(() => Boolean)
+  hasOpenExecutionWork!: boolean;
 }
 
 @ObjectType()
@@ -87,6 +100,15 @@ export class TeamRunHistoryResolver {
       lastActivityAt: projection.lastActivityAt,
       hasEarlierActiveTraceEvents: projection.hasEarlierActiveTraceEvents,
     };
+  }
+
+  @Query(() => TeamRunExecutionCheckpointPayload)
+  getTeamRunExecutionCheckpoint(
+    @Arg("teamRunId", () => String) teamRunId: string,
+  ): TeamRunExecutionCheckpointPayload {
+    const root = getAgentTeamRunManager().getTeamRun(teamRunId);
+    if (!root) throw new Error(`Active RootTeamRun '${teamRunId}' was not found.`);
+    return root.getExecutionCheckpoint();
   }
 
   @Query(() => EventMonitorActiveTracePageObject)

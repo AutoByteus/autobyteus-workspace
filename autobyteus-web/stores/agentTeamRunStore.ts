@@ -9,6 +9,7 @@ import { useContextFileUploadStore } from '~/stores/contextFileUploadStore';
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { ConnectionState, TeamStreamingService } from '~/services/agentStreaming';
+import type { TeamStreamRecoveryNotice } from '~/services/agentStreaming/TeamStreamingService';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import type { ContextAttachment } from '~/types/conversation';
 import { AgentStatus } from '~/types/agent/AgentStatus';
@@ -74,12 +75,17 @@ const transferDraftPendingInputs = (
 };
 
 export const useAgentTeamRunStore = defineStore('agentTeamRun', {
-  state: () => ({ stopPendingTeamIds: {} as Record<string, boolean> }),
+  state: () => ({
+    stopPendingTeamIds: {} as Record<string, boolean>,
+    streamRecoveryNoticesByRootTeamRunId: {} as Record<string, TeamStreamRecoveryNotice>,
+  }),
   getters: {
     hasDraftLaunchInFlight: (): boolean => useTeamRunConfigStore().hasInFlightLaunch,
     isDraftLaunchPending: () => (draftId: TeamLaunchDraft['draftId'] | null): boolean => (
       useTeamRunConfigStore().isDraftLaunchInFlight(draftId)
     ),
+    getTeamStreamRecoveryNotice: (state) => (rootTeamRunId: string): TeamStreamRecoveryNotice | null =>
+      state.streamRecoveryNoticesByRootTeamRunId[rootTeamRunId] ?? null,
   },
   actions: {
     connectToTeamStream(rootTeamRunId: string): TeamStreamingService | null {
@@ -87,6 +93,7 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
       if (!context || context.view.getRootTeamRunId() !== rootTeamRunId) return null;
       const existing = teamStreamingServices.get(rootTeamRunId);
       if (existing) {
+        if (existing.isReopenRequired) return existing;
         existing.attachContext(context);
         if (existing.connectionState === ConnectionState.DISCONNECTED) existing.connect(rootTeamRunId, context);
         return existing;
@@ -95,15 +102,27 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
       const service = new TeamStreamingService(wsEndpoint, {
         onInterruptCommandResult: showInterruptCommandResult,
         onInterruptCommandTransportFailure: showInterruptTransportFailure,
+        onStreamRecoveryRequired: (notice) => {
+          this.streamRecoveryNoticesByRootTeamRunId = {
+            ...this.streamRecoveryNoticesByRootTeamRunId,
+            [notice.rootTeamRunId]: notice,
+          };
+        },
       });
       teamStreamingServices.set(rootTeamRunId, service);
       service.connect(rootTeamRunId, context);
       return service;
     },
     isTeamStreamReady(rootTeamRunId: string): boolean { return teamStreamingServices.get(rootTeamRunId)?.isReady ?? false; },
+    isTeamStreamReopenRequired(rootTeamRunId: string): boolean {
+      return teamStreamingServices.get(rootTeamRunId)?.isReopenRequired ?? false;
+    },
     async ensureTeamStreamConnected(rootTeamRunId: string): Promise<TeamStreamingService> {
       const service = this.connectToTeamStream(rootTeamRunId);
       if (!service) throw new Error(`Unable to connect Team stream for '${rootTeamRunId}'.`);
+      if (service.isReopenRequired) {
+        throw new Error('TEAM_STREAM_REOPEN_REQUIRED: Select this Team member again to reload the complete conversation.');
+      }
       const timeoutAt = Date.now() + 10_000;
       while (Date.now() < timeoutAt) {
         if (service.connectionState === ConnectionState.CONNECTED && service.isReady) return service;
@@ -111,10 +130,69 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
       }
       throw new Error(`Timed out waiting for Team stream handshake for '${rootTeamRunId}'.`);
     },
+    async replaceFailedTeamStream(input: {
+      rootTeamRunId: string;
+      candidateContext: AgentTeamContext;
+      expectedBaseChangeSequence: number;
+    }): Promise<TeamStreamingService> {
+      const previousService = teamStreamingServices.get(input.rootTeamRunId);
+      const contexts = useAgentTeamContextsStore();
+      const previousContext = contexts.getTeamContextById(input.rootTeamRunId);
+      if (!previousService?.isReopenRequired || !previousContext) {
+        throw new Error(`Team stream '${input.rootTeamRunId}' is not awaiting recovery.`);
+      }
+      if (input.candidateContext.view.getRootTeamRunId() !== input.rootTeamRunId) {
+        throw new Error('Candidate Team context root identity mismatch.');
+      }
+      const wsEndpoint = useWindowNodeContextStore().getBoundEndpoints().teamWs;
+      const candidate = new TeamStreamingService(wsEndpoint, {
+        onInterruptCommandResult: showInterruptCommandResult,
+        onInterruptCommandTransportFailure: showInterruptTransportFailure,
+        onStreamRecoveryRequired: (notice) => {
+          this.streamRecoveryNoticesByRootTeamRunId = {
+            ...this.streamRecoveryNoticesByRootTeamRunId,
+            [notice.rootTeamRunId]: notice,
+          };
+        },
+      });
+      let timeout: ReturnType<typeof setTimeout> | null = null;
+      try {
+        await Promise.race([
+          candidate.connectCandidate(
+            input.rootTeamRunId,
+            input.candidateContext,
+            input.expectedBaseChangeSequence,
+          ),
+          new Promise<never>((_resolve, reject) => {
+            timeout = setTimeout(() => reject(new Error(`Timed out waiting for recovery snapshot for '${input.rootTeamRunId}'.`)), 10_000);
+          }),
+        ]);
+        if (teamStreamingServices.get(input.rootTeamRunId) !== previousService
+          || contexts.getTeamContextById(input.rootTeamRunId) !== previousContext
+          || !previousService.isReopenRequired) {
+          throw new Error(`Team stream '${input.rootTeamRunId}' changed before recovery commit.`);
+        }
+        contexts.replaceTeamContext(input.rootTeamRunId, previousContext, input.candidateContext);
+        teamStreamingServices.set(input.rootTeamRunId, candidate);
+        const notices = { ...this.streamRecoveryNoticesByRootTeamRunId };
+        delete notices[input.rootTeamRunId];
+        this.streamRecoveryNoticesByRootTeamRunId = notices;
+        previousService.disconnect();
+        return candidate;
+      } catch (error) {
+        candidate.disconnect();
+        throw error;
+      } finally {
+        if (timeout) clearTimeout(timeout);
+      }
+    },
     disconnectTeamStream(rootTeamRunId: string): void {
       const service = teamStreamingServices.get(rootTeamRunId);
       if (!service) return;
       service.disconnect(); teamStreamingServices.delete(rootTeamRunId);
+      const notices = { ...this.streamRecoveryNoticesByRootTeamRunId };
+      delete notices[rootTeamRunId];
+      this.streamRecoveryNoticesByRootTeamRunId = notices;
     },
     async terminateTeamRun(rootTeamRunId: string): Promise<boolean> {
       const team = useAgentTeamContextsStore().getTeamContextById(rootTeamRunId);

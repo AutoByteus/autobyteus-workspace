@@ -8,6 +8,10 @@ import { validateTaskDelegationRecordsV1Payload } from "../../../../src/agent-te
 import { validateTeamRunExecutionTreePayload } from "../../../../src/run-history/store/team-run-execution-tree-schema.js";
 import { validateTeamCommunicationMessagesV1Payload } from "../../../../src/services/team-communication/team-communication-v1-schema.js";
 import { projectSequencedTeamRunEvent, projectTeamExecutionViewSnapshot } from "../../../../src/services/agent-streaming/team-execution-view-projector.js";
+import {
+  projectLiveTeamAgentStatusMessage,
+  projectTeamAgentStatusSnapshotDto,
+} from "../../../../src/services/agent-streaming/team-agent-status-websocket-projector.js";
 
 const scenarioDir = path.resolve(
   process.cwd(),
@@ -70,6 +74,74 @@ describe("Team execution view strict projection", () => {
           status: "running",
         })],
       },
+    });
+  });
+
+  it("keeps snapshot placement identity out of the exact live status payload", () => {
+    const status = createTeamAgentStatusSnapshot({
+      execution: createTeamAgentExecutionBinding({
+        rootTeamRunId: "team-run-root",
+        memberAddress: "/qa/automation/tester",
+        agentRunId: "nested-task-agent-run-001",
+      }),
+      details: createTeamAgentStatusDetails({ status: "running", trigger: "turn_started" }),
+    });
+
+    expect(projectTeamAgentStatusSnapshotDto(status)).toEqual({
+      agent_run_id: "nested-task-agent-run-001",
+      member_address: "/qa/automation/tester",
+      status: "running",
+      trigger: "turn_started",
+      tool_name: null,
+      error_message: null,
+      error_details: null,
+    });
+    expect(projectLiveTeamAgentStatusMessage(status, 18)).toEqual({
+      type: "AGENT_STATUS",
+      payload: {
+        change_sequence: 18,
+        agent_run_id: "nested-task-agent-run-001",
+        status: "running",
+        trigger: "turn_started",
+        tool_name: null,
+        error_message: null,
+        error_details: null,
+      },
+    });
+  });
+
+  it("projects live status and the following Agent event contiguously through strict admission", () => {
+    const execution = createTeamAgentExecutionBinding({
+      rootTeamRunId: "team-run-root",
+      memberAddress: "/qa/automation/tester",
+      agentRunId: "nested-task-agent-run-001",
+    });
+    expect(projectSequencedTeamRunEvent(root as never, {
+      changeSequence: 22,
+      event: {
+        eventSourceType: TeamRunEventSourceType.AGENT,
+        execution,
+        payload: {
+          eventType: "AGENT_STATUS",
+          statusHint: "running",
+          details: createTeamAgentStatusDetails({ status: "running", trigger: "turn_started" }),
+        },
+      },
+    })).toMatchObject({ type: "AGENT_STATUS", payload: { change_sequence: 22 } });
+    expect(projectSequencedTeamRunEvent(root as never, {
+      changeSequence: 23,
+      event: {
+        eventSourceType: TeamRunEventSourceType.AGENT,
+        execution,
+        payload: {
+          eventType: "TURN_STARTED",
+          statusHint: "running",
+          details: { turnId: "turn-1" },
+        },
+      },
+    })).toEqual({
+      type: "TURN_STARTED",
+      payload: { change_sequence: 23, agent_run_id: execution.agentRunId, turn_id: "turn-1" },
     });
   });
 

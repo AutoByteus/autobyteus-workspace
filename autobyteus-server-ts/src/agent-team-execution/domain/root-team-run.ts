@@ -45,6 +45,12 @@ export type RootTeamRunPackageSnapshot = Readonly<{
   statuses: readonly TeamAgentStatusSnapshot[];
 }>;
 
+export type TeamRunExecutionCheckpoint = Readonly<{
+  rootTeamRunId: string;
+  changeSequence: number;
+  hasOpenExecutionWork: boolean;
+}>;
+
 type RootLifecycleState = "active" | "persistence_fail_stop" | "terminating" | "terminated";
 
 /** The sole public operation boundary for one rooted Team execution. */
@@ -117,6 +123,13 @@ export class RootTeamRun {
   isActive(): boolean { return this.lifecycle === "active" && this.options.rootRun.isActive(); }
   hasOpenExecutionWork(): boolean {
     return this.taskDelegation.hasOpenWork() || this.options.rootRun.hasOpenExecutionWork();
+  }
+  getExecutionCheckpoint(): TeamRunExecutionCheckpoint {
+    return Object.freeze({
+      rootTeamRunId: this.teamRunId,
+      changeSequence: this.options.publisher.getCurrentChangeSequence(),
+      hasOpenExecutionWork: this.hasOpenExecutionWork(),
+    });
   }
   getLeafAgentStatusSnapshots(): readonly TeamAgentStatusSnapshot[] {
     return this.options.rootRun.getLeafAgentStatusSnapshots();

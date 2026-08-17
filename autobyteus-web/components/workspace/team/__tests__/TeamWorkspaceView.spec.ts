@@ -5,8 +5,8 @@ import { AgentStatus } from '~/types/agent/AgentStatus';
 import { buildTestTeamContext, testAgentNode, testSubTeamNode } from '~/test-support/currentTeamTestFixtures';
 
 const { state, teamContextsStoreMock, agentDefinitionStoreMock, teamRunConfigStoreMock,
-  agentRunConfigStoreMock, selectionStoreMock, workspaceCenterViewStoreMock } = vi.hoisted(() => {
-  const localState = { activeTeamContext: null as any };
+  agentRunConfigStoreMock, selectionStoreMock, workspaceCenterViewStoreMock, agentTeamRunStoreMock } = vi.hoisted(() => {
+  const localState = { activeTeamContext: null as any, recoveryNotice: null as any };
   return {
     state: localState,
     teamContextsStoreMock: { get activeTeamContext() { return localState.activeTeamContext; } },
@@ -21,6 +21,9 @@ const { state, teamContextsStoreMock, agentDefinitionStoreMock, teamRunConfigSto
     agentRunConfigStoreMock: { clearConfig: vi.fn() },
     selectionStoreMock: { clearSelection: vi.fn() },
     workspaceCenterViewStoreMock: { showConfig: vi.fn() },
+    agentTeamRunStoreMock: {
+      getTeamStreamRecoveryNotice: vi.fn(() => localState.recoveryNotice),
+    },
   };
 });
 
@@ -30,6 +33,7 @@ vi.mock('~/stores/teamRunConfigStore', () => ({ useTeamRunConfigStore: () => tea
 vi.mock('~/stores/agentRunConfigStore', () => ({ useAgentRunConfigStore: () => agentRunConfigStoreMock }));
 vi.mock('~/stores/agentSelectionStore', () => ({ useAgentSelectionStore: () => selectionStoreMock }));
 vi.mock('~/stores/workspaceCenterViewStore', () => ({ useWorkspaceCenterViewStore: () => workspaceCenterViewStoreMock }));
+vi.mock('~/stores/agentTeamRunStore', () => ({ useAgentTeamRunStore: () => agentTeamRunStoreMock }));
 
 const buildAgent = (address: string, displayName: string, agentRunId: string, agentDefinitionId: string) =>
   testAgentNode(address, { displayName, agentRunId, agentDefinitionId });
@@ -49,10 +53,16 @@ describe('TeamWorkspaceView current aggregate', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     state.activeTeamContext = buildTeamContext();
+    state.recoveryNotice = null;
+    agentTeamRunStoreMock.getTeamStreamRecoveryNotice.mockImplementation(() => state.recoveryNotice);
   });
 
   const mountComponent = () => mount(TeamWorkspaceView, {
-    global: { stubs: {
+    global: { mocks: {
+      $t: (key: string) => key === 'workspace.components.workspace.team.TeamWorkspaceView.stream_recovery_required'
+        ? 'Live Team updates are out of sync. Wait for the Team to finish its current work, then select this Team member again to reload the complete conversation.'
+        : key,
+    }, stubs: {
       AgentTeamEventMonitor: { template: '<div data-test="team-event-monitor"><slot name="composerContext" /></div>' },
       SkillImprovementComposerCta: {
         props: ['target'],
@@ -83,6 +93,14 @@ describe('TeamWorkspaceView current aggregate', () => {
     const wrapper = mountComponent();
     expect(wrapper.find('h4').text()).toBe('Student');
     expect(wrapper.get('[data-test="header-status"]').text()).toBe(AgentStatus.Initializing);
+  });
+
+  it('renders persistent actionable guidance while the selected Team stream requires recovery', () => {
+    state.recoveryNotice = { kind: 'team_stream_recovery_required', rootTeamRunId: 'team-1' };
+    const wrapper = mountComponent();
+    expect(wrapper.get('[role="alert"]').text()).toBe(
+      'Live Team updates are out of sync. Wait for the Team to finish its current work, then select this Team member again to reload the complete conversation.',
+    );
   });
 
   it('rejects an unresolved initial AgentRun focus instead of substituting another identity', () => {

@@ -1,0 +1,15 @@
+{
+  "snapshotDto": {
+    "agent_run_id": "professor-run-proof",
+    "member_address": "/professor",
+    "status": "running",
+    "trigger": "turn_started",
+    "tool_name": null,
+    "error_message": null,
+    "error_details": null
+  },
+  "liveProjection": {
+    "accepted": false,
+    "error": "[\n  {\n    \"code\": \"unrecognized_keys\",\n    \"keys\": [\n      \"member_address\"\n    ],\n    \"path\": [\n      \"payload\"\n    ],\n    \"message\": \"Unrecognized key: \\\"member_address\\\"\"\n  }\n]"
+  }
+}

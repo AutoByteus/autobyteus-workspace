@@ -108,6 +108,12 @@ export interface TeamRunResumeConfigPayload {
   executionTree: TeamRunExecutionTreeDto;
 }
 
+export interface TeamRunExecutionCheckpointPayload {
+  rootTeamRunId: string;
+  changeSequence: number;
+  hasOpenExecutionWork: boolean;
+}
+
 export interface TeamMemberTreeRow {
   teamRunId: string;
   kind: 'agent' | 'agent_team';
@@ -201,6 +207,10 @@ export interface GetTeamRunResumeConfigQueryData {
     isActive: boolean;
     executionTree: unknown;
   };
+}
+
+export interface GetTeamRunExecutionCheckpointQueryData {
+  getTeamRunExecutionCheckpoint: TeamRunExecutionCheckpointPayload;
 }
 
 export interface DeleteStoredRunMutationData {

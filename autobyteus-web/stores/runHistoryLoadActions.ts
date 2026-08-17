@@ -215,15 +215,18 @@ export const reconcileDiscoveredActiveRuns = async (
     const existingTeamContext = teamContextsStore.getTeamContextById(teamRunId);
     if (existingTeamContext) {
       existingTeamContext.view.setRootTeamActive(true);
+      const streamReopenRequired = agentTeamRunStore.isTeamStreamReopenRequired(teamRunId);
       const streamConnected = agentTeamRunStore.isTeamStreamReady(teamRunId);
-      existingTeamContext.view.listAgentContextEntries().forEach(({ agentContext }) => {
-        agentContext.config.isLocked = true;
-        applyActiveRuntimePlaceholder(agentContext, {
-          preserveExistingLive: true,
-          streamConnected,
+      if (!streamReopenRequired) {
+        existingTeamContext.view.listAgentContextEntries().forEach(({ agentContext }) => {
+          agentContext.config.isLocked = true;
+          applyActiveRuntimePlaceholder(agentContext, {
+            preserveExistingLive: true,
+            streamConnected,
+          });
         });
-      });
-      if (!streamConnected) {
+      }
+      if (!streamConnected && !streamReopenRequired) {
         agentTeamRunStore.connectToTeamStream(teamRunId);
       }
       continue;

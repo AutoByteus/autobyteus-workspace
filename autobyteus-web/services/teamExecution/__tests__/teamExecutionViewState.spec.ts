@@ -217,8 +217,26 @@ describe('TeamExecutionViewState', () => {
         execution: { agent_run_id: 'unseen-run' },
       }),
     }));
-    expect(gap).toMatchObject({ disposition: 'rejected', code: 'TEAM_EXECUTION_CHANGE_SEQUENCE_GAP' });
-    expect(state.needsSnapshotRefresh()).toBe(true);
+    expect(gap).toMatchObject({
+      disposition: 'rejected',
+      code: 'TEAM_EXECUTION_CHANGE_SEQUENCE_GAP',
+      effects: [{ kind: 'team_stream_recovery_required' }],
+    });
+    expect(state.needsStreamRecovery()).toBe(true);
+
+    const later = state.applyMessage(taskEvent({
+      event_type: 'TASK_CHANGED', change_sequence: 1,
+      task: task({
+        taskId: 'later', delegatorAgentRunId: 'teacher-run', recipientAddress: '/StudentStudyGroup/Student',
+        execution: { agent_run_id: 'later-run' },
+      }),
+    }));
+    expect(later).toMatchObject({
+      disposition: 'rejected',
+      code: 'TEAM_EXECUTION_STREAM_RECOVERY_REQUIRED',
+      effects: [],
+    });
+    expect(state.listTaskHistoryRows()).toEqual([]);
 
     const invalidSnapshot = {
       type: 'TEAM_EXECUTION_VIEW_SNAPSHOT' as const,

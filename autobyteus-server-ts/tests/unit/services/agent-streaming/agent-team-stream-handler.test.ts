@@ -8,6 +8,8 @@ import { validateTaskDelegationRecordsV1Payload } from "../../../../src/agent-te
 import { validateTeamRunExecutionTreePayload } from "../../../../src/run-history/store/team-run-execution-tree-schema.js";
 import { validateTeamCommunicationMessagesV1Payload } from "../../../../src/services/team-communication/team-communication-v1-schema.js";
 import { TeamRunEventSourceType } from "../../../../src/agent-team-execution/domain/team-run-event.js";
+import { createTeamAgentExecutionBinding } from "../../../../src/agent-team-execution/domain/team-agent-execution-binding.js";
+import { createTeamAgentStatusDetails } from "../../../../src/agent-team-execution/domain/team-agent-status.js";
 
 const scenarioDir = path.resolve(
   process.cwd(),
@@ -84,18 +86,57 @@ describe("AgentTeamStreamHandler current root stream", () => {
     });
   });
 
-  it("streams sequenced current events after the snapshot barrier", async () => {
+  it("streams strict live status N and the following Agent event N+1 after the snapshot barrier", async () => {
     const harness = createHarness();
     const sessionId = await harness.handler.connect(harness.connection, "team-run-root");
     sessions.push({ handler: harness.handler, id: sessionId! });
+    const execution = createTeamAgentExecutionBinding({
+      rootTeamRunId: "team-run-root",
+      memberAddress: "/qa/automation/tester",
+      agentRunId: "nested-task-agent-run-001",
+    });
     harness.emit({
       changeSequence: 32,
-      event: { eventSourceType: TeamRunEventSourceType.COMMUNICATION, payload: messages.messages[0] },
+      event: {
+        eventSourceType: TeamRunEventSourceType.AGENT,
+        execution,
+        payload: {
+          eventType: "AGENT_STATUS",
+          statusHint: "running",
+          details: createTeamAgentStatusDetails({ status: "running", trigger: "turn_started" }),
+        },
+      },
     });
-    expect(sent(harness.connection).at(-1)).toMatchObject({
-      type: "TEAM_COMMUNICATION_MESSAGE",
-      payload: { change_sequence: 32, message: { message_id: "message-010" } },
+    harness.emit({
+      changeSequence: 33,
+      event: {
+        eventSourceType: TeamRunEventSourceType.AGENT,
+        execution,
+        payload: { eventType: "TURN_STARTED", statusHint: "running", details: { turnId: "turn-1" } },
+      },
     });
+    expect(sent(harness.connection).slice(-2)).toEqual([
+      {
+        type: "AGENT_STATUS",
+        payload: {
+          change_sequence: 32,
+          agent_run_id: "nested-task-agent-run-001",
+          status: "running",
+          trigger: "turn_started",
+          tool_name: null,
+          error_message: null,
+          error_details: null,
+        },
+      },
+      {
+        type: "TURN_STARTED",
+        payload: {
+          change_sequence: 33,
+          agent_run_id: "nested-task-agent-run-001",
+          turn_id: "turn-1",
+        },
+      },
+    ]);
   });
 
   it("routes SEND_MESSAGE by the exact concrete AgentRun ID and records activity once", async () => {

@@ -1,0 +1,642 @@
+Source: autobyteus-server-ts/tests/.tmp/agent-team-codex-output-not-visible-20260817-1/logs/server.log
+Captured: 2026-08-17
+Filter: strict TeamRun projection failures for live AGENT_STATUS payloads
+
+128:Error projecting TeamRun event: [
+129-  {
+130-    "code": "unrecognized_keys",
+131-    "keys": [
+132-      "member_address"
+133-    ],
+134-    "path": [
+135-      "payload"
+136-    ],
+137-    "message": "Unrecognized key: \"member_address\""
+138-  }
+139-]
+140:Error projecting TeamRun event: [
+141-  {
+142-    "code": "unrecognized_keys",
+143-    "keys": [
+144-      "member_address"
+145-    ],
+146-    "path": [
+147-      "payload"
+148-    ],
+149-    "message": "Unrecognized key: \"member_address\""
+150-  }
+151-]
+--
+153:Error projecting TeamRun event: [
+154-  {
+155-    "code": "unrecognized_keys",
+156-    "keys": [
+157-      "member_address"
+158-    ],
+159-    "path": [
+160-      "payload"
+161-    ],
+162-    "message": "Unrecognized key: \"member_address\""
+163-  }
+164-]
+165:Error projecting TeamRun event: [
+166-  {
+167-    "code": "unrecognized_keys",
+168-    "keys": [
+169-      "member_address"
+170-    ],
+171-    "path": [
+172-      "payload"
+173-    ],
+174-    "message": "Unrecognized key: \"member_address\""
+175-  }
+176-]
+177:Error projecting TeamRun event: [
+178-  {
+179-    "code": "unrecognized_keys",
+180-    "keys": [
+181-      "member_address"
+182-    ],
+183-    "path": [
+184-      "payload"
+185-    ],
+186-    "message": "Unrecognized key: \"member_address\""
+187-  }
+188-]
+189:Error projecting TeamRun event: [
+190-  {
+191-    "code": "unrecognized_keys",
+192-    "keys": [
+193-      "member_address"
+194-    ],
+195-    "path": [
+196-      "payload"
+197-    ],
+198-    "message": "Unrecognized key: \"member_address\""
+199-  }
+200-]
+201:Error projecting TeamRun event: [
+202-  {
+203-    "code": "unrecognized_keys",
+204-    "keys": [
+205-      "member_address"
+206-    ],
+207-    "path": [
+208-      "payload"
+209-    ],
+210-    "message": "Unrecognized key: \"member_address\""
+211-  }
+212-]
+213:Error projecting TeamRun event: [
+214-  {
+215-    "code": "unrecognized_keys",
+216-    "keys": [
+217-      "member_address"
+218-    ],
+219-    "path": [
+220-      "payload"
+221-    ],
+222-    "message": "Unrecognized key: \"member_address\""
+223-  }
+224-]
+225:Error projecting TeamRun event: [
+226-  {
+227-    "code": "unrecognized_keys",
+228-    "keys": [
+229-      "member_address"
+230-    ],
+231-    "path": [
+232-      "payload"
+233-    ],
+234-    "message": "Unrecognized key: \"member_address\""
+235-  }
+236-]
+237:Error projecting TeamRun event: [
+238-  {
+239-    "code": "unrecognized_keys",
+240-    "keys": [
+241-      "member_address"
+242-    ],
+243-    "path": [
+244-      "payload"
+245-    ],
+246-    "message": "Unrecognized key: \"member_address\""
+247-  }
+248-]
+249:Error projecting TeamRun event: [
+250-  {
+251-    "code": "unrecognized_keys",
+252-    "keys": [
+253-      "member_address"
+254-    ],
+255-    "path": [
+256-      "payload"
+257-    ],
+258-    "message": "Unrecognized key: \"member_address\""
+259-  }
+260-]
+261:Error projecting TeamRun event: [
+262-  {
+263-    "code": "unrecognized_keys",
+264-    "keys": [
+265-      "member_address"
+266-    ],
+267-    "path": [
+268-      "payload"
+269-    ],
+270-    "message": "Unrecognized key: \"member_address\""
+271-  }
+272-]
+273:Error projecting TeamRun event: [
+274-  {
+275-    "code": "unrecognized_keys",
+276-    "keys": [
+277-      "member_address"
+278-    ],
+279-    "path": [
+280-      "payload"
+281-    ],
+282-    "message": "Unrecognized key: \"member_address\""
+283-  }
+284-]
+285:Error projecting TeamRun event: [
+286-  {
+287-    "code": "unrecognized_keys",
+288-    "keys": [
+289-      "member_address"
+290-    ],
+291-    "path": [
+292-      "payload"
+293-    ],
+294-    "message": "Unrecognized key: \"member_address\""
+295-  }
+296-]
+297:Error projecting TeamRun event: [
+298-  {
+299-    "code": "unrecognized_keys",
+300-    "keys": [
+301-      "member_address"
+302-    ],
+303-    "path": [
+304-      "payload"
+305-    ],
+306-    "message": "Unrecognized key: \"member_address\""
+307-  }
+308-]
+309:Error projecting TeamRun event: [
+310-  {
+311-    "code": "unrecognized_keys",
+312-    "keys": [
+313-      "member_address"
+314-    ],
+315-    "path": [
+316-      "payload"
+317-    ],
+318-    "message": "Unrecognized key: \"member_address\""
+319-  }
+320-]
+321:Error projecting TeamRun event: [
+322-  {
+323-    "code": "unrecognized_keys",
+324-    "keys": [
+325-      "member_address"
+326-    ],
+327-    "path": [
+328-      "payload"
+329-    ],
+330-    "message": "Unrecognized key: \"member_address\""
+331-  }
+332-]
+333:Error projecting TeamRun event: [
+334-  {
+335-    "code": "unrecognized_keys",
+336-    "keys": [
+337-      "member_address"
+338-    ],
+339-    "path": [
+340-      "payload"
+341-    ],
+342-    "message": "Unrecognized key: \"member_address\""
+343-  }
+344-]
+345:Error projecting TeamRun event: [
+346-  {
+347-    "code": "unrecognized_keys",
+348-    "keys": [
+349-      "member_address"
+350-    ],
+351-    "path": [
+352-      "payload"
+353-    ],
+354-    "message": "Unrecognized key: \"member_address\""
+355-  }
+356-]
+357:Error projecting TeamRun event: [
+358-  {
+359-    "code": "unrecognized_keys",
+360-    "keys": [
+361-      "member_address"
+362-    ],
+363-    "path": [
+364-      "payload"
+365-    ],
+366-    "message": "Unrecognized key: \"member_address\""
+367-  }
+368-]
+369:Error projecting TeamRun event: [
+370-  {
+371-    "code": "unrecognized_keys",
+372-    "keys": [
+373-      "member_address"
+374-    ],
+375-    "path": [
+376-      "payload"
+377-    ],
+378-    "message": "Unrecognized key: \"member_address\""
+379-  }
+380-]
+381:Error projecting TeamRun event: [
+382-  {
+383-    "code": "unrecognized_keys",
+384-    "keys": [
+385-      "member_address"
+386-    ],
+387-    "path": [
+388-      "payload"
+389-    ],
+390-    "message": "Unrecognized key: \"member_address\""
+391-  }
+392-]
+393:Error projecting TeamRun event: [
+394-  {
+395-    "code": "unrecognized_keys",
+396-    "keys": [
+397-      "member_address"
+398-    ],
+399-    "path": [
+400-      "payload"
+401-    ],
+402-    "message": "Unrecognized key: \"member_address\""
+403-  }
+404-]
+405:Error projecting TeamRun event: [
+406-  {
+407-    "code": "unrecognized_keys",
+408-    "keys": [
+409-      "member_address"
+410-    ],
+411-    "path": [
+412-      "payload"
+413-    ],
+414-    "message": "Unrecognized key: \"member_address\""
+415-  }
+416-]
+417:Error projecting TeamRun event: [
+418-  {
+419-    "code": "unrecognized_keys",
+420-    "keys": [
+421-      "member_address"
+422-    ],
+423-    "path": [
+424-      "payload"
+425-    ],
+426-    "message": "Unrecognized key: \"member_address\""
+427-  }
+428-]
+429:Error projecting TeamRun event: [
+430-  {
+431-    "code": "unrecognized_keys",
+432-    "keys": [
+433-      "member_address"
+434-    ],
+435-    "path": [
+436-      "payload"
+437-    ],
+438-    "message": "Unrecognized key: \"member_address\""
+439-  }
+440-]
+441:Error projecting TeamRun event: [
+442-  {
+443-    "code": "unrecognized_keys",
+444-    "keys": [
+445-      "member_address"
+446-    ],
+447-    "path": [
+448-      "payload"
+449-    ],
+450-    "message": "Unrecognized key: \"member_address\""
+451-  }
+452-]
+453:Error projecting TeamRun event: [
+454-  {
+455-    "code": "unrecognized_keys",
+456-    "keys": [
+457-      "member_address"
+458-    ],
+459-    "path": [
+460-      "payload"
+461-    ],
+462-    "message": "Unrecognized key: \"member_address\""
+463-  }
+464-]
+465:Error projecting TeamRun event: [
+466-  {
+467-    "code": "unrecognized_keys",
+468-    "keys": [
+469-      "member_address"
+470-    ],
+471-    "path": [
+472-      "payload"
+473-    ],
+474-    "message": "Unrecognized key: \"member_address\""
+475-  }
+476-]
+477:Error projecting TeamRun event: [
+478-  {
+479-    "code": "unrecognized_keys",
+480-    "keys": [
+481-      "member_address"
+482-    ],
+483-    "path": [
+484-      "payload"
+485-    ],
+486-    "message": "Unrecognized key: \"member_address\""
+487-  }
+488-]
+489:Error projecting TeamRun event: [
+490-  {
+491-    "code": "unrecognized_keys",
+492-    "keys": [
+493-      "member_address"
+494-    ],
+495-    "path": [
+496-      "payload"
+497-    ],
+498-    "message": "Unrecognized key: \"member_address\""
+499-  }
+500-]
+501:Error projecting TeamRun event: [
+502-  {
+503-    "code": "unrecognized_keys",
+504-    "keys": [
+505-      "member_address"
+506-    ],
+507-    "path": [
+508-      "payload"
+509-    ],
+510-    "message": "Unrecognized key: \"member_address\""
+511-  }
+512-]
+513:Error projecting TeamRun event: [
+514-  {
+515-    "code": "unrecognized_keys",
+516-    "keys": [
+517-      "member_address"
+518-    ],
+519-    "path": [
+520-      "payload"
+521-    ],
+522-    "message": "Unrecognized key: \"member_address\""
+523-  }
+524-]
+525:Error projecting TeamRun event: [
+526-  {
+527-    "code": "unrecognized_keys",
+528-    "keys": [
+529-      "member_address"
+530-    ],
+531-    "path": [
+532-      "payload"
+533-    ],
+534-    "message": "Unrecognized key: \"member_address\""
+535-  }
+536-]
+537:Error projecting TeamRun event: [
+538-  {
+539-    "code": "unrecognized_keys",
+540-    "keys": [
+541-      "member_address"
+542-    ],
+543-    "path": [
+544-      "payload"
+545-    ],
+546-    "message": "Unrecognized key: \"member_address\""
+547-  }
+548-]
+549:Error projecting TeamRun event: [
+550-  {
+551-    "code": "unrecognized_keys",
+552-    "keys": [
+553-      "member_address"
+554-    ],
+555-    "path": [
+556-      "payload"
+557-    ],
+558-    "message": "Unrecognized key: \"member_address\""
+559-  }
+560-]
+--
+567:Error projecting TeamRun event: [
+568-  {
+569-    "code": "unrecognized_keys",
+570-    "keys": [
+571-      "member_address"
+572-    ],
+573-    "path": [
+574-      "payload"
+575-    ],
+576-    "message": "Unrecognized key: \"member_address\""
+577-  }
+578-]
+579:Error projecting TeamRun event: [
+580-  {
+581-    "code": "unrecognized_keys",
+582-    "keys": [
+583-      "member_address"
+584-    ],
+585-    "path": [
+586-      "payload"
+587-    ],
+588-    "message": "Unrecognized key: \"member_address\""
+589-  }
+590-]
+591:Error projecting TeamRun event: [
+592-  {
+593-    "code": "unrecognized_keys",
+594-    "keys": [
+595-      "member_address"
+596-    ],
+597-    "path": [
+598-      "payload"
+599-    ],
+600-    "message": "Unrecognized key: \"member_address\""
+601-  }
+602-]
+603:Error projecting TeamRun event: [
+604-  {
+605-    "code": "unrecognized_keys",
+606-    "keys": [
+607-      "member_address"
+608-    ],
+609-    "path": [
+610-      "payload"
+611-    ],
+612-    "message": "Unrecognized key: \"member_address\""
+613-  }
+614-]
+615:Error projecting TeamRun event: [
+616-  {
+617-    "code": "unrecognized_keys",
+618-    "keys": [
+619-      "member_address"
+620-    ],
+621-    "path": [
+622-      "payload"
+623-    ],
+624-    "message": "Unrecognized key: \"member_address\""
+625-  }
+626-]
+627:Error projecting TeamRun event: [
+628-  {
+629-    "code": "unrecognized_keys",
+630-    "keys": [
+631-      "member_address"
+632-    ],
+633-    "path": [
+634-      "payload"
+635-    ],
+636-    "message": "Unrecognized key: \"member_address\""
+637-  }
+638-]
+639:Error projecting TeamRun event: [
+640-  {
+641-    "code": "unrecognized_keys",
+642-    "keys": [
+643-      "member_address"
+644-    ],
+645-    "path": [
+646-      "payload"
+647-    ],
+648-    "message": "Unrecognized key: \"member_address\""
+649-  }
+650-]
+651:Error projecting TeamRun event: [
+652-  {
+653-    "code": "unrecognized_keys",
+654-    "keys": [
+655-      "member_address"
+656-    ],
+657-    "path": [
+658-      "payload"
+659-    ],
+660-    "message": "Unrecognized key: \"member_address\""
+661-  }
+662-]
+663:Error projecting TeamRun event: [
+664-  {
+665-    "code": "unrecognized_keys",
+666-    "keys": [
+667-      "member_address"
+668-    ],
+669-    "path": [
+670-      "payload"
+671-    ],
+672-    "message": "Unrecognized key: \"member_address\""
+673-  }
+674-]
+675:Error projecting TeamRun event: [
+676-  {
+677-    "code": "unrecognized_keys",
+678-    "keys": [
+679-      "member_address"
+680-    ],
+681-    "path": [
+682-      "payload"
+683-    ],
+684-    "message": "Unrecognized key: \"member_address\""
+685-  }
+686-]
+687:Error projecting TeamRun event: [
+688-  {
+689-    "code": "unrecognized_keys",
+690-    "keys": [
+691-      "member_address"
+692-    ],
+693-    "path": [
+694-      "payload"
+695-    ],
+696-    "message": "Unrecognized key: \"member_address\""
+697-  }
+698-]
+699:Error projecting TeamRun event: [
+700-  {
+701-    "code": "unrecognized_keys",
+702-    "keys": [
+703-      "member_address"
+704-    ],
+705-    "path": [
+706-      "payload"
+707-    ],
+708-    "message": "Unrecognized key: \"member_address\""
+709-  }
+710-]
+711:Error projecting TeamRun event: [
+712-  {
+713-    "code": "unrecognized_keys",
+714-    "keys": [
+715-      "member_address"
+716-    ],
+717-    "path": [
+718-      "payload"
+719-    ],
+720-    "message": "Unrecognized key: \"member_address\""
+721-  }
+722-]
+723:Error projecting TeamRun event: [
+724-  {
+725-    "code": "unrecognized_keys",
+726-    "keys": [
+727-      "member_address"
+728-    ],
+729-    "path": [
+730-      "payload"
+731-    ],
+732-    "message": "Unrecognized key: \"member_address\""
+733-  }
+734-]
+735:Error projecting TeamRun event: [
+736-  {
+737-    "code": "unrecognized_keys",
+738-    "keys": [
+739-      "member_address"
+740-    ],
+741-    "path": [
+742-      "payload"
+743-    ],
+744-    "message": "Unrecognized key: \"member_address\""
+745-  }
+746-]
+747:Error projecting TeamRun event: [
+748-  {
+749-    "code": "unrecognized_keys",
+750-    "keys": [
+751-      "member_address"
+752-    ],
+753-    "path": [
+754-      "payload"
+755-    ],
+756-    "message": "Unrecognized key: \"member_address\""
+757-  }
+758-]
+759:Error projecting TeamRun event: [
+760-  {
+761-    "code": "unrecognized_keys",
+762-    "keys": [
+763-      "member_address"
+764-    ],
+765-    "path": [
+766-      "payload"
+767-    ],
+768-    "message": "Unrecognized key: \"member_address\""
+769-  }
+770-]

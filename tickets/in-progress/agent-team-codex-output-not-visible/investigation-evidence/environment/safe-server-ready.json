@@ -1,0 +1,11 @@
+{
+  "status": "READY",
+  "pid": 14814,
+  "serverUrl": "http://127.0.0.1:60417",
+  "runtimeRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/autobyteus-server-ts/tests/.tmp/agent-team-codex-output-not-visible-20260817-1",
+  "runtimeEnvironmentPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/autobyteus-server-ts/tests/.tmp/agent-team-codex-output-not-visible-20260817-1/.env",
+  "databasePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/autobyteus-server-ts/db/agent-team-codex-output-not-visible-20260817-1.db",
+  "lsofExactDisposableTarget": true,
+  "lsofOperationalTarget": false,
+  "protectedPortsTargeted": false
+}

@@ -25,7 +25,8 @@ import { TeamRunEventSourceType, type TeamRunEvent } from "../../agent-team-exec
 import type { SequencedRootEvent } from "../../agent-team-execution/services/team-run-event-publisher.js";
 import type { TaskDelegationRecordV1, TaskExecutionReference } from "../../agent-team-execution/task-delegation/task-delegation-record-v1.js";
 import type { TeamCommunicationMessageV1 } from "../../services/team-communication/team-communication-v1-types.js";
-import { projectTeamAgentEventMessage, projectTeamAgentStatusDto } from "./team-agent-event-websocket-projector.js";
+import { projectTeamAgentEventMessage } from "./team-agent-event-websocket-projector.js";
+import { projectTeamAgentStatusSnapshotDto } from "./team-agent-status-websocket-projector.js";
 import { projectTeamReferenceFile } from "../../agent-team-execution/services/team-reference-file-projection.js";
 
 const projectReference = (ownerId: string, filePath: string, timestamp: string): TeamReferenceFileDto => {
@@ -51,7 +52,7 @@ export const projectTeamExecutionViewSnapshot = (
     execution_tree: projectExecutionTree(snapshot.tree),
     tasks: snapshot.tasks.records.map(projectTaskRecord),
     messages: snapshot.messages.messages.map(projectCommunicationMessage),
-    agent_statuses: snapshot.statuses.map(projectTeamAgentStatusDto),
+    agent_statuses: snapshot.statuses.map(projectTeamAgentStatusSnapshotDto),
   },
 });
 

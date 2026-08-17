@@ -26,6 +26,27 @@ const createHarness = (state = 'connected') => {
     })],
   });
   service.connect('team-1', team);
+  callbacks.get('onMessage')?.(JSON.stringify({
+    type: 'CONNECTED', payload: { session_id: 'session-1', root_team_run_id: 'team-1' },
+  }));
+  callbacks.get('onMessage')?.(JSON.stringify({
+    type: 'TEAM_EXECUTION_VIEW_SNAPSHOT', payload: {
+      root_team_run_id: 'team-1',
+      base_change_sequence: 0,
+      execution_tree: team.view.getExecutionTree(),
+      tasks: team.view.listTaskHistoryRows().map((row) => row.task),
+      messages: [],
+      agent_statuses: team.view.listAgentContextEntries().map((entry) => ({
+        agent_run_id: entry.agentRunId,
+        member_address: entry.memberAddress,
+        status: 'idle',
+        trigger: null,
+        tool_name: null,
+        error_message: null,
+        error_details: null,
+      })),
+    },
+  }));
   return { callbacks, commandResults, service, wsClient };
 };
 

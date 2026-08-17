@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { openTeamRun } from '~/services/runOpen/teamRunOpenCoordinator'
+import { openTeamRun, reopenTeamRunAfterStreamLoss } from '~/services/runOpen/teamRunOpenCoordinator'
 import {
   buildTestTeamContext,
   testAgentNode,
@@ -8,20 +8,26 @@ import {
 
 const {
   hydrateLiveTeamRunContextMock,
+  hydrateTeamRunContextForStreamRecoveryMock,
   getTeamContextByIdMock,
   addTeamContextMock,
   connectToTeamStreamMock,
   disconnectTeamStreamMock,
+  isTeamStreamReopenRequiredMock,
+  replaceFailedTeamStreamMock,
   selectRunMock,
   selectRunWithoutShellNavigationMock,
   selectDraftMock,
   clearAgentRunConfigMock,
 } = vi.hoisted(() => ({
   hydrateLiveTeamRunContextMock: vi.fn(),
+  hydrateTeamRunContextForStreamRecoveryMock: vi.fn(),
   getTeamContextByIdMock: vi.fn(),
   addTeamContextMock: vi.fn(),
   connectToTeamStreamMock: vi.fn(),
   disconnectTeamStreamMock: vi.fn(),
+  isTeamStreamReopenRequiredMock: vi.fn(),
+  replaceFailedTeamStreamMock: vi.fn(),
   selectRunMock: vi.fn(),
   selectRunWithoutShellNavigationMock: vi.fn(),
   selectDraftMock: vi.fn(),
@@ -30,6 +36,7 @@ const {
 
 vi.mock('~/services/runHydration/teamRunContextHydrationService', () => ({
   hydrateLiveTeamRunContext: hydrateLiveTeamRunContextMock,
+  hydrateTeamRunContextForStreamRecovery: hydrateTeamRunContextForStreamRecoveryMock,
 }))
 vi.mock('~/stores/agentTeamContextsStore', () => ({
   useAgentTeamContextsStore: () => ({
@@ -41,6 +48,8 @@ vi.mock('~/stores/agentTeamRunStore', () => ({
   useAgentTeamRunStore: () => ({
     connectToTeamStream: connectToTeamStreamMock,
     disconnectTeamStream: disconnectTeamStreamMock,
+    isTeamStreamReopenRequired: isTeamStreamReopenRequiredMock,
+    replaceFailedTeamStream: replaceFailedTeamStreamMock,
   }),
 }))
 vi.mock('~/stores/agentSelectionStore', () => ({
@@ -85,7 +94,11 @@ const hydration = (team: ReturnType<typeof makeTeam>) => ({
 })
 
 describe('openTeamRun current exact execution identity', () => {
-  beforeEach(() => vi.clearAllMocks())
+  beforeEach(() => {
+    vi.clearAllMocks()
+    isTeamStreamReopenRequiredMock.mockReturnValue(true)
+    replaceFailedTeamStreamMock.mockResolvedValue(undefined)
+  })
 
   it('uses the existing exact focus as the hydration request and replaces it with the current projection', async () => {
     const existing = makeTeam({ focus: 'run-b' })
@@ -182,5 +195,53 @@ describe('openTeamRun current exact execution identity', () => {
     expect(selectRunMock).not.toHaveBeenCalled()
     expect(disconnectTeamStreamMock).toHaveBeenCalledWith(ROOT)
     expect(connectToTeamStreamMock).not.toHaveBeenCalled()
+  })
+
+  it('keeps the failed context unpublished until exact recovery candidate readiness', async () => {
+    const failed = makeTeam({ focus: 'run-b' })
+    const candidate = makeTeam({ focus: 'run-b' })
+    getTeamContextByIdMock.mockReturnValue(failed)
+    hydrateTeamRunContextForStreamRecoveryMock.mockResolvedValue({
+      ...hydration(candidate),
+      expectedBaseChangeSequence: 12,
+    })
+
+    const result = await reopenTeamRunAfterStreamLoss({
+      teamRunId: ROOT,
+      agentRunId: 'run-b',
+      resolveWorkspaceMetadataByRootPath: vi.fn(),
+      ensureWorkspaceByRootPath: vi.fn(),
+    })
+
+    expect(addTeamContextMock).not.toHaveBeenCalled()
+    expect(replaceFailedTeamStreamMock).toHaveBeenCalledWith({
+      rootTeamRunId: ROOT,
+      candidateContext: candidate,
+      expectedBaseChangeSequence: 12,
+    })
+    expect(selectRunMock).toHaveBeenCalledWith(ROOT, 'team')
+    expect(result).toMatchObject({ focusedAgentRunId: 'run-b', focusedMemberAddress: '/member-b' })
+  })
+
+  it('preserves selection when candidate replacement fails', async () => {
+    const failed = makeTeam({ focus: 'run-a' })
+    const candidate = makeTeam({ focus: 'run-b' })
+    getTeamContextByIdMock.mockReturnValue(failed)
+    hydrateTeamRunContextForStreamRecoveryMock.mockResolvedValue({
+      ...hydration(candidate),
+      expectedBaseChangeSequence: 12,
+    })
+    replaceFailedTeamStreamMock.mockRejectedValue(new Error('snapshot mismatch'))
+
+    await expect(reopenTeamRunAfterStreamLoss({
+      teamRunId: ROOT,
+      agentRunId: 'run-b',
+      resolveWorkspaceMetadataByRootPath: vi.fn(),
+      ensureWorkspaceByRootPath: vi.fn(),
+    })).rejects.toThrow('snapshot mismatch')
+
+    expect(addTeamContextMock).not.toHaveBeenCalled()
+    expect(selectRunMock).not.toHaveBeenCalled()
+    expect(failed.view.getFocusedAgentRunId()).toBe('run-a')
   })
 })

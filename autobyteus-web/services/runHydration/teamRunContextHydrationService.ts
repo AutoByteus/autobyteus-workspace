@@ -3,13 +3,19 @@ import {
   type TeamRunExecutionTreeDto,
 } from '@autobyteus/team-stream-contracts';
 import { getApolloClient } from '~/utils/apolloClient';
-import { GetTeamMemberRunProjection, GetTeamRunResumeConfig } from '~/graphql/queries/runHistoryQueries';
+import {
+  GetTeamMemberRunProjection,
+  GetTeamRunExecutionCheckpoint,
+  GetTeamRunResumeConfig,
+} from '~/graphql/queries/runHistoryQueries';
 import type { AgentContext } from '~/types/agent/AgentContext';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import type { AgentTeamAddress } from '~/types/agent/AgentTeamAddress';
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
 import type {
+  GetTeamRunExecutionCheckpointQueryData,
   TeamMemberRunProjectionPayload,
+  TeamRunExecutionCheckpointPayload,
   TeamRunResumeConfigPayload,
 } from '~/stores/runHistoryTypes';
 import { createWorkspaceMetadata } from '~/utils/workspaceMetadata';
@@ -44,6 +50,11 @@ export interface TeamRunContextHydrationPayload {
   projectionByAgentRunId: Map<string, TeamMemberRunProjectionPayload | null>;
 }
 
+export interface TeamRunRecoveryHydrationPayload extends Omit<TeamRunContextHydrationPayload, 'projectionByAgentRunId'> {
+  projectionByAgentRunId: Map<string, TeamMemberRunProjectionPayload>;
+  expectedBaseChangeSequence: number;
+}
+
 interface ResumeGraphqlData {
   getTeamRunResumeConfig: {
     teamRunId: string;
@@ -56,26 +67,56 @@ interface ProjectionGraphqlData {
   getTeamMemberRunProjection: TeamMemberRunProjectionPayload | null;
 }
 
-const fetchProjection = async (
+type ProjectionFetchPolicy = 'best_effort' | 'exact';
+
+const graphqlErrors = (errors: readonly { message: string }[] | undefined): string | null =>
+  errors?.length ? errors.map((error) => error.message).join(', ') : null;
+
+const fetchExactProjection = async (
+  teamRunId: string,
+  agentRunId: string,
+): Promise<TeamMemberRunProjectionPayload> => {
+  const response = await getApolloClient().query<ProjectionGraphqlData>({
+    query: GetTeamMemberRunProjection,
+    variables: { teamRunId, agentRunId },
+    fetchPolicy: 'network-only',
+  });
+  const errors = graphqlErrors(response.errors);
+  if (errors) throw new Error(errors);
+  const projection = response.data?.getTeamMemberRunProjection;
+  if (!projection) throw new Error(`Team member projection payload missing for '${agentRunId}'.`);
+  if (projection.agentRunId !== agentRunId) {
+    throw new Error(`Team member projection '${projection.agentRunId}' does not match '${agentRunId}'.`);
+  }
+  return projection;
+};
+
+const fetchBestEffortProjection = async (
   teamRunId: string,
   agentRunId: string,
 ): Promise<TeamMemberRunProjectionPayload | null> => {
   try {
-    const response = await getApolloClient().query<ProjectionGraphqlData>({
-      query: GetTeamMemberRunProjection,
-      variables: { teamRunId, agentRunId },
-      fetchPolicy: 'network-only',
-    });
-    if (response.errors?.length) throw new Error(response.errors.map((error: { message: string }) => error.message).join(', '));
-    const projection = response.data?.getTeamMemberRunProjection ?? null;
-    if (projection && projection.agentRunId !== agentRunId) {
-      throw new Error(`Team member projection '${projection.agentRunId}' does not match '${agentRunId}'.`);
-    }
-    return projection;
+    return await fetchExactProjection(teamRunId, agentRunId);
   } catch (error) {
     console.warn(`[teamRunContextHydration] Failed to fetch AgentRun projection '${agentRunId}'.`, error);
     return null;
   }
+};
+
+const fetchCheckpoint = async (teamRunId: string): Promise<TeamRunExecutionCheckpointPayload> => {
+  const response = await getApolloClient().query<GetTeamRunExecutionCheckpointQueryData>({
+    query: GetTeamRunExecutionCheckpoint,
+    variables: { teamRunId },
+    fetchPolicy: 'network-only',
+  });
+  const errors = graphqlErrors(response.errors);
+  if (errors) throw new Error(errors);
+  const checkpoint = response.data?.getTeamRunExecutionCheckpoint;
+  if (!checkpoint) throw new Error(`Team execution checkpoint missing for '${teamRunId}'.`);
+  if (checkpoint.rootTeamRunId !== teamRunId) {
+    throw new Error(`Team execution checkpoint root '${checkpoint.rootTeamRunId}' does not match '${teamRunId}'.`);
+  }
+  return checkpoint;
 };
 
 const resolveWorkspaces = async (input: {
@@ -141,8 +182,9 @@ const selectInitialAgentRunId = (input: {
   return coordinator.agent_run_id;
 };
 
-export const hydrateLiveTeamRunContext = async (
+const hydrateCurrentTeamRunContext = async (
   input: LoadTeamRunContextHydrationInput,
+  projectionPolicy: ProjectionFetchPolicy,
 ): Promise<TeamRunContextHydrationPayload> => {
   const client = getApolloClient();
   const response = await client.query<ResumeGraphqlData>({
@@ -150,7 +192,8 @@ export const hydrateLiveTeamRunContext = async (
     variables: { teamRunId: input.teamRunId },
     fetchPolicy: 'network-only',
   });
-  if (response.errors?.length) throw new Error(response.errors.map((error: { message: string }) => error.message).join(', '));
+  const errors = graphqlErrors(response.errors);
+  if (errors) throw new Error(errors);
   const raw = response.data?.getTeamRunResumeConfig;
   if (!raw) throw new Error(`Team resume config payload missing for '${input.teamRunId}'.`);
   const tree = teamRunExecutionTreeDtoSchema.parse(raw.executionTree);
@@ -172,7 +215,10 @@ export const hydrateLiveTeamRunContext = async (
   ]);
   const projectionByAgentRunId = new Map<string, TeamMemberRunProjectionPayload | null>();
   await Promise.all(collectExecutionAgents(tree).map(async (agent) => {
-    projectionByAgentRunId.set(agent.agentRunId, await fetchProjection(input.teamRunId, agent.agentRunId));
+    const projection = projectionPolicy === 'exact'
+      ? await fetchExactProjection(input.teamRunId, agent.agentRunId)
+      : await fetchBestEffortProjection(input.teamRunId, agent.agentRunId);
+    projectionByAgentRunId.set(agent.agentRunId, projection);
   }));
   const contexts = collectExecutionAgents(tree).map((agent) => {
     const context = createTeamAgentContext({
@@ -206,12 +252,34 @@ export const hydrateLiveTeamRunContext = async (
       workspaceMetadata: workspaces.get(address) ?? null,
     }),
   });
-  const hydratedContext = Object.freeze({ view });
   return {
     teamRunId: input.teamRunId,
     focusedAgentRunId: view.getFocusedAgentRunId(),
     resumeConfig: { teamRunId: input.teamRunId, isActive: raw.isActive, executionTree: tree },
     projectionByAgentRunId,
-    hydratedContext,
+    hydratedContext: Object.freeze({ view }),
+  };
+};
+
+export const hydrateLiveTeamRunContext = async (
+  input: LoadTeamRunContextHydrationInput,
+): Promise<TeamRunContextHydrationPayload> => hydrateCurrentTeamRunContext(input, 'best_effort');
+
+export const hydrateTeamRunContextForStreamRecovery = async (
+  input: LoadTeamRunContextHydrationInput,
+): Promise<TeamRunRecoveryHydrationPayload> => {
+  const before = await fetchCheckpoint(input.teamRunId);
+  if (before.hasOpenExecutionWork) {
+    throw new Error('TEAM_STREAM_RECOVERY_WAIT: This Team is still working. Wait for it to finish, then select this Team member again.');
+  }
+  const candidate = await hydrateCurrentTeamRunContext(input, 'exact');
+  const after = await fetchCheckpoint(input.teamRunId);
+  if (after.hasOpenExecutionWork || after.changeSequence !== before.changeSequence) {
+    throw new Error('TEAM_STREAM_RECOVERY_CHECKPOINT_CHANGED: Team activity changed while the conversation was being reloaded. Select this Team member again.');
+  }
+  return {
+    ...candidate,
+    projectionByAgentRunId: candidate.projectionByAgentRunId as Map<string, TeamMemberRunProjectionPayload>,
+    expectedBaseChangeSequence: before.changeSequence,
   };
 };

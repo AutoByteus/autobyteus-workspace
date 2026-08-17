@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "runtimeRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/autobyteus-server-ts/tests/.tmp/agent-team-codex-output-not-visible-20260817-1",
+  "runtimeEnvironmentPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/autobyteus-server-ts/tests/.tmp/agent-team-codex-output-not-visible-20260817-1/.env",
+  "databasePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/autobyteus-server-ts/db/agent-team-codex-output-not-visible-20260817-1.db",
+  "operationalTargetMatch": false,
+  "ports": {
+    "server": 60417,
+    "web": 31417
+  },
+  "protectedPortsTargeted": false,
+  "environmentDatabaseAssignmentMatches": true,
+  "databaseExistsAfterConfigOnlyPreflight": false
+}

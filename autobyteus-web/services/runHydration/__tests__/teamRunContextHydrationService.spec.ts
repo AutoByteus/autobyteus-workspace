@@ -1,5 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { hydrateLiveTeamRunContext } from '../teamRunContextHydrationService';
+import {
+  hydrateLiveTeamRunContext,
+  hydrateTeamRunContextForStreamRecovery,
+} from '../teamRunContextHydrationService';
 import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures';
 
 const {
@@ -110,5 +113,111 @@ describe('hydrateLiveTeamRunContext current V1 aggregate', () => {
       teamRunId: 'team-live-recovery',
       resolveWorkspaceMetadataByRootPath: vi.fn().mockResolvedValue(null),
     })).rejects.toThrow("Team execution tree root identity mismatch for 'team-live-recovery'.");
+  });
+
+  it('accepts the exact non-null empty projection inside a stable recovery checkpoint', async () => {
+    const checkpoints = [
+      { rootTeamRunId: 'team-live-recovery', changeSequence: 9, hasOpenExecutionWork: false },
+      { rootTeamRunId: 'team-live-recovery', changeSequence: 9, hasOpenExecutionWork: false },
+    ];
+    const emptyProjection = {
+      agentRunId: 'run-a', conversation: [], activities: [], summary: null,
+      lastActivityAt: null, hasEarlierActiveTraceEvents: false,
+    };
+    queryMock.mockImplementation(async ({ query, variables }: { query: any; variables: Record<string, unknown> }) => {
+      const operation = query.definitions[0]?.name?.value;
+      if (operation === 'GetTeamRunExecutionCheckpoint') {
+        return { data: { getTeamRunExecutionCheckpoint: checkpoints.shift() }, errors: [] };
+      }
+      if (variables.agentRunId) {
+        return { data: { getTeamMemberRunProjection: emptyProjection }, errors: [] };
+      }
+      return { data: { getTeamRunResumeConfig: {
+        teamRunId: 'team-live-recovery', isActive: true, executionTree: tree,
+      } }, errors: [] };
+    });
+
+    const result = await hydrateTeamRunContextForStreamRecovery({
+      teamRunId: 'team-live-recovery',
+      agentRunId: 'run-a',
+      resolveWorkspaceMetadataByRootPath: vi.fn().mockResolvedValue(null),
+      ensureWorkspaceByRootPath: vi.fn().mockResolvedValue(null),
+    });
+
+    expect(result.expectedBaseChangeSequence).toBe(9);
+    expect(result.projectionByAgentRunId.get('run-a')).toBe(emptyProjection);
+    expect(result.hydratedContext.view.getAgentContext('run-a')?.state.conversation.messages).toEqual([]);
+    expect(checkpoints).toEqual([]);
+  });
+
+  it('refuses recovery before hydration while the root still has open work', async () => {
+    queryMock.mockResolvedValue({ data: { getTeamRunExecutionCheckpoint: {
+      rootTeamRunId: 'team-live-recovery', changeSequence: 9, hasOpenExecutionWork: true,
+    } }, errors: [] });
+
+    await expect(hydrateTeamRunContextForStreamRecovery({
+      teamRunId: 'team-live-recovery',
+      agentRunId: 'run-a',
+      resolveWorkspaceMetadataByRootPath: vi.fn().mockResolvedValue(null),
+      ensureWorkspaceByRootPath: vi.fn().mockResolvedValue(null),
+    })).rejects.toThrow('TEAM_STREAM_RECOVERY_WAIT');
+    expect(queryMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('cancels recovery when the root checkpoint changes during hydration', async () => {
+    const checkpoints = [
+      { rootTeamRunId: 'team-live-recovery', changeSequence: 9, hasOpenExecutionWork: false },
+      { rootTeamRunId: 'team-live-recovery', changeSequence: 10, hasOpenExecutionWork: false },
+    ];
+    queryMock.mockImplementation(async ({ query, variables }: { query: any; variables: Record<string, unknown> }) => {
+      const operation = query.definitions[0]?.name?.value;
+      if (operation === 'GetTeamRunExecutionCheckpoint') {
+        return { data: { getTeamRunExecutionCheckpoint: checkpoints.shift() }, errors: [] };
+      }
+      if (variables.agentRunId) {
+        return { data: { getTeamMemberRunProjection: {
+          agentRunId: 'run-a', conversation: [], activities: [], summary: null,
+          lastActivityAt: null, hasEarlierActiveTraceEvents: false,
+        } }, errors: [] };
+      }
+      return { data: { getTeamRunResumeConfig: {
+        teamRunId: 'team-live-recovery', isActive: true, executionTree: tree,
+      } }, errors: [] };
+    });
+
+    await expect(hydrateTeamRunContextForStreamRecovery({
+      teamRunId: 'team-live-recovery',
+      agentRunId: 'run-a',
+      resolveWorkspaceMetadataByRootPath: vi.fn().mockResolvedValue(null),
+      ensureWorkspaceByRootPath: vi.fn().mockResolvedValue(null),
+    })).rejects.toThrow('TEAM_STREAM_RECOVERY_CHECKPOINT_CHANGED');
+    expect(checkpoints).toEqual([]);
+  });
+
+  it.each([
+    { name: 'missing payload', projection: null, error: "projection payload missing for 'run-a'" },
+    { name: 'identity mismatch', projection: {
+      agentRunId: 'foreign-run', conversation: [], activities: [], hasEarlierActiveTraceEvents: false,
+    }, error: "projection 'foreign-run' does not match 'run-a'" },
+  ])('aborts recovery on $name instead of inventing empty history', async ({ projection, error }) => {
+    queryMock.mockImplementation(async ({ query, variables }: { query: any; variables: Record<string, unknown> }) => {
+      const operation = query.definitions[0]?.name?.value;
+      if (operation === 'GetTeamRunExecutionCheckpoint') {
+        return { data: { getTeamRunExecutionCheckpoint: {
+          rootTeamRunId: 'team-live-recovery', changeSequence: 9, hasOpenExecutionWork: false,
+        } }, errors: [] };
+      }
+      if (variables.agentRunId) return { data: { getTeamMemberRunProjection: projection }, errors: [] };
+      return { data: { getTeamRunResumeConfig: {
+        teamRunId: 'team-live-recovery', isActive: true, executionTree: tree,
+      } }, errors: [] };
+    });
+
+    await expect(hydrateTeamRunContextForStreamRecovery({
+      teamRunId: 'team-live-recovery',
+      agentRunId: 'run-a',
+      resolveWorkspaceMetadataByRootPath: vi.fn().mockResolvedValue(null),
+      ensureWorkspaceByRootPath: vi.fn().mockResolvedValue(null),
+    })).rejects.toThrow(error);
   });
 });

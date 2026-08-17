@@ -5,23 +5,13 @@ import {
 } from "@autobyteus/team-stream-contracts";
 import type { TeamAgentEvent, TeamTokenUsageDetails } from "../../agent-team-execution/domain/team-agent-event.js";
 import type { TeamAgentExecutionBinding } from "../../agent-team-execution/domain/team-agent-execution-binding.js";
-import type { TeamAgentStatusSnapshot } from "../../agent-team-execution/domain/team-agent-status.js";
+import { projectLiveTeamAgentStatusMessage } from "./team-agent-status-websocket-projector.js";
 
 export const projectTeamMemberExecutionIdentityDto = (
   identity: TeamAgentExecutionBinding,
 ): TeamMemberExecutionIdentityDto => Object.freeze({
   agent_run_id: identity.agentRunId,
   member_address: identity.memberAddress,
-});
-
-export const projectTeamAgentStatusDto = (snapshot: TeamAgentStatusSnapshot) => ({
-  agent_run_id: snapshot.execution.agentRunId,
-  member_address: snapshot.execution.memberAddress,
-  status: snapshot.details.status,
-  trigger: snapshot.details.trigger,
-  tool_name: snapshot.details.toolName,
-  error_message: snapshot.details.errorMessage,
-  error_details: snapshot.details.errorDetails,
 });
 
 const tokenPayload = (change_sequence: number, agent_run_id: string, details: TeamTokenUsageDetails) => ({
@@ -75,14 +65,6 @@ const tokenPayload = (change_sequence: number, agent_run_id: string, details: Te
   quality_flags: [...details.qualityFlags],
 });
 
-export const projectTeamAgentStatusMessage = (
-  snapshot: TeamAgentStatusSnapshot,
-  changeSequence: number,
-): TeamStreamServerMessage => parseTeamStreamServerMessage({
-  type: "AGENT_STATUS",
-  payload: { change_sequence: changeSequence, ...projectTeamAgentStatusDto(snapshot) },
-});
-
 export const projectTeamAgentEventMessage = (
   execution: TeamAgentExecutionBinding,
   event: TeamAgentEvent,
@@ -96,7 +78,7 @@ export const projectTeamAgentEventMessage = (
     case "SEGMENT_START": return parseTeamStreamServerMessage({ type: event.eventType, payload: { ...base, segment_id: event.details.segmentId, turn_id: event.details.turnId, segment_type: event.details.segmentType, metadata: event.details.metadata } });
     case "SEGMENT_CONTENT": return parseTeamStreamServerMessage({ type: event.eventType, payload: { ...base, segment_id: event.details.segmentId, turn_id: event.details.turnId, segment_type: event.details.segmentType, delta: event.details.delta } });
     case "SEGMENT_END": return parseTeamStreamServerMessage({ type: event.eventType, payload: { ...base, segment_id: event.details.segmentId, turn_id: event.details.turnId, metadata: event.details.metadata, interrupted: event.details.interrupted, reason: event.details.reason, failed: event.details.failed, error: event.details.error } });
-    case "AGENT_STATUS": return projectTeamAgentStatusMessage({ execution, details: event.details, statusHint: event.statusHint }, changeSequence);
+    case "AGENT_STATUS": return projectLiveTeamAgentStatusMessage({ execution, details: event.details, statusHint: event.statusHint }, changeSequence);
     case "COMPACTION_STATUS": return parseTeamStreamServerMessage({ type: event.eventType, payload: {
       ...base, phase: event.details.phase, kind: event.details.kind, status: event.details.status, turn_id: event.details.turnId,
       compaction_operation_id: event.details.compactionOperationId, requested_turn_id: event.details.requestedTurnId, execution_turn_id: event.details.executionTurnId,

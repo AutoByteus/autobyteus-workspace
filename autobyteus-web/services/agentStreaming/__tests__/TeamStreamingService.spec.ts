@@ -47,9 +47,13 @@ const createHarness = () => {
       description: 'Solve the delegated problem.',
     })],
   });
-  const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient });
+  const recoveryRequired = vi.fn();
+  const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', {
+    wsClient,
+    onStreamRecoveryRequired: recoveryRequired,
+  });
   service.connect(rootTeamRunId, team);
-  return { callbacks, service, team, wsClient };
+  return { callbacks, recoveryRequired, service, team, wsClient };
 };
 
 const emit = (
@@ -58,9 +62,9 @@ const emit = (
   payload: Record<string, unknown>,
 ) => callbacks.get('onMessage')?.(JSON.stringify({ type, payload }));
 
-const snapshotPayload = (team: ReturnType<typeof buildTestTeamContext>) => ({
+const snapshotPayload = (team: ReturnType<typeof buildTestTeamContext>, baseChangeSequence = team.view.getChangeSequence()) => ({
   root_team_run_id: rootTeamRunId,
-  base_change_sequence: team.view.getChangeSequence(),
+  base_change_sequence: baseChangeSequence,
   execution_tree: team.view.getExecutionTree(),
   tasks: team.view.listTaskHistoryRows().map((row) => row.task),
   messages: team.view.listCommunicationMessages(),
@@ -74,6 +78,15 @@ const snapshotPayload = (team: ReturnType<typeof buildTestTeamContext>) => ({
     error_details: null,
   })),
 });
+
+const admitReady = (
+  callbacks: Map<string, (payload?: any) => void>,
+  team: ReturnType<typeof buildTestTeamContext>,
+  baseChangeSequence = team.view.getChangeSequence(),
+): void => {
+  emit(callbacks, 'CONNECTED', { session_id: 'team-session-1', root_team_run_id: rootTeamRunId });
+  emit(callbacks, 'TEAM_EXECUTION_VIEW_SNAPSHOT', snapshotPayload(team, baseChangeSequence));
+};
 
 const statusPayload = (changeSequence: number, agentRunId: string, status: string) => ({
   change_sequence: changeSequence,
@@ -124,6 +137,7 @@ describe('TeamStreamingService current AgentRun event dispatch', () => {
 
   it('projects status and segment content only into the exact persistent AgentRun', () => {
     const { callbacks, team } = createHarness();
+    admitReady(callbacks, team);
     const teacher = team.view.getAgentContext(teacherRunId)!;
     const persistentStudent = team.view.getAgentContext(persistentStudentRunId)!;
     const taskStudent = team.view.getAgentContext(taskStudentRunId)!;
@@ -156,6 +170,7 @@ describe('TeamStreamingService current AgentRun event dispatch', () => {
 
   it('rejects a legacy identity-less Agent event instead of using the focused AgentRun', () => {
     const { callbacks, team } = createHarness();
+    admitReady(callbacks, team);
     const teacher = team.view.getAgentContext(teacherRunId)!;
     const error = vi.spyOn(console, 'error').mockImplementation(() => undefined);
 
@@ -176,6 +191,7 @@ describe('TeamStreamingService current AgentRun event dispatch', () => {
 
   it('projects an external user message only when AgentRun and logical member placement agree', () => {
     const { callbacks, team } = createHarness();
+    admitReady(callbacks, team);
     const teacher = team.view.getAgentContext(teacherRunId)!;
     const persistentStudent = team.view.getAgentContext(persistentStudentRunId)!;
 
@@ -200,7 +216,8 @@ describe('TeamStreamingService current AgentRun event dispatch', () => {
   });
 
   it('routes successful tool execution through the browser owner for the exact AgentRun', () => {
-    const { callbacks } = createHarness();
+    const { callbacks, team } = createHarness();
+    admitReady(callbacks, team);
     emit(callbacks, 'TOOL_EXECUTION_SUCCEEDED', {
       change_sequence: 1,
       agent_run_id: teacherRunId,
@@ -219,6 +236,7 @@ describe('TeamStreamingService current AgentRun event dispatch', () => {
 
   it('projects MEMBER_INPUT into the exact task AgentRun without persistent substitution', () => {
     const { callbacks, team } = createHarness();
+    admitReady(callbacks, team);
     const taskStudent = team.view.getAgentContext(taskStudentRunId)!;
     const persistentStudent = team.view.getAgentContext(persistentStudentRunId)!;
     const teacher = team.view.getAgentContext(teacherRunId)!;
@@ -245,6 +263,7 @@ describe('TeamStreamingService current AgentRun event dispatch', () => {
 
   it('rejects removed recipient-address fallback before any AgentRun mutation', () => {
     const { callbacks, team } = createHarness();
+    admitReady(callbacks, team);
     const taskStudent = team.view.getAgentContext(taskStudentRunId)!;
     const error = vi.spyOn(console, 'error').mockImplementation(() => undefined);
 
@@ -269,6 +288,7 @@ describe('TeamStreamingService current AgentRun event dispatch', () => {
 
   it('adds the exact public Team communication record to the authoritative view once', () => {
     const { callbacks, team } = createHarness();
+    admitReady(callbacks, team);
     emit(callbacks, 'TEAM_COMMUNICATION_MESSAGE', {
       change_sequence: 1,
       message: {
@@ -291,5 +311,75 @@ describe('TeamStreamingService current AgentRun event dispatch', () => {
       created_at: '2026-08-11T00:04:00.000Z',
       reference_files: [],
     }]);
+  });
+
+  it('acts on the first rejected gap effect once and cannot revive the failed instance', () => {
+    const { callbacks, recoveryRequired, service, team, wsClient } = createHarness();
+    admitReady(callbacks, team);
+
+    emit(callbacks, 'AGENT_STATUS', statusPayload(2, teacherRunId, 'running'));
+
+    expect(service.isReady).toBe(false);
+    expect(service.isReopenRequired).toBe(true);
+    expect(team.view.getChangeSequence()).toBe(0);
+    expect(team.view.getAgentContext(teacherRunId)?.state.currentStatus).not.toBe(AgentStatus.Running);
+    expect(wsClient.disconnect).toHaveBeenCalledTimes(1);
+    expect(recoveryRequired).toHaveBeenCalledTimes(1);
+    expect(recoveryRequired).toHaveBeenCalledWith({
+      kind: 'team_stream_recovery_required',
+      rootTeamRunId,
+    });
+
+    emit(callbacks, 'AGENT_STATUS', statusPayload(1, teacherRunId, 'running'));
+    expect(recoveryRequired).toHaveBeenCalledTimes(1);
+    expect(team.view.getChangeSequence()).toBe(0);
+    expect(() => service.connect(rootTeamRunId, team)).toThrow('TEAM_STREAM_REOPEN_REQUIRED');
+  });
+
+  it('admits a candidate only after the exact expected snapshot base', async () => {
+    const callbacks = new Map<string, (payload?: any) => void>();
+    const wsClient = {
+      state: 'connected', connect: vi.fn(), disconnect: vi.fn(), send: vi.fn(),
+      on: vi.fn((event: string, callback: (payload?: any) => void) => callbacks.set(event, callback)),
+      off: vi.fn(),
+    } as any;
+    const team = buildTestTeamContext({
+      teamRunId: rootTeamRunId,
+      coordinatorAddress: '/Teacher',
+      rootChildren: [testAgentNode('/Teacher', { agentRunId: teacherRunId, displayName: 'Teacher' })],
+    });
+    const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient });
+    const readiness = service.connectCandidate(rootTeamRunId, team, 7);
+
+    emit(callbacks, 'CONNECTED', { session_id: 'candidate-session', root_team_run_id: rootTeamRunId });
+    emit(callbacks, 'TEAM_EXECUTION_VIEW_SNAPSHOT', snapshotPayload(team, 7));
+
+    await expect(readiness).resolves.toBeUndefined();
+    expect(service.isReady).toBe(true);
+    expect(team.view.getChangeSequence()).toBe(7);
+  });
+
+  it('rejects and stops a candidate whose snapshot base does not match', async () => {
+    const callbacks = new Map<string, (payload?: any) => void>();
+    const wsClient = {
+      state: 'connected', connect: vi.fn(), disconnect: vi.fn(), send: vi.fn(),
+      on: vi.fn((event: string, callback: (payload?: any) => void) => callbacks.set(event, callback)),
+      off: vi.fn(),
+    } as any;
+    const team = buildTestTeamContext({
+      teamRunId: rootTeamRunId,
+      coordinatorAddress: '/Teacher',
+      rootChildren: [testAgentNode('/Teacher', { agentRunId: teacherRunId, displayName: 'Teacher' })],
+    });
+    const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient });
+    const readiness = service.connectCandidate(rootTeamRunId, team, 7);
+
+    emit(callbacks, 'CONNECTED', { session_id: 'candidate-session', root_team_run_id: rootTeamRunId });
+    emit(callbacks, 'TEAM_EXECUTION_VIEW_SNAPSHOT', snapshotPayload(team, 8));
+
+    await expect(readiness).rejects.toThrow('TEAM_STREAM_SNAPSHOT_BASE_MISMATCH');
+    expect(service.isReopenRequired).toBe(true);
+    expect(wsClient.disconnect).toHaveBeenCalledTimes(1);
+    expect(team.view.getChangeSequence()).toBe(0);
   });
 });

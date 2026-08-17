@@ -43,6 +43,20 @@ export const useAgentTeamContextsStore = defineStore('agentTeamContexts', {
       this.teams = new Map(this.teams).set(rootTeamRunId, context);
       useRunHistoryStore().refreshRunNavigationTopology('team-context-add');
     },
+    replaceTeamContext(
+      rootTeamRunId: string,
+      expectedCurrent: AgentTeamContext,
+      replacement: AgentTeamContext,
+    ): void {
+      if (replacement.view.getRootTeamRunId() !== rootTeamRunId
+        || this.teams.get(rootTeamRunId) !== expectedCurrent) {
+        throw new Error(`Team context '${rootTeamRunId}' changed before recovery commit.`);
+      }
+      expectedCurrent.view.listAgentContextEntries().forEach((entry) => resetRecentEventMonitorBaseline(entry.agentContext));
+      replacement.view.listAgentContextEntries().forEach((entry) => primeRecentEventMonitorBaseline(entry.agentContext));
+      this.teams = new Map(this.teams).set(rootTeamRunId, replacement);
+      useRunHistoryStore().refreshRunNavigationTopology('team-context-replace');
+    },
     removeTeamContext(rootTeamRunId: string): void {
       const context = this.teams.get(rootTeamRunId);
       if (!context) return;

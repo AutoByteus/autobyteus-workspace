@@ -35,7 +35,7 @@ export interface TeamExecutionViewState {
   getExecutionTree(): TeamRunExecutionTreeDto;
   getConfigurationView(): Readonly<TeamRunConfig>;
   getChangeSequence(): number;
-  needsSnapshotRefresh(): boolean;
+  needsStreamRecovery(): boolean;
   isRootTeamActive(): boolean;
   setRootTeamActive(active: boolean): MutationResult;
   getFocusedAgentRunId(): string;
@@ -99,7 +99,7 @@ export const createTeamExecutionViewState = (
   const tasks = shallowRef(structuredClone(input.tasks ?? [])) as Ref<TaskDelegationRecordDto[]>;
   const messages = shallowRef(structuredClone(input.messages ?? [])) as Ref<TeamCommunicationMessageDto[]>;
   const changeSequence = ref(input.baseChangeSequence ?? 0);
-  const refreshRequired = ref(false);
+  const streamRecoveryRequired = ref(false);
   const rootActive = ref(input.rootActive);
   const focusedAgentRunId = ref(requiredId(input.initialFocusedAgentRunId, 'initialFocusedAgentRunId'));
   const contexts = shallowReactive(new Map<string, AgentContext>());
@@ -163,11 +163,18 @@ export const createTeamExecutionViewState = (
   };
 
   const rejectGap = (received: number): TeamExecutionApplyResult => {
-    refreshRequired.value = true;
+    if (streamRecoveryRequired.value) {
+      return Object.freeze({
+        disposition: 'rejected', code: 'TEAM_EXECUTION_STREAM_RECOVERY_REQUIRED',
+        message: 'The Team execution stream is waiting for explicit recovery.',
+        effects: Object.freeze([]),
+      });
+    }
+    streamRecoveryRequired.value = true;
     return Object.freeze({
       disposition: 'rejected', code: 'TEAM_EXECUTION_CHANGE_SEQUENCE_GAP',
       message: `Expected change sequence ${changeSequence.value + 1}, received ${received}.`,
-      effects: Object.freeze([{ kind: 'snapshot_refresh_required' as const }]),
+      effects: Object.freeze([{ kind: 'team_stream_recovery_required' as const }]),
     });
   };
 
@@ -208,7 +215,7 @@ export const createTeamExecutionViewState = (
       tasks.value = structuredClone(payload.tasks);
       messages.value = structuredClone(payload.messages);
       changeSequence.value = payload.base_change_sequence;
-      refreshRequired.value = false;
+      streamRecoveryRequired.value = false;
       repairFocus();
       return Object.freeze({ disposition: 'applied', effects: Object.freeze([]) });
     } catch (error) {
@@ -218,6 +225,13 @@ export const createTeamExecutionViewState = (
 
   const applyMessage = (message: Exclude<TeamStreamServerMessage,
     { type: 'CONNECTED' | 'TEAM_RUN_LIFECYCLE' | 'TEAM_EXECUTION_VIEW_SNAPSHOT' | 'AGENT_COMMAND_ACK' }>): TeamExecutionApplyResult => {
+    if (streamRecoveryRequired.value) {
+      return Object.freeze({
+        disposition: 'rejected', code: 'TEAM_EXECUTION_STREAM_RECOVERY_REQUIRED',
+        message: 'The Team execution stream is waiting for explicit recovery.',
+        effects: Object.freeze([]),
+      });
+    }
     const sequence = sequenceOf(message);
     if (sequence !== null && sequence !== changeSequence.value + 1) return rejectGap(sequence);
     const effects: TeamExecutionEffect[] = [];
@@ -279,7 +293,7 @@ export const createTeamExecutionViewState = (
     getExecutionTree: () => tree.value,
     getConfigurationView: () => input.configuration,
     getChangeSequence: () => changeSequence.value,
-    needsSnapshotRefresh: () => refreshRequired.value,
+    needsStreamRecovery: () => streamRecoveryRequired.value,
     isRootTeamActive: () => rootActive.value,
     setRootTeamActive: (active) => {
       if (rootActive.value === active) return { disposition: 'unchanged' };

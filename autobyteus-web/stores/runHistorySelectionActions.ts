@@ -6,9 +6,10 @@ import type { RunTreeRow } from '~/utils/runTreeProjection';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useAgentContextsStore } from '~/stores/agentContextsStore';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
+import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
 import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
-import { openTeamRun } from '~/services/runOpen/teamRunOpenCoordinator';
+import { openTeamRun, reopenTeamRunAfterStreamLoss } from '~/services/runOpen/teamRunOpenCoordinator';
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
 
 type RunHistorySelectionMode = 'desktop' | 'mobile';
@@ -73,6 +74,30 @@ export const selectTreeRunFromHistory = async (
     const localTargetMemberAddress = row.memberAddress;
 
     if (shouldReuseLocalTeamContext) {
+      const teamRunStore = useAgentTeamRunStore();
+      if (teamRunStore.isTeamStreamReopenRequired(row.teamRunId)) {
+        store.openingRun = true;
+        store.error = null;
+        try {
+          const result = await reopenTeamRunAfterStreamLoss({
+            teamRunId: row.teamRunId,
+            agentRunId: row.agentRunId,
+            resolveWorkspaceMetadataByRootPath: (path: string) =>
+              store.resolveWorkspaceMetadataByRootPath(path),
+            ensureWorkspaceByRootPath: (path: string) => store.ensureWorkspaceByRootPath(path),
+          });
+          store.teamResumeConfigByTeamRunId[result.resumeConfig.teamRunId] = result.resumeConfig;
+          store.selectedTeamRunId = result.teamRunId;
+          store.selectedTeamMemberAddress = result.focusedMemberAddress;
+          store.selectedRunId = null;
+        } catch (error: any) {
+          store.error = error?.message || `Failed to recover team '${row.teamRunId}'.`;
+          throw error;
+        } finally {
+          store.openingRun = false;
+        }
+        return;
+      }
       try {
         selectionStore.selectRun(row.teamRunId, 'team');
         await store.focusTeamMemberAndEnsureHydrated(row.teamRunId, row.agentRunId);

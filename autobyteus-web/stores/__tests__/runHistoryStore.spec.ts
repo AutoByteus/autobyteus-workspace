@@ -279,6 +279,7 @@ const {
       connectToTeamStream: vi.fn(),
       disconnectTeamStream: vi.fn(),
       isTeamStreamReady: vi.fn().mockReturnValue(false),
+      isTeamStreamReopenRequired: vi.fn().mockReturnValue(false),
     },
     llmProviderConfigStoreMock: {
       models: ['model-default'],
@@ -882,7 +883,7 @@ describe('runHistoryStore', () => {
     expect(store.getTreeNodes()).toEqual([]);
   });
 
-  it('preserves subscribed live member statuses while refreshing root team activity', async () => {
+  it('preserves failed-stream member statuses without background stream resurrection', async () => {
     queryMock.mockResolvedValue({
       data: {
         listWorkspaceRunHistory: [
@@ -951,7 +952,10 @@ describe('runHistoryStore', () => {
     liveMember(implementation.agentRunId).state.currentStatus = 'idle' as any;
     liveMember(review.agentRunId).state.currentStatus = 'running' as any;
     teamContextsStoreMock.teams.set('team-live-1', liveTeam);
-    agentTeamRunStoreMock.isTeamStreamReady.mockImplementation((teamRunId: string) => teamRunId === 'team-live-1');
+    agentTeamRunStoreMock.isTeamStreamReady.mockReturnValue(false);
+    agentTeamRunStoreMock.isTeamStreamReopenRequired.mockImplementation(
+      (teamRunId: string) => teamRunId === 'team-live-1',
+    );
 
     const store = useRunHistoryStore();
     await store.fetchTree();

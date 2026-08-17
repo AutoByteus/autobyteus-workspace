@@ -130,6 +130,13 @@ describe("AgentTeamRunManager strict V1 package integration", () => {
     const run = await manager.createTeamRun({ config, teamDefinitionName: "Runtime Team" });
 
     expect(run.teamRunId).toBe("team-runtime-root");
+    const checkpoint = run.getExecutionCheckpoint();
+    expect(checkpoint).toEqual({
+      rootTeamRunId: "team-runtime-root",
+      changeSequence: 0,
+      hasOpenExecutionWork: false,
+    });
+    expect(Object.isFrozen(checkpoint)).toBe(true);
     expect(manager.getActiveRun(run.teamRunId)).toBe(run);
     expect(manager.listActiveRuns()).toEqual([run.teamRunId]);
     expect(factory.createBackend).toHaveBeenCalledWith(
