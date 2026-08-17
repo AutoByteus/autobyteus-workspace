@@ -96,6 +96,15 @@ class ControlledClaudeQuery implements ClaudeSdkQueryLike {
     signal.addEventListener("abort", this.releaseOnAbort, { once: true });
   }
 
+  bindProviderSessionId(sessionId: string | null): void {
+    if (!sessionId) return;
+    for (const chunk of this.chunks) {
+      if (chunk && typeof chunk === "object" && !Array.isArray(chunk) && "session_id" in chunk) {
+        (chunk as { session_id: string }).session_id = sessionId;
+      }
+    }
+  }
+
   private release(): void {
     this.releaseWaiter();
   }
@@ -175,6 +184,11 @@ const createFakeSdkClient = (
         throw new Error("No fake Claude SDK query queued for test.");
       }
       const abortController = call.options?.abortController as AbortController | undefined;
+      query.bindProviderSessionId(
+        typeof call.options?.sessionId === "string"
+          ? call.options.sessionId
+          : typeof call.options?.resume === "string" ? call.options.resume : null,
+      );
       query.attachAbortSignal(abortController?.signal);
       return query;
     }),
@@ -199,9 +213,13 @@ const createMemoryCheckingFakeSdkClient = (input: {
       sdkCalls.push(call);
       const prompt = typeof call.prompt === "string" ? call.prompt : "";
       if (sdkCalls.length === 1) {
+        const createdSessionId = typeof call.options?.sessionId === "string"
+          ? call.options.sessionId
+          : input.providerSessionId;
         if (prompt.includes(input.marker)) {
-          providerMemory.set(input.providerSessionId, input.marker);
+          providerMemory.set(createdSessionId, input.marker);
         }
+        firstQuery.bindProviderSessionId(createdSessionId);
         const abortController = call.options?.abortController as AbortController | undefined;
         firstQuery.attachAbortSignal(abortController?.signal);
         return firstQuery;
@@ -418,6 +436,10 @@ const createClaudeWebSocketHarnessWithSdkClient = async (input: {
   const agentRunService = {
     getAgentRun: (runId: string) => (runId === input.runId ? agentRun : null),
     resolveAgentRun: async (runId: string) => (runId === input.runId ? agentRun : null),
+    resolveCommandReadyAgentRun: async (runId: string) => {
+      if (runId !== input.runId) throw new Error(`Unknown run '${runId}'.`);
+      return agentRun;
+    },
     recordRunActivity: async () => {},
   };
   const statusProjectionService = {
@@ -518,7 +540,7 @@ const closeHarness = async (harness: {
 describe("Claude Agent SDK websocket interrupt/resume integration", () => {
   it("preserves provider conversation memory after interrupt instead of starting a new Claude conversation", async () => {
     const runId = "claude-ws-context-memory";
-    const providerSessionId = "claude-provider-session-with-memory";
+    const providerSessionId = "11111111-1111-4111-8111-111111111111";
     const marker = "E2E_CONTEXT_MARKER_AFTER_INTERRUPT_7419";
     const { sdkClient, sdkCalls, firstQuery } = createMemoryCheckingFakeSdkClient({
       providerSessionId,
@@ -531,6 +553,7 @@ describe("Claude Agent SDK websocket interrupt/resume integration", () => {
     });
 
     try {
+      const reservedSessionId = harness.sessionManager.requireRunSession(runId).sessionId;
       const initialUserPrompt = `Remember this exact marker before I interrupt you: ${marker}`;
       sendE2eSendMessageCommand(harness.socket, {
         content: initialUserPrompt,
@@ -539,8 +562,8 @@ describe("Claude Agent SDK websocket interrupt/resume integration", () => {
       await waitForCondition(
         () =>
           harness.sdkCalls.length === 1 &&
-          harness.runContext.runtimeContext.sessionId === providerSessionId,
-        "initial fake Claude query memory capture and provider session adoption",
+          harness.sdkCalls[0]?.options?.sessionId === reservedSessionId,
+        "initial fake Claude query memory capture and reserved provider session use",
       );
       expect(harness.runContext.runtimeContext.hasCompletedTurn).toBe(false);
       expect(harness.sdkCalls[0]?.prompt).toBe(initialUserPrompt);
@@ -575,7 +598,7 @@ describe("Claude Agent SDK websocket interrupt/resume integration", () => {
       const rememberedDelta = rememberedMessage.payload?.delta;
       expect(rememberedDelta).toBe(`remembered provider context marker: ${marker}`);
       expect(rememberedDelta).not.toBe("new conversation: no remembered provider context marker");
-      expect(harness.sdkCalls[1]?.options?.resume).toBe(providerSessionId);
+      expect(harness.sdkCalls[1]?.options?.resume).toBe(reservedSessionId);
       expect(harness.sdkCalls[1]?.options?.resume).not.toBe(runId);
       expect(harness.sdkCalls[1]?.prompt).toBe(followUpUserPrompt);
       expect(harness.sdkCalls[1]?.options?.systemPrompt).toBe(
@@ -591,7 +614,7 @@ describe("Claude Agent SDK websocket interrupt/resume integration", () => {
 
   it("resumes the same WebSocket follow-up with the adopted provider session id after INTERRUPT_GENERATION", async () => {
     const runId = "claude-ws-interrupt-provider";
-    const providerSessionId = "claude-provider-session-from-first-query";
+    const providerSessionId = "22222222-2222-4222-8222-222222222222";
     const firstQuery = createProviderSessionThenPendingQuery(providerSessionId);
     const secondQuery = createCompletedQuery(providerSessionId);
     const harness = await createClaudeWebSocketHarness({
@@ -600,15 +623,17 @@ describe("Claude Agent SDK websocket interrupt/resume integration", () => {
     });
 
     try {
+      const reservedSessionId = harness.sessionManager.requireRunSession(runId).sessionId;
       sendE2eSendMessageCommand(harness.socket, { content: "start long Claude work" });
 
       await waitForCondition(
         () =>
           harness.sdkCalls.length === 1 &&
-          harness.runContext.runtimeContext.sessionId === providerSessionId,
-        "initial fake Claude query and provider session adoption",
+          harness.sdkCalls[0]?.options?.sessionId === reservedSessionId,
+        "initial fake Claude query and reserved provider session use",
       );
       expect(harness.sdkCalls[0]?.options?.resume).toBeUndefined();
+      expect(harness.sdkCalls[0]?.options?.sessionId).toBe(reservedSessionId);
       expect(harness.runContext.runtimeContext.hasCompletedTurn).toBe(false);
 
       harness.socket.send(JSON.stringify({
@@ -629,7 +654,7 @@ describe("Claude Agent SDK websocket interrupt/resume integration", () => {
         "follow-up fake Claude query start",
       );
       const followUpResume = harness.sdkCalls[1]?.options?.resume;
-      expect(followUpResume).toBe(providerSessionId);
+      expect(followUpResume).toBe(reservedSessionId);
       expect(followUpResume).not.toBeNull();
       expect(followUpResume).not.toBe(runId);
       await waitForCondition(
@@ -641,10 +666,10 @@ describe("Claude Agent SDK websocket interrupt/resume integration", () => {
     }
   });
 
-  it("does not send the local run id as SDK resume when INTERRUPT_GENERATION happens before a provider session id exists", async () => {
+  it("resumes the caller-reserved UUID when INTERRUPT_GENERATION happens before stream confirmation", async () => {
     const runId = "claude-ws-interrupt-placeholder";
     const firstQuery = createPendingQueryWithoutProviderSession();
-    const secondProviderSessionId = "claude-provider-session-after-placeholder";
+    const secondProviderSessionId = "33333333-3333-4333-8333-333333333333";
     const secondQuery = createCompletedQuery(secondProviderSessionId);
     const harness = await createClaudeWebSocketHarness({
       runId,
@@ -652,6 +677,7 @@ describe("Claude Agent SDK websocket interrupt/resume integration", () => {
     });
 
     try {
+      const reservedSessionId = harness.sessionManager.requireRunSession(runId).sessionId;
       sendE2eSendMessageCommand(harness.socket, { content: "start before Claude emits a provider session id" });
 
       await waitForCondition(
@@ -659,7 +685,8 @@ describe("Claude Agent SDK websocket interrupt/resume integration", () => {
         "initial placeholder fake Claude query start",
       );
       expect(harness.sdkCalls[0]?.options?.resume).toBeUndefined();
-      expect(harness.runContext.runtimeContext.sessionId).toBe(runId);
+      expect(harness.sdkCalls[0]?.options?.sessionId).toBe(reservedSessionId);
+      expect(harness.runContext.runtimeContext.sessionId).toBeNull();
       expect(harness.runContext.runtimeContext.hasCompletedTurn).toBe(false);
 
       harness.socket.send(JSON.stringify({
@@ -679,13 +706,13 @@ describe("Claude Agent SDK websocket interrupt/resume integration", () => {
         () => harness.sdkCalls.length === 2,
         "placeholder follow-up fake Claude query start",
       );
-      expect(harness.sdkCalls[1]?.options?.resume).toBeUndefined();
+      expect(harness.sdkCalls[1]?.options?.resume).toBe(reservedSessionId);
       expect(harness.sdkCalls[1]?.options?.resume).not.toBe(runId);
       await waitForCondition(
         () => harness.runContext.runtimeContext.hasCompletedTurn,
         "placeholder follow-up completion",
       );
-      expect(harness.runContext.runtimeContext.sessionId).toBe(secondProviderSessionId);
+      expect(harness.sessionManager.requireRunSession(runId).sessionId).toBe(reservedSessionId);
     } finally {
       await closeHarness(harness);
     }
@@ -728,14 +755,7 @@ describeLiveClaudeRuntime("Claude Agent SDK websocket interrupt/resume live E2E"
             });
 
         await approvalRequestPromise;
-        await waitForCondition(
-          () =>
-            typeof harness.runContext.runtimeContext.sessionId === "string" &&
-            harness.runContext.runtimeContext.sessionId !== runId,
-          "live Claude provider session id adoption before interrupt",
-          LIVE_CLAUDE_STEP_TIMEOUT_MS,
-        );
-        const providerSessionId = harness.runContext.runtimeContext.sessionId;
+        const providerSessionId = harness.sessionManager.requireRunSession(runId).sessionId;
         expect(providerSessionId).toBeTruthy();
         expect(providerSessionId).not.toBe(runId);
         expect(harness.runContext.runtimeContext.hasCompletedTurn).toBe(false);
@@ -766,7 +786,7 @@ describeLiveClaudeRuntime("Claude Agent SDK websocket interrupt/resume live E2E"
 
         const resumedResponseText = await rememberedMarkerPromise;
         expect(resumedResponseText).toContain(marker);
-        expect(harness.runContext.runtimeContext.sessionId).toBe(providerSessionId);
+        expect(harness.sessionManager.requireRunSession(runId).sessionId).toBe(providerSessionId);
       } finally {
         await closeHarness(harness);
         await fs.rm(workspaceRoot, { recursive: true, force: true });

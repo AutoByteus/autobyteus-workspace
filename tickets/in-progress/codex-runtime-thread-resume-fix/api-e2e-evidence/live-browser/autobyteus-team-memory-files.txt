@@ -1,0 +1,2 @@
+/private/tmp/codex-runtime-thread-resume-fix-api-e2e-20260817/server-data/memory/agent_teams/classroom_simulation_team_ab8a82e00cdc450ea0ebf952089c5962/professor_124d75241ce246c2875c9b8e3120a067/raw_traces_active.jsonl
+/private/tmp/codex-runtime-thread-resume-fix-api-e2e-20260817/server-data/memory/agent_teams/classroom_simulation_team_ab8a82e00cdc450ea0ebf952089c5962/professor_124d75241ce246c2875c9b8e3120a067/working_context_snapshot.json

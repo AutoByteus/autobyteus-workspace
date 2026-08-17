@@ -11,7 +11,6 @@ import type { CodexAppServerClientManager } from "../../../../../../src/runtime-
 import type { CodexClientThreadRouter } from "../../../../../../src/agent-execution/backends/codex/thread/codex-client-thread-router.js";
 import type { CodexThreadCleanup } from "../../../../../../src/agent-execution/backends/codex/backend/codex-thread-cleanup.js";
 import { MemberTeamContext } from "../../../../../../src/agent-team-execution/domain/member-team-context.js";
-import { TeamBackendKind } from "../../../../../../src/agent-team-execution/domain/team-backend-kind.js";
 
 const createRunContext = (
   runId: string,
@@ -38,27 +37,12 @@ const createRunContext = (
       skillAccessMode: SkillAccessMode.NONE,
       memberTeamContext: input.teamRunId
         ? new MemberTeamContext({
-            teamRunId: input.teamRunId,
-            teamDefinitionId: "team-def",
-            teamName: "Codex team",
-            teamBackendKind: TeamBackendKind.MIXED,
-            teamAddress: "/",
-            memberAddress: `/${runId}`,
-            agentRunId: runId,
-            runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-            coordinatorAddress: `/${runId}`,
-            collaboration: {
-              addressing: {
-                rootTeamRunId: input.teamRunId,
-                memberAddress: `/${runId}`,
-              },
-            },
-            executionAddress: {
+            identity: {
               rootTeamRunId: input.teamRunId,
-              taskTeamRunIds: [],
               memberAddress: `/${runId}`,
-              taskAgentRunId: null,
+              agentRunId: runId,
             },
+            collaboration: { outgoingHandoffs: [] },
           })
         : null,
     }),
@@ -385,5 +369,41 @@ describe("CodexThreadManager", () => {
         config: appServerConfig,
       }),
     );
+  });
+
+  it("surfaces a known-thread resume failure without starting a replacement thread", async () => {
+    const request = vi.fn(async (method: string) => {
+      if (method === "thread/resume") throw new Error("known thread unavailable");
+      return { thread: { id: "replacement-must-not-start" } };
+    });
+    const client = {
+      request,
+      onNotification: vi.fn(() => () => {}),
+      onServerRequest: vi.fn(() => () => {}),
+      onClose: vi.fn(() => () => {}),
+    } as unknown as CodexAppServerClient;
+    const releaseClient = vi.fn(async () => undefined);
+    const manager = new CodexThreadManager(
+      {
+        acquireClient: vi.fn(async () => client),
+        releaseClient,
+      } as unknown as CodexAppServerClientManager,
+      { cleanupThreadResources: vi.fn(async () => undefined) } as unknown as CodexThreadCleanup,
+      { registerThread: vi.fn(() => () => {}) } as unknown as CodexClientThreadRouter,
+    );
+
+    await expect(manager.restoreThread(
+      createRunContext("run-known-resume", "/tmp/workspace", {
+        threadId: "thread-known",
+      }),
+    )).rejects.toThrow("known thread unavailable");
+
+    expect(request).toHaveBeenCalledTimes(1);
+    expect(request).toHaveBeenCalledWith(
+      "thread/resume",
+      expect.objectContaining({ threadId: "thread-known" }),
+    );
+    expect(request).not.toHaveBeenCalledWith("thread/start", expect.anything());
+    expect(releaseClient).toHaveBeenCalledWith("/tmp/workspace");
   });
 });

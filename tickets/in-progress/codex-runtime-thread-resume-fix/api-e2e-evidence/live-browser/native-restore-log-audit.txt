@@ -1,0 +1,28 @@
+== restart marker ==
+553:===== FULL API PROCESS RESTART 2026-08-17T19:51Z =====
+== post-restart persisted workspace activation ==
+   724	Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix/api-e2e-evidence/live-browser/workspaces/autobyteus.
+   727	Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix/api-e2e-evidence/live-browser/workspaces/daily-autobyteus.
+   736	Created and registered workspace ID: agent_ws_c9bfe3e90110f1c25408c9879705697312635b5d31370a0468c195979a991816
+   753	Created and registered workspace ID: agent_ws_e3be5b4f78235d623d2b5497f8b0f76a3890557b28c62cd43ef8718d7e97a959
+   756	Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix/api-e2e-evidence/live-browser/workspaces/autobyteus
+   757	Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix/api-e2e-evidence/live-browser/workspaces/autobyteus.
+   758	Created and registered workspace ID: agent_ws_4620aa8612cb94757de8cae36c0a359f139c1958d0c1921f4de4dc89c8121a44
+   987	Created and registered workspace ID: agent_ws_0f4f293fa2fb8247dfbe43d314ed6affdc9bd407892e5599368bc71eb35478e1
+   999	Created and registered workspace ID: agent_ws_d3e73721624f56b741ee4463c803c8eaa7f52447a39762ddefeac622a5f5c323
+  1005	Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix/api-e2e-evidence/live-browser/workspaces/daily-autobyteus
+  1006	Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix/api-e2e-evidence/live-browser/workspaces/daily-autobyteus.
+  1007	Created and registered workspace ID: agent_ws_0d3247abf147fc0ba708cc2e08fc7c6c4416bc27d21775fc8a616faf532844d5
+== native restore signals ==
+195:AgentRuntimeState initialized for agent_id 'professor_124d75241ce246c2875c9b8e3120a067'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+395:Agent 'professor_124d75241ce246c2875c9b8e3120a067': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+441:AgentRuntimeState initialized for agent_id 'daily_assistant_a0606e36a7164d799b125b5d651c06df'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+505:Agent 'daily_assistant_a0606e36a7164d799b125b5d651c06df': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+760:AgentRuntimeState initialized for agent_id 'professor_124d75241ce246c2875c9b8e3120a067'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+768:Agent 'professor_124d75241ce246c2875c9b8e3120a067' restored and stored successfully.
+960:Agent 'professor_124d75241ce246c2875c9b8e3120a067': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+1017:AgentRuntimeState initialized for agent_id 'daily_assistant_a0606e36a7164d799b125b5d651c06df'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+1025:Agent 'daily_assistant_a0606e36a7164d799b125b5d651c06df' restored and stored successfully.
+1081:Agent 'daily_assistant_a0606e36a7164d799b125b5d651c06df': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+== interpretation ==
+The process creates its standard temp workspace at startup, but after restart both persisted non-null native roots are explicitly reconstructed/registered before each native runtime is restored; the live run state and system prompt retain those exact roots. No log associates either native run ID with the temp workspace or reports a fallback.

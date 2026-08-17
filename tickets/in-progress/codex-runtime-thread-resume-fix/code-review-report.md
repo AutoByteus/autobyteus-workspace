@@ -19,11 +19,11 @@
 - Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix/implementation-revision-record.md`
 - Relevant Implementation Revision IDs: `IR-001`, `IR-002`
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-002`
-- Current Review Round: 2
-- Trigger: `implementation_engineer` rework `IR-002` at commit `1d0452235a5d5fa1311c15e497f0115361414f4e`, addressing `CODE-FIND-001` and implementing the superseding SR-004 / ARCH-REV-003 native-continuity scope.
-- Prior Review Round Reviewed: Round 1 / `CRR-001` — Fail, `Local Fix`
-- Latest Authoritative Round: Round 2 / `CRR-002`
+- Current Code Review Revision ID: `CRR-003`
+- Current Review Round: 3
+- Trigger: `implementation_engineer` rework `IR-003` at commit `294e73390a16643d327695bfa4df06e30da84138`, addressing `CODE-FIND-002` without changing the cumulative SR-001 through SR-004 / ARCH-REV-003 behavior basis.
+- Prior Review Round Reviewed: Round 2 / `CRR-002` — Fail, `Local Fix`
+- Latest Authoritative Round: Round 3 / `CRR-003`
 - Coverage Investigation Reviewed: N/A
 - Execution Coverage Report Reviewed: N/A
 - API/E2E Revision Record Reviewed: N/A
@@ -36,18 +36,18 @@
 
 ## Review Scope
 
-- Changed implementation and behavior reviewed: the complete cumulative source delta from base `2b0f8ea99` through `IR-002`, with re-review emphasis on external-only binding, root/configured/task materialization provenance, workspace activation, native same-run restoration, nested configured composition, and preservation of SR-003 candidate/durability/provider/standalone invariants.
-- Files / areas reviewed: all cumulative changed production files listed in the source audit; the complete `ddfb494e7..1d0452235` production/test delta; root command ingress, `RootTeamRun`, `TeamRunResolver`, mixed root/subteam/member factories and contexts, native/external candidate APIs, workspace and activity owners, root binding/task publication, provider lifecycle, and seven focused unit/narrow-integration files.
-- Reviewer checks: `pnpm exec tsc -p tsconfig.build.json --noEmit` passed; the seven claimed focused files passed 29/29 on reviewer rerun; cumulative `git diff --check` passed; built-module direct-handle and `TeamRunResolver` overlap probes reproduced `CODE-FIND-002` without modifying repository source.
+- Changed implementation and behavior reviewed: the complete cumulative source delta from base `2b0f8ea99` through `IR-003`, with re-review emphasis on the configured-subteam materialization single-flight, safe retry/sticky failure policy, termination coordination, and preservation of the already-reviewed native/external/provider/durability lifecycle.
+- Files / areas reviewed: all cumulative changed production files listed in the source audit; the complete `1d0452235..294e73390` production/test delta; `MixedSubTeamMemberHandle`, `TeamRunResolver`, real mixed root/subteam composition, configured-agent readiness, and the updated/new overlap tests.
+- Reviewer checks: `pnpm exec tsc -p tsconfig.build.json --noEmit` passed; the eight focused files passed 33/33 on reviewer rerun; cumulative `git diff --check` passed; source inspection confirmed the handle installs the shared promise before factory invocation and waits for it during termination preparation.
 - Explicit exclusions: API/E2E coverage investigation and realistic browser/provider execution remain downstream-owned. The repository-wide test-typing TS6059 configuration issue and already-disclosed stale durable contracts are not reclassified by this source review.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
 - Approved requirements basis understood: Yes — the cumulative approved scope is exact Codex/Claude provider continuation plus configured native working-context restoration, requested-workspace activation, external-only team bindings, configured-descendant restore inheritance, explicitly fresh task executions, and joined first-command readiness.
-- Design-spec behavior map verified against the implementation: Mostly. `CODE-FIND-001` is resolved, and the new native activation plan matches the reviewed design for a single materialized configured path. The configured-subteam composition boundary does not join overlapping materialization callers, so the supported overlap path can reject a command before it reaches the one agent-handle readiness promise.
+- Design-spec behavior map verified against the implementation: Yes. `CODE-FIND-001` remains resolved, and IR-003 closes the configured-subteam overlap gap before both callers proceed through the existing one-agent readiness candidate.
 - Design review report and round confirmed: `ARCH-REV-003` Pass, including `PREM-ARCH-001` and `PREM-ARCH-004` reachability.
-- Behavior-basis status: `Contradicted`
-- Changed or newly discovered behavior, if any: None. `CODE-FIND-002` contradicts already-approved overlap and configured-descendant behavior; it does not establish a new product behavior.
+- Behavior-basis status: `Confirmed`
+- Changed or newly discovered behavior, if any: None.
 - Remaining material ambiguity, if any: None.
 
 | Behavior ID | Current Status | Current Implementation Path And Lifecycle Evidence | Contradicting Or Newly Discovered Supported Behavior Evidence |
@@ -60,7 +60,7 @@
 | `BEH-006` | Confirmed | Known external restore is strict; prior activity plus null binding rejects; Codex has no resume-to-start fallback. | N/A |
 | `BEH-007` | Confirmed | Claude reserved UUID creation, exact subsequent/restored resume, root durability, and stream confirmation remain intact. | N/A |
 | `BEH-008` | Confirmed | Standalone one-flight still orders exact UUID metadata durability before publication/input. | N/A |
-| `BEH-009` | Contradicted | Root restore mode reaches configured descendants; a materialized native agent with activity selects generic same-run restore. However, `MixedSubTeamMemberHandle` has no in-flight materialization promise. | Two supported overlapping `SEND_MESSAGE` commands to an as-yet-unmaterialized configured nested member both create child `TeamRun` wrappers; `TeamRunResolver` registers one and rejects the other as already registered before the shared agent readiness path. See `CODE-FIND-002`, `PREM-ARCH-001`, and `PREM-ARCH-004`. |
+| `BEH-009` | Confirmed | Root restore mode reaches configured descendants; `MixedSubTeamMemberHandle` joins overlapping child materialization callers on one exact active `TeamRun`; both resolver callers then join the configured agent readiness promise and native same-run restore/new selection. | N/A |
 | `BEH-010` | Confirmed | Non-null roots call `WorkspaceManager.ensureWorkspaceByRootPath()` before context building, activity inspection, or candidate construction; the returned ID is used. | N/A |
 
 ## Structural / Design Checks
@@ -69,13 +69,13 @@
 | --- | --- | --- | --- |
 | Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | Root provenance, workspace ownership, handle activation planning, native/external restore separation, and candidate publication follow SR-004/SR-003. | None |
 | Implementation matches approved behavior-defining supplemental artifacts | Pass | Native base/personal evidence is addressed by restore-mode propagation, workspace ensure, generic native restore, and external-only binding. | None |
-| Data-flow spine inventory clarity and preservation under shared principles | Fail | DS-012/DS-013 are clear for one resolved child, but nested configured materialization is not single-flight under the approved overlapping ingress path. | Resolve `CODE-FIND-002`. |
+| Data-flow spine inventory clarity and preservation under shared principles | Pass | DS-012/DS-013 now remain single-flight across both configured-child materialization and configured-agent candidate readiness. | None |
 | Ownership boundary preservation and clarity | Pass | Root, workspace, activity, candidate, provider, task, and standalone authorities remain separated; the missing join is local to the existing subteam-handle owner. | None beyond the local fix. |
 | Off-spine concern clarity | Pass | Workspace, activity parsing, provider protocol, cleanup, and event projection remain owned off the main line. | None |
 | Existing capability/subsystem reuse check | Pass | Existing WorkspaceManager, activity inspector, generic native restore, root persistence, and candidate lifecycle are reused. | None |
 | Reusable owned structures check | Pass | Activation mode, private plan, candidate, binding, and activity union remain tight and owned. | None |
 | Shared-structure/data-model tightness check | Pass | Runtime kind governs binding relevance; no persisted mode or widened binding DTO was introduced. | None |
-| Repeated coordination ownership check | Fail | Agent readiness is joined, but repeated configured-child materialization callers are not joined by `MixedSubTeamMemberHandle`. | Add one handle-owned in-flight child materialization promise. |
+| Repeated coordination ownership check | Pass | `MixedSubTeamMemberHandle` owns one child materialization promise and `MixedAgentMemberHandle` owns one agent readiness promise; neither policy is duplicated in the resolver/root. | None |
 | Empty indirection check | Pass | Explicit root create/restore and configured/fresh-task factory methods encode distinct subjects rather than pass-through aliases. | None |
 | Scope-appropriate separation of concerns and file responsibility clarity | Pass | Files align with the reviewed responsibility map; the 469-line member handle remains cohesive but near the hard limit. | Monitor only. |
 | Ownership-driven dependency check | Pass | No store/provider/standalone bypass or new cycle was found. | None |
@@ -87,10 +87,10 @@
 | No unjustified duplication of code / repeated structures in changed scope | Pass | No duplicated activation plan, workspace registry, or provider-binding structure was added. | None |
 | Patch-on-patch complexity control | Pass | The rework replaces ambiguous paths rather than layering a truthy-ID compatibility patch. | None |
 | Dead/obsolete code cleanup completeness in changed scope | Pass | Ambiguous `createOrRestore`, restore runtime-context reconstruction, and unused generic TeamRun factory interface are removed; searches found no production references. | None |
-| Relevant test scenarios and assertions are clear and requirement-aligned | Fail | The 29 focused tests cover native null binding, workspace ordering, restore/new/failure, root mode, task freshness, and real native restore. The configured-subteam test is sequential only and misses supported overlapping materialization. | Add a latch-based nested/subteam overlap test through the resolver or equivalent production boundary. |
+| Relevant test scenarios and assertions are clear and requirement-aligned | Pass | The 33 focused tests include latch-based real mixed composition through two `TeamRunResolver` callers, one child wrapper, one native candidate/publication, and two accepted messages, plus direct retry/sticky-failure checks. | None |
 | Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | Current fixtures and focused native handle helper are coherent; source-size thresholds are not applied to tests. | None |
 | No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | Changed tests target current explicit contracts. Broader old-suite maintenance remains disclosed for coverage investigation. | None |
-| API/E2E readiness for the next workflow stage | Fail | A normal overlapping nested configured command can be rejected before candidate readiness, so source is not ready for downstream API/E2E sign-off. | Return to `implementation_engineer`, then source re-review. |
+| API/E2E readiness for the next workflow stage | Pass | Production typing, focused lifecycle coverage, cumulative source inspection, and diff checks pass; no implementation-review finding remains. | Advance to `api_e2e_engineer` for required coverage investigation/execution. |
 
 ## Source File Size And Structure Audit (If Applicable)
 
@@ -116,7 +116,7 @@ Effective-line counts exclude blank and line-comment-only lines. Delta is added 
 | `agent-memory/services/agent-conversation-activity-inspector.ts` | 74 | Pass | Pass | Pass | Pass | None | None |
 | `agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts` | 469 | Pass | Triggered (306-line delta) | Pass — cohesive runtime-adaptation/readiness owner near limit | Pass | Monitor | Avoid unrelated growth. |
 | `agent-team-execution/backends/mixed/members/mixed-configured-member-registry.ts` | 63 | Pass | Pass | Pass | Pass | None | None |
-| `agent-team-execution/backends/mixed/members/mixed-sub-team-member-handle.ts` | 69 | Pass | Pass | Fail — no in-flight materialization join | Pass | `Local Fix` / `CODE-FIND-002` | Join concurrent child materialization. |
+| `agent-team-execution/backends/mixed/members/mixed-sub-team-member-handle.ts` | 94 | Pass | Pass | Pass — child materialization and termination coordination stay handle-owned | Pass | None | None |
 | `agent-team-execution/backends/mixed/members/mixed-task-agent-execution-registry.ts` | 165 | Pass | Pass | Pass | Pass | None | None |
 | `agent-team-execution/backends/mixed/members/mixed-task-team-execution-registry.ts` | 166 | Pass | Pass | Pass | Pass | None | None |
 | `agent-team-execution/backends/mixed/mixed-sub-team-run-factory.ts` | 47 | Pass | Pass | Pass | Pass | None | None |
@@ -172,58 +172,44 @@ None.
 | `PREM-ARCH-003` | Confirmed | N/A |
 | `PREM-ARCH-004` | Confirmed | N/A |
 
-No new or reclassified premise is required. `CODE-FIND-002` uses the independently supported overlapping `SEND_MESSAGE` path from `PREM-ARCH-001` and the configured-descendant path from `PREM-ARCH-004`.
+No new or reclassified premise is required. IR-003 directly exercises the independently supported overlapping `SEND_MESSAGE` and configured-descendant paths from `PREM-ARCH-001` and `PREM-ARCH-004`.
 
 ## Review Scorecard (Mandatory)
 
-- Overall score (`/10`): 8.89
-- Overall score (`/100`): 88.9
-- Score calculation note: Simple average of the ten categories. The supported nested-overlap defect independently fails review regardless of the average.
+- Overall score (`/10`): 9.17
+- Overall score (`/100`): 91.7
+- Score calculation note: Simple average of the ten categories. Every category meets the clean-pass target.
 
 | Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | ---: | --- | --- | --- |
-| `1` | `Data-Flow Spine Inventory and Clarity` | 8.6 | External, native, task, standalone, and failure spines are otherwise coherent. | Configured-descendant materialization forks under overlap before the shared agent spine. | Join one child materialization at the configured subteam handle. |
-| `2` | `Ownership Clarity and Boundary Encapsulation` | 8.8 | Major authorities remain explicit and correctly separated. | The subteam handle owns child materialization but does not own its in-flight coordination. | Add the missing handle-owned promise without widening the root or factory. |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 9.2 | External, native, task, standalone, nested composition, and failure spines are coherent through durability and input admission. | No material spine gap remains; complexity is inherent to the supported lifecycle. | Preserve the current latch coverage as durable suites are maintained. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.3 | Root, subteam handle, agent handle, manager, workspace, activity, task, standalone, and provider authorities are explicit and non-overlapping. | No material ownership weakness found. | None. |
 | `3` | `API / Interface / Query / Command Clarity` | 9.2 | Fresh/restore and configured/fresh-task interfaces are explicit; native/external candidate APIs remain distinct. | No material interface ambiguity remains. | None beyond preserving current shapes. |
 | `4` | `Separation of Concerns and File Placement` | 9.1 | The rework follows the reviewed file map and removes conflicting abstraction. | Several cohesive lifecycle files are near size limits. | Avoid unrelated growth. |
 | `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.2 | Mode, plan, candidate, binding, and runtime-kind semantics are tight. | No material data-model weakness found. | None. |
 | `6` | `Naming Quality and Local Readability` | 9.2 | Lifecycle and subject names make the new routing readable. | The large member handle remains dense but coherent. | Keep the local follow-up narrow. |
-| `7` | `API/E2E Readiness` | 8.4 | Production typing and 29 focused tests pass, including real native restore. | The nested overlap case is absent and currently rejects one supported command. | Add focused coverage and re-review before API/E2E. |
-| `8` | `Runtime Correctness And Behavioral Fidelity` | 8.2 | `CODE-FIND-001`, native restore, workspace ordering, and task freshness are correctly implemented. | Two first commands to an unmaterialized configured descendant can produce split TeamRun wrappers and one rejection. | Enforce one materialization result for all overlapping callers. |
+| `7` | `API/E2E Readiness` | 9.0 | Production typing and 33 focused tests pass, including real native restore and the exact nested overlap path. | Broader durable-suite maintenance and realistic provider/browser execution remain intentionally downstream. | Proceed with the required coverage investigation and execution. |
+| `8` | `Runtime Correctness And Behavioral Fidelity` | 9.1 | Native/external identity, workspace ordering, exact restore, task freshness, candidate durability, and both readiness single-flights align with the approved behavior. | Realistic multi-provider restart evidence is still required downstream, not a source-review defect. | Validate through API/E2E. |
 | `9` | `No Backward-Compatibility / No Legacy Retention` | 9.3 | Obsolete fallback, placeholder, refresh, and ambiguous factory paths are cleanly removed. | No material legacy weakness found. | None. |
-| `10` | `Cleanup Completeness` | 8.9 | Intended obsolete source is removed and normal candidate cleanup remains sound. | The overlap race temporarily leaves distinct active child wrappers under resolver/handle ownership until teardown. | Prevent duplicate child construction rather than cleaning it after divergence. |
+| `10` | `Cleanup Completeness` | 9.1 | Obsolete source is removed; candidate and child lifecycle owners prevent duplicate publication/materialization and coordinate teardown. | Broader stale-test cleanup remains downstream-owned. | Complete coverage maintenance after investigation. |
 
 ## Findings
 
-### `CODE-FIND-002` — Configured subteam materialization is not single-flight, so an overlapping first command is rejected
-
-- Severity: Medium
-- Classification: `Local Fix`
-- Affected approved behavior / requirements: `BEH-009`; `REQ-012`; `AC-019`; retained SR-003 joined-readiness contract; `PREM-ARCH-001` and `PREM-ARCH-004`.
-- Supported initiating trigger and forward production path: On the supported team-conversation surface, a user or normal system delivery sends two `SEND_MESSAGE` commands close together to an agent inside the same configured nested team before that child TeamRun is materialized. Each WebSocket command independently reaches `RootTeamRun.executeAgentCommand()` -> `requireContainingTeamRun()` -> `TeamRunResolver.requireConfigured()`. Both calls observe no registered child and call the same `MixedSubTeamMemberHandle.getOrCreateTeamRun()`. Because the handle stores only the completed `childRun`, each call invokes `materializeConfiguredChild()` and receives a different active wrapper. `TeamRunResolver.registerActive()` accepts the first and rejects the second as already registered, so the second normal command never reaches the configured agent's shared readiness/candidate promise.
-- Source evidence:
-  - `src/services/agent-streaming/agent-team-stream-handler.ts:159-175` independently accepts and awaits each normal message.
-  - `src/agent-team-execution/services/team-run-resolver.ts:31-50` checks the active directory before awaiting child materialization, then registers the returned wrapper; lines 86-90 reject a different wrapper for the same TeamRun ID.
-  - `src/agent-team-execution/backends/mixed/members/mixed-sub-team-member-handle.ts:64-74` checks only completed `childRun`, awaits the factory, and has no in-flight promise to join callers.
-  - `tests/unit/agent-team-execution/mixed-sub-team-member-handle.test.ts` validates sequential reuse only; it does not latch overlapping calls.
-- Reviewer execution evidence: a built-module production-boundary probe invoked two concurrent `TeamRunResolver.requireConfigured("nested")` calls. Before resolution it observed `factoryCallsBeforeResolution: 2`; after resolving both wrappers, one call fulfilled and the other rejected with `TeamRun 'nested' is already registered.` A direct handle probe likewise produced two distinct promises and two distinct runs.
-- Material consequence: A supported overlapping first message to a configured descendant is dropped/rejected before native restore or input admission. The parent handle and root resolver can also temporarily reference different active child wrappers, weakening lifecycle/status coherence until root teardown.
-- Required action: Make `MixedSubTeamMemberHandle` join exactly one in-flight child materialization promise installed before the factory call, set `childRun`/`childRuntimeContext` once, and clear a failed attempt only when retry is safe. Add a latch-based test through `TeamRunResolver.requireConfigured()` or the equivalent production boundary proving two overlapping callers cause one factory call, receive the same TeamRun, avoid registration conflict, and proceed to one configured-agent readiness candidate.
-- Why proportionate: The reviewed design already assigns configured-child materialization to this handle and already approves joined readiness. The correction is bounded to enforcing that invariant at the existing owner; no new persisted state, root policy, or design change is needed.
+None. `CODE-FIND-001` and `CODE-FIND-002` are resolved; their verification history is preserved in `code-review-revision-record.md`.
 
 ## Classification
 
-`Local Fix` — the cumulative design is adequate; the remaining defect is a bounded missing single-flight at the existing configured-subteam materialization owner.
+N/A — Pass.
 
 ## Recommended Recipient
 
-`implementation_engineer`
+`api_e2e_engineer`
 
-The source correction and focused overlap evidence must return through implementation review before API/E2E begins.
+Proceed with the mandatory coverage investigation, durable coverage decisions, environment setup, and realistic execution. If repository-resident durable coverage changes, return through proportional code review before delivery.
 
 ## Residual Risks
 
-- Existing focused durable suites still contain obsolete contracts and require downstream coverage classification after source passes.
+- Existing focused durable suites still contain obsolete contracts and require downstream coverage classification.
 - Historical external null bindings, standalone Claude placeholders, and overwritten native snapshots remain intentionally non-recoverable.
 - Native activity with missing/corrupt working state and exact provider restore failures remain fail-closed by design.
 - Realistic isolated Codex, Claude, native AutoByteus, and standalone Claude restart coverage remains outstanding.
@@ -231,10 +217,10 @@ The source correction and focused overlap evidence must return through implement
 
 ## Latest Authoritative Result
 
-- Review Decision: **Fail**
+- Review Decision: **Pass**
 - Review Entry Point: `Implementation Review`
 - Material-Premise Gate (`Pass`/`Fail`/`Blocked`): `Pass`
-- Score Summary: `8.89/10` (`88.9/100`); API/E2E readiness and runtime fidelity remain below clean-pass threshold because of `CODE-FIND-002`.
+- Score Summary: `9.17/10` (`91.7/100`); every mandatory category meets the clean-pass threshold.
 - Failure Origin (when applicable): N/A — implementation re-review.
-- Recommended Recipient (when applicable): `implementation_engineer`
-- Notes: `CODE-FIND-001` is resolved and the SR-004 native/external lifecycle is otherwise aligned. Do not advance to API/E2E until configured-subteam materialization joins supported overlapping callers and the local fix passes source re-review.
+- Recommended Recipient (when applicable): `api_e2e_engineer`
+- Notes: `CODE-FIND-001` and `CODE-FIND-002` are resolved. The cumulative implementation is source-review ready for API/E2E coverage investigation and execution; no API/E2E sign-off is implied by this pass.

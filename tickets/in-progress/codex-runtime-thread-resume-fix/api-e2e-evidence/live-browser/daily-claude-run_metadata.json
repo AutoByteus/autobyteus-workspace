@@ -1,0 +1,16 @@
+{
+  "runId": "daily_assistant_2a1686d4c9d14c45b367a52e7da36873",
+  "agentDefinitionId": "daily-assistant",
+  "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix/api-e2e-evidence/live-browser/workspaces/daily-claude",
+  "memoryDir": "/private/tmp/codex-runtime-thread-resume-fix-api-e2e-20260817/server-data/memory/agents/daily_assistant_2a1686d4c9d14c45b367a52e7da36873",
+  "llmModelIdentifier": "haiku",
+  "llmConfig": null,
+  "autoExecuteTools": true,
+  "skillAccessMode": "PRELOADED_ONLY",
+  "runtimeKind": "claude_agent_sdk",
+  "platformAgentRunId": "0ecffbd0-a6db-4fbf-8a2f-c66b29f578cc",
+  "preparedAt": "2026-08-17T19:49:37.587Z",
+  "preparedExpiresAt": "2026-08-18T19:49:37.587Z",
+  "startedAt": "2026-08-17T19:49:37.613Z",
+  "applicationExecutionContext": null
+}

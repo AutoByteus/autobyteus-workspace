@@ -8,25 +8,38 @@ const createActiveRun = (input: {
   runId: string;
   runtimeKind: RuntimeKind;
   platformAgentRunId?: string | null;
-  memoryDir?: string | null;
-  terminateResult?: { accepted: boolean };
 }) => ({
   runId: input.runId,
   runtimeKind: input.runtimeKind,
-  config: {
-    memoryDir: input.memoryDir ?? null,
-  },
-  getPlatformAgentRunId: vi.fn().mockReturnValue(input.platformAgentRunId ?? null),
-  terminate: vi
-    .fn()
-    .mockResolvedValue(input.terminateResult ?? { accepted: true }),
+  config: { memoryDir: `/tmp/memory/agents/${input.runId}` },
+  getPlatformAgentRunId: vi.fn(() => input.platformAgentRunId ?? null),
+  isActive: vi.fn(() => true),
 });
+
+const createCandidate = (input: {
+  runId: string;
+  runtimeKind: RuntimeKind;
+  platformAgentRunId: string | null;
+}) => {
+  const run = createActiveRun(input);
+  return {
+    run,
+    candidate: {
+      runId: input.runId,
+      runtimeKind: input.runtimeKind,
+      platformAgentRunId: input.platformAgentRunId,
+      commitPublication: vi.fn(() => run),
+      abort: vi.fn(async () => ({ kind: "aborted" as const })),
+    },
+  };
+};
 
 const createMetadata = (input: {
   runId: string;
   runtimeKind: RuntimeKind;
   workspaceRootPath?: string;
   platformAgentRunId?: string | null;
+  startedAt?: string | null;
 }): AgentRunMetadata => ({
   runId: input.runId,
   agentDefinitionId: "agent-def-1",
@@ -38,118 +51,98 @@ const createMetadata = (input: {
   skillAccessMode: SkillAccessMode.NONE,
   runtimeKind: input.runtimeKind,
   platformAgentRunId: input.platformAgentRunId ?? null,
-  lastKnownStatus: "IDLE",
+  preparedAt: "2026-08-17T20:00:00.000Z",
+  preparedExpiresAt: null,
+  startedAt: input.startedAt ?? null,
+  applicationExecutionContext: null,
 });
 
-const createRunHistoryHarness = (
-  initialMetadata: AgentRunMetadata[] = [],
-) => {
+const createRunHistoryHarness = (initialMetadata: AgentRunMetadata[] = []) => {
   const metadataByRunId = new Map<string, AgentRunMetadata>(
     initialMetadata.map((metadata) => [metadata.runId, { ...metadata }]),
   );
   const metadataService = {
-    writeMetadata: vi.fn().mockImplementation(
-      async (runId: string, metadata: AgentRunMetadata) => {
-        metadataByRunId.set(runId, { ...metadata, runId });
-      },
-    ),
-    readMetadata: vi.fn().mockImplementation(async (runId: string) => {
+    writeMetadata: vi.fn(async (runId: string, metadata: AgentRunMetadata) => {
+      metadataByRunId.set(runId, { ...metadata, runId });
+    }),
+    readMetadata: vi.fn(async (runId: string) => {
       const metadata = metadataByRunId.get(runId);
       return metadata ? { ...metadata } : null;
     }),
+    readMetadataState: vi.fn(async (runId: string) => {
+      const metadata = metadataByRunId.get(runId);
+      return metadata
+        ? { kind: "present" as const, metadata: { ...metadata } }
+        : { kind: "missing" as const };
+    }),
   };
   const historyCatalogService = {
-    recordPreparedRun: vi.fn().mockImplementation(
-      async (input: { runId: string; metadata: AgentRunMetadata }) => {
-        metadataByRunId.set(input.runId, {
-          ...input.metadata,
-          runId: input.runId,
-        });
-      },
-    ),
-    recordRunStarted: vi.fn().mockImplementation(
-      async (input: {
-        runId: string;
-        runtimeKind?: RuntimeKind;
-        platformAgentRunId?: string | null;
-        startedAt?: string;
-      }) => {
-        const metadata = metadataByRunId.get(input.runId);
-        if (!metadata) {
-          return null;
-        }
-        const updated: AgentRunMetadata = {
-          ...metadata,
-          runtimeKind: input.runtimeKind ?? metadata.runtimeKind,
-          platformAgentRunId:
-            input.platformAgentRunId === undefined
-              ? metadata.platformAgentRunId
-              : input.platformAgentRunId,
-          startedAt: input.startedAt ?? metadata.startedAt ?? new Date(0).toISOString(),
-        };
-        metadataByRunId.set(input.runId, updated);
-        return { ...updated };
-      },
-    ),
-    recordRunSummary: vi.fn().mockResolvedValue(undefined),
-    recordRunTerminated: vi.fn().mockResolvedValue(undefined),
+    recordPreparedRun: vi.fn(async (input: { runId: string; metadata: AgentRunMetadata }) => {
+      metadataByRunId.set(input.runId, { ...input.metadata, runId: input.runId });
+    }),
+    recordRunStarted: vi.fn(async (input: AgentRunMetadata) => {
+      const metadata = metadataByRunId.get(input.runId);
+      if (!metadata) return null;
+      const updated: AgentRunMetadata = {
+        ...metadata,
+        runtimeKind: input.runtimeKind ?? metadata.runtimeKind,
+        platformAgentRunId: input.platformAgentRunId,
+        startedAt: input.startedAt ?? metadata.startedAt ?? new Date(0).toISOString(),
+      };
+      metadataByRunId.set(input.runId, updated);
+      return { ...updated };
+    }),
+    recordRunSummary: vi.fn(async () => undefined),
+    recordRunTerminated: vi.fn(async () => undefined),
   };
-
-  return {
-    metadataByRunId,
-    metadataService,
-    historyCatalogService,
-  };
+  return { metadataByRunId, metadataService, historyCatalogService };
 };
 
-afterEach(() => {
-  vi.clearAllMocks();
+const workspaceManager = (rootPath = "/tmp/project") => ({
+  ensureWorkspaceByRootPath: vi.fn(async () => ({
+    workspaceId: "workspace-123",
+    getBasePath: () => rootPath,
+  })),
+  getWorkspaceById: vi.fn(),
 });
+
+afterEach(() => vi.clearAllMocks());
 
 describe("AgentRunService integration", () => {
   it.each([
-    [RuntimeKind.AUTOBYTEUS, "autobyteus", "native-123"],
+    [RuntimeKind.AUTOBYTEUS, "autobyteus", null],
     [RuntimeKind.CODEX_APP_SERVER, "codex_app_server", "thread-123"],
-    [RuntimeKind.CLAUDE_AGENT_SDK, "claude_agent_sdk", "session-123"],
+    [RuntimeKind.CLAUDE_AGENT_SDK, "claude_agent_sdk", "11111111-1111-4111-8111-111111111111"],
   ] as const)(
-    "creates a %s run, ensures the workspace, and persists metadata/history",
+    "prepares, durably starts, and only then publishes a %s run",
     async (runtimeKind, runtimeKindInput, platformAgentRunId) => {
+      const runId = `run-create-${runtimeKind}`;
+      const { run, candidate } = createCandidate({ runId, runtimeKind, platformAgentRunId });
       const agentRunManager = {
-        createAgentRun: vi.fn().mockImplementation(
-          async (config: { memoryDir?: string | null }, preferredRunId?: string | null) =>
-            createActiveRun({
-              runId: preferredRunId ?? `run-create-${runtimeKind}`,
-              runtimeKind,
-              platformAgentRunId,
-              memoryDir:
-                config.memoryDir ??
-                `/tmp/memory/agents/${preferredRunId ?? `run-create-${runtimeKind}`}`,
-            }),
-        ),
-        getActiveRun: vi.fn().mockReturnValue(null),
-        restoreAgentRun: vi.fn(),
-        hasActiveRun: vi.fn().mockReturnValue(false),
+        getActiveRun: vi.fn(() => null),
+        hasActiveRun: vi.fn(() => false),
+        prepareNewAgentRun: vi.fn(async () => candidate),
+        prepareRestoreAgentRun: vi.fn(),
+        prepareRestoreAgentRunFromPlatformState: vi.fn(),
       };
-      const { metadataByRunId, metadataService, historyCatalogService } =
-        createRunHistoryHarness();
-      const workspaceManager = {
-        ensureWorkspaceByRootPath: vi.fn().mockResolvedValue({
-          workspaceId: "workspace-123",
-          getBasePath: () => "/tmp/project",
-        }),
-        getWorkspaceById: vi.fn(),
-      };
+      const history = createRunHistoryHarness();
+      const workspaces = workspaceManager();
       const service = new AgentRunService("/tmp/memory", {
         agentRunManager: agentRunManager as never,
-        metadataService: metadataService as never,
-        historyCatalogService: historyCatalogService as never,
-        workspaceManager: workspaceManager as never,
-        agentDefinitionService: {
-          getFreshAgentDefinitionById: vi.fn().mockResolvedValue({
-            name: "Create Agent",
-            role: "Tester",
-          }),
-        } as never,
+        metadataService: history.metadataService as never,
+        historyCatalogService: history.historyCatalogService as never,
+        workspaceManager: workspaces as never,
+        agentRunIdentityAllocator: {
+          allocateForAgentDefinition: vi.fn(async () => runId),
+        },
+      });
+
+      history.historyCatalogService.recordRunStarted.mockImplementationOnce(async (input: AgentRunMetadata) => {
+        expect(candidate.commitPublication).not.toHaveBeenCalled();
+        const current = history.metadataByRunId.get(input.runId)!;
+        const updated = { ...current, ...input };
+        history.metadataByRunId.set(input.runId, updated);
+        return updated;
       });
 
       const result = await service.createAgentRun({
@@ -162,237 +155,164 @@ describe("AgentRunService integration", () => {
         runtimeKind: runtimeKindInput,
       });
 
-      const expectedPreparedRunId = agentRunManager.createAgentRun.mock.calls[0]?.[1];
-      expect(result.runId).toBe(expectedPreparedRunId);
-      expect(workspaceManager.ensureWorkspaceByRootPath).toHaveBeenCalledWith("/tmp/project");
-      expect(agentRunManager.createAgentRun).toHaveBeenCalledWith(
-        expect.objectContaining({
+      expect(result).toEqual({ runId });
+      expect(run.runId).toBe(runId);
+      expect(workspaces.ensureWorkspaceByRootPath).toHaveBeenCalledWith("/tmp/project");
+      expect(agentRunManager.prepareNewAgentRun).toHaveBeenCalledWith({
+        runId,
+        config: expect.objectContaining({
           runtimeKind,
           workspaceId: "workspace-123",
-          memoryDir: `/tmp/memory/agents/${expectedPreparedRunId}`,
+          memoryDir: `/tmp/memory/agents/${runId}`,
         }),
-        expectedPreparedRunId,
-      );
-      expect(metadataByRunId.get(expectedPreparedRunId)).toEqual(
+      });
+      expect(history.metadataByRunId.get(runId)).toEqual(expect.objectContaining({
+        runId,
+        runtimeKind,
+        platformAgentRunId,
+        preparedAt: expect.any(String),
+        startedAt: expect.any(String),
+      }));
+      expect(history.historyCatalogService.recordPreparedRun).toHaveBeenCalledWith(
         expect.objectContaining({
-          runId: expectedPreparedRunId,
-          runtimeKind,
-          workspaceRootPath: "/tmp/project",
-          memoryDir: `/tmp/memory/agents/${expectedPreparedRunId}`,
-          platformAgentRunId,
-          preparedAt: expect.any(String),
-          startedAt: expect.any(String),
+          runId,
+          metadata: expect.objectContaining({ platformAgentRunId: null, startedAt: null }),
         }),
       );
-      expect(historyCatalogService.recordPreparedRun).toHaveBeenCalledWith(
-        expect.objectContaining({
-          runId: expectedPreparedRunId,
-          metadata: expect.objectContaining({
-            runId: expectedPreparedRunId,
-            preparedAt: expect.any(String),
-            startedAt: null,
-          }),
-        }),
-      );
-      expect(historyCatalogService.recordRunStarted).toHaveBeenCalledWith(
-        expect.objectContaining({
-          runId: expectedPreparedRunId,
-          runtimeKind,
-          platformAgentRunId,
-        }),
-      );
+      expect(candidate.commitPublication).toHaveBeenCalledOnce();
     },
   );
 
   it.each([
-    [RuntimeKind.AUTOBYTEUS, "native-restore-1", null],
-    [RuntimeKind.CODEX_APP_SERVER, "thread-restore-1", "threadId"],
-    [RuntimeKind.CLAUDE_AGENT_SDK, "session-restore-1", "sessionId"],
+    [RuntimeKind.AUTOBYTEUS, "native-restore-1"],
+    [RuntimeKind.CODEX_APP_SERVER, "thread-restore-1"],
+    [RuntimeKind.CLAUDE_AGENT_SDK, "22222222-2222-4222-8222-222222222222"],
   ] as const)(
-    "restores a %s run with the correct runtime context shape and persists refreshed metadata",
-    async (runtimeKind, platformAgentRunId, expectedContextKey) => {
-      const metadata = createMetadata({
-        runId: `run-restore-${runtimeKind}`,
+    "restores a started %s run through the correct exact continuation path",
+    async (runtimeKind, persistedPlatformAgentRunId) => {
+      const runId = `run-restore-${runtimeKind}`;
+      const expectedPlatformAgentRunId = runtimeKind === RuntimeKind.AUTOBYTEUS
+        ? null
+        : persistedPlatformAgentRunId;
+      const persisted = createMetadata({
+        runId,
         runtimeKind,
         workspaceRootPath: `/tmp/${runtimeKind}`,
-        platformAgentRunId,
+        platformAgentRunId: persistedPlatformAgentRunId,
+        startedAt: "2026-08-17T20:05:00.000Z",
       });
-      const restoredRun = createActiveRun({
-        runId: metadata.runId,
+      const { run, candidate } = createCandidate({
+        runId,
         runtimeKind,
-        platformAgentRunId: `${platformAgentRunId}-new`,
-        memoryDir: metadata.memoryDir,
+        platformAgentRunId: expectedPlatformAgentRunId,
       });
       const agentRunManager = {
-        createAgentRun: vi.fn(),
-        getActiveRun: vi.fn().mockReturnValue(null),
-        restoreAgentRun: vi.fn().mockResolvedValue(restoredRun),
-        hasActiveRun: vi.fn().mockReturnValue(false),
+        getActiveRun: vi.fn(() => null),
+        hasActiveRun: vi.fn(() => false),
+        prepareNewAgentRun: vi.fn(),
+        prepareRestoreAgentRun: vi.fn(async () => candidate),
+        prepareRestoreAgentRunFromPlatformState: vi.fn(async () => candidate),
       };
-      const { metadataService, historyCatalogService } =
-        createRunHistoryHarness([metadata]);
-      const workspaceManager = {
-        ensureWorkspaceByRootPath: vi.fn().mockResolvedValue({
-          workspaceId: `ws-${runtimeKind}`,
-          getBasePath: () => metadata.workspaceRootPath,
-        }),
-        getWorkspaceById: vi.fn(),
-      };
+      const history = createRunHistoryHarness([persisted]);
+      const workspaces = workspaceManager(persisted.workspaceRootPath);
       const service = new AgentRunService("/tmp/memory", {
         agentRunManager: agentRunManager as never,
-        metadataService: metadataService as never,
-        historyCatalogService: historyCatalogService as never,
-        workspaceManager: workspaceManager as never,
+        metadataService: history.metadataService as never,
+        historyCatalogService: history.historyCatalogService as never,
+        workspaceManager: workspaces as never,
       });
 
-      const result = await service.restoreAgentRun(metadata.runId);
-
-      expect(result.run).toBe(restoredRun);
-      const restoredContext = agentRunManager.restoreAgentRun.mock.calls[0]?.[0];
-      expect(restoredContext.runId).toBe(metadata.runId);
-      expect(restoredContext.config.workspaceId).toBe(`ws-${runtimeKind}`);
-      expect(restoredContext.config.memoryDir).toBe(metadata.memoryDir);
-      if (expectedContextKey) {
-        expect(restoredContext.runtimeContext[expectedContextKey]).toBe(platformAgentRunId);
+      await expect(service.restoreAgentRun(runId)).resolves.toMatchObject({
+        run,
+        metadata: { platformAgentRunId: expectedPlatformAgentRunId },
+      });
+      if (runtimeKind === RuntimeKind.AUTOBYTEUS) {
+        const restoredContext = agentRunManager.prepareRestoreAgentRun.mock.calls[0]?.[0];
+        expect(restoredContext).toMatchObject({
+          runId,
+          config: expect.objectContaining({ workspaceId: "workspace-123", memoryDir: persisted.memoryDir }),
+          runtimeContext: null,
+        });
+        expect(agentRunManager.prepareRestoreAgentRunFromPlatformState).not.toHaveBeenCalled();
       } else {
-        expect(restoredContext.runtimeContext).toBeNull();
+        expect(agentRunManager.prepareRestoreAgentRunFromPlatformState).toHaveBeenCalledWith({
+          runId,
+          config: expect.objectContaining({ workspaceId: "workspace-123", memoryDir: persisted.memoryDir }),
+          platformAgentRunId: persistedPlatformAgentRunId,
+        });
+        expect(agentRunManager.prepareRestoreAgentRun).not.toHaveBeenCalled();
       }
-      expect(historyCatalogService.recordRunStarted).toHaveBeenCalledWith(
-        expect.objectContaining({
-          runId: metadata.runId,
-          runtimeKind,
-          platformAgentRunId: `${platformAgentRunId}-new`,
-        }),
-      );
+      expect(agentRunManager.prepareNewAgentRun).not.toHaveBeenCalled();
+      expect(candidate.commitPublication).toHaveBeenCalledOnce();
     },
   );
 
-  it("rejects restore when the run is already active", async () => {
-    const activeRun = createActiveRun({
+  it("returns an already-active run only when its durable metadata is present", async () => {
+    const persisted = createMetadata({
       runId: "run-active",
       runtimeKind: RuntimeKind.AUTOBYTEUS,
+      startedAt: "2026-08-17T20:05:00.000Z",
     });
-    const { metadataService, historyCatalogService } = createRunHistoryHarness();
+    const activeRun = createActiveRun({ runId: persisted.runId, runtimeKind: persisted.runtimeKind });
+    const history = createRunHistoryHarness([persisted]);
     const service = new AgentRunService("/tmp/memory", {
-      agentRunManager: {
-        createAgentRun: vi.fn(),
-        getActiveRun: vi.fn().mockReturnValue(activeRun),
-        restoreAgentRun: vi.fn(),
-        hasActiveRun: vi.fn().mockReturnValue(false),
-      } as never,
-      metadataService: metadataService as never,
-      historyCatalogService: historyCatalogService as never,
-      workspaceManager: {
-        ensureWorkspaceByRootPath: vi.fn(),
-        getWorkspaceById: vi.fn(),
-      } as never,
+      agentRunManager: { getActiveRun: vi.fn(() => activeRun) } as never,
+      metadataService: history.metadataService as never,
+      historyCatalogService: history.historyCatalogService as never,
+      workspaceManager: workspaceManager() as never,
     });
 
-    await expect(service.restoreAgentRun("run-active")).rejects.toThrow("already active");
+    await expect(service.restoreAgentRun(persisted.runId)).resolves.toEqual({
+      run: activeRun,
+      metadata: persisted,
+    });
   });
 
-  it("terminates native and runtime runs with the correct route and updates history/metadata", async () => {
-    const { metadataService, historyCatalogService } = createRunHistoryHarness([
-      createMetadata({
-        runId: "run-term-1",
-        runtimeKind: RuntimeKind.AUTOBYTEUS,
-        platformAgentRunId: "native-1",
-      }),
-      createMetadata({
-        runId: "run-term-2",
-        runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
-        platformAgentRunId: "session-2",
-      }),
-    ]);
-    const nativeRun = createActiveRun({
-      runId: "run-term-1",
-      runtimeKind: RuntimeKind.AUTOBYTEUS,
-      platformAgentRunId: "native-1-updated",
-    });
-    const runtimeRun = createActiveRun({
-      runId: "run-term-2",
-      runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
-      platformAgentRunId: "session-2-updated",
-    });
+  it("terminates native and external active runs through the manager and records termination", async () => {
+    const nativeRun = createActiveRun({ runId: "run-term-native", runtimeKind: RuntimeKind.AUTOBYTEUS });
+    const externalRun = createActiveRun({ runId: "run-term-external", runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK });
     const agentRunManager = {
-      createAgentRun: vi.fn(),
-      getActiveRun: vi
-        .fn()
-        .mockImplementation((runId: string) => {
-          if (runId === "run-term-1") return nativeRun;
-          if (runId === "run-term-2") return runtimeRun;
-          return null;
-        }),
-      restoreAgentRun: vi.fn(),
-      hasActiveRun: vi.fn().mockReturnValue(false),
+      getActiveRun: vi.fn((runId: string) => runId === nativeRun.runId
+        ? nativeRun
+        : runId === externalRun.runId ? externalRun : null),
+      terminateAgentRun: vi.fn(async () => true),
+      hasActiveRun: vi.fn(() => false),
     };
+    const history = createRunHistoryHarness();
     const service = new AgentRunService("/tmp/memory", {
       agentRunManager: agentRunManager as never,
-      metadataService: metadataService as never,
-      historyCatalogService: historyCatalogService as never,
-      workspaceManager: {
-        ensureWorkspaceByRootPath: vi.fn(),
-        getWorkspaceById: vi.fn(),
-      } as never,
+      metadataService: history.metadataService as never,
+      historyCatalogService: history.historyCatalogService as never,
+      workspaceManager: workspaceManager() as never,
     });
 
-    const nativeResult = await service.terminateAgentRun("run-term-1");
-    const runtimeResult = await service.terminateAgentRun("run-term-2");
-
-    expect(nativeResult).toMatchObject({
+    await expect(service.terminateAgentRun(nativeRun.runId)).resolves.toMatchObject({
       success: true,
       route: "native",
       runtimeKind: RuntimeKind.AUTOBYTEUS,
     });
-    expect(runtimeResult).toMatchObject({
+    await expect(service.terminateAgentRun(externalRun.runId)).resolves.toMatchObject({
       success: true,
       route: "runtime",
       runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
     });
-    expect(metadataService.writeMetadata).toHaveBeenCalledWith(
-      "run-term-1",
-      expect.objectContaining({
-        lastKnownStatus: "IDLE",
-        platformAgentRunId: "native-1-updated",
-      }),
-    );
-    expect(metadataService.writeMetadata).toHaveBeenCalledWith(
-      "run-term-2",
-      expect.objectContaining({
-        lastKnownStatus: "IDLE",
-        platformAgentRunId: "session-2-updated",
-      }),
-    );
-    expect(historyCatalogService.recordRunTerminated).toHaveBeenCalledTimes(2);
-    expect(historyCatalogService.recordRunTerminated).toHaveBeenCalledWith({
-      runId: "run-term-1",
-    });
-    expect(historyCatalogService.recordRunTerminated).toHaveBeenCalledWith({
-      runId: "run-term-2",
-    });
+    expect(agentRunManager.terminateAgentRun).toHaveBeenCalledTimes(2);
+    expect(history.historyCatalogService.recordRunTerminated).toHaveBeenCalledTimes(2);
   });
 
-  it("returns not_found when termination target is missing or unaccepted", async () => {
-    const deniedRun = createActiveRun({
-      runId: "run-denied",
-      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-      terminateResult: { accepted: false },
-    });
-    const { metadataService, historyCatalogService } = createRunHistoryHarness();
+  it("returns not_found for a missing run or a manager-rejected termination", async () => {
+    const deniedRun = createActiveRun({ runId: "run-denied", runtimeKind: RuntimeKind.CODEX_APP_SERVER });
+    const history = createRunHistoryHarness();
+    const agentRunManager = {
+      getActiveRun: vi.fn((runId: string) => runId === deniedRun.runId ? deniedRun : null),
+      terminateAgentRun: vi.fn(async () => false),
+      hasActiveRun: vi.fn(() => false),
+    };
     const service = new AgentRunService("/tmp/memory", {
-      agentRunManager: {
-        createAgentRun: vi.fn(),
-        getActiveRun: vi
-          .fn()
-          .mockImplementation((runId: string) => (runId === "run-denied" ? deniedRun : null)),
-        restoreAgentRun: vi.fn(),
-      } as never,
-      metadataService: metadataService as never,
-      historyCatalogService: historyCatalogService as never,
-      workspaceManager: {
-        ensureWorkspaceByRootPath: vi.fn(),
-        getWorkspaceById: vi.fn(),
-      } as never,
+      agentRunManager: agentRunManager as never,
+      metadataService: history.metadataService as never,
+      historyCatalogService: history.historyCatalogService as never,
+      workspaceManager: workspaceManager() as never,
     });
 
     await expect(service.terminateAgentRun("missing-run")).resolves.toMatchObject({
@@ -400,41 +320,39 @@ describe("AgentRunService integration", () => {
       route: "not_found",
       runtimeKind: null,
     });
-    await expect(service.terminateAgentRun("run-denied")).resolves.toMatchObject({
+    await expect(service.terminateAgentRun(deniedRun.runId)).resolves.toMatchObject({
       success: false,
       route: "not_found",
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
     });
+    expect(history.historyCatalogService.recordRunTerminated).not.toHaveBeenCalled();
   });
 
-  it("rejects unsupported runtime kinds during create", async () => {
-    const { metadataService, historyCatalogService } = createRunHistoryHarness();
+  it("rejects unsupported runtime kinds before allocating or constructing a candidate", async () => {
+    const history = createRunHistoryHarness();
+    const allocateForAgentDefinition = vi.fn(async () => "unused");
+    const agentRunManager = {
+      getActiveRun: vi.fn(),
+      hasActiveRun: vi.fn(() => false),
+      prepareNewAgentRun: vi.fn(),
+    };
     const service = new AgentRunService("/tmp/memory", {
-      agentRunManager: {
-        createAgentRun: vi.fn(),
-        getActiveRun: vi.fn(),
-        restoreAgentRun: vi.fn(),
-      } as never,
-      metadataService: metadataService as never,
-      historyCatalogService: historyCatalogService as never,
-      workspaceManager: {
-        ensureWorkspaceByRootPath: vi.fn().mockResolvedValue({
-          workspaceId: "workspace-123",
-          getBasePath: () => "/tmp/project",
-        }),
-        getWorkspaceById: vi.fn(),
-      } as never,
+      agentRunManager: agentRunManager as never,
+      metadataService: history.metadataService as never,
+      historyCatalogService: history.historyCatalogService as never,
+      workspaceManager: workspaceManager() as never,
+      agentRunIdentityAllocator: { allocateForAgentDefinition },
     });
 
-    await expect(
-      service.createAgentRun({
-        agentDefinitionId: "agent-def-1",
-        workspaceRootPath: "/tmp/project",
-        llmModelIdentifier: "model-1",
-        autoExecuteTools: true,
-        skillAccessMode: SkillAccessMode.NONE,
-        runtimeKind: "unsupported_runtime",
-      }),
-    ).rejects.toThrow("not supported");
+    await expect(service.createAgentRun({
+      agentDefinitionId: "agent-def-1",
+      workspaceRootPath: "/tmp/project",
+      llmModelIdentifier: "model-1",
+      autoExecuteTools: true,
+      skillAccessMode: SkillAccessMode.NONE,
+      runtimeKind: "unsupported_runtime",
+    })).rejects.toThrow("not supported");
+    expect(allocateForAgentDefinition).not.toHaveBeenCalled();
+    expect(agentRunManager.prepareNewAgentRun).not.toHaveBeenCalled();
   });
 });

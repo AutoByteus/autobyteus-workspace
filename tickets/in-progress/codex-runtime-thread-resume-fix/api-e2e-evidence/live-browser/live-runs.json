@@ -1,0 +1,236 @@
+{
+  "createdAt": "2026-08-17T19:46:16.277Z",
+  "rows": [
+    {
+      "label": "codex",
+      "runtimeKind": "codex_app_server",
+      "model": "gpt-5.6-luna",
+      "teamRunId": "classroom_simulation_team_c5094d797f4a47b6b2e176bb26d936bc",
+      "professorAgentRunId": "professor_dbc35977c25141d79de619649aa5b357",
+      "initialExecutionTree": {
+        "schema_version": 1,
+        "created_at": "2026-08-17T19:45:48.945Z",
+        "archived_at": null,
+        "application_binding": null,
+        "handoffs": [],
+        "root_team": {
+          "team_definition_id": "classroom-simulation-team",
+          "team_definition_name": "Classroom Simulation Team",
+          "team_run_id": "classroom_simulation_team_c5094d797f4a47b6b2e176bb26d936bc",
+          "coordinator_address": "/professor",
+          "members": [
+            {
+              "kind": "configured_agent",
+              "address": "/professor",
+              "agent_definition_id": "team-local-agent:classroom-simulation-team:professor",
+              "role": null,
+              "description": null,
+              "agent_run_id": "professor_dbc35977c25141d79de619649aa5b357",
+              "platform_agent_run_id": null,
+              "launch_configuration": {
+                "runtime_kind": "CODEX",
+                "llm_model_identifier": "gpt-5.6-luna",
+                "llm_config": null,
+                "auto_execute_tools": true,
+                "skill_access_mode": "NONE",
+                "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix/api-e2e-evidence/live-browser/workspaces/codex"
+              }
+            },
+            {
+              "kind": "configured_agent",
+              "address": "/student",
+              "agent_definition_id": "team-local-agent:classroom-simulation-team:student",
+              "role": null,
+              "description": null,
+              "agent_run_id": "student_ea6ef0f6bd81497c95518954aa87a280",
+              "platform_agent_run_id": null,
+              "launch_configuration": {
+                "runtime_kind": "CODEX",
+                "llm_model_identifier": "gpt-5.6-luna",
+                "llm_config": null,
+                "auto_execute_tools": true,
+                "skill_access_mode": "NONE",
+                "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix/api-e2e-evidence/live-browser/workspaces/codex"
+              }
+            }
+          ],
+          "task_executions": []
+        }
+      }
+    },
+    {
+      "label": "claude",
+      "runtimeKind": "claude_agent_sdk",
+      "model": "haiku",
+      "input": {
+        "teamDefinitionId": "classroom-simulation-team",
+        "memberConfigs": [
+          {
+            "memberAddress": "/professor",
+            "agentDefinitionId": "team-local-agent:classroom-simulation-team:professor",
+            "llmModelIdentifier": "haiku",
+            "autoExecuteTools": true,
+            "skillAccessMode": "PRELOADED_ONLY",
+            "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix/api-e2e-evidence/live-browser/workspaces/claude",
+            "llmConfig": null,
+            "runtimeKind": "claude_agent_sdk"
+          },
+          {
+            "memberAddress": "/student",
+            "agentDefinitionId": "team-local-agent:classroom-simulation-team:student",
+            "llmModelIdentifier": "haiku",
+            "autoExecuteTools": true,
+            "skillAccessMode": "PRELOADED_ONLY",
+            "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix/api-e2e-evidence/live-browser/workspaces/claude",
+            "llmConfig": null,
+            "runtimeKind": "claude_agent_sdk"
+          }
+        ]
+      },
+      "result": {
+        "success": true,
+        "message": "Agent team run created successfully.",
+        "teamRunId": "classroom_simulation_team_5b8aa9e05d684f82892cddc445dc602e"
+      },
+      "teamRunId": "classroom_simulation_team_5b8aa9e05d684f82892cddc445dc602e",
+      "professorAgentRunId": "professor_88c0343f282b4aa18acd7c1dd9bd2960",
+      "initialExecutionTree": {
+        "schema_version": 1,
+        "created_at": "2026-08-17T19:46:16.169Z",
+        "archived_at": null,
+        "application_binding": null,
+        "handoffs": [],
+        "root_team": {
+          "team_definition_id": "classroom-simulation-team",
+          "team_definition_name": "Classroom Simulation Team",
+          "team_run_id": "classroom_simulation_team_5b8aa9e05d684f82892cddc445dc602e",
+          "coordinator_address": "/professor",
+          "members": [
+            {
+              "kind": "configured_agent",
+              "address": "/professor",
+              "agent_definition_id": "team-local-agent:classroom-simulation-team:professor",
+              "role": null,
+              "description": null,
+              "agent_run_id": "professor_88c0343f282b4aa18acd7c1dd9bd2960",
+              "platform_agent_run_id": null,
+              "launch_configuration": {
+                "runtime_kind": "CLAUDE",
+                "llm_model_identifier": "haiku",
+                "llm_config": null,
+                "auto_execute_tools": true,
+                "skill_access_mode": "PRELOADED_ONLY",
+                "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix/api-e2e-evidence/live-browser/workspaces/claude"
+              }
+            },
+            {
+              "kind": "configured_agent",
+              "address": "/student",
+              "agent_definition_id": "team-local-agent:classroom-simulation-team:student",
+              "role": null,
+              "description": null,
+              "agent_run_id": "student_13c48ae7e385487ca9e62adcf152fed7",
+              "platform_agent_run_id": null,
+              "launch_configuration": {
+                "runtime_kind": "CLAUDE",
+                "llm_model_identifier": "haiku",
+                "llm_config": null,
+                "auto_execute_tools": true,
+                "skill_access_mode": "PRELOADED_ONLY",
+                "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix/api-e2e-evidence/live-browser/workspaces/claude"
+              }
+            }
+          ],
+          "task_executions": []
+        }
+      }
+    },
+    {
+      "label": "autobyteus",
+      "runtimeKind": "autobyteus",
+      "model": "deepseek-v4-flash",
+      "input": {
+        "teamDefinitionId": "classroom-simulation-team",
+        "memberConfigs": [
+          {
+            "memberAddress": "/professor",
+            "agentDefinitionId": "team-local-agent:classroom-simulation-team:professor",
+            "llmModelIdentifier": "deepseek-v4-flash",
+            "autoExecuteTools": true,
+            "skillAccessMode": "NONE",
+            "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix/api-e2e-evidence/live-browser/workspaces/autobyteus",
+            "llmConfig": null,
+            "runtimeKind": "autobyteus"
+          },
+          {
+            "memberAddress": "/student",
+            "agentDefinitionId": "team-local-agent:classroom-simulation-team:student",
+            "llmModelIdentifier": "deepseek-v4-flash",
+            "autoExecuteTools": true,
+            "skillAccessMode": "NONE",
+            "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix/api-e2e-evidence/live-browser/workspaces/autobyteus",
+            "llmConfig": null,
+            "runtimeKind": "autobyteus"
+          }
+        ]
+      },
+      "result": {
+        "success": true,
+        "message": "Agent team run created successfully.",
+        "teamRunId": "classroom_simulation_team_ab8a82e00cdc450ea0ebf952089c5962"
+      },
+      "teamRunId": "classroom_simulation_team_ab8a82e00cdc450ea0ebf952089c5962",
+      "professorAgentRunId": "professor_124d75241ce246c2875c9b8e3120a067",
+      "initialExecutionTree": {
+        "schema_version": 1,
+        "created_at": "2026-08-17T19:46:16.223Z",
+        "archived_at": null,
+        "application_binding": null,
+        "handoffs": [],
+        "root_team": {
+          "team_definition_id": "classroom-simulation-team",
+          "team_definition_name": "Classroom Simulation Team",
+          "team_run_id": "classroom_simulation_team_ab8a82e00cdc450ea0ebf952089c5962",
+          "coordinator_address": "/professor",
+          "members": [
+            {
+              "kind": "configured_agent",
+              "address": "/professor",
+              "agent_definition_id": "team-local-agent:classroom-simulation-team:professor",
+              "role": null,
+              "description": null,
+              "agent_run_id": "professor_124d75241ce246c2875c9b8e3120a067",
+              "platform_agent_run_id": null,
+              "launch_configuration": {
+                "runtime_kind": "AUTOBYTEUS",
+                "llm_model_identifier": "deepseek-v4-flash",
+                "llm_config": null,
+                "auto_execute_tools": true,
+                "skill_access_mode": "NONE",
+                "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix/api-e2e-evidence/live-browser/workspaces/autobyteus"
+              }
+            },
+            {
+              "kind": "configured_agent",
+              "address": "/student",
+              "agent_definition_id": "team-local-agent:classroom-simulation-team:student",
+              "role": null,
+              "description": null,
+              "agent_run_id": "student_c365eb277107406bb2699c3e15114a27",
+              "platform_agent_run_id": null,
+              "launch_configuration": {
+                "runtime_kind": "AUTOBYTEUS",
+                "llm_model_identifier": "deepseek-v4-flash",
+                "llm_config": null,
+                "auto_execute_tools": true,
+                "skill_access_mode": "NONE",
+                "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix/api-e2e-evidence/live-browser/workspaces/autobyteus"
+              }
+            }
+          ],
+          "task_executions": []
+        }
+      }
+    }
+  ]
+}

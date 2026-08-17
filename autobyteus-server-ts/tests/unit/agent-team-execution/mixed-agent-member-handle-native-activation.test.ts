@@ -175,6 +175,77 @@ describe("MixedAgentMemberHandle native activation", () => {
     expect(fixture.context.getPlatformAgentRunId()).toBeNull();
   });
 
+  it("stages a fresh direct-task external binding without root adoption and publishes only after durability", async () => {
+    const externalNode = testAgentNode("/Codex", {
+      agentRunId: "codex-task-run",
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+      workspaceRootPath: "/tmp/codex-task-workspace",
+    });
+    const config = testTeamRunConfig({
+      rootTeamRunId: "external-task-team",
+      coordinatorAddress: externalNode.address,
+      children: [externalNode],
+    });
+    const context = new MixedAgentMemberContext({
+      address: externalNode.address,
+      agentRunId: externalNode.agentRunId,
+      runtimeKind: externalNode.runtimeKind,
+      platformAgentRunId: null,
+    });
+    const teamContext = new TeamRunContext({
+      rootTeamRunId: config.rootTeam.teamRunId,
+      teamRunId: config.rootTeam.teamRunId,
+      teamBackendKind: TeamBackendKind.MIXED,
+      teamNode: config.rootTeam,
+      runtimeContext: new MixedTeamRunContext({ memberContexts: [context] }),
+    });
+    const run = {
+      runId: externalNode.agentRunId,
+      isActive: () => true,
+      subscribeToEvents: vi.fn(() => () => undefined),
+    };
+    const candidate = {
+      runId: externalNode.agentRunId,
+      runtimeKind: externalNode.runtimeKind,
+      platformAgentRunId: "thread-task-1",
+      commitPublication: vi.fn(() => run),
+      abort: vi.fn(async () => ({ kind: "aborted" as const })),
+    };
+    const acceptPlatformBinding = vi.fn(async () => undefined);
+    const handle = new MixedAgentMemberHandle({
+      teamContext,
+      context,
+      config: externalNode,
+      activationMode: "fresh",
+      agentRunManager: {
+        prepareNewAgentRun: vi.fn(async () => candidate),
+      } as never,
+      activityInspector: { inspect: vi.fn(() => ({ kind: "none" as const })) } as never,
+      memberTeamContextBuilder: { build: vi.fn(async () => null) } as never,
+      workspaceManager: {
+        ensureWorkspaceByRootPath: vi.fn(async () => ({ workspaceId: "workspace-codex-task" })),
+      } as never,
+      publish: vi.fn(),
+      acceptPlatformBinding,
+      deliverInterAgentMessage: vi.fn(),
+    });
+
+    const prepared = await handle.prepareForTaskActivation();
+
+    expect(prepared.stagedPlatformBindings).toEqual([{
+      execution: {
+        rootTeamRunId: "external-task-team",
+        memberAddress: externalNode.address,
+        agentRunId: "codex-task-run",
+      },
+      platformAgentRunId: "thread-task-1",
+    }]);
+    expect(acceptPlatformBinding).not.toHaveBeenCalled();
+    expect(candidate.commitPublication).not.toHaveBeenCalled();
+    prepared.commitAfterDurability();
+    expect(candidate.commitPublication).toHaveBeenCalledOnce();
+  });
+
   it("never falls back to fresh creation when a native restore fails", async () => {
     const manager = {
       prepareNewAgentRun: vi.fn(),

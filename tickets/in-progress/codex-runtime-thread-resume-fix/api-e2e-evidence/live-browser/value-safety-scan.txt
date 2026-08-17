@@ -1,0 +1,2 @@
+Value-safety pattern scan (potential secret-value signatures):
+NONE
