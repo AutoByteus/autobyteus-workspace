@@ -9,6 +9,7 @@ The current integrated repository state, delivery artifacts, and latest complete
 | DR-001 | `CRR-003` Pass over `API-REV-001` / `CRR-002` / `IR-002` / `ARCH-REV-003` / `SR-003` | N/A | Paused — reviewed state checkpointed and tracked base confirmed current; user-expanded `API-REV-002` live-runtime validation began before docs/final handoff completion | `delivery-revision-record.md`, `delivery-evidence/delivery-latest-base-refresh-dr001.log`; three uncommitted long-lived documentation candidates remain pending re-evaluation |
 | DR-002 | `CRR-006` Not Applicable over `API-REV-003` / `CRR-005` / `IR-003`, after expanded runtime rework | DR-001 Paused | Pass — latest base remains current; documentation synchronized; integrated handoff ready on explicit user-verification hold | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `release-notes.md`, `delivery-evidence/delivery-*-dr002.log` |
 | DR-003 | User explicitly verified the DR-002 candidate and authorized finalization to its recorded base branch | DR-002 ready for verification | Pass — exact base refreshed unchanged; archival and finalization to `codex/agent-team-universal-task-delegation` authorized; `personal` explicitly excluded | `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/delivery-finalization-refresh-dr003.log` |
+| DR-004 | Completion of the user-authorized DR-003 repository sequence | DR-003 authorized | Pass — ticket archived, own branch published, and exact base fast-forwarded and pushed; no `personal`, release, or deployment action | `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/delivery-*-dr004.log` |
 
 ## Revision Entries
 
@@ -51,3 +52,17 @@ The current integrated repository state, delivery artifacts, and latest complete
 - Explicit exclusion: no fetch-for-integration, merge, fast-forward, commit, or push may target `personal` or `origin/personal`.
 - Release/deployment scope: none. Finalization authorization does not authorize a version bump, tag, release, publication workflow, deployment, operational-data action, rollback, or repair.
 - Completion record: actual archive, commit, push, merge, target push, and cleanup outcomes will be recorded in the next delivery revision after those actions complete.
+
+### DR-004 — Archived ticket integrated into and published on the exact base
+
+- Trigger: completion of the user-authorized DR-003 finalization sequence.
+- Archive result: the ticket moved from `tickets/in-progress/agent-team-codex-output-not-visible` to `tickets/done/agent-team-codex-output-not-visible` before the final ticket commit.
+- Ticket commit: `d8ce4d8678637c2259a15a3950d9caaac6a7e05e` (`chore(delivery): finalize codex team output fix`) contains the archived ticket, synchronized long-lived docs, and DR-001 through DR-003 delivery records.
+- Ticket publication: `origin/codex/agent-team-codex-output-not-visible` was created at exactly `d8ce4d8678637c2259a15a3950d9caaac6a7e05e`; see `delivery-evidence/delivery-ticket-branch-push-dr004.log`.
+- Exact-base integration: the clean local `codex/agent-team-universal-task-delegation` worktree refreshed `origin/codex/agent-team-universal-task-delegation`, confirmed it unchanged at `37739aa2bd718e3e1a53587c1d8604d353d334cb`, and fast-forwarded to the ticket commit. No conflict or additional source change occurred.
+- Exact-base publication: `origin/codex/agent-team-universal-task-delegation` advanced from `37739aa2bd718e3e1a53587c1d8604d353d334cb` to `d8ce4d8678637c2259a15a3950d9caaac6a7e05e`. Remote ticket and base refs were independently verified; see `delivery-evidence/delivery-base-finalization-dr004.log` and `delivery-evidence/delivery-repository-finalization-dr004.log`.
+- Explicitly excluded branch: action on `personal` and `origin/personal` was `NONE`. Neither ref was fetched for integration, merged, fast-forwarded, committed, nor pushed by this finalization.
+- Release/deployment result: `NONE / not requested`. No version bump, tag, release, publication workflow, deployment, or rollout occurred.
+- Safety: operational database and `$HOME/.autobyteus` action `NONE`; protected `60004/31004` action `NONE`; rollback/repair action `NONE`.
+- Completion-record publication: this DR-004 record and its evidence are committed and pushed on the exact base branch after the initial ticket integration push. No product or test source changes are introduced by that completion-record commit.
+- Cleanup: the dedicated ticket worktree and local ticket branch may be removed only after this completion record is published and the final base ref is verified. The remote ticket branch remains as a durable published candidate unless separately authorized for deletion.

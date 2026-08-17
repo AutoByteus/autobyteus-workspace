@@ -2,9 +2,9 @@
 
 ## Status
 
-**User verified; repository finalization authorized.** The exact finalization
-target is `origin/codex/agent-team-universal-task-delegation`. `origin/personal`
-is explicitly excluded.
+**User verified; ticket archived and repository finalized.** The exact target
+`origin/codex/agent-team-universal-task-delegation` contains the ticket.
+`origin/personal` was explicitly excluded and untouched.
 
 ## Candidate State
 
@@ -67,10 +67,12 @@ finalization to its recorded base branch. Delivery refreshed only
 already contained by the ticket, so the verified state did not materially
 change and renewed verification is not required.
 
-## Finalization Authorization
+## Finalization Result
 
-Authorized sequence: archive the ticket, commit and publish
-`codex/agent-team-codex-output-not-visible`, merge it into
-`codex/agent-team-universal-task-delegation`, and push that exact base branch to
-`origin`. No merge or push to `personal` is authorized. No release, deployment,
-tag, version bump, operational-data action, rollback, or repair is in scope.
+- Ticket archive: `tickets/done/agent-team-codex-output-not-visible`
+- Ticket commit: `d8ce4d8678637c2259a15a3950d9caaac6a7e05e`
+- Ticket publication: `origin/codex/agent-team-codex-output-not-visible` at the ticket commit
+- Base integration: clean fast-forward into `codex/agent-team-universal-task-delegation`
+- Base publication: `origin/codex/agent-team-universal-task-delegation` advanced to the ticket commit, followed only by the DR-004 completion-record commit
+- `personal` / `origin/personal`: action `NONE`
+- Release, deployment, tag, version bump, operational-data action, rollback, and repair: `NONE`

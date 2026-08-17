@@ -12,8 +12,8 @@ deployment, tag, version bump, or `personal` branch action is authorized.
 - Handoff summary artifact: `tickets/done/agent-team-codex-output-not-visible/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Delivery revision record: `tickets/done/agent-team-codex-output-not-visible/delivery-revision-record.md`
-- Current delivery revision ID: `DR-002`
-- Notes: The user verified the integrated candidate and authorized exact-base finalization.
+- Current delivery revision ID: `DR-004`
+- Notes: The user verified the integrated candidate; the ticket is archived and finalized to the exact recorded base.
 
 ## Initial Delivery Integration Refresh
 
@@ -59,18 +59,18 @@ Not applicable before verification. No version, tag, changelog release entry, or
 
 - Bootstrap context source: `requirements.md` / investigation bootstrap base.
 - Ticket branch: `codex/agent-team-codex-output-not-visible`
-- Ticket branch commit result: pre-integration checkpoint complete; final archival commit authorized and pending in DR-003.
-- Ticket branch push result: not performed.
+- Ticket branch commit result: `Completed` at `d8ce4d8678637c2259a15a3950d9caaac6a7e05e`.
+- Ticket branch push result: `Completed`; `origin/codex/agent-team-codex-output-not-visible` was created at the ticket commit.
 - Finalization target remote: `origin`
 - Finalization target branch: `codex/agent-team-universal-task-delegation` (`personal` explicitly excluded)
 - Target advanced after verification / acceptance: `No`; final refresh confirmed the verified base revision unchanged.
-- Delivery-owned edits protected before re-integration: `Completed` by checkpoint `6daeaf14fa8b1b625c650d24571d5664297815ab`
-- Re-integration before final merge result: `Not needed` in DR-002; required to refresh again after verification.
-- Target branch update result: not performed.
-- Merge into target result: not performed.
-- Push target branch result: not performed.
-- Repository finalization status: `Blocked`
-- Blocker (if applicable): completion commands and completion record are still in progress under the received authorization; this is not a product/review blocker.
+- Delivery-owned edits protected before re-integration: `Completed` by checkpoint `6daeaf14fa8b1b625c650d24571d5664297815ab` plus the `/tmp/codex-output-pre-finalization-20260817T094312Z-*` backups.
+- Re-integration before final merge result: `Not needed`; the final refresh left the exact base unchanged and already contained.
+- Target branch update result: `Completed`; the clean local target was refreshed from its exact remote ref.
+- Merge into target result: `Completed` by conflict-free fast-forward of `codex/agent-team-codex-output-not-visible`.
+- Push target branch result: `Completed`; `origin/codex/agent-team-universal-task-delegation` advanced to the ticket commit. This completion record is then published on the same exact base.
+- Repository finalization status: `Completed`
+- Blocker (if applicable): none.
 
 ## Release / Publication / Deployment
 
@@ -88,7 +88,7 @@ Not applicable before verification. No version, tag, changelog release entry, or
 - Worktree prune result: `Blocked`
 - Local ticket branch cleanup result: `Blocked`
 - Remote branch cleanup result: `Not required`
-- Blocker (if applicable): repository finalization and explicit cleanup authorization have not occurred.
+- Blocker (if applicable): cleanup follows publication of the DR-004 completion record; repository finalization itself is complete.
 
 ## Escalation / Reroute (Use Only If Final Handoff Cannot Complete)
 
@@ -128,4 +128,4 @@ No rollout occurred. If user verification fails, do not archive, push, merge, re
 
 ## Final Status
 
-**User verified; exact-base repository finalization authorized and in progress.**
+**Repository finalization completed on `origin/codex/agent-team-universal-task-delegation`; no `personal`, release, or deployment action occurred. Ticket-worktree cleanup follows completion-record publication.**

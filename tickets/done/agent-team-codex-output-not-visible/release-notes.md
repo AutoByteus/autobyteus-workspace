@@ -33,6 +33,6 @@ This change fixes a Team streaming failure where valid Codex output was generate
 
 ## Release Status
 
-User verification is complete and repository finalization to
-`codex/agent-team-universal-task-delegation` is authorized. No tag, release,
-publication, deployment, or `personal` branch action is included.
+User verification and repository finalization to
+`codex/agent-team-universal-task-delegation` are complete. No tag, release,
+publication, deployment, or `personal` branch action occurred.
