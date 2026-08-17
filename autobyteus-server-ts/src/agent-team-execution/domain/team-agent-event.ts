@@ -3,6 +3,11 @@ import type { AgentRunStatusHint } from "../../agent-execution/domain/agent-run-
 import type { TeamMemberExecutionIdentity } from "./team-member-execution-identity.js";
 import type { TeamAgentStatusDetails } from "./team-agent-status.js";
 import type { AgentSegmentType } from "../../agent-execution/domain/agent-segment.js";
+import type {
+  AgentRunFileChangeArtifactType,
+  AgentRunFileChangeSourceTool,
+  AgentRunFileChangeStatus,
+} from "../../agent-execution/domain/agent-run-file-change.js";
 
 type Correlated<T extends string, D> = Readonly<{
   eventType: T;
@@ -97,5 +102,5 @@ export type TeamAgentEvent =
   | Correlated<"TODO_LIST_UPDATE", { todos: readonly Readonly<{ todoId: string; description: string; status: "pending" | "in_progress" | "done" }>[] }>
   | Correlated<"SYSTEM_TASK_NOTIFICATION", { sender: Readonly<{ kind: "system" }> | Readonly<{ kind: "execution"; identity: TeamMemberExecutionIdentity }>; content: string }>
   | Correlated<"ARTIFACT_PERSISTED", { artifactId: string; path: string; artifactType: string; status: "available"; description: string | null; revisionId: string; createdAt: string; updatedAt: string }>
-  | Correlated<"FILE_CHANGE", { fileChangeId: string; path: string; fileType: string; status: string; sourceTool: string; sourceInvocationId: string | null; content: string | null; createdAt: string; updatedAt: string }>
+  | Correlated<"FILE_CHANGE", { fileChangeId: string; path: string; fileType: AgentRunFileChangeArtifactType; status: AgentRunFileChangeStatus; sourceTool: AgentRunFileChangeSourceTool; sourceInvocationId: string | null; content: string | null; createdAt: string; updatedAt: string }>
   | Correlated<"ERROR", TeamAgentErrorDetails>;

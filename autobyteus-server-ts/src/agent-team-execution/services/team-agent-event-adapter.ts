@@ -9,6 +9,12 @@ import { createTeamAgentStatusDetails } from "../domain/team-agent-status.js";
 import type { TeamMemberExecutionIdentity } from "../domain/team-member-execution-identity.js";
 import { isAgentSegmentType } from "../../agent-execution/domain/agent-segment.js";
 import { resolveAgentRunErrorEvidence } from "../../agent-execution/domain/agent-run-error-evidence.js";
+import type {
+  AgentRunFileChangeArtifactType,
+  AgentRunFileChangePayload,
+  AgentRunFileChangeSourceTool,
+  AgentRunFileChangeStatus,
+} from "../../agent-execution/domain/agent-run-file-change.js";
 
 export type TeamAgentEventAdaptationResult =
   | Readonly<{ kind: "publish"; event: TeamAgentEvent }>
@@ -70,6 +76,62 @@ const errorEvidence = (event: AgentRunEvent) => {
 const statusHint = (event: AgentRunEvent): AgentRunStatusHint => event.statusHint ?? null;
 const correlated = <T extends TeamAgentEvent>(event: T): Readonly<{ kind: "publish"; event: T }> =>
   Object.freeze({ kind: "publish", event: Object.freeze(event) });
+
+const fileChangePayloadKeys = [
+  "id",
+  "runId",
+  "path",
+  "type",
+  "status",
+  "sourceTool",
+  "sourceInvocationId",
+  "content",
+  "createdAt",
+  "updatedAt",
+] as const satisfies readonly (keyof AgentRunFileChangePayload)[];
+const fileChangeArtifactTypes = new Set<AgentRunFileChangeArtifactType>([
+  "file", "image", "audio", "video", "pdf", "csv", "excel", "other",
+]);
+const fileChangeStatuses = new Set<AgentRunFileChangeStatus>([
+  "streaming", "pending", "available", "failed",
+]);
+const fileChangeSourceTools = new Set<AgentRunFileChangeSourceTool>([
+  "write_file", "edit_file", "generated_output",
+]);
+
+const fileChangeEnum = <T extends string>(value: unknown, allowed: ReadonlySet<T>, field: string): T => {
+  if (typeof value !== "string" || !allowed.has(value as T)) throw new Error(`${field} is invalid`);
+  return value as T;
+};
+
+const requiredNullableText = (payload: Record<string, unknown>, key: string): string | null => {
+  if (!Object.prototype.hasOwnProperty.call(payload, key)) throw new Error(`${key} is required`);
+  return payload[key] === null ? null : required(payload[key], key);
+};
+
+type TeamFileChangeDetails = Extract<TeamAgentEvent, { eventType: "FILE_CHANGE" }>["details"];
+
+const fileChange = (event: AgentRunEvent): TeamFileChangeDetails => {
+  const payload = event.payload;
+  if (Object.keys(payload).some((key) => !fileChangePayloadKeys.includes(key as keyof AgentRunFileChangePayload))) {
+    throw new Error("FILE_CHANGE payload contains unsupported fields");
+  }
+  const payloadRunId = required(payload.runId, "runId");
+  if (payloadRunId !== event.runId) throw new Error("runId does not match the AgentRun event");
+  const content = Object.prototype.hasOwnProperty.call(payload, "content") ? payload.content : null;
+  if (content !== null && typeof content !== "string") throw new Error("content is invalid");
+  return Object.freeze({
+    fileChangeId: required(payload.id, "id"),
+    path: required(payload.path, "path"),
+    fileType: fileChangeEnum(payload.type, fileChangeArtifactTypes, "type"),
+    status: fileChangeEnum(payload.status, fileChangeStatuses, "status"),
+    sourceTool: fileChangeEnum(payload.sourceTool, fileChangeSourceTools, "sourceTool"),
+    sourceInvocationId: requiredNullableText(payload, "sourceInvocationId"),
+    content,
+    createdAt: required(payload.createdAt, "createdAt"),
+    updatedAt: required(payload.updatedAt, "updatedAt"),
+  });
+};
 
 const token = (payload: Record<string, unknown>): TeamTokenUsageDetails => Object.freeze({
   usageEventId: required(raw(payload, "usage_event_id", "usageEventId"), "usage_event_id"),
@@ -232,7 +294,7 @@ export class TeamAgentEventAdapter {
       case AgentRunEventType.ARTIFACT_PERSISTED:
         return correlated({ eventType: "ARTIFACT_PERSISTED", details: { artifactId: required(raw(p, "artifact_id", "id"), "artifact_id"), path: required(p.path, "path"), artifactType: required(raw(p, "artifact_type", "type"), "artifact_type"), status: "available", description: typeof p.description === "string" ? p.description : null, revisionId: required(raw(p, "revision_id", "revisionId"), "revision_id"), createdAt: required(raw(p, "created_at", "createdAt"), "created_at"), updatedAt: required(raw(p, "updated_at", "updatedAt"), "updated_at") }, statusHint: hint });
       case AgentRunEventType.FILE_CHANGE:
-        return correlated({ eventType: "FILE_CHANGE", details: { fileChangeId: required(raw(p, "file_change_id", "fileChangeId"), "file_change_id"), path: required(p.path, "path"), fileType: required(raw(p, "file_type", "fileType"), "file_type"), status: required(p.status, "status"), sourceTool: required(raw(p, "source_tool", "sourceTool"), "source_tool"), sourceInvocationId: text(raw(p, "source_invocation_id", "sourceInvocationId")), content: typeof p.content === "string" ? p.content : null, createdAt: required(raw(p, "created_at", "createdAt"), "created_at"), updatedAt: required(raw(p, "updated_at", "updatedAt"), "updated_at") }, statusHint: hint });
+        return correlated({ eventType: "FILE_CHANGE", details: fileChange(event), statusHint: hint });
       case AgentRunEventType.ERROR:
         return correlated({ eventType: "ERROR", details: { code: required(p.code, "code"), message: stringValue(p.message), ...errorEvidence(event) }, statusHint: hint });
       case AgentRunEventType.INTER_AGENT_MESSAGE:

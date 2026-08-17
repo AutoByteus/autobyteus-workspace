@@ -9,6 +9,7 @@ The latest `code-review-report.md` or `api-e2e-test-review-report.md` remains au
 | CRR-001 | `code-review-report.md` | Implementation Review / IR-001 initial cumulative source review | N/A | Fail — Local Fix | CR-F-001 |
 | CRR-002 | `code-review-report.md` | Implementation Review / IR-002 correction plus cumulative re-review | Fail — Local Fix | Pass | CR-F-001 resolved |
 | CRR-003 | `api-e2e-test-review-report.md` | Proportional Test Review / API-REV-001 successful durable delta | Pass (source CRR-002) | Pass | None |
+| CRR-004 | `code-review-report.md` | API/E2E Failure-Origin Review / API-REV-002 real Team FILE_CHANGE rejection | API-REV-001 Pass / CRR-003 Pass | Fail — Local Fix | CR-F-002 / API-F-001 |
 
 ## Revision Entries
 
@@ -82,3 +83,28 @@ None. `CR-F-001` was already resolved under `CRR-002` and was not a test-review 
 - Material score or classification changes: none; this proportional review has no source scorecard
 - Recommended recipient: `delivery_engineer`
 - Remaining risks or uncertainty: deliberate sequence loss was proven deterministically at the production state/service boundary rather than injected into a credentialed live provider stream; Electron shell behavior is unchanged and outside scope. Both are nonblocking under `API-REV-001`.
+
+### CRR-004 — Shared Team FILE_CHANGE admission mismatch confirmed as a bounded source defect
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/tickets/in-progress/agent-team-codex-output-not-visible/code-review-report.md`
+- Review entry point and round: `API/E2E Failure-Origin Review`, round 3
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/tickets/in-progress/agent-team-codex-output-not-visible/api-e2e-execution-coverage-report.md`; `API-REV-002`, `API-F-001`, API-RUNTIME-TEAM-009B/009C
+- Relevant solution revision IDs: `SR-001`–`SR-003`
+- Relevant architecture-review revision IDs: `ARCH-REV-001`–`ARCH-REV-003`
+- Relevant implementation revision IDs: `IR-001`–`IR-002`
+- Relevant API/E2E revision IDs: `API-REV-001`–`API-REV-002`
+- Relevant delivery revision IDs: `DR-001`
+- Prior authoritative result: implementation source `CRR-002` Pass; proportional test review `CRR-003` Pass; API/E2E `API-REV-001` Pass / 98%
+- Current authoritative result: `Fail — Local Fix`
+- What changed in the review result and why: the user-expanded real file-backed matrix established a supported Team file-write trigger in both AutoByteus and Claude. The canonical internal producer emits `id`/`type`, but the shared adapter requires wire-shaped `file_change_id`/`file_type` before the dedicated wire projector, so admission deterministically fails. The ownership design is sound and no requirement/design change is needed; the field mapping and missing direct seam coverage are bounded implementation defects.
+
+#### Prior Finding Resolution
+
+| Finding ID | Resolution | Current Evidence |
+| --- | --- | --- |
+| CR-F-001 | Remains resolved | API-REV-001 passed the real Codex output/recovery/reopen journey and CRR-003 passed its durable delta; API-REV-002 does not contradict that result. |
+
+- New or remaining finding IDs: `CR-F-002` / `API-F-001`
+- Material score or classification changes: no repeated scorecard in this focused round; current result changes from Pass to `Fail — Local Fix`
+- Recommended recipient: `implementation_engineer`
+- Remaining risks or uncertainty: exact source origin and production reachability are confirmed. Post-fix source review and rerun of the failed real Team file-write rows remain mandatory; the unrelated Claude provider-native observation is nonblocking.
