@@ -44,6 +44,7 @@ export class MixedConfiguredMemberRegistry implements ConfiguredMemberRegistryAc
           teamContext: this.options.teamContext,
           context,
           config: node,
+          activationMode: this.options.teamContext.runtimeContext.configuredMemberActivationMode,
           agentRunManager: this.options.agentRunManager,
           publish: this.options.publish,
           deliverInterAgentMessage: this.options.deliverInterAgentMessage,

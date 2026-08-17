@@ -2,6 +2,7 @@ import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-in
 import { getAgentTeamAddressBasename } from "../../../../agent-collaboration/domain/agent-team-address.js";
 import type { AgentOperationResult } from "../../../../agent-execution/domain/agent-operation-result.js";
 import { AgentRunConfig } from "../../../../agent-execution/domain/agent-run-config.js";
+import { AgentRunContext } from "../../../../agent-execution/domain/agent-run-context.js";
 import type { AgentRun } from "../../../../agent-execution/domain/agent-run.js";
 import { isAgentRunEvent } from "../../../../agent-execution/domain/agent-run-event.js";
 import type { AgentRunInputOptions, AgentRunInputReservationResult } from "../../../../agent-execution/input/agent-run-input-contract.js";
@@ -15,9 +16,10 @@ import {
   type AgentConversationActivityInspector,
 } from "../../../../agent-memory/services/agent-conversation-activity-inspector.js";
 import { getAgentToolMcpSessionService } from "../../../../agent-tools/mcp/agent-tool-mcp-session-service.js";
-import { buildFilesystemWorkspaceId } from "../../../../workspaces/workspace-registry-store.js";
+import { getWorkspaceManager, type WorkspaceManager } from "../../../../workspaces/workspace-manager.js";
 import type { ApplicationExecutionContext } from "../../../../application-orchestration/domain/models.js";
 import type { InterAgentMessageDeliveryIntent } from "../../../domain/inter-agent-message-delivery.js";
+import { TeamAgentActivationError } from "../../../errors.js";
 import type { PreparedLocalExecutionTermination } from "../../../domain/prepared-local-execution-termination.js";
 import { createTeamAgentExecutionBinding } from "../../../domain/team-agent-execution-binding.js";
 import type { TeamMemberExecutionIdentity } from "../../../domain/team-member-execution-identity.js";
@@ -35,7 +37,11 @@ import { MemberCommandStatusOverlayStore } from "../../../services/member-comman
 import { TeamAgentEventAdapter } from "../../../services/team-agent-event-adapter.js";
 import { buildTeamMemberInputEventPayload } from "../../../services/team-member-input-event-builder.js";
 import { buildTaskDelegationSystemTaskNotificationEvent, isTaskDelegationSystemTaskNotificationMessage } from "../../../task-delegation/task-delegation-system-message-visibility.js";
-import type { MixedAgentMemberContext, MixedTeamRunContext } from "../mixed-team-run-context.js";
+import type {
+  MixedAgentMemberContext,
+  MixedConfiguredMemberActivationMode,
+  MixedTeamRunContext,
+} from "../mixed-team-run-context.js";
 import type { MixedTeamEventPublish } from "./mixed-team-member-handle.js";
 
 export type PreparedMixedTaskAgentActivation = Readonly<{
@@ -43,6 +49,11 @@ export type PreparedMixedTaskAgentActivation = Readonly<{
   commitAfterDurability(): void;
   abort(): Promise<void>;
 }>;
+
+type MixedAgentActivationPlan =
+  | Readonly<{ kind: "new" }>
+  | Readonly<{ kind: "restore_native" }>
+  | Readonly<{ kind: "restore_external"; platformAgentRunId: string }>;
 
 export class MixedAgentMemberHandle {
   readonly context: MixedAgentMemberContext;
@@ -55,9 +66,11 @@ export class MixedAgentMemberHandle {
     teamContext: TeamRunContext<MixedTeamRunContext>;
     context: MixedAgentMemberContext;
     config: TeamRunAgentNode;
+    activationMode: MixedConfiguredMemberActivationMode;
     agentRunManager?: AgentRunManager;
     activityInspector?: AgentConversationActivityInspector;
     memberTeamContextBuilder?: MemberTeamContextBuilder;
+    workspaceManager?: Pick<WorkspaceManager, "ensureWorkspaceByRootPath">;
     publish: MixedTeamEventPublish;
     acceptPlatformBinding: (binding: TeamAgentPlatformBinding) => Promise<void>;
     deliverInterAgentMessage: (request: InterAgentMessageDeliveryIntent) => Promise<AgentOperationResult>;
@@ -122,13 +135,13 @@ export class MixedAgentMemberHandle {
       throw new Error(`Task AgentRun '${this.context.agentRunId}' already entered live readiness.`);
     }
     const config = await this.buildAgentRunConfig();
-    this.assertFreshExternalConversation(config);
+    const plan = this.resolveActivationPlan(config);
+    if (plan.kind !== "new") {
+      throw new Error(`Fresh task AgentRun '${this.context.agentRunId}' selected an invalid activation plan.`);
+    }
     const candidate = await this.manager.prepareNewAgentRun({ runId: this.context.agentRunId, config });
     try {
-      this.assertExternalCandidate(candidate);
-      const binding = candidate.platformAgentRunId
-        ? createTeamAgentPlatformBinding({ execution: this.identity(), platformAgentRunId: candidate.platformAgentRunId })
-        : null;
+      const binding = this.createExternalBinding(candidate);
       if (binding) this.context.adoptPlatformAgentRunId(binding.platformAgentRunId);
       let state: "prepared" | "published" | "aborted" = "prepared";
       return Object.freeze({
@@ -214,21 +227,10 @@ export class MixedAgentMemberHandle {
     let candidate: AgentRunActivationCandidate | null = null;
     try {
       const config = await this.buildAgentRunConfig();
-      const persistedBinding = this.context.getPlatformAgentRunId();
-      if (!persistedBinding) this.assertFreshExternalConversation(config);
-      candidate = persistedBinding
-        ? await this.manager.prepareRestoreAgentRunFromPlatformState({
-            runId: this.context.agentRunId,
-            config,
-            platformAgentRunId: persistedBinding,
-          })
-        : await this.manager.prepareNewAgentRun({ runId: this.context.agentRunId, config });
-      this.assertExternalCandidate(candidate);
-      if (candidate.platformAgentRunId) {
-        const binding = createTeamAgentPlatformBinding({
-          execution: this.identity(),
-          platformAgentRunId: candidate.platformAgentRunId,
-        });
+      const plan = this.resolveActivationPlan(config);
+      candidate = await this.prepareCandidate(plan, config);
+      const binding = this.createExternalBinding(candidate);
+      if (binding) {
         await this.options.acceptPlatformBinding(binding);
         this.context.adoptPlatformAgentRunId(binding.platformAgentRunId);
       }
@@ -254,17 +256,64 @@ export class MixedAgentMemberHandle {
     }
   }
 
-  private assertFreshExternalConversation(config: AgentRunConfig): void {
-    if (!isExternalProviderRuntimeKind(config.runtimeKind)) return;
-    const memoryDir = config.memoryDir;
-    if (!memoryDir) {
-      throw new TeamAgentPlatformBindingError(
-        "TEAM_AGENT_CONTINUATION_STATE_UNREADABLE",
-        "The local conversation state cannot be inspected safely.",
+  private resolveActivationPlan(config: AgentRunConfig): MixedAgentActivationPlan {
+    const external = isExternalProviderRuntimeKind(config.runtimeKind);
+    if (this.options.activationMode === "fresh") {
+      if (external) this.assertNoPriorConversationActivity(config);
+      return Object.freeze({ kind: "new" });
+    }
+
+    if (external) {
+      const platformAgentRunId = this.context.getPlatformAgentRunId()?.trim() || null;
+      if (platformAgentRunId) {
+        return Object.freeze({ kind: "restore_external", platformAgentRunId });
+      }
+      this.assertNoPriorConversationActivity(config);
+      return Object.freeze({ kind: "new" });
+    }
+
+    const activity = this.inspectConversationActivity(config);
+    if (activity.kind === "present") return Object.freeze({ kind: "restore_native" });
+    if (activity.kind === "none") return Object.freeze({ kind: "new" });
+    throw new TeamAgentPlatformBindingError(
+      "TEAM_AGENT_CONTINUATION_STATE_UNREADABLE",
+      "The local conversation state cannot be inspected safely.",
+      { cause: activity.error },
+    );
+  }
+
+  private async prepareCandidate(
+    plan: MixedAgentActivationPlan,
+    config: AgentRunConfig,
+  ): Promise<AgentRunActivationCandidate> {
+    if (plan.kind === "new") {
+      return this.manager.prepareNewAgentRun({ runId: this.context.agentRunId, config });
+    }
+    if (plan.kind === "restore_external") {
+      return this.manager.prepareRestoreAgentRunFromPlatformState({
+        runId: this.context.agentRunId,
+        config,
+        platformAgentRunId: plan.platformAgentRunId,
+      });
+    }
+    try {
+      return await this.manager.prepareRestoreAgentRun(new AgentRunContext({
+        runId: this.context.agentRunId,
+        config,
+        runtimeContext: null,
+      }));
+    } catch (error) {
+      if (isAgentRunActivationQuarantineError(error)) throw error;
+      throw new TeamAgentActivationError(
+        "TEAM_AGENT_NATIVE_RESTORE_FAILED",
+        "The prior native conversation context could not be restored.",
+        { cause: error },
       );
     }
-    const activity = (this.options.activityInspector ?? getAgentConversationActivityInspector())
-      .inspect({ agentRunId: this.context.agentRunId, memoryDir });
+  }
+
+  private assertNoPriorConversationActivity(config: AgentRunConfig): void {
+    const activity = this.inspectConversationActivity(config);
     if (activity.kind === "present") {
       throw new TeamAgentPlatformBindingError(
         "TEAM_AGENT_CONTINUATION_BINDING_MISSING",
@@ -280,16 +329,30 @@ export class MixedAgentMemberHandle {
     }
   }
 
-  private assertExternalCandidate(candidate: AgentRunActivationCandidate): void {
-    if (
-      isExternalProviderRuntimeKind(candidate.runtimeKind) &&
-      (!candidate.platformAgentRunId || candidate.platformAgentRunId === candidate.runId)
-    ) {
+  private inspectConversationActivity(config: AgentRunConfig) {
+    const memoryDir = config.memoryDir;
+    if (!memoryDir) {
+      return {
+        kind: "indeterminate" as const,
+        error: new Error("AgentRun memory location is unavailable."),
+      };
+    }
+    return (this.options.activityInspector ?? getAgentConversationActivityInspector())
+      .inspect({ agentRunId: this.context.agentRunId, memoryDir });
+  }
+
+  private createExternalBinding(candidate: AgentRunActivationCandidate): TeamAgentPlatformBinding | null {
+    if (!isExternalProviderRuntimeKind(candidate.runtimeKind)) return null;
+    if (!candidate.platformAgentRunId || candidate.platformAgentRunId === candidate.runId) {
       throw new AgentRunActivationError(
         "PLATFORM_AGENT_RUN_BINDING_INVALID",
         "The external runtime did not provide a valid provider conversation identity.",
       );
     }
+    return createTeamAgentPlatformBinding({
+      execution: this.identity(),
+      platformAgentRunId: candidate.platformAgentRunId,
+    });
   }
 
   private get manager(): AgentRunManager { return this.options.agentRunManager ?? AgentRunManager.getInstance(); }
@@ -310,7 +373,11 @@ export class MixedAgentMemberHandle {
   private displayName(): string { return getAgentTeamAddressBasename(this.context.address) ?? this.context.agentRunId; }
 
   private readinessFailureCode(error: unknown): string {
-    if (error instanceof TeamAgentPlatformBindingError || error instanceof AgentRunActivationError) {
+    if (
+      error instanceof TeamAgentPlatformBindingError ||
+      error instanceof AgentRunActivationError ||
+      error instanceof TeamAgentActivationError
+    ) {
       return error.code;
     }
     return "TEAM_AGENT_ACTIVATION_FAILED";
@@ -340,6 +407,20 @@ export class MixedAgentMemberHandle {
 
   private async buildAgentRunConfig(): Promise<AgentRunConfig> {
     const node = this.options.config;
+    let workspaceId: string | null = null;
+    if (node.workspaceRootPath) {
+      try {
+        const workspace = await (this.options.workspaceManager ?? getWorkspaceManager())
+          .ensureWorkspaceByRootPath(node.workspaceRootPath);
+        workspaceId = workspace.workspaceId;
+      } catch (error) {
+        throw new TeamAgentActivationError(
+          "TEAM_AGENT_WORKSPACE_ACTIVATION_FAILED",
+          "The configured workspace could not be activated.",
+          { cause: error },
+        );
+      }
+    }
     const memberTeamContext = await (this.options.memberTeamContextBuilder ?? getMemberTeamContextBuilder()).build({
       teamContext: this.options.teamContext,
       agentNode: node,
@@ -349,7 +430,7 @@ export class MixedAgentMemberHandle {
       agentDefinitionId: node.agentDefinitionId,
       llmModelIdentifier: node.llmModelIdentifier,
       autoExecuteTools: node.autoExecuteTools,
-      workspaceId: node.workspaceRootPath ? buildFilesystemWorkspaceId(node.workspaceRootPath) : null,
+      workspaceId,
       memoryDir: getAgentMemoryLocationService().getTeamAgentRunLocation({
         rootTeamRunId: this.options.teamContext.rootTeamRunId,
         ancestorTeamRunIds: [],

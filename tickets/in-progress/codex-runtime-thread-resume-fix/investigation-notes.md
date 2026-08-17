@@ -3,250 +3,229 @@
 ## Investigation Status
 
 - Bootstrap Status: Complete
-- Current Status: Codex and Claude Agent SDK investigation complete. The complete refined requirements basis was explicitly approved by the user on 2026-08-17. `ARCH-REV-001` returned SR-002 with two high-severity Design Impact findings about supported overlapping team/standalone activation; SR-003 has revised the candidate, publication, single-flight, cleanup, and retry design, and the cumulative package is ready for architecture re-review.
-- Investigation Goal: Reproduce and trace why persisted Codex- and Claude-Agent-SDK-backed conversations on the specified base lose provider-session continuity after restart, compare the paths with `origin/personal`, and establish a refined behavioral basis for one durable identity design.
-- Scope Classification (`Small`/`Medium`/`Large`): Medium
-- Scope Classification Rationale: The regression crosses persisted root execution state, runtime member initialization, process restoration, two distinct provider-session contracts, standalone Claude persistence timing, and realistic restart coverage.
-- Scope Summary: Provider-native identity adoption and restart continuity for persisted Codex and Claude Agent SDK team agents; correct Claude new-session/resume identity lifecycle for team and standalone runs; preserve native runtime behavior. The separate Electron/database migration failure remains deferred.
-- Primary Questions To Resolve: Resolved. V1 never durably adopts a discovered provider ID into its authoritative tree. `origin/personal` only appeared healthy on the team path because a legacy event-driven metadata refresh persisted live member-context IDs. Claude has the same V1 loss plus a local-ID placeholder lifecycle; the installed SDK supports reserving a provider-valid UUID before first input and using that UUID distinctly for new-session creation and later resume.
+- Current Status: Codex, Claude Agent SDK, and native AutoByteus restart-continuity investigation complete. The user explicitly approved the cumulative behavior scope on 2026-08-17. SR-003 passed architecture review, implementation commit `ddfb494e7` was halted after code review, and the native browser rerun now requires upstream SR-004 requirement/design rework before implementation may resume.
+- Investigation Goal: Explain why reopened team conversations can display prior history while losing provider/native context, compare every affected runtime with `origin/personal`, and produce one lifecycle-correct design.
+- Scope Classification: Large
+- Scope Summary: Exact Codex/Claude provider identity durability; Claude first-session UUID lifecycle; native configured-member local-state restoration; workspace reactivation; candidate single-flight/publication ordering; preserved external-only team binding semantics. The separate Electron/database migration defect remains out of scope.
+- Primary Questions Resolved:
+  1. External provider IDs were learned outside the V1 root persistence owner.
+  2. Claude formerly used an invalid local-ID placeholder before its provider UUID was known.
+  3. V1 native root restoration discarded fresh-versus-restored materialization provenance and invoked fresh AgentRun construction.
+  4. V1 restored members derived a workspace ID without reactivating the persisted workspace.
+  5. The partial implementation then treated the native self-ID as an external provider binding; external gating is necessary but not sufficient.
 
 ## Request Context
 
-The user reported that the affected branch correctly shows old conversation messages after a server restart but answers a context-dependent follow-up as though it were a first turn. They identified `origin/personal` as unaffected, explicitly required the ticket to be based on `origin/codex/agent-team-universal-task-delegation`, prioritized this over a separate migration problem, requested a live browser restart reproduction, and suggested the classroom simulation agent team from `/Users/normy/autobyteus_org/autobyteus-agents` using Codex runtime model `gpt-5.6-luna`. After the Codex root cause was established, they explicitly requested equivalent Claude Agent SDK experiments and investigation using DeepSeek V4 Flash, including another comparison with `origin/personal` and a proper design if the issue was present.
+The user reported that the affected branch reopens old conversation messages after a server restart but answers a context-dependent follow-up as a first turn. They required the ticket to bootstrap from `origin/codex/agent-team-universal-task-delegation`, not `personal`; prioritized this over a separate migration failure; requested live browser stop/restart/reopen experiments; supplied `/Users/normy/autobyteus_org/autobyteus-agents`; requested Classroom Simulation Team with Codex `gpt-5.6-luna`; then requested equivalent Claude and native AutoByteus testing. For native validation they requested DeepSeek V4 Flash and credential import from `/Users/normy/.autobyteus/server-data/.env`. After the native rerun still failed, the user explicitly directed requirements, investigation, and design updates and halted implementation.
 
 ## Environment Discovery / Bootstrap Context
 
-- Project Type (`Git`/`Non-Git`): Git super-repository with package directories
+- Project Type: Git super-repository with package workspaces
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix`
 - Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix`
 - Current Branch: `codex/codex-runtime-thread-resume-fix`
-- Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix`
-- Bootstrap Base Branch: `origin/codex/agent-team-universal-task-delegation`
-- Remote Refresh Result: `git fetch origin codex/agent-team-universal-task-delegation` succeeded on 2026-08-17; refreshed base commit is `2b0f8ea99296bb3f983c497d1f5c00a4d839f404`.
-- Task Branch: `codex/codex-runtime-thread-resume-fix`
-- Expected Base Branch (if known): `origin/codex/agent-team-universal-task-delegation`
-- Expected Finalization Target (if known): `codex/agent-team-universal-task-delegation`
+- Bootstrap Base: `origin/codex/agent-team-universal-task-delegation`
+- Refreshed Base Commit: `2b0f8ea99296bb3f983c497d1f5c00a4d839f404`
+- Comparison Branch/Commit: `origin/personal` / `acb8985930ccce49b632cdca22b92f5b237e35bf`
+- Current Ticket HEAD: `ddfb494e7d...` (`fix(server): preserve external agent sessions across restart`), one implementation commit ahead of the base; source work is halted and must not be edited during this design round.
+- Expected Finalization Target: `codex/agent-team-universal-task-delegation`
 - Bootstrap Blockers: None
-- Notes For Downstream Agents: Do not use or modify `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation`; it contains unrelated uncommitted API/E2E evidence. The shared superrepo checkout is also not the ticket workspace. `origin/personal` is comparison-only and must not become the implementation base.
+- Worktree Safety: The base worktree and shared personal checkout are comparison/test inputs only. Authoritative artifacts remain in the ticket worktree.
+- Working Tree At SR-004 Start: implementation source committed; untracked downstream `code-review-report.md` and `code-review-revision-record.md`; no uncommitted source modifications.
 
 ## Supplemental Task Artifact Inventory
 
-| Artifact Path | Purpose And Scope | Evidence, Context, Or Decision Captured | Core Artifact(s) Supported | Related Requirement / Acceptance-Criteria IDs (When Applicable) | Status | Approval Applicability / State | Follow-Up Needed |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix/runtime-reproduction-evidence.md` | Retain the isolated live-browser restart reproduction and provider-identity result | Setup, prompts, stable local IDs, different pre/post Codex thread IDs, null physical tree binding, screenshots/log inventory, and isolation safeguards | Requirements, investigation notes, later design and downstream validation | REQ-001, REQ-002, REQ-007; AC-001 through AC-004 | Complete | N/A — evidence only | Include in every downstream package while relevant |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix/claude-runtime-reproduction-evidence.md` | Retain the isolated Claude live-browser restart result, provider lifecycle trace, SDK contract, standalone timing finding, and `origin/personal` comparison | Stable local IDs, different pre/post Claude UUIDs, null tree binding, exact marker loss, installed SDK `sessionId`/`resume` contract, and why the personal team path appeared healthy | Requirements, investigation notes, later revised design and downstream validation | REQ-001 through REQ-004, REQ-009 through REQ-011; AC-010 through AC-015 | Complete | N/A — evidence only | Include in every downstream package while relevant |
+| Artifact Path | Purpose And Scope | Evidence Captured | Core Artifacts Supported | Related IDs | Status / Approval | Follow-Up |
+| --- | --- | --- | --- | --- | --- | --- |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix/runtime-reproduction-evidence.md` | Codex browser restart reproduction | Stable local IDs, changed provider thread, null tree binding, screenshots/logs | Requirements, investigation, design | REQ-001, REQ-002, REQ-007; AC-001 through AC-004 | Complete / N/A evidence | Include downstream |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix/claude-runtime-reproduction-evidence.md` | Claude browser/SDK/standalone investigation | Changed UUID, null tree binding, SDK `sessionId`/`resume`, personal comparison | Requirements, investigation, design | REQ-001 through REQ-004, REQ-009 through REQ-011; AC-010 through AC-015 | Complete / N/A evidence | Include downstream |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix/autobyteus-runtime-reproduction-evidence.md` | Native base rerun plus personal control | Marker failure/pass, raw traces, working snapshots, tree, workspace and restore logs, source comparison | Requirements, investigation, design | REQ-012 through REQ-015; AC-016 through AC-019 | Complete / N/A evidence | Include downstream |
 
 ## Source Log
 
-| Date | Source Type (`Code`/`Doc`/`Spec`/`Web`/`Repo`/`Issue`/`Command`/`Trace`/`Log`/`Data`/`Setup`/`Other`) | Exact Source / Query / Command | Why Consulted | Relevant Findings | Follow-Up Needed |
-| --- | --- | --- | --- | --- | --- |
-| 2026-08-17 | Other | User report in current task | Establish symptom, priority, base, comparison, and requested reproduction | Visible history survives restart, but Codex context does not; `origin/personal` is reported good; migration issue deferred. | No |
-| 2026-08-17 | Command | `git status --short --branch`; `git worktree list --porcelain`; `git remote -v` | Discover repository/worktree state without disturbing user work | Shared checkout is on `personal`; specified base has another worktree with unrelated changes. | No |
-| 2026-08-17 | Command | `git fetch origin codex/agent-team-universal-task-delegation`; `git rev-parse origin/codex/agent-team-universal-task-delegation` | Refresh the explicit base | Base resolved to `2b0f8ea99296bb3f983c497d1f5c00a4d839f404`. | No |
-| 2026-08-17 | Setup | `git worktree add -b codex/codex-runtime-thread-resume-fix /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix origin/codex/agent-team-universal-task-delegation` | Create the required isolated ticket workspace | Dedicated branch/worktree created from the requested base. | No |
-| 2026-08-17 | Doc | `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/.codex/skills/solution-designer/design-principles.md` | Apply canonical design/investigation standards | The target must preserve one authoritative root-owned identity path and explicit write-before-live-commit behavior. | No |
-| 2026-08-17 | Command | `pnpm install --offline --frozen-lockfile`; server build commands | Prepare and validate the isolated checkout | Dependency install and server build completed successfully. | No |
-| 2026-08-17 | Code | `autobyteus-server-ts/src/agent-team-execution/domain/team-run-execution-tree.ts`; `src/run-history/store/team-run-execution-tree-schema.ts` | Locate the canonical persisted provider-binding shape | Configured-agent and task-agent execution nodes already carry nullable `platformAgentRunId`; no schema expansion is required. | No |
-| 2026-08-17 | Code | `autobyteus-server-ts/src/agent-team-execution/services/team-definition-topology-planner.ts:162`; `services/agent-team-run-manager.ts:62-114` | Trace initial creation and restart hydration | Initial configured nodes receive null; the initial tree is written before runtime materialization; restore rebuilds config solely from the loaded tree. | No |
-| 2026-08-17 | Code | `autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts:144-158,200-205` | Trace provider ID discovery | The runtime captures the provider ID into `this.context.platformAgentRunId`; null chooses create, non-null chooses restore. No durable/root mutation occurs here. | No |
-| 2026-08-17 | Code | `autobyteus-server-ts/src/agent-team-execution/domain/root-team-run.ts:137`; `services/team-run-persistence-coordinator.ts:70-91`; `services/team-run-execution-tree-mutator.ts` | Identify the authoritative owner and available mutation boundary | Root returns its tree; the coordinator already persists before live commit; mutator supports task add/settle only and lacks provider-binding adoption. | No |
-| 2026-08-17 | Code | `autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts:152-156`; `src/services/agent-streaming/agent-team-stream-handler.ts:170-182` | Check whether later activity persists the captured binding | Activity updates summary only; metadata refresh projects the unchanged root tree; stream send no longer schedules live-context metadata refresh. | No |
-| 2026-08-17 | Code | `autobyteus-server-ts/src/agent-execution/services/agent-run-service.ts:337-351`; `backends/codex/backend/codex-thread-bootstrapper.ts:197-266`; `backends/codex/thread/codex-thread-manager.ts:37-55,96-145` | Verify standalone and provider restore behavior | Standalone restore propagates metadata ID; Codex restore preserves it and passes it to thread startup. | No |
-| 2026-08-17 | Code | `autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread-manager.ts:171-201` | Check provider resume failure semantics | Any `thread/resume` error is caught and converted into `thread/start`, silently losing required context. | Design scope approval |
-| 2026-08-17 | Repo | `git show origin/personal:autobyteus-server-ts/src/agent-team-execution/services/team-run-metadata-mapper.ts`; `.../services/team-run-service.ts`; `.../src/services/agent-streaming/agent-team-stream-handler.ts` | Compare the reported-good branch | Personal mapped live member context IDs into metadata and scheduled a debounced metadata rebuild on team events. | No |
-| 2026-08-17 | Command | `git merge-base origin/personal origin/codex/agent-team-universal-task-delegation`; `git blame`; commit inspection around `3f3aafa7c` | Locate regression relationship | `origin/personal` at `acb8985930ccce49b632cdca22b92f5b237e35bf` is the merge base; the V1 rewrite on the affected branch removed the legacy refresh without an authoritative replacement. | No |
-| 2026-08-17 | Setup | Disposable SQLite migration plus `pnpm secrets:import -- --source /Users/normy/.autobyteus/server-data/.env --database-url file:///.../codex-resume-investigation-20260817-1.db` | Configure a realistic isolated runtime with requested credentials | Import targeted only the disposable DB; no credential values were retained. | No |
-| 2026-08-17 | Data | `lsof` against the runtime server PID and database paths | Prove production isolation | Server had the disposable DB open and did not have `/Users/normy/.autobyteus/server-data/db/production.db` open. | No |
-| 2026-08-17 | Repro | AutoByteus Browser Tools `open_tab`, UI navigation, textarea input, Send clicks, complete API-server stop/start, reopen same TeamRun, follow-up send | Validate the user's report through the real UI | Old messages reappeared, but the follow-up returned the wrong marker after a new Codex thread was created. | No |
-| 2026-08-17 | Trace | `~/.codex/sessions` metadata filtered to the isolated working directory; persisted tree reads; `server.log` | Correlate local identity, provider identity, and physical persistence | Same local professor AgentRun used two different provider threads; tree binding remained null; logs recorded create both times. | No |
-| 2026-08-17 | Test | `autobyteus-server-ts/tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts:32,860-1133`; `tests/integration/agent-team-execution/services/agent-team-run-manager.integration.test.ts:175-208` | Assess current coverage | Live restore assertions exist but require both LMStudio and Codex flags; integration fakes copy IDs and do not exercise ID discovery/adoption. The actual branch behavior contradicts the intended live assertion. | Downstream coverage investigation |
-| 2026-08-17 | Data | Read-only targeted count under `/Users/normy/.autobyteus/server-data/memory/agent_teams` | Avoid conflating the separate migration report | Observed 512 team directories, 506 legacy metadata files, and no V1 execution-tree files. This belongs to the deferred migration issue. | Separate ticket only |
-| 2026-08-17 | Code | `backends/mixed/members/mixed-task-agent-execution-registry.ts:34-97`; `task-delegation/task-delegation-service.ts:112-168,220-301`; `task-delegation/task-execution-tree-projection.ts` | Trace provider-ID timing for delegated task agents | Direct task-agent preparation eagerly creates the provider AgentRun before its tree node exists; activation later projects the task node with a null ID. The prepared binding therefore must stage the learned provider binding into the same root activation commit. | Design constraint |
-| 2026-08-17 | Code | `services/team-run-persistence-coordinator.ts`; `task-delegation/task-delegation-service.ts` | Check concurrency safety for an added tree mutation | Physical writes are root-serialized, but task next-trees are computed before acquiring that lock. A new concurrent binding mutation could otherwise be overwritten by a stale task tree. All tree-changing commit plans must prepare from the current tree at the lock head. | Design constraint |
-| 2026-08-17 | Code | `agent-memory/services/agent-run-memory-recorder.ts`; `agent-memory/services/runtime-memory-event-accumulator.ts`; isolated `raw_traces_active.jsonl` | Find a canonical signal distinguishing fresh null from prior-activity null | External runtime user/assistant turns are stored under the exact team AgentRun memory directory; the complete active/archive trace corpus can identify prior conversation without guessing a provider ID. | Design guard |
-| 2026-08-17 | Command | `rg -n "refreshRunMetadata\\(" autobyteus-server-ts/src autobyteus-server-ts/tests` | Check whether the stale V1 refresh facade remains used | Only the declaration remains; it has no production or test caller and merely reprojects the already-authoritative root tree. | Remove in scope |
-| 2026-08-17 | Setup | Second disposable SQLite migration plus `pnpm secrets:import -- --source /Users/normy/.autobyteus/server-data/.env --database-url file:///.../claude-resume-investigation-20260817-2.db`; start API on 60418 and web on 31318 | Configure the user-requested Claude experiment without production-state access | Credential slots were already configured and skipped; no values were printed; server and browser used only isolated state. | No |
-| 2026-08-17 | Repro | AutoByteus Browser Tools against `classroom-simulation-team`, `claude_agent_sdk`, model identifier `haiku` resolved as `Anthropic / deepseek-v4-flash`; full API stop/start; reopen and send marker follow-up | Test whether Claude has the same user-visible restart failure | Pre-restart response stored `AMBER-ORCHID-4821`; post-restart response explicitly said no marker existed although old history remained visible. | No |
-| 2026-08-17 | Trace | Physical V1 tree, GraphQL projections, raw local trace, two Claude JSONL sessions, and `server.log` under `live-browser-reproduction-claude/` | Correlate local IDs, provider UUIDs, and persistence | Same TeamRun and professor AgentRun used provider UUIDs `11771792-3875-42a5-8f8a-455dd819af27` then `8ba2e83a-f5aa-4d9c-832b-49e1caaab420`; tree binding stayed null; creation was logged twice. | No |
-| 2026-08-17 | Code | `agent-execution/backends/claude/backend/claude-agent-run-backend-factory.ts`; `claude-agent-run-backend.ts`; `session/claude-session-manager.ts`; `session/claude-session.ts` | Trace fresh creation, provider ID availability, and restoration | Fresh session uses local AgentRun ID as a placeholder; provider UUID is adopted only from the asynchronous stream; restore resumes only when a non-placeholder ID is supplied. | Design constraint |
-| 2026-08-17 | Code | `runtime-management/claude/client/claude-sdk-client.ts` | Trace how the wrapper selects SDK session creation versus restore | Wrapper's `sessionId` input maps only to SDK `resume`; it does not expose the SDK new-conversation `sessionId` option. | Design constraint |
-| 2026-08-17 | Spec | Installed `@anthropic-ai/claude-agent-sdk@0.3.231` `sdk.d.ts:1824-1833` | Verify the locally installed authoritative SDK contract instead of inferring behavior | SDK distinguishes `resume?: string` from `sessionId?: string`; the latter accepts a caller-selected valid UUID for a new conversation. | No |
-| 2026-08-17 | Repo | `git show origin/personal:` and `git diff origin/personal --` for Claude backend/session, mixed member handle, legacy `TeamRunMetadataMapper`, `TeamRunService`, and `AgentTeamStreamHandler` | Explain why personal works and whether provider code differs | Claude placeholder/adoption behavior is the same. Personal's legacy team stream-event metadata refresh projected updated live member context; V1 removed it without a root-owned replacement. | No |
-| 2026-08-17 | Code | `agent-execution/services/agent-run-provisioning-service.ts:83-184`; `agent-run-command-coordinator.ts:47-92`; `services/agent-streaming/agent-stream-handler.ts:256-366`; Claude `startTurn` | Assess standalone Claude rather than assuming the team-only root cause | Activation can persist the local-ID placeholder; activity persistence is launched immediately after asynchronous turn acceptance and may precede provider UUID discovery; abrupt restart can therefore lose standalone Claude context too. | Add standalone Claude requirement |
-| 2026-08-17 | Test | `tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts`; Claude session/manager unit tests | Assess whether current coverage protects restart identity | E2E tests validate readiness and local projections, not exact provider UUID or semantic restart context; unit tests explicitly expect the local-ID placeholder and first-query null resume. | Downstream coverage investigation |
-| 2026-08-17 | Probe | Close Claude browser tab; stop API/web; `lsof` on 60418 and 31318 | Clean up owned live-test processes | No listener remained on either port. | No |
-| 2026-08-17 | Review | `design-review-report.md` (`ARCH-REV-001`, `ARCH-FIND-001`, `ARCH-FIND-002`) | Evaluate SR-002 architecture against supported concurrency and durability ordering | Review validated the root/task/Claude/no-migration design but found that the current manager registers candidates before root/standalone durability and that readiness/standalone activation ownership is not single-flight end to end. | Revise as SR-003 |
-| 2026-08-17 | Code | `src/api/websocket/agent.ts:60-72,121-133`; `services/agent-streaming/agent-stream-handler.ts:165-180`; `agent-team-stream-handler.ts:84-104` | Verify whether overlapping commands are product-reachable rather than synthetic | Both standalone and team WebSocket surfaces dispatch normal messages independently; two supported first commands can overlap asynchronous lazy initialization. | Design constraint |
-| 2026-08-17 | Code | `mixed-agent-member-handle.ts:148-158`; `agent-run-manager.ts:96-121,232-259` | Trace team duplicate-candidate and registry timing | The handle has no readiness promise. Manager checks active state before awaiting backend creation and registers only after construction, so two first commands can create competing candidates. Manager registration also installs observers only at live publication. | SR-003 candidate/single-flight design |
-| 2026-08-17 | Code | `agent-run-command-coordinator.ts:47-71,141-166`; `agent-run-provisioning-service.ts:122-184` | Trace standalone pre-durability input reachability | Command resolution prefers an active manager run, while provisioning calls eager manager creation before `recordRunStarted`; a second message can post before UUID metadata durability. | SR-003 standalone activation design |
-| 2026-08-17 | Code | `run-history/store/agent-run-metadata-store.ts:58-96`; `atomic-json-file-writer.ts`; `agent-run-history-catalog-service.ts:191-217` | Determine safe standalone write-error reconciliation | Metadata uses temp-file atomic rename. The critical activation path can strictly re-read exact target versus unchanged prepared state; the current forgiving read conflates missing/unreadable and is insufficient for retry decisions. | Add strict read classification |
+| Date | Type | Exact Source / Command | Why Consulted | Relevant Finding |
+| --- | --- | --- | --- | --- |
+| 2026-08-17 | User | Current task messages | Establish base, priority, runtimes, models, browser workflow, and approval | User authorized cumulative Codex/Claude/native continuity scope and halted implementation for upstream rework. |
+| 2026-08-17 | Command | `git fetch origin codex/agent-team-universal-task-delegation`; `git rev-parse ...`; worktree/bootstrap commands | Resolve authoritative base | Dedicated ticket branch was created from refreshed base `2b0f8ea...`, not personal. |
+| 2026-08-17 | Doc | `.codex/skills/solution-designer/SKILL.md`; `design-principles.md` | Apply workflow and architecture rules | Root authority, product reachability, clean-cut replacement, and no-migration analysis are mandatory. |
+| 2026-08-17 | Code | `team-run-execution-tree.ts`; `team-run-execution-tree-schema.ts`; `team-run-execution-tree-builder.ts` | Locate persisted identity facts | V1 already stores local IDs, runtime kind, workspace root, and nullable external binding. |
+| 2026-08-17 | Code | Base `agent-team-run-manager.ts`; `mixed-team-run-backend-factory.ts`; `mixed-agent-member-handle.ts` | Trace create/restore | Root restore loads V1 state but `materializeRoot` always calls fresh `createBackend`; null binding selects new AgentRun. |
+| 2026-08-17 | Code | `root-team-run.ts`; `team-run-persistence-coordinator.ts`; `team-run-execution-tree-mutator.ts` | Identify binding owner | Root already has serialized write-before-live mutation boundary; SR-001 added exact binding adoption. |
+| 2026-08-17 | Code | Codex backend/thread manager and standalone restore services | Trace provider lifecycle | Standalone carries the ID; team tree does not. Known resume failure formerly fell back to creation. |
+| 2026-08-17 | Repo | `git show origin/personal:` for metadata mapper, team service/manager, mixed handle/factory, stream handler | Compare reported-good external path | Personal rebuilt metadata from mutable live contexts after events, persisting late external IDs. |
+| 2026-08-17 | Setup | `pnpm secrets:import -- --source /Users/normy/.autobyteus/server-data/.env --database-url file:///.../codex-resume-investigation-20260817-1.db` | Isolate realistic Codex run | Credentials imported only into disposable state; values were not retained. |
+| 2026-08-17 | Repro | Browser `open_tab` workflow; full API stop/start; same run reopen | Test Codex report | Old messages displayed; provider context was lost; marker response was wrong. |
+| 2026-08-17 | Trace | Codex sessions, V1 tree, server log | Correlate identity | Same local AgentRun used threads `01a0104a-...` then `01a0104c-...`; tree stayed null. |
+| 2026-08-17 | Code | Direct task registry/delegation/persistence paths | Cover task binding lifecycle | Task candidate precedes its tree node; external binding must be staged into root task durability before publication. |
+| 2026-08-17 | Code | Raw trace store/recorder/archive paths | Find canonical activity signal | Active plus complete archived user/assistant traces distinguish fresh from prior semantic activity without guessing an ID. |
+| 2026-08-17 | Setup | Isolated Claude database; API 60418; web 31318; same secret-import form | Configure Claude test | No production state used. |
+| 2026-08-17 | Repro | Browser Classroom Simulation Team; Claude SDK; DeepSeek V4 Flash-backed selection; full restart | Test Claude | `AMBER-ORCHID-4821` visible locally but absent from provider context after restart. |
+| 2026-08-17 | Trace | Claude JSONL, tree, trace, log | Correlate UUID | Same local AgentRun used UUIDs `11771792-...` then `8ba2e83a-...`; tree stayed null. |
+| 2026-08-17 | Spec | Installed `@anthropic-ai/claude-agent-sdk@0.3.231` declarations | Verify provider contract | SDK distinguishes new-session `sessionId` from existing-session `resume`. |
+| 2026-08-17 | Code | Claude factory/session/client/cache; standalone provisioning/commands | Trace timing | Fresh Claude used local-ID placeholder; standalone metadata could commit it before stream UUID discovery. |
+| 2026-08-17 | Review | `design-review-report.md` ARCH-REV-001 | Validate SR-002 | Found supported overlapping team/standalone activation could publish before authoritative durability. |
+| 2026-08-17 | Code | WebSocket team/standalone dispatch and manager registration | Product reachability for review findings | Two normal commands can overlap; active registry is a real input-admission surface. |
+| 2026-08-17 | Review | `design-review-report.md` ARCH-REV-002 | Validate SR-003 | Passed candidate single-flight, unpublished activation, cleanup/quarantine, root/task/standalone durability design. |
+| 2026-08-17 | Implementation | Commit `ddfb494e7`; `implementation-handoff.md` | Inspect current ticket state | SR-003 was substantially implemented and committed before the native expansion. |
+| 2026-08-17 | Review | `code-review-report.md`, `CODE-FIND-001` | Inspect halted implementation defect | Handle stages native `candidate.platformAgentRunId === local runId` as external binding; restart strict restore rejects it. |
+| 2026-08-17 | Setup | Base rerun: disposable `/private/tmp/autobyteus-native-base-rerun-20260817`, API 60420, web 31320, exact secret import | Repeat native test with strict isolation | All database/data/memory/log/temp paths explicitly pinned; production DB not touched. |
+| 2026-08-17 | Repro | Browser Classroom Simulation Team; `AUTOBYTEUS`; `deepseek-v4-flash`; marker `BASE-NATIVE-RERUN-20260817-P8W6`; full restart | Test native base | Pre-restart ACK passed; post-restart agent said it had no record of a marker. |
+| 2026-08-17 | Trace | Retained base tree, raw trace, working snapshot, server log, screenshot | Correlate native state | Tree binding correctly null; both turns `turn_0001`; snapshot lost marker; log used missing-workspace temp fallback and fresh AgentRun creation. |
+| 2026-08-17 | Setup | Personal control: disposable `/private/tmp/autobyteus-native-personal-control-20260817`, API 60421, web 31321, exact secret import | Compare reported-good branch | Same isolation and product workflow. |
+| 2026-08-17 | Repro | Marker `PERSONAL-NATIVE-CONTROL-20260817-R5C3`; full restart | Test personal native | Marker was recalled exactly. |
+| 2026-08-17 | Trace | Personal metadata, raw trace, working snapshot, server log, screenshot | Explain pass | Workspace re-established; mixed team and native AgentRun restore logged; snapshot retained then appended both turns. |
+| 2026-08-17 | Repo | Diff/read personal vs base `AgentTeamRunManager`, `TeamRunService`, `TeamRunMetadataMapper`, `MixedAgentMemberHandle`, `AutoByteusAgentRunBackendFactory` | Establish root cause | Personal carries a restore context, ensures workspace, and invokes generic/native restore; V1 loses that provenance. |
+| 2026-08-17 | Code | Current `AgentRunManager.prepareRestoreAgentRun`; `prepareRestoreAgentRunFromPlatformState`; native backend `getPlatformAgentRunId` | Find clean target seam | Generic restore is correct for native local state; strict platform restore is external-only; candidate seam can be reused. |
+| 2026-08-17 | Code | Current `WorkspaceManager.ensureWorkspaceByRootPath`; native backend workspace lookup | Find workspace owner | Existing workspace subsystem can activate the persisted root; handle currently only derives an ID and backend sync lookup falls back. |
+
+Operational note: an earlier exploratory native start inherited an unintended environment and was discarded as evidence. The authoritative second round above explicitly pinned disposable DB, app-data, memory, log, temp, and ports, then removed the disposable runtime directories after copying the retained evidence.
 
 ## Relevant Existing Behavior And Production Paths
 
-| Behavior ID | Kind (`User`/`System`/`Operational`/`Contract`) | Current Supported Trigger Or Governing Contract | Current Production Path And Lifecycle | Meaningful Current Outcome / Invariants | Evidence |
-| --- | --- | --- | --- | --- | --- |
-| BEH-001 | User / Operational | Open a configured Codex team member, complete a turn, fully restart the server, reopen, and send a context-dependent turn | `TeamRunService.createTeamRun` -> `AgentTeamRunManager.createTeamRun` writes initial null-binding tree -> `RootTeamRun.executeAgentCommand` -> `MixedAgentMemberHandle.ensureReady` creates provider AgentRun and captures ID only in member context -> restart -> `restoreTeamRun` loads unchanged tree -> null selects `createAgentRun` | Stable local TeamRun/AgentRun identity but a different provider thread after restart | Live browser evidence; physical tree; provider session metadata; server log; code trace |
-| BEH-002 | User / Operational | Reopen the same persisted TeamRun after restart | Run-history/message readers restore local messages independently of provider backend initialization; UI renders them before the next turn | Old local messages remain visible even when provider context is absent | Live browser screenshots and GraphQL/API projections |
-| BEH-003 | System / Contract | Any configured or delegated task agent in a persisted execution tree establishes an external provider identity | Execution-tree schema holds the field for both node categories; mixed handle updates a detached mutable context; existing tree mutator has only add/settle operations | Canonical tree may remain stale relative to live backend identity | Schema, handle, mutator, root, and persistence-coordinator code trace |
-| BEH-004 | System / Operational | Restore a standalone persisted Codex AgentRun | `AgentRunService.buildRestoreRuntimeContext` -> Codex bootstrap preserves `threadId` -> `CodexThreadManager.restoreThread` -> `thread/resume` | Valid stored standalone ID reaches the provider restore request | Standalone restore source trace |
-| BEH-005 | System | First activation of an agent with null provider binding | `MixedAgentMemberHandle.ensureReady` -> `AgentRunManager.createAgentRun` -> Codex `thread/start` | Fresh thread creation works and the live handle learns its ID | Source trace and first half of live reproduction |
-| BEH-006 | System / Contract | Restore with a known Codex provider ID when `thread/resume` errors | `CodexThreadManager.resumeRemoteThread` catches all errors and calls `startRemoteThread` | Caller receives a new thread instead of an explicit contextual-continuation failure | `codex-thread-manager.ts:171-201`; behavior also exists on `origin/personal` |
-| BEH-007 | User / Operational / Contract | Open a configured Claude team member, complete a context-bearing turn, fully restart the server, reopen, and send a dependent turn | Fresh Claude manager publishes local AgentRun ID placeholder -> first SDK query creates auto-ID session -> stream mutates live session UUID -> mixed handle updates detached context only -> V1 restart reads null and creates another auto-ID session | Stable local TeamRun/AgentRun and visible local history, but different provider UUID and no semantic continuation | Claude browser evidence, physical trees, two provider JSONL files, server log, and source trace |
-| BEH-008 | System / Operational | Create a standalone Claude AgentRun and lose the process without graceful run termination | Prepared metadata begins null -> activation records backend ID, currently local AgentRun ID placeholder -> `startTurn` returns before provider UUID -> activity write can precede UUID discovery -> restore suppresses placeholder and creates fresh provider session | Standalone correctness is timing/graceful-shutdown dependent rather than durably established before input | Static production-path trace; installed SDK contract |
+| Behavior ID | Supported Trigger | Current Production Path | Evidence | Current Conclusion |
+| --- | --- | --- | --- | --- |
+| BEH-001 | Send to configured Codex team member | UI/WebSocket -> root command -> lazy mixed handle -> provider create; restart rebuilds null binding -> create | Browser/provider/tree/log supplement | Reachable defect |
+| BEH-002 | Reopen conversation after restart | History projection reads local traces independently of runtime activation | Browser and raw traces | Visible history does not prove context |
+| BEH-003 | Configured/task external initialization; native initialization | Handle consumes generic candidate platform ID | Source plus CODE-FIND-001 probe | Binding eligibility must be external-only |
+| BEH-004 | Restore standalone Codex | Metadata -> standalone activation -> strict platform restore | Source/tests | Preserve |
+| BEH-005 | First send to fresh external member | Lazy handle -> provider creation | Source/live first turn | Preserve with durability |
+| BEH-006 | Known Codex resume failure | Provider manager caught error -> thread start | Source | Replace with strict failure |
+| BEH-007 | Send/restart configured Claude member | Late UUID discovery; null V1 tree; second session after restart | Claude supplement | Reachable defect |
+| BEH-008 | Abrupt standalone Claude restart | Placeholder metadata can precede UUID discovery | Source ordering | Reachable timing defect |
+| BEH-009 | Send/restart configured native member | V1 restore -> fresh mixed factory -> null-binding handle -> new native AgentRun | Native base browser/log/source | Reachable defect |
+| BEH-010 | First member activation after process restart | Deterministic workspace ID -> sync active lookup -> temp fallback | Native base log/source | Reachable defect |
 
 ## Design Health Assessment Evidence
 
-- Change posture (`Feature`/`Bug Fix`/`Behavior Change`/`Refactor`/`Cleanup`/`Performance`/`Larger Requirement`): Bug Fix
-- Candidate root cause classification (`Local Implementation Defect`/`Missing Invariant`/`Boundary Or Ownership Issue`/`Duplicated Policy Or Coordination`/`File Placement Or Responsibility Drift`/`Shared Structure Looseness`/`Legacy Or Compatibility Pressure`/`No Design Issue Found`/`Unclear`): Missing Invariant and Boundary Or Ownership Issue
-- Refactor posture evidence summary: Refactor needed now. The V1 tree is the canonical persisted topology, yet live provider identity is owned only by detached runtime contexts. The repair must add an explicit root-owned execution-tree binding change and cannot safely be a stream-handler refresh or provider-specific file write. Claude must also replace its local-ID placeholder with an explicit provider UUID lifecycle that separates reserved-new from materialized/resumable state.
-
-| Evidence Source | Observation | Design Health Implication | Follow-Up Needed |
-| --- | --- | --- | --- |
-| V1 creation/restoration trace | Tree is persisted before backend initialization and is the only source for restored config | Provider binding must be committed into that tree when it becomes known | Design exact operation |
-| Mixed member handle | Provider ID discovery mutates only `context.platformAgentRunId` | Backend context cannot remain an independent persistence authority | Design callback/port into root owner |
-| Root persistence coordinator | `commitExecutionChange` already provides locked write-before-live-commit sequencing | Reuse the root-owned commit boundary rather than adding best-effort persistence | Design conflict/idempotency rules |
-| Execution-tree mutator | Only task add and settle mutations exist | Add a semantically narrow provider-binding adoption mutation | Design configured/task traversal |
-| Personal comparison | Legacy event-driven metadata refresh happened to capture live context | Reintroducing that UI/event-dependent shortcut would preserve split ownership and is forbidden | Explicit in design |
-| Codex adapter fallback | Known resume failure becomes new-thread creation | Exact-continuation guarantee also requires fail-closed restore semantics | User approval and design |
-| Claude live reproduction | Same local AgentRun used two different provider UUIDs across restart while tree stayed null | Generic root-binding loss affects more than Codex | Expand behavior map and provider-specific lifecycle design |
-| Claude session lifecycle | Local AgentRun ID is exposed until first provider chunk supplies a UUID | Placeholder violates provider-binding semantics and cannot satisfy pre-input durability | Remove placeholder lifecycle; reserve a valid UUID before release |
-| Installed Claude SDK contract | New-session `sessionId` and existing-session `resume` are distinct supported options | Use one reserved UUID with explicit unmaterialized/materialized state | Design wrapper and state contract |
-| Standalone Claude trace | Activation/activity writes can persist placeholder before async provider discovery | Fix must cover standalone creation as well as team tree adoption | Add standalone creation persistence path |
+- Change posture: Bug fix with required lifecycle refactor.
+- Root causes: missing invariant plus boundary/ownership issue.
+- External identity authority is split between mutable member context and root tree; SR-003 fixes this with root durability and unpublished candidates.
+- Native materialization authority is missing: manager knows create versus restore, but factory/context/handle do not.
+- Generic `platformAgentRunId` is not a universal continuation key. Native returns its local self-ID; external providers return separate opaque IDs.
+- Workspace activation belongs to existing `WorkspaceManager`, but restored member configuration bypasses it.
+- Refactor needed now: add explicit configured-member activation provenance; centralize plan selection in the handle; reuse generic manager restore for native and strict platform restore for external; external-gate binding; activate workspace before candidate construction.
+- Refactor not needed: no new persistence schema, history projection, provider-agnostic replay, or second metadata authority.
 
 ## Relevant Files / Components
 
-| Path / Component | Current Responsibility | Finding / Observation | Design / Ownership Implication |
-| --- | --- | --- | --- |
-| `autobyteus-server-ts/src/agent-team-execution/domain/team-run-execution-tree.ts` | Canonical V1 TeamRun topology and execution identities | Both configured and task agent nodes expose nullable `platformAgentRunId` | Existing shape should be reused; no parallel store or Codex-only field |
-| `autobyteus-server-ts/src/run-history/store/team-run-execution-tree-schema.ts` | Validates persisted tree payloads | Existing schema accepts the provider binding | No schema migration needed |
-| `autobyteus-server-ts/src/agent-team-execution/services/team-definition-topology-planner.ts` | Builds initial configured topology | Correctly initializes unstarted agents with null binding | Preserve fresh-state semantics |
-| `autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts` | Creates/restores/materializes root TeamRuns | Initial tree write precedes runtime creation; restore trusts the stored tree | Correct boundary, but needs the root to own later binding adoption |
-| `autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts` | Lazily creates/restores an AgentRun and adapts its events | Learns provider ID only locally and has no in-flight readiness promise, so overlapping first commands can construct twice | Must own one joined readiness attempt and publish one private candidate only after root acceptance |
-| `autobyteus-server-ts/src/agent-team-execution/domain/root-team-run.ts` | Governs root lifecycle and authoritative snapshots | Returns the unchanged tree; has no provider-binding command | Natural lifecycle owner for the new mutation |
-| `autobyteus-server-ts/src/agent-team-execution/services/team-run-persistence-coordinator.ts` | Serializes durable root state changes | Has reusable `commitExecutionChange` write-before-live-commit path | Use for durable provider binding |
-| `autobyteus-server-ts/src/agent-team-execution/services/team-run-execution-tree-mutator.ts` | Pure validated execution-tree mutations | Traverses configured/task shapes but only adds/settles tasks | Extend with identity-targeted, idempotent, conflict-rejecting binding adoption |
-| `autobyteus-server-ts/src/agent-team-execution/domain/prepared-task-execution.ts` | Opaque prepared local task execution contract | Direct task-agent provider initialization happens before its tree node is committed, but the contract carries no staged platform binding | Add a narrow staged-binding collection without polluting task identity |
-| `autobyteus-server-ts/src/agent-team-execution/task-delegation/task-execution-tree-projection.ts` | Projects prepared task executions into the V1 tree | Direct task-agent projection hard-codes a null provider binding | Apply staged binding during the root-owned activation transaction |
-| `autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts` | Public service and history catalog projection | Activity writes only a summary; refresh projects the root tree | Not the primary binding owner |
-| `autobyteus-server-ts/src/services/agent-streaming/agent-team-stream-handler.ts` | WebSocket ingress/egress | No longer refreshes live-context metadata after events | Must remain transport/UI glue, not persistence repair point |
-| `autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts` | Constructs/registers/terminates AgentRuns and attaches lifecycle observers | Eager create/restore registers before the caller's root/metadata commit; active checks happen before async factory work | Split private candidate construction from synchronous publication; claim run IDs before awaiting and quarantine uncertain cleanup |
-| `autobyteus-server-ts/src/agent-execution/services/agent-run-service.ts` | Standalone AgentRun facade/persistence operations | Builds part of restoration itself and has no single authoritative activation owner behind all callers | Delegate command-ready/create/activate/restore paths to one standalone activation service |
-| `autobyteus-server-ts/src/agent-execution/services/agent-run-provisioning-service.ts` | Prepares and activates standalone AgentRuns | Owns an activation lock but calls eager manager creation before `recordRunStarted`, so the candidate is already discoverable | Retighten to prepared-record allocation/cancel/expiry; move live activation to the standalone durability owner |
-| `autobyteus-server-ts/src/agent-execution/services/agent-run-command-coordinator.ts` | Accepts standalone commands and owns command/status lifecycle | Owns a second activation map and prefers a manager-visible run, allowing a concurrent message to bypass pending metadata durability | Remove activation ownership and always request a command-ready run from the standalone activation owner |
-| `autobyteus-server-ts/src/run-history/store/agent-run-metadata-store.ts` | Reads/writes standalone metadata atomically | Forgiving `readMetadata` returns null for both missing and unreadable state | Add a strict classified read for activation commit reconciliation; keep general forgiving reads unchanged |
-| `autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts` | Builds Codex runtime context | Correctly retains an existing thread ID | No primary regression here |
-| `autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread-manager.ts` | Starts/restores provider threads | Uses supplied ID but silently starts new on resume error | Remove fail-open fallback for known identity |
-| `autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-manager.ts` | Creates/restores Claude session wrappers | Fresh creation writes local AgentRun ID as `sessionId`; restore treats a non-local ID as completed/provider-backed | Replace placeholder with reserved provider UUID plus explicit materialization state |
-| `autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts` | Starts Claude SDK queries and adopts stream identity | First query omits resume; stream can replace session ID with any resolved UUID | Select new-session versus resume explicitly and require stream identity equality |
-| `autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-client.ts` | Adapts local runtime inputs to SDK query options | Wrapper's `sessionId` maps to SDK `resume`; it cannot express SDK new-session `sessionId` | Introduce semantically distinct new-session and resume inputs and reject invalid combinations |
-| Installed `@anthropic-ai/claude-agent-sdk@0.3.231` `sdk.d.ts` | Installed provider contract | Supports caller-selected valid UUID via new-session `sessionId` and existing-session load via `resume` | Authoritative local basis for preallocating Claude provider identity |
-| `autobyteus-server-ts/src/agent-memory/services/runtime-memory-event-accumulator.ts` and memory store | Records externally backed conversation traces | Forwarded user and assistant traces persist independently of the provider binding | Reuse through a narrow activity-inspection capability to distinguish fresh from broken null-binding state |
-| `autobyteus-server-ts/tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts` | Real mixed-runtime persistence/restart coverage | Intended stable-ID assertions are doubly environment-gated and did not prevent this branch regression | Coverage validity and expansion required downstream |
-| `autobyteus-server-ts/tests/integration/agent-team-execution/services/agent-team-run-manager.integration.test.ts` | V1 manager integration | Fake restoration copies already-present IDs and misses discovery/adoption | Add focused owner-level adoption coverage |
-| `autobyteus-server-ts/tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts` | Live Claude team runtime coverage | Tests readiness/local projection but not provider UUID continuity or context after restart | Coverage investigation must classify and expand the relevant scenario |
-| Claude session/manager unit tests | Claude adapter contract coverage | Encode local-ID placeholder and null first-query resume as expected behavior | Update to the refined SDK identity contract after implementation |
+| Path | Current Responsibility | SR-004 Relevance |
+| --- | --- | --- |
+| `src/agent-team-execution/services/agent-team-run-manager.ts` | Root create/restore/package/register owner | Must preserve create-vs-restore provenance and call the corresponding factory entrypoint. |
+| `src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts` | Builds mixed runtime contexts/managers | Must materialize configured-member mode explicitly and propagate it. |
+| `src/agent-team-execution/backends/mixed/mixed-team-run-context.ts` | Mixed process-local runtime context | Owns non-persisted configured-member activation mode alongside member contexts. |
+| `src/agent-team-execution/backends/mixed/mixed-sub-team-run-factory.ts` | Builds configured/task subteams | Configured children inherit mode; new task teams pass fresh explicitly. |
+| `src/agent-team-execution/backends/mixed/members/mixed-sub-team-member-handle.ts` | Lazy configured child-team creation | Must forward inherited configured-member mode. |
+| `src/agent-team-execution/backends/mixed/members/mixed-configured-member-registry.ts` | Creates configured handles | Passes root/configured activation mode. |
+| `src/agent-team-execution/backends/mixed/members/mixed-task-agent-execution-registry.ts` | Prepares new task agents | Passes fresh mode and stages binding only for external runtimes. |
+| `src/agent-team-execution/backends/mixed/members/mixed-task-team-execution-registry.ts` | Prepares new task teams | Passes fresh mode regardless of restored parent root. |
+| `src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts` | Member readiness/runtime adaptation | Selects new/native-restore/external-restore plan; ensures workspace; external-gates binding; retains single-flight. |
+| `src/agent-execution/services/agent-run-manager.ts` | Private candidate lifecycle | Existing generic restore fits native; strict platform restore remains external. |
+| `src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts` | Native create/restore | Existing restore loads working snapshot; no provider-binding changes needed. |
+| `src/agent-memory/services/agent-conversation-activity-inspector.ts` | Strict active/archive semantic activity classification | Reused to distinguish restored native activity from never-initialized native state. |
+| `src/workspaces/workspace-manager.ts` | Workspace activation/registry | Existing `ensureWorkspaceByRootPath` must be called before candidate construction. |
+| `src/agent-team-execution/domain/team-agent-platform-binding.ts` | External team binding value | Remains provider-neutral but is constructed only for external runtime candidates. |
 
 ## Runtime / Probe Findings
 
-| Date | Method (`Repro`/`Trace`/`Probe`/`Script`/`Test`/`Setup`) | Exact Command / Method | Observation | Implication |
-| --- | --- | --- | --- | --- |
-| 2026-08-17 | Setup | Migrate/import credentials against disposable DB; start API on 60417 and web on 31317 | Requested agent/model could run without touching production DB | Reproduction is isolated and realistic |
-| 2026-08-17 | Repro | Browser UI: import `/Users/normy/autobyteus_org/autobyteus-agents`, create/open classroom team, send marker prompt | First response correctly acknowledged `COBALT-RIVER-9173` | Initial provider thread works |
-| 2026-08-17 | Trace | Read physical execution tree and Codex session metadata before restart | Thread `01a0104a-2dd9-7bd2-92f9-70a704a4dbf5`; persisted binding null | Provider ID was not committed |
-| 2026-08-17 | Repro | Stop API completely, verify listener closed, restart same server/state, reopen same run | Earlier user and assistant messages were visible | Local history path works |
-| 2026-08-17 | Repro | Browser UI follow-up: ask for exact earlier marker | Reply was `codex-runtime-thread-resume-fix` | Provider did not have earlier context |
-| 2026-08-17 | Trace | Read post-restart Codex session metadata, tree, and server log | New thread `01a0104c-1a48-7af2-a8bc-d9cb94e4ed12`; tree still null; create logged twice | Null binding deterministically selected new-thread creation after restart |
-| 2026-08-17 | Probe | Stop owned listeners and close browser tab | No listener remained on 60417 or 31317 | Investigation cleanup complete |
-| 2026-08-17 | Setup | Migrate/import credentials against second disposable DB; start API on 60418 and web on 31318 | Requested Claude agent/model could run without production DB access | Reproduction is isolated and realistic |
-| 2026-08-17 | Repro | Browser UI: create/open classroom team with Claude runtime and DeepSeek V4 Flash-backed selection; send `AMBER-ORCHID-4821` marker | First response correctly returned `STORED AMBER-ORCHID-4821` | Initial Claude provider session works |
-| 2026-08-17 | Trace | Read pre-restart physical tree and provider JSONL | Session `11771792-3875-42a5-8f8a-455dd819af27`; persisted professor binding null | Late provider UUID was not committed |
-| 2026-08-17 | Repro | Stop API, restart exact state, reopen same run, ask for marker | Earlier exchange remained visible; response said no marker was known | Local history works while provider context is absent |
-| 2026-08-17 | Trace | Read post-restart tree, provider JSONL, raw trace, and server log | New session `8ba2e83a-f5aa-4d9c-832b-49e1caaab420`; tree still null; creation logged twice | Claude follows the same V1 persistence failure as Codex |
-| 2026-08-17 | Probe | Close browser and stop owned listeners | No listener remained on 60418 or 31318 | Claude investigation cleanup complete |
+| Runtime / Branch | Marker | Pre-Restart | Post-Restart | Physical Result | Verdict |
+| --- | --- | --- | --- | --- | --- |
+| Codex / base | `COBALT-RIVER-9173` | Correct acknowledgement; thread `01a0104a-...` | Wrong marker; new thread `01a0104c-...` | Tree binding null | Fail |
+| Claude / base | `AMBER-ORCHID-4821` | Correct acknowledgement; UUID `11771792-...` | Provider reports no marker; UUID `8ba2e83a-...` | Tree binding null | Fail |
+| Native / base rerun | `BASE-NATIVE-RERUN-20260817-P8W6` | Exact ACK | Explicit no-record response | Binding null; turn number reset; snapshot replaced; temp fallback | Fail |
+| Native / personal control | `PERSONAL-NATIVE-CONTROL-20260817-R5C3` | Exact ACK | Exact marker | Snapshot retained/appended; workspace/team/AgentRun restore logged | Pass |
+
+All retained browser-owned processes/tabs were stopped/closed. Ports 60420/31320/60421/31321 were free. Disposable native runtime directories were deleted only after evidence was copied into the ticket.
 
 ## External / Public Source Findings
 
-- Public API / spec / issue / upstream source: No web source was required. Codex behavior was observed from the installed app-server. Claude behavior and the distinct SDK `sessionId`/`resume` options were verified from the installed package declaration rather than secondary documentation.
-- Version / tag / commit / freshness: Local environment on 2026-08-17; affected source base `2b0f8ea99296bb3f983c497d1f5c00a4d839f404`; `@anthropic-ai/claude-agent-sdk` `0.3.231`; provider CLI JSONL version `2.1.231`.
-- Relevant contract, behavior, or constraint learned: Codex `thread/start` returns a distinct identity and `thread/resume` requires it. Claude SDK `sessionId` assigns a valid caller-selected UUID to a new conversation, while `resume` loads an existing session; those options have different semantics and may not be conflated.
-- Why it matters: The shared root cause is local persistence ownership, while Claude's installed contract provides a safe way to make its provider identity available before the first turn.
+No web source was required. The relevant provider contracts were verified from installed primary artifacts:
+
+- Codex app-server behavior was observed directly.
+- `@anthropic-ai/claude-agent-sdk@0.3.231` distinguishes `sessionId?: string` for a new caller-selected UUID from `resume?: string` for an existing session.
+- Native restoration behavior was verified from the repository source and live personal logs (`agentFactory.restoreAgent` plus `WorkingContextSnapshotRestoreStep`).
 
 ## Reproduction / Environment Setup
 
-- Required services, mocks, emulators, or fixtures: Real local server and web UI, local Codex app-server and Claude Agent SDK integrations, separate disposable SQLite states, imported classroom simulation agent package.
-- Required config, feature flags, env vars, or accounts: Existing local Codex authentication/model access; Claude API configuration; credential import from `/Users/normy/.autobyteus/server-data/.env` into each disposable database only.
-- External repos, samples, or artifacts cloned/downloaded for investigation: Existing `/Users/normy/autobyteus_org/autobyteus-agents`; it was imported through the product and not modified.
-- Setup commands that materially affected the investigation: `pnpm install --offline --frozen-lockfile`; server build; disposable Prisma migrations; `pnpm secrets:import -- --source /Users/normy/.autobyteus/server-data/.env --database-url file:///.../codex-resume-investigation-20260817-1.db`; the corresponding import for `claude-resume-investigation-20260817-2.db`; local API/web start commands.
-- Cleanup notes for temporary investigation-only setup: All four owned listeners and both browser tabs were stopped. Disposable DB/data remain only as isolated investigation inputs; no production DB was opened by either test server or modified.
+- Agent package: `/Users/normy/autobyteus_org/autobyteus-agents`
+- Team: Classroom Simulation Team
+- Codex model: `gpt-5.6-luna`
+- Claude/native model selection: DeepSeek V4 Flash (`deepseek-v4-flash`; Claude selection used the configured Anthropic-backed entry)
+- Credential import, always isolated:
+
+```bash
+pnpm secrets:import -- \
+  --source /Users/normy/.autobyteus/server-data/.env \
+  --database-url file:///private/tmp/<isolated-run>/autobyteus.db
+```
+
+- Required restart boundary: fully stop API, verify listener closed, restart with identical isolated data, reopen the same TeamRun, send a context-dependent marker question.
+- Evidence standard: retain browser result, same local IDs, physical binding/snapshot, provider ID where applicable, and server create/restore logs. Visible history alone is insufficient.
 
 ## Findings From Code / Docs / Data / Logs
 
-1. **The user's symptom is confirmed.** The live browser showed local history after restart but a context-free answer on the next turn.
-2. **Local and provider identities diverge.** TeamRun and professor AgentRun IDs remained stable; the Codex thread ID changed across restart.
-3. **The physical provider binding is null.** The authoritative V1 execution tree remained null after a successful provider turn, so restore had no thread ID to supply.
-4. **The ID is learned but not adopted.** `MixedAgentMemberHandle.capturePlatformRunId` updates only its context. No production call turns that fact into a root execution-tree change.
-5. **Restart behavior follows directly from the null.** V1 restoration rebuilds runtime config from the tree; `ensureReady` uses create when the binding is null.
-6. **`origin/personal` had a different persistence bridge.** It mapped IDs from live member contexts and refreshed metadata after events. The V1/root rewrite removed that mechanism without providing a root-owned replacement.
-7. **The new root already has the correct durability primitive.** `TeamRunPersistenceCoordinator.commitExecutionChange` writes the next tree before exposing the live commit; the missing piece is a semantically narrow binding mutation and invocation path.
-8. **The issue is broader than one configured Codex member at the structural boundary.** Configured and task agent nodes share the provider-binding contract, so a correct invariant must cover both. Native runtimes may legitimately remain null.
-9. **Standalone Codex restoration is not the source of the V1 regression.** It already propagates a valid stored thread ID and must be preserved. Standalone Claude has a separate creation-timing gap described below.
-10. **Known provider-resume failure is separately fail-open.** Codex currently turns any `thread/resume` error into a new thread. Even after binding persistence is repaired, that behavior can still falsely claim continuation and therefore belongs in the approved guarantee.
-11. **Existing coverage did not protect the path.** The realistic mixed-runtime test is gated by two external-runtime flags; the manager integration fake does not simulate provider ID discovery and durable adoption.
-12. **The migration report is separate.** A read-only production-memory count showed legacy team records and no V1 trees; no production migration work was attempted or folded into this ticket.
-13. **Direct task agents have a distinct transaction phase.** Their provider AgentRun is created while the task execution is only prepared, before its node exists in the root tree. The learned ID must travel as staged preparation data and be folded into the task activation tree write before work is released.
-14. **The physical lock alone is insufficient for a new concurrent mutation.** Existing task changes calculate `nextTree` before entering the persistence coordinator's root lock. Provider-binding adoption can occur concurrently across members and with task activation, so every tree-changing plan must derive its next tree after reaching the lock head to prevent lost updates.
-15. **Prior conversation is detectable without provider-ID guessing.** External-runtime raw trace memory records forwarded user and assistant turns under the exact AgentRun directory, including archive support. A null-binding execution with such traces is not a genuinely fresh execution and must fail closed.
-16. **`TeamRunService.refreshRunMetadata` is dead in V1.** It has no caller and cannot repair the defect because it only reprojects the unchanged root tree; retaining it would imply an obsolete second persistence path.
-17. **Claude has the same user-visible team failure.** The browser restored the `AMBER-ORCHID-4821` local exchange but the post-restart provider said no marker existed.
-18. **Claude provider identity changed while local identity remained stable.** One professor AgentRun used provider UUIDs `11771792-3875-42a5-8f8a-455dd819af27` and `8ba2e83a-f5aa-4d9c-832b-49e1caaab420`; the physical tree stayed null.
-19. **The personal-branch explanation is the same for both providers.** Claude backend code also discovers its ID late. Personal persisted that mutable live-context value after team events; V1 removed the projection. The provider implementation did not independently preserve the team binding.
-20. **Claude's local-ID placeholder is semantically invalid persistence input.** It is neither an opaque provider identity nor safely resumable and must not be published as `platformAgentRunId`.
-21. **The installed SDK removes the need for late identity discovery on fresh Claude runs.** Its new-session `sessionId` option accepts a caller-selected valid UUID; subsequent/restored turns use the distinct `resume` option.
-22. **Claude needs explicit materialization state.** A reserved fresh UUID must be sent as new-session `sessionId`; after the provider stream confirms it, or when loaded from persisted state, it must be sent as `resume`. `hasCompletedTurn` alone is not sufficient because an interrupted/partial provider session can be materialized without a completed turn.
-23. **A conflicting Claude stream UUID is an invariant violation.** Once the provider UUID is reserved or restored, stream data may confirm it but must not silently replace it.
-24. **Standalone Claude is exposed by the same late-discovery timing.** Activation stores the local placeholder, and post-accept activity persistence can precede stream discovery. Graceful termination may repair it, but abrupt process loss cannot rely on graceful cleanup. Preassigned UUID creation closes that gap through the existing standalone persistence boundary.
-25. **Current Claude coverage encodes or misses the defect.** Unit tests expect the placeholder lifecycle; existing live team tests do not assert exact provider UUID or semantic context across a process restart.
-26. **Team lazy readiness is a supported single-flight requirement, not a synthetic race.** Team WebSocket callbacks allow two ordinary messages to overlap. The handle checks only a completed `agentRun`, while manager construction awaits before registration; both commands can create provider candidates before either becomes active.
-27. **Standalone live registration currently precedes the authoritative metadata boundary.** Provisioning obtains an already-registered AgentRun from the manager and only afterward awaits `recordRunStarted`. The command coordinator's active-first resolution lets another normal command post input during that window.
-28. **The manager active registry must contain published runs only.** A caller-level convention not to post is insufficient because other product surfaces resolve through the manager. A private candidate that hides the raw AgentRun, plus an exclusive pre-await run-ID claim, makes pre-durability non-discoverability structural.
-29. **Cleanup outcome determines retry safety.** Confirmed private teardown permits retry; cleanup uncertainty must retain a run-ID quarantine. Standalone write errors also require strict metadata reconciliation: exact intended started state can publish, exact unchanged prepared state can abort/retry, and missing/unreadable/conflicting state must not create another candidate.
+1. The user-visible defect is confirmed for Codex, Claude, and native AutoByteus configured team members.
+2. Local history restoration is independent from provider/native runtime context restoration.
+3. The external V1 defect is missing authoritative binding adoption; SR-003's root/tree/candidate design remains correct.
+4. The native V1 defect is different: the same local run identity survives, but root materialization provenance does not.
+5. `AgentTeamRunManager.restoreTeamRun()` currently calls the same mixed factory method used by create.
+6. A native null external binding is correct; it cannot distinguish never-created from restored-with-local-memory.
+7. Canonical active/archive traces can distinguish prior semantic activity. For restored native activity, generic `prepareRestoreAgentRun` invokes the native restore backend. For no activity, fresh creation remains appropriate.
+8. The personal control succeeds because it explicitly reconstructs a restore context, reactivates workspace roots, and reaches native `restoreBackend`.
+9. The base V1 path does not reactivate workspace roots, so native backend's synchronous lookup falls back to temp even though `workspaces.json` has the mapping.
+10. `WorkspaceManager.ensureWorkspaceByRootPath()` is the existing owner and can be reused in the async member-config build; a new workspace subsystem is unnecessary.
+11. The halted implementation's `CODE-FIND-001` is real: native backend self-ID is truthy, but the handle's binding/adoption branch is not external-gated.
+12. Merely ignoring the native self-ID would preserve null binding but would leave the pre-existing browser restart failure. SR-004 must add materialization provenance and native restore planning.
+13. Configured nested teams must inherit restored provenance. Newly delegated task agents and task teams are new executions and must remain fresh even when their parent root was restored.
+14. The member handle remains the correct runtime-adaptation owner: it already owns lazy readiness, activity inspection, candidate selection, and external binding acceptance.
+15. Single-flight candidate/publication/cleanup rules from SR-003 remain applicable to native; overlapping post-restart commands must create/restore only one native candidate.
+16. No persisted schema field is required for materialization mode; the manager entrypoint supplies it for each process lifetime.
+17. Valid existing external IDs and native memory are directly usable. Missing provider IDs, overwritten native snapshots, and conflicting Claude IDs remain unrecoverable/fail-closed states.
+18. Legacy native self-ID values in converted V1 trees are not provider identities. Runtime kind and materialization mode ignore them for activation; no bulk rewrite is justified.
+19. Open delegated-task recovery across process restart is a broader existing gap and is not established by this user's configured-member reproduction. New task creation/binding neutrality remains in scope; task hydration is not added speculatively.
 
 ## Persisted Data Transition Evidence (When Applicable)
 
-- Current stored subject, location, representative shape, and approximate volume: V1 team package `team_run_execution_tree.json` contains nullable `platformAgentRunId` on configured-agent and task-agent execution nodes. Both isolated team reproductions contain one configured professor and one configured student node whose bindings remained null after completed professor turns. Standalone AgentRun metadata separately carries the same semantic provider ID; fresh Claude activation can currently place the local AgentRun ID there as a placeholder.
-- Relevant code-model, serialization, semantic, or physical-store change: No persisted schema change is required. The team defect is failure to update an existing field when the backend establishes identity. The Claude defect is additionally that fresh creation reports a non-provider placeholder instead of reserving a valid provider UUID.
-- Normal readers and writers, including unknown/extra-field behavior: `AgentTeamRunManager` writes the initial tree and `TeamRunStatePackageLoader` reads it on restore. Root task mutations use `TeamRunPersistenceCoordinator`. Valid provider IDs are already converted into restored runtime config.
-- Representative direct-read or compatibility evidence: Physical Codex and Claude pre/post reproduction trees all contained null. Existing schema validates non-null strings. The legacy-to-V1 conversion path can preserve legacy provider IDs when present. Installed Claude SDK accepts a valid UUID for a new conversation.
-- Required semantics and invariants preserved by direct use: Yes — valid non-null IDs under the existing schema carry the required opaque identity without transformation. No — already-broken null records do not contain enough canonical information to recover the original provider thread.
-- Physical storage, privacy/security, disposal, rebuild, or operational constraints: Provider IDs are opaque execution bindings and must not be guessed, cross-assigned, or exposed as credentials. Production state was not modified. Local conversation history must be preserved.
-- Concrete benefit, cost, and risk of migration if it remains a candidate: A migration offers no safe benefit because there is no deterministic value for an affected null. Guessing from local Codex or Claude sessions could cross-bind members/workspaces and is unacceptable. Existing standalone Claude metadata equal to its local AgentRun ID is not a valid provider UUID binding and must not be treated as recoverable provider context. Correct handling is direct use of valid records plus an explicit non-resumable outcome for unrecoverable records.
-- Existing migration framework or lifecycle constraints, only if migration may be required: Not applicable; required outcome is `Directly Usable — No Migration`. The separate legacy migration failure is a different ticket.
+- Stored subjects: V1 execution tree, local team AgentRun memory (working snapshot and trace corpus), workspace registry, standalone metadata.
+- Representative base native tree: stable professor `agentRunId`, runtime `AUTOBYTEUS`, `platformAgentRunId: null`, workspace root `/Users/normy/autobyteus_org/autobyteus-agents`.
+- Representative base post-restart memory: raw file contains both user turns, but working snapshot contains only the post-restart exchange.
+- Representative personal post-restart memory: working snapshot contains both the pre-restart marker pair and appended recall pair.
+- Reader/writer semantics: external binding is relevant only for external runtime kinds; native continuation uses local ID/memory. Fresh/restore is process-local provenance.
+- Transition outcome: `Directly Usable — No Migration`.
+- No schema change, data rewrite, or maintenance window is needed. A native self-ID value can remain physically present in old converted data but is ignored by the current runtime-kind rule; new writes never adopt one.
+- Unrecoverable: absent external binding after prior provider activity; native snapshot already overwritten; provider UUID conflict.
 
 ## Constraints / Dependencies / Compatibility Facts
 
-- Base and finalization target are the universal task-delegation branch, not `personal`.
-- The tree is the sole V1 canonical topology; mutable runtime contexts and WebSocket event presence cannot become parallel persistence owners.
-- The AgentRun active registry is a live input-admission surface. Candidates must be absent from it until the applicable root-tree or standalone metadata boundary is durable.
-- Normal overlapping callers for the same lazy team member or standalone run must join one owning promise; manager-level duplicate construction rejection is a backstop, not the normal join mechanism.
-- Adoption must be idempotent for the same binding and reject a conflicting replacement for the same agent execution.
-- Configured and delegated task agents share the invariant; native/no-provider-ID executions remain valid.
-- `platformAgentRunId` for an external runtime must be either null before a binding exists or an actual provider-native identity; the local AgentRun ID is not a supported placeholder.
-- Fresh Claude execution must reserve a valid UUID before release, persist it through the owning standalone/team boundary, pass it as SDK `sessionId` for new creation, and use SDK `resume` only after materialization or restoration.
-- Claude stream identity is confirmation-only once a UUID is reserved/restored; conflicting rebinding is forbidden.
-- A real restart validation incurs provider access and must use isolated state.
-- Existing affected null-binding histories cannot be promised transparent recovery.
+- Base/finalization target is universal task delegation, never personal.
+- Root tree remains sole V1 external identity authority.
+- AgentRun candidates remain undiscoverable/non-input-admitting until applicable durability commits.
+- Same member/run callers join one readiness/activation result.
+- Team platform binding construction/adoption is external-runtime-only.
+- Native restore uses local run identity and memory, not strict platform-state restore.
+- Configured materialization mode is explicit and process-local; it is not inferred from binding truthiness.
+- New task executions are always fresh; configured children inherit their root/team provenance.
+- Valid workspace roots are activated through `WorkspaceManager` before backend construction.
+- No compatibility wrapper, event-driven metadata refresh, provider-history replay, or silent provider/native fallback is allowed.
+- Real browser validation must use an isolated database and the exact secret-import form above.
 
 ## Open Unknowns / Risks
 
-- The approved design must use the complete local user/assistant trace corpus as the fresh-versus-prior-activity signal and fail closed if that state cannot be inspected reliably.
-- The design must define narrow structured error codes for missing canonical binding and failed known-provider restoration, then use the existing team event projection so the UI observes them without making transport the persistence owner.
-- Other external backends may surface their provider ID at a different event/lifecycle point; the binding port must not assume Codex- or Claude-specific timing.
-- Durable UUID reservation can precede actual Claude provider-session materialization. If the process dies in that window, later resume of the known but unmaterialized UUID may fail; it must fail closed rather than create a replacement. The revised design must make this state transition and error semantics explicit.
-- Existing standalone Claude records whose `platformAgentRunId` equals the local AgentRun ID contain a placeholder, not recoverable provider identity. The design must classify them with the same no-fabrication principle as other invalid/missing bindings.
-- Candidate cleanup can fail after provider/backend construction. Same-process availability is intentionally secondary to identity safety: without confirmed inactivity, the local run ID must remain quarantined and no replacement candidate may be created.
-- A standalone metadata write can be durably renamed even if a later catalog operation reports failure. The activation owner must strictly re-read and classify exact target, unchanged prepared, or indeterminate state before choosing publication, retry, or quarantine.
-- Downstream API/E2E investigation must classify the doubly gated mixed-runtime test and decide how to make the regression durable without relying only on an expensive live suite.
+- Activity corpus read can be indeterminate; target must fail closed rather than fresh-create over uncertain native context.
+- A native snapshot may be corrupt even when traces prove activity; native restore should surface the backend failure and must not retry as fresh.
+- Candidate cleanup uncertainty continues to quarantine the local run ID.
+- Legacy native self-ID values are ignored rather than rewritten; downstream tests should include one such direct-use fixture if representative data exists.
+- Provider/live E2E is credential/environment gated. `api_e2e_engineer` owns final durable coverage classification after implementation and source review.
+- Task execution hydration across restart is out of scope unless a separate supported reproduction establishes it.
 
 ## Notes For Architecture Reviewer
 
-The complete refined requirements basis was explicitly approved on 2026-08-17 and remains unchanged by the Design Impact rework. For SR-003, verify in addition that configured team callers join one handle-owned readiness result; direct-task candidates remain private until task durability; `AgentRunManager` claims before awaiting and exposes candidates only through publish/abort; the active registry contains published runs only; every standalone caller joins `StandaloneAgentRunActivationService`; metadata commit reconciliation and candidate cleanup have deterministic retry/quarantine rules; and no eager manager/provisioning/command activation bypass remains. The SR-002 root binding, Codex strict resume, Claude reserved UUID, no-migration, and historical fail-closed decisions otherwise remain authoritative.
+Review SR-004 cumulatively, not as a replacement for SR-003. Confirm:
+
+1. `AgentTeamRunManager` preserves create/restore provenance and the mixed factory exposes two semantically distinct entrypoints.
+2. The process-local mixed context carries configured-member activation mode; nested configured teams inherit it; new task agents/teams explicitly use fresh mode.
+3. The handle selects exactly one activation plan: new, native local restore, or external exact restore.
+4. External binding creation/adoption/strict platform restore never receives a native self-ID.
+5. Workspace activation reuses the existing owner before candidate construction.
+6. Native activity uses generic manager restore and retains SR-003 single-flight, unpublished candidate, cleanup, and publication ordering.
+7. No persistence migration or parallel metadata authority is introduced.
+8. The halted implementation and code-review artifacts are triggers only; `requirements.md`, these notes, `design-spec.md`, and the three evidence supplements remain the upstream authority.

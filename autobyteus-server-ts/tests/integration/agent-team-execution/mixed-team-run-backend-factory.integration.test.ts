@@ -1,10 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { MixedTeamRunBackendFactory } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.js";
-import {
-  MixedAgentMemberContext,
-  MixedSubTeamMemberContext,
-  MixedTeamRunContext,
-} from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-context.js";
+import { MixedTeamRunContext } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-context.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
@@ -114,7 +110,7 @@ describe("MixedTeamRunBackendFactory current execution identity integration", ()
     expect(createTeamManager).not.toHaveBeenCalled();
   });
 
-  it("restores exact platform identities and nested runtime context without route/path reconstruction", async () => {
+  it("restores configured provenance and exact external identities while ignoring native self-bindings", async () => {
     const contexts: Array<TeamRunContext<MixedTeamRunContext>> = [];
     const manager = createManagerStub();
     const factory = new MixedTeamRunBackendFactory({
@@ -123,55 +119,37 @@ describe("MixedTeamRunBackendFactory current execution identity integration", ()
         return manager;
       }) as never,
     });
-    const config = createConfig();
-    const restoredChild = new MixedTeamRunContext({
-      memberContexts: [
-        new MixedAgentMemberContext({
-          address: "/BuildSquad/Builder",
-          agentRunId: "builder-run",
-          runtimeKind: RuntimeKind.AUTOBYTEUS,
-          platformAgentRunId: "native-builder-run",
-        }),
-      ],
-    });
-    const restoreRuntimeContext = new MixedTeamRunContext({
-      memberContexts: [
-        new MixedAgentMemberContext({
-          address: "/Coordinator",
-          agentRunId: "coord-run",
-          runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-          platformAgentRunId: "thread-coordinator",
-        }),
-        new MixedAgentMemberContext({
-          address: "/Reviewer",
-          agentRunId: "reviewer-run",
-          runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
-          platformAgentRunId: "session-reviewer",
-        }),
-        new MixedSubTeamMemberContext({
-          address: "/BuildSquad",
-          teamDefinitionId: "build-squad-definition",
-          teamRunId: "build-squad-run",
-          childRuntimeContext: restoredChild,
-        }),
-      ],
-    });
-    const restoreContext = new TeamRunContext({
-      rootTeamRunId: config.rootTeam.teamRunId,
-      teamRunId: config.rootTeam.teamRunId,
-      teamBackendKind: TeamBackendKind.MIXED,
-      teamNode: config.rootTeam,
-      handoffs: config.handoffs,
-      runtimeContext: restoreRuntimeContext,
+    const base = createConfig();
+    const config = testTeamRunConfig({
+      rootTeamRunId: base.rootTeam.teamRunId,
+      rootTeamDefinitionId: base.rootTeam.teamDefinitionId,
+      coordinatorAddress: base.rootTeam.coordinatorAddress,
+      children: base.rootTeam.children.map((node) => {
+        if (node.kind === "agent" && node.address === "/Coordinator") {
+          return { ...node, platformAgentRunId: "thread-coordinator" };
+        }
+        if (node.kind === "agent" && node.address === "/Reviewer") {
+          return { ...node, platformAgentRunId: "session-reviewer" };
+        }
+        if (node.kind === "agent_team") {
+          return {
+            ...node,
+            children: node.children.map((child) => child.kind === "agent"
+              ? { ...child, platformAgentRunId: child.agentRunId }
+              : child),
+          };
+        }
+        return node;
+      }),
     });
 
-    const backend = await factory.restoreBackend(restoreContext, config);
+    const backend = await factory.restoreBackend(config, config.rootTeam.teamRunId);
 
     const runtime = contexts[0]!.runtimeContext;
-    expect(runtime).not.toBe(restoreRuntimeContext);
+    expect(runtime.configuredMemberActivationMode).toBe("restore");
     expect(runtime.memberContexts[0]).toMatchObject({ platformAgentRunId: "thread-coordinator" });
     expect(runtime.memberContexts[1]).toMatchObject({ platformAgentRunId: "session-reviewer" });
-    expect(runtime.memberContexts[2]).toMatchObject({ childRuntimeContext: restoredChild });
+    expect(runtime.memberContexts[2]).toMatchObject({ childRuntimeContext: null });
     expect(backend.getRuntimeContext()).toBe(runtime);
   });
 });

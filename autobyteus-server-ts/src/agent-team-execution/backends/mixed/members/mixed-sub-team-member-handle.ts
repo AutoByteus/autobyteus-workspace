@@ -63,12 +63,12 @@ export class MixedSubTeamMemberHandle {
 
   private async ensureReady(): Promise<TeamRun> {
     if (this.childRun?.isActive()) return this.childRun;
-    this.childRun = await this.options.subTeamRunFactory.createOrRestore({
+    this.childRun = await this.options.subTeamRunFactory.materializeConfiguredChild({
       handoffs: this.options.parentContext.handoffs,
       applicationBinding: this.options.parentContext.applicationBinding,
       rootTeamRunId: this.options.parentContext.rootTeamRunId,
       teamNode: this.options.config,
-      restoreRuntimeContext: this.context.childRuntimeContext,
+      configuredMemberActivationMode: this.options.parentContext.runtimeContext.configuredMemberActivationMode,
     });
     this.context.childRuntimeContext = this.childRun.getRuntimeContext() as MixedTeamRunContext;
     return this.childRun;

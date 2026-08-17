@@ -4,7 +4,10 @@ import type { CollaborationHandoff } from "../../../agent-collaboration/domain/c
 import type { TeamRunContext } from "../../domain/team-run-context.js";
 import { MixedTeamRunBackend } from "./mixed-team-run-backend.js";
 import type { MixedTeamManager } from "./mixed-team-manager.js";
-import type { MixedTeamRunContext } from "./mixed-team-run-context.js";
+import type {
+  MixedConfiguredMemberActivationMode,
+  MixedTeamRunContext,
+} from "./mixed-team-run-context.js";
 
 export type MixedSubTeamRunFactoryOptions = {
   buildContext: (input: {
@@ -12,7 +15,7 @@ export type MixedSubTeamRunFactoryOptions = {
     applicationBinding?: TeamRunApplicationBinding | null;
     rootTeamRunId: string;
     teamNode: TeamRunAgentTeamNode;
-    restoreRuntimeContext?: MixedTeamRunContext | null;
+    configuredMemberActivationMode: MixedConfiguredMemberActivationMode;
   }) => TeamRunContext<MixedTeamRunContext>;
   createTeamManager: (context: TeamRunContext<MixedTeamRunContext>) => MixedTeamManager;
 };
@@ -20,17 +23,29 @@ export type MixedSubTeamRunFactoryOptions = {
 export class MixedSubTeamRunFactory {
   constructor(private readonly options: MixedSubTeamRunFactoryOptions) {}
 
-  async createOrRestore(input: {
+  async materializeConfiguredChild(input: {
     handoffs: readonly CollaborationHandoff[];
     applicationBinding?: TeamRunApplicationBinding | null;
     rootTeamRunId: string;
     teamNode: TeamRunAgentTeamNode;
-    restoreRuntimeContext?: MixedTeamRunContext | null;
+    configuredMemberActivationMode: MixedConfiguredMemberActivationMode;
   }): Promise<TeamRun> {
     const context = this.options.buildContext(input);
     return new TeamRun(
       context,
       new MixedTeamRunBackend(context, this.options.createTeamManager(context)),
     );
+  }
+
+  async prepareFreshTaskTeam(input: {
+    handoffs: readonly CollaborationHandoff[];
+    applicationBinding?: TeamRunApplicationBinding | null;
+    rootTeamRunId: string;
+    teamNode: TeamRunAgentTeamNode;
+  }): Promise<TeamRun> {
+    return this.materializeConfiguredChild({
+      ...input,
+      configuredMemberActivationMode: "fresh",
+    });
   }
 }

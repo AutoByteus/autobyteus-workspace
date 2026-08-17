@@ -6,6 +6,8 @@ import type {
 } from "../../domain/team-run-context.js";
 import type { AgentTeamAddress } from "../../../agent-collaboration/domain/agent-team-address.js";
 
+export type MixedConfiguredMemberActivationMode = "fresh" | "restore";
+
 export class MixedAgentMemberContext implements TeamAgentMemberRuntimeContext {
   readonly kind = "agent" as const;
   readonly address: AgentTeamAddress;
@@ -49,8 +51,13 @@ export type MixedTeamMemberContext = MixedAgentMemberContext | MixedSubTeamMembe
 
 export class MixedTeamRunContext {
   readonly memberContexts: MixedTeamMemberContext[];
-  constructor(input: { memberContexts: MixedTeamMemberContext[] }) {
+  readonly configuredMemberActivationMode: MixedConfiguredMemberActivationMode;
+  constructor(input: {
+    memberContexts: MixedTeamMemberContext[];
+    configuredMemberActivationMode: MixedConfiguredMemberActivationMode;
+  }) {
     this.memberContexts = [...input.memberContexts];
+    this.configuredMemberActivationMode = input.configuredMemberActivationMode;
   }
 }
 

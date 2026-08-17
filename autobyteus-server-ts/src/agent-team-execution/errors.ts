@@ -18,3 +18,22 @@ export class AgentTeamTerminationError extends AgentTeamExecutionError {
     this.name = "AgentTeamTerminationError";
   }
 }
+
+export type TeamAgentActivationErrorCode =
+  | "TEAM_AGENT_NATIVE_RESTORE_FAILED"
+  | "TEAM_AGENT_WORKSPACE_ACTIVATION_FAILED";
+
+export class TeamAgentActivationError extends AgentTeamExecutionError {
+  readonly code: TeamAgentActivationErrorCode;
+
+  constructor(
+    code: TeamAgentActivationErrorCode,
+    message: string,
+    options: { cause?: unknown } = {},
+  ) {
+    super(message);
+    this.name = "TeamAgentActivationError";
+    this.code = code;
+    if (options.cause !== undefined) this.cause = options.cause;
+  }
+}

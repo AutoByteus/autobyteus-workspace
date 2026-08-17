@@ -63,10 +63,11 @@ const createFactory = (input: {
   const state = { active: input.active ?? true };
   const callbacks: MixedTeamRunCallbacks[] = [];
   const backends: Array<Record<string, unknown>> = [];
-  const createBackend = vi.fn(async (
+  const buildBackend = async (
     config: ReturnType<typeof createConfig>,
     teamRunId: string,
     callback: MixedTeamRunCallbacks,
+    configuredMemberActivationMode: "fresh" | "restore",
   ) => {
     callbacks.push(callback);
     const runtimeContext = new MixedTeamRunContext({
@@ -78,6 +79,7 @@ const createFactory = (input: {
           runtimeKind: node.runtimeKind,
           platformAgentRunId: node.platformAgentRunId,
         })),
+      configuredMemberActivationMode,
     });
     const context = new TeamRunContext({
       rootTeamRunId: teamRunId,
@@ -104,10 +106,15 @@ const createFactory = (input: {
     };
     backends.push(backend);
     return backend;
-  });
+  };
+  const createBackend = vi.fn((config, teamRunId, callback) =>
+    buildBackend(config, teamRunId, callback, "fresh"));
+  const restoreBackend = vi.fn((config, teamRunId, callback) =>
+    buildBackend(config, teamRunId, callback, "restore"));
   return {
-    factory: { createBackend } as unknown as MixedTeamRunBackendFactory,
+    factory: { createBackend, restoreBackend } as unknown as MixedTeamRunBackendFactory,
     createBackend,
+    restoreBackend,
     callbacks,
     backends,
     state,
@@ -167,6 +174,11 @@ describe("AgentTeamRunManager strict V1 package integration", () => {
         coordinatorAddress: "/Coordinator",
       },
     });
+    for (const member of tree.rootTeam.members) {
+      if ("agentRunId" in member && member.launchConfiguration.runtimeKind === "AUTOBYTEUS") {
+        expect(member.platformAgentRunId).toBeNull();
+      }
+    }
     await expect(manager.createTeamRun({ config, teamDefinitionName: "Duplicate" })).rejects.toThrow(
       "already active",
     );
@@ -200,11 +212,14 @@ describe("AgentTeamRunManager strict V1 package integration", () => {
       rootTeamRunId: config.rootTeam.teamRunId,
       messages: [],
     });
-    expect(restoredFactory.createBackend).toHaveBeenCalledWith(
+    expect(restoredFactory.createBackend).not.toHaveBeenCalled();
+    expect(restoredFactory.restoreBackend).toHaveBeenCalledWith(
       expect.objectContaining({ rootTeam: expect.objectContaining({ teamRunId: config.rootTeam.teamRunId }) }),
       config.rootTeam.teamRunId,
       expect.any(Object),
     );
+    const restoredRuntime = (restoredFactory.backends[0]?.getRuntimeContext as (() => MixedTeamRunContext))();
+    expect(restoredRuntime.configuredMemberActivationMode).toBe("restore");
   });
 
   it("emits root lifecycle transitions and unregisters only after accepted termination", async () => {

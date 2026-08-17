@@ -37,7 +37,7 @@ export class MixedTaskTeamExecutionRegistry {
     let state: PreparedState = "preparing";
     let root: TeamRun;
     try {
-      root = await this.options.subTeamRunFactory.createOrRestore({
+      root = await this.options.subTeamRunFactory.prepareFreshTaskTeam({
         handoffs: input.handoffs,
         rootTeamRunId: this.options.teamContext.rootTeamRunId,
         teamNode: input.teamNode,

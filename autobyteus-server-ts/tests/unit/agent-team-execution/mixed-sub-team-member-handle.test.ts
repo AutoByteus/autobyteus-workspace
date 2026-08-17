@@ -24,7 +24,10 @@ const config = testTeamRunConfig({
 
 const build = (terminationAccepted = true) => {
   let active = true;
-  const childRuntime = new MixedTeamRunContext({ memberContexts: [] });
+  const childRuntime = new MixedTeamRunContext({
+    memberContexts: [],
+    configuredMemberActivationMode: "restore",
+  });
   const childFinish = vi.fn(async () => {
     if (terminationAccepted) active = false;
     return terminationAccepted
@@ -41,14 +44,17 @@ const build = (terminationAccepted = true) => {
     hasOpenExecutionWork: vi.fn(() => false),
     prepareTermination: vi.fn(async () => ({ cancel: childCancel, commit: childCommit })),
   };
-  const subTeamRunFactory = { createOrRestore: vi.fn(async () => childRun) };
+  const subTeamRunFactory = { materializeConfiguredChild: vi.fn(async () => childRun) };
   const parentContext = new TeamRunContext({
     rootTeamRunId: "parent-1",
     teamRunId: "parent-1",
     teamBackendKind: TeamBackendKind.MIXED,
     teamNode: config.rootTeam,
     handoffs: config.handoffs,
-    runtimeContext: new MixedTeamRunContext({ memberContexts: [] }),
+    runtimeContext: new MixedTeamRunContext({
+      memberContexts: [],
+      configuredMemberActivationMode: "restore",
+    }),
   });
   const context = new MixedSubTeamMemberContext({
     address: reviewTeam.address,
@@ -70,13 +76,13 @@ describe("MixedSubTeamMemberHandle", () => {
 
     await expect(handle.getOrCreateTeamRun()).resolves.toBe(childRun);
     await expect(handle.getOrCreateTeamRun()).resolves.toBe(childRun);
-    expect(subTeamRunFactory.createOrRestore).toHaveBeenCalledOnce();
-    expect(subTeamRunFactory.createOrRestore).toHaveBeenCalledWith({
+    expect(subTeamRunFactory.materializeConfiguredChild).toHaveBeenCalledOnce();
+    expect(subTeamRunFactory.materializeConfiguredChild).toHaveBeenCalledWith({
       handoffs: config.handoffs,
       applicationBinding: null,
       rootTeamRunId: "parent-1",
       teamNode: reviewTeam,
-      restoreRuntimeContext: null,
+      configuredMemberActivationMode: "restore",
     });
     expect(context.childRuntimeContext).toBe(childRuntime);
   });

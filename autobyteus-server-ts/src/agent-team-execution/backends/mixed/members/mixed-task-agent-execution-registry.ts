@@ -52,6 +52,7 @@ export class MixedTaskAgentExecutionRegistry {
         platformAgentRunId: null,
       }),
       config: Object.freeze({ ...input.sourceNode, agentRunId: runId, platformAgentRunId: null }),
+      activationMode: "fresh",
       agentRunManager: this.options.agentRunManager,
       publish: (event) => retainedEvents.push(event),
       deliverInterAgentMessage: this.options.deliverInterAgentMessage,

@@ -43,6 +43,7 @@ const createContext = () => new TeamRunContext({
         teamRunId: configuredReviewTeam.teamRunId,
       }),
     ],
+    configuredMemberActivationMode: "restore",
   }),
 });
 
@@ -57,7 +58,10 @@ const freshTaskTeam = () => {
   });
 };
 
-const createFakeTeamRun = (teamNode: ReturnType<typeof freshTaskTeam> | typeof configuredReviewTeam) => {
+const createFakeTeamRun = (
+  teamNode: ReturnType<typeof freshTaskTeam> | typeof configuredReviewTeam,
+  configuredMemberActivationMode: "fresh" | "restore",
+) => {
   let active = true;
   let openWork = false;
   const postMessage = vi.fn(async () => ({ accepted: true as const }));
@@ -73,7 +77,10 @@ const createFakeTeamRun = (teamNode: ReturnType<typeof freshTaskTeam> | typeof c
     teamBackendKind: TeamBackendKind.MIXED,
     teamNode,
     handoffs: [],
-    runtimeContext: new MixedTeamRunContext({ memberContexts: [] }),
+    runtimeContext: new MixedTeamRunContext({
+      memberContexts: [],
+      configuredMemberActivationMode,
+    }),
   });
   return {
     teamRunId: teamNode.teamRunId,
@@ -98,32 +105,44 @@ const createFakeTeamRun = (teamNode: ReturnType<typeof freshTaskTeam> | typeof c
 const buildManager = () => {
   const context = createContext();
   const runs = new Map<string, ReturnType<typeof createFakeTeamRun>>();
-  const createOrRestore = vi.fn(async (input: { teamNode: ReturnType<typeof freshTaskTeam> | typeof configuredReviewTeam }) => {
-    const run = createFakeTeamRun(input.teamNode);
+  const materializeConfiguredChild = vi.fn(async (input: {
+    teamNode: typeof configuredReviewTeam;
+    configuredMemberActivationMode: "fresh" | "restore";
+  }) => {
+    const run = createFakeTeamRun(input.teamNode, input.configuredMemberActivationMode);
+    runs.set(input.teamNode.teamRunId, run);
+    return run;
+  });
+  const prepareFreshTaskTeam = vi.fn(async (input: {
+    teamNode: ReturnType<typeof freshTaskTeam>;
+  }) => {
+    const run = createFakeTeamRun(input.teamNode, "fresh");
     runs.set(input.teamNode.teamRunId, run);
     return run;
   });
   const manager = new MixedTeamManager(context, {
-    subTeamRunFactory: { createOrRestore } as never,
+    subTeamRunFactory: { materializeConfiguredChild, prepareFreshTaskTeam } as never,
     agentRunManager: { createAgentRun: vi.fn() } as never,
     publish: vi.fn(),
     deliverInterAgentMessage: vi.fn(async () => ({ accepted: true })),
+    acceptPlatformBinding: vi.fn(async () => undefined),
   });
-  return { manager, context, runs, createOrRestore };
+  return { manager, context, runs, materializeConfiguredChild, prepareFreshTaskTeam };
 };
 
 describe("MixedTeamManager current local execution mechanics", () => {
   it("materializes only the exact configured child TeamRun ID", async () => {
-    const { manager, createOrRestore } = buildManager();
+    const { manager, materializeConfiguredChild } = buildManager();
 
     await expect(manager.getOrCreateConfiguredChildTeam("configured-review-team-run"))
       .resolves.toMatchObject({ teamRunId: "configured-review-team-run" });
     await expect(manager.getOrCreateConfiguredChildTeam("foreign-team-run"))
       .rejects.toThrow("is not a direct configured child");
 
-    expect(createOrRestore).toHaveBeenCalledOnce();
-    expect(createOrRestore).toHaveBeenCalledWith(expect.objectContaining({
+    expect(materializeConfiguredChild).toHaveBeenCalledOnce();
+    expect(materializeConfiguredChild).toHaveBeenCalledWith(expect.objectContaining({
       rootTeamRunId: rootRunId,
+      configuredMemberActivationMode: "restore",
       teamNode: expect.objectContaining({
         address: "/review_team",
         teamRunId: "configured-review-team-run",
@@ -133,7 +152,7 @@ describe("MixedTeamManager current local execution mechanics", () => {
   });
 
   it("prepares a fresh task Team, hides it until commit, and releases its exact coordinator message once", async () => {
-    const { manager, runs } = buildManager();
+    const { manager, runs, prepareFreshTaskTeam } = buildManager();
     const teamNode = freshTaskTeam();
     const message = new AgentInputUserMessage("perform delegated review");
 
@@ -152,9 +171,12 @@ describe("MixedTeamManager current local execution mechanics", () => {
       teamRunId: "task-review-team-run",
       coordinatorAgentRunId: "task-reviewer-run",
     });
+    expect(prepareFreshTaskTeam).toHaveBeenCalledOnce();
+    expect(runs.get(teamNode.teamRunId)?.context.runtimeContext.configuredMemberActivationMode)
+      .toBe("fresh");
     expect(manager.getLeafAgentStatusSnapshots()).toHaveLength(2);
     prepared.sealForCommit();
-    const committed = prepared.commit();
+    const committed = prepared.commitAfterDurability();
     committed.releaseWork();
     committed.releaseWork();
 
@@ -176,7 +198,7 @@ describe("MixedTeamManager current local execution mechanics", () => {
       message: new AgentInputUserMessage("work"),
     });
     prepared.sealForCommit();
-    prepared.commit();
+    prepared.commitAfterDurability();
     const run = runs.get(teamNode.teamRunId)!;
 
     run.setOpenWork(true);
