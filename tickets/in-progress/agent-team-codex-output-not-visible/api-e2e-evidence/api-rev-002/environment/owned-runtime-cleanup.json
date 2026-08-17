@@ -1,0 +1,56 @@
+{
+  "cleanedAt": "2026-08-17T08:45:50.426394+00:00",
+  "scope": "exact API-REV-002 owned disposable runtime/database/key/sidecars only",
+  "before": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/autobyteus-server-ts/tests/.tmp/api-rev-002-live-20260817-1",
+      "exists": true,
+      "kind": "directory"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/autobyteus-server-ts/db/api-rev-002-live-20260817-1.db",
+      "exists": true,
+      "kind": "file"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/autobyteus-server-ts/db/api-rev-002-live-20260817-1.db-wal",
+      "exists": false,
+      "kind": "missing"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/autobyteus-server-ts/db/api-rev-002-live-20260817-1.db-shm",
+      "exists": false,
+      "kind": "missing"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/autobyteus-server-ts/db/api-rev-002-live-20260817-1.db.secret.key",
+      "exists": true,
+      "kind": "file"
+    }
+  ],
+  "after": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/autobyteus-server-ts/tests/.tmp/api-rev-002-live-20260817-1",
+      "exists": false
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/autobyteus-server-ts/db/api-rev-002-live-20260817-1.db",
+      "exists": false
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/autobyteus-server-ts/db/api-rev-002-live-20260817-1.db-wal",
+      "exists": false
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/autobyteus-server-ts/db/api-rev-002-live-20260817-1.db-shm",
+      "exists": false
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/autobyteus-server-ts/db/api-rev-002-live-20260817-1.db.secret.key",
+      "exists": false
+    }
+  ],
+  "operationalDatabaseAction": "NONE",
+  "homeAutoByteusAction": "NONE",
+  "protectedPortsAction": "NONE"
+}

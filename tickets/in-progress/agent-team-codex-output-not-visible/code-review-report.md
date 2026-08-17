@@ -2,7 +2,7 @@
 
 ## Review Round Meta
 
-- Review Entry Point: `API/E2E Failure-Origin Review`
+- Review Entry Point: `Implementation Review` (focused post-fix source verification)
 - Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/tickets/in-progress/agent-team-codex-output-not-visible/requirements.md`
 - Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/tickets/in-progress/agent-team-codex-output-not-visible/investigation-notes.md`
 - Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/tickets/in-progress/agent-team-codex-output-not-visible/design-spec.md`
@@ -14,35 +14,35 @@
 - Relevant Architecture Review Revision IDs: `ARCH-REV-001`–`ARCH-REV-003`
 - Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/tickets/in-progress/agent-team-codex-output-not-visible/implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/tickets/in-progress/agent-team-codex-output-not-visible/implementation-revision-record.md`
-- Relevant Implementation Revision IDs: `IR-001`–`IR-002`
+- Relevant Implementation Revision IDs: `IR-001`–`IR-003`
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/tickets/in-progress/agent-team-codex-output-not-visible/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-004`
-- Current Review Round: `3` (third source/failure-origin result; `CRR-003` was the separate proportional test review)
-- Trigger: `API-REV-002` Fail / 88% at checkpoint HEAD `06e67b78ca7d1843a2428c5f931c45029f8ed796`
-- Prior Review Round Reviewed: `CRR-002` implementation-source Pass and `CRR-003` proportional durable-test Pass
-- Latest Authoritative Round: `CRR-004`
+- Current Code Review Revision ID: `CRR-005`
+- Current Review Round: `4` (fourth source/failure-origin result; `CRR-003` was the separate proportional test review)
+- Trigger: `IR-003` correction for `CR-F-002` / `API-F-001` at HEAD `00b471bc24e6a6d06d3af7c38cf9f50536af1b60`
+- Prior Review Round Reviewed: `CRR-004` failure-origin `Fail — Local Fix`; unaffected full source basis remains `CRR-002` Pass and proportional durable-test result remains `CRR-003` Pass
+- Latest Authoritative Round: `CRR-005`
 - Coverage Investigation Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/tickets/in-progress/agent-team-codex-output-not-visible/api-e2e-coverage-investigation.md`
 - Execution Coverage Report Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/tickets/in-progress/agent-team-codex-output-not-visible/api-e2e-execution-coverage-report.md`
 - API/E2E Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/tickets/in-progress/agent-team-codex-output-not-visible/api-e2e-revision-record.md`
 - Relevant API/E2E Revision IDs: `API-REV-001`–`API-REV-002`
 - Delivery Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/tickets/in-progress/agent-team-codex-output-not-visible/delivery-revision-record.md`
 - Relevant Delivery Revision IDs: `DR-001`
-- Failing Scenario IDs: `API-RUNTIME-TEAM-009B`, `API-RUNTIME-TEAM-009C`; API finding `API-F-001`
-- Exact Failing Commands / Execution Mode: real checked-disposable AutoByteus `open_tab` Team matrix against server `127.0.0.1:60419` and Nuxt `127.0.0.1:31419`, using supported isolated import and real AutoByteus/Claude providers
-- Failure Evidence Paths: `api-e2e-evidence/api-rev-002/failure/api-f001-team-file-change-admission-analysis.md`; `api-f001-file-change-id-source-audit.log`; real provider JSON and browser screenshots; reviewer audit `/tmp/crr004-api-f001-origin-audit.log`
+- Triggering Scenario IDs: `API-RUNTIME-TEAM-009B`, `API-RUNTIME-TEAM-009C`; `API-F-001`; source finding `CR-F-002`
+- Focused Verification Command: `pnpm exec vitest run tests/unit/agent-team-execution/team-agent-file-change-admission.test.ts tests/unit/agent-execution/events/file-change-event-processor.test.ts tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts` with both database variables explicitly bound to repository-local disposable state; 3 files / 24 tests Pass
+- Verification Evidence Paths: `/tmp/crr005-team-file-change-focused.log`; `/tmp/crr005-crf002-source-audit.log`; implementation evidence `/tmp/ir003-file-change-focused-final.log`, `/tmp/ir003-server-production-typecheck-round1.log`, `/tmp/ir003-server-build-full-round1.log`, and `/tmp/ir003-source-audit.log`
 
 ## Review Scope
 
-- Changed implementation and behavior reviewed: focused origin of the real Team `FILE_CHANGE` rejection after a supported member file write. No API/E2E or delivery production-source change caused the failure; the checkpoint only committed the already reviewed state and evidence.
-- Files / areas reviewed: current internal `AgentRunFileChangePayload` producer/domain, default file-change pipeline, `AgentRun` event publication, mixed Team member subscription, `TeamAgentEventAdapter`, strict Team event domain/projector, web DTO adapter, exact failure evidence, and ticket/base lineage for those paths.
-- Explicit exclusions: this is not a repeated full implementation scorecard or a proportional successful-test review. Unaffected CRR-002 structural conclusions remain historical and valid; API-REV-002 changed no durable repository test. Operational data and protected ports were not accessed.
+- Changed implementation and behavior reviewed: IR-003's bounded correction of the shared Team `FILE_CHANGE` admission seam after the confirmed real AutoByteus/Claude Team file-write failure.
+- Files / areas reviewed: exact current `AgentRunFileChangePayload` domain and `FileChangePayloadBuilder`; `TeamAgentEvent` FILE_CHANGE details; the complete `TeamAgentEventAdapter`; unchanged strict `TeamAgentEventWebsocketProjector`; new builder-to-adapter-to-projector proof; directly affected Codex producer fixture; IR-003 diff, checks, cleanup, and handoff evidence.
+- Explicit exclusions: this is focused post-fix source verification, not a repeated full implementation scorecard or proportional successful-test review. CRR-002's unaffected cumulative source scorecard remains historical. Real provider/browser confirmation remains API/E2E-owned. Operational data and protected ports were not accessed.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
 - Approved requirements and relevant existing-behavior basis understood: Yes. The ticket requires provider-neutral supported Team streaming and strict current contracts; independently, the product exposes file mutation tools to workspace-backed Team members and the default AgentRun pipeline deliberately derives `FILE_CHANGE` events for that supported action.
 - Design-spec behavior map verified against the implementation: The ticket's BEH-001–BEH-005 correction remains intact. The expanded matrix exposed an adjacent inherited internal-adapter mismatch on the existing Team file-change path, not a contradiction in the reviewed recovery design.
 - Design review report and round confirmed: `ARCH-REV-003`, `Pass`.
-- Behavior-basis status: `Contradicted at the existing Team FILE_CHANGE path; ticket BEH-001–BEH-005 remain confirmed`
+- Behavior-basis status: `Confirmed in current source; ticket BEH-001–BEH-005 remain confirmed`
 - Changed or newly discovered behavior, if any: No new product behavior is proposed. The existing supported Team member file-write surface is now directly evidenced in this ticket's expanded real-browser matrix.
 - Remaining material ambiguity, if any: None.
 
@@ -53,11 +53,11 @@
 | BEH-003 | Confirmed | The first non-next message is mutation-free, emits one recovery effect, enters `reopen_required`, stops transport, blocks commands/reconnect, and retains persistent guidance. | None. |
 | BEH-004 | Confirmed | Known-failed local selection performs checkpoint A, exact non-null hydration, checkpoint B, exact-base candidate readiness, and one registry/context commit. Stable open-work, checkpoint-change, and snapshot-base refusals retain the failed context and selection, leave `runHistoryStore.error` clear, keep the Team/member tree mounted, and produce localized informational feedback before a later explicit retry. | None. |
 | BEH-005 | Confirmed | Review and implementation checks used repository-local disposable state; no live provider/browser, operational data, or protected-port action occurred. | None. |
-| Existing supported Team `FILE_CHANGE` contract | Contradicted | Team workspace instruction -> provider file tool -> default `FileChangeEventProcessor` -> canonical internal `AgentRunFileChangePayload` -> `AgentRun` subscriber -> `MixedAgentMemberHandle` -> `TeamAgentEventAdapter` -> root publisher/projector/browser. | AutoByteus and Claude real Team writes both render `Rejected FILE_CHANGE: file_change_id is required`; CR-MP-002 confirms reachability and the deterministic field mismatch. |
+| Existing supported Team `FILE_CHANGE` contract | Confirmed in source | Team workspace instruction -> provider file tool -> default `FileChangeEventProcessor`/`FileChangePayloadBuilder` -> exact internal `AgentRunFileChangePayload` -> `AgentRun` subscriber -> `MixedAgentMemberHandle` -> strict `TeamAgentEventAdapter` -> root publisher -> unchanged strict WebSocket projector/browser. | IR-003 now consumes only `id`/`runId`/`type` and the remaining current internal fields, validates exact identity/enums/nullability, and projects snake case only at the WebSocket boundary. Real 009B/009C recheck remains downstream-required. |
 
 ## Structural / Design Checks
 
-CRR-004 is a focused failure-origin review. Unchanged Pass rows below preserve CRR-002's implementation-review evidence; the three `Fail (focused supersession)` rows are the current affected-boundary result.
+CRR-005 is a focused post-fix source verification. Unchanged Pass rows preserve CRR-002's implementation-review evidence; the three formerly superseded rows are revalidated below against IR-003.
 
 | Check | Result | Evidence | Required Action |
 | --- | --- | --- | --- |
@@ -76,19 +76,19 @@ CRR-004 is a focused failure-origin review. Unchanged Pass rows below preserve C
 | Authoritative Boundary Rule check | Pass | GraphQL reads the RootTeamRun checkpoint facade; UI callers use store/coordinator boundaries and do not depend on internal publisher or registry maps. | None. |
 | File placement check | Pass | Projection, stream, hydration/open, store, composable, panel, and localization changes remain in their owning subsystem folders. | None. |
 | Flat-vs-over-split layout judgment | Pass | The small status projector is justified; IR-002 adds no new file or artificial fragment. | None. |
-| Interface/API/query/command/service-method boundary clarity | Fail (focused supersession) | The internal adapter receives `AgentRunFileChangePayload` but asks for wire-level `file_change_id`/`file_type` instead of the current internal `id`/`type`. The existing projector is already the snake-case wire owner. | Make the adapter consume the exact internal payload once; retain the projector as the only wire-name owner and add no alias/dual reader. |
+| Interface/API/query/command/service-method boundary clarity | Pass | `TeamAgentEventAdapter` accepts only the exact current internal `AgentRunFileChangePayload` fields and maps them once to typed Team details; the unchanged `TeamAgentEventWebsocketProjector` alone creates `file_change_id`, `file_type`, and the remaining wire names. | None. |
 | Naming quality and naming-to-responsibility alignment check | Pass | Snapshot/live, checkpoint, candidate, `reopen_required`, and `TeamStreamRecoverySelectionFeedback` names match their responsibilities. | None. |
 | No unjustified duplication of code / repeated structures in changed scope | Pass | One private status-details mapper, one hydration builder, one refusal classifier, and one panel feedback callback serve the specialized paths. | None. |
 | Patch-on-patch complexity control | Pass | Retired boolean/effect vocabulary remains absent; no fallback, replay, outbox, provider branch, compatibility alias, or automatic retry was added. | None. |
 | Dead/obsolete code cleanup completeness in changed scope | Pass | EN/ZH wait/retry keys are both owned and used; retired status/recovery symbols remain absent. | None. |
-| Relevant test scenarios and assertions are clear and requirement-aligned | Fail (focused supersession) | Existing producer tests prove `id`/`type`, while adapter-focused coverage has no actual builder-to-adapter/projector `FILE_CHANGE` path; the incompatible seam therefore remained unexercised. | Add current-contract coverage that carries an actual builder-derived file-change event through Team admission and strict projection. |
+| Relevant test scenarios and assertions are clear and requirement-aligned | Pass | `team-agent-file-change-admission.test.ts` builds a real payload with the production builder, admits it through the strict adapter, and asserts the exact Team-domain and snake-case wire outputs. The directly affected Codex fixture now supplies its required turn identity. Reviewer rerun: 3 files / 24 tests Pass. | None. |
 | Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | Existing Team fixtures, selection mocks, panel mount helper, and cumulative state/service suites are reused. | None. |
 | No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | Current tests assert strict current contracts; no alias, fallback, or disabled compatibility case was added. | None. |
-| API/E2E readiness for the next workflow stage | Fail (focused supersession) | API-REV-002 reproduced the shared Team rejection in two real provider rows. | Correct CR-F-002, return through source review, then rerun the failed rows and required downstream matrix. |
+| API/E2E readiness for the next workflow stage | Pass | The deterministic builder/adapter/projector seam now passes, production TypeScript and full server build/bootstrap pass, and no compatibility/provider-specific path was added. | Rerun 009B/009C first, then the applicable real matrix. |
 
 ## Source File Size And Structure Audit (Preserved CRR-002 Implementation Review)
 
-No changed implementation-source file exceeds the 500-effective-line hard limit. Every file above the 220-line pressure threshold was inspected in full. `WorkspaceAgentRunsTreePanel.vue` remains a presentation composition root over owned composables; IR-002 adds only the six-line localized feedback adapter.
+No changed implementation-source file exceeds the 500-effective-line hard limit. Every file above the 220-line pressure threshold was inspected in full. IR-003 brings `team-agent-event-adapter.ts` to 293 effective non-empty lines; it remains one coherent strict AgentRun-to-Team event admission owner with event-specific private mapping functions, while WebSocket serialization stays outside it.
 
 | Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
 | --- | ---: | --- | --- | --- | --- | --- | --- |
@@ -99,6 +99,7 @@ No changed implementation-source file exceeds the 500-effective-line hard limit.
 | `teamExecutionViewState.ts` | 314 | Pass | Pressure reviewed | Pass; pure aggregate/admission owner | Pass | No finding | None |
 | `runHistoryLoadActions.ts` | 309 | Pass | Pressure reviewed | Pass; active-run reconciliation | Pass | No finding | None |
 | `runHistoryQueries.ts` | 298 | Pass | Pressure reviewed | Pass; GraphQL query catalog | Pass | No finding | None |
+| `team-agent-event-adapter.ts` | 293 | Pass | Pressure reviewed in full | Pass; one strict internal-to-Team admission owner, with FILE_CHANGE validation isolated in a private mapper | Pass | No finding | None |
 | `teamRunContextHydrationService.ts` | 269 | Pass | Pressure reviewed | Pass; shared builder with distinct normal/recovery policy | Pass | No finding | None |
 | `team-execution-view-projector.ts` | 246 | Pass | Pressure reviewed | Pass; structural projection | Pass | No finding | None |
 | `localization/messages/en/workspace.ts` | 231 | Pass | Pressure reviewed | Pass; catalog owner and both keys used | Pass | No finding | None |
@@ -110,6 +111,7 @@ No changed implementation-source file exceeds the 500-effective-line hard limit.
 | `useWorkspaceHistorySelectionActions.ts` | 120 | Pass | Below threshold | Pass; selection-to-presentation adapter | Pass | No finding | None |
 | `teamRunOpenCoordinator.ts` | 108 | Pass | Below threshold | Pass | Pass | No finding | None |
 | `team-agent-event-websocket-projector.ts` | 105 | Pass | Below threshold | Pass | Pass | No finding | None |
+| `team-agent-event.ts` | 101 | Pass | Below threshold | Pass; FILE_CHANGE details reuse exact internal enum types | Pass | No finding | None |
 | `agentTeamContextsStore.ts` | 78 | Pass | Below threshold | Pass | Pass | No finding | None |
 | `teamExecutionViewModels.ts` | 66 | Pass | Below threshold | Pass | Pass | No finding | None |
 | `team-agent-status-websocket-projector.ts` | 32 | Pass | Below threshold | Pass | Pass | No finding | None |
@@ -165,16 +167,16 @@ None.
 - Initiating basis kind: `User`
 - Independent product-supported initiating trigger or applicable governing contract: in the Agent Teams workspace, the user launches a workspace-backed Team and instructs a member to create or modify a file through its exposed file tool.
 - Support evidence: real AutoByteus and Claude Classroom launches, file-tool activity, provider JSON, and browser screenshots in `api-e2e-evidence/api-rev-002/`; the default file-change processor is registered for every AgentRun.
-- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: Team message -> provider file lifecycle -> default `FileChangeEventProcessor`/`FileChangePayloadBuilder` -> `AgentRun.publishSourceEvents()` -> `MixedAgentMemberHandle.bindEvents()` -> `TeamAgentEventAdapter.adapt()` -> rejected result -> terminal Team `ERROR` -> root publisher/projector/WebSocket -> rendered red error.
-- Lifecycle preconditions and material consequence at the claimed point: a workspace-backed member performs a supported file mutation; the builder emits nonempty `id` and `type`, but the adapter requires absent `file_change_id` and `file_type`, so no `FILE_CHANGE` reaches the strict wire projector and the user sees a terminal admission error.
+- Forward production path that established the premise at API-REV-002: Team message -> provider file lifecycle -> default `FileChangeEventProcessor`/`FileChangePayloadBuilder` -> `AgentRun.publishSourceEvents()` -> `MixedAgentMemberHandle.bindEvents()` -> then-current `TeamAgentEventAdapter.adapt()` -> rejected result -> terminal Team `ERROR` -> root publisher/projector/WebSocket -> rendered red error. Current IR-003 follows the same supported path but admits the exact internal payload and reaches the projector.
+- Lifecycle preconditions and material consequence at the claimed point: at the failing checkpoint, a workspace-backed member performed a supported file mutation; the builder emitted nonempty `id` and `type`, but the adapter required absent wire names, so no `FILE_CHANGE` reached the strict wire projector and the user saw a terminal admission error. IR-003 removes that mismatch rather than weakening the path.
 - Reachability: `Reachable`
-- Review consequence / proportionate response: accept CR-F-002 as a source defect. Correct only the internal mapping and its direct coverage; no provider branch, relaxed parser, compatibility alias, second mapper, or design expansion is justified.
+- Review consequence / proportionate response: CR-F-002 was correctly bounded to the internal mapping and direct seam coverage. IR-003 supplies that correction without a provider branch, relaxed parser, compatibility alias, second mapper, or design expansion.
 
 ## Review Scorecard (Preserved CRR-002 Implementation Review)
 
 - Overall score (`/10`): `9.4` (historical CRR-002 implementation review)
 - Overall score (`/100`): `94.2` (historical CRR-002 implementation review)
-- Score calculation note: CRR-004 is a focused failure-origin round, so the full implementation scorecard is not recomputed. The current source result is nevertheless Fail because CR-F-002 is confirmed; a post-fix source review must revalidate the affected boundary before restoring a Pass.
+- Score calculation note: CRR-005 is a focused post-fix source verification, so the full implementation scorecard is not recomputed. CRR-002's score remains historical rather than being silently raised; current source status returns to Pass because the affected boundary and proof seam are revalidated.
 
 | Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | ---: | --- | --- | --- |
@@ -191,29 +193,28 @@ None.
 
 ## Findings
 
-### CR-F-002 / API-F-001 — Team FILE_CHANGE adapter requires wire names from the internal producer
+### CR-F-002 / API-F-001 — Resolved
 
 - Affected supported behavior: existing workspace-backed Team member file writes; API-RUNTIME-TEAM-009B and API-RUNTIME-TEAM-009C; CR-MP-002.
-- Evidence: `FileChangePayloadBuilder` emits the typed internal fields `id`, `type`, `sourceTool`, `sourceInvocationId`, `createdAt`, and `updatedAt`. `TeamAgentEventAdapter` instead requires `file_change_id`/`fileChangeId` and `file_type`/`fileType`, so the real internal event deterministically becomes `TEAM_AGENT_EVENT_ADMISSION_FAILED` before `TeamAgentEventWebsocketProjector` can perform its owned snake-case projection. Both AutoByteus and Claude independently render the exact rejection.
-- Failure origin: current implementation source in `autobyteus-server-ts/src/agent-team-execution/services/team-agent-event-adapter.ts`.
-- Required action: consume and validate the exact current `AgentRunFileChangePayload` fields at the adapter, map them once to `TeamAgentEvent` details, and retain `TeamAgentEventWebsocketProjector` as the sole snake-case wire owner. Add direct builder-derived adapter/projector coverage. Do not add an alias, dual reader, relaxed parser, provider-specific path, fallback name, or second mapping owner.
-- Proportionate classification / owner: `Local Fix` / `implementation_engineer`.
-- Prior-review-gap assessment: this adapter/builder mismatch is inherited unchanged from the reviewed base, the delivery checkpoint changed no production source, and the prior ticket requirements/direct matrix did not exercise file mutation. It was not reasonably attributable to CRR-002's changed status/recovery source review; the user-expanded real file-backed matrix established the independent supported trigger now.
+- Resolution evidence: `TeamAgentEventAdapter.fileChange()` now rejects unsupported keys, requires `payload.runId === event.runId`, validates current artifact/status/source enums and required nullable invocation identity, and maps `id`/`type` once to typed Team details. The FILE_CHANGE path does not read snake-case or alternate field aliases. `TeamAgentEventWebsocketProjector` is unchanged from the failing checkpoint and remains the sole Team wire-name owner.
+- Direct proof: the new test obtains its payload from `FileChangePayloadBuilder`, passes it through `TeamAgentEventAdapter`, and verifies the final strict Team message. Both implementation and reviewer focused selections pass 3 files / 24 tests; production TypeScript and full build/bootstrap also pass.
+- Clean-cut assessment: no dual reader, relaxed parser, provider-specific branch, fallback, guessed field, duplicate projector, or second lifecycle owner was added.
+- Current status: source finding resolved. Real API-RUNTIME-TEAM-009B/009C confirmation remains downstream, so source Pass does not claim runtime revalidation.
 
-`CR-F-001` remains resolved.
+`CR-F-001` remains resolved. No new source finding is open.
 
 ## Classification
 
-`Local Fix — implementation source`
+`N/A — Pass`
 
 ## Recommended Recipient
 
-`implementation_engineer`
+`api_e2e_engineer`
 
 ## Residual Risks
 
-- CR-F-002 must be corrected and the two failed real Team file-write rows rerun before delivery resumes.
-- The seven other expanded capability rows, including all standalone runtimes and the three nested delegation/reverse-reply paths, passed but do not compensate for the confirmed shared Team admission failure.
+- The two failed real Team file-write rows must be rerun before delivery resumes; focused source proof cannot replace real provider/browser confirmation.
+- The seven other expanded capability rows, including all standalone runtimes and the three nested delegation/reverse-reply paths, passed historically, but they do not replace a fresh real-file-write recheck of the corrected shared Team admission path.
 - Claude's provider-native TaskOutput unknown-ID observation remains nonblocking because the supported product delegation and reverse-reply path succeeded; it does not drive this finding or any corrective machinery.
 
 ## Verification Evidence
@@ -228,13 +229,18 @@ None.
 - API-REV-002 real provider/browser matrix and exact failure analysis: `api-e2e-evidence/api-rev-002/live/provider/runtime-browser-matrix-summary.json`; `failure/api-f001-team-file-change-admission-analysis.md`.
 - Real browser evidence: `live/browser/classroom-autobyteus-deepseek-file-change-failure.png` and `live/browser/classroom-claude-deepseek-file-change-failure.png`, both visually inspected during CRR-004.
 - Focused reviewer source/lineage audit: `/tmp/crr004-api-f001-origin-audit.log`.
+- IR-003 focused source/test proof: 3 files / 24 tests Pass — `/tmp/ir003-file-change-focused-final.log`.
+- Reviewer IR-003 focused rerun: 3 files / 24 tests Pass — `/tmp/crr005-team-file-change-focused.log`.
+- Reviewer exact-contract, ownership, diff, size, cleanup, and residue audit: Pass — `/tmp/crr005-crf002-source-audit.log`.
+- Canonical report/revision consistency and final artifact audit: Pass — `/tmp/crr005-review-artifact-audit.log`.
+- IR-003 production TypeScript and full server build/bootstrap: Pass — `/tmp/ir003-server-production-typecheck-round1.log`, `/tmp/ir003-server-build-full-round1.log`.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`
-- Review Entry Point: `API/E2E Failure-Origin Review`
+- Review Decision: `Pass`
+- Review Entry Point: `Implementation Review` (focused post-fix source verification)
 - Material-Premise Gate: `Pass`
-- Score Summary: not recomputed for this focused round; CRR-002's `9.4/10` (`94.2/100`) is historical until the affected source boundary is corrected and re-reviewed.
-- Failure Origin: confirmed current implementation source, `CR-F-002` / `API-F-001`, in the shared internal Team `FILE_CHANGE` adapter mapping.
-- Recommended Recipient: `implementation_engineer`
-- Notes: bounded Local Fix. The architecture remains correctly partitioned between internal payload builder, Team domain adapter, and strict wire projector; the adapter uses the wrong field contract. After correction, require focused source verification, API/E2E rerun, and any applicable proportional durable-test review before delivery re-entry.
+- Score Summary: not recomputed for this focused round; CRR-002's historical `9.4/10` (`94.2/100`) cumulative score remains the latest full implementation scorecard.
+- Finding Status: `CR-F-002` / `API-F-001` resolved in source; `CR-F-001` remains resolved; no open source finding.
+- Recommended Recipient: `api_e2e_engineer`
+- Notes: IR-003 preserves the reviewed architecture: the builder owns the current internal shape, the shared Team adapter owns strict internal admission, and the unchanged projector alone owns wire serialization. API/E2E must rerun 009B/009C first and then the applicable matrix; any repository-resident durable test delta returns for proportional review before delivery.

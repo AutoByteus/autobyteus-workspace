@@ -1,0 +1,36 @@
+COMMAND  PID  USER   FD      TYPE             DEVICE  SIZE/OFF                NODE NAME
+node    2593 normy  cwd       DIR               1,13      1024           350626818 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/autobyteus-server-ts
+node    2593 normy  txt       REG               1,13 112928848           255287132 /Users/normy/.hermes/node/bin/node
+node    2593 normy  txt       REG               1,13     72984           293325547 /Library/Preferences/Logging/.plist-cache.TQHe3XLT
+node    2593 normy  txt       REG               1,13   2374000 1152921500312573276 /usr/lib/dyld
+node    2593 normy  txt       REG               1,13  17251592           351072201 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/.prisma/client/libquery_engine-darwin-arm64.dylib.node
+node    2593 normy    0u     unix 0x895280533864f52c       0t0                     ->0xc1415a5a5805c88a
+node    2593 normy    1u     unix  0xe7165603cd9b5a4       0t0                     ->0xf6580920accb41bf
+node    2593 normy    2u     unix 0xb172626e6f498bd7       0t0                     ->0xe4da29446441f98d
+node    2593 normy    3u   KQUEUE                                                  count=0, state=0x8
+node    2593 normy    4      PIPE 0x7a9cee5b9115116b     16384                     ->0x280f3e889de447b9
+node    2593 normy    5      PIPE 0x280f3e889de447b9     16384                     ->0x7a9cee5b9115116b
+node    2593 normy    6r      DIR               1,13       704                   2 /
+node    2593 normy    7u   KQUEUE                                                  count=0, state=0xa
+node    2593 normy    8r      DIR               1,13       704                   2 /
+node    2593 normy    9u   KQUEUE                                                  count=0, state=0xa
+node    2593 normy   10r      DIR               1,13       704                   2 /
+node    2593 normy   11r      CHR                3,2       0t0                 336 /dev/null
+node    2593 normy   12w      REG               1,13     37027           351049265 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/autobyteus-server-ts/tests/.tmp/api-rev-002-live-20260817-1/logs/server.log
+node    2593 normy   13u   KQUEUE                                                  count=0, state=0xa
+node    2593 normy   14u   KQUEUE                                                  count=0, state=0xa
+node    2593 normy   15u   KQUEUE                                                  count=0, state=0xa
+node    2593 normy   16u     unix 0x530201112219d64e       0t0                     ->0xbb103f68f4dbb07a
+node    2593 normy   17u     unix 0xbb103f68f4dbb07a       0t0                     ->0x530201112219d64e
+node    2593 normy   18u     unix 0x530201112219d64e       0t0                     ->0xbb103f68f4dbb07a
+node    2593 normy   19u      REG               1,13    319488           351049271 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/autobyteus-server-ts/db/api-rev-002-live-20260817-1.db
+node    2593 normy   20u      REG               1,13    319488           351049271 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/autobyteus-server-ts/db/api-rev-002-live-20260817-1.db
+node    2593 normy   21      PIPE 0x8e2a0028aaa3aa11     16384                     ->0x1e4e0b43e4118618
+node    2593 normy   22      PIPE 0x1e4e0b43e4118618     16384                     ->0x8e2a0028aaa3aa11
+node    2593 normy   23u     IPv4 0x950f81bcbdeb4101       0t0                 TCP 127.0.0.1:60419 (LISTEN)
+node    2593 normy   24u    systm 0xa421a43b033f56a2       0t0                     [ctl com.apple.netsrc id 7 unit 93]
+node    2593 normy   25u     unix 0xf35d85b7ec275a4c       0t0                     ->0x77d166264e542c13
+node    2593 normy   26u     IPv4 0x103acc176aab0cd5       0t0                 TCP 127.0.0.1:61187->127.0.0.1:1234 (ESTABLISHED)
+node    2593 normy   27   NPOLICY                                                  
+node    2593 normy   28u   KQUEUE                                                  count=0, state=0xa
+node    2593 normy   29u     IPv4 0x39287c08adbe27b0       0t0                 TCP 192.168.2.158:61188->104.18.29.136:443 (SYN_SENT)

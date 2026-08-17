@@ -1,0 +1,69 @@
+{
+  "createdAt": "2026-08-17T07:53:51.917Z",
+  "isolation": "API-REV-002 disposable runtime/database only",
+  "agents": {
+    "teacher": {
+      "id": "nested-classroom-teacher",
+      "name": "Nested Classroom Teacher",
+      "role": "teacher",
+      "instructions": "You are the teacher coordinator in a real nested classroom validation. Follow the user's exact request. When the user explicitly asks you to delegate a task to StudentStudyGroup, call delegate_task exactly once with target {kind:\"member\",name:\"StudentStudyGroup\"}; wait for the result; then report the requested exact final marker. Do not invent a result.",
+      "ownershipScope": "SHARED"
+    },
+    "studentOne": {
+      "id": "nested-classroom-student-one",
+      "name": "Nested Classroom Student One",
+      "role": "student_one",
+      "instructions": "You coordinate the student study group. When delegated an explicit task, solve it accurately. If the task explicitly asks you to message student_two, call send_message_to exactly once with recipient_name \"student_two\", then report the exact requested result to the delegating teacher.",
+      "ownershipScope": "SHARED"
+    },
+    "studentTwo": {
+      "id": "nested-classroom-student-two",
+      "name": "Nested Classroom Student Two",
+      "role": "student_two",
+      "instructions": "You are student_two in the student study group. When student_one sends a direct message asking for an exact token or arithmetic check, reply concisely with the exact requested content.",
+      "ownershipScope": "SHARED"
+    }
+  },
+  "teams": {
+    "child": {
+      "id": "student-study-group-api-rev-002",
+      "name": "Student Study Group API REV 002",
+      "coordinatorMemberName": "student_one",
+      "ownershipScope": "SHARED",
+      "nodes": [
+        {
+          "memberName": "student_one",
+          "ref": "nested-classroom-student-one",
+          "refType": "AGENT",
+          "refScope": "SHARED"
+        },
+        {
+          "memberName": "student_two",
+          "ref": "nested-classroom-student-two",
+          "refType": "AGENT",
+          "refScope": "SHARED"
+        }
+      ]
+    },
+    "parent": {
+      "id": "nested-classroom-test-team",
+      "name": "Nested Classroom Test Team",
+      "coordinatorMemberName": "teacher",
+      "ownershipScope": "SHARED",
+      "nodes": [
+        {
+          "memberName": "teacher",
+          "ref": "nested-classroom-teacher",
+          "refType": "AGENT",
+          "refScope": "SHARED"
+        },
+        {
+          "memberName": "StudentStudyGroup",
+          "ref": "student-study-group-api-rev-002",
+          "refType": "AGENT_TEAM",
+          "refScope": "SHARED"
+        }
+      ]
+    }
+  }
+}

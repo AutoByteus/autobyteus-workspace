@@ -116,6 +116,16 @@ separate facts. Initial Team streaming subscribes to events and manager
 lifecycle before reading fresh snapshots, then publishes exact Agent status and
 root liveness without synthesizing one from the other.
 
+Team Agent status has two deliberately distinct strict projections. The initial
+`TEAM_EXECUTION_VIEW_SNAPSHOT.agent_statuses` entries carry both
+`agent_run_id` and snapshot-only `member_address`, while a sequenced live
+`AGENT_STATUS` carries `change_sequence`, `agent_run_id`, and status details
+without `member_address`. Both shapes share only a private status-details
+mapper and are parsed by their respective `@autobyteus/team-stream-contracts`
+schemas. `RootTeamRun` and `TeamRunEventPublisher` remain the only live change
+sequence authority; a live projector must never reuse the structural snapshot
+DTO or fabricate an address after sequence assignment.
+
 Each executable member handle owns its pending command overlay. It can publish
 `initializing` before slow Agent startup/restore/provider send work and replaces
 or clears that overlay only through matching runtime status, command failure,

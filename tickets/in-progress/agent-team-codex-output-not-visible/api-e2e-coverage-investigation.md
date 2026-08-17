@@ -221,3 +221,130 @@ Authoritative broader evidence:
 - `api-e2e-evidence/api-rev-001/environment/final-cleanup-verification.log`
 
 Final scores are recorded in the execution report. No reroute was required. The final investigation decision is **proceed and report Pass**, with the one-path durable package returned to `code_reviewer` for proportional test-code review.
+
+## Investigation Round 2 — User-Expanded Real Runtime Matrix
+
+- Trigger: after `API-REV-001` Pass / 98%, the user explicitly required real `open_tab` coverage across all three supported runtime/model pairings, two Team fixtures, and standalone Daily Assistant.
+- Planned revision: `API-REV-002`; the latest completed result remains API-REV-001 until this matrix finishes.
+- Source basis: delivery checkpoint HEAD `06e67b78ca7d1843a2428c5f931c45029f8ed796`; production implementation remains the CRR-002-reviewed source (`548ff34a...` plus committed API-REV-001 test/evidence/docs only). CRR-003 proportional test review passed the one durable update.
+- Prior evidence reviewed: API-REV-001 complete package, including one currentized durable integration test and the checked-disposable safety mechanism.
+
+### Expanded Scope And Coverage Decision
+
+| Scenario ID | Surface | Runtime / model | Required real target | Planned proof |
+| --- | --- | --- | --- | --- |
+| API-RUNTIME-TEAM-009A | Classroom Simulation Team | Codex / `gpt-5.6-luna` | Professor + Student | real browser launch, prompt, visible terminal output, exact persisted runtime/model; classroom peer handoff when model follows the explicit fixture instruction |
+| API-RUNTIME-TEAM-009B | Classroom Simulation Team | AutoByteus / `deepseek-v4-flash` | Professor + Student | same |
+| API-RUNTIME-TEAM-009C | Classroom Simulation Team | Claude Agent SDK / `deepseek-v4-flash` | Professor + Student | same |
+| API-RUNTIME-NESTED-010A | Nested Classroom Test Team | Codex / `gpt-5.6-luna` | Teacher + StudentStudyGroup | real browser launch, nested task-Team delegation/result when fixture and model comply, visible terminal output, exact persisted runtime/model |
+| API-RUNTIME-NESTED-010B | Nested Classroom Test Team | AutoByteus / `deepseek-v4-flash` | Teacher + StudentStudyGroup | same |
+| API-RUNTIME-NESTED-010C | Nested Classroom Test Team | Claude Agent SDK / `deepseek-v4-flash` | Teacher + StudentStudyGroup | same |
+| API-RUNTIME-AGENT-011A | standalone imported Daily Assistant | Codex / `gpt-5.6-luna` | exact AgentRun | real browser launch/send/output, persisted runtime/model |
+| API-RUNTIME-AGENT-011B | standalone imported Daily Assistant | AutoByteus / `deepseek-v4-flash` | exact AgentRun | same |
+| API-RUNTIME-AGENT-011C | standalone imported Daily Assistant | Claude Agent SDK / `deepseek-v4-flash` | exact AgentRun | same |
+
+This is a **broader live-validation expansion**, not a production-source or durable-test gap. No repository-resident test addition/update/removal is planned in Round 2. The real provider matrix is credentialed, environment-dependent, and intentionally ticket-local. API-REV-001's durable package remains unchanged and has passed CRR-003 proportional review.
+
+### Round-2 Environment And Safety Plan
+
+- Use a new checked-disposable runtime, database, ports, workspace, and evidence root; do not reuse or inspect operational data.
+- Sanitize ambient `DATABASE_URL` and `DATABASE_URL_TEST`.
+- Initialize only an empty isolated DB; dry-run and then use the supported secret importer with `/Users/normy/.autobyteus/server-data/.env` targeting that exact DB. Never log values.
+- Import `/Users/normy/autobyteus_org/autobyteus-agents` through the supported package API without source edits.
+- Confirm actual runtime availability and model catalog before launches.
+- Use AutoByteus `open_tab` for every browser row. Capture semantic DOM state, screenshots, exact run identity, persisted runtime/model, terminal status, message count, and server error audit.
+- For Team rows, distinguish product capability from probabilistic LLM tool election: a model omitting an optional/asked peer or task call is a model-behavior observation unless the tool is absent/rejected/misrouted. The fixture instruction and public records will determine whether the collaboration call occurred.
+- Clean only exact owned Teams/Agents, tab, PIDs, ports, runtime, DB, key, and sidecars. Operational DB and protected ports `60004/31004`: action NONE.
+
+### Round-2 Confidence Gate
+
+API-REV-001 already passed the ticket's critical requirements at 98%. Round 2 is not permitted to infer nine live Pass rows from provider-neutral repository evidence. Each row must be recorded `Pass`, `Fail`, or `Not Tested` from fresh real execution. An actual runtime rejection, routing failure, missing output, wrong persisted runtime/model, or browser failure is a new API/E2E failure and must be routed. Model non-election of a requested collaboration call is recorded separately from runtime capability unless the call is attempted and fails.
+
+- Proceed to expanded execution: **Yes**.
+- Durable coverage change planned: **No**.
+- Broader validation: **Required by user and planned**.
+- Reroute before execution: **No**.
+
+## Investigation Round 2 Final Update — Real Runtime Matrix And Failure Origin
+
+This section supersedes the Round-2 planned-result fields. The full nine-row user-expanded matrix executed through a real AutoByteus `open_tab` browser session on the checked-disposable target. Screenshots were captured and visually inspected; public GraphQL projections and exact run configuration were correlated for every row.
+
+### Final Round-2 Coverage Adjudication
+
+| Scenario | Fixture / runtime | Result | Direct evidence / adjudication |
+| --- | --- | --- | --- |
+| API-RUNTIME-TEAM-009A | Classroom / Codex / `gpt-5.6-luna` | Pass | Real Professor -> Student -> Professor `send_message_to`; exact `102`; browser and public projections clean. |
+| API-RUNTIME-TEAM-009B | Classroom / AutoByteus / `deepseek-v4-flash` | **Fail — API-F-001** | Real file write rendered `Rejected FILE_CHANGE: file_change_id is required`. |
+| API-RUNTIME-TEAM-009C | Classroom / Claude Agent SDK / configured `deepseek-v4-flash` | **Fail — API-F-001** | Business round trip completed with exact `184`, but the same Team FILE_CHANGE rejection rendered in the supported browser surface. |
+| API-RUNTIME-NESTED-010A | Nested Classroom / Codex / `gpt-5.6-luna` | Pass capability | Real task-Team delegation, peer send/reply, exact result `43`; model omitted formal completion after successful messaging. |
+| API-RUNTIME-NESTED-010B | Nested Classroom / AutoByteus / `deepseek-v4-flash` | Pass capability | Exact task student_one -> configured student_two -> exact task student_one -> teacher chain; result `51`. Initial persistent-recipient reply was a fixture/model targeting observation and the isolated test fixture was currentized to require exact incoming AgentRun reply. |
+| API-RUNTIME-NESTED-010C | Nested Classroom / Claude Agent SDK / configured `deepseek-v4-flash` | Pass collaboration | Exact delegation and reverse-reply chain; result `45`. Provider-native `TaskOutput` selected an unknown provider task ID, but collaboration succeeded; per user clarification this is a nonblocking provider/model behavior observation, not a product finding. |
+| API-RUNTIME-AGENT-011A | Daily Assistant / Codex / `gpt-5.6-luna` | Pass | Real standalone browser launch, Bash tool, exact final marker. |
+| API-RUNTIME-AGENT-011B | Daily Assistant / AutoByteus / `deepseek-v4-flash` | Pass | Real standalone browser launch, approval, Bash tool, exact final marker. |
+| API-RUNTIME-AGENT-011C | Daily Assistant / Claude Agent SDK / configured `deepseek-v4-flash` | Pass | Real standalone browser launch, Bash tool, exact final marker. |
+
+Seven capability rows passed. The two failing Classroom rows share one source-boundary failure rather than two independent provider failures. `FileChangePayloadBuilder` emits the current internal `AgentRunFileChangePayload` as `id`/`type`/camel-case domain fields, while `TeamAgentEventAdapter` requires wire-shaped `file_change_id`/`file_type`. The existing `TeamAgentEventWebsocketProjector` is already the proper snake-case wire owner. The preliminary source classification is recorded at `api-e2e-evidence/api-rev-002/failure/api-f001-team-file-change-admission-analysis.md` and is routed to `code_reviewer` for focused failure-origin review.
+
+### Round-2 Durable And Safety Decision
+
+- Repository-resident durable coverage changed in Round 2: **No** (`0 added / 0 updated / 0 removed`).
+- API-REV-001's one-path durable update remains historically valid and already passed CRR-003 proportional review.
+- Operational database and `$HOME/.autobyteus`: **action NONE**. The authorized env file was read only by the supported importer targeting the exact isolated database; values were not recorded.
+- Protected ports `60004/31004`: **action NONE**.
+- Cleanup: every remaining owned active run was terminated through the public mutation; tab `8b0ced` was closed; owned ports `60419/31419`, processes, runtime, database, key, and sidecars were removed. Evidence: `api-e2e-evidence/api-rev-002/environment/final-owned-run-termination.json`, `final-cleanup-verification.log`, `owned-runtime-cleanup.json`.
+
+### Final Round-2 Decision
+
+- Result: **Fail** due critical supported Team browser FILE_CHANGE admission failure (`API-F-001`).
+- Confidence: **88%**. Evidence directness, integration realism, environment fidelity, and standalone/collaboration proof are high; user-surface confidence is materially reduced by the reproducible red Team error.
+- Broader validation: **Required and completed**.
+- Recommended recipient: `code_reviewer` for focused failure-origin review.
+
+## Investigation Round 3 — Post-IR-003 API-F-001 Resolution Recheck
+
+- Trigger: `CRR-005 Pass`; source HEAD `00b471bc24e6a6d06d3af7c38cf9f50536af1b60`.
+- Prior authoritative runtime result: `API-REV-002 Fail / 88%`.
+- Prior open finding: `API-F-001` on `API-RUNTIME-TEAM-009B` and `API-RUNTIME-TEAM-009C`.
+- Reviewed source resolution: the current internal `AgentRunFileChangePayload` remains canonical, `TeamAgentEventAdapter` admits only its exact internal fields, and the unchanged strict projector remains the sole snake-case wire owner.
+
+### Coverage Validity And Execution Decision
+
+| Existing evidence | Decision | Rationale / current plan |
+| --- | --- | --- |
+| IR-003 `team-agent-file-change-admission.test.ts` | Still Valid | Direct builder -> exact adapter -> strict projector proof; implementation-owned and source-reviewed. Re-execute with affected producer/segment tests. |
+| API-REV-002 AutoByteus Classroom failure row | Needs Rerun | Exact real provider/browser row that exposed API-F-001; rerun first with a real file write and prove no red admission error. |
+| API-REV-002 Claude Classroom failure row | Needs Rerun | Same shared boundary through the second actual provider; rerun immediately after AutoByteus. |
+| API-REV-002 Codex Classroom, three Nested Classroom, and three Daily Assistant rows | Still Valid / targeted reuse | Production change is confined to Team FILE_CHANGE admission. Their collaboration, standalone, routing, and provider behavior is unchanged and remains direct real evidence. Repeat only if focused rows expose broader regression. |
+| API-REV-001 refresh/reopen/recovery evidence | Still Valid | No lifecycle, status, history, recovery, or frontend source changed in IR-003. |
+
+No API/E2E-owned durable coverage edit is planned. The implementation added a durable exact-boundary test, already reviewed in CRR-005. API/E2E will not duplicate it. Final live acceptance requires:
+
+1. execute the exact 3-file/24-test affected selection;
+2. start a new checked-disposable built target with sanitized ambient database variables;
+3. import secrets only through the supported importer into that exact isolated DB and import the user-authorized Agent package through the public API;
+4. use real AutoByteus `open_tab` for Classroom AutoByteus/`deepseek-v4-flash`, require a real `write_file`, inspect the screenshot, and correlate the exact public run/file-change projection and server error audit;
+5. repeat for Classroom Claude Agent SDK/configured `deepseek-v4-flash`;
+6. require zero `TEAM_AGENT_EVENT_ADMISSION_FAILED`, zero `file_change_id is required`, and at least one strict current file-change projection per row;
+7. terminate exact owned runs, close the tab, stop ports/processes, and remove only the exact disposable runtime/DB/key/sidecars.
+
+### Round-3 Pre-Execution Confidence
+
+The source-reviewed deterministic boundary proof is strong, but API-F-001 was visible only in a real provider/Team/browser journey. Pre-live confidence is therefore **92%**, and broader validation is **Required**. A clean Pass requires both failed rows to pass; historical rows cannot substitute for either rerun.
+
+## Investigation Round 3 Final Update — API-F-001 Closed Downstream
+
+The user confirmed that this round should remain targeted to the previously failing FILE_CHANGE behavior. The planned focused scope completed without broad repetition.
+
+| Scenario | Current execution result | Exact proof |
+| --- | --- | --- |
+| affected deterministic boundary | Pass — 3 files / 24 tests | current builder -> exact Team adapter -> strict projector; affected file-change producer; retained Team segment admission |
+| API-RUNTIME-TEAM-009B | **Pass** | real AutoByteus/`deepseek-v4-flash` Team `write_file`; one current public file-change projection with exact AgentRun ID, `type=file`, `status=available`, `sourceTool=write_file`, nonempty invocation ID, exact content `AUTO_FILE_CHANGE_OK`; inspected browser marker `AUTOBYTEUS_FILE_CHANGE_FIXED`; zero prior/admission errors |
+| API-RUNTIME-TEAM-009C | **Pass** | real Claude Agent SDK/configured `deepseek-v4-flash` Team `Write`; one current public file-change projection with exact AgentRun ID, `type=file`, `status=available`, `sourceTool=write_file`, nonempty invocation ID; exact physical isolated-file content `CLAUDE_FILE_CHANGE_OK`; inspected browser marker `CLAUDE_FILE_CHANGE_FIXED`; zero prior/admission errors |
+
+Final server audit found `0` occurrences of both `file_change_id is required` and `TEAM_AGENT_EVENT_ADMISSION_FAILED`. Browser DOM and inspected screenshots were clean for the failure under test. Claude's unrelated provider-selected `Read` errors remain a nonblocking provider/model behavior observation under the user's prior clarification; they neither affected the file write nor indicate the Team adapter failure.
+
+No API/E2E-owned durable coverage changed (`0 added / 0 updated / 0 removed`). API-REV-001 and the seven unaffected API-REV-002 capability rows remain valid because IR-003 changed only Team FILE_CHANGE admission.
+
+Cleanup passed: zero active owned runs, zero browser tabs, zero listeners on 60420/31420, exact disposable runtime/database/key/sidecars removed, repository test DB residue removed, operational database action NONE, protected 60004/31004 action NONE.
+
+Final Round-3 decision: **Pass / 98%**. API-F-001 is resolved downstream. Return to `code_reviewer` for the required proportional no-durable-change disposition before delivery.

@@ -1,0 +1,36 @@
+# FILE_CHANGE source boundary audit
+Mon Aug 17 08:40:34 UTC 2026
+HEAD:
+06e67b78ca7d1843a2428c5f931c45029f8ed796
+
+autobyteus-server-ts/src/services/agent-streaming/models.ts:37:  FILE_CHANGE = "FILE_CHANGE",
+autobyteus-web/services/agentStreaming/teamStreamDtoAdapters.ts:51:    case 'FILE_CHANGE': return { type: message.type, payload: { id: message.payload.file_change_id, runId: exactAgentRunId, path: message.payload.path, type: artifactType(message.payload.file_type), status: fileStatus(message.payload.status), sourceTool: fileSourceTool(message.payload.source_tool), sourceInvocationId: message.payload.source_invocation_id, content: message.payload.content, createdAt: message.payload.created_at, updatedAt: message.payload.updated_at } };
+autobyteus-server-ts/src/services/agent-streaming/agent-run-event-message-mapper.ts:112:      case AgentRunEventType.FILE_CHANGE:
+autobyteus-server-ts/src/services/agent-streaming/agent-run-event-message-mapper.ts:113:        return new ServerMessage(ServerMessageType.FILE_CHANGE, payload);
+autobyteus-server-ts/src/services/agent-streaming/team-agent-event-websocket-projector.ts:105:    case "FILE_CHANGE": return parseTeamStreamServerMessage({ type: event.eventType, payload: { ...base, file_change_id: event.details.fileChangeId, path: event.details.path, file_type: event.details.fileType, status: event.details.status, source_tool: event.details.sourceTool, source_invocation_id: event.details.sourceInvocationId, content: event.details.content, created_at: event.details.createdAt, updated_at: event.details.updatedAt } });
+autobyteus-web/services/agentStreaming/protocol/messageTypes.ts:58:  | 'FILE_CHANGE'
+autobyteus-web/services/agentStreaming/protocol/messageTypes.ts:279:  | { type: 'FILE_CHANGE'; payload: FileChangePayload }
+autobyteus-server-ts/src/services/run-file-changes/run-file-change-service.ts:13:  EMPTY_RUN_FILE_CHANGE_PROJECTION,
+autobyteus-server-ts/src/services/run-file-changes/run-file-change-service.ts:51:      if (isAgentRunEvent(event) && event.eventType === AgentRunEventType.FILE_CHANGE) {
+autobyteus-server-ts/src/services/run-file-changes/run-file-change-service.ts:61:      if (event.eventSourceType !== TeamRunEventSourceType.AGENT || event.payload.eventType !== "FILE_CHANGE") return;
+autobyteus-server-ts/src/services/run-file-changes/run-file-change-service.ts:66:        eventType: AgentRunEventType.FILE_CHANGE,
+autobyteus-server-ts/src/services/run-file-changes/run-file-change-service.ts:115:      : { ...EMPTY_RUN_FILE_CHANGE_PROJECTION, entries: [] };
+autobyteus-web/services/agentStreaming/agentStreamMessageProjector.ts:183:    case 'FILE_CHANGE':
+autobyteus-server-ts/src/services/run-file-changes/run-file-change-projection-store.ts:4:  EMPTY_RUN_FILE_CHANGE_PROJECTION,
+autobyteus-server-ts/src/services/run-file-changes/run-file-change-projection-store.ts:29:  ...EMPTY_RUN_FILE_CHANGE_PROJECTION,
+autobyteus-server-ts/src/services/run-file-changes/run-file-change-types.ts:23:export const EMPTY_RUN_FILE_CHANGE_PROJECTION: RunFileChangeProjection = {
+autobyteus-server-ts/src/agent-execution/domain/agent-run-event.ts:27:  FILE_CHANGE = "FILE_CHANGE",
+autobyteus-server-ts/src/agent-execution/events/processors/file-change/file-change-event-processor.ts:44:      if (event.eventType === AgentRunEventType.FILE_CHANGE) {
+autobyteus-server-ts/src/agent-execution/events/processors/file-change/file-change-event-processor.ts:54:        eventType: AgentRunEventType.FILE_CHANGE,
+autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-tool-approval-coordinator.ts:44:  eventMethod === CodexThreadEventName.ITEM_FILE_CHANGE_REQUEST_APPROVAL;
+autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-tool-approval-coordinator.ts:112:    method === CodexThreadEventName.ITEM_FILE_CHANGE_REQUEST_APPROVAL
+autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-thread-event-name.ts:17:  ITEM_FILE_CHANGE_OUTPUT_DELTA = "item/fileChange/outputDelta",
+autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-thread-event-name.ts:18:  ITEM_FILE_CHANGE_REQUEST_APPROVAL = "item/fileChange/requestApproval",
+autobyteus-server-ts/src/agent-team-execution/services/team-agent-event-adapter.ts:234:      case AgentRunEventType.FILE_CHANGE:
+autobyteus-server-ts/src/agent-team-execution/services/team-agent-event-adapter.ts:235:        return correlated({ eventType: "FILE_CHANGE", details: { fileChangeId: required(raw(p, "file_change_id", "fileChangeId"), "file_change_id"), path: required(p.path, "path"), fileType: required(raw(p, "file_type", "fileType"), "file_type"), status: required(p.status, "status"), sourceTool: required(raw(p, "source_tool", "sourceTool"), "source_tool"), sourceInvocationId: text(raw(p, "source_invocation_id", "sourceInvocationId")), content: typeof p.content === "string" ? p.content : null, createdAt: required(raw(p, "created_at", "createdAt"), "created_at"), updatedAt: required(raw(p, "updated_at", "updatedAt"), "updated_at") }, statusHint: hint });
+autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-item-event-converter.ts:99:  CodexThreadEventName.ITEM_FILE_CHANGE_OUTPUT_DELTA,
+autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-item-event-converter.ts:100:  CodexThreadEventName.ITEM_FILE_CHANGE_REQUEST_APPROVAL,
+autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-item-event-converter.ts:420:    case CodexThreadEventName.ITEM_FILE_CHANGE_REQUEST_APPROVAL:
+autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-item-event-converter.ts:425:        codexEventName === CodexThreadEventName.ITEM_FILE_CHANGE_REQUEST_APPROVAL
+autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-item-event-converter.ts:463:    case CodexThreadEventName.ITEM_FILE_CHANGE_OUTPUT_DELTA: {
+autobyteus-server-ts/src/agent-team-execution/domain/team-agent-event.ts:100:  | Correlated<"FILE_CHANGE", { fileChangeId: string; path: string; fileType: string; status: string; sourceTool: string; sourceInvocationId: string | null; content: string | null; createdAt: string; updatedAt: string }>

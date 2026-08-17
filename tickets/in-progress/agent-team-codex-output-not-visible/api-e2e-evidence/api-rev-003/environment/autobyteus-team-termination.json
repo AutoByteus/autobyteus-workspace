@@ -1,0 +1,14 @@
+{
+  "terminatedAt": "2026-08-17T09:22:44.116Z",
+  "endpoint": "http://127.0.0.1:60420/graphql",
+  "teamRunId": "classroom_simulation_team_6461520955364b2c9f689d11be032555",
+  "result": {
+    "data": {
+      "terminateAgentTeamRun": {
+        "success": true,
+        "message": "Agent team run terminated successfully."
+      }
+    }
+  },
+  "operationalDatabaseAction": "NONE"
+}

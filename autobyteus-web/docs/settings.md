@@ -198,7 +198,19 @@ The Pinia stores act as the primary interface for the UI components to interact 
     selection changes, and duplicate launch allocation are rejected.
   - `connectToTeamStream(rootTeamRunId)`: attaches one `TeamStreamingService` to
     the root TeamRun and its canonical `AgentTeamContext`. Transport readiness is
-    separate from root Team liveness and leaf Agent status.
+    separate from root Team liveness and leaf Agent status. The service accepts
+    the initial structural snapshot as its sequence base and then requires exact
+    next-sequence admission for every live execution message. The first gap is
+    rejected before Team or Agent conversation mutation, enters the persistent
+    `reopen_required` phase once, closes the stale transport, and blocks commands
+    and ordinary reconnect rather than silently dropping later output.
+  - Team-stream recovery is an explicit history-selection workflow, not a
+    structural-snapshot refresh. Reselecting a member performs a root execution
+    checkpoint, exact per-Agent conversation hydration, and a second checkpoint;
+    open work or a changed checkpoint produces localized wait/retry feedback and
+    leaves the failed context selected. Only a candidate stream whose snapshot
+    base equals the stable checkpoint can atomically replace the failed service
+    and fully hydrated context.
   - `sendMessageToFocusedMember()`: uses the focused exact
     `TeamExecutionAddress` (`rootTeamRunId`, ordered `taskTeamRunIds`, rooted
     `memberAddress`, and nullable `taskAgentRunId`). It launches or restores when

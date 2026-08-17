@@ -1,0 +1,35 @@
+{
+  "checkedAt": "2026-08-17T08:45:10.652Z",
+  "endpoint": "http://127.0.0.1:60419/graphql",
+  "scope": "checked disposable API-REV-002 target only",
+  "before": {
+    "activeTeams": [
+      {
+        "teamDefinitionId": "classroom-simulation-team",
+        "teamRunId": "classroom_simulation_team_314dedc97546477c930bb393d2a1a3dd",
+        "summary": "Run exactly one real file-backed classroom round trip. Ask student to solve 19 * 7, require the s..."
+      }
+    ],
+    "activeAgents": []
+  },
+  "termination": {
+    "teamResults": [
+      {
+        "teamDefinitionId": "classroom-simulation-team",
+        "teamRunId": "classroom_simulation_team_314dedc97546477c930bb393d2a1a3dd",
+        "summary": "Run exactly one real file-backed classroom round trip. Ask student to solve 19 * 7, require the s...",
+        "result": {
+          "success": true,
+          "message": "Agent team run terminated successfully."
+        }
+      }
+    ],
+    "agentResults": []
+  },
+  "activeAfter": {
+    "teams": [],
+    "agents": []
+  },
+  "operationalDatabaseAction": "NONE",
+  "protectedPortsAction": "NONE"
+}
