@@ -1,0 +1,67 @@
+{
+  "createdAt": "2026-08-17T15:48:14.941Z",
+  "serverDataRoot": "autobyteus-server-ts/tests/.tmp/claude-resume-investigation-20260817-2",
+  "ports": {
+    "api": 60418,
+    "web": 31318
+  },
+  "agentPackageRoot": "/Users/normy/autobyteus_org/autobyteus-agents",
+  "teamDefinitionId": "classroom-simulation-team",
+  "teamRunId": "classroom_simulation_team_94b696120d254dd3b06a0ee39f2d0790",
+  "professorAgentRunId": "professor_a3c8cb8a642e4ed1961f7651e28aae4a",
+  "studentAgentRunId": "student_fbb7bbec204a430c9b08680e970cd7c1",
+  "runtimeKind": "claude_agent_sdk",
+  "modelIdentifier": "haiku",
+  "resolvedModelLabel": "Anthropic / deepseek-v4-flash",
+  "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix/live-browser-reproduction-claude/workspace",
+  "preProviderSessionId": "11771792-3875-42a5-8f8a-455dd819af27",
+  "postProviderSessionId": "8ba2e83a-f5aa-4d9c-832b-49e1caaab420",
+  "initialExecutionTree": {
+    "schemaVersion": 1,
+    "createdAt": "2026-08-17T15:48:14.941Z",
+    "archivedAt": null,
+    "applicationBinding": null,
+    "handoffs": [],
+    "rootTeam": {
+      "teamDefinitionId": "classroom-simulation-team",
+      "teamDefinitionName": "Classroom Simulation Team",
+      "teamRunId": "classroom_simulation_team_94b696120d254dd3b06a0ee39f2d0790",
+      "coordinatorAddress": "/professor",
+      "members": [
+        {
+          "address": "/professor",
+          "agentDefinitionId": "team-local-agent:classroom-simulation-team:professor",
+          "role": null,
+          "description": null,
+          "agentRunId": "professor_a3c8cb8a642e4ed1961f7651e28aae4a",
+          "platformAgentRunId": null,
+          "launchConfiguration": {
+            "runtimeKind": "CLAUDE",
+            "llmModelIdentifier": "haiku",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "skillAccessMode": "PRELOADED_ONLY",
+            "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix/live-browser-reproduction-claude/workspace"
+          }
+        },
+        {
+          "address": "/student",
+          "agentDefinitionId": "team-local-agent:classroom-simulation-team:student",
+          "role": null,
+          "description": null,
+          "agentRunId": "student_fbb7bbec204a430c9b08680e970cd7c1",
+          "platformAgentRunId": null,
+          "launchConfiguration": {
+            "runtimeKind": "CLAUDE",
+            "llmModelIdentifier": "haiku",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "skillAccessMode": "PRELOADED_ONLY",
+            "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix/live-browser-reproduction-claude/workspace"
+          }
+        }
+      ],
+      "taskExecutions": []
+    }
+  }
+}

@@ -8,6 +8,7 @@ import { MixedTeamManager } from "./mixed-team-manager.js";
 import { MixedAgentMemberContext, MixedSubTeamMemberContext, MixedTeamRunContext, type MixedTeamMemberContext } from "./mixed-team-run-context.js";
 import { MixedTeamRunBackend } from "./mixed-team-run-backend.js";
 import { MixedSubTeamRunFactory } from "./mixed-sub-team-run-factory.js";
+import type { TeamAgentPlatformBinding } from "../../domain/team-agent-platform-binding.js";
 
 export type MixedTeamRunBackendFactoryOptions = {
   createTeamManager?: (
@@ -20,11 +21,13 @@ export type MixedTeamRunBackendFactoryOptions = {
 export type MixedTeamRunCallbacks = Readonly<{
   publish: (event: TeamRunEvent) => void;
   deliverInterAgentMessage: (intent: InterAgentMessageDeliveryIntent) => Promise<AgentOperationResult>;
+  acceptPlatformBinding: (binding: TeamAgentPlatformBinding) => Promise<void>;
 }>;
 
 const noopCallbacks = (): MixedTeamRunCallbacks => ({
   publish: () => undefined,
   deliverInterAgentMessage: async () => ({ accepted: false, code: "TEAM_ROOT_NOT_BOUND", message: "The TeamRun is not bound to a root operation owner." }),
+  acceptPlatformBinding: async () => { throw new Error("The TeamRun is not bound to a root operation owner."); },
 });
 
 export class MixedTeamRunBackendFactory {
@@ -72,6 +75,7 @@ export class MixedTeamRunBackendFactory {
           subTeamRunFactory,
           publish: input.callbacks.publish,
           deliverInterAgentMessage: input.callbacks.deliverInterAgentMessage,
+          acceptPlatformBinding: input.callbacks.acceptPlatformBinding,
         }));
     subTeamRunFactory = new MixedSubTeamRunFactory({
       buildContext: (child) => this.buildTeamRunContext(child),
@@ -110,7 +114,9 @@ export class MixedTeamRunBackendFactory {
           address: node.address,
           agentRunId: node.agentRunId,
           runtimeKind: node.runtimeKind,
-          platformAgentRunId: restoredNode?.kind === "agent" ? restoredNode.platformAgentRunId : node.platformAgentRunId,
+          platformAgentRunId: restoredNode?.kind === "agent"
+            ? restoredNode.getPlatformAgentRunId()
+            : node.platformAgentRunId,
         })
       : new MixedSubTeamMemberContext({
           address: node.address,

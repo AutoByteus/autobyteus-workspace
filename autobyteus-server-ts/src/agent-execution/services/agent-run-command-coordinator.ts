@@ -1,5 +1,4 @@
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
-import type { AgentRun } from "../domain/agent-run.js";
 import type { AgentStatusPayload } from "../domain/agent-status-payload.js";
 import type { AgentRunInputLifecycle } from "../input/agent-run-input-contract.js";
 import { AgentRunService, getAgentRunService } from "./agent-run-service.js";
@@ -34,8 +33,6 @@ const toMessage = (error: unknown): string =>
   error instanceof Error && error.message ? error.message : String(error);
 
 export class AgentRunCommandCoordinator {
-  private readonly activationByRunId = new Map<string, Promise<AgentRun>>();
-
   constructor(private readonly deps: {
     agentRunService?: AgentRunService;
     registry?: AgentRunCommandRegistry;
@@ -64,7 +61,7 @@ export class AgentRunCommandCoordinator {
     }
 
     try {
-      const activeRun = activeRunAtStart ?? await this.resolveRuntimeForCommand(record.runId);
+      const activeRun = await this.agentRunService.resolveCommandReadyAgentRun(record.runId);
       this.clearOverlayForCommand(record);
       input.onActiveRunReady?.(activeRun);
 
@@ -136,34 +133,6 @@ export class AgentRunCommandCoordinator {
         this.registry.markCancelled(identity);
         return;
     }
-  }
-
-  private async resolveRuntimeForCommand(runId: string): Promise<AgentRun> {
-    const activeRun = this.agentRunService.getAgentRun(runId);
-    if (activeRun) return activeRun;
-    const existingActivation = this.activationByRunId.get(runId);
-    if (existingActivation) return existingActivation;
-
-    const activation = this.activateRuntimeForCommand(runId);
-    this.activationByRunId.set(runId, activation);
-    try {
-      return await activation;
-    } finally {
-      if (this.activationByRunId.get(runId) === activation) {
-        this.activationByRunId.delete(runId);
-      }
-    }
-  }
-
-  private async activateRuntimeForCommand(runId: string): Promise<AgentRun> {
-    const activeRun = this.agentRunService.getAgentRun(runId);
-    if (activeRun) return activeRun;
-    const metadata = await this.agentRunService.getRunMetadata(runId);
-    if (!metadata) throw new Error(`Run '${runId}' was not found or cannot accept commands.`);
-    if (metadata.preparedAt && !metadata.startedAt) {
-      return this.agentRunService.activatePreparedRun(runId);
-    }
-    return (await this.agentRunService.restoreAgentRun(runId)).run;
   }
 
   private async failCommand(

@@ -23,6 +23,7 @@ import {
   getClaudeCatalogSettingSources,
   getClaudeRuntimeSettingSources,
 } from "./claude-sdk-setting-sources.js";
+import type { ClaudeSdkSessionBinding } from "./claude-sdk-session-binding.js";
 
 type ClaudePermissionDecision = { behavior: "allow" };
 
@@ -58,7 +59,7 @@ type ClaudeApiKeyResolver = () => Promise<SecretValue>;
 export type ClaudeSdkStartQueryTurnOptions = {
   prompt: string;
   systemPrompt: string;
-  sessionId?: string | null;
+  sessionBinding: ClaudeSdkSessionBinding;
   model: string;
   workingDirectory: string | null;
   env?: Record<string, string | undefined>;
@@ -397,7 +398,9 @@ export class ClaudeSdkClient {
       env: spawnEnvironment,
       disallowedTools: [...CLAUDE_BUILT_IN_TOOLS_DISALLOWED_BY_AUTOBYTEUS],
       ...(allowedTools.size > 0 ? { allowedTools: [...allowedTools] } : {}),
-      ...(options.sessionId ? { resume: options.sessionId } : {}),
+      ...(options.sessionBinding.kind === "create"
+        ? { sessionId: options.sessionBinding.sessionId }
+        : { resume: options.sessionBinding.sessionId }),
       ...(options.mcpServers ? { mcpServers: options.mcpServers } : {}),
       ...(options.abortController ? { abortController: options.abortController } : {}),
       ...(options.stderr ? { stderr: options.stderr } : {}),

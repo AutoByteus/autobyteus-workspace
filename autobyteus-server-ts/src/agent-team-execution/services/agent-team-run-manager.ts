@@ -175,6 +175,10 @@ export class AgentTeamRunManager {
         if (!root) return Promise.resolve({ accepted: false, code: "TEAM_ROOT_NOT_BOUND", message: "RootTeamRun construction is incomplete." });
         return root.deliverInterAgentMessage(intent);
       },
+      acceptPlatformBinding: (binding: import("../domain/team-agent-platform-binding.js").TeamAgentPlatformBinding) => {
+        if (!root) return Promise.reject(new Error("RootTeamRun construction is incomplete."));
+        return root.adoptAgentPlatformBinding(binding);
+      },
     };
     const backend = await this.factory.createBackend(input.config, input.tree.rootTeam.teamRunId, callbacks);
     const rootRun = new TeamRun(backend.getTeamRunContext(), backend);

@@ -4,7 +4,6 @@ import {
   resolveSkillAccessMode,
 } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentRunConfig } from "../domain/agent-run-config.js";
-import type { AgentRun } from "../domain/agent-run.js";
 import { AgentRunManager } from "./agent-run-manager.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import {
@@ -53,7 +52,6 @@ export class AgentRunProvisioningService {
   private readonly historyCatalogService: AgentRunHistoryCatalogService;
   private readonly workspaceManager: ReturnType<typeof getWorkspaceManager>;
   private readonly agentRunIdentityAllocator: Pick<AgentRunIdentityAllocator, "allocateForAgentDefinition">;
-  private readonly activationLocks = new Map<string, Promise<AgentRun>>();
 
   constructor(
     memoryDir: string,
@@ -121,67 +119,6 @@ export class AgentRunProvisioningService {
       activationState: "PREPARED",
       preparedExpiresAt: preparedExpiresAt.toISOString(),
     };
-  }
-
-  async activatePreparedRun(runId: string): Promise<AgentRun> {
-    const normalizedRunId = normalizeRequiredRunId(runId);
-    const existingLock = this.activationLocks.get(normalizedRunId);
-    if (existingLock) {
-      return existingLock;
-    }
-    const lock = this.activatePreparedRunUnlocked(normalizedRunId);
-    this.activationLocks.set(normalizedRunId, lock);
-    try {
-      return await lock;
-    } finally {
-      if (this.activationLocks.get(normalizedRunId) === lock) {
-        this.activationLocks.delete(normalizedRunId);
-      }
-    }
-  }
-
-  private async activatePreparedRunUnlocked(normalizedRunId: string): Promise<AgentRun> {
-    const activeRun = this.agentRunManager.getActiveRun(normalizedRunId);
-    if (activeRun) {
-      throw new Error(`Run '${normalizedRunId}' is already active and cannot be prepared-activated again.`);
-    }
-
-    const metadata = await this.metadataService.readMetadata(normalizedRunId);
-    if (!metadata) {
-      throw new Error(`Run '${normalizedRunId}' cannot be activated because metadata is missing.`);
-    }
-    if (!metadata.preparedAt || metadata.startedAt) {
-      throw new Error(`Run '${normalizedRunId}' is not in a prepared activation state.`);
-    }
-
-    const workspace = await this.workspaceManager.ensureWorkspaceByRootPath(
-      metadata.workspaceRootPath,
-    );
-    const createdRun = await this.agentRunManager.createAgentRun(
-      new AgentRunConfig({
-        runtimeKind: metadata.runtimeKind,
-        agentDefinitionId: metadata.agentDefinitionId,
-        llmModelIdentifier: metadata.llmModelIdentifier,
-        autoExecuteTools: metadata.autoExecuteTools,
-        workspaceId: workspace.workspaceId,
-        memoryDir: metadata.memoryDir,
-        llmConfig: metadata.llmConfig,
-        skillAccessMode: metadata.skillAccessMode ?? SkillAccessMode.PRELOADED_ONLY,
-        applicationExecutionContext: metadata.applicationExecutionContext ?? null,
-      }),
-      normalizedRunId,
-    );
-
-    const activatedMetadata = await this.historyCatalogService.recordRunStarted({
-      runId: normalizedRunId,
-      runtimeKind: createdRun.runtimeKind,
-      platformAgentRunId: createdRun.getPlatformAgentRunId(),
-      startedAt: new Date().toISOString(),
-    });
-    if (!activatedMetadata) {
-      throw new Error(`Run '${normalizedRunId}' cannot be activated because metadata disappeared.`);
-    }
-    return createdRun;
   }
 
   async cancelPreparedAgentRun(runId: string): Promise<CancelPreparedAgentRunResult> {

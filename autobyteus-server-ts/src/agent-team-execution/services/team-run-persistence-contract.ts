@@ -36,9 +36,11 @@ export type PreparedTaskActivationCommit = Readonly<{
 export type PreparedTaskMutationCommit =
   | Readonly<{
       kind: "activation";
-      nextTree: TeamRunExecutionTreeSnapshot;
-      nextTasks: TaskDelegationRecordsSnapshot;
       activation: PreparedTaskActivationCommit;
+      prepareAgainstCurrent(): Readonly<{
+        nextTree: TeamRunExecutionTreeSnapshot;
+        nextTasks: TaskDelegationRecordsSnapshot;
+      }>;
     }>
   | Readonly<{
       kind: "record_transition";
@@ -48,9 +50,11 @@ export type PreparedTaskMutationCommit =
     }>;
 
 export type PreparedTaskSettlementCommit = Readonly<{
-  nextTree: TeamRunExecutionTreeSnapshot;
   settlement: PreparedTaskSettlement;
-  commitTreeAndEvent(settlement: CommittedTaskSettlement): void;
+  prepareAgainstCurrent(): Readonly<{
+    nextTree: TeamRunExecutionTreeSnapshot;
+    commitTreeAndEvent(settlement: CommittedTaskSettlement): void;
+  }>;
 }>;
 
 export type TaskMutationCommitResult =
@@ -115,6 +119,11 @@ export type TeamMessageCommitResult =
 
 export type PreparedExecutionTreeCommit = Readonly<{
   nextTree: TeamRunExecutionTreeSnapshot;
+  requiresWrite: boolean;
   cancelBeforeDurability(): void;
   commitAfterDurability(): void;
+}>;
+
+export type PreparedExecutionTreeMutation = Readonly<{
+  prepareAgainstCurrent(): PreparedExecutionTreeCommit;
 }>;

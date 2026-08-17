@@ -73,11 +73,12 @@ export class MixedTaskTeamExecutionRegistry {
         coordinatorAgentRunId: coordinator.agentRunId,
       }),
       preparedTeamRuns: Object.freeze(preparedTeamRuns),
+      stagedPlatformBindings: Object.freeze([]),
       sealForCommit: () => {
         if (state !== "preparing" || !this.reserved.has(teamRunId)) throw new Error(`Task TeamRun '${teamRunId}' cannot be sealed.`);
         state = "sealed";
       },
-      commit: () => {
+      commitAfterDurability: () => {
         if (state !== "sealed" || !this.reserved.delete(teamRunId)) throw new Error(`Task TeamRun '${teamRunId}' is not sealed.`);
         this.preparedTeamRuns.delete(teamRunId);
         this.active.set(teamRunId, root);

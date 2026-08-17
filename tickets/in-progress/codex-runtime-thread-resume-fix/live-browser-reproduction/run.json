@@ -1,0 +1,83 @@
+{
+  "createdAt": "2026-08-17T15:13:08.448Z",
+  "request": {
+    "teamDefinitionId": "classroom-simulation-team",
+    "memberConfigs": [
+      {
+        "memberAddress": "/professor",
+        "agentDefinitionId": "team-local-agent:classroom-simulation-team:professor",
+        "llmModelIdentifier": "gpt-5.6-luna",
+        "autoExecuteTools": true,
+        "skillAccessMode": "NONE",
+        "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix/live-browser-reproduction/workspace",
+        "runtimeKind": "codex_app_server"
+      },
+      {
+        "memberAddress": "/student",
+        "agentDefinitionId": "team-local-agent:classroom-simulation-team:student",
+        "llmModelIdentifier": "gpt-5.6-luna",
+        "autoExecuteTools": true,
+        "skillAccessMode": "NONE",
+        "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix/live-browser-reproduction/workspace",
+        "runtimeKind": "codex_app_server"
+      }
+    ]
+  },
+  "result": {
+    "success": true,
+    "message": "Agent team run created successfully.",
+    "teamRunId": "classroom_simulation_team_6ae0a589b65246af8c39b4faca92cfcc"
+  },
+  "teamRunId": "classroom_simulation_team_6ae0a589b65246af8c39b4faca92cfcc",
+  "professorAgentRunId": "professor_6ae1faec0bc64239bb81d85caa39a5ad",
+  "initialExecutionTree": {
+    "schema_version": 1,
+    "created_at": "2026-08-17T15:13:08.377Z",
+    "archived_at": null,
+    "application_binding": null,
+    "handoffs": [],
+    "root_team": {
+      "team_definition_id": "classroom-simulation-team",
+      "team_definition_name": "Classroom Simulation Team",
+      "team_run_id": "classroom_simulation_team_6ae0a589b65246af8c39b4faca92cfcc",
+      "coordinator_address": "/professor",
+      "members": [
+        {
+          "kind": "configured_agent",
+          "address": "/professor",
+          "agent_definition_id": "team-local-agent:classroom-simulation-team:professor",
+          "role": null,
+          "description": null,
+          "agent_run_id": "professor_6ae1faec0bc64239bb81d85caa39a5ad",
+          "platform_agent_run_id": null,
+          "launch_configuration": {
+            "runtime_kind": "CODEX",
+            "llm_model_identifier": "gpt-5.6-luna",
+            "llm_config": null,
+            "auto_execute_tools": true,
+            "skill_access_mode": "NONE",
+            "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix/live-browser-reproduction/workspace"
+          }
+        },
+        {
+          "kind": "configured_agent",
+          "address": "/student",
+          "agent_definition_id": "team-local-agent:classroom-simulation-team:student",
+          "role": null,
+          "description": null,
+          "agent_run_id": "student_cc4effc9d63f464f966621981c86c80d",
+          "platform_agent_run_id": null,
+          "launch_configuration": {
+            "runtime_kind": "CODEX",
+            "llm_model_identifier": "gpt-5.6-luna",
+            "llm_config": null,
+            "auto_execute_tools": true,
+            "skill_access_mode": "NONE",
+            "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix/live-browser-reproduction/workspace"
+          }
+        }
+      ],
+      "task_executions": []
+    }
+  }
+}

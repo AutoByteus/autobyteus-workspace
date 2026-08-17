@@ -1,0 +1,364 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/autobyteus-server-ts/tests/.tmp/claude-resume-investigation-20260817-2
+AppConfig instance created.
+Config file path: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/autobyteus-server-ts/tests/.tmp/claude-resume-investigation-20260817-2/.env
+Loading environment from: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/autobyteus-server-ts/tests/.tmp/claude-resume-investigation-20260817-2/.env
+[dotenv@17.3.1] injecting env (0) from autobyteus-server-ts/tests/.tmp/claude-resume-investigation-20260817-2/.env -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:60418
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:60418
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/autobyteus-server-ts
+APP DATA DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/autobyteus-server-ts/tests/.tmp/claude-resume-investigation-20260817-2
+DB DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/autobyteus-server-ts/tests/.tmp/claude-resume-investigation-20260817-2/db
+LOGS DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/autobyteus-server-ts/tests/.tmp/claude-resume-investigation-20260817-2/logs
+DOWNLOAD DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/autobyteus-server-ts/tests/.tmp/claude-resume-investigation-20260817-2/download
+MEMORY DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/autobyteus-server-ts/tests/.tmp/claude-resume-investigation-20260817-2/memory
+============================================================
+AppConfig initialization completed successfully
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "claude-resume-investigation-20260817-2.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/autobyteus-server-ts/db/claude-resume-investigation-20260817-2.db"
+
+21 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:72037) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 20 predefined settings
+Populating agent definition cache for the first time...
+Agent definition cache populated with 9 items.
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+AgentRunManager initialized.
+[2026-08-17T15:45:33.884Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+{"level":30,"time":1786981533965,"pid":72037,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:60418"}
+[2026-08-17T15:45:33.966Z] [INFO] [server.runtime] Server listening on 127.0.0.1:60418
+[2026-08-17T15:45:33.967Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:60418
+Creating temp workspace at: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/autobyteus-server-ts/tests/.tmp/claude-resume-investigation-20260817-2/temp_workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/autobyteus-server-ts/tests/.tmp/claude-resume-investigation-20260817-2/temp_workspace.
+Initialized TempWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/autobyteus-server-ts/tests/.tmp/claude-resume-investigation-20260817-2/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Scheduling non-critical startup tasks to run in the background...
+Background cache pre-loading process has started.
+CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.
+AutobyteusModelCatalog initialized.
+CachedAudioModelProvider initialized.
+AudioModelService initialized.
+CachedImageModelProvider initialized.
+ImageModelService initialized.
+CachedVideoModelProvider initialized.
+VideoModelService initialized.
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Loading workspace packages to trigger registration...
+Loading agent tool definitions...
+Running MCP tool registration background task...
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Loading and registering all MCP server configurations from file...
+Populating MCP server config cache for the first time...
+Background task 'Agent Customizations' completed successfully.
+Background task 'Memory Sync Worker' completed successfully.
+Pre-loaded 9 agent definitions into cache.
+[2026-08-17T15:45:33.987Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Loaded tool group: Media Tools
+Successfully loaded workspace packages.
+Background task 'Workspaces' completed successfully.
+Successfully registered tool definition: 'publish_artifacts'
+Loaded tool group: Published Artifact Tools
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+Loaded tool group: Browser Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Loaded tool group: Task Delegation Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Loaded tool group: Agent Communication Tools
+Background task 'Agent Tools' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+[2026-08-17T15:45:34.016Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 20 items.
+Pre-loaded 20 agent team definitions into cache.
+Pre-loaded 0 MCP server configs into cache.
+Populating LLM models cache for the first time...
+Fetching list of available LLM models from LLMFactory...
+Discovering Autobyteus models from host: https://localhost:51739
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Discovering Autobyteus models from host: https://localhost:51740
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+AUTOBYTEUS_LLM_DISCOVERY_REMOTE_FAILED
+Discovering Autobyteus models from host: https://192.168.2.142:51739
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Discovering Ollama models from host: http://127.0.0.1:11434
+Could not connect to Ollama server at http://127.0.0.1:11434. Ensure it's running. fetch failed
+Discovering LM Studio models from host: http://127.0.0.1:1234
+Finished LM Studio discovery. Total models registered: 15
+Successfully fetched 120 models from LLMFactory.
+LLM models cache populated with 120 items.
+Pre-loaded 120 LLM models into cache.
+Populating Image models cache for the first time...
+Fetching list of available Image models from ImageClientFactory...
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+AUTOBYTEUS_IMAGE_DISCOVERY_REMOTE_FAILED
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Successfully fetched 19 image models from ImageClientFactory.
+Image models by provider: OPENAI=2, GEMINI=5, AUTOBYTEUS=12
+Image models by runtime: api=7, autobyteus=12
+Image models cache populated with 19 items.
+Pre-loaded 19 image models into cache.
+Populating Audio models cache for the first time...
+Fetching list of available Audio models from AudioClientFactory...
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+AUTOBYTEUS_AUDIO_DISCOVERY_REMOTE_FAILED
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Successfully fetched 12 audio models from AudioClientFactory.
+Audio models by provider: OPENAI=1, GEMINI=3, AUTOBYTEUS=8
+Audio models by runtime: api=4, autobyteus=8
+Audio models cache populated with 12 items.
+Pre-loaded 12 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Populating Video models cache for the first time...
+Fetching list of available Video models from VideoClientFactory...
+Successfully fetched 1 video models from VideoClientFactory.
+Video models by provider: GEMINI=1
+Video models by runtime: api=1
+Video models cache populated with 1 items.
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix/live-browser-reproduction-claude/workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix/live-browser-reproduction-claude/workspace.
+Created and registered workspace ID: agent_ws_7f78c78fe756b0e5f4c7ae1d7ec49439f4dd98e8e6426a2b72b21fdb1692f013
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix/live-browser-reproduction-claude/workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix/live-browser-reproduction-claude/workspace.
+Reusing registered workspace ID: agent_ws_7f78c78fe756b0e5f4c7ae1d7ec49439f4dd98e8e6426a2b72b21fdb1692f013
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/autobyteus-server-ts/tests/.tmp/claude-resume-investigation-20260817-2/memory/agent_teams/classroom_simulation_team_94b696120d254dd3b06a0ee39f2d0790/professor_a3c8cb8a642e4ed1961f7651e28aae4a/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/autobyteus-server-ts/tests/.tmp/claude-resume-investigation-20260817-2/memory/agent_teams/classroom_simulation_team_94b696120d254dd3b06a0ee39f2d0790/student_fbb7bbec204a430c9b08680e970cd7c1/raw_traces_active.jsonl
+Agent team websocket attached for team run classroom_simulation_team_94b696120d254dd3b06a0ee39f2d0790
+Created agent session d610c86b-484b-4680-825c-e3f79fb406ac for run classroom_simulation_team_94b696120d254dd3b06a0ee39f2d0790
+Agent Team WebSocket connected: session=d610c86b-484b-4680-825c-e3f79fb406ac, run=classroom_simulation_team_94b696120d254dd3b06a0ee39f2d0790
+Successfully created claude_agent_sdk agent run 'professor_a3c8cb8a642e4ed1961f7651e28aae4a'.
+(node:72037) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: send_message_to, mcp__autobyteus_agent_tools__send_message_to, get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+
+===== RESTART 2026-08-17T15:50Z =====
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/autobyteus-server-ts/tests/.tmp/claude-resume-investigation-20260817-2
+AppConfig instance created.
+Config file path: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/autobyteus-server-ts/tests/.tmp/claude-resume-investigation-20260817-2/.env
+Loading environment from: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/autobyteus-server-ts/tests/.tmp/claude-resume-investigation-20260817-2/.env
+[dotenv@17.3.1] injecting env (0) from autobyteus-server-ts/tests/.tmp/claude-resume-investigation-20260817-2/.env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:60418
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:60418
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/autobyteus-server-ts
+APP DATA DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/autobyteus-server-ts/tests/.tmp/claude-resume-investigation-20260817-2
+DB DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/autobyteus-server-ts/tests/.tmp/claude-resume-investigation-20260817-2/db
+LOGS DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/autobyteus-server-ts/tests/.tmp/claude-resume-investigation-20260817-2/logs
+DOWNLOAD DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/autobyteus-server-ts/tests/.tmp/claude-resume-investigation-20260817-2/download
+MEMORY DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/autobyteus-server-ts/tests/.tmp/claude-resume-investigation-20260817-2/memory
+============================================================
+AppConfig initialization completed successfully
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "claude-resume-investigation-20260817-2.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/autobyteus-server-ts/db/claude-resume-investigation-20260817-2.db"
+
+21 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:74793) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 20 predefined settings
+Populating agent definition cache for the first time...
+Agent definition cache populated with 9 items.
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+AgentRunManager initialized.
+[2026-08-17T15:50:20.355Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+{"level":30,"time":1786981820433,"pid":74793,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:60418"}
+[2026-08-17T15:50:20.433Z] [INFO] [server.runtime] Server listening on 127.0.0.1:60418
+[2026-08-17T15:50:20.434Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:60418
+Creating temp workspace at: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/autobyteus-server-ts/tests/.tmp/claude-resume-investigation-20260817-2/temp_workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/autobyteus-server-ts/tests/.tmp/claude-resume-investigation-20260817-2/temp_workspace.
+Initialized TempWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/autobyteus-server-ts/tests/.tmp/claude-resume-investigation-20260817-2/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Scheduling non-critical startup tasks to run in the background...
+Background cache pre-loading process has started.
+CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.
+AutobyteusModelCatalog initialized.
+CachedAudioModelProvider initialized.
+AudioModelService initialized.
+CachedImageModelProvider initialized.
+ImageModelService initialized.
+CachedVideoModelProvider initialized.
+VideoModelService initialized.
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Loading workspace packages to trigger registration...
+Loading agent tool definitions...
+Running MCP tool registration background task...
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Loading and registering all MCP server configurations from file...
+Populating MCP server config cache for the first time...
+Background task 'Agent Customizations' completed successfully.
+Background task 'Memory Sync Worker' completed successfully.
+Pre-loaded 9 agent definitions into cache.
+[2026-08-17T15:50:20.463Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Loaded tool group: Media Tools
+Successfully loaded workspace packages.
+Background task 'Workspaces' completed successfully.
+Successfully registered tool definition: 'publish_artifacts'
+Loaded tool group: Published Artifact Tools
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+Loaded tool group: Browser Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Loaded tool group: Task Delegation Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Loaded tool group: Agent Communication Tools
+Background task 'Agent Tools' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+[2026-08-17T15:50:20.485Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 20 items.
+Pre-loaded 20 agent team definitions into cache.
+Pre-loaded 0 MCP server configs into cache.
+Populating LLM models cache for the first time...
+Fetching list of available LLM models from LLMFactory...
+Discovering Autobyteus models from host: https://localhost:51739
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Discovering Autobyteus models from host: https://localhost:51740
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+AUTOBYTEUS_LLM_DISCOVERY_REMOTE_FAILED
+Discovering Autobyteus models from host: https://192.168.2.142:51739
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Discovering Ollama models from host: http://127.0.0.1:11434
+Could not connect to Ollama server at http://127.0.0.1:11434. Ensure it's running. fetch failed
+Discovering LM Studio models from host: http://127.0.0.1:1234
+Finished LM Studio discovery. Total models registered: 15
+Successfully fetched 120 models from LLMFactory.
+LLM models cache populated with 120 items.
+Pre-loaded 120 LLM models into cache.
+Populating Image models cache for the first time...
+Fetching list of available Image models from ImageClientFactory...
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+AUTOBYTEUS_IMAGE_DISCOVERY_REMOTE_FAILED
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Successfully fetched 19 image models from ImageClientFactory.
+Image models by provider: OPENAI=2, GEMINI=5, AUTOBYTEUS=12
+Image models by runtime: api=7, autobyteus=12
+Image models cache populated with 19 items.
+Pre-loaded 19 image models into cache.
+Populating Audio models cache for the first time...
+Fetching list of available Audio models from AudioClientFactory...
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+AUTOBYTEUS_AUDIO_DISCOVERY_REMOTE_FAILED
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Successfully fetched 12 audio models from AudioClientFactory.
+Audio models by provider: OPENAI=1, GEMINI=3, AUTOBYTEUS=8
+Audio models by runtime: api=4, autobyteus=8
+Audio models cache populated with 12 items.
+Pre-loaded 12 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Agent team websocket attached for team run classroom_simulation_team_94b696120d254dd3b06a0ee39f2d0790
+Created agent session 81be90c7-975c-4aeb-af5d-f29ef113329d for run classroom_simulation_team_94b696120d254dd3b06a0ee39f2d0790
+Agent Team WebSocket connected: session=81be90c7-975c-4aeb-af5d-f29ef113329d, run=classroom_simulation_team_94b696120d254dd3b06a0ee39f2d0790
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix/live-browser-reproduction-claude/workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix/live-browser-reproduction-claude/workspace.
+Created and registered workspace ID: agent_ws_7f78c78fe756b0e5f4c7ae1d7ec49439f4dd98e8e6426a2b72b21fdb1692f013
+Successfully created claude_agent_sdk agent run 'professor_a3c8cb8a642e4ed1961f7651e28aae4a'.
+(node:74793) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: send_message_to, mcp__autobyteus_agent_tools__send_message_to, get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.

@@ -173,32 +173,25 @@ export class CodexThreadManager {
     threadId: string,
     config: CodexThreadConfig,
   ): Promise<string | null> {
-    try {
-      const response = await client.request<unknown>("thread/resume", {
-        threadId,
-        history: null,
-        path: null,
-        model: config.model,
-        modelProvider: null,
-        serviceTier: config.serviceTier,
-        cwd: config.workingDirectory,
-        approvalPolicy: config.approvalPolicy,
-        sandbox: config.sandbox,
-        config: config.appServerConfig ?? null,
-        baseInstructions: config.baseInstructions,
-        developerInstructions: config.developerInstructions,
-        personality: null,
-        dynamicTools: config.dynamicTools,
-        experimentalRawEvents: true,
-        persistExtendedHistory: true,
-      });
-      return resolveThreadId(response);
-    } catch (error) {
-      console.warn(
-        `Failed to resume Codex thread '${threadId}', starting a new thread: ${String(error)}`,
-      );
-      return this.startRemoteThread(client, config);
-    }
+    const response = await client.request<unknown>("thread/resume", {
+      threadId,
+      history: null,
+      path: null,
+      model: config.model,
+      modelProvider: null,
+      serviceTier: config.serviceTier,
+      cwd: config.workingDirectory,
+      approvalPolicy: config.approvalPolicy,
+      sandbox: config.sandbox,
+      config: config.appServerConfig ?? null,
+      baseInstructions: config.baseInstructions,
+      developerInstructions: config.developerInstructions,
+      personality: null,
+      dynamicTools: config.dynamicTools,
+      experimentalRawEvents: true,
+      persistExtendedHistory: true,
+    });
+    return resolveThreadId(response);
   }
 
   private handleUnexpectedThreadClosure(thread: CodexThread): void {

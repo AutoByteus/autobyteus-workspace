@@ -3,7 +3,7 @@ import type { TaskDelegationRecordsV1Store } from "../task-delegation/records/ta
 import type { TeamCommunicationV1Store } from "../../services/team-communication/team-communication-v1-store.js";
 import type { TeamRunFileWriteResult } from "../../run-history/store/team-run-file-commit-writer.js";
 import type {
-  PreparedExecutionTreeCommit,
+  PreparedExecutionTreeMutation,
   PreparedTaskMutationCommit,
   PreparedTaskSettlementCommit,
   PreparedTeamMessageAppend,
@@ -41,9 +41,16 @@ export class TeamRunPersistenceCoordinator {
 
   commitTaskSettlement(command: PreparedTaskSettlementCommit): Promise<TaskSettlementCommitResult> {
     return this.withRootLock(async () => {
+      let prepared: ReturnType<PreparedTaskSettlementCommit["prepareAgainstCurrent"]>;
+      try {
+        prepared = command.prepareAgainstCurrent();
+      } catch (error) {
+        command.settlement.cancelBeforeDurability();
+        throw error;
+      }
       const result = await this.options.executionTreeStore.write(
         this.options.teamMemoryDir,
-        command.nextTree,
+        prepared.nextTree,
       );
       if (result.outcome === "not_renamed") {
         command.settlement.cancelBeforeDurability();
@@ -58,7 +65,7 @@ export class TeamRunPersistenceCoordinator {
         };
       }
       const settlement = command.settlement.commitAfterDurability();
-      command.commitTreeAndEvent(settlement);
+      prepared.commitTreeAndEvent(settlement);
       return { outcome: "committed", settlement };
     });
   }
@@ -67,8 +74,13 @@ export class TeamRunPersistenceCoordinator {
     return this.withRootLock(() => this.commitReservedMessageAppendLocked(plan));
   }
 
-  commitExecutionChange(change: PreparedExecutionTreeCommit): Promise<TaskMutationCommitResult> {
+  commitExecutionTreeMutation(plan: PreparedExecutionTreeMutation): Promise<TaskMutationCommitResult> {
     return this.withRootLock(async () => {
+      const change = plan.prepareAgainstCurrent();
+      if (!change.requiresWrite) {
+        change.commitAfterDurability();
+        return { outcome: "committed" };
+      }
       const result = await this.options.executionTreeStore.write(
         this.options.teamMemoryDir,
         change.nextTree,
@@ -102,18 +114,27 @@ export class TeamRunPersistenceCoordinator {
   private async commitTaskMutationLocked(
     command: PreparedTaskMutationCommit,
   ): Promise<TaskMutationCommitResult> {
-    if (command.kind === "activation") command.activation.assertCommitReady();
+    let activationPlan: ReturnType<Extract<PreparedTaskMutationCommit, { kind: "activation" }>["prepareAgainstCurrent"]> | null = null;
+    if (command.kind === "activation") {
+      command.activation.assertCommitReady();
+      try {
+        activationPlan = command.prepareAgainstCurrent();
+      } catch (error) {
+        await command.activation.abortBeforeCommit();
+        throw error;
+      }
+    }
     if (command.kind === "activation") {
       const treeResult = await this.options.executionTreeStore.write(
         this.options.teamMemoryDir,
-        command.nextTree,
+        activationPlan!.nextTree,
       );
       const treeFailure = await this.handleTaskFileFailure(command, treeResult, false);
       if (treeFailure) return treeFailure;
     }
     const taskResult = await this.options.taskRecordsStore.write(
       this.options.teamMemoryDir,
-      command.nextTasks,
+      command.kind === "activation" ? activationPlan!.nextTasks : command.nextTasks,
     );
     const taskFailure = await this.handleTaskFileFailure(
       command,
@@ -135,6 +156,7 @@ export class TeamRunPersistenceCoordinator {
     if (result.outcome === "committed") return null;
     if (result.outcome === "renamed_finalization_indeterminate") {
       this.latchPersistenceFailStop(result);
+      if (command.kind === "activation") await command.activation.abortBeforeCommit();
       return { outcome: "finalization_indeterminate", file: result.file, stage: result.stage };
     }
     if (command.kind === "activation") await command.activation.abortBeforeCommit();

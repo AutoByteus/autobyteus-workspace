@@ -1,13 +1,19 @@
 import type {
+  ConfiguredAgentExecution,
   ConfiguredMemberExecution,
   ConfiguredTeamExecution,
   RootConfiguredTeamExecution,
+  TaskAgentExecution,
   TaskExecution,
+  TaskTeamAgentExecution,
+  TaskTeamExecution,
   TaskTeamMemberExecution,
   TaskTeamNestedTeamExecution,
   TeamRunExecutionTreeSnapshot,
 } from "../domain/team-run-execution-tree.js";
 import { validateTeamRunExecutionTreePayload } from "../../run-history/store/team-run-execution-tree-schema.js";
+import type { TeamAgentPlatformBinding } from "../domain/team-agent-platform-binding.js";
+import { TeamAgentPlatformBindingError } from "../domain/team-agent-platform-binding.js";
 
 type TeamWithTasks =
   | RootConfiguredTeamExecution
@@ -127,4 +133,82 @@ export const settleTaskExecutionInTree = (input: {
   };
   if (!found) throw new Error(`Task execution '${input.taskExecutionRunId}' was not found.`);
   return validateTeamRunExecutionTreePayload(next, input.tree.rootTeam.teamRunId);
+};
+
+type AgentExecutionNode = ConfiguredAgentExecution | TaskAgentExecution | TaskTeamAgentExecution;
+
+export type TeamAgentPlatformBindingMutation = Readonly<{
+  outcome: "adopted" | "unchanged";
+  tree: TeamRunExecutionTreeSnapshot;
+}>;
+
+export const adoptAgentPlatformBindingInTree = (input: {
+  tree: TeamRunExecutionTreeSnapshot;
+  binding: TeamAgentPlatformBinding;
+}): TeamAgentPlatformBindingMutation => {
+  if (input.binding.execution.rootTeamRunId !== input.tree.rootTeam.teamRunId) {
+    throw new TeamAgentPlatformBindingError(
+      "TEAM_AGENT_PLATFORM_BINDING_CONFLICT",
+      "The platform binding belongs to a different root TeamRun.",
+    );
+  }
+  let matches = 0;
+  let changed = false;
+  const mapAgent = <T extends AgentExecutionNode>(agent: T): T => {
+    const identity = input.binding.execution;
+    if (agent.address !== identity.memberAddress || agent.agentRunId !== identity.agentRunId) return agent;
+    matches += 1;
+    if (matches > 1) {
+      throw new TeamAgentPlatformBindingError(
+        "TEAM_AGENT_PLATFORM_BINDING_CONFLICT",
+        "The platform binding matched more than one execution-tree node.",
+      );
+    }
+    if (agent.platformAgentRunId === input.binding.platformAgentRunId) return agent;
+    if (agent.platformAgentRunId !== null) {
+      throw new TeamAgentPlatformBindingError(
+        "TEAM_AGENT_PLATFORM_BINDING_CONFLICT",
+        "The team agent execution already has a different provider binding.",
+      );
+    }
+    changed = true;
+    return { ...agent, platformAgentRunId: input.binding.platformAgentRunId };
+  };
+  const mapTaskMember = (member: TaskTeamMemberExecution): TaskTeamMemberExecution =>
+    "agentRunId" in member ? mapAgent(member) : {
+      ...member,
+      members: member.members.map(mapTaskMember),
+      taskExecutions: member.taskExecutions.map(mapTask),
+    };
+  const mapTask = (task: TaskExecution): TaskExecution =>
+    "agentRunId" in task ? mapAgent(task) : {
+      ...task,
+      members: task.members.map(mapTaskMember),
+      taskExecutions: task.taskExecutions.map(mapTask),
+    } as TaskTeamExecution;
+  const mapConfigured = (member: ConfiguredMemberExecution): ConfiguredMemberExecution =>
+    "agentRunId" in member ? mapAgent(member) : {
+      ...member,
+      members: member.members.map(mapConfigured),
+      taskExecutions: member.taskExecutions.map(mapTask),
+    };
+  const next = {
+    ...input.tree,
+    rootTeam: {
+      ...input.tree.rootTeam,
+      members: input.tree.rootTeam.members.map(mapConfigured),
+      taskExecutions: input.tree.rootTeam.taskExecutions.map(mapTask),
+    },
+  };
+  if (matches !== 1) {
+    throw new TeamAgentPlatformBindingError(
+      "TEAM_AGENT_PLATFORM_BINDING_CONFLICT",
+      "The platform binding target was not found in the execution tree.",
+    );
+  }
+  if (!changed) return { outcome: "unchanged", tree: input.tree };
+  return {
+    outcome: "adopted",
+    tree: validateTeamRunExecutionTreePayload(next, input.tree.rootTeam.teamRunId),
+  };
 };
