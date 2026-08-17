@@ -268,6 +268,12 @@ const {
     emit('run-selected', { type: 'team', runId: payload.runId });
   },
   emitRunCreated: (payload) => emit('run-created', payload),
+  presentTeamStreamRecoveryFeedback: (feedback) => {
+    const key = feedback === 'wait'
+      ? 'workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.stream_recovery_wait'
+      : 'workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.stream_recovery_retry';
+    addToast(t(key), 'info');
+  },
 });
 
 const onToggleWorkspace = async (workspaceNode: RunTreeWorkspaceNode): Promise<void> => {

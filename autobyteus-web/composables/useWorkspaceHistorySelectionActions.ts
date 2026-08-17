@@ -1,5 +1,9 @@
 import type { TeamMemberFocusTarget, TeamMemberTreeRow, TeamTreeNode } from '~/stores/runHistoryTypes';
 import type { RunTreeRow } from '~/utils/runTreeProjection';
+import {
+  getTeamStreamRecoverySelectionFeedback,
+  type TeamStreamRecoverySelectionFeedback,
+} from '~/stores/runHistorySelectionActions';
 
 interface RunHistorySelectionStoreLike {
   selectTreeRun: (row: RunTreeRow | TeamMemberFocusTarget) => Promise<void>;
@@ -27,6 +31,7 @@ export const useWorkspaceHistorySelectionActions = (params: {
   ) => boolean;
   emitRunSelected: (payload: { type: 'agent' | 'team'; runId: string }) => void;
   emitRunCreated: (payload: { type: 'agent'; definitionId: string }) => void;
+  presentTeamStreamRecoveryFeedback: (feedback: TeamStreamRecoverySelectionFeedback) => void;
 }) => {
   const flattenTeamRows = (rows: readonly TeamMemberTreeRow[]): TeamMemberTreeRow[] =>
     rows.flatMap((row) => [row, ...flattenTeamRows(row.children)]);
@@ -51,6 +56,13 @@ export const useWorkspaceHistorySelectionActions = (params: {
     } catch (error) {
       console.error('Failed to open run:', error);
     }
+  };
+
+  const presentRecoveryFeedback = (error: unknown): boolean => {
+    const feedback = getTeamStreamRecoverySelectionFeedback(error);
+    if (!feedback) return false;
+    params.presentTeamStreamRecoveryFeedback(feedback);
+    return true;
   };
 
   const onSelectTeam = async (team: TeamTreeNode, workspaceId = ''): Promise<void> => {
@@ -84,7 +96,7 @@ export const useWorkspaceHistorySelectionActions = (params: {
       params.selectionStore.selectRun(team.teamRunId, 'team');
       params.emitRunSelected({ type: 'team', runId: team.teamRunId });
     } catch (error) {
-      console.error('Failed to open team:', error);
+      if (!presentRecoveryFeedback(error)) console.error('Failed to open team:', error);
     }
   };
 
@@ -98,7 +110,7 @@ export const useWorkspaceHistorySelectionActions = (params: {
       await params.runHistoryStore.selectTreeRun(member);
       params.emitRunSelected({ type: 'team', runId: member.teamRunId });
     } catch (error) {
-      console.error('Failed to open team member run:', error);
+      if (!presentRecoveryFeedback(error)) console.error('Failed to open team member run:', error);
     }
   };
 

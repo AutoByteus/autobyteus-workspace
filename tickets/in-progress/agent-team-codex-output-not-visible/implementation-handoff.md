@@ -11,21 +11,24 @@
 - Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/tickets/in-progress/agent-team-codex-output-not-visible/solution-revision-record.md`
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/tickets/in-progress/agent-team-codex-output-not-visible/design-review-report.md`
 - Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/tickets/in-progress/agent-team-codex-output-not-visible/architecture-review-revision-record.md`
-- Triggering evidence: the provider/status/sequence/browser and cleanup evidence under the investigation-evidence directory listed above.
+- Triggering rework report and revision record:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/tickets/in-progress/agent-team-codex-output-not-visible/code-review-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/tickets/in-progress/agent-team-codex-output-not-visible/code-review-revision-record.md`
+- Triggering evidence: the provider/status/sequence/browser and cleanup evidence under the investigation-evidence directory listed above, plus `/tmp/crr001-recovery-retry-surface-audit.log`.
 
 ## Current Implementation Summary
 
-The SR-003 implementation separates strict snapshot and live Team Agent status projection, exposes the existing root sequence/open-work state as a read-only execution checkpoint, and replaces overlapping frontend stream flags with one synchronization phase. A sequence gap now fails closed even though the delta is rejected, exposes persistent recovery guidance, and prevents ordinary reconnect or background reconciliation from falsely reviving the failed stream. Explicit reselection performs stable checkpointed history hydration into an unpublished candidate and commits the candidate context/service exactly once only after an exact snapshot-base handshake.
+The cumulative SR-003 implementation separates strict snapshot and live Team Agent status projection, exposes the existing root sequence/open-work state as a read-only execution checkpoint, and replaces overlapping frontend stream flags with one synchronization phase. A sequence gap now fails closed even though the delta is rejected, exposes persistent recovery guidance, and prevents ordinary reconnect or background reconciliation from falsely reviving the failed stream. Explicit reselection performs stable checkpointed history hydration into an unpublished candidate and commits the candidate context/service exactly once only after an exact snapshot-base handshake. IR-002 corrects the retryable refusal return path: expected open-work, checkpoint-change, and snapshot-base refusals leave the complete navigation tree and failed selection intact and use the existing history-panel toast presentation owner for localized, non-blocking wait/retry guidance.
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/tickets/in-progress/agent-team-codex-output-not-visible/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002`
 - Related solution revision IDs: `SR-001` through `SR-003`
 - Related architecture-review revision IDs: `ARCH-REV-003`
-- Related code-review revision IDs: `N/A`
+- Related code-review revision IDs: `CRR-001`
 - Related API/E2E revision IDs: `N/A`
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A`
+- Triggering finding IDs: `CR-F-001`
 
 ## Reviewed Behavior Implementation Trace
 
@@ -34,7 +37,7 @@ The SR-003 implementation separates strict snapshot and live Team Agent status p
 | BEH-001 / DS-001 | Preserve exact Team/AgentRun routing while making the normal strict live event path able to deliver the Codex response without a status-projection sequence hole. | `team-agent-status-websocket-projector.ts`, `team-agent-event-websocket-projector.ts`, `team-execution-view-projector.ts`, `TeamStreamingService.ts`, `teamExecutionViewState.ts` | Snapshot-only logical address no longer enters live status. Actual live provider/browser confirmation remains downstream-owned. |
 | BEH-002 / DS-002 / DS-003 | Use separate exact snapshot/live status DTO construction around one private details core and retain one root sequence owner. | `team-agent-status-websocket-projector.ts`, `team-agent-event-websocket-projector.ts`, `team-execution-view-projector.ts`, `agent-team-stream-handler.test.ts` | Strict snapshot retains `member_address`; strict live status omits it. Handler proof covers live status N followed by the next Team event N+1. |
 | BEH-003 / DS-004 / DS-005 | Reject a non-next delta without mutation, but still execute one recovery effect and expose a durable user action instead of silently rejecting subsequent events. | `teamExecutionViewModels.ts`, `teamExecutionViewState.ts`, `TeamStreamingService.ts`, `agentTeamRunStore.ts`, `TeamWorkspaceView.vue`, EN/ZH localization | One gap latch and one `team_stream_recovery_required` effect move the service to `reopen_required`, disconnect transport, drain commands, and keep the instruction visible until successful recovery or page reload. |
-| BEH-004 / DS-006 | Preserve directly readable history and recover only across an exact quiescent root checkpoint into an unpublished candidate, committing once after readiness. | `root-team-run.ts`, GraphQL `team-run-history.ts`, `runHistoryQueries.ts`, `teamRunContextHydrationService.ts`, `teamRunOpenCoordinator.ts`, `runHistorySelectionActions.ts`, `agentTeamContextsStore.ts`, `agentTeamRunStore.ts` | Checkpoint A and B must be the same root/sequence and report no open work. Exact non-null empty projection remains a valid object; missing/null/mismatched payloads fail. Old context/service remains published on candidate failure. |
+| BEH-004 / DS-006 | Preserve directly readable history and recover only across an exact quiescent root checkpoint into an unpublished candidate, committing once after readiness. Keep the initiating selection surface reachable across an expected refusal. | `root-team-run.ts`, GraphQL `team-run-history.ts`, `runHistoryQueries.ts`, `teamRunContextHydrationService.ts`, `teamRunOpenCoordinator.ts`, `runHistorySelectionActions.ts`, `useWorkspaceHistorySelectionActions.ts`, `WorkspaceAgentRunsTreePanel.vue`, `agentTeamContextsStore.ts`, `agentTeamRunStore.ts` | Checkpoint A and B must be the same root/sequence and report no open work. Exact non-null empty projection remains valid; missing/null/mismatched payloads fail. Old context/service/selection remains published on candidate failure. Stable retryable refusal codes do not populate the panel-global fatal error and instead present localized wait/retry toasts, so the same member can be selected again. |
 | BEH-005 / DS-007 | Preserve isolated operational validation constraints. | Implementation commands and evidence logs; no live server/browser/provider setup in this stage. | No `$HOME/.autobyteus` access and no protected-port action. Every database-capable check used explicit repository-local disposable URLs. Real provider/browser validation remains required downstream. |
 
 ## Key Files Or Areas
@@ -44,7 +47,7 @@ The SR-003 implementation separates strict snapshot and live Team Agent status p
 - Frontend stream/view state: `autobyteus-web/services/agentStreaming/`, `autobyteus-web/services/teamExecution/`
 - Stable recovery construction and orchestration: `autobyteus-web/services/runHydration/`, `autobyteus-web/services/runOpen/`
 - Store/selection integration: `autobyteus-web/stores/agentTeamRunStore.ts`, `agentTeamContextsStore.ts`, `runHistorySelectionActions.ts`, `runHistoryLoadActions.ts`
-- Recovery presentation: `autobyteus-web/components/workspace/team/TeamWorkspaceView.vue` and EN/ZH workspace localization.
+- Recovery presentation: `autobyteus-web/components/workspace/team/TeamWorkspaceView.vue`, `autobyteus-web/components/workspace/history/WorkspaceAgentRunsTreePanel.vue`, `autobyteus-web/composables/useWorkspaceHistorySelectionActions.ts`, and EN/ZH workspace localization.
 
 ## Important Assumptions
 
@@ -62,11 +65,11 @@ The SR-003 implementation separates strict snapshot and live Team Agent status p
 ## Task Design Health Assessment Implementation Check
 
 - Reviewed change posture: bounded server projection correction plus coordinated frontend recovery refactor.
-- Reviewed root-cause classification: one strict live status projector carried snapshot-only identity, and the frontend discarded the required recovery effect for a rejected gap.
+- Reviewed root-cause classification: the initial defect combined a snapshot-only identity in the live status projector with discarded recovery effects for rejected gaps. `CR-F-001` is a bounded presentation/routing defect: expected retryable recovery refusals were incorrectly assigned to the history panel's fatal error slot.
 - Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): `Refactor Needed Now` for the overlapping stream booleans and blind reconnect/recovery paths; bounded split for status projection.
 - Implementation matched the reviewed assessment (`Yes`/`No`): `Yes`
 - If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): `N/A`
-- Evidence / notes: one phase owner now governs stream synchronization; one root sequence owner is preserved; candidate recovery is unpublished until exact readiness; no provider-specific or compatibility branch was introduced.
+- Evidence / notes: one phase owner governs stream synchronization; one root sequence owner is preserved; candidate recovery is unpublished until exact readiness. IR-002 changes only selection error disposition and existing toast presentation; it adds no recovery owner, retry scheduler, provider path, or compatibility branch.
 
 ## Legacy / Compatibility Removal Check
 
@@ -107,10 +110,16 @@ The SR-003 implementation separates strict snapshot and live Team Agent status p
 - Frontend affected broad selection: 11 files / 109 tests passed (`/tmp/ir001-web-broad.log`).
 - Web boundary, localization boundary, and localization-literal guards: passed (`/tmp/ir001-web-guards.log`).
 - Frontend `pnpm build`: passed and prerendered 15 routes (`/tmp/ir001-web-build-final.log`).
+- IR-002 recovery presentation/selection/rendered-surface selection: 3 files / 61 tests passed (`/tmp/ir002-recovery-presentation-final.log`).
+- IR-002 cumulative changed frontend selection: 11 files / 159 tests passed (`/tmp/ir002-web-cumulative-focused.log`).
+- IR-002 web boundary, localization boundary, and localization-literal guards: passed (`/tmp/ir002-web-guards-final.log`).
+- IR-002 frontend `pnpm build`: passed and prerendered 15 routes (`/tmp/ir002-web-build-final2.log`).
+- IR-002 source, cleanup, stable-refusal routing, localization ownership, process, disposable-database, and size audit: passed (`/tmp/ir002-source-audit.log`).
 - Nuxt typecheck could not run because its transient `vue-tsc` is incompatible with the installed TypeScript exports; raw `tsc` reports broad pre-existing Vue shim/dependency/test configuration failures. Neither replaces the passing production Nuxt build (`/tmp/ir001-web-typecheck-round1.log`, `/tmp/ir001-web-tsc-round1.log`).
 - Source/cleanup/retired-symbol/size audit: passed (`/tmp/ir001-source-audit.log`).
 - `git diff --check` for changed production/test/handoff content: passed. The immutable upstream investigation log `investigation-evidence/environment/server-pid-lsof.log` contains inherited trailing spaces in captured `lsof` output and was preserved byte-for-byte rather than rewritten as implementation evidence.
 - One early incorrectly formed `pnpm test -- --run ...` invocation expanded to unrelated repository tests and was stopped. It used only the explicit disposable repository test database and is not reported as validation evidence (`/tmp/ir001-server-focused-round1.log`).
+- One IR-002 cumulative-test wrapper used the unavailable Bash `mapfile` builtin, leaving Vitest with no file arguments and starting an unintended full web suite. The run was terminated, used the explicit disposable test-database environment, and is not validation evidence (`/tmp/ir002-web-cumulative.log`). The corrected exact 11-file run is the cumulative IR-002 evidence above.
 
 ## Frontend Rendered-Result Check (When Applicable)
 
@@ -118,9 +127,9 @@ The SR-003 implementation separates strict snapshot and live Team Agent status p
 - Approved UI/UX, interaction, requirement, or design references: BEH-003/BEH-004, DS-004 through DS-006, and the exact notice text in `design-spec.md`.
 - Existing design system, shared components, and adjacent product surfaces reviewed: existing `TeamWorkspaceView`, run-history selection/open coordinator, Team execution aggregate, alert styling, and EN/ZH localization boundaries.
 - Project development / preview instructions and rendered surface used: Vue component mount/render through the repository's Vitest environment plus the Nuxt production renderer/build; a separate live server/browser was intentionally not started.
-- States, layouts, viewports, and interactions inspected: normal focused conversation, persistent `role="alert"` recovery notice, exact action wording, local-selection bypass, failed candidate preservation, successful candidate commit, and background reconciliation while recovery is required.
-- Visual or interaction issues found and corrected: background run-history reconciliation initially could revive/mutate a failed stream; it is now mutation-free for that stream until explicit recovery, with a dedicated regression test.
-- Supporting evidence and remaining unverified states or limitations: component/state/service tests and `/tmp/ir001-web-build-final.log`; real populated desktop/browser layout and provider timing remain for downstream API/E2E.
+- States, layouts, viewports, and interactions inspected: normal focused conversation, persistent `role="alert"` recovery notice, exact action wording, local-selection bypass, retryable open-work/checkpoint/candidate refusal, failed candidate preservation, successful candidate commit, and background reconciliation while recovery is required.
+- Visual or interaction issues found and corrected: background run-history reconciliation initially could revive/mutate a failed stream and was fixed in IR-001. CR-F-001 then showed that a retryable refusal replaced the tree with a fatal error; IR-002 keeps the same Team member rendered/selectable, shows localized informational feedback, and proves a later click retries.
+- Supporting evidence and remaining unverified states or limitations: mounted panel/component/state/service tests, `/tmp/ir002-recovery-presentation-final.log`, and `/tmp/ir002-web-build-final2.log`; real populated desktop/browser layout and provider timing remain for downstream API/E2E.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 

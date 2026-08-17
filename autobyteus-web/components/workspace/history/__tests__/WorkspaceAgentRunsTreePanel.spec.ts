@@ -1467,6 +1467,68 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     ]);
   });
 
+  it('keeps a Team member rendered and selectable after a retryable recovery refusal', async () => {
+    runHistoryState.teamNodesByWorkspace['/ws/a'] = [
+      {
+        teamRunId: 'team-1',
+        teamDefinitionId: 'team-def-1',
+        teamDefinitionName: 'Team Alpha',
+        workspaceRootPath: '/ws/a',
+        summary: 'Team summary',
+        lastActivityAt: '2026-01-01T02:00:00.000Z',
+        isActive: true,
+        currentStatus: 'running',
+        deleteLifecycle: 'CLEANUP_PENDING',
+        focusedAddress: '/super_agent',
+        members: [
+          {
+            teamRunId: 'team-1',
+            memberAddress: '/super_agent',
+            displayName: 'Super Agent',
+            agentRunId: 'member-run-1',
+            workspaceRootPath: '/ws/a',
+            summary: 'Team summary',
+            lastActivityAt: '2026-01-01T02:00:00.000Z',
+            isActive: true,
+            deleteLifecycle: 'CLEANUP_PENDING',
+          },
+        ],
+      },
+    ];
+
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandTeamDefinitionGroup(wrapper);
+    await wrapper.get('[data-test="workspace-team-row-team-1"]').trigger('click');
+    await flushPromises();
+
+    runHistoryStoreMock.selectTreeRun.mockClear();
+    runHistoryStoreMock.selectTreeRun
+      .mockRejectedValueOnce(new Error('TEAM_STREAM_RECOVERY_WAIT: still working'))
+      .mockResolvedValueOnce(undefined);
+
+    const selector = '[data-test="workspace-team-member-team-1-/super_agent"]';
+    await wrapper.get(selector).trigger('click');
+    await flushPromises();
+
+    expect(runHistoryState.error).toBeNull();
+    expect(wrapper.find(selector).exists()).toBe(true);
+    expect(addToastMock).toHaveBeenCalledWith(
+      'This Team is still working. Wait for it to finish, then select this Team member again.',
+      'info',
+    );
+
+    await wrapper.get(selector).trigger('click');
+    await flushPromises();
+
+    expect(runHistoryStoreMock.selectTreeRun).toHaveBeenCalledTimes(2);
+    expect(runHistoryStoreMock.selectTreeRun).toHaveBeenLastCalledWith(expect.objectContaining({
+      teamRunId: 'team-1',
+      memberAddress: '/super_agent',
+      agentRunId: 'member-run-1',
+    }));
+  });
+
   it('keeps the global Workspaces tree free of delegated-task detail and full-context UI under an expanded live team', async () => {
     runHistoryState.teamNodesByWorkspace['/ws/a'] = [
       {

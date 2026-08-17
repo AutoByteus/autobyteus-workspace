@@ -32,6 +32,18 @@ interface RunHistorySelectionStoreLike {
   focusTeamMemberAndEnsureHydrated(teamRunId: string, agentRunId: string): Promise<boolean>;
 }
 
+export type TeamStreamRecoverySelectionFeedback = 'wait' | 'retry';
+
+export const getTeamStreamRecoverySelectionFeedback = (
+  error: unknown,
+): TeamStreamRecoverySelectionFeedback | null => {
+  const message = error instanceof Error ? error.message : String(error);
+  if (message.startsWith('TEAM_STREAM_RECOVERY_WAIT:')) return 'wait';
+  if (message.startsWith('TEAM_STREAM_RECOVERY_CHECKPOINT_CHANGED:')
+    || message.startsWith('TEAM_STREAM_SNAPSHOT_BASE_MISMATCH:')) return 'retry';
+  return null;
+};
+
 export const openTeamMemberRunFromHistory = async (
   store: RunHistorySelectionStoreLike,
   teamRunId: string,
@@ -91,7 +103,9 @@ export const selectTreeRunFromHistory = async (
           store.selectedTeamMemberAddress = result.focusedMemberAddress;
           store.selectedRunId = null;
         } catch (error: any) {
-          store.error = error?.message || `Failed to recover team '${row.teamRunId}'.`;
+          if (!getTeamStreamRecoverySelectionFeedback(error)) {
+            store.error = error?.message || `Failed to recover team '${row.teamRunId}'.`;
+          }
           throw error;
         } finally {
           store.openingRun = false;

@@ -74,8 +74,10 @@ const buildActions = () => {
     createDraftRun: vi.fn(async () => undefined),
   };
   const selectionStore = { selectedType: null, selectedRunId: null, selectRun: vi.fn() };
+  const presentTeamStreamRecoveryFeedback = vi.fn();
   return {
     runHistoryStore,
+    presentTeamStreamRecoveryFeedback,
     actions: useWorkspaceHistorySelectionActions({
       runHistoryStore,
       selectionStore,
@@ -83,6 +85,7 @@ const buildActions = () => {
       toggleTeam: vi.fn(),
       emitRunSelected: vi.fn(),
       emitRunCreated: vi.fn(),
+      presentTeamStreamRecoveryFeedback,
     }),
   };
 };
@@ -102,5 +105,20 @@ describe('useWorkspaceHistorySelectionActions current AgentRun identity', () => 
     expect(runHistoryStore.selectTreeRun).toHaveBeenCalledWith(
       expect.objectContaining({ memberAddress: '/BuildSquad/review_lead' }),
     );
+  });
+
+  it.each([
+    ['TEAM_STREAM_RECOVERY_WAIT: still working', 'wait'],
+    ['TEAM_STREAM_RECOVERY_CHECKPOINT_CHANGED: changed', 'retry'],
+    ['TEAM_STREAM_SNAPSHOT_BASE_MISMATCH: changed', 'retry'],
+  ] as const)('presents %s as non-blocking recovery feedback', async (message, feedback) => {
+    const { actions, runHistoryStore, presentTeamStreamRecoveryFeedback } = buildActions();
+    runHistoryStore.selectTreeRun.mockRejectedValueOnce(new Error(message));
+
+    await actions.onSelectTeamMember({
+      teamRunId: 'team-1', memberAddress: '/program_manager', agentRunId: 'program-manager-run',
+    });
+
+    expect(presentTeamStreamRecoveryFeedback).toHaveBeenCalledWith(feedback);
   });
 });

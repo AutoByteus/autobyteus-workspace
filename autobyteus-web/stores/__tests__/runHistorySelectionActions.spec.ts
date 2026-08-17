@@ -86,16 +86,44 @@ describe('runHistorySelectionActions failed Team stream recovery', () => {
     expect(store.selectedRunId).toBeNull();
   });
 
-  it('preserves the prior selection when checkpointed recovery rejects', async () => {
-    reopenMock.mockRejectedValue(new Error('TEAM_STREAM_RECOVERY_WAIT'));
+  it.each([
+    'TEAM_STREAM_RECOVERY_WAIT: still working',
+    'TEAM_STREAM_RECOVERY_CHECKPOINT_CHANGED: changed during hydration',
+    'TEAM_STREAM_SNAPSHOT_BASE_MISMATCH: candidate base changed',
+  ])('preserves navigation and avoids the panel-fatal error for retryable refusal %s', async (message) => {
+    reopenMock.mockRejectedValue(new Error(message));
     const store = buildStore();
 
     await expect(selectTreeRunFromHistory(store, {
       teamRunId: 'team-recovery', agentRunId: 'run-a', memberAddress: '/member-a',
-    })).rejects.toThrow('TEAM_STREAM_RECOVERY_WAIT');
+    })).rejects.toThrow(message);
 
     expect(store.selectedTeamRunId).toBe('team-before');
     expect(store.selectedTeamMemberAddress).toBe('/before');
     expect(store.selectedRunId).toBe('standalone-before');
+    expect(store.error).toBeNull();
+  });
+
+  it('retries the same Team member after a retryable refusal', async () => {
+    reopenMock
+      .mockRejectedValueOnce(new Error('TEAM_STREAM_RECOVERY_WAIT: still working'))
+      .mockResolvedValueOnce({
+        teamRunId: 'team-recovery',
+        focusedAgentRunId: 'run-a',
+        focusedMemberAddress: '/member-a',
+        resumeConfig: { teamRunId: 'team-recovery', isActive: true, executionTree: {} },
+      });
+    const store = buildStore();
+    const target = {
+      teamRunId: 'team-recovery', agentRunId: 'run-a', memberAddress: '/member-a',
+    };
+
+    await expect(selectTreeRunFromHistory(store, target)).rejects.toThrow('TEAM_STREAM_RECOVERY_WAIT');
+    await selectTreeRunFromHistory(store, target);
+
+    expect(reopenMock).toHaveBeenCalledTimes(2);
+    expect(store.error).toBeNull();
+    expect(store.selectedTeamRunId).toBe('team-recovery');
+    expect(store.selectedTeamMemberAddress).toBe('/member-a');
   });
 });

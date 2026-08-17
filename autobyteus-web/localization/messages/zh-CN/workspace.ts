@@ -3,8 +3,10 @@ import type { TranslationCatalog } from "../../runtime/types";
 const messages = {
   "workspace.components.workspace.team.TeamWorkspaceView.stream_recovery_required":
     "团队实时更新已不同步。请等待团队完成当前工作，然后再次选择此团队成员以重新加载完整对话。",
-  "workspace.components.workspace.team.TeamWorkspaceView.stream_recovery_wait":
+  "workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.stream_recovery_wait":
     "该团队仍在工作。请等待其完成，然后再次选择此团队成员。",
+  "workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.stream_recovery_retry":
+    "重新加载对话时团队活动发生了变化。请再次选择此团队成员以重试。",
   "workspace.components.conversation.segments.renderer.MermaidDiagram.expand_diagram":
     "放大图表",
   "workspace.components.conversation.segments.renderer.MermaidDiagram.viewer":
