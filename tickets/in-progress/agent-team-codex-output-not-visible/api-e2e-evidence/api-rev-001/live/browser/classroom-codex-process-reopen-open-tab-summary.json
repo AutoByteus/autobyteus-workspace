@@ -1,0 +1,19 @@
+{
+  "tool": "mcp__autobyteus_agent_tools__open_tab",
+  "tabId": "c8f144",
+  "url": "http://127.0.0.1:31418/workspace",
+  "journey": [
+    "Open runs/history",
+    "expand Temp Workspace",
+    "expand Classroom Simulation Team",
+    "select exact persisted run summary"
+  ],
+  "teamRunId": "classroom_simulation_team_aadbe5a3b3b444d8bbe0ca0cbcddb51c",
+  "professorAgentRunId": "professor_7a62e8cb6ed2495291386e2df0b2d1f7",
+  "marker": "CODEX_TEAM_VISIBLE_API_REV_001_FINAL_20260817",
+  "markerVisibleAfterProcessReopen": true,
+  "exactAssistantMarkerLeafCount": 1,
+  "selectedMember": "professor",
+  "restoredStatus": "Offline",
+  "screenshot": "classroom-codex-process-reopen-open-tab.png"
+}

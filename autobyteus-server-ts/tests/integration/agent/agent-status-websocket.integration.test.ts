@@ -241,14 +241,19 @@ describe("Agent status WebSocket contract integration", () => {
         backend.setSnapshot(runningSnapshot("turn-a"));
         await backend.emitSource([
           event(run.runId, AgentRunEventType.TURN_STARTED, { turn_id: "turn-a" }),
-          event(run.runId, AgentRunEventType.SEGMENT_CONTENT, {
+          event(run.runId, AgentRunEventType.SEGMENT_START, {
+            id: "content-a",
             turn_id: "turn-a",
-            segment_id: "content-a",
+            segment_type: "text",
+          }),
+          event(run.runId, AgentRunEventType.SEGMENT_CONTENT, {
+            id: "content-a",
+            turn_id: "turn-a",
             delta: "one",
           }),
           event(run.runId, AgentRunEventType.SEGMENT_CONTENT, {
+            id: "content-a",
             turn_id: "turn-a",
-            segment_id: "content-a",
             delta: "two",
           }),
         ]);
@@ -257,34 +262,34 @@ describe("Agent status WebSocket contract integration", () => {
           event(run.runId, AgentRunEventType.TURN_COMPLETED, { turn_id: "turn-a" }),
         ]);
 
-        await waitForMessageCount(connection.messages, 7);
+        await waitForMessageCount(connection.messages, 8);
         const liveTrace = connection.messages.slice(2);
         expect(liveTrace.map((message) => message.type)).toEqual([
           "AGENT_STATUS",
           "TURN_STARTED",
+          "SEGMENT_START",
           "SEGMENT_CONTENT",
           "TURN_COMPLETED",
           "AGENT_STATUS",
         ]);
         expectStatusOnlyPayload(liveTrace[0]!, "running");
-        expectStatusOnlyPayload(liveTrace[4]!, "idle");
-        expect(liveTrace[2]?.payload.delta).toBe("onetwo");
+        expectStatusOnlyPayload(liveTrace[5]!, "idle");
+        expect(liveTrace[3]?.payload.delta).toBe("onetwo");
         expect(liveTrace.filter((message) => message.type === "AGENT_STATUS")).toHaveLength(2);
-        expect(liveTrace.filter((message) => message.type !== "AGENT_STATUS")).toHaveLength(3);
+        expect(liveTrace.filter((message) => message.type !== "AGENT_STATUS")).toHaveLength(4);
 
-        expect(canonicalEvents.map((runEvent) => runEvent.eventType)).toEqual([
-          AgentRunEventType.AGENT_STATUS,
+        expect(canonicalEvents.filter(
+          (runEvent) => runEvent.eventType !== AgentRunEventType.AGENT_STATUS,
+        ).map((runEvent) => runEvent.eventType)).toEqual([
           AgentRunEventType.TURN_STARTED,
-          AgentRunEventType.AGENT_STATUS,
+          AgentRunEventType.SEGMENT_START,
           AgentRunEventType.SEGMENT_CONTENT,
-          AgentRunEventType.AGENT_STATUS,
           AgentRunEventType.SEGMENT_CONTENT,
           AgentRunEventType.TURN_COMPLETED,
-          AgentRunEventType.AGENT_STATUS,
         ]);
         expect(canonicalEvents.filter(
           (runEvent) => runEvent.eventType === AgentRunEventType.AGENT_STATUS,
-        )).toHaveLength(4);
+        )).toHaveLength(5);
 
         const reconnect = await openSocket(`${harness.baseUrl}/ws/agent/${run.runId}`);
         try {
@@ -323,16 +328,22 @@ describe("Agent status WebSocket contract integration", () => {
       await waitForMessageCount(connection.messages, 2);
       const deltas = Array.from({ length: 30 }, (_, index) => `${String(index).padStart(2, "0")}|`);
       const openedAt = Date.now();
-      await backend.emitSource(deltas.map((delta) => event(
-        run.runId,
-        AgentRunEventType.SEGMENT_CONTENT,
-        {
+      await backend.emitSource([
+        event(run.runId, AgentRunEventType.SEGMENT_START, {
+          id: "segment-rate",
           turn_id: "turn-rate",
-          segment_id: "segment-rate",
           segment_type: "text",
-          delta,
-        },
-      )));
+        }),
+        ...deltas.map((delta) => event(
+          run.runId,
+          AgentRunEventType.SEGMENT_CONTENT,
+          {
+            id: "segment-rate",
+            turn_id: "turn-rate",
+            delta,
+          },
+        )),
+      ]);
 
       await wait(350);
       expect(connection.messages.filter((message) => message.type === "SEGMENT_CONTENT")).toHaveLength(0);
@@ -372,10 +383,14 @@ describe("Agent status WebSocket contract integration", () => {
     try {
       await waitForMessageCount(connection.messages, 2);
       await backend.emitSource([
-        event(run.runId, AgentRunEventType.SEGMENT_CONTENT, {
+        event(run.runId, AgentRunEventType.SEGMENT_START, {
+          id: "segment-live-setting",
           turn_id: "turn-live-setting",
-          segment_id: "segment-live-setting",
           segment_type: "text",
+        }),
+        event(run.runId, AgentRunEventType.SEGMENT_CONTENT, {
+          id: "segment-live-setting",
+          turn_id: "turn-live-setting",
           delta: "first",
         }),
       ]);
@@ -390,9 +405,8 @@ describe("Agent status WebSocket contract integration", () => {
 
       await backend.emitSource([
         event(run.runId, AgentRunEventType.SEGMENT_CONTENT, {
+          id: "segment-live-setting",
           turn_id: "turn-live-setting",
-          segment_id: "segment-live-setting",
-          segment_type: "text",
           delta: "second",
         }),
       ]);
@@ -413,7 +427,7 @@ describe("Agent status WebSocket contract integration", () => {
     }
   });
 
-  it("keeps late A observable and preserves B across delayed A activity/terminal events and reconnect", async () => {
+  it("preserves B while rejecting a retired turn's late segment content across reconnect", async () => {
     const backend = new ScriptedAgentRunBackend(
       "run-retired-turn-ordering",
       RuntimeKind.CODEX_APP_SERVER,
@@ -428,6 +442,11 @@ describe("Agent status WebSocket contract integration", () => {
       backend.setSnapshot(runningSnapshot("turn-a"));
       await backend.emitSource([
         event(run.runId, AgentRunEventType.TURN_STARTED, { turn_id: "turn-a" }),
+        event(run.runId, AgentRunEventType.SEGMENT_START, {
+          id: "late-content-a",
+          turn_id: "turn-a",
+          segment_type: "text",
+        }),
       ]);
       backend.setSnapshot(idleSnapshot());
       await backend.emitSource([
@@ -449,25 +468,27 @@ describe("Agent status WebSocket contract integration", () => {
       await backend.emitSource([
         event(run.runId, AgentRunEventType.TURN_COMPLETED, { turn_id: "turn-a" }),
         event(run.runId, AgentRunEventType.SEGMENT_CONTENT, {
+          id: "late-content-a",
           turn_id: "turn-a",
-          segment_id: "late-content-a",
           delta: "still observable",
         }),
       ]);
 
-      await waitForMessageCount(primary.messages, 11);
+      await waitForMessageCount(primary.messages, 12);
       const trace = primary.messages.slice(2);
       expect(trace.map((message) => [message.type, message.payload.status ?? message.payload.turn_id])).toEqual([
         ["AGENT_STATUS", "running"],
         ["TURN_STARTED", "turn-a"],
+        ["SEGMENT_START", "turn-a"],
         ["TURN_COMPLETED", "turn-a"],
         ["AGENT_STATUS", "idle"],
         ["TOOL_EXECUTION_SUCCEEDED", "turn-a"],
         ["AGENT_STATUS", "running"],
         ["TURN_STARTED", "turn-b"],
         ["TURN_COMPLETED", "turn-a"],
-        ["SEGMENT_CONTENT", "turn-a"],
+        ["ERROR", "turn-a"],
       ]);
+      expect(trace.at(-1)?.payload.code).toBe("AGENT_SEGMENT_LIFECYCLE_INVALID");
       expect(run.getStatusSnapshot()).toEqual({
         status: "running",
         agent_id: run.runId,
@@ -485,7 +506,7 @@ describe("Agent status WebSocket contract integration", () => {
       await backend.emitSource([
         event(run.runId, AgentRunEventType.TURN_INTERRUPTED, { turn_id: "turn-b" }),
       ]);
-      await waitForMessageCount(primary.messages, 13);
+      await waitForMessageCount(primary.messages, 14);
       expect(primary.messages.slice(-2).map((message) => message.type)).toEqual([
         "TURN_INTERRUPTED",
         "AGENT_STATUS",

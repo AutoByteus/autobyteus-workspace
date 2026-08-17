@@ -1,0 +1,9 @@
+checked_at=2026-08-17T07:36:50Z
+head=548ff34a4fd3f34d3e90a8f3dd4604e3c7311bbe
+inventory_entries=1
+diff_paths=1
+inventory_path=autobyteus-server-ts/tests/integration/agent/agent-status-websocket.integration.test.ts
+diff_path=autobyteus-server-ts/tests/integration/agent/agent-status-websocket.integration.test.ts
+diff_check=PASS
+prohibited_current_segment_content_alias_scan=PASS
+inventory_diff_match=PASS

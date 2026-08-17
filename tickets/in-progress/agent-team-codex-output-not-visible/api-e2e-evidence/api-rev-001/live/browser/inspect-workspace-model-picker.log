@@ -1,0 +1,337 @@
+{
+  "text": "Agents\nAgent Teams\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nSettings\nTeam Definition\nClassroom Simulation Team\nRuntime\nAutoByteus\nCodex App Server\nClaude Agent SDK\n\nSelects the runtime backend used by this team run.\n\nDefault LLM Model (Global)\nSelect a model\n\nThis model will be used by all members unless overridden.\n\nWorkspace Directory\nExisting\nNew\n📁 Temp Workspace (Default)\nDefault temporary workspace\n\nWorkspace: Temp Workspace\n\nAuto approve tools\n\nHigh-trust mode for Codex team members: automatically allows tool calls and access/permission requests for this run.\n\nAuto approve tools\nTeam Members Override (2)\nRun Team\n\nA default team model is required before running this team.\n\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nNo file selected\n\nSelect a file from the explorer to view or edit its content.\n\nANTHROPIC\nAUTOBYTEUS\nDEEPSEEK\nGEMINI\nGLM\nGROK\nKIMI\nLM STUDIO\nMINIMAX\nMISTRAL\nOLLAMA\nOPENAI\nGPT-5.3-Codex-Spark (default reasoning: high)\nGPT-5.4 (default reasoning: medium)\nGPT-5.4-Mini (default reasoning: medium)\nGPT-5.5 (default reasoning: medium)\nGPT-5.6-Luna (default reasoning: medium)\nGPT-5.6-Sol (default reasoning: low)\nGPT-5.6-Terra (default reasoning: medium)\nQWEN",
+  "buttonCount": 26,
+  "buttons": [
+    {
+      "text": "Agents",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "aria": null,
+      "title": "Collapse left panel",
+      "disabled": false
+    },
+    {
+      "text": "Agent Teams",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "Skills",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "Memory",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "Nodes",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "aria": null,
+      "title": "Add workspace",
+      "disabled": false
+    },
+    {
+      "text": "Temp Workspace",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "Settings",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "Select a model",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "Existing",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "New",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "📁 Temp Workspace (Default)Default temporary workspace",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "Auto approve tools",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "Team Members Override (2)",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "Global default",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "Global default",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "Run Team",
+      "aria": null,
+      "title": null,
+      "disabled": true
+    },
+    {
+      "text": "Files",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "Terminal",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "Activity",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "Token",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "Artifacts",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "VNC Viewer",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "aria": null,
+      "title": "Toggle Sidebar",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "aria": null,
+      "title": "Maximize view",
+      "disabled": false
+    }
+  ],
+  "inputs": [
+    {
+      "tag": "SELECT",
+      "type": null,
+      "placeholder": null,
+      "aria": null,
+      "value": "codex_app_server",
+      "options": [
+        {
+          "value": "autobyteus",
+          "text": "AutoByteus"
+        },
+        {
+          "value": "codex_app_server",
+          "text": "Codex App Server"
+        },
+        {
+          "value": "claude_agent_sdk",
+          "text": "Claude Agent SDK"
+        }
+      ]
+    },
+    {
+      "tag": "SELECT",
+      "type": null,
+      "placeholder": null,
+      "aria": null,
+      "value": "",
+      "options": [
+        {
+          "value": "",
+          "text": "Global default"
+        },
+        {
+          "value": "autobyteus",
+          "text": "AutoByteus"
+        },
+        {
+          "value": "codex_app_server",
+          "text": "Codex App Server"
+        },
+        {
+          "value": "claude_agent_sdk",
+          "text": "Claude Agent SDK"
+        }
+      ]
+    },
+    {
+      "tag": "INPUT",
+      "type": "checkbox",
+      "placeholder": null,
+      "aria": null,
+      "value": "on"
+    },
+    {
+      "tag": "SELECT",
+      "type": null,
+      "placeholder": null,
+      "aria": null,
+      "value": "",
+      "options": [
+        {
+          "value": "",
+          "text": "Global default"
+        },
+        {
+          "value": "autobyteus",
+          "text": "AutoByteus"
+        },
+        {
+          "value": "codex_app_server",
+          "text": "Codex App Server"
+        },
+        {
+          "value": "claude_agent_sdk",
+          "text": "Claude Agent SDK"
+        }
+      ]
+    },
+    {
+      "tag": "INPUT",
+      "type": "checkbox",
+      "placeholder": null,
+      "aria": null,
+      "value": "on"
+    },
+    {
+      "tag": "INPUT",
+      "type": "text",
+      "placeholder": "Search...",
+      "aria": null,
+      "value": ""
+    },
+    {
+      "tag": "INPUT",
+      "type": "text",
+      "placeholder": "Search models...",
+      "aria": null,
+      "value": ""
+    }
+  ],
+  "consoleMessages": [
+    {
+      "type": "debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "type": "log",
+      "text": "Workspace.vue: Mounted. Fetching server settings and loading profiles..."
+    },
+    {
+      "type": "log",
+      "text": "[useTerminalSession] Connecting to: ws://127.0.0.1:60418/ws/terminal/6ce51d5a-304a-4f90-85f3-8c2b8deb1beb"
+    },
+    {
+      "type": "log",
+      "text": "[useTerminalSession] Connected"
+    },
+    {
+      "type": "log",
+      "text": "serverStore: Checking server health at /rest/health"
+    },
+    {
+      "type": "log",
+      "text": "[useTerminalSession] Disconnected: 1005 "
+    },
+    {
+      "type": "log",
+      "text": "Workspace.vue: Mounted. Fetching server settings and loading profiles..."
+    },
+    {
+      "type": "log",
+      "text": "[Workspace] Connecting to file system changes for workspace: temp_ws_default"
+    },
+    {
+      "type": "log",
+      "text": "[FileExplorerStreaming] Connecting to ws://127.0.0.1:60418/ws/file-explorer/temp_ws_default..."
+    },
+    {
+      "type": "log",
+      "text": "[FileExplorerStreaming] WebSocket connected"
+    },
+    {
+      "type": "log",
+      "text": "[FileExplorerStreaming] Session established: 0cdfce91-01ca-4a45-abec-224fd77747aa"
+    },
+    {
+      "type": "log",
+      "text": "[Workspace] Connected to file system changes: 0cdfce91-01ca-4a45-abec-224fd77747aa"
+    },
+    {
+      "type": "log",
+      "text": "Download the Apollo DevTools for a better development experience: %s https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm"
+    }
+  ]
+}

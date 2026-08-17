@@ -1,0 +1,36 @@
+{
+  "browserTool": "mcp__autobyteus_agent_tools__open_tab",
+  "tabId": "c8f144",
+  "tabClosed": true,
+  "url": "http://127.0.0.1:31418/workspace",
+  "journey": [
+    "select Agent Teams",
+    "select imported Classroom Simulation Team",
+    "select Codex App Server",
+    "select GPT-5.6-Luna (default reasoning: medium)",
+    "launch Team on Temp Workspace",
+    "send exact marker to professor",
+    "observe exact marker once at terminal Idle before refresh",
+    "navigate_to workspace to refresh",
+    "open run history and select exact run",
+    "observe identical marker once after refresh/reopen"
+  ],
+  "teamRunId": "classroom_simulation_team_0c52e51ceffb406faab7acb3fdb6f7d3",
+  "professorAgentRunId": "professor_b45576ef4e8c4bb688e4d2060a2bb0bd",
+  "studentAgentRunId": "student_2f97d861fb4841c299f546235f9b14b8",
+  "runtimeKind": "CODEX",
+  "modelIdentifier": "gpt-5.6-luna",
+  "reasoning": "default medium",
+  "marker": "CODEX_TEAM_OPEN_TAB_LIVE_API_REV_001_20260817",
+  "visibleBeforeRefresh": true,
+  "visibleAfterRefreshReopen": true,
+  "exactAssistantMarkerLeafCountBeforeRefresh": 1,
+  "exactAssistantMarkerLeafCountAfterRefresh": 1,
+  "terminalStatusBeforeRefresh": "Idle",
+  "terminalStatusAfterRefresh": "Idle",
+  "screenshots": [
+    "classroom-codex-open-tab-configured.png",
+    "classroom-codex-open-tab-visible-live.png",
+    "classroom-codex-open-tab-visible-after-refresh-reopen.png"
+  ]
+}

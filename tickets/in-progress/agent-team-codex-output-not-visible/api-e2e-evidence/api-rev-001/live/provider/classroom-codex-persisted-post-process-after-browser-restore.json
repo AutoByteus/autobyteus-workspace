@@ -1,0 +1,119 @@
+{
+  "summary": {
+    "phase": "post-process-after-browser-restore",
+    "teamRunId": "classroom_simulation_team_aadbe5a3b3b444d8bbe0ca0cbcddb51c",
+    "professorAgentRunId": "professor_7a62e8cb6ed2495291386e2df0b2d1f7",
+    "projectionAgentRunId": "professor_7a62e8cb6ed2495291386e2df0b2d1f7",
+    "runtimeKind": "CODEX",
+    "modelIdentifier": "gpt-5.6-luna",
+    "checkpoint": null,
+    "assistantMarkerCount": 1,
+    "exactIdentity": true,
+    "canonicalStateSha256": "27ce758a954b2265a754f5514f0fe15b992669315a688bb688a823cee75fa049"
+  },
+  "payload": {
+    "data": {
+      "getTeamRunResumeConfig": {
+        "teamRunId": "classroom_simulation_team_aadbe5a3b3b444d8bbe0ca0cbcddb51c",
+        "isActive": false,
+        "executionTree": {
+          "schema_version": 1,
+          "created_at": "2026-08-17T07:15:56.431Z",
+          "archived_at": null,
+          "application_binding": null,
+          "handoffs": [],
+          "root_team": {
+            "team_definition_id": "classroom-simulation-team",
+            "team_definition_name": "Classroom Simulation Team",
+            "team_run_id": "classroom_simulation_team_aadbe5a3b3b444d8bbe0ca0cbcddb51c",
+            "coordinator_address": "/professor",
+            "members": [
+              {
+                "kind": "configured_agent",
+                "address": "/professor",
+                "agent_definition_id": "team-local-agent:classroom-simulation-team:professor",
+                "role": null,
+                "description": null,
+                "agent_run_id": "professor_7a62e8cb6ed2495291386e2df0b2d1f7",
+                "platform_agent_run_id": null,
+                "launch_configuration": {
+                  "runtime_kind": "CODEX",
+                  "llm_model_identifier": "gpt-5.6-luna",
+                  "llm_config": null,
+                  "auto_execute_tools": false,
+                  "skill_access_mode": "PRELOADED_ONLY",
+                  "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/autobyteus-server-ts/tests/.tmp/api-rev-001-live-20260817-1/temp_workspace"
+                }
+              },
+              {
+                "kind": "configured_agent",
+                "address": "/student",
+                "agent_definition_id": "team-local-agent:classroom-simulation-team:student",
+                "role": null,
+                "description": null,
+                "agent_run_id": "student_c1060d41f20b4e518e47be9831667fce",
+                "platform_agent_run_id": null,
+                "launch_configuration": {
+                  "runtime_kind": "CODEX",
+                  "llm_model_identifier": "gpt-5.6-luna",
+                  "llm_config": null,
+                  "auto_execute_tools": false,
+                  "skill_access_mode": "PRELOADED_ONLY",
+                  "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/autobyteus-server-ts/tests/.tmp/api-rev-001-live-20260817-1/temp_workspace"
+                }
+              }
+            ],
+            "task_executions": []
+          }
+        }
+      },
+      "getTeamMemberRunProjection": {
+        "agentRunId": "professor_7a62e8cb6ed2495291386e2df0b2d1f7",
+        "summary": "Reply with exactly CODEX_TEAM_VISIBLE_API_REV_001_FINAL_20260817 and no other text.",
+        "lastActivityAt": "2026-08-17T07:16:00.993Z",
+        "conversation": [
+          {
+            "kind": "message",
+            "role": "user",
+            "content": "Reply with exactly CODEX_TEAM_VISIBLE_API_REV_001_FINAL_20260817 and no other text.",
+            "media": null,
+            "ts": 1786950957.084
+          },
+          {
+            "kind": "reasoning",
+            "role": null,
+            "content": "**Confirming strict output compliance**",
+            "media": null,
+            "ts": 1786950960.8
+          },
+          {
+            "kind": "message",
+            "role": "assistant",
+            "content": "CODEX_TEAM_VISIBLE_API_REV_001_FINAL_20260817",
+            "media": null,
+            "ts": 1786950960.993
+          }
+        ],
+        "activities": [],
+        "hasEarlierActiveTraceEvents": false
+      }
+    }
+  },
+  "checkpointPayload": {
+    "data": null,
+    "errors": [
+      {
+        "message": "Active RootTeamRun 'classroom_simulation_team_aadbe5a3b3b444d8bbe0ca0cbcddb51c' was not found.",
+        "locations": [
+          {
+            "line": 2,
+            "column": 3
+          }
+        ],
+        "path": [
+          "getTeamRunExecutionCheckpoint"
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "phase": "before-explicit-browser-restore",
+  "preSha256": "27ce758a954b2265a754f5514f0fe15b992669315a688bb688a823cee75fa049",
+  "postSha256": "27ce758a954b2265a754f5514f0fe15b992669315a688bb688a823cee75fa049",
+  "canonicalStateIdentical": true,
+  "preIdentity": true,
+  "postIdentity": true,
+  "preMarkerCount": 1,
+  "postMarkerCount": 1,
+  "postCheckpoint": null,
+  "checkpointUnavailableUntilRestore": true
+}

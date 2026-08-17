@@ -1,0 +1,13 @@
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+locator.waitFor: Timeout 90000ms exceeded.
+Call log:
+[2m  - waiting for getByText('CODEX_TEAM_VISIBLE_API_REV_001_20260817', { exact: true }) to be visible[22m
+
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/tickets/in-progress/agent-team-codex-output-not-visible/api-e2e-evidence/api-rev-001/live/browser/classroom-codex-browser-journey.mjs:196:49 {
+  name: 'TimeoutError'
+}
+
+Node.js v22.23.1

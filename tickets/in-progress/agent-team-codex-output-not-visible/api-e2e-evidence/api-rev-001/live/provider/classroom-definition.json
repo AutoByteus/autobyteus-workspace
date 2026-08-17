@@ -1,0 +1,22 @@
+{
+  "id": "classroom-simulation-team",
+  "name": "Classroom Simulation Team",
+  "coordinatorMemberName": "professor",
+  "ownershipScope": "SHARED",
+  "ownerPackageId": null,
+  "defaultLaunchConfig": null,
+  "nodes": [
+    {
+      "memberName": "professor",
+      "ref": "professor",
+      "refType": "AGENT",
+      "refScope": "TEAM_LOCAL"
+    },
+    {
+      "memberName": "student",
+      "ref": "student",
+      "refType": "AGENT",
+      "refScope": "TEAM_LOCAL"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "phase": "after-open_tab-inactive-team-followup-restore",
+  "preIdentity": true,
+  "postIdentity": true,
+  "firstMarkerRetainedOnce": true,
+  "followupMarkerPersistedOnce": true,
+  "postCheckpoint": {
+    "rootTeamRunId": "classroom_simulation_team_aadbe5a3b3b444d8bbe0ca0cbcddb51c",
+    "changeSequence": 52,
+    "hasOpenExecutionWork": false
+  },
+  "checkpointAvailableAfterFollowupRestore": true,
+  "checkpointQuiescent": true
+}

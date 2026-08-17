@@ -1,0 +1,23 @@
+{
+  "cleanupMethod": "test-support/live-e2e/test-runtime-bootstrap.mjs#removeOwnedTestRuntime",
+  "before": {
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/autobyteus-server-ts/tests/.tmp/api-rev-001-live-20260817-1": true,
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/autobyteus-server-ts/db/api-rev-001-live-20260817-1.db": true,
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/autobyteus-server-ts/db/api-rev-001-live-20260817-1.db.secret.key": true,
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/autobyteus-server-ts/db/api-rev-001-live-20260817-1.db-wal": false,
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/autobyteus-server-ts/db/api-rev-001-live-20260817-1.db-shm": false,
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/autobyteus-server-ts/db/api-rev-001-live-20260817-1.db-journal": false
+  },
+  "after": {
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/autobyteus-server-ts/tests/.tmp/api-rev-001-live-20260817-1": false,
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/autobyteus-server-ts/db/api-rev-001-live-20260817-1.db": false,
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/autobyteus-server-ts/db/api-rev-001-live-20260817-1.db.secret.key": false,
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/autobyteus-server-ts/db/api-rev-001-live-20260817-1.db-wal": false,
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/autobyteus-server-ts/db/api-rev-001-live-20260817-1.db-shm": false,
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/autobyteus-server-ts/db/api-rev-001-live-20260817-1.db-journal": false
+  },
+  "allOwnedTargetsRemoved": true,
+  "operationalDatabaseAction": "NONE",
+  "protectedPort60004Action": "NONE",
+  "protectedPort31004Action": "NONE"
+}

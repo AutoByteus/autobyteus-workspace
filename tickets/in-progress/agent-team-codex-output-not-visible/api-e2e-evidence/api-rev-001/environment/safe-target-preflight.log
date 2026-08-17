@@ -1,0 +1,17 @@
+captured_at=2026-08-17T06:59:52Z
+workspace=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible
+head=548ff34a4fd3f34d3e90a8f3dd4604e3c7311bbe
+server_port=60418
+web_port=31418
+runtime=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/autobyteus-server-ts/tests/.tmp/api-rev-001-live-20260817-1
+database=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/autobyteus-server-ts/db/api-rev-001-live-20260817-1.db
+operational_database_action=NONE
+home_autobyteus_action=NONE_EXCEPT_USER_AUTHORIZED_ENV_SOURCE_VIA_IMPORTER
+protected_60004=
+protected_31004=
+target_60418=
+target_31418=
+repo_test_db_residue=
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db-journal
+target_db_residue=

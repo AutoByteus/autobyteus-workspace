@@ -1,0 +1,19 @@
+source_log=autobyteus-server-ts/tests/.tmp/api-rev-001-live-20260817-1/logs/server.log
+forbidden_projection_or_admission_matches:
+runtime_errors:
+194:{"level":30,"time":1786950677744,"pid":96738,"hostname":"MacBookPro","reqId":"req-3a","err":{"type":"GraphQLError","message":"Graphql validation error","stack":"FastifyError: Graphql validation error\n    at Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:473:21)\n    at _Reply.graphql (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:232:16)\n    at executeQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:231:18)\n    at executeRegularQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\n    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:388:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)","extensions":{}},"msg":"Graphql validation error"}
+codex_success_lines:
+180:Agent team websocket attached for team run classroom_simulation_team_d2ed6e5cfdee4d57964e34370f4d0bc5
+183:Agent team websocket attached for team run classroom_simulation_team_d2ed6e5cfdee4d57964e34370f4d0bc5
+186:Successfully created codex_app_server agent run 'professor_b3e0095ef9e040afb23c642429f5b751'.
+220:Agent team websocket attached for team run classroom_simulation_team_d2ed6e5cfdee4d57964e34370f4d0bc5
+246:Agent team websocket attached for team run classroom_simulation_team_aadbe5a3b3b444d8bbe0ca0cbcddb51c
+249:Agent team websocket attached for team run classroom_simulation_team_aadbe5a3b3b444d8bbe0ca0cbcddb51c
+253:Agent team websocket attached for team run classroom_simulation_team_d2ed6e5cfdee4d57964e34370f4d0bc5
+256:Successfully created codex_app_server agent run 'professor_7a62e8cb6ed2495291386e2df0b2d1f7'.
+263:Agent team websocket attached for team run classroom_simulation_team_aadbe5a3b3b444d8bbe0ca0cbcddb51c
+377:Agent team websocket attached for team run classroom_simulation_team_aadbe5a3b3b444d8bbe0ca0cbcddb51c
+380:Successfully created codex_app_server agent run 'professor_7a62e8cb6ed2495291386e2df0b2d1f7'.
+390:Agent team websocket attached for team run classroom_simulation_team_0c52e51ceffb406faab7acb3fdb6f7d3
+400:Successfully created codex_app_server agent run 'professor_b45576ef4e8c4bb688e4d2060a2bb0bd'.
+404:Agent team websocket attached for team run classroom_simulation_team_0c52e51ceffb406faab7acb3fdb6f7d3

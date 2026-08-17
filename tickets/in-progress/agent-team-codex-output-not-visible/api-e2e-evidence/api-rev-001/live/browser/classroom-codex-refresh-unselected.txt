@@ -1,0 +1,27 @@
+Agents
+Agent Teams
+Skills
+Memory
+Nodes
+Workspaces
+Temp Workspace
+Settings
+No agent or team run selected
+
+Choose an agent or team, or open run history to continue.
+
+Choose an agent or team
+Open runs/history
+Files
+Terminal
+Activity
+Token
+Artifacts
+VNC Viewer
+➜ Terminal initialized
+The default interactive shell is now zsh.
+To update your account to use zsh, please run `chsh
+ -s /bin/zsh`.
+For more details, please visit https://support.appl
+e.com/kb/HT208050.
+~ $  
