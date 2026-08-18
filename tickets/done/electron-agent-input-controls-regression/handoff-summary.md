@@ -3,8 +3,8 @@
 ## Ticket And Handoff State
 
 - Ticket: `electron-agent-input-controls-regression`
-- Delivery revision: `DR-004`
-- Current disposition: repository finalization, cleanup, surviving-target refresh, and the separately requested local Electron build all completed and passed.
+- Delivery revision: `DR-005`
+- Current disposition: repository finalization and local Electron build remain complete; the later requested current-source Docker server build is blocked by a local Docker packaging omission and has been routed to implementation.
 - Repository finalization target: `codex/agent-team-universal-task-delegation`, as recorded in `ticket-description.md`.
 - Explicit user finalization authorization received: `Yes` — “i tested. the task is done. finalize to the base branch”.
 - Post-finalization local build requested: `Yes` — refresh the surviving target worktree and build Electron there after repository finalization.
@@ -31,6 +31,17 @@
 - Integrity: `Pass`; the app executable is Mach-O arm64, `hdiutil verify` reported the DMG checksum valid, and `unzip -tq` reported no compressed-data errors.
 - Build policy: local validation only. Electron Builder skipped Developer ID signing because identity was explicitly null; notarization, release, publication, deployment, and use of the user's active profile/process were not performed.
 - Evidence directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/evidence/local-electron-build`
+
+## Post-Finalization Local Docker Server Attempt
+
+- User request: build the current finalized server Docker image, start an isolated Docker node, verify it, and provide the Backend URL for **Nodes -> Manage Nodes -> Add Remote Node**.
+- Source refresh: `Pass`; local and remote `codex/agent-team-universal-task-delegation` were clean and identical at `469b0b26b133ab4c5246a4e819ab90efa9b65ea1` before the attempt.
+- Command: `./docker-start.sh up -p electron-agent-input-controls-regression-dr005 --build-local`
+- Isolation: unique Compose project, collision-safe ports, and project-scoped volumes; existing AutoByteus Docker nodes were not changed.
+- Build result: `Blocked — Local Fix`. `pnpm install` failed because `autobyteus-server-ts` declares `@autobyteus/team-stream-contracts@workspace:*` while `Dockerfile.monorepo` does not copy that workspace package into its builder.
+- Runtime result: container start and `/rest/health` were not reached; reserved Backend URL `http://127.0.0.1:52704` is not usable yet.
+- Required route: `/implementation_engineer` must correct Docker packaging/build-context completeness and return the updated state through the applicable review gates before delivery retries the build/start/health path.
+- Blocker report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/evidence/local-docker-server/docker-build-blocker.md`
 
 ## Integrated-State Refresh
 
@@ -100,4 +111,5 @@
 - Target freshness after acceptance: `Pass`; the remote target did not advance, so renewed verification is not required.
 - Release/publication/deployment: not requested and will not be inferred.
 - Follow-up local build: `Pass`; completed as unsigned/non-notarized local validation from the refreshed target worktree.
-- Finalization result: `Pass`; repository finalization, cleanup, local build, and artifact integrity verification are complete. No release or deployment was requested.
+- Finalization result: `Pass`; repository finalization, cleanup, local Electron build, and artifact integrity verification remain complete.
+- Docker follow-up: `Blocked — Local Fix`; no Docker Backend URL is being presented as usable until the packaging fix passes build, start, and health verification.
