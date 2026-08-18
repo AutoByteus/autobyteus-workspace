@@ -3,11 +3,21 @@
 ## Ticket And Handoff State
 
 - Ticket: `electron-agent-input-controls-regression`
-- Delivery revision: `DR-002`
-- Current disposition: user-tested candidate accepted; repository finalization authorized and in progress.
+- Delivery revision: `DR-003`
+- Current disposition: repository finalization completed and verified; the separately requested local Electron build is next.
 - Repository finalization target: `codex/agent-team-universal-task-delegation`, as recorded in `ticket-description.md`.
 - Explicit user finalization authorization received: `Yes` — “i tested. the task is done. finalize to the base branch”.
 - Post-finalization local build requested: `Yes` — refresh the surviving target worktree and build Electron there after repository finalization.
+
+## Repository Finalization Outcome
+
+- Archived ticket: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression`
+- Ticket commit: `83ff52cbff61225b4a486a8850b34763b4bf939c` (`fix(web): restore AgentTeam input controls`); pushed before target integration.
+- Target merge: `ac6e277a73eabb04e6240d6fc820b2325600e45b` (`--no-ff`), with exact parents `cc4e0611a03ad5e123fe561c64ed56a4784492ef` and `83ff52cbff61225b4a486a8850b34763b4bf939c`.
+- Target push: `Pass`; the ticket commit was proven to be an ancestor of the remote target.
+- Cleanup: `Pass`; dedicated worktree pruned and local/remote ticket branches removed only after target verification.
+- Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/repository-finalization-verification.log`
+- Release/publication/deployment: not requested and not performed.
 
 ## Integrated-State Refresh
 
@@ -19,7 +29,7 @@
 - New base commits integrated: `No`
 - Post-acceptance target refresh: `Pass`; ticket `HEAD` and refreshed remote target remained `cc4e0611a03ad5e123fe561c64ed56a4784492ef` with divergence `0 0`.
 - Additional executable rerun required: `No`; the reviewed source/test state did not change.
-- Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-agent-input-controls-regression/tickets/done/electron-agent-input-controls-regression/delivery-integrated-state-refresh.log`
+- Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/delivery-integrated-state-refresh.log`
 
 ## Delivered Behavior
 
@@ -32,12 +42,12 @@
 
 ## Changed Files
 
-- Production: `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-agent-input-controls-regression/autobyteus-web/services/teamExecution/teamExecutionViewState.ts`
+- Production: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web/services/teamExecution/teamExecutionViewState.ts`
 - Implementation-owned durable coverage:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-agent-input-controls-regression/autobyteus-web/services/teamExecution/__tests__/teamExecutionViewState.spec.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-agent-input-controls-regression/autobyteus-web/stores/__tests__/activeContextStore.spec.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-agent-input-controls-regression/autobyteus-web/stores/__tests__/agentTeamRunStore.spec.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-agent-input-controls-regression/autobyteus-web/components/agentInput/__tests__/ContextFilePathInputArea.spec.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web/services/teamExecution/__tests__/teamExecutionViewState.spec.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web/stores/__tests__/activeContextStore.spec.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web/stores/__tests__/agentTeamRunStore.spec.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web/components/agentInput/__tests__/ContextFilePathInputArea.spec.ts`
 - API/E2E durable test delta: none.
 
 ## Validation
@@ -48,14 +58,14 @@
 - Repository execution: 11 focused Nuxt files / 76 tests passed; production Nuxt build and `git diff --check` passed.
 - Isolated Chrome journeys passed for one Team event/send, visible clear/pending, member isolation, captured-member transcript without auto-send, attachment removal/Clear all/failure retention, retained-versus-removed request/event state, and standalone preservation.
 - Packaged Electron was proportionately unnecessary because the changed behavior is renderer/web-equivalent and no shell/preload/IPC/process code changed.
-- Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-agent-input-controls-regression/tickets/done/electron-agent-input-controls-regression/api-e2e-execution-coverage-report.md`
-- Delivery artifact/no-impact validation: `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-agent-input-controls-regression/tickets/done/electron-agent-input-controls-regression/docs-sync-validation.log`
+- Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/api-e2e-execution-coverage-report.md`
+- Delivery artifact/no-impact validation: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/docs-sync-validation.log`
 
 ## Documentation
 
 - Result: `No impact`
 - Rationale: this restores existing released behavior through an internal reactivity correction; no intended UI, API, persistence, transport, operation, or deployment contract changed.
-- Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-agent-input-controls-regression/tickets/done/electron-agent-input-controls-regression/docs-sync-report.md`
+- Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/docs-sync-report.md`
 
 ## Persisted Data And Safety
 
@@ -77,3 +87,4 @@
 - Target freshness after acceptance: `Pass`; the remote target did not advance, so renewed verification is not required.
 - Release/publication/deployment: not requested and will not be inferred.
 - Follow-up local build: explicitly requested after repository finalization; it will be unsigned/non-notarized local validation unless separately authorized otherwise.
+- Finalization result: `Pass`; proceed with the requested local target refresh and Electron build.
