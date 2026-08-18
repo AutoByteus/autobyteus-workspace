@@ -247,6 +247,58 @@ describe('ContextFilePathInputArea', () => {
     expect(context.contextFilePaths).toEqual([]);
   });
 
+  it('retains failed Team draft deletions while Clear all removes independently deletable items', async () => {
+    const solutionContext = createContext('team-1::solution_designer');
+    const implementationContext = createContext('team-1::implementation_engineer');
+    const retainedAfterFailure = createUploadedContextAttachment({
+      storedFilename: 'ctx_keep__retained.txt',
+      locator: '/rest/drafts/team-runs/team-1/members/solution_designer/context-files/ctx_keep__retained.txt',
+      displayName: 'retained.txt', phase: 'draft', type: 'Text',
+    });
+    const removable = createUploadedContextAttachment({
+      storedFilename: 'ctx_remove__removable.txt',
+      locator: '/rest/drafts/team-runs/team-1/members/solution_designer/context-files/ctx_remove__removable.txt',
+      displayName: 'removable.txt', phase: 'draft', type: 'Text',
+    });
+    solutionContext.contextFilePaths.push(retainedAfterFailure, removable);
+    selectContext(solutionContext);
+    agentSelectionStoreMock.selectedType = 'team';
+    agentContextsStoreMock.activeRun = null;
+    agentTeamContextsStoreMock.activeTeamContext = {
+      view: {
+        getRootTeamRunId: () => 'team-1',
+        getFocusedMemberAddress: () => '/solution_designer',
+      },
+    };
+    agentTeamContextsStoreMock.activeExecutionFocusedMemberContext = solutionContext;
+    contextFileUploadStoreMock.deleteDraftAttachment.mockImplementation(
+      async ({ attachment }: { attachment: ContextAttachment }) => {
+        if (attachment.id === retainedAfterFailure.id) throw new Error('draft delete unavailable');
+      },
+    );
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    const wrapper = mount(ContextFilePathInputArea, {
+      global: { stubs: { FullScreenImageModal: true } },
+    });
+
+    await wrapper.findAll('button[aria-label="Remove file"]')[0]?.trigger('click');
+    await flushPromises();
+    expect(solutionContext.contextFilePaths).toEqual([retainedAfterFailure, removable]);
+
+    const clearAll = wrapper.findAll('button').find((button) => button.text().includes('Clear all'));
+    expect(clearAll).toBeTruthy();
+    await clearAll!.trigger('click');
+    await flushPromises();
+
+    expect(solutionContext.contextFilePaths).toEqual([retainedAfterFailure]);
+    expect(implementationContext.contextFilePaths).toEqual([]);
+    expect(contextFileUploadStoreMock.deleteDraftAttachment).toHaveBeenCalledWith(expect.objectContaining({
+      attachment: removable,
+    }));
+    expect(consoleError).toHaveBeenCalledTimes(2);
+    consoleError.mockRestore();
+  });
+
   it('clones pasted draft URLs into the focused team member draft owner', async () => {
     const solutionContext = createContext('team-1::solution_designer');
     const implementationContext = createContext('team-1::implementation_engineer');

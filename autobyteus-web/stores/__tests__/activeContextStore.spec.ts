@@ -159,4 +159,101 @@ describe('activeContextStore interrupt routing', () => {
     expect(teamContextsStore.activeExecutionFocusedMemberAddress).toBe('/delivery_engineer');
     expect(activeContextStore.activeAgentContext?.state.runId).toBe('team-1::delivery_engineer');
   });
+
+  it('observes exact-member Team composer mutations and keeps a captured voice target isolated across focus changes', () => {
+    const selectionStore = useAgentSelectionStore();
+    const teamContextsStore = useAgentTeamContextsStore();
+    const activeContextStore = useActiveContextStore();
+    const solutionRaw = createAgentContext('team-1::solution_designer');
+    const implementationRaw = createAgentContext('team-1::implementation_engineer');
+    const team = buildTeamContext([
+      ['solution_designer', solutionRaw],
+      ['implementation_engineer', implementationRaw],
+    ], solutionRaw.state.runId);
+    teamContextsStore.addTeamContext(team);
+    selectionStore.selectRun('team-1', 'team');
+
+    const solution = team.view.getAgentContext(solutionRaw.state.runId)!;
+    const implementation = team.view.getAgentContext(implementationRaw.state.runId)!;
+    const solutionFile = {
+      kind: 'workspace_path', id: 'solution-file', locator: '/tmp/solution.txt',
+      displayName: 'solution.txt', type: 'Text',
+    } as const;
+    const solutionImage = {
+      kind: 'workspace_path', id: 'solution-image', locator: '/tmp/solution.png',
+      displayName: 'solution.png', type: 'Image',
+    } as const;
+    const implementationFile = {
+      kind: 'workspace_path', id: 'implementation-file', locator: '/tmp/implementation.txt',
+      displayName: 'implementation.txt', type: 'Text',
+    } as const;
+
+    expect(activeContextStore.activeAgentContext).toBe(solution);
+    expect(activeContextStore.currentRequirement).toBe('');
+    expect(activeContextStore.currentContextPaths).toEqual([]);
+    expect(activeContextStore.submissionPending).toBe(false);
+    expect(activeContextStore.currentStatus).toBe(AgentStatus.Running);
+
+    activeContextStore.updateRequirement('Solution draft');
+    activeContextStore.addContextFilePath(solutionFile);
+    activeContextStore.addContextFilePath(solutionImage);
+    solution.submissionPending = true;
+    expect(activeContextStore.currentRequirement).toBe('Solution draft');
+    expect(activeContextStore.currentContextPaths.map((attachment) => attachment.id))
+      .toEqual(['solution-file', 'solution-image']);
+    expect(activeContextStore.submissionPending).toBe(true);
+
+    const capturedVoiceTarget = activeContextStore.activeAgentContext;
+    teamContextsStore.focusMember('team-1', implementation.state.runId);
+    expect(activeContextStore.activeAgentContext).toBe(implementation);
+    expect(activeContextStore.currentRequirement).toBe('');
+    expect(activeContextStore.currentContextPaths).toEqual([]);
+    expect(activeContextStore.submissionPending).toBe(false);
+
+    activeContextStore.updateRequirement('Implementation draft');
+    activeContextStore.addContextFilePath(implementationFile);
+    implementation.submissionPending = true;
+    activeContextStore.updateRequirementForContext(
+      capturedVoiceTarget,
+      'Solution draft Voice transcript',
+    );
+    activeContextStore.removeContextFilePathForContext(capturedVoiceTarget, 0);
+
+    expect(activeContextStore.currentRequirement).toBe('Implementation draft');
+    expect(activeContextStore.currentContextPaths.map((attachment) => attachment.id))
+      .toEqual(['implementation-file']);
+    expect(activeContextStore.submissionPending).toBe(true);
+    expect(solution.requirement).toBe('Solution draft Voice transcript');
+    expect(solution.contextFilePaths.map((attachment) => attachment.id)).toEqual(['solution-image']);
+
+    activeContextStore.clearContextFilePathsForContext(capturedVoiceTarget);
+    solution.submissionPending = false;
+    teamContextsStore.focusMember('team-1', solution.state.runId);
+    expect(activeContextStore.activeAgentContext).toBe(capturedVoiceTarget);
+    expect(activeContextStore.currentRequirement).toBe('Solution draft Voice transcript');
+    expect(activeContextStore.currentContextPaths).toEqual([]);
+    expect(activeContextStore.submissionPending).toBe(false);
+    expect(implementation.requirement).toBe('Implementation draft');
+    expect(implementation.contextFilePaths.map((attachment) => attachment.id))
+      .toEqual(['implementation-file']);
+    expect(implementation.submissionPending).toBe(true);
+  });
+
+  it('preserves observable standalone Agent draft clearing and transcript insertion', () => {
+    const selectionStore = useAgentSelectionStore();
+    const agentContextsStore = useAgentContextsStore();
+    const activeContextStore = useActiveContextStore();
+    agentContextsStore.runs.set('agent-run-standalone', createAgentContext('agent-run-standalone'));
+    selectionStore.selectRun('agent-run-standalone', 'agent');
+    const standalone = agentContextsStore.runs.get('agent-run-standalone')!;
+
+    expect(activeContextStore.activeAgentContext).toBe(standalone);
+    expect(activeContextStore.currentRequirement).toBe('');
+    activeContextStore.updateRequirement('Standalone draft');
+    expect(activeContextStore.currentRequirement).toBe('Standalone draft');
+    activeContextStore.updateRequirementForContext(standalone, 'Standalone draft Voice transcript');
+    expect(activeContextStore.currentRequirement).toBe('Standalone draft Voice transcript');
+    standalone.requirement = '';
+    expect(activeContextStore.currentRequirement).toBe('');
+  });
 });

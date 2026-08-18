@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { computed, isReactive, toRaw } from 'vue';
 import type {
   TaskDelegationRecordDto,
   TaskExecutionDto,
@@ -105,22 +106,34 @@ const task = (input: {
   created_at: createdAt,
 });
 
-const createState = () => {
+const createStateFixture = () => {
   const initialTree = tree();
   const initial = [
     ['teacher-run', '/Teacher'],
     ['coordinator-run', '/StudentStudyGroup/Coordinator'],
     ['student-run', '/StudentStudyGroup/Student'],
   ] as const;
-  return createTeamExecutionViewState({
+  const initialContexts = new Map(initial.map(([agentRunId, memberAddress]) => [
+    agentRunId,
+    context(agentRunId, memberAddress),
+  ]));
+  const dynamicallyCreatedContexts = new Map<string, AgentContext>();
+  const state = createTeamExecutionViewState({
     rootTeamRunId: 'root-team-1', rootActive: true, executionTree: initialTree,
     tasks: [], messages: [], configuration: config(), initialFocusedAgentRunId: 'teacher-run',
     agentContexts: initial.map(([agentRunId, memberAddress]) => ({
-      agentRunId, memberAddress, agentContext: context(agentRunId, memberAddress),
+      agentRunId, memberAddress, agentContext: initialContexts.get(agentRunId)!,
     })),
-    createAgentContext: (agentRunId, address) => context(agentRunId, address),
+    createAgentContext: (agentRunId, address) => {
+      const created = context(agentRunId, address);
+      dynamicallyCreatedContexts.set(agentRunId, created);
+      return created;
+    },
   });
+  return { state, initialContexts, dynamicallyCreatedContexts };
 };
+
+const createState = () => createStateFixture().state;
 
 const taskEvent = (payload: Extract<TeamStreamServerMessage, { type: 'TASK_DELEGATION_EVENT' }>['payload']):
 Extract<TeamStreamServerMessage, { type: 'TASK_DELEGATION_EVENT' }> => ({
@@ -133,6 +146,87 @@ const expectApplied = (result: ReturnType<ReturnType<typeof createState>['applyM
 };
 
 describe('TeamExecutionViewState', () => {
+  it('stores one canonical reactive context proxy for initial and dynamically associated members', () => {
+    const { state, initialContexts, dynamicallyCreatedContexts } = createStateFixture();
+    const teacher = state.getAgentContext('teacher-run')!;
+    const teacherRequirement = computed(() => teacher.requirement);
+    const teacherAttachmentIds = computed(() => teacher.contextFilePaths.map((attachment) => attachment.id));
+    const teacherSubmissionPending = computed(() => teacher.submissionPending);
+    const teacherStatus = computed(() => teacher.state.currentStatus);
+
+    expect(teacherRequirement.value).toBe('');
+    expect(teacherAttachmentIds.value).toEqual([]);
+    expect(teacherSubmissionPending.value).toBe(false);
+    expect(teacherStatus.value).toBe(AgentStatus.Offline);
+    teacher.requirement = 'Initial member draft';
+    teacher.contextFilePaths = [{
+      kind: 'workspace_path', id: 'initial-file', locator: '/tmp/initial.txt',
+      displayName: 'initial.txt', type: 'Text',
+    }];
+    teacher.submissionPending = true;
+
+    expect(teacherRequirement.value).toBe('Initial member draft');
+    expect(teacherAttachmentIds.value).toEqual(['initial-file']);
+    expect(teacherSubmissionPending.value).toBe(true);
+    teacher.state.currentStatus = AgentStatus.Running;
+    expect(teacherStatus.value).toBe(AgentStatus.Running);
+    expect(isReactive(teacher)).toBe(true);
+    expect(isReactive(teacher.state)).toBe(true);
+    expect(toRaw(teacher)).toBe(initialContexts.get('teacher-run'));
+    expect(isReactive(initialContexts.get('teacher-run')!.state)).toBe(true);
+    expect(teacher.state).toBe(initialContexts.get('teacher-run')!.state);
+    expect(state.getFocusedAgentContext()).toBe(teacher);
+    expect(state.listAgentContextEntries().find((entry) => entry.agentRunId === 'teacher-run')?.agentContext)
+      .toBe(teacher);
+
+    const activation = state.applyMessage(taskEvent({
+      event_type: 'TASK_AGENT_ACTIVATED', change_sequence: 1,
+      parent_team_run_id: 'study-team-persistent',
+      execution: {
+        kind: 'task_agent', address: '/StudentStudyGroup/Student',
+        agent_run_id: 'dynamic-student-run', platform_agent_run_id: null,
+        started_at: createdAt, settled_at: null,
+      },
+      task: task({
+        taskId: 'dynamic-student-task', delegatorAgentRunId: 'coordinator-run',
+        recipientAddress: '/StudentStudyGroup/Student',
+        execution: { agent_run_id: 'dynamic-student-run' },
+      }),
+    }));
+    expectApplied(activation);
+
+    const dynamic = state.getAgentContext('dynamic-student-run')!;
+    const dynamicRequirement = computed(() => dynamic.requirement);
+    const dynamicAttachmentCount = computed(() => dynamic.contextFilePaths.length);
+    const dynamicSubmissionPending = computed(() => dynamic.submissionPending);
+    const dynamicStatus = computed(() => dynamic.state.currentStatus);
+    expect(dynamicRequirement.value).toBe('');
+    expect(dynamicAttachmentCount.value).toBe(0);
+    expect(dynamicSubmissionPending.value).toBe(false);
+    expect(dynamicStatus.value).toBe(AgentStatus.Offline);
+    dynamic.requirement = 'Dynamic member transcript';
+    dynamic.contextFilePaths = [{
+      kind: 'workspace_path', id: 'dynamic-file', locator: '/tmp/dynamic.txt',
+      displayName: 'dynamic.txt', type: 'Text',
+    }];
+    dynamic.submissionPending = true;
+
+    expect(dynamicRequirement.value).toBe('Dynamic member transcript');
+    expect(dynamicAttachmentCount.value).toBe(1);
+    expect(dynamicSubmissionPending.value).toBe(true);
+    dynamic.state.currentStatus = AgentStatus.Idle;
+    expect(dynamicStatus.value).toBe(AgentStatus.Idle);
+    expect(isReactive(dynamic)).toBe(true);
+    expect(isReactive(dynamic.state)).toBe(true);
+    expect(toRaw(dynamic)).toBe(dynamicallyCreatedContexts.get('dynamic-student-run'));
+    expect(isReactive(dynamicallyCreatedContexts.get('dynamic-student-run')!.state)).toBe(true);
+    expect(dynamic.state).toBe(dynamicallyCreatedContexts.get('dynamic-student-run')!.state);
+    expect(state.listAgentContextEntries()
+      .find((entry) => entry.agentRunId === 'dynamic-student-run')?.agentContext).toBe(dynamic);
+    expect(state.focusAgent('dynamic-student-run').disposition).toBe('applied');
+    expect(state.getFocusedAgentContext()).toBe(dynamic);
+  });
+
   it('materializes fresh task-Team and nested task-Agent identities without replacing configured placement', () => {
     const state = createState();
     const taskTeamExecution: TaskExecutionDto = {
