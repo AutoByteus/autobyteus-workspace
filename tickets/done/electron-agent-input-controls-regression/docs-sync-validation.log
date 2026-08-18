@@ -8,10 +8,14 @@ No-impact rationale present: PASS
 DR-001 baseline: PASS
 DR-002 user acceptance/authorization: PASS
 DR-003 repository finalization/cleanup: PASS
+DR-004 refreshed-target local Electron build: PASS
 Ticket archive: PASS — tickets/done/electron-agent-input-controls-regression
 Ticket commit: 83ff52cbff61225b4a486a8850b34763b4bf939c
 Target merge: ac6e277a73eabb04e6240d6fc820b2325600e45b
 Remote ancestry and cleanup: PASS
-Requested post-finalization local Electron build: PENDING
+Requested post-finalization local Electron build: PASS — exit 0; macOS arm64 app/DMG/ZIP/blockmaps produced
+DMG verification: PASS — hdiutil checksum VALID
+ZIP verification: PASS — unzip compressed-data test clean
+Developer ID signing/notarization/release/deployment: NOT PERFORMED (out of scope)
 Bounded safety/residual-risk wording: PASS
-Validated: 2026-08-18T14:34:01+02:00
+Validated: 2026-08-18T14:43:33+02:00

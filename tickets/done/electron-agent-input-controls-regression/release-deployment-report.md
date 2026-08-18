@@ -9,8 +9,8 @@ Initial delivery-stage latest-base refresh, explicit no-impact documentation ass
 - Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/delivery-revision-record.md`
-- Current delivery revision ID: `DR-003`
-- Notes: Repository finalization and ticket cleanup completed. The explicitly requested local Electron build remains the next delivery action.
+- Current delivery revision ID: `DR-004`
+- Notes: Repository finalization, ticket cleanup, surviving-target refresh, local Electron build, and artifact integrity verification completed.
 
 ## Initial Delivery Integration Refresh
 
@@ -80,9 +80,9 @@ Initial delivery-stage latest-base refresh, explicit no-impact documentation ass
 - Applicable: `No` in the currently authorized scope.
 - Method: `Other` — not selected.
 - Method reference / command: N/A
-- Release/publication/deployment result: `Not required` at DR-001.
-- Release notes handoff result: `Not required` at DR-001.
-- Blocker: Any later release/deployment requires explicit user direction after repository finalization.
+- Release/publication/deployment result: `Not required` at DR-004.
+- Release notes handoff result: `Not required` at DR-004.
+- Blocker: None for the requested local build. Any later release/deployment requires separate explicit user direction.
 
 ## Post-Finalization Cleanup
 
@@ -93,11 +93,26 @@ Initial delivery-stage latest-base refresh, explicit no-impact documentation ass
 - Remote branch cleanup result: `Completed`.
 - Blocker: None.
 
+## Post-Finalization Local Electron Build
+
+- Surviving worktree refresh: `Pass`; local `codex/agent-team-universal-task-delegation` and its refreshed remote matched at `66f7755000763c6179e2e99dceb2955cf4822861`, and the worktree was clean before building.
+- Build command: `NO_TIMESTAMP=1 APPLE_TEAM_ID= pnpm -C autobyteus-web build:electron:mac`
+- Build result: `Pass` (exit `0`), version `1.4.52`, enterprise flavor, macOS arm64.
+- Application: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
+- DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.52.dmg`
+- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.52.zip`
+- Architecture and integrity: `Pass`; the executable is Mach-O arm64, `hdiutil verify` reported the DMG checksum valid, and `unzip -tq` found no errors.
+- DMG SHA-256: `48b7b96167250cc1425ef97ff0fe3f691ff33aa3605bc7fe5a437edfc7d27433`
+- ZIP SHA-256: `7229f33b432edcc90f73f9327580d6f8d286b1454dde5576b0f699f9e4adbbcd`
+- Signing/notarization: Electron Builder skipped Developer ID signing because identity was explicitly null; no distribution signature, team identity, or notarization was applied.
+- Scope boundary: local build validation only; no tag, release, publication, deployment, active Electron launch, port `29695`, `~/.autobyteus`, production profile, or production data was touched.
+- Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/evidence/local-electron-build`
+
 ## Escalation / Reroute
 
 - Classification: N/A
 - Recommended recipient: N/A
-- Why final handoff could not complete: N/A; repository finalization completed. The separate requested local build remains in progress.
+- Why final handoff could not complete: N/A; repository finalization and the separately requested local build completed.
 
 ## Release Notes Summary
 
@@ -109,7 +124,7 @@ Initial delivery-stage latest-base refresh, explicit no-impact documentation ass
 
 None authorized or performed. No user Electron process, embedded port `29695`, production profile, or production data was touched.
 
-After repository finalization and cleanup, refresh the surviving `agent-team-universal-task-delegation` worktree and run the documented unsigned/non-notarized local macOS Electron build. This is local build validation, not release/publication/deployment.
+Repository finalization and cleanup were followed by a clean refresh of the surviving `agent-team-universal-task-delegation` worktree and a passing unsigned/non-notarized local macOS Electron build. This remained local build validation, not release/publication/deployment.
 
 ## Environment Or Persisted-Data Transition Notes
 
@@ -130,6 +145,9 @@ After repository finalization and cleanup, refresh the surviving `agent-team-uni
 - Ticket archive/commit/push — Pass: `83ff52cbff61225b4a486a8850b34763b4bf939c`.
 - Target update/merge/push — Pass: `ac6e277a73eabb04e6240d6fc820b2325600e45b`; exact parents and remote ancestry verified.
 - Dedicated ticket cleanup — Pass: worktree/local branch/remote branch removed and pruned.
+- Surviving-target refresh — Pass: local/remote target matched at `66f7755000763c6179e2e99dceb2955cf4822861` before build.
+- Local Electron build — Pass: exit `0`; app/DMG/ZIP/blockmaps created for macOS arm64 version `1.4.52`.
+- Artifact integrity — Pass: Mach-O arm64 executable, valid DMG checksum, ZIP data test clean, SHA-256 values recorded.
 
 ## Rollback Criteria
 
@@ -137,4 +155,4 @@ Before finalization, reject or revise the local candidate if user verification s
 
 ## Final Status
 
-`DR-003 Pass — ticket archived, finalized to origin/codex/agent-team-universal-task-delegation, remotely verified, and cleaned up; requested local Electron build is next; no release/deployment.`
+`DR-004 Pass — ticket archived, finalized to origin/codex/agent-team-universal-task-delegation, remotely verified, and cleaned up; refreshed-target local Electron build and artifact integrity checks passed; no release/deployment.`

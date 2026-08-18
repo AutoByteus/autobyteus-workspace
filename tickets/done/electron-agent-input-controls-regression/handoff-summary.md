@@ -3,8 +3,8 @@
 ## Ticket And Handoff State
 
 - Ticket: `electron-agent-input-controls-regression`
-- Delivery revision: `DR-003`
-- Current disposition: repository finalization completed and verified; the separately requested local Electron build is next.
+- Delivery revision: `DR-004`
+- Current disposition: repository finalization, cleanup, surviving-target refresh, and the separately requested local Electron build all completed and passed.
 - Repository finalization target: `codex/agent-team-universal-task-delegation`, as recorded in `ticket-description.md`.
 - Explicit user finalization authorization received: `Yes` — “i tested. the task is done. finalize to the base branch”.
 - Post-finalization local build requested: `Yes` — refresh the surviving target worktree and build Electron there after repository finalization.
@@ -18,6 +18,19 @@
 - Cleanup: `Pass`; dedicated worktree pruned and local/remote ticket branches removed only after target verification.
 - Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/repository-finalization-verification.log`
 - Release/publication/deployment: not requested and not performed.
+
+## Post-Finalization Local Electron Build
+
+- Surviving target worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation`
+- Target refresh: `Pass`; local and remote `codex/agent-team-universal-task-delegation` were clean and identical at source revision `66f7755000763c6179e2e99dceb2955cf4822861` before the build.
+- Build command: `NO_TIMESTAMP=1 APPLE_TEAM_ID= pnpm -C autobyteus-web build:electron:mac`
+- Build result: `Pass` (exit `0`); enterprise macOS arm64 application, DMG, ZIP, and blockmaps were produced for version `1.4.52`.
+- Application: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
+- DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.52.dmg`
+- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.52.zip`
+- Integrity: `Pass`; the app executable is Mach-O arm64, `hdiutil verify` reported the DMG checksum valid, and `unzip -tq` reported no compressed-data errors.
+- Build policy: local validation only. Electron Builder skipped Developer ID signing because identity was explicitly null; notarization, release, publication, deployment, and use of the user's active profile/process were not performed.
+- Evidence directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/evidence/local-electron-build`
 
 ## Integrated-State Refresh
 
@@ -57,7 +70,7 @@
 - Proportional test-code gate: `CRR-002 Not Applicable`, no findings, because API/E2E introduced no repository-resident durable coverage change.
 - Repository execution: 11 focused Nuxt files / 76 tests passed; production Nuxt build and `git diff --check` passed.
 - Isolated Chrome journeys passed for one Team event/send, visible clear/pending, member isolation, captured-member transcript without auto-send, attachment removal/Clear all/failure retention, retained-versus-removed request/event state, and standalone preservation.
-- Packaged Electron was proportionately unnecessary because the changed behavior is renderer/web-equivalent and no shell/preload/IPC/process code changed.
+- Packaged Electron was proportionately unnecessary for the API/E2E acceptance gate because the changed behavior is renderer/web-equivalent and no shell/preload/IPC/process code changed. The later user-requested local package build passed under `DR-004`.
 - Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/api-e2e-execution-coverage-report.md`
 - Delivery artifact/no-impact validation: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/docs-sync-validation.log`
 
@@ -77,7 +90,7 @@
 
 - Actual microphone permission/capture was not rerun; the affected transcript-result propagation was directly proven with deterministic output while microphone mechanics remained unchanged.
 - Live backend/WebSocket transport was not exercised; the unchanged adjacent request/event contracts passed and browser validation used isolated fakes only at external boundaries.
-- Electron shell/package lifecycle was not rerun because no shell, preload, IPC, window, or process code changed.
+- Electron shell runtime behavior was not launched because no shell, preload, IPC, window, or process code changed; the later local compile/package lifecycle completed successfully.
 - These are bounded unchanged-surface residuals, not failed acceptance criteria.
 
 ## User Verification / Finalization Authorization
@@ -86,5 +99,5 @@
 - Repository finalization: explicitly authorized to the recorded target `codex/agent-team-universal-task-delegation`.
 - Target freshness after acceptance: `Pass`; the remote target did not advance, so renewed verification is not required.
 - Release/publication/deployment: not requested and will not be inferred.
-- Follow-up local build: explicitly requested after repository finalization; it will be unsigned/non-notarized local validation unless separately authorized otherwise.
-- Finalization result: `Pass`; proceed with the requested local target refresh and Electron build.
+- Follow-up local build: `Pass`; completed as unsigned/non-notarized local validation from the refreshed target worktree.
+- Finalization result: `Pass`; repository finalization, cleanup, local build, and artifact integrity verification are complete. No release or deployment was requested.
