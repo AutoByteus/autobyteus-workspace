@@ -1,0 +1,14 @@
+{
+  "result": "Pass",
+  "evidencePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/electron-agent-input-controls-regression/tickets/in-progress/electron-agent-input-controls-regression/evidence/api-e2e-round-1/browser/evidence.json",
+  "cleanup": {
+    "browser": "closed",
+    "nuxt": {
+      "status": "terminated",
+      "pid": 38861,
+      "exitCode": null,
+      "signalCode": "SIGTERM"
+    },
+    "temporaryPage": "removed"
+  }
+}

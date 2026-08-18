@@ -1,0 +1,47 @@
+
+> autobyteus@1.4.52 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/electron-agent-input-controls-regression/autobyteus-web
+> cross-env NUXT_TEST=true vitest services/runSubmission/__tests__/localUserSubmission.spec.ts utils/contextFiles/__tests__/contextAttachmentSend.spec.ts stores/__tests__/contextFileUploadStore.spec.ts --run --reporter=verbose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/electron-agent-input-controls-regression/autobyteus-web
+
+stderr | stores/__tests__/contextFileUploadStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/contextFiles/__tests__/contextAttachmentSend.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/runSubmission/__tests__/localUserSubmission.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/runSubmission/__tests__/localUserSubmission.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/contextFiles/__tests__/contextAttachmentSend.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/contextFileUploadStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/contextFiles/__tests__/contextAttachmentSend.spec.ts > planContextAttachmentSubmission > retains all current items while excluding unsupported and blank locators from execution 2ms
+ ✓ stores/__tests__/contextFileUploadStore.spec.ts > contextFileUploadStore > preserves uploaded display names when finalizing sanitized stored filenames 4ms
+ ✓ stores/__tests__/contextFileUploadStore.spec.ts > contextFileUploadStore > finalizes draft locators even when attachment metadata was downgraded to a plain path 1ms
+ ✓ services/runSubmission/__tests__/localUserSubmission.spec.ts > localUserSubmission > appends the local user message and leaves canonical runtime status to backend events 5ms
+ ✓ services/runSubmission/__tests__/localUserSubmission.spec.ts > localUserSubmission > applies the same exact summary/activity effect to an existing team member 1ms
+ ✓ services/runSubmission/__tests__/localUserSubmission.spec.ts > localUserSubmission > keeps the first user summary when submitting to an existing standalone run 0ms
+ ✓ services/runSubmission/__tests__/localUserSubmission.spec.ts > localUserSubmission > reconciles finalized attachments on the existing local message 2ms
+ ✓ services/runSubmission/__tests__/localUserSubmission.spec.ts > localUserSubmission > does not revise for an equal semantic attachment replacement 0ms
+ ✓ services/runSubmission/__tests__/localUserSubmission.spec.ts > localUserSubmission > keeps the submitted message visible and appends system error feedback on failure 1ms
+
+ Test Files  3 passed (3)
+      Tests  9 passed (9)
+   Start at  14:11:21
+   Duration  8.79s (transform 4.20s, setup 22.24s, collect 104ms, tests 19ms, environment 1.68s, prepare 1.03s)

@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
+import { computed } from 'vue'
 import { useAgentTeamRunStore } from '../agentTeamRunStore'
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore'
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore'
@@ -13,6 +14,7 @@ import {
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext'
 import type { TeamLaunchDraft } from '~/types/agent/TeamLaunchDraft'
 import type { TeamRunConfig } from '~/types/agent/TeamRunConfig'
+import type { ContextAttachment } from '~/types/conversation'
 
 const {
   mockConnect,
@@ -419,22 +421,95 @@ describe('agentTeamRunStore current rooted execution contract', () => {
   it('sends to the exact focused persistent execution and records the local submission', async () => {
     const team = twoMemberTeam({ teamRunId: 'team-send', focusedMemberAddress: '/worker' })
     setActiveTeam(team)
+    const worker = team.view.getAgentContext('team-send-worker-run')!
+    const coordinator = team.view.getAgentContext('team-send-coordinator-run')!
+    const retainedImage: ContextAttachment = {
+      kind: 'workspace_path', id: 'retained-image', locator: '/tmp/retained-image.png',
+      displayName: 'retained-image.png', type: 'Image',
+    }
+    const removedFile: ContextAttachment = {
+      kind: 'workspace_path', id: 'removed-file', locator: '/tmp/removed-file.txt',
+      displayName: 'removed-file.txt', type: 'Text',
+    }
+    worker.requirement = 'inspect exact identity'
+    worker.contextFilePaths = [retainedImage, removedFile]
+    const visibleRequirement = computed(() => worker.requirement)
+    const visibleAttachmentIds = computed(() => worker.contextFilePaths.map((attachment) => attachment.id))
+    const visiblePending = computed(() => worker.submissionPending)
 
-    await useAgentTeamRunStore().sendMessageToFocusedMember('inspect exact identity', [])
+    expect(visibleRequirement.value).toBe('inspect exact identity')
+    expect(visibleAttachmentIds.value).toEqual(['retained-image', 'removed-file'])
+    expect(visiblePending.value).toBe(false)
+    worker.contextFilePaths = worker.contextFilePaths.filter(
+      (attachment) => attachment.id !== removedFile.id,
+    )
+    expect(visibleAttachmentIds.value).toEqual(['retained-image'])
+
+    await useAgentTeamRunStore().sendMessageToFocusedMember(
+      worker.requirement,
+      worker.contextFilePaths,
+    )
 
     expect(mockSendMessage).toHaveBeenCalledWith(
       'inspect exact identity',
       'team-send-worker-run',
       [],
-      [],
+      ['/tmp/retained-image.png'],
       expect.objectContaining({
         messageId: expect.any(String),
         dedupeKey: expect.stringContaining('team-send'),
       }),
     )
-    const worker = team.view.getAgentContext('team-send-worker-run')!
-    expect(worker.state.conversation.messages.at(-1)).toMatchObject({ text: 'inspect exact identity' })
+    expect(mockSendMessage).toHaveBeenCalledTimes(1)
+    expect(contextFileUploadStoreMock.finalizeDraftAttachments).toHaveBeenCalledWith(expect.objectContaining({
+      attachments: [retainedImage],
+    }))
+    expect(worker.state.conversation.messages).toEqual([
+      expect.objectContaining({
+        type: 'user', text: 'inspect exact identity', contextFilePaths: [retainedImage],
+      }),
+    ])
+    expect(visibleRequirement.value).toBe('')
+    expect(visibleAttachmentIds.value).toEqual([])
+    expect(visiblePending.value).toBe(true)
+    expect(coordinator.requirement).toBe('')
+    expect(coordinator.contextFilePaths).toEqual([])
+    expect(coordinator.submissionPending).toBe(false)
     expect(runHistoryStoreMock.markTeamAsActive).toHaveBeenCalledWith('team-send')
+  })
+
+  it('preserves the real associated Team draft when restore fails before local admission', async () => {
+    const team = twoMemberTeam({
+      teamRunId: 'team-pre-admission-failure', focusedMemberAddress: '/worker', isActive: false,
+    })
+    setActiveTeam(team)
+    const worker = team.view.getAgentContext('team-pre-admission-failure-worker-run')!
+    const stagedAttachment: ContextAttachment = {
+      kind: 'workspace_path', id: 'staged-file', locator: '/tmp/staged.txt',
+      displayName: 'staged.txt', type: 'Text',
+    }
+    worker.requirement = 'Keep this draft'
+    worker.contextFilePaths = [stagedAttachment]
+    const visibleRequirement = computed(() => worker.requirement)
+    const visibleAttachmentIds = computed(() => worker.contextFilePaths.map((attachment) => attachment.id))
+    const visiblePending = computed(() => worker.submissionPending)
+    expect(visibleRequirement.value).toBe('Keep this draft')
+    expect(visibleAttachmentIds.value).toEqual(['staged-file'])
+    expect(visiblePending.value).toBe(false)
+    mockMutate.mockResolvedValue({
+      data: { restoreAgentTeamRun: { success: false, teamRunId: null } }, errors: [],
+    })
+
+    await expect(useAgentTeamRunStore().sendMessageToFocusedMember(
+      worker.requirement,
+      worker.contextFilePaths,
+    )).rejects.toThrow('Team restore failed')
+
+    expect(visibleRequirement.value).toBe('Keep this draft')
+    expect(visibleAttachmentIds.value).toEqual(['staged-file'])
+    expect(visiblePending.value).toBe(false)
+    expect(worker.state.conversation.messages).toEqual([])
+    expect(mockSendMessage).not.toHaveBeenCalled()
   })
 
   it('restores an inactive Team and sends to the unchanged exact execution address', async () => {

@@ -115,7 +115,8 @@ export const createTeamExecutionViewState = (
     const id = requiredId(entry.agentRunId, 'agentRunId');
     if (contexts.has(id)) throw new Error(`Duplicate AgentRun context '${id}'.`);
     entry.agentContext.state = reactive(entry.agentContext.state);
-    contexts.set(id, entry.agentContext);
+    const associatedContext = reactive(entry.agentContext);
+    contexts.set(id, associatedContext);
     addresses.set(id, entry.memberAddress);
   };
   input.agentContexts.forEach(associate);

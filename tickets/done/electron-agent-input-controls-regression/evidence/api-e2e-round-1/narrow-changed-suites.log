@@ -1,0 +1,84 @@
+
+> autobyteus@1.4.52 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/electron-agent-input-controls-regression/autobyteus-web
+> cross-env NUXT_TEST=true vitest services/teamExecution/__tests__/teamExecutionViewState.spec.ts stores/__tests__/activeContextStore.spec.ts stores/__tests__/agentTeamRunStore.spec.ts components/agentInput/__tests__/ContextFilePathInputArea.spec.ts --run --reporter=verbose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/electron-agent-input-controls-regression/autobyteus-web
+
+stderr | stores/__tests__/agentTeamRunStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agentInput/__tests__/ContextFilePathInputArea.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/teamExecution/__tests__/teamExecutionViewState.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/activeContextStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/teamExecution/__tests__/teamExecutionViewState.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/agentTeamRunStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/agentInput/__tests__/ContextFilePathInputArea.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/activeContextStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/teamExecution/__tests__/teamExecutionViewState.spec.ts > TeamExecutionViewState > stores one canonical reactive context proxy for initial and dynamically associated members 9ms
+ ✓ services/teamExecution/__tests__/teamExecutionViewState.spec.ts > TeamExecutionViewState > materializes fresh task-Team and nested task-Agent identities without replacing configured placement 4ms
+ ✓ services/teamExecution/__tests__/teamExecutionViewState.spec.ts > TeamExecutionViewState > keeps accepted history visible until the exact execution settlement and then repairs focus 1ms
+ ✓ services/teamExecution/__tests__/teamExecutionViewState.spec.ts > TeamExecutionViewState > rejects sequence gaps and invalid snapshots without partially replacing authoritative state 2ms
+ ✓ components/agentInput/__tests__/ContextFilePathInputArea.spec.ts > ContextFilePathInputArea > renders an image thumbnail for an absolute workspace image path in embedded Electron runtime 12ms
+ ✓ components/agentInput/__tests__/ContextFilePathInputArea.spec.ts > ContextFilePathInputArea > keeps async uploads with the member that started them when focus changes 13ms
+ ✓ components/agentInput/__tests__/ContextFilePathInputArea.spec.ts > ContextFilePathInputArea > deletes draft uploads immediately when the user removes them from the composer 8ms
+ ✓ components/agentInput/__tests__/ContextFilePathInputArea.spec.ts > ContextFilePathInputArea > retains failed Team draft deletions while Clear all removes independently deletable items 9ms
+ ✓ components/agentInput/__tests__/ContextFilePathInputArea.spec.ts > ContextFilePathInputArea > clones pasted draft URLs into the focused team member draft owner 16ms
+stderr | stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > does not mutate local lifecycle when backend termination rejects
+Error terminating Team 'team-terminate-reject': Error: not found
+    at Proxy.terminateTeamRun (/Users/normy/autobyteus_org/autobyteus-worktrees/electron-agent-input-controls-regression/autobyteus-web/stores/agentTeamRunStore.ts:204:58)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/electron-agent-input-controls-regression/autobyteus-web/stores/__tests__/agentTeamRunStore.spec.ts:401:12
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+ ✓ stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > connects the exact Team context to the bound Team WebSocket endpoint 7ms
+ ✓ stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > reattaches an existing service to the latest context with the same root identity 1ms
+ ✓ stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > latches one persistent recovery notice and blocks ordinary service reuse 1ms
+ ✓ stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > commits one ready recovery candidate over the unchanged failed entries 2ms
+ ✓ stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > preserves failed entries and notice when the candidate handshake rejects 2ms
+ ✓ stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > terminates once, disconnects, and preserves an offline context for history restore 1ms
+ ✓ stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > does not mutate local lifecycle when backend termination rejects 36ms
+ ✓ stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > deduplicates concurrent Stop requests while the first mutation is pending 2ms
+ ✓ stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > sends to the exact focused persistent execution and records the local submission 12ms
+ ✓ stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > preserves the real associated Team draft when restore fails before local admission 1ms
+ ✓ stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > restores an inactive Team and sends to the unchanged exact execution address 6ms
+ ✓ stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > launches a nested mixed-runtime draft with exact rooted memberAddress inputs and focus 9ms
+ ✓ stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > admits one exact draft before allocation and blocks edits, selection changes, and duplicate allocation until success 3ms
+ ✓ stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > preserves and unlocks the exact selected draft after allocation failure, then permits one later canonical launch 6ms
+ ✓ stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > first-send launch uses the admitted selected draft and sends once to the exact promoted execution 2ms
+ ✓ stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > preserves an explicit approval target and never synthesizes a default target 0ms
+ ✓ stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > interrupts only an AgentRun in the exact current Team execution 0ms
+ ✓ stores/__tests__/activeContextStore.spec.ts > activeContextStore interrupt routing > targets the focused team member route key at click time 13ms
+ ✓ stores/__tests__/activeContextStore.spec.ts > activeContextStore interrupt routing > preserves single-agent interrupt routing 2ms
+ ✓ stores/__tests__/activeContextStore.spec.ts > activeContextStore interrupt routing > routes only the exact focused AgentRun through the team target 2ms
+ ✓ stores/__tests__/activeContextStore.spec.ts > activeContextStore interrupt routing > keeps composer context on the visible focused member even when active-execution display falls back 2ms
+ ✓ stores/__tests__/activeContextStore.spec.ts > activeContextStore interrupt routing > observes exact-member Team composer mutations and keeps a captured voice target isolated across focus changes 4ms
+ ✓ stores/__tests__/activeContextStore.spec.ts > activeContextStore interrupt routing > preserves observable standalone Agent draft clearing and transcript insertion 1ms
+
+ Test Files  4 passed (4)
+      Tests  32 passed (32)
+   Start at  14:10:32
+   Duration  8.95s (transform 4.33s, setup 30.19s, collect 696ms, tests 193ms, environment 1.56s, prepare 1.26s)
