@@ -1,0 +1,60 @@
+{
+  "data": {
+    "getAgentRunResumeConfig": {
+      "runId": "daily_assistant_977bfccbe0154201afa60ea5e0d20f4c",
+      "isActive": true,
+      "metadataConfig": {
+        "agentDefinitionId": "daily-assistant",
+        "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix/api-e2e-evidence/live-browser/workspaces/daily-codex",
+        "llmModelIdentifier": "gpt-5.6-luna",
+        "llmConfig": null,
+        "autoExecuteTools": true,
+        "skillAccessMode": "NONE",
+        "runtimeKind": "codex_app_server",
+        "runtimeReference": {
+          "runtimeKind": "codex_app_server",
+          "sessionId": null,
+          "threadId": "01a01145-b9ed-7912-adf0-34f9d11e28ba",
+          "metadata": null
+        }
+      }
+    },
+    "getRunProjection": {
+      "runId": "daily_assistant_977bfccbe0154201afa60ea5e0d20f4c",
+      "summary": "Remember exact marker DAILY-CODEX-817-D3K6. Do not use tools. Reply exactly: ACK DAILY-CODEX-817-...",
+      "lastActivityAt": "2026-08-17T19:55:25.608Z",
+      "conversation": [
+        {
+          "kind": "message",
+          "role": "user",
+          "content": "Remember exact marker DAILY-CODEX-817-D3K6. Do not use tools. Reply exactly: ACK DAILY-CODEX-817-D3K6",
+          "media": null,
+          "ts": 1786996222.227
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "content": "ACK DAILY-CODEX-817-D3K6",
+          "media": null,
+          "ts": 1786996224.363
+        },
+        {
+          "kind": "message",
+          "role": "user",
+          "content": "After the full API process restart, what exact marker did I ask you to remember? Reply with only the marker. Do not infer or use tools.",
+          "media": null,
+          "ts": 1786996521.533
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "content": "DAILY-CODEX-817-D3K6",
+          "media": null,
+          "ts": 1786996525.608
+        }
+      ],
+      "activities": [],
+      "hasEarlierActiveTraceEvents": false
+    }
+  }
+}

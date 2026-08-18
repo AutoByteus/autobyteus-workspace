@@ -1,0 +1,71 @@
+Live browser/full-process-restart scenario matrix
+All post-state files were captured after one complete API listener/process stop and same-state restart.
+
+LIVE-TEAM-CODEX-001: PASS
+  subject=Classroom Simulation Team / Professor
+  runtime=CODEX model=gpt-5.6-luna
+  marker=CODEX-FIX-817-C9X4
+  run_id_before=classroom_simulation_team_c5094d797f4a47b6b2e176bb26d936bc run_id_after=classroom_simulation_team_c5094d797f4a47b6b2e176bb26d936bc equal=True
+  agent_run_id_before=professor_dbc35977c25141d79de619649aa5b357 agent_run_id_after=professor_dbc35977c25141d79de619649aa5b357 equal=True
+  platform_binding_before=01a01143-b378-70a2-ab71-96799f7281fb platform_binding_after=01a01143-b378-70a2-ab71-96799f7281fb equal=True
+  platform_binding_semantics=non-null-external-exact
+  message_role_order=['user', 'assistant', 'user', 'assistant'] expected=['user', 'assistant', 'user', 'assistant'] equal=True
+  exact_ack_count=1 exact_post_restart_recall_count=1
+  screenshot=codex-post-restart.png state=codex-post-restart-state.json
+
+LIVE-TEAM-CLAUDE-001: PASS
+  subject=Classroom Simulation Team / Professor
+  runtime=CLAUDE model=haiku
+  marker=CLAUDE-FIX-817-H7Q2
+  run_id_before=classroom_simulation_team_5b8aa9e05d684f82892cddc445dc602e run_id_after=classroom_simulation_team_5b8aa9e05d684f82892cddc445dc602e equal=True
+  agent_run_id_before=professor_88c0343f282b4aa18acd7c1dd9bd2960 agent_run_id_after=professor_88c0343f282b4aa18acd7c1dd9bd2960 equal=True
+  platform_binding_before=0f1e5275-277e-4fcf-9572-c560e66aea25 platform_binding_after=0f1e5275-277e-4fcf-9572-c560e66aea25 equal=True
+  platform_binding_semantics=non-null-external-exact
+  message_role_order=['user', 'assistant', 'user', 'assistant'] expected=['user', 'assistant', 'user', 'assistant'] equal=True
+  exact_ack_count=1 exact_post_restart_recall_count=1
+  screenshot=claude-post-restart.png state=claude-post-restart-state.json
+
+LIVE-TEAM-NATIVE-001: PASS
+  subject=Classroom Simulation Team / Professor
+  runtime=AUTOBYTEUS model=deepseek-v4-flash
+  marker=NATIVE-FIX-817-N4M8
+  run_id_before=classroom_simulation_team_ab8a82e00cdc450ea0ebf952089c5962 run_id_after=classroom_simulation_team_ab8a82e00cdc450ea0ebf952089c5962 equal=True
+  agent_run_id_before=professor_124d75241ce246c2875c9b8e3120a067 agent_run_id_after=professor_124d75241ce246c2875c9b8e3120a067 equal=True
+  platform_binding_before=None platform_binding_after=None equal=True
+  platform_binding_semantics=null-native-correct
+  message_role_order=['user', 'assistant', 'user', 'assistant'] expected=['user', 'assistant', 'user', 'assistant'] equal=True
+  exact_ack_count=1 exact_post_restart_recall_count=1
+  screenshot=autobyteus-post-restart.png state=autobyteus-post-restart-state.json
+
+LIVE-DAILY-CODEX-001: PASS
+  subject=Daily Assistant standalone
+  runtime=codex_app_server model=gpt-5.6-luna
+  marker=DAILY-CODEX-817-D3K6
+  run_id_before=daily_assistant_977bfccbe0154201afa60ea5e0d20f4c run_id_after=daily_assistant_977bfccbe0154201afa60ea5e0d20f4c equal=True
+  platform_binding_before=01a01145-b9ed-7912-adf0-34f9d11e28ba platform_binding_after=01a01145-b9ed-7912-adf0-34f9d11e28ba equal=True
+  platform_binding_semantics=non-null-external-exact
+  message_role_order=['user', 'assistant', 'user', 'assistant'] expected=['user', 'assistant', 'user', 'assistant'] equal=True
+  exact_ack_count=1 exact_post_restart_recall_count=1
+  screenshot=daily-codex-post-restart.png state=daily-codex-post-restart-state.json
+
+LIVE-DAILY-CLAUDE-001: PASS
+  subject=Daily Assistant standalone
+  runtime=claude_agent_sdk model=haiku
+  marker=DAILY-CLAUDE-817-D8V5
+  run_id_before=daily_assistant_2a1686d4c9d14c45b367a52e7da36873 run_id_after=daily_assistant_2a1686d4c9d14c45b367a52e7da36873 equal=True
+  platform_binding_before=0ecffbd0-a6db-4fbf-8a2f-c66b29f578cc platform_binding_after=0ecffbd0-a6db-4fbf-8a2f-c66b29f578cc equal=True
+  platform_binding_semantics=non-null-external-exact
+  message_role_order=['user', 'assistant', 'user', 'assistant'] expected=['user', 'assistant', 'user', 'assistant'] equal=True
+  exact_ack_count=1 exact_post_restart_recall_count=1
+  screenshot=daily-claude-post-restart.png state=daily-claude-post-restart-state.json
+
+LIVE-DAILY-NATIVE-001: PASS
+  subject=Daily Assistant standalone
+  runtime=autobyteus model=deepseek-v4-flash
+  marker=DAILY-NATIVE-817-D2P9
+  run_id_before=daily_assistant_a0606e36a7164d799b125b5d651c06df run_id_after=daily_assistant_a0606e36a7164d799b125b5d651c06df equal=True
+  platform_binding_before=None platform_binding_after=None equal=True
+  platform_binding_semantics=null-native-correct
+  message_role_order=['user', 'assistant', 'user', 'assistant'] expected=['user', 'assistant', 'user', 'assistant'] equal=True
+  exact_ack_count=1 exact_post_restart_recall_count=1
+  screenshot=daily-autobyteus-post-restart.png state=daily-autobyteus-post-restart-state.json

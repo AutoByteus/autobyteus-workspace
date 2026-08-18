@@ -1,5 +1,6 @@
 import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import type { TeamRun } from "./team-run.js";
+import type { TeamAgentPlatformBinding } from "./team-agent-platform-binding.js";
 
 export type TaskExecutionBinding =
   | Readonly<{ kind: "agent"; address: AgentTeamAddress; agentRunId: string }>
@@ -13,7 +14,8 @@ export type CommittedTaskExecution = Readonly<{
 export interface PreparedTaskExecution {
   readonly binding: TaskExecutionBinding;
   readonly preparedTeamRuns: readonly TeamRun[];
+  readonly stagedPlatformBindings: readonly TeamAgentPlatformBinding[];
   sealForCommit(): void;
-  commit(): CommittedTaskExecution;
+  commitAfterDurability(): CommittedTaskExecution;
   abort(): Promise<void>;
 }

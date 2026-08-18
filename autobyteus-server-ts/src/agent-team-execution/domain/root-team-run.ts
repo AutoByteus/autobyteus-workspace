@@ -37,6 +37,9 @@ import type {
 } from "../task-delegation/task-delegation-record.js";
 import type { TaskDelegationRecordsSnapshot } from "../task-delegation/task-delegation-record-v1.js";
 import { TaskDelegationService } from "../task-delegation/task-delegation-service.js";
+import type { TeamAgentPlatformBinding } from "./team-agent-platform-binding.js";
+import { TeamAgentPlatformBindingError } from "./team-agent-platform-binding.js";
+import { adoptAgentPlatformBindingInTree } from "../services/team-run-execution-tree-mutator.js";
 
 export type RootTeamRunPackageSnapshot = Readonly<{
   tree: TeamRunExecutionTreeSnapshot;
@@ -137,6 +140,58 @@ export class RootTeamRun {
   getExecutionTreeSnapshot(): TeamRunExecutionTreeSnapshot { return this.tree; }
   getTaskRecordsSnapshot(): TaskDelegationRecordsSnapshot { return this.tasks; }
   getCommunicationSnapshot(): TeamCommunicationMessagesSnapshot { return this.messages; }
+
+  async adoptAgentPlatformBinding(binding: TeamAgentPlatformBinding): Promise<void> {
+    this.assertAdmitting();
+    let liveCommitStarted = false;
+    let result: Awaited<ReturnType<TeamRunPersistenceCoordinator["commitExecutionTreeMutation"]>>;
+    try {
+      result = await this.options.persistence.commitExecutionTreeMutation({
+        prepareAgainstCurrent: () => {
+          const mutation = adoptAgentPlatformBindingInTree({ tree: this.tree, binding });
+          return {
+            nextTree: mutation.tree,
+            requiresWrite: mutation.outcome === "adopted",
+            cancelBeforeDurability: () => undefined,
+            commitAfterDurability: () => {
+              liveCommitStarted = true;
+              this.tree = mutation.tree;
+              this.index = new TeamExecutionIndex(mutation.tree);
+              this.assertRootCorrelation();
+            },
+          };
+        },
+      });
+    } catch (error) {
+      if (error instanceof TeamAgentPlatformBindingError) throw error;
+      if (liveCommitStarted) {
+        this.enterLifecycleFailStop();
+        throw new TeamAgentPlatformBindingError(
+          "TEAM_AGENT_PLATFORM_BINDING_COMMIT_FAILED",
+          "The team provider binding committed durably but live finalization failed.",
+          { cause: error, indeterminate: true },
+        );
+      }
+      throw new TeamAgentPlatformBindingError(
+        "TEAM_AGENT_PLATFORM_BINDING_COMMIT_FAILED",
+        "The team provider binding did not commit.",
+        { cause: error },
+      );
+    }
+    if (result.outcome === "committed") return;
+    if (result.outcome === "finalization_indeterminate") {
+      throw new TeamAgentPlatformBindingError(
+        "TEAM_AGENT_PLATFORM_BINDING_COMMIT_FAILED",
+        "The team provider binding commit is indeterminate.",
+        { indeterminate: true },
+      );
+    }
+    throw new TeamAgentPlatformBindingError(
+      "TEAM_AGENT_PLATFORM_BINDING_COMMIT_FAILED",
+      "The team provider binding did not commit.",
+      { cause: result.cause },
+    );
+  }
 
   getAgentExecution(agentRunId: string): Readonly<{
     identity: TeamMemberExecutionIdentity;

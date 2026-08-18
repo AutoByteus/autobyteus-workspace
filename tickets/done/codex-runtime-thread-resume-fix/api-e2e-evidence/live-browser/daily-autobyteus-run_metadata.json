@@ -1,0 +1,16 @@
+{
+  "runId": "daily_assistant_a0606e36a7164d799b125b5d651c06df",
+  "agentDefinitionId": "daily-assistant",
+  "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix/api-e2e-evidence/live-browser/workspaces/daily-autobyteus",
+  "memoryDir": "/private/tmp/codex-runtime-thread-resume-fix-api-e2e-20260817/server-data/memory/agents/daily_assistant_a0606e36a7164d799b125b5d651c06df",
+  "llmModelIdentifier": "deepseek-v4-flash",
+  "llmConfig": null,
+  "autoExecuteTools": true,
+  "skillAccessMode": "NONE",
+  "runtimeKind": "autobyteus",
+  "platformAgentRunId": "daily_assistant_a0606e36a7164d799b125b5d651c06df",
+  "preparedAt": "2026-08-17T19:49:37.631Z",
+  "preparedExpiresAt": "2026-08-18T19:49:37.631Z",
+  "startedAt": "2026-08-17T19:49:37.667Z",
+  "applicationExecutionContext": null
+}

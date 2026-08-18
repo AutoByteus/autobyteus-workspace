@@ -7,6 +7,8 @@ Manages runtime agent runs and message execution flow.
 ## TS Source
 
 - `src/agent-execution/services/agent-run-manager.ts` (`AgentRunManager`)
+- `src/agent-execution/services/agent-run-activation-candidate.ts`
+- `src/agent-execution/services/standalone-agent-run-activation-service.ts`
 - `src/agent-execution/services/agent-run-command-coordinator.ts`
 - `src/agent-execution/services/agent-run-command-registry.ts`
 - `src/agent-execution/services/agent-run-command-status-overlay-store.ts`
@@ -118,6 +120,31 @@ agent ids remain separate metadata.
 Historical restore paths continue to use stored run ids as data. Old readable,
 deterministic, or otherwise legacy ids are not rewritten and are not validated
 against the new generated shape.
+
+## Activation Publication And Exact Continuation
+
+`AgentRunManager` constructs new and restored runtimes as private
+`AgentRunActivationCandidate`s. A candidate exposes only its local run ID,
+runtime kind, optional external-provider identity, `commitPublication()`, and
+`abort()`. It is absent from active-run lookup and cannot receive input or
+publish events until its governing owner has durably committed the metadata or
+Team execution-tree state that makes the run discoverable. Cleanup uncertainty
+quarantines the run ID in-process instead of permitting a replacement runtime.
+
+`StandaloneAgentRunActivationService` owns one activation attempt per run ID
+across command, prepared-run activation, and history restore callers. It
+reactivates the persisted workspace, reconstructs the exact stored run config,
+prepares the private candidate, commits `startedAt` and the external provider ID
+when applicable, and only then publishes the run. A started external run
+requires a non-local persisted provider ID and restores that exact identity; a
+native AutoByteus run restores by its local run ID and memory directory.
+Missing, unreadable, conflicting, or indeterminate durable state fails closed.
+
+Codex restoration sends the stored thread ID to `thread/resume`; failure never
+falls back to `thread/start`. Claude reserves one valid UUID before first input:
+the first SDK query receives only `sessionId`, later and restored queries receive
+only `resume`, and every provider-reported session ID must confirm the same UUID.
+The local AgentRun ID is never a Codex/Claude provider binding or placeholder.
 
 ## Standalone Command Lifecycle
 
@@ -354,9 +381,11 @@ surface as a runtime `ERROR`. Active terminate reuses the same session-owned
 closure boundary before the manager emits `SESSION_TERMINATED` and removes the
 run session, so row-level termination remains stronger than interrupt without
 duplicating abort-first cleanup policy outside the session. Follow-up messages
-start from a fresh query resource after settlement and still resume with a real
-provider `session_id` when one has been observed. The local run id placeholder
-is never an SDK `resume` value.
+start from a fresh query resource after settlement and resume the same UUID
+reserved before the first query. The initial query uses SDK `sessionId`; after
+it opens, every later query uses SDK `resume`. Provider stream identity confirms
+that immutable UUID and a missing or conflicting confirmation is terminal rather
+than a late adoption opportunity.
 
 Native AutoByteus runs expose the same user-facing interrupt contract through
 the `autobyteus-ts` runtime. `AgentRun.interrupt(...)` delegates to

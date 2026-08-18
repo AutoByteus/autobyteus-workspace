@@ -1,0 +1,10 @@
+listener_pid=91753
+owned_database_handles:
+node    91753 normy   19u      REG               1,13    245760           352409437 /private/tmp/codex-runtime-thread-resume-fix-api-e2e-20260817/autobyteus.db
+node    91753 normy   20u      REG               1,13    245760           352409437 /private/tmp/codex-runtime-thread-resume-fix-api-e2e-20260817/autobyteus.db
+production_database_handles:
+post_restart_listener_pid=1472
+owned_database_handles:
+node    1472 normy   19u      REG               1,13    262144           352409437 /private/tmp/codex-runtime-thread-resume-fix-api-e2e-20260817/autobyteus.db
+node    1472 normy   20u      REG               1,13    262144           352409437 /private/tmp/codex-runtime-thread-resume-fix-api-e2e-20260817/autobyteus.db
+production_database_handles:

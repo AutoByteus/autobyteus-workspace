@@ -189,6 +189,7 @@ const createSettlementHarness = (input: {
     },
     commitTaskSettlement: async (command) => {
       const outcome = input.settlementOutcome?.(command.settlement.taskId) ?? "committed";
+      const preparedMutation = command.prepareAgainstCurrent();
       if (outcome === "not_committed") {
         command.settlement.cancelBeforeDurability();
         return { outcome, cause: new Error("tree write rejected") };
@@ -198,7 +199,7 @@ const createSettlementHarness = (input: {
         return { outcome, file: "execution_tree" as const, stage: "sync_directory" as const };
       }
       const settlement = command.settlement.commitAfterDurability();
-      command.commitTreeAndEvent(settlement);
+      preparedMutation.commitTreeAndEvent(settlement);
       return { outcome, settlement };
     },
     enterLifecycleFailStop,
@@ -419,9 +420,18 @@ describe("current task delegation invariants", () => {
       const prepared = Object.freeze({
         binding: Object.freeze({ kind: "agent" as const, address: at("/researcher"), agentRunId: "task-agent-new" }),
         preparedTeamRuns: Object.freeze([]),
-        sealForCommit: vi.fn(), commit, abort,
+        stagedPlatformBindings: Object.freeze([{
+          execution: createTeamMemberExecutionIdentity({
+            rootTeamRunId: tree.rootTeam.teamRunId,
+            memberAddress: at("/researcher"),
+            agentRunId: "task-agent-new",
+          }),
+          platformAgentRunId: "thread-task-new",
+        }]),
+        sealForCommit: vi.fn(), commitAfterDurability: commit, abort,
       });
       let releasedInsideCommit = false;
+      let preparedTreePlatformAgentRunId: string | null = null;
       const service = new TaskDelegationService({
         rootTeamRunId: tree.rootTeam.teamRunId,
         config: { rootTeam: { children: [{ ...configuredAgent("/researcher", "configured-researcher"), kind: "agent" }] }, handoffs: [] } as never,
@@ -433,11 +443,18 @@ describe("current task delegation invariants", () => {
         requireTeamRun: async () => ({ prepareTaskAgent: async () => prepared }) as never,
         teamRunResolver: { unregisterInactive: vi.fn() } as never,
         commitTaskMutation: async (command) => {
-          if (outcome === "finalization_indeterminate") {
-            return { outcome, file: "task_records" as const, stage: "sync_directory" as const };
-          }
           if (command.kind !== "activation") throw new Error("Expected activation.");
           command.activation.assertCommitReady();
+          const next = command.prepareAgainstCurrent();
+          const task = next.nextTree.rootTeam.taskExecutions.find((execution) =>
+            "agentRunId" in execution && execution.agentRunId === "task-agent-new");
+          preparedTreePlatformAgentRunId = task && "agentRunId" in task
+            ? task.platformAgentRunId
+            : null;
+          if (outcome === "finalization_indeterminate") {
+            await command.activation.abortBeforeCommit();
+            return { outcome, file: "task_records" as const, stage: "sync_directory" as const };
+          }
           command.activation.commitAfterDurability();
           releasedInsideCommit = releaseWork.mock.calls.length === 1;
           return { outcome };
@@ -452,7 +469,15 @@ describe("current task delegation invariants", () => {
         deliverSystemMessage: async () => ({ accepted: true }),
         agentRunIdentityAllocator: { allocateForAgentDefinition: async () => "task-agent-new" },
       });
-      return { service, prepared, abort, releaseWork, commit, releasedInsideCommit: () => releasedInsideCommit };
+      return {
+        service,
+        prepared,
+        abort,
+        releaseWork,
+        commit,
+        releasedInsideCommit: () => releasedInsideCommit,
+        preparedTreePlatformAgentRunId: () => preparedTreePlatformAgentRunId,
+      };
     };
     const context = { identity: createTeamMemberExecutionIdentity({
       rootTeamRunId: "root-team-run", memberAddress: "/coordinator", agentRunId: "root-coordinator",
@@ -462,14 +487,16 @@ describe("current task delegation invariants", () => {
     const indeterminate = buildService("finalization_indeterminate");
     await expect(indeterminate.service.delegateTask(context, { recipient_address: "/researcher", description: "work" }, placement))
       .rejects.toBeInstanceOf(TeamRunPersistenceFinalizationIndeterminateError);
-    expect(indeterminate.abort).not.toHaveBeenCalled();
+    expect(indeterminate.abort).toHaveBeenCalledOnce();
     expect(indeterminate.commit).not.toHaveBeenCalled();
     expect(indeterminate.releaseWork).not.toHaveBeenCalled();
+    expect(indeterminate.preparedTreePlatformAgentRunId()).toBe("thread-task-new");
 
     const committed = buildService("committed");
     await expect(committed.service.delegateTask(context, { recipient_address: "/researcher", description: "work" }, placement))
       .resolves.toMatchObject({ status: "active", target_agent_run_id: "task-agent-new" });
     expect(committed.releasedInsideCommit()).toBe(true);
     expect(committed.releaseWork).toHaveBeenCalledOnce();
+    expect(committed.preparedTreePlatformAgentRunId()).toBe("thread-task-new");
   });
 });

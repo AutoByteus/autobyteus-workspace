@@ -36,6 +36,7 @@ describe("MixedTeamRunBackendFactory", () => {
 
     expect(backend.teamRunId).toBe(config.rootTeam.teamRunId);
     expect(captured).toHaveLength(1);
+    expect(captured[0]?.runtimeContext?.configuredMemberActivationMode).toBe("fresh");
     expect(captured[0]?.runtimeContext?.memberContexts).toEqual([
       expect.objectContaining({
         kind: "agent",
@@ -52,5 +53,37 @@ describe("MixedTeamRunBackendFactory", () => {
     ]);
     expect(captured[0]).not.toHaveProperty("memberRouteKey");
     expect(captured[0]).not.toHaveProperty("memberPath");
+  });
+
+  it("marks restored configured members for restoration and ignores legacy native self-bindings", async () => {
+    const captured: TeamRunContext[] = [];
+    const config = testTeamRunConfig({
+      rootTeamRunId: "team-native-restore",
+      coordinatorAddress: "/Coordinator",
+      children: [
+        testAgentNode("/Coordinator", {
+          agentRunId: "native-run",
+          platformAgentRunId: "native-run",
+          runtimeKind: RuntimeKind.AUTOBYTEUS,
+        }),
+      ],
+    });
+    const factory = new MixedTeamRunBackendFactory({
+      createTeamManager: (context) => {
+        captured.push(context);
+        return {
+          isActive: () => true,
+          getLeafAgentStatusSnapshots: () => [],
+          hasOpenExecutionWork: () => false,
+        } as never;
+      },
+    });
+
+    await factory.restoreBackend(config, config.rootTeam.teamRunId);
+
+    expect(captured[0]?.runtimeContext?.configuredMemberActivationMode).toBe("restore");
+    const native = captured[0]?.runtimeContext?.memberContexts[0];
+    expect(native?.kind).toBe("agent");
+    expect(native?.getPlatformAgentRunId()).toBeNull();
   });
 });

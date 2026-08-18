@@ -10,6 +10,7 @@ import type { MixedSubTeamRunFactory } from "../mixed-sub-team-run-factory.js";
 export class MixedSubTeamMemberHandle {
   readonly context: MixedSubTeamMemberContext;
   private childRun: TeamRun | null = null;
+  private materializationAttempt: Promise<TeamRun> | null = null;
 
   constructor(private readonly options: {
     parentContext: TeamRunContext<MixedTeamRunContext>;
@@ -24,6 +25,7 @@ export class MixedSubTeamMemberHandle {
   getOrCreateTeamRun(): Promise<TeamRun> { return this.ensureReady(); }
 
   async prepareTermination(): Promise<PreparedLocalExecutionTermination> {
+    if (this.materializationAttempt) await this.materializationAttempt.catch(() => null);
     const childRun = this.childRun;
     const prepared = childRun ? await childRun.prepareTermination() : null;
     let state: "prepared" | "cancelled" | "committed" = "prepared";
@@ -61,16 +63,40 @@ export class MixedSubTeamMemberHandle {
     this.context.childRuntimeContext = null;
   }
 
-  private async ensureReady(): Promise<TeamRun> {
-    if (this.childRun?.isActive()) return this.childRun;
-    this.childRun = await this.options.subTeamRunFactory.createOrRestore({
-      handoffs: this.options.parentContext.handoffs,
-      applicationBinding: this.options.parentContext.applicationBinding,
-      rootTeamRunId: this.options.parentContext.rootTeamRunId,
-      teamNode: this.options.config,
-      restoreRuntimeContext: this.context.childRuntimeContext,
+  private ensureReady(): Promise<TeamRun> {
+    if (this.childRun?.isActive()) return Promise.resolve(this.childRun);
+    if (this.materializationAttempt) return this.materializationAttempt;
+    let retrySafe = false;
+    const attempt = Promise.resolve().then(() => this.materializeOnce(() => { retrySafe = true; }));
+    this.materializationAttempt = attempt;
+    void attempt.then(() => {
+      if (this.materializationAttempt === attempt) this.materializationAttempt = null;
+    }, () => {
+      if (retrySafe && this.materializationAttempt === attempt) this.materializationAttempt = null;
     });
-    this.context.childRuntimeContext = this.childRun.getRuntimeContext() as MixedTeamRunContext;
-    return this.childRun;
+    return attempt;
+  }
+
+  private async materializeOnce(markRetrySafe: () => void): Promise<TeamRun> {
+    let childRun: TeamRun;
+    try {
+      childRun = await this.options.subTeamRunFactory.materializeConfiguredChild({
+        handoffs: this.options.parentContext.handoffs,
+        applicationBinding: this.options.parentContext.applicationBinding,
+        rootTeamRunId: this.options.parentContext.rootTeamRunId,
+        teamNode: this.options.config,
+        configuredMemberActivationMode: this.options.parentContext.runtimeContext.configuredMemberActivationMode,
+      });
+    } catch (error) {
+      markRetrySafe();
+      throw error;
+    }
+    if (childRun.teamRunId !== this.context.teamRunId || !childRun.isActive()) {
+      throw new Error(`Configured TeamRun '${this.context.teamRunId}' did not materialize exactly.`);
+    }
+    const childRuntimeContext = childRun.getRuntimeContext() as MixedTeamRunContext;
+    this.childRun = childRun;
+    this.context.childRuntimeContext = childRuntimeContext;
+    return childRun;
   }
 }

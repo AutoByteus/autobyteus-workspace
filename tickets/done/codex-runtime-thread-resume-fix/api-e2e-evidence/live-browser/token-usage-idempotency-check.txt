@@ -1,0 +1,225 @@
+== requirements relevant acceptance ==
+## Functional Requirements
+
+- **REQ-001:** When an external persisted team-agent runtime establishes a non-null provider-native ID, the matching authoritative execution-tree node must durably adopt that exact ID through `RootTeamRun` before the binding is committed.
+- **REQ-002:** Restoring an external persisted team run must supply each stored provider ID before the first post-restart turn and request exact provider resume.
+- **REQ-003:** External binding adoption must apply to configured and delegated task-agent nodes through the same root-owned invariant. Runtime eligibility must be explicit.
+- **REQ-004:** An external execution with no prior activity and no binding must retain supported new-thread creation and durably record its result; no ID may be invented.
+- **REQ-005:** Failure to resume a known provider ID must be observable and must not silently create a replacement.
+- **REQ-006:** Prior external activity plus a null canonical binding must yield an explicit non-resumable/context-loss outcome.
+- **REQ-007:** Existing local history loading, ordering, content, and visibility must remain unchanged and independent of runtime restoration success.
+- **REQ-008:** Standalone Codex persistence/restoration must retain exact ID propagation and no-silent-replacement semantics.
+- **REQ-009:** For external runtimes, `platformAgentRunId` must contain only a provider-native identity; no local ID, sentinel, or placeholder is valid.
+- **REQ-010:** Fresh Claude execution must reserve one valid UUID before input, durably bind it, use it as SDK `sessionId` for first creation, and use the identical UUID as `resume` thereafter. Stream identity only confirms it.
+- **REQ-011:** Standalone Claude metadata must durably contain that UUID before first input is admitted; correctness must not depend on a later event or graceful shutdown.
+- **REQ-012:** `createTeamRun` and `restoreTeamRun` must convey explicit process-local materialization provenance to configured mixed-team members and nested configured teams. A restored native member with canonical prior local activity must prepare native restoration with its local AgentRun ID and existing memory directory; the external binding field must not be used as native restoration provenance.
+- **REQ-013:** Native configured and newly delegated task AgentRuns must not stage, root-adopt, or persist a `TeamAgentPlatformBinding`, even if their backend reports the local AgentRun ID through a generic platform-ID accessor. Newly written native execution-tree bindings remain null.
+- **REQ-014:** Before a team member candidate is created or restored, every non-null persisted `workspaceRootPath` must be canonicalized and made active through the workspace owner. A valid persisted workspace must not silently fall back to the temp workspace.
+- **REQ-015:** Successful native restart continuation must load the prior working-context snapshot before input and append the first post-restart turn without clearing, replacing, duplicating, or reordering prior user/assistant context.
+
+## Acceptance Criteria
+
+- **AC-001:** A configured Codex marker turn resumes the identical non-null Codex thread ID across full restart.
+- **AC-002:** The first context-dependent Codex turn returns the earlier fact without client replay.
+- **AC-003:** Earlier local messages remain visible once and in order.
+- **AC-004:** Before restart, the physical configured Codex node contains the exact provider ID.
+- **AC-005:** Targeted coverage proves external binding adoption for configured/task agents and proves fresh configured/task native executions do not produce a root binding.
+- **AC-006:** A genuinely fresh external team agent creates one thread, persists it, and reuses it in-process.
+- **AC-007:** Prior external activity with null binding fails explicitly and starts no silent replacement.
+- **AC-008:** Known Codex resume failure does not invoke `thread/start`.
+- **AC-009:** Standalone Codex exact restoration remains green.
+- **AC-010:** A configured Claude node physically persists the exact valid UUID selected for first SDK creation before restart.
+- **AC-011:** Restart requests resume of that exact UUID and creates no replacement.
+- **AC-012:** The first post-restart Claude context response returns `AMBER-ORCHID-4821`; local history remains intact.
+- **AC-013:** Claude adapter coverage proves mutually exclusive SDK `sessionId` creation and `resume` restoration.
+- **AC-014:** A conflicting stream UUID fails and is never adopted.
+- **AC-015:** Standalone Claude abrupt restart resumes the UUID durably stored before first input.
+- **AC-016:** A real browser restart test using Classroom Simulation Team, native AutoByteus, DeepSeek V4 Flash, and the isolated secret-import setup recalls its exact pre-restart marker on the first context-dependent turn.
+- **AC-017:** The same native scenario retains the same TeamRun/AgentRun IDs, and the physical configured native execution-tree node remains `platformAgentRunId: null` before and after activation/restart.
+- **AC-018:** The post-restart native working snapshot contains the pre-restart marker user/assistant messages exactly once and appends the recall user/assistant messages; logs show native restore, not fresh creation, and no valid-workspace temp fallback.
+- **AC-019:** Focused automated coverage proves: restored configured native activity selects generic local-state restore; restored uninitialized native state and new native task execution select fresh creation; configured nested teams inherit restore provenance; newly delegated task teams remain fresh; overlapping first commands still join one candidate.
+
+## Constraints / Dependencies
+
+- Authoritative work remains on `codex/codex-runtime-thread-resume-fix`, bootstrapped from `origin/codex/agent-team-universal-task-delegation`; `origin/personal` is comparison evidence only.
+- `RootTeamRun` owns V1 execution-tree durability; `AgentRunManager` owns unpublished candidate construction/publication; the member handle owns runtime adaptation and readiness single-flight; `WorkspaceManager` owns workspace activation.
+- Native working-context state lives under the deterministic team-agent memory directory and is restored by `AutoByteusAgentRunBackendFactory.restoreBackend()`.
+- Real external/native validation needs installed credentials and model access. Use an isolated database and the exact import form: `pnpm secrets:import -- --source /Users/normy/.autobyteus/server-data/.env --database-url file:///private/tmp/<isolated-run>/autobyteus.db`.
+- No test may import credentials into the default or production database. No production database mutation is authorized.
+
+## Persisted Data Outcome (When Applicable)
+
+- Stored subjects: V1 `team_run_execution_tree.json`; team AgentRun memory directories (`working_context_snapshot.json`, raw traces); existing standalone metadata.
+- Required outcome: **Directly Usable — No Migration**.
+- Preserve: valid external IDs, native local run IDs, workspace roots, memory directories, snapshots, traces, and local history.
+
+== repository append implementation ==
+
+export class SqlTokenUsageLedgerRepository extends BaseRepository.forModel(
+  Prisma.ModelName.TokenUsageLedgerEvent,
+) {
+  async appendUsageEvent(payload: TokenUsageUpdatedPayload): Promise<TokenUsageUpdatedPayload> {
+    try {
+      const created = await this.create({ data: toCreateInput(payload) });
+      return toDomainPayload(created);
+    } catch (error) {
+      if (typeof error === "object" && error && "code" in error && (error as { code?: string }).code === "P2002") {
+        const existing = await this.findFirst({
+          where: {
+            OR: [
+              { usageEventId: payload.usage_event_id },
+              { idempotencyKey: payload.idempotency_key },
+            ],
+          },
+        });
+        if (existing) return toDomainPayload(existing);
+      }
+      throw error;
+    }
+  }
+
+  async updateUsageEventDisplayFields(payload: TokenUsageUpdatedPayload): Promise<TokenUsageUpdatedPayload> {
+    const updated = await this.update({
+      where: { usageEventId: payload.usage_event_id },
+      data: {
+        teamName: payload.team_name,
+        agentName: payload.agent_name,
+        runSummary: payload.run_summary,
+        runCreatedAt: normalizeNullableDate(payload.run_created_at),
+        memberDisplayName: payload.member_display_name,
+      },
+    });
+    return toDomainPayload(updated);
+  }
+
+  async findLatestCumulativeSnapshot(input: {
+    runId: string;
+    snapshotSeriesKey: string;
+  }): Promise<TokenUsageUpdatedPayload | null> {
+    const record = await this.findFirst({
+      where: {
+        runId: input.runId,
+        snapshotSeriesKey: input.snapshotSeriesKey,
+        usageScope: "cumulative_snapshot",
+      },
+      orderBy: [
+        { observedAt: "desc" },
+        { id: "desc" },
+      ],
+    });
+    return record ? toDomainPayload(record) : null;
+  }
+
+  async listEventsByRunId(runId: string): Promise<TokenUsageUpdatedPayload[]> {
+    const records = await this.findMany({
+      where: { runId },
+      orderBy: [{ observedAt: "asc" }, { id: "asc" }],
+    });
+    return records.map(toDomainPayload);
+  }
+
+  async listEventsByTeamRunId(rootTeamRunId: string): Promise<TokenUsageUpdatedPayload[]> {
+    const normalized = rootTeamRunId.trim();
+    if (!normalized) return [];
+    const records = await this.findMany({
+      where: { rootTeamRunId: normalized },
+      orderBy: [{ observedAt: "asc" }, { id: "asc" }],
+    });
+    return records.map(toDomainPayload);
+  }
+
+  async listEventsInPeriod(input: {
+    startDate: Date;
+    endDate: Date;
+  }): Promise<TokenUsageUpdatedPayload[]> {
+    const records = await this.findMany({
+      where: { observedAt: { gte: input.startDate, lte: input.endDate } },
+      orderBy: [{ observedAt: "asc" }, { id: "asc" }],
+    });
+    return records.map(toDomainPayload);
+  }
+}
+
+== table schema ==
+CREATE TABLE IF NOT EXISTS "token_usage_ledger_events" (
+  "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  "usage_event_id" TEXT NOT NULL,
+  "idempotency_key" TEXT NOT NULL,
+  "observed_at" DATETIME NOT NULL,
+  "persisted_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "run_id" TEXT NOT NULL,
+  "turn_id" TEXT,
+  "llm_call_id" TEXT,
+  "call_sequence" INTEGER,
+  "agent_definition_id" TEXT,
+  "workspace_id" TEXT,
+  "task_id" TEXT,
+  "runtime_kind" TEXT NOT NULL,
+  "model_provider" TEXT,
+  "model_identifier" TEXT,
+  "model_value" TEXT,
+  "ingestion_kind" TEXT NOT NULL,
+  "usage_scope" TEXT NOT NULL,
+  "snapshot_series_key" TEXT,
+  "previous_snapshot_event_id" TEXT,
+  "reported_input_tokens" INTEGER,
+  "reported_output_tokens" INTEGER,
+  "reported_total_tokens" INTEGER,
+  "accounting_input_tokens" INTEGER,
+  "accounting_output_tokens" INTEGER,
+  "accounting_total_tokens" INTEGER,
+  "cache_read_input_tokens" INTEGER,
+  "cache_creation_input_tokens" INTEGER,
+  "reasoning_output_tokens" INTEGER,
+  "billable_input_tokens" INTEGER,
+  "billable_output_tokens" INTEGER,
+  "raw_usage_json" TEXT,
+  "raw_event_json" TEXT,
+  "quality_flags_json" TEXT,
+  "cost_basis" TEXT,
+  "currency" TEXT,
+  "input_price_per_million" REAL,
+  "output_price_per_million" REAL,
+  "cached_input_read_price_per_million" REAL,
+  "cached_input_write_price_per_million" REAL,
+  "pricing_source" TEXT,
+  "pricing_status" TEXT NOT NULL,
+  "pricing_missing_reason" TEXT,
+  "pricing_snapshot_json" TEXT,
+  "estimated_api_input_cost" REAL,
+  "estimated_api_standard_input_cost" REAL,
+  "estimated_api_cache_read_input_cost" REAL,
+  "estimated_api_cache_creation_input_cost" REAL,
+  "estimated_api_output_cost" REAL,
+  "estimated_api_reasoning_output_cost" REAL,
+  "estimated_api_total_cost" REAL,
+  "api_cost_status" TEXT NOT NULL,
+  "latest_context_input_tokens" INTEGER,
+  "effective_context_budget_tokens" INTEGER,
+  "context_pressure_percent" REAL
+, "input_token_semantic" TEXT NOT NULL DEFAULT 'unknown', "standard_input_tokens" INTEGER, "cache_miss_input_tokens" INTEGER, "cache_creation_5m_input_tokens" INTEGER, "cache_creation_1h_input_tokens" INTEGER, "cache_state" TEXT NOT NULL DEFAULT 'unknown', "cached_input_write_5m_price_per_million" REAL, "cached_input_write_1h_price_per_million" REAL, "pricing_policy_key" TEXT, "selected_pricing_tier_id" TEXT, "missing_price_dimensions_json" TEXT, "estimated_api_cache_creation_5m_input_cost" REAL, "estimated_api_cache_creation_1h_input_cost" REAL, "latest_prompt_tokens" INTEGER, "effective_context_window_tokens" INTEGER, "context_window_usage_percent" REAL, "team_name" TEXT, "agent_name" TEXT, "run_summary" TEXT, "run_created_at" DATETIME, "member_display_name" TEXT, "provider_name" TEXT, "root_team_run_id" TEXT);
+CREATE UNIQUE INDEX "token_usage_ledger_events_usage_event_id_key" ON "token_usage_ledger_events"("usage_event_id");
+CREATE UNIQUE INDEX "token_usage_ledger_events_idempotency_key_key" ON "token_usage_ledger_events"("idempotency_key");
+CREATE INDEX "token_usage_ledger_events_run_id_observed_at_idx" ON "token_usage_ledger_events"("run_id", "observed_at");
+CREATE INDEX "token_usage_ledger_events_snapshot_series_key_run_id_observed_at_idx" ON "token_usage_ledger_events"("snapshot_series_key", "run_id", "observed_at");
+CREATE INDEX "token_usage_ledger_events_root_team_run_id_observed_at_idx" ON "token_usage_ledger_events" ("root_team_run_id", "observed_at");
+
+== total and duplicate-key check ==
+total_rows  distinct_idempotency_keys
+----------  -------------------------
+10          10                       
+
+== rows for six live run IDs ==
+run_id                                            rows  distinct_keys
+------------------------------------------------  ----  -------------
+daily_assistant_2a1686d4c9d14c45b367a52e7da36873  2     2            
+daily_assistant_977bfccbe0154201afa60ea5e0d20f4c  2     2            
+daily_assistant_a0606e36a7164d799b125b5d651c06df  1     1            
+professor_124d75241ce246c2875c9b8e3120a067        1     1            
+professor_88c0343f282b4aa18acd7c1dd9bd2960        2     2            
+professor_dbc35977c25141d79de619649aa5b357        2     2            
+
+== unique constraint error count in live log ==
+4
+
+Interpretation: SQLite uniqueness and the duplicate query establish that provider replay attempts produced no duplicate ledger rows. The Prisma errors are rejected duplicate insert attempts from an ancillary token-usage path; no messaging or context-continuity failure occurred.

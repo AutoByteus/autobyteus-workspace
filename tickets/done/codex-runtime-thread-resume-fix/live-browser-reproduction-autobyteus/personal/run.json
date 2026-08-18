@@ -1,0 +1,32 @@
+{
+  "evidenceKind": "live-browser-personal-control",
+  "sourceBranch": "origin/personal",
+  "sourceCommit": "acb8985930ccce49b632cdca22b92f5b237e35bf",
+  "worktree": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo",
+  "isolation": {
+    "database": "disposable file database",
+    "apiPort": 60421,
+    "webPort": 31321,
+    "productionDatabaseTouched": false
+  },
+  "secretImportCommand": "pnpm secrets:import -- --source /Users/normy/.autobyteus/server-data/.env --database-url file:///private/tmp/autobyteus-native-personal-control-20260817/autobyteus.db",
+  "agentPackage": "/Users/normy/autobyteus_org/autobyteus-agents",
+  "teamDefinition": "Classroom Simulation Team",
+  "runtimeKind": "AUTOBYTEUS",
+  "modelIdentifier": "deepseek-v4-flash",
+  "teamRunId": "classroom_simulation_team_ece4a4cdd54e417bab501355f3b4a549",
+  "agentRunId": "professor_643c95b1f45c4f27ade00f72ec1efb18",
+  "marker": "PERSONAL-NATIVE-CONTROL-20260817-R5C3",
+  "preRestartPrompt": "Remember exact marker PERSONAL-NATIVE-CONTROL-20260817-R5C3. Reply exactly: ACK PERSONAL-NATIVE-CONTROL-20260817-R5C3",
+  "preRestartResponse": "ACK PERSONAL-NATIVE-CONTROL-20260817-R5C3",
+  "restart": "full API process stop and restart against the same disposable state; same browser conversation reopened",
+  "postRestartPrompt": "After the server restart, what exact marker did I ask you to remember immediately before restart? Reply with only that marker.",
+  "postRestartResponse": "PERSONAL-NATIVE-CONTROL-20260817-R5C3",
+  "outcome": "PASS",
+  "physicalFindings": [
+    "Legacy personal restoration rebuilt the workspace registry entry before backend restore.",
+    "The native AgentRun restore path loaded the working-context snapshot for the same local AgentRun ID.",
+    "The post-restart working-context snapshot retained both pre-restart marker messages and appended the recall turn."
+  ],
+  "cleanup": "servers and browser tab stopped/closed; disposable runtime directory deleted after evidence copy"
+}

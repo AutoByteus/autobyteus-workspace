@@ -152,9 +152,6 @@ export class TeamRunService {
   recordRunActivity(run: RootTeamRun, input: { summary?: string | null } = {}): Promise<void> {
     return this.catalog.recordTeamRunSummary({ teamRunId: run.teamRunId, summary: input.summary });
   }
-  refreshRunMetadata(run: RootTeamRun): Promise<void> {
-    return this.catalog.recordTeamRunRestored({ tree: run.getExecutionTreeSnapshot() });
-  }
   async terminateTeamRun(teamRunId: string): Promise<boolean> {
     const success = await this.manager.terminateTeamRun(teamRunId);
     if (success) await this.catalog.recordTeamRunTerminated({ teamRunId });

@@ -12,11 +12,15 @@ import {
   type PreparedTaskMutationCommit, type PreparedTaskSettlementCommit,
   type TaskMutationCommitResult, type TaskSettlementCommitResult,
 } from "../services/team-run-persistence-contract.js";
-import { addTaskExecutionToTree, settleTaskExecutionInTree } from "../services/team-run-execution-tree-mutator.js";
+import {
+  addTaskExecutionToTree,
+  adoptAgentPlatformBindingInTree,
+  settleTaskExecutionInTree,
+} from "../services/team-run-execution-tree-mutator.js";
 import type { TeamMemberExecutionIdentity } from "../domain/team-member-execution-identity.js";
 import type { TeamRunExecutionTreeSnapshot } from "../domain/team-run-execution-tree.js";
 import type { TeamRun } from "../domain/team-run.js";
-import type { TeamRunAgentNode, TeamRunAgentTeamNode, TeamRunConfig, TeamRunNode } from "../domain/team-run-config.js";
+import type { TeamRunAgentNode, TeamRunAgentTeamNode, TeamRunConfig } from "../domain/team-run-config.js";
 import { TeamRunEventSourceType, type TeamRunEvent } from "../domain/team-run-event.js";
 import { validateTaskDelegationRecordsV1Payload } from "./records/task-delegation-records-v1-schema.js";
 import type { TaskDelegationRecordV1, TaskDelegationRecordsSnapshot, TaskExecutionReference, TaskReview, TaskSubmission } from "./task-delegation-record-v1.js";
@@ -26,6 +30,7 @@ import { buildTaskAssigneeWorkPacket, optionalTaskString, requireTaskString, val
 import { hasOpenChildTask, orderTasksDeepestFirst } from "./task-delegation-ownership.js";
 import { projectTaskAgentExecution, projectTaskTeamExecution } from "./task-execution-tree-projection.js";
 import { TaskTeamRunIdentityFactory } from "./task-team-run-identity-factory.js";
+import { findTaskConfigNode, requirePreparedTaskTeamNode, sameTaskExecutionBinding, taskErrorMessage } from "./task-delegation-execution-resolution.js";
 import {
   TaskDelegationError,
   type DelegateTaskInput, type DelegateTaskResult, type ReviewTaskResultInput,
@@ -125,7 +130,7 @@ export class TaskDelegationService {
       });
       const hostRun = await this.options.requireTeamRun(host.teamRunId);
       if (placement.kind === "agent") {
-        const source = findConfigNode(this.options.config.rootTeam, placement.address);
+        const source = findTaskConfigNode(this.options.config.rootTeam, placement.address);
         if (!source || source.kind !== "agent") throw new TaskDelegationError("TARGET_MEMBER_NOT_FOUND", `Agent '${placement.address}' was not found.`);
         const agentRunId = await this.agentIds.allocateForAgentDefinition(source.agentDefinitionId);
         prepared = await hostRun.prepareTaskAgent({
@@ -136,7 +141,7 @@ export class TaskDelegationService {
           message: buildTaskAssigneeWorkPacket({ delegator: context.identity, description, referenceFiles }),
         });
       } else {
-        const source = findConfigNode(this.options.config.rootTeam, placement.address);
+        const source = findTaskConfigNode(this.options.config.rootTeam, placement.address);
         if (!source || source.kind !== "agent_team") throw new TaskDelegationError("TARGET_MEMBER_NOT_FOUND", `AgentTeam '${placement.address}' was not found.`);
         const materialized = await this.taskTeams.create({ source, taskId });
         prepared = await hostRun.prepareTaskTeam({
@@ -170,7 +175,7 @@ export class TaskDelegationService {
       if (error instanceof TeamRunPersistenceFinalizationIndeterminateError) throw error;
       reservation?.cancel();
       if (prepared) await prepared.abort();
-      return { task_id: taskId, status: "not_started", message: errorMessage(error) };
+      return { task_id: taskId, status: "not_started", message: taskErrorMessage(error) };
     }
   }
 
@@ -231,19 +236,12 @@ export class TaskDelegationService {
     try {
       this.assertExternal(input.context.identity);
       if (this.currentTasks.records.some((record) => record.taskId === input.taskId)) throw new Error(`Task '${input.taskId}' already exists.`);
-      const currentIndex = this.options.getIndex();
-      const expectedHost = new TeamExecutionScopeResolver(currentIndex).resolveTargetOwner({
-        callerAgentRunId: input.context.identity.agentRunId,
-        recipientAddress: input.placement.address,
-      });
-      if (expectedHost.teamRunId !== input.hostTeamRunId) throw new Error("Task host changed before activation commit.");
       const execution = input.prepared.binding.kind === "agent"
         ? projectTaskAgentExecution({ address: input.prepared.binding.address, agentRunId: input.prepared.binding.agentRunId, startedAt: input.startedAt })
         : projectTaskTeamExecution({ node: requirePreparedTaskTeamNode(input.prepared, this.options.config.rootTeam), startedAt: input.startedAt });
       const taskExecution: TaskExecutionReference = input.prepared.binding.kind === "agent"
         ? Object.freeze({ agentRunId: input.prepared.binding.agentRunId })
         : Object.freeze({ teamRunId: input.prepared.binding.teamRunId });
-      const nextTree = addTaskExecutionToTree({ tree: this.options.getTree(), ownerTeamRunId: input.hostTeamRunId, execution });
       const record: TaskDelegationRecordV1 = Object.freeze({
         taskId: input.taskId,
         delegatorAgentRunId: input.context.identity.agentRunId,
@@ -260,10 +258,26 @@ export class TaskDelegationService {
         records: [...this.currentTasks.records, record],
       }, this.options.rootTeamRunId);
       let committedExecution: import("../domain/prepared-task-execution.js").CommittedTaskExecution | null = null;
+      let nextTreeAtCommit: TeamRunExecutionTreeSnapshot | null = null;
       const command: PreparedTaskMutationCommit = {
         kind: "activation",
-        nextTree,
-        nextTasks,
+        prepareAgainstCurrent: () => {
+          const expectedHost = new TeamExecutionScopeResolver(this.options.getIndex()).resolveTargetOwner({
+            callerAgentRunId: input.context.identity.agentRunId,
+            recipientAddress: input.placement.address,
+          });
+          if (expectedHost.teamRunId !== input.hostTeamRunId) throw new Error("Task host changed before activation commit.");
+          let nextTree = addTaskExecutionToTree({
+            tree: this.options.getTree(),
+            ownerTeamRunId: input.hostTeamRunId,
+            execution,
+          });
+          for (const binding of input.prepared.stagedPlatformBindings) {
+            nextTree = adoptAgentPlatformBindingInTree({ tree: nextTree, binding }).tree;
+          }
+          nextTreeAtCommit = nextTree;
+          return { nextTree, nextTasks };
+        },
         activation: {
           assertCommitReady: () => {
             if (!this.options.isRootOpen()) throw new Error("Root TeamRun is not open.");
@@ -271,10 +285,16 @@ export class TaskDelegationService {
           },
           abortBeforeCommit: async () => { input.reservation?.cancel(); await input.prepared.abort(); },
           commitAfterDurability: () => {
-            committedExecution = input.prepared.commit();
+            if (!nextTreeAtCommit) throw new Error("Task activation tree was not prepared at the lock head.");
+            try {
+              committedExecution = input.prepared.commitAfterDurability();
+            } catch (error) {
+              this.options.enterLifecycleFailStop();
+              throw error;
+            }
             input.reservation?.commit();
             this.currentTasks = nextTasks;
-            this.options.replaceState({ tree: nextTree, tasks: nextTasks });
+            this.options.replaceState({ tree: nextTreeAtCommit, tasks: nextTasks });
             this.options.publish(taskActivatedEvent(record));
             committedExecution.releaseWork();
           },
@@ -298,7 +318,7 @@ export class TaskDelegationService {
       if (error instanceof TeamRunPersistenceFinalizationIndeterminateError) throw error;
       input.reservation?.cancel();
       await input.prepared.abort();
-      return { task_id: input.taskId, status: "not_started", message: errorMessage(error) };
+      return { task_id: input.taskId, status: "not_started", message: taskErrorMessage(error) };
     }
   }
 
@@ -400,13 +420,24 @@ export class TaskDelegationService {
     }
     const settledAt = new Date().toISOString();
     const runId = "agentRunId" in task.taskExecution ? task.taskExecution.agentRunId : task.taskExecution.teamRunId;
-    const nextTree = settleTaskExecutionInTree({ tree: this.options.getTree(), taskExecutionRunId: runId, settledAt });
+    let nextTreeAtCommit: TeamRunExecutionTreeSnapshot | null = null;
     const result = await this.options.commitTaskSettlement({
-      nextTree,
       settlement: prepared,
-      commitTreeAndEvent: () => {
-        this.options.replaceState({ tree: nextTree, tasks: this.currentTasks });
-        this.options.publish(taskSettledEvent(task, settledAt));
+      prepareAgainstCurrent: () => {
+        const nextTree = settleTaskExecutionInTree({
+          tree: this.options.getTree(),
+          taskExecutionRunId: runId,
+          settledAt,
+        });
+        nextTreeAtCommit = nextTree;
+        return {
+          nextTree,
+          commitTreeAndEvent: () => {
+            if (!nextTreeAtCommit) throw new Error("Task settlement tree was not prepared at the lock head.");
+            this.options.replaceState({ tree: nextTreeAtCommit, tasks: this.currentTasks });
+            this.options.publish(taskSettledEvent(task, settledAt));
+          },
+        };
       },
     });
     if (result.outcome === "not_committed") return false;
@@ -426,7 +457,7 @@ export class TaskDelegationService {
       if (error instanceof TaskDelegationError) throw error;
       throw new TaskDelegationError(
         "TASK_EXECUTION_SETTLEMENT_FAILED",
-        `Task '${task.taskId}' execution cleanup failed: ${errorMessage(error)}`,
+        `Task '${task.taskId}' execution cleanup failed: ${taskErrorMessage(error)}`,
       );
     }
     this.options.teamRunResolver.unregisterInactive();
@@ -465,7 +496,7 @@ export class TaskDelegationService {
   }
 
   private configuredCoordinator(address: string) {
-    const source = findConfigNode(this.options.config.rootTeam, address);
+    const source = findTaskConfigNode(this.options.config.rootTeam, address);
     if (!source || source.kind !== "agent_team") throw new Error(`Configured Team '${address}' was not found.`);
     return source.coordinatorAddress;
   }
@@ -486,40 +517,6 @@ export class TaskDelegationService {
     return result.accepted ? null : `Task transition committed, but notification failed: ${result.message ?? result.code ?? "unknown error"}`;
   }
 }
-
-const errorMessage = (error: unknown): string => error instanceof Error ? error.message : String(error);
-
-const sameTaskExecutionBinding = (
-  reference: TaskExecutionReference,
-  binding: import("../domain/prepared-task-execution.js").TaskExecutionBinding,
-): boolean => binding.kind === "agent"
-  ? "agentRunId" in reference && reference.agentRunId === binding.agentRunId
-  : "teamRunId" in reference && reference.teamRunId === binding.teamRunId;
-
-const findConfigNode = (root: TeamRunAgentTeamNode, address: string): TeamRunNode | null => {
-  if (root.address === address) return root;
-  for (const child of root.children) {
-    if (child.address === address) return child;
-    if (child.kind === "agent_team") {
-      const nested = findConfigNode(child, address);
-      if (nested) return nested;
-    }
-  }
-  return null;
-};
-
-const requirePreparedTaskTeamNode = (
-  prepared: import("../domain/prepared-task-execution.js").PreparedTaskExecution,
-  root: TeamRunAgentTeamNode,
-): TeamRunAgentTeamNode => {
-  const binding = prepared.binding;
-  if (binding.kind !== "team") throw new Error("Prepared execution is not a Team.");
-  const source = findConfigNode(root, binding.address);
-  if (!source || source.kind !== "agent_team") throw new Error(`Configured Team '${binding.address}' was not found.`);
-  const preparedRoot = prepared.preparedTeamRuns.find((run) => run.teamRunId === binding.teamRunId);
-  if (!preparedRoot) throw new Error(`Prepared TeamRun '${binding.teamRunId}' was not found.`);
-  return preparedRoot.context.teamNode;
-};
 
 const assertCommitted = (result: TaskMutationCommitResult, label: string): void => {
   if (result.outcome === "committed") return;

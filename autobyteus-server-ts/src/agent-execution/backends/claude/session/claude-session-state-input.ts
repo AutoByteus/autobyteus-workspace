@@ -8,6 +8,7 @@ import type {
 } from "../../../../runtime-management/claude/client/claude-sdk-client.js";
 import type { ContextFileLocalPathResolver } from "../../../../context-files/services/context-file-local-path-resolver.js";
 import type { ClaudeAgentToolsMcpSessionServiceLike } from "../agent-tools-mcp/claude-agent-tools-mcp-session-state.js";
+import type { ClaudeProviderSessionLifecycle } from "./claude-provider-session-lifecycle.js";
 
 type ContextFilePathResolverLike = Pick<ContextFileLocalPathResolver, "resolve">;
 
@@ -24,6 +25,7 @@ export type ClaudeSessionDependencies = {
 
 export type ClaudeSessionStateInput = {
   runContext: ClaudeRunContext;
+  providerSessionLifecycle: ClaudeProviderSessionLifecycle;
   dependencies: ClaudeSessionDependencies;
   listeners?: Set<(event: ClaudeSessionEvent) => void>;
   activeAbortController?: AbortController | null;

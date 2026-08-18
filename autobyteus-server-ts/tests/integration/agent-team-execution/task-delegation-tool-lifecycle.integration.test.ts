@@ -60,6 +60,7 @@ const findTeamNode = (root: TeamRunAgentTeamNode, teamRunId: string): TeamRunAge
 class PreparedTask implements PreparedTaskExecution {
   readonly binding;
   readonly preparedTeamRuns;
+  readonly stagedPlatformBindings = Object.freeze([]);
   readonly releaseWork = vi.fn();
   readonly abort = vi.fn(async () => undefined);
   private state: "open" | "sealed" | "committed" | "aborted" = "open";
@@ -77,7 +78,7 @@ class PreparedTask implements PreparedTaskExecution {
     this.state = "sealed";
   }
 
-  commit() {
+  commitAfterDurability() {
     if (this.state !== "sealed") throw new Error("Task preparation was not sealed.");
     this.state = "committed";
     return Object.freeze({ releaseWork: this.releaseWork });

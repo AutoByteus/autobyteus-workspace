@@ -24,7 +24,10 @@ const config = testTeamRunConfig({
 
 const build = (terminationAccepted = true) => {
   let active = true;
-  const childRuntime = new MixedTeamRunContext({ memberContexts: [] });
+  const childRuntime = new MixedTeamRunContext({
+    memberContexts: [],
+    configuredMemberActivationMode: "restore",
+  });
   const childFinish = vi.fn(async () => {
     if (terminationAccepted) active = false;
     return terminationAccepted
@@ -41,14 +44,17 @@ const build = (terminationAccepted = true) => {
     hasOpenExecutionWork: vi.fn(() => false),
     prepareTermination: vi.fn(async () => ({ cancel: childCancel, commit: childCommit })),
   };
-  const subTeamRunFactory = { createOrRestore: vi.fn(async () => childRun) };
+  const subTeamRunFactory = { materializeConfiguredChild: vi.fn(async () => childRun) };
   const parentContext = new TeamRunContext({
     rootTeamRunId: "parent-1",
     teamRunId: "parent-1",
     teamBackendKind: TeamBackendKind.MIXED,
     teamNode: config.rootTeam,
     handoffs: config.handoffs,
-    runtimeContext: new MixedTeamRunContext({ memberContexts: [] }),
+    runtimeContext: new MixedTeamRunContext({
+      memberContexts: [],
+      configuredMemberActivationMode: "restore",
+    }),
   });
   const context = new MixedSubTeamMemberContext({
     address: reviewTeam.address,
@@ -70,15 +76,60 @@ describe("MixedSubTeamMemberHandle", () => {
 
     await expect(handle.getOrCreateTeamRun()).resolves.toBe(childRun);
     await expect(handle.getOrCreateTeamRun()).resolves.toBe(childRun);
-    expect(subTeamRunFactory.createOrRestore).toHaveBeenCalledOnce();
-    expect(subTeamRunFactory.createOrRestore).toHaveBeenCalledWith({
+    expect(subTeamRunFactory.materializeConfiguredChild).toHaveBeenCalledOnce();
+    expect(subTeamRunFactory.materializeConfiguredChild).toHaveBeenCalledWith({
       handoffs: config.handoffs,
       applicationBinding: null,
       rootTeamRunId: "parent-1",
       teamNode: reviewTeam,
-      restoreRuntimeContext: null,
+      configuredMemberActivationMode: "restore",
     });
     expect(context.childRuntimeContext).toBe(childRuntime);
+  });
+
+  it("joins overlapping child materialization callers on one in-flight attempt", async () => {
+    const { handle, context, childRun, childRuntime, subTeamRunFactory } = build();
+    let releaseMaterialization!: () => void;
+    subTeamRunFactory.materializeConfiguredChild.mockImplementationOnce(() => new Promise((resolve) => {
+      releaseMaterialization = () => resolve(childRun);
+    }));
+
+    const first = handle.getOrCreateTeamRun();
+    const second = handle.getOrCreateTeamRun();
+
+    expect(first).toBe(second);
+    await Promise.resolve();
+    expect(subTeamRunFactory.materializeConfiguredChild).toHaveBeenCalledOnce();
+    expect(context.childRuntimeContext).toBeNull();
+    releaseMaterialization();
+    await expect(Promise.all([first, second])).resolves.toEqual([childRun, childRun]);
+    expect(context.childRuntimeContext).toBe(childRuntime);
+  });
+
+  it("clears a rejected factory attempt when no child was returned", async () => {
+    const { handle, childRun, subTeamRunFactory } = build();
+    subTeamRunFactory.materializeConfiguredChild.mockRejectedValueOnce(new Error("factory failed"));
+
+    const first = handle.getOrCreateTeamRun();
+    const joined = handle.getOrCreateTeamRun();
+    expect(joined).toBe(first);
+    await expect(first).rejects.toThrow("factory failed");
+    await expect(joined).rejects.toThrow("factory failed");
+
+    await expect(handle.getOrCreateTeamRun()).resolves.toBe(childRun);
+    expect(subTeamRunFactory.materializeConfiguredChild).toHaveBeenCalledTimes(2);
+  });
+
+  it("retains an invalid returned child failure instead of admitting a replacement", async () => {
+    const { handle, childRun, subTeamRunFactory } = build();
+    childRun.isActive.mockReturnValue(false);
+
+    const first = handle.getOrCreateTeamRun();
+    await expect(first).rejects.toThrow("did not materialize exactly");
+    const joined = handle.getOrCreateTeamRun();
+    expect(joined).toBe(first);
+    await expect(joined).rejects.toThrow("did not materialize exactly");
+    expect(subTeamRunFactory.materializeConfiguredChild).toHaveBeenCalledOnce();
   });
 
   it("commits prepared termination once and clears only after accepted child teardown", async () => {

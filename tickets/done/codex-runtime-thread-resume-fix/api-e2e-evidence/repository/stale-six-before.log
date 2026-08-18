@@ -1,0 +1,829 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+
+stdout | tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts (14 tests | 8 failed) 519ms
+     ✓ preserves the auto, cli, and api-key selector with cli as the default 1ms
+     × does not resolve a vault key for auto and preserves caller-supplied launch environment 510ms
+     × does not resolve a vault key for cli and preserves caller-supplied launch environment 1ms
+     × resolves explicit api-key once immediately before launch and changes only ANTHROPIC_API_KEY 1ms
+     ✓ fails value-free before SDK launch when explicit api-key resolution fails 1ms
+     ✓ keeps original cli process-environment filtering separate from vault resolution 0ms
+     × passes stable query options for project skills, resume, MCP, and send_message_to tooling 1ms
+     × loads user, project, and local Claude Code settings for normal turns 0ms
+     × forwards an AbortController to Claude SDK query options when provided 0ms
+     × forwards stderr diagnostics callback to Claude SDK query options when provided 0ms
+     ✓ uses user settings-source policy for model discovery 2ms
+     × prefers an explicit canUseTool callback and otherwise injects auto-exec tool approval 1ms
+     ✓ closes the returned one-string query without exposing product interrupt control 0ms
+     ✓ returns null when getSessionMessages is unavailable or session id is empty 0ms
+stdout | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:55633) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > defensively rejects an impossible explicit start while another turn is active
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/autobyteus-server-ts
+
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts (20 tests | 17 failed) 26ms
+     ✓ defensively rejects an impossible explicit start while another turn is active 5ms
+     ✓ does not clear an identified active turn for missing or mismatched completion identity 0ms
+     × caches and sends local context file reference paths in user content 4ms
+     × resolves finalized context-file locators before caching and sending user content 1ms
+     × applies idle status before emitting normal turn completion 1ms
+     × auto-approves workspace and safe outside-scratch write/delete/shell requests under default permission mode 9ms
+     × keeps manual mode gated for a safe outside-scratch permission request until approval resolves 1ms
+     × enriches generic Claude process exits with bounded redacted stderr diagnostics 0ms
+     × classifies Claude terminal auth result chunks as runtime errors instead of completed turns 1ms
+     × settles an interrupted active turn before emitting TURN_INTERRUPTED 0ms
+     ✓ keeps manager-owned closure cleanup idempotent without an active turn execution 1ms
+     × rejects a foreign interrupt turn without mutating the active query 0ms
+     × delegates terminate to the session manager dependency 0ms
+     × adopts a resolved Claude session id and migrates cached messages 0ms
+     × resumes an interrupted incomplete turn using its adopted Claude provider session id 0ms
+     × does not pass the local run id placeholder as a Claude resume id after interrupt 0ms
+     × continues to resume completed Claude turns with the adopted provider session id 0ms
+     × continues to resume restored Claude runs with the restored provider session id 0ms
+     × emits provider-derived text segment ids and preserves text-tool-text order 0ms
+     × coalesces partial stream_event text deltas by message and content block 0ms
+stdout | tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:55634) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts > ClaudeSessionManager > creates a run session and initializes runtime context to a fresh local placeholder session id
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/autobyteus-server-ts
+
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts (7 tests | 2 failed) 15ms
+     × creates a run session and initializes runtime context to a fresh local placeholder session id 7ms
+     × restores a run session and marks it as having completed a prior turn 1ms
+     ✓ uses the provided session id directly when fetching session messages 1ms
+     ✓ falls back to cached messages when the SDK returns no history 0ms
+     ✓ merges normalized SDK history with cached messages when both are available 0ms
+     ✓ terminates a run session, emits SESSION_TERMINATED, and removes the run session 1ms
+     ✓ settles an active turn through the session-owned interrupt sequence before termination cleanup 4ms
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:55636) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager > delegates Codex create to a runtime-managed run factory
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/autobyteus-server-ts
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager > delegates Codex restore to a runtime-managed run factory
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager > removes stale inactive registry entries before restoring a run
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager > delegates Claude create to a runtime-managed run factory
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager > delegates Claude restore to a runtime-managed run factory
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager > creates native AgentRun instances and keeps them in the unified active-run registry
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager > rejects duplicate active creation without replacing the original run or sidecars
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager > attaches and detaches always-on sidecars with the active run lifecycle
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager > revokes run-scoped Agent Tools MCP sessions when accepted manager termination unregisters the run
+AgentRunManager initialized.
+
+ ❯ tests/unit/agent-execution/agent-run-manager.test.ts (9 tests | 9 failed) 12ms
+     × delegates Codex create to a runtime-managed run factory 7ms
+     × delegates Codex restore to a runtime-managed run factory 1ms
+     × removes stale inactive registry entries before restoring a run 1ms
+     × delegates Claude create to a runtime-managed run factory 0ms
+     × delegates Claude restore to a runtime-managed run factory 0ms
+     × creates native AgentRun instances and keeps them in the unified active-run registry 0ms
+     × rejects duplicate active creation without replacing the original run or sidecars 0ms
+     × attaches and detaches always-on sidecars with the active run lifecycle 0ms
+     × revokes run-scoped Agent Tools MCP sessions when accepted manager termination unregisters the run 1ms
+stdout | tests/unit/agent-execution/backends/codex/thread/codex-thread-manager.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:55638) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/unit/agent-execution/backends/codex/thread/codex-thread-manager.test.ts (6 tests | 1 failed) 8ms
+     ✓ registers the thread with the shared router before starting the remote thread 3ms
+     ✓ uses the workspace app-server client boundary for same-workspace standalone agent runs 1ms
+     × shares the cwd-scoped app-server client for team member runs 2ms
+     ✓ passes auto-approved access config to Codex thread start and resume 1ms
+     ✓ passes serviceTier when resuming a remote Codex thread 0ms
+     ✓ passes thread-scoped app-server config to thread start and resume 0ms
+ ❯ tests/unit/agent-team-execution/team-run-persistence-coordinator.test.ts (4 tests | 4 failed) 7ms
+     × cancels synchronously and preserves the live capability on not_renamed 4ms
+     × retains hidden preparation and fail-stops on indeterminate finalization 1ms
+     × rejects a trailing root mutation after indeterminate finalization 1ms
+     × detaches and swaps current tree/event under the lock but leaves teardown to the caller 0ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 41 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager > delegates Codex create to a runtime-managed run factory
+TypeError: manager.createAgentRun is not a function
+ ❯ tests/unit/agent-execution/agent-run-manager.test.ts:83:31
+     81|     });
+     82| 
+     83|     const run = await manager.createAgentRun(
+       |                               ^
+     84|       new AgentRunConfig({
+     85|         runtimeKind: "codex_app_server",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/41]⎯
+
+ FAIL  tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager > delegates Codex restore to a runtime-managed run factory
+TypeError: manager.restoreAgentRun is not a function
+ ❯ tests/unit/agent-execution/agent-run-manager.test.ts:135:31
+    133|     });
+    134| 
+    135|     const run = await manager.restoreAgentRun(restoreContext);
+       |                               ^
+    136| 
+    137|     expect(run.runId).toBe("run-codex");
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/41]⎯
+
+ FAIL  tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager > removes stale inactive registry entries before restoring a run
+TypeError: manager.createAgentRun is not a function
+ ❯ tests/unit/agent-execution/agent-run-manager.test.ts:170:39
+    168|     });
+    169| 
+    170|     const originalRun = await manager.createAgentRun(config, "run-code…
+       |                                       ^
+    171|     runActive = false;
+    172| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/41]⎯
+
+ FAIL  tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager > delegates Claude create to a runtime-managed run factory
+TypeError: manager.createAgentRun is not a function
+ ❯ tests/unit/agent-execution/agent-run-manager.test.ts:200:31
+    198|     });
+    199| 
+    200|     const run = await manager.createAgentRun(
+       |                               ^
+    201|       new AgentRunConfig({
+    202|         runtimeKind: "claude_agent_sdk",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/41]⎯
+
+ FAIL  tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager > delegates Claude restore to a runtime-managed run factory
+TypeError: manager.restoreAgentRun is not a function
+ ❯ tests/unit/agent-execution/agent-run-manager.test.ts:251:31
+    249|     });
+    250| 
+    251|     const run = await manager.restoreAgentRun(restoreContext);
+       |                               ^
+    252| 
+    253|     expect(run.runId).toBe("run-claude");
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/41]⎯
+
+ FAIL  tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager > creates native AgentRun instances and keeps them in the unified active-run registry
+TypeError: manager.createAgentRun is not a function
+ ❯ tests/unit/agent-execution/agent-run-manager.test.ts:271:31
+    269|     });
+    270| 
+    271|     const run = await manager.createAgentRun(
+       |                               ^
+    272|       new AgentRunConfig({
+    273|         runtimeKind: "autobyteus",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/41]⎯
+
+ FAIL  tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager > rejects duplicate active creation without replacing the original run or sidecars
+TypeError: manager.createAgentRun is not a function
+ ❯ tests/unit/agent-execution/agent-run-manager.test.ts:338:36
+    336|     });
+    337| 
+    338|     const firstRun = await manager.createAgentRun(config, "run-duplica…
+       |                                    ^
+    339|     await expect(manager.createAgentRun(config, "run-duplicate")).reje…
+    340|       "Agent run 'run-duplicate' is already active.",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/41]⎯
+
+ FAIL  tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager > attaches and detaches always-on sidecars with the active run lifecycle
+TypeError: manager.createAgentRun is not a function
+ ❯ tests/unit/agent-execution/agent-run-manager.test.ts:375:19
+    373|     });
+    374| 
+    375|     await manager.createAgentRun(
+       |                   ^
+    376|       new AgentRunConfig({
+    377|         runtimeKind: "codex_app_server",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/41]⎯
+
+ FAIL  tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager > revokes run-scoped Agent Tools MCP sessions when accepted manager termination unregisters the run
+TypeError: manager.createAgentRun is not a function
+ ❯ tests/unit/agent-execution/agent-run-manager.test.ts:439:19
+    437|     });
+    438| 
+    439|     await manager.createAgentRun(
+       |                   ^
+    440|       new AgentRunConfig({
+    441|         runtimeKind: "codex_app_server",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/41]⎯
+
+ FAIL  tests/unit/agent-team-execution/team-run-persistence-coordinator.test.ts > TeamRunPersistenceCoordinator task settlement > cancels synchronously and preserves the live capability on not_renamed
+AssertionError: promise rejected "TypeError: command.prepareAgainstCurrent …" instead of resolving
+ ❯ tests/unit/agent-team-execution/team-run-persistence-coordinator.test.ts:52:75
+     50|     });
+     51| 
+     52|     await expect(harness.coordinator.commitTaskSettlement(harness.comm…
+       |                                                                           ^
+     53|       outcome: "not_committed",
+     54|     });
+
+Caused by: TypeError: command.prepareAgainstCurrent is not a function
+ ❯ src/agent-team-execution/services/team-run-persistence-coordinator.ts:46:28
+ ❯ guarded src/agent-team-execution/services/team-run-persistence-coordinator.ts:206:9
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/41]⎯
+
+ FAIL  tests/unit/agent-team-execution/team-run-persistence-coordinator.test.ts > TeamRunPersistenceCoordinator task settlement > retains hidden preparation and fail-stops on indeterminate finalization
+AssertionError: promise rejected "TypeError: command.prepareAgainstCurrent …" instead of resolving
+ ❯ tests/unit/agent-team-execution/team-run-persistence-coordinator.test.ts:69:75
+     67|     });
+     68| 
+     69|     await expect(harness.coordinator.commitTaskSettlement(harness.comm…
+       |                                                                           ^
+     70|       outcome: "finalization_indeterminate",
+     71|       file: "execution_tree",
+
+Caused by: TypeError: command.prepareAgainstCurrent is not a function
+ ❯ src/agent-team-execution/services/team-run-persistence-coordinator.ts:46:28
+ ❯ guarded src/agent-team-execution/services/team-run-persistence-coordinator.ts:206:9
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/41]⎯
+
+ FAIL  tests/unit/agent-team-execution/team-run-persistence-coordinator.test.ts > TeamRunPersistenceCoordinator task settlement > rejects a trailing root mutation after indeterminate finalization
+AssertionError: promise rejected "TypeError: command.prepareAgainstCurrent …" instead of resolving
+ ❯ tests/unit/agent-team-execution/team-run-persistence-coordinator.test.ts:90:23
+     88|     const first = harness.coordinator.commitTaskSettlement(harness.com…
+     89|     const trailing = harness.coordinator.commitTaskSettlement(harness.…
+     90|     await expect(first).resolves.toMatchObject({ outcome: "finalizatio…
+       |                       ^
+     91|     await expect(trailing).rejects.toThrow("pending strict reopen");
+     92|     expect(harness.order).toEqual(["write", "fail-stop"]);
+
+Caused by: TypeError: command.prepareAgainstCurrent is not a function
+ ❯ src/agent-team-execution/services/team-run-persistence-coordinator.ts:46:28
+ ❯ guarded src/agent-team-execution/services/team-run-persistence-coordinator.ts:206:9
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/41]⎯
+
+ FAIL  tests/unit/agent-team-execution/team-run-persistence-coordinator.test.ts > TeamRunPersistenceCoordinator task settlement > detaches and swaps current tree/event under the lock but leaves teardown to the caller
+TypeError: command.prepareAgainstCurrent is not a function
+ ❯ src/agent-team-execution/services/team-run-persistence-coordinator.ts:46:28
+     44|       let prepared: ReturnType<PreparedTaskSettlementCommit["prepareAg…
+     45|       try {
+     46|         prepared = command.prepareAgainstCurrent();
+       |                            ^
+     47|       } catch (error) {
+     48|         command.settlement.cancelBeforeDurability();
+ ❯ guarded src/agent-team-execution/services/team-run-persistence-coordinator.ts:206:9
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/41]⎯
+
+ FAIL  tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts > ClaudeSdkClient > does not resolve a vault key for auto and preserves caller-supplied launch environment
+ FAIL  tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts > ClaudeSdkClient > does not resolve a vault key for cli and preserves caller-supplied launch environment
+TypeError: Cannot read properties of undefined (reading 'kind')
+ ❯ ClaudeSdkClient.buildQueryOptions src/runtime-management/claude/client/claude-sdk-client.ts:401:34
+    399|       disallowedTools: [...CLAUDE_BUILT_IN_TOOLS_DISALLOWED_BY_AUTOBYT…
+    400|       ...(allowedTools.size > 0 ? { allowedTools: [...allowedTools] } …
+    401|       ...(options.sessionBinding.kind === "create"
+       |                                  ^
+    402|         ? { sessionId: options.sessionBinding.sessionId }
+    403|         : { resume: options.sessionBinding.sessionId }),
+ ❯ ClaudeSdkClient.startQueryTurn src/runtime-management/claude/client/claude-sdk-client.ts:262:31
+ ❯ tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts:52:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/41]⎯
+
+ FAIL  tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts > ClaudeSdkClient > resolves explicit api-key once immediately before launch and changes only ANTHROPIC_API_KEY
+TypeError: Cannot read properties of undefined (reading 'kind')
+ ❯ ClaudeSdkClient.buildQueryOptions src/runtime-management/claude/client/claude-sdk-client.ts:401:34
+    399|       disallowedTools: [...CLAUDE_BUILT_IN_TOOLS_DISALLOWED_BY_AUTOBYT…
+    400|       ...(allowedTools.size > 0 ? { allowedTools: [...allowedTools] } …
+    401|       ...(options.sessionBinding.kind === "create"
+       |                                  ^
+    402|         ? { sessionId: options.sessionBinding.sessionId }
+    403|         : { resume: options.sessionBinding.sessionId }),
+ ❯ ClaudeSdkClient.startQueryTurn src/runtime-management/claude/client/claude-sdk-client.ts:262:31
+ ❯ tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts:79:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/41]⎯
+
+ FAIL  tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts > ClaudeSdkClient > passes stable query options for project skills, resume, MCP, and send_message_to tooling
+TypeError: Cannot read properties of undefined (reading 'kind')
+ ❯ ClaudeSdkClient.buildQueryOptions src/runtime-management/claude/client/claude-sdk-client.ts:401:34
+    399|       disallowedTools: [...CLAUDE_BUILT_IN_TOOLS_DISALLOWED_BY_AUTOBYT…
+    400|       ...(allowedTools.size > 0 ? { allowedTools: [...allowedTools] } …
+    401|       ...(options.sessionBinding.kind === "create"
+       |                                  ^
+    402|         ? { sessionId: options.sessionBinding.sessionId }
+    403|         : { resume: options.sessionBinding.sessionId }),
+ ❯ ClaudeSdkClient.startQueryTurn src/runtime-management/claude/client/claude-sdk-client.ts:262:31
+ ❯ tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts:146:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/41]⎯
+
+ FAIL  tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts > ClaudeSdkClient > loads user, project, and local Claude Code settings for normal turns
+TypeError: Cannot read properties of undefined (reading 'kind')
+ ❯ ClaudeSdkClient.buildQueryOptions src/runtime-management/claude/client/claude-sdk-client.ts:401:34
+    399|       disallowedTools: [...CLAUDE_BUILT_IN_TOOLS_DISALLOWED_BY_AUTOBYT…
+    400|       ...(allowedTools.size > 0 ? { allowedTools: [...allowedTools] } …
+    401|       ...(options.sessionBinding.kind === "create"
+       |                                  ^
+    402|         ? { sessionId: options.sessionBinding.sessionId }
+    403|         : { resume: options.sessionBinding.sessionId }),
+ ❯ ClaudeSdkClient.startQueryTurn src/runtime-management/claude/client/claude-sdk-client.ts:262:31
+ ❯ tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts:203:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/41]⎯
+
+ FAIL  tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts > ClaudeSdkClient > forwards an AbortController to Claude SDK query options when provided
+TypeError: Cannot read properties of undefined (reading 'kind')
+ ❯ ClaudeSdkClient.buildQueryOptions src/runtime-management/claude/client/claude-sdk-client.ts:401:34
+    399|       disallowedTools: [...CLAUDE_BUILT_IN_TOOLS_DISALLOWED_BY_AUTOBYT…
+    400|       ...(allowedTools.size > 0 ? { allowedTools: [...allowedTools] } …
+    401|       ...(options.sessionBinding.kind === "create"
+       |                                  ^
+    402|         ? { sessionId: options.sessionBinding.sessionId }
+    403|         : { resume: options.sessionBinding.sessionId }),
+ ❯ ClaudeSdkClient.startQueryTurn src/runtime-management/claude/client/claude-sdk-client.ts:262:31
+ ❯ tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts:227:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/41]⎯
+
+ FAIL  tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts > ClaudeSdkClient > forwards stderr diagnostics callback to Claude SDK query options when provided
+TypeError: Cannot read properties of undefined (reading 'kind')
+ ❯ ClaudeSdkClient.buildQueryOptions src/runtime-management/claude/client/claude-sdk-client.ts:401:34
+    399|       disallowedTools: [...CLAUDE_BUILT_IN_TOOLS_DISALLOWED_BY_AUTOBYT…
+    400|       ...(allowedTools.size > 0 ? { allowedTools: [...allowedTools] } …
+    401|       ...(options.sessionBinding.kind === "create"
+       |                                  ^
+    402|         ? { sessionId: options.sessionBinding.sessionId }
+    403|         : { resume: options.sessionBinding.sessionId }),
+ ❯ ClaudeSdkClient.startQueryTurn src/runtime-management/claude/client/claude-sdk-client.ts:262:31
+ ❯ tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts:252:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/41]⎯
+
+ FAIL  tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts > ClaudeSdkClient > prefers an explicit canUseTool callback and otherwise injects auto-exec tool approval
+TypeError: Cannot read properties of undefined (reading 'kind')
+ ❯ ClaudeSdkClient.buildQueryOptions src/runtime-management/claude/client/claude-sdk-client.ts:401:34
+    399|       disallowedTools: [...CLAUDE_BUILT_IN_TOOLS_DISALLOWED_BY_AUTOBYT…
+    400|       ...(allowedTools.size > 0 ? { allowedTools: [...allowedTools] } …
+    401|       ...(options.sessionBinding.kind === "create"
+       |                                  ^
+    402|         ? { sessionId: options.sessionBinding.sessionId }
+    403|         : { resume: options.sessionBinding.sessionId }),
+ ❯ ClaudeSdkClient.startQueryTurn src/runtime-management/claude/client/claude-sdk-client.ts:262:31
+ ❯ tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts:308:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/41]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts > ClaudeSessionManager > creates a run session and initializes runtime context to a fresh local placeholder session id
+AssertionError: expected null to be 'run-create' // Object.is equality
+
+- Expected: 
+"run-create"
+
++ Received: 
+null
+
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts:76:57
+     74| 
+     75|     expect(manager.hasRunSession("run-create")).toBe(true);
+     76|     expect(session.runContext.runtimeContext.sessionId).toBe("run-crea…
+       |                                                         ^
+     77|     expect(session.runContext.runtimeContext.hasCompletedTurn).toBe(fa…
+     78|     expect(session.runContext.runtimeContext.activeTurnId).toBe(null);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/41]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts > ClaudeSessionManager > restores a run session and marks it as having completed a prior turn
+Error: PLATFORM_AGENT_RUN_BINDING_INVALID: Claude provider identity must be a UUID.
+ ❯ normalizeUuid src/agent-execution/backends/claude/session/claude-provider-session-lifecycle.ts:12:11
+     10|   const normalized = value.trim().toLowerCase();
+     11|   if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[89ab][0-9a-f]{3}-[0-9a-f…
+     12|     throw new Error("PLATFORM_AGENT_RUN_BINDING_INVALID: Claude provid…
+       |           ^
+     13|   }
+     14|   return normalized;
+ ❯ Function.restore src/agent-execution/backends/claude/session/claude-provider-session-lifecycle.ts:35:33
+ ❯ ClaudeSessionManager.restoreRunSession src/agent-execution/backends/claude/session/claude-session-manager.ts:74:69
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts:88:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/41]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > caches and sends local context file reference paths in user content
+TypeError: Cannot read properties of undefined (reading 'sessionId')
+ ❯ ClaudeSession.get sessionId [as sessionId] src/agent-execution/backends/claude/session/claude-session.ts:76:42
+     74| 
+     75|   get sessionId(): string {
+     76|     return this.providerSessionLifecycle.sessionId;
+       |                                          ^
+     77|   }
+     78| 
+ ❯ ClaudeSession.startTurn src/agent-execution/backends/claude/session/claude-session.ts:155:62
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:254:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[23/41]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > resolves finalized context-file locators before caching and sending user content
+TypeError: Cannot read properties of undefined (reading 'sessionId')
+ ❯ ClaudeSession.get sessionId [as sessionId] src/agent-execution/backends/claude/session/claude-session.ts:76:42
+     74| 
+     75|   get sessionId(): string {
+     76|     return this.providerSessionLifecycle.sessionId;
+       |                                          ^
+     77|   }
+     78| 
+ ❯ ClaudeSession.startTurn src/agent-execution/backends/claude/session/claude-session.ts:155:62
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:283:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[24/41]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > applies idle status before emitting normal turn completion
+TypeError: Cannot read properties of undefined (reading 'sessionId')
+ ❯ ClaudeSession.get sessionId [as sessionId] src/agent-execution/backends/claude/session/claude-session.ts:76:42
+     74| 
+     75|   get sessionId(): string {
+     76|     return this.providerSessionLifecycle.sessionId;
+       |                                          ^
+     77|   }
+     78| 
+ ❯ ClaudeSession.startTurn src/agent-execution/backends/claude/session/claude-session.ts:155:62
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:322:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[25/41]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > auto-approves workspace and safe outside-scratch write/delete/shell requests under default permission mode
+TypeError: Cannot read properties of undefined (reading 'sessionId')
+ ❯ ClaudeSession.get sessionId [as sessionId] src/agent-execution/backends/claude/session/claude-session.ts:76:42
+     74| 
+     75|   get sessionId(): string {
+     76|     return this.providerSessionLifecycle.sessionId;
+       |                                          ^
+     77|   }
+     78| 
+ ❯ ClaudeSession.startTurn src/agent-execution/backends/claude/session/claude-session.ts:155:62
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:410:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[26/41]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > keeps manual mode gated for a safe outside-scratch permission request until approval resolves
+TypeError: Cannot read properties of undefined (reading 'sessionId')
+ ❯ ClaudeSession.get sessionId [as sessionId] src/agent-execution/backends/claude/session/claude-session.ts:76:42
+     74| 
+     75|   get sessionId(): string {
+     76|     return this.providerSessionLifecycle.sessionId;
+       |                                          ^
+     77|   }
+     78| 
+ ❯ ClaudeSession.startTurn src/agent-execution/backends/claude/session/claude-session.ts:155:62
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:468:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[27/41]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > enriches generic Claude process exits with bounded redacted stderr diagnostics
+TypeError: Cannot read properties of undefined (reading 'sessionId')
+ ❯ ClaudeSession.get sessionId [as sessionId] src/agent-execution/backends/claude/session/claude-session.ts:76:42
+     74| 
+     75|   get sessionId(): string {
+     76|     return this.providerSessionLifecycle.sessionId;
+       |                                          ^
+     77|   }
+     78| 
+ ❯ ClaudeSession.startTurn src/agent-execution/backends/claude/session/claude-session.ts:155:62
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:508:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[28/41]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > classifies Claude terminal auth result chunks as runtime errors instead of completed turns
+TypeError: Cannot read properties of undefined (reading 'sessionId')
+ ❯ ClaudeSession.get sessionId [as sessionId] src/agent-execution/backends/claude/session/claude-session.ts:76:42
+     74| 
+     75|   get sessionId(): string {
+     76|     return this.providerSessionLifecycle.sessionId;
+       |                                          ^
+     77|   }
+     78| 
+ ❯ ClaudeSession.startTurn src/agent-execution/backends/claude/session/claude-session.ts:155:62
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:545:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[29/41]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > settles an interrupted active turn before emitting TURN_INTERRUPTED
+TypeError: Cannot read properties of undefined (reading 'sessionId')
+ ❯ ClaudeSession.get sessionId [as sessionId] src/agent-execution/backends/claude/session/claude-session.ts:76:42
+     74| 
+     75|   get sessionId(): string {
+     76|     return this.providerSessionLifecycle.sessionId;
+       |                                          ^
+     77|   }
+     78| 
+ ❯ ClaudeSession.startTurn src/agent-execution/backends/claude/session/claude-session.ts:155:62
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:590:38
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[30/41]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > rejects a foreign interrupt turn without mutating the active query
+TypeError: Cannot read properties of undefined (reading 'sessionId')
+ ❯ ClaudeSession.get sessionId [as sessionId] src/agent-execution/backends/claude/session/claude-session.ts:76:42
+     74| 
+     75|   get sessionId(): string {
+     76|     return this.providerSessionLifecycle.sessionId;
+       |                                          ^
+     77|   }
+     78| 
+ ❯ ClaudeSession.startTurn src/agent-execution/backends/claude/session/claude-session.ts:155:62
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:677:38
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[31/41]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > delegates terminate to the session manager dependency
+TypeError: Cannot read properties of undefined (reading 'sessionId')
+ ❯ ClaudeSession.get sessionId [as sessionId] src/agent-execution/backends/claude/session/claude-session.ts:76:42
+     74| 
+     75|   get sessionId(): string {
+     76|     return this.providerSessionLifecycle.sessionId;
+       |                                          ^
+     77|   }
+     78| 
+ ❯ ClaudeSession.terminate src/agent-execution/backends/claude/session/claude-session.ts:285:33
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:696:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[32/41]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > adopts a resolved Claude session id and migrates cached messages
+TypeError: session.adoptResolvedSessionId is not a function
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:710:13
+    708|     });
+    709| 
+    710|     session.adoptResolvedSessionId("claude-session-42", sessionMessage…
+       |             ^
+    711| 
+    712|     expect(session.runContext.runtimeContext.sessionId).toBe("claude-s…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[33/41]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > resumes an interrupted incomplete turn using its adopted Claude provider session id
+TypeError: Cannot read properties of undefined (reading 'sessionId')
+ ❯ ClaudeSession.get sessionId [as sessionId] src/agent-execution/backends/claude/session/claude-session.ts:76:42
+     74| 
+     75|   get sessionId(): string {
+     76|     return this.providerSessionLifecycle.sessionId;
+       |                                          ^
+     77|   }
+     78| 
+ ❯ ClaudeSession.startTurn src/agent-execution/backends/claude/session/claude-session.ts:155:62
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:730:38
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[34/41]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > does not pass the local run id placeholder as a Claude resume id after interrupt
+TypeError: Cannot read properties of undefined (reading 'sessionId')
+ ❯ ClaudeSession.get sessionId [as sessionId] src/agent-execution/backends/claude/session/claude-session.ts:76:42
+     74| 
+     75|   get sessionId(): string {
+     76|     return this.providerSessionLifecycle.sessionId;
+       |                                          ^
+     77|   }
+     78| 
+ ❯ ClaudeSession.startTurn src/agent-execution/backends/claude/session/claude-session.ts:155:62
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:762:38
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[35/41]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > continues to resume completed Claude turns with the adopted provider session id
+TypeError: Cannot read properties of undefined (reading 'sessionId')
+ ❯ ClaudeSession.get sessionId [as sessionId] src/agent-execution/backends/claude/session/claude-session.ts:76:42
+     74| 
+     75|   get sessionId(): string {
+     76|     return this.providerSessionLifecycle.sessionId;
+       |                                          ^
+     77|   }
+     78| 
+ ❯ ClaudeSession.startTurn src/agent-execution/backends/claude/session/claude-session.ts:155:62
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:791:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[36/41]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > continues to resume restored Claude runs with the restored provider session id
+TypeError: Cannot read properties of undefined (reading 'sessionId')
+ ❯ ClaudeSession.get sessionId [as sessionId] src/agent-execution/backends/claude/session/claude-session.ts:76:42
+     74| 
+     75|   get sessionId(): string {
+     76|     return this.providerSessionLifecycle.sessionId;
+       |                                          ^
+     77|   }
+     78| 
+ ❯ ClaudeSession.startTurn src/agent-execution/backends/claude/session/claude-session.ts:155:62
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:812:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[37/41]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > emits provider-derived text segment ids and preserves text-tool-text order
+TypeError: Cannot read properties of undefined (reading 'sessionId')
+ ❯ ClaudeSession.get sessionId [as sessionId] src/agent-execution/backends/claude/session/claude-session.ts:76:42
+     74| 
+     75|   get sessionId(): string {
+     76|     return this.providerSessionLifecycle.sessionId;
+       |                                          ^
+     77|   }
+     78| 
+ ❯ ClaudeSession.startTurn src/agent-execution/backends/claude/session/claude-session.ts:155:62
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:888:38
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[38/41]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > coalesces partial stream_event text deltas by message and content block
+TypeError: Cannot read properties of undefined (reading 'sessionId')
+ ❯ ClaudeSession.get sessionId [as sessionId] src/agent-execution/backends/claude/session/claude-session.ts:76:42
+     74| 
+     75|   get sessionId(): string {
+     76|     return this.providerSessionLifecycle.sessionId;
+       |                                          ^
+     77|   }
+     78| 
+ ❯ ClaudeSession.startTurn src/agent-execution/backends/claude/session/claude-session.ts:155:62
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:1039:38
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[39/41]⎯
+
+ FAIL  tests/unit/agent-execution/backends/codex/thread/codex-thread-manager.test.ts > CodexThreadManager > shares the cwd-scoped app-server client for team member runs
+TypeError: Cannot convert undefined or null to object
+ ❯ createTeamMemberExecutionIdentity src/agent-team-execution/domain/team-member-execution-identity.ts:24:23
+     22|   agentRunId: string;
+     23| }): TeamMemberExecutionIdentity => {
+     24|   const keys = Object.keys(input).sort();
+       |                       ^
+     25|   const expected = ["agentRunId", "memberAddress", "rootTeamRunId"];
+     26|   if (keys.length !== expected.length || keys.some((key, index) => key…
+ ❯ cloneTeamMemberExecutionIdentity src/agent-team-execution/domain/team-member-execution-identity.ts:42:35
+ ❯ new MemberTeamContext src/agent-team-execution/domain/member-team-context.ts:18:21
+ ❯ createRunContext tests/unit/agent-execution/backends/codex/thread/codex-thread-manager.test.ts:40:11
+ ❯ tests/unit/agent-execution/backends/codex/thread/codex-thread-manager.test.ts:210:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[40/41]⎯
+
+
+ Test Files  6 failed (6)
+      Tests  41 failed | 19 passed (60)
+   Start at  21:09:09
+   Duration  8.88s (transform 3.03s, setup 25ms, import 7.30s, tests 585ms, environment 0ms)
+

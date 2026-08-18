@@ -10,6 +10,7 @@ import type { InterAgentMessageDeliveryIntent } from "../../../domain/inter-agen
 import { MixedAgentMemberContext, type MixedTeamRunContext } from "../mixed-team-run-context.js";
 import { MixedAgentMemberHandle } from "./mixed-agent-member-handle.js";
 import type { MixedTeamEventPublish } from "./mixed-team-member-handle.js";
+import type { TeamAgentPlatformBinding } from "../../../domain/team-agent-platform-binding.js";
 
 type PreparedState = "preparing" | "sealed" | "committed" | "aborted";
 
@@ -25,6 +26,7 @@ export class MixedTaskAgentExecutionRegistry {
     agentRunManager?: AgentRunManager;
     publish: MixedTeamEventPublish;
     deliverInterAgentMessage: (request: InterAgentMessageDeliveryIntent) => Promise<AgentOperationResult>;
+    acceptPlatformBinding: (binding: TeamAgentPlatformBinding) => Promise<void>;
   }) {}
 
   listHandles(): readonly MixedAgentMemberHandle[] { return Object.freeze([...this.active.values()]); }
@@ -50,14 +52,17 @@ export class MixedTaskAgentExecutionRegistry {
         platformAgentRunId: null,
       }),
       config: Object.freeze({ ...input.sourceNode, agentRunId: runId, platformAgentRunId: null }),
+      activationMode: "fresh",
       agentRunManager: this.options.agentRunManager,
       publish: (event) => retainedEvents.push(event),
       deliverInterAgentMessage: this.options.deliverInterAgentMessage,
+      acceptPlatformBinding: this.options.acceptPlatformBinding,
     });
     this.preparedHandles.set(runId, handle);
     let state: PreparedState = "preparing";
+    let activation!: Awaited<ReturnType<MixedAgentMemberHandle["prepareForTaskActivation"]>>;
     try {
-      await handle.getOrCreateAgentRun();
+      activation = await handle.prepareForTaskActivation();
     } catch (error) {
       this.reserved.delete(runId);
       this.preparedHandles.delete(runId);
@@ -67,12 +72,14 @@ export class MixedTaskAgentExecutionRegistry {
     return {
       binding: Object.freeze({ kind: "agent", address: input.address, agentRunId: runId }),
       preparedTeamRuns: Object.freeze([]),
+      stagedPlatformBindings: activation.stagedPlatformBindings,
       sealForCommit: () => {
         if (state !== "preparing" || !this.reserved.has(runId)) throw new Error(`Task AgentRun '${runId}' cannot be sealed.`);
         state = "sealed";
       },
-      commit: () => {
+      commitAfterDurability: () => {
         if (state !== "sealed" || !this.reserved.delete(runId)) throw new Error(`Task AgentRun '${runId}' is not sealed.`);
+        activation.commitAfterDurability();
         this.preparedHandles.delete(runId);
         this.active.set(runId, handle);
         state = "committed";
@@ -92,7 +99,7 @@ export class MixedTaskAgentExecutionRegistry {
         this.reserved.delete(runId);
         this.preparedHandles.delete(runId);
         retainedEvents.length = 0;
-        try { await handle.terminate(); } catch { handle.dispose(); }
+        try { await activation.abort(); } finally { handle.dispose(); }
       },
     };
   }

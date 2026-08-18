@@ -85,6 +85,23 @@ results are recorded and retryable while ordinary server startup continues.
 
 The old monolithic `raw_traces_archive.jsonl` file is no longer an active read/write target. Historical monolithic archive files are intentionally not read by the approved no-compatibility policy.
 
+## Conversation Activity Classification For Restore
+
+`AgentConversationActivityInspector` is a read-only activation guard over one
+resolved run memory directory. It reports `present` when the active raw-trace
+file or a manifest-declared complete rotated segment contains canonical prior
+activity, `none` when canonical activity is absent, and `indeterminate` when an
+active file, manifest, or complete segment is malformed or unreadable. Pending
+manifest entries do not count as complete history. The inspector never repairs,
+truncates, rotates, or rewrites memory.
+
+Team-member activation uses this classification before candidate construction.
+A restored native AutoByteus member with `present` activity selects local-state
+restore, while `none` permits genuinely fresh materialization. An external
+member with `present` activity but no persisted provider binding fails closed.
+`indeterminate` is always a continuation-safety error rather than permission to
+create a replacement run.
+
 Memory Sync does not move or wrap local runtime memory. `memory/agents` and
 `memory/agent_teams` remain the active local runtime roots. Imported Memory Sync
 content is an explicit read-only corpus under `memory/imports/<sourceNodeId>` and
@@ -544,6 +561,7 @@ above.
 - Raw-trace record normalization: `src/agent-memory/services/raw-trace-record-normalizer.ts`
 - Explorer helpers: `src/agent-memory/services/memory-run-summary-builder.ts`, `src/agent-memory/services/team-memory-member-target-builder.ts`, `src/agent-memory/services/memory-explorer-page.ts`
 - Memory location owner: `src/agent-memory/services/agent-memory-location-service.ts`
+- Conversation activity guard: `src/agent-memory/services/agent-conversation-activity-inspector.ts`
 - Memory layout owner: `src/agent-memory/store/agent-memory-layout.ts`
 - Team memory topology reader: `src/run-history/services/team-run-memory-topology-reader.ts`
 - Explorer GraphQL types/resolver: `src/api/graphql/types/memory-explorer-schema.ts`, `src/api/graphql/types/memory-explorer.ts`

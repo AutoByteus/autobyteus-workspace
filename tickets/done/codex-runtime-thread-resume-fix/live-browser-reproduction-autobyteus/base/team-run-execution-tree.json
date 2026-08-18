@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "createdAt": "2026-08-17T17:48:21.366Z",
+  "archivedAt": null,
+  "applicationBinding": null,
+  "handoffs": [],
+  "rootTeam": {
+    "teamDefinitionId": "classroom-simulation-team",
+    "teamDefinitionName": "Classroom Simulation Team",
+    "teamRunId": "classroom_simulation_team_dfac65f6192f4535813544a7513067d6",
+    "coordinatorAddress": "/professor",
+    "members": [
+      {
+        "address": "/professor",
+        "agentDefinitionId": "team-local-agent:classroom-simulation-team:professor",
+        "role": null,
+        "description": null,
+        "agentRunId": "professor_471ca2122b3c4920b01e7e2afb4556b2",
+        "platformAgentRunId": null,
+        "launchConfiguration": {
+          "runtimeKind": "AUTOBYTEUS",
+          "llmModelIdentifier": "deepseek-v4-flash",
+          "llmConfig": null,
+          "autoExecuteTools": false,
+          "skillAccessMode": "PRELOADED_ONLY",
+          "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-agents"
+        }
+      },
+      {
+        "address": "/student",
+        "agentDefinitionId": "team-local-agent:classroom-simulation-team:student",
+        "role": null,
+        "description": null,
+        "agentRunId": "student_d67f8998b99f41fe9702aa1f95f5d510",
+        "platformAgentRunId": null,
+        "launchConfiguration": {
+          "runtimeKind": "AUTOBYTEUS",
+          "llmModelIdentifier": "deepseek-v4-flash",
+          "llmConfig": null,
+          "autoExecuteTools": false,
+          "skillAccessMode": "PRELOADED_ONLY",
+          "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-agents"
+        }
+      }
+    ],
+    "taskExecutions": []
+  }
+}

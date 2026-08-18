@@ -6,12 +6,14 @@ import type {
 } from "../../domain/team-run-context.js";
 import type { AgentTeamAddress } from "../../../agent-collaboration/domain/agent-team-address.js";
 
+export type MixedConfiguredMemberActivationMode = "fresh" | "restore";
+
 export class MixedAgentMemberContext implements TeamAgentMemberRuntimeContext {
   readonly kind = "agent" as const;
   readonly address: AgentTeamAddress;
   readonly agentRunId: string;
   readonly runtimeKind: RuntimeKind;
-  platformAgentRunId: string | null;
+  private platformAgentRunId: string | null;
   constructor(input: { address: AgentTeamAddress; agentRunId: string; runtimeKind: RuntimeKind; platformAgentRunId: string | null }) {
     Object.assign(this, input);
     this.address = input.address;
@@ -20,6 +22,14 @@ export class MixedAgentMemberContext implements TeamAgentMemberRuntimeContext {
     this.platformAgentRunId = input.platformAgentRunId;
   }
   getPlatformAgentRunId(): string | null { return this.platformAgentRunId; }
+  adoptPlatformAgentRunId(platformAgentRunId: string): void {
+    const normalized = platformAgentRunId.trim();
+    if (!normalized) throw new Error("platformAgentRunId is required.");
+    if (this.platformAgentRunId && this.platformAgentRunId !== normalized) {
+      throw new Error("Mixed Agent member already has a different provider binding.");
+    }
+    this.platformAgentRunId = normalized;
+  }
 }
 
 export class MixedSubTeamMemberContext implements TeamSubTeamMemberRuntimeContext {
@@ -41,8 +51,13 @@ export type MixedTeamMemberContext = MixedAgentMemberContext | MixedSubTeamMembe
 
 export class MixedTeamRunContext {
   readonly memberContexts: MixedTeamMemberContext[];
-  constructor(input: { memberContexts: MixedTeamMemberContext[] }) {
+  readonly configuredMemberActivationMode: MixedConfiguredMemberActivationMode;
+  constructor(input: {
+    memberContexts: MixedTeamMemberContext[];
+    configuredMemberActivationMode: MixedConfiguredMemberActivationMode;
+  }) {
     this.memberContexts = [...input.memberContexts];
+    this.configuredMemberActivationMode = input.configuredMemberActivationMode;
   }
 }
 

@@ -11,6 +11,7 @@ import { AgentRunContext } from "../../../../../../src/agent-execution/domain/ag
 import { ClaudeAgentRunContext } from "../../../../../../src/agent-execution/backends/claude/backend/claude-agent-run-context.js";
 import { buildClaudeSessionConfig } from "../../../../../../src/agent-execution/backends/claude/session/claude-session-config.js";
 import { ClaudeSession } from "../../../../../../src/agent-execution/backends/claude/session/claude-session.js";
+import { ClaudeProviderSessionLifecycle } from "../../../../../../src/agent-execution/backends/claude/session/claude-provider-session-lifecycle.js";
 import { ClaudeSessionMessageCache } from "../../../../../../src/agent-execution/backends/claude/session/claude-session-message-cache.js";
 import { ClaudeSessionToolUseCoordinator } from "../../../../../../src/agent-execution/backends/claude/session/claude-session-tool-use-coordinator.js";
 import { ClaudeSessionEventName } from "../../../../../../src/agent-execution/backends/claude/events/claude-session-event-name.js";
@@ -42,7 +43,11 @@ const pathExists = async (targetPath: string): Promise<boolean> => {
   }
 };
 
-const createResultQuery = (sessionId = "claude-session-1"): ClaudeSdkQueryLike => ({
+const RESERVED_SESSION_ID = "11111111-1111-4111-8111-111111111111";
+const RESTORED_SESSION_ID = "22222222-2222-4222-8222-222222222222";
+const CONFLICTING_SESSION_ID = "33333333-3333-4333-8333-333333333333";
+
+const createResultQuery = (sessionId = RESERVED_SESSION_ID): ClaudeSdkQueryLike => ({
   async *[Symbol.asyncIterator]() {
     yield {
       type: "result",
@@ -80,14 +85,13 @@ const createPermissionHarnessQuery = (
       const decision = await canUseTool(request.toolName, request.input, {
         toolUseID: request.id,
       });
-      if (decision["behavior"] !== "allow") {
-        return;
+      if (decision["behavior"] === "allow") {
+        await request.onAllow();
       }
-      await request.onAllow();
     }
     yield {
       type: "result",
-      session_id: "claude-session-permission-harness",
+      session_id: RESERVED_SESSION_ID,
       result: "done",
     };
   },
@@ -193,7 +197,7 @@ const createSession = (input: {
       }),
       carpenterSystemPrompt: "## Agent Identity\n\n- Name: Test agent",
       runtimeToolExposure: buildRuntimeAgentToolExposure([]),
-      sessionId: input.sessionId ?? "run-1",
+      sessionId: input.sessionId ?? null,
       hasCompletedTurn: input.hasCompletedTurn ?? false,
       activeTurnId: input.activeTurnId ?? null,
     }),
@@ -201,6 +205,9 @@ const createSession = (input: {
 
   const session = new ClaudeSession({
     runContext,
+    providerSessionLifecycle: input.sessionId
+      ? ClaudeProviderSessionLifecycle.restore(input.sessionId, runContext.runId)
+      : ClaudeProviderSessionLifecycle.reserveNew(() => RESERVED_SESSION_ID),
     dependencies: {
       sessionMessageCache,
       sdkClient: {
@@ -248,7 +255,7 @@ describe("ClaudeSession", () => {
 
   it("caches and sends local context file reference paths in user content", async () => {
     const { session, sessionMessageCache, startQueryTurn } = createSession({
-      query: createResultQuery("run-1"),
+      query: createResultQuery(),
     });
 
     await session.startTurn(
@@ -259,7 +266,7 @@ describe("ClaudeSession", () => {
     await waitFor(() => startQueryTurn.mock.calls.length === 1, "Claude query start");
 
     const expectedContent = "inspect this\n\nReference files:\n- /abs/proof.png";
-    expect(sessionMessageCache.getCachedMessages("run-1")).toEqual(expect.arrayContaining([
+    expect(sessionMessageCache.getCachedMessages(RESERVED_SESSION_ID)).toEqual(expect.arrayContaining([
       expect.objectContaining({
         role: "user",
         content: expectedContent,
@@ -276,7 +283,7 @@ describe("ClaudeSession", () => {
       uri === "/rest/runs/run-1/context-files/proof.png" ? "/resolved/proof.png" : null,
     );
     const { session, sessionMessageCache, startQueryTurn } = createSession({
-      query: createResultQuery("run-1"),
+      query: createResultQuery(),
       contextFileLocalPathResolver: { resolve },
     });
 
@@ -291,7 +298,7 @@ describe("ClaudeSession", () => {
     await waitFor(() => startQueryTurn.mock.calls.length === 1, "Claude query start");
 
     const expectedContent = "inspect this\n\nReference files:\n- /resolved/proof.png";
-    expect(sessionMessageCache.getCachedMessages("run-1")).toEqual(expect.arrayContaining([
+    expect(sessionMessageCache.getCachedMessages(RESERVED_SESSION_ID)).toEqual(expect.arrayContaining([
       expect.objectContaining({
         role: "user",
         content: expectedContent,
@@ -305,7 +312,7 @@ describe("ClaudeSession", () => {
 
   it("applies idle status before emitting normal turn completion", async () => {
     const { session } = createSession({
-      query: createResultQuery("claude-session-completed-status"),
+      query: createResultQuery(),
     });
     const events: Array<{
       method: string;
@@ -532,7 +539,7 @@ describe("ClaudeSession", () => {
       query: createQueryFromChunks([
         {
           type: "result",
-          session_id: "claude-session-auth",
+          session_id: RESERVED_SESSION_ID,
           is_error: true,
           error: "authentication_failed",
           result: "Not logged in · Please run /login",
@@ -554,7 +561,7 @@ describe("ClaudeSession", () => {
     expect(session.hasCompletedTurn).toBe(false);
     expect(
       sessionMessageCache
-        .getCachedMessages("claude-session-auth")
+        .getCachedMessages(RESERVED_SESSION_ID)
         .some((message) => message["role"] === "assistant"),
     ).toBe(false);
   });
@@ -639,7 +646,7 @@ describe("ClaudeSession", () => {
     expect(activeQueriesByRunId.has("run-1")).toBe(false);
     expect(closeQuery).toHaveBeenCalledTimes(1);
     expect(closeQuery).toHaveBeenCalledWith(controlledQuery.query);
-    expect(sessionMessageCache.getCachedMessages("run-1")).toEqual([
+    expect(sessionMessageCache.getCachedMessages(RESERVED_SESSION_ID)).toEqual([
       expect.objectContaining({
         role: "user",
         content: "hello",
@@ -698,40 +705,24 @@ describe("ClaudeSession", () => {
     expect(terminateRunSession).toHaveBeenCalledTimes(1);
   });
 
-  it("adopts a resolved Claude session id and migrates cached messages", () => {
-    const { session, sessionMessageCache } = createSession({ sessionId: "placeholder-run-1" });
+  it("exposes the caller-reserved provider UUID before the first query", () => {
+    const { session } = createSession();
 
-    sessionMessageCache.appendMessage("placeholder-run-1", {
-      role: "user",
-      content: "hello",
-      createdAt: 1,
-    });
-
-    session.adoptResolvedSessionId("claude-session-42", sessionMessageCache);
-
-    expect(session.runContext.runtimeContext.sessionId).toBe("claude-session-42");
-    expect(sessionMessageCache.getCachedMessages("placeholder-run-1")).toEqual([]);
-    expect(sessionMessageCache.getCachedMessages("claude-session-42")).toEqual([
-      {
-        role: "user",
-        content: "hello",
-        createdAt: 1,
-      },
-    ]);
+    expect(session.sessionId).toBe(RESERVED_SESSION_ID);
+    expect(session.runContext.runtimeContext.sessionId).toBeNull();
   });
 
-  it("resumes an interrupted incomplete turn using its adopted Claude provider session id", async () => {
-    const providerSessionId = "claude-session-interrupted";
-    const firstQuery = createProviderSessionThenPendingQuery(providerSessionId);
+  it("resumes an interrupted incomplete turn using its immutable reserved provider UUID", async () => {
+    const firstQuery = createProviderSessionThenPendingQuery(RESERVED_SESSION_ID);
     const { session, startQueryTurn, closeQuery } = createSession({
-      queries: [firstQuery.query, createResultQuery(providerSessionId)],
+      queries: [firstQuery.query, createResultQuery()],
     });
 
     const { turnId } = await session.startTurn(new AgentInputUserMessage("start long work"));
-    await waitFor(() => session.sessionId === providerSessionId, "provider session adoption");
+    await waitFor(() => startQueryTurn.mock.calls.length === 1, "provider session query");
 
-    const firstOptions = startQueryTurn.mock.calls[0]?.[0] as { sessionId?: string | null };
-    expect(firstOptions.sessionId).toBeNull();
+    const firstOptions = startQueryTurn.mock.calls[0]?.[0] as ClaudeSdkStartQueryTurnOptions;
+    expect(firstOptions.sessionBinding).toEqual({ kind: "create", sessionId: RESERVED_SESSION_ID });
     expect(session.hasCompletedTurn).toBe(false);
 
     const interruptPromise = session.interrupt(turnId as string);
@@ -739,24 +730,24 @@ describe("ClaudeSession", () => {
       () => (startQueryTurn.mock.calls[0]?.[0] as { abortController?: AbortController }).abortController?.signal.aborted === true,
       "interrupt abort signal",
     );
-    expect(closeQuery).not.toHaveBeenCalled();
     firstQuery.release();
     await interruptPromise;
 
     expect(session.hasCompletedTurn).toBe(false);
+    expect(closeQuery).toHaveBeenCalledTimes(1);
 
     await session.startTurn(new AgentInputUserMessage("continue with that context"));
     await waitFor(() => startQueryTurn.mock.calls.length === 2, "follow-up query start");
 
-    const secondOptions = startQueryTurn.mock.calls[1]?.[0] as { sessionId?: string | null };
-    expect(secondOptions.sessionId).toBe(providerSessionId);
+    const secondOptions = startQueryTurn.mock.calls[1]?.[0] as ClaudeSdkStartQueryTurnOptions;
+    expect(secondOptions.sessionBinding).toEqual({ kind: "resume", sessionId: RESERVED_SESSION_ID });
     await waitFor(() => session.hasCompletedTurn, "follow-up turn completion");
   });
 
-  it("does not pass the local run id placeholder as a Claude resume id after interrupt", async () => {
+  it("switches an opened but unconfirmed first query to exact resume after interrupt", async () => {
     const firstQuery = createManuallySettledQuery();
     const { session, startQueryTurn, closeQuery } = createSession({
-      queries: [firstQuery.query, createResultQuery("claude-session-after-placeholder")],
+      queries: [firstQuery.query, createResultQuery()],
     });
 
     const { turnId } = await session.startTurn(new AgentInputUserMessage("start before provider id"));
@@ -771,56 +762,83 @@ describe("ClaudeSession", () => {
     firstQuery.release();
     await interruptPromise;
 
-    expect(session.sessionId).toBe("run-1");
+    expect(session.sessionId).toBe(RESERVED_SESSION_ID);
     expect(session.hasCompletedTurn).toBe(false);
 
     await session.startTurn(new AgentInputUserMessage("follow up without provider id"));
     await waitFor(() => startQueryTurn.mock.calls.length === 2, "placeholder follow-up query start");
 
-    const secondOptions = startQueryTurn.mock.calls[1]?.[0] as { sessionId?: string | null };
-    expect(secondOptions.sessionId).toBeNull();
+    const secondOptions = startQueryTurn.mock.calls[1]?.[0] as ClaudeSdkStartQueryTurnOptions;
+    expect(secondOptions.sessionBinding).toEqual({ kind: "resume", sessionId: RESERVED_SESSION_ID });
     await waitFor(() => session.hasCompletedTurn, "placeholder follow-up completion");
   });
 
-  it("continues to resume completed Claude turns with the adopted provider session id", async () => {
-    const providerSessionId = "claude-session-completed";
+  it("uses SDK sessionId for the first turn and resume for every completed follow-up", async () => {
     const { session, startQueryTurn } = createSession({
-      queries: [createResultQuery(providerSessionId), createResultQuery(providerSessionId)],
+      queries: [createResultQuery(), createResultQuery()],
     });
 
     await session.startTurn(new AgentInputUserMessage("first turn"));
     await waitFor(() => session.hasCompletedTurn, "first turn completion");
 
-    const firstOptions = startQueryTurn.mock.calls[0]?.[0] as { sessionId?: string | null };
-    expect(firstOptions.sessionId).toBeNull();
+    const firstOptions = startQueryTurn.mock.calls[0]?.[0] as ClaudeSdkStartQueryTurnOptions;
+    expect(firstOptions.sessionBinding).toEqual({ kind: "create", sessionId: RESERVED_SESSION_ID });
 
     await session.startTurn(new AgentInputUserMessage("second turn"));
     await waitFor(() => startQueryTurn.mock.calls.length === 2, "completed follow-up query start");
 
-    const secondOptions = startQueryTurn.mock.calls[1]?.[0] as { sessionId?: string | null };
-    expect(secondOptions.sessionId).toBe(providerSessionId);
+    const secondOptions = startQueryTurn.mock.calls[1]?.[0] as ClaudeSdkStartQueryTurnOptions;
+    expect(secondOptions.sessionBinding).toEqual({ kind: "resume", sessionId: RESERVED_SESSION_ID });
   });
 
   it("continues to resume restored Claude runs with the restored provider session id", async () => {
-    const restoredSessionId = "claude-session-restored";
     const { session, startQueryTurn } = createSession({
-      sessionId: restoredSessionId,
+      sessionId: RESTORED_SESSION_ID,
       hasCompletedTurn: true,
-      queries: [createResultQuery(restoredSessionId)],
+      queries: [createResultQuery(RESTORED_SESSION_ID)],
     });
 
     await session.startTurn(new AgentInputUserMessage("restored follow up"));
     await waitFor(() => startQueryTurn.mock.calls.length === 1, "restored query start");
 
-    const options = startQueryTurn.mock.calls[0]?.[0] as { sessionId?: string | null };
-    expect(options.sessionId).toBe(restoredSessionId);
+    const options = startQueryTurn.mock.calls[0]?.[0] as ClaudeSdkStartQueryTurnOptions;
+    expect(options.sessionBinding).toEqual({ kind: "resume", sessionId: RESTORED_SESSION_ID });
+  });
+
+  it("fails a turn when Claude reports a conflicting provider UUID", async () => {
+    const { session } = createSession({ query: createResultQuery(CONFLICTING_SESSION_ID) });
+    const errors: unknown[] = [];
+    session.subscribeRuntimeEvents((event) => {
+      if (event.method === ClaudeSessionEventName.ERROR) errors.push(event.params);
+    });
+
+    await session.startTurn(new AgentInputUserMessage("conflicting identity"));
+    await waitFor(() => errors.length === 1, "conflicting identity error");
+
+    expect(JSON.stringify(errors[0])).toContain("CLAUDE_PROVIDER_SESSION_ID_CONFLICT");
+    expect(session.hasCompletedTurn).toBe(false);
+  });
+
+  it("fails a successful-looking turn that never confirms the provider UUID", async () => {
+    const query = createQueryFromChunks([{ type: "result", result: "done" }]);
+    const { session } = createSession({ query });
+    const errors: unknown[] = [];
+    session.subscribeRuntimeEvents((event) => {
+      if (event.method === ClaudeSessionEventName.ERROR) errors.push(event.params);
+    });
+
+    await session.startTurn(new AgentInputUserMessage("missing identity"));
+    await waitFor(() => errors.length === 1, "unconfirmed identity error");
+
+    expect(JSON.stringify(errors[0])).toContain("CLAUDE_PROVIDER_SESSION_ID_UNCONFIRMED");
+    expect(session.hasCompletedTurn).toBe(false);
   });
 
   it("emits provider-derived text segment ids and preserves text-tool-text order", async () => {
     const chunks = [
       {
         type: "assistant",
-        session_id: "claude-session-1",
+        session_id: RESERVED_SESSION_ID,
         uuid: "assistant-wrapper-pre",
         message: {
           id: "msg-pre",
@@ -841,7 +859,7 @@ describe("ClaudeSession", () => {
       },
       {
         type: "user",
-        session_id: "claude-session-1",
+        session_id: RESERVED_SESSION_ID,
         uuid: "user-wrapper-tool-result",
         message: {
           role: "user",
@@ -857,7 +875,7 @@ describe("ClaudeSession", () => {
       },
       {
         type: "assistant",
-        session_id: "claude-session-1",
+        session_id: RESERVED_SESSION_ID,
         uuid: "assistant-wrapper-post",
         message: {
           id: "msg-post",
@@ -872,7 +890,7 @@ describe("ClaudeSession", () => {
       },
       {
         type: "result",
-        session_id: "claude-session-1",
+        session_id: RESERVED_SESSION_ID,
         uuid: "result-wrapper",
         result: "The workspace is /tmp/project.",
       },
@@ -938,7 +956,7 @@ describe("ClaudeSession", () => {
     expect(toolEndIndex).toBeGreaterThan(toolStartIndex);
     expect(postTextIndex).toBeGreaterThan(toolEndIndex);
 
-    expect(sessionMessageCache.getCachedMessages("claude-session-1")).toEqual([
+    expect(sessionMessageCache.getCachedMessages(RESERVED_SESSION_ID)).toEqual([
       expect.objectContaining({
         role: "user",
         content: "where am I?",
@@ -954,7 +972,7 @@ describe("ClaudeSession", () => {
     const chunks = [
       {
         type: "stream_event",
-        session_id: "claude-session-1",
+        session_id: RESERVED_SESSION_ID,
         uuid: "partial-wrapper-start",
         event: {
           type: "message_start",
@@ -967,7 +985,7 @@ describe("ClaudeSession", () => {
       },
       {
         type: "stream_event",
-        session_id: "claude-session-1",
+        session_id: RESERVED_SESSION_ID,
         uuid: "partial-wrapper-block-start",
         event: {
           type: "content_block_start",
@@ -980,7 +998,7 @@ describe("ClaudeSession", () => {
       },
       {
         type: "stream_event",
-        session_id: "claude-session-1",
+        session_id: RESERVED_SESSION_ID,
         uuid: "partial-wrapper-delta-1",
         event: {
           type: "content_block_delta",
@@ -993,7 +1011,7 @@ describe("ClaudeSession", () => {
       },
       {
         type: "stream_event",
-        session_id: "claude-session-1",
+        session_id: RESERVED_SESSION_ID,
         uuid: "partial-wrapper-delta-2",
         event: {
           type: "content_block_delta",
@@ -1006,7 +1024,7 @@ describe("ClaudeSession", () => {
       },
       {
         type: "stream_event",
-        session_id: "claude-session-1",
+        session_id: RESERVED_SESSION_ID,
         uuid: "partial-wrapper-block-stop",
         event: {
           type: "content_block_stop",
@@ -1015,7 +1033,7 @@ describe("ClaudeSession", () => {
       },
       {
         type: "stream_event",
-        session_id: "claude-session-1",
+        session_id: RESERVED_SESSION_ID,
         uuid: "partial-wrapper-message-stop",
         event: {
           type: "message_stop",
@@ -1023,7 +1041,7 @@ describe("ClaudeSession", () => {
       },
       {
         type: "result",
-        session_id: "claude-session-1",
+        session_id: RESERVED_SESSION_ID,
         uuid: "partial-result-wrapper",
         result: "Hello",
       },

@@ -10,8 +10,8 @@ import { resolveClaudeStreamChunkSessionId } from "../claude-runtime-message-nor
 import { ClaudeSessionEventName } from "../events/claude-session-event-name.js";
 import { logRawClaudeSessionChunkDetails } from "../events/claude-session-event-debug.js";
 import type { ClaudeRunContext } from "../backend/claude-agent-run-context.js";
-import { ClaudeSessionMessageCache } from "./claude-session-message-cache.js";
 import type { ClaudeSessionConfig } from "./claude-session-config.js";
+import type { ClaudeProviderSessionLifecycle } from "./claude-provider-session-lifecycle.js";
 import {
   createClaudeActiveTurnExecution,
   isClaudeActiveTurnInterrupted,
@@ -46,9 +46,11 @@ export class ClaudeSession {
   private rawClaudeChunkSequence = 0;
   private readonly contextFileLocalPathResolver: ContextFilePathResolverLike;
   private readonly agentToolsMcpSessionState: ClaudeAgentToolsMcpSessionState;
+  private readonly providerSessionLifecycle: ClaudeProviderSessionLifecycle;
 
   constructor(input: ClaudeSessionStateInput) {
     this.runContext = input.runContext;
+    this.providerSessionLifecycle = input.providerSessionLifecycle;
     this.dependencies = input.dependencies;
     this.listeners = input.listeners ?? new Set();
     this.activeAbortController = input.activeAbortController ?? null;
@@ -71,7 +73,7 @@ export class ClaudeSession {
   }
 
   get sessionId(): string {
-    return this.runContext.runtimeContext.sessionId ?? this.runId;
+    return this.providerSessionLifecycle.sessionId;
   }
 
   get hasCompletedTurn(): boolean {
@@ -284,20 +286,6 @@ export class ClaudeSession {
     });
   }
 
-  adoptResolvedSessionId(
-    sessionId: string | null | undefined,
-    sessionMessageCache: ClaudeSessionMessageCache,
-  ): void {
-    const normalized = asString(sessionId);
-    if (!normalized || normalized === this.sessionId) {
-      return;
-    }
-
-    const previousSessionId = this.sessionId;
-    this.runContext.runtimeContext.sessionId = normalized;
-    sessionMessageCache.migrateSessionMessages(previousSessionId, normalized);
-  }
-
   setActiveTurn(turnId: string | null): void {
     this.runContext.runtimeContext.activeTurnId = turnId;
   }
@@ -322,11 +310,6 @@ export class ClaudeSession {
     this.currentStatus = "IDLE";
     this.isInterruptingActiveTurn = false;
     this.runContext.runtimeContext.activeTurnId = null;
-  }
-
-  private resolveProviderSessionIdForResume(): string | null {
-    const sessionId = asString(this.runContext.runtimeContext.sessionId);
-    return sessionId && sessionId !== this.runId ? sessionId : null;
   }
 
   private clearActiveTurnExecution(activeTurn: ClaudeActiveTurnExecution): void {
@@ -420,6 +403,9 @@ export class ClaudeSession {
     });
     const processDiagnostics = new ClaudeProcessDiagnostics();
     let query: ClaudeActiveTurnExecution["query"] = null;
+    let queryOpened = false;
+    let streamCompleted = false;
+    const sessionBinding = this.providerSessionLifecycle.buildNextQueryBinding();
     const textProjector = new ClaudeTextSegmentProjector({
       turnId: options.turnId,
       getSessionId: () => this.sessionId,
@@ -429,7 +415,7 @@ export class ClaudeSession {
       query = await this.dependencies.sdkClient.startQueryTurn({
         prompt: options.content,
         systemPrompt: this.runContext.runtimeContext.carpenterSystemPrompt,
-        sessionId: this.resolveProviderSessionIdForResume(),
+        sessionBinding,
         model: this.model,
         workingDirectory: this.workingDirectory,
         mcpServers,
@@ -449,6 +435,8 @@ export class ClaudeSession {
             toolOptions,
           ),
       });
+      this.providerSessionLifecycle.noteQueryOpened(sessionBinding);
+      queryOpened = true;
       if (activeTurn) {
         activeTurn.query = query;
       }
@@ -468,7 +456,9 @@ export class ClaudeSession {
           break;
         }
         const resolvedSessionId = resolveClaudeStreamChunkSessionId(chunk);
-        this.adoptResolvedSessionId(resolvedSessionId, this.dependencies.sessionMessageCache);
+        if (resolvedSessionId) {
+          this.providerSessionLifecycle.confirmProviderSessionId(resolvedSessionId);
+        }
         const compactionEvent = buildClaudeProviderCompactionEvent({
           chunk,
           turnId: options.turnId,
@@ -499,6 +489,7 @@ export class ClaudeSession {
           break;
         }
       }
+      streamCompleted = true;
     } catch (error) {
       throw enrichClaudeRuntimeErrorWithDiagnostics(error, processDiagnostics);
     } finally {
@@ -510,30 +501,33 @@ export class ClaudeSession {
       } else {
         this.dependencies.activeQueriesByRunId.delete(this.runId);
       }
+      if (queryOpened && !streamCompleted) this.providerSessionLifecycle.closeCurrentQuery();
     }
 
     if (isClaudeActiveTurnInterrupted(activeTurn, options.abortController)) {
+      this.providerSessionLifecycle.closeCurrentQuery();
       return;
     }
+    try {
+      this.providerSessionLifecycle.assertCurrentQueryConfirmed();
+      textProjector.finishTurn();
+      const assistantOutput = textProjector.getAssistantOutput();
+      if (assistantOutput.length > 0) {
+        this.dependencies.sessionMessageCache.appendMessage(this.sessionId, {
+          role: "assistant",
+          content: assistantOutput,
+          createdAt: nowTimestampSeconds(),
+        });
+      }
 
-    textProjector.finishTurn();
-    const assistantOutput = textProjector.getAssistantOutput();
-    if (assistantOutput.length > 0) {
-      this.dependencies.sessionMessageCache.appendMessage(this.sessionId, {
-        role: "assistant",
-        content: assistantOutput,
-        createdAt: nowTimestampSeconds(),
+      this.markTurnCompleted(options.turnId);
+      this.emitRuntimeEvent({
+        method: ClaudeSessionEventName.TURN_COMPLETED,
+        params: { turnId: options.turnId, sessionId: this.sessionId },
       });
+    } finally {
+      this.providerSessionLifecycle.closeCurrentQuery();
     }
-
-    this.markTurnCompleted(options.turnId);
-    this.emitRuntimeEvent({
-      method: ClaudeSessionEventName.TURN_COMPLETED,
-      params: {
-        turnId: options.turnId,
-        sessionId: this.sessionId,
-      },
-    });
   }
 
 }

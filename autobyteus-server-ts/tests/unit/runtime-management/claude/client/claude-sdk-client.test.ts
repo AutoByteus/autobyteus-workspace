@@ -17,6 +17,12 @@ const createMockQuery = () => {
   return query;
 };
 
+const RESERVED_SESSION_ID = "11111111-1111-4111-8111-111111111111";
+const createSessionBinding = () => ({
+  kind: "create" as const,
+  sessionId: RESERVED_SESSION_ID,
+});
+
 describe("ClaudeSdkClient", () => {
   beforeEach(() => {
     vi.stubEnv("CLAUDE_AGENT_SDK_AUTH_MODE", "cli");
@@ -51,6 +57,7 @@ describe("ClaudeSdkClient", () => {
 
       await client.startQueryTurn({
         prompt: `${mode} turn`,
+        sessionBinding: createSessionBinding(),
         model: "haiku",
         workingDirectory: "/tmp/claude-original-mode",
         env,
@@ -78,6 +85,7 @@ describe("ClaudeSdkClient", () => {
 
     await client.startQueryTurn({
       prompt: "api-key turn",
+      sessionBinding: createSessionBinding(),
       model: "haiku",
       workingDirectory: "/tmp/claude-api-key-mode",
       env,
@@ -109,6 +117,7 @@ describe("ClaudeSdkClient", () => {
 
     await expect(client.startQueryTurn({
       prompt: "api-key turn",
+      sessionBinding: createSessionBinding(),
       model: "haiku",
       workingDirectory: "/tmp/claude-api-key-failure",
       env: { CLAUDE_AGENT_SDK_AUTH_MODE: "api-key" },
@@ -133,7 +142,7 @@ describe("ClaudeSdkClient", () => {
     });
   });
 
-  it("passes stable query options for project skills, resume, MCP, and send_message_to tooling", async () => {
+  it("passes stable query options for project skills, exact resume, MCP, and send_message_to tooling", async () => {
     const client = new ClaudeSdkClient();
     const queryMock = createMockQuery();
     const queryFn = vi.fn(async (input: unknown) => queryMock);
@@ -145,7 +154,7 @@ describe("ClaudeSdkClient", () => {
     const mcpServer = { transport: "mock" };
     const query = await client.startQueryTurn({
       prompt: "Use the skill and continue the session.",
-      sessionId: "session-123",
+      sessionBinding: { kind: "resume", sessionId: RESERVED_SESSION_ID },
       model: "haiku",
       workingDirectory: "/tmp/claude-client-query-options",
       mcpServers: { demo: mcpServer },
@@ -169,7 +178,7 @@ describe("ClaudeSdkClient", () => {
       options: expect.objectContaining({
         model: "haiku",
         cwd: "/tmp/claude-client-query-options",
-        resume: "session-123",
+        resume: RESERVED_SESSION_ID,
         mcpServers: { demo: mcpServer },
         permissionMode: "default",
         settingSources: ["user", "project", "local"],
@@ -189,6 +198,24 @@ describe("ClaudeSdkClient", () => {
       options?: Record<string, unknown>;
     };
     expect(firstCall.options).not.toHaveProperty("tools");
+    expect(firstCall.options).not.toHaveProperty("sessionId");
+  });
+
+  it("passes only SDK sessionId for a caller-reserved first conversation", async () => {
+    const client = new ClaudeSdkClient();
+    const queryFn = vi.fn(async () => createMockQuery());
+    client.setCachedModuleForTesting({ query: queryFn });
+
+    await client.startQueryTurn({
+      prompt: "start the reserved conversation",
+      sessionBinding: createSessionBinding(),
+      model: "haiku",
+      workingDirectory: "/tmp/claude-client-create-binding",
+    });
+
+    const call = queryFn.mock.calls[0]?.[0] as { options: Record<string, unknown> };
+    expect(call.options.sessionId).toBe(RESERVED_SESSION_ID);
+    expect(call.options).not.toHaveProperty("resume");
   });
 
   it("loads user, project, and local Claude Code settings for normal turns", async () => {
@@ -202,6 +229,7 @@ describe("ClaudeSdkClient", () => {
 
     await client.startQueryTurn({
       prompt: "Use the configured Claude Code settings.",
+      sessionBinding: createSessionBinding(),
       model: "default",
       workingDirectory: "/tmp/claude-client-default-setting-sources",
     });
@@ -226,6 +254,7 @@ describe("ClaudeSdkClient", () => {
 
     await client.startQueryTurn({
       prompt: "abortable turn",
+      sessionBinding: createSessionBinding(),
       model: "haiku",
       workingDirectory: "/tmp/claude-client-abort-controller",
       abortController,
@@ -251,6 +280,7 @@ describe("ClaudeSdkClient", () => {
 
     await client.startQueryTurn({
       prompt: "diagnostic turn",
+      sessionBinding: createSessionBinding(),
       model: "haiku",
       workingDirectory: "/tmp/claude-client-stderr",
       stderr,
@@ -307,6 +337,7 @@ describe("ClaudeSdkClient", () => {
 
     await client.startQueryTurn({
       prompt: "explicit approval callback",
+      sessionBinding: createSessionBinding(),
       model: "haiku",
       workingDirectory: "/tmp/claude-client-explicit-can-use-tool",
       autoExecuteTools: true,
@@ -315,6 +346,7 @@ describe("ClaudeSdkClient", () => {
 
     await client.startQueryTurn({
       prompt: "auto exec callback",
+      sessionBinding: createSessionBinding(),
       model: "haiku",
       workingDirectory: "/tmp/claude-client-auto-exec",
       autoExecuteTools: true,

@@ -7,6 +7,7 @@ import { MixedAgentMemberHandle } from "./mixed-agent-member-handle.js";
 import { MixedSubTeamMemberHandle } from "./mixed-sub-team-member-handle.js";
 import type { MixedConfiguredMemberHandle, MixedTeamEventPublish } from "./mixed-team-member-handle.js";
 import { MixedTeamMemberConfigResolver } from "./mixed-team-member-config-resolver.js";
+import type { TeamAgentPlatformBinding } from "../../../domain/team-agent-platform-binding.js";
 
 export type ConfiguredMemberRegistryAccess = {
   getOrCreate(context: MixedTeamMemberContext): MixedConfiguredMemberHandle;
@@ -22,6 +23,7 @@ export class MixedConfiguredMemberRegistry implements ConfiguredMemberRegistryAc
     agentRunManager?: AgentRunManager;
     publish: MixedTeamEventPublish;
     deliverInterAgentMessage: (request: InterAgentMessageDeliveryIntent) => Promise<import("../../../../agent-execution/domain/agent-operation-result.js").AgentOperationResult>;
+    acceptPlatformBinding: (binding: TeamAgentPlatformBinding) => Promise<void>;
   }) {}
 
   listHandles(): MixedConfiguredMemberHandle[] { return [...this.handles.values()]; }
@@ -42,9 +44,11 @@ export class MixedConfiguredMemberRegistry implements ConfiguredMemberRegistryAc
           teamContext: this.options.teamContext,
           context,
           config: node,
+          activationMode: this.options.teamContext.runtimeContext.configuredMemberActivationMode,
           agentRunManager: this.options.agentRunManager,
           publish: this.options.publish,
           deliverInterAgentMessage: this.options.deliverInterAgentMessage,
+          acceptPlatformBinding: this.options.acceptPlatformBinding,
         })
       : context.kind === "agent_team" && node.kind === "agent_team"
         ? new MixedSubTeamMemberHandle({

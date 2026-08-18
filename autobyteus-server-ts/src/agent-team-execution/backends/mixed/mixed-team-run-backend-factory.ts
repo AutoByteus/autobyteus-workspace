@@ -4,10 +4,18 @@ import type { TeamRunEvent } from "../../domain/team-run-event.js";
 import type { TeamRunAgentTeamNode, TeamRunConfig, TeamRunNode } from "../../domain/team-run-config.js";
 import { TeamRunContext } from "../../domain/team-run-context.js";
 import { TeamBackendKind } from "../../domain/team-backend-kind.js";
+import { isExternalProviderRuntimeKind } from "../../../runtime-management/runtime-kind-enum.js";
 import { MixedTeamManager } from "./mixed-team-manager.js";
-import { MixedAgentMemberContext, MixedSubTeamMemberContext, MixedTeamRunContext, type MixedTeamMemberContext } from "./mixed-team-run-context.js";
+import {
+  MixedAgentMemberContext,
+  type MixedConfiguredMemberActivationMode,
+  MixedSubTeamMemberContext,
+  MixedTeamRunContext,
+  type MixedTeamMemberContext,
+} from "./mixed-team-run-context.js";
 import { MixedTeamRunBackend } from "./mixed-team-run-backend.js";
 import { MixedSubTeamRunFactory } from "./mixed-sub-team-run-factory.js";
+import type { TeamAgentPlatformBinding } from "../../domain/team-agent-platform-binding.js";
 
 export type MixedTeamRunBackendFactoryOptions = {
   createTeamManager?: (
@@ -20,11 +28,13 @@ export type MixedTeamRunBackendFactoryOptions = {
 export type MixedTeamRunCallbacks = Readonly<{
   publish: (event: TeamRunEvent) => void;
   deliverInterAgentMessage: (intent: InterAgentMessageDeliveryIntent) => Promise<AgentOperationResult>;
+  acceptPlatformBinding: (binding: TeamAgentPlatformBinding) => Promise<void>;
 }>;
 
 const noopCallbacks = (): MixedTeamRunCallbacks => ({
   publish: () => undefined,
   deliverInterAgentMessage: async () => ({ accepted: false, code: "TEAM_ROOT_NOT_BOUND", message: "The TeamRun is not bound to a root operation owner." }),
+  acceptPlatformBinding: async () => { throw new Error("The TeamRun is not bound to a root operation owner."); },
 });
 
 export class MixedTeamRunBackendFactory {
@@ -40,20 +50,22 @@ export class MixedTeamRunBackendFactory {
       config,
       rootTeamRunId: teamRunId,
       teamNode: config.rootTeam,
+      configuredMemberActivationMode: "fresh",
       callbacks,
     });
   }
 
   async restoreBackend(
-    context: TeamRunContext<MixedTeamRunContext>,
     config: TeamRunConfig,
+    teamRunId: string,
     callbacks: MixedTeamRunCallbacks = noopCallbacks(),
   ): Promise<MixedTeamRunBackend> {
+    if (config.rootTeam.teamRunId !== teamRunId) throw new Error(`Root TeamRun id '${config.rootTeam.teamRunId}' does not match '${teamRunId}'.`);
     return this.createBackendForNode({
       config,
-      rootTeamRunId: context.rootTeamRunId,
-      teamNode: context.teamNode,
-      restoreRuntimeContext: context.runtimeContext,
+      rootTeamRunId: teamRunId,
+      teamNode: config.rootTeam,
+      configuredMemberActivationMode: "restore",
       callbacks,
     });
   }
@@ -62,7 +74,7 @@ export class MixedTeamRunBackendFactory {
     config: TeamRunConfig;
     rootTeamRunId: string;
     teamNode: TeamRunAgentTeamNode;
-    restoreRuntimeContext?: MixedTeamRunContext | null;
+    configuredMemberActivationMode: MixedConfiguredMemberActivationMode;
     callbacks: MixedTeamRunCallbacks;
   }): MixedTeamRunBackend {
     let subTeamRunFactory!: MixedSubTeamRunFactory;
@@ -72,6 +84,7 @@ export class MixedTeamRunBackendFactory {
           subTeamRunFactory,
           publish: input.callbacks.publish,
           deliverInterAgentMessage: input.callbacks.deliverInterAgentMessage,
+          acceptPlatformBinding: input.callbacks.acceptPlatformBinding,
         }));
     subTeamRunFactory = new MixedSubTeamRunFactory({
       buildContext: (child) => this.buildTeamRunContext(child),
@@ -87,10 +100,11 @@ export class MixedTeamRunBackendFactory {
     applicationBinding?: import("../../domain/team-run-config.js").TeamRunApplicationBinding | null;
     rootTeamRunId: string;
     teamNode: TeamRunAgentTeamNode;
-    restoreRuntimeContext?: MixedTeamRunContext | null;
+    configuredMemberActivationMode: MixedConfiguredMemberActivationMode;
   }): TeamRunContext<MixedTeamRunContext> {
     const runtimeContext = new MixedTeamRunContext({
-      memberContexts: input.teamNode.children.map((node) => this.buildRuntimeMemberContext(node, input.restoreRuntimeContext ?? null)),
+      memberContexts: input.teamNode.children.map((node) => this.buildRuntimeMemberContext(node)),
+      configuredMemberActivationMode: input.configuredMemberActivationMode,
     });
     return new TeamRunContext({
       rootTeamRunId: input.rootTeamRunId,
@@ -103,20 +117,20 @@ export class MixedTeamRunBackendFactory {
     });
   }
 
-  private buildRuntimeMemberContext(node: TeamRunNode, restored: MixedTeamRunContext | null): MixedTeamMemberContext {
-    const restoredNode = restored?.memberContexts.find((item) => item.address === node.address) ?? null;
+  private buildRuntimeMemberContext(node: TeamRunNode): MixedTeamMemberContext {
     return node.kind === "agent"
       ? new MixedAgentMemberContext({
           address: node.address,
           agentRunId: node.agentRunId,
           runtimeKind: node.runtimeKind,
-          platformAgentRunId: restoredNode?.kind === "agent" ? restoredNode.platformAgentRunId : node.platformAgentRunId,
+          platformAgentRunId: isExternalProviderRuntimeKind(node.runtimeKind)
+            ? node.platformAgentRunId
+            : null,
         })
       : new MixedSubTeamMemberContext({
           address: node.address,
           teamDefinitionId: node.teamDefinitionId,
           teamRunId: node.teamRunId,
-          childRuntimeContext: restoredNode?.kind === "agent_team" ? restoredNode.childRuntimeContext : null,
         });
   }
 }

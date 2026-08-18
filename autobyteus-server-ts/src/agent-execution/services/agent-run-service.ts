@@ -1,6 +1,4 @@
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
-import { AgentRunConfig } from "../domain/agent-run-config.js";
-import { AgentRunContext, type RuntimeAgentRunContext } from "../domain/agent-run-context.js";
+import type { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import type { AgentRun } from "../domain/agent-run.js";
 import { AgentRunManager } from "./agent-run-manager.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
@@ -21,6 +19,7 @@ import { isAgentRunEvent } from "../domain/agent-run-event.js";
 import { AgentRunCanonicalFailureObserver } from "../events/agent-run-canonical-failure-observer.js";
 import { AgentRunProvisioningService } from "./agent-run-provisioning-service.js";
 import type { AgentRunIdentityAllocator } from "./agent-run-identity-allocator.js";
+import { StandaloneAgentRunActivationService } from "./standalone-agent-run-activation-service.js";
 
 export interface CreateAgentRunInput {
   agentDefinitionId: string;
@@ -77,8 +76,8 @@ export class AgentRunService {
   private agentRunManager: AgentRunManager;
   private metadataService: AgentRunMetadataService;
   private historyCatalogService: AgentRunHistoryCatalogService;
-  private workspaceManager = getWorkspaceManager();
   private readonly provisioningService: AgentRunProvisioningService;
+  private readonly activationService: StandaloneAgentRunActivationService;
 
   constructor(
     memoryDir: string,
@@ -88,6 +87,7 @@ export class AgentRunService {
       historyCatalogService?: AgentRunHistoryCatalogService;
       workspaceManager?: ReturnType<typeof getWorkspaceManager>;
       agentRunIdentityAllocator?: Pick<AgentRunIdentityAllocator, "allocateForAgentDefinition">;
+      activationService?: StandaloneAgentRunActivationService;
     } = {},
   ) {
     this.agentRunManager = deps.agentRunManager ?? AgentRunManager.getInstance();
@@ -95,13 +95,19 @@ export class AgentRunService {
       deps.metadataService ?? new AgentRunMetadataService(memoryDir);
     this.historyCatalogService =
       deps.historyCatalogService ?? new AgentRunHistoryCatalogService(memoryDir);
-    this.workspaceManager = deps.workspaceManager ?? getWorkspaceManager();
+    const workspaceManager = deps.workspaceManager ?? getWorkspaceManager();
     this.provisioningService = new AgentRunProvisioningService(memoryDir, {
       agentRunManager: this.agentRunManager,
       metadataService: this.metadataService,
       historyCatalogService: this.historyCatalogService,
-      workspaceManager: this.workspaceManager,
+      workspaceManager,
       agentRunIdentityAllocator: deps.agentRunIdentityAllocator,
+    });
+    this.activationService = deps.activationService ?? new StandaloneAgentRunActivationService(memoryDir, {
+      agentRunManager: this.agentRunManager,
+      metadataService: this.metadataService,
+      historyCatalogService: this.historyCatalogService,
+      workspaceManager,
     });
   }
 
@@ -118,13 +124,6 @@ export class AgentRunService {
       return this.notFound(activeRun.runtimeKind);
     }
 
-    const metadata = await this.metadataService.readMetadata(runId);
-    if (metadata) {
-      await this.metadataService.writeMetadata(runId, {
-        ...metadata,
-        platformAgentRunId: activeRun.getPlatformAgentRunId() ?? metadata.platformAgentRunId,
-      });
-    }
     await this.historyCatalogService.recordRunTerminated({ runId });
     return {
       success: true,
@@ -213,7 +212,7 @@ export class AgentRunService {
     input: CreateAgentRunInput,
   ): Promise<CreateAgentRunResult> {
     const prepared = await this.provisioningService.prepareAgentRun(input);
-    const activeRun = await this.provisioningService.activatePreparedRun(prepared.runId);
+    const activeRun = await this.activationService.activatePreparedRun(prepared.runId);
     return { runId: activeRun.runId };
   }
 
@@ -224,7 +223,11 @@ export class AgentRunService {
   }
 
   async activatePreparedRun(runId: string): Promise<AgentRun> {
-    return this.provisioningService.activatePreparedRun(runId);
+    return this.activationService.activatePreparedRun(runId);
+  }
+
+  resolveCommandReadyAgentRun(runId: string): Promise<AgentRun> {
+    return this.activationService.resolveCommandReadyAgentRun(runId);
   }
 
   async cancelPreparedAgentRun(runId: string): Promise<CancelPreparedAgentRunResult> {
@@ -249,16 +252,6 @@ export class AgentRunService {
       summary?: string | null;
     } = {},
   ): Promise<void> {
-    const metadata = await this.metadataService.readMetadata(run.runId);
-    const updatedMetadata = metadata
-      ? {
-          ...metadata,
-          platformAgentRunId: run.getPlatformAgentRunId() ?? metadata.platformAgentRunId,
-        }
-      : null;
-    if (updatedMetadata) {
-      await this.metadataService.writeMetadata(run.runId, updatedMetadata);
-    }
     await this.historyCatalogService.recordRunSummary({
       runId: run.runId,
       summary: input.summary ?? "",
@@ -266,63 +259,7 @@ export class AgentRunService {
   }
 
   async restoreAgentRun(runId: string): Promise<RestoreAgentRunResult> {
-    const normalizedRunId = normalizeRequiredRunId(runId);
-    const activeRun = this.agentRunManager.getActiveRun(normalizedRunId);
-    if (activeRun) {
-      throw new Error(
-        `Run '${normalizedRunId}' is already active and does not need restore.`,
-      );
-    }
-
-    const metadata = await this.metadataService.readMetadata(normalizedRunId);
-    if (!metadata) {
-      throw new Error(
-        `Run '${normalizedRunId}' cannot be restored because metadata is missing.`,
-      );
-    }
-    if (metadata.preparedAt && !metadata.startedAt) {
-      throw new Error(
-        `Run '${normalizedRunId}' cannot be restored because it has not been started.`,
-      );
-    }
-
-    const workspace = await this.workspaceManager.ensureWorkspaceByRootPath(
-      metadata.workspaceRootPath,
-    );
-    const restoredRun = await this.agentRunManager.restoreAgentRun(
-      new AgentRunContext({
-        runId: normalizedRunId,
-        config: new AgentRunConfig({
-          runtimeKind: metadata.runtimeKind,
-          agentDefinitionId: metadata.agentDefinitionId,
-          llmModelIdentifier: metadata.llmModelIdentifier,
-          autoExecuteTools: metadata.autoExecuteTools,
-          workspaceId: workspace.workspaceId,
-          memoryDir: metadata.memoryDir,
-          llmConfig: metadata.llmConfig,
-          skillAccessMode: metadata.skillAccessMode ?? SkillAccessMode.PRELOADED_ONLY,
-          applicationExecutionContext: metadata.applicationExecutionContext ?? null,
-        }),
-        runtimeContext: this.buildRestoreRuntimeContext(metadata),
-      }),
-    );
-
-    const persistedMetadata = await this.historyCatalogService.recordRunStarted({
-      runId: normalizedRunId,
-      runtimeKind: restoredRun.runtimeKind,
-      platformAgentRunId: restoredRun.getPlatformAgentRunId() ?? metadata.platformAgentRunId,
-      startedAt: metadata.startedAt ?? new Date().toISOString(),
-    });
-    if (!persistedMetadata) {
-      throw new Error(
-        `Run '${normalizedRunId}' cannot be restored because metadata disappeared.`,
-      );
-    }
-
-    return {
-      run: restoredRun,
-      metadata: persistedMetadata,
-    };
+    return this.activationService.restorePersistedRun(normalizeRequiredRunId(runId));
   }
 
   private notFound(runtimeKind: RuntimeKind | null): AgentRunTerminationResult {
@@ -334,22 +271,6 @@ export class AgentRunService {
     };
   }
 
-  private buildRestoreRuntimeContext(metadata: AgentRunMetadata): RuntimeAgentRunContext {
-    if (metadata.runtimeKind === RuntimeKind.CODEX_APP_SERVER) {
-      return {
-        threadId: metadata.platformAgentRunId,
-        activeTurnId: null,
-      } as RuntimeAgentRunContext;
-    }
-    if (metadata.runtimeKind === RuntimeKind.CLAUDE_AGENT_SDK) {
-      return {
-        sessionId: metadata.platformAgentRunId,
-        hasCompletedTurn: false,
-        activeTurnId: null,
-      } as RuntimeAgentRunContext;
-    }
-    return null;
-  }
 }
 
 const normalizeRequiredRunId = (runId: string): string => {

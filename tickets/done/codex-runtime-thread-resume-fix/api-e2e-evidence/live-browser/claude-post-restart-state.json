@@ -1,0 +1,95 @@
+{
+  "data": {
+    "getTeamRunResumeConfig": {
+      "teamRunId": "classroom_simulation_team_5b8aa9e05d684f82892cddc445dc602e",
+      "isActive": true,
+      "executionTree": {
+        "schema_version": 1,
+        "created_at": "2026-08-17T19:46:16.169Z",
+        "archived_at": null,
+        "application_binding": null,
+        "handoffs": [],
+        "root_team": {
+          "team_definition_id": "classroom-simulation-team",
+          "team_definition_name": "Classroom Simulation Team",
+          "team_run_id": "classroom_simulation_team_5b8aa9e05d684f82892cddc445dc602e",
+          "coordinator_address": "/professor",
+          "members": [
+            {
+              "kind": "configured_agent",
+              "address": "/professor",
+              "agent_definition_id": "team-local-agent:classroom-simulation-team:professor",
+              "role": null,
+              "description": null,
+              "agent_run_id": "professor_88c0343f282b4aa18acd7c1dd9bd2960",
+              "platform_agent_run_id": "0f1e5275-277e-4fcf-9572-c560e66aea25",
+              "launch_configuration": {
+                "runtime_kind": "CLAUDE",
+                "llm_model_identifier": "haiku",
+                "llm_config": null,
+                "auto_execute_tools": true,
+                "skill_access_mode": "PRELOADED_ONLY",
+                "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix/api-e2e-evidence/live-browser/workspaces/claude"
+              }
+            },
+            {
+              "kind": "configured_agent",
+              "address": "/student",
+              "agent_definition_id": "team-local-agent:classroom-simulation-team:student",
+              "role": null,
+              "description": null,
+              "agent_run_id": "student_13c48ae7e385487ca9e62adcf152fed7",
+              "platform_agent_run_id": null,
+              "launch_configuration": {
+                "runtime_kind": "CLAUDE",
+                "llm_model_identifier": "haiku",
+                "llm_config": null,
+                "auto_execute_tools": true,
+                "skill_access_mode": "PRELOADED_ONLY",
+                "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix/api-e2e-evidence/live-browser/workspaces/claude"
+              }
+            }
+          ],
+          "task_executions": []
+        }
+      }
+    },
+    "getTeamMemberRunProjection": {
+      "agentRunId": "professor_88c0343f282b4aa18acd7c1dd9bd2960",
+      "summary": "Remember exact marker CLAUDE-FIX-817-H7Q2. Do not use tools or delegate. Reply exactly: ACK CLAUD...",
+      "lastActivityAt": "2026-08-17T19:53:53.995Z",
+      "conversation": [
+        {
+          "kind": "message",
+          "role": "user",
+          "content": "Remember exact marker CLAUDE-FIX-817-H7Q2. Do not use tools or delegate. Reply exactly: ACK CLAUDE-FIX-817-H7Q2",
+          "media": null,
+          "ts": 1786996091.051
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "content": "ACK CLAUDE-FIX-817-H7Q2",
+          "media": null,
+          "ts": 1786996094.892
+        },
+        {
+          "kind": "message",
+          "role": "user",
+          "content": "After the full API process restart, what exact marker did I ask you to remember? Reply with only the marker. Do not infer or use tools.",
+          "media": null,
+          "ts": 1786996431.044
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "content": "CLAUDE-FIX-817-H7Q2",
+          "media": null,
+          "ts": 1786996433.995
+        }
+      ],
+      "activities": [],
+      "hasEarlierActiveTraceEvents": false
+    }
+  }
+}

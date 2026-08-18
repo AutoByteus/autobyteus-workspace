@@ -22,6 +22,7 @@ import { MixedSubTeamMemberHandle } from "./members/mixed-sub-team-member-handle
 import { MixedTaskAgentExecutionRegistry } from "./members/mixed-task-agent-execution-registry.js";
 import { MixedTaskTeamExecutionRegistry } from "./members/mixed-task-team-execution-registry.js";
 import { MixedTeamMemberConfigResolver } from "./members/mixed-team-member-config-resolver.js";
+import type { TeamAgentPlatformBinding } from "../../domain/team-agent-platform-binding.js";
 
 /** Provider/local mechanics for exactly one concrete TeamRun. */
 export class MixedTeamManager {
@@ -40,6 +41,7 @@ export class MixedTeamManager {
       agentRunManager?: AgentRunManager;
       publish: (event: TeamRunEvent) => void;
       deliverInterAgentMessage: (intent: InterAgentMessageDeliveryIntent) => Promise<AgentOperationResult>;
+      acceptPlatformBinding: (binding: TeamAgentPlatformBinding) => Promise<void>;
     },
   ) {
     this.configured = new MixedConfiguredMemberRegistry({
@@ -49,12 +51,14 @@ export class MixedTeamManager {
       agentRunManager: options.agentRunManager,
       publish: options.publish,
       deliverInterAgentMessage: options.deliverInterAgentMessage,
+      acceptPlatformBinding: options.acceptPlatformBinding,
     });
     this.taskAgents = new MixedTaskAgentExecutionRegistry({
       teamContext: context,
       agentRunManager: options.agentRunManager,
       publish: options.publish,
       deliverInterAgentMessage: options.deliverInterAgentMessage,
+      acceptPlatformBinding: options.acceptPlatformBinding,
     });
     this.taskTeams = new MixedTaskTeamExecutionRegistry({
       teamContext: context,

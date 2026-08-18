@@ -10,6 +10,7 @@ import {
 } from "./claude-session-bootstrapper.js";
 import type { AgentRunBackendFactory } from "../../agent-run-backend-factory.js";
 import { ClaudeAgentRunBackend } from "./claude-agent-run-backend.js";
+import { ClaudeProviderSessionLifecycle } from "../session/claude-provider-session-lifecycle.js";
 
 
 export class ClaudeAgentRunBackendFactory implements AgentRunBackendFactory {
@@ -56,7 +57,11 @@ export class ClaudeAgentRunBackendFactory implements AgentRunBackendFactory {
       typeof runtimeContext.sessionId === "string" &&
       runtimeContext.sessionId.trim()
         ? runtimeContext.sessionId.trim()
-        : context.runId;
+        : null;
+    if (!platformAgentRunId || platformAgentRunId === context.runId) {
+      throw new Error("PLATFORM_AGENT_RUN_BINDING_INVALID: Claude restore requires a provider UUID.");
+    }
+    ClaudeProviderSessionLifecycle.restore(platformAgentRunId, context.runId);
     const runContext = await this.sessionBootstrapper.bootstrapForRestore(
       context as AgentRunContext<any>,
     );

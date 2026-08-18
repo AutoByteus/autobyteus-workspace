@@ -1,0 +1,10 @@
+ProductName:		macOS
+ProductVersion:		26.5.2
+BuildVersion:		25F84
+arm64
+v22.23.1
+10.28.2
+Google Chrome 151.0.7922.138 
+/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix/api-e2e-evidence/live-browser/codex-post-restart.png
+  pixelWidth: 1960
+  pixelHeight: 1476

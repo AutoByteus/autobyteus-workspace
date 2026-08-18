@@ -28,14 +28,16 @@ const createHarness = (writeResult: object) => {
     enterPersistenceFailStop,
   });
   const command = Object.freeze({
-    nextTree: tree,
     settlement: Object.freeze({
       taskId: "task-1",
       binding: Object.freeze({ kind: "agent" as const, address: "/worker" as never, agentRunId: "agent-1" }),
       cancelBeforeDurability,
       commitAfterDurability,
     }),
-    commitTreeAndEvent,
+    prepareAgainstCurrent: vi.fn(() => Object.freeze({
+      nextTree: tree,
+      commitTreeAndEvent,
+    })),
   });
   return {
     coordinator, command, order, finishLocalTeardown, cancelBeforeDurability,

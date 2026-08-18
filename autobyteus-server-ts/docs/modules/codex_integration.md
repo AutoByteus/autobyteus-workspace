@@ -48,6 +48,15 @@ Team runs:
    projected into the Codex prompt.
 4. Team websocket streaming preserves the member domain identity while forwarding Codex member runtime events under the mixed team backend.
 
+Codex conversation identity is exact and durability-gated. A fresh standalone
+or Team candidate is private until its returned thread ID has been committed to
+standalone metadata or the authoritative Team execution tree. Restore supplies
+that stored ID to `thread/resume`; a resume error or returned-ID mismatch is
+terminal and never falls back to `thread/start`. The local AgentRun ID is not a
+Codex thread ID. Existing local replay can reopen visible history, but it is not
+a substitute for the canonical provider binding required to continue runtime
+context.
+
 Codex App Server client reuse is scoped by canonical workspace `cwd`.
 Standalone runs and same-workspace Codex team members can therefore share one
 `CodexAppServerClient` process; team identity, member identity, and active-turn

@@ -37,7 +37,7 @@ export class MixedTaskTeamExecutionRegistry {
     let state: PreparedState = "preparing";
     let root: TeamRun;
     try {
-      root = await this.options.subTeamRunFactory.createOrRestore({
+      root = await this.options.subTeamRunFactory.prepareFreshTaskTeam({
         handoffs: input.handoffs,
         rootTeamRunId: this.options.teamContext.rootTeamRunId,
         teamNode: input.teamNode,
@@ -73,11 +73,12 @@ export class MixedTaskTeamExecutionRegistry {
         coordinatorAgentRunId: coordinator.agentRunId,
       }),
       preparedTeamRuns: Object.freeze(preparedTeamRuns),
+      stagedPlatformBindings: Object.freeze([]),
       sealForCommit: () => {
         if (state !== "preparing" || !this.reserved.has(teamRunId)) throw new Error(`Task TeamRun '${teamRunId}' cannot be sealed.`);
         state = "sealed";
       },
-      commit: () => {
+      commitAfterDurability: () => {
         if (state !== "sealed" || !this.reserved.delete(teamRunId)) throw new Error(`Task TeamRun '${teamRunId}' is not sealed.`);
         this.preparedTeamRuns.delete(teamRunId);
         this.active.set(teamRunId, root);

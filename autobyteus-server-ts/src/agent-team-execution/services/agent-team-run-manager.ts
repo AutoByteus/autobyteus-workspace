@@ -6,6 +6,7 @@ import { TeamRunStatePackageLoader } from "../../run-history/services/team-run-s
 import { TeamCommunicationV1Store } from "../../services/team-communication/team-communication-v1-store.js";
 import { AgentTeamTerminationError } from "../errors.js";
 import { getMixedTeamRunBackendFactory, type MixedTeamRunBackendFactory } from "../backends/mixed/mixed-team-run-backend-factory.js";
+import type { MixedConfiguredMemberActivationMode } from "../backends/mixed/mixed-team-run-context.js";
 import { RootTeamRun } from "../domain/root-team-run.js";
 import { TeamRun } from "../domain/team-run.js";
 import type { TeamRunConfig } from "../domain/team-run-config.js";
@@ -84,7 +85,14 @@ export class AgentTeamRunManager {
     await this.requireCommitted(this.taskRecordsStore.write(teamMemoryDir, tasks), "task records");
     await this.requireCommitted(this.communicationStore.write(teamMemoryDir, messages), "communication messages");
     this.packageCatalog.admit(rootTeamRunId);
-    const root = await this.materializeRoot({ config: input.config, tree, tasks, messages, teamMemoryDir });
+    const root = await this.materializeRoot({
+      config: input.config,
+      tree,
+      tasks,
+      messages,
+      teamMemoryDir,
+      mode: "fresh",
+    });
     this.register(root);
     return root;
   }
@@ -109,6 +117,7 @@ export class AgentTeamRunManager {
       tasks: loaded.state.taskRecords,
       messages: loaded.state.communicationMessages,
       teamMemoryDir,
+      mode: "restore",
     });
     this.register(root);
     return root;
@@ -166,6 +175,7 @@ export class AgentTeamRunManager {
     tasks: TaskDelegationRecordsSnapshot;
     messages: TeamCommunicationMessagesSnapshot;
     teamMemoryDir: string;
+    mode: MixedConfiguredMemberActivationMode;
   }): Promise<RootTeamRun> {
     const publisher = new TeamRunEventPublisher<TeamRunEvent>();
     let root: RootTeamRun | null = null;
@@ -175,8 +185,14 @@ export class AgentTeamRunManager {
         if (!root) return Promise.resolve({ accepted: false, code: "TEAM_ROOT_NOT_BOUND", message: "RootTeamRun construction is incomplete." });
         return root.deliverInterAgentMessage(intent);
       },
+      acceptPlatformBinding: (binding: import("../domain/team-agent-platform-binding.js").TeamAgentPlatformBinding) => {
+        if (!root) return Promise.reject(new Error("RootTeamRun construction is incomplete."));
+        return root.adoptAgentPlatformBinding(binding);
+      },
     };
-    const backend = await this.factory.createBackend(input.config, input.tree.rootTeam.teamRunId, callbacks);
+    const backend = input.mode === "fresh"
+      ? await this.factory.createBackend(input.config, input.tree.rootTeam.teamRunId, callbacks)
+      : await this.factory.restoreBackend(input.config, input.tree.rootTeam.teamRunId, callbacks);
     const rootRun = new TeamRun(backend.getTeamRunContext(), backend);
     const persistence = new TeamRunPersistenceCoordinator({
       rootTeamRunId: input.tree.rootTeam.teamRunId,
