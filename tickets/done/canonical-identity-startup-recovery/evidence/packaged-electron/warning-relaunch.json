@@ -1,0 +1,350 @@
+{
+  "observedAt": "2026-08-18T09:51:54.793Z",
+  "cdpEndpoint": "http://127.0.0.1:39281",
+  "result": {
+    "before": {
+      "status": "running",
+      "urls": {
+        "graphql": "http://127.0.0.1:29695/graphql",
+        "rest": "http://127.0.0.1:29695/rest",
+        "ws": "ws://localhost:29695/graphql",
+        "transcription": "ws://localhost:29695/transcribe",
+        "health": "http://127.0.0.1:29695/rest/health"
+      },
+      "healthCheckStatus": "Healthy"
+    },
+    "transitions": [
+      {
+        "observedAt": "2026-08-18T09:51:52.975Z",
+        "status": {
+          "status": "restarting",
+          "urls": {
+            "graphql": "http://127.0.0.1:29695/graphql",
+            "rest": "http://127.0.0.1:29695/rest",
+            "ws": "ws://localhost:29695/graphql",
+            "transcription": "ws://localhost:29695/transcribe",
+            "health": "http://127.0.0.1:29695/rest/health"
+          },
+          "healthCheckStatus": "Healthy"
+        }
+      },
+      {
+        "observedAt": "2026-08-18T09:51:54.772Z",
+        "status": {
+          "status": "running",
+          "urls": {
+            "graphql": "http://127.0.0.1:29695/graphql",
+            "rest": "http://127.0.0.1:29695/rest",
+            "ws": "ws://localhost:29695/graphql",
+            "transcription": "ws://localhost:29695/transcribe",
+            "health": "http://127.0.0.1:29695/rest/health"
+          },
+          "healthCheckStatus": "Healthy"
+        }
+      },
+      {
+        "observedAt": "2026-08-18T09:51:54.780Z",
+        "status": {
+          "status": "running",
+          "urls": {
+            "graphql": "http://127.0.0.1:29695/graphql",
+            "rest": "http://127.0.0.1:29695/rest",
+            "ws": "ws://localhost:29695/graphql",
+            "transcription": "ws://localhost:29695/transcribe",
+            "health": "http://127.0.0.1:29695/rest/health"
+          },
+          "healthCheckStatus": "Healthy"
+        }
+      },
+      {
+        "observedAt": "2026-08-18T09:51:54.782Z",
+        "status": {
+          "status": "running",
+          "urls": {
+            "graphql": "http://127.0.0.1:29695/graphql",
+            "rest": "http://127.0.0.1:29695/rest",
+            "ws": "ws://localhost:29695/graphql",
+            "transcription": "ws://localhost:29695/transcribe",
+            "health": "http://127.0.0.1:29695/rest/health"
+          },
+          "healthCheckStatus": "Healthy"
+        }
+      }
+    ],
+    "restartResult": {
+      "status": "running",
+      "urls": {
+        "graphql": "http://127.0.0.1:29695/graphql",
+        "rest": "http://127.0.0.1:29695/rest",
+        "ws": "ws://localhost:29695/graphql",
+        "transcription": "ws://localhost:29695/transcribe",
+        "health": "http://127.0.0.1:29695/rest/health"
+      },
+      "healthCheckStatus": "Healthy"
+    },
+    "after": {
+      "status": "running",
+      "urls": {
+        "graphql": "http://127.0.0.1:29695/graphql",
+        "rest": "http://127.0.0.1:29695/rest",
+        "ws": "ws://localhost:29695/graphql",
+        "transcription": "ws://localhost:29695/transcribe",
+        "health": "http://127.0.0.1:29695/rest/health"
+      },
+      "healthCheckStatus": "Healthy"
+    },
+    "health": {
+      "status": "ok",
+      "data": {
+        "status": "ok",
+        "message": "Server is running"
+      }
+    },
+    "migrations": {
+      "data": {
+        "getAppDataMigrations": [
+          {
+            "migrationId": "20260727_custom_provider_v1_secret_migration",
+            "status": "SUCCEEDED",
+            "attempts": 1,
+            "summary": {
+              "scannedCount": 1,
+              "migratedCount": 1,
+              "skippedCount": 0,
+              "failedCount": 0,
+              "details": []
+            },
+            "errorMessage": null,
+            "logPath": "/synthetic/20260727_custom_provider_v1_secret_migration.log"
+          },
+          {
+            "migrationId": "20260706_remove_global_skill_discovery_mode",
+            "status": "SUCCEEDED",
+            "attempts": 1,
+            "summary": {
+              "scannedCount": 1,
+              "migratedCount": 1,
+              "skippedCount": 0,
+              "failedCount": 0,
+              "details": []
+            },
+            "errorMessage": null,
+            "logPath": "/synthetic/20260706_remove_global_skill_discovery_mode.log"
+          },
+          {
+            "migrationId": "20260517_team_run_metadata_member_tree",
+            "status": "SUCCEEDED",
+            "attempts": 1,
+            "summary": {
+              "scannedCount": 1,
+              "migratedCount": 1,
+              "skippedCount": 0,
+              "failedCount": 0,
+              "details": []
+            },
+            "errorMessage": null,
+            "logPath": "/synthetic/20260517_team_run_metadata_member_tree.log"
+          },
+          {
+            "migrationId": "20260814_team_run_execution_tree_v1",
+            "status": "SUCCEEDED_WITH_WARNINGS",
+            "attempts": 1,
+            "summary": {
+              "scannedCount": 1,
+              "migratedCount": 0,
+              "skippedCount": 0,
+              "failedCount": 1,
+              "details": [
+                {
+                  "itemId": "packaged-warning",
+                  "status": "FAILED",
+                  "message": "synthetic warning-ready packaged profile"
+                }
+              ]
+            },
+            "errorMessage": "synthetic warning-ready packaged profile",
+            "logPath": "/synthetic/20260814_team_run_execution_tree_v1.log"
+          },
+          {
+            "migrationId": "20260731_remove_external_runtime_working_context_snapshots",
+            "status": "SUCCEEDED",
+            "attempts": 1,
+            "summary": {
+              "scannedCount": 1,
+              "migratedCount": 1,
+              "skippedCount": 0,
+              "failedCount": 0,
+              "details": []
+            },
+            "errorMessage": null,
+            "logPath": "/synthetic/20260731_remove_external_runtime_working_context_snapshots.log"
+          },
+          {
+            "migrationId": "20260617_raw_trace_rotation_layout",
+            "status": "SUCCEEDED",
+            "attempts": 1,
+            "summary": {
+              "scannedCount": 1,
+              "migratedCount": 1,
+              "skippedCount": 0,
+              "failedCount": 0,
+              "details": []
+            },
+            "errorMessage": null,
+            "logPath": "/synthetic/20260617_raw_trace_rotation_layout.log"
+          },
+          {
+            "migrationId": "20260707_raw_trace_active_file_name",
+            "status": "SUCCEEDED",
+            "attempts": 1,
+            "summary": {
+              "scannedCount": 1,
+              "migratedCount": 1,
+              "skippedCount": 0,
+              "failedCount": 0,
+              "details": []
+            },
+            "errorMessage": null,
+            "logPath": "/synthetic/20260707_raw_trace_active_file_name.log"
+          },
+          {
+            "migrationId": "20260731_migrate_native_working_context_snapshots_v5",
+            "status": "SUCCEEDED_WITH_WARNINGS",
+            "attempts": 1,
+            "summary": {
+              "scannedCount": 1,
+              "migratedCount": 0,
+              "skippedCount": 0,
+              "failedCount": 1,
+              "details": [
+                {
+                  "itemId": "packaged-warning",
+                  "status": "FAILED",
+                  "message": "synthetic warning-ready packaged profile"
+                }
+              ]
+            },
+            "errorMessage": "synthetic warning-ready packaged profile",
+            "logPath": "/synthetic/20260731_migrate_native_working_context_snapshots_v5.log"
+          },
+          {
+            "migrationId": "20260701_team_communication_projection_addresses",
+            "status": "SUCCEEDED_WITH_WARNINGS",
+            "attempts": 1,
+            "summary": {
+              "scannedCount": 1,
+              "migratedCount": 0,
+              "skippedCount": 0,
+              "failedCount": 1,
+              "details": [
+                {
+                  "itemId": "packaged-warning",
+                  "status": "FAILED",
+                  "message": "synthetic warning-ready packaged profile"
+                }
+              ]
+            },
+            "errorMessage": "synthetic warning-ready packaged profile",
+            "logPath": "/synthetic/20260701_team_communication_projection_addresses.log"
+          },
+          {
+            "migrationId": "20260730_token_usage_custom_provider_model_value_backfill",
+            "status": "SUCCEEDED",
+            "attempts": 1,
+            "summary": {
+              "scannedCount": 1,
+              "migratedCount": 1,
+              "skippedCount": 0,
+              "failedCount": 0,
+              "details": []
+            },
+            "errorMessage": null,
+            "logPath": "/synthetic/20260730_token_usage_custom_provider_model_value_backfill.log"
+          },
+          {
+            "migrationId": "20260730_token_usage_provider_name_snapshot_backfill",
+            "status": "SUCCEEDED",
+            "attempts": 1,
+            "summary": {
+              "scannedCount": 1,
+              "migratedCount": 1,
+              "skippedCount": 0,
+              "failedCount": 0,
+              "details": []
+            },
+            "errorMessage": null,
+            "logPath": "/synthetic/20260730_token_usage_provider_name_snapshot_backfill.log"
+          },
+          {
+            "migrationId": "20260623_remove_self_evolution_run_metadata",
+            "status": "SUCCEEDED",
+            "attempts": 1,
+            "summary": {
+              "scannedCount": 1,
+              "migratedCount": 1,
+              "skippedCount": 0,
+              "failedCount": 0,
+              "details": []
+            },
+            "errorMessage": null,
+            "logPath": "/synthetic/20260623_remove_self_evolution_run_metadata.log"
+          },
+          {
+            "migrationId": "20260521_team_run_history_index_v2",
+            "status": "SUCCEEDED",
+            "attempts": 1,
+            "summary": {
+              "scannedCount": 1,
+              "migratedCount": 1,
+              "skippedCount": 0,
+              "failedCount": 0,
+              "details": []
+            },
+            "errorMessage": null,
+            "logPath": "/synthetic/20260521_team_run_history_index_v2.log"
+          },
+          {
+            "migrationId": "20260521_run_history_index_v2",
+            "status": "SUCCEEDED_WITH_WARNINGS",
+            "attempts": 1,
+            "summary": {
+              "scannedCount": 1,
+              "migratedCount": 0,
+              "skippedCount": 0,
+              "failedCount": 1,
+              "details": [
+                {
+                  "itemId": "packaged-warning",
+                  "status": "FAILED",
+                  "message": "synthetic warning-ready packaged profile"
+                }
+              ]
+            },
+            "errorMessage": "synthetic warning-ready packaged profile",
+            "logPath": "/synthetic/20260521_run_history_index_v2.log"
+          },
+          {
+            "migrationId": "20260803_custom_provider_readable_identity",
+            "status": "SUCCEEDED_WITH_WARNINGS",
+            "attempts": 1,
+            "summary": {
+              "scannedCount": 1,
+              "migratedCount": 0,
+              "skippedCount": 0,
+              "failedCount": 1,
+              "details": [
+                {
+                  "itemId": "packaged-warning",
+                  "status": "FAILED",
+                  "message": "synthetic warning-ready packaged profile"
+                }
+              ]
+            },
+            "errorMessage": "synthetic warning-ready packaged profile",
+            "logPath": "/synthetic/20260803_custom_provider_readable_identity.log"
+          }
+        ]
+      }
+    }
+  }
+}

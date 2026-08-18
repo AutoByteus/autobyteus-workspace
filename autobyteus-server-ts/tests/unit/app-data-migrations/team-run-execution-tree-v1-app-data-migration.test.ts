@@ -3,6 +3,8 @@ import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { TeamRunExecutionTreeV1AppDataMigration } from "../../../src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-execution-tree-v1-app-data-migration.js";
+import { TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID } from "../../../src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-execution-tree-v1-constants.js";
+import { AppDataMigrationRegistry } from "../../../src/app-data-migrations/app-data-migration-registry.js";
 import {
   resetTeamRunV1PackageCatalog,
   TeamRunV1PackageCatalog,
@@ -38,10 +40,21 @@ const copyCurrentScenario = async (memoryDir: string, scenario: string): Promise
   return tree.rootTeam.teamRunId;
 };
 
-const tokenStore = () => ({
-  listExecutionIdentityMigrationEvidence: vi.fn(async () => []),
-  migrateExecutionIdentity: vi.fn(async () => ({ migratedRows: 0, alreadyCurrent: true })),
-  disconnectExecutionIdentityMigration: vi.fn(async () => undefined),
+const tokenStore = (overrides: Record<string, unknown> = {}) => ({
+  inspectTeamRunV1Migration: vi.fn(async () => ({
+    rows: [],
+    rowCount: 0,
+    columns: new Set(["id", "usage_event_id", "run_id", "root_team_run_id", "observed_at"]),
+    evidenceColumns: new Set<string>(),
+    hasCurrentRootIndex: true,
+  })),
+  applyTeamRunV1RootUpdates: vi.fn(async () => ({
+    kind: "APPLIED" as const,
+    updatedRows: 0,
+    alreadyCurrent: true,
+  })),
+  disconnectTeamRunV1Migration: vi.fn(async () => undefined),
+  ...overrides,
 });
 
 afterEach(async () => {
@@ -52,6 +65,12 @@ afterEach(async () => {
 });
 
 describe("TeamRunExecutionTreeV1AppDataMigration", () => {
+  it("registers the final TeamRun migration exactly once without the removed intermediate ID", () => {
+    const ids = new AppDataMigrationRegistry().listDefinitions().map(({ id }) => id);
+    expect(ids.filter((id) => id === TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID)).toHaveLength(1);
+    expect(ids).not.toContain("20260801_team_canonical_identity");
+  });
+
   it("keeps unresolved predecessor bytes retryable while admitting an independent valid root", async () => {
     const { memoryDir, appDataDir } = await createEnvironment();
     const validRoot = await copyCurrentScenario(memoryDir, "case-001-persistent-only");
@@ -67,7 +86,7 @@ describe("TeamRunExecutionTreeV1AppDataMigration", () => {
       tokenStore(),
     ).execute();
 
-    expect(result.status).toBe("FAILED");
+    expect(result.status).toBe("SUCCEEDED_WITH_WARNINGS");
     expect(result.summary.details).toEqual(expect.arrayContaining([
       expect.objectContaining({ itemId: `team-root:${validRoot}`, status: "SKIPPED" }),
       expect.objectContaining({ itemId: `team-root:${invalidRoot}`, status: "FAILED" }),
@@ -97,7 +116,7 @@ describe("TeamRunExecutionTreeV1AppDataMigration", () => {
       tokenStore(),
     ).execute();
 
-    expect(result.status).toBe("FAILED");
+    expect(result.status).toBe("SUCCEEDED_WITH_WARNINGS");
     expect(result.summary.details).toContainEqual(expect.objectContaining({
       itemId: `team-root:${rootTeamRunId}`,
       status: "FAILED",
@@ -105,5 +124,46 @@ describe("TeamRunExecutionTreeV1AppDataMigration", () => {
     }));
     await expect(fs.readFile(path.join(rootDirectory, "team_run_metadata.json"), "utf8"))
       .resolves.toBe(predecessorBytes);
+  });
+
+  it("turns token-apply and history-reconciliation problems into terminal warnings", async () => {
+    const { memoryDir, appDataDir } = await createEnvironment();
+    const validRoot = await copyCurrentScenario(memoryDir, "case-001-persistent-only");
+    const malformedHistory = '{"not":"a valid history index"}\n';
+    await fs.writeFile(
+      path.join(memoryDir, "team_run_history_index.json"),
+      malformedHistory,
+      "utf8",
+    );
+    const applyTeamRunV1RootUpdates = vi.fn(async () => ({
+      kind: "ROLLED_BACK_WARNING" as const,
+      rollbackVerified: true,
+      message: "Injected token transaction rolled back.",
+    }));
+
+    const result = await new TeamRunExecutionTreeV1AppDataMigration(
+      memoryDir,
+      appDataDir,
+      tokenStore({ applyTeamRunV1RootUpdates }),
+    ).execute();
+
+    expect(result.status).toBe("SUCCEEDED_WITH_WARNINGS");
+    expect(result.summary.details).toEqual(expect.arrayContaining([
+      expect.objectContaining({ itemId: `team-root:${validRoot}`, status: "SKIPPED" }),
+      expect.objectContaining({
+        itemId: "token-usage:root-update-transaction",
+        status: "FAILED",
+        message: expect.stringContaining("rolled back"),
+      }),
+      expect.objectContaining({
+        itemId: "team-history-index",
+        status: "FAILED",
+        message: expect.stringContaining("reconciliation warning"),
+      }),
+    ]));
+    await expect(fs.readFile(
+      path.join(memoryDir, "team_run_history_index.json"),
+      "utf8",
+    )).resolves.toBe(malformedHistory);
   });
 });

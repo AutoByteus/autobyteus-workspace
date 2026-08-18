@@ -1,0 +1,64 @@
+{
+  "evidenceType": "sanitized-user-directed-production-observation",
+  "recordedAt": "2026-08-18T10:23:00Z",
+  "launchOwnership": {
+    "launchedBy": "user",
+    "launchedByApiE2E": false,
+    "application": "/Users/normy/autobyteus_org/autobyteus-worktrees/canonical-identity-startup-recovery/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app",
+    "dataDirectory": "/Users/normy/.autobyteus/server-data"
+  },
+  "migration": {
+    "migrationId": "20260814_team_run_execution_tree_v1",
+    "status": "SUCCEEDED_WITH_WARNINGS",
+    "attempts": 1,
+    "scannedCount": 515,
+    "migratedCount": 506,
+    "skippedCount": 0,
+    "failedWarningCount": 9,
+    "warningClasses": {
+      "preservedAndExcludedHistoricalRoots": 8,
+      "tokenUsageRootUpdateWarning": 1
+    },
+    "tokenUsageWarning": "Maximum call stack size exceeded",
+    "startupContinued": true,
+    "listenerPort": 29695,
+    "migrationLogPath": "/Users/normy/.autobyteus/server-data/logs/app-data-migrations/20260814_team_run_execution_tree_v1-2026-08-18T10-13-17-785Z.log"
+  },
+  "ticketTeamRun": {
+    "teamRunId": "software_engineering_team_8547bc07df6c42f5940cf357bfb54850",
+    "migrationItemStatus": "MIGRATED",
+    "agentRunId": "api_e2e_engineer_af460c9e326549dc853f29521642488c",
+    "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo"
+  },
+  "userRequestedMetadataRepair": {
+    "targetPath": "/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_8547bc07df6c42f5940cf357bfb54850/team_run_execution_tree.json",
+    "field": "rootTeam.members[/api_e2e_engineer].platformAgentRunId",
+    "oldValue": "01a01451-5b4a-7a23-8f8c-c1fb1d0f6fbe",
+    "newValue": "01a0142d-9671-7623-8eb7-0e0390aea27b",
+    "selectionBasis": [
+      "exact /api_e2e_engineer member",
+      "exact agentRunId",
+      "exact workspaceRootPath",
+      "sole candidate trace package containing the target Codex thread ID"
+    ],
+    "matchingCandidates": 1,
+    "backupPath": "/Users/normy/.autobyteus/server-data/manual-repair-backups/20260818T101920Z/software_engineering_team_8547bc07df6c42f5940cf357bfb54850/team_run_execution_tree.json",
+    "beforeSha256": "797a0e38106582ecaa1a31bf8072c93d1854598bae076e8346396079b719bd15",
+    "afterSha256": "f87a85ff911f1d59e257fa5c486587d42ea25e1462d0079b683a553952515e33",
+    "replacementCount": 1,
+    "jsonValidation": "PASS",
+    "atomicReplace": "PASS"
+  },
+  "postRestart": {
+    "correctedValueRetained": true,
+    "serverListening": true,
+    "listenerPort": 29695,
+    "transientThreadStoreConflictObserved": true,
+    "currentConversationContinuityObserved": true
+  },
+  "dataHandling": {
+    "rawProductionContentCopiedIntoTicket": false,
+    "productionDataUsedAsTestFixture": false,
+    "metadataOnlyBackupCreatedInsideProductionDataAreaAtUserRequest": true
+  }
+}

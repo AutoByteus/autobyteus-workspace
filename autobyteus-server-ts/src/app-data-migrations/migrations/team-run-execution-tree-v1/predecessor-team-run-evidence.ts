@@ -1,5 +1,5 @@
 import { parseTeamExecutionAddress, type TeamExecutionAddress } from "../../legacy/team-execution-address.js";
-import type { TokenUsageExecutionIdentityEvidenceRow } from "../../../token-usage/repositories/sql/token-usage-execution-identity-migration-repository.js";
+import type { TeamRunV1TokenRowDisposition } from "./token-usage-team-run-v1-row-planner.js";
 
 export type JsonRecord = Record<string, unknown>;
 
@@ -45,20 +45,17 @@ export type TokenExecutionEvidence = Readonly<{
 
 /** All rows for one exact address must agree on the same concrete AgentRun. */
 export const buildTokenExecutionEvidence = (
-  rows: readonly TokenUsageExecutionIdentityEvidenceRow[],
+  dispositions: readonly TeamRunV1TokenRowDisposition[],
 ): ReadonlyMap<string, TokenExecutionEvidence> => {
   const mutable = new Map<string, { runId: string; address: TeamExecutionAddress; usageEventIds: string[] }>();
-  for (const row of rows) {
-    if (!row.executionAddressJson) continue;
-    let address: TeamExecutionAddress;
-    try { address = parseTeamExecutionAddress(row.executionAddressJson); }
-    catch (error) {
-      throw new Error(`Token row '${row.usageEventId || row.id}' has invalid exact execution evidence: ${error instanceof Error ? error.message : String(error)}`);
-    }
+  for (const disposition of dispositions) {
+    if (disposition.kind !== "RESOLVED") continue;
+    const row = disposition.row;
+    const address = disposition.address;
     const key = addressKey(address);
     const current = mutable.get(key);
     if (current && current.runId !== row.runId) {
-      throw new Error(`Token evidence for '${key}' names both '${current.runId}' and '${row.runId}'.`);
+      throw new Error(`Validated token evidence for '${key}' still contains a run conflict.`);
     }
     if (current) current.usageEventIds.push(row.usageEventId || String(row.id));
     else mutable.set(key, { runId: text(row.runId, "token.runId"), address, usageEventIds: [row.usageEventId || String(row.id)] });

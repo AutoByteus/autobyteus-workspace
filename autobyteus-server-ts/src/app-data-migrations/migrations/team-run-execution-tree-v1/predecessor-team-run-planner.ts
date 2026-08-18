@@ -4,11 +4,12 @@ import { TeamRunConfig } from "../../../agent-team-execution/domain/team-run-con
 import type { TeamRunExecutionTreeSnapshot } from "../../../agent-team-execution/domain/team-run-execution-tree.js";
 import { buildInitialTeamRunExecutionTree } from "../../../agent-team-execution/services/team-run-execution-tree-builder.js";
 import { validateTeamRunExecutionTreePayload } from "../../../run-history/store/team-run-execution-tree-schema.js";
-import { validateTeamRunMetadataPayload } from "../../legacy/team-run-metadata-schema.js";
-import type { TokenUsageExecutionIdentityEvidenceRow } from "../../../token-usage/repositories/sql/token-usage-execution-identity-migration-repository.js";
 import { buildTokenExecutionEvidence, object, text } from "./predecessor-team-run-evidence.js";
 import { PredecessorPhysicalRunIndex } from "./predecessor-physical-run-index.js";
 import { convertPredecessorTeamPackageSubjects } from "./predecessor-task-package-converter.js";
+import { convertLegacyTeamRunMetadata } from "./predecessor-team-metadata-converter.js";
+import { convertPredecessorTaskDelegationFile } from "./predecessor-task-delegation-converter.js";
+import type { TeamRunV1TokenRowDisposition } from "./token-usage-team-run-v1-row-planner.js";
 
 const missing = (error: unknown): boolean =>
   (error as NodeJS.ErrnoException | null)?.code === "ENOENT";
@@ -53,10 +54,10 @@ export const planPredecessorTeamRunV1Package = async (input: {
   metadataPath: string;
   taskRecordsPath: string;
   communicationPath: string;
-  tokenRows: readonly TokenUsageExecutionIdentityEvidenceRow[];
+  tokenRows: readonly TeamRunV1TokenRowDisposition[];
 }): Promise<PlannedTeamRunV1Package> => {
   const rawMetadata = await readJson(input.metadataPath);
-  const metadata = validateTeamRunMetadataPayload(rawMetadata, input.rootTeamRunId);
+  const metadata = convertLegacyTeamRunMetadata(rawMetadata, input.rootTeamRunId);
   const config = new TeamRunConfig({
     teamBackendKind: TeamBackendKind.MIXED,
     rootTeam: metadata.rootTeam,
@@ -77,10 +78,13 @@ export const planPredecessorTeamRunV1Package = async (input: {
     input.rootDir,
     new Set([...evidence.values()].map((row) => row.runId)),
   );
+  const rawTasks = await readJson(input.taskRecordsPath, true);
   const converted = convertPredecessorTeamPackageSubjects({
     rootTeamRunId: input.rootTeamRunId,
     initialTree,
-    taskFile: await readJson(input.taskRecordsPath, true),
+    taskFile: rawTasks === null
+      ? null
+      : convertPredecessorTaskDelegationFile(rawTasks, input.rootTeamRunId),
     communicationFile: await readJson(input.communicationPath, true),
     evidence,
     physical,

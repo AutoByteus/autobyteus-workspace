@@ -7,6 +7,7 @@ import { getCanonicalBaseDataPath } from '../appDataPaths'
 import { INTERNAL_SERVER_BASE_URL, INTERNAL_SERVER_PORT } from '../../shared/embeddedServerConfig'
 import { AppDataService } from './services/AppDataService'
 import { createServerProcessOutputForwarder } from './serverOutputLogging'
+import { parseEmbeddedServerPlatformFatal, platformFatalError } from './embeddedServerPlatformFatal'
 
 const logger = rootLogger.child('server.base-server-manager')
 const stdoutLogger = rootLogger.child('embedded-server.stdout')
@@ -34,6 +35,10 @@ export abstract class BaseServerManager extends EventEmitter {
   protected gracefulShutdownTimeoutMs: number = 5000  // 5 seconds for graceful shutdown
   protected appDataService: AppDataService
   protected runtimeEnvOverrides: Record<string, string> = {}
+  protected healthPollIntervalMs: number = 250
+  private startupGeneration: number = 0
+  private settledStartupGeneration: number = 0
+  private lastStartupError: Error | null = null
 
   constructor() {
     super()
@@ -90,6 +95,12 @@ export abstract class BaseServerManager extends EventEmitter {
       return
     }
 
+    const generation = ++this.startupGeneration
+    this.settledStartupGeneration = 0
+    this.lastStartupError = null
+    this.ready = false
+    this.isServerRunning = false
+
     try {
       this.serverUrl = INTERNAL_SERVER_BASE_URL
       const serverRoot = this.getServerRoot()
@@ -118,11 +129,16 @@ export abstract class BaseServerManager extends EventEmitter {
 
       // Always start a new internal server process.
       await this.launchServerProcess()
-      await this.waitForServerReady()
+      const launchedProcess = this.serverProcess
+      if (!launchedProcess) {
+        throw new Error('Server launcher did not provide a child process')
+      }
+      await this.waitForServerReady(generation, launchedProcess)
     } catch (error) {
       logger.error('Failed to start server:', error)
-      this.emit('error', error instanceof Error ? error : new Error(`${error}`))
-      throw error
+      const normalized = error instanceof Error ? error : new Error(`${error}`)
+      this.settleStartupError(generation, normalized)
+      throw normalized
     }
   }
 
@@ -194,16 +210,23 @@ export abstract class BaseServerManager extends EventEmitter {
   /**
    * Check if the server is healthy by calling the health check endpoint.
    */
-  protected async checkServerHealth(): Promise<void> {
+  protected async checkServerHealth(
+    generation: number = this.startupGeneration,
+    process: ChildProcess | null = this.serverProcess
+  ): Promise<void> {
     try {
       const response = await axios.get(`${this.serverUrl}/rest/health`, {
         timeout: 2000
       })
       if (response.status === 200 && response.data.status === 'ok') {
+        if (generation !== this.startupGeneration || process !== this.serverProcess) {
+          return
+        }
         logger.info('Server health check successful, server is ready')
-        if (!this.ready) {
+        if (!this.ready && this.settledStartupGeneration !== generation) {
           this.isServerRunning = true
           this.ready = true
+          this.settledStartupGeneration = generation
           this.emit('ready')
         }
       }
@@ -298,83 +321,108 @@ export abstract class BaseServerManager extends EventEmitter {
    */
   protected setupProcessHandlers(): void {
     if (!this.serverProcess) return
-    const stdoutForwarder = createServerProcessOutputForwarder(stdoutLogger, 'info')
-    const stderrForwarder = createServerProcessOutputForwarder(stderrLogger, 'error')
+    const process = this.serverProcess
+    const generation = this.startupGeneration
+    const capturePlatformFatal = (line: string): void => {
+      if (
+        generation !== this.startupGeneration
+        || process !== this.serverProcess
+        || this.ready
+      ) return
+      const fatal = parseEmbeddedServerPlatformFatal(line)
+      if (fatal) this.settleStartupError(generation, platformFatalError(fatal))
+    }
+    const stdoutForwarder = createServerProcessOutputForwarder(
+      stdoutLogger,
+      'info',
+      capturePlatformFatal,
+    )
+    const stderrForwarder = createServerProcessOutputForwarder(
+      stderrLogger,
+      'error',
+      capturePlatformFatal,
+    )
 
     this.serverProcess.stdout?.on('data', (data) => {
       const output = data.toString()
       stdoutForwarder.pushChunk(output)
-      if (!this.ready && this.checkForReadyMessage(output)) {
-        this.isServerRunning = true
-        this.ready = true
-        this.emit('ready')
-      }
     })
 
     this.serverProcess.stderr?.on('data', (data) => {
       const output = data.toString()
       stderrForwarder.pushChunk(output)
-      if (!this.ready && this.checkForReadyMessage(output)) {
-        this.isServerRunning = true
-        this.ready = true
-        this.emit('ready')
-      }
     })
 
     this.serverProcess.on('error', (error) => {
       logger.error('Server process error:', error)
+      if (generation !== this.startupGeneration || process !== this.serverProcess) return
       this.isServerRunning = false
       this.ready = false
-      this.emit('error', error)
+      this.settleStartupError(generation, error)
     })
 
     this.serverProcess.on('close', (code) => {
       stdoutForwarder.flush()
       stderrForwarder.flush()
       logger.info(`Server process exited with code ${code}`)
+      if (generation !== this.startupGeneration || process !== this.serverProcess) return
+      const closedBeforeHealth = !this.ready
       this.isServerRunning = false
       this.ready = false
       this.serverProcess = null
       this.emit('stopped');
-      if (code !== 0 && code !== null) {
+      if (closedBeforeHealth) {
+        this.settleStartupError(
+          generation,
+          new Error(`Server process exited before health was available (code ${code ?? 'unknown'})`)
+        )
+      } else if (code !== 0 && code !== null) {
         this.emit('error', new Error(`Server process exited with code ${code}`))
       }
     })
   }
 
-  /**
-   * Check if the given output contains server ready messages.
-   */
-  protected checkForReadyMessage(output: string): boolean {
-    return (
-      output.includes('Application startup complete') || 
-      output.includes('Running on http://') || 
-      output.includes('Uvicorn running on') ||
-      output.includes('Server listening on') ||
-      output.includes('Server listening at') ||
-      output.includes('INFO:     Application startup complete') ||
-      output.includes('INFO:     Uvicorn running on')
-    )
+  private settleStartupError(generation: number, error: Error): void {
+    if (
+      generation !== this.startupGeneration
+      || this.settledStartupGeneration === generation
+    ) {
+      return
+    }
+    this.settledStartupGeneration = generation
+    this.lastStartupError = error
+    if (this.listenerCount('error') > 0) {
+      this.emit('error', error)
+    }
   }
 
   /**
    * Wait for the server to be ready or timeout.
    */
-  protected async waitForServerReady(): Promise<void> {
+  protected async waitForServerReady(
+    generation: number,
+    process: ChildProcess
+  ): Promise<void> {
     if (this.ready) {
       return Promise.resolve();
     }
+    if (this.settledStartupGeneration === generation && this.lastStartupError) {
+      return Promise.reject(this.lastStartupError)
+    }
     return new Promise<void>((resolve, reject) => {
         let timeoutId: NodeJS.Timeout;
+        let healthIntervalId: NodeJS.Timeout;
 
         const onReadyListener = () => {
             clearTimeout(timeoutId);
+            clearInterval(healthIntervalId);
             this.removeListener('error', onErrorListener);
             resolve();
         };
 
         const onErrorListener = (error: Error) => {
             clearTimeout(timeoutId);
+            clearInterval(healthIntervalId);
             this.removeListener('ready', onReadyListener);
             reject(error);
         };
@@ -382,11 +430,18 @@ export abstract class BaseServerManager extends EventEmitter {
         this.once('ready', onReadyListener);
         this.once('error', onErrorListener);
 
+        const pollHealth = () => {
+          void this.checkServerHealth(generation, process)
+        }
+        healthIntervalId = setInterval(pollHealth, this.healthPollIntervalMs)
+        pollHealth()
+
         timeoutId = setTimeout(() => {
+            clearInterval(healthIntervalId);
             this.removeListener('ready', onReadyListener);
             this.removeListener('error', onErrorListener);
             const error = new Error(`Server failed to start within ${this.maxStartupTime / 1000} seconds`);
-            this.emit('error', error);
+            this.settleStartupError(generation, error);
             reject(error);
         }, this.maxStartupTime);
     });

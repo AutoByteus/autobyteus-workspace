@@ -10,9 +10,13 @@ import { TeamRunHistoryIndexStore } from "../../../run-history/store/team-run-hi
 import { TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID } from "./team-run-execution-tree-v1-constants.js";
 
 export type TeamRunHistoryIndexReconciliationResult = Readonly<{
+  kind: "APPLIED";
   changed: boolean;
   projectedCount: number;
   backupPath: string | null;
+}> | Readonly<{
+  kind: "WARNING";
+  message: string;
 }>;
 
 type ReconcilerDependencies = Readonly<{
@@ -53,6 +57,19 @@ export class TeamRunHistoryIndexReconciler {
   async reconcile(
     trees: ReadonlyMap<string, TeamRunExecutionTreeSnapshot>,
   ): Promise<TeamRunHistoryIndexReconciliationResult> {
+    try {
+      return await this.reconcileStrict(trees);
+    } catch (error) {
+      return Object.freeze({
+        kind: "WARNING" as const,
+        message: error instanceof Error ? error.message : String(error),
+      });
+    }
+  }
+
+  private async reconcileStrict(
+    trees: ReadonlyMap<string, TeamRunExecutionTreeSnapshot>,
+  ): Promise<TeamRunHistoryIndexReconciliationResult> {
     const snapshot = await this.indexStore.readIndexStrict();
     const existingRows = new Map(snapshot.rows.map((row) => [row.teamRunId, row]));
     const projected: TeamRunIndexFileRecord = [];
@@ -71,14 +88,28 @@ export class TeamRunHistoryIndexReconciler {
     projected.sort((left, right) =>
       right.createdAt.localeCompare(left.createdAt) || left.teamRunId.localeCompare(right.teamRunId));
     if (rowsEqual(projected, snapshot.rows)) {
-      return Object.freeze({ changed: false, projectedCount: projected.length, backupPath: null });
+      return Object.freeze({
+        kind: "APPLIED" as const,
+        changed: false,
+        projectedCount: projected.length,
+        backupPath: null,
+      });
     }
 
     const backupPath = snapshot.sourceExists
       ? await this.backupExistingIndex(snapshot.sourcePath)
       : null;
     await this.indexStore.writeIndex(projected);
-    return Object.freeze({ changed: true, projectedCount: projected.length, backupPath });
+    const persisted = await this.indexStore.readIndexStrict();
+    if (!rowsEqual(projected, persisted.rows)) {
+      throw new Error("TeamRun history index validation did not match the admitted projection.");
+    }
+    return Object.freeze({
+      kind: "APPLIED" as const,
+      changed: true,
+      projectedCount: projected.length,
+      backupPath,
+    });
   }
 
   private async recoverCoordinatorSummary(tree: TeamRunExecutionTreeSnapshot): Promise<string> {

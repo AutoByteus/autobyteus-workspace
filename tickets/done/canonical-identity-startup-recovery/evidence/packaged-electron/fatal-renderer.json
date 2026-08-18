@@ -1,0 +1,30 @@
+{
+  "observedAt": "2026-08-18T09:55:00.391Z",
+  "cdpEndpoint": "http://127.0.0.1:39282",
+  "renderer": {
+    "electronApiPresent": true,
+    "serverStatus": {
+      "status": "error",
+      "urls": {
+        "graphql": "http://127.0.0.1:29695/graphql",
+        "rest": "http://127.0.0.1:29695/rest",
+        "ws": "ws://localhost:29695/graphql",
+        "transcription": "ws://localhost:29695/transcribe",
+        "health": "http://127.0.0.1:29695/rest/health"
+      },
+      "healthCheckStatus": "",
+      "message": "Server startup failed [DATABASE_MIGRATION_FAILED]: Failed to run database migrations: Error: Command failed: /Users/normy/autobyteus_org/autobyteus-worktrees/canonical-identity-startup-recovery/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus /Users/normy/autobyteus_org/autobyteus-worktrees/canonical-identity-startup-recovery/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/prisma/build/index.js migrate deploy --schema /Users/normy/autobyteus_org/autobyteus-worktrees/canonical-identity-startup-recovery/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/prisma/schema.prisma Server log: /tmp/autobyteus-team-v1-packaged-validation/fatal-home/.autobyteus/server-data/logs/server.log"
+    },
+    "healthViaIpc": {
+      "status": "starting",
+      "message": "Server is not running or still starting"
+    },
+    "logFilePath": "/tmp/autobyteus-team-v1-packaged-validation/fatal-home/.autobyteus/logs/app.log",
+    "rendererLocation": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/canonical-identity-startup-recovery/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/",
+    "title": "",
+    "visibleText": "❌\nApplication Error\n\nServer startup failed [DATABASE_MIGRATION_FAILED]: Failed to run database migrations: Error: Command failed: /Users/normy/autobyteus_org/autobyteus-worktrees/canonical-identity-startup-recovery/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus /Users/normy/autobyteus_org/autobyteus-worktrees/canonical-identity-startup-recovery/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/prisma/build/index.js migrate deploy --schema /Users/normy/autobyteus_org/autobyteus-worktrees/canonical-identity-startup-recovery/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/prisma/schema.prisma Server log: /tmp/autobyteus-team-v1-packaged-validation/fatal-home/.autobyteus/server-data/logs/server.log\n\nRestart Server\nCheck Server Health\nShow technical details\nShow Advanced Recovery Options",
+    "appLogErrorTransitionCount": 0,
+    "appLogStructuredCodeCount": 0
+  },
+  "screenshotPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/canonical-identity-startup-recovery/tickets/in-progress/canonical-identity-startup-recovery/evidence/packaged-electron/fatal-renderer.png"
+}

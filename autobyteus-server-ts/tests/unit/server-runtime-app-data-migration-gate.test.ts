@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import fs from "node:fs";
 
 const mocks = vi.hoisted(() => {
   const app = {
@@ -21,6 +22,7 @@ const mocks = vi.hoisted(() => {
     initializeSecretVault: vi.fn(async () => undefined),
     configureDeniedPaths: vi.fn(),
     loggerError: vi.fn(),
+    loggerWarn: vi.fn(),
     scheduleBackgroundTasks: vi.fn(async () => undefined),
     startChannelRuntime: vi.fn(),
     startGatewayRuntime: vi.fn(),
@@ -164,26 +166,28 @@ vi.mock("../../src/config/logging-config.js", () => ({
 }));
 vi.mock("../../src/logging/runtime-logger-bootstrap.js", () => ({
   getFastifyLoggerOptions: vi.fn(() => false),
-  initializeRuntimeLoggerBootstrap: vi.fn(),
+  initializeRuntimeLoggerBootstrap: vi.fn(() => ({
+    logFilePath: "/tmp/server-runtime-gate/logs/server.log",
+  })),
 }));
 vi.mock("../../src/logging/server-app-logger.js", () => ({
   createServerLogger: () => ({
     info: vi.fn(),
     error: mocks.loggerError,
-    warn: vi.fn(),
+    warn: mocks.loggerWarn,
     debug: vi.fn(),
   }),
   initializeServerAppLogger: vi.fn(),
 }));
 
 import { startConfiguredServer } from "../../src/server-runtime.js";
-import { TEAM_CANONICAL_IDENTITY_MIGRATION_ID } from "../../src/app-data-migrations/migrations/team-canonical-identity-migration.js";
+import { TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID } from "../../src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-execution-tree-v1-constants.js";
 
 describe("startConfiguredServer required app-data migration gates", () => {
-  const canonicalSuccess = {
-    migrationId: TEAM_CANONICAL_IDENTITY_MIGRATION_ID,
+  const finalSuccess = {
+    migrationId: TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID,
     status: "SUCCEEDED",
-    logPath: "/tmp/server-runtime-gate/canonical.log",
+    logPath: "/tmp/server-runtime-gate/team-run-v1.log",
   };
   const readableSuccess = {
     migrationId: "20260803_custom_provider_readable_identity",
@@ -193,7 +197,7 @@ describe("startConfiguredServer required app-data migration gates", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    mocks.runPending.mockResolvedValue([canonicalSuccess, readableSuccess]);
+    mocks.runPending.mockResolvedValue([finalSuccess, readableSuccess]);
   });
 
   const expectStartupBlocked = () => {
@@ -216,15 +220,35 @@ describe("startConfiguredServer required app-data migration gates", () => {
     }
   };
 
-  it("blocks bootstrap and listen when the canonical identity migration reports FAILED", async () => {
+  const expectAppDataStartupPlatformFatal = async (summaryDetail: string) => {
+    const writeSync = vi.spyOn(fs, "writeSync").mockImplementation(() => 0);
+    try {
+      await expectControlledExit();
+      expect(writeSync).toHaveBeenCalledWith(
+        process.stderr.fd,
+        `${JSON.stringify({
+          protocol: "autobyteus.embedded-server.platform-fatal.v1",
+          code: "APP_DATA_STARTUP_GATE_FAILED",
+          summary: `Failed to run app data migrations: ${summaryDetail}`,
+          logPath: "/tmp/server-runtime-gate/logs/server.log",
+        })}\n`,
+        null,
+        "utf8",
+      );
+    } finally {
+      writeSync.mockRestore();
+    }
+  };
+
+  it("continues bootstrap and listen when final TeamRun migration reports a warning", async () => {
     mocks.runPending.mockResolvedValueOnce([{
-      migrationId: TEAM_CANONICAL_IDENTITY_MIGRATION_ID,
-      status: "FAILED",
-      displayName: "AgentTeam canonical identity migration",
+      migrationId: TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID,
+      status: "SUCCEEDED_WITH_WARNINGS",
+      displayName: "TeamRun execution-tree V1 migration",
       attempts: 1,
       summary: { failedCount: 1 },
       errorMessage: "identity mismatch",
-      logPath: "/tmp/canonical-migration-failure.log",
+      logPath: "/tmp/team-run-v1-warning.log",
     }, readableSuccess]);
 
     await expect(startConfiguredServer({ host: "127.0.0.1", port: 0 })).resolves.toBeUndefined();
@@ -241,31 +265,62 @@ describe("startConfiguredServer required app-data migration gates", () => {
     expect(mocks.initializeSecretVault).toHaveBeenCalledTimes(1);
     expect(mocks.runPending).toHaveBeenCalledTimes(1);
     expect(mocks.rebuildTeamRunCatalog).toHaveBeenCalledTimes(1);
-    expectStartupBlocked();
-    expect(mocks.loggerError).toHaveBeenCalledWith(expect.stringContaining(TEAM_CANONICAL_IDENTITY_MIGRATION_ID));
+    expect(mocks.bootstrapBuiltInAgents).toHaveBeenCalledTimes(1);
+    expect(mocks.app.listen).toHaveBeenCalledTimes(1);
+    expect(mocks.loggerWarn).toHaveBeenCalledWith(expect.stringContaining(
+      TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID,
+    ));
   });
 
-  it("blocks bootstrap and listen when the canonical identity migration status is missing", async () => {
+  it("continues with strict catalog admission when the final status is missing", async () => {
     mocks.runPending.mockResolvedValueOnce([readableSuccess]);
     await expect(startConfiguredServer({ host: "127.0.0.1", port: 0 })).resolves.toBeUndefined();
-    expectStartupBlocked();
-    expect(mocks.loggerError).toHaveBeenCalledWith(expect.stringContaining('"status":"MISSING"'));
+    expect(mocks.bootstrapBuiltInAgents).toHaveBeenCalledTimes(1);
+    expect(mocks.app.listen).toHaveBeenCalledTimes(1);
+    expect(mocks.loggerWarn).toHaveBeenCalledWith(expect.stringContaining('"status":"MISSING"'));
+  });
+
+  it("emits a narrow structured platform fatal before database bootstrap exits", async () => {
+    mocks.initializePrisma.mockRejectedValueOnce(new Error("database schema is unavailable"));
+    const writeSync = vi.spyOn(fs, "writeSync").mockImplementation(() => 0);
+    try {
+      await expectControlledExit();
+      expectStartupBlocked();
+      expect(writeSync).toHaveBeenCalledWith(
+        process.stderr.fd,
+        expect.stringContaining(
+          '"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APPLICATION_DATABASE_INITIALIZATION_FAILED"',
+        ),
+        null,
+        "utf8",
+      );
+      expect(writeSync).toHaveBeenCalledWith(
+        process.stderr.fd,
+        expect.stringContaining('"logPath":"/tmp/server-runtime-gate/logs/server.log"'),
+        null,
+        "utf8",
+      );
+    } finally {
+      writeSync.mockRestore();
+    }
   });
 
   it("blocks bootstrap and listen when migration execution throws", async () => {
     mocks.runPending.mockRejectedValueOnce(new Error("migration state store unavailable"));
-    await expectControlledExit();
+    await expectAppDataStartupPlatformFatal("Error: migration state store unavailable");
     expectStartupBlocked();
     expect(mocks.loggerError).toHaveBeenCalledWith(expect.stringContaining("Failed to run app data migrations"));
   });
 
   it("blocks startup when readable identity has a non-terminal failure", async () => {
-    mocks.runPending.mockResolvedValueOnce([canonicalSuccess, {
+    mocks.runPending.mockResolvedValueOnce([finalSuccess, {
       migrationId: "20260803_custom_provider_readable_identity",
       status: "FAILED",
       logPath: "/tmp/server-runtime-gate/readable-failed.log",
     }]);
-    await expectControlledExit();
+    await expectAppDataStartupPlatformFatal(
+      "Error: CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:FAILED:/tmp/server-runtime-gate/readable-failed.log",
+    );
     expectStartupBlocked();
     expect(mocks.loggerError).toHaveBeenCalledWith(expect.stringContaining(
       "CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:FAILED:/tmp/server-runtime-gate/readable-failed.log",
@@ -273,8 +328,10 @@ describe("startConfiguredServer required app-data migration gates", () => {
   });
 
   it("blocks startup when the readable identity result is missing", async () => {
-    mocks.runPending.mockResolvedValueOnce([canonicalSuccess]);
-    await expectControlledExit();
+    mocks.runPending.mockResolvedValueOnce([finalSuccess]);
+    await expectAppDataStartupPlatformFatal(
+      "Error: CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:NOT_RUN:NO_LOG",
+    );
     expectStartupBlocked();
     expect(mocks.loggerError).toHaveBeenCalledWith(expect.stringContaining(
       "CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:NOT_RUN:NO_LOG",
@@ -282,12 +339,14 @@ describe("startConfiguredServer required app-data migration gates", () => {
   });
 
   it("blocks startup when readable identity is still RUNNING and preserves its log path", async () => {
-    mocks.runPending.mockResolvedValueOnce([canonicalSuccess, {
+    mocks.runPending.mockResolvedValueOnce([finalSuccess, {
       migrationId: "20260803_custom_provider_readable_identity",
       status: "RUNNING",
       logPath: "/tmp/server-runtime-gate/readable-running.log",
     }]);
-    await expectControlledExit();
+    await expectAppDataStartupPlatformFatal(
+      "Error: CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:RUNNING:/tmp/server-runtime-gate/readable-running.log",
+    );
     expectStartupBlocked();
     expect(mocks.loggerError).toHaveBeenCalledWith(expect.stringContaining(
       "CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:RUNNING:/tmp/server-runtime-gate/readable-running.log",
@@ -296,7 +355,7 @@ describe("startConfiguredServer required app-data migration gates", () => {
 
   it("continues when both blocking migrations are terminal despite an unrelated failure", async () => {
     mocks.runPending.mockResolvedValueOnce([
-      canonicalSuccess,
+      finalSuccess,
       { ...readableSuccess, status: "SUCCEEDED_WITH_WARNINGS" },
       { migrationId: "unrelated_best_effort_migration", status: "FAILED" },
     ]);

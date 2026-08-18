@@ -118,10 +118,27 @@ export class TeamRunMigrationStateClassifier {
       throw error;
     }
     const states: TeamRunMigrationState[] = [];
-    for (const entry of entries
-      .filter((candidate) => candidate.isDirectory())
-      .sort((left, right) => left.name.localeCompare(right.name))) {
-      states.push(await this.classifyRoot(entry.name));
+    for (const entry of entries.sort((left, right) => left.name.localeCompare(right.name))) {
+      const rootDir = path.join(this.layout.getTeamRootDirPath(), entry.name);
+      if (!entry.isDirectory()) {
+        states.push(this.invalid(
+          entry.name,
+          rootDir,
+          rootDir,
+          "TeamRun root entry is not a regular directory and was not followed.",
+        ));
+        continue;
+      }
+      try {
+        states.push(await this.classifyRoot(entry.name));
+      } catch (error) {
+        states.push(this.invalid(
+          entry.name,
+          rootDir,
+          rootDir,
+          `TeamRun root could not be classified safely: ${message(error)}`,
+        ));
+      }
     }
     return Object.freeze(states);
   }
@@ -194,11 +211,26 @@ export class TeamRunMigrationStateClassifier {
     const manifestPath = path.join(rootDir, HISTORICAL_MANIFEST_FILE);
     const manifestState = await fileState(manifestPath);
     if (manifestState === "MISSING") {
+      let rootEntries: import("node:fs").Dirent[];
+      try {
+        rootEntries = await fs.readdir(rootDir, { withFileTypes: true });
+      } catch (error) {
+        return this.invalid(
+          rootTeamRunId,
+          rootDir,
+          rootDir,
+          `TeamRun root cannot be inventoried safely: ${message(error)}`,
+        );
+      }
       return this.invalid(
         rootTeamRunId,
         rootDir,
         rootDir,
-        "TeamRun root has no recognized predecessor, current V1, or historical manifest authority.",
+        rootEntries.length === 0
+          ? "Empty TeamRun shell has no recognized authority and remains preserved/excluded."
+          : `Content-bearing TeamRun root has no recognized authority (${rootEntries.length} direct entr${
+            rootEntries.length === 1 ? "y" : "ies"
+          }) and remains preserved/excluded.`,
       );
     }
     if (manifestState === "UNSAFE") {

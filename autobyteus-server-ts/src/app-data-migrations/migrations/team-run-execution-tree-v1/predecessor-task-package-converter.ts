@@ -9,15 +9,14 @@ import { TeamExecutionIndex } from "../../../agent-team-execution/services/team-
 import { addTaskExecutionToTree } from "../../../agent-team-execution/services/team-run-execution-tree-mutator.js";
 import type { TaskDelegationRecordV1, TaskDelegationRecordsSnapshot, TaskUpdate } from "../../../agent-team-execution/task-delegation/task-delegation-record-v1.js";
 import { validateTaskDelegationRecordsV1Payload } from "../../../agent-team-execution/task-delegation/records/task-delegation-records-v1-schema.js";
-import { validateTeamCommunicationMessagesV1Payload } from "../../../services/team-communication/team-communication-v1-schema.js";
-import type { TeamCommunicationMessageV1, TeamCommunicationMessagesSnapshot } from "../../../services/team-communication/team-communication-v1-types.js";
+import type { TeamCommunicationMessagesSnapshot } from "../../../services/team-communication/team-communication-v1-types.js";
 import { validateTeamRunStatePackage } from "../../../run-history/services/team-run-state-package-validator.js";
-import { normalizePredecessorTeamExecutionAddress } from "../team-execution-address-normalizer.js";
 import {
   addressKey, array, object, parseAddress, referencePaths, text,
   type JsonRecord, type TokenExecutionEvidence,
 } from "./predecessor-team-run-evidence.js";
 import type { PredecessorPhysicalRunIndex } from "./predecessor-physical-run-index.js";
+import { convertPredecessorTeamCommunication } from "./predecessor-team-communication-converter.js";
 
 type ConversionState = {
   tree: TeamRunExecutionTreeSnapshot;
@@ -281,43 +280,12 @@ export const convertPredecessorTeamPackageSubjects = (input: {
     rootTeamRunId: input.rootTeamRunId,
     records: state.tasks,
   }, input.rootTeamRunId);
-  const messageRows = input.communicationFile
-    ? array(object(input.communicationFile, "Communication records").messages, "Communication records.messages")
-    : [];
-  const messageIndex = new TeamExecutionIndex(state.tree);
-  const messages: TeamCommunicationMessageV1[] = messageRows.map((raw, position) => {
-    const row = object(raw, `messages[${position}]`);
-    return Object.freeze({
-      messageId: text(row.messageId, `messages[${position}].messageId`),
-      senderAgentRunId: resolveAgentRunId(
-        normalizePredecessorTeamExecutionAddress(
-          row.senderAddress,
-          input.rootTeamRunId,
-          `messages[${position}].senderAddress`,
-        ),
-        messageIndex,
-        input.evidence,
-      ),
-      receiverAgentRunId: resolveAgentRunId(
-        normalizePredecessorTeamExecutionAddress(
-          row.receiverAddress,
-          input.rootTeamRunId,
-          `messages[${position}].receiverAddress`,
-        ),
-        messageIndex,
-        input.evidence,
-      ),
-      content: typeof row.content === "string" ? row.content : "",
-      messageType: typeof row.messageType === "string" && row.messageType.trim() ? row.messageType.trim() : "agent_message",
-      referenceFiles: referencePaths(row.referenceFiles),
-      createdAt: text(row.createdAt, `messages[${position}].createdAt`),
-    });
-  });
-  const communication = validateTeamCommunicationMessagesV1Payload({
-    schemaVersion: 1,
+  const communication = convertPredecessorTeamCommunication({
     rootTeamRunId: input.rootTeamRunId,
-    messages,
-  }, input.rootTeamRunId);
+    tree: state.tree,
+    communicationFile: input.communicationFile,
+    evidence: input.evidence,
+  });
   const validated = validateTeamRunStatePackage({
     executionTree: state.tree,
     taskRecords: tasks,

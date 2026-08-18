@@ -6,9 +6,11 @@ import { buildTokenUsageRunSummary } from "../projections/token-usage-run-summar
 import { SqlTokenUsageLedgerRepository } from "../repositories/sql/token-usage-ledger-repository.js";
 import { TokenUsageDisplayFieldCapturer } from "./token-usage-display-field-capturer.js";
 import {
-  TokenUsageExecutionIdentityMigrationRepository,
-  type TokenUsageExecutionIdentityEvidenceRow,
-} from "../repositories/sql/token-usage-execution-identity-migration-repository.js";
+  TokenUsageTeamRunV1MigrationRepository,
+  type TokenUsageRuntimeSchemaSnapshot,
+  type TokenUsageTeamRunV1ApplyResult,
+  type TokenUsageTeamRunV1RootUpdate,
+} from "../repositories/sql/token-usage-team-run-v1-migration-repository.js";
 
 const hasMissingDisplayField = (event: TokenUsageUpdatedPayload): boolean => (
   event.root_team_run_id
@@ -33,19 +35,22 @@ export class TokenUsageLedgerStore {
   constructor(
     private readonly repository = new SqlTokenUsageLedgerRepository(),
     private readonly displayFieldCapturer = new TokenUsageDisplayFieldCapturer(),
-    private readonly identityMigration = new TokenUsageExecutionIdentityMigrationRepository(),
+    private readonly teamRunV1Migration = new TokenUsageTeamRunV1MigrationRepository(),
   ) {}
 
-  listExecutionIdentityMigrationEvidence(): Promise<TokenUsageExecutionIdentityEvidenceRow[]> {
-    return this.identityMigration.listEvidence();
+  inspectTeamRunV1Migration(): Promise<TokenUsageRuntimeSchemaSnapshot> {
+    return this.teamRunV1Migration.inspectRuntimeSchemaAndEvidence();
   }
 
-  migrateExecutionIdentity(): Promise<{ migratedRows: number; alreadyCurrent: boolean }> {
-    return this.identityMigration.migrateToExactRunIdentity();
+  applyTeamRunV1RootUpdates(
+    updates: readonly TokenUsageTeamRunV1RootUpdate[],
+    snapshot: TokenUsageRuntimeSchemaSnapshot,
+  ): Promise<TokenUsageTeamRunV1ApplyResult> {
+    return this.teamRunV1Migration.applyResolvedRootUpdates(updates, snapshot);
   }
 
-  disconnectExecutionIdentityMigration(): Promise<void> {
-    return this.identityMigration.disconnect();
+  disconnectTeamRunV1Migration(): Promise<void> {
+    return this.teamRunV1Migration.disconnect();
   }
 
   async appendTokenUsageEvent(payload: TokenUsageUpdatedPayload): Promise<TokenUsageUpdatedPayload> {

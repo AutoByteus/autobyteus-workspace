@@ -46,6 +46,34 @@ const readAndValidateStaged = async (
   });
 };
 
+export type TeamRunV1PromotionResult =
+  | Readonly<{ kind: "COMMITTED"; backupDirectory: string }>
+  | Readonly<{
+      kind: "COMMITTED_WITH_WARNING";
+      backupDirectory: string | null;
+      message: string;
+    }>
+  | Readonly<{
+      kind: "EXCLUDED_PROMOTION_WARNING";
+      backupDirectory: string | null;
+      message: string;
+      markerPresent: boolean | null;
+      validationMessage: string;
+    }>;
+
+const errorMessage = (error: unknown): string =>
+  error instanceof Error ? error.message : String(error);
+
+const markerState = async (metadataPath: string): Promise<boolean | null> => {
+  try {
+    await fs.lstat(metadataPath);
+    return true;
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") return false;
+    return null;
+  }
+};
+
 export class TeamRunV1PackagePromoter {
   constructor(private readonly backupRoot: string) {}
 
@@ -56,23 +84,10 @@ export class TeamRunV1PackagePromoter {
     sourceTaskRecordsPath: string;
     sourceCommunicationPath: string;
     package: PlannedTeamRunV1Package;
-  }): Promise<string> {
+  }): Promise<TeamRunV1PromotionResult> {
     const token = new Date().toISOString().replace(/[:.]/g, "-");
     const backupDir = path.join(this.backupRoot, input.rootTeamRunId, token);
-    await fs.mkdir(backupDir, { recursive: true });
-    await Promise.all([
-      copyIfPresent(input.metadataPath, path.join(backupDir, "team_run_metadata.json")),
-      copyIfPresent(input.sourceTaskRecordsPath, path.join(backupDir, "task_delegation_records.json")),
-      copyIfPresent(input.sourceCommunicationPath, path.join(backupDir, "team_communication_messages.json")),
-    ]);
-    await writeSynced(path.join(backupDir, "manifest.json"), {
-      migrationId: TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID,
-      rootTeamRunId: input.rootTeamRunId,
-      sourceRootDir: input.rootDir,
-      backedUpAt: new Date().toISOString(),
-    });
-    await syncDirectory(backupDir);
-
+    let backupReady = false;
     const staged = Object.fromEntries(Object.entries(targetNames).map(([key, name]) => [
       key,
       path.join(
@@ -81,6 +96,20 @@ export class TeamRunV1PackagePromoter {
       ),
     ])) as Record<keyof typeof targetNames, string>;
     try {
+      await fs.mkdir(backupDir, { recursive: true });
+      await Promise.all([
+        copyIfPresent(input.metadataPath, path.join(backupDir, "team_run_metadata.json")),
+        copyIfPresent(input.sourceTaskRecordsPath, path.join(backupDir, "task_delegation_records.json")),
+        copyIfPresent(input.sourceCommunicationPath, path.join(backupDir, "team_communication_messages.json")),
+      ]);
+      await writeSynced(path.join(backupDir, "manifest.json"), {
+        migrationId: TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID,
+        rootTeamRunId: input.rootTeamRunId,
+        sourceRootDir: input.rootDir,
+        backedUpAt: new Date().toISOString(),
+      });
+      await syncDirectory(backupDir);
+      backupReady = true;
       await fs.mkdir(input.rootDir, { recursive: true });
       await writeSynced(staged.executionTree, input.package.executionTree);
       await writeSynced(staged.taskRecords, input.package.taskRecords);
@@ -93,10 +122,46 @@ export class TeamRunV1PackagePromoter {
       await fs.rename(input.metadataPath, path.join(backupDir, "team_run_metadata.promoted.json"));
       await syncDirectory(input.rootDir);
       await syncDirectory(backupDir);
-      return backupDir;
+      await readAndValidateStaged(input.rootTeamRunId, {
+        executionTree: path.join(input.rootDir, targetNames.executionTree),
+        taskRecords: path.join(input.rootDir, targetNames.taskRecords),
+        communicationMessages: path.join(input.rootDir, targetNames.communicationMessages),
+      });
+      return Object.freeze({ kind: "COMMITTED" as const, backupDirectory: backupDir });
     } catch (error) {
-      await Promise.all(Object.values(staged).map((filePath) => fs.rm(filePath, { force: true }).catch(() => undefined)));
-      throw error;
+      const operationMessage = errorMessage(error);
+      const markerPresent = await markerState(input.metadataPath);
+      if (markerPresent === false) {
+        try {
+          await readAndValidateStaged(input.rootTeamRunId, {
+            executionTree: path.join(input.rootDir, targetNames.executionTree),
+            taskRecords: path.join(input.rootDir, targetNames.taskRecords),
+            communicationMessages: path.join(input.rootDir, targetNames.communicationMessages),
+          });
+          return Object.freeze({
+            kind: "COMMITTED_WITH_WARNING" as const,
+            backupDirectory: backupReady ? backupDir : null,
+            message: `Promotion operation reported an error, but the complete current package independently validates: ${operationMessage}`,
+          });
+        } catch (validationError) {
+          return Object.freeze({
+            kind: "EXCLUDED_PROMOTION_WARNING" as const,
+            backupDirectory: backupReady ? backupDir : null,
+            message: operationMessage,
+            markerPresent,
+            validationMessage: errorMessage(validationError),
+          });
+        }
+      }
+      return Object.freeze({
+        kind: "EXCLUDED_PROMOTION_WARNING" as const,
+        backupDirectory: backupReady ? backupDir : null,
+        message: operationMessage,
+        markerPresent,
+        validationMessage: markerPresent
+          ? "Predecessor marker remains, so the root is migration-owned and excluded."
+          : "Predecessor marker state could not be observed safely.",
+      });
     }
   }
 }

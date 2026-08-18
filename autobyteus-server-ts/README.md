@@ -124,9 +124,9 @@ echo "PID: $(cat "$PID_FILE")"
 echo "Log: $LOG_FILE"
 ```
 
-## Database migrations
+## Production data migrations
 
-Migrations are executed on startup via:
+Prisma database-schema migrations are executed on startup via:
 
 ```bash
 pnpm -C autobyteus-server-ts exec prisma migrate deploy
@@ -135,8 +135,10 @@ pnpm -C autobyteus-server-ts exec prisma migrate deploy
 You can also run it manually.
 
 After Prisma and encrypted-vault initialization, registered app-data migrations
-run before normal provider consumers. This includes the one-time transition of
-the supported version-1
+run before normal provider consumers. These migrations can transform database
+rows as well as filesystem/application-data formats; Prisma schema deployment
+alone does not cover those data-shape transitions. This includes the one-time
+transition of the supported version-1
 `<app-data-dir>/llm/custom-llm-providers.json` file: a complete valid set is
 migrated atomically into encrypted vault entries plus secret-free v2 metadata.
 An invalid or colliding v1 set is deleted and requires reconfiguration through
@@ -145,6 +147,39 @@ deleted safely, the server and built-in Settings still start, but custom
 provider creation remains unavailable until the filesystem issue is fixed and
 the server restarts. There is no manual v1 command, backup/quarantine copy,
 runtime v1 reader, partial migration, or automatic `.env` import.
+
+### Production migration practice
+
+- Define each migration as a deterministic transformation from explicitly
+  investigated, supported released source shapes to one fixed current target.
+  Before implementation, inventory representative persisted formats across
+  database rows/schema and filesystem/application data, their invariants,
+  normal readers and writers, evidence precedence, and unacceptable data loss.
+- Validate before mutation and give each independently owned subject, root, or
+  row an explicit disposition so one unsupported item cannot make the product
+  unusable. Never guess identity or silently delete evidence. Leave a
+  pre-mutation failure untouched; after mutation begins, report the observed
+  state honestly and admit only independently validated current data.
+- Treat one startup/migration writer, a stable process/power/device for the
+  attempt, sufficient permissions and readable/writable same-filesystem
+  storage, and normal SQLite/filesystem behavior as operating prerequisites.
+  Use SQLite transactions, existing atomic file-replacement patterns, protected
+  backups where they add migration recovery value, and bounded independent
+  validation of the resulting current data.
+- Do not build bespoke journals, restoration state machines, or exhaustive
+  handling for every hypothetical power, kernel, device, syscall, hostile
+  process, or arbitrary external-interference scenario unless a concrete
+  product requirement demands it. Infrastructure security, access control,
+  backup/disaster recovery, and arbitrary external tampering remain separate
+  operational concerns rather than migration business logic.
+- Conversion, promotion, token, and history migration problems must be truthful
+  terminal warnings. They must not prevent catalog/listen/health, new work,
+  unaffected valid history, or a later product upgrade. Only an independent
+  platform/bootstrap owner may establish that the current application itself
+  is inoperable and select startup fatality.
+- Validate with isolated synthetic fixtures representing supported released
+  data families, relaunch/idempotence, and same-identity continuation. Never run
+  automated migration proof against a user's live production profile.
 
 See `docs/modules/secret_management.md` and
 `docs/modules/llm_management.md` for the full value-free migration and reset

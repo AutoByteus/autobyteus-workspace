@@ -5,12 +5,12 @@ import {
   type AgentTeamAddress,
 } from "../../agent-collaboration/domain/agent-team-address.js";
 import type { TeamExecutionAddress } from "../legacy/team-execution-address.js";
-import { normalizePredecessorTaskDelegationRecordsFile } from "../predecessor-task-delegation-records.js";
 import {
   TeamRunMigrationStateClassifier,
   type TeamRunMigrationState,
 } from "./team-run-migration-state-classifier.js";
 import type { TeamRunPredecessorSourceResolver } from "./team-run-execution-tree-v1/team-run-predecessor-source-resolver.js";
+import { convertPredecessorTaskDelegationFile } from "./team-run-execution-tree-v1/predecessor-task-delegation-converter.js";
 
 export type TokenUsageTaskTeamRunIndexEntry = Readonly<{
   rootTeamRunId: string;
@@ -28,6 +28,7 @@ export type TokenUsageTaskTeamRunIndexIssue = Readonly<{
 
 export type TokenUsageTaskTeamRunIndex = Readonly<{
   entries: ReadonlyMap<string, TokenUsageTaskTeamRunIndexEntry>;
+  unusableTaskTeamRunIds: ReadonlySet<string>;
   issues: readonly TokenUsageTaskTeamRunIndexIssue[];
 }>;
 
@@ -78,12 +79,14 @@ const addEntry = (
   next: TokenUsageTaskTeamRunIndexEntry,
   entries: Map<string, TokenUsageTaskTeamRunIndexEntry>,
   seen: Map<string, TokenUsageTaskTeamRunIndexEntry>,
+  unusableTaskTeamRunIds: Set<string>,
   issues: TokenUsageTaskTeamRunIndexIssue[],
 ): void => {
   const taskTeamRunId = next.taskTeamRunIds.at(-1)!;
   const previous = seen.get(taskTeamRunId);
   if (previous) {
     entries.delete(taskTeamRunId);
+    unusableTaskTeamRunIds.add(taskTeamRunId);
     issues.push({
       itemId: `task-team-run:${taskTeamRunId}`,
       filePath: next.sourceFilePath,
@@ -102,6 +105,7 @@ const indexPredecessorState = async (
   sourceResolver: TeamRunPredecessorSourceResolver,
   entries: Map<string, TokenUsageTaskTeamRunIndexEntry>,
   seen: Map<string, TokenUsageTaskTeamRunIndexEntry>,
+  unusableTaskTeamRunIds: Set<string>,
   issues: TokenUsageTaskTeamRunIndexIssue[],
 ): Promise<void> => {
   let filePath = path.join(state.rootDir, "task_delegation_records.json");
@@ -121,9 +125,7 @@ const indexPredecessorState = async (
   }
 
   try {
-    const recordsFile = normalizePredecessorTaskDelegationRecordsFile(raw, {
-      teamRunId: state.rootTeamRunId,
-    });
+    const recordsFile = convertPredecessorTaskDelegationFile(raw, state.rootTeamRunId);
     for (const record of recordsFile.records) {
       if (record.receiverTargetKind !== "agent_team") continue;
       if (!record.taskRun) {
@@ -140,7 +142,7 @@ const indexPredecessorState = async (
           filePath,
           taskId: record.taskId,
           address: record.taskRun.address,
-        }), entries, seen, issues);
+        }), entries, seen, unusableTaskTeamRunIds, issues);
       } catch (error) {
         issues.push({
           itemId: `task-record:${recordsFile.teamRunId}:${record.taskId}`,
@@ -162,6 +164,7 @@ const indexCurrentState = (
   state: Extract<TeamRunMigrationState, { kind: "CURRENT_V1" }>,
   entries: Map<string, TokenUsageTaskTeamRunIndexEntry>,
   seen: Map<string, TokenUsageTaskTeamRunIndexEntry>,
+  unusableTaskTeamRunIds: Set<string>,
   issues: TokenUsageTaskTeamRunIndexIssue[],
 ): void => {
   const sourceFilePath = path.join(state.rootDir, "task_delegation_records.json");
@@ -181,7 +184,7 @@ const indexCurrentState = (
       teamAddress: indexedTeam.address,
       sourceFilePath,
       taskId: record.taskId,
-    }), entries, seen, issues);
+    }), entries, seen, unusableTaskTeamRunIds, issues);
   }
 };
 
@@ -190,24 +193,37 @@ export const buildTokenUsageTaskTeamRunIndex = async (
   sourceResolver: TeamRunPredecessorSourceResolver,
   classifier: TeamRunMigrationStateClassifier = new TeamRunMigrationStateClassifier(memoryDir),
 ): Promise<TokenUsageTaskTeamRunIndex> => {
+  return buildTokenUsageTaskTeamRunIndexFromStates(
+    await classifier.listAndClassifyRoots(),
+    sourceResolver,
+  );
+};
+
+export const buildTokenUsageTaskTeamRunIndexFromStates = async (
+  states: readonly TeamRunMigrationState[],
+  sourceResolver: TeamRunPredecessorSourceResolver,
+): Promise<TokenUsageTaskTeamRunIndex> => {
   const entries = new Map<string, TokenUsageTaskTeamRunIndexEntry>();
   const seen = new Map<string, TokenUsageTaskTeamRunIndexEntry>();
+  const unusableTaskTeamRunIds = new Set<string>();
   const issues: TokenUsageTaskTeamRunIndexIssue[] = [];
 
-  for (const state of await classifier.listAndClassifyRoots()) {
+  for (const state of states) {
     if (state.kind === "HISTORICAL_RESIDUE") continue;
     if (state.kind === "INVALID") {
-      issues.push({
-        itemId: `team-root:${state.rootTeamRunId}`,
-        filePath: state.evidencePath,
-        message: `TeamRun root classification failed: ${state.reason}`,
-      });
       continue;
     }
     if (state.kind === "PREDECESSOR") {
-      await indexPredecessorState(state, sourceResolver, entries, seen, issues);
+      await indexPredecessorState(
+        state,
+        sourceResolver,
+        entries,
+        seen,
+        unusableTaskTeamRunIds,
+        issues,
+      );
     } else {
-      indexCurrentState(state, entries, seen, issues);
+      indexCurrentState(state, entries, seen, unusableTaskTeamRunIds, issues);
     }
   }
 
@@ -217,6 +233,7 @@ export const buildTokenUsageTaskTeamRunIndex = async (
       const ancestor = entries.get(ancestorId);
       const expectedChain = entry.taskTeamRunIds.slice(0, index + 1);
       if (!ancestor) {
+        unusableTaskTeamRunIds.add(taskTeamRunId);
         issues.push({
           itemId: `task-team-run:${taskTeamRunId}`,
           filePath: entry.sourceFilePath,
@@ -229,6 +246,7 @@ export const buildTokenUsageTaskTeamRunIndex = async (
         || JSON.stringify(ancestor.taskTeamRunIds) !== JSON.stringify(expectedChain)
         || !isAgentTeamAddressAncestor(ancestor.teamAddress, entry.teamAddress)
       ) {
+        unusableTaskTeamRunIds.add(taskTeamRunId);
         issues.push({
           itemId: `task-team-run:${taskTeamRunId}`,
           filePath: entry.sourceFilePath,
@@ -238,5 +256,24 @@ export const buildTokenUsageTaskTeamRunIndex = async (
     }
   }
 
-  return Object.freeze({ entries, issues: Object.freeze(issues) });
+  let propagated = true;
+  while (propagated) {
+    propagated = false;
+    for (const [taskTeamRunId, entry] of entries) {
+      if (
+        !unusableTaskTeamRunIds.has(taskTeamRunId)
+        && entry.taskTeamRunIds.some((ancestorId) => unusableTaskTeamRunIds.has(ancestorId))
+      ) {
+        unusableTaskTeamRunIds.add(taskTeamRunId);
+        propagated = true;
+      }
+    }
+  }
+
+  for (const taskTeamRunId of unusableTaskTeamRunIds) entries.delete(taskTeamRunId);
+  return Object.freeze({
+    entries,
+    unusableTaskTeamRunIds,
+    issues: Object.freeze(issues),
+  });
 };

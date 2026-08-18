@@ -1,17 +1,17 @@
-import { createAgentTeamAddress, getParentAgentTeamAddress, type AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
-import { normalizeCollaborationHandoffs, type CollaborationHandoff } from "../../agent-collaboration/domain/collaboration-handoff.js";
-import { validateTeamRunMetadataPayload } from "../legacy/team-run-metadata-schema.js";
+import { createAgentTeamAddress, getParentAgentTeamAddress, type AgentTeamAddress } from "../../../agent-collaboration/domain/agent-team-address.js";
+import { normalizeCollaborationHandoffs, type CollaborationHandoff } from "../../../agent-collaboration/domain/collaboration-handoff.js";
+import { validateTeamRunMetadataPayload } from "../../legacy/team-run-metadata-schema.js";
 import type {
   TeamRunAgentMemberMetadata,
   TeamRunMemberMetadata,
   TeamRunMetadata,
   TeamRunSubTeamMemberMetadata,
-} from "../legacy/team-run-metadata-types.js";
+} from "../../legacy/team-run-metadata-types.js";
 import {
   decodeFlatTeamRunMetadataToMemberTree,
   isLegacyFlatTeamRunMetadata,
-} from "./team-run-member-tree-prerequisite-converter.js";
-import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
+} from "../team-run-member-tree-prerequisite-converter.js";
+import { RuntimeKind } from "../../../runtime-management/runtime-kind-enum.js";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 
 const object = (value: unknown, label: string): Record<string, unknown> => {
@@ -23,7 +23,11 @@ const text = (value: unknown, label: string): string => {
   return value.trim();
 };
 const nullableText = (value: unknown, label: string): string | null => {
-  if (value === null || value === undefined || value === "") return null;
+  if (
+    value === null
+    || value === undefined
+    || (typeof value === "string" && !value.trim())
+  ) return null;
   return text(value, label);
 };
 const stringArray = (value: unknown, label: string): string[] => {
@@ -116,8 +120,7 @@ const convertNode = (
     } satisfies TeamRunAgentMemberMetadata);
   }
   if (record.memberKind !== "agent_team") throw new Error(`${label}.memberKind is unsupported.`);
-  const teamRunId = text(record.teamRunId, `${label}.teamRunId`);
-  if (teamRunId !== memberRunId) throw new Error(`${label}.memberRunId and .teamRunId contradict.`);
+  const teamRunId = nullableText(record.teamRunId, `${label}.teamRunId`) ?? memberRunId;
   const coordinatorRoute = normalizedRoute(record.coordinatorMemberRouteKey, `${label}.coordinatorMemberRouteKey`);
   const coordinatorAddress = createAgentTeamAddress(coordinatorRoute.split("/"));
   if (getParentAgentTeamAddress(coordinatorAddress) !== address) throw new Error(`${label}.coordinatorMemberRouteKey is not direct.`);

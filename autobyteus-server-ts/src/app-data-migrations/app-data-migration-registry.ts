@@ -13,7 +13,6 @@ import { RemoveGlobalSkillDiscoveryModeMigration } from "./migrations/remove-glo
 import { CustomProviderV1AppDataMigration } from "./migrations/custom-provider-v1-app-data-migration.js";
 import { RemoveExternalRuntimeWorkingContextSnapshotsMigration } from "./migrations/remove-external-runtime-working-context-snapshots-migration.js";
 import { MigrateNativeWorkingContextSnapshotsV5Migration } from "./migrations/migrate-native-working-context-snapshots-v5-migration.js";
-import { TeamCanonicalIdentityMigration } from "./migrations/team-canonical-identity-migration.js";
 import { CustomProviderReadableIdAppDataMigration } from "./migrations/custom-provider-readable-id-app-data-migration.js";
 import { TeamRunExecutionTreeV1AppDataMigration } from "./migrations/team-run-execution-tree-v1/team-run-execution-tree-v1-app-data-migration.js";
 
@@ -28,10 +27,6 @@ export class AppDataMigrationRegistry {
         appConfigProvider.config.getAppDataDir(),
       ),
       new TeamRunMetadataMemberTreeMigration(appConfigProvider.config.getMemoryDir()),
-      new TeamCanonicalIdentityMigration(
-        appConfigProvider.config.getMemoryDir(),
-        appConfigProvider.config.getAppDataDir(),
-      ),
       new TeamRunExecutionTreeV1AppDataMigration(
         appConfigProvider.config.getMemoryDir(),
         appConfigProvider.config.getAppDataDir(),
