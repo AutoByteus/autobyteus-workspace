@@ -57,7 +57,8 @@ describe("TeamRunHistoryIndexReconciler", () => {
 
     const first = await reconciler.reconcile(new Map([["team-run-root", tree]]));
 
-    expect(first).toMatchObject({ changed: true, projectedCount: 1 });
+    expect(first).toMatchObject({ kind: "APPLIED", changed: true, projectedCount: 1 });
+    if (first.kind !== "APPLIED") throw new Error(first.message);
     expect(first.backupPath).toContain(path.join("team-history-index", "2026-08-16T20-00-00-000Z"));
     expect(JSON.parse(await fs.readFile(path.join(first.backupPath!, "team_run_history_index.json"), "utf8"))).toEqual(original);
     const rows = JSON.parse(await fs.readFile(indexPath, "utf8")) as Array<Record<string, unknown>>;
@@ -73,7 +74,12 @@ describe("TeamRunHistoryIndexReconciler", () => {
     });
 
     const second = await reconciler.reconcile(new Map([["team-run-root", tree]]));
-    expect(second).toEqual({ changed: false, projectedCount: 1, backupPath: null });
+    expect(second).toEqual({
+      kind: "APPLIED",
+      changed: false,
+      projectedCount: 1,
+      backupPath: null,
+    });
     expect(await fs.readdir(path.join(backupRoot, "team-history-index"))).toHaveLength(1);
   });
 
@@ -89,7 +95,12 @@ describe("TeamRunHistoryIndexReconciler", () => {
     const result = await new TeamRunHistoryIndexReconciler(memoryDir, backupRoot)
       .reconcile(new Map([["team-run-root", tree]]));
 
-    expect(result).toEqual({ changed: true, projectedCount: 1, backupPath: null });
+    expect(result).toEqual({
+      kind: "APPLIED",
+      changed: true,
+      projectedCount: 1,
+      backupPath: null,
+    });
     const rows = JSON.parse(await fs.readFile(path.join(memoryDir, "team_run_history_index.json"), "utf8")) as Array<Record<string, unknown>>;
     expect(rows[0]?.summary).toBe("Build a reliable migration for team history.");
   });
@@ -101,7 +112,10 @@ describe("TeamRunHistoryIndexReconciler", () => {
 
     await expect(new TeamRunHistoryIndexReconciler(memoryDir, backupRoot)
       .reconcile(new Map([["team-run-root", tree]])))
-      .rejects.toThrow("Invalid team run history index format");
+      .resolves.toEqual(expect.objectContaining({
+        kind: "WARNING",
+        message: expect.stringContaining("Invalid team run history index format"),
+      }));
     expect(await fs.readFile(indexPath, "utf8")).toBe(malformed);
     await expect(fs.access(backupRoot)).rejects.toThrow();
   });

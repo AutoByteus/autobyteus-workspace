@@ -1,0 +1,127 @@
+{
+  "observedAt": "2026-08-18T09:52:18.319864+00:00",
+  "assertions": {
+    "exactPreparedLedgerRowsUnchangedAfterInitialStartAndRelaunch": true,
+    "ledgerRowCount": 16,
+    "finalMigrationWarningAttemptOne": true,
+    "removedCanonicalFailedAttemptSixRetainedButNotRerun": true,
+    "warningLoggedPerPackagedStartupCount": 2,
+    "listenLoggedCount": 2,
+    "electronReadyLoggedCount": 2,
+    "structuredPlatformFatalCount": 0,
+    "productionProfileDirectoryMetadataUnchanged": true,
+    "packagedServerUsesSyntheticDataDir": true,
+    "packagedProcessHomeIsSynthetic": true,
+    "serverCwdIsPackagedResource": true
+  },
+  "ledgerRows": [
+    {
+      "migrationId": "20260517_team_run_metadata_member_tree",
+      "status": "SUCCEEDED",
+      "attempts": 1
+    },
+    {
+      "migrationId": "20260521_run_history_index_v2",
+      "status": "SUCCEEDED_WITH_WARNINGS",
+      "attempts": 1
+    },
+    {
+      "migrationId": "20260521_team_run_history_index_v2",
+      "status": "SUCCEEDED",
+      "attempts": 1
+    },
+    {
+      "migrationId": "20260617_raw_trace_rotation_layout",
+      "status": "SUCCEEDED",
+      "attempts": 1
+    },
+    {
+      "migrationId": "20260623_remove_self_evolution_run_metadata",
+      "status": "SUCCEEDED",
+      "attempts": 1
+    },
+    {
+      "migrationId": "20260701_team_communication_projection_addresses",
+      "status": "SUCCEEDED_WITH_WARNINGS",
+      "attempts": 1
+    },
+    {
+      "migrationId": "20260706_remove_global_skill_discovery_mode",
+      "status": "SUCCEEDED",
+      "attempts": 1
+    },
+    {
+      "migrationId": "20260707_raw_trace_active_file_name",
+      "status": "SUCCEEDED",
+      "attempts": 1
+    },
+    {
+      "migrationId": "20260727_custom_provider_v1_secret_migration",
+      "status": "SUCCEEDED",
+      "attempts": 1
+    },
+    {
+      "migrationId": "20260730_token_usage_custom_provider_model_value_backfill",
+      "status": "SUCCEEDED",
+      "attempts": 1
+    },
+    {
+      "migrationId": "20260730_token_usage_provider_name_snapshot_backfill",
+      "status": "SUCCEEDED",
+      "attempts": 1
+    },
+    {
+      "migrationId": "20260731_migrate_native_working_context_snapshots_v5",
+      "status": "SUCCEEDED_WITH_WARNINGS",
+      "attempts": 1
+    },
+    {
+      "migrationId": "20260731_remove_external_runtime_working_context_snapshots",
+      "status": "SUCCEEDED",
+      "attempts": 1
+    },
+    {
+      "migrationId": "20260801_team_canonical_identity",
+      "status": "FAILED",
+      "attempts": 6
+    },
+    {
+      "migrationId": "20260803_custom_provider_readable_identity",
+      "status": "SUCCEEDED_WITH_WARNINGS",
+      "attempts": 1
+    },
+    {
+      "migrationId": "20260814_team_run_execution_tree_v1",
+      "status": "SUCCEEDED_WITH_WARNINGS",
+      "attempts": 1
+    }
+  ],
+  "productionBefore": {
+    "exists": true,
+    "dev": 16777229,
+    "ino": 12014671,
+    "mode": 16877,
+    "size": 992,
+    "mtimeMs": 1786648600712.3284
+  },
+  "productionAfter": {
+    "exists": true,
+    "dev": 16777229,
+    "ino": 12014671,
+    "mode": 16877,
+    "size": 992,
+    "mtimeMs": 1786648600712.3284
+  },
+  "process": {
+    "appPid": 71220,
+    "serverPid": 77719,
+    "appCommand": "/Users/normy/autobyteus_org/autobyteus-worktrees/canonical-identity-startup-recovery/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus --remote-debugging-port=39281",
+    "serverCommand": "/Users/normy/autobyteus_org/autobyteus-worktrees/canonical-identity-startup-recovery/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus /Users/normy/autobyteus_org/autobyteus-worktrees/canonical-identity-startup-recovery/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/app.js --port 29695 --data-dir /tmp/autobyteus-team-v1-packaged-validation/warning-home/.autobyteus/server-data",
+    "serverHome": "/tmp/autobyteus-team-v1-packaged-validation/warning-home",
+    "serverCwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/canonical-identity-startup-recovery/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server"
+  },
+  "logs": {
+    "serverLog": "/tmp/autobyteus-team-v1-packaged-validation/warning-home/.autobyteus/server-data/logs/server.log",
+    "electronLog": "/tmp/autobyteus-team-v1-packaged-validation/warning-home/.autobyteus/logs/app.log"
+  }
+}

@@ -18,7 +18,7 @@ import {
 import { SERVER_ROUTE_PARAM_MAX_LENGTH } from "./api/fastify-runtime-config.js";
 import { runMigrations } from "./startup/migrations.js";
 import { getAppDataMigrationRunner } from "./app-data-migrations/app-data-migration-runner.js";
-import { TEAM_CANONICAL_IDENTITY_MIGRATION_ID } from "./app-data-migrations/migrations/team-canonical-identity-migration.js";
+import { TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID } from "./app-data-migrations/migrations/team-run-execution-tree-v1/team-run-execution-tree-v1-constants.js";
 import { CUSTOM_PROVIDER_READABLE_ID_APP_DATA_MIGRATION_ID } from "./app-data-migrations/migrations/custom-provider-readable-id-app-data-migration.js";
 import { scheduleBackgroundTasks } from "./startup/background-runner.js";
 import { bootstrapBuiltInAgents } from "./built-in-agents/built-in-agent-bootstrapper.js";
@@ -53,6 +53,7 @@ import { registerProvisionedSearchTool } from "./agent-tools/search/register-sea
 import { stopDefaultAgentRunEventPipeline } from "./agent-execution/events/default-agent-run-event-pipeline.js";
 import { configureFileToolDeniedPaths } from "autobyteus-ts/tools/file/workspace-path-utils.js";
 import { TeamRunV1PackageCatalog } from "./run-history/services/team-run-v1-package-catalog.js";
+import { exitWithEmbeddedServerPlatformFatal } from "./startup/embedded-server-platform-fatal.js";
 
 const logger = createServerLogger("server.runtime");
 
@@ -148,17 +149,23 @@ function registerShutdownHandlers(app: FastifyInstance): void {
 
 export async function startConfiguredServer(options: ServerOptions): Promise<void> {
   let loggingConfig: LoggingConfig = getLoggingConfigFromEnv(process.env);
+  let serverLogPath: string | null = null;
 
   try {
     loggingConfig = getLoggingConfigFromEnv(process.env);
-    initializeRuntimeLoggerBootstrap({
+    serverLogPath = initializeRuntimeLoggerBootstrap({
       logsDir: appConfigProvider.config.getLogsDir(),
       loggingConfig,
-    });
+    }).logFilePath;
     initializeServerAppLogger(loggingConfig);
   } catch (error) {
-    logger.error(`Failed to initialize runtime logging: ${String(error)}`);
-    process.exit(1);
+    const summary = `Failed to initialize runtime logging: ${String(error)}`;
+    logger.error(summary);
+    exitWithEmbeddedServerPlatformFatal({
+      code: "RUNTIME_LOGGING_INITIALIZATION_FAILED",
+      summary,
+      logPath: serverLogPath,
+    });
   }
 
   try {
@@ -168,8 +175,13 @@ export async function startConfiguredServer(options: ServerOptions): Promise<voi
       databaseUrl: config.getOperationalDatabaseUrl(),
     });
   } catch (error) {
-    logger.error(`Failed to run database migrations: ${String(error)}`);
-    process.exit(1);
+    const summary = `Failed to run database migrations: ${String(error)}`;
+    logger.error(summary);
+    exitWithEmbeddedServerPlatformFatal({
+      code: "DATABASE_MIGRATION_FAILED",
+      summary,
+      logPath: serverLogPath,
+    });
   }
 
   const databaseLocation = appConfigProvider.config.getOperationalDatabaseLocation();
@@ -185,30 +197,44 @@ export async function startConfiguredServer(options: ServerOptions): Promise<voi
       datasourceUrl: databaseLocation.databaseUrl,
     });
   } catch (error) {
-    logger.error(`Failed to initialize application database: ${String(error)}`);
-    process.exit(1);
+    const summary = `Failed to initialize application database: ${String(error)}`;
+    logger.error(summary);
+    exitWithEmbeddedServerPlatformFatal({
+      code: "APPLICATION_DATABASE_INITIALIZATION_FAILED",
+      summary,
+      logPath: serverLogPath,
+    });
   }
-  await getSecretVaultRuntime().initialize(databaseLocation);
+  try {
+    await getSecretVaultRuntime().initialize(databaseLocation);
+  } catch (error) {
+    const summary = `Failed to initialize secret vault: ${String(error)}`;
+    logger.error(summary);
+    exitWithEmbeddedServerPlatformFatal({
+      code: "SECRET_VAULT_INITIALIZATION_FAILED",
+      summary,
+      logPath: serverLogPath,
+    });
+  }
 
   try {
     const statuses = await getAppDataMigrationRunner().runPending();
     await new TeamRunV1PackageCatalog(appConfigProvider.config.getMemoryDir()).rebuild();
-    const canonicalStatus = statuses.find(
-      (status) => status.migrationId === TEAM_CANONICAL_IDENTITY_MIGRATION_ID,
+    const teamRunV1Status = statuses.find(
+      (status) => status.migrationId === TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID,
     );
-    if (canonicalStatus?.status !== "SUCCEEDED") {
-      logger.error(
-        `Canonical identity migration did not complete successfully; startup halted: ${JSON.stringify({
-          migrationId: TEAM_CANONICAL_IDENTITY_MIGRATION_ID,
-          displayName: canonicalStatus?.displayName ?? null,
-          status: canonicalStatus?.status ?? "MISSING",
-          attempts: canonicalStatus?.attempts ?? null,
-          failedCount: canonicalStatus?.summary?.failedCount ?? null,
-          errorMessage: canonicalStatus?.errorMessage ?? null,
-          logPath: canonicalStatus?.logPath ?? null,
+    if (teamRunV1Status?.status !== "SUCCEEDED") {
+      logger.warn(
+        `TeamRun V1 migration did not report clean success; startup continues with strict current-package admission: ${JSON.stringify({
+          migrationId: TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID,
+          displayName: teamRunV1Status?.displayName ?? null,
+          status: teamRunV1Status?.status ?? "MISSING",
+          attempts: teamRunV1Status?.attempts ?? null,
+          failedCount: teamRunV1Status?.summary?.failedCount ?? null,
+          errorMessage: teamRunV1Status?.errorMessage ?? null,
+          logPath: teamRunV1Status?.logPath ?? null,
         })}`,
       );
-      return;
     }
     const readableProviderStatus = statuses.find(
       (status) => status.migrationId === CUSTOM_PROVIDER_READABLE_ID_APP_DATA_MIGRATION_ID,
@@ -224,20 +250,43 @@ export async function startConfiguredServer(options: ServerOptions): Promise<voi
       ].join(":"));
     }
   } catch (error) {
-    logger.error(`Failed to run app data migrations: ${String(error)}`);
-    process.exit(1);
+    const summary = `Failed to run app data migrations: ${String(error)}`;
+    logger.error(summary);
+    exitWithEmbeddedServerPlatformFatal({
+      code: "APP_DATA_STARTUP_GATE_FAILED",
+      summary,
+      logPath: serverLogPath,
+    });
   }
 
   try {
     await bootstrapBuiltInAgents();
   } catch (error) {
-    logger.error(`Failed to bootstrap built-in agents: ${String(error)}`);
-    process.exit(1);
+    const summary = `Failed to bootstrap built-in agents: ${String(error)}`;
+    logger.error(summary);
+    exitWithEmbeddedServerPlatformFatal({
+      code: "BUILT_IN_AGENTS_BOOTSTRAP_FAILED",
+      summary,
+      logPath: serverLogPath,
+    });
   }
 
-  const app = await buildApp({ loggingConfig });
-  registerShutdownHandlers(app);
-  await app.listen({ host: options.host, port: options.port });
+  const app = await (async (): Promise<FastifyInstance> => {
+    try {
+      const builtApp = await buildApp({ loggingConfig });
+      registerShutdownHandlers(builtApp);
+      await builtApp.listen({ host: options.host, port: options.port });
+      return builtApp;
+    } catch (error) {
+      const summary = `Failed to initialize HTTP server: ${String(error)}`;
+      logger.error(summary);
+      return exitWithEmbeddedServerPlatformFatal({
+        code: "HTTP_SERVER_INITIALIZATION_FAILED",
+        summary,
+        logPath: serverLogPath,
+      });
+    }
+  })();
   logger.info(`Server listening on ${options.host}:${options.port}`);
   startChannelRunOutputDeliveryRuntime();
   startGatewayCallbackDeliveryRuntime();
@@ -264,8 +313,13 @@ export async function startConfiguredServer(options: ServerOptions): Promise<voi
   try {
     await getWorkspaceManager().getOrCreateTempWorkspace();
   } catch (error) {
-    logger.error(`Failed to create temp workspace: ${String(error)}`);
-    process.exit(1);
+    const summary = `Failed to create temp workspace: ${String(error)}`;
+    logger.error(summary);
+    exitWithEmbeddedServerPlatformFatal({
+      code: "TEMP_WORKSPACE_INITIALIZATION_FAILED",
+      summary,
+      logPath: serverLogPath,
+    });
   }
 
   try {
@@ -287,8 +341,13 @@ export async function startConfiguredServer(options: ServerOptions): Promise<voi
       await getApplicationExecutionEventDispatchService().resumePendingEvents();
     });
   } catch (error) {
-    logger.error(`Failed to complete application orchestration startup recovery: ${String(error)}`);
-    process.exit(1);
+    const summary = `Failed to complete application orchestration startup recovery: ${String(error)}`;
+    logger.error(summary);
+    exitWithEmbeddedServerPlatformFatal({
+      code: "APPLICATION_ORCHESTRATION_RECOVERY_FAILED",
+      summary,
+      logPath: serverLogPath,
+    });
   }
   await scheduleBackgroundTasks();
 }

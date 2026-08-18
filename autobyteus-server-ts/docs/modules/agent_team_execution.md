@@ -328,7 +328,11 @@ pipeline passes, or projection writes.
 Current runtime readers consume one validated V1 package per root TeamRun:
 `team_run_execution_tree.json`, `task_delegation_records.json`, and
 `team_communication_messages.json`. Released predecessor interpretation stays
-inside required startup app-data migrations.
+inside required startup app-data migration
+`20260814_team_run_execution_tree_v1`. It is the single registered final Team
+cutover: the unpublished canonical-identity migration and its converters are
+not prerequisites or runtime compatibility paths, and external-channel state is
+outside this transition.
 
 The migration classifier uses positive authority evidence; missing
 `team_run_metadata.json` alone is not an error or a reason to skip blindly:
@@ -340,51 +344,62 @@ The migration classifier uses positive authority evidence; missing
   `team_run_manifest.json` matching the directory is `HISTORICAL_RESIDUE` and is
   skipped without mutation; and
 - partial, malformed, or unrecognized roots are `INVALID`, preserve their bytes,
-  and keep the required migration failed for repair/retry.
+  and are excluded with a warning. Empty shells, content-bearing roots without
+  recognized authority, unsafe paths, and read/classification errors receive
+  the same isolated preserve/exclude treatment.
 
-Canonical identity conversion and the execution-tree V1 promotion share this
-classifier. The V1 definition declares the canonical identity migration as a
-prerequisite, so it cannot create an attempt after canonical conversion fails.
-When predecessor metadata survives an interrupted V1 promotion, both migrations
-resolve task/message evidence from a matching protected V1 backup rather than
-parsing live target files as predecessor data. Normal restore and API paths do
-not implement a predecessor/current dual reader.
+Each root is planned and validated before mutation. Released metadata is
+converted directly to the current recursive execution tree; a non-empty nested
+`teamRunId` is authoritative, while an absent or blank value may use the
+released `memberRunId` evidence. The predecessor-only execution-address
+normalizer accepts the exact four-field form or the released ordered `segments`
+form, folds nested member/task-Team ancestry in order, and rejects contradictory
+or incomplete identity rather than guessing. Address-bearing and older
+run-ID-based Team communication projections are resolved against the same
+planned tree. Normal restore and API paths do not implement a
+predecessor/current dual reader.
 
-Predecessor communication endpoints may contain either the exact four-field
-Team execution address or the released ordered `segments` representation. One
-migration-only execution-address normalizer owns this translation for canonical
-structured conversion, stored-address conversion in the older communication
-migration, and retryable V1 package planning. It validates the expected root,
-member path/route aliases, ordered task-Team ancestry, and optional task-Agent
-identity; a null optional alias is treated as absent, while contradictory,
-duplicate, malformed, or root-mismatched evidence fails with row/side context.
-The older migration's flat projection adapter remains local to that migration.
+For a valid predecessor root, the migration creates a protected backup, stages
+and validates the complete three-file package, then promotes it with
+same-filesystem operations. Roots are independent; one invalid root does not
+prevent another root from being promoted. If a promotion operation reports an
+error after the predecessor marker disappears, read-only validation decides
+whether the complete current package can still be admitted. Otherwise the root
+is excluded without a false preservation claim. Existing valid V1 packages are
+admitted as no-ops, and a terminal clean or warning-completed migration does not
+repeat work on relaunch.
 
-Terminal success of the older communication and canonical migrations does not
-force them to rerun when V1 previously failed. Startup retries only the V1
-migration, resolves normalized endpoints to exact AgentRun IDs through the
-planned execution tree, validates every root first, and promotes the cohort only
-when all roots are valid. A failed preflight preserves predecessor files and
-backups; after success, later startup is a byte/path/backup/attempt no-op. The
-current V1 communication file contains AgentRun IDs only and runtime readers do
-not retain either predecessor address representation.
+The same final coordinator validates released token identity only at the
+migration boundary, updates eligible `root_team_run_id` values transactionally,
+and retains predecessor-only database columns as inert evidence. Unsupported
+token rows remain unchanged with warnings. Current Token Usage readers group by
+root TeamRun and concrete AgentRun IDs; they do not own Team execution topology.
 
-Before `20260814_team_run_execution_tree_v1` can report success, it reconciles
-`team_run_history_index.json` from the complete validated current/promoted tree
-map. Every validated root produces exactly one Team history row; historical
-residue, invalid roots, and stale index-only roots are absent. The execution tree
-owns Team identity, definition, workspace, creation, and archive facts. Existing
-index rows may contribute only their summary and termination fields; if no
-summary exists, coordinator trace evidence may supply a best-effort title.
+After root processing, the migration reconciles `team_run_history_index.json`
+from independently admitted trees. Every admitted root produces exactly one
+Team history row; historical residue, invalid roots, and stale index-only roots
+are absent. The execution tree owns Team identity, definition, workspace,
+creation, and archive facts. Existing index rows may contribute only their
+summary and termination fields; if no summary exists, coordinator trace
+evidence may supply a best-effort title.
 
 The history store owns strict index parsing and the canonical index path. A
-missing index is treated as empty, but malformed rows fail the required migration
-without changing bytes. If a valid existing index must change, the reconciler
-creates a protected timestamped backup before the atomic replacement. Exact
-equivalence is a no-write/no-backup result, so later startup is idempotent.
-Normal catalog, GraphQL, and sidebar paths still consume only this current index;
-they do not scan `memory/agent_teams`, and Team members do not become standalone
-Agent history rows.
+missing index is treated as empty. If a valid existing index must change, the
+reconciler creates a protected timestamped backup before the atomic replacement
+and validates the persisted projection. Exact equivalence creates no write and
+no backup. A history read/write/validation problem is a warning and does not
+block startup; the strict catalog is still rebuilt from admitted current
+packages. Normal catalog, GraphQL, and sidebar paths consume only the current
+index; they do not scan `memory/agent_teams`, and Team members do not become
+standalone Agent history rows.
+
+Conversion, promotion, token, and history problems produce item diagnostics and
+a terminal `SUCCEEDED_WITH_WARNINGS`, never migration-owned startup fatality.
+The server logs the result, rebuilds the strict catalog, and continues to
+listen; `/rest/health` is the embedded application's only readiness authority.
+Only an independently established database/runtime/bootstrap condition that
+makes the current application inoperable can use the separate fixed
+platform-fatal path.
 
 ## TS Source
 
@@ -412,9 +427,17 @@ Agent history rows.
 - `src/services/agent-streaming/agent-team-stream-handler.ts`
 - `src/services/agent-streaming/team-agent-event-websocket-projector.ts`
 - `src/app-data-migrations/migrations/team-run-migration-state-classifier.ts`
-- `src/app-data-migrations/migrations/team-execution-address-normalizer.ts`
+- `src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-execution-tree-v1-app-data-migration.ts`
+- `src/app-data-migrations/migrations/team-run-execution-tree-v1/predecessor-team-metadata-converter.ts`
+- `src/app-data-migrations/migrations/team-run-execution-tree-v1/predecessor-team-execution-address-normalizer.ts`
+- `src/app-data-migrations/migrations/team-run-execution-tree-v1/predecessor-task-delegation-converter.ts`
+- `src/app-data-migrations/migrations/team-run-execution-tree-v1/predecessor-team-communication-converter.ts`
+- `src/app-data-migrations/migrations/team-run-execution-tree-v1/predecessor-team-run-planner.ts`
 - `src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-predecessor-source-resolver.ts`
+- `src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-v1-package-promoter.ts`
 - `src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-history-index-reconciler.ts`
+- `src/app-data-migrations/migrations/team-run-execution-tree-v1/token-usage-team-run-v1-row-planner.ts`
+- `src/token-usage/repositories/sql/token-usage-team-run-v1-migration-repository.ts`
 - `src/run-history/services/team-run-history-index-row-projector.ts`
 - `src/run-history/store/team-run-history-index-store.ts`
 - `@autobyteus/team-stream-contracts`

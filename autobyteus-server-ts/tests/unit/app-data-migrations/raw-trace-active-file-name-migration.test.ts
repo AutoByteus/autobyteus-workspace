@@ -148,11 +148,14 @@ describe("RawTraceActiveFileNameMigration", () => {
     expect(definitions.find((definition) =>
       definition.id === MIGRATE_NATIVE_WORKING_CONTEXT_SNAPSHOTS_V5_MIGRATION_ID))
       .toBeInstanceOf(MigrateNativeWorkingContextSnapshotsV5Migration);
+    const externalIndex = definitionIds.indexOf(
+      REMOVE_EXTERNAL_RUNTIME_WORKING_CONTEXT_SNAPSHOTS_MIGRATION_ID,
+    );
+    expect(externalIndex).toBeGreaterThanOrEqual(0);
     expect([
-      definitionIds.indexOf(REMOVE_EXTERNAL_RUNTIME_WORKING_CONTEXT_SNAPSHOTS_MIGRATION_ID),
       definitionIds.indexOf(RAW_TRACE_ROTATION_LAYOUT_MIGRATION_ID),
       definitionIds.indexOf(RAW_TRACE_ACTIVE_FILE_NAME_MIGRATION_ID),
       definitionIds.indexOf(MIGRATE_NATIVE_WORKING_CONTEXT_SNAPSHOTS_V5_MIGRATION_ID),
-    ]).toEqual([5, 6, 7, 8]);
+    ]).toEqual([externalIndex + 1, externalIndex + 2, externalIndex + 3]);
   });
 });

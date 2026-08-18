@@ -1,0 +1,74 @@
+{
+  "observedAt": "2026-08-18T09:55:29.131031+00:00",
+  "assertions": {
+    "oneStructuredPlatformFatalRecord": true,
+    "structuredProtocolExact": true,
+    "structuredCodePrecise": true,
+    "structuredLogPathPrecise": true,
+    "oneCurrentGenerationErrorTransition": true,
+    "childExitedCodeOneOnce": true,
+    "noElectronReadySignal": true,
+    "noServerListen": true,
+    "rendererStatusError": true,
+    "rendererMessageContainsPreciseCode": true,
+    "rendererMessageContainsSyntheticLogPath": true,
+    "visibleApplicationError": true,
+    "visiblePreciseCode": true,
+    "visibleSyntheticLogPath": true,
+    "packagedProcessHomeIsSynthetic": true,
+    "loggedDataDirIsSynthetic": true,
+    "productionProfileDirectoryMetadataUnchanged": true
+  },
+  "structuredPlatformFatalRecords": [
+    {
+      "protocol": "autobyteus.embedded-server.platform-fatal.v1",
+      "code": "DATABASE_MIGRATION_FAILED",
+      "summary": "Failed to run database migrations: Error: Command failed: /Users/normy/autobyteus_org/autobyteus-worktrees/canonical-identity-startup-recovery/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus /Users/normy/autobyteus_org/autobyteus-worktrees/canonical-identity-startup-recovery/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/prisma/build/index.js migrate deploy --schema /Users/normy/autobyteus_org/autobyteus-worktrees/canonical-identity-startup-recovery/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/prisma/schema.prisma",
+      "logPath": "/tmp/autobyteus-team-v1-packaged-validation/fatal-home/.autobyteus/server-data/logs/server.log"
+    }
+  ],
+  "rendererStatus": {
+    "status": "error",
+    "urls": {
+      "graphql": "http://127.0.0.1:29695/graphql",
+      "rest": "http://127.0.0.1:29695/rest",
+      "ws": "ws://localhost:29695/graphql",
+      "transcription": "ws://localhost:29695/transcribe",
+      "health": "http://127.0.0.1:29695/rest/health"
+    },
+    "healthCheckStatus": "",
+    "message": "Server startup failed [DATABASE_MIGRATION_FAILED]: Failed to run database migrations: Error: Command failed: /Users/normy/autobyteus_org/autobyteus-worktrees/canonical-identity-startup-recovery/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus /Users/normy/autobyteus_org/autobyteus-worktrees/canonical-identity-startup-recovery/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/prisma/build/index.js migrate deploy --schema /Users/normy/autobyteus_org/autobyteus-worktrees/canonical-identity-startup-recovery/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/prisma/schema.prisma Server log: /tmp/autobyteus-team-v1-packaged-validation/fatal-home/.autobyteus/server-data/logs/server.log"
+  },
+  "rendererHealth": {
+    "status": "starting",
+    "message": "Server is not running or still starting"
+  },
+  "visibleText": "\u274c\nApplication Error\n\nServer startup failed [DATABASE_MIGRATION_FAILED]: Failed to run database migrations: Error: Command failed: /Users/normy/autobyteus_org/autobyteus-worktrees/canonical-identity-startup-recovery/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus /Users/normy/autobyteus_org/autobyteus-worktrees/canonical-identity-startup-recovery/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/prisma/build/index.js migrate deploy --schema /Users/normy/autobyteus_org/autobyteus-worktrees/canonical-identity-startup-recovery/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/prisma/schema.prisma Server log: /tmp/autobyteus-team-v1-packaged-validation/fatal-home/.autobyteus/server-data/logs/server.log\n\nRestart Server\nCheck Server Health\nShow technical details\nShow Advanced Recovery Options",
+  "process": {
+    "appPid": 79952,
+    "appCommand": "/Users/normy/autobyteus_org/autobyteus-worktrees/canonical-identity-startup-recovery/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus --remote-debugging-port=39282",
+    "appHome": "/tmp/autobyteus-team-v1-packaged-validation/fatal-home",
+    "embeddedServerPortListening": false
+  },
+  "logs": {
+    "electronLog": "/tmp/autobyteus-team-v1-packaged-validation/fatal-home/.autobyteus/logs/app.log",
+    "serverLog": "/tmp/autobyteus-team-v1-packaged-validation/fatal-home/.autobyteus/server-data/logs/server.log"
+  },
+  "productionBefore": {
+    "exists": true,
+    "dev": 16777229,
+    "ino": 12014671,
+    "mode": 16877,
+    "size": 992,
+    "mtimeMs": 1786648600712.3284
+  },
+  "productionAfter": {
+    "exists": true,
+    "dev": 16777229,
+    "ino": 12014671,
+    "mode": 16877,
+    "size": 992,
+    "mtimeMs": 1786648600712.3284
+  },
+  "screenshotPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/canonical-identity-startup-recovery/tickets/in-progress/canonical-identity-startup-recovery/evidence/packaged-electron/fatal-renderer.png"
+}

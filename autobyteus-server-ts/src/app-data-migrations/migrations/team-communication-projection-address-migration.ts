@@ -5,7 +5,7 @@ import type { TeamExecutionAddress } from "../legacy/team-execution-address.js";
 import { buildTeamCommunicationMessageId, buildTeamCommunicationReferenceId, normalizeTeamCommunicationReferencePath } from "../../services/team-communication/team-communication-identity.js";
 import type { TeamCommunicationReferenceFile, TeamCommunicationReferenceFileType } from "../../services/team-communication/team-communication-types.js";
 import type { AppDataMigrationDefinition, AppDataMigrationExecutionResult, AppDataMigrationItemDetail, AppDataMigrationSummary } from "../domain/app-data-migration-types.js";
-import { normalizePredecessorTeamExecutionAddress } from "./team-execution-address-normalizer.js";
+import { normalizePredecessorTeamExecutionAddress } from "./team-run-execution-tree-v1/predecessor-team-execution-address-normalizer.js";
 
 const MIGRATION_ID = "20260701_team_communication_projection_addresses";
 const FILE_NAME = "team_communication_messages.json";

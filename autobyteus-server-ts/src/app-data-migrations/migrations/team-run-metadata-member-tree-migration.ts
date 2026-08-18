@@ -10,7 +10,7 @@ import {
   decodeFlatTeamRunMetadataToMemberTree,
   isLegacyFlatTeamRunMetadata,
 } from "./team-run-member-tree-prerequisite-converter.js";
-import { convertLegacyTeamRunMetadata } from "./team-canonical-metadata-converter.js";
+import { convertLegacyTeamRunMetadata } from "./team-run-execution-tree-v1/predecessor-team-metadata-converter.js";
 
 const MIGRATION_ID = "20260517_team_run_metadata_member_tree";
 const missing = (error: unknown): boolean => (error as NodeJS.ErrnoException | null)?.code === "ENOENT";

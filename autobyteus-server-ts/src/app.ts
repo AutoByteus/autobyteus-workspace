@@ -1,6 +1,7 @@
 import "reflect-metadata";
 import { pathToFileURL } from "node:url";
 import { appConfigProvider } from "./config/app-config-provider.js";
+import { exitWithEmbeddedServerPlatformFatal } from "./startup/embedded-server-platform-fatal.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -67,8 +68,12 @@ export async function startServer(): Promise<void> {
   try {
     initializeConfig(options);
   } catch (error) {
-    logger.error(`Failed to initialize AppConfig: ${String(error)}`);
-    process.exit(1);
+    const summary = `Failed to initialize AppConfig: ${String(error)}`;
+    logger.error(summary);
+    exitWithEmbeddedServerPlatformFatal({
+      code: "APP_CONFIG_INITIALIZATION_FAILED",
+      summary,
+    });
   }
 
   const runtime = await import("./server-runtime.js");
@@ -78,7 +83,11 @@ export async function startServer(): Promise<void> {
 const modulePath = pathToFileURL(process.argv[1] ?? "").href;
 if (import.meta.url === modulePath) {
   startServer().catch((error) => {
-    logger.error(`Failed to start server: ${String(error)}`);
-    process.exit(1);
+    const summary = `Failed to start server: ${String(error)}`;
+    logger.error(summary);
+    exitWithEmbeddedServerPlatformFatal({
+      code: "UNEXPECTED_SERVER_STARTUP_FAILURE",
+      summary,
+    });
   });
 }

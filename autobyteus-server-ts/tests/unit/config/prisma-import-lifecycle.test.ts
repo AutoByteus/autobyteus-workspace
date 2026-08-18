@@ -11,7 +11,7 @@ vi.mock("../../../src/config/prisma-client-factory.js", () => factoryHarness);
 import { SqlTokenUsageLedgerRepository } from "../../../src/token-usage/repositories/sql/token-usage-ledger-repository.js";
 import { TokenUsageLedgerStore } from "../../../src/token-usage/providers/token-usage-ledger-store.js";
 import { AppDataMigrationRecordRepository } from "../../../src/app-data-migrations/repositories/app-data-migration-record-repository.js";
-import { TokenUsageExecutionIdentityMigrationRepository } from "../../../src/token-usage/repositories/sql/token-usage-execution-identity-migration-repository.js";
+import { TokenUsageTeamRunV1MigrationRepository } from "../../../src/token-usage/repositories/sql/token-usage-team-run-v1-migration-repository.js";
 
 describe("Prisma import lifecycle", () => {
   beforeEach(async () => {
@@ -30,7 +30,7 @@ describe("Prisma import lifecycle", () => {
     new SqlTokenUsageLedgerRepository();
     new TokenUsageLedgerStore();
     new AppDataMigrationRecordRepository();
-    new TokenUsageExecutionIdentityMigrationRepository();
+    new TokenUsageTeamRunV1MigrationRepository();
 
     expect(factoryHarness.createConfiguredPrismaClient).not.toHaveBeenCalled();
   });
@@ -38,7 +38,7 @@ describe("Prisma import lifecycle", () => {
   it("acquires the configured client only on each migration owner's first database operation", async () => {
     const operations = [
       () => new AppDataMigrationRecordRepository().getRecord("migration-1"),
-      () => new TokenUsageExecutionIdentityMigrationRepository().listEvidence(),
+      () => new TokenUsageTeamRunV1MigrationRepository().inspectRuntimeSchemaAndEvidence(),
     ];
 
     for (const operation of operations) {
@@ -52,15 +52,20 @@ describe("Prisma import lifecycle", () => {
     const disconnect = vi.fn().mockResolvedValue(undefined);
     const injectedClient = {
       $queryRaw: vi.fn()
-        .mockResolvedValueOnce([])
-        .mockResolvedValueOnce([])
+        .mockResolvedValueOnce([
+          { name: "id" },
+          { name: "usage_event_id" },
+          { name: "run_id" },
+          { name: "root_team_run_id" },
+          { name: "observed_at" },
+        ])
         .mockResolvedValueOnce([]),
       $queryRawUnsafe: vi.fn().mockResolvedValue([]),
       $disconnect: disconnect,
     } as unknown as PrismaClient;
 
-    const migration = new TokenUsageExecutionIdentityMigrationRepository(injectedClient);
-    await migration.listEvidence();
+    const migration = new TokenUsageTeamRunV1MigrationRepository(injectedClient);
+    await migration.inspectRuntimeSchemaAndEvidence();
     await migration.disconnect();
 
     expect(factoryHarness.createConfiguredPrismaClient).not.toHaveBeenCalled();
@@ -71,15 +76,21 @@ describe("Prisma import lifecycle", () => {
     const disconnect = vi.fn().mockResolvedValue(undefined);
     const client = {
       $queryRaw: vi.fn()
-        .mockResolvedValueOnce([])
-        .mockResolvedValueOnce([])
+        .mockResolvedValueOnce([
+          { name: "id" },
+          { name: "usage_event_id" },
+          { name: "run_id" },
+          { name: "root_team_run_id" },
+          { name: "observed_at" },
+        ])
         .mockResolvedValueOnce([]),
+      $queryRawUnsafe: vi.fn().mockResolvedValue([]),
       $disconnect: disconnect,
     } as unknown as PrismaClient;
     factoryHarness.createConfiguredPrismaClient.mockReturnValueOnce(client);
 
-    const migration = new TokenUsageExecutionIdentityMigrationRepository();
-    await migration.listEvidence();
+    const migration = new TokenUsageTeamRunV1MigrationRepository();
+    await migration.inspectRuntimeSchemaAndEvidence();
     await migration.disconnect();
 
     expect(factoryHarness.createConfiguredPrismaClient).toHaveBeenCalledOnce();

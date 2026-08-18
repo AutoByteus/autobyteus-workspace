@@ -77,11 +77,12 @@ export class ServerStatusManager extends EventEmitter {
     } catch (error) {
       logger.error('ServerStatusManager: Restart failed:', error)
       const errorMessage = error instanceof Error ? error.message : String(error)
-      this.emitStatusChange(ServerStatus.ERROR, errorMessage)
-      return {
-        status: ServerStatus.ERROR,
-        message: errorMessage
+      // BaseServerManager emits the generation's startup error before rejecting.
+      // Retain that one detailed transition; only synthesize one if restart failed earlier.
+      if (this.currentStatus !== ServerStatus.ERROR) {
+        this.emitStatusChange(ServerStatus.ERROR, errorMessage)
       }
+      return this.getStatus()
     }
   }
   

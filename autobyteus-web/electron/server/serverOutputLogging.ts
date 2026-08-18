@@ -106,6 +106,7 @@ const emitServerOutputLine = (
 export const createServerProcessOutputForwarder = (
   targetLogger: ElectronAppLogger,
   defaultLevel: ElectronLogLevel,
+  onLine?: (output: string) => void,
 ): ServerProcessOutputForwarder => {
   let pendingOutput = ''
 
@@ -123,6 +124,7 @@ export const createServerProcessOutputForwarder = (
         completedLine.endsWith('\r') ? completedLine.slice(0, -1) : completedLine,
         defaultLevel,
       )
+      onLine?.(completedLine.endsWith('\r') ? completedLine.slice(0, -1) : completedLine)
     }
   }
 
@@ -137,6 +139,9 @@ export const createServerProcessOutputForwarder = (
         pendingOutput.endsWith('\r') ? pendingOutput.slice(0, -1) : pendingOutput,
         defaultLevel,
       )
+      if (pendingOutput) {
+        onLine?.(pendingOutput.endsWith('\r') ? pendingOutput.slice(0, -1) : pendingOutput)
+      }
       pendingOutput = ''
     },
   }

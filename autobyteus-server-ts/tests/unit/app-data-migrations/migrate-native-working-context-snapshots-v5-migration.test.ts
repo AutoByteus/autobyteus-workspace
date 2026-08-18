@@ -341,7 +341,12 @@ describe("MigrateNativeWorkingContextSnapshotsV5Migration", () => {
     const rotationIndex = defaultDefinitions.findIndex((item) => item instanceof RawTraceRotationLayoutMigration);
     const activeNameIndex = defaultDefinitions.findIndex((item) => item instanceof RawTraceActiveFileNameMigration);
     const nativeIndex = defaultDefinitions.findIndex((item) => item instanceof MigrateNativeWorkingContextSnapshotsV5Migration);
-    expect([externalIndex, rotationIndex, activeNameIndex, nativeIndex]).toEqual([5, 6, 7, 8]);
+    expect(externalIndex).toBeGreaterThanOrEqual(0);
+    expect([rotationIndex, activeNameIndex, nativeIndex]).toEqual([
+      externalIndex + 1,
+      externalIndex + 2,
+      externalIndex + 3,
+    ]);
 
     const runId = "ordinary-runner-direct-upgrade";
     const runDir = standaloneDir(runId);

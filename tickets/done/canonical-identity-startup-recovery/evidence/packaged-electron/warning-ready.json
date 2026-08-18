@@ -1,0 +1,286 @@
+{
+  "observedAt": "2026-08-18T09:51:29.621Z",
+  "cdpEndpoint": "http://127.0.0.1:39281",
+  "renderer": {
+    "electronApiPresent": true,
+    "serverStatus": {
+      "status": "running",
+      "urls": {
+        "graphql": "http://127.0.0.1:29695/graphql",
+        "rest": "http://127.0.0.1:29695/rest",
+        "ws": "ws://localhost:29695/graphql",
+        "transcription": "ws://localhost:29695/transcribe",
+        "health": "http://127.0.0.1:29695/rest/health"
+      },
+      "healthCheckStatus": "Healthy"
+    },
+    "healthViaIpc": {
+      "status": "ok",
+      "data": {
+        "status": "ok",
+        "message": "Server is running"
+      }
+    },
+    "healthViaRendererFetch": {
+      "httpStatus": 200,
+      "body": {
+        "status": "ok",
+        "message": "Server is running"
+      }
+    },
+    "migrationsViaRendererFetch": {
+      "httpStatus": 200,
+      "body": {
+        "data": {
+          "getAppDataMigrations": [
+            {
+              "migrationId": "20260727_custom_provider_v1_secret_migration",
+              "status": "SUCCEEDED",
+              "attempts": 1,
+              "summary": {
+                "scannedCount": 1,
+                "migratedCount": 1,
+                "skippedCount": 0,
+                "failedCount": 0,
+                "details": []
+              },
+              "errorMessage": null,
+              "logPath": "/synthetic/20260727_custom_provider_v1_secret_migration.log"
+            },
+            {
+              "migrationId": "20260706_remove_global_skill_discovery_mode",
+              "status": "SUCCEEDED",
+              "attempts": 1,
+              "summary": {
+                "scannedCount": 1,
+                "migratedCount": 1,
+                "skippedCount": 0,
+                "failedCount": 0,
+                "details": []
+              },
+              "errorMessage": null,
+              "logPath": "/synthetic/20260706_remove_global_skill_discovery_mode.log"
+            },
+            {
+              "migrationId": "20260517_team_run_metadata_member_tree",
+              "status": "SUCCEEDED",
+              "attempts": 1,
+              "summary": {
+                "scannedCount": 1,
+                "migratedCount": 1,
+                "skippedCount": 0,
+                "failedCount": 0,
+                "details": []
+              },
+              "errorMessage": null,
+              "logPath": "/synthetic/20260517_team_run_metadata_member_tree.log"
+            },
+            {
+              "migrationId": "20260814_team_run_execution_tree_v1",
+              "status": "SUCCEEDED_WITH_WARNINGS",
+              "attempts": 1,
+              "summary": {
+                "scannedCount": 1,
+                "migratedCount": 0,
+                "skippedCount": 0,
+                "failedCount": 1,
+                "details": [
+                  {
+                    "itemId": "packaged-warning",
+                    "status": "FAILED",
+                    "message": "synthetic warning-ready packaged profile"
+                  }
+                ]
+              },
+              "errorMessage": "synthetic warning-ready packaged profile",
+              "logPath": "/synthetic/20260814_team_run_execution_tree_v1.log"
+            },
+            {
+              "migrationId": "20260731_remove_external_runtime_working_context_snapshots",
+              "status": "SUCCEEDED",
+              "attempts": 1,
+              "summary": {
+                "scannedCount": 1,
+                "migratedCount": 1,
+                "skippedCount": 0,
+                "failedCount": 0,
+                "details": []
+              },
+              "errorMessage": null,
+              "logPath": "/synthetic/20260731_remove_external_runtime_working_context_snapshots.log"
+            },
+            {
+              "migrationId": "20260617_raw_trace_rotation_layout",
+              "status": "SUCCEEDED",
+              "attempts": 1,
+              "summary": {
+                "scannedCount": 1,
+                "migratedCount": 1,
+                "skippedCount": 0,
+                "failedCount": 0,
+                "details": []
+              },
+              "errorMessage": null,
+              "logPath": "/synthetic/20260617_raw_trace_rotation_layout.log"
+            },
+            {
+              "migrationId": "20260707_raw_trace_active_file_name",
+              "status": "SUCCEEDED",
+              "attempts": 1,
+              "summary": {
+                "scannedCount": 1,
+                "migratedCount": 1,
+                "skippedCount": 0,
+                "failedCount": 0,
+                "details": []
+              },
+              "errorMessage": null,
+              "logPath": "/synthetic/20260707_raw_trace_active_file_name.log"
+            },
+            {
+              "migrationId": "20260731_migrate_native_working_context_snapshots_v5",
+              "status": "SUCCEEDED_WITH_WARNINGS",
+              "attempts": 1,
+              "summary": {
+                "scannedCount": 1,
+                "migratedCount": 0,
+                "skippedCount": 0,
+                "failedCount": 1,
+                "details": [
+                  {
+                    "itemId": "packaged-warning",
+                    "status": "FAILED",
+                    "message": "synthetic warning-ready packaged profile"
+                  }
+                ]
+              },
+              "errorMessage": "synthetic warning-ready packaged profile",
+              "logPath": "/synthetic/20260731_migrate_native_working_context_snapshots_v5.log"
+            },
+            {
+              "migrationId": "20260701_team_communication_projection_addresses",
+              "status": "SUCCEEDED_WITH_WARNINGS",
+              "attempts": 1,
+              "summary": {
+                "scannedCount": 1,
+                "migratedCount": 0,
+                "skippedCount": 0,
+                "failedCount": 1,
+                "details": [
+                  {
+                    "itemId": "packaged-warning",
+                    "status": "FAILED",
+                    "message": "synthetic warning-ready packaged profile"
+                  }
+                ]
+              },
+              "errorMessage": "synthetic warning-ready packaged profile",
+              "logPath": "/synthetic/20260701_team_communication_projection_addresses.log"
+            },
+            {
+              "migrationId": "20260730_token_usage_custom_provider_model_value_backfill",
+              "status": "SUCCEEDED",
+              "attempts": 1,
+              "summary": {
+                "scannedCount": 1,
+                "migratedCount": 1,
+                "skippedCount": 0,
+                "failedCount": 0,
+                "details": []
+              },
+              "errorMessage": null,
+              "logPath": "/synthetic/20260730_token_usage_custom_provider_model_value_backfill.log"
+            },
+            {
+              "migrationId": "20260730_token_usage_provider_name_snapshot_backfill",
+              "status": "SUCCEEDED",
+              "attempts": 1,
+              "summary": {
+                "scannedCount": 1,
+                "migratedCount": 1,
+                "skippedCount": 0,
+                "failedCount": 0,
+                "details": []
+              },
+              "errorMessage": null,
+              "logPath": "/synthetic/20260730_token_usage_provider_name_snapshot_backfill.log"
+            },
+            {
+              "migrationId": "20260623_remove_self_evolution_run_metadata",
+              "status": "SUCCEEDED",
+              "attempts": 1,
+              "summary": {
+                "scannedCount": 1,
+                "migratedCount": 1,
+                "skippedCount": 0,
+                "failedCount": 0,
+                "details": []
+              },
+              "errorMessage": null,
+              "logPath": "/synthetic/20260623_remove_self_evolution_run_metadata.log"
+            },
+            {
+              "migrationId": "20260521_team_run_history_index_v2",
+              "status": "SUCCEEDED",
+              "attempts": 1,
+              "summary": {
+                "scannedCount": 1,
+                "migratedCount": 1,
+                "skippedCount": 0,
+                "failedCount": 0,
+                "details": []
+              },
+              "errorMessage": null,
+              "logPath": "/synthetic/20260521_team_run_history_index_v2.log"
+            },
+            {
+              "migrationId": "20260521_run_history_index_v2",
+              "status": "SUCCEEDED_WITH_WARNINGS",
+              "attempts": 1,
+              "summary": {
+                "scannedCount": 1,
+                "migratedCount": 0,
+                "skippedCount": 0,
+                "failedCount": 1,
+                "details": [
+                  {
+                    "itemId": "packaged-warning",
+                    "status": "FAILED",
+                    "message": "synthetic warning-ready packaged profile"
+                  }
+                ]
+              },
+              "errorMessage": "synthetic warning-ready packaged profile",
+              "logPath": "/synthetic/20260521_run_history_index_v2.log"
+            },
+            {
+              "migrationId": "20260803_custom_provider_readable_identity",
+              "status": "SUCCEEDED_WITH_WARNINGS",
+              "attempts": 1,
+              "summary": {
+                "scannedCount": 1,
+                "migratedCount": 0,
+                "skippedCount": 0,
+                "failedCount": 1,
+                "details": [
+                  {
+                    "itemId": "packaged-warning",
+                    "status": "FAILED",
+                    "message": "synthetic warning-ready packaged profile"
+                  }
+                ]
+              },
+              "errorMessage": "synthetic warning-ready packaged profile",
+              "logPath": "/synthetic/20260803_custom_provider_readable_identity.log"
+            }
+          ]
+        }
+      }
+    },
+    "logFilePath": "/tmp/autobyteus-team-v1-packaged-validation/warning-home/.autobyteus/logs/app.log",
+    "location": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/canonical-identity-startup-recovery/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agents",
+    "title": "",
+    "visibleTextSample": "Agents\nAgent Teams\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nNo task history in this workspace.\nSettings\nReload\nCreate Agent\nIndividual agents\n2 agents\nMC\nMemory Compactor\n\nSummarizes the conversation history of a target agent so the target agent can continue later.\n\nTools 0\nNone\nSkills 0\nNone\nRun\nView Details\n→\nRS\nRetrospective Skill Improver\n\nImproves configured durable skill packages from target run work-trace evidence.\n\nTools 2\nrun_bash\nsend_message_to\nSkills 1\nretrospective-skill-improver\nRun\nView Details\n→"
+  },
+  "screenshotPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/canonical-identity-startup-recovery/tickets/in-progress/canonical-identity-startup-recovery/evidence/packaged-electron/warning-ready.png"
+}
