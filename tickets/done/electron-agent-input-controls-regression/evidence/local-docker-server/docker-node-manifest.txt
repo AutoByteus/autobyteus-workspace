@@ -1,0 +1,64 @@
+DR-006 local Docker node manifest
+Ticket: electron-agent-input-controls-regression
+Result: PASS — built, running, and health-verified
+Recorded: 2026-08-18T15:33:24+02:00
+
+Source branch: codex/agent-team-universal-task-delegation
+Source revision: c7dc4e73e350f9941106837e3d890273a0e0c176
+Reviewed gates: CRR-003 Pass / 9.6; API-REV-002 Pass / 97.2%; CRR-004 Pass
+Compose project: electron-agent-input-controls-regression-dr005
+Container: electron-agent-input-controls-regression-dr005-autobyteus-server-1
+Container ID: 0ec4a7e360ec
+Container state: running
+Container restart count: 0
+Restart policy: unless-stopped
+Image: autobyteus-server:latest
+Image ID: sha256:6d8e9f250b9ce094142970e2e7a0c1b31ccb574990b3369a03fec28d429a4efa
+Image platform: linux/arm64
+Image size bytes: 1837740323
+
+Nodes Backend URL: http://localhost:52704
+Loopback-equivalent URL: http://127.0.0.1:52704
+REST health URL: http://localhost:52704/rest/health
+GraphQL URL: http://localhost:52704/graphql
+noVNC URL: http://localhost:52706
+VNC endpoint: localhost:52705
+Chrome debug endpoint: localhost:52707
+
+Health evidence:
+- GET /rest/health: HTTP 200; {"status":"ok","message":"Server is running"}
+- GraphQL health: {"data":{"health":{"status":"ok","message":"Server is running"}}}
+- Stabilization recheck: localhost and 127.0.0.1 both PASS
+- Container: running; restart_count=0
+- Database migrations: successfully applied to the new isolated data volume
+
+Isolated persistent volumes:
+- electron-agent-input-controls-regression-dr005_autobyteus-server-workspace
+- electron-agent-input-controls-regression-dr005_autobyteus-server-data
+- electron-agent-input-controls-regression-dr005_autobyteus-server-root-home
+- electron-agent-input-controls-regression-dr005_autobyteus-server-chromium-profile
+
+Lifecycle commands (run from the Docker helper directory):
+cd /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/docker
+./docker-start.sh ps -p electron-agent-input-controls-regression-dr005
+./docker-start.sh ports -p electron-agent-input-controls-regression-dr005
+./docker-start.sh logs -p electron-agent-input-controls-regression-dr005
+./docker-start.sh down -p electron-agent-input-controls-regression-dr005
+./docker-start.sh up -p electron-agent-input-controls-regression-dr005 --no-build
+
+The down command removes the project container/network but preserves its named volumes and saved port state. Do not pass --volumes or --delete-state unless permanent data/state removal is explicitly intended.
+
+Safety result:
+- All pre-existing containers remained present with identical IDs.
+- All pre-existing volumes remained present.
+- Only this project's one container and four named volumes were added.
+- Port 29695, the active Electron process, ~/.autobyteus production profile, and production data were not touched.
+
+Observed non-blocking startup warnings:
+- VNC desktop emitted existing XFCE/GTK/DPMS warnings.
+- Optional localhost Ollama and LM Studio discovery reported those services unavailable inside the container.
+- Chromium emitted Google GCM registration warnings.
+These did not affect server listen, migrations, REST/GraphQL health, or container stability.
+
+Evidence directory:
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/evidence/local-docker-server

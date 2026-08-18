@@ -3,8 +3,8 @@
 ## Ticket And Handoff State
 
 - Ticket: `electron-agent-input-controls-regression`
-- Delivery revision: `DR-005`
-- Current disposition: repository finalization and local Electron build remain complete; the later requested current-source Docker server build is blocked by a local Docker packaging omission and has been routed to implementation.
+- Delivery revision: `DR-006`
+- Current disposition: repository finalization, local Electron build, reviewed Docker packaging repair, isolated Docker server build/start, and REST/GraphQL health verification all passed. The Docker node is running for user testing.
 - Repository finalization target: `codex/agent-team-universal-task-delegation`, as recorded in `ticket-description.md`.
 - Explicit user finalization authorization received: `Yes` — “i tested. the task is done. finalize to the base branch”.
 - Post-finalization local build requested: `Yes` — refresh the surviving target worktree and build Electron there after repository finalization.
@@ -32,15 +32,22 @@
 - Build policy: local validation only. Electron Builder skipped Developer ID signing because identity was explicitly null; notarization, release, publication, deployment, and use of the user's active profile/process were not performed.
 - Evidence directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/evidence/local-electron-build`
 
-## Post-Finalization Local Docker Server Attempt
+## Post-Finalization Local Docker Server
 
 - User request: build the current finalized server Docker image, start an isolated Docker node, verify it, and provide the Backend URL for **Nodes -> Manage Nodes -> Add Remote Node**.
-- Source refresh: `Pass`; local and remote `codex/agent-team-universal-task-delegation` were clean and identical at `469b0b26b133ab4c5246a4e819ab90efa9b65ea1` before the attempt.
+- Initial source refresh: `Pass`; local and remote `codex/agent-team-universal-task-delegation` were clean and identical at `469b0b26b133ab4c5246a4e819ab90efa9b65ea1` before the original attempt.
 - Command: `./docker-start.sh up -p electron-agent-input-controls-regression-dr005 --build-local`
-- Isolation: unique Compose project, collision-safe ports, and project-scoped volumes; existing AutoByteus Docker nodes were not changed.
-- Build result: `Blocked — Local Fix`. `pnpm install` failed because `autobyteus-server-ts` declares `@autobyteus/team-stream-contracts@workspace:*` while `Dockerfile.monorepo` does not copy that workspace package into its builder.
-- Runtime result: container start and `/rest/health` were not reached; reserved Backend URL `http://127.0.0.1:52704` is not usable yet.
-- Required route: `/implementation_engineer` must correct Docker packaging/build-context completeness and return the updated state through the applicable review gates before delivery retries the build/start/health path.
+- Initial result: `DR-005 Blocked — Local Fix`; the builder omitted the server's declared `@autobyteus/team-stream-contracts` workspace dependency.
+- Resolution gates: `IR-002`; `CRR-003 Pass / 9.6`; `API-REV-002 Pass / 97.2%`; `CRR-004 Pass` with no findings.
+- Reviewed follow-up finalization: `Pass`; commit `c7dc4e73e350f9941106837e3d890273a0e0c176` (`fix(docker): package team stream contracts`) was pushed to `origin/codex/agent-team-universal-task-delegation`, and local/remote divergence is `0 0`.
+- Build/start result: `Pass`; image `autobyteus-server:latest` (`linux/arm64`) built from current source and container `electron-agent-input-controls-regression-dr005-autobyteus-server-1` is running with restart count `0` and policy `unless-stopped`.
+- **Nodes Backend URL:** `http://localhost:52704`
+- REST health: `Pass`; `GET http://localhost:52704/rest/health` returned HTTP `200` with `{"status":"ok","message":"Server is running"}`.
+- GraphQL health: `Pass`; `http://localhost:52704/graphql` returned health status `ok`.
+- noVNC URL: `http://localhost:52706`.
+- Isolation: `Pass`; all pre-existing containers retained identical IDs, all pre-existing volumes remained present, and only the project's one container and four named volumes were added.
+- Safety: port `29695`, the active Electron process, `~/.autobyteus`, production profile/data, and existing Docker nodes/volumes were not changed.
+- Manifest and lifecycle commands: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/evidence/local-docker-server/docker-node-manifest.txt`
 - Blocker report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/evidence/local-docker-server/docker-build-blocker.md`
 
 ## Integrated-State Refresh
@@ -72,7 +79,12 @@
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web/stores/__tests__/activeContextStore.spec.ts`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web/stores/__tests__/agentTeamRunStore.spec.ts`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web/components/agentInput/__tests__/ContextFilePathInputArea.spec.ts`
-- API/E2E durable test delta: none.
+- API/E2E round-1 durable test delta: none.
+- Docker packaging follow-up production paths:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/docker/Dockerfile.monorepo`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/docker/Dockerfile.remote-server`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/docker/Dockerfile.allinone`
+- Docker follow-up API/E2E-owned durable coverage: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/scripts/tests/test_docker_build_context_sources.py` (`DPK-001`).
 
 ## Validation
 
@@ -84,11 +96,15 @@
 - Packaged Electron was proportionately unnecessary for the API/E2E acceptance gate because the changed behavior is renderer/web-equivalent and no shell/preload/IPC/process code changed. The later user-requested local package build passed under `DR-004`.
 - Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/api-e2e-execution-coverage-report.md`
 - Delivery artifact/no-impact validation: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/docs-sync-validation.log`
+- Docker packaging source review: `CRR-003 Pass / 9.6`, no findings.
+- Docker API/E2E: `API-REV-002 Pass / 97.2%`; current-source primary image build/load, no-network runtime resolution, three Dockerfile checks, and cleanup/safety passed.
+- Docker durable test re-review: `CRR-004 Pass`, no findings.
+- Delivery runtime gate: current-source build/load, persistent isolated Compose start, database migrations, REST health, GraphQL health, stabilization recheck, and pre-existing resource preservation all passed.
 
 ## Documentation
 
 - Result: `No impact`
-- Rationale: this restores existing released behavior through an internal reactivity correction; no intended UI, API, persistence, transport, operation, or deployment contract changed.
+- Rationale: the original change restores released behavior, and the Docker follow-up only restores the declared workspace dependency to existing documented image paths. No public UI/API, persisted-data format, operator command, or deployment contract changed.
 - Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/docs-sync-report.md`
 
 ## Persisted Data And Safety
@@ -96,6 +112,7 @@
 - Persisted-data decision: `Not Affected`; values are in-memory frontend composer session state.
 - No migration, compatibility reader, schema change, production-profile mutation, or data cleanup exists.
 - No user Electron process, embedded port `29695`, `~/.autobyteus`, production profile, or production data was touched.
+- The new Docker node owns four isolated named volumes. Its fresh SQLite database applied the normal current migrations successfully; no existing volume or user data was migrated or mounted.
 
 ## Residual Risks / Boundaries
 
@@ -112,4 +129,4 @@
 - Release/publication/deployment: not requested and will not be inferred.
 - Follow-up local build: `Pass`; completed as unsigned/non-notarized local validation from the refreshed target worktree.
 - Finalization result: `Pass`; repository finalization, cleanup, local Electron build, and artifact integrity verification remain complete.
-- Docker follow-up: `Blocked — Local Fix`; no Docker Backend URL is being presented as usable until the packaging fix passes build, start, and health verification.
+- Docker follow-up: `Pass`; reviewed packaging fix finalized, node running, health verified, and Backend URL ready for Nodes testing at `http://localhost:52704`.

@@ -1,0 +1,10 @@
+DR-006 resource preservation check
+Pre-existing containers retained with same IDs: PASS
+Missing pre-existing containers: []
+Changed pre-existing container IDs: []
+New containers: ['electron-agent-input-controls-regression-dr005-autobyteus-server-1']
+Expected isolated container only: PASS
+Pre-existing volumes retained: PASS
+Missing pre-existing volumes: []
+New volumes: ['electron-agent-input-controls-regression-dr005_autobyteus-server-chromium-profile', 'electron-agent-input-controls-regression-dr005_autobyteus-server-data', 'electron-agent-input-controls-regression-dr005_autobyteus-server-root-home', 'electron-agent-input-controls-regression-dr005_autobyteus-server-workspace']
+Expected four isolated volumes only: PASS

@@ -2,15 +2,15 @@
 
 ## Release / Publication / Deployment Scope
 
-Initial delivery-stage latest-base refresh, explicit no-impact documentation assessment, integrated verification handoff, user acceptance, repository finalization, the completed post-finalization local Electron build, and the later requested isolated current-source Docker server build/start for `electron-agent-input-controls-regression`. Release/publication remains outside scope; the Docker runtime request is currently blocked before container creation.
+Initial delivery-stage latest-base refresh, explicit no-impact documentation assessment, integrated verification handoff, user acceptance, repository finalization, completed post-finalization local Electron build, reviewed Docker packaging repair, and the explicitly requested isolated current-source Docker server build/start/health handoff for `electron-agent-input-controls-regression`. Public release/publication remains outside scope.
 
 ## Handoff Summary
 
 - Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/delivery-revision-record.md`
-- Current delivery revision ID: `DR-005`
-- Notes: Repository finalization and local Electron build remain complete. The later Docker build/start request is blocked by a local Docker packaging omission and routed to implementation.
+- Current delivery revision ID: `DR-006`
+- Notes: Repository finalization and local Electron build remain complete; the reviewed Docker repair is finalized and the isolated Docker node is running and healthy for user testing.
 
 ## Initial Delivery Integration Refresh
 
@@ -80,9 +80,10 @@ Initial delivery-stage latest-base refresh, explicit no-impact documentation ass
 - Applicable: `No` in the currently authorized scope.
 - Method: `Other` — not selected.
 - Method reference / command: N/A
-- Release/publication/deployment result: `Not required` at DR-004.
-- Release notes handoff result: `Not required` at DR-004.
-- Blocker: None for the requested local build. Any later release/deployment requires separate explicit user direction.
+- Release/publication result: `Not required` at DR-006.
+- Release notes handoff result: `Not required` at DR-006.
+- Local Docker runtime result: `Pass`; explicitly authorized test node only.
+- Blocker: None for the requested local runtime. Any public release/deployment requires separate explicit user direction.
 
 ## Post-Finalization Cleanup
 
@@ -111,23 +112,26 @@ Initial delivery-stage latest-base refresh, explicit no-impact documentation ass
 ## Post-Finalization Local Docker Server
 
 - Applicable: `Yes`; explicitly requested for local node testing.
-- Pre-build refresh: `Pass`; local and remote target matched at `469b0b26b133ab4c5246a4e819ab90efa9b65ea1`, divergence `0 0`, clean worktree.
+- Initial pre-build refresh: `Pass`; local and remote target matched at `469b0b26b133ab4c5246a4e819ab90efa9b65ea1`, divergence `0 0`, clean worktree.
 - Documented method: `autobyteus-server-ts/docker/docker-start.sh` source-checkout developer helper.
 - Compose project: `electron-agent-input-controls-regression-dr005`.
 - Command: `./docker-start.sh up -p electron-agent-input-controls-regression-dr005 --build-local`.
-- Isolation result: `Pass`; unique ports and project-scoped storage selected without changing the seven existing AutoByteus Docker nodes.
-- Build result: `Failed` (exit `1`) at `RUN pnpm install --no-frozen-lockfile` because `@autobyteus/team-stream-contracts@workspace:*` is declared by the server but omitted from the Docker builder context.
-- Start/health result: `Not reached`; no container exists for the project, and reserved Backend URL `http://127.0.0.1:52704` is not usable.
-- Persisted state: only the ignored retry port file at `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/docker/.runtime/electron-agent-input-controls-regression-dr005.env`; no production profile or existing Docker volume was touched.
-- Blocker classification: `Local Fix` — Docker packaging/build-context dependency completeness.
-- Required recipient: `/implementation_engineer`.
-- Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/evidence/local-docker-server/docker-build-blocker.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/evidence/local-docker-server/build-and-start.log`.
+- Initial result: `DR-005 Blocked — Local Fix`; builder omitted `autobyteus-team-stream-contracts`.
+- Resolution: `IR-002`; `CRR-003 Pass / 9.6`; `API-REV-002 Pass / 97.2%`; `CRR-004 Pass`. Reviewed follow-up commit `c7dc4e73e350f9941106837e3d890273a0e0c176` was pushed and verified at remote divergence `0 0`.
+- Isolation result: `Pass`; all pre-existing containers retained identical IDs, every pre-existing volume remained present, and only the project's one container and four named volumes were added.
+- Build result: `Pass`; `autobyteus-server:latest`, image ID `sha256:6d8e9f250b9ce094142970e2e7a0c1b31ccb574990b3369a03fec28d429a4efa`, `linux/arm64`.
+- Runtime result: `Pass`; container `electron-agent-input-controls-regression-dr005-autobyteus-server-1` is running with restart count `0` and `unless-stopped` policy.
+- Nodes Backend URL: `http://localhost:52704`.
+- REST/GraphQL health: `Pass`; REST returned HTTP `200` / status `ok`, GraphQL returned health status `ok`, and stabilization checks passed through both `localhost` and `127.0.0.1`.
+- noVNC URL: `http://localhost:52706`.
+- Persisted state: four project-scoped named volumes plus the ignored saved port state; fresh isolated database migrations completed. No production profile/data or existing Docker volume was touched.
+- Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/evidence/local-docker-server/docker-node-manifest.txt`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/evidence/local-docker-server/health-check-dr006.log`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/evidence/local-docker-server/resource-preservation-dr006.log`.
 
 ## Escalation / Reroute
 
-- Classification: `Local Fix`
-- Recommended recipient: `/implementation_engineer`
-- Why the Docker runtime handoff could not complete: current `Dockerfile.monorepo` does not materialize the `autobyteus-team-stream-contracts` workspace dependency required by `autobyteus-server-ts`, so the image cannot be built and no truthful node URL can be handed off yet.
+- Classification: N/A — prior `Local Fix` resolved.
+- Recommended recipient: N/A.
+- Why the Docker runtime handoff could not complete: N/A; reviewed repair, build, start, health, and URL handoff passed under `DR-006`.
 
 ## Release Notes Summary
 
@@ -137,7 +141,7 @@ Initial delivery-stage latest-base refresh, explicit no-impact documentation ass
 
 ## Deployment Steps
 
-An isolated local Docker node was explicitly authorized, but the image build failed before container creation. No public release/publication, user Electron process, embedded port `29695`, production profile, or production data was touched.
+The explicitly authorized isolated local Docker node was built and started through the documented source helper. It remains running for user testing at `http://localhost:52704`. No public release/publication, user Electron process, embedded port `29695`, production profile, or production data was touched.
 
 Repository finalization and cleanup were followed by a clean refresh of the surviving `agent-team-universal-task-delegation` worktree and a passing unsigned/non-notarized local macOS Electron build. This remained local build validation, not release/publication/deployment.
 
@@ -163,7 +167,12 @@ Repository finalization and cleanup were followed by a clean refresh of the surv
 - Surviving-target refresh — Pass: local/remote target matched at `66f7755000763c6179e2e99dceb2955cf4822861` before build.
 - Local Electron build — Pass: exit `0`; app/DMG/ZIP/blockmaps created for macOS arm64 version `1.4.52`.
 - Artifact integrity — Pass: Mach-O arm64 executable, valid DMG checksum, ZIP data test clean, SHA-256 values recorded.
-- Current-source Docker image build — Blocked: `ERR_PNPM_WORKSPACE_PKG_NOT_FOUND` for `@autobyteus/team-stream-contracts`; no container or health URL exists yet.
+- Docker packaging follow-up gates — Pass: `CRR-003`, `API-REV-002`, and `CRR-004`, no unresolved findings.
+- Reviewed follow-up finalization — Pass: `c7dc4e73e350f9941106837e3d890273a0e0c176` pushed; local/remote divergence `0 0`.
+- Current-source Docker image build/load — Pass: linux/arm64 image `sha256:6d8e9f250b9ce094142970e2e7a0c1b31ccb574990b3369a03fec28d429a4efa`.
+- Persistent isolated Compose start — Pass: container running, restart count `0`, `unless-stopped`.
+- REST and GraphQL health — Pass: HTTP `200` / status `ok` and GraphQL health `ok`.
+- Existing Docker resource preservation — Pass: all prior container IDs and volumes retained; only the isolated project resources added.
 
 ## Rollback Criteria
 
@@ -171,4 +180,4 @@ Before finalization, reject or revise the local candidate if user verification s
 
 ## Final Status
 
-`DR-005 Blocked — repository finalization and local Electron build remain passed; the explicitly requested isolated Docker node cannot start until the local Docker packaging omission is fixed, reviewed, rebuilt, and health-verified.`
+`DR-006 Pass — reviewed Docker repair finalized; current-source linux/arm64 image built; isolated persistent Docker node running and REST/GraphQL healthy at http://localhost:52704; existing nodes/data preserved; no public release.`
