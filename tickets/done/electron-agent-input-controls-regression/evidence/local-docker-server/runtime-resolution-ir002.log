@@ -1,0 +1,5 @@
+Command: docker run --rm --network none --entrypoint node --workdir /app/autobyteus-server-ts autobyteus-server:electron-agent-input-controls-regression-ir002 --input-type=module -e <runtime import probe>
+Started: 2026-08-18T14:59:40+02:00
+team-stream-contracts runtime import: PASS
+Exit status: 0
+Finished: 2026-08-18T14:59:41+02:00

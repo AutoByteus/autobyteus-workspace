@@ -1,0 +1,35 @@
+# API-REV-002 cleanup and safety audit
+started_utc=2026-08-18T13:22:05Z
+
+## containers derived from API-owned image before removal
+(none)
+
+## remove API-owned image tag only
+Untagged: autobyteus-server:electron-agent-input-controls-regression-api-rev-002
+Deleted: sha256:73ee17c213a718d90560940de39755a453b9b8e198835557af2a5c7bbf72aadc
+API image absent after removal
+
+## reserved project containers after
+(none)
+## reserved project volumes after
+(none)
+
+## missing pre-existing container identities
+(none)
+## missing pre-existing volume names
+(none)
+## newly retained container identities
+(none)
+## newly retained volume names
+(none)
+
+## git diff check
+git_diff_check=PASS
+finished_utc=2026-08-18T13:22:06Z
+
+## final artifact/test validation
+timestamp_utc=2026-08-18T13:24:31Z
+git_diff_check_after_artifacts=PASS
+api_owned_image_present=no
+reserved_project_containers=0
+reserved_project_volumes=0

@@ -12,16 +12,19 @@ COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
 COPY autobyteus-ts/package.json autobyteus-ts/tsconfig.build.json autobyteus-ts/tsconfig.json ./autobyteus-ts/
 COPY autobyteus-application-sdk-contracts/package.json autobyteus-application-sdk-contracts/tsconfig.build.json autobyteus-application-sdk-contracts/tsconfig.json ./autobyteus-application-sdk-contracts/
 COPY autobyteus-application-backend-sdk/package.json autobyteus-application-backend-sdk/tsconfig.build.json autobyteus-application-backend-sdk/tsconfig.json ./autobyteus-application-backend-sdk/
+COPY autobyteus-team-stream-contracts/package.json autobyteus-team-stream-contracts/tsconfig.build.json autobyteus-team-stream-contracts/tsconfig.json ./autobyteus-team-stream-contracts/
 COPY autobyteus-server-ts/package.json autobyteus-server-ts/tsconfig.json ./autobyteus-server-ts/
 COPY autobyteus-web/package.json ./autobyteus-web/
 
 COPY autobyteus-ts ./autobyteus-ts
 COPY autobyteus-application-sdk-contracts ./autobyteus-application-sdk-contracts
 COPY autobyteus-application-backend-sdk ./autobyteus-application-backend-sdk
+COPY autobyteus-team-stream-contracts ./autobyteus-team-stream-contracts
 COPY autobyteus-server-ts ./autobyteus-server-ts
 COPY autobyteus-web ./autobyteus-web
 
 RUN pnpm install --no-frozen-lockfile
+RUN pnpm -C autobyteus-team-stream-contracts build
 RUN pnpm -C autobyteus-server-ts exec prisma generate --schema prisma/schema.prisma
 RUN pnpm -C autobyteus-server-ts build
 RUN pnpm -C autobyteus-web build:mobile-web
@@ -39,6 +42,7 @@ COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/autobyteus-ts ./autobyteus-ts
 COPY --from=builder /app/autobyteus-application-sdk-contracts ./autobyteus-application-sdk-contracts
 COPY --from=builder /app/autobyteus-application-backend-sdk ./autobyteus-application-backend-sdk
+COPY --from=builder /app/autobyteus-team-stream-contracts ./autobyteus-team-stream-contracts
 COPY --from=builder /app/autobyteus-server-ts ./autobyteus-server-ts
 COPY --from=builder /app/autobyteus-web/dist-mobile/public ./autobyteus-server-ts/mobile-web
 

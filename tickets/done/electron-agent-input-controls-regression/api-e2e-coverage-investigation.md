@@ -2,125 +2,124 @@
 
 ## Investigation Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-agent-input-controls-regression/tickets/in-progress/electron-agent-input-controls-regression/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-agent-input-controls-regression/tickets/in-progress/electron-agent-input-controls-regression/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-agent-input-controls-regression/tickets/in-progress/electron-agent-input-controls-regression/design-spec.md`
-- Supplemental Task Artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-agent-input-controls-regression/tickets/in-progress/electron-agent-input-controls-regression/ui-ux-spec.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-agent-input-controls-regression/tickets/in-progress/electron-agent-input-controls-regression/design-use-case-validation.md`
-- Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-agent-input-controls-regression/tickets/in-progress/electron-agent-input-controls-regression/solution-revision-record.md` (`SR-001`)
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-agent-input-controls-regression/tickets/in-progress/electron-agent-input-controls-regression/design-review-report.md`
-- Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-agent-input-controls-regression/tickets/in-progress/electron-agent-input-controls-regression/architecture-review-revision-record.md` (`ARCH-REV-001`)
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-agent-input-controls-regression/tickets/in-progress/electron-agent-input-controls-regression/implementation-handoff.md`
-- Implementation Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-agent-input-controls-regression/tickets/in-progress/electron-agent-input-controls-regression/implementation-revision-record.md` (`IR-001`)
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-agent-input-controls-regression/tickets/in-progress/electron-agent-input-controls-regression/code-review-report.md`
-- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-agent-input-controls-regression/tickets/in-progress/electron-agent-input-controls-regression/code-review-revision-record.md` (`CRR-001`)
-- Delivery Revision Record (delivery re-entry only): `N/A`
-- Relevant Delivery Revision IDs: `N/A`
-- API/E2E Revision Record (created after the first completed result): `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-agent-input-controls-regression/tickets/in-progress/electron-agent-input-controls-regression/api-e2e-revision-record.md` (to be created after the completed result)
-- Current API/E2E Revision ID: `N/A`
-- Current Investigation Round: `1`
-- Trigger: `CRR-001 Pass / 97%, no source findings; mandatory downstream coverage investigation and execution`
-- Prior Investigation Reviewed: `N/A — first API/E2E round`
-- Latest Authoritative Investigation: `This file`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/design-spec.md`
+- Supplemental Task Artifacts: `ui-ux-spec.md`; `design-use-case-validation.md`; delivery `DR-005`; `docker-build-blocker.md`; `release-deployment-report.md`
+- Solution Revision Record: `solution-revision-record.md` (`SR-001`)
+- Design Review Report: `design-review-report.md`
+- Architecture Review Revision Record: `architecture-review-revision-record.md` (`ARCH-REV-001`)
+- Implementation Handoff: `implementation-handoff.md`
+- Implementation Revision Record: `implementation-revision-record.md` (`IR-002`, preserving `IR-001`)
+- Code Review Report: `code-review-report.md`
+- Code Review Revision Record: `code-review-revision-record.md` (`CRR-003`, preserving `CRR-001/002`)
+- Delivery Revision Record: `delivery-revision-record.md`
+- Relevant Delivery Revision IDs: `DR-005`
+- API/E2E Revision Record: `api-e2e-revision-record.md`
+- Current API/E2E Revision ID: `API-REV-001` (prior completed product round; `API-REV-002` will record this packaging round)
+- Current Investigation Round: `2`
+- Trigger: `IR-002 / CRR-003 Pass after DR-005 Docker packaging Local Fix`
+- Prior Investigation Reviewed: `Yes — API-REV-001 product/browser investigation and Pass / 97.4% result`
+- Latest Authoritative Investigation: `This file — supersedes round 1 as the current coverage plan while API-REV-001 preserves its history`
+
+All relative artifact names above resolve under `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/`.
 
 ## Current Requirement And Design Basis
 
-The approved change restores one canonical reactive `AgentContext` for every AgentTeam member associated by `TeamExecutionViewState`. The visible Team composer must observe the same member-owned `requirement`, `contextFilePaths`, and `submissionPending` values used by local admission, voice-result application, and attachment submission. Initial and dynamically discovered members must share the invariant; focus changes must not leak state between members; retained attachments must reach the existing request/event path while removed attachments do not; deletion failure must retain the affected draft item; and standalone Agent behavior must remain unchanged. The implementation is intentionally a local Vue-observation correction: no API, backend, protocol, Electron shell, persisted-data, or migration behavior changes.
+The original composer implementation and `AC-001`–`AC-007` are unchanged and remain passed under `API-REV-001`; that browser evidence is historical product proof only and is not evidence for `IR-002`. The new reachable operational contract is `CODE-PREM-001` / `DR-005`: a supported current-source server Docker build must install, build, and materialize every server workspace dependency so the final image can resolve the existing pnpm link and import the package at runtime.
 
-The critical acceptance criteria are `AC-001` through `AC-007`. Validation must not rely only on component mocks that pre-reactivize contexts or on the existing workflow test that stubs `sendMessageToFocusedMember`. Direct evidence must include the actual `TeamExecutionViewState` association boundary and the real Team local-submission action. Successful voice transcription may be injected at the deterministic result boundary; an actual microphone is not required.
+`autobyteus-server-ts/package.json` declares `@autobyteus/team-stream-contracts@workspace:*`. All three active current-source server Dockerfiles must admit the package manifest during install, copy its source, build it because root Docker context excludes source-tree `dist`, and materialize it in the runtime stage. The primary optimized image must preserve the exact server link `node_modules/@autobyteus/team-stream-contracts -> ../../../autobyteus-team-stream-contracts`, load the package export, parse a representative current Team message, and resolve transitive `zod` without network. Delivery retains ownership of the reserved persistent Compose start, `/rest/health`, and final Nodes URL handoff.
 
 ## Changed Behavior Summary
 
 | Behavior ID / Boundary | Change Type | Upstream Evidence | Coverage Consequence |
 | --- | --- | --- | --- |
-| `BEH-001` / Team text-clear and pending observation | Changed | Requirements `REQ-001`; design `DS-001`/`DS-002`; `IR-001` | Exercise a real associated member through real local admission, then observe one local user event, empty draft, and pending state. |
-| `BEH-002` / captured Team voice target | Changed | `REQ-002`; approved transcript-boundary injection | Apply an actual voice-store success result to member A after focus changes to B; prove A-only mutation and no send. |
-| `BEH-003` / Team attachment tray | Changed | `REQ-003`; UI/UX spec | Exercise real associated member state plus the attachment component for remove, Clear all, and deletion failure retention. |
-| `BEH-004` / retained versus removed attachment submission | Preserved and directly re-proven | `REQ-004`; implementation handoff | Execute actual Team send-owner logic with isolated finalization/transport fakes; assert outbound request and local event. |
-| `BEH-005` / standalone Agent composer | Preserved | `REQ-005`/`REQ-006`; implementation changes no standalone owner | Re-run standalone component/store and transcript coverage; browser probe observes standalone draft/transcript/clear. |
-| Initial, snapshot, and task-discovered association | Changed | `REQ-005`; `AC-005`; `TeamExecutionViewState.associate()` | Execute real initial and dynamically associated contexts and assert proxy identity/reactivity for top-level and nested fields. |
+| Original `BEH-001`–`BEH-005` composer behavior | Preserved | `IR-002`, `CRR-003` | Do not repeat prior browser/composer suite; no frontend/application path changed. |
+| `DR-005` / `CODE-PREM-001` primary image build | Changed | Delivery blocker, `IR-002`, `CRR-003` | Independently build and load a uniquely tagged native current-source primary image. |
+| Primary runtime workspace link/package export | Changed | Server manifest and `Dockerfile.monorepo` | Run a short-lived `--rm --network none` container from the API-owned image and record link target, export resolution, parse result, and transitive `zod`. |
+| Related remote-server/all-in-one inventories | Changed | `IR-002` three-Dockerfile diff | Add a cheap durable structural guard across all three and rerun BuildKit checks; full related runtime images are unnecessary after accepted builder evidence. |
+| Reserved persistent server lifecycle and Nodes URL | Deferred to delivery | Reviewer handoff and `DR-005` ownership | Do not start or mutate the reserved project; record zero-container/zero-volume baseline and leave health/URL to delivery. |
 
 ## Changed Surface And Boundary Classification
 
 | Surface / Boundary | Affected? | Actual Changed Boundary | Repository Evidence Available | Material Risk Not Exercised By That Evidence | Candidate Broader Validation Mode |
 | --- | --- | --- | --- | --- | --- |
-| Domain / backend logic | No | None | Existing attachment planner/local submission tests | None created by this patch | None |
-| API / transport / contract | No, preserved path re-proven | Existing Team send request and event path | `agentTeamRunStore.spec.ts`, attachment planner, `UserMessage.spec.ts` | Store tests fake finalization and WebSocket transport | Isolated browser uses real send action with only external finalizer/transport faked; no live API needed |
-| Frontend component / state | Yes | Raw top-level Team `AgentContext` registry value becomes one Vue proxy | Real view, active facade, send-store, textarea, attachment suites | happy-dom alone does not prove browser DOM invalidation | Browser |
-| Browser integration / user journey | Yes | Computed/watch/template consumers must see proxy mutations | Component and Pinia integration suites | Browser scheduler/DOM surface not yet executed | Browser |
-| Authentication / session / permissions | No | None | N/A | N/A | None |
-| Desktop renderer / web-equivalent UI | Yes | Same Nuxt/Vue composer rendered by Electron | Nuxt build and Nuxt tests | Browser-visible Team journey remains unexecuted | Browser, using owned Nuxt server/profile |
-| Desktop shell / Electron-specific integration | No | No preload, IPC, window, native media, or packaging code changed | Source delta and Electron separation documented | None material to this change | None; packaged Electron not required |
-| Process / lifecycle | No | None | N/A | N/A | None |
-| Persisted-data transition | No | In-memory per-run composer only | Requirements and handoff say `Not Affected` | None | None |
-| Worker / queue / distributed coordination | No | None | N/A | N/A | None |
-| External integration | No | Voice service/transport unchanged; result boundary only | Voice store deterministic tests | Actual microphone/transcription service variability is outside defect | Deterministic browser result injection only |
+| Domain / backend logic | No | None | Prior server/product suites | None from IR-002 | None |
+| API / transport / contract | No semantic change | Package import is required by existing Team-stream server modules | Contracts package tests and prior product evidence | Image resolution, not protocol semantics | No-network runtime import/parse |
+| Frontend/browser/desktop renderer | No | None | `API-REV-001` | None | Do not rerun |
+| Authentication/session/permissions | No | None | N/A | N/A | None |
+| Docker build / workspace install | Yes | Three Dockerfile inventories | Implementation/reviewer builds and lightweight source tests | Independent current-worktree build not yet executed by API/E2E | Native primary image build/load |
+| Docker runtime filesystem/module resolution | Yes | Primary optimized runtime package pieces and pnpm links | Prior implementation/reviewer probes | API-owned image/runtime sample absent | `docker run --rm --network none` |
+| Process / lifecycle / health | Indirectly | Server process must eventually start from image | Delivery owns reserved start/health | `/rest/health` remains unproven after fix | Related-runtime sample now; persistent health later by delivery |
+| Persisted-data transition | No | No volume/schema/profile change | `IR-002`, `CRR-003` | None | None |
+| Worker/queue/distributed coordination | No | None | N/A | N/A | None |
+| External integration | No | Base images/npm only during build | BuildKit/cache | Multi-arch publication not requested | Native arm64 only |
 
 ## Project Execution Discovery
 
-- Assigned task worktree / workspace: `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-agent-input-controls-regression`
-- Project type and runtime stack: Nuxt 3 / Vue 3 / Pinia frontend wrapped by Electron; Vitest with Nuxt test utilities and happy-dom; Playwright Core browser probes.
-- Conflicting, missing, or unclear project instructions: the assigned worktree intentionally has no installed `autobyteus-web/node_modules`. The exact reviewed base worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web/node_modules` is available. A temporary symlink may be used only for execution and must be removed afterward; lockfiles and manifests will not be changed.
-- Required environment variables or secrets available: `N/A`; no backend, account, secret, microphone, production profile, or production data is required.
+- Assigned worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation`
+- Stack: pnpm monorepo, TypeScript server/contracts, Docker Buildx, native Linux/arm64 Docker Desktop runtime.
+- Conflicts or missing instructions: none. Docker Desktop is available. Many unrelated/user-owned Docker nodes and volumes are active and must not be changed.
+- Required environment variables/secrets: none; no registry push, account, API key, or production data is needed.
 
 | Instruction / Configuration Path | Authority / Purpose | Commands, Setup, Or Constraints Learned |
 | --- | --- | --- |
-| `autobyteus-web/AGENTS.md` | Closest project instructions | Colocated tests; use `pnpm test:nuxt ... --run`; never leave Vitest in watch mode. |
-| `autobyteus-web/README.md` | Development/testing authority | Browser development uses `pnpm dev`; focused Nuxt tests use `pnpm test:nuxt <paths> --run`; browser probes use Playwright Core and owned temporary routes/processes. |
-| `autobyteus-web/ARCHITECTURE.md` | Testing architecture | Vitest/Nuxt component tests are primary; Electron-specific tests are separate. |
-| `autobyteus-web/package.json` | Executable scripts | `test:nuxt`, `test:electron`, `build`, and browser-probe scripts are authoritative. |
-| `autobyteus-web/vitest.config.mts` | Nuxt test configuration | Nuxt environment with happy-dom and repository aliases/setup. |
-| `autobyteus-web/tests/e2e/team-activity-presentation-probe.mjs` | Existing browser-probe convention | Install an owned temporary Nuxt page, select a free loopback port, launch headless Chrome, capture JSON/screenshots/logs, stop only owned process, remove the page. |
+| `autobyteus-server-ts/AGENTS.md` | Server tests | Use one-shot Vitest; not material for Docker-only source. |
+| `autobyteus-server-ts/docker/README.md` | Docker build/runtime authority | `./build.sh` builds without starting; source helper owns persistent Compose lifecycle. |
+| `autobyteus-server-ts/docker/build.sh` | Primary image builder | `--variant latest --tag <unique>` loads native server architecture and avoids retagging `autobyteus-server:latest`. |
+| `autobyteus-server-ts/docker/Dockerfile.monorepo` | Primary optimized build/runtime | Runtime is rooted at `/app`; server workdir is `/app/autobyteus-server-ts`. |
+| `docker/Dockerfile.remote-server`; `docker/Dockerfile.allinone` | Related active image definitions | Full package runtime copy shapes; all-in-one uses filtered install. |
+| `scripts/tests/test_docker_build_context_sources.py` | Existing durable Docker inventory test | Direct COPY sources exist, but the test does not assert the missing package is admitted/built/materialized. |
+| `scripts/tests/test_server_docker_cli_latest_defaults.py` | Existing durable CLI packaging test | Still valid but unrelated to the workspace omission. |
 
 | Component / Dependency | Working Directory | Start / Setup Command | Runtime / Resource Notes | Readiness Check | Stop / Cleanup Method |
 | --- | --- | --- | --- | --- | --- |
-| Dependency tree | `autobyteus-web` | Temporary symlink to exact base-worktree `node_modules` | No install or lockfile mutation | `pnpm exec vitest --version` | Remove only created symlink |
-| Repository tests | `autobyteus-web` | `pnpm test:nuxt <paths> --run` | Synthetic fixtures only | Exit code 0 and scenario counts | No persistent process |
-| Browser-equivalent probe | `autobyteus-web` | Owned probe starts `pnpm exec nuxi dev --host 127.0.0.1 --port <free>` | Backend endpoints forced to unused loopback; fake transport/finalization only; no user profile | HTTP 200 for temporary route | Probe closes browser, terminates its process group, removes temporary page |
-| Packaged Electron | N/A | Not planned | Shell behavior is unchanged and user has a live Electron process | N/A | N/A |
+| Lightweight durable tests | repository root | `python3 -m unittest ...` | No services/data | Exit 0 | None |
+| Three Dockerfile checks | repository root | `docker buildx build --check -f <Dockerfile> .` | Read-only validation/cache use | Exit 0, no warnings | None |
+| Primary image | `autobyteus-server-ts/docker` | `CLI_INSTALL_CACHE_BUSTER=api-rev-002 ./build.sh --variant latest --tag electron-agent-input-controls-regression-api-rev-002` | Unique API-owned tag; no container/volume/port | Image inspect, native linux/arm64 | Remove only unique API tag after evidence |
+| Runtime sample | repository root | `docker run --rm --network none --entrypoint node --workdir /app/autobyteus-server-ts <unique-tag> ...` | No mount, port, volume, or network | Structured JSON assertions; exit 0 | `--rm` |
 
 | Data / Fixture / Identity Need | Existing Project Mechanism Or Creation Method | Environment / Data-Safety Notes | Cleanup / Retention |
 | --- | --- | --- | --- |
-| Two exact Team members A/B | `buildTestTeamContext` and `testAgentNode` | Synthetic in-memory run/member IDs only | Browser context/process discarded |
-| Initial and task-discovered member | Existing view-state fixtures and task event builder | Synthetic in-memory tree | Test teardown |
-| Retained/removed image and file | `ContextAttachment` / uploaded draft fixture constructors | Synthetic locators; no filesystem or server file touched | Test teardown |
-| Voice success | Actual voice-store stop/result logic with an injected `window.electronAPI.transcribeVoiceInput` response | No microphone or service call | Browser context discarded |
-| Standalone Agent | `testAgentContext` stored in isolated Pinia | Synthetic in-memory run | Browser context discarded |
+| Representative Team message | Inline current client schema payload | No server/database/profile | Container exits/removes |
+| Existing Docker resource baseline | Read-only `docker ps/volume ls` label queries | Reserved project must remain 0 containers/volumes; all unrelated resources untouched | Compare after run |
+| Image identity | Unique tag plus inspected image ID/digests | Never overwrite `latest` or implementation tag | Remove unique tag only |
 
-## Persisted Data Transition Coverage Basis (When Applicable)
+## Persisted Data Transition Coverage Basis
 
 - Approved decision: `Not Affected`
-- Design-spec and implementation-handoff references: persisted-data sections in both artifacts identify only live in-memory Vue observation.
-- Representative existing-data setup and required behavior: `N/A`; no stored schema or reader changes.
-- Evidence planned for the approved direct-use, discard/rebuild, or migration outcome: source/diff audit plus execution using only new isolated in-memory fixtures proves no persisted store is involved.
-- Migration-specific completion/recovery scenarios, only when `Migration Required`: `N/A`
-- Upstream ambiguity or reroute required: `No`
+- References: `IR-002` and `CRR-003` persisted-data/legacy verdicts.
+- Representative existing-data setup: none.
+- Evidence planned: no volume/mount/data-dir is created; reserved/user resource identities/counts are unchanged.
+- Migration scenarios: `N/A`
+- Reroute required: `No`
 
 ## Existing Durable Coverage Inventory
 
-| Path / Scenario | Current Assertion Or Intent | Related Requirement / Acceptance Criteria / Design | Validity Decision | Evidence | Action |
+| Path / Scenario | Current Assertion Or Intent | Related Boundary | Validity Decision | Evidence | Action |
 | --- | --- | --- | --- | --- | --- |
-| `services/teamExecution/__tests__/teamExecutionViewState.spec.ts` — canonical initial/dynamic proxy | Real view stores one proxy; primed computeds observe text, attachments, pending, nested status; exact identity shared by getters | `REQ-005`, `REQ-006`; `AC-005`, `AC-007` | Still Valid | Directly crosses the changed `associate()` boundary | Re-run narrowly and in broader set |
-| `stores/__tests__/activeContextStore.spec.ts` — exact Team members and standalone | Real associated A/B contexts expose isolated draft/attachment/pending; captured target changes A after focus B; standalone draft/transcript/clear | `REQ-002`, `REQ-003`, `REQ-005`, `REQ-006`; `AC-002`, `AC-003`, `AC-006`, `AC-007` | Still Valid | Uses real Team view rather than pre-reactive test doubles | Re-run |
-| `stores/__tests__/agentTeamRunStore.spec.ts` — current rooted send and pre-admission failure | Actual Team send action creates one local event, clears draft/attachments, sets pending, includes retained image, omits removed file, preserves other member; pre-admission failure retains draft | `REQ-001`, `REQ-004`–`REQ-006`; `AC-001`, `AC-004`, `AC-007` | Still Valid | Direct local admission/finalization/transport-planning path; only external boundaries mocked | Re-run |
-| `components/agentInput/__tests__/ContextFilePathInputArea.spec.ts` — remove/Clear all/delete failure | Actual component updates real member-owned array; failed deletion remains; independent deletion succeeds | `REQ-003`; `AC-003` | Still Valid | Direct component/composable deletion behavior | Re-run |
-| `components/agentInput/__tests__/AgentUserInputTextArea.spec.ts` | Enter policy, visible clear on local acknowledgement, pending policy, per-member draft switching | `REQ-001`, `REQ-005`; `AC-001`, `AC-006` | Still Valid | Strong shared-component behavior, but reactive mocks bypass the changed association | Re-run as complementary evidence only |
-| `stores/__tests__/voiceInputStore.spec.ts` | Success/no-speech/empty/error and captured recording target; no auto-submit | `REQ-002`, `REQ-005`; `AC-002`, `AC-006` | Still Valid | Direct voice-result owner; active-context facade is mocked | Re-run; combine with real-associated-context browser result injection |
-| `components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts` | Real UI focus remains exact while Team send is invoked | `REQ-005`; `AC-007` | Still Valid | Valuable focus/UI evidence but explicitly stubs Team send | Re-run as complementary, never sole send proof |
-| `components/conversation/__tests__/UserMessage.spec.ts` | Retained uploaded image renders and viewer fallback works | `REQ-004`; `AC-004` | Still Valid | Direct event renderer coverage | Re-run with send-path suite |
-| `utils/contextFiles` and local-submission tests selected by name | Attachment planning/finalization and local event semantics | `REQ-001`, `REQ-004` | Still Valid | Preserved lower-boundary contract | Discover exact paths and include in broader affected run |
-| Existing unrelated browser/Electron probes | Unrelated presentation, VNC, workspace responsiveness, or shell features | None | Out Of Scope | Do not exercise Team composer association | Do not run |
+| `scripts/tests/test_docker_build_context_sources.py` direct COPY source check | Every directly copied context source exists | All three Dockerfiles | Still Valid but insufficient | It passed before DR-005 because it cannot detect omitted dependencies | Update with one focused package inventory regression scenario. |
+| `scripts/tests/test_server_docker_cli_latest_defaults.py` | Current CLI default/override/cache-buster contract | Primary Dockerfile/build scripts | Still Valid | Unchanged CLI lines | Rerun with inventory suite. |
+| `autobyteus-team-stream-contracts/tests/*.test.mjs` | Package build and schema parse/serialize behavior | Package export | Still Valid | Package unchanged | Do not rerun separately; independent image build and runtime parse exercise the material packaged copy. |
+| `API-REV-001` 11 files / 76 tests and browser scenarios | Composer product behavior | Unchanged frontend/product boundary | Out Of Scope for round 2 | `IR-002` changes only Dockerfiles | Preserve historical Pass; do not repeat. |
+| Implementation/reviewer full primary build and runtime probes | Current Dockerfile can build/resolve | Same changed boundary | Still Valid upstream evidence, not independent API proof | `IR-002`/`CRR-003` logs | Run an API-owned unique image and probe. |
+| Remote/all-in-one complete builder evidence | Related builders compile | Related Dockerfiles | Still Valid | Accepted by `CRR-003` | Structural guard plus BuildKit checks only; do not duplicate expensive builder runs. |
 
 ## Stale Or Obsolete Coverage Decisions
 
-None. No relevant existing assertion protects the stale raw-context behavior.
+None.
 
 ## Durable Coverage To Add
 
-None. `IR-001` already added requirement-linked durable coverage at the changed view, active-facade, real Team send, and attachment-component boundaries. A second durable browser harness would duplicate extensive synthetic orchestration for a two-line Vue observation fix; the established repository browser probes are feature-specific and no Team composer browser framework exists.
+| Scenario ID | Behavior / Boundary | Requirement / Evidence | Planned Artifact / Path | Why Durable Coverage Is Needed |
+| --- | --- | --- | --- | --- |
+| `DPK-001` | All three active server Dockerfiles admit, copy, build, and runtime-materialize `autobyteus-team-stream-contracts`; all-in-one filter admits it | `DR-005`, `IR-002`, `CODE-PREM-001` | Update `scripts/tests/test_docker_build_context_sources.py` | The existing direct-source check passed before DR-005. This cheap deterministic guard catches the exact inventory regression early but does not replace full image/runtime execution. |
 
 ## Durable Coverage To Update
 
-None planned by API/E2E. The implementation-owned durable changes are coherent and will be executed as reviewed.
+| Scenario ID | Existing Path / Scenario | Required Update | Evidence | Notes |
+| --- | --- | --- | --- | --- |
+| `DPK-001` | `scripts/tests/test_docker_build_context_sources.py` | Add one table-driven assertion for manifest admission, source copy, build command, runtime copy shape, and all-in-one filter | `IR-002` / three Dockerfile diff | No production source change. |
 
 ## Durable Coverage To Remove
 
@@ -130,121 +129,93 @@ None.
 
 | Order | Command | Working Directory / Configuration | Boundary Or Scenario Proven | Result | Evidence / Output Path |
 | --- | --- | --- | --- | --- | --- |
-| 1 | `pnpm test:nuxt services/teamExecution/__tests__/teamExecutionViewState.spec.ts stores/__tests__/activeContextStore.spec.ts stores/__tests__/agentTeamRunStore.spec.ts components/agentInput/__tests__/ContextFilePathInputArea.spec.ts --run --reporter=verbose` | `autobyteus-web`; temporary exact-base dependency symlink | Changed view proxy, A/B facade, real Team admission/request/event, attachment failure | Pass — 4 files / 32 tests | `evidence/api-e2e-round-1/narrow-changed-suites.log` |
-| 2 | `pnpm test:nuxt components/agentInput/__tests__/AgentUserInputTextArea.spec.ts stores/__tests__/voiceInputStore.spec.ts components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts components/conversation/__tests__/UserMessage.spec.ts --run --reporter=verbose` | Same | Shared textarea, voice result, UI focus, event rendering, standalone-preserved behaviors | Pass — 4 files / 35 tests | `evidence/api-e2e-round-1/complementary-ui-voice-event-suites.log` |
-| 3 | `pnpm test:nuxt services/runSubmission/__tests__/localUserSubmission.spec.ts utils/contextFiles/__tests__/contextAttachmentSend.spec.ts stores/__tests__/contextFileUploadStore.spec.ts --run --reporter=verbose` | Same | Preserved finalization, planner, local event, failure behavior | Pass — 3 files / 9 tests | `evidence/api-e2e-round-1/preserved-submission-attachment-contracts.log` |
-| 4 | `pnpm build` | Same; normal Nuxt production build | Production renderer compilation with changed source | Pass — production client/server/static build completed | `evidence/api-e2e-round-1/nuxt-production-build.log` |
-| 5 | `git diff --check` plus worktree cleanup audit | `autobyteus-web` | Patch hygiene and absence of retained temporary execution files | Pass | `evidence/api-e2e-round-1/cleanup-and-diff-check.log` |
-| 6 | `node .../evidence/api-e2e-round-1/team-composer-browser-probe.mjs` | Owned Nuxt dev server on free loopback port plus isolated headless Chrome context | Actual browser DOM over real Team view/Pinia/shared components/Team send/voice-result owners with external boundaries faked | Pass — `BR-001` through `BR-005` (five recorded scenarios, with attachment success/failure split into `BR-003A/B`) | `evidence/api-e2e-round-1/browser/evidence.json`; screenshot and Nuxt log alongside it |
+| 1 | `python3 -m unittest scripts.tests.test_docker_build_context_sources scripts.tests.test_server_docker_cli_latest_defaults -v` | repository root | `DPK-001` and preserved Docker source tests | Pass — 5/5 | `evidence/api-e2e-round-2/lightweight-docker-tests.log` |
+| 2 | Three `docker buildx build --check -f <Dockerfile> .` commands | repository root | Dockerfile validity and warning-free inventory | Pass — all three, no warnings | `evidence/api-e2e-round-2/dockerfile-checks.log` |
+| 3 | `CLI_INSTALL_CACHE_BUSTER=api-rev-002 ./build.sh --variant latest --tag electron-agent-input-controls-regression-api-rev-002` | `autobyteus-server-ts/docker` | Independent current-source primary build/load | Pass — linux/arm64 image loaded | `evidence/api-e2e-round-2/primary-image-build.log`; `primary-image-inspect.log` |
+| 4 | `docker run --rm --network none ...` structured package/link/parse/`zod` probe | repository root | Final runtime workspace resolution | Pass — exact link/export/message parse/`zod` | `evidence/api-e2e-round-2/primary-runtime-resolution.log` |
+| 5 | Resource baseline/final comparison, unique image removal, `git diff --check` | repository root | Safety and cleanup | Pass — no retained/missing resources; image removed | `evidence/api-e2e-round-2/resource-baseline.txt`; `cleanup-and-safety.log` |
 
-## Post-Repository Confidence Scorecard (Mandatory)
+## Post-Repository Confidence Scorecard
 
-| Confidence Category | Score | What Supports The Score | Remaining Uncertainty | Additional Validation That Could Improve It |
-| --- | --- | --- | --- | --- |
-| Requirement and acceptance-criteria proof | 96% | All `AC-001`–`AC-007` have passing directly mapped repository scenarios; 76 assertions/tests passed across 11 focused files. | Browser-visible combination has not yet run. | Execute `BR-001`–`BR-005`. |
-| Changed-boundary execution directness | 98% | The real `associate()` path and primed Vue computeds passed for initial/dynamic contexts; actual Team send-owner local admission passed. | Browser DOM scheduler remains. | Browser probe. |
-| Cross-boundary integration realism and mock gap | 91% | Real view, Pinia facade, send action, local submission, planner, textarea, tray, voice store, and renderer each pass. | External finalizer/stream are mocked and the combined workflow is split across suites. | Combine actual owners in isolated browser; keep only external boundaries fake. |
-| Environment, configuration, identity, and fixture fidelity | 95% | Exact A/B AgentRun identities and actual test fixture builders run in the assigned worktree with the reviewed base dependency tree; production build passes. | Synthetic rather than live Team/back end. | Browser with exact synthetic identities. |
-| Failure, edge-case, lifecycle, and recovery evidence | 96% | Pre-admission failure, deletion failure, partial Clear all, voice error/no-speech/empty, pending/duplicate-send controls, and local post-admission error behavior pass. | No material missing failure mode for the local proxy change. | Browser deletion-failure observation adds surface confidence. |
-| User-surface, browser, and desktop-shell confidence | 88% | happy-dom component tests prove shared UI logic and production Nuxt build compiles. | No actual browser DOM invalidation/combined Team journey yet; Electron shell is unchanged. | Required browser-equivalent probe. |
-| Durable regression coverage quality and relevance | 97% | The implementation-owned additions target the actual view/facade/send/component boundaries and preserve existing shared coverage without stale tests. | Browser scenario is temporary rather than durable, by proportionate decision. | None if browser evidence agrees. |
+The five lightweight Docker tests and all three warning-free BuildKit checks passed. This closes the durable inventory gap but remains source/static evidence; it cannot prove that the final primary image contains a loadable package and transitive runtime dependencies.
 
-- Overall post-repository confidence: `94.4%`
-- Calculation method: simple average of seven applicable categories after execution
-- Every critical acceptance criterion directly proven: `Yes at repository boundary; browser confirmation pending for the user-visible combined path`
-- Any applicable category below `90%`: `Yes — user-surface/browser/desktop-shell confidence is 88%`
-- Default clean-confidence target of `95%` met: `No`
-- Material residual risks: browser DOM invalidation and combined real-view/shared-consumer behavior remain to be executed; these are exactly the selected broader-validation target.
+| Confidence Category | Score | Support | Remaining Uncertainty | Improvement |
+| --- | ---: | --- | --- | --- |
+| Requirement/operational-contract proof | 91% | `DPK-001` directly asserts manifest admission, source copy, package build, final-stage materialization, and all-in-one filtered install | Assertions do not create a runnable filesystem | Build the primary image and execute its package |
+| Changed-boundary execution directness | 84% | Checks read all three actual Dockerfiles | No API-owned final image execution yet | Native primary build and no-network runtime probe |
+| Cross-boundary integration realism/mock gap | 84% | BuildKit parses/resolves every active Dockerfile and no test mock substitutes source text | Install/build/runtime copying has not executed in this round | Full Buildx build/load and real Node module loader |
+| Environment/configuration/identity/fixture fidelity | 90% | Docker Engine is native linux/arm64; unique tag and resource baseline are established | Target image does not exist yet | Inspect the independently built image |
+| Failure/edge/lifecycle/recovery evidence | 90% | Upstream DR-005 expected-red proves the prior omission; warning checks pass | API cleanup comparison and runtime exit are pending; persistent health remains delivery-owned | Execute `--rm --network none`, cleanup, and final resource audit |
+| User surface/browser/desktop confidence | N/A | No UI/desktop surface changed in IR-002 | N/A | None |
+| Durable regression coverage quality/relevance | 95% | Focused table-driven `DPK-001` passed with the three existing Docker CLI guards | Proportional test-code review remains after API completion | Return updated test to code reviewer |
 
-## Broader Validation Decision (Mandatory)
+- Overall post-repository confidence: `89.0%` (`(91 + 84 + 84 + 90 + 90 + 95) / 6`); UI is genuinely inapplicable to IR-002.
+- Every critical contract directly proven: `No — the final runtime filesystem/module loader remains unexecuted by API/E2E.`
+- Any category below 90%: `Yes — directness and integration realism are 84%.`
+- Clean target met: `No.`
+- Material residual risk: an inventory-correct Dockerfile could still produce an incomplete or unloadable final image; delivery-owned persistent startup and `/rest/health` also remain intentionally outside this round.
 
-- Decision: `Required`
-- Selected execution mode: `Browser`
-- Specific confidence gap or residual risk addressed: the defect was user-visible stale Nuxt/Vue composer state, while several existing component tests use reactive test doubles and one workflow suite stubs the Team send action.
-- Why the selected mode can materially improve confidence: an owned browser can exercise actual Vue dependency tracking, Pinia selection, the real associated Team contexts, actual shared composer/attachment components, actual Team local-submission action, and actual voice result processing without involving the Electron shell or production data.
-- Expected confidence after the selected validation: at least `95%` overall with no category below `90%`, assuming all repository and browser scenarios pass.
-- Browser-specific decision and rationale: required because the changed boundary is web-equivalent renderer reactivity and the observed failure was visible stale UI; Chrome/Nuxt is more direct and safer than packaged Electron.
-- If `Not Required`, evidence proving the real changed boundary without broader execution: `N/A`
-- If `Blocked`, exact dependency or access that remains unavailable after safe setup/emulation attempts: `N/A`
+## Broader Validation Decision
 
-### Broader Validation Result
+- Decision: `Required and completed — Pass`
+- Selected execution mode: `Other — Docker native image build plus short-lived no-network runtime sample`
+- Gap addressed: source/static checks cannot prove the final runtime link/package/transitive dependency exists.
+- Expected confidence: at least 95% if unique build/runtime/safety checks pass.
+- Browser decision: `Not Required`; no frontend or web-equivalent renderer changed.
+- Health decision: a persistent or port-bound health check is not required here because delivery explicitly owns the reserved project start, `/rest/health`, and URL handoff. The selected related-runtime sample directly proves the changed package-resolution boundary without creating state or competing with existing nodes.
 
-- Result: `Pass`
-- Executed mode: owned Nuxt development server on `127.0.0.1:51933` and a fresh headless Google Chrome context.
-- Scenario result: `BR-003A`, `BR-003B`, `BR-001_BR-004`, `BR-002`, and `BR-005` all passed.
-- Direct observations: one Team local user event and one transport call; A draft/attachments cleared and pending became true; B remained empty/nonpending; retained image/file reached the planned transport arguments and local event while removed file did not; successful voice processing changed captured A while B was focused with no new event/send; successful remove/Clear all and deletion-failure retention kept DOM and authoritative arrays equal; standalone transcript and clear remained visible.
-- Expected synthetic console evidence: the deliberate `failure-keep` deletion raised and was logged once while the item remained visible/authoritative. No browser `pageerror` occurred.
-- Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-agent-input-controls-regression/tickets/in-progress/electron-agent-input-controls-regression/evidence/api-e2e-round-1/browser/evidence.json`
-- Cleanup: browser closed, owned Nuxt process terminated, temporary page removed, generated build outputs removed, dependency symlink removed, and owned-process scan clean.
+## Desktop Application Validation Decision
 
-## Final Validation Confidence After Broader Execution
-
-| Confidence Category | Final Score | Final Evidence / Residual Uncertainty |
-| --- | ---: | --- |
-| Requirement and acceptance-criteria proof | 99% | Every `AC-001`–`AC-007` has direct repository evidence and the combined browser journeys passed. |
-| Changed-boundary execution directness | 99% | Real `associate()` proxy, real computed/watch DOM consumers, and actual Team send/local-admission action executed. |
-| Cross-boundary integration realism and mock gap | 96% | Real view, Pinia, shared components, voice result owner, local submission, planner, and browser DOM were combined; only unchanged external finalizer/Team transport were faked. |
-| Environment, configuration, identity, and fixture fidelity | 97% | Assigned worktree, production build, exact A/B AgentRun identities, free loopback port, fresh Chrome context, and no shared data/profile. Synthetic data is intentional. |
-| Failure, edge-case, lifecycle, and recovery evidence | 98% | Pre-admission failure, delete failure retention, independent Clear all success, voice non-success outcomes, and pending/duplicate policy all pass. |
-| User-surface, browser, and desktop-shell confidence | 96% | Actual Chrome DOM proved the web-equivalent Electron renderer behavior. Shell/microphone capture remain unchanged and intentionally unexecuted. |
-| Durable regression coverage quality and relevance | 97% | Direct implementation-owned coverage is maintained at coherent owner boundaries; API/E2E added no duplicate durable suite. |
-
-- Overall final confidence: `97.4%` (simple average)
-- Every critical acceptance criterion directly proven: `Yes`
-- Any final applicable category below `90%`: `No`
-- Default clean-confidence target of `95%` met: `Yes`
-- Confidence-limiting residual risks: unchanged actual microphone capture, live WebSocket/backend transport, and Electron shell were not executed. The direct changed renderer boundary and preserved request/event planning are proven, so these bounded risks do not block Pass.
-
-## Desktop Application Validation Decision (When Applicable)
-
-- Desktop framework / shell: Electron wrapping the Nuxt renderer.
-- Relevant README or development instructions: `autobyteus-web/README.md` development, testing, Electron build, and integrated-server sections.
-- Web-equivalent behavior: Team composer text, voice-result application, attachments, focus, pending state, and local event presentation.
-- Shell-specific or lifecycle behavior: none changed; actual microphone/media permission and preload transport are preserved and not implicated.
-- Chosen validation approach and why it fits the project: owned headless Chrome against a temporary Nuxt fixture route, following the repository's established probe convention.
-- Server/frontend setup when browser validation is used: one owned Nuxt dev server on an automatically selected `127.0.0.1` port; backend forced to an unused loopback address; external Team transport/finalization faked in-memory.
-- Effect on any already-running desktop application: `None`. The live Electron process, port `29695`, and `~/.autobyteus` are not inspected, attached to, stopped, copied, or mutated.
-- Behavior not directly proven and confidence consequence: Electron shell/preload packaging and real microphone capture are not tested because they are unchanged; this is a negligible, explicitly bounded residual risk rather than a blocker.
+- Framework: Electron exists in the product but is not part of IR-002.
+- Chosen approach: no Electron/browser execution.
+- Effect on running Electron: `None`; no process, port `29695`, profile, or data access.
 
 ## Live Environment And Fixture Plan
 
-- Startup order and commands: create temporary route; start owned Nuxt on a free loopback port; wait for HTTP 200; launch a new headless Chrome context; execute scenarios; close browser; terminate owned Nuxt process group; remove route and dependency symlink.
-- Environment choices that materially affect the run: `BACKEND_NODE_BASE_URL=http://127.0.0.1:65534`; no persisted browser profile; no Electron process.
-- Health / readiness checks: temporary route returns HTTP 200 and semantic probe marker is visible.
-- Seed data / fixtures: two-member real `TeamExecutionViewState`, synthetic attachment metadata, one standalone Agent; all in memory.
-- Test identities, authentication, permissions, or session state: synthetic A/B member IDs; no authentication.
-- Requirement-linked journeys or scenarios: `BR-001` Team Enter/local admission and B isolation; `BR-002` captured A voice result after focus B; `BR-003` remove/Clear all/delete-failure visible-authoritative agreement; `BR-004` retained/removed request/event evidence (repository real-send test plus browser observable); `BR-005` standalone draft/transcript/clear.
-- DOM, screenshot, log, API, process, or other evidence to capture: semantic JSON snapshot per scenario, outbound fake-service calls, event counts/attachment IDs, screenshots, browser console/page errors, Nuxt log, cleanup result.
-- Owned processes and temporary state to clean up: headless Chrome context/process, Nuxt process group, temporary route, dependency symlink. Evidence under the ticket is retained.
+- Startup order: baseline resource inventory -> durable tests -> BuildKit checks -> unique primary build/load -> image inspect -> `docker run --rm --network none` -> cleanup -> final inventory.
+- Environment: Docker Desktop 4.52.0 / Engine 29.0.1, linux/arm64; unique tag only.
+- Readiness: build exit 0; image inspect platform; runtime JSON assertions.
+- Seed data: inline schema-valid Team client message only.
+- Identities/auth: none.
+- Evidence: exact commands/logs, image ID, workspace link target, resolved package path, parse output, resolved `zod`, before/after container/volume labels.
+- Cleanup: automatic container removal; remove API-owned image tag only; never stop/remove/prune any pre-existing resource or BuildKit builder.
 
 ## Temporary Executable Validation Plan
 
-| Scenario ID | Probe / Harness / Runtime Setup | Behavior Proven | Why This Should Not Remain As Durable Coverage |
+| Scenario ID | Probe / Setup | Behavior Proven | Why Not Durable |
 | --- | --- | --- | --- |
-| `BR-001` | Temporary Nuxt page with actual Team view/Pinia/textarea and real Team send action; only external finalizer and stream faked | One event, clear, pending, focus B isolation in browser DOM | Durable view/send/component suites already own these contracts; repository has no generic Team-composer browser framework. |
-| `BR-002` | Same page; actual voice store stop/result logic with injected successful transcript after focus change | Captured A changes, B does not, no auto-send | Actual microphone is nondeterministic and unchanged; durable voice and real-associated-context suites already split the contract. |
-| `BR-003` | Same page with actual attachment tray/composable; synthetic draft deletion success/failure | Remove/Clear all and failure retention remain visibly authoritative | Broad fixture orchestration would duplicate the durable attachment component scenario. |
-| `BR-005` | Same isolated Pinia/browser page switches to standalone context | Standalone draft, transcript, and clear stay visible | Standalone behavior is unchanged and already has durable store/component coverage. |
+| `DPK-002` | Full unique native image build/load | Real current-source build completes | Full builds are too expensive for a lightweight source unit test; documented/release Docker pipelines remain authoritative. |
+| `DPK-003` | One `--rm --network none` Node runtime sample | Exact pnpm link, package export/parse, and transitive `zod` resolve in final image | Runtime filesystem evidence is tied to the built image and retained as execution evidence. |
+| `DPK-004` | Read-only baseline/final resource diff | Existing/reserved Docker resources unchanged | Environment-specific safety evidence. |
 
 ## Not Tested / Infeasible / Deferred
 
-| Behavior / Boundary | Reason | Risk | Required Follow-Up Or Escalation |
+| Boundary | Reason | Risk | Follow-Up |
 | --- | --- | --- | --- |
-| Actual microphone/audio capture | Unchanged and nondeterministic; approved transcript-boundary injection is more direct for the defect | Low | None unless browser voice-result processing contradicts repository evidence |
-| Packaged Electron shell | No shell code or contract changed; user has a live app that must not be controlled | Low/negligible | None unless Nuxt/browser evidence exposes a shell-specific dependency |
-| Production profile/data | Explicitly prohibited and unnecessary | None for approved scope | Never use for this validation |
-| Live backend/WebSocket | Protocol/backend unchanged; real send-owner test reaches planner/local-event boundary with deterministic fake service | Low | Reroute only if preserved contract tests fail |
+| Reserved Compose start, `/rest/health`, Nodes URL | Explicit delivery ownership | Bounded lifecycle evidence remains | Delivery resumes after API/reviewer gate |
+| Remote/all-in-one final loaded runtimes | Full builders already accepted; primary owns user-requested image path | Low | Release/related deployment pipelines if later requested |
+| linux/amd64 | Host is native arm64; no multi-arch publication requested | Low | CI/release multi-arch build |
+| Prior composer browser journeys | No application/frontend diff | None for IR-002 | Preserve API-REV-001 |
 
 ## Ambiguities Or Reroute Triggers
 
-None at investigation time. Any failing valid assertion will be classified against the approved behavior before rerouting.
+None. A build/runtime failure will be recorded and returned to `/code_reviewer`; no failure is inferred now.
 
 ## Investigation Decision
 
-- Proceed To API/E2E Execution: `Completed`
-- Repository-Resident Durable Coverage Will Be Added / Updated / Removed: `No`
-- Post-repository confidence: `94.4%`
-- Broader validation decision: `Required and completed — isolated browser-equivalent Nuxt probe passed; final confidence 97.4%`
-- Reroute Required Before Validation Execution: `No`
-- Recommended Recipient If Reroute Required: `N/A`
-- Notes: No live Electron process, production data, server profile, or embedded port will be used. Packaged Electron is not justified for a renderer-only Vue proxy correction.
+- Proceed To API/E2E Execution: `Completed — Pass`
+- Repository-Resident Durable Coverage Will Be Added / Updated / Removed: `Yes — update one existing Python test file with DPK-001`
+- Post-repository confidence: `89.0% before the required broader Docker execution`
+- Broader validation: `Required and completed — unique primary Docker image plus no-network runtime sample passed`
+- Reroute Required Before Execution: `No`
+- Notes: The prior 97.4% composer result is not used as proof of this Docker boundary. Existing Docker nodes/volumes, reserved project, port `29695`, Electron, `~/.autobyteus`, and production data/profile were strictly untouched; the API-owned image was removed.
+
+
+## Completed Execution Outcome
+
+- Result: `Pass`
+- Final confidence: `97.2%`; no applicable category is below `90%`.
+- Changed boundary result: the independent native linux/arm64 primary image built and loaded, exposed the exact server workspace link, resolved the package export from `/app/autobyteus-team-stream-contracts/dist/index.js`, parsed a current `SEND_MESSAGE`, and loaded transitive `zod` with networking disabled.
+- Durable result: `DPK-001` and the existing CLI/source scenarios passed `5/5`; proportional test-code review is required for the updated Python path.
+- Safety result: no persistent container, volume, port, Electron, profile, or production-data resource was created or changed; every baseline container identity and volume name remained, the reserved project stayed at zero containers/volumes, and the unique API-owned image was removed.
+- Deferred boundary: delivery still owns the reserved persistent Compose start, `/rest/health`, and final Nodes URL handoff.

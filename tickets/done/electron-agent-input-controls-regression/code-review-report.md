@@ -3,102 +3,107 @@
 ## Review Round Meta
 
 - Review Entry Point: `Implementation Review`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-agent-input-controls-regression/tickets/in-progress/electron-agent-input-controls-regression/requirements.md`
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-agent-input-controls-regression/tickets/in-progress/electron-agent-input-controls-regression/investigation-notes.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-agent-input-controls-regression/tickets/in-progress/electron-agent-input-controls-regression/design-spec.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/requirements.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/design-spec.md`
 - Supplemental Task Artifacts Reviewed As Context: `ticket-description.md`; approved `ui-ux-spec.md`; derived `design-use-case-validation.md`
-- Solution Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-agent-input-controls-regression/tickets/in-progress/electron-agent-input-controls-regression/solution-revision-record.md`
+- Solution Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/solution-revision-record.md`
 - Relevant Solution Revision IDs: `SR-001`
-- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-agent-input-controls-regression/tickets/in-progress/electron-agent-input-controls-regression/design-review-report.md`
-- Architecture Review Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-agent-input-controls-regression/tickets/in-progress/electron-agent-input-controls-regression/architecture-review-revision-record.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/design-review-report.md`
+- Architecture Review Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/architecture-review-revision-record.md`
 - Relevant Architecture Review Revision IDs: `ARCH-REV-001`
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-agent-input-controls-regression/tickets/in-progress/electron-agent-input-controls-regression/implementation-handoff.md`
-- Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-agent-input-controls-regression/tickets/in-progress/electron-agent-input-controls-regression/implementation-revision-record.md`
-- Relevant Implementation Revision IDs: `IR-001`
-- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-agent-input-controls-regression/tickets/in-progress/electron-agent-input-controls-regression/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-001`
-- Current Review Round: `1`
-- Trigger: Initial source review after `IR-001` implementation against `SR-001` / `ARCH-REV-001`.
-- Prior Review Round Reviewed: `N/A`
-- Latest Authoritative Round: `CRR-001`
-- Coverage Investigation Reviewed: `N/A`
-- Execution Coverage Report Reviewed: `N/A`
-- API/E2E Revision Record Reviewed: `N/A`
-- Relevant API/E2E Revision IDs: `N/A`
-- Delivery Revision Record Reviewed: `N/A`
-- Relevant Delivery Revision IDs: `N/A`
-- Failing Scenario IDs: `N/A`
-- Exact Failing Commands / Execution Mode: `N/A`
-- Failure Evidence Paths: `N/A`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/implementation-handoff.md`
+- Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/implementation-revision-record.md`
+- Relevant Implementation Revision IDs: `IR-002` (with `IR-001` preserved)
+- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/code-review-revision-record.md`
+- Current Code Review Revision ID: `CRR-003`
+- Current Review Round: `2`
+- Trigger: `IR-002` delivery-stage Local Fix after the supported `DR-005` current-source Docker build failed because the server workspace dependency `@autobyteus/team-stream-contracts` was absent from the Docker build contexts.
+- Prior Review Round Reviewed: `CRR-001` implementation-source `Pass`; `CRR-002` proportional test-code `Not Applicable`
+- Latest Authoritative Round: `CRR-003`
+- Coverage Investigation Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/api-e2e-coverage-investigation.md` (prior `API-REV-001` context)
+- Execution Coverage Report Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/api-e2e-execution-coverage-report.md` (prior product behavior result)
+- API/E2E Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/api-e2e-revision-record.md`
+- Relevant API/E2E Revision IDs: `API-REV-001`; new packaging investigation/execution is required after this review
+- Delivery Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/delivery-revision-record.md`
+- Relevant Delivery Revision IDs: `DR-005`
+- Failing Scenario IDs: `DR-005 Docker packaging Local Fix` (delivery assigned no separate finding ID)
+- Exact Failing Commands / Execution Mode: `./docker-start.sh up -p electron-agent-input-controls-regression-dr005 --build-local`; current-source, isolated Compose project
+- Failure Evidence Paths: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/evidence/local-docker-server/docker-build-blocker.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/evidence/local-docker-server/build-and-start.log`
 
 ## Review Scope
 
-- Changed implementation and behavior reviewed: canonical whole-`AgentContext` Vue proxy association for every initial and dynamically discovered AgentTeam member; observable exact-member text, voice-target, attachment, pending, local-admission, retained/removed attachment, and standalone-preservation coverage.
-- Files / areas reviewed: the complete five-file delta from base `cc4e0611a03ad5e123fe561c64ed56a4784492ef`; relevant Team association, active-context, local-submission, Team-send, voice-target, attachment, stream/event, and standalone ownership paths.
-- Explicit exclusions: downstream browser/API/E2E allocation and execution; actual microphone capture/transcription; packaged Electron execution; the user's active Electron process and production profile.
+- Changed implementation and behavior reviewed: the prior canonical AgentTeam composer fix remains unchanged; `IR-002` restores the server's declared `@autobyteus/team-stream-contracts` workspace package to all three tracked current-source server Docker build/runtime inventories.
+- Files / areas reviewed: `autobyteus-server-ts/docker/Dockerfile.monorepo`; `docker/Dockerfile.remote-server`; `docker/Dockerfile.allinone`; root `.dockerignore`; `pnpm-workspace.yaml`; server/contracts manifests and exports; Docker helper/Compose callers; pnpm workspace link topology; prior/current implementation and delivery evidence.
+- Explicit exclusions: persistent start of the reserved Compose project, `/rest/health`, and Nodes URL handoff remain downstream; no public release; no application/frontend/protocol/manifest/lockfile/migration/data change; no user Electron process, port `29695`, `~/.autobyteus`, production profile, or production data.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Approved requirements basis understood: restore one observable composer state for the exact focused AgentTeam member while retaining the existing local-admission, captured voice-target, attachment lifecycle/wire/event, member isolation, and standalone Agent contracts.
-- Design-spec behavior map verified against the implementation: `associate()` remains the only Team context registration owner, preserves nested-state proxying, then stores one whole-context proxy. Initial input, snapshot discovery, and task-event discovery all still funnel through that path, and the existing getters/list return the stored value.
-- Design review report and round confirmed: `ARCH-REV-001` Pass for `SR-001`, with no open design finding or material-premise decision.
+- Approved requirements basis understood: `BEH-001`–`BEH-005` and `AC-001`–`AC-007` remain the approved product behavior and are unaffected by the Docker-only delta. `DR-005` separately records the user's supported operational request to build and start an isolated current-source Docker server for Nodes testing.
+- Design-spec behavior map verified against the implementation: the canonical Team proxy implementation and its durable coverage are unchanged in the `IR-002` diff. The new packaging lines affect only how the already-declared server workspace dependency is installed, compiled, and materialized into current-source images.
+- Design review report and round confirmed: `ARCH-REV-001` Pass for `SR-001`; the Docker Local Fix does not alter the reviewed product architecture.
 - Behavior-basis status: `Confirmed`
-- Changed or newly discovered behavior, if any: None.
+- Changed or newly discovered behavior, if any: No new product behavior. The independently supported delivery operation is governed by `DR-005` and validated as `CODE-PREM-001` below.
 - Remaining material ambiguity, if any: None.
 
-| Behavior ID | Current Status | Current Implementation Path And Lifecycle Evidence | Contradicting Or Newly Discovered Supported Behavior Evidence |
+| Behavior / Contract ID | Current Status | Current Implementation Path And Lifecycle Evidence | Contradicting Or Newly Discovered Supported Behavior Evidence |
 | --- | --- | --- | --- |
-| `BEH-001` | Confirmed | AgentTeam Enter/Send resolves the focused context through the active facade and Team view; `beginLocalUserSubmission` mutates the stored proxy's top-level draft/attachments/pending and nested conversation. The real-view Team-send test primes computed consumers and proves one event, visible clear, pending, exact target, and pre-admission preservation. | None. |
-| `BEH-002` | Confirmed | The unchanged voice store retains its captured `AgentContext`; the active facade writes the transcript to that exact associated proxy. The real-Team focus-switch test proves the captured member changes while the newly focused member remains isolated; existing voice lifecycle coverage remains unchanged. | None. |
-| `BEH-003` | Confirmed | Remove/Clear all continue to mutate the exact context attachment collection; whole-context proxying makes replacement/splice observable. Real associated-context coverage proves exact-member attachment isolation, and component coverage preserves successful removal, partial Clear all, and failed-delete retention. | None. |
-| `BEH-004` | Confirmed | The Team send owner reads authoritative retained attachments, admits one local event, finalizes/plans them, and calls the unchanged stream contract. The real-view send test proves a retained image reaches wire/event state and a removed file reaches neither. | None. |
-| `BEH-005` | Confirmed | No standalone production owner changed. The existing Pinia path remains the active-facade source, and the added preservation assertion confirms observable draft update, transcript-style merge, and clear. | None. |
+| `BEH-001` | Confirmed | The committed `TeamExecutionViewState` proxy and local-admission coverage are outside the `IR-002` diff. | None. |
+| `BEH-002` | Confirmed | Captured-member transcript routing and active-context ownership are unchanged. | None. |
+| `BEH-003` | Confirmed | Exact-member attachment observation/removal/failure retention are unchanged. | None. |
+| `BEH-004` | Confirmed | Retained/removed attachment request/event behavior and its server projection remain unchanged; Docker now includes the runtime contract package those current server modules import. | None. |
+| `BEH-005` | Confirmed | No standalone Agent or frontend source changed. | None. |
+| `DR-005` | Confirmed | Documented source helper -> isolated Compose build -> `Dockerfile.monorepo` workspace install/build -> runtime package/link -> server start/health. `IR-002` repairs the install/build/runtime segment in the primary image and the two related tracked current-source server images. | None. |
 
 ## Structural / Design Checks
 
 | Check | Result | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | The bounded local-defect posture is preserved: one production owner changes by one effective line; no refactor or parallel state is introduced. | None. |
-| Implementation matches approved behavior-defining supplemental artifacts | Pass | The approved `ui-ux-spec.md` transitions and exact-member isolation are represented in the changed real-view/store/component tests. | None. |
-| Data-flow spine inventory clarity and preservation under shared principles | Pass | `DS-001`–`DS-006` remain intact from supported UI triggers through association, local admission/voice/attachment owners, and visible or wire/event outcomes. | None. |
-| Ownership boundary preservation and clarity | Pass | `TeamExecutionViewState.associate()` alone establishes the canonical Team context proxy; callers keep using existing view APIs. | None. |
-| Off-spine concern clarity | Pass | Vue observation is confined to the Team owner; voice, attachment, local-submission, transport, and rendering concerns remain with their existing owners. | None. |
-| Existing capability/subsystem reuse check | Pass | Existing Vue `reactive`, active facade, submission, attachment, stream, and event capabilities are reused without a new helper/store. | None. |
-| Reusable owned structures check | Pass | No repeated new production structure exists; extracting a one-call proxy wrapper would be empty indirection. | None. |
-| Shared-structure/data-model tightness check | Pass | One `AgentContext` remains authoritative; no mirrored Team composer model or overlapping state representation was added. | None. |
-| Repeated coordination ownership check | Pass | All initial/snapshot/task member origins share `associate()`; proxy policy is not repeated in callers. | None. |
-| Empty indirection check | Pass | The change directly completes the existing owner invariant and adds no pass-through boundary. | None. |
-| Scope-appropriate separation of concerns and file responsibility clarity | Pass | The production change is confined to Team context association; test changes remain within existing owner/facade/send/component suites. | None. |
-| Ownership-driven dependency check | Pass | Team view adds only its already-approved Vue reactivity use; no component, voice, attachment, or backend dependency is introduced. | None. |
-| Authoritative Boundary Rule check | Pass | Consumers depend on view getters/facades and do not access both the Team owner and its internal registry. | None. |
-| File placement check | Pass | Proxy conversion stays in `services/teamExecution/teamExecutionViewState.ts`; coverage stays with the exercised owners. | None. |
-| Flat-vs-over-split layout judgment | Pass | One local owner edit and four existing coherent suites are proportionate; no artificial new module is warranted. | None. |
-| Interface/API/query/command/service-method boundary clarity | Pass | No public signature changes; exact AgentRun/member identity and singular getter/send responsibilities remain unchanged. | None. |
-| Naming quality and naming-to-responsibility alignment check | Pass | `associatedContext` clearly names the canonical stored proxy; existing domain names remain aligned. | None. |
-| No unjustified duplication of code / repeated structures in changed scope | Pass | Proxy creation occurs once; test fixtures reuse existing Team builders and localized setup. | None. |
-| Patch-on-patch complexity control | Pass | No watcher, mirror, revision counter, compatibility branch, component workaround, or transport patch exists. | None. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | Raw top-level registry storage is cleanly replaced and the disposable investigation probes are absent. | None. |
-| Relevant test scenarios and assertions are clear and requirement-aligned | Pass | Initial/dynamic proxy identity, primed dependencies, local admission/failure, exact-member voice/attachment isolation, retained/removed payload/event state, deletion outcomes, and standalone preservation map to `AC-001`–`AC-007`. | None. |
-| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | The view fixture now exposes initial/dynamic raw contexts, while existing Team/store/component builders remain the appropriate test boundaries. | None. |
-| No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | Prior tests remain valid; new assertions close the real raw-association gap rather than preserving the stale behavior. | None. |
-| API/E2E readiness for the next workflow stage | Pass | Source diff is bounded, behavior coverage is executable, downstream scenarios/constraints are explicit, and the reviewer rerun passes 4 files / 32 tests. | Proceed to coverage investigation and isolated browser/API/E2E execution. |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | `IR-002` is correctly bounded as a post-finalization packaging Local Fix; the root cause is an omitted declared workspace package, not a new product owner or refactor need. | None. |
+| Implementation matches approved behavior-defining supplemental artifacts | Pass | No UI/UX or product behavior changes; the previously approved and validated composer state remains byte-outside the `IR-002` source diff. | None. |
+| Data-flow spine inventory clarity and preservation under shared principles | Pass | Original `DS-001`–`DS-006` remain unchanged. The delivery operation is traceable from the documented helper through build context, workspace install, package compilation, runtime materialization, and server import. | None. |
+| Ownership boundary preservation and clarity | Pass | Package dependency authority remains in the server/contracts manifests; each Dockerfile owns its explicit image build/runtime inventory. | None. |
+| Off-spine concern clarity | Pass | Packaging does not absorb server behavior, protocol, data, or frontend policy; it only materializes the declared workspace package. | None. |
+| Existing capability/subsystem reuse check | Pass | Existing pnpm workspace linking and the contracts package's existing `build` script are reused; no alternate installer or vendored artifact path is added. | None. |
+| Reusable owned structures check | Pass | No new data/helper structure is duplicated. The three explicit Docker inventories use the shared package/manifests as their only source. | None. |
+| Shared-structure/data-model tightness check | Pass | No application shape changes; the existing contracts package remains the singular server/frontend protocol structure. | None. |
+| Repeated coordination ownership check | Pass | All three tracked current-source server images are corrected together. Their intentional explicit COPY/build inventories remain aligned with their distinct runtime images. | None. |
+| Empty indirection check | Pass | Direct Docker COPY/build/runtime materialization is used; no wrapper stage or pass-through helper is introduced. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | Pass | Each change is in the Dockerfile that owns the affected image; the primary optimized runtime copies only the required package pieces while the full-source runtimes preserve their established shape. | None. |
+| Ownership-driven dependency check | Pass | The server continues to import its manifest-declared workspace dependency; image builders now satisfy rather than bypass that dependency. | None. |
+| Authoritative Boundary Rule check | Pass | Runtime consumers resolve through the server's pnpm workspace link and package export; no caller imports contract internals or parallel copied module. | None. |
+| File placement check | Pass | The three changes are in the only tracked active server Dockerfiles identified by current build/Compose callers. Generated Electron resource copies are ignored outputs and derive from source. | None. |
+| Flat-vs-over-split layout judgment | Pass | The small per-image inventory additions fit the existing Dockerfiles; extracting a shared Docker fragment would not improve the current build boundary. | None. |
+| Interface/API/query/command/service-method boundary clarity | Pass | No API, command signature, protocol, manifest, or service method changes. The package's existing `exports` boundary remains authoritative. | None. |
+| Naming quality and naming-to-responsibility alignment check | Pass | Exact workspace/package names and established Docker stage names are used consistently. | None. |
+| No unjustified duplication of code / repeated structures in changed scope | Pass | Repetition is limited to the explicit inventory required by three independent image definitions; no duplicated package implementation or resolver logic exists. | None. |
+| Patch-on-patch complexity control | Pass | The fix adds the missing manifest/source/build/runtime steps without fallback links, ad hoc module copying into server source, or dual resolution. | None. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | All three tracked active stale inventories are updated; no alternate broken current-source server Dockerfile remains. | None. |
+| Relevant test scenarios and assertions are clear and requirement-aligned | Pass | Delivery expected-red evidence, full primary image build/load, no-network runtime import/parse/transitive-`zod` probe, two full builder builds, BuildKit checks, and lightweight repository Docker tests cover the changed boundary proportionately. | None. |
+| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | Existing Docker build helpers and structural unit tests are reused; no one-off durable fixture is added. | None. |
+| No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | No durable test changed; existing build-context and CLI-default tests still pass and remain applicable. | None. |
+| API/E2E readiness for the next workflow stage | Pass | The source and built primary runtime resolve the package correctly, all three builders pass, evidence/limitations are explicit, and the persistent isolated start/health handoff is well defined. | API/E2E must investigate and execute packaging coverage before delivery resumes. |
 
 ## Source File Size And Structure Audit
 
+Dockerfiles are reviewed as changed implementation source. Unit/integration/evidence artifacts are not subject to source thresholds.
+
 | Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
 | --- | ---: | --- | --- | --- | --- | --- | --- |
-| `autobyteus-web/services/teamExecution/teamExecutionViewState.ts` | 315 | Pass | Assessed: the delta is `+2/-1` physical lines and `+1` effective line, adds no responsibility, and completes the existing association invariant. | Pass; the file remains one Team execution aggregate owner despite its established breadth. | Pass | Pass | None; splitting would be unrelated churn for this bounded fix. |
+| `autobyteus-server-ts/docker/Dockerfile.monorepo` | 76 | Pass | Pass | Pass; optimized local/release server builder/runtime inventory | Pass | Pass | None. |
+| `docker/Dockerfile.remote-server` | 49 | Pass | Pass | Pass; remote server builder/runtime inventory | Pass | Pass | None. |
+| `docker/Dockerfile.allinone` | 72 | Pass | Pass | Pass; all-in-one builder/runtime inventory | Pass | Pass | None. |
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Check | Result | Notes |
 | --- | --- | --- |
-| No backward-compatibility mechanisms in changed scope | Pass | One clean canonical proxy path replaces raw registry values. |
-| No legacy old-behavior retention in changed scope | Pass | There is no raw/reactive branch or caller-selectable fallback. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | No workaround or disposable probe remains. |
-| Approved persisted-data transition decision is followed without unnecessary migration work | Pass | `Not Affected`; only live in-memory Vue observation changes. |
-| No version-specific dual reads/writes or request-time old-shape fallback exists | Pass | No persistence or protocol path changed. |
-| Approved transition mechanics match the reviewed design, including migration safety only when required | Pass | Migration is inapplicable and none was added. |
+| No backward-compatibility mechanisms in changed scope | Pass | One current workspace package/link path is materialized; no historical fallback exists. |
+| No legacy old-behavior retention in changed scope | Pass | The missing-package inventories are replaced across all tracked active server Dockerfiles. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | No broken active current-source image definition remains. |
+| Approved persisted-data transition decision is followed without unnecessary migration work | Pass | `Not Affected`; no volume, profile, schema, database, or file-format change. |
+| No version-specific dual reads/writes or request-time old-shape fallback exists | Pass | Packaging is version-agnostic and uses the current workspace dependency. |
+| Approved transition mechanics match the reviewed design, including migration safety only when required | Pass | Migration remains inapplicable. |
 
 ## Dead / Obsolete / Legacy Items Requiring Removal
 
@@ -107,8 +112,8 @@ None.
 ## Docs-Impact Verdict
 
 - Docs impact: `No`
-- Why: the change restores the existing released AgentTeam composer contract without changing public APIs, operator procedures, persisted formats, or intended UI behavior.
-- Files or areas likely affected: None.
+- Why: the documented current-source Docker command and runtime contract do not change; the fix makes the existing helper and image definitions satisfy the already-declared workspace dependency.
+- Files or areas likely affected: None. Delivery should preserve the existing command/URL guidance and update only its result after runtime verification.
 
 ## Material Premise Validation
 
@@ -116,26 +121,37 @@ None.
 
 None.
 
-No new or reclassified material production, failure, or lifecycle premise is needed for this review. Each affected behavior begins at the approved Electron AgentTeam composer surface and follows the established production path.
+### `CODE-PREM-001` — Current-source server Docker packaging must resolve declared workspace dependencies
+
+- Origin: `New` delivery re-entry premise, independently established by `DR-005`; it is not inferred from the Docker diff or a synthetic test.
+- Related approved requirement or established contract: the user's explicit post-finalization isolated Docker node request; tracked `autobyteus-server-ts/docker/docker-start.sh`, `autobyteus-server-ts/docker/docker-compose.yml`, and `docker/compose.personal-test.yml` current-source build entrypoints; server manifest dependency contract.
+- Relevant behavior ID(s): original `BEH-001`–`BEH-005` are preserved; operational contract `DR-005` is affected.
+- Initiating basis kind: `Operational`
+- Independent product-supported initiating trigger or applicable governing contract: the user requested a current finalized server image and Nodes backend URL; delivery invoked the documented `docker-start.sh up -p electron-agent-input-controls-regression-dr005 --build-local` action in an isolated project. The two related tracked Compose definitions govern the other changed server Dockerfiles.
+- Support evidence: `DR-005`, `docker-build-blocker.md`, the documented helper, and tracked Compose callers exist independently of `IR-002` and reproduce the pre-fix omission from a clean current source checkout.
+- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: supported operator command -> Docker Compose/build helper -> repository-root build context -> selected server Dockerfile -> pnpm workspace install -> contracts package build -> server build -> runtime workspace link/package export -> server process -> `/rest/health` and Nodes URL.
+- Lifecycle preconditions and material consequence at the claimed point: a clean current source tree and isolated Compose project are sufficient. Before `IR-002`, install stops before image/container creation; after the fix, the primary image builds and its no-network runtime resolves/parses through the package and transitive `zod`. Persistent start/health remains downstream.
+- Reachability: `Reachable`
+- Review consequence / proportionate response: review all three active Docker inventory changes, require primary image/runtime evidence and proportionate related-builder evidence, then return to API/E2E for isolated start/health coverage before delivery resumes. No product redesign or migration is justified.
 
 ## Review Scorecard
 
-- Overall score (`/10`): `9.7`
-- Overall score (`/100`): `97`
-- Score calculation note: simple average of the ten category scores, rounded to one decimal / whole-number presentation.
+- Overall score (`/10`): `9.6`
+- Overall score (`/100`): `96`
+- Score calculation note: simple average of the ten categories, rounded for summary. The prior source score was `9.7/10`; the small change reflects the newly reviewed packaging surface and its still-pending persistent runtime check, not an open source defect.
 
 | Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | ---: | --- | --- | --- |
-| `1` | `Data-Flow Spine Inventory and Clarity` | 9.7 | The local association invariant and every user/return/wire spine trace coherently to observable outcomes. | The governing aggregate is broad enough that reviewers must navigate several established methods. | Downstream evidence should retain scenario IDs and exact end outcomes. |
-| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.8 | The fix lands once at the canonical Team registry owner and all consumers retain public boundaries. | Vue reactivity is a runtime invariant that the TypeScript return type cannot express directly. | Keep the identity/reactivity tests as the executable boundary contract. |
-| `3` | `API / Interface / Query / Command Clarity` | 9.8 | No signature changes or ambiguous selector paths; exact AgentRun identities remain authoritative. | Reactive canonicality remains an implementation contract rather than a new public type. | Preserve the getter/list identity assertions. |
-| `4` | `Separation of Concerns and File Placement` | 9.6 | One source owner and existing test boundaries absorb the change without cross-layer workarounds. | The changed owner is 315 effective lines, above the proactive review threshold. | Avoid adding unrelated policies to this aggregate; reassess only if future deltas add a distinct responsibility. |
-| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.8 | One `AgentContext` proxy serves all consumers with no mirror or duplicate shape. | `AgentContext` intentionally combines runtime and composer session fields as established design. | Keep one canonical proxy and reject parallel Team state. |
-| `6` | `Naming Quality and Local Readability` | 9.6 | `associatedContext` makes the new invariant locally explicit and the diff is immediately readable. | The surrounding established aggregate has high information density. | Maintain local names and focused methods rather than adding inline coordination. |
-| `7` | `API/E2E Readiness` | 9.3 | Durable real-view regression coverage and precise downstream scenarios make the change ready for investigation/execution. | No isolated browser-equivalent or packaged Electron run has yet been completed. | API/E2E should select proportionate isolated browser coverage and use packaged Electron only if safely justified. |
-| `8` | `Runtime Correctness And Behavioral Fidelity` | 9.7 | Vue proxy identity, primed dependency invalidation, exact-member isolation, admission semantics, and attachment behavior are directly covered. | Actual microphone return and packaged renderer behavior remain downstream/environment-dependent. | Confirm the browser-equivalent composer journey and deterministic voice-result boundary downstream. |
-| `9` | `No Backward-Compatibility / No Legacy Retention` | 10.0 | The raw registry value is replaced cleanly with no dual path, migration, or fallback. | None. | Preserve the clean-cut invariant. |
-| `10` | `Cleanup Completeness` | 9.8 | No temporary probes, symlinks, generated dependency edits, or obsolete workaround paths remain. | Broader generated Nuxt outputs are ignored environment artifacts, not reviewable source. | Delivery should retain a clean diff and avoid generated artifacts. |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 9.6 | Original product spines remain clear, and the operational build-to-runtime path is traceable end to end. | Packaging spans three explicit image inventories plus pnpm link topology. | Keep downstream evidence tied to the exact image/helper/runtime path. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.6 | Manifests own dependency identity; each Dockerfile owns its image inventory; runtime uses the package export/link. | Explicit inventory must be synchronized across three image definitions. | Preserve manifest/package authority and update all active inventories together. |
+| `3` | `API / Interface / Query / Command Clarity` | 9.8 | No public API or command changes; existing package exports and Docker entrypoints remain singular. | Runtime resolvability is enforced operationally rather than by a new static type. | Retain the runtime import probe in downstream evidence. |
+| `4` | `Separation of Concerns and File Placement` | 9.6 | All changes reside in the correct image definitions and do not leak packaging policy into application source. | Three distinct runtimes necessarily repeat small inventory steps. | Avoid further unrelated build policy in these Dockerfiles. |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.4 | The existing contracts package remains the sole shared schema owner with no copied implementation. | Docker COPY/build declarations cannot be derived automatically from the server manifest in the current layout. | Reassess a stronger inventory guard only if this class of omission recurs; no refactor is warranted now. |
+| `6` | `Naming Quality and Local Readability` | 9.6 | Package/stage/path names are exact and each added step is easy to audit. | The optimized runtime's link topology requires reading several adjacent COPY lines. | Keep package runtime pieces contiguous as they are now. |
+| `7` | `API/E2E Readiness` | 9.2 | Full primary image build/load, runtime import, related builders, and structural tests give a strong executable basis. | The reserved persistent project has not yet started and `/rest/health` is unproven after the fix. | API/E2E should investigate and execute isolated Docker runtime coverage; delivery then owns the persistent URL handoff. |
+| `8` | `Runtime Correctness And Behavioral Fidelity` | 9.6 | Reviewer and implementation no-network probes prove the exact server workspace link, package parse, and transitive `zod`; full primary build passes. | The two related Dockerfiles have builder-only rather than loaded-runtime evidence. | Downstream may sample runtime materialization proportionately if its coverage investigation finds value. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | 10.0 | One current package path, no fallback, no dual resolution, no historical schema behavior. | None. | Preserve the clean current-workspace path. |
+| `10` | `Cleanup Completeness` | 9.8 | All active inventories are corrected; reserved project still has zero containers/volumes; diff/artifact checks pass. | Implementation-owned validation image and evidence remain intentionally available for review. | Delivery/API should clean only their owned runtime resources after use. |
 
 ## Findings
 
@@ -151,17 +167,17 @@ No findings.
 
 ## Residual Risks
 
-- The implementation review accepts the recorded successful Nuxt build and focused source typecheck, but the repository-wide `nuxi`/`vue-tsc` limitation remains an environment/tooling constraint rather than evidence against this two-line source change.
-- The reviewer independently reran the changed suites with the matching base-worktree dependency tree: `4 files / 32 tests` passed. The temporary dependency symlink was removed afterward.
-- Browser-visible AgentTeam composer behavior, deterministic transcription return through a browser-equivalent surface, and any safely isolated packaged-Electron check remain downstream coverage decisions.
-- The user's live Electron process and production profile remain prohibited validation targets.
+- The reserved persistent Compose project was intentionally not started by implementation or review; `/rest/health` and the Nodes backend URL remain unverified after the fix.
+- `Dockerfile.remote-server` and `Dockerfile.allinone` passed complete builder stages but were not loaded as final runtime images; their source/runtime copy topology matches the independently proven primary image.
+- The primary validation image is native `linux/arm64`; multi-architecture publication remains outside this local request.
+- Existing Docker nodes, volumes, port `29695`, Electron, `~/.autobyteus`, and production data/profile remain untouched.
 
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
 - Review Entry Point: `Implementation Review`
 - Material-Premise Gate: `Pass`
-- Score Summary: `9.7/10 (97/100)`; every category is at least `9.0`.
-- Failure Origin: `N/A`
+- Score Summary: `9.6/10 (96/100)`; every category is at least `9.0`.
+- Failure Origin: `DR-005` correctly identified a reachable current-source Docker packaging omission; `IR-002` resolves it at source/build/runtime boundaries.
 - Recommended Recipient: `api_e2e_engineer`
-- Notes: `IR-001` implements the reviewed canonical-proxy invariant without source, ownership, legacy, or API/E2E-readiness findings. API/E2E coverage investigation and execution are now required.
+- Notes: `CRR-003` supersedes the prior source report as the current implementation-review result. The `CRR-001` product source result remains passed, `CRR-002` remains the historical no-durable-test-delta gate, and a new packaging coverage investigation/execution round is required before delivery resumes the persistent build/start/health/URL request.

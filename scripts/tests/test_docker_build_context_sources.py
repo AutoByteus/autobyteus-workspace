@@ -6,10 +6,13 @@ from pathlib import Path
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
+PRIMARY_DOCKERFILE = REPO_ROOT / "autobyteus-server-ts" / "docker" / "Dockerfile.monorepo"
+ALLINONE_DOCKERFILE = REPO_ROOT / "docker" / "Dockerfile.allinone"
+REMOTE_SERVER_DOCKERFILE = REPO_ROOT / "docker" / "Dockerfile.remote-server"
 SUPPORTED_DOCKERFILES = (
-    REPO_ROOT / "autobyteus-server-ts" / "docker" / "Dockerfile.monorepo",
-    REPO_ROOT / "docker" / "Dockerfile.allinone",
-    REPO_ROOT / "docker" / "Dockerfile.remote-server",
+    PRIMARY_DOCKERFILE,
+    ALLINONE_DOCKERFILE,
+    REMOTE_SERVER_DOCKERFILE,
 )
 
 
@@ -26,6 +29,55 @@ class DockerBuildContextSourcesTest(unittest.TestCase):
                         matches,
                         f"{dockerfile.relative_to(REPO_ROOT)} copies missing repository-root source {source!r}",
                     )
+
+    def test_team_stream_contracts_dependency_is_built_and_materialized_in_all_server_images(self) -> None:
+        server_manifest = json.loads(
+            (REPO_ROOT / "autobyteus-server-ts" / "package.json").read_text(encoding="utf-8")
+        )
+        self.assertEqual(
+            server_manifest["dependencies"]["@autobyteus/team-stream-contracts"],
+            "workspace:*",
+        )
+
+        common_instructions = (
+            "COPY autobyteus-team-stream-contracts/package.json autobyteus-team-stream-contracts/tsconfig.build.json "
+            "autobyteus-team-stream-contracts/tsconfig.json ./autobyteus-team-stream-contracts/",
+            "COPY autobyteus-team-stream-contracts ./autobyteus-team-stream-contracts",
+            "RUN pnpm -C autobyteus-team-stream-contracts build",
+        )
+        runtime_instructions = {
+            PRIMARY_DOCKERFILE: (
+                "COPY --from=builder /app/autobyteus-team-stream-contracts/node_modules "
+                "./autobyteus-team-stream-contracts/node_modules",
+                "COPY --from=builder /app/autobyteus-team-stream-contracts/dist "
+                "./autobyteus-team-stream-contracts/dist",
+                "COPY --from=builder /app/autobyteus-team-stream-contracts/package.json "
+                "./autobyteus-team-stream-contracts/package.json",
+            ),
+            ALLINONE_DOCKERFILE: (
+                "COPY --from=builder /app/autobyteus-team-stream-contracts ./autobyteus-team-stream-contracts",
+            ),
+            REMOTE_SERVER_DOCKERFILE: (
+                "COPY --from=builder /app/autobyteus-team-stream-contracts ./autobyteus-team-stream-contracts",
+            ),
+        }
+
+        for dockerfile in SUPPORTED_DOCKERFILES:
+            instructions = set(logical_instructions(dockerfile.read_text(encoding="utf-8")))
+            with self.subTest(dockerfile=dockerfile.relative_to(REPO_ROOT)):
+                for instruction in common_instructions + runtime_instructions[dockerfile]:
+                    self.assertIn(instruction, instructions)
+
+        allinone_instructions = set(logical_instructions(ALLINONE_DOCKERFILE.read_text(encoding="utf-8")))
+        allinone_install = next(
+            (instruction for instruction in allinone_instructions if instruction.startswith("RUN pnpm install ")),
+            "",
+        )
+        self.assertIn(
+            "--filter @autobyteus/team-stream-contracts...",
+            allinone_install,
+            "Dockerfile.allinone must admit @autobyteus/team-stream-contracts to its filtered install command",
+        )
 
 
 def direct_copy_sources(dockerfile: Path):
