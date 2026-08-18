@@ -168,8 +168,9 @@ missing `platformAgentRunId` and not represented by a persisted
 `platformAgentRunId: null`, resume configuration, and the memory directory. A
 prepared identity has a memory directory and V2 catalog row, but no runtime
 until the first backend-owned `SEND_MESSAGE` activates it. Activation records
-`startedAt` and the platform runtime id when available while preserving the
-catalog row. GraphQL `prepareAgentRun` may return `activationState: "PREPARED"`
+`startedAt` and the exact external provider ID when applicable while preserving
+the catalog row. Native AutoByteus activation keeps `platformAgentRunId: null`.
+GraphQL `prepareAgentRun` may return `activationState: "PREPARED"`
 as a launch API response field, but that value is not a stored standalone
 history or metadata field. Explicit cancellation and stale-prepared cleanup
 remove only unactivated prepared identities.
@@ -311,6 +312,9 @@ Important identity/storage rules:
   - AutoByteus native agent id
   - Codex thread id
   - Claude session id
+- current Team metadata uses `platformAgentRunId` only for an exact external
+  Codex/Claude provider binding; native Team nodes keep it null and restore from
+  local AgentRun identity plus native memory state
 
 Current Team metadata is schema v3 and stores one recursive `rootTeam` instead
 of a flat member list. Each node has `kind`:
@@ -558,7 +562,10 @@ For team runs:
 2. Canonical `memberAddress` selects a persistent Agent within the Team tree.
 3. `agentRunId` identifies the persisted Agent run/storage subtree; it is opaque
    and not a logical address.
-4. `platformAgentRunId` identifies the runtime-native session/thread/agent when the runtime requires one.
+4. `platformAgentRunId` identifies the exact external Codex thread or Claude
+   session when that runtime requires one. It is never a local AgentRun ID or a
+   native AutoByteus restoration signal; current native Team nodes keep it
+   null.
 5. `agent_team` nodes record their canonical address, child `teamRunId`, exact
    coordinator address, and child tree used to restore nested handles. Child
    TeamRun IDs form the physical `ancestorTeamRunIds` chain used for nested

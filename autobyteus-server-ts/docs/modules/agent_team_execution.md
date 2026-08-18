@@ -34,8 +34,11 @@ execution address.
 
 IDs are opaque runtime/storage identities. Names/slugs can improve readability
 but must never be parsed for routing, task ownership, restore, or UI identity.
-Provider-native Codex thread IDs, Claude session IDs, and AutoByteus runtime IDs
-remain separate metadata.
+Provider-native Codex thread IDs and Claude session IDs remain separate from
+local AgentRun identity. For current Team execution trees,
+`platformAgentRunId` is an external-provider binding only. Native AutoByteus
+continuation uses the local AgentRun ID plus its persisted memory state, and new
+native nodes keep `platformAgentRunId: null`.
 
 Member memory is root-hierarchical. Persistent and task executions resolve their
 `memoryDir` through `AgentMemoryLocationService` from the root TeamRun, concrete
@@ -70,6 +73,43 @@ type TeamExecutionAddress = Readonly<{
 | Any server team run (all-AutoByteus, all-Codex, all-Claude, heterogeneous, or nested) | `MixedTeamManager` | Agent members own one runtime-specific `AgentRun`; subteam members own child `TeamRun`s | `MixedTeamManager` is retained by name and is the single active server team manager. Runtime-specific team managers/backends are not instantiated by server team create/restore. |
 | AutoByteus member in a server team | `MixedAgentMemberHandle -> AgentRunManager -> AutoByteusAgentRunBackendFactory` | Standalone AutoByteus `AgentRun` | `composeNativeAutoByteusPrompt` consumes `MemberTeamContext` and emits Team Instruction plus AgentTeam Addressing/Collaboration before native guidance; native core then appends only the terminal configured Skills catalog. |
 | Codex or Claude member in a server team | `MixedAgentMemberHandle -> AgentRunManager` | Standalone Codex or Claude `AgentRun` | `composeSharedCarpenterPrompt` projects shared Team Instruction plus AgentTeam Addressing/Collaboration through provider instruction boundaries; native Bash/file guidance is excluded. `get_handoff_rules`, `send_message_to`, and `delegate_task` remain automatically included in effective team tool exposure and routed through Agent Tools MCP. |
+
+## Durable Member Activation And Restore
+
+Root create versus restore intent is explicit process-local materialization
+state. `AgentTeamRunManager` passes it through the mixed root, configured-member
+registry, and persistent nested subteams; configured handles do not infer a
+restored native run from `platformAgentRunId`. Before any candidate is built,
+the handle canonicalizes and reactivates the persisted workspace through
+`WorkspaceManager.ensureWorkspaceByRootPath(...)`.
+
+Each configured Agent handle and configured subteam handle owns one readiness
+attempt. Concurrent commands join that attempt. `AgentRunManager` returns a
+private activation candidate that is not visible through active lookup and has
+no input/event surface until the governing durability step succeeds:
+
+- A fresh external member creates one provider conversation and stages its
+  exact non-local ID as a `TeamAgentPlatformBinding`. `RootTeamRun` adopts that
+  binding through a lock-head execution-tree mutation before candidate
+  publication.
+- A restored external member must have an exact persisted provider binding.
+  Local conversation activity with a null binding is an explicit non-resumable
+  failure, not permission to create a replacement. Codex resume has no
+  start-thread fallback; Claude resumes the same preselected UUID.
+- A restored native member with canonical prior activity restores the same
+  local AgentRun ID, memory directory, and WorkingContext. A restored native
+  member with no activity may create fresh. Native members never stage or adopt
+  a `TeamAgentPlatformBinding`; unreadable activity or restore failure fails
+  closed.
+- A delegated task Agent is always a fresh execution. An external task binding
+  is applied to the same lock-head tree snapshot as task activation, and both
+  tree/task durability finish before candidate publication and work release.
+  Native task Agents stage no provider binding.
+
+A failed pre-durability attempt aborts the private candidate and is retryable
+only after cleanup is confirmed. An indeterminate durable write, publication
+failure after durability, or uncertain candidate cleanup fail-stops/quarantines
+the owning root or run instead of admitting duplicate work.
 
 ## Nested Member Identity And Commands
 
@@ -277,6 +317,9 @@ pipeline passes, or projection writes.
 - Member memory paths are resolved through `AgentMemoryLocationService`; no
   manager, stream, browser, or history consumer reconstructs them from names or
   provider IDs.
+- Every non-null persisted member workspace root is made active before create or
+  restore candidate construction; valid persisted workspaces do not silently
+  fall back to the temporary workspace.
 - Accepted restored follow-up messages record activity without changing the
   stable opening/coordinator title.
 
@@ -351,6 +394,8 @@ Agent history rows.
 - `src/agent-team-execution/domain/team-run.ts`
 - `src/agent-team-execution/services/team-run-service.ts`
 - `src/agent-team-execution/services/agent-team-run-manager.ts`
+- `src/agent-team-execution/services/team-run-execution-tree-mutator.ts`
+- `src/agent-team-execution/services/team-run-persistence-coordinator.ts`
 - `src/agent-team-execution/services/team-definition-topology-planner.ts`
 - `src/agent-team-execution/services/team-logical-placement-resolver.ts`
 - `src/agent-team-execution/services/member-team-context-builder.ts`

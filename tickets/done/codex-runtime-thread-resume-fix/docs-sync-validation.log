@@ -1,0 +1,37 @@
+# Docs sync validation
+timestamp=2026-08-17T20:31:14Z
+
+$ git diff --check
+PASS: no whitespace errors
+
+$ test -s <each edited durable doc>
+PASS autobyteus-server-ts/docs/modules/agent_execution.md
+PASS autobyteus-server-ts/docs/modules/agent_team_execution.md
+PASS autobyteus-server-ts/docs/modules/run_history.md
+PASS autobyteus-server-ts/docs/modules/codex_integration.md
+PASS autobyteus-server-ts/docs/modules/agent_memory.md
+
+$ test -f <each newly documented source owner>
+PASS autobyteus-server-ts/src/agent-execution/services/agent-run-activation-candidate.ts
+PASS autobyteus-server-ts/src/agent-execution/services/standalone-agent-run-activation-service.ts
+PASS autobyteus-server-ts/src/agent-memory/services/agent-conversation-activity-inspector.ts
+PASS autobyteus-server-ts/src/agent-team-execution/services/team-run-execution-tree-mutator.ts
+PASS autobyteus-server-ts/src/agent-team-execution/services/team-run-persistence-coordinator.ts
+
+$ required contract phrase audit
+autobyteus-server-ts/docs/modules/agent_team_execution.md:77:## Durable Member Activation And Restore
+autobyteus-server-ts/docs/modules/agent_memory.md:88:## Conversation Activity Classification For Restore
+autobyteus-server-ts/docs/modules/codex_integration.md:51:Codex conversation identity is exact and durability-gated. A fresh standalone
+autobyteus-server-ts/docs/modules/agent_execution.md:124:## Activation Publication And Exact Continuation
+autobyteus-server-ts/docs/modules/run_history.md:172:the catalog row. Native AutoByteus activation keeps `platformAgentRunId: null`.
+PASS: required promoted contracts present
+
+$ stale Claude identity wording audit
+PASS: stale observed-ID/placeholder wording absent
+
+$ shasum -a 256 <edited durable docs>
+eae75fea9323a7b7292bae476cf8c8b5396da0067abdabf92303d4a6f4bf7c6b  autobyteus-server-ts/docs/modules/agent_execution.md
+a741eef2c64b5a9a95cd1ab59ae0654560f16a62dcc80af64370b2cd38b02305  autobyteus-server-ts/docs/modules/agent_team_execution.md
+cd6b211c76d73a2b14e5297ae13d45ce3fe6cc2607f1e274f966249c18fe99a7  autobyteus-server-ts/docs/modules/run_history.md
+d03afbb1cc53385c264b5ca842968cefadba1d3ad92ebd9c12a678493b1f0abd  autobyteus-server-ts/docs/modules/codex_integration.md
+30336158111e9a1042dd039c387d14db3d8846a8614b9da01e6d2a1fd7aaaf47  autobyteus-server-ts/docs/modules/agent_memory.md
