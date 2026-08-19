@@ -4,7 +4,7 @@ const tokenLifecycleHarness = vi.hoisted(() => ({
   enrichmentConstructed: vi.fn(),
   enrichmentQuiesced: vi.fn(),
   persistenceConstructed: vi.fn(),
-  persistenceClosed: vi.fn().mockResolvedValue(undefined),
+  persistenceQuiesced: vi.fn(),
 }));
 
 vi.mock(
@@ -27,19 +27,19 @@ vi.mock(
 );
 
 vi.mock(
-  "../../../../src/agent-execution/events/processors/token-usage/token-usage-event-persistence-processor.js",
+  "../../../../src/agent-execution/events/processors/token-usage/token-usage-run-persistence-transformer.js",
   () => ({
-    TokenUsageEventPersistenceProcessor: class {
+    TokenUsageRunPersistenceTransformer: class {
       constructor() {
         tokenLifecycleHarness.persistenceConstructed();
       }
 
-      close(): Promise<void> {
-        return tokenLifecycleHarness.persistenceClosed();
+      quiesce(): void {
+        tokenLifecycleHarness.persistenceQuiesced();
       }
 
-      process(): [] {
-        return [];
+      transform(input: { events: readonly unknown[] }): unknown[] {
+        return [...input.events];
       }
     },
   }),
@@ -57,7 +57,7 @@ describe("default agent-run event pipeline lifecycle", () => {
     tokenLifecycleHarness.enrichmentConstructed.mockClear();
     tokenLifecycleHarness.enrichmentQuiesced.mockClear();
     tokenLifecycleHarness.persistenceConstructed.mockClear();
-    tokenLifecycleHarness.persistenceClosed.mockClear();
+    tokenLifecycleHarness.persistenceQuiesced.mockClear();
   });
 
   afterEach(async () => {
@@ -71,7 +71,7 @@ describe("default agent-run event pipeline lifecycle", () => {
     expect(getDefaultAgentRunEventPipeline()).toBe(stoppedComposition);
     expect(tokenLifecycleHarness.enrichmentConstructed).not.toHaveBeenCalled();
     expect(tokenLifecycleHarness.persistenceConstructed).not.toHaveBeenCalled();
-    expect(tokenLifecycleHarness.persistenceClosed).not.toHaveBeenCalled();
+    expect(tokenLifecycleHarness.persistenceQuiesced).not.toHaveBeenCalled();
   });
 
   it("retains the stopped composition and restarts only through the explicit reset hook", async () => {
@@ -84,7 +84,7 @@ describe("default agent-run event pipeline lifecycle", () => {
     expect(tokenLifecycleHarness.enrichmentConstructed).toHaveBeenCalledOnce();
     expect(tokenLifecycleHarness.persistenceConstructed).toHaveBeenCalledOnce();
     expect(tokenLifecycleHarness.enrichmentQuiesced).toHaveBeenCalledOnce();
-    expect(tokenLifecycleHarness.persistenceClosed).toHaveBeenCalledOnce();
+    expect(tokenLifecycleHarness.persistenceQuiesced).toHaveBeenCalledOnce();
 
     await stopDefaultAgentRunEventPipeline();
     expect(getDefaultAgentRunEventPipeline()).toBe(acceptingComposition);

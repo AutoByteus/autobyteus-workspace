@@ -12,7 +12,7 @@ import type {
   TokenUsageRuntimeModelStatisticsRow,
   TokenUsageTaskStatisticsRow,
 } from "../../../token-usage/domain/statistics-models.js";
-import { TokenUsageLedgerStore } from "../../../token-usage/providers/token-usage-ledger-store.js";
+import { TokenUsageRunStore } from "../../../token-usage/providers/token-usage-run-store.js";
 import { TokenUsageStatisticsProvider } from "../../../token-usage/providers/statistics-provider.js";
 
 @ObjectType()
@@ -501,7 +501,7 @@ export class TokenUsageStatisticsResolver {
   async getAgentRunTokenUsageSummary(
     @Arg("runId", () => String) runId: string,
   ): Promise<TokenUsageRunSummaryGraphql> {
-    const store = new TokenUsageLedgerStore();
+    const store = new TokenUsageRunStore();
     return toTokenUsageRunSummaryGraphql(await store.getAgentRunSummary(runId));
   }
 
@@ -509,7 +509,7 @@ export class TokenUsageStatisticsResolver {
   async getTeamRunTokenUsageSummary(
     @Arg("teamRunId", () => String) teamRunId: string,
   ): Promise<TokenUsageRunSummaryGraphql> {
-    const store = new TokenUsageLedgerStore();
+    const store = new TokenUsageRunStore();
     return toTokenUsageRunSummaryGraphql(await store.getTeamRunSummary(teamRunId));
   }
 
@@ -518,7 +518,7 @@ export class TokenUsageStatisticsResolver {
     @Arg("teamRunId", () => String) teamRunId: string,
     @Arg("agentRunId", () => String) agentRunId: string,
   ): Promise<TokenUsageRunSummaryGraphql> {
-    const store = new TokenUsageLedgerStore();
+    const store = new TokenUsageRunStore();
     return toTokenUsageRunSummaryGraphql(await store.getTeamMemberSummary({
       rootTeamRunId: teamRunId,
       agentRunId,

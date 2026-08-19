@@ -459,6 +459,8 @@ const settingsMessages = {
   'settings.components.settings.TokenUsageStatistics.endDateAriaLabel': '结束日期',
   'settings.components.settings.TokenUsageStatistics.loadingStatistics': '加载中…',
   'settings.components.settings.TokenUsageStatistics.loadingStatisticsLong': '正在加载 token 用量统计…',
+  'settings.components.settings.TokenUsageStatistics.rangeMeaning': '日期范围按运行创建时间筛选；总计显示每个所选运行的生命周期用量。',
+  'settings.components.settings.TokenUsageStatistics.historyMigrationRequired': '历史 token 数据迁移尚未完成，因此存量统计暂不可用。新运行仍可使用。请安装修正版后重启以重试迁移。',
   'settings.components.settings.TokenUsageStatistics.noTaskUsage': '该日期范围内没有找到代理或团队用量。',
   'settings.components.settings.TokenUsageStatistics.tryWiderRangeOrModel': '请尝试更宽的日期范围，或切换到模型视图。',
   'settings.components.settings.TokenUsageStatistics.noModelUsage': '该日期范围内没有找到运行时/模型用量。',

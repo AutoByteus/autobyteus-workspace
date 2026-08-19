@@ -11,6 +11,7 @@ import type {
 import {
   AppDataMigrationDuplicateRunError,
   AppDataMigrationPrerequisiteError,
+  AppDataMigrationRestartRequiredError,
 } from "./domain/app-data-migration-types.js";
 import {
   AppDataMigrationRegistry,
@@ -100,6 +101,9 @@ export class AppDataMigrationRunner {
     const definition = this.registry.getDefinition(migrationId);
     if (!definition) {
       throw new Error(`Unknown app data migration '${migrationId}'.`);
+    }
+    if (definition.executionPolicy === "STARTUP_ONLY") {
+      throw new AppDataMigrationRestartRequiredError(definition.id);
     }
     const record = await this.runDefinition(definition);
     return this.toStatusSnapshot(definition, record);

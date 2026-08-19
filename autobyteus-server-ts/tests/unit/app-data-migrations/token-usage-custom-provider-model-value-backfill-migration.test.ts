@@ -2,97 +2,67 @@ import { describe, expect, it } from "vitest";
 import {
   TOKEN_USAGE_CUSTOM_PROVIDER_MODEL_VALUE_BACKFILL_MIGRATION_ID,
   TokenUsageCustomProviderModelValueBackfillMigration,
-  type RawTokenUsageCustomProviderModelValueRow,
   type TokenUsageCustomProviderModelValueBackfillDatabase,
 } from "../../../src/app-data-migrations/migrations/token-usage-custom-provider-model-value-backfill-migration.js";
 
-const row = (input: Partial<RawTokenUsageCustomProviderModelValueRow> = {}): RawTokenUsageCustomProviderModelValueRow => ({
-  id: input.id ?? 1,
-  usage_event_id: input.usage_event_id ?? `event-${input.id ?? 1}`,
-  runtime_kind: input.runtime_kind ?? "autobyteus",
-  model_provider: input.model_provider ?? "OPENAI_COMPATIBLE",
-  provider_name: input.provider_name ?? null,
-  model_identifier: input.model_identifier ?? "openai-compatible:provider_A:org/model:tag",
-  model_value: input.model_value ?? "openai-compatible:provider_A:org/model:tag",
+type Row = Awaited<ReturnType<TokenUsageCustomProviderModelValueBackfillDatabase["listCandidateBatch"]>>[number];
+const row = (id: number, value = "openai-compatible:provider_A:org/model:tag"): Row => ({
+  id,
+  usage_event_id: `event-${id}`,
+  runtime_kind: "autobyteus",
+  model_provider: "OPENAI_COMPATIBLE",
+  model_identifier: "openai-compatible:provider_A:org/model:tag",
+  model_value: value,
 });
 
 class FakeDatabase implements TokenUsageCustomProviderModelValueBackfillDatabase {
-  rows: RawTokenUsageCustomProviderModelValueRow[];
-  failures = new Set<number>();
-
-  constructor(rows: RawTokenUsageCustomProviderModelValueRow[]) {
-    this.rows = rows.map((value) => ({ ...value }));
+  readonly batchSizes: number[] = [];
+  failNextBatch = false;
+  constructor(readonly rows: Row[]) {}
+  async listCandidateBatch(afterId: number, limit: number): Promise<Row[]> {
+    this.batchSizes.push(limit);
+    return this.rows.filter((item) => item.id > afterId && item.model_value?.trim().startsWith("openai-compatible:"))
+      .slice(0, limit).map((item) => ({ ...item }));
   }
-
-  async listTokenUsageLedgerRows(): Promise<RawTokenUsageCustomProviderModelValueRow[]> {
-    return this.rows.map((value) => ({ ...value }));
-  }
-
-  async countTokenUsageLedgerRows(): Promise<number> {
-    return this.rows.length;
-  }
-
-  async updateTokenUsageModelValue(input: {
-    id: number;
-    expectedModelValue: string;
-    nextModelValue: string;
-  }): Promise<number> {
-    if (this.failures.has(input.id)) throw new Error("synthetic update failure");
-    const target = this.rows.find((value) => value.id === input.id);
-    if (!target || target.model_value !== input.expectedModelValue) return 0;
-    target.model_value = input.nextModelValue;
-    return 1;
+  async countRows(): Promise<bigint> { return BigInt(this.rows.length); }
+  async applyBatch(updates: readonly { id: number; expectedModelValue: string; nextModelValue: string }[]): Promise<number[]> {
+    if (this.failNextBatch) { this.failNextBatch = false; throw new Error("synthetic batch failure"); }
+    return updates.map((update) => {
+      const target = this.rows.find((item) => item.id === update.id);
+      if (!target || target.model_value !== update.expectedModelValue) return 0;
+      target.model_value = update.nextModelValue;
+      return 1;
+    });
   }
 }
 
-describe("token usage custom-provider model value backfill migration", () => {
-  it("uses the fixed ID, preserves raw identity, and is idempotent", async () => {
-    const database = new FakeDatabase([row()]);
+describe("token usage custom-provider model value backfill", () => {
+  it("keeps the released ID, uses bounded candidates, and retries idempotently", async () => {
+    const database = new FakeDatabase([row(1), row(2, "ordinary-model")]);
     const migration = new TokenUsageCustomProviderModelValueBackfillMigration(database);
-
     expect(migration.id).toBe(TOKEN_USAGE_CUSTOM_PROVIDER_MODEL_VALUE_BACKFILL_MIGRATION_ID);
     await expect(migration.execute()).resolves.toMatchObject({ status: "SUCCEEDED" });
-    expect(database.rows[0]).toMatchObject({
-      model_identifier: "openai-compatible:provider_A:org/model:tag",
-      model_value: "org/model:tag",
-    });
+    expect(database.rows[0]?.model_value).toBe("org/model:tag");
+    expect(database.batchSizes.every((size) => size <= 250)).toBe(true);
     await expect(migration.execute()).resolves.toMatchObject({ status: "SUCCEEDED" });
   });
 
-  it("returns warnings for unsafe rows and keeps valid non-composites safe", async () => {
-    const database = new FakeDatabase([
-      row({ id: 1 }),
-      row({ id: 2, model_value: "openai-compatible:provider_A" }),
-      row({ id: 3, model_value: "org/model:tag" }),
-      row({ id: 4, model_identifier: "short-model" }),
-      row({ id: 5, runtime_kind: "codex_app_server" }),
-    ]);
+  it("caps malformed-candidate evidence and keeps scalar skip counts", async () => {
+    const database = new FakeDatabase(Array.from({ length: 70 }, (_, index) =>
+      row(index + 1, "openai-compatible:malformed")));
     const result = await new TokenUsageCustomProviderModelValueBackfillMigration(database).execute();
-
     expect(result.status).toBe("SUCCEEDED_WITH_WARNINGS");
-    expect(result.summary.migratedCount).toBe(1);
-    expect(result.summary.scannedCount).toBe(5);
-    expect(result.summary.details.some((detail) => detail.message.includes("SKIPPED_INVALID_COMPOSITE_MODEL_VALUE"))).toBe(true);
-    expect(result.summary.details.some((detail) => detail.message.includes("SKIPPED_SCOPE_MISMATCH"))).toBe(true);
+    expect(result.summary.skippedCount).toBe(70);
+    expect(result.summary.details.length).toBeLessThanOrEqual(50);
   });
 
-  it("continues after an independent row failure and retries only unresolved rows", async () => {
-    const database = new FakeDatabase([row({ id: 1 }), row({ id: 2 }), row({ id: 3 })]);
-    database.failures.add(2);
+  it("returns failure after a transactional batch error and succeeds on normal retry", async () => {
+    const database = new FakeDatabase([row(1), row(2)]);
+    database.failNextBatch = true;
     const migration = new TokenUsageCustomProviderModelValueBackfillMigration(database);
-
-    const failed = await migration.execute();
-    expect(failed.status).toBe("FAILED");
-    expect(failed.summary.migratedCount).toBe(2);
-    expect(database.rows.map((value) => value.model_value)).toEqual([
-      "org/model:tag",
-      "openai-compatible:provider_A:org/model:tag",
-      "org/model:tag",
-    ]);
-
-    database.failures.clear();
-    const retried = await migration.execute();
-    expect(retried.status).toBe("SUCCEEDED");
-    expect(retried.summary.migratedCount).toBe(1);
+    expect((await migration.execute()).status).toBe("FAILED");
+    expect(database.rows.every((item) => item.model_value?.startsWith("openai-compatible:"))).toBe(true);
+    expect((await migration.execute()).status).toBe("SUCCEEDED");
+    expect(database.rows.every((item) => item.model_value === "org/model:tag")).toBe(true);
   });
 });

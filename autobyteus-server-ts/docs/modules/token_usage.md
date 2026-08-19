@@ -2,559 +2,357 @@
 
 ## Scope
 
-Token usage is the server-owned accounting spine for model/runtime usage. The
-current source of truth is the append-only `token_usage_ledger_events` table,
-not frontend state, message rendering metadata, runtime memory, or the historical
-role-split `token_usage_records` table.
+Token Usage is the server-owned accounting boundary for model/runtime usage.
+The current source of truth is `token_usage_run_records`: exactly one cumulative
+row per canonical agent `run_id`. The same invariant covers standalone runs,
+direct and nested Team members, and delegated/task-created agent runs.
 
-The ledger answers, per usage observation:
+`TOKEN_USAGE_UPDATED` observations are transient inputs. They carry the raw
+runtime facts needed to normalize and fold one update, but the current store
+does not retain one row or raw payload per notification. The released
+`token_usage_ledger_events` table remains declared only inside the production
+migration contract for direct and skip-version upgrades; normal runtime code
+does not read or write it.
 
-- which agent run and turn consumed the tokens;
-- which team/member/task context owned the usage when the run is inside a team;
-- which runtime, model provider, and model identifier produced the usage;
-- for AutoByteus rows, which provider display name was snapshotted at ingestion
-  for historical statistics labels (direct Codex/Claude paths may leave this
-  nullable);
-- which token counts were reported by the provider/runtime and which accounting
-  delta is safe to aggregate;
-- whether estimated API price could be calculated from trusted catalog pricing;
-- which raw provider/runtime usage payload was observed for audit/debugging.
+Each current run record contains:
 
-## TS Source
+- cumulative token components and estimated API-cost components;
+- exact canonical run identity plus root-Team/task/display attribution;
+- first/latest observation and run-created timestamps;
+- latest runtime/model/prompt/context facts;
+- aggregate identity, pricing, cache, cost-status, and quality summaries; and
+- compact cumulative-snapshot checkpoints and recent idempotency digests needed
+  to fold future observations safely.
 
-- Domain/event payloads: `src/agent-execution/domain/agent-run-token-usage.ts`
-- Event enrichment/persistence pipeline:
+Event-level raw usage history is intentionally not part of the authoritative
+store.
+
+## Source Map
+
+- Transient event/domain contract:
+  `src/agent-execution/domain/agent-run-token-usage.ts`
+- Event pipeline:
   - `src/agent-execution/events/default-agent-run-event-pipeline.ts`
-  - `src/agent-execution/events/processors/token-usage/`
-- Runtime ingestion:
-  - Native AutoByteus: `autobyteus-ts` emits `TOKEN_USAGE_UPDATED` from
-    `LlmPhase` using `LlmTokenUsageObservation` provider normalizers.
-  - Codex App Server: `src/agent-execution/backends/codex/thread/` parses
-    `thread/tokenUsage/updated`; `codex-agent-run-backend.ts` emits ready
-    `TOKEN_USAGE_UPDATED` events.
-  - Claude Agent SDK: `src/agent-execution/backends/claude/session/` extracts
-    terminal result/model-usage data into `TOKEN_USAGE_UPDATED` events.
-- Ledger/pricing/projections: `src/token-usage`
-- SQL model repository:
-  `src/token-usage/repositories/sql/token-usage-ledger-repository.ts`, which
-  extends `repository_prisma` `BaseRepository` for
-  `TokenUsageLedgerEvent`.
-- TeamRun V1 production-data transition:
-  - `src/app-data-migrations/migrations/team-run-execution-tree-v1/token-usage-team-run-v1-row-planner.ts`
-  - `src/app-data-migrations/migrations/token-usage-task-team-run-index.ts`
-  - `src/token-usage/repositories/sql/token-usage-team-run-v1-migration-repository.ts`
-- GraphQL API: `src/api/graphql/types/token-usage-stats.ts`
-- Prisma model/migration:
-  - `prisma/schema.prisma` model `TokenUsageLedgerEvent`
-  - `prisma/migrations/20260624090000_add_token_usage_ledger_events/`
-  - `prisma/migrations/20260625193000_token_usage_component_pricing_explainability/`
-  - `prisma/migrations/20260730090000_add_token_usage_provider_name/`
-  - `prisma/migrations/20260702093000_token_usage_execution_address/`
+  - `src/agent-execution/events/processors/token-usage/token-usage-event-enrichment-transformer.ts`
+  - `src/agent-execution/events/processors/token-usage/token-usage-run-persistence-transformer.ts`
+- Current token-usage owner: `src/token-usage`
+  - domain record: `domain/token-usage-run-record.ts`
+  - deterministic fold: `projections/token-usage-run-fold.ts`
+  - accumulator: `services/token-usage-run-accumulator.ts`
+  - use-case facade/readiness: `providers/token-usage-run-store.ts` and
+    `providers/token-usage-migration-readiness.ts`
+  - SQL repository: `repositories/sql/token-usage-run-repository.ts`
+- GraphQL: `src/api/graphql/types/token-usage-stats.ts`
+- Current Prisma owner:
+  - `prisma/schema.prisma` model `TokenUsageRunRecord`
+  - `prisma/migrations/20260819090000_add_token_usage_run_records/`
+- Migration-only legacy owners:
+  - `src/app-data-migrations/migrations/token-usage-custom-provider-model-value-backfill-migration.ts`
+  - `src/app-data-migrations/migrations/token-usage-provider-name-snapshot-backfill-migration.ts`
+  - `src/app-data-migrations/migrations/team-run-execution-tree-v1/`
+  - `src/app-data-migrations/migrations/token-usage-run-records-v1/`
 
-## Event Pipeline
+Production migration design follows
+[`Production Data-Migration Conventions`](../design/production_data_migration_conventions.md).
 
-`TOKEN_USAGE_UPDATED` is a normalized `AgentRunEvent`. Before downstream
-processors run, `TokenUsageEventEnrichmentTransformer` converts raw runtime
-payloads into the ledger/event contract:
+## Observation And Persistence Flow
 
-1. `createTokenUsageUpdatedPayload(...)` normalizes reported usage, model
-   identity, input-token semantic, cache state, latest prompt/context-window
-   fields, scope, raw JSON, quality flags, and idempotency fields.
-2. `TokenUsageContextEnricher` adds current run, root-Team, and workspace
-   identity from `AgentRunContext` / `AgentRunConfig` / `MemberTeamContext`.
-   The concrete `run_id` identifies the Agent execution and
-   `root_team_run_id` groups Team-context usage; execution topology remains
-   owned by the TeamRun execution tree rather than duplicated in new ledger
-   rows.
-3. `TokenUsageComponentBasisResolver` converts provider/runtime readings into
-   canonical component fields before pricing. It is the only stage that decides
-   whether reported input already includes cache tokens (`gross_includes_cache`)
-   or is a base/additive count (`base_excludes_cache`, used by Anthropic-style
-   usage).
-4. `TokenUsageSnapshotDeltaNormalizer` converts provider readings into
-   aggregatable accounting deltas. `per_call` and `per_turn` readings are direct
-   deltas; `cumulative_snapshot` readings are diffed by snapshot series so a
-   Codex cumulative total cannot be summed repeatedly.
-5. `TokenPriceConfigProvider` resolves a provider/model/runtime pricing policy
-   through the shared `autobyteus-ts` model catalog, then `TokenCostCalculator`
-   applies only trusted price dimensions to the component basis.
-6. `TokenUsageEventPersistenceProcessor` schedules a tracked async append
-   through `TokenUsageLedgerStore`. Persistence failures are logged and must not
-   block runtime streaming/event dispatch. The default pipeline can quiesce and
-   drain every accepted scheduled/in-flight append before the shared Prisma
-   lifecycle closes. Normal shutdown keeps token enrichment and persistence
-   quiescent, so a late active-run event cannot query or create new persistence
-   work after the drain; only an explicit lifecycle-owned test reset can create
-   a new token pipeline.
+`TOKEN_USAGE_UPDATED` remains the live event contract. The default event
+pipeline processes each token event in this order:
 
-The ledger repository acquires no raw or injected Prisma client. Each inherited
-model operation resolves the current `repository_prisma` root or
-AsyncLocalStorage transaction client at call time. Normal server composition
-initializes that root after schema migrations and shuts it down only after the
-default token processor has drained.
+1. `createTokenUsageUpdatedPayload(...)` normalizes the runtime payload into the
+   transient token-usage observation shape.
+2. `TokenUsageContextEnricher` adds run, root-Team, workspace, task, and display
+   context from the active run.
+3. `TokenUsageComponentBasisResolver` defines gross/standard/cache/billable
+   component meaning. It is the only stage that interprets whether provider
+   input already includes cache tokens (`gross_includes_cache`) or is additive
+   (`base_excludes_cache`).
+4. `TokenUsageSnapshotDeltaNormalizer` prepares an optimistic live delta and
+   preserves exact cumulative source counters in the transient payload. It is
+   not the durable reconciliation owner.
+5. `TokenCostCalculator` enriches the transient observation using trusted
+   server-side model pricing.
+6. The awaited `TokenUsageRunPersistenceTransformer` sends the enriched
+   observation to `TokenUsageRunStore`. `TokenUsageRunAccumulator` serializes
+   work by `run_id`, resolves the pricing policy, folds inside a real SQLite
+   transaction, upserts the one current row, and returns the authoritative
+   per-event contribution plus `run_summary_after_event`.
 
-## Runtime-Native Token Event Ingestion
+Persistence is not detached with `setImmediate`; a completed pipeline transform
+has completed its token fold. A failed fold is logged and the live event still
+continues with `token_usage_persistence_unavailable`. If the BigInt record was
+persisted but cannot be projected as an exact JavaScript safe integer, the event
+continues with `token_usage_public_summary_unavailable` instead. Shutdown
+quiesces both token transformers so no new persistence work begins after the
+shared Prisma lifecycle starts closing; there is no background append queue to
+drain.
 
-Runtime token events use the same canonical ledger contract as native
-`autobyteus-ts` provider observations. Runtime adapters must map first-class
-usage fields before the event reaches the enrichment/pricing/persistence spine;
-future callers should not depend on raw JSON for supported fields.
+## Current Run-Record Invariants
+
+### Identity And Transaction Ownership
+
+- `token_usage_run_records.run_id` has a database unique constraint.
+- `run_id` is the concrete AgentRun identity. Team-context records also carry
+  `root_team_run_id`; the TeamRun execution tree remains the topology authority.
+- A process-wide per-run promise queue serializes observations for the same run.
+  Each fold reads and writes the row within one repository transaction.
+- Different runs remain independent. Readers query the current table directly;
+  they do not reconstruct a run from event arrays.
+
+### Additive Observations
+
+`per_call` and `per_turn` observations contribute their normalized component
+deltas directly. The fold accumulates token and cost components, merges
+identity/pricing/cache/status facts truthfully, increments `usage_report_count`,
+and preserves only the latest prompt/context fields selected by the observation
+ordering marker.
+
+### Cumulative Snapshots
+
+Cumulative sources such as Codex cannot be summed blindly. The persisted fold
+uses a stable snapshot-series digest and the exact transient source counters:
+
+- a known series contributes only positive advancement beyond its checkpoint;
+- unchanged replays contribute zero and do not increment the report count;
+- regressed counters contribute zero, preserve the component-wise maximum
+  checkpoint, and add a quality flag;
+- the first Codex snapshot uses provider-delta reconciliation when available;
+  otherwise it establishes a no-charge baseline rather than charging historical
+  thread totals; and
+- duplicate event/idempotency digests contribute zero.
+
+State is bounded per run:
+
+- at most 8 cumulative-series checkpoints and 16 KiB encoded checkpoint state;
+- at most 64 recent event/idempotency digests and 8 KiB encoded digest state;
+- keys are SHA-256 digests rather than retained raw identifiers.
+
+When a ninth series appears, the least-recent checkpoint is evicted
+deterministically. A later observation for an evicted series establishes a
+no-charge baseline and records `cumulative_series_checkpoint_evicted`. This can
+cause bounded undercount for extreme series churn but cannot double-charge the
+unknown interval or grow storage without bound.
+
+### Stored Numbers And Public SafeInt
+
+SQLite/Prisma stores cumulative token counts as `BigInt`. The GraphQL family
+uses `SafeInt` and supports exact JavaScript numbers only through
+`Number.MAX_SAFE_INTEGER`. An out-of-range public projection returns a bounded
+field-specific error such as
+`TOKEN_USAGE_SAFE_INTEGER_EXCEEDED:accounting_input_tokens`; it is not rounded,
+capped, string-coerced, or silently dropped. Persistence can therefore remain
+truthful even when the current public number contract cannot represent a value.
+
+## Runtime Adapter Semantics
 
 ### Codex App Server
 
-Codex App Server emits raw `thread/tokenUsage/updated` notifications with
-`tokenUsage.last`, `tokenUsage.total`, and `tokenUsage.modelContextWindow`.
-`tokenUsage.total` is treated as the authoritative cumulative thread snapshot
-when present, while `tokenUsage.last` is preserved as provider-delta metadata
-for the current update. `resolveCodexThreadTokenUsage(...)` owns this mapping:
+Codex emits `thread/tokenUsage/updated` notifications containing
+`tokenUsage.total`, `tokenUsage.last`, and `modelContextWindow`.
+`resolveCodexThreadTokenUsage(...)`:
 
-- prefer `total` as a `cumulative_snapshot` with stable
+- prefers `total` as a `cumulative_snapshot` with stable
   `snapshot_series_key=codex_thread:<thread-id>`;
-- use `last` as a fallback `per_call` delta only when Codex omits `total`, and
-  flag that fallback with `codex_cumulative_total_missing_used_provider_delta`;
-- attach `last` token fields to the raw event as reconciliation metadata so the
-  first cumulative snapshot can be baselined from the provider delta instead of
-  charging historical thread totals, and later total movement can be compared
-  against the provider-reported delta;
-- mark Codex input semantics as `gross_includes_cache`;
-- map `inputTokens`, `outputTokens`, and `totalTokens` to reported token fields,
-  with the latest provider-delta gross input becoming `latest_prompt_tokens`;
-- map `cachedInputTokens` to first-class `cache_read_input_tokens`;
-- map `reasoningOutputTokens` to first-class `reasoning_output_tokens`; and
-- map `modelContextWindow` to `effective_context_window_tokens`.
+- uses `last` as a `per_call` fallback only when `total` is absent;
+- carries `last` in transient reconciliation metadata so the first cumulative
+  snapshot can charge the provider delta rather than historical totals;
+- treats input as `gross_includes_cache`;
+- maps cache-read, reasoning-output, latest-prompt, and context-window facts to
+  first-class fields; and
+- does not infer cache creation from `inputTokens - cachedInputTokens`.
 
-The Codex app-server contract verified on 2026-07-10 exposes no cache-write
-quantity in either `total` or `last`. `cachedInputTokens` is cache read only;
-`resolveCodexThreadTokenUsage(...)` must keep cache creation unknown/null and
-must not infer it from `inputTokens - cachedInputTokens`. A trusted model-policy
-write price without a positive source quantity produces no write cost and no
-frontend cache-write row.
-
-When auditing protocol support, distinguish upstream source records from
-AutoByteus reconciliation metadata. `tokenUsage.total` / `tokenUsage.last` and
-the selected `raw_usage_json` are source evidence. Enriched `raw_event_json`
-may include AutoByteus-added
-`autobyteus_cumulative_snapshot_provider_delta_tokens` with a canonical null
-cache-write entry; that key does not mean Codex emitted a write field. Before
-supporting a future write count, re-generate the supported Codex bindings and
-review the official field's `total`/`last` cumulative semantics rather than
-adding aliases or remainder inference.
-
-Codex token-usage updates are dispatched as they arrive, including multiple
-updates for one active `turnId`; they must not wait behind a single pending
-turn-id map entry that could overwrite an earlier update. The raw Codex payload
-is still preserved for audit/debugging, but cache, reasoning, and context fields
-must not be raw-only. Durable coverage asserts these fields persist in
-`token_usage_ledger_events`, surface through GraphQL summaries where exposed,
-and update the live token meter store state.
+The supported Codex contract exposes no cache-write quantity. Raw Codex
+payloads remain transient event evidence used by the fold and live path; they
+are not retained in the cumulative database row. Multiple updates for one
+active turn are dispatched in arrival order rather than collapsed in a pending
+turn map.
 
 ### Claude Agent SDK
 
-Claude Agent SDK accounting is terminal-result based. Assistant thinking/text
-chunks are content stream events, not token-accounting rows, and must not be
-summed into usage. `buildClaudeTokenUsageEvent(...)` emits one `per_turn`
-`TOKEN_USAGE_UPDATED` event only from terminal `result` payloads with
-`result.usage` and/or `modelUsage`.
+Claude accounting is terminal-result based. Thinking/text stream chunks are
+content events, not token contributions. `buildClaudeTokenUsageEvent(...)`
+emits one `per_turn` observation from terminal `result.usage` and/or
+`modelUsage`.
 
-The mapper preserves input/output/total tokens plus cache-read/cache-creation
-fields from snake_case or camelCase usage shapes. Claude/Anthropic input uses
-`base_excludes_cache`: gross input is the reported `input_tokens` plus cache
-read and cache creation buckets, while standard input remains the base input.
-If a future SDK result exposes numeric thinking details such as
-`output_tokens_details.thinking_tokens` or `thinkingTokens`, that value maps to
-`reasoning_output_tokens`. If the SDK emits thinking content but no numeric
-thinking-token count, `reasoning_output_tokens` stays null; the UI should show
-accurate output totals/cost without a thinking-token subline.
-When both `result.usage` and `modelUsage` are present, the mapper preserves the
-raw terminal result and flags comparable token divergence with
-`claude_usage_model_usage_mismatch`; it does not switch Claude to Codex-style
-cumulative accounting.
+Claude/Anthropic input uses `base_excludes_cache`: gross input is base input
+plus cache-read and cache-creation buckets. Numeric thinking details map to
+`reasoning_output_tokens`; absent numeric detail remains null even when thinking
+content exists. Divergence between comparable `usage` and `modelUsage` facts is
+flagged rather than changing Claude into cumulative accounting.
 
-## Ledger Semantics
+## Token And Pricing Semantics
 
-The ledger separates **reported** provider/runtime readings from **accounting**
-deltas:
+The transient observation separates reported provider readings from the
+accounting contribution. The persisted run record stores cumulative accounting
+components rather than reported raw snapshots:
 
-- `reported_input_tokens`, `reported_output_tokens`, and `reported_total_tokens`
-  preserve what the runtime said.
-- `accounting_input_tokens`, `accounting_output_tokens`, and
-  `accounting_total_tokens` are gross input/output/total deltas and are the only
-  primary fields that summaries/statistics add.
-- `input_token_semantic` explains how the reported input count should be read:
-  `gross_includes_cache` means provider prompt/input already includes cache-hit
-  and cache-write tokens; `base_excludes_cache` means gross input is additive
-  (`reported input + cache read + cache creation`); `unknown` means the row is
-  unsafe for full component pricing.
-- Public summaries expose named component fields instead of forcing readers to
-  infer billing meaning from one broad input number:
-  - `gross_input_tokens`: cumulative input/prompt tokens sent to model context.
-  - `standard_input_tokens`: uncached/base/full-price input tokens.
-  - `cache_miss_input_tokens`: explicit provider miss bucket when available.
-  - `cache_read_input_tokens`: cache-hit/read tokens.
-  - `cache_creation_input_tokens`, `cache_creation_5m_input_tokens`, and
-    `cache_creation_1h_input_tokens`: cache write/creation buckets.
-  - `output_tokens`, `reasoning_output_tokens`, and `billable_output_tokens`:
-    output totals, visible reasoning/thinking sub-breakdown, and provider-billed
-    output basis when a provider reports them differently.
-- `cache_state` is `positive`, `zero_reported`, `not_reported`,
-  `unsupported_or_local`, or `unknown`. Zero cache tokens are different from a
-  provider not reporting cache fields.
-- `latest_prompt_tokens`, `effective_context_window_tokens`, and
-  `context_window_usage_percent` describe the latest model-call prompt/context
-  pressure. They are not cumulative usage and must not be compared directly with
-  cumulative gross input totals.
-- `usage_report_count` counts token-usage/model-call reports emitted by the
-  runtime/provider. It is not a user-message count or a chat-row count.
-- Cost calculation uses billable token fields when providers expose them. For
-  example, Gemini thinking tokens are carried as `reasoning_output_tokens` and
-  billable output tokens so output-price estimates include provider-billed
-  thinking, while reasoning remains a visible output sub-breakdown instead of
-  being double-counted in token totals.
-- Component, cache, reasoning, billable-output, and latest-prompt fields are
-  delta-normalized for cumulative snapshots just like the primary
-  input/output/total fields.
-- `usage_scope` is `per_call`, `per_turn`, or `cumulative_snapshot`.
-- `raw_usage_json` and `raw_event_json` preserve provider/runtime details such
-  as cache and reasoning token fields when available.
-- `quality_flags` record missing/partial usage observations without fabricating
-  token counts.
+- gross, standard, cache-miss, cache-read, cache-creation (general/5m/1h),
+  output, reasoning-output, billable-input, and billable-output token totals;
+- latest prompt and effective context-window facts separately from lifetime
+  totals; and
+- usage report count as model/runtime usage reports, not chat rows or user
+  messages.
 
-Cost is always an **estimated API-price** interpretation over accounting token
-deltas. It is separate from token counts and is nullable:
+Estimated API cost is server-owned, nullable, and distinct from token counts:
 
-- `api_cost_status = estimated` only when trusted pricing resolves from the
-  shared catalog for all dimensions needed by the observed row.
-- `price_missing` means tokens were stored but no trusted price was available.
-- `partial_price_missing` means only part of the needed price dimensions were
-  trusted, such as observed cache-write tokens without a trusted cache-write
-  price.
-- `local_no_api_bill` means local runtimes such as Ollama/LM Studio have no
-  provider API bill in this context. The UI should present that status directly
-  instead of rendering a paid-provider `$0 estimate`.
-- `mixed` is used by aggregate summaries/statistics when rows have incompatible
-  cost statuses, providers, models, or currencies. Mixed aggregates keep token
-  totals but return nullable aggregate costs instead of adding unsafe monetary
-  values together.
+- `estimated`: every required positive-token dimension had trusted pricing;
+- `price_missing`: usage exists but trusted pricing was absent;
+- `partial_price_missing`: only some required dimensions were priced;
+- `local_no_api_bill`: the runtime has no provider API bill in this context;
+- `mixed`: aggregate rows contain incompatible price statuses, providers,
+  models, or currencies and therefore do not sum unsafe monetary values.
 
-Constructor/default-zero price values are not trusted free prices. Unknown,
-placeholder, custom, or unmatched models remain token-only until trusted pricing
-is added. Local runtime models must use explicit `local_no_api_bill` status
-rather than pretending to be a remote paid provider with zero pricing. The shared
-`autobyteus-ts` catalog can express currency, cache read/write prices, cache
-write subtype prices, provider pricing source/effective date, and input-size
-price tiers; server-side accounting selects the applicable trusted tier before
-estimating cost.
+Constructor/default-zero prices are not trusted free prices. Public summaries
+include component `unitPrices`, policy/tier identifiers, currency/status, and
+missing dimensions so the UI can explain costs without recalculating them.
+Reasoning tokens remain a visible subset of output and are not double-counted.
 
-## SQL Storage
+## Production Data Transition
 
-`token_usage_ledger_events` is append-oriented and idempotent:
+### Expansion And Legacy Boundary
 
-- `usage_event_id` is unique.
-- `idempotency_key` is unique.
-- run/time, team/time, and snapshot-series indexes support summaries and
-  cumulative snapshot diffing.
-- `run_id` is the concrete AgentRun identity. Team-context usage also stores
-  `root_team_run_id`, and the
-  `token_usage_ledger_events_root_team_run_id_observed_at_idx` index supports
-  root-Team summaries. Current Token Usage storage and APIs do not duplicate
-  the TeamRun execution tree or use an execution address as hierarchy
-  authority.
+The Prisma expansion migration creates `token_usage_run_records` with unique
+`run_id` and all current columns. `TokenUsageLedgerEvent` remains declared only
+because Prisma schema deployment precedes app-data transformation on a direct
+or skip-version upgrade. Current domain, repository, provider, GraphQL, and
+runtime code contain no legacy query, decoder, dual reader/writer, or missing-
+current-table fallback.
 
-The old `token_usage_records` table was a lossy role-split storage shape and is
-not used as the current accounting source. `TokenUsageStore`,
-`SqlTokenUsageRecordRepository`, and `TokenUsagePersistenceProcessor` should not
-be reintroduced as compatibility writers. Released SQLite files may still
-contain predecessor-only execution-address, path, member, or task columns.
-Those columns are inert migration evidence: they are absent from the current
-Prisma model and are not selected by normal ingestion, summary, GraphQL, or
-frontend paths.
+### Released Source-Shaping Repairs
 
-## TeamRun V1 Root-Attribution Transition
+The existing migration IDs
+`20260730_token_usage_custom_provider_model_value_backfill` and
+`20260730_token_usage_provider_name_snapshot_backfill` are repaired in place so
+installations already marked `FAILED` retry the corrected definitions. Both
+migrations:
 
-Required startup app-data migration `20260814_team_run_execution_tree_v1` is the
-single final production transition for released Team metadata, task records,
-communication messages, token root attribution, and Team history. The
-unpublished `20260801_team_canonical_identity` definition is not registered and
-its old ledger row, if present, remains inert.
+- select only SQL-eligible candidates and required scalar columns;
+- use keyset batches of at most 250 rows;
+- update only the target field with compare-and-set conditions;
+- validate with scalar counts rather than whole-ledger snapshots;
+- cap examples while retaining per-reason counts; and
+- leave failures truthful and retryable.
 
-For Token Usage the final migration:
+The TeamRun V1 token attribution repository also lives inside its registered
+migration boundary. It may interpret released predecessor columns to correct
+legacy root attribution before consolidation, but no current token owner imports
+that repository or those legacy fields.
 
-1. Inspects the current runtime columns and all available predecessor evidence,
-   then gives every row one explicit disposition: standalone, already current,
-   resolved, or preserved-with-warning. It validates task-Team ancestry against
-   retained predecessor or current V1 topology when available. Self-contained
-   retired-row evidence is accepted only within the bounded migration planner;
-   ambiguous, conflicting, or incomplete identity is never guessed.
-2. Treats predecessor execution-address/path/member/task columns as read-only
-   evidence. A resolved row is eligible for a root correction only when the
-   destination root has an independently admitted current V1 package. An
-   unresolved or unsupported row and all of its accounting facts remain
-   unchanged with a truthful warning.
-3. Applies only required `root_team_run_id` corrections in one SQLite
-   transaction. The transaction verifies every updated root, all non-root
-   accounting facts, total row count, retention of every predecessor evidence
-   column that existed at inspection time, and the current
-   `(root_team_run_id, observed_at)` index. A transaction problem is reported as
-   a warning, with native rollback checked against the pre-transaction
-   snapshot; the migration does not contract the table or delete evidence.
+### One-Row Consolidation
 
-Standalone rows keep `root_team_run_id = null`. Current Team rows use the root
-TeamRun ID plus their concrete `run_id`; task identity may remain descriptive
-ledger metadata but is not runtime topology authority. Normal reads never
-repair identity from predecessor columns. Token planning or apply problems
-produce `SUCCEEDED_WITH_WARNINGS` and do not block server health or unrelated
-TeamRun migration work.
+Startup-only migration `20260819_token_usage_run_records_v1` runs after both
+source-shaping migrations. Inside one SQLite transaction it:
 
-## Custom-Provider Model Metadata Migrations
+1. validates nonblank canonical run IDs and zero intersection between legacy
+   and already-current run IDs;
+2. keyset-reads each run's legacy rows in batches of at most 250;
+3. deterministically folds the complete legacy run into one current record;
+4. validates per-run aggregates plus global row/run counts;
+5. inserts one current row per legacy run; and
+6. deletes every legacy source row only after all validation succeeds.
 
-The Prisma migration
-`20260730090000_add_token_usage_provider_name` adds nullable
-`token_usage_ledger_events.provider_name`. New AutoByteus observations persist
-the configured custom-provider name or canonical built-in provider display name
-at ingestion time. Direct Codex and Claude paths keep `provider_name = null` and
-retain their existing non-AutoByteus display behavior. New-event persistence
-does not perform a statistics-time provider-registry lookup.
+Any failure rolls back both target inserts and source deletion. Ordinary startup
+retry repeats the same path. A successful consolidation leaves the legacy table
+empty and its SQLite pages reusable. It does not run startup `VACUUM`, and the
+physical legacy table/model contract remains for a separately sequenced future
+contraction.
 
-Two required app-data migrations separately repair historical provider/model
-display fields after Prisma schema deployment. They do not contract Team
-identity columns and do not own the TeamRun V1 root-attribution transition:
+### Readiness And Availability
 
-1. `20260730_token_usage_custom_provider_model_value_backfill` repairs a
-   validated legacy composite `model_value` by keeping the complete
-   `<modelName>` suffix, including additional `:` characters. It never changes
-   `model_identifier`, row counts, attribution, or accounting.
-2. `20260730_token_usage_provider_name_snapshot_backfill` fills only null/empty
-   AutoByteus `provider_name` values from built-in mappings or the current
-   custom-provider registry. It skips direct non-AutoByteus rows and warns
-   rather than guessing for missing/deleted/invalid providers. Rows that
-   already contain a snapshot are unchanged.
+Bootstrap validates the current table, required columns, and unique `run_id`
+constraint before app-data migration execution:
 
-Both migrations use independently durable compare-and-set updates, preserve
-row count and all non-target ledger fields, and are idempotent. Startup
-continues after row or migration failures; `FAILED` rows retry through
-`runPending()`, while warning-completed rows remain terminal for `runPending()`
-and retry only through explicit `runMigration(id)`. Each migration records
-`SUCCEEDED`, `SUCCEEDED_WITH_WARNINGS`, or `FAILED` with scan/update/skip/failure
-details. Snapshot-first display preserves historical provider names after a
-rename or deletion; legacy rows without a recoverable snapshot retain the
-current lookup/deterministic fallback policy.
+- missing current schema is `CRITICAL_CURRENT_SCHEMA_FAILURE`; the embedded
+  server exits with bounded `TOKEN_USAGE_CURRENT_SCHEMA_INVALID` evidence and
+  no old-ledger runtime fallback;
+- successful consolidation is `READY`; current history, summaries, and restore
+  paths are available; and
+- failed/incomplete consolidation with a valid current schema is
+  `CURRENT_SCHEMA_DEGRADED`; the application and newly allocated runs remain
+  available, but historical token reads and restoration/continuation of a
+  pre-existing canonical run are rejected before provider startup.
 
-## GraphQL / Statistics
+New runs write only the current table. Global run-ID allocation plus the restore
+gate keeps their IDs disjoint from legacy IDs; retry validates that disjointness
+again before import. Users recover from a migration defect by installing a
+corrected release and restarting. No manual production-data surgery or migration
+status fabrication is part of the supported path.
 
-`TokenUsageStatisticsResolver` exposes ledger-backed reads:
+## GraphQL And Statistics
 
-- `totalCostInPeriod(startTime, endTime)` returns nullable estimated total cost.
-- `tokenUsageTaskStatisticsInPeriod(startTime, endTime)` is the primary
-  Settings > Token Statistics projection. It returns one top-level row for each
-  standalone agent run or root team run that has ledger usage observed during
-  the selected period, with descendant usage nested through recursive
-  `children` rows instead of repeated as standalone rows.
-- The current projection emits `TEAM_RUN`, `AGENT_RUN`, and `MEMBER_RUN` rows.
-  A Team row groups by `root_team_run_id`; its children group by exact
-  `run_id`. A task Agent or task-Team Agent therefore appears as the concrete
-  member run that produced the usage rather than causing Token Usage to rebuild
-  the execution topology. `taskId` remains descriptive row metadata when it was
-  captured.
-- Active Token Usage Task statistics does not expose or consume
-  `executionAddress`, `memberPath`, `teamRunPath`, `member_path`, or
-  `team_run_path` as hierarchy surfaces. The TeamRun execution-tree package is
-  the topology authority; Token Usage owns only its root/run grouping and
-  display fields.
-- Task-statistics row labels come from token-usage-owned display fields
-  captured or backfilled at the ledger boundary: `teamName`, `agentName`,
-  `runSummary`, `runCreatedAt`, and `memberName`. Runtime/model/scalar member
-  facts continue to use ledger fields for display/filter metadata, and Settings
-  statistics does not add workspace or inactive roster metadata. If
-  `runCreatedAt` is unavailable, the row falls back to the first observed ledger
-  timestamp and marks `createdTimeSource` so the frontend can label it as first
-  usage observed rather than true task creation.
-- `usageStatisticsInPeriod(startTime, endTime)` remains the secondary
-  diagnostics projection for the Settings > Token Statistics `Model` grouping. It groups
-  by runtime/model pair so the same model used through different runtimes is not
-  collapsed into one ambiguous row. Legacy display aliases such as `inputTokens`
-  / `outputTokens` are backed by the same cache-aware aggregate contract; do not
-  confuse them with the Token Meter's `latestPromptTokens`.
-- The Model projection exposes `llmModel` as the unchanged raw identity and
-  `modelDisplayName` as a server-owned display label. The Task projection
-  exposes `models` and a positional `modelDisplayNames` array from one ordered
-  raw/display sequence; the arrays always have equal length, including
-  recursive and empty rows. AutoByteus custom-provider labels prefer the
-  ingestion-time `provider_name` snapshot and fall back to the current saved
-  provider name only for legacy rows without a snapshot; built-in providers use
-  the canonical provider display name plus model. Non-AutoByteus labels retain
-  their existing behavior. The frontend must not parse raw provider identities
-  or use display labels for grouping/accounting.
-- `getAgentRunTokenUsageSummary(runId)` returns a run summary.
-- `getTeamRunTokenUsageSummary(teamRunId)` returns a team aggregate.
-- `getTeamMemberTokenUsageSummary(teamRunId, agentRunId)` returns rows whose
-  exact `root_team_run_id` and `run_id` match those two arguments.
+`TokenUsageRunStore` and `TokenUsageStatisticsProvider` read current run records:
 
-The period filter is based on ledger `observed_at` / usage observation time.
-The MVP has no `rangeMode` argument and does not implement a "tasks created in
-period" mode. Future created-time filtering must be added explicitly rather than
-repurposing the current observed-usage period semantics.
+- `getAgentRunTokenUsageSummary(runId)` reads at most one exact run record.
+- `getTeamRunTokenUsageSummary(teamRunId)` sums the concrete member records with
+  that exact `root_team_run_id` once each.
+- `getTeamMemberTokenUsageSummary(teamRunId, agentRunId)` requires both exact
+  root and run identity.
+- `tokenUsageTaskStatisticsInPeriod(startTime, endTime)` returns standalone and
+  root-Team rows with usage-derived member children.
+- `usageStatisticsInPeriod(startTime, endTime)` groups the same selected run
+  records by runtime/model for diagnostics.
+- `totalCostInPeriod(startTime, endTime)` keeps its public name but follows the
+  same run-selection rule.
 
-All summary token totals are computed from accounting deltas, not reported
-cumulative snapshots. Run, team, member, and statistics GraphQL shapes include
-the cache-aware/component summary contract: gross input, standard input, cache
-read/write tokens, cache rates, output/reasoning/billable output, nullable
-component costs, `apiCostStatus`, missing price dimensions, policy/tier
-metadata, component `unitPrices`, latest prompt/context-window fields,
-model/runtime identity, and `usageReportCount`. Clients must treat those fields
-as server-owned summary data, not as a prompt to recalculate prices locally.
+The date range selects runs whose `run_created_at` is in range, falling back to
+`first_observed_at` only when creation time is unavailable. Every selected row
+shows its lifetime cumulative totals. The one-row model does not claim exact
+"usage observed during an arbitrary period" semantics and does not retain time
+buckets to reconstruct them.
 
-Token-valued outputs in this GraphQL family use the `SafeInt` scalar rather
-than the built-in signed 32-bit `Int`. The supported transport and client
-contract remains an exact JavaScript `number` through
-`Number.MAX_SAFE_INTEGER`; values beyond that boundary require a separately
-designed cross-client contract and must not be rounded, capped, string-coerced,
-or dropped. Non-token counters such as `usageReportCount` remain GraphQL `Int`.
-The web code generator must explicitly map `SafeInt` input and output to
-TypeScript `number`, because remote schema introspection does not carry the
-scalar package's code-generation metadata.
+Task statistics keep topology ownership narrow:
 
-`unitPrices` is the display-safe explanation of the unit-price basis used by
-the summary. It reports a `{ status, pricePerMillion }` summary for standard
-input, cache-read input, cache-write input, cache-write 5m/1h subtype buckets,
-output, and reasoning output. A `single` status means one trusted unit price can
-explain the positive tokens in that component; `mixed` means the aggregate spans
-different component-relevant prices, providers, models, currencies, or local
-and paid rows; `missing` / `partial_missing` means trusted pricing was absent
-for all or some relevant rows; `not_applicable` means the component has no
-positive tokens; and `local_no_api_bill` means no provider API unit price
-applies. Zero-token rows do not make a unit price look mixed. Reasoning output
-uses the output unit price when the pricing owner exposes reasoning/thinking as
-an output sub-breakdown, and it remains included in output cost rather than
-being added as a separate total.
+- a Team row groups by exact root TeamRun ID;
+- child rows represent exact concrete member run IDs;
+- nested member/task usage is not repeated as a standalone top-level row;
+- task IDs and captured names/summaries remain display metadata; and
+- token code does not rebuild TeamRun topology from execution paths, names, or
+  migration-only predecessor columns.
+
+When history readiness is degraded, GraphQL returns
+`TOKEN_USAGE_HISTORY_MIGRATION_REQUIRED` with migration status/log guidance
+instead of exposing partial history.
 
 ## Frontend Contract
 
 The frontend treats token usage as display-only state:
 
-- live `TOKEN_USAGE_UPDATED` WebSocket events update `tokenUsageMeterStore`;
-- reopening/focusing runs hydrates from the GraphQL summary queries;
-- `TokenUsageHeaderChip` and the right-side `Token` tab render tokens, nullable
-  estimated API costs, price status, model/runtime metadata, latest prompt
-  context pressure, and focused-member totals;
-- Settings > Token Statistics uses `tokenUsageStatisticsStore` and the
-  historical statistics queries. The selected Settings sidebar item remains the
-  page identity, while the main content starts with one compact filter/control
-  card ordered as grouping select (`Task` / `Model`), date range, and
-  `Fetch Statistics`. It defaults to the `Task` grouping for task/team cost
-  understanding and keeps `Model` as a runtime/model diagnostics grouping.
-  The frontend does not render `Usage during period`, `Select Date Range:`,
-  `Group by:`, or a separate `By Task` / `By Model` tab row.
-- Settings Model rows render the server-owned `modelDisplayName` while
-  retaining the raw `llmModel` for identity and fallback. Task rows render
-  `modelDisplayNames` positionally beside the raw `models` array; the frontend
-  does not reconstruct provider names from opaque identifiers.
-- The Task grouping table shows task/run identity, runtime, model(s), token
-  totals, input/output/total cost, recursive team/task/member children, created
-  time as the last visible column, and a cost breakdown. It does not render
-  standalone `Type` or `Status` columns: row kind stays visible through
-  hierarchy/metadata, complete-estimate status is suppressed in main rows, and
-  non-complete price status appears through formatted `Total Cost` text plus the
-  expanded breakdown. Sortable headers show compact persistent two-triangle
-  neutral/active glyphs; `Model(s)`, `Input Cost`, and `Output Cost` remain
-  non-sortable, and cost details open through one visible value-plus-solid-
-  triangle button in `Total Cost` rather than duplicate hover-only cost-cell
-  buttons. The button text is the formatted total cost/status, and its
-  localized show/hide label/title repeat that same cost/status for assistive
-  technology. Team expansion is usage-derived
-  for the selected period: inactive roster members are not emitted, child rows
-  remain attached to their parent during sorting, and member/task usage must not
-  be double-counted as standalone top-level rows. The frontend consumes
-  backend-provided `children`, `rootTeamRunId`, and `runId` values; it must not
-  rebuild execution topology from task records, predecessor identity columns,
-  memory paths, or display names. The current backend emits one Team-to-member
-  child level; the GraphQL `children` shape remains recursive for the table
-  contract.
-- Primary Task-table `Input` and `Output` cells render full locale-aware
-  integer digits so supported safe-integer totals remain exact and inspectable;
-  compact formatting is reserved for secondary cache/thinking explanatory
-  sublines.
-- `TokenUsageMeterPanel` presents the approved Token Meter hierarchy:
-  `Latest prompt`, `Gross input`, `Output`, `Total estimate`,
-  `Input breakdown`, `Pricing details`, and collapsed `Calculation details`.
-- `Gross input` is cumulative input sent to providers. It may include discounted
-  cache-hit tokens and must not be labeled as full-price input or as the latest
-  active context size.
-- `Input breakdown` renders server-owned `standardInputTokens`,
-  `cacheReadInputTokens`, cache-write tokens, cache hit rate, and component input
-  costs when meaningful. The frontend hides zero/unknown component rows rather
-  than fabricating values.
-- `Pricing details` renders model/runtime, `apiCostStatus`, missing dimensions,
-  and `usageReportCount` as `Usage reports` / model calls. Raw `events` is not a
-  primary Token Meter label.
-- `Calculation details` renders server-provided component unit prices and the
-  explanatory formula `tokens ÷ 1,000,000 × unit price`, with explicit
-  `varies by call`, `unpriced`, `partially missing`, and local/no-bill labels
-  instead of frontend catalog lookups or fake blended rates.
-- The Output card shows reasoning/thinking tokens only when the server summary
-  reports positive `reasoningOutputTokens`; those tokens are already included in
-  output tokens and estimated output cost. Calculation details labels their unit
-  price as the output price / included in output cost so users do not
-  double-count thinking.
-- The `Latest prompt` block renders whenever latest-prompt tokens are present.
-  Known context capacity shows the percentage and progress bar; when capacity
-  is unknown, the panel shows the prompt-token count with explicit
-  `contextLimitUnavailable` copy and never fabricates a denominator or
-  percentage;
-- the frontend does not compute authoritative accounting deltas or model prices.
+- live `TOKEN_USAGE_UPDATED` events update `tokenUsageMeterStore` using the
+  authoritative contribution returned by the persistence fold;
+- focus/reopen paths hydrate from current-record GraphQL summaries;
+- Token Meter renders latest prompt, lifetime gross input/output, component
+  breakdown, estimated cost/status, pricing explanation, context pressure, and
+  report count without recomputing accounting or prices;
+- Settings > Token Statistics defaults to Task grouping and retains Model as a
+  runtime/model diagnostic view;
+- the visible range helper states that the date range selects runs by creation
+  time and totals show lifetime usage; and
+- a history-migration error is rendered as an actionable nonfatal warning that
+  new runs remain available and a corrected installed version can retry on
+  restart.
 
-"Unpriced" means token usage exists but trusted API-price metadata was missing;
-it must not be displayed as `$0`. Local/no-bill rows should be labeled as local
-rather than unpriced. Mixed-currency aggregate costs are displayed as
-mixed/unavailable rather than summed under one currency label.
+Task rows render backend-provided `children`, `rootTeamRunId`, display fields,
+models, totals, and cost statuses. The frontend must not infer provider identity
+from display labels, reconstruct execution topology, or round primary SafeInt
+token totals. `Unpriced` is not `$0`; local/no-bill and mixed-currency states
+remain explicit.
 
-## Browser Frontend Evidence
+## Coverage And Operational Notes
 
-Delivery evidence has exercised the browser-facing Token Meter against real
-local backend/frontend stacks and ledger-backed GraphQL hydration. The current
-cache-aware evidence for the approved Token Meter hierarchy is the 2026-06-25
-Codex App Server / GPT-5.5 run recorded under
-`tickets/token-input-prompt-discrepancy-analysis/implementation-evidence/`.
-That run emitted `grossInputTokens=10248`, `standardInputTokens=5256`,
-`cacheReadInputTokens=4992`, `cacheState=positive`,
-`estimatedApiTotalCost=0.029076 USD`, `latestPromptTokens=10248`,
-`effectiveContextWindowTokens=258400`, `contextWindowUsagePercent≈3.97`, and
-`usageReportCount=1`; the current UI presents that context-size metric as
-`Latest prompt` beside `Gross input`,
-`Output`, `Total estimate`, `Input breakdown`, `Pricing details`, and `Usage
-reports` rather than ambiguous primary `Input` / raw `events` labels.
-
-These browser proofs are one-off delivery evidence rather than a committed
-browser or screenshot automation harness. Current durable regression coverage
-for the token-usage contract comes from GraphQL E2E coverage for cached gross
-input, provider-specific component semantics, local/no-bill, custom missing
-price, mixed-currency aggregate behavior, model-list regressions, unit-price
-hydration across run/team/member/statistics summaries, and the runtime-native
-Codex/Claude field baseline. Frontend store/component tests cover live update
-aggregation, live/hydrated unit-price convergence, GraphQL hydration
-replacement, Token Meter hierarchy, calculation details, cache-aware input rows,
-price-status labels, reasoning-output display, latest prompt fields, and the
-right-side tab label. Settings > Token Statistics also has focused backend
-GraphQL E2E coverage plus frontend store/component coverage
-for Task default grouping, no `rangeMode`, Team-to-member `children`, exact
-root/run grouping, task IDs as metadata, first-usage created-time fallback,
-runtime/model grouping, reduced Task columns, compact sort affordances,
-value-plus-solid-triangle Total Cost disclosure controls, cost-inclusive
-accessible labels, status/cost-breakdown display, and Model runtime diagnostics.
-
-The final TeamRun V1 transition has deterministic planner, real-SQLite
-repository, and actual-startup E2E coverage. It verifies retained/current task
-topology evidence, supported released row families, resolved root correction,
-preserved unsupported rows, accounting-fact and row-count preservation, the
-current root/time index, predecessor-column retention, native rollback
-observation, warning-ready startup, and relaunch idempotence. Source scans guard
-against restoring the removed canonical-identity migration, runtime predecessor
-readers, legacy-column contraction, or compatibility writers.
-
-## Runtime E2E Coverage
-
-Real runtime token usage coverage is intentionally environment-gated so default
-CI and local developer runs do not require live LM Studio, Codex App Server, or
-Claude Agent SDK processes. When those runtimes are configured, run:
+- Deterministic unit/integration/E2E coverage owns current fold, repository,
+  migration, readiness, restore, GraphQL, pricing, frontend component, and
+  lifecycle contracts.
+- Built-server coverage exercises released-row upgrade/relaunch, degraded new
+  work, retry, overlap rejection, rollback, empty-source relaunch, and critical
+  current-schema failure.
+- Released-scale evidence covers approximately 154,000 legacy rows, 1,269 runs,
+  bounded source shaping, single-transaction consolidation, reusable SQLite
+  pages, and absence of startup `VACUUM`.
+- Browser coverage checks normal lifetime statistics plus degraded and fatal
+  error presentation in Chrome. Electron shell-specific behavior is not implied
+  by browser evidence.
+- Real LM Studio, Codex, and Claude runtime E2E remains opt-in:
 
 ```sh
 RUN_RUNTIME_TOKEN_USAGE_E2E=1 \
@@ -562,35 +360,12 @@ RUNTIME_TOKEN_USAGE_E2E_TIMEOUT_MS=300000 \
 LMSTUDIO_MODEL_ID='qwen3.5-27b:lmstudio@127.0.0.1:1234' \
 CODEX_E2E_TOOL_MODEL='gpt-5.4-mini' \
 CLAUDE_E2E_MODEL='sonnet' \
-pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts
+pnpm -C autobyteus-server-ts exec vitest run \
+  tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts
 ```
 
-When enabled, the suite creates a run, opens the agent websocket, sends
-`SEND_MESSAGE`, observes `TOKEN_USAGE_UPDATED` with positive token totals and
-the expected runtime/ingestion kind, waits for idle, and verifies ledger-backed
-GraphQL summary/statistics projections using the current field names:
-`grossInputTokens`, component cache fields, `latestPromptTokens`,
-`effectiveContextWindowTokens`, `contextWindowUsagePercent`, and
-`usageReportCount`. Model identity assertions compare GraphQL summaries and
-statistics with the emitted `TOKEN_USAGE_UPDATED.model_identifier`, not a launch
-alias that a runtime may resolve to a provider-specific model id.
-
-With `RUN_RUNTIME_TOKEN_USAGE_E2E` unset, the suite remains safely skipped by
-design.
-
-## Operational Notes
-
-- No local tokenizer estimate should feed persisted accounting.
-- Native provider adapters preserve raw/cache/reasoning usage details in
-  `LlmTokenUsageObservation` before the server turns observations into ledger
-  events.
-- Removed provider models such as MiniMax M2.7 must not remain selectable via
-  model-list GraphQL/API compatibility aliases. MiniMax M3 remains the supported
-  MiniMax LLM catalog entry.
-- When token-usage GraphQL documents or schema types change, refresh the tracked
-  frontend generated artifact with `pnpm -C autobyteus-web codegen` against the
-  matching backend schema so `autobyteus-web/generated/graphql.ts` does not drift
-  from the committed queries.
-- Deterministic unit/integration/E2E coverage validates the ledger, cost,
-  GraphQL, and frontend meter contracts; the environment-gated runtime E2E above
-  provides live-runtime confirmation when configured runtimes are available.
+- Never run migration proof against a user's live production profile; use
+  isolated synthetic released-shape fixtures.
+- No local tokenizer estimate may feed persisted accounting.
+- When GraphQL documents/types change, regenerate
+  `autobyteus-web/generated/graphql.ts` against the matching backend schema.

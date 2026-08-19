@@ -34,10 +34,13 @@ The TypeScript server follows a layered domain architecture:
    database URL, without enabling WAL.
 7. Initialize or verify the encrypted secret vault through the shared
    repository lifecycle.
-8. Run required app-data migrations against the expanded schema.
-9. Build and start Fastify transports.
-10. Create temp workspace.
-11. Schedule non-critical background startup tasks.
+8. Validate current token-usage schema invariants, then run required app-data
+   migrations against the expanded schema.
+9. Classify token-usage readiness as ready, capability-degraded, or critical
+   current-schema failure without activating a legacy runtime path.
+10. Build and start Fastify transports.
+11. Create temp workspace.
+12. Schedule non-critical background startup tasks.
 
 ## Caching and Singleton Pattern
 
@@ -65,10 +68,13 @@ Current task groups include:
 
 Persistence is subsystem-owned rather than selected through a global mode.
 
-- Token usage is persisted through `src/token-usage/providers/token-usage-ledger-store.ts`.
-  - The store is the authoritative token-usage boundary.
-  - It writes and reads SQL rows through a model-specific
-    `repository_prisma` `BaseRepository`.
+- Token usage is persisted through `TokenUsageRunStore` and
+  `TokenUsageRunAccumulator` into `token_usage_run_records`.
+  - The authoritative subject is one cumulative row per canonical AgentRun ID.
+  - Observations for one run are serialized and folded inside a SQLite
+    transaction through `SqlTokenUsageRunRepository`.
+  - Legacy ledger tables and decoders are migration-only; current runtime and
+    GraphQL paths do not read or write them.
 - Encrypted secret persistence uses separate `SecretEntry` and
   `SecretEncryptionMetadata` model repositories behind the vault persistence
   coordinator. The coordinator alone opens option-aware implicit transactions;
@@ -81,18 +87,18 @@ Persistence is subsystem-owned rather than selected through a global mode.
   `memory/imports/<sourceNodeId>/`.
 - SQLite URL derivation is controlled by DB config (`DB_TYPE=sqlite` with optional `DATABASE_URL` override), and startup runs the normal Prisma migration path whenever the Prisma schema exists.
 - Required app-data migrations run after Prisma schema migrations so data repair
-  and guarded local schema contracts can rely on newly added columns before
-  runtime/API reads begin. For example, token usage execution-address backfill
-  writes historical `execution_address_json` values after the schema expand
-  migration has added the column, and the later token-usage legacy-path-column
-  contract migration drops obsolete physical path columns only after that
-  backfill has reached terminal success.
+  can rely on the expanded current shape before runtime/API reads begin. Token
+  usage first repairs released source-shaping migrations, then atomically folds
+  the migration-owned event source into one current record per run. A valid
+  current schema with incomplete history gates historical reads and old-run
+  restore while allowing new current-only work; a missing required current
+  schema may stop startup.
 
 Normal server shutdown first stops dependent delivery runtimes, then quiesces
-and drains every token append accepted by the default event pipeline. It next
-closes the secret runtime to zeroize its root key and finally shuts down the one
-shared `repository_prisma` client. The ordering prevents an already-scheduled
-token callback from reopening the database after shutdown.
+the token transformers. Token persistence is awaited inside the event pipeline,
+so there is no detached append queue to drain. Shutdown next closes the secret
+runtime to zeroize its root key and finally shuts down the shared
+`repository_prisma` client.
 
 External-channel persistence has one deliberate exception:
 

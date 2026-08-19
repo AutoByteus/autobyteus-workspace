@@ -29,7 +29,12 @@ Use one compact filter/control card with controls in this order:
 2. Start date and end date inputs.
 3. Primary action: `Fetch Statistics`.
 
-Visible control copy should stay minimal: do **not** show `Usage during period`, `Select Date Range:`, `Group by:`, `By Task`, `By Model`, a separate lower tab row, a full explanatory paragraph/box, or a `Tasks created in period` selector in MVP. Use ARIA/non-visible labels when controls need accessible names.
+Visible control copy should stay minimal. Show one short range-meaning sentence:
+`The date range selects runs by creation time; totals show each selected run's lifetime usage.`
+Do **not** show `Usage during period`, `Select Date Range:`, `Group by:`,
+`By Task`, `By Model`, a separate lower tab row, a large explanatory box, or a
+range-mode selector. Use ARIA/non-visible labels when controls need accessible
+names.
 
 ## Default Grouping: Task
 
@@ -40,7 +45,10 @@ Show one top-level row per task-level unit:
 - standalone agent run
 - root agent team run
 
-Team rows are expandable. Expansion shows **usage-derived member rows only**: members that emitted token-usage ledger events in the selected date range. The page is a usage/cost report, not a roster viewer, so inactive/no-usage team members are omitted in MVP.
+Team rows are expandable. Expansion shows **usage-derived member rows only**:
+members with current run records selected by run creation time (first-usage
+fallback). Their values are lifetime totals. The page is a usage/cost report,
+not a roster viewer, so inactive/no-usage team members are omitted in MVP.
 
 Concrete row examples, expanded team examples, cost-breakdown examples, fallback timestamp examples, repeated-run chronology examples, and the preserved `Model` grouping example are specified normatively in the requirements doc section `Required UI Example Data`.
 
@@ -51,8 +59,8 @@ Visible columns must appear in this order for MVP:
 | Column | Required? | Meaning | Display Rules |
 | --- | --- | --- | --- |
 | Task / Run | Yes | Human-readable task identity | Team rows use `teamName`; standalone rows use `agentName`; show `runSummary` and shortened run/team id. Child rows use backend `displayName`/`memberName` and the relevant shortened member/task run id. |
-| Runtime | Yes | Runtime used by the run/member | Single runtime label, or `Mixed` for rows with multiple runtimes. Uses existing ledger runtime fields. |
-| Model(s) | Yes | LLM model(s) used | Single model, or `Mixed` with distinct models available in row details. Uses existing ledger model fields. |
+| Runtime | Yes | Runtime used by the run/member | Single runtime label, or `Mixed` for runs that observed multiple runtimes. Uses the current run record's identity summary. |
+| Model(s) | Yes | LLM model(s) used | Single model, or `Mixed` with distinct models available in row details. Uses the current run record's identity summary. |
 | Input | Yes | Gross input tokens | Subline: cache hit rate and cached token count when present. |
 | Output | Yes | Output tokens | Subline: thinking/reasoning tokens included in output when present. |
 | Input Cost | Yes | Backend-estimated input cost | Includes uncached + cache read/write costs; renders as a plain value, not a separate detail toggle. |
@@ -68,7 +76,7 @@ Optional advanced values belong in details, not extra default columns:
 - Cache hit rate
 - Usage report count
 - Raw runtime/model identifiers
-- Backend `executionAddress` details for nested member/task-team/task-agent usage rows
+- Exact backend-provided run, root-Team, and task identifiers
 - Row-kind/status diagnostics that are already conveyed by hierarchy, metadata,
   formatted non-complete cost text, and the expanded cost breakdown
 
@@ -93,16 +101,14 @@ Optional advanced values belong in details, not extra default columns:
 Indented under the team row.
 
 - Primary text: backend `displayName` / `memberName`, e.g. `solution_designer`.
-- Optional subline: shortened `memberAgentRunId`, `taskTeamRunId`, or
-  `taskAgentRunId`, plus a compact backend `executionAddress` detail when it is
-  useful for disambiguation.
-- Runtime/model from actual usage ledger events.
+- Optional subline: shortened canonical member/task agent-run ID and task ID.
+- Runtime/model from the selected current run record.
 - Same token/cost metric columns as the parent. There is no standalone `Type` or
   `Status` cell; meaningful row-kind/status information stays in metadata,
   formatted total-cost text, and details.
 - `Created Time` cell is not a separate member run creation time in MVP; render `—`, `same as team`, or muted inherited parent time.
 - No separate top-level row for nested member/task-team/task-agent runs, to avoid double-counting.
-- Members with no token usage observed in the selected date range are omitted.
+- Members without a selected current run record are omitted.
 
 #### Standalone agent row
 
@@ -143,7 +149,7 @@ and `Output Cost` stay plain values in the table.
 ### Team details
 
 - Expanded member rows remain inline below the team row, or a nested member table may appear inside details.
-- Only members with selected-period usage appear.
+- Only members with a current run record in the selected run set appear.
 - Missing/partial price dimensions are listed in the detail panel.
 
 ### Agent details
@@ -156,7 +162,8 @@ Keep current model diagnostics available through the top grouping select option 
 
 Use case:
 
-> "Which runtime/model pair is costing the most in this period?"
+> "Which runtime/model pair accounts for the most lifetime cost among runs
+> created in this range?"
 
 Required behavior:
 
@@ -255,7 +262,7 @@ Top-level source priority:
 
 1. Token-statistics `runCreatedAt` captured from root team run creation time for team rows.
 2. Token-statistics `runCreatedAt` captured from standalone agent run creation time for standalone rows.
-3. Fallback only: earliest token ledger `observedAt` for the row.
+3. Fallback only: the current run record's `firstObservedAt`.
 
 Member row rule:
 
@@ -265,7 +272,7 @@ Member row rule:
 
 Fallback display rule:
 
-- If using fallback `observedAt` for a top-level row, show the same visible date/time but include a tooltip/detail label: `First usage observed; run creation time unavailable.`
+- If using `firstObservedAt` for a top-level row, show the same visible date/time but include a tooltip/detail label: `First usage observed; run creation time unavailable.`
 
 Formatting rule:
 
@@ -284,7 +291,8 @@ These rows remain separate even if they share the same team definition, runtime,
 
 ## Backend Shape Needed
 
-A task query should return historical usage rows, not live roster rows and not only model rows.
+A task query should return selected cumulative run rows, not live roster rows
+and not only model rows.
 
 Candidate GraphQL query:
 
@@ -293,46 +301,32 @@ query TokenUsageTaskStatistics($startTime: DateTime!, $endTime: DateTime!) {
   tokenUsageTaskStatisticsInPeriod(startTime: $startTime, endTime: $endTime) {
     rows {
       rowId
-      rowKind # TEAM_RUN | AGENT_RUN
+      rowKind # TEAM_RUN | AGENT_RUN | MEMBER_RUN
       runId
-      rootTeamRunId
-      memberRouteKey
-      memberAgentRunId
-      taskAgentRunId
-      taskTeamRunId
       taskId
-      executionAddress
-      teamName
-      agentName
+      rootTeamRunId
       displayName
-      runSummary
-      runCreatedAt
+      summary
+      createdAt
       createdTimeSource # RUN_CREATED_AT | FIRST_USAGE_OBSERVED
       models
+      modelDisplayNames
       runtimeKinds
       aggregate { ...TokenUsageCostSummaryAggregateFields }
       children {
         rowId
-        rowKind # MEMBER_RUN | TASK_TEAM_RUN | TASK_AGENT_RUN
+        rowKind # MEMBER_RUN
         runId
-        rootTeamRunId
-        memberRouteKey
-        memberAgentRunId
-        taskAgentRunId
-        taskTeamRunId
         taskId
-        executionAddress
+        rootTeamRunId
         displayName
+        summary
+        createdAt
+        createdTimeSource
         models
+        modelDisplayNames
         runtimeKinds
         aggregate { ...TokenUsageCostSummaryAggregateFields }
-        children {
-          rowId
-          rowKind
-          displayName
-          executionAddress
-          aggregate { totalTokens estimatedApiTotalCost }
-        }
       }
     }
   }
@@ -341,11 +335,13 @@ query TokenUsageTaskStatistics($startTime: DateTime!, $endTime: DateTime!) {
 
 Important backend constraints:
 
-- `teamName`, `agentName`, `runSummary`, `runCreatedAt`, and `memberName` are the only new self-contained display fields.
-- Runtime/model come from existing ledger fields and are not duplicated in the display fields.
-- Hierarchy comes from backend-provided recursive `children` and
-  `executionAddress`; the UI must not rebuild hierarchy from legacy
-  `memberPathJson`, `member_path`, task records, memory paths, or display names.
+- `teamName`, `agentName`, `runSummary`, `runCreatedAt`, and
+  `memberDisplayName` are self-contained fields in the current run record.
+- Runtime/model come from the record's identity summary and are not duplicated
+  in the display fields.
+- Hierarchy comes from backend-provided `children`, `rootTeamRunId`, and
+  canonical `runId`; the UI must not rebuild hierarchy from migration-only
+  execution paths, task records, memory paths, or display names.
 - There is no `rangeMode` argument.
 - There is no no-usage member state, no roster order, no configured no-usage member runtime/model, no workspace field, and no generic snapshot/display-context object.
 
@@ -356,14 +352,18 @@ Important backend constraints:
 - Add one compact grouping select with visible options `Task` and `Model`; do not add a separate tab row.
 - Default to `Task`.
 - Do not render visible `Usage during period`, `Select Date Range:`, or `Group by:` copy.
-- Query task rows by usage observed during date range.
-- Show expandable team rows with usage-derived recursive member/task-team/task-agent rows.
+- Show the concise creation-time/lifetime-total range helper.
+- Query current run records by `runCreatedAt`, falling back to
+  `firstObservedAt`, and display their lifetime totals.
+- Show expandable team rows with usage-derived member run rows.
 - Add only the five self-contained display fields needed by the UI: `teamName`, `agentName`, `runSummary`, `runCreatedAt`, `memberName`.
 - Keep existing model statistics under the `Model` grouping, grouped by runtime/model pair.
 
 ### Later
 
-- Add an explicit created-time filtering mode in the future only if a backend contract is designed; do not repurpose the current observed-period date range.
+- Add exact observation-period reporting in the future only if a time-bucket or
+  history contract is designed; do not claim that the current one-row model can
+  reconstruct it.
 - Add CSV/export/import tooling.
 - Add row click-through to run history.
 - Add per-turn/per-model detail inside a task row.

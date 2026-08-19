@@ -4,11 +4,11 @@ import { LifecycleStatusEventTransformer } from "./processors/lifecycle-status/l
 import { AgentSegmentLifecycleEventTransformer } from "./processors/segment-lifecycle/agent-segment-lifecycle-event-transformer.js";
 import { TeamCommunicationMessageProcessor } from "./processors/team-communication/team-communication-message-event-processor.js";
 import { TokenUsageEventEnrichmentTransformer } from "./processors/token-usage/token-usage-event-enrichment-transformer.js";
-import { TokenUsageEventPersistenceProcessor } from "./processors/token-usage/token-usage-event-persistence-processor.js";
+import { TokenUsageRunPersistenceTransformer } from "./processors/token-usage/token-usage-run-persistence-transformer.js";
 
 let cachedDefaultAgentRunEventPipeline: AgentRunEventPipeline | null = null;
 let cachedTokenUsageEnrichmentTransformer: TokenUsageEventEnrichmentTransformer | null = null;
-let cachedTokenUsagePersistenceProcessor: TokenUsageEventPersistenceProcessor | null = null;
+let cachedTokenUsagePersistenceTransformer: TokenUsageRunPersistenceTransformer | null = null;
 let tokenUsageLifecycleState: "accepting" | "quiescent" = "accepting";
 
 export const getDefaultAgentRunEventPipeline = (): AgentRunEventPipeline => {
@@ -16,19 +16,19 @@ export const getDefaultAgentRunEventPipeline = (): AgentRunEventPipeline => {
     cachedTokenUsageEnrichmentTransformer = tokenUsageLifecycleState === "accepting"
       ? new TokenUsageEventEnrichmentTransformer()
       : null;
-    cachedTokenUsagePersistenceProcessor = tokenUsageLifecycleState === "accepting"
-      ? new TokenUsageEventPersistenceProcessor()
+    cachedTokenUsagePersistenceTransformer = tokenUsageLifecycleState === "accepting"
+      ? new TokenUsageRunPersistenceTransformer()
       : null;
     cachedDefaultAgentRunEventPipeline = new AgentRunEventPipeline([
       new FileChangeEventProcessor(),
       new TeamCommunicationMessageProcessor(),
-      ...(cachedTokenUsagePersistenceProcessor
-        ? [cachedTokenUsagePersistenceProcessor]
-        : []),
     ], [
       new AgentSegmentLifecycleEventTransformer(),
       ...(cachedTokenUsageEnrichmentTransformer
         ? [cachedTokenUsageEnrichmentTransformer]
+        : []),
+      ...(cachedTokenUsagePersistenceTransformer
+        ? [cachedTokenUsagePersistenceTransformer]
         : []),
     ], [
       new LifecycleStatusEventTransformer(),
@@ -40,16 +40,13 @@ export const getDefaultAgentRunEventPipeline = (): AgentRunEventPipeline => {
 export const stopDefaultAgentRunEventPipeline = async (): Promise<void> => {
   tokenUsageLifecycleState = "quiescent";
   cachedTokenUsageEnrichmentTransformer?.quiesce();
-  const processor = cachedTokenUsagePersistenceProcessor;
-  if (processor) {
-    await processor.close();
-  }
+  cachedTokenUsagePersistenceTransformer?.quiesce();
 };
 
 export const resetDefaultAgentRunEventPipelineForTests = async (): Promise<void> => {
   await stopDefaultAgentRunEventPipeline();
   cachedDefaultAgentRunEventPipeline = null;
   cachedTokenUsageEnrichmentTransformer = null;
-  cachedTokenUsagePersistenceProcessor = null;
+  cachedTokenUsagePersistenceTransformer = null;
   tokenUsageLifecycleState = "accepting";
 };

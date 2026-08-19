@@ -459,6 +459,8 @@ const settingsMessages = {
   'settings.components.settings.TokenUsageStatistics.endDateAriaLabel': 'End date',
   'settings.components.settings.TokenUsageStatistics.loadingStatistics': 'Loading…',
   'settings.components.settings.TokenUsageStatistics.loadingStatisticsLong': 'Loading token usage statistics…',
+  'settings.components.settings.TokenUsageStatistics.rangeMeaning': 'The date range selects runs by creation time; totals show each selected run’s lifetime usage.',
+  'settings.components.settings.TokenUsageStatistics.historyMigrationRequired': 'Stored token history is temporarily unavailable while its data migration is incomplete. New runs remain available. Restart after installing the corrected version to retry.',
   'settings.components.settings.TokenUsageStatistics.noTaskUsage': 'No agent or team usage found for this date range.',
   'settings.components.settings.TokenUsageStatistics.tryWiderRangeOrModel': 'Try a wider date range or switch to Model.',
   'settings.components.settings.TokenUsageStatistics.noModelUsage': 'No runtime/model usage found for this date range.',

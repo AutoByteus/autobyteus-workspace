@@ -1,0 +1,19 @@
+Delivery documentation audit DR-001
+timestamp=2026-08-19T10:08:33Z
+$ git diff --check
+git_diff_check=pass
+$ stale owner/period scan over durable Markdown
+stale_scan=pass(no matches)
+$ local Markdown link target audit
+local_markdown_links=pass files=9
+changed_durable_docs:
+ M autobyteus-server-ts/README.md
+ M autobyteus-server-ts/docs/ARCHITECTURE.md
+ M autobyteus-server-ts/docs/modules/README.md
+ M autobyteus-server-ts/docs/modules/token_usage.md
+ M autobyteus-web/docs/agent_execution_architecture.md
+ M autobyteus-web/docs/settings.md
+ M ui-prototypes/token-statistics-task-cost/ui-behavior-test-matrix.md
+ M ui-prototypes/token-statistics-task-cost/ui-prototype-spec.md
+?? autobyteus-server-ts/docs/design/production_data_migration_conventions.md
+docs_audit=pass

@@ -1,0 +1,404 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+
+stdout | tests/integration/token-usage/repositories/token-usage-record-repository.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:16282) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/token-usage/repositories/token-usage-record-repository.integration.test.ts
+prisma:info Starting a sqlite pool with 21 connections.
+
+ ✓ tests/integration/token-usage/repositories/token-usage-record-repository.integration.test.ts > SqlTokenUsageRunRepository current-record integration > serializes rapid same-time direct observations into one exact row using fold revision order 110ms
+ ✓ tests/integration/token-usage/repositories/token-usage-record-repository.integration.test.ts > SqlTokenUsageRunRepository current-record integration > reconciles cumulative advancement, suppresses exact replay, and records non-subtracting regression 19ms
+ ✓ tests/integration/token-usage/repositories/token-usage-record-repository.integration.test.ts > SqlTokenUsageRunRepository current-record integration > round-trips ninth-series eviction, evicted-series reappearance, later advancement, and both compact-state byte caps 395ms
+ ✓ tests/integration/token-usage/repositories/token-usage-record-repository.integration.test.ts > SqlTokenUsageRunRepository current-record integration > selects runs by creation time with first-observation fallback and returns the current record once 18ms
+stdout | tests/integration/token-usage/providers/default-agent-run-event-pipeline-lifecycle.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:16297) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/token-usage/providers/default-agent-run-event-pipeline-lifecycle.integration.test.ts > default token event pipeline real SQLite lifecycle
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/integration/token-usage/providers/default-agent-run-event-pipeline-lifecycle.integration.test.ts > default token event pipeline real SQLite lifecycle > drains accepted persistence, stays stopped for late work, and never reopens through a getter
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts
+
+ × tests/integration/token-usage/providers/default-agent-run-event-pipeline-lifecycle.integration.test.ts > default token event pipeline real SQLite lifecycle > drains accepted persistence, stays stopped for late work, and never reopens through a getter 39ms
+   → expected [ { …(4) }, { …(4) } ] to deeply equal [ { …(4) } ]
+stdout | tests/integration/token-usage/providers/token-usage-store.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:16607) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/token-usage/providers/token-usage-store.integration.test.ts
+prisma:info Starting a sqlite pool with 21 connections.
+
+ ✓ tests/integration/token-usage/providers/token-usage-store.integration.test.ts > TokenUsageRunStore > summarizes exact current components, costs, context, and report count without an event list 28ms
+ ✓ tests/integration/token-usage/providers/token-usage-store.integration.test.ts > TokenUsageRunStore > keeps exact token totals but reports mixed currency and unit-price semantics truthfully 19ms
+ ✓ tests/integration/token-usage/providers/token-usage-store.integration.test.ts > TokenUsageRunStore > stores standalone, direct, nested, and delegated runs once and sums only concrete team rows 30ms
+ ✓ tests/unit/token-usage/projections/token-usage-snapshot-delta-normalizer.test.ts > TokenUsageSnapshotDeltaNormalizer > keeps the exact cumulative source while using provider-delta metadata for the optimistic live delta 4ms
+ ✓ tests/unit/token-usage/projections/token-usage-snapshot-delta-normalizer.test.ts > TokenUsageSnapshotDeltaNormalizer > does not reconcile one cumulative observation against another in the transient normalizer 1ms
+ ✓ tests/unit/token-usage/projections/token-usage-snapshot-delta-normalizer.test.ts > TokenUsageSnapshotDeltaNormalizer > preserves assumed-run-origin cumulative values but defers Codex snapshots without provider deltas to the durable fold 0ms
+ ✓ tests/unit/token-usage/projections/token-usage-snapshot-delta-normalizer.test.ts > TokenUsageSnapshotDeltaNormalizer > clears cost-affecting fields when a cumulative snapshot lacks a series key 1ms
+ ✓ tests/unit/token-usage/projections/token-usage-unit-price-summary.test.ts > token usage unit-price summary projection > summarizes single component unit prices and ignores zero-token price churn 2ms
+ ✓ tests/unit/token-usage/projections/token-usage-unit-price-summary.test.ts > token usage unit-price summary projection > marks component-relevant differing positive-token prices as mixed 0ms
+ ✓ tests/unit/token-usage/projections/token-usage-unit-price-summary.test.ts > token usage unit-price summary projection > distinguishes missing, partial-missing, and local/no-bill component prices 0ms
+ ✓ tests/unit/token-usage/projections/token-usage-unit-price-summary.test.ts > token usage unit-price summary projection > uses stable price comparison tolerance for equivalent decimal prices 0ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/token-usage/providers/default-agent-run-event-pipeline-lifecycle.integration.test.ts > default token event pipeline real SQLite lifecycle > drains accepted persistence, stays stopped for late work, and never reopens through a getter
+AssertionError: expected [ { …(4) }, { …(4) } ] to deeply equal [ { …(4) } ]
+
+- Expected
++ Received
+
+  [
+    {
++     "eventType": "AGENT_STATUS",
++     "payload": {
++       "agent_id": "token-pipeline-lifecycle-883cb405-2052-4372-87f7-419c51df1e7d",
++       "status": "idle",
++     },
++     "runId": "token-pipeline-lifecycle-883cb405-2052-4372-87f7-419c51df1e7d",
++     "statusHint": "IDLE",
++   },
++   {
+      "eventType": "TOKEN_USAGE_UPDATED",
+      "payload": {
+-       "idempotency_key": "token-pipeline-lifecycle:late",
++       "accounting_input_tokens": 20,
++       "accounting_output_tokens": 5,
++       "accounting_total_tokens": 25,
++       "agent_definition_id": "agent-token-pipeline-lifecycle",
++       "agent_name": null,
++       "api_cost_status": "local_no_api_bill",
++       "billable_input_tokens": 20,
++       "billable_output_tokens": 5,
++       "cache_creation_1h_input_tokens": null,
++       "cache_creation_5m_input_tokens": null,
++       "cache_creation_input_tokens": null,
++       "cache_miss_input_tokens": 20,
++       "cache_read_input_tokens": null,
++       "cache_state": "unsupported_or_local",
++       "cached_input_read_price_per_million": null,
++       "cached_input_write_1h_price_per_million": null,
++       "cached_input_write_5m_price_per_million": null,
++       "cached_input_write_price_per_million": null,
++       "call_sequence": null,
++       "context_window_usage_percent": null,
++       "cost_basis": null,
++       "currency": null,
++       "effective_context_window_tokens": null,
++       "estimated_api_cache_creation_1h_input_cost": null,
++       "estimated_api_cache_creation_5m_input_cost": null,
++       "estimated_api_cache_creation_input_cost": null,
++       "estimated_api_cache_read_input_cost": null,
++       "estimated_api_input_cost": 0,
++       "estimated_api_output_cost": 0,
++       "estimated_api_reasoning_output_cost": null,
++       "estimated_api_standard_input_cost": 0,
++       "estimated_api_total_cost": 0,
++       "idempotency_key": "token-pipeline-lifecycle:accepted",
++       "ingestion_kind": "codex_thread_token_usage",
++       "input_price_per_million": 0,
++       "input_token_semantic": "gross_includes_cache",
++       "latest_prompt_tokens": null,
++       "llm_call_id": null,
++       "member_display_name": null,
++       "meter_delta_input_tokens": 20,
++       "meter_delta_output_tokens": 5,
++       "meter_delta_total_tokens": 25,
++       "missing_price_dimensions": [],
++       "model_identifier": "gpt-test",
++       "model_provider": "OLLAMA",
++       "model_value": null,
++       "observed_at": "2026-08-19T08:44:27.517Z",
++       "output_price_per_million": 0,
++       "previous_snapshot_event_id": null,
++       "pricing_missing_reason": null,
++       "pricing_policy_key": "local_no_api_bill:codex_app_server",
++       "pricing_snapshot_json": {
++         "cached_input_read_price_per_million": null,
++         "cached_input_write_1h_price_per_million": null,
++         "cached_input_write_5m_price_per_million": null,
++         "cached_input_write_price_per_million": null,
++         "canonical_name": "gpt-test",
++         "currency": null,
++         "effective_from": null,
++         "effective_to": null,
++         "input_price_per_million": 0,
++         "input_price_tiers": [],
++         "missing_reason": null,
++         "model_identifier": "gpt-test",
++         "model_provider": "OLLAMA",
++         "model_value": null,
++         "output_price_per_million": 0,
++         "price_config_id": null,
++         "pricing_policy_key": "local_no_api_bill:codex_app_server",
++         "pricing_status": "local_no_api_bill",
++         "source": "local_runtime_no_provider_api_bill",
++         "trusted_dimensions": {
++           "cached_input_read": false,
++           "cached_input_write": false,
++           "cached_input_write_1h": false,
++           "cached_input_write_5m": false,
++           "input": true,
++           "output": true,
++         },
++         "version": null,
++       },
++       "pricing_source": "local_runtime_no_provider_api_bill",
++       "pricing_status": "local_no_api_bill",
++       "provider_name": null,
++       "quality_flags": [],
++       "raw_event_json": {
++         "idempotency_key": "token-pipeline-lifecycle:accepted",
+          "ingestion_kind": "codex_thread_token_usage",
+          "input_token_semantic": "gross_includes_cache",
+          "model_identifier": "gpt-test",
+          "model_provider": "OLLAMA",
+          "reported_input_tokens": 20,
+          "reported_output_tokens": 5,
+          "reported_total_tokens": 25,
+          "runtime_kind": "codex_app_server",
+          "usage_scope": "per_turn",
++       },
++       "raw_usage_json": null,
++       "reasoning_output_tokens": null,
++       "reported_input_tokens": 20,
++       "reported_output_tokens": 5,
++       "reported_total_tokens": 25,
++       "root_team_run_id": null,
++       "run_created_at": null,
++       "run_id": "token-pipeline-lifecycle-883cb405-2052-4372-87f7-419c51df1e7d",
++       "run_summary": null,
++       "run_summary_after_event": {
++         "agent_definition_id": "agent-token-pipeline-lifecycle",
++         "api_cost_status": "local_no_api_bill",
++         "billable_output_tokens": 5,
++         "cache_creation_1h_input_tokens": 0,
++         "cache_creation_5m_input_tokens": 0,
++         "cache_creation_input_token_rate": 0,
++         "cache_creation_input_tokens": 0,
++         "cache_miss_input_tokens": 20,
++         "cache_read_input_token_rate": 0,
++         "cache_read_input_tokens": 0,
++         "cache_state": "unknown",
++         "context_window_usage_percent": null,
++         "currency": null,
++         "effective_context_window_tokens": null,
++         "estimated_api_cache_creation_1h_input_cost": null,
++         "estimated_api_cache_creation_5m_input_cost": null,
++         "estimated_api_cache_creation_input_cost": null,
++         "estimated_api_cache_read_input_cost": null,
++         "estimated_api_input_cost": 0,
++         "estimated_api_output_cost": 0,
++         "estimated_api_reasoning_output_cost": null,
++         "estimated_api_standard_input_cost": 0,
++         "estimated_api_total_cost": 0,
++         "gross_input_tokens": 20,
++         "latest_model_identifier": "gpt-test",
++         "latest_model_provider": "OLLAMA",
++         "latest_prompt_tokens": null,
++         "latest_runtime_kind": "codex_app_server",
++         "missing_price_dimensions": [],
++         "observed_model_identifiers": [
++           "gpt-test",
++         ],
++         "observed_model_providers": [
++           "OLLAMA",
++         ],
++         "observed_runtime_kinds": [
++           "codex_app_server",
++         ],
++         "output_tokens": 5,
++         "pricing_policy_key": "local_no_api_bill:codex_app_server",
++         "reasoning_output_tokens": 0,
++         "root_team_run_id": null,
++         "run_id": "token-pipeline-lifecycle-883cb405-2052-4372-87f7-419c51df1e7d",
++         "selected_pricing_tier_id": null,
++         "standard_input_token_rate": 1,
++         "standard_input_tokens": 20,
++         "total_tokens": 25,
++         "unit_prices": {
++           "cache_creation_1h_input": {
++             "price_per_million": null,
++             "status": "not_applicable",
++           },
++           "cache_creation_5m_input": {
++             "price_per_million": null,
++             "status": "not_applicable",
++           },
++           "cache_creation_input": {
++             "price_per_million": null,
++             "status": "not_applicable",
++           },
++           "cache_read_input": {
++             "price_per_million": null,
++             "status": "not_applicable",
++           },
++           "output": {
++             "price_per_million": null,
++             "status": "local_no_api_bill",
++           },
++           "reasoning_output": {
++             "price_per_million": null,
++             "status": "not_applicable",
++           },
++           "standard_input": {
++             "price_per_million": null,
++             "status": "local_no_api_bill",
++           },
++         },
++         "updated_at": "2026-08-19T08:44:27.517Z",
++         "usage_report_count": 1,
++         "workspace_id": "workspace-token-pipeline-lifecycle",
++       },
++       "runtime_kind": "codex_app_server",
++       "selected_pricing_tier_id": null,
++       "snapshot_series_key": null,
++       "standard_input_tokens": 20,
++       "task_id": null,
++       "team_name": null,
++       "turn_id": null,
++       "usage_event_id": "9bb37458-8f30-42c3-95cb-12b4e49b127f",
++       "usage_scope": "per_turn",
++       "workspace_id": "workspace-token-pipeline-lifecycle",
+      },
+      "runId": "token-pipeline-lifecycle-883cb405-2052-4372-87f7-419c51df1e7d",
+      "statusHint": null,
+    },
+  ]
+
+ ❯ tests/integration/token-usage/providers/default-agent-run-event-pipeline-lifecycle.integration.test.ts:97:18
+     95|     expect(getDefaultAgentRunEventPipeline()).toBe(pipeline);
+     96|     await expect(rootPrismaClient.tokenUsageRunRecord.count({ where: {…
+     97|     expect(late).toEqual([rawTokenEvent("token-pipeline-lifecycle:late…
+       |                  ^
+     98|   });
+     99| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 4 passed (5)
+      Tests  1 failed | 15 passed (16)
+   Start at  10:44:19
+   Duration  10.92s (transform 3.77s, setup 57ms, import 8.82s, tests 805ms, environment 0ms)
+

@@ -1,0 +1,4 @@
+$ pnpm exec tsc -p tsconfig.build.json --noEmit --pretty false
+$ git diff --check
+$ removed runtime legacy boundary scan
+PASS: no removed runtime legacy reference outside migration isolation

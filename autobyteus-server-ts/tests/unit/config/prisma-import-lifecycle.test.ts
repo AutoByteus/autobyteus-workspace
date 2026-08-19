@@ -8,10 +8,10 @@ const factoryHarness = vi.hoisted(() => ({
 
 vi.mock("../../../src/config/prisma-client-factory.js", () => factoryHarness);
 
-import { SqlTokenUsageLedgerRepository } from "../../../src/token-usage/repositories/sql/token-usage-ledger-repository.js";
-import { TokenUsageLedgerStore } from "../../../src/token-usage/providers/token-usage-ledger-store.js";
+import { SqlTokenUsageRunRepository } from "../../../src/token-usage/repositories/sql/token-usage-run-repository.js";
+import { TokenUsageRunStore } from "../../../src/token-usage/providers/token-usage-run-store.js";
 import { AppDataMigrationRecordRepository } from "../../../src/app-data-migrations/repositories/app-data-migration-record-repository.js";
-import { TokenUsageTeamRunV1MigrationRepository } from "../../../src/token-usage/repositories/sql/token-usage-team-run-v1-migration-repository.js";
+import { TokenUsageTeamRunV1MigrationRepository } from "../../../src/app-data-migrations/migrations/team-run-execution-tree-v1/token-usage-team-run-v1-migration-repository.js";
 
 describe("Prisma import lifecycle", () => {
   beforeEach(async () => {
@@ -27,8 +27,8 @@ describe("Prisma import lifecycle", () => {
   });
 
   it("imports and constructs database owners without acquiring runtime configuration", () => {
-    new SqlTokenUsageLedgerRepository();
-    new TokenUsageLedgerStore();
+    new SqlTokenUsageRunRepository();
+    new TokenUsageRunStore();
     new AppDataMigrationRecordRepository();
     new TokenUsageTeamRunV1MigrationRepository();
 
@@ -102,9 +102,9 @@ describe("Prisma import lifecycle", () => {
     expect(datasourceUrl).toBeTruthy();
     await initializePrisma({ datasourceUrl });
 
-    await new SqlTokenUsageLedgerRepository().listEventsByRunId("run-a");
-    await new TokenUsageLedgerStore().getAgentRunSummary("run-b");
-    await new TokenUsageLedgerStore().getAgentRunSummary("run-c");
+    await new SqlTokenUsageRunRepository().getByRunId("run-a");
+    await new TokenUsageRunStore().getAgentRunSummary("run-b");
+    await new TokenUsageRunStore().getAgentRunSummary("run-c");
 
     expect(factoryHarness.createConfiguredPrismaClient).not.toHaveBeenCalled();
   });

@@ -5,7 +5,6 @@ import os from 'node:os';
 import path from 'node:path';
 import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest';
 import { initializePrisma, rootPrismaClient, shutdownPrisma } from 'repository_prisma';
-import { LLMProvider } from 'autobyteus-ts/llm/providers.js';
 import { AppDataMigrationRecordRepository } from '../../../src/app-data-migrations/repositories/app-data-migration-record-repository.js';
 import { AppDataMigrationRegistry } from '../../../src/app-data-migrations/app-data-migration-registry.js';
 import { AppDataMigrationRunner } from '../../../src/app-data-migrations/app-data-migration-runner.js';
@@ -13,7 +12,6 @@ import {
   PrismaTokenUsageProviderNameSnapshotBackfillDatabase,
   TOKEN_USAGE_PROVIDER_NAME_SNAPSHOT_BACKFILL_MIGRATION_ID,
   TokenUsageProviderNameSnapshotBackfillMigration,
-  type RawTokenUsageProviderNameBackfillRow,
   type TokenUsageProviderNameSnapshotBackfillDatabase,
 } from '../../../src/app-data-migrations/migrations/token-usage-provider-name-snapshot-backfill-migration.js';
 import type {
@@ -28,46 +26,43 @@ let logsRoot: string;
 type DatabaseLike = TokenUsageProviderNameSnapshotBackfillDatabase;
 
 class CountingDatabase implements DatabaseLike {
-  listCalls = 0;
-  candidateCalls = 0;
-  updateCalls = 0;
+  candidateBatchCalls = 0;
+  applyBatchCalls = 0;
+  attemptedUpdateRows = 0;
   failingId: number | null = null;
 
   constructor(private readonly delegate: DatabaseLike) {}
 
-  async listTokenUsageLedgerRows(): Promise<RawTokenUsageProviderNameBackfillRow[]> {
-    this.listCalls += 1;
-    return this.delegate.listTokenUsageLedgerRows();
+  listCandidateBatch(
+    afterId: number,
+    limit: number,
+  ): ReturnType<DatabaseLike['listCandidateBatch']> {
+    this.candidateBatchCalls += 1;
+    return this.delegate.listCandidateBatch(afterId, limit);
   }
 
-  async listTokenUsageProviderNameBackfillCandidates(): Promise<RawTokenUsageProviderNameBackfillRow[]> {
-    this.candidateCalls += 1;
-    return this.delegate.listTokenUsageProviderNameBackfillCandidates();
+  countRows(): ReturnType<DatabaseLike['countRows']> {
+    return this.delegate.countRows();
   }
 
-  async countTokenUsageLedgerRows(): Promise<number> {
-    return this.delegate.countTokenUsageLedgerRows();
-  }
-
-  async updateTokenUsageProviderName(input: {
-    id: number;
-    expectedProviderName: string | null;
-    nextProviderName: string;
-  }): Promise<number | void> {
-    this.updateCalls += 1;
-    if (this.failingId === input.id) throw new Error('synthetic provider-name update failure');
-    return this.delegate.updateTokenUsageProviderName(input);
+  applyBatch(
+    updates: Parameters<DatabaseLike['applyBatch']>[0],
+  ): ReturnType<DatabaseLike['applyBatch']> {
+    this.applyBatchCalls += 1;
+    this.attemptedUpdateRows += updates.length;
+    if (updates.some(({ id }) => this.failingId === id)) {
+      return Promise.reject(new Error('synthetic provider-name update failure'));
+    }
+    return this.delegate.applyBatch(updates);
   }
 }
 
 const providerStore = (providerNames: Map<string, string>, onLoad?: () => void) => ({
-  listProviders: async () => {
+  read: async () => {
     onLoad?.();
     return [...providerNames.entries()].map(([id, name]) => ({
       id,
       name,
-      providerType: LLMProvider.OPENAI_COMPATIBLE,
-      baseUrl: 'https://provider.invalid/v1',
     }));
   },
 });
@@ -271,7 +266,7 @@ describe('token usage provider-name snapshot backfill startup e2e', () => {
     expect((await readRows(rowIds)).map(withoutProviderName)).toEqual(beforePreservedRows);
   });
 
-  it('blocks startup after a failed provider-name update and retries only the unresolved row', async () => {
+  it('records a failed atomic provider-name batch, continues sibling startup work, and retries the whole batch', async () => {
     const providerId = `provider_${randomUUID()}`;
     const rawModel = `openai-compatible:${providerId}:org/model:tag`;
     const runId = `provider-name-failure-${randomUUID()}`;
@@ -302,9 +297,9 @@ describe('token usage provider-name snapshot backfill startup e2e', () => {
     ]));
     expect(siblingExecutions).toBe(1);
     expect((await readRows(rowIds)).map((row) => row.providerName)).toEqual([
-      'Alibaba Cloud',
       null,
-      'Alibaba Cloud',
+      null,
+      null,
     ]);
     expect((await readRows(rowIds)).map(withoutProviderName)).toEqual(beforePreservedRows);
 
@@ -315,7 +310,9 @@ describe('token usage provider-name snapshot backfill startup e2e', () => {
       attempts: 2,
     });
     expect(siblingExecutions).toBe(1);
-    expect(database.updateCalls).toBe(4);
+    expect(database.candidateBatchCalls).toBe(2);
+    expect(database.applyBatchCalls).toBe(2);
+    expect(database.attemptedUpdateRows).toBe(6);
     expect((await readRows(rowIds)).map((row) => row.providerName)).toEqual([
       'Alibaba Cloud',
       'Alibaba Cloud',

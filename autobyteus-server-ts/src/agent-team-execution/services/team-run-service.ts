@@ -14,6 +14,7 @@ import { TeamRunEventSourceType } from "../domain/team-run-event.js";
 import { generateTeamRunIdForDefinitionName } from "../domain/team-run-id.js";
 import { AgentTeamRunManager } from "./agent-team-run-manager.js";
 import { TeamDefinitionTopologyPlanner } from "./team-definition-topology-planner.js";
+import { TokenUsageMigrationReadiness } from "../../token-usage/providers/token-usage-migration-readiness.js";
 
 export interface TeamRunPresetInput {
   workspaceRootPath: string;
@@ -47,6 +48,8 @@ export class TeamRunService {
   private readonly catalog: TeamRunHistoryCatalogService;
   private readonly workspaces: WorkspaceManager;
   private readonly identityAllocator: Pick<AgentRunIdentityAllocator, "allocateForAgentDefinition">;
+  private readonly tokenUsageReadiness: Pick<TokenUsageMigrationReadiness,
+    "assertCurrentSchemaReady" | "assertExistingRunRestoreReady">;
 
   constructor(options: {
     agentTeamRunManager?: AgentTeamRunManager;
@@ -56,6 +59,8 @@ export class TeamRunService {
     memoryDir?: string;
     memoryLocationService?: AgentMemoryLocationService;
     agentRunIdentityAllocator?: Pick<AgentRunIdentityAllocator, "allocateForAgentDefinition">;
+    tokenUsageReadiness?: Pick<TokenUsageMigrationReadiness,
+      "assertCurrentSchemaReady" | "assertExistingRunRestoreReady">;
   } = {}) {
     this.manager = options.agentTeamRunManager ?? AgentTeamRunManager.getInstance();
     this.definitions = options.teamDefinitionService ?? AgentTeamDefinitionService.getInstance();
@@ -65,6 +70,7 @@ export class TeamRunService {
     this.identityAllocator = options.agentRunIdentityAllocator ?? new AgentRunIdentityAllocator({
       memoryDir: options.memoryDir ?? appConfigProvider.config.getMemoryDir(),
     });
+    this.tokenUsageReadiness = options.tokenUsageReadiness ?? new TokenUsageMigrationReadiness();
   }
 
   async buildMemberConfigsFromLaunchPreset(input: {
@@ -86,6 +92,7 @@ export class TeamRunService {
   }
 
   async createTeamRun(input: CreateTeamRunInput): Promise<RootTeamRun> {
+    this.tokenUsageReadiness.assertCurrentSchemaReady();
     const workspaces = new Map<string, Promise<string>>();
     const memberConfigs = await Promise.all(input.memberConfigs.map(async (member) => {
       const requested = member.workspaceRootPath?.trim() || null;
@@ -129,6 +136,7 @@ export class TeamRunService {
   async restoreTeamRun(teamRunId: string): Promise<RootTeamRun> {
     const normalized = required(teamRunId, "teamRunId");
     if (this.manager.getTeamRun(normalized)) throw new Error(`Team run '${normalized}' is already active and does not need restore.`);
+    this.tokenUsageReadiness.assertExistingRunRestoreReady();
     const root = await this.manager.restoreTeamRun(normalized);
     try {
       await this.catalog.recordTeamRunRestored({ tree: root.getExecutionTreeSnapshot() });

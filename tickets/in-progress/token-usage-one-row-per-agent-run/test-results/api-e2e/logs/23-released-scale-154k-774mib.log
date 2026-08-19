@@ -1,0 +1,156 @@
+(node:58603) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+{
+  "rowCount": 154100,
+  "runCount": 1269,
+  "seedElapsedMs": 6018,
+  "seeded": {
+    "pageSize": 4096,
+    "pageCount": 215051,
+    "freelistCount": 0,
+    "journalMode": "wal",
+    "databaseBytes": 880848896,
+    "walBytes": 0,
+    "shmBytes": 32768,
+    "logicalPageBytes": 880848896
+  },
+  "modelValuePhase": {
+    "name": "model-value-source-shaping",
+    "elapsedMs": 110,
+    "peakWalBytes": 477952,
+    "peakTmpBytes": 0,
+    "peakRssBytes": 171343872,
+    "freeDiskDeltaBytes": -1118208,
+    "result": {
+      "status": "SUCCEEDED_WITH_WARNINGS",
+      "summary": {
+        "scannedCount": 144,
+        "migratedCount": 141,
+        "skippedCount": 3,
+        "failedCount": 0,
+        "details": [
+          {
+            "itemId": "released-scale-event-141",
+            "status": "SKIPPED",
+            "message": "reason=SKIPPED_CONFLICTING_COMPOSITE_VALUES; row=142"
+          },
+          {
+            "itemId": "released-scale-event-142",
+            "status": "SKIPPED",
+            "message": "reason=SKIPPED_RAW_IDENTITY_MISSING; row=143"
+          },
+          {
+            "itemId": "released-scale-event-143",
+            "status": "SKIPPED",
+            "message": "reason=SKIPPED_INVALID_COMPOSITE_MODEL_VALUE; row=144"
+          },
+          {
+            "itemId": "token-usage-model-value:summary",
+            "status": "SKIPPED",
+            "message": "rows=154100; migrated=141; reasons={\"SKIPPED_CONFLICTING_COMPOSITE_VALUES\":1,\"SKIPPED_RAW_IDENTITY_MISSING\":1,\"SKIPPED_INVALID_COMPOSITE_MODEL_VALUE\":1}"
+          }
+        ]
+      },
+      "errorMessage": null
+    }
+  },
+  "providerNamePhase": {
+    "name": "provider-name-source-shaping",
+    "elapsedMs": 126,
+    "peakWalBytes": 782832,
+    "peakTmpBytes": 0,
+    "peakRssBytes": 171491328,
+    "freeDiskDeltaBytes": 729088,
+    "result": {
+      "status": "SUCCEEDED_WITH_WARNINGS",
+      "summary": {
+        "scannedCount": 144,
+        "migratedCount": 142,
+        "skippedCount": 2,
+        "failedCount": 0,
+        "details": [
+          {
+            "itemId": "released-scale-event-142",
+            "status": "SKIPPED",
+            "message": "reason=SKIPPED_PROVIDER_NAME_UNRECOVERABLE; row=143"
+          },
+          {
+            "itemId": "released-scale-event-143",
+            "status": "SKIPPED",
+            "message": "reason=SKIPPED_PROVIDER_NAME_UNRECOVERABLE; row=144"
+          },
+          {
+            "itemId": "token-usage-provider-name:summary",
+            "status": "SKIPPED",
+            "message": "rows=154100; migrated=142; reasons={\"SKIPPED_PROVIDER_NAME_UNRECOVERABLE\":2}"
+          }
+        ]
+      },
+      "errorMessage": null
+    }
+  },
+  "sourceShapingValidation": {
+    "custom_model_values_migrated": 141,
+    "custom_candidates_remaining": 3,
+    "provider_names_present": 142
+  },
+  "consolidationPhase": {
+    "name": "run-record-consolidation",
+    "elapsedMs": 11287,
+    "peakWalBytes": 12112832,
+    "peakTmpBytes": 0,
+    "peakRssBytes": 192937984,
+    "freeDiskDeltaBytes": 29089792,
+    "result": {
+      "status": "SUCCEEDED",
+      "summary": {
+        "scannedCount": 154100,
+        "migratedCount": 1269,
+        "skippedCount": 0,
+        "failedCount": 0,
+        "details": [
+          {
+            "itemId": "token-usage-run-records-v1:summary",
+            "status": "MIGRATED",
+            "message": "Consolidated 154100 legacy rows into 1269 current run records and emptied the source atomically."
+          }
+        ]
+      },
+      "errorMessage": null
+    }
+  },
+  "completed": {
+    "pageSize": 4096,
+    "pageCount": 217767,
+    "freelistCount": 215037,
+    "journalMode": "wal",
+    "databaseBytes": 891973632,
+    "walBytes": 0,
+    "shmBytes": 32768,
+    "logicalPageBytes": 891973632
+  },
+  "validation": {
+    "legacyRows": 0,
+    "currentRows": 1269,
+    "totalReports": 154100,
+    "totalInputTokens": 154100,
+    "totalOutputTokens": 154100,
+    "integrityCheck": "ok"
+  },
+  "freeDiskAtStart": 209044946944,
+  "freeDiskBeforeCleanup": 208138989568,
+  "probeRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-token-scale-4gHPZp"
+}

@@ -37,6 +37,9 @@
             {{ store.isLoading ? t('settings.components.settings.TokenUsageStatistics.loadingStatistics') : t('settings.components.settings.TokenUsageStatistics.fetchStatistics') }}
           </button>
         </div>
+        <p class="mt-3 text-sm text-gray-600">
+          {{ t('settings.components.settings.TokenUsageStatistics.rangeMeaning') }}
+        </p>
       </div>
 
       <div v-if="store.isLoading" class="flex flex-col items-center justify-center gap-3 py-20 text-gray-600">
@@ -44,8 +47,8 @@
         <div>{{ t('settings.components.settings.TokenUsageStatistics.loadingStatisticsLong') }}</div>
       </div>
 
-      <div v-else-if="store.getError" class="rounded-lg border border-red-200 bg-red-50 p-4 text-red-700">
-        {{ store.getError }}
+      <div v-else-if="displayError" class="rounded-lg border border-amber-200 bg-amber-50 p-4 text-amber-900" role="alert">
+        {{ displayError }}
       </div>
 
       <div v-else-if="selectedGrouping === 'task' && store.getTaskRows.length === 0" class="rounded-lg border border-gray-200 bg-white p-6 text-gray-600">
@@ -70,7 +73,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useLocalization } from '~/composables/useLocalization';
 import { useTokenUsageStatisticsStore } from '~/stores/tokenUsageStatistics';
 import TokenUsageModelStatisticsTable from './token-usage/TokenUsageModelStatisticsTable.vue';
@@ -81,6 +84,9 @@ const { t } = useLocalization();
 const startDate = ref('');
 const endDate = ref('');
 const selectedGrouping = ref<'task' | 'model'>('task');
+const displayError = computed(() => store.getError?.includes('TOKEN_USAGE_HISTORY_MIGRATION_REQUIRED')
+  ? t('settings.components.settings.TokenUsageStatistics.historyMigrationRequired')
+  : store.getError);
 
 const fetchStatistics = async (): Promise<void> => {
   if (!startDate.value || !endDate.value) {

@@ -23,7 +23,6 @@ import {
 import { CUSTOM_PROVIDER_V1_APP_DATA_MIGRATION_ID } from './custom-provider-v1-app-data-migration.js';
 import { REMOVE_GLOBAL_SKILL_DISCOVERY_MODE_MIGRATION_ID } from './remove-global-skill-discovery-mode-migration.js';
 import { TEAM_RUN_METADATA_MEMBER_TREE_MIGRATION_ID } from './team-run-metadata-member-tree-migration.js';
-import { TOKEN_USAGE_PROVIDER_NAME_SNAPSHOT_BACKFILL_MIGRATION_ID } from './token-usage-provider-name-snapshot-backfill-migration.js';
 import { REMOVE_SELF_EVOLUTION_RUN_METADATA_MIGRATION_ID } from './remove-self-evolution-run-metadata-migration.js';
 import {
   CustomProviderReadableIdJsonSelectorMigrator,
@@ -39,7 +38,6 @@ export const CUSTOM_PROVIDER_READABLE_ID_PREREQUISITE_IDS = [
   CUSTOM_PROVIDER_V1_APP_DATA_MIGRATION_ID,
   REMOVE_GLOBAL_SKILL_DISCOVERY_MODE_MIGRATION_ID,
   TEAM_RUN_METADATA_MEMBER_TREE_MIGRATION_ID,
-  TOKEN_USAGE_PROVIDER_NAME_SNAPSHOT_BACKFILL_MIGRATION_ID,
   REMOVE_SELF_EVOLUTION_RUN_METADATA_MIGRATION_ID,
 ] as const;
 

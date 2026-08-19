@@ -156,7 +156,7 @@ const asString = (value: unknown): string | null =>
   typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
 
 const asNonNegativeInt = (value: unknown): number | null =>
-  typeof value === "number" && Number.isFinite(value) && value >= 0 ? Math.trunc(value) : null;
+  typeof value === "number" && Number.isSafeInteger(value) && value >= 0 ? value : null;
 
 const asFiniteNumber = (value: unknown): number | null =>
   typeof value === "number" && Number.isFinite(value) ? value : null;

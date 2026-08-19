@@ -1,0 +1,1262 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+
+(node:20925) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "team-v1-supported-startup-20925-1787129126736-0eba03ab56e18.db" at "file:///Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts/db/team-v1-supported-startup-20925-1787129126736-0eba03ab56e18.db"
+
+SQLite database team-v1-supported-startup-20925-1787129126736-0eba03ab56e18.db created at file:///Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts/db/team-v1-supported-startup-20925-1787129126736-0eba03ab56e18.db
+
+22 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+stdout | tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun V1 released-shape production upgrade through actual startup > migrates the exact supported cohort, serves history and new work, and remains immutable on relaunch
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Database migrations completed successfully.
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "team-v1-warning-startup-20925-1787129127214-41c36db88eaff.db" at "file:///Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts/db/team-v1-warning-startup-20925-1787129127214-41c36db88eaff.db"
+
+SQLite database team-v1-warning-startup-20925-1787129127214-41c36db88eaff.db created at file:///Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts/db/team-v1-warning-startup-20925-1787129127214-41c36db88eaff.db
+
+22 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+stdout | tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun V1 released-shape production upgrade through actual startup > isolates mixed root, token, and history warnings while keeping health, history, new work, and relaunch available
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Database migrations completed successfully.
+
+ × tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun V1 released-shape production upgrade through actual startup > migrates the exact supported cohort, serves history and new work, and remains immutable on relaunch 478ms
+   → TEST_SERVER_BUILD_REQUIRED
+ × tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun V1 released-shape production upgrade through actual startup > isolates mixed root, token, and history warnings while keeping health, history, new work, and relaunch available 441ms
+   → TEST_SERVER_BUILD_REQUIRED
+stdout | tests/e2e/token-usage/gpt56-token-usage-accounting-graphql.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:20943) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/token-usage/token-usage-custom-provider-model-value-backfill-startup.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:21570) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/token-usage/token-usage-custom-provider-model-value-backfill-startup.e2e.test.ts > token usage custom-provider model-value backfill startup e2e
+prisma:info Starting a sqlite pool with 21 connections.
+
+ × tests/e2e/token-usage/token-usage-custom-provider-model-value-backfill-startup.e2e.test.ts > token usage custom-provider model-value backfill startup e2e > runs the real Prisma adapter, preserves raw identity, and keeps warning completion terminal for runPending 33ms
+   → expected [ { …(13) }, { …(13) } ] to deeply equal ArrayContaining{…}
+ × tests/e2e/token-usage/token-usage-custom-provider-model-value-backfill-startup.e2e.test.ts > token usage custom-provider model-value backfill startup e2e > blocks startup after a failed row, durably retries only the unresolved row, and records attempts 17ms
+   → expected [ { id: 3, …(2) }, …(2) ] to deeply equal [ { id: 3, …(2) }, …(2) ]
+stdout | tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:21573) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/token-usage/token-usage-ledger-provider-semantics.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:21575) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/token-usage/token-usage-model-list.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:21579) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/token-usage/token-usage-model-list.e2e.test.ts > token usage related model-list GraphQL coverage > keeps removed MiniMax M2.7 absent from the settings-facing GraphQL model list
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts
+CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.
+AutobyteusModelCatalog initialized.
+CachedAudioModelProvider initialized.
+AudioModelService initialized.
+CachedImageModelProvider initialized.
+ImageModelService initialized.
+CachedVideoModelProvider initialized.
+VideoModelService initialized.
+
+stdout | tests/e2e/token-usage/token-usage-model-list.e2e.test.ts > token usage related model-list GraphQL coverage > keeps removed MiniMax M2.7 absent from the settings-facing GraphQL model list
+Populating LLM models cache for the first time...
+Fetching list of available LLM models from LLMFactory...
+
+stdout | tests/e2e/token-usage/token-usage-model-list.e2e.test.ts > token usage related model-list GraphQL coverage > keeps removed MiniMax M2.7 absent from the settings-facing GraphQL model list
+Successfully fetched 31 models from LLMFactory.
+
+stdout | tests/e2e/token-usage/token-usage-model-list.e2e.test.ts > token usage related model-list GraphQL coverage > keeps removed MiniMax M2.7 absent from the settings-facing GraphQL model list
+LLM models cache populated with 31 items.
+
+ ✓ tests/e2e/token-usage/token-usage-model-list.e2e.test.ts > token usage related model-list GraphQL coverage > keeps removed MiniMax M2.7 absent from the settings-facing GraphQL model list 9ms
+ ✓ tests/e2e/token-usage/token-usage-model-list.e2e.test.ts > token usage related model-list GraphQL coverage > surfaces current static Anthropic models through the settings-facing GraphQL model list 3ms
+stdout | tests/e2e/token-usage/token-usage-provider-name-snapshot-backfill-startup.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:21584) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/token-usage/token-usage-provider-name-snapshot-backfill-startup.e2e.test.ts > token usage provider-name snapshot backfill startup e2e
+prisma:info Starting a sqlite pool with 21 connections.
+
+ × tests/e2e/token-usage/token-usage-provider-name-snapshot-backfill-startup.e2e.test.ts > token usage provider-name snapshot backfill startup e2e > runs the real Prisma adapter, preserves all non-provider fields, and explicitly retries warning rows 33ms
+   → expected [ { …(13) }, { …(13) } ] to deeply equal ArrayContaining{…}
+ × tests/e2e/token-usage/token-usage-provider-name-snapshot-backfill-startup.e2e.test.ts > token usage provider-name snapshot backfill startup e2e > blocks startup after a failed provider-name update and retries only the unresolved row 21ms
+   → expected [ null, null, null ] to deeply equal [ 'Alibaba Cloud', null, …(1) ]
+stdout | tests/e2e/token-usage/token-usage-unit-prices-graphql.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:21587) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/token-usage/providers/statistics-provider.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:21589) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/token-usage/providers/statistics-provider.integration.test.ts > TokenUsageStatisticsProvider > gets nullable total cost via ledger events without turning missing price into zero
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts
+
+ × tests/integration/token-usage/providers/statistics-provider.integration.test.ts > TokenUsageStatisticsProvider > gets nullable total cost via ledger events without turning missing price into zero 7ms
+   → this.store.listRunsCreatedInRange is not a function
+ × tests/integration/token-usage/providers/statistics-provider.integration.test.ts > TokenUsageStatisticsProvider > aggregates diagnostics per runtime/model pair with mixed price status 1ms
+   → this.store.listRunsCreatedInRange is not a function
+ × tests/integration/token-usage/providers/statistics-provider.integration.test.ts > TokenUsageStatisticsProvider > loads legacy custom provider names once and keeps the raw model identifier separate from display 1ms
+   → this.store.listRunsCreatedInRange is not a function
+ × tests/integration/token-usage/providers/statistics-provider.integration.test.ts > TokenUsageStatisticsProvider > prefers the persisted provider snapshot without reading the current provider map 1ms
+   → this.store.listRunsCreatedInRange is not a function
+ × tests/integration/token-usage/providers/statistics-provider.integration.test.ts > TokenUsageStatisticsProvider > returns null aggregate cost and mixed status for mixed currencies 3ms
+   → promise rejected "TypeError: this.store.listRunsCreatedInRa…" instead of resolving
+ × tests/integration/token-usage/providers/statistics-provider.integration.test.ts > TokenUsageStatisticsProvider > preserves partial-price-missing statistics instead of coercing missing dimensions to zero 1ms
+   → this.store.listRunsCreatedInRange is not a function
+ × tests/integration/token-usage/providers/statistics-provider.integration.test.ts > TokenUsageStatisticsProvider > groups task statistics by team run and standalone run without duplicating team members 1ms
+   → this.store.listRunsCreatedInRange is not a function
+ × tests/integration/token-usage/providers/statistics-provider.integration.test.ts > TokenUsageStatisticsProvider > keeps expanded team rows usage-derived and omits no-usage roster members 0ms
+   → this.store.listRunsCreatedInRange is not a function
+ × tests/integration/token-usage/providers/statistics-provider.integration.test.ts > TokenUsageStatisticsProvider > keeps task-related usage grouped by exact AgentRun ID while Team topology stays execution-tree-owned 1ms
+   → this.store.listRunsCreatedInRange is not a function
+stdout | tests/integration/token-usage/providers/token-usage-display-field-capturer.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:21592) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/token-usage/providers/token-usage-display-field-capturer.integration.test.ts > TokenUsageDisplayFieldCapturer > captures team and member names from team history metadata without producing roster rows
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts
+
+ × tests/integration/token-usage/providers/token-usage-display-field-capturer.integration.test.ts > TokenUsageDisplayFieldCapturer > captures standalone agent display fields from run history sources 9ms
+   → expected { …(77) } to match object { team_name: null, …(4) }
+(87 matching properties omitted from actual)
+ × tests/integration/token-usage/providers/token-usage-display-field-capturer.integration.test.ts > TokenUsageDisplayFieldCapturer > captures team and member names from team history metadata without producing roster rows 3ms
+   → expected { …(77) } to match object { team_name: 'Historical Team', …(4) }
+(90 matching properties omitted from actual)
+ ✓ tests/integration/token-usage/providers/token-usage-display-field-capturer.integration.test.ts > TokenUsageDisplayFieldCapturer > preserves imported display fields over currently available metadata 1ms
+stdout | tests/integration/token-usage/repositories/token-usage-record-repository.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:21896) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/token-usage/repositories/token-usage-record-repository.integration.test.ts
+prisma:info Starting a sqlite pool with 21 connections.
+
+ ✓ tests/integration/token-usage/repositories/token-usage-record-repository.integration.test.ts > SqlTokenUsageRunRepository current-record integration > serializes rapid same-time direct observations into one exact row using fold revision order 109ms
+ ✓ tests/integration/token-usage/repositories/token-usage-record-repository.integration.test.ts > SqlTokenUsageRunRepository current-record integration > reconciles cumulative advancement, suppresses exact replay, and records non-subtracting regression 23ms
+ ✓ tests/integration/token-usage/repositories/token-usage-record-repository.integration.test.ts > SqlTokenUsageRunRepository current-record integration > round-trips ninth-series eviction, evicted-series reappearance, later advancement, and both compact-state byte caps 382ms
+ ✓ tests/integration/token-usage/repositories/token-usage-record-repository.integration.test.ts > SqlTokenUsageRunRepository current-record integration > selects runs by creation time with first-observation fallback and returns the current record once 13ms
+stdout | tests/integration/token-usage/providers/token-usage-store.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:21898) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/token-usage/providers/token-usage-store.integration.test.ts
+prisma:info Starting a sqlite pool with 21 connections.
+
+ ✓ tests/integration/token-usage/providers/token-usage-store.integration.test.ts > TokenUsageRunStore > summarizes exact current components, costs, context, and report count without an event list 17ms
+ ✓ tests/integration/token-usage/providers/token-usage-store.integration.test.ts > TokenUsageRunStore > keeps exact token totals but reports mixed currency and unit-price semantics truthfully 11ms
+ ✓ tests/integration/token-usage/providers/token-usage-store.integration.test.ts > TokenUsageRunStore > stores standalone, direct, nested, and delegated runs once and sums only concrete team rows 25ms
+stdout | tests/integration/token-usage/providers/default-agent-run-event-pipeline-lifecycle.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:21900) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/token-usage/providers/default-agent-run-event-pipeline-lifecycle.integration.test.ts > default token event pipeline real SQLite lifecycle
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/integration/token-usage/providers/default-agent-run-event-pipeline-lifecycle.integration.test.ts > default token event pipeline real SQLite lifecycle > drains accepted persistence, stays stopped for late work, and never reopens through a getter
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts
+
+ ✓ tests/integration/token-usage/providers/default-agent-run-event-pipeline-lifecycle.integration.test.ts > default token event pipeline real SQLite lifecycle > drains accepted persistence, stays stopped for late work, and never reopens through a getter 17ms
+ ✓ tests/unit/token-usage/token-usage-team-run-v1-migration-repository.test.ts > TokenUsageTeamRunV1MigrationRepository > updates only final roots while retaining evidence, facts, and the current index 27ms
+ ✓ tests/unit/token-usage/token-usage-team-run-v1-migration-repository.test.ts > TokenUsageTeamRunV1MigrationRepository > returns a verified rollback warning when the root transaction fails 16ms
+stdout | tests/unit/token-usage/services/token-usage-run-accumulator.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/token-usage/services/token-usage-run-accumulator.test.ts > TokenUsageRunAccumulator > commits exact BigInt state before an unsafe public-summary projection rejects 40ms
+stdout | tests/unit/config/prisma-import-lifecycle.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:21911) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/config/prisma-import-lifecycle.test.ts > Prisma import lifecycle > uses the explicitly initialized repository_prisma lifecycle for default token repositories and stores
+prisma:info Starting a sqlite pool with 21 connections.
+
+ ✓ tests/unit/config/prisma-import-lifecycle.test.ts > Prisma import lifecycle > imports and constructs database owners without acquiring runtime configuration 1ms
+ ✓ tests/unit/config/prisma-import-lifecycle.test.ts > Prisma import lifecycle > acquires the configured client only on each migration owner's first database operation 1ms
+ ✓ tests/unit/config/prisma-import-lifecycle.test.ts > Prisma import lifecycle > does not acquire or disconnect caller-injected migration clients 1ms
+ ✓ tests/unit/config/prisma-import-lifecycle.test.ts > Prisma import lifecycle > disconnects lazily acquired migration-owned clients 1ms
+ ✓ tests/unit/config/prisma-import-lifecycle.test.ts > Prisma import lifecycle > uses the explicitly initialized repository_prisma lifecycle for default token repositories and stores 21ms
+stdout | tests/unit/server-runtime-app-data-migration-gate.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:21912) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/server-runtime-app-data-migration-gate.test.ts > startConfiguredServer required app-data migration gates > continues bootstrap and listen when final TeamRun migration reports a warning 5ms
+ ✓ tests/unit/server-runtime-app-data-migration-gate.test.ts > startConfiguredServer required app-data migration gates > continues with strict catalog admission when the final status is missing 1ms
+ ✓ tests/unit/server-runtime-app-data-migration-gate.test.ts > startConfiguredServer required app-data migration gates > emits a narrow structured platform fatal before database bootstrap exits 2ms
+ ✓ tests/unit/server-runtime-app-data-migration-gate.test.ts > startConfiguredServer required app-data migration gates > emits a current-schema fatal before app-data migrations when the required token table is invalid 1ms
+ ✓ tests/unit/server-runtime-app-data-migration-gate.test.ts > startConfiguredServer required app-data migration gates > blocks bootstrap and listen when migration execution throws 1ms
+ ✓ tests/unit/server-runtime-app-data-migration-gate.test.ts > startConfiguredServer required app-data migration gates > blocks startup when readable identity has a non-terminal failure 0ms
+ ✓ tests/unit/server-runtime-app-data-migration-gate.test.ts > startConfiguredServer required app-data migration gates > blocks startup when the readable identity result is missing 1ms
+ ✓ tests/unit/server-runtime-app-data-migration-gate.test.ts > startConfiguredServer required app-data migration gates > blocks startup when readable identity is still RUNNING and preserves its log path 0ms
+ ✓ tests/unit/server-runtime-app-data-migration-gate.test.ts > startConfiguredServer required app-data migration gates > continues when both blocking migrations are terminal despite an unrelated failure 1ms
+ ✓ tests/unit/server-runtime-app-data-migration-gate.test.ts > startConfiguredServer required app-data migration gates > starts exactly once when all blocking migrations succeed 0ms
+stdout | tests/unit/agent-execution/events/token-usage-event-enrichment-transformer.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/token-usage/projections/token-usage-run-fold.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/token-usage/projections/token-usage-run-fold.test.ts > token usage current run fold > replays cumulative snapshots without changing totals, reports, or revision 5ms
+ ✓ tests/unit/token-usage/projections/token-usage-run-fold.test.ts > token usage current run fold > keeps checkpoint and digest state within hard count and byte limits 9ms
+ ✓ tests/unit/token-usage/projections/token-usage-run-fold.test.ts > token usage current run fold > rejects unsafe input numbers and refuses to narrow persisted BigInt totals 1ms
+stdout | tests/unit/agent-execution/events/token-usage-run-persistence-transformer-lifecycle.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:21917) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/agent-execution/events/token-usage-run-persistence-transformer-lifecycle.test.ts > TokenUsageRunPersistenceTransformer lifecycle > awaits an accepted fold and ignores late events after quiesce 5ms
+ ✓ tests/unit/agent-execution/events/token-usage-run-persistence-transformer-lifecycle.test.ts > TokenUsageRunPersistenceTransformer lifecycle > marks persistence failures without dropping the event 2ms
+ ✓ tests/unit/agent-execution/events/token-usage-run-persistence-transformer-lifecycle.test.ts > TokenUsageRunPersistenceTransformer lifecycle > does not misclassify an after-commit public summary rejection as persistence failure 1ms
+stdout | tests/unit/token-usage/projections/token-usage-pricing-summary.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/token-usage/projections/token-usage-pricing-summary.test.ts > token usage pricing summary > makes mixed currency govern cost status and every relevant unit price 2ms
+ ✓ tests/unit/token-usage/projections/token-usage-pricing-summary.test.ts > token usage pricing summary > normalizes an inconsistent stored mixed-currency summary at aggregate read time 4ms
+ ✓ tests/unit/token-usage/projections/token-usage-snapshot-delta-normalizer.test.ts > TokenUsageSnapshotDeltaNormalizer > keeps the exact cumulative source while using provider-delta metadata for the optimistic live delta 4ms
+ ✓ tests/unit/token-usage/projections/token-usage-snapshot-delta-normalizer.test.ts > TokenUsageSnapshotDeltaNormalizer > does not reconcile one cumulative observation against another in the transient normalizer 1ms
+ ✓ tests/unit/token-usage/projections/token-usage-snapshot-delta-normalizer.test.ts > TokenUsageSnapshotDeltaNormalizer > preserves assumed-run-origin cumulative values but defers Codex snapshots without provider deltas to the durable fold 1ms
+ ✓ tests/unit/token-usage/projections/token-usage-snapshot-delta-normalizer.test.ts > TokenUsageSnapshotDeltaNormalizer > clears cost-affecting fields when a cumulative snapshot lacks a series key 1ms
+stdout | tests/unit/token-usage/pricing/token-cost-calculator.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/token-usage/pricing/token-cost-calculator.test.ts > TokenCostCalculator > calculates estimated API input/output/total costs only for trusted dimensions 3ms
+ ✓ tests/unit/token-usage/pricing/token-cost-calculator.test.ts > TokenCostCalculator > keeps missing/default-zero pricing token-only instead of showing zero estimated cost 0ms
+ ✓ tests/unit/token-usage/pricing/token-cost-calculator.test.ts > TokenCostCalculator > marks cache-priced rows partial when standard prices are trusted but cache prices are absent 0ms
+ ✓ tests/unit/token-usage/pricing/token-cost-calculator.test.ts > TokenCostCalculator > uses billable output tokens for output cost and reports reasoning as a subcost without double counting 0ms
+ ✓ tests/unit/token-usage/pricing/token-cost-calculator.test.ts > TokenCostCalculator > prices cache creation input when the cache-write dimension is trusted 0ms
+ ✓ tests/unit/token-usage/pricing/token-cost-calculator.test.ts > TokenCostCalculator > marks positive cache creation tokens partial when cache-write pricing is missing 0ms
+ ✓ tests/unit/token-usage/pricing/token-cost-calculator.test.ts > TokenCostCalculator > prices cache read input when the cache dimension is trusted 0ms
+ ✓ tests/unit/token-usage/pricing/token-cost-calculator.test.ts > TokenCostCalculator > selects input-size pricing tiers from event input tokens 0ms
+ ✓ tests/unit/app-data-migrations/token-usage-custom-provider-model-value-backfill-migration.test.ts > token usage custom-provider model value backfill > keeps the released ID, uses bounded candidates, and retries idempotently 2ms
+ ✓ tests/unit/app-data-migrations/token-usage-custom-provider-model-value-backfill-migration.test.ts > token usage custom-provider model value backfill > caps malformed-candidate evidence and keeps scalar skip counts 1ms
+ ✓ tests/unit/app-data-migrations/token-usage-custom-provider-model-value-backfill-migration.test.ts > token usage custom-provider model value backfill > returns failure after a transactional batch error and succeeds on normal retry 0ms
+stdout | tests/unit/token-usage/pricing/token-price-config-provider.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/token-usage/pricing/token-price-config-provider.test.ts > TokenPriceConfigProvider Anthropic catalog policies > exposes cache-aware Anthropic pricing dimensions for claude-fable-5 to server token-pricing consumers 3ms
+ ✓ tests/unit/token-usage/pricing/token-price-config-provider.test.ts > TokenPriceConfigProvider Anthropic catalog policies > exposes cache-aware Anthropic pricing dimensions for claude-opus-4.8 to server token-pricing consumers 1ms
+ ✓ tests/unit/token-usage/pricing/token-price-config-provider.test.ts > TokenPriceConfigProvider Anthropic catalog policies > exposes cache-aware Anthropic pricing dimensions for claude-opus-5 to server token-pricing consumers 1ms
+ ✓ tests/unit/token-usage/pricing/token-price-config-provider.test.ts > TokenPriceConfigProvider Anthropic catalog policies > exposes cache-aware Anthropic pricing dimensions for claude-sonnet-5 to server token-pricing consumers 1ms
+ ✓ tests/unit/app-data-migrations/token-usage-team-run-v1-row-planner.test.ts > planTeamRunV1TokenRow > assigns one isolated disposition to standalone, current, direct, retained, retired, and bad rows 3ms
+ ✓ tests/unit/app-data-migrations/token-usage-team-run-v1-row-planner.test.ts > planTeamRunV1TokenRow > invalidates only an exact address group that names multiple AgentRuns 1ms
+ ✓ tests/unit/token-usage/projections/token-usage-unit-price-summary.test.ts > token usage unit-price summary projection > summarizes single component unit prices and ignores zero-token price churn 2ms
+ ✓ tests/unit/token-usage/projections/token-usage-unit-price-summary.test.ts > token usage unit-price summary projection > marks component-relevant differing positive-token prices as mixed 0ms
+ ✓ tests/unit/token-usage/projections/token-usage-unit-price-summary.test.ts > token usage unit-price summary projection > distinguishes missing, partial-missing, and local/no-bill component prices 1ms
+ ✓ tests/unit/token-usage/projections/token-usage-unit-price-summary.test.ts > token usage unit-price summary projection > uses stable price comparison tolerance for equivalent decimal prices 1ms
+stdout | tests/unit/app-data-migrations/token-usage-provider-name-snapshot-backfill-migration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/app-data-migrations/token-usage-provider-name-snapshot-backfill-migration.test.ts > token usage provider-name snapshot backfill > keeps the released ID and changes only bounded SQL-scope candidates 2ms
+ ✓ tests/unit/app-data-migrations/token-usage-provider-name-snapshot-backfill-migration.test.ts > token usage provider-name snapshot backfill > uses bounded evidence for unrecoverable candidates 1ms
+ ✓ tests/unit/app-data-migrations/token-usage-provider-name-snapshot-backfill-migration.test.ts > token usage provider-name snapshot backfill > fails if the provider snapshot is unavailable and retries a failed batch 0ms
+ ✓ tests/unit/token-usage/projections/token-usage-model-display-projection.test.ts > token usage model display projection > parses the complete colon-containing suffix with the anchored grammar 1ms
+ ✓ tests/unit/token-usage/projections/token-usage-model-display-projection.test.ts > token usage model display projection > resolves custom, built-in, and non-AutoByteus labels without changing raw identity 1ms
+ ✓ tests/unit/token-usage/projections/token-usage-model-display-projection.test.ts > token usage model display projection > uses deterministic deleted-provider and malformed-value fallbacks 0ms
+ ✓ tests/unit/token-usage/projections/token-usage-model-display-projection.test.ts > token usage model display projection > keeps task raw/display entries aligned and falls back on cross-runtime collisions 1ms
+ ✓ tests/unit/agent-execution/domain/agent-run-token-usage-provider-name.test.ts > createTokenUsageUpdatedPayload provider-name precedence > uses the trimmed top-level snapshot and flags a conflicting nested value 3ms
+ ✓ tests/unit/agent-execution/domain/agent-run-token-usage-provider-name.test.ts > createTokenUsageUpdatedPayload provider-name precedence > falls back to the nested snapshot when the top-level value is absent or blank 0ms
+ ✓ tests/unit/agent-execution/domain/agent-run-token-usage-provider-name.test.ts > createTokenUsageUpdatedPayload provider-name precedence > preserves null when neither producer location supplies a snapshot 0ms
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/token-usage/gpt56-token-usage-accounting-graphql.e2e.test.ts [ tests/e2e/token-usage/gpt56-token-usage-accounting-graphql.e2e.test.ts ]
+Error: Cannot find module '../../../src/token-usage/providers/token-usage-ledger-store.js' imported from '/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts/tests/e2e/token-usage/gpt56-token-usage-accounting-graphql.e2e.test.ts'
+ ❯ tests/e2e/token-usage/gpt56-token-usage-accounting-graphql.e2e.test.ts:22:1
+     20| import { TokenUsageComponentBasisResolver } from "../../../src/token-u…
+     21| import { TokenUsageSnapshotDeltaNormalizer } from "../../../src/token-…
+     22| import { TokenUsageLedgerStore } from "../../../src/token-usage/provid…
+       | ^
+     23| 
+     24| type UnitPrice = {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: 'ERR_MODULE_NOT_FOUND' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/22]⎯
+
+ FAIL  tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts [ tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts ]
+Error: Cannot find module '../../../src/token-usage/providers/token-usage-ledger-store.js' imported from '/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts/tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts'
+ ❯ tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts:11:1
+      9| import { buildGraphqlSchema } from '../../../src/api/graphql/schema.js…
+     10| import { createTokenUsageUpdatedPayload } from '../../../src/agent-exe…
+     11| import { TokenUsageLedgerStore } from '../../../src/token-usage/provid…
+       | ^
+     12| import type { TokenUsageUpdatedPayload } from '../../../src/agent-exec…
+     13| import { appConfigProvider } from '../../../src/config/app-config-prov…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: 'ERR_MODULE_NOT_FOUND' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/22]⎯
+
+ FAIL  tests/e2e/token-usage/token-usage-ledger-provider-semantics.e2e.test.ts [ tests/e2e/token-usage/token-usage-ledger-provider-semantics.e2e.test.ts ]
+Error: Cannot find module '../../../src/token-usage/providers/token-usage-ledger-store.js' imported from '/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts/tests/e2e/token-usage/token-usage-ledger-provider-semantics.e2e.test.ts'
+ ❯ tests/e2e/token-usage/token-usage-ledger-provider-semantics.e2e.test.ts:13:1
+     11| import { appConfigProvider } from '../../../src/config/app-config-prov…
+     12| import { createTokenUsageUpdatedPayload } from '../../../src/agent-exe…
+     13| import { TokenUsageLedgerStore } from '../../../src/token-usage/provid…
+       | ^
+     14| import type { TokenUsageUpdatedPayload } from '../../../src/agent-exec…
+     15| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: 'ERR_MODULE_NOT_FOUND' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/22]⎯
+
+ FAIL  tests/e2e/token-usage/token-usage-unit-prices-graphql.e2e.test.ts [ tests/e2e/token-usage/token-usage-unit-prices-graphql.e2e.test.ts ]
+Error: Cannot find module '../../../src/token-usage/providers/token-usage-ledger-store.js' imported from '/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts/tests/e2e/token-usage/token-usage-unit-prices-graphql.e2e.test.ts'
+ ❯ tests/e2e/token-usage/token-usage-unit-prices-graphql.e2e.test.ts:10:1
+      8| import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js…
+      9| import { createTokenUsageUpdatedPayload } from "../../../src/agent-exe…
+     10| import { TokenUsageLedgerStore } from "../../../src/token-usage/provid…
+       | ^
+     11| import type { TokenUsageUpdatedPayload } from "../../../src/agent-exec…
+     12| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: 'ERR_MODULE_NOT_FOUND' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/22]⎯
+
+ FAIL  tests/unit/agent-execution/events/token-usage-event-enrichment-transformer.test.ts [ tests/unit/agent-execution/events/token-usage-event-enrichment-transformer.test.ts ]
+TypeError: Cannot convert undefined or null to object
+ ❯ createTeamMemberExecutionIdentity src/agent-team-execution/domain/team-member-execution-identity.ts:24:23
+     22|   agentRunId: string;
+     23| }): TeamMemberExecutionIdentity => {
+     24|   const keys = Object.keys(input).sort();
+       |                       ^
+     25|   const expected = ["agentRunId", "memberAddress", "rootTeamRunId"];
+     26|   if (keys.length !== expected.length || keys.some((key, index) => key…
+ ❯ cloneTeamMemberExecutionIdentity src/agent-team-execution/domain/team-member-execution-identity.ts:42:35
+ ❯ new MemberTeamContext src/agent-team-execution/domain/member-team-context.ts:18:21
+ ❯ tests/unit/agent-execution/events/token-usage-event-enrichment-transformer.test.ts:28:24
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/22]⎯
+
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 17 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun V1 released-shape production upgrade through actual startup > migrates the exact supported cohort, serves history and new work, and remains immutable on relaunch
+Error: TEST_SERVER_BUILD_REQUIRED
+ ❯ stableError ../test-support/live-e2e/test-runtime-bootstrap.mjs:47:17
+     45| 
+     46| const stableError = (code) => {
+     47|   const error = new Error(code);
+       |                 ^
+     48|   error.code = code;
+     49|   return error;
+ ❯ startBuiltTestServer ../test-support/live-e2e/test-runtime-bootstrap.mjs:266:47
+ ❯ startScenarioServer tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:599:24
+ ❯ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:629:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: 'TEST_SERVER_BUILD_REQUIRED' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/22]⎯
+
+ FAIL  tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun V1 released-shape production upgrade through actual startup > isolates mixed root, token, and history warnings while keeping health, history, new work, and relaunch available
+Error: TEST_SERVER_BUILD_REQUIRED
+ ❯ stableError ../test-support/live-e2e/test-runtime-bootstrap.mjs:47:17
+     45| 
+     46| const stableError = (code) => {
+     47|   const error = new Error(code);
+       |                 ^
+     48|   error.code = code;
+     49|   return error;
+ ❯ startBuiltTestServer ../test-support/live-e2e/test-runtime-bootstrap.mjs:266:47
+ ❯ startScenarioServer tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:599:24
+ ❯ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:659:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: 'TEST_SERVER_BUILD_REQUIRED' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/22]⎯
+
+ FAIL  tests/e2e/token-usage/token-usage-custom-provider-model-value-backfill-startup.e2e.test.ts > token usage custom-provider model-value backfill startup e2e > runs the real Prisma adapter, preserves raw identity, and keeps warning completion terminal for runPending
+AssertionError: expected [ { …(13) }, { …(13) } ] to deeply equal ArrayContaining{…}
+
+- Expected
++ Received
+
+- ArrayContaining [
+-   ObjectContaining {
++ [
++   {
+      "attempts": 1,
+      "canRetry": true,
++     "completedAt": 2026-08-19T08:45:36.504Z,
++     "description": "Normalizes bounded batches of validated legacy custom-provider model values.",
++     "displayName": "Token usage custom-provider model value backfill",
++     "errorMessage": "this.database.countRows is not a function",
++     "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/token-usage-model-backfill-e2e-RSossV/20260730_token_usage_custom_provider_model_value_backfill-2026-08-19T08-45-36-503Z.log",
+      "migrationId": "20260730_token_usage_custom_provider_model_value_backfill",
+-     "status": "SUCCEEDED_WITH_WARNINGS",
++     "requiredOnStartup": true,
++     "startedAt": 2026-08-19T08:45:36.501Z,
++     "status": "FAILED",
++     "summary": {
++       "details": [
++         {
++           "itemId": "token-usage-model-value:failure",
++           "message": "this.database.countRows is not a function",
++           "status": "FAILED",
+          },
+-   ObjectContaining {
++       ],
++       "failedCount": 1,
++       "migratedCount": 0,
++       "scannedCount": 0,
++       "skippedCount": 0,
++     },
++     "summaryJson": "{\"scannedCount\":0,\"migratedCount\":0,\"skippedCount\":0,\"failedCount\":1,\"details\":[{\"itemId\":\"token-usage-model-value:failure\",\"status\":\"FAILED\",\"message\":\"this.database.countRows is not a function\"}]}",
++   },
++   {
++     "attempts": 1,
++     "canRetry": false,
++     "completedAt": 2026-08-19T08:45:36.508Z,
++     "description": "Confirms startup continues after the token usage migration reports failure.",
++     "displayName": "Synthetic startup sibling migration",
++     "errorMessage": null,
++     "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/token-usage-model-backfill-e2e-RSossV/migration-warning-sibling-f3bc6871-9e37-449a-adc9-f42942714467-2026-08-19T08-45-36-508Z.log",
+      "migrationId": "migration-warning-sibling-f3bc6871-9e37-449a-adc9-f42942714467",
++     "requiredOnStartup": true,
++     "startedAt": 2026-08-19T08:45:36.506Z,
+      "status": "SUCCEEDED",
++     "summary": {
++       "details": [],
++       "failedCount": 0,
++       "migratedCount": 0,
++       "scannedCount": 0,
++       "skippedCount": 0,
++     },
++     "summaryJson": "{\"scannedCount\":0,\"migratedCount\":0,\"skippedCount\":0,\"failedCount\":0,\"details\":[]}",
+    },
+  ]
+
+ ❯ tests/e2e/token-usage/token-usage-custom-provider-model-value-backfill-startup.e2e.test.ts:170:19
+    168| 
+    169|     const first = await runner.runPending();
+    170|     expect(first).toEqual(expect.arrayContaining([
+       |                   ^
+    171|       expect.objectContaining({
+    172|         migrationId: TOKEN_USAGE_CUSTOM_PROVIDER_MODEL_VALUE_BACKFILL_…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/22]⎯
+
+ FAIL  tests/e2e/token-usage/token-usage-custom-provider-model-value-backfill-startup.e2e.test.ts > token usage custom-provider model-value backfill startup e2e > blocks startup after a failed row, durably retries only the unresolved row, and records attempts
+AssertionError: expected [ { id: 3, …(2) }, …(2) ] to deeply equal [ { id: 3, …(2) }, …(2) ]
+
+- Expected
++ Received
+
+  [
+    {
+      "id": 3,
+      "modelIdentifier": "openai-compatible:provider_3d73b5f1-8fdd-40df-819e-4fcfbb3cb6d1:org/model:tag",
+-     "modelValue": "org/model:tag",
++     "modelValue": "openai-compatible:provider_3d73b5f1-8fdd-40df-819e-4fcfbb3cb6d1:org/model:tag",
+    },
+    {
+      "id": 4,
+      "modelIdentifier": "openai-compatible:provider_3d73b5f1-8fdd-40df-819e-4fcfbb3cb6d1:org/model:tag-two",
+      "modelValue": "openai-compatible:provider_3d73b5f1-8fdd-40df-819e-4fcfbb3cb6d1:org/model:tag-two",
+    },
+    {
+      "id": 5,
+      "modelIdentifier": "openai-compatible:provider_3d73b5f1-8fdd-40df-819e-4fcfbb3cb6d1:org/model:tag-three",
+-     "modelValue": "org/model:tag-three",
++     "modelValue": "openai-compatible:provider_3d73b5f1-8fdd-40df-819e-4fcfbb3cb6d1:org/model:tag-three",
+    },
+  ]
+
+ ❯ tests/e2e/token-usage/token-usage-custom-provider-model-value-backfill-startup.e2e.test.ts:231:9
+    229|       orderBy: { id: 'asc' },
+    230|       select: { id: true, modelIdentifier: true, modelValue: true },
+    231|     })).toEqual([
+       |         ^
+    232|       { id: rowIds[0], modelIdentifier: rawModel, modelValue: 'org/mod…
+    233|       { id: rowIds[1], modelIdentifier: `${rawModel}-two`, modelValue:…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/22]⎯
+
+ FAIL  tests/e2e/token-usage/token-usage-provider-name-snapshot-backfill-startup.e2e.test.ts > token usage provider-name snapshot backfill startup e2e > runs the real Prisma adapter, preserves all non-provider fields, and explicitly retries warning rows
+AssertionError: expected [ { …(13) }, { …(13) } ] to deeply equal ArrayContaining{…}
+
+- Expected
++ Received
+
+- ArrayContaining [
+-   ObjectContaining {
++ [
++   {
+      "attempts": 1,
+      "canRetry": true,
++     "completedAt": 2026-08-19T08:45:42.889Z,
++     "description": "Recovers exact provider display names in bounded legacy candidate batches.",
++     "displayName": "Token usage provider-name snapshot backfill",
++     "errorMessage": "this.providerNameReader.read is not a function",
++     "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/token-usage-provider-name-backfill-e2e-FbZiAg/20260730_token_usage_provider_name_snapshot_backfill-2026-08-19T08-45-42-889Z.log",
+      "migrationId": "20260730_token_usage_provider_name_snapshot_backfill",
+-     "status": "SUCCEEDED_WITH_WARNINGS",
++     "requiredOnStartup": true,
++     "startedAt": 2026-08-19T08:45:42.886Z,
++     "status": "FAILED",
++     "summary": {
++       "details": [
++         {
++           "itemId": "token-usage-provider-name:failure",
++           "message": "this.providerNameReader.read is not a function",
++           "status": "FAILED",
+          },
+-   ObjectContaining {
++       ],
++       "failedCount": 1,
++       "migratedCount": 0,
++       "scannedCount": 0,
++       "skippedCount": 0,
++     },
++     "summaryJson": "{\"scannedCount\":0,\"migratedCount\":0,\"skippedCount\":0,\"failedCount\":1,\"details\":[{\"itemId\":\"token-usage-provider-name:failure\",\"status\":\"FAILED\",\"message\":\"this.providerNameReader.read is not a function\"}]}",
++   },
++   {
++     "attempts": 1,
++     "canRetry": false,
++     "completedAt": 2026-08-19T08:45:42.893Z,
++     "description": "Confirms startup continues after provider-name snapshot migration outcomes.",
++     "displayName": "Synthetic provider-name startup sibling migration",
++     "errorMessage": null,
++     "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/token-usage-provider-name-backfill-e2e-FbZiAg/provider-name-warning-sibling-718f7871-a71d-465d-9ccc-f7a8e79d8576-2026-08-19T08-45-42-893Z.log",
+      "migrationId": "provider-name-warning-sibling-718f7871-a71d-465d-9ccc-f7a8e79d8576",
++     "requiredOnStartup": true,
++     "startedAt": 2026-08-19T08:45:42.892Z,
+      "status": "SUCCEEDED",
++     "summary": {
++       "details": [],
++       "failedCount": 0,
++       "migratedCount": 0,
++       "scannedCount": 0,
++       "skippedCount": 0,
++     },
++     "summaryJson": "{\"scannedCount\":0,\"migratedCount\":0,\"skippedCount\":0,\"failedCount\":0,\"details\":[]}",
+    },
+  ]
+
+ ❯ tests/e2e/token-usage/token-usage-provider-name-snapshot-backfill-startup.e2e.test.ts:232:19
+    230| 
+    231|     const first = await runner.runPending();
+    232|     expect(first).toEqual(expect.arrayContaining([
+       |                   ^
+    233|       expect.objectContaining({
+    234|         migrationId: TOKEN_USAGE_PROVIDER_NAME_SNAPSHOT_BACKFILL_MIGRA…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/22]⎯
+
+ FAIL  tests/e2e/token-usage/token-usage-provider-name-snapshot-backfill-startup.e2e.test.ts > token usage provider-name snapshot backfill startup e2e > blocks startup after a failed provider-name update and retries only the unresolved row
+AssertionError: expected [ null, null, null ] to deeply equal [ 'Alibaba Cloud', null, …(1) ]
+
+- Expected
++ Received
+
+  [
+-   "Alibaba Cloud",
+    null,
+-   "Alibaba Cloud",
++   null,
++   null,
+  ]
+
+ ❯ tests/e2e/token-usage/token-usage-provider-name-snapshot-backfill-startup.e2e.test.ts:304:69
+    302|     ]));
+    303|     expect(siblingExecutions).toBe(1);
+    304|     expect((await readRows(rowIds)).map((row) => row.providerName)).to…
+       |                                                                     ^
+    305|       'Alibaba Cloud',
+    306|       null,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/22]⎯
+
+ FAIL  tests/integration/token-usage/providers/statistics-provider.integration.test.ts > TokenUsageStatisticsProvider > gets nullable total cost via ledger events without turning missing price into zero
+TypeError: this.store.listRunsCreatedInRange is not a function
+ ❯ TokenUsageStatisticsProvider.getTotalCost src/token-usage/providers/statistics-provider.ts:62:38
+     60| 
+     61|   async getTotalCost(startDate: Date, endDate: Date): Promise<number |…
+     62|     const records = await this.store.listRunsCreatedInRange(startDate,…
+       |                                      ^
+     63|     return buildTokenUsageRunAggregate(records).estimated_api_total_co…
+     64|   }
+ ❯ tests/integration/token-usage/providers/statistics-provider.integration.test.ts:100:40
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/22]⎯
+
+ FAIL  tests/integration/token-usage/providers/statistics-provider.integration.test.ts > TokenUsageStatisticsProvider > aggregates diagnostics per runtime/model pair with mixed price status
+TypeError: this.store.listRunsCreatedInRange is not a function
+ ❯ TokenUsageStatisticsProvider.getStatisticsPerRuntimeModel src/token-usage/providers/statistics-provider.ts:72:38
+     70| 
+     71|   async getStatisticsPerRuntimeModel(startDate: Date, endDate: Date): …
+     72|     const records = await this.store.listRunsCreatedInRange(startDate,…
+       |                                      ^
+     73|     const displayContext = await this.loadDisplayContext(records);
+     74|     const groups: RecordGroups = new Map();
+ ❯ tests/integration/token-usage/providers/statistics-provider.integration.test.ts:114:36
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/22]⎯
+
+ FAIL  tests/integration/token-usage/providers/statistics-provider.integration.test.ts > TokenUsageStatisticsProvider > loads legacy custom provider names once and keeps the raw model identifier separate from display
+TypeError: this.store.listRunsCreatedInRange is not a function
+ ❯ TokenUsageStatisticsProvider.getStatisticsPerRuntimeModel src/token-usage/providers/statistics-provider.ts:72:38
+     70| 
+     71|   async getStatisticsPerRuntimeModel(startDate: Date, endDate: Date): …
+     72|     const records = await this.store.listRunsCreatedInRange(startDate,…
+       |                                      ^
+     73|     const displayContext = await this.loadDisplayContext(records);
+     74|     const groups: RecordGroups = new Map();
+ ❯ tests/integration/token-usage/providers/statistics-provider.integration.test.ts:160:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/22]⎯
+
+ FAIL  tests/integration/token-usage/providers/statistics-provider.integration.test.ts > TokenUsageStatisticsProvider > prefers the persisted provider snapshot without reading the current provider map
+TypeError: this.store.listRunsCreatedInRange is not a function
+ ❯ TokenUsageStatisticsProvider.getStatisticsPerRuntimeModel src/token-usage/providers/statistics-provider.ts:72:38
+     70| 
+     71|   async getStatisticsPerRuntimeModel(startDate: Date, endDate: Date): …
+     72|     const records = await this.store.listRunsCreatedInRange(startDate,…
+       |                                      ^
+     73|     const displayContext = await this.loadDisplayContext(records);
+     74|     const groups: RecordGroups = new Map();
+ ❯ tests/integration/token-usage/providers/statistics-provider.integration.test.ts:193:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/22]⎯
+
+ FAIL  tests/integration/token-usage/providers/statistics-provider.integration.test.ts > TokenUsageStatisticsProvider > returns null aggregate cost and mixed status for mixed currencies
+AssertionError: promise rejected "TypeError: this.store.listRunsCreatedInRa…" instead of resolving
+ ❯ tests/integration/token-usage/providers/statistics-provider.integration.test.ts:208:53
+    206|     ]);
+    207| 
+    208|     await expect(provider().getTotalCost(start, end)).resolves.toBeNul…
+       |                                                     ^
+    209|     const [stats] = await provider().getStatisticsPerRuntimeModel(star…
+    210| 
+
+Caused by: TypeError: this.store.listRunsCreatedInRange is not a function
+ ❯ TokenUsageStatisticsProvider.getTotalCost src/token-usage/providers/statistics-provider.ts:62:38
+ ❯ tests/integration/token-usage/providers/statistics-provider.integration.test.ts:208:29
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/22]⎯
+
+ FAIL  tests/integration/token-usage/providers/statistics-provider.integration.test.ts > TokenUsageStatisticsProvider > preserves partial-price-missing statistics instead of coercing missing dimensions to zero
+TypeError: this.store.listRunsCreatedInRange is not a function
+ ❯ TokenUsageStatisticsProvider.getStatisticsPerRuntimeModel src/token-usage/providers/statistics-provider.ts:72:38
+     70| 
+     71|   async getStatisticsPerRuntimeModel(startDate: Date, endDate: Date): …
+     72|     const records = await this.store.listRunsCreatedInRange(startDate,…
+       |                                      ^
+     73|     const displayContext = await this.loadDisplayContext(records);
+     74|     const groups: RecordGroups = new Map();
+ ❯ tests/integration/token-usage/providers/statistics-provider.integration.test.ts:226:38
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/22]⎯
+
+ FAIL  tests/integration/token-usage/providers/statistics-provider.integration.test.ts > TokenUsageStatisticsProvider > groups task statistics by team run and standalone run without duplicating team members
+TypeError: this.store.listRunsCreatedInRange is not a function
+ ❯ TokenUsageStatisticsProvider.getTaskStatisticsInPeriod src/token-usage/providers/statistics-provider.ts:67:38
+     65| 
+     66|   async getTaskStatisticsInPeriod(startDate: Date, endDate: Date): Pro…
+     67|     const records = await this.store.listRunsCreatedInRange(startDate,…
+       |                                      ^
+     68|     return { rows: this.taskTreeBuilder.buildRows(records, await this.…
+     69|   }
+ ❯ tests/integration/token-usage/providers/statistics-provider.integration.test.ts:290:37
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/22]⎯
+
+ FAIL  tests/integration/token-usage/providers/statistics-provider.integration.test.ts > TokenUsageStatisticsProvider > keeps expanded team rows usage-derived and omits no-usage roster members
+TypeError: this.store.listRunsCreatedInRange is not a function
+ ❯ TokenUsageStatisticsProvider.getTaskStatisticsInPeriod src/token-usage/providers/statistics-provider.ts:67:38
+     65| 
+     66|   async getTaskStatisticsInPeriod(startDate: Date, endDate: Date): Pro…
+     67|     const records = await this.store.listRunsCreatedInRange(startDate,…
+       |                                      ^
+     68|     return { rows: this.taskTreeBuilder.buildRows(records, await this.…
+     69|   }
+ ❯ tests/integration/token-usage/providers/statistics-provider.integration.test.ts:352:37
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/22]⎯
+
+ FAIL  tests/integration/token-usage/providers/statistics-provider.integration.test.ts > TokenUsageStatisticsProvider > keeps task-related usage grouped by exact AgentRun ID while Team topology stays execution-tree-owned
+TypeError: this.store.listRunsCreatedInRange is not a function
+ ❯ TokenUsageStatisticsProvider.getTaskStatisticsInPeriod src/token-usage/providers/statistics-provider.ts:67:38
+     65| 
+     66|   async getTaskStatisticsInPeriod(startDate: Date, endDate: Date): Pro…
+     67|     const records = await this.store.listRunsCreatedInRange(startDate,…
+       |                                      ^
+     68|     return { rows: this.taskTreeBuilder.buildRows(records, await this.…
+     69|   }
+ ❯ tests/integration/token-usage/providers/statistics-provider.integration.test.ts:444:37
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/22]⎯
+
+ FAIL  tests/integration/token-usage/providers/token-usage-display-field-capturer.integration.test.ts > TokenUsageDisplayFieldCapturer > captures standalone agent display fields from run history sources
+AssertionError: expected { …(77) } to match object { team_name: null, …(4) }
+(87 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "agent_name": "Historical Agent",
+-   "member_name": null,
+    "run_created_at": "2026-06-29T10:00:00.000Z",
+    "run_summary": "Summarize captured costs",
+    "team_name": null,
+  }
+
+ ❯ tests/integration/token-usage/providers/token-usage-display-field-capturer.integration.test.ts:48:22
+     46|     const captured = await capturer.capture(buildEvent({ run_id: "agen…
+     47| 
+     48|     expect(captured).toMatchObject({
+       |                      ^
+     49|       team_name: null,
+     50|       agent_name: "Historical Agent",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/22]⎯
+
+ FAIL  tests/integration/token-usage/providers/token-usage-display-field-capturer.integration.test.ts > TokenUsageDisplayFieldCapturer > captures team and member names from team history metadata without producing roster rows
+AssertionError: expected { …(77) } to match object { team_name: 'Historical Team', …(4) }
+(90 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "agent_name": null,
+-   "member_name": "Solution Designer",
+    "run_created_at": "2026-06-29T09:00:00.000Z",
+    "run_summary": "Team summary",
+    "team_name": "Historical Team",
+  }
+
+ ❯ tests/integration/token-usage/providers/token-usage-display-field-capturer.integration.test.ts:106:22
+    104|     }));
+    105| 
+    106|     expect(captured).toMatchObject({
+       |                      ^
+    107|       team_name: "Historical Team",
+    108|       agent_name: null,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/22]⎯
+
+
+ Test Files  10 failed | 20 passed (30)
+      Tests  17 failed | 72 passed (89)
+   Start at  10:45:25
+   Duration  35.25s (transform 5.82s, setup 173ms, import 16.56s, tests 2.01s, environment 3ms)
+

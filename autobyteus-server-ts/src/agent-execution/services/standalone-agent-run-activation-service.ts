@@ -13,6 +13,7 @@ import {
   AgentRunActivationError,
   isAgentRunActivationQuarantineError,
 } from "../errors.js";
+import { TokenUsageMigrationReadiness } from "../../token-usage/providers/token-usage-migration-readiness.js";
 
 export type StandaloneAgentRunActivationResult = Readonly<{
   run: AgentRun;
@@ -32,6 +33,8 @@ export class StandaloneAgentRunActivationService {
   private readonly metadataService: AgentRunMetadataService;
   private readonly historyCatalogService: AgentRunHistoryCatalogService;
   private readonly workspaceManager: ReturnType<typeof getWorkspaceManager>;
+  private readonly tokenUsageReadiness: Pick<TokenUsageMigrationReadiness,
+    "assertCurrentSchemaReady" | "assertExistingRunRestoreReady">;
 
   constructor(
     memoryDir: string,
@@ -40,12 +43,15 @@ export class StandaloneAgentRunActivationService {
       metadataService?: AgentRunMetadataService;
       historyCatalogService?: AgentRunHistoryCatalogService;
       workspaceManager?: ReturnType<typeof getWorkspaceManager>;
+      tokenUsageReadiness?: Pick<TokenUsageMigrationReadiness,
+        "assertCurrentSchemaReady" | "assertExistingRunRestoreReady">;
     } = {},
   ) {
     this.agentRunManager = deps.agentRunManager ?? AgentRunManager.getInstance();
     this.metadataService = deps.metadataService ?? new AgentRunMetadataService(memoryDir);
     this.historyCatalogService = deps.historyCatalogService ?? new AgentRunHistoryCatalogService(memoryDir);
     this.workspaceManager = deps.workspaceManager ?? getWorkspaceManager();
+    this.tokenUsageReadiness = deps.tokenUsageReadiness ?? new TokenUsageMigrationReadiness();
   }
 
   async resolveCommandReadyAgentRun(runId: string): Promise<AgentRun> {
@@ -100,6 +106,7 @@ export class StandaloneAgentRunActivationService {
   }
 
   private async activatePrepared(metadata: AgentRunMetadata): Promise<StandaloneAgentRunActivationResult> {
+    this.tokenUsageReadiness.assertCurrentSchemaReady();
     const config = await this.buildConfig(metadata);
     const candidate = await this.agentRunManager.prepareNewAgentRun({ runId: metadata.runId, config });
     await this.validateCandidateOrAbort(candidate, metadata.runtimeKind, metadata.runId);
@@ -118,6 +125,7 @@ export class StandaloneAgentRunActivationService {
   }
 
   private async restoreStarted(metadata: AgentRunMetadata): Promise<StandaloneAgentRunActivationResult> {
+    this.tokenUsageReadiness.assertExistingRunRestoreReady();
     const config = await this.buildConfig(metadata);
     let candidate: AgentRunActivationCandidate;
     if (isExternalProviderRuntimeKind(metadata.runtimeKind)) {

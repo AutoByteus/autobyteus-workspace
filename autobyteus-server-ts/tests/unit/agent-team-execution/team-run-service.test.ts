@@ -5,6 +5,7 @@ import { TeamRunService } from "../../../src/agent-team-execution/services/team-
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { TeamRunEventSourceType, type TeamRunEvent } from "../../../src/agent-team-execution/domain/team-run-event.js";
 import { createTeamAgentExecutionBinding } from "../../../src/agent-team-execution/domain/team-agent-execution-binding.js";
+import { configureTokenUsageMigrationReadiness } from "../../../src/token-usage/providers/token-usage-migration-readiness.js";
 
 const rootDefinition = {
   name: "Support Team",
@@ -79,6 +80,23 @@ const createSubject = (
 };
 
 describe("TeamRunService current root lifecycle", () => {
+  it("blocks root, nested, delegated, and task-team restoration before the team backend constructs providers", async () => {
+    configureTokenUsageMigrationReadiness({
+      kind: "CURRENT_SCHEMA_DEGRADED",
+      migrationStatus: "FAILED",
+      logPath: null,
+    });
+    try {
+      const { service, mocks } = createSubject();
+      await expect(service.restoreTeamRun("team-with-nested-and-task-runs")).rejects.toMatchObject({
+        code: "TOKEN_USAGE_EXISTING_RUN_RESTORE_MIGRATION_REQUIRED",
+      });
+      expect(mocks.agentTeamRunManager.restoreTeamRun).not.toHaveBeenCalled();
+    } finally {
+      configureTokenUsageMigrationReadiness({ kind: "READY" });
+    }
+  });
+
   it("returns an active RootTeamRun without attempting restore", async () => {
     const activeRun = { teamRunId: "team-1" };
     const { service, mocks } = createSubject(activeRun);

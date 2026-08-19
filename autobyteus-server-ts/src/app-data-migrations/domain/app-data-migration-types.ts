@@ -34,8 +34,18 @@ export interface AppDataMigrationDefinition {
   displayName: string;
   description: string;
   requiredOnStartup: boolean;
+  executionPolicy?: "ANYTIME" | "STARTUP_ONLY";
   prerequisiteMigrationIds?: readonly string[];
   execute(): Promise<AppDataMigrationExecutionResult>;
+}
+
+export class AppDataMigrationRestartRequiredError extends Error {
+  readonly code = "APP_DATA_MIGRATION_RESTART_REQUIRED";
+
+  constructor(readonly migrationId: string) {
+    super(`App data migration '${migrationId}' can run only during startup. Restart the application to retry it safely.`);
+    this.name = "AppDataMigrationRestartRequiredError";
+  }
 }
 
 export interface AppDataMigrationRecordSnapshot {

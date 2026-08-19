@@ -1,11 +1,11 @@
 import path from "node:path";
 import type { TeamRunExecutionTreeSnapshot } from "../../../agent-team-execution/domain/team-run-execution-tree.js";
-import { TokenUsageLedgerStore } from "../../../token-usage/providers/token-usage-ledger-store.js";
+import { TokenUsageTeamRunV1MigrationRepository } from "./token-usage-team-run-v1-migration-repository.js";
 import type {
   TokenUsageRuntimeSchemaSnapshot,
   TokenUsageTeamRunV1ApplyResult,
   TokenUsageTeamRunV1RootUpdate,
-} from "../../../token-usage/repositories/sql/token-usage-team-run-v1-migration-repository.js";
+} from "./token-usage-team-run-v1-migration-repository.js";
 import type {
   AppDataMigrationDefinition,
   AppDataMigrationExecutionResult,
@@ -39,8 +39,8 @@ import {
 
 export { TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID } from "./team-run-execution-tree-v1-constants.js";
 
-type TokenMigrationBoundary = Pick<TokenUsageLedgerStore,
-  "inspectTeamRunV1Migration" | "applyTeamRunV1RootUpdates" | "disconnectTeamRunV1Migration">;
+type TokenMigrationBoundary = Pick<TokenUsageTeamRunV1MigrationRepository,
+  "inspectRuntimeSchemaAndEvidence" | "applyResolvedRootUpdates" | "disconnect">;
 
 type PlannedPredecessorRoot = Readonly<{
   state: Extract<TeamRunMigrationState, { kind: "PREDECESSOR" }>;
@@ -74,7 +74,7 @@ export class TeamRunExecutionTreeV1AppDataMigration implements AppDataMigrationD
   constructor(
     private readonly memoryDir: string,
     appDataDir: string,
-    private readonly tokenStore: TokenMigrationBoundary = new TokenUsageLedgerStore(),
+    private readonly tokenStore: TokenMigrationBoundary = new TokenUsageTeamRunV1MigrationRepository(),
   ) {
     this.backupRoot = path.join(appDataDir, "app-data-migration-backups", this.id);
   }
@@ -158,7 +158,7 @@ export class TeamRunExecutionTreeV1AppDataMigration implements AppDataMigrationD
     }
 
     try {
-      await this.tokenStore.disconnectTeamRunV1Migration();
+      await this.tokenStore.disconnect();
     } catch (error) {
       details.push({
         itemId: "token-usage:disconnect",
@@ -181,7 +181,7 @@ export class TeamRunExecutionTreeV1AppDataMigration implements AppDataMigrationD
     details: AppDataMigrationItemDetail[],
   ): Promise<TokenUsageRuntimeSchemaSnapshot | null> {
     try {
-      return await this.tokenStore.inspectTeamRunV1Migration();
+      return await this.tokenStore.inspectRuntimeSchemaAndEvidence();
     } catch (error) {
       details.push({
         itemId: "token-usage:evidence-snapshot",
@@ -361,7 +361,7 @@ export class TeamRunExecutionTreeV1AppDataMigration implements AppDataMigrationD
         : []);
     let applied: TokenUsageTeamRunV1ApplyResult;
     try {
-      applied = await this.tokenStore.applyTeamRunV1RootUpdates(updates, snapshot);
+      applied = await this.tokenStore.applyResolvedRootUpdates(updates, snapshot);
     } catch (error) {
       applied = Object.freeze({
         kind: "ROLLED_BACK_WARNING" as const,

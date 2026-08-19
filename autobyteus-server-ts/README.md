@@ -150,6 +150,10 @@ runtime v1 reader, partial migration, or automatic `.env` import.
 
 ### Production migration practice
 
+- Follow the canonical
+  [`Production Data-Migration Conventions`](docs/design/production_data_migration_conventions.md)
+  for reachability, forward-only runtime ownership, final-current-state failure
+  classification, cleanup residue, and proportionate recovery decisions.
 - Define each migration as a deterministic transformation from explicitly
   investigated, supported released source shapes to one fixed current target.
   Before implementation, inventory representative persisted formats across
@@ -172,11 +176,15 @@ runtime v1 reader, partial migration, or automatic `.env` import.
   product requirement demands it. Infrastructure security, access control,
   backup/disaster recovery, and arbitrary external tampering remain separate
   operational concerns rather than migration business logic.
-- Conversion, promotion, token, and history migration problems must be truthful
-  terminal warnings. They must not prevent catalog/listen/health, new work,
-  unaffected valid history, or a later product upgrade. Only an independent
-  platform/bootstrap owner may establish that the current application itself
-  is inoperable and select startup fatality.
+- Keep current runtime code forward-only. Old database tables/columns and old
+  file shapes may be decoded only inside registered migration boundaries kept
+  for supported direct and skip-version upgrades. Do not restore operation with
+  dual readers/writers or read-old-if-current-is-absent fallbacks.
+- Classify the final persisted state against the facts current application
+  owners actually require. Missing current platform/core invariants may stop
+  startup; a bounded capability-data failure gates only that capability;
+  independently valid current data with inert bounded residue may complete with
+  warnings. A warning must never hide a missing or ambiguous current target.
 - Validate with isolated synthetic fixtures representing supported released
   data families, relaunch/idempotence, and same-identity continuation. Never run
   automated migration proof against a user's live production profile.

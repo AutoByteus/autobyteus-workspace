@@ -11,6 +11,7 @@ import type {
 } from "../../../src/app-data-migrations/domain/app-data-migration-types.js";
 import {
   AppDataMigrationDuplicateRunError,
+  AppDataMigrationRestartRequiredError,
 } from "../../../src/app-data-migrations/domain/app-data-migration-types.js";
 
 class InMemoryMigrationRepository implements AppDataMigrationRecordRepositoryLike {
@@ -200,6 +201,26 @@ describe("AppDataMigrationRunner", () => {
 
     await expect(runner.listStatuses()).resolves.toMatchObject([
       { migrationId: "m1", status: "NOT_RUN", attempts: 0, canRetry: true },
+    ]);
+  });
+
+  it("requires restart for manual execution of a startup-only migration", async () => {
+    const execute = vi.fn(async () => ({ status: "SUCCEEDED" as const, summary }));
+    const definition = {
+      ...createDefinition("startup-only", execute),
+      executionPolicy: "STARTUP_ONLY" as const,
+    };
+    const runner = new AppDataMigrationRunner(
+      new AppDataMigrationRegistry([definition]),
+      new InMemoryMigrationRepository(),
+      { logsDir: tempDir },
+    );
+
+    await expect(runner.runMigration("startup-only"))
+      .rejects.toBeInstanceOf(AppDataMigrationRestartRequiredError);
+    expect(execute).not.toHaveBeenCalled();
+    await expect(runner.runPending()).resolves.toMatchObject([
+      { migrationId: "startup-only", status: "SUCCEEDED" },
     ]);
   });
 

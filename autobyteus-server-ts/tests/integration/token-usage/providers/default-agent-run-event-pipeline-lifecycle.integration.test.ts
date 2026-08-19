@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { initializePrisma, rootPrismaClient, shutdownPrisma } from "repository_prisma";
 import { AgentRunConfig } from "../../../../src/agent-execution/domain/agent-run-config.js";
@@ -13,11 +13,13 @@ import {
   resetDefaultAgentRunEventPipelineForTests,
   stopDefaultAgentRunEventPipeline,
 } from "../../../../src/agent-execution/events/default-agent-run-event-pipeline.js";
+import { AgentTurnLifecycleState } from "../../../../src/agent-execution/events/processors/lifecycle-status/agent-turn-lifecycle-state.js";
+import { AgentSegmentLifecycleState } from "../../../../src/agent-execution/events/processors/segment-lifecycle/agent-segment-lifecycle-state.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
+import { configureTokenUsageMigrationReadiness } from "../../../../src/token-usage/providers/token-usage-migration-readiness.js";
 
 describe("default token event pipeline real SQLite lifecycle", () => {
   const runId = `token-pipeline-lifecycle-${randomUUID()}`;
-  const warning = vi.spyOn(console, "warn").mockImplementation(() => undefined);
   const runContext = new AgentRunContext({
     runId,
     runtimeContext: null,
@@ -34,16 +36,16 @@ describe("default token event pipeline real SQLite lifecycle", () => {
   beforeAll(async () => {
     await shutdownPrisma();
     await initializePrisma({ datasourceUrl: process.env.DATABASE_URL });
+    configureTokenUsageMigrationReadiness({ kind: "READY" });
     await resetDefaultAgentRunEventPipelineForTests();
   });
 
   afterAll(async () => {
     try {
       await resetDefaultAgentRunEventPipelineForTests();
-      await rootPrismaClient.tokenUsageLedgerEvent.deleteMany({ where: { runId } });
+      await rootPrismaClient.tokenUsageRunRecord.deleteMany({ where: { runId } });
     } finally {
       await shutdownPrisma();
-      warning.mockRestore();
     }
   });
 
@@ -67,25 +69,33 @@ describe("default token event pipeline real SQLite lifecycle", () => {
 
   it("drains accepted persistence, stays stopped for late work, and never reopens through a getter", async () => {
     const pipeline = getDefaultAgentRunEventPipeline();
+    const lifecycleState = new AgentTurnLifecycleState();
+    const segmentLifecycleState = new AgentSegmentLifecycleState();
     await pipeline.process({
       runContext,
       events: [rawTokenEvent("token-pipeline-lifecycle:accepted")],
+      lifecycleState,
+      segmentLifecycleState,
     });
 
     const stop = stopDefaultAgentRunEventPipeline();
     await expect(stopDefaultAgentRunEventPipeline()).resolves.toBeUndefined();
     await expect(stop).resolves.toBeUndefined();
     expect(getDefaultAgentRunEventPipeline()).toBe(pipeline);
-    await expect(rootPrismaClient.tokenUsageLedgerEvent.count({ where: { runId } })).resolves.toBe(1);
+    await expect(rootPrismaClient.tokenUsageRunRecord.count({ where: { runId } })).resolves.toBe(1);
 
-    await pipeline.process({
+    const late = await pipeline.process({
       runContext,
       events: [rawTokenEvent("token-pipeline-lifecycle:late")],
+      lifecycleState,
+      segmentLifecycleState,
     });
     await new Promise<void>((resolve) => setImmediate(resolve));
 
     expect(getDefaultAgentRunEventPipeline()).toBe(pipeline);
-    await expect(rootPrismaClient.tokenUsageLedgerEvent.count({ where: { runId } })).resolves.toBe(1);
-    expect(warning).toHaveBeenCalledWith(expect.stringContaining("payload is not enriched"));
+    await expect(rootPrismaClient.tokenUsageRunRecord.count({ where: { runId } })).resolves.toBe(1);
+    expect(late.find((event) => event.eventType === AgentRunEventType.TOKEN_USAGE_UPDATED)).toEqual(
+      rawTokenEvent("token-pipeline-lifecycle:late"),
+    );
   });
 });

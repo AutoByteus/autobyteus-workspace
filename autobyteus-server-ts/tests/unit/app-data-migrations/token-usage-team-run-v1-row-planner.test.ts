@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { createAgentTeamAddress } from "../../../src/agent-collaboration/domain/agent-team-address.js";
-import type { TokenUsageTeamRunV1EvidenceRow } from "../../../src/token-usage/repositories/sql/token-usage-team-run-v1-migration-repository.js";
+import type { TokenUsageTeamRunV1EvidenceRow } from "../../../src/app-data-migrations/migrations/team-run-execution-tree-v1/token-usage-team-run-v1-migration-repository.js";
 import type { TokenUsageTaskTeamRunIndex } from "../../../src/app-data-migrations/migrations/token-usage-task-team-run-index.js";
 import {
   invalidateConflictingTokenEvidence,
