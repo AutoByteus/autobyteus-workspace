@@ -1,0 +1,85 @@
+# DR-006 upstream-reported live DR-005 technical verification
+
+recorded_at_utc=2026-08-19T14:40:00Z
+source=/solution_designer live read-only verification report
+delivery_live_database_access=none
+delivery_live_database_mutation=none
+explicit_user_finalization_instruction=no
+
+## Ticket-scope technical pass
+
+running_electron_pid=5415
+embedded_server_pid=6028
+embedded_server_port=29695
+rest_health=ok
+graphql_health=ok
+migration_id=20260819_token_usage_run_records_v1
+migration_status=SUCCEEDED
+migration_attempt=6
+migration_current_error=none
+legacy_source_rows_scanned=158025
+current_records=1283
+legacy_rows_after_success=0
+distinct_current_run_ids=1283
+duplicate_current_run_ids=0
+blank_current_run_ids=0
+sqlite_quick_check=ok
+negative_or_js_unsafe_token_counters=0
+invalid_json_documents=0
+first_latest_time_inversions=0
+state_blob_cap_violations=0
+current_in_place_revision_observed=376
+current_row_count_increased_for_same_run=no
+frontend_task_statistics_http=200
+frontend_task_statistics_graphql_errors=0
+frontend_task_statistics_root_rows=552
+frontend_task_statistics_hierarchy_rows=1648
+frontend_task_statistics_bytes=2940000
+frontend_task_statistics_seconds=0.364
+frontend_model_statistics_http=200
+frontend_model_statistics_graphql_errors=0
+frontend_model_statistics_rows=27
+frontend_model_statistics_bytes=45100
+frontend_model_statistics_seconds=0.242
+current_token_migration_or_readiness_errors=0
+freelist_pages=203409
+total_pages=213739
+freelist_percent=95.2
+vacuum_required_by_ticket=no
+
+## Reachable residual requiring classification
+
+historical_succeeded_20260730_records_with_unbounded_summary_json=2
+historical_summary_json_bytes_1=13964274
+historical_summary_json_bytes_2=14318058
+current_GetAppDataMigrations_response_bytes=31387995
+current_GetAppDataMigrations_http_or_graphql_result=success
+current_GetAppDataMigrations_seconds=0.333
+current_repaired_definitions_bound_new_or_retry_evidence=yes
+already_succeeded_old_records_rewritten=no
+reachable_current_status_ui_or_api_residue=yes
+
+Delivery classification: Requirement Gap / Design Impact. REQ-014 says logs and
+summary_json shall not grow linearly with ledger cardinality; REQ-025 requires
+truthful bounded outcome evidence. The repaired same-ID definitions execute for
+NOT_RUN/stale-RUNNING/FAILED records but the approved package does not specify
+how an already-SUCCEEDED old unbounded record is normalized, retained, or
+bounded at the current read/API boundary. The residual does not invalidate the
+successful token consolidation, but it prevents delivery from claiming that
+all reachable migration-status evidence is bounded without an upstream scope
+and preservation decision.
+
+## Unrelated non-ticket warnings reported
+
+- TeamRun V1: SUCCEEDED_WITH_WARNINGS, 9 isolated items.
+- Optional Ollama unavailable.
+- Remote discovery SSL warnings.
+
+## Safety
+
+All inspection reported by /solution_designer used sqlite3 -readonly / PRAGMA
+query_only and read-only API probes. Delivery did not independently open, copy,
+query, or mutate the live database or migration status.
+
+Live migration log supplied by upstream:
+/Users/normy/.autobyteus/server-data/logs/app-data-migrations/20260819_token_usage_run_records_v1-2026-08-19T14-32-51-838Z.log

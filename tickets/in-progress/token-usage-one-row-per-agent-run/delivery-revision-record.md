@@ -4,12 +4,99 @@
 
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
+| `DR-006` | Read-only live technical verification of DR-005 plus discovery of reachable old successful migration summaries | `DR-005` Pass at renewed-user-verification checkpoint | Ticket-scope technical Pass; finalization Blocked — consolidation and current statistics passed, but two old `SUCCEEDED` 20260730 summaries produce a reachable 31 MB status response and require Requirement Gap / Design Impact classification; no explicit user finalization instruction | `delivery-requirement-gap.md`, `delivery-evidence/19-*`, `handoff-summary.md`, `release-deployment-report.md`, `docs-sync-report.md` |
+| `DR-005` | `CRR-012` Pass after the IR-007 nullable-adapter correction, plus renewed Electron verification packaging | `DR-004` Failed / Blocked on real production-shaped migration decoding | Pass at renewed-user-verification checkpoint — latest base current, durable adapter convention synchronized, fresh ARM64 Electron package and integrity checks passed; user result pending | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-rework-record.md`, `delivery-evidence/15-*` through `18-*`, server README and canonical migration convention |
 | `DR-004` | Explicit user verification of the DR-003 personal macOS ARM64 Electron package | `DR-003` Pass at package-build/integrity checkpoint, awaiting user test | Failed / Blocked — live production-shaped migration failed three times; safe-backup reproduction confirmed nullable Prisma decimal-string decoding defect; route `Local Fix` to implementation | `delivery-rework-record.md`, `delivery-evidence/10-*`, `11-*`, `13-*`, `handoff-summary.md`, `release-deployment-report.md`, `docs-sync-report.md` |
 | `DR-003` | `CRR-010` Pass after focused integrated `API-REV-004`, plus the user's request for a refreshed personal macOS Electron build | `DR-002` Blocked on latest-base source conflict | Pass — integrated/reviewed package protected, latest base current, README-guided personal ARM64 Electron build and integrity checks passed; awaiting user verification | `delivery-evidence/05-*` through `09-*`, `handoff-summary.md`, `release-deployment-report.md`, `docs-sync-report.md`, `delivery-integration-blocker.md` |
 | `DR-002` | User requested a fresh latest-base refresh and local Electron verification build | `DR-001` Pass — prior base current, docs synchronized, verification handoff ready | Blocked — latest base advanced 8 commits; protected candidate checkpointed; merge had one source conflict in `team-run-service.ts`; routed as `Local Fix` | `delivery-integration-blocker.md`, `delivery-evidence/04-reentry-integration-conflict-dr002.log` |
 | `DR-001` | `CRR-008` Pass over the 17-path `API-REV-003` durable coverage delta, after authoritative `CRR-007` source Pass | N/A — initial delivery baseline | Pass — latest tracked base unchanged/current, durable docs synchronized, user-verification handoff ready; archival/finalization/release held | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/01-*`, `delivery-evidence/02-*`, nine long-lived docs |
 
 ## Revision Entries
+
+### DR-006 — Live migration passes; historical status payload needs classification
+
+- Trigger: `/solution_designer` performed read-only live verification against
+  the running DR-005 packaged app at the user's request. The report explicitly
+  states that this is technical evidence, not an instruction to finalize.
+- Ticket-scope result: `Pass`. The embedded server and REST/GraphQL health were
+  healthy; `20260819_token_usage_run_records_v1` succeeded on attempt `6`;
+  `158,025` legacy rows became `1,283` unique current rows; legacy rows became
+  `0`; SQLite quick check passed; run IDs, counters, JSON, timestamp ordering,
+  and state caps validated; current writes updated a run row in place; exact
+  task/model statistics GraphQL documents returned 200 without errors.
+- Storage result: `203,409 / 213,739` pages are on SQLite's freelist, so the
+  unchanged `835 MiB` physical file is expected and does not violate the ticket,
+  which did not require startup VACUUM.
+- Residual: two old, already-`SUCCEEDED` 20260730 migration records retain
+  `13,964,274`- and `14,318,058`-byte `summary_json` values. The current
+  `GetAppDataMigrations` frontend query succeeds but returns `31,387,995` bytes.
+- Classification: `Requirement Gap / Design Impact`. `REQ-014` and `REQ-025`
+  require bounded migration evidence, while the current requirements explain
+  same-ID retries for `NOT_RUN` / stale `RUNNING` / `FAILED` but not the
+  preservation, normalization, or read-bounding contract for a released
+  already-successful oversized audit record. Because the current UI/API can
+  observe it, the residue is not inert.
+- Required recipient: `/solution_designer`. Canonical record:
+  `delivery-requirement-gap.md`; evidence: `delivery-evidence/19-*`.
+- Safety: upstream inspection was read-only; delivery did not access or mutate
+  the live database or migration record.
+- Current result: `Blocked pending upstream requirement/design disposition and
+  explicit user acceptance.` The successful token migration remains intact.
+- Hold: no push, archive, target merge/push, tag, release, deployment, or
+  cleanup.
+
+### DR-005 — Corrected Electron verification package is ready
+
+- Trigger and lineage: `SR-007` / `ARCH-REV-007` confirmed the exact
+  adapter-boundary design; `IR-007` implemented it; `CRR-011` source review
+  passed; `API-REV-005` passed at `97.4%`; `CRR-012` passed proportional review
+  of both new DS-009 durable test files with no findings.
+- Reviewed-state protection: delivery staged the explicitly reviewed IR-007
+  package and created local checkpoint
+  `bb31e469270ee2b032d19c6dbf8a2c9bea91a18a`. It was not pushed and is not
+  repository finalization.
+- Latest-base refresh: repeated fetches kept
+  `origin/personal@1f5663ddb86e478d0b4ffdd878d57dee72d67b4b`. It is the ticket
+  branch merge base; divergence is `0 behind / 4 ahead`. No merge was needed.
+  Evidence: `delivery-evidence/15-*` and `18-*`.
+- Post-integration rerun decision: no base commit was integrated after
+  `API-REV-005` / `CRR-012`, so no duplicate server selection was warranted.
+  Their current evidence includes the two DS-009 files at `2 / 32`, four-file
+  migration regression at `4 / 43`, final migration/lifecycle selection at
+  `5 / 47`, refreshed built-server lifecycle, and `154,100`-row scale probe.
+- Durable docs result: `Pass`. Added database adapter/transport representation,
+  deterministic typed SQL projection, full grammar and exact parsing, range
+  checks, and real nullable-result adapter-fixture guidance to
+  `autobyteus-server-ts/docs/design/production_data_migration_conventions.md`
+  and summarized it in `autobyteus-server-ts/README.md`. Diff and relative-link
+  audits passed. Evidence: `delivery-evidence/15-*` and `18-*`.
+- Artifact isolation: moved the stale DR-003 `electron-dist` directory to a
+  preserved temporary location before building so old output could not be
+  mistaken for the corrected candidate.
+- Build result: `Pass`. Read the current Electron README and built personal
+  macOS ARM64 version `1.4.52` with the documented no-timestamp/no-notarization
+  command and explicit ARM64 selection. Guards, integrated server build,
+  renderer/transpilation, DMG/ZIP, blockmaps, and updater metadata completed
+  with exit `0`. Evidence: `delivery-evidence/16-*`.
+- Integrity result: `Pass`. Verified DMG and ZIP, mounted payload,
+  `com.autobyteus.app`, version/build `1.4.52`, ARM64 executable, server
+  `dist/index.js`, Prisma ARM64 engine, packaged terminal spawn, zero broken
+  symlinks, and updater hashes/sizes. Delivery did not launch Electron or the
+  bundled server. Evidence: `delivery-evidence/17-*`.
+- DMG SHA-256:
+  `8990b9c4b5c5fd931ce3a119e1e0c7e9f0741ca27f18eae8ff6d276487596c47`.
+- ZIP SHA-256:
+  `cd6acbf1eb56c9808d939ac29a902b06ba6df5f62a95b2e4c2b59bfb3b92f241`.
+- Signing state: expected local unsigned/ad-hoc state; not notarized and not a
+  public release candidate.
+- Rework disposition: DR-004 remains the historical failed acceptance result.
+  Its implementation rework is resolved through the full reviewed gate, but
+  the new package still requires renewed explicit user verification.
+- Current result: `Pass — corrected local Electron artifact ready for renewed
+  explicit user verification.`
+- Hold: ticket remains in progress. No push, archive, target merge/push,
+  version/tag, release, deployment, or cleanup until the user's result and a
+  final latest-base refresh.
 
 ### DR-004 — User verification fails on production-shaped migration decoding
 

@@ -3,10 +3,10 @@
 ## Artifact Metadata
 
 - **Canonical task artifact:** `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/data-migration-conventions.md`
-- **Purpose:** Centralize the deterministic source-to-target rule, operating assumptions, reachability gate, current-application contract test, database-adapter transport rule, failure-isolation/later-upgrade contract, worked classification examples, and proportionate recovery boundary that govern the token-usage migrations, so individual requirements and design sections can reference one authority instead of re-deriving speculative failure handling.
-- **Scope:** The repaired token-usage source-shaping migrations, the new ledger-to-run-record consolidation, and any migration fallback, repair, recovery, or lifecycle branch proposed for this ticket. The principles are reusable for later production app-data migrations.
+- **Purpose:** Centralize the deterministic source-to-target rule, operating assumptions, reachability gate, current-application contract test, database-adapter transport rule, terminal-audit/status-read rule, scheduling-versus-criticality rule, failure-isolation/later-upgrade contract, worked classification examples, and proportionate recovery boundary that govern the token-usage migrations, so individual requirements and design sections can reference one authority instead of re-deriving speculative failure handling.
+- **Scope:** The repaired token-usage source-shaping migrations, the new ledger-to-run-record consolidation, the terminal audit-record compaction, and any migration fallback, repair, recovery, or lifecycle branch proposed for this ticket. The principles are reusable for later production app-data migrations.
 - **Relationship to core artifacts:** Normative supplement for migration constraints in `requirements.md` and `design-spec.md`; evidence and source provenance remain in `investigation-notes.md`; task-specific schemas, algorithms, batching, overlap handling, and sequencing remain authoritative in `design-spec.md`.
-- **Related requirements and acceptance criteria:** `REQ-012`–`REQ-027`; `AC-011`–`AC-026`.
+- **Related requirements and acceptance criteria:** `REQ-012`–`REQ-028`; `AC-011`–`AC-027`.
 - **Status and approval applicability:** Approved governing intent. It makes the user's explicit production-migration and anti-overengineering direction durable; it does not change the approved one-row-per-canonical-run behavior.
 - **Repository source:** `autobyteus-server-ts/README.md`, especially “Production data migrations” and “Production migration practice.” This artifact applies that source without replacing it.
 
@@ -110,6 +110,23 @@ Do not fix an adapter mismatch with broad `Number(value)`, `parseInt(value)`, tr
 
 The regression fixture must preserve the result-set condition that exposed the defect. For a nullable expression, include leading `NULL` rows followed by valid values in the same ordered batch. Also cover the supported type tag/value and rejected source types/ranges through a real disposable SQLite database and the production ORM/driver. Do not use or mutate a user's live database for automated coverage.
 
+### 5.2 Terminal Audit Records And Bounded Current Reads
+
+A repaired same-ID migration definition reaches `NOT_RUN`, stale `RUNNING`, and `FAILED` attempts through the existing runner, but it does not reach a released record already in terminal `SUCCEEDED` state. When that terminal record itself contains a source-cardinality-sized summary or log and a current API reads it, the record is a supported migration source—not inert residue and not evidence that the repaired same-ID code will eventually fix it.
+
+Apply two distinct owners:
+
+1. **Current bounded status owner.** Scheduling, prerequisite, status, API, and UI reads use the current `AppDataMigrationSummary` envelope and must never load an oversized historical detail array merely to obtain status or aggregate counts. SQL may return a bounded projection containing validated scalar counts plus a truthful omission marker. This is current output bounding, not legacy business-schema compatibility.
+2. **Migration-owned historical transformation.** A separate registered migration owns any old terminal record/log shape and deterministically compacts it at rest. It preserves outcome identity, status, attempts, timestamps, errors, and aggregate counts; only row-linear examples are replaced by bounded compaction evidence.
+
+Do not mutate a terminal audit record opportunistically inside the normal status repository, rerun its original business migration under the old ID, or make current API code decode migration-specific legacy detail semantics. The generic current repository knows only the uniform summary envelope and byte limit; the separate migration alone knows which released IDs and historical log shapes are supported.
+
+Keep **scheduling** separate from **failure criticality**. A runner field named `requiredOnStartup` may be the current inclusion switch for ordinary startup scheduling rather than a universal instruction to terminate startup when that migration reports failure. Use the metadata according to its verified caller path, then express criticality through the owning bootstrap capability/fatal gates and prerequisite relationships. Do not make optional cleanup unreachable merely by marking it noncritical, and do not make scheduled cleanup fatal merely because the scheduler's field name contains “required.”
+
+For this ticket's current runner, the compactor is `requiredOnStartup=true` plus `STARTUP_ONLY` so `runPending()` is its one supported production entrypoint; it is noncritical because no consolidation prerequisite or explicit ServerRuntime fatal-status gate depends on it. `FAILED` and stale `RUNNING` may retry through later ordinary startups. `SUCCEEDED` and `SUCCEEDED_WITH_WARNINGS` are terminal, so warning disposition must not claim an automatic later retry.
+
+The same product-availability rule applies: an invalid historical summary, a missing log, or an unowned log path does not make the current application schema unusable. Preserve unsupported source, return bounded status evidence, and classify compaction as warning unless an independently governing audit/retention contract requires more. This is a normal returned migration disposition, not a reason for shutdown-specific recovery machinery.
+
 ## 6. Failure Classification And Availability
 
 A migration failure is classified by the current application's ability to satisfy its forward-only platform and capability invariants—not by a blanket rule that every failure is nonfatal.
@@ -203,8 +220,11 @@ Production data migrations should, by default:
 8. retry through the existing migration runner or a corrected later release;
 9. classify failure against forward-only platform/core/capability invariants; and
 10. keep normal runtime current-schema-only;
-11. define deterministic adapter transport for computed/nullable scalars; and
-12. exercise that transport through the real production ORM/driver with result-order/nullability conditions preserved.
+11. define deterministic adapter transport for computed/nullable scalars;
+12. exercise that transport through the real production ORM/driver with result-order/nullability conditions preserved;
+13. keep migration scheduling/status/API projections bounded independently of stored historical detail size; and
+14. use a separate registered migration when a repaired same-ID definition cannot reach an already-terminal old record; and
+15. verify that its scheduling metadata has a real production caller and keep scheduling inclusion distinct from bootstrap fatality.
 
 Do not add bespoke journals, restoration state machines, exhaustive failure matrices, semantic guessing, parallel recovery formats, backup copies, runtime legacy adapters, dual reads/writes, or infrastructure/security recovery unless a separately approved reachable contract requires them.
 
@@ -213,6 +233,8 @@ Do not add bespoke journals, restoration state machines, exhaustive failure matr
 | Ticket Concern | Proportionate Application |
 | --- | --- |
 | Failed/stale 20260730 source-shaping migrations | Repair unchanged migration definitions with narrow keyset batches, compare-and-set updates, scalar validation, capped diagnostics, and normal runner retry. Their legacy types/queries remain in migration files. |
+| Already-terminal oversized 20260730 audit summaries | The current record repository returns only validated aggregate counts plus a bounded omission marker when stored summary bytes exceed the envelope. A separate `requiredOnStartup=true`, `STARTUP_ONLY` registered migration is reached through ordinary `runPending()` and compacts the two known terminal summaries/logs at rest; the same-ID business backfills are not rerun or relabeled. Its status is absent from consolidation prerequisites and ServerRuntime fatal gates. |
+| Missing, malformed, or unowned historical audit evidence | Preserve it, return a bounded current status marker, and report compaction as `SUCCEEDED_WITH_WARNINGS`; do not block unrelated startup or reach outside the configured migration-log ownership boundary. |
 | Bounded unrecoverable provider-display items | When the current nullable display contract and truthful current-only fallback are independently valid, record aggregate reason counts plus capped examples as `SUCCEEDED_WITH_WARNINGS`; do not block startup or consult an old runtime field. |
 | Provider-name display backfill returns `FAILED` | Current schema and unrelated capabilities remain valid, so start the application, keep the failure retryable, use truthful current display fallback, and do not make it a global provider/startup prerequisite. |
 | Target Prisma schema migration fails or required current table/columns are absent | Fail startup with bounded evidence. Do not run the old event-ledger application path. A corrected externally installed release may retry/repair. |
@@ -230,6 +252,8 @@ Do not add bespoke journals, restoration state machines, exhaustive failure matr
 Relative to `SR-005`, the detailed decision test and worked examples added in `SR-006` do **not** change ticket implementation mechanics. They make the status/startup classification reusable and verifiable.
 
 `SR-007` **does change** the consolidation migration's scalar adapter mechanics: nullable JSON integers receive a deterministic typed-text SQL projection and strict migration-only decoder, with a real Prisma/SQLite leading-`NULL` regression. It does not change current runtime code, the one-row model, degraded readiness behavior, retry semantics, or the supported source/target meaning.
+
+`SR-008` **does change** app-data-migration status and audit mechanics: the current record repository enforces a per-summary 64 KiB read envelope, and a separate migration compacts the two known already-terminal token-migration summaries/owned logs without rerunning their business transformations. `SR-009` corrects that compactor's production scheduling to `requiredOnStartup=true` plus `STARTUP_ONLY`, while keeping its result outside explicit fatal gates and consolidation prerequisites and aligning retry claims to `FAILED`/stale `RUNNING`. Neither revision changes token totals, current run persistence, the successful consolidation record, or general runtime legacy support.
 
 The earlier `SR-005` forward-only refinement **did change** the `SR-003` transition mechanics:
 

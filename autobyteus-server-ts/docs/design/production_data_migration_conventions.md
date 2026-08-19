@@ -116,6 +116,39 @@ If a migration does not establish the required current state, choose an
 explicit capability or startup disposition. Do not teach current runtime code
 to understand the historical format.
 
+## Database Adapter And Transport Representations
+
+Database meaning, SQLite storage class, ORM result metadata, and JavaScript
+runtime type are distinct contracts. A TypeScript annotation on `$queryRaw`
+does not convert or validate the received runtime value. Nullable computed
+SQLite expressions such as `json_extract(...)` can expose the same semantic
+integer as a `bigint` or decimal `string`, depending on result-set shape and
+leading `NULL` rows.
+
+When a migration depends on a derived scalar:
+
+1. reproduce the query through the production database and ORM/driver adapter,
+   not only a mocked row object;
+2. choose a deterministic SQL-boundary representation when adapter inference
+   is unstable, and carry the source type when distinct SQLite or JSON types
+   could otherwise share the representation;
+3. validate the complete transport grammar before exact parsing;
+4. parse integers with `BigInt` or an equivalently exact mechanism;
+5. enforce sign, range, and domain constraints before narrowing; and
+6. keep the adapter-specific projection and decoder inside the migration
+   boundary.
+
+Do not use broad `Number(value)`, `parseInt(value)`, truthy coercion,
+permissive numeric regular expressions, or unchecked casts to repair an adapter
+mismatch. They can silently admit fractional, exponent, prefixed, truncated,
+negative, wrong-source-type, or out-of-range values.
+
+Regression coverage must preserve the result-set condition that exposed the
+defect. For a nullable expression, include leading `NULL` rows followed by
+valid values in the same ordered batch. Cover admitted and rejected source
+types and ranges through a real disposable database plus the production
+ORM/driver. Never use or mutate a user's live database for automated coverage.
+
 ## Classify The Final Current State
 
 Do not treat every migration failure as globally fatal or automatically
@@ -222,6 +255,10 @@ a separately approved reachable contract.
 - Does current runtime use only the current schema and model?
 - Does destructive cleanup occur only after target validation?
 - Is retry/relaunch idempotent through the existing runner?
+- Are computed scalar results transported deterministically and decoded with
+  complete grammar, exact parsing, and explicit source/range checks?
+- Does real-adapter coverage preserve nullable result ordering such as leading
+  `NULL` rows followed by valid values in the same batch?
 - Is every warning based on an independently valid current result?
 - Are capability-scoped and critical failures classified by actual current
   owners rather than by a blanket startup rule?

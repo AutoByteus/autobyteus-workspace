@@ -16,6 +16,7 @@ import { MigrateNativeWorkingContextSnapshotsV5Migration } from "./migrations/mi
 import { CustomProviderReadableIdAppDataMigration } from "./migrations/custom-provider-readable-id-app-data-migration.js";
 import { TeamRunExecutionTreeV1AppDataMigration } from "./migrations/team-run-execution-tree-v1/team-run-execution-tree-v1-app-data-migration.js";
 import { TokenUsageRunRecordsV1AppDataMigration } from "./migrations/token-usage-run-records-v1/token-usage-run-records-v1-app-data-migration.js";
+import { TokenUsageMigrationAuditCompactionV1AppDataMigration } from "./migrations/token-usage-migration-audit-compaction-v1/token-usage-migration-audit-compaction-v1-app-data-migration.js";
 
 export class AppDataMigrationRegistry {
   private readonly definitions: AppDataMigrationDefinition[];
@@ -44,6 +45,7 @@ export class AppDataMigrationRegistry {
       new TeamCommunicationProjectionAddressMigration(appConfigProvider.config.getMemoryDir()),
       new TokenUsageCustomProviderModelValueBackfillMigration(),
       new TokenUsageProviderNameSnapshotBackfillMigration(),
+      new TokenUsageMigrationAuditCompactionV1AppDataMigration(),
       new TokenUsageRunRecordsV1AppDataMigration(),
       new RemoveSelfEvolutionRunMetadataMigration(appConfigProvider.config.getMemoryDir()),
       new TeamRunHistoryIndexV2AppDataMigration(appConfigProvider.config.getMemoryDir()),

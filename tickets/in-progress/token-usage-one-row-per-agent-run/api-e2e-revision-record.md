@@ -11,6 +11,8 @@ The latest coverage investigation and execution coverage report remain authorita
 | API-REV-003 | `code_reviewer` / CRR-007 / round 3 | SR-006; ARCH-REV-006; IR-005; CRR-007 | Fail / 75.0% | Pass / 97.1% |
 | API-REV-004 | `code_reviewer` / CRR-009 / round 4 | SR-006; ARCH-REV-006; IR-006; CRR-009; DR-002 | Pass / 97.1% | Pass / 97.3% |
 | API-REV-005 | `code_reviewer` / CRR-011 / round 5 | SR-007; ARCH-REV-007; IR-007; CRR-011; DR-004 | Pass / 97.3% | Pass / 97.4% |
+| API-REV-006 | `code_reviewer` / CRR-014 / round 6 | SR-009; ARCH-REV-009; IR-008–IR-009; CRR-014; DR-006 | Pass / 97.4% | Pass / 97.6% |
+| API-REV-007 | `code_reviewer` / CRR-015 / round 7 Local Fix | SR-009; IR-009; CRR-014; CRR-015/TCR-001; DR-006 | Pass / 97.6% | Pass / 97.7% |
 
 ## Revision Entries
 
@@ -153,3 +155,57 @@ None.
 - New or remaining failure IDs: `None`.
 - Recommended recipient: `/code_reviewer` for proportional review of the two new durable test paths before delivery resumes.
 - Remaining risks, blocked evidence, or untested scope: the pre-fix DR-003 package remains invalid. Delivery must rebuild Electron and obtain renewed explicit user verification. The known Nuxt typecheck toolchain incompatibility and external-provider opt-in exclusions remain unchanged and do not block DS-009 proof.
+
+### API-REV-006 — Bounded terminal audit reads and reachable startup compaction pass
+
+- Triggering role, report path, and round: `/code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/code-review-report.md`; API/E2E round 6 after `CRR-014`.
+- Triggering finding or scenario IDs: reachable delivery residual `DR-006`; approved `REQ-028` / `AC-027`; reviewed `DS-010` / `DS-011`; resolved source finding `CR-007`. No new API/E2E failure ID.
+- Related revision IDs: `SR-009`, `ARCH-REV-009`, cumulative `IR-008`–`IR-009`, `CRR-014`, `DR-006`; prior `API-REV-005` and proportional review `CRR-012` form the unaffected migration baseline.
+- Why this revision was recorded: API-REV-005 predates the current migration-status bound, separate terminal-audit compactor, its actual startup reachability correction, and execution-policy-aware public retry capability. The exact frontend document and built-process restart path therefore required direct executable proof rather than inference from unit/source review.
+- Coverage decisions or durable paths changed: accepted five upstream test/fixture paths and added one actual-system E2E at `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts/tests/e2e/app-data-migrations/token-usage-migration-audit-compaction-startup.e2e.test.ts`. It executes the exact tracked frontend document before/after compaction through rebuilt `dist`, proves warning `canRetry=false`, current token health, and table immutability. No durable path was removed.
+- Scenarios added, changed, removed, or rechecked: exact frontend query/finite response/per-summary 64 KiB bound; two 100,001-detail/>10 MiB terminal summaries/logs; actual startup `runPending()` scheduling; source tuple/count preservation; canonical summary/log replacement; both partial progression retries; terminal warning/manual-disabled semantics; malformed/wrong-shape/missing/unowned/nonregular/unwritable dispositions; current token tables/statistics health; Nuxt production build; static nonfatal/ownership boundaries.
+- Commands, environment, fixture, or broader-validation delta: full server build passed; exact actual-system E2E passed; focused repository/runner/compactor passed 3 files/33 tests; mounted Settings/store passed 2 files/3 tests; Nuxt production build passed; final server selection passed 4 files/34 tests; TypeScript/diff/static/cleanup passed. All server/database/log fixtures were disposable and removed; the user's live database/profile was never accessed.
+
+#### Prior Failure Resolution
+
+| Prior scenario / reference | Previous status | Current resolution | Evidence |
+| --- | --- | --- | --- |
+| `DR-006` / reachable ~31 MB migration-status response | Live target observation; no target-code acceptance proof | DS-010 exact frontend query returns bounded summaries before compaction; actual startup DS-011 compacts both >10 MiB source summaries/logs and preserves outcome/counts | `test-results/api-e2e/logs/46-ir009-built-server-audit-compaction-e2e-rerun.log`; `logs/50-ir009-final-audit-compaction-suite.log` |
+| `CR-007` / terminal startup-only warning falsely advertised manual retry | Source-resolved by IR-009/CRR-014; API/UI execution pending | Actual built GraphQL returns `SUCCEEDED_WITH_WARNINGS/canRetry=false`; mounted Settings button is disabled and dispatches nothing; runner later-startup/terminal rules pass | `logs/46-ir009-built-server-audit-compaction-e2e-rerun.log`; `logs/47-ir009-bounds-runner-compactor-suite.log`; `logs/48-ir009-settings-store-suite.log` |
+| API-REV-005 DS-009 scale/lifecycle | Passed before SR-009 | Remains applicable; current audit changes do not modify consolidation/fold/API/renderer and new built startups run the full registry/current token health path | Prior API-REV-005 evidence retained; focused `logs/50-ir009-final-audit-compaction-suite.log` found no widened impact |
+
+- Canonical artifacts updated:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-coverage-investigation.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-execution-coverage-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-revision-record.md`
+- Prior result and confidence: `Pass / 97.4%`.
+- Current result and confidence: `Pass / 97.6%`.
+- New or remaining failure IDs: `None`.
+- Recommended recipient: `/code_reviewer` for mandatory proportional review of all six changed durable test/fixture paths before delivery resumes.
+- Remaining risks, blocked evidence, or untested scope: fresh Electron packaging and renewed user verification remain delivery-owned after the review gate. The known independent Nuxt `vue-tsc`/TypeScript package-export incompatibility and unchanged external-provider opt-in runtime are retained limitations, not SR-009 acceptance failures.
+
+### API-REV-007 — Canonical compacted-log evidence is durably asserted
+
+- Triggering role, report path, and round: `/code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-test-review-report.md`; API/E2E round 7 bounded Local Fix after `CRR-015`.
+- Triggering finding or scenario IDs: `TCR-001`; successful oversized owned-log compaction under `REQ-028` / `AC-027`.
+- Related revision IDs: `SR-009`, `ARCH-REV-009`, cumulative `IR-008`–`IR-009`, source `CRR-014` Pass, prior `API-REV-006`, test-review `CRR-015`, delivery residual `DR-006`.
+- Why this revision was recorded: the API-REV-006 product path passed, but proportional review found that size-only log assertions would admit empty/unrelated bounded content. Completed API/E2E results require a revision entry after correcting and rerunning durable coverage.
+- Coverage decisions or durable paths changed: updated exactly the unit compactor and actual built-startup E2E. Both now read each replacement log and assert the complete canonical identity/outcome/count/omission/reason content while retaining the byte bound. No source, fixture, other test, or removal.
+- Scenarios added, changed, removed, or rechecked: successful real Prisma/SQLite `runPending()` owned-log compaction; exact frontend-document/built-server restart compaction; both original source statuses/attempts/timestamps/error states and count tuples; exact 100,001 omitted details and 65,536-byte reason.
+- Commands, environment, fixture, or broader-validation delta: focused unit passed 1 file/9 tests; focused actual built-startup passed 1 file/1 test; final combined passed 2 files/10 tests; server TypeScript/diff/assertion/exclusivity/cleanup audit passed. Test-owned runtime/database/logs were removed and production data was not accessed.
+
+#### Prior Finding Resolution
+
+| Prior scenario / reference | Previous status | Current resolution | Evidence |
+| --- | --- | --- | --- |
+| `TCR-001` / compacted log content not asserted | Open Local Fix under `CRR-015`; API-REV-006 execution otherwise passed | Resolved in both durable successful paths with complete canonical body equality tied to seeded source tuple/counts | `test-results/api-e2e/logs/53-tcr001-unit-compacted-log-content.log`; `logs/54-tcr001-built-startup-compacted-log-content.log`; `logs/55-tcr001-final-two-file-rerun.log`; `logs/56-tcr001-ts-assertion-cleanup.log` |
+
+- Canonical artifacts updated:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-coverage-investigation.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-execution-coverage-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-revision-record.md`
+- Prior result and confidence: `Pass / 97.6%`.
+- Current result and confidence: `Pass / 97.7%`.
+- New or remaining failure IDs: `None`; `TCR-001` resolved in API/E2E evidence pending proportional re-review.
+- Recommended recipient: `/code_reviewer` for proportional re-review of the two corrected durable paths.
+- Remaining risks, blocked evidence, or untested scope: delivery/Electron/user verification remains paused through the review gate. The independent Nuxt typecheck limitation and unchanged external-provider opt-in runtime remain as previously recorded.

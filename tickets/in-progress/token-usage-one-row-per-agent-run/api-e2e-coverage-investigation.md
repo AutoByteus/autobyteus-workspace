@@ -8,13 +8,110 @@
 - Supplemental Artifacts:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/token-usage-data-model-analysis.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/data-migration-conventions.md`
-- Solution / Architecture Revisions: `SR-007`; `ARCH-REV-007`
-- Implementation / Source Review Revisions: `IR-007`; `CRR-011` Pass at 93.0/100 with no open source finding
+- Solution / Architecture Revisions: `SR-009`; `ARCH-REV-009`
+- Implementation / Source Review Revisions: `IR-009` (cumulative `IR-008`); `CRR-014` Pass at 93.2/100 with no open source finding
 - Prior API/E2E Revisions: `API-REV-001` Fail at 70.0%; `API-REV-002` Fail at 75.0%; `API-REV-003` Pass at 97.1%; `API-REV-004` Pass at 97.3%
-- Current API/E2E Revision: `API-REV-005` Pass at 97.4%
-- Investigation Round: `5`
-- Trigger: `DR-004` production-shaped verification failure, reviewed `SR-007` / `ARCH-REV-007` / `IR-007` / `CRR-011`, reachable premise `MP-004`, and approved deterministic legacy scalar transport `DS-009`.
-- Investigation timing: this round-5 decision was recorded before any API-REV-005 execution or API/E2E-owned durable edit. The user's live database will not be accessed or mutated, and the failed DR-003 Electron artifact is excluded from acceptance evidence.
+- Current API/E2E Revision: `API-REV-007` Pass at 97.7%
+- Investigation Round: `6`
+- Trigger: `DR-006` reachable oversized terminal audit residue, reviewed `SR-009` / `ARCH-REV-009` / cumulative `IR-008`–`IR-009` / `CRR-014`, bounded status projection `DS-010`, and reachable startup audit compactor `DS-011`.
+- Investigation timing: this round-6 decision was recorded before any API-REV-006 execution or API/E2E-owned durable edit. All fixtures will be disposable production-repository/runtime targets. The user's live database will not be accessed or mutated, and the pre-SR-009 Electron artifact is excluded from acceptance evidence.
+
+## Round 6 SR-009 / IR-008 / IR-009 Coverage Investigation Before Execution
+
+### Changed Boundary And Required Proof
+
+- `REQ-028` / `AC-027` add two connected boundaries without changing current token accounting: a migration-ID-agnostic SQL/repository projection that caps every materialized migration summary at 64 KiB, and a separate migration-owned compactor for the two known terminal 20260730 records and their owned logs.
+- Production reachability is material. The compactor is now `requiredOnStartup=true` plus `STARTUP_ONLY`, so the ordinary built-server `AppDataMigrationRunner.runPending()` path must execute it. It remains nonfatal because it is neither a token-consolidation prerequisite nor an explicit `ServerRuntime` fatal-status gate.
+- Public retry capability is execution-policy-aware. A terminal or failed `STARTUP_ONLY` compactor cannot be manually dispatched from Settings (`canRetry=false`), while `FAILED` or stale `RUNNING` remains eligible for a later ordinary startup retry. A `SUCCEEDED_WITH_WARNINGS` result is terminal and skipped.
+- Critical proof includes: the exact exported frontend `GetAppDataMigrations` document before and after compaction; finite total response and <=64 KiB per-summary bounds; actual built-server restart scheduling; two 100,001-detail/>10 MiB source summaries and owned logs; preservation of source ID/status/attempt/timestamps/error/counts; canonical bounded replacement; both injected partial-progression retries; malformed/wrong-shape/missing/unowned/unwritable dispositions; token-table immutability; and healthy current token reads.
+
+### Durable Coverage Inventory And Decisions
+
+| Coverage path / group | Decision before execution | Reason / planned evidence |
+| --- | --- | --- |
+| `tests/unit/app-data-migrations/app-data-migration-record-repository-bounds.test.ts` | `Add Durable Coverage` (added by IR-008; execute unchanged) | Real Prisma/SQLite proof that small summaries remain exact, oversized valid summaries are SQL-projected before Node materialization, invalid shapes become bounded unavailable markers, and `getRecord`/`listRecords` stay within 64 KiB |
+| `tests/unit/app-data-migrations/token-usage-migration-audit-compaction-v1.test.ts` | `Add Durable Coverage` (added by IR-008/updated by IR-009; execute unchanged) | Direct 100,001-detail/>10 MiB real repository/log fixture, instrumented bounded `runPending()`, source tuple/count preservation, token sentinels, both partial-progression retries, terminal warning skip/canRetry, malformed/wrong-shape/missing/unowned/unwritable dispositions, and registry/nonfatal placement |
+| `tests/unit/app-data-migrations/app-data-migration-runner.test.ts` | `Needs Update` completed upstream in IR-008/IR-009; execute | Locks execution-policy-aware manual capability, startup-only rejection, later-startup FAILED/stale-RUNNING retry, terminal warning skip, and unchanged executable ANYTIME warning behavior |
+| `tests/helpers/app-data-migration-audit-fixtures.ts` | `Add Durable Coverage` fixture added upstream; reuse | Disposable real SQLite/Prisma audit and token-sentinel owner shared by the bounded read and compactor suites |
+| `autobyteus-web/components/settings/__tests__/ServerMigrationsManager.spec.ts` | `Add Durable Coverage` (added by IR-009; execute unchanged) | Mounted user-surface proof that `canRetry=false` renders disabled and dispatches no mutation, while a truly executable warning remains enabled and dispatches |
+| `autobyteus-web/stores/__tests__/appDataMigrationsStore.spec.ts` | `Still Valid`; rerun with component test | Existing store contract proves the actual retry mutation path used only after the component action |
+| Exact frontend document + actual built-server startup boundary | `Add Durable Coverage` in `tests/e2e/app-data-migrations/token-usage-migration-audit-compaction-startup.e2e.test.ts` | No existing test imports and executes the exact web `GetAppDataMigrations` document against a built server before/after seeding terminal oversized records, then proves restart-only compactor scheduling and live current-token health. Unit-only or resolver-local evidence leaves this material AC-027 boundary unproven. |
+| API-REV-005 DS-009 migration scale/lifecycle and API-REV-003 current token API/SafeInt/Chrome evidence | `Still Valid`; retain without repetition unless focused failure widens impact | IR-008/IR-009 do not change consolidation SQL/fold, current token repository/GraphQL, SafeInt projection, or token statistics renderer. The new built-server journey will directly recheck startup, GraphQL, and current token health. |
+| DR-006 live production response observation | `Triggering evidence only`, not target-code acceptance evidence | It proves reachability of the old 31 MB response. It predates the implementation under test and the live user database must not be modified by API/E2E. |
+| Prior Electron package | `Stale / not acceptance evidence` | It predates SR-009/IR-009. Delivery may rebuild and request renewed user verification only after successful API/E2E and proportional test review. |
+
+### Planned Durable Delta
+
+- Add one API/E2E-owned durable path: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts/tests/e2e/app-data-migrations/token-usage-migration-audit-compaction-startup.e2e.test.ts`.
+- Return that file plus every upstream durable test/fixture change listed above to `/code_reviewer` for proportional test-code review after a successful result. No durable test removal is planned.
+- The new actual-system test must own and clean its runtime, database, server processes, and >10 MiB files through the tracked live-E2E harness. It must not touch the user's live profile.
+
+### Planned Execution Order And Broader Gate
+
+1. Implement the classified actual built-server/frontend-document durable journey.
+2. Build the full integrated server so the spawned server executes reviewed `dist` code.
+3. Run the bounded repository, runner, and compactor selection, including >100,000-detail source, both partial retries, warnings, and immutability.
+4. Run the new actual built-server E2E, including exact frontend query before/after restart compaction and a current token summary health read.
+5. Run mounted Settings/store coverage, web production build, server TypeScript, focused combined regression, diff/static ownership checks, and cleanup audit.
+
+- Initial broader-validation decision: `Required`, satisfied by the new durable actual built-server/API journey because repository tests alone mock or bypass the frontend document and process-start boundary. A new Chrome journey is not initially selected: there is no renderer implementation change, and the mounted component directly proves disabled/no-dispatch semantics. Prior token scale/API/Chrome evidence remains applicable because no such source changed.
+- Reroute rule: any critical implementation failure stops execution and returns the cumulative evidence package to `/code_reviewer` for failure-origin review. A clean result becomes `API-REV-006` and returns all six durable coverage/fixture paths for mandatory proportional review.
+
+### Round 6 Executed Evidence And Final Coverage Decision
+
+- Full integrated server build passed, including shared packages, Prisma generation, server TypeScript, managed assets, and sanitized built-in bootstrap smoke.
+- The focused DS-010/DS-011 repository/runner/compactor selection passed `3 files / 33 tests`. It directly proves 100,001-detail/>10 MiB input, no raw oversized summary returned by the instrumented repository, both partial-progression retries through `runPending()`, warning terminality, malformed/wrong-shape/missing/unowned/unwritable disposition, registry reachability, nonfatal gate absence, and token sentinels.
+- The new durable actual-system journey passed against rebuilt `dist`: it started a fresh built server, seeded two >10 MiB terminal summaries and owned logs plus a valid current token row, executed the exact query text read from the exported frontend `GetAppDataMigrations` document before compaction, stopped and restarted the server, and observed the registered compactor created as `SUCCEEDED/attempts=1/canRetry=false`. Both source outcome tuples/counts were preserved, summaries/logs became <=64 KiB, the token tables were byte/row-equivalent, and current token GraphQL remained healthy. A second restart condition with malformed oversized source produced a healthy `SUCCEEDED_WITH_WARNINGS/canRetry=false` result, bounded frontend response, preserved unsupported source, and unchanged token data.
+- The mounted Settings/store selection passed `2 files / 3 tests`: the terminal-warning Retry action is disabled and dispatches nothing, while the executable control remains enabled and dispatches exactly once.
+- The final combined server selection passed `4 files / 34 tests`; Nuxt production client/server/prerender build passed; server TypeScript, `git diff --check`, fatal-gate/token-table boundary scans, no `.only`/`.skip`, and owned runtime/database cleanup passed.
+- An initial test-collection diagnostic tried to import the frontend module directly from the server Vitest package and failed because `graphql-tag` is not directly linked into that package. This was test-harness package isolation, not product execution: the normal Nuxt build passed. The durable test now reads the exact tracked frontend document source and executes its exported template text, avoiding a test-only dependency link. The authoritative rerun and final combined suite pass.
+
+Final coverage decisions:
+
+- `Add Durable Coverage` is complete for the actual frontend-document/built-startup gap.
+- All five upstream test/fixture changes remain valid and passed; no stale test was removed.
+- API-REV-005 released-scale consolidation, current token pricing/SafeInt/API, TeamRun lifecycle, and Chrome evidence remains applicable because IR-008/IR-009 changes none of those sources. Focused execution did not show broader impact.
+- Broader validation is `Required and completed` through the durable actual built-server/API journey. Additional Chrome execution is `Not Required`; mounted DOM/action coverage plus production build is direct for the only user-surface semantic, and no layout/style/rendering code changed.
+
+Final confidence scorecard:
+
+| Confidence category | Final | Evidence / residual uncertainty |
+| --- | ---: | --- |
+| Requirement and acceptance-criteria proof | 98% | AC-027 material cases pass directly; prior unaffected requirement evidence retained |
+| Changed-boundary execution directness | 99% | Real Prisma/SQLite, exact tracked frontend document, actual rebuilt server and restarts |
+| Cross-boundary integration realism and mock gap | 97% | Real API/process path plus real repository; fault injection remains intentionally controlled in-process |
+| Environment, configuration, identity, and fixture fidelity | 98% | Production repository/schema, normal startup/bootstrap, 100,001-detail/>10 MiB owned fixtures, isolated runtime |
+| Failure, edge-case, lifecycle, and recovery evidence | 98% | Both partial retries, terminal warning, malformed/shapes/path ownership, healthy nonfatal restart, immutability |
+| User-surface, browser, and desktop-shell confidence | 95% | Mounted disabled/no-dispatch action and Nuxt build; Electron rebuild/user verification remains delivery-owned |
+| Durable regression coverage quality and relevance | 98% | Six cohesive changed paths including one actual-system E2E; final proportional review pending |
+
+- Overall final confidence: `97.6%` (simple average, rounded from 97.57%).
+- Every critical acceptance criterion directly proven: `Yes`.
+- Applicable category below 90%: `No`.
+- Default 95% clean target met: `Yes`.
+- Remaining limitations: the previously recorded independent Nuxt `vue-tsc`/TypeScript package-export issue; external-provider opt-in runtime; and a fresh Electron package/user verification owned by delivery. None is a material SR-009/IR-009 API/E2E gap.
+
+## Round 7 TCR-001 Local-Fix Investigation Before Durable Edit
+
+- Trigger: `CRR-015` proportional durable-test review found `TCR-001`, a bounded API/E2E-owned assertion gap. Source remains `CRR-014` Pass and the executed API-REV-006 product behavior remains Pass.
+- Validity decision: `Needs Update` for exactly two successful owned-log scenarios:
+  1. `autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-migration-audit-compaction-v1.test.ts`;
+  2. `autobyteus-server-ts/tests/e2e/app-data-migrations/token-usage-migration-audit-compaction-startup.e2e.test.ts`.
+- Obsolete assertion: size-only checks (`<=64 KiB`) admit an empty or unrelated short replacement and therefore do not independently prove the `REQ-028` / `AC-027` canonical audit-evidence contract.
+- Required replacement/expansion: retain the byte bound, then read a real successfully replaced owned log and assert deterministic content tied to the seeded source outcome: migration ID, display name, terminal status, attempts, ISO start/completion timestamps, error presence/absence, all four exact counts, `detailsOmitted=100001`, and the `65,536`-byte historical-detail reason. Both the direct real Prisma/SQLite compactor path and actual built-startup path will receive the assertion so a local unit regression cannot mask a process-path regression.
+- No production source, fixture builder, unrelated durable test, or requirement interpretation changes. No test removal is planned.
+- Planned execution: focused unit compactor file; focused actual built-startup file against the already rebuilt reviewed `dist`; combined two-file rerun; TypeScript/diff/exclusivity/cleanup audit; then update the canonical execution/revision artifacts as `API-REV-007` and return the two changed paths for proportional re-review.
+- Broader-validation decision: `Required`, limited to the existing actual built-startup durable test because the finding concerns observable output on that process path. Repeating scale, current token API/SafeInt, Settings, Chrome, Nuxt build, or Electron would not add evidence for the log-content assertion.
+
+### Round 7 Executed Result
+
+- Both classified durable paths now retain the 64 KiB assertion and read every successfully replaced owned log. They compare the entire canonical body against values derived from the seeded source tuple and summary: migration ID, display name, `SUCCEEDED`/`SUCCEEDED_WITH_WARNINGS`, attempts 5/6, exact ISO timestamps, absent/present error state, all four counts, `detailsOmitted=100001`, and `reason=historical audit detail exceeded 65,536 bytes`.
+- Focused real Prisma/SQLite compactor coverage passed `1 file / 9 tests`.
+- Focused exact-frontend-document/actual-built-startup coverage passed `1 file / 1 test` across its success and warning restart lifecycle.
+- The combined authoritative rerun passed `2 files / 10 tests`; server TypeScript, `git diff --check`, assertion-field audit, no-disabled-test scan, and owned runtime/database/process cleanup passed.
+- `TCR-001` is resolved in executable evidence. No implementation source, fixture owner, other durable path, or acceptance interpretation changed.
+- Final broader-validation decision: `Required and completed` through the actual built-startup durable rerun. Prior API-REV-006 server build, repository/runner, Settings/store, Nuxt build, and retained API/scale/Chrome evidence remain applicable.
+- Final confidence: `97.7%`. The only score delta is durable regression quality (`99%` from `98%`) because canonical log content is now locked at both the real compactor and actual process boundary; every other category and residual-risk decision remains API-REV-006-valid. No category is below 90%, every critical criterion is proven, and the 95% clean target remains met.
 
 ## Round 5 DS-009 Coverage Investigation Before Execution
 

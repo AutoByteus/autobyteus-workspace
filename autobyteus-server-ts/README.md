@@ -180,6 +180,15 @@ runtime v1 reader, partial migration, or automatic `.env` import.
   file shapes may be decoded only inside registered migration boundaries kept
   for supported direct and skip-version upgrades. Do not restore operation with
   dual readers/writers or read-old-if-current-is-absent fallbacks.
+- Treat database meaning, SQLite storage class, ORM result representation, and
+  TypeScript annotations as distinct contracts. For nullable or computed
+  scalars, choose a deterministic SQL transport, preserve the source type,
+  validate the complete grammar, parse exactly through `BigInt` where
+  applicable, and enforce sign/range/domain constraints before narrowing.
+- Reproduce adapter-sensitive scalar behavior through the production ORM and a
+  disposable database. Preserve exposing result-set conditions such as leading
+  `NULL` rows followed by valid values in one ordered batch; never substitute
+  broad numeric coercion or run automated proof against a live user database.
 - Classify the final persisted state against the facts current application
   owners actually require. Missing current platform/core invariants may stop
   startup; a bounded capability-data failure gates only that capability;

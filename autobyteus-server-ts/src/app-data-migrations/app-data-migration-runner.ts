@@ -5,6 +5,7 @@ import type {
   AppDataMigrationDefinition,
   AppDataMigrationRecordRepositoryLike,
   AppDataMigrationRecordSnapshot,
+  AppDataMigrationStatus,
   AppDataMigrationStatusSnapshot,
   AppDataMigrationSummary,
 } from "./domain/app-data-migration-types.js";
@@ -48,10 +49,14 @@ const parseSummary = (summaryJson: string | null): AppDataMigrationSummary | nul
   }
 };
 
-const canRetryStatus = (status: string): boolean =>
-  status === "NOT_RUN" ||
-  status === "FAILED" ||
-  status === "SUCCEEDED_WITH_WARNINGS";
+const canRetryManually = (
+  definition: AppDataMigrationDefinition,
+  status: AppDataMigrationStatus,
+): boolean =>
+  definition.executionPolicy !== "STARTUP_ONLY" &&
+  (status === "NOT_RUN" ||
+    status === "FAILED" ||
+    status === "SUCCEEDED_WITH_WARNINGS");
 
 export class AppDataMigrationRunner {
   private readonly inFlight = new Map<string, Promise<AppDataMigrationRecordSnapshot>>();
@@ -218,7 +223,7 @@ export class AppDataMigrationRunner {
       summary: parseSummary(record?.summaryJson ?? null),
       errorMessage: record?.errorMessage ?? null,
       logPath: record?.logPath ?? null,
-      canRetry: canRetryStatus(status),
+      canRetry: canRetryManually(definition, status),
     };
   }
 

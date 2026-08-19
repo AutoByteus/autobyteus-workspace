@@ -13,6 +13,8 @@ The latest `design-review-report.md` remains authoritative. This record indexes 
 | ARCH-REV-005 | Round 5 / superseding forward-only SR-005 re-review | SR-005 | Pass | Pass | AR-001, AR-002, AR-003, AR-004 |
 | ARCH-REV-006 | Round 6 / SR-006 current-contract classification re-review | SR-006 | Pass | Pass | AR-001, AR-002, AR-003, AR-004 |
 | ARCH-REV-007 | Round 7 / SR-007 production-adapter re-review after DR-004 | SR-007 | Pass | Pass | AR-001, AR-002, AR-003, AR-004 |
+| ARCH-REV-008 | Round 8 / SR-008 terminal-audit re-review after DR-006 | SR-008 | Pass | Fail | AR-001, AR-002, AR-003, AR-004, AR-005 |
+| ARCH-REV-009 | Round 9 / SR-009 startup-scheduling re-review | SR-009 | Fail | Pass | AR-001, AR-002, AR-003, AR-004, AR-005 |
 
 ## Revision Entries
 
@@ -174,3 +176,52 @@ None.
 - Material classification changes: New premise `MP-004` is `Reachable` and directly observed through the supported Electron launch/startup-migration path. DS-009 is the minimum migration-local response. `MP-003` remains `Not Reachable` under the current restore gate.
 - Recommended recipient: `/implementation_engineer`
 - Remaining risks or uncertainty: The actual implementation must provide the exact same-batch four-leading-`NULL` Prisma/SQLite query-and-transaction fixture plus wrong-type, negative, malformed/noncanonical, and out-of-range rollback evidence; a mock, one-row, or non-null-first test is insufficient. Diagnostics must truthfully distinguish source-type/grammar/range rejection rather than repeat the former misleading SafeInt message. Existing long-transaction, restore/history unavailability, allocator/disjointness, bounded-series, SQLite physical-size, BigInt/API, durable-doc promotion, and renewed Electron verification risks remain.
+
+### ARCH-REV-008 — Terminal-audit compactor needs an executable startup contract
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/design-review-report.md`
+- Review round and trigger: Round 8; `SR-008` re-review after `DR-006` established two already-terminal row-linear summaries and a 31,387,995-byte supported migration-status response after the corrected token consolidation passed live.
+- Triggering role, report path, and finding IDs: `/delivery_engineer` through `/solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/delivery-requirement-gap.md` (`DR-006`) plus evidence 19/20; no prior architecture finding ID.
+- Relevant solution revision IDs: `SR-008`
+- Prior authoritative decision: `Pass`
+- Current authoritative decision: `Fail`
+- What changed in the review result or what baseline was established: `SR-008` correctly assigns generic <=64 KiB current reads to the app-data migration record repository and historical two-record/log mutation to a separate registered compactor. Review of the existing runner found one blocking execution contradiction: DS-011 is declared `requiredOnStartup=false` and `STARTUP_ONLY`; `runPending()` skips the former, `runMigration()` rejects the latter, and bootstrap has no third entrypoint. The required at-rest transition therefore cannot run despite the independently observed source state.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001 | Resolved | Remains resolved | SR-002, SR-008; REQ-005; AC-005 | DS-010/DS-011 add no token reconciliation state; existing checkpoint/digest count and byte bounds are unchanged. |
+| AR-002 | Resolved | Remains resolved | SR-002, SR-008; REQ-022; AC-021 | Both same-ID repairs remain bounded and ordered; terminal compaction does not rerun their business transformations. |
+| AR-003 | Resolved | Remains resolved | SR-002, SR-008; AC-004; AC-007 | Admission ordering and event-identity separation are unchanged. |
+| AR-004 | Resolved under superseding restore-gate policy | Remains resolved | SR-003, SR-005–SR-008; REQ-023–REQ-027; AC-022–AC-026; MP-003 | Terminal audit work does not affect failed-consolidation restoration; current runtime remains forward-only and the old-run gate/disjoint retry remain intact. |
+
+- New or remaining finding IDs: `AR-005`
+- Material classification changes: New premise `MP-005` is `Reachable`: ordinary Electron startup and the supported migration-status surface expose the observed terminal records, but both supported runner paths exclude the proposed compactor. The authoritative decision changes from `Pass` to `Fail` until the scheduling contract is corrected.
+- Recommended recipient: `/solution_designer`
+- Remaining risks or uncertainty: The smallest correction should reuse ordinary startup scheduling while keeping DS-011 out of fatal bootstrap gates and consolidation prerequisites. The final design must also make any claimed ordinary partial-attempt retry reachable through runner status semantics; it must not add a second orchestrator, manual production mutation, or speculative recovery state.
+
+### ARCH-REV-009 — Ordinary startup scheduling resolves the compactor reachability gap
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/design-review-report.md`
+- Review round and trigger: Round 9; `SR-009` re-review after `ARCH-REV-008` found that DS-011's former `requiredOnStartup=false` plus `STARTUP_ONLY` metadata excluded both supported runner entrypoints.
+- Triggering role, report path, and finding IDs: `/solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/design-review-report.md` and `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/architecture-review-revision-record.md`; `AR-005` / `MP-005`.
+- Relevant solution revision IDs: `SR-009`
+- Prior authoritative decision: `Fail`
+- Current authoritative decision: `Pass`
+- What changed in the review result or what baseline was established: `SR-009` sets DS-011 to `requiredOnStartup=true` plus `STARTUP_ONLY`, making `ServerRuntime -> runPending()` its sole supported production caller. It separates scheduler inclusion from criticality by excluding the compactor ID from consolidation prerequisites and every explicit ServerRuntime fatal-status lookup. Partial log/database progression now throws into `FAILED` or stale `RUNNING`, which ordinary startup retries; `SUCCEEDED` and `SUCCEEDED_WITH_WARNINGS` are terminal. AC-027 exercises the actual registry/repository/`runPending()` path and rejects direct definition execution as reachability proof.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001 | Resolved | Remains resolved | SR-002, SR-009; REQ-005; AC-005 | Scheduling/audit changes add no token reconciliation state; checkpoint/digest count and byte bounds remain unchanged. |
+| AR-002 | Resolved | Remains resolved | SR-002, SR-009; REQ-022; AC-021 | Both same-ID repairs remain bounded, ordered, and distinct from the terminal audit compactor. |
+| AR-003 | Resolved | Remains resolved | SR-002, SR-009; AC-004; AC-007 | Admission ordering and event-identity separation remain unchanged. |
+| AR-004 | Resolved under superseding restore-gate policy | Remains resolved | SR-003, SR-005–SR-009; REQ-023–REQ-027; AC-022–AC-026; MP-003 | DS-011 does not touch token readiness or runtime legacy behavior; old-run restore gating and disjoint consolidation retry remain intact. |
+| AR-005 | Open / blocking | Resolved | SR-009; REQ-028; AC-027; MP-005 | Current `runPending()` schedules `requiredOnStartup=true`; `STARTUP_ONLY` rejects manual execution; ServerRuntime calls `runPending()` and has no compactor fatal lookup. The design and required fixture use that exact path, keep the compactor out of consolidation prerequisites, and align retry claims with `FAILED`/stale `RUNNING` rather than terminal warnings. |
+
+- New or remaining finding IDs: None.
+- Material classification changes: `MP-005` remains `Reachable`, and the corrected target production path now handles it proportionately. `AR-005` is resolved; the authoritative decision changes from `Fail` to `Pass`.
+- Recommended recipient: `/implementation_engineer`
+- Remaining risks or uncertainty: Implementation must prove DS-010 before compactor enumeration, DS-011 execution through the actual startup runner, nonfatal/prerequisite absence, exact status-based partial retry, terminal-warning skip, outcome/count preservation, owned-log confinement, bounded results, and token-table immutability. The overloaded `requiredOnStartup` name remains a maintenance smell but does not justify a runner API redesign in this ticket.

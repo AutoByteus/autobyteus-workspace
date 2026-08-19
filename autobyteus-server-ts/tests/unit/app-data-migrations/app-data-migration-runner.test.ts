@@ -216,12 +216,96 @@ describe("AppDataMigrationRunner", () => {
       { logsDir: tempDir },
     );
 
+    await expect(runner.listStatuses()).resolves.toMatchObject([
+      { migrationId: "startup-only", status: "NOT_RUN", canRetry: false },
+    ]);
     await expect(runner.runMigration("startup-only"))
       .rejects.toBeInstanceOf(AppDataMigrationRestartRequiredError);
     expect(execute).not.toHaveBeenCalled();
     await expect(runner.runPending()).resolves.toMatchObject([
-      { migrationId: "startup-only", status: "SUCCEEDED" },
+      { migrationId: "startup-only", status: "SUCCEEDED", canRetry: false },
     ]);
+  });
+
+  it.each(["FAILED", "RUNNING"] as const)(
+    "retries a startup-only %s record only through the next ordinary startup",
+    async (status) => {
+      const execute = vi.fn(async () => ({ status: "SUCCEEDED" as const, summary }));
+      const repository = new InMemoryMigrationRepository();
+      repository.records.set("startup-retry", {
+        migrationId: "startup-retry",
+        displayName: "Migration startup-retry",
+        status,
+        attempts: 1,
+        startedAt: new Date(Date.now() - 10_000),
+        completedAt: status === "FAILED" ? new Date() : null,
+        summaryJson: null,
+        errorMessage: status === "FAILED" ? "prior startup failed" : null,
+        logPath: null,
+      });
+      const definition = {
+        ...createDefinition("startup-retry", execute),
+        executionPolicy: "STARTUP_ONLY" as const,
+      };
+      const runner = new AppDataMigrationRunner(
+        new AppDataMigrationRegistry([definition]),
+        repository,
+        { staleRunningMs: 1, logsDir: tempDir },
+      );
+
+      await expect(runner.listStatuses()).resolves.toMatchObject([
+        { migrationId: "startup-retry", status, attempts: 1, canRetry: false },
+      ]);
+      await expect(runner.runMigration("startup-retry"))
+        .rejects.toBeInstanceOf(AppDataMigrationRestartRequiredError);
+      await expect(runner.runPending()).resolves.toMatchObject([
+        { migrationId: "startup-retry", status: "SUCCEEDED", attempts: 2, canRetry: false },
+      ]);
+      expect(execute).toHaveBeenCalledOnce();
+    },
+  );
+
+  it("keeps a startup-only warning terminal without advertising manual retry", async () => {
+    const execute = vi.fn();
+    const repository = new InMemoryMigrationRepository();
+    repository.records.set("startup-warning", {
+      migrationId: "startup-warning",
+      displayName: "Migration startup-warning",
+      status: "SUCCEEDED_WITH_WARNINGS",
+      attempts: 1,
+      startedAt: new Date(),
+      completedAt: new Date(),
+      summaryJson: JSON.stringify(summary),
+      errorMessage: "bounded terminal warning",
+      logPath: null,
+    });
+    const definition = {
+      ...createDefinition("startup-warning", execute),
+      executionPolicy: "STARTUP_ONLY" as const,
+    };
+    const runner = new AppDataMigrationRunner(
+      new AppDataMigrationRegistry([definition]),
+      repository,
+      { logsDir: tempDir },
+    );
+
+    await expect(runner.listStatuses()).resolves.toMatchObject([
+      {
+        migrationId: "startup-warning",
+        status: "SUCCEEDED_WITH_WARNINGS",
+        attempts: 1,
+        canRetry: false,
+      },
+    ]);
+    await expect(runner.runPending()).resolves.toMatchObject([
+      {
+        migrationId: "startup-warning",
+        status: "SUCCEEDED_WITH_WARNINGS",
+        attempts: 1,
+        canRetry: false,
+      },
+    ]);
+    expect(execute).not.toHaveBeenCalled();
   });
 
   it("attempts, persists, and returns every required result without an aggregate startup throw", async () => {

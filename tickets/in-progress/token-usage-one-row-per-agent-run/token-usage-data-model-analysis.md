@@ -2,8 +2,8 @@
 
 ## Status And Purpose
 
-- **Status:** Investigation evidence/context updated through the 2026-08-19 production-shaped Electron verification failure and exact adapter reproduction; Option A remains approved.
-- **Purpose:** Explain the verified current model, why it grows without bound, why a naive latest-row upsert is insufficient, bounded reconciliation, released source-shaping failures, the failed-consolidation replay seam, the Prisma/SQLite scalar-transport defect, and the period-statistics decision that constrains the design.
+- **Status:** Investigation evidence/context updated through the successful corrected live consolidation, the `DR-006` terminal-audit requirement gap, and `ARCH-REV-008` / `AR-005` runner-reachability analysis; Option A remains approved.
+- **Purpose:** Explain the verified current model, why it grows without bound, why a naive latest-row upsert is insufficient, bounded reconciliation, released source-shaping failures, the failed-consolidation replay seam, the Prisma/SQLite scalar-transport defect, the supported already-terminal audit residue, and the period-statistics decision that constrains the design.
 - **Authority:** This file supports the requirements and investigation notes. Intended behavior remains authoritative in `requirements.md`; migration operating assumptions and the reachability/anti-overengineering boundary are authoritative in [`data-migration-conventions.md`](./data-migration-conventions.md).
 
 ## Executive Finding
@@ -176,6 +176,40 @@ Exact Prisma execution against a SQLite backup exposed the actual boundary:
 
 The target migration boundary must not depend on that result-shape inference. Each cumulative-source scalar is projected as either `NULL` or an explicit JSON type plus exact text, for example `integer:28826658`. The migration decoder accepts only `integer:(0|[1-9][0-9]*)`, parses the suffix through `BigInt`, enforces `<= Number.MAX_SAFE_INTEGER`, and then folds it. JSON strings, real values, booleans/containers, negative/noncanonical/malformed tags, and out-of-range integers fail before cleanup. A real Prisma/SQLite fixture must contain leading `NULL` rows followed by valid integers in the same ordered batch; a mocked row or a single non-null row does not exercise the defect.
 
+## Production Verification: Terminal Migration Audit Residue
+
+The `SR-007` correction subsequently passed the supported live upgrade. Read-only verification recorded `20260819_token_usage_run_records_v1` attempt 6 as `SUCCEEDED`: 158,025 legacy rows became 1,283 unique current rows, the legacy source was empty, the database passed `quick_check`, current statistics returned correctly, and an active run updated its existing row. The remaining large database file mostly contains reusable freelist pages; it is not evidence that the one-row transition failed.
+
+The same verification found a different bounded-evidence defect in migration infrastructure:
+
+| Released record | Status | Stored `summary_json` bytes | Detail count | Preserved `(scanned,migrated,skipped,failed)` |
+| --- | --- | ---: | ---: | --- |
+| `20260730_token_usage_custom_provider_model_value_backfill` | `SUCCEEDED` | 13,964,274 | 100,530 | `(100528,0,100528,0)` |
+| `20260730_token_usage_provider_name_snapshot_backfill` | `SUCCEEDED` | 14,318,058 | 103,041 | `(104696,1657,103039,0)` |
+
+The exact current `GetAppDataMigrations` frontend request returned 31,387,995 bytes. This is a supported current path: the record repository selects raw `summary_json`, the runner parses it into the status snapshot, and GraphQL returns it. The repaired same-ID definitions cannot reach these rows because the runner correctly skips `SUCCEEDED`/`SUCCEEDED_WITH_WARNINGS` records.
+
+The target needs two owners, not one compatibility branch:
+
+1. The **current status repository** applies a 64 KiB per-summary envelope in SQL before Node materialization. For an oversized valid uniform summary it projects the four exact scalar counts plus one truthful omission marker; for an invalid/unsupported shape it emits a bounded unavailable marker. It does not know the two historical migration IDs or their business semantics.
+2. A **separate registered audit-compaction migration** knows the two released IDs and historical regular-log shape. For a supported terminal record it preserves migration identity/name/status/attempts/timestamps/error and the four aggregate counts, replaces only row-linear details with one deterministic compaction marker, and replaces an owned oversized regular log with a canonical bounded log derived from the preserved outcome. It never reruns or relabels the old business migration and never touches token ledger/run rows.
+
+The provider-name regular log is an owned 14,318,198-byte file under the configured migration-log directory. The custom-provider record points to a missing `/tmp` log. Missing content is not reconstructed; an unowned or unwritable path is not rewritten. Malformed/unsupported summary or log source remains intact and produces bounded warnings, while the current read boundary keeps the application/status API usable.
+
+A read-only SQL proof returned the two valid oversized summaries as 326/324-byte projections with exact counts and one omitted-details marker, without loading the original arrays. This establishes that the reader protection is both deterministic and independent of historical detail cardinality. At-rest compaction remains necessary for the two known sources so valid released evidence no longer persists as multi-megabyte blobs.
+
+### Production scheduling and criticality
+
+Current runner inspection establishes a separate reachability constraint:
+
+- `AppDataMigrationRunner.runPending()` schedules only definitions whose `requiredOnStartup` is `true`;
+- public/manual `runMigration()` rejects definitions whose execution policy is `STARTUP_ONLY`; and
+- `ServerRuntime` invokes only `runPending()`, then applies explicit status gates to selected capability-critical migrations.
+
+Therefore `requiredOnStartup=false` plus `STARTUP_ONLY` has no supported caller and would leave the audit compactor `NOT_RUN` forever (`MP-005`). The current-code fit is `requiredOnStartup=true` plus `STARTUP_ONLY`: this makes the compactor reachable in ordinary registry/startup order. It does **not** make audit cleanup globally fatal, because its ID is absent from the consolidation prerequisite list and from every explicit ServerRuntime fatal-status gate.
+
+Retry claims follow the runner's actual state machine. A normal partial log/database failure must leave the compactor record `FAILED`, or stale `RUNNING` if final status persistence did not complete; later `runPending()` retries those states. `SUCCEEDED` and `SUCCEEDED_WITH_WARNINGS` are terminal and skipped, so unsupported-source warnings are a final bounded disposition, not a promise of automatic repair. Production-path coverage must invoke the registered definition through `runPending()`, not only call its `execute()` method.
+
 ## One-Row Invariant Versus Period Statistics
 
 The current period query asks: “Which accounting deltas were observed between exact timestamps?” A single lifetime cumulative row knows only a first time, a latest time, and final totals. It cannot reconstruct how much of the total belongs on each side of an arbitrary boundary.
@@ -218,5 +252,8 @@ The repository's migration convention adds an ordering constraint: Prisma schema
 - **Confirmed:** one row per canonical agent run is compatible with standalone/team/delegated identity and current lifetime run/team summaries.
 - **Confirmed historical premise:** existing-run restoration would make cross-schema replay reachable after failed consolidation; `SR-003` proved one exact guard, but the stronger forward-only rule now rejects that runtime legacy dependency.
 - **Confirmed production adapter defect:** nullable SQLite JSON expressions can cross the Prisma raw-query boundary with result-shape-dependent JavaScript representations. A TypeScript generic is not runtime normalization; migration-owned typed transport and exact parsing are required.
+- **Confirmed corrected transition:** the fixed consolidation produces one unique current record per canonical run, empties the legacy source, and supports current statistics/in-place updates.
+- **Confirmed terminal-audit gap:** already-successful released summaries remain observable as a 31.4 MB current status response and cannot be reached by same-ID retry. A generic bounded read envelope plus a separate migration-owned compactor is required; token data and original business outcomes remain unchanged.
+- **Confirmed scheduling constraint:** current runner metadata couples startup scheduling inclusion to `requiredOnStartup=true`, while fatality is decided separately by ServerRuntime gates. The compactor must use the real `runPending()` path and remain absent from fatal/prerequisite dependencies.
 - **Approved incompatibility decision:** exact event-observed period statistics are intentionally retired because they cannot be preserved from one cumulative row alone.
-- **Approved direction:** strict one-row run totals; hard-bounded current state; no replacement event history; run-created-period filtering; bounded same-ID repairs and migration-only consolidation; deterministic nullable-scalar transport through real Prisma/SQLite; forward-only current source; history/old-run restore gating after capability-scoped failure; critical startup failure when required current schema/core invariants are absent; and corrected external-release recovery.
+- **Approved direction:** strict one-row run totals; hard-bounded current state; no replacement event history; run-created-period filtering; bounded same-ID repairs and migration-only consolidation; deterministic nullable-scalar transport through real Prisma/SQLite; a 64 KiB current migration-status envelope and separate terminal token-audit compaction; forward-only current source; history/old-run restore gating after capability-scoped failure; critical startup failure when required current schema/core invariants are absent; and corrected external-release recovery.

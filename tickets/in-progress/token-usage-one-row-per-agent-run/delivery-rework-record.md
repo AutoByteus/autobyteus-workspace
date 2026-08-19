@@ -2,12 +2,45 @@
 
 ## Current Result
 
-- Delivery revision: `DR-004`
+- Delivery revision: `DR-006`
 - Trigger: explicit user verification of the DR-003 Electron package
-- Result: `Failed — production-shaped token consolidation did not start`
-- Classification: `Local Fix`
-- Required recipient: `/implementation_engineer`
-- Finalization state: `Blocked`
+- Historical result: `DR-004 Failed — production-shaped token consolidation
+  did not start`
+- Rework result: `Resolved through reviewed and executed IR-007`
+- Current state: `Token rework technically verified live; separate reachable
+  historical migration-status payload requires requirement/design
+  classification; explicit user acceptance not received`
+- Finalization state: `Blocked / held`
+
+## Rework Resolution
+
+- Design and architecture confirmation: `SR-007` / `ARCH-REV-007`; no product
+  requirement change and no runtime legacy fallback.
+- Implementation: `IR-007` added deterministic typed SQL transport and strict
+  migration-only decimal-string decoding through exact `BigInt` parsing with
+  source-tag, grammar, nonnegative, domain, and SafeInt validation.
+- Source review: `CRR-011` Pass.
+- API/E2E: `API-REV-005` Pass at `97.4%`. The two DS-009 regression files
+  passed unchanged at `2 files / 32 tests`, the four-file migration regression
+  passed at `4 / 43`, and the final migration/lifecycle selection passed at
+  `5 / 47`; refreshed built-server and `154,100`-row scale evidence passed.
+- Durable-test review: `CRR-012` Pass with no findings.
+- Delivery: latest `origin/personal` remained current; reviewed state was
+  checkpointed at `bb31e469270ee2b032d19c6dbf8a2c9bea91a18a`; durable adapter
+  guidance was promoted; a new Electron package was built and integrity-
+  checked successfully.
+- Automated validation did not access or mutate the user's live database.
+
+The original user-verification failure remains historical evidence and is not
+retroactively converted into a Pass. Closure requires an explicit user result
+for the corrected DR-005 package.
+
+DR-006 read-only live evidence subsequently verified that the corrected
+consolidation succeeded and current Token Statistics operates correctly. A
+separate old-successful-record status-payload gap is recorded in
+`delivery-requirement-gap.md`; it does not reopen the nullable scalar defect,
+but it blocks finalization until upstream classification and explicit user
+acceptance.
 
 ## Failure Summary
 
@@ -92,6 +125,9 @@ not mutated.
 
 ## Required Rework
 
+The following requirements were completed by `IR-007` through `CRR-012`; they
+are retained as the authoritative repair checklist:
+
 1. Correct migration-only legacy integer decoding to accept Prisma's exact
    canonical decimal-string representation. Parse strictly through `BigInt`,
    require nonnegative and `<= Number.MAX_SAFE_INTEGER`, then convert to
@@ -115,6 +151,9 @@ not mutated.
 - Do not mark the failed migration successful or bypass the SafeInt guard.
 - Do not delete legacy rows or populate destination rows manually.
 - No push, ticket archival, target merge/push, version bump, tag, release,
-  deployment, or cleanup is authorized.
+  deployment, or cleanup is authorized until renewed explicit user
+  verification.
 - The DR-003 DMG/ZIP remain useful only as failure reproduction artifacts and
   must not be presented as verification-passed candidates.
+- The DR-005 DMG/ZIP are ready for renewed user verification but are not yet
+  acceptance-passed or public release candidates.

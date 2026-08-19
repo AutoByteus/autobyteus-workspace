@@ -18,6 +18,10 @@ The latest canonical review report remains authoritative. This record preserves 
 | `CRR-010` | `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-test-review-report.md` | Proportional review after focused integrated `API-REV-004` Pass | `Pass` | `Pass` | None |
 | `CRR-011` | `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/code-review-report.md` | Source review of `IR-007` after production migration failure `DR-004` and reviewed `SR-007` / `ARCH-REV-007` | `Pass` | `Pass` | None; `CR-001`–`CR-006` remain resolved |
 | `CRR-012` | `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-test-review-report.md` | Proportional review of two new DS-009 durable paths after `API-REV-005` Pass | `Pass` | `Pass` | None |
+| `CRR-013` | `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/code-review-report.md` | Source review of `IR-008` after `DR-006` and reviewed `SR-009` / `ARCH-REV-009` | `Pass` | `Fail` | `CR-007` |
+| `CRR-014` | `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/code-review-report.md` | Source re-review of `IR-009` after `CRR-013` | `Fail` | `Pass` | `CR-007` resolved |
+| `CRR-015` | `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-test-review-report.md` | Proportional review of six SR-009 durable paths after `API-REV-006` Pass | `Pass` | `Fail — Local Fix` | `TCR-001` |
+| `CRR-016` | `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-test-review-report.md` | Proportional re-review of two corrected paths after `API-REV-007` Pass | `Fail — Local Fix` | `Pass` | `TCR-001` resolved |
 
 ## Revision Entries
 
@@ -323,3 +327,102 @@ None.
 - Material score or classification changes: no source scorecard change; proportional test-review result is `Pass`.
 - Recommended recipient: `/delivery_engineer`
 - Remaining risks or uncertainty: `DR-003` is stale and failed user verification. Delivery must first refresh the ticket branch against the latest tracked base, preserve the reviewed state, synchronize the durable migration convention, build a new Electron package, verify its integrity, and obtain renewed explicit user verification before finalization. The known independent Nuxt typecheck incompatibility and external-provider opt-in exclusions remain unchanged.
+
+### CRR-013 — Bounded terminal-audit implementation fails on false retry affordance
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/code-review-report.md`
+- Review entry point and round: `Implementation Review`, round `13`
+- Triggering role, report path, and finding or scenario IDs: `/implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/implementation-revision-record.md`; `IR-008`; delivery residual `DR-006`; resolved architecture finding `AR-005` / `MP-005`; new finding `CR-007` / `MP-CR-006`.
+- Relevant solution revision IDs: `SR-009` (current), `SR-008`, `SR-007` (baseline)
+- Relevant architecture-review revision IDs: `ARCH-REV-009` (current), `ARCH-REV-008`, `ARCH-REV-007`
+- Relevant implementation revision IDs: `IR-008` (current), `IR-001`–`IR-007` (baseline)
+- Relevant API/E2E revision IDs: `API-REV-005` (prior baseline; IR-008 not covered)
+- Relevant delivery revision IDs: `DR-006`, `DR-005`
+- Prior authoritative result: source `CRR-011` Pass and proportional test review `CRR-012` Pass for DS-009; neither covers SR-009/IR-008.
+- Current authoritative result: `Fail`
+- What changed in the review result and why: IR-008 correctly bounds `getRecord/listRecords` at the SQL repository boundary, registers DS-011 on ordinary startup, scalar-inspects only the two closed terminal records, preserves terminal outcome/count facts, compacts supported summaries/owned logs, leaves unsupported evidence behind bounded terminal warnings, and keeps the compactor outside token prerequisites/fatal gates. One integration contradiction prevents passage: the runner maps every `SUCCEEDED_WITH_WARNINGS` snapshot to `canRetry=true`, so Settings enables Retry for the new STARTUP_ONLY terminal warning even though manual `runMigration()` rejects it and later `runPending()` skips it. This violates the approved no-false-retry contract.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-001`–`CR-006` | Resolved | Remain resolved | `IR-002`–`IR-005`, `CRR-002`–`CRR-011`, `API-REV-003`–`API-REV-005` | IR-008 changes only app-data migration status reads/audit compaction and does not alter exact token persistence, pricing, cache state, legacy row normalization, or run lifecycle owners. |
+
+- New or remaining finding IDs: `CR-007`
+- Material score or classification changes: source changes from `Pass` to `Fail`; current score is `9.1/10` (`91.4/100`) with API/interface, API/E2E readiness, and runtime fidelity below `9.0`. `MP-CR-006` is `Reachable` from the approved warning contract through ordinary startup and the supported Settings > Server Migrations Retry action.
+- Recommended recipient: `/implementation_engineer`
+- Remaining risks or uncertainty: after the bounded Local Fix and source re-review, API/E2E must refresh the exact frontend query/response bound, startup compaction, warning action semantics, partial-progression retry, and token-immutability evidence. Delivery rebuild/live verification remains held; the user's live database was not accessed or mutated during review.
+
+### CRR-014 — Execution-policy-aware retry capability resolves CR-007
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/code-review-report.md`
+- Review entry point and round: `Implementation Review`, round `14`
+- Triggering role, report path, and finding or scenario IDs: `/implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/implementation-revision-record.md`; `IR-009`; `CRR-013` / `CR-007` / `MP-CR-006`.
+- Relevant solution revision IDs: `SR-009`
+- Relevant architecture-review revision IDs: `ARCH-REV-009`
+- Relevant implementation revision IDs: `IR-009` (current), `IR-008` (cumulative DS-010/DS-011 baseline)
+- Relevant API/E2E revision IDs: `API-REV-005` (prior baseline; SR-009/IR-009 still require refreshed execution)
+- Relevant delivery revision IDs: `DR-006`, `DR-005`
+- Prior authoritative result: `CRR-013` implementation-review `Fail` with one bounded Local Fix, `CR-007`.
+- Current authoritative result: `Pass`
+- What changed in the review result and why: `AppDataMigrationRunner` now derives public `canRetry` from both status and execution policy. Every `STARTUP_ONLY` snapshot is false, while default/ANYTIME NOT_RUN, FAILED, and warning states retain executable manual retry. Manual startup-only execution remains restart-required; startup-only FAILED/stale RUNNING still retry through later ordinary `runPending()`; terminal warning remains skipped. The actual compactor warning and mounted Settings action now prove false/disabled/non-dispatching behavior without weakening the true executable warning path.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-007` | Open / Local Fix | Resolved | `IR-009`, `CRR-013`, `REQ-028`, `AC-027`, `MP-CR-006` | Reviewer static trace confirms `canRetryManually(definition,status)` rejects STARTUP_ONLY before status admission while `runMigration()` and `runPending()` keep their distinct lifecycles. Reviewer reruns passed server TypeScript; server 3 files / 33 tests; Settings/store 2 files / 3 tests; diff/ancestry/size checks. |
+| `CR-001`–`CR-006` | Resolved | Remain resolved | `IR-002`–`IR-005`, `CRR-002`–`CRR-013`, `API-REV-003`–`API-REV-005` | IR-009 changes only public app-data manual retry capability and focused tests; token persistence, pricing, cache, migration normalization, and run lifecycle sources remain unchanged. |
+
+- New or remaining finding IDs: None.
+- Material score or classification changes: source changes from `Fail` to `Pass`; score rises from `9.1/10` (`91.4/100`) to `9.3/10` (`93.2/100`), with every category `>=9.0`. `MP-CR-006` remains `Reachable`, and the current path now ends in a truthful disabled/no-dispatch action.
+- Recommended recipient: `/api_e2e_engineer`
+- Remaining risks or uncertainty: `API-REV-005` predates SR-009/IR-008/IR-009. API/E2E must refresh the exact frontend query/response bound, actual startup compaction, warning action semantics, partial-progression retry, and token-table immutability evidence before proportional durable-test review and delivery rebuild/live verification. The user's live database was not accessed or mutated during review.
+
+### CRR-015 — Compacted-log content is not asserted by the durable coverage
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-test-review-report.md`
+- Review entry point and round: successful API/E2E proportional test-code review, round `4`
+- Triggering role, report path, and finding or scenario IDs: `/api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-execution-coverage-report.md`; `API-REV-006`; `REQ-028` / `AC-027`; finding `TCR-001`.
+- Relevant solution revision IDs: `SR-009`
+- Relevant architecture-review revision IDs: `ARCH-REV-009`
+- Relevant implementation revision IDs: `IR-009` (current), `IR-008` (cumulative SR-009 baseline)
+- Relevant API/E2E revision IDs: `API-REV-006` (current), `API-REV-003`–`API-REV-005` (applicable baselines)
+- Relevant delivery revision IDs: `DR-006`, `DR-005`
+- Prior authoritative result: source `CRR-014` Pass; prior proportional test review `CRR-012` Pass; `API-REV-006` execution Pass at 97.6%.
+- Current authoritative result: `Fail — Local Fix`
+- What changed in the review result and why: all six changed durable paths were reviewed proportionately. Their repository bounds, runner lifecycle, Settings affordance, startup execution, retry/warning behavior, source tuple/count preservation, and token health assertions are coherent and passed. The successful owned-log paths nevertheless inspect only the replacement file size. They never read the compacted log to prove that it contains the canonical migration identity, terminal outcome, preserved counts, omitted-detail count, and reason required by `REQ-028` / `AC-027`. The already-executed ordinary-startup path makes this assertion gap reachable and material.
+
+#### Prior Finding Resolution
+
+None — prior proportional reviews had no unresolved test-code finding. Source `CR-007` remains resolved under `CRR-014`.
+
+- New or remaining finding IDs: `TCR-001`
+- Material score or classification changes: no implementation-source scorecard change; source remains `CRR-014` Pass and API execution remains `API-REV-006` Pass. Proportional test-review result is `Fail`, classification `Local Fix` in API/E2E-owned durable coverage.
+- Recommended recipient: `/api_e2e_engineer`
+- Remaining risks or uncertainty: add a deterministic content assertion after successful owned-log replacement and rerun the focused compactor/actual-startup coverage. Delivery, Electron rebuild, and renewed user verification remain paused until that corrected coverage passes proportional re-review. The known independent Nuxt typecheck limitation and external-provider opt-in exclusions remain unchanged.
+
+### CRR-016 — Canonical compacted-log evidence resolves TCR-001
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-test-review-report.md`
+- Review entry point and round: successful API/E2E proportional test-code review, round `5`
+- Triggering role, report path, and finding or scenario IDs: `/api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-execution-coverage-report.md`; `API-REV-007`; prior finding `TCR-001`; `REQ-028` / `AC-027`.
+- Relevant solution revision IDs: `SR-009`
+- Relevant architecture-review revision IDs: `ARCH-REV-009`
+- Relevant implementation revision IDs: `IR-009` (current), `IR-008` (cumulative SR-009 baseline)
+- Relevant API/E2E revision IDs: `API-REV-007` (current), `API-REV-006` (full SR-009 baseline), `API-REV-003`–`API-REV-005` (applicable baselines)
+- Relevant delivery revision IDs: `DR-006`, `DR-005`
+- Prior authoritative result: `CRR-015` proportional test-review `Fail — Local Fix`; source `CRR-014` Pass; `API-REV-006` execution Pass / 97.6%.
+- Current authoritative result: `Pass`; `API-REV-007` execution Pass / 97.7%.
+- What changed in the review result and why: the two successful owned-log paths now retain the byte bound, read every replaced log, and require complete equality with deterministic content derived from each seeded source tuple and count summary. They directly cover migration ID/display name, both terminal statuses, attempts, exact timestamps, absent/present error state, four counts, `detailsOmitted=100001`, the exact 65,536-byte reason, and terminating newline. Focused unit, actual built-startup, combined, TypeScript/static, and cleanup evidence all pass; no source or unrelated durable path changed.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `TCR-001` | Open / Local Fix | Resolved | `CRR-015`, `API-REV-007`, `REQ-028`, `AC-027` | Unit lines 201–210 and actual-startup E2E lines 323–332 compare complete replacement bodies to seeded source/count facts. Logs `53`–`57` pass the two focused paths, combined `2 files / 10 tests`, all-field static audit, and cleanup. |
+
+- New or remaining finding IDs: None.
+- Material score or classification changes: no implementation-source scorecard change; source remains `CRR-014` Pass. Proportional test-review changes from `Fail — Local Fix` to `Pass`; `API-REV-007` is the latest successful execution result at 97.7%.
+- Recommended recipient: `/delivery_engineer`
+- Remaining risks or uncertainty: delivery must refresh the ticket branch against the latest tracked base, preserve the reviewed package, synchronize durable migration documentation, build and integrity-check a fresh Electron artifact, and obtain renewed explicit user verification. The known independent Nuxt typecheck limitation and unchanged external-provider opt-in exclusions remain recorded but do not block this review.
