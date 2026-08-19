@@ -16,6 +16,8 @@ The latest canonical review report remains authoritative. This record preserves 
 | `CRR-008` | `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-test-review-report.md` | Proportional review after `API-REV-003` Pass | `N/A` | `Pass` | None |
 | `CRR-009` | `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/code-review-report.md` | Integrated source review of `IR-006` after delivery conflict `DR-002` | `Pass` | `Pass` | None; `CR-001`–`CR-006` remain resolved |
 | `CRR-010` | `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-test-review-report.md` | Proportional review after focused integrated `API-REV-004` Pass | `Pass` | `Pass` | None |
+| `CRR-011` | `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/code-review-report.md` | Source review of `IR-007` after production migration failure `DR-004` and reviewed `SR-007` / `ARCH-REV-007` | `Pass` | `Pass` | None; `CR-001`–`CR-006` remain resolved |
+| `CRR-012` | `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-test-review-report.md` | Proportional review of two new DS-009 durable paths after `API-REV-005` Pass | `Pass` | `Pass` | None |
 
 ## Revision Entries
 
@@ -273,3 +275,51 @@ None.
 - Material score or classification changes: no source scorecard change; proportional test-review result is `Pass`.
 - Recommended recipient: `/delivery_engineer`
 - Remaining risks or uncertainty: the independent Nuxt `vue-tsc`/TypeScript package-export incompatibility and external-provider opt-in exclusions remain as recorded. Delivery must verify latest-base state, preserve the reviewed uncommitted package, then resume the user-requested Electron README/build/integrity workflow and update delivery evidence before final handoff.
+
+### CRR-011 — Deterministic nullable legacy-scalar transport passes source review
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/code-review-report.md`
+- Review entry point and round: `Implementation Review`, round `11`
+- Triggering role, report path, and finding or scenario IDs: `/implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/implementation-revision-record.md`; `IR-007`; delivery verification failure `DR-004`; reachable `MP-004`; approved `DS-009`; no new code-review finding ID.
+- Relevant solution revision IDs: `SR-007` (current), `SR-006` (prior baseline)
+- Relevant architecture-review revision IDs: `ARCH-REV-007` (current), `ARCH-REV-006` (prior baseline)
+- Relevant implementation revision IDs: `IR-007` (current), `IR-001`–`IR-006` (baseline)
+- Relevant API/E2E revision IDs: `API-REV-004`, `API-REV-003` (prior baselines; DS-009 not covered)
+- Relevant delivery revision IDs: `DR-004`, `DR-003`, `DR-002`
+- Prior authoritative result: source `CRR-009` Pass; proportional test review `CRR-010` Pass; the later `DR-004` user verification failed the pre-DS-009 Electron package.
+- Current authoritative result: `Pass`
+- What changed in the review result and why: all 15 nullable cumulative-source JSON fields now cross the real Prisma/SQLite boundary as `NULL` or parameterized type-tagged exact text generated from the closed field set. The migration-only decoder treats transport as untrusted, admits only canonical nonnegative `integer:` digits, parses through exact `BigInt`, and enforces SafeInt before checkpoint use. Wrong source type, grammar, or range fails before cleanup and the existing transaction preserves source/empty target for retry. Reviewer execution passed the exact four-leading-`NULL` real-adapter scenario, the two-file 32-test selection, the four-file 43-test migration regression, server TypeScript, dependency/size review, and diff checks.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-001`–`CR-006` | Resolved | Remain resolved | `IR-002`–`IR-005`, `CRR-002`–`CRR-009`, `API-REV-003`–`API-REV-004` | `IR-007` changes only migration-derived cumulative checkpoint transport. Exact BigInt commit/public projection, pricing ownership, mixed currency, first cache state, released unknown-input normalization, and integrated TeamRun/task lifecycle sources remain unchanged. |
+
+- New or remaining finding IDs: None.
+- Material score or classification changes: source remains `Pass`; current DS-009 score is `9.3/10` (`93.0/100`). `MP-004` remains `Reachable` from the supported Electron upgrade/startup-migration path and is handled proportionately without runtime compatibility.
+- Recommended recipient: `/api_e2e_engineer`
+- Remaining risks or uncertainty: `API-REV-004` predates DS-009. API/E2E must refresh coverage investigation/execution for the real leading-`NULL` adapter path, invalid-source rollback/retry, and affected degraded lifecycle, then return durable changes for proportional review. The failed `DR-003` package remains unaccepted; delivery must rebuild and request renewed explicit user verification only after those gates. The user's live database was not accessed or mutated.
+
+### CRR-012 — DS-009 durable coverage passes proportional test-code review
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-test-review-report.md`
+- Review entry point and round: successful API/E2E proportional test-code review, round `3`
+- Triggering role, report path, and finding or scenario IDs: `/api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-execution-coverage-report.md`; `API-REV-005`; `DR-004` / `MP-004` / `DS-009`; no API/E2E failure ID.
+- Relevant solution revision IDs: `SR-007`
+- Relevant architecture-review revision IDs: `ARCH-REV-007`
+- Relevant implementation revision IDs: `IR-007`
+- Relevant API/E2E revision IDs: `API-REV-005` (current), `API-REV-003`–`API-REV-004` (applicable baselines)
+- Relevant delivery revision IDs: `DR-004`, `DR-003`, `DR-002`
+- Prior authoritative result: source `CRR-011` Pass; prior proportional test review `CRR-010` Pass.
+- Current authoritative result: `Pass`
+- What changed in the review result and why: both new IR-007 durable paths were executed unchanged and reviewed proportionately. The 212-line real Prisma/SQLite test owns the exact four-leading-`NULL` transport, successful current checkpoint/cleanup, and actual invalid-source rollback/retry contract. The 76-line focused decoder test owns canonical tag/grammar/BigInt/SafeInt admission, malformed/wrong-type/noncanonical rejection, and all-null behavior. Their scopes are complementary, deterministic, disposable, free of disabled cases, and aligned to `REQ-027` / `AC-026`. API/E2E execution passed them at `2 files / 32 tests`, within `4 files / 43 tests`, and within the final `5 files / 47 tests` migration/lifecycle selection; refreshed built-server and released-scale evidence also passed.
+
+#### Prior Finding Resolution
+
+None.
+
+- New or remaining finding IDs: None.
+- Material score or classification changes: no source scorecard change; proportional test-review result is `Pass`.
+- Recommended recipient: `/delivery_engineer`
+- Remaining risks or uncertainty: `DR-003` is stale and failed user verification. Delivery must first refresh the ticket branch against the latest tracked base, preserve the reviewed state, synchronize the durable migration convention, build a new Electron package, verify its integrity, and obtain renewed explicit user verification before finalization. The known independent Nuxt typecheck incompatibility and external-provider opt-in exclusions remain unchanged.

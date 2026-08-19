@@ -3,10 +3,10 @@
 ## Artifact Metadata
 
 - **Canonical task artifact:** `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/data-migration-conventions.md`
-- **Purpose:** Centralize the deterministic source-to-target rule, operating assumptions, reachability gate, current-application contract test, failure-isolation/later-upgrade contract, worked classification examples, and proportionate recovery boundary that govern the token-usage migrations, so individual requirements and design sections can reference one authority instead of re-deriving speculative failure handling.
+- **Purpose:** Centralize the deterministic source-to-target rule, operating assumptions, reachability gate, current-application contract test, database-adapter transport rule, failure-isolation/later-upgrade contract, worked classification examples, and proportionate recovery boundary that govern the token-usage migrations, so individual requirements and design sections can reference one authority instead of re-deriving speculative failure handling.
 - **Scope:** The repaired token-usage source-shaping migrations, the new ledger-to-run-record consolidation, and any migration fallback, repair, recovery, or lifecycle branch proposed for this ticket. The principles are reusable for later production app-data migrations.
 - **Relationship to core artifacts:** Normative supplement for migration constraints in `requirements.md` and `design-spec.md`; evidence and source provenance remain in `investigation-notes.md`; task-specific schemas, algorithms, batching, overlap handling, and sequencing remain authoritative in `design-spec.md`.
-- **Related requirements and acceptance criteria:** `REQ-012`–`REQ-026`; `AC-011`–`AC-025`.
+- **Related requirements and acceptance criteria:** `REQ-012`–`REQ-027`; `AC-011`–`AC-026`.
 - **Status and approval applicability:** Approved governing intent. It makes the user's explicit production-migration and anti-overengineering direction durable; it does not change the approved one-row-per-canonical-run behavior.
 - **Repository source:** `autobyteus-server-ts/README.md`, especially “Production data migrations” and “Production migration practice.” This artifact applies that source without replacing it.
 
@@ -91,6 +91,24 @@ The normal structure is:
 `current schema expansion -> migration-owned legacy read/transform/validation -> current schema/domain -> forward-only runtime`
 
 If the migration does not establish the required current state, the product must choose an explicit capability or startup disposition. It must not restore operation by teaching current runtime code to understand the past schema.
+
+### 5.1 Database Adapter And Transport Representations
+
+Database meaning, SQLite storage class, ORM result metadata, and JavaScript runtime type are distinct contracts. A TypeScript annotation on `$queryRaw` does not convert or validate the value received at runtime. In particular, nullable SQLite computed expressions such as `json_extract(...)` have dynamic type/affinity; the production Prisma boundary may represent the same semantic integer as `bigint` in one result shape and decimal `string` in another when earlier ordered rows are `NULL`.
+
+Migration code that depends on a derived scalar must therefore:
+
+1. reproduce the query through the actual production database and ORM/driver adapter, not only a mocked row object;
+2. choose one deterministic transport representation at the SQL boundary when adapter inference is unstable;
+3. carry the source type explicitly when multiple SQLite/JSON types could otherwise share text;
+4. validate the complete transport grammar before exact parsing;
+5. parse integers through `BigInt` or an equivalently exact mechanism before any narrowing;
+6. enforce sign, range, and domain constraints before converting to the target type; and
+7. keep the adapter-specific projection and decoder inside the migration boundary.
+
+Do not fix an adapter mismatch with broad `Number(value)`, `parseInt(value)`, truthy coercion, a permissive numeric regex, or an unchecked cast. Such fixes can silently admit fractional, exponent, prefixed, truncated, negative, wrong-source-type, or out-of-range values.
+
+The regression fixture must preserve the result-set condition that exposed the defect. For a nullable expression, include leading `NULL` rows followed by valid values in the same ordered batch. Also cover the supported type tag/value and rejected source types/ranges through a real disposable SQLite database and the production ORM/driver. Do not use or mutate a user's live database for automated coverage.
 
 ## 6. Failure Classification And Availability
 
@@ -184,7 +202,9 @@ Production data migrations should, by default:
 7. leave source evidence intact when a normal attempt fails;
 8. retry through the existing migration runner or a corrected later release;
 9. classify failure against forward-only platform/core/capability invariants; and
-10. keep normal runtime current-schema-only.
+10. keep normal runtime current-schema-only;
+11. define deterministic adapter transport for computed/nullable scalars; and
+12. exercise that transport through the real production ORM/driver with result-order/nullability conditions preserved.
 
 Do not add bespoke journals, restoration state machines, exhaustive failure matrices, semantic guessing, parallel recovery formats, backup copies, runtime legacy adapters, dual reads/writes, or infrastructure/security recovery unless a separately approved reachable contract requires them.
 
@@ -200,6 +220,7 @@ Do not add bespoke journals, restoration state machines, exhaustive failure matr
 | Later consolidation retry | Migration code alone reads legacy rows, validates no `run_id` intersection with current rows admitted from new runs, imports one aggregate per legacy run, validates, and deletes source atomically. Any intersection fails before cleanup rather than invoking runtime compatibility logic. |
 | Populated legacy ledger after failed consolidation | Not inert cleanup residue: the required current historical target is incomplete, so the migration remains `FAILED` and history/old-run restore stay gated. It cannot be reclassified as `SUCCEEDED_WITH_WARNINGS` merely because new-run storage works. |
 | Empty dormant legacy table/model after validated consolidation | Inert migration-only schema residue required for safe skip-version Prisma ordering. Current code never queries it; its presence does not make the application degraded or backward-compatible. |
+| Nullable JSON integer projection | Project each cumulative-source scalar as `NULL` or explicit JSON type plus exact text, then admit only the supported integer tag/canonical digits and SafeInt range. Test leading `NULL` rows followed by integers through real Prisma/SQLite; do not trust a TypeScript raw-query type annotation or accept untagged decimal strings. |
 | Attempt ends before consolidation commit | Rely on SQLite rollback and a later normal migration attempt; do not add a progress journal, cause-specific recovery branch, or termination-specific backup. |
 | Consolidation commits before its status record is written | Migration code recognizes validated empty legacy source as already current and records completion on relaunch. This is deterministic migration idempotence, not a runtime compatibility mode. |
 | Hypothetical tampering/corruption/adversarial writers | Out of scope; do not add code or dedicated migration coverage. |
@@ -207,6 +228,8 @@ Do not add bespoke journals, restoration state machines, exhaustive failure matr
 ## 10. Implementation-Mechanics Impact
 
 Relative to `SR-005`, the detailed decision test and worked examples added in `SR-006` do **not** change ticket implementation mechanics. They make the status/startup classification reusable and verifiable.
+
+`SR-007` **does change** the consolidation migration's scalar adapter mechanics: nullable JSON integers receive a deterministic typed-text SQL projection and strict migration-only decoder, with a real Prisma/SQLite leading-`NULL` regression. It does not change current runtime code, the one-row model, degraded readiness behavior, retry semantics, or the supported source/target meaning.
 
 The earlier `SR-005` forward-only refinement **did change** the `SR-003` transition mechanics:
 

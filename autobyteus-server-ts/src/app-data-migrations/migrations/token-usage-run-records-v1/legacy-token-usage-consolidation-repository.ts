@@ -7,6 +7,10 @@ import {
   type TokenUsageRunRecord,
 } from "../../../token-usage/domain/token-usage-run-record.js";
 import {
+  cumulativeSnapshotSourceTokensKey,
+  cumulativeSnapshotTokenFields,
+} from "../../../token-usage/projections/cumulative-snapshot-reconciliation-metadata.js";
+import {
   fromPrismaTokenUsageRunRecord,
   toPrismaTokenUsageRunRecordData,
 } from "../../../token-usage/repositories/sql/token-usage-run-record-codec.js";
@@ -69,6 +73,15 @@ const sameRecordAfterRoundTrip = (left: TokenUsageRunRecord, right: TokenUsageRu
   const { costTotals: leftCosts, ...leftExact } = left;
   const { costTotals: rightCosts, ...rightExact } = right;
   return isDeepStrictEqual(leftExact, rightExact) && sameCostTotals(leftCosts, rightCosts);
+};
+
+const legacySnapshotSourceProjection = (field: (typeof cumulativeSnapshotTokenFields)[number]): Prisma.Sql => {
+  const path = `$.${cumulativeSnapshotSourceTokensKey}.${field}`;
+  // JSON scalar expressions have no declared SQLite affinity for Prisma to decode.
+  // Carry SQLite's JSON type with an exact text value so the migration adapter is deterministic.
+  return Prisma.sql`json_type("raw_event_json", ${path}) || ':' ||
+    CAST(json_extract("raw_event_json", ${path}) AS TEXT)
+    AS ${Prisma.raw(`"source_${field}"`)}`;
 };
 
 export class LegacyTokenUsageConsolidationTransaction {
@@ -154,21 +167,7 @@ export class LegacyTokenUsageConsolidationTransaction {
         "estimated_api_cache_creation_1h_input_cost", "estimated_api_output_cost",
         "estimated_api_reasoning_output_cost", "estimated_api_total_cost", "api_cost_status",
         "latest_prompt_tokens", "effective_context_window_tokens", "context_window_usage_percent",
-        json_extract("raw_event_json", '$.autobyteus_cumulative_snapshot_source_tokens.reported_input_tokens') AS "source_reported_input_tokens",
-        json_extract("raw_event_json", '$.autobyteus_cumulative_snapshot_source_tokens.reported_output_tokens') AS "source_reported_output_tokens",
-        json_extract("raw_event_json", '$.autobyteus_cumulative_snapshot_source_tokens.reported_total_tokens') AS "source_reported_total_tokens",
-        json_extract("raw_event_json", '$.autobyteus_cumulative_snapshot_source_tokens.accounting_input_tokens') AS "source_accounting_input_tokens",
-        json_extract("raw_event_json", '$.autobyteus_cumulative_snapshot_source_tokens.accounting_output_tokens') AS "source_accounting_output_tokens",
-        json_extract("raw_event_json", '$.autobyteus_cumulative_snapshot_source_tokens.accounting_total_tokens') AS "source_accounting_total_tokens",
-        json_extract("raw_event_json", '$.autobyteus_cumulative_snapshot_source_tokens.standard_input_tokens') AS "source_standard_input_tokens",
-        json_extract("raw_event_json", '$.autobyteus_cumulative_snapshot_source_tokens.cache_miss_input_tokens') AS "source_cache_miss_input_tokens",
-        json_extract("raw_event_json", '$.autobyteus_cumulative_snapshot_source_tokens.cache_read_input_tokens') AS "source_cache_read_input_tokens",
-        json_extract("raw_event_json", '$.autobyteus_cumulative_snapshot_source_tokens.cache_creation_input_tokens') AS "source_cache_creation_input_tokens",
-        json_extract("raw_event_json", '$.autobyteus_cumulative_snapshot_source_tokens.cache_creation_5m_input_tokens') AS "source_cache_creation_5m_input_tokens",
-        json_extract("raw_event_json", '$.autobyteus_cumulative_snapshot_source_tokens.cache_creation_1h_input_tokens') AS "source_cache_creation_1h_input_tokens",
-        json_extract("raw_event_json", '$.autobyteus_cumulative_snapshot_source_tokens.reasoning_output_tokens') AS "source_reasoning_output_tokens",
-        json_extract("raw_event_json", '$.autobyteus_cumulative_snapshot_source_tokens.billable_input_tokens') AS "source_billable_input_tokens",
-        json_extract("raw_event_json", '$.autobyteus_cumulative_snapshot_source_tokens.billable_output_tokens') AS "source_billable_output_tokens"
+        ${Prisma.join(cumulativeSnapshotTokenFields.map(legacySnapshotSourceProjection))}
       FROM "token_usage_ledger_events"
       WHERE "run_id"=${runId} AND "id">${afterId}
       ORDER BY "id" ASC

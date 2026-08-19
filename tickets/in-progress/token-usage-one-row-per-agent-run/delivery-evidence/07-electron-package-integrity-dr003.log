@@ -1,0 +1,128 @@
+started_at=2026-08-19T11:31:24Z
+head=11b861de677200fe7441ed189934f7776804c04d
+base=1f5663ddb86e478d0b4ffdd878d57dee72d67b4b
+
+$ artifact existence and SHA-256
+-rw-r--r--@ 1 normy  staff   442M Aug 19 13:28 /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.dmg
+-rw-r--r--@ 1 normy  staff   473K Aug 19 13:28 /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.dmg.blockmap
+-rw-r--r--@ 1 normy  staff   437M Aug 19 13:30 /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.zip
+-rw-r--r--@ 1 normy  staff   461K Aug 19 13:30 /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.zip.blockmap
+-rw-r--r--@ 1 normy  staff   555B Aug 19 13:30 /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist/latest-mac.yml
+cefaa367556b0edd5b76e3e974a39e1143d5ec72bcd5bbec92db20f654e7c348  /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.dmg
+02ef6a9f51ed97fd39cb7b650fc89f2ca92b0ef4a84c3fadb7a6c4f9fe8e22c6  /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.zip
+ac2e67d3397007a2168affd37ef7f39787c87a5f2478e572398193e742936dbb  /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.dmg.blockmap
+050d16672ed1bdba609cab2a029efbed1bbefc9e2ead7752ded1c523c6fc802e  /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.zip.blockmap
+result=pass
+
+$ bundle identity/version/architecture
+bundle_id=com.autobyteus.app
+version=1.4.52
+build_version=1.4.52
+executable=AutoByteus
+/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus: Mach-O 64-bit executable arm64
+result=pass
+
+$ packaged renderer and integrated server entry
+server_package_main=dist/index.js
+-rw-r--r--@ 1 normy  staff   298M Aug 19 13:27 /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar
+-rw-r--r--@ 1 normy  staff   2.4K Aug 19 13:27 /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/app.js
+-rw-r--r--@ 1 normy  staff   112B Aug 19 13:27 /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/index.js
+-rw-r--r--@ 1 normy  staff    13K Aug 19 13:27 /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/prisma/schema.prisma
+/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/prisma@5.22.0/node_modules/prisma/libquery_engine-darwin-arm64.dylib.node: Mach-O 64-bit dynamically linked shared library arm64
+result=pass
+
+$ packaged terminal runtime including spawn probe
+[terminal-runtime] node-pty root: /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] ok: node-pty spawn probe
+result=pass
+
+$ broken bundle symlink scan
+broken_symlinks=0
+result=pass
+
+$ DMG integrity
+Prüfsumme für Protective Master Boot Record (MBR : 0) berechnen …
+Protective Master Boot Record (MBR :: Die überprüfte CRC32-Prüfsumme ist $7A4A19DA
+Prüfsumme für GPT Header (Primary GPT Header : 1) berechnen …
+ GPT Header (Primary GPT Header : 1): Die überprüfte CRC32-Prüfsumme ist $18FFE7EA
+Prüfsumme für GPT Partition Data (Primary GPT Table : 2) berechnen …
+GPT Partition Data (Primary GPT Tabl: Die überprüfte CRC32-Prüfsumme ist $108ACE0E
+Prüfsumme für  (Apple_Free : 3) berechnen …
+                    (Apple_Free : 3): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für disk image (Apple_APFS : 4) berechnen …
+         disk image (Apple_APFS : 4): Die überprüfte CRC32-Prüfsumme ist $2CE6AAA0
+Prüfsumme für  (Apple_Free : 5) berechnen …
+                    (Apple_Free : 5): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für GPT Partition Data (Backup GPT Table : 6) berechnen …
+GPT Partition Data (Backup GPT Table: Die überprüfte CRC32-Prüfsumme ist $108ACE0E
+Prüfsumme für GPT Header (Backup GPT Header : 7) berechnen …
+  GPT Header (Backup GPT Header : 7): Die überprüfte CRC32-Prüfsumme ist $B10F0CDC
+Die überprüfte CRC32-Prüfsumme ist $AB44F689
+hdiutil: verify: checksum of "/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.dmg" is VALID
+result=pass
+
+$ DMG mounted payload identity/architecture
+Die erwartete CRC32-Prüfsumme ist $AB44F689
+/dev/disk7          	GUID_partition_scheme          	
+/dev/disk7s1        	Apple_APFS                     	
+/dev/disk8          	EF57347C-0000-11AA-AA11-0030654	
+/dev/disk8s1        	41504653-0000-11AA-AA11-0030654	/private/tmp/autobyteus-dmg-verify.nCm8vx
+/tmp/autobyteus-dmg-verify.nCm8vx/AutoByteus.app/Contents/MacOS/AutoByteus: Mach-O 64-bit executable arm64
+result=pass
+
+$ ZIP integrity
+No errors detected in compressed data of /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.zip.
+result=pass
+
+$ updater metadata SHA-512/size consistency
+zip_sha512=A149374cmwGgoRsplPzRfLA3YsexFarHSYWGfnogLnDg6Qu1jmtfUpJCNgHBAlAuT9xM9x8C9mKa1EddeC8IaA==
+dmg_sha512=oqaWEgs9LyBNn1VJYLAI1GP7YHsKaAphqtK+67VRWol06+d9p57f2d617KglggmTUvlSifaCvasaoVW1Kae1Vw==
+zip_size=457714647
+dmg_size=463779859
+version: 1.4.52
+files:
+  - url: AutoByteus_personal_macos-arm64-1.4.52.zip
+    sha512: A149374cmwGgoRsplPzRfLA3YsexFarHSYWGfnogLnDg6Qu1jmtfUpJCNgHBAlAuT9xM9x8C9mKa1EddeC8IaA==
+    size: 457714647
+  - url: AutoByteus_personal_macos-arm64-1.4.52.dmg
+    sha512: oqaWEgs9LyBNn1VJYLAI1GP7YHsKaAphqtK+67VRWol06+d9p57f2d617KglggmTUvlSifaCvasaoVW1Kae1Vw==
+    size: 463779859
+path: AutoByteus_personal_macos-arm64-1.4.52.zip
+sha512: A149374cmwGgoRsplPzRfLA3YsexFarHSYWGfnogLnDg6Qu1jmtfUpJCNgHBAlAuT9xM9x8C9mKa1EddeC8IaA==
+releaseDate: '2026-08-19T11:30:37.705Z'
+result=pass
+
+$ signing/notarization state (informational; local build expected unsigned)
+Executable=/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+Identifier=Electron
+Format=app bundle with Mach-O thin (arm64)
+CodeDirectory v=20400 size=392 flags=0x20002(adhoc,linker-signed) hashes=9+0 location=embedded
+Hash type=sha256 size=32
+CandidateCDHash sha256=183bce38eb383b21f21c2cdedcf6cd8781b11cdd
+CandidateCDHashFull sha256=183bce38eb383b21f21c2cdedcf6cd8781b11cdd090f942c4eacd6c09b1112f7
+Hash choices=sha256
+CMSDigest=183bce38eb383b21f21c2cdedcf6cd8781b11cdd090f942c4eacd6c09b1112f7
+CMSDigestType=2
+CDHash=183bce38eb383b21f21c2cdedcf6cd8781b11cdd
+Signature=adhoc
+Info.plist=not bound
+TeamIdentifier=not set
+Sealed Resources=none
+Internal requirements=none
+/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app: code has no resources but signature indicates they must be present
+/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app: code has no resources but signature indicates they must be present
+Processing: /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+AutoByteus.app does not have a ticket stapled to it.
+codesign_display_exit=0
+codesign_strict_verify_exit=1
+spctl_exit=1
+stapler_exit=65
+expected_signing_state=ad-hoc/linker-signed Electron executable only; not Developer ID signed or notarized
+result=pass-expected-local-unsigned
+
+electron_launched=no
+bundled_server_started=no
+overall_result=pass
+completed_at=2026-08-19T11:31:48Z

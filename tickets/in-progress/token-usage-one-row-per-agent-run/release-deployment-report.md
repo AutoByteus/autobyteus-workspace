@@ -2,226 +2,93 @@
 
 ## Current Result
 
-- Delivery revision: `DR-002`
-- Latest-base integration: `Blocked — one implementation-owned source conflict`
-- Electron README/build: `Not started`
-- Repository finalization: `Held`
-- Release/deployment: `Not in scope`
-- Required route: `/implementation_engineer`
-- Canonical blocker:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/delivery-integration-blocker.md`
+- Delivery revision: `DR-004`
+- Explicit user verification: `Failed`
+- Classification: `Local Fix`
+- Required recipient: `/implementation_engineer`
+- Repository finalization: `Blocked / held`
+- Release/publication/deployment: `Not authorized and not executed`
 
-## Release / Publication / Deployment Scope
+## Failure
 
-This is the pre-finalization delivery checkpoint. Documentation sync and the
-user-verification handoff are in scope. Repository finalization, versioning,
-release/tag publication, deployment, and cleanup are held until explicit user
-verification/completion. No release version or deployment target was requested.
+The DR-003 Electron bundle was structurally valid, but the required live
+production-shaped consolidation failed three times before scanning:
 
-## Handoff Summary
+`Legacy token usage field 'source_reported_input_tokens' is outside JavaScript SafeInt.`
 
-- Handoff summary artifact:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/handoff-summary.md`
-- Handoff summary status: `Updated`
-- Delivery revision record:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/delivery-revision-record.md`
-- Current delivery revision ID: `DR-002`
-- Notes: DR-001 was reviewed, executed, proportionally re-reviewed, and docs-
-  synchronized. DR-002 protected that state, but latest-base advancement created
-  a source conflict before the requested Electron build.
+Migration state is `FAILED`, attempts `3`; the legacy ledger remains `157,742`
+rows over `1,283` run IDs; the current table remains empty. SQLite quick check
+is `ok`. Safe-backup reproduction confirmed the implementation defect: when a
+nullable SQLite `json_extract` result set begins with `NULL` rows, Prisma
+`$queryRaw` decodes later safe integers as decimal strings; the pre-fix decoder
+accepted only `number | bigint` and rejected that string via
+`Number.isSafeInteger`. A 15-field scan found no invalid production token value.
+No design or requirement change is needed.
 
-## DR-002 Re-entry Integration Refresh
+The healthy/listening server and `TOKEN_USAGE_*_MIGRATION_REQUIRED` gates prove
+the designed degraded mode, but required migration acceptance failed.
 
-- User trigger: refresh potentially updated `origin/personal`, read the current
-  Electron build README, and build Electron for local testing.
-- Previous integrated base:
-  `0194fb4fffa69037a46aeace491024fdf816dde7`
-- Latest fetched base:
-  `1f5663ddb86e478d0b4ffdd878d57dee72d67b4b`
-- Base advanced: `Yes — 8 commits`
-- Local reviewed-state checkpoint:
-  `b68170cf608364bbcd264dde198ad83e030a3bb2`
-- Integration method: `Merge`
-- Integration result: `Blocked`
-- Unmerged path:
-  `autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts`
-- Conflict: latest base's `hasManagedTeamRun(...)` restore guard intersects the
-  ticket's `assertExistingRunRestoreReady()` token migration gate.
-- Auto-merged overlapping paths requiring focused review:
-  `task-delegation-service.ts` and `team-run-service.test.ts` (plus the conflict
-  file).
-- Post-integration executable checks: `Not run — merge incomplete`
-- Electron README/build: `Not started — integrated state unavailable`
-- Evidence:
-  `delivery-evidence/04-reentry-integration-conflict-dr002.log`
-- Classification/recipient: `Local Fix` -> `/implementation_engineer`
+## Canonical Rework / Evidence
 
-## DR-001 Initial Delivery Integration Refresh
+- Rework record: `delivery-rework-record.md`
+- Delivery evidence: `delivery-evidence/10-user-verification-failure-dr004.log`
+- Exact copied migration log:
+  `delivery-evidence/11-production-migration-failure-dr004.log`
+- Exact root-cause reproduction:
+  `delivery-evidence/13-exact-root-cause-dr004.log`
+- Live migration log:
+  `/Users/normy/.autobyteus/server-data/logs/app-data-migrations/20260819_token_usage_run_records_v1-2026-08-19T13-08-18-307Z.log`
+- Live server log: `/Users/normy/.autobyteus/server-data/logs/server.log`
+- Live production database was not accessed or mutated by delivery.
 
-- Bootstrap base reference:
-  `origin/personal@0194fb4fffa69037a46aeace491024fdf816dde7`
-- Latest tracked remote base reference checked:
-  `origin/personal@0194fb4fffa69037a46aeace491024fdf816dde7`
-- Base advanced since bootstrap or previous refresh: `No`
-- New base commits integrated into the ticket branch: `No`
-- Local checkpoint commit result: `Not needed`
-- Integration method: `Already current`
-- Integration result: `Completed`
-- Post-integration executable checks rerun: `No`
-- Post-integration verification result: `Passed`
-- No-rerun rationale: `git fetch origin personal` left the tracked remote base,
-  ticket `HEAD`, and merge base identical; divergence remained `0/0`. No base
-  commit was integrated. Delivery then changed only durable documentation and
-  ticket-local delivery artifacts, so no production/test behavior changed after
-  `API-REV-003` / `CRR-008`.
-- Delivery edits started only after integrated state was current: `Yes`
-- Handoff state current with latest tracked remote base: `Yes`
-- Blocker: None.
-- Evidence:
-  `delivery-evidence/01-initial-integration-refresh-dr001.log`
+## Prior Package Disposition
 
-## User Verification
+- DR-003 build/integrity result: historically Pass.
+- User acceptance: Failed.
+- DMG/ZIP status: reproduction artifacts only; not verification-passed, not
+  publishable, and not valid final handoff candidates.
+- Public signing/notarization was never in scope.
 
-- Initial explicit user completion/verification received: `No`
-- Initial verification / acceptance reference: User instead requested a current
-  Electron build for local testing; that package is blocked on DR-002 integration.
-- Renewed verification required after later re-integration: `No` at this
-  checkpoint; reassess if `origin/personal` advances before finalization.
-- Renewed verification received: `Not needed`
-- Renewed verification / acceptance reference: N/A.
+## Documentation
 
-## Docs Sync Result
+The DR-001 durable documentation remains the intended contract and was current
+through DR-003. No documentation-only edit can correct this runtime failure.
+Revalidate after implementation returns; update durable docs only if the
+corrected decoding/runtime behavior changes the approved contract or operator
+guidance.
 
-- Docs sync artifact:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/docs-sync-report.md`
-- Docs sync result: `Updated`
-- Docs updated: server README; production migration convention; server
-  architecture/module index/token module; web agent-execution and Settings
-  docs; Token Statistics UI prototype/spec matrix.
-- No-impact rationale: N/A; code review explicitly required durable docs impact.
-- Validation: `git diff --check`, stale retired-owner/period scan, and local
-  Markdown link audit passed. Evidence:
-  `delivery-evidence/02-docs-sync-audit-dr001.log`.
+## Repository / Release Hold
 
-## Ticket State Transition
+- Ticket moved to `tickets/done`: `No`.
+- Ticket branch push: `No`.
+- Target `personal` merge/push: `No`.
+- Version bump/tag/release notes/publication/deployment: `None`.
+- Worktree/branch cleanup: `No`.
+- User approval: explicitly not granted; verification failed.
 
-- Ticket moved to `tickets/done/<ticket-name>`: `No`
-- Archived ticket path: Pending explicit user verification/completion.
+Required sequence before any finalization:
 
-## Version / Tag / Release Commit
+1. implementation diagnosis and correction using isolated production-shaped
+   evidence;
+2. source review;
+3. API/E2E coverage investigation and execution;
+4. proportional review of any durable test delta;
+5. delivery base refresh and documentation revalidation;
+6. new Electron build/integrity verification; and
+7. renewed explicit user verification.
 
-- Version decision: Not requested; no version file changed.
-- Tag decision: Not requested; no tag created.
-- Release commit: Not created.
-- Release notes: Not required for this verification-only checkpoint. If the user
-  authorizes a release after verification, create/update release notes before
-  archival/finalization and re-read the then-current documented release method.
+## Data Safety / Rollback
 
-## Repository Finalization
-
-- Bootstrap context source:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/investigation-notes.md`
-- Ticket branch: `codex/token-usage-one-row-per-agent-run`
-- Ticket branch commit result: `Held — user verification pending`
-- Ticket branch push result: `Held — user verification pending`
-- Finalization target remote: `origin`
-- Finalization target branch: `personal`
-- Target advanced after verification / acceptance: `No verification received`
-- Delivery-owned edits protected before re-integration: `Not needed`
-- Re-integration before final merge result: `Not needed at current checkpoint`
-- Target branch update result: `Held`
-- Merge into target result: `Held`
-- Push target branch result: `Held`
-- Repository finalization status: `Blocked`
-- Blocker: First resolve/check the DR-002 latest-base source conflict and build
-  the requested Electron verification artifact; then obtain explicit user
-  verification. Before terminal finalization, refresh `origin/personal` again.
-
-## Release / Publication / Deployment
-
-- Applicable: `No` at this verification checkpoint; no authorization/version/
-  environment was supplied.
-- Method: `Other — deferred pending explicit scope`
-- Method reference / command: N/A.
-- Release/publication/deployment result: `Not required`
-- Release notes handoff result: `Not required`
-- Blocker: None beyond the repository-finalization verification hold.
-
-## Post-Finalization Cleanup
-
-- Dedicated ticket worktree path:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run`
-- Worktree cleanup result: `Blocked — finalization not completed`
-- Worktree prune result: `Blocked — finalization not completed`
-- Local ticket branch cleanup result: `Blocked — finalization not completed`
-- Remote branch cleanup result: `Not required` at this checkpoint.
-- Blocker: User verification and repository finalization must complete first.
-
-## Release Notes Summary
-
-- Release notes artifact created before verification / acceptance: `No — not
-  required because release/publication is not in the current authorized scope`
-- Archived release notes artifact used for release/publication: `Not required`
-- Release notes status: `Not required`
-
-## Deployment Steps
-
-None executed. A future release/deployment must use the current documented
-project method after repository finalization and must monitor startup schema/
-app-data migration disposition.
-
-## Environment Or Persisted-Data Transition Notes
-
-- Approved persisted-data decision: Replace released append-per-observation
-  token rows with one current cumulative row per canonical run, after same-ID
-  source-shaping repairs, using a startup-only atomic app-data consolidation.
-- Delivery action required: `Migration Required`
-- Result and evidence: Implementation and isolated production-shape execution
-  passed. No user's live production database was mutated. `API-REV-003` records
-  a 154,100-row / 1,269-run released-scale consolidation with exact preserved
-  totals, source `0`, current `1,269`, `PRAGMA integrity_check=ok`, and reusable
-  freelist pages.
-- Migration completion, validation, recovery, and rollout evidence: Built-server
-  upgrade/relaunch, degraded new-run, pre-existing restore rejection, corrected
-  retry, overlap rejection, transaction rollback/retry, empty-source relaunch,
-  critical-schema fatal protocol, SafeInt persistence/public rejection, and
-  no-startup-VACUUM behavior passed. See
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-execution-coverage-report.md`.
-
-## Verification Checks
-
-- `CRR-007`: source Pass, `9.3/10`, no open findings.
-- `API-REV-003`: Pass at `97.1%` confidence.
-- Final broad selected server/API suite: `27 files / 125 tests` passed.
-- All original 13 API/E2E-owned paths passed.
-- Server and Nuxt production builds passed.
-- Chrome normal/degraded/fatal flows passed.
-- `CRR-008`: all 17 durable coverage changes passed proportional review with
-  no findings.
-- Delivery integration refresh and documentation audits passed.
-- Known independent block: Nuxt typecheck package-export incompatibility before
-  project checking; production build and product validation pass.
-
-## Rollback Criteria
-
-No rollout occurred, so no deployment rollback was invoked. For a future
-rollout:
-
-- Do not hand-edit migration records or re-enable the legacy runtime.
-- A valid-current-schema consolidation failure is capability-degraded: keep
-  unrelated/new-run use available, gate history/old-run restore, install a
-  corrected release, and restart for normal retry.
-- Missing required current schema is platform-fatal: stop the rollout and ship/
-  install a corrected release. The old ledger is not a supported runtime
-  fallback.
-- After successful consolidation, legacy rows are intentionally emptied;
-  distribution rollback to code that requires the old ledger is unsupported.
-  Prefer forward correction and validate the release's direct/skip-version path
-  before publication.
+- Do not edit live migration records or data.
+- Do not bypass genuine SafeInt rejection.
+- Do not manually delete the legacy source or populate current rows.
+- No rollout occurred, so no deployment rollback was invoked.
+- Preserve the valid-schema degraded state until corrected code is installed
+  and normal startup retry succeeds.
 
 ## Final Status
 
-`Blocked — DR-001 remains the protected reviewed/docs-synchronized baseline,
-but latest base advanced and the required merge has one source conflict.
-Electron packaging cannot start until implementation resolves and checks the
-integrated state.`
+`Blocked — DR-004 explicit user verification failed on real production-shaped
+migration decoding. All finalization, release, deployment, and cleanup actions
+remain held pending corrected implementation, review/execution gates, rebuilt
+Electron verification, and renewed user acceptance.`

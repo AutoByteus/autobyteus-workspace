@@ -2,7 +2,7 @@
 
 ## Status
 
-User-directed governance revision (`SR-006`) superseding the delivered `SR-005` snapshot after `ARCH-REV-003` passed `SR-003`. Requirements remain `Design-ready` and user-approved on 2026-08-19. The product still requires one authoritative cumulative token-usage row per canonical agent run with run-created-range/lifetime-total statistics. Current application code remains forward-only; every old-schema decoder/query/fold remains migration-only; capability gating or critical startup failure replaces runtime backward compatibility. `SR-006` adds the explicit current-application-contract decision test and detailed SQLite/structured-file classification examples: inert cleanup residue may be a bounded warning only after the required current target is independently valid. It does not change the `SR-005` implementation mechanics. The `SR-003` runtime overlap guard/protocol marker remains removed, `MP-003` remains Not Reachable because pre-existing-run restoration is unavailable while consolidation is incomplete, and `AR-001`–`AR-004` remain preserved in the historical review trail.
+User-directed implementation-significant revision (`SR-007`) after `ARCH-REV-006` passed `SR-006` and the delivered Electron candidate failed production-shaped consolidation. Requirements remain `Design-ready` and user-approved on 2026-08-19. The one-row model, forward-only runtime, migration-only legacy ownership, degraded history/restore gate, disjoint retry, and failure classification remain unchanged. The new authority fixes the reproduced adapter seam: nullable SQLite `json_extract` integers must cross Prisma through one deterministic typed-text transport and a strict migration-only parser, with the leading-`NULL` result shape exercised through real Prisma/SQLite. `AR-001`–`AR-004` remain preserved; there is no return of the runtime overlap guard or legacy compatibility.
 
 ## Current-State Read
 
@@ -25,6 +25,8 @@ Verified constraints from `BEH-001`–`BEH-006`, repository inspection, and the 
 - Provider-display/consolidation app-data failure can be capability-scoped when current schema exists; absence of required current tables/columns/constraints may be platform-critical.
 - `MP-003` proves restored-run replay would overlap schemas if restoration continued. The user now rejects the required runtime legacy adapter, so restoration is gated until consolidation succeeds.
 - Current business/runtime code must never query or decode `token_usage_ledger_events`; legacy knowledge is confined to registered migration boundaries.
+- Production verification of the delivered candidate recorded `20260819_token_usage_run_records_v1=FAILED` after three attempts, with 157,742 source rows / 1,283 runs, zero target rows, and healthy SQLite. Degraded startup behaved as designed but the required consolidation did not complete.
+- Exact Prisma execution against a backup proved result-shape-dependent decoding: the first ordered run has four leading `NULL` cumulative-source expressions, after which safe SQLite integers `28,826,658` and `28,987,545` arrive as JavaScript strings. The same expression can arrive as `bigint` when a result begins non-null. A TypeScript `$queryRaw` result annotation is not runtime normalization.
 
 ## Intended Change
 
@@ -32,6 +34,7 @@ Implement three ordered migration dispositions and one forward-only current runt
 
 1. Replace the unchanged-ID implementations of `20260730_token_usage_custom_provider_model_value_backfill` and `20260730_token_usage_provider_name_snapshot_backfill` with narrow, keyset-batched, bounded, idempotent transformations. Remove the display backfill as a prerequisite of readable custom-provider identity.
 2. Expand the current schema with `token_usage_run_records`, then register startup-only app-data migration `20260819_token_usage_run_records_v1`. Migration-owned code folds released ledger rows into one record per legacy `run_id`, validates in one SQLite transaction, and deletes source rows only after success.
+   - Derived cumulative-source JSON integers use a deterministic migration-only transport: SQL returns `NULL` or `integer:<canonical unsigned decimal>`, and the decoder validates the tag/grammar, parses through `BigInt`, and enforces SafeInt before folding.
 3. Replace append/list-event runtime APIs with an awaited current run-record fold and current-only queries. While consolidation status is incomplete, current readiness gates historical token reads and pre-existing-run restoration before provider startup. Newly allocated runs use only `token_usage_run_records`. Migration retry validates that legacy and current run-ID sets are disjoint before importing legacy aggregates.
 4. If required current Prisma/schema/platform invariants are absent, fail startup with bounded actionable evidence rather than reactivating the old ledger runtime. A corrected externally installed release can retry/repair.
 
@@ -45,24 +48,24 @@ The runtime still emits one live `TOKEN_USAGE_UPDATED` event per notification fo
 | BEH-002 | Contract | REQ-006–REQ-010; AC-006–AC-009 | GraphQL asks for run/member/team summary | Current store lists event arrays | Direct current run read; team result merges concrete current records once | Resolver -> readiness -> run store -> current repository -> aggregate; DS-003 |
 | BEH-003 | User | REQ-011; AC-010 | Settings supplies dates | Current repository filters event `observed_at` | Select runs by `COALESCE(run_created_at, first_observed_at)` and show lifetime totals | UI -> GraphQL -> statistics provider -> current query; DS-004 |
 | BEH-004 | Operational | REQ-012–REQ-016, REQ-022, REQ-024–REQ-026; AC-011–AC-015, AC-021, AC-023–AC-025 | Either released 20260730 migration is pending/failed | Unbounded definitions and fatal display dependency | Both same IDs retry bounded migration-only code; provider display failure is capability-scoped | Runner -> repaired migration adapter -> status; DS-005 |
-| BEH-005 | Operational | REQ-017–REQ-026; AC-016–AC-025 | Populated ledger upgrades; consolidation fails; new work may start | Naive restored-run continuation creates cross-schema overlap | Gate restore/history; admit only globally new run IDs to current; retry validates set disjointness and imports legacy once | Prisma expand -> DS-005/DS-006; failed interval -> DS-007/DS-008; retry DS-006 |
+| BEH-005 | Operational | REQ-017–REQ-027; AC-016–AC-026 | Populated ledger upgrades; nullable derived scalars cross Prisma; consolidation can fail; new work may start | Production verification proves leading-NULL raw expressions can make later safe integers arrive as strings; naive restored-run continuation also creates cross-schema overlap | DS-009 stabilizes source type/value transport before DS-006 fold; gate restore/history; admit only globally new run IDs; retry validates set disjointness and imports legacy once | Prisma expand -> DS-005/DS-009/DS-006; failed interval -> DS-007/DS-008; retry DS-009/DS-006 |
 | BEH-006 | Operational | REQ-015–REQ-016, REQ-019–REQ-020, REQ-023–REQ-026; AC-014–AC-015, AC-017, AC-019, AC-022–AC-025 | App-data or schema migration fails | Current fatal coupling lacks classification | Capability-scoped app-data failure starts current-only unrelated/new work; platform-critical current-schema failure stops startup without legacy fallback | Migration result -> bootstrap classifier -> healthy gated app or fatal current-schema error; DS-007 |
 
 ## Relevant Supplemental Task Artifacts
 
 | Artifact Path | Purpose | Related Requirement / Acceptance-Criteria IDs | Relationship To This Design | Status / Approval Applicability |
 | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/token-usage-data-model-analysis.md` | Storage, update semantics, bounded state, released migrations, historical overlap pressure, forward-only gate, period decision, and SQLite constraints | REQ-001–REQ-026; AC-001–AC-025 | Supplies evidence for capacities, restored-run risk, disjointness, fold, ordering, and sequencing | Evidence/context complete; approval N/A |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/data-migration-conventions.md` | Deterministic mapping, forward-only current runtime, migration-only legacy knowledge, failure classification, reachability, operating assumptions, and proportionality | REQ-012–REQ-026; AC-011–AC-025 | Governs source ownership and startup/capability disposition; task algorithms remain here | Approved normative supplement |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/token-usage-data-model-analysis.md` | Storage, update semantics, bounded state, released migrations, historical overlap pressure, production adapter verification, forward-only gate, period decision, and SQLite constraints | REQ-001–REQ-027; AC-001–AC-026 | Supplies evidence for capacities, restored-run risk, adapter transport, disjointness, fold, ordering, and sequencing | Evidence/context complete; approval N/A |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/data-migration-conventions.md` | Deterministic mapping, forward-only current runtime, migration-only legacy knowledge, adapter transport, failure classification, reachability, operating assumptions, and proportionality | REQ-012–REQ-027; AC-011–AC-026 | Governs source/adapter ownership and startup/capability disposition; task algorithms remain here | Approved normative supplement |
 
 ## Task Design Health Assessment (Mandatory)
 
 - Change posture: `Larger Requirement` / `Bug Fix` / `Performance` / `Behavior Change` / `Refactor` / persisted-data contraction.
 - Current design issue found: `Yes`.
-- Root cause classification: primary `Boundary Or Ownership Issue`; contributing `Missing Invariant`, `Shared Structure Looseness`, and `Legacy Or Compatibility Pressure`.
+- Root cause classification: primary `Boundary Or Ownership Issue`; contributing `Missing Invariant`, `Shared Structure Looseness`, `Legacy Or Compatibility Pressure`, and a verified migration adapter/runtime-representation mismatch.
 - Refactor needed now: `Yes`.
-- Evidence: persistence owns immutable notifications rather than cumulative run accounting; readers rebuild state; persistence is detached; both released source-shaping migrations materialize whole-ledger evidence; and the prior degraded guard leaked legacy schema knowledge into current runtime.
-- Design response: one current run accumulator and table; awaited current persistence; legacy row types/queries/folds only under registered migrations; readiness gates history and old-run restore; migration retry validates legacy/current run-ID disjointness; bootstrap classifies current-schema-critical versus capability-scoped failure.
+- Evidence: persistence owns immutable notifications rather than cumulative run accounting; readers rebuild state; persistence is detached; both released source-shaping migrations materialize whole-ledger evidence; the prior degraded guard leaked legacy knowledge into current runtime; and production verification proved a TypeScript raw-query type masked Prisma's variable runtime representation for nullable SQLite expressions.
+- Design response: one current run accumulator and table; awaited current persistence; legacy row types/queries/folds only under registered migrations; deterministic typed transport at the migration SQL/adapter boundary; readiness gates history and old-run restore; migration retry validates legacy/current run-ID disjointness; bootstrap classifies current-schema-critical versus capability-scoped failure.
 - Refactor rationale: fixing only the historical query leaves unbounded growth; keeping the overlap guard violates the now-approved forward-only boundary. The current subject, writer, readers, transition ownership, and failure disposition must change together.
 - Intentional deferrals: physical removal of the empty legacy table/model/index contract remains deferred because Prisma deploy precedes app-data conversion for skip-version upgrades. This is a migration-only storage declaration, not a current runtime compatibility path. Physical file shrink also remains separate.
 
@@ -77,6 +80,7 @@ The runtime still emits one live `TOKEN_USAGE_UPDATED` event per notification fo
 - **Historical readiness**: successful or warning completion of `20260819_token_usage_run_records_v1`; required for stored token history and pre-existing-run restoration.
 - **New-run readiness**: current schema exists and the run is newly allocated, so it may use current storage even while consolidation is incomplete.
 - **Critical current-schema failure**: required current table/column/constraint/platform invariant is absent; startup may fail rather than use old schema.
+- **Legacy JSON integer transport**: migration-only `NULL | integer:<canonical unsigned decimal>` representation produced by SQL from explicit SQLite JSON type plus scalar text; it is not a current domain type.
 
 ## Production Migration Convention Application
 
@@ -92,6 +96,7 @@ The runtime still emits one live `TOKEN_USAGE_UPDATED` event per notification fo
 | Critical failure | Missing required current schema/core invariant may stop startup. No legacy fallback; corrected external release retries. |
 | Classification decision test | Judge the final persisted state against schema, current-format data, and integrity/safety facts actually required by the current application—not against whether any migration or cleanup statement emitted an error. |
 | Inert cleanup residue | A validated current target plus an unreachable old table/column, obsolete structured-file attribute, or superseded file can be `SUCCEEDED_WITH_WARNINGS` when no independent removal contract applies; observable ambiguity, rollback of the target, or required removal is failure. |
+| Adapter representation | Do not trust `$queryRaw<T>` to normalize nullable computed scalars. Project explicit JSON type plus exact text; admit only the named grammar and range through a migration-only decoder. |
 | `AR-004` disposition | Historical `MP-003` would be reachable if restore continued. The new restore gate makes provider replay Not Reachable, so runtime overlap machinery is removed. |
 | Durable convention | Delivery promotes `docs/design/production_data_migration_conventions.md` and makes README reference it. |
 
@@ -102,6 +107,10 @@ This is a real design change from `SR-003`: remove the runtime legacy-overlap gu
 ### SR-006 Impact On Mechanics
 
 No implementation mechanic changes from `SR-005`. The convention and verification language now make the existing classification rule concrete for database and structured-file migrations. This ticket's consolidation still requires validated import and legacy-row deletion before historical readiness; its populated legacy ledger is not reclassified as inert warning residue because stored history remains incomplete until consolidation and cleanup succeed.
+
+### SR-007 Impact On Mechanics
+
+This is a bounded migration implementation change. Replace direct nullable `json_extract(...) AS source_*` projections and inferred `number | bigint` source-field types with one owned typed-text projection/parser boundary. The current runtime schema, domain, repository, readiness behavior, transaction/retry semantics, and preserved accounting meaning do not change. Coverage must reproduce leading `NULL` rows followed by integers in the same ordered real-adapter batch; a single non-null fixture is insufficient.
 
 ## Legacy Removal Policy (Mandatory)
 
@@ -122,7 +131,7 @@ No implementation mechanic changes from `SR-005`. The convention and verificatio
 - Failed capability-scoped state: legacy source remains intact; pre-existing-run restore/history is gated; newly allocated current run rows are allowed and must be run-ID-disjoint from legacy.
 - Critical state: missing current schema/core invariant may fail startup; do not use the source as current runtime storage.
 - Retry: one migration transaction validates target schema, legacy/current run-ID disjointness, per-run/global aggregates, then deletes source.
-- Supported criteria: REQ-001–REQ-026; AC-001–AC-025.
+- Supported criteria: REQ-001–REQ-027; AC-001–AC-026.
 
 ### Target Current Record Shape
 
@@ -232,9 +241,39 @@ Manual GraphQL invocation of consolidation remains restart-required; it cannot r
 | Model-value repair | SQL-filtered legacy candidates | Corrected `model_value` | Same-ID migration | <=250 batches, CAS, scalar counts, capped examples | Normal retry; source retained |
 | Provider-name repair | SQL-filtered blank AutoByteus names | Corrected provider snapshot | Same-ID migration | <=250 batches, CAS, scalar counts, capped examples | Capability-scoped failure; normal retry |
 | Consolidation preflight | Legacy source + current new-run rows | Scalar facts only | Consolidation migration adapter | Schemas/statuses/counts plus zero `run_id` intersection | Fail before mutation; history/old-run restore remain gated |
+| Derived scalar transport | Nullable legacy JSON token counters | Exact bigint-or-null checkpoint facts | Consolidation repository + legacy row decoder | Explicit JSON type; canonical digits; nonnegative SafeInt | Wrong type/grammar/range aborts transaction before import/delete; source retained |
 | Bounded fold/import | Legacy rows `(run_id,id)` | One inserted current row per legacy run | Migration accumulator/repository | Batch bound, per-run expected aggregate/checkpoint state | Transaction rollback retains source/current new-run rows |
 | Validation/cleanup | Imported legacy records + disjoint pre-existing new-run rows | Complete current rows + empty source | Consolidation transaction | Coverage anti-join, per-run/global sums, unchanged pre-existing rows, source zero | Any error rolls back import/delete |
 | Capability admission | Migration status + current schema readiness | Ready/degraded/fatal disposition | Readiness/bootstrap classifier | Success/warning, incomplete app data, or missing current schema | Degraded gates history/old-run restore; fatal stops startup |
+
+### Deterministic Nullable-Scalar Transport
+
+The consolidation repository owns the SQL-to-JavaScript representation for cumulative-source token counters. It must not select bare nullable `json_extract(...)` expressions into a TypeScript-declared `number | bigint` field because production evidence proves Prisma's runtime representation depends on the ordered result shape.
+
+For each member of `cumulativeSnapshotTokenFields`, `legacySnapshotSourceProjection(field)` emits the parameterized equivalent of:
+
+```sql
+json_type("raw_event_json", :path) || ':' ||
+CAST(json_extract("raw_event_json", :path) AS TEXT)
+AS "source_<field>"
+```
+
+- Missing paths and JSON `null` result in SQL `NULL`.
+- A SQLite JSON integer becomes `integer:<SQLite exact decimal text>`.
+- JSON real, text, true/false, array, or object values retain a non-`integer` source tag and are rejected rather than numerically coerced.
+- The field name and JSON path come only from the closed `cumulativeSnapshotTokenFields` constant; values/paths are parameterized and aliases are generated from that closed set.
+
+`LegacyTokenUsageLedgerRow` models these derived fields as untrusted `string | null`, distinct from direct legacy integer columns. `asSourceSafeInt(value, field)` is migration-private and follows one grammar:
+
+1. `NULL` -> `null`;
+2. require exact `/^integer:(0|[1-9][0-9]*)$/`;
+3. parse only the digit suffix with `BigInt`;
+4. require `value <= BigInt(Number.MAX_SAFE_INTEGER)`; and
+5. return the exact `bigint` checkpoint value.
+
+Negative, signed-plus, leading-zero, whitespace, exponent, fractional, untagged, malformed, wrong-source-type, and out-of-range forms fail the migration with the existing bounded field-specific error. No `Number(...)`, `parseInt(...)`, or permissive fallback is allowed. Because this is a migration adapter contract, no tagged transport type crosses into the current run record or runtime APIs.
+
+The required regression executes the real repository query and migration transaction through production Prisma and a disposable SQLite file. One run must contain at least four leading rows whose derived source value is `NULL`, followed in the same ordered batch by JSON integers `28826658` and `28987545`. Separate fixtures prove rejection/rollback for wrong JSON types, negative values, malformed/noncanonical transport at the decoder boundary, and `9007199254740992`.
 
 ### Bounded Released Source-Shaping Repairs
 
@@ -256,7 +295,7 @@ All rules in this subsection are migration-only:
 - Merge cache/currency/cost/unit-price/policy/tier and conflicting attribution through bounded finite-state unknown/single/mixed summaries.
 - Select first/latest facts deterministically by legacy `(observed_at,id)`; event identity never orders facts.
 - Keep only the latest 64 hashed legacy idempotency facts needed in the migrated current state, enforcing the 8 KiB target codec cap.
-- Extract cumulative source counters as SQL scalars, hash exact series keys, preserve all historical totals, retain only the eight greatest legacy checkpoints, enforce 16 KiB, and flag compaction.
+- Extract cumulative source counters through DS-009 typed transport, hash exact series keys, preserve all historical totals, retain only the eight greatest legacy checkpoints, enforce 16 KiB, and flag compaction.
 - Never select `raw_usage_json`, `raw_event_json`, or `pricing_snapshot_json` into Node.
 - Insert one current record only when no current row with that run ID exists. Any legacy/current run-ID intersection aborts preflight; migration never merges two schemas for the same run.
 
@@ -272,6 +311,7 @@ All rules in this subsection are migration-only:
 | DS-006 | Primary End-to-End | BEH-005 | Startup consolidation pending | Disjoint complete current rows + empty source | Run-records V1 migration | Owns every legacy read/fold/import/delete. |
 | DS-007 | Return/Lifecycle | BEH-006 | Migration/schema outcome | Healthy gated app or critical startup error | Bootstrap failure classifier/readiness | Makes availability proportional without legacy fallback. |
 | DS-008 | Return/Lifecycle | BEH-001/BEH-005/BEH-006 | New-run or restore activation | Current-run admission or migration-incomplete error | Run activation readiness gate | Makes cross-schema replay Not Reachable. |
+| DS-009 | Bounded Local | BEH-005 | Nullable SQLite JSON token scalar | Exact bigint-or-null or bounded failure | Consolidation repository + legacy row decoder | Stabilizes the real Prisma transport before any legacy fold or destructive cleanup. |
 
 ## Primary Execution Spine(s)
 
@@ -282,6 +322,7 @@ All rules in this subsection are migration-only:
 - DS-006: `Prisma current schema -> migration prerequisites -> scalar disjointness preflight -> bounded legacy fold/import -> validation -> source delete -> status`
 - DS-007: `schema/app-data outcome -> classify current invariant -> READY | CURRENT_SCHEMA_DEGRADED | fatal bootstrap error`
 - DS-008: `activation -> readiness -> new run admitted to current schema OR pre-existing restore rejected while incomplete`
+- DS-009: `SQLite json type/value -> typed-text SQL projection -> Prisma string/null -> exact tag/grammar -> BigInt SafeInt check -> legacy checkpoint fact`
 
 ## Spine Narratives (Mandatory)
 
@@ -295,6 +336,7 @@ All rules in this subsection are migration-only:
 | DS-006 | Migration-only code validates schemas/status/disjoint run sets, folds legacy batches, inserts one row per legacy run, validates all aggregates, and deletes source atomically. | Legacy row, migrated aggregate, existing disjoint current rows | Consolidation migration | Timeout/status |
 | DS-007 | Valid current schema plus incomplete app data becomes a healthy gated app. Missing required current schema/core invariant becomes a bounded fatal startup error. | Migration outcome, readiness | Bootstrap classifier | External corrected release |
 | DS-008 | Restore paths check readiness before provider creation; incomplete consolidation rejects old-run continuation. New-run allocation proceeds with a globally new ID and current-only persistence. | Run activation intent | Activation readiness gate | User-facing error |
+| DS-009 | The migration repository projects a nullable JSON scalar into explicit source-type plus exact text. The legacy adapter admits only canonical nonnegative integer tags, parses with `BigInt`, and rejects every other representation before fold/import/delete. | SQLite JSON scalar, transport string/null, checkpoint integer | Consolidation repository + legacy row adapter | Prisma transport behavior, field-specific bounded error |
 
 ## Spine Actors / Main-Line Nodes
 
@@ -307,6 +349,7 @@ All rules in this subsection are migration-only:
 - `AgentRunRestoreReadiness` or equivalent integration: blocks pre-existing-run restoration while consolidation incomplete.
 - Both repaired 20260730 migration definitions: migration-only source-shaping owners.
 - `TokenUsageRunRecordsV1AppDataMigration`: sole legacy consolidation owner.
+- `LegacyTokenUsageConsolidationRepository` + `legacy-token-usage-row`: sole typed projection/parser owner for DS-009.
 - `ServerRuntime`/schema bootstrap: classifies capability-scoped versus critical current-invariant failure.
 
 ## Ownership Map
@@ -321,6 +364,7 @@ All rules in this subsection are migration-only:
 | Migration readiness | Current schema/history/restore availability from migration outcome | Legacy row queries or running migrations |
 | Restore activation boundary | Enforce readiness before restoring provider state | Token migration internals |
 | Historical migrations | Old schema queries/decoders/classification/fold/import/delete | Normal runtime behavior |
+| Consolidation repository/legacy row adapter | Closed-field JSON path projection, typed transport grammar, exact integer parsing/range rejection | Current runtime codec, broad coercion, semantic fold policy |
 | Bootstrap classifier | Degraded versus fatal disposition against current invariants | Old-schema compatibility |
 
 ## Thin Entry Facades / Public Wrappers
@@ -361,7 +405,8 @@ All rules in this subsection are migration-only:
 
 - Run accumulator: `enqueue run -> current transaction -> read current -> current fold -> upsert -> return`.
 - Source-shaping repair: `afterId -> <=250 SQL candidates -> classify -> CAS -> scalar counters/capped examples`.
-- Consolidation: `transaction -> schema/status/scalar intersection preflight -> <=250 legacy rows -> migration aggregate -> insert absent run -> validate -> delete -> commit`.
+- Consolidation scalar adapter: `closed JSON path -> NULL or type-tagged exact text -> grammar/type/range validation -> bigint/null`.
+- Consolidation: `transaction -> schema/status/scalar intersection preflight -> <=250 typed legacy rows -> migration aggregate -> insert absent run -> validate -> delete -> commit`.
 - Readiness: `startup migration/schema outcome -> immutable process capability state -> current history/restore/new-run checks`.
 
 ## Off-Spine Concerns Around The Spine
@@ -371,7 +416,8 @@ All rules in this subsection are migration-only:
 | Display capture | DS-001/DS-003 | Run store | Current stable labels | Repository depends on catalogs |
 | Pricing policy | DS-001/DS-002 | Accumulator/projections | Apply resolved current pricing | Full pricing JSON persistence |
 | Keyed serialization | DS-001 | Accumulator | Prevent current fold races | Assuming caller order |
-| SafeInt conversion | DS-003/DS-004 | Codec/API | Reject unsafe conversion | Silent rounding |
+| Current SafeInt conversion | DS-003/DS-004 | Codec/API | Reject unsafe current/API narrowing | Silent rounding |
+| Legacy derived integer transport | DS-006/DS-009 | Consolidation repository/row decoder | Carry JSON source type and exact digits; parse/range-check | Result-shape inference or broad coercion |
 | History/restore readiness | DS-003/DS-007/DS-008 | Readiness/activation | Gate incomplete capability without legacy reads | Global over-gate or replay overlap |
 | Critical schema classification | DS-007 | Bootstrap | Stop when current platform invariant absent | Runtime optional-schema fallback |
 | Capped diagnostics | DS-005/DS-006 | Migrations | Bounded counts/examples | Linear memory/log growth |
@@ -392,6 +438,7 @@ The older TeamRun migration uses its own migration repository directly. `TokenUs
 | `TokenUsageMigrationReadiness` | Current history/schema/restore capability | Run store, restore services, bootstrap | Runtime legacy count/query |
 | Source-shaping migration adapter | Candidate SQL/batches/CAS/scalars | Its registered definition | Whole-ledger reads |
 | Consolidation migration adapter | Legacy schema, disjointness, batches, import/validation/delete | Run-records V1 definition | Current runtime legacy access |
+| Legacy scalar transport | Closed JSON path projection + exact tag/grammar/range decoder | Consolidation query/fold only | Bare nullable computed expression, untagged string, generic numeric coercion |
 | Bootstrap classifier | Current schema/core invariant disposition | Server startup | Migration self-declares global fatality |
 
 ## Dependency Rules
@@ -402,6 +449,8 @@ The older TeamRun migration uses its own migration repository directly. `TokenUs
 - Migration code may reuse pure current aggregate/checkpoint target builders; current code may not import migration types.
 - No current code writes or reads `token_usage_ledger_events`; no dual-read/write, optional old column, or read-old fallback.
 - Migration queries forbid `SELECT *`, OFFSET pagination, unbounded arrays/details, and raw payload transfer.
+- Nullable/computed migration scalars require an explicit SQL transport and runtime parser contract. TypeScript raw-query generics and SQLite `CAST` alone are not treated as runtime normalization.
+- Derived legacy integer transport accepts only `NULL` or `integer:(0|[1-9][0-9]*)` within SafeInt; no untagged string or wrong JSON type is admitted.
 - Event/series IDs are identity inputs, never temporal ordering.
 - Raw event/usage/pricing JSON is forbidden from target schema.
 - Team totals remain derived; no persisted team-total row.
@@ -421,6 +470,8 @@ The older TeamRun migration uses its own migration repository directly. `TokenUs
 | Candidate batch/CAS methods | Historical source-shaping rows | Bounded field repair | Numeric legacy cursor | Migration-only |
 | `legacyCurrentRunIdOverlapExists()` | Both stores | Scalar disjointness preflight | Canonical run ID | Migration-only boolean |
 | `listLegacyRunBatch(...)` | Legacy import | Minimal bounded rows | Run/id cursor | Migration-only |
+| `legacySnapshotSourceProjection(field)` | One closed cumulative-source field | Emit type-tagged exact-text SQL projection | `cumulativeSnapshotTokenFields` member | Migration-private; paths parameterized, alias from closed set |
+| `asSourceSafeInt(value,field)` | One projected JSON integer | Exact tag/grammar/BigInt/SafeInt validation | Field name for bounded error | Migration-private; returns bigint/null, no coercion |
 | `executeConsolidation()` | Released store | All-or-nothing conversion | Startup global token store | Manual call restart-required |
 
 ## Interface Boundary Check
@@ -432,6 +483,7 @@ The older TeamRun migration uses its own migration repository directly. `TokenUs
 | Readiness gates | Yes | Yes | Medium | Separate history/restore/schema methods; no generic “isReady” guess |
 | Source-shaping adapters | Yes | Yes | Low | Fixed projection/CAS per migration |
 | Consolidation | Yes | Yes | Medium | Startup-only, disjointness before mutation |
+| Legacy scalar adapter | Yes | Yes | Low | Closed field identity plus exact tagged grammar; no generic scalar decoder |
 
 ## Main Domain Subject Naming Check
 
@@ -441,6 +493,7 @@ The older TeamRun migration uses its own migration repository directly. `TokenUs
 | Transient input | `TokenUsageFoldObservation` | Yes | Low | Never store raw DTO |
 | Current owner | `TokenUsageRunAccumulator` | Yes | Low | Keep transaction behind it |
 | Historical row | `LegacyTokenUsageLedgerRow` | Yes | Low | Migration folder only |
+| Derived scalar transport | `LegacyJsonIntegerTransport` | Yes | Low | Untrusted migration I/O type only; decoder returns bigint/null |
 | Capability state | `TokenUsageMigrationReadiness` | Yes | Low | Explicit history/restore/schema assertions |
 | Consolidation | `TokenUsageRunRecordsV1AppDataMigration` | Yes | Low | Sole old-to-current owner |
 
@@ -466,7 +519,7 @@ The older TeamRun migration uses its own migration repository directly. `TokenUs
 | Current SQL persistence | DS-001/DS-003/DS-004 | Current repository | Replace | Target schema only |
 | History/statistics | DS-003/DS-004 | Run store/statistics | Refactor | Readiness gated |
 | Run activation | DS-008 | Activation services + readiness | Extend | Restore blocked, new runs admitted |
-| App-data migrations | DS-005/DS-006 | Registered definitions | Extend/create | Sole legacy ownership |
+| App-data migrations | DS-005/DS-006/DS-009 | Registered definitions + consolidation adapter | Extend/create | Sole legacy ownership and typed transport |
 | Bootstrap/readiness | DS-007/DS-008 | Classifier/readiness | Extend/create | Degraded or fatal current-state disposition |
 | Web settings | DS-004/DS-007 | UI/store | Extend | Truthful semantics/error |
 
@@ -480,7 +533,9 @@ The older TeamRun migration uses its own migration repository directly. `TokenUs
 | `projections/token-usage-run-fold.ts` | Pure current reducer | Direct/cumulative bounded next state | Migration branch |
 | `repositories/sql/token-usage-run-repository.ts` | Current persistence | Current table mapping/query | Legacy table |
 | `providers/token-usage-migration-readiness.ts` | Current capability | History/restore/schema assertions | Source row count/query |
-| `app-data-migrations/.../token-usage-run-records-v1/*` | Migration | Legacy types/query/fold/disjoint import/delete | Normal runtime API |
+| `app-data-migrations/.../token-usage-run-records-v1/legacy-token-usage-consolidation-repository.ts` | Migration repository | Closed-path typed JSON scalar projection, batches, disjointness/import/validation/delete | Broad value coercion or current API |
+| `app-data-migrations/.../token-usage-run-records-v1/legacy-token-usage-row.ts` | Migration decoder | Untrusted transport types, exact source integer parser, legacy-to-current mapping | Prisma query construction or current codec |
+| Remaining `app-data-migrations/.../token-usage-run-records-v1/*` | Migration | Legacy fold and orchestration | Normal runtime API |
 | `tickets/.../data-migration-conventions.md` | Solution governance | Forward-only/failure principles | Task algorithm duplication |
 
 ## Reusable Owned Structures Check
@@ -492,6 +547,7 @@ The older TeamRun migration uses its own migration repository directly. `TokenUs
 | Bounded checkpoint state | Current domain | Token domain | Target invariant shared with migration builder | Raw/unbounded map |
 | Compact codecs | Current SQL codec | Persistence | One validated target mapping | Permissive dump |
 | Migration readiness result | Provider/current capability | Readiness | History/restore/bootstrap share classification | Legacy store facade |
+| Cumulative field set | Current reconciliation metadata | Projection + current normalization | Closed semantic field list already shared | Open-ended SQL/alias input |
 
 ## Shared Structure / Data Model Tightness Check
 
@@ -503,6 +559,7 @@ The older TeamRun migration uses its own migration repository directly. `TokenUs
 | `TokenUsageAggregateState` | Current/migrated target aggregate | Low | Migration supplies target facts, not legacy DTO |
 | `TokenUsageMigrationReadiness` | Current capability disposition | Low | No legacy query/count surface |
 | Legacy row/accumulator | Migration source only | Low | Folder/dependency enforcement |
+| `LegacyJsonIntegerTransport` | Untrusted migration query representation | Low | Keep string/null input distinct; strict parser before target bigint |
 
 ## Final File Responsibility Mapping
 
@@ -520,7 +577,9 @@ The older TeamRun migration uses its own migration repository directly. `TokenUs
 | `src/token-usage/repositories/sql/token-usage-run-record-codec.ts` | Current mapper | BigInt/bounded JSON/current marker | Domain constants |
 | `src/agent-execution/events/processors/token-usage/token-usage-run-persistence-transformer.ts` | Pipeline | Await current fold and return event | Run store |
 | Standalone/team/task activation services | Run lifecycle | Call restore/schema readiness before provider startup | Readiness interface |
-| `src/app-data-migrations/migrations/token-usage-run-records-v1/*` | Historical owner | Legacy adapter/decoder/fold/disjoint import/validation/delete | Pure current target mergers |
+| `src/app-data-migrations/migrations/token-usage-run-records-v1/legacy-token-usage-consolidation-repository.ts` | Historical DB adapter | Closed-path typed-text source projection; bounded rows; disjoint import/validation/delete | Prisma SQL + field constant |
+| `src/app-data-migrations/migrations/token-usage-run-records-v1/legacy-token-usage-row.ts` | Historical row decoder | Direct legacy scalar validation plus strict tagged JSON integer parser/mapping | Checkpoint bigint target |
+| Remaining `src/app-data-migrations/migrations/token-usage-run-records-v1/*` | Historical owner | Fold/orchestration/results | Pure current target mergers |
 | Same-ID 20260730 migration files | Historical owner | Bounded source shaping | Shared batch constants |
 | `tickets/.../data-migration-conventions.md` | Solution governance | Canonical principles before delivery promotion | README practice |
 
@@ -528,6 +587,7 @@ The older TeamRun migration uses its own migration repository directly. `TokenUs
 
 - **Forward-only current path**: current domain/services/repositories/runtime know only current schema.
 - **Migration-only legacy adapter**: old rows/columns/JSON and transformation stay under registered migration folders.
+- **Explicit adapter transport**: nullable computed legacy scalars carry source type plus exact text and cross one strict migration-only parser before folding.
 - **Expand -> app-data transform -> deferred physical contract**: create current schema before converting; keep dormant old declaration for skip upgrades; never run old runtime.
 - **Capability gate instead of compatibility**: incomplete history/restore is unavailable; new current work may proceed when schema is valid.
 - **Critical current-invariant fail-fast**: missing required current schema stops startup with evidence rather than optional-column/old-table fallback.
@@ -546,7 +606,7 @@ The older TeamRun migration uses its own migration repository directly. `TokenUs
 | `src/token-usage/providers/token-usage-migration-readiness.ts` | Capability | Readiness | History/restore/current-schema assertions | Legacy row count/query |
 | `src/token-usage/repositories/sql/` | Current persistence | Repository | Current table/codec/query | Legacy event access |
 | Standalone/team/task activation services | Lifecycle | Run activation | Gate old-run restore; admit new current runs | Migration fold/legacy query |
-| `src/app-data-migrations/migrations/token-usage-run-records-v1/` | Migration | Consolidation | All legacy types/queries/fold/disjoint import/delete | Current runtime facade |
+| `src/app-data-migrations/migrations/token-usage-run-records-v1/` | Migration | Consolidation | All legacy types/typed scalar transport/queries/fold/disjoint import/delete | Current runtime facade or broad coercion |
 | Same-ID 20260730 migration files | Migration | Source shaping | Bounded candidates/CAS/scalars | Whole-ledger arrays/details |
 | `src/server-runtime.ts` | Bootstrap | Platform | Classify current schema critical vs app-data degraded | Old runtime construction |
 | GraphQL/web token statistics | Transport/UI | Current reads | Readiness error/current DTO/copy | Event arrays/legacy fallback |
@@ -559,7 +619,7 @@ The older TeamRun migration uses its own migration repository directly. `TokenUs
 | --- | --- | --- | --- |
 | `token-usage/domain`, `services`, `providers`, `repositories` | Current main line | Low | Explicitly legacy-free |
 | Run activation services | Lifecycle | Medium | Must gate before provider creation and not absorb migration details |
-| `app-data-migrations/.../token-usage-run-records-v1` | Historical off-spine | Low | Sole legacy query/decode/fold owner |
+| `app-data-migrations/.../token-usage-run-records-v1` | Historical off-spine | Medium | Sole legacy query/decode/fold owner; actual Prisma transport needs real-adapter coverage |
 | Same-ID migration files | Historical off-spine | Low | Retained for supported upgrades |
 | Prisma legacy model declaration | Migration-only storage contract | Medium | Required by ordering; enforce no current imports |
 
@@ -571,6 +631,9 @@ The older TeamRun migration uses its own migration repository directly. `TokenUs
 | Cumulative replay | current checkpoint 210 + current snapshot 210 -> zero change | add/overwrite 210 | Current idempotence |
 | Ninth series | evict/baseline/flag, later advance | unbounded map | Fixed storage |
 | Provider migration | SQL candidate `id>? LIMIT 250`, CAS, scalars | `SELECT *` and full snapshots | Avoid result overflow |
+| Nullable JSON integer | `NULL` or `integer:28826658` -> exact tag/BigInt/range parser | bare `json_extract` declared as number-or-bigint | Stable across leading-null Prisma result shape |
+| Wrong JSON source type | `text:28826658` / `real:1.5` -> fail before import/delete | `Number(value)` or `parseInt(value)` | Do not silently reinterpret legacy meaning |
+| Adapter regression fixture | four leading `NULL` rows then two integer rows in one real Prisma/SQLite batch | one mocked or first-row-non-null record | Reproduces the delivered failure |
 | Capability-scoped failure | current schema valid; history/old-run restore return typed unavailable; new run works | old-ledger reader fallback | Forward-only availability |
 | Restore attempt after failed consolidation | readiness rejects before provider creation | start provider then inspect legacy replay | Makes `MP-003` Not Reachable |
 | New work after failed consolidation | allocator creates `R-new`; current row only | reuse old run ID | Set disjointness |
@@ -596,6 +659,9 @@ The older TeamRun migration uses its own migration repository directly. `TokenUs
 | Same-release source drop | Rejected | Empty dormant migration-only declaration |
 | Blanket global fatal for every app-data warning | Rejected | Classify current platform/core/capability invariant |
 | Blanket “app must always start” rule | Rejected | Critical current-schema/core failures may stop startup |
+| Trust `$queryRaw<T>` for nullable computed scalar runtime type | Rejected by production evidence | Explicit SQL type-tagged text + strict migration decoder |
+| Broad decimal-string coercion | Rejected | Closed `integer:` grammar + `BigInt` + SafeInt bound |
+| `CAST(json_extract(...) AS INTEGER)` as sole normalization | Rejected; leading-null batch still produced strings in exact probe | Carry source type plus exact text and parse explicitly |
 
 ## Derived Layering
 
@@ -605,7 +671,7 @@ The older TeamRun migration uses its own migration repository directly. `TokenUs
 
 `run activation -> readiness -> current new/restore service`
 
-`startup runner -> migration-only legacy adapter/fold -> current target inserts -> validation/delete`
+`startup runner -> migration-only typed scalar adapter -> legacy fold -> current target inserts -> validation/delete`
 
 `schema/bootstrap -> current-invariant classifier -> degraded current app OR fatal error`
 
@@ -622,10 +688,11 @@ Only the startup migration line may reference legacy token columns. The current 
 7. Add bootstrap classification: valid current schema + failed app-data -> degraded; missing required current schema/core invariant -> fatal; no old runtime.
 8. Repair both 20260730 definitions under unchanged IDs and remove provider-name display from independent readable-identity prerequisites.
 9. Add/register startup-only `20260819_token_usage_run_records_v1` with migration-owned legacy schema/decoder/fold.
-10. Implement scalar legacy/current run-ID intersection preflight, bounded import, aggregate validation, source delete, and empty-source relaunch recognition in one transaction.
-11. Remove event repository/store/mappers/aggregators/raw persistence plus all overlap guard/mode/SQL/protocol-marker code and obsolete tests.
-12. Add synthetic coverage for large same-ID repairs, bounded fold, degraded restore gate/new-run disjointness, overlap rejection, critical schema failure, corrected-release retry, and docs/UI errors.
-13. Delivery promotes the convention to durable docs, makes README reference it, and updates token-usage documentation.
+10. Establish DS-009: replace bare nullable JSON scalar projections with closed-field type-tagged exact text; keep derived fields `string | null`; add strict tag/grammar/BigInt/SafeInt parsing.
+11. Implement scalar legacy/current run-ID intersection preflight, bounded import, aggregate validation, source delete, and empty-source relaunch recognition in one transaction.
+12. Remove event repository/store/mappers/aggregators/raw persistence plus all overlap guard/mode/SQL/protocol-marker code and obsolete tests.
+13. Add synthetic coverage for large same-ID repairs, bounded fold, degraded restore gate/new-run disjointness, overlap rejection, critical schema failure, corrected-release retry, and docs/UI errors. Add the actual Prisma/SQLite DS-009 leading-null batch and invalid-type/range rollback fixtures; do not substitute a mock or a single non-null row.
+14. Delivery promotes the convention to durable docs, makes README reference it, updates token-usage documentation, rebuilds Electron, and obtains renewed production-shaped user verification.
 
 Temporary-state rule: incomplete consolidation permits only forward-current behavior whose run IDs cannot exist in legacy. Historical reads and pre-existing-run restoration remain unavailable. There is no temporary legacy runtime seam.
 
@@ -650,6 +717,7 @@ Temporary-state rule: incomplete consolidation permits only forward-current beha
 - Legacy metadata conflict/checkpoint compaction and BigInt mapping remain explicit migration/API test risks.
 - SQLite file does not shrink automatically; pages become reusable, optional compaction remains separate.
 - Provider candidate sets can be large; every result and diagnostic stays bounded.
+- ORM/driver representation can regress independently of SQLite semantic type. The DS-009 real Prisma/SQLite fixture fixes the exact nullable result-order condition and prevents TypeScript-only/mocked coverage from masking it.
 
 ## Requirement And Acceptance Traceability
 
@@ -665,6 +733,7 @@ Temporary-state rule: incomplete consolidation permits only forward-current beha
 | Determinism/anti-overengineering | REQ-024 | AC-023 |
 | Failure classification/corrected release | REQ-025 | AC-024 |
 | Forward-only current source/migration-only legacy | REQ-026 | AC-018, AC-025 |
+| Deterministic nullable legacy scalar transport | REQ-027 | AC-026 |
 
 ## Guidance For Implementation
 
@@ -677,6 +746,7 @@ Temporary-state rule: incomplete consolidation permits only forward-current beha
 - Treat missing required current schema as critical. Do not catch Prisma missing-table/column errors and route to old storage.
 - Keep statuses truthful: `SUCCEEDED_WITH_WARNINGS` only after valid current target; `FAILED` otherwise. Classify startup separately.
 - Use one real transaction for consolidation and bounded <=250 rows/capped 50 examples for migrations.
+- For cumulative-source JSON fields, generate paths only from `cumulativeSnapshotTokenFields`, project `NULL | <json_type>:<exact text>`, keep the transport untrusted `string | null`, and accept only canonical nonnegative `integer:` digits through `BigInt` and the SafeInt bound. Never use broad numeric coercion.
 - Preserve current GraphQL query names where compatible, but return typed readiness errors instead of partial/legacy data.
-- Coverage: ~147k provider fixture; ~147k sibling fixture; ordinary relaunch; transaction rollback; failed consolidation -> restore old run rejected before provider -> new run current row -> retry exact import; injected run-ID intersection rejection; current schema missing -> fatal/no legacy call; corrected release retry; 8/9/reappearing series; equal times; mixed pricing/identity; commit-before-status empty-source recognition.
+- Coverage: ~147k provider fixture; ~147k sibling fixture; ordinary relaunch; transaction rollback; failed consolidation -> restore old run rejected before provider -> new run current row -> retry exact import; injected run-ID intersection rejection; current schema missing -> fatal/no legacy call; corrected release retry; 8/9/reappearing series; equal times; mixed pricing/identity; commit-before-status empty-source recognition; and real Prisma/SQLite leading `NULL` rows followed by `28826658`/`28987545` plus wrong-type/negative/malformed/out-of-range rollback cases.
 - Do not create separate power/kill/shutdown tests or use a live user profile.

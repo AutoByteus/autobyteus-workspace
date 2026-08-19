@@ -2,8 +2,8 @@
 
 ## Status And Purpose
 
-- **Status:** Investigation evidence/context complete as of 2026-08-19; Option A was subsequently approved for design.
-- **Purpose:** Explain the verified current model, why it grows without bound, why a naive latest-row upsert is insufficient, bounded reconciliation, released source-shaping failures, the failed-consolidation replay seam, and the period-statistics decision that constrains the design.
+- **Status:** Investigation evidence/context updated through the 2026-08-19 production-shaped Electron verification failure and exact adapter reproduction; Option A remains approved.
+- **Purpose:** Explain the verified current model, why it grows without bound, why a naive latest-row upsert is insufficient, bounded reconciliation, released source-shaping failures, the failed-consolidation replay seam, the Prisma/SQLite scalar-transport defect, and the period-statistics decision that constrains the design.
 - **Authority:** This file supports the requirements and investigation notes. Intended behavior remains authoritative in `requirements.md`; migration operating assumptions and the reachability/anti-overengineering boundary are authoritative in [`data-migration-conventions.md`](./data-migration-conventions.md).
 
 ## Executive Finding
@@ -162,6 +162,20 @@ This removes the runtime overlap guard, checkpoint seed, source-count mode, and 
 
 If current Prisma schema itself is absent or invalid, the application may fail startup. It must not fall back to the old ledger runtime; a corrected external release may repair/retry.
 
+## Production Verification: Nullable JSON Scalar Transport
+
+The delivered Electron candidate reached the intended degraded mode but its consolidation failed three times before scanning a row. The reported field was `source_reported_input_tokens`, supposedly outside JavaScript SafeInt. Read-only production SQL disproved the message: every non-null cumulative-source token value was a nonnegative SQLite integer within SafeInt; the largest total was `1,374,407,961`.
+
+Exact Prisma execution against a SQLite backup exposed the actual boundary:
+
+1. the first ordered run's first four `json_extract(...)` values were `NULL`;
+2. later values `28,826,658` and `28,987,545` were SQLite integers;
+3. in that nullable ordered result, Prisma returned the later values as JavaScript decimal strings;
+4. when a result began with a non-null expression, Prisma returned the same semantic type as `bigint`; and
+5. the migration's TypeScript row annotation admitted only `number | bigint`, so `Number.isSafeInteger("28826658")` returned false.
+
+The target migration boundary must not depend on that result-shape inference. Each cumulative-source scalar is projected as either `NULL` or an explicit JSON type plus exact text, for example `integer:28826658`. The migration decoder accepts only `integer:(0|[1-9][0-9]*)`, parses the suffix through `BigInt`, enforces `<= Number.MAX_SAFE_INTEGER`, and then folds it. JSON strings, real values, booleans/containers, negative/noncanonical/malformed tags, and out-of-range integers fail before cleanup. A real Prisma/SQLite fixture must contain leading `NULL` rows followed by valid integers in the same ordered batch; a mocked row or a single non-null row does not exercise the defect.
+
 ## One-Row Invariant Versus Period Statistics
 
 The current period query asks: “Which accounting deltas were observed between exact timestamps?” A single lifetime cumulative row knows only a first time, a latest time, and final totals. It cannot reconstruct how much of the total belongs on each side of an arbitrary boundary.
@@ -203,5 +217,6 @@ The repository's migration convention adds an ordering constraint: Prisma schema
 - **Confirmed:** the earlier custom-provider model-value backfill is also unbounded by ledger cardinality and can block supported direct/skip-version upgrades before consolidation.
 - **Confirmed:** one row per canonical agent run is compatible with standalone/team/delegated identity and current lifetime run/team summaries.
 - **Confirmed historical premise:** existing-run restoration would make cross-schema replay reachable after failed consolidation; `SR-003` proved one exact guard, but the stronger forward-only rule now rejects that runtime legacy dependency.
+- **Confirmed production adapter defect:** nullable SQLite JSON expressions can cross the Prisma raw-query boundary with result-shape-dependent JavaScript representations. A TypeScript generic is not runtime normalization; migration-owned typed transport and exact parsing are required.
 - **Approved incompatibility decision:** exact event-observed period statistics are intentionally retired because they cannot be preserved from one cumulative row alone.
-- **Approved direction:** strict one-row run totals; hard-bounded current state; no replacement event history; run-created-period filtering; bounded same-ID repairs and migration-only consolidation; forward-only current source; history/old-run restore gating after capability-scoped failure; critical startup failure when required current schema/core invariants are absent; and corrected external-release recovery.
+- **Approved direction:** strict one-row run totals; hard-bounded current state; no replacement event history; run-created-period filtering; bounded same-ID repairs and migration-only consolidation; deterministic nullable-scalar transport through real Prisma/SQLite; forward-only current source; history/old-run restore gating after capability-scoped failure; critical startup failure when required current schema/core invariants are absent; and corrected external-release recovery.

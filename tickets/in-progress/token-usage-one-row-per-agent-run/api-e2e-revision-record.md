@@ -10,6 +10,7 @@ The latest coverage investigation and execution coverage report remain authorita
 | API-REV-002 | `code_reviewer` / CRR-004 / round 2 | SR-006; ARCH-REV-006; IR-003; CRR-004 | Fail / 70.0% | Fail / 75.0% |
 | API-REV-003 | `code_reviewer` / CRR-007 / round 3 | SR-006; ARCH-REV-006; IR-005; CRR-007 | Fail / 75.0% | Pass / 97.1% |
 | API-REV-004 | `code_reviewer` / CRR-009 / round 4 | SR-006; ARCH-REV-006; IR-006; CRR-009; DR-002 | Pass / 97.1% | Pass / 97.3% |
+| API-REV-005 | `code_reviewer` / CRR-011 / round 5 | SR-007; ARCH-REV-007; IR-007; CRR-011; DR-004 | Pass / 97.3% | Pass / 97.4% |
 
 ## Revision Entries
 
@@ -124,3 +125,31 @@ None.
 - New or remaining failure IDs: `None`.
 - Recommended recipient: `/code_reviewer` for proportional review of the one changed durable test before delivery resumes.
 - Remaining risks, blocked evidence, or untested scope: known independent Nuxt typecheck package-export incompatibility; external-provider runtime and Electron shell remain unchanged and were not selected. No material IR-006 validation risk remains.
+
+### API-REV-005 — Deterministic Prisma/SQLite legacy scalar transport passes
+
+- Triggering role, report path, and round: `/code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/code-review-report.md`; API/E2E round 5 after `CRR-011`.
+- Triggering finding or scenario IDs: `DR-004` production-shaped verification failure; reachable `MP-004`; approved `DS-009`; no new source-review finding ID.
+- Related revision IDs: `SR-007`, `ARCH-REV-007`, `IR-007`, `CRR-011`, `DR-004`; prior `API-REV-004` and proportional review `CRR-010` form the integrated baseline.
+- Why this revision was recorded: API-REV-004 predates the migration-only transport fix. The failed DR-003 Electron artifact cannot serve as acceptance evidence, so the exact nullable Prisma/SQLite result-order condition, invalid-source rollback/retry, actual built-server lifecycle, and changed scale query required fresh executable proof.
+- Coverage decisions or durable paths changed: two new IR-007 durable files were accepted as `Add Durable Coverage` and executed unchanged: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts` and `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts/tests/unit/app-data-migrations/legacy-token-usage-source-decoder.test.ts`. API/E2E added, updated, or removed no other durable path.
+- Scenarios added, changed, removed, or rechecked: exact four-leading-`NULL` then `28826658`/`28987545` real-adapter import; tagged transport/checkpoint/current target/source cleanup; real JSON wrong types, negative, out-of-range rollback and retry; malformed/noncanonical decoder inputs; cleanup failure retry; freelist; actual-server success/warnings/degraded history and restore gate/new-run/retry/overlap/relaunch; refreshed 154,100-row scale execution.
+- Commands, environment, fixture, or broader-validation delta: server build passed; two-file DS-009 selection passed 32 tests; four-file migration selection passed 43; actual built-server file passed 4; final combined five-file selection passed 47; refreshed scale probe passed at 12.804 seconds with peak WAL 12,112,832 bytes, zero temp spill, exact 1,269 current rows, integrity ok, and 215,037 freelist pages; TypeScript/diff/boundary/coercion/cleanup checks passed. All fixtures were disposable; the user's live database was not accessed or mutated.
+
+#### Prior Failure Resolution
+
+| Prior scenario / reference | Previous status | Current resolution | Evidence |
+| --- | --- | --- | --- |
+| `DR-004` / leading-NULL Prisma scalar decoding | Delivery verification failed; source fixed in IR-007/CRR-011 | Exact production condition passes through the actual query and transaction; invalid source remains atomic and retryable | `test-results/api-e2e/logs/39-ir007-ds009-leading-null-decoder.log`; `logs/40-ir007-four-file-migration-regression.log` |
+| API-REV-003 released-scale result | Previously passed pre-DS-009 query | Refreshed against rebuilt DS-009 dist; output/resource conclusions remain valid and latency is superseded by 12.804 seconds | `logs/42-ir007-released-scale-154k.log`; `test-results/api-e2e/scale-probe-result.json` |
+| API-REV-004 integrated TeamRun/task lifecycle | Passed before DS-009 | Still valid; affected unmanaged restore/degraded retry path directly rechecked through actual built server | `logs/41-ir007-built-server-production-upgrade-lifecycle.log`; `logs/43-ir007-final-migration-lifecycle-suite.log` |
+
+- Canonical artifacts updated:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-coverage-investigation.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-execution-coverage-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-revision-record.md`
+- Prior result and confidence: `Pass / 97.3%`.
+- Current result and confidence: `Pass / 97.4%`.
+- New or remaining failure IDs: `None`.
+- Recommended recipient: `/code_reviewer` for proportional review of the two new durable test paths before delivery resumes.
+- Remaining risks, blocked evidence, or untested scope: the pre-fix DR-003 package remains invalid. Delivery must rebuild Electron and obtain renewed explicit user verification. The known Nuxt typecheck toolchain incompatibility and external-provider opt-in exclusions remain unchanged and do not block DS-009 proof.

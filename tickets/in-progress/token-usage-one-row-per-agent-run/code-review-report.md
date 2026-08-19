@@ -6,106 +6,104 @@
 - Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/requirements.md`
 - Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/investigation-notes.md`
 - Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/design-spec.md`
-- Supplemental Task Artifacts Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/token-usage-data-model-analysis.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/data-migration-conventions.md`; latest-base offline-TeamRun requirements/design/review artifacts under `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/done/team-run-offline-delete-action/`
+- Supplemental Task Artifacts Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/token-usage-data-model-analysis.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/data-migration-conventions.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/delivery-rework-record.md`; exact delivery evidence `11-production-migration-failure-dr004.log` and `13-exact-root-cause-dr004.log`
 - Solution Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/solution-revision-record.md`
-- Relevant Solution Revision IDs: `SR-006`
+- Relevant Solution Revision IDs: `SR-007` (current), `SR-006` (prior baseline)
 - Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/design-review-report.md`
 - Architecture Review Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/architecture-review-revision-record.md`
-- Relevant Architecture Review Revision IDs: `ARCH-REV-006`
+- Relevant Architecture Review Revision IDs: `ARCH-REV-007` (current), `ARCH-REV-006` (prior baseline)
 - Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/implementation-revision-record.md`
-- Relevant Implementation Revision IDs: `IR-006` (current), `IR-001`–`IR-005` (baseline)
+- Relevant Implementation Revision IDs: `IR-007` (current), `IR-001`–`IR-006` (reviewed baseline)
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-009`
-- Current Review Round: `9`
-- Trigger: delivery re-entry `DR-002` found a latest-base conflict where token restore readiness intersected the broader managed/offline TeamRun lifecycle; `IR-006` resolves and commits that integration.
-- Prior Review Round Reviewed: source `CRR-007` Pass and successful-test review `CRR-008` Pass.
-- Latest Authoritative Round: `CRR-009`
-- Coverage Investigation Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-coverage-investigation.md`
+- Current Code Review Revision ID: `CRR-011`
+- Current Review Round: `11`
+- Trigger: the `DR-003` Electron candidate failed explicit user verification; `DR-004` and safe-backup reproduction established that Prisma can decode later valid SQLite JSON integers as strings when the ordered nullable expression begins with `NULL`. `SR-007` / `ARCH-REV-007` approved DS-009, and `IR-007` implements it.
+- Prior Review Round Reviewed: source `CRR-009` Pass and focused successful-test review `CRR-010` Pass.
+- Latest Authoritative Round: `CRR-011`
+- Coverage Investigation Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-coverage-investigation.md` (`API-REV-004` baseline predates DS-009)
 - Execution Coverage Report Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-execution-coverage-report.md`
 - API/E2E Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-revision-record.md`
-- Relevant API/E2E Revision IDs: `API-REV-003`
+- Relevant API/E2E Revision IDs: `API-REV-004`, `API-REV-003` (prior baselines; neither covers DS-009)
 - Delivery Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/delivery-revision-record.md`
-- Relevant Delivery Revision IDs: `DR-002`, `DR-001`
-- Failing Scenario IDs: N/A.
-- Reviewer Commands / Evidence: merge `cbbedd6ea0e6d466a3e3741c7216f03887b0182e` has parents `b68170cf608364bbcd264dde198ad83e030a3bb2` and `origin/personal@1f5663ddb86e478d0b4ffdd878d57dee72d67b4b`; `origin/personal` is an ancestor and divergence is `0 behind / 2 ahead`; no unmerged paths or source/test conflict markers remain. Reviewer reran server TypeScript build checking and the six-file integrated Vitest selection: `6 files / 34 tests` passed. Targeted integration-source/test `git diff --check` passed.
+- Relevant Delivery Revision IDs: `DR-004`, `DR-003`, `DR-002`
+- Failing Scenario IDs: delivery verification `DR-004`; no current API/E2E failure ID.
+- Reviewer Commands / Evidence: reviewer reran the two-file DS-009 selection (`2 files / 32 tests`), the four-file migration regression selection (`4 files / 43 tests`), server `tsconfig.build.json` TypeScript checking, `git diff --check`, current-runtime legacy-boundary scans, closed-field dependency inspection, and effective-line counts. All executed checks passed.
 
 ## Review Scope
 
-- Changed implementation and behavior reviewed: the `TeamRunService.restoreTeamRun()` conflict resolution, current-schema admission for new TeamRuns and delegated tasks, the clean task-settlement lifecycle merge, the latest-base managed/offline root contract, and the implementation-owned durable test composition.
-- Files / areas reviewed: `team-run-service.ts`; `task-delegation-service.ts`; direct `AgentTeamRunManager`/`TeamRunResolver` contracts; `team-run-service.test.ts`; `task-delegation-current-invariants.test.ts`; the four adjacent manager/root service suites in the focused execution; merge metadata; `IR-006`; `DR-002` and its evidence.
-- Explicit exclusions: unchanged token fold/migration/pricing source retains the authoritative `CRR-007` source result and `API-REV-003` evidence. Latest-base offline-delete files outside the direct intersection were integrated byte-for-byte from the separately reviewed `origin/personal` change and were not re-reviewed as this ticket's implementation. Delivery-owned uncommitted records and the not-yet-started Electron packaging workflow remain delivery-owned. Tests and fixtures are excluded from source-size thresholds.
+- Changed implementation and behavior reviewed: DS-009's deterministic SQL transport for all 15 nullable cumulative-source JSON fields; strict untrusted transport decoding; exact checkpoint construction; failure-before-cleanup behavior; and the two new durable migration tests.
+- Files / areas reviewed: `legacy-token-usage-consolidation-repository.ts`; `legacy-token-usage-row.ts`; `legacy-token-usage-run-fold.ts`; `token-usage-run-records-v1-app-data-migration.ts`; shared cumulative-source metadata; `token-usage-run-records-v1-source-token-decoding.test.ts`; `legacy-token-usage-source-decoder.test.ts`; the migration transaction/rollback tests exercised by the regression selection; `IR-007`; `SR-007`; `ARCH-REV-007`; `DR-004` evidence.
+- Explicit exclusions: unchanged current run fold, pricing, GraphQL, UI, readiness, TeamRun/task lifecycle, and released source-shaping implementations retain the prior `CRR-009` / `CRR-010` reviewed baseline. `API-REV-004` execution is context only and does not establish DS-009 coverage. The user's live database was not accessed or mutated. Tests and fixtures are excluded from source-size thresholds.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Approved requirements basis understood: `Confirmed`. New current TeamRuns and delegated work require current schema (`REQ-023`–`REQ-026`); an actual unmanaged pre-existing TeamRun restore must fail before provider construction while consolidation is incomplete (`REQ-005`, `REQ-019`, `REQ-023`; `AC-019`, `AC-022`). Latest base separately requires one stable manager-owned root identity even when configured members are offline.
-- Design-spec behavior map verified against the implementation: `Confirmed`. `IR-006` preserves DS-008's admission path and composes it with the latest-base active/managed distinction instead of reviving legacy runtime logic.
-- Design review report and round confirmed: `ARCH-REV-006` passed `SR-006`; no requirement or design ambiguity applies.
+- Approved requirements basis understood: `Confirmed`. `REQ-027` / `AC-026` require a migration-only `NULL | <json-type>:<exact-text>` SQL transport, canonical `integer:` grammar, exact `BigInt` parsing, SafeInt enforcement, and real Prisma/SQLite leading-`NULL` evidence before destructive cleanup.
+- Design-spec behavior map verified against the implementation: `Confirmed`. DS-009 is implemented at the consolidation repository and legacy-row decoder boundary and feeds the existing DS-006 transaction/fold without changing current runtime behavior.
+- Design review report and round confirmed: `ARCH-REV-007` passed `SR-007`; its injection-safety, ownership, strict-decoding, rollback, and real-adapter requirements are present.
 - Behavior-basis status: `Confirmed`.
-- Changed or newly discovered behavior: None. The managed/offline lifecycle is established latest-base behavior, not a new token-ticket decision.
+- Changed or newly discovered behavior: None. `IR-007` implements the already approved BEH-005 adapter correction.
 - Remaining material ambiguity: None.
 
 | Behavior ID | Current Status | Current Implementation Path And Lifecycle Evidence | Contradicting Or Newly Discovered Supported Behavior Evidence |
 | --- | --- | --- | --- |
-| `BEH-001` | `Confirmed` | New TeamRun creation calls `assertCurrentSchemaReady()` before workspace/planning/materialization. Delegated task creation calls the same assertion before run-ID allocation or task Agent/Team materialization. An unmanaged restore calls `assertExistingRunRestoreReady()` before the manager constructs restored providers. | N/A |
-| `BEH-002` | `Confirmed` | Current repository/aggregate/GraphQL paths are unchanged from `CRR-007`/`API-REV-003`. | N/A |
-| `BEH-003` | `Confirmed` | Run-created-range/lifetime-total UI semantics are unchanged. | N/A |
-| `BEH-004` | `Confirmed` | Released source-shaping migrations are unchanged. | N/A |
-| `BEH-005` | `Confirmed` | A genuinely unmanaged historical root reaches readiness before manager restore; a root already owned by the process is not treated as a new restore candidate. Retry/disjoint import mechanics are unchanged. | N/A |
-| `BEH-006` | `Confirmed` | Current-schema-critical versus capability-scoped readiness remains the sole runtime admission policy; no legacy query/fallback was introduced by the merge. | N/A |
+| `BEH-001` | `Confirmed` | Current observations still follow the awaited one-run accumulator/current repository path; DS-009 is not imported by runtime owners. | N/A |
+| `BEH-002` | `Confirmed` | Current record/statistics/GraphQL paths are unchanged from the prior reviewed baseline. | N/A |
+| `BEH-003` | `Confirmed` | Run-created-range/lifetime-total behavior is unchanged. | N/A |
+| `BEH-004` | `Confirmed` | Both released same-ID source-shaping repairs are unchanged. | N/A |
+| `BEH-005` | `Confirmed` | Startup consolidation reads each run in bounded ordered batches. The repository now derives all 15 source fields from the closed metadata list and returns `NULL` or type-tagged exact text. The legacy-row adapter admits only canonical nonnegative `integer:` transport within SafeInt, produces exact `bigint | null` checkpoint facts, and the existing transaction validates current records before source deletion. Real Prisma/SQLite coverage reproduces four leading `NULL` rows followed by `28826658` and `28987545`; invalid type/grammar/range aborts and rolls back. | N/A |
+| `BEH-006` | `Confirmed` | DS-009 returns the existing truthful migration failure outcome on invalid input; capability-scoped readiness and critical current-schema classification remain unchanged and no legacy runtime fallback was introduced. | N/A |
 
 ## Structural / Design Checks
 
 | Check | Result | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Task design health assessment is present, evidence-backed, and preserved by the implementation | `Pass` | The one-row/current-only assessment and readiness ownership remain intact; latest-base lifecycle ownership is composed at its existing service boundary. | None. |
-| Implementation matches approved behavior-defining supplemental artifacts | `Pass` | Migration conventions remain unchanged; offline roots remain manager-owned while actual historical restore remains token-readiness-gated. | None. |
-| Data-flow spine inventory clarity and preservation under shared principles | `Pass` | New run: application service -> current-schema assertion -> plan -> manager materialization. Restore: history/API -> TeamRunService -> managed check -> restore readiness -> manager/package/provider. Delegation: task command -> current-schema assertion -> prepare/commit -> resolver cleanup. | Focused API/E2E revalidation is required after this post-`API-REV-003` composition. |
-| Ownership boundary preservation and clarity | `Pass` | `TeamRunService` owns application-facing root lifecycle, manager owns exact root identity/transition lanes, readiness owns token capability, and task service owns task command sequencing. | None. |
-| Off-spine concern clarity | `Pass` | Readiness is a capability assertion serving lifecycle owners; it does not absorb manager/package or legacy storage behavior. | None. |
-| Existing capability/subsystem reuse check | `Pass` | The merge uses `hasManagedTeamRun`, `assertExistingRunRestoreReady`, `assertCurrentSchemaReady`, and `unregisterTerminated`; no compatibility helper or second lifecycle registry was added. | None. |
-| Reusable owned structures check | `Pass` | Existing readiness and manager/resolver contracts are reused without copied state representations. | None. |
-| Shared-structure/data-model tightness check | `Pass` | Active versus managed remains one explicit lifecycle distinction; token readiness remains a separate capability state. | None. |
-| Repeated coordination ownership check | `Pass` | Schema assertions occur at each supported allocation/restore boundary; manager identity and task cleanup remain centralized in their owners. | None. |
-| Empty indirection check | `Pass` | Each involved service enforces sequencing or lifecycle invariants rather than merely forwarding. | None. |
-| Scope-appropriate separation of concerns and file responsibility clarity | `Pass` | The conflict adds one readiness step to the application service; it does not move migration, package, or provider construction into that file. | None. |
-| Ownership-driven dependency check | `Pass` | Application lifecycle depends on readiness and manager; current token runtime still has no dependency on old-schema migration code. | None. |
-| Authoritative Boundary Rule check | `Pass` | External callers use `TeamRunService`; it alone coordinates the manager and readiness boundary. Task callers use `TaskDelegationService`, which owns resolver coordination. | None. |
-| File placement check | `Pass` | Root lifecycle, task lifecycle, readiness, and migration code remain in their owning subsystems. | None. |
-| Flat-vs-over-split layout judgment | `Pass` | No new file or abstraction was necessary for a two-contract merge composition. | None. |
-| Interface/API/query/command/service-method boundary clarity | `Pass` | `getActiveTeamRun`, `getManagedTeamRun`, `hasManagedTeamRun`, current-schema admission, and existing-run restore readiness have distinct subjects and meanings. | None. |
-| Naming quality and naming-to-responsibility alignment check | `Pass` | `hasManagedTeamRun` and `unregisterTerminated` match latest lifecycle semantics; no retired `getTeamRun`/`unregisterInactive` alias was retained. | None. |
-| No unjustified duplication of code / repeated structures in changed scope | `Pass` | The merge composes existing assertions and contracts; tests reuse the existing service harness. | None. |
-| Patch-on-patch complexity control | `Pass` | One conflict was resolved directly, while the clean task merge kept both owners' current contracts. | None. |
-| Dead/obsolete code cleanup completeness in changed scope | `Pass` | The stale test double was renamed to the actual `unregisterTerminated` contract; no compatibility alias or legacy runtime path was added. | None. |
-| Relevant test scenarios and assertions are clear and requirement-aligned | `Pass` | Tests prove current-schema rejection before construction, actual restore rejection before provider construction, managed-root non-restoration, settlement cleanup, root termination, and exact-ID delete/restore serialization. | None. |
-| Test fixtures/helpers are reasonably reusable and test structure remains coherent | `Pass` | The existing TeamRun service and settlement harnesses were extended narrowly; no duplicated fixture family was introduced. | None. |
-| No stale, duplicated, or compatibility-only tests are retained in changed scope | `Pass` | Retired method mocks were removed rather than aliased. The new ordering test records the combined lifecycle boundary. | None. |
-| API/E2E readiness for the next workflow stage | `Pass` | Source/build/focused suites pass and the affected system paths are identifiable. Because `IR-006` changes source after `API-REV-003`, focused API/E2E must rerun the actual built-server degraded/restore lifecycle and latest-base TeamRun/task intersections before delivery resumes. | Route to `/api_e2e_engineer`. |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | `Pass` | `SR-007` identifies the adapter/runtime-representation boundary defect; `IR-007` corrects only that migration seam. | None. |
+| Implementation matches approved behavior-defining supplemental artifacts | `Pass` | The code follows the migration convention's deterministic adapter transport, exact parsing, forward-only runtime, rollback, and real-driver fixture rules. | None. |
+| Data-flow spine inventory clarity and preservation under shared principles | `Pass` | DS-009 is explicit: SQLite JSON scalar -> typed-text SQL projection -> Prisma string/null -> strict decoder -> exact BigInt checkpoint -> existing DS-006 fold/transaction. | Refresh API/E2E evidence for this new spine. |
+| Ownership boundary preservation and clarity | `Pass` | The consolidation repository owns SQL transport; the legacy-row adapter owns untrusted parsing/mapping; the fold owns run aggregation; the migration orchestrator owns the transaction. | None. |
+| Off-spine concern clarity | `Pass` | Prisma representation handling remains a migration adapter concern and does not enter current domain, repository, GraphQL, or runtime owners. | None. |
+| Existing capability/subsystem reuse check | `Pass` | The implementation reuses the closed cumulative-source metadata and existing consolidation transaction rather than adding a generic transport framework. | None. |
+| Reusable owned structures check | `Pass` | One 15-field tuple drives current source-token metadata, SQL projection, row transport typing, and decoder iteration. | None. |
+| Shared-structure/data-model tightness check | `Pass` | Direct legacy integer columns remain `number | bigint`; only derived JSON scalars use the distinct untrusted string transport. No broad union leaks into current models. | None. |
+| Repeated coordination ownership check | `Pass` | Projection and parsing policies each have one owner and are applied uniformly to the closed field list. | None. |
+| Empty indirection check | `Pass` | The projection function establishes deterministic SQL representation; the decoder enforces source type, grammar, and range. Neither is pass-through-only. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | `Pass` | Query construction remains in the repository and transport admission remains beside the migration row shape/mapping, exactly as `ARCH-REV-007` allocates responsibility. | None. |
+| Ownership-driven dependency check | `Pass` | Migration code imports shared current semantic metadata; current runtime has no reverse dependency on legacy migration row/repository code. | None. |
+| Authoritative Boundary Rule check | `Pass` | The app-data migration uses the consolidation repository boundary; current callers do not bypass it or combine current repositories with its internals. | None. |
+| File placement check | `Pass` | Both changed sources live under the registered `token-usage-run-records-v1` migration boundary. | None. |
+| Flat-vs-over-split layout judgment | `Pass` | Two cohesive owners are sufficient. A generic adapter module would add indirection; the 281-line row owner remains navigable and singular after threshold inspection. | Avoid unrelated growth in the row owner. |
+| Interface/API/query/command/service-method boundary clarity | `Pass` | `listLegacyRunBatch` returns a migration-only typed row; `legacySourceTokens` converts only the derived checkpoint fields. No public/current API changed. | None. |
+| Naming quality and naming-to-responsibility alignment check | `Pass` | `legacySnapshotSourceProjection`, `LegacyJsonScalarTransport`, and `asSourceSafeInt` identify their migration-only roles and constraints. | None. |
+| No unjustified duplication of code / repeated structures in changed scope | `Pass` | The former 15 hand-written projections were replaced by the shared closed list; tag/grammar/range logic is not repeated. | None. |
+| Patch-on-patch complexity control | `Pass` | The verified seam is corrected at the SQL/decoder boundary rather than by adding coercion branches around the old behavior. | None. |
+| Dead/obsolete code cleanup completeness in changed scope | `Pass` | Bare nullable `json_extract AS source_*` projections and inferred source `number | bigint` typing are removed. | None. |
+| Relevant test scenarios and assertions are clear and requirement-aligned | `Pass` | Tests prove the exact same-batch leading-`NULL` reproduction, exact tags/checkpoint, wrong source types, grammar/range rejection, rollback, empty target, and retry. | None. |
+| Test fixtures/helpers are reasonably reusable and test structure remains coherent | `Pass` | One disposable real SQLite/Prisma harness serves transport and transaction cases; focused decoder cases remain small and table-driven. | None. |
+| No stale, duplicated, or compatibility-only tests are retained in changed scope | `Pass` | Tests target the current registered migration boundary and do not introduce a current-runtime compatibility path. | None. |
+| API/E2E readiness for the next workflow stage | `Pass` | Source, TypeScript, real-adapter, transaction, regression, dependency, and whitespace checks pass. The changed migration boundary and exact production-shaped scenario are directly executable downstream. | Route to `/api_e2e_engineer` for a refreshed coverage investigation and execution. |
 
 ## Source File Size And Structure Audit
 
-Effective lines count non-empty current lines. Tests, fixtures, logs, generated output, and localization catalogs are excluded.
+Effective lines count non-empty current lines. Tests, fixtures, logs, generated output, and task artifacts are excluded.
 
 | Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
 | --- | ---: | --- | --- | --- | --- | --- | --- |
-| `autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts` | 213 | `Pass` | `Pass` | `Pass`; application-facing root lifecycle and admission sequencing | `Pass` | N/A | None. |
-| `autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-service.ts` | 486 | `Pass` | Prior pressure remains resolved | `Pass`; root-scoped task lifecycle/FIFO; focused contracts remain extracted | `Pass` | N/A | Avoid unrelated growth. |
-| `autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts` | 268 | `Pass` | `Triggered` by separately reviewed latest-base lifecycle work | `Pass`; exact managed-root registry, transitions, materialization | `Pass` | N/A | None in this ticket; direct contract was inspected. |
-| `autobyteus-server-ts/src/agent-team-execution/services/team-run-resolver.ts` | 105 | `Pass` | `Pass` | `Pass`; root-private TeamRun registry/reservations/terminated cleanup | `Pass` | N/A | None. |
+| `autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-run-records-v1/legacy-token-usage-consolidation-repository.ts` | 207 | `Pass` | `Pass` | `Pass`; bounded source query, target validation, and transaction adapter ownership | `Pass` | N/A | None. |
+| `autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-run-records-v1/legacy-token-usage-row.ts` | 281 | `Pass` | `Triggered`; current file exceeds 220, while the IR-007 delta is small | `Pass`; one concrete legacy row contract, strict derived-scalar admission, and released-row-to-current-payload mapping | `Pass` | No finding: `ARCH-REV-007` deliberately assigns the untrusted transport and exact admission to this owner; splitting the 25-line policy would reduce locality without establishing a separate owner. | Avoid unrelated growth; reassess if another transport or mapping concern is added. |
 
-No new `>500` source, threshold-hiding formatting, empty split, or mixed-owner file appeared. The remaining token implementation sources retain the `CRR-007` audit.
+No changed implementation source exceeds 500 lines, hides size through formatting, creates an empty split, or mixes current runtime with historical storage.
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Check | Result | Notes |
 | --- | --- | --- |
-| No backward-compatibility mechanisms in changed scope | `Pass` | No old lifecycle alias or token fallback was added. |
-| No legacy old-behavior retention in changed scope | `Pass` | Current runtime remains current-schema-only. |
-| Dead/obsolete code cleanup completeness in changed scope | `Pass` | Retired active-only/`unregisterInactive` contracts are not preserved as aliases. |
-| Approved persisted-data transition decision is followed without unnecessary migration work | `Pass` | `IR-006` changes only admission/lifecycle composition; consolidation mechanics remain the reviewed migration-required path. |
-| No version-specific dual reads/writes or request-time old-shape fallback exists | `Pass` | Readiness gates capability; it does not query or reactivate legacy storage. |
-| Approved transition mechanics match the reviewed design, including migration safety only when required | `Pass` | Actual unmanaged restore is rejected before provider construction while incomplete; new current work remains separately admitted. |
+| No backward-compatibility mechanisms in changed scope | `Pass` | DS-009 is confined to the registered startup migration; it is not a current reader/writer fallback. |
+| No legacy old-behavior retention in changed scope | `Pass` | Current runtime remains one-row/current-schema-only. |
+| Dead/obsolete code cleanup completeness in changed scope | `Pass` | Bare inferred nullable scalar transport is removed from all 15 fields. |
+| Approved persisted-data transition decision is followed without unnecessary migration work | `Pass` | The approved decision remains `Migration Required`; only the defective source adapter is normalized. |
+| No version-specific dual reads/writes or request-time old-shape fallback exists | `Pass` | Legacy table/types/decoder remain under app-data migrations; static scans found no current-runtime reference. |
+| Approved transition mechanics match the reviewed design, including migration safety only when required | `Pass` | Existing bounded reads, disjoint preflight, exact fold, round-trip/scalar validation, one transaction, deletion-after-validation, rollback, and retry remain intact. |
 
 ## Dead / Obsolete / Legacy Items Requiring Removal
 
@@ -113,9 +111,9 @@ None.
 
 ## Docs-Impact Verdict
 
-- Docs impact: `No` new long-lived feature documentation from `IR-006`.
-- Why: the token migration/readiness behavior and latest-base active/managed TeamRun behavior are already documented in their integrated ticket docs. Delivery must refresh verification/final-handoff records after the focused rerun and Electron build, but no new product contract was introduced.
-- Files or areas likely affected: ticket-local delivery records only.
+- Docs impact: `Yes`.
+- Why: `SR-007` adds a reusable production migration convention: SQLite meaning, storage class, ORM result representation, and TypeScript annotations are distinct contracts; derived nullable scalars require deterministic SQL transport plus exact parsing and real-adapter evidence.
+- Files or areas likely affected: the task-local `data-migration-conventions.md` is already current. Delivery must promote/synchronize the approved rule to `autobyteus-server-ts/docs/design/production_data_migration_conventions.md` and the README link/summary only after integrated revalidation, then rebuild the failed Electron package.
 
 ## Material Premise Validation
 
@@ -123,53 +121,38 @@ None.
 
 | Premise ID | Current Status | Changed Evidence / Reason |
 | --- | --- | --- |
-| `MP-003` | `Confirmed` | An unmanaged persisted TeamRun restore is a supported history action; readiness still blocks it before restored providers can replay a legacy observation while consolidation is incomplete. |
-| `MP-CR-001` | `Confirmed` | Exact BigInt commit-before-public-projection behavior is unchanged. |
-| `MP-CR-002` | `Confirmed` | Mixed-currency behavior is unchanged. |
-| `MP-CR-003` | `Confirmed` | Supported local-provider cache state is unchanged. |
-| `MP-CR-004` | `Confirmed` | Released unknown-input migration normalization is unchanged. |
+| `MP-004` | `Confirmed` | Supported Electron upgrade and three production-shaped attempts independently reached the nullable Prisma/SQLite result-shape seam. `IR-007` responds proportionately at the migration boundary, and its disposable real-adapter test reproduces the exact four-leading-`NULL` condition. |
+| `MP-003` | `Confirmed` | Its current classification remains `Not Reachable`: incomplete consolidation still rejects pre-existing-run restore before provider construction. DS-009 adds no runtime overlap machinery. |
+| `MP-CR-001`–`MP-CR-005` | `Confirmed` | DS-009 changes only migration-derived checkpoint transport and does not alter commit/public projection, mixed currency, cache state, released unknown-input normalization, or managed/unmanaged TeamRun lifecycle behavior. |
 
-### `MP-CR-005` — managed current roots and unmanaged historical restores require distinct admission outcomes
-
-- Origin: `New` integration premise created by the latest-base conflict.
-- Related approved requirement or established contract: token `REQ-023`/`AC-019`/`AC-022`; latest-base offline-TeamRun `REQ-002`, `REQ-014`–`REQ-015` and `AC-001`, `AC-012`, `AC-017`.
-- Relevant behavior ID(s): `BEH-001`, `BEH-005`, `BEH-006`.
-- Initiating basis kind: `User` and established lifecycle `Contract`.
-- Independent product-supported initiating trigger or applicable governing contract: the Team history/live surface supports continuing an active root even when all configured members are offline, and separately supports restoring a fully stopped retained history row. The manager contract preserves one nonterminal root identity until accepted termination.
-- Support evidence: the integrated latest-base offline-delete requirements and runtime reproduction establish active-root/all-members-offline reachability and retained-history restoration. Token architecture premise `MP-003` establishes the stopped historical restore path.
-- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: active/offline continuation resolves the existing manager-owned root through `resolveActiveTeamRun`/`resolveManagedTeamRun` and never constructs a replacement. Stopped history Restore reaches GraphQL/application `TeamRunService.restoreTeamRun`; an unmanaged ID proceeds through `assertExistingRunRestoreReady()` before `AgentTeamRunManager.restoreTeamRun()` loads the package and constructs providers.
-- Lifecycle preconditions and material consequence at the claimed point: a managed root is already current process state and is not a restoration candidate; a stopped historical root is unmanaged and may contain a replay-capable provider, so incomplete consolidation must reject it before provider construction.
-- Reachability: `Reachable`.
-- Review consequence / proportionate response: retain the explicit managed/unmanaged distinction and readiness order; require a focused combined API/E2E rerun after the merge rather than rerunning unaffected pricing, released-scale, or browser-layout evidence.
+No new or reclassified material premise is needed for this result.
 
 ## Review Scorecard
 
 - Overall score (`/10`): `9.3`
 - Overall score (`/100`): `93.0`
-- Score calculation note: simple average of the ten categories. Every category meets the clean-pass threshold. Focused post-integration API/E2E remains required and is not represented as already complete.
+- Score calculation note: simple average of the ten mandatory category scores, rounded for summary visibility; the clean-pass decision also follows every mandatory check and finding result.
 
 | Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | ---: | --- | --- | --- |
-| `1` | `Data-Flow Spine Inventory and Clarity` | `9.4` | New, managed-continuation, unmanaged-restore, and delegated-task paths remain explicit. | Multiple lifecycle paths meet at TeamRunService. | Revalidate the composed system paths. |
-| `2` | `Ownership Clarity and Boundary Encapsulation` | `9.3` | Service, manager, resolver, readiness, and task owners remain distinct. | The intersection necessarily spans two capabilities. | Keep policy at existing boundaries. |
-| `3` | `API / Interface / Query / Command Clarity` | `9.3` | Active, managed, schema-ready, and restore-ready contracts have precise meanings. | Error ordering is newly composed. | Confirm through actual lifecycle execution. |
-| `4` | `Separation of Concerns and File Placement` | `9.2` | The conflict adds no migration or provider behavior to lifecycle files. | TaskDelegationService remains 486 effective lines. | Avoid unrelated growth. |
-| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | `9.4` | Existing manager/readiness contracts are reused without parallel state. | Cross-capability coordination remains necessary. | Preserve the single owners. |
-| `6` | `Naming Quality and Local Readability` | `9.2` | Current names distinguish managed, active, terminated, schema-ready, and restore-ready state. | TeamRun lifecycle is inherently stateful. | Keep explicit verbs and error messages. |
-| `7` | `API/E2E Readiness` | `9.1` | TypeScript and 6-file/34-test integrated checks pass; prior `API-REV-003` provides a strong baseline. | Source changed after that pass. | Run focused combined built-server/TeamRun/task lifecycle evidence before delivery. |
-| `8` | `Runtime Correctness And Behavioral Fidelity` | `9.3` | Both independently approved contracts survive the merge in the correct owners. | Full composed runtime has not yet been rerun. | Complete the focused API/E2E rerun. |
-| `9` | `No Backward-Compatibility / No Legacy Retention` | `9.6` | No alias, old token reader, dual path, or compatibility fallback was introduced. | Dormant physical source declaration remains by approved migration ordering. | Remove only in a later safe contract release. |
-| `10` | `Cleanup Completeness` | `9.2` | Conflict markers and retired test doubles are gone; merge ancestry is correct. | Delivery verification and Electron packaging remain pending. | Resume only after API/E2E/test-review gates. |
+| `1` | `Data-Flow Spine Inventory and Clarity` | `9.4` | DS-009 is a short, explicit adapter spine feeding the unchanged transactional migration spine. | Final built-product evidence is not yet refreshed. | API/E2E should execute the exact production-shaped path. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | `9.4` | SQL representation, untrusted decoding, fold, and transaction orchestration remain distinct owners. | The row owner is moderately sized. | Keep future unrelated migration policies out of it. |
+| `3` | `API / Interface / Query / Command Clarity` | `9.3` | The query returns a deterministic migration-only contract generated from a closed field set. | The raw SQL projection necessarily has adapter-specific syntax. | Preserve the real-adapter contract test across ORM changes. |
+| `4` | `Separation of Concerns and File Placement` | `9.2` | Both changes stay inside the registered consolidation boundary and match reviewed allocation. | `legacy-token-usage-row.ts` is 281 effective lines. | Reassess only if a genuinely separate concern appears. |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | `9.4` | One closed 15-field tuple drives projection and decoding; derived transport is distinct from direct integers/current types. | The transport alias is intentionally simple rather than branded. | No change required for current scope. |
+| `6` | `Naming Quality and Local Readability` | `9.2` | Names and field-specific errors make the migration contract readable. | Raw SQL interpolation requires careful reading despite the explanatory comment. | Keep closed-list and parameterization assertions durable. |
+| `7` | `API/E2E Readiness` | `9.0` | Focused real Prisma/SQLite and regression coverage passes and exposes the downstream scenario precisely. | `API-REV-004` predates DS-009 and the failed package has not been rebuilt. | Refresh coverage/execution, then return durable changes for proportional review. |
+| `8` | `Runtime Correctness And Behavioral Fidelity` | `9.4` | Exact supported integers survive the observed nullable result shape; wrong types/grammar/range fail atomically and retryably. | The user's live database is deliberately not used as automated evidence. | Validate a disposable production-shaped built-server upgrade, then renew user verification after delivery rebuild. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | `9.5` | Historical transport is migration-only; current runtime has no legacy query, decoder, dual path, or fallback. | Dormant source schema remains for required upgrade ordering. | Remove it only in a separately reviewed safe later release. |
+| `10` | `Cleanup Completeness` | `9.2` | All 15 bare projections are replaced and no coercive compatibility branch remains. | Durable project docs and the failed Electron artifact still require downstream refresh. | Delivery should sync docs and rebuild only after API/E2E/test-review gates. |
 
 ## Findings
 
-No open findings.
-
-`CR-001`–`CR-006` remain resolved. `IR-006` introduces no regression in their source owners.
+None.
 
 ## Classification
 
-N/A — current integrated implementation source review passes.
+`N/A` — clean implementation-review Pass.
 
 ## Recommended Recipient
 
@@ -177,18 +160,17 @@ N/A — current integrated implementation source review passes.
 
 ## Residual Risks
 
-- `API-REV-003` predates merge `cbbedd6ea`. A focused rerun must exercise the actual built-server failed-consolidation -> unmanaged restore rejection -> retry -> successful restore path against the integrated TeamRun service.
-- The latest-base managed/offline continuation and exact restore/delete lifecycle plus delegated-task current-schema/settlement intersection should be rechecked proportionately. The previously completed released-scale, pricing, SafeInt, and Chrome layout evidence need not be repeated unless the focused run exposes a broader impact.
-- The full first-parent merge range contains pre-existing whitespace in imported historical evidence logs from the separately finalized base ticket; targeted source/test diff checking passes and no implementation source defect is attributed to those evidence files.
-- Delivery-owned `DR-002` records remain intentionally uncommitted. Electron packaging has not started and must not resume until the API/E2E and resulting proportional test-review gate completes.
-- The independent Nuxt `vue-tsc`/TypeScript package-export incompatibility and external-provider opt-in exclusions remain as recorded in `API-REV-003`.
+- `API-REV-004` predates DS-009. API/E2E must refresh its coverage investigation and execute the real Prisma/SQLite leading-`NULL` upgrade, invalid-source rollback/retry, and affected degraded-state lifecycle before deciding which older broad/scale evidence remains applicable.
+- The user's live database was not accessed or mutated. That is the correct automated-test boundary, but the corrected Electron package still requires renewed explicit user verification after all review gates.
+- The failed `DR-003` artifact is not acceptance evidence and must not be reused as the final package.
+- The independent Nuxt `vue-tsc`/TypeScript package-export limitation and explicit external-provider opt-in exclusions remain unchanged from prior reports.
 
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
 - Review Entry Point: `Implementation Review`
-- Material-Premise Gate (`Pass`/`Fail`/`Blocked`): `Pass` — `MP-003` and `MP-CR-005` establish the two supported lifecycle branches; the merge adds no unsupported recovery or compatibility machinery.
-- Score Summary: `9.3/10` (`93.0/100`); every category is at least `9.0`.
-- Failure Origin (when applicable): N/A.
-- Recommended Recipient (when applicable): `/api_e2e_engineer`
-- Notes: Source composition passes. A focused API/E2E rerun is required because implementation-owned source changed after `API-REV-003`. If no durable coverage changes, the later proportional test-code review may record `Not Applicable`; otherwise review every changed durable path before delivery resumes.
+- Material-Premise Gate: `Pass`
+- Score Summary: `9.3/10` (`93.0/100`); every category is `>=9.0`.
+- Failure Origin: N/A. `DR-004` was the verified trigger corrected by reviewed `SR-007` / `IR-007`.
+- Recommended Recipient: `/api_e2e_engineer`
+- Notes: DS-009 matches the approved data-migration conventions and closes the production Prisma/SQLite representation seam without adding current-runtime compatibility. API/E2E must now supersede the pre-DS-009 execution baseline before delivery rebuilds Electron.

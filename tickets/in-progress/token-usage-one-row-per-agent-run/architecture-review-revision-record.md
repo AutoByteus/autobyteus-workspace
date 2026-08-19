@@ -12,6 +12,7 @@ The latest `design-review-report.md` remains authoritative. This record indexes 
 | ARCH-REV-004 | Round 4 / user-directed SR-004 governance re-review | SR-004 | Pass | Pass | AR-001, AR-002, AR-003, AR-004 |
 | ARCH-REV-005 | Round 5 / superseding forward-only SR-005 re-review | SR-005 | Pass | Pass | AR-001, AR-002, AR-003, AR-004 |
 | ARCH-REV-006 | Round 6 / SR-006 current-contract classification re-review | SR-006 | Pass | Pass | AR-001, AR-002, AR-003, AR-004 |
+| ARCH-REV-007 | Round 7 / SR-007 production-adapter re-review after DR-004 | SR-007 | Pass | Pass | AR-001, AR-002, AR-003, AR-004 |
 
 ## Revision Entries
 
@@ -149,3 +150,27 @@ None.
 - Material classification changes: None. `MP-003` remains `Not Reachable` in the current approved lifecycle; the new classification examples introduce no recovery or runtime compatibility premise.
 - Recommended recipient: `/implementation_engineer`
 - Remaining risks or uncertainty: Existing long-transaction, allocator/disjointness, temporary restore/history unavailability, bounded-series, SQLite physical-size, and BigInt risks remain. Migration authors must document actual current readers/writers and independently applicable removal contracts before classifying residue as inert. Delivery must preserve the worked examples when promoting the convention.
+
+### ARCH-REV-007 — Deterministic legacy scalar transport closes the verified Prisma seam
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/design-review-report.md`
+- Review round and trigger: Round 7; `SR-007` re-review after production-shaped Electron verification failed and `DR-004` plus exact safe-backup reproduction established the nullable SQLite/Prisma representation seam.
+- Triggering role, report path, and finding IDs: `/solution_designer` following explicit user design-rework direction; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/delivery-rework-record.md` (`DR-004`); no new architecture finding ID.
+- Relevant solution revision IDs: `SR-007`
+- Prior authoritative decision: `Pass`
+- Current authoritative decision: `Pass`
+- What changed in the review result or what baseline was established: Production verification proved that a TypeScript `$queryRaw` generic was not a runtime transport contract. Four leading `NULL` computed values caused later valid SQLite integers to arrive from Prisma as decimal strings and be falsely rejected before import. `SR-007` adds DS-009: the consolidation repository projects each closed cumulative-source path as `NULL` or explicit JSON type plus exact text, the migration row decoder accepts only canonical nonnegative `integer:` digits through `BigInt` and SafeInt enforcement, and the real production query/transaction fixture preserves the leading-`NULL` result shape. Wrong types/grammar/range fail before cleanup with transaction rollback. Current runtime and all prior lifecycle mechanics remain unchanged.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001 | Resolved | Remains resolved | SR-002, SR-007; REQ-005; AC-005 | DS-009 changes only migration scalar transport; checkpoint/digest count, byte, and overflow rules remain unchanged. |
+| AR-002 | Resolved | Remains resolved | SR-002, SR-007; REQ-022; AC-021 | Both same-ID repairs remain independently bounded and ordered before consolidation; DS-009 adds no whole-ledger result or diagnostic. |
+| AR-003 | Resolved | Remains resolved | SR-002, SR-007; AC-004; AC-007 | Admission ordering remains timestamp plus migration row ID/current revision; adapter representation does not affect temporal ordering. |
+| AR-004 | Resolved under superseding restore-gate policy | Remains resolved | SR-003, SR-005–SR-007; REQ-023–REQ-027; AC-022–AC-026; MP-003 | Failed consolidation still gates every pre-existing-run restore before provider creation, admits only globally new IDs, and rejects any legacy/current overlap. DS-009 is migration-only and reintroduces no runtime legacy adapter. |
+
+- New or remaining finding IDs: None.
+- Material classification changes: New premise `MP-004` is `Reachable` and directly observed through the supported Electron launch/startup-migration path. DS-009 is the minimum migration-local response. `MP-003` remains `Not Reachable` under the current restore gate.
+- Recommended recipient: `/implementation_engineer`
+- Remaining risks or uncertainty: The actual implementation must provide the exact same-batch four-leading-`NULL` Prisma/SQLite query-and-transaction fixture plus wrong-type, negative, malformed/noncanonical, and out-of-range rollback evidence; a mock, one-row, or non-null-first test is insufficient. Diagnostics must truthfully distinguish source-type/grammar/range rejection rather than repeat the former misleading SafeInt message. Existing long-transaction, restore/history unavailability, allocator/disjointness, bounded-series, SQLite physical-size, BigInt/API, durable-doc promotion, and renewed Electron verification risks remain.

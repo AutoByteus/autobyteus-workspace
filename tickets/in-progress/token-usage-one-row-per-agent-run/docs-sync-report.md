@@ -2,32 +2,41 @@
 
 ## Current Re-entry Status
 
-- Delivery revision: `DR-002`
-- Result: `Blocked`
+- Delivery revision: `DR-004`
+- Result: `Blocked — user verification exposed a runtime implementation defect`
 - Latest fetched base:
   `origin/personal@1f5663ddb86e478d0b4ffdd878d57dee72d67b4b`
-- Reason: latest-base merge has one implementation-owned conflict in
-  `autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts`.
-- Documentation disposition: the report below remains the authoritative DR-001
-  prior-base sync, but it is not promoted as current with latest base until the
-  conflict is resolved, integrated checks pass, and durable docs are re-audited.
-- Long-lived docs edited in DR-002: `None`.
-- Canonical blocker: `delivery-integration-blocker.md`.
+- Integrated state: merge
+  `cbbedd6ea0e6d466a3e3741c7216f03887b0182e` composes the DR-002 conflict;
+  the fetched base is the merge base, divergence is `0 behind / 3 ahead`, and
+  there are no unmerged paths.
+- Review gate: `CRR-009` source Pass, focused `API-REV-004` Pass at `97.3%`,
+  and `CRR-010` proportional test review Pass with no findings.
+- Documentation disposition: the DR-001 durable sync remains authoritative on
+  the current integrated state. `CRR-009` found no new long-lived docs impact
+  from `IR-006`; the integrated-state stale-contract and link audits passed.
+- Long-lived docs edited after DR-001: `None`.
+- Historical blocker: `delivery-integration-blocker.md` is resolved.
+- Current blocker: `delivery-rework-record.md`. No documentation-only change can
+  make the failed consolidation acceptable. The durable contract remains the
+  intended behavior and must be revalidated after corrected code returns.
 
 ## Scope
 
-- Delivery revision: `DR-001` historical integrated-state result
+- Delivery revision: `DR-003` current confirmation of the `DR-001` durable sync
 - Ticket: `token-usage-one-row-per-agent-run`
-- Trigger: `CRR-008` proportional durable-test review Pass after authoritative
-  source review `CRR-007` Pass and API/E2E execution `API-REV-003` Pass.
+- Trigger: `CRR-010` proportional review Pass after integrated source review
+  `CRR-009` and focused execution `API-REV-004`; the broad documentation basis
+  remains `CRR-007` / `API-REV-003` / `CRR-008`.
 - Bootstrap base reference:
   `origin/personal@0194fb4fffa69037a46aeace491024fdf816dde7`
 - Integrated base reference used for docs sync:
-  `origin/personal@0194fb4fffa69037a46aeace491024fdf816dde7`
+  `origin/personal@1f5663ddb86e478d0b4ffdd878d57dee72d67b4b`
 - Post-integration verification reference:
-  `delivery-evidence/01-initial-integration-refresh-dr001.log` — fetched base
-  remained identical to bootstrap and ticket `HEAD`; divergence `0/0`, no
-  unmerged paths, no integration commit.
+  `delivery-evidence/08-final-base-and-docs-audit-dr003.log` — fetched base
+  remained current and was the merge base; no unmerged paths; stale-contract
+  and local-link audits passed. DR-001 creation evidence remains
+  `delivery-evidence/01-*` and `02-*`.
 
 ## Why Docs Were Updated
 
@@ -92,20 +101,23 @@
 - `git diff --check` — Pass.
 - Stale-owner/retired-period scan across durable Markdown — Pass, no matches.
 - Local Markdown link-target audit across all nine reviewed/updated documents —
-  Pass.
-- Evidence: `delivery-evidence/02-docs-sync-audit-dr001.log`.
-- No product/test rerun was added: the remote base did not advance or integrate
-  any commit, and delivery changed documentation/artifacts only. The executable
-  basis remains `API-REV-003` and `CRR-008`.
+  Pass, 55 links checked again on the integrated base.
+- Evidence: original sync `delivery-evidence/02-docs-sync-audit-dr001.log`;
+  integrated-state revalidation `delivery-evidence/08-final-base-and-docs-audit-dr003.log`.
+- No duplicate server rerun was added after the final fetch because the base did
+  not advance after `API-REV-004` / `CRR-010`. The user-requested Electron
+  build and package-integrity suite passed as the additional integrated-state
+  executable check (`delivery-evidence/06-*` and `07-*`).
 
 ## Delivery Continuation
 
-- Result: `Blocked` in DR-002; DR-001 remains the historical prior-base Pass.
-- Next delivery action: `/implementation_engineer` resolves and checks the
-  latest-base source conflict. Delivery then revalidates docs against the
-  integrated state, reads the current Electron packaging README, and builds the
-  requested local verification artifact before asking for user verification.
+- Result: `Blocked` in DR-004. DR-003 package integrity remains historical, but
+  explicit user acceptance failed.
+- Next delivery action: `/implementation_engineer` diagnoses and corrects the
+  production-shaped decoding defect. After review/API-E2E gates, delivery
+  revalidates these docs, refreshes the base, rebuilds Electron, and requests
+  renewed explicit user verification.
 - Notes: The known Nuxt typecheck package-export incompatibility remains a
   transparent toolchain blocker, not a product/docs failure. Production Nuxt
-  build, components, server build, current API, Chrome, scale, lifecycle, and
-  migration checks passed upstream.
+  build, components, server build, current API, Chrome, scale, lifecycle,
+  migration, focused integration, and Electron packaging checks passed.

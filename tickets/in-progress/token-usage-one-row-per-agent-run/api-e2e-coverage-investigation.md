@@ -8,13 +8,59 @@
 - Supplemental Artifacts:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/token-usage-data-model-analysis.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/data-migration-conventions.md`
-- Solution / Architecture Revisions: `SR-006`; `ARCH-REV-006`
-- Implementation / Source Review Revisions: `IR-006`; `CRR-009` Pass at 93.0/100 with no open source finding
-- Prior API/E2E Revisions: `API-REV-001` Fail at 70.0%; `API-REV-002` Fail at 75.0%; `API-REV-003` Pass at 97.1%
-- Current API/E2E Revision: `API-REV-004` Pass at 97.3%
-- Investigation Round: `4`
-- Trigger: `IR-006` / `CRR-009` Pass after merge `cbbedd6ea0e6d466a3e3741c7216f03887b0182e` integrated the latest-base managed/offline TeamRun lifecycle with the token restore-readiness gate.
-- Investigation timing: this round-4 delta was recorded before focused execution or any round-4 durable coverage edit. The round-3 evidence remains authoritative for unaffected scale, pricing, SafeInt, and Chrome layout boundaries.
+- Solution / Architecture Revisions: `SR-007`; `ARCH-REV-007`
+- Implementation / Source Review Revisions: `IR-007`; `CRR-011` Pass at 93.0/100 with no open source finding
+- Prior API/E2E Revisions: `API-REV-001` Fail at 70.0%; `API-REV-002` Fail at 75.0%; `API-REV-003` Pass at 97.1%; `API-REV-004` Pass at 97.3%
+- Current API/E2E Revision: `API-REV-005` Pass at 97.4%
+- Investigation Round: `5`
+- Trigger: `DR-004` production-shaped verification failure, reviewed `SR-007` / `ARCH-REV-007` / `IR-007` / `CRR-011`, reachable premise `MP-004`, and approved deterministic legacy scalar transport `DS-009`.
+- Investigation timing: this round-5 decision was recorded before any API-REV-005 execution or API/E2E-owned durable edit. The user's live database will not be accessed or mutated, and the failed DR-003 Electron artifact is excluded from acceptance evidence.
+
+## Round 5 DS-009 Coverage Investigation Before Execution
+
+### Changed Boundary And Required Proof
+
+- Changed production source is confined to the registered `20260819_token_usage_run_records_v1` migration boundary:
+  - `legacy-token-usage-consolidation-repository.ts` now projects all 15 nullable cumulative-source JSON fields as `NULL` or closed-field, parameterized `<json_type>:<exact text>` transport;
+  - `legacy-token-usage-row.ts` treats the transport as untrusted, admits only `integer:(0|[1-9][0-9]*)`, parses through `BigInt`, and enforces nonnegative SafeInt before checkpoint use.
+- Critical new acceptance criterion: `AC-026`. A disposable real Prisma/SQLite query and transaction must preserve one ordered batch with four leading `NULL` values followed by `28826658` and `28987545`, create one exact current record/checkpoint, validate, and clean the source. Real invalid source type/grammar/range must preserve all source rows, leave the target empty, and repeat the same failure on ordinary retry.
+- Existing lifecycle requirements remain `AC-022` and `AC-024`: a failed consolidation must leave the actual built server healthy, gate history and unmanaged pre-existing-run restore before provider construction, admit a globally new current run, and succeed after a corrected restart retry.
+- No current token domain, repository, GraphQL, frontend, TeamRun, or Electron source changed in IR-007.
+
+### Durable Coverage Inventory And Decisions
+
+| Coverage path / group | Decision before execution | Reason / planned evidence |
+| --- | --- | --- |
+| `tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts` | `Add Durable Coverage` (added by IR-007; execute without API/E2E edit initially) | Direct real Prisma/SQLite repository query and actual migration transaction contains the exact four-NULL/safe-integer order plus real JSON type, negative, and out-of-range rollback/retry cases |
+| `tests/unit/app-data-migrations/legacy-token-usage-source-decoder.test.ts` | `Add Durable Coverage` (added by IR-007; execute without API/E2E edit initially) | Focused strict-tag/grammar/BigInt/SafeInt boundary, including malformed and noncanonical forms not constructible as valid JSON integers through SQLite |
+| `tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts` | `Still Valid`; rerun | Real released upgrade, independent cleanup-failure rollback/retry, empty relaunch, source cleanup, and freelist behavior exercise the changed repository/decoder transitively |
+| `tests/unit/app-data-migrations/legacy-token-usage-run-fold.test.ts` | `Still Valid`; rerun | Confirms DS-009 transport does not change legacy fold semantics, checkpoint compaction, or target totals |
+| `tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts` | `Still Valid`; rerun all four actual built-server cases | Revalidates successful startup/relaunch, warning isolation, failed consolidation -> history/restore gates -> new current run -> corrected retry -> restore success, and overlap rejection on the affected migration lifecycle |
+| `test-results/api-e2e/probes/released-scale-token-consolidation.mjs` | `Temporary Executable Probe`; rerun | DS-009 changes the SQL work performed for 15 projections across every released row. Prior volume/WAL/temp/disk architecture remains relevant, but the 11.287-second latency is not treated as current until the same 154,100-row/1,269-run probe executes the new query |
+| API-REV-003 current fold/pricing/SafeInt/GraphQL/API suites | `Still Valid`; retain without repetition unless a focused failure widens impact | IR-007 changes no current runtime or API source and successful migration produces the same current record contract |
+| API-REV-003 Chrome normal/degraded/fatal renderer evidence | `Still Valid`; retain without repetition | No UI, resolver, readiness code, error code, or browser contract changed. Actual built-server lifecycle will revalidate backend classification; rerunning visual layout would add no DS-009 evidence |
+| API-REV-004 managed/offline exact delete and task lifecycle evidence | `Still Valid`; retain except the built-server restore lifecycle selected above | IR-007 changes neither TeamRun/task source nor manager identity; CRR-011 confirms those seams unchanged |
+| DR-003 Electron artifact and DR-004 live failures | `Stale / not acceptance evidence` | DR-003 contains pre-DS-009 code and failed explicit verification. Delivery must build a new artifact and obtain renewed user verification only after API/E2E and proportional test-review gates |
+
+### Durable Coverage Delta And Edit Decision
+
+- Two repository-resident durable test files were added upstream in `IR-007` and must be returned for proportional review after successful execution:
+  1. `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts`
+  2. `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts/tests/unit/app-data-migrations/legacy-token-usage-source-decoder.test.ts`
+- No API/E2E-owned durable edit, replacement, or removal is planned initially. If execution reveals a real gap, this investigation will be updated before editing another durable path.
+- No production/live fixture will be used. All database and runtime targets must be disposable and owned by the repository harness or ticket probe.
+
+### Planned Execution Order And Broader Gate
+
+1. Full integrated server build.
+2. Exact two-file DS-009 real-adapter/decoder selection.
+3. Four-file migration regression selection covering released mapping, invalid-source/cleanup rollback and retry, freelist, and fold semantics.
+4. Entire actual built-server production-upgrade E2E file to cover success, degraded history/restore/new-run/retry, warning isolation, and overlap.
+5. Rebuilt-server 154,100-row scale/WAL/temp/disk/latency probe because the SQL projection work changed.
+6. Server TypeScript, diff, current-runtime legacy-boundary, closed-field ownership, residue, and process cleanup checks.
+
+- Initial broader-validation decision: `Required`, limited to the retained released-scale probe. Browser and Electron execution are not selected: browser presentation is unaffected, and delivery owns the required fresh Electron build and renewed explicit user verification after this gate.
+- Reroute rule: any critical implementation or migration failure stops execution and returns the cumulative evidence package to `/code_reviewer` for failure-origin review. A clean result becomes `API-REV-005` and returns both new durable paths to `/code_reviewer` for proportional test-code review.
 
 ## Round 4 Integrated-Source Resumption Delta
 
@@ -267,3 +313,56 @@ Both probes are retained as ticket evidence, syntax-checked, and clean only thei
 - Critical acceptance criterion unproven: `None`.
 - Residual non-product limitation: the previously recorded Nuxt `vue-tsc`/TypeScript package-export incompatibility remains; no frontend/typecheck boundary changed in IR-006.
 - Required next recipient: `/code_reviewer` for proportional review of the one round-4 durable test update. Delivery and Electron work remain paused through that gate.
+
+## Round 5 DS-009 Execution Result — API-REV-005
+
+### Executed Coverage And Decisions
+
+| Scenario / boundary | Result | Evidence |
+| --- | --- | --- |
+| Full integrated server build | Pass: shared packages, Prisma generation, server TypeScript, assets, and sanitized bootstrap smoke | `test-results/api-e2e/logs/38-ir007-integrated-server-build.log` |
+| Exact leading-NULL Prisma/SQLite transport plus strict decoder | Pass: 2 files / 32 tests. The real ordered batch returned four `NULL` values then `integer:28826658` and `integer:28987545`; consolidation produced one validated record/checkpoint and emptied the source | `logs/39-ir007-ds009-leading-null-decoder.log` |
+| Invalid source and migration regression | Pass: 4 files / 43 tests. Real JSON real/text/boolean/array/object, negative integer, and `9007199254740992` cases retained source, left the target empty, and repeated the bounded failure; decoder grammar and cleanup-failure retry/freelist/fold semantics passed | `logs/40-ir007-four-file-migration-regression.log` |
+| Actual built-server upgrade/degraded/history/restore lifecycle | Pass: all 4 cases. Success/relaunch, warning isolation, failed consolidation -> unavailable history/rejected old restore -> new current run -> corrected retry/import -> successful restore, and overlap rejection all passed | `logs/41-ir007-built-server-production-upgrade-lifecycle.log` |
+| Refreshed released-scale consolidation | Pass: 154,100 rows / 1,269 runs / 880,848,896-byte seeded DB; 12.804-second consolidation; peak WAL 12,112,832 bytes; peak temp 0; peak RSS 193,183,744 bytes; source 0; target 1,269; exact totals; `integrity_check=ok`; freelist 215,037 | `logs/42-ir007-released-scale-154k.log`; `test-results/api-e2e/scale-probe-result.json` |
+| Final combined migration/lifecycle regression | Pass: 5 files / 47 tests | `logs/43-ir007-final-migration-lifecycle-suite.log` |
+| TypeScript, diff, ownership/boundary, refreshed scale result, and cleanup | Pass: 15-field closed set, no current-runtime legacy transport reference, no broad source coercion, latest base ancestor (`0 behind / 3 ahead`), no probe/database/process residue | `logs/44-ir007-ts-boundary-cleanup.log` |
+
+Final canonical revision markers, all evidence files, both durable paths, diff cleanliness, and post-report resource state were re-audited successfully in `logs/45-ir007-final-artifact-audit.log`.
+
+### Prior Evidence Applicability After Execution
+
+- **API-REV-003 released scale:** superseded for DS-009 latency by the refreshed 154,100-row probe. The new consolidation completed in 12.804 seconds versus the prior 11.287 seconds, with the same 12,112,832-byte peak WAL, zero temp spill, exact totals, integrity, and freelist result. Volume/WAL/temp/disk conclusions therefore remain directly current.
+- **API-REV-003 current fold, pricing, SafeInt, GraphQL, and general API:** remains applicable without repetition. IR-007 changes no current runtime/API source; the real migration and built-server runs create and serve the same current record contract. The affected GraphQL history/restore/new-run surfaces were exercised by the actual built-server file.
+- **API-REV-003 Chrome normal/degraded/fatal:** remains applicable without repetition. No renderer, frontend, GraphQL shape, error code, readiness, or layout source changed. The backend degraded classification was directly revalidated through the built server.
+- **API-REV-004 managed/offline delete and delegated-task lifecycle:** remains applicable. No TeamRun/task code changed; the affected unmanaged restore gate was re-executed in the actual built-server recovery case.
+- **DR-003 Electron package:** remains invalid as acceptance evidence. It contains the pre-DS-009 failure. API/E2E did not launch or reuse it; delivery owns a fresh package build/integrity check and renewed explicit user verification after proportional test review.
+
+### Durable Coverage And Edit Outcome
+
+- Repository-resident durable coverage in the candidate changed: `Yes`, two upstream IR-007 additions:
+  1. `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts`
+  2. `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts/tests/unit/app-data-migrations/legacy-token-usage-source-decoder.test.ts`
+- API/E2E-owned edits to those tests: `None`; they passed exactly as source-reviewed.
+- Other durable files added, updated, or removed by API/E2E in round 5: `None`.
+- The two new paths require proportional test-code review before delivery.
+
+### Round 5 Final Confidence
+
+| Category | Score | Evidence / residual uncertainty |
+| --- | ---: | --- |
+| Requirement and acceptance-criteria proof | 98% | AC-026 exact adapter condition, rejection matrix, AC-022/024 lifecycle, cleanup, scale, and retained current-contract evidence all pass |
+| Changed-boundary execution directness | 99% | Actual production repository query/transaction, real Prisma/SQLite, actual built server, and rebuilt dist scale probe |
+| Cross-boundary integration realism and mock gap | 98% | Real driver/database, migration runner/startup, GraphQL history/restore/new work, retry/relaunch, and target repository reads |
+| Environment, configuration, identity, and fixture fidelity | 97% | Exact observed values/order and released schemas in disposable fixtures; live user database correctly not used |
+| Failure, edge-case, lifecycle, and recovery evidence | 99% | Type/grammar/range rejection, atomic rollback/retry, cleanup failure, failed startup capability gate, overlap, warning isolation, and relaunch |
+| User-surface, browser, and desktop-shell confidence | 95% | Prior Chrome evidence remains source-current; corrected Electron package/user verification is intentionally delivery-owned and still pending |
+| Durable regression coverage quality and relevance | 96% | Two narrow production-condition files plus 47-test combined pass; proportional review remains pending |
+
+- Overall final confidence: `97.4%` (simple average, rounded from 97.43%).
+- Result: `Pass`.
+- Broader validation decision: `Required` and completed through the refreshed released-scale probe. Browser repetition was `Not Required`; Electron execution remains a downstream delivery/user-verification gate.
+- Applicable category below 90%: `None`.
+- Critical acceptance criterion unproven: `None`.
+- New or remaining API/E2E failure IDs: `None`.
+- Required next recipient: `/code_reviewer` for proportional review of both new durable tests. Delivery must remain paused until that gate passes.

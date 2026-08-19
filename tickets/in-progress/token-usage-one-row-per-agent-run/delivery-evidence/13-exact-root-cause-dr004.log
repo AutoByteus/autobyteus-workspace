@@ -1,0 +1,26 @@
+captured_at=2026-08-19T13:37:49Z
+source=/solution_designer safe reproduction against SQLite backup
+classification=implementation defect
+design_change=no
+requirement_change=no
+diagnostic_database=/tmp/autobyteus-token-diag.pp7eIM/production.db
+live_database_mutated=no
+first_legacy_run=3d99f4bf-5b6e-4d63-bcda-180febd4f083
+first_six_row_ids=700,701,702,704,23004,23005
+first_four_json_extract_values=NULL
+row_23004_type=string
+row_23004_value=28826658
+row_23005_type=string
+row_23005_value=28987545
+exact_seam=Prisma $queryRaw decodes later non-null SQLite json_extract INTEGER values as decimal strings when the ordered nullable result column begins with NULL rows
+contrast=the same json_extract result set beginning on a non-null row decodes as bigint
+pre_fix_type=LegacyInteger number|bigint
+pre_fix_behavior=asSafeInt converts bigint only; decimal string reaches Number.isSafeInteger and is rejected with misleading outside-SafeInt error
+full_15_field_scan=all non-null values INTEGER, nonnegative, within SafeInt
+largest_total=1374407961
+bad_production_token_value=no
+required_fix=strict canonical decimal-string parsing through BigInt, nonnegative and <= Number.MAX_SAFE_INTEGER, then exact conversion to number; no broad string coercion
+required_regression=real Prisma/SQLite ordered batch with leading NULL json_extract rows followed by safe integer rows
+preserve=rollback,retry,degraded capability,genuine SafeInt rejection,atomicity
+workflow=implementation -> code review -> API/E2E -> proportional durable-test review if changed -> delivery revalidation
+finalization=blocked

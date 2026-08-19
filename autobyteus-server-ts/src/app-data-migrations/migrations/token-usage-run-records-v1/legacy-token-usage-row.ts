@@ -6,6 +6,7 @@ import {
 import type { CumulativeSnapshotBigIntRecord } from "../../../token-usage/domain/token-usage-snapshot-checkpoint.js";
 
 export type LegacyInteger = number | bigint;
+export type LegacyJsonScalarTransport = string;
 
 export const MAX_LEGACY_MISSING_PRICE_DIMENSIONS = 32;
 const MAX_MISSING_PRICE_DIMENSION_LENGTH = 96;
@@ -84,13 +85,39 @@ export type LegacyTokenUsageLedgerRow = {
   latest_prompt_tokens: LegacyInteger | null;
   effective_context_window_tokens: LegacyInteger | null;
   context_window_usage_percent: number | null;
-} & Record<`source_${CumulativeSnapshotTokenField}`, LegacyInteger | null>;
+} & Record<`source_${CumulativeSnapshotTokenField}`, LegacyJsonScalarTransport | null>;
 
 const asSafeInt = (value: LegacyInteger | null, field: string): number | null => {
   if (value === null) return null;
   const converted = typeof value === "bigint" ? Number(value) : value;
   if (!Number.isSafeInteger(converted) || converted < 0) {
     throw new Error(`Legacy token usage field '${field}' is outside JavaScript SafeInt.`);
+  }
+  return converted;
+};
+
+const LEGACY_JSON_INTEGER_PREFIX = "integer:";
+const LEGACY_JSON_INTEGER_PATTERN = /^integer:(0|[1-9]\d*)$/;
+const MAX_SAFE_INTEGER_BIGINT = BigInt(Number.MAX_SAFE_INTEGER);
+
+const asSourceSafeInt = (value: unknown, field: string): bigint | null => {
+  if (value === null) return null;
+  if (typeof value !== "string") {
+    throw new Error(`Legacy token usage field '${field}' has invalid tagged JSON integer transport.`);
+  }
+  const separator = value.indexOf(":");
+  if (separator <= 0) {
+    throw new Error(`Legacy token usage field '${field}' has invalid tagged JSON integer transport.`);
+  }
+  if (value.slice(0, separator) !== "integer") {
+    throw new Error(`Legacy token usage field '${field}' has an unsupported JSON source type.`);
+  }
+  if (!LEGACY_JSON_INTEGER_PATTERN.test(value)) {
+    throw new Error(`Legacy token usage field '${field}' is not a canonical nonnegative JSON integer.`);
+  }
+  const converted = BigInt(value.slice(LEGACY_JSON_INTEGER_PREFIX.length));
+  if (converted > MAX_SAFE_INTEGER_BIGINT) {
+    throw new Error(`Legacy token usage field '${field}' exceeds JavaScript SafeInt.`);
   }
   return converted;
 };
@@ -142,7 +169,7 @@ export const legacySourceTokens = (
   let present = false;
   const record = Object.fromEntries(cumulativeSnapshotTokenFields.map((field) => {
     const value = row[`source_${field}`];
-    const normalized = value === null ? null : BigInt(asSafeInt(value, `source_${field}`)!);
+    const normalized = asSourceSafeInt(value, `source_${field}`);
     present ||= normalized !== null;
     return [field, normalized];
   })) as CumulativeSnapshotBigIntRecord;
