@@ -1,0 +1,18 @@
+== git diff --check ==
+== forbidden active combined flow strings in changed strict UI/source ==
+PASS: no forbidden combined active-delete residue
+== obsolete Team manager accessors in updated durable E2E ==
+PASS: no obsolete Team manager accessors
+== removed Team socket selectors in updated nested E2E ==
+PASS: no removed Team socket/tool selectors
+== changed durable paths ==
+ .../nested-mixed-team-runtime-graphql.e2e.test.ts  | 416 ++++++++++-----------
+ .../archive-run-history-graphql.e2e.test.ts        |  25 +-
+ 2 files changed, 212 insertions(+), 229 deletions(-)
+== status ==
+ M autobyteus-server-ts/tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts
+ M tickets/in-progress/team-run-offline-delete-action/code-review-report.md
+ M tickets/in-progress/team-run-offline-delete-action/code-review-revision-record.md
+?? tickets/in-progress/team-run-offline-delete-action/api-e2e-coverage-investigation.md
+?? tickets/in-progress/team-run-offline-delete-action/evidence/

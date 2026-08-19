@@ -1,0 +1,89 @@
+timestamp=2026-08-19T08:47:45Z
+worktree=/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action
+branch=codex/team-run-offline-delete-action
+head_before_checkpoint=dc1838e4e35c7ce31d2eb1a871cfe5b035027b83
+upstream=origin/personal
+command=git fetch origin personal
+remote_base=0194fb4fffa69037a46aeace491024fdf816dde7
+head_to_base=2	0
+merge_base=0194fb4fffa69037a46aeace491024fdf816dde7
+tracked_dirty_paths:
+M	autobyteus-server-ts/tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts
+M	autobyteus-server-ts/tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts
+M	tickets/in-progress/team-run-offline-delete-action/code-review-report.md
+M	tickets/in-progress/team-run-offline-delete-action/code-review-revision-record.md
+untracked_paths:
+tickets/in-progress/team-run-offline-delete-action/api-e2e-coverage-investigation.md
+tickets/in-progress/team-run-offline-delete-action/api-e2e-execution-coverage-report.md
+tickets/in-progress/team-run-offline-delete-action/api-e2e-revision-record.md
+tickets/in-progress/team-run-offline-delete-action/api-e2e-test-review-report.md
+tickets/in-progress/team-run-offline-delete-action/delivery-preintegration-audit.log
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-round-1/application-integrations-after-build.log
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-round-1/archive-history-e2e-final.log
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-round-1/archive-history-e2e-rerun.log
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-round-1/archive-history-e2e.log
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-round-1/brief-studio-after-build.log
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-round-1/dev-runtime-materialize.log
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-round-1/durable-e2e-final.log
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-round-1/live-backend.log
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-round-1/live-frontend-health.txt
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-round-1/live-frontend.log
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-round-1/live-health.json
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-round-1/nested-mixed-team-e2e.log
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-round-1/pending-marker-before.txt
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-round-1/pending-marker-during.txt
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-round-1/secrets-import-apply.log
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-round-1/secrets-import-dry-run.log
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-round-1/server-build.log
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-round-1/server-changed-suite.log
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-round-1/server-focused.log
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-round-1/static-checks-final.log
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-round-1/static-checks.log
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-round-1/web-focused.log
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/01-agent-package-reloaded.png
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/02-active-pending-approval-stop-only.png
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/03-stopped-history-retained-inactive-actions.png
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/04-retained-v1-restored-active-stop-only.png
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/05-inactive-delete-confirmation.png
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/06-after-inactive-delete-empty-cleanup.png
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/after-inactive-delete.txt
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/build-static.log
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/cleanup-runs.txt
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/durable-e2e-final.log
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/durable-e2e.log
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/inactive-delete-cancel.txt
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/live-backend-focused.log
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/live-backend.log
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/live-browser-summary.json
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/live-frontend-health.txt
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/live-frontend.log
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/live-health.json
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/live-process-inventory-after.txt
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/live-process-inventory-before.txt
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/nested-live-e2e-final-2.log
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/nested-live-e2e-final-3.log
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/nested-live-e2e-final-4.log
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/nested-live-e2e-final.log
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/nested-live-e2e-rerun-2.log
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/nested-live-e2e-rerun-3.log
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/nested-live-e2e-rerun.log
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/nested-live-e2e.log
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/nested-live-preflight.log
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/pending-marker-before.txt
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/pending-marker-during.txt
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/retained-after-stop-lifecycle.json
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/retained-after-stop.txt
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/same-summary-exact-delete.txt
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/server-focused.log
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/static-corrected.log
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/static-final-corrected.log
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/static-final.log
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/web-history-store.log
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/web-strict-focused.log
+source_review=CRR-002 Pass 95.2/100
+api_e2e=API-REV-001 Pass 97.1%
+proportional_test_review=CRR-003 Pass no findings
+durable_test_delta=2 updated; 0 added; 0 removed
+checkpoint_reason=preserve complete reviewed/API-E2E/proportionally-reviewed candidate before delivery integration and documentation edits
+source_test_report_diff_check=pass
+whole_staged_diff_check=raw execution evidence contains captured trailing-space/blank-EOF warnings only; no source, durable test, or report warning

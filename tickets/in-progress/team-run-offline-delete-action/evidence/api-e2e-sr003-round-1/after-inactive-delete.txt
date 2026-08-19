@@ -1,0 +1,3 @@
+marker_after_delete=ABSENT
+run_directory_after_delete=ABSENT
+index_rows_after_delete=0

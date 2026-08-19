@@ -25,13 +25,12 @@ const harness = vi.hoisted(() => ({
     listActiveRuns: vi.fn<() => string[]>(),
   },
   teamRunManager: {
-    getActiveRun: vi.fn<(teamRunId: string) => unknown | null>(),
-    getTeamRun: vi.fn<(teamRunId: string) => unknown | null>(),
+    getManagedTeamRun: vi.fn<(teamRunId: string) => unknown | null>(),
+    hasManagedTeamRun: vi.fn<(teamRunId: string) => boolean>(),
     getLifecycleSnapshot: vi.fn<(teamRunId: string) => {
       teamRunId: string;
       isActive: boolean;
     }>(),
-    listActiveRuns: vi.fn<() => string[]>(),
   },
   services: {
     agentRunHistoryService: null as unknown,
@@ -239,26 +238,18 @@ describe("Archive run history GraphQL e2e", () => {
       teamRunId,
       isActive: teamRunId === "team-active" || teamRunId === "team-archived-active",
     }));
-    harness.teamRunManager.getActiveRun.mockImplementation((teamRunId: string) =>
+    harness.teamRunManager.getManagedTeamRun.mockImplementation((teamRunId: string) =>
       teamRunId === "team-active" || teamRunId === "team-archived-active"
         ? {
             teamRunId,
             getLeafAgentStatusSnapshots: () => [],
-          }
+        }
         : null,
     );
-    harness.teamRunManager.getTeamRun.mockImplementation((teamRunId: string) =>
-      teamRunId === "team-active" || teamRunId === "team-archived-active"
-        ? {
-            teamRunId,
-            getLeafAgentStatusSnapshots: () => [],
-          }
-        : null,
+    harness.teamRunManager.hasManagedTeamRun.mockImplementation(
+      (teamRunId: string) =>
+        teamRunId === "team-active" || teamRunId === "team-archived-active",
     );
-    harness.teamRunManager.listActiveRuns.mockReturnValue([
-      "team-active",
-      "team-archived-active",
-    ]);
 
     const { AgentRunHistoryService } = await import(
       "../../../src/run-history/services/agent-run-history-service.js"
@@ -543,7 +534,7 @@ describe("Archive run history GraphQL e2e", () => {
     const archivedTeamRow = teamIndex.find((row: any) => row.teamRunId === "team-archive");
     expect(archivedTeamRow).toEqual(expect.objectContaining({
       archivedAt: expect.any(String),
-      createdAt: "2026-05-01T08:10:00.000Z",
+      createdAt: "2026-05-01T08:00:00.000Z",
       terminatedAt: null,
     }));
     expect(archivedTeamRow).not.toHaveProperty("lastKnownStatus");
