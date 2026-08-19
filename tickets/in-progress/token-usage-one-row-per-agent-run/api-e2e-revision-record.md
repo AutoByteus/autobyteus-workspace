@@ -9,6 +9,7 @@ The latest coverage investigation and execution coverage report remain authorita
 | API-REV-001 | `code_reviewer` / CRR-002 / round 1 | SR-006; ARCH-REV-006; IR-002; CRR-002 | N/A | Fail / 70.0% |
 | API-REV-002 | `code_reviewer` / CRR-004 / round 2 | SR-006; ARCH-REV-006; IR-003; CRR-004 | Fail / 70.0% | Fail / 75.0% |
 | API-REV-003 | `code_reviewer` / CRR-007 / round 3 | SR-006; ARCH-REV-006; IR-005; CRR-007 | Fail / 75.0% | Pass / 97.1% |
+| API-REV-004 | `code_reviewer` / CRR-009 / round 4 | SR-006; ARCH-REV-006; IR-006; CRR-009; DR-002 | Pass / 97.1% | Pass / 97.3% |
 
 ## Revision Entries
 
@@ -95,3 +96,31 @@ None.
 - New or remaining failure IDs: `None`; `APIE2E-F001` and `APIE2E-F002` resolved.
 - Recommended recipient: `/code_reviewer` for mandatory proportional review of the 17 changed durable coverage paths before delivery.
 - Remaining risks, blocked evidence, or untested scope: known independent Nuxt typecheck package-export incompatibility; external-provider runtime E2E not selected; Electron shell unchanged and not executed. None blocks the approved current storage/migration/API/renderer scope.
+
+### API-REV-004 — Integrated TeamRun/readiness lifecycle passes
+
+- Triggering role, report path, and round: `/code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/code-review-report.md`; focused API/E2E round 4 after `CRR-009`.
+- Triggering finding or scenario IDs: no open source finding; latest-base integration required revalidation of built-server consolidation recovery/unmanaged restore, managed/offline exact restore/delete, and delegated-task readiness/settlement seams.
+- Related revision IDs: `SR-006`, `ARCH-REV-006`, `IR-006`, `CRR-009`, `DR-002`; prior `API-REV-003` and proportional review `CRR-008` remain the unaffected broad baseline.
+- Why this revision was recorded: source changed after API-REV-003 when the ticket branch integrated the latest base. The focused run directly proved the combined lifecycle at merge `cbbedd6ea0e6d466a3e3741c7216f03887b0182e` rather than inferring validity from the earlier result.
+- Coverage decisions or durable paths changed: existing actual built-server, TeamRun service/manager, archive GraphQL, and settlement tests remained valid. Inventory found one real gap and updated `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-current-invariants.test.ts` to prove current-schema readiness rejection precedes agent-run allocation, TeamRun lookup, and task materialization. No durable file was added or removed.
+- Scenarios added, changed, removed, or rechecked: rechecked actual built-server failed consolidation -> unmanaged old restore rejection -> current new-run admission -> corrected retry -> old restore success; rechecked manager-owned offline identity and exact restore/delete transition lanes; executed a temporary current GraphQL inactive-delete/managed-rejection probe; rechecked task settlement `unregisterTerminated()` cleanup; added the direct delegated-task readiness-order scenario.
+- Commands, environment, fixture, or broader-validation delta: full server build passed; actual built-server lifecycle passed 1 selected case; temporary GraphQL plus service/manager selection passed 4 files/23 tests after a fixture-only diagnostic correction; task file passed 9 tests; final integrated selection passed 7 files/37 tests; server TypeScript, diff, ancestry, and cleanup checks passed. Broader scale/pricing/SafeInt/Chrome repetition was not required because the focused source and execution showed no impact beyond lifecycle integration.
+
+#### Prior Failure Resolution
+
+| Prior scenario / reference | Previous status | Current resolution | Evidence |
+| --- | --- | --- | --- |
+| `APIE2E-F001` / mixed pricing | Resolved before API-REV-003 | Remains resolved; IR-006 does not change pricing | Prior API-REV-003 broad evidence retained |
+| `APIE2E-F002` / first cache state | Resolved in API-REV-003 | Remains resolved; IR-006 does not change current fold/cache semantics | Prior API-REV-003 broad evidence retained |
+| DR-002 integrated restore conflict risk | Source-resolved in IR-006/CRR-009; executable proof pending | Resolved by direct focused built-server, GraphQL, TeamRun integration, and task lifecycle passes | `test-results/api-e2e/logs/32-ir006-built-server-restore-retry.log`; `logs/34-ir006-managed-offline-graphql-delete-pass.log`; `logs/36-ir006-final-integrated-focused-suite.log` |
+
+- Canonical artifacts updated:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-coverage-investigation.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-execution-coverage-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-revision-record.md`
+- Prior result and confidence: `Pass / 97.1%`.
+- Current result and confidence: `Pass / 97.3%`.
+- New or remaining failure IDs: `None`.
+- Recommended recipient: `/code_reviewer` for proportional review of the one changed durable test before delivery resumes.
+- Remaining risks, blocked evidence, or untested scope: known independent Nuxt typecheck package-export incompatibility; external-provider runtime and Electron shell remain unchanged and were not selected. No material IR-006 validation risk remains.

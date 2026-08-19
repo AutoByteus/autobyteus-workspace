@@ -1,5 +1,16 @@
 # Delivery / Release / Deployment Report
 
+## Current Result
+
+- Delivery revision: `DR-002`
+- Latest-base integration: `Blocked — one implementation-owned source conflict`
+- Electron README/build: `Not started`
+- Repository finalization: `Held`
+- Release/deployment: `Not in scope`
+- Required route: `/implementation_engineer`
+- Canonical blocker:
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/delivery-integration-blocker.md`
+
 ## Release / Publication / Deployment Scope
 
 This is the pre-finalization delivery checkpoint. Documentation sync and the
@@ -14,11 +25,38 @@ verification/completion. No release version or deployment target was requested.
 - Handoff summary status: `Updated`
 - Delivery revision record:
   `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/delivery-revision-record.md`
-- Current delivery revision ID: `DR-001`
-- Notes: Reviewed, executed, proportionally re-reviewed, latest-base current,
-  documentation synchronized, and ready for explicit user verification.
+- Current delivery revision ID: `DR-002`
+- Notes: DR-001 was reviewed, executed, proportionally re-reviewed, and docs-
+  synchronized. DR-002 protected that state, but latest-base advancement created
+  a source conflict before the requested Electron build.
 
-## Initial Delivery Integration Refresh
+## DR-002 Re-entry Integration Refresh
+
+- User trigger: refresh potentially updated `origin/personal`, read the current
+  Electron build README, and build Electron for local testing.
+- Previous integrated base:
+  `0194fb4fffa69037a46aeace491024fdf816dde7`
+- Latest fetched base:
+  `1f5663ddb86e478d0b4ffdd878d57dee72d67b4b`
+- Base advanced: `Yes — 8 commits`
+- Local reviewed-state checkpoint:
+  `b68170cf608364bbcd264dde198ad83e030a3bb2`
+- Integration method: `Merge`
+- Integration result: `Blocked`
+- Unmerged path:
+  `autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts`
+- Conflict: latest base's `hasManagedTeamRun(...)` restore guard intersects the
+  ticket's `assertExistingRunRestoreReady()` token migration gate.
+- Auto-merged overlapping paths requiring focused review:
+  `task-delegation-service.ts` and `team-run-service.test.ts` (plus the conflict
+  file).
+- Post-integration executable checks: `Not run — merge incomplete`
+- Electron README/build: `Not started — integrated state unavailable`
+- Evidence:
+  `delivery-evidence/04-reentry-integration-conflict-dr002.log`
+- Classification/recipient: `Local Fix` -> `/implementation_engineer`
+
+## DR-001 Initial Delivery Integration Refresh
 
 - Bootstrap base reference:
   `origin/personal@0194fb4fffa69037a46aeace491024fdf816dde7`
@@ -45,8 +83,8 @@ verification/completion. No release version or deployment target was requested.
 ## User Verification
 
 - Initial explicit user completion/verification received: `No`
-- Initial verification / acceptance reference: Pending user response to
-  `handoff-summary.md`.
+- Initial verification / acceptance reference: User instead requested a current
+  Electron build for local testing; that package is blocked on DR-002 integration.
 - Renewed verification required after later re-integration: `No` at this
   checkpoint; reassess if `origin/personal` advances before finalization.
 - Renewed verification received: `Not needed`
@@ -95,10 +133,9 @@ verification/completion. No release version or deployment target was requested.
 - Merge into target result: `Held`
 - Push target branch result: `Held`
 - Repository finalization status: `Blocked`
-- Blocker: Required explicit user verification/completion only. Before
-  finalization, refresh `origin/personal` again; material advancement must be
-  integrated and checked, and a material user-facing change requires renewed
-  verification.
+- Blocker: First resolve/check the DR-002 latest-base source conflict and build
+  the requested Electron verification artifact; then obtain explicit user
+  verification. Before terminal finalization, refresh `origin/personal` again.
 
 ## Release / Publication / Deployment
 
@@ -184,5 +221,7 @@ rollout:
 
 ## Final Status
 
-`Pass — latest-base current, docs synchronized, handoff ready. Repository
-finalization is intentionally blocked only on explicit user verification.`
+`Blocked — DR-001 remains the protected reviewed/docs-synchronized baseline,
+but latest base advanced and the required merge has one source conflict.
+Electron packaging cannot start until implementation resolves and checks the
+integrated state.`

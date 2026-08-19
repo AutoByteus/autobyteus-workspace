@@ -4,9 +4,49 @@
 
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
+| `DR-002` | User requested a fresh latest-base refresh and local Electron verification build | `DR-001` Pass — prior base current, docs synchronized, verification handoff ready | Blocked — latest base advanced 8 commits; protected candidate checkpointed; merge has one source conflict in `team-run-service.ts`; routed as `Local Fix` before Electron build | `delivery-integration-blocker.md`, `delivery-evidence/04-reentry-integration-conflict-dr002.log`, `handoff-summary.md`, `release-deployment-report.md`, `docs-sync-report.md` |
 | `DR-001` | `CRR-008` Pass over the 17-path `API-REV-003` durable coverage delta, after authoritative `CRR-007` source Pass | N/A — initial delivery baseline | Pass — latest tracked base unchanged/current, durable docs synchronized, user-verification handoff ready; archival/finalization/release held | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/01-*`, `delivery-evidence/02-*`, nine long-lived docs |
 
 ## Revision Entries
+
+### DR-002 — Latest-base conflict blocks requested Electron verification build
+
+- Trigger: the user requested that delivery refresh potentially updated
+  `origin/personal`, read the Electron build README, and build Electron for local
+  verification.
+- Base result: latest `origin/personal` is
+  `1f5663ddb86e478d0b4ffdd878d57dee72d67b4b`, eight commits beyond the DR-001
+  base `0194fb4fffa69037a46aeace491024fdf816dde7`.
+- Reviewed-state protection: delivery created the allowed local checkpoint
+  `b68170cf608364bbcd264dde198ad83e030a3bb2` containing the complete DR-001
+  candidate. It was not pushed and is not terminal finalization.
+- Integration method: merge latest `origin/personal` into the ticket branch.
+- Integration result: `Blocked`. One conflict remains at
+  `autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts`
+  inside `restoreTeamRun(...)`.
+- Conflict meaning: the ticket's required
+  `assertExistingRunRestoreReady()` gate intersects the latest base's new
+  `hasManagedTeamRun(...)` offline-delete lifecycle guard. Delivery cannot
+  discard either behavior or choose source composition without implementation
+  ownership.
+- Auto-merged intersection: `team-run-service.ts`,
+  `task-delegation-service.ts`, and `team-run-service.test.ts` changed on both
+  sides and require focused integrated validation.
+- Classification: `Local Fix`; route to `/implementation_engineer` with the
+  cumulative package and
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/delivery-integration-blocker.md`.
+- Electron result: README not yet read and build not started. A package from the
+  old checkpoint or conflicted index would not represent the current integrated
+  verification candidate.
+- Evidence:
+  `delivery-evidence/04-reentry-integration-conflict-dr002.log`.
+- Current result: `Blocked — implementation-owned latest-base conflict must be
+  resolved and checked before delivery can read current packaging instructions
+  or build Electron.`
+- Next action: implementation resolves/completes the merge and runs focused
+  offline-managed-run plus token-readiness tests. Delivery then re-enters,
+  refreshes base, runs required post-integration checks, reads the current
+  Electron README, builds/verifies the artifact, and updates the user handoff.
 
 ### DR-001 — Integrated-state documentation and verification handoff baseline
 

@@ -1,0 +1,80 @@
+# Delivery Integration Blocker
+
+## Current Result
+
+- Delivery revision: `DR-002`
+- Classification: `Local Fix`
+- Recommended recipient: `/implementation_engineer`
+- Status: `Blocked`
+- User request: refresh latest `origin/personal`, read the Electron build README,
+  and build a local Electron verification artifact.
+
+## Reviewed-State Protection
+
+The complete `DR-001` reviewed, tested, docs-synchronized candidate was protected
+in the allowed local delivery checkpoint commit:
+
+`b68170cf608364bbcd264dde198ad83e030a3bb2`
+
+The checkpoint has not been pushed and is not repository finalization.
+
+## Latest-Base Refresh
+
+- Previous integrated base:
+  `0194fb4fffa69037a46aeace491024fdf816dde7`
+- Latest fetched `origin/personal`:
+  `1f5663ddb86e478d0b4ffdd878d57dee72d67b4b`
+- Base advancement: `8 commits`
+- Integration method: merge `origin/personal` into the ticket branch.
+- Merge state: in progress; `MERGE_HEAD` is the latest fetched base.
+- Evidence:
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/delivery-evidence/04-reentry-integration-conflict-dr002.log`
+
+## Conflict
+
+One unmerged path remains:
+
+`/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts`
+
+The conflict is inside `restoreTeamRun(...)`:
+
+- the ticket requires `TokenUsageMigrationReadiness.assertExistingRunRestoreReady()`
+  before restored providers can replay legacy usage; and
+- latest base changed the existing-run guard from active-only
+  `manager.getTeamRun(...)` behavior to the offline-delete lifecycle's broader
+  `manager.hasManagedTeamRun(...)` contract.
+
+Both behaviors are independently current and must be composed by the source
+owner. Delivery must not choose one side or bypass the reviewed restore gate.
+
+## Auto-Merged Intersection Requiring Validation
+
+Latest base and the token-usage ticket both changed these paths:
+
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-service.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts/tests/unit/agent-team-execution/team-run-service.test.ts`
+
+The implementation owner should review the clean auto-merges, resolve the
+explicit conflict, run focused tests that cover offline managed-run semantics
+plus token-history restore readiness/current-schema admission, and complete the
+merge commit. If source or durable test behavior changes beyond mechanical
+composition, return the integrated state through the applicable source/API/E2E
+review gates before delivery re-entry.
+
+## Electron Build Disposition
+
+- Electron README read: `No`
+- Electron build started: `No`
+- Reason: delivery workflow requires a conflict-free, integrated, checked branch
+  before packaging. Building the pre-integration checkpoint or conflicted index
+  would not be a truthful user-verification artifact.
+
+After implementation returns a conflict-free checked integration, delivery must:
+
+1. verify the latest base remains current;
+2. record the post-integration executable result;
+3. read the current Electron build instructions from the integrated branch;
+4. build and integrity-check the requested Electron artifact; and
+5. update the handoff with exact artifact paths, hashes, signing/notarization
+   state, and residual packaging risks.

@@ -2,16 +2,42 @@
 
 ## Status
 
-- Delivery revision: `DR-001`
+- Delivery revision: `DR-002`
 - Ticket: `token-usage-one-row-per-agent-run`
 - Date: `2026-08-19`
-- State: `Ready for explicit user verification`
+- State: `Blocked — latest-base source conflict; Electron build not started`
 - Ticket branch: `codex/token-usage-one-row-per-agent-run`
 - Finalization target: local `personal`, refreshed from `origin/personal`
-- Latest integrated base:
-  `origin/personal@0194fb4fffa69037a46aeace491024fdf816dde7`
-- Integration method/result: `Already current`; fetched base, ticket `HEAD`, and
-  merge base are identical; divergence `0/0`; no conflicts or new base commits.
+- Latest fetched base:
+  `origin/personal@1f5663ddb86e478d0b4ffdd878d57dee72d67b4b`
+- Protected DR-001 checkpoint:
+  `b68170cf608364bbcd264dde198ad83e030a3bb2`
+- Integration method/result: merge in progress; one unmerged source path blocks
+  post-integration checking and Electron packaging.
+
+## DR-002 Re-entry Blocker
+
+The user requested a fresh base refresh plus an Electron verification build.
+`origin/personal` advanced eight commits. Delivery protected the reviewed DR-001
+candidate, began the required base merge, and stopped on one implementation-
+owned conflict:
+
+`autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts`
+
+The conflict combines the ticket's required pre-existing-run token migration
+readiness gate with latest base's broader offline managed-run restore guard.
+Both contracts must survive. The implementation owner must also inspect the
+clean auto-merges in `task-delegation-service.ts` and
+`team-run-service.test.ts`.
+
+- Canonical blocker:
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/delivery-integration-blocker.md`
+- Evidence:
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/delivery-evidence/04-reentry-integration-conflict-dr002.log`
+- Electron README read: `No`
+- Electron build started: `No`
+- Reason: a package must be built from a conflict-free latest-base integrated
+  state, not the stale checkpoint or conflicted merge index.
 
 ## Delivered
 
@@ -63,6 +89,9 @@
 
 ## Documentation Synced
 
+- DR-002 status: the DR-001 docs sync remains the prior-base result and must be
+  revalidated after the latest-base conflict is resolved. Delivery made no new
+  long-lived documentation claim from the conflicted state.
 - Promoted the approved convention to
   `autobyteus-server-ts/docs/design/production_data_migration_conventions.md`
   and linked it from the server README.
@@ -105,17 +134,11 @@
 
 ## User Verification Requested
 
-Please review the delivered behavior and documentation, and optionally exercise
-the normal/degraded Token Statistics flow in your preferred local build. Then
-reply explicitly with either:
-
-- **Approved — finalize**; or
-- the behavior/documentation changes still required.
-
-Until that explicit signal, the ticket remains under `tickets/in-progress`.
-Delivery will not commit or push the ticket branch, move the ticket to
-`tickets/done`, update/merge/push `personal`, create a version/tag/release,
-deploy, or clean up the ticket worktree/branch.
+Superseded for now by the user's Electron-build request. After the source owner
+returns a conflict-free checked integration, delivery will read the current
+packaging instructions, build and verify the Electron artifact, then provide
+its exact path/hash/signing status for local user testing. Finalization remains
+held until explicit verification after that package is available.
 
 ## Canonical Artifact Package
 

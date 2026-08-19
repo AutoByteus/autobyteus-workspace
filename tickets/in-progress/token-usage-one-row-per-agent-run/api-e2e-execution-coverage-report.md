@@ -2,26 +2,26 @@
 
 ## Execution Round Meta
 
-- API/E2E Revision: `API-REV-003`
-- Trigger: `IR-005` / `CRR-007` Pass, resuming after `API-REV-002` and `APIE2E-F002`.
-- Upstream revisions: `SR-006`; `ARCH-REV-006`; `IR-005`; `CRR-007`.
+- API/E2E Revision: `API-REV-004`
+- Trigger: `IR-006` / `CRR-009` Pass after latest-base integration changed TeamRun restore identity and delegated-task lifecycle seams following `API-REV-003`.
+- Upstream revisions: `SR-006`; `ARCH-REV-006`; `IR-006`; `CRR-009`; prior `API-REV-003`; prior proportional test review `CRR-008`.
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run`
 - Ticket: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run`
 - Execution date / host: 2026-08-19; macOS 26.5.2 arm64; Europe/Berlin.
 - Result: `Pass`.
-- Final validation confidence: `97.1%`.
-- Broader validation: `Required` and completed through released-scale real SQLite plus actual-server Chrome.
-- Durable coverage changed by API/E2E: `Yes`; 17 paths; no file removed.
+- Final validation confidence: `97.3%`.
+- Broader validation: `Not Required` for the focused IR-006 delta; unaffected released-scale, pricing, SafeInt, API, and Chrome evidence from `API-REV-003` remains applicable.
+- Durable coverage changed by API/E2E in this round: `Yes`; exactly one updated path; no file added or removed.
 - Required next gate: `/code_reviewer` proportional test-code review before delivery.
 
 ## Investigation And Execution Basis
 
-Execution followed the round-3 plan written first in:
+Execution followed the round-4 integrated-source delta written before focused execution or durable editing in:
 `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-coverage-investigation.md`.
 
-The approved proof target is the strict current one-row model plus deterministic released-data transition: current folds and APIs never inspect the legacy event table; migration-only code source-shapes and consolidates released rows; incomplete consolidation gates history/restores but not new runs; invalid current schema is fatal; unsafe public integers reject without losing exact persistence; settings uses created-in-range/lifetime totals.
+The focused proof target was the IR-006 integration delta: actual built-server failed-consolidation recovery must distinguish unmanaged historical restoration from a manager-owned current root; current GraphQL must retain exact inactive restore/delete behavior; and delegated-task admission/settlement must preserve current-schema readiness plus exact manager cleanup. The broad strict one-row transition proof completed in `API-REV-003` remains the unaffected baseline.
 
-The exact prior failure was rechecked before expansion. The corrected local first-observation state passed. The later failing historical-unknown case was a stale test setup because it injected through current normalization; it was retargeted to actual released-row consolidation and current output. Two GraphQL assertions already classified as event-model remnants were corrected without changing production source.
+No prior implementation failure remained open. Focused inventory found one durable regression gap: delegated-task readiness ordering had no direct assertion. That decision was added to the coverage investigation before updating the test. All other selected coverage remained valid.
 
 ## Compatibility / Legacy Scope Check
 
@@ -43,7 +43,7 @@ The exact prior failure was rechecked before expansion. The corrected local firs
 | REQ-023–REQ-026 / AC-022–AC-025: forward-only degraded/fatal gate | Actual server failed consolidation -> healthy -> old restore reject -> new run -> retry import; injected overlap; standalone plus root/nested/delegated/task-team restore service tests; fatal current schema Chrome target; static scan | Pass |
 | Public SafeInt / post-commit quality | Real Prisma stores 9007199254740992n and revision/report 2; GraphQL returns null and `TOKEN_USAGE_SAFE_INTEGER_EXCEEDED:accounting_input_tokens`; lifecycle reports public-summary unavailable, not persistence unavailable | Pass |
 
-## Additional Repository Coverage Execution
+## Prior API-REV-003 Repository Coverage Baseline
 
 All commands ran from the assigned worktree with repository-locked dependencies and isolated test data.
 
@@ -68,7 +68,7 @@ All commands ran from the assigned worktree with repository-locked dependencies 
 
 The 125 passing cases include actual built-server startup/relaunch, current GraphQL, store/repository, source shaping, runner/status, current-schema readiness, standalone restore gate, root/nested/delegated/task-team restore gate, exact migration fold, unsafe public projection lifecycle, pricing, ninth-series and byte caps. The only three skipped cases are explicitly gated by `RUN_RUNTIME_TOKEN_USAGE_E2E=1` and require external LM Studio/Codex/Claude runtimes; no provider implementation changed.
 
-## Validation Confidence Scorecard
+## Prior API-REV-003 Validation Confidence Scorecard
 
 | Confidence Category | Post-Repository | Final | Evidence Gained By Broader Validation | Residual Uncertainty |
 | --- | ---: | ---: | --- | --- |
@@ -87,7 +87,7 @@ The 125 passing cases include actual built-server startup/relaunch, current Grap
 - Applicable category below 90%: `No`.
 - Default 95% target met: `Yes`.
 
-## Broader Validation Decision And Execution
+## Prior API-REV-003 Broader Validation Decision And Execution
 
 - Decision: `Required`.
 - Modes: released-scale real SQLite probe; actual built server; Nuxt dev proxy; local installed Chrome headless; semantic DOM assertions and screenshots; Nuxt production build.
@@ -129,7 +129,7 @@ The 125 passing cases include actual built-server startup/relaunch, current Grap
 | Fatal current schema | Built server exits 1 with bounded versioned platform-fatal current-schema evidence; no legacy fallback |
 | Reusable pages | Legacy row deletion raises SQLite freelist; physical DB may stay same/grow and no `VACUUM` runs |
 
-## Tests Implemented Or Updated
+## Prior API-REV-003 Tests Implemented Or Updated
 
 API/E2E added or updated 17 repository-resident paths:
 
@@ -157,13 +157,13 @@ API/E2E added or updated 17 repository-resident paths:
 - Removed within retained tests: imports and assertions tied to deleted append/list/aggregate ledger APIs, event-bucket reconstruction, old source-shaping whole-ledger helpers, and obsolete global-fatal behavior.
 - Replacement: current record/fold/repository/GraphQL owners and capability-scoped startup/lifecycle evidence listed above.
 
-## Durable Coverage Changed In The Codebase
+## Prior API-REV-003 Durable Coverage Changed In The Codebase
 
 - Repository-resident durable coverage changed: `Yes`.
 - Added/updated paths: 17, listed above.
 - Removed paths: `None`.
-- Successful post-API test-code review: `Pending`.
-- Routing consequence: delivery is not eligible until `/code_reviewer` completes proportional review.
+- Successful post-API test-code review: `CRR-008` Pass.
+- Routing consequence at that revision: satisfied before the latest-base integration triggered this focused round.
 
 ## Other Execution Artifacts
 
@@ -203,7 +203,7 @@ All paths below are under:
 - Failure injection uses a delegating real Prisma adapter or deliberate released fixture state; atomicity is supplied by real SQLite transactions.
 - External LM Studio/Codex/Claude runtime calls are not emulated and their opt-in E2E remains skipped.
 
-## Result Summary
+## Prior API-REV-003 Result Summary
 
 | Result | Scenario IDs | Summary |
 | --- | --- | --- |
@@ -227,23 +227,97 @@ All paths below are under:
 
 Final process and filesystem audit found no owned probe/server process and no `token-browser-*` or released-scale DB/runtime residue.
 
-## Preliminary Classification
+## Prior API-REV-003 Preliminary Classification
 
 - Classification: `Pass`.
 - Prior failure resolution: `APIE2E-F002` is resolved by reviewed source and direct rerun. The later historical-unknown failure was stale coverage and is replaced by the actual released migration case.
 - Open critical finding: `None`.
 - Known non-product issue: Nuxt typecheck toolchain package-export incompatibility, separately evidenced and not hidden.
 
-## Recommended Recipient
+## Prior API-REV-003 Recommended Recipient
 
-`/code_reviewer` for the mandatory proportional review of the 17 API/E2E-owned durable coverage changes. Do not advance directly to delivery.
+`/code_reviewer` for the mandatory proportional review of the 17 API/E2E-owned durable coverage changes. This gate completed as `CRR-008` Pass before IR-006.
 
-## Latest Authoritative Result
+## Prior API-REV-003 Authoritative Result
 
 - Result: `Pass`.
 - Final validation confidence: `97.1%`.
 - Default clean target met: `Yes`.
 - Applicable categories below 90%: `None`.
 - Critical acceptance criteria unproven: `None`.
-- Durable coverage changed: `Yes`; proportional review pending.
-- Required next recipient: `/code_reviewer`.
+- Durable coverage changed: `Yes`; proportional review completed in `CRR-008`.
+- Required next recipient at that revision: `/code_reviewer` (completed).
+
+## API-REV-004 Focused Integrated Revalidation
+
+### Execution Matrix
+
+All commands ran from `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts` with repository-locked dependencies, normal Prisma reset/migration setup, and isolated test-owned data.
+
+| ID | Command / execution surface | Result | Evidence |
+| --- | --- | --- | --- |
+| IR006-001 | `pnpm -C autobyteus-server-ts build` | Pass: shared packages, Prisma generation, server TypeScript build, assets, and bootstrap smoke | `test-results/api-e2e/logs/31-ir006-integrated-server-build.log` |
+| IR006-002 | `pnpm test --run --maxWorkers=1 tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts -t 'keeps the server healthy after failed consolidation, admits a new current run, and imports disjoint legacy rows on restart retry'` | Pass: 1 selected actual built-server test; 3 filtered cases skipped | `logs/32-ir006-built-server-restore-retry.log` |
+| IR006-003 | Temporary exact inactive-delete GraphQL probe plus TeamRun unit/integration coverage | Final pass: 4 files / 23 tests | `logs/34-ir006-managed-offline-graphql-delete-pass.log` |
+| IR006-004 | Focused durable delegated-task admission/settlement file | Pass: 1 file / 9 tests | `logs/35-ir006-task-admission-settlement.log` |
+| IR006-005 | Final integrated manager/service/task/archive GraphQL selection | Pass: 7 files / 37 tests | `logs/36-ir006-final-integrated-focused-suite.log` |
+| IR006-006 | `pnpm exec tsc -p tsconfig.build.json --noEmit --pretty false`; `git diff --check`; base ancestry/divergence; temp-probe/data/process cleanup checks | Pass; HEAD `cbbedd6ea0e6d466a3e3741c7216f03887b0182e`; latest base ancestor; `0 behind / 2 ahead` | `logs/37-ir006-ts-diff-cleanup.log` |
+
+### Requirement-Linked Outcomes
+
+1. **Actual built-server recovery lifecycle — Pass.** A deliberately invalid released source caused consolidation failure without taking down the server. The unmanaged historical TeamRun restore was rejected before provider construction, a newly allocated current run was admitted and persisted, the corrected source was imported on restart retry, source rows were deleted atomically, and the historical run then restored successfully.
+2. **Managed/offline identity and exact inactive GraphQL lifecycle — Pass.** The current manager-owned root remains the same identity even while offline and does not take the unmanaged historical readiness path. Exact-ID transition-lane integration preserves delete/restore serialization. The temporary current GraphQL probe deleted only the inactive package/index/history record and rejected deletion of the managed root with the active/stopping classification.
+3. **Delegated-task admission and settlement cleanup — Pass.** The newly added durable assertion proves `assertCurrentSchemaReady()` runs before delegated agent-run allocation, TeamRun lookup, or task record materialization. Existing integrated coverage proves accepted settlement calls `unregisterTerminated()` once after committed teardown and does not unregister when cleanup rejects.
+
+### Temporary Fixture Diagnostic
+
+The initial copied GraphQL probe run reported `1 failed / 22 passed` because its local copied archive test fixture did not implement the latest-base manager method `withUnmanagedHistoryDeletion`. This method is a required mock boundary for the existing resolver, not an implementation defect. The coverage investigation already classified the exact inactive-delete journey as a temporary probe; the fixture was updated, the identical four-file command passed `23/23`, and the temporary test file was deleted. Diagnostic evidence is retained in `logs/33-ir006-managed-offline-graphql-delete.log`; the authoritative rerun is `logs/34-ir006-managed-offline-graphql-delete-pass.log`. No product failure ID was opened.
+
+### Durable Coverage Delta
+
+- Updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-current-invariants.test.ts`
+- Added files: `None`.
+- Removed files: `None`.
+- New assertion: current-schema readiness rejection occurs before delegated agent-run allocation, TeamRun resolution, or materialization.
+- Review status: proportional test-code review is required because repository-resident durable coverage changed after `CRR-009`.
+
+### Confidence Scorecard
+
+| Confidence category | Score | Evidence / residual uncertainty |
+| --- | ---: | --- |
+| Requirement and acceptance-criteria proof | 98% | All three material IR-006 lifecycle seams pass; the complete API-REV-003 requirement map remains applicable |
+| Changed-boundary execution directness | 99% | Actual built server/restart/released SQLite lifecycle and direct current service/task execution |
+| Cross-boundary integration realism and mock gap | 98% | Real built-server GraphQL path and real manager/service integration; exact delete mutation uses a controlled current resolver fixture |
+| Environment, configuration, identity, and fixture fidelity | 97% | Integrated merge, normal build, reset/migrated SQLite, exact released fixtures, and exact managed/unmanaged identities |
+| Failure, edge-case, lifecycle, and recovery evidence | 98% | Consolidation failure/retry, old rejection/new admission, exact delete/restore, offline identity, admission rejection, and teardown cleanup |
+| User-surface, browser, and desktop-shell confidence | 95% | Prior normal/degraded/fatal Chrome evidence remains valid; IR-006 changes no frontend or Electron-shell source |
+| Durable regression coverage quality and relevance | 96% | One narrow readiness-order case closes the only focused gap; final 37-test selection passes; proportional review is pending |
+
+- Overall final confidence: `97.3%` (simple average, rounded from 97.29%).
+- Default clean target met: `Yes`.
+- Any applicable category below 90%: `No`.
+- Critical acceptance criteria unproven: `None`.
+
+### Broader Validation Decision
+
+- Decision: `Not Required` for API-REV-004.
+- Rationale: the actual built-server recovery path, current GraphQL mutation, real TeamRun manager/service integration, and direct task lifecycle tests exercise the complete changed IR-006 boundary. No focused result suggests impact to previously passed scale, pricing, SafeInt, frontend, or browser behavior.
+- Retained prior evidence: API-REV-003 released-scale (~154k rows), pricing/SafeInt, broad API, and Chrome normal/degraded/fatal results.
+- Electron execution: not selected; there is still no IPC, preload, native, window, packaging, or shell lifecycle delta.
+
+### Cleanup And Residual Risk
+
+- The temporary GraphQL probe file is absent.
+- No run-specific `token-consolidation-retry-startup` or IR-006 SQLite residue was found.
+- No matching owned Node process remained after execution.
+- Ticket logs are retained intentionally; production profile/data, external accounts, and Electron were never touched.
+- Known non-product limitation retained: Nuxt typecheck remains blocked by the previously recorded `vue-tsc`/TypeScript package-export incompatibility. Production frontend evidence was not invalidated by IR-006.
+
+## Latest Authoritative Result — API-REV-004
+
+- Result: `Pass`.
+- Final validation confidence: `97.3%`.
+- Broader validation: `Not Required` for the focused delta.
+- New or remaining failure IDs: `None`.
+- Durable coverage changed this round: `Yes`; exactly one updated path, no additions or removals.
+- Required next recipient: `/code_reviewer` for proportional review of the changed test. Delivery and Electron work remain paused through that gate.

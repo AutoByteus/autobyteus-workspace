@@ -225,6 +225,61 @@ const createSettlementHarness = (input: {
 };
 
 describe("current task delegation invariants", () => {
+  it("rejects current-schema admission before delegated execution allocation or materialization", async () => {
+    const assertCurrentSchemaReady = vi.fn(() => {
+      throw new Error("TOKEN_USAGE_CURRENT_SCHEMA_REQUIRED");
+    });
+    const allocateForAgentDefinition = vi.fn(async () => "task-agent-should-not-allocate");
+    const requireTeamRun = vi.fn(async () => {
+      throw new Error("Task host should not be resolved before current-schema admission.");
+    });
+    const currentIndex = new TeamExecutionIndex(tree);
+    const service = new TaskDelegationService({
+      rootTeamRunId: tree.rootTeam.teamRunId,
+      config: {
+        rootTeam: {
+          children: [{ ...configuredAgent("/researcher", "configured-researcher"), kind: "agent" }],
+        },
+        handoffs: [],
+      } as never,
+      initialTasks: Object.freeze({
+        schemaVersion: 1 as const,
+        rootTeamRunId: tree.rootTeam.teamRunId,
+        records: Object.freeze([]),
+      }),
+      getTree: () => tree,
+      getIndex: () => currentIndex,
+      isRootOpen: () => true,
+      authorize: () => undefined,
+      requireTeamRun,
+      teamRunResolver: { unregisterTerminated: vi.fn() } as never,
+      commitTaskMutation: async () => { throw new Error("Unexpected activation commit."); },
+      commitTaskSettlement: async () => { throw new Error("Unexpected settlement."); },
+      enterLifecycleFailStop: vi.fn(),
+      replaceState: vi.fn(),
+      publish: vi.fn(),
+      deliverSystemMessage: async () => ({ accepted: true }),
+      agentRunIdentityAllocator: { allocateForAgentDefinition },
+      tokenUsageMigrationReadiness: { assertCurrentSchemaReady },
+    });
+    const context = { identity: createTeamMemberExecutionIdentity({
+      rootTeamRunId: tree.rootTeam.teamRunId,
+      memberAddress: "/coordinator",
+      agentRunId: "root-coordinator",
+    }) };
+
+    await expect(service.delegateTask(
+      context,
+      { recipient_address: "/researcher", description: "blocked work" },
+      { kind: "agent", address: at("/researcher") },
+    )).rejects.toThrow("TOKEN_USAGE_CURRENT_SCHEMA_REQUIRED");
+
+    expect(assertCurrentSchemaReady).toHaveBeenCalledOnce();
+    expect(allocateForAgentDefinition).not.toHaveBeenCalled();
+    expect(requireTeamRun).not.toHaveBeenCalled();
+    expect(service.getSnapshot().records).toEqual([]);
+  });
+
   it("builds the exact assignee packet from delegator identity without exposing task IDs", () => {
     const message = buildTaskAssigneeWorkPacket({
       delegator: createTeamMemberExecutionIdentity({

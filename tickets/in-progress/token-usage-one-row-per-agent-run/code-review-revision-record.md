@@ -14,6 +14,8 @@ The latest canonical review report remains authoritative. This record preserves 
 | `CRR-006` | `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/code-review-report.md` | Source re-review of `IR-004` after `CRR-005` | `Fail` | `Fail` | `CR-005` resolved; `CR-006` |
 | `CRR-007` | `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/code-review-report.md` | Source re-review of `IR-005` after `CRR-006` | `Fail` | `Pass` | `CR-006` resolved |
 | `CRR-008` | `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-test-review-report.md` | Proportional review after `API-REV-003` Pass | `N/A` | `Pass` | None |
+| `CRR-009` | `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/code-review-report.md` | Integrated source review of `IR-006` after delivery conflict `DR-002` | `Pass` | `Pass` | None; `CR-001`–`CR-006` remain resolved |
+| `CRR-010` | `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-test-review-report.md` | Proportional review after focused integrated `API-REV-004` Pass | `Pass` | `Pass` | None |
 
 ## Revision Entries
 
@@ -223,3 +225,51 @@ None.
 - Material score or classification changes: no source scorecard change; proportional test-review result is `Pass`.
 - Recommended recipient: `/delivery_engineer`
 - Remaining risks or uncertainty: known independent Nuxt `vue-tsc`/TypeScript package-export incompatibility; three explicit external-provider runtime cases remain opt-in/skipped; Electron shell was unchanged and not selected. Delivery must refresh the branch against its recorded base, verify integrated state, sync durable documentation, and prepare final handoff.
+
+### CRR-009 — Latest-base TeamRun/readiness integration passes source review
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/code-review-report.md`
+- Review entry point and round: `Implementation Review`, round `9`
+- Triggering role, report path, and finding or scenario IDs: `/implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/implementation-revision-record.md`; `IR-006`; delivery conflict `DR-002`; no separate finding ID.
+- Relevant solution revision IDs: `SR-006`
+- Relevant architecture-review revision IDs: `ARCH-REV-006`
+- Relevant implementation revision IDs: `IR-006` (current), `IR-001`–`IR-005` (baseline)
+- Relevant API/E2E revision IDs: `API-REV-003`
+- Relevant delivery revision IDs: `DR-002`, `DR-001`
+- Prior authoritative result: source `CRR-007` Pass; successful-test review `CRR-008` Pass.
+- Current authoritative result: `Pass`
+- What changed in the review result and why: merge `cbbedd6ea0e6d466a3e3741c7216f03887b0182e` integrates latest `origin/personal` and resolves its only implementation-owned conflict. `TeamRunService.restoreTeamRun()` now preserves latest-base managed-root identity before applying token restore readiness to an actual unmanaged restore. New TeamRuns and delegated tasks retain current-schema admission before allocation/materialization; accepted task settlement uses the current `unregisterTerminated()` contract. No compatibility alias or legacy token path was introduced.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-001`–`CR-006` | Resolved | Remain resolved | `IR-002`–`IR-005`, `CRR-002`–`CRR-007`, `API-REV-003` | `IR-006` changes only TeamRun/task lifecycle integration. Exact BigInt commit, pricing ownership, mixed currency, first cache state, and released unknown-input migration owners are unchanged. |
+
+- New or remaining finding IDs: None.
+- Material score or classification changes: source remains `Pass`; current integrated score is `9.3/10` (`93.0/100`). New reachable integration premise `MP-CR-005` distinguishes manager-owned current roots from unmanaged historical restores.
+- Recommended recipient: `/api_e2e_engineer`
+- Remaining risks or uncertainty: `API-REV-003` predates the merge. Focused combined execution must cover actual built-server degraded restore rejection/retry/success, managed/offline TeamRun identity and exact restore/delete behavior, and the task-delegation admission/settlement intersection. Unaffected released-scale, pricing, SafeInt, and Chrome layout evidence need not be repeated unless the focused run exposes broader impact. Delivery-owned records remain uncommitted and Electron packaging has not started.
+
+### CRR-010 — Focused integrated durable coverage passes proportional review
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-test-review-report.md`
+- Review entry point and round: successful API/E2E proportional test-code review, round `2`
+- Triggering role, report path, and finding or scenario IDs: `/api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-execution-coverage-report.md`; focused integrated `API-REV-004`; no failure IDs.
+- Relevant solution revision IDs: `SR-006`
+- Relevant architecture-review revision IDs: `ARCH-REV-006`
+- Relevant implementation revision IDs: `IR-006`
+- Relevant API/E2E revision IDs: `API-REV-004` (current), `API-REV-003` (unaffected broad baseline)
+- Relevant delivery revision IDs: `DR-002`, `DR-001`
+- Prior authoritative result: source `CRR-009` Pass; prior proportional test review `CRR-008` Pass.
+- Current authoritative result: `Pass`
+- What changed in the review result and why: `API-REV-004` passed the post-merge built-server restore/retry, managed/offline GraphQL/delete, and integrated task lifecycle selection at 97.3% confidence. Its one durable update adds a direct delegated-task readiness-order regression proving rejection before AgentRun allocation, TeamRun lookup/materialization, or task-record mutation. The test is coherent, deterministic, requirement-aligned, and passed alone (`9 tests`) and in the final integrated selection (`7 files / 37 tests`).
+
+#### Prior Finding Resolution
+
+None.
+
+- New or remaining finding IDs: None.
+- Material score or classification changes: no source scorecard change; proportional test-review result is `Pass`.
+- Recommended recipient: `/delivery_engineer`
+- Remaining risks or uncertainty: the independent Nuxt `vue-tsc`/TypeScript package-export incompatibility and external-provider opt-in exclusions remain as recorded. Delivery must verify latest-base state, preserve the reviewed uncommitted package, then resume the user-requested Electron README/build/integrity workflow and update delivery evidence before final handoff.

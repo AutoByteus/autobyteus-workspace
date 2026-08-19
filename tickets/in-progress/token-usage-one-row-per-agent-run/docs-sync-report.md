@@ -1,8 +1,22 @@
 # Docs Sync Report
 
+## Current Re-entry Status
+
+- Delivery revision: `DR-002`
+- Result: `Blocked`
+- Latest fetched base:
+  `origin/personal@1f5663ddb86e478d0b4ffdd878d57dee72d67b4b`
+- Reason: latest-base merge has one implementation-owned conflict in
+  `autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts`.
+- Documentation disposition: the report below remains the authoritative DR-001
+  prior-base sync, but it is not promoted as current with latest base until the
+  conflict is resolved, integrated checks pass, and durable docs are re-audited.
+- Long-lived docs edited in DR-002: `None`.
+- Canonical blocker: `delivery-integration-blocker.md`.
+
 ## Scope
 
-- Delivery revision: `DR-001`
+- Delivery revision: `DR-001` historical integrated-state result
 - Ticket: `token-usage-one-row-per-agent-run`
 - Trigger: `CRR-008` proportional durable-test review Pass after authoritative
   source review `CRR-007` Pass and API/E2E execution `API-REV-003` Pass.
@@ -86,10 +100,11 @@
 
 ## Delivery Continuation
 
-- Result: `Pass`
-- Next delivery action: Present `handoff-summary.md` and wait for explicit user
-  verification/completion before archival, commit, push, final-target merge,
-  release, deployment, or cleanup.
+- Result: `Blocked` in DR-002; DR-001 remains the historical prior-base Pass.
+- Next delivery action: `/implementation_engineer` resolves and checks the
+  latest-base source conflict. Delivery then revalidates docs against the
+  integrated state, reads the current Electron packaging README, and builds the
+  requested local verification artifact before asking for user verification.
 - Notes: The known Nuxt typecheck package-export incompatibility remains a
   transparent toolchain blocker, not a product/docs failure. Production Nuxt
   build, components, server build, current API, Chrome, scale, lifecycle, and
