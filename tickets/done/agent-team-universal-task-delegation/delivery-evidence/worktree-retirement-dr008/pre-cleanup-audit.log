@@ -1,0 +1,36 @@
+timestamp=2026-08-19T04:15:39Z
+main=/Users/normy/autobyteus_org/autobyteus-workspace-superrepo
+worktree=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation
+local_personal=eb9fc2287a2650ddb73ae0a4b41c60e34040e965
+remote_personal=eb9fc2287a2650ddb73ae0a4b41c60e34040e965
+promotion_merge=c4bcec60b557839cc2d6093ed2d20e23f1ead03a
+promotion_merge_in_local_personal=yes
+promotion_merge_in_remote_personal=yes
+source_checkpoint=659a6be15926a13fba3520174ac9714d0c73ebb5
+source_checkpoint_in_local_personal=yes
+source_checkpoint_in_remote_personal=yes
+source_worktree_head=659a6be15926a13fba3520174ac9714d0c73ebb5
+source_remote=659a6be15926a13fba3520174ac9714d0c73ebb5
+source_tracked_status=0 paths
+source_untracked_nonignored=0 paths
+worktree_size=6.9G
+electron_dist_size=3.1G
+ignored_ticket_log_preserved=/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-team-universal-task-delegation/delivery-evidence/worktree-retirement-dr008/preserved-api-f004-postfix-focused.log
+ignored_ticket_log_sha256=6159e12703d310cb59f233438f4d898969b828ba031a94d828600d71ebf60b37
+docker_runtime_source=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/docker/.runtime/electron-agent-input-controls-regression-dr005.env
+docker_runtime_preserved=/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/docker/.runtime/electron-agent-input-controls-regression-dr005.env
+docker_runtime_sha256=f012e69bfc36d1ea29b9aecab3bd5fa20ed914fb32e94bf637c47dd50fc3c988
+docker_runtime_values:
+AUTOBYTEUS_BACKEND_PORT=52704
+AUTOBYTEUS_VNC_PORT=52705
+AUTOBYTEUS_WEB_VNC_PORT=52706
+AUTOBYTEUS_CHROME_DEBUG_PORT=52707
+AUTOBYTEUS_IMAGE_TAG=latest
+AUTOBYTEUS_SKIP_SYNC=1
+docker_container=0ec4a7e360ec|electron-agent-input-controls-regression-dr005-autobyteus-server-1|Up 15 hours|0.0.0.0:52705->5900/tcp, [::]:52705->5900/tcp, 0.0.0.0:52706->6080/tcp, [::]:52706->6080/tcp, 0.0.0.0:52704->8000/tcp, [::]:52704->8000/tcp, 0.0.0.0:52707->9223/tcp, [::]:52707->9223/tcp
+docker_health={"status":"ok","message":"Server is running"}
+dependent_branch=codex/agent-team-released-history-migration-recovery|upstream=origin/codex/agent-team-universal-task-delegation
+cleanup_scope=remove worktree registration and directory; delete merged local source branch; retain remote source branch because a live dependent branch tracks it; retain Docker container/volumes and protected git stash/tmp backups
+main_helper_pre_removal:
+NAME                                                                 IMAGE                      COMMAND                  SERVICE             CREATED        STATUS        PORTS
+electron-agent-input-controls-regression-dr005-autobyteus-server-1   autobyteus-server:latest   "/usr/local/bin/entr…"   autobyteus-server   15 hours ago   Up 15 hours   0.0.0.0:52705->5900/tcp, [::]:52705->5900/tcp, 0.0.0.0:52706->6080/tcp, [::]:52706->6080/tcp, 0.0.0.0:52704->8000/tcp, [::]:52704->8000/tcp, 0.0.0.0:52707->9223/tcp, [::]:52707->9223/tcp

@@ -9,8 +9,8 @@ Initial delivery-stage latest-base refresh, explicit no-impact documentation ass
 - Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/delivery-revision-record.md`
-- Current delivery revision ID: `DR-009`
-- Notes: Repository finalization, reviewed Docker repair, user-tested isolated node, promotion to `origin/personal`, refreshed main-personal worktree, and the requested personal-flavor local Electron build are complete.
+- Current delivery revision ID: `DR-010`
+- Notes: Repository finalization, reviewed Docker repair, user-tested isolated node, promotion to `origin/personal`, refreshed main-personal Electron build, and obsolete AgentTeam source-worktree cleanup are complete.
 
 ## Initial Delivery Integration Refresh
 
@@ -80,8 +80,8 @@ Initial delivery-stage latest-base refresh, explicit no-impact documentation ass
 - Applicable: `No` in the currently authorized scope.
 - Method: `Other` — not selected.
 - Method reference / command: N/A
-- Release/publication result: `Not required` at DR-009.
-- Release notes handoff result: `Not required` at DR-009.
+- Release/publication result: `Not required` at DR-010.
+- Release notes handoff result: `Not required` at DR-010.
 - Local Docker runtime result: `Pass`; explicitly authorized test node only.
 - Blocker: None for the requested local runtime. Any public release/deployment requires separate explicit user direction.
 
@@ -209,6 +209,18 @@ Repository finalization and cleanup were followed by a clean refresh of the surv
 
 Before finalization, reject or revise the local candidate if user verification shows persistent Team draft text after admitted send, missing successful transcript propagation, stale attachment tray state, retained/removed request/event mismatch, cross-member leakage, or standalone regression. After future finalization, use a reviewed revert or forward corrective change rather than rewriting published history. No tag, release, or deployment exists for this ticket.
 
+
+## Obsolete AgentTeam Source-Worktree Cleanup
+
+- Personal ancestry: `Pass`; local and remote personal contain `c4bcec60b557839cc2d6093ed2d20e23f1ead03a` and `659a6be15926a13fba3520174ac9714d0c73ebb5`.
+- Source worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation` removed and pruned after clean-status verification.
+- Local source branch: deleted after merged-ancestry verification.
+- Remote source branch: retained because `codex/agent-team-released-history-migration-recovery` still uses it as upstream.
+- Docker continuity: runtime state copied to main personal; container and named volumes preserved; health remains `ok` at `http://localhost:52704/rest/health`.
+- Local Electron continuity: main-personal app/DMG/ZIP remain present.
+- Safety: unique ignored test evidence archived; protected stashes/backups, production/user data, and unrelated `.article-work/` preserved.
+- Evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-team-universal-task-delegation/delivery-evidence/worktree-retirement-dr008`.
+
 ## Final Status
 
-`DR-009 Pass — origin/personal and the main local personal worktree were current; personal-flavor macOS arm64 Electron 1.4.52 built successfully; application/DMG/ZIP integrity passed; unrelated local work preserved; no public release.`
+`DR-010 Pass — personal contains the AgentTeam delegation promotion; obsolete source worktree and merged local branch retired; dependent remote branch, Docker node/state, main Electron artifacts, protected backups, and unrelated local work preserved; no public release.`

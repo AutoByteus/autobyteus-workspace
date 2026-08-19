@@ -3,8 +3,8 @@
 ## Ticket And Handoff State
 
 - Ticket: `electron-agent-input-controls-regression`
-- Delivery revision: `DR-009`
-- Current disposition: complete. Repository finalization, reviewed Docker packaging repair, isolated Docker server health, user Docker verification, promotion to `origin/personal`, main-personal refresh, and the requested personal-flavor local Electron build all passed.
+- Delivery revision: `DR-010`
+- Current disposition: complete. Repository finalization, reviewed Docker packaging repair, isolated Docker server health, user Docker verification, promotion to `origin/personal`, main-personal Electron build, and obsolete AgentTeam source-worktree cleanup all passed.
 - Repository finalization target: `codex/agent-team-universal-task-delegation`, as recorded in `ticket-description.md`.
 - Aggregate promotion target: `origin/personal`, explicitly authorized after successful Docker testing.
 - Explicit user finalization authorization received: `Yes` — “i tested. the task is done. finalize to the base branch”.
@@ -162,3 +162,14 @@
 - Personal promotion refresh evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/evidence/personal-promotion-refresh.log`.
 - Personal promotion result: `Pass`; `origin/personal` accepted merge `c4bcec60b557839cc2d6093ed2d20e23f1ead03a`, remote ancestry/tree identity passed, and the Docker node remained healthy.
 - Main-personal Electron build: `Pass`; personal flavor version `1.4.52` built from refreshed `personal@589c06c2e`, and application/DMG/ZIP verification passed.
+
+## Obsolete AgentTeam Source-Worktree Cleanup
+
+- Personal ancestry: `Pass`; local and remote `personal` contain promotion merge `c4bcec60b557839cc2d6093ed2d20e23f1ead03a` and source checkpoint `659a6be15926a13fba3520174ac9714d0c73ebb5`.
+- Source worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation` was clean, removed, and pruned.
+- Local source branch: deleted after merged-ancestry verification.
+- Remote source branch: retained because active branch `codex/agent-team-released-history-migration-recovery` still tracks it.
+- Docker continuity: runtime state moved to the main-personal worktree; container and named volumes remain; REST health is `ok`.
+- Electron continuity: main-personal application, DMG, and ZIP remain present.
+- Safety: one unique ignored test log archived; production/user data, protected stashes/backups, and unrelated `.article-work/` remain untouched.
+- Evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-team-universal-task-delegation/delivery-evidence/worktree-retirement-dr008`.

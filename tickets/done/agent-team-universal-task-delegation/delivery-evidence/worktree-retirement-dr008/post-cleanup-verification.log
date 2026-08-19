@@ -1,0 +1,26 @@
+timestamp=2026-08-19T04:16:25Z
+worktree_path_exists=no
+worktree_registration_count=0
+local_source_branch_exists=no
+remote_source_branch=659a6be15926a13fba3520174ac9714d0c73ebb5
+remote_source_retained_reason=codex/agent-team-released-history-migration-recovery still tracks origin/codex/agent-team-universal-task-delegation
+local_personal=eb9fc2287a2650ddb73ae0a4b41c60e34040e965
+remote_personal=eb9fc2287a2650ddb73ae0a4b41c60e34040e965
+personal_divergence=0	0
+promotion_merge_in_local_personal=yes
+promotion_merge_in_remote_personal=yes
+docker_runtime_preserved=/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/docker/.runtime/electron-agent-input-controls-regression-dr005.env
+docker_runtime_exists=yes
+docker_container=0ec4a7e360ec|electron-agent-input-controls-regression-dr005-autobyteus-server-1|Up 15 hours|0.0.0.0:52705->5900/tcp, [::]:52705->5900/tcp, 0.0.0.0:52706->6080/tcp, [::]:52706->6080/tcp, 0.0.0.0:52704->8000/tcp, [::]:52704->8000/tcp, 0.0.0.0:52707->9223/tcp, [::]:52707->9223/tcp
+docker_health={"status":"ok","message":"Server is running"}
+main_helper_post_removal:
+NAME                                                                 IMAGE                      COMMAND                  SERVICE             CREATED        STATUS        PORTS
+electron-agent-input-controls-regression-dr005-autobyteus-server-1   autobyteus-server:latest   "/usr/local/bin/entr…"   autobyteus-server   15 hours ago   Up 15 hours   0.0.0.0:52705->5900/tcp, [::]:52705->5900/tcp, 0.0.0.0:52706->6080/tcp, [::]:52706->6080/tcp, 0.0.0.0:52704->8000/tcp, [::]:52704->8000/tcp, 0.0.0.0:52707->9223/tcp, [::]:52707->9223/tcp
+main_personal_app_exists=yes
+main_personal_dmg_exists=yes
+main_personal_zip_exists=yes
+protected_stash_count=18
+main_status:
+## personal...origin/personal
+?? .article-work/
+?? tickets/done/agent-team-universal-task-delegation/delivery-evidence/worktree-retirement-dr008/

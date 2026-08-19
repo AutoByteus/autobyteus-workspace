@@ -2,8 +2,8 @@
 
 ## Finalized Ticket Branch
 
-- Delivery revision: `DR-005`
-- Status: `Finalized, archived, and published on its own branch`
+- Delivery revision: `DR-008`
+- Status: `Finalized, promoted to personal under later explicit authorization, and obsolete local worktree retired`
 - Ticket branch: `codex/agent-team-universal-task-delegation`
 - Reviewed source HEAD: `03b91d079af71b996ab4cadfe985ca2b2fddf049`
 - Protected delivery checkpoint: `dd439fcfc06b9a7bdc8b1f961d71e1ebd7ce2c39`
@@ -66,19 +66,33 @@ The user explicitly approved moving this ticket to `done`, committing the final
 delivery records on `codex/agent-team-universal-task-delegation`, and pushing
 that same branch to `origin/codex/agent-team-universal-task-delegation`.
 
-The branch was created remotely and the local branch now tracks that exact
-same-name remote branch. The final DR-005 record is published as the terminal
-delivery-only update.
+At DR-005, the branch was created remotely and the local branch tracked that
+exact same-name remote branch. The final DR-005 record was published as the
+terminal delivery-only update for that stage.
 
-No merge, fast-forward, promotion, or push to
-`codex/agent-team-hierarchical-handoffs` is authorized. No merge or push to
-`personal` is authorized. No release, deployment, tag, or version action is
-authorized.
+At DR-005, no merge, fast-forward, promotion, or push to
+`codex/agent-team-hierarchical-handoffs` or `personal` was authorized. Later
+user authorization superseded only the `personal` promotion and local-cleanup
+boundaries, as recorded below. No release, deployment, tag, or version action
+was authorized.
 
 GitHub's push response also reported existing Dependabot alerts on the default
 branch: 818 total (`20 critical / 347 high / 385 moderate / 66 low`). Delivery
 did not assess or change that unrelated default-branch advisory state.
 
-The clean original hierarchical worktree was retired at the user's direction;
-its local and remote-tracking branch refs remain preserved. The current ticket
-worktree is the surviving checkout.
+The clean original hierarchical worktree was retired at the user's direction.
+At that stage, the current ticket worktree was designated as the surviving
+checkout; DR-008 records its later authorized retirement after promotion.
+
+## Later Personal Promotion And Worktree Cleanup
+
+The branch-only limits above describe the historical DR-005 authorization. The user later separately tested the completed follow-up, authorized promotion to `personal`, and then authorized retirement of the merged source worktree.
+
+- Local and remote `personal` contain promotion merge `c4bcec60b557839cc2d6093ed2d20e23f1ead03a` and source checkpoint `659a6be15926a13fba3520174ac9714d0c73ebb5`.
+- The obsolete `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation` checkout was verified clean, removed, and pruned.
+- The merged local source branch was deleted.
+- The same-name remote source branch was deliberately retained because `codex/agent-team-released-history-migration-recovery` still tracks it.
+- Docker lifecycle state was moved to the main-personal worktree; the isolated Docker node remains running and healthy at `http://localhost:52704`.
+- The one unique ignored focused-test log was preserved under `delivery-evidence/worktree-retirement-dr008/`; source-worktree-only ignored build caches were removed.
+- Protected stashes/backups and all production/user data remain untouched.
+- Evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-team-universal-task-delegation/delivery-evidence/worktree-retirement-dr008`.

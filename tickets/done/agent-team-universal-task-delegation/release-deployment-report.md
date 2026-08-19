@@ -2,12 +2,12 @@
 
 ## Current Result
 
-- Delivery revision: `DR-007`
+- Delivery revision: `DR-008`
 - Integrated-state result: `Pass — current and integrated`
 - Documentation result: `Pass`
 - Final handoff: `User verified and authorized branch-only finalization`
-- Repository finalization: `Complete on current ticket branch only`
-- Local Electron test package: `Pass with temporary dependency materialization; documented clean build needs a packaging Local Fix`
+- Repository finalization: `Complete; later explicitly promoted to personal and obsolete local worktree retired`
+- Local Electron test package: `DR-006 workaround passed; later reviewed packaging fix and clean main-personal build passed`
 - Post-build record publication: `Complete on the same-name ticket branch only; packages remain local`
 - Release/publication/deployment: `Not requested; not performed`
 
@@ -77,10 +77,11 @@ The local artifacts are:
 - `autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.dmg`
 - `autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.zip`
 
-The repeatable README build remains classified `Local Fix — packaging` and
-should be corrected by `implementation_engineer` before claiming a clean-clone
-desktop packaging pass. DR-006 itself did not commit, push, merge, release,
-deploy, tag, or alter a version. After the user's explicit follow-up direction,
+At DR-006, the repeatable README build remained classified `Local Fix — packaging`.
+The later reviewed packaging correction resolved that omission, and the clean
+main-personal Electron build passed under the accepted follow-up delivery
+record. DR-006 itself did not commit, push, merge, release, deploy, tag, or
+alter a version. After the user's explicit follow-up direction,
 DR-007 committed and pushed the build records and evidence only to
 `origin/codex/agent-team-universal-task-delegation`. Generated Electron
 packages remain local ignored outputs; no target-branch merge, release, or
@@ -95,4 +96,19 @@ deployment occurred.
 - Historical operational-database incident: preserved in the final handoff.
 - Original clean hierarchical worktree: retired earlier under explicit user
   direction; branch refs retained.
-- Surviving worktree, branch, or backup cleanup: not performed.
+- Surviving worktree, branch, or backup cleanup at DR-007: not performed; later worktree/local-branch cleanup is recorded below.
+
+## Later Personal Promotion And Local Cleanup
+
+The DR-005/DR-007 branch-only limits above remain the historical scope at those revisions. The user later separately tested the completed follow-up, authorized promotion to `origin/personal`, and then requested cleanup of the obsolete AgentTeam delegation worktree.
+
+- Personal promotion merge: `c4bcec60b557839cc2d6093ed2d20e23f1ead03a`.
+- Published source checkpoint: `659a6be15926a13fba3520174ac9714d0c73ebb5`.
+- Verification: both local and remote `personal` contain both commits.
+- Worktree cleanup: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation` removed and pruned; fully merged local source branch deleted.
+- Remote source branch: retained because an active dependent branch still tracks it.
+- Docker continuity: port/runtime state preserved in the main-personal worktree; container and named volumes retained; REST health remains `ok` at `http://localhost:52704/rest/health`.
+- Electron continuity: the later main-personal app/DMG/ZIP remain available under `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/`.
+- Evidence continuity: one unique ignored focused test log was archived before removal.
+- Release boundary: no version bump, tag, registry/publication action, or public deployment occurred.
+- Evidence: `delivery-evidence/worktree-retirement-dr008/`.
