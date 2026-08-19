@@ -128,7 +128,7 @@ export class TeamRunService {
 
   async restoreTeamRun(teamRunId: string): Promise<RootTeamRun> {
     const normalized = required(teamRunId, "teamRunId");
-    if (this.manager.getTeamRun(normalized)) throw new Error(`Team run '${normalized}' is already active and does not need restore.`);
+    if (this.manager.hasManagedTeamRun(normalized)) throw new Error(`Team run '${normalized}' is already managed and cannot be restored.`);
     const root = await this.manager.restoreTeamRun(normalized);
     try {
       await this.catalog.recordTeamRunRestored({ tree: root.getExecutionTreeSnapshot() });
@@ -139,10 +139,21 @@ export class TeamRunService {
     }
   }
 
-  getTeamRun(teamRunId: string): RootTeamRun | null { return this.manager.getTeamRun(required(teamRunId, "teamRunId")); }
-  async resolveTeamRun(teamRunId: string): Promise<RootTeamRun | null> {
+  getActiveTeamRun(teamRunId: string): RootTeamRun | null {
+    return this.manager.getActiveTeamRun(required(teamRunId, "teamRunId"));
+  }
+  getManagedTeamRun(teamRunId: string): RootTeamRun | null {
+    return this.manager.getManagedTeamRun(required(teamRunId, "teamRunId"));
+  }
+  async resolveActiveTeamRun(teamRunId: string): Promise<RootTeamRun | null> {
     const normalized = required(teamRunId, "teamRunId");
-    return this.getTeamRun(normalized) ?? this.restoreTeamRun(normalized).catch(() => null);
+    const active = this.getActiveTeamRun(normalized);
+    if (active || this.manager.hasManagedTeamRun(normalized)) return active;
+    return this.restoreTeamRun(normalized).catch(() => null);
+  }
+  async resolveManagedTeamRun(teamRunId: string): Promise<RootTeamRun | null> {
+    const normalized = required(teamRunId, "teamRunId");
+    return this.getManagedTeamRun(normalized) ?? this.restoreTeamRun(normalized).catch(() => null);
   }
   async allocateTeamRunId(teamDefinitionId: string): Promise<string> {
     const definition = await this.definitions.getDefinitionById(required(teamDefinitionId, "teamDefinitionId"));
@@ -158,7 +169,7 @@ export class TeamRunService {
     return success;
   }
   async observeTeamRunLifecycle(teamRunId: string, listener: (event: ObservedRunLifecycleEvent) => void): Promise<(() => void) | null> {
-    const root = await this.resolveTeamRun(teamRunId);
+    const root = await this.resolveActiveTeamRun(teamRunId);
     if (!root) return null;
     listener({ runtimeSubject: "TEAM_RUN", runId: root.teamRunId, phase: "ATTACHED", occurredAt: new Date().toISOString() });
     const offLifecycle = this.manager.subscribeToLifecycle(root.teamRunId, (snapshot) => {

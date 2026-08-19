@@ -23,11 +23,11 @@ export type ResolveChannelTurnReplyInput = {
 export class ChannelTurnReplyRecoveryService {
   private readonly memoryDir: string;
   private readonly memoryLayout: AgentMemoryLayout;
-  private readonly teamRuns: Pick<TeamRunService, "resolveTeamRun">;
+  private readonly teamRuns: Pick<TeamRunService, "resolveManagedTeamRun">;
 
   constructor(
     memoryDir: string = appConfigProvider.config.getMemoryDir(),
-    teamRuns: Pick<TeamRunService, "resolveTeamRun"> = getTeamRunService(),
+    teamRuns: Pick<TeamRunService, "resolveManagedTeamRun"> = getTeamRunService(),
   ) {
     this.memoryDir = memoryDir;
     this.memoryLayout = new AgentMemoryLayout(memoryDir);
@@ -55,7 +55,7 @@ export class ChannelTurnReplyRecoveryService {
     rootTeamRunId: string,
     agentRunId: string,
   ): Promise<string | null> {
-    const root = await this.teamRuns.resolveTeamRun(rootTeamRunId);
+    const root = await this.teamRuns.resolveManagedTeamRun(rootTeamRunId);
     const execution = root?.getAgentExecution(agentRunId) ?? null;
     if (!execution) return null;
     return this.memoryLayout.getTeamAgentRunDirPath({

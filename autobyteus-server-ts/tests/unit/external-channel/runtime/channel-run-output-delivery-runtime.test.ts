@@ -226,7 +226,7 @@ describe("ChannelRunOutputDeliveryRuntime", () => {
       messageReceiptService: { findLatestAcceptedSourceForRoute: vi.fn() } as any,
       deliveryService,
       agentRunService: {} as any,
-      teamRunService: { resolveTeamRun: vi.fn().mockResolvedValue(teamRun.run) } as any,
+      teamRunService: { resolveActiveTeamRun: vi.fn().mockResolvedValue(teamRun.run) } as any,
       turnReplyRecoveryService: { resolveReplyText: vi.fn().mockResolvedValue(null) } as any,
       replyCallbackServiceFactory: () => ({ publishRunOutputReply } as any),
     });
@@ -306,7 +306,7 @@ describe("ChannelRunOutputDeliveryRuntime", () => {
       messageReceiptService: { findLatestAcceptedSourceForRoute: vi.fn() } as any,
       deliveryService,
       agentRunService: {} as any,
-      teamRunService: { resolveTeamRun: vi.fn().mockResolvedValue(teamRun.run) } as any,
+      teamRunService: { resolveActiveTeamRun: vi.fn().mockResolvedValue(teamRun.run) } as any,
       turnReplyRecoveryService: { resolveReplyText: vi.fn().mockResolvedValue(null) } as any,
       replyCallbackServiceFactory: () => ({ publishRunOutputReply } as any),
     });
@@ -546,7 +546,7 @@ describe("ChannelRunOutputDeliveryRuntime", () => {
       } as any,
       deliveryService,
       agentRunService: {} as any,
-      teamRunService: { resolveTeamRun: vi.fn().mockResolvedValue(teamRun.run) } as any,
+      teamRunService: { resolveActiveTeamRun: vi.fn().mockResolvedValue(teamRun.run) } as any,
       turnReplyRecoveryService: { resolveReplyText: vi.fn().mockResolvedValue(null) } as any,
       replyCallbackServiceFactory: () => replyCallbackService,
     });
@@ -580,7 +580,7 @@ describe("ChannelRunOutputDeliveryRuntime", () => {
       new FileChannelBindingProvider(bindingFilePath),
       {},
       {
-        teamRunService: { resolveTeamRun: vi.fn().mockResolvedValue(teamRun.run) } as any,
+        teamRunService: { resolveActiveTeamRun: vi.fn().mockResolvedValue(teamRun.run) } as any,
       },
     );
     const deliveryService = new ChannelRunOutputDeliveryService(
@@ -647,7 +647,7 @@ describe("ChannelRunOutputDeliveryRuntime", () => {
       } as any,
       deliveryService,
       agentRunService: {} as any,
-      teamRunService: { resolveTeamRun: vi.fn().mockResolvedValue(teamRun.run) } as any,
+      teamRunService: { resolveActiveTeamRun: vi.fn().mockResolvedValue(teamRun.run) } as any,
       turnReplyRecoveryService: { resolveReplyText: vi.fn().mockResolvedValue(null) } as any,
       replyCallbackServiceFactory: () => replyCallbackService,
     });

@@ -188,8 +188,8 @@ export class AgentTeamStreamHandler {
 
   static parseMessage(raw: string): TeamStreamClientMessage { return parseTeamStreamClientMessage(raw); }
 
-  private getTeamRun(teamRunId: string): RootTeamRun | null { return this.teamRunService.getTeamRun(teamRunId); }
-  private resolveTeamRun(teamRunId: string): Promise<RootTeamRun | null> { return this.teamRunService.resolveTeamRun(teamRunId); }
+  private getTeamRun(teamRunId: string): RootTeamRun | null { return this.teamRunService.getActiveTeamRun(teamRunId); }
+  private resolveTeamRun(teamRunId: string): Promise<RootTeamRun | null> { return this.teamRunService.resolveActiveTeamRun(teamRunId); }
 
   private closeWithTeamNotFound(
     connection: WebSocketConnection,

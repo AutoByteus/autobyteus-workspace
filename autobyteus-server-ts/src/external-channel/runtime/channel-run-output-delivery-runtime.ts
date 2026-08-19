@@ -143,7 +143,7 @@ export class ChannelRunOutputDeliveryRuntime {
     if (binding.targetType !== "TEAM" || !binding.teamRunId) {
       return;
     }
-    const teamRun = await this.teamRunService.resolveTeamRun(binding.teamRunId);
+    const teamRun = await this.teamRunService.resolveActiveTeamRun(binding.teamRunId);
     if (!teamRun) {
       return;
     }
@@ -198,7 +198,7 @@ export class ChannelRunOutputDeliveryRuntime {
       });
     }
 
-    const run = input.resolvedTeamRun ?? await this.teamRunService.resolveTeamRun(input.target.teamRunId);
+    const run = input.resolvedTeamRun ?? await this.teamRunService.resolveActiveTeamRun(input.target.teamRunId);
     if (!run) {
       return null;
     }

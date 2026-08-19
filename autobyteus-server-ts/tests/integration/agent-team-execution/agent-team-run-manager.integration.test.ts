@@ -96,12 +96,18 @@ const createFactory = (input: {
       getTeamRunContext: () => context,
       getRuntimeContext: () => runtimeContext,
       isActive: () => state.active,
+      isTerminated: () => !state.active,
       getLeafAgentStatusSnapshots: () => [],
       hasOpenExecutionWork: () => false,
       terminate: vi.fn(async () => {
         const result = input.terminateResult ?? { accepted: true };
         if (result.accepted) state.active = false;
         return result;
+      }),
+      freezeForRootTermination: () => ({
+        interruptActiveTurns: vi.fn(async () => ({ accepted: true })),
+        prepareMemberRuns: vi.fn(async () => undefined),
+        finish: vi.fn(async () => backend.terminate()),
       }),
     };
     backends.push(backend);
@@ -144,8 +150,8 @@ describe("AgentTeamRunManager strict V1 package integration", () => {
       hasOpenExecutionWork: false,
     });
     expect(Object.isFrozen(checkpoint)).toBe(true);
-    expect(manager.getActiveRun(run.teamRunId)).toBe(run);
-    expect(manager.listActiveRuns()).toEqual([run.teamRunId]);
+    expect(manager.getActiveTeamRun(run.teamRunId)).toBe(run);
+    expect(manager.listActiveTeamRunIds()).toEqual([run.teamRunId]);
     expect(factory.createBackend).toHaveBeenCalledWith(
       expect.objectContaining({ rootTeam: config.rootTeam }),
       "team-runtime-root",
@@ -180,7 +186,7 @@ describe("AgentTeamRunManager strict V1 package integration", () => {
       }
     }
     await expect(manager.createTeamRun({ config, teamDefinitionName: "Duplicate" })).rejects.toThrow(
-      "already active",
+      "already managed",
     );
   });
 
@@ -192,7 +198,8 @@ describe("AgentTeamRunManager strict V1 package integration", () => {
     const initial = new AgentTeamRunManager({ memoryDir, mixedTeamRunBackendFactory: initialFactory.factory });
     await initial.createTeamRun({ config, teamDefinitionName: "Restorable Team" });
     initialFactory.state.active = false;
-    expect(initial.getTeamRun(config.rootTeam.teamRunId)).toBeNull();
+    expect(initial.getActiveTeamRun(config.rootTeam.teamRunId)).toBeNull();
+    expect(initial.getManagedTeamRun(config.rootTeam.teamRunId)).not.toBeNull();
 
     const restoredFactory = createFactory();
     const restoredManager = new AgentTeamRunManager({ memoryDir, mixedTeamRunBackendFactory: restoredFactory.factory });
@@ -238,7 +245,39 @@ describe("AgentTeamRunManager strict V1 package integration", () => {
       { teamRunId: config.rootTeam.teamRunId, isActive: true },
       { teamRunId: config.rootTeam.teamRunId, isActive: false },
     ]);
-    expect(manager.getTeamRun(config.rootTeam.teamRunId)).toBeNull();
+    expect(manager.getManagedTeamRun(config.rootTeam.teamRunId)).toBeNull();
     await expect(manager.terminateTeamRun(config.rootTeam.teamRunId)).resolves.toBe(false);
+  });
+
+  it("holds one exact-ID transition lane across unmanaged deletion and restore registration", async () => {
+    const memoryDir = await createMemoryDir();
+    initializeTaskIdentityAllocator(memoryDir);
+    const config = createConfig([RuntimeKind.AUTOBYTEUS]);
+    const factory = createFactory();
+    const manager = new AgentTeamRunManager({ memoryDir, mixedTeamRunBackendFactory: factory.factory });
+    await manager.createTeamRun({ config, teamDefinitionName: "Lane Team" });
+    await expect(manager.terminateTeamRun(config.rootTeam.teamRunId)).resolves.toBe(true);
+    // The fake factory shares lifecycle state across backends; a restored backend is a fresh active owner.
+    factory.state.active = true;
+
+    let releaseDeletion!: () => void;
+    const deletionBarrier = new Promise<void>((resolve) => { releaseDeletion = resolve; });
+    const deletion = manager.withUnmanagedHistoryDeletion(config.rootTeam.teamRunId, async () => {
+      await deletionBarrier;
+      return "deleted";
+    });
+    let restoreSettled = false;
+    const restore = manager.restoreTeamRun(config.rootTeam.teamRunId).then((root) => {
+      restoreSettled = true;
+      return root;
+    });
+    await new Promise((resolve) => setTimeout(resolve, 10));
+    expect(restoreSettled).toBe(false);
+
+    releaseDeletion();
+    await expect(deletion).resolves.toEqual({ kind: "completed", value: "deleted" });
+    await expect(restore).resolves.toMatchObject({ teamRunId: config.rootTeam.teamRunId });
+    await expect(manager.withUnmanagedHistoryDeletion(config.rootTeam.teamRunId, async () => "unexpected"))
+      .resolves.toEqual({ kind: "managed" });
   });
 });

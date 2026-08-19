@@ -422,7 +422,7 @@ describe("ApplicationOrchestrationHostService startAgent", () => {
         getBinding: vi.fn(async () => cloneBinding(binding)),
       } as never,
       teamRunService: {
-        resolveTeamRun: vi.fn(async () => ({ postMessage })),
+        resolveActiveTeamRun: vi.fn(async () => ({ postMessage })),
       } as never,
     });
 
@@ -454,7 +454,7 @@ describe("ApplicationOrchestrationHostService startAgent", () => {
         getBinding: vi.fn(async () => cloneBinding(binding)),
       } as never,
       teamRunService: {
-        resolveTeamRun: vi.fn(async () => ({ postMessage })),
+        resolveActiveTeamRun: vi.fn(async () => ({ postMessage })),
       } as never,
     });
 

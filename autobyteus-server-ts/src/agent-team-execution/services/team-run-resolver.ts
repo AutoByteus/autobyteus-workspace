@@ -7,26 +7,26 @@ export type TeamRunRegistrationReservation = Readonly<{
   cancel(): void;
 }>;
 
-/** Private live TeamRun directory owned by one RootTeamRun. */
+/** Private nonterminal TeamRun directory owned by one RootTeamRun. */
 export class TeamRunResolver {
-  private readonly active = new Map<string, TeamRun>();
+  private readonly managed = new Map<string, TeamRun>();
   private readonly reserved = new Map<string, TeamRun>();
+  private registrationOpen = true;
 
   constructor(private readonly options: {
     rootTeamRun: TeamRun;
     getIndex(): TeamExecutionIndex;
   }) {
-    this.active.set(options.rootTeamRun.teamRunId, options.rootTeamRun);
+    this.managed.set(options.rootTeamRun.teamRunId, options.rootTeamRun);
   }
 
   getActive(teamRunId: string): TeamRun | null {
-    const run = this.active.get(teamRunId) ?? null;
-    if (!run?.isActive()) {
-      if (run) this.active.delete(teamRunId);
-      return null;
-    }
-    return run;
+    const run = this.getManaged(teamRunId);
+    return run?.isActive() ? run : null;
   }
+
+  getManaged(teamRunId: string): TeamRun | null { return this.managed.get(teamRunId) ?? null; }
+  closeRegistration(): void { this.registrationOpen = false; }
 
   async requireConfigured(teamRunId: string): Promise<TeamRun> {
     const existing = this.getActive(teamRunId);
@@ -46,18 +46,19 @@ export class TeamRunResolver {
       if (child.teamRunId !== childTeamRunId || !child.isActive()) {
         throw new Error(`Configured TeamRun '${childTeamRunId}' did not materialize exactly.`);
       }
-      this.registerActive(child);
+      this.registerManaged(child);
       current = child;
     }
     return current;
   }
 
   reserveTaskSubtree(teamRuns: readonly TeamRun[]): TeamRunRegistrationReservation {
+    if (!this.registrationOpen) throw new Error("TeamRun registration is closed for root termination.");
     const unique = new Map(teamRuns.map((run) => [run.teamRunId, run]));
     if (unique.size !== teamRuns.length) throw new Error("Prepared task subtree contains duplicate TeamRuns.");
     for (const [teamRunId, run] of unique) {
       if (!run.isActive()) throw new Error(`Prepared TeamRun '${teamRunId}' is inactive.`);
-      if (this.active.has(teamRunId) || this.reserved.has(teamRunId)) {
+      if (this.managed.has(teamRunId) || this.reserved.has(teamRunId)) {
         throw new Error(`TeamRun '${teamRunId}' is already registered or reserved.`);
       }
     }
@@ -69,7 +70,7 @@ export class TeamRunResolver {
         if (state !== "reserved") return;
         unique.forEach((run, teamRunId) => {
           this.reserved.delete(teamRunId);
-          this.active.set(teamRunId, run);
+          this.managed.set(teamRunId, run);
         });
         state = "committed";
       },
@@ -83,33 +84,34 @@ export class TeamRunResolver {
     });
   }
 
-  registerActive(teamRun: TeamRun): void {
-    const existing = this.active.get(teamRun.teamRunId);
+  registerManaged(teamRun: TeamRun): void {
+    if (!this.registrationOpen) throw new Error("TeamRun registration is closed for root termination.");
+    const existing = this.managed.get(teamRun.teamRunId);
     if (existing && existing !== teamRun) {
       throw new Error(`TeamRun '${teamRun.teamRunId}' is already registered.`);
     }
     if (this.reserved.has(teamRun.teamRunId)) {
       throw new Error(`TeamRun '${teamRun.teamRunId}' has an uncommitted registration reservation.`);
     }
-    this.active.set(teamRun.teamRunId, teamRun);
+    this.managed.set(teamRun.teamRunId, teamRun);
   }
 
   unregister(teamRunId: string, expected: TeamRun): void {
-    if (this.active.get(teamRunId) === expected) this.active.delete(teamRunId);
+    if (this.managed.get(teamRunId) === expected) this.managed.delete(teamRunId);
   }
 
-  unregisterInactive(): void {
-    for (const [teamRunId, run] of this.active) {
-      if (!run.isActive()) this.active.delete(teamRunId);
+  unregisterTerminated(): void {
+    for (const [teamRunId, run] of this.managed) {
+      if (run.isTerminated()) this.managed.delete(teamRunId);
     }
   }
 
-  listActive(): readonly TeamRun[] {
-    return Object.freeze([...this.active.values()].filter((run) => run.isActive()));
+  listManaged(): readonly TeamRun[] {
+    return Object.freeze([...this.managed.values()]);
   }
 
   clear(): void {
-    this.active.clear();
+    this.managed.clear();
     this.reserved.clear();
   }
 }

@@ -9,7 +9,7 @@ describe("ApplicationAgentStreamRuntimeSource team attribution", () => {
     let listener!: (event: any) => void;
     const runtimeSource = new ApplicationAgentStreamRuntimeSource({
       teamRunManager: {
-        getActiveRun: () => ({ subscribeToEvents: (next: typeof listener) => { listener = next; return () => undefined; } }),
+        getActiveTeamRun: () => ({ subscribeToEvents: (next: typeof listener) => { listener = next; return () => undefined; } }),
       },
     });
     const captured: any[] = [];

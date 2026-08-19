@@ -18,18 +18,13 @@ import type {
 } from "../input/agent-run-input-contract.js";
 import { createAgentRunInputReservation } from "../input/agent-run-input-reservation.js";
 import type { AgentRunContext } from "./agent-run-context.js";
-import {
-  resolveAgentRunErrorEvidence,
-} from "./agent-run-error-evidence.js";
+import { resolveAgentRunErrorEvidence } from "./agent-run-error-evidence.js";
 import { resolveAgentRunEventTurnId } from "./agent-run-event-turn-id.js";
 import { AgentRunEventType, type AgentRunEvent } from "./agent-run-event.js";
 import type { AgentRunCommandObserver } from "./agent-run-command-observer.js";
 import { dispatchUserMessageForwarded } from "./agent-run-command-observer-dispatch.js";
 import type { AgentOperationResult } from "./agent-operation-result.js";
-import {
-  createPreparedAgentRunTermination,
-  type PreparedAgentRunTermination,
-} from "./prepared-agent-run-termination.js";
+import { createPreparedAgentRunTermination, type PreparedAgentRunTermination } from "./prepared-agent-run-termination.js";
 import {
   buildAgentStatusPayload,
   type AgentApiStatus,
@@ -499,6 +494,11 @@ export class AgentRun {
     if (this.termination) return this.termination;
     const termination = this.finishCommittedTerminationOnce();
     this.termination = termination;
+    void termination.then((result) => {
+      if (!result.accepted && this.termination === termination) this.termination = null;
+    }, () => {
+      if (this.termination === termination) this.termination = null;
+    });
     return termination;
   }
 

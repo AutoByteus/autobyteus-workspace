@@ -35,7 +35,9 @@ const createSubject = (
 ) => {
   const executionTree = { schemaVersion: 1, rootTeam: { teamRunId: "team-mixed-1" } };
   const agentTeamRunManager = {
-    getTeamRun: vi.fn().mockReturnValue(activeRun),
+    getActiveTeamRun: vi.fn().mockReturnValue(activeRun),
+    getManagedTeamRun: vi.fn().mockReturnValue(activeRun),
+    hasManagedTeamRun: vi.fn().mockReturnValue(Boolean(activeRun)),
     createTeamRun: vi.fn(async ({ config }) => ({
       teamRunId: config.rootTeam.teamRunId,
       config,
@@ -84,8 +86,8 @@ describe("TeamRunService current root lifecycle", () => {
     const { service, mocks } = createSubject(activeRun);
     const restoreSpy = vi.spyOn(service, "restoreTeamRun");
 
-    await expect(service.resolveTeamRun("team-1")).resolves.toBe(activeRun);
-    expect(mocks.agentTeamRunManager.getTeamRun).toHaveBeenCalledWith("team-1");
+    await expect(service.resolveActiveTeamRun("team-1")).resolves.toBe(activeRun);
+    expect(mocks.agentTeamRunManager.getActiveTeamRun).toHaveBeenCalledWith("team-1");
     expect(restoreSpy).not.toHaveBeenCalled();
   });
 
@@ -93,7 +95,7 @@ describe("TeamRunService current root lifecycle", () => {
     const { service } = createSubject();
     vi.spyOn(service, "restoreTeamRun").mockRejectedValue(new Error("missing V1 package"));
 
-    await expect(service.resolveTeamRun("team-1")).resolves.toBeNull();
+    await expect(service.resolveActiveTeamRun("team-1")).resolves.toBeNull();
   });
 
   it("projects one exact current Agent error into a failed lifecycle result", async () => {

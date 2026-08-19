@@ -71,7 +71,7 @@ const createLauncher = (overrides: {
     bindingRunRegistry:
       overrides.bindingRunRegistry ?? new InMemoryChannelBindingLiveRunRegistry(),
     teamRunService: {
-      getTeamRun: vi.fn().mockReturnValue(null),
+      getActiveTeamRun: vi.fn().mockReturnValue(null),
       restoreTeamRun: vi.fn(),
       buildMemberConfigsFromLaunchPreset: vi.fn(),
       createTeamRun: vi.fn(),
@@ -159,7 +159,7 @@ describe("ChannelBindingRunLauncher", () => {
 
   it("reuses a cached active team run only when the binding owns it in this process", async () => {
     const binding = createTeamBinding();
-    const getTeamRun = vi.fn().mockReturnValue({
+    const getActiveTeamRun = vi.fn().mockReturnValue({
       runId: "team-run-1",
     });
     const buildMemberConfigsFromLaunchPreset = vi.fn();
@@ -171,7 +171,7 @@ describe("ChannelBindingRunLauncher", () => {
       bindingService: { upsertBindingTeamRunId },
       bindingRunRegistry,
       teamRunService: {
-        getTeamRun,
+        getActiveTeamRun,
         buildMemberConfigsFromLaunchPreset,
         createTeamRun,
       },
@@ -180,7 +180,7 @@ describe("ChannelBindingRunLauncher", () => {
     const teamRunId = await launcher.resolveOrStartTeamRun(binding);
 
     expect(teamRunId).toBe("team-run-1");
-    expect(getTeamRun).toHaveBeenCalledWith("team-run-1");
+    expect(getActiveTeamRun).toHaveBeenCalledWith("team-run-1");
     expect(buildMemberConfigsFromLaunchPreset).not.toHaveBeenCalled();
     expect(createTeamRun).not.toHaveBeenCalled();
     expect(upsertBindingTeamRunId).not.toHaveBeenCalled();

@@ -30,7 +30,7 @@ const harness = (input: { storedTree?: typeof tree | null; active?: boolean } = 
     deleteTeamRun: vi.fn(async () => ({ success: true, message: "deleted" })),
   };
   const treeStore = { read: vi.fn(async () => input.storedTree === undefined ? tree : input.storedTree) };
-  const manager = { getTeamRun: vi.fn(() => input.active ? {} : null) };
+  const manager = { hasManagedTeamRun: vi.fn(() => Boolean(input.active)) };
   const live = { getCatalogListLiveProjection: vi.fn(() => ({
     isActive: input.active ?? false,
     memberStatusSnapshots: input.active ? [{ agentRunId: "worker-run", status: "running" }] : [],

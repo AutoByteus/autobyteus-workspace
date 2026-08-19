@@ -53,7 +53,6 @@ const mountSubject = (options: {
   liveContext?: ReturnType<typeof buildTestTeamContext>;
   workspaceTeams?: TeamTreeNode[];
   teamExpanded?: boolean;
-  canTerminateTeam?: (isActive: boolean) => boolean;
   selectedTeamRunId?: string | null;
   selectedType?: 'agent' | 'team' | null;
 } = {}) => {
@@ -123,7 +122,6 @@ const mountSubject = (options: {
       const key = expansionKey(workspaceId, teamRunId, rowKey);
       expandedTeamMembers[key] = !expandedTeamMembers[key];
     }),
-    canTerminateTeam: options.canTerminateTeam ?? ((isActive: boolean) => isActive),
   };
 
   const wrapper = mount(WorkspaceHistoryWorkspaceSection, {
@@ -168,7 +166,7 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
       ...activeRun, teamRunId: 'team-run-inactive', rootTeam: rootRow([], 'team-run-inactive'),
       summary: 'Inactive task', lastActivityAt: '2026-06-30T00:00:00.000Z', isActive: false,
     };
-    const { wrapper } = mountSubject({ workspaceTeams: [activeRun, inactiveRun], teamExpanded: false, canTerminateTeam: () => false });
+    const { wrapper } = mountSubject({ workspaceTeams: [activeRun, inactiveRun], teamExpanded: false });
     const groupRow = wrapper.get('[data-test="workspace-team-definition-row-team-def-1"]');
     expect(groupRow.get('[data-test="team-activity-dot"]').attributes()).toMatchObject({
       'data-active': 'true', 'aria-label': 'Active team runs', title: 'Active team runs',
@@ -178,6 +176,14 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
     await wrapper.setProps({ workspaceTeams: [{ ...activeRun, isActive: false }, inactiveRun] });
     await wrapper.vm.$nextTick();
     expect(groupRow.get('[data-test="team-activity-dot"]').attributes('data-active')).toBe('false');
+  });
+
+  it('renders independent Stop and permanent Delete for active READY Team rows', () => {
+    const { wrapper } = mountSubject();
+    expect(wrapper.find('button[title$="terminate_team"]').exists()).toBe(true);
+    const deleteButton = wrapper.get('button[aria-label="Delete team history permanently"]');
+    expect(deleteButton.attributes('disabled')).toBeUndefined();
+    expect(wrapper.find('button[title$="archive_team_history"]').exists()).toBe(false);
   });
 
   it('renders and selects exact stable and task-Agent execution identities', async () => {

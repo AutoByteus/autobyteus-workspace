@@ -15,6 +15,7 @@ export type ConfiguredMemberRegistryAccess = {
 
 export class MixedConfiguredMemberRegistry implements ConfiguredMemberRegistryAccess {
   private readonly handles = new Map<AgentTeamAddress, MixedConfiguredMemberHandle>();
+  private materializationOpen = true;
 
   constructor(private readonly options: {
     teamContext: TeamRunContext<MixedTeamRunContext>;
@@ -27,6 +28,7 @@ export class MixedConfiguredMemberRegistry implements ConfiguredMemberRegistryAc
   }) {}
 
   listHandles(): MixedConfiguredMemberHandle[] { return [...this.handles.values()]; }
+  freezeMaterialization(): void { this.materializationOpen = false; }
 
   remove(address: AgentTeamAddress): boolean {
     const handle = this.handles.get(address);
@@ -38,6 +40,9 @@ export class MixedConfiguredMemberRegistry implements ConfiguredMemberRegistryAc
   getOrCreate(context: MixedTeamMemberContext): MixedConfiguredMemberHandle {
     const existing = this.handles.get(context.address);
     if (existing) return existing;
+    if (!this.materializationOpen) {
+      throw new Error(`Configured member '${context.address}' cannot materialize after TeamRun freeze.`);
+    }
     const node = this.options.configResolver.resolve(context);
     const handle = context.kind === "agent" && node.kind === "agent"
       ? new MixedAgentMemberHandle({

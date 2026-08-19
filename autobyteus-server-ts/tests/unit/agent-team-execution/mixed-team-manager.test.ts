@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
+import { MixedAgentMemberHandle } from "../../../src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.js";
 import { MixedTeamManager } from "../../../src/agent-team-execution/backends/mixed/mixed-team-manager.js";
 import { MixedAgentMemberContext, MixedSubTeamMemberContext, MixedTeamRunContext } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-context.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
@@ -70,6 +71,10 @@ const createFakeTeamRun = (
     active = false;
     return { accepted: true as const };
   });
+  const interruptActiveTurns = vi.fn(async () => ({ accepted: true as const }));
+  const prepareMemberRuns = vi.fn(async () => undefined);
+  const scopeFinish = vi.fn(async () => finish());
+  const frozenScope = Object.freeze({ interruptActiveTurns, prepareMemberRuns, finish: scopeFinish });
   const commit = vi.fn(() => ({ finish }));
   const context = new TeamRunContext({
     rootTeamRunId: rootRunId,
@@ -86,6 +91,7 @@ const createFakeTeamRun = (
     teamRunId: teamNode.teamRunId,
     context,
     isActive: vi.fn(() => active),
+    isTerminated: vi.fn(() => !active),
     getRuntimeContext: vi.fn(() => context.runtimeContext),
     getLeafAgentStatusSnapshots: vi.fn(() => [{
       execution: { rootTeamRunId: rootRunId, memberAddress: teamNode.coordinatorAddress, agentRunId: teamNode.children[0]!.kind === "agent" ? teamNode.children[0]!.agentRunId : "" },
@@ -96,9 +102,11 @@ const createFakeTeamRun = (
     getOrCreateConfiguredChildTeam: vi.fn(),
     postMessage,
     prepareTermination: vi.fn(async () => ({ cancel, commit })),
+    freezeForRootTermination: vi.fn(() => frozenScope),
     cancel,
     commit,
     finish,
+    frozenScope,
   };
 };
 
@@ -223,5 +231,129 @@ describe("MixedTeamManager current local execution mechanics", () => {
     expect(manager.isActive()).toBe(true);
     await expect(manager.executeDirectAgentCommand("missing", { kind: "interrupt" }))
       .resolves.toMatchObject({ accepted: false, code: "RUN_NOT_FOUND" });
+  });
+
+  it("freezes configured and delegated descendants once, dispatches every interrupt, and retries the same scope", async () => {
+    const { manager, context, runs } = buildManager();
+    const activationSpy = vi.spyOn(MixedAgentMemberHandle.prototype, "prepareForTaskActivation")
+      .mockResolvedValue({
+        stagedPlatformBindings: Object.freeze([]),
+        commitAfterDurability: vi.fn(),
+        abort: vi.fn(async () => undefined),
+      });
+    const directAgentContext = context.runtimeContext.memberContexts.find((member) => member.kind === "agent")!;
+    const configuredAgent = (manager as unknown as {
+      configured: { getOrCreate(member: typeof directAgentContext): MixedAgentMemberHandle };
+    }).configured.getOrCreate(directAgentContext);
+    const preparedTaskAgent = await manager.prepareTaskAgent({
+      taskId: "task-agent-1",
+      address: rootLead.address,
+      agentRunId: "delegated-agent-run",
+      sourceNode: rootLead,
+      message: new AgentInputUserMessage("delegated agent work"),
+    });
+    const taskAgent = (manager as unknown as {
+      taskAgents: { listPreparedHandles(): readonly MixedAgentMemberHandle[] };
+    }).taskAgents.listPreparedHandles()[0]!;
+    activationSpy.mockRestore();
+
+    await manager.getOrCreateConfiguredChildTeam(configuredReviewTeam.teamRunId);
+    const taskTeamNode = freshTaskTeam();
+    const preparedTaskTeam = await manager.prepareTaskTeam({
+      taskId: "task-team-1",
+      address: taskTeamNode.address,
+      teamRunId: taskTeamNode.teamRunId,
+      handoffs: [],
+      teamNode: taskTeamNode,
+      message: new AgentInputUserMessage("delegated team work"),
+    });
+
+    const order: string[] = [];
+    const localTermination = (label: string) => {
+      const finish = vi.fn(async () => { order.push(`${label}:finish`); return { accepted: true as const }; });
+      const commit = vi.fn(() => Object.freeze({ finish }));
+      return Object.freeze({ cancel: vi.fn(), commit });
+    };
+    vi.spyOn(configuredAgent, "interruptForRootTermination")
+      .mockImplementation(async () => { order.push("configured-agent:interrupt"); return { accepted: true }; });
+    vi.spyOn(taskAgent, "interruptForRootTermination")
+      .mockImplementation(async () => { order.push("task-agent:interrupt"); return { accepted: true }; });
+    vi.spyOn(configuredAgent, "prepareTermination")
+      .mockImplementation(async () => { order.push("configured-agent:prepare"); return localTermination("configured-agent"); });
+    vi.spyOn(taskAgent, "prepareTermination")
+      .mockImplementation(async () => { order.push("task-agent:prepare"); return localTermination("task-agent"); });
+
+    const configuredChild = runs.get(configuredReviewTeam.teamRunId)!;
+    const taskChild = runs.get(taskTeamNode.teamRunId)!;
+    configuredChild.frozenScope.interruptActiveTurns.mockImplementation(async () => {
+      order.push("configured-child:interrupt");
+      return { accepted: true };
+    });
+    taskChild.frozenScope.interruptActiveTurns.mockImplementation(async () => {
+      order.push("task-child:interrupt");
+      return { accepted: true };
+    });
+    configuredChild.frozenScope.prepareMemberRuns.mockImplementation(async () => {
+      order.push("configured-child:prepare");
+    });
+    taskChild.frozenScope.prepareMemberRuns.mockImplementation(async () => {
+      order.push("task-child:prepare");
+    });
+    configuredChild.frozenScope.finish.mockImplementation(async () => {
+      order.push("configured-child:finish");
+      return { accepted: true };
+    });
+    taskChild.frozenScope.finish
+      .mockImplementationOnce(async () => {
+        order.push("task-child:finish-rejected");
+        return { accepted: false, code: "DESCENDANT_BUSY" };
+      })
+      .mockImplementationOnce(async () => {
+        order.push("task-child:finish");
+        return { accepted: true };
+      });
+
+    const scope = manager.freezeForRootTermination();
+    expect(manager.freezeForRootTermination()).toBe(scope);
+    expect(configuredChild.freezeForRootTermination).toHaveBeenCalledOnce();
+    expect(taskChild.freezeForRootTermination).toHaveBeenCalledOnce();
+    expect(preparedTaskAgent.binding).toMatchObject({ kind: "agent", agentRunId: "delegated-agent-run" });
+    expect(preparedTaskTeam.binding).toMatchObject({ kind: "team", teamRunId: taskTeamNode.teamRunId });
+
+    await expect(manager.prepareTaskAgent({
+      taskId: "late-task",
+      address: rootLead.address,
+      agentRunId: "late-agent-run",
+      sourceNode: rootLead,
+      message: new AgentInputUserMessage("late"),
+    })).rejects.toThrow("materialization is closed");
+    const lateContext = new MixedAgentMemberContext({
+      address: address("/late"),
+      agentRunId: "late-configured-run",
+      runtimeKind: RuntimeKind.AUTOBYTEUS,
+      platformAgentRunId: null,
+    });
+    expect(() => (manager as unknown as {
+      configured: { getOrCreate(member: MixedAgentMemberContext): unknown };
+    }).configured.getOrCreate(lateContext)).toThrow("cannot materialize after TeamRun freeze");
+
+    const interruption = scope.interruptActiveTurns();
+    expect(order).toEqual([
+      "configured-agent:interrupt",
+      "task-agent:interrupt",
+      "configured-child:interrupt",
+      "task-child:interrupt",
+    ]);
+    await expect(interruption).resolves.toEqual({ accepted: true });
+    await scope.prepareMemberRuns();
+    await expect(scope.finish()).resolves.toEqual({ accepted: false, code: "DESCENDANT_BUSY" });
+    expect(manager.isTerminated()).toBe(false);
+    await expect(scope.finish()).resolves.toEqual({ accepted: true });
+
+    expect(configuredChild.frozenScope.finish).toHaveBeenCalledTimes(2);
+    expect(taskChild.frozenScope.finish).toHaveBeenCalledTimes(2);
+    expect(order.indexOf("task-child:finish")).toBeLessThan(order.indexOf("configured-agent:finish"));
+    expect(order.indexOf("task-child:finish")).toBeLessThan(order.indexOf("task-agent:finish"));
+    expect(manager.isTerminated()).toBe(true);
   });
 });

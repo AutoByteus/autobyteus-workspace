@@ -18,7 +18,13 @@ type CatalogState = {
   rows: Map<string, TeamRunIndexRowRecord>;
   queue: Promise<void>;
 };
-type TeamRunActivityLookup = { getActiveRun(teamRunId: string): unknown | null };
+type TeamRunHistoryManager = {
+  hasManagedTeamRun(teamRunId: string): boolean;
+  withUnmanagedHistoryDeletion<T>(
+    teamRunId: string,
+    operation: () => Promise<T>,
+  ): Promise<{ kind: "managed" } | { kind: "completed"; value: T }>;
+};
 type CatalogMutationResult<T> = { value: T; shouldFlush: boolean };
 
 const states = new Map<string, CatalogState>();
@@ -54,21 +60,26 @@ export interface TeamCatalogMutationResultMessage { success: boolean; message: s
 export class TeamRunHistoryCatalogService {
   private readonly indexStore: TeamRunHistoryIndexStore;
   private readonly treeStore: TeamRunExecutionTreeStore;
-  private readonly manager: TeamRunActivityLookup;
+  private readonly manager: TeamRunHistoryManager;
   private readonly layout: AgentMemoryLayout;
   private readonly state: CatalogState;
   private readonly packageCatalog: TeamRunV1PackageCatalog;
+  private readonly removePackage: (teamDirPath: string) => Promise<void>;
 
   constructor(private readonly memoryDir: string, dependencies: {
     indexStore?: TeamRunHistoryIndexStore;
     executionTreeStore?: TeamRunExecutionTreeStore;
-    teamRunManager?: TeamRunActivityLookup;
+    teamRunManager?: TeamRunHistoryManager;
+    packageCatalog?: TeamRunV1PackageCatalog;
+    removePackage?: (teamDirPath: string) => Promise<void>;
   } = {}) {
     this.indexStore = dependencies.indexStore ?? new TeamRunHistoryIndexStore(memoryDir);
     this.treeStore = dependencies.executionTreeStore ?? new TeamRunExecutionTreeStore();
     this.manager = dependencies.teamRunManager ?? AgentTeamRunManager.getInstance();
     this.layout = new AgentMemoryLayout(memoryDir);
-    this.packageCatalog = new TeamRunV1PackageCatalog(memoryDir);
+    this.packageCatalog = dependencies.packageCatalog ?? new TeamRunV1PackageCatalog(memoryDir);
+    this.removePackage = dependencies.removePackage ?? ((teamDirPath) =>
+      fs.rm(teamDirPath, { recursive: true, force: true }));
     this.state = stateFor(memoryDir);
   }
 
@@ -139,21 +150,45 @@ export class TeamRunHistoryCatalogService {
   async deleteTeamRun(rawTeamRunId: string): Promise<TeamCatalogMutationResultMessage> {
     const identity = this.resolveIdentity(rawTeamRunId, true);
     if (!identity) return { success: false, message: "Invalid team run ID path." };
-    if (this.manager.getActiveRun(identity.teamRunId)) return { success: false, message: "Team run is active. Terminate it before deleting history." };
     return this.enqueueValue(async () => {
-      const rows = new Map(this.state.rows);
-      rows.delete(identity.teamRunId);
-      await this.flush(rows);
-      this.state.rows = rows;
-      await fs.rm(identity.teamDirPath, { recursive: true, force: true });
-      return { success: true, message: `Team run '${identity.teamRunId}' deleted permanently.` };
+      const transition = await this.manager.withUnmanagedHistoryDeletion(identity.teamRunId, async () => {
+        const originalRows = new Map(this.state.rows);
+        const originalRow = originalRows.get(identity.teamRunId) ?? null;
+        if (!originalRow) {
+          return { success: false, message: `Team run '${identity.teamRunId}' was not found.` };
+        }
+        const candidateRows = new Map(originalRows);
+        candidateRows.delete(identity.teamRunId);
+        try {
+          await this.flush(candidateRows);
+        } catch (error) {
+          return { success: false, message: `Team run history index removal failed: ${String(error)}` };
+        }
+        try {
+          await this.removePackage(identity.teamDirPath);
+        } catch (error) {
+          await this.restoreAndValidateDeleteTarget({
+            teamRunId: identity.teamRunId,
+            teamDirPath: identity.teamDirPath,
+            originalRows,
+            originalRow,
+          });
+          return { success: false, message: `Team run package removal failed: ${String(error)}` };
+        }
+        this.state.rows = candidateRows;
+        this.packageCatalog.exclude(identity.teamRunId, "Team run history was deleted permanently.");
+        return { success: true, message: `Team run '${identity.teamRunId}' deleted permanently.` };
+      });
+      return transition.kind === "managed"
+        ? { success: false, message: "Team run is active or stopping. Terminate it before deleting history." }
+        : transition.value;
     });
   }
 
   private async setArchived(rawTeamRunId: string, archived: boolean): Promise<TeamCatalogMutationResultMessage> {
     const identity = this.resolveIdentity(rawTeamRunId, true);
     if (!identity) return { success: false, message: "Invalid team run ID path." };
-    if (this.manager.getActiveRun(identity.teamRunId)) return { success: false, message: "Team run is active. Terminate it before archiving history." };
+    if (this.manager.hasManagedTeamRun(identity.teamRunId)) return { success: false, message: "Team run is active. Terminate it before archiving history." };
     return this.enqueueValue(async () => {
       const tree = await this.treeStore.read(identity.teamDirPath, identity.teamRunId);
       if (!tree) return { success: false, message: `Team run execution tree not found for '${identity.teamRunId}'.` };
@@ -210,6 +245,21 @@ export class TeamRunHistoryCatalogService {
   }
   private flush(rows: Map<string, TeamRunIndexRowRecord>): Promise<void> {
     return this.indexStore.writeIndex(this.sorted(rows));
+  }
+  private async restoreAndValidateDeleteTarget(input: {
+    teamRunId: string;
+    teamDirPath: string;
+    originalRows: Map<string, TeamRunIndexRowRecord>;
+    originalRow: TeamRunIndexRowRecord;
+  }): Promise<void> {
+    await this.flush(input.originalRows);
+    const durableRows = await this.indexStore.readIndexStrict();
+    const durableRow = durableRows.rows.find((row) => row.teamRunId === input.teamRunId) ?? null;
+    if (!durableRow || JSON.stringify(normalizeRow(durableRow)) !== JSON.stringify(normalizeRow(input.originalRow))) {
+      throw new Error(`Team run '${input.teamRunId}' history index compensation could not be verified.`);
+    }
+    const tree = await this.treeStore.read(input.teamDirPath, input.teamRunId);
+    if (!tree) throw new Error(`Team run '${input.teamRunId}' execution tree was not readable after compensation.`);
   }
   private resolveIdentity(rawTeamRunId: string, rejectDraft: boolean): { teamRunId: string; teamDirPath: string } | null {
     const teamRunId = rawTeamRunId.trim();

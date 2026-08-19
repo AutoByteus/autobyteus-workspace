@@ -294,7 +294,7 @@ describe("ChannelBindingService", () => {
       deleteBinding: vi.fn(),
     };
     const service = new ChannelBindingService(provider, {}, {
-      teamRunService: { resolveTeamRun: vi.fn().mockResolvedValue(createTeamRun()) } as any,
+      teamRunService: { resolveActiveTeamRun: vi.fn().mockResolvedValue(createTeamRun()) } as any,
     });
     const route = {
       provider: ExternalChannelProvider.WHATSAPP,

@@ -24,7 +24,7 @@ export type LocatedTeamAgentExecution = Readonly<{
   isActive: boolean;
 }>;
 
-type Manager = Pick<AgentTeamRunManager, "getTeamRun" | "listActiveRuns">;
+type Manager = Pick<AgentTeamRunManager, "getManagedTeamRun" | "listManagedTeamRunIds">;
 
 /** Derives physical/history context from the exact V1 tree without another identity model. */
 export class TeamRunExecutionTreeLocationService {
@@ -70,7 +70,7 @@ export class TeamRunExecutionTreeLocationService {
     const rootIds = requestedRootId ? [requestedRootId] : await this.listRootTeamRunIds();
     const output: LocatedTeamAgentExecution[] = [];
     for (const rootTeamRunId of rootIds) {
-      const activeRoot = this.manager.getTeamRun(rootTeamRunId);
+      const activeRoot = this.manager.getManagedTeamRun(rootTeamRunId);
       const tree = activeRoot?.getExecutionTreeSnapshot() ?? await this.readStoredTree(rootTeamRunId);
       if (!tree) continue;
       output.push(...this.listInTree(tree, Boolean(activeRoot)).filter((item) =>
@@ -84,7 +84,7 @@ export class TeamRunExecutionTreeLocationService {
     const normalized = runId.trim();
     if (!normalized) throw new Error("runId is required.");
     for (const rootTeamRunId of await this.listRootTeamRunIds()) {
-      const activeRoot = this.manager.getTeamRun(rootTeamRunId);
+      const activeRoot = this.manager.getManagedTeamRun(rootTeamRunId);
       const tree = activeRoot?.getExecutionTreeSnapshot() ?? await this.readStoredTree(rootTeamRunId);
       if (!tree) continue;
       const index = new TeamExecutionIndex(tree);
@@ -94,7 +94,7 @@ export class TeamRunExecutionTreeLocationService {
   }
 
   async listRootTeamRunIds(): Promise<string[]> {
-    return [...new Set([...this.manager.listActiveRuns(), ...await this.listStoredRootIds()])].sort();
+    return [...new Set([...this.manager.listManagedTeamRunIds(), ...await this.listStoredRootIds()])].sort();
   }
 
   findAgentSync(input: {
@@ -120,7 +120,7 @@ export class TeamRunExecutionTreeLocationService {
   async readTree(rootTeamRunId: string): Promise<TeamRunExecutionTreeSnapshot | null> {
     const normalized = rootTeamRunId.trim();
     if (!normalized) throw new Error("rootTeamRunId is required.");
-    return this.manager.getTeamRun(normalized)?.getExecutionTreeSnapshot() ?? this.readStoredTree(normalized);
+    return this.manager.getManagedTeamRun(normalized)?.getExecutionTreeSnapshot() ?? this.readStoredTree(normalized);
   }
 
   private findInActive(input: {
@@ -128,8 +128,8 @@ export class TeamRunExecutionTreeLocationService {
     memberAddress?: string | null;
     containingTeamRunId?: string | null;
   }): LocatedTeamAgentExecution | null {
-    for (const rootTeamRunId of this.manager.listActiveRuns()) {
-      const root = this.manager.getTeamRun(rootTeamRunId);
+    for (const rootTeamRunId of this.manager.listManagedTeamRunIds()) {
+      const root = this.manager.getManagedTeamRun(rootTeamRunId);
       if (!root) continue;
       const located = this.findInTree(root.getExecutionTreeSnapshot(), input, true);
       if (located) return located;

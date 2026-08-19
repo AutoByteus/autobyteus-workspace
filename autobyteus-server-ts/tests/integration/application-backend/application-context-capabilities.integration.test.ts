@@ -423,7 +423,7 @@ describe("Application context capability integration", () => {
           },
         },
       }; }),
-      resolveTeamRun: vi.fn(async (runId: string) => runId === "team-run-1" ? { postMessage: teamPostMessage } : null),
+      resolveActiveTeamRun: vi.fn(async (runId: string) => runId === "team-run-1" ? { postMessage: teamPostMessage } : null),
       terminateTeamRun: vi.fn(async () => undefined),
     };
     const runBindingLaunchService = new ApplicationRunBindingLaunchService({

@@ -59,6 +59,48 @@ const buildHandle = (overrides: { platformAgentRunId?: string | null; agentRunMa
 };
 
 describe("MixedAgentMemberHandle termination", () => {
+  it("treats an absent local run as a benign root-shutdown interrupt without restoring it", async () => {
+    const agentRunManager = {
+      restoreAgentRunFromPlatformState: vi.fn(),
+      createAgentRun: vi.fn(),
+    };
+    const handle = buildHandle({
+      platformAgentRunId: "platform-worker-run-1",
+      agentRunManager,
+    });
+
+    await expect(handle.interruptForRootTermination()).resolves.toEqual({ accepted: true });
+
+    expect(agentRunManager.restoreAgentRunFromPlatformState).not.toHaveBeenCalled();
+    expect(agentRunManager.createAgentRun).not.toHaveBeenCalled();
+  });
+
+  it("translates only NO_ACTIVE_TURN to a benign root-shutdown interrupt", async () => {
+    const run = {
+      runId: "worker-run-1",
+      isActive: () => true,
+      getPlatformAgentRunId: () => "platform-worker-run-1",
+      getStatusSnapshot: () => ({ status: "waiting_for_tool" }),
+      subscribeToEvents: vi.fn(() => () => undefined),
+      postUserMessage: vi.fn(async () => ({ accepted: true as const })),
+      interrupt: vi.fn()
+        .mockResolvedValueOnce({ accepted: false, code: "NO_ACTIVE_TURN" })
+        .mockResolvedValueOnce({ accepted: false, code: "INTERRUPT_REJECTED", message: "provider rejected" }),
+    };
+    const handle = buildHandle({
+      agentRunManager: { createAgentRun: vi.fn(async () => run) },
+    });
+    (handle as unknown as { agentRun: typeof run }).agentRun = run;
+
+    await expect(handle.interruptForRootTermination()).resolves.toEqual({ accepted: true });
+    await expect(handle.interruptForRootTermination()).resolves.toEqual({
+      accepted: false,
+      code: "INTERRUPT_REJECTED",
+      message: "provider rejected",
+    });
+    expect(run.interrupt).toHaveBeenCalledTimes(2);
+  });
+
   it("does not restore platform state solely to terminate an absent local run", async () => {
     const agentRunManager = {
       restoreAgentRunFromPlatformState: vi.fn(),
@@ -98,7 +140,7 @@ describe("MixedAgentMemberHandle termination", () => {
     const handle = buildHandle({
       agentRunManager: { createAgentRun: vi.fn(async () => run) },
     });
-    await handle.postMessage({ content: "initialize" } as never);
+    (handle as unknown as { agentRun: typeof run }).agentRun = run;
 
     await expect(handle.terminate()).resolves.toEqual(rejected);
 

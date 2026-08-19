@@ -15,6 +15,7 @@ export class MixedTaskTeamExecutionRegistry {
   private readonly reserved = new Set<string>();
   private readonly preparedTeamRuns = new Map<string, TeamRun>();
   private readonly settling = new Set<string>();
+  private materializationOpen = true;
 
   constructor(private readonly options: {
     teamContext: TeamRunContext<MixedTeamRunContext>;
@@ -23,9 +24,11 @@ export class MixedTaskTeamExecutionRegistry {
 
   listTeamRuns(): readonly TeamRun[] { return Object.freeze([...this.active.values()]); }
   listPreparedTeamRuns(): readonly TeamRun[] { return Object.freeze([...this.preparedTeamRuns.values()]); }
+  freezeMaterialization(): void { this.materializationOpen = false; }
   get(teamRunId: string): TeamRun | null { return this.active.get(teamRunId) ?? null; }
 
   async prepare(input: PrepareTaskTeamInput): Promise<PreparedTaskExecution> {
+    if (!this.materializationOpen) throw new Error("Task Team materialization is closed for TeamRun termination.");
     const teamRunId = input.teamRunId.trim();
     if (!teamRunId || input.address !== input.teamNode.address || input.teamNode.teamRunId !== teamRunId) {
       throw new Error("Task Team preparation requires one exact placement and TeamRun ID.");

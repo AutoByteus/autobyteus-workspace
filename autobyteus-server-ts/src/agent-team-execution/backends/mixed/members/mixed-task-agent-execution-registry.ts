@@ -20,6 +20,7 @@ export class MixedTaskAgentExecutionRegistry {
   private readonly reserved = new Set<string>();
   private readonly preparedHandles = new Map<string, MixedAgentMemberHandle>();
   private readonly settling = new Set<string>();
+  private materializationOpen = true;
 
   constructor(private readonly options: {
     teamContext: TeamRunContext<MixedTeamRunContext>;
@@ -31,9 +32,11 @@ export class MixedTaskAgentExecutionRegistry {
 
   listHandles(): readonly MixedAgentMemberHandle[] { return Object.freeze([...this.active.values()]); }
   listPreparedHandles(): readonly MixedAgentMemberHandle[] { return Object.freeze([...this.preparedHandles.values()]); }
+  freezeMaterialization(): void { this.materializationOpen = false; }
   get(agentRunId: string): MixedAgentMemberHandle | null { return this.active.get(agentRunId) ?? null; }
 
   async prepare(input: PrepareTaskAgentInput): Promise<PreparedTaskExecution> {
+    if (!this.materializationOpen) throw new Error("Task Agent materialization is closed for TeamRun termination.");
     const runId = input.agentRunId.trim();
     if (!runId || input.address !== input.sourceNode.address) {
       throw new Error("Task Agent preparation requires one exact configured placement and AgentRun ID.");

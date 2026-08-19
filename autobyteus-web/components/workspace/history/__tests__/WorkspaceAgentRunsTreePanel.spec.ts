@@ -292,7 +292,7 @@ const {
     },
     teamRunStoreMock: {
       stopPendingTeamIds: { __v_isRef: true, value: {} },
-      terminateTeamRun: vi.fn().mockResolvedValue(undefined),
+      terminateTeamRun: vi.fn().mockResolvedValue(true),
     },
     agentDefinitionStoreMock: {
       agentDefinitions: [
@@ -1596,6 +1596,91 @@ describe('WorkspaceAgentRunsTreePanel', () => {
 
     const deleteButtons = wrapper.findAll('button[title="Delete team history permanently"]');
     expect(deleteButtons).toHaveLength(1);
+  });
+
+  it('renders independent Stop and Delete for an active READY Team and confirms stop before exact delete', async () => {
+    runHistoryState.teamNodesByWorkspace['/ws/a'] = [{
+      teamRunId: 'team-active', teamDefinitionId: 'team-def-1', teamDefinitionName: 'Team Alpha',
+      workspaceRootPath: '/ws/a', summary: 'Same summary', lastActivityAt: '2026-01-01T02:00:00.000Z',
+      isActive: true, currentStatus: 'running', deleteLifecycle: 'READY', members: [],
+    }];
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandTeamDefinitionGroup(wrapper);
+    const vm = wrapper.vm as any;
+
+    expect(wrapper.findAll('button[title="Terminate team"]')).toHaveLength(1);
+    const deleteButton = wrapper.get('button[aria-label="Delete team history permanently"]');
+    await deleteButton.trigger('click');
+    await nextTick();
+    expect(vm.deleteConfirmationMessage).toBe(
+      'This Team is active. Stop it and permanently delete its history? This cannot be undone.',
+    );
+    await vm.confirmDeleteRun();
+    await flushPromises();
+
+    expect(teamRunStoreMock.terminateTeamRun).toHaveBeenCalledWith('team-active');
+    expect(runHistoryStoreMock.deleteTeamRun).toHaveBeenCalledWith('team-active');
+    expect(teamRunStoreMock.terminateTeamRun.mock.invocationCallOrder[0])
+      .toBeLessThan(runHistoryStoreMock.deleteTeamRun.mock.invocationCallOrder[0]);
+    expect(addToastMock).toHaveBeenCalledWith('Team history deleted permanently.', 'success');
+  });
+
+  it('does not delete history when active Team stop fails', async () => {
+    teamRunStoreMock.terminateTeamRun.mockResolvedValueOnce(false);
+    runHistoryState.teamNodesByWorkspace['/ws/a'] = [{
+      teamRunId: 'team-active', teamDefinitionId: 'team-def-1', teamDefinitionName: 'Team Alpha',
+      workspaceRootPath: '/ws/a', summary: 'Team summary', lastActivityAt: '2026-01-01T02:00:00.000Z',
+      isActive: true, currentStatus: 'running', deleteLifecycle: 'READY', members: [],
+    }];
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandTeamDefinitionGroup(wrapper);
+    await wrapper.get('button[aria-label="Delete team history permanently"]').trigger('click');
+    await (wrapper.vm as any).confirmDeleteRun();
+    await flushPromises();
+
+    expect(runHistoryStoreMock.deleteTeamRun).not.toHaveBeenCalled();
+    expect(addToastMock).toHaveBeenCalledWith('Failed to stop and delete this Team. Try again.', 'error');
+  });
+
+  it('keeps stopped Team history retryable and reports the partial failure when delete fails', async () => {
+    runHistoryStoreMock.deleteTeamRun.mockResolvedValueOnce(false);
+    runHistoryState.teamNodesByWorkspace['/ws/a'] = [{
+      teamRunId: 'team-active', teamDefinitionId: 'team-def-1', teamDefinitionName: 'Team Alpha',
+      workspaceRootPath: '/ws/a', summary: 'Team summary', lastActivityAt: '2026-01-01T02:00:00.000Z',
+      isActive: true, currentStatus: 'running', deleteLifecycle: 'READY', members: [],
+    }];
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandTeamDefinitionGroup(wrapper);
+    await wrapper.get('button[aria-label="Delete team history permanently"]').trigger('click');
+    await (wrapper.vm as any).confirmDeleteRun();
+    await flushPromises();
+
+    expect(teamRunStoreMock.terminateTeamRun).toHaveBeenCalledWith('team-active');
+    expect(runHistoryStoreMock.deleteTeamRun).toHaveBeenCalledWith('team-active');
+    expect(addToastMock).toHaveBeenCalledWith(
+      'The Team was stopped, but its history could not be deleted. Try Delete again.',
+      'error',
+    );
+  });
+
+  it('cancels active Team deletion without stop or storage mutation', async () => {
+    runHistoryState.teamNodesByWorkspace['/ws/a'] = [{
+      teamRunId: 'team-active', teamDefinitionId: 'team-def-1', teamDefinitionName: 'Team Alpha',
+      workspaceRootPath: '/ws/a', summary: 'Team summary', lastActivityAt: '2026-01-01T02:00:00.000Z',
+      isActive: true, currentStatus: 'running', deleteLifecycle: 'READY', members: [],
+    }];
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandTeamDefinitionGroup(wrapper);
+    await wrapper.get('button[aria-label="Delete team history permanently"]').trigger('click');
+    (wrapper.vm as any).closeDeleteConfirmation();
+    await flushPromises();
+
+    expect(teamRunStoreMock.terminateTeamRun).not.toHaveBeenCalled();
+    expect(runHistoryStoreMock.deleteTeamRun).not.toHaveBeenCalled();
   });
 
   it('renders archive action for inactive team history rows', async () => {

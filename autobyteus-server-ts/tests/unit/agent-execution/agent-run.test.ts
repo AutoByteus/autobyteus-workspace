@@ -548,6 +548,18 @@ describe("AgentRun input admission", () => {
     expect(terminate).toHaveBeenCalledOnce();
   });
 
+  it("retries the same prepared AgentRun after a nonterminal provider termination result", async () => {
+    const terminate = vi.fn()
+      .mockResolvedValueOnce({ accepted: false, code: "BUSY" })
+      .mockResolvedValueOnce({ accepted: true });
+    const harness = createHarness({ terminate });
+
+    await expect(harness.run.terminate()).resolves.toEqual({ accepted: false, code: "BUSY" });
+    await expect(harness.run.terminate()).resolves.toEqual({ accepted: true });
+
+    expect(terminate).toHaveBeenCalledTimes(2);
+  });
+
   it("drains claimed and queued inputs in FIFO order before provider termination", async () => {
     const firstDispatch = createDeferred<AgentRunBackendInputDispatchResult>();
     const secondDispatch = createDeferred<AgentRunBackendInputDispatchResult>();
