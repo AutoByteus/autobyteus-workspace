@@ -2,9 +2,9 @@
 
 ## User Request
 
-Investigate why an offline Classroom Simulation AgentTeam run has no visible delete action in the desktop UI. The screenshot shows multiple similarly titled Classroom Simulation runs; the focused `professor` member is offline, but the user cannot find a delete button for the run.
+Investigate why a Classroom Simulation AgentTeam history run can show every member as `Offline` while the parent TeamRun still behaves as active and therefore shows no permanent-delete action. Preserve the established safe workflow: an active TeamRun exposes **Stop**, Stop fully terminates the runtime while retaining all history, and only the resulting inactive history row exposes a separate **Delete** action with permanent-deletion confirmation.
 
-The ticket was initially bootstrapped from `origin/codex/agent-team-universal-task-delegation`. After that integration was finalized and promoted, the user explicitly requested deleting the old ticket worktree and re-bootstrapping the ticket from the refreshed `origin/personal` branch. The current authoritative ticket branch and worktree now use that promoted base.
+The ticket was initially bootstrapped from `origin/codex/agent-team-universal-task-delegation`. After that integration was finalized and promoted, the user explicitly requested deleting the old ticket worktree and re-bootstrapping from refreshed `origin/personal`. This ticket worktree/branch is the current authority.
 
 ## User Evidence
 
@@ -12,11 +12,13 @@ The ticket was initially bootstrapped from `origin/codex/agent-team-universal-ta
 
 ## Requested Outcome
 
-- Provide deletion for the whole persisted AgentTeam history run; configured member rows remain focus/navigation subjects and are not independently deleted.
-- Resolve the observed mismatch in which the root TeamRun is active/resumable while the focused member is offline, causing the current UI to show only a small stop action and suppress permanent delete.
-- Fix the exact shutdown defect reproduced from the user's sequence: when a member is waiting for tool approval, stop must cancel/interrupt that pending turn and complete without requiring the user to approve or deny the tool first.
-- Define the smallest correct product fix: keep stop-only, expose permanent delete for active or inactive persisted TeamRuns, require explicit confirmation, reliably terminate an active exact root before deleting its exact stored history, and preserve truthful retry behavior on partial failure.
+- Preserve whole-TeamRun actions on the parent row; member rows remain focus/navigation subjects and are never independently deleted.
+- Fix Stop so it cancels/interruption-resolves pending tool approval, stops every materialized configured/delegated/nested execution, and reaches a truthful inactive state without requiring Approve or Deny.
+- Stop retains the exact TeamRun history and never initiates permanent deletion or opens a deletion confirmation.
+- While the root remains active or Stop is pending/failed, Delete is not offered.
+- After complete Stop, the same exact history row becomes inactive and offers a separate Delete action. Delete then opens permanent-deletion confirmation and, when confirmed, removes only that exact stored TeamRun.
+- Remove the ticket WIP's added active-row Delete and combined “stop and permanently delete” workflow; those were based on a superseded interpretation and are not approved product behavior.
 
 ## User-Approved Runtime Reproduction
 
-The user authorized an isolated experiment against the already-running Electron server. A newly allocated Classroom Simulation fixture reproduced `autoExecuteTools=false -> TOOL_APPROVAL_REQUESTED -> terminateAgentTeamRun`. The Team lifecycle stopped advertising active, but the termination mutation remained pending beyond 60 seconds until the experiment explicitly denied the pending tool for cleanup. A subsequent clean restore produced the supported state `root active + both configured members offline`, then successfully lazily activated the professor on new input. The exact fixture was terminated and deleted after evidence capture; neither reported run was mutated. See `runtime-reproduction-evidence.md`.
+The user authorized an isolated experiment against the already-running Electron server. A newly allocated Classroom Simulation fixture reproduced `autoExecuteTools=false -> TOOL_APPROVAL_REQUESTED -> terminateAgentTeamRun`. The Team lifecycle stopped advertising active too early, but the termination mutation remained pending beyond 60 seconds until the experiment explicitly denied the pending tool for cleanup. A clean restore then produced the supported state `root active + both configured members offline` and successfully lazily activated the professor on new input. The exact fixture was terminated and deleted after evidence capture; neither reported production run was mutated. See `runtime-reproduction-evidence.md`.

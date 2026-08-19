@@ -178,12 +178,22 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
     expect(groupRow.get('[data-test="team-activity-dot"]').attributes('data-active')).toBe('false');
   });
 
-  it('renders independent Stop and permanent Delete for active READY Team rows', () => {
-    const { wrapper } = mountSubject();
-    expect(wrapper.find('button[title$="terminate_team"]').exists()).toBe(true);
-    const deleteButton = wrapper.get('button[aria-label="Delete team history permanently"]');
-    expect(deleteButton.attributes('disabled')).toBeUndefined();
-    expect(wrapper.find('button[title$="archive_team_history"]').exists()).toBe(false);
+  it('renders mutually exclusive active Stop and inactive Archive/Delete actions', async () => {
+    const active = mountSubject();
+    expect(active.wrapper.find('button[title$="terminate_team"]').exists()).toBe(true);
+    expect(active.wrapper.find('button[aria-label="Delete team history permanently"]').exists()).toBe(false);
+    expect(active.wrapper.find('button[title$="archive_team_history"]').exists()).toBe(false);
+    active.wrapper.unmount();
+
+    const inactiveTeam = {
+      ...active.team,
+      isActive: false,
+      rootTeam: { ...active.team.rootTeam, isActive: false },
+    };
+    const inactive = mountSubject({ workspaceTeams: [inactiveTeam] });
+    expect(inactive.wrapper.find('button[title$="terminate_team"]').exists()).toBe(false);
+    expect(inactive.wrapper.find('button[title$="archive_team_history"]').exists()).toBe(true);
+    expect(inactive.wrapper.find('button[aria-label="Delete team history permanently"]').exists()).toBe(true);
   });
 
   it('renders and selects exact stable and task-Agent execution identities', async () => {

@@ -3,22 +3,24 @@
 ## Investigation Status
 
 - Bootstrap Status: Complete
-- Current Status: Requirements remain approved; ARCH-REV-001 design-impact evidence incorporated; SR-002 design rework complete and ready for architecture re-review
-- Investigation Goal: Determine why the observed Classroom Simulation member says `Offline` while the TeamRun has no permanent-delete action, reproduce the user's pending-approval shutdown sequence, and define the smallest safe correction.
+- Current Status: User-approved requirement reset incorporated; SR-003 solution rework in progress after API/E2E reroute
+- Investigation Goal: Explain the active-root/offline-member state, reproduce pending-approval Stop, and preserve the original strict Stop-then-later-Delete workflow.
 - Scope Classification: `Medium`
-- Scope Classification Rationale: The symptom is a compact row-action defect, but active deletion spans root lifecycle, destructive confirmation, exact persisted-package deletion, stream/context cleanup, and partial failures.
-- Scope Summary: Whole-AgentTeam persisted history deletion only. No member deletion and no change to TeamRun continuation semantics.
+- Scope Classification Rationale: The row workflow stays simple, but reliable Stop crosses root admission, materialization stabilization, pending-turn interruption, recursive termination, identity ownership, and retry.
+- Scope Summary: Whole-AgentTeam Stop and later inactive history deletion only. No active Delete, combined stop-delete, or member deletion.
 - Primary Questions Resolved:
-  - The whole TeamRun row owns stop/archive/delete actions.
-  - Delete is suppressed solely because the root `isActive`; member `Offline` is not the gate.
-  - The observed roots can be active and quiescent while their configured members are offline by design.
-  - A complete server deletion contract exists but intentionally rejects active roots.
-  - Stop while a member awaits tool approval is defective: termination waits for quiescence without interrupting the pending turn, while the root may be removed from manager lookup before teardown finishes.
-  - The safe product correction is reliable descendant-first termination plus an explicit active-delete flow that stops the exact root before catalog deletion.
+  - Root activity and member status are distinct; all members may be offline while the root remains active/resumable.
+  - The original/released workflow is active Stop only, then inactive Archive/Delete.
+  - Stop while a member awaits tool approval is defective because it waits before interrupting the pending turn and may release root ownership too early.
+  - The committed backend lifecycle/catalog corrections remain appropriate.
+  - The ticket WIP's active-row Delete, combined confirmation, and stop-then-delete composable are not approved and must be removed.
+  - Stop must retain history; a later independent inactive Delete owns permanent disposal.
 
 ## Request Context
 
 The user supplied a desktop screenshot showing the Classroom Simulation Team expanded into multiple similarly titled runs. The focused `/professor` member shows `Offline`; no delete button is apparent. The ticket was first investigated from the universal-task-delegation integration branch. After that work was finalized and promoted, the user explicitly requested deleting the old ticket worktree and re-bootstrapping this ticket from current `origin/personal`.
+
+During API/E2E, the active row exposed two independent controls because IR-001 implemented the earlier active-delete interpretation. The API/E2E engineer clicked the extra active Delete—not Stop—and observed the combined confirmation. The user then explicitly reset the requirement: the original two-step workflow is authoritative; Stop never deletes, and active Delete must be removed.
 
 ## Environment Discovery / Bootstrap Context
 
@@ -40,9 +42,9 @@ The user supplied a desktop screenshot showing the Classroom Simulation Team exp
 
 | Artifact | Purpose | Status |
 | --- | --- | --- |
-| `ui-ux-spec.md` | Specifies TeamRun row actions, active/inactive confirmation, accessibility, descendant-first stop presentation, and partial-failure recovery. | Approved 2026-08-19 |
-| `runtime-reproduction-evidence.md` | Records the exact user-approved pending-approval stop experiment, code-correlated cause, clean restore control, and fixture cleanup. | Complete; evidence only; approval N/A |
-| `design-use-case-validation.md` | Self-validates each materially different approved case through target data-flow spines and lifecycle invariants. | Complete; design evidence only; approval N/A |
+| `ui-ux-spec.md` | Specifies mutually exclusive active Stop / inactive Archive-Delete, separate confirmation, accessibility, and failure recovery. | Refined; user-approved reset 2026-08-19 |
+| `runtime-reproduction-evidence.md` | Records exact pending-approval Stop failure, source-correlated cause, clean restore control, and fixture cleanup. | Complete; evidence only; approval N/A |
+| `design-use-case-validation.md` | Self-validates each reset case through target data-flow spines and lifecycle invariants. | Refined; design evidence only; approval N/A |
 
 ## Source Log
 
@@ -65,45 +67,49 @@ The user supplied a desktop screenshot showing the Classroom Simulation Team exp
 | 2026-08-19 | User-approved isolated runtime | Public GraphQL create/terminate/restore/delete plus Team/Agent WebSocket commands against `127.0.0.1:29695`; exact fixture `classroom_simulation_team_4c3801479a874b13ad3cf91b67bba633` | Reproduce the user's `autoExecuteTools=false -> approval pending -> shutdown` sequence and distinguish it from normal lazy offline state | Approval pending was reached with open work. Termination stopped advertising active but did not return within 60 seconds; explicit denial solely for cleanup let it finish. Clean restore projected active root + both offline, then new input activated professor and completed. Fixture was terminated/deleted. | Yes—termination design must settle pending approval and preserve one in-flight root identity |
 | 2026-08-19 | Code | `RootTeamRun.terminate/runTermination`; `MixedTeamManager.prepareTermination`; `MixedAgentMemberHandle.prepareTermination`; `AgentRun.prepareTermination`; `AgentTeamRunManager.getTeamRun/terminateTeamRun` | Correlate runtime hang to lifecycle ownership | Root closes admission and enters `terminating`; member termination waits for AgentRun input quiescence without interrupting the pending approval turn. Manager lookup unregisters any root whose `isActive()` is false, including the still-terminating root. | Yes—reuse AgentRun interrupt before quiescence and retain manager ownership until terminal completion |
 | 2026-08-19 | Code | `TeamRun`, `TeamRunBackend`, `MixedTeamManager`, configured/task Agent and Team registries/handles, `TeamRunResolver`, `TaskDelegationService.shutdownAndSettle` | Trace every configured/delegated/nested shutdown owner | The mixed backend already owns the full materialized descendant set, but root shutdown reaches task settlement/member termination without a prior whole-tree interruption phase. Both root and nested resolvers remove non-active runs on read, so ownership and admission are conflated at two levels. | Yes—add bounded root-shutdown interruption/quiescence phases and retain nonterminal execution ownership until accepted termination |
-| 2026-08-19 | Code | `TeamRunService`, GraphQL termination/history resolvers, `agentTeamRunStore`, `useWorkspaceHistoryMutations`, `runHistoryMutationActions`, Team history row/modal | Derive the smallest active-delete composition | Existing stop-only already owns server termination stamping and exact client stream/member cleanup; existing history delete already owns exact local history/context/selection cleanup. The current mutation composable is the narrow owner that can sequence those two operations after one confirmation without a new server mutation or compatibility path. | Yes—extend the existing composable and preserve the catalog guard |
+| 2026-08-19 | Code | `TeamRunService`, GraphQL termination/history resolvers, `agentTeamRunStore`, `useWorkspaceHistoryMutations`, `runHistoryMutationActions`, Team history row/modal | Earlier active-delete design investigation (superseded by later user reset) | The two operations already had distinct owners; the earlier solution incorrectly chose to compose them after one confirmation. The later reset preserves their separation. | Superseded—remove composition; preserve both boundaries |
 | 2026-08-19 | Command | `git fetch origin personal`; `git rev-list --left-right --count HEAD...origin/personal`; `git status --short --branch` | Revalidate dedicated workspace immediately before design | Ticket worktree remains dedicated, branch and `origin/personal` are `0/0` at `0194fb4fffa69037a46aeace491024fdf816dde7`; only ticket artifacts are untracked. | No |
 | 2026-08-19 | User approval | Conversation approval after exact shutdown sequence confirmation | Lock requirements basis for design | User confirmed: close admission; interrupt/cancel pending approvals; wait settlement; fully stop every individual/delegated/nested execution; only then stop/unregister root and expose delete-ready UI. User instructed solution design to proceed using design principles. | No |
 | 2026-08-19 | Architecture review | `design-review-report.md` (`ARCH-REV-001`, `AR-001`–`AR-003`) and `architecture-review-revision-record.md` | Validate SR-001 against approved partial-failure and lifecycle concurrency contracts | Overall direction passed, but current catalog order removes the durable row before package deletion, the managed-root check does not exclude concurrent restore through deletion, and existing drains do not join already-admitted asynchronous member/task preparation. | Yes—SR-002 bounded design correction |
 | 2026-08-19 | Code | `TeamRunHistoryCatalogService.deleteTeamRun`, `TeamRunHistoryService.listTeamRunHistory`, `TeamRunV1PackageCatalog`, `TeamRunService.restoreTeamRun`, `AgentTeamRunManager.createTeamRun/restoreTeamRun` | Independently validate AR-001/AR-002 and locate the narrow owners | Catalog currently flushes row removal and publishes in-memory removal before `fs.rm`; history requires both row and execution tree; restore registers through the manager before catalog restoration recording. One-time pre-queue lookup therefore cannot protect the package. | Yes—catalog compensation plus one manager-owned exact-ID transition lane |
 | 2026-08-19 | Code | `RootTeamRun.executeAgentCommand`/Team delivery/task methods; `TaskDelegationService.delegateTask`; mixed configured/task registries; task command queue | Independently validate AR-003 and identify the stabilization boundary | Team message and delegation can pass root admission, then await configured-member or task preparation before the existing task/persistence queues. Delegation preparation can create prepared Agent/Team objects and registration reservations before queue submission. Existing drains alone do not freeze the traversal set. | Yes—root admitted-operation gate plus frozen exact termination scope |
-| 2026-08-18 | Tests | `WorkspaceAgentRunsTreePanel.spec.ts`; `runHistoryStore.spec.ts` | Inventory coverage | Tests assert inactive TeamRun delete and active stop separately, but do not cover active root + offline members, active-delete composition, or stream cleanup. | Yes—durable coverage required |
+| 2026-08-18 | Tests | `WorkspaceAgentRunsTreePanel.spec.ts`; `runHistoryStore.spec.ts` | Inventory coverage | Base tests assert inactive TeamRun Delete and active Stop separately but do not cover active root + offline members, pending-approval completion, or the complete post-stop action transition. | Yes—strict transition coverage required |
+
+| 2026-08-19 | API/E2E reroute | `api-e2e-coverage-investigation.md` plus incoming `/api_e2e_engineer` report | Distinguish Stop behavior from WIP active Delete | Isolated browser row had independent Stop and Delete. API/E2E invoked Delete; Stop was not observed opening the modal. Execution paused because user rejected the added active-delete workflow. | Yes—requirement/design reset |
+| 2026-08-19 | Git / source comparison | `git show origin/personal:...WorkspaceHistoryWorkspaceSection.vue`; `git diff origin/personal..HEAD -- ...WorkspaceHistoryWorkspaceSection.vue ...useWorkspaceHistoryMutations.ts` | Verify original workflow and locate WIP divergence | Base uses `Stop` while active and Delete only while inactive; WIP changed Delete guard to all `READY`, added `wasActive`, combined confirmation, and stop-then-delete sequence. | Yes—remove only WIP UI divergence |
+| 2026-08-19 | User clarification | Conversation after API/E2E pause | Resolve option A vs B | User explicitly selected B: keep original strict workflow; Stop retains history and only after full stop does a separate Delete appear. | No—approved authority |
 
 ## Relevant Existing Behavior And Production Paths
 
 | Behavior ID | Kind | Current Supported Trigger Or Governing Contract | Current Production Path And Lifecycle | Meaningful Current Outcome / Invariants | Evidence |
 | --- | --- | --- | --- | --- | --- |
-| `BEH-001` | User | User sees a persisted TeamRun row and its focused member | GraphQL history -> run-history projection -> TeamTreeNode -> `WorkspaceHistoryWorkspaceSection` | Root `isActive` selects stop or archive/delete; focused member status is independent. | UI/store/server tracing; runtime probe |
-| `BEH-002` | System | User requests permanent TeamRun history deletion | component -> composable -> store -> GraphQL -> `TeamRunHistoryService` -> catalog | Frontend prevents active request; catalog independently rejects active root; inactive exact row/package is removed. | Source tracing |
-| `BEH-003` | User | User selects stop for active TeamRun | component -> composable -> `agentTeamRunStore.terminateTeamRun` -> GraphQL -> `TeamRunService` -> manager/root -> catalog termination stamp -> client stream/context status cleanup | Stops runtime but intentionally retains history; later refresh makes row inactive and trash eligible. | Source tracing; later runtime observation |
-| `BEH-004` | System | User sends new input to an active root whose member is offline | Team stream handler -> `RootTeamRun.executeAgentCommand` -> containing `TeamRun` -> mixed member handle -> `ensureReady()` -> AgentRun manager | Offline configured member is lazily activated/restored; root resumability is preserved. | Root/backend source tracing |
-| `BEH-005` | User | User deletes one of multiple same-summary TeamRuns | Row action carries `team.teamRunId`; API/path validation uses exact ID | Summary cannot select deletion target; exact root identity is available throughout. | UI/API/storage tracing |
-| `BEH-006` | User/System | User selects Team stop or confirmed active delete while a member awaits tool approval | row/store -> `terminateAgentTeamRun` -> manager/root -> mixed member -> `AgentRun.prepareTermination()` | Root enters `terminating`, but AgentRun quiescence waits on the unanswered approval; manager lookup can unregister the non-active root before teardown finishes; the public mutation can remain pending indefinitely. | User-approved exact runtime reproduction plus source tracing |
+| `BEH-001` | User | Persisted TeamRun row | history projection -> TeamTreeNode -> row actions | Released base: active Stop only; inactive `READY` Archive/Delete. WIP incorrectly adds active Delete. | Base/WIP source diff; API/E2E observation |
+| `BEH-002` | User/System | User clicks active Stop | row -> composable -> Team store -> GraphQL -> TeamRunService -> manager/root -> descendants -> terminal stamp -> client cleanup | Stop is intended to retain history; current base can hang at approval before terminal completion. | Runtime reproduction and source trace |
+| `BEH-003` | User/System | User clicks inactive Delete | inactive row -> confirmation -> history store -> GraphQL -> history service/catalog -> exact package/index -> exact client cleanup | Separate destructive decision, inactive only; never restores or terminates. | Base source trace |
+| `BEH-004` | System | New input to active root with offline member | Team stream -> RootTeamRun -> TeamRun -> member handle -> `ensureReady()` | Offline member may lazily activate/restore; root resumability remains supported. | Runtime control and source trace |
+| `BEH-005` | Contract | Same-summary exact Stop/Delete; restore concurrent with inactive Delete | exact `teamRunId` through UI/runtime/catalog and manager transition lane | Summary/member identity never selects the operation; manager-owned package cannot be deleted. | Source trace and SR-002 review evidence |
+| `BEH-006` | User/System | Stop while approval/admitted materialization exists | root gate -> frozen exact scope -> AgentRun interrupt/quiesce -> recursive finish -> terminal root | Target correction fully stops same root before inactive projection; same exact objects are retryable. | Runtime reproduction, committed source, SR-002 |
 
 ## Design Health Assessment Evidence
 
-- Change posture: `Bug Fix / Behavior Change`
-- Candidate root cause classification: `Missing Lifecycle Invariant / Boundary Ownership`, plus duplicated delete-policy coordination
-- Refactor posture evidence summary: no subsystem rewrite is warranted. Add bounded whole-tree interruption/quiescence phases, separate nonterminal ownership from command admission in root and nested registries, make rejected/failed termination retry the same objects, and extend the existing UI mutation owner for stop-before-delete while retaining the catalog's physical safety guard.
+- Change posture: `Bug Fix / Requirement Correction`
+- Root cause classification: `Missing Lifecycle Invariant / Boundary Ownership`; the active-delete WIP is a local workflow defect caused by a superseded interpretation.
+- Refactor posture: retain bounded shutdown/catalog ownership changes; remove only active-delete UI composition and its stale tests/copy.
 
 | Evidence Source | Observation | Design Health Implication | Follow-Up Needed |
 | --- | --- | --- | --- |
-| Screenshot + live history | Parent root is active while member header is offline | The UI presents two valid but different lifecycle scopes without explaining which governs deletion. | UI copy/action design |
-| UI source | `v-if canTerminateTeam` suppresses trash; trash itself is hover/focus hidden at desktop widths | The user must infer a two-step process from a small stop square. | Expose explicit delete |
-| Server source | Root is resumable and members are lazy; catalog refuses active package deletion | Do not reinterpret offline as inactive. Coordinate root termination before storage deletion. | Service design |
-| Existing tests | Only inactive delete and active stop are asserted | Observed state and partial failures are unprotected. | Add isolated coverage |
-| Exact runtime reproduction | Stop remained pending until an explicit approval denial; restored root immediately showed active + both offline | Current termination does not supersede pending approval, and active/offline alone is a valid lazy state. | Add pending-approval stop/delete and clean-restore control coverage |
+| Screenshot + live history | Root active while members offline | Do not infer terminal root from member status. | Preserve status separation |
+| Exact runtime reproduction | Stop hangs at tool approval | Stop must interrupt before quiescence and terminalize all descendants. | Retain backend fix/coverage |
+| Base source | Active Stop and inactive Delete are mutually exclusive | This is deliberate product safety behavior. | Restore exact guard |
+| WIP source/API observation | WIP exposes active Delete and combined confirmation | Requirement divergence, not required architecture. | Remove WIP active-delete delta |
+| Catalog/manager review | Restore/delete and failure ordering need held exact-ID coordination | Backend deletion correction remains useful for inactive Delete. | Retain DS-006 safeguards |
 
 ## Relevant Files / Components
 
 - `autobyteus-web/components/workspace/history/WorkspaceHistoryWorkspaceSection.vue` — renders TeamRun root activity and row actions.
-- `autobyteus-web/components/workspace/history/WorkspaceAgentRunsTreePanel.vue` — owns generic delete confirmation modal and section bindings.
+- `autobyteus-web/components/workspace/history/WorkspaceAgentRunsTreePanel.vue` — owns the existing inactive-history delete confirmation modal and section bindings; WIP dynamic active copy must be removed.
 - `autobyteus-web/composables/useWorkspaceHistoryTreeState.ts` — defines `canTerminateTeam(isActive)`.
-- `autobyteus-web/composables/useWorkspaceHistoryMutations.ts` — currently blocks active delete and coordinates confirmation/loading/toasts.
+- `autobyteus-web/composables/useWorkspaceHistoryMutations.ts` — base correctly blocks active delete; WIP added `wasActive` combined confirmation/sequence that must be removed.
 - `autobyteus-web/stores/runHistoryMutationActions.ts` — invokes GraphQL delete and removes exact local Team history/context/selection.
 - `autobyteus-web/stores/agentTeamRunStore.ts` — owns Team stream disconnection and stop-only lifecycle cleanup.
 - `autobyteus-server-ts/src/run-history/services/team-run-history-service.ts` — application-facing stored TeamRun history service.
@@ -143,7 +149,7 @@ The state is reachable through the normal lazy TeamRun lifecycle, and the produc
 6. The professor never becomes an active AgentRun after that attempt; the student was never activated. Both therefore project offline.
 7. Member activation failure does not terminate the root. The root remains active so a later command can retry activation. Since no delegated task or member turn remains open, the root checkpoint reports `hasOpenExecutionWork=false`.
 
-Thus the state is not computed incorrectly: it is an **active retry-capable root with zero currently active member runtimes**. What is misleading is the single user-facing word `Active` and the current deletion gate, not the distinction itself.
+Thus the state is not computed incorrectly: it is an **active retry-capable root with zero currently active member runtimes**. Under the user-confirmed workflow, Delete is correctly absent until Stop reaches terminal completion; the defect is that pending-approval Stop could fail to reach that state.
 
 ### User-Approved Exact Reproduction
 
@@ -159,7 +165,7 @@ The isolated fixture matched the two reported configurations: professor `AUTOBYT
 This establishes two separate conclusions:
 
 - `root active + all members offline` is a normal, supported lazy/restored state.
-- `stop while approval pending` is broken and is the concrete way the user's workflow can become stuck/inconsistent. It must be corrected for stop-only and before active-delete composition is safe.
+- `stop while approval pending` is broken and is the concrete way the user's workflow can become stuck/inconsistent. It must be corrected so Stop reliably reaches the retained inactive state where the later separate Delete becomes available.
 
 ## External / Public Source Findings
 
@@ -174,20 +180,20 @@ Not applicable. This is a local product contract; no external source is required
 
 ## Findings From Code / Docs / Data / Logs
 
-1. `Offline` in the focused member header is semantically correct for that configured AgentRun and does not describe the root TeamRun lifecycle.
-2. The root activity dot/small stop icon is also semantically correct: the root remains registered, resumable, and able to lazily activate the member on new input.
-3. The bug is the missing explicit destructive route and the discoverability mismatch between these two scopes, not corrupted data or duplicate row identity.
-4. Existing two-step behavior is safe but too implicit: stop exact root, wait for history refresh, hover parent row, then delete.
-5. The existing storage boundary already provides the needed last-line invariant: active packages cannot be removed.
-6. The existing frontend history-mutation owner can compose stop-if-active then invoke the existing guarded catalog deletion; no new server mutation, migration, or general recovery framework is needed.
-7. For the two exact reported roots, this was not only an abstract lazy state: production logs prove that prior native conversation restoration failed during professor activation. Fixing that separate continuation failure is not required to make failed/retry-capable TeamRuns deletable.
-8. The user's remembered `autoExecuteTools=false` sequence is confirmed by stored launch configurations and exact reproduction. The stop action itself has a missing cancellation invariant: it cannot wait for a decision the user is explicitly trying to abandon by stopping.
-9. Manager membership and command admission are currently conflated. A root in `terminating` rejects new work, but current `getTeamRun()` also removes it from manager ownership before its termination promise necessarily finishes. This permits lookup/projection inconsistency and makes idempotent stop/restore coordination unsafe.
-10. The same read-pruning pattern exists inside `TeamRunResolver`: non-active nested TeamRuns disappear from ownership lookup even when their termination has not completed. Descendant-first shutdown therefore needs the same explicit `managed/nonterminal` versus `active/admitting` distinction at both root and nested TeamRun boundaries.
-11. Current termination promises are cached even when a provider/local termination returns `accepted: false` or throws. Under the approved retry requirement, the promise may be shared while in flight but must be cleared after a nonterminal failure so the same prepared execution objects can be retried; accepted descendants remain idempotent.
-12. Current deletion publishes an index without the row before recursively removing the package. A package-removal exception can therefore report failure after the only durable history row is already gone. The bounded correction must keep the current in-memory row until success and compensate the durable index from the captured original rows before returning a normal failure.
-13. Restore and Delete are independently supported exact-ID operations. They currently have no shared exclusion window: restore can register after Delete's manager check and before physical removal. The process-level root manager is the narrow existing owner for one exact-ID transition lane shared by create, restore, and an unmanaged-history-delete callback.
-14. Root admission closure is not itself a materialization barrier. An accepted message or delegation may still be between its admission check and configured/task registration when shutdown drains the current queues. RootTeamRun must track those admitted promises, wait them to either register or abort, then freeze local materialization and capture one exact recursive termination scope before interruption begins.
+1. `Offline` is a member-runtime status and does not describe root TeamRun lifecycle.
+2. An active root with offline members is a supported resumable state; the absence of Delete there is intentional under the original workflow.
+3. The actual blocking bug is unreliable Stop: pending approval prevents quiescence, and ownership can disappear before teardown completes.
+4. Base `origin/personal` proves the established UX: active root renders Stop; after authoritative inactive projection, Archive/Delete render.
+5. API/E2E observed two controls because IR-001 implemented the now-superseded active-delete requirement. It invoked Delete, not Stop; therefore the combined modal was not evidence that Stop itself deletes.
+6. The user expressly rejects active Delete and any combined “stop and permanently delete” path. Stop and Delete are separate decisions.
+7. Stop must preserve exact history/context/package; terminal completion changes runtime lifecycle only.
+8. Inactive Delete remains separately confirmed and exact-ID only.
+9. Manager/root shutdown changes in IR-001 correctly distinguish nonterminal ownership from command admission, interrupt before quiescence, freeze already-admitted materialization, and retry the same scope.
+10. Catalog/manager changes remain appropriate even with inactive-only UI: supported restore can race an inactive delete, and ordinary I/O failure must not lose the visible retry row.
+11. The WIP UI changes to remove are limited and identifiable: unconditional `READY` Delete, `pendingDeleteTeam.wasActive`, dynamic active copy, termination inside `confirmDeleteRun`, combined error messages, and active-delete tests.
+12. No new server API or client coordinator is needed. The corrected Stop makes the original post-terminal Delete transition reachable.
+13. Native conversation restoration failure remains separate; it explains two reported member errors but does not change the Stop/Delete contract.
+14. No persisted representation changes; retained packages stay directly usable.
 
 ## Persisted Data Transition Evidence
 
@@ -200,22 +206,28 @@ Not applicable. This is a local product contract; no external source is required
 
 ## Constraints / Dependencies / Compatibility Facts
 
-- Exact `teamRunId` is authoritative across UI, GraphQL, runtime, catalog, and directory resolution.
-- Member `offline` and root `isActive` are intentionally independent.
-- Root termination may drain open delegated work and member runtimes; active delete must not bypass it.
-- Pending tool approval is open work that requires explicit interruption/cancellation by termination; waiting for spontaneous quiescence is not sufficient.
-- The manager must distinguish `owned/in-flight termination` from `admitting new work`; a non-admitting root must not become restorable until the existing root reaches a terminal outcome.
-- Catalog deletion validates a safe non-path ID and refuses active roots.
-- Current generic modal copy is insufficient for an active-delete consequence.
-- Existing independent Agent and archive behavior must remain out of this change.
+- Exact `teamRunId` is authoritative across UI, GraphQL, runtime, catalog, and storage.
+- Member `offline` and root `isActive` remain intentionally independent.
+- Active and stop-pending roots expose Stop only. Delete/Archive require inactive `READY`.
+- Stop retains history and never calls Delete or opens a deletion modal.
+- Pending approval requires AgentRun interruption before quiescence; Team code must not synthesize Approve/Deny.
+- One manager-owned root remains authoritative until terminal success/failure outcome.
+- Inactive catalog Delete remains independently guarded and serialized against restore/create for the same root.
+- Current implementation/code-review artifacts describe a superseded active-delete workflow and require downstream rework/re-review after architecture approval.
+- Existing independent Agent and Archive behavior stays outside this change.
 
 ## Open Unknowns / Risks
 
-- The target design must avoid leaving an exact Team WebSocket registration after successful active deletion.
-- A partial stop-success/delete-failure state must be represented as inactive retained history, not rolled back or hidden.
-- The native conversation restoration failure is material evidence but remains a separate defect unless the user explicitly expands this ticket.
-- The design must use existing AgentRun interrupt semantics rather than introduce a second generic approval-cancellation or termination framework.
+- No open product ambiguity remains: the user explicitly selected removal of active Delete.
+- Rework must not accidentally revert the valid backend lifecycle/catalog fixes while removing the WIP UI sequence.
+- Lifecycle projection must not reveal Delete before every descendant has terminated and root terminal publication completes.
+- API/E2E durable edits are currently uncommitted and execution is paused; coverage must be reconsidered against SR-003 after source rework.
+- Native conversation restoration remains a separate defect.
 
 ## Notes For Architecture Reviewer
 
-Do not reinterpret all-members-offline as root inactivity. Review both verified states: (1) active root, both configured members offline, `hasOpenExecutionWork=false`; and (2) active professor turn blocked at tool approval, `hasOpenExecutionWork=true`, stop mutation waiting on quiescence. For SR-002, also verify the admitted-message/delegation stabilization boundary, one frozen retry scope, the manager exact-ID create/restore/delete lane, and DS-007 candidate-index/package compensation. No data migration, combined stop-delete API, second runtime manager, generic filesystem journal, or broad tool-approval redesign is requested.
+This is a user-approved Requirement Gap reset after `ARCH-REV-002` Pass, `IR-001`, and `CRR-001`. Review the revised product spine rather than treating active Delete as approved legacy behavior:
+
+`active row Stop only -> reliable full-tree termination while history remains -> authoritative inactive row -> separate Delete -> inactive-only confirmation -> exact catalog removal`.
+
+The backend gate/frozen-scope/managed-identity retry and catalog exact-ID/compensation work remains justified. The required removal is the WIP active-delete UI path and its combined state/copy/tests. Do not request a combined stop-delete API, generic transaction, or new lifecycle framework.

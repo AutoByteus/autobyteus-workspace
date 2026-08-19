@@ -7,7 +7,8 @@ The current `requirements.md`, `investigation-notes.md`, `design-spec.md`, and l
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Result |
 | --- | --- | --- | --- | --- |
 | `SR-001` | `solution_designer` / initial solution round | N/A | `Initial Baseline` | Design package ready for architecture review |
-| `SR-002` | `architecture_reviewer` / `ARCH-REV-001` / round 1 | `AR-001`, `AR-002`, `AR-003` | `Design Impact` | Catalog and shutdown coordination revised; ready for architecture re-review |
+| `SR-002` | `architecture_reviewer` / `ARCH-REV-001` / round 1 | `AR-001`, `AR-002`, `AR-003` | `Design Impact` | Catalog and shutdown coordination revised; architecture later passed as `ARCH-REV-002` |
+| `SR-003` | `api_e2e_engineer` reroute + user clarification after `IR-001`/`CRR-001` | User-approved strict workflow reset | `Requirement Gap` | Active Delete removed from target; strict Stop-retain-then-separate-Delete package ready for architecture re-review |
 
 ## Revision Entries
 
@@ -54,3 +55,32 @@ The current `requirements.md`, `investigation-notes.md`, `design-spec.md`, and l
 - Downstream and architecture-review impact: implementation must establish manager exclusion and compensated catalog deletion before UI Delete exposure, and must establish the root gate/frozen scope before relying on whole-tree interrupt coverage. No new combined API, second runtime manager, generic transaction journal, or generic termination framework is introduced.
 - Next recipient or routing: `/architecture_reviewer` with `ARCH-REV-001` and the architecture revision record included.
 - Remaining gaps or risks: deterministic single-operation index/package failures and one compensation are covered; simultaneous compensation failure, process/power loss, external tampering, and partial media corruption remain outside the bounded ticket. Native conversation restoration remains separately out of scope.
+
+
+### SR-003 — Restore Strict Stop-Retain-Then-Separate-Delete Workflow
+
+- Triggering role, report path, and round: `/api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/tickets/in-progress/team-run-offline-delete-action/api-e2e-coverage-investigation.md`; API/E2E paused after `IR-001` and `CRR-001` because the user challenged the active-delete workflow.
+- Triggering finding IDs: downstream `Requirement Gap` (no formal API revision ID was issued before execution paused); explicit user requirement correction on 2026-08-19.
+- Prior authoritative result: `SR-002` passed architecture as `ARCH-REV-002`; `IR-001` implemented and `CRR-001` passed the then-approved active-delete design.
+- Current authoritative result: Requirements/UI intent reset is approved; design and static proof reworked; package ready for architecture re-review before implementation rework.
+- Why this revision is recorded: API/E2E observed two independent active-row controls and invoked the added Delete control, which opened the combined confirmation. The user clarified that the original product workflow is intentional safety: active Stop retains history; only terminal inactive state reveals Archive and a later separately confirmed Delete. Stop itself was not observed opening the modal.
+- Resolution:
+  - Replace the former active-delete goal with strict mutual exclusion: active/stopping = Stop only; inactive `READY` = Archive/Delete.
+  - Keep Stop non-destructive and make Delete a later independent user decision.
+  - Decommission former `DS-002 — Active Delete`, `wasActive` UI state, combined confirmation/error copy, stop-then-delete composable sequence, and corresponding tests.
+  - Retain SR-002/IR-001 backend lifecycle correctness: admitted-materialization gate, frozen recursive scope, interrupt-before-quiescence, same-object retry, managed identity, exact-ID transition lane, and compensated inactive catalog deletion.
+  - Rewrite self-validation around the target transition `Stop -> retained inactive row -> optional later Delete`.
+- Approved behavior or requirement IDs affected: all `BEH-001`–`BEH-006`, `REQ-001`–`REQ-016`, and `AC-001`–`AC-019` were aligned to the reset; backend lifecycle intent remains materially unchanged.
+- Canonical artifacts and sections updated:
+  - `ticket-description.md` — corrected requested outcome.
+  - `requirements.md` — authoritative strict two-step behavior and acceptance criteria.
+  - `investigation-notes.md` — base/WIP source distinction, API/E2E observation, user reset, and selective-rework evidence.
+  - `design-spec.md` — removed active-delete spine; retained lifecycle/catalog owners; added subtractive UI rework/removal plan.
+  - `solution-revision-record.md` — this `SR-003` entry.
+- Supplemental artifacts updated:
+  - `ui-ux-spec.md` — approved active Stop / inactive Archive-Delete states and separate journeys.
+  - `design-use-case-validation.md` — `VAL-001`–`VAL-014` re-prove strict two-step behavior, including explicit active-delete unreachability.
+  - `runtime-reproduction-evidence.md` remains authoritative and unchanged.
+- Downstream and architecture-review impact: implementation source and existing UI tests are now design-impacted even though `CRR-001` passed the superseded design. Architecture must re-review SR-003. After Pass, implementation should remove only the WIP active-delete UI/composable/copy/tests while preserving backend lifecycle/catalog corrections; source review and a revised API/E2E coverage investigation are mandatory before execution resumes.
+- Next recipient or routing: `/architecture_reviewer` with the cumulative solution package, `ARCH-REV-002` artifacts, `implementation-handoff.md`, `CRR-001` artifacts, and paused API/E2E investigation as context.
+- Remaining gaps or risks: no product ambiguity remains. Native conversation restoration stays out of scope. Uncommitted API/E2E durable edits must remain paused and be re-evaluated against the reworked implementation before execution.

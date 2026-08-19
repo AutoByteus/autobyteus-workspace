@@ -2,179 +2,200 @@
 
 ## Status
 
-`Approved requirements supplement — user approved 2026-08-19`
+`Refined intended-behavior supplement — user-approved reset 2026-08-19`
 
 ## UX Goal
 
-Make permanent deletion of a persisted AgentTeam run understandable and directly reachable from its parent TeamRun row, even when the root is active but the focused member says `Offline`. Preserve a separate stop-only choice, make destructive consequences explicit before any mutation, and ensure either stop path completes when a member is waiting for tool approval instead of leaving the row indefinitely pending.
+Preserve a deliberate two-decision safety workflow. The active TeamRun row gives the user one runtime action—**Stop**—which retains all history. The destructive **Delete** action appears only after the Team is fully inactive, and only Delete opens permanent-deletion confirmation. Member `Offline` presentation never changes which root-level action is safe.
 
 ## Related Requirements And Acceptance Criteria
 
-- Requirements: `REQ-001`, `REQ-002`, `REQ-003`, `REQ-006`–`REQ-011`, `REQ-013`–`REQ-016`
+- Requirements: `REQ-001`–`REQ-011`, `REQ-013`–`REQ-016`
 - Acceptance criteria: `AC-001`–`AC-019`
 
 ## Users / Personas / Contexts
 
-- Desktop Electron user managing many same-team history runs with similar summaries.
+- Desktop Electron user managing many same-Team history runs with similar summaries.
+- User abandoning a Team turn that is waiting for tool approval.
 - Keyboard user navigating sidebar row actions.
 - Touch/narrow viewport user for whom hover-only controls are unavailable.
-- User revisiting a TeamRun whose root remains resumable while configured members are currently offline.
+- User revisiting a root that remains resumable while its configured members are offline.
 
 ## User-Journey Inventory
 
 | Journey ID | User / Context | Starting State | User Goal | Completion State | Related IDs |
 | --- | --- | --- | --- | --- | --- |
-| `UXJ-001` | User; active/quiescent Team, offline members, including after member activation/restore failure | Persisted parent row has active root dot; focused member header says Offline | Permanently remove this exact TeamRun | Confirmed root is stopped and exact history disappears | `REQ-001`–`REQ-003`, `REQ-006`, `REQ-009`; `AC-001`, `AC-002`, `AC-004` |
-| `UXJ-002` | User; inactive Team history | Persisted parent row is inactive | Permanently remove exact history | Exact history disappears without runtime activation | `REQ-004`, `REQ-006`, `REQ-009`; `AC-003`, `AC-005` |
-| `UXJ-003` | User; active Team they want to retain | Active parent row | Stop future work but retain history | Every active descendant stops; the root then becomes inactive and history delete/archive actions become available | `REQ-011`, `REQ-016`; `AC-012`, `AC-019` |
-| `UXJ-004` | User; operation failure | Delete was confirmed | Recover without ambiguity/data loss | Row remains with truthful active/inactive state and retry path | `REQ-010`; `AC-010`, `AC-011` |
-| `UXJ-005` | User; member is waiting for tool approval | Active parent row; approval card is pending | Stop and retain, or stop and delete, without first approving/denying the tool | Pending tool is not executed; every active descendant and then the exact root stop; history is retained or deleted according to the chosen action | `REQ-013`–`REQ-016`; `AC-015`–`AC-019` |
+| `UXJ-001` | Active Team; members may all be offline | Active parent row | Stop work but preserve history | Exact root fully inactive; history retained; Archive/Delete now available | `REQ-001`–`REQ-003`, `REQ-013`–`REQ-016`; `AC-001`, `AC-004`, `AC-015`–`AC-019` |
+| `UXJ-002` | Inactive Team history | Inactive `READY` parent row | Permanently remove exact history | Confirmation accepted; exact row/package/context removed | `REQ-004`–`REQ-010`; `AC-003`, `AC-005`–`AC-012` |
+| `UXJ-003` | Active member waiting for tool approval | Active parent row + approval card | Abandon work without approving/denying | Pending tool not executed; exact Team fully stops; history remains | `REQ-013`–`REQ-016`; `AC-015`–`AC-019` |
+| `UXJ-004` | Stop or Delete failure | Active Stop or inactive confirmed Delete | Recover without data loss or ambiguous state | Same exact row remains in truthful retryable state | `REQ-010`; `AC-010`, `AC-011` |
+| `UXJ-005` | Same-summary Team runs | Several similar parent rows | Act on one exact run | Only selected `teamRunId` changes | `REQ-007`; `AC-008` |
 
 ## Journey Details
 
-### UXJ-001 — Delete Active TeamRun
+### UXJ-001 — Stop Active TeamRun And Retain History
 
-1. User targets the parent TeamRun row, not a member row.
-2. Row exposes both the existing stop-only action and a permanent-delete action; member `Offline` does not suppress either root-level choice.
-3. Delete opens a destructive confirmation: **“This Team is active. Stop it and permanently delete its history? This cannot be undone.”**
-4. Cancel closes the modal and changes nothing.
-5. Confirm disables duplicate actions and shows pending state on that exact row/modal.
-6. System terminates the exact root, interrupting/cancelling any pending approval turn without executing its tool, then permanently deletes its exact stored history.
-7. On success the exact row/context/stream disappears; another same-summary row is never selected by substitution.
+1. The parent row is active, regardless of whether its members show running, idle, error, or offline.
+2. The row exposes **Stop** and does not expose Archive or Delete.
+3. User clicks Stop. No destructive-deletion modal appears.
+4. The exact row enters stop-pending and duplicate Stop is disabled.
+5. Server closes admission, stabilizes already-admitted materialization, cancels/interruption-resolves active turns, and terminates all materialized configured/delegated/nested descendants.
+6. Until terminal completion, the row remains non-delete-ready.
+7. On success, the same exact row remains in history, projects inactive, and exposes Archive and Delete.
+8. The user may leave it retained, restore/continue it using existing behavior, archive it, or independently choose Delete later.
 
-### UXJ-002 — Delete Inactive TeamRun
+### UXJ-002 — Separately Delete Inactive Team History
 
-1. User targets an inactive parent TeamRun row.
+1. User targets an inactive `READY` parent TeamRun row.
 2. Delete opens: **“Delete this Team history permanently? This cannot be undone.”**
-3. Confirm deletes exact history without restoring or activating it.
+3. Cancel closes the modal with no side effect.
+4. Confirm disables duplicate Archive/Delete for that exact row.
+5. Server deletes only the exact inactive history package/catalog row.
+6. On success, exact context/selection/history is removed; another same-summary row remains untouched.
 
-### UXJ-003 — Stop Only
+### UXJ-003 — Stop While Approval Is Pending
 
-1. User chooses the existing stop square/action.
-2. The exact root closes new admission. Shutdown cancels/interruption-resolves every active leaf turn, including pending tool approval, without asking the user to decide or executing the tool.
-3. Shutdown waits for every configured, delegated, and nested execution to stop fully. The root remains stop-pending and is not delete-ready before that point.
-4. Only after complete descendant shutdown does the parent row become inactive; archive and permanent delete are then available.
+1. A member tool-approval card is visible.
+2. User clicks the parent TeamRun Stop action. Delete is not available.
+3. Shutdown owns cancellation; user is not required to click Approve or Deny, and the pending tool never executes.
+4. The approval/turn reaches existing interrupted terminal semantics; all captured descendants then terminate.
+5. Only after root terminal success does the row become inactive and reveal the later independent Delete action.
 
-### UXJ-004 — Failures
+### UXJ-004 — Failure Recovery
 
-- Stop failure: keep the row present and non-delete-ready, retain history, and show “Failed to stop and delete this Team. Try again.” The exact root remains manager-owned for retry; admission may remain closed.
-- Stop succeeds but delete fails: show inactive presentation and retain history; show “The Team was stopped, but its history could not be deleted. Try Delete again.”
-- Delete retry on inactive row performs only storage deletion.
+- Stop failure: the exact history remains present; root remains active/nonterminal and Delete stays absent; show `Failed to terminate team. Please try again.`; retry Stop targets the same root instance.
+- Inactive Delete failure: the exact inactive row/package remains visible and Delete is retryable; show `Failed to delete team history. Please try again.`
+- No “stopped but delete failed” combined outcome exists because Stop does not call Delete.
 
-### UXJ-005 — Stop While Approval Is Pending
+### UXJ-005 — Same-Summary Exact Identity
 
-1. A tool approval card is visible for a Team member and the user chooses either Stop or confirmed active Delete.
-2. The exact row/action enters one pending state; duplicate stop/delete actions are disabled.
-3. Shutdown owns cancellation. The user is not required to click Approve or Deny, and the pending tool never executes.
-4. The approval/active-turn presentation resolves with the existing interrupted/cancelled terminal semantics.
-5. Stop-only leaves an inactive retained row. Active Delete continues to exact package deletion only after termination success.
-6. The row must not remain indefinitely pending merely because the approval was unanswered.
-7. The row must not project inactive or expose the post-stop delete-ready state until every active configured/delegated/nested execution has terminated successfully.
+1. User locates one parent row by its current placement/timestamp.
+2. Stop or Delete carries its exact `teamRunId`.
+3. Only that row enters pending state or disappears; no summary-based substitution occurs.
 
 ## Screen / Surface / Component Inventory
 
 | Surface / Component | Purpose | Entry Conditions | Important States | Exit / Next Action |
 | --- | --- | --- | --- | --- |
-| TeamRun parent row | Exact whole-run navigation/actions | Persisted history row | active, inactive, stop-pending, delete-pending, failure | select, stop, archive inactive, delete |
-| Member row/header | Focused member presentation | TeamRun expanded/member selected | idle, running, offline, error | focus/send input; no permanent delete |
-| Destructive confirmation modal | Obtain informed consent | Delete invoked | active copy, inactive copy, pending, cancel | confirm/cancel |
-| Toast/error presentation | Explain result/recovery | Operation completes/fails | stop failure, partial failure, delete failure, success | retry or continue |
+| TeamRun parent row | Whole-run actions/navigation | Persisted row | active Stop-only; stop-pending; inactive Archive/Delete; delete-pending; failure | Stop, select, Archive/Delete when inactive |
+| Member row/header | Member focus/status | Team expanded/member selected | idle, running, offline, error | focus/send input; no whole-history destructive action |
+| Delete confirmation modal | Informed consent for inactive permanent deletion | Inactive Delete clicked | open, confirm pending, cancel | confirm/cancel |
+| Toast/error surface | Result/recovery | Stop/Delete returns | stop failure, delete failure, delete success | retry or continue |
 
 ## Interaction And State-Transition Specification
 
 | Scenario / State | User Action Or Trigger | Immediate Feedback | Resulting UI State | Data / Side Effect | Next Available Actions |
 | --- | --- | --- | --- | --- | --- |
-| Active root; members offline or live | Delete | Active-specific confirm | No change until confirm | None | Confirm/cancel |
-| Active confirmation | Confirm | Exact row/action pending | Stop then delete | Runtime terminates; exact package/catalog removed | Other history |
-| Active confirmation | Cancel | Modal closes | Unchanged active row | None | Stop, delete, select |
-| Inactive root | Delete + confirm | Inactive-specific confirm/pending | Exact row removed | Exact package/catalog removed | Other history |
-| Stop-only | Stop | Stop pending until all descendants terminate | Inactive retained row only after root terminal completion | Every active configured/delegated/nested execution terminates; history retained | Archive/delete/restore |
-| Tool approval pending | Stop | Exact row stop pending; duplicate decisions disabled | Interrupted/cancelled approval and inactive retained row | Pending tool is not executed; exact runtime terminates | Archive/delete/restore |
-| Tool approval pending | Delete + confirm | Exact row delete pending | Interrupted/cancelled approval, then exact row removed | Pending tool is not executed; exact runtime terminates; exact history deletes | Other history |
-| Termination failure | Confirm delete | Error toast | Active retained row | No storage deletion | Retry/stop/select |
-| Deletion failure after stop | Confirm delete | Partial-failure toast | Inactive retained row | Runtime stopped; history retained | Retry delete |
-| Same-summary rows | Delete one | Target row pending | Only target removed | Exact ID only | Other same-summary rows remain |
+| Active root, any member status | Stop | Exact Stop disabled/pending | Remains non-delete-ready until terminal | Termination only; history untouched | Wait/retry after failure |
+| Active root | Any row inspection/focus | No Delete control exists | Active Stop-only | None | Stop/select |
+| Pending tool approval | Stop | Stop pending | Approval interrupted; later inactive retained row | Tool not executed; runtime terminated | Archive/Delete/restore after success |
+| Stop success | Lifecycle/history refresh | Activity changes to inactive | Archive/Delete appear | `terminatedAt`; history retained | Leave/restore/archive/delete |
+| Stop failure | Server failure | Error toast | Active/non-delete-ready exact row | No history deletion | Retry Stop |
+| Inactive `READY` root | Delete | Inactive destructive confirmation | Unchanged until confirm | None | Confirm/cancel |
+| Inactive confirmation | Cancel | Modal closes | Inactive row retained | None | Delete/archive/restore |
+| Inactive confirmation | Confirm | Exact row delete-pending | Row removed only on success | Exact package/catalog/context removed | Other history |
+| Inactive Delete failure | Confirm | Error toast | Inactive row retained | No successful disposal | Retry Delete |
+| Same-summary rows | Stop/Delete one | Only target pending | Only target transitions/removes | Exact ID only | Other rows unchanged |
 
 ## Markdown Wireframe / Visual Structure
 
 ```text
-▼ ● Create a very simple ...   [■ Stop] [🗑 Delete]  2h   <- parent TeamRun row
-    ○ professor                                         <- member row; Offline is member state
-    ○ student
+ACTIVE
+▼ ● Create a very simple ...   [■ Stop]          2h
+    ○ professor   Offline
+    ○ student     Offline
 
-Active delete confirmation:
-┌──────────────────────────────────────────────────────────┐
-│ This Team is active. Stop it and permanently delete its │
-│ history? This cannot be undone.                         │
-│                                     [Cancel] [Delete]   │
-└──────────────────────────────────────────────────────────┘
+STOP-PENDING
+▼ ● Create a very simple ...   [■ Stop disabled] 2h
+    (no Archive, no Delete)
+
+INACTIVE AFTER COMPLETE STOP
+▼ ○ Create a very simple ...   [Archive] [🗑 Delete] 2h
+    ○ professor   Offline
+    ○ student     Offline
+
+DELETE CONFIRMATION (inactive only)
+┌──────────────────────────────────────────────────┐
+│ Delete this Team history permanently?            │
+│ This cannot be undone.                           │
+│                              [Cancel] [Delete]   │
+└──────────────────────────────────────────────────┘
 ```
 
-The exact icon system may remain the current Heroicons implementation. The behavior does not require a new menu system.
+Forbidden active state:
+
+```text
+▼ ● Active Team ... [Stop] [Delete]   <- not allowed
+“This Team is active. Stop it and permanently delete ...” <- not allowed
+```
 
 ## Non-Happy-Path States
 
 ### Loading
 
-- Disable repeat stop/delete/archive actions for the exact row.
-- Do not optimistically remove the row before server success.
-- A pending tool-approval card must not require separate user action for Team shutdown to finish.
+- Disable duplicate Stop for the exact root while stop is pending.
+- Keep Delete absent throughout Stop; do not optimistically project inactive.
+- During inactive Delete, disable that row's Archive/Delete and do not remove it before server success.
 
 ### Empty
 
-- Existing empty-history behavior remains unchanged.
+Existing empty-history behavior is unchanged.
 
 ### Error And Recovery
 
-- Distinguish no-stop from stopped-but-not-deleted outcomes.
-- Refresh authoritative history after partial failure so the row changes from active to inactive when termination committed.
-- Clear pending state after a bounded server failure; never leave the action permanently disabled because an approval was unanswered.
+- Stop failure keeps the active/non-delete-ready row and exact retained history.
+- Delete failure keeps the inactive row and exact valid package.
+- Pending flags clear after bounded error; an unanswered approval must not leave Stop permanently pending after server correction.
 
 ### Disabled / Unavailable
 
-- Draft/CLEANUP_PENDING semantics remain governed by their existing lifecycle and are not converted into stored active delete.
-- Archive remains unavailable while active.
+- Delete/Archive are unavailable while active, stop-pending, or non-`READY`.
+- Stop is unavailable when inactive.
+- Member rows never gain a root-history Delete action.
 
 ### Permission / Authentication
 
-- No new permission model is introduced.
+No new permission model.
 
 ## Responsive And Platform Behavior
 
-- Desktop: delete is discoverable on the parent TeamRun row without requiring the user to stop first. Active-row delete should not be hidden behind the member row.
-- Keyboard: row actions participate in tab order; focus-within reveals hover-styled controls; Enter/Space activates them.
-- Touch/narrow viewport: delete is present without a hover prerequisite.
+- Desktop: active Stop is visible on the parent row. Inactive Archive/Delete may retain hover/focus styling, but remain keyboard reachable.
+- Touch/narrow viewport: inactive Delete must not require hover; active Delete remains absent.
+- Electron uses the same Nuxt behavior; no shell-specific interaction is added.
 
 ## Accessibility And Keyboard Behavior
 
-- Delete action accessible name: `Delete team history permanently`.
-- Stop action accessible name remains distinct: `Terminate team` / `Stop team`.
-- Confirmation focus is trapped by the existing modal; Escape/Cancel produces no mutation.
-- Pending state uses disabled semantics and does not rely on color alone.
+- Active accessible action: `Terminate team` (or existing localized Stop label).
+- Inactive destructive accessible action: `Delete team history permanently`.
+- The actions are mutually exclusive, so assistive technology cannot encounter two conflicting actions on an active row.
+- Existing modal focus trap/Escape/Cancel semantics remain; Enter/Space activation targets the focused control only.
+- Pending/disabled state does not rely on color alone.
 
 ## Content, Labels, And Validation Messages
 
-- Active confirmation: `This Team is active. Stop it and permanently delete its history? This cannot be undone.`
+- Stop accessible label/title: existing `Terminate team`.
 - Inactive confirmation: `Delete this Team history permanently? This cannot be undone.`
-- Success: `Team history deleted permanently.`
-- Stop failure: `Failed to stop and delete this Team. Try again.`
-- Partial failure: `The Team was stopped, but its history could not be deleted. Try Delete again.`
-- Do not call member `Offline` equivalent to Team stopped/terminated.
+- Stop failure: `Failed to terminate team. Please try again.`
+- Delete failure: `Failed to delete team history. Please try again.`
+- Delete success: `Team history deleted permanently.`
+- Remove/not render: `This Team is active. Stop it and permanently delete its history? This cannot be undone.`
+- Remove/not render: `Failed to stop and delete this Team. Try again.` and `The Team was stopped, but its history could not be deleted. Try Delete again.`
 
 ## Data And API Dependencies
 
-- Exact `teamRunId`, root `isActive`, and `deleteLifecycle` from the Team history row.
-- Authoritative stop-if-active + delete result must distinguish total failure from post-stop delete failure.
-- Successful cleanup must close exact stream/context/selection state.
+- UI state: exact `teamRunId`, root `isActive`, `deleteLifecycle`, exact stop/delete pending maps.
+- Stop uses only existing `terminateAgentTeamRun` through the Team store.
+- Delete uses only existing `deleteStoredTeamRun` through the history store and is admitted only from an inactive `READY` row.
+- Lifecycle/history refresh must make the post-stop action transition authoritative; no local stop-then-delete continuation is retained.
 
 ## Out Of Scope
 
-- Member deletion, bulk deletion, team-definition deletion, active archive, new overflow menu, or changing root/member lifecycle semantics.
+Active Delete, combined stop-delete confirmation or mutation, member deletion, bulk deletion, team-definition deletion, active Archive, new overflow menus, and root/member lifecycle reinterpretation.
 
 ## Resolved Design Dependency
 
-- The design reuses the existing stop mutation and the existing guarded history-delete mutation. The current UI mutation owner observes their two ordered results to distinguish total stop failure from stop-success/delete-failure; no new combined server API is required.
+No combined server or client command is required. The backend termination fix makes the original two-step UI reachable and truthful. The catalog remains independently guarded because UI visibility is not the security/safety boundary.
 
 ## Approval Status
 
-Approved by the user on 2026-08-19 together with `requirements.md`, including the explicit descendant-first shutdown and post-terminal delete-ready behavior.
+Approved by the user on 2026-08-19. This version supersedes the earlier active-delete supplement. The explicit authoritative rule is: **Stop retains; only the inactive state reveals a separately confirmed Delete.**

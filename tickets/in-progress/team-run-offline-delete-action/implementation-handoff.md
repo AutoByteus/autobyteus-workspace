@@ -13,79 +13,80 @@
 - Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/tickets/in-progress/team-run-offline-delete-action/solution-revision-record.md`
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/tickets/in-progress/team-run-offline-delete-action/design-review-report.md`
 - Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/tickets/in-progress/team-run-offline-delete-action/architecture-review-revision-record.md`
-- Triggering rework report, revision record, or evidence, when applicable: `N/A` — this is the initial implementation baseline for the ARCH-REV-002 Pass.
+- Triggering rework reports and context:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/tickets/in-progress/team-run-offline-delete-action/code-review-report.md` (`CRR-001`; historical pass for superseded SR-002 behavior)
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/tickets/in-progress/team-run-offline-delete-action/code-review-revision-record.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/tickets/in-progress/team-run-offline-delete-action/api-e2e-coverage-investigation.md` (paused trigger context only; not current approval or execution evidence)
 
 ## Current Implementation Summary
 
-SR-002 is implemented as the reviewed one-root exact-identity lifecycle correction and active/inactive permanent-delete flow. The server now distinguishes active from managed Team roots, serializes exact-ID create/restore/delete transitions, retains nonterminal roots through failure, stabilizes and freezes the complete recursive termination scope, interrupts every captured leaf before quiescence, and compensates catalog deletion before reporting a retryable package-removal failure. The web client exposes independent Stop and Delete actions for active `READY` Team history, keeps Archive inactive-only, and composes the two existing exact server mutations behind state-specific confirmation and outcome copy.
+SR-003 is implemented as a selective rework over IR-001. The reviewed backend lifecycle and catalog corrections remain intact: one manager-owned root, exact-ID transition serialization, the RootTeamRun admitted-materialization gate, one recursively frozen termination scope retained through retry, interrupt-before-quiescence/finish ordering, and compensated inactive catalog deletion. The rejected active-delete client path is removed cleanly. Active or Stop-pending Team rows expose Stop only; Stop invokes only exact-root termination and retains history. Only an authoritative inactive `READY` row exposes Archive/Delete, and Delete is a later separately confirmed inactive-history operation.
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/tickets/in-progress/team-run-offline-delete-action/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
-- Related solution revision IDs: `SR-002`
-- Related architecture-review revision IDs: `ARCH-REV-002`
-- Related code-review revision IDs: `N/A`
-- Related API/E2E revision IDs: `N/A`
+- Current implementation revision ID: `IR-002`
+- Related solution revision IDs: `SR-003` (retaining the technical corrections from `SR-002`)
+- Related architecture-review revision IDs: `ARCH-REV-003` (with `ARCH-REV-002` retained as historical technical closure)
+- Related code-review revision IDs: `CRR-001` (historical pass under the superseded SR-002 intent)
+- Related API/E2E revision IDs: `N/A` — investigation paused before a formal revision or execution result
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A`
+- Triggering finding IDs: `N/A` — user-approved downstream Requirement Gap had no formal API finding ID
+- Development commit: the commit containing this handoff; final SHA is reported in the review message because a commit cannot stably self-record its own content hash
 
 ## Reviewed Behavior Implementation Trace
 
 | Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
 | --- | --- | --- | --- |
-| `BEH-001` | Preserve Stop and expose permanent Delete independently for every persisted `READY` Team parent, including an active root. | `autobyteus-web/components/workspace/history/WorkspaceHistoryWorkspaceSection.vue`; `workspaceHistorySectionContracts.ts`; `useWorkspaceHistoryTreeState.ts` | Active rows render Stop plus Delete; inactive rows render Archive plus Delete; member rows have no destructive action. All row actions share exact-row pending disables. |
-| `BEH-002` | Active Delete stops the exact root before exact package deletion; inactive Delete goes directly to deletion; catalog still refuses managed roots. | `autobyteus-web/composables/useWorkspaceHistoryMutations.ts`; `autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts`; `autobyteus-server-ts/src/run-history/services/team-run-history-catalog-service.ts` | The client retains `{ teamRunId, wasActive }`, invokes existing Stop then Delete, and never invokes Delete after a failed Stop. Catalog deletion holds the manager's exact-ID unmanaged lane for its complete transition. |
-| `BEH-003` | Use distinct active/inactive destructive confirmation and preserve cancel-with-no-mutation. | `useWorkspaceHistoryMutations.ts`; `WorkspaceAgentRunsTreePanel.vue` | Exact approved confirmation copy is selected from the captured state. Cancel clears the pending exact target. |
-| `BEH-004` | Preserve exact `teamRunId` for similar summaries and keep member selection independent. | Web mutation/composable paths; explicit server manager/service APIs; updated callers and projections | Stop, archive, deletion, restore, streaming, workspace guard, GraphQL, application, and channel callers use explicit active/managed semantics without summary or member selection. |
-| `BEH-005` | Publish inactive/history cleanup only after complete terminal/delete success and leave truthful retry state on partial failure. | `RootTeamRun`; `TeamRunService`; `TeamRunHistoryCatalogService`; `useWorkspaceHistoryMutations.ts`; existing web store cleanup | Manager lifecycle remains owned/active until terminal callback. Candidate index state is not published until package removal succeeds. Package failure re-flushes and validates the original row/tree. UI distinguishes Stop failure, post-Stop Delete failure, and success with the approved exact copy. |
-| `BEH-006` | Close and drain admitted materialization, freeze one recursive scope, interrupt all captured leaves, quiesce, settle, finish descendants, and retry the same objects after nonterminal failure. | New `root-team-run-materialization-gate.ts`; new `frozen-team-run-termination-scope.ts`; `root-team-run.ts`; `mixed-team-manager.ts`; mixed registries/handles; `agent-run.ts`; `team-run-resolver.ts` | All root materializing command paths enter the gate. Registries freeze before scope capture. Configured, delegated, prepared, and nested Team/Agent objects are deduplicated and retained. `NO_ACTIVE_TURN` is the only benign interrupt rejection. Failed/nonaccepted promises are cleared for same-object retry while the managed root remains registered. |
+| `BEH-001` | Active or Stop-pending root shows Stop only; inactive `READY` history shows Archive/Delete. | `autobyteus-web/components/workspace/history/WorkspaceHistoryWorkspaceSection.vue`; `useWorkspaceHistoryTreeState.ts` | Delete and Archive now share the explicit `!team.isActive && READY` admission; active Delete is unreachable from the row. Stop pending disables only the exact Stop action. |
+| `BEH-002` | Stop fully terminates the exact recursive runtime while retaining history. | Preserved `AgentTeamRunManager`, `RootTeamRun`, admitted-materialization gate, frozen termination scope, mixed runtime, `AgentRun`, and `TeamRunService` corrections from IR-001; `useWorkspaceHistoryMutations.ts` | Stop calls only `terminateTeamRun(teamRunId)`. It never opens deletion confirmation or calls history Delete. Root inactive publication remains after accepted descendant termination and terminal callback. |
+| `BEH-003` | Delete is a later, independently confirmed inactive-history operation. | `WorkspaceHistoryWorkspaceSection.vue`; `useWorkspaceHistoryMutations.ts`; shared `ConfirmationModal` | The composable defensively rejects active/non-READY Teams, retains one inactive `teamRunId`, shows exact Team-history copy, and invokes only `deleteTeamRun`. `wasActive`, Stop-inside-Delete, combined copy, and combined failure branches are removed. |
+| `BEH-004` | Stop/Delete/Archive and cleanup remain exact-root operations; member rows have no destructive history action. | Existing exact-ID server/client boundaries plus focused history component tests | No summary, definition name, member address, or member AgentRun selector is introduced. Same-summary/member isolation from IR-001 remains intact. |
+| `BEH-005` | Stop and inactive Delete failures remain truthful and retryable without deleting or misrepresenting another row. | Preserved manager ownership and compensated catalog deletion; singular Stop/Delete client error paths | Stop failure retains active history with Delete absent. Inactive Delete failure retains inactive history and reports only the inactive Delete failure. |
+| `BEH-006` | One admitted recursive scope is frozen, interrupted, quiesced, terminated, and retried as the same objects before root terminal publication. | Preserved `root-team-run-materialization-gate.ts`, `frozen-team-run-termination-scope.ts`, `root-team-run.ts`, mixed registries/handles, and `agent-run.ts` | The SR-002/IR-001 lifecycle correction is unchanged and remains the foundation for the strict Stop-to-inactive transition. |
 
 ## Key Files Or Areas
 
-- Root ownership and exact-ID transition serialization:
+- Selective SR-003 client rework:
+  - `autobyteus-web/components/workspace/history/WorkspaceHistoryWorkspaceSection.vue`
+  - `autobyteus-web/composables/useWorkspaceHistoryMutations.ts`
+  - `autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts`
+  - `autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts`
+- Preserved exact-root lifecycle ownership:
   - `autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts`
   - `autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts`
-  - `autobyteus-server-ts/src/agent-team-execution/services/team-run-resolver.ts`
-- Root stabilization and recursive shutdown:
   - `autobyteus-server-ts/src/agent-team-execution/domain/root-team-run.ts`
   - `autobyteus-server-ts/src/agent-team-execution/domain/root-team-run-materialization-gate.ts`
   - `autobyteus-server-ts/src/agent-team-execution/domain/frozen-team-run-termination-scope.ts`
   - `autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-manager.ts`
-  - mixed configured/task Agent/task Team registries and handles
   - `autobyteus-server-ts/src/agent-execution/domain/agent-run.ts`
-- Compensated exact package deletion:
+- Preserved compensated inactive deletion:
   - `autobyteus-server-ts/src/run-history/services/team-run-history-catalog-service.ts`
   - `autobyteus-server-ts/src/run-history/services/team-run-history-service.ts`
-- Explicit active/managed call-site alignment across streaming, orchestration, external channels, projections, GraphQL, task tools, and workspace removal guard.
-- Team history UI and client mutation sequence:
-  - `autobyteus-web/components/workspace/history/WorkspaceHistoryWorkspaceSection.vue`
-  - `autobyteus-web/components/workspace/history/WorkspaceAgentRunsTreePanel.vue`
-  - `autobyteus-web/composables/useWorkspaceHistoryMutations.ts`
-  - `autobyteus-web/composables/useWorkspaceHistoryTreeState.ts`
-- Focused server and Nuxt component coverage, including new root termination race/retry tests.
 
 ## Important Assumptions
 
-- A persisted `READY` Team parent row is the only web deletion target. A configured/delegated member is never independently deleted as a Team history root.
-- The existing Stop and Delete mutations remain separate server operations; only the client composes them after one destructive confirmation.
-- Root manager ownership, not leaf status or `RootTeamRun.isActive()` during teardown, is the storage exclusion authority.
-- Only isolated temporary test packages and a temporary dev-render fixture were used. The two reported production roots, the user's Electron process, and production profile data were not opened or mutated.
+- Root `isActive`, not member status or `deleteLifecycle` alone, governs whether destructive history actions are admissible.
+- A persisted inactive `READY` Team parent is the only Team history deletion target; member rows remain navigation surfaces.
+- Stop and Delete remain separate existing mutations. There is no active Delete composition or combined server mutation.
+- Manager ownership remains the storage exclusion authority through termination failure/retry.
+- The two reported production roots, production profile, active Electron process, and external Docker/runtime state were not opened or mutated. All implementation checks used repository fixtures or a backend-free temporary Nuxt render.
 
 ## Known Risks
 
-- The reviewed residual risk remains: native conversation restoration can fail independently after later restore; this implementation makes the exact root stoppable/deletable but does not repair provider conversation state.
-- Catalog compensation intentionally covers ordinary candidate-index and package-removal failures, not process/power loss, external tampering, simultaneous compensation failure, or media corruption.
-- An exploratory set of six existing application/external-channel unit files is not a green gate in the current base: 19 tests passed and 18 failed on stale target/coordinator/output fixture contracts (missing `getCoordinatorAgentRunId`, `entryAgentRunId`, and current application target shape). The only changes in those failing test files are the required ambiguous-Team-accessor renames, and the failure signatures are outside this ticket's termination/delete behavior. The implementation sign-off uses the 91-test focused server set below; code review should assess this base-suite debt proportionately.
-- Nuxt source typecheck could not be used as a clean gate because the package has no local `vue-tsc` dependency and `nuxi typecheck` resolves an incompatible package-export combination with the installed TypeScript. Focused Nuxt tests and a real Nuxt dev render passed.
+- Native conversation restoration can still fail independently after a later restore; this remains outside the reviewed ticket.
+- Catalog compensation covers the reviewed ordinary candidate-index/package-removal failures, not power loss, tampering, simultaneous compensation failure, or media corruption.
+- The base retains stale application/external-channel fixture debt recorded in IR-001; no new failure evidence in those unrelated paths was introduced by this UI-only rework.
+- Nuxt source typecheck remains unavailable as a clean gate because the workspace's resolved `vue-tsc`/TypeScript package combination is incompatible. Focused Nuxt tests and direct rendered interaction passed.
+- The worktree intentionally still contains the API/E2E engineer's two pre-existing uncommitted durable-test edits and evidence. Implementation did not edit or stage them. They are not approval/execution evidence and must be reinvestigated after source review.
 
 ## Task Design Health Assessment Implementation Check
 
-- Reviewed change posture: `Bug Fix / Behavior Change`
-- Reviewed root-cause classification: `Missing Invariant` and `Boundary Or Ownership Issue`
-- Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): `Refactor Needed Now` — bounded ownership correction
+- Reviewed change posture: `Bug Fix / Behavior Change / Requirement Reset`
+- Reviewed root-cause classification: `Missing Invariant` and `Boundary Or Ownership Issue`; SR-003 additionally resolves a downstream `Requirement Gap`
+- Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): `Refactor Needed Now` — preserve bounded backend ownership correction and cleanly remove the rejected UI composition
 - Implementation matched the reviewed assessment (`Yes`/`No`): `Yes`
-- If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): `N/A`
-- Evidence / notes: the implementation preserves the existing RootTeamRun -> TeamRun -> MixedTeamManager -> AgentRun and catalog owners. It adds only the reviewed root-local gate/frozen scope and manager-local per-ID lane, rather than a parallel registry, combined mutation, approval protocol, or storage journal.
+- If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): `N/A` — SR-003/ARCH-REV-003 already resolved the requirement basis before rework
+- Evidence / notes: implementation removed only the active-delete row/composable/copy/test path. It did not weaken the exact manager, termination, or catalog owners and introduced no parallel store, protocol, mutation, or fallback.
 
 ## Legacy / Compatibility Removal Check
 
@@ -95,57 +96,53 @@ SR-002 is implemented as the reviewed one-root exact-identity lifecycle correcti
 - Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): `Yes`
 - Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`
 - Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`
-- Notes: ambiguous Team manager/service lookup methods, read-pruning behavior, the active-delete suppression, the empty `canTerminateTeam` indirection, one-time delete guard, early catalog publication, and permanently retained failed termination promises were removed. Root gate and termination-scope concerns were split into focused files; all changed production files are at or below 499 effective nonempty/noncomment lines.
+- Notes: `wasActive`, active confirmation selection, Stop-inside-Delete sequencing, combined failure branches/copy, and stale active-delete assertions were removed. Effective source sizes are 480 lines for the row component and 283 lines for the composable.
 
 ## Persisted Data Transition Check (When Applicable)
 
 - Approved decision (`Not Affected`/`Directly Usable — No Migration`/`Discard or Rebuild`/`Migration Required`): `Directly Usable — No Migration`
 - Design-spec decision reference: `design-spec.md` -> `Persisted Data / State Transition Decision`
 - Implementation follows the approved decision without an unapproved migration or version-specific runtime fallback: `Yes`
-- Direct-use evidence or discard/rebuild result, when applicable: no schema, serialization, row, package, or startup format changed. Retained V1 TeamRun packages remain readable unchanged; only a confirmed exact terminal package is disposed.
+- Direct-use evidence or discard/rebuild result, when applicable: no schema, serialization, row, package, or startup format changed. Successful Stop retains the current V1 package; a later confirmed inactive Delete disposes it through the existing compensated catalog path.
 - Migration implementation and focused checks, only when `Migration Required`: `N/A`
 - Deviation from the reviewed transition decision: `None`
 
 ## Environment Or Dependency Notes
 
-- Dependencies were installed with `pnpm install --frozen-lockfile`; no tracked manifest or lockfile changed.
-- Prisma client generation was run only in the ticket worktree for source typechecking and isolated Vitest database fixtures.
-- The Nuxt development renderer used `NUXT_TEST=true` on isolated port `34217`. The temporary preview page was removed and the renderer/browser tab were stopped before handoff.
+- No manifest, lockfile, database schema, or generated source changed.
+- Prisma client generation and Vitest database reset occurred only inside the ticket worktree/test fixture paths.
+- The Nuxt dev renderer ran with `NUXT_TEST=true` on isolated port `34218`. Its temporary preview page was removed and the browser tab/server were closed before handoff.
 - No broader API/E2E environment was established by implementation.
 
 ## Local Implementation Checks Run
 
-- **Pass** — server source typecheck:
-  - `pnpm exec prisma generate --schema ./prisma/schema.prisma`
-  - `pnpm exec tsc -p tsconfig.build.json --noEmit --pretty false`
-- **Pass** — focused server unit/narrow integration suite: 17 files, 91 tests. Coverage includes manager lifecycle/transition serialization, gate stabilization, frozen configured/delegated/nested scope, pending-turn interruption handling, same-scope retry, AgentRun retry, catalog candidate/package compensation, service/projection/GraphQL/workspace call sites, and exact Team websocket behavior.
-- **Pass** — focused Nuxt component/composable suite: 2 files, 62 tests via `pnpm test:nuxt ... --run`. Coverage includes independent active Stop/Delete, inactive Archive/Delete, exact confirmations, cancel, exact ID sequence, same-summary isolation, pending states, failure copy, cleanup, and member-row preservation.
-- **Pass** — the manager integration test was rerun independently after the final transition-lane fixture update: 1 file, 7 tests.
+- **Pass** — server source typecheck: Prisma generate plus `pnpm exec tsc -p tsconfig.build.json --noEmit --pretty false`.
+- **Pass** — preserved backend lifecycle/catalog focused set: 17 files, 91 unit/narrow integration tests.
+- **Pass** — focused Nuxt component/composable set: 2 files, 63 tests. This covers active Stop-only, direct active-Delete rejection, Stop failure/history retention, Stop pending, inactive confirmation/cancel/Delete/failure, exact IDs, member isolation, and existing history behavior.
+- **Pass** — forbidden active-delete state/copy scan (`wasActive`, active combined confirmation, combined failure copy): no matches.
 - **Pass** — `git diff --check`.
-- **Pass** — changed production file size scan; no changed production file exceeds 500 effective lines.
-- **Exploratory / not a sign-off gate** — six existing application/external-channel unit files: 19 passed, 18 failed for the stale fixture contracts recorded under Known Risks.
-- **Unavailable as a clean gate** — `pnpm exec nuxi typecheck`; `vue-tsc`/TypeScript package-export incompatibility noted above.
+- **Pass** — changed production source-size scan: 480 and 283 effective nonempty/noncomment lines; neither exceeds 500.
+- **Unavailable as a clean gate** — Nuxt source typecheck for the existing dependency mismatch noted above.
 
 ## Frontend Rendered-Result Check (When Applicable)
 
-- Affected surfaces / journeys: Workspace history Team parent rows; active Stop and Delete; inactive Archive and Delete; destructive confirmation; cancel and confirm interactions.
-- Approved UI/UX, interaction, requirement, or design references: `ui-ux-spec.md`; `BEH-001`–`BEH-005`; `DS-002`, `DS-003`, `DS-004`, `DS-006`; `AC-001`–`AC-014`.
-- Existing design system, shared components, and adjacent product surfaces reviewed: existing `WorkspaceHistoryWorkspaceSection`, `WorkspaceAgentRunsTreePanel`, `ConfirmationModal`, Team activity dots, row hover/focus actions, and existing Agent history actions.
-- Project development / preview instructions and rendered surface used: project Nuxt dev renderer under `NUXT_TEST=true`, with a temporary uncommitted layout-free page that mounted the real history section and shared confirmation modal against isolated active/inactive Team fixtures.
-- States, layouts, viewports, and interactions inspected: 885x738 browser viewport; grouped active and inactive Team rows; active Stop remaining independently visible; Delete keyboard focus revealing the hover/focus action; active Delete modal; cancel; inactive Delete modal; confirm; exact action IDs. DOM/accessibility inspection confirmed two enabled `Delete team history permanently` buttons and exact modal text.
-- Visual or interaction issues found and corrected: no remaining issue found. The shared danger modal, row hierarchy, action spacing, activity states, and focus-within reveal behavior were visually coherent with adjacent history controls.
-- Supporting evidence and remaining unverified states or limitations: screenshots were captured at `/Users/normy/.autobyteus/browser-artifacts/ef9a60-1787120343506.png` and `/Users/normy/.autobyteus/browser-artifacts/ef9a60-1787120356056.png`. The renderer was intentionally backend-free, so real store cleanup/toasts and responsive/device coverage remain downstream API/E2E obligations; focused component tests cover those client branches.
+- Affected surfaces / journeys: Workspace history Team parent rows; active Stop; Stop-pending disabled state; inactive Archive/Delete; separate permanent-deletion confirmation.
+- Approved UI/UX, interaction, requirement, or design references: `ui-ux-spec.md`; `BEH-001`–`BEH-005`; `DS-001`, `DS-003`, `DS-004`, `DS-006`; `AC-001`–`AC-014`, `AC-018`.
+- Existing design system, shared components, and adjacent product surfaces reviewed: real `WorkspaceHistoryWorkspaceSection`, `WorkspaceAgentRunsTreePanel`, shared `ConfirmationModal`, Team activity dots, and existing row hover/focus action treatment.
+- Project development / preview instructions and rendered surface used: backend-free Nuxt development renderer with `NUXT_TEST=true`; temporary uncommitted page mounting the real row component and modal against isolated active, Stop-pending, and inactive Team fixtures.
+- States, layouts, viewports, and interactions inspected: 2048x1152 capture; active row exposed one enabled `Terminate team`; Stop-pending exposed the same disabled action; inactive row exposed Archive plus keyboard-focused `Delete team history permanently`. Active Stop produced a retained-history marker with no dialog. Inactive Delete opened the exact approved Team-history modal; cancel made no mutation and a later independent confirm produced the exact inactive Delete marker.
+- Visual or interaction issues found and corrected: active Delete was absent, state distinction was clear, focused inactive actions remained discoverable, and the shared danger modal/copy/spacing were visually coherent. No additional production CSS or component workaround was needed.
+- Supporting evidence and remaining unverified states or limitations: row-state screenshot `/Users/normy/.autobyteus/browser-artifacts/f27af6-1787124284105.png`; inactive confirmation screenshot `/Users/normy/.autobyteus/browser-artifacts/f27af6-1787124364416.png`. The backend-free render does not establish real API/storage execution; that remains downstream API/E2E work.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
-- Execute `VAL-001`–`VAL-014` from `design-use-case-validation.md` against isolated temporary roots/packages only.
-- Prioritize approval-pending configured Agent, prepared/delegated Agent, configured nested Team, task Team, already-admitted message activation, and already-admitted delegation interleavings with Stop.
-- Prove manager ownership and lifecycle remain active through nonterminal failure; repeat Stop must traverse the same frozen objects and must not restore/materialize a second root.
-- Prove exact-ID create/restore/delete exclusion and both DS-007 failure positions, including durable row/tree compensation before ordinary package-removal failure returns.
-- Prove same-summary and expanded/member-focused row isolation, active Stop/Delete sequencing, inactive direct Delete, cancel, all exact toast branches, stream disconnect, selection cleanup, and retained-history restore.
-- Include keyboard/focus and narrow-layout coverage for the independent row actions and confirmation modal.
-- Do not mutate the reported production roots, the user's production profile, or the running Electron process.
+- Reinvestigate the existing API/E2E suite against SR-003 before editing or executing durable coverage; the paused investigation and its two current E2E edits are not authoritative coverage decisions.
+- Execute `VAL-001`–`VAL-014` with isolated roots/packages only.
+- Prioritize the strict transition `active Stop only -> Stop pending -> terminal retained inactive row -> optional separately confirmed Delete` and explicit absence of active Delete, combined modal copy, or Stop-inside-Delete behavior.
+- Preserve deep runtime proof: approval-pending configured Agent, prepared/delegated Agent, configured nested Team, task Team, already-admitted message/delegation, same-object failure/retry, and no inactive publication before every descendant accepts termination.
+- Prove exact-ID inactive Delete, both DS-007 failure positions, restore/delete serialization, same-summary/member isolation, confirmation cancel, singular Stop/Delete errors, stream/selection cleanup, and retained-history restore.
+- Include keyboard/focus and narrow/touch action availability without touching production roots/profile/Electron.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-API/E2E coverage investigation, durable broader coverage decisions, realistic execution, environment setup, and final evidence remain owned by `api_e2e_engineer` after source review passes. This handoff records implementation-scoped checks only and does not claim API/E2E sign-off.
+API/E2E coverage investigation, durable coverage decisions, realistic execution, environment setup, and final evidence remain owned by `api_e2e_engineer` after this rework passes source review. The prior investigation was paused by the requirement reset and must be revised or replaced; this handoff records implementation-scoped checks only and claims no API/E2E sign-off.

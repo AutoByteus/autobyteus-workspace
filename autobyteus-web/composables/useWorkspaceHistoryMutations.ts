@@ -23,13 +23,10 @@ export const useWorkspaceHistoryMutations = (params: {
   const archivingTeamIds = ref<Record<string, boolean>>({});
   const showDeleteConfirmation = ref(false);
   const pendingDeleteRunId = ref<string | null>(null);
-  const pendingDeleteTeam = ref<{ teamRunId: string; wasActive: boolean } | null>(null);
-  const deleteConfirmationMessage = computed(() => {
-    if (!pendingDeleteTeam.value) return 'Delete this history permanently. This cannot be undone.';
-    return pendingDeleteTeam.value.wasActive
-      ? 'This Team is active. Stop it and permanently delete its history? This cannot be undone.'
-      : 'Delete this Team history permanently? This cannot be undone.';
-  });
+  const pendingDeleteTeamRunId = ref<string | null>(null);
+  const deleteConfirmationMessage = computed(() => pendingDeleteTeamRunId.value
+    ? 'Delete this Team history permanently? This cannot be undone.'
+    : 'Delete this history permanently. This cannot be undone.');
 
   const removeDraftRun = async (runId: string): Promise<void> => {
     const removeErrorMessage = 'Failed to remove draft run. Please try again.';
@@ -120,12 +117,12 @@ export const useWorkspaceHistoryMutations = (params: {
     }
 
     pendingDeleteRunId.value = runId;
-    pendingDeleteTeam.value = null;
+    pendingDeleteTeamRunId.value = null;
     showDeleteConfirmation.value = true;
   };
 
   const onDeleteTeam = (team: TeamTreeNode): void => {
-    if (team.deleteLifecycle !== 'READY') {
+    if (team.isActive || team.deleteLifecycle !== 'READY') {
       return;
     }
 
@@ -138,7 +135,7 @@ export const useWorkspaceHistoryMutations = (params: {
     }
 
     pendingDeleteRunId.value = null;
-    pendingDeleteTeam.value = { teamRunId, wasActive: team.isActive };
+    pendingDeleteTeamRunId.value = teamRunId;
     showDeleteConfirmation.value = true;
   };
 
@@ -230,14 +227,14 @@ export const useWorkspaceHistoryMutations = (params: {
   const closeDeleteConfirmation = (): void => {
     showDeleteConfirmation.value = false;
     pendingDeleteRunId.value = null;
-    pendingDeleteTeam.value = null;
+    pendingDeleteTeamRunId.value = null;
   };
 
   const confirmDeleteRun = async (): Promise<void> => {
     const deleteErrorMessage = 'Failed to delete run. Please try again.';
     const deleteTeamErrorMessage = 'Failed to delete team history. Please try again.';
     const runId = pendingDeleteRunId.value;
-    const teamTarget = pendingDeleteTeam.value;
+    const teamRunId = pendingDeleteTeamRunId.value;
     closeDeleteConfirmation();
 
     if (runId) {
@@ -268,8 +265,7 @@ export const useWorkspaceHistoryMutations = (params: {
       return;
     }
 
-    if (!teamTarget) return;
-    const { teamRunId, wasActive } = teamTarget;
+    if (!teamRunId) return;
     if (
       deletingTeamIds.value[teamRunId] || archivingTeamIds.value[teamRunId] ||
       stopPendingTeamIds.value[teamRunId]
@@ -282,37 +278,16 @@ export const useWorkspaceHistoryMutations = (params: {
       [teamRunId]: true,
     };
 
-    let terminationCompleted = !wasActive;
     try {
-      if (wasActive) {
-        const terminated = await params.terminateTeamRun(teamRunId);
-        if (!terminated) {
-          params.addToast('Failed to stop and delete this Team. Try again.', 'error');
-          return;
-        }
-        terminationCompleted = true;
-      }
       const deleted = await params.deleteTeamRun(teamRunId);
       if (!deleted) {
-        params.addToast(
-          wasActive
-            ? 'The Team was stopped, but its history could not be deleted. Try Delete again.'
-            : deleteTeamErrorMessage,
-          'error',
-        );
+        params.addToast(deleteTeamErrorMessage, 'error');
         return;
       }
       params.addToast('Team history deleted permanently.', 'success');
     } catch (error) {
       console.error('Failed to delete team history:', error);
-      params.addToast(
-        wasActive
-          ? (terminationCompleted
-              ? 'The Team was stopped, but its history could not be deleted. Try Delete again.'
-              : 'Failed to stop and delete this Team. Try again.')
-          : deleteTeamErrorMessage,
-        'error',
-      );
+      params.addToast(deleteTeamErrorMessage, 'error');
     } finally {
       const next = { ...deletingTeamIds.value };
       delete next[teamRunId];
