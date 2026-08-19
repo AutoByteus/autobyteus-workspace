@@ -3,8 +3,8 @@
 ## Ticket And Handoff State
 
 - Ticket: `electron-agent-input-controls-regression`
-- Delivery revision: `DR-008`
-- Current disposition: complete. Repository finalization, local Electron build, reviewed Docker packaging repair, isolated Docker server health, user Docker verification, and promotion of the completed integration branch to `origin/personal` all passed.
+- Delivery revision: `DR-009`
+- Current disposition: complete. Repository finalization, reviewed Docker packaging repair, isolated Docker server health, user Docker verification, promotion to `origin/personal`, main-personal refresh, and the requested personal-flavor local Electron build all passed.
 - Repository finalization target: `codex/agent-team-universal-task-delegation`, as recorded in `ticket-description.md`.
 - Aggregate promotion target: `origin/personal`, explicitly authorized after successful Docker testing.
 - Explicit user finalization authorization received: `Yes` — “i tested. the task is done. finalize to the base branch”.
@@ -31,6 +31,20 @@
 - Local safety: unrelated untracked `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/.article-work/` content was checksum-verified unchanged and remains uncommitted.
 - Rollout check: the isolated Docker node remained up and REST health remained `ok` at `http://localhost:52704/rest/health`.
 - Evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/electron-agent-input-controls-regression/evidence/personal-promotion-verification.log`.
+
+## Main-Personal Local Electron Build
+
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`.
+- Source refresh: `Pass`; local and remote `personal` matched at `589c06c2eb6b4c5315beddf323542c295933746f` before and after the build, divergence `0 0`.
+- Build command: `NO_TIMESTAMP=1 APPLE_TEAM_ID= pnpm -C autobyteus-web build:electron:mac`.
+- Build result: `Pass` (exit `0`); personal-flavor macOS arm64 version `1.4.52` application, DMG, ZIP, and blockmaps were produced.
+- Application: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`.
+- DMG: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.dmg`.
+- ZIP: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.zip`.
+- Integrity: `Pass`; Mach-O arm64 executable, valid DMG checksum, and ZIP data test with no errors.
+- Signing/notarization: local unsigned/non-notarized build only; no tag, release, publication, or application launch.
+- Local safety: tracked build inputs remained clean and unrelated `.article-work/` content was checksum-preserved.
+- Evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/electron-agent-input-controls-regression/evidence/local-personal-electron-build`.
 
 ## Post-Finalization Local Electron Build
 
@@ -147,3 +161,4 @@
 - Personal promotion authorization: `Yes`; refreshed `origin/personal@acb898593` is an ancestor of the published integration checkpoint at `659a6be15`, so no target-only change or renewed acceptance is required before the authorized merge.
 - Personal promotion refresh evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/evidence/personal-promotion-refresh.log`.
 - Personal promotion result: `Pass`; `origin/personal` accepted merge `c4bcec60b557839cc2d6093ed2d20e23f1ead03a`, remote ancestry/tree identity passed, and the Docker node remained healthy.
+- Main-personal Electron build: `Pass`; personal flavor version `1.4.52` built from refreshed `personal@589c06c2e`, and application/DMG/ZIP verification passed.

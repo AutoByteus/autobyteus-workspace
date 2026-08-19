@@ -1,0 +1,27 @@
+source_worktree=/Users/normy/autobyteus_org/autobyteus-workspace-superrepo
+source_branch=personal
+source_revision=589c06c2eb6b4c5315beddf323542c295933746f
+source_remote=origin/personal
+source_divergence=0 0
+build_command=NO_TIMESTAMP=1 APPLE_TEAM_ID= pnpm -C autobyteus-web build:electron:mac
+build_exit=0
+flavor=personal
+version=1.4.52
+platform=macOS
+architecture=arm64
+application=/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+executable=/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+executable_format=Mach-O 64-bit executable arm64
+dmg=/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.dmg
+dmg_sha256=b96c979d065a68ce0ee306a1772902e3e151ab8e5234ad1ee213cba8d2fc8420
+dmg_bytes=463743976
+dmg_verification=VALID
+zip=/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.zip
+zip_sha256=a8c1d24d7947c1d0035801d1a3315c42b5a2f2fdcf8f7cc4c95cdc3f9507a9a0
+zip_bytes=457618361
+zip_verification=No errors detected
+signing=skipped; identity explicitly null
+notarization=not requested or performed
+active_electron_launch=not performed
+production_profile_or_data=not touched
+article_work_preserved=yes

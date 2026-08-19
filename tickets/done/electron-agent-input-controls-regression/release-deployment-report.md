@@ -9,8 +9,8 @@ Initial delivery-stage latest-base refresh, explicit no-impact documentation ass
 - Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/delivery-revision-record.md`
-- Current delivery revision ID: `DR-008`
-- Notes: Repository finalization and local Electron build remain complete; the reviewed Docker repair is finalized, the isolated Docker node is healthy and user-tested, and the completed integration branch is merged and pushed to `origin/personal`.
+- Current delivery revision ID: `DR-009`
+- Notes: Repository finalization, reviewed Docker repair, user-tested isolated node, promotion to `origin/personal`, refreshed main-personal worktree, and the requested personal-flavor local Electron build are complete.
 
 ## Initial Delivery Integration Refresh
 
@@ -80,8 +80,8 @@ Initial delivery-stage latest-base refresh, explicit no-impact documentation ass
 - Applicable: `No` in the currently authorized scope.
 - Method: `Other` — not selected.
 - Method reference / command: N/A
-- Release/publication result: `Not required` at DR-008.
-- Release notes handoff result: `Not required` at DR-008.
+- Release/publication result: `Not required` at DR-009.
+- Release notes handoff result: `Not required` at DR-009.
 - Local Docker runtime result: `Pass`; explicitly authorized test node only.
 - Blocker: None for the requested local runtime. Any public release/deployment requires separate explicit user direction.
 
@@ -108,6 +108,20 @@ Initial delivery-stage latest-base refresh, explicit no-impact documentation ass
 - Signing/notarization: Electron Builder skipped Developer ID signing because identity was explicitly null; no distribution signature, team identity, or notarization was applied.
 - Scope boundary: local build validation only; no tag, release, publication, deployment, active Electron launch, port `29695`, `~/.autobyteus`, production profile, or production data was touched.
 - Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/evidence/local-electron-build`
+
+## Post-Promotion Main-Personal Local Electron Build
+
+- Main worktree: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`.
+- Refresh result: `Pass`; local/remote `personal` matched at `589c06c2eb6b4c5315beddf323542c295933746f` with divergence `0 0` before the build, and the post-build refetch remained unchanged.
+- Build command: `NO_TIMESTAMP=1 APPLE_TEAM_ID= pnpm -C autobyteus-web build:electron:mac`.
+- Build result: `Pass` (exit `0`), version `1.4.52`, personal flavor, macOS arm64.
+- Application: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`.
+- DMG: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.dmg`; SHA-256 `b96c979d065a68ce0ee306a1772902e3e151ab8e5234ad1ee213cba8d2fc8420`.
+- ZIP: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.zip`; SHA-256 `a8c1d24d7947c1d0035801d1a3315c42b5a2f2fdcf8f7cc4c95cdc3f9507a9a0`.
+- Verification: `Pass`; executable is Mach-O arm64, DMG checksum is valid, and ZIP contains no compressed-data errors.
+- Signing/notarization: electron-builder skipped signing because identity was explicitly null; notarization was not requested or performed.
+- Scope/safety: local build validation only; tracked source stayed clean, `.article-work/` was preserved, and no active Electron process, user profile, production data, tag, release, publication, or deployment was touched.
+- Evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/electron-agent-input-controls-regression/evidence/local-personal-electron-build`.
 
 ## Post-Finalization Local Docker Server
 
@@ -197,4 +211,4 @@ Before finalization, reject or revise the local candidate if user verification s
 
 ## Final Status
 
-`DR-008 Pass — user-verified Docker result accepted; completed integration branch checkpointed and merged to origin/personal as c4bcec60b; remote ancestry/tree identity and Docker health verified; unrelated local work preserved; no public release.`
+`DR-009 Pass — origin/personal and the main local personal worktree were current; personal-flavor macOS arm64 Electron 1.4.52 built successfully; application/DMG/ZIP integrity passed; unrelated local work preserved; no public release.`
