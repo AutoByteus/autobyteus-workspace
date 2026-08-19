@@ -9,8 +9,8 @@ Initial delivery-stage latest-base refresh, explicit no-impact documentation ass
 - Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/delivery-revision-record.md`
-- Current delivery revision ID: `DR-007`
-- Notes: Repository finalization and local Electron build remain complete; the reviewed Docker repair is finalized, the isolated Docker node is running and healthy, the user tested it successfully, and promotion to `origin/personal` is authorized.
+- Current delivery revision ID: `DR-008`
+- Notes: Repository finalization and local Electron build remain complete; the reviewed Docker repair is finalized, the isolated Docker node is healthy and user-tested, and the completed integration branch is merged and pushed to `origin/personal`.
 
 ## Initial Delivery Integration Refresh
 
@@ -80,8 +80,8 @@ Initial delivery-stage latest-base refresh, explicit no-impact documentation ass
 - Applicable: `No` in the currently authorized scope.
 - Method: `Other` — not selected.
 - Method reference / command: N/A
-- Release/publication result: `Not required` at DR-007.
-- Release notes handoff result: `Not required` at DR-007.
+- Release/publication result: `Not required` at DR-008.
+- Release notes handoff result: `Not required` at DR-008.
 - Local Docker runtime result: `Pass`; explicitly authorized test node only.
 - Blocker: None for the requested local runtime. Any public release/deployment requires separate explicit user direction.
 
@@ -135,8 +135,14 @@ Initial delivery-stage latest-base refresh, explicit no-impact documentation ass
 - Target relationship: `origin/personal` is the exact merge base and an ancestor of the source; divergence is `0 146`. There is no target-only change to reintegrate.
 - Renewed verification: `Not required`; the tested source behavior is unchanged, and this delivery checkpoint changes records only.
 - Local target safety: unrelated untracked `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/.article-work/` content has no path overlap with the source delta and will remain untouched.
-- Promotion status: `Authorized / pending checkpoint commit, merge, push, and remote verification`.
+- Source delivery checkpoint: `659a6be15926a13fba3520174ac9714d0c73ebb5`; pushed and verified on `origin/codex/agent-team-universal-task-delegation`.
+- Promotion merge: `c4bcec60b557839cc2d6093ed2d20e23f1ead03a`; exact parents are target `acb8985930ccce49b632cdca22b92f5b237e35bf` and source `659a6be15926a13fba3520174ac9714d0c73ebb5`.
+- Promotion status: `Completed`; `origin/personal` accepted the merge and exact remote equality/source ancestry passed.
+- Tree verification: `Pass`; merge/source trees both equal `ec703df88578d5139da35c489944b4ff1289cbc1`, proving no conflict resolution or content drift.
+- Target worktree preservation: `Pass`; unrelated untracked `.article-work/` checksums were unchanged and those files remain uncommitted.
+- Runtime verification: `Pass`; the isolated Docker container remained up and `/rest/health` returned status `ok` after promotion.
 - Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/evidence/personal-promotion-refresh.log`.
+- Completion evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/electron-agent-input-controls-regression/evidence/personal-promotion-verification.log`.
 
 ## Escalation / Reroute
 
@@ -191,4 +197,4 @@ Before finalization, reject or revise the local candidate if user verification s
 
 ## Final Status
 
-`DR-007 Pass — user-verified Docker result accepted; completed integration source and origin/personal refreshed with target as a strict ancestor; personal promotion authorized; checkpoint/merge/push verification next; no public release.`
+`DR-008 Pass — user-verified Docker result accepted; completed integration branch checkpointed and merged to origin/personal as c4bcec60b; remote ancestry/tree identity and Docker health verified; unrelated local work preserved; no public release.`

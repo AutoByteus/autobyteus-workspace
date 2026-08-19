@@ -3,8 +3,8 @@
 ## Ticket And Handoff State
 
 - Ticket: `electron-agent-input-controls-regression`
-- Delivery revision: `DR-007`
-- Current disposition: repository finalization, local Electron build, reviewed Docker packaging repair, isolated Docker server build/start, and REST/GraphQL health verification all passed. The user also tested the Docker node and authorized promotion of the completed integration branch to `origin/personal`.
+- Delivery revision: `DR-008`
+- Current disposition: complete. Repository finalization, local Electron build, reviewed Docker packaging repair, isolated Docker server health, user Docker verification, and promotion of the completed integration branch to `origin/personal` all passed.
 - Repository finalization target: `codex/agent-team-universal-task-delegation`, as recorded in `ticket-description.md`.
 - Aggregate promotion target: `origin/personal`, explicitly authorized after successful Docker testing.
 - Explicit user finalization authorization received: `Yes` — “i tested. the task is done. finalize to the base branch”.
@@ -19,6 +19,18 @@
 - Cleanup: `Pass`; dedicated worktree pruned and local/remote ticket branches removed only after target verification.
 - Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/repository-finalization-verification.log`
 - Release/publication/deployment: not requested and not performed.
+
+## Aggregate Promotion To Personal
+
+- Authorization: `Pass`; after testing the Docker node, the user declared the overall task finally done and explicitly requested promotion to `origin/personal`.
+- Published source checkpoint: `659a6be15926a13fba3520174ac9714d0c73ebb5` on `origin/codex/agent-team-universal-task-delegation`.
+- Target before merge: `origin/personal@acb8985930ccce49b632cdca22b92f5b237e35bf`; it was the exact merge base and contained no target-only commit.
+- Promotion merge: `c4bcec60b557839cc2d6093ed2d20e23f1ead03a` with exact parents `acb8985930ccce49b632cdca22b92f5b237e35bf` and `659a6be15926a13fba3520174ac9714d0c73ebb5`.
+- Target push: `Pass`; remote `personal` returned the exact merge commit and preserved source ancestry.
+- Content identity: `Pass`; the merge tree exactly equals the published source checkpoint tree, so the merge introduced no conflict resolution or behavioral drift.
+- Local safety: unrelated untracked `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/.article-work/` content was checksum-verified unchanged and remains uncommitted.
+- Rollout check: the isolated Docker node remained up and REST health remained `ok` at `http://localhost:52704/rest/health`.
+- Evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/electron-agent-input-controls-regression/evidence/personal-promotion-verification.log`.
 
 ## Post-Finalization Local Electron Build
 
@@ -132,5 +144,6 @@
 - Finalization result: `Pass`; repository finalization, cleanup, local Electron build, and artifact integrity verification remain complete.
 - Docker follow-up: `Pass`; reviewed packaging fix finalized, node running, health verified, and Backend URL ready for Nodes testing at `http://localhost:52704`.
 - Docker user verification: `Pass`; the user explicitly reported testing it successfully and declared the overall task finally done.
-- Personal promotion authorization: `Yes`; refreshed `origin/personal@acb898593` is an ancestor of the complete integration source at `eb7967144`, so no target-only change or renewed acceptance is required before the authorized merge.
+- Personal promotion authorization: `Yes`; refreshed `origin/personal@acb898593` is an ancestor of the published integration checkpoint at `659a6be15`, so no target-only change or renewed acceptance is required before the authorized merge.
 - Personal promotion refresh evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/evidence/personal-promotion-refresh.log`.
+- Personal promotion result: `Pass`; `origin/personal` accepted merge `c4bcec60b557839cc2d6093ed2d20e23f1ead03a`, remote ancestry/tree identity passed, and the Docker node remained healthy.
