@@ -45,7 +45,7 @@ M-008 components/workspace/history/WorkspaceHistoryWorkspaceSection.vue Delete t
 - Process exit: `1`.
 - Build stopped before `prepare-server`, Nuxt generation, Electron transpilation, electron-builder, signing, or packaging.
 - Current verification artifact: none. No `.app`, DMG, or ZIP was produced.
-- Full log: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/tickets/done/team-run-offline-delete-action/electron-build-macos-arm64.log`
+- Full log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-run-offline-delete-action/electron-build-macos-arm64.log`
 
 ## Failure Origin
 

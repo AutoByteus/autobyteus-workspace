@@ -1,0 +1,394 @@
+repository_finalization_started=2026-08-19T10:23:37Z
+ticket_branch=codex/team-run-offline-delete-action
+ticket_commit=f14a068469b33b71c3fa55e437ae121e57742075
+ticket_status_begin
+## codex/team-run-offline-delete-action...origin/personal [ahead 6]
+ticket_status_end
+remote: 
+remote: Create a pull request for 'codex/team-run-offline-delete-action' on GitHub by visiting:        
+remote:      https://github.com/AutoByteus/autobyteus-workspace/pull/new/codex/team-run-offline-delete-action        
+remote: 
+remote: GitHub found 818 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (20 critical, 347 high, 385 moderate, 66 low). To find out more, visit:        
+remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot        
+remote: 
+To github.com-ryan:AutoByteus/autobyteus-workspace.git
+ * [new branch]          HEAD -> codex/team-run-offline-delete-action
+branch 'codex/team-run-offline-delete-action' set up to track 'origin/codex/team-run-offline-delete-action'.
+ticket_remote_tip=f14a068469b33b71c3fa55e437ae121e57742075
+ticket_branch_push=PASS
+target_pre_update_status_begin
+## personal...origin/personal
+?? .article-work/
+target_pre_update_status_end
+target_tracked_state_clean=PASS
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+target_post_fetch_origin_personal=0194fb4fffa69037a46aeace491024fdf816dde7
+target_post_fetch_expected=0194fb4fffa69037a46aeace491024fdf816dde7
+target_post_verification_advance=NO
+Already up to date.
+target_local_update=PASS
+Merge made by the 'ort' strategy.
+ .../design/agent_websocket_streaming_protocol.md   |   21 +-
+ .../docs/modules/agent_streaming.md                |   24 +-
+ .../docs/modules/agent_team_execution.md           |   57 +-
+ .../services/global-agent-run-message-router.ts    |    6 +-
+ .../src/agent-execution/domain/agent-run.ts        |   14 +-
+ .../mixed/members/mixed-agent-member-handle.ts     |    8 +
+ .../members/mixed-configured-member-registry.ts    |    5 +
+ .../mixed/members/mixed-sub-team-member-handle.ts  |    1 +
+ .../members/mixed-task-agent-execution-registry.ts |    3 +
+ .../members/mixed-task-team-execution-registry.ts  |    3 +
+ .../backends/mixed/mixed-team-manager.ts           |  104 ++
+ .../backends/mixed/mixed-team-run-backend.ts       |    2 +
+ .../backends/team-run-backend.ts                   |    3 +
+ .../domain/frozen-team-run-termination-scope.ts    |    8 +
+ .../domain/root-team-run-materialization-gate.ts   |   31 +
+ .../agent-team-execution/domain/root-team-run.ts   |  136 ++-
+ .../src/agent-team-execution/domain/team-run.ts    |    2 +
+ .../services/agent-team-run-manager.ts             |  174 +--
+ .../services/team-run-resolver.ts                  |   46 +-
+ .../services/team-run-service.ts                   |   21 +-
+ .../task-delegation-projection-service.ts          |    6 +-
+ .../task-delegation/task-delegation-service.ts     |    2 +-
+ .../task-delegation-tool-service.ts                |    2 +-
+ .../src/api/graphql/types/team-run-history.ts      |    2 +-
+ .../application-agent-stream-runtime-source.ts     |    4 +-
+ .../application-orchestration-host-service.ts      |    4 +-
+ .../runtime/channel-binding-run-launcher.ts        |    2 +-
+ .../runtime/channel-run-output-delivery-runtime.ts |    4 +-
+ .../runtime/channel-team-run-facade.ts             |    2 +-
+ .../services/channel-binding-service.ts            |    8 +-
+ .../channel-turn-reply-recovery-service.ts         |    6 +-
+ .../services/run-file-change-projection-service.ts |    6 +-
+ .../team-run-execution-tree-location-service.ts    |   14 +-
+ .../services/team-run-history-catalog-service.ts   |   74 +-
+ .../services/team-run-history-service.ts           |    2 +-
+ .../services/team-run-live-projection-service.ts   |    4 +-
+ .../agent-streaming/agent-team-stream-handler.ts   |    4 +-
+ .../team-communication-projection-service.ts       |    4 +-
+ .../src/workspaces/workspace-removal-guard.ts      |    6 +-
+ .../nested-mixed-team-runtime-graphql.e2e.test.ts  |  416 ++++---
+ .../archive-run-history-graphql.e2e.test.ts        |   25 +-
+ .../agent-team-run-manager.integration.test.ts     |   49 +-
+ ...nversation-target-websocket.integration.test.ts |    4 +-
+ .../team-run-service.integration.test.ts           |    4 +-
+ ...tion-agent-communication-ws.integration.test.ts |    4 +-
+ ...cation-context-capabilities.integration.test.ts |    2 +-
+ ...ief-studio-imported-package.integration.test.ts |    2 +-
+ .../tests/unit/agent-execution/agent-run.test.ts   |   12 +
+ .../agent-team-run-manager-lifecycle.test.ts       |   17 +-
+ .../mixed-agent-member-handle-termination.test.ts  |   44 +-
+ .../mixed-team-manager.test.ts                     |  132 +++
+ .../root-team-run-termination.test.ts              |  139 +++
+ .../agent-team-execution/team-run-service.test.ts  |   10 +-
+ .../api/graphql/types/team-run-history.test.ts     |   12 +-
+ .../application-agent-runtime-source.test.ts       |    2 +-
+ .../application-orchestration-host-service.test.ts |    4 +-
+ .../runtime/channel-binding-run-launcher.test.ts   |    8 +-
+ .../channel-run-output-delivery-runtime.test.ts    |   10 +-
+ .../runtime/channel-team-run-facade.test.ts        |   22 +-
+ .../services/channel-binding-service.test.ts       |    2 +-
+ .../run-file-change-projection-service.test.ts     |    2 +-
+ .../team-run-history-catalog-service.test.ts       |   56 +-
+ .../services/team-run-history-service.test.ts      |    2 +-
+ .../agent-team-stream-handler.test.ts              |    4 +-
+ .../workspaces/workspace-removal-guard.test.ts     |   44 +-
+ .../history/WorkspaceAgentRunsTreePanel.vue        |    5 +-
+ .../history/WorkspaceHistoryWorkspaceSection.vue   |   12 +-
+ .../__tests__/WorkspaceAgentRunsTreePanel.spec.ts  |  115 +-
+ .../WorkspaceHistoryWorkspaceSection.spec.ts       |   24 +-
+ .../history/workspaceHistorySectionContracts.ts    |    1 -
+ .../composables/useWorkspaceHistoryMutations.ts    |   22 +-
+ .../composables/useWorkspaceHistoryTreeState.ts    |    3 -
+ .../api-e2e-coverage-investigation.md              |  289 +++++
+ .../api-e2e-execution-coverage-report.md           |  175 +++
+ .../api-e2e-revision-record.md                     |   55 +
+ .../api-e2e-test-review-report.md                  |   57 +
+ .../architecture-review-revision-record.md         |   78 ++
+ .../code-review-report.md                          |  195 ++++
+ .../code-review-revision-record.md                 |  132 +++
+ .../delivery-dr003-final-validation.log            |   43 +
+ .../delivery-finalization-refresh-dr004.log        |   77 ++
+ .../delivery-integrated-state-refresh.log          |   20 +
+ .../delivery-preintegration-audit.log              |   89 ++
+ .../delivery-reentry-integrated-state-refresh.log  |   22 +
+ .../delivery-reentry-preintegration-audit.log      |   40 +
+ .../delivery-revision-record.md                    |   72 ++
+ .../design-review-report.md                        |  287 +++++
+ .../team-run-offline-delete-action/design-spec.md  |  461 ++++++++
+ .../design-use-case-validation.md                  |  195 ++++
+ .../docs-sync-report.md                            |   65 ++
+ .../docs-sync-validation.log                       |   41 +
+ .../electron-build-blocker.md                      |   84 ++
+ .../electron-build-macos-arm64-dr003.log           |  Bin 0 -> 13176542 bytes
+ .../electron-build-macos-arm64.log                 |   37 +
+ ...ld-verification-macos-arm64-dr003-corrected.log |  116 ++
+ ...ectron-build-verification-macos-arm64-dr003.log |  122 ++
+ .../application-integrations-after-build.log       |  152 +++
+ .../api-e2e-round-1/archive-history-e2e-final.log  |  105 ++
+ .../api-e2e-round-1/archive-history-e2e-rerun.log  |  140 +++
+ .../api-e2e-round-1/archive-history-e2e.log        |  143 +++
+ .../api-e2e-round-1/brief-studio-after-build.log   |  136 +++
+ .../api-e2e-round-1/dev-runtime-materialize.log    |    2 +
+ .../evidence/api-e2e-round-1/durable-e2e-final.log |  123 ++
+ .../evidence/api-e2e-round-1/live-backend.log      |  443 +++++++
+ .../api-e2e-round-1/live-frontend-health.txt       |    1 +
+ .../evidence/api-e2e-round-1/live-frontend.log     |   35 +
+ .../evidence/api-e2e-round-1/live-health.json      |    1 +
+ .../api-e2e-round-1/nested-mixed-team-e2e.log      |  100 ++
+ .../api-e2e-round-1/pending-marker-before.txt      |    1 +
+ .../api-e2e-round-1/pending-marker-during.txt      |    1 +
+ .../api-e2e-round-1/secrets-import-apply.log       |   57 +
+ .../api-e2e-round-1/secrets-import-dry-run.log     |   71 ++
+ .../evidence/api-e2e-round-1/server-build.log      |   49 +
+ .../api-e2e-round-1/server-changed-suite.log       |  991 ++++++++++++++++
+ .../evidence/api-e2e-round-1/server-focused.log    |  279 +++++
+ .../api-e2e-round-1/static-checks-final.log        |    1 +
+ .../evidence/api-e2e-round-1/static-checks.log     |    3 +
+ .../evidence/api-e2e-round-1/web-focused.log       |   60 +
+ .../01-agent-package-reloaded.png                  |  Bin 0 -> 198911 bytes
+ .../02-active-pending-approval-stop-only.png       |  Bin 0 -> 194966 bytes
+ ...3-stopped-history-retained-inactive-actions.png |  Bin 0 -> 196334 bytes
+ .../04-retained-v1-restored-active-stop-only.png   |  Bin 0 -> 247143 bytes
+ .../05-inactive-delete-confirmation.png            |  Bin 0 -> 214449 bytes
+ .../06-after-inactive-delete-empty-cleanup.png     |  Bin 0 -> 83252 bytes
+ .../after-inactive-delete.txt                      |    3 +
+ .../api-e2e-sr003-round-1/build-static.log         |   56 +
+ .../api-e2e-sr003-round-1/cleanup-runs.txt         |    3 +
+ .../api-e2e-sr003-round-1/durable-e2e-final.log    |  123 ++
+ .../evidence/api-e2e-sr003-round-1/durable-e2e.log |  123 ++
+ .../inactive-delete-cancel.txt                     |    2 +
+ .../api-e2e-sr003-round-1/live-backend-focused.log |   31 +
+ .../api-e2e-sr003-round-1/live-backend.log         | 1228 ++++++++++++++++++++
+ .../live-browser-summary.json                      |   90 ++
+ .../api-e2e-sr003-round-1/live-frontend-health.txt |    1 +
+ .../api-e2e-sr003-round-1/live-frontend.log        |   26 +
+ .../api-e2e-sr003-round-1/live-health.json         |    1 +
+ .../live-process-inventory-after.txt               |   11 +
+ .../live-process-inventory-before.txt              |   15 +
+ .../nested-live-e2e-final-2.log                    |  530 +++++++++
+ .../nested-live-e2e-final-3.log                    |  594 ++++++++++
+ .../nested-live-e2e-final-4.log                    |  556 +++++++++
+ .../nested-live-e2e-final.log                      |  530 +++++++++
+ .../nested-live-e2e-rerun-2.log                    |  205 ++++
+ .../nested-live-e2e-rerun-3.log                    |  530 +++++++++
+ .../nested-live-e2e-rerun.log                      |  235 ++++
+ .../api-e2e-sr003-round-1/nested-live-e2e.log      |  223 ++++
+ .../nested-live-preflight.log                      |    3 +
+ .../pending-marker-before.txt                      |    1 +
+ .../pending-marker-during.txt                      |    1 +
+ .../retained-after-stop-lifecycle.json             |   39 +
+ .../api-e2e-sr003-round-1/retained-after-stop.txt  |   13 +
+ .../same-summary-exact-delete.txt                  |   13 +
+ .../api-e2e-sr003-round-1/server-focused.log       |  279 +++++
+ .../api-e2e-sr003-round-1/static-corrected.log     |    4 +
+ .../static-final-corrected.log                     |   18 +
+ .../api-e2e-sr003-round-1/static-final.log         |    5 +
+ .../api-e2e-sr003-round-1/web-history-store.log    |   63 +
+ .../api-e2e-sr003-round-1/web-strict-focused.log   |   40 +
+ .../api-e2e-sr003-round-2/diff-and-scope.log       |   61 +
+ .../localization-boundary.log                      |   33 +
+ .../web-localized-accessible-name.log              |   40 +
+ .../handoff-summary.md                             |  103 ++
+ .../implementation-handoff.md                      |  156 +++
+ .../implementation-revision-record.md              |   73 ++
+ .../investigation-notes.md                         |  233 ++++
+ .../release-deployment-report.md                   |  156 +++
+ .../team-run-offline-delete-action/requirements.md |  167 +++
+ .../runtime-reproduction-evidence.md               |   55 +
+ .../solution-revision-record.md                    |   86 ++
+ .../ticket-description.md                          |   24 +
+ .../team-run-offline-delete-action/ui-ux-spec.md   |  201 ++++
+ 171 files changed, 14094 insertions(+), 570 deletions(-)
+ create mode 100644 autobyteus-server-ts/src/agent-team-execution/domain/frozen-team-run-termination-scope.ts
+ create mode 100644 autobyteus-server-ts/src/agent-team-execution/domain/root-team-run-materialization-gate.ts
+ create mode 100644 autobyteus-server-ts/tests/unit/agent-team-execution/root-team-run-termination.test.ts
+ create mode 100644 tickets/done/team-run-offline-delete-action/api-e2e-coverage-investigation.md
+ create mode 100644 tickets/done/team-run-offline-delete-action/api-e2e-execution-coverage-report.md
+ create mode 100644 tickets/done/team-run-offline-delete-action/api-e2e-revision-record.md
+ create mode 100644 tickets/done/team-run-offline-delete-action/api-e2e-test-review-report.md
+ create mode 100644 tickets/done/team-run-offline-delete-action/architecture-review-revision-record.md
+ create mode 100644 tickets/done/team-run-offline-delete-action/code-review-report.md
+ create mode 100644 tickets/done/team-run-offline-delete-action/code-review-revision-record.md
+ create mode 100644 tickets/done/team-run-offline-delete-action/delivery-dr003-final-validation.log
+ create mode 100644 tickets/done/team-run-offline-delete-action/delivery-finalization-refresh-dr004.log
+ create mode 100644 tickets/done/team-run-offline-delete-action/delivery-integrated-state-refresh.log
+ create mode 100644 tickets/done/team-run-offline-delete-action/delivery-preintegration-audit.log
+ create mode 100644 tickets/done/team-run-offline-delete-action/delivery-reentry-integrated-state-refresh.log
+ create mode 100644 tickets/done/team-run-offline-delete-action/delivery-reentry-preintegration-audit.log
+ create mode 100644 tickets/done/team-run-offline-delete-action/delivery-revision-record.md
+ create mode 100644 tickets/done/team-run-offline-delete-action/design-review-report.md
+ create mode 100644 tickets/done/team-run-offline-delete-action/design-spec.md
+ create mode 100644 tickets/done/team-run-offline-delete-action/design-use-case-validation.md
+ create mode 100644 tickets/done/team-run-offline-delete-action/docs-sync-report.md
+ create mode 100644 tickets/done/team-run-offline-delete-action/docs-sync-validation.log
+ create mode 100644 tickets/done/team-run-offline-delete-action/electron-build-blocker.md
+ create mode 100644 tickets/done/team-run-offline-delete-action/electron-build-macos-arm64-dr003.log
+ create mode 100644 tickets/done/team-run-offline-delete-action/electron-build-macos-arm64.log
+ create mode 100644 tickets/done/team-run-offline-delete-action/electron-build-verification-macos-arm64-dr003-corrected.log
+ create mode 100644 tickets/done/team-run-offline-delete-action/electron-build-verification-macos-arm64-dr003.log
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-round-1/application-integrations-after-build.log
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-round-1/archive-history-e2e-final.log
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-round-1/archive-history-e2e-rerun.log
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-round-1/archive-history-e2e.log
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-round-1/brief-studio-after-build.log
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-round-1/dev-runtime-materialize.log
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-round-1/durable-e2e-final.log
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-round-1/live-backend.log
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-round-1/live-frontend-health.txt
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-round-1/live-frontend.log
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-round-1/live-health.json
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-round-1/nested-mixed-team-e2e.log
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-round-1/pending-marker-before.txt
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-round-1/pending-marker-during.txt
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-round-1/secrets-import-apply.log
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-round-1/secrets-import-dry-run.log
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-round-1/server-build.log
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-round-1/server-changed-suite.log
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-round-1/server-focused.log
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-round-1/static-checks-final.log
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-round-1/static-checks.log
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-round-1/web-focused.log
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/01-agent-package-reloaded.png
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/02-active-pending-approval-stop-only.png
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/03-stopped-history-retained-inactive-actions.png
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/04-retained-v1-restored-active-stop-only.png
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/05-inactive-delete-confirmation.png
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/06-after-inactive-delete-empty-cleanup.png
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/after-inactive-delete.txt
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/build-static.log
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/cleanup-runs.txt
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/durable-e2e-final.log
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/durable-e2e.log
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/inactive-delete-cancel.txt
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/live-backend-focused.log
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/live-backend.log
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/live-browser-summary.json
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/live-frontend-health.txt
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/live-frontend.log
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/live-health.json
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/live-process-inventory-after.txt
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/live-process-inventory-before.txt
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/nested-live-e2e-final-2.log
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/nested-live-e2e-final-3.log
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/nested-live-e2e-final-4.log
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/nested-live-e2e-final.log
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/nested-live-e2e-rerun-2.log
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/nested-live-e2e-rerun-3.log
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/nested-live-e2e-rerun.log
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/nested-live-e2e.log
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/nested-live-preflight.log
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/pending-marker-before.txt
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/pending-marker-during.txt
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/retained-after-stop-lifecycle.json
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/retained-after-stop.txt
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/same-summary-exact-delete.txt
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/server-focused.log
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/static-corrected.log
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/static-final-corrected.log
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/static-final.log
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/web-history-store.log
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/web-strict-focused.log
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-2/diff-and-scope.log
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-2/localization-boundary.log
+ create mode 100644 tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-2/web-localized-accessible-name.log
+ create mode 100644 tickets/done/team-run-offline-delete-action/handoff-summary.md
+ create mode 100644 tickets/done/team-run-offline-delete-action/implementation-handoff.md
+ create mode 100644 tickets/done/team-run-offline-delete-action/implementation-revision-record.md
+ create mode 100644 tickets/done/team-run-offline-delete-action/investigation-notes.md
+ create mode 100644 tickets/done/team-run-offline-delete-action/release-deployment-report.md
+ create mode 100644 tickets/done/team-run-offline-delete-action/requirements.md
+ create mode 100644 tickets/done/team-run-offline-delete-action/runtime-reproduction-evidence.md
+ create mode 100644 tickets/done/team-run-offline-delete-action/solution-revision-record.md
+ create mode 100644 tickets/done/team-run-offline-delete-action/ticket-description.md
+ create mode 100644 tickets/done/team-run-offline-delete-action/ui-ux-spec.md
+target_merge_commit=424687b1189b0bf9dd0bf8b94847c672b3d2477c
+tickets/done/team-run-offline-delete-action/evidence/api-e2e-round-1/application-integrations-after-build.log:152: new blank line at EOF.
+tickets/done/team-run-offline-delete-action/evidence/api-e2e-round-1/archive-history-e2e-final.log:105: new blank line at EOF.
+tickets/done/team-run-offline-delete-action/evidence/api-e2e-round-1/archive-history-e2e-rerun.log:140: new blank line at EOF.
+tickets/done/team-run-offline-delete-action/evidence/api-e2e-round-1/archive-history-e2e.log:143: new blank line at EOF.
+tickets/done/team-run-offline-delete-action/evidence/api-e2e-round-1/brief-studio-after-build.log:136: new blank line at EOF.
+tickets/done/team-run-offline-delete-action/evidence/api-e2e-round-1/durable-e2e-final.log:123: new blank line at EOF.
+tickets/done/team-run-offline-delete-action/evidence/api-e2e-round-1/live-frontend-health.txt:1: trailing whitespace.
++HTTP/1.1 200 OK
+tickets/done/team-run-offline-delete-action/evidence/api-e2e-round-1/nested-mixed-team-e2e.log:100: new blank line at EOF.
+tickets/done/team-run-offline-delete-action/evidence/api-e2e-round-1/server-changed-suite.log:734: trailing whitespace.
++    102| 
+tickets/done/team-run-offline-delete-action/evidence/api-e2e-round-1/server-changed-suite.log:752: trailing whitespace.
++    1631| 
+tickets/done/team-run-offline-delete-action/evidence/api-e2e-round-1/server-changed-suite.log:771: trailing whitespace.
++     54| 
+tickets/done/team-run-offline-delete-action/evidence/api-e2e-round-1/server-changed-suite.log:782: trailing whitespace.
++- Expected: 
+tickets/done/team-run-offline-delete-action/evidence/api-e2e-round-1/server-changed-suite.log:790: trailing whitespace.
+++ Received: 
+tickets/done/team-run-offline-delete-action/evidence/api-e2e-round-1/server-changed-suite.log:795: trailing whitespace.
++    312| 
+tickets/done/team-run-offline-delete-action/evidence/api-e2e-round-1/server-changed-suite.log:810: trailing whitespace.
++    405| 
+tickets/done/team-run-offline-delete-action/evidence/api-e2e-round-1/server-changed-suite.log:838: trailing whitespace.
++- Expected: 
+tickets/done/team-run-offline-delete-action/evidence/api-e2e-round-1/server-changed-suite.log:841: trailing whitespace.
+++ Received: 
+tickets/done/team-run-offline-delete-action/evidence/api-e2e-round-1/server-changed-suite.log:846: trailing whitespace.
++    205| 
+tickets/done/team-run-offline-delete-action/evidence/api-e2e-round-1/server-changed-suite.log:857: trailing whitespace.
++- Expected: 
+tickets/done/team-run-offline-delete-action/evidence/api-e2e-round-1/server-changed-suite.log:860: trailing whitespace.
+++ Received: 
+tickets/done/team-run-offline-delete-action/evidence/api-e2e-round-1/server-changed-suite.log:865: trailing whitespace.
++    236| 
+tickets/done/team-run-offline-delete-action/evidence/api-e2e-round-1/server-changed-suite.log:972: trailing whitespace.
++    324| 
+tickets/done/team-run-offline-delete-action/evidence/api-e2e-round-1/server-changed-suite.log:991: new blank line at EOF.
+tickets/done/team-run-offline-delete-action/evidence/api-e2e-round-1/server-focused.log:279: new blank line at EOF.
+tickets/done/team-run-offline-delete-action/evidence/api-e2e-round-1/web-focused.log:60: new blank line at EOF.
+tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/durable-e2e-final.log:123: new blank line at EOF.
+tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/durable-e2e.log:123: new blank line at EOF.
+tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/live-backend.log:688: trailing whitespace.
++prisma:error 
+tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/nested-live-e2e-final-2.log:530: new blank line at EOF.
+tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/nested-live-e2e-final-3.log:573: trailing whitespace.
++- Expected: 
+tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/nested-live-e2e-final-3.log:576: trailing whitespace.
+++ Received: 
+tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/nested-live-e2e-final-3.log:594: new blank line at EOF.
+tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/nested-live-e2e-final-4.log:506: trailing whitespace.
++prisma:error 
+tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/nested-live-e2e-final-4.log:556: new blank line at EOF.
+tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/nested-live-e2e-final.log:530: new blank line at EOF.
+tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/nested-live-e2e-rerun-2.log:205: new blank line at EOF.
+tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/nested-live-e2e-rerun-3.log:530: new blank line at EOF.
+tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/nested-live-e2e-rerun.log:214: trailing whitespace.
++- Expected: 
+tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/nested-live-e2e-rerun.log:217: trailing whitespace.
+++ Received: 
+tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/nested-live-e2e-rerun.log:235: new blank line at EOF.
+tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/nested-live-e2e.log:223: new blank line at EOF.
+tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/server-focused.log:279: new blank line at EOF.
+tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/web-history-store.log:63: new blank line at EOF.
+tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1/web-strict-focused.log:40: new blank line at EOF.
+tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-2/diff-and-scope.log:50: trailing whitespace.
++ 
+tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-2/diff-and-scope.log:59: trailing whitespace.
++ 
+tickets/done/team-run-offline-delete-action/evidence/api-e2e-sr003-round-2/web-localized-accessible-name.log:40: new blank line at EOF.
+full_diff_check_result=EXPECTED_EVIDENCE_ONLY_DIAGNOSTICS
+corrected_diff_check_begin
+corrected_diff_check=PASS
+target_pre_push_validation=PASS
+remote: 
+remote: GitHub found 818 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (20 critical, 347 high, 385 moderate, 66 low). To find out more, visit:        
+remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot        
+remote: 
+To github.com-ryan:AutoByteus/autobyteus-workspace.git
+   0194fb4ff..424687b11  personal -> personal
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+target_remote_tip=424687b1189b0bf9dd0bf8b94847c672b3d2477c
+target_push=PASS
+target_post_push_status_begin
+## personal...origin/personal
+?? .article-work/
+target_post_push_status_end
