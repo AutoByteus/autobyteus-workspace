@@ -14,32 +14,8 @@ describe("team-member-run-view-projection-service import timing", () => {
     vi.doMock("../../../src/run-history/services/agent-run-view-projection-service.js", () => ({
       AgentRunViewProjectionService: class {},
     }));
-    vi.doMock("../../../src/run-history/services/team-run-history-service.js", () => ({
-      TeamRunHistoryService: class {},
-      getTeamRunHistoryService: vi.fn(),
-    }));
-    vi.doMock("../../../src/agent-team-execution/services/agent-team-run-manager.js", () => ({
-      AgentTeamRunManager: {
-        getInstance: () => ({
-          getActiveRun: () => null,
-        }),
-      },
-    }));
-    vi.doMock("../../../src/agent-team-execution/domain/team-run-context.js", () => ({
-      getRuntimeMemberContexts: () => [],
-    }));
-    vi.doMock("../../../src/agent-team-execution/domain/team-run-member-identity.js", () => ({
-      normalizeMemberRouteKey: (value: string) => value,
-    }));
-    vi.doMock("../../../src/agent-memory/services/agent-memory-location-service.js", () => ({
-      AgentMemoryLocationService: class {},
-      getAgentMemoryLocationService: vi.fn(() => ({
-        resolveTeamMemberLocationFromMetadata: () => ({
-          member: {},
-          memberRunId: "member-run",
-          memoryDir: "/tmp/member-memory",
-        }),
-      })),
+    vi.doMock("../../../src/run-history/services/team-run-execution-tree-location-service.js", () => ({
+      TeamRunExecutionTreeLocationService: class {},
     }));
     vi.doMock("../../../src/config/app-config-provider.js", () => ({
       appConfigProvider: {

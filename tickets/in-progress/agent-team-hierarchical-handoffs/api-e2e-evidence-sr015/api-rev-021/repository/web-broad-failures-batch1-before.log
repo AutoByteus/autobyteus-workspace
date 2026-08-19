@@ -1,0 +1,292 @@
+
+> autobyteus@1.4.47 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts components/mobile/__tests__/MobileUxRefinement.spec.ts components/workspace/config/__tests__/TeamRunConfigForm.spec.ts components/workspace/running/__tests__/RunningTeamRow.spec.ts components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web
+
+stderr | components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/running/__tests__/RunningTeamRow.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/__tests__/MobileUxRefinement.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/running/__tests__/RunningTeamRow.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/mobile/__tests__/MobileUxRefinement.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ components/workspace/running/__tests__/RunningTeamRow.spec.ts (4 tests | 4 failed) 11ms
+   × RunningTeamRow > renders exact-run activity independently from subscription, members, and row action 6ms
+     → Cannot read properties of undefined (reading 'children')
+   × RunningTeamRow > filters initializing task-only logical members from active running rows 1ms
+     → Cannot read properties of undefined (reading 'children')
+   × RunningTeamRow > keeps logical members with direct conversation history visible in the running sidebar 1ms
+     → Cannot read properties of undefined (reading 'children')
+   × RunningTeamRow > does not keep a settled task-only logical worker as an active row when poisoned by a task-agent run id 1ms
+     → Cannot read properties of undefined (reading 'children')
+ ❯ components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts (1 test | 1 failed) 25ms
+   × ApplicationTeamLaunchProfileEditor > repairs stale saved member overrides by exact route/id match and drops stale carry-forward overrides 25ms
+     → expected { kind: 'AGENT_TEAM', …(2) } to deeply equal { kind: 'AGENT_TEAM', …(2) }
+ ❯ components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts (3 tests | 3 failed) 17ms
+   × TeamCommunicationPanel.vue > renders compact newest-first address-based message rows with reference icons 12ms
+     → expected [] to have a length of 2 but got +0
+   × TeamCommunicationPanel.vue > shows the empty state when no exact address match exists 3ms
+     → expected 'Select a team member to view communic…' to contain 'No team messages yet'
+   × TeamCommunicationPanel.vue > opens a selected reference using the selected message and reference ids 2ms
+     → Cannot read properties of undefined (reading 'trigger')
+ ❯ components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts (4 tests | 4 failed) 11ms
+   × AgentTeamEventMonitor.vue > passes sender-id to member-name mapping to AgentEventMonitor 7ms
+     → Cannot read properties of undefined (reading 'children')
+   × AgentTeamEventMonitor.vue > passes focused member display name and avatar to AgentEventMonitor 1ms
+     → Cannot read properties of undefined (reading 'children')
+   × AgentTeamEventMonitor.vue > uses roster focus for displayed Focus history while active execution can remain on the coordinator 1ms
+     → Cannot read properties of undefined (reading 'children')
+   × AgentTeamEventMonitor.vue > does not render task-agent work packets as the logical parent conversation 2ms
+     → Cannot read properties of undefined (reading 'children')
+ ❯ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts (12 tests | 1 failed) 122ms
+   ✓ TeamRunConfigForm > places team auto approve before a collapsed accessible member override disclosure 32ms
+   ✓ TeamRunConfigForm > toggles the member override disclosure without mutating config fields 6ms
+   ✓ TeamRunConfigForm > renders runtime selector and member override entries 6ms
+   ✓ TeamRunConfigForm > loads models for the team runtime and syncs runtime catalogs for explicit member runtimes 7ms
+   ✓ TeamRunConfigForm > changes runtime kind and reloads runtime-scoped models 6ms
+   ✓ TeamRunConfigForm > renders Codex effort-only reasoning defaults visibly on the team-global config path 16ms
+   ✓ TeamRunConfigForm > starts team-global advanced collapsed for OpenAI Responses off defaults 18ms
+   ✓ TeamRunConfigForm > prunes inherited member-only llmConfig overrides when the global model changes 5ms
+   ✓ TeamRunConfigForm > prunes inherited member llmConfig overrides when the global runtime changes 6ms
+   × TeamRunConfigForm > renders nested leaf overrides under their subteam group and keeps route-key override identity 11ms
+     → expected undefined to be 'program_manager' // Object.is equality
+   ✓ TeamRunConfigForm > renders selected existing team run configuration as read-only while keeping member overrides inspectable 5ms
+   ✓ TeamRunConfigForm > marks historical team member config as missing when read-only metadata has null llmConfig 4ms
+ ❯ components/mobile/__tests__/MobileUxRefinement.spec.ts (15 tests | 1 failed) 133ms
+   ✓ mobile Round 4 UX refinements > shows mixed-success reachability instead of claiming the desktop is unreachable 11ms
+   ✓ mobile Round 4 UX refinements > uses concise configure-only mobile setup without first-message entry or launch summary 22ms
+   ✓ mobile Round 4 UX refinements > removes team launch first-message target from setup while keeping searchable team selection 11ms
+   ✓ mobile Round 4 UX refinements > keeps mobile launch disabled instead of silently choosing a model for unconfigured agents 6ms
+   ✓ mobile Round 4 UX refinements > consumes a single-use setup intent so selected agents open visible setup preselected 8ms
+   ✓ mobile Round 4 UX refinements > binds agent Auto approve tools to the launch config and created context 8ms
+   × mobile Round 4 UX refinements > binds team Auto approve tools to the launch config, team context, and member configs 12ms
+     → Cannot read properties of undefined (reading 'values')
+   ✓ mobile Round 4 UX refinements > lists launch workspaces from the workspace store and loads an unlisted server path into the active config 14ms
+   ✓ mobile Round 4 UX refinements > keeps context visibility adjacent to the mobile composer send decision 10ms
+   ✓ mobile Round 4 UX refinements > keeps mobile Files browse-first while preserving secondary filters and deliberate deep search 10ms
+   ✓ mobile Round 4 UX refinements > renders Activity as a compact digest without secondary issue filters or redundant headers 4ms
+   ✓ mobile Round 4 UX refinements > renders compaction rows in the mobile run Activity list and count 3ms
+   ✓ mobile Round 4 UX refinements > opens mobile Files from run root-path metadata with an empty workspace store 4ms
+   ✓ mobile Round 4 UX refinements > releases the mobile Files live session when the visible context changes 7ms
+   ✓ mobile Round 4 UX refinements > keeps interactive Terminal and VNC out of mobile refinement surfaces 0ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 14 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/mobile/__tests__/MobileUxRefinement.spec.ts > mobile Round 4 UX refinements > binds team Auto approve tools to the launch config, team context, and member configs
+TypeError: Cannot read properties of undefined (reading 'values')
+ ❯ components/mobile/__tests__/MobileUxRefinement.spec.ts:568:30
+    566|     expect(activeTeam?.config.autoExecuteTools).toBe(true);
+    567|     expect(
+    568|       Array.from(activeTeam?.leafAgentContextsByRouteKey.values() ?? […
+       |                              ^
+    569|         (member) => member.config.autoExecuteTools,
+    570|       ),
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/14]⎯
+
+ FAIL  components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts > ApplicationTeamLaunchProfileEditor > repairs stale saved member overrides by exact route/id match and drops stale carry-forward overrides
+AssertionError: expected { kind: 'AGENT_TEAM', …(2) } to deeply equal { kind: 'AGENT_TEAM', …(2) }
+
+- Expected
++ Received
+
+@@ -6,19 +6,19 @@
+    },
+    "kind": "AGENT_TEAM",
+    "memberProfiles": [
+      {
+        "agentDefinitionId": "bundle-agent__researcher",
+-       "llmModelIdentifier": "claude-sonnet",
+-       "memberName": "researcher",
+-       "memberRouteKey": "researcher",
+-       "runtimeKind": "claude_agent_sdk",
++       "displayName": "researcher",
++       "llmModelIdentifier": "",
++       "memberAddress": "/researcher",
++       "runtimeKind": "",
+      },
+      {
+        "agentDefinitionId": "bundle-agent__writer-new",
++       "displayName": "writer",
+        "llmModelIdentifier": "",
+-       "memberName": "writer",
+-       "memberRouteKey": "writer",
++       "memberAddress": "/writer",
+        "runtimeKind": "",
+      },
+    ],
+  }
+
+ ❯ components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts:182:32
+    180|       .find((payload) => payload.memberProfiles?.length === 2 && paylo…
+    181| 
+    182|     expect(repairedDraftEvent).toEqual({
+       |                                ^
+    183|       kind: 'AGENT_TEAM',
+    184|       defaults: {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/14]⎯
+
+ FAIL  components/workspace/running/__tests__/RunningTeamRow.spec.ts > RunningTeamRow > renders exact-run activity independently from subscription, members, and row action
+ FAIL  components/workspace/running/__tests__/RunningTeamRow.spec.ts > RunningTeamRow > filters initializing task-only logical members from active running rows
+ FAIL  components/workspace/running/__tests__/RunningTeamRow.spec.ts > RunningTeamRow > keeps logical members with direct conversation history visible in the running sidebar
+ FAIL  components/workspace/running/__tests__/RunningTeamRow.spec.ts > RunningTeamRow > does not keep a settled task-only logical worker as an active row when poisoned by a task-agent run id
+TypeError: Cannot read properties of undefined (reading 'children')
+ ❯ flattenActiveExecutionMemberNodesForDisplay utils/teamActiveExecutionMembers.ts:40:52
+     38| export const flattenActiveExecutionMemberNodesForDisplay = (
+     39|   team: AgentTeamContext,
+     40|   nodes: readonly TeamMemberNode[] = team.rootTeam.children,
+       |                                                    ^
+     41|   depth = 0,
+     42| ): TeamActiveExecutionMemberEntry[] => nodes.flatMap((node) => {
+ ❯ ComputedRefImpl.fn components/workspace/running/RunningTeamRow.vue:100:3
+ ❯ refreshComputed ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:397:28
+ ❯ ComputedRefImpl.get value [as value] ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1711:5
+ ❯ unref ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1536:45
+ ❯ Object.get ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1542:64
+ ❯ Proxy._sfc_render components/workspace/running/RunningTeamRow.vue:47:26
+ ❯ renderComponentRoot ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:4499:16
+ ❯ ReactiveEffect.componentUpdateFn [as fn] ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:6007:46
+ ❯ ReactiveEffect.run ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:243:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/14]⎯
+
+ FAIL  components/workspace/config/__tests__/TeamRunConfigForm.spec.ts > TeamRunConfigForm > renders nested leaf overrides under their subteam group and keeps route-key override identity
+AssertionError: expected undefined to be 'program_manager' // Object.is equality
+
+- Expected: 
+"program_manager"
+
++ Received: 
+undefined
+
+ ❯ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts:510:46
+    508| 
+    509|     expect(items).toHaveLength(3)
+    510|     expect(items[0].props('memberRouteKey')).toBe('program_manager')
+       |                                              ^
+    511|     expect(itemTexts).toHaveLength(2)
+    512|     expect(itemTexts[0].props('memberName')).toBe('review_lead')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/14]⎯
+
+ FAIL  components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts > AgentTeamEventMonitor.vue > passes sender-id to member-name mapping to AgentEventMonitor
+ FAIL  components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts > AgentTeamEventMonitor.vue > passes focused member display name and avatar to AgentEventMonitor
+ FAIL  components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts > AgentTeamEventMonitor.vue > uses roster focus for displayed Focus history while active execution can remain on the coordinator
+ FAIL  components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts > AgentTeamEventMonitor.vue > does not render task-agent work packets as the logical parent conversation
+TypeError: Cannot read properties of undefined (reading 'children')
+ ❯ findLocation services/agentStreaming/teamTaskExecutionTree.ts:31:43
+     29|   team: AgentTeamContext,
+     30|   address: TeamExecutionAddress,
+     31|   nodes: TeamMemberNode[] = team.rootTeam.children,
+       |                                           ^
+     32| ): TeamExecutionNodeLocation | null => {
+     33|   for (let index = 0; index < nodes.length; index += 1) {
+ ❯ findTeamExecutionNode services/agentStreaming/teamTaskExecutionTree.ts:49:29
+ ❯ ComputedRefImpl.fn components/workspace/team/AgentTeamEventMonitor.vue:88:17
+ ❯ refreshComputed ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:397:28
+ ❯ ComputedRefImpl.get value [as value] ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1711:5
+ ❯ ComputedRefImpl.fn components/workspace/team/AgentTeamEventMonitor.vue:91:50
+ ❯ refreshComputed ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:397:28
+ ❯ ComputedRefImpl.get value [as value] ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1711:5
+ ❯ unref ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1536:45
+ ❯ Object.get ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1542:64
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/14]⎯
+
+ FAIL  components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts > TeamCommunicationPanel.vue > renders compact newest-first address-based message rows with reference icons
+AssertionError: expected [] to have a length of 2 but got +0
+
+- Expected
++ Received
+
+- 2
++ 0
+
+ ❯ components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts:94:18
+     92| 
+     93|     const rows = wrapper.findAll('[data-test="team-communication-messa…
+     94|     expect(rows).toHaveLength(2);
+       |                  ^
+     95|     expect(rows[0].text()).toContain('Assignment');
+     96|     expect(rows[0].text()).toContain('from solution_designer');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/14]⎯
+
+ FAIL  components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts > TeamCommunicationPanel.vue > shows the empty state when no exact address match exists
+AssertionError: expected 'Select a team member to view communic…' to contain 'No team messages yet'
+
+Expected: "No team messages yet"
+Received: "Select a team member to view communication."
+
+ ❯ components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts:120:28
+    118|     const wrapper = mountSubject({ focusedAddress: taskTeamChild('task…
+    119| 
+    120|     expect(wrapper.text()).toContain('No team messages yet');
+       |                            ^
+    121|     expect(wrapper.find('[data-test="team-communication-message-row"]'…
+    122|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/14]⎯
+
+ FAIL  components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts > TeamCommunicationPanel.vue > opens a selected reference using the selected message and reference ids
+TypeError: Cannot read properties of undefined (reading 'trigger')
+ ❯ components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts:142:91
+    140|     const wrapper = mountSubject();
+    141|     await wrapper.vm.$nextTick();
+    142|     await wrapper.findAll('button').find((button) => button.text().tri…
+       |                                                                                           ^
+    143| 
+    144|     expect(wrapper.get('[data-test="reference-viewer"]').text()).toBe(…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/14]⎯
+
+
+ Test Files  6 failed (6)
+      Tests  14 failed | 25 passed (39)
+   Start at  06:10:56
+   Duration  6.32s (transform 3.14s, setup 29.41s, collect 1.64s, tests 320ms, environment 1.95s, prepare 1.12s)
+
+ ELIFECYCLE  Command failed with exit code 1.

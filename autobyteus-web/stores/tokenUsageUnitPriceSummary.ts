@@ -5,6 +5,8 @@ import type {
   TokenUsageUpdatedPayload,
 } from '~/types/tokenUsageMeter';
 
+type TokenUsageUnitPricePayload = Omit<TokenUsageUpdatedPayload, 'run_id'>;
+
 const PRICE_COMPARISON_EPSILON = 1e-9;
 
 export const notApplicableUnitPrice = (): TokenUsageUnitPriceSummary => ({
@@ -75,7 +77,7 @@ const pricesEqual = (left: number | null, right: number | null): boolean => (
 );
 
 const eventUnitPriceSummary = (
-  payload: TokenUsageUpdatedPayload,
+  payload: TokenUsageUnitPricePayload,
   tokens: number,
   pricePerMillion: number | null | undefined,
 ): TokenUsageUnitPriceSummary => {
@@ -123,7 +125,7 @@ const genericCacheCreationTokens = (total: number, fiveMinute: number, oneHour: 
 
 export const mergeUnitPrices = (
   current: TokenUsageUnitPrices,
-  payload: TokenUsageUpdatedPayload,
+  payload: TokenUsageUnitPricePayload,
 ): TokenUsageUnitPrices => ({
   standardInput: mergeUnitPriceSummary(current.standardInput, eventUnitPriceSummary(payload, payload.standard_input_tokens ?? 0, payload.input_price_per_million)),
   cacheReadInput: mergeUnitPriceSummary(current.cacheReadInput, eventUnitPriceSummary(payload, payload.cache_read_input_tokens ?? 0, payload.cached_input_read_price_per_million)),

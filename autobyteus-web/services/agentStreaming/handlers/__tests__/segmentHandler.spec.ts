@@ -155,7 +155,7 @@ describe('segmentHandler', () => {
           metadata: {
             tool_name: 'send_message_to',
             arguments: {
-              recipient_name: 'Student',
+              recipient_address: 'Student',
               content: 'Question for you',
             },
           },
@@ -166,7 +166,7 @@ describe('segmentHandler', () => {
       const segment = findSegmentById(mockContext, 'send-msg-1') as any;
       expect(segment.toolName).toBe('send_message_to');
       expect(segment.arguments).toEqual({
-        recipient_name: 'Student',
+        recipient_address: 'Student',
         content: 'Question for you',
       });
       expect(useAgentActivityStore().getToolActivities('test-agent-id')).toEqual([
@@ -174,7 +174,7 @@ describe('segmentHandler', () => {
           invocationId: 'send-msg-1',
           toolName: 'send_message_to',
           arguments: {
-            recipient_name: 'Student',
+            recipient_address: 'Student',
             content: 'Question for you',
           },
         }),
@@ -252,7 +252,7 @@ describe('segmentHandler', () => {
         metadata: {
           tool_name: 'send_message_to',
           arguments: {
-            recipient_name: 'Student',
+            recipient_address: 'Student',
             content: 'hello',
           },
         },
@@ -266,7 +266,7 @@ describe('segmentHandler', () => {
       expect(aiMessage.segments[0].type).toBe('tool_call');
       expect(aiMessage.segments[0].toolName).toBe('send_message_to');
       expect(aiMessage.segments[0].arguments).toEqual({
-        recipient_name: 'Student',
+        recipient_address: 'Student',
         content: 'hello',
       });
       expect(useAgentActivityStore().getToolActivities('test-agent-id')).toHaveLength(1);
@@ -280,7 +280,7 @@ describe('segmentHandler', () => {
           segment_type: 'tool_call',
           metadata: {
             tool_name: 'send_message_to',
-            arguments: { recipient_name: 'Student', content: 'hello' },
+            arguments: { recipient_address: 'Student', content: 'hello' },
           },
         },
         mockContext,
@@ -360,12 +360,13 @@ describe('segmentHandler', () => {
       expect(segment.originalContent).toBe('hello');
     });
 
-    it('creates a synthetic text segment when content arrives before segment start', () => {
+    it('creates a typed late-subscriber segment when canonical content arrives before segment start', () => {
       handleSegmentContent(
         {
           id: 'seg-fallback',
           turn_id: 'turn-1',
           delta: 'hello from fallback',
+          segment_type: 'text',
         },
         mockContext,
       );
@@ -375,9 +376,15 @@ describe('segmentHandler', () => {
       expect(aiMessage.segments).toHaveLength(1);
       expect(aiMessage.segments[0].type).toBe('text');
       expect(aiMessage.segments[0].content).toBe('hello from fallback');
+      expect(getStreamSegmentIdentity(aiMessage.segments[0])).toEqual({
+        turnId: 'turn-1',
+        id: 'seg-fallback',
+        segmentType: 'text',
+        presentationComplete: false,
+      });
     });
 
-    it('creates separate reasoning and tool segments when ids are reused across types', () => {
+    it('rejects a conflicting type for the same turn and segment id without mutation', () => {
       handleSegmentContent(
         {
           id: 'seg-shared',
@@ -399,11 +406,11 @@ describe('segmentHandler', () => {
       );
 
       const aiMessage = mockContext.conversation.messages[0] as any;
-      expect(aiMessage.segments).toHaveLength(2);
+      expect(aiMessage.segments).toHaveLength(1);
       expect(aiMessage.segments[0].type).toBe('think');
       expect(aiMessage.segments[0].content).toBe('reasoning burst');
-      expect(aiMessage.segments[1].type).toBe('terminal_command');
-      expect(aiMessage.segments[1].command).toBe('echo shared');
+      expect(getStreamSegmentIdentity(aiMessage.segments[0])?.segmentType).toBe('reasoning');
+      expect(useAgentActivityStore().getToolActivities('test-agent-id')).toEqual([]);
     });
 
     it('preserves text-tool-text order when text segment ids differ around a tool', () => {
@@ -483,7 +490,7 @@ describe('segmentHandler', () => {
         mockContext,
       );
 
-      const segment = findSegmentById(mockContext, 'reasoning-block:test:1')!;
+      const segment = (mockContext.conversation.messages[0] as any).segments[0];
       expect(getStreamSegmentIdentity(segment)?.presentationComplete).toBe(false);
 
       handleSegmentEnd(
@@ -495,7 +502,7 @@ describe('segmentHandler', () => {
       );
 
       expect(getStreamSegmentIdentity(segment)?.presentationComplete).toBe(true);
-      expect(findSegmentById(mockContext, 'reasoning-block:test:1')).toBe(segment);
+      expect((mockContext.conversation.messages[0] as any).segments[0]).toBe(segment);
     });
 
     it('retains write_file content when the segment ends', () => {

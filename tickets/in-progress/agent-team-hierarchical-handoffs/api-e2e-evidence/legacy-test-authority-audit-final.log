@@ -1,0 +1,17 @@
+Runtime E2E legacy selector audit (expected: no matches)
+AUDIT_RESULT=PASS_NO_MATCHES
+
+Removed-field wording audit (remaining hits must be explicit negative assertions or test descriptions):
+autobyteus-server-ts/tests/integration/api/runtime-selection-top-level.integration.test.ts:966:        expect(coordinatorCreateConfig.memberTeamContext).not.toHaveProperty("allowedRecipientNames");
+autobyteus-server-ts/tests/unit/agent-tools/task-delegation/task-delegation-autobyteus-context.test.ts:29:  it("projects only primitive caller addressing without a parallel member roster", () => {
+autobyteus-server-ts/tests/unit/agent-tools/task-delegation/task-delegation-autobyteus-context.test.ts:46:    expect(managed).not.toHaveProperty("allowedRecipientNames");
+autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-manager.test.ts:142:    expect(forwarded.sender.participant).not.toHaveProperty("representedSubTeam");
+autobyteus-server-ts/tests/unit/agent-team-execution/member-run-instruction-composer.test.ts:67:  it("does not inline handoff rule text or render a flat recipient roster", () => {
+autobyteus-server-ts/tests/unit/agent-team-execution/member-run-instruction-composer.test.ts:77:    expect(composition.runtimeInstruction).not.toContain("Team membership roster");
+autobyteus-server-ts/tests/unit/agent-team-execution/member-run-instruction-composer.test.ts:78:    expect(composition.runtimeInstruction).not.toContain("allowedRecipientNames");
+autobyteus-server-ts/tests/unit/agent-team-execution/member-run-instruction-composer.test.ts:81:    expect(composition.runtimeInstruction).not.toContain("Use recipient_name for one logical roster recipient");
+autobyteus-server-ts/tests/unit/agent-team-execution/inter-agent-message-delivery-intent-builder.test.ts:55:    expect(result.intent).not.toHaveProperty("representedSubTeam");
+autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts:262:  it("advertises strict logical and exact-run selectors without a flat recipient roster", async () => {
+autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts:322:    expect(built.agentConfig.systemPrompt).not.toContain("roster recipients");
+autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts:215:  it("enables hierarchical Team and exact-run send_message_to without a static roster", async () => {
+autobyteus-server-ts/tests/unit/agent-execution/backends/codex/team-communication/team-member-codex-thread-bootstrap-strategy.test.ts:90:    expect(preparation.developerInstructions).not.toContain("roster recipient");

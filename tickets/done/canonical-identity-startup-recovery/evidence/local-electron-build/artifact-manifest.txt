@@ -1,0 +1,23 @@
+Local Electron build artifact manifest
+Source revision: 5a9ed50679547f387ef208be3e5e98141f81aaf1
+Build command: NO_TIMESTAMP=1 APPLE_TEAM_ID= pnpm -C autobyteus-web build:electron:mac
+Build result: PASS (exit status 0)
+Platform: Darwin arm64
+Application version: 1.4.52
+Bundle: autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+Executable: AutoByteus
+Executable inspection: autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus: Mach-O 64-bit executable arm64
+Signing/notarization: intentionally skipped for local build
+DMG verification: PASS
+ZIP verification: PASS
+
+-rw-r--r--@ 1 normy  staff   442M Aug 18 13:04:06 2026 autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.52.dmg
+-rw-r--r--@ 1 normy  staff   472K Aug 18 13:04:09 2026 autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.52.dmg.blockmap
+-rw-r--r--@ 1 normy  staff   436M Aug 18 13:07:34 2026 autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.52.zip
+-rw-r--r--@ 1 normy  staff   460K Aug 18 13:07:37 2026 autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.52.zip.blockmap
+
+9896fa784688a81b82f20ddaedeb4b2ab4a9e686740dd131ddd8445a24cc9c91  autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.52.dmg
+6594c85457b797590a8a6ac6d7e262802cb2a1a9b69ff3293bf977bdb85206ff  autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.52.dmg.blockmap
+0fad2e4a26c31370db132cdbb2dff75f94977b1500ad8f0f4aabd7afc4976c4b  autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.52.zip
+01fcaffd33ec515276c1042b3736e11a9568cd8b46bfb2c971a0f1a17daa1581  autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.52.zip.blockmap
+Recorded: 2026-08-18T13:08:26+02:00

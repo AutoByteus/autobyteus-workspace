@@ -19,7 +19,6 @@ export type { IWebSocketClient, WebSocketClientOptions, WebSocketClientEvents } 
 export type {
   ServerMessage,
   ClientMessage,
-  TeamClientMessage,
   SegmentType,
   SegmentStartPayload,
   SegmentContentPayload,

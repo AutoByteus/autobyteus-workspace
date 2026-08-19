@@ -2,72 +2,93 @@
 
 ## Scope
 
-Describes how streaming model output is parsed and transformed before being persisted and emitted.
+Describes how provider stream output becomes canonical Agent events before
+persistence, Team/application adaptation, and WebSocket projection.
 
 ## Building Blocks
 
-- Runtime streaming handlers:
-  - `src/services/agent-streaming/agent-stream-handler.ts`
-  - `src/services/agent-streaming/agent-team-stream-handler.ts`
-- Processor pipeline registration:
-  - `src/startup/agent-customization-loader.ts`
-- Parser and formatter dependencies from `autobyteus-ts`.
+- provider converters under `src/agent-execution/backends/*/events`
+- `src/agent-execution/domain/agent-run.ts`
+- `src/agent-execution/events/default-agent-run-event-pipeline.ts`
+- `src/agent-execution/events/processors/segment-lifecycle`
+- `src/agent-execution/events/processors/file-change`
+- `src/agent-memory`
+- `src/agent-team-execution/services/team-agent-event-adapter.ts`
+- `src/services/agent-streaming`
+- browser handlers under `autobyteus-web/services/agentStreaming`
 
 ## Pipeline
 
-1. User message enters runtime manager.
-2. Input processors apply transformations.
-3. Model stream events are parsed.
-4. Tool invocation/result processors may transform application/runtime artifacts.
-5. Response processors persist/normalize outbound content.
-6. Transport layer emits stream chunks and completion events.
+```text
+provider-native event
+  -> provider converter (minimal source AgentRunEvent)
+  -> AgentRunEventDispatchQueue (one ordered lane per AgentRun)
+  -> run-owned lifecycle transformers
+  -> derived-event processors
+  -> canonical listener fanout
+       -> memory/raw traces/history
+       -> file-change projection
+       -> application producer
+       -> stateless Team adaptation and strict Team wire projection
+       -> standalone wire projection
+  -> WebSocket presentation egress
+  -> strict browser parser and state mutation
+```
 
-The run-scoped web Artifacts tab is intentionally separate from this
-customization pipeline: runtime adapters first emit base normalized
-`AgentRunEvent` batches, then `AgentRunEventPipeline` appends derived
-`FILE_CHANGE` events for explicit write/edit/generated-output semantics before
-subscriber fan-out. `RunFileChangeService` consumes those `FILE_CHANGE` events
-for projection/persistence instead of deriving artifacts from generic
-tool-result processors.
+Providers do not emit application-facing Team identity or repair consumer state.
+AutoByteus normalizes native `segment_id` once to internal `payload.id`; Codex
+and Claude also reach the common boundary using `id`. Missing provider identity
+stays missing and is rejected by common lifecycle admission; no runtime may
+manufacture a fallback ID.
 
-Native AutoByteus team events follow the same pipeline boundary. The
-AutoByteus team backend owns one native event bridge per active team run,
-converts/enriches each native member event once, runs that event through the
-pipeline, and only then fans the processed source/derived events out to all
-server subscribers. This preserves stateful file-change ordering for
-`write_file` events and avoids duplicate derivation when multiple websocket/API
-subscribers are attached.
+## Canonical Segment Boundary
 
-Nested mixed-team events use the same processed-event boundary but prefix child
-team events with the parent subteam member path before fan-out. The canonical
-source identity is `TeamRunEvent.sourcePath`; the WebSocket transport derives
-`source_route_key` from that path and may include the deprecated
-`sub_team_node_name` only as a display alias. Downstream processors and
-projections must use path/route identity, not the one-segment alias, when
-attributing nested leaf output.
+Each `AgentRun` owns one live, non-persisted `AgentSegmentLifecycleState` keyed
+by `{turnId,segmentId}`. The finite segment type is established by
+`SEGMENT_START`. Provider content and end remain minimal; the first pipeline
+transformer validates their exact source shape, derives the start-owned type
+onto canonical content, and emits a type-less canonical end. Invalid lifecycle
+input becomes `AGENT_SEGMENT_LIFECYCLE_INVALID` turn/runtime diagnostic evidence
+and produces no segment mutation.
 
-Team Communication references use the accepted `INTER_AGENT_MESSAGE` as
-processor input. The raw message payload carries `message_id`, sender/receiver
-identity, natural `content`, `message_type`, and structured reference metadata
-from explicit `payload.reference_files`. Message prose is not scanned for path
-candidates: absolute paths mentioned only in `content`, Markdown decoration,
-frontend chat rendering, and user clicks are not reference-declaration
-authorities. `TeamCommunicationMessageProcessor` emits one normalized
-`TEAM_COMMUNICATION_MESSAGE` event per accepted message, and
-`TeamCommunicationService` persists those derived events once per team run in
-`agent_teams/<teamRunId>/team_communication_messages.json`. The persisted
-projection stores `teamRunId` once at the projection level and each message
-stores `senderAddress` and `receiverAddress` as canonical
-`ConversationTargetAddress` values. Parent-to-representative,
-child-to-parent, task-team, and task-agent communication retain their concrete
-runtime scope through address segments instead of flat sender/receiver member
-fields or represented-subteam wrappers. The frontend projects focused-member
-sent/received message views in the Team tab from `TEAM_COMMUNICATION_MESSAGE`
-by exact normalized address equality, while raw `INTER_AGENT_MESSAGE` remains
-the conversation display source. Old flat projection files are handled by the
-registered app-data migration, not by runtime read fallback. Recipient runtime
-input may include one generated **Reference files:** block from the structured
-list, while the original
-inter-agent message content remains natural and self-contained. Runtime
-diagnostics for this path use the `[team-communication]` prefix and log concise
-event-level metadata rather than full message content.
+All post-pipeline consumers therefore receive only:
+
+- start: exact ID, turn, finite type, optional JSON metadata;
+- content: exact ID, turn, the admitted type, and delta; or
+- end: exact ID, turn, terminal metadata, with no repeated type.
+
+Turn completion/interruption, turn-terminal error, runtime-global terminal
+error, offline/error status, and accepted AgentRun termination clear the
+applicable live state. Partial lifecycle is not persisted or resumed.
+
+## Derived Events And Persistence
+
+`FILE_CHANGE` derivation is part of the canonical pipeline rather than a
+WebSocket/tool-result side path. `RunFileChangeService` consumes derived events
+for persistence. `RuntimeMemoryEventAccumulator` consumes exact canonical
+segment and tool lifecycle events; it does not derive turn/segment identity,
+synthesize missing starts, or recover text from end payloads.
+
+Team Communication separately consumes accepted inter-Agent delivery events.
+Its persisted projection stores exact `TeamExecutionAddress` sender/receiver
+values and structured `reference_files`; natural prose is never scanned for
+reference authority.
+
+## Team And Browser Projection
+
+A Team member handle verifies its real AgentRun binding and supplies one
+`TeamAgentExecutionBinding`. `TeamAgentEventAdapter` is stateless: it maps
+canonical Agent events and exact error evidence but performs no segment
+correlation. The strict Team projector emits `agent_execution` plus the canonical
+payload through `@autobyteus/team-stream-contracts`.
+
+Standalone and Team browser handlers use the same compound turn/segment
+identity. The stored identity retains canonical type, existing mutation requires
+that type to agree, and typed canonical content can initialize a late subscriber.
+Missing/unknown types, ID-only lookup, type defaults, serialized type-plus-ID
+lookup keys, and consumer-side missing-start synthesis are not supported.
+
+WebSocket content cadence is presentation-only. It coalesces adjacent content
+only when every payload field except `delta` is deeply equal, preserving exact
+execution, turn, segment, and type identity. Lifecycle, persistence, and other
+subscribers remain unbuffered.

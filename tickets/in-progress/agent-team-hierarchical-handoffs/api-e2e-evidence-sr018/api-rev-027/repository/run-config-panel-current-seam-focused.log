@@ -1,0 +1,37 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/config/__tests__/RunConfigPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > renders placeholder when nothing selected 6ms
+ ✓ components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > renders Agent Form when Agent Template set 6ms
+ ✓ components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > renders Team Form when Team Template set 4ms
+ ✓ components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > triggers team run on button click when launch readiness passes 8ms
+ ✓ components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > loads a pending New workspace path before creating an agent run 5ms
+ ✓ components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > blocks agent run creation when pending New workspace loading fails 4ms
+ ✓ components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > allows Run Agent with a non-empty pending New path even before it is preloaded 4ms
+ ✓ components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > loads a pending New workspace path before creating a team run 4ms
+ ✓ components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > disables team run and shows the blocking message when mixed-runtime readiness fails 5ms
+ ✓ components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > disables team run when workspace is missing 3ms
+ ✓ components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > disables agent run when workspace is missing 2ms
+ ✓ components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > keeps draft agent configuration editable for workspace selection events 6ms
+ ✓ components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > keeps draft team configuration editable for workspace selection events 4ms
+ ✓ components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > returns to event view from selection-mode config header action 4ms
+ ✓ components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > passes read-only mode to selected existing run configuration and ignores workspace edit events 2ms
+ ✓ components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > passes read-only mode to selected existing team configuration and ignores workspace edit events 84ms
+
+ Test Files  1 passed (1)
+      Tests  16 passed (16)
+   Start at  09:11:57
+   Duration  5.76s (transform 3.11s, setup 4.81s, collect 237ms, tests 152ms, environment 146ms, prepare 151ms)
+

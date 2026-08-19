@@ -1,0 +1,6 @@
+# API-REV-002 primary final-image runtime resolution
+command=docker run --rm --network none --entrypoint node --workdir /app/autobyteus-server-ts <api-owned-image> --input-type=module -e <assertion-probe>
+started_utc=2026-08-18T13:21:47Z
+{"result":"PASS","network":"none","workspaceLink":"../../../autobyteus-team-stream-contracts","packageUrl":"file:///app/autobyteus-team-stream-contracts/dist/index.js","parsedType":"SEND_MESSAGE","parsedContent":"api-rev-002","zodPath":"/app/node_modules/.pnpm/zod@4.3.6/node_modules/zod/index.cjs"}
+exit_status=0
+finished_utc=2026-08-18T13:21:48Z

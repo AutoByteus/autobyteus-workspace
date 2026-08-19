@@ -1,0 +1,14 @@
+finding=CR-F-043
+owned_residue_removed=true
+residue_exists_after=false
+empty_owned_parent_removed=true
+owned_port_60235=ABSENT
+owned_port_31235=ABSENT
+protected_port_60004=ABSENT_UNTOUCHED
+protected_port_31004=ABSENT_UNTOUCHED
+operational_database_action=NONE
+operational_database_inspection=NONE
+protected_stack_action=NONE
+stashes_action=NONE
+delivery_backup_action=NONE
+automatic_rollback_or_repair=NONE

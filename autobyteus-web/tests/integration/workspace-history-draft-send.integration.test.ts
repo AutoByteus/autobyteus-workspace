@@ -28,6 +28,16 @@ const {
     } as Record<string, any>,
     fetchAllWorkspaces: vi.fn().mockResolvedValue(undefined),
     createWorkspace: vi.fn().mockResolvedValue('ws-1'),
+    resolveWorkspaceMetadataByRootPath: vi.fn(async (rootPath: string) => (
+      rootPath === '/tmp/workspace-a'
+        ? {
+            workspaceId: 'ws-1',
+            workspaceRootPath: rootPath,
+            displayName: 'workspace-a',
+            kind: 'filesystem',
+          }
+        : null
+    )),
   },
   windowNodeContextStoreMock: {
     waitForBoundBackendReady: vi.fn().mockResolvedValue(true),
@@ -111,7 +121,7 @@ describe('workspace history + draft send integration', () => {
 
     mutateMock.mockResolvedValue({
       data: {
-        createAgentRun: {
+        prepareAgentRun: {
           success: true,
           message: 'ok',
           runId: 'run-001',

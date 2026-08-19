@@ -1,0 +1,19 @@
+HEAD=d980e000fd7e1282178b2effc85a633255793ea6
+production_source_dirty_paths:
+round8_test_diff_check:
+diff_check_exit=0
+canonical_artifacts:
+present tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-coverage-investigation.md
+present tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md
+present tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-revision-record.md
+present tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr012/task-agent-nested-delegation-failure-final.log
+present tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr012/task-agent-nested-delegation-failure-analysis.log
+present tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr012/dirty-unit-round8-final-halted.log
+revision_lineage:
+16:| API-REV-008 | `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md`; Round 8 | SR-012; ARCH-REV-007; IR-008; CRR-014; CRR-015 | Fail / 29% (API-REV-007) | Fail / 32% |
+187:### API-REV-008 — Termination test boundary passes; active task-Agent nested delegation fails
+190:- Triggering finding or scenario IDs: resolved `API-F-003`; new `API-F-004`; `SR012-TERMINATION-001`; `SR012-TASK-NESTED-001`.
+194:- Scenarios added, changed, removed, or rechecked: `API-F-003` resolves at 6/6 through TeamRun/backend with zero registry calls. The exact 25-file dirty-unit set passes 24 files / 224 tests; the remaining two failures both demonstrate `API-F-004`. No entire test file was removed.
+195:- Commands, environment, fixture, or broader-validation delta: project-owned `.env.test`/Prisma/Vitest; focused `API-F-004` command passes 30/32; exact unit set passes 224/226; a contract/source/context audit shows the task runtime correctly projects exact task AgentRun identity before the mapper rejects it against the persistent node run ID. Migration, integration/API/E2E, frontend, build, broader deterministic, provider, and mandatory live execution were deferred after the critical failure.
+206:- Current result and confidence: `Fail / 32%`.
+207:- New or remaining failure IDs: `API-F-004` open. All remaining migration/application/frontend/API/E2E/provider/lifecycle and three live rows remain outstanding, not passed or skipped.

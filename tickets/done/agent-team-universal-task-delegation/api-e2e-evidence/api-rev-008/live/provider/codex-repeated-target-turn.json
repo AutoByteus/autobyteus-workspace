@@ -1,0 +1,1906 @@
+{
+  "teamRunId": "utd_root_team_api_rev_008_1786830349955_45bb7b4ee1014c9c9f9ea66ea5e30e8c",
+  "agentRunId": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+  "prompt": "Delegate exactly one new formal task to recipient_address /worker with description Return E2E_DIRECT_TASK_RESULT_42 for second identity proof. Wait for submission and accept it.",
+  "startedAt": "2026-08-15T21:52:08.885Z",
+  "durationMs": 60122,
+  "sent": true,
+  "terminalAt": {
+    "type": "TURN_COMPLETED",
+    "atMs": 59068
+  },
+  "websocketError": null,
+  "observations": [
+    {
+      "atMs": 27,
+      "type": "CONNECTED",
+      "agentRunId": null,
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": null
+    },
+    {
+      "atMs": 27,
+      "type": "TEAM_EXECUTION_VIEW_SNAPSHOT",
+      "agentRunId": null,
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": null
+    },
+    {
+      "atMs": 27,
+      "type": "TEAM_RUN_LIFECYCLE",
+      "agentRunId": null,
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": null
+    },
+    {
+      "atMs": 28,
+      "type": "MEMBER_INPUT_MESSAGE",
+      "agentRunId": null,
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": null
+    },
+    {
+      "atMs": 37,
+      "type": "TURN_STARTED",
+      "agentRunId": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": null
+    },
+    {
+      "atMs": 1633,
+      "type": "SEGMENT_START",
+      "agentRunId": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "reasoning",
+      "toolName": null
+    },
+    {
+      "atMs": 1633,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "reasoning",
+      "toolName": null
+    },
+    {
+      "atMs": 2319,
+      "type": "SEGMENT_END",
+      "agentRunId": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": null
+    },
+    {
+      "atMs": 2319,
+      "type": "SEGMENT_START",
+      "agentRunId": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2319,
+      "type": "TOOL_EXECUTION_STARTED",
+      "agentRunId": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": "delegate_task"
+    },
+    {
+      "atMs": 2512,
+      "type": "TASK_DELEGATION_EVENT",
+      "agentRunId": null,
+      "status": null,
+      "code": null,
+      "taskEvent": "TASK_AGENT_ACTIVATED",
+      "taskId": "task_d45629f981304938b0bd639741c50d2b",
+      "segmentType": null,
+      "toolName": null
+    },
+    {
+      "atMs": 2514,
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "agentRunId": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": "delegate_task"
+    },
+    {
+      "atMs": 2515,
+      "type": "SEGMENT_END",
+      "agentRunId": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": null
+    },
+    {
+      "atMs": 2518,
+      "type": "TOKEN_USAGE_UPDATED",
+      "agentRunId": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": null
+    },
+    {
+      "atMs": 8229,
+      "type": "TASK_DELEGATION_EVENT",
+      "agentRunId": null,
+      "status": null,
+      "code": null,
+      "taskEvent": "TASK_CHANGED",
+      "taskId": "task_d45629f981304938b0bd639741c50d2b",
+      "segmentType": null,
+      "toolName": null
+    },
+    {
+      "atMs": 8229,
+      "type": "MEMBER_INPUT_MESSAGE",
+      "agentRunId": null,
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": null
+    },
+    {
+      "atMs": 15104,
+      "type": "TOKEN_USAGE_UPDATED",
+      "agentRunId": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": null
+    },
+    {
+      "atMs": 34119,
+      "type": "TOKEN_USAGE_UPDATED",
+      "agentRunId": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": null
+    },
+    {
+      "atMs": 47126,
+      "type": "TOKEN_USAGE_UPDATED",
+      "agentRunId": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": null
+    },
+    {
+      "atMs": 56117,
+      "type": "TOKEN_USAGE_UPDATED",
+      "agentRunId": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": null
+    },
+    {
+      "atMs": 58111,
+      "type": "SEGMENT_START",
+      "agentRunId": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 58111,
+      "type": "TOOL_EXECUTION_STARTED",
+      "agentRunId": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": "review_task_result"
+    },
+    {
+      "atMs": 58126,
+      "type": "TASK_DELEGATION_EVENT",
+      "agentRunId": null,
+      "status": null,
+      "code": null,
+      "taskEvent": "TASK_CHANGED",
+      "taskId": "task_d45629f981304938b0bd639741c50d2b",
+      "segmentType": null,
+      "toolName": null
+    },
+    {
+      "atMs": 58129,
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "agentRunId": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": "review_task_result"
+    },
+    {
+      "atMs": 58129,
+      "type": "SEGMENT_END",
+      "agentRunId": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": null
+    },
+    {
+      "atMs": 58141,
+      "type": "TOKEN_USAGE_UPDATED",
+      "agentRunId": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": null
+    },
+    {
+      "atMs": 58143,
+      "type": "TASK_DELEGATION_EVENT",
+      "agentRunId": null,
+      "status": null,
+      "code": null,
+      "taskEvent": "TASK_EXECUTION_SETTLED",
+      "taskId": "task_d45629f981304938b0bd639741c50d2b",
+      "segmentType": null,
+      "toolName": null
+    },
+    {
+      "atMs": 58852,
+      "type": "SEGMENT_START",
+      "agentRunId": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "text",
+      "toolName": null
+    },
+    {
+      "atMs": 58856,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "text",
+      "toolName": null
+    },
+    {
+      "atMs": 58856,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "text",
+      "toolName": null
+    },
+    {
+      "atMs": 58884,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "text",
+      "toolName": null
+    },
+    {
+      "atMs": 58900,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "text",
+      "toolName": null
+    },
+    {
+      "atMs": 59045,
+      "type": "SEGMENT_END",
+      "agentRunId": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": null
+    },
+    {
+      "atMs": 59066,
+      "type": "TOKEN_USAGE_UPDATED",
+      "agentRunId": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": null
+    },
+    {
+      "atMs": 59068,
+      "type": "TURN_COMPLETED",
+      "agentRunId": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": null
+    },
+    {
+      "atMs": 59083,
+      "type": "TURN_STARTED",
+      "agentRunId": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": null
+    }
+  ],
+  "messages": [
+    {
+      "atMs": 27,
+      "message": {
+        "type": "CONNECTED",
+        "payload": {
+          "session_id": "30d04ad5-ab71-4423-a71b-7b10f48320a9",
+          "root_team_run_id": "utd_root_team_api_rev_008_1786830349955_45bb7b4ee1014c9c9f9ea66ea5e30e8c"
+        }
+      }
+    },
+    {
+      "atMs": 27,
+      "message": {
+        "type": "TEAM_EXECUTION_VIEW_SNAPSHOT",
+        "payload": {
+          "root_team_run_id": "utd_root_team_api_rev_008_1786830349955_45bb7b4ee1014c9c9f9ea66ea5e30e8c",
+          "base_change_sequence": 410,
+          "execution_tree": {
+            "schema_version": 1,
+            "created_at": "2026-08-15T21:46:58.810Z",
+            "archived_at": null,
+            "application_binding": null,
+            "handoffs": [],
+            "root_team": {
+              "team_definition_id": "utd-root-team-api-rev-008-1786830349955",
+              "team_definition_name": "utd_root_team_api_rev_008_1786830349955",
+              "team_run_id": "utd_root_team_api_rev_008_1786830349955_45bb7b4ee1014c9c9f9ea66ea5e30e8c",
+              "coordinator_address": "/coordinator",
+              "members": [
+                {
+                  "kind": "configured_agent",
+                  "address": "/coordinator",
+                  "agent_definition_id": "utd-coordinator-api-rev-008-1786830349955",
+                  "role": null,
+                  "description": null,
+                  "agent_run_id": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+                  "platform_agent_run_id": null,
+                  "launch_configuration": {
+                    "runtime_kind": "CODEX",
+                    "llm_model_identifier": "gpt-5.6-luna",
+                    "llm_config": null,
+                    "auto_execute_tools": true,
+                    "skill_access_mode": "NONE",
+                    "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-008/live/workspaces/api_rev_008_1786830349955"
+                  }
+                },
+                {
+                  "kind": "configured_agent",
+                  "address": "/worker",
+                  "agent_definition_id": "utd-worker-api-rev-008-1786830349955",
+                  "role": null,
+                  "description": null,
+                  "agent_run_id": "utd_worker_api_rev_008_1786830349955_c5c3fd8714644b5391fb04cf6233f63d",
+                  "platform_agent_run_id": null,
+                  "launch_configuration": {
+                    "runtime_kind": "CODEX",
+                    "llm_model_identifier": "gpt-5.6-luna",
+                    "llm_config": null,
+                    "auto_execute_tools": true,
+                    "skill_access_mode": "NONE",
+                    "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-008/live/workspaces/api_rev_008_1786830349955"
+                  }
+                },
+                {
+                  "kind": "configured_team",
+                  "address": "/lab",
+                  "team_definition_id": "utd-child-team-api-rev-008-1786830349955",
+                  "role": null,
+                  "description": null,
+                  "team_run_id": "utd_child_team_api_rev_008_1786830349955_f85c6518d4d642f08ef0918d00c21fe3",
+                  "coordinator_address": "/lab/lead",
+                  "members": [
+                    {
+                      "kind": "configured_agent",
+                      "address": "/lab/lead",
+                      "agent_definition_id": "utd-nested-coordinator-api-rev-008-1786830349955",
+                      "role": null,
+                      "description": null,
+                      "agent_run_id": "utd_nested_coordinator_api_rev_008_1786830349955_3156e95c1fe54a57b74e1f8df431bbfb",
+                      "platform_agent_run_id": null,
+                      "launch_configuration": {
+                        "runtime_kind": "CODEX",
+                        "llm_model_identifier": "gpt-5.6-luna",
+                        "llm_config": null,
+                        "auto_execute_tools": true,
+                        "skill_access_mode": "NONE",
+                        "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-008/live/workspaces/api_rev_008_1786830349955"
+                      }
+                    },
+                    {
+                      "kind": "configured_agent",
+                      "address": "/lab/researcher",
+                      "agent_definition_id": "utd-nested-worker-api-rev-008-1786830349955",
+                      "role": null,
+                      "description": null,
+                      "agent_run_id": "utd_nested_worker_api_rev_008_1786830349955_ccfce8f20d5a45b187c6d148188b9b49",
+                      "platform_agent_run_id": null,
+                      "launch_configuration": {
+                        "runtime_kind": "CODEX",
+                        "llm_model_identifier": "gpt-5.6-luna",
+                        "llm_config": null,
+                        "auto_execute_tools": true,
+                        "skill_access_mode": "NONE",
+                        "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-008/live/workspaces/api_rev_008_1786830349955"
+                      }
+                    }
+                  ],
+                  "task_executions": []
+                }
+              ],
+              "task_executions": [
+                {
+                  "kind": "task_agent",
+                  "address": "/worker",
+                  "agent_run_id": "utd_worker_api_rev_008_1786830349955_6e563ed7d84147b191d0889649947ea6",
+                  "platform_agent_run_id": null,
+                  "started_at": "2026-08-15T21:47:07.191Z",
+                  "settled_at": "2026-08-15T21:48:27.096Z"
+                },
+                {
+                  "kind": "task_team",
+                  "address": "/lab",
+                  "team_run_id": "utd_child_team_api_rev_008_1786830349955_e9491fe561024a59906fcbd8e9f68d8c",
+                  "members": [
+                    {
+                      "kind": "task_team_agent",
+                      "address": "/lab/lead",
+                      "agent_run_id": "utd_nested_coordinator_api_rev_008_1786830349955_cfe801dc482242609d92141704218d1b",
+                      "platform_agent_run_id": null
+                    },
+                    {
+                      "kind": "task_team_agent",
+                      "address": "/lab/researcher",
+                      "agent_run_id": "utd_nested_worker_api_rev_008_1786830349955_23939c5a93954495bdeadb585481e8b9",
+                      "platform_agent_run_id": null
+                    }
+                  ],
+                  "task_executions": [
+                    {
+                      "kind": "task_agent",
+                      "address": "/lab/researcher",
+                      "agent_run_id": "utd_nested_worker_api_rev_008_1786830349955_d83db6e144cb4a5898b809441ae2d1ec",
+                      "platform_agent_run_id": null,
+                      "started_at": "2026-08-15T21:48:43.070Z",
+                      "settled_at": "2026-08-15T21:48:52.433Z"
+                    }
+                  ],
+                  "started_at": "2026-08-15T21:48:36.017Z",
+                  "settled_at": "2026-08-15T21:49:42.063Z"
+                }
+              ]
+            }
+          },
+          "tasks": [
+            {
+              "task_id": "task_f9e93ed17f8e4964accf2a8283670c77",
+              "delegator_agent_run_id": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+              "recipient_address": "/worker",
+              "task_execution": {
+                "agent_run_id": "utd_worker_api_rev_008_1786830349955_6e563ed7d84147b191d0889649947ea6"
+              },
+              "description": "Return E2E_DIRECT_TASK_RESULT_42",
+              "reference_files": [],
+              "status": "accepted",
+              "updates": [
+                {
+                  "kind": "submission",
+                  "submission_id": "submission_d7fc51404b974d239090fa7da38c51b4",
+                  "message": "E2E_DIRECT_TASK_RESULT_42",
+                  "reference_files": [],
+                  "created_at": "2026-08-15T21:47:13.379Z"
+                },
+                {
+                  "kind": "review",
+                  "review_id": "review_abb1cd2df8c843b38c76f25a7f4f2e3f",
+                  "reviewed_submission_id": "submission_d7fc51404b974d239090fa7da38c51b4",
+                  "decision": "accept",
+                  "comment": null,
+                  "reference_files": [],
+                  "created_at": "2026-08-15T21:48:27.079Z"
+                }
+              ],
+              "created_at": "2026-08-15T21:47:07.191Z"
+            },
+            {
+              "task_id": "task_fd619a28550b4558a47303bb9177a1ac",
+              "delegator_agent_run_id": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+              "recipient_address": "/lab",
+              "task_execution": {
+                "team_run_id": "utd_child_team_api_rev_008_1786830349955_e9491fe561024a59906fcbd8e9f68d8c"
+              },
+              "description": "Return E2E_NESTED_TEAM_RESULT after delegating the required child task.",
+              "reference_files": [],
+              "status": "accepted",
+              "updates": [
+                {
+                  "kind": "submission",
+                  "submission_id": "submission_4dc1513e686045819ba2e67a55966984",
+                  "message": "E2E_NESTED_TEAM_RESULT",
+                  "reference_files": [],
+                  "created_at": "2026-08-15T21:48:54.502Z"
+                },
+                {
+                  "kind": "review",
+                  "review_id": "review_b79652726ad74dac82b43d108049f676",
+                  "reviewed_submission_id": "submission_4dc1513e686045819ba2e67a55966984",
+                  "decision": "accept",
+                  "comment": null,
+                  "reference_files": [],
+                  "created_at": "2026-08-15T21:49:42.050Z"
+                }
+              ],
+              "created_at": "2026-08-15T21:48:36.017Z"
+            },
+            {
+              "task_id": "task_e7a202c5ea2c43c4915b50b75d17061c",
+              "delegator_agent_run_id": "utd_nested_coordinator_api_rev_008_1786830349955_cfe801dc482242609d92141704218d1b",
+              "recipient_address": "/lab/researcher",
+              "task_execution": {
+                "agent_run_id": "utd_nested_worker_api_rev_008_1786830349955_d83db6e144cb4a5898b809441ae2d1ec"
+              },
+              "description": "Return E2E_NESTED_CHILD_RESULT",
+              "reference_files": [],
+              "status": "accepted",
+              "updates": [
+                {
+                  "kind": "submission",
+                  "submission_id": "submission_5105eccc953d4830ac7d763dfeacea08",
+                  "message": "E2E_NESTED_CHILD_RESULT",
+                  "reference_files": [],
+                  "created_at": "2026-08-15T21:48:50.064Z"
+                },
+                {
+                  "kind": "review",
+                  "review_id": "review_363cf8599e5740f595413919552c5dda",
+                  "reviewed_submission_id": "submission_5105eccc953d4830ac7d763dfeacea08",
+                  "decision": "accept",
+                  "comment": null,
+                  "reference_files": [],
+                  "created_at": "2026-08-15T21:48:52.411Z"
+                }
+              ],
+              "created_at": "2026-08-15T21:48:43.070Z"
+            }
+          ],
+          "messages": [],
+          "agent_statuses": [
+            {
+              "agent_run_id": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+              "member_address": "/coordinator",
+              "status": "idle",
+              "trigger": null,
+              "tool_name": null,
+              "error_message": null,
+              "error_details": null
+            },
+            {
+              "agent_run_id": "utd_worker_api_rev_008_1786830349955_c5c3fd8714644b5391fb04cf6233f63d",
+              "member_address": "/worker",
+              "status": "offline",
+              "trigger": null,
+              "tool_name": null,
+              "error_message": null,
+              "error_details": null
+            },
+            {
+              "agent_run_id": "utd_nested_coordinator_api_rev_008_1786830349955_3156e95c1fe54a57b74e1f8df431bbfb",
+              "member_address": "/lab/lead",
+              "status": "offline",
+              "trigger": null,
+              "tool_name": null,
+              "error_message": null,
+              "error_details": null
+            },
+            {
+              "agent_run_id": "utd_nested_worker_api_rev_008_1786830349955_ccfce8f20d5a45b187c6d148188b9b49",
+              "member_address": "/lab/researcher",
+              "status": "offline",
+              "trigger": null,
+              "tool_name": null,
+              "error_message": null,
+              "error_details": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "atMs": 27,
+      "message": {
+        "type": "TEAM_RUN_LIFECYCLE",
+        "payload": {
+          "is_active": true
+        }
+      }
+    },
+    {
+      "atMs": 28,
+      "message": {
+        "type": "MEMBER_INPUT_MESSAGE",
+        "payload": {
+          "change_sequence": 412,
+          "recipient_agent_run_id": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+          "message_id": "api-rev-008-17c310b3-fd14-44ef-9e48-7e610d6ad9d0",
+          "dedupe_key": "api-rev-008-6270a366-6135-4c46-b293-27a7cadf6360",
+          "content": "Delegate exactly one new formal task to recipient_address /worker with description Return E2E_DIRECT_TASK_RESULT_42 for second identity proof. Wait for submission and accept it.",
+          "input_origin": "user_message",
+          "received_at": "2026-08-15T21:52:08.913Z",
+          "context_file_paths": [],
+          "sender_agent_run_id": null,
+          "parent_communication_message_id": null
+        }
+      }
+    },
+    {
+      "atMs": 37,
+      "message": {
+        "type": "TURN_STARTED",
+        "payload": {
+          "change_sequence": 416,
+          "agent_run_id": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+          "turn_id": "01a00769-2ed1-7a92-88f6-55a0825dbb88"
+        }
+      }
+    },
+    {
+      "atMs": 1633,
+      "message": {
+        "type": "SEGMENT_START",
+        "payload": {
+          "change_sequence": 418,
+          "agent_run_id": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+          "segment_id": "reasoning-block:6063d4e2-aa1d-4e34-ad29-a1113032f07f:10",
+          "turn_id": "01a00769-2ed1-7a92-88f6-55a0825dbb88",
+          "segment_type": "reasoning",
+          "metadata": null
+        }
+      }
+    },
+    {
+      "atMs": 1633,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 420,
+          "agent_run_id": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+          "segment_id": "reasoning-block:6063d4e2-aa1d-4e34-ad29-a1113032f07f:10",
+          "turn_id": "01a00769-2ed1-7a92-88f6-55a0825dbb88",
+          "segment_type": "reasoning",
+          "delta": "**Planning single delegate acceptance**"
+        }
+      }
+    },
+    {
+      "atMs": 2319,
+      "message": {
+        "type": "SEGMENT_END",
+        "payload": {
+          "change_sequence": 422,
+          "agent_run_id": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+          "segment_id": "reasoning-block:6063d4e2-aa1d-4e34-ad29-a1113032f07f:10",
+          "turn_id": "01a00769-2ed1-7a92-88f6-55a0825dbb88",
+          "metadata": null,
+          "interrupted": false,
+          "reason": null,
+          "failed": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "atMs": 2319,
+      "message": {
+        "type": "SEGMENT_START",
+        "payload": {
+          "change_sequence": 424,
+          "agent_run_id": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+          "segment_id": "exec-a0819f10-1f15-44e4-801e-24ffde7b6051",
+          "turn_id": "01a00769-2ed1-7a92-88f6-55a0825dbb88",
+          "segment_type": "tool_call",
+          "metadata": {
+            "tool_name": "delegate_task",
+            "arguments": {
+              "recipient_address": "/worker",
+              "description": "Return E2E_DIRECT_TASK_RESULT_42 for second identity proof."
+            }
+          }
+        }
+      }
+    },
+    {
+      "atMs": 2319,
+      "message": {
+        "type": "TOOL_EXECUTION_STARTED",
+        "payload": {
+          "change_sequence": 426,
+          "agent_run_id": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+          "invocation_id": "exec-a0819f10-1f15-44e4-801e-24ffde7b6051",
+          "tool_name": "delegate_task",
+          "turn_id": "01a00769-2ed1-7a92-88f6-55a0825dbb88",
+          "arguments": {
+            "recipient_address": "/worker",
+            "description": "Return E2E_DIRECT_TASK_RESULT_42 for second identity proof."
+          }
+        }
+      }
+    },
+    {
+      "atMs": 2512,
+      "message": {
+        "type": "TASK_DELEGATION_EVENT",
+        "payload": {
+          "event_type": "TASK_AGENT_ACTIVATED",
+          "change_sequence": 427,
+          "parent_team_run_id": "utd_root_team_api_rev_008_1786830349955_45bb7b4ee1014c9c9f9ea66ea5e30e8c",
+          "execution": {
+            "kind": "task_agent",
+            "address": "/worker",
+            "agent_run_id": "utd_worker_api_rev_008_1786830349955_de7cbf311d254854a43a73d630de0979",
+            "platform_agent_run_id": null,
+            "started_at": "2026-08-15T21:52:11.206Z",
+            "settled_at": null
+          },
+          "task": {
+            "task_id": "task_d45629f981304938b0bd639741c50d2b",
+            "delegator_agent_run_id": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+            "recipient_address": "/worker",
+            "task_execution": {
+              "agent_run_id": "utd_worker_api_rev_008_1786830349955_de7cbf311d254854a43a73d630de0979"
+            },
+            "description": "Return E2E_DIRECT_TASK_RESULT_42 for second identity proof.",
+            "reference_files": [],
+            "status": "active",
+            "updates": [],
+            "created_at": "2026-08-15T21:52:11.206Z"
+          }
+        }
+      }
+    },
+    {
+      "atMs": 2514,
+      "message": {
+        "type": "TOOL_EXECUTION_SUCCEEDED",
+        "payload": {
+          "change_sequence": 429,
+          "agent_run_id": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+          "invocation_id": "exec-a0819f10-1f15-44e4-801e-24ffde7b6051",
+          "tool_name": "delegate_task",
+          "turn_id": "01a00769-2ed1-7a92-88f6-55a0825dbb88",
+          "arguments": {
+            "recipient_address": "/worker",
+            "description": "Return E2E_DIRECT_TASK_RESULT_42 for second identity proof."
+          },
+          "result": {
+            "task_id": "task_d45629f981304938b0bd639741c50d2b",
+            "status": "active",
+            "target_agent_run_id": "utd_worker_api_rev_008_1786830349955_de7cbf311d254854a43a73d630de0979"
+          }
+        }
+      }
+    },
+    {
+      "atMs": 2515,
+      "message": {
+        "type": "SEGMENT_END",
+        "payload": {
+          "change_sequence": 431,
+          "agent_run_id": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+          "segment_id": "exec-a0819f10-1f15-44e4-801e-24ffde7b6051",
+          "turn_id": "01a00769-2ed1-7a92-88f6-55a0825dbb88",
+          "metadata": {
+            "tool_name": "delegate_task",
+            "arguments": {
+              "recipient_address": "/worker",
+              "description": "Return E2E_DIRECT_TASK_RESULT_42 for second identity proof."
+            }
+          },
+          "interrupted": false,
+          "reason": null,
+          "failed": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "atMs": 2518,
+      "message": {
+        "type": "TOKEN_USAGE_UPDATED",
+        "payload": {
+          "change_sequence": 433,
+          "agent_run_id": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+          "usage_event_id": "2da4893d-0e34-4e30-a125-998fc30a44d8",
+          "idempotency_key": "codex_token_usage:utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691:01a00764-7480-7be0-8b14-6e7578b530f3:01a00769-2ed1-7a92-88f6-55a0825dbb88:cumulative_snapshot:494180:461056:1810:974:495990",
+          "observed_at": "2026-08-15T21:52:11.402Z",
+          "turn_id": "01a00769-2ed1-7a92-88f6-55a0825dbb88",
+          "llm_call_id": null,
+          "model_provider": "OPENAI",
+          "model_identifier": "gpt-5.6-luna",
+          "model_value": "gpt-5.6-luna",
+          "usage_scope": "cumulative_snapshot",
+          "input_token_semantic": "gross_includes_cache",
+          "standard_input_tokens": 533,
+          "cache_miss_input_tokens": 533,
+          "cache_read_input_tokens": 24320,
+          "cache_creation_input_tokens": null,
+          "cache_creation_5m_input_tokens": null,
+          "cache_creation_1h_input_tokens": null,
+          "cache_state": "positive",
+          "reasoning_output_tokens": 21,
+          "billable_output_tokens": 80,
+          "meter_delta_input_tokens": 24853,
+          "meter_delta_output_tokens": 80,
+          "meter_delta_total_tokens": 24933,
+          "input_price_per_million": 0.2,
+          "output_price_per_million": 1.2,
+          "cached_input_read_price_per_million": 0.02,
+          "cached_input_write_price_per_million": 0.25,
+          "cached_input_write_5m_price_per_million": null,
+          "cached_input_write_1h_price_per_million": null,
+          "estimated_api_input_cost": 0.0005930000000000001,
+          "estimated_api_standard_input_cost": 0.00010660000000000002,
+          "estimated_api_cache_read_input_cost": 0.00048640000000000006,
+          "estimated_api_cache_creation_input_cost": null,
+          "estimated_api_cache_creation_5m_input_cost": null,
+          "estimated_api_cache_creation_1h_input_cost": null,
+          "estimated_api_output_cost": 0.000096,
+          "estimated_api_reasoning_output_cost": 0.0000252,
+          "estimated_api_total_cost": 0.0006890000000000002,
+          "currency": "USD",
+          "api_cost_status": "estimated",
+          "missing_price_dimensions": [],
+          "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+          "selected_pricing_tier_id": "standard_le_272k",
+          "latest_prompt_tokens": 24853,
+          "effective_context_window_tokens": 258400,
+          "context_window_usage_percent": 9.618034055727556,
+          "quality_flags": []
+        }
+      }
+    },
+    {
+      "atMs": 8229,
+      "message": {
+        "type": "TASK_DELEGATION_EVENT",
+        "payload": {
+          "event_type": "TASK_CHANGED",
+          "change_sequence": 434,
+          "task": {
+            "task_id": "task_d45629f981304938b0bd639741c50d2b",
+            "delegator_agent_run_id": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+            "recipient_address": "/worker",
+            "task_execution": {
+              "agent_run_id": "utd_worker_api_rev_008_1786830349955_de7cbf311d254854a43a73d630de0979"
+            },
+            "description": "Return E2E_DIRECT_TASK_RESULT_42 for second identity proof.",
+            "reference_files": [],
+            "status": "awaiting_review",
+            "updates": [
+              {
+                "kind": "submission",
+                "submission_id": "submission_ed3544a4931d48b980d88ba2731f8cb7",
+                "message": "E2E_DIRECT_TASK_RESULT_42",
+                "reference_files": [],
+                "created_at": "2026-08-15T21:52:17.097Z"
+              }
+            ],
+            "created_at": "2026-08-15T21:52:11.206Z"
+          }
+        }
+      }
+    },
+    {
+      "atMs": 8229,
+      "message": {
+        "type": "MEMBER_INPUT_MESSAGE",
+        "payload": {
+          "change_sequence": 435,
+          "recipient_agent_run_id": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+          "message_id": "memberinput_jPqlmIVcLpCvAFG2oW7otIO0zVE2u8Nk",
+          "dedupe_key": "member_input:utd_root_team_api_rev_008_1786830349955_45bb7b4ee1014c9c9f9ea66ea5e30e8c:utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691:memberinput_jPqlmIVcLpCvAFG2oW7otIO0zVE2u8Nk",
+          "content": "Task task_d45629f981304938b0bd639741c50d2b result submitted:\nE2E_DIRECT_TASK_RESULT_42",
+          "input_origin": "user_message",
+          "received_at": "2026-08-15T21:52:17.114Z",
+          "context_file_paths": [],
+          "sender_agent_run_id": null,
+          "parent_communication_message_id": null
+        }
+      }
+    },
+    {
+      "atMs": 15104,
+      "message": {
+        "type": "TOKEN_USAGE_UPDATED",
+        "payload": {
+          "change_sequence": 437,
+          "agent_run_id": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+          "usage_event_id": "2f84afaa-69b0-49a5-8e96-b7db19e50be5",
+          "idempotency_key": "codex_token_usage:utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691:01a00764-7480-7be0-8b14-6e7578b530f3:01a00769-2ed1-7a92-88f6-55a0825dbb88:cumulative_snapshot:519225:485376:1852:986:521077",
+          "observed_at": "2026-08-15T21:52:23.988Z",
+          "turn_id": "01a00769-2ed1-7a92-88f6-55a0825dbb88",
+          "llm_call_id": null,
+          "model_provider": "OPENAI",
+          "model_identifier": "gpt-5.6-luna",
+          "model_value": "gpt-5.6-luna",
+          "usage_scope": "cumulative_snapshot",
+          "input_token_semantic": "gross_includes_cache",
+          "standard_input_tokens": 725,
+          "cache_miss_input_tokens": 725,
+          "cache_read_input_tokens": 24320,
+          "cache_creation_input_tokens": null,
+          "cache_creation_5m_input_tokens": null,
+          "cache_creation_1h_input_tokens": null,
+          "cache_state": "positive",
+          "reasoning_output_tokens": 12,
+          "billable_output_tokens": 42,
+          "meter_delta_input_tokens": 25045,
+          "meter_delta_output_tokens": 42,
+          "meter_delta_total_tokens": 25087,
+          "input_price_per_million": 0.2,
+          "output_price_per_million": 1.2,
+          "cached_input_read_price_per_million": 0.02,
+          "cached_input_write_price_per_million": 0.25,
+          "cached_input_write_5m_price_per_million": null,
+          "cached_input_write_1h_price_per_million": null,
+          "estimated_api_input_cost": 0.0006314000000000001,
+          "estimated_api_standard_input_cost": 0.000145,
+          "estimated_api_cache_read_input_cost": 0.00048640000000000006,
+          "estimated_api_cache_creation_input_cost": null,
+          "estimated_api_cache_creation_5m_input_cost": null,
+          "estimated_api_cache_creation_1h_input_cost": null,
+          "estimated_api_output_cost": 0.0000504,
+          "estimated_api_reasoning_output_cost": 0.0000144,
+          "estimated_api_total_cost": 0.0006818000000000001,
+          "currency": "USD",
+          "api_cost_status": "estimated",
+          "missing_price_dimensions": [],
+          "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+          "selected_pricing_tier_id": "standard_le_272k",
+          "latest_prompt_tokens": 25045,
+          "effective_context_window_tokens": 258400,
+          "context_window_usage_percent": 9.69233746130031,
+          "quality_flags": []
+        }
+      }
+    },
+    {
+      "atMs": 34119,
+      "message": {
+        "type": "TOKEN_USAGE_UPDATED",
+        "payload": {
+          "change_sequence": 439,
+          "agent_run_id": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+          "usage_event_id": "c71e7ec7-00ca-4478-adf8-7659f942003d",
+          "idempotency_key": "codex_token_usage:utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691:01a00764-7480-7be0-8b14-6e7578b530f3:01a00769-2ed1-7a92-88f6-55a0825dbb88:cumulative_snapshot:544340:509696:1883:986:546223",
+          "observed_at": "2026-08-15T21:52:43.002Z",
+          "turn_id": "01a00769-2ed1-7a92-88f6-55a0825dbb88",
+          "llm_call_id": null,
+          "model_provider": "OPENAI",
+          "model_identifier": "gpt-5.6-luna",
+          "model_value": "gpt-5.6-luna",
+          "usage_scope": "cumulative_snapshot",
+          "input_token_semantic": "gross_includes_cache",
+          "standard_input_tokens": 795,
+          "cache_miss_input_tokens": 795,
+          "cache_read_input_tokens": 24320,
+          "cache_creation_input_tokens": null,
+          "cache_creation_5m_input_tokens": null,
+          "cache_creation_1h_input_tokens": null,
+          "cache_state": "positive",
+          "reasoning_output_tokens": 0,
+          "billable_output_tokens": 31,
+          "meter_delta_input_tokens": 25115,
+          "meter_delta_output_tokens": 31,
+          "meter_delta_total_tokens": 25146,
+          "input_price_per_million": 0.2,
+          "output_price_per_million": 1.2,
+          "cached_input_read_price_per_million": 0.02,
+          "cached_input_write_price_per_million": 0.25,
+          "cached_input_write_5m_price_per_million": null,
+          "cached_input_write_1h_price_per_million": null,
+          "estimated_api_input_cost": 0.0006454000000000001,
+          "estimated_api_standard_input_cost": 0.00015900000000000002,
+          "estimated_api_cache_read_input_cost": 0.00048640000000000006,
+          "estimated_api_cache_creation_input_cost": null,
+          "estimated_api_cache_creation_5m_input_cost": null,
+          "estimated_api_cache_creation_1h_input_cost": null,
+          "estimated_api_output_cost": 0.0000372,
+          "estimated_api_reasoning_output_cost": null,
+          "estimated_api_total_cost": 0.0006826000000000001,
+          "currency": "USD",
+          "api_cost_status": "estimated",
+          "missing_price_dimensions": [],
+          "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+          "selected_pricing_tier_id": "standard_le_272k",
+          "latest_prompt_tokens": 25115,
+          "effective_context_window_tokens": 258400,
+          "context_window_usage_percent": 9.719427244582043,
+          "quality_flags": []
+        }
+      }
+    },
+    {
+      "atMs": 47126,
+      "message": {
+        "type": "TOKEN_USAGE_UPDATED",
+        "payload": {
+          "change_sequence": 441,
+          "agent_run_id": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+          "usage_event_id": "07bd162f-c51f-47dd-805a-9f4c68df4a75",
+          "idempotency_key": "codex_token_usage:utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691:01a00764-7480-7be0-8b14-6e7578b530f3:01a00769-2ed1-7a92-88f6-55a0825dbb88:cumulative_snapshot:569511:534016:1922:995:571433",
+          "observed_at": "2026-08-15T21:52:56.009Z",
+          "turn_id": "01a00769-2ed1-7a92-88f6-55a0825dbb88",
+          "llm_call_id": null,
+          "model_provider": "OPENAI",
+          "model_identifier": "gpt-5.6-luna",
+          "model_value": "gpt-5.6-luna",
+          "usage_scope": "cumulative_snapshot",
+          "input_token_semantic": "gross_includes_cache",
+          "standard_input_tokens": 851,
+          "cache_miss_input_tokens": 851,
+          "cache_read_input_tokens": 24320,
+          "cache_creation_input_tokens": null,
+          "cache_creation_5m_input_tokens": null,
+          "cache_creation_1h_input_tokens": null,
+          "cache_state": "positive",
+          "reasoning_output_tokens": 9,
+          "billable_output_tokens": 39,
+          "meter_delta_input_tokens": 25171,
+          "meter_delta_output_tokens": 39,
+          "meter_delta_total_tokens": 25210,
+          "input_price_per_million": 0.2,
+          "output_price_per_million": 1.2,
+          "cached_input_read_price_per_million": 0.02,
+          "cached_input_write_price_per_million": 0.25,
+          "cached_input_write_5m_price_per_million": null,
+          "cached_input_write_1h_price_per_million": null,
+          "estimated_api_input_cost": 0.0006566,
+          "estimated_api_standard_input_cost": 0.00017020000000000002,
+          "estimated_api_cache_read_input_cost": 0.00048640000000000006,
+          "estimated_api_cache_creation_input_cost": null,
+          "estimated_api_cache_creation_5m_input_cost": null,
+          "estimated_api_cache_creation_1h_input_cost": null,
+          "estimated_api_output_cost": 0.0000468,
+          "estimated_api_reasoning_output_cost": 0.0000108,
+          "estimated_api_total_cost": 0.0007034000000000001,
+          "currency": "USD",
+          "api_cost_status": "estimated",
+          "missing_price_dimensions": [],
+          "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+          "selected_pricing_tier_id": "standard_le_272k",
+          "latest_prompt_tokens": 25171,
+          "effective_context_window_tokens": 258400,
+          "context_window_usage_percent": 9.741099071207431,
+          "quality_flags": []
+        }
+      }
+    },
+    {
+      "atMs": 56117,
+      "message": {
+        "type": "TOKEN_USAGE_UPDATED",
+        "payload": {
+          "change_sequence": 443,
+          "agent_run_id": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+          "usage_event_id": "bb795d07-0e3c-456b-8214-c6ae2b0bb15a",
+          "idempotency_key": "codex_token_usage:utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691:01a00764-7480-7be0-8b14-6e7578b530f3:01a00769-2ed1-7a92-88f6-55a0825dbb88:cumulative_snapshot:594749:558336:1953:995:596702",
+          "observed_at": "2026-08-15T21:53:05.000Z",
+          "turn_id": "01a00769-2ed1-7a92-88f6-55a0825dbb88",
+          "llm_call_id": null,
+          "model_provider": "OPENAI",
+          "model_identifier": "gpt-5.6-luna",
+          "model_value": "gpt-5.6-luna",
+          "usage_scope": "cumulative_snapshot",
+          "input_token_semantic": "gross_includes_cache",
+          "standard_input_tokens": 918,
+          "cache_miss_input_tokens": 918,
+          "cache_read_input_tokens": 24320,
+          "cache_creation_input_tokens": null,
+          "cache_creation_5m_input_tokens": null,
+          "cache_creation_1h_input_tokens": null,
+          "cache_state": "positive",
+          "reasoning_output_tokens": 0,
+          "billable_output_tokens": 31,
+          "meter_delta_input_tokens": 25238,
+          "meter_delta_output_tokens": 31,
+          "meter_delta_total_tokens": 25269,
+          "input_price_per_million": 0.2,
+          "output_price_per_million": 1.2,
+          "cached_input_read_price_per_million": 0.02,
+          "cached_input_write_price_per_million": 0.25,
+          "cached_input_write_5m_price_per_million": null,
+          "cached_input_write_1h_price_per_million": null,
+          "estimated_api_input_cost": 0.00067,
+          "estimated_api_standard_input_cost": 0.00018360000000000002,
+          "estimated_api_cache_read_input_cost": 0.00048640000000000006,
+          "estimated_api_cache_creation_input_cost": null,
+          "estimated_api_cache_creation_5m_input_cost": null,
+          "estimated_api_cache_creation_1h_input_cost": null,
+          "estimated_api_output_cost": 0.0000372,
+          "estimated_api_reasoning_output_cost": null,
+          "estimated_api_total_cost": 0.0007072000000000001,
+          "currency": "USD",
+          "api_cost_status": "estimated",
+          "missing_price_dimensions": [],
+          "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+          "selected_pricing_tier_id": "standard_le_272k",
+          "latest_prompt_tokens": 25238,
+          "effective_context_window_tokens": 258400,
+          "context_window_usage_percent": 9.76702786377709,
+          "quality_flags": []
+        }
+      }
+    },
+    {
+      "atMs": 58111,
+      "message": {
+        "type": "SEGMENT_START",
+        "payload": {
+          "change_sequence": 445,
+          "agent_run_id": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+          "segment_id": "exec-a4cee92d-7b84-425e-aa31-a642b1f4eed4",
+          "turn_id": "01a00769-2ed1-7a92-88f6-55a0825dbb88",
+          "segment_type": "tool_call",
+          "metadata": {
+            "tool_name": "review_task_result",
+            "arguments": {
+              "task_id": "task_d45629f981304938b0bd639741c50d2b",
+              "decision": "accept"
+            }
+          }
+        }
+      }
+    },
+    {
+      "atMs": 58111,
+      "message": {
+        "type": "TOOL_EXECUTION_STARTED",
+        "payload": {
+          "change_sequence": 447,
+          "agent_run_id": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+          "invocation_id": "exec-a4cee92d-7b84-425e-aa31-a642b1f4eed4",
+          "tool_name": "review_task_result",
+          "turn_id": "01a00769-2ed1-7a92-88f6-55a0825dbb88",
+          "arguments": {
+            "task_id": "task_d45629f981304938b0bd639741c50d2b",
+            "decision": "accept"
+          }
+        }
+      }
+    },
+    {
+      "atMs": 58126,
+      "message": {
+        "type": "TASK_DELEGATION_EVENT",
+        "payload": {
+          "event_type": "TASK_CHANGED",
+          "change_sequence": 448,
+          "task": {
+            "task_id": "task_d45629f981304938b0bd639741c50d2b",
+            "delegator_agent_run_id": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+            "recipient_address": "/worker",
+            "task_execution": {
+              "agent_run_id": "utd_worker_api_rev_008_1786830349955_de7cbf311d254854a43a73d630de0979"
+            },
+            "description": "Return E2E_DIRECT_TASK_RESULT_42 for second identity proof.",
+            "reference_files": [],
+            "status": "accepted",
+            "updates": [
+              {
+                "kind": "submission",
+                "submission_id": "submission_ed3544a4931d48b980d88ba2731f8cb7",
+                "message": "E2E_DIRECT_TASK_RESULT_42",
+                "reference_files": [],
+                "created_at": "2026-08-15T21:52:17.097Z"
+              },
+              {
+                "kind": "review",
+                "review_id": "review_b44a0aed7d3f4a4b8cd341651e22adca",
+                "reviewed_submission_id": "submission_ed3544a4931d48b980d88ba2731f8cb7",
+                "decision": "accept",
+                "comment": null,
+                "reference_files": [],
+                "created_at": "2026-08-15T21:53:06.997Z"
+              }
+            ],
+            "created_at": "2026-08-15T21:52:11.206Z"
+          }
+        }
+      }
+    },
+    {
+      "atMs": 58129,
+      "message": {
+        "type": "TOOL_EXECUTION_SUCCEEDED",
+        "payload": {
+          "change_sequence": 450,
+          "agent_run_id": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+          "invocation_id": "exec-a4cee92d-7b84-425e-aa31-a642b1f4eed4",
+          "tool_name": "review_task_result",
+          "turn_id": "01a00769-2ed1-7a92-88f6-55a0825dbb88",
+          "arguments": {
+            "task_id": "task_d45629f981304938b0bd639741c50d2b",
+            "decision": "accept"
+          },
+          "result": {
+            "task_id": "task_d45629f981304938b0bd639741c50d2b",
+            "status": "accepted"
+          }
+        }
+      }
+    },
+    {
+      "atMs": 58129,
+      "message": {
+        "type": "SEGMENT_END",
+        "payload": {
+          "change_sequence": 452,
+          "agent_run_id": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+          "segment_id": "exec-a4cee92d-7b84-425e-aa31-a642b1f4eed4",
+          "turn_id": "01a00769-2ed1-7a92-88f6-55a0825dbb88",
+          "metadata": {
+            "tool_name": "review_task_result",
+            "arguments": {
+              "task_id": "task_d45629f981304938b0bd639741c50d2b",
+              "decision": "accept"
+            }
+          },
+          "interrupted": false,
+          "reason": null,
+          "failed": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "atMs": 58141,
+      "message": {
+        "type": "TOKEN_USAGE_UPDATED",
+        "payload": {
+          "change_sequence": 454,
+          "agent_run_id": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+          "usage_event_id": "2d205071-8267-4d7a-85e9-715e280b0f98",
+          "idempotency_key": "codex_token_usage:utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691:01a00764-7480-7be0-8b14-6e7578b530f3:01a00769-2ed1-7a92-88f6-55a0825dbb88:cumulative_snapshot:620043:582656:2024:1001:622067",
+          "observed_at": "2026-08-15T21:53:07.022Z",
+          "turn_id": "01a00769-2ed1-7a92-88f6-55a0825dbb88",
+          "llm_call_id": null,
+          "model_provider": "OPENAI",
+          "model_identifier": "gpt-5.6-luna",
+          "model_value": "gpt-5.6-luna",
+          "usage_scope": "cumulative_snapshot",
+          "input_token_semantic": "gross_includes_cache",
+          "standard_input_tokens": 974,
+          "cache_miss_input_tokens": 974,
+          "cache_read_input_tokens": 24320,
+          "cache_creation_input_tokens": null,
+          "cache_creation_5m_input_tokens": null,
+          "cache_creation_1h_input_tokens": null,
+          "cache_state": "positive",
+          "reasoning_output_tokens": 6,
+          "billable_output_tokens": 71,
+          "meter_delta_input_tokens": 25294,
+          "meter_delta_output_tokens": 71,
+          "meter_delta_total_tokens": 25365,
+          "input_price_per_million": 0.2,
+          "output_price_per_million": 1.2,
+          "cached_input_read_price_per_million": 0.02,
+          "cached_input_write_price_per_million": 0.25,
+          "cached_input_write_5m_price_per_million": null,
+          "cached_input_write_1h_price_per_million": null,
+          "estimated_api_input_cost": 0.0006812000000000001,
+          "estimated_api_standard_input_cost": 0.00019480000000000002,
+          "estimated_api_cache_read_input_cost": 0.00048640000000000006,
+          "estimated_api_cache_creation_input_cost": null,
+          "estimated_api_cache_creation_5m_input_cost": null,
+          "estimated_api_cache_creation_1h_input_cost": null,
+          "estimated_api_output_cost": 0.0000852,
+          "estimated_api_reasoning_output_cost": 0.0000072,
+          "estimated_api_total_cost": 0.0007664000000000001,
+          "currency": "USD",
+          "api_cost_status": "estimated",
+          "missing_price_dimensions": [],
+          "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+          "selected_pricing_tier_id": "standard_le_272k",
+          "latest_prompt_tokens": 25294,
+          "effective_context_window_tokens": 258400,
+          "context_window_usage_percent": 9.788699690402476,
+          "quality_flags": []
+        }
+      }
+    },
+    {
+      "atMs": 58143,
+      "message": {
+        "type": "TASK_DELEGATION_EVENT",
+        "payload": {
+          "event_type": "TASK_EXECUTION_SETTLED",
+          "change_sequence": 455,
+          "execution": {
+            "agent_run_id": "utd_worker_api_rev_008_1786830349955_de7cbf311d254854a43a73d630de0979"
+          },
+          "task": {
+            "task_id": "task_d45629f981304938b0bd639741c50d2b",
+            "delegator_agent_run_id": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+            "recipient_address": "/worker",
+            "task_execution": {
+              "agent_run_id": "utd_worker_api_rev_008_1786830349955_de7cbf311d254854a43a73d630de0979"
+            },
+            "description": "Return E2E_DIRECT_TASK_RESULT_42 for second identity proof.",
+            "reference_files": [],
+            "status": "accepted",
+            "updates": [
+              {
+                "kind": "submission",
+                "submission_id": "submission_ed3544a4931d48b980d88ba2731f8cb7",
+                "message": "E2E_DIRECT_TASK_RESULT_42",
+                "reference_files": [],
+                "created_at": "2026-08-15T21:52:17.097Z"
+              },
+              {
+                "kind": "review",
+                "review_id": "review_b44a0aed7d3f4a4b8cd341651e22adca",
+                "reviewed_submission_id": "submission_ed3544a4931d48b980d88ba2731f8cb7",
+                "decision": "accept",
+                "comment": null,
+                "reference_files": [],
+                "created_at": "2026-08-15T21:53:06.997Z"
+              }
+            ],
+            "created_at": "2026-08-15T21:52:11.206Z"
+          },
+          "settled_at": "2026-08-15T21:53:07.011Z"
+        }
+      }
+    },
+    {
+      "atMs": 58852,
+      "message": {
+        "type": "SEGMENT_START",
+        "payload": {
+          "change_sequence": 457,
+          "agent_run_id": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+          "segment_id": "msg_022879662a64afaf016a80dfc3bae8819198eaa17b84deade9",
+          "turn_id": "01a00769-2ed1-7a92-88f6-55a0825dbb88",
+          "segment_type": "text",
+          "metadata": null
+        }
+      }
+    },
+    {
+      "atMs": 58856,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 459,
+          "agent_run_id": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+          "segment_id": "msg_022879662a64afaf016a80dfc3bae8819198eaa17b84deade9",
+          "turn_id": "01a00769-2ed1-7a92-88f6-55a0825dbb88",
+          "segment_type": "text",
+          "delta": "Task"
+        }
+      }
+    },
+    {
+      "atMs": 58856,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 461,
+          "agent_run_id": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+          "segment_id": "msg_022879662a64afaf016a80dfc3bae8819198eaa17b84deade9",
+          "turn_id": "01a00769-2ed1-7a92-88f6-55a0825dbb88",
+          "segment_type": "text",
+          "delta": " accepted"
+        }
+      }
+    },
+    {
+      "atMs": 58884,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 463,
+          "agent_run_id": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+          "segment_id": "msg_022879662a64afaf016a80dfc3bae8819198eaa17b84deade9",
+          "turn_id": "01a00769-2ed1-7a92-88f6-55a0825dbb88",
+          "segment_type": "text",
+          "delta": " successfully"
+        }
+      }
+    },
+    {
+      "atMs": 58900,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 465,
+          "agent_run_id": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+          "segment_id": "msg_022879662a64afaf016a80dfc3bae8819198eaa17b84deade9",
+          "turn_id": "01a00769-2ed1-7a92-88f6-55a0825dbb88",
+          "segment_type": "text",
+          "delta": "."
+        }
+      }
+    },
+    {
+      "atMs": 59045,
+      "message": {
+        "type": "SEGMENT_END",
+        "payload": {
+          "change_sequence": 467,
+          "agent_run_id": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+          "segment_id": "msg_022879662a64afaf016a80dfc3bae8819198eaa17b84deade9",
+          "turn_id": "01a00769-2ed1-7a92-88f6-55a0825dbb88",
+          "metadata": null,
+          "interrupted": false,
+          "reason": null,
+          "failed": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "atMs": 59066,
+      "message": {
+        "type": "TOKEN_USAGE_UPDATED",
+        "payload": {
+          "change_sequence": 469,
+          "agent_run_id": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+          "usage_event_id": "804a040c-9bb7-47d7-bcdf-8620bc920980",
+          "idempotency_key": "codex_token_usage:utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691:01a00764-7480-7be0-8b14-6e7578b530f3:01a00769-2ed1-7a92-88f6-55a0825dbb88:cumulative_snapshot:645480:606976:2032:1001:647512",
+          "observed_at": "2026-08-15T21:53:07.950Z",
+          "turn_id": "01a00769-2ed1-7a92-88f6-55a0825dbb88",
+          "llm_call_id": null,
+          "model_provider": "OPENAI",
+          "model_identifier": "gpt-5.6-luna",
+          "model_value": "gpt-5.6-luna",
+          "usage_scope": "cumulative_snapshot",
+          "input_token_semantic": "gross_includes_cache",
+          "standard_input_tokens": 1117,
+          "cache_miss_input_tokens": 1117,
+          "cache_read_input_tokens": 24320,
+          "cache_creation_input_tokens": null,
+          "cache_creation_5m_input_tokens": null,
+          "cache_creation_1h_input_tokens": null,
+          "cache_state": "positive",
+          "reasoning_output_tokens": 0,
+          "billable_output_tokens": 8,
+          "meter_delta_input_tokens": 25437,
+          "meter_delta_output_tokens": 8,
+          "meter_delta_total_tokens": 25445,
+          "input_price_per_million": 0.2,
+          "output_price_per_million": 1.2,
+          "cached_input_read_price_per_million": 0.02,
+          "cached_input_write_price_per_million": 0.25,
+          "cached_input_write_5m_price_per_million": null,
+          "cached_input_write_1h_price_per_million": null,
+          "estimated_api_input_cost": 0.0007098,
+          "estimated_api_standard_input_cost": 0.0002234,
+          "estimated_api_cache_read_input_cost": 0.00048640000000000006,
+          "estimated_api_cache_creation_input_cost": null,
+          "estimated_api_cache_creation_5m_input_cost": null,
+          "estimated_api_cache_creation_1h_input_cost": null,
+          "estimated_api_output_cost": 0.0000096,
+          "estimated_api_reasoning_output_cost": null,
+          "estimated_api_total_cost": 0.0007194,
+          "currency": "USD",
+          "api_cost_status": "estimated",
+          "missing_price_dimensions": [],
+          "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+          "selected_pricing_tier_id": "standard_le_272k",
+          "latest_prompt_tokens": 25437,
+          "effective_context_window_tokens": 258400,
+          "context_window_usage_percent": 9.844040247678018,
+          "quality_flags": []
+        }
+      }
+    },
+    {
+      "atMs": 59068,
+      "message": {
+        "type": "TURN_COMPLETED",
+        "payload": {
+          "change_sequence": 471,
+          "agent_run_id": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+          "turn_id": "01a00769-2ed1-7a92-88f6-55a0825dbb88",
+          "reason": null
+        }
+      }
+    },
+    {
+      "atMs": 59083,
+      "message": {
+        "type": "TURN_STARTED",
+        "payload": {
+          "change_sequence": 477,
+          "agent_run_id": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+          "turn_id": "01a0076a-1572-7be2-8fa5-910b86a5fe84"
+        }
+      }
+    }
+  ],
+  "finalSnapshot": {
+    "getTeamRunResumeConfig": {
+      "teamRunId": "utd_root_team_api_rev_008_1786830349955_45bb7b4ee1014c9c9f9ea66ea5e30e8c",
+      "isActive": true,
+      "executionTree": {
+        "schema_version": 1,
+        "created_at": "2026-08-15T21:46:58.810Z",
+        "archived_at": null,
+        "application_binding": null,
+        "handoffs": [],
+        "root_team": {
+          "team_definition_id": "utd-root-team-api-rev-008-1786830349955",
+          "team_definition_name": "utd_root_team_api_rev_008_1786830349955",
+          "team_run_id": "utd_root_team_api_rev_008_1786830349955_45bb7b4ee1014c9c9f9ea66ea5e30e8c",
+          "coordinator_address": "/coordinator",
+          "members": [
+            {
+              "kind": "configured_agent",
+              "address": "/coordinator",
+              "agent_definition_id": "utd-coordinator-api-rev-008-1786830349955",
+              "role": null,
+              "description": null,
+              "agent_run_id": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+              "platform_agent_run_id": null,
+              "launch_configuration": {
+                "runtime_kind": "CODEX",
+                "llm_model_identifier": "gpt-5.6-luna",
+                "llm_config": null,
+                "auto_execute_tools": true,
+                "skill_access_mode": "NONE",
+                "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-008/live/workspaces/api_rev_008_1786830349955"
+              }
+            },
+            {
+              "kind": "configured_agent",
+              "address": "/worker",
+              "agent_definition_id": "utd-worker-api-rev-008-1786830349955",
+              "role": null,
+              "description": null,
+              "agent_run_id": "utd_worker_api_rev_008_1786830349955_c5c3fd8714644b5391fb04cf6233f63d",
+              "platform_agent_run_id": null,
+              "launch_configuration": {
+                "runtime_kind": "CODEX",
+                "llm_model_identifier": "gpt-5.6-luna",
+                "llm_config": null,
+                "auto_execute_tools": true,
+                "skill_access_mode": "NONE",
+                "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-008/live/workspaces/api_rev_008_1786830349955"
+              }
+            },
+            {
+              "kind": "configured_team",
+              "address": "/lab",
+              "team_definition_id": "utd-child-team-api-rev-008-1786830349955",
+              "role": null,
+              "description": null,
+              "team_run_id": "utd_child_team_api_rev_008_1786830349955_f85c6518d4d642f08ef0918d00c21fe3",
+              "coordinator_address": "/lab/lead",
+              "members": [
+                {
+                  "kind": "configured_agent",
+                  "address": "/lab/lead",
+                  "agent_definition_id": "utd-nested-coordinator-api-rev-008-1786830349955",
+                  "role": null,
+                  "description": null,
+                  "agent_run_id": "utd_nested_coordinator_api_rev_008_1786830349955_3156e95c1fe54a57b74e1f8df431bbfb",
+                  "platform_agent_run_id": null,
+                  "launch_configuration": {
+                    "runtime_kind": "CODEX",
+                    "llm_model_identifier": "gpt-5.6-luna",
+                    "llm_config": null,
+                    "auto_execute_tools": true,
+                    "skill_access_mode": "NONE",
+                    "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-008/live/workspaces/api_rev_008_1786830349955"
+                  }
+                },
+                {
+                  "kind": "configured_agent",
+                  "address": "/lab/researcher",
+                  "agent_definition_id": "utd-nested-worker-api-rev-008-1786830349955",
+                  "role": null,
+                  "description": null,
+                  "agent_run_id": "utd_nested_worker_api_rev_008_1786830349955_ccfce8f20d5a45b187c6d148188b9b49",
+                  "platform_agent_run_id": null,
+                  "launch_configuration": {
+                    "runtime_kind": "CODEX",
+                    "llm_model_identifier": "gpt-5.6-luna",
+                    "llm_config": null,
+                    "auto_execute_tools": true,
+                    "skill_access_mode": "NONE",
+                    "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-008/live/workspaces/api_rev_008_1786830349955"
+                  }
+                }
+              ],
+              "task_executions": []
+            }
+          ],
+          "task_executions": [
+            {
+              "kind": "task_agent",
+              "address": "/worker",
+              "agent_run_id": "utd_worker_api_rev_008_1786830349955_6e563ed7d84147b191d0889649947ea6",
+              "platform_agent_run_id": null,
+              "started_at": "2026-08-15T21:47:07.191Z",
+              "settled_at": "2026-08-15T21:48:27.096Z"
+            },
+            {
+              "kind": "task_team",
+              "address": "/lab",
+              "team_run_id": "utd_child_team_api_rev_008_1786830349955_e9491fe561024a59906fcbd8e9f68d8c",
+              "members": [
+                {
+                  "kind": "task_team_agent",
+                  "address": "/lab/lead",
+                  "agent_run_id": "utd_nested_coordinator_api_rev_008_1786830349955_cfe801dc482242609d92141704218d1b",
+                  "platform_agent_run_id": null
+                },
+                {
+                  "kind": "task_team_agent",
+                  "address": "/lab/researcher",
+                  "agent_run_id": "utd_nested_worker_api_rev_008_1786830349955_23939c5a93954495bdeadb585481e8b9",
+                  "platform_agent_run_id": null
+                }
+              ],
+              "task_executions": [
+                {
+                  "kind": "task_agent",
+                  "address": "/lab/researcher",
+                  "agent_run_id": "utd_nested_worker_api_rev_008_1786830349955_d83db6e144cb4a5898b809441ae2d1ec",
+                  "platform_agent_run_id": null,
+                  "started_at": "2026-08-15T21:48:43.070Z",
+                  "settled_at": "2026-08-15T21:48:52.433Z"
+                }
+              ],
+              "started_at": "2026-08-15T21:48:36.017Z",
+              "settled_at": "2026-08-15T21:49:42.063Z"
+            },
+            {
+              "kind": "task_agent",
+              "address": "/worker",
+              "agent_run_id": "utd_worker_api_rev_008_1786830349955_de7cbf311d254854a43a73d630de0979",
+              "platform_agent_run_id": null,
+              "started_at": "2026-08-15T21:52:11.206Z",
+              "settled_at": "2026-08-15T21:53:07.011Z"
+            }
+          ]
+        }
+      }
+    },
+    "getTaskDelegationRecords": [
+      {
+        "taskId": "task_f9e93ed17f8e4964accf2a8283670c77",
+        "delegatorAgentRunId": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+        "recipientAddress": "/worker",
+        "targetAgentRunId": "utd_worker_api_rev_008_1786830349955_6e563ed7d84147b191d0889649947ea6",
+        "targetTeamRunId": null,
+        "status": "accepted",
+        "description": "Return E2E_DIRECT_TASK_RESULT_42",
+        "createdAt": "2026-08-15T21:47:07.191Z",
+        "referenceFiles": [],
+        "updates": [
+          {
+            "kind": "submission",
+            "submissionId": "submission_d7fc51404b974d239090fa7da38c51b4",
+            "reviewId": null,
+            "interruptionId": null,
+            "reviewedSubmissionId": null,
+            "decision": null,
+            "content": "E2E_DIRECT_TASK_RESULT_42",
+            "createdAt": "2026-08-15T21:47:13.379Z",
+            "referenceFiles": []
+          },
+          {
+            "kind": "review",
+            "submissionId": null,
+            "reviewId": "review_abb1cd2df8c843b38c76f25a7f4f2e3f",
+            "interruptionId": null,
+            "reviewedSubmissionId": "submission_d7fc51404b974d239090fa7da38c51b4",
+            "decision": "accept",
+            "content": null,
+            "createdAt": "2026-08-15T21:48:27.079Z",
+            "referenceFiles": []
+          }
+        ]
+      },
+      {
+        "taskId": "task_fd619a28550b4558a47303bb9177a1ac",
+        "delegatorAgentRunId": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+        "recipientAddress": "/lab",
+        "targetAgentRunId": null,
+        "targetTeamRunId": "utd_child_team_api_rev_008_1786830349955_e9491fe561024a59906fcbd8e9f68d8c",
+        "status": "accepted",
+        "description": "Return E2E_NESTED_TEAM_RESULT after delegating the required child task.",
+        "createdAt": "2026-08-15T21:48:36.017Z",
+        "referenceFiles": [],
+        "updates": [
+          {
+            "kind": "submission",
+            "submissionId": "submission_4dc1513e686045819ba2e67a55966984",
+            "reviewId": null,
+            "interruptionId": null,
+            "reviewedSubmissionId": null,
+            "decision": null,
+            "content": "E2E_NESTED_TEAM_RESULT",
+            "createdAt": "2026-08-15T21:48:54.502Z",
+            "referenceFiles": []
+          },
+          {
+            "kind": "review",
+            "submissionId": null,
+            "reviewId": "review_b79652726ad74dac82b43d108049f676",
+            "interruptionId": null,
+            "reviewedSubmissionId": "submission_4dc1513e686045819ba2e67a55966984",
+            "decision": "accept",
+            "content": null,
+            "createdAt": "2026-08-15T21:49:42.050Z",
+            "referenceFiles": []
+          }
+        ]
+      },
+      {
+        "taskId": "task_e7a202c5ea2c43c4915b50b75d17061c",
+        "delegatorAgentRunId": "utd_nested_coordinator_api_rev_008_1786830349955_cfe801dc482242609d92141704218d1b",
+        "recipientAddress": "/lab/researcher",
+        "targetAgentRunId": "utd_nested_worker_api_rev_008_1786830349955_d83db6e144cb4a5898b809441ae2d1ec",
+        "targetTeamRunId": null,
+        "status": "accepted",
+        "description": "Return E2E_NESTED_CHILD_RESULT",
+        "createdAt": "2026-08-15T21:48:43.070Z",
+        "referenceFiles": [],
+        "updates": [
+          {
+            "kind": "submission",
+            "submissionId": "submission_5105eccc953d4830ac7d763dfeacea08",
+            "reviewId": null,
+            "interruptionId": null,
+            "reviewedSubmissionId": null,
+            "decision": null,
+            "content": "E2E_NESTED_CHILD_RESULT",
+            "createdAt": "2026-08-15T21:48:50.064Z",
+            "referenceFiles": []
+          },
+          {
+            "kind": "review",
+            "submissionId": null,
+            "reviewId": "review_363cf8599e5740f595413919552c5dda",
+            "interruptionId": null,
+            "reviewedSubmissionId": "submission_5105eccc953d4830ac7d763dfeacea08",
+            "decision": "accept",
+            "content": null,
+            "createdAt": "2026-08-15T21:48:52.411Z",
+            "referenceFiles": []
+          }
+        ]
+      },
+      {
+        "taskId": "task_d45629f981304938b0bd639741c50d2b",
+        "delegatorAgentRunId": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+        "recipientAddress": "/worker",
+        "targetAgentRunId": "utd_worker_api_rev_008_1786830349955_de7cbf311d254854a43a73d630de0979",
+        "targetTeamRunId": null,
+        "status": "accepted",
+        "description": "Return E2E_DIRECT_TASK_RESULT_42 for second identity proof.",
+        "createdAt": "2026-08-15T21:52:11.206Z",
+        "referenceFiles": [],
+        "updates": [
+          {
+            "kind": "submission",
+            "submissionId": "submission_ed3544a4931d48b980d88ba2731f8cb7",
+            "reviewId": null,
+            "interruptionId": null,
+            "reviewedSubmissionId": null,
+            "decision": null,
+            "content": "E2E_DIRECT_TASK_RESULT_42",
+            "createdAt": "2026-08-15T21:52:17.097Z",
+            "referenceFiles": []
+          },
+          {
+            "kind": "review",
+            "submissionId": null,
+            "reviewId": "review_b44a0aed7d3f4a4b8cd341651e22adca",
+            "interruptionId": null,
+            "reviewedSubmissionId": "submission_ed3544a4931d48b980d88ba2731f8cb7",
+            "decision": "accept",
+            "content": null,
+            "createdAt": "2026-08-15T21:53:06.997Z",
+            "referenceFiles": []
+          }
+        ]
+      }
+    ],
+    "getTeamCommunicationMessages": []
+  }
+}

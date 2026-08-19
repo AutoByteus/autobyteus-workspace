@@ -1,0 +1,2394 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web
+
+stderr | components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/__tests__/teamTaskExecutionEventRouter.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamOverviewPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/__tests__/MobileUxRefinement.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/runHydration/__tests__/teamRunContextHydrationService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/agentStreaming/__tests__/TeamStreamingService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamOverviewPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/mobile/__tests__/MobileUxRefinement.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/runHydration/__tests__/teamRunContextHydrationService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/__tests__/teamTaskExecutionEventRouter.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ × services/runHydration/__tests__/teamRunContextHydrationService.spec.ts > hydrateLiveTeamRunContext Event Monitor final-prime ownership > primes each real loader/builder context exactly once 'after projected activity hydration' 8ms
+   → [vitest] No "fetchTaskDelegationRecordsForTeam" export is defined on the "../taskDelegationHydrationService" mock. Did you forget to return it from "vi.mock"?
+If you need to partially mock a module, you can use "importOriginal" helper inside:
+
+ × services/runHydration/__tests__/teamRunContextHydrationService.spec.ts > hydrateLiveTeamRunContext Event Monitor final-prime ownership > primes each real loader/builder context exactly once 'when the member projection is absent' 1ms
+   → [vitest] No "fetchTaskDelegationRecordsForTeam" export is defined on the "../taskDelegationHydrationService" mock. Did you forget to return it from "vi.mock"?
+If you need to partially mock a module, you can use "importOriginal" helper inside:
+
+ × services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current rooted event dispatch > keeps subscription transport state separate from backend Team lifecycle 8ms
+   → Cannot read properties of undefined (reading 'getRootTeamRunId')
+ × services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current rooted event dispatch > reattaches transport callbacks to the latest exact Team context 3ms
+   → Cannot read properties of undefined (reading 'getRootTeamRunId')
+ × services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current rooted event dispatch > projects status and content only into the exact persistent execution context 1ms
+   → Cannot read properties of undefined (reading 'getRootTeamRunId')
+ × services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current rooted event dispatch > drops a live member payload without canonical execution identity instead of using focus 3ms
+   → Cannot read properties of undefined (reading 'getRootTeamRunId')
+ × services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current rooted event dispatch > mirrors an exact external user message into its addressed conversation 0ms
+   → Cannot read properties of undefined (reading 'getRootTeamRunId')
+ × services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current rooted event dispatch > routes successful tool execution through the browser-owned success handler at the exact execution 0ms
+   → Cannot read properties of undefined (reading 'getRootTeamRunId')
+ × services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current rooted event dispatch > projects an inter-Agent delivery as a user input only in the exact persistent receiver conversation 0ms
+   → Cannot read properties of undefined (reading 'getRootTeamRunId')
+ × services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current rooted event dispatch > projects an inter-Agent delivery only into the exact nonempty task-Team receiver context 0ms
+   → Cannot read properties of undefined (reading 'getRootTeamRunId')
+ × services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current rooted event dispatch > drops a member input without exact execution identity instead of using recipient data as fallback 1ms
+   → Cannot read properties of undefined (reading 'getRootTeamRunId')
+ × services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current rooted event dispatch > forwards exact Team communication messages to the communication projection store 0ms
+   → Cannot read properties of undefined (reading 'getRootTeamRunId')
+ × services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current rooted event dispatch > routes compaction lifecycle only to the exact addressed member 1ms
+   → Cannot read properties of undefined (reading 'getRootTeamRunId')
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > loads workspace list without eager history tree on mount 59ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > renders workspace rows collapsed by default 46ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > fetches scoped workspace history when a workspace row is expanded 13ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > renders scoped workspace history loading, error, and empty states 25ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > opens workspace removal confirmation from the row action without expanding the row 9ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > does not render remove action for non-removable temp workspace rows 5ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > cancels workspace removal without mutating workspace or history state 11ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > confirms workspace removal and prunes history plus expansion state after success 18ms
+ ✓ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts > TeamRunConfigForm > places team auto approve before a collapsed accessible member override disclosure 62ms
+ ✓ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts > TeamRunConfigForm > toggles the member override disclosure without mutating config fields 28ms
+ ✓ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts > TeamRunConfigForm > renders runtime selector and member override entries 5ms
+ ✓ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts > TeamRunConfigForm > loads models for the team runtime and syncs runtime catalogs for explicit member runtimes 9ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > keeps the workspace visible and reports an error when workspace removal fails 29ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > shows groups after opening a workspace but keeps run histories collapsed 18ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > keeps the individual team run disclosure chevron visually consistent with the parent team chevron 48ms
+ ✓ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts > TeamRunConfigForm > changes runtime kind and reloads runtime-scoped models 34ms
+ ✓ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts > TeamRunConfigForm > renders Codex effort-only reasoning defaults visibly on the team-global config path 28ms
+ ✓ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts > TeamRunConfigForm > starts team-global advanced collapsed for OpenAI Responses off defaults 25ms
+ ✓ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts > TeamRunConfigForm > prunes inherited member-only llmConfig overrides when the global model changes 6ms
+ ✓ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts > TeamRunConfigForm > prunes inherited member llmConfig overrides when the global runtime changes 12ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > renders nested team members collapsed by default with a disclosure control 69ms
+ ✓ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts > TeamRunConfigForm > renders nested leaf overrides under their subteam group and keeps canonical-address override identity 7ms
+ ✓ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts > TeamRunConfigForm > renders selected existing team run configuration as read-only while keeping member overrides inspectable 87ms
+ ✓ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts > TeamRunConfigForm > marks historical team member config as missing when read-only metadata has null llmConfig 5ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > toggles nested team member disclosure without selecting the member 130ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > toggles and selects a nested team row from the row body 45ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > keeps an expanded nested child visible after selecting it 28ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > expands nested ancestors when a team row opens a focused nested member 23ms
+ × components/workspace/team/__tests__/TeamOverviewPanel.spec.ts > TeamOverviewPanel.vue > renders Messages without the removed Task Plan section 6ms
+   → Cannot read properties of undefined (reading 'getRootTeamRunId')
+ × components/workspace/team/__tests__/TeamOverviewPanel.spec.ts > TeamOverviewPanel.vue > keeps Team tab section expansion parent-owned with Messages open first 1ms
+   → Cannot read properties of undefined (reading 'getRootTeamRunId')
+ × components/workspace/team/__tests__/TeamOverviewPanel.spec.ts > TeamOverviewPanel.vue > opens Tasks immediately when the selected team already has delegated task entries 0ms
+   → Cannot read properties of undefined (reading 'getRootTeamRunId')
+ × components/workspace/team/__tests__/TeamOverviewPanel.spec.ts > TeamOverviewPanel.vue > opens Tasks when delegated task entries appear while mounted 0ms
+   → Cannot read properties of undefined (reading 'getRootTeamRunId')
+ × components/workspace/team/__tests__/TeamOverviewPanel.spec.ts > TeamOverviewPanel.vue > preserves manual collapse for the same task set but reopens for a new task identity 0ms
+   → Cannot read properties of undefined (reading 'getRootTeamRunId')
+ × components/workspace/team/__tests__/TeamOverviewPanel.spec.ts > TeamOverviewPanel.vue > resets Messages open when the selected team run changes without taking over message identity 0ms
+   → Cannot read properties of undefined (reading 'getRootTeamRunId')
+ × components/workspace/team/__tests__/TeamOverviewPanel.spec.ts > TeamOverviewPanel.vue > opens Tasks when the selected team run changes to another run with delegated task entries 0ms
+   → Cannot read properties of undefined (reading 'getRootTeamRunId')
+ × components/workspace/team/__tests__/TeamOverviewPanel.spec.ts > TeamOverviewPanel.vue > counts and passes route/path identity for a focused subteam without a member run id 0ms
+   → Cannot read properties of undefined (reading 'getRootTeamRunId')
+ ✓ components/mobile/__tests__/MobileUxRefinement.spec.ts > mobile Round 4 UX refinements > shows mixed-success reachability instead of claiming the desktop is unreachable 13ms
+ ✓ components/mobile/__tests__/MobileUxRefinement.spec.ts > mobile Round 4 UX refinements > uses concise configure-only mobile setup without first-message entry or launch summary 42ms
+ ✓ components/mobile/__tests__/MobileUxRefinement.spec.ts > mobile Round 4 UX refinements > removes team launch first-message target from setup while keeping searchable team selection 23ms
+ ✓ components/mobile/__tests__/MobileUxRefinement.spec.ts > mobile Round 4 UX refinements > keeps mobile launch disabled instead of silently choosing a model for unconfigured agents 11ms
+ ✓ components/mobile/__tests__/MobileUxRefinement.spec.ts > mobile Round 4 UX refinements > consumes a single-use setup intent so selected agents open visible setup preselected 85ms
+ ✓ components/mobile/__tests__/MobileUxRefinement.spec.ts > mobile Round 4 UX refinements > binds agent Auto approve tools to the launch config and created context 64ms
+ × components/mobile/__tests__/MobileUxRefinement.spec.ts > mobile Round 4 UX refinements > binds team Auto approve tools to the launch config, team context, and member configs 27ms
+   → (0 , useAgentTeamContextsStore)(...).createRunFromTemplate is not a function
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > refreshes expanded workspace history quietly on the background interval while mounted 12ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > renders agent avatar image when the tree node provides avatar URL 10ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > tracks broken avatar per URL key so a changed avatar URL can recover 5ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > selects run via runHistoryStore.selectTreeRun and emits run-selected 14ms
+ ✓ components/mobile/__tests__/MobileUxRefinement.spec.ts > mobile Round 4 UX refinements > lists launch workspaces from the workspace store and loads an unlisted server path into the active config 34ms
+ ✓ components/mobile/__tests__/MobileUxRefinement.spec.ts > mobile Round 4 UX refinements > keeps context visibility adjacent to the mobile composer send decision 33ms
+ ✓ components/mobile/__tests__/MobileUxRefinement.spec.ts > mobile Round 4 UX refinements > keeps mobile Files browse-first while preserving secondary filters and deliberate deep search 41ms
+ ✓ components/mobile/__tests__/MobileUxRefinement.spec.ts > mobile Round 4 UX refinements > renders Activity as a compact digest without secondary issue filters or redundant headers 8ms
+ ✓ components/mobile/__tests__/MobileUxRefinement.spec.ts > mobile Round 4 UX refinements > renders compaction rows in the mobile run Activity list and count 3ms
+ ✓ components/mobile/__tests__/MobileUxRefinement.spec.ts > mobile Round 4 UX refinements > opens mobile Files from run root-path metadata with an empty workspace store 10ms
+ ✓ components/mobile/__tests__/MobileUxRefinement.spec.ts > mobile Round 4 UX refinements > releases the mobile Files live session when the visible context changes 8ms
+ ✓ components/mobile/__tests__/MobileUxRefinement.spec.ts > mobile Round 4 UX refinements > keeps interactive Terminal and VNC out of mobile refinement surfaces 1ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > creates draft run from agent row plus button and emits run-created 133ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > does not render run-row configuration button 22ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > does not render Skill Improvement actions on run-history rows 35ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > renders grouped team rows under workspace and selects the team run when clicked 25ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > opens a historical team row through the coordinator-focused member instead of the first alphabetical member 22ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > strips the user requirement prefix from agent and team summary labels 17ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > renders team avatar image when team definition avatar is available 13ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > renders team member avatar image when matching agent definition avatar is available 98ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > selects team member through runHistoryStore so persisted member history can hydrate 28ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > keeps the global Workspaces tree free of delegated-task detail and full-context UI under an expanded live team 97ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > renders delete action for inactive team history rows 27ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > renders archive action for inactive team history rows 13ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > does not render team-row configuration button 13ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > deletes inactive team history from team row action without selecting the row 29ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > archives inactive team history from team row action without selecting the row 14ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > creates workspace from inline input when user presses Enter 15ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > opens native folder picker on embedded electron and creates workspace from selected path 6ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > does not create workspace when embedded electron picker is canceled 4ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > closes inline add workspace input without creating workspace on cancel 11ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > renders active status indicator for active runs 15ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > does not render status indicator for inactive runs 18ms
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > shows an error toast when terminate fails
+Failed to terminate run 'run-1'.
+
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > renders delete action only for inactive history runs 28ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > renders archive action only for inactive persisted history runs 25ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > terminates active run from row action without selecting the row 20ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > shows an error toast when terminate fails 16ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > deletes inactive history run from row action without selecting the row 78ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > archives inactive history run from row action without selecting the row 71ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > shows an error toast when archive fails 23ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > does not call delete when confirmation is cancelled 106ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > shows an error toast when delete fails 27ms
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/__tests__/MobileContextSelectionRegression.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/__tests__/MobileTeamMessages.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/mobile/__tests__/MobileContextSelectionRegression.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/mobile/__tests__/MobileTeamMessages.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts > ApplicationTeamLaunchProfileEditor > repairs stale saved member overrides by exact route/id match and drops stale carry-forward overrides 20ms
+stdout | components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ × components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts > TeamDelegatedTasksSection > uses controlled collapsed state with human task count and no approval summary 8ms
+   → Cannot read properties of undefined (reading 'getRootTeamRunId')
+ × components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts > TeamDelegatedTasksSection > renders task detail navigation without duplicating execution hierarchy rows 2ms
+   → Cannot read properties of undefined (reading 'getRootTeamRunId')
+ × components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts > TeamDelegatedTasksSection > switches the whole right pane to a task-owned reference preview and refreshes repeated reference selections 1ms
+   → Cannot read properties of undefined (reading 'getRootTeamRunId')
+ × components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts > TeamDelegatedTasksSection > returns from reference preview to task body when a summary row is selected 20ms
+   → Cannot read properties of undefined (reading 'getRootTeamRunId')
+ × components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts > TeamDelegatedTasksSection > adds a message-style horizontal split resize handle for the task navigator 1ms
+   → Cannot read properties of undefined (reading 'getRootTeamRunId')
+ × components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts > TeamDelegatedTasksSection > selects task summaries for reading without focusing execution targets 1ms
+   → Cannot read properties of undefined (reading 'getRootTeamRunId')
+ × components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts > TeamDelegatedTasksSection > keeps task-team summary selection detail-only with no member navigation 1ms
+   → Cannot read properties of undefined (reading 'getRootTeamRunId')
+ × components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts > TeamDelegatedTasksSection > shows the empty delegated-task state 3ms
+   → Cannot read properties of undefined (reading 'getRootTeamRunId')
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts > WorkspaceAgentRunsTreePanel regressions > routes team top-row clicks through persisted member hydration instead of blind team selection 97ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts > WorkspaceAgentRunsTreePanel regressions > keeps a previously selected team expanded when another team row is opened 33ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts > WorkspaceAgentRunsTreePanel regressions > removes a draft agent row through the local close path 16ms
+ × components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts > WorkspaceAgentRunsTreePanel regressions > removes a draft team row through the local discard path 41ms
+   → Unable to get button[title="Remove draft team"] within: <div class="flex h-full flex-col bg-white">
+  <div class="flex items-center justify-between border-t border-gray-200 px-3 py-2">
+    <h3 class="text-sm font-semibold text-gray-700">Workspaces</h3><button type="button" class="inline-flex h-6 w-6 items-center justify-center rounded-md text-gray-500 transition-colors hover:bg-indigo-50 hover:text-indigo-600" title="Add workspace"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-4 w-4"></svg></button>
+  </div>
+  <!--v-if-->
+  <div class="min-h-0 flex-1 overflow-y-auto px-1 pb-2">
+    <div class="space-y-1">
+      <section class="rounded-md">
+        <div class="group/workspace-row flex items-center rounded-md text-sm text-gray-700 transition-colors hover:bg-gray-50 focus-within:bg-gray-50" data-test="workspace-row" data-workspace-id="workspace:/ws/a" data-workspace-root="/ws/a" aria-expanded="true"><button type="button" class="flex min-w-0 flex-1 items-center px-2 py-1.5 text-left" aria-expanded="true"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1.5 h-4 w-4 text-gray-400 transition-transform rotate-0"></svg><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1.5 h-4 w-4 text-gray-500"></svg><span class="truncate">autobyteus_org</span></button>
+          <!--v-if-->
+        </div>
+        <div class="ml-2 mt-0.5 space-y-1">
+          <!--v-if-->
+          <div class="rounded-md">
+            <div class="flex items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition-colors hover:bg-gray-50"><button type="button" class="flex min-w-0 flex-1 items-center text-left" data-test="workspace-agent-row" data-workspace-root="/ws/a" data-agent-definition-id="agent-def-1" aria-expanded="false"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1 h-3.5 w-3.5 text-gray-400 transition-transform -rotate-90"></svg><span class="mr-1.5 inline-flex h-5 w-5 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[0.625rem] font-semibold text-gray-600"><img src="https://example.com/superagent.png" alt="SuperAgent avatar" class="h-full w-full object-cover"></span><span class="truncate font-medium">SuperAgent</span><span class="ml-1 text-xs text-gray-400">(2)</span></button><button type="button" class="ml-2 inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-colors hover:bg-indigo-50 hover:text-indigo-600" title="New run with this agent"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-4 w-4"></svg></button></div>
+            <!--v-if-->
+          </div>
+          <div class="mt-1 space-y-0.5">
+            <div class="px-2 py-1 text-[0.6875rem] font-semibold uppercase tracking-wide text-gray-400"> Teams </div>
+            <div class="rounded-md"><button type="button" class="flex w-full items-center rounded-md px-2 py-1 text-left text-sm text-gray-700 transition-colors hover:bg-gray-50" data-test="workspace-team-definition-row-team-def-1" aria-expanded="true"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1 h-3.5 w-3.5 text-gray-400 transition-transform rotate-0"></svg><span class="h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-1.5" role="img" aria-label="No active team runs" title="No active team runs" data-test="team-activity-dot" data-active="false"></span><span class="mr-1.5 inline-flex h-5 w-5 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[0.625rem] font-semibold text-gray-600"><img src="https://example.com/team-alpha.png" alt="Team Alpha avatar" class="h-full w-full object-cover"></span><span class="truncate font-medium">Team Alpha</span><span class="ml-1 text-xs text-gray-400">(1)</span></button>
+              <div class="ml-3 mt-0.5 space-y-0.5">
+                <div class="rounded-md">
+                  <div class="group/team-row flex items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition-colors hover:bg-gray-50"><button type="button" class="flex min-w-0 flex-1 items-center text-left" data-test="workspace-team-row-temp-team-1" aria-expanded="false"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1 h-3.5 w-3.5 flex-shrink-0 text-gray-400 transition-transform -rotate-90" data-test="workspace-team-run-disclosure"></svg><span class="h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-1.5" role="img" aria-label="Inactive team run" title="Inactive team run" data-test="team-activity-dot" data-active="false"></span><span class="truncate font-medium">Draft team summary</span></button>
+                    <div class="ml-2 flex flex-shrink-0 items-center gap-1"><button type="button" class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-amber-50 hover:text-amber-600 md:opacity-0 md:group-hover/team-row:opacity-100 md:group-focus-within/team-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50" title="Archive team history"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-3.5 w-3.5"></svg></button><button type="button" class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-red-50 hover:text-red-600 md:opacity-0 md:group-hover/team-row:opacity-100 md:group-focus-within/team-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50" title="Delete team history permanently"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-3.5 w-3.5"></svg></button><span class="text-xs text-gray-400">4h</span></div>
+                  </div>
+                  <!--v-if-->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+  <!--v-if-->
+  <!--v-if-->
+</div>
+ × components/mobile/__tests__/MobileTeamMessages.spec.ts > MobileTeamMessages > renders structured reference files as tappable rows without linkifying raw prose paths 9ms
+   → Cannot read properties of undefined (reading 'getRootTeamRunId')
+ × components/mobile/__tests__/MobileTeamMessages.spec.ts > MobileTeamMessages > opens a phone reference viewer by team/message/reference identity and closes back to the list 4ms
+   → Cannot read properties of undefined (reading 'getRootTeamRunId')
+ ✓ components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts > TeamCommunicationPanel.vue > renders compact newest-first address-based message rows with reference icons 49ms
+ ✓ components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts > TeamCommunicationPanel.vue > shows the empty state when no exact address match exists 2ms
+ ✓ components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts > TeamCommunicationPanel.vue > opens a selected reference using the selected message and reference ids 19ms
+stderr | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > shows focused member name in header
+[Vue warn]: Invalid vnode type when creating vnode: undefined. 
+  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > does not render the token usage header chip
+[Vue warn]: Invalid vnode type when creating vnode: undefined. 
+  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > shows focused member status in header
+[Vue warn]: Invalid vnode type when creating vnode: undefined. 
+  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > shows focused member avatar in header when available
+[Vue warn]: Invalid vnode type when creating vnode: undefined. 
+  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > does not silently substitute the team title for an unresolved exact focus address
+[Vue warn]: Invalid vnode type when creating vnode: undefined. 
+  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > shows roster focus in the header when active execution falls back to the coordinator
+[Vue warn]: Invalid vnode type when creating vnode: undefined. 
+  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > keeps roster focus in the header after simplifying the shell controls
+[Vue warn]: Invalid vnode type when creating vnode: undefined. 
+  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > opens selected team config from header action
+[Vue warn]: Invalid vnode type when creating vnode: undefined. 
+  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > seeds a new team config from the selected run without sharing nested global or member llmConfig
+[Vue warn]: Invalid vnode type when creating vnode: undefined. 
+  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > renders the focused monitor directly
+[Vue warn]: Invalid vnode type when creating vnode: undefined. 
+  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > passes the focused member run to the composer skill-improvement CTA
+[Vue warn]: Invalid vnode type when creating vnode: undefined. 
+  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > preserves the shared composer only for a focused subteam
+[Vue warn]: Invalid vnode type when creating vnode: undefined. 
+  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+ × components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > shows focused member name in header 11ms
+   → Cannot read properties of undefined (reading 'getFocusedAddress')
+ × components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > does not render the token usage header chip 2ms
+   → Cannot read properties of undefined (reading 'getFocusedAddress')
+ × components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > shows focused member status in header 2ms
+   → Cannot read properties of undefined (reading 'getFocusedAddress')
+ × components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > shows focused member avatar in header when available 2ms
+   → Cannot read properties of undefined (reading 'getFocusedAddress')
+ × components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > does not silently substitute the team title for an unresolved exact focus address 1ms
+   → Cannot read properties of undefined (reading 'getFocusedAddress')
+ × components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > shows roster focus in the header when active execution falls back to the coordinator 1ms
+   → Cannot read properties of undefined (reading 'getFocusedAddress')
+ × components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > keeps roster focus in the header after simplifying the shell controls 1ms
+   → Cannot read properties of undefined (reading 'getFocusedAddress')
+ × components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > opens selected team config from header action 2ms
+   → Cannot read properties of undefined (reading 'getFocusedAddress')
+ × components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > seeds a new team config from the selected run without sharing nested global or member llmConfig 2ms
+   → Cannot read properties of undefined (reading 'getFocusedAddress')
+ × components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > renders the focused monitor directly 1ms
+   → Cannot read properties of undefined (reading 'getFocusedAddress')
+ × components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > passes the focused member run to the composer skill-improvement CTA 12ms
+   → Cannot read properties of undefined (reading 'getFocusedAddress')
+ × components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > preserves the shared composer only for a focused subteam 1ms
+   → Cannot read properties of undefined (reading 'getFocusedAddress')
+stderr | components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts > Historical team lazy hydration integration > opens a historical team through the sidebar and lazily hydrates only the newly selected member
+Failed to open team: TypeError: (0 , __vite_ssr_import_4__.useTeamRunConfigStore)(...).selectDraft is not a function
+    at openTeamRun (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts:55:29)
+    at openTeamMemberRunFromHistory (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/stores/runHistorySelectionActions.ts:48:20)
+    at Proxy.openTeamMemberRun (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/stores/runHistoryStore.ts:433:7)
+    at selectTreeRunFromHistory (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/stores/runHistorySelectionActions.ts:121:5)
+    at Proxy.selectTreeRun (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/stores/runHistoryStore.ts:440:7)
+    at Object.onSelectTeam (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/composables/useWorkspaceHistorySelectionActions.ts:85:7)
+
+ × components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts > Historical team lazy hydration integration > opens a historical team through the sidebar and lazily hydrates only the newly selected member 118ms
+   → expected undefined to deeply equal { rootTeamRunId: 'team-1', …(3) }
+stdout | components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ × components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts > WorkspaceHistoryWorkspaceSection > renders any-active definition activity and exact sibling run activity reactively 5ms
+   → Cannot read properties of undefined (reading 'listNavigationRows')
+ × components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts > WorkspaceHistoryWorkspaceSection > renders and selects exact stable and task-Agent execution rows 1ms
+   → Cannot read properties of undefined (reading 'listNavigationRows')
+ × components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts > WorkspaceHistoryWorkspaceSection > marks only the selected TeamRun current when focused member addresses repeat 0ms
+   → Cannot read properties of undefined (reading 'listNavigationRows')
+ × components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts > WorkspaceHistoryWorkspaceSection > toggles an exact task-Team subtree while keeping task details out of the tree 1ms
+   → Cannot read properties of undefined (reading 'listNavigationRows')
+ × components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts > WorkspaceHistoryWorkspaceSection > removes transient execution rows when the exact live projection disappears 0ms
+   → Cannot read properties of undefined (reading 'listNavigationRows')
+ × components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts > WorkspaceHistoryWorkspaceSection > toggles stable nested Team children from row body and disclosure with exact addresses 0ms
+   → Cannot read properties of undefined (reading 'listNavigationRows')
+stderr | components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/__tests__/MobileArtifacts.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/runHistoryStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/runHistoryNavigationProjection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/teamCommunicationStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentTeamRunStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/running/__tests__/RunningTeamRow.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentTeamContextsStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/__tests__/teamRunConfigUtils.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/mobile/__tests__/MobileArtifacts.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/runHistoryStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/runHistoryNavigationProjection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > hydrates and connects newly discovered active runs from workspace history
+[runHistorySync] Failed to hydrate active team run 'team-live-1'. TypeError: Cannot read properties of undefined (reading 'listAgentContextEntries')
+    at reconcileDiscoveredActiveRuns (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/stores/runHistoryLoadActions.ts:258:52)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at fetchRunHistoryTree (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/stores/runHistoryLoadActions.ts:100:5)
+    at Proxy.fetchTree (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/stores/runHistoryStore.ts:121:7)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/stores/__tests__/runHistoryStore.spec.ts:618:5
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+stdout | stores/__tests__/teamCommunicationStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > archiveTeamRun rejects draft team IDs without backend mutation call
+Failed to archive team run 'temp-team-123': TypeError: Cannot destructure property 'data' of '(intermediate value)' as it is undefined.
+    at archiveTeamRunInHistoryStore (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/stores/runHistoryMutationActions.ts:205:13)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at Proxy.archiveTeamRun (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/stores/runHistoryStore.ts:346:23)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/stores/__tests__/runHistoryStore.spec.ts:2365:22
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > publishes the asynchronously loaded initial workspace catalog with exactly one topology refresh 3ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > fetches run history tree from GraphQL 3ms
+ × stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > hydrates and connects newly discovered active runs from workspace history 11ms
+   → Cannot read properties of undefined (reading 'getRootTeamRunId')
+ × stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > fetchWorkspaceHistory does not reconcile unrelated active contexts outside the scoped workspace 1ms
+   → Cannot read properties of undefined (reading 'getRootTeamRunId')
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > projects backend-visible temp workspace descriptors as non-removable roots with local drafts 1ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > prefers fixed temp identity and non-removability when temp and filesystem descriptors share one root 1ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > keeps permanent local standalone contexts visible until history reconciliation dedupes them 1ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > does not project history-only removed workspace roots without visible descriptors 1ms
+ × stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > preserves subscribed live member statuses while refreshing root team activity 1ms
+   → Cannot read properties of undefined (reading 'getRootTeamRunId')
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > preserves subscribed single-agent live status during active history refresh 1ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > returns backend readiness error on fetchTree when backend is not ready 0ms
+ × stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > opens a run, hydrates projection, selects runContext, and connects stream when active 2ms
+   → agentRunStore.isAgentStreamReady is not a function
+ × stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > opens an inactive run and hydrates offline status without connecting stream 1ms
+   → agentRunStore.isAgentStreamReady is not a function
+ × stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > trusts history active state and reconnects an agent stream when reopening an active run 0ms
+   → agentRunStore.isAgentStreamReady is not a function
+ × stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > does not clobber live active context state when reopening an already subscribed run 1ms
+   → agentRunStore.isAgentStreamReady is not a function
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > creates draft run for selected workspace and agent 1ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > reuses model from existing context when creating draft run 0ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > prefers the selected same-definition context and deep-clones its llmConfig when creating a draft run 9ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > clears copied llmConfig when model resolution changes the source model for a draft run 1ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > reuses an existing workspace id when local cache has matching root path 0ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > fetches workspaces before creating one when cache is not loaded yet 0ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > projects persisted history and temp drafts into workspace tree 1ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > pruneWorkspace clears global agent selection when the selected run belongs to the removed workspace 1ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > pruneWorkspace clears global team selection when the selected team belongs to the removed workspace 0ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > overlays persisted run status with matching live context only 0ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > projects offline draft contexts as inactive in tree projection 0ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > selectTreeRun delegates to openRun for history rows 0ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > selectTreeRun selects local temp context for draft rows 0ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > deleteRun removes local state and refreshes tree when backend succeeds 1ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > deleteRun does not mutate local state when backend rejects deletion 0ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > deleteRun rejects draft run IDs without backend mutation call 0ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > archiveRun removes local state and refreshes tree when backend succeeds 1ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > archiveRun does not mutate local state when backend rejects archive 2ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > archiveRun rejects draft run IDs without backend mutation call 1ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > archiveTeamRun removes local team state and refreshes tree when backend succeeds 1ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > archiveTeamRun leaves local state unchanged when backend rejects archive 0ms
+ × stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > archiveTeamRun rejects draft team IDs without backend mutation call 5ms
+   → expected "spy" to not be called at all, but actually been called 1 times
+
+Received: 
+
+  1st spy call:
+
+    Array [
+      Object {
+        "mutation": Object {
+          "definitions": Array [
+            Object {
+              "description": undefined,
+              "directives": Array [],
+              "kind": "OperationDefinition",
+              "name": Object {
+                "kind": "Name",
+                "value": "ArchiveStoredTeamRun",
+              },
+              "operation": "mutation",
+              "selectionSet": Object {
+                "kind": "SelectionSet",
+                "selections": Array [
+                  Object {
+                    "alias": undefined,
+                    "arguments": Array [
+                      Object {
+                        "kind": "Argument",
+                        "name": [Object],
+                        "value": [Object],
+                      },
+                    ],
+                    "directives": Array [],
+                    "kind": "Field",
+                    "name": Object {
+                      "kind": "Name",
+                      "value": "archiveStoredTeamRun",
+                    },
+                    "selectionSet": Object {
+                      "kind": "SelectionSet",
+                      "selections": Array [
+                        [Object],
+                        [Object],
+                      ],
+                    },
+                  },
+                ],
+              },
+              "variableDefinitions": Array [
+                Object {
+                  "defaultValue": undefined,
+                  "description": undefined,
+                  "directives": Array [],
+                  "kind": "VariableDefinition",
+                  "type": Object {
+                    "kind": "NonNullType",
+                    "type": Object {
+                      "kind": "NamedType",
+                      "name": Object {
+                        "kind": "Name",
+                        "value": "String",
+                      },
+                    },
+                  },
+                  "variable": Object {
+                    "kind": "Variable",
+                    "name": Object {
+                      "kind": "Name",
+                      "value": "teamRunId",
+                    },
+                  },
+                },
+              ],
+            },
+          ],
+          "kind": "Document",
+          "loc": Object {
+            "end": 144,
+            "start": 0,
+          },
+        },
+        "variables": Object {
+          "teamRunId": "temp-team-123",
+        },
+      },
+    ]
+
+
+Number of calls: 1
+
+ × stores/__tests__/runHistoryNavigationProjection.spec.ts > runHistoryNavigationProjection current exact execution identity > publishes stable and transient rows, exact focus/indexes, and reconciles equal branches 15ms
+   → Cannot read properties of undefined (reading 'getRootTeamRunId')
+ × stores/__tests__/runHistoryNavigationProjection.spec.ts > runHistoryNavigationProjection current exact execution identity > reuses an unrelated workspace Team bucket when one Team topology changes 1ms
+   → Cannot read properties of undefined (reading 'getRootTeamRunId')
+ × stores/__tests__/runHistoryNavigationProjection.spec.ts > runHistoryNavigationProjection current exact execution identity > patches only the indexed standalone branch and skips activity in the same minute bucket 0ms
+   → Cannot read properties of undefined (reading 'getRootTeamRunId')
+ × stores/__tests__/runHistoryNavigationProjection.spec.ts > runHistoryNavigationProjection current exact execution identity > applies tight task-row and exact-focus patches while equal/detail-free changes do no work 1ms
+   → Cannot read properties of undefined (reading 'getRootTeamRunId')
+ × stores/__tests__/runHistoryNavigationProjection.spec.ts > runHistoryNavigationProjection current exact execution identity > applies combined status, summary, and activity through one exact Team branch patch 1ms
+   → Cannot read properties of undefined (reading 'getRootTeamRunId')
+ × stores/__tests__/runHistoryNavigationProjection.spec.ts > runHistoryNavigationProjection current exact execution identity > patches the root Team lifecycle and no-ops an equal snapshot 0ms
+   → Cannot read properties of undefined (reading 'getRootTeamRunId')
+ ✓ components/mobile/__tests__/MobileArtifacts.spec.ts > MobileArtifacts > lists active agent-run artifacts newest first and selects the newest artifact 22ms
+ ✓ components/mobile/__tests__/MobileArtifacts.spec.ts > MobileArtifacts > passes selected artifacts to the shared viewer and refreshes on reselection 8ms
+ ✓ components/mobile/__tests__/MobileArtifacts.spec.ts > MobileArtifacts > does not leak stale artifacts into non-run mobile contexts 3ms
+ × components/mobile/__tests__/MobileArtifacts.spec.ts > MobileArtifacts > uses the focused team member run id when team focus changes 8ms
+   → Cannot read properties of undefined (reading 'getFocusedAddress')
+ ✓ stores/__tests__/teamCommunicationStore.spec.ts > teamCommunicationStore > hydrates and groups focused-member sent and received messages by counterpart address 12ms
+ ✓ stores/__tests__/teamCommunicationStore.spec.ts > teamCommunicationStore > matches static nested members by exact normalized address 1ms
+ ✓ stores/__tests__/teamCommunicationStore.spec.ts > teamCommunicationStore > matches task-agent messages by member plus task_agent segment 0ms
+ ✓ stores/__tests__/teamCommunicationStore.spec.ts > teamCommunicationStore > matches task-team root messages by member plus task_team segment 0ms
+ ✓ stores/__tests__/teamCommunicationStore.spec.ts > teamCommunicationStore > isolates concurrent task-team child runs by exact task_team segment 0ms
+ ✓ stores/__tests__/teamCommunicationStore.spec.ts > teamCommunicationStore > matches task-agent messages inside task-team children by the full address 0ms
+ ✓ stores/__tests__/teamCommunicationStore.spec.ts > teamCommunicationStore > upserts live address-first payloads with reference files 0ms
+ × components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts > AgentTeamEventMonitor.vue > passes sender-id to member-name mapping to AgentEventMonitor 40ms
+   → Cannot read properties of undefined (reading 'getFocusedAddress')
+ × components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts > AgentTeamEventMonitor.vue > passes focused member display name and avatar to AgentEventMonitor 4ms
+   → Cannot read properties of undefined (reading 'getFocusedAddress')
+ × components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts > AgentTeamEventMonitor.vue > uses roster focus for displayed Focus history while active execution can remain on the coordinator 1ms
+   → Cannot read properties of undefined (reading 'getFocusedAddress')
+ × components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts > AgentTeamEventMonitor.vue > does not render task-agent work packets as the logical parent conversation 5ms
+   → Cannot read properties of undefined (reading 'getFocusedAddress')
+stdout | stores/__tests__/agentTeamRunStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/running/__tests__/RunningTeamRow.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ × components/workspace/running/__tests__/RunningTeamRow.spec.ts > RunningTeamRow > renders exact-run activity independently from subscription, members, and row action 8ms
+   → Cannot read properties of undefined (reading 'getFocusedAddress')
+ × components/workspace/running/__tests__/RunningTeamRow.spec.ts > RunningTeamRow > filters initializing task-only logical members from active running rows 2ms
+   → Cannot read properties of undefined (reading 'getFocusedAddress')
+ × components/workspace/running/__tests__/RunningTeamRow.spec.ts > RunningTeamRow > keeps logical members with direct conversation history visible in the running sidebar 6ms
+   → Cannot read properties of undefined (reading 'getFocusedAddress')
+ × components/workspace/running/__tests__/RunningTeamRow.spec.ts > RunningTeamRow > does not keep a logical worker visible when its only conversation is a task-agent work packet 2ms
+   → Cannot read properties of undefined (reading 'getFocusedAddress')
+stdout | stores/__tests__/agentTeamContextsStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ × stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > connects the exact Team context to the bound Team WebSocket endpoint 7ms
+   → Cannot read properties of undefined (reading 'getRootTeamRunId')
+ × stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > terminates once, disconnects, and preserves an offline context for history restore 7ms
+   → Cannot read properties of undefined (reading 'getRootTeamRunId')
+ × stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > does not mutate local lifecycle when backend termination rejects 1ms
+   → Cannot read properties of undefined (reading 'isRootTeamActive')
+ × stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > deduplicates concurrent Stop requests while the first mutation is pending 1ms
+   → Cannot read properties of undefined (reading 'isRootTeamActive')
+ × stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > discards a temporary Team locally without a backend termination 0ms
+   → Cannot read properties of undefined (reading 'getRootTeamRunId')
+ × stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > sends to the exact focused persistent execution and records the local submission 1ms
+   → Cannot read properties of undefined (reading 'getRootTeamRunId')
+ × stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > restores an inactive persisted Team before sending to the unchanged execution address 0ms
+   → Cannot read properties of undefined (reading 'getRootTeamRunId')
+ × stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > fails closed when the focused execution is absent instead of selecting another member 4ms
+   → expected [Function] to throw error including 'Focused Team execution \'/missing\' i…' but got 'Cannot read properties of undefined (…'
+ × stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > launches a nested mixed-runtime Team with exact rooted memberAddress inputs and focused target 1ms
+   → Cannot read properties of undefined (reading 'getRootTeamRunId')
+ × stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > does not synthesize an approval target and preserves an explicit event target 0ms
+   → Cannot read properties of undefined (reading 'getRootTeamRunId')
+ × stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > reattaches an existing stream service to the latest context 0ms
+   → Cannot read properties of undefined (reading 'getRootTeamRunId')
+ × stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > interrupts only the exact same-root execution and leaves submission state for the ack 0ms
+   → Cannot read properties of undefined (reading 'getRootTeamRunId')
+stdout | utils/__tests__/teamRunConfigUtils.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/__tests__/teamRunConfigUtils.spec.ts > teamRunConfigUtils > treats only property presence as an explicit member llmConfig override 1ms
+ ✓ utils/__tests__/teamRunConfigUtils.spec.ts > teamRunConfigUtils > resolves effective member config from explicit override or global fallback 0ms
+ ✓ utils/__tests__/teamRunConfigUtils.spec.ts > teamRunConfigUtils > compares model configs independent of key order 8ms
+ ✓ utils/__tests__/teamRunConfigUtils.spec.ts > teamRunConfigUtils > treats explicit null llmConfig as a meaningful member override 0ms
+ ✓ utils/__tests__/teamRunConfigUtils.spec.ts > teamRunConfigUtils > reconstructs global defaults and only keeps divergent overrides from member metadata 1ms
+ ✓ utils/__tests__/teamRunConfigUtils.spec.ts > teamRunConfigUtils > reconstructs member runtime overrides when one member runtime differs from the dominant team runtime 0ms
+ ✓ utils/__tests__/teamRunConfigUtils.spec.ts > teamRunConfigUtils > does not synthesize member override keys from bare member names 0ms
+ ✓ utils/__tests__/teamRunConfigUtils.spec.ts > teamRunConfigUtils > reconstructs a coherent default runtime/model/config tuple for mixed metadata and stays launch-ready 0ms
+ × stores/__tests__/agentTeamContextsStore.spec.ts > agentTeamContextsStore > creates exact-address member executions with mixed runtimes from overrides 6ms
+   → store.createRunFromTemplate is not a function
+ × stores/__tests__/agentTeamContextsStore.spec.ts > agentTeamContextsStore > keeps rooted nested topology while indexing exact leaf executions 2ms
+   → store.createRunFromTemplate is not a function
+ × stores/__tests__/agentTeamContextsStore.spec.ts > agentTeamContextsStore > returns only the currently selected Team context 1ms
+   → store.createRunFromTemplate is not a function
+ × stores/__tests__/agentTeamContextsStore.spec.ts > agentTeamContextsStore > changes exact focus without moving another member draft or attachments 2ms
+   → Cannot read properties of undefined (reading 'getRootTeamRunId')
+ × stores/__tests__/agentTeamContextsStore.spec.ts > agentTeamContextsStore > focuses an exact persistent member and triggers lazy historical hydration 1ms
+   → Cannot read properties of undefined (reading 'getRootTeamRunId')
+stderr | services/runOpen/__tests__/teamRunOpenCoordinator.primeOwnership.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/__tests__/teamDelegatedTaskEntries.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/mobile/__tests__/useMobileWorkCatalog.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/__tests__/teamActiveExecutionMembers.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/runHistoryTeamRows.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/runHistoryTeamExecutionRows.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/runOpen/__tests__/teamRunOpenCoordinator.primeOwnership.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/__tests__/teamDelegatedTaskEntries.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/mobile/__tests__/useMobileWorkCatalog.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ × services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts > openTeamRun current exact execution identity > preserves a subscribed live member context and establishes the final baseline once 4ms
+   → Cannot read properties of undefined (reading 'getFocusedAddress')
+ × services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts > openTeamRun current exact execution identity > adds one fresh hydrated current Team context with exact rooted members 0ms
+   → Cannot read properties of undefined (reading 'getFocusedAddress')
+ × services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts > openTeamRun current exact execution identity > hydrates only a newly introduced exact member while preserving an existing live member 1ms
+   → Cannot read properties of undefined (reading 'getFocusedAddress')
+ × services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts > openTeamRun current exact execution identity > preserves an exact requested task-Agent focus present in the subscribed execution map 0ms
+   → Cannot read properties of undefined (reading 'hasExecution')
+ × services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts > openTeamRun current exact execution identity > falls back to the hydrated focus when a requested execution identity is absent 0ms
+   → Cannot read properties of undefined (reading 'hasExecution')
+ × services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts > openTeamRun current exact execution identity > replaces an unsubscribed inactive Team projection and leaves it disconnected 0ms
+   → Cannot read properties of undefined (reading 'getFocusedAddress')
+ × utils/__tests__/teamDelegatedTaskEntries.spec.ts > deriveDelegatedTaskEntries current canonical identity > filters persisted task records by the exact focused sender or receiver execution address 4ms
+   → Cannot read properties of undefined (reading 'listTaskHistoryRows')
+ × utils/__tests__/teamDelegatedTaskEntries.spec.ts > deriveDelegatedTaskEntries current canonical identity > matches a Team-target record by exact ingress and enriches it from the live task-Team node 1ms
+   → Cannot read properties of undefined (reading 'listTaskHistoryRows')
+ × utils/__tests__/teamDelegatedTaskEntries.spec.ts > deriveDelegatedTaskEntries current canonical identity > classifies a child-context record by its final exact task-agent identity 0ms
+   → Cannot read properties of undefined (reading 'listTaskHistoryRows')
+stdout | composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/__tests__/teamActiveExecutionMembers.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ × utils/__tests__/teamActiveExecutionMembers.spec.ts > teamActiveExecutionMembers current execution tree > falls back from a settled task-agent-only logical member to the coordinator 3ms
+   → Cannot read properties of undefined (reading 'listNavigationRows')
+ × utils/__tests__/teamActiveExecutionMembers.spec.ts > teamActiveExecutionMembers current execution tree > keeps the exact concrete task-agent execution visible when its logical member is inactive 0ms
+   → Cannot read properties of undefined (reading 'listNavigationRows')
+ × utils/__tests__/teamActiveExecutionMembers.spec.ts > teamActiveExecutionMembers current execution tree > does not treat a task-agent-only logical member conversation as active execution 0ms
+   → Cannot read properties of undefined (reading 'listNavigationRows')
+ × utils/__tests__/teamActiveExecutionMembers.spec.ts > teamActiveExecutionMembers current execution tree > keeps a direct logical member conversation visible after the member is offline 0ms
+   → Cannot read properties of undefined (reading 'listNavigationRows')
+ × utils/__tests__/teamActiveExecutionMembers.spec.ts > teamActiveExecutionMembers current execution tree > includes task-Team roots, scoped children, and nested task Agents together 0ms
+   → Cannot read properties of undefined (reading 'listNavigationRows')
+stdout | stores/__tests__/runHistoryTeamRows.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ composables/mobile/__tests__/useMobileWorkCatalog.spec.ts > useMobileWorkCatalog > maps query-shaped team runs from createdAt and binary activity without legacy team status fields 4ms
+ ✓ composables/mobile/__tests__/useMobileWorkCatalog.spec.ts > useMobileWorkCatalog > uses guarded activity sort keys when a malformed run context lacks an activity timestamp 1ms
+stdout | stores/__tests__/runHistoryTeamExecutionRows.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts > useMobileFocusedRunIdentity > resolves the selected agent run only when the mobile context and active context match 3ms
+ ✓ composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts > useMobileFocusedRunIdentity > returns no focused run id for non-run and stale selected contexts 1ms
+ × composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts > useMobileFocusedRunIdentity > resolves the focused leaf member run for selected team contexts 4ms
+   → Cannot read properties of undefined (reading 'getFocusedAddress')
+ × composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts > useMobileFocusedRunIdentity > rejects team contexts when selected team or focused route is stale 1ms
+   → Cannot read properties of undefined (reading 'getFocusedAddress')
+ × stores/__tests__/runHistoryTeamRows.spec.ts > runHistoryTeamRows current rooted metadata > builds stable live context rows while filtering transient task executions 4ms
+   → Cannot read properties of undefined (reading 'getRootTeamRunId')
+ × stores/__tests__/runHistoryTeamRows.spec.ts > runHistoryTeamRows current rooted metadata > uses structural membership labels rather than Agent definition names 1ms
+   → Cannot read properties of undefined (reading 'getRootTeamRunId')
+ × stores/__tests__/runHistoryTeamExecutionRows.spec.ts > runHistoryTeamExecutionRows exact addresses > preserves live placement while separating stable and transient execution rows 9ms
+   → Cannot read properties of undefined (reading 'listNavigationRows')
+ ✓ stores/__tests__/runHistoryTeamExecutionRows.spec.ts > runHistoryTeamExecutionRows exact addresses > falls back to stable rooted rows only when no live context exists 5ms
+stdout | composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts > useWorkspaceHistorySelectionActions current rooted addresses > does not resolve focused Team history selection by a duplicate bare member name 7ms
+ ✓ composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts > useWorkspaceHistorySelectionActions current rooted addresses > resolves focused Team history selection by its exact nested member address 1ms
+stderr | composables/__tests__/useWorkspaceHistoryTreeState.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/__tests__/teamStreamMemberContextResolver.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/mobileWorkStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/runHistoryMetadata.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/runHistoryTeamMemberProjectionHydrator.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | graphql/queries/__tests__/runHistoryQueries.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/workspace/__tests__/workspaceNavigationService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | composables/__tests__/useWorkspaceHistoryTreeState.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/__tests__/teamStreamMemberContextResolver.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ composables/__tests__/useWorkspaceHistoryTreeState.spec.ts > useWorkspaceHistoryTreeState > defaults workspaces, agent groups, team-definition groups, and team runs to collapsed 2ms
+ ✓ composables/__tests__/useWorkspaceHistoryTreeState.spec.ts > useWorkspaceHistoryTreeState > prunes workspace expansion state for removed workspaces 1ms
+ ✓ composables/__tests__/useWorkspaceHistoryTreeState.spec.ts > useWorkspaceHistoryTreeState > reveals only the selected agent run ancestry 1ms
+ ✓ composables/__tests__/useWorkspaceHistoryTreeState.spec.ts > useWorkspaceHistoryTreeState > reveals selected team ancestry from the run-history store selected team source 0ms
+ ✓ composables/__tests__/useWorkspaceHistoryTreeState.spec.ts > useWorkspaceHistoryTreeState > keeps selected reveal pending until matching data becomes available 0ms
+ ✓ composables/__tests__/useWorkspaceHistoryTreeState.spec.ts > useWorkspaceHistoryTreeState > does not re-open an already revealed selected path after manual collapse and quiet refresh 0ms
+ ✓ composables/__tests__/useWorkspaceHistoryTreeState.spec.ts > useWorkspaceHistoryTreeState > expands exact member ancestors from the cached navigation index 0ms
+stdout | stores/__tests__/mobileWorkStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/mobileWorkStore.spec.ts > mobileWorkStore > preserves the Artifacts tab through store tab normalization 2ms
+ ✓ stores/__tests__/mobileWorkStore.spec.ts > mobileWorkStore > preserves an explicit Artifacts tab when selecting a mobile work context 1ms
+ ✓ stores/__tests__/mobileWorkStore.spec.ts > mobileWorkStore > still falls back unknown tab ids to Chat 0ms
+ ✓ stores/__tests__/mobileWorkStore.spec.ts > mobileWorkStore > hands off one revisioned Event Monitor preview request to Mobile Files 0ms
+ ✓ stores/__tests__/mobileWorkStore.spec.ts > mobileWorkStore > clears a pending preview when team focus changes 0ms
+stdout | stores/__tests__/runHistoryMetadata.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/runHistoryTeamMemberProjectionHydrator.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/workspace/__tests__/workspaceNavigationService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | graphql/queries/__tests__/runHistoryQueries.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/runHistoryMetadata.spec.ts > runHistoryMetadata canonical address identity > keeps same-named leaves distinct by exact rooted address without a bare-name fallback 1ms
+ ✓ services/workspace/__tests__/workspaceNavigationService.spec.ts > workspaceNavigationService > builds and parses agent execution routes 2ms
+ ✓ services/workspace/__tests__/workspaceNavigationService.spec.ts > workspaceNavigationService > builds and parses team execution routes with member focus 0ms
+ ✓ services/workspace/__tests__/workspaceNavigationService.spec.ts > workspaceNavigationService > strips workspace execution query params without disturbing others 0ms
+ ✓ services/workspace/__tests__/workspaceNavigationService.spec.ts > workspaceNavigationService > routes agent execution links through the agent open coordinator 1ms
+ ✓ services/workspace/__tests__/workspaceNavigationService.spec.ts > workspaceNavigationService > routes team execution links through the team open coordinator 0ms
+ ✓ graphql/queries/__tests__/runHistoryQueries.spec.ts > Event Monitor active-trace page queries > exposes only explicit standalone/team subject identity and an opaque cursor 1ms
+ ✓ graphql/queries/__tests__/runHistoryQueries.spec.ts > GetRunFileChanges query > requests inline content for live buffered file-change hydration without legacy artifact ids 0ms
+ ✓ graphql/queries/__tests__/runHistoryQueries.spec.ts > ListWorkspaceRunHistory query > uses V2 standalone and team history catalog shapes without persisted live fields 0ms
+ ✓ graphql/queries/__tests__/runHistoryQueries.spec.ts > GetTeamCommunicationMessages query > requests address-first sender and receiver fields without removed flat participant identity 0ms
+ ✓ graphql/queries/__tests__/runHistoryQueries.spec.ts > GetTaskDelegationRecords query > requests durable address-first task records with updates and references 0ms
+ ✓ stores/__tests__/runHistoryTeamMemberProjectionHydrator.spec.ts > runHistoryTeamMemberProjectionHydrator > applies active member projection while preserving canonical live status 2ms
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/mobile/__tests__/MobileContextSelectionRegression.spec.ts [ components/mobile/__tests__/MobileContextSelectionRegression.spec.ts ]
+Error: Failed to resolve import "~/composables/mobile/useMobilePromotedRunContextSync" from "components/mobile/__tests__/MobileContextSelectionRegression.spec.ts". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/mobile/__tests__/MobileContextSelectionRegression.spec.ts:13:0
+  18 |  const __vi_import_9__ = await import("~/composables/mobile/useMobileFileContextCoordinator");
+  19 |  const __vi_import_10__ = await import("~/composables/mobile/useMobilePendingTeamRunAttachments");
+  20 |  const __vi_import_11__ = await import("~/composables/mobile/useMobilePromotedRunContextSync");
+     |                                        ^
+  21 |  const __vi_import_12__ = await import("~/composables/mobile/useMobileWorkCatalog");
+  22 |  const __vi_import_13__ = await import("~/stores/agentContextsStore");
+ ❯ TransformPluginContext._formatLog ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:28999:43
+ ❯ TransformPluginContext.error ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:28996:14
+ ❯ normalizeUrl ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:27119:18
+ ❯ ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:27177:32
+ ❯ TransformPluginContext.transform ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:27145:4
+ ❯ EnvironmentPluginContainer.transform ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:28797:14
+ ❯ loadAndTransform ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:22670:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/117]⎯
+
+ FAIL  services/agentStreaming/__tests__/teamStreamMemberContextResolver.spec.ts [ services/agentStreaming/__tests__/teamStreamMemberContextResolver.spec.ts ]
+Error: Failed to resolve import "../teamStreamMemberContextResolver" from "services/agentStreaming/__tests__/teamStreamMemberContextResolver.spec.ts". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/teamStreamMemberContextResolver.spec.ts:3:47
+  1  |  import { describe, expect, it } from "vitest";
+  2  |  import { createTeamExecutionAddress, serializeTeamExecutionAddress } from "~/types/agent/TeamExecutionAddress";
+  3  |  import { resolveTeamStreamMemberContext } from "../teamStreamMemberContextResolver";
+     |                                                  ^
+  4  |  import { ensureTaskAgentProjection } from "../teamTaskAgentContextProjection";
+  5  |  import {
+ ❯ TransformPluginContext._formatLog ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:28999:43
+ ❯ TransformPluginContext.error ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:28996:14
+ ❯ normalizeUrl ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:27119:18
+ ❯ ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:27177:32
+ ❯ TransformPluginContext.transform ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:27145:4
+ ❯ EnvironmentPluginContainer.transform ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:28797:14
+ ❯ loadAndTransform ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:22670:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/117]⎯
+
+ FAIL  services/agentStreaming/__tests__/teamTaskExecutionEventRouter.spec.ts [ services/agentStreaming/__tests__/teamTaskExecutionEventRouter.spec.ts ]
+Error: Failed to resolve import "../teamTaskExecutionEventRouter" from "services/agentStreaming/__tests__/teamTaskExecutionEventRouter.spec.ts". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/teamTaskExecutionEventRouter.spec.ts:2:53
+  1  |  import { describe, expect, it } from "vitest";
+  2  |  import { handleTaskExecutionProjectionMessage } from "../teamTaskExecutionEventRouter";
+     |                                                        ^
+  3  |  import {
+  4  |    findTeamExecutionNode,
+ ❯ TransformPluginContext._formatLog ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:28999:43
+ ❯ TransformPluginContext.error ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:28996:14
+ ❯ normalizeUrl ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:27119:18
+ ❯ ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:27177:32
+ ❯ TransformPluginContext.transform ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:27145:4
+ ❯ EnvironmentPluginContainer.transform ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:28797:14
+ ❯ loadAndTransform ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:22670:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/117]⎯
+
+ FAIL  services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts [ services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts ]
+Error: Failed to resolve import "../teamTaskExecutionEventRouter" from "services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts:2:53
+  1  |  import { describe, expect, it } from "vitest";
+  2  |  import { handleTaskExecutionProjectionMessage } from "../teamTaskExecutionEventRouter";
+     |                                                        ^
+  3  |  import { restoreTaskExecutionProjections } from "../teamTaskExecutionRestore";
+  4  |  import {
+ ❯ TransformPluginContext._formatLog ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:28999:43
+ ❯ TransformPluginContext.error ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:28996:14
+ ❯ normalizeUrl ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:27119:18
+ ❯ ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:27177:32
+ ❯ TransformPluginContext.transform ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:27145:4
+ ❯ EnvironmentPluginContainer.transform ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:28797:14
+ ❯ loadAndTransform ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:22670:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/117]⎯
+
+ FAIL  services/runOpen/__tests__/teamRunOpenCoordinator.primeOwnership.spec.ts [ services/runOpen/__tests__/teamRunOpenCoordinator.primeOwnership.spec.ts ]
+Error: Failed to resolve import "~/utils/teamMemberMetadataNodes" from "services/runOpen/__tests__/teamRunOpenCoordinator.primeOwnership.spec.ts". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/runOpen/__tests__/teamRunOpenCoordinator.primeOwnership.spec.ts:8:0
+  97 |  const __vi_import_4__ = await import("../teamRunOpenCoordinator");
+  98 |  const __vi_import_5__ = await import("~/services/runHydration/teamRunContextHydrationService");
+  99 |  const __vi_import_6__ = await import("~/utils/teamMemberMetadataNodes");
+     |                                       ^
+  100|  const __vi_import_7__ = await import("~/utils/teamDefinitionMembers");
+  101|  const __vi_import_8__ = await import("~/types/agent/TeamExecutionAddress");
+ ❯ TransformPluginContext._formatLog ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:28999:43
+ ❯ TransformPluginContext.error ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:28996:14
+ ❯ normalizeUrl ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:27119:18
+ ❯ ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:27177:32
+ ❯ TransformPluginContext.transform ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:27145:4
+ ❯ EnvironmentPluginContainer.transform ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:28797:14
+ ❯ loadAndTransform ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:22670:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/117]⎯
+
+ FAIL  components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts [ components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts ]
+Error: Failed to resolve import "~/services/agentStreaming/teamTaskExecutionEventRouter" from "components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts:20:53
+  18 |    taskTeamEvent
+  19 |  } from "~/services/agentStreaming/__tests__/currentTaskExecutionFixture";
+  20 |  import { handleTaskExecutionProjectionMessage } from "~/services/agentStreaming/teamTaskExecutionEventRouter";
+     |                                                        ^
+  21 |  import { createTeamExecutionAddress, serializeTeamExecutionAddress } from "~/types/agent/TeamExecutionAddress";
+  22 |  const labels = {
+ ❯ TransformPluginContext._formatLog ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:28999:43
+ ❯ TransformPluginContext.error ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:28996:14
+ ❯ normalizeUrl ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:27119:18
+ ❯ ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:27177:32
+ ❯ TransformPluginContext.transform ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:27145:4
+ ❯ EnvironmentPluginContainer.transform ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:28797:14
+ ❯ loadAndTransform ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:22670:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/117]⎯
+
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 111 ⎯⎯⎯⎯⎯⎯
+
+ FAIL  stores/__tests__/agentTeamContextsStore.spec.ts > agentTeamContextsStore > creates exact-address member executions with mixed runtimes from overrides
+TypeError: store.createRunFromTemplate is not a function
+ ❯ stores/__tests__/agentTeamContextsStore.spec.ts:96:26
+     94|     })
+     95| 
+     96|     const teamId = store.createRunFromTemplate()
+       |                          ^
+     97|     const team = store.teams.get(teamId)!
+     98|     expect(team.agentExecutionsByKey.size).toBe(2)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/117]⎯
+
+ FAIL  stores/__tests__/agentTeamContextsStore.spec.ts > agentTeamContextsStore > keeps rooted nested topology while indexing exact leaf executions
+TypeError: store.createRunFromTemplate is not a function
+ ❯ stores/__tests__/agentTeamContextsStore.spec.ts:122:26
+    120|     })
+    121| 
+    122|     const teamId = store.createRunFromTemplate()
+       |                          ^
+    123|     const team = store.teams.get(teamId)!
+    124|     expect(team.rootTeam.children).toMatchObject([
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/117]⎯
+
+ FAIL  stores/__tests__/agentTeamContextsStore.spec.ts > agentTeamContextsStore > returns only the currently selected Team context
+TypeError: store.createRunFromTemplate is not a function
+ ❯ stores/__tests__/agentTeamContextsStore.spec.ts:145:26
+    143|       nodes: [{ memberName: 'agent-1', refType: 'AGENT', ref: 'def-1' …
+    144|     })
+    145|     const teamId = store.createRunFromTemplate()
+       |                          ^
+    146|     expect(store.activeTeamContext?.teamRunId).toBe(teamId)
+    147|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/117]⎯
+
+ FAIL  stores/__tests__/agentTeamContextsStore.spec.ts > agentTeamContextsStore > changes exact focus without moving another member draft or attachments
+TypeError: Cannot read properties of undefined (reading 'getRootTeamRunId')
+ ❯ Proxy.addTeamContext stores/agentTeamContextsStore.ts:51:48
+     49|   actions: {
+     50|     addTeamContext(context: AgentTeamContext) {
+     51|       const rootTeamRunId = context.executions.getRootTeamRunId();
+       |                                                ^
+     52|       context.executions.listAgentContextEntries().forEach((entry) => …
+     53|       this.teams = new Map(this.teams).set(rootTeamRunId, context);
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ stores/__tests__/agentTeamContextsStore.spec.ts:161:11
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/117]⎯
+
+ FAIL  stores/__tests__/agentTeamContextsStore.spec.ts > agentTeamContextsStore > focuses an exact persistent member and triggers lazy historical hydration
+TypeError: Cannot read properties of undefined (reading 'getRootTeamRunId')
+ ❯ Proxy.addTeamContext stores/agentTeamContextsStore.ts:51:48
+     49|   actions: {
+     50|     addTeamContext(context: AgentTeamContext) {
+     51|       const rootTeamRunId = context.executions.getRootTeamRunId();
+       |                                                ^
+     52|       context.executions.listAgentContextEntries().forEach((entry) => …
+     53|       this.teams = new Map(this.teams).set(rootTeamRunId, context);
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ stores/__tests__/agentTeamContextsStore.spec.ts:186:11
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/117]⎯
+
+ FAIL  stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > connects the exact Team context to the bound Team WebSocket endpoint
+TypeError: Cannot read properties of undefined (reading 'getRootTeamRunId')
+ ❯ Proxy.connectToTeamStream stores/agentTeamRunStore.ts:55:42
+     53|     connectToTeamStream(rootTeamRunId: string): TeamStreamingService |…
+     54|       const context = useAgentTeamContextsStore().getTeamContextById(r…
+     55|       if (!context || context.executions.getRootTeamRunId() !== rootTe…
+       |                                          ^
+     56|       const existing = teamStreamingServices.get(rootTeamRunId);
+     57|       if (existing) {
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ stores/__tests__/agentTeamRunStore.spec.ts:156:44
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/117]⎯
+
+ FAIL  stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > terminates once, disconnects, and preserves an offline context for history restore
+TypeError: Cannot read properties of undefined (reading 'getRootTeamRunId')
+ ❯ Proxy.connectToTeamStream stores/agentTeamRunStore.ts:55:42
+     53|     connectToTeamStream(rootTeamRunId: string): TeamStreamingService |…
+     54|       const context = useAgentTeamContextsStore().getTeamContextById(r…
+     55|       if (!context || context.executions.getRootTeamRunId() !== rootTe…
+       |                                          ^
+     56|       const existing = teamStreamingServices.get(rootTeamRunId);
+     57|       if (existing) {
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ stores/__tests__/agentTeamRunStore.spec.ts:166:28
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/117]⎯
+
+ FAIL  stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > does not mutate local lifecycle when backend termination rejects
+TypeError: Cannot read properties of undefined (reading 'isRootTeamActive')
+ ❯ Proxy.terminateTeamRun stores/agentTeamRunStore.ts:89:104
+     87|     async terminateTeamRun(rootTeamRunId: string): Promise<boolean> {
+     88|       const team = useAgentTeamContextsStore().getTeamContextById(root…
+     89|       if (!rootTeamRunId.trim() || this.stopPendingTeamIds[rootTeamRun…
+       |                                                                                                        ^
+     90|       this.stopPendingTeamIds = { ...this.stopPendingTeamIds, [rootTea…
+     91|       try {
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ stores/__tests__/agentTeamRunStore.spec.ts:181:41
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/117]⎯
+
+ FAIL  stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > deduplicates concurrent Stop requests while the first mutation is pending
+TypeError: Cannot read properties of undefined (reading 'isRootTeamActive')
+ ❯ Proxy.terminateTeamRun stores/agentTeamRunStore.ts:89:104
+     87|     async terminateTeamRun(rootTeamRunId: string): Promise<boolean> {
+     88|       const team = useAgentTeamContextsStore().getTeamContextById(root…
+     89|       if (!rootTeamRunId.trim() || this.stopPendingTeamIds[rootTeamRun…
+       |                                                                                                        ^
+     90|       this.stopPendingTeamIds = { ...this.stopPendingTeamIds, [rootTea…
+     91|       try {
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ stores/__tests__/agentTeamRunStore.spec.ts:190:24
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/117]⎯
+
+ FAIL  stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > discards a temporary Team locally without a backend termination
+TypeError: Cannot read properties of undefined (reading 'getRootTeamRunId')
+ ❯ Proxy.connectToTeamStream stores/agentTeamRunStore.ts:55:42
+     53|     connectToTeamStream(rootTeamRunId: string): TeamStreamingService |…
+     54|       const context = useAgentTeamContextsStore().getTeamContextById(r…
+     55|       if (!context || context.executions.getRootTeamRunId() !== rootTe…
+       |                                          ^
+     56|       const existing = teamStreamingServices.get(rootTeamRunId);
+     57|       if (existing) {
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ stores/__tests__/agentTeamRunStore.spec.ts:197:28
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/117]⎯
+
+ FAIL  stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > sends to the exact focused persistent execution and records the local submission
+TypeError: Cannot read properties of undefined (reading 'getRootTeamRunId')
+ ❯ Proxy.sendMessageToFocusedMember stores/agentTeamRunStore.ts:118:48
+    116|       if (!team && !draft) throw new Error('No Team run or launch draf…
+    117|       if (draft) drafts.setPendingInput(draft.focusedMemberAddress, { …
+    118|       let rootTeamRunId: string | null = team?.executions.getRootTeamR…
+       |                                                ^
+    119|       let target = team?.executions.getFocusedAddress() ?? null;
+    120|       let localSubmission: LocalUserSubmissionHandle | null = null;
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ stores/__tests__/agentTeamRunStore.spec.ts:206:34
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/117]⎯
+
+ FAIL  stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > restores an inactive persisted Team before sending to the unchanged execution address
+TypeError: Cannot read properties of undefined (reading 'getRootTeamRunId')
+ ❯ Proxy.sendMessageToFocusedMember stores/agentTeamRunStore.ts:118:48
+    116|       if (!team && !draft) throw new Error('No Team run or launch draf…
+    117|       if (draft) drafts.setPendingInput(draft.focusedMemberAddress, { …
+    118|       let rootTeamRunId: string | null = team?.executions.getRootTeamR…
+       |                                                ^
+    119|       let target = team?.executions.getFocusedAddress() ?? null;
+    120|       let localSubmission: LocalUserSubmissionHandle | null = null;
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ stores/__tests__/agentTeamRunStore.spec.ts:218:34
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/117]⎯
+
+ FAIL  stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > fails closed when the focused execution is absent instead of selecting another member
+AssertionError: expected [Function] to throw error including 'Focused Team execution \'/missing\' i…' but got 'Cannot read properties of undefined (…'
+
+Expected: "Focused Team execution '/missing' is not present."
+Received: "Cannot read properties of undefined (reading 'getRootTeamRunId')"
+
+ ❯ stores/__tests__/agentTeamRunStore.spec.ts:226:5
+    224|   it('fails closed when the focused execution is absent instead of sel…
+    225|     const team = twoMemberTeam(); team.focusedExecutionAddress = execu…
+    226|     await expect(useAgentTeamRunStore().sendMessageToFocusedMember('do…
+       |     ^
+    227|       .rejects.toThrow("Focused Team execution '/missing' is not prese…
+    228|     expect(mockSendMessage).not.toHaveBeenCalled();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/117]⎯
+
+ FAIL  stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > launches a nested mixed-runtime Team with exact rooted memberAddress inputs and focused target
+TypeError: Cannot read properties of undefined (reading 'getRootTeamRunId')
+ ❯ Proxy.sendMessageToFocusedMember stores/agentTeamRunStore.ts:118:48
+    116|       if (!team && !draft) throw new Error('No Team run or launch draf…
+    117|       if (draft) drafts.setPendingInput(draft.focusedMemberAddress, { …
+    118|       let rootTeamRunId: string | null = team?.executions.getRootTeamR…
+       |                                                ^
+    119|       let target = team?.executions.getFocusedAddress() ?? null;
+    120|       let localSubmission: LocalUserSubmissionHandle | null = null;
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ stores/__tests__/agentTeamRunStore.spec.ts:258:34
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/117]⎯
+
+ FAIL  stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > does not synthesize an approval target and preserves an explicit event target
+TypeError: Cannot read properties of undefined (reading 'getRootTeamRunId')
+ ❯ Proxy.connectToTeamStream stores/agentTeamRunStore.ts:55:42
+     53|     connectToTeamStream(rootTeamRunId: string): TeamStreamingService |…
+     54|       const context = useAgentTeamContextsStore().getTeamContextById(r…
+     55|       if (!context || context.executions.getRootTeamRunId() !== rootTe…
+       |                                          ^
+     56|       const existing = teamStreamingServices.get(rootTeamRunId);
+     57|       if (existing) {
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ stores/__tests__/agentTeamRunStore.spec.ts:270:100
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/117]⎯
+
+ FAIL  stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > reattaches an existing stream service to the latest context
+TypeError: Cannot read properties of undefined (reading 'getRootTeamRunId')
+ ❯ Proxy.connectToTeamStream stores/agentTeamRunStore.ts:55:42
+     53|     connectToTeamStream(rootTeamRunId: string): TeamStreamingService |…
+     54|       const context = useAgentTeamContextsStore().getTeamContextById(r…
+     55|       if (!context || context.executions.getRootTeamRunId() !== rootTe…
+       |                                          ^
+     56|       const existing = teamStreamingServices.get(rootTeamRunId);
+     57|       if (existing) {
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ stores/__tests__/agentTeamRunStore.spec.ts:280:11
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/117]⎯
+
+ FAIL  stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > interrupts only the exact same-root execution and leaves submission state for the ack
+TypeError: Cannot read properties of undefined (reading 'getRootTeamRunId')
+ ❯ Proxy.connectToTeamStream stores/agentTeamRunStore.ts:55:42
+     53|     connectToTeamStream(rootTeamRunId: string): TeamStreamingService |…
+     54|       const context = useAgentTeamContextsStore().getTeamContextById(r…
+     55|       if (!context || context.executions.getRootTeamRunId() !== rootTe…
+       |                                          ^
+     56|       const existing = teamStreamingServices.get(rootTeamRunId);
+     57|       if (existing) {
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ stores/__tests__/agentTeamRunStore.spec.ts:286:100
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[23/117]⎯
+
+ FAIL  stores/__tests__/runHistoryNavigationProjection.spec.ts > runHistoryNavigationProjection current exact execution identity > publishes stable and transient rows, exact focus/indexes, and reconciles equal branches
+TypeError: Cannot read properties of undefined (reading 'getRootTeamRunId')
+ ❯ buildTeamNodes stores/runHistoryTeamHelpers.ts:134:46
+    132|   }
+    133|   for (const teamContext of params.teamContexts) {
+    134|     const teamRunId = teamContext.executions.getRootTeamRunId();
+       |                                              ^
+    135|     const existing = nodesByTeamRunId.get(teamRunId);
+    136|     const workspaceRootPath = existing?.workspaceRootPath || params.re…
+ ❯ buildRunHistoryTeamNodes stores/runHistoryReadModel.ts:313:10
+ ❯ buildRunHistoryNavigationProjection stores/runHistoryNavigationProjection.ts:108:26
+ ❯ buildProjection stores/__tests__/runHistoryNavigationProjection.spec.ts:86:6
+ ❯ stores/__tests__/runHistoryNavigationProjection.spec.ts:106:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[24/117]⎯
+
+ FAIL  stores/__tests__/runHistoryNavigationProjection.spec.ts > runHistoryNavigationProjection current exact execution identity > reuses an unrelated workspace Team bucket when one Team topology changes
+TypeError: Cannot read properties of undefined (reading 'getRootTeamRunId')
+ ❯ buildTeamNodes stores/runHistoryTeamHelpers.ts:134:46
+    132|   }
+    133|   for (const teamContext of params.teamContexts) {
+    134|     const teamRunId = teamContext.executions.getRootTeamRunId();
+       |                                              ^
+    135|     const existing = nodesByTeamRunId.get(teamRunId);
+    136|     const workspaceRootPath = existing?.workspaceRootPath || params.re…
+ ❯ buildRunHistoryTeamNodes stores/runHistoryReadModel.ts:313:10
+ ❯ buildRunHistoryNavigationProjection stores/runHistoryNavigationProjection.ts:108:26
+ ❯ buildProjection stores/__tests__/runHistoryNavigationProjection.spec.ts:86:6
+ ❯ stores/__tests__/runHistoryNavigationProjection.spec.ts:134:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[25/117]⎯
+
+ FAIL  stores/__tests__/runHistoryNavigationProjection.spec.ts > runHistoryNavigationProjection current exact execution identity > patches only the indexed standalone branch and skips activity in the same minute bucket
+TypeError: Cannot read properties of undefined (reading 'getRootTeamRunId')
+ ❯ buildTeamNodes stores/runHistoryTeamHelpers.ts:134:46
+    132|   }
+    133|   for (const teamContext of params.teamContexts) {
+    134|     const teamRunId = teamContext.executions.getRootTeamRunId();
+       |                                              ^
+    135|     const existing = nodesByTeamRunId.get(teamRunId);
+    136|     const workspaceRootPath = existing?.workspaceRootPath || params.re…
+ ❯ buildRunHistoryTeamNodes stores/runHistoryReadModel.ts:313:10
+ ❯ buildRunHistoryNavigationProjection stores/runHistoryNavigationProjection.ts:108:26
+ ❯ buildProjection stores/__tests__/runHistoryNavigationProjection.spec.ts:86:6
+ ❯ stores/__tests__/runHistoryNavigationProjection.spec.ts:144:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[26/117]⎯
+
+ FAIL  stores/__tests__/runHistoryNavigationProjection.spec.ts > runHistoryNavigationProjection current exact execution identity > applies tight task-row and exact-focus patches while equal/detail-free changes do no work
+TypeError: Cannot read properties of undefined (reading 'getRootTeamRunId')
+ ❯ buildTeamNodes stores/runHistoryTeamHelpers.ts:134:46
+    132|   }
+    133|   for (const teamContext of params.teamContexts) {
+    134|     const teamRunId = teamContext.executions.getRootTeamRunId();
+       |                                              ^
+    135|     const existing = nodesByTeamRunId.get(teamRunId);
+    136|     const workspaceRootPath = existing?.workspaceRootPath || params.re…
+ ❯ buildRunHistoryTeamNodes stores/runHistoryReadModel.ts:313:10
+ ❯ buildRunHistoryNavigationProjection stores/runHistoryNavigationProjection.ts:108:26
+ ❯ buildProjection stores/__tests__/runHistoryNavigationProjection.spec.ts:86:6
+ ❯ stores/__tests__/runHistoryNavigationProjection.spec.ts:160:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[27/117]⎯
+
+ FAIL  stores/__tests__/runHistoryNavigationProjection.spec.ts > runHistoryNavigationProjection current exact execution identity > applies combined status, summary, and activity through one exact Team branch patch
+TypeError: Cannot read properties of undefined (reading 'getRootTeamRunId')
+ ❯ buildTeamNodes stores/runHistoryTeamHelpers.ts:134:46
+    132|   }
+    133|   for (const teamContext of params.teamContexts) {
+    134|     const teamRunId = teamContext.executions.getRootTeamRunId();
+       |                                              ^
+    135|     const existing = nodesByTeamRunId.get(teamRunId);
+    136|     const workspaceRootPath = existing?.workspaceRootPath || params.re…
+ ❯ buildRunHistoryTeamNodes stores/runHistoryReadModel.ts:313:10
+ ❯ buildRunHistoryNavigationProjection stores/runHistoryNavigationProjection.ts:108:26
+ ❯ buildProjection stores/__tests__/runHistoryNavigationProjection.spec.ts:86:6
+ ❯ stores/__tests__/runHistoryNavigationProjection.spec.ts:187:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[28/117]⎯
+
+ FAIL  stores/__tests__/runHistoryNavigationProjection.spec.ts > runHistoryNavigationProjection current exact execution identity > patches the root Team lifecycle and no-ops an equal snapshot
+TypeError: Cannot read properties of undefined (reading 'getRootTeamRunId')
+ ❯ buildTeamNodes stores/runHistoryTeamHelpers.ts:134:46
+    132|   }
+    133|   for (const teamContext of params.teamContexts) {
+    134|     const teamRunId = teamContext.executions.getRootTeamRunId();
+       |                                              ^
+    135|     const existing = nodesByTeamRunId.get(teamRunId);
+    136|     const workspaceRootPath = existing?.workspaceRootPath || params.re…
+ ❯ buildRunHistoryTeamNodes stores/runHistoryReadModel.ts:313:10
+ ❯ buildRunHistoryNavigationProjection stores/runHistoryNavigationProjection.ts:108:26
+ ❯ buildProjection stores/__tests__/runHistoryNavigationProjection.spec.ts:86:6
+ ❯ stores/__tests__/runHistoryNavigationProjection.spec.ts:215:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[29/117]⎯
+
+ FAIL  stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > hydrates and connects newly discovered active runs from workspace history
+TypeError: Cannot read properties of undefined (reading 'getRootTeamRunId')
+ ❯ buildTeamNodes stores/runHistoryTeamHelpers.ts:134:46
+    132|   }
+    133|   for (const teamContext of params.teamContexts) {
+    134|     const teamRunId = teamContext.executions.getRootTeamRunId();
+       |                                              ^
+    135|     const existing = nodesByTeamRunId.get(teamRunId);
+    136|     const workspaceRootPath = existing?.workspaceRootPath || params.re…
+ ❯ buildRunHistoryTeamNodes stores/runHistoryReadModel.ts:313:10
+ ❯ buildRunHistoryNavigationProjection stores/runHistoryNavigationProjection.ts:108:26
+ ❯ refreshRunNavigationTopologyForStore stores/runHistoryNavigationStoreActions.ts:31:32
+ ❯ Proxy.refreshRunNavigationTopology stores/runHistoryStore.ts:410:7
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ Proxy.fetchTree stores/runHistoryStore.ts:122:12
+ ❯ stores/__tests__/runHistoryStore.spec.ts:618:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[30/117]⎯
+
+ FAIL  stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > fetchWorkspaceHistory does not reconcile unrelated active contexts outside the scoped workspace
+TypeError: Cannot read properties of undefined (reading 'getRootTeamRunId')
+ ❯ buildTeamNodes stores/runHistoryTeamHelpers.ts:134:46
+    132|   }
+    133|   for (const teamContext of params.teamContexts) {
+    134|     const teamRunId = teamContext.executions.getRootTeamRunId();
+       |                                              ^
+    135|     const existing = nodesByTeamRunId.get(teamRunId);
+    136|     const workspaceRootPath = existing?.workspaceRootPath || params.re…
+ ❯ buildRunHistoryTeamNodes stores/runHistoryReadModel.ts:313:10
+ ❯ buildRunHistoryNavigationProjection stores/runHistoryNavigationProjection.ts:108:26
+ ❯ refreshRunNavigationTopologyForStore stores/runHistoryNavigationStoreActions.ts:31:32
+ ❯ Proxy.refreshRunNavigationTopology stores/runHistoryStore.ts:410:7
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ Proxy.fetchWorkspaceHistory stores/runHistoryStore.ts:361:12
+ ❯ stores/__tests__/runHistoryStore.spec.ts:693:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[31/117]⎯
+
+ FAIL  stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > preserves subscribed live member statuses while refreshing root team activity
+TypeError: Cannot read properties of undefined (reading 'getRootTeamRunId')
+ ❯ buildTeamNodes stores/runHistoryTeamHelpers.ts:134:46
+    132|   }
+    133|   for (const teamContext of params.teamContexts) {
+    134|     const teamRunId = teamContext.executions.getRootTeamRunId();
+       |                                              ^
+    135|     const existing = nodesByTeamRunId.get(teamRunId);
+    136|     const workspaceRootPath = existing?.workspaceRootPath || params.re…
+ ❯ buildRunHistoryTeamNodes stores/runHistoryReadModel.ts:313:10
+ ❯ buildRunHistoryNavigationProjection stores/runHistoryNavigationProjection.ts:108:26
+ ❯ refreshRunNavigationTopologyForStore stores/runHistoryNavigationStoreActions.ts:31:32
+ ❯ Proxy.refreshRunNavigationTopology stores/runHistoryStore.ts:410:7
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ Proxy.fetchTree stores/runHistoryStore.ts:122:12
+ ❯ stores/__tests__/runHistoryStore.spec.ts:965:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[32/117]⎯
+
+ FAIL  stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > opens a run, hydrates projection, selects runContext, and connects stream when active
+TypeError: agentRunStore.isAgentStreamReady is not a function
+ ❯ openAgentRun services/runOpen/agentRunOpenCoordinator.ts:42:41
+     40|   const existingContext = agentContextsStore.getRun(input.runId);
+     41|   const agentRunStore = useAgentRunStore();
+     42|   const streamConnected = agentRunStore.isAgentStreamReady(input.runId…
+       |                                         ^
+     43|   const shouldTreatAsLive = resumeConfig.isActive;
+     44|   const strategy = decideRunOpenStrategy({
+ ❯ openHistoricalRun stores/runHistoryLoadActions.ts:277:20
+ ❯ Proxy.openRun stores/runHistoryStore.ts:126:7
+ ❯ stores/__tests__/runHistoryStore.spec.ts:1147:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[33/117]⎯
+
+ FAIL  stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > opens an inactive run and hydrates offline status without connecting stream
+TypeError: agentRunStore.isAgentStreamReady is not a function
+ ❯ openAgentRun services/runOpen/agentRunOpenCoordinator.ts:42:41
+     40|   const existingContext = agentContextsStore.getRun(input.runId);
+     41|   const agentRunStore = useAgentRunStore();
+     42|   const streamConnected = agentRunStore.isAgentStreamReady(input.runId…
+       |                                         ^
+     43|   const shouldTreatAsLive = resumeConfig.isActive;
+     44|   const strategy = decideRunOpenStrategy({
+ ❯ openHistoricalRun stores/runHistoryLoadActions.ts:277:20
+ ❯ Proxy.openRun stores/runHistoryStore.ts:126:7
+ ❯ stores/__tests__/runHistoryStore.spec.ts:1263:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[34/117]⎯
+
+ FAIL  stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > trusts history active state and reconnects an agent stream when reopening an active run
+TypeError: agentRunStore.isAgentStreamReady is not a function
+ ❯ openAgentRun services/runOpen/agentRunOpenCoordinator.ts:42:41
+     40|   const existingContext = agentContextsStore.getRun(input.runId);
+     41|   const agentRunStore = useAgentRunStore();
+     42|   const streamConnected = agentRunStore.isAgentStreamReady(input.runId…
+       |                                         ^
+     43|   const shouldTreatAsLive = resumeConfig.isActive;
+     44|   const strategy = decideRunOpenStrategy({
+ ❯ openHistoricalRun stores/runHistoryLoadActions.ts:277:20
+ ❯ Proxy.openRun stores/runHistoryStore.ts:126:7
+ ❯ stores/__tests__/runHistoryStore.spec.ts:1364:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[35/117]⎯
+
+ FAIL  stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > does not clobber live active context state when reopening an already subscribed run
+TypeError: agentRunStore.isAgentStreamReady is not a function
+ ❯ openAgentRun services/runOpen/agentRunOpenCoordinator.ts:42:41
+     40|   const existingContext = agentContextsStore.getRun(input.runId);
+     41|   const agentRunStore = useAgentRunStore();
+     42|   const streamConnected = agentRunStore.isAgentStreamReady(input.runId…
+       |                                         ^
+     43|   const shouldTreatAsLive = resumeConfig.isActive;
+     44|   const strategy = decideRunOpenStrategy({
+ ❯ openHistoricalRun stores/runHistoryLoadActions.ts:277:20
+ ❯ Proxy.openRun stores/runHistoryStore.ts:126:7
+ ❯ stores/__tests__/runHistoryStore.spec.ts:1476:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[36/117]⎯
+
+ FAIL  stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > archiveTeamRun rejects draft team IDs without backend mutation call
+AssertionError: expected "spy" to not be called at all, but actually been called 1 times
+
+Received: 
+
+  1st spy call:
+
+    Array [
+      Object {
+        "mutation": Object {
+          "definitions": Array [
+            Object {
+              "description": undefined,
+              "directives": Array [],
+              "kind": "OperationDefinition",
+              "name": Object {
+                "kind": "Name",
+                "value": "ArchiveStoredTeamRun",
+              },
+              "operation": "mutation",
+              "selectionSet": Object {
+                "kind": "SelectionSet",
+                "selections": Array [
+                  Object {
+                    "alias": undefined,
+                    "arguments": Array [
+                      Object {
+                        "kind": "Argument",
+                        "name": [Object],
+                        "value": [Object],
+                      },
+                    ],
+                    "directives": Array [],
+                    "kind": "Field",
+                    "name": Object {
+                      "kind": "Name",
+                      "value": "archiveStoredTeamRun",
+                    },
+                    "selectionSet": Object {
+                      "kind": "SelectionSet",
+                      "selections": Array [
+                        [Object],
+                        [Object],
+                      ],
+                    },
+                  },
+                ],
+              },
+              "variableDefinitions": Array [
+                Object {
+                  "defaultValue": undefined,
+                  "description": undefined,
+                  "directives": Array [],
+                  "kind": "VariableDefinition",
+                  "type": Object {
+                    "kind": "NonNullType",
+                    "type": Object {
+                      "kind": "NamedType",
+                      "name": Object {
+                        "kind": "Name",
+                        "value": "String",
+                      },
+                    },
+                  },
+                  "variable": Object {
+                    "kind": "Variable",
+                    "name": Object {
+                      "kind": "Name",
+                      "value": "teamRunId",
+                    },
+                  },
+                },
+              ],
+            },
+          ],
+          "kind": "Document",
+          "loc": Object {
+            "end": 144,
+            "start": 0,
+          },
+        },
+        "variables": Object {
+          "teamRunId": "temp-team-123",
+        },
+      },
+    ]
+
+
+Number of calls: 1
+
+ ❯ stores/__tests__/runHistoryStore.spec.ts:2368:28
+    2366| 
+    2367|     expect(archived).toBe(false);
+    2368|     expect(mutateMock).not.toHaveBeenCalled();
+       |                            ^
+    2369|   });
+    2370| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[37/117]⎯
+
+ FAIL  stores/__tests__/runHistoryTeamExecutionRows.spec.ts > runHistoryTeamExecutionRows exact addresses > preserves live placement while separating stable and transient execution rows
+TypeError: Cannot read properties of undefined (reading 'listNavigationRows')
+ ❯ buildRunHistoryTeamExecutionRows stores/runHistoryTeamExecutionRows.ts:31:29
+     29|   if (!context) return flattenStableRows(stableSource);
+     30|   const stableByAddress = indexStableRows(stableSource);
+     31|   return context.executions.listNavigationRows().flatMap((execution): …
+       |                             ^
+     32|     const topology = context.topology.getNode(execution.executionAddre…
+     33|     if (!topology) return [];
+ ❯ stores/__tests__/runHistoryTeamExecutionRows.spec.ts:124:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[38/117]⎯
+
+ FAIL  stores/__tests__/runHistoryTeamRows.spec.ts > runHistoryTeamRows current rooted metadata > builds stable live context rows while filtering transient task executions
+TypeError: Cannot read properties of undefined (reading 'getRootTeamRunId')
+ ❯ buildTeamRowsFromContext stores/runHistoryTeamRows.ts:98:48
+     96|   resolveWorkspaceRootPath: (workspaceId: string | null) => string,
+     97| ): TeamMemberTreeRow[] => {
+     98|   const rootTeamRunId = teamContext.executions.getRootTeamRunId();
+       |                                                ^
+     99|   const visit = (nodes: readonly TeamMemberNode[]): TeamMemberTreeRow[…
+    100|     if (node.kind === 'agent_team') {
+ ❯ stores/__tests__/runHistoryTeamRows.spec.ts:84:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[39/117]⎯
+
+ FAIL  stores/__tests__/runHistoryTeamRows.spec.ts > runHistoryTeamRows current rooted metadata > uses structural membership labels rather than Agent definition names
+TypeError: Cannot read properties of undefined (reading 'getRootTeamRunId')
+ ❯ buildTeamRowsFromContext stores/runHistoryTeamRows.ts:98:48
+     96|   resolveWorkspaceRootPath: (workspaceId: string | null) => string,
+     97| ): TeamMemberTreeRow[] => {
+     98|   const rootTeamRunId = teamContext.executions.getRootTeamRunId();
+       |                                                ^
+     99|   const visit = (nodes: readonly TeamMemberNode[]): TeamMemberTreeRow[…
+    100|     if (node.kind === 'agent_team') {
+ ❯ stores/__tests__/runHistoryTeamRows.spec.ts:139:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[40/117]⎯
+
+ FAIL  utils/__tests__/teamActiveExecutionMembers.spec.ts > teamActiveExecutionMembers current execution tree > falls back from a settled task-agent-only logical member to the coordinator
+TypeError: Cannot read properties of undefined (reading 'listNavigationRows')
+ ❯ flattenActiveExecutionMemberNodesForDisplay utils/teamActiveExecutionMembers.ts:20:19
+     18| 
+     19| export const flattenActiveExecutionMemberNodesForDisplay = (team: Agen…
+     20|   team.executions.listNavigationRows().flatMap((row) => {
+       |                   ^
+     21|     const node = team.topology.getNode(row.executionAddress.memberAddr…
+     22|     const context = team.executions.getAgentContext(row.executionAddre…
+ ❯ entryIds utils/__tests__/teamActiveExecutionMembers.spec.ts:27:3
+ ❯ utils/__tests__/teamActiveExecutionMembers.spec.ts:81:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[41/117]⎯
+
+ FAIL  utils/__tests__/teamActiveExecutionMembers.spec.ts > teamActiveExecutionMembers current execution tree > keeps the exact concrete task-agent execution visible when its logical member is inactive
+TypeError: Cannot read properties of undefined (reading 'listNavigationRows')
+ ❯ flattenActiveExecutionMemberNodesForDisplay utils/teamActiveExecutionMembers.ts:20:19
+     18| 
+     19| export const flattenActiveExecutionMemberNodesForDisplay = (team: Agen…
+     20|   team.executions.listNavigationRows().flatMap((row) => {
+       |                   ^
+     21|     const node = team.topology.getNode(row.executionAddress.memberAddr…
+     22|     const context = team.executions.getAgentContext(row.executionAddre…
+ ❯ entryIds utils/__tests__/teamActiveExecutionMembers.spec.ts:27:3
+ ❯ utils/__tests__/teamActiveExecutionMembers.spec.ts:103:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[42/117]⎯
+
+ FAIL  utils/__tests__/teamActiveExecutionMembers.spec.ts > teamActiveExecutionMembers current execution tree > does not treat a task-agent-only logical member conversation as active execution
+TypeError: Cannot read properties of undefined (reading 'listNavigationRows')
+ ❯ flattenActiveExecutionMemberNodesForDisplay utils/teamActiveExecutionMembers.ts:20:19
+     18| 
+     19| export const flattenActiveExecutionMemberNodesForDisplay = (team: Agen…
+     20|   team.executions.listNavigationRows().flatMap((row) => {
+       |                   ^
+     21|     const node = team.topology.getNode(row.executionAddress.memberAddr…
+     22|     const context = team.executions.getAgentContext(row.executionAddre…
+ ❯ entryIds utils/__tests__/teamActiveExecutionMembers.spec.ts:27:3
+ ❯ utils/__tests__/teamActiveExecutionMembers.spec.ts:117:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[43/117]⎯
+
+ FAIL  utils/__tests__/teamActiveExecutionMembers.spec.ts > teamActiveExecutionMembers current execution tree > keeps a direct logical member conversation visible after the member is offline
+TypeError: Cannot read properties of undefined (reading 'listNavigationRows')
+ ❯ flattenActiveExecutionMemberNodesForDisplay utils/teamActiveExecutionMembers.ts:20:19
+     18| 
+     19| export const flattenActiveExecutionMemberNodesForDisplay = (team: Agen…
+     20|   team.executions.listNavigationRows().flatMap((row) => {
+       |                   ^
+     21|     const node = team.topology.getNode(row.executionAddress.memberAddr…
+     22|     const context = team.executions.getAgentContext(row.executionAddre…
+ ❯ entryIds utils/__tests__/teamActiveExecutionMembers.spec.ts:27:3
+ ❯ utils/__tests__/teamActiveExecutionMembers.spec.ts:130:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[44/117]⎯
+
+ FAIL  utils/__tests__/teamActiveExecutionMembers.spec.ts > teamActiveExecutionMembers current execution tree > includes task-Team roots, scoped children, and nested task Agents together
+TypeError: Cannot read properties of undefined (reading 'listNavigationRows')
+ ❯ flattenActiveExecutionMemberNodesForDisplay utils/teamActiveExecutionMembers.ts:20:19
+     18| 
+     19| export const flattenActiveExecutionMemberNodesForDisplay = (team: Agen…
+     20|   team.executions.listNavigationRows().flatMap((row) => {
+       |                   ^
+     21|     const node = team.topology.getNode(row.executionAddress.memberAddr…
+     22|     const context = team.executions.getAgentContext(row.executionAddre…
+ ❯ entryIds utils/__tests__/teamActiveExecutionMembers.spec.ts:27:3
+ ❯ utils/__tests__/teamActiveExecutionMembers.spec.ts:182:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[45/117]⎯
+
+ FAIL  utils/__tests__/teamDelegatedTaskEntries.spec.ts > deriveDelegatedTaskEntries current canonical identity > filters persisted task records by the exact focused sender or receiver execution address
+TypeError: Cannot read properties of undefined (reading 'listTaskHistoryRows')
+ ❯ deriveDelegatedTaskEntries utils/teamDelegatedTaskEntries.ts:93:26
+     91|   focusedAddress?: TeamExecutionAddress | null,
+     92| ): DelegatedTaskEntry[] => {
+     93|   return team.executions.listTaskHistoryRows()
+       |                          ^
+     94|     .filter((task) => visibleForFocus(team, task, focusedAddress))
+     95|     .map((task) => toEntry(team, task));
+ ❯ utils/__tests__/teamDelegatedTaskEntries.spec.ts:106:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[46/117]⎯
+
+ FAIL  utils/__tests__/teamDelegatedTaskEntries.spec.ts > deriveDelegatedTaskEntries current canonical identity > matches a Team-target record by exact ingress and enriches it from the live task-Team node
+TypeError: Cannot read properties of undefined (reading 'listTaskHistoryRows')
+ ❯ deriveDelegatedTaskEntries utils/teamDelegatedTaskEntries.ts:93:26
+     91|   focusedAddress?: TeamExecutionAddress | null,
+     92| ): DelegatedTaskEntry[] => {
+     93|   return team.executions.listTaskHistoryRows()
+       |                          ^
+     94|     .filter((task) => visibleForFocus(team, task, focusedAddress))
+     95|     .map((task) => toEntry(team, task));
+ ❯ utils/__tests__/teamDelegatedTaskEntries.spec.ts:126:23
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[47/117]⎯
+
+ FAIL  utils/__tests__/teamDelegatedTaskEntries.spec.ts > deriveDelegatedTaskEntries current canonical identity > classifies a child-context record by its final exact task-agent identity
+TypeError: Cannot read properties of undefined (reading 'listTaskHistoryRows')
+ ❯ deriveDelegatedTaskEntries utils/teamDelegatedTaskEntries.ts:93:26
+     91|   focusedAddress?: TeamExecutionAddress | null,
+     92| ): DelegatedTaskEntry[] => {
+     93|   return team.executions.listTaskHistoryRows()
+       |                          ^
+     94|     .filter((task) => visibleForFocus(team, task, focusedAddress))
+     95|     .map((task) => toEntry(team, task));
+ ❯ utils/__tests__/teamDelegatedTaskEntries.spec.ts:160:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[48/117]⎯
+
+ FAIL  components/mobile/__tests__/MobileArtifacts.spec.ts > MobileArtifacts > uses the focused team member run id when team focus changes
+TypeError: Cannot read properties of undefined (reading 'getFocusedAddress')
+ ❯ ComputedRefImpl.fn composables/mobile/useMobileFocusedRunIdentity.ts:33:62
+     31| 
+     32|       const team = teamContextsStore.getTeamContextById(currentContext…
+     33|       if (!team || !sameTeamExecutionAddress(team.executions.getFocuse…
+       |                                                              ^
+     34|         return '';
+     35|       }
+ ❯ refreshComputed ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:397:28
+ ❯ ComputedRefImpl.get value [as value] ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1711:5
+ ❯ ReactiveEffect.getter [as fn] ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1810:27
+ ❯ ReactiveEffect.run ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:243:19
+ ❯ Object.watch ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1932:25
+ ❯ doWatch ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:905:34
+ ❯ watch ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:838:10
+ ❯ setup components/mobile/MobileArtifacts.vue:142:1
+ ❯ callWithErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:200:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[49/117]⎯
+
+ FAIL  components/mobile/__tests__/MobileTeamMessages.spec.ts > MobileTeamMessages > renders structured reference files as tappable rows without linkifying raw prose paths
+ FAIL  components/mobile/__tests__/MobileTeamMessages.spec.ts > MobileTeamMessages > opens a phone reference viewer by team/message/reference identity and closes back to the list
+TypeError: Cannot read properties of undefined (reading 'getRootTeamRunId')
+ ❯ ComputedRefImpl.fn components/mobile/MobileTeamMessages.vue:96:21
+     94|   if (!team) return [];
+     95|   return teamCommunicationStore.getPerspectiveForAddress(
+     96|     team.executions.getRootTeamRunId(),
+       |                     ^
+     97|     team.executions.getFocusedAddress(),
+     98|   ).messages;
+ ❯ refreshComputed ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:397:28
+ ❯ ComputedRefImpl.get value [as value] ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1711:5
+ ❯ unref ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1536:45
+ ❯ Object.get ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1542:64
+ ❯ Proxy._sfc_render components/mobile/MobileTeamMessages.vue:6:26
+ ❯ renderComponentRoot ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:4499:16
+ ❯ ReactiveEffect.componentUpdateFn [as fn] ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:6007:46
+ ❯ ReactiveEffect.run ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:243:19
+ ❯ setupRenderEffect ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:6142:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[50/117]⎯
+
+ FAIL  components/mobile/__tests__/MobileUxRefinement.spec.ts > mobile Round 4 UX refinements > binds team Auto approve tools to the launch config, team context, and member configs
+TypeError: (0 , useAgentTeamContextsStore)(...).createRunFromTemplate is not a function
+ ❯ components/mobile/__tests__/MobileUxRefinement.spec.ts:562:51
+    560|     ]);
+    561| 
+    562|     const teamRunId = useAgentTeamContextsStore().createRunFromTemplat…
+       |                                                   ^
+    563|       selectionMode: "mobile",
+    564|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[51/117]⎯
+
+ FAIL  composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts > useMobileFocusedRunIdentity > resolves the focused leaf member run for selected team contexts
+TypeError: Cannot read properties of undefined (reading 'getFocusedAddress')
+ ❯ ComputedRefImpl.fn composables/mobile/useMobileFocusedRunIdentity.ts:33:62
+     31| 
+     32|       const team = teamContextsStore.getTeamContextById(currentContext…
+     33|       if (!team || !sameTeamExecutionAddress(team.executions.getFocuse…
+       |                                                              ^
+     34|         return '';
+     35|       }
+ ❯ refreshComputed ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:397:28
+ ❯ ComputedRefImpl.get value [as value] ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1711:5
+ ❯ composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts:147:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[52/117]⎯
+
+ FAIL  composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts > useMobileFocusedRunIdentity > rejects team contexts when selected team or focused route is stale
+TypeError: Cannot read properties of undefined (reading 'getFocusedAddress')
+ ❯ ComputedRefImpl.fn composables/mobile/useMobileFocusedRunIdentity.ts:33:62
+     31| 
+     32|       const team = teamContextsStore.getTeamContextById(currentContext…
+     33|       if (!team || !sameTeamExecutionAddress(team.executions.getFocuse…
+       |                                                              ^
+     34|         return '';
+     35|       }
+ ❯ refreshComputed ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:397:28
+ ❯ ComputedRefImpl.get value [as value] ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1711:5
+ ❯ composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts:165:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[53/117]⎯
+
+ FAIL  services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current rooted event dispatch > keeps subscription transport state separate from backend Team lifecycle
+TypeError: Cannot read properties of undefined (reading 'getRootTeamRunId')
+ ❯ TeamStreamingService.connect services/agentStreaming/TeamStreamingService.ts:73:62
+     71|   connect(teamRunId: string, teamContext: AgentTeamContext): void {
+     72|     const normalized = teamRunId.trim();
+     73|     if (!normalized || normalized !== teamContext.executions.getRootTe…
+       |                                                              ^
+     74|     this.attachContext(teamContext);
+     75|     this.teamRunId = normalized;
+ ❯ createHarness services/agentStreaming/__tests__/TeamStreamingService.spec.ts:50:11
+ ❯ services/agentStreaming/__tests__/TeamStreamingService.spec.ts:64:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[54/117]⎯
+
+ FAIL  services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current rooted event dispatch > reattaches transport callbacks to the latest exact Team context
+TypeError: Cannot read properties of undefined (reading 'getRootTeamRunId')
+ ❯ TeamStreamingService.connect services/agentStreaming/TeamStreamingService.ts:73:62
+     71|   connect(teamRunId: string, teamContext: AgentTeamContext): void {
+     72|     const normalized = teamRunId.trim();
+     73|     if (!normalized || normalized !== teamContext.executions.getRootTe…
+       |                                                              ^
+     74|     this.attachContext(teamContext);
+     75|     this.teamRunId = normalized;
+ ❯ createHarness services/agentStreaming/__tests__/TeamStreamingService.spec.ts:50:11
+ ❯ services/agentStreaming/__tests__/TeamStreamingService.spec.ts:84:42
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[55/117]⎯
+
+ FAIL  services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current rooted event dispatch > projects status and content only into the exact persistent execution context
+TypeError: Cannot read properties of undefined (reading 'getRootTeamRunId')
+ ❯ TeamStreamingService.connect services/agentStreaming/TeamStreamingService.ts:73:62
+     71|   connect(teamRunId: string, teamContext: AgentTeamContext): void {
+     72|     const normalized = teamRunId.trim();
+     73|     if (!normalized || normalized !== teamContext.executions.getRootTe…
+       |                                                              ^
+     74|     this.attachContext(teamContext);
+     75|     this.teamRunId = normalized;
+ ❯ createHarness services/agentStreaming/__tests__/TeamStreamingService.spec.ts:50:11
+ ❯ services/agentStreaming/__tests__/TeamStreamingService.spec.ts:97:42
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[56/117]⎯
+
+ FAIL  services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current rooted event dispatch > drops a live member payload without canonical execution identity instead of using focus
+TypeError: Cannot read properties of undefined (reading 'getRootTeamRunId')
+ ❯ TeamStreamingService.connect services/agentStreaming/TeamStreamingService.ts:73:62
+     71|   connect(teamRunId: string, teamContext: AgentTeamContext): void {
+     72|     const normalized = teamRunId.trim();
+     73|     if (!normalized || normalized !== teamContext.executions.getRootTe…
+       |                                                              ^
+     74|     this.attachContext(teamContext);
+     75|     this.teamRunId = normalized;
+ ❯ createHarness services/agentStreaming/__tests__/TeamStreamingService.spec.ts:50:11
+ ❯ services/agentStreaming/__tests__/TeamStreamingService.spec.ts:116:36
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[57/117]⎯
+
+ FAIL  services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current rooted event dispatch > mirrors an exact external user message into its addressed conversation
+TypeError: Cannot read properties of undefined (reading 'getRootTeamRunId')
+ ❯ TeamStreamingService.connect services/agentStreaming/TeamStreamingService.ts:73:62
+     71|   connect(teamRunId: string, teamContext: AgentTeamContext): void {
+     72|     const normalized = teamRunId.trim();
+     73|     if (!normalized || normalized !== teamContext.executions.getRootTe…
+       |                                                              ^
+     74|     this.attachContext(teamContext);
+     75|     this.teamRunId = normalized;
+ ❯ createHarness services/agentStreaming/__tests__/TeamStreamingService.spec.ts:50:11
+ ❯ services/agentStreaming/__tests__/TeamStreamingService.spec.ts:130:36
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[58/117]⎯
+
+ FAIL  services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current rooted event dispatch > routes successful tool execution through the browser-owned success handler at the exact execution
+TypeError: Cannot read properties of undefined (reading 'getRootTeamRunId')
+ ❯ TeamStreamingService.connect services/agentStreaming/TeamStreamingService.ts:73:62
+     71|   connect(teamRunId: string, teamContext: AgentTeamContext): void {
+     72|     const normalized = teamRunId.trim();
+     73|     if (!normalized || normalized !== teamContext.executions.getRootTe…
+       |                                                              ^
+     74|     this.attachContext(teamContext);
+     75|     this.teamRunId = normalized;
+ ❯ createHarness services/agentStreaming/__tests__/TeamStreamingService.spec.ts:50:11
+ ❯ services/agentStreaming/__tests__/TeamStreamingService.spec.ts:143:27
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[59/117]⎯
+
+ FAIL  services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current rooted event dispatch > projects an inter-Agent delivery as a user input only in the exact persistent receiver conversation
+TypeError: Cannot read properties of undefined (reading 'getRootTeamRunId')
+ ❯ TeamStreamingService.connect services/agentStreaming/TeamStreamingService.ts:73:62
+     71|   connect(teamRunId: string, teamContext: AgentTeamContext): void {
+     72|     const normalized = teamRunId.trim();
+     73|     if (!normalized || normalized !== teamContext.executions.getRootTe…
+       |                                                              ^
+     74|     this.attachContext(teamContext);
+     75|     this.teamRunId = normalized;
+ ❯ createHarness services/agentStreaming/__tests__/TeamStreamingService.spec.ts:50:11
+ ❯ services/agentStreaming/__tests__/TeamStreamingService.spec.ts:156:42
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[60/117]⎯
+
+ FAIL  services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current rooted event dispatch > projects an inter-Agent delivery only into the exact nonempty task-Team receiver context
+TypeError: Cannot read properties of undefined (reading 'getRootTeamRunId')
+ ❯ TeamStreamingService.connect services/agentStreaming/TeamStreamingService.ts:73:62
+     71|   connect(teamRunId: string, teamContext: AgentTeamContext): void {
+     72|     const normalized = teamRunId.trim();
+     73|     if (!normalized || normalized !== teamContext.executions.getRootTe…
+       |                                                              ^
+     74|     this.attachContext(teamContext);
+     75|     this.teamRunId = normalized;
+ ❯ createHarness services/agentStreaming/__tests__/TeamStreamingService.spec.ts:50:11
+ ❯ services/agentStreaming/__tests__/TeamStreamingService.spec.ts:184:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[61/117]⎯
+
+ FAIL  services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current rooted event dispatch > drops a member input without exact execution identity instead of using recipient data as fallback
+TypeError: Cannot read properties of undefined (reading 'getRootTeamRunId')
+ ❯ TeamStreamingService.connect services/agentStreaming/TeamStreamingService.ts:73:62
+     71|   connect(teamRunId: string, teamContext: AgentTeamContext): void {
+     72|     const normalized = teamRunId.trim();
+     73|     if (!normalized || normalized !== teamContext.executions.getRootTe…
+       |                                                              ^
+     74|     this.attachContext(teamContext);
+     75|     this.teamRunId = normalized;
+ ❯ createHarness services/agentStreaming/__tests__/TeamStreamingService.spec.ts:50:11
+ ❯ services/agentStreaming/__tests__/TeamStreamingService.spec.ts:219:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[62/117]⎯
+
+ FAIL  services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current rooted event dispatch > forwards exact Team communication messages to the communication projection store
+TypeError: Cannot read properties of undefined (reading 'getRootTeamRunId')
+ ❯ TeamStreamingService.connect services/agentStreaming/TeamStreamingService.ts:73:62
+     71|   connect(teamRunId: string, teamContext: AgentTeamContext): void {
+     72|     const normalized = teamRunId.trim();
+     73|     if (!normalized || normalized !== teamContext.executions.getRootTe…
+       |                                                              ^
+     74|     this.attachContext(teamContext);
+     75|     this.teamRunId = normalized;
+ ❯ createHarness services/agentStreaming/__tests__/TeamStreamingService.spec.ts:50:11
+ ❯ services/agentStreaming/__tests__/TeamStreamingService.spec.ts:242:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[63/117]⎯
+
+ FAIL  services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current rooted event dispatch > routes compaction lifecycle only to the exact addressed member
+TypeError: Cannot read properties of undefined (reading 'getRootTeamRunId')
+ ❯ TeamStreamingService.connect services/agentStreaming/TeamStreamingService.ts:73:62
+     71|   connect(teamRunId: string, teamContext: AgentTeamContext): void {
+     72|     const normalized = teamRunId.trim();
+     73|     if (!normalized || normalized !== teamContext.executions.getRootTe…
+       |                                                              ^
+     74|     this.attachContext(teamContext);
+     75|     this.teamRunId = normalized;
+ ❯ createHarness services/agentStreaming/__tests__/TeamStreamingService.spec.ts:50:11
+ ❯ services/agentStreaming/__tests__/TeamStreamingService.spec.ts:259:42
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[64/117]⎯
+
+ FAIL  services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts > openTeamRun current exact execution identity > preserves a subscribed live member context and establishes the final baseline once
+TypeError: Cannot read properties of undefined (reading 'getFocusedAddress')
+ ❯ requestedFocus services/runOpen/teamRunOpenCoordinator.ts:31:20
+     29|   if (input.executionAddress?.rootTeamRunId === input.teamRunId) retur…
+     30|   if (input.memberAddress) return createTeamExecutionAddress({ rootTea…
+     31|   return existing?.executions.getFocusedAddress() ?? null;
+       |                    ^
+     32| };
+     33| 
+ ❯ Module.openTeamRun services/runOpen/teamRunOpenCoordinator.ts:37:21
+ ❯ services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts:136:11
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[65/117]⎯
+
+ FAIL  services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts > openTeamRun current exact execution identity > adds one fresh hydrated current Team context with exact rooted members
+TypeError: Cannot read properties of undefined (reading 'getFocusedAddress')
+ ❯ Module.openTeamRun services/runOpen/teamRunOpenCoordinator.ts:48:54
+     46| 
+     47|   if (preferred && context.executions.hasExecution(preferred)) context…
+     48|   const focusedExecutionAddress = context.executions.getFocusedAddress…
+       |                                                      ^
+     49| 
+     50|   if (input.selectRun !== false) {
+ ❯ services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts:155:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[66/117]⎯
+
+ FAIL  services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts > openTeamRun current exact execution identity > hydrates only a newly introduced exact member while preserving an existing live member
+TypeError: Cannot read properties of undefined (reading 'getFocusedAddress')
+ ❯ requestedFocus services/runOpen/teamRunOpenCoordinator.ts:31:20
+     29|   if (input.executionAddress?.rootTeamRunId === input.teamRunId) retur…
+     30|   if (input.memberAddress) return createTeamExecutionAddress({ rootTea…
+     31|   return existing?.executions.getFocusedAddress() ?? null;
+       |                    ^
+     32| };
+     33| 
+ ❯ Module.openTeamRun services/runOpen/teamRunOpenCoordinator.ts:37:21
+ ❯ services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts:183:11
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[67/117]⎯
+
+ FAIL  services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts > openTeamRun current exact execution identity > preserves an exact requested task-Agent focus present in the subscribed execution map
+TypeError: Cannot read properties of undefined (reading 'hasExecution')
+ ❯ Module.openTeamRun services/runOpen/teamRunOpenCoordinator.ts:47:39
+     45|   contexts.addTeamContext(context);
+     46| 
+     47|   if (preferred && context.executions.hasExecution(preferred)) context…
+       |                                       ^
+     48|   const focusedExecutionAddress = context.executions.getFocusedAddress…
+     49| 
+ ❯ services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts:203:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[68/117]⎯
+
+ FAIL  services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts > openTeamRun current exact execution identity > falls back to the hydrated focus when a requested execution identity is absent
+TypeError: Cannot read properties of undefined (reading 'hasExecution')
+ ❯ Module.openTeamRun services/runOpen/teamRunOpenCoordinator.ts:47:39
+     45|   contexts.addTeamContext(context);
+     46| 
+     47|   if (preferred && context.executions.hasExecution(preferred)) context…
+       |                                       ^
+     48|   const focusedExecutionAddress = context.executions.getFocusedAddress…
+     49| 
+ ❯ services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts:223:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[69/117]⎯
+
+ FAIL  services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts > openTeamRun current exact execution identity > replaces an unsubscribed inactive Team projection and leaves it disconnected
+TypeError: Cannot read properties of undefined (reading 'getFocusedAddress')
+ ❯ requestedFocus services/runOpen/teamRunOpenCoordinator.ts:31:20
+     29|   if (input.executionAddress?.rootTeamRunId === input.teamRunId) retur…
+     30|   if (input.memberAddress) return createTeamExecutionAddress({ rootTea…
+     31|   return existing?.executions.getFocusedAddress() ?? null;
+       |                    ^
+     32| };
+     33| 
+ ❯ Module.openTeamRun services/runOpen/teamRunOpenCoordinator.ts:37:21
+ ❯ services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts:249:11
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[70/117]⎯
+
+ FAIL  services/runHydration/__tests__/teamRunContextHydrationService.spec.ts > hydrateLiveTeamRunContext Event Monitor final-prime ownership > primes each real loader/builder context exactly once 'after projected activity hydration'
+ FAIL  services/runHydration/__tests__/teamRunContextHydrationService.spec.ts > hydrateLiveTeamRunContext Event Monitor final-prime ownership > primes each real loader/builder context exactly once 'when the member projection is absent'
+Error: [vitest] No "fetchTaskDelegationRecordsForTeam" export is defined on the "../taskDelegationHydrationService" mock. Did you forget to return it from "vi.mock"?
+If you need to partially mock a module, you can use "importOriginal" helper inside:
+
+vi.mock(import("../taskDelegationHydrationService"), async (importOriginal) => {
+  const actual = await importOriginal()
+  return {
+    ...actual,
+    // your mocked methods
+  }
+})
+
+ ❯ fetchTeamOwnedRecords services/runHydration/teamRunContextHydrationService.ts:178:5
+    176|   const [, taskDelegationRecords] = await Promise.all([
+    177|     fetchAndHydrateTeamCommunicationForTeam({ client, teamRunId }),
+    178|     fetchTaskDelegationRecordsForTeam({ client, teamRunId }),
+       |     ^
+    179|   ]);
+    180|   return taskDelegationRecords;
+ ❯ loadRuntimePayload services/runHydration/teamRunContextHydrationService.ts:200:39
+ ❯ Module.hydrateLiveTeamRunContext services/runHydration/teamRunContextHydrationService.ts:295:19
+ ❯ services/runHydration/__tests__/teamRunContextHydrationService.spec.ts:143:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[71/117]⎯
+
+ FAIL  components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts > Historical team lazy hydration integration > opens a historical team through the sidebar and lazily hydrates only the newly selected member
+AssertionError: expected undefined to deeply equal { rootTeamRunId: 'team-1', …(3) }
+
+- Expected: 
+{
+  "memberAddress": "/solution_designer",
+  "rootTeamRunId": "team-1",
+  "taskAgentRunId": null,
+  "taskTeamRunIds": [],
+}
+
++ Received: 
+undefined
+
+ ❯ components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts:423:51
+    421|     const hydratedTeam = teamContextsStore.getTeamContextById('team-1'…
+    422|     expect(hydratedTeam).toBeTruthy();
+    423|     expect(hydratedTeam?.focusedExecutionAddress).toEqual(
+       |                                                   ^
+    424|       createTeamExecutionAddress({ rootTeamRunId: 'team-1', memberAddr…
+    425|     );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[72/117]⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts > WorkspaceAgentRunsTreePanel regressions > removes a draft team row through the local discard path
+Error: Unable to get button[title="Remove draft team"] within: <div class="flex h-full flex-col bg-white">
+  <div class="flex items-center justify-between border-t border-gray-200 px-3 py-2">
+    <h3 class="text-sm font-semibold text-gray-700">Workspaces</h3><button type="button" class="inline-flex h-6 w-6 items-center justify-center rounded-md text-gray-500 transition-colors hover:bg-indigo-50 hover:text-indigo-600" title="Add workspace"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-4 w-4"></svg></button>
+  </div>
+  <!--v-if-->
+  <div class="min-h-0 flex-1 overflow-y-auto px-1 pb-2">
+    <div class="space-y-1">
+      <section class="rounded-md">
+        <div class="group/workspace-row flex items-center rounded-md text-sm text-gray-700 transition-colors hover:bg-gray-50 focus-within:bg-gray-50" data-test="workspace-row" data-workspace-id="workspace:/ws/a" data-workspace-root="/ws/a" aria-expanded="true"><button type="button" class="flex min-w-0 flex-1 items-center px-2 py-1.5 text-left" aria-expanded="true"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1.5 h-4 w-4 text-gray-400 transition-transform rotate-0"></svg><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1.5 h-4 w-4 text-gray-500"></svg><span class="truncate">autobyteus_org</span></button>
+          <!--v-if-->
+        </div>
+        <div class="ml-2 mt-0.5 space-y-1">
+          <!--v-if-->
+          <div class="rounded-md">
+            <div class="flex items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition-colors hover:bg-gray-50"><button type="button" class="flex min-w-0 flex-1 items-center text-left" data-test="workspace-agent-row" data-workspace-root="/ws/a" data-agent-definition-id="agent-def-1" aria-expanded="false"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1 h-3.5 w-3.5 text-gray-400 transition-transform -rotate-90"></svg><span class="mr-1.5 inline-flex h-5 w-5 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[0.625rem] font-semibold text-gray-600"><img src="https://example.com/superagent.png" alt="SuperAgent avatar" class="h-full w-full object-cover"></span><span class="truncate font-medium">SuperAgent</span><span class="ml-1 text-xs text-gray-400">(2)</span></button><button type="button" class="ml-2 inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-colors hover:bg-indigo-50 hover:text-indigo-600" title="New run with this agent"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-4 w-4"></svg></button></div>
+            <!--v-if-->
+          </div>
+          <div class="mt-1 space-y-0.5">
+            <div class="px-2 py-1 text-[0.6875rem] font-semibold uppercase tracking-wide text-gray-400"> Teams </div>
+            <div class="rounded-md"><button type="button" class="flex w-full items-center rounded-md px-2 py-1 text-left text-sm text-gray-700 transition-colors hover:bg-gray-50" data-test="workspace-team-definition-row-team-def-1" aria-expanded="true"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1 h-3.5 w-3.5 text-gray-400 transition-transform rotate-0"></svg><span class="h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-1.5" role="img" aria-label="No active team runs" title="No active team runs" data-test="team-activity-dot" data-active="false"></span><span class="mr-1.5 inline-flex h-5 w-5 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[0.625rem] font-semibold text-gray-600"><img src="https://example.com/team-alpha.png" alt="Team Alpha avatar" class="h-full w-full object-cover"></span><span class="truncate font-medium">Team Alpha</span><span class="ml-1 text-xs text-gray-400">(1)</span></button>
+              <div class="ml-3 mt-0.5 space-y-0.5">
+                <div class="rounded-md">
+                  <div class="group/team-row flex items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition-colors hover:bg-gray-50"><button type="button" class="flex min-w-0 flex-1 items-center text-left" data-test="workspace-team-row-temp-team-1" aria-expanded="false"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1 h-3.5 w-3.5 flex-shrink-0 text-gray-400 transition-transform -rotate-90" data-test="workspace-team-run-disclosure"></svg><span class="h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-1.5" role="img" aria-label="Inactive team run" title="Inactive team run" data-test="team-activity-dot" data-active="false"></span><span class="truncate font-medium">Draft team summary</span></button>
+                    <div class="ml-2 flex flex-shrink-0 items-center gap-1"><button type="button" class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-amber-50 hover:text-amber-600 md:opacity-0 md:group-hover/team-row:opacity-100 md:group-focus-within/team-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50" title="Archive team history"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-3.5 w-3.5"></svg></button><button type="button" class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-red-50 hover:text-red-600 md:opacity-0 md:group-hover/team-row:opacity-100 md:group-focus-within/team-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50" title="Delete team history permanently"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-3.5 w-3.5"></svg></button><span class="text-xs text-gray-400">4h</span></div>
+                  </div>
+                  <!--v-if-->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+  <!--v-if-->
+  <!--v-if-->
+</div>
+ ❯ VueWrapper.BaseWrapper.get ../node_modules/.pnpm/@vue+test-utils@2.4.6/node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7279:15
+    7277|             return result;
+    7278|         }
+    7279|         throw new Error("Unable to get ".concat(selector, " within: ")…
+       |               ^
+    7280|     };
+    7281|     BaseWrapper.prototype.getComponent = function (selector) {
+ ❯ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts:551:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[73/117]⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts > WorkspaceHistoryWorkspaceSection > renders any-active definition activity and exact sibling run activity reactively
+TypeError: Cannot read properties of undefined (reading 'listNavigationRows')
+ ❯ buildRunHistoryTeamExecutionRows stores/runHistoryTeamExecutionRows.ts:31:29
+     29|   if (!context) return flattenStableRows(stableSource);
+     30|   const stableByAddress = indexStableRows(stableSource);
+     31|   return context.executions.listNavigationRows().flatMap((execution): …
+       |                             ^
+     32|     const topology = context.topology.getNode(execution.executionAddre…
+     33|     if (!topology) return [];
+ ❯ mountSubject components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:115:24
+ ❯ components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:236:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[74/117]⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts > WorkspaceHistoryWorkspaceSection > renders and selects exact stable and task-Agent execution rows
+TypeError: Cannot read properties of undefined (reading 'listNavigationRows')
+ ❯ buildRunHistoryTeamExecutionRows stores/runHistoryTeamExecutionRows.ts:31:29
+     29|   if (!context) return flattenStableRows(stableSource);
+     30|   const stableByAddress = indexStableRows(stableSource);
+     31|   return context.executions.listNavigationRows().flatMap((execution): …
+       |                             ^
+     32|     const topology = context.topology.getNode(execution.executionAddre…
+     33|     if (!topology) return [];
+ ❯ mountSubject components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:115:24
+ ❯ components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:258:41
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[75/117]⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts > WorkspaceHistoryWorkspaceSection > marks only the selected TeamRun current when focused member addresses repeat
+TypeError: Cannot read properties of undefined (reading 'listNavigationRows')
+ ❯ buildRunHistoryTeamExecutionRows stores/runHistoryTeamExecutionRows.ts:31:29
+     29|   if (!context) return flattenStableRows(stableSource);
+     30|   const stableByAddress = indexStableRows(stableSource);
+     31|   return context.executions.listNavigationRows().flatMap((execution): …
+       |                             ^
+     32|     const topology = context.topology.getNode(execution.executionAddre…
+     33|     if (!topology) return [];
+ ❯ mountSubject components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:115:24
+ ❯ components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:338:58
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[76/117]⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts > WorkspaceHistoryWorkspaceSection > toggles an exact task-Team subtree while keeping task details out of the tree
+TypeError: Cannot read properties of undefined (reading 'listNavigationRows')
+ ❯ buildRunHistoryTeamExecutionRows stores/runHistoryTeamExecutionRows.ts:31:29
+     29|   if (!context) return flattenStableRows(stableSource);
+     30|   const stableByAddress = indexStableRows(stableSource);
+     31|   return context.executions.listNavigationRows().flatMap((execution): …
+       |                             ^
+     32|     const topology = context.topology.getNode(execution.executionAddre…
+     33|     if (!topology) return [];
+ ❯ mountSubject components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:115:24
+ ❯ components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:416:34
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[77/117]⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts > WorkspaceHistoryWorkspaceSection > removes transient execution rows when the exact live projection disappears
+TypeError: Cannot read properties of undefined (reading 'listNavigationRows')
+ ❯ buildRunHistoryTeamExecutionRows stores/runHistoryTeamExecutionRows.ts:31:29
+     29|   if (!context) return flattenStableRows(stableSource);
+     30|   const stableByAddress = indexStableRows(stableSource);
+     31|   return context.executions.listNavigationRows().flatMap((execution): …
+       |                             ^
+     32|     const topology = context.topology.getNode(execution.executionAddre…
+     33|     if (!topology) return [];
+ ❯ mountSubject components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:115:24
+ ❯ components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:448:39
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[78/117]⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts > WorkspaceHistoryWorkspaceSection > toggles stable nested Team children from row body and disclosure with exact addresses
+TypeError: Cannot read properties of undefined (reading 'listNavigationRows')
+ ❯ buildRunHistoryTeamExecutionRows stores/runHistoryTeamExecutionRows.ts:31:29
+     29|   if (!context) return flattenStableRows(stableSource);
+     30|   const stableByAddress = indexStableRows(stableSource);
+     31|   return context.executions.listNavigationRows().flatMap((execution): …
+       |                             ^
+     32|     const topology = context.topology.getNode(execution.executionAddre…
+     33|     if (!topology) return [];
+ ❯ mountSubject components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:115:24
+ ❯ components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:488:41
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[79/117]⎯
+
+ FAIL  components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts > AgentTeamEventMonitor.vue > passes sender-id to member-name mapping to AgentEventMonitor
+ FAIL  components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts > AgentTeamEventMonitor.vue > passes focused member display name and avatar to AgentEventMonitor
+ FAIL  components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts > AgentTeamEventMonitor.vue > uses roster focus for displayed Focus history while active execution can remain on the coordinator
+ FAIL  components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts > AgentTeamEventMonitor.vue > does not render task-agent work packets as the logical parent conversation
+TypeError: Cannot read properties of undefined (reading 'getFocusedAddress')
+ ❯ ComputedRefImpl.fn components/workspace/team/AgentTeamEventMonitor.vue:77:66
+     75| 
+     76| const activeTeam = computed(() => teamContextsStore.activeTeamContext);
+     77| const focusedExecutionAddress = computed(() => activeTeam.value?.execu…
+       |                                                                  ^
+     78| const focusedMember = computed(() => {
+     79|   const team = activeTeam.value;
+ ❯ refreshComputed ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:397:28
+ ❯ ComputedRefImpl.get value [as value] ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1711:5
+ ❯ ComputedRefImpl.fn components/workspace/team/AgentTeamEventMonitor.vue:85:43
+ ❯ refreshComputed ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:397:28
+ ❯ ComputedRefImpl.get value [as value] ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1711:5
+ ❯ ComputedRefImpl.fn components/workspace/team/AgentTeamEventMonitor.vue:89:50
+ ❯ refreshComputed ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:397:28
+ ❯ ComputedRefImpl.get value [as value] ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1711:5
+ ❯ unref ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1536:45
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[80/117]⎯
+
+ FAIL  components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts > TeamDelegatedTasksSection > uses controlled collapsed state with human task count and no approval summary
+ FAIL  components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts > TeamDelegatedTasksSection > renders task detail navigation without duplicating execution hierarchy rows
+ FAIL  components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts > TeamDelegatedTasksSection > switches the whole right pane to a task-owned reference preview and refreshes repeated reference selections
+ FAIL  components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts > TeamDelegatedTasksSection > returns from reference preview to task body when a summary row is selected
+ FAIL  components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts > TeamDelegatedTasksSection > adds a message-style horizontal split resize handle for the task navigator
+ FAIL  components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts > TeamDelegatedTasksSection > selects task summaries for reading without focusing execution targets
+ FAIL  components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts > TeamDelegatedTasksSection > keeps task-team summary selection detail-only with no member navigation
+ FAIL  components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts > TeamDelegatedTasksSection > shows the empty delegated-task state
+TypeError: Cannot read properties of undefined (reading 'getRootTeamRunId')
+ ❯ ComputedRefImpl.fn components/workspace/team/TeamDelegatedTasksSection.vue:115:67
+    113| });
+    114| 
+    115| const rootTeamRunId = computed(() => props.teamContext.executions.getR…
+       |                                                                   ^
+    116| const delegatedTaskEntries = computed<DelegatedTaskEntry[]>(() => deri…
+    117|   props.teamContext,
+ ❯ refreshComputed ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:397:28
+ ❯ ComputedRefImpl.get value [as value] ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1711:5
+ ❯ ReactiveEffect.getter [as fn] ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1810:27
+ ❯ ReactiveEffect.run ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:243:19
+ ❯ Object.watch ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1932:25
+ ❯ doWatch ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:905:34
+ ❯ watch ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:838:10
+ ❯ setup components/workspace/team/TeamDelegatedTasksSection.vue:130:1
+ ❯ callWithErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:200:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[81/117]⎯
+
+ FAIL  components/workspace/team/__tests__/TeamOverviewPanel.spec.ts > TeamOverviewPanel.vue > renders Messages without the removed Task Plan section
+ FAIL  components/workspace/team/__tests__/TeamOverviewPanel.spec.ts > TeamOverviewPanel.vue > keeps Team tab section expansion parent-owned with Messages open first
+ FAIL  components/workspace/team/__tests__/TeamOverviewPanel.spec.ts > TeamOverviewPanel.vue > opens Tasks immediately when the selected team already has delegated task entries
+ FAIL  components/workspace/team/__tests__/TeamOverviewPanel.spec.ts > TeamOverviewPanel.vue > opens Tasks when delegated task entries appear while mounted
+ FAIL  components/workspace/team/__tests__/TeamOverviewPanel.spec.ts > TeamOverviewPanel.vue > preserves manual collapse for the same task set but reopens for a new task identity
+ FAIL  components/workspace/team/__tests__/TeamOverviewPanel.spec.ts > TeamOverviewPanel.vue > resets Messages open when the selected team run changes without taking over message identity
+ FAIL  components/workspace/team/__tests__/TeamOverviewPanel.spec.ts > TeamOverviewPanel.vue > opens Tasks when the selected team run changes to another run with delegated task entries
+ FAIL  components/workspace/team/__tests__/TeamOverviewPanel.spec.ts > TeamOverviewPanel.vue > counts and passes route/path identity for a focused subteam without a member run id
+TypeError: Cannot read properties of undefined (reading 'getRootTeamRunId')
+ ❯ Proxy.addTeamContext stores/agentTeamContextsStore.ts:51:48
+     49|   actions: {
+     50|     addTeamContext(context: AgentTeamContext) {
+     51|       const rootTeamRunId = context.executions.getRootTeamRunId();
+       |                                                ^
+     52|       context.executions.listAgentContextEntries().forEach((entry) => …
+     53|       this.teams = new Map(this.teams).set(rootTeamRunId, context);
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ seedActiveTeam components/workspace/team/__tests__/TeamOverviewPanel.spec.ts:67:31
+ ❯ components/workspace/team/__tests__/TeamOverviewPanel.spec.ts:154:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[82/117]⎯
+
+ FAIL  components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > shows focused member name in header
+ FAIL  components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > does not render the token usage header chip
+ FAIL  components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > shows focused member status in header
+ FAIL  components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > shows focused member avatar in header when available
+ FAIL  components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > does not silently substitute the team title for an unresolved exact focus address
+ FAIL  components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > shows roster focus in the header when active execution falls back to the coordinator
+ FAIL  components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > keeps roster focus in the header after simplifying the shell controls
+ FAIL  components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > opens selected team config from header action
+ FAIL  components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > seeds a new team config from the selected run without sharing nested global or member llmConfig
+ FAIL  components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > renders the focused monitor directly
+ FAIL  components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > passes the focused member run to the composer skill-improvement CTA
+ FAIL  components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > preserves the shared composer only for a focused subteam
+TypeError: Cannot read properties of undefined (reading 'getFocusedAddress')
+ ❯ ComputedRefImpl.fn components/workspace/team/TeamWorkspaceView.vue:105:73
+    103| 
+    104| const activeTeamContext = computed(() => teamContextsStore.activeTeamC…
+    105| const focusedExecutionAddress = computed(() => activeTeamContext.value…
+       |                                                                         ^
+    106| const focusedMemberContext = computed(() => {
+    107|   const team = activeTeamContext.value;
+ ❯ refreshComputed ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:397:28
+ ❯ ComputedRefImpl.get value [as value] ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1711:5
+ ❯ ComputedRefImpl.fn components/workspace/team/TeamWorkspaceView.vue:173:56
+ ❯ refreshComputed ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:397:28
+ ❯ ComputedRefImpl.get value [as value] ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1711:5
+ ❯ ReactiveEffect.getter [as fn] ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1810:27
+ ❯ ReactiveEffect.run ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:243:19
+ ❯ Object.watch ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1932:25
+ ❯ doWatch ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:905:34
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[83/117]⎯
+
+ FAIL  components/workspace/running/__tests__/RunningTeamRow.spec.ts > RunningTeamRow > renders exact-run activity independently from subscription, members, and row action
+ FAIL  components/workspace/running/__tests__/RunningTeamRow.spec.ts > RunningTeamRow > filters initializing task-only logical members from active running rows
+ FAIL  components/workspace/running/__tests__/RunningTeamRow.spec.ts > RunningTeamRow > keeps logical members with direct conversation history visible in the running sidebar
+ FAIL  components/workspace/running/__tests__/RunningTeamRow.spec.ts > RunningTeamRow > does not keep a logical worker visible when its only conversation is a task-agent work packet
+TypeError: Cannot read properties of undefined (reading 'getFocusedAddress')
+ ❯ immediate components/workspace/running/RunningTeamRow.vue:93:46
+     91|     expanded.value = true;
+     92|     // Auto-focus coordinator if no member is focused
+     93|     const focused = props.teamRun.executions.getFocusedAddress();
+       |                                              ^
+     94|     if (!props.teamRun.executions.getAgentContext(focused) && props.co…
+     95|   }
+ ❯ callWithErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:200:19
+ ❯ callWithAsyncErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:207:17
+ ❯ baseWatchOptions.call ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:877:47
+ ❯ job ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1895:18
+ ❯ Object.watch ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1930:7
+ ❯ doWatch ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:905:34
+ ❯ watch ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:838:10
+ ❯ setup components/workspace/running/RunningTeamRow.vue:89:1
+ ❯ callWithErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:200:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[84/117]⎯
+
+⎯⎯⎯⎯⎯⎯ Unhandled Errors ⎯⎯⎯⎯⎯⎯
+
+Vitest caught 1 unhandled error during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: Cannot read properties of undefined (reading 'isRootTeamActive')
+ ❯ Proxy.terminateTeamRun stores/agentTeamRunStore.ts:89:104
+     87|     async terminateTeamRun(rootTeamRunId: string): Promise<boolean> {
+     88|       const team = useAgentTeamContextsStore().getTeamContextById(root…
+     89|       if (!rootTeamRunId.trim() || this.stopPendingTeamIds[rootTeamRun…
+       |                                                                                                        ^
+     90|       this.stopPendingTeamIds = { ...this.stopPendingTeamIds, [rootTea…
+     91|       try {
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ stores/__tests__/agentTeamRunStore.spec.ts:189:63
+ ❯ ../node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:155:11
+ ❯ ../node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:26
+ ❯ ../node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1897:20
+ ❯ runWithTimeout ../node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1863:10
+ ❯ runTest ../node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1574:12
+ ❯ processTicksAndRejections node:internal/process/task_queues:103:5
+
+This error originated in "stores/__tests__/agentTeamRunStore.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+
+ Test Files  29 failed | 14 passed (43)
+      Tests  111 failed | 161 passed (272)
+     Errors  1 error
+   Start at  21:34:26
+   Duration  24.86s (transform 5.49s, setup 161.63s, collect 13.08s, tests 3.27s, environment 15.96s, prepare 11.06s)
+

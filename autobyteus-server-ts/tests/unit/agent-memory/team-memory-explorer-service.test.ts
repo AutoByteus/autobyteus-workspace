@@ -1,136 +1,79 @@
-import fs from "node:fs";
+import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
-import { afterEach, describe, expect, it } from "vitest";
-import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { TeamMemoryExplorerService } from "../../../src/agent-memory/services/team-memory-explorer-service.js";
-import { TeamRunMetadataStore } from "../../../src/run-history/store/team-run-metadata-store.js";
+import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
+import { resetTeamRunHistoryCatalogState } from "../../../src/run-history/services/team-run-history-catalog-service.js";
+import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-run-execution-tree-store.js";
+import { TeamRunHistoryIndexStore } from "../../../src/run-history/store/team-run-history-index-store.js";
+import { testAgentNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
 
-const touch = (filePath: string, mtime: number) => {
-  fs.mkdirSync(path.dirname(filePath), { recursive: true });
-  fs.writeFileSync(filePath, "{}", "utf-8");
-  fs.utimesSync(filePath, mtime, mtime);
+const touch = async (filePath: string, mtime: number) => {
+  await fs.mkdir(path.dirname(filePath), { recursive: true });
+  await fs.writeFile(filePath, "{}", "utf8");
+  const at = new Date(mtime);
+  await fs.utimes(filePath, at, at);
 };
 
-const member = (memberRunId: string, memberName: string) => ({
-  memberKind: "agent" as const,
-  memberRouteKey: memberName.toLowerCase(),
-  memberPath: [memberName],
-  memberName,
-  memberRunId,
-  runtimeKind: RuntimeKind.AUTOBYTEUS,
-  platformAgentRunId: null,
-  agentDefinitionId: `${memberName.toLowerCase()}-agent`,
-  llmModelIdentifier: "model-a",
-  autoExecuteTools: false,
-  skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
-  llmConfig: null,
-  workspaceRootPath: null,
-});
+describe("TeamMemoryExplorerService current V1 tree", () => {
+  let memoryDir: string;
+  let layout: AgentMemoryLayout;
 
-describe("TeamMemoryExplorerService", () => {
-  let tempDir: string | null = null;
-
-  afterEach(() => {
-    if (tempDir) {
-      fs.rmSync(tempDir, { recursive: true, force: true });
-      tempDir = null;
+  beforeEach(async () => {
+    memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "team-memory-explorer-current-"));
+    layout = new AgentMemoryLayout(memoryDir);
+    const store = new TeamRunExecutionTreeStore();
+    for (const [runId, agentRunId, createdAt] of [
+      ["classroom-run-1", "teacher-run-1", "2026-08-14T00:00:00.000Z"],
+      ["classroom-run-2", "teacher-run-2", "2026-08-15T00:00:00.000Z"],
+    ] as const) {
+      const tree = testExecutionTree({
+        rootTeamRunId: runId,
+        rootTeamDefinitionId: "classroom-team",
+        teamDefinitionName: "Classroom Team",
+        coordinatorAddress: "/Teacher",
+        createdAt,
+        children: [testAgentNode("/Teacher", { agentRunId, workspaceRootPath: `/tmp/${runId}` })],
+      });
+      await store.write(layout.getTeamDirPath({ rootTeamRunId: runId, ancestorTeamRunIds: [] }), tree);
     }
-  });
-
-  const writeTeamMetadata = async (
-    teamRunId: string,
-    teamDefinitionId: string,
-    teamDefinitionName: string,
-    memberRunId: string,
-    memberName = "Coordinator",
-  ) => {
-    if (!tempDir) {
-      throw new Error("tempDir not initialized");
-    }
-    await new TeamRunMetadataStore(tempDir).writeMetadata(teamRunId, {
-      teamRunId,
-      teamDefinitionId,
-      teamDefinitionName,
-      coordinatorMemberRouteKey: memberName.toLowerCase(),
-      createdAt: "2026-03-07T00:00:00Z",
-      memberTree: [member(memberRunId, memberName)],
-    });
-  };
-
-  it("lists only agent teams with inspectable member memory", async () => {
-    tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "team-memory-explorer-"));
-    await writeTeamMetadata("team-alpha-1", "alpha-team", "Alpha Team", "alpha-member-1");
-    await writeTeamMetadata("team-alpha-2", "alpha-team", "Alpha Team", "alpha-member-2");
-    await writeTeamMetadata("team-empty", "empty-team", "Empty Team", "empty-member");
-    touch(path.join(tempDir, "agent_teams", "team-alpha-1", "alpha-member-1", "raw_traces_active.jsonl"), 1000);
-    touch(path.join(tempDir, "agent_teams", "team-alpha-2", "alpha-member-2", "semantic.jsonl"), 2000);
-
-    const page = await new TeamMemoryExplorerService(tempDir).listAgentTeamsWithMemory();
-
-    expect(page.entries).toHaveLength(1);
-    expect(page.entries[0]?.teamDefinitionId).toBe("alpha-team");
-    expect(page.entries[0]?.teamRunCount).toBe(2);
-    expect(page.entries[0]?.memberMemoryCount).toBe(1);
-    expect(page.entries[0]?.memory.hasRawTraces).toBe(true);
-    expect(page.entries[0]?.memory.hasSemantic).toBe(true);
-  });
-
-  it("lists selected team runs with member memory targets only", async () => {
-    tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "team-memory-explorer-"));
-    await writeTeamMetadata("team-alpha-1", "alpha-team", "Alpha Team", "alpha-member-1");
-    await writeTeamMetadata("team-beta-1", "beta-team", "Beta Team", "beta-member-1");
-    touch(path.join(tempDir, "agent_teams", "team-alpha-1", "alpha-member-1", "raw_traces_active.jsonl"), 1000);
-    touch(path.join(tempDir, "agent_teams", "team-beta-1", "beta-member-1", "raw_traces_active.jsonl"), 2000);
-
-    const page = await new TeamMemoryExplorerService(tempDir).listAgentTeamRunsWithMemory("alpha-team");
-
-    expect(page.entries.map((entry) => entry.teamRunId)).toEqual(["team-alpha-1"]);
-    expect(page.entries[0]?.memberTargets).toHaveLength(1);
-    expect(page.entries[0]?.memberTargets[0]?.memberRunId).toBe("alpha-member-1");
-  });
-
-  it("lists nested member memory from the hierarchical root team directory", async () => {
-    tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "team-memory-explorer-"));
-    await new TeamRunMetadataStore(tempDir).writeMetadata("root-team-run", {
-      teamRunId: "root-team-run",
-      teamDefinitionId: "nested-team",
-      teamDefinitionName: "Nested Team",
-      coordinatorMemberRouteKey: "ReviewSquad/reviewer",
-      createdAt: "2026-03-07T00:00:00Z",
-      memberTree: [
-        {
-          memberKind: "agent_team" as const,
-          memberRouteKey: "ReviewSquad",
-          memberPath: ["ReviewSquad"],
-          memberName: "ReviewSquad",
-          memberRunId: "review-squad-wrapper",
-          role: null,
-          description: null,
-          teamDefinitionId: "review-team",
-          teamRunId: "child-review-team-run",
-          coordinatorMemberRouteKey: "ReviewSquad/reviewer",
-          memberTree: [
-            member("nested-reviewer-run", "reviewer"),
-          ],
-        },
-      ],
-    });
-    touch(
-      path.join(tempDir, "agent_teams", "root-team-run", "child-review-team-run", "nested-reviewer-run", "raw_traces_active.jsonl"),
-      3000,
-    );
-
-    const page = await new TeamMemoryExplorerService(tempDir).listAgentTeamRunsWithMemory("nested-team");
-
-    expect(page.entries).toHaveLength(1);
-    expect(page.entries[0]?.memberTargets).toEqual([
-      expect.objectContaining({
-        memberRunId: "nested-reviewer-run",
-        memberRouteKey: "reviewer",
-      }),
+    await new TeamRunHistoryIndexStore(memoryDir).writeIndex([
+      { teamRunId: "classroom-run-1", teamDefinitionId: "classroom-team", teamDefinitionName: "Classroom Team", workspaceRootPath: "/tmp/classroom-run-1", summary: "first lesson", createdAt: "2026-08-14T00:00:00.000Z", archivedAt: null, terminatedAt: null },
+      { teamRunId: "classroom-run-2", teamDefinitionId: "classroom-team", teamDefinitionName: "Classroom Team", workspaceRootPath: "/tmp/classroom-run-2", summary: "second lesson", createdAt: "2026-08-15T00:00:00.000Z", archivedAt: null, terminatedAt: null },
     ]);
-    expect(page.entries[0]?.memory.hasRawTraces).toBe(true);
+    await touch(path.join(memoryDir, "agent_teams", "classroom-run-1", "teacher-run-1", "raw_traces_active.jsonl"), Date.parse("2026-08-14T01:00:00.000Z"));
+    await touch(path.join(memoryDir, "agent_teams", "classroom-run-2", "teacher-run-2", "semantic.jsonl"), Date.parse("2026-08-15T01:00:00.000Z"));
+    resetTeamRunHistoryCatalogState(memoryDir);
+  });
+
+  afterEach(async () => {
+    resetTeamRunHistoryCatalogState(memoryDir);
+    await fs.rm(memoryDir, { recursive: true, force: true });
+  });
+
+  it("groups stored V1 roots by Team definition and exact configured Agent address", async () => {
+    const page = await new TeamMemoryExplorerService(memoryDir).listAgentTeamsWithMemory();
+    expect(page.entries).toEqual([expect.objectContaining({
+      teamDefinitionId: "classroom-team",
+      teamDefinitionName: "Classroom Team",
+      teamRunCount: 2,
+      memberMemoryCount: 1,
+      memory: expect.objectContaining({ hasRawTraces: true, hasSemantic: true }),
+    })]);
+  });
+
+  it("lists and filters current run/member targets without route/path compatibility identity", async () => {
+    const service = new TeamMemoryExplorerService(memoryDir);
+    const page = await service.listAgentTeamRunsWithMemory("classroom-team", "second lesson");
+    expect(page.entries).toEqual([expect.objectContaining({
+      teamRunId: "classroom-run-2",
+      summary: "second lesson",
+      memberTargets: [expect.objectContaining({
+        memberAddress: "/Teacher",
+        displayName: "Teacher",
+        agentRunId: "teacher-run-2",
+      })],
+    })]);
   });
 });

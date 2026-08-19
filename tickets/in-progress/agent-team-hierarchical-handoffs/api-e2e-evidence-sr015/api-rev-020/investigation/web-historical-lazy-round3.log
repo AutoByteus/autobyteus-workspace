@@ -1,0 +1,22 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web
+
+stderr | components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts (1 test) 87ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  22:02:08
+   Duration  6.41s (transform 3.28s, setup 5.26s, collect 350ms, tests 87ms, environment 258ms, prepare 165ms)
+

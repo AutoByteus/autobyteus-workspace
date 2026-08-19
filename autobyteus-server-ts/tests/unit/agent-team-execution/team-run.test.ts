@@ -1,211 +1,75 @@
 import { describe, expect, it, vi } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
+import type { TeamRunBackend } from "../../../src/agent-team-execution/backends/team-run-backend.js";
 import { TeamRun } from "../../../src/agent-team-execution/domain/team-run.js";
-import { TeamRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
-const createBackend = () => ({
-  runId: "team-run-1",
+import { testAgentNode, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
+
+const config = testTeamRunConfig({
+  rootTeamRunId: "team-run-1",
+  coordinatorAddress: "/Coordinator",
+  children: [testAgentNode("/Coordinator", { agentRunId: "coordinator-run-1" })],
+});
+
+const createBackend = (): TeamRunBackend => ({
+  teamRunId: "team-run-1",
   teamBackendKind: TeamBackendKind.MIXED,
   getRuntimeContext: () => null,
   isActive: () => true,
   getLeafAgentStatusSnapshots: vi.fn(() => []),
-  hasOpenExecutionWork: vi.fn(() => true),
-  subscribeToEvents: vi.fn().mockImplementation(() => () => undefined),
-  postMessage: vi.fn().mockResolvedValue({ accepted: true }),
-  postMessageToConversationTarget: vi.fn().mockResolvedValue({ accepted: true }),
-  deliverInterAgentMessage: vi.fn().mockResolvedValue({ accepted: true }),
-  approveToolInvocation: vi.fn().mockResolvedValue({ accepted: true }),
-  interruptMember: vi.fn().mockResolvedValue({ accepted: true }),
-  settleMember: vi.fn().mockResolvedValue({ accepted: true }),
-  startTaskAgentInstance: vi.fn().mockResolvedValue({ accepted: true }),
-  settleTaskAgentInstance: vi.fn().mockResolvedValue({ accepted: true }),
-  terminate: vi.fn().mockResolvedValue({ accepted: true }),
-  publishEvent: vi.fn(),
+  hasOpenExecutionWork: vi.fn(() => false),
+  getOrCreateConfiguredChildTeam: vi.fn(),
+  reserveDirectAgentInput: vi.fn(),
+  deliverToDirectAgent: vi.fn(async () => ({ accepted: true })),
+  executeDirectAgentCommand: vi.fn(async () => ({ accepted: true })),
+  prepareTaskAgent: vi.fn(),
+  prepareTaskTeam: vi.fn(),
+  prepareDirectTaskSettlement: vi.fn(),
+  prepareTermination: vi.fn(),
+  terminate: vi.fn(async () => ({ accepted: true })),
 });
 
+const createRun = (backend: TeamRunBackend): TeamRun => new TeamRun(
+  new TeamRunContext({
+    rootTeamRunId: "team-run-1",
+    teamRunId: "team-run-1",
+    teamBackendKind: TeamBackendKind.MIXED,
+    teamNode: config.rootTeam,
+    runtimeContext: null,
+  }),
+  backend,
+);
+
 describe("TeamRun", () => {
-  it("defaults omitted team messages to the coordinator member from active context", async () => {
+  it("delivers input only to the exact direct AgentRun selected by the root", async () => {
     const backend = createBackend();
-    const run = new TeamRun({
-      context: new TeamRunContext({
-        runId: "team-run-1",
-        teamBackendKind: TeamBackendKind.MIXED,
-        coordinatorMemberName: "Coordinator",
-        config: new TeamRunConfig({
-          teamDefinitionId: "team-def-1",
-          teamBackendKind: TeamBackendKind.MIXED,
-          coordinatorMemberName: "Coordinator",
-          memberConfigs: [],
-        }),
-        runtimeContext: { memberContexts: [] },
-      }),
-      backend: backend as never,
-    });
+    const run = createRun(backend);
+    const message = new AgentInputUserMessage("continue");
 
-    await run.postMessage(new AgentInputUserMessage("continue"));
-
-    expect(backend.postMessage).toHaveBeenCalledWith(
-      expect.any(AgentInputUserMessage),
-      { kind: "route_key", memberRouteKey: "Coordinator" },
-      null,
-    );
+    await expect(run.postMessage(message, "coordinator-run-1")).resolves.toEqual({ accepted: true });
+    expect(backend.deliverToDirectAgent).toHaveBeenCalledWith("coordinator-run-1", message);
   });
 
-  it("falls back to config coordinator member when context coordinator is absent", async () => {
+  it("forwards exact direct-member commands without route or address fallback", async () => {
     const backend = createBackend();
-    const run = new TeamRun({
-      context: new TeamRunContext({
-        runId: "team-run-1",
-        teamBackendKind: TeamBackendKind.MIXED,
-        coordinatorMemberName: null,
-        config: new TeamRunConfig({
-          teamDefinitionId: "team-def-1",
-          teamBackendKind: TeamBackendKind.MIXED,
-          coordinatorMemberName: "Coordinator",
-          memberConfigs: [],
-        }),
-        runtimeContext: { memberContexts: [] },
-      }),
-      backend: backend as never,
-    });
+    const run = createRun(backend);
+    const command = { kind: "interrupt" as const };
 
-    await run.postMessage(new AgentInputUserMessage("continue"));
-
-    expect(backend.postMessage).toHaveBeenCalledWith(
-      expect.any(AgentInputUserMessage),
-      { kind: "route_key", memberRouteKey: "Coordinator" },
-      null,
-    );
+    await expect(run.executeDirectAgentCommand("coordinator-run-1", command)).resolves.toEqual({ accepted: true });
+    expect(backend.executeDirectAgentCommand).toHaveBeenCalledWith("coordinator-run-1", command);
   });
 
-  it("defaults omitted team messages to a configured coordinator route key", async () => {
+  it("keeps status/open-work and prepared settlement at the one local backend boundary", async () => {
     const backend = createBackend();
-    const run = new TeamRun({
-      context: new TeamRunContext({
-        runId: "team-run-1",
-        teamBackendKind: TeamBackendKind.MIXED,
-        coordinatorMemberName: null,
-        coordinatorMemberRouteKey: "ReviewTeam/Reviewer",
-        config: new TeamRunConfig({
-          teamDefinitionId: "team-def-1",
-          teamBackendKind: TeamBackendKind.MIXED,
-          coordinatorMemberRouteKey: "ReviewTeam/Reviewer",
-          memberConfigs: [],
-        }),
-        runtimeContext: { memberContexts: [] },
-      }),
-      backend: backend as never,
-    });
+    const run = createRun(backend);
+    await run.prepareDirectTaskSettlement("task_0001", { agentRunId: "task-agent-run-1" });
 
-    await run.postMessage(new AgentInputUserMessage("continue"));
-
-    expect(backend.postMessage).toHaveBeenCalledWith(
-      expect.any(AgentInputUserMessage),
-      { kind: "route_key", memberRouteKey: "ReviewTeam/Reviewer" },
-      null,
-    );
-  });
-
-  it("delegates member interrupt by route key and optional run guard", async () => {
-    const backend = createBackend();
-    const run = new TeamRun({
-      context: new TeamRunContext({
-        runId: "team-run-1",
-        teamBackendKind: TeamBackendKind.MIXED,
-        coordinatorMemberName: null,
-        config: null,
-        runtimeContext: { memberContexts: [] },
-      }),
-      backend: backend as never,
-    });
-
-    await expect(run.interruptMember(" code_reviewer ", "member-run-2")).resolves.toEqual({
-      accepted: true,
-    });
-
-    expect(backend.interruptMember).toHaveBeenCalledWith("code_reviewer", "member-run-2");
-  });
-
-  it("delegates conversation target messages through the backend address boundary", async () => {
-    const backend = createBackend();
-    const run = new TeamRun({
-      context: new TeamRunContext({
-        runId: "team-run-1",
-        teamBackendKind: TeamBackendKind.MIXED,
-        coordinatorMemberName: null,
-        config: null,
-        runtimeContext: { memberContexts: [] },
-      }),
-      backend: backend as never,
-    });
-    const address = {
-      segments: [
-        { kind: "member" as const, memberRouteKey: "BuildSquad" },
-        { kind: "task_team" as const, taskTeamRunId: "task-team-run-1" },
-        { kind: "member" as const, memberRouteKey: "review_lead" },
-      ],
-    };
-
-    await run.postMessageToConversationTarget(new AgentInputUserMessage("continue"), address);
-
-    expect(backend.postMessageToConversationTarget).toHaveBeenCalledWith(
-      expect.any(AgentInputUserMessage),
-      address,
-    );
-  });
-
-  it("rejects member interrupt without a route key", async () => {
-    const backend = createBackend();
-    const run = new TeamRun({
-      context: new TeamRunContext({
-        runId: "team-run-1",
-        teamBackendKind: TeamBackendKind.MIXED,
-        coordinatorMemberName: null,
-        config: null,
-        runtimeContext: { memberContexts: [] },
-      }),
-      backend: backend as never,
-    });
-
-    await expect(run.interruptMember("   ")).resolves.toMatchObject({
-      accepted: false,
-      code: "TARGET_MEMBER_REQUIRED",
-    });
-    expect(backend.interruptMember).not.toHaveBeenCalled();
-  });
-
-  it("delegates leaf status snapshots and private open-work semantics to the backend", () => {
-    const snapshots = [{
-      scopeKind: "ordinary_member" as const,
-      teamRunId: "team-run-1",
-      payload: {
-        status: "running" as const,
-        agent_id: "worker-run-1",
-        agent_name: "worker",
-        member_route_key: "worker",
-        member_path: ["worker"],
-        source_route_key: "worker",
-        source_path: ["worker"],
-      },
-    }];
-    const backend = createBackend();
-    backend.getLeafAgentStatusSnapshots.mockReturnValue(snapshots);
-    backend.hasOpenExecutionWork.mockReturnValue(false);
-    const run = new TeamRun({
-      context: new TeamRunContext({
-        runId: "team-run-1",
-        teamBackendKind: TeamBackendKind.MIXED,
-        coordinatorMemberName: null,
-        config: null,
-        runtimeContext: { memberContexts: [] },
-      }),
-      backend: backend as never,
-    });
-
-    expect(run.getLeafAgentStatusSnapshots()).toBe(snapshots);
+    expect(run.getLeafAgentStatusSnapshots()).toEqual([]);
     expect(run.hasOpenExecutionWork()).toBe(false);
-    expect(backend.getLeafAgentStatusSnapshots).toHaveBeenCalledTimes(1);
-    expect(backend.hasOpenExecutionWork).toHaveBeenCalledTimes(1);
+    expect(backend.prepareDirectTaskSettlement).toHaveBeenCalledWith(
+      "task_0001",
+      { agentRunId: "task-agent-run-1" },
+    );
   });
 });

@@ -1,0 +1,1 @@
+{"query":"query { agentDefinitions { id name } agentTeamDefinitions { id name } }"}

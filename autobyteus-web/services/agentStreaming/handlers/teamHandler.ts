@@ -2,19 +2,13 @@
  * Team-specific event handlers.
  * 
  * Layer 3 of the agent streaming architecture - handles team-only events:
- * INTER_AGENT_MESSAGE, TEAM_COMMUNICATION_MESSAGE
+ * INTER_AGENT_MESSAGE
  */
 
 import type { AgentContext } from '~/types/agent/AgentContext';
-import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import type { InterAgentMessageSegment } from '~/types/segments';
-import type { 
-  InterAgentMessagePayload, 
-  TeamCommunicationMessagePayload,
-  TeamRunLifecyclePayload,
-} from '../protocol/messageTypes';
+import type { InterAgentMessagePayload } from '../protocol/messageTypes';
 import { findOrCreateAIMessage } from './segmentHandler';
-import { useTeamCommunicationStore } from '~/stores/teamCommunicationStore';
 
 /**
  * Handle INTER_AGENT_MESSAGE event.
@@ -56,29 +50,5 @@ export function handleInterAgentMessage(
   };
   
   aiMessage.segments.push(segment);
-  return true;
-}
-
-/**
- * Handle TEAM_COMMUNICATION_MESSAGE event.
- */
-export function handleTeamCommunicationMessage(
-  payload: TeamCommunicationMessagePayload,
-): void {
-  useTeamCommunicationStore().upsertFromBackendPayload(payload);
-}
-
-export function handleTeamRunLifecycle(
-  payload: TeamRunLifecyclePayload,
-  context: AgentTeamContext,
-): boolean {
-  if (payload.team_run_id !== context.teamRunId) {
-    console.warn(
-      `Ignoring lifecycle for team '${payload.team_run_id}' on '${context.teamRunId}'.`,
-    );
-    return false;
-  }
-  if (context.isActive === payload.is_active) return false;
-  context.isActive = payload.is_active;
   return true;
 }

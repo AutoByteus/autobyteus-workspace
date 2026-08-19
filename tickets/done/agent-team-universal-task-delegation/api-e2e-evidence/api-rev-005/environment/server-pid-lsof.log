@@ -1,0 +1,43 @@
+COMMAND   PID  USER   FD      TYPE             DEVICE  SIZE/OFF                NODE NAME
+node    76631 normy  cwd       DIR               1,13      1024           345229709 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+node    76631 normy  txt       REG               1,13 112928848           255287132 /Users/normy/.hermes/node/bin/node
+node    76631 normy  txt       REG               1,13     72984           293325547 /Library/Preferences/Logging/.plist-cache.TQHe3XLT
+node    76631 normy  txt       REG               1,13   2374000 1152921500312573276 /usr/lib/dyld
+node    76631 normy  txt       REG               1,13  17251592           349117520 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/.prisma/client/libquery_engine-darwin-arm64.dylib.node
+node    76631 normy    0u     unix 0xa18dfda2f01ca9b7       0t0                     ->0x108cbc41d335341
+node    76631 normy    1u     unix 0x9bb4526485ce3086       0t0                     ->0x1c06a8e328de366d
+node    76631 normy    2u     unix 0x86912e27c881fcb5       0t0                     ->0xb87cf7657f835693
+node    76631 normy    3u   KQUEUE                                                  count=0, state=0x8
+node    76631 normy    4      PIPE 0xa5849a76c4d5bd4e     16384                     ->0x4b0a9539f48d8a09
+node    76631 normy    5      PIPE 0x4b0a9539f48d8a09     16384                     ->0xa5849a76c4d5bd4e
+node    76631 normy    6r      DIR               1,13       704                   2 /
+node    76631 normy    7u   KQUEUE                                                  count=0, state=0xa
+node    76631 normy    8r      DIR               1,13       704                   2 /
+node    76631 normy    9u   KQUEUE                                                  count=0, state=0xa
+node    76631 normy   10r      DIR               1,13       704                   2 /
+node    76631 normy   11r      CHR                3,2       0t0                 336 /dev/null
+node    76631 normy   12w      REG               1,13      5881           349119679 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/tests/.tmp/api-rev-005-live-20260815-1/logs/server.log
+node    76631 normy   13u   KQUEUE                                                  count=0, state=0xa
+node    76631 normy   14u   KQUEUE                                                  count=0, state=0xa
+node    76631 normy   15u   KQUEUE                                                  count=0, state=0xa
+node    76631 normy   16u     unix 0x31756765c9540b91       0t0                     ->0x83a6456a693023ef
+node    76631 normy   17u     unix 0x83a6456a693023ef       0t0                     ->0x31756765c9540b91
+node    76631 normy   18u     unix 0x31756765c9540b91       0t0                     ->0x83a6456a693023ef
+node    76631 normy   19u      REG               1,13    221184           349093510 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/db/api-rev-005-live-20260815-1.db
+node    76631 normy   20u      REG               1,13    221184           349093510 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/db/api-rev-005-live-20260815-1.db
+node    76631 normy   21u      REG               1,13    221184           349093510 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/db/api-rev-005-live-20260815-1.db
+node    76631 normy   22u      REG               1,13    221184           349093510 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/db/api-rev-005-live-20260815-1.db
+node    76631 normy   23      PIPE 0xe352b6f028507684     16384                     ->0x9d81d092aa33946b
+node    76631 normy   24u      REG               1,13    221184           349093510 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/db/api-rev-005-live-20260815-1.db
+node    76631 normy   25u      REG               1,13    221184           349093510 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/db/api-rev-005-live-20260815-1.db
+node    76631 normy   26u      REG               1,13    221184           349093510 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/db/api-rev-005-live-20260815-1.db
+node    76631 normy   27u      REG               1,13    221184           349093510 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/db/api-rev-005-live-20260815-1.db
+node    76631 normy   28u      REG               1,13    221184           349093510 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/db/api-rev-005-live-20260815-1.db
+node    76631 normy   29      PIPE 0x9d81d092aa33946b     16384                     ->0xe352b6f028507684
+node    76631 normy   30u     IPv4 0x8cd9917e073cc375       0t0                 TCP 127.0.0.1:60310 (LISTEN)
+node    76631 normy   31u    systm 0x52df08977aea076a       0t0                     [ctl com.apple.netsrc id 7 unit 74]
+node    76631 normy   32u     IPv4 0xd3e9e466902c6618       0t0                 TCP 127.0.0.1:53303->127.0.0.1:1234 (ESTABLISHED)
+node    76631 normy   33   NPOLICY                                                  
+node    76631 normy   34u     unix 0xb56739e66b6b1926       0t0                     ->0x64dd2889fb1d51c4
+node    76631 normy   35u     IPv6 0xb2ddb947e14fcadc       0t0                 TCP [2003:ca:5732:5a23:4872:be0d:35bd:cf64]:53304->[2607:6bc0::10]:443 (ESTABLISHED)
+node    76631 normy   36u     IPv6 0xc8e8cc7bf48a1908       0t0                 TCP [2003:ca:5732:5a23:4872:be0d:35bd:cf64]:53305->[2606:4700::6812:1c88]:443 (SYN_SENT)

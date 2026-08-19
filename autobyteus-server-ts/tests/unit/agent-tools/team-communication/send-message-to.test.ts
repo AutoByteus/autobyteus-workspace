@@ -1,50 +1,41 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { createBoundAutoByteusSendMessageToTool } from "../../../../src/agent-tools/agent-communication/send-message-to.js";
+import { CollaborationContractError } from "../../../../src/agent-collaboration/domain/collaboration-contract-error.js";
 import { buildAgentRunMessageSenderContext } from "../../../../src/agent-communication/domain/agent-run-message-sender.js";
-import { SendMessageToDispatcher } from "../../../../src/agent-communication/services/send-message-to-dispatcher.js";
 import type { GlobalAgentRunMessageRouter } from "../../../../src/agent-communication/services/global-agent-run-message-router.js";
-import { MemberTeamContext } from "../../../../src/agent-team-execution/domain/member-team-context.js";
-import { TeamBackendKind } from "../../../../src/agent-team-execution/domain/team-backend-kind.js";
+import { SendMessageToDispatcher } from "../../../../src/agent-communication/services/send-message-to-dispatcher.js";
 import type { InterAgentMessageDeliveryIntent } from "../../../../src/agent-team-execution/domain/inter-agent-message-delivery.js";
+import { createBoundAutoByteusSendMessageToTool } from "../../../../src/agent-tools/agent-communication/send-message-to.js";
+import { SendMessageToMcpAdapterProvider } from "../../../../src/agent-tools/mcp/providers/send-message-to-mcp-adapter-provider.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
+import { testMemberTeamContext } from "../../../fixtures/current-team-run-fixtures.js";
+
+const parseEnvelope = (value: string) => JSON.parse(value) as {
+  accepted: boolean;
+  code: string;
+  message: string;
+  result: unknown;
+};
 
 const createMemberTeamContext = (
-  deliverInterAgentMessage: (request: InterAgentMessageDeliveryIntent) => Promise<{ accepted: boolean; message?: string }>,
-) => new MemberTeamContext({
-  teamRunId: "team-run-1",
-  teamDefinitionId: "team-def-1",
-  teamName: "Team",
-  teamBackendKind: TeamBackendKind.MIXED,
-  memberName: "Professor",
-  memberPath: ["professor"],
-  memberRouteKey: "professor",
-  memberRunId: "run-professor",
-  coordinatorMemberRouteKey: "professor",
-  communicationRecipients: [
-    {
-      recipientName: "Writer",
-      scope: "local_agent",
-      participant: {
-        memberKind: "agent",
-        memberName: "Writer",
-        memberPath: ["writer"],
-        memberRouteKey: "writer",
-        memberRunId: "run-writer",
-        address: { teamRunId: "team-run-1", memberPath: ["writer"], memberRouteKey: "writer" },
-      },
-      delivery: { teamRunId: "team-run-1", selector: { kind: "route_key", memberRouteKey: "writer" } },
-      role: null,
-      description: null,
-    },
-  ],
-  allowedRecipientNames: ["Writer"],
-  sendMessageToEnabled: true,
+  deliverInterAgentMessage: (request: InterAgentMessageDeliveryIntent) => Promise<{
+    accepted: boolean;
+    code?: string;
+    message?: string;
+  }>,
+) => testMemberTeamContext({
+  rootTeamRunId: "team-run-1",
+  memberAddress: "/professor",
+  agentRunId: "run-professor",
   deliverInterAgentMessage,
 });
 
-const createDispatcher = () => {
+const createDispatcher = (globalResult = {
+  accepted: true,
+  code: "DIRECT_DELIVERED",
+  message: "Delivered globally.",
+}) => {
   const globalRouter = {
-    deliver: vi.fn(async () => ({ accepted: true, code: "DELIVERED", message: "Delivered globally." })),
+    deliver: vi.fn(async () => globalResult),
   } as unknown as GlobalAgentRunMessageRouter;
   return {
     globalRouter,
@@ -57,37 +48,58 @@ describe("AutoByteus server-owned send_message_to", () => {
     vi.restoreAllMocks();
   });
 
-  it("routes recipient_name through the team delivery context", async () => {
+  it("routes a hierarchical recipient_address through Team delivery and returns canonical JSON", async () => {
     const deliverInterAgentMessage = vi.fn(async () => ({ accepted: true }));
     const memberTeamContext = createMemberTeamContext(deliverInterAgentMessage);
     const { dispatcher, globalRouter } = createDispatcher();
     const tool = createBoundAutoByteusSendMessageToTool(
       buildAgentRunMessageSenderContext({
-        senderRunId: memberTeamContext.memberRunId,
-        senderName: memberTeamContext.memberName,
+        senderRunId: memberTeamContext.identity.agentRunId,
+        senderName: "professor",
         runtimeKind: RuntimeKind.AUTOBYTEUS,
         memberTeamContext,
       }),
       dispatcher,
     );
 
-    const result = await tool.execute({}, {
-      recipient_name: "Writer",
+    const result = parseEnvelope(await tool.execute({}, {
+      recipient_address: "/research_team/research_lead",
       content: "Please review this handoff.",
       message_type: "handoff",
-    });
+    }));
 
-    expect(result).toBe("Delivered message to Writer.");
+    expect(result).toEqual({
+      accepted: true,
+      code: "DELIVERED",
+      message: "Delivered message to /research_team/research_lead.",
+      result: null,
+    });
     expect(globalRouter.deliver).not.toHaveBeenCalled();
     expect(deliverInterAgentMessage).toHaveBeenCalledWith(expect.objectContaining({
-      target: { kind: "recipient_name", recipientName: "Writer" },
+      rootTeamRunId: "team-run-1",
+      recipientAddress: "/research_team/research_lead",
+      sender: {
+        participant: {
+          kind: "agent",
+          identity: {
+            rootTeamRunId: "team-run-1",
+            memberAddress: "/professor",
+            agentRunId: "run-professor",
+          },
+          displayName: "professor",
+        },
+      },
       content: "Please review this handoff.",
       messageType: "handoff",
     }));
   });
 
-  it("routes target_agent_run_id through the global direct router without team context", async () => {
-    const { dispatcher, globalRouter } = createDispatcher();
+  it("preserves exact-run operation codes unchanged in the public envelope", async () => {
+    const { dispatcher, globalRouter } = createDispatcher({
+      accepted: true,
+      code: "DIRECT_MESSAGE_DELIVERED",
+      message: "Delivered globally.",
+    });
     const tool = createBoundAutoByteusSendMessageToTool(
       buildAgentRunMessageSenderContext({
         senderRunId: "standalone-sender",
@@ -97,14 +109,19 @@ describe("AutoByteus server-owned send_message_to", () => {
       dispatcher,
     );
 
-    const result = await tool.execute({}, {
+    const result = parseEnvelope(await tool.execute({}, {
       target_agent_run_id: "active-target-run",
       content: "Direct message body.",
       message_type: "direct_note",
       reference_files: ["/tmp/direct-note.md"],
-    });
+    }));
 
-    expect(result).toBe("Delivered globally.");
+    expect(result).toEqual({
+      accepted: true,
+      code: "DIRECT_MESSAGE_DELIVERED",
+      message: "Delivered globally.",
+      result: null,
+    });
     expect(globalRouter.deliver).toHaveBeenCalledWith(expect.objectContaining({
       sender: expect.objectContaining({ senderRunId: "standalone-sender" }),
       targetAgentRunId: "active-target-run",
@@ -114,7 +131,36 @@ describe("AutoByteus server-owned send_message_to", () => {
     }));
   });
 
-  it("rejects recipient_name when the sender is not a team member", async () => {
+  it("exposes a typed Team placement rejection without provider rewording", async () => {
+    const memberTeamContext = createMemberTeamContext(async () => {
+      throw new CollaborationContractError(
+        "COLLABORATION_TARGET_NOT_FOUND",
+        "Collaboration target '/missing' was not found.",
+      );
+    });
+    const { dispatcher } = createDispatcher();
+    const tool = createBoundAutoByteusSendMessageToTool(
+      buildAgentRunMessageSenderContext({
+        senderRunId: memberTeamContext.identity.agentRunId,
+        senderName: "professor",
+        runtimeKind: RuntimeKind.AUTOBYTEUS,
+        memberTeamContext,
+      }),
+      dispatcher,
+    );
+
+    expect(parseEnvelope(await tool.execute({}, {
+      recipient_address: "/missing",
+      content: "Team-only delivery.",
+    }))).toEqual({
+      accepted: false,
+      code: "COLLABORATION_TARGET_NOT_FOUND",
+      message: "Collaboration target '/missing' was not found.",
+      result: null,
+    });
+  });
+
+  it("rejects recipient_address for a non-Team sender with all envelope fields", async () => {
     const { dispatcher } = createDispatcher();
     const tool = createBoundAutoByteusSendMessageToTool(
       buildAgentRunMessageSenderContext({
@@ -125,11 +171,50 @@ describe("AutoByteus server-owned send_message_to", () => {
       dispatcher,
     );
 
-    const result = await tool.execute({}, {
-      recipient_name: "Writer",
+    expect(parseEnvelope(await tool.execute({}, {
+      recipient_address: "./writer",
       content: "Team-only delivery.",
+    }))).toMatchObject({
+      accepted: false,
+      code: "TEAM_CONTEXT_REQUIRED",
+      result: null,
     });
+  });
 
-    expect(result).toContain("recipient_name delivery requires an active team member context");
+  it.each([
+    {
+      label: "accepted",
+      result: { accepted: true, code: "DELIVERED", message: "Delivered through Team routing." },
+      isError: undefined,
+    },
+    {
+      label: "rejected",
+      result: { accepted: false, code: "COLLABORATION_TARGET_NOT_FOUND", message: "Target was not found." },
+      isError: true,
+    },
+  ])("keeps AutoByteus and MCP $label envelopes byte-for-byte equivalent", async ({ result, isError }) => {
+    const deliverInterAgentMessage = vi.fn(async () => result);
+    const memberTeamContext = createMemberTeamContext(deliverInterAgentMessage);
+    const sender = buildAgentRunMessageSenderContext({
+      senderRunId: memberTeamContext.identity.agentRunId,
+      senderName: "professor",
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+      memberTeamContext,
+    });
+    const { dispatcher } = createDispatcher();
+    const input = { recipient_address: "./writer", content: "Provider parity." };
+    const nativeTool = createBoundAutoByteusSendMessageToTool(sender, dispatcher);
+    const nativeText = await nativeTool.execute({}, input);
+    const adapter = new SendMessageToMcpAdapterProvider(dispatcher).getAdapters()[0]!;
+
+    const projected = await adapter.execute({
+      session: { sender } as never,
+      rawArguments: input,
+    });
+    expect(projected.kind).toBe("mcp_tool_result");
+    if (projected.kind !== "mcp_tool_result") throw new Error("Expected MCP tool result.");
+    expect(projected.result.content).toEqual([{ type: "text", text: nativeText }]);
+    expect(projected.result.structuredContent).toEqual(JSON.parse(nativeText));
+    expect(projected.result.isError).toBe(isError);
   });
 });

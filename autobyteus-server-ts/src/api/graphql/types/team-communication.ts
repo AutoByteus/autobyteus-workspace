@@ -20,39 +20,15 @@ class TeamCommunicationReferenceFileObject {
 }
 
 @ObjectType()
-class TeamCommunicationTargetSegmentObject {
-  @Field(() => String)
-  kind!: string;
-
-  @Field(() => String, { nullable: true })
-  memberRouteKey?: string | null;
-
-  @Field(() => [String], { nullable: true })
-  memberPath?: string[] | null;
-
-  @Field(() => String, { nullable: true })
-  taskTeamRunId?: string | null;
-
-  @Field(() => String, { nullable: true })
-  taskAgentRunId?: string | null;
-}
-
-@ObjectType()
-class TeamCommunicationTargetAddressObject {
-  @Field(() => [TeamCommunicationTargetSegmentObject])
-  segments!: TeamCommunicationTargetSegmentObject[];
-}
-
-@ObjectType()
 class TeamCommunicationMessageObject {
   @Field(() => String)
   messageId!: string;
 
-  @Field(() => TeamCommunicationTargetAddressObject)
-  senderAddress!: TeamCommunicationTargetAddressObject;
+  @Field(() => String)
+  senderAgentRunId!: string;
 
-  @Field(() => TeamCommunicationTargetAddressObject)
-  receiverAddress!: TeamCommunicationTargetAddressObject;
+  @Field(() => String)
+  receiverAgentRunId!: string;
 
   @Field(() => String)
   content!: string;

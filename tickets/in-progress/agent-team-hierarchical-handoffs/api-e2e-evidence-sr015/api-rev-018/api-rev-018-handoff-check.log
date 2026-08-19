@@ -1,0 +1,37 @@
+2026-08-10T17:48:42Z
+revision markers:
+19:- Current API/E2E Revision ID: `API-REV-018` (`Fail / 91%`; product/runtime sub-result `Pass`, environment-safety sub-result `Fail`).
+11:- Current result: **Fail / 91%**.
+26:| API-REV-018 | `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md`; Round 18 | SR-015; ARCH-REV-009; IR-021; CRR-038 | Fail / 72% (API-REV-017) | Fail / 91% (product Pass; environment safety Fail) |
+durable inventory:
+rows=61 delta=6 approved_absent=2
+structured accepted rows:
+AutoByteus Pass delegated_task_ui_validation_team_4d4381848fec4433bb3031aedc5f9964 0
+Codex App Server Pass delegated_task_ui_validation_team_946b3b5d18c742e68e53472436a31a7a 0
+Claude Agent SDK Pass delegated_task_ui_validation_team_8a8251c18aaa41809ba09f7899c25fa1 0
+AutoByteus Pass nested_classroom_test_team_b71e7338427b4e28b641f3a64ff9fd5d 0
+Codex App Server Pass nested_classroom_test_team_4182b55c4d2b49ff9129c4046e0e4d82 0
+Claude Agent SDK Pass nested_classroom_test_team_01f11e8745dc41d49bbbd1ba251bfed9 0
+task-agent selected screenshots:
+ea70a5dccfddfdcf257f22b635f906b387d366ab9f0c873171628b55ebed9e74  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-018/live/browser/postfix-task-ui-autobyteus-task-agent-selected.png
+867941bee061fe5c20d0d39a7ce42a39d6b7a172c565b2374f11ac6a09b919f4  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-018/live/browser/postfix-task-ui-codex-task-agent-selected.png
+164edb5f26ca4024a6310751cdefe3bba1a768cd3bd14f0dbeb9cfc69aefd929  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-018/live/browser/postfix-task-ui-claude-task-agent-selected.png
+repository logs:
+present tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-018/repository/web-current-focused-final.log
+present tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-018/repository/web-current-affected-final.log
+present tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-018/repository/current-server-retained-selection-final.log
+present tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-018/repository/cadence-harness-final.log
+present tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-018/repository/production-typecheck-final.log
+present tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-018/repository/server-build-full-final.log
+present tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-018/repository/web-production-build-final.log
+cleanup:
+owned 60018
+owned 31018
+user 60004
+COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    71461 normy   26u  IPv4 0xbe9eaf34a35017b1      0t0  TCP 127.0.0.1:60004 (LISTEN)
+user 31004
+COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    73207 normy   12u  IPv4 0xe0271daf60061249      0t0  TCP 127.0.0.1:31004 (LISTEN)
+git diff check:
+handoff_check=pass

@@ -1,0 +1,32 @@
+# DR-003 integrated-state check
+timestamp_utc=2026-08-15T22:15:56Z
+source_reviewed_head=03b91d079af71b996ab4cadfe985ca2b2fddf049
+delivery_checkpoint=dd439fcfc06b9a7bdc8b1f961d71e1ebd7ce2c39
+tracked_base=origin/codex/agent-team-hierarchical-handoffs@3e121efb32462c314f4ef1c4e051f30d2f9b3e58
+personal_integration_source=origin/personal@acb8985930ccce49b632cdca22b92f5b237e35bf
+tracked_base_contained=true
+personal_integration_source_contained=true
+new_remote_commits_integrated_by_dr003=0
+merge_or_rebase_performed_by_dr003=NONE
+
+## Reviewed tree identity
+non_ticket_tree_matches_reviewed_source=true
+production_and_durable_test_tree_matches_reviewed_source=true
+
+## Executable-rerun decision
+additional_delivery_rerun=NOT_REQUIRED
+reason=Both fetched refs were unchanged and already ancestors of the reviewed source. The delivery checkpoint changes ticket evidence only, so API-REV-008 repository/build/live evidence still applies byte-for-byte to the non-ticket tree.
+api_e2e_authority=API-REV-008_PASS_98.3
+source_authority=CRR-021_PASS_92.8
+durable_test_review=CRR-022_NOT_APPLICABLE_ZERO_DELTA
+uc_ac=77/77_PASS
+
+## Hygiene and safety
+non_ticket_diff_check=PASS
+operational_database_action=NONE
+home_autobyteus_action=NONE
+protected_60004_31004_action=NONE
+rollback_repair_action=NONE
+push_archive_release_deployment_action=NONE
+
+RESULT=PASS_CURRENT_AND_INTEGRATED

@@ -9,7 +9,9 @@ import type {
   AppDataMigrationRecordRepositoryLike,
   AppDataMigrationRecordSnapshot,
 } from "../../../src/app-data-migrations/domain/app-data-migration-types.js";
-import { AppDataMigrationDuplicateRunError } from "../../../src/app-data-migrations/domain/app-data-migration-types.js";
+import {
+  AppDataMigrationDuplicateRunError,
+} from "../../../src/app-data-migrations/domain/app-data-migration-types.js";
 
 class InMemoryMigrationRepository implements AppDataMigrationRecordRepositoryLike {
   records = new Map<string, AppDataMigrationRecordSnapshot>();
@@ -76,11 +78,16 @@ class InMemoryMigrationRepository implements AppDataMigrationRecordRepositoryLik
   }
 }
 
-const createDefinition = (id: string, execute: AppDataMigrationDefinition["execute"]): AppDataMigrationDefinition => ({
+const createDefinition = (
+  id: string,
+  execute: AppDataMigrationDefinition["execute"],
+  prerequisiteMigrationIds: readonly string[] = [],
+): AppDataMigrationDefinition => ({
   id,
   displayName: `Migration ${id}`,
   description: "test migration",
   requiredOnStartup: true,
+  prerequisiteMigrationIds,
   execute,
 });
 
@@ -234,6 +241,126 @@ describe("AppDataMigrationRunner", () => {
     expect((await repository.getRecord("m-fail"))?.errorMessage).toBe("failed item");
     expect((await repository.getRecord("m-success"))?.status).toBe("SUCCEEDED");
     expect((await repository.getRecord("m-throws"))?.errorMessage).toBe("definition crashed");
+  });
+
+  it("blocks a failed dependent before attempt creation and continues independent migrations", async () => {
+    const repository = new InMemoryMigrationRepository();
+    const dependent = vi.fn(async () => ({ status: "SUCCEEDED" as const, summary }));
+    const independent = vi.fn(async () => ({ status: "SUCCEEDED" as const, summary }));
+    const runner = new AppDataMigrationRunner(
+      new AppDataMigrationRegistry([
+        createDefinition("prerequisite", async () => ({
+          status: "FAILED",
+          summary: { ...summary, failedCount: 1 },
+          errorMessage: "prerequisite failed",
+        })),
+        createDefinition("dependent", dependent, ["prerequisite"]),
+        createDefinition("independent", independent),
+      ]),
+      repository,
+      { logsDir: tempDir },
+    );
+
+    const results = await runner.runPending();
+
+    expect(results).toMatchObject([
+      { migrationId: "prerequisite", status: "FAILED", attempts: 1 },
+      {
+        migrationId: "dependent",
+        status: "NOT_RUN",
+        attempts: 0,
+        errorMessage: expect.stringContaining("APP_DATA_MIGRATION_PREREQUISITE_INCOMPLETE"),
+      },
+      { migrationId: "independent", status: "SUCCEEDED", attempts: 1 },
+    ]);
+    expect(dependent).not.toHaveBeenCalled();
+    expect(independent).toHaveBeenCalledOnce();
+    expect(await repository.getRecord("dependent")).toBeNull();
+  });
+
+  it.each(["SUCCEEDED", "SUCCEEDED_WITH_WARNINGS"] as const)(
+    "admits a dependent when its prerequisite is %s",
+    async (status) => {
+      const repository = new InMemoryMigrationRepository();
+      repository.records.set("prerequisite", {
+        migrationId: "prerequisite",
+        displayName: "Migration prerequisite",
+        status,
+        attempts: 1,
+        startedAt: new Date(),
+        completedAt: new Date(),
+        summaryJson: JSON.stringify(summary),
+        errorMessage: null,
+        logPath: null,
+      });
+      const dependent = vi.fn(async () => ({ status: "SUCCEEDED" as const, summary }));
+      const runner = new AppDataMigrationRunner(
+        new AppDataMigrationRegistry([
+          createDefinition("prerequisite", async () => ({ status: "SUCCEEDED", summary })),
+          createDefinition("dependent", dependent, ["prerequisite"]),
+        ]),
+        repository,
+        { logsDir: tempDir },
+      );
+
+      await expect(runner.runMigration("dependent")).resolves.toMatchObject({
+        status: "SUCCEEDED",
+        attempts: 1,
+      });
+      expect(dependent).toHaveBeenCalledOnce();
+    },
+  );
+
+  it.each(["FAILED", "RUNNING", "NOT_RUN"] as const)(
+    "rejects manual dependent execution when its prerequisite is %s",
+    async (status) => {
+      const repository = new InMemoryMigrationRepository();
+      if (status !== "NOT_RUN") {
+        repository.records.set("prerequisite", {
+          migrationId: "prerequisite",
+          displayName: "Migration prerequisite",
+          status,
+          attempts: 1,
+          startedAt: new Date(),
+          completedAt: status === "RUNNING" ? null : new Date(),
+          summaryJson: null,
+          errorMessage: null,
+          logPath: null,
+        });
+      }
+      const dependent = vi.fn(async () => ({ status: "SUCCEEDED" as const, summary }));
+      const runner = new AppDataMigrationRunner(
+        new AppDataMigrationRegistry([
+          createDefinition("prerequisite", async () => ({ status: "SUCCEEDED", summary })),
+          createDefinition("dependent", dependent, ["prerequisite"]),
+        ]),
+        repository,
+        { logsDir: tempDir },
+      );
+
+      await expect(runner.runMigration("dependent")).rejects.toMatchObject({
+        name: "AppDataMigrationPrerequisiteError",
+        migrationId: "dependent",
+        incomplete: [{ migrationId: "prerequisite", status }],
+      });
+      expect(dependent).not.toHaveBeenCalled();
+      expect(await repository.getRecord("dependent")).toBeNull();
+    },
+  );
+
+  it("rejects invalid prerequisite topology at registry construction", () => {
+    expect(() => new AppDataMigrationRegistry([
+      createDefinition("dependent", async () => ({ status: "SUCCEEDED", summary }), ["later"]),
+      createDefinition("later", async () => ({ status: "SUCCEEDED", summary })),
+    ])).toThrow("must be registered earlier");
+    expect(() => new AppDataMigrationRegistry([
+      createDefinition("one", async () => ({ status: "SUCCEEDED", summary })),
+      createDefinition("one", async () => ({ status: "SUCCEEDED", summary })),
+    ])).toThrow("Duplicate app data migration ID");
+    expect(() => new AppDataMigrationRegistry([
+      createDefinition("one", async () => ({ status: "SUCCEEDED", summary })),
+      createDefinition("two", async () => ({ status: "SUCCEEDED", summary }), ["one", "one"]),
+    ])).toThrow("repeats prerequisite");
   });
 
   it("accepts persisted SUCCEEDED and SUCCEEDED_WITH_WARNINGS results without rerunning them", async () => {

@@ -1,0 +1,945 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:9441) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rebroadcasts agent lifecycle events with member context
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > connects through TeamRunService.resolveTeamRun and sends CONNECTED, leaf status, and lifecycle
+Created agent session 30090f20-0c1f-4c68-b833-cb65880adf43 for run team-1
+Agent Team WebSocket connected: session=30090f20-0c1f-4c68-b833-cb65880adf43, run=team-1
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > continues lifecycle publication after the backend event listener is torn down
+Created agent session 4f8252af-63cb-4ba1-9f29-d936e894ba36 for run team-1
+Agent Team WebSocket connected: session=4f8252af-63cb-4ba1-9f29-d936e894ba36, run=team-1
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > continues lifecycle publication after the backend event listener is torn down
+Closed agent session 4f8252af-63cb-4ba1-9f29-d936e894ba36
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > continues lifecycle publication after the backend event listener is torn down
+Agent Team WebSocket disconnected: 4f8252af-63cb-4ba1-9f29-d936e894ba36
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > handles SEND_MESSAGE via the service-resolved TeamRun subject
+Created agent session f727f7be-e7b9-4938-bec3-a6abbc0ba753 for run team-1
+Closed agent session f727f7be-e7b9-4938-bec3-a6abbc0ba753
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > handles SEND_MESSAGE via the service-resolved TeamRun subject
+Failed to subscribe to team lifecycle: TypeError: Cannot read properties of undefined (reading 'trim')
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > handles SEND_MESSAGE via the service-resolved TeamRun subject
+Message for unknown team session: null
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > handles SEND_MESSAGE with structured camelCase route and path selectors
+Created agent session 19a5842d-69f3-4d46-a92e-109d73f2c13e for run team-1
+Closed agent session 19a5842d-69f3-4d46-a92e-109d73f2c13e
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > handles SEND_MESSAGE with structured camelCase route and path selectors
+Failed to subscribe to team lifecycle: TypeError: Cannot read properties of undefined (reading 'trim')
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > handles SEND_MESSAGE with structured camelCase route and path selectors
+Message for unknown team session: null
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > handles SEND_MESSAGE with structured camelCase route and path selectors
+Message for unknown team session: null
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+Created agent session bd2a5c7b-e267-4d97-9f1d-6bc42dc4fb53 for run team-1
+Closed agent session bd2a5c7b-e267-4d97-9f1d-6bc42dc4fb53
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+Failed to subscribe to team lifecycle: TypeError: Cannot read properties of undefined (reading 'trim')
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+Message for unknown team session: null
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+Message for unknown team session: null
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+Message for unknown team session: null
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+Message for unknown team session: null
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+Message for unknown team session: null
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+Message for unknown team session: null
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+Message for unknown team session: null
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+Message for unknown team session: null
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+Message for unknown team session: null
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+Message for unknown team session: null
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+Message for unknown team session: null
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+Message for unknown team session: null
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+Message for unknown team session: null
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+Message for unknown team session: null
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+Message for unknown team session: null
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+Message for unknown team session: null
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > restores and rebinds a team run before SEND_MESSAGE when the active subject was removed
+Created agent session a6bb3bb2-dc80-4fc5-af38-dd2ee8924596 for run team-1
+Closed agent session a6bb3bb2-dc80-4fc5-af38-dd2ee8924596
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > restores and rebinds a team run before SEND_MESSAGE when the active subject was removed
+Failed to subscribe to team lifecycle: TypeError: Cannot read properties of undefined (reading 'trim')
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > restores and rebinds a team run before SEND_MESSAGE when the active subject was removed
+Message for unknown team session: null
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > keeps interrupt-generation active-only and does not restore a stopped team run
+Created agent session c7739acf-fb31-4fb3-bd5f-4e177f807c2f for run team-1
+Closed agent session c7739acf-fb31-4fb3-bd5f-4e177f807c2f
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > keeps interrupt-generation active-only and does not restore a stopped team run
+Failed to subscribe to team lifecycle: TypeError: Cannot read properties of undefined (reading 'trim')
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > keeps interrupt-generation active-only and does not restore a stopped team run
+Message for unknown team session: null
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > routes interrupt-generation to the explicit member route key with run-id as guard
+Created agent session 116cdd32-f4eb-4fe8-a8d9-85e2420797c8 for run team-1
+Closed agent session 116cdd32-f4eb-4fe8-a8d9-85e2420797c8
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > routes interrupt-generation to the explicit member route key with run-id as guard
+Failed to subscribe to team lifecycle: TypeError: Cannot read properties of undefined (reading 'trim')
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > routes interrupt-generation to the explicit member route key with run-id as guard
+Message for unknown team session: null
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > routes interrupt-generation with structured camelCase member path selectors
+Created agent session 76b3c9de-8160-4a95-871c-556df52030e5 for run team-1
+Closed agent session 76b3c9de-8160-4a95-871c-556df52030e5
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > routes interrupt-generation with structured camelCase member path selectors
+Failed to subscribe to team lifecycle: TypeError: Cannot read properties of undefined (reading 'trim')
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > routes interrupt-generation with structured camelCase member path selectors
+Message for unknown team session: null
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects interrupt-generation without a target instead of falling back to team-wide interrupt
+Created agent session 45a7315c-a25a-45d9-9866-bb472130222a for run team-1
+Closed agent session 45a7315c-a25a-45d9-9866-bb472130222a
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects interrupt-generation without a target instead of falling back to team-wide interrupt
+Failed to subscribe to team lifecycle: TypeError: Cannot read properties of undefined (reading 'trim')
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects interrupt-generation without a target instead of falling back to team-wide interrupt
+Message for unknown team session: null
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects scalar interrupt target aliases with invalid-target errors
+Created agent session b8712949-0586-4d67-aaf7-57d53a20e61f for run team-1
+Closed agent session b8712949-0586-4d67-aaf7-57d53a20e61f
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects scalar interrupt target aliases with invalid-target errors
+Failed to subscribe to team lifecycle: TypeError: Cannot read properties of undefined (reading 'trim')
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects scalar interrupt target aliases with invalid-target errors
+Message for unknown team session: null
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > returns one failed acknowledgement when exact member interruption throws
+Created agent session a0e5ad6a-6412-45cb-b9db-16cb9023fde4 for run team-1
+Closed agent session a0e5ad6a-6412-45cb-b9db-16cb9023fde4
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > returns one failed acknowledgement when exact member interruption throws
+Failed to subscribe to team lifecycle: TypeError: Cannot read properties of undefined (reading 'trim')
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > returns one failed acknowledgement when exact member interruption throws
+Message for unknown team session: null
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > routes approval commands with explicit member path selectors
+Created agent session dd35d432-da01-4989-a027-317cd4da6f1a for run team-1
+Closed agent session dd35d432-da01-4989-a027-317cd4da6f1a
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > routes approval commands with explicit member path selectors
+Failed to subscribe to team lifecycle: TypeError: Cannot read properties of undefined (reading 'trim')
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > routes approval commands with explicit member path selectors
+Message for unknown team session: null
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > routes approval commands with structured camelCase selector fields
+Created agent session e9c6c604-1aa0-470a-8d3c-5ed4ea15d383 for run team-1
+Closed agent session e9c6c604-1aa0-470a-8d3c-5ed4ea15d383
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > routes approval commands with structured camelCase selector fields
+Failed to subscribe to team lifecycle: TypeError: Cannot read properties of undefined (reading 'trim')
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > routes approval commands with structured camelCase selector fields
+Message for unknown team session: null
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > routes approval commands with structured camelCase selector fields
+Message for unknown team session: null
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > routes approval commands with task-agent run identity as a concrete run guard
+Created agent session 4d768967-cfc4-48c1-82e0-a75523c34f6f for run team-1
+Closed agent session 4d768967-cfc4-48c1-82e0-a75523c34f6f
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > routes approval commands with task-agent run identity as a concrete run guard
+Failed to subscribe to team lifecycle: TypeError: Cannot read properties of undefined (reading 'trim')
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > routes approval commands with task-agent run identity as a concrete run guard
+Message for unknown team session: null
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > routes task-team scoped approval commands with relative route selectors and run guards
+Created agent session f6314196-d388-4361-98b9-1dac34d04401 for run team-1
+Closed agent session f6314196-d388-4361-98b9-1dac34d04401
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > routes task-team scoped approval commands with relative route selectors and run guards
+Failed to subscribe to team lifecycle: TypeError: Cannot read properties of undefined (reading 'trim')
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > routes task-team scoped approval commands with relative route selectors and run guards
+Message for unknown team session: null
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > routes task-team scoped denial commands with relative path selectors
+Created agent session c80d1e2b-fe14-4b50-8e0a-313896b6ef01 for run team-1
+Closed agent session c80d1e2b-fe14-4b50-8e0a-313896b6ef01
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > routes task-team scoped denial commands with relative path selectors
+Failed to subscribe to team lifecycle: TypeError: Cannot read properties of undefined (reading 'trim')
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > routes task-team scoped denial commands with relative path selectors
+Message for unknown team session: null
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects task-team scoped approvals without relative child selectors
+Created agent session a491a6fd-d17c-4504-ada3-3dfa6f28b146 for run team-1
+Closed agent session a491a6fd-d17c-4504-ada3-3dfa6f28b146
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects task-team scoped approvals without relative child selectors
+Failed to subscribe to team lifecycle: TypeError: Cannot read properties of undefined (reading 'trim')
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects task-team scoped approvals without relative child selectors
+Message for unknown team session: null
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects task-team scoped approvals without relative child selectors
+Message for unknown team session: null
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+Created agent session d1d3fc86-9b5a-424a-adfe-5cf5c012cf32 for run team-1
+Closed agent session d1d3fc86-9b5a-424a-adfe-5cf5c012cf32
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+Failed to subscribe to team lifecycle: TypeError: Cannot read properties of undefined (reading 'trim')
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+Message for unknown team session: null
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+Message for unknown team session: null
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+Message for unknown team session: null
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+Message for unknown team session: null
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+Message for unknown team session: null
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+Message for unknown team session: null
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+Message for unknown team session: null
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+Message for unknown team session: null
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+Message for unknown team session: null
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+Message for unknown team session: null
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+Message for unknown team session: null
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+Message for unknown team session: null
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+Message for unknown team session: null
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+Message for unknown team session: null
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+Message for unknown team session: null
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+Message for unknown team session: null
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects tool approvals without structured target identity with invalid-target errors
+Created agent session 3cf73e7b-6a37-4f82-86e9-fb6220d58961 for run team-1
+Closed agent session 3cf73e7b-6a37-4f82-86e9-fb6220d58961
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects tool approvals without structured target identity with invalid-target errors
+Failed to subscribe to team lifecycle: TypeError: Cannot read properties of undefined (reading 'trim')
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects tool approvals without structured target identity with invalid-target errors
+Message for unknown team session: null
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > registers the websocket connection for team-scoped live message broadcasts
+Created agent session 34ef1baa-c536-4755-8815-f977ad2c07a9 for run team-1
+Closed agent session 34ef1baa-c536-4755-8815-f977ad2c07a9
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > registers the websocket connection for team-scoped live message broadcasts
+Failed to subscribe to team lifecycle: TypeError: Cannot read properties of undefined (reading 'trim')
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > coalesces metadata refresh work across a burst of streamed team events
+Created agent session bc280a2d-b423-4d8c-a371-8d4d29232819 for run team-1
+Closed agent session bc280a2d-b423-4d8c-a371-8d4d29232819
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > coalesces metadata refresh work across a burst of streamed team events
+Failed to subscribe to team lifecycle: TypeError: Cannot read properties of undefined (reading 'trim')
+
+ × tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rebroadcasts agent lifecycle events with member context 6ms
+   → expected undefined to be 'worker-a' // Object.is equality
+ × tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > projects canonical team communication events to the address-first websocket payload 3ms
+   → expected { messageId: 'message-1', …(7) } to match object { messageId: 'message-1', …(9) }
+ × tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > maps member input events to member input messages with canonical nested source identity 2ms
+   → expected { …(9) } to match object { …(16) }
+(3 matching properties omitted from actual)
+ × tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > maps task-agent member input events with concrete task-agent identity 1ms
+   → expected { …(12) } to match object { …(11) }
+(7 matching properties omitted from actual)
+ ✓ tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > connects through TeamRunService.resolveTeamRun and sends CONNECTED, leaf status, and lifecycle 2ms
+ ✓ tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > continues lifecycle publication after the backend event listener is torn down 1ms
+ ✓ tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > closes with 4004 when the team run is missing 1ms
+ × tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > handles SEND_MESSAGE via the service-resolved TeamRun subject 1ms
+   → expected "vi.fn()" to be called 1 times, but got 0 times
+ × tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > handles SEND_MESSAGE with structured camelCase route and path selectors 1ms
+   → expected 1st "vi.fn()" call to have been called with [ Array(2) ], but called only 0 times
+ × tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors 1ms
+   → expected [ Array(1) ] to have a length of 16 but got 1
+ × tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > restores and rebinds a team run before SEND_MESSAGE when the active subject was removed 0ms
+   → expected "vi.fn()" to be called 2 times, but got 1 times
+ × tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > keeps interrupt-generation active-only and does not restore a stopped team run 1ms
+   → expected { type: 'ERROR', payload: { …(2) } } to match object { type: 'AGENT_COMMAND_ACK', …(1) }
+(1 matching property omitted from actual)
+ × tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > routes interrupt-generation to the explicit member route key with run-id as guard 0ms
+   → expected "vi.fn()" to be called with arguments: [ 'worker-a', 'member-42' ]
+
+Number of calls: 0
+
+ × tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > routes interrupt-generation with structured camelCase member path selectors 0ms
+   → expected "vi.fn()" to be called with arguments: [ 'BuildSquad/review_lead', …(1) ]
+
+Number of calls: 0
+
+ × tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects interrupt-generation without a target instead of falling back to team-wide interrupt 1ms
+   → expected { type: 'ERROR', payload: { …(2) } } to match object { payload: { code: 'INVALID_TARGET' } }
+(2 matching properties omitted from actual)
+ × tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects scalar interrupt target aliases with invalid-target errors 1ms
+   → expected { type: 'ERROR', payload: { …(2) } } to match object { payload: { code: 'INVALID_TARGET' } }
+(2 matching properties omitted from actual)
+ × tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > returns one failed acknowledgement when exact member interruption throws 0ms
+   → expected "vi.fn()" to be called 1 times, but got 0 times
+ × tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > routes approval commands with explicit member path selectors 0ms
+   → expected "vi.fn()" to be called with arguments: [ { kind: 'path', …(1) }, …(5) ]
+
+Number of calls: 0
+
+ × tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > routes approval commands with structured camelCase selector fields 1ms
+   → expected 1st "vi.fn()" call to have been called with [ { kind: 'path', …(1) }, …(5) ], but called only 0 times
+ × tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > routes approval commands with task-agent run identity as a concrete run guard 0ms
+   → expected "vi.fn()" to be called with arguments: [ { kind: 'route_key', …(1) }, …(5) ]
+
+Number of calls: 0
+
+ × tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > routes task-team scoped approval commands with relative route selectors and run guards 0ms
+   → expected "vi.fn()" to be called with arguments: [ { kind: 'route_key', …(1) }, …(5) ]
+
+Number of calls: 0
+
+ × tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > routes task-team scoped denial commands with relative path selectors 0ms
+   → expected "vi.fn()" to be called with arguments: [ { kind: 'path', …(1) }, …(5) ]
+
+Number of calls: 0
+
+ × tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects task-team scoped approvals without relative child selectors 1ms
+   → expected [ Array(1) ] to have a length of 2 but got 1
+ × tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors 1ms
+   → expected [ Array(1) ] to have a length of 16 but got 1
+ × tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects tool approvals without structured target identity with invalid-target errors 1ms
+   → expected { type: 'ERROR', payload: { …(2) } } to match object { payload: { code: 'INVALID_TARGET' } }
+(2 matching properties omitted from actual)
+ × tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > registers the websocket connection for team-scoped live message broadcasts 0ms
+   → expected null to be truthy
+ ✓ tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > coalesces metadata refresh work across a burst of streamed team events 2ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 23 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rebroadcasts agent lifecycle events with member context
+AssertionError: expected undefined to be 'worker-a' // Object.is equality
+
+- Expected: 
+"worker-a"
+
++ Received: 
+undefined
+
+ ❯ tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts:121:40
+    119|     expect(message.type).toBe(ServerMessageType.TOOL_EXECUTION_SUCCEED…
+    120|     expect(message.payload.invocation_id).toBe("inv-1");
+    121|     expect(message.payload.agent_name).toBe("worker-a");
+       |                                        ^
+    122|     expect(message.payload.agent_id).toBe("agent-xyz");
+    123|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/23]⎯
+
+ FAIL  tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > projects canonical team communication events to the address-first websocket payload
+AssertionError: expected { messageId: 'message-1', …(7) } to match object { messageId: 'message-1', …(9) }
+
+- Expected
++ Received
+
+@@ -18,11 +18,7 @@
+          "kind": "member",
+          "memberRouteKey": "program_manager",
+        },
+      ],
+    },
+-   "source_path": [
+-     "program_manager",
+-   ],
+-   "source_route_key": "program_manager",
+    "teamRunId": "team-1",
+  }
+
+ ❯ tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts:148:29
+    146| 
+    147|     expect(message.type).toBe(ServerMessageType.TEAM_COMMUNICATION_MES…
+    148|     expect(message.payload).toMatchObject({
+       |                             ^
+    149|       messageId: "message-1",
+    150|       teamRunId: "team-1",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/23]⎯
+
+ FAIL  tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > maps member input events to member input messages with canonical nested source identity
+AssertionError: expected { …(9) } to match object { …(16) }
+(3 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "agent_id": "review-lead-run",
+-   "agent_name": "review_lead",
+    "content": "You received a message from sender name: program_manager",
+    "dedupe_key": "member_input:team-1:BuildSquad/review_lead:member-input-1",
+    "input_origin": "inter_agent_delivery",
+-   "member_path": [
+-     "BuildSquad",
+-     "review_lead",
+-   ],
+-   "member_route_key": "BuildSquad/review_lead",
+    "message_id": "member-input-1",
+    "parent_communication_message_id": "team-message-1",
+    "received_at": "2026-05-13T06:30:00.000Z",
+-   "sender_agent_id": "program-manager-run",
+-   "sender_agent_name": "program_manager",
+-   "sender_member_path": [
+-     "program_manager",
+-   ],
+-   "sender_member_route_key": "program_manager",
+-   "source_path": [
+-     "BuildSquad",
+-     "review_lead",
+-   ],
+-   "source_route_key": "BuildSquad/review_lead",
+  }
+
+ ❯ tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts:197:29
+    195| 
+    196|     expect(message.type).toBe(ServerMessageType.MEMBER_INPUT_MESSAGE);
+    197|     expect(message.payload).toMatchObject({
+       |                             ^
+    198|       content: "You received a message from sender name: program_manag…
+    199|       message_id: "member-input-1",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/23]⎯
+
+ FAIL  tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > maps task-agent member input events with concrete task-agent identity
+AssertionError: expected { …(12) } to match object { …(11) }
+(7 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "agent_id": "task-agent-run-1",
+-   "agent_name": "worker",
+    "content": "Delegated task work packet",
+-   "member_path": [
+-     "worker",
+-   ],
+-   "member_route_key": "worker",
+    "message_id": "task-agent-input-1",
+-   "source_path": [
+-     "worker",
+-   ],
+-   "source_route_key": "worker",
+    "task_agent_instance_id": "task-agent-instance-1",
+    "task_agent_run_id": "task-agent-run-1",
+    "task_id": "task-1",
+  }
+
+ ❯ tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts:253:29
+    251| 
+    252|     expect(message.type).toBe(ServerMessageType.MEMBER_INPUT_MESSAGE);
+    253|     expect(message.payload).toMatchObject({
+       |                             ^
+    254|       content: "Delegated task work packet",
+    255|       message_id: "task-agent-input-1",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/23]⎯
+
+ FAIL  tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > handles SEND_MESSAGE via the service-resolved TeamRun subject
+AssertionError: expected "vi.fn()" to be called 1 times, but got 0 times
+ ❯ tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts:407:53
+    405|     );
+    406| 
+    407|     expect(teamRun.postMessageToConversationTarget).toHaveBeenCalledTi…
+       |                                                     ^
+    408|     expect(teamRun.postMessageToConversationTarget.mock.calls[0]?.[1])…
+    409|       segments: [{ kind: "member", memberRouteKey: "worker-a" }],
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/23]⎯
+
+ FAIL  tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > handles SEND_MESSAGE with structured camelCase route and path selectors
+AssertionError: expected 1st "vi.fn()" call to have been called with [ Array(2) ], but called only 0 times
+ ❯ tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts:454:53
+    452|     );
+    453| 
+    454|     expect(teamRun.postMessageToConversationTarget).toHaveBeenNthCalle…
+       |                                                     ^
+    455|       1,
+    456|       expect.anything(),
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/23]⎯
+
+ FAIL  tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+AssertionError: expected [ Array(1) ] to have a length of 16 but got 1
+
+- Expected
++ Received
+
+- 16
++ 1
+
+ ❯ tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts:516:27
+    514|     expect(teamRunService.recordRunActivity).not.toHaveBeenCalled();
+    515|     const errorMessages = getSentErrors(connection);
+    516|     expect(errorMessages).toHaveLength(16);
+       |                           ^
+    517|     expect(
+    518|       errorMessages.every(
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/23]⎯
+
+ FAIL  tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > restores and rebinds a team run before SEND_MESSAGE when the active subject was removed
+AssertionError: expected "vi.fn()" to be called 2 times, but got 1 times
+ ❯ tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts:560:43
+    558|     );
+    559| 
+    560|     expect(teamRunService.resolveTeamRun).toHaveBeenCalledTimes(2);
+       |                                           ^
+    561|     expect(restoredRun.postMessageToConversationTarget).toHaveBeenCall…
+    562|     expect(initialRun.postMessageToConversationTarget).not.toHaveBeenC…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/23]⎯
+
+ FAIL  tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > keeps interrupt-generation active-only and does not restore a stopped team run
+AssertionError: expected { type: 'ERROR', payload: { …(2) } } to match object { type: 'AGENT_COMMAND_ACK', …(1) }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "payload": {
+-     "code": "RUN_NOT_FOUND",
+-     "command_id": "client_interrupt_missing_team",
+-     "state": "rejected",
+-     "target": {
+-       "member_route_key": "worker-a",
+-       "member_run_id": "member-42",
+-       "target_kind": "team_member",
+-       "team_run_id": "team-1",
++     "code": "TEAM_STREAM_UNAVAILABLE",
+    },
+-   },
+-   "type": "AGENT_COMMAND_ACK",
++   "type": "ERROR",
+  }
+
+ ❯ tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts:602:48
+    600|     expect(teamRunService.resolveTeamRun).not.toHaveBeenCalled();
+    601|     expect(teamRun.interruptMember).not.toHaveBeenCalled();
+    602|     expect(getSentMessages(connection).at(-1)).toMatchObject({
+       |                                                ^
+    603|       type: ServerMessageType.AGENT_COMMAND_ACK,
+    604|       payload: {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/23]⎯
+
+ FAIL  tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > routes interrupt-generation to the explicit member route key with run-id as guard
+AssertionError: expected "vi.fn()" to be called with arguments: [ 'worker-a', 'member-42' ]
+
+Number of calls: 0
+
+ ❯ tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts:642:37
+    640|     );
+    641| 
+    642|     expect(teamRun.interruptMember).toHaveBeenCalledWith("worker-a", "…
+       |                                     ^
+    643|     expect(getSentMessages(connection).at(-1)).toEqual({
+    644|       type: ServerMessageType.AGENT_COMMAND_ACK,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/23]⎯
+
+ FAIL  tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > routes interrupt-generation with structured camelCase member path selectors
+AssertionError: expected "vi.fn()" to be called with arguments: [ 'BuildSquad/review_lead', …(1) ]
+
+Number of calls: 0
+
+ ❯ tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts:683:37
+    681|     );
+    682| 
+    683|     expect(teamRun.interruptMember).toHaveBeenCalledWith("BuildSquad/r…
+       |                                     ^
+    684|   });
+    685| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/23]⎯
+
+ FAIL  tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects interrupt-generation without a target instead of falling back to team-wide interrupt
+AssertionError: expected { type: 'ERROR', payload: { …(2) } } to match object { payload: { code: 'INVALID_TARGET' } }
+(2 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "payload": {
+-     "code": "INVALID_TARGET",
++     "code": "TEAM_STREAM_UNAVAILABLE",
+    },
+  }
+
+ ❯ tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts:709:46
+    707| 
+    708|     expect(teamRun.interruptMember).not.toHaveBeenCalled();
+    709|     expect(getSentErrors(connection).at(-1)).toMatchObject({
+       |                                              ^
+    710|       payload: {
+    711|         code: "INVALID_TARGET",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/23]⎯
+
+ FAIL  tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects scalar interrupt target aliases with invalid-target errors
+AssertionError: expected { type: 'ERROR', payload: { …(2) } } to match object { payload: { code: 'INVALID_TARGET' } }
+(2 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "payload": {
+-     "code": "INVALID_TARGET",
++     "code": "TEAM_STREAM_UNAVAILABLE",
+    },
+  }
+
+ ❯ tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts:749:46
+    747| 
+    748|     expect(teamRun.interruptMember).not.toHaveBeenCalled();
+    749|     expect(getSentErrors(connection).at(-1)).toMatchObject({
+       |                                              ^
+    750|       payload: {
+    751|         code: "INVALID_TARGET",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/23]⎯
+
+ FAIL  tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > returns one failed acknowledgement when exact member interruption throws
+AssertionError: expected "vi.fn()" to be called 1 times, but got 0 times
+ ❯ tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts:782:29
+    780|     }));
+    781| 
+    782|     expect(connection.send).toHaveBeenCalledTimes(1);
+       |                             ^
+    783|     expect(JSON.parse(connection.send.mock.calls[0][0])).toMatchObject…
+    784|       type: ServerMessageType.AGENT_COMMAND_ACK,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/23]⎯
+
+ FAIL  tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > routes approval commands with explicit member path selectors
+AssertionError: expected "vi.fn()" to be called with arguments: [ { kind: 'path', …(1) }, …(5) ]
+
+Number of calls: 0
+
+ ❯ tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts:817:43
+    815|     );
+    816| 
+    817|     expect(teamRun.approveToolInvocation).toHaveBeenCalledWith(
+       |                                           ^
+    818|       {
+    819|         kind: "path",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/23]⎯
+
+ FAIL  tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > routes approval commands with structured camelCase selector fields
+AssertionError: expected 1st "vi.fn()" call to have been called with [ { kind: 'path', …(1) }, …(5) ], but called only 0 times
+ ❯ tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts:866:43
+    864|     );
+    865| 
+    866|     expect(teamRun.approveToolInvocation).toHaveBeenNthCalledWith(
+       |                                           ^
+    867|       1,
+    868|       {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/23]⎯
+
+ FAIL  tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > routes approval commands with task-agent run identity as a concrete run guard
+AssertionError: expected "vi.fn()" to be called with arguments: [ { kind: 'route_key', …(1) }, …(5) ]
+
+Number of calls: 0
+
+ ❯ tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts:919:43
+    917|     );
+    918| 
+    919|     expect(teamRun.approveToolInvocation).toHaveBeenCalledWith(
+       |                                           ^
+    920|       {
+    921|         kind: "route_key",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/23]⎯
+
+ FAIL  tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > routes task-team scoped approval commands with relative route selectors and run guards
+AssertionError: expected "vi.fn()" to be called with arguments: [ { kind: 'route_key', …(1) }, …(5) ]
+
+Number of calls: 0
+
+ ❯ tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts:959:43
+    957|     );
+    958| 
+    959|     expect(teamRun.approveToolInvocation).toHaveBeenCalledWith(
+       |                                           ^
+    960|       {
+    961|         kind: "route_key",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/23]⎯
+
+ FAIL  tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > routes task-team scoped denial commands with relative path selectors
+AssertionError: expected "vi.fn()" to be called with arguments: [ { kind: 'path', …(1) }, …(5) ]
+
+Number of calls: 0
+
+ ❯ tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts:999:43
+    997|     );
+    998| 
+    999|     expect(teamRun.approveToolInvocation).toHaveBeenCalledWith(
+       |                                           ^
+    1000|       {
+    1001|         kind: "path",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/23]⎯
+
+ FAIL  tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects task-team scoped approvals without relative child selectors
+AssertionError: expected [ Array(1) ] to have a length of 2 but got 1
+
+- Expected
++ Received
+
+- 2
++ 1
+
+ ❯ tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts:1051:27
+    1049|     expect(teamRun.approveToolInvocation).not.toHaveBeenCalled();
+    1050|     const errorMessages = getSentErrors(connection);
+    1051|     expect(errorMessages).toHaveLength(2);
+       |                           ^
+    1052|     expect(
+    1053|       errorMessages.every(
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/23]⎯
+
+ FAIL  tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+AssertionError: expected [ Array(1) ] to have a length of 16 but got 1
+
+- Expected
++ Received
+
+- 16
++ 1
+
+ ❯ tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts:1104:27
+    1102|     expect(teamRun.approveToolInvocation).not.toHaveBeenCalled();
+    1103|     const errorMessages = getSentErrors(connection);
+    1104|     expect(errorMessages).toHaveLength(16);
+       |                           ^
+    1105|     expect(
+    1106|       errorMessages.every(
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/23]⎯
+
+ FAIL  tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects tool approvals without structured target identity with invalid-target errors
+AssertionError: expected { type: 'ERROR', payload: { …(2) } } to match object { payload: { code: 'INVALID_TARGET' } }
+(2 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "payload": {
+-     "code": "INVALID_TARGET",
++     "code": "TEAM_STREAM_UNAVAILABLE",
+    },
+  }
+
+ ❯ tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts:1136:46
+    1134| 
+    1135|     expect(teamRun.approveToolInvocation).not.toHaveBeenCalled();
+    1136|     expect(getSentErrors(connection).at(-1)).toMatchObject({
+       |                                              ^
+    1137|       payload: {
+    1138|         code: "INVALID_TARGET",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/23]⎯
+
+ FAIL  tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > registers the websocket connection for team-scoped live message broadcasts
+AssertionError: expected null to be truthy
+
+- Expected: 
+true
+
++ Received: 
+null
+
+ ❯ tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts:1158:23
+    1156|     const sessionId = await handler.connect(connection, "team-1");
+    1157| 
+    1158|     expect(sessionId).toBeTruthy();
+       |                       ^
+    1159|     expect(
+    1160|       broadcaster.publishToTeamRun(
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[23/23]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  23 failed | 4 passed (27)
+   Start at  21:36:08
+   Duration  4.11s (transform 2.66s, setup 10ms, import 3.60s, tests 29ms, environment 0ms)
+

@@ -11,6 +11,26 @@ describe("CodexOrderedToolBoundaryTracker", () => {
       .toBe("existing_card_update");
   });
 
+  it("retains only one exact same-turn invocation tool name", () => {
+    const tracker = new CodexOrderedToolBoundaryTracker();
+
+    tracker.markOrderedToolCreated("turn-1", "tool-1", "delegate_task");
+
+    expect(tracker.resolveToolName("turn-1", "tool-1")).toBe("delegate_task");
+    expect(tracker.resolveToolName("turn-2", "tool-1")).toBeNull();
+    expect(tracker.resolveToolName("turn-1", "tool-2")).toBeNull();
+  });
+
+  it("fails closed after conflicting names for the same invocation", () => {
+    const tracker = new CodexOrderedToolBoundaryTracker();
+
+    tracker.markOrderedToolCreated("turn-1", "tool-1", "delegate_task");
+    tracker.markOrderedToolCreated("turn-1", "tool-1", "review_task_result");
+    tracker.markOrderedToolCreated("turn-1", "tool-1", "delegate_task");
+
+    expect(tracker.resolveToolName("turn-1", "tool-1")).toBeNull();
+  });
+
   it("conservatively classifies missing identity and allocates no reusable state", () => {
     const tracker = new CodexOrderedToolBoundaryTracker();
 
@@ -26,8 +46,10 @@ describe("CodexOrderedToolBoundaryTracker", () => {
     tracker.markOrderedToolCreated("turn-2", "tool-2");
 
     tracker.clearForTurn("turn-1");
+    expect(tracker.resolveToolName("turn-1", "tool-1")).toBeNull();
     expect(tracker.classifyToolLifecycleUpdate("turn-1", "tool-1"))
       .toBe("result_first_creation");
+    expect(tracker.resolveToolName("turn-2", "tool-2")).toBeNull();
     expect(tracker.classifyToolLifecycleUpdate("turn-2", "tool-2"))
       .toBe("existing_card_update");
 

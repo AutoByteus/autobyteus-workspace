@@ -1,3 +1,5 @@
+import type { TeamStreamServerMessage } from '@autobyteus/team-stream-contracts';
+
 export type TokenUsageApiCostStatus = 'estimated' | 'price_missing' | 'partial_price_missing' | 'mixed' | 'local_no_api_bill';
 export type TokenUsageCacheState = 'positive' | 'zero_reported' | 'not_reported' | 'unsupported_or_local' | 'unknown';
 export type TokenUsageUnitPriceSummaryStatus = 'single' | 'mixed' | 'missing' | 'partial_missing' | 'not_applicable' | 'local_no_api_bill';
@@ -25,9 +27,6 @@ export interface TokenUsageUpdatedPayload {
   turn_id?: string | null;
   llm_call_id?: string | null;
   root_team_run_id?: string | null;
-  execution_address?: TokenUsageExecutionAddress | null;
-  member_agent_run_id?: string | null;
-  member_route_key?: string | null;
   agent_definition_id?: string | null;
   workspace_id?: string | null;
   runtime_kind?: string | null;
@@ -75,11 +74,8 @@ export interface TokenUsageUpdatedPayload {
 }
 
 export interface TokenUsageRunSummary {
-  runId: string;
+  runId: string | null;
   rootTeamRunId: string | null;
-  executionAddress: TokenUsageExecutionAddress | null;
-  memberAgentRunId: string | null;
-  memberRouteKey: string | null;
   agentDefinitionId: string | null;
   workspaceId: string | null;
   grossInputTokens: number;
@@ -122,11 +118,5 @@ export interface TokenUsageRunSummary {
   updatedAt: string | null;
 }
 
-export type TokenUsageExecutionAddressSegment =
-  | { kind: 'member'; memberRouteKey: string }
-  | { kind: 'task_team'; taskTeamRunId: string }
-  | { kind: 'task_agent'; taskAgentRunId: string };
-
-export interface TokenUsageExecutionAddress {
-  segments: TokenUsageExecutionAddressSegment[];
-}
+type TeamTokenUsageMessage = Extract<TeamStreamServerMessage, { type: 'TOKEN_USAGE_UPDATED' }>;
+export type TeamTokenUsageDetails = TeamTokenUsageMessage['payload'];

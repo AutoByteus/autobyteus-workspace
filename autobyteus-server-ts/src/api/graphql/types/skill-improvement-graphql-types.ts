@@ -120,7 +120,7 @@ export class GraphqlSkillImprovementTargetRef {
   teamRunId?: string | null;
 
   @Field(() => String, { nullable: true })
-  memberRunId?: string | null;
+  agentRunId?: string | null;
 }
 
 @ObjectType()
@@ -204,7 +204,7 @@ export class StartTeamMemberSkillImprovementInput {
   teamRunId!: string;
 
   @Field(() => String)
-  memberRunId!: string;
+  agentRunId!: string;
 }
 
 @ObjectType()

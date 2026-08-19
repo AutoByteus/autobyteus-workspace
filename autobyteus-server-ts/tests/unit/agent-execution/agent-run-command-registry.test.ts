@@ -2,48 +2,42 @@ import { describe, expect, it } from "vitest";
 import { AgentRunCommandRegistry } from "../../../src/agent-execution/services/agent-run-command-registry.js";
 
 describe("AgentRunCommandRegistry", () => {
-  it("returns duplicate_in_progress shape for the same in-flight command and rejects different ids", () => {
+  it("admits several distinct commands while preserving duplicate replay identity", () => {
     const registry = new AgentRunCommandRegistry();
+    const first = registry.begin({ runId: "run-1", messageId: "msg-1", dedupeKey: "d-1" });
+    registry.markAdmitted({ runId: "run-1", messageId: "msg-1" });
+    const second = registry.begin({ runId: "run-1", messageId: "msg-2", dedupeKey: "d-2" });
+    registry.markAdmitted({ runId: "run-1", messageId: "msg-2" });
+    const duplicate = registry.begin({ runId: "run-1", messageId: "msg-1", dedupeKey: "d-1" });
 
-    const first = registry.begin({
-      runId: "run-1",
-      messageId: "msg-1",
-      dedupeKey: "dedupe-1",
-    });
     expect(first.kind).toBe("accepted");
-    expect(first.record.association).toEqual({ kind: "PENDING_IDENTITY" });
-
-    const duplicate = registry.begin({
-      runId: "run-1",
-      messageId: "msg-1",
-      dedupeKey: "dedupe-1",
-    });
-    expect(duplicate.kind).toBe("duplicate");
-    expect(duplicate.record.state).toBe("STARTING");
-
-    const busy = registry.begin({
-      runId: "run-1",
-      messageId: "msg-2",
-      dedupeKey: "dedupe-2",
-    });
-    expect(busy.kind).toBe("busy");
-    expect(busy.record.state).toBe("REJECTED");
-    expect(busy.record.code).toBe("RUN_COMMAND_IN_PROGRESS");
+    expect(second.kind).toBe("accepted");
+    expect(duplicate).toMatchObject({ kind: "duplicate", record: { state: "ADMITTED" } });
+    expect(registry.getOutstandingRecords("run-1").map((record) => record.messageId))
+      .toEqual(["msg-1", "msg-2"]);
   });
 
-  it("uses discriminated association transitions and never overwrites a terminal record", () => {
+  it("projects a forwarded record before the oldest admitted record", () => {
     const registry = new AgentRunCommandRegistry();
-    registry.begin({ runId: "run-1", messageId: "msg-1", dedupeKey: "dedupe-1" });
-    registry.markForwarded({ runId: "run-1", messageId: "msg-1" });
-    registry.awaitAnonymousStart({ runId: "run-1", messageId: "msg-1" });
-    expect(registry.getRecord("run-1", "msg-1")?.association)
-      .toEqual({ kind: "AWAITING_ANONYMOUS_START" });
-    registry.armAnonymous({ runId: "run-1", messageId: "msg-1", armedAtSequence: 4 });
-    expect(registry.getRecord("run-1", "msg-1")?.association)
-      .toEqual({ kind: "ANONYMOUS_ARMED", armedAtSequence: 4 });
+    registry.begin({ runId: "run-1", messageId: "msg-1", dedupeKey: "d-1" });
+    registry.markAdmitted({ runId: "run-1", messageId: "msg-1" });
+    registry.begin({ runId: "run-1", messageId: "msg-2", dedupeKey: "d-2" });
+    registry.markAdmitted({ runId: "run-1", messageId: "msg-2" });
+    registry.markForwarded({ runId: "run-1", messageId: "msg-2", turnId: "turn-2" });
+
+    expect(registry.getPresentedOutstandingRecord("run-1")).toMatchObject({
+      messageId: "msg-2",
+      state: "FORWARDED",
+      turnId: "turn-2",
+    });
+  });
+
+  it("settles independently and never overwrites a terminal record", () => {
+    const registry = new AgentRunCommandRegistry();
+    registry.begin({ runId: "run-1", messageId: "msg-1", dedupeKey: "d-1" });
+    registry.markAdmitted({ runId: "run-1", messageId: "msg-1" });
+    registry.markForwarded({ runId: "run-1", messageId: "msg-1", turnId: null });
     registry.associateIdentified({ runId: "run-1", messageId: "msg-1", turnId: "turn-1" });
-    expect(registry.getRecord("run-1", "msg-1")?.association)
-      .toEqual({ kind: "IDENTIFIED", turnId: "turn-1" });
     registry.markCompleted({ runId: "run-1", messageId: "msg-1", turnId: "turn-1" });
     registry.markFailed({
       runId: "run-1",
@@ -51,39 +45,24 @@ describe("AgentRunCommandRegistry", () => {
       code: "RUNTIME_REJECTED",
       message: "late",
     });
-    registry.markForwarded({ runId: "run-1", messageId: "msg-1" });
-    expect(registry.getRecord("run-1", "msg-1")?.state).toBe("COMPLETED");
+
+    expect(registry.getRecord("run-1", "msg-1")).toMatchObject({
+      state: "COMPLETED",
+      turnId: "turn-1",
+    });
+    expect(registry.hasOutstandingCommands("run-1")).toBe(false);
   });
 
   it("retains terminal records during ttl and purges them after ttl", () => {
     const registry = new AgentRunCommandRegistry(60_000);
-    const first = registry.begin({
-      runId: "run-1",
-      messageId: "msg-1",
-      dedupeKey: "dedupe-1",
-    });
-    expect(first.kind).toBe("accepted");
+    registry.begin({ runId: "run-1", messageId: "msg-1", dedupeKey: "d-1" });
     registry.markCompleted({ runId: "run-1", messageId: "msg-1", turnId: "turn-1" });
+    expect(registry.begin({ runId: "run-1", messageId: "msg-1", dedupeKey: "d-1" }).kind)
+      .toBe("duplicate");
 
-    const duplicateCompleted = registry.begin({
-      runId: "run-1",
-      messageId: "msg-1",
-      dedupeKey: "dedupe-1",
-    });
-    expect(duplicateCompleted.kind).toBe("duplicate");
-    expect(duplicateCompleted.record.state).toBe("COMPLETED");
-    expect(duplicateCompleted.record.turnId).toBe("turn-1");
-
-    const record = registry.getRecord("run-1", "msg-1");
-    expect(record).not.toBeNull();
-    record!.terminalAt = new Date(Date.now() - 120_000).toISOString();
-
-    const acceptedAfterPurge = registry.begin({
-      runId: "run-1",
-      messageId: "msg-1",
-      dedupeKey: "dedupe-1-new",
-    });
-    expect(acceptedAfterPurge.kind).toBe("accepted");
-    expect(acceptedAfterPurge.record.dedupeKey).toBe("dedupe-1-new");
+    const record = registry.getRecord("run-1", "msg-1")!;
+    record.terminalAt = new Date(Date.now() - 120_000).toISOString();
+    expect(registry.begin({ runId: "run-1", messageId: "msg-1", dedupeKey: "d-new" }))
+      .toMatchObject({ kind: "accepted", record: { dedupeKey: "d-new" } });
   });
 });

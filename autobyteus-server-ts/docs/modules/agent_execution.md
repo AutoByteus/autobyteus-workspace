@@ -7,6 +7,8 @@ Manages runtime agent runs and message execution flow.
 ## TS Source
 
 - `src/agent-execution/services/agent-run-manager.ts` (`AgentRunManager`)
+- `src/agent-execution/services/agent-run-activation-candidate.ts`
+- `src/agent-execution/services/standalone-agent-run-activation-service.ts`
 - `src/agent-execution/services/agent-run-command-coordinator.ts`
 - `src/agent-execution/services/agent-run-command-registry.ts`
 - `src/agent-execution/services/agent-run-command-status-overlay-store.ts`
@@ -23,13 +25,14 @@ Runtime managers compose definitions, prompts, tools, processors, and workspace 
 ## Carpenter Runtime Instructions
 
 Before creating any native AutoByteus, Codex, or Claude backend, the runtime
-resolves the selected agent definition and team context. Native AutoByteus then
-resolves its exact absolute workspace and calls
+resolves the selected agent definition and validated team context. Native
+AutoByteus then resolves its exact absolute workspace and calls
 `composeNativeAutoByteusPrompt(...)`; Codex and Claude call
 `composeSharedCarpenterPrompt(...)` and retain ownership of their provider
 working-directory fields. A team run supplies its validated `MemberTeamContext`
-so every composition includes the exact selected team instruction, current
-member identity, communication roster, and delegation target roster.
+so every composition includes the exact selected Team instruction, canonical
+member address, and the same AgentTeam Addressing/Collaboration guidance. No
+flat communication or delegation roster is injected.
 
 The shared semantic order is Agent Identity, optional Team Instruction, and
 optional Team Collaboration. Native AutoByteus appends Working Environment,
@@ -118,10 +121,35 @@ Historical restore paths continue to use stored run ids as data. Old readable,
 deterministic, or otherwise legacy ids are not rewritten and are not validated
 against the new generated shape.
 
+## Activation Publication And Exact Continuation
+
+`AgentRunManager` constructs new and restored runtimes as private
+`AgentRunActivationCandidate`s. A candidate exposes only its local run ID,
+runtime kind, optional external-provider identity, `commitPublication()`, and
+`abort()`. It is absent from active-run lookup and cannot receive input or
+publish events until its governing owner has durably committed the metadata or
+Team execution-tree state that makes the run discoverable. Cleanup uncertainty
+quarantines the run ID in-process instead of permitting a replacement runtime.
+
+`StandaloneAgentRunActivationService` owns one activation attempt per run ID
+across command, prepared-run activation, and history restore callers. It
+reactivates the persisted workspace, reconstructs the exact stored run config,
+prepares the private candidate, commits `startedAt` and the external provider ID
+when applicable, and only then publishes the run. A started external run
+requires a non-local persisted provider ID and restores that exact identity; a
+native AutoByteus run restores by its local run ID and memory directory.
+Missing, unreadable, conflicting, or indeterminate durable state fails closed.
+
+Codex restoration sends the stored thread ID to `thread/resume`; failure never
+falls back to `thread/start`. Claude reserves one valid UUID before first input:
+the first SDK query receives only `sessionId`, later and restored queries receive
+only `resume`, and every provider-reported session ID must confirm the same UUID.
+The local AgentRun ID is never a Codex/Claude provider binding or placeholder.
+
 ## Standalone Command Lifecycle
 
-Standalone user-message dispatch is owned by the backend command boundary, not
-by frontend restore/start orchestration. `AgentRunCommandCoordinator` accepts
+Standalone user-message activation is owned by the backend command boundary,
+not by frontend restore/start orchestration. `AgentRunCommandCoordinator` accepts
 `SEND_MESSAGE` commands for a durable `runId`, validates required
 `message_id` and `dedupe_key`, publishes command-level lifecycle status when an
 inactive run must be activated, resolves the active runtime, forwards the
@@ -129,9 +157,12 @@ message, records activity, and returns an `AGENT_COMMAND_ACK`.
 
 The command registry is scoped by `(runId, message_id)`. A retry with the same
 message id is idempotent and returns the current/original acknowledgement state.
-A different message id while the run already has a `STARTING` or `FORWARDED`
-command is rejected with `RUN_COMMAND_IN_PROGRESS` instead of being queued.
-Terminal command records are retained in process for at least 15 minutes.
+Distinct commands may coexist: activation is single-flight, then every command
+enters the same `AgentRun` admission boundary in arrival order. The registry
+tracks `STARTING -> ADMITTED -> FORWARDED -> COMPLETED | FAILED | REJECTED |
+CANCELLED` through a per-entry typed lifecycle observer; it does not select
+active-turn behavior or maintain a second input queue. Terminal command records
+are retained in process for at least 15 minutes.
 
 For inactive historical runs and prepared-new identities, the coordinator
 publishes a command overlay `AGENT_STATUS { status: "initializing",
@@ -160,21 +191,43 @@ activated or historical runs. Standalone `activationState` is not persisted; the
 `prepareAgentRun` response may still return `activationState: "PREPARED"` as a
 launch API response field.
 
-`AgentRun.postUserMessage(...)` remains the runtime-level status and turn
-authority once an `AgentRun` exists. Its runtime events are the source that
-replaces command overlays and drives later `running`, `idle`, `offline`, and
-`error` projections.
+`AgentRun.postUserMessage(...)` is the sole runtime-level input-admission,
+status, and turn authority once an `AgentRun` exists. Its runtime events are the
+source that replaces command overlays and drives later `running`, `idle`,
+`offline`, and `error` projections.
 
 ## Active Input And Interrupt Command Results
 
-Provider input policy remains inside its runtime adapter. In particular,
-`CodexThread.submitInput(...)` serializes submissions: idle sends
-`turn/start`, while identified active turn A sends only
+Each live `AgentRun` owns one non-persisted `AgentRunInputAdmissionState` behind
+`postUserMessage(...)`. It validates and admits a private FIFO entry, owns one
+provider-dispatch claim at a time, and selects exactly one explicit
+`start_turn` or `append_to_active_turn` dispatch from canonical turn state plus
+the backend's declared `activeTurnAppend` capability. `accepted: true` means the
+run owns the ordered, at-most-once forwarding attempt; it does not mean the
+provider completed the turn. A non-null immediate `turnId` is returned only for
+an entry atomically claimed as an exact active-turn append. Other admissions
+return `turnId: null` and gain their identified turn through canonical lifecycle
+observation.
+
+Codex declares exact active-turn append support and maps that dispatch to
 `turn/steer(expectedTurnId=A)`. A successful steer preserves A without a new
-turn-start transition; a rejected or mismatched steer returns a structured
-failure and never falls back to start. Start/terminal and steer/terminal races
-are reconciled so a late request response cannot reinstall a turn already
-retired by provider lifecycle evidence.
+turn-start transition; rejection, mismatch, or failure never falls back to
+start. AutoByteus and Claude declare append unsupported, so input accepted while
+their turn is active stays in the AgentRun FIFO and becomes one later
+`start_turn` after the current canonical terminal. Provider I/O stays outside
+the serialized critical section, while admission, claims, result application,
+terminal observation, and drain re-enter the per-run event queue. User-message
+memory/sidecar observation occurs only when the entry is actually forwarded.
+
+An active interrupt reservation temporarily makes every queued entry ineligible
+for provider dispatch, including append-capable Codex input. Rejected or thrown
+interrupt work releases only that matching reservation and drains the original
+FIFO; an accepted interrupt holds the reservation until the exact canonical
+terminal, which is projected before the next start. Termination first quiesces
+new admission, waits for a claimed provider call, cancels undispatched entries
+once after accepted termination, and reopens the original order if termination
+is rejected. No provider queue, retry, persisted inbox, or provider-specific
+caller policy is used.
 
 `INTERRUPT_GENERATION` is command-correlated control traffic. Standalone and
 exact team-member requests carry a fresh client `command_id`; the originating
@@ -228,6 +281,7 @@ Canonical `ERROR` payloads add structured lifecycle evidence:
 ```ts
 type AgentErrorLifecycleEvidence =
   | { error_scope: "turn"; error_effect: "diagnostic"; turn_id: string }
+  | { error_scope: "runtime"; error_effect: "diagnostic" }
   | { error_scope: "turn"; error_effect: "terminal"; turn_id: string }
   | { error_scope: "runtime"; error_effect: "terminal" };
 ```
@@ -245,12 +299,23 @@ identified command by itself.
 
 ## Runtime Segment Identity And Ordering
 
-Provider adapters own the stream segment identities they emit. Text segments must
-use provider message/content-block identity when it is available, and may fall
-back to runtime-generated identities only for genuinely anonymous stream text.
-They must not use the whole turn id as the text segment id for all assistant
-text in a turn, because clients intentionally coalesce later content into an
-existing rendered segment when `segment_type` and `id` match.
+The provider boundary supplies truthful source identity, while `AgentRun` owns
+canonical segment admission. A source start must carry non-empty `id`,
+`turn_id`, and one finite segment type. Source content/end carry only their
+non-empty ID and turn plus content/terminal facts; they do not repeat type.
+Missing provider identity remains missing and becomes a non-terminal
+`AGENT_SEGMENT_LIFECYCLE_INVALID` diagnostic. No provider or consumer may
+generate a fallback identity, use the turn as segment ID, infer a type, or
+synthesize a missing start.
+
+Each `AgentRun` owns one non-persisted lifecycle map keyed by exact
+`{turnId,segmentId}`. The first pipeline transformer admits valid starts,
+derives their type onto canonical content, preserves a type-less canonical end,
+and rejects conflicting/replayed/retired lifecycle mutations as specified by
+the common state machine. Browser and transport coalescing also require exact
+turn, segment, and type agreement; equal deltas remain distinct events unless
+the presentation egress joins adjacent messages with every other payload field
+equal.
 
 Adapters also own the ordering boundary between assistant text and tool
 lifecycles. If a provider emits `assistant text -> tool_use/tool_result ->
@@ -267,7 +332,9 @@ Provider adapters must keep tool calls on two runtime-neutral lanes:
 - `TOOL_APPROVAL_*` and `TOOL_EXECUTION_*` owns execution/approval status, terminal result/error, logs, argument hydration, and durable tool traces.
 
 Provider-specific tool identities and result envelopes must be canonicalized at
-the runtime event-converter boundary before they become `AgentRunEvent`s.
+the runtime event-converter boundary before they become post-pipeline
+`AgentRunEvent`s. Tool source events still cross the common segment lifecycle
+when they use the segment lane.
 Frontend streaming handlers, Activity rows, and conversation tool cards consume
 the backend-provided tool name and result shape; they must not infer provider
 wire protocols such as MCP prefixes.
@@ -291,26 +358,34 @@ AutoByteus still expects. AutoByteus MCP tools continue to be supplied through
 `mcpServers` and pre-approved through `allowedTools` according to the configured
 tool exposure.
 
-Claude Agent SDK active-turn closure is owned by the session, not by websocket,
-GraphQL, or frontend button state. Each active Claude turn is tracked with its
-own `AbortController`, and that controller is passed into the SDK query options.
+Claude Agent SDK `0.3.231` is used with exact direct peers
+`@anthropic-ai/sdk@0.116.0` and `@modelcontextprotocol/sdk@1.30.0`. The adapter
+continues to call one `query({ prompt: string, options })` per AgentRun
+`start_turn`; it does not use SDK `streamInput`, priority scheduling, or a
+provider-owned input queue. The intrinsic Agent Tools MCP descriptor alone is
+marked `alwaysLoad: true` so required Team tools are ready on the first turn.
+
+Claude active-turn closure is owned by the session, not by WebSocket, GraphQL,
+or frontend button state. Each active Claude turn is tracked with its own
+`AbortController`, and that controller is passed into the SDK query options.
 When a user interrupt or active-run terminate request closes an in-flight Claude
 turn, the session clears pending tool approvals, flushes pending
-approval/control-response work, aborts and closes the active SDK query, removes
-the active query registration, and waits for the active turn task to settle
-before the caller continues its terminal lifecycle. A user-requested interrupt is
-a normal interrupted terminal path: it must not be recorded as a successful
-completed turn and SDK abort/close fallout should not surface as a runtime
-`ERROR`. Active terminate reuses the same session-owned closure boundary before
-the manager emits `SESSION_TERMINATED` and removes the run session, so row-level
-termination remains stronger than interrupt without duplicating abort-first
-cleanup policy outside the session. Follow-up messages in the same run or team
-member must start from a fresh query resource after that settlement boundary,
-but they must still resume the provider conversation when the session has
-already adopted a real Claude provider `session_id`. The local run id
-placeholder is not a provider session id and must never be sent as the SDK
-`resume` value; when no provider `session_id` has been observed before the
-closure, provider-level resume is unavailable for that follow-up.
+approval/control-response work, calls `AbortController.abort()`, waits for the
+exact active query execution to settle, completes registered-query/reference
+cleanup, clears active state, and only then emits canonical `TURN_INTERRUPTED`.
+It does not call SDK `Query.interrupt()` or consume an SDK interrupt receipt as
+a fallback. AgentRun then releases the reservation and drains retained FIFO
+input. A user-requested interrupt is a normal interrupted terminal path: it must
+not be recorded as a completed turn and SDK abort/close fallout should not
+surface as a runtime `ERROR`. Active terminate reuses the same session-owned
+closure boundary before the manager emits `SESSION_TERMINATED` and removes the
+run session, so row-level termination remains stronger than interrupt without
+duplicating abort-first cleanup policy outside the session. Follow-up messages
+start from a fresh query resource after settlement and resume the same UUID
+reserved before the first query. The initial query uses SDK `sessionId`; after
+it opens, every later query uses SDK `resume`. Provider stream identity confirms
+that immutable UUID and a missing or conflicting confirmation is terminal rather
+than a late adoption opportunity.
 
 Native AutoByteus runs expose the same user-facing interrupt contract through
 the `autobyteus-ts` runtime. `AgentRun.interrupt(...)` delegates to
@@ -393,7 +468,7 @@ MCP protocol result envelopes into application-facing result/error payloads.
 Family-specific execution ownership stays below the Agent Tools MCP adapter:
 
 - `send_message_to` still runs through the shared
-  `src/agent-communication` dispatcher, so `recipient_name` stays a
+  `src/agent-communication` dispatcher, so `recipient_address` stays a
   team-context route and `target_agent_run_id` remains the global live-only exact
   active-run route.
 - Browser tools use the shared browser service and normalize successful results

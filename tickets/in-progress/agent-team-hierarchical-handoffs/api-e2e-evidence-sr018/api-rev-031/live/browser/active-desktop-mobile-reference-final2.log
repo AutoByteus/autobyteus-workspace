@@ -1,0 +1,19 @@
+{
+  "passed": false,
+  "rootTeamRunId": "nested_classroom_test_team_4f912dc8e02a4aab8d848253f43c5a52",
+  "conditions": {
+    "freshActiveTeam": true,
+    "referencedMessagePresent": true,
+    "exactReplyReceivedOnce": true,
+    "exactRootOnAllRecords": true,
+    "desktopActiveReference": true,
+    "selectedTeamConfigReadOnly": true,
+    "mobileActiveReference": false,
+    "noBrowserConsoleErrors": true
+  },
+  "fatalError": null,
+  "termination": {
+    "success": true,
+    "message": "Agent team run terminated successfully."
+  }
+}

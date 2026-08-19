@@ -1,11 +1,13 @@
 import {
   AgentRunEventType,
   isAgentRunEvent,
+  type AgentRunEvent,
 } from "../../agent-execution/domain/agent-run-event.js";
 import {
   resolveAgentRunErrorEvidence,
   type AgentRunErrorEvidence,
 } from "../../agent-execution/domain/agent-run-error-evidence.js";
+import { resolveAgentRunEventTurnId } from "../../agent-execution/domain/agent-run-event-turn-id.js";
 import {
   TeamRunEventSourceType,
   type TeamRunEvent,
@@ -16,16 +18,14 @@ export type ParsedChannelOutputEvent = {
   statusHint: string | null;
   errorEvidence: AgentRunErrorEvidence | null;
   agentRunId: string;
+  memberAddress: string | null;
   teamRunId: string | null;
-  memberRunId: string | null;
-  memberRouteKey: string | null;
-  memberPath: string[] | null;
   turnId: string | null;
   text: string | null;
   textKind: ChannelOutputEventTextKind | null;
 };
 
-export type ChannelOutputEventTextKind = "STREAM_FRAGMENT" | "FINAL_TEXT";
+export type ChannelOutputEventTextKind = "STREAM_FRAGMENT";
 
 export const parseDirectChannelOutputEvent = (
   event: unknown,
@@ -39,74 +39,70 @@ export const parseDirectChannelOutputEvent = (
     statusHint: event.statusHint ?? null,
     errorEvidence: resolveAgentRunErrorEvidence(event),
     agentRunId: event.runId,
+    memberAddress: null,
     teamRunId: null,
-    memberRunId: null,
-    memberRouteKey: null,
-    memberPath: null,
-    turnId: resolveTurnIdFromPayload(event.payload),
+    turnId: resolveAgentRunEventTurnId(event),
     text: text.text,
     textKind: text.kind,
   };
 };
 
 export const parseTeamChannelOutputEvent = (
-  event: unknown,
+  input: unknown,
 ): ParsedChannelOutputEvent | null => {
+  const event = input && typeof input === "object" && "event" in input
+    ? (input as { event: unknown }).event
+    : input;
   if (!isTeamAgentEvent(event)) {
     return null;
   }
-  const parsedAgentEvent = parseDirectChannelOutputEvent(event.data.agentEvent);
-  if (!parsedAgentEvent) {
-    return null;
-  }
+  const payload = event.payload;
+  const text = payload.eventType === "SEGMENT_CONTENT"
+    && payload.details.segmentType === "text"
+    ? { text: payload.details.delta, kind: "STREAM_FRAGMENT" as const }
+    : { text: null, kind: null };
+  const turnId = "turnId" in payload.details ? payload.details.turnId : null;
   return {
-    ...parsedAgentEvent,
-    agentRunId: asNonEmptyString(event.data.memberRunId) ?? parsedAgentEvent.agentRunId,
-    teamRunId: asNonEmptyString(event.teamRunId),
-    memberRunId: asNonEmptyString(event.data.memberRunId),
-    memberRouteKey: asNonEmptyString(event.data.memberRouteKey),
-    memberPath: Array.isArray(event.data.memberPath)
-      ? event.data.memberPath.map(asNonEmptyString).filter((value): value is string => Boolean(value))
+    eventType: payload.eventType as AgentRunEventType,
+    statusHint: payload.statusHint,
+    errorEvidence: payload.eventType === "ERROR"
+      ? payload.details.errorEffect === "diagnostic"
+        ? payload.details.errorScope === "turn" && payload.details.turnId
+          ? { kind: "TURN_DIAGNOSTIC", turnId: payload.details.turnId }
+          : null
+        : payload.details.errorEffect === "terminal"
+          ? payload.details.errorScope === "turn" && payload.details.turnId
+            ? { kind: "TURN_TERMINAL", turnId: payload.details.turnId }
+            : payload.details.errorScope === "runtime" && payload.details.turnId === null
+              ? { kind: "RUNTIME_GLOBAL" }
+              : null
+          : null
       : null,
+    agentRunId: event.execution.agentRunId,
+    memberAddress: event.execution.memberAddress,
+    teamRunId: event.execution.rootTeamRunId,
+    turnId,
+    text: text.text,
+    textKind: text.kind,
   };
 };
 
 const isTeamAgentEvent = (
   event: unknown,
-): event is TeamRunEvent & {
-  data: {
-    memberRunId: string;
-    memberRouteKey?: string;
-    memberPath?: string[];
-    agentEvent: unknown;
-  };
-} => {
+): event is Extract<TeamRunEvent, { eventSourceType: TeamRunEventSourceType.AGENT }> => {
   if (!event || typeof event !== "object") {
     return false;
   }
   const candidate = event as {
     eventSourceType?: unknown;
-    data?: unknown;
+    execution?: unknown;
+    payload?: unknown;
   };
   if (candidate.eventSourceType !== TeamRunEventSourceType.AGENT) {
     return false;
   }
-  return !!candidate.data && typeof candidate.data === "object";
-};
-
-const resolveTurnIdFromPayload = (
-  params: Record<string, unknown>,
-): string | null => {
-  const turn = asObject(params.turn);
-  const item = asObject(params.item);
-  return (
-    asNonEmptyString(params.turnId) ??
-    asNonEmptyString(params.turn_id) ??
-    asNonEmptyString(turn?.id) ??
-    asNonEmptyString(item?.turnId) ??
-    asNonEmptyString(item?.turn_id) ??
-    null
-  );
+  return !!candidate.execution && typeof candidate.execution === "object" &&
+    !!candidate.payload && typeof candidate.payload === "object";
 };
 
 const resolveAgentRunEventText = (
@@ -118,25 +114,7 @@ const resolveAgentRunEventText = (
     if (segmentType !== "text") {
       return noText();
     }
-    return parsedText(
-      asNonEmptyRawString(payload.delta) ??
-        asNonEmptyRawString(payload.text) ??
-        extractAssistantText(payload),
-      "STREAM_FRAGMENT",
-    );
-  }
-
-  if (eventType === AgentRunEventType.SEGMENT_END) {
-    if (segmentType && segmentType !== "text") {
-      return noText();
-    }
-    const assistantText = extractAssistantText(payload);
-    return parsedText(
-      (segmentType === "text" ? asNonEmptyRawString(payload.text) : null) ??
-        assistantText ??
-        (segmentType === "text" ? asNonEmptyRawString(payload.delta) : null),
-      "FINAL_TEXT",
-    );
+    return parsedText(asRawString(payload.delta), "STREAM_FRAGMENT");
   }
 
   return noText();
@@ -145,92 +123,13 @@ const resolveAgentRunEventText = (
 const parsedText = (
   text: string | null,
   kind: ChannelOutputEventTextKind,
-): { text: string | null; kind: ChannelOutputEventTextKind | null } => {
-  const normalized = normalizeOptionalRawString(text);
-  return {
-    text: normalized,
-    kind: normalized ? kind : null,
-  };
-};
+): { text: string | null; kind: ChannelOutputEventTextKind | null } =>
+  text === null ? noText() : { text, kind };
 
 const noText = (): { text: null; kind: null } => ({ text: null, kind: null });
-
-const extractAssistantText = (
-  params: Record<string, unknown>,
-): string | null => {
-  const item = asObject(params.item) ?? params;
-  const kind = normalizeItemKind(item);
-  if (
-    !kind.includes("outputtext") &&
-    !kind.includes("assistant") &&
-    !kind.includes("agentmessage")
-  ) {
-    return null;
-  }
-
-  const fragments = [
-    asNonEmptyRawString(item.text),
-    asNonEmptyRawString(item.delta),
-    asNonEmptyRawString(item.value),
-    ...collectTextFragments(item.content),
-  ].filter((value): value is string => Boolean(value));
-
-  if (fragments.length === 0) {
-    return null;
-  }
-
-  return normalizeOptionalRawString(fragments.join("\n"));
-};
-
-const normalizeItemKind = (value: Record<string, unknown>): string =>
-  (
-    asNonEmptyString(value.type) ??
-    asNonEmptyString(value.method) ??
-    asNonEmptyString(value.kind) ??
-    ""
-  )
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "");
-
-const collectTextFragments = (value: unknown, depth = 0): string[] => {
-  if (depth > 4 || value === null || value === undefined) {
-    return [];
-  }
-  if (typeof value === "string") {
-    return value.trim() ? [value] : [];
-  }
-  if (Array.isArray(value)) {
-    return value.flatMap((entry) => collectTextFragments(entry, depth + 1));
-  }
-  const objectValue = asObject(value);
-  if (!objectValue) {
-    return [];
-  }
-  return [
-    objectValue.text,
-    objectValue.content,
-    objectValue.value,
-    objectValue.delta,
-    objectValue.summary,
-  ].flatMap((entry) => collectTextFragments(entry, depth + 1));
-};
-
-const asObject = (value: unknown): Record<string, unknown> | null =>
-  value && typeof value === "object" && !Array.isArray(value)
-    ? (value as Record<string, unknown>)
-    : null;
 
 const asNonEmptyString = (value: unknown): string | null =>
   typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
 
-const asNonEmptyRawString = (value: unknown): string | null =>
-  typeof value === "string" && value.trim().length > 0 ? value : null;
-
-const normalizeOptionalRawString = (
-  value: string | null | undefined,
-): string | null => {
-  if (value === undefined || value === null) {
-    return null;
-  }
-  return value.trim().length > 0 ? value : null;
-};
+const asRawString = (value: unknown): string | null =>
+  typeof value === "string" ? value : null;

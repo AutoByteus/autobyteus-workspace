@@ -1,0 +1,110 @@
+
+> autobyteus@1.4.51 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts (3 tests) 69ms
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > shows an error toast when terminate fails
+Failed to terminate run 'run-1'.
+
+ ❯ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts (50 tests | 1 failed) 584ms
+   ✓ WorkspaceAgentRunsTreePanel > loads workspace list without eager history tree on mount 29ms
+   ✓ WorkspaceAgentRunsTreePanel > renders workspace rows collapsed by default 14ms
+   ✓ WorkspaceAgentRunsTreePanel > fetches scoped workspace history when a workspace row is expanded 10ms
+   ✓ WorkspaceAgentRunsTreePanel > renders scoped workspace history loading, error, and empty states 20ms
+   ✓ WorkspaceAgentRunsTreePanel > opens workspace removal confirmation from the row action without expanding the row 7ms
+   ✓ WorkspaceAgentRunsTreePanel > does not render remove action for non-removable temp workspace rows 4ms
+   ✓ WorkspaceAgentRunsTreePanel > cancels workspace removal without mutating workspace or history state 8ms
+   ✓ WorkspaceAgentRunsTreePanel > confirms workspace removal and prunes history plus expansion state after success 12ms
+   ✓ WorkspaceAgentRunsTreePanel > keeps the workspace visible and reports an error when workspace removal fails 5ms
+   ✓ WorkspaceAgentRunsTreePanel > shows groups after opening a workspace but keeps run histories collapsed 7ms
+   ✓ WorkspaceAgentRunsTreePanel > keeps the individual team run disclosure chevron visually consistent with the parent team chevron 14ms
+   ✓ WorkspaceAgentRunsTreePanel > renders nested team members collapsed by default with a disclosure control 13ms
+   ✓ WorkspaceAgentRunsTreePanel > toggles nested team member disclosure without selecting the member 20ms
+   × WorkspaceAgentRunsTreePanel > toggles and selects a nested team row from the row body 24ms
+     → expected "spy" to be called with arguments: [ ObjectContaining{…} ]
+
+Number of calls: 0
+
+   ✓ WorkspaceAgentRunsTreePanel > keeps an expanded nested child visible after selecting it 21ms
+   ✓ WorkspaceAgentRunsTreePanel > expands nested ancestors when a team row opens a focused nested member 19ms
+   ✓ WorkspaceAgentRunsTreePanel > refreshes expanded workspace history quietly on the background interval while mounted 20ms
+   ✓ WorkspaceAgentRunsTreePanel > renders agent avatar image when the tree node provides avatar URL 6ms
+   ✓ WorkspaceAgentRunsTreePanel > tracks broken avatar per URL key so a changed avatar URL can recover 5ms
+   ✓ WorkspaceAgentRunsTreePanel > selects run via runHistoryStore.selectTreeRun and emits run-selected 12ms
+   ✓ WorkspaceAgentRunsTreePanel > creates draft run from agent row plus button and emits run-created 8ms
+   ✓ WorkspaceAgentRunsTreePanel > does not render run-row configuration button 3ms
+   ✓ WorkspaceAgentRunsTreePanel > does not render Skill Improvement actions on run-history rows 8ms
+   ✓ WorkspaceAgentRunsTreePanel > renders grouped team rows under workspace and selects the team run when clicked 13ms
+   ✓ WorkspaceAgentRunsTreePanel > opens a historical team row through the coordinator-focused member instead of the first alphabetical member 10ms
+   ✓ WorkspaceAgentRunsTreePanel > strips the user requirement prefix from agent and team summary labels 13ms
+   ✓ WorkspaceAgentRunsTreePanel > renders team avatar image when team definition avatar is available 6ms
+   ✓ WorkspaceAgentRunsTreePanel > renders team member avatar image when matching agent definition avatar is available 11ms
+   ✓ WorkspaceAgentRunsTreePanel > selects team member through runHistoryStore so persisted member history can hydrate 13ms
+   ✓ WorkspaceAgentRunsTreePanel > keeps the global Workspaces tree free of delegated-task detail and full-context UI under an expanded live team 10ms
+   ✓ WorkspaceAgentRunsTreePanel > renders delete action for inactive team history rows 9ms
+   ✓ WorkspaceAgentRunsTreePanel > renders archive action for inactive team history rows 8ms
+   ✓ WorkspaceAgentRunsTreePanel > does not render team-row configuration button 9ms
+   ✓ WorkspaceAgentRunsTreePanel > deletes inactive team history from team row action without selecting the row 12ms
+   ✓ WorkspaceAgentRunsTreePanel > archives inactive team history from team row action without selecting the row 11ms
+   ✓ WorkspaceAgentRunsTreePanel > creates workspace from inline input when user presses Enter 9ms
+   ✓ WorkspaceAgentRunsTreePanel > opens native folder picker on embedded electron and creates workspace from selected path 5ms
+   ✓ WorkspaceAgentRunsTreePanel > does not create workspace when embedded electron picker is canceled 4ms
+   ✓ WorkspaceAgentRunsTreePanel > closes inline add workspace input without creating workspace on cancel 7ms
+   ✓ WorkspaceAgentRunsTreePanel > renders active status indicator for active runs 9ms
+   ✓ WorkspaceAgentRunsTreePanel > does not render status indicator for inactive runs 9ms
+   ✓ WorkspaceAgentRunsTreePanel > renders delete action only for inactive history runs 9ms
+   ✓ WorkspaceAgentRunsTreePanel > renders archive action only for inactive persisted history runs 9ms
+   ✓ WorkspaceAgentRunsTreePanel > terminates active run from row action without selecting the row 11ms
+   ✓ WorkspaceAgentRunsTreePanel > shows an error toast when terminate fails 11ms
+   ✓ WorkspaceAgentRunsTreePanel > deletes inactive history run from row action without selecting the row 11ms
+   ✓ WorkspaceAgentRunsTreePanel > archives inactive history run from row action without selecting the row 36ms
+   ✓ WorkspaceAgentRunsTreePanel > shows an error toast when archive fails 11ms
+   ✓ WorkspaceAgentRunsTreePanel > does not call delete when confirmation is cancelled 12ms
+   ✓ WorkspaceAgentRunsTreePanel > shows an error toast when delete fails 12ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > toggles and selects a nested team row from the row body
+AssertionError: expected "spy" to be called with arguments: [ ObjectContaining{…} ]
+
+Number of calls: 0
+
+ ❯ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts:909:47
+    907| 
+    908|     expect(wrapper.find('[data-test="workspace-team-member-team-1-/eng…
+    909|     expect(runHistoryStoreMock.selectTreeRun).toHaveBeenCalledWith(
+       |                                               ^
+    910|       expect.objectContaining({
+    911|         teamRunId: 'team-1',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 52 passed (53)
+   Start at  15:19:28
+   Duration  5.65s (transform 2.89s, setup 8.62s, collect 489ms, tests 653ms, environment 288ms, prepare 297ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

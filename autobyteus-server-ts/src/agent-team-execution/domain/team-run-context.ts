@@ -1,100 +1,78 @@
-import type { MixedTeamRunContext } from "../backends/mixed/mixed-team-run-context.js";
-import type { TeamRunConfig } from "./team-run-config.js";
+import type { CollaborationHandoff } from "../../agent-collaboration/domain/collaboration-handoff.js";
 import type { TeamBackendKind } from "./team-backend-kind.js";
-import { buildMemberPath, buildMemberRouteKeyFromPath } from "./team-run-member-identity.js";
+import type { TeamRunAgentTeamNode, TeamRunApplicationBinding } from "./team-run-config.js";
+import type { MixedTeamRunContext } from "../backends/mixed/mixed-team-run-context.js";
 
-export interface TeamMemberRuntimeContext {
-  readonly memberKind: "agent" | "agent_team";
-  readonly memberName: string;
-  readonly memberPath: string[];
-  readonly memberRouteKey: string;
-  readonly memberRunId: string;
+export interface TeamAgentMemberRuntimeContext {
+  readonly kind: "agent";
+  readonly address: import("../../agent-collaboration/domain/agent-team-address.js").AgentTeamAddress;
+  readonly agentRunId: string;
   getPlatformAgentRunId(): string | null;
 }
 
-export interface TeamAgentMemberRuntimeContext extends TeamMemberRuntimeContext {
-  readonly memberKind: "agent";
-}
-
-export interface TeamSubTeamMemberRuntimeContext extends TeamMemberRuntimeContext {
-  readonly memberKind: "agent_team";
+export interface TeamSubTeamMemberRuntimeContext {
+  readonly kind: "agent_team";
+  readonly address: import("../../agent-collaboration/domain/agent-team-address.js").AgentTeamAddress;
   readonly teamDefinitionId: string;
-  childTeamRunId: string | null;
-  childRuntimeContext?: RuntimeTeamRunContext | null;
+  readonly teamRunId: string;
+  childRuntimeContext: RuntimeTeamRunContext | null;
+  getPlatformAgentRunId(): null;
 }
 
-type TeamMemberContextCarrier = {
-  memberContexts: TeamMemberRuntimeContext[];
-};
-
-const hasMemberContexts = (value: unknown): value is TeamMemberContextCarrier =>
-  value !== null &&
-  value !== undefined &&
-  typeof value === "object" &&
-  "memberContexts" in value &&
-  Array.isArray((value as { memberContexts?: unknown }).memberContexts);
-
+export type TeamMemberRuntimeContext = TeamAgentMemberRuntimeContext | TeamSubTeamMemberRuntimeContext;
 export type RuntimeTeamRunContext = MixedTeamRunContext | null;
 
-export type TeamRunContextInput<TRuntimeContext> = {
-  runId: string;
-  teamBackendKind: TeamBackendKind;
-  coordinatorMemberName?: string | null;
-  coordinatorMemberRouteKey?: string | null;
-  config: TeamRunConfig | null;
-  runtimeContext: TRuntimeContext;
-};
-
 export class TeamRunContext<TRuntimeContext = RuntimeTeamRunContext> {
-  readonly runId: string;
+  readonly rootTeamRunId: string;
+  readonly teamRunId: string;
   readonly teamBackendKind: TeamBackendKind;
-  readonly coordinatorMemberName: string | null;
-  readonly coordinatorMemberRouteKey: string | null;
-  readonly config: TeamRunConfig | null;
+  readonly teamNode: TeamRunAgentTeamNode;
+  readonly handoffs: readonly CollaborationHandoff[];
+  readonly applicationBinding: TeamRunApplicationBinding | null;
   readonly runtimeContext: TRuntimeContext;
 
-  constructor(input: TeamRunContextInput<TRuntimeContext>) {
-    this.runId = input.runId;
+  constructor(input: {
+    rootTeamRunId: string;
+    teamRunId: string;
+    teamBackendKind: TeamBackendKind;
+    teamNode: TeamRunAgentTeamNode;
+    handoffs?: readonly CollaborationHandoff[] | null;
+    applicationBinding?: TeamRunApplicationBinding | null;
+    runtimeContext: TRuntimeContext;
+  }) {
+    this.rootTeamRunId = required(input.rootTeamRunId, "rootTeamRunId");
+    this.teamRunId = required(input.teamRunId, "teamRunId");
+    if (input.teamNode.teamRunId !== this.teamRunId) {
+      throw new Error(`Team node '${input.teamNode.address}' does not own TeamRun '${this.teamRunId}'.`);
+    }
     this.teamBackendKind = input.teamBackendKind;
-    this.coordinatorMemberName = input.coordinatorMemberName ?? null;
-    this.coordinatorMemberRouteKey = input.coordinatorMemberRouteKey ?? input.config?.coordinatorMemberRouteKey ?? null;
-    this.config = input.config;
+    this.teamNode = input.teamNode;
+    this.handoffs = Object.freeze([...(input.handoffs ?? [])]);
+    this.applicationBinding = input.applicationBinding
+      ? Object.freeze({ ...input.applicationBinding })
+      : null;
     this.runtimeContext = input.runtimeContext;
   }
+
+  get teamAddress() { return this.teamNode.address; }
 }
 
-export const ensureRuntimeMemberPath = (input: {
-  memberName: string;
-  memberPath?: string[] | null;
-}): string[] =>
-  Array.isArray(input.memberPath) && input.memberPath.length > 0
-    ? [...input.memberPath]
-    : buildMemberPath([], input.memberName);
-
-export const ensureRuntimeMemberRouteKey = (input: {
-  memberName: string;
-  memberPath?: string[] | null;
-  memberRouteKey?: string | null;
-}): string =>
-  typeof input.memberRouteKey === "string" && input.memberRouteKey.trim().length > 0
-    ? input.memberRouteKey.trim()
-    : buildMemberRouteKeyFromPath(ensureRuntimeMemberPath(input));
+const required = (value: string, field: string): string => {
+  const normalized = value.trim();
+  if (!normalized) throw new Error(`${field} is required.`);
+  return normalized;
+};
 
 export const getRuntimeMemberContexts = (
   runtimeContext: RuntimeTeamRunContext | null | undefined,
-): TeamMemberRuntimeContext[] =>
-  hasMemberContexts(runtimeContext) ? [...runtimeContext.memberContexts] : [];
+): TeamMemberRuntimeContext[] => runtimeContext ? [...runtimeContext.memberContexts] : [];
 
-export const resolveRuntimeMemberContext = (
+export const resolveRuntimeAgentContext = (
   teamContext: TeamRunContext<unknown> | null | undefined,
-  memberRunId: string,
-): TeamMemberRuntimeContext | null => {
-  if (!teamContext) {
-    return null;
-  }
-  return (
-    getRuntimeMemberContexts(teamContext.runtimeContext as RuntimeTeamRunContext).find(
-      (memberContext) => memberContext.memberRunId === memberRunId,
-    ) ?? null
-  );
+  agentRunId: string,
+): TeamAgentMemberRuntimeContext | null => {
+  if (!teamContext) return null;
+  return getRuntimeMemberContexts(teamContext.runtimeContext as RuntimeTeamRunContext).find(
+    (context): context is TeamAgentMemberRuntimeContext => context.kind === "agent" && context.agentRunId === agentRunId,
+  ) ?? null;
 };

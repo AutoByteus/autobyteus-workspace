@@ -17,7 +17,7 @@ interface WorkspaceHistoryStoreLike {
   agentAvatarByDefinitionId: Record<string, string>;
   selectedRunId: string | null;
   selectedTeamRunId: string | null;
-  selectedTeamMemberRouteKey: string | null;
+  selectedTeamMemberAddress: string | null;
   resumeConfigByRunId: Record<string, RunResumeConfigPayload>;
   teamResumeConfigByTeamRunId: Record<string, TeamRunResumeConfigPayload>;
 }
@@ -129,6 +129,6 @@ const clearSelectedHistoryFromGroup = (
   }
   if (store.selectedTeamRunId && teamRunIds.has(store.selectedTeamRunId)) {
     store.selectedTeamRunId = null;
-    store.selectedTeamMemberRouteKey = null;
+    store.selectedTeamMemberAddress = null;
   }
 };

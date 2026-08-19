@@ -226,7 +226,6 @@ const {
     await agentRunStore.closeAgent(runId, { terminate: false });
     return true;
   },
-  removeDraftTeam: async (teamRunId: string) => teamRunStore.discardDraftTeamRun(teamRunId),
   deleteRun: (runId: string) => runHistoryStore.deleteRun(runId),
   deleteTeamRun: (teamRunId: string) => runHistoryStore.deleteTeamRun(teamRunId),
   archiveRun: (runId: string) => runHistoryStore.archiveRun(runId),
@@ -269,6 +268,12 @@ const {
     emit('run-selected', { type: 'team', runId: payload.runId });
   },
   emitRunCreated: (payload) => emit('run-created', payload),
+  presentTeamStreamRecoveryFeedback: (feedback) => {
+    const key = feedback === 'wait'
+      ? 'workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.stream_recovery_wait'
+      : 'workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.stream_recovery_retry';
+    addToast(t(key), 'info');
+  },
 });
 
 const onToggleWorkspace = async (workspaceNode: RunTreeWorkspaceNode): Promise<void> => {

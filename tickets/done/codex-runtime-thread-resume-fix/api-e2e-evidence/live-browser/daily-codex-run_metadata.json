@@ -1,0 +1,16 @@
+{
+  "runId": "daily_assistant_977bfccbe0154201afa60ea5e0d20f4c",
+  "agentDefinitionId": "daily-assistant",
+  "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix/api-e2e-evidence/live-browser/workspaces/daily-codex",
+  "memoryDir": "/private/tmp/codex-runtime-thread-resume-fix-api-e2e-20260817/server-data/memory/agents/daily_assistant_977bfccbe0154201afa60ea5e0d20f4c",
+  "llmModelIdentifier": "gpt-5.6-luna",
+  "llmConfig": null,
+  "autoExecuteTools": true,
+  "skillAccessMode": "NONE",
+  "runtimeKind": "codex_app_server",
+  "platformAgentRunId": "01a01145-b9ed-7912-adf0-34f9d11e28ba",
+  "preparedAt": "2026-08-17T19:49:36.955Z",
+  "preparedExpiresAt": "2026-08-18T19:49:36.955Z",
+  "startedAt": "2026-08-17T19:49:37.559Z",
+  "applicationExecutionContext": null
+}

@@ -33,19 +33,6 @@ export class ClaudeSessionMessageCache {
     this.messagesBySessionId.set(sessionId, existing);
   }
 
-  migrateSessionMessages(sourceSessionId: string, targetSessionId: string): void {
-    if (sourceSessionId === targetSessionId) {
-      this.ensureSession(targetSessionId);
-      return;
-    }
-
-    const sourceMessages = this.getCachedMessages(sourceSessionId);
-    const targetMessages = this.getCachedMessages(targetSessionId);
-    const mergedMessages = mergeMessages(sourceMessages, targetMessages);
-    this.messagesBySessionId.set(targetSessionId, mergedMessages);
-    this.messagesBySessionId.delete(sourceSessionId);
-  }
-
   getCachedMessages(sessionId: string): Array<Record<string, unknown>> {
     return this.messagesBySessionId.get(sessionId) ?? [];
   }

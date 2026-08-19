@@ -1,0 +1,24 @@
+{
+  "slug": "codex",
+  "runtime": "codex_app_server",
+  "passed": true,
+  "rootTeamRunId": "classroom_simulation_team_3cf13d5cf1ce493e80fedfab5d2996e7",
+  "conditions": {
+    "freshRun": true,
+    "rootedTopology": true,
+    "effectiveRuntime": true,
+    "effectiveReasoning": true,
+    "exactOneProfessorRequest": true,
+    "requestHasReference": true,
+    "exactOneStudentReply": true,
+    "replyHasReference": true,
+    "exactPersistentAddresses": true,
+    "completionVisible": true,
+    "noConsoleErrors": true
+  },
+  "fatalError": null,
+  "termination": {
+    "success": true,
+    "message": "Agent team run terminated successfully."
+  }
+}

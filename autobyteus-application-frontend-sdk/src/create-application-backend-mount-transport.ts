@@ -1,6 +1,6 @@
 import {
   ApplicationAgentConnectionError,
-  getApplicationAgentTargetPathSegments,
+  getApplicationAgentTargetUrlSegments,
   type ApplicationNotificationMessage,
   type ApplicationRequestContext,
   type ApplicationRouteMethod,
@@ -308,7 +308,7 @@ export const createApplicationBackendMountTransport = (
       try {
         url = composeApplicationWebSocketUrl({
           baseUrl,
-          pathSegments: getApplicationAgentTargetPathSegments(address),
+          pathSegments: getApplicationAgentTargetUrlSegments(address),
         });
       } catch {
         throw new ApplicationAgentConnectionError({

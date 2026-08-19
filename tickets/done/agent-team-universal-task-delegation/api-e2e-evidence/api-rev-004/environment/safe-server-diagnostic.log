@@ -1,0 +1,65 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/tests/.tmp/api-rev-004-live-20260815-1
+AppConfig instance created.
+Config file path: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/tests/.tmp/api-rev-004-live-20260815-1/.env
+Loading environment from: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/tests/.tmp/api-rev-004-live-20260815-1/.env
+[dotenv@17.3.1] injecting env (5) from tests/.tmp/api-rev-004-live-20260815-1/.env -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:60309
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:60309
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+APP DATA DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/tests/.tmp/api-rev-004-live-20260815-1
+DB DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/tests/.tmp/api-rev-004-live-20260815-1/db
+LOGS DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/tests/.tmp/api-rev-004-live-20260815-1/logs
+DOWNLOAD DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/tests/.tmp/api-rev-004-live-20260815-1/download
+MEMORY DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/tests/.tmp/api-rev-004-live-20260815-1/memory
+============================================================
+AppConfig initialization completed successfully
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "api-rev-004-live-20260815-1.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/db/api-rev-004-live-20260815-1.db"
+
+21 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:89841) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 20 predefined settings
+Populating agent definition cache for the first time...
+Agent definition cache populated with 2 items.
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+[2026-08-15T14:00:22.815Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+Failed to start server: RangeError: Maximum call stack size exceeded
+    at new AgentToolMcpSessionService (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/dist/agent-tools/mcp/agent-tool-mcp-session-service.js:19:16)
+    at AgentToolMcpSessionService.getInstance (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/dist/agent-tools/mcp/agent-tool-mcp-session-service.js:12:51)
+    at getAgentToolMcpSessionService (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/dist/agent-tools/mcp/agent-tool-mcp-session-service.js:78:79)
+    at new CodexThreadBootstrapper (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/dist/agent-execution/backends/codex/backend/codex-thread-bootstrapper.js:95:318)
+    at getCodexThreadBootstrapper (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/dist/agent-execution/backends/codex/backend/codex-thread-bootstrapper.js:240:41)
+    at new CodexAgentRunBackendFactory (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/dist/agent-execution/backends/codex/backend/codex-agent-run-backend-factory.js:10:79)
+    at getCodexAgentRunBackendFactory (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/dist/agent-execution/backends/codex/backend/codex-agent-run-backend-factory.js:57:45)
+    at new AgentRunManager (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/dist/agent-execution/services/agent-run-manager.js:52:44)
+    at AgentRunManager.getInstance (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/dist/agent-execution/services/agent-run-manager.js:44:40)
+    at new AgentRunIdentityAllocator (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/dist/agent-execution/services/agent-run-identity-allocator.js:36:75)

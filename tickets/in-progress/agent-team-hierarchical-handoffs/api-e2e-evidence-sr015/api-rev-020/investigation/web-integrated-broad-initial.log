@@ -1,0 +1,2938 @@
+
+> autobyteus@1.4.47 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run services/agentStreaming/__tests__/teamStreamMemberContextResolver.spec.ts services/agentStreaming/__tests__/teamTaskExecutionEventRouter.spec.ts services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts services/runHydration/__tests__/taskDelegationGraphqlDtoProjection.spec.ts services/runHydration/__tests__/teamRunContextHydrationService.spec.ts services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts stores/__tests__/runHistoryNavigationProjection.spec.ts stores/__tests__/runHistoryTeamExecutionRows.spec.ts stores/__tests__/runHistoryTeamRows.spec.ts components/workspace/team/__tests__/TeamDelegatedTasksSection.current-contract.spec.ts components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts components/workspace/team/__tests__/TeamDelegatedTaskNavigator.spec.ts components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts composables/__tests__/useWorkspaceHistoryTreeState.spec.ts components/mobile/__tests__/MobileContextSelectionRegression.spec.ts composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts composables/mobile/__tests__/useMobileWorkCatalog.spec.ts stores/__tests__/mobileWorkStore.spec.ts utils/__tests__/teamActiveExecutionMembers.spec.ts utils/__tests__/teamDelegatedTaskEntries.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web
+
+stderr | components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useWorkspaceHistoryTreeState.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/runHistoryNavigationProjection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/mobileWorkStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/__tests__/MobileContextSelectionRegression.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/mobile/__tests__/MobileContextSelectionRegression.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/__tests__/useWorkspaceHistoryTreeState.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/mobileWorkStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/runHistoryNavigationProjection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ stores/__tests__/mobileWorkStore.spec.ts (5 tests | 1 failed) 8ms
+   ✓ mobileWorkStore > preserves the Artifacts tab through store tab normalization 2ms
+   ✓ mobileWorkStore > preserves an explicit Artifacts tab when selecting a mobile work context 1ms
+   ✓ mobileWorkStore > still falls back unknown tab ids to Chat 0ms
+   ✓ mobileWorkStore > hands off one revisioned Event Monitor preview request to Mobile Files 0ms
+   × mobileWorkStore > clears a pending preview when team focus changes 4ms
+     → Cannot read properties of undefined (reading 'trim')
+ ❯ services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts (7 tests | 7 failed) 13ms
+   × openTeamRun > preserves live activities when keeping subscribed live member context 7ms
+     → [vitest] No "hydrateLiveTeamRunContext" export is defined on the "~/services/runHydration/teamRunContextHydrationService" mock. Did you forget to return it from "vi.mock"?
+If you need to partially mock a module, you can use "importOriginal" helper inside:
+
+   × openTeamRun > hydrates projected activities when applying a fresh active team projection 2ms
+     → [vitest] No "hydrateLiveTeamRunContext" export is defined on the "~/services/runHydration/teamRunContextHydrationService" mock. Did you forget to return it from "vi.mock"?
+If you need to partially mock a module, you can use "importOriginal" helper inside:
+
+   × openTeamRun > still establishes one final baseline when an active member projection is absent 1ms
+     → [vitest] No "hydrateLiveTeamRunContext" export is defined on the "~/services/runHydration/teamRunContextHydrationService" mock. Did you forget to return it from "vi.mock"?
+If you need to partially mock a module, you can use "importOriginal" helper inside:
+
+   × openTeamRun > hydrates only newly applied member projections when preserving existing live members 1ms
+     → [vitest] No "hydrateLiveTeamRunContext" export is defined on the "~/services/runHydration/teamRunContextHydrationService" mock. Did you forget to return it from "vi.mock"?
+If you need to partially mock a module, you can use "importOriginal" helper inside:
+
+   × openTeamRun > normalizes inactive logical member focus when reopening subscribed active execution 0ms
+     → [vitest] No "hydrateLiveTeamRunContext" export is defined on the "~/services/runHydration/teamRunContextHydrationService" mock. Did you forget to return it from "vi.mock"?
+If you need to partially mock a module, you can use "importOriginal" helper inside:
+
+   × openTeamRun > reconstructs a missing live task-agent child node when reopening a subscribed active team 1ms
+     → Cannot read properties of undefined (reading 'children')
+   × openTeamRun > preserves existing member-scoped statuses when reopening an active unsubscribed team 1ms
+     → [vitest] No "hydrateLiveTeamRunContext" export is defined on the "~/services/runHydration/teamRunContextHydrationService" mock. Did you forget to return it from "vi.mock"?
+If you need to partially mock a module, you can use "importOriginal" helper inside:
+
+ ❯ stores/__tests__/runHistoryNavigationProjection.spec.ts (6 tests | 6 failed) 22ms
+   × runHistoryNavigationProjection > publishes stable-plus-transient execution rows, exact focus, indexes, and reconciled equal branches 18ms
+     → Cannot read properties of undefined (reading 'coordinatorAddress')
+   × runHistoryNavigationProjection > reuses an unrelated workspace team bucket when one team topology changes 1ms
+     → Cannot read properties of undefined (reading 'coordinatorAddress')
+   × runHistoryNavigationProjection > patches only the indexed standalone branch and skips activity in the same minute bucket 0ms
+     → Cannot read properties of undefined (reading 'coordinatorAddress')
+   × runHistoryNavigationProjection > applies tight task-row and focus patches while equal or detail-free changes do no work 1ms
+     → Cannot read properties of undefined (reading 'coordinatorAddress')
+   × runHistoryNavigationProjection > applies combined status, summary, and activity through one exact branch patch 1ms
+     → Cannot read properties of undefined (reading 'coordinatorAddress')
+   × runHistoryNavigationProjection > patches an actual root team lifecycle transition and no-ops an equal snapshot 1ms
+     → Cannot read properties of undefined (reading 'coordinatorAddress')
+ ❯ composables/__tests__/useWorkspaceHistoryTreeState.spec.ts (7 tests | 1 failed) 18ms
+   ✓ useWorkspaceHistoryTreeState > defaults workspaces, agent groups, team-definition groups, and team runs to collapsed 3ms
+   ✓ useWorkspaceHistoryTreeState > prunes workspace expansion state for removed workspaces 1ms
+   ✓ useWorkspaceHistoryTreeState > reveals only the selected agent run ancestry 1ms
+   ✓ useWorkspaceHistoryTreeState > reveals selected team ancestry from the run-history store selected team source 0ms
+   ✓ useWorkspaceHistoryTreeState > keeps selected reveal pending until matching data becomes available 4ms
+   ✓ useWorkspaceHistoryTreeState > does not re-open an already revealed selected path after manual collapse and quiet refresh 2ms
+   × useWorkspaceHistoryTreeState > expands exact member ancestors from the cached navigation index 4ms
+     → params.runHistoryStore.getTeamMemberNavigationAncestorAddresses is not a function
+ ❯ components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts (8 tests | 8 failed) 35ms
+   × TeamDelegatedTasksSection > uses controlled collapsed state with human task count and no approval summary 12ms
+     → Cannot read properties of undefined (reading 'children')
+   × TeamDelegatedTasksSection > renders task detail navigation without duplicating execution hierarchy rows 9ms
+     → Cannot read properties of undefined (reading 'children')
+   × TeamDelegatedTasksSection > switches the whole right pane to a task-owned reference preview and refreshes repeated reference selections 2ms
+     → Cannot read properties of undefined (reading 'children')
+   × TeamDelegatedTasksSection > returns from reference preview to task body when a summary row is selected 3ms
+     → Cannot read properties of undefined (reading 'children')
+   × TeamDelegatedTasksSection > adds a message-style horizontal split resize handle for the task navigator 3ms
+     → Cannot read properties of undefined (reading 'children')
+   × TeamDelegatedTasksSection > selects task summaries for reading without focusing execution targets 2ms
+     → Cannot read properties of undefined (reading 'children')
+   × TeamDelegatedTasksSection > keeps task-team summary selection detail-only with no member navigation 2ms
+     → Cannot read properties of undefined (reading 'children')
+   × TeamDelegatedTasksSection > shows the empty delegated-task state 1ms
+     → Cannot read properties of undefined (reading 'children')
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts > WorkspaceAgentRunsTreePanel regressions > routes team top-row clicks through persisted member hydration instead of blind team selection
+[Vue warn]: Unhandled error during execution of render function 
+  at <WorkspaceHistoryWorkspaceSection key="workspace:/ws/a" workspace-node= {
+  workspaceRootPath: '/ws/a',
+  workspaceName: 'autobyteus_org',
+  agents: [
+    {
+      agentDefinitionId: 'agent-def-1',
+      agentName: 'SuperAgent',
+      agentAvatarUrl: 'https://example.com/superagent.png',
+      runs: [Array]
+    }
+  ],
+  workspaceId: 'workspace:/ws/a'
+} workspace-teams= [
+  {
+    teamRunId: 'team-1',
+    teamDefinitionId: 'team-def-1',
+    teamDefinitionName: 'Team Alpha',
+    workspaceRootPath: '/ws/a',
+    summary: 'Team summary',
+    lastActivityAt: '2026-01-01T02:00:00.000Z',
+    lastKnownStatus: 'IDLE',
+    isActive: false,
+    currentStatus: 'idle',
+    deleteLifecycle: 'READY',
+    focusedMemberName: 'super_agent',
+    members: [ [Object] ],
+    focusedMemberRouteKey: 'super_agent',
+    memberTree: [],
+    executionRows: [ [Object] ]
+  }
+]  ... > 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of component update 
+  at <WorkspaceHistoryWorkspaceSection key="workspace:/ws/a" workspace-node= {
+  workspaceRootPath: '/ws/a',
+  workspaceName: 'autobyteus_org',
+  agents: [
+    {
+      agentDefinitionId: 'agent-def-1',
+      agentName: 'SuperAgent',
+      agentAvatarUrl: 'https://example.com/superagent.png',
+      runs: [Array]
+    }
+  ],
+  workspaceId: 'workspace:/ws/a'
+} workspace-teams= [
+  {
+    teamRunId: 'team-1',
+    teamDefinitionId: 'team-def-1',
+    teamDefinitionName: 'Team Alpha',
+    workspaceRootPath: '/ws/a',
+    summary: 'Team summary',
+    lastActivityAt: '2026-01-01T02:00:00.000Z',
+    lastKnownStatus: 'IDLE',
+    isActive: false,
+    currentStatus: 'idle',
+    deleteLifecycle: 'READY',
+    focusedMemberName: 'super_agent',
+    members: [ [Object] ],
+    focusedMemberRouteKey: 'super_agent',
+    memberTree: [],
+    executionRows: [ [Object] ]
+  }
+]  ... > 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of native event handler 
+  at <WorkspaceHistoryWorkspaceSection key="workspace:/ws/a" workspace-node= {
+  workspaceRootPath: '/ws/a',
+  workspaceName: 'autobyteus_org',
+  agents: [
+    {
+      agentDefinitionId: 'agent-def-1',
+      agentName: 'SuperAgent',
+      agentAvatarUrl: 'https://example.com/superagent.png',
+      runs: [Array]
+    }
+  ],
+  workspaceId: 'workspace:/ws/a'
+} workspace-teams= [
+  {
+    teamRunId: 'team-1',
+    teamDefinitionId: 'team-def-1',
+    teamDefinitionName: 'Team Alpha',
+    workspaceRootPath: '/ws/a',
+    summary: 'Team summary',
+    lastActivityAt: '2026-01-01T02:00:00.000Z',
+    lastKnownStatus: 'IDLE',
+    isActive: false,
+    currentStatus: 'idle',
+    deleteLifecycle: 'READY',
+    focusedMemberName: 'super_agent',
+    members: [ [Object] ],
+    focusedMemberRouteKey: 'super_agent',
+    memberTree: [],
+    executionRows: [ [Object] ]
+  }
+]  ... > 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+ ❯ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts (4 tests | 2 failed) 132ms
+   × WorkspaceAgentRunsTreePanel regressions > routes team top-row clicks through persisted member hydration instead of blind team selection 76ms
+     → Cannot read properties of undefined (reading 'rootTeamRunId')
+   × WorkspaceAgentRunsTreePanel regressions > keeps a previously selected team expanded when another team row is opened 5ms
+     → Cannot read properties of undefined (reading 'rootTeamRunId')
+   ✓ WorkspaceAgentRunsTreePanel regressions > removes a draft agent row through the local close path 34ms
+   ✓ WorkspaceAgentRunsTreePanel regressions > removes a draft team row through the local discard path 15ms
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > keeps the individual team run disclosure chevron visually consistent with the parent team chevron
+[Vue warn]: Unhandled error during execution of render function 
+  at <WorkspaceHistoryWorkspaceSection key="workspace:/ws/a" workspace-node= {
+  workspaceRootPath: '/ws/a',
+  workspaceName: 'autobyteus_org',
+  agents: [
+    {
+      agentDefinitionId: 'agent-def-1',
+      agentName: 'SuperAgent',
+      agentAvatarUrl: 'https://example.com/superagent.png',
+      runs: [Array]
+    }
+  ],
+  workspaceId: 'workspace:/ws/a',
+  workspaceKind: 'filesystem',
+  canRemoveFromWorkspaces: true
+} workspace-teams= [
+  {
+    teamRunId: 'team-1',
+    teamDefinitionId: 'team-def-1',
+    teamDefinitionName: 'Team Alpha',
+    workspaceRootPath: '/ws/a',
+    summary: 'Team summary',
+    lastActivityAt: '2026-01-01T02:00:00.000Z',
+    lastKnownStatus: 'IDLE',
+    isActive: false,
+    currentStatus: 'offline',
+    deleteLifecycle: 'READY',
+    focusedMemberName: 'super_agent',
+    members: [ [Object] ],
+    focusedMemberRouteKey: 'super_agent',
+    memberTree: [],
+    executionRows: [ [Object] ]
+  }
+]  ... > 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of component update 
+  at <WorkspaceHistoryWorkspaceSection key="workspace:/ws/a" workspace-node= {
+  workspaceRootPath: '/ws/a',
+  workspaceName: 'autobyteus_org',
+  agents: [
+    {
+      agentDefinitionId: 'agent-def-1',
+      agentName: 'SuperAgent',
+      agentAvatarUrl: 'https://example.com/superagent.png',
+      runs: [Array]
+    }
+  ],
+  workspaceId: 'workspace:/ws/a',
+  workspaceKind: 'filesystem',
+  canRemoveFromWorkspaces: true
+} workspace-teams= [
+  {
+    teamRunId: 'team-1',
+    teamDefinitionId: 'team-def-1',
+    teamDefinitionName: 'Team Alpha',
+    workspaceRootPath: '/ws/a',
+    summary: 'Team summary',
+    lastActivityAt: '2026-01-01T02:00:00.000Z',
+    lastKnownStatus: 'IDLE',
+    isActive: false,
+    currentStatus: 'offline',
+    deleteLifecycle: 'READY',
+    focusedMemberName: 'super_agent',
+    members: [ [Object] ],
+    focusedMemberRouteKey: 'super_agent',
+    memberTree: [],
+    executionRows: [ [Object] ]
+  }
+]  ... > 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of native event handler 
+  at <WorkspaceHistoryWorkspaceSection key="workspace:/ws/a" workspace-node= {
+  workspaceRootPath: '/ws/a',
+  workspaceName: 'autobyteus_org',
+  agents: [
+    {
+      agentDefinitionId: 'agent-def-1',
+      agentName: 'SuperAgent',
+      agentAvatarUrl: 'https://example.com/superagent.png',
+      runs: [Array]
+    }
+  ],
+  workspaceId: 'workspace:/ws/a',
+  workspaceKind: 'filesystem',
+  canRemoveFromWorkspaces: true
+} workspace-teams= [
+  {
+    teamRunId: 'team-1',
+    teamDefinitionId: 'team-def-1',
+    teamDefinitionName: 'Team Alpha',
+    workspaceRootPath: '/ws/a',
+    summary: 'Team summary',
+    lastActivityAt: '2026-01-01T02:00:00.000Z',
+    lastKnownStatus: 'IDLE',
+    isActive: false,
+    currentStatus: 'offline',
+    deleteLifecycle: 'READY',
+    focusedMemberName: 'super_agent',
+    members: [ [Object] ],
+    focusedMemberRouteKey: 'super_agent',
+    memberTree: [],
+    executionRows: [ [Object] ]
+  }
+]  ... > 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > renders nested team members collapsed by default with a disclosure control
+[Vue warn]: Unhandled error during execution of render function 
+  at <WorkspaceHistoryWorkspaceSection key="workspace:/ws/a" workspace-node= {
+  workspaceRootPath: '/ws/a',
+  workspaceName: 'autobyteus_org',
+  agents: [
+    {
+      agentDefinitionId: 'agent-def-1',
+      agentName: 'SuperAgent',
+      agentAvatarUrl: 'https://example.com/superagent.png',
+      runs: [Array]
+    }
+  ],
+  workspaceId: 'workspace:/ws/a',
+  workspaceKind: 'filesystem',
+  canRemoveFromWorkspaces: true
+} workspace-teams= [
+  {
+    teamRunId: 'team-1',
+    teamDefinitionId: 'team-def-1',
+    teamDefinitionName: 'Team Alpha',
+    workspaceRootPath: '/ws/a',
+    summary: 'Team summary',
+    lastActivityAt: '2026-01-01T02:00:00.000Z',
+    lastKnownStatus: 'IDLE',
+    isActive: false,
+    currentStatus: 'offline',
+    deleteLifecycle: 'READY',
+    focusedMemberRouteKey: 'coordinator',
+    members: [ [Object], [Object] ],
+    memberTree: [],
+    executionRows: [ [Object], [Object], [Object] ]
+  }
+]  ... > 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of component update 
+  at <WorkspaceHistoryWorkspaceSection key="workspace:/ws/a" workspace-node= {
+  workspaceRootPath: '/ws/a',
+  workspaceName: 'autobyteus_org',
+  agents: [
+    {
+      agentDefinitionId: 'agent-def-1',
+      agentName: 'SuperAgent',
+      agentAvatarUrl: 'https://example.com/superagent.png',
+      runs: [Array]
+    }
+  ],
+  workspaceId: 'workspace:/ws/a',
+  workspaceKind: 'filesystem',
+  canRemoveFromWorkspaces: true
+} workspace-teams= [
+  {
+    teamRunId: 'team-1',
+    teamDefinitionId: 'team-def-1',
+    teamDefinitionName: 'Team Alpha',
+    workspaceRootPath: '/ws/a',
+    summary: 'Team summary',
+    lastActivityAt: '2026-01-01T02:00:00.000Z',
+    lastKnownStatus: 'IDLE',
+    isActive: false,
+    currentStatus: 'offline',
+    deleteLifecycle: 'READY',
+    focusedMemberRouteKey: 'coordinator',
+    members: [ [Object], [Object] ],
+    memberTree: [],
+    executionRows: [ [Object], [Object], [Object] ]
+  }
+]  ... > 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of native event handler 
+  at <WorkspaceHistoryWorkspaceSection key="workspace:/ws/a" workspace-node= {
+  workspaceRootPath: '/ws/a',
+  workspaceName: 'autobyteus_org',
+  agents: [
+    {
+      agentDefinitionId: 'agent-def-1',
+      agentName: 'SuperAgent',
+      agentAvatarUrl: 'https://example.com/superagent.png',
+      runs: [Array]
+    }
+  ],
+  workspaceId: 'workspace:/ws/a',
+  workspaceKind: 'filesystem',
+  canRemoveFromWorkspaces: true
+} workspace-teams= [
+  {
+    teamRunId: 'team-1',
+    teamDefinitionId: 'team-def-1',
+    teamDefinitionName: 'Team Alpha',
+    workspaceRootPath: '/ws/a',
+    summary: 'Team summary',
+    lastActivityAt: '2026-01-01T02:00:00.000Z',
+    lastKnownStatus: 'IDLE',
+    isActive: false,
+    currentStatus: 'offline',
+    deleteLifecycle: 'READY',
+    focusedMemberRouteKey: 'coordinator',
+    members: [ [Object], [Object] ],
+    memberTree: [],
+    executionRows: [ [Object], [Object], [Object] ]
+  }
+]  ... > 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > toggles nested team member disclosure without selecting the member
+[Vue warn]: Unhandled error during execution of render function 
+  at <WorkspaceHistoryWorkspaceSection key="workspace:/ws/a" workspace-node= {
+  workspaceRootPath: '/ws/a',
+  workspaceName: 'autobyteus_org',
+  agents: [
+    {
+      agentDefinitionId: 'agent-def-1',
+      agentName: 'SuperAgent',
+      agentAvatarUrl: 'https://example.com/superagent.png',
+      runs: [Array]
+    }
+  ],
+  workspaceId: 'workspace:/ws/a',
+  workspaceKind: 'filesystem',
+  canRemoveFromWorkspaces: true
+} workspace-teams= [
+  {
+    teamRunId: 'team-1',
+    teamDefinitionId: 'team-def-1',
+    teamDefinitionName: 'Team Alpha',
+    workspaceRootPath: '/ws/a',
+    summary: 'Team summary',
+    lastActivityAt: '2026-01-01T02:00:00.000Z',
+    lastKnownStatus: 'IDLE',
+    isActive: false,
+    currentStatus: 'offline',
+    deleteLifecycle: 'READY',
+    focusedMemberRouteKey: 'coordinator',
+    members: [ [Object], [Object] ],
+    memberTree: [],
+    executionRows: [ [Object], [Object], [Object] ]
+  }
+]  ... > 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of component update 
+  at <WorkspaceHistoryWorkspaceSection key="workspace:/ws/a" workspace-node= {
+  workspaceRootPath: '/ws/a',
+  workspaceName: 'autobyteus_org',
+  agents: [
+    {
+      agentDefinitionId: 'agent-def-1',
+      agentName: 'SuperAgent',
+      agentAvatarUrl: 'https://example.com/superagent.png',
+      runs: [Array]
+    }
+  ],
+  workspaceId: 'workspace:/ws/a',
+  workspaceKind: 'filesystem',
+  canRemoveFromWorkspaces: true
+} workspace-teams= [
+  {
+    teamRunId: 'team-1',
+    teamDefinitionId: 'team-def-1',
+    teamDefinitionName: 'Team Alpha',
+    workspaceRootPath: '/ws/a',
+    summary: 'Team summary',
+    lastActivityAt: '2026-01-01T02:00:00.000Z',
+    lastKnownStatus: 'IDLE',
+    isActive: false,
+    currentStatus: 'offline',
+    deleteLifecycle: 'READY',
+    focusedMemberRouteKey: 'coordinator',
+    members: [ [Object], [Object] ],
+    memberTree: [],
+    executionRows: [ [Object], [Object], [Object] ]
+  }
+]  ... > 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of native event handler 
+  at <WorkspaceHistoryWorkspaceSection key="workspace:/ws/a" workspace-node= {
+  workspaceRootPath: '/ws/a',
+  workspaceName: 'autobyteus_org',
+  agents: [
+    {
+      agentDefinitionId: 'agent-def-1',
+      agentName: 'SuperAgent',
+      agentAvatarUrl: 'https://example.com/superagent.png',
+      runs: [Array]
+    }
+  ],
+  workspaceId: 'workspace:/ws/a',
+  workspaceKind: 'filesystem',
+  canRemoveFromWorkspaces: true
+} workspace-teams= [
+  {
+    teamRunId: 'team-1',
+    teamDefinitionId: 'team-def-1',
+    teamDefinitionName: 'Team Alpha',
+    workspaceRootPath: '/ws/a',
+    summary: 'Team summary',
+    lastActivityAt: '2026-01-01T02:00:00.000Z',
+    lastKnownStatus: 'IDLE',
+    isActive: false,
+    currentStatus: 'offline',
+    deleteLifecycle: 'READY',
+    focusedMemberRouteKey: 'coordinator',
+    members: [ [Object], [Object] ],
+    memberTree: [],
+    executionRows: [ [Object], [Object], [Object] ]
+  }
+]  ... > 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > toggles and selects a nested team row from the row body
+[Vue warn]: Unhandled error during execution of render function 
+  at <WorkspaceHistoryWorkspaceSection key="workspace:/ws/a" workspace-node= {
+  workspaceRootPath: '/ws/a',
+  workspaceName: 'autobyteus_org',
+  agents: [
+    {
+      agentDefinitionId: 'agent-def-1',
+      agentName: 'SuperAgent',
+      agentAvatarUrl: 'https://example.com/superagent.png',
+      runs: [Array]
+    }
+  ],
+  workspaceId: 'workspace:/ws/a',
+  workspaceKind: 'filesystem',
+  canRemoveFromWorkspaces: true
+} workspace-teams= [
+  {
+    teamRunId: 'team-1',
+    teamDefinitionId: 'team-def-1',
+    teamDefinitionName: 'Team Alpha',
+    workspaceRootPath: '/ws/a',
+    summary: 'Team summary',
+    lastActivityAt: '2026-01-01T02:00:00.000Z',
+    lastKnownStatus: 'IDLE',
+    isActive: false,
+    currentStatus: 'offline',
+    deleteLifecycle: 'READY',
+    focusedMemberRouteKey: 'coordinator',
+    members: [ [Object], [Object] ],
+    memberTree: [],
+    executionRows: [ [Object], [Object], [Object] ]
+  }
+]  ... > 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of component update 
+  at <WorkspaceHistoryWorkspaceSection key="workspace:/ws/a" workspace-node= {
+  workspaceRootPath: '/ws/a',
+  workspaceName: 'autobyteus_org',
+  agents: [
+    {
+      agentDefinitionId: 'agent-def-1',
+      agentName: 'SuperAgent',
+      agentAvatarUrl: 'https://example.com/superagent.png',
+      runs: [Array]
+    }
+  ],
+  workspaceId: 'workspace:/ws/a',
+  workspaceKind: 'filesystem',
+  canRemoveFromWorkspaces: true
+} workspace-teams= [
+  {
+    teamRunId: 'team-1',
+    teamDefinitionId: 'team-def-1',
+    teamDefinitionName: 'Team Alpha',
+    workspaceRootPath: '/ws/a',
+    summary: 'Team summary',
+    lastActivityAt: '2026-01-01T02:00:00.000Z',
+    lastKnownStatus: 'IDLE',
+    isActive: false,
+    currentStatus: 'offline',
+    deleteLifecycle: 'READY',
+    focusedMemberRouteKey: 'coordinator',
+    members: [ [Object], [Object] ],
+    memberTree: [],
+    executionRows: [ [Object], [Object], [Object] ]
+  }
+]  ... > 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of native event handler 
+  at <WorkspaceHistoryWorkspaceSection key="workspace:/ws/a" workspace-node= {
+  workspaceRootPath: '/ws/a',
+  workspaceName: 'autobyteus_org',
+  agents: [
+    {
+      agentDefinitionId: 'agent-def-1',
+      agentName: 'SuperAgent',
+      agentAvatarUrl: 'https://example.com/superagent.png',
+      runs: [Array]
+    }
+  ],
+  workspaceId: 'workspace:/ws/a',
+  workspaceKind: 'filesystem',
+  canRemoveFromWorkspaces: true
+} workspace-teams= [
+  {
+    teamRunId: 'team-1',
+    teamDefinitionId: 'team-def-1',
+    teamDefinitionName: 'Team Alpha',
+    workspaceRootPath: '/ws/a',
+    summary: 'Team summary',
+    lastActivityAt: '2026-01-01T02:00:00.000Z',
+    lastKnownStatus: 'IDLE',
+    isActive: false,
+    currentStatus: 'offline',
+    deleteLifecycle: 'READY',
+    focusedMemberRouteKey: 'coordinator',
+    members: [ [Object], [Object] ],
+    memberTree: [],
+    executionRows: [ [Object], [Object], [Object] ]
+  }
+]  ... > 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/mobile/__tests__/MobileContextSelectionRegression.spec.ts > mobile context selection stale-run regression > hides existing-run target selector on Runs while keeping compact target controls on focused work tabs
+[Vue warn]: Unhandled error during execution of render function 
+  at <MobileTeamMemberFocusBar key=0 context= {
+  kind: 'team-run',
+  teamRunId: 'team-run-1',
+  teamDefinitionId: 'team-1',
+  title: 'Software Team',
+  summary: 'Existing team run',
+  workspaceRootPath: '/Users/normy/project',
+  focusedMemberRouteKey: 'lead',
+  isActive: true,
+  lastActivityAt: '2026-05-18T16:00:00.000Z',
+  statusLabel: 'Running'
+} > 
+  at <MobileWorkShell context= {
+  kind: 'team-run',
+  teamRunId: 'team-run-1',
+  teamDefinitionId: 'team-1',
+  title: 'Software Team',
+  summary: 'Existing team run',
+  workspaceRootPath: '/Users/normy/project',
+  focusedMemberRouteKey: 'lead',
+  isActive: true,
+  lastActivityAt: '2026-05-18T16:00:00.000Z',
+  statusLabel: 'Running'
+} activeTab="chat" ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of component update 
+  at <VTUROOT>
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > keeps an expanded nested child visible after selecting it
+[Vue warn]: Unhandled error during execution of render function 
+  at <WorkspaceHistoryWorkspaceSection key="workspace:/ws/a" workspace-node= {
+  workspaceRootPath: '/ws/a',
+  workspaceName: 'autobyteus_org',
+  agents: [
+    {
+      agentDefinitionId: 'agent-def-1',
+      agentName: 'SuperAgent',
+      agentAvatarUrl: 'https://example.com/superagent.png',
+      runs: [Array]
+    }
+  ],
+  workspaceId: 'workspace:/ws/a',
+  workspaceKind: 'filesystem',
+  canRemoveFromWorkspaces: true
+} workspace-teams= [
+  {
+    teamRunId: 'team-1',
+    teamDefinitionId: 'team-def-1',
+    teamDefinitionName: 'Team Alpha',
+    workspaceRootPath: '/ws/a',
+    summary: 'Team summary',
+    lastActivityAt: '2026-01-01T02:00:00.000Z',
+    lastKnownStatus: 'IDLE',
+    isActive: false,
+    currentStatus: 'offline',
+    deleteLifecycle: 'READY',
+    focusedMemberRouteKey: 'coordinator',
+    members: [ [Object], [Object] ],
+    memberTree: [],
+    executionRows: [ [Object], [Object], [Object] ]
+  }
+]  ... > 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of component update 
+  at <WorkspaceHistoryWorkspaceSection key="workspace:/ws/a" workspace-node= {
+  workspaceRootPath: '/ws/a',
+  workspaceName: 'autobyteus_org',
+  agents: [
+    {
+      agentDefinitionId: 'agent-def-1',
+      agentName: 'SuperAgent',
+      agentAvatarUrl: 'https://example.com/superagent.png',
+      runs: [Array]
+    }
+  ],
+  workspaceId: 'workspace:/ws/a',
+  workspaceKind: 'filesystem',
+  canRemoveFromWorkspaces: true
+} workspace-teams= [
+  {
+    teamRunId: 'team-1',
+    teamDefinitionId: 'team-def-1',
+    teamDefinitionName: 'Team Alpha',
+    workspaceRootPath: '/ws/a',
+    summary: 'Team summary',
+    lastActivityAt: '2026-01-01T02:00:00.000Z',
+    lastKnownStatus: 'IDLE',
+    isActive: false,
+    currentStatus: 'offline',
+    deleteLifecycle: 'READY',
+    focusedMemberRouteKey: 'coordinator',
+    members: [ [Object], [Object] ],
+    memberTree: [],
+    executionRows: [ [Object], [Object], [Object] ]
+  }
+]  ... > 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of native event handler 
+  at <WorkspaceHistoryWorkspaceSection key="workspace:/ws/a" workspace-node= {
+  workspaceRootPath: '/ws/a',
+  workspaceName: 'autobyteus_org',
+  agents: [
+    {
+      agentDefinitionId: 'agent-def-1',
+      agentName: 'SuperAgent',
+      agentAvatarUrl: 'https://example.com/superagent.png',
+      runs: [Array]
+    }
+  ],
+  workspaceId: 'workspace:/ws/a',
+  workspaceKind: 'filesystem',
+  canRemoveFromWorkspaces: true
+} workspace-teams= [
+  {
+    teamRunId: 'team-1',
+    teamDefinitionId: 'team-def-1',
+    teamDefinitionName: 'Team Alpha',
+    workspaceRootPath: '/ws/a',
+    summary: 'Team summary',
+    lastActivityAt: '2026-01-01T02:00:00.000Z',
+    lastKnownStatus: 'IDLE',
+    isActive: false,
+    currentStatus: 'offline',
+    deleteLifecycle: 'READY',
+    focusedMemberRouteKey: 'coordinator',
+    members: [ [Object], [Object] ],
+    memberTree: [],
+    executionRows: [ [Object], [Object], [Object] ]
+  }
+]  ... > 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > expands nested ancestors when a team row opens a focused nested member
+[Vue warn]: Unhandled error during execution of render function 
+  at <WorkspaceHistoryWorkspaceSection key="workspace:/ws/a" workspace-node= {
+  workspaceRootPath: '/ws/a',
+  workspaceName: 'autobyteus_org',
+  agents: [
+    {
+      agentDefinitionId: 'agent-def-1',
+      agentName: 'SuperAgent',
+      agentAvatarUrl: 'https://example.com/superagent.png',
+      runs: [Array]
+    }
+  ],
+  workspaceId: 'workspace:/ws/a',
+  workspaceKind: 'filesystem',
+  canRemoveFromWorkspaces: true
+} workspace-teams= [
+  {
+    teamRunId: 'team-1',
+    teamDefinitionId: 'team-def-1',
+    teamDefinitionName: 'Team Alpha',
+    workspaceRootPath: '/ws/a',
+    summary: 'Team summary',
+    lastActivityAt: '2026-01-01T02:00:00.000Z',
+    lastKnownStatus: 'IDLE',
+    isActive: false,
+    currentStatus: 'offline',
+    deleteLifecycle: 'READY',
+    focusedMemberRouteKey: 'engineering_org/implementation_engineer',
+    members: [ [Object], [Object] ],
+    memberTree: [],
+    executionRows: [ [Object], [Object], [Object] ]
+  }
+]  ... > 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of component update 
+  at <WorkspaceHistoryWorkspaceSection key="workspace:/ws/a" workspace-node= {
+  workspaceRootPath: '/ws/a',
+  workspaceName: 'autobyteus_org',
+  agents: [
+    {
+      agentDefinitionId: 'agent-def-1',
+      agentName: 'SuperAgent',
+      agentAvatarUrl: 'https://example.com/superagent.png',
+      runs: [Array]
+    }
+  ],
+  workspaceId: 'workspace:/ws/a',
+  workspaceKind: 'filesystem',
+  canRemoveFromWorkspaces: true
+} workspace-teams= [
+  {
+    teamRunId: 'team-1',
+    teamDefinitionId: 'team-def-1',
+    teamDefinitionName: 'Team Alpha',
+    workspaceRootPath: '/ws/a',
+    summary: 'Team summary',
+    lastActivityAt: '2026-01-01T02:00:00.000Z',
+    lastKnownStatus: 'IDLE',
+    isActive: false,
+    currentStatus: 'offline',
+    deleteLifecycle: 'READY',
+    focusedMemberRouteKey: 'engineering_org/implementation_engineer',
+    members: [ [Object], [Object] ],
+    memberTree: [],
+    executionRows: [ [Object], [Object], [Object] ]
+  }
+]  ... > 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of native event handler 
+  at <WorkspaceHistoryWorkspaceSection key="workspace:/ws/a" workspace-node= {
+  workspaceRootPath: '/ws/a',
+  workspaceName: 'autobyteus_org',
+  agents: [
+    {
+      agentDefinitionId: 'agent-def-1',
+      agentName: 'SuperAgent',
+      agentAvatarUrl: 'https://example.com/superagent.png',
+      runs: [Array]
+    }
+  ],
+  workspaceId: 'workspace:/ws/a',
+  workspaceKind: 'filesystem',
+  canRemoveFromWorkspaces: true
+} workspace-teams= [
+  {
+    teamRunId: 'team-1',
+    teamDefinitionId: 'team-def-1',
+    teamDefinitionName: 'Team Alpha',
+    workspaceRootPath: '/ws/a',
+    summary: 'Team summary',
+    lastActivityAt: '2026-01-01T02:00:00.000Z',
+    lastKnownStatus: 'IDLE',
+    isActive: false,
+    currentStatus: 'offline',
+    deleteLifecycle: 'READY',
+    focusedMemberRouteKey: 'engineering_org/implementation_engineer',
+    members: [ [Object], [Object] ],
+    memberTree: [],
+    executionRows: [ [Object], [Object], [Object] ]
+  }
+]  ... > 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+ ❯ components/mobile/__tests__/MobileContextSelectionRegression.spec.ts (13 tests | 7 failed) 273ms
+   ✓ mobile context selection stale-run regression > does not show an existing run monitor after switching mobile Chat to a non-run context 17ms
+   ✓ mobile context selection stale-run regression > routes non-run file attachments to mobile draft state instead of the stale selected run 43ms
+   ✓ mobile context selection stale-run regression > shows composer attachments from the current mobile context only 10ms
+   ✓ mobile context selection stale-run regression > reconciles mobile current agent-run context when a temporary run is promoted after first send 2ms
+   × mobile context selection stale-run regression > reconciles mobile current team-run context and pending state when a temporary team is promoted after first send 8ms
+     → Cannot read properties of undefined (reading 'trim')
+   × mobile context selection stale-run regression > keeps pending team run attachments visible across focus changes and flushes them to the focused leaf before send 66ms
+     → Cannot read properties of undefined (reading 'trim')
+   × mobile context selection stale-run regression > blocks pending team run attachment flush for non-leaf focus without consuming pending files 1ms
+     → Cannot read properties of undefined (reading 'trim')
+   ✓ mobile context selection stale-run regression > uses draft attachment count for run setup and launches with the next-run draft 53ms
+   × mobile context selection stale-run regression > updates both team focus and the mobile work context when changing an existing team-run target 19ms
+     → Cannot read properties of undefined (reading 'children')
+   × mobile context selection stale-run regression > hides existing-run target selector on Runs while keeping compact target controls on focused work tabs 8ms
+     → Cannot read properties of undefined (reading 'children')
+   ✓ mobile context selection stale-run regression > keeps non-chat tabs in a bounded block task surface so h-full roots fill the viewport 36ms
+   × mobile context selection stale-run regression > prefers remembered valid team focus when mapping Recent team runs and falls back safely when stale 0ms
+     → Cannot read properties of undefined (reading 'trim')
+   × mobile context selection stale-run regression > does not leak stale run or tool activity into non-run mobile activity contexts 4ms
+     → expected false to be true // Object.is equality
+ ❯ components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts (1 test | 1 failed) 63ms
+   × Historical team lazy hydration integration > opens a historical team through the sidebar and lazily hydrates only the newly selected member 62ms
+     → Cannot read properties of undefined (reading 'children')
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > renders grouped team rows under workspace and selects the team run when clicked
+[Vue warn]: Unhandled error during execution of render function 
+  at <WorkspaceHistoryWorkspaceSection key="workspace:/ws/a" workspace-node= {
+  workspaceRootPath: '/ws/a',
+  workspaceName: 'autobyteus_org',
+  agents: [
+    {
+      agentDefinitionId: 'agent-def-1',
+      agentName: 'SuperAgent',
+      agentAvatarUrl: 'https://example.com/superagent.png',
+      runs: [Array]
+    }
+  ],
+  workspaceId: 'workspace:/ws/a',
+  workspaceKind: 'filesystem',
+  canRemoveFromWorkspaces: true
+} workspace-teams= [
+  {
+    teamRunId: 'team-1',
+    teamDefinitionId: 'team-def-1',
+    teamDefinitionName: 'Team Alpha',
+    workspaceRootPath: '/ws/a',
+    summary: 'Team summary',
+    lastActivityAt: '2026-01-01T02:00:00.000Z',
+    lastKnownStatus: 'IDLE',
+    isActive: false,
+    currentStatus: 'offline',
+    deleteLifecycle: 'READY',
+    focusedMemberName: 'super_agent',
+    members: [ [Object] ],
+    focusedMemberRouteKey: 'super_agent',
+    memberTree: [],
+    executionRows: [ [Object] ]
+  }
+]  ... > 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of component update 
+  at <WorkspaceHistoryWorkspaceSection key="workspace:/ws/a" workspace-node= {
+  workspaceRootPath: '/ws/a',
+  workspaceName: 'autobyteus_org',
+  agents: [
+    {
+      agentDefinitionId: 'agent-def-1',
+      agentName: 'SuperAgent',
+      agentAvatarUrl: 'https://example.com/superagent.png',
+      runs: [Array]
+    }
+  ],
+  workspaceId: 'workspace:/ws/a',
+  workspaceKind: 'filesystem',
+  canRemoveFromWorkspaces: true
+} workspace-teams= [
+  {
+    teamRunId: 'team-1',
+    teamDefinitionId: 'team-def-1',
+    teamDefinitionName: 'Team Alpha',
+    workspaceRootPath: '/ws/a',
+    summary: 'Team summary',
+    lastActivityAt: '2026-01-01T02:00:00.000Z',
+    lastKnownStatus: 'IDLE',
+    isActive: false,
+    currentStatus: 'offline',
+    deleteLifecycle: 'READY',
+    focusedMemberName: 'super_agent',
+    members: [ [Object] ],
+    focusedMemberRouteKey: 'super_agent',
+    memberTree: [],
+    executionRows: [ [Object] ]
+  }
+]  ... > 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of native event handler 
+  at <WorkspaceHistoryWorkspaceSection key="workspace:/ws/a" workspace-node= {
+  workspaceRootPath: '/ws/a',
+  workspaceName: 'autobyteus_org',
+  agents: [
+    {
+      agentDefinitionId: 'agent-def-1',
+      agentName: 'SuperAgent',
+      agentAvatarUrl: 'https://example.com/superagent.png',
+      runs: [Array]
+    }
+  ],
+  workspaceId: 'workspace:/ws/a',
+  workspaceKind: 'filesystem',
+  canRemoveFromWorkspaces: true
+} workspace-teams= [
+  {
+    teamRunId: 'team-1',
+    teamDefinitionId: 'team-def-1',
+    teamDefinitionName: 'Team Alpha',
+    workspaceRootPath: '/ws/a',
+    summary: 'Team summary',
+    lastActivityAt: '2026-01-01T02:00:00.000Z',
+    lastKnownStatus: 'IDLE',
+    isActive: false,
+    currentStatus: 'offline',
+    deleteLifecycle: 'READY',
+    focusedMemberName: 'super_agent',
+    members: [ [Object] ],
+    focusedMemberRouteKey: 'super_agent',
+    memberTree: [],
+    executionRows: [ [Object] ]
+  }
+]  ... > 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > opens a historical team row through the coordinator-focused member instead of the first alphabetical member
+[Vue warn]: Unhandled error during execution of render function 
+  at <WorkspaceHistoryWorkspaceSection key="workspace:/ws/a" workspace-node= {
+  workspaceRootPath: '/ws/a',
+  workspaceName: 'autobyteus_org',
+  agents: [
+    {
+      agentDefinitionId: 'agent-def-1',
+      agentName: 'SuperAgent',
+      agentAvatarUrl: 'https://example.com/superagent.png',
+      runs: [Array]
+    }
+  ],
+  workspaceId: 'workspace:/ws/a',
+  workspaceKind: 'filesystem',
+  canRemoveFromWorkspaces: true
+} workspace-teams= [
+  {
+    teamRunId: 'team-1',
+    teamDefinitionId: 'team-def-1',
+    teamDefinitionName: 'Team Alpha',
+    workspaceRootPath: '/ws/a',
+    summary: 'Team summary',
+    lastActivityAt: '2026-01-01T02:00:00.000Z',
+    lastKnownStatus: 'IDLE',
+    isActive: false,
+    currentStatus: 'offline',
+    deleteLifecycle: 'READY',
+    focusedMemberName: 'solution_designer',
+    members: [ [Object], [Object] ],
+    focusedMemberRouteKey: 'solution_designer',
+    memberTree: [],
+    executionRows: [ [Object], [Object] ]
+  }
+]  ... > 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of component update 
+  at <WorkspaceHistoryWorkspaceSection key="workspace:/ws/a" workspace-node= {
+  workspaceRootPath: '/ws/a',
+  workspaceName: 'autobyteus_org',
+  agents: [
+    {
+      agentDefinitionId: 'agent-def-1',
+      agentName: 'SuperAgent',
+      agentAvatarUrl: 'https://example.com/superagent.png',
+      runs: [Array]
+    }
+  ],
+  workspaceId: 'workspace:/ws/a',
+  workspaceKind: 'filesystem',
+  canRemoveFromWorkspaces: true
+} workspace-teams= [
+  {
+    teamRunId: 'team-1',
+    teamDefinitionId: 'team-def-1',
+    teamDefinitionName: 'Team Alpha',
+    workspaceRootPath: '/ws/a',
+    summary: 'Team summary',
+    lastActivityAt: '2026-01-01T02:00:00.000Z',
+    lastKnownStatus: 'IDLE',
+    isActive: false,
+    currentStatus: 'offline',
+    deleteLifecycle: 'READY',
+    focusedMemberName: 'solution_designer',
+    members: [ [Object], [Object] ],
+    focusedMemberRouteKey: 'solution_designer',
+    memberTree: [],
+    executionRows: [ [Object], [Object] ]
+  }
+]  ... > 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of native event handler 
+  at <WorkspaceHistoryWorkspaceSection key="workspace:/ws/a" workspace-node= {
+  workspaceRootPath: '/ws/a',
+  workspaceName: 'autobyteus_org',
+  agents: [
+    {
+      agentDefinitionId: 'agent-def-1',
+      agentName: 'SuperAgent',
+      agentAvatarUrl: 'https://example.com/superagent.png',
+      runs: [Array]
+    }
+  ],
+  workspaceId: 'workspace:/ws/a',
+  workspaceKind: 'filesystem',
+  canRemoveFromWorkspaces: true
+} workspace-teams= [
+  {
+    teamRunId: 'team-1',
+    teamDefinitionId: 'team-def-1',
+    teamDefinitionName: 'Team Alpha',
+    workspaceRootPath: '/ws/a',
+    summary: 'Team summary',
+    lastActivityAt: '2026-01-01T02:00:00.000Z',
+    lastKnownStatus: 'IDLE',
+    isActive: false,
+    currentStatus: 'offline',
+    deleteLifecycle: 'READY',
+    focusedMemberName: 'solution_designer',
+    members: [ [Object], [Object] ],
+    focusedMemberRouteKey: 'solution_designer',
+    memberTree: [],
+    executionRows: [ [Object], [Object] ]
+  }
+]  ... > 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > renders team member avatar image when matching agent definition avatar is available
+[Vue warn]: Unhandled error during execution of render function 
+  at <WorkspaceHistoryWorkspaceSection key="workspace:/ws/a" workspace-node= {
+  workspaceRootPath: '/ws/a',
+  workspaceName: 'autobyteus_org',
+  agents: [
+    {
+      agentDefinitionId: 'agent-def-1',
+      agentName: 'SuperAgent',
+      agentAvatarUrl: 'https://example.com/superagent.png',
+      runs: [Array]
+    }
+  ],
+  workspaceId: 'workspace:/ws/a',
+  workspaceKind: 'filesystem',
+  canRemoveFromWorkspaces: true
+} workspace-teams= [
+  {
+    teamRunId: 'team-1',
+    teamDefinitionId: 'team-def-1',
+    teamDefinitionName: 'Team Alpha',
+    workspaceRootPath: '/ws/a',
+    summary: 'Team summary',
+    lastActivityAt: '2026-01-01T02:00:00.000Z',
+    lastKnownStatus: 'IDLE',
+    isActive: false,
+    currentStatus: 'offline',
+    deleteLifecycle: 'READY',
+    focusedMemberName: 'super_agent',
+    members: [ [Object] ],
+    focusedMemberRouteKey: 'super_agent',
+    memberTree: [],
+    executionRows: [ [Object] ]
+  }
+]  ... > 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of component update 
+  at <WorkspaceHistoryWorkspaceSection key="workspace:/ws/a" workspace-node= {
+  workspaceRootPath: '/ws/a',
+  workspaceName: 'autobyteus_org',
+  agents: [
+    {
+      agentDefinitionId: 'agent-def-1',
+      agentName: 'SuperAgent',
+      agentAvatarUrl: 'https://example.com/superagent.png',
+      runs: [Array]
+    }
+  ],
+  workspaceId: 'workspace:/ws/a',
+  workspaceKind: 'filesystem',
+  canRemoveFromWorkspaces: true
+} workspace-teams= [
+  {
+    teamRunId: 'team-1',
+    teamDefinitionId: 'team-def-1',
+    teamDefinitionName: 'Team Alpha',
+    workspaceRootPath: '/ws/a',
+    summary: 'Team summary',
+    lastActivityAt: '2026-01-01T02:00:00.000Z',
+    lastKnownStatus: 'IDLE',
+    isActive: false,
+    currentStatus: 'offline',
+    deleteLifecycle: 'READY',
+    focusedMemberName: 'super_agent',
+    members: [ [Object] ],
+    focusedMemberRouteKey: 'super_agent',
+    memberTree: [],
+    executionRows: [ [Object] ]
+  }
+]  ... > 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of native event handler 
+  at <WorkspaceHistoryWorkspaceSection key="workspace:/ws/a" workspace-node= {
+  workspaceRootPath: '/ws/a',
+  workspaceName: 'autobyteus_org',
+  agents: [
+    {
+      agentDefinitionId: 'agent-def-1',
+      agentName: 'SuperAgent',
+      agentAvatarUrl: 'https://example.com/superagent.png',
+      runs: [Array]
+    }
+  ],
+  workspaceId: 'workspace:/ws/a',
+  workspaceKind: 'filesystem',
+  canRemoveFromWorkspaces: true
+} workspace-teams= [
+  {
+    teamRunId: 'team-1',
+    teamDefinitionId: 'team-def-1',
+    teamDefinitionName: 'Team Alpha',
+    workspaceRootPath: '/ws/a',
+    summary: 'Team summary',
+    lastActivityAt: '2026-01-01T02:00:00.000Z',
+    lastKnownStatus: 'IDLE',
+    isActive: false,
+    currentStatus: 'offline',
+    deleteLifecycle: 'READY',
+    focusedMemberName: 'super_agent',
+    members: [ [Object] ],
+    focusedMemberRouteKey: 'super_agent',
+    memberTree: [],
+    executionRows: [ [Object] ]
+  }
+]  ... > 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > selects team member through runHistoryStore so persisted member history can hydrate
+[Vue warn]: Unhandled error during execution of render function 
+  at <WorkspaceHistoryWorkspaceSection key="workspace:/ws/a" workspace-node= {
+  workspaceRootPath: '/ws/a',
+  workspaceName: 'autobyteus_org',
+  agents: [
+    {
+      agentDefinitionId: 'agent-def-1',
+      agentName: 'SuperAgent',
+      agentAvatarUrl: 'https://example.com/superagent.png',
+      runs: [Array]
+    }
+  ],
+  workspaceId: 'workspace:/ws/a',
+  workspaceKind: 'filesystem',
+  canRemoveFromWorkspaces: true
+} workspace-teams= [
+  {
+    teamRunId: 'team-1',
+    teamDefinitionId: 'team-def-1',
+    teamDefinitionName: 'Team Alpha',
+    workspaceRootPath: '/ws/a',
+    summary: 'Team summary',
+    lastActivityAt: '2026-01-01T02:00:00.000Z',
+    lastKnownStatus: 'IDLE',
+    isActive: false,
+    currentStatus: 'offline',
+    deleteLifecycle: 'READY',
+    focusedMemberName: 'super_agent',
+    members: [ [Object] ],
+    focusedMemberRouteKey: 'super_agent',
+    memberTree: [],
+    executionRows: [ [Object] ]
+  }
+]  ... > 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of component update 
+  at <WorkspaceHistoryWorkspaceSection key="workspace:/ws/a" workspace-node= {
+  workspaceRootPath: '/ws/a',
+  workspaceName: 'autobyteus_org',
+  agents: [
+    {
+      agentDefinitionId: 'agent-def-1',
+      agentName: 'SuperAgent',
+      agentAvatarUrl: 'https://example.com/superagent.png',
+      runs: [Array]
+    }
+  ],
+  workspaceId: 'workspace:/ws/a',
+  workspaceKind: 'filesystem',
+  canRemoveFromWorkspaces: true
+} workspace-teams= [
+  {
+    teamRunId: 'team-1',
+    teamDefinitionId: 'team-def-1',
+    teamDefinitionName: 'Team Alpha',
+    workspaceRootPath: '/ws/a',
+    summary: 'Team summary',
+    lastActivityAt: '2026-01-01T02:00:00.000Z',
+    lastKnownStatus: 'IDLE',
+    isActive: false,
+    currentStatus: 'offline',
+    deleteLifecycle: 'READY',
+    focusedMemberName: 'super_agent',
+    members: [ [Object] ],
+    focusedMemberRouteKey: 'super_agent',
+    memberTree: [],
+    executionRows: [ [Object] ]
+  }
+]  ... > 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of native event handler 
+  at <WorkspaceHistoryWorkspaceSection key="workspace:/ws/a" workspace-node= {
+  workspaceRootPath: '/ws/a',
+  workspaceName: 'autobyteus_org',
+  agents: [
+    {
+      agentDefinitionId: 'agent-def-1',
+      agentName: 'SuperAgent',
+      agentAvatarUrl: 'https://example.com/superagent.png',
+      runs: [Array]
+    }
+  ],
+  workspaceId: 'workspace:/ws/a',
+  workspaceKind: 'filesystem',
+  canRemoveFromWorkspaces: true
+} workspace-teams= [
+  {
+    teamRunId: 'team-1',
+    teamDefinitionId: 'team-def-1',
+    teamDefinitionName: 'Team Alpha',
+    workspaceRootPath: '/ws/a',
+    summary: 'Team summary',
+    lastActivityAt: '2026-01-01T02:00:00.000Z',
+    lastKnownStatus: 'IDLE',
+    isActive: false,
+    currentStatus: 'offline',
+    deleteLifecycle: 'READY',
+    focusedMemberName: 'super_agent',
+    members: [ [Object] ],
+    focusedMemberRouteKey: 'super_agent',
+    memberTree: [],
+    executionRows: [ [Object] ]
+  }
+]  ... > 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > keeps the global Workspaces tree free of delegated-task detail and full-context UI under an expanded live team
+[Vue warn]: Unhandled error during execution of render function 
+  at <WorkspaceHistoryWorkspaceSection key="workspace:/ws/a" workspace-node= {
+  workspaceRootPath: '/ws/a',
+  workspaceName: 'autobyteus_org',
+  agents: [
+    {
+      agentDefinitionId: 'agent-def-1',
+      agentName: 'SuperAgent',
+      agentAvatarUrl: 'https://example.com/superagent.png',
+      runs: [Array]
+    }
+  ],
+  workspaceId: 'workspace:/ws/a',
+  workspaceKind: 'filesystem',
+  canRemoveFromWorkspaces: true
+} workspace-teams= [
+  {
+    teamRunId: 'team-1',
+    teamDefinitionId: 'team-def-1',
+    teamDefinitionName: 'Team Alpha',
+    workspaceRootPath: '/ws/a',
+    summary: 'Team summary',
+    lastActivityAt: '2026-01-01T02:00:00.000Z',
+    lastKnownStatus: 'ACTIVE',
+    isActive: true,
+    currentStatus: 'running',
+    deleteLifecycle: 'CLEANUP_PENDING',
+    focusedMemberRouteKey: 'implementation_engineer',
+    members: [ [Object] ],
+    memberTree: [],
+    executionRows: [ [Object] ]
+  }
+]  ... > 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of component update 
+  at <WorkspaceHistoryWorkspaceSection key="workspace:/ws/a" workspace-node= {
+  workspaceRootPath: '/ws/a',
+  workspaceName: 'autobyteus_org',
+  agents: [
+    {
+      agentDefinitionId: 'agent-def-1',
+      agentName: 'SuperAgent',
+      agentAvatarUrl: 'https://example.com/superagent.png',
+      runs: [Array]
+    }
+  ],
+  workspaceId: 'workspace:/ws/a',
+  workspaceKind: 'filesystem',
+  canRemoveFromWorkspaces: true
+} workspace-teams= [
+  {
+    teamRunId: 'team-1',
+    teamDefinitionId: 'team-def-1',
+    teamDefinitionName: 'Team Alpha',
+    workspaceRootPath: '/ws/a',
+    summary: 'Team summary',
+    lastActivityAt: '2026-01-01T02:00:00.000Z',
+    lastKnownStatus: 'ACTIVE',
+    isActive: true,
+    currentStatus: 'running',
+    deleteLifecycle: 'CLEANUP_PENDING',
+    focusedMemberRouteKey: 'implementation_engineer',
+    members: [ [Object] ],
+    memberTree: [],
+    executionRows: [ [Object] ]
+  }
+]  ... > 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of native event handler 
+  at <WorkspaceHistoryWorkspaceSection key="workspace:/ws/a" workspace-node= {
+  workspaceRootPath: '/ws/a',
+  workspaceName: 'autobyteus_org',
+  agents: [
+    {
+      agentDefinitionId: 'agent-def-1',
+      agentName: 'SuperAgent',
+      agentAvatarUrl: 'https://example.com/superagent.png',
+      runs: [Array]
+    }
+  ],
+  workspaceId: 'workspace:/ws/a',
+  workspaceKind: 'filesystem',
+  canRemoveFromWorkspaces: true
+} workspace-teams= [
+  {
+    teamRunId: 'team-1',
+    teamDefinitionId: 'team-def-1',
+    teamDefinitionName: 'Team Alpha',
+    workspaceRootPath: '/ws/a',
+    summary: 'Team summary',
+    lastActivityAt: '2026-01-01T02:00:00.000Z',
+    lastKnownStatus: 'ACTIVE',
+    isActive: true,
+    currentStatus: 'running',
+    deleteLifecycle: 'CLEANUP_PENDING',
+    focusedMemberRouteKey: 'implementation_engineer',
+    members: [ [Object] ],
+    memberTree: [],
+    executionRows: [ [Object] ]
+  }
+]  ... > 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > shows an error toast when terminate fails
+Failed to terminate run 'run-1'.
+
+ ❯ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts (50 tests | 11 failed) 1679ms
+   ✓ WorkspaceAgentRunsTreePanel > loads workspace list without eager history tree on mount 39ms
+   ✓ WorkspaceAgentRunsTreePanel > renders workspace rows collapsed by default 31ms
+   ✓ WorkspaceAgentRunsTreePanel > fetches scoped workspace history when a workspace row is expanded 16ms
+   ✓ WorkspaceAgentRunsTreePanel > renders scoped workspace history loading, error, and empty states 32ms
+   ✓ WorkspaceAgentRunsTreePanel > opens workspace removal confirmation from the row action without expanding the row 16ms
+   ✓ WorkspaceAgentRunsTreePanel > does not render remove action for non-removable temp workspace rows 3ms
+   ✓ WorkspaceAgentRunsTreePanel > cancels workspace removal without mutating workspace or history state 14ms
+   ✓ WorkspaceAgentRunsTreePanel > confirms workspace removal and prunes history plus expansion state after success 43ms
+   ✓ WorkspaceAgentRunsTreePanel > keeps the workspace visible and reports an error when workspace removal fails 64ms
+   ✓ WorkspaceAgentRunsTreePanel > shows groups after opening a workspace but keeps run histories collapsed 30ms
+   × WorkspaceAgentRunsTreePanel > keeps the individual team run disclosure chevron visually consistent with the parent team chevron 49ms
+     → Cannot read properties of undefined (reading 'rootTeamRunId')
+   × WorkspaceAgentRunsTreePanel > renders nested team members collapsed by default with a disclosure control 39ms
+     → Cannot read properties of undefined (reading 'trim')
+   × WorkspaceAgentRunsTreePanel > toggles nested team member disclosure without selecting the member 12ms
+     → Cannot read properties of undefined (reading 'trim')
+   × WorkspaceAgentRunsTreePanel > toggles and selects a nested team row from the row body 36ms
+     → Cannot read properties of undefined (reading 'trim')
+   × WorkspaceAgentRunsTreePanel > keeps an expanded nested child visible after selecting it 52ms
+     → Cannot read properties of undefined (reading 'trim')
+   × WorkspaceAgentRunsTreePanel > expands nested ancestors when a team row opens a focused nested member 21ms
+     → Cannot read properties of undefined (reading 'trim')
+   ✓ WorkspaceAgentRunsTreePanel > refreshes expanded workspace history quietly on the background interval while mounted 106ms
+   ✓ WorkspaceAgentRunsTreePanel > renders agent avatar image when the tree node provides avatar URL 57ms
+   ✓ WorkspaceAgentRunsTreePanel > tracks broken avatar per URL key so a changed avatar URL can recover 13ms
+   ✓ WorkspaceAgentRunsTreePanel > selects run via runHistoryStore.selectTreeRun and emits run-selected 25ms
+   ✓ WorkspaceAgentRunsTreePanel > creates draft run from agent row plus button and emits run-created 57ms
+   ✓ WorkspaceAgentRunsTreePanel > does not render run-row configuration button 23ms
+   ✓ WorkspaceAgentRunsTreePanel > does not render Skill Improvement actions on run-history rows 36ms
+   × WorkspaceAgentRunsTreePanel > renders grouped team rows under workspace and selects the team run when clicked 25ms
+     → Cannot read properties of undefined (reading 'rootTeamRunId')
+   × WorkspaceAgentRunsTreePanel > opens a historical team row through the coordinator-focused member instead of the first alphabetical member 19ms
+     → Cannot read properties of undefined (reading 'rootTeamRunId')
+   ✓ WorkspaceAgentRunsTreePanel > strips the user requirement prefix from agent and team summary labels 23ms
+   ✓ WorkspaceAgentRunsTreePanel > renders team avatar image when team definition avatar is available 9ms
+   × WorkspaceAgentRunsTreePanel > renders team member avatar image when matching agent definition avatar is available 15ms
+     → Cannot read properties of undefined (reading 'rootTeamRunId')
+   × WorkspaceAgentRunsTreePanel > selects team member through runHistoryStore so persisted member history can hydrate 27ms
+     → Cannot read properties of undefined (reading 'rootTeamRunId')
+   × WorkspaceAgentRunsTreePanel > keeps the global Workspaces tree free of delegated-task detail and full-context UI under an expanded live team 47ms
+     → Cannot read properties of undefined (reading 'rootTeamRunId')
+   ✓ WorkspaceAgentRunsTreePanel > renders delete action for inactive team history rows 36ms
+   ✓ WorkspaceAgentRunsTreePanel > renders archive action for inactive team history rows 27ms
+   ✓ WorkspaceAgentRunsTreePanel > does not render team-row configuration button 27ms
+   ✓ WorkspaceAgentRunsTreePanel > deletes inactive team history from team row action without selecting the row 46ms
+   ✓ WorkspaceAgentRunsTreePanel > archives inactive team history from team row action without selecting the row 39ms
+   ✓ WorkspaceAgentRunsTreePanel > creates workspace from inline input when user presses Enter 14ms
+   ✓ WorkspaceAgentRunsTreePanel > opens native folder picker on embedded electron and creates workspace from selected path 8ms
+   ✓ WorkspaceAgentRunsTreePanel > does not create workspace when embedded electron picker is canceled 7ms
+   ✓ WorkspaceAgentRunsTreePanel > closes inline add workspace input without creating workspace on cancel 8ms
+   ✓ WorkspaceAgentRunsTreePanel > renders active status indicator for active runs 26ms
+   ✓ WorkspaceAgentRunsTreePanel > does not render status indicator for inactive runs 14ms
+   ✓ WorkspaceAgentRunsTreePanel > renders delete action only for inactive history runs 10ms
+   ✓ WorkspaceAgentRunsTreePanel > renders archive action only for inactive persisted history runs 21ms
+   ✓ WorkspaceAgentRunsTreePanel > terminates active run from row action without selecting the row 34ms
+   ✓ WorkspaceAgentRunsTreePanel > shows an error toast when terminate fails 29ms
+   ✓ WorkspaceAgentRunsTreePanel > deletes inactive history run from row action without selecting the row 39ms
+   ✓ WorkspaceAgentRunsTreePanel > archives inactive history run from row action without selecting the row 57ms
+   ✓ WorkspaceAgentRunsTreePanel > shows an error toast when archive fails 69ms
+   ✓ WorkspaceAgentRunsTreePanel > does not call delete when confirmation is cancelled 134ms
+   ✓ WorkspaceAgentRunsTreePanel > shows an error toast when delete fails 47ms
+stderr | utils/__tests__/teamActiveExecutionMembers.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/runHistoryTeamExecutionRows.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamDelegatedTasksSection.current-contract.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamDelegatedTaskNavigator.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/runHydration/__tests__/teamRunContextHydrationService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/mobile/__tests__/useMobileWorkCatalog.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | utils/__tests__/teamActiveExecutionMembers.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ utils/__tests__/teamActiveExecutionMembers.spec.ts (5 tests | 5 failed) 6ms
+   × teamActiveExecutionMembers > falls back from a settled task-agent-only logical member to the coordinator for active execution 4ms
+     → Cannot read properties of undefined (reading 'children')
+   × teamActiveExecutionMembers > keeps a logical parent visible while its concrete task-agent child is active 0ms
+     → Cannot read properties of undefined (reading 'children')
+   × teamActiveExecutionMembers > does not treat a task-agent-only logical member conversation as active execution 0ms
+     → Cannot read properties of undefined (reading 'children')
+   × teamActiveExecutionMembers > keeps a direct logical member conversation visible after the member is offline 0ms
+     → Cannot read properties of undefined (reading 'children')
+   × teamActiveExecutionMembers > includes task-team roots, scoped child projections, and nested task agents together 0ms
+     → Cannot read properties of undefined (reading 'children')
+stdout | stores/__tests__/runHistoryTeamExecutionRows.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ stores/__tests__/runHistoryTeamExecutionRows.spec.ts (2 tests | 2 failed) 7ms
+   × runHistoryTeamExecutionRows > preserves live placement while separating stable and transient execution rows 5ms
+     → Cannot read properties of undefined (reading 'children')
+   × runHistoryTeamExecutionRows > falls back to stable rows only when no live context exists 1ms
+     → Cannot read properties of undefined (reading 'children')
+stdout | components/workspace/team/__tests__/TeamDelegatedTasksSection.current-contract.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts (4 tests | 2 failed) 12ms
+   ✓ useMobileFocusedRunIdentity > resolves the selected agent run only when the mobile context and active context match 5ms
+   ✓ useMobileFocusedRunIdentity > returns no focused run id for non-run and stale selected contexts 1ms
+   × useMobileFocusedRunIdentity > resolves the focused leaf member run for selected team contexts 4ms
+     → Cannot read properties of undefined (reading 'rootTeamRunId')
+   × useMobileFocusedRunIdentity > rejects team contexts when selected team or focused route is stale 1ms
+     → Cannot read properties of undefined (reading 'rootTeamRunId')
+stdout | components/workspace/team/__tests__/TeamDelegatedTaskNavigator.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/team/__tests__/TeamDelegatedTasksSection.current-contract.spec.ts (1 test) 28ms
+ ✓ components/workspace/team/__tests__/TeamDelegatedTaskNavigator.spec.ts (2 tests) 34ms
+stdout | services/runHydration/__tests__/teamRunContextHydrationService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | services/agentStreaming/__tests__/teamStreamMemberContextResolver.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+ ❯ services/runHydration/__tests__/teamRunContextHydrationService.spec.ts (2 tests | 2 failed) 6ms
+   × hydrateLiveTeamRunContext Event Monitor final-prime ownership > primes each real loader/builder context exactly once 'after projected activity hydration' 4ms
+     → unsupported legacy TeamRun metadata: schemaVersion 3 is required.
+   × hydrateLiveTeamRunContext Event Monitor final-prime ownership > primes each real loader/builder context exactly once 'when the member projection is absent' 1ms
+     → unsupported legacy TeamRun metadata: schemaVersion 3 is required.
+stdout | components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/mobile/__tests__/useMobileWorkCatalog.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts (5 tests | 5 failed) 7ms
+   × WorkspaceHistoryWorkspaceSection > renders any-active definition activity and exact sibling run activity reactively 5ms
+     → Cannot read properties of undefined (reading 'children')
+   × WorkspaceHistoryWorkspaceSection > renders transient execution rows inline with ghost/dashed semantics and focus identity 1ms
+     → Cannot read properties of undefined (reading 'children')
+   × WorkspaceHistoryWorkspaceSection > toggles transient task-team children from the row body and keeps disclosure toggle-only 1ms
+     → Cannot read properties of undefined (reading 'children')
+   × WorkspaceHistoryWorkspaceSection > removes transient execution rows when live projection cleanup removes the backing node 0ms
+     → Cannot read properties of undefined (reading 'children')
+   × WorkspaceHistoryWorkspaceSection > toggles stable nested team row children from row body click and keyboard while selecting the row 0ms
+     → Cannot read properties of undefined (reading 'children')
+ ❯ composables/mobile/__tests__/useMobileWorkCatalog.spec.ts (2 tests | 1 failed) 8ms
+   × useMobileWorkCatalog > maps query-shaped team runs from createdAt and binary activity without legacy team status fields 5ms
+     → Cannot read properties of undefined (reading 'trim')
+   ✓ useMobileWorkCatalog > uses guarded activity sort keys when a malformed run context lacks an activity timestamp 3ms
+stdout | services/agentStreaming/__tests__/teamStreamMemberContextResolver.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ services/agentStreaming/__tests__/teamStreamMemberContextResolver.spec.ts (3 tests | 1 failed) 6ms
+   ✓ teamStreamMemberContextResolver > leaves explicit missing task-agent identity unresolved without mutating topology 1ms
+   ✓ teamStreamMemberContextResolver > skips identity-less routed messages with a mismatched logical agent id 1ms
+   × teamStreamMemberContextResolver > routes identity-less follow-up messages to an existing task-agent context by exact run id 3ms
+     → Cannot read properties of undefined (reading 'children')
+stderr | utils/__tests__/teamDelegatedTaskEntries.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/runHistoryTeamRows.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/runHydration/__tests__/taskDelegationGraphqlDtoProjection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/__tests__/teamTaskExecutionEventRouter.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/__tests__/teamDelegatedTaskEntries.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts (2 tests | 2 failed) 6ms
+   × useWorkspaceHistorySelectionActions > does not resolve focused team history selection by duplicate bare member name 4ms
+     → Cannot read properties of undefined (reading 'memberAddress')
+   × useWorkspaceHistorySelectionActions > resolves focused team history selection by exact nested member route key 1ms
+     → Cannot read properties of undefined (reading 'memberAddress')
+ ❯ utils/__tests__/teamDelegatedTaskEntries.spec.ts (3 tests | 3 failed) 5ms
+   × deriveDelegatedTaskEntries > filters persisted task records by focused sender or receiver address 4ms
+     → Cannot read properties of undefined (reading 'children')
+   × deriveDelegatedTaskEntries > matches team-target records by the exact task-team ingress receiver address and only enriches from live nodes 0ms
+     → Cannot read properties of undefined (reading 'children')
+   × deriveDelegatedTaskEntries > classifies child-context member task records by their final task-agent execution segment 0ms
+     → Cannot read properties of undefined (reading 'children')
+stdout | stores/__tests__/runHistoryTeamRows.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ stores/__tests__/runHistoryTeamRows.spec.ts (2 tests | 2 failed) 6ms
+   × runHistoryTeamRows > builds stable live context rows while filtering transient task-run projections 4ms
+     → Cannot read properties of undefined (reading 'children')
+   × runHistoryTeamRows > uses membership labels instead of agent definition names for active team rows 1ms
+     → Cannot read properties of undefined (reading 'children')
+stdout | services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/runHydration/__tests__/taskDelegationGraphqlDtoProjection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/__tests__/teamTaskExecutionEventRouter.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/runHydration/__tests__/taskDelegationGraphqlDtoProjection.spec.ts (2 tests) 4ms
+ ✓ services/agentStreaming/__tests__/teamTaskExecutionEventRouter.spec.ts (7 tests) 8ms
+stderr | services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts > TeamStreamingService exact execution-address serialization > echoes the complete 'persistent member' address for tool approval
+No member context found for message, skipping
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts > TeamStreamingService exact execution-address serialization > echoes the complete 'direct task Agent' address for tool approval
+No exact task Agent source exists at '/worker'.
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts > TeamStreamingService exact execution-address serialization > echoes the complete 'outer task AgentTeam member' address for tool approval
+No exact task Team Agent execution exists at '/BuildSquad/reviewer'.
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts > TeamStreamingService exact execution-address serialization > echoes the complete 'nested task AgentTeam member' address for tool approval
+No exact task Team Agent execution exists at '/BuildSquad/ReviewCell/reviewer'.
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts > TeamStreamingService exact execution-address serialization > accepts only an acknowledgement matching the exact pending execution address
+Ignoring unmatched team interrupt command acknowledgement. {
+  command_type: 'INTERRUPT_GENERATION',
+  command_id: 'interrupt-ack',
+  state: 'accepted',
+  target: {
+    target_kind: 'team_member',
+    team_run_id: 'team-1',
+    execution_address: {
+      rootTeamRunId: 'team-1',
+      taskTeamRunIds: [Array],
+      memberAddress: '/BuildSquad/ReviewCell/reviewer',
+      taskAgentRunId: null
+    }
+  }
+}
+
+ ✓ services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts (16 tests) 11ms
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts [ services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts ]
+Error: Failed to resolve import "~/utils/workspaceTeamExecutionDisplayRows" from "services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts:10:55
+  8  |  import { extractTaskTeamIdentity } from "../teamTaskTeamExecutionProjection";
+  9  |  import { deriveDelegatedTaskEntries } from "~/utils/teamDelegatedTaskEntries";
+  10 |  import { buildWorkspaceTeamExecutionDisplayRows } from "~/utils/workspaceTeamExecutionDisplayRows";
+     |                                                          ^
+  11 |  import { createTeamExecutionAddress } from "~/types/agent/TeamExecutionAddress";
+  12 |  import {
+ ❯ TransformPluginContext._formatLog ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:28999:43
+ ❯ TransformPluginContext.error ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:28996:14
+ ❯ normalizeUrl ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:27119:18
+ ❯ ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:27177:32
+ ❯ TransformPluginContext.transform ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:27145:4
+ ❯ EnvironmentPluginContainer.transform ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:28797:14
+ ❯ loadAndTransform ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:22670:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/70]⎯
+
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 69 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts > useWorkspaceHistorySelectionActions > does not resolve focused team history selection by duplicate bare member name
+TypeError: Cannot read properties of undefined (reading 'memberAddress')
+ ❯ resolveTeamTargetMember composables/useWorkspaceHistorySelectionActions.ts:36:59
+     34| 
+     35|   const resolveTeamTargetMember = (team: TeamTreeNode): TeamMemberTree…
+     36|     const focusedMemberKey = team.focusedExecutionAddress.memberAddres…
+       |                                                           ^
+     37|     const rows = flattenTeamRows(team.rootTeam.children.length > 0 ? t…
+     38|     if (focusedMemberKey) {
+ ❯ Object.onSelectTeam composables/useWorkspaceHistorySelectionActions.ts:71:26
+ ❯ composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts:101:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/70]⎯
+
+ FAIL  composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts > useWorkspaceHistorySelectionActions > resolves focused team history selection by exact nested member route key
+TypeError: Cannot read properties of undefined (reading 'memberAddress')
+ ❯ resolveTeamTargetMember composables/useWorkspaceHistorySelectionActions.ts:36:59
+     34| 
+     35|   const resolveTeamTargetMember = (team: TeamTreeNode): TeamMemberTree…
+     36|     const focusedMemberKey = team.focusedExecutionAddress.memberAddres…
+       |                                                           ^
+     37|     const rows = flattenTeamRows(team.rootTeam.children.length > 0 ? t…
+     38|     if (focusedMemberKey) {
+ ❯ Object.onSelectTeam composables/useWorkspaceHistorySelectionActions.ts:71:26
+ ❯ composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts:111:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/70]⎯
+
+ FAIL  composables/__tests__/useWorkspaceHistoryTreeState.spec.ts > useWorkspaceHistoryTreeState > expands exact member ancestors from the cached navigation index
+TypeError: params.runHistoryStore.getTeamMemberNavigationAncestorAddresses is not a function
+ ❯ Object.expandTeamMemberAncestors composables/useWorkspaceHistoryTreeState.ts:281:8
+    279|   ): boolean => {
+    280|     const ancestorAddresses = params.runHistoryStore
+    281|       .getTeamMemberNavigationAncestorAddresses(teamRunId, executionAd…
+       |        ^
+    282|     for (const ancestorAddress of ancestorAddresses) {
+    283|       setTeamMemberExpanded(workspaceId, teamRunId, ancestorAddress, t…
+ ❯ composables/__tests__/useWorkspaceHistoryTreeState.spec.ts:284:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/70]⎯
+
+ FAIL  stores/__tests__/mobileWorkStore.spec.ts > mobileWorkStore > clears a pending preview when team focus changes
+TypeError: Cannot read properties of undefined (reading 'trim')
+ ❯ createTeamExecutionAddress types/agent/TeamExecutionAddress.ts:30:45
+     28|   taskAgentRunId?: string | null;
+     29| }): TeamExecutionAddress => {
+     30|   const rootTeamRunId = input.rootTeamRunId.trim();
+       |                                             ^
+     31|   if (!rootTeamRunId) throw new Error('rootTeamRunId is required.');
+     32|   const taskTeamRunIds = [...(input.taskTeamRunIds ?? [])].map((id) =>…
+ ❯ Proxy.updateFocusedTeamMember stores/mobileWorkStore.ts:188:24
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ stores/__tests__/mobileWorkStore.spec.ts:91:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/70]⎯
+
+ FAIL  stores/__tests__/runHistoryNavigationProjection.spec.ts > runHistoryNavigationProjection > publishes stable-plus-transient execution rows, exact focus, indexes, and reconciled equal branches
+TypeError: Cannot read properties of undefined (reading 'coordinatorAddress')
+ ❯ summarizeTeamDraft stores/runHistoryTeamHelpers.ts:21:88
+     19| 
+     20| export const summarizeTeamDraft = (teamContext: AgentTeamContext, draf…
+     21|   const coordinatorContext = persistentMemberContext(teamContext, team…
+       |                                                                                        ^
+     22|   const firstCoordinatorUserMessage = coordinatorContext?.state.conver…
+     23|     (message) => message.type === 'user' && message.text?.trim().lengt…
+ ❯ Object.summarizeTeamDraft stores/runHistoryReadModel.ts:326:7
+ ❯ buildTeamNodes stores/runHistoryTeamHelpers.ts:135:57
+ ❯ buildRunHistoryTeamNodes stores/runHistoryReadModel.ts:313:10
+ ❯ buildRunHistoryNavigationProjection stores/runHistoryNavigationProjection.ts:108:26
+ ❯ buildProjection stores/__tests__/runHistoryNavigationProjection.spec.ts:93:6
+ ❯ stores/__tests__/runHistoryNavigationProjection.spec.ts:113:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/70]⎯
+
+ FAIL  stores/__tests__/runHistoryNavigationProjection.spec.ts > runHistoryNavigationProjection > reuses an unrelated workspace team bucket when one team topology changes
+TypeError: Cannot read properties of undefined (reading 'coordinatorAddress')
+ ❯ summarizeTeamDraft stores/runHistoryTeamHelpers.ts:21:88
+     19| 
+     20| export const summarizeTeamDraft = (teamContext: AgentTeamContext, draf…
+     21|   const coordinatorContext = persistentMemberContext(teamContext, team…
+       |                                                                                        ^
+     22|   const firstCoordinatorUserMessage = coordinatorContext?.state.conver…
+     23|     (message) => message.type === 'user' && message.text?.trim().lengt…
+ ❯ Object.summarizeTeamDraft stores/runHistoryReadModel.ts:326:7
+ ❯ buildTeamNodes stores/runHistoryTeamHelpers.ts:135:57
+ ❯ buildRunHistoryTeamNodes stores/runHistoryReadModel.ts:313:10
+ ❯ buildRunHistoryNavigationProjection stores/runHistoryNavigationProjection.ts:108:26
+ ❯ buildProjection stores/__tests__/runHistoryNavigationProjection.spec.ts:93:6
+ ❯ stores/__tests__/runHistoryNavigationProjection.spec.ts:147:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/70]⎯
+
+ FAIL  stores/__tests__/runHistoryNavigationProjection.spec.ts > runHistoryNavigationProjection > patches only the indexed standalone branch and skips activity in the same minute bucket
+TypeError: Cannot read properties of undefined (reading 'coordinatorAddress')
+ ❯ summarizeTeamDraft stores/runHistoryTeamHelpers.ts:21:88
+     19| 
+     20| export const summarizeTeamDraft = (teamContext: AgentTeamContext, draf…
+     21|   const coordinatorContext = persistentMemberContext(teamContext, team…
+       |                                                                                        ^
+     22|   const firstCoordinatorUserMessage = coordinatorContext?.state.conver…
+     23|     (message) => message.type === 'user' && message.text?.trim().lengt…
+ ❯ Object.summarizeTeamDraft stores/runHistoryReadModel.ts:326:7
+ ❯ buildTeamNodes stores/runHistoryTeamHelpers.ts:135:57
+ ❯ buildRunHistoryTeamNodes stores/runHistoryReadModel.ts:313:10
+ ❯ buildRunHistoryNavigationProjection stores/runHistoryNavigationProjection.ts:108:26
+ ❯ buildProjection stores/__tests__/runHistoryNavigationProjection.spec.ts:93:6
+ ❯ stores/__tests__/runHistoryNavigationProjection.spec.ts:161:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/70]⎯
+
+ FAIL  stores/__tests__/runHistoryNavigationProjection.spec.ts > runHistoryNavigationProjection > applies tight task-row and focus patches while equal or detail-free changes do no work
+TypeError: Cannot read properties of undefined (reading 'coordinatorAddress')
+ ❯ summarizeTeamDraft stores/runHistoryTeamHelpers.ts:21:88
+     19| 
+     20| export const summarizeTeamDraft = (teamContext: AgentTeamContext, draf…
+     21|   const coordinatorContext = persistentMemberContext(teamContext, team…
+       |                                                                                        ^
+     22|   const firstCoordinatorUserMessage = coordinatorContext?.state.conver…
+     23|     (message) => message.type === 'user' && message.text?.trim().lengt…
+ ❯ Object.summarizeTeamDraft stores/runHistoryReadModel.ts:326:7
+ ❯ buildTeamNodes stores/runHistoryTeamHelpers.ts:135:57
+ ❯ buildRunHistoryTeamNodes stores/runHistoryReadModel.ts:313:10
+ ❯ buildRunHistoryNavigationProjection stores/runHistoryNavigationProjection.ts:108:26
+ ❯ buildProjection stores/__tests__/runHistoryNavigationProjection.spec.ts:93:6
+ ❯ stores/__tests__/runHistoryNavigationProjection.spec.ts:186:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/70]⎯
+
+ FAIL  stores/__tests__/runHistoryNavigationProjection.spec.ts > runHistoryNavigationProjection > applies combined status, summary, and activity through one exact branch patch
+TypeError: Cannot read properties of undefined (reading 'coordinatorAddress')
+ ❯ summarizeTeamDraft stores/runHistoryTeamHelpers.ts:21:88
+     19| 
+     20| export const summarizeTeamDraft = (teamContext: AgentTeamContext, draf…
+     21|   const coordinatorContext = persistentMemberContext(teamContext, team…
+       |                                                                                        ^
+     22|   const firstCoordinatorUserMessage = coordinatorContext?.state.conver…
+     23|     (message) => message.type === 'user' && message.text?.trim().lengt…
+ ❯ Object.summarizeTeamDraft stores/runHistoryReadModel.ts:326:7
+ ❯ buildTeamNodes stores/runHistoryTeamHelpers.ts:135:57
+ ❯ buildRunHistoryTeamNodes stores/runHistoryReadModel.ts:313:10
+ ❯ buildRunHistoryNavigationProjection stores/runHistoryNavigationProjection.ts:108:26
+ ❯ buildProjection stores/__tests__/runHistoryNavigationProjection.spec.ts:93:6
+ ❯ stores/__tests__/runHistoryNavigationProjection.spec.ts:221:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/70]⎯
+
+ FAIL  stores/__tests__/runHistoryNavigationProjection.spec.ts > runHistoryNavigationProjection > patches an actual root team lifecycle transition and no-ops an equal snapshot
+TypeError: Cannot read properties of undefined (reading 'coordinatorAddress')
+ ❯ summarizeTeamDraft stores/runHistoryTeamHelpers.ts:21:88
+     19| 
+     20| export const summarizeTeamDraft = (teamContext: AgentTeamContext, draf…
+     21|   const coordinatorContext = persistentMemberContext(teamContext, team…
+       |                                                                                        ^
+     22|   const firstCoordinatorUserMessage = coordinatorContext?.state.conver…
+     23|     (message) => message.type === 'user' && message.text?.trim().lengt…
+ ❯ Object.summarizeTeamDraft stores/runHistoryReadModel.ts:326:7
+ ❯ buildTeamNodes stores/runHistoryTeamHelpers.ts:135:57
+ ❯ buildRunHistoryTeamNodes stores/runHistoryReadModel.ts:313:10
+ ❯ buildRunHistoryNavigationProjection stores/runHistoryNavigationProjection.ts:108:26
+ ❯ buildProjection stores/__tests__/runHistoryNavigationProjection.spec.ts:93:6
+ ❯ stores/__tests__/runHistoryNavigationProjection.spec.ts:259:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/70]⎯
+
+ FAIL  stores/__tests__/runHistoryTeamExecutionRows.spec.ts > runHistoryTeamExecutionRows > preserves live placement while separating stable and transient execution rows
+TypeError: Cannot read properties of undefined (reading 'children')
+ ❯ buildRunHistoryTeamExecutionRows stores/runHistoryTeamExecutionRows.ts:74:42
+     72|   teamContext?: AgentTeamContext | null,
+     73| ): RunHistoryTeamExecutionRow[] => {
+     74|   const stableSourceRows = team.rootTeam.children.length > 0 ? team.ro…
+       |                                          ^
+     75|   if (!teamContext?.rootTeam.children.length) return flattenStableRows…
+     76|   const stableRowsByAddress = indexStableRows(stableSourceRows);
+ ❯ stores/__tests__/runHistoryTeamExecutionRows.spec.ts:117:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/70]⎯
+
+ FAIL  stores/__tests__/runHistoryTeamExecutionRows.spec.ts > runHistoryTeamExecutionRows > falls back to stable rows only when no live context exists
+TypeError: Cannot read properties of undefined (reading 'children')
+ ❯ buildRunHistoryTeamExecutionRows stores/runHistoryTeamExecutionRows.ts:74:42
+     72|   teamContext?: AgentTeamContext | null,
+     73| ): RunHistoryTeamExecutionRow[] => {
+     74|   const stableSourceRows = team.rootTeam.children.length > 0 ? team.ro…
+       |                                          ^
+     75|   if (!teamContext?.rootTeam.children.length) return flattenStableRows…
+     76|   const stableRowsByAddress = indexStableRows(stableSourceRows);
+ ❯ stores/__tests__/runHistoryTeamExecutionRows.spec.ts:158:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/70]⎯
+
+ FAIL  stores/__tests__/runHistoryTeamRows.spec.ts > runHistoryTeamRows > builds stable live context rows while filtering transient task-run projections
+TypeError: Cannot read properties of undefined (reading 'children')
+ ❯ buildTeamRowsFromContext stores/runHistoryTeamRows.ts:143:37
+    141|       };
+    142|     });
+    143|   return visit(teamContext.rootTeam.children);
+       |                                     ^
+    144| };
+    145| 
+ ❯ stores/__tests__/runHistoryTeamRows.spec.ts:88:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/70]⎯
+
+ FAIL  stores/__tests__/runHistoryTeamRows.spec.ts > runHistoryTeamRows > uses membership labels instead of agent definition names for active team rows
+TypeError: Cannot read properties of undefined (reading 'children')
+ ❯ buildTeamRowsFromContext stores/runHistoryTeamRows.ts:143:37
+    141|       };
+    142|     });
+    143|   return visit(teamContext.rootTeam.children);
+       |                                     ^
+    144| };
+    145| 
+ ❯ stores/__tests__/runHistoryTeamRows.spec.ts:171:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/70]⎯
+
+ FAIL  utils/__tests__/teamActiveExecutionMembers.spec.ts > teamActiveExecutionMembers > falls back from a settled task-agent-only logical member to the coordinator for active execution
+TypeError: Cannot read properties of undefined (reading 'children')
+ ❯ flattenActiveExecutionMemberNodesForDisplay utils/teamActiveExecutionMembers.ts:40:52
+     38| export const flattenActiveExecutionMemberNodesForDisplay = (
+     39|   team: AgentTeamContext,
+     40|   nodes: readonly TeamMemberNode[] = team.rootTeam.children,
+       |                                                    ^
+     41|   depth = 0,
+     42| ): TeamActiveExecutionMemberEntry[] => nodes.flatMap((node) => {
+ ❯ routeKeys utils/__tests__/teamActiveExecutionMembers.spec.ts:56:3
+ ❯ utils/__tests__/teamActiveExecutionMembers.spec.ts:69:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/70]⎯
+
+ FAIL  utils/__tests__/teamActiveExecutionMembers.spec.ts > teamActiveExecutionMembers > keeps a logical parent visible while its concrete task-agent child is active
+TypeError: Cannot read properties of undefined (reading 'children')
+ ❯ flattenActiveExecutionMemberNodesForDisplay utils/teamActiveExecutionMembers.ts:40:52
+     38| export const flattenActiveExecutionMemberNodesForDisplay = (
+     39|   team: AgentTeamContext,
+     40|   nodes: readonly TeamMemberNode[] = team.rootTeam.children,
+       |                                                    ^
+     41|   depth = 0,
+     42| ): TeamActiveExecutionMemberEntry[] => nodes.flatMap((node) => {
+ ❯ routeKeys utils/__tests__/teamActiveExecutionMembers.spec.ts:56:3
+ ❯ utils/__tests__/teamActiveExecutionMembers.spec.ts:88:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/70]⎯
+
+ FAIL  utils/__tests__/teamActiveExecutionMembers.spec.ts > teamActiveExecutionMembers > does not treat a task-agent-only logical member conversation as active execution
+TypeError: Cannot read properties of undefined (reading 'children')
+ ❯ flattenActiveExecutionMemberNodesForDisplay utils/teamActiveExecutionMembers.ts:40:52
+     38| export const flattenActiveExecutionMemberNodesForDisplay = (
+     39|   team: AgentTeamContext,
+     40|   nodes: readonly TeamMemberNode[] = team.rootTeam.children,
+       |                                                    ^
+     41|   depth = 0,
+     42| ): TeamActiveExecutionMemberEntry[] => nodes.flatMap((node) => {
+ ❯ routeKeys utils/__tests__/teamActiveExecutionMembers.spec.ts:56:3
+ ❯ utils/__tests__/teamActiveExecutionMembers.spec.ts:102:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/70]⎯
+
+ FAIL  utils/__tests__/teamActiveExecutionMembers.spec.ts > teamActiveExecutionMembers > keeps a direct logical member conversation visible after the member is offline
+TypeError: Cannot read properties of undefined (reading 'children')
+ ❯ flattenActiveExecutionMemberNodesForDisplay utils/teamActiveExecutionMembers.ts:40:52
+     38| export const flattenActiveExecutionMemberNodesForDisplay = (
+     39|   team: AgentTeamContext,
+     40|   nodes: readonly TeamMemberNode[] = team.rootTeam.children,
+       |                                                    ^
+     41|   depth = 0,
+     42| ): TeamActiveExecutionMemberEntry[] => nodes.flatMap((node) => {
+ ❯ routeKeys utils/__tests__/teamActiveExecutionMembers.spec.ts:56:3
+ ❯ utils/__tests__/teamActiveExecutionMembers.spec.ts:116:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/70]⎯
+
+ FAIL  utils/__tests__/teamActiveExecutionMembers.spec.ts > teamActiveExecutionMembers > includes task-team roots, scoped child projections, and nested task agents together
+TypeError: Cannot read properties of undefined (reading 'children')
+ ❯ flattenActiveExecutionMemberNodesForDisplay utils/teamActiveExecutionMembers.ts:40:52
+     38| export const flattenActiveExecutionMemberNodesForDisplay = (
+     39|   team: AgentTeamContext,
+     40|   nodes: readonly TeamMemberNode[] = team.rootTeam.children,
+       |                                                    ^
+     41|   depth = 0,
+     42| ): TeamActiveExecutionMemberEntry[] => nodes.flatMap((node) => {
+ ❯ routeKeys utils/__tests__/teamActiveExecutionMembers.spec.ts:56:3
+ ❯ utils/__tests__/teamActiveExecutionMembers.spec.ts:158:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/70]⎯
+
+ FAIL  utils/__tests__/teamDelegatedTaskEntries.spec.ts > deriveDelegatedTaskEntries > filters persisted task records by focused sender or receiver address
+TypeError: Cannot read properties of undefined (reading 'children')
+ ❯ deriveDelegatedTaskEntries utils/teamDelegatedTaskEntries.ts:128:56
+    126|   focusedAddress?: TeamExecutionAddress | null,
+    127| ): DelegatedTaskEntry[] => {
+    128|   const liveNodes = collectLiveTaskNodes(team.rootTeam.children);
+       |                                                        ^
+    129|   const byTaskId = new Map(liveNodes.flatMap((node) => node.taskId ? […
+    130|   const consumed = new Set<TeamMemberNode>();
+ ❯ utils/__tests__/teamDelegatedTaskEntries.spec.ts:117:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/70]⎯
+
+ FAIL  utils/__tests__/teamDelegatedTaskEntries.spec.ts > deriveDelegatedTaskEntries > matches team-target records by the exact task-team ingress receiver address and only enriches from live nodes
+TypeError: Cannot read properties of undefined (reading 'children')
+ ❯ deriveDelegatedTaskEntries utils/teamDelegatedTaskEntries.ts:128:56
+    126|   focusedAddress?: TeamExecutionAddress | null,
+    127| ): DelegatedTaskEntry[] => {
+    128|   const liveNodes = collectLiveTaskNodes(team.rootTeam.children);
+       |                                                        ^
+    129|   const byTaskId = new Map(liveNodes.flatMap((node) => node.taskId ? […
+    130|   const consumed = new Set<TeamMemberNode>();
+ ❯ utils/__tests__/teamDelegatedTaskEntries.spec.ts:142:23
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/70]⎯
+
+ FAIL  utils/__tests__/teamDelegatedTaskEntries.spec.ts > deriveDelegatedTaskEntries > classifies child-context member task records by their final task-agent execution segment
+TypeError: Cannot read properties of undefined (reading 'children')
+ ❯ deriveDelegatedTaskEntries utils/teamDelegatedTaskEntries.ts:128:56
+    126|   focusedAddress?: TeamExecutionAddress | null,
+    127| ): DelegatedTaskEntry[] => {
+    128|   const liveNodes = collectLiveTaskNodes(team.rootTeam.children);
+       |                                                        ^
+    129|   const byTaskId = new Map(liveNodes.flatMap((node) => node.taskId ? […
+    130|   const consumed = new Set<TeamMemberNode>();
+ ❯ utils/__tests__/teamDelegatedTaskEntries.spec.ts:187:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[23/70]⎯
+
+ FAIL  components/mobile/__tests__/MobileContextSelectionRegression.spec.ts > mobile context selection stale-run regression > reconciles mobile current team-run context and pending state when a temporary team is promoted after first send
+TypeError: Cannot read properties of undefined (reading 'trim')
+ ❯ createTeamExecutionAddress types/agent/TeamExecutionAddress.ts:30:45
+     28|   taskAgentRunId?: string | null;
+     29| }): TeamExecutionAddress => {
+     30|   const rootTeamRunId = input.rootTeamRunId.trim();
+       |                                             ^
+     31|   if (!rootTeamRunId) throw new Error('rootTeamRunId is required.');
+     32|   const taskTeamRunIds = [...(input.taskTeamRunIds ?? [])].map((id) =>…
+ ❯ Proxy.updateFocusedTeamMember stores/mobileWorkStore.ts:188:24
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ components/mobile/__tests__/MobileContextSelectionRegression.spec.ts:401:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[24/70]⎯
+
+ FAIL  components/mobile/__tests__/MobileContextSelectionRegression.spec.ts > mobile context selection stale-run regression > keeps pending team run attachments visible across focus changes and flushes them to the focused leaf before send
+TypeError: Cannot read properties of undefined (reading 'trim')
+ ❯ createTeamExecutionAddress types/agent/TeamExecutionAddress.ts:30:45
+     28|   taskAgentRunId?: string | null;
+     29| }): TeamExecutionAddress => {
+     30|   const rootTeamRunId = input.rootTeamRunId.trim();
+       |                                             ^
+     31|   if (!rootTeamRunId) throw new Error('rootTeamRunId is required.');
+     32|   const taskTeamRunIds = [...(input.taskTeamRunIds ?? [])].map((id) =>…
+ ❯ Proxy.updateFocusedTeamMember stores/mobileWorkStore.ts:188:24
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ components/mobile/__tests__/MobileContextSelectionRegression.spec.ts:457:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[25/70]⎯
+
+ FAIL  components/mobile/__tests__/MobileContextSelectionRegression.spec.ts > mobile context selection stale-run regression > blocks pending team run attachment flush for non-leaf focus without consuming pending files
+TypeError: Cannot read properties of undefined (reading 'trim')
+ ❯ createTeamExecutionAddress types/agent/TeamExecutionAddress.ts:30:45
+     28|   taskAgentRunId?: string | null;
+     29| }): TeamExecutionAddress => {
+     30|   const rootTeamRunId = input.rootTeamRunId.trim();
+       |                                             ^
+     31|   if (!rootTeamRunId) throw new Error('rootTeamRunId is required.');
+     32|   const taskTeamRunIds = [...(input.taskTeamRunIds ?? [])].map((id) =>…
+ ❯ Proxy.updateFocusedTeamMember stores/mobileWorkStore.ts:188:24
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ components/mobile/__tests__/MobileContextSelectionRegression.spec.ts:499:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[26/70]⎯
+
+ FAIL  components/mobile/__tests__/MobileContextSelectionRegression.spec.ts > mobile context selection stale-run regression > updates both team focus and the mobile work context when changing an existing team-run target
+ FAIL  components/mobile/__tests__/MobileContextSelectionRegression.spec.ts > mobile context selection stale-run regression > hides existing-run target selector on Runs while keeping compact target controls on focused work tabs
+TypeError: Cannot read properties of undefined (reading 'children')
+ ❯ ComputedRefImpl.fn composables/mobile/useMobileTeamMemberFocusCoordinator.ts:70:56
+     68|   })
+     69| 
+     70|   const memberTree = computed(() => teamContext.value?.rootTeam.childr…
+       |                                                        ^
+     71|   const leafMembers = computed(() => flattenLeafAgentMemberNodes(membe…
+     72|   const memberRows = computed(() => buildMobileTeamMemberFocusRows(
+ ❯ refreshComputed ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:397:28
+ ❯ ComputedRefImpl.get value [as value] ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1711:5
+ ❯ ComputedRefImpl.fn composables/mobile/useMobileTeamMemberFocusCoordinator.ts:71:77
+ ❯ refreshComputed ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:397:28
+ ❯ ComputedRefImpl.get value [as value] ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1711:5
+ ❯ ComputedRefImpl.fn composables/mobile/useMobileTeamMemberFocusCoordinator.ts:73:17
+ ❯ refreshComputed ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:397:28
+ ❯ ComputedRefImpl.get value [as value] ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1711:5
+ ❯ ComputedRefImpl.fn components/mobile/MobileTeamMemberFocusBar.vue:53:47
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[27/70]⎯
+
+ FAIL  components/mobile/__tests__/MobileContextSelectionRegression.spec.ts > mobile context selection stale-run regression > prefers remembered valid team focus when mapping Recent team runs and falls back safely when stale
+TypeError: Cannot read properties of undefined (reading 'trim')
+ ❯ createTeamExecutionAddress types/agent/TeamExecutionAddress.ts:30:45
+     28|   taskAgentRunId?: string | null;
+     29| }): TeamExecutionAddress => {
+     30|   const rootTeamRunId = input.rootTeamRunId.trim();
+       |                                             ^
+     31|   if (!rootTeamRunId) throw new Error('rootTeamRunId is required.');
+     32|   const taskTeamRunIds = [...(input.taskTeamRunIds ?? [])].map((id) =>…
+ ❯ Proxy.rememberFocusedTeamMember stores/mobileWorkStore.ts:171:24
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ components/mobile/__tests__/MobileContextSelectionRegression.spec.ts:768:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[28/70]⎯
+
+ FAIL  components/mobile/__tests__/MobileContextSelectionRegression.spec.ts > mobile context selection stale-run regression > does not leak stale run or tool activity into non-run mobile activity contexts
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ components/mobile/__tests__/MobileContextSelectionRegression.spec.ts:819:7
+    817|     expect(
+    818|       wrapper.find('[data-testid="mobile-run-activity-row"]').exists(),
+    819|     ).toBe(true);
+       |       ^
+    820|     expect(wrapper.text()).toContain("read_file");
+    821|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[29/70]⎯
+
+ FAIL  composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts > useMobileFocusedRunIdentity > resolves the focused leaf member run for selected team contexts
+TypeError: Cannot read properties of undefined (reading 'rootTeamRunId')
+ ❯ createTeamExecutionAddress types/agent/TeamExecutionAddress.ts:30:31
+     28|   taskAgentRunId?: string | null;
+     29| }): TeamExecutionAddress => {
+     30|   const rootTeamRunId = input.rootTeamRunId.trim();
+       |                               ^
+     31|   if (!rootTeamRunId) throw new Error('rootTeamRunId is required.');
+     32|   const taskTeamRunIds = [...(input.taskTeamRunIds ?? [])].map((id) =>…
+ ❯ serializeTeamExecutionAddress types/agent/TeamExecutionAddress.ts:62:18
+ ❯ sameTeamExecutionAddress types/agent/TeamExecutionAddress.ts:65:3
+ ❯ ComputedRefImpl.fn composables/mobile/useMobileFocusedRunIdentity.ts:33:21
+ ❯ refreshComputed ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:397:28
+ ❯ ComputedRefImpl.get value [as value] ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1711:5
+ ❯ composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts:170:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[30/70]⎯
+
+ FAIL  composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts > useMobileFocusedRunIdentity > rejects team contexts when selected team or focused route is stale
+TypeError: Cannot read properties of undefined (reading 'rootTeamRunId')
+ ❯ createTeamExecutionAddress types/agent/TeamExecutionAddress.ts:30:31
+     28|   taskAgentRunId?: string | null;
+     29| }): TeamExecutionAddress => {
+     30|   const rootTeamRunId = input.rootTeamRunId.trim();
+       |                               ^
+     31|   if (!rootTeamRunId) throw new Error('rootTeamRunId is required.');
+     32|   const taskTeamRunIds = [...(input.taskTeamRunIds ?? [])].map((id) =>…
+ ❯ serializeTeamExecutionAddress types/agent/TeamExecutionAddress.ts:62:18
+ ❯ sameTeamExecutionAddress types/agent/TeamExecutionAddress.ts:65:3
+ ❯ ComputedRefImpl.fn composables/mobile/useMobileFocusedRunIdentity.ts:33:21
+ ❯ refreshComputed ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:397:28
+ ❯ ComputedRefImpl.get value [as value] ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1711:5
+ ❯ composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts:188:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[31/70]⎯
+
+ FAIL  composables/mobile/__tests__/useMobileWorkCatalog.spec.ts > useMobileWorkCatalog > maps query-shaped team runs from createdAt and binary activity without legacy team status fields
+TypeError: Cannot read properties of undefined (reading 'trim')
+ ❯ createTeamExecutionAddress types/agent/TeamExecutionAddress.ts:30:45
+     28|   taskAgentRunId?: string | null;
+     29| }): TeamExecutionAddress => {
+     30|   const rootTeamRunId = input.rootTeamRunId.trim();
+       |                                             ^
+     31|   if (!rootTeamRunId) throw new Error('rootTeamRunId is required.');
+     32|   const taskTeamRunIds = [...(input.taskTeamRunIds ?? [])].map((id) =>…
+ ❯ Proxy.rememberFocusedTeamMember stores/mobileWorkStore.ts:171:24
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ composables/mobile/__tests__/useMobileWorkCatalog.spec.ts:53:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[32/70]⎯
+
+ FAIL  services/agentStreaming/__tests__/teamStreamMemberContextResolver.spec.ts > teamStreamMemberContextResolver > routes identity-less follow-up messages to an existing task-agent context by exact run id
+TypeError: Cannot read properties of undefined (reading 'children')
+ ❯ captureTaskExecutionNavigationSnapshot services/agentStreaming/teamTaskExecutionProjection.ts:76:30
+     74|     });
+     75|   };
+     76|   visit(teamContext.rootTeam.children, null, 0);
+       |                              ^
+     77|   return rows;
+     78| };
+ ❯ ensureTaskAgentProjection services/agentStreaming/teamTaskAgentContextProjection.ts:93:18
+ ❯ services/agentStreaming/__tests__/teamStreamMemberContextResolver.spec.ts:130:30
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[33/70]⎯
+
+ FAIL  services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts > openTeamRun > preserves live activities when keeping subscribed live member context
+Error: [vitest] No "hydrateLiveTeamRunContext" export is defined on the "~/services/runHydration/teamRunContextHydrationService" mock. Did you forget to return it from "vi.mock"?
+If you need to partially mock a module, you can use "importOriginal" helper inside:
+
+vi.mock(import("~/services/runHydration/teamRunContextHydrationService"), async (importOriginal) => {
+  const actual = await importOriginal()
+  return {
+    ...actual,
+    // your mocked methods
+  }
+})
+
+ ❯ Module.openTeamRun services/runOpen/teamRunOpenCoordinator.ts:93:27
+     91|   const existing = teamContextsStore.getTeamContextById(input.teamRunI…
+     92|   const preferredFocus = requestedFocus(input, existing);
+     93|   const hydration = await hydrateLiveTeamRunContext({
+       |                           ^
+     94|     ...input,
+     95|     memberAddress: preferredFocus?.memberAddress ?? input.memberAddres…
+ ❯ services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts:246:11
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[34/70]⎯
+
+ FAIL  services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts > openTeamRun > hydrates projected activities when applying a fresh active team projection
+Error: [vitest] No "hydrateLiveTeamRunContext" export is defined on the "~/services/runHydration/teamRunContextHydrationService" mock. Did you forget to return it from "vi.mock"?
+If you need to partially mock a module, you can use "importOriginal" helper inside:
+
+vi.mock(import("~/services/runHydration/teamRunContextHydrationService"), async (importOriginal) => {
+  const actual = await importOriginal()
+  return {
+    ...actual,
+    // your mocked methods
+  }
+})
+
+ ❯ Module.openTeamRun services/runOpen/teamRunOpenCoordinator.ts:93:27
+     91|   const existing = teamContextsStore.getTeamContextById(input.teamRunI…
+     92|   const preferredFocus = requestedFocus(input, existing);
+     93|   const hydration = await hydrateLiveTeamRunContext({
+       |                           ^
+     94|     ...input,
+     95|     memberAddress: preferredFocus?.memberAddress ?? input.memberAddres…
+ ❯ services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts:276:11
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[35/70]⎯
+
+ FAIL  services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts > openTeamRun > still establishes one final baseline when an active member projection is absent
+Error: [vitest] No "hydrateLiveTeamRunContext" export is defined on the "~/services/runHydration/teamRunContextHydrationService" mock. Did you forget to return it from "vi.mock"?
+If you need to partially mock a module, you can use "importOriginal" helper inside:
+
+vi.mock(import("~/services/runHydration/teamRunContextHydrationService"), async (importOriginal) => {
+  const actual = await importOriginal()
+  return {
+    ...actual,
+    // your mocked methods
+  }
+})
+
+ ❯ Module.openTeamRun services/runOpen/teamRunOpenCoordinator.ts:93:27
+     91|   const existing = teamContextsStore.getTeamContextById(input.teamRunI…
+     92|   const preferredFocus = requestedFocus(input, existing);
+     93|   const hydration = await hydrateLiveTeamRunContext({
+       |                           ^
+     94|     ...input,
+     95|     memberAddress: preferredFocus?.memberAddress ?? input.memberAddres…
+ ❯ services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts:307:11
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[36/70]⎯
+
+ FAIL  services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts > openTeamRun > hydrates only newly applied member projections when preserving existing live members
+Error: [vitest] No "hydrateLiveTeamRunContext" export is defined on the "~/services/runHydration/teamRunContextHydrationService" mock. Did you forget to return it from "vi.mock"?
+If you need to partially mock a module, you can use "importOriginal" helper inside:
+
+vi.mock(import("~/services/runHydration/teamRunContextHydrationService"), async (importOriginal) => {
+  const actual = await importOriginal()
+  return {
+    ...actual,
+    // your mocked methods
+  }
+})
+
+ ❯ Module.openTeamRun services/runOpen/teamRunOpenCoordinator.ts:93:27
+     91|   const existing = teamContextsStore.getTeamContextById(input.teamRunI…
+     92|   const preferredFocus = requestedFocus(input, existing);
+     93|   const hydration = await hydrateLiveTeamRunContext({
+       |                           ^
+     94|     ...input,
+     95|     memberAddress: preferredFocus?.memberAddress ?? input.memberAddres…
+ ❯ services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts:348:11
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[37/70]⎯
+
+ FAIL  services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts > openTeamRun > normalizes inactive logical member focus when reopening subscribed active execution
+Error: [vitest] No "hydrateLiveTeamRunContext" export is defined on the "~/services/runHydration/teamRunContextHydrationService" mock. Did you forget to return it from "vi.mock"?
+If you need to partially mock a module, you can use "importOriginal" helper inside:
+
+vi.mock(import("~/services/runHydration/teamRunContextHydrationService"), async (importOriginal) => {
+  const actual = await importOriginal()
+  return {
+    ...actual,
+    // your mocked methods
+  }
+})
+
+ ❯ Module.openTeamRun services/runOpen/teamRunOpenCoordinator.ts:93:27
+     91|   const existing = teamContextsStore.getTeamContextById(input.teamRunI…
+     92|   const preferredFocus = requestedFocus(input, existing);
+     93|   const hydration = await hydrateLiveTeamRunContext({
+       |                           ^
+     94|     ...input,
+     95|     memberAddress: preferredFocus?.memberAddress ?? input.memberAddres…
+ ❯ services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts:409:11
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[38/70]⎯
+
+ FAIL  services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts > openTeamRun > reconstructs a missing live task-agent child node when reopening a subscribed active team
+TypeError: Cannot read properties of undefined (reading 'children')
+ ❯ captureTaskExecutionNavigationSnapshot services/agentStreaming/teamTaskExecutionProjection.ts:76:30
+     74|     });
+     75|   };
+     76|   visit(teamContext.rootTeam.children, null, 0);
+       |                              ^
+     77|   return rows;
+     78| };
+ ❯ Module.ensureTaskAgentProjection services/agentStreaming/teamTaskAgentContextProjection.ts:93:18
+ ❯ services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts:441:38
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[39/70]⎯
+
+ FAIL  services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts > openTeamRun > preserves existing member-scoped statuses when reopening an active unsubscribed team
+Error: [vitest] No "hydrateLiveTeamRunContext" export is defined on the "~/services/runHydration/teamRunContextHydrationService" mock. Did you forget to return it from "vi.mock"?
+If you need to partially mock a module, you can use "importOriginal" helper inside:
+
+vi.mock(import("~/services/runHydration/teamRunContextHydrationService"), async (importOriginal) => {
+  const actual = await importOriginal()
+  return {
+    ...actual,
+    // your mocked methods
+  }
+})
+
+ ❯ Module.openTeamRun services/runOpen/teamRunOpenCoordinator.ts:93:27
+     91|   const existing = teamContextsStore.getTeamContextById(input.teamRunI…
+     92|   const preferredFocus = requestedFocus(input, existing);
+     93|   const hydration = await hydrateLiveTeamRunContext({
+       |                           ^
+     94|     ...input,
+     95|     memberAddress: preferredFocus?.memberAddress ?? input.memberAddres…
+ ❯ services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts:523:11
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[40/70]⎯
+
+ FAIL  services/runHydration/__tests__/teamRunContextHydrationService.spec.ts > hydrateLiveTeamRunContext Event Monitor final-prime ownership > primes each real loader/builder context exactly once 'after projected activity hydration'
+ FAIL  services/runHydration/__tests__/teamRunContextHydrationService.spec.ts > hydrateLiveTeamRunContext Event Monitor final-prime ownership > primes each real loader/builder context exactly once 'when the member projection is absent'
+Error: unsupported legacy TeamRun metadata: schemaVersion 3 is required.
+ ❯ parseTeamRunMetadata stores/runHistoryMetadata.ts:107:42
+    105| export const parseTeamRunMetadata = (value: unknown): TeamRunMetadataP…
+    106|   const payload = record(value, 'TeamRun metadata');
+    107|   if (payload.schemaVersion !== 3) throw new Error('unsupported legacy…
+       |                                          ^
+    108|   exactKeys(payload, ['schemaVersion', 'teamDefinitionName', 'createdA…
+    109|   const parsedRoot = parseMemberMetadata(payload.rootTeam, true);
+ ❯ loadTeamRunContextHydrationPayload services/runHydration/teamRunContextHydrationService.ts:230:20
+ ❯ Module.hydrateLiveTeamRunContext services/runHydration/teamRunContextHydrationService.ts:252:19
+ ❯ services/runHydration/__tests__/teamRunContextHydrationService.spec.ts:134:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[41/70]⎯
+
+ FAIL  components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts > Historical team lazy hydration integration > opens a historical team through the sidebar and lazily hydrates only the newly selected member
+TypeError: Cannot read properties of undefined (reading 'children')
+ ❯ buildTeamRowsFromHistoryItem stores/runHistoryTeamRows.ts:86:21
+     84| export const buildTeamRowsFromHistoryItem = (team: TeamRunHistoryItem)…
+     85|   const historyByAddress = new Map(team.members.map((member) => [membe…
+     86|   if (team.rootTeam.children.length > 0) {
+       |                     ^
+     87|     return metadataRows(team, team.rootTeam.children, historyByAddress…
+     88|   }
+ ❯ buildTeamNodes stores/runHistoryTeamHelpers.ts:103:22
+ ❯ buildRunHistoryTeamNodes stores/runHistoryReadModel.ts:313:10
+ ❯ buildRunHistoryNavigationProjection stores/runHistoryNavigationProjection.ts:108:26
+ ❯ refreshRunNavigationTopologyForStore stores/runHistoryNavigationStoreActions.ts:33:32
+ ❯ Proxy.refreshRunNavigationTopology stores/runHistoryStore.ts:412:7
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ Proxy.fetchTree stores/runHistoryStore.ts:124:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[42/70]⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts > WorkspaceAgentRunsTreePanel regressions > routes team top-row clicks through persisted member hydration instead of blind team selection
+ FAIL  components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts > WorkspaceAgentRunsTreePanel regressions > keeps a previously selected team expanded when another team row is opened
+ FAIL  components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > keeps the individual team run disclosure chevron visually consistent with the parent team chevron
+ FAIL  components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > renders grouped team rows under workspace and selects the team run when clicked
+ FAIL  components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > opens a historical team row through the coordinator-focused member instead of the first alphabetical member
+ FAIL  components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > renders team member avatar image when matching agent definition avatar is available
+ FAIL  components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > selects team member through runHistoryStore so persisted member history can hydrate
+ FAIL  components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > keeps the global Workspaces tree free of delegated-task detail and full-context UI under an expanded live team
+TypeError: Cannot read properties of undefined (reading 'rootTeamRunId')
+ ❯ createTeamExecutionAddress types/agent/TeamExecutionAddress.ts:30:31
+     28|   taskAgentRunId?: string | null;
+     29| }): TeamExecutionAddress => {
+     30|   const rootTeamRunId = input.rootTeamRunId.trim();
+       |                               ^
+     31|   if (!rootTeamRunId) throw new Error('rootTeamRunId is required.');
+     32|   const taskTeamRunIds = [...(input.taskTeamRunIds ?? [])].map((id) =>…
+ ❯ Proxy.serializeTeamExecutionAddress types/agent/TeamExecutionAddress.ts:62:18
+ ❯ components/workspace/history/WorkspaceHistoryWorkspaceSection.vue:295:51
+ ❯ renderList ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:3153:16
+ ❯ components/workspace/history/WorkspaceHistoryWorkspaceSection.vue:371:28
+ ❯ renderList ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:3153:16
+ ❯ components/workspace/history/WorkspaceHistoryWorkspaceSection.vue:374:19
+ ❯ renderList ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:3153:16
+ ❯ Proxy._sfc_render components/workspace/history/WorkspaceHistoryWorkspaceSection.vue:376:15
+ ❯ renderComponentRoot ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:4499:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[43/70]⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > renders nested team members collapsed by default with a disclosure control
+ FAIL  components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > toggles nested team member disclosure without selecting the member
+ FAIL  components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > toggles and selects a nested team row from the row body
+ FAIL  components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > keeps an expanded nested child visible after selecting it
+ FAIL  components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > expands nested ancestors when a team row opens a focused nested member
+TypeError: Cannot read properties of undefined (reading 'trim')
+ ❯ teamMemberKey composables/useWorkspaceHistoryTreeState.ts:129:51
+    127|     const normalizedWorkspace = workspaceKey(workspaceId);
+    128|     const normalizedTeamRunId = teamRunId.trim();
+    129|     const normalizedMemberAddress = memberAddress.trim();
+       |                                                   ^
+    130|     return normalizedWorkspace && normalizedTeamRunId && normalizedMem…
+    131|       ? `${normalizedWorkspace}::team-member::${normalizedTeamRunId}::…
+ ❯ Object.isTeamMemberExpanded composables/useWorkspaceHistoryTreeState.ts:241:17
+ ❯ isTeamDisplayRowExpanded components/workspace/history/WorkspaceHistoryWorkspaceSection.vue:445:27
+ ❯ Proxy.visibleTeamExecutionRows components/workspace/history/WorkspaceHistoryWorkspaceSection.vue:476:25
+ ❯ components/workspace/history/WorkspaceHistoryWorkspaceSection.vue:294:40
+ ❯ renderList ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:3153:16
+ ❯ components/workspace/history/WorkspaceHistoryWorkspaceSection.vue:374:19
+ ❯ renderList ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:3153:16
+ ❯ Proxy._sfc_render components/workspace/history/WorkspaceHistoryWorkspaceSection.vue:376:15
+ ❯ renderComponentRoot ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:4499:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[44/70]⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts > WorkspaceHistoryWorkspaceSection > renders any-active definition activity and exact sibling run activity reactively
+TypeError: Cannot read properties of undefined (reading 'children')
+ ❯ buildRunHistoryTeamExecutionRows stores/runHistoryTeamExecutionRows.ts:74:42
+     72|   teamContext?: AgentTeamContext | null,
+     73| ): RunHistoryTeamExecutionRow[] => {
+     74|   const stableSourceRows = team.rootTeam.children.length > 0 ? team.ro…
+       |                                          ^
+     75|   if (!teamContext?.rootTeam.children.length) return flattenStableRows…
+     76|   const stableRowsByAddress = indexStableRows(stableSourceRows);
+ ❯ mountSubject components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:87:33
+ ❯ components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:205:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[45/70]⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts > WorkspaceHistoryWorkspaceSection > renders transient execution rows inline with ghost/dashed semantics and focus identity
+TypeError: Cannot read properties of undefined (reading 'children')
+ ❯ buildRunHistoryTeamExecutionRows stores/runHistoryTeamExecutionRows.ts:74:42
+     72|   teamContext?: AgentTeamContext | null,
+     73| ): RunHistoryTeamExecutionRow[] => {
+     74|   const stableSourceRows = team.rootTeam.children.length > 0 ? team.ro…
+       |                                          ^
+     75|   if (!teamContext?.rootTeam.children.length) return flattenStableRows…
+     76|   const stableRowsByAddress = indexStableRows(stableSourceRows);
+ ❯ mountSubject components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:87:33
+ ❯ components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:242:41
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[46/70]⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts > WorkspaceHistoryWorkspaceSection > toggles transient task-team children from the row body and keeps disclosure toggle-only
+TypeError: Cannot read properties of undefined (reading 'children')
+ ❯ buildRunHistoryTeamExecutionRows stores/runHistoryTeamExecutionRows.ts:74:42
+     72|   teamContext?: AgentTeamContext | null,
+     73| ): RunHistoryTeamExecutionRow[] => {
+     74|   const stableSourceRows = team.rootTeam.children.length > 0 ? team.ro…
+       |                                          ^
+     75|   if (!teamContext?.rootTeam.children.length) return flattenStableRows…
+     76|   const stableRowsByAddress = indexStableRows(stableSourceRows);
+ ❯ mountSubject components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:87:33
+ ❯ components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:344:34
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[47/70]⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts > WorkspaceHistoryWorkspaceSection > removes transient execution rows when live projection cleanup removes the backing node
+TypeError: Cannot read properties of undefined (reading 'children')
+ ❯ buildRunHistoryTeamExecutionRows stores/runHistoryTeamExecutionRows.ts:74:42
+     72|   teamContext?: AgentTeamContext | null,
+     73| ): RunHistoryTeamExecutionRow[] => {
+     74|   const stableSourceRows = team.rootTeam.children.length > 0 ? team.ro…
+       |                                          ^
+     75|   if (!teamContext?.rootTeam.children.length) return flattenStableRows…
+     76|   const stableRowsByAddress = indexStableRows(stableSourceRows);
+ ❯ mountSubject components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:87:33
+ ❯ components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:442:39
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[48/70]⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts > WorkspaceHistoryWorkspaceSection > toggles stable nested team row children from row body click and keyboard while selecting the row
+TypeError: Cannot read properties of undefined (reading 'children')
+ ❯ buildRunHistoryTeamExecutionRows stores/runHistoryTeamExecutionRows.ts:74:42
+     72|   teamContext?: AgentTeamContext | null,
+     73| ): RunHistoryTeamExecutionRow[] => {
+     74|   const stableSourceRows = team.rootTeam.children.length > 0 ? team.ro…
+       |                                          ^
+     75|   if (!teamContext?.rootTeam.children.length) return flattenStableRows…
+     76|   const stableRowsByAddress = indexStableRows(stableSourceRows);
+ ❯ mountSubject components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:87:33
+ ❯ components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:486:41
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[49/70]⎯
+
+ FAIL  components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts > TeamDelegatedTasksSection > uses controlled collapsed state with human task count and no approval summary
+ FAIL  components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts > TeamDelegatedTasksSection > renders task detail navigation without duplicating execution hierarchy rows
+ FAIL  components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts > TeamDelegatedTasksSection > switches the whole right pane to a task-owned reference preview and refreshes repeated reference selections
+ FAIL  components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts > TeamDelegatedTasksSection > returns from reference preview to task body when a summary row is selected
+ FAIL  components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts > TeamDelegatedTasksSection > adds a message-style horizontal split resize handle for the task navigator
+ FAIL  components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts > TeamDelegatedTasksSection > selects task summaries for reading without focusing execution targets
+ FAIL  components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts > TeamDelegatedTasksSection > keeps task-team summary selection detail-only with no member navigation
+ FAIL  components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts > TeamDelegatedTasksSection > shows the empty delegated-task state
+TypeError: Cannot read properties of undefined (reading 'children')
+ ❯ deriveDelegatedTaskEntries utils/teamDelegatedTaskEntries.ts:128:56
+    126|   focusedAddress?: TeamExecutionAddress | null,
+    127| ): DelegatedTaskEntry[] => {
+    128|   const liveNodes = collectLiveTaskNodes(team.rootTeam.children);
+       |                                                        ^
+    129|   const byTaskId = new Map(liveNodes.flatMap((node) => node.taskId ? […
+    130|   const consumed = new Set<TeamMemberNode>();
+ ❯ ComputedRefImpl.fn components/workspace/team/TeamDelegatedTasksSection.vue:117:67
+ ❯ refreshComputed ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:397:28
+ ❯ ComputedRefImpl.get value [as value] ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1711:5
+ ❯ ComputedRefImpl.fn components/workspace/team/TeamDelegatedTasksSection.vue:128:77
+ ❯ refreshComputed ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:397:28
+ ❯ ComputedRefImpl.get value [as value] ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1711:5
+ ❯ selectedEntryKey.value components/workspace/team/TeamDelegatedTasksSection.vue:139:71
+ ❯ callWithErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:200:33
+ ❯ callWithAsyncErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:207:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[50/70]⎯
+
+⎯⎯⎯⎯⎯⎯ Unhandled Errors ⎯⎯⎯⎯⎯⎯
+
+Vitest caught 12 unhandled errors during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: Cannot read properties of undefined (reading 'memberAddress')
+ ❯ resolveTeamTargetMember composables/useWorkspaceHistorySelectionActions.ts:36:59
+     34| 
+     35|   const resolveTeamTargetMember = (team: TeamTreeNode): TeamMemberTree…
+     36|     const focusedMemberKey = team.focusedExecutionAddress.memberAddres…
+       |                                                           ^
+     37|     const rows = flattenTeamRows(team.rootTeam.children.length > 0 ? t…
+     38|     if (focusedMemberKey) {
+ ❯ Object.onSelectTeam composables/useWorkspaceHistorySelectionActions.ts:71:26
+ ❯ onClick components/workspace/history/WorkspaceHistoryWorkspaceSection.vue:227:35
+ ❯ callWithErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:200:19
+ ❯ Object.callWithAsyncErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:207:17
+ ❯ HTMLButtonElement.invoker ../node_modules/.pnpm/@vue+runtime-dom@3.5.28/node_modules/@vue/runtime-dom/dist/runtime-dom.cjs.js:665:17
+ ❯ Function.captureError ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/window/WindowErrorUtility.ts:29:13
+ ❯ HTMLButtonElement.#callDispatchEventListeners ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/event/EventTarget.ts:277:25
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/event/EventTarget.ts:121:35
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/nodes/element/Element.ts:1252:29
+
+This error originated in "components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "removes a draft agent row through the local close path". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: Cannot read properties of undefined (reading 'memberAddress')
+ ❯ resolveTeamTargetMember composables/useWorkspaceHistorySelectionActions.ts:36:59
+     34| 
+     35|   const resolveTeamTargetMember = (team: TeamTreeNode): TeamMemberTree…
+     36|     const focusedMemberKey = team.focusedExecutionAddress.memberAddres…
+       |                                                           ^
+     37|     const rows = flattenTeamRows(team.rootTeam.children.length > 0 ? t…
+     38|     if (focusedMemberKey) {
+ ❯ Object.onSelectTeam composables/useWorkspaceHistorySelectionActions.ts:71:26
+ ❯ onClick components/workspace/history/WorkspaceHistoryWorkspaceSection.vue:227:35
+ ❯ callWithErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:200:19
+ ❯ Object.callWithAsyncErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:207:17
+ ❯ HTMLButtonElement.invoker ../node_modules/.pnpm/@vue+runtime-dom@3.5.28/node_modules/@vue/runtime-dom/dist/runtime-dom.cjs.js:665:17
+ ❯ Function.captureError ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/window/WindowErrorUtility.ts:29:13
+ ❯ HTMLButtonElement.#callDispatchEventListeners ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/event/EventTarget.ts:277:25
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/event/EventTarget.ts:121:35
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/nodes/element/Element.ts:1252:29
+
+This error originated in "components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "renders nested team members collapsed by default with a disclosure control". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: Cannot read properties of undefined (reading 'memberAddress')
+ ❯ resolveTeamTargetMember composables/useWorkspaceHistorySelectionActions.ts:36:59
+     34| 
+     35|   const resolveTeamTargetMember = (team: TeamTreeNode): TeamMemberTree…
+     36|     const focusedMemberKey = team.focusedExecutionAddress.memberAddres…
+       |                                                           ^
+     37|     const rows = flattenTeamRows(team.rootTeam.children.length > 0 ? t…
+     38|     if (focusedMemberKey) {
+ ❯ Object.onSelectTeam composables/useWorkspaceHistorySelectionActions.ts:71:26
+ ❯ onClick components/workspace/history/WorkspaceHistoryWorkspaceSection.vue:227:35
+ ❯ callWithErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:200:19
+ ❯ Object.callWithAsyncErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:207:17
+ ❯ HTMLButtonElement.invoker ../node_modules/.pnpm/@vue+runtime-dom@3.5.28/node_modules/@vue/runtime-dom/dist/runtime-dom.cjs.js:665:17
+ ❯ Function.captureError ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/window/WindowErrorUtility.ts:29:13
+ ❯ HTMLButtonElement.#callDispatchEventListeners ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/event/EventTarget.ts:277:25
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/event/EventTarget.ts:121:35
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/nodes/element/Element.ts:1252:29
+
+This error originated in "components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "toggles nested team member disclosure without selecting the member". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: Cannot read properties of undefined (reading 'memberAddress')
+ ❯ resolveTeamTargetMember composables/useWorkspaceHistorySelectionActions.ts:36:59
+     34| 
+     35|   const resolveTeamTargetMember = (team: TeamTreeNode): TeamMemberTree…
+     36|     const focusedMemberKey = team.focusedExecutionAddress.memberAddres…
+       |                                                           ^
+     37|     const rows = flattenTeamRows(team.rootTeam.children.length > 0 ? t…
+     38|     if (focusedMemberKey) {
+ ❯ Object.onSelectTeam composables/useWorkspaceHistorySelectionActions.ts:71:26
+ ❯ onClick components/workspace/history/WorkspaceHistoryWorkspaceSection.vue:227:35
+ ❯ callWithErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:200:19
+ ❯ Object.callWithAsyncErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:207:17
+ ❯ HTMLButtonElement.invoker ../node_modules/.pnpm/@vue+runtime-dom@3.5.28/node_modules/@vue/runtime-dom/dist/runtime-dom.cjs.js:665:17
+ ❯ Function.captureError ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/window/WindowErrorUtility.ts:29:13
+ ❯ HTMLButtonElement.#callDispatchEventListeners ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/event/EventTarget.ts:277:25
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/event/EventTarget.ts:121:35
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/nodes/element/Element.ts:1252:29
+
+This error originated in "components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "toggles and selects a nested team row from the row body". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: Cannot read properties of undefined (reading 'memberAddress')
+ ❯ resolveTeamTargetMember composables/useWorkspaceHistorySelectionActions.ts:36:59
+     34| 
+     35|   const resolveTeamTargetMember = (team: TeamTreeNode): TeamMemberTree…
+     36|     const focusedMemberKey = team.focusedExecutionAddress.memberAddres…
+       |                                                           ^
+     37|     const rows = flattenTeamRows(team.rootTeam.children.length > 0 ? t…
+     38|     if (focusedMemberKey) {
+ ❯ Object.onSelectTeam composables/useWorkspaceHistorySelectionActions.ts:71:26
+ ❯ onClick components/workspace/history/WorkspaceHistoryWorkspaceSection.vue:227:35
+ ❯ callWithErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:200:19
+ ❯ Object.callWithAsyncErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:207:17
+ ❯ HTMLButtonElement.invoker ../node_modules/.pnpm/@vue+runtime-dom@3.5.28/node_modules/@vue/runtime-dom/dist/runtime-dom.cjs.js:665:17
+ ❯ Function.captureError ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/window/WindowErrorUtility.ts:29:13
+ ❯ HTMLButtonElement.#callDispatchEventListeners ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/event/EventTarget.ts:277:25
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/event/EventTarget.ts:121:35
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/nodes/element/Element.ts:1252:29
+
+This error originated in "components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "keeps an expanded nested child visible after selecting it". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: Cannot read properties of undefined (reading 'memberAddress')
+ ❯ resolveTeamTargetMember composables/useWorkspaceHistorySelectionActions.ts:36:59
+     34| 
+     35|   const resolveTeamTargetMember = (team: TeamTreeNode): TeamMemberTree…
+     36|     const focusedMemberKey = team.focusedExecutionAddress.memberAddres…
+       |                                                           ^
+     37|     const rows = flattenTeamRows(team.rootTeam.children.length > 0 ? t…
+     38|     if (focusedMemberKey) {
+ ❯ Object.onSelectTeam composables/useWorkspaceHistorySelectionActions.ts:71:26
+ ❯ onClick components/workspace/history/WorkspaceHistoryWorkspaceSection.vue:227:35
+ ❯ callWithErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:200:19
+ ❯ Object.callWithAsyncErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:207:17
+ ❯ HTMLButtonElement.invoker ../node_modules/.pnpm/@vue+runtime-dom@3.5.28/node_modules/@vue/runtime-dom/dist/runtime-dom.cjs.js:665:17
+ ❯ Function.captureError ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/window/WindowErrorUtility.ts:29:13
+ ❯ HTMLButtonElement.#callDispatchEventListeners ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/event/EventTarget.ts:277:25
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/event/EventTarget.ts:121:35
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/nodes/element/Element.ts:1252:29
+
+This error originated in "components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "expands nested ancestors when a team row opens a focused nested member". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: Cannot read properties of undefined (reading 'memberAddress')
+ ❯ resolveTeamTargetMember composables/useWorkspaceHistorySelectionActions.ts:36:59
+     34| 
+     35|   const resolveTeamTargetMember = (team: TeamTreeNode): TeamMemberTree…
+     36|     const focusedMemberKey = team.focusedExecutionAddress.memberAddres…
+       |                                                           ^
+     37|     const rows = flattenTeamRows(team.rootTeam.children.length > 0 ? t…
+     38|     if (focusedMemberKey) {
+ ❯ Object.onSelectTeam composables/useWorkspaceHistorySelectionActions.ts:71:26
+ ❯ onClick components/workspace/history/WorkspaceHistoryWorkspaceSection.vue:227:35
+ ❯ callWithErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:200:19
+ ❯ Object.callWithAsyncErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:207:17
+ ❯ HTMLButtonElement.invoker ../node_modules/.pnpm/@vue+runtime-dom@3.5.28/node_modules/@vue/runtime-dom/dist/runtime-dom.cjs.js:665:17
+ ❯ Function.captureError ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/window/WindowErrorUtility.ts:29:13
+ ❯ HTMLButtonElement.#callDispatchEventListeners ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/event/EventTarget.ts:277:25
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/event/EventTarget.ts:121:35
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/nodes/element/Element.ts:1252:29
+
+This error originated in "components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "refreshes expanded workspace history quietly on the background interval while mounted". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: Cannot read properties of undefined (reading 'memberAddress')
+ ❯ resolveTeamTargetMember composables/useWorkspaceHistorySelectionActions.ts:36:59
+     34| 
+     35|   const resolveTeamTargetMember = (team: TeamTreeNode): TeamMemberTree…
+     36|     const focusedMemberKey = team.focusedExecutionAddress.memberAddres…
+       |                                                           ^
+     37|     const rows = flattenTeamRows(team.rootTeam.children.length > 0 ? t…
+     38|     if (focusedMemberKey) {
+ ❯ Object.onSelectTeam composables/useWorkspaceHistorySelectionActions.ts:71:26
+ ❯ onClick components/workspace/history/WorkspaceHistoryWorkspaceSection.vue:227:35
+ ❯ callWithErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:200:19
+ ❯ Object.callWithAsyncErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:207:17
+ ❯ HTMLButtonElement.invoker ../node_modules/.pnpm/@vue+runtime-dom@3.5.28/node_modules/@vue/runtime-dom/dist/runtime-dom.cjs.js:665:17
+ ❯ Function.captureError ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/window/WindowErrorUtility.ts:29:13
+ ❯ HTMLButtonElement.#callDispatchEventListeners ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/event/EventTarget.ts:277:25
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/event/EventTarget.ts:121:35
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/nodes/element/Element.ts:1252:29
+
+This error originated in "components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "opens a historical team row through the coordinator-focused member instead of the first alphabetical member". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: Cannot read properties of undefined (reading 'memberAddress')
+ ❯ resolveTeamTargetMember composables/useWorkspaceHistorySelectionActions.ts:36:59
+     34| 
+     35|   const resolveTeamTargetMember = (team: TeamTreeNode): TeamMemberTree…
+     36|     const focusedMemberKey = team.focusedExecutionAddress.memberAddres…
+       |                                                           ^
+     37|     const rows = flattenTeamRows(team.rootTeam.children.length > 0 ? t…
+     38|     if (focusedMemberKey) {
+ ❯ Object.onSelectTeam composables/useWorkspaceHistorySelectionActions.ts:71:26
+ ❯ onClick components/workspace/history/WorkspaceHistoryWorkspaceSection.vue:227:35
+ ❯ callWithErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:200:19
+ ❯ Object.callWithAsyncErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:207:17
+ ❯ HTMLButtonElement.invoker ../node_modules/.pnpm/@vue+runtime-dom@3.5.28/node_modules/@vue/runtime-dom/dist/runtime-dom.cjs.js:665:17
+ ❯ Function.captureError ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/window/WindowErrorUtility.ts:29:13
+ ❯ HTMLButtonElement.#callDispatchEventListeners ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/event/EventTarget.ts:277:25
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/event/EventTarget.ts:121:35
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/nodes/element/Element.ts:1252:29
+
+This error originated in "components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "strips the user requirement prefix from agent and team summary labels". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: Cannot read properties of undefined (reading 'memberAddress')
+ ❯ resolveTeamTargetMember composables/useWorkspaceHistorySelectionActions.ts:36:59
+     34| 
+     35|   const resolveTeamTargetMember = (team: TeamTreeNode): TeamMemberTree…
+     36|     const focusedMemberKey = team.focusedExecutionAddress.memberAddres…
+       |                                                           ^
+     37|     const rows = flattenTeamRows(team.rootTeam.children.length > 0 ? t…
+     38|     if (focusedMemberKey) {
+ ❯ Object.onSelectTeam composables/useWorkspaceHistorySelectionActions.ts:71:26
+ ❯ onClick components/workspace/history/WorkspaceHistoryWorkspaceSection.vue:227:35
+ ❯ callWithErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:200:19
+ ❯ Object.callWithAsyncErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:207:17
+ ❯ HTMLButtonElement.invoker ../node_modules/.pnpm/@vue+runtime-dom@3.5.28/node_modules/@vue/runtime-dom/dist/runtime-dom.cjs.js:665:17
+ ❯ Function.captureError ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/window/WindowErrorUtility.ts:29:13
+ ❯ HTMLButtonElement.#callDispatchEventListeners ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/event/EventTarget.ts:277:25
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/event/EventTarget.ts:121:35
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/nodes/element/Element.ts:1252:29
+
+This error originated in "components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "selects team member through runHistoryStore so persisted member history can hydrate". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: Cannot read properties of undefined (reading 'memberAddress')
+ ❯ resolveTeamTargetMember composables/useWorkspaceHistorySelectionActions.ts:36:59
+     34| 
+     35|   const resolveTeamTargetMember = (team: TeamTreeNode): TeamMemberTree…
+     36|     const focusedMemberKey = team.focusedExecutionAddress.memberAddres…
+       |                                                           ^
+     37|     const rows = flattenTeamRows(team.rootTeam.children.length > 0 ? t…
+     38|     if (focusedMemberKey) {
+ ❯ Object.onSelectTeam composables/useWorkspaceHistorySelectionActions.ts:71:26
+ ❯ onClick components/workspace/history/WorkspaceHistoryWorkspaceSection.vue:227:35
+ ❯ callWithErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:200:19
+ ❯ Object.callWithAsyncErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:207:17
+ ❯ HTMLButtonElement.invoker ../node_modules/.pnpm/@vue+runtime-dom@3.5.28/node_modules/@vue/runtime-dom/dist/runtime-dom.cjs.js:665:17
+ ❯ Function.captureError ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/window/WindowErrorUtility.ts:29:13
+ ❯ HTMLButtonElement.#callDispatchEventListeners ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/event/EventTarget.ts:277:25
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/event/EventTarget.ts:121:35
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/nodes/element/Element.ts:1252:29
+
+This error originated in "components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "keeps the global Workspaces tree free of delegated-task detail and full-context UI under an expanded live team". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: Cannot read properties of undefined (reading 'memberAddress')
+ ❯ resolveTeamTargetMember composables/useWorkspaceHistorySelectionActions.ts:36:59
+     34| 
+     35|   const resolveTeamTargetMember = (team: TeamTreeNode): TeamMemberTree…
+     36|     const focusedMemberKey = team.focusedExecutionAddress.memberAddres…
+       |                                                           ^
+     37|     const rows = flattenTeamRows(team.rootTeam.children.length > 0 ? t…
+     38|     if (focusedMemberKey) {
+ ❯ Object.onSelectTeam composables/useWorkspaceHistorySelectionActions.ts:71:26
+ ❯ onClick components/workspace/history/WorkspaceHistoryWorkspaceSection.vue:227:35
+ ❯ callWithErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:200:19
+ ❯ Object.callWithAsyncErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:207:17
+ ❯ HTMLButtonElement.invoker ../node_modules/.pnpm/@vue+runtime-dom@3.5.28/node_modules/@vue/runtime-dom/dist/runtime-dom.cjs.js:665:17
+ ❯ Function.captureError ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/window/WindowErrorUtility.ts:29:13
+ ❯ HTMLButtonElement.#callDispatchEventListeners ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/event/EventTarget.ts:277:25
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/event/EventTarget.ts:121:35
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/nodes/element/Element.ts:1252:29
+
+This error originated in "components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "renders delete action for inactive team history rows". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+
+ Test Files  20 failed | 5 passed (25)
+      Tests  69 failed | 90 passed (159)
+     Errors  12 errors
+   Start at  21:32:10
+   Duration  16.36s (transform 5.19s, setup 111.18s, collect 6.89s, tests 2.40s, environment 9.34s, prepare 5.49s)
+
+ ELIFECYCLE  Command failed with exit code 1.

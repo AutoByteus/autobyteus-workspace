@@ -53,7 +53,7 @@ describe('useWorkspaceRouteSelection', () => {
     routeMock.query = {
       workspaceExecutionKind: 'team',
       workspaceExecutionRunId: 'team-run-1',
-      workspaceExecutionMemberRouteKey: 'writer',
+      workspaceExecutionAgentRunId: 'writer-run-1',
     }
 
     mount(Harness)
@@ -62,7 +62,7 @@ describe('useWorkspaceRouteSelection', () => {
     expect(openWorkspaceExecutionLinkMock).toHaveBeenCalledWith({
       kind: 'team',
       teamRunId: 'team-run-1',
-      memberRouteKey: 'writer',
+      agentRunId: 'writer-run-1',
     })
     expect(routerReplaceMock).toHaveBeenCalledWith({
       path: '/workspace',

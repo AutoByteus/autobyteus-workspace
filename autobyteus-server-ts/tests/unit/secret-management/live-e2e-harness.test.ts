@@ -5,6 +5,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
   supportedModelDefinitions,
 } from 'autobyteus-ts/llm/supported-model-definitions.js';
+import { AgentInputUserMessage } from 'autobyteus-ts/agent/message/agent-input-user-message.js';
 import { AudioClientFactory } from 'autobyteus-ts/multimedia/audio/audio-client-factory.js';
 import { ImageClientFactory } from 'autobyteus-ts/multimedia/image/image-client-factory.js';
 import {
@@ -98,6 +99,7 @@ describe('one-database live E2E runtime and evidence boundary', () => {
     const rawBackend = {
       runId,
       runtimeKind: context.config.runtimeKind,
+      inputCapabilities: { activeTurnAppend: 'unsupported' },
       getContext: () => context,
       isActive: () => true,
       getPlatformAgentRunId: () => runId,
@@ -112,14 +114,28 @@ describe('one-database live E2E runtime and evidence boundary', () => {
           sourceListener = null;
         };
       },
-      postUserMessage: async () => {
-        await sourceListener?.([{
-          eventType: AgentRunEventType.ASSISTANT_COMPLETE,
-          runId,
-          payload: { content: 'pong' },
-          statusHint: 'IDLE',
-        }]);
-        return { accepted: true } as const;
+      dispatchUserInput: async () => {
+        void sourceListener?.([
+          {
+            eventType: AgentRunEventType.TURN_STARTED,
+            runId,
+            payload: { turn_id: 'turn-1' },
+            statusHint: 'RUNNING',
+          },
+          {
+            eventType: AgentRunEventType.ASSISTANT_COMPLETE,
+            runId,
+            payload: { content: 'pong', turn_id: 'turn-1' },
+            statusHint: 'RUNNING',
+          },
+          {
+            eventType: AgentRunEventType.TURN_COMPLETED,
+            runId,
+            payload: { turn_id: 'turn-1' },
+            statusHint: 'IDLE',
+          },
+        ]);
+        return { forwarded: true, turnId: null } as const;
       },
       approveToolInvocation: vi.fn().mockResolvedValue({ accepted: true }),
       interrupt: vi.fn().mockResolvedValue({ accepted: true }),
@@ -129,9 +145,12 @@ describe('one-database live E2E runtime and evidence boundary', () => {
     const observed: AgentRunEventType[] = [];
     run.subscribeToEvents((event) => observed.push(event.eventType));
 
-    await expect(run.postUserMessage({ text: 'ping' } as never)).resolves.toEqual({ accepted: true });
+    await expect(run.postUserMessage(new AgentInputUserMessage('ping')))
+      .resolves.toEqual({ accepted: true, turnId: null });
     expect(observed).toContain(AgentRunEventType.AGENT_STATUS);
-    expect(observed).toContain(AgentRunEventType.ASSISTANT_COMPLETE);
+    await vi.waitFor(() => {
+      expect(observed).toContain(AgentRunEventType.ASSISTANT_COMPLETE);
+    });
     await expect(run.terminate()).resolves.toEqual({ accepted: true });
     expect(terminate).toHaveBeenCalledTimes(1);
   });

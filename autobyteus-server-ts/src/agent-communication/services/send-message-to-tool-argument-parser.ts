@@ -13,7 +13,7 @@ type SendMessageToValidationError = {
 };
 
 export type SendMessageToToolArguments = {
-  recipientName: string | null;
+  recipientAddress: string | null;
   targetAgentRunId: string | null;
   target: SendMessageTargetSelector | null;
   unsupportedTargetSelectorFields: string[];
@@ -34,7 +34,7 @@ const readReferenceFiles = (toolArguments: Record<string, unknown>): unknown =>
     : toolArguments.referenceFiles;
 
 const unsupportedTargetSelectorAliases = (toolArguments: Record<string, unknown>): string[] =>
-  ["recipient", "recipientName", "targetAgentRunId"].filter((fieldName) =>
+  ["recipient", "recipientAddress", "targetAgentRunId"].filter((fieldName) =>
     Object.prototype.hasOwnProperty.call(toolArguments, fieldName),
   );
 
@@ -44,17 +44,17 @@ export const parseSendMessageToToolArguments = (
   const referenceFilesResult = normalizeExplicitAgentCommunicationReferenceFiles(
     readReferenceFiles(toolArguments),
   );
-  const recipientName =
-    readString(toolArguments.recipient_name);
+  const recipientAddress =
+    readString(toolArguments.recipient_address);
   const targetAgentRunId =
     readString(toolArguments.target_agent_run_id);
   const targetResult = buildSendMessageTargetSelector({
-    recipientName,
+    recipientAddress,
     targetAgentRunId,
   });
 
   return {
-    recipientName,
+    recipientAddress,
     targetAgentRunId,
     target: targetResult.ok ? targetResult.target : null,
     unsupportedTargetSelectorFields: unsupportedTargetSelectorAliases(toolArguments),
@@ -75,11 +75,11 @@ export const validateParsedSendMessageToToolArguments = (
   if (input.unsupportedTargetSelectorFields.length > 0) {
     return {
       code: "UNSUPPORTED_TARGET_SELECTOR_ALIAS",
-      message: `${toolName} target selector fields must use recipient_name or target_agent_run_id only. Unsupported field(s): ${input.unsupportedTargetSelectorFields.join(", ")}.`,
+      message: `${toolName} target selector fields must use recipient_address or target_agent_run_id only. Unsupported field(s): ${input.unsupportedTargetSelectorFields.join(", ")}.`,
     };
   }
   const targetResult = buildSendMessageTargetSelector({
-    recipientName: input.recipientName,
+    recipientAddress: input.recipientAddress,
     targetAgentRunId: input.targetAgentRunId,
     toolName,
   });

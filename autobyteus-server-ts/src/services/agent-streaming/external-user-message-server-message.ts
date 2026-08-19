@@ -1,138 +1,57 @@
+import {
+  parseTeamStreamServerMessage,
+  type TeamStreamServerMessage,
+} from "@autobyteus/team-stream-contracts";
 import type { ExternalAttachment } from "autobyteus-ts/external-channel/external-attachment.js";
 import type { ExternalMessageEnvelope } from "autobyteus-ts/external-channel/external-message-envelope.js";
-import {
-  buildMemberRouteKeyFromPath,
-  normalizeMemberPath,
-} from "../../agent-team-execution/domain/team-run-member-identity.js";
-import { normalizeMemberRouteKey } from "../../agent-team-execution/domain/team-run-member-identity.js";
+import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import { ServerMessage, ServerMessageType } from "./models.js";
 
 export const createExternalUserMessageServerMessage = (input: {
   envelope: ExternalMessageEnvelope;
-  agentName?: string | null;
-  agentId?: string | null;
-  memberRouteKey?: string | null;
-  memberPath?: readonly string[] | null;
-  sourceRouteKey?: string | null;
-  sourcePath?: readonly string[] | null;
-}): ServerMessage => {
-  const identity = normalizeExternalUserMessageMemberIdentity(input);
-  return new ServerMessage(ServerMessageType.EXTERNAL_USER_MESSAGE, {
-    content: input.envelope.content,
-    received_at: input.envelope.receivedAt,
-    provider: input.envelope.provider,
-    transport: input.envelope.transport,
-    account_id: input.envelope.accountId,
-    peer_id: input.envelope.peerId,
-    thread_id: input.envelope.threadId,
-    external_message_id: input.envelope.externalMessageId,
-    context_file_paths: input.envelope.attachments
-      .map((attachment) => mapAttachmentToContextFilePath(attachment))
-      .filter(
-        (
-          item,
-        ): item is {
-          path: string;
-          type: "Audio" | "Image" | "Video";
-        } => item !== null,
-      ),
-    ...(input.agentName ? { agent_name: input.agentName } : {}),
-    ...(input.agentId ? { agent_id: input.agentId } : {}),
-    ...(identity.memberRouteKey ? { member_route_key: identity.memberRouteKey } : {}),
-    ...(identity.memberPath ? { member_path: identity.memberPath } : {}),
-    ...(identity.sourceRouteKey ? { source_route_key: identity.sourceRouteKey } : {}),
-    ...(identity.sourcePath ? { source_path: identity.sourcePath } : {}),
-  });
-};
+  displayName?: string | null;
+  agentRunId?: string | null;
+}): ServerMessage => new ServerMessage(ServerMessageType.EXTERNAL_USER_MESSAGE, {
+  ...basePayload(input.envelope),
+  ...(input.displayName ? { agent_name: input.displayName } : {}),
+  ...(input.agentRunId ? { agent_id: input.agentRunId } : {}),
+});
 
-const normalizeExternalUserMessageMemberIdentity = (input: {
-  memberRouteKey?: string | null;
-  memberPath?: readonly string[] | null;
-  sourceRouteKey?: string | null;
-  sourcePath?: readonly string[] | null;
-}): {
-  memberRouteKey: string | null;
-  memberPath: string[] | null;
-  sourceRouteKey: string | null;
-  sourcePath: string[] | null;
-} => {
-  const sourcePath = normalizeOptionalMemberPath(input.sourcePath ?? null);
-  const memberPath = normalizeOptionalMemberPath(input.memberPath ?? null) ?? sourcePath;
-  const sourceRouteKey = normalizeOptionalRouteKey(input.sourceRouteKey ?? null)
-    ?? (sourcePath ? buildMemberRouteKeyFromPath(sourcePath) : null);
-  const memberRouteKey = normalizeOptionalRouteKey(input.memberRouteKey ?? null)
-    ?? (memberPath ? buildMemberRouteKeyFromPath(memberPath) : sourceRouteKey);
+export const createTeamExternalUserMessageServerMessage = (input: {
+  envelope: ExternalMessageEnvelope;
+  memberAddress: AgentTeamAddress;
+  agentRunId: string;
+}): TeamStreamServerMessage => parseTeamStreamServerMessage({
+  type: "EXTERNAL_USER_MESSAGE",
+  payload: {
+    member_address: input.memberAddress,
+    agent_run_id: input.agentRunId,
+    ...basePayload(input.envelope),
+  },
+});
 
-  const resolvedMemberPath = memberPath ?? routeKeyToMemberPath(memberRouteKey);
-  const resolvedSourcePath = sourcePath ?? routeKeyToMemberPath(sourceRouteKey ?? memberRouteKey);
-  const resolvedSourceRouteKey = sourceRouteKey ?? memberRouteKey;
+const basePayload = (envelope: ExternalMessageEnvelope) => ({
+  content: envelope.content,
+  received_at: envelope.receivedAt,
+  provider: envelope.provider,
+  transport: envelope.transport,
+  account_id: envelope.accountId,
+  peer_id: envelope.peerId,
+  thread_id: envelope.threadId,
+  external_message_id: envelope.externalMessageId,
+  context_file_paths: envelope.attachments
+    .map(mapAttachment)
+    .filter((item): item is NonNullable<typeof item> => item !== null),
+});
 
-  return {
-    memberRouteKey,
-    memberPath: resolvedMemberPath,
-    sourceRouteKey: resolvedSourceRouteKey,
-    sourcePath: resolvedSourcePath,
-  };
-};
-
-const normalizeOptionalMemberPath = (
-  value: readonly string[] | null,
-): string[] | null => {
-  if (!Array.isArray(value)) {
-    return null;
-  }
-  try {
-    return normalizeMemberPath(value);
-  } catch {
-    return null;
-  }
-};
-
-const normalizeOptionalRouteKey = (value: string | null): string | null => {
-  if (typeof value !== "string" || value.trim().length === 0) {
-    return null;
-  }
-  try {
-    return normalizeMemberRouteKey(value);
-  } catch {
-    return null;
-  }
-};
-
-const routeKeyToMemberPath = (routeKey: string | null): string[] | null =>
-  routeKey ? routeKey.split("/").map((segment) => segment.trim()).filter(Boolean) : null;
-
-const mapAttachmentToContextFilePath = (
+const mapAttachment = (
   attachment: ExternalAttachment,
-):
-  | {
-      path: string;
-      type: "Audio" | "Image" | "Video";
-    }
-  | null => {
-  if (typeof attachment.url !== "string" || attachment.url.trim().length === 0) {
-    return null;
-  }
-
+): { path: string; type: "Audio" | "Image" | "Video" } | null => {
+  if (!attachment.url?.trim()) return null;
   const kind = attachment.kind.trim().toLowerCase();
-  const mimeType = attachment.mimeType?.trim().toLowerCase() ?? "";
-  if (kind === "audio" || mimeType.startsWith("audio/")) {
-    return {
-      path: attachment.url,
-      type: "Audio",
-    };
-  }
-  if (kind === "image" || mimeType.startsWith("image/")) {
-    return {
-      path: attachment.url,
-      type: "Image",
-    };
-  }
-  if (kind === "video" || mimeType.startsWith("video/")) {
-    return {
-      path: attachment.url,
-      type: "Video",
-    };
-  }
+  const mime = attachment.mimeType?.trim().toLowerCase() ?? "";
+  if (kind === "audio" || mime.startsWith("audio/")) return { path: attachment.url, type: "Audio" };
+  if (kind === "image" || mime.startsWith("image/")) return { path: attachment.url, type: "Image" };
+  if (kind === "video" || mime.startsWith("video/")) return { path: attachment.url, type: "Video" };
   return null;
 };

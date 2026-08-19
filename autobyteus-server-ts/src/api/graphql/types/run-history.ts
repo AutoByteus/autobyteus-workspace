@@ -62,13 +62,13 @@ class RunHistoryAgentGroupObject {
 @ObjectType("WorkspaceHistoryTeamRunMemberObject")
 class WorkspaceHistoryTeamRunMemberObject {
   @Field(() => String)
-  memberRouteKey!: string;
+  memberAddress!: string;
 
   @Field(() => String)
-  memberName!: string;
+  displayName!: string;
 
   @Field(() => String)
-  memberRunId!: string;
+  agentRunId!: string;
 
   @Field(() => String)
   status!: string;
@@ -92,7 +92,7 @@ class WorkspaceHistoryTeamRunItemObject {
   teamDefinitionName!: string;
 
   @Field(() => String)
-  coordinatorMemberRouteKey!: string;
+  coordinatorAddress!: string;
 
   @Field(() => String, { nullable: true })
   workspaceRootPath?: string | null;
@@ -116,7 +116,7 @@ class WorkspaceHistoryTeamRunItemObject {
   members!: WorkspaceHistoryTeamRunMemberObject[];
 
   @Field(() => GraphQLJSON)
-  memberTree!: unknown[];
+  rootTeam!: unknown;
 }
 
 @ObjectType("WorkspaceHistoryTeamDefinitionObject")

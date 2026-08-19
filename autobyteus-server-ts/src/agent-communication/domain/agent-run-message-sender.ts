@@ -1,5 +1,6 @@
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { MemberTeamContext } from "../../agent-team-execution/domain/member-team-context.js";
+import { getAgentTeamAddressBasename } from "../../agent-collaboration/domain/agent-team-address.js";
 
 export type AgentRunMessageSenderContext = {
   senderRunId: string;
@@ -36,9 +37,9 @@ export const buildAgentRunMessageSenderContext = (input: {
     senderRunId,
     senderName:
       normalizeOptional(input.senderName) ??
-      normalizeOptional(memberTeamContext?.memberName) ??
+      normalizeOptional(memberTeamContext ? getAgentTeamAddressBasename(memberTeamContext.identity.memberAddress) : null) ??
       senderRunId,
-    runtimeKind: input.runtimeKind ?? memberTeamContext?.teamBackendKind ?? null,
+    runtimeKind: input.runtimeKind ?? null,
     memberTeamContext,
   };
 };

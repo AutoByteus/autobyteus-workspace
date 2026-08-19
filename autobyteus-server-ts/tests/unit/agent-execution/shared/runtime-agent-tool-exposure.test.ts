@@ -5,16 +5,14 @@ import {
   resolveRuntimeAgentToolExposure,
   toRuntimeAgentToolNameSet,
 } from "../../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
-import { MemberTeamContext } from "../../../../src/agent-team-execution/domain/member-team-context.js";
-import { TeamBackendKind } from "../../../../src/agent-team-execution/domain/team-backend-kind.js";
+import { testMemberTeamContext } from "../../../fixtures/current-team-run-fixtures.js";
 
-const memberTeamContext = new MemberTeamContext({
+const memberTeamContext = testMemberTeamContext({
   teamRunId: "team-run",
+  rootTeamRunId: "team-run",
   teamDefinitionId: "team-def",
-  teamBackendKind: TeamBackendKind.MIXED,
-  memberName: "worker",
-  memberRouteKey: "worker",
-  memberRunId: "run-worker",
+  memberAddress: "/worker",
+  agentRunId: "run-worker",
 });
 
 describe("runtime-agent-tool-exposure", () => {
@@ -51,6 +49,7 @@ describe("runtime-agent-tool-exposure", () => {
       "review_task_result",
     ]);
     expect(exposure.sendMessageToEnabled).toBe(true);
+    expect(exposure.getHandoffRulesEnabled).toBe(false);
     expect(exposure.publishArtifactsEnabled).toBe(true);
     expect(toRuntimeAgentToolNameSet(exposure)).toEqual(
       new Set([
@@ -110,23 +109,30 @@ describe("runtime-agent-tool-exposure", () => {
       enabledMediaToolNames: [],
       enabledTaskDelegationToolNames: [],
       sendMessageToEnabled: false,
+      getHandoffRulesEnabled: false,
       publishArtifactsEnabled: false,
     });
   });
 
-  it("deduplicates configured names and automatically adds exactly the two team tools", () => {
+  it("deduplicates configured names and automatically adds the three Team runtime tools", () => {
     const exposure = resolveRuntimeAgentToolExposure(
       { toolNames: [" run_bash ", "run_bash", "send_message_to"] },
       memberTeamContext,
     );
 
-    expect(AUTOMATIC_TEAM_TOOL_NAMES).toEqual(["send_message_to", "delegate_task"]);
+    expect(AUTOMATIC_TEAM_TOOL_NAMES).toEqual([
+      "get_handoff_rules",
+      "send_message_to",
+      "delegate_task",
+    ]);
     expect(exposure.requestedToolNames).toEqual([
       "run_bash",
       "send_message_to",
+      "get_handoff_rules",
       "delegate_task",
     ]);
     expect(exposure.enabledTaskDelegationToolNames).toEqual(["delegate_task"]);
     expect(exposure.sendMessageToEnabled).toBe(true);
+    expect(exposure.getHandoffRulesEnabled).toBe(true);
   });
 });

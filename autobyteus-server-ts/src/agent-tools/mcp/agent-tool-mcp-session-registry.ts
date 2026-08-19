@@ -164,6 +164,7 @@ const cloneRuntimeExposure = (
   enabledMediaToolNames: [...exposure.enabledMediaToolNames],
   enabledTaskDelegationToolNames: [...exposure.enabledTaskDelegationToolNames],
   sendMessageToEnabled: exposure.sendMessageToEnabled,
+  getHandoffRulesEnabled: exposure.getHandoffRulesEnabled,
   publishArtifactsEnabled: exposure.publishArtifactsEnabled,
 });
 
@@ -174,17 +175,16 @@ const doesOwnerMatch = (
   if (candidate.runId !== undefined && sessionOwner.runId !== candidate.runId) {
     return false;
   }
-  if (candidate.teamRunId !== undefined && sessionOwner.teamRunId !== candidate.teamRunId) {
+  if (candidate.displayName !== undefined && sessionOwner.displayName !== candidate.displayName) {
     return false;
   }
-  if (candidate.memberRunId !== undefined && sessionOwner.memberRunId !== candidate.memberRunId) {
-    return false;
-  }
-  if (candidate.memberRouteKey !== undefined && sessionOwner.memberRouteKey !== candidate.memberRouteKey) {
-    return false;
-  }
-  if (candidate.memberName !== undefined && sessionOwner.memberName !== candidate.memberName) {
-    return false;
+  if (candidate.teamIdentity !== undefined) {
+    const actual = sessionOwner.teamIdentity;
+    const expected = candidate.teamIdentity;
+    if (!actual || !expected || actual.rootTeamRunId !== expected.rootTeamRunId ||
+      actual.memberAddress !== expected.memberAddress || actual.agentRunId !== expected.agentRunId) {
+      return false;
+    }
   }
   return Object.keys(candidate).length > 0;
 };

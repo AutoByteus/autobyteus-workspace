@@ -1,0 +1,9 @@
+{
+  "slug": "autobyteus",
+  "runtime": "autobyteus",
+  "model": "gpt-5.6-luna",
+  "passed": false,
+  "rootTeamRunId": null,
+  "termination": null,
+  "fatalError": "TimeoutError: locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Run', exact: true })\u001b[22m\n\nlocator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Run', exact: true })\u001b[22m\n\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr025/api-rev-039/live/run-one-team-browser-row.mjs:164:64"
+}

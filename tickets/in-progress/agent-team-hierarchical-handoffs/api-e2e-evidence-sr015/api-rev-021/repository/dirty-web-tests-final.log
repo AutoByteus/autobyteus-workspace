@@ -1,0 +1,209 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/__tests__/MobileTeamMessages.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamOverviewPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/__tests__/MobileContextSelectionRegression.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/mobile/__tests__/MobileContextSelectionRegression.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/mobile/__tests__/MobileTeamMessages.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamOverviewPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts (5 tests) 54ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts (4 tests) 216ms
+ ✓ components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts (8 tests) 91ms
+ ✓ components/mobile/__tests__/MobileTeamMessages.spec.ts (2 tests) 212ms
+ ✓ components/workspace/team/__tests__/TeamOverviewPanel.spec.ts (8 tests) 179ms
+ ✓ components/workspace/team/__tests__/TeamWorkspaceView.spec.ts (12 tests) 213ms
+ ✓ components/mobile/__tests__/MobileContextSelectionRegression.spec.ts (13 tests) 99ms
+ ✓ components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts (1 test) 249ms
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > shows an error toast when terminate fails
+Failed to terminate run 'run-1'.
+
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts (50 tests) 2166ms
+stderr | components/mobile/__tests__/MobileArtifacts.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/runHistoryNavigationProjection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useWorkspaceHistoryTreeState.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/runHydration/__tests__/teamRunContextHydrationService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/mobile/__tests__/useMobileWorkCatalog.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/mobile/__tests__/MobileArtifacts.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/runHistoryNavigationProjection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/mobile/__tests__/MobileArtifacts.spec.ts (4 tests) 80ms
+ ✓ stores/__tests__/runHistoryNavigationProjection.spec.ts (6 tests) 20ms
+stdout | services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/__tests__/useWorkspaceHistoryTreeState.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/mobile/__tests__/useMobileWorkCatalog.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/runHydration/__tests__/teamRunContextHydrationService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts (4 tests) 11ms
+ ✓ composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts (4 tests) 7ms
+stderr | utils/__tests__/teamActiveExecutionMembers.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+ ✓ composables/__tests__/useWorkspaceHistoryTreeState.spec.ts (7 tests) 5ms
+ ✓ services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts (6 tests) 8ms
+ ✓ services/runHydration/__tests__/teamRunContextHydrationService.spec.ts (2 tests) 8ms
+ ✓ composables/mobile/__tests__/useMobileWorkCatalog.spec.ts (2 tests) 6ms
+stdout | utils/__tests__/teamActiveExecutionMembers.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/__tests__/teamActiveExecutionMembers.spec.ts (5 tests) 5ms
+stderr | stores/__tests__/runHistoryTeamExecutionRows.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/runHistoryTeamRows.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/__tests__/teamDelegatedTaskEntries.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/mobileWorkStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/__tests__/teamStreamMemberContextResolver.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/runHistoryTeamExecutionRows.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/runHistoryTeamRows.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/runHistoryTeamExecutionRows.spec.ts (2 tests) 4ms
+ ✓ stores/__tests__/runHistoryTeamRows.spec.ts (2 tests) 4ms
+stdout | utils/__tests__/teamDelegatedTaskEntries.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/__tests__/teamDelegatedTaskEntries.spec.ts (3 tests) 4ms
+ ✓ composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts (2 tests) 4ms
+stdout | stores/__tests__/mobileWorkStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/mobileWorkStore.spec.ts (5 tests) 4ms
+stdout | services/agentStreaming/__tests__/teamStreamMemberContextResolver.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/agentStreaming/__tests__/teamStreamMemberContextResolver.spec.ts (3 tests) 7ms
+
+ Test Files  24 passed (24)
+      Tests  160 passed (160)
+   Start at  06:04:52
+   Duration  25.04s (transform 10.04s, setup 162.90s, collect 18.67s, tests 3.66s, environment 10.21s, prepare 7.12s)
+

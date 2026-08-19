@@ -1,0 +1,24 @@
+{
+  "slug": "claude",
+  "runtime": "claude_agent_sdk",
+  "model": "sonnet",
+  "passed": true,
+  "runId": "api_rev_036_browser_agent_d4599420f6cb4cf7a7422dafc1143fec",
+  "conditions": {
+    "freshRun": true,
+    "effectiveRuntime": true,
+    "effectiveReasoning": true,
+    "exactTokenBeforeRefresh": true,
+    "exactTokenAfterRefresh": true,
+    "resumeRunMatches": true,
+    "resumeActive": true,
+    "resumeRuntimeMatches": true,
+    "resumeModelMatches": true,
+    "noBrowserConsoleErrors": true
+  },
+  "fatalError": null,
+  "termination": {
+    "success": true,
+    "message": "Agent run terminated successfully."
+  }
+}

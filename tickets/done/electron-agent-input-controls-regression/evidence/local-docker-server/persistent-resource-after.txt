@@ -1,0 +1,129 @@
+DR-006 persistent Docker operation resource final state
+Recorded: 2026-08-18T15:32:35+02:00
+Source revision: c7dc4e73e350f9941106837e3d890273a0e0c176
+Container ID: 0ec4a7e360ec
+
+[all containers: id name image status ports]
+0ec4a7e360ecda2410bf1aa3b8d7b952edd21bb464dddf82295b75b030b3431e	electron-agent-input-controls-regression-dr005-autobyteus-server-1	autobyteus-server:latest	Up 58 seconds	0.0.0.0:52705->5900/tcp, [::]:52705->5900/tcp, 0.0.0.0:52706->6080/tcp, [::]:52706->6080/tcp, 0.0.0.0:52704->8000/tcp, [::]:52704->8000/tcp, 0.0.0.0:52707->9223/tcp, [::]:52707->9223/tcp
+3e6c9e772d5e1c75ac654717208686d8f3cd0218e18db6b744e4f49846ecb88c	autobyteus-server-2	autobyteus/autobyteus-server:latest	Up 2 days	0.0.0.0:5910->5900/tcp, [::]:5910->5900/tcp, 0.0.0.0:56512->6080/tcp, [::]:56512->6080/tcp, 0.0.0.0:8003->8000/tcp, [::]:8003->8000/tcp, 0.0.0.0:9230->9223/tcp, [::]:9230->9223/tcp
+4b94a3900b7e8b63a04b1713bf043fe2ce4f3f2a3ca10bf601e8ec7c8a57309a	autobyteus-server-0	autobyteus/autobyteus-server:latest	Up 11 hours	0.0.0.0:5908->5900/tcp, [::]:5908->5900/tcp, 0.0.0.0:64611->6080/tcp, [::]:64611->6080/tcp, 0.0.0.0:8001->8000/tcp, [::]:8001->8000/tcp, 0.0.0.0:9228->9223/tcp, [::]:9228->9223/tcp
+540d4b5d7b73935a90a335978345871eb96210d7be1ed458878321781427b377	llm-server-0	autobyteus/llm-server:latest-arm64	Up 4 weeks	0.0.0.0:5900->5900/tcp, [::]:5900->5900/tcp, 0.0.0.0:6080->6080/tcp, [::]:6080->6080/tcp, 0.0.0.0:51739->51739/tcp, [::]:51739->51739/tcp
+5b46eaecfd0a1f125ddf7b1d0e7ae521debf7557042287157331514dcaa96f7f	codex-screensaver-probe-1780386533	sha256:d80ef400bc03efa27467d6003dd8d3f7d17148968e5deca6436de48409ffa1f5	Exited (137) 2 months ago
+6f8515f32c90a5eabbe9f10fd00aff6805fbd6536088681362793ad8cfb1f356	autobyteus-server-6	autobyteus/autobyteus-server:latest	Up 28 hours	0.0.0.0:5914->5900/tcp, [::]:5914->5900/tcp, 0.0.0.0:6086->6080/tcp, [::]:6086->6080/tcp, 0.0.0.0:8007->8000/tcp, [::]:8007->8000/tcp, 0.0.0.0:9234->9223/tcp, [::]:9234->9223/tcp
+82a1a48432859e2662052a072dd5d7dec81ceea191676821a6735e6b59e67f5d	autobyteus-server-5	autobyteus/autobyteus-server:latest	Up 2 days	0.0.0.0:5913->5900/tcp, [::]:5913->5900/tcp, 0.0.0.0:6085->6080/tcp, [::]:6085->6080/tcp, 0.0.0.0:8006->8000/tcp, [::]:8006->8000/tcp, 0.0.0.0:9233->9223/tcp, [::]:9233->9223/tcp
+87451db54e33c6693558bd2d6f0a2dc70d814b1a9d8612a40502589ebea2ef31	autobyteus-server-1	autobyteus/autobyteus-server:latest	Up 2 days	0.0.0.0:50435->5900/tcp, [::]:50435->5900/tcp, 0.0.0.0:50436->6080/tcp, [::]:50436->6080/tcp, 0.0.0.0:50433->8000/tcp, [::]:50433->8000/tcp, 0.0.0.0:50437->9223/tcp, [::]:50437->9223/tcp
+90d6df350dede15716070f126a24bdae1fe92f167158d0a692dde7719cbe2a22	autobyteus-server-4	autobyteus/autobyteus-server:latest	Up 2 days	0.0.0.0:5912->5900/tcp, [::]:5912->5900/tcp, 0.0.0.0:6084->6080/tcp, [::]:6084->6080/tcp, 0.0.0.0:8005->8000/tcp, [::]:8005->8000/tcp, 0.0.0.0:9232->9223/tcp, [::]:9232->9223/tcp
+9a5827e900adbd5c4843e30b8b2be7d12767300786a0152db2e04239b41a1904	german-bilderbuch-db	postgres:17	Exited (255) 6 months ago	0.0.0.0:5432->5432/tcp
+aad7b072d209a23986427dcbf2cb589a9e5d89a91d9d57e8a2a12b65f0a20898	chrome-vnc-tigervnc	autobyteus/chrome-vnc:local-zh-fcitx-fix	Exited (137) 4 weeks ago
+dbf50a41ec9dd12c52dafb8478c29a2a7b164b46cc400c1ebf6cd3d28a9a1210	llm-server-source-0	autobyteus/llm-server:latest-source	Exited (137) 5 weeks ago
+ecbc3a08be4482fded3593b6a7e4a8dcd05c9dfae81e0e3542792b1a951c2267	anna-learn-german-db	postgres:17	Exited (0) 6 months ago
+f11e08f05917a1c065631d0bf7f899a2d7ad3e1f4293a0e67dfe60cff98c8bf9	autobyteus-server-3	autobyteus/autobyteus-server:latest-zh	Up 4 weeks	0.0.0.0:5911->5900/tcp, [::]:5911->5900/tcp, 0.0.0.0:60670->6080/tcp, [::]:60670->6080/tcp, 0.0.0.0:8004->8000/tcp, [::]:8004->8000/tcp, 0.0.0.0:9231->9223/tcp, [::]:9231->9223/tcp
+f2ce6963d4861433b76e1ce606b40fd2f015965a11642e1f6a9b410c619807c7	buildx_buildkit_multi-platform-builder0	sha256:de10faf919fc71ba4eb1dd7bd6449566d012b0c9436b1c61bfee21d621b009aa	Up 4 weeks
+
+[all volumes]
+288ad43af59d6c4a3059095fc97d313bfcccd189bc041938cbb5dfdfbe9f94fa
+2a9d6cb885233e5acd3c2f0033e2a3e352f66ece4d92056e38b6ef949a11e968
+39e8359655eb2b5f81c35a36dc94eca92f6826778a2be175808a68df7d41fc0f
+671bd1ee8b7cbeb5a025ad8c788fb807116e1b9896cf14cb5abd626eaf2b7993
+7cfc605e9fe59461a1cfa4e4c8970ade8589aadf24166ea071f21a166ddb4604
+89b0ed2a4171bb16bed6f6fe70b16d275f7640bdcc95875120e0857e40b03f43
+89bce768cf0045d89bddd6fd7d7df276fc0c3c0fb517aff4bec54291c4742af0
+a76b6ea74656eda5a101806312a76bd45587173de981859be94a1485af66d9b7
+ac-verify_gateway-memory
+ac-verify_main-allinone-data
+add-node-local_autobyteus-server-data
+add-node-local_autobyteus-server-root-home
+add-node-local_autobyteus-server-workspace
+autobyteus-server-0-chromium-profile
+autobyteus-server-0-data
+autobyteus-server-0-root-home
+autobyteus-server-0-workspace
+autobyteus-server-1-chromium-profile
+autobyteus-server-1-data
+autobyteus-server-1-root-home
+autobyteus-server-1-workspace
+autobyteus-server-2-chromium-profile
+autobyteus-server-2-data
+autobyteus-server-2-root-home
+autobyteus-server-2-workspace
+autobyteus-server-3-chromium-profile
+autobyteus-server-3-data
+autobyteus-server-3-root-home
+autobyteus-server-3-workspace
+autobyteus-server-4-chromium-profile
+autobyteus-server-4-data
+autobyteus-server-4-root-home
+autobyteus-server-4-workspace
+autobyteus-server-5-chromium-profile
+autobyteus-server-5-data
+autobyteus-server-5-root-home
+autobyteus-server-5-workspace
+autobyteus-server-6-chromium-profile
+autobyteus-server-6-data
+autobyteus-server-6-root-home
+autobyteus-server-6-workspace
+autobyteus-server-7-chromium-profile
+autobyteus-server-7-data
+autobyteus-server-7-root-home
+autobyteus-server-7-workspace
+autobyteus-server-data
+autobyteus-server-mobile-safe-401-electron-test-data
+autobyteus-server-mobile-safe-401-electron-test-root-home
+autobyteus-server-mobile-safe-401-electron-test-workspace
+autobyteus-server-root-home
+autobyteus-server-workspace
+autobyteus-server_autobyteus-server-data
+autobyteus-server_autobyteus-server-root-home
+autobyteus-server_autobyteus-server-workspace
+autobyteus-workspace-superrepo_gateway-memory
+autobyteus-workspace-superrepo_main-allinone-data
+autobyteus-workspace-superrepo_remote-server-logs
+buildx_buildkit_multi-platform-builder0_state
+c21673de10fc878732160fef18311338cd5d5f4dfe331d4bdddc05ef4d7ed489
+claude-agent-sdk-runtime-support_gateway-memory
+claude-agent-sdk-runtime-support_main-allinone-data
+claude_home
+codex-agent-workspace-path_gateway-memory
+codex-agent-workspace-path_main-allinone-data
+codex-agent-workspace-path_remote-server-logs
+codex-logcheck_remote-server-logs
+codex-team-runtime_gateway-memory
+codex-team-runtime_main-allinone-data
+codex-team-runtime_remote-server-logs
+codex_home
+docker_autobyteus-server-data
+docker_autobyteus-server-workspace
+electron-agent-input-controls-regression-dr005_autobyteus-server-chromium-profile
+electron-agent-input-controls-regression-dr005_autobyteus-server-data
+electron-agent-input-controls-regression-dr005_autobyteus-server-root-home
+electron-agent-input-controls-regression-dr005_autobyteus-server-workspace
+electron-cleanup-review_autobyteus-server-data
+electron-cleanup-review_autobyteus-server-root-home
+electron-cleanup-review_autobyteus-server-workspace
+external-channel-open-session-delivery_autobyteus-server-data
+external-channel-open-session-delivery_autobyteus-server-root-home
+external-channel-open-session-delivery_autobyteus-server-workspace
+llm-server-0-chromium-profile
+llm-server-1-chromium-profile
+llm-server-2-chromium-profile
+llm-server-3-chromium-profile
+llm-server-source-chromium-profile
+local-test_autobyteus-server-data
+local-test_autobyteus-server-root-home
+local-test_autobyteus-server-workspace
+msg-delivery-stage7_gateway-memory
+msg-delivery-stage7_main-allinone-data
+openclaw_home
+personal-live_remote-server-logs
+remote-browser-bridge-pairing_autobyteus-server-data
+remote-browser-bridge-pairing_autobyteus-server-root-home
+remote-browser-bridge-pairing_autobyteus-server-workspace
+server-docker-test_autobyteus-server-data
+server-docker-test_autobyteus-server-root-home
+server-docker-test_autobyteus-server-workspace
+
+[reserved project container inspect]
+name=/electron-agent-input-controls-regression-dr005-autobyteus-server-1 image_id=sha256:6d8e9f250b9ce094142970e2e7a0c1b31ccb574990b3369a03fec28d429a4efa state=running running=true restart_count=0 restart_policy=unless-stopped started=2026-08-18T13:31:36.792030591Z mounts=[{"Type":"volume","Name":"electron-agent-input-controls-regression-dr005_autobyteus-server-chromium-profile","Source":"/var/lib/docker/volumes/electron-agent-input-controls-regression-dr005_autobyteus-server-chromium-profile/_data","Destination":"/home/vncuser/.config/chromium","Driver":"local","Mode":"rw","RW":true,"Propagation":""},{"Type":"volume","Name":"electron-agent-input-controls-regression-dr005_autobyteus-server-workspace","Source":"/var/lib/docker/volumes/electron-agent-input-controls-regression-dr005_autobyteus-server-workspace/_data","Destination":"/app/autobyteus-server-ts/workspace","Driver":"local","Mode":"rw","RW":true,"Propagation":""},{"Type":"volume","Name":"electron-agent-input-controls-regression-dr005_autobyteus-server-data","Source":"/var/lib/docker/volumes/electron-agent-input-controls-regression-dr005_autobyteus-server-data/_data","Destination":"/home/autobyteus/data","Driver":"local","Mode":"rw","RW":true,"Propagation":""},{"Type":"volume","Name":"electron-agent-input-controls-regression-dr005_autobyteus-server-root-home","Source":"/var/lib/docker/volumes/electron-agent-input-controls-regression-dr005_autobyteus-server-root-home/_data","Destination":"/root","Driver":"local","Mode":"rw","RW":true,"Propagation":""}]
+
+[reserved project image inspect]
+id=sha256:6d8e9f250b9ce094142970e2e7a0c1b31ccb574990b3369a03fec28d429a4efa created=2026-08-18T13:30:05.221358216Z architecture=arm64 os=linux size=1837740323 entrypoint=["/usr/local/bin/entrypoint.sh"] workdir=/app

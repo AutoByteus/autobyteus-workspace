@@ -1,0 +1,51 @@
+HEAD:
+619a442eebe7c6a1fce8d38d03ed2e7a7c71ed07
+PRODUCTION_SOURCE_DIFF:
+COMPONENT_CALL:
+    80	const activeTeamContext = computed(() => teamContextsStore.activeTeamContext);
+    81	const activeTeamRunId = computed(() => activeTeamContext.value?.teamRunId || '');
+    82	const expandedSection = ref<TeamOverviewSection | null>('messages');
+    83	const lastAutoOpenedDelegatedTaskSignatureKey = ref('');
+    84	const messagesExpanded = computed(() => expandedSection.value === 'messages');
+    85	const delegatedTasksExpanded = computed(() => expandedSection.value === 'delegatedTasks');
+    86	const focusedCommunicationAddress = computed(() => {
+    87	  const teamContext = activeTeamContext.value;
+    88	  if (!teamContext) return null;
+    89	  return teamContext.focusedExecutionAddress;
+    90	});
+    91	const delegatedTaskEntries = computed(() => {
+    92	  const teamContext = activeTeamContext.value;
+    93	  return teamContext
+    94	    ? deriveDelegatedTaskEntries(
+    95	      teamContext,
+    96	      taskDelegationStore.getRecordsForTeam(teamContext.teamRunId),
+    97	      focusedCommunicationAddress.value,
+    98	    )
+    99	    : [];
+   100	});
+   101	const delegatedTaskSignature = computed(() => delegatedTaskEntries.value
+FILTER_OWNER:
+   123	export const deriveDelegatedTaskEntries = (
+   124	  team: AgentTeamContext,
+   125	  records: readonly TaskDelegationRecord[] = [],
+   126	  focusedAddress?: TeamExecutionAddress | null,
+   127	): DelegatedTaskEntry[] => {
+   128	  const liveNodes = collectLiveTaskNodes(team.rootTeam.children);
+   129	  const byTaskId = new Map(liveNodes.flatMap((node) => node.taskId ? [[node.taskId, node] as const] : []));
+   130	  const consumed = new Set<TeamMemberNode>();
+   131	  const persisted = records.filter((record) => recordVisible(record, focusedAddress)).map((record) => {
+   132	    const node = byTaskId.get(record.taskId) ?? null;
+   133	    if (node) consumed.add(node);
+   134	    return node ? liveEntry(team, node, record) : persistedEntry(team, record);
+   135	  });
+   136	  const live = liveNodes.filter((node) => !consumed.has(node)).filter((node) => {
+   137	    if (focusedAddress === undefined) return true;
+   138	    return addressKey(node.executionAddress) === addressKey(focusedAddress);
+   139	  }).map((node) => liveEntry(team, node, null));
+   140	  return [...persisted, ...live];
+   141	};
+USER_STACK_PORTS:
+COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    71461 normy   26u  IPv4 0xbe9eaf34a35017b1      0t0  TCP 127.0.0.1:60004 (LISTEN)
+COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    73207 normy   12u  IPv4 0xe0271daf60061249      0t0  TCP 127.0.0.1:31004 (LISTEN)

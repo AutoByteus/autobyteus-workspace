@@ -2,9 +2,9 @@ import type { AIResponseSegment } from '~/types/segments';
 import type { SegmentType } from '../protocol/messageTypes';
 
 export interface StreamSegmentIdentity {
-  id: string;
-  segmentType?: SegmentType;
-  lookupKey: string | null;
+  readonly turnId: string;
+  readonly id: string;
+  readonly segmentType: SegmentType;
   presentationComplete: boolean;
 }
 
@@ -14,61 +14,43 @@ export interface StreamSegmentIdentityCarrier {
 
 export type IdentifiedAIResponseSegment = AIResponseSegment & StreamSegmentIdentityCarrier;
 
-export function buildStreamSegmentLookupKey(segmentId: string, segmentType?: SegmentType): string | null {
-  if (!segmentType) {
-    return null;
-  }
-  return `${segmentType}:${segmentId}`;
-}
-
 export function getStreamSegmentIdentity(segment: AIResponseSegment): StreamSegmentIdentity | null {
   return (segment as IdentifiedAIResponseSegment)._streamSegmentIdentity ?? null;
 }
 
 export function setStreamSegmentIdentity(
   segment: AIResponseSegment,
+  turnId: string,
   segmentId: string,
-  segmentType?: SegmentType,
+  segmentType: SegmentType,
 ): void {
   (segment as IdentifiedAIResponseSegment)._streamSegmentIdentity = {
+    turnId,
     id: segmentId,
     segmentType,
-    lookupKey: buildStreamSegmentLookupKey(segmentId, segmentType),
     presentationComplete: false,
   };
 }
 
 export function markStreamSegmentPresentationComplete(segment: AIResponseSegment): boolean {
   const identity = getStreamSegmentIdentity(segment);
-  if (!identity || identity.presentationComplete) {
-    return false;
-  }
+  if (!identity || identity.presentationComplete) return false;
   identity.presentationComplete = true;
   return true;
 }
 
 export function matchesStreamSegmentIdentity(
   segment: AIResponseSegment,
+  turnId: string,
   segmentId: string,
-  segmentType?: SegmentType,
 ): boolean {
   const identity = getStreamSegmentIdentity(segment);
-  if (!identity) {
-    return false;
-  }
-
-  if (!segmentType) {
-    return identity.id === segmentId;
-  }
-
-  const lookupKey = buildStreamSegmentLookupKey(segmentId, segmentType);
-  if (identity.lookupKey) {
-    return identity.lookupKey === lookupKey;
-  }
-
-  return !identity.segmentType && identity.id === segmentId;
+  return identity?.turnId === turnId && identity.id === segmentId;
 }
 
-export function hasStreamSegmentId(segment: AIResponseSegment, segmentId: string): boolean {
-  return getStreamSegmentIdentity(segment)?.id === segmentId;
+export function matchesStreamSegmentType(
+  segment: AIResponseSegment,
+  segmentType: SegmentType,
+): boolean {
+  return getStreamSegmentIdentity(segment)?.segmentType === segmentType;
 }

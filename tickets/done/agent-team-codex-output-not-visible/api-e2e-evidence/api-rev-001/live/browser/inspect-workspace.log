@@ -1,0 +1,165 @@
+{
+  "text": "Agents\nAgent Teams\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nSettings\nNo agent or team run selected\n\nChoose an agent or team, or open run history to continue.\n\nChoose an agent or team\nOpen runs/history\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\n➜ Terminal initialized\nThe default interactive shell is now zsh.\nTo update your account to use zsh, please run `chsh\n -s /bin/zsh`.\nFor more details, please visit https://support.appl\ne.com/kb/HT208050.\n~ $  ",
+  "buttonCount": 18,
+  "buttons": [
+    {
+      "text": "Agents",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "aria": null,
+      "title": "Collapse left panel",
+      "disabled": false
+    },
+    {
+      "text": "Agent Teams",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "Skills",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "Memory",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "Nodes",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "aria": null,
+      "title": "Add workspace",
+      "disabled": false
+    },
+    {
+      "text": "Temp Workspace",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "Settings",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "Choose an agent or team",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "Open runs/history",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "Files",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "Terminal",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "Activity",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "Token",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "Artifacts",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "VNC Viewer",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "aria": null,
+      "title": "Toggle Sidebar",
+      "disabled": false
+    }
+  ],
+  "inputs": [
+    {
+      "tag": "TEXTAREA",
+      "type": null,
+      "placeholder": null,
+      "aria": "Terminal input",
+      "value": ""
+    }
+  ],
+  "consoleMessages": [
+    {
+      "type": "debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "type": "log",
+      "text": "Workspace.vue: Mounted. Fetching server settings and loading profiles..."
+    },
+    {
+      "type": "log",
+      "text": "[useTerminalSession] Connecting to: ws://127.0.0.1:60418/ws/terminal/ce39281c-b44e-404b-867a-7660880b6e13"
+    },
+    {
+      "type": "log",
+      "text": "[useTerminalSession] Connected"
+    },
+    {
+      "type": "log",
+      "text": "serverStore: Checking server health at /rest/health"
+    }
+  ]
+}

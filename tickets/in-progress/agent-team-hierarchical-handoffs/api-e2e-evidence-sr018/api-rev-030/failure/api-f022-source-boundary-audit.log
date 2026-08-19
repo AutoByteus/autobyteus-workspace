@@ -1,0 +1,206 @@
+API-F-022 source boundary audit
+1. Team communication query contains nested senderAddress/receiverAddress/referenceFiles GraphQL objects:
+export const GetTeamCommunicationMessages = gql`
+  query GetTeamCommunicationMessages($teamRunId: String!) {
+    getTeamCommunicationMessages(teamRunId: $teamRunId) {
+      messageId
+      senderAddress {
+        rootTeamRunId taskTeamRunIds memberAddress taskAgentRunId
+      }
+      receiverAddress {
+        rootTeamRunId taskTeamRunIds memberAddress taskAgentRunId
+      }
+      content
+      messageType
+      createdAt
+      referenceFiles {
+        referenceId
+        path
+        type
+        createdAt
+        updatedAt
+      }
+    }
+  }
+`;
+
+
+
+export const GetTaskDelegationRecords = gql`
+
+2. Hydration passes raw GraphQL response directly to store:
+
+export const fetchAndHydrateTeamCommunicationForTeam = async (params: {
+  client: TeamCommunicationHydrationClient;
+  teamRunId: string;
+}): Promise<void> => {
+  try {
+    const response = await params.client.query<GetTeamCommunicationMessagesQueryData>({
+      query: GetTeamCommunicationMessages,
+      variables: {
+        teamRunId: params.teamRunId,
+      },
+      fetchPolicy: 'network-only',
+    });
+    if (response.errors && response.errors.length > 0) {
+      throw new Error(response.errors.map((error: { message: string }) => error.message).join(', '));
+    }
+    hydrateTeamCommunicationMessages(
+      params.teamRunId,
+      response.data?.getTeamCommunicationMessages || [],
+    );
+  } catch (error) {
+    console.warn(
+      `[runHistoryStore] Failed to fetch team communication messages for team '${params.teamRunId}'`,
+      error,
+    );
+    hydrateTeamCommunicationMessages(params.teamRunId, []);
+  }
+};
+
+3. Store strict-parses raw addresses and silently filters rejected messages:
+    : null;
+};
+
+const parseMessage = (value: unknown): TeamCommunicationMessage | null => {
+  const item = record(value);
+  if (!item || !Array.isArray(item.referenceFiles)) return null;
+  const messageId = text(item.messageId);
+  const content = typeof item.content === 'string' ? item.content : null;
+  const messageType = text(item.messageType);
+  const createdAt = text(item.createdAt);
+  const references = item.referenceFiles.map(parseReference);
+  if (!messageId || content === null || !messageType || !createdAt || references.some((entry) => !entry)) return null;
+  try {
+    return {
+      messageId,
+      senderAddress: parseTeamExecutionAddress(item.senderAddress),
+      receiverAddress: parseTeamExecutionAddress(item.receiverAddress),
+      content,
+      messageType,
+      createdAt,
+      referenceFiles: references as TeamCommunicationReferenceFile[],
+    };
+  } catch { return null; }
+};
+
+const compareMessagesDesc = (left: TeamCommunicationMessage, right: TeamCommunicationMessage): number =>
+  right.createdAt.localeCompare(left.createdAt) || left.messageId.localeCompare(right.messageId);
+
+export const formatTeamCommunicationAddressLabel = (address: TeamExecutionAddress): string => {
+  const task = address.taskAgentRunId ?? address.taskTeamRunIds.at(-1) ?? null;
+  return task ? `${address.memberAddress} · ${task}` : address.memberAddress;
+};
+
+const perspectiveMessage = (message: TeamCommunicationMessage, direction: TeamCommunicationDirection): TeamCommunicationPerspectiveMessage => {
+      const sentGroups = groups(messages.filter((message) => serializeTeamExecutionAddress(message.senderAddress) === key).map((message) => perspectiveMessage(message, 'sent')));
+      const receivedGroups = groups(messages.filter((message) => serializeTeamExecutionAddress(message.receiverAddress) === key).map((message) => perspectiveMessage(message, 'received')));
+      return { sentGroups, receivedGroups, messages: [...sentGroups, ...receivedGroups].flatMap((group) => group.messages).sort(compareMessagesDesc) };
+    },
+  },
+  actions: {
+    replaceProjection(teamRunId: string, messages: unknown[]) {
+      this.messagesByTeam.set(teamRunId, messages.map(parseMessage).filter((item): item is TeamCommunicationMessage => Boolean(item)));
+    },
+    upsertMessage(teamRunId: string, message: unknown) {
+      const parsed = parseMessage(message);
+      if (!parsed) return null;
+      const messages = this.messagesByTeam.get(teamRunId) ?? [];
+      const index = messages.findIndex((item) => item.messageId === parsed.messageId);
+      index < 0 ? messages.push(parsed) : messages.splice(index, 1, parsed);
+      this.messagesByTeam.set(teamRunId, messages);
+      return parsed;
+    },
+    upsertFromBackendPayload(payload: TeamCommunicationProjectionPayload) {
+
+4. Domain parser requires exactly four keys:
+export const parseTeamExecutionAddress = (value: unknown): TeamExecutionAddress => {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error('TeamExecutionAddress object required.');
+  const record = value as Record<string, unknown>;
+  const keys = ['rootTeamRunId', 'taskTeamRunIds', 'memberAddress', 'taskAgentRunId'];
+  if (Object.keys(record).length !== keys.length || !keys.every((key) => Object.hasOwn(record, key))) {
+    throw new Error('TeamExecutionAddress must contain exactly rootTeamRunId, taskTeamRunIds, memberAddress, and taskAgentRunId.');
+  }
+  if (typeof record.rootTeamRunId !== 'string' || !Array.isArray(record.taskTeamRunIds) ||
+    !record.taskTeamRunIds.every((item) => typeof item === 'string') || typeof record.memberAddress !== 'string' ||
+    (record.taskAgentRunId !== null && typeof record.taskAgentRunId !== 'string')) {
+    throw new Error('Invalid TeamExecutionAddress field types.');
+  }
+  return createTeamExecutionAddress(record as unknown as TeamExecutionAddress);
+};
+
+export const parseSerializedTeamExecutionAddress = (value: string): TeamExecutionAddress => {
+  let decoded: unknown;
+  try {
+
+5. Adjacent task GraphQL DTO projection validates/removes __typename before strict parsing:
+import type {
+  TaskDelegationRecord,
+  TaskDelegationReviewUpdate,
+  TaskDelegationSubmissionUpdate,
+  TaskDelegationUpdate,
+} from '~/stores/taskDelegationTypes';
+import { parseTeamExecutionAddress, type TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
+import type { TeamReferenceFile } from '~/types/teamReferenceFile';
+
+const object = (value: unknown, label: string): Record<string, unknown> => {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error(`${label} must be an object.`);
+  return value as Record<string, unknown>;
+};
+
+const hasExactKeys = (value: Record<string, unknown>, keys: readonly string[]): boolean =>
+  Object.keys(value).length === keys.length && keys.every((key) => Object.hasOwn(value, key));
+
+const shapeIsExact = (
+  source: Record<string, unknown>,
+  keys: readonly string[],
+  typename: string,
+): boolean => hasExactKeys(source, keys)
+  || (hasExactKeys(source, ['__typename', ...keys]) && source.__typename === typename);
+
+const requireShape = (
+  source: Record<string, unknown>,
+  keys: readonly string[],
+  typename: string,
+  label: string,
+): void => {
+  if (!shapeIsExact(source, keys, typename)) throw new Error(`${label} has unsupported or missing GraphQL fields.`);
+};
+
+const text = (value: unknown, label: string): string => {
+  if (typeof value !== 'string' || !value.trim()) throw new Error(`${label} is required.`);
+  return value.trim();
+};
+
+const optionalText = (value: unknown, label: string): string | null => {
+  if (value === null) return null;
+  if (typeof value !== 'string') throw new Error(`${label} must be a string or null.`);
+  return value.trim() || null;
+};
+
+const ADDRESS_KEYS = ['rootTeamRunId', 'taskTeamRunIds', 'memberAddress', 'taskAgentRunId'] as const;
+const APOLLO_ADDRESS_KEYS = ['__typename', ...ADDRESS_KEYS] as const;
+
+/** Removes only Apollo's expected address discriminator before exact domain admission. */
+export const projectTaskDelegationAddressDto = (value: unknown, label = 'Task address'): TeamExecutionAddress => {
+  const source = object(value, label);
+  if (hasExactKeys(source, APOLLO_ADDRESS_KEYS)) {
+    if (source.__typename !== 'TaskDelegationTargetAddressObject') throw new Error(`${label} has the wrong GraphQL type.`);
+  } else if (!hasExactKeys(source, ADDRESS_KEYS)) {
+    throw new Error(`${label} has unsupported or missing fields.`);
+  }
+  return parseTeamExecutionAddress({
+    rootTeamRunId: source.rootTeamRunId,
+    taskTeamRunIds: source.taskTeamRunIds,
+    memberAddress: source.memberAddress,
+    taskAgentRunId: source.taskAgentRunId,
+  });
+};
+
+const projectReference = (value: unknown, label: string): TeamReferenceFile => {
+  const source = object(value, label);
+  requireShape(source, ['referenceId', 'path', 'type', 'createdAt', 'updatedAt'], 'TaskDelegationReferenceFileObject', label);
+  const type = text(source.type, `${label}.type`);
+  if (!['file', 'image', 'audio', 'video', 'pdf', 'csv', 'excel', 'other'].includes(type)) {
+    throw new Error(`${label}.type is unsupported.`);
+  }

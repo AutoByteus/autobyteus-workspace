@@ -1,0 +1,15 @@
+ M autobyteus-web/components/workspace/config/__tests__/RunConfigPanel.spec.ts
+ M autobyteus-web/stores/__tests__/agentTeamRunStore.spec.ts
+ M tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-coverage-investigation.md
+ M tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md
+ M tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-revision-record.md
+ M tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md
+ M tickets/in-progress/agent-team-hierarchical-handoffs/code-review-revision-record.md
+?? tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr018/api-rev-033/
+?? tickets/in-progress/agent-team-hierarchical-handoffs/delivery-evidence/
+?? tickets/in-progress/agent-team-hierarchical-handoffs/delivery-integration-blocker.md
+?? tickets/in-progress/agent-team-hierarchical-handoffs/delivery-revision-record.md
+?? tickets/in-progress/agent-team-hierarchical-handoffs/docs-sync-report.md
+?? tickets/in-progress/agent-team-hierarchical-handoffs/handoff-summary.md
+?? tickets/in-progress/agent-team-hierarchical-handoffs/release-deployment-report.md
+?? tickets/in-progress/agent-team-hierarchical-handoffs/release-notes.md

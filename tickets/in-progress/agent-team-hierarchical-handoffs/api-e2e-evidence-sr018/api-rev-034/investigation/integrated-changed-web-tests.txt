@@ -1,0 +1,13 @@
+autobyteus-web/components/agentTeams/__tests__/AgentTeamDetail.spec.ts
+autobyteus-web/components/agents/__tests__/AgentCard.spec.ts
+autobyteus-web/components/agents/__tests__/AgentDefinitionForm.spec.ts
+autobyteus-web/components/agents/__tests__/AgentDetail.spec.ts
+autobyteus-web/components/mobile/__tests__/MobileContextSelectionRegression.spec.ts
+autobyteus-web/components/mobile/__tests__/MobileRemoteAccessShell.spec.ts
+autobyteus-web/components/mobile/__tests__/MobileUxRefinement.spec.ts
+autobyteus-web/stores/__tests__/agentContextsStore.spec.ts
+autobyteus-web/stores/__tests__/agentDefinitionStore.spec.ts
+autobyteus-web/stores/__tests__/agentRunConfigStore.spec.ts
+autobyteus-web/tests/integration/agent-definition.integration.test.ts
+autobyteus-web/tests/stores/agentDefinitionOptionsStore.test.ts
+autobyteus-web/utils/catalog/__tests__/agentDefinitionOriginGroups.spec.ts

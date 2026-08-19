@@ -1,0 +1,86 @@
+{
+  "data": {
+    "getTeamCommunicationMessages": [
+      {
+        "messageId": "teammsg_vsppMnops6XKnXY-ZM4TK1wzqo6CfoEx",
+        "senderAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_5f9a69a922a74ab298c3a6e6f54465cb",
+          "taskTeamRunIds": [],
+          "memberAddress": "/Teacher",
+          "taskAgentRunId": null
+        },
+        "receiverAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_5f9a69a922a74ab298c3a6e6f54465cb",
+          "taskTeamRunIds": [],
+          "memberAddress": "/StudentStudyGroup/student_one",
+          "taskAgentRunId": null
+        },
+        "content": "Please ask your coordinator to reply to /Teacher with exactly CLASSROOM_REPLY_AUTOBYTEUS.",
+        "messageType": "classroom_message",
+        "createdAt": "2026-08-11T05:19:37.041Z"
+      },
+      {
+        "messageId": "teammsg_8_WI5sPc-J27UCsX9xjxkT4oryPDAWd2",
+        "senderAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_5f9a69a922a74ab298c3a6e6f54465cb",
+          "taskTeamRunIds": [],
+          "memberAddress": "/StudentStudyGroup/student_one",
+          "taskAgentRunId": null
+        },
+        "receiverAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_5f9a69a922a74ab298c3a6e6f54465cb",
+          "taskTeamRunIds": [],
+          "memberAddress": "/Teacher",
+          "taskAgentRunId": null
+        },
+        "content": "CLASSROOM_REPLY_AUTOBYTEUS",
+        "messageType": "reply",
+        "createdAt": "2026-08-11T05:19:41.090Z"
+      },
+      {
+        "messageId": "teammsg_BrO1v28h71ICl06eyPmKc2lCx3nf6kj1",
+        "senderAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_5f9a69a922a74ab298c3a6e6f54465cb",
+          "taskTeamRunIds": [
+            "team_local_team_nested_classroom_test_student_st_0cab581ef9e24f87a72cc56a5d08bb9d"
+          ],
+          "memberAddress": "/StudentStudyGroup/student_one",
+          "taskAgentRunId": null
+        },
+        "receiverAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_5f9a69a922a74ab298c3a6e6f54465cb",
+          "taskTeamRunIds": [
+            "team_local_team_nested_classroom_test_student_st_0cab581ef9e24f87a72cc56a5d08bb9d"
+          ],
+          "memberAddress": "/StudentStudyGroup/student_two",
+          "taskAgentRunId": null
+        },
+        "content": "TASK_PEER_AUTOBYTEUS",
+        "messageType": "peer_request",
+        "createdAt": "2026-08-11T05:19:52.097Z"
+      },
+      {
+        "messageId": "teammsg_ioloZVCfQnbhpIALUdvBcYky76ERgGVf",
+        "senderAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_5f9a69a922a74ab298c3a6e6f54465cb",
+          "taskTeamRunIds": [
+            "team_local_team_nested_classroom_test_student_st_0cab581ef9e24f87a72cc56a5d08bb9d"
+          ],
+          "memberAddress": "/StudentStudyGroup/student_two",
+          "taskAgentRunId": null
+        },
+        "receiverAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_5f9a69a922a74ab298c3a6e6f54465cb",
+          "taskTeamRunIds": [
+            "team_local_team_nested_classroom_test_student_st_0cab581ef9e24f87a72cc56a5d08bb9d"
+          ],
+          "memberAddress": "/StudentStudyGroup/student_one",
+          "taskAgentRunId": null
+        },
+        "content": "TASK_PEER_AUTOBYTEUS",
+        "messageType": "answer",
+        "createdAt": "2026-08-11T05:19:53.669Z"
+      }
+    ]
+  }
+}

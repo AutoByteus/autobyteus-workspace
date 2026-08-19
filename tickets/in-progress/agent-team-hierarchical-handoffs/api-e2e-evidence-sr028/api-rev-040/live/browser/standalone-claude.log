@@ -1,0 +1,24 @@
+{
+  "slug": "claude",
+  "runtime": "claude_agent_sdk",
+  "model": "haiku",
+  "passed": true,
+  "runId": "api_rev_040_browser_agent_31cb1a6a41dd4e97b6e3bf0f2233258f",
+  "conditions": {
+    "freshRun": true,
+    "effectiveRuntime": true,
+    "effectiveReasoning": true,
+    "exactTokenBeforeRefresh": true,
+    "exactTokenAfterRefresh": true,
+    "resumeRunMatches": true,
+    "resumeActive": true,
+    "resumeRuntimeMatches": true,
+    "resumeModelMatches": true,
+    "noBrowserConsoleErrors": true
+  },
+  "fatalError": null,
+  "termination": {
+    "success": true,
+    "message": "Agent run terminated successfully."
+  }
+}

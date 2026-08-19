@@ -1,0 +1,135 @@
+{
+  "teamRunId": "utd_root_team_api_rev_008_1786830349955_c3be778aefc044a1a5b4ef38ffc5b529",
+  "agentRunId": "utd_coordinator_api_rev_008_1786830349955_54de8235d93a411587e95c435cfc3336",
+  "durationMs": 20069,
+  "sent": true,
+  "terminalAt": {
+    "type": "TURN_COMPLETED",
+    "atMs": 3559
+  },
+  "websocketError": null,
+  "messageCount": 63,
+  "typeCounts": {
+    "CONNECTED": 1,
+    "TEAM_EXECUTION_VIEW_SNAPSHOT": 1,
+    "TEAM_RUN_LIFECYCLE": 1,
+    "MEMBER_INPUT_MESSAGE": 4,
+    "TURN_STARTED": 4,
+    "SEGMENT_START": 11,
+    "TOOL_EXECUTION_STARTED": 5,
+    "TASK_DELEGATION_EVENT": 8,
+    "SEGMENT_END": 11,
+    "TOOL_EXECUTION_SUCCEEDED": 5,
+    "SEGMENT_CONTENT": 6,
+    "TOKEN_USAGE_UPDATED": 3,
+    "TURN_COMPLETED": 3
+  },
+  "tasks": [
+    {
+      "taskId": "task_5f9af769290542509b51563377c79747",
+      "delegatorAgentRunId": "utd_coordinator_api_rev_008_1786830349955_54de8235d93a411587e95c435cfc3336",
+      "recipientAddress": "/worker",
+      "targetAgentRunId": "utd_worker_api_rev_008_1786830349955_ee669642702644fd9a0f6ba4797b925e",
+      "targetTeamRunId": null,
+      "status": "accepted",
+      "description": "Return E2E_DIRECT_TASK_RESULT_42",
+      "createdAt": "2026-08-15T21:50:03.966Z",
+      "referenceFiles": [],
+      "updates": [
+        {
+          "kind": "submission",
+          "submissionId": "submission_7cf69af698a14044b9fec80091b248b4",
+          "reviewId": null,
+          "interruptionId": null,
+          "reviewedSubmissionId": null,
+          "decision": null,
+          "content": "E2E_DIRECT_TASK_RESULT_42",
+          "createdAt": "2026-08-15T21:50:06.424Z",
+          "referenceFiles": []
+        },
+        {
+          "kind": "review",
+          "submissionId": null,
+          "reviewId": "review_6c9f06ee6d94408cb052676e2130ae22",
+          "interruptionId": null,
+          "reviewedSubmissionId": "submission_7cf69af698a14044b9fec80091b248b4",
+          "decision": "accept",
+          "content": null,
+          "createdAt": "2026-08-15T21:50:08.878Z",
+          "referenceFiles": []
+        }
+      ]
+    },
+    {
+      "taskId": "task_8cbb71e547764dcf8adfe43a4e2fa976",
+      "delegatorAgentRunId": "utd_coordinator_api_rev_008_1786830349955_54de8235d93a411587e95c435cfc3336",
+      "recipientAddress": "/lab",
+      "targetAgentRunId": null,
+      "targetTeamRunId": "utd_child_team_api_rev_008_1786830349955_f89bb19387a84af08136e9817702703a",
+      "status": "accepted",
+      "description": "Return E2E_NESTED_TEAM_RESULT after delegating the required child task",
+      "createdAt": "2026-08-15T21:50:12.769Z",
+      "referenceFiles": [],
+      "updates": [
+        {
+          "kind": "submission",
+          "submissionId": "submission_531a3de742ed40c691a682443485b2c5",
+          "reviewId": null,
+          "interruptionId": null,
+          "reviewedSubmissionId": null,
+          "decision": null,
+          "content": "E2E_NESTED_TEAM_RESULT",
+          "createdAt": "2026-08-15T21:50:27.965Z",
+          "referenceFiles": []
+        },
+        {
+          "kind": "review",
+          "submissionId": null,
+          "reviewId": "review_5b7dfdb930f443f39b9a14ab2f55eeb6",
+          "interruptionId": null,
+          "reviewedSubmissionId": "submission_531a3de742ed40c691a682443485b2c5",
+          "decision": "accept",
+          "content": null,
+          "createdAt": "2026-08-15T21:50:29.905Z",
+          "referenceFiles": []
+        }
+      ]
+    },
+    {
+      "taskId": "task_616c3c121b7f4e74aa272c020e0da09e",
+      "delegatorAgentRunId": "utd_nested_coordinator_api_rev_008_1786830349955_da99a08972df403ca09825284989078b",
+      "recipientAddress": "/lab/researcher",
+      "targetAgentRunId": "utd_nested_worker_api_rev_008_1786830349955_d7c6d23e08ef4293bf4ac48868f8d260",
+      "targetTeamRunId": null,
+      "status": "accepted",
+      "description": "Return E2E_NESTED_CHILD_RESULT",
+      "createdAt": "2026-08-15T21:50:16.174Z",
+      "referenceFiles": [],
+      "updates": [
+        {
+          "kind": "submission",
+          "submissionId": "submission_751cbd2641dd4916b86e5f57f261078c",
+          "reviewId": null,
+          "interruptionId": null,
+          "reviewedSubmissionId": null,
+          "decision": null,
+          "content": "E2E_NESTED_CHILD_RESULT",
+          "createdAt": "2026-08-15T21:50:18.911Z",
+          "referenceFiles": []
+        },
+        {
+          "kind": "review",
+          "submissionId": null,
+          "reviewId": "review_948a10d7c5e9482ca5d929b87da6647b",
+          "interruptionId": null,
+          "reviewedSubmissionId": "submission_751cbd2641dd4916b86e5f57f261078c",
+          "decision": "accept",
+          "content": "Child task completed with expected result.",
+          "createdAt": "2026-08-15T21:50:26.460Z",
+          "referenceFiles": []
+        }
+      ]
+    }
+  ],
+  "communications": []
+}

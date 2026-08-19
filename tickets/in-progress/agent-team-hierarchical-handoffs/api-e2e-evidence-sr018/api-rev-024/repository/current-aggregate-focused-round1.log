@@ -1,0 +1,474 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web
+
+stderr | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamOverviewPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/__tests__/MobileArtifacts.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/running/__tests__/RunningTeamRow.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/__tests__/teamStreamMemberContextResolver.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/teamExecution/__tests__/teamExecutionState.task-lifecycle.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/teamExecution/__tests__/teamExecutionState.task-lifecycle.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/__tests__/TeamStreamingService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/running/__tests__/RunningTeamRow.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/mobile/__tests__/MobileArtifacts.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamOverviewPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/__tests__/teamStreamMemberContextResolver.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/agentStreaming/__tests__/teamStreamMemberContextResolver.spec.ts (5 tests) 10ms
+ ❯ services/teamExecution/__tests__/teamExecutionState.task-lifecycle.spec.ts (7 tests | 2 failed) 31ms
+   ✓ TeamExecutionState task lifecycle > materializes a direct task Agent from a durable-confirmed activation 4ms
+   ✓ TeamExecutionState task lifecycle > requests complete-record refresh for result events without fabricating task state 2ms
+   ✓ TeamExecutionState task lifecycle > retains terminal history while cleaning only the confirmed task subtree and repairing focus 1ms
+   × TeamExecutionState task lifecycle > retains a valid child projection until the exact task-Team Agent binding arrives 14ms
+     → expected [ 'task-team-child-0002', …(1) ] to deeply equal [ 'task-team-outer-0001', …(1) ]
+   ✓ TeamExecutionState task lifecycle > rejects a foreign delayed binding atomically 2ms
+   ✓ TeamExecutionState task lifecycle > rejects terminal task-Team cleanup while a materialized descendant is nonterminal 3ms
+   × TeamExecutionState task lifecycle > applies exact status only to a materialized task Agent 3ms
+     → expected 'offline' to be 'idle' // Object.is equality
+ ✓ components/workspace/running/__tests__/RunningTeamRow.spec.ts (4 tests) 30ms
+stdout | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current rooted event dispatch > keeps WebSocket readiness separate from backend Team lifecycle
+Team WebSocket transport connected
+
+ ❯ services/agentStreaming/__tests__/TeamStreamingService.spec.ts (9 tests | 1 failed) 34ms
+   ✓ TeamStreamingService current rooted event dispatch > keeps WebSocket readiness separate from backend Team lifecycle 6ms
+   ✓ TeamStreamingService current rooted event dispatch > projects status and content only through the exact persistent execution binding 6ms
+   ✓ TeamStreamingService current rooted event dispatch > rejects an identity-less legacy Agent event instead of using the focused execution 2ms
+   × TeamStreamingService current rooted event dispatch > mirrors an exact external user message into only its addressed conversation 10ms
+     → expected { type: 'user', …(3) } to match object { type: 'user', …(2) }
+(2 matching properties omitted from actual)
+   ✓ TeamStreamingService current rooted event dispatch > routes successful tool execution through the browser-owned handler at the exact execution 4ms
+   ✓ TeamStreamingService current rooted event dispatch > projects MEMBER_INPUT only into the exact persistent receiver 1ms
+   ✓ TeamStreamingService current rooted event dispatch > materializes and routes MEMBER_INPUT only into the exact task-Team Agent binding 3ms
+   ✓ TeamStreamingService current rooted event dispatch > rejects removed recipient-address fallback data before any member mutation 1ms
+   ✓ TeamStreamingService current rooted event dispatch > forwards the exact snake-case Team communication projection to the store 1ms
+ ✓ composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts (4 tests) 8ms
+ ✓ components/mobile/__tests__/MobileArtifacts.spec.ts (4 tests) 40ms
+ ✓ components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts (4 tests) 22ms
+ ❯ components/workspace/team/__tests__/TeamOverviewPanel.spec.ts (7 tests | 7 failed) 63ms
+   × TeamOverviewPanel current execution aggregate > shows exact focused communication count and no removed Task Plan section 24ms
+     → expected 'Messages0 Messages' to contain '1 Messages'
+   × TeamOverviewPanel current execution aggregate > keeps section expansion parent-owned with Messages open first 12ms
+     → Unable to get [data-test="team-delegated-tasks-header"] within: <div class="flex h-full flex-col overflow-hidden bg-white">
+  <section class="flex min-h-0 flex-col transition-all duration-300 ease-in-out flex-1" data-test="team-messages-section"><button type="button" class="flex flex-shrink-0 items-center justify-between border-b border-gray-200 bg-white px-3 py-2 text-left transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500" data-test="team-messages-header" aria-expanded="true">
+      <div class="flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transform text-gray-500 transition-transform duration-300" data-test="team-messages-disclosure" aria-hidden="true">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+        <h3 class="text-xs font-bold leading-none tracking-wider text-gray-900">Messages</h3>
+      </div><span class="text-xs font-medium text-gray-600">0 Messages</span>
+    </button>
+    <div data-test="team-communication-panel" class="min-h-0 flex-1"></div>
+  </section>
+  <!--v-if-->
+</div>
+   × TeamOverviewPanel current execution aggregate > opens Tasks immediately for a retained aggregate task projection 10ms
+     → Unable to get [data-test="team-delegated-tasks-header"] within: <div class="flex h-full flex-col overflow-hidden bg-white">
+  <section class="flex min-h-0 flex-col transition-all duration-300 ease-in-out flex-1" data-test="team-messages-section"><button type="button" class="flex flex-shrink-0 items-center justify-between border-b border-gray-200 bg-white px-3 py-2 text-left transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500" data-test="team-messages-header" aria-expanded="true">
+      <div class="flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transform text-gray-500 transition-transform duration-300" data-test="team-messages-disclosure" aria-hidden="true">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+        <h3 class="text-xs font-bold leading-none tracking-wider text-gray-900">Messages</h3>
+      </div><span class="text-xs font-medium text-gray-600">0 Messages</span>
+    </button>
+    <div data-test="team-communication-panel" class="min-h-0 flex-1"></div>
+  </section>
+  <!--v-if-->
+</div>
+   × TeamOverviewPanel current execution aggregate > opens Tasks when a complete snapshot adds a task while mounted 4ms
+     → Cannot read properties of null (reading 'executions')
+   × TeamOverviewPanel current execution aggregate > preserves manual collapse for an unchanged snapshot but reopens for a new task identity 5ms
+     → Unable to get [data-test="team-delegated-tasks-header"] within: <div class="flex h-full flex-col overflow-hidden bg-white">
+  <section class="flex min-h-0 flex-col transition-all duration-300 ease-in-out flex-1" data-test="team-messages-section"><button type="button" class="flex flex-shrink-0 items-center justify-between border-b border-gray-200 bg-white px-3 py-2 text-left transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500" data-test="team-messages-header" aria-expanded="true">
+      <div class="flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transform text-gray-500 transition-transform duration-300" data-test="team-messages-disclosure" aria-hidden="true">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+        <h3 class="text-xs font-bold leading-none tracking-wider text-gray-900">Messages</h3>
+      </div><span class="text-xs font-medium text-gray-600">0 Messages</span>
+    </button>
+    <div data-test="team-communication-panel" class="min-h-0 flex-1"></div>
+  </section>
+  <!--v-if-->
+</div>
+   × TeamOverviewPanel current execution aggregate > resets Messages open when selection changes to a taskless TeamRun 3ms
+     → Unable to get [data-test="team-delegated-tasks-header"] within: <div class="flex h-full flex-col overflow-hidden bg-white">
+  <section class="flex min-h-0 flex-col transition-all duration-300 ease-in-out flex-1" data-test="team-messages-section"><button type="button" class="flex flex-shrink-0 items-center justify-between border-b border-gray-200 bg-white px-3 py-2 text-left transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500" data-test="team-messages-header" aria-expanded="true">
+      <div class="flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transform text-gray-500 transition-transform duration-300" data-test="team-messages-disclosure" aria-hidden="true">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+        <h3 class="text-xs font-bold leading-none tracking-wider text-gray-900">Messages</h3>
+      </div><span class="text-xs font-medium text-gray-600">0 Messages</span>
+    </button>
+    <div data-test="team-communication-panel" class="min-h-0 flex-1"></div>
+  </section>
+  <!--v-if-->
+</div>
+   × TeamOverviewPanel current execution aggregate > passes the exact focused nested Agent address rather than a Team alias 4ms
+     → expected 'Messages0 Messages' to contain '1 Messages'
+ ❯ components/workspace/team/__tests__/TeamWorkspaceView.spec.ts (12 tests | 1 failed) 62ms
+   ✓ TeamWorkspaceView > shows focused member name in header 23ms
+   ✓ TeamWorkspaceView > does not render the token usage header chip 3ms
+   ✓ TeamWorkspaceView > shows focused member status in header 2ms
+   ✓ TeamWorkspaceView > shows focused member avatar in header when available 2ms
+   ✓ TeamWorkspaceView > rejects an unresolved initial focus instead of substituting another identity 1ms
+   ✓ TeamWorkspaceView > shows roster focus in the header when active execution falls back to the coordinator 2ms
+   ✓ TeamWorkspaceView > keeps roster focus in the header after simplifying the shell controls 2ms
+   ✓ TeamWorkspaceView > opens selected team config from header action 5ms
+   ✓ TeamWorkspaceView > seeds a new team config from the selected run without sharing nested global or member llmConfig 12ms
+   ✓ TeamWorkspaceView > renders the focused monitor directly 5ms
+   ✓ TeamWorkspaceView > passes the focused member run to the composer skill-improvement CTA 2ms
+   × TeamWorkspaceView > keeps focus on an exact Agent and does not substitute a non-focusable AgentTeam 3ms
+     → Initial Team focus must resolve to an Agent.
+stderr | services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts (5 tests | 1 failed) 25ms
+   × TeamExecutionState nested task AgentTeam projection > materializes distinct outer and nested task Team roots from one complete snapshot 18ms
+     → expected [ { address: { …(4) }, …(1) }, …(1) ] to deeply equal [ { address: { …(4) }, …(1) }, …(1) ]
+   ✓ TeamExecutionState nested task AgentTeam projection > materializes exact task-Team Agent bindings as focusable children 2ms
+   ✓ TeamExecutionState nested task AgentTeam projection > removes only an accepted nested subtree and retains its immutable task history 1ms
+   ✓ TeamExecutionState nested task AgentTeam projection > rejects terminal outer cleanup while a nested task Team remains nonterminal 1ms
+   ✓ TeamExecutionState nested task AgentTeam projection > rejects a reordered or truncated task-Team Agent chain before mutation 1ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 12 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current rooted event dispatch > mirrors an exact external user message into only its addressed conversation
+AssertionError: expected { type: 'user', …(3) } to match object { type: 'user', …(2) }
+(2 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "messageId": "external-1",
+    "text": "hello from telegram",
+    "type": "user",
+  }
+
+ ❯ services/agentStreaming/__tests__/TeamStreamingService.spec.ts:141:56
+    139|       thread_id: null, external_message_id: 'external-1', context_file…
+    140|     });
+    141|     expect(teacher.state.conversation.messages.at(-1)).toMatchObject({
+       |                                                        ^
+    142|       type: 'user', text: 'hello from telegram', messageId: 'external-…
+    143|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/12]⎯
+
+ FAIL  services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts > TeamExecutionState nested task AgentTeam projection > materializes distinct outer and nested task Team roots from one complete snapshot
+AssertionError: expected [ { address: { …(4) }, …(1) }, …(1) ] to deeply equal [ { address: { …(4) }, …(1) }, …(1) ]
+
+- Expected
++ Received
+
+  [
+    {
+      "address": {
+-       "memberAddress": "/StudentStudyGroup",
++       "memberAddress": "/StudentStudyGroup/LabGroup",
+        "rootTeamRunId": "root-team-run-1",
+        "taskAgentRunId": null,
+        "taskTeamRunIds": [
+          "task-team-outer",
++         "task-team-inner",
+        ],
+      },
+      "parent": {
+        "memberAddress": "/StudentStudyGroup",
+        "rootTeamRunId": "root-team-run-1",
+        "taskAgentRunId": null,
+-       "taskTeamRunIds": [],
++       "taskTeamRunIds": [
++         "task-team-outer",
++       ],
+      },
+    },
+    {
+      "address": {
+-       "memberAddress": "/StudentStudyGroup/LabGroup",
++       "memberAddress": "/StudentStudyGroup",
+        "rootTeamRunId": "root-team-run-1",
+        "taskAgentRunId": null,
+        "taskTeamRunIds": [
+          "task-team-outer",
+-         "task-team-inner",
+        ],
+      },
+      "parent": {
+        "memberAddress": "/StudentStudyGroup",
+        "rootTeamRunId": "root-team-run-1",
+        "taskAgentRunId": null,
+-       "taskTeamRunIds": [
+-         "task-team-outer",
+-       ],
++       "taskTeamRunIds": [],
+      },
+    },
+  ]
+
+ ❯ services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts:75:10
+     73|       address: row.executionAddress,
+     74|       parent: row.parentExecutionAddress,
+     75|     }))).toEqual([
+       |          ^
+     76|       {
+     77|         address: taskTeamExecutionAddress(),
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/12]⎯
+
+ FAIL  services/teamExecution/__tests__/teamExecutionState.task-lifecycle.spec.ts > TeamExecutionState task lifecycle > retains a valid child projection until the exact task-Team Agent binding arrives
+AssertionError: expected [ 'task-team-child-0002', …(1) ] to deeply equal [ 'task-team-outer-0001', …(1) ]
+
+- Expected
++ Received
+
+  [
+-   "task-team-outer-0001",
+    "task-team-child-0002",
++   "task-team-outer-0001",
+  ]
+
+ ❯ services/teamExecution/__tests__/teamExecutionState.task-lifecycle.spec.ts:138:76
+    136|     expect(team.executions.hasExecution(outer.executionAddress)).toBe(…
+    137|     expect(team.executions.hasExecution(child.executionAddress)).toBe(…
+    138|     expect(team.executions.listTaskHistoryRows().map((row) => row.task…
+       |                                                                            ^
+    139|       outer.taskId, child.taskId,
+    140|     ]);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/12]⎯
+
+ FAIL  services/teamExecution/__tests__/teamExecutionState.task-lifecycle.spec.ts > TeamExecutionState task lifecycle > applies exact status only to a materialized task Agent
+AssertionError: expected 'offline' to be 'idle' // Object.is equality
+
+Expected: "idle"
+Received: "offline"
+
+ ❯ services/teamExecution/__tests__/teamExecutionState.task-lifecycle.spec.ts:211:75
+    209|     } as any);
+    210|     expect(result).toMatchObject({ disposition: 'unchanged', effects: …
+    211|     expect(team.executions.getAgentContext(address)?.state.currentStat…
+       |                                                                           ^
+    212|   });
+    213| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/12]⎯
+
+ FAIL  components/workspace/team/__tests__/TeamOverviewPanel.spec.ts > TeamOverviewPanel current execution aggregate > shows exact focused communication count and no removed Task Plan section
+AssertionError: expected 'Messages0 Messages' to contain '1 Messages'
+
+Expected: "1 Messages"
+Received: "Messages0 Messages"
+
+ ❯ components/workspace/team/__tests__/TeamOverviewPanel.spec.ts:124:70
+    122|     const wrapper = mountSubject();
+    123|     expect(wrapper.text()).not.toContain('Task Plan');
+    124|     expect(wrapper.get('[data-test="team-messages-header"]').text()).t…
+       |                                                                      ^
+    125|     expect(wrapper.get('[data-test="team-delegated-tasks-header"]').te…
+    126|     expect(messagesVisible(wrapper)).toBe(true);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/12]⎯
+
+ FAIL  components/workspace/team/__tests__/TeamOverviewPanel.spec.ts > TeamOverviewPanel current execution aggregate > keeps section expansion parent-owned with Messages open first
+Error: Unable to get [data-test="team-delegated-tasks-header"] within: <div class="flex h-full flex-col overflow-hidden bg-white">
+  <section class="flex min-h-0 flex-col transition-all duration-300 ease-in-out flex-1" data-test="team-messages-section"><button type="button" class="flex flex-shrink-0 items-center justify-between border-b border-gray-200 bg-white px-3 py-2 text-left transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500" data-test="team-messages-header" aria-expanded="true">
+      <div class="flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transform text-gray-500 transition-transform duration-300" data-test="team-messages-disclosure" aria-hidden="true">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+        <h3 class="text-xs font-bold leading-none tracking-wider text-gray-900">Messages</h3>
+      </div><span class="text-xs font-medium text-gray-600">0 Messages</span>
+    </button>
+    <div data-test="team-communication-panel" class="min-h-0 flex-1"></div>
+  </section>
+  <!--v-if-->
+</div>
+ ❯ VueWrapper.BaseWrapper.get ../node_modules/.pnpm/@vue+test-utils@2.4.6/node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7279:15
+    7277|             return result;
+    7278|         }
+    7279|         throw new Error("Unable to get ".concat(selector, " within: ")…
+       |               ^
+    7280|     };
+    7281|     BaseWrapper.prototype.getComponent = function (selector) {
+ ❯ components/workspace/team/__tests__/TeamOverviewPanel.spec.ts:132:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/12]⎯
+
+ FAIL  components/workspace/team/__tests__/TeamOverviewPanel.spec.ts > TeamOverviewPanel current execution aggregate > opens Tasks immediately for a retained aggregate task projection
+Error: Unable to get [data-test="team-delegated-tasks-header"] within: <div class="flex h-full flex-col overflow-hidden bg-white">
+  <section class="flex min-h-0 flex-col transition-all duration-300 ease-in-out flex-1" data-test="team-messages-section"><button type="button" class="flex flex-shrink-0 items-center justify-between border-b border-gray-200 bg-white px-3 py-2 text-left transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500" data-test="team-messages-header" aria-expanded="true">
+      <div class="flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transform text-gray-500 transition-transform duration-300" data-test="team-messages-disclosure" aria-hidden="true">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+        <h3 class="text-xs font-bold leading-none tracking-wider text-gray-900">Messages</h3>
+      </div><span class="text-xs font-medium text-gray-600">0 Messages</span>
+    </button>
+    <div data-test="team-communication-panel" class="min-h-0 flex-1"></div>
+  </section>
+  <!--v-if-->
+</div>
+ ❯ VueWrapper.BaseWrapper.get ../node_modules/.pnpm/@vue+test-utils@2.4.6/node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7279:15
+    7277|             return result;
+    7278|         }
+    7279|         throw new Error("Unable to get ".concat(selector, " within: ")…
+       |               ^
+    7280|     };
+    7281|     BaseWrapper.prototype.getComponent = function (selector) {
+ ❯ components/workspace/team/__tests__/TeamOverviewPanel.spec.ts:143:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/12]⎯
+
+ FAIL  components/workspace/team/__tests__/TeamOverviewPanel.spec.ts > TeamOverviewPanel current execution aggregate > opens Tasks when a complete snapshot adds a task while mounted
+TypeError: Cannot read properties of null (reading 'executions')
+ ❯ reconcileTestTaskSnapshot test-support/currentTeamTestFixtures.ts:202:14
+    200|   context: AgentTeamContext,
+    201|   tasks: readonly TeamTaskProjection[],
+    202| ) => context.executions.reconcileTaskSnapshot(Object.freeze({
+       |              ^
+    203|   kind: 'complete_root_task_snapshot',
+    204|   tasks: Object.freeze([...tasks]),
+ ❯ components/workspace/team/__tests__/TeamOverviewPanel.spec.ts:150:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/12]⎯
+
+ FAIL  components/workspace/team/__tests__/TeamOverviewPanel.spec.ts > TeamOverviewPanel current execution aggregate > preserves manual collapse for an unchanged snapshot but reopens for a new task identity
+Error: Unable to get [data-test="team-delegated-tasks-header"] within: <div class="flex h-full flex-col overflow-hidden bg-white">
+  <section class="flex min-h-0 flex-col transition-all duration-300 ease-in-out flex-1" data-test="team-messages-section"><button type="button" class="flex flex-shrink-0 items-center justify-between border-b border-gray-200 bg-white px-3 py-2 text-left transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500" data-test="team-messages-header" aria-expanded="true">
+      <div class="flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transform text-gray-500 transition-transform duration-300" data-test="team-messages-disclosure" aria-hidden="true">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+        <h3 class="text-xs font-bold leading-none tracking-wider text-gray-900">Messages</h3>
+      </div><span class="text-xs font-medium text-gray-600">0 Messages</span>
+    </button>
+    <div data-test="team-communication-panel" class="min-h-0 flex-1"></div>
+  </section>
+  <!--v-if-->
+</div>
+ ❯ VueWrapper.BaseWrapper.get ../node_modules/.pnpm/@vue+test-utils@2.4.6/node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7279:15
+    7277|             return result;
+    7278|         }
+    7279|         throw new Error("Unable to get ".concat(selector, " within: ")…
+       |               ^
+    7280|     };
+    7281|     BaseWrapper.prototype.getComponent = function (selector) {
+ ❯ components/workspace/team/__tests__/TeamOverviewPanel.spec.ts:159:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/12]⎯
+
+ FAIL  components/workspace/team/__tests__/TeamOverviewPanel.spec.ts > TeamOverviewPanel current execution aggregate > resets Messages open when selection changes to a taskless TeamRun
+Error: Unable to get [data-test="team-delegated-tasks-header"] within: <div class="flex h-full flex-col overflow-hidden bg-white">
+  <section class="flex min-h-0 flex-col transition-all duration-300 ease-in-out flex-1" data-test="team-messages-section"><button type="button" class="flex flex-shrink-0 items-center justify-between border-b border-gray-200 bg-white px-3 py-2 text-left transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500" data-test="team-messages-header" aria-expanded="true">
+      <div class="flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transform text-gray-500 transition-transform duration-300" data-test="team-messages-disclosure" aria-hidden="true">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+        <h3 class="text-xs font-bold leading-none tracking-wider text-gray-900">Messages</h3>
+      </div><span class="text-xs font-medium text-gray-600">0 Messages</span>
+    </button>
+    <div data-test="team-communication-panel" class="min-h-0 flex-1"></div>
+  </section>
+  <!--v-if-->
+</div>
+ ❯ VueWrapper.BaseWrapper.get ../node_modules/.pnpm/@vue+test-utils@2.4.6/node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7279:15
+    7277|             return result;
+    7278|         }
+    7279|         throw new Error("Unable to get ".concat(selector, " within: ")…
+       |               ^
+    7280|     };
+    7281|     BaseWrapper.prototype.getComponent = function (selector) {
+ ❯ components/workspace/team/__tests__/TeamOverviewPanel.spec.ts:172:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/12]⎯
+
+ FAIL  components/workspace/team/__tests__/TeamOverviewPanel.spec.ts > TeamOverviewPanel current execution aggregate > passes the exact focused nested Agent address rather than a Team alias
+AssertionError: expected 'Messages0 Messages' to contain '1 Messages'
+
+Expected: "1 Messages"
+Received: "Messages0 Messages"
+
+ ❯ components/workspace/team/__tests__/TeamOverviewPanel.spec.ts:183:70
+    181|     seedNestedTeam();
+    182|     const wrapper = mountSubject();
+    183|     expect(wrapper.get('[data-test="team-messages-header"]').text()).t…
+       |                                                                      ^
+    184|     expect(wrapper.getComponent({ name: 'TeamCommunicationPanel' }).pr…
+    185|       .toEqual(stable('team-subteam', '/BuildSquad/review_lead'));
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/12]⎯
+
+ FAIL  components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > keeps focus on an exact Agent and does not substitute a non-focusable AgentTeam
+Error: Initial Team focus must resolve to an Agent.
+ ❯ buildTeamRunFrontendProjection services/teamExecution/teamRunFrontendProjectionBuilder.ts:44:59
+     42|   });
+     43|   const focusedNode = topology.getNode(initialFocusedAddress.memberAdd…
+     44|   if (!focusedNode || focusedNode.kind !== 'agent') throw new Error('I…
+       |                                                           ^
+     45|   const executions = createTeamExecutionState({
+     46|     rootTeamRunId,
+ ❯ Module.buildTestTeamContext test-support/currentTeamTestFixtures.ts:281:19
+ ❯ components/workspace/team/__tests__/TeamWorkspaceView.spec.ts:297:31
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/12]⎯
+
+
+ Test Files  5 failed | 5 passed (10)
+      Tests  12 failed | 49 passed (61)
+   Start at  21:50:03
+   Duration  11.57s (transform 4.93s, setup 73.84s, collect 4.00s, tests 323ms, environment 4.24s, prepare 2.48s)
+

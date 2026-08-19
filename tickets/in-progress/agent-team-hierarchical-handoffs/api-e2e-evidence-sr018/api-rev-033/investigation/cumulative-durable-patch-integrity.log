@@ -1,0 +1,6 @@
+reverse_apply_check:
+PASS
+inventory_vs_diff_path_check:
+PASS
+inventory_status_vs_diff_status_check:
+PASS

@@ -47,9 +47,24 @@ const buildTeamNode = (teamRunId = 'team-1') => ({
   lastKnownStatus: 'IDLE',
   isActive: false,
   deleteLifecycle: 'READY',
-  focusedMemberRouteKey: 'solution_designer',
+  focusedAgentRunId: 'solution-designer-run',
+  rootTeam: {
+    teamRunId,
+    kind: 'agent_team',
+    memberAddress: '/',
+    displayName: 'Team Alpha',
+    teamDefinitionId: 'team-def-1',
+    teamRunIdForNode: teamRunId,
+    coordinatorAddress: '/solution_designer',
+    workspaceRootPath: null,
+    summary: 'Team summary',
+    lastActivityAt: '2026-01-01T01:00:00.000Z',
+    currentStatus: null,
+    isActive: false,
+    deleteLifecycle: 'READY',
+    children: [],
+  },
   members: [],
-  memberTree: [],
   executionRows: [],
 });
 
@@ -128,21 +143,21 @@ const buildReactiveHarness = () => {
         teamDefinitionGroupKey: team.teamDefinitionId,
       } : null;
     },
-    getTeamMemberNavigationAncestorRouteKeys: (teamRunId: string, memberRouteKey: string) => {
+    getTeamMemberNavigationAncestorRowKeys: (teamRunId: string, agentRunId: string) => {
       const team = state.teams.find((candidate) => candidate.teamRunId === teamRunId);
       const targetIndex = team?.executionRows.findIndex(
-        (row: any) => row.memberRouteKey === memberRouteKey,
+        (row: any) => row.agentRunId === agentRunId,
       ) ?? -1;
       if (!team || targetIndex < 0) return [];
-      const ancestorRouteKeys: string[] = [];
+      const ancestorRowKeys: string[] = [];
       let expectedDepth = team.executionRows[targetIndex].depth - 1;
       for (let index = targetIndex - 1; index >= 0 && expectedDepth >= 0; index -= 1) {
         const row = team.executionRows[index];
         if (row.depth !== expectedDepth || !row.hasChildren) continue;
-        ancestorRouteKeys.unshift(row.memberRouteKey);
+        ancestorRowKeys.unshift(row.rowKey);
         expectedDepth -= 1;
       }
-      return ancestorRouteKeys;
+      return ancestorRowKeys;
     },
   };
 
@@ -275,9 +290,9 @@ describe('useWorkspaceHistoryTreeState', () => {
     state.teams = [{
       ...buildTeamNode('team-1'),
       executionRows: [
-        { memberRouteKey: 'BuildSquad', depth: 0, hasChildren: true },
-        { memberRouteKey: 'BuildSquad/reviewer', depth: 1, hasChildren: true },
-        { memberRouteKey: 'task-agent-run-1', depth: 2, hasChildren: false },
+        { rowKey: 'team:build-squad', memberAddress: '/BuildSquad', agentRunId: null, depth: 0, hasChildren: true },
+        { rowKey: 'agent:reviewer-run', memberAddress: '/BuildSquad/reviewer', agentRunId: 'reviewer-run', depth: 1, hasChildren: true },
+        { rowKey: 'task-agent:task-agent-run-1', memberAddress: '/BuildSquad/reviewer', agentRunId: 'task-agent-run-1', depth: 2, hasChildren: false },
       ],
     }];
 
@@ -286,7 +301,7 @@ describe('useWorkspaceHistoryTreeState', () => {
       'team-1',
       'task-agent-run-1',
     )).toBe(true);
-    expect(treeState.isTeamMemberExpanded('workspace-a', 'team-1', 'BuildSquad')).toBe(true);
-    expect(treeState.isTeamMemberExpanded('workspace-a', 'team-1', 'BuildSquad/reviewer')).toBe(true);
+    expect(treeState.isTeamMemberExpanded('workspace-a', 'team-1', 'team:build-squad')).toBe(true);
+    expect(treeState.isTeamMemberExpanded('workspace-a', 'team-1', 'agent:reviewer-run')).toBe(true);
   });
 });

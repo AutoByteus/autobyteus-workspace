@@ -1,0 +1,10 @@
+{
+  "data": {
+    "createAgentTeamRun": {
+      "__typename": "CreateAgentTeamRunResult",
+      "success": true,
+      "message": "Agent team run created successfully.",
+      "teamRunId": "classroom_simulation_team_aadbe5a3b3b444d8bbe0ca0cbcddb51c"
+    }
+  }
+}

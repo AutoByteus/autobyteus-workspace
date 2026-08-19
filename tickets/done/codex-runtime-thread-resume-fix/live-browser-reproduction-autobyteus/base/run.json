@@ -1,0 +1,33 @@
+{
+  "evidenceKind": "live-browser-restart-rerun",
+  "sourceBranch": "origin/codex/agent-team-universal-task-delegation",
+  "sourceCommit": "2b0f8ea99296bb3f983c497d1f5c00a4d839f404",
+  "worktree": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation",
+  "isolation": {
+    "database": "disposable file database",
+    "apiPort": 60420,
+    "webPort": 31320,
+    "productionDatabaseTouched": false
+  },
+  "secretImportCommand": "pnpm secrets:import -- --source /Users/normy/.autobyteus/server-data/.env --database-url file:///private/tmp/autobyteus-native-base-rerun-20260817/autobyteus.db",
+  "agentPackage": "/Users/normy/autobyteus_org/autobyteus-agents",
+  "teamDefinition": "Classroom Simulation Team",
+  "runtimeKind": "AUTOBYTEUS",
+  "modelIdentifier": "deepseek-v4-flash",
+  "teamRunId": "classroom_simulation_team_dfac65f6192f4535813544a7513067d6",
+  "agentRunId": "professor_471ca2122b3c4920b01e7e2afb4556b2",
+  "marker": "BASE-NATIVE-RERUN-20260817-P8W6",
+  "preRestartPrompt": "Remember exact marker BASE-NATIVE-RERUN-20260817-P8W6. Reply exactly: ACK BASE-NATIVE-RERUN-20260817-P8W6",
+  "preRestartResponse": "ACK BASE-NATIVE-RERUN-20260817-P8W6",
+  "restart": "full API process stop and restart against the same disposable state; same browser conversation reopened",
+  "postRestartPrompt": "After the server restart, what exact marker did I ask you to remember immediately before restart? Reply with only that marker.",
+  "postRestartResponse": "I have no record of a marker. No prior context or file about a server-restart marker exists in this session, so I cannot truthfully reproduce one.",
+  "outcome": "FAIL",
+  "physicalFindings": [
+    "Configured native execution-tree platformAgentRunId remained null, which is the correct external-binding representation.",
+    "Both pre- and post-restart raw turns used turn_0001.",
+    "The post-restart working-context snapshot contains only the new system/user/assistant turn; the pre-restart marker turn was overwritten.",
+    "Restart logs show missing active workspace lookup and temporary-workspace fallback; no native AgentRun restore path ran."
+  ],
+  "cleanup": "servers and browser tab stopped/closed; disposable runtime directory deleted after evidence copy"
+}

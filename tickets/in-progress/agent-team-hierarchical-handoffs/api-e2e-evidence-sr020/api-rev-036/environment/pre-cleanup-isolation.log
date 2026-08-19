@@ -1,0 +1,31 @@
+API-REV-036 pre-cleanup isolation
+2026-08-13T02:21:42Z
+server_pid=1242
+runtime=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-036-live-20260813-1
+database=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-036-live-20260813-1.db
+server_lsof_exact_owned_paths:
+node    1242 normy   19u      REG               1,13    573440           340375787 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-036-live-20260813-1.db
+node    1242 normy   20u      REG               1,13    573440           340375787 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-036-live-20260813-1.db
+node    1242 normy   21u      REG               1,13    573440           340375787 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-036-live-20260813-1.db
+node    1242 normy   22u      REG               1,13    573440           340375787 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-036-live-20260813-1.db
+node    1242 normy   24u      REG               1,13    573440           340375787 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-036-live-20260813-1.db
+node    1242 normy   25u      REG               1,13    573440           340375787 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-036-live-20260813-1.db
+node    1242 normy   26u      REG               1,13    573440           340375787 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-036-live-20260813-1.db
+node    1242 normy   27u      REG               1,13    573440           340375787 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-036-live-20260813-1.db
+node    1242 normy   28u      REG               1,13    573440           340375787 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-036-live-20260813-1.db
+server_operational_path_match=false (verified by checked launcher exact string guard)
+owned_database_sidecars:
+path=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-036-live-20260813-1.db type=Regular File size=573440
+absent=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-036-live-20260813-1.db-wal
+absent=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-036-live-20260813-1.db-shm
+absent=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-036-live-20260813-1.db-journal
+path=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-036-live-20260813-1.db.secret.key type=Regular File size=32
+owned_runtime_exists=true
+protected_port_metadata_only:
+owned_listeners:
+COMMAND  PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    1242 normy   30u  IPv4 0x13d455a84c7043e4      0t0  TCP 127.0.0.1:60236 (LISTEN)
+COMMAND  PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    2532 normy   13u  IPv4 0xa9653d33e68007ec      0t0  TCP 127.0.0.1:31236 (LISTEN)
+operational_database_action=NONE
+operational_database_inspection=NONE

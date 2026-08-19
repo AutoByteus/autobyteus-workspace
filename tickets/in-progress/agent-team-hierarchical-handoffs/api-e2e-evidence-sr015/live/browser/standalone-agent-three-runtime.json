@@ -1,0 +1,173 @@
+{
+  "observedAt": "2026-08-09T10:18:31.221673+00:00",
+  "frontendUrl": "http://127.0.0.1:31001",
+  "serverUrl": "http://127.0.0.1:60001/graphql",
+  "definitions": [
+    {
+      "id": "sr015-browser-autobyteus-agent",
+      "name": "SR015 Browser AutoByteus Agent",
+      "role": "Live validation agent",
+      "category": "api-e2e-live",
+      "description": "Browser-created standalone AutoByteus runtime validation agent.",
+      "defaultLaunchConfig": {
+        "runtimeKind": "autobyteus",
+        "llmModelIdentifier": "gpt-5.6-luna",
+        "llmConfig": null
+      }
+    },
+    {
+      "id": "sr015-browser-claude-agent",
+      "name": "SR015 Browser Claude Agent",
+      "role": "Live validation agent",
+      "category": "api-e2e-live",
+      "description": "Browser-created standalone Claude runtime validation agent.",
+      "defaultLaunchConfig": {
+        "runtimeKind": "claude_agent_sdk",
+        "llmModelIdentifier": "sonnet",
+        "llmConfig": null
+      }
+    },
+    {
+      "id": "sr015-browser-codex-agent",
+      "name": "SR015 Browser Codex Agent",
+      "role": "Live validation agent",
+      "category": "api-e2e-live",
+      "description": "Browser-created standalone Codex runtime validation agent.",
+      "defaultLaunchConfig": {
+        "runtimeKind": "codex_app_server",
+        "llmModelIdentifier": "gpt-5.6-luna",
+        "llmConfig": null
+      }
+    }
+  ],
+  "runs": [
+    {
+      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/sr015-api-rev-012-20260809/temp_workspace",
+      "workspaceName": "temp_workspace",
+      "agentDefinitionId": "sr015-browser-autobyteus-agent",
+      "agentName": "SR015 Browser AutoByteus Agent",
+      "runId": "sr015_browser_autobyteus_agent_4f745d2c11e142fb9e2046f5dac18466",
+      "summary": "Reply with exactly AUTOBYTEUS_BROWSER_OK and nothing else.",
+      "createdAt": "2026-08-09T10:14:56.250Z",
+      "terminatedAt": "2026-08-09T10:15:30.253Z",
+      "status": "offline",
+      "isActive": false,
+      "shouldConnectStream": false,
+      "statusSource": "TERMINATED_METADATA",
+      "resume": {
+        "runId": "sr015_browser_autobyteus_agent_4f745d2c11e142fb9e2046f5dac18466",
+        "isActive": false,
+        "metadataConfig": {
+          "agentDefinitionId": "sr015-browser-autobyteus-agent",
+          "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/sr015-api-rev-012-20260809/temp_workspace",
+          "llmModelIdentifier": "gpt-5.6-luna",
+          "llmConfig": null,
+          "autoExecuteTools": false,
+          "skillAccessMode": "PRELOADED_ONLY",
+          "runtimeKind": "autobyteus",
+          "runtimeReference": {
+            "runtimeKind": "autobyteus",
+            "sessionId": null,
+            "threadId": null,
+            "metadata": null
+          }
+        },
+        "editableFields": {
+          "llmModelIdentifier": true,
+          "llmConfig": true,
+          "autoExecuteTools": true,
+          "skillAccessMode": true,
+          "workspaceRootPath": false,
+          "runtimeKind": false
+        }
+      }
+    },
+    {
+      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/sr015-api-rev-012-20260809/temp_workspace",
+      "workspaceName": "temp_workspace",
+      "agentDefinitionId": "sr015-browser-claude-agent",
+      "agentName": "SR015 Browser Claude Agent",
+      "runId": "sr015_browser_claude_agent_b334ef022d96441b9f701066f75026ae",
+      "summary": "Reply with exactly CLAUDE_BROWSER_OK and nothing else.",
+      "createdAt": "2026-08-09T10:17:08.150Z",
+      "terminatedAt": "2026-08-09T10:17:40.091Z",
+      "status": "offline",
+      "isActive": false,
+      "shouldConnectStream": false,
+      "statusSource": "TERMINATED_METADATA",
+      "resume": {
+        "runId": "sr015_browser_claude_agent_b334ef022d96441b9f701066f75026ae",
+        "isActive": false,
+        "metadataConfig": {
+          "agentDefinitionId": "sr015-browser-claude-agent",
+          "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/sr015-api-rev-012-20260809/temp_workspace",
+          "llmModelIdentifier": "sonnet",
+          "llmConfig": null,
+          "autoExecuteTools": false,
+          "skillAccessMode": "PRELOADED_ONLY",
+          "runtimeKind": "claude_agent_sdk",
+          "runtimeReference": {
+            "runtimeKind": "claude_agent_sdk",
+            "sessionId": "ee3397e5-d690-48f1-a9fd-c435c848a28f",
+            "threadId": null,
+            "metadata": null
+          }
+        },
+        "editableFields": {
+          "llmModelIdentifier": true,
+          "llmConfig": true,
+          "autoExecuteTools": true,
+          "skillAccessMode": true,
+          "workspaceRootPath": false,
+          "runtimeKind": false
+        }
+      }
+    },
+    {
+      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/sr015-api-rev-012-20260809/temp_workspace",
+      "workspaceName": "temp_workspace",
+      "agentDefinitionId": "sr015-browser-codex-agent",
+      "agentName": "SR015 Browser Codex Agent",
+      "runId": "sr015_browser_codex_agent_98ab828ccff14f549b554e6b2b2d88b1",
+      "summary": "Reply with exactly CODEX_BROWSER_OK and nothing else.",
+      "createdAt": "2026-08-09T10:16:16.329Z",
+      "terminatedAt": "2026-08-09T10:16:28.797Z",
+      "status": "offline",
+      "isActive": false,
+      "shouldConnectStream": false,
+      "statusSource": "TERMINATED_METADATA",
+      "resume": {
+        "runId": "sr015_browser_codex_agent_98ab828ccff14f549b554e6b2b2d88b1",
+        "isActive": false,
+        "metadataConfig": {
+          "agentDefinitionId": "sr015-browser-codex-agent",
+          "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/sr015-api-rev-012-20260809/temp_workspace",
+          "llmModelIdentifier": "gpt-5.6-luna",
+          "llmConfig": null,
+          "autoExecuteTools": false,
+          "skillAccessMode": "PRELOADED_ONLY",
+          "runtimeKind": "codex_app_server",
+          "runtimeReference": {
+            "runtimeKind": "codex_app_server",
+            "sessionId": null,
+            "threadId": "019fe605-efbc-7e43-8952-ac45666af322",
+            "metadata": null
+          }
+        },
+        "editableFields": {
+          "llmModelIdentifier": true,
+          "llmConfig": true,
+          "autoExecuteTools": true,
+          "skillAccessMode": true,
+          "workspaceRootPath": false,
+          "runtimeKind": false
+        }
+      }
+    }
+  ],
+  "assertions": {
+    "sr015-browser-autobyteus-agent": "AUTOBYTEUS_BROWSER_OK observed in browser, run terminated",
+    "sr015-browser-codex-agent": "CODEX_BROWSER_OK observed in browser, reasoning_effort medium, run terminated",
+    "sr015-browser-claude-agent": "CLAUDE_BROWSER_OK observed in browser, authenticated sonnet alias, run terminated"
+  }
+}

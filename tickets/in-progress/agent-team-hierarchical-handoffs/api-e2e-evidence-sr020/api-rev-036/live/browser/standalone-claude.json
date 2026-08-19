@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "slug": "claude",
+  "runtime": "claude_agent_sdk",
+  "model": "sonnet",
+  "agentDefinitionId": "api-rev-036-browser-agent",
+  "runId": "api_rev_036_browser_agent_d4599420f6cb4cf7a7422dafc1143fec",
+  "expectedToken": "STANDALONE_CLAUDE_OK",
+  "startedAt": "2026-08-13T02:19:48.985Z",
+  "completedAt": "2026-08-13T02:19:55.999Z",
+  "passed": true,
+  "conditions": {
+    "freshRun": true,
+    "effectiveRuntime": true,
+    "effectiveReasoning": true,
+    "exactTokenBeforeRefresh": true,
+    "exactTokenAfterRefresh": true,
+    "resumeRunMatches": true,
+    "resumeActive": true,
+    "resumeRuntimeMatches": true,
+    "resumeModelMatches": true,
+    "noBrowserConsoleErrors": true
+  },
+  "effective": {
+    "runtimeKind": "claude_agent_sdk",
+    "model": "sonnet",
+    "reasoningEffort": "medium",
+    "autoExecuteClass": "relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 bg-blue-600"
+  },
+  "resume": {
+    "runId": "api_rev_036_browser_agent_d4599420f6cb4cf7a7422dafc1143fec",
+    "isActive": true,
+    "metadataConfig": {
+      "runtimeKind": "claude_agent_sdk",
+      "llmModelIdentifier": "sonnet"
+    }
+  },
+  "consoleEvents": [],
+  "termination": {
+    "success": true,
+    "message": "Agent run terminated successfully."
+  }
+}

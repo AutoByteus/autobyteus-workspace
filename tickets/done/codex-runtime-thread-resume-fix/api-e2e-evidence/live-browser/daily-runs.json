@@ -1,0 +1,119 @@
+{
+  "createdAt": "2026-08-17T19:49:37.688Z",
+  "rows": [
+    {
+      "label": "daily-codex",
+      "runtimeKind": "codex_app_server",
+      "model": "gpt-5.6-luna",
+      "input": {
+        "agentDefinitionId": "daily-assistant",
+        "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix/api-e2e-evidence/live-browser/workspaces/daily-codex",
+        "workspaceId": null,
+        "llmModelIdentifier": "gpt-5.6-luna",
+        "autoExecuteTools": true,
+        "llmConfig": null,
+        "skillAccessMode": "NONE",
+        "runtimeKind": "codex_app_server",
+        "initialSummary": "API E2E daily-codex"
+      },
+      "result": {
+        "success": true,
+        "message": "Agent run created successfully.",
+        "runId": "daily_assistant_977bfccbe0154201afa60ea5e0d20f4c"
+      },
+      "runId": "daily_assistant_977bfccbe0154201afa60ea5e0d20f4c",
+      "initialResumeConfig": {
+        "runId": "daily_assistant_977bfccbe0154201afa60ea5e0d20f4c",
+        "isActive": true,
+        "metadataConfig": {
+          "agentDefinitionId": "daily-assistant",
+          "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix/api-e2e-evidence/live-browser/workspaces/daily-codex",
+          "llmModelIdentifier": "gpt-5.6-luna",
+          "runtimeKind": "codex_app_server",
+          "runtimeReference": {
+            "runtimeKind": "codex_app_server",
+            "sessionId": null,
+            "threadId": "01a01145-b9ed-7912-adf0-34f9d11e28ba",
+            "metadata": null
+          }
+        }
+      }
+    },
+    {
+      "label": "daily-claude",
+      "runtimeKind": "claude_agent_sdk",
+      "model": "haiku",
+      "input": {
+        "agentDefinitionId": "daily-assistant",
+        "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix/api-e2e-evidence/live-browser/workspaces/daily-claude",
+        "workspaceId": null,
+        "llmModelIdentifier": "haiku",
+        "autoExecuteTools": true,
+        "llmConfig": null,
+        "skillAccessMode": "PRELOADED_ONLY",
+        "runtimeKind": "claude_agent_sdk",
+        "initialSummary": "API E2E daily-claude"
+      },
+      "result": {
+        "success": true,
+        "message": "Agent run created successfully.",
+        "runId": "daily_assistant_2a1686d4c9d14c45b367a52e7da36873"
+      },
+      "runId": "daily_assistant_2a1686d4c9d14c45b367a52e7da36873",
+      "initialResumeConfig": {
+        "runId": "daily_assistant_2a1686d4c9d14c45b367a52e7da36873",
+        "isActive": true,
+        "metadataConfig": {
+          "agentDefinitionId": "daily-assistant",
+          "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix/api-e2e-evidence/live-browser/workspaces/daily-claude",
+          "llmModelIdentifier": "haiku",
+          "runtimeKind": "claude_agent_sdk",
+          "runtimeReference": {
+            "runtimeKind": "claude_agent_sdk",
+            "sessionId": "0ecffbd0-a6db-4fbf-8a2f-c66b29f578cc",
+            "threadId": null,
+            "metadata": null
+          }
+        }
+      }
+    },
+    {
+      "label": "daily-autobyteus",
+      "runtimeKind": "autobyteus",
+      "model": "deepseek-v4-flash",
+      "input": {
+        "agentDefinitionId": "daily-assistant",
+        "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix/api-e2e-evidence/live-browser/workspaces/daily-autobyteus",
+        "workspaceId": null,
+        "llmModelIdentifier": "deepseek-v4-flash",
+        "autoExecuteTools": true,
+        "llmConfig": null,
+        "skillAccessMode": "NONE",
+        "runtimeKind": "autobyteus",
+        "initialSummary": "API E2E daily-autobyteus"
+      },
+      "result": {
+        "success": true,
+        "message": "Agent run created successfully.",
+        "runId": "daily_assistant_a0606e36a7164d799b125b5d651c06df"
+      },
+      "runId": "daily_assistant_a0606e36a7164d799b125b5d651c06df",
+      "initialResumeConfig": {
+        "runId": "daily_assistant_a0606e36a7164d799b125b5d651c06df",
+        "isActive": true,
+        "metadataConfig": {
+          "agentDefinitionId": "daily-assistant",
+          "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix/tickets/in-progress/codex-runtime-thread-resume-fix/api-e2e-evidence/live-browser/workspaces/daily-autobyteus",
+          "llmModelIdentifier": "deepseek-v4-flash",
+          "runtimeKind": "autobyteus",
+          "runtimeReference": {
+            "runtimeKind": "autobyteus",
+            "sessionId": null,
+            "threadId": null,
+            "metadata": null
+          }
+        }
+      }
+    }
+  ]
+}

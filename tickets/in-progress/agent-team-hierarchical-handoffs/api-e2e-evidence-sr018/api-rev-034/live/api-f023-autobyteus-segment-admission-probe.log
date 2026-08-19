@@ -1,0 +1,53 @@
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+{
+  "nativeSegment": {
+    "event_type": "segment_event",
+    "data": {
+      "event_type": "SEGMENT_CONTENT",
+      "turn_id": "turn-real-shape",
+      "segment_id": "segment-real-shape",
+      "segment_type": "text",
+      "payload": {
+        "delta": "visible delta"
+      }
+    },
+    "timestamp": "2026-08-12T20:00:00.000Z"
+  },
+  "converted": {
+    "eventType": "SEGMENT_CONTENT",
+    "runId": "run-real-shape",
+    "payload": {
+      "id": "segment-real-shape",
+      "turn_id": "turn-real-shape",
+      "segment_type": "text",
+      "delta": "visible delta"
+    },
+    "statusHint": null
+  },
+  "standaloneWire": {
+    "type": "SEGMENT_CONTENT",
+    "payload": {
+      "id": "segment-real-shape",
+      "segment_type": "text",
+      "delta": "visible delta",
+      "turn_id": "turn-real-shape"
+    }
+  },
+  "teamAdmission": {
+    "kind": "rejected",
+    "code": "TEAM_AGENT_EVENT_ADMISSION_FAILED",
+    "message": "Rejected SEGMENT_CONTENT: segment_id is required"
+  }
+}

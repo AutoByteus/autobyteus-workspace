@@ -1,0 +1,97 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web
+
+stderr | services/agentStreaming/__tests__/teamStreamMemberContextResolver.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamOverviewPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/__tests__/MobileArtifacts.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/teamExecution/__tests__/teamExecutionState.task-lifecycle.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/running/__tests__/RunningTeamRow.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/teamExecution/__tests__/teamExecutionState.task-lifecycle.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/mobile/__tests__/MobileArtifacts.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/__tests__/teamStreamMemberContextResolver.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamOverviewPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/running/__tests__/RunningTeamRow.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/__tests__/TeamStreamingService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/agentStreaming/__tests__/teamStreamMemberContextResolver.spec.ts (5 tests) 9ms
+ ✓ services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts (5 tests) 27ms
+ ✓ services/teamExecution/__tests__/teamExecutionState.task-lifecycle.spec.ts (7 tests) 31ms
+ ✓ components/workspace/running/__tests__/RunningTeamRow.spec.ts (4 tests) 42ms
+stdout | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current rooted event dispatch > keeps WebSocket readiness separate from backend Team lifecycle
+Team WebSocket transport connected
+
+ ✓ services/agentStreaming/__tests__/TeamStreamingService.spec.ts (9 tests) 32ms
+ ✓ components/mobile/__tests__/MobileArtifacts.spec.ts (4 tests) 60ms
+ ✓ components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts (4 tests) 25ms
+ ✓ components/workspace/team/__tests__/TeamWorkspaceView.spec.ts (12 tests) 76ms
+ ✓ components/workspace/team/__tests__/TeamOverviewPanel.spec.ts (7 tests) 110ms
+stderr | composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts (4 tests) 9ms
+
+ Test Files  10 passed (10)
+      Tests  61 passed (61)
+   Start at  22:18:58
+   Duration  11.19s (transform 4.67s, setup 70.59s, collect 3.51s, tests 422ms, environment 4.50s, prepare 2.69s)
+

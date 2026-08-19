@@ -2,7 +2,8 @@ import type { ApplicationExecutionProducer } from "@autobyteus/application-sdk-c
 import { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
 import { isAgentRunEvent } from "../../agent-execution/domain/agent-run-event.js";
 import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
-import { TeamRunEventSourceType, type TeamRunAgentEventPayload } from "../../agent-team-execution/domain/team-run-event.js";
+import { TeamRunEventSourceType } from "../../agent-team-execution/domain/team-run-event.js";
+import type { TeamAgentExecutionBinding } from "../../agent-team-execution/domain/team-agent-execution-binding.js";
 import type { AuthorizedApplicationAgentTargetDescriptor } from "../../application-orchestration/services/application-agent-target-authorization-service.js";
 import type { ApplicationAgentStreamSourceEvent } from "../domain/application-agent-streaming-models.js";
 import { ApplicationAgentStreamingEstablishmentError } from "../domain/application-agent-streaming-models.js";
@@ -34,20 +35,17 @@ export class ApplicationAgentStreamRuntimeSource {
     const run = (this.dependencies.teamRunManager ?? AgentTeamRunManager.getInstance())
       .getActiveRun(descriptor.runtimeRunId);
     if (!run) throw runtimeNotActive();
-    const selectedRouteKey = descriptor.address.target.kind === "AGENT_TEAM_MEMBER"
-      ? descriptor.address.target.memberRouteKey
+    const selectedAgentRunId = descriptor.address.target.kind === "AGENT_TEAM_MEMBER"
+      ? descriptor.address.target.agentRunId
       : null;
-    return run.subscribeToEvents((event) => {
+    return run.subscribeToEvents(({ event }) => {
       try {
-        if (selectedRouteKey) {
+        if (selectedAgentRunId) {
           if (event.eventSourceType !== TeamRunEventSourceType.AGENT) return;
-          const payload = event.data as TeamRunAgentEventPayload;
-          const producerRouteKey = payload.taskAgentInstance?.logicalMember.memberRouteKey
-            ?? payload.memberRouteKey;
-          if (producerRouteKey !== selectedRouteKey) return;
+          if (event.execution.agentRunId !== selectedAgentRunId) return;
         }
         const producer = event.eventSourceType === TeamRunEventSourceType.AGENT
-          ? resolveTeamAgentProducer(descriptor, event.data as TeamRunAgentEventPayload)
+          ? resolveTeamAgentProducer(descriptor, event.execution)
           : null;
         if (event.eventSourceType === TeamRunEventSourceType.AGENT && !producer) return;
         listener({ source: "AGENT_TEAM", event, producer });
@@ -58,18 +56,9 @@ export class ApplicationAgentStreamRuntimeSource {
 
 const resolveTeamAgentProducer = (
   descriptor: AuthorizedApplicationAgentTargetDescriptor,
-  payload: TeamRunAgentEventPayload,
+  execution: TeamAgentExecutionBinding,
 ): ApplicationExecutionProducer | null => {
-  const task = payload.taskAgentInstance ?? null;
-  if (task) {
-    return {
-      runId: task.taskAgentRunId,
-      memberRouteKey: task.logicalMember.memberRouteKey,
-      memberName: task.logicalMember.memberName,
-      displayName: task.logicalMember.memberName,
-      runtimeKind: "AGENT_TEAM_MEMBER",
-      teamPath: [...task.logicalMember.memberPath],
-    };
-  }
-  return descriptor.producers.find((producer) => producer.memberRouteKey === payload.memberRouteKey) ?? null;
+  return descriptor.producers.find((producer) =>
+    producer.agentRunId === execution.agentRunId,
+  ) ?? null;
 };

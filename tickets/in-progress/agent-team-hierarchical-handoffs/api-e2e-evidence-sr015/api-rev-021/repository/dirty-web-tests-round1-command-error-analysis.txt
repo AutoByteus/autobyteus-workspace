@@ -1,0 +1,4 @@
+The initial dirty-path command used mapfile, unavailable in macOS bash 3.2.
+That left an empty array and invoked unfiltered Vitest, entering the known non-clean whole-web suite.
+It is non-authoritative and is replaced by the exact command in dirty-web-tests-final.log.
+No service, browser, database, vault, secret import, or user stack was touched.

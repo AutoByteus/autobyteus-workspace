@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS",
+  "finding": "API-F-025",
+  "previous": "API-REV-039 concrete Claude active-turn rejection",
+  "currentHead": "632c503188cb9dbb8eecf4422fa174499519ad89",
+  "rootTeamRunId": "nested_classroom_test_team_642391e132464cb69eb799a243b359bc",
+  "conditions": {
+    "currentRowPassed": true,
+    "exactOnePeerRequest": true,
+    "exactOneReverseReply": true,
+    "identicalNonemptyOrderedChain": true,
+    "sameCanonicalRoot": true,
+    "acceptedSubmissionReview": true,
+    "noRuntimeCommandFailure": true,
+    "terminated": true,
+    "taskTeamLogicalKindPreserved": true
+  },
+  "peerRequest": [
+    {
+      "messageId": "teammsg_4lkvQA6yZMmH8ju009MJNoJiM83K_uer",
+      "content": "TASK_PEER_CLAUDE",
+      "messageType": "agent_message",
+      "createdAt": "2026-08-13T15:11:03.716Z",
+      "senderAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_642391e132464cb69eb799a243b359bc",
+        "taskTeamRunIds": [
+          "team_local_team_nested_classroom_test_student_st_83b9d9eaf8da491580999747a7ecaa18"
+        ],
+        "memberAddress": "/StudentStudyGroup/student_one",
+        "taskAgentRunId": null
+      },
+      "receiverAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_642391e132464cb69eb799a243b359bc",
+        "taskTeamRunIds": [
+          "team_local_team_nested_classroom_test_student_st_83b9d9eaf8da491580999747a7ecaa18"
+        ],
+        "memberAddress": "/StudentStudyGroup/student_two",
+        "taskAgentRunId": null
+      },
+      "referenceFiles": []
+    }
+  ],
+  "reverseReply": [
+    {
+      "messageId": "teammsg_BVUbfx7f3lIZTlqP4Dwx9JVzO-avz5mG",
+      "content": "TASK_PEER_CLAUDE",
+      "messageType": "agent_message",
+      "createdAt": "2026-08-13T15:11:11.746Z",
+      "senderAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_642391e132464cb69eb799a243b359bc",
+        "taskTeamRunIds": [
+          "team_local_team_nested_classroom_test_student_st_83b9d9eaf8da491580999747a7ecaa18"
+        ],
+        "memberAddress": "/StudentStudyGroup/student_two",
+        "taskAgentRunId": null
+      },
+      "receiverAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_642391e132464cb69eb799a243b359bc",
+        "taskTeamRunIds": [
+          "team_local_team_nested_classroom_test_student_st_83b9d9eaf8da491580999747a7ecaa18"
+        ],
+        "memberAddress": "/StudentStudyGroup/student_one",
+        "taskAgentRunId": null
+      },
+      "referenceFiles": []
+    }
+  ]
+}

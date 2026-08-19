@@ -1,0 +1,12 @@
+server_listener:
+COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    58029 normy   30u  IPv4 0x6af113e6c73ebd9a      0t0  TCP 127.0.0.1:60239 (LISTEN)
+frontend_listener:
+COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    67133 normy   17u  IPv4 0x1866bee0f8b79d87      0t0  TCP 127.0.0.1:31239 (LISTEN)
+server_health:
+
+frontend_status:
+200
+protected_60004:
+protected_31004:

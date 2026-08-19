@@ -1,0 +1,98 @@
+{
+  "stamp": "api_rev_006_1786811621320",
+  "workspaceRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-006/live/workspaces/api_rev_006_1786811621320",
+  "createdAgentIds": [
+    "utd-coordinator-api-rev-006-1786811621320",
+    "utd-worker-api-rev-006-1786811621320",
+    "utd-nested-coordinator-api-rev-006-1786811621320",
+    "utd-nested-worker-api-rev-006-1786811621320"
+  ],
+  "createdTeamIds": [
+    "utd-child-team-api-rev-006-1786811621320",
+    "utd-root-team-api-rev-006-1786811621320"
+  ],
+  "coordinator": {
+    "id": "utd-coordinator-api-rev-006-1786811621320",
+    "name": "utd_coordinator_api_rev_006_1786811621320",
+    "instructions": "You are the deterministic coordinator in a real universal-task-delegation validation.\nWhen the user asks you to delegate, call delegate_task exactly once using the exact recipient_address and description in the request. Do not solve the task yourself and do not substitute send_message_to.\nWhen you receive a formal submitted task result, call review_task_result exactly once for that task_id with decision accept if the result contains the requested marker. Do not start another task.\nKeep ordinary visible text under one sentence.",
+    "toolNames": [
+      "delegate_task",
+      "submit_task_result",
+      "review_task_result"
+    ]
+  },
+  "worker": {
+    "id": "utd-worker-api-rev-006-1786811621320",
+    "name": "utd_worker_api_rev_006_1786811621320",
+    "instructions": "You are the deterministic worker in a real universal-task-delegation validation.\nWhen you are activated as a dedicated task execution, immediately call submit_task_result exactly once with message E2E_DIRECT_TASK_RESULT_42. Do not call send_message_to. Do not wait for another user message. Keep visible text under one sentence.",
+    "toolNames": [
+      "delegate_task",
+      "submit_task_result",
+      "review_task_result"
+    ]
+  },
+  "nestedCoordinator": {
+    "id": "utd-nested-coordinator-api-rev-006-1786811621320",
+    "name": "utd_nested_coordinator_api_rev_006_1786811621320",
+    "instructions": "You are the deterministic coordinator of a delegated nested AgentTeam.\nWhen activated as a dedicated task Team, immediately delegate exactly one child task to recipient_address /lab/researcher with description Return E2E_NESTED_CHILD_RESULT, then wait for the formal result and accept it. After the child is accepted, call submit_task_result exactly once with message E2E_NESTED_TEAM_RESULT. Do not use send_message_to.",
+    "toolNames": [
+      "delegate_task",
+      "submit_task_result",
+      "review_task_result"
+    ]
+  },
+  "nestedWorker": {
+    "id": "utd-nested-worker-api-rev-006-1786811621320",
+    "name": "utd_nested_worker_api_rev_006_1786811621320",
+    "instructions": "You are the deterministic nested worker. When activated as a dedicated task execution, immediately call submit_task_result exactly once with message E2E_NESTED_CHILD_RESULT. Do not call send_message_to and do not wait for another user message.",
+    "toolNames": [
+      "delegate_task",
+      "submit_task_result",
+      "review_task_result"
+    ]
+  },
+  "childTeam": {
+    "id": "utd-child-team-api-rev-006-1786811621320",
+    "name": "utd_child_team_api_rev_006_1786811621320",
+    "coordinatorMemberName": "lead",
+    "nodes": [
+      {
+        "memberName": "lead",
+        "ref": "utd-nested-coordinator-api-rev-006-1786811621320",
+        "refType": "AGENT",
+        "refScope": "SHARED"
+      },
+      {
+        "memberName": "researcher",
+        "ref": "utd-nested-worker-api-rev-006-1786811621320",
+        "refType": "AGENT",
+        "refScope": "SHARED"
+      }
+    ]
+  },
+  "rootTeam": {
+    "id": "utd-root-team-api-rev-006-1786811621320",
+    "name": "utd_root_team_api_rev_006_1786811621320",
+    "coordinatorMemberName": "coordinator",
+    "nodes": [
+      {
+        "memberName": "coordinator",
+        "ref": "utd-coordinator-api-rev-006-1786811621320",
+        "refType": "AGENT",
+        "refScope": "SHARED"
+      },
+      {
+        "memberName": "worker",
+        "ref": "utd-worker-api-rev-006-1786811621320",
+        "refType": "AGENT",
+        "refScope": "SHARED"
+      },
+      {
+        "memberName": "lab",
+        "ref": "utd-child-team-api-rev-006-1786811621320",
+        "refType": "AGENT_TEAM",
+        "refScope": "SHARED"
+      }
+    ]
+  }
+}

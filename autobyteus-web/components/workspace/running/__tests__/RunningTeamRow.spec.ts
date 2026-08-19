@@ -2,55 +2,25 @@ import { describe, expect, it } from 'vitest';
 import { mount } from '@vue/test-utils';
 import RunningTeamRow from '../RunningTeamRow.vue';
 import { AgentStatus } from '~/types/agent/AgentStatus';
-
-const buildMemberContext = (runId: string, status: AgentStatus, messages: any[] = []) => ({
-  state: {
-    runId,
-    currentStatus: status,
-    conversation: {
-      id: runId,
-      createdAt: '2026-05-31T00:00:00.000Z',
-      updatedAt: '2026-05-31T00:00:00.000Z',
-      messages,
-    },
-  },
-  submissionPending: false,
-});
-
-const buildMemberNode = (memberRouteKey: string, displayName = memberRouteKey) => ({
-  memberKind: 'agent',
-  memberName: memberRouteKey,
-  displayName,
-  memberPath: [memberRouteKey],
-  memberRouteKey,
-  agentDefinitionId: `${memberRouteKey}-def`,
-});
+import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures';
 
 const buildTeamContext = () => {
-  const coordinatorNode = buildMemberNode('coordinator', 'Coordinator');
-  const workerNode = buildMemberNode('worker', 'Worker');
-  return {
+  const teamRunId = 'team-running-row-1';
+  return buildTestTeamContext({
     teamRunId: 'team-running-row-1',
-    focusedMemberRouteKey: 'worker',
-    coordinatorMemberRouteKey: 'coordinator',
-    isActive: true,
-    memberTree: [coordinatorNode, workerNode],
-    memberNodesByRouteKey: new Map([
-      ['coordinator', coordinatorNode],
-      ['worker', workerNode],
-    ]),
-    leafAgentContextsByRouteKey: new Map([
-      ['coordinator', buildMemberContext('coordinator-run', AgentStatus.Running)],
-      ['worker', buildMemberContext('worker-run', AgentStatus.Initializing)],
-    ]),
-  };
+    coordinatorAddress: '/coordinator',
+    focusedAgentRunId: 'worker-run',
+    rootChildren: [
+      testAgentNode('/coordinator', { displayName: 'Coordinator', agentRunId: 'coordinator-run', currentStatus: AgentStatus.Running }),
+      testAgentNode('/worker', { displayName: 'Worker', agentRunId: 'worker-run', currentStatus: AgentStatus.Initializing }),
+    ],
+  });
 };
 
 const mountRow = (teamRun = buildTeamContext()) => mount(RunningTeamRow, {
   props: {
     teamRun: teamRun as any,
     isSelected: true,
-    coordinatorRouteKey: 'coordinator',
   },
   global: {
     mocks: {
@@ -62,17 +32,16 @@ const mountRow = (teamRun = buildTeamContext()) => mount(RunningTeamRow, {
     stubs: {
       TeamMemberRow: {
         name: 'TeamMemberRow',
-        props: ['memberName', 'memberRouteKey', 'isFocused'],
-        template: '<button type="button" class="member-row" :data-route="memberRouteKey" :data-focused="String(isFocused)" @click="$emit(\'select\', memberRouteKey)">{{ memberName }}</button>',
+        props: ['memberName', 'memberAddress', 'isFocused'],
+        template: '<button type="button" class="member-row" :data-address="memberAddress" :data-focused="String(isFocused)" @click="$emit(\'select\', memberAddress)">{{ memberName }}</button>',
       },
     },
   },
 });
 
 describe('RunningTeamRow', () => {
-  it('renders exact-run activity independently from subscription, members, and row action', async () => {
-    const teamRun = buildTeamContext() as any;
-    teamRun.isSubscribed = false;
+  it('renders exact root lifecycle independently from members and row action', async () => {
+    const teamRun = buildTeamContext();
     const wrapper = mountRow(teamRun);
 
     const dot = wrapper.get('[data-test="team-activity-dot"]');
@@ -84,13 +53,8 @@ describe('RunningTeamRow', () => {
     expect(dot.classes()).toContain('bg-blue-500');
     expect(wrapper.find('.delete-btn').exists()).toBe(true);
 
-    await wrapper.setProps({
-      teamRun: {
-        ...teamRun,
-        isActive: false,
-        isSubscribed: true,
-      },
-    });
+    expect(teamRun.view.setRootTeamActive(false).disposition).toBe('applied');
+    await wrapper.setProps({ teamRun });
 
     expect(dot.attributes()).toMatchObject({
       'data-active': 'false',
@@ -101,40 +65,17 @@ describe('RunningTeamRow', () => {
     expect(wrapper.find('.delete-btn').exists()).toBe(true);
   });
 
-  it('filters initializing task-only logical members from active running rows', () => {
+  it('renders every current focusable AgentRun and marks the exact focused run', () => {
     const wrapper = mountRow();
 
     const rows = wrapper.findAll('.member-row');
-    expect(rows.map((row) => row.attributes('data-route'))).toEqual(['coordinator']);
-    expect(rows[0].attributes('data-focused')).toBe('true');
-    expect(wrapper.text()).not.toContain('Worker');
+    expect(rows.map((row) => row.attributes('data-address'))).toEqual(['/coordinator', '/worker']);
+    expect(rows.map((row) => row.attributes('data-focused'))).toEqual(['false', 'true']);
   });
 
-  it('keeps logical members with direct conversation history visible in the running sidebar', () => {
-    const teamRun = buildTeamContext();
-    const worker = teamRun.leafAgentContextsByRouteKey.get('worker') as any;
-    worker.state.conversation.messages.push({
-      type: 'user',
-      text: 'direct member message',
-      timestamp: new Date('2026-05-31T00:00:00.000Z'),
-    });
-
-    const wrapper = mountRow(teamRun);
-
-    expect(wrapper.findAll('.member-row').map((row) => row.attributes('data-route'))).toEqual([
-      'coordinator',
-      'worker',
-    ]);
-  });
-
-  it('does not keep a settled task-only logical worker as an active row when poisoned by a task-agent run id', () => {
-    const teamRun = buildTeamContext();
-    const worker = teamRun.leafAgentContextsByRouteKey.get('worker') as any;
-    worker.state.runId = 'team-running-row-1__worker__task_0001';
-    worker.state.currentStatus = AgentStatus.Initializing;
-
-    const wrapper = mountRow(teamRun);
-
-    expect(wrapper.findAll('.member-row').map((row) => row.attributes('data-route'))).toEqual(['coordinator']);
+  it('emits the exact focused AgentRun id rather than a logical route', async () => {
+    const wrapper = mountRow();
+    await wrapper.findAll('.member-row')[1]!.trigger('click');
+    expect(wrapper.emitted('select-member')).toEqual([['team-running-row-1', 'worker-run']]);
   });
 });

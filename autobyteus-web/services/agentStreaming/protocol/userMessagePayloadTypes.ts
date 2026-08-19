@@ -1,4 +1,3 @@
-import type { TeamStreamIdentityPayload } from './teamStreamIdentityTypes';
 
 export type UserMessageContextFilePathPayloadType =
   | 'Audio'
@@ -24,7 +23,7 @@ export interface UserMessageContextFilePathPayload {
   type?: UserMessageContextFilePathPayloadType | null;
 }
 
-export interface UserMessageProjectionPayload extends TeamStreamIdentityPayload {
+export interface UserMessageProjectionPayload {
   content?: string | null;
   received_at?: string | null;
   message_id?: string | null;

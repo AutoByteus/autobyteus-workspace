@@ -1,0 +1,160 @@
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-work-packet-renderer.ts:12:const entryExecutionKind = (entry: ActiveTaskDelegationWorkEntry): "task_agent" | "task_team" | null => (
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-work-packet-renderer.ts:35:      "5. Do not use send_message_to for task result submission, revision responses, acceptance, or finalization; task lifecycle is handled by submit_task_result and review_task_result.",
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-work-packet-renderer.ts:36:      "6. Use send_message_to only for ordinary non-lifecycle teammate communication when that is genuinely needed.",
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-work-packet-renderer.ts:43:    if (entryExecutionKind(entry) === "task_team") {
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-persistence-scope.ts:7:  ancestorTeamRunIds: [...teamRun.context.taskTeamRunIds],
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-activation-coordinator.ts:37:    private readonly taskTeamFactory = new TaskTeamRunIdentityFactory(allocator),
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-activation-coordinator.ts:111:    const materialized = await this.taskTeamFactory.create({
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-activation-coordinator.ts:124:    const taskTeamRunId = materialized.teamNode.teamRunId;
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-activation-coordinator.ts:127:      taskTeamRunIds: [...entry.receiverAddress.taskTeamRunIds, taskTeamRunId],
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-activation-coordinator.ts:136:      kind: "task_team",
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-activation-coordinator.ts:148:      task_team_run_id: taskTeamRunId,
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-activation-coordinator.ts:149:      message_type: "task_team_delegation_work_packet",
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-activation-coordinator.ts:160:      commit: () => { teamRun.markTaskTeamExecutionActive(taskTeamRunId); },
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-activation-coordinator.ts:161:      openWork: () => { teamRun.releaseTaskTeamExecutionWork(entry.target.address, taskTeamRunId); },
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-activation-coordinator.ts:163:        await teamRun.settleTaskTeamExecution(entry.target.address, taskTeamRunId, "activation aborted");
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-service.ts:48:  taskTeamDirectory?: TaskTeamActiveRunDirectory;
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-service.ts:57:  private readonly taskTeamDirectory: TaskTeamActiveRunDirectory;
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-service.ts:64:  private readonly taskTeamSettlementCoordinator: TaskTeamSettlementCoordinator;
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-service.ts:79:    this.taskTeamDirectory = options.taskTeamDirectory ?? getTaskTeamActiveRunDirectory();
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-service.ts:98:    this.taskTeamSettlementCoordinator = new TaskTeamSettlementCoordinator({
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-service.ts:100:      taskTeamDirectory: this.taskTeamDirectory,
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-service.ts:108:    this.taskTeamSettlementCoordinator.detach();
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-service.ts:181:          receiverAddress: startingEntry.boundExecution.kind === "task_team"
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-service.ts:255:    const chain = context.caller.executionAddress.taskTeamRunIds;
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-service.ts:256:    const taskTeamRunId = chain.at(-1) ?? null;
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-service.ts:260:    const activeTeam = this.taskTeamDirectory.resolveActiveEntryByTaskTeamRunId(taskTeamRunId);
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-service.ts:261:    if (!taskTeamRunId || parentTeamRunId !== this.teamRun.teamRunId ||
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-service.ts:263:      activeTeam.activeRun.teamRunId !== taskTeamRunId ||
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-service.ts:273:      taskTeamRunId,
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-service.ts:314:    if (updatedEntry.activeExecution.kind === "task_team") {
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-service.ts:315:      this.taskTeamSettlementCoordinator.requestSettlement(updatedEntry.activeExecution);
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-service.ts:328:    taskTeamRunId: string,
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-service.ts:332:    const transition = this.ledger.submitResultFromTaskTeam({ taskId, taskTeamRunId, message, referenceFiles });
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-service.ts:457:      this.sameRunChain(execution.taskTeamRunIds, this.teamRun.context.taskTeamRunIds) &&
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-record.ts:157:  target_task_team_run_id?: string | null;
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-notification-dispatcher.ts:28:  | { kind: "task_team"; memberAddress: AgentTeamAddress; taskTeamRunId: string };
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-notification-dispatcher.ts:95:      target_task_team_run_id: input.target.kind === "task_team" ? input.target.taskTeamRunId : null,
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-notification-dispatcher.ts:101:      const result = input.target.kind === "task_team"
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-notification-dispatcher.ts:104:            input.target.taskTeamRunId,
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-notification-dispatcher.ts:142:      kind: "task_team",
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-notification-dispatcher.ts:144:      taskTeamRunId: entry.activeExecution.executionAddress.taskTeamRunIds.at(-1)!,
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-notification-dispatcher.ts:157:      targetTaskTeamRunId: target.kind === "task_team" ? target.taskTeamRunId : null,
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-notification-dispatcher.ts:174:      target_task_team_run_id: target.kind === "task_team" ? target.taskTeamRunId : null,
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-notification-dispatcher.ts:182:      targetTaskTeamRunId: warning.target_task_team_run_id ?? null,
+autobyteus-server-ts/src/agent-team-execution/task-delegation/active-task-execution-binding.ts:7:  kind: "task_agent" | "task_team";
+autobyteus-server-ts/src/agent-team-execution/task-delegation/active-task-execution-binding.ts:26:  } else if (executionAddress.taskAgentRunId !== null || executionAddress.taskTeamRunIds.length === 0) {
+autobyteus-server-ts/src/agent-team-execution/task-delegation/active-task-execution-binding.ts:44:  : binding?.executionAddress.taskTeamRunIds.at(-1) ?? null;
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-ledger.ts:266:    taskTeamRunId: string;
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-ledger.ts:271:    if (entry.activeExecution.kind !== "task_team" || entry.activeExecution.executionAddress.taskTeamRunIds.at(-1) !== input.taskTeamRunId.trim()) {
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-ledger.ts:272:      throw new TaskDelegationError("TASK_TEAM_NOT_AUTHORIZED", `Task-team run '${input.taskTeamRunId}' is not assigned to delegated task '${input.taskId}'.`);
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-team-settlement-coordinator.ts:20:    taskTeamDirectory: TaskTeamActiveRunDirectory;
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-team-settlement-coordinator.ts:25:    if (!binding || binding.kind !== "task_team") return false;
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-team-settlement-coordinator.ts:26:    const taskTeamRunId = binding.executionAddress.taskTeamRunIds.at(-1)?.trim() ?? "";
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-team-settlement-coordinator.ts:27:    if (!taskTeamRunId) return false;
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-team-settlement-coordinator.ts:28:    this.pendingByTaskTeamRunId.set(taskTeamRunId, {
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-team-settlement-coordinator.ts:31:      status: this.pendingByTaskTeamRunId.get(taskTeamRunId)?.status ?? "settlement_requested",
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-team-settlement-coordinator.ts:33:    this.subscribeToChildEvents(taskTeamRunId);
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-team-settlement-coordinator.ts:34:    void this.settleIfReady(taskTeamRunId);
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-team-settlement-coordinator.ts:44:  private async settleIfReady(taskTeamRunId: string): Promise<void> {
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-team-settlement-coordinator.ts:45:    const pending = this.pendingByTaskTeamRunId.get(taskTeamRunId);
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-team-settlement-coordinator.ts:48:    const entry = this.dependencies.taskTeamDirectory.resolveKnownEntryByTaskTeamRunId(taskTeamRunId);
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-team-settlement-coordinator.ts:50:    this.subscribeToChildEvents(taskTeamRunId);
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-team-settlement-coordinator.ts:57:        taskTeamRunId,
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-team-settlement-coordinator.ts:58:        `task_team_delegation_safe_after_${pending.requestedAt}`,
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-team-settlement-coordinator.ts:62:        this.unsubscribeFromChildEvents(taskTeamRunId);
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-team-settlement-coordinator.ts:64:        this.dependencies.taskTeamDirectory.unbind(taskTeamRunId);
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-team-settlement-coordinator.ts:68:          `TaskTeamSettlementCoordinator: settlement rejected for '${taskTeamRunId}': ${result.message ?? "unknown error"}`,
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-team-settlement-coordinator.ts:74:        `TaskTeamSettlementCoordinator: settlement failed for '${taskTeamRunId}': ${String(error)}`,
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-team-settlement-coordinator.ts:86:  private subscribeToChildEvents(taskTeamRunId: string): void {
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-team-settlement-coordinator.ts:87:    if (this.subscriptionsByTaskTeamRunId.has(taskTeamRunId)) return;
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-team-settlement-coordinator.ts:88:    const entry = this.dependencies.taskTeamDirectory.resolveKnownEntryByTaskTeamRunId(taskTeamRunId);
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-team-settlement-coordinator.ts:92:      void this.settleIfReady(taskTeamRunId);
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-team-settlement-coordinator.ts:94:    this.subscriptionsByTaskTeamRunId.set(taskTeamRunId, unsubscribe);
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-team-settlement-coordinator.ts:97:  private unsubscribeFromChildEvents(taskTeamRunId: string): void {
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-team-settlement-coordinator.ts:98:    const unsubscribe = this.subscriptionsByTaskTeamRunId.get(taskTeamRunId) ?? null;
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-team-settlement-coordinator.ts:100:    this.subscriptionsByTaskTeamRunId.delete(taskTeamRunId);
+autobyteus-server-ts/src/agent-team-execution/services/member-run-instruction-composer.ts:23:    lines.push("If you use `send_message_to`, use `target_agent_run_id` for one exact currently active AgentRun. Do not claim delivery unless the tool result is accepted.");
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-team-active-run-directory.ts:12:  entry.binding.executionAddress.taskTeamRunIds.at(-1)!;
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-team-active-run-directory.ts:15:  const chain = entry.binding.executionAddress.taskTeamRunIds;
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-team-active-run-directory.ts:34:    if (binding.kind !== "task_team") throw new Error("Task AgentTeam directory requires a task_team binding.");
+autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts:99:      taskTeamRunIds: context.taskTeamRunIds,
+autobyteus-server-ts/src/agent-team-execution/services/member-team-context-builder.ts:42:          taskTeamRunIds: readonly string[];
+autobyteus-server-ts/src/agent-team-execution/services/member-team-context-builder.ts:46:          taskTeamRunIds: input.teamContext.taskTeamRunIds,
+autobyteus-server-ts/src/agent-team-execution/services/task-activation-event-barrier.ts:26:      isSameChain(root.taskTeamRunIds, candidate.taskTeamRunIds);
+autobyteus-server-ts/src/agent-team-execution/services/task-activation-event-barrier.ts:28:  if (root.taskTeamRunIds.length > 0) {
+autobyteus-server-ts/src/agent-team-execution/services/task-activation-event-barrier.ts:29:    return isSameChain(root.taskTeamRunIds, candidate.taskTeamRunIds);
+autobyteus-server-ts/src/agent-team-execution/services/task-activation-event-barrier.ts:68:    if (normalized.taskTeamRunIds.length === 0 && normalized.taskAgentRunId === null) {
+autobyteus-server-ts/src/agent-tools/agent-communication/send-message-to.ts:62:        "send_message_to requires an active Agent sender context.",
+autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-manifest.ts:50:      "Delegate one ready-to-run task using recipient_address with the same rooted /... or immediate-Team-relative ./... logical address grammar as send_message_to. The resolved Agent or Team must be a direct child of the caller's immediate Team. Provide complete task details in description and optional absolute local reference_files. Agent targets start one task-agent; Team targets start one task-scoped TeamRun through its real coordinator ingress.",
+autobyteus-server-ts/src/agent-team-execution/domain/team-agent-execution-binding.ts:16:      kind: "task_team_agent";
+autobyteus-server-ts/src/agent-team-execution/domain/team-agent-execution-binding.ts:43:  if (executionAddress.taskTeamRunIds.length > 0) {
+autobyteus-server-ts/src/agent-team-execution/domain/team-agent-execution-binding.ts:44:    return Object.freeze({ kind: "task_team_agent", executionAddress, agentRunId });
+autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-service.ts:56:    return route.kind === "task_team_ingress_parent"
+autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-catalog.ts:108:      ...(context.sender?.memberTeamContext ? ["send_message_to", "get_handoff_rules"] : []),
+autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-run-router.ts:29:      kind: "task_team_ingress_parent";
+autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-run-router.ts:45:    taskTeamActiveRunDirectory?: TaskTeamActiveRunDirectory;
+autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-run-router.ts:68:    if (taskId && executionAddress.taskAgentRunId === null && executionAddress.taskTeamRunIds.length > 0) {
+autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-run-router.ts:69:      const parentRunId = executionAddress.taskTeamRunIds.length === 1
+autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-run-router.ts:71:        : executionAddress.taskTeamRunIds.at(-2)!;
+autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-run-router.ts:74:        kind: "task_team_ingress_parent",
+autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-run-router.ts:101:    const taskTeamRun = (this.dependencies.taskTeamActiveRunDirectory ?? getTaskTeamActiveRunDirectory())
+autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-run-router.ts:103:    if (taskTeamRun) return taskTeamRun;
+autobyteus-server-ts/src/agent-team-execution/domain/team-run-context.ts:32:  taskTeamRunIds?: readonly string[] | null;
+autobyteus-server-ts/src/agent-team-execution/domain/team-run-context.ts:42:  readonly taskTeamRunIds: readonly string[];
+autobyteus-server-ts/src/agent-team-execution/domain/team-run-context.ts:52:    this.taskTeamRunIds = Object.freeze([...(input.taskTeamRunIds ?? [])]);
+autobyteus-server-ts/src/agent-team-execution/domain/team-run.ts:91:    taskTeamRunId: string | null = null,
+autobyteus-server-ts/src/agent-team-execution/domain/team-run.ts:99:      taskTeamRunId,
+autobyteus-server-ts/src/agent-team-execution/domain/team-run.ts:121:  markTaskTeamExecutionActive(taskTeamRunId: string): void {
+autobyteus-server-ts/src/agent-team-execution/domain/team-run.ts:122:    this.backend.markTaskTeamExecutionActive(taskTeamRunId);
+autobyteus-server-ts/src/agent-team-execution/domain/team-run.ts:124:  releaseTaskTeamExecutionWork(address: string, taskTeamRunId: string): void {
+autobyteus-server-ts/src/agent-team-execution/domain/team-run.ts:125:    this.backend.releaseTaskTeamExecutionWork(assertAgentTeamAddress(address), taskTeamRunId);
+autobyteus-server-ts/src/agent-team-execution/domain/team-run.ts:127:  postMessageToTaskTeamExecution(address: string, taskTeamRunId: string, message: AgentInputUserMessage) {
+autobyteus-server-ts/src/agent-team-execution/domain/team-run.ts:128:    return this.backend.postMessageToTaskTeamExecution(assertAgentTeamAddress(address), taskTeamRunId, message);
+autobyteus-server-ts/src/agent-team-execution/domain/team-run.ts:130:  settleTaskTeamExecution(address: string, taskTeamRunId: string, reason: string | null = null) {
+autobyteus-server-ts/src/agent-team-execution/domain/team-run.ts:131:    return this.backend.settleTaskTeamExecution(assertAgentTeamAddress(address), taskTeamRunId, reason);
+autobyteus-server-ts/src/agent-team-execution/backends/team-manager.ts:48:    taskTeamRunId?: string | null,
+autobyteus-server-ts/src/agent-team-execution/backends/team-manager.ts:71:  markTaskTeamExecutionActive(taskTeamRunId: string): void;
+autobyteus-server-ts/src/agent-team-execution/backends/team-manager.ts:72:  releaseTaskTeamExecutionWork(target: AgentTeamAddress, taskTeamRunId: string): void;
+autobyteus-server-ts/src/agent-team-execution/backends/team-manager.ts:75:    taskTeamRunId: string,
+autobyteus-server-ts/src/agent-team-execution/backends/team-manager.ts:80:    taskTeamRunId: string,
+autobyteus-server-ts/src/agent-team-execution/domain/team-execution-address.ts:8:  taskTeamRunIds: readonly string[];
+autobyteus-server-ts/src/agent-team-execution/domain/team-execution-address.ts:21:  taskTeamRunIds?: readonly string[] | null;
+autobyteus-server-ts/src/agent-team-execution/domain/team-execution-address.ts:26:  const allowed = new Set(["rootTeamRunId", "taskTeamRunIds", "memberAddress", "taskAgentRunId"]);
+autobyteus-server-ts/src/agent-team-execution/domain/team-execution-address.ts:30:  const taskTeamRunIds = Object.freeze((input.taskTeamRunIds ?? []).map((id, index) =>
+autobyteus-server-ts/src/agent-team-execution/domain/team-execution-address.ts:31:    required(id, `taskTeamRunIds[${index}]`),
+autobyteus-server-ts/src/agent-team-execution/domain/team-execution-address.ts:38:    taskTeamRunIds,
+autobyteus-server-ts/src/agent-team-execution/domain/team-execution-address.ts:47:    taskTeamRunIds: [...address.taskTeamRunIds],
+autobyteus-server-ts/src/agent-team-execution/domain/team-execution-address.ts:63:  const expected = ["memberAddress", "rootTeamRunId", "taskAgentRunId", "taskTeamRunIds"];
+autobyteus-server-ts/src/agent-team-execution/domain/team-execution-address.ts:65:    throw new Error("TeamExecutionAddress must contain exactly rootTeamRunId, taskTeamRunIds, memberAddress, and taskAgentRunId.");
+autobyteus-server-ts/src/agent-team-execution/domain/team-execution-address.ts:67:  if (!Array.isArray(record.taskTeamRunIds)) {
+autobyteus-server-ts/src/agent-team-execution/domain/team-execution-address.ts:68:    throw new Error("TeamExecutionAddress.taskTeamRunIds must be an array.");
+autobyteus-server-ts/src/agent-team-execution/domain/team-execution-address.ts:72:    taskTeamRunIds: record.taskTeamRunIds as string[],
+autobyteus-server-ts/src/agent-team-execution/backends/team-run-backend.ts:33:  approveToolInvocation(target: AgentTeamAddress, invocationId: string, approved: boolean, reason?: string | null, targetAgentRunId?: string | null, taskTeamRunId?: string | null): Promise<AgentOperationResult>;
+autobyteus-server-ts/src/agent-team-execution/backends/team-run-backend.ts:40:  markTaskTeamExecutionActive(taskTeamRunId: string): void;
+autobyteus-server-ts/src/agent-team-execution/backends/team-run-backend.ts:41:  releaseTaskTeamExecutionWork(target: AgentTeamAddress, taskTeamRunId: string): void;
+autobyteus-server-ts/src/agent-team-execution/backends/team-run-backend.ts:42:  postMessageToTaskTeamExecution(target: AgentTeamAddress, taskTeamRunId: string, message: AgentInputUserMessage): Promise<AgentOperationResult>;
+autobyteus-server-ts/src/agent-team-execution/backends/team-run-backend.ts:43:  settleTaskTeamExecution(target: AgentTeamAddress, taskTeamRunId: string, reason?: string | null): Promise<AgentOperationResult>;
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend.ts:153:    taskTeamRunId: string | null = null,
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend.ts:165:        taskTeamRunId,
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend.ts:252:  markTaskTeamExecutionActive(taskTeamRunId: string): void {
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend.ts:254:    this.teamManager.markTaskTeamExecutionActive(taskTeamRunId);
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend.ts:257:  releaseTaskTeamExecutionWork(target: AgentTeamAddress, taskTeamRunId: string): void {
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend.ts:259:    this.teamManager.releaseTaskTeamExecutionWork(target, taskTeamRunId);
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend.ts:264:    taskTeamRunId: string,
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend.ts:273:        taskTeamRunId,
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend.ts:283:    taskTeamRunId: string,
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend.ts:292:        taskTeamRunId,
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/delivery/task-team-active-execution-resolver.ts:25:  taskTeamRunIds: readonly string[];
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/delivery/task-team-active-execution-resolver.ts:33:    taskTeamDirectory: TaskTeamActiveRunDirectory;
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/delivery/task-team-active-execution-resolver.ts:47:    const execution = this.resolveChain(address.taskTeamRunIds);
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/delivery/task-team-active-execution-resolver.ts:60:    const execution = this.resolveChain(address.taskTeamRunIds);
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/delivery/task-team-active-execution-resolver.ts:86:      const taskTeamRunId = chain[index];
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/delivery/task-team-active-execution-resolver.ts:87:      const entry = this.options.taskTeamDirectory
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/delivery/task-team-active-execution-resolver.ts:88:        .resolveActiveEntryByTaskTeamRunId(taskTeamRunId);
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/delivery/task-team-active-execution-resolver.ts:89:      if (!entry) this.reject(`task TeamRun '${taskTeamRunId}' is missing or inactive`);
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/delivery/task-team-active-execution-resolver.ts:97:      taskTeamRunIds: Object.freeze([...chain]),
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/delivery/task-team-active-execution-resolver.ts:107:    const taskTeamRunId = expectedChain.at(-1)!;
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/delivery/task-team-active-execution-resolver.ts:115:      taskTeamRunId !== taskTeamRunId.trim() ||
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/delivery/task-team-active-execution-resolver.ts:116:      binding.kind !== "task_team" ||
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/delivery/task-team-active-execution-resolver.ts:117:      binding.executionAddress.taskTeamRunIds.at(-1) !== taskTeamRunId ||

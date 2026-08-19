@@ -8,7 +8,10 @@ import type {
   AppDataMigrationStatusSnapshot,
   AppDataMigrationSummary,
 } from "./domain/app-data-migration-types.js";
-import { AppDataMigrationDuplicateRunError } from "./domain/app-data-migration-types.js";
+import {
+  AppDataMigrationDuplicateRunError,
+  AppDataMigrationPrerequisiteError,
+} from "./domain/app-data-migration-types.js";
 import {
   AppDataMigrationRegistry,
   getAppDataMigrationRegistry,
@@ -82,9 +85,12 @@ export class AppDataMigrationRunner {
       try {
         const updated = await this.runDefinition(definition);
         results.push(this.toStatusSnapshot(definition, updated));
-      } catch {
+      } catch (error) {
         const failedRecord = await this.repository.getRecord(definition.id);
-        results.push(this.toStatusSnapshot(definition, failedRecord));
+        const snapshot = this.toStatusSnapshot(definition, failedRecord);
+        results.push(error instanceof AppDataMigrationPrerequisiteError
+          ? { ...snapshot, errorMessage: JSON.stringify(error.toJSON()) }
+          : snapshot);
       }
     }
     return results;
@@ -122,8 +128,24 @@ export class AppDataMigrationRunner {
     if (this.isCurrentlyRunning(existingRecord)) {
       throw new AppDataMigrationDuplicateRunError(definition.id);
     }
+    await this.assertPrerequisites(definition);
 
     return this.executeDefinition(definition);
+  }
+
+  private async assertPrerequisites(definition: AppDataMigrationDefinition): Promise<void> {
+    const statuses = await Promise.all(
+      (definition.prerequisiteMigrationIds ?? []).map(async (migrationId) => ({
+        migrationId,
+        status: (await this.repository.getRecord(migrationId))?.status ?? "NOT_RUN" as const,
+      })),
+    );
+    const incomplete = statuses.filter(
+      ({ status }) => status !== "SUCCEEDED" && status !== "SUCCEEDED_WITH_WARNINGS",
+    );
+    if (incomplete.length > 0) {
+      throw new AppDataMigrationPrerequisiteError(definition.id, incomplete);
+    }
   }
 
   private isCurrentlyRunning(record: AppDataMigrationRecordSnapshot | null): boolean {

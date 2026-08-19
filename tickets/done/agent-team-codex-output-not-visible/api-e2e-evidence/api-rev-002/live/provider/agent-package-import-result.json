@@ -1,0 +1,30 @@
+{
+  "importAgentPackage": [
+    {
+      "packageId": "built-in:default",
+      "displayName": "Built-in Storage",
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/autobyteus-server-ts/tests/.tmp/api-rev-002-live-20260817-1",
+      "sourceKind": "BUILT_IN",
+      "source": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/autobyteus-server-ts/tests/.tmp/api-rev-002-live-20260817-1",
+      "sharedAgentCount": 2,
+      "teamLocalAgentCount": 0,
+      "agentTeamCount": 0,
+      "applicationCount": 0,
+      "isDefault": true,
+      "isRemovable": false
+    },
+    {
+      "packageId": "local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-agents",
+      "displayName": "autobyteus-agents",
+      "path": "/Users/normy/autobyteus_org/autobyteus-agents",
+      "sourceKind": "LOCAL_PATH",
+      "source": "/Users/normy/autobyteus_org/autobyteus-agents",
+      "sharedAgentCount": 7,
+      "teamLocalAgentCount": 57,
+      "agentTeamCount": 14,
+      "applicationCount": 0,
+      "isDefault": false,
+      "isRemovable": true
+    }
+  ]
+}

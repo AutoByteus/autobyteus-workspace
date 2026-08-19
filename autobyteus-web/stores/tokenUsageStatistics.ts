@@ -11,7 +11,6 @@ import type {
   TokenUsageTaskRowKind,
   TokenUsageTaskStatisticsRow,
 } from '~/types/tokenUsageStatistics';
-import type { ConversationTargetAddress } from '~/types/agent/ConversationTargetAddress';
 import type { TokenUsageApiCostStatus, TokenUsageCacheState } from '~/types/tokenUsageMeter';
 
 interface TokenUsageStatisticsState {
@@ -35,7 +34,7 @@ type TaskRowPayload = Omit<TokenUsageTaskStatisticsRow, 'aggregate' | 'children'
   rowKind?: string | null;
   createdTimeSource?: string | null;
   aggregate?: AggregatePayload | null;
-  executionAddress?: unknown;
+  rootTeamRunId?: string | null;
   children?: TaskRowPayload[] | null;
   modelDisplayNames?: string[] | null;
 };
@@ -145,25 +144,12 @@ const normalizeTaskRowKind = (value?: string | null): TokenUsageTaskRowKind => {
   return 'AGENT_RUN';
 };
 
-const normalizeExecutionAddress = (value: unknown): ConversationTargetAddress | null => {
-  if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
-  const segments = (value as { segments?: unknown }).segments;
-  return Array.isArray(segments)
-    ? { segments: segments as ConversationTargetAddress['segments'] }
-    : null;
-};
-
 const normalizeTaskRow = (row: TaskRowPayload): TokenUsageTaskStatisticsRow => ({
   rowId: row.rowId,
   rowKind: normalizeTaskRowKind(row.rowKind),
   runId: row.runId ?? null,
-  rootTeamRunId: row.rootTeamRunId ?? null,
-  memberRouteKey: row.memberRouteKey ?? null,
-  memberAgentRunId: row.memberAgentRunId ?? null,
-  taskAgentRunId: row.taskAgentRunId ?? null,
-  taskTeamRunId: row.taskTeamRunId ?? null,
   taskId: row.taskId ?? null,
-  executionAddress: normalizeExecutionAddress(row.executionAddress),
+  rootTeamRunId: nullableString(row.rootTeamRunId),
   displayName: row.displayName,
   summary: row.summary ?? null,
   createdAt: row.createdAt,

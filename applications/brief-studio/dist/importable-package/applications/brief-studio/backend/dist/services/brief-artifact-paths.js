@@ -77,19 +77,23 @@ const extractBriefStudioSuffix = (normalizedPath) => {
     }
     return normalizedPath.slice(markerIndex + 1);
 };
-export const resolveBriefArtifactPathRule = (memberRouteKey, artifactPath) => {
-    const normalizedRouteKey = memberRouteKey.trim();
+export const resolveBriefArtifactPathRule = (memberAddress, artifactPath) => {
+    const normalizedAddress = memberAddress.trim();
+    if (!normalizedAddress.startsWith('/')) {
+        throw new Error(`Unexpected Brief Studio artifact producer '${memberAddress}'. A canonical member address is required.`);
+    }
+    const normalizedRouteKey = normalizedAddress.split('/').filter(Boolean).at(-1) ?? '';
     const normalizedPath = normalizeArtifactPath(artifactPath);
     const producerRules = RULES_BY_PRODUCER[normalizedRouteKey];
     if (!producerRules) {
-        throw new Error(`Unexpected Brief Studio artifact producer '${memberRouteKey}'. Expected 'researcher' or 'writer'.`);
+        throw new Error(`Unexpected Brief Studio artifact producer '${memberAddress}'. Expected '/researcher' or '/writer'.`);
     }
     const suffixPath = extractBriefStudioSuffix(normalizedPath);
     const rule = producerRules[normalizedPath]
         ?? (suffixPath ? producerRules[suffixPath] : undefined)
         ?? BASENAME_RULES_BY_PRODUCER[normalizedRouteKey]?.[basenameOf(normalizedPath)];
     if (!rule) {
-        throw new Error(`Unexpected Brief Studio artifact path '${artifactPath}' for producer '${memberRouteKey}'.`);
+        throw new Error(`Unexpected Brief Studio artifact path '${artifactPath}' for producer '${memberAddress}'.`);
     }
     return rule;
 };

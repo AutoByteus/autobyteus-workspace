@@ -4,7 +4,6 @@ import {
   resolveSkillAccessMode,
 } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentRunConfig } from "../domain/agent-run-config.js";
-import type { AgentRun } from "../domain/agent-run.js";
 import { AgentRunManager } from "./agent-run-manager.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import {
@@ -53,7 +52,6 @@ export class AgentRunProvisioningService {
   private readonly historyCatalogService: AgentRunHistoryCatalogService;
   private readonly workspaceManager: ReturnType<typeof getWorkspaceManager>;
   private readonly agentRunIdentityAllocator: Pick<AgentRunIdentityAllocator, "allocateForAgentDefinition">;
-  private readonly activationLocks = new Map<string, Promise<AgentRun>>();
 
   constructor(
     memoryDir: string,
@@ -107,7 +105,7 @@ export class AgentRunProvisioningService {
       preparedAt: preparedAt.toISOString(),
       preparedExpiresAt: preparedExpiresAt.toISOString(),
       startedAt: null,
-      applicationExecutionContext: preparedInput.applicationExecutionContext,
+      applicationExecutionContext: preparedRun.config.applicationExecutionContext,
     };
 
     await this.historyCatalogService.recordPreparedRun({
@@ -123,70 +121,9 @@ export class AgentRunProvisioningService {
     };
   }
 
-  async activatePreparedRun(runId: string): Promise<AgentRun> {
-    const normalizedRunId = normalizeRequiredRunId(runId);
-    const existingLock = this.activationLocks.get(normalizedRunId);
-    if (existingLock) {
-      return existingLock;
-    }
-    const lock = this.activatePreparedRunUnlocked(normalizedRunId);
-    this.activationLocks.set(normalizedRunId, lock);
-    try {
-      return await lock;
-    } finally {
-      if (this.activationLocks.get(normalizedRunId) === lock) {
-        this.activationLocks.delete(normalizedRunId);
-      }
-    }
-  }
-
-  private async activatePreparedRunUnlocked(normalizedRunId: string): Promise<AgentRun> {
-    const activeRun = this.agentRunManager.getActiveRun(normalizedRunId);
-    if (activeRun) {
-      throw new Error(`Run '${normalizedRunId}' is already active and cannot be prepared-activated again.`);
-    }
-
-    const metadata = await this.metadataService.readMetadata(normalizedRunId);
-    if (!metadata) {
-      throw new Error(`Run '${normalizedRunId}' cannot be activated because metadata is missing.`);
-    }
-    if (!metadata.preparedAt || metadata.startedAt) {
-      throw new Error(`Run '${normalizedRunId}' is not in a prepared activation state.`);
-    }
-
-    const workspace = await this.workspaceManager.ensureWorkspaceByRootPath(
-      metadata.workspaceRootPath,
-    );
-    const createdRun = await this.agentRunManager.createAgentRun(
-      new AgentRunConfig({
-        runtimeKind: metadata.runtimeKind,
-        agentDefinitionId: metadata.agentDefinitionId,
-        llmModelIdentifier: metadata.llmModelIdentifier,
-        autoExecuteTools: metadata.autoExecuteTools,
-        workspaceId: workspace.workspaceId,
-        memoryDir: metadata.memoryDir,
-        llmConfig: metadata.llmConfig,
-        skillAccessMode: metadata.skillAccessMode ?? SkillAccessMode.PRELOADED_ONLY,
-        applicationExecutionContext: metadata.applicationExecutionContext ?? null,
-      }),
-      normalizedRunId,
-    );
-
-    const activatedMetadata = await this.historyCatalogService.recordRunStarted({
-      runId: normalizedRunId,
-      runtimeKind: createdRun.runtimeKind,
-      platformAgentRunId: createdRun.getPlatformAgentRunId(),
-      startedAt: new Date().toISOString(),
-    });
-    if (!activatedMetadata) {
-      throw new Error(`Run '${normalizedRunId}' cannot be activated because metadata disappeared.`);
-    }
-    return createdRun;
-  }
-
   async cancelPreparedAgentRun(runId: string): Promise<CancelPreparedAgentRunResult> {
     const normalizedRunId = normalizeRequiredRunId(runId);
-    if (getAgentRunCommandRegistry().hasInFlightCommand(normalizedRunId)) {
+    if (getAgentRunCommandRegistry().hasOutstandingCommands(normalizedRunId)) {
       return {
         success: false,
         message: "Prepared run has a command in progress.",
@@ -209,7 +146,7 @@ export class AgentRunProvisioningService {
       if (!metadata || !metadata.preparedAt || metadata.startedAt) {
         continue;
       }
-      if (this.agentRunManager.hasActiveRun(runId) || getAgentRunCommandRegistry().hasInFlightCommand(runId)) {
+      if (this.agentRunManager.hasActiveRun(runId) || getAgentRunCommandRegistry().hasOutstandingCommands(runId)) {
         continue;
       }
       const expiresAt = metadata.preparedExpiresAt ? Date.parse(metadata.preparedExpiresAt) : NaN;
@@ -244,7 +181,7 @@ export class AgentRunProvisioningService {
     autoExecuteTools: boolean;
     llmConfig: Record<string, unknown> | null;
     skillAccessMode: SkillAccessMode;
-    applicationExecutionContext: ApplicationExecutionContext | null;
+    applicationBinding: CreateAgentRunInput["applicationBinding"];
   }> {
     if (!hasNonEmptyString(input.agentDefinitionId)) {
       throw new Error(`agentDefinitionId is required when ${action} a run.`);
@@ -278,7 +215,7 @@ export class AgentRunProvisioningService {
       autoExecuteTools: input.autoExecuteTools,
       llmConfig: input.llmConfig ?? null,
       skillAccessMode: resolveSkillAccessMode(input.skillAccessMode, 0),
-      applicationExecutionContext: input.applicationExecutionContext ?? null,
+      applicationBinding: input.applicationBinding ?? null,
     };
   }
 
@@ -290,7 +227,7 @@ export class AgentRunProvisioningService {
     autoExecuteTools: boolean;
     llmConfig: Record<string, unknown> | null;
     skillAccessMode: SkillAccessMode;
-    applicationExecutionContext: ApplicationExecutionContext | null;
+    applicationBinding: CreateAgentRunInput["applicationBinding"];
   }): Promise<{ runId: string; config: AgentRunConfig }> {
     const runId = await this.agentRunIdentityAllocator.allocateForAgentDefinition(input.agentDefinitionId);
     const memoryDir = this.memoryLayout.getStandaloneRunDirPath(runId);
@@ -305,7 +242,9 @@ export class AgentRunProvisioningService {
         memoryDir,
         llmConfig: input.llmConfig,
         skillAccessMode: input.skillAccessMode,
-        applicationExecutionContext: input.applicationExecutionContext,
+        applicationExecutionContext: input.applicationBinding
+          ? createApplicationExecutionContext(input.applicationBinding, runId)
+          : null,
       }),
     };
   }
@@ -327,3 +266,16 @@ export class AgentRunProvisioningService {
     return canonicalizeWorkspaceRootPath(appConfigProvider.config.getTempWorkspaceDir());
   }
 }
+
+const createApplicationExecutionContext = (
+  binding: NonNullable<CreateAgentRunInput["applicationBinding"]>,
+  agentRunId: string,
+): ApplicationExecutionContext => Object.freeze({
+  applicationId: normalizeRequiredRunId(binding.applicationId),
+  bindingId: normalizeRequiredRunId(binding.bindingId),
+  producer: Object.freeze({
+    agentRunId,
+    displayName: binding.displayName?.trim() || null,
+    runtimeKind: binding.runtimeKind,
+  }),
+});

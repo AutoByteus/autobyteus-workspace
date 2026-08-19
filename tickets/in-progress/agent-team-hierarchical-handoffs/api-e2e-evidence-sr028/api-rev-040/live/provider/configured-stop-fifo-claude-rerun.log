@@ -1,0 +1,20 @@
+{
+  "passed": true,
+  "runId": "api_rev_040_claude_stop_fifo_agent_ba6dce81bd8e4c388d79da49dc8a39ee",
+  "conditions": {
+    "exactClaudeRuntimeConfigured": true,
+    "interruptSentBeforeFollowup": true,
+    "followupAdmittedWhileInterruptOutstanding": true,
+    "interruptAccepted": true,
+    "followupAcceptedOnce": true,
+    "terminalBeforeNextStart": true,
+    "exactTokenRenderedOnce": true,
+    "exactTokenOnWireOnce": true,
+    "noBrowserConsoleErrors": true
+  },
+  "fatalError": null,
+  "termination": {
+    "success": true,
+    "message": "Agent run terminated successfully."
+  }
+}

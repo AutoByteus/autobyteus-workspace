@@ -1,0 +1,15 @@
+API-REV-040 cumulative durable inventory audit
+2026-08-13T15:29:35Z
+HEAD=632c503188cb9dbb8eecf4422fa174499519ad89
+inventory_count=5
+actual_count=5
+inventory_unique=5
+path_status_equality=True
+all_active_exist=True
+reverse_apply=PASS
+active_skip_only_todo=ZERO
+retired_identity_residue=ZERO
+diff_check=PASS
+bb6b78a475ff53b17bc6bc1044b9f2b32b28b31486f2726ece6d924f3aefa182  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr028/api-rev-040/investigation/cumulative-durable-coverage-inventory.tsv
+0ed1b1006299dcfb51b00b748f9a3ec05b5f4d6cdb3936a9616eea0b3a4ceb7b  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr028/api-rev-040/investigation/cumulative-durable-diff.patch
+STATUS=PASS

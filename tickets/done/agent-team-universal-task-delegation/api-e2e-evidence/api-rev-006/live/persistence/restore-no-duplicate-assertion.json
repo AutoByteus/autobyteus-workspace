@@ -1,0 +1,19 @@
+{
+  "checks": [
+    {
+      "teamRunId": "utd_root_team_api_rev_006_1786811621320_dba28e5c40cb4d2ba2c561c4b21b86a6",
+      "tasksExactNoDuplicate": true,
+      "messagesExactNoDuplicate": true,
+      "treeExact": true,
+      "postRestoreIsActive": true
+    },
+    {
+      "teamRunId": "classroom_simulation_team_61ecc73703324acfa1f63394c2727d5a",
+      "tasksExactNoDuplicate": true,
+      "messagesExactNoDuplicate": true,
+      "treeExact": true,
+      "postRestoreIsActive": true
+    }
+  ],
+  "pass": true
+}

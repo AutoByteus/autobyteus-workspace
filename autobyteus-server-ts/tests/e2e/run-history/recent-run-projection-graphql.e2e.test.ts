@@ -19,9 +19,9 @@ import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { AgentRunMetadataStore } from "../../../src/run-history/store/agent-run-metadata-store.js";
 import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-metadata-types.js";
-import { TeamRunMetadataStore } from "../../../src/run-history/store/team-run-metadata-store.js";
-import type { TeamRunMetadata } from "../../../src/run-history/store/team-run-metadata-types.js";
+import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-run-execution-tree-store.js";
 import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
+import { testAgentNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
 
 const GRAPHQL_QUERY = `
   query RunProjection($runId: String!) {
@@ -36,8 +36,8 @@ const GRAPHQL_QUERY = `
 `;
 
 const TEAM_GRAPHQL_QUERY = `
-  query TeamRunProjection($teamRunId: String!, $memberRouteKey: String!) {
-    getTeamMemberRunProjection(teamRunId: $teamRunId, memberRouteKey: $memberRouteKey) {
+  query TeamRunProjection($teamRunId: String!, $agentRunId: String!) {
+    getTeamMemberRunProjection(teamRunId: $teamRunId, agentRunId: $agentRunId) {
       agentRunId
       summary
       lastActivityAt
@@ -86,9 +86,9 @@ const STANDALONE_ACTIVE_TRACE_PAGE_QUERY = `
 `;
 
 const TEAM_ACTIVE_TRACE_PAGE_QUERY = `
-  query TeamActiveTracePage($teamRunId: String!, $memberRouteKey: String!, $beforeCursor: String) {
+  query TeamActiveTracePage($teamRunId: String!, $agentRunId: String!, $beforeCursor: String) {
     getTeamMemberEventMonitorActiveTracePage(
-      teamRunId: $teamRunId, memberRouteKey: $memberRouteKey, beforeCursor: $beforeCursor
+      teamRunId: $teamRunId, agentRunId: $agentRunId, beforeCursor: $beforeCursor
     ) {
       ${ACTIVE_TRACE_PAGE_FIELDS}
     }
@@ -279,32 +279,29 @@ describe("recent run projection GraphQL e2e", () => {
     memberRunId: string;
     memberRouteKey: string;
   }): Promise<string> => {
-    const teamStore = new TeamRunMetadataStore(memoryDir);
-    await teamStore.writeMetadata(input.teamRunId, {
-      teamRunId: input.teamRunId,
-      teamDefinitionId: "recent-window-team-definition",
+    const layout = new AgentMemoryLayout(memoryDir);
+    const memberAddress = `/${input.memberRouteKey}`;
+    const rootDir = layout.getTeamDirPath({
+      rootTeamRunId: input.teamRunId,
+      ancestorTeamRunIds: [],
+    });
+    await new TeamRunExecutionTreeStore().write(rootDir, testExecutionTree({
+      rootTeamRunId: input.teamRunId,
+      rootTeamDefinitionId: "recent-window-team-definition",
       teamDefinitionName: "Recent Window Team",
-      coordinatorMemberRouteKey: input.memberRouteKey,
+      coordinatorAddress: memberAddress,
       createdAt: new Date(1_800_000_000_000).toISOString(),
-      memberTree: [{
-        memberKind: "agent",
-        memberRouteKey: input.memberRouteKey,
-        memberPath: [input.memberRouteKey],
-        memberName: "Worker",
-        memberRunId: input.memberRunId,
-        runtimeKind: RuntimeKind.AUTOBYTEUS,
-        platformAgentRunId: null,
+      children: [testAgentNode(memberAddress, {
+        agentRunId: input.memberRunId,
         agentDefinitionId: "recent-window-agent",
         llmModelIdentifier: "model",
         autoExecuteTools: false,
         skillAccessMode: SkillAccessMode.NONE,
-        llmConfig: null,
         workspaceRootPath,
-        applicationExecutionContext: null,
-      }],
-    } satisfies TeamRunMetadata);
-    return new AgentMemoryLayout(memoryDir).getTeamAgentRunDirPath(
-      { rootTeamRunId: input.teamRunId, teamRunPath: [] },
+      })],
+    }));
+    return layout.getTeamAgentRunDirPath(
+      { rootTeamRunId: input.teamRunId, ancestorTeamRunIds: [] },
       input.memberRunId,
     );
   };
@@ -380,7 +377,7 @@ describe("recent run projection GraphQL e2e", () => {
 
     const teamProjection = (await execGraphql<{
       getTeamMemberRunProjection: ProjectionPayload;
-    }>(TEAM_GRAPHQL_QUERY, { teamRunId, memberRouteKey })).getTeamMemberRunProjection;
+    }>(TEAM_GRAPHQL_QUERY, { teamRunId, agentRunId: memberRunId })).getTeamMemberRunProjection;
     expect(teamProjection.agentRunId).toBe(memberRunId);
     expect(teamProjection.conversation).toEqual([
       expect.objectContaining({ kind: "reasoning", content: "team member private reasoning" }),
@@ -390,7 +387,7 @@ describe("recent run projection GraphQL e2e", () => {
       getTeamMemberEventMonitorActiveTracePage: ActiveTracePagePayload;
     }>(TEAM_ACTIVE_TRACE_PAGE_QUERY, {
       teamRunId,
-      memberRouteKey,
+      agentRunId: memberRunId,
       beforeCursor: null,
     })).getTeamMemberEventMonitorActiveTracePage;
     expect(teamPage.events.flatMap((event) => event.visuals)).toEqual([
@@ -464,35 +461,7 @@ describe("recent run projection GraphQL e2e", () => {
     const teamRunId = "recent-window-team";
     const memberRunId = "recent-window-member";
     const memberRouteKey = "worker";
-    const teamStore = new TeamRunMetadataStore(memoryDir);
-    await teamStore.writeMetadata(teamRunId, {
-      teamRunId,
-      teamDefinitionId: "recent-window-team-definition",
-      teamDefinitionName: "Recent Window Team",
-      coordinatorMemberRouteKey: memberRouteKey,
-      createdAt: new Date(1_800_000_000_000).toISOString(),
-      memberTree: [{
-        memberKind: "agent",
-        memberRouteKey,
-        memberPath: [memberRouteKey],
-        memberName: "Worker",
-        memberRunId,
-        runtimeKind: RuntimeKind.AUTOBYTEUS,
-        platformAgentRunId: null,
-        agentDefinitionId: "recent-window-agent",
-        llmModelIdentifier: "model",
-        autoExecuteTools: false,
-        skillAccessMode: SkillAccessMode.NONE,
-        llmConfig: null,
-        workspaceRootPath,
-        applicationExecutionContext: null,
-      }],
-    } satisfies TeamRunMetadata);
-
-    const memberDir = new AgentMemoryLayout(memoryDir).getTeamAgentRunDirPath(
-      { rootTeamRunId: teamRunId, teamRunPath: [] },
-      memberRunId,
-    );
+    const memberDir = await writeTeamMetadata({ teamRunId, memberRunId, memberRouteKey });
     const activeRows = Array.from({ length: 105 }, (_, index) =>
       userTrace(`team-active-${index}`, index + 3, `team-active-${index}`));
     const files = await archivePrefix(memberDir, "team", activeRows);
@@ -502,7 +471,7 @@ describe("recent run projection GraphQL e2e", () => {
     try {
       const result = await execGraphql<{ getTeamMemberRunProjection: ProjectionPayload }>(
         TEAM_GRAPHQL_QUERY,
-        { teamRunId, memberRouteKey },
+        { teamRunId, agentRunId: memberRunId },
       );
       projection = result.getTeamMemberRunProjection;
     } finally {
@@ -592,7 +561,7 @@ describe("recent run projection GraphQL e2e", () => {
     try {
       const latest = await execGraphql<{ getTeamMemberRunProjection: ProjectionPayload }>(
         TEAM_GRAPHQL_QUERY,
-        { teamRunId, memberRouteKey },
+        { teamRunId, agentRunId: memberRunId },
       );
       expect(latest.getTeamMemberRunProjection.conversation.map((entry) => entry["content"]))
         .toEqual(Array.from({ length: 100 }, (_, index) => `event-${index + 175}`));
@@ -601,7 +570,7 @@ describe("recent run projection GraphQL e2e", () => {
       do {
         const result = await execGraphql<{ getTeamMemberEventMonitorActiveTracePage: ActiveTracePagePayload }>(
           TEAM_ACTIVE_TRACE_PAGE_QUERY,
-          { teamRunId, memberRouteKey, beforeCursor },
+          { teamRunId, agentRunId: memberRunId, beforeCursor },
         );
         pages.push(result.getTeamMemberEventMonitorActiveTracePage);
         beforeCursor = result.getTeamMemberEventMonitorActiveTracePage.beforeCursor;

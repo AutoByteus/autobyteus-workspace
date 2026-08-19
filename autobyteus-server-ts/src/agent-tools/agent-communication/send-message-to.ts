@@ -14,6 +14,11 @@ import {
   SEND_MESSAGE_TO_TOOL_NAME,
 } from "../../agent-communication/services/send-message-to-tool-contract.js";
 import { buildSendMessageToParameterSchema } from "./send-message-to-parameter-schema.js";
+import {
+  communicationRejection,
+  serializeAgentCommunicationToolResult,
+  toAgentCommunicationToolResult,
+} from "../../agent-communication/services/agent-communication-tool-result.js";
 
 const SERVER_OWNED_AGENT_COMMUNICATION_TOOL = "server-owned-agent-communication";
 
@@ -52,7 +57,10 @@ export class AutoByteusSendMessageToTool extends BaseTool<unknown, Record<string
     kwargs: Record<string, unknown> = {},
   ): Promise<string> {
     if (!this.sender) {
-      return "Error: send_message_to sender context is unavailable for this AutoByteus run.";
+      return serializeAgentCommunicationToolResult(communicationRejection(
+        "AGENT_COMMUNICATION_SENDER_CONTEXT_REQUIRED",
+        "send_message_to requires an active Agent sender context.",
+      ));
     }
 
     const result = await this.dispatcher.dispatch({
@@ -60,11 +68,7 @@ export class AutoByteusSendMessageToTool extends BaseTool<unknown, Record<string
       rawArguments: kwargs,
       sender: this.sender,
     });
-    if (!result.accepted) {
-      return `Error: ${result.message ?? "send_message_to failed."}`;
-    }
-
-    return result.message ?? "Delivered message.";
+    return serializeAgentCommunicationToolResult(toAgentCommunicationToolResult(result));
   }
 }
 

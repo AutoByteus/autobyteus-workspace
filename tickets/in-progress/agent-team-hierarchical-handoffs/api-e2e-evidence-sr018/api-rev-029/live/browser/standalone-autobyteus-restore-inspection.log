@@ -1,0 +1,11 @@
+rows 1
+[ 'Reply with exactly STANDALONE_AUTOBYTEUS_OK and nothing else.\n6m' ]
+contains true
+t.
+conversation You
+**[User Requirement]**
+Reply with exactly STANDALONE_AUTOBYTEUS_OK and nothing else.
+AR
+API REV 029 Browser Agent
+
+STANDALONE_AUTOBYTEUS_OK

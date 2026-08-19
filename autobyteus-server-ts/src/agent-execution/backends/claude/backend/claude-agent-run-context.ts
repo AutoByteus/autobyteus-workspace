@@ -12,7 +12,7 @@ export class ClaudeAgentRunContext {
   readonly configuredSkills: Skill[];
   readonly materializedConfiguredSkills: MaterializedClaudeWorkspaceSkill[];
   readonly skillAccessMode: SkillAccessMode | null;
-  sessionId: string | null;
+  readonly sessionId: string | null;
   hasCompletedTurn: boolean;
   activeTurnId: string | null;
 

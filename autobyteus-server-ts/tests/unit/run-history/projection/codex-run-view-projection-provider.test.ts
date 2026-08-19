@@ -418,7 +418,7 @@ describe("CodexRunViewProjectionProvider", () => {
                   id: "call-send-1",
                   tool: "send_message_to",
                   arguments: {
-                    recipient_name: "code_reviewer",
+                    recipient_address: "code_reviewer",
                     content: "Implementation handoff is ready.",
                   },
                   result: { success: true },
@@ -466,7 +466,7 @@ describe("CodexRunViewProjectionProvider", () => {
       expect(toolCalls[1]).toMatchObject({
         invocationId: "call-send-1",
         toolArgs: {
-          recipient_name: "code_reviewer",
+          recipient_address: "code_reviewer",
           content: "Implementation handoff is ready.",
         },
         toolResult: { success: true },
@@ -487,7 +487,7 @@ describe("CodexRunViewProjectionProvider", () => {
             type: "tool_call",
             status: "success",
             arguments: {
-              recipient_name: "code_reviewer",
+              recipient_address: "code_reviewer",
               content: "Implementation handoff is ready.",
             },
             result: { success: true },
@@ -530,7 +530,7 @@ describe("CodexRunViewProjectionProvider", () => {
                   type: "dynamicToolCall",
                   id: "call-send-failed",
                   tool: "send_message_to",
-                  arguments: { recipient_name: "missing", content: "hello" },
+                  arguments: { recipient_address: "missing", content: "hello" },
                   status: "failed",
                   result: {
                     content: [
@@ -579,7 +579,7 @@ describe("CodexRunViewProjectionProvider", () => {
           kind: "tool_call",
           invocationId: "call-send-failed",
           toolName: "send_message_to",
-          toolArgs: { recipient_name: "missing", content: "hello" },
+          toolArgs: { recipient_address: "missing", content: "hello" },
           toolError: "Recipient missing was not found.",
         }),
       ]);

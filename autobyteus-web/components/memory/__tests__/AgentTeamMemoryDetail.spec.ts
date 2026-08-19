@@ -18,7 +18,7 @@ describe('AgentTeamMemoryDetail', () => {
       workspaceRootPath: '/tmp/team-project',
       lastUpdatedAt: '2026-06-19T10:06:04.000Z',
       memory: { latestMemoryAt: null, hasWorkingContext: true, hasEpisodic: false, hasSemantic: false, hasRawTraces: false, hasRawArchive: false },
-      memberTargets: [{ memberRouteKey: 'lead', memberName: 'Lead', memberRunId: 'member-1', memory: { latestMemoryAt: null, hasWorkingContext: true, hasEpisodic: false, hasSemantic: false, hasRawTraces: false, hasRawArchive: false } }],
+      memberTargets: [{ memberAddress: '/lead', memberName: 'Lead', agentRunId: 'member-1', memory: { latestMemoryAt: null, hasWorkingContext: true, hasEpisodic: false, hasSemantic: false, hasRawTraces: false, hasRawArchive: false } }],
     }];
     const wrapper = mount(AgentTeamMemoryDetail, { props: { teamDefinitionId: 'team' }, global: { plugins: [pinia] } });
 
@@ -41,6 +41,6 @@ describe('AgentTeamMemoryDetail', () => {
     await wrapper.findAll('button').find((button) => button.text() === 'Search')!.trigger('click');
     expect(store.setTeamRunsSearch).toHaveBeenCalledWith('team', 'planning');
     await wrapper.findAll('button').find((button) => button.text().includes('Lead'))!.trigger('click');
-    expect(wrapper.emitted('inspectMember')?.[0]?.[1]).toMatchObject({ memberRunId: 'member-1' });
+    expect(wrapper.emitted('inspectMember')?.[0]?.[1]).toMatchObject({ memberAddress: '/lead', agentRunId: 'member-1' });
   });
 });

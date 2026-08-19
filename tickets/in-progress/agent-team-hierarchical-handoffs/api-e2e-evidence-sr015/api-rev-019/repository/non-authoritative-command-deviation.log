@@ -1,0 +1,7 @@
+API-REV-019 non-authoritative command deviation
+
+An initial local rerun mistakenly inserted `--` before the five requested Vitest paths and used an invalid relative tee destination. Vitest therefore began the known non-clean whole-web suite instead of the intended focused selection, and no authoritative log was created. That invocation is not acceptance evidence. Its unrelated failures remain outside the CRR-039 environment correction and do not replace the existing broader-baseline classification.
+
+The exact intended commands were immediately rerun without the extra separator and are authoritative:
+- repository/web-current-focused-final.log: 5 files / 26 tests passed
+- repository/web-current-affected-final.log: 7 files / 60 tests passed

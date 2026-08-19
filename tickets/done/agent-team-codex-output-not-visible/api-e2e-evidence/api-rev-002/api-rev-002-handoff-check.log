@@ -1,0 +1,16 @@
+API-REV-002 handoff audit
+generated_at=2026-08-17T08:51:04Z
+head=06e67b78ca7d1843a2428c5f931c45029f8ed796
+report_latest=169:- Result: **Fail**.;172:- Open finding: `API-F-001`.;
+revision_index=8:| API-REV-002 | user-expanded all-runtime real-browser matrix | API-REV-001; CRR-003 | Pass / 98% | Fail / 88% |;
+failure_analysis_exists=1
+screenshot_count=13
+provider_capture_count=30
+server_60419_listener_count=0
+web_31419_listener_count=0
+owned_runtime_exists=0
+owned_db_residue=0
+operational_database_action=NONE
+home_autobyteus_action=NONE
+protected_60004_31004_action=NONE
+durable_round2_delta=0_added_0_updated_0_removed

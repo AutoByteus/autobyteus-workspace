@@ -1,0 +1,36 @@
+COMMAND  PID  USER   FD      TYPE             DEVICE  SIZE/OFF                NODE NAME
+node    3036 normy  cwd       DIR               1,13      1024           345229709 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+node    3036 normy  txt       REG               1,13 112928848           255287132 /Users/normy/.hermes/node/bin/node
+node    3036 normy  txt       REG               1,13     72984           293325547 /Library/Preferences/Logging/.plist-cache.TQHe3XLT
+node    3036 normy  txt       REG               1,13   2374000 1152921500312573276 /usr/lib/dyld
+node    3036 normy  txt       REG               1,13  17251592           349638075 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/.prisma/client/libquery_engine-darwin-arm64.dylib.node
+node    3036 normy    0u     unix 0x6e22f23c4a277474       0t0                     ->0x11a927357dfd1ead
+node    3036 normy    1u     unix 0x64dd2889fb1d51c4       0t0                     ->0x20ab7cca958f88b0
+node    3036 normy    2u     unix 0x9af0980e3f5a929f       0t0                     ->0x59c8016f6c610a1e
+node    3036 normy    3u   KQUEUE                                                  count=0, state=0x8
+node    3036 normy    4      PIPE 0xacf9accd3a738cfc     16384                     ->0xf01779214ca26278
+node    3036 normy    5      PIPE 0xf01779214ca26278     16384                     ->0xacf9accd3a738cfc
+node    3036 normy    6r      DIR               1,13       704                   2 /
+node    3036 normy    7u   KQUEUE                                                  count=0, state=0xa
+node    3036 normy    8r      DIR               1,13       704                   2 /
+node    3036 normy    9u   KQUEUE                                                  count=0, state=0xa
+node    3036 normy   10r      DIR               1,13       704                   2 /
+node    3036 normy   11r      CHR                3,2       0t0                 336 /dev/null
+node    3036 normy   12w      REG               1,13     64100           349639712 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/tests/.tmp/api-rev-008-live-20260815-1/logs/server.log
+node    3036 normy   13u   KQUEUE                                                  count=0, state=0xa
+node    3036 normy   14u   KQUEUE                                                  count=0, state=0xa
+node    3036 normy   15u   KQUEUE                                                  count=0, state=0xa
+node    3036 normy   16u     unix 0x623c6d30dec7eb7e       0t0                     ->0xff7d2fbb80be43c2
+node    3036 normy   17u     unix 0xff7d2fbb80be43c2       0t0                     ->0x623c6d30dec7eb7e
+node    3036 normy   18u     unix 0x623c6d30dec7eb7e       0t0                     ->0xff7d2fbb80be43c2
+node    3036 normy   19u      REG               1,13    233472           349632643 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/db/api-rev-008-live-20260815-1.db
+node    3036 normy   20u      REG               1,13    233472           349632643 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/db/api-rev-008-live-20260815-1.db
+node    3036 normy   21      PIPE 0xebf1a6b575c8d840     16384                     ->0x9150019ffb734fa2
+node    3036 normy   22      PIPE 0x9150019ffb734fa2     16384                     ->0xebf1a6b575c8d840
+node    3036 normy   23u     IPv4 0xc39404d634e10172       0t0                 TCP 127.0.0.1:60313 (LISTEN)
+node    3036 normy   24u    systm 0xb5e6f750129ece7e       0t0                     [ctl com.apple.netsrc id 7 unit 93]
+node    3036 normy   25u     unix 0x32b201ce24dd062f       0t0                     ->0x408f310ed194a413
+node    3036 normy   26u     IPv4 0xe0271daf60061249       0t0                 TCP 127.0.0.1:63309->127.0.0.1:1234 (ESTABLISHED)
+node    3036 normy   27   NPOLICY                                                  
+node    3036 normy   28u     IPv6 0xd9abfc918e058e59       0t0                 TCP [2003:ca:5732:5a23:4872:be0d:35bd:cf64]:63310->[2607:6bc0::10]:443 (ESTABLISHED)
+node    3036 normy   31u   KQUEUE                                                  count=0, state=0xa

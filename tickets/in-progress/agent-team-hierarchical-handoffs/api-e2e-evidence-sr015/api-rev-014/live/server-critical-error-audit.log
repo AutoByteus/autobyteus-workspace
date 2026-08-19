@@ -1,0 +1,3 @@
+# Live server critical-error audit
+# Expected/observed non-2xx requests
+1644:{"level":40,"time":1786288011224,"pid":42962,"hostname":"normys-MacBook-Pro.local","reqId":"req-dj","method":"POST","url":"/mcp/agent-tools/agtmcp_YDSkQz6mcmsEk8HaO449RPSl","statusCode":404,"elapsedMs":0.4780409336090088,"msg":"http request completed"}

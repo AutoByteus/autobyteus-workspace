@@ -11,6 +11,7 @@ import { useActiveContextStore } from '~/stores/activeContextStore';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
+import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures';
 
 const {
   mockWsConnect,
@@ -87,6 +88,8 @@ vi.mock('~/stores/contextFileUploadStore', () => ({
 vi.mock('~/stores/workspace', () => ({
   useWorkspaceStore: () => ({
     activeWorkspace: { absolutePath: '/tmp/workspace' },
+    allWorkspaces: [],
+    workspaces: {},
   }),
 }));
 
@@ -126,33 +129,20 @@ const createAgentContext = (routeKey: string): AgentContext => {
   return context;
 };
 
-const buildAgentNode = (memberRouteKey: string) => ({
-  memberKind: 'agent' as const,
-  memberName: memberRouteKey.split('/').at(-1) || memberRouteKey,
-  displayName: memberRouteKey.split('/').at(-1) || memberRouteKey,
-  memberPath: memberRouteKey.split('/'),
-  memberRouteKey,
-  agentDefinitionId: `def-${memberRouteKey}`,
-});
-
 const buildTeamContext = (
   members: Array<[string, AgentContext]>,
-  focusedMemberRouteKey: string,
-) => {
-  const memberTree = members.map(([memberRouteKey]) => buildAgentNode(memberRouteKey));
-  return {
-    teamRunId: 'team-1',
-    config: { teamDefinitionId: 'team-def-1' } as any,
-    memberTree,
-    memberNodesByRouteKey: new Map(memberTree.map((member) => [member.memberRouteKey, member])),
-    leafAgentContextsByRouteKey: new Map(members),
-    coordinatorMemberRouteKey: 'solution_designer',
-    historicalHydration: null,
-    focusedMemberRouteKey,
-    isActive: true,
-    isSubscribed: true,
-  };
-};
+  focusedAgentRunId: string,
+) => buildTestTeamContext({
+  teamRunId: 'team-1',
+  teamDefinitionId: 'team-def-1',
+  rootChildren: members.map(([memberAddress, context]) => testAgentNode(
+    memberAddress.startsWith('/') ? memberAddress : `/${memberAddress}`,
+    { agentRunId: context.state.runId, currentStatus: context.state.currentStatus },
+  )),
+  contexts: members.map(([, context]) => ({ agentRunId: context.state.runId, context })),
+  focusedAgentRunId,
+  isActive: true,
+});
 
 describe('focused team member interrupt UI-to-WebSocket e2e', () => {
   beforeEach(() => {
@@ -175,7 +165,7 @@ describe('focused team member interrupt UI-to-WebSocket e2e', () => {
     teamContextsStore.addTeamContext(buildTeamContext([
       ['solution_designer', solutionDesigner],
       ['code_reviewer', codeReviewer],
-    ], 'solution_designer'));
+    ], solutionDesigner.state.runId));
     selectionStore.selectRun('team-1', 'team');
     teamRunStore.connectToTeamStream('team-1');
 
@@ -190,7 +180,7 @@ describe('focused team member interrupt UI-to-WebSocket e2e', () => {
 
     expect(activeContextStore.activeAgentContext?.state.runId).toBe('team-1::solution_designer');
 
-    teamContextsStore.setFocusedMember('code_reviewer');
+    teamContextsStore.focusMember('team-1', codeReviewer.state.runId);
     await nextTick();
 
     expect(activeContextStore.activeAgentContext?.state.runId).toBe('team-1::code_reviewer');
@@ -202,8 +192,7 @@ describe('focused team member interrupt UI-to-WebSocket e2e', () => {
       type: 'INTERRUPT_GENERATION',
       payload: {
         command_id: expect.stringMatching(/^client_interrupt_/),
-        target_member_route_key: 'code_reviewer',
-        target_member_run_id: 'team-1::code_reviewer',
+        agent_run_id: 'team-1::code_reviewer',
       },
     });
   });

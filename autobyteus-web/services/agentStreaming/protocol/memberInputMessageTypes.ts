@@ -3,10 +3,8 @@ import type { UserMessageContextFilePathPayload, UserMessageProjectionPayload } 
 export type MemberInputMessageContextFilePathPayload = UserMessageContextFilePathPayload;
 
 export interface MemberInputMessagePayload extends UserMessageProjectionPayload {
+  recipient_agent_run_id: string;
   input_origin?: 'user_message' | 'inter_agent_delivery' | string | null;
-  sender_agent_id?: string | null;
-  sender_agent_name?: string | null;
-  sender_member_route_key?: string | null;
-  sender_member_path?: string[] | null;
+  sender_agent_run_id?: string | null;
   parent_communication_message_id?: string | null;
 }

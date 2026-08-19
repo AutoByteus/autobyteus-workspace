@@ -1,0 +1,118 @@
+{
+  "scenario": "autobyteus-first-send-failure-pending-success",
+  "runtime": "autobyteus",
+  "model": "gpt-5.6-luna",
+  "token": "API33_AUTOBYTEUS_FIRST_SEND_OK",
+  "rootTeamRunId": "nested_classroom_test_team_fb3045ca79b64d27b426c561ca0f4515",
+  "allocationRequests": 2,
+  "configured": {
+    "draftId": "team-draft-1837c619-50aa-4f97-9cf8-f092b6fa57dd",
+    "runtimeKind": "autobyteus",
+    "model": "gpt-5.6-luna",
+    "workspaceId": "temp_ws_default",
+    "focusedMemberAddress": "/Teacher",
+    "frozenDraft": true,
+    "frozenConfig": true
+  },
+  "selectedForFirstSend": {
+    "kind": "team_draft",
+    "draftId": "team-draft-1837c619-50aa-4f97-9cf8-f092b6fa57dd"
+  },
+  "failedFirstSend": {
+    "rejected": true,
+    "message": "API33_INJECTED_ALLOCATION_FAILURE"
+  },
+  "afterFailure": {
+    "draftId": "team-draft-1837c619-50aa-4f97-9cf8-f092b6fa57dd",
+    "pendingText": "Reply with exactly API33_AUTOBYTEUS_FIRST_SEND_OK and nothing else.",
+    "inFlight": false,
+    "selection": {
+      "kind": "team_draft",
+      "draftId": "team-draft-1837c619-50aa-4f97-9cf8-f092b6fa57dd"
+    },
+    "editUnlocked": true
+  },
+  "rawProviderEvidence": {
+    "exactAssistant": true,
+    "rawTracePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-033-live-20260812-1/memory/agent_teams/nested_classroom_test_team_fb3045ca79b64d27b426c561ca0f4515/test_teacher_38d7e73969dd4924b28cd6328a9f7066/raw_traces_active.jsonl"
+  },
+  "pendingEvidence": {
+    "draftId": "team-draft-1837c619-50aa-4f97-9cf8-f092b6fa57dd",
+    "exactAdmitted": true,
+    "runButtonDisabled": true,
+    "runtimeDisabled": true,
+    "edit": {
+      "rejected": true,
+      "message": "Team launch draft 'team-draft-1837c619-50aa-4f97-9cf8-f092b6fa57dd' is in flight and cannot be edited."
+    },
+    "focus": {
+      "rejected": true,
+      "message": "Team launch draft 'team-draft-1837c619-50aa-4f97-9cf8-f092b6fa57dd' is in flight and cannot change focus."
+    },
+    "input": {
+      "rejected": true,
+      "message": "Team launch draft 'team-draft-1837c619-50aa-4f97-9cf8-f092b6fa57dd' is in flight and cannot change pending input."
+    },
+    "workspace": {
+      "rejected": true,
+      "message": "Team launch draft 'team-draft-1837c619-50aa-4f97-9cf8-f092b6fa57dd' is in flight and cannot change workspace state."
+    },
+    "removal": {
+      "rejected": true,
+      "message": "Team launch draft 'team-draft-1837c619-50aa-4f97-9cf8-f092b6fa57dd' is in flight and cannot be removed."
+    },
+    "clear": {
+      "rejected": true,
+      "message": "Team launch draft 'team-draft-1837c619-50aa-4f97-9cf8-f092b6fa57dd' is in flight and cannot be cleared."
+    },
+    "selection": {
+      "rejected": true,
+      "message": "Run selection cannot change while a Team launch draft is in flight."
+    },
+    "duplicateLaunch": {
+      "rejected": true,
+      "message": "Team launch draft 'team-draft-1837c619-50aa-4f97-9cf8-f092b6fa57dd' is in flight and cannot start another launch."
+    }
+  },
+  "afterSuccess": {
+    "draftRemoved": true,
+    "inFlightReleased": true,
+    "selection": {
+      "kind": "team_run",
+      "rootTeamRunId": "nested_classroom_test_team_fb3045ca79b64d27b426c561ca0f4515"
+    },
+    "contextRootIds": [
+      "nested_classroom_test_team_fb3045ca79b64d27b426c561ca0f4515"
+    ]
+  },
+  "conditions": {
+    "configuredExactFrozenDraft": true,
+    "failureRejectedExactly": true,
+    "failurePreservedSameDraft": true,
+    "failurePreservedPendingInput": true,
+    "failureReleasedAndUnlocked": true,
+    "failurePreservedDraftSelection": true,
+    "failureAllocatedNoServerRun": true,
+    "pendingExactAdmission": true,
+    "pendingUiLocked": true,
+    "pendingEditsRejected": true,
+    "duplicateRejected": true,
+    "duplicateBeforeAllocation": true,
+    "oneRealCanonicalPromotion": true,
+    "exactTeamSelection": true,
+    "exactContextRegistered": true,
+    "draftRemovedAndUnlocked": true,
+    "providerResponseExactInCurrentRawTrace": true
+  },
+  "passed": true,
+  "consoleEvents": [
+    {
+      "type": "error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22__typename%22%2C%22%7B%5Cn%20%20%5C%22success%5C%22%3A%20false%2C%5Cn%20%20%5C%22message%5C%22%3A%20%5C%22API33_INJECTED_ALLOCATION_FAILURE%5C%22%2C%5Cn%20%20%5C%22teamRunId%5C%22%3A%20null%5Cn%7D%22%5D%7D"
+    }
+  ],
+  "termination": {
+    "success": true,
+    "message": "Agent team run terminated successfully."
+  }
+}

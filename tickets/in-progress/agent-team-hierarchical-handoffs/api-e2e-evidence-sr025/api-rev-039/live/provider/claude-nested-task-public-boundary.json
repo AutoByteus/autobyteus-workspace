@@ -1,0 +1,119 @@
+{
+  "rootRunId": "nested_classroom_test_team_94632c1f5a46474280e349e2adab2811",
+  "passed": false,
+  "finalTaskRecords": [
+    {
+      "taskId": "task_0001",
+      "status": "active",
+      "receiverTargetKind": "agent_team",
+      "content": "As the StudentStudyGroup coordinator (student_one), perform exactly the following steps and no others:\n\n1. Using send_message_to, send a message to ./student_two whose content is exactly: TASK_PEER_CLAUDE\n2. Wait for the peer reply from ./student_two.\n3. After receiving the peer reply, submit the task result using submit_task_result with exactly this result token: NESTED_CLASSROOM_OK_CLAUDE\n\nSubmit exactly NESTED_CLASSROOM_OK_CLAUDE. Do not delegate any additional tasks.",
+      "createdAt": "2026-08-13T09:40:26.921Z",
+      "senderAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_94632c1f5a46474280e349e2adab2811",
+        "taskTeamRunIds": [],
+        "memberAddress": "/Teacher",
+        "taskAgentRunId": null
+      },
+      "receiverAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_94632c1f5a46474280e349e2adab2811",
+        "taskTeamRunIds": [
+          "team_local_team_nested_classroom_test_student_st_deb14f9d3e2745d3a4ec243f9d1402e0"
+        ],
+        "memberAddress": "/StudentStudyGroup/student_one",
+        "taskAgentRunId": null
+      },
+      "referenceFiles": [],
+      "taskRun": {
+        "startedAt": "2026-08-13T09:40:26.927Z",
+        "address": {
+          "rootTeamRunId": "nested_classroom_test_team_94632c1f5a46474280e349e2adab2811",
+          "taskTeamRunIds": [
+            "team_local_team_nested_classroom_test_student_st_deb14f9d3e2745d3a4ec243f9d1402e0"
+          ],
+          "memberAddress": "/StudentStudyGroup",
+          "taskAgentRunId": null
+        }
+      },
+      "updates": []
+    }
+  ],
+  "finalCommunications": [
+    {
+      "messageId": "teammsg_BMzAFUBXZ6j2CMEnRm2P4UVbG4I2LXJv",
+      "content": "Hello StudentStudyGroup coordinator. Please review the attached reference file and reply to /Teacher with exactly the token: CLASSROOM_REPLY_CLAUDE",
+      "messageType": "classroom",
+      "createdAt": "2026-08-13T09:40:08.312Z",
+      "senderAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_94632c1f5a46474280e349e2adab2811",
+        "taskTeamRunIds": [],
+        "memberAddress": "/Teacher",
+        "taskAgentRunId": null
+      },
+      "receiverAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_94632c1f5a46474280e349e2adab2811",
+        "taskTeamRunIds": [],
+        "memberAddress": "/StudentStudyGroup/student_one",
+        "taskAgentRunId": null
+      },
+      "referenceFiles": [
+        {
+          "referenceId": "teamref_5J3U21hEF4N6zdvwt11txX3nyA_-z_Ix",
+          "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr025/api-rev-039/live/claude-reference.txt",
+          "type": "file",
+          "createdAt": "2026-08-13T09:40:08.312Z",
+          "updatedAt": "2026-08-13T09:40:08.312Z"
+        }
+      ]
+    },
+    {
+      "messageId": "teammsg_lIC92WwyglKsGsuEUZlv5Es8Noi0GgW_",
+      "content": "CLASSROOM_REPLY_CLAUDE",
+      "messageType": "agent_message",
+      "createdAt": "2026-08-13T09:40:23.180Z",
+      "senderAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_94632c1f5a46474280e349e2adab2811",
+        "taskTeamRunIds": [],
+        "memberAddress": "/StudentStudyGroup/student_one",
+        "taskAgentRunId": null
+      },
+      "receiverAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_94632c1f5a46474280e349e2adab2811",
+        "taskTeamRunIds": [],
+        "memberAddress": "/Teacher",
+        "taskAgentRunId": null
+      },
+      "referenceFiles": []
+    },
+    {
+      "messageId": "teammsg_c9kavrvHPGn-c22HqC5uQcRwMJUt92AM",
+      "content": "TASK_PEER_CLAUDE",
+      "messageType": "agent_message",
+      "createdAt": "2026-08-13T09:40:30.326Z",
+      "senderAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_94632c1f5a46474280e349e2adab2811",
+        "taskTeamRunIds": [
+          "team_local_team_nested_classroom_test_student_st_deb14f9d3e2745d3a4ec243f9d1402e0"
+        ],
+        "memberAddress": "/StudentStudyGroup/student_one",
+        "taskAgentRunId": null
+      },
+      "receiverAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_94632c1f5a46474280e349e2adab2811",
+        "taskTeamRunIds": [
+          "team_local_team_nested_classroom_test_student_st_deb14f9d3e2745d3a4ec243f9d1402e0"
+        ],
+        "memberAddress": "/StudentStudyGroup/student_two",
+        "taskAgentRunId": null
+      },
+      "referenceFiles": []
+    }
+  ],
+  "observedStatuses": [
+    "none",
+    "active"
+  ],
+  "termination": {
+    "success": true,
+    "message": "Agent team run terminated successfully."
+  }
+}

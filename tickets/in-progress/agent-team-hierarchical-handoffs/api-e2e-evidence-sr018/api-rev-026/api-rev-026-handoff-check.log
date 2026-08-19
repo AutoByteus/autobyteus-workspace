@@ -1,0 +1,65 @@
+HEAD=324c91788bb524101cc4d4df6a1571d5ffa7d786
+canonical_markers:
+1201:## API-REV-026 Post-CRR-057 Resumption Investigation (Pre-execution Update)
+1208:- This investigation update is written before API-REV-026 durable test edits, final execution, or live environment materialization.
+1241:Starting API-REV-026 confidence remains `73%`. Source correction does not raise downstream confidence until the real existing-Team launch and required runtime matrix pass.
+1243:### API-REV-026 execution update — immutable launch draft passes; real Team launch reaches a missing action
+11:- Current API/E2E Revision ID: `API-REV-026`
+15:- Latest authoritative result: `API-REV-026 Fail / 74%`
+19:- Investigation completed before durable coverage edits and final execution: `Yes`; see `API-REV-026 Post-CRR-057 Resumption Investigation (Pre-execution Update)`.
+106:- All 20 migrations were applied only to the absent disposable API-REV-026 database.
+36:| API-REV-026 | `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md`; Round 26 | SR-018; ARCH-REV-011; IR-032; CRR-057 | Fail / 73% (API-REV-025) | Fail / 74% |
+624:### API-REV-026 — IR-032 passes downstream; real Team launch calls a missing store action
+629:- Why recorded: API-REV-026 independently proves the immutable reactive Team launch draft and typed form/store edit owner, completes current deterministic/build/safe-target setup, and then exposes a distinct real critical launch failure at the next production store seam.
+durable_counts:
+A 2
+D 6
+M 82
+total 90
+patch_paths=90
+result_markers:
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr018/api-rev-026/repository/team-launch-edit-focused-final.log: Test Files  3 passed (3)
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr018/api-rev-026/repository/team-launch-edit-focused-final.log:      Tests  38 passed (38)
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr018/api-rev-026/repository/team-launch-mobile-and-boundary-focused.log: Test Files  5 passed (5)
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr018/api-rev-026/repository/team-launch-mobile-and-boundary-focused.log:      Tests  41 passed (41)
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr018/api-rev-026/repository/current-maintained-web-final.log: Test Files  48 passed (48)
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr018/api-rev-026/repository/current-maintained-web-final.log:      Tests  343 passed (343)
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr018/api-rev-026/repository/server-ticket-retained-final.log: Test Files  74 passed | 7 skipped (81)
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr018/api-rev-026/repository/server-ticket-retained-final.log:      Tests  523 passed | 20 skipped (543)
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr018/api-rev-026/repository/server-production-typecheck.log:TYPECHECK_EXIT=0
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr018/api-rev-026/repository/web-production-build.log:WEB_BUILD_EXIT=0
+failure_marker:
+3:autobyteus-web/composables/mobile/useMobileRunLaunchCoordinator.ts:174:    const temporaryRunId = agentContextsStore.createRunFromTemplate({ selectionMode: 'mobile' });
+4:autobyteus-web/stores/agentContextsStore.ts:76:    createRunFromTemplate(options: { selectionMode?: 'desktop' | 'mobile' } = {}): string {
+5:autobyteus-web/stores/__tests__/agentContextsStore.spec.ts:55:            const runId = store.createRunFromTemplate();
+6:autobyteus-web/stores/__tests__/agentContextsStore.spec.ts:79:            expect(() => store.createRunFromTemplate()).toThrowError("No run config template available");
+7:autobyteus-web/stores/__tests__/agentContextsStore.spec.ts:90:            const id1 = store.createRunFromTemplate();
+8:autobyteus-web/stores/__tests__/agentContextsStore.spec.ts:91:            const id2 = store.createRunFromTemplate();
+9:autobyteus-web/stores/__tests__/agentContextsStore.spec.ts:110:            const id = store.createRunFromTemplate();
+10:autobyteus-web/stores/__tests__/agentContextsStore.spec.ts:127:            const id1 = store.createRunFromTemplate();
+safety_cleanup:
+owned_runtime_exists=false
+owned_database_exists=false
+owned_vault_key_exists=false
+owned_port_60226=CLOSED
+owned_port_31226=CLOSED
+operational_database_action=NONE
+current_listener_check:
+port_60226=ABSENT
+port_31226=ABSENT
+port_60004=ABSENT
+port_31004=ABSENT
+owned_disposable_paths:
+ABSENT:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-026-live-20260812-1
+ABSENT:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-026-live-20260812-1.db
+canonical_consistency:
+execution_result=Fail
+execution_confidence=74
+revision_index=consistent
+diff_hygiene:
+DURABLE_DIFF_CHECK=PASS
+manifest_pre_final_regeneration:
+./repository/team-launch-edit-focused.log: OK
+./repository/team-launch-mobile-and-boundary-focused.log: OK
+./repository/web-production-build.log: OK
+manifest_check=PASS

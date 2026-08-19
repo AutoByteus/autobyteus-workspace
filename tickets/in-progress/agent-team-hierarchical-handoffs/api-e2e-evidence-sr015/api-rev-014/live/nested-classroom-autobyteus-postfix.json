@@ -1,0 +1,324 @@
+{
+  "row": "AutoByteus",
+  "expected": {
+    "runtimeKind": "autobyteus",
+    "model": "gpt-5.6-luna",
+    "autoExecuteTools": true
+  },
+  "metadata": {
+    "schemaVersion": 3,
+    "teamDefinitionName": "Nested Classroom Test Team",
+    "createdAt": "2026-08-09T14:53:43.533Z",
+    "archivedAt": null,
+    "rootTeam": {
+      "kind": "agent_team",
+      "address": "/",
+      "teamDefinitionId": "nested-classroom-test",
+      "teamRunId": "nested_classroom_test_team_002ab7c6e52e489e9144098c4359babb",
+      "coordinatorAddress": "/Teacher",
+      "children": [
+        {
+          "kind": "agent",
+          "address": "/Teacher",
+          "agentDefinitionId": "team-local-agent:nested-classroom-test:teacher",
+          "agentRunId": "test_teacher_c0ebc0a5f7be41bebcf1c7207ab8e297",
+          "platformAgentRunId": "test_teacher_c0ebc0a5f7be41bebcf1c7207ab8e297",
+          "role": null,
+          "description": null,
+          "runtimeKind": "autobyteus",
+          "llmModelIdentifier": "gpt-5.6-luna",
+          "llmConfig": null,
+          "autoExecuteTools": true,
+          "skillAccessMode": "PRELOADED_ONLY",
+          "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/sr015-api-rev-014-20260809/temp_workspace",
+          "applicationExecutionContext": null
+        },
+        {
+          "kind": "agent_team",
+          "address": "/StudentStudyGroup",
+          "teamDefinitionId": "team-local-team:nested-classroom-test:student-study-group",
+          "teamRunId": "student_study_group_480a3172df954a628620340f95c72af0",
+          "coordinatorAddress": "/StudentStudyGroup/student_one",
+          "role": null,
+          "description": null,
+          "children": [
+            {
+              "kind": "agent",
+              "address": "/StudentStudyGroup/student_one",
+              "agentDefinitionId": "team-local-agent:team-local-team%3Anested-classroom-test%3Astudent-study-group:student-one",
+              "agentRunId": "student_one_a898da1ed0bf4a15a78f45b8bf1b28f7",
+              "platformAgentRunId": "student_one_a898da1ed0bf4a15a78f45b8bf1b28f7",
+              "role": null,
+              "description": null,
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "gpt-5.6-luna",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/sr015-api-rev-014-20260809/temp_workspace",
+              "applicationExecutionContext": null
+            },
+            {
+              "kind": "agent",
+              "address": "/StudentStudyGroup/student_two",
+              "agentDefinitionId": "team-local-agent:team-local-team%3Anested-classroom-test%3Astudent-study-group:student-two",
+              "agentRunId": "student_two_deeb18c796cb4bb7a2c39fbcb96ae1c2",
+              "platformAgentRunId": "student_two_deeb18c796cb4bb7a2c39fbcb96ae1c2",
+              "role": null,
+              "description": null,
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "gpt-5.6-luna",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/sr015-api-rev-014-20260809/temp_workspace",
+              "applicationExecutionContext": null
+            }
+          ]
+        }
+      ]
+    },
+    "handoffs": [
+      {
+        "from": "/Teacher",
+        "to": "/StudentStudyGroup",
+        "rules": [
+          "When the user asks to send the classroom handoff token to the study group."
+        ]
+      },
+      {
+        "from": "/StudentStudyGroup/student_one",
+        "to": "/Teacher",
+        "rules": [
+          "When the delegated classroom task is finished and the teacher needs the outcome."
+        ]
+      },
+      {
+        "from": "/StudentStudyGroup/student_one",
+        "to": "/StudentStudyGroup/student_two",
+        "rules": [
+          "When the delegated classroom task asks the coordinator to consult the supporting student."
+        ]
+      }
+    ]
+  },
+  "communications": {
+    "teamRunId": "nested_classroom_test_team_002ab7c6e52e489e9144098c4359babb",
+    "messages": [
+      {
+        "messageId": "teammsg_vkJu-7tds9RYjNlQIL-d6JTQx_p5h9qI",
+        "senderAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_002ab7c6e52e489e9144098c4359babb",
+          "taskTeamRunIds": [],
+          "memberAddress": "/Teacher",
+          "taskAgentRunId": null
+        },
+        "receiverAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_002ab7c6e52e489e9144098c4359babb",
+          "taskTeamRunIds": [],
+          "memberAddress": "/StudentStudyGroup/student_one",
+          "taskAgentRunId": null
+        },
+        "content": "Please have your coordinator call get_handoff_rules, send exactly one message to ./student_two requesting the token PEER-AUTOBYTEUS, wait for the reply, then send a summary back to /Teacher. This is the sole message I am sending to the study group for this step.",
+        "messageType": "classroom_handoff",
+        "createdAt": "2026-08-09T14:53:49.562Z",
+        "referenceFiles": []
+      },
+      {
+        "messageId": "teammsg_OrOhWOhn9kq19iK0K8D5xHVzk-A5dt1u",
+        "senderAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_002ab7c6e52e489e9144098c4359babb",
+          "taskTeamRunIds": [],
+          "memberAddress": "/StudentStudyGroup/student_one",
+          "taskAgentRunId": null
+        },
+        "receiverAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_002ab7c6e52e489e9144098c4359babb",
+          "taskTeamRunIds": [],
+          "memberAddress": "/StudentStudyGroup/student_two",
+          "taskAgentRunId": null
+        },
+        "content": "Please reply with exactly the token PEER-AUTOBYTEUS.",
+        "messageType": "request",
+        "createdAt": "2026-08-09T14:53:53.334Z",
+        "referenceFiles": []
+      },
+      {
+        "messageId": "teammsg_jIixcrMc7LS-JjiWDyVYCT_TyaLxH12N",
+        "senderAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_002ab7c6e52e489e9144098c4359babb",
+          "taskTeamRunIds": [],
+          "memberAddress": "/StudentStudyGroup/student_two",
+          "taskAgentRunId": null
+        },
+        "receiverAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_002ab7c6e52e489e9144098c4359babb",
+          "taskTeamRunIds": [],
+          "memberAddress": "/StudentStudyGroup/student_one",
+          "taskAgentRunId": null
+        },
+        "content": "PEER-AUTOBYTEUS",
+        "messageType": "peer_response",
+        "createdAt": "2026-08-09T14:53:55.217Z",
+        "referenceFiles": []
+      },
+      {
+        "messageId": "teammsg_PgCB7ePrZ8dwGGJ9-t9JnQAmlnY7pVaJ",
+        "senderAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_002ab7c6e52e489e9144098c4359babb",
+          "taskTeamRunIds": [],
+          "memberAddress": "/StudentStudyGroup/student_one",
+          "taskAgentRunId": null
+        },
+        "receiverAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_002ab7c6e52e489e9144098c4359babb",
+          "taskTeamRunIds": [],
+          "memberAddress": "/Teacher",
+          "taskAgentRunId": null
+        },
+        "content": "student_two replied with the requested token: PEER-AUTOBYTEUS.",
+        "messageType": "summary",
+        "createdAt": "2026-08-09T14:53:57.613Z",
+        "referenceFiles": []
+      },
+      {
+        "messageId": "teammsg_pdL1qGZIBw8wyS6fQBzDk7ievqLMwnYD",
+        "senderAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_002ab7c6e52e489e9144098c4359babb",
+          "taskTeamRunIds": [
+            "team_local_team_nested_classroom_test_student_st_ec7efe47c1e940c4bab229f0d6a05448"
+          ],
+          "memberAddress": "/StudentStudyGroup/student_one",
+          "taskAgentRunId": null
+        },
+        "receiverAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_002ab7c6e52e489e9144098c4359babb",
+          "taskTeamRunIds": [
+            "team_local_team_nested_classroom_test_student_st_ec7efe47c1e940c4bab229f0d6a05448"
+          ],
+          "memberAddress": "/StudentStudyGroup/student_two",
+          "taskAgentRunId": null
+        },
+        "content": "Please provide the token TASKPEER-AUTOBYTEUS.",
+        "messageType": "request",
+        "createdAt": "2026-08-09T14:54:03.391Z",
+        "referenceFiles": []
+      },
+      {
+        "messageId": "teammsg_wnTiunhhddfUkIaDIA-civR_o7g55b9z",
+        "senderAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_002ab7c6e52e489e9144098c4359babb",
+          "taskTeamRunIds": [
+            "team_local_team_nested_classroom_test_student_st_ec7efe47c1e940c4bab229f0d6a05448"
+          ],
+          "memberAddress": "/StudentStudyGroup/student_two",
+          "taskAgentRunId": null
+        },
+        "receiverAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_002ab7c6e52e489e9144098c4359babb",
+          "taskTeamRunIds": [
+            "team_local_team_nested_classroom_test_student_st_ec7efe47c1e940c4bab229f0d6a05448"
+          ],
+          "memberAddress": "/StudentStudyGroup/student_one",
+          "taskAgentRunId": null
+        },
+        "content": "TASKPEER-AUTOBYTEUS",
+        "messageType": "answer",
+        "createdAt": "2026-08-09T14:54:04.905Z",
+        "referenceFiles": []
+      }
+    ]
+  },
+  "tasks": {
+    "teamRunId": "nested_classroom_test_team_002ab7c6e52e489e9144098c4359babb",
+    "records": [
+      {
+        "taskId": "task_0001",
+        "status": "accepted",
+        "senderAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_002ab7c6e52e489e9144098c4359babb",
+          "taskTeamRunIds": [],
+          "memberAddress": "/Teacher",
+          "taskAgentRunId": null
+        },
+        "receiverAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_002ab7c6e52e489e9144098c4359babb",
+          "taskTeamRunIds": [
+            "team_local_team_nested_classroom_test_student_st_ec7efe47c1e940c4bab229f0d6a05448"
+          ],
+          "memberAddress": "/StudentStudyGroup/student_one",
+          "taskAgentRunId": null
+        },
+        "receiverTargetKind": "agent_team",
+        "content": "Active task coordinator must call get_handoff_rules, send exactly one message to ./student_two requesting token TASKPEER-AUTOBYTEUS, wait for its reply, then call submit_task_result with exactly token RESULT-AUTOBYTEUS. Do not substitute any other token. Return the submitted result for review.",
+        "referenceFiles": [],
+        "taskRun": {
+          "address": {
+            "rootTeamRunId": "nested_classroom_test_team_002ab7c6e52e489e9144098c4359babb",
+            "taskTeamRunIds": [
+              "team_local_team_nested_classroom_test_student_st_ec7efe47c1e940c4bab229f0d6a05448"
+            ],
+            "memberAddress": "/StudentStudyGroup",
+            "taskAgentRunId": null
+          },
+          "startedAt": "2026-08-09T14:54:00.557Z"
+        },
+        "updates": [
+          {
+            "kind": "submission",
+            "submissionId": "task_0001_submission_0001",
+            "senderAddress": {
+              "rootTeamRunId": "nested_classroom_test_team_002ab7c6e52e489e9144098c4359babb",
+              "taskTeamRunIds": [
+                "team_local_team_nested_classroom_test_student_st_ec7efe47c1e940c4bab229f0d6a05448"
+              ],
+              "memberAddress": "/StudentStudyGroup",
+              "taskAgentRunId": null
+            },
+            "receiverAddress": {
+              "rootTeamRunId": "nested_classroom_test_team_002ab7c6e52e489e9144098c4359babb",
+              "taskTeamRunIds": [],
+              "memberAddress": "/Teacher",
+              "taskAgentRunId": null
+            },
+            "content": "RESULT-AUTOBYTEUS",
+            "referenceFiles": [],
+            "createdAt": "2026-08-09T14:54:16.168Z"
+          },
+          {
+            "kind": "review",
+            "reviewId": "task_0001_review_0001",
+            "senderAddress": {
+              "rootTeamRunId": "nested_classroom_test_team_002ab7c6e52e489e9144098c4359babb",
+              "taskTeamRunIds": [],
+              "memberAddress": "/Teacher",
+              "taskAgentRunId": null
+            },
+            "receiverAddress": {
+              "rootTeamRunId": "nested_classroom_test_team_002ab7c6e52e489e9144098c4359babb",
+              "taskTeamRunIds": [
+                "team_local_team_nested_classroom_test_student_st_ec7efe47c1e940c4bab229f0d6a05448"
+              ],
+              "memberAddress": "/StudentStudyGroup",
+              "taskAgentRunId": null
+            },
+            "reviewedSubmissionId": "task_0001_submission_0001",
+            "decision": "accept",
+            "content": "Accepted: the task result contains the required token RESULT-AUTOBYTEUS.",
+            "referenceFiles": [],
+            "createdAt": "2026-08-09T14:54:24.032Z"
+          }
+        ],
+        "createdAt": "2026-08-09T14:54:00.534Z"
+      }
+    ]
+  },
+  "assertions": {
+    "persistentHandoff": true,
+    "sameTaskTeamPeer": true,
+    "taskAccepted": true,
+    "submittedExact": true,
+    "reviewAccepted": true,
+    "allPersistentLeavesExact": true
+  }
+}

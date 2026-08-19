@@ -1,0 +1,260 @@
+HEAD=8a0494e8b55a3debc7acbee7b61d286d5311d1a8
+=== persisted/runtime enum boundary ===
+    10	import { TeamRunConfig } from "../domain/team-run-config.js";
+    11	import { validateTeamRunExecutionTreePayload } from "../../run-history/store/team-run-execution-tree-schema.js";
+    12	import { TeamBackendKind } from "../domain/team-backend-kind.js";
+    13	import { createAgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
+    14	
+    15	const persistedRuntimeKind = (runtimeKind: RuntimeKind): TeamRunRuntimeKind => {
+    16	  switch (runtimeKind) {
+    17	    case RuntimeKind.AUTOBYTEUS:
+    18	      return "AUTOBYTEUS";
+    19	    case RuntimeKind.CLAUDE_AGENT_SDK:
+    20	      return "CLAUDE";
+    21	    case RuntimeKind.CODEX_APP_SERVER:
+    22	      return "CODEX";
+    23	  }
+    24	};
+    25	
+    26	const toAgent = (node: TeamRunAgentNode): ConfiguredAgentExecution => ({
+    27	  address: node.address,
+    28	  agentDefinitionId: node.agentDefinitionId,
+    29	  role: node.role,
+    30	  description: node.description,
+    31	  agentRunId: node.agentRunId,
+    32	  platformAgentRunId: node.platformAgentRunId,
+    33	  launchConfiguration: {
+    34	    runtimeKind: persistedRuntimeKind(node.runtimeKind),
+    35	    llmModelIdentifier: node.llmModelIdentifier,
+    36	    llmConfig: node.llmConfig,
+    37	    autoExecuteTools: node.autoExecuteTools,
+    38	    skillAccessMode: node.skillAccessMode,
+    39	    workspaceRootPath: node.workspaceRootPath,
+    40	  },
+    41	});
+    42	
+    43	const toTeam = (node: TeamRunAgentTeamNode): ConfiguredTeamExecution => ({
+    44	  address: node.address,
+    45	  teamDefinitionId: node.teamDefinitionId,
+    46	  role: node.role ?? null,
+    47	  description: node.description ?? null,
+    48	  teamRunId: node.teamRunId,
+   145	    blockedPaths: Set<string>,
+   146	    diagnostics: RuntimeMemoryLocationDiagnostic[],
+   147	  ): Promise<void> {
+   148	    const rootDir = this.layout.getTeamRootDirPath();
+   149	    const teamRunIds = await this.listDirectories(rootDir, diagnostics);
+   150	    for (const teamRunId of teamRunIds) {
+   151	      const metadataPath = getTeamRunExecutionTreePath(
+   152	        this.layout.getTeamDirPath({ rootTeamRunId: teamRunId, ancestorTeamRunIds: [] }),
+   153	      );
+   154	      try {
+   155	        const exactLocations = await this.locationService.listTeamMemberLocations({ teamRunId });
+   156	        if (exactLocations.length === 0) {
+   157	          diagnostics.push({
+   158	            itemId: `agent_teams/${teamRunId}:metadata`,
+   159	            filePath: metadataPath,
+   160	            status: "SKIPPED",
+   161	            reasonCode: "metadata_missing",
+   162	            message: "Team run has no current execution tree or Agent executions and was not classified.",
+   163	          });
+   164	          continue;
+   165	        }
+   166	        for (const exact of exactLocations) {
+   167	          this.registerLocation(locations, blockedPaths, diagnostics, {
+   168	            itemId: itemIdFor(this.memoryDir, exact.memoryDir),
+   169	            memoryDir: path.resolve(exact.memoryDir),
+   170	            workingContextSnapshotPath: path.resolve(
+   171	              exact.memoryDir,
+   172	              WORKING_CONTEXT_SNAPSHOT_FILE_NAME,
+   173	            ),
+   174	            runtimeKind: exact.configuredPlacement
+   175	              ? runtimeKindFromString(exact.configuredPlacement.launchConfiguration.runtimeKind)
+     1	export enum RuntimeKind {
+     2	  AUTOBYTEUS = "autobyteus",
+     3	  CLAUDE_AGENT_SDK = "claude_agent_sdk",
+     4	  CODEX_APP_SERVER = "codex_app_server",
+     5	}
+     6	
+     7	export const isExternalProviderRuntimeKind = (
+     8	  runtimeKind: RuntimeKind,
+     9	): boolean =>
+    10	  runtimeKind === RuntimeKind.CLAUDE_AGENT_SDK ||
+    11	  runtimeKind === RuntimeKind.CODEX_APP_SERVER;
+    12	
+    13	export const runtimeKindFromString = (
+    14	  value: unknown,
+    15	  fallback?: RuntimeKind | null,
+    16	): RuntimeKind | null => {
+    17	  const normalized =
+    18	    typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
+    19	  if (!normalized) {
+    20	    return fallback !== undefined ? fallback : null;
+    21	  }
+    22	  const match = Object.values(RuntimeKind).find((kind) => kind === normalized);
+    23	  if (match) {
+    24	    return match;
+    25	  }
+    26	  return fallback !== undefined ? fallback : null;
+    27	};
+=== predecessor metadata conversion boundary ===
+    55	  role: nullableText(record.role, `${label}.role`),
+    56	  description: nullableText(record.description, `${label}.description`),
+    57	});
+    58	
+    59	const convertNode = (value: unknown, expectedParent: AgentTeamAddress, label: string): TeamRunNode => {
+    60	  const record = object(value, label);
+    61	  const address = addressFromLegacyPair(record.memberRouteKey, record.memberPath, label);
+    62	  // memberName is required historical display input, never a structural assertion.
+    63	  text(record.memberName, `${label}.memberName`);
+    64	  if (getParentAgentTeamAddress(address) !== expectedParent) throw new Error(`${label} is not a direct child of '${expectedParent}'.`);
+    65	  const memberRunId = text(record.memberRunId, `${label}.memberRunId`);
+    66	  const common = roleAndDescription(record, label);
+    67	  if (record.memberKind === "agent") {
+    68	    return cloneTeamRunNode({
+    69	      kind: "agent",
+    70	      address,
+    71	      agentRunId: memberRunId,
+    72	      agentDefinitionId: text(record.agentDefinitionId, `${label}.agentDefinitionId`),
+    73	      platformAgentRunId: nullableText(record.platformAgentRunId, `${label}.platformAgentRunId`),
+    74	      runtimeKind: text(record.runtimeKind, `${label}.runtimeKind`) as never,
+    75	      llmModelIdentifier: text(record.llmModelIdentifier, `${label}.llmModelIdentifier`),
+    76	      autoExecuteTools: booleanValue(record.autoExecuteTools, `${label}.autoExecuteTools`),
+    77	      skillAccessMode: record.skillAccessMode as never,
+    78	      llmConfig: nullableObject(record.llmConfig, `${label}.llmConfig`),
+    79	      workspaceRootPath: nullableText(record.workspaceRootPath, `${label}.workspaceRootPath`),
+    80	      ...common,
+    81	    });
+    82	  }
+    83	  if (record.memberKind !== "agent_team") throw new Error(`${label}.memberKind is unsupported.`);
+    84	  const teamRunId = text(record.teamRunId, `${label}.teamRunId`);
+    85	  if (teamRunId !== memberRunId) throw new Error(`${label}.memberRunId and .teamRunId contradict.`);
+    86	  const coordinatorRoute = normalizedRoute(record.coordinatorMemberRouteKey, `${label}.coordinatorMemberRouteKey`);
+    87	  const coordinatorAddress = createAgentTeamAddress(coordinatorRoute.split("/"));
+    88	  if (getParentAgentTeamAddress(coordinatorAddress) !== address) throw new Error(`${label}.coordinatorMemberRouteKey is not direct.`);
+    89	  if (!Array.isArray(record.memberTree)) throw new Error(`${label}.memberTree must be an array.`);
+    90	  return cloneTeamRunNode({
+    91	    kind: "agent_team",
+    92	    address,
+    93	    teamDefinitionId: text(record.teamDefinitionId, `${label}.teamDefinitionId`),
+    94	    teamRunId,
+    95	    coordinatorAddress,
+    96	    children: record.memberTree.map((child, index) => convertNode(child, address, `${label}.memberTree[${index}]`)),
+    97	    ...common,
+    98	  });
+    99	};
+   100	
+    82	export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
+    83	  const address = assertAgentTeamAddress(node.address);
+    84	  if (node.kind === "agent") {
+    85	    if (address === "/") throw new Error("The root TeamRun node must be an AgentTeam.");
+    86	    return Object.freeze({
+    87	      kind: "agent",
+    88	      address,
+    89	      agentDefinitionId: required(node.agentDefinitionId, `agentDefinitionId at '${address}'`),
+    90	      agentRunId: required(node.agentRunId, `agentRunId at '${address}'`),
+    91	      platformAgentRunId: optional(node.platformAgentRunId),
+    92	      role: node.role ?? null,
+    93	      description: node.description ?? null,
+    94	      runtimeKind: node.runtimeKind,
+    95	      llmModelIdentifier: required(node.llmModelIdentifier, `llmModelIdentifier at '${address}'`),
+    96	      llmConfig: freezeRecord(node.llmConfig as Record<string, unknown> | null),
+    97	      autoExecuteTools: Boolean(node.autoExecuteTools),
+    98	      skillAccessMode: node.skillAccessMode,
+    99	      workspaceRootPath: optional(node.workspaceRootPath),
+   100	    });
+   101	  }
+   102	  const children = Object.freeze(node.children.map(cloneTeamRunNode));
+   103	  const coordinatorAddress = assertAgentTeamAddress(node.coordinatorAddress);
+   104	  const directCoordinator = children.filter((child) =>
+   105	    child.kind === "agent" && child.address === coordinatorAddress,
+   106	  );
+   107	  if (directCoordinator.length !== 1) {
+   108	    throw new Error(`AgentTeam '${address}' must have exactly one direct Agent coordinator '${coordinatorAddress}'.`);
+   109	  }
+   110	  const seen = new Set<string>();
+   111	  for (const child of children) {
+   112	    if (getParentAgentTeamAddress(child.address) !== address) {
+   113	      throw new Error(`Node '${child.address}' is not a direct child of AgentTeam '${address}'.`);
+   114	    }
+   115	    const name = getAgentTeamAddressBasename(child.address)!;
+   116	    const expected = appendAgentTeamAddress(address, name);
+   117	    if (child.address !== expected) throw new Error(`Node '${child.address}' is not canonical.`);
+   118	    const folded = name.toLocaleLowerCase("en-US");
+   119	    if (seen.has(folded)) throw new Error(`AgentTeam '${address}' has duplicate child '${name}'.`);
+   120	    seen.add(folded);
+   121	  }
+   122	  const placement = address === "/"
+    70	  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    71	    throw new Error(`${label} must be an object.`);
+    72	  }
+    73	  return value as Record<string, unknown>;
+    74	};
+    75	
+    76	const validateNullableString = (value: unknown, label: string): void => {
+    77	  if (value !== null && typeof value !== "string") throw new Error(`${label} must be a string or null.`);
+    78	};
+    79	
+    80	const validateNodeShape = (value: unknown, label: string, isRoot = false): void => {
+    81	  const node = record(value, label);
+    82	  if (node.kind === "agent") {
+    83	    exactKeys(node, [
+    84	      "kind", "address", "agentDefinitionId", "agentRunId", "platformAgentRunId",
+    85	      "role", "description", "runtimeKind", "llmModelIdentifier", "llmConfig",
+    86	      "autoExecuteTools", "skillAccessMode", "workspaceRootPath", "applicationExecutionContext",
+    87	    ], label);
+    88	    required(node.address, `${label}.address`);
+    89	    required(node.agentDefinitionId, `${label}.agentDefinitionId`);
+    90	    required(node.agentRunId, `${label}.agentRunId`);
+    91	    validateNullableString(node.platformAgentRunId, `${label}.platformAgentRunId`);
+    92	    validateNullableString(node.role, `${label}.role`);
+    93	    validateNullableString(node.description, `${label}.description`);
+    94	    if (!Object.values(RuntimeKind).includes(node.runtimeKind as RuntimeKind)) {
+    95	      throw new Error(`${label}.runtimeKind is unsupported.`);
+    96	    }
+    97	    required(node.llmModelIdentifier, `${label}.llmModelIdentifier`);
+    98	    if (node.llmConfig !== null && (!node.llmConfig || typeof node.llmConfig !== "object" || Array.isArray(node.llmConfig))) {
+    99	      throw new Error(`${label}.llmConfig must be an object or null.`);
+   100	    }
+   101	    if (typeof node.autoExecuteTools !== "boolean") throw new Error(`${label}.autoExecuteTools must be boolean.`);
+   102	    if (!Object.values(SkillAccessMode).includes(node.skillAccessMode as SkillAccessMode)) {
+   103	      throw new Error(`${label}.skillAccessMode is unsupported.`);
+   104	    }
+   105	    validateNullableString(node.workspaceRootPath, `${label}.workspaceRootPath`);
+   106	    if (node.applicationExecutionContext !== null && (!node.applicationExecutionContext || typeof node.applicationExecutionContext !== "object" || Array.isArray(node.applicationExecutionContext))) {
+   107	      throw new Error(`${label}.applicationExecutionContext must be an object or null.`);
+   108	    }
+   109	    return;
+   110	  }
+   111	  if (node.kind !== "agent_team") throw new Error(`${label}.kind is unsupported.`);
+   112	  exactKeys(node, isRoot
+   113	    ? ["kind", "address", "teamDefinitionId", "teamRunId", "coordinatorAddress", "children"]
+   114	    : [
+   115	        "kind", "address", "teamDefinitionId", "teamRunId", "coordinatorAddress",
+=== default required migration registration ===
+    24	    this.definitions = definitions ?? [
+    25	      new CustomProviderV1AppDataMigration(),
+    26	      new RemoveGlobalSkillDiscoveryModeMigration(
+    27	        appConfigProvider.config.getMemoryDir(),
+    28	        appConfigProvider.config.getAppDataDir(),
+    29	      ),
+    30	      new TeamRunMetadataMemberTreeMigration(appConfigProvider.config.getMemoryDir()),
+    31	      new TeamCanonicalIdentityMigration(
+    32	        appConfigProvider.config.getMemoryDir(),
+    33	        appConfigProvider.config.getAppDataDir(),
+    34	      ),
+    35	      new TeamRunExecutionTreeV1AppDataMigration(
+    36	        appConfigProvider.config.getMemoryDir(),
+    37	        appConfigProvider.config.getAppDataDir(),
+    38	      ),
+    39	      new RemoveExternalRuntimeWorkingContextSnapshotsMigration(
+    40	        appConfigProvider.config.getMemoryDir(),
+    41	      ),
+    42	      // Native snapshot conversion resolves provenance through the current raw-trace layout.
+    43	      new RawTraceRotationLayoutMigration(appConfigProvider.config.getMemoryDir()),
+    44	      new RawTraceActiveFileNameMigration(appConfigProvider.config.getMemoryDir()),
+    45	      new MigrateNativeWorkingContextSnapshotsV5Migration(
+    46	        appConfigProvider.config.getMemoryDir(),
+=== prohibited target checks ===
+operational database action: NONE
+protected ports action: NONE

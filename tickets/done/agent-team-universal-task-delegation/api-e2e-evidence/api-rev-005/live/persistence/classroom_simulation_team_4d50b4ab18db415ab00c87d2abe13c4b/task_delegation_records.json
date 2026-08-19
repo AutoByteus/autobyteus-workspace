@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "rootTeamRunId": "classroom_simulation_team_4d50b4ab18db415ab00c87d2abe13c4b",
+  "records": [
+    {
+      "taskId": "task_563258be71814f66bcf16599614cf47e",
+      "delegatorAgentRunId": "professor_e6f3f6ce5c0147fd95ed0444016c35cb",
+      "recipientAddress": "/student",
+      "taskExecution": {
+        "agentRunId": "student_135504b9bf9846d39acbcc29f1369a9a"
+      },
+      "description": "Solve 19 + 23, show concise arithmetic, and submit the result to the delegator.",
+      "referenceFiles": [],
+      "status": "active",
+      "updates": [],
+      "createdAt": "2026-08-15T15:25:03.783Z"
+    }
+  ]
+}

@@ -5,24 +5,25 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { TeamRunHistoryIndexV2AppDataMigration } from "../../../src/app-data-migrations/migrations/team-run-history-index-v2-migration.js";
-import type { TeamRunMetadata } from "../../../src/run-history/store/team-run-metadata-types.js";
+import type { TeamRunMetadata } from "../../../src/app-data-migrations/legacy/team-run-metadata-types.js";
 
 let memoryDir: string;
 
 const buildMetadata = (teamRunId: string, overrides: Partial<TeamRunMetadata> = {}): TeamRunMetadata => ({
-  teamRunId,
-  teamDefinitionId: "software-engineering-team",
+  schemaVersion: 3,
   teamDefinitionName: "Software Engineering Team",
-  coordinatorMemberRouteKey: "lead",
   createdAt: "2026-03-27T10:00:00.000Z",
   archivedAt: null,
-  memberTree: [
-    {
-      memberKind: "agent",
-      memberRouteKey: "lead",
-      memberPath: ["Lead"],
-      memberName: "Lead",
-      memberRunId: `${teamRunId}-lead`,
+  rootTeam: {
+    kind: "agent_team",
+    address: "/",
+    teamDefinitionId: "software-engineering-team",
+    teamRunId,
+    coordinatorAddress: "/lead",
+    children: [{
+      kind: "agent",
+      address: "/lead",
+      agentRunId: `${teamRunId}-lead`,
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
       platformAgentRunId: null,
       agentDefinitionId: "agent-lead",
@@ -32,8 +33,11 @@ const buildMetadata = (teamRunId: string, overrides: Partial<TeamRunMetadata> = 
       llmConfig: null,
       workspaceRootPath: "/workspace/team",
       applicationExecutionContext: null,
-    },
-  ],
+      role: null,
+      description: null,
+    }],
+  },
+  handoffs: [],
   ...overrides,
 });
 

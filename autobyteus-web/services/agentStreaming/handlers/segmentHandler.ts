@@ -9,18 +9,18 @@ import type { AgentContext } from '~/types/agent/AgentContext';
 import type { AIMessage } from '~/types/conversation';
 import type { AIResponseSegment, ToolCallSegment, WriteFileSegment, TerminalCommandSegment, EditFileSegment, ThinkSegment, AIResponseTextSegment, ToolInvocationLifecycle } from '~/types/segments';
 import type { SegmentStartPayload, SegmentContentPayload, SegmentEndPayload } from '../protocol/messageTypes';
-import { createSegmentFromPayload } from '../protocol/segmentTypes';
+import { createSegmentFromPayload, toSegmentMetadataRecord } from '../protocol/segmentTypes';
 import {
-  hasStreamSegmentId,
   markStreamSegmentPresentationComplete,
   matchesStreamSegmentIdentity,
+  matchesStreamSegmentType,
   setStreamSegmentIdentity,
 } from './segmentIdentity';
 import { isPlaceholderToolName } from '~/utils/toolNamePlaceholders';
 import { isProjectableToolSegment, upsertActivityFromToolSegment } from './toolActivityProjection';
 import type { RecentEventMonitorEffect } from '../agentStreamMutationEffects';
 
-function extractToolCallArgumentsFromMetadata(metadata?: Record<string, any>): Record<string, any> {
+function extractToolCallArgumentsFromMetadata(metadata?: Record<string, any> | null): Record<string, any> {
   const parseArgumentsCandidate = (value: unknown): Record<string, any> => {
     if (value && typeof value === 'object' && !Array.isArray(value)) {
       return { ...(value as Record<string, any>) };
@@ -65,8 +65,10 @@ export function handleSegmentStart(
     console.warn('[SegmentHandler] Dropping SEGMENT_START with invalid id', payload);
     return 'NONE';
   }
-  const existingSegment = findSegmentById(context, payload.id, payload.segment_type);
+  if (typeof payload.turn_id !== 'string' || payload.turn_id.trim().length === 0) return 'NONE';
+  const existingSegment = findStreamSegment(context, payload.turn_id, payload.id);
   if (existingSegment) {
+    if (!matchesStreamSegmentType(existingSegment, payload.segment_type)) return 'NONE';
     const changed = mergeSegmentStartMetadata(existingSegment, payload);
     if (isProjectableToolSegment(existingSegment)) {
       upsertActivityFromToolSegment(context, payload.id, existingSegment);
@@ -76,7 +78,7 @@ export function handleSegmentStart(
   const aiMessage = findOrCreateAIMessage(context);
   const segment = createSegmentFromPayload(payload);
 
-  setStreamSegmentIdentity(segment, payload.id, payload.segment_type);
+  setStreamSegmentIdentity(segment, payload.turn_id, payload.id, payload.segment_type);
   mergeSegmentStartMetadata(segment, payload);
 
   aiMessage.segments.push(segment);
@@ -91,7 +93,7 @@ function mergeSegmentStartMetadata(
   payload: SegmentStartPayload,
 ): boolean {
   const before = JSON.stringify(segment);
-  const metadata = payload.metadata;
+  const metadata = toSegmentMetadataRecord(payload.metadata);
   if (!metadata) {
     return false;
   }
@@ -185,14 +187,18 @@ export function handleSegmentContent(
     console.warn('[SegmentHandler] Dropping SEGMENT_CONTENT with invalid id', payload);
     return 'NONE';
   }
+  if (typeof payload.turn_id !== 'string' || payload.turn_id.trim().length === 0) return 'NONE';
   const delta = typeof payload.delta === 'string' ? payload.delta : '';
   if (!delta) {
     return 'NONE';
   }
-  let segment = findSegmentById(context, payload.id, payload.segment_type);
+  let segment = findStreamSegment(context, payload.turn_id, payload.id);
   let segmentCreated = false;
+  if (segment && !matchesStreamSegmentType(segment, payload.segment_type)) {
+    return 'NONE';
+  }
   if (!segment) {
-    segment = createSyntheticSegmentFromContent(payload.id, payload.turn_id, payload.segment_type ?? 'text', context);
+    segment = createSyntheticSegmentFromContent(payload.id, payload.turn_id, payload.segment_type, context);
     segmentCreated = true;
   }
 
@@ -212,7 +218,8 @@ export function handleSegmentEnd(
     console.warn('[SegmentHandler] Dropping SEGMENT_END with invalid id', payload);
     return 'NONE';
   }
-  const segment = findSegmentById(context, payload.id);
+  if (typeof payload.turn_id !== 'string' || payload.turn_id.trim().length === 0) return 'NONE';
+  const segment = findStreamSegment(context, payload.turn_id, payload.id);
   if (!segment) {
     console.warn(`Segment not found for end event: ${payload.id}`);
     return 'NONE';
@@ -224,12 +231,12 @@ export function handleSegmentEnd(
   if (segment.type === 'think') {
     const thinkSegment = segment as ThinkSegment;
     if (!thinkSegment.content.trim()) {
-      removeSegmentById(context, payload.id);
+      removeStreamSegment(context, payload.turn_id, payload.id);
       return 'STRUCTURAL';
     }
   }
 
-  finalizeSegment(segment, payload.metadata, {
+  finalizeSegment(segment, toSegmentMetadataRecord(payload.metadata), {
     interrupted: payload.interrupted === true,
     reason: typeof payload.reason === 'string' ? payload.reason : null,
     failed: payload.failed === true,
@@ -270,16 +277,12 @@ export function findOrCreateAIMessage(context: AgentContext): AIMessage {
 export function findSegmentById(
   context: AgentContext,
   segmentId: string,
-  segmentType?: SegmentStartPayload['segment_type'] | SegmentContentPayload['segment_type'],
 ): AIResponseSegment | null {
   for (let i = context.conversation.messages.length - 1; i >= 0; i--) {
     const message = context.conversation.messages[i];
     if (message.type === 'ai') {
       for (let j = message.segments.length - 1; j >= 0; j--) {
         const segment = message.segments[j];
-        if (matchesStreamSegmentIdentity(segment, segmentId, segmentType)) {
-          return segment;
-        }
         if (
           ['tool_call', 'write_file', 'terminal_command', 'edit_file'].includes(segment.type) &&
           (segment as ToolInvocationLifecycle).invocationId === segmentId
@@ -287,6 +290,22 @@ export function findSegmentById(
           return segment;
         }
       }
+    }
+  }
+  return null;
+}
+
+function findStreamSegment(
+  context: AgentContext,
+  turnId: string,
+  segmentId: string,
+): AIResponseSegment | null {
+  for (let i = context.conversation.messages.length - 1; i >= 0; i--) {
+    const message = context.conversation.messages[i];
+    if (message.type !== 'ai') continue;
+    for (let j = message.segments.length - 1; j >= 0; j--) {
+      const segment = message.segments[j];
+      if (matchesStreamSegmentIdentity(segment, turnId, segmentId)) return segment;
     }
   }
   return null;
@@ -330,28 +349,28 @@ function appendContentToSegment(segment: AIResponseSegment, delta: string): bool
 
 function createSyntheticSegmentFromContent(
   segmentId: string,
-  turnId: string | null,
+  turnId: string,
   segmentType: SegmentStartPayload['segment_type'],
   context: AgentContext,
 ): AIResponseSegment {
   const aiMessage = findOrCreateAIMessage(context);
   const segment = createSegmentFromPayload({
     id: segmentId,
-    turn_id: turnId,
     segment_type: segmentType,
   });
-  setStreamSegmentIdentity(segment, segmentId, segmentType);
+  setStreamSegmentIdentity(segment, turnId, segmentId, segmentType);
   aiMessage.segments.push(segment);
   return segment;
 }
 
-function removeSegmentById(context: AgentContext, segmentId: string): boolean {
+function removeStreamSegment(context: AgentContext, turnId: string, segmentId: string): boolean {
   for (let i = context.conversation.messages.length - 1; i >= 0; i--) {
     const message = context.conversation.messages[i];
     if (message.type !== 'ai') {
       continue;
     }
-    const segmentIndex = message.segments.findIndex((segment) => hasStreamSegmentId(segment, segmentId));
+    const segmentIndex = message.segments.findIndex((segment) =>
+      matchesStreamSegmentIdentity(segment, turnId, segmentId));
     if (segmentIndex >= 0) {
       message.segments.splice(segmentIndex, 1);
       return true;
@@ -365,7 +384,7 @@ function removeSegmentById(context: AgentContext, segmentId: string): boolean {
  */
 function finalizeSegment(
   segment: AIResponseSegment,
-  metadata?: Record<string, any>,
+  metadata?: Record<string, any> | null,
   options: {
     interrupted?: boolean;
     reason?: string | null;

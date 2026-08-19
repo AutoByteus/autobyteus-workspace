@@ -1,0 +1,31 @@
+CRR-072 API-REV-033 proportional durable-test audit
+delta_matches_worktree:
+PASS
+delta_paths:
+40	0	autobyteus-web/components/workspace/config/__tests__/RunConfigPanel.spec.ts
+189	72	autobyteus-web/stores/__tests__/agentTeamRunStore.spec.ts
+delta_status:
+inventory_counts:
+rows=92 A=3 M=83 D=6 server=38 web=54 active=86
+active_path_check:
+missing=0
+disabled_marker_check_changed_files:
+PASS
+current-contract-retirement-check_changed_files:
+PASS
+focused_evidence:
+37: Test Files  2 passed (2)
+38:      Tests  30 passed (30)
+affected_evidence:
+77: Test Files  7 passed (7)
+78:      Tests  83 passed (83)
+cumulative_web_evidence:
+419: Test Files  49 passed (49)
+420:      Tests  349 passed (349)
+hashes:
+515d92e34fa1447f784a0b38c3748b0d902b9b60c5dc243e4d1ca42a728b6916  /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr018/api-rev-033/investigation/cumulative-durable-coverage-inventory.tsv
+67ec15947a0f0dba98916246d174dde06bd656769dbb0eb1185926d11b908bd3  /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr018/api-rev-033/investigation/cumulative-durable-diff.patch
+858550170571f1ae0692684a2917f84aca3dde6535e5078fe44d7d8e5d9ba07a  /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr018/api-rev-033/investigation/api-rev-033-durable-delta.patch
+4898b3ddeead3c5d7e7d297185a588040df591e58928c26c703a6b78d64b9d95  /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr018/api-rev-033/repository/launch-owner-and-panel-focused-final.log
+25e85f1fc6791c1db9fdbb1ff0870ab353eb505a5e6761aaf5ef850a22a37baa  /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr018/api-rev-033/repository/ir038-affected-seven-final.log
+54e17a097396684f812a1104fbfd69b64c230338c0d3b8631588504912e901c4  /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr018/api-rev-033/repository/web-current-final.log

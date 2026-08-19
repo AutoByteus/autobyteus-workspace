@@ -46,26 +46,21 @@ const listActiveTeamRuns = (workspaceGroups: RunHistoryWorkspaceGroup[]): TeamRu
 const applyTeamHistoryStatusToExistingContext = (
   existingTeamContext: AgentTeamContext,
   teamRun: TeamRunHistoryItem,
+  preserveCurrentMemberStatuses: boolean,
 ): void => {
-  const preserveCurrentMemberStatuses =
-    existingTeamContext.isSubscribed;
-  const statusByKey = new Map(
-    teamRun.members
-      .map((member) => [member.memberRouteKey.trim(), member.status] as const)
-      .filter(([memberRouteKey]) => Boolean(memberRouteKey)),
-  );
   const statusByRunId = new Map(
     teamRun.members
-      .map((member) => [member.memberRunId.trim(), member.status] as const)
-      .filter(([memberRunId]) => Boolean(memberRunId)),
+      .map((member) => [member.agentRunId.trim(), member.status] as const)
+      .filter(([agentRunId]) => Boolean(agentRunId)),
   );
 
-  existingTeamContext.isActive = teamRun.isActive;
-  existingTeamContext.leafAgentContextsByRouteKey.forEach((memberContext, memberRouteKey) => {
+  existingTeamContext.view.setRootTeamActive(teamRun.isActive);
+  existingTeamContext.view.listAgentContextEntries().forEach(({ agentRunId, memberAddress, agentContext: memberContext }) => {
     memberContext.config.isLocked = true;
-    const matchedStatus =
-      statusByKey.get(memberRouteKey) ||
-      statusByRunId.get(memberContext.state.runId);
+    const historyMember = teamRun.members.find((member) => member.agentRunId === agentRunId);
+    const matchedStatus = historyMember?.memberAddress === memberAddress
+      ? statusByRunId.get(agentRunId)
+      : undefined;
     applyMemberOrHistoryStatusSnapshot(
       memberContext,
       matchedStatus ? normalizeAgentRuntimeStatus(matchedStatus) : preserveCanonicalAgentStatus(memberContext.state.currentStatus),
@@ -88,9 +83,10 @@ export const recoverActiveRunsFromHistory = async (
     const existingContext = agentContextsStore.getRun(runId);
     if (existingContext) {
       existingContext.config.isLocked = true;
-      applyActiveRuntimePlaceholder(existingContext, { preserveExistingLive: true });
+      const streamConnected = agentRunStore.isAgentStreamReady(runId);
+      applyActiveRuntimePlaceholder(existingContext, { preserveExistingLive: true, streamConnected });
 
-      if (!existingContext.isSubscribed) {
+      if (!streamConnected) {
         agentRunStore.connectToAgentStream(runId);
       }
       continue;
@@ -114,10 +110,10 @@ export const recoverActiveRunsFromHistory = async (
     const teamRunId = teamRun.teamRunId;
     const existingTeamContext = teamContextsStore.getTeamContextById(teamRunId);
     if (existingTeamContext) {
-      existingTeamContext.config.isLocked = true;
-      applyTeamHistoryStatusToExistingContext(existingTeamContext, teamRun);
+      const streamConnected = agentTeamRunStore.isTeamStreamReady(teamRunId);
+      applyTeamHistoryStatusToExistingContext(existingTeamContext, teamRun, streamConnected);
 
-      if (!existingTeamContext.isSubscribed) {
+      if (!streamConnected) {
         agentTeamRunStore.connectToTeamStream(teamRunId);
       }
       continue;
@@ -126,7 +122,7 @@ export const recoverActiveRunsFromHistory = async (
     try {
       const result = await openTeamRun({
         teamRunId,
-        memberRouteKey: null,
+        agentRunId: null,
         resolveWorkspaceMetadataByRootPath: input.resolveWorkspaceMetadataByRootPath,
         ensureWorkspaceByRootPath: input.ensureWorkspaceByRootPath,
         selectRun: false,

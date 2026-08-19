@@ -143,10 +143,11 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
       });
     expect(compactionAgentRunnerFactory).toHaveBeenCalledOnce();
 
-    const commandResult = await backend.postUserMessage(
-      new AgentInputUserMessage("hello backend integration"),
-    );
-    expect(commandResult.accepted).toBe(true);
+    const commandResult = await backend.dispatchUserInput({
+      kind: "start_turn",
+      message: new AgentInputUserMessage("hello backend integration"),
+    });
+    expect(commandResult.forwarded).toBe(true);
 
     await waitFor(() => backend.getLifecycleSnapshot().phase === "idle");
 
@@ -185,10 +186,11 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
       ?.getAutomaticCompactionConfiguration()).toEqual({ kind: "disabled" });
     expect(compactionAgentRunnerFactory).not.toHaveBeenCalled();
 
-    const commandResult = await backend.postUserMessage(
-      new AgentInputUserMessage("persist one compactor task before restore"),
-    );
-    expect(commandResult.accepted).toBe(true);
+    const commandResult = await backend.dispatchUserInput({
+      kind: "start_turn",
+      message: new AgentInputUserMessage("persist one compactor task before restore"),
+    });
+    expect(commandResult.forwarded).toBe(true);
     await waitFor(() => backend.getLifecycleSnapshot().phase === "idle");
 
     const terminateResult = await backend.terminate();
@@ -228,10 +230,11 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
       fs.access(path.join(memoryDir, "agents", preferredRunId)),
     ).resolves.toBeUndefined();
 
-    const commandResult = await backend.postUserMessage(
-      new AgentInputUserMessage("hello explicit memory"),
-    );
-    expect(commandResult.accepted).toBe(true);
+    const commandResult = await backend.dispatchUserInput({
+      kind: "start_turn",
+      message: new AgentInputUserMessage("hello explicit memory"),
+    });
+    expect(commandResult.forwarded).toBe(true);
     await waitFor(() => backend.getLifecycleSnapshot().phase === "idle");
 
     const rawTracesPath = path.join(memoryDir, "agents", preferredRunId, "raw_traces_active.jsonl");
@@ -252,10 +255,11 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
       runId,
     );
 
-    const firstResult = await created.postUserMessage(
-      new AgentInputUserMessage("first restoreable turn"),
-    );
-    expect(firstResult.accepted).toBe(true);
+    const firstResult = await created.dispatchUserInput({
+      kind: "start_turn",
+      message: new AgentInputUserMessage("first restoreable turn"),
+    });
+    expect(firstResult.forwarded).toBe(true);
     await waitFor(() => created.getLifecycleSnapshot().phase === "idle");
 
     const terminateResult = await created.terminate();
@@ -290,10 +294,11 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
       });
     expect(compactionAgentRunnerFactory).toHaveBeenCalledTimes(2);
 
-    const secondResult = await restored.postUserMessage(
-      new AgentInputUserMessage("second restoreable turn"),
-    );
-    expect(secondResult.accepted).toBe(true);
+    const secondResult = await restored.dispatchUserInput({
+      kind: "start_turn",
+      message: new AgentInputUserMessage("second restoreable turn"),
+    });
+    expect(secondResult.forwarded).toBe(true);
     await waitFor(() => restored.getLifecycleSnapshot().phase === "idle");
   });
 

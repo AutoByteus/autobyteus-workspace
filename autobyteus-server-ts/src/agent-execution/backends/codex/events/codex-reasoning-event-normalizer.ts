@@ -17,10 +17,11 @@ export class CodexReasoningEventNormalizer {
     payload: Record<string, unknown>,
   ): CodexReasoningLifecycleAction[] {
     const snapshot = this.resolveSnapshot(payload);
-    if (!snapshot) return [];
+    const turnId = this.resolveTurnId(payload);
+    if (!snapshot || !turnId) return [];
 
     return this.blockTracker.append({
-      turnId: this.resolveTurnId(payload),
+      turnId,
       providerItemId: this.resolveProviderItemId(payload),
       snapshot,
     });

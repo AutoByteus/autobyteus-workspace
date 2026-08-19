@@ -1,0 +1,23 @@
+{
+  "result": "PASS",
+  "results": [
+    {
+      "path": "/agent-teams?view=team-list",
+      "status": 200,
+      "title": "",
+      "bodyBytes": 154
+    },
+    {
+      "path": "/agents?view=list",
+      "status": 200,
+      "title": "",
+      "bodyBytes": 454
+    },
+    {
+      "path": "/workspace",
+      "status": 200,
+      "title": "",
+      "bodyBytes": 465
+    }
+  ]
+}

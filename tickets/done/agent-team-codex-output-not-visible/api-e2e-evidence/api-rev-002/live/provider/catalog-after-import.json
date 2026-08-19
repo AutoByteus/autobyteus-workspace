@@ -1,0 +1,1865 @@
+{
+  "runtimeAvailabilities": [
+    {
+      "runtimeKind": "autobyteus",
+      "enabled": true,
+      "reason": null
+    },
+    {
+      "runtimeKind": "codex_app_server",
+      "enabled": true,
+      "reason": null
+    },
+    {
+      "runtimeKind": "claude_agent_sdk",
+      "enabled": true,
+      "reason": null
+    }
+  ],
+  "agentDefinitions": [
+    {
+      "id": "autobyteus-memory-compactor",
+      "name": "Memory Compactor",
+      "ownershipScope": "SHARED",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "autobyteus-retrospective-skill-improver",
+      "name": "Retrospective Skill Improver",
+      "ownershipScope": "SHARED",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "codex",
+      "name": "Codex",
+      "ownershipScope": "SHARED",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "daily-assistant",
+      "name": "Daily Assistant",
+      "ownershipScope": "SHARED",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "product-prototyper",
+      "name": "Product Prototyper",
+      "ownershipScope": "SHARED",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "research-engineer",
+      "name": "research engineer",
+      "ownershipScope": "SHARED",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "resume-designer",
+      "name": "Resume Designer",
+      "ownershipScope": "SHARED",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "skill-optimizer",
+      "name": "Skill Optimizer",
+      "ownershipScope": "SHARED",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "software-tutorial-video-maker",
+      "name": "Software Tutorial Video Maker",
+      "ownershipScope": "SHARED",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:article-writing-team:article-reviewer",
+      "name": "article reviewer",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:article-writing-team:article-writer",
+      "name": "article writer",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:bible-learning-team:bible-researcher",
+      "name": "bible researcher",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:bible-learning-team:bible-teaching-preparer",
+      "name": "bible teaching preparer",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:bible-learning-team:bible-teaching-reviewer",
+      "name": "bible teaching reviewer",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:classroom-simulation-team:professor",
+      "name": "Professor",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:classroom-simulation-team:student",
+      "name": "Student",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:kids-coloring-story-team:child-experience-reviewer",
+      "name": "child-experience-reviewer",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:kids-coloring-story-team:coloring-page-illustrator",
+      "name": "coloring-page-illustrator",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:kids-coloring-story-team:printable-pack-producer",
+      "name": "printable-pack-producer",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:kids-coloring-story-team:story-activity-designer",
+      "name": "story-activity-designer",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:kids-picture-story-team:book-production-editor",
+      "name": "book-production-editor",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:kids-picture-story-team:picture-book-illustrator",
+      "name": "picture-book-illustrator",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:kids-picture-story-team:picture-book-reviewer",
+      "name": "picture-book-reviewer",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:kids-picture-story-team:story-picture-book-author",
+      "name": "story-picture-book-author",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:manga-video-studio-team:manga-illustrator",
+      "name": "manga illustrator",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:manga-video-studio-team:manga-showrunner",
+      "name": "manga showrunner",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:manga-video-studio-team:storyboard-director",
+      "name": "storyboard director",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:manga-video-studio-team:voice-video-producer",
+      "name": "voice and video producer",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:narrated-presentation-video-team:narration-script-reviewer",
+      "name": "narration-script-reviewer",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:narrated-presentation-video-team:presentation-director",
+      "name": "presentation-director",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:narrated-presentation-video-team:slide-video-producer",
+      "name": "slide-video-producer",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:northstar-operating-company:ceo",
+      "name": "CEO",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:northstar-operating-company:cfo",
+      "name": "CFO",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:northstar-operating-company:chief-of-staff",
+      "name": "Chief of Staff",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:northstar-operating-company:chief-people-officer",
+      "name": "Chief People Officer",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:northstar-operating-company:cmo",
+      "name": "CMO",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:northstar-operating-company:coo",
+      "name": "COO",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:northstar-operating-company:cpo",
+      "name": "CPO",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:northstar-operating-company:cro",
+      "name": "CRO",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:northstar-operating-company:cto",
+      "name": "CTO",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:picture-book-studio-team:book-production-editor",
+      "name": "book-production-editor",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:picture-book-studio-team:picture-book-concept-director",
+      "name": "picture-book-concept-director",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:picture-book-studio-team:picture-book-illustrator",
+      "name": "picture-book-illustrator",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:picture-book-studio-team:picture-book-reviewer",
+      "name": "picture-book-reviewer",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:requirements-engineering-team:product-prototyper",
+      "name": "product prototyper",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:requirements-engineering-team:prototype-bootstrapper",
+      "name": "prototype bootstrapper",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:requirements-engineering-team:requirements-engineer",
+      "name": "requirements engineer",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:research-to-deck-team:deck-reviewer",
+      "name": "deck reviewer",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:research-to-deck-team:deep-researcher",
+      "name": "deep researcher",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:research-to-deck-team:infographic-powerpoint-designer",
+      "name": "infographic PowerPoint designer",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:software-engineering-team:api-e2e-engineer",
+      "name": "api e2e engineer",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:software-engineering-team:architecture-reviewer",
+      "name": "architecture reviewer",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:software-engineering-team:code-reviewer",
+      "name": "code reviewer",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:software-engineering-team:delivery-engineer",
+      "name": "delivery engineer",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:software-engineering-team:implementation-engineer",
+      "name": "implementation engineer",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:software-engineering-team:solution-designer",
+      "name": "solution designer",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:software-product-promo-video-team:promo-director",
+      "name": "promo-director",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:software-product-promo-video-team:promo-video-producer",
+      "name": "promo-video-producer",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:software-product-promo-video-team:visual-director",
+      "name": "visual-director",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:software-product-promo-video-team:visual-reviewer",
+      "name": "visual-reviewer",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:storm-team:article-polisher-verifier",
+      "name": "article polisher verifier",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:storm-team:cited-article-writer",
+      "name": "cited article writer",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:storm-team:expert-interviewer",
+      "name": "expert interviewer",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:storm-team:outline-architect",
+      "name": "outline architect",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:storm-team:perspective-miner",
+      "name": "perspective miner",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:storm-team:topic-research-coordinator",
+      "name": "topic research coordinator",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Aengineering-org:infrastructure-security-lead",
+      "name": "Infrastructure & Security Lead",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Aengineering-org:platform-engineering-manager",
+      "name": "Platform Engineering Manager",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Aengineering-org:product-engineering-manager",
+      "name": "Product Engineering Manager",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Aengineering-org:qa-release-manager",
+      "name": "QA & Release Manager",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Aengineering-org:vp-engineering",
+      "name": "VP Engineering",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Afinance-people-org:controller",
+      "name": "Controller",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Afinance-people-org:legal-compliance-lead",
+      "name": "Legal & Compliance Lead",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Afinance-people-org:people-ops-lead",
+      "name": "People Operations Lead",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Afinance-people-org:talent-acquisition-lead",
+      "name": "Talent Acquisition Lead",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Afinance-people-org:vp-finance",
+      "name": "VP Finance",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Amarketing-org:brand-content-lead",
+      "name": "Brand & Content Lead",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Amarketing-org:demand-generation-lead",
+      "name": "Demand Generation Lead",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Amarketing-org:facebook-marketer",
+      "name": "Facebook Marketer",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Amarketing-org:linkedin-marketer",
+      "name": "LinkedIn Marketer",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Amarketing-org:marketing-operations-analytics-lead",
+      "name": "Marketing Operations & Analytics Lead",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Amarketing-org:product-marketing-lead",
+      "name": "Product Marketing Lead",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Amarketing-org:vp-marketing",
+      "name": "VP Marketing",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Amarketing-org:x-marketer",
+      "name": "X Marketer",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Aoperations-org:business-operations-lead",
+      "name": "Business Operations Lead",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Aoperations-org:customer-operations-lead",
+      "name": "Customer Operations Lead",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Aoperations-org:data-analytics-lead",
+      "name": "Data Analytics Lead",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Aoperations-org:vendor-operations-lead",
+      "name": "Vendor Operations Lead",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Aoperations-org:vp-operations",
+      "name": "VP Operations",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Aproduct-org:growth-product-manager",
+      "name": "Growth Product Manager",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Aproduct-org:platform-product-manager",
+      "name": "Platform Product Manager",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Aproduct-org:product-design-lead",
+      "name": "Product Design Lead",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Aproduct-org:ux-research-lead",
+      "name": "UX Research Lead",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Aproduct-org:vp-product",
+      "name": "VP Product",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Arevenue-org:account-executive-manager",
+      "name": "Account Executive Manager",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Arevenue-org:customer-success-lead",
+      "name": "Customer Success Lead",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Arevenue-org:partnerships-lead",
+      "name": "Partnerships Lead",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Arevenue-org:vp-sales",
+      "name": "VP Sales",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null
+    }
+  ],
+  "agentTeamDefinitions": [
+    {
+      "id": "article-writing-team",
+      "name": "Article Writing Team",
+      "coordinatorMemberName": "article_writer",
+      "ownershipScope": "SHARED",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null,
+      "nodes": [
+        {
+          "memberName": "article_writer",
+          "ref": "article-writer",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "article_reviewer",
+          "ref": "article-reviewer",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        }
+      ]
+    },
+    {
+      "id": "bible-learning-team",
+      "name": "Bible Learning Team",
+      "coordinatorMemberName": "bible_researcher",
+      "ownershipScope": "SHARED",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null,
+      "nodes": [
+        {
+          "memberName": "bible_researcher",
+          "ref": "bible-researcher",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "bible_teaching_preparer",
+          "ref": "bible-teaching-preparer",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "bible_teaching_reviewer",
+          "ref": "bible-teaching-reviewer",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        }
+      ]
+    },
+    {
+      "id": "classroom-simulation-team",
+      "name": "Classroom Simulation Team",
+      "coordinatorMemberName": "professor",
+      "ownershipScope": "SHARED",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null,
+      "nodes": [
+        {
+          "memberName": "professor",
+          "ref": "professor",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "student",
+          "ref": "student",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        }
+      ]
+    },
+    {
+      "id": "kids-coloring-story-team",
+      "name": "Kids Coloring Story Team",
+      "coordinatorMemberName": "story_activity_designer",
+      "ownershipScope": "SHARED",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null,
+      "nodes": [
+        {
+          "memberName": "story_activity_designer",
+          "ref": "story-activity-designer",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "coloring_page_illustrator",
+          "ref": "coloring-page-illustrator",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "child_experience_reviewer",
+          "ref": "child-experience-reviewer",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "printable_pack_producer",
+          "ref": "printable-pack-producer",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        }
+      ]
+    },
+    {
+      "id": "kids-picture-story-team",
+      "name": "Kids Picture Story Team",
+      "coordinatorMemberName": "story_picture_book_author",
+      "ownershipScope": "SHARED",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null,
+      "nodes": [
+        {
+          "memberName": "story_picture_book_author",
+          "ref": "story-picture-book-author",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "picture_book_illustrator",
+          "ref": "picture-book-illustrator",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "picture_book_reviewer",
+          "ref": "picture-book-reviewer",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "book_production_editor",
+          "ref": "book-production-editor",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        }
+      ]
+    },
+    {
+      "id": "manga-video-studio-team",
+      "name": "Manga Video Studio Team",
+      "coordinatorMemberName": "manga_showrunner",
+      "ownershipScope": "SHARED",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null,
+      "nodes": [
+        {
+          "memberName": "manga_showrunner",
+          "ref": "manga-showrunner",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "storyboard_director",
+          "ref": "storyboard-director",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "manga_illustrator",
+          "ref": "manga-illustrator",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "voice_video_producer",
+          "ref": "voice-video-producer",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        }
+      ]
+    },
+    {
+      "id": "narrated-presentation-video-team",
+      "name": "Narrated Presentation Video Team",
+      "coordinatorMemberName": "presentation_director",
+      "ownershipScope": "SHARED",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null,
+      "nodes": [
+        {
+          "memberName": "presentation_director",
+          "ref": "presentation-director",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "narration_script_reviewer",
+          "ref": "narration-script-reviewer",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "slide_video_producer",
+          "ref": "slide-video-producer",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        }
+      ]
+    },
+    {
+      "id": "northstar-operating-company",
+      "name": "Northstar Operating Company",
+      "coordinatorMemberName": "ceo",
+      "ownershipScope": "SHARED",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null,
+      "nodes": [
+        {
+          "memberName": "ceo",
+          "ref": "ceo",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "chief_of_staff",
+          "ref": "chief-of-staff",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "cto",
+          "ref": "cto",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "cpo",
+          "ref": "cpo",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "cmo",
+          "ref": "cmo",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "cro",
+          "ref": "cro",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "coo",
+          "ref": "coo",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "cfo",
+          "ref": "cfo",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "chief_people_officer",
+          "ref": "chief-people-officer",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "engineering_org",
+          "ref": "engineering-org",
+          "refType": "AGENT_TEAM",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "product_org",
+          "ref": "product-org",
+          "refType": "AGENT_TEAM",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "marketing_org",
+          "ref": "marketing-org",
+          "refType": "AGENT_TEAM",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "revenue_org",
+          "ref": "revenue-org",
+          "refType": "AGENT_TEAM",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "operations_org",
+          "ref": "operations-org",
+          "refType": "AGENT_TEAM",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "finance_people_org",
+          "ref": "finance-people-org",
+          "refType": "AGENT_TEAM",
+          "refScope": "TEAM_LOCAL"
+        }
+      ]
+    },
+    {
+      "id": "picture-book-studio-team",
+      "name": "Picture Book Studio Team",
+      "coordinatorMemberName": "picture_book_concept_director",
+      "ownershipScope": "SHARED",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null,
+      "nodes": [
+        {
+          "memberName": "picture_book_concept_director",
+          "ref": "picture-book-concept-director",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "picture_book_illustrator",
+          "ref": "picture-book-illustrator",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "picture_book_reviewer",
+          "ref": "picture-book-reviewer",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "book_production_editor",
+          "ref": "book-production-editor",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        }
+      ]
+    },
+    {
+      "id": "requirements-engineering-team",
+      "name": "Requirements Engineering Team",
+      "coordinatorMemberName": "requirements_engineer",
+      "ownershipScope": "SHARED",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null,
+      "nodes": [
+        {
+          "memberName": "requirements_engineer",
+          "ref": "requirements-engineer",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "product_prototyper",
+          "ref": "product-prototyper",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "prototype_bootstrapper",
+          "ref": "prototype-bootstrapper",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        }
+      ]
+    },
+    {
+      "id": "research-to-deck-team",
+      "name": "Research To Deck Team",
+      "coordinatorMemberName": "deep_researcher",
+      "ownershipScope": "SHARED",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null,
+      "nodes": [
+        {
+          "memberName": "deep_researcher",
+          "ref": "deep-researcher",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "infographic_powerpoint_designer",
+          "ref": "infographic-powerpoint-designer",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "deck_reviewer",
+          "ref": "deck-reviewer",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        }
+      ]
+    },
+    {
+      "id": "software-engineering-team",
+      "name": "Software Engineering Team",
+      "coordinatorMemberName": "solution_designer",
+      "ownershipScope": "SHARED",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null,
+      "nodes": [
+        {
+          "memberName": "solution_designer",
+          "ref": "solution-designer",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "architecture_reviewer",
+          "ref": "architecture-reviewer",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "implementation_engineer",
+          "ref": "implementation-engineer",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "code_reviewer",
+          "ref": "code-reviewer",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "api_e2e_engineer",
+          "ref": "api-e2e-engineer",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "delivery_engineer",
+          "ref": "delivery-engineer",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        }
+      ]
+    },
+    {
+      "id": "software-product-promo-video-team",
+      "name": "Software Product Promo Video Team",
+      "coordinatorMemberName": "promo_director",
+      "ownershipScope": "SHARED",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null,
+      "nodes": [
+        {
+          "memberName": "promo_director",
+          "ref": "promo-director",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "visual_director",
+          "ref": "visual-director",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "visual_reviewer",
+          "ref": "visual-reviewer",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "promo_video_producer",
+          "ref": "promo-video-producer",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        }
+      ]
+    },
+    {
+      "id": "storm-team",
+      "name": "STORM Team",
+      "coordinatorMemberName": "topic_research_coordinator",
+      "ownershipScope": "SHARED",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null,
+      "nodes": [
+        {
+          "memberName": "topic_research_coordinator",
+          "ref": "topic-research-coordinator",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "perspective_miner",
+          "ref": "perspective-miner",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "expert_interviewer",
+          "ref": "expert-interviewer",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "outline_architect",
+          "ref": "outline-architect",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "cited_article_writer",
+          "ref": "cited-article-writer",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "article_polisher_verifier",
+          "ref": "article-polisher-verifier",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        }
+      ]
+    },
+    {
+      "id": "team-local-team:northstar-operating-company:engineering-org",
+      "name": "Northstar Engineering Org Team",
+      "coordinatorMemberName": "vp_engineering",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null,
+      "nodes": [
+        {
+          "memberName": "vp_engineering",
+          "ref": "vp-engineering",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "platform_engineering_manager",
+          "ref": "platform-engineering-manager",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "product_engineering_manager",
+          "ref": "product-engineering-manager",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "infrastructure_security_lead",
+          "ref": "infrastructure-security-lead",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "qa_release_manager",
+          "ref": "qa-release-manager",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        }
+      ]
+    },
+    {
+      "id": "team-local-team:northstar-operating-company:finance-people-org",
+      "name": "Northstar Finance & People Org Team",
+      "coordinatorMemberName": "vp_finance",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null,
+      "nodes": [
+        {
+          "memberName": "vp_finance",
+          "ref": "vp-finance",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "controller",
+          "ref": "controller",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "people_ops_lead",
+          "ref": "people-ops-lead",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "talent_acquisition_lead",
+          "ref": "talent-acquisition-lead",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "legal_compliance_lead",
+          "ref": "legal-compliance-lead",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        }
+      ]
+    },
+    {
+      "id": "team-local-team:northstar-operating-company:marketing-org",
+      "name": "Northstar Marketing Org Team",
+      "coordinatorMemberName": "vp_marketing",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null,
+      "nodes": [
+        {
+          "memberName": "vp_marketing",
+          "ref": "vp-marketing",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "product_marketing_lead",
+          "ref": "product-marketing-lead",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "brand_content_lead",
+          "ref": "brand-content-lead",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "demand_generation_lead",
+          "ref": "demand-generation-lead",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "marketing_operations_analytics_lead",
+          "ref": "marketing-operations-analytics-lead",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "linkedin_marketer",
+          "ref": "linkedin-marketer",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "x_marketer",
+          "ref": "x-marketer",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "facebook_marketer",
+          "ref": "facebook-marketer",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        }
+      ]
+    },
+    {
+      "id": "team-local-team:northstar-operating-company:operations-org",
+      "name": "Northstar Operations Org Team",
+      "coordinatorMemberName": "vp_operations",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null,
+      "nodes": [
+        {
+          "memberName": "vp_operations",
+          "ref": "vp-operations",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "business_operations_lead",
+          "ref": "business-operations-lead",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "customer_operations_lead",
+          "ref": "customer-operations-lead",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "vendor_operations_lead",
+          "ref": "vendor-operations-lead",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "data_analytics_lead",
+          "ref": "data-analytics-lead",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        }
+      ]
+    },
+    {
+      "id": "team-local-team:northstar-operating-company:product-org",
+      "name": "Northstar Product Org Team",
+      "coordinatorMemberName": "vp_product",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null,
+      "nodes": [
+        {
+          "memberName": "vp_product",
+          "ref": "vp-product",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "growth_product_manager",
+          "ref": "growth-product-manager",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "platform_product_manager",
+          "ref": "platform-product-manager",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "product_design_lead",
+          "ref": "product-design-lead",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "ux_research_lead",
+          "ref": "ux-research-lead",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        }
+      ]
+    },
+    {
+      "id": "team-local-team:northstar-operating-company:revenue-org",
+      "name": "Northstar Revenue Org Team",
+      "coordinatorMemberName": "vp_sales",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerPackageId": null,
+      "defaultLaunchConfig": null,
+      "nodes": [
+        {
+          "memberName": "vp_sales",
+          "ref": "vp-sales",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "account_executive_manager",
+          "ref": "account-executive-manager",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "customer_success_lead",
+          "ref": "customer-success-lead",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "partnerships_lead",
+          "ref": "partnerships-lead",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        }
+      ]
+    }
+  ],
+  "providerSettings": [
+    {
+      "provider": {
+        "id": "ANTHROPIC",
+        "name": "Anthropic",
+        "providerType": "ANTHROPIC",
+        "apiKeyConfigured": false,
+        "status": "NOT_APPLICABLE",
+        "statusMessage": null
+      },
+      "llmModels": [
+        {
+          "modelIdentifier": "claude-fable-5",
+          "name": "claude-fable-5",
+          "providerType": "ANTHROPIC"
+        },
+        {
+          "modelIdentifier": "claude-opus-4.7",
+          "name": "claude-opus-4.7",
+          "providerType": "ANTHROPIC"
+        },
+        {
+          "modelIdentifier": "claude-opus-4.8",
+          "name": "claude-opus-4.8",
+          "providerType": "ANTHROPIC"
+        },
+        {
+          "modelIdentifier": "claude-opus-5",
+          "name": "claude-opus-5",
+          "providerType": "ANTHROPIC"
+        },
+        {
+          "modelIdentifier": "claude-sonnet-4.6",
+          "name": "claude-sonnet-4.6",
+          "providerType": "ANTHROPIC"
+        },
+        {
+          "modelIdentifier": "claude-sonnet-5",
+          "name": "claude-sonnet-5",
+          "providerType": "ANTHROPIC"
+        }
+      ]
+    },
+    {
+      "provider": {
+        "id": "AUTOBYTEUS",
+        "name": "AutoByteus",
+        "providerType": "AUTOBYTEUS",
+        "apiKeyConfigured": false,
+        "status": "NOT_APPLICABLE",
+        "statusMessage": null
+      },
+      "llmModels": []
+    },
+    {
+      "provider": {
+        "id": "DEEPSEEK",
+        "name": "DeepSeek",
+        "providerType": "DEEPSEEK",
+        "apiKeyConfigured": false,
+        "status": "NOT_APPLICABLE",
+        "statusMessage": null
+      },
+      "llmModels": [
+        {
+          "modelIdentifier": "deepseek-v4-flash",
+          "name": "deepseek-v4-flash",
+          "providerType": "DEEPSEEK"
+        },
+        {
+          "modelIdentifier": "deepseek-v4-pro",
+          "name": "deepseek-v4-pro",
+          "providerType": "DEEPSEEK"
+        }
+      ]
+    },
+    {
+      "provider": {
+        "id": "GEMINI",
+        "name": "Gemini",
+        "providerType": "GEMINI",
+        "apiKeyConfigured": false,
+        "status": "NOT_APPLICABLE",
+        "statusMessage": null
+      },
+      "llmModels": [
+        {
+          "modelIdentifier": "gemini-3-flash-preview",
+          "name": "gemini-3-flash-preview",
+          "providerType": "GEMINI"
+        },
+        {
+          "modelIdentifier": "gemini-3.1-pro-preview",
+          "name": "gemini-3.1-pro-preview",
+          "providerType": "GEMINI"
+        },
+        {
+          "modelIdentifier": "gemini-3.5-flash",
+          "name": "gemini-3.5-flash",
+          "providerType": "GEMINI"
+        }
+      ]
+    },
+    {
+      "provider": {
+        "id": "GLM",
+        "name": "GLM",
+        "providerType": "GLM",
+        "apiKeyConfigured": false,
+        "status": "NOT_APPLICABLE",
+        "statusMessage": null
+      },
+      "llmModels": [
+        {
+          "modelIdentifier": "glm-5.2",
+          "name": "glm-5.2",
+          "providerType": "GLM"
+        }
+      ]
+    },
+    {
+      "provider": {
+        "id": "GROK",
+        "name": "Grok",
+        "providerType": "GROK",
+        "apiKeyConfigured": false,
+        "status": "NOT_APPLICABLE",
+        "statusMessage": null
+      },
+      "llmModels": [
+        {
+          "modelIdentifier": "grok-4.5",
+          "name": "grok-4.5",
+          "providerType": "GROK"
+        }
+      ]
+    },
+    {
+      "provider": {
+        "id": "KIMI",
+        "name": "Kimi",
+        "providerType": "KIMI",
+        "apiKeyConfigured": false,
+        "status": "NOT_APPLICABLE",
+        "statusMessage": null
+      },
+      "llmModels": [
+        {
+          "modelIdentifier": "kimi-k2.6",
+          "name": "kimi-k2.6",
+          "providerType": "KIMI"
+        },
+        {
+          "modelIdentifier": "kimi-k2.7-code",
+          "name": "kimi-k2.7-code",
+          "providerType": "KIMI"
+        },
+        {
+          "modelIdentifier": "kimi-k2.7-code-highspeed",
+          "name": "kimi-k2.7-code-highspeed",
+          "providerType": "KIMI"
+        }
+      ]
+    },
+    {
+      "provider": {
+        "id": "LMSTUDIO",
+        "name": "LM Studio",
+        "providerType": "LMSTUDIO",
+        "apiKeyConfigured": false,
+        "status": "NOT_APPLICABLE",
+        "statusMessage": null
+      },
+      "llmModels": [
+        {
+          "modelIdentifier": "deepseek-ocr:lmstudio@localhost:1234",
+          "name": "deepseek-ocr",
+          "providerType": "LMSTUDIO"
+        },
+        {
+          "modelIdentifier": "google/gemma-4-26b-a4b:lmstudio@localhost:1234",
+          "name": "google/gemma-4-26b-a4b",
+          "providerType": "LMSTUDIO"
+        },
+        {
+          "modelIdentifier": "google/gemma-4-31b:lmstudio@localhost:1234",
+          "name": "google/gemma-4-31b",
+          "providerType": "LMSTUDIO"
+        },
+        {
+          "modelIdentifier": "mlx-qwen3.5-35b-a3b-claude-4.6-opus-reasoning-distilled:lmstudio@localhost:1234",
+          "name": "mlx-qwen3.5-35b-a3b-claude-4.6-opus-reasoning-distilled",
+          "providerType": "LMSTUDIO"
+        },
+        {
+          "modelIdentifier": "qwen/qwen3.6-27b:lmstudio@localhost:1234",
+          "name": "qwen/qwen3.6-27b",
+          "providerType": "LMSTUDIO"
+        },
+        {
+          "modelIdentifier": "qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234",
+          "name": "qwen/qwen3.6-35b-a3b",
+          "providerType": "LMSTUDIO"
+        },
+        {
+          "modelIdentifier": "qwen/qwen3.8-27b:lmstudio@localhost:1234",
+          "name": "qwen/qwen3.8-27b",
+          "providerType": "LMSTUDIO"
+        },
+        {
+          "modelIdentifier": "qwen3.5-27b:lmstudio@localhost:1234",
+          "name": "qwen3.5-27b",
+          "providerType": "LMSTUDIO"
+        },
+        {
+          "modelIdentifier": "qwen3.5-27b-claude-4.6-opus-distilled-mlx:lmstudio@localhost:1234",
+          "name": "qwen3.5-27b-claude-4.6-opus-distilled-mlx",
+          "providerType": "LMSTUDIO"
+        },
+        {
+          "modelIdentifier": "qwen3.6-27b:lmstudio@localhost:1234",
+          "name": "qwen3.6-27b",
+          "providerType": "LMSTUDIO"
+        },
+        {
+          "modelIdentifier": "qwen3.6-27b-mtplx-optimized-speed:lmstudio@localhost:1234",
+          "name": "qwen3.6-27b-mtplx-optimized-speed",
+          "providerType": "LMSTUDIO"
+        },
+        {
+          "modelIdentifier": "qwen3.6-27b-ud-mlx:lmstudio@localhost:1234",
+          "name": "qwen3.6-27b-ud-mlx",
+          "providerType": "LMSTUDIO"
+        },
+        {
+          "modelIdentifier": "text-embedding-nomic-embed-text-v1.5:lmstudio@localhost:1234",
+          "name": "text-embedding-nomic-embed-text-v1.5",
+          "providerType": "LMSTUDIO"
+        },
+        {
+          "modelIdentifier": "unsloth/gemma-4-26b-a4b-it:lmstudio@localhost:1234",
+          "name": "unsloth/gemma-4-26b-a4b-it",
+          "providerType": "LMSTUDIO"
+        },
+        {
+          "modelIdentifier": "unsloth/gemma-4-31b-it:lmstudio@localhost:1234",
+          "name": "unsloth/gemma-4-31b-it",
+          "providerType": "LMSTUDIO"
+        }
+      ]
+    },
+    {
+      "provider": {
+        "id": "MINIMAX",
+        "name": "MiniMax",
+        "providerType": "MINIMAX",
+        "apiKeyConfigured": false,
+        "status": "NOT_APPLICABLE",
+        "statusMessage": null
+      },
+      "llmModels": [
+        {
+          "modelIdentifier": "minimax-m3",
+          "name": "minimax-m3",
+          "providerType": "MINIMAX"
+        }
+      ]
+    },
+    {
+      "provider": {
+        "id": "MISTRAL",
+        "name": "Mistral",
+        "providerType": "MISTRAL",
+        "apiKeyConfigured": false,
+        "status": "NOT_APPLICABLE",
+        "statusMessage": null
+      },
+      "llmModels": [
+        {
+          "modelIdentifier": "devstral-2",
+          "name": "devstral-2",
+          "providerType": "MISTRAL"
+        },
+        {
+          "modelIdentifier": "mistral-large-3",
+          "name": "mistral-large-3",
+          "providerType": "MISTRAL"
+        }
+      ]
+    },
+    {
+      "provider": {
+        "id": "OLLAMA",
+        "name": "Ollama",
+        "providerType": "OLLAMA",
+        "apiKeyConfigured": false,
+        "status": "NOT_APPLICABLE",
+        "statusMessage": null
+      },
+      "llmModels": []
+    },
+    {
+      "provider": {
+        "id": "OPENAI",
+        "name": "OpenAI",
+        "providerType": "OPENAI",
+        "apiKeyConfigured": false,
+        "status": "NOT_APPLICABLE",
+        "statusMessage": null
+      },
+      "llmModels": [
+        {
+          "modelIdentifier": "gpt-5.4",
+          "name": "gpt-5.4",
+          "providerType": "OPENAI"
+        },
+        {
+          "modelIdentifier": "gpt-5.4-mini",
+          "name": "gpt-5.4-mini",
+          "providerType": "OPENAI"
+        },
+        {
+          "modelIdentifier": "gpt-5.5",
+          "name": "gpt-5.5",
+          "providerType": "OPENAI"
+        },
+        {
+          "modelIdentifier": "gpt-5.6-luna",
+          "name": "gpt-5.6-luna",
+          "providerType": "OPENAI"
+        },
+        {
+          "modelIdentifier": "gpt-5.6-sol",
+          "name": "gpt-5.6-sol",
+          "providerType": "OPENAI"
+        },
+        {
+          "modelIdentifier": "gpt-5.6-terra",
+          "name": "gpt-5.6-terra",
+          "providerType": "OPENAI"
+        }
+      ]
+    },
+    {
+      "provider": {
+        "id": "QWEN",
+        "name": "Qwen",
+        "providerType": "QWEN",
+        "apiKeyConfigured": false,
+        "status": "NOT_APPLICABLE",
+        "statusMessage": null
+      },
+      "llmModels": [
+        {
+          "modelIdentifier": "qwen:deepseek-v4-flash-0731",
+          "name": "DeepSeek V4 Flash 0731 (Qwen)",
+          "providerType": "QWEN"
+        },
+        {
+          "modelIdentifier": "qwen:deepseek-v4-pro",
+          "name": "DeepSeek V4 Pro (Qwen)",
+          "providerType": "QWEN"
+        },
+        {
+          "modelIdentifier": "qwen:glm-5.2",
+          "name": "GLM-5.2 (Qwen)",
+          "providerType": "QWEN"
+        },
+        {
+          "modelIdentifier": "qwen3-max",
+          "name": "qwen3-max",
+          "providerType": "QWEN"
+        },
+        {
+          "modelIdentifier": "qwen3.7-max",
+          "name": "qwen3.7-max",
+          "providerType": "QWEN"
+        },
+        {
+          "modelIdentifier": "qwen3.8-max",
+          "name": "qwen3.8-max",
+          "providerType": "QWEN"
+        }
+      ]
+    }
+  ]
+}

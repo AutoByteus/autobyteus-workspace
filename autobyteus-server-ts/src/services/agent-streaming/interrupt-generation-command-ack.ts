@@ -9,8 +9,7 @@ export type InterruptCommandTarget =
   | {
       target_kind: "team_member";
       team_run_id: string;
-      member_route_key: string;
-      member_run_id: string | null;
+      agent_run_id: string;
     };
 
 export type InterruptGenerationCommandAckPayload =

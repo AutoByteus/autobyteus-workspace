@@ -244,17 +244,7 @@
 
                 <div class="ml-2 flex flex-shrink-0 items-center gap-1">
                   <button
-                    v-if="team.teamRunId.startsWith('temp-')"
-                    type="button"
-                    class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-red-50 hover:text-red-600 md:opacity-0 md:group-hover/team-row:opacity-100 md:group-focus-within/team-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50"
-                    :title="$t('workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.remove_draft_team')"
-                    :disabled="state.isTeamDeleting(team.teamRunId)"
-                    @click.stop="actions.onDeleteTeam(team)"
-                  >
-                    <Icon icon="heroicons:trash-20-solid" class="h-3.5 w-3.5" />
-                  </button>
-                  <button
-                    v-else-if="state.canTerminateTeam(team.isActive)"
+                    v-if="state.canTerminateTeam(team.isActive)"
                     type="button"
                     class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-colors hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-50"
                     :title="$t('workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.terminate_team')"
@@ -274,7 +264,7 @@
                     <Icon icon="heroicons:archive-box-20-solid" class="h-3.5 w-3.5" />
                   </button>
                   <button
-                    v-if="!team.teamRunId.startsWith('temp-') && !state.canTerminateTeam(team.isActive) && team.deleteLifecycle === 'READY'"
+                    v-if="!state.canTerminateTeam(team.isActive) && team.deleteLifecycle === 'READY'"
                     type="button"
                     class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-red-50 hover:text-red-600 md:opacity-0 md:group-hover/team-row:opacity-100 md:group-focus-within/team-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50"
                     :title="$t('workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.delete_team_history_permanently')"
@@ -292,14 +282,14 @@
               <div v-if="state.isTeamExpanded(team.teamRunId)" class="ml-3 space-y-0.5">
                 <template
                   v-for="displayRow in visibleTeamExecutionRows(team)"
-                  :key="`${displayRow.row.kind}:${displayRow.row.memberRouteKey}`"
+                  :key="displayRow.row.rowKey"
                 >
                   <div
                     v-if="displayRow.row.kind === 'stable_member'"
                     class="flex w-full cursor-pointer items-center rounded-md text-sm transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
                     :class="isSelectedTeamMember(team, displayRow.row) ? 'bg-indigo-50 text-indigo-900' : 'text-gray-600 hover:bg-gray-50'"
                     :style="teamExecutionRowStyle(displayRow.row)"
-                    :data-test="`workspace-team-member-${team.teamRunId}-${displayRow.row.memberRouteKey}`"
+                    :data-test="`workspace-team-member-${team.teamRunId}-${displayRow.row.memberAddress}`"
                     data-row-kind="stable_member"
                     :aria-current="isSelectedTeamMember(team, displayRow.row) ? 'true' : undefined"
                     role="button"
@@ -314,16 +304,16 @@
                       class="ml-2 mr-1 inline-flex h-3.5 w-3.5 flex-shrink-0 items-center justify-center rounded text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
                       data-test="workspace-team-member-disclosure"
                       :data-team-run-id="team.teamRunId"
-                      :data-member-route-key="displayRow.row.memberRouteKey"
-                      :aria-expanded="state.isTeamMemberExpanded(workspaceNode.workspaceId, team.teamRunId, displayRow.row.memberRouteKey)"
-                      @click.stop="state.toggleTeamMember(workspaceNode.workspaceId, team.teamRunId, displayRow.row.memberRouteKey)"
+                      :data-member-address="displayRow.row.memberAddress"
+                      :aria-expanded="isTeamDisplayRowExpanded(team, displayRow.row)"
+                      @click.stop="toggleTeamDisplayRow(team, displayRow.row)"
                       @keydown.enter.stop
                       @keydown.space.stop
                     >
                       <Icon
                         icon="heroicons:chevron-down-20-solid"
                         class="h-3.5 w-3.5 transition-transform"
-                        :class="state.isTeamMemberExpanded(workspaceNode.workspaceId, team.teamRunId, displayRow.row.memberRouteKey) ? 'rotate-0' : '-rotate-90'"
+                        :class="isTeamDisplayRowExpanded(team, displayRow.row) ? 'rotate-0' : '-rotate-90'"
                         aria-hidden="true"
                       />
                     </button>
@@ -335,7 +325,7 @@
 
                     <div class="flex min-w-0 flex-1 items-center justify-between py-1 pr-2">
                       <div class="flex min-w-0 items-center">
-                        <StatusDot v-if="displayRow.row.row.memberKind === 'agent'" class="mr-1.5" :status="displayRow.row.row.currentStatus" />
+                        <StatusDot v-if="displayRow.row.row.kind === 'agent'" class="mr-1.5" :status="displayRow.row.row.currentStatus" />
                         <span
                           class="mr-1.5 inline-flex h-4 w-4 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[0.5625rem] font-semibold text-gray-600"
                         >
@@ -350,7 +340,7 @@
                         </span>
                         <span class="truncate">{{ displayRow.row.displayName || avatars.getTeamMemberDisplayName(displayRow.row.row) }}</span>
                         <span
-                          v-if="displayRow.row.row.memberKind === 'agent_team'"
+                          v-if="displayRow.row.row.kind === 'agent_team'"
                           class="ml-1 rounded bg-slate-100 px-1 text-[0.625rem] font-semibold uppercase tracking-wide text-slate-500"
                         >Team</span>
                       </div>
@@ -366,8 +356,8 @@
                     :is-selected="isSelectedTeamMember(team, displayRow.row)"
                     :has-children="displayRow.hasChildren"
                     :expanded="isTeamDisplayRowExpanded(team, displayRow.row)"
-                    @select="(row) => selectTeamDisplayRow(team, row)"
-                    @toggle="(row) => toggleTeamDisplayRow(team, row)"
+                    @select="(row: import('~/stores/runHistoryTypes').RunHistoryTransientExecutionRow) => selectTeamDisplayRow(team, row)"
+                    @toggle="(row: import('~/stores/runHistoryTypes').RunHistoryTransientExecutionRow) => toggleTeamDisplayRow(team, row)"
                   />
                 </template>
 
@@ -439,14 +429,13 @@ interface VisibleTeamExecutionRow {
   row: RunHistoryTeamExecutionRow;
   hasChildren: boolean;
 }
-
 const isTeamDisplayRowExpanded = (
   team: TeamTreeNode,
   row: RunHistoryTeamExecutionRow,
 ): boolean => props.state.isTeamMemberExpanded(
   props.workspaceNode.workspaceId,
   team.teamRunId,
-  row.memberRouteKey,
+  row.rowKey,
 );
 
 const toggleTeamDisplayRow = (
@@ -455,7 +444,7 @@ const toggleTeamDisplayRow = (
 ): void => props.state.toggleTeamMember(
   props.workspaceNode.workspaceId,
   team.teamRunId,
-  row.memberRouteKey,
+  row.rowKey,
 );
 
 const visibleTeamExecutionRows = (team: TeamTreeNode): VisibleTeamExecutionRow[] => {
@@ -486,17 +475,22 @@ const isSelectedTeamMember = (
   team: TeamTreeNode,
   row: RunHistoryTeamExecutionRow,
 ): boolean => props.state.isTeamRunSelected(team.teamRunId)
-  && row.memberRouteKey === team.focusedMemberRouteKey;
+  && row.agentRunId !== null
+  && row.agentRunId === team.focusedAgentRunId;
 
 const teamExecutionRowStyle = (row: RunHistoryTeamExecutionRow): Record<string, string> => ({ marginLeft: `${row.depth * 12}px` });
 
 const selectTeamDisplayRow = (
   team: TeamTreeNode,
   row: RunHistoryTeamExecutionRow,
-): Promise<void> | void => props.actions.onSelectTeamMember(
-  row,
-  props.workspaceNode.workspaceId,
-);
+): Promise<void> | void => {
+  if (!row.agentRunId) return;
+  return props.actions.onSelectTeamMember({
+    teamRunId: team.teamRunId,
+    memberAddress: row.memberAddress,
+    agentRunId: row.agentRunId,
+  }, props.workspaceNode.workspaceId);
+};
 
 const activateTeamDisplayRow = (
   team: TeamTreeNode,
@@ -504,6 +498,7 @@ const activateTeamDisplayRow = (
   hasChildren: boolean,
 ): Promise<void> | void => {
   if (hasChildren) toggleTeamDisplayRow(team, row);
+  if (!row.agentRunId) return;
   return selectTeamDisplayRow(team, row);
 };
 

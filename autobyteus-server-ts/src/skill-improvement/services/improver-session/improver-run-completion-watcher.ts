@@ -1,5 +1,6 @@
 import { AgentRunEventType, isAgentRunEvent, type AgentRunEvent } from "../../../agent-execution/domain/agent-run-event.js";
 import { AgentRunCanonicalFailureObserver } from "../../../agent-execution/events/agent-run-canonical-failure-observer.js";
+import type { AgentRunInputLifecycle } from "../../../agent-execution/input/agent-run-input-contract.js";
 
 type CompletionWaiter = {
   resolve: (value: string) => void;
@@ -26,13 +27,30 @@ export class ImproverRunCompletionWatcher {
       return;
     }
     if (event.eventType === AgentRunEventType.ASSISTANT_COMPLETE) {
-      this.assistantCompleteText = this.extractText(event.payload) ?? this.assistantCompleteText;
-    } else if (event.eventType === AgentRunEventType.SEGMENT_CONTENT || event.eventType === AgentRunEventType.SEGMENT_END) {
+      this.assistantCompleteText = this.asString(event.payload.content) ?? this.assistantCompleteText;
+    } else if (event.eventType === AgentRunEventType.SEGMENT_CONTENT) {
       this.captureSegment(event);
     } else if (event.eventType === AgentRunEventType.TURN_COMPLETED || this.isIdleStatus(event)) {
       this.terminal = true;
     }
     this.notifyWaiters();
+  }
+
+  observeInputLifecycle(fact: AgentRunInputLifecycle): void {
+    if (this.failure || this.terminal) return;
+    if (fact.kind === "failed") {
+      this.fail(new Error(
+        `Retrospective Skill Improver run '${this.runId}' input dispatch failed: ${fact.message}`,
+      ));
+    } else if (fact.kind === "cancelled") {
+      this.fail(new Error(
+        `Retrospective Skill Improver run '${this.runId}' terminated before input forwarding.`,
+      ));
+    } else if (fact.kind === "interrupted") {
+      this.fail(new Error(
+        `Retrospective Skill Improver run '${this.runId}' input was interrupted.`,
+      ));
+    }
   }
 
   waitForCompletion(timeoutMs: number): Promise<string> {
@@ -51,14 +69,13 @@ export class ImproverRunCompletionWatcher {
   }
 
   private captureSegment(event: AgentRunEvent): void {
-    const id = this.asString(event.payload.id) ?? this.asString(event.payload.segment_id) ?? this.asString(event.payload.segmentId);
-    const text = this.extractText(event.payload);
-    if (!id || !text) return;
-    if (event.eventType === AgentRunEventType.SEGMENT_CONTENT) {
-      this.segmentTextById.set(id, `${this.segmentTextById.get(id) ?? ""}${text}`);
-    } else if (!this.segmentTextById.has(id)) {
-      this.segmentTextById.set(id, text);
-    }
+    if (event.payload.segment_type !== "text") return;
+    const segmentId = this.asString(event.payload.id);
+    const turnId = this.asString(event.payload.turn_id);
+    const text = this.asString(event.payload.delta);
+    if (!segmentId || !turnId || !text) return;
+    const id = JSON.stringify([turnId, segmentId]);
+    this.segmentTextById.set(id, `${this.segmentTextById.get(id) ?? ""}${text}`);
   }
 
   private resolveImmediateResult(): Promise<string> | null {
@@ -88,10 +105,6 @@ export class ImproverRunCompletionWatcher {
 
   private isIdleStatus(event: AgentRunEvent): boolean {
     return event.eventType === AgentRunEventType.AGENT_STATUS && this.asString(event.payload.status)?.toLowerCase() === "idle";
-  }
-
-  private extractText(payload: Record<string, unknown>): string | null {
-    return this.asString(payload.content) ?? this.asString(payload.text) ?? this.asString(payload.message);
   }
 
   private asString(value: unknown): string | null {

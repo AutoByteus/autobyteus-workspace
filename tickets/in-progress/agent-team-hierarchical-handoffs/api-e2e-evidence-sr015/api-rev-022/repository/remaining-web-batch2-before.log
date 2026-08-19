@@ -1,0 +1,574 @@
+
+> autobyteus@1.4.47 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts graphql/queries/__tests__/runHistoryQueries.spec.ts services/runOpen/__tests__/teamRunOpenCoordinator.primeOwnership.spec.ts services/workspace/__tests__/workspaceNavigationService.spec.ts stores/__tests__/agentTeamContextsStore.spec.ts stores/__tests__/runHistoryMetadata.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web
+
+stderr | stores/__tests__/agentTeamContextsStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/runHistoryMetadata.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/workspace/__tests__/workspaceNavigationService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/runOpen/__tests__/teamRunOpenCoordinator.primeOwnership.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | graphql/queries/__tests__/runHistoryQueries.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/workspace/__tests__/workspaceNavigationService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/runOpen/__tests__/teamRunOpenCoordinator.primeOwnership.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/agentTeamContextsStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/runHistoryMetadata.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | graphql/queries/__tests__/runHistoryQueries.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ stores/__tests__/runHistoryMetadata.spec.ts (1 test | 1 failed) 4ms
+   × runHistoryMetadata route-key identity > uses canonical memberRouteKey without falling back to bare memberName 3ms
+     → unsupported legacy TeamRun metadata: schemaVersion 3 is required.
+ ❯ graphql/queries/__tests__/runHistoryQueries.spec.ts (5 tests | 4 failed) 13ms
+   × Event Monitor active-trace page queries > exposes only explicit standalone/team subject identity and an opaque cursor 7ms
+     → expected '\n  query GetTeamMemberEventMonitorAc…' to contain '$memberRouteKey: String!'
+   ✓ GetRunFileChanges query > requests inline content for live buffered file-change hydration without legacy artifact ids 0ms
+   × ListWorkspaceRunHistory query > uses V2 standalone and team history catalog shapes without persisted live fields 1ms
+     → expected 'teamDefinitions {\n        teamDefini…' to contain 'status'
+   × GetTeamCommunicationMessages query > requests address-first sender and receiver fields without removed flat participant identity 1ms
+     → expected '\n  query GetTeamCommunicationMessage…' to contain 'segments'
+   × GetTaskDelegationRecords query > requests durable address-first task records with updates and references 2ms
+     → expected '\n  query GetTaskDelegationRecords($t…' to contain 'memberRouteKey'
+ ❯ services/workspace/__tests__/workspaceNavigationService.spec.ts (5 tests | 3 failed) 9ms
+   ✓ workspaceNavigationService > builds and parses agent execution routes 1ms
+   × workspaceNavigationService > builds and parses team execution routes with member focus 4ms
+     → expected { kind: 'team', …(2) } to deeply equal { kind: 'team', …(2) }
+   × workspaceNavigationService > strips workspace execution query params without disturbing others 1ms
+     → expected { …(2) } to deeply equal { preserved: 'value' }
+   ✓ workspaceNavigationService > routes agent execution links through the agent open coordinator 1ms
+   × workspaceNavigationService > routes team execution links through the team open coordinator 2ms
+     → expected "spy" to be called with arguments: [ { teamRunId: 'team-run-1', …(3) } ]
+
+Received: 
+
+  1st spy call:
+
+  [
+    {
+      "ensureWorkspaceByRootPath": [Function spy],
+-     "memberRouteKey": "writer",
++     "memberAddress": undefined,
+      "resolveWorkspaceMetadataByRootPath": [Function spy],
+      "teamRunId": "team-run-1",
+    },
+  ]
+
+
+Number of calls: 1
+
+ ❯ services/runOpen/__tests__/teamRunOpenCoordinator.primeOwnership.spec.ts (6 tests | 6 failed) 8ms
+   × openTeamRun real loader/builder Event Monitor prime ownership > primes the final member exactly once for 'historical projection-present open' 4ms
+     → unsupported legacy TeamRun metadata: schemaVersion 3 is required.
+   × openTeamRun real loader/builder Event Monitor prime ownership > primes the final member exactly once for 'active projection-present open' 0ms
+     → unsupported legacy TeamRun metadata: schemaVersion 3 is required.
+   × openTeamRun real loader/builder Event Monitor prime ownership > primes the final member exactly once for 'active projection-absent open' 0ms
+     → unsupported legacy TeamRun metadata: schemaVersion 3 is required.
+   × openTeamRun real loader/builder Event Monitor prime ownership > primes an existing replacement once after reset and projected activity hydration 1ms
+     → Cannot read properties of undefined (reading 'split')
+   × openTeamRun real loader/builder Event Monitor prime ownership > primes a preserved subscribed member once without reset or projected activity replacement 0ms
+     → Cannot read properties of undefined (reading 'split')
+   × openTeamRun real loader/builder Event Monitor prime ownership > owns a separate final prime after lazy historical projection hydration 0ms
+     → unsupported legacy TeamRun metadata: schemaVersion 3 is required.
+ ❯ stores/__tests__/agentTeamContextsStore.spec.ts (6 tests | 4 failed) 18ms
+   × agentTeamContextsStore > createRunFromTemplate > creates a team context with mixed member runtimes from overrides 9ms
+     → Cannot read properties of undefined (reading 'size')
+   × agentTeamContextsStore > createRunFromTemplate > keeps nested team topology while indexing leaf member contexts by route key 6ms
+     → expected undefined to match object [ { memberKind: 'agent_team', …(3) } ]
+   ✓ agentTeamContextsStore > activeTeamContext > returns null if no team selected 0ms
+   ✓ agentTeamContextsStore > activeTeamContext > returns context if team selected 1ms
+   × agentTeamContextsStore > setFocusedMember > keeps unsent draft text and context files on the original member 1ms
+     → indexTeamMemberNodesByRouteKey is not a function
+   × agentTeamContextsStore > focusMemberAndEnsureHydrated > focuses the requested member and triggers lazy historical hydration 0ms
+     → indexTeamMemberNodesByRouteKey is not a function
+ ❯ components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts (2 tests | 2 failed) 9ms
+   × Team Tasks Focus + send-message workflow > selects task details from Tasks without changing the focused send target 7ms
+     → Cannot read properties of undefined (reading 'values')
+   × Team Tasks Focus + send-message workflow > selects task-team summaries inside Tasks without focusing or reintroducing right-side member navigation 1ms
+     → Cannot read properties of undefined (reading 'values')
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 20 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  stores/__tests__/agentTeamContextsStore.spec.ts > agentTeamContextsStore > createRunFromTemplate > creates a team context with mixed member runtimes from overrides
+TypeError: Cannot read properties of undefined (reading 'size')
+ ❯ stores/__tests__/agentTeamContextsStore.spec.ts:152:20
+    150| 
+    151|       const team = store.teams.get(teamId!)
+    152|       expect(team?.leafAgentContextsByRouteKey.size).toBe(2)
+       |                    ^
+    153| 
+    154|       const agent1 = team?.leafAgentContextsByRouteKey.get('agent-1')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/20]⎯
+
+ FAIL  stores/__tests__/agentTeamContextsStore.spec.ts > agentTeamContextsStore > createRunFromTemplate > keeps nested team topology while indexing leaf member contexts by route key
+AssertionError: expected undefined to match object [ { memberKind: 'agent_team', …(3) } ]
+
+- Expected: 
+[
+  {
+    "children": [
+      {
+        "memberKind": "agent",
+        "memberName": "leaf-a",
+        "memberRouteKey": "nested-group/leaf-a",
+      },
+      {
+        "memberKind": "agent",
+        "memberName": "leaf-b",
+        "memberRouteKey": "nested-group/leaf-b",
+      },
+    ],
+    "memberKind": "agent_team",
+    "memberName": "nested-group",
+    "memberRouteKey": "nested-group",
+  },
+]
+
++ Received: 
+undefined
+
+ ❯ stores/__tests__/agentTeamContextsStore.spec.ts:194:32
+    192|       const [teamId] = Array.from(store.teams.keys())
+    193|       const team = store.teams.get(teamId!)
+    194|       expect(team?.memberTree).toMatchObject([
+       |                                ^
+    195|         {
+    196|           memberKind: 'agent_team',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/20]⎯
+
+ FAIL  stores/__tests__/agentTeamContextsStore.spec.ts > agentTeamContextsStore > setFocusedMember > keeps unsent draft text and context files on the original member
+TypeError: indexTeamMemberNodesByRouteKey is not a function
+ ❯ buildTeamContext stores/__tests__/agentTeamContextsStore.spec.ts:96:28
+     94|     config: {} as any,
+     95|     memberTree: memberTree as any,
+     96|     memberNodesByRouteKey: indexTeamMemberNodesByRouteKey(memberTree a…
+       |                            ^
+     97|     leafAgentContextsByRouteKey,
+     98|     coordinatorMemberRouteKey: params.memberRouteKeys[0],
+ ❯ stores/__tests__/agentTeamContextsStore.spec.ts:250:28
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/20]⎯
+
+ FAIL  stores/__tests__/agentTeamContextsStore.spec.ts > agentTeamContextsStore > focusMemberAndEnsureHydrated > focuses the requested member and triggers lazy historical hydration
+TypeError: indexTeamMemberNodesByRouteKey is not a function
+ ❯ buildTeamContext stores/__tests__/agentTeamContextsStore.spec.ts:96:28
+     94|     config: {} as any,
+     95|     memberTree: memberTree as any,
+     96|     memberNodesByRouteKey: indexTeamMemberNodesByRouteKey(memberTree a…
+       |                            ^
+     97|     leafAgentContextsByRouteKey,
+     98|     coordinatorMemberRouteKey: params.memberRouteKeys[0],
+ ❯ stores/__tests__/agentTeamContextsStore.spec.ts:277:28
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/20]⎯
+
+ FAIL  stores/__tests__/runHistoryMetadata.spec.ts > runHistoryMetadata route-key identity > uses canonical memberRouteKey without falling back to bare memberName
+Error: unsupported legacy TeamRun metadata: schemaVersion 3 is required.
+ ❯ parseTeamRunMetadata stores/runHistoryMetadata.ts:107:42
+    105| export const parseTeamRunMetadata = (value: unknown): TeamRunMetadataP…
+    106|   const payload = record(value, 'TeamRun metadata');
+    107|   if (payload.schemaVersion !== 3) throw new Error('unsupported legacy…
+       |                                          ^
+    108|   exactKeys(payload, ['schemaVersion', 'teamDefinitionName', 'createdA…
+    109|   const parsedRoot = parseMemberMetadata(payload.rootTeam, true);
+ ❯ stores/__tests__/runHistoryMetadata.spec.ts:26:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/20]⎯
+
+ FAIL  graphql/queries/__tests__/runHistoryQueries.spec.ts > Event Monitor active-trace page queries > exposes only explicit standalone/team subject identity and an opaque cursor
+AssertionError: expected '\n  query GetTeamMemberEventMonitorAc…' to contain '$memberRouteKey: String!'
+
+- Expected
++ Received
+
+- $memberRouteKey: String!
++
++   query GetTeamMemberEventMonitorActiveTracePage(
++     $teamRunId: String!, $memberAddress: String!, $beforeCursor: String
++   ) {
++     getTeamMemberEventMonitorActiveTracePage(
++       teamRunId: $teamRunId, memberAddress: $memberAddress, beforeCursor: $beforeCursor
++     ) {
++       ...EventMonitorActiveTracePageFields
++     }
++   }
++   
++   fragment EventMonitorActiveTracePageFields on EventMonitorActiveTracePage {
++     beforeCursor
++     hasEarlier
++     loadedEarlierCount
++     activeGeneration
++     cursorStatus
++     events {
++       eventId
++       turnGroupId
++       occurredAtMs
++       visuals {
++         ... on EventMonitorUserVisual {
++           kind visualId eventId kindOrdinal text
++           attachments { attachmentId mediaType locator }
++         }
++         ... on EventMonitorAssistantTextVisual { kind visualId eventId kindOrdinal content }
++         ... on EventMonitorThinkingVisual { kind visualId eventId kindOrdinal content }
++         ... on EventMonitorToolCardVisual {
++           kind visualId eventId kindOrdinal invocationId cardKind toolName statusKey errorMessage
++           summaryArgs {
++             path file_path filepath filename target_path command cmd script query prompt url message text title name raw
++           }
++           approvalTarget {
++             executionAddress
++           }
++         }
++         ... on EventMonitorMediaVisual { kind visualId eventId kindOrdinal mediaType urls }
++         ... on EventMonitorCompactionVisual {
++           kind visualId eventId kindOrdinal activityId phase message turnId rawTraceCount semanticFactCount provider
++         }
++       }
++     }
++   }
++
++
+
+ ❯ graphql/queries/__tests__/runHistoryQueries.spec.ts:17:24
+     15|     expect(runSource).toContain('$runId: String!');
+     16|     expect(teamSource).toContain('$teamRunId: String!');
+     17|     expect(teamSource).toContain('$memberRouteKey: String!');
+       |                        ^
+     18|     for (const source of [runSource, teamSource]) {
+     19|       expect(source).toContain('$beforeCursor: String');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/20]⎯
+
+ FAIL  graphql/queries/__tests__/runHistoryQueries.spec.ts > ListWorkspaceRunHistory query > uses V2 standalone and team history catalog shapes without persisted live fields
+AssertionError: expected 'teamDefinitions {\n        teamDefini…' to contain 'status'
+
+- Expected
++ Received
+
+- status
++ teamDefinitions {
++         teamDefinitionId
++         teamDefinitionName
++         runs {
++           teamRunId
++           teamDefinitionId
++           teamDefinitionName
++           coordinatorAddress
++           workspaceRootPath
++           summary
++           createdAt
++           archivedAt
++           terminatedAt
++           isActive
++           rootTeam
++           members
+
+ ❯ graphql/queries/__tests__/runHistoryQueries.spec.ts:51:27
+     49|     expect(teamRunsBlock).toContain('archivedAt');
+     50|     expect(teamRunsBlock).toContain('terminatedAt');
+     51|     expect(teamRunsBlock).toContain('status');
+       |                           ^
+     52|     expect(teamRunsBlock).not.toContain('lastActivityAt');
+     53|     expect(teamRunsBlock).not.toContain('lastKnownStatus');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/20]⎯
+
+ FAIL  graphql/queries/__tests__/runHistoryQueries.spec.ts > GetTeamCommunicationMessages query > requests address-first sender and receiver fields without removed flat participant identity
+AssertionError: expected '\n  query GetTeamCommunicationMessage…' to contain 'segments'
+
+- Expected
++ Received
+
+- segments
++
++   query GetTeamCommunicationMessages($teamRunId: String!) {
++     getTeamCommunicationMessages(teamRunId: $teamRunId) {
++       messageId
++       senderAddress {
++         rootTeamRunId taskTeamRunIds memberAddress taskAgentRunId
++       }
++       receiverAddress {
++         rootTeamRunId taskTeamRunIds memberAddress taskAgentRunId
++       }
++       content
++       messageType
++       createdAt
++       referenceFiles {
++         referenceId
++         path
++         type
++         createdAt
++         updatedAt
++       }
++     }
++   }
++
+
+ ❯ graphql/queries/__tests__/runHistoryQueries.spec.ts:65:20
+     63|     expect(source).toContain('senderAddress');
+     64|     expect(source).toContain('receiverAddress');
+     65|     expect(source).toContain('segments');
+       |                    ^
+     66|     expect(source).toContain('memberRouteKey');
+     67|     expect(source).toContain('taskTeamRunId');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/20]⎯
+
+ FAIL  graphql/queries/__tests__/runHistoryQueries.spec.ts > GetTaskDelegationRecords query > requests durable address-first task records with updates and references
+AssertionError: expected '\n  query GetTaskDelegationRecords($t…' to contain 'memberRouteKey'
+
+- Expected
++ Received
+
+- memberRouteKey
++
++   query GetTaskDelegationRecords($teamRunId: String!) {
++     getTaskDelegationRecords(teamRunId: $teamRunId) {
++       taskId
++       status
++       senderAddress {
++         rootTeamRunId taskTeamRunIds memberAddress taskAgentRunId
++       }
++       receiverAddress {
++         rootTeamRunId taskTeamRunIds memberAddress taskAgentRunId
++       }
++       receiverTargetKind
++       content
++       referenceFiles {
++         referenceId
++         path
++         type
++         createdAt
++         updatedAt
++       }
++       taskRun {
++         address {
++           rootTeamRunId taskTeamRunIds memberAddress taskAgentRunId
++         }
++         startedAt
++       }
++       updates {
++         kind
++         submissionId
++         reviewId
++         reviewedSubmissionId
++         decision
++         senderAddress {
++           rootTeamRunId taskTeamRunIds memberAddress taskAgentRunId
++         }
++         receiverAddress {
++           rootTeamRunId taskTeamRunIds memberAddress taskAgentRunId
++         }
++         content
++         referenceFiles {
++           referenceId
++           path
++           type
++           createdAt
++           updatedAt
++         }
++         createdAt
++       }
++       createdAt
++     }
++   }
++
+
+ ❯ graphql/queries/__tests__/runHistoryQueries.spec.ts:93:20
+     91|     expect(source).toContain('reviewedSubmissionId');
+     92|     expect(source).toContain('referenceFiles');
+     93|     expect(source).toContain('memberRouteKey');
+       |                    ^
+     94|     expect(source).toContain('taskTeamRunId');
+     95|     expect(source).toContain('taskAgentRunId');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/20]⎯
+
+ FAIL  services/runOpen/__tests__/teamRunOpenCoordinator.primeOwnership.spec.ts > openTeamRun real loader/builder Event Monitor prime ownership > primes the final member exactly once for 'historical projection-present open'
+ FAIL  services/runOpen/__tests__/teamRunOpenCoordinator.primeOwnership.spec.ts > openTeamRun real loader/builder Event Monitor prime ownership > primes the final member exactly once for 'active projection-present open'
+ FAIL  services/runOpen/__tests__/teamRunOpenCoordinator.primeOwnership.spec.ts > openTeamRun real loader/builder Event Monitor prime ownership > primes the final member exactly once for 'active projection-absent open'
+ FAIL  services/runOpen/__tests__/teamRunOpenCoordinator.primeOwnership.spec.ts > openTeamRun real loader/builder Event Monitor prime ownership > owns a separate final prime after lazy historical projection hydration
+Error: unsupported legacy TeamRun metadata: schemaVersion 3 is required.
+ ❯ parseTeamRunMetadata stores/runHistoryMetadata.ts:107:42
+    105| export const parseTeamRunMetadata = (value: unknown): TeamRunMetadataP…
+    106|   const payload = record(value, 'TeamRun metadata');
+    107|   if (payload.schemaVersion !== 3) throw new Error('unsupported legacy…
+       |                                          ^
+    108|   exactKeys(payload, ['schemaVersion', 'teamDefinitionName', 'createdA…
+    109|   const parsedRoot = parseMemberMetadata(payload.rootTeam, true);
+ ❯ loadTeamRunContextHydrationPayload services/runHydration/teamRunContextHydrationService.ts:230:20
+ ❯ hydrateLiveTeamRunContext services/runHydration/teamRunContextHydrationService.ts:252:19
+ ❯ Module.openTeamRun services/runOpen/teamRunOpenCoordinator.ts:93:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/20]⎯
+
+ FAIL  services/runOpen/__tests__/teamRunOpenCoordinator.primeOwnership.spec.ts > openTeamRun real loader/builder Event Monitor prime ownership > primes an existing replacement once after reset and projected activity hydration
+TypeError: Cannot read properties of undefined (reading 'split')
+ ❯ memberAddressBasename types/agent/TeamExecutionAddress.ts:68:35
+     66| 
+     67| export const memberAddressBasename = (address: string): string =>
+     68|   address === '/' ? '/' : address.split('/').filter(Boolean).at(-1) ??…
+       |                                   ^
+     69| 
+ ❯ teamMemberNodeFromMetadata utils/teamMemberMetadataNodes.ts:8:18
+ ❯ Module.teamMemberNodesFromMetadata utils/teamMemberMetadataNodes.ts:33:11
+ ❯ createExistingTeamContext services/runOpen/__tests__/teamRunOpenCoordinator.primeOwnership.spec.ts:185:22
+ ❯ services/runOpen/__tests__/teamRunOpenCoordinator.primeOwnership.spec.ts:284:44
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/20]⎯
+
+ FAIL  services/runOpen/__tests__/teamRunOpenCoordinator.primeOwnership.spec.ts > openTeamRun real loader/builder Event Monitor prime ownership > primes a preserved subscribed member once without reset or projected activity replacement
+TypeError: Cannot read properties of undefined (reading 'split')
+ ❯ memberAddressBasename types/agent/TeamExecutionAddress.ts:68:35
+     66| 
+     67| export const memberAddressBasename = (address: string): string =>
+     68|   address === '/' ? '/' : address.split('/').filter(Boolean).at(-1) ??…
+       |                                   ^
+     69| 
+ ❯ teamMemberNodeFromMetadata utils/teamMemberMetadataNodes.ts:8:18
+ ❯ Module.teamMemberNodesFromMetadata utils/teamMemberMetadataNodes.ts:33:11
+ ❯ createExistingTeamContext services/runOpen/__tests__/teamRunOpenCoordinator.primeOwnership.spec.ts:185:22
+ ❯ services/runOpen/__tests__/teamRunOpenCoordinator.primeOwnership.spec.ts:302:44
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/20]⎯
+
+ FAIL  services/workspace/__tests__/workspaceNavigationService.spec.ts > workspaceNavigationService > builds and parses team execution routes with member focus
+AssertionError: expected { kind: 'team', …(2) } to deeply equal { kind: 'team', …(2) }
+
+- Expected
++ Received
+
+  {
+    "kind": "team",
+-   "memberRouteKey": "writer",
++   "memberAddress": null,
+    "teamRunId": "team-run-1",
+  }
+
+ ❯ services/workspace/__tests__/workspaceNavigationService.spec.ts:66:85
+     64|     })
+     65| 
+     66|     expect(parseWorkspaceExecutionLinkQuery((route as any).query as Lo…
+       |                                                                                     ^
+     67|       kind: 'team',
+     68|       teamRunId: 'team-run-1',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/20]⎯
+
+ FAIL  services/workspace/__tests__/workspaceNavigationService.spec.ts > workspaceNavigationService > strips workspace execution query params without disturbing others
+AssertionError: expected { …(2) } to deeply equal { preserved: 'value' }
+
+- Expected
++ Received
+
+  {
+    "preserved": "value",
++   "workspaceExecutionMemberRouteKey": "writer",
+  }
+
+ ❯ services/workspace/__tests__/workspaceNavigationService.spec.ts:80:9
+     78|       workspaceExecutionMemberRouteKey: 'writer',
+     79|       preserved: 'value',
+     80|     })).toEqual({
+       |         ^
+     81|       preserved: 'value',
+     82|     })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/20]⎯
+
+ FAIL  services/workspace/__tests__/workspaceNavigationService.spec.ts > workspaceNavigationService > routes team execution links through the team open coordinator
+AssertionError: expected "spy" to be called with arguments: [ { teamRunId: 'team-run-1', …(3) } ]
+
+Received: 
+
+  1st spy call:
+
+  [
+    {
+      "ensureWorkspaceByRootPath": [Function spy],
+-     "memberRouteKey": "writer",
++     "memberAddress": undefined,
+      "resolveWorkspaceMetadataByRootPath": [Function spy],
+      "teamRunId": "team-run-1",
+    },
+  ]
+
+
+Number of calls: 1
+
+ ❯ services/workspace/__tests__/workspaceNavigationService.spec.ts:107:29
+    105|     })
+    106| 
+    107|     expect(openTeamRunMock).toHaveBeenCalledWith({
+       |                             ^
+    108|       teamRunId: 'team-run-1',
+    109|       memberRouteKey: 'writer',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/20]⎯
+
+ FAIL  components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts > Team Tasks Focus + send-message workflow > selects task details from Tasks without changing the focused send target
+ FAIL  components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts > Team Tasks Focus + send-message workflow > selects task-team summaries inside Tasks without focusing or reintroducing right-side member navigation
+TypeError: Cannot read properties of undefined (reading 'values')
+ ❯ resolveTeamWorkspaceRootPathFromContext stores/runHistoryTeamHelpers.ts:52:48
+     50|     || resolveWorkspaceRootPath(teamContext.config.workspaceId);
+     51|   if (configured) return configured;
+     52|   for (const member of leafContexts(teamContext).values()) {
+       |                                                ^
+     53|     const root = member.config.workspaceMetadata?.workspaceRootPath
+     54|       || resolveWorkspaceRootPath(member.config.workspaceId);
+ ❯ Object.resolveWorkspaceRootPathFromContext stores/runHistoryReadModel.ts:320:7
+ ❯ buildTeamNodes stores/runHistoryTeamHelpers.ts:134:69
+ ❯ buildRunHistoryTeamNodes stores/runHistoryReadModel.ts:313:10
+ ❯ buildRunHistoryNavigationProjection stores/runHistoryNavigationProjection.ts:108:26
+ ❯ refreshRunNavigationTopologyForStore stores/runHistoryNavigationStoreActions.ts:33:32
+ ❯ Proxy.refreshRunNavigationTopology stores/runHistoryStore.ts:412:7
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ Proxy.addTeamContext stores/agentTeamContextsStore.ts:149:28
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/20]⎯
+
+
+ Test Files  6 failed (6)
+      Tests  20 failed | 5 passed (25)
+   Start at  06:37:41
+   Duration  5.43s (transform 2.91s, setup 26.96s, collect 819ms, tests 61ms, environment 1.13s, prepare 948ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

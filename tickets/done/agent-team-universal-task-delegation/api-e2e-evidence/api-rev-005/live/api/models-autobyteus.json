@@ -1,0 +1,351 @@
+{
+  "data": {
+    "availableLlmProvidersWithModels": [
+      {
+        "provider": {
+          "id": "ANTHROPIC",
+          "name": "Anthropic",
+          "apiKeyConfigured": false
+        },
+        "models": [
+          {
+            "modelIdentifier": "claude-fable-5",
+            "name": "claude-fable-5",
+            "runtime": "api"
+          },
+          {
+            "modelIdentifier": "claude-opus-4.7",
+            "name": "claude-opus-4.7",
+            "runtime": "api"
+          },
+          {
+            "modelIdentifier": "claude-opus-4.8",
+            "name": "claude-opus-4.8",
+            "runtime": "api"
+          },
+          {
+            "modelIdentifier": "claude-opus-5",
+            "name": "claude-opus-5",
+            "runtime": "api"
+          },
+          {
+            "modelIdentifier": "claude-sonnet-4.6",
+            "name": "claude-sonnet-4.6",
+            "runtime": "api"
+          },
+          {
+            "modelIdentifier": "claude-sonnet-5",
+            "name": "claude-sonnet-5",
+            "runtime": "api"
+          }
+        ]
+      },
+      {
+        "provider": {
+          "id": "AUTOBYTEUS",
+          "name": "AutoByteus",
+          "apiKeyConfigured": false
+        },
+        "models": []
+      },
+      {
+        "provider": {
+          "id": "DEEPSEEK",
+          "name": "DeepSeek",
+          "apiKeyConfigured": false
+        },
+        "models": [
+          {
+            "modelIdentifier": "deepseek-v4-flash",
+            "name": "deepseek-v4-flash",
+            "runtime": "api"
+          },
+          {
+            "modelIdentifier": "deepseek-v4-pro",
+            "name": "deepseek-v4-pro",
+            "runtime": "api"
+          }
+        ]
+      },
+      {
+        "provider": {
+          "id": "GEMINI",
+          "name": "Gemini",
+          "apiKeyConfigured": false
+        },
+        "models": [
+          {
+            "modelIdentifier": "gemini-3-flash-preview",
+            "name": "gemini-3-flash-preview",
+            "runtime": "api"
+          },
+          {
+            "modelIdentifier": "gemini-3.1-pro-preview",
+            "name": "gemini-3.1-pro-preview",
+            "runtime": "api"
+          },
+          {
+            "modelIdentifier": "gemini-3.5-flash",
+            "name": "gemini-3.5-flash",
+            "runtime": "api"
+          }
+        ]
+      },
+      {
+        "provider": {
+          "id": "GLM",
+          "name": "GLM",
+          "apiKeyConfigured": false
+        },
+        "models": [
+          {
+            "modelIdentifier": "glm-5.2",
+            "name": "glm-5.2",
+            "runtime": "api"
+          }
+        ]
+      },
+      {
+        "provider": {
+          "id": "GROK",
+          "name": "Grok",
+          "apiKeyConfigured": false
+        },
+        "models": [
+          {
+            "modelIdentifier": "grok-4.5",
+            "name": "grok-4.5",
+            "runtime": "api"
+          }
+        ]
+      },
+      {
+        "provider": {
+          "id": "KIMI",
+          "name": "Kimi",
+          "apiKeyConfigured": false
+        },
+        "models": [
+          {
+            "modelIdentifier": "kimi-k2.6",
+            "name": "kimi-k2.6",
+            "runtime": "api"
+          },
+          {
+            "modelIdentifier": "kimi-k2.7-code",
+            "name": "kimi-k2.7-code",
+            "runtime": "api"
+          },
+          {
+            "modelIdentifier": "kimi-k2.7-code-highspeed",
+            "name": "kimi-k2.7-code-highspeed",
+            "runtime": "api"
+          }
+        ]
+      },
+      {
+        "provider": {
+          "id": "LMSTUDIO",
+          "name": "LM Studio",
+          "apiKeyConfigured": false
+        },
+        "models": [
+          {
+            "modelIdentifier": "deepseek-ocr:lmstudio@localhost:1234",
+            "name": "deepseek-ocr",
+            "runtime": "lmstudio"
+          },
+          {
+            "modelIdentifier": "google/gemma-4-26b-a4b:lmstudio@localhost:1234",
+            "name": "google/gemma-4-26b-a4b",
+            "runtime": "lmstudio"
+          },
+          {
+            "modelIdentifier": "google/gemma-4-31b:lmstudio@localhost:1234",
+            "name": "google/gemma-4-31b",
+            "runtime": "lmstudio"
+          },
+          {
+            "modelIdentifier": "mlx-qwen3.5-35b-a3b-claude-4.6-opus-reasoning-distilled:lmstudio@localhost:1234",
+            "name": "mlx-qwen3.5-35b-a3b-claude-4.6-opus-reasoning-distilled",
+            "runtime": "lmstudio"
+          },
+          {
+            "modelIdentifier": "qwen/qwen3.6-27b:lmstudio@localhost:1234",
+            "name": "qwen/qwen3.6-27b",
+            "runtime": "lmstudio"
+          },
+          {
+            "modelIdentifier": "qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234",
+            "name": "qwen/qwen3.6-35b-a3b",
+            "runtime": "lmstudio"
+          },
+          {
+            "modelIdentifier": "qwen/qwen3.8-27b:lmstudio@localhost:1234",
+            "name": "qwen/qwen3.8-27b",
+            "runtime": "lmstudio"
+          },
+          {
+            "modelIdentifier": "qwen3.5-27b:lmstudio@localhost:1234",
+            "name": "qwen3.5-27b",
+            "runtime": "lmstudio"
+          },
+          {
+            "modelIdentifier": "qwen3.5-27b-claude-4.6-opus-distilled-mlx:lmstudio@localhost:1234",
+            "name": "qwen3.5-27b-claude-4.6-opus-distilled-mlx",
+            "runtime": "lmstudio"
+          },
+          {
+            "modelIdentifier": "qwen3.6-27b:lmstudio@localhost:1234",
+            "name": "qwen3.6-27b",
+            "runtime": "lmstudio"
+          },
+          {
+            "modelIdentifier": "qwen3.6-27b-mtplx-optimized-speed:lmstudio@localhost:1234",
+            "name": "qwen3.6-27b-mtplx-optimized-speed",
+            "runtime": "lmstudio"
+          },
+          {
+            "modelIdentifier": "qwen3.6-27b-ud-mlx:lmstudio@localhost:1234",
+            "name": "qwen3.6-27b-ud-mlx",
+            "runtime": "lmstudio"
+          },
+          {
+            "modelIdentifier": "text-embedding-nomic-embed-text-v1.5:lmstudio@localhost:1234",
+            "name": "text-embedding-nomic-embed-text-v1.5",
+            "runtime": "lmstudio"
+          },
+          {
+            "modelIdentifier": "unsloth/gemma-4-26b-a4b-it:lmstudio@localhost:1234",
+            "name": "unsloth/gemma-4-26b-a4b-it",
+            "runtime": "lmstudio"
+          },
+          {
+            "modelIdentifier": "unsloth/gemma-4-31b-it:lmstudio@localhost:1234",
+            "name": "unsloth/gemma-4-31b-it",
+            "runtime": "lmstudio"
+          }
+        ]
+      },
+      {
+        "provider": {
+          "id": "MINIMAX",
+          "name": "MiniMax",
+          "apiKeyConfigured": false
+        },
+        "models": [
+          {
+            "modelIdentifier": "minimax-m3",
+            "name": "minimax-m3",
+            "runtime": "api"
+          }
+        ]
+      },
+      {
+        "provider": {
+          "id": "MISTRAL",
+          "name": "Mistral",
+          "apiKeyConfigured": false
+        },
+        "models": [
+          {
+            "modelIdentifier": "devstral-2",
+            "name": "devstral-2",
+            "runtime": "api"
+          },
+          {
+            "modelIdentifier": "mistral-large-3",
+            "name": "mistral-large-3",
+            "runtime": "api"
+          }
+        ]
+      },
+      {
+        "provider": {
+          "id": "OLLAMA",
+          "name": "Ollama",
+          "apiKeyConfigured": false
+        },
+        "models": []
+      },
+      {
+        "provider": {
+          "id": "OPENAI",
+          "name": "OpenAI",
+          "apiKeyConfigured": false
+        },
+        "models": [
+          {
+            "modelIdentifier": "gpt-5.4",
+            "name": "gpt-5.4",
+            "runtime": "api"
+          },
+          {
+            "modelIdentifier": "gpt-5.4-mini",
+            "name": "gpt-5.4-mini",
+            "runtime": "api"
+          },
+          {
+            "modelIdentifier": "gpt-5.5",
+            "name": "gpt-5.5",
+            "runtime": "api"
+          },
+          {
+            "modelIdentifier": "gpt-5.6-luna",
+            "name": "gpt-5.6-luna",
+            "runtime": "api"
+          },
+          {
+            "modelIdentifier": "gpt-5.6-sol",
+            "name": "gpt-5.6-sol",
+            "runtime": "api"
+          },
+          {
+            "modelIdentifier": "gpt-5.6-terra",
+            "name": "gpt-5.6-terra",
+            "runtime": "api"
+          }
+        ]
+      },
+      {
+        "provider": {
+          "id": "QWEN",
+          "name": "Qwen",
+          "apiKeyConfigured": false
+        },
+        "models": [
+          {
+            "modelIdentifier": "qwen:deepseek-v4-flash-0731",
+            "name": "DeepSeek V4 Flash 0731 (Qwen)",
+            "runtime": "api"
+          },
+          {
+            "modelIdentifier": "qwen:deepseek-v4-pro",
+            "name": "DeepSeek V4 Pro (Qwen)",
+            "runtime": "api"
+          },
+          {
+            "modelIdentifier": "qwen:glm-5.2",
+            "name": "GLM-5.2 (Qwen)",
+            "runtime": "api"
+          },
+          {
+            "modelIdentifier": "qwen3-max",
+            "name": "qwen3-max",
+            "runtime": "api"
+          },
+          {
+            "modelIdentifier": "qwen3.7-max",
+            "name": "qwen3.7-max",
+            "runtime": "api"
+          },
+          {
+            "modelIdentifier": "qwen3.8-max",
+            "name": "qwen3.8-max",
+            "runtime": "api"
+          }
+        ]
+      }
+    ]
+  }
+}

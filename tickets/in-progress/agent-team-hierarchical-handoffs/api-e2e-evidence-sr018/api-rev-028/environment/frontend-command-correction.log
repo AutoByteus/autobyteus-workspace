@@ -1,0 +1,4 @@
+frontend_initial_attempt=pnpm dev -- --port 31228
+observed_port=3001 due forwarded argument shape
+action=owned process stopped immediately
+replacement=pnpm exec nuxt dev --host 127.0.0.1 --port 31228

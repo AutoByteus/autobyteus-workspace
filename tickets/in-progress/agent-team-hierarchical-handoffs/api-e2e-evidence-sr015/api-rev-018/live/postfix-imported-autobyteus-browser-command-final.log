@@ -1,0 +1,20 @@
+{
+  "result": "Pass",
+  "rows": [
+    {
+      "scenario": "AutoByteus",
+      "teamRunId": "nested_classroom_test_team_b71e7338427b4e28b641f3a64ff9fd5d",
+      "assertions": {
+        "currentTaskTeamVisibleActive": true,
+        "currentTaskTeamTransientRowVisible": true,
+        "awaitingReviewVisible": true,
+        "refreshRestoreVisible": true,
+        "exactTaskTeamSelection": true,
+        "acceptedPersisted": true,
+        "terminalTransientCleanup": true,
+        "exactRootedAddresses": true,
+        "allPersistentLeavesExact": true
+      }
+    }
+  ]
+}

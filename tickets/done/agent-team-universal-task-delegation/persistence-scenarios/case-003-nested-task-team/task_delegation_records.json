@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "rootTeamRunId": "team-run-root",
+  "records": [
+    {
+      "taskId": "task-010",
+      "delegatorAgentRunId": "agent-run-product-manager",
+      "recipientAddress": "/qa",
+      "taskExecution": {
+        "teamRunId": "task-team-run-qa-001"
+      },
+      "description": "Own the full release validation.",
+      "referenceFiles": [],
+      "status": "active",
+      "updates": [],
+      "createdAt": "2026-08-14T10:20:00.000Z"
+    },
+    {
+      "taskId": "task-011",
+      "delegatorAgentRunId": "task-team-agent-run-qa-lead-001",
+      "recipientAddress": "/qa/automation/tester",
+      "taskExecution": {
+        "agentRunId": "nested-task-agent-run-001"
+      },
+      "description": "Run the browser automation suite.",
+      "referenceFiles": [
+        "/workspace/software-engineering/test-plan.md"
+      ],
+      "status": "awaiting_review",
+      "updates": [
+        {
+          "submissionId": "task-011_submission_0001",
+          "message": "The browser suite is green.",
+          "referenceFiles": [
+            "/workspace/software-engineering/results/browser.log"
+          ],
+          "createdAt": "2026-08-14T10:30:00.000Z"
+        }
+      ],
+      "createdAt": "2026-08-14T10:22:00.000Z"
+    }
+  ]
+}

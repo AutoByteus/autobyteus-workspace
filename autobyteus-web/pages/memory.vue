@@ -146,16 +146,16 @@ function buildTargetFromRoute(): MemoryInspectTarget | null {
   }
   if (currentView.value === 'team-inspector') {
     const teamRunId = queryValue('teamRunId');
-    const memberRunId = queryValue('memberRunId');
-    if (!teamRunId || !memberRunId) return null;
+    const agentRunId = queryValue('agentRunId');
+    if (!teamRunId || !agentRunId) return null;
     return {
       kind: 'team_member_run',
       source,
       teamDefinitionId: queryValue('teamDefinitionId') ?? null,
       teamDefinitionName: queryValue('teamName') ?? null,
       teamRunId,
-      memberRunId,
-      memberRouteKey: queryValue('memberRouteKey') ?? null,
+      agentRunId,
+      memberAddress: queryValue('memberAddress') ?? null,
       memberName: queryValue('memberName') ?? null,
       lastUpdatedAt: queryValue('updatedAt') ?? null,
     };
@@ -228,8 +228,8 @@ const inspectTeamMember = async (run: AgentTeamRunMemorySummary, member: TeamMem
     teamDefinitionId: run.teamDefinitionId,
     teamDefinitionName: run.teamDefinitionName,
     teamRunId: run.teamRunId,
-    memberRunId: member.memberRunId,
-    memberRouteKey: member.memberRouteKey,
+    agentRunId: member.agentRunId,
+    memberAddress: member.memberAddress,
     memberName: member.memberName,
     lastUpdatedAt: member.lastUpdatedAt ?? run.lastUpdatedAt ?? null,
   };
@@ -242,8 +242,8 @@ const inspectTeamMember = async (run: AgentTeamRunMemorySummary, member: TeamMem
       teamDefinitionId: run.teamDefinitionId,
       teamName: run.teamDefinitionName,
       teamRunId: run.teamRunId,
-      memberRunId: member.memberRunId,
-      memberRouteKey: member.memberRouteKey,
+      agentRunId: member.agentRunId,
+      memberAddress: member.memberAddress,
       memberName: member.memberName,
       updatedAt: target.lastUpdatedAt,
     }),

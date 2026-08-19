@@ -1,0 +1,28 @@
+{
+  "terminatedAt": "2026-08-17T09:26:20.669Z",
+  "endpoint": "http://127.0.0.1:60420/graphql",
+  "before": {
+    "teams": [
+      {
+        "teamDefinitionId": "classroom-simulation-team",
+        "teamRunId": "classroom_simulation_team_0a8473a3f6e6474b9c8dec3421f9d94f",
+        "summary": "Use Write exactly once to create api_rev_003_claude_file_change.txt in the current workspace with...",
+        "isActive": true
+      }
+    ],
+    "agents": []
+  },
+  "results": [
+    {
+      "id": "classroom_simulation_team_0a8473a3f6e6474b9c8dec3421f9d94f",
+      "success": true,
+      "message": "Agent team run terminated successfully."
+    }
+  ],
+  "after": {
+    "teams": [],
+    "agents": []
+  },
+  "operationalDatabaseAction": "NONE",
+  "protectedPortsAction": "NONE"
+}

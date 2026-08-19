@@ -1,0 +1,11 @@
+delivery_revision=DR-010
+inventory_rows=5
+inventory_statuses=['M']
+inventory_scopes=['server']
+patch_path_count=5
+inventory_patch_path_equality=PASS
+active_path_existence=PASS
+reviewer_audit_sha256=fed1c690c5cdf3584c355f32fd2fb62ec4aa9bb9118a2fb803023a2dfa0a8a16
+authority_artifacts=PASS
+error_count=0
+cumulative_patch_reverse_apply=PASS

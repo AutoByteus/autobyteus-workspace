@@ -1,26 +1,34 @@
 import { asObject, asString, type JsonObject } from "../codex-app-server-json.js";
-import type { CodexAppServerMessage } from "./codex-app-server-message.js";
+import type { CodexLocalDerivedEventInput } from "./codex-app-server-message.js";
 import { CodexThreadEventName } from "../events/codex-thread-event-name.js";
 import {
   resolveThreadIdFromAppServerMessage,
   resolveTurnIdFromAppServerMessage,
 } from "./codex-thread-id-resolver.js";
-import type { CodexThread } from "./codex-thread.js";
+import type {
+  CodexNativeAdmittedThreadEventMessage,
+  CodexThread,
+} from "./codex-thread.js";
 import { resolveCodexThreadTokenUsage } from "./codex-thread-token-usage.js";
 
 const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
 };
 
-const hasEntries = (value: JsonObject): boolean => Object.keys(value).length > 0;
+const hasEntries = (value: Readonly<JsonObject>): boolean => Object.keys(value).length > 0;
+
+export type CodexNotificationHandlingResult = Readonly<{
+  localDerivedEvents: readonly CodexLocalDerivedEventInput[];
+  emitNativeMessage: boolean;
+}>;
 
 export const handleAppServerNotification = (
   codexThread: CodexThread,
-  method: string,
-  params: JsonObject,
-  emitEvent: (codexThread: CodexThread, event: CodexAppServerMessage) => void,
-): void => {
-  const eventMethod = method.trim();
+  message: CodexNativeAdmittedThreadEventMessage,
+): CodexNotificationHandlingResult => {
+  const eventMethod = message.method;
+  const params = message.params;
+  const localDerivedEvents: CodexLocalDerivedEventInput[] = [];
   let eventParams = params;
   const item = asObject(params.item);
   const itemType = asString(item?.type)?.replace(/[_-]/g, "").toLowerCase();
@@ -51,7 +59,7 @@ export const handleAppServerNotification = (
       const turnId = resolveTurnIdFromAppServerMessage(params) ?? codexThread.activeTurnId;
       if (turnId) {
         codexThread.markTurnFailed(turnId);
-        emitEvent(codexThread, {
+        localDerivedEvents.push({
           method: CodexThreadEventName.ERROR,
           params: {
             code: "CODEX_THREAD_STATUS_FAILED",
@@ -61,7 +69,10 @@ export const handleAppServerNotification = (
             turn_id: turnId,
           },
         });
-        return;
+        return Object.freeze({
+          localDerivedEvents: Object.freeze(localDerivedEvents),
+          emitNativeMessage: false,
+        });
       }
       codexThread.setCurrentStatus("ERROR");
     }
@@ -125,7 +136,7 @@ export const handleAppServerNotification = (
         const argumentsPayload = { ...itemArguments, ...pendingArguments };
         const toolName = asString(item?.tool) ?? pending?.toolName ?? null;
         const turnId = asString(params.turnId) ?? asString(params.turn_id) ?? pending?.turnId ?? null;
-        emitEvent(codexThread, {
+        localDerivedEvents.push({
           method: CodexThreadEventName.LOCAL_MCP_TOOL_EXECUTION_COMPLETED,
           params: {
             ...params,
@@ -139,5 +150,12 @@ export const handleAppServerNotification = (
     }
   }
 
-  emitEvent(codexThread, { method: eventMethod, params: eventParams });
+  if (eventParams !== params) {
+    localDerivedEvents.push({ method: eventMethod, params: eventParams });
+  }
+
+  return Object.freeze({
+    localDerivedEvents: Object.freeze(localDerivedEvents),
+    emitNativeMessage: eventParams === params,
+  });
 };

@@ -1,0 +1,226 @@
+# API-REV-018 initial inventory
+UTC 2026-08-10T16:20:23Z
+33b9b1e28e1c7f666dffdbcd349d394b2bfef875
+M  autobyteus-server-ts/tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts
+M  autobyteus-server-ts/tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts
+M  autobyteus-server-ts/tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts
+A  autobyteus-web/services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts
+MM tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-coverage-investigation.md
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/api-rev-016-handoff-check.log
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/build-full-final.log
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/built-stream-command-probe-final.log
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/built-team-command-probe-final.log
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/cadence-harness-final.log
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/cumulative-durable-coverage-inventory.tsv
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/cumulative-durable-diff.patch
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/current-command-memory-focused-final.log
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/current-server-selection-final-rerun.log
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/current-server-selection-final.log
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/current-server-test-selection.txt
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/durable-delta-audit-final.log
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/final-evidence-manifest.sha256
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/initial-integrated-inventory.log
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/initial-integrated-inventory.log.sha256
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/live-support-current-audit.log
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/live/authoritative-rerun-summary.json
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/live/browser-automation-network-matcher-attempt.log
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/live/browser-automation-proxy-capture-attempt.log
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/live/browser-automation-selector-attempt.log
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/live/browser/initial-agent-detail.png
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/live/browser/initial-team-detail.png
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/live/browser/standalone-autobyteus-completed.png
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/live/browser/standalone-autobyteus-config.png
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/live/browser/standalone-claude-completed.png
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/live/browser/standalone-claude-config.png
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/live/browser/standalone-codex-completed.png
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/live/browser/standalone-codex-config.png
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/live/browser/team-autobyteus-completed.png
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/live/browser/team-autobyteus-config.png
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/live/browser/team-claude-completed.png
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/live/browser/team-claude-config.png
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/live/browser/team-claude-rerun-browser-followup.png
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/live/browser/team-claude-rerun-completed.png
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/live/browser/team-claude-rerun-config.png
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/live/browser/team-claude-rerun-peer-browser-followup.png
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/live/browser/team-codex-completed.png
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/live/browser/team-codex-config.png
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/live/browser/team-codex-rerun-completed.png
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/live/browser/team-codex-rerun-config.png
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/live/browser/team-config-inspect.png
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/live/claude-rerun-browser-followup.log
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/live/claude-rerun-peer-browser-followup.log
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/live/cleanup-verification.log
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/live/frontend.log
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/live/initial-browser-automation-public-surface-classification.md
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/live/live-log-audit.log
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/live/prisma-migrate-deploy.log
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/live/real-browser-provider-summary-initial-automation-only.json
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/live/real-browser-provider-summary.json
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/live/runtime-package-import.json
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/live/secrets-import-postcheck.log
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/live/secrets-import-result.log
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/live/server.log
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/live/source-fixture-postcheck.log
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/live/source-preflight.log
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/live/staged-package-manifest.json
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/live/standalone-autobyteus.json
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/live/standalone-claude.json
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/live/standalone-codex.json
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/live/team-autobyteus.json
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/live/team-claude-authoritative-rerun.json
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/live/team-claude-initial-incomplete.json
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/live/team-claude.json
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/live/team-codex-authoritative-rerun.json
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/live/team-codex-initial-incomplete.json
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/live/team-codex.json
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/live/team-public-surface-assertions.log
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/live/team-public-surface-evidence.json
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/memory-fixture-postchange.log
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/memory-fixture-prechange.log
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/production-typecheck-final.log
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/removed-authority-audit-final.log
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/team-stream-handler-postchange.log
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/team-stream-handler-prechange.log
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/web-affected-final.log
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/web-current-focused-final.log
+A  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-016/web-team-streaming-prechange.log
+MM tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md
+MM tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-revision-record.md
+M  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-test-review-report.md
+MM tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md
+MM tickets/in-progress/agent-team-hierarchical-handoffs/code-review-revision-record.md
+?? tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-017/
+?? tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-018/
+?? tickets/in-progress/agent-team-hierarchical-handoffs/delivery-evidence/
+?? tickets/in-progress/agent-team-hierarchical-handoffs/delivery-integration-blocker.md
+?? tickets/in-progress/agent-team-hierarchical-handoffs/delivery-revision-record.md
+?? tickets/in-progress/agent-team-hierarchical-handoffs/docs-sync-report.md
+?? tickets/in-progress/agent-team-hierarchical-handoffs/handoff-summary.md
+?? tickets/in-progress/agent-team-hierarchical-handoffs/release-deployment-report.md
+?? tickets/in-progress/agent-team-hierarchical-handoffs/release-notes.md
+
+IR-021 source diff:
+ .../history/WorkspaceHistoryWorkspaceSection.vue   |  15 +-
+ .../workspace/running/RunningTeamRow.vue           |   2 +-
+ .../workspace/team/AgentTeamEventMonitor.vue       |  20 +--
+ .../components/workspace/team/TeamMembersPanel.vue |   4 +-
+ .../workspace/team/TeamWorkspaceView.vue           |   3 +-
+ .../agentStreaming/TeamStreamingService.ts         |  10 +-
+ .../teamTaskAgentContextProjection.ts              |  19 ++-
+ .../agentStreaming/teamTaskExecutionEventRouter.ts | 110 ++++++++++---
+ .../agentStreaming/teamTaskExecutionProjection.ts  |  52 ++++--
+ .../agentStreaming/teamTaskExecutionRestore.ts     |  56 +++++++
+ .../agentStreaming/teamTaskExecutionTree.ts        | 180 +++++++++++++++++++++
+ .../teamTaskTeamExecutionProjection.ts             | 148 +++++++++++++----
+ .../taskDelegationGraphqlDtoProjection.ts          | 123 ++++++++++++++
+ .../runHydration/taskDelegationHydrationService.ts |  10 +-
+ .../runHydration/teamRunContextHydrationService.ts |   3 +
+ .../services/runOpen/teamRunOpenCoordinator.ts     |   3 +-
+ autobyteus-web/stores/agentTeamContextsStore.ts    |   5 +-
+ autobyteus-web/stores/agentTeamRunStore.ts         |   3 +-
+ .../stores/runHistorySelectionActions.ts           |   3 +-
+ autobyteus-web/stores/runHistoryTypes.ts           |   3 +-
+ autobyteus-web/utils/teamDelegatedTaskEntries.ts   |   2 +-
+ .../utils/workspaceTeamExecutionDisplayRows.ts     |   6 +-
+ 22 files changed, 676 insertions(+), 104 deletions(-)
+M	autobyteus-web/components/workspace/history/WorkspaceHistoryWorkspaceSection.vue
+M	autobyteus-web/components/workspace/running/RunningTeamRow.vue
+M	autobyteus-web/components/workspace/team/AgentTeamEventMonitor.vue
+M	autobyteus-web/components/workspace/team/TeamMembersPanel.vue
+M	autobyteus-web/components/workspace/team/TeamWorkspaceView.vue
+M	autobyteus-web/services/agentStreaming/TeamStreamingService.ts
+M	autobyteus-web/services/agentStreaming/teamTaskAgentContextProjection.ts
+M	autobyteus-web/services/agentStreaming/teamTaskExecutionEventRouter.ts
+M	autobyteus-web/services/agentStreaming/teamTaskExecutionProjection.ts
+A	autobyteus-web/services/agentStreaming/teamTaskExecutionRestore.ts
+A	autobyteus-web/services/agentStreaming/teamTaskExecutionTree.ts
+M	autobyteus-web/services/agentStreaming/teamTaskTeamExecutionProjection.ts
+A	autobyteus-web/services/runHydration/taskDelegationGraphqlDtoProjection.ts
+M	autobyteus-web/services/runHydration/taskDelegationHydrationService.ts
+M	autobyteus-web/services/runHydration/teamRunContextHydrationService.ts
+M	autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts
+M	autobyteus-web/stores/agentTeamContextsStore.ts
+M	autobyteus-web/stores/agentTeamRunStore.ts
+M	autobyteus-web/stores/runHistorySelectionActions.ts
+M	autobyteus-web/stores/runHistoryTypes.ts
+M	autobyteus-web/utils/teamDelegatedTaskEntries.ts
+M	autobyteus-web/utils/workspaceTeamExecutionDisplayRows.ts
+
+Current direct imports in tests:
+
+Stale identity in relevant existing tests:
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/teamTaskExecutionEventRouter.spec.ts:10:    memberPath: ['implementation_engineer'],
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/teamTaskExecutionEventRouter.spec.ts:11:    memberRouteKey: 'implementation_engineer',
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:7:const stableMember = (memberRouteKey: string, overrides: Record<string, any> = {}) => ({
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:10:  memberRouteKey,
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:11:  memberPath: [memberRouteKey],
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:12:  memberName: memberRouteKey,
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:13:  displayName: memberRouteKey,
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:14:  memberRunId: `${memberRouteKey}-run`,
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:57:    memberPath: ['worker', 'task-agent-run-1'],
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:58:    memberRouteKey: 'task-agent-run-1',
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:71:      { memberKind: 'agent', memberName: 'worker', displayName: 'worker', memberPath: ['worker'], memberRouteKey: 'worker', memberRunId: 'worker-run', agentDefinitionId: 'worker-agent' },
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:96:  const expansionKey = (workspaceId: string, teamRunId: string, memberRouteKey: string) =>
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:97:    `${workspaceId}::${teamRunId}::${memberRouteKey}`;
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:118:    isTeamMemberExpanded: vi.fn((workspaceId: string, teamRunId: string, memberRouteKey: string) =>
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:119:      Boolean(expandedTeamMembers[expansionKey(workspaceId, teamRunId, memberRouteKey)])),
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:120:    toggleTeamMember: vi.fn((workspaceId: string, teamRunId: string, memberRouteKey: string) => {
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:121:      const key = expansionKey(workspaceId, teamRunId, memberRouteKey);
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:250:        memberRouteKey: 'worker',
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:285:        memberRouteKey: 'task-agent-run-1',
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:296:      memberPath: ['SoftwareEngineeringTeam', 'review_lead'],
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:302:      memberPath: ['SoftwareEngineeringTeam'],
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:312:      memberPath: ['task-team-run-1', 'review_lead'],
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:313:      memberRouteKey: 'task-team-run-1/review_lead',
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:324:      memberPath: ['task-team-run-1'],
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:325:      memberRouteKey: 'task-team-run-1',
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:344:          { memberKind: 'agent', memberName: 'worker', displayName: 'worker', memberPath: ['worker'], memberRouteKey: 'worker', memberRunId: 'worker-run', agentDefinitionId: 'worker-agent' },
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:349:            memberPath: ['SoftwareEngineeringTeam'],
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:350:            memberRouteKey: 'SoftwareEngineeringTeam',
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:354:              { memberKind: 'agent', memberName: 'review_lead', displayName: 'review_lead', memberPath: ['SoftwareEngineeringTeam', 'review_lead'], memberRouteKey: 'SoftwareEngineeringTeam/review_lead', memberRunId: 'review-lead-run', agentDefinitionId: 'review-lead' },
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:398:        memberRouteKey: 'task-team-run-1',
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:447:            { memberKind: 'agent', memberName: 'worker', displayName: 'worker', memberPath: ['worker'], memberRouteKey: 'worker', memberRunId: 'worker-run', agentDefinitionId: 'worker-agent' },
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:461:      memberPath: ['SoftwareEngineeringTeam', 'review_lead'],
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:467:      memberPath: ['SoftwareEngineeringTeam'],
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:504:        memberRouteKey: 'SoftwareEngineeringTeam',
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts:30:    memberPath: ['worker'],
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts:31:    memberRouteKey: 'worker',
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts:39:    memberPath: ['worker', 'team-run__worker__task_0001'],
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts:40:    memberRouteKey: 'team-run__worker__task_0001',
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts:82:    memberPath: ['task-team-run-1', 'solution_designer'],
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts:83:    memberRouteKey: 'task-team-run-1/solution_designer',
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts:93:    memberPath: ['task-team-run-1'],
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts:94:    memberRouteKey: 'task-team-run-1',
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/team/__tests__/TeamOverviewPanel.spec.ts:29:const memberAddress = (memberRouteKey: string) => ({
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/team/__tests__/TeamOverviewPanel.spec.ts:30:  segments: [{ kind: 'member' as const, memberRouteKey }],
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/team/__tests__/TeamOverviewPanel.spec.ts:37:  memberPath: ['implementation_engineer', runId],
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/team/__tests__/TeamOverviewPanel.spec.ts:38:  memberRouteKey: `implementation_engineer__${taskId}`,
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/team/__tests__/TeamOverviewPanel.spec.ts:60:    memberPath: ['implementation_engineer'],
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/team/__tests__/TeamOverviewPanel.spec.ts:61:    memberRouteKey: 'implementation_engineer',
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/team/__tests__/TeamOverviewPanel.spec.ts:70:    memberNodesByRouteKey: new Map<string, any>(memberTree.map((member) => [member.memberRouteKey, member])),
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/team/__tests__/TeamOverviewPanel.spec.ts:74:        member.memberRouteKey,
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/team/__tests__/TeamOverviewPanel.spec.ts:101:    memberPath: ['program_manager'],
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/team/__tests__/TeamOverviewPanel.spec.ts:102:    memberRouteKey: 'program_manager',
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/team/__tests__/TeamOverviewPanel.spec.ts:109:    memberPath: ['BuildSquad', 'review_lead'],
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/team/__tests__/TeamOverviewPanel.spec.ts:110:    memberRouteKey: 'BuildSquad/review_lead',
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/team/__tests__/TeamOverviewPanel.spec.ts:117:    memberPath: ['BuildSquad'],
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/team/__tests__/TeamOverviewPanel.spec.ts:118:    memberRouteKey: 'BuildSquad',
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/team/__tests__/TeamOverviewPanel.spec.ts:233:      [taskNode.memberRouteKey, taskNode],
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/team/__tests__/TeamOverviewPanel.spec.ts:237:      [taskNode.memberRouteKey, { state: { runId: taskNode.memberRunId, currentStatus: 'running' } }],
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/team/__tests__/TeamOverviewPanel.spec.ts:257:      member.memberRouteKey === 'implementation_engineer__task_0001');
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/team/__tests__/TeamOverviewPanel.spec.ts:267:      [nextTaskNode.memberRouteKey, nextTaskNode],
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/team/__tests__/TeamOverviewPanel.spec.ts:271:      [nextTaskNode.memberRouteKey, { state: { runId: nextTaskNode.memberRunId, currentStatus: 'running' } }],
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts:37:    memberPath: ['SoftwareEngineeringTeam', 'solution_designer'],
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts:38:    memberRouteKey: 'SoftwareEngineeringTeam/solution_designer',
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts:47:    memberPath: ['SoftwareEngineeringTeam', 'implementation_engineer'],
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts:48:    memberRouteKey: 'SoftwareEngineeringTeam/implementation_engineer',
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts:57:    memberPath: ['SoftwareEngineeringTeam'],
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts:58:    memberRouteKey: 'SoftwareEngineeringTeam',
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts:95:        task_team_run_id: 'task-team-run-7',
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts:99:        team_route_key: 'research_group/review_team',
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts:124:        task_team_run_id: 'task-team-run-1',
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts:137:        team_route_key: 'SoftwareEngineeringTeam',
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts:161:        task_team_run_id: 'task-team-run-1',
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts:174:        team_route_key: 'SoftwareEngineeringTeam',
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts:198:      memberRouteKey: 'task-team-run-1/solution_designer',
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts:199:      memberPath: ['task-team-run-1', 'solution_designer'],

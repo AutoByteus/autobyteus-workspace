@@ -1,0 +1,24 @@
+{
+  "slug": "autobyteus",
+  "runtime": "autobyteus",
+  "model": "gpt-5.6-luna",
+  "passed": true,
+  "runId": "api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9",
+  "conditions": {
+    "freshRun": true,
+    "effectiveRuntime": true,
+    "effectiveReasoning": true,
+    "exactTokenBeforeRefresh": true,
+    "exactTokenAfterRefresh": true,
+    "resumeRunMatches": true,
+    "resumeActive": true,
+    "resumeRuntimeMatches": true,
+    "resumeModelMatches": true,
+    "noBrowserConsoleErrors": true
+  },
+  "fatalError": null,
+  "termination": {
+    "success": true,
+    "message": "Agent run terminated successfully."
+  }
+}

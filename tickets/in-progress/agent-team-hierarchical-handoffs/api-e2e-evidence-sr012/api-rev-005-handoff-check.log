@@ -1,0 +1,35 @@
+Generated 2026-08-04T23:49:15Z
+HEAD ee93189a0757ac1778c0efe98d4cceb73088ec15
+--- authoritative IDs ---
+tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-revision-record.md:13:| API-REV-005 | `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md`; Round 5 | SR-012; ARCH-REV-007; IR-006; CRR-010; DR-004 | Pass / 97.0% (API-REV-004; SR-006 only) | Fail / 18% |
+tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-revision-record.md:116:### API-REV-005 — SR-012 exact traversal-code validation fails at the first current-contract seam
+tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-revision-record.md:119:- Triggering finding or scenario IDs: `API-F-001`; `SR012-ADDR-001A`; `SR012-ADDR-001B`.
+tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-revision-record.md:123:- Scenarios added, changed, removed, or rechecked: canonical address/recipient expression checks were updated and passed 3/3; root `TeamRecipientResolver` checks were updated and passed 10/11; the exact Agent-before-final-segment case failed as `API-F-001`; no file was removed.
+tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-revision-record.md:133:- New or remaining failure IDs: `API-F-001` open. All unexecuted SR-012 deterministic and live scenarios remain outstanding rather than passed or skipped.
+tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-coverage-investigation.md:260:| `API-F-001`: `TeamRecipientResolver` returns `COLLABORATION_TARGET_NOT_FOUND` for `/product_manager/child`, although `/product_manager` is an Agent before the final segment and the approved table requires `COLLABORATION_TRAVERSAL_INVALID` | `Local Fix` (preliminary implementation defect; code reviewer confirms origin) | Contract line 628; maintained durable test; resolver source lines 32–37; `address-resolver-current-contract.log` | `code_reviewer` for focused failure-origin review |
+tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-coverage-investigation.md:264:- Proceed To API/E2E Execution: `No` until `API-F-001` is resolved and source re-review passes.
+tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-coverage-investigation.md:270:- Notes: `API-F-001` was exposed at the narrowest valid current-contract seam after replacing a stale schema-v2 fixture. It is a critical exact public code mismatch. Broader deterministic and mandatory live work is intentionally deferred rather than obscuring the first failing critical criterion. Prior API-REV-004 and implementation probes are context only.
+tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md:31:- Reroute required during execution: `Yes` — `API-F-001`.
+tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md:47:| `API-F-001` | Agent before final segment must return `COLLABORATION_TRAVERSAL_INVALID` | `TeamRecipientResolver.resolve` | Real source called by maintained durable test | Durable | Fail | Expected `COLLABORATION_TRAVERSAL_INVALID`; observed `COLLABORATION_TARGET_NOT_FOUND` with “not found” message |
+tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md:79:- Confidence-limiting risks: `API-F-001`; unmaintained dirty coverage; migration/app/frontend/API/live matrix not executed.
+tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md:83:- Decision: `Required`, but deferred pending `API-F-001` source/failure-origin review.
+tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md:109:- Migration completion/recovery: `Not Tested` pending `API-F-001` resolution.
+tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md:119:| `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/unit/agent-team-execution/team-logical-placement-resolver.test.ts` | Updated | Rooted Agent/AgentTeam resolution and exact error codes | Fail 1/11 (`API-F-001`) | Current schema-v3 fixture; ten assertions pass; exact traversal-code assertion intentionally remains |
+tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md:153:| Fail | `API-F-001` / `SR012-ADDR-001B` | Agent-before-final-segment returns the wrong exact public error code |
+tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md:166:- `API-F-001`: `Local Fix` — preliminary implementation defect in `TeamRecipientResolver` / rooted traversal classification.
+tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md:172:`code_reviewer` for focused failure-origin review of `API-F-001`, not proportional successful-test review.
+tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md:181:## Latest Authoritative Result
+tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md:183:- Result: `Fail`.
+tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md:187:- Broader validation decision: `Required after API-F-001 is resolved`; not executed in this failed round.
+--- evidence/test artifact existence and sha256 ---
+4ee40261fcd0e98eceaca8a46ddd9b9442f05733d0a1cf3c0f863fa6f6bc9637  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-coverage-investigation.md
+d82ed122e059f8d1f1883c42a6fd7113e5fd049da9d67974dfd37c6981634998  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md
+be35fde6eb69f8d5f5bb0361fa2ca20bfde07c07ce452fde14ccabd6a63d5e47  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-revision-record.md
+47af47b73af339f9dc433d916c487d73d211e3bbaeac277f458976c7afdc92f5  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr012/initial-dirty-inventory.log
+8e33a101c67f6b0b945f2cf43fc57567ea5e794ef8e4cb7092ff8c7365d3464d  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr012/discovery-collaboration.log
+6fdfbe373c4612182f1bd4b67e5d354499db2acac49aa7d979ac4bede80ec6d7  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr012/address-resolver-current-contract.log
+ef73229d4402cdb415e4a6638a986da170f5ad72aa843fa2d6677d0a389423a2  tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr012/traversal-failure-analysis.log
+e556c7792a5ba669faadb7eef48e921289389102d7511dd125023ca4653e5096  autobyteus-server-ts/tests/fixtures/current-team-run-fixtures.ts
+acd0bd55aeab9f18f95caf60e5b538283a4bd3638cb5bd8f7e7d95aad812cda4  autobyteus-server-ts/tests/unit/agent-collaboration/collaboration-logical-address.test.ts
+e27ec4b18fb0bdf869dbb47a29a9816aaa578102d47d2f9e6a6f20628ec168c3  autobyteus-server-ts/tests/unit/agent-team-execution/team-logical-placement-resolver.test.ts
+--- diff check ---

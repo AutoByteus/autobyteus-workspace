@@ -1,0 +1,9 @@
+head=209daad0c74eeb78cc3631b26bdd53f197c10d56
+diff_check=pass
+artifact_check=pass
+result=Fail
+confidence=57%
+finding=API-F-016
+no_server_frontend_browser_provider_vault_migration_or_database_started=true
+protected_stack_untouched=127.0.0.1:60004,127.0.0.1:31004
+operational_database_not_contacted=true

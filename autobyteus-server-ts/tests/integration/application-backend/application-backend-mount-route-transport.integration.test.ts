@@ -130,7 +130,7 @@ describe("Application backend mount route transport integration", () => {
     await fs.writeFile(
       path.join(applicationRootPath, "backend", "dist", "entry.mjs"),
       `export default {
-  definitionContractVersion: '4',
+  definitionContractVersion: '5',
   routes: [
     {
       method: 'POST',

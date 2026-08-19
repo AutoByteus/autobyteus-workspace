@@ -1,0 +1,84 @@
+{
+  "at": "2026-08-15T20:55:50.043Z",
+  "teamRunId": "stale_team_stale_1786827145248_1b9224423bd4447ca6298e7bad2c3677",
+  "data": {
+    "getTeamRunResumeConfig": {
+      "teamRunId": "stale_team_stale_1786827145248_1b9224423bd4447ca6298e7bad2c3677",
+      "isActive": false,
+      "executionTree": {
+        "schema_version": 1,
+        "created_at": "2026-08-15T20:52:25.332Z",
+        "archived_at": null,
+        "application_binding": null,
+        "handoffs": [],
+        "root_team": {
+          "team_definition_id": "stale-team-stale-1786827145248",
+          "team_definition_name": "stale_team_stale_1786827145248",
+          "team_run_id": "stale_team_stale_1786827145248_1b9224423bd4447ca6298e7bad2c3677",
+          "coordinator_address": "/coordinator",
+          "members": [
+            {
+              "kind": "configured_agent",
+              "address": "/coordinator",
+              "agent_definition_id": "stale-coordinator-stale-1786827145248",
+              "role": null,
+              "description": null,
+              "agent_run_id": "stale_coordinator_stale_1786827145248_db8dc5f4ab854dae8ff65f74bea32fea",
+              "platform_agent_run_id": null,
+              "launch_configuration": {
+                "runtime_kind": "AUTOBYTEUS",
+                "llm_model_identifier": "gpt-5.6-luna",
+                "llm_config": null,
+                "auto_execute_tools": true,
+                "skill_access_mode": "NONE",
+                "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-007/live/workspaces/stale_1786827145248"
+              }
+            },
+            {
+              "kind": "configured_agent",
+              "address": "/worker",
+              "agent_definition_id": "stale-worker-stale-1786827145248",
+              "role": null,
+              "description": null,
+              "agent_run_id": "stale_worker_stale_1786827145248_333a350d77214676806fc0752554228b",
+              "platform_agent_run_id": null,
+              "launch_configuration": {
+                "runtime_kind": "AUTOBYTEUS",
+                "llm_model_identifier": "gpt-5.6-luna",
+                "llm_config": null,
+                "auto_execute_tools": true,
+                "skill_access_mode": "NONE",
+                "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-007/live/workspaces/stale_1786827145248"
+              }
+            }
+          ],
+          "task_executions": [
+            {
+              "kind": "task_agent",
+              "address": "/worker",
+              "agent_run_id": "stale_worker_stale_1786827145248_3e7f14e77ec043e1bc03db7fcd40f129",
+              "platform_agent_run_id": null,
+              "started_at": "2026-08-15T20:52:34.757Z",
+              "settled_at": null
+            }
+          ]
+        }
+      }
+    },
+    "getTaskDelegationRecords": [
+      {
+        "taskId": "task_70257a0a02f445acadf6e44fd3acddf3",
+        "delegatorAgentRunId": "stale_coordinator_stale_1786827145248_db8dc5f4ab854dae8ff65f74bea32fea",
+        "recipientAddress": "/worker",
+        "targetAgentRunId": "stale_worker_stale_1786827145248_3e7f14e77ec043e1bc03db7fcd40f129",
+        "targetTeamRunId": null,
+        "status": "active",
+        "description": "REMAIN_ACTIVE_UNTIL_RESTART",
+        "createdAt": "2026-08-15T20:52:34.757Z",
+        "updates": [],
+        "referenceFiles": []
+      }
+    ],
+    "getTeamCommunicationMessages": []
+  }
+}

@@ -5,6 +5,10 @@ import type { AgentOperationResult } from "../../domain/agent-operation-result.j
 import type { AgentRunContext, RuntimeAgentRunContext } from "../../domain/agent-run-context.js";
 import { RuntimeKind } from "../../../runtime-management/runtime-kind-enum.js";
 import type { AgentRunBackend, AgentRunSourceEventBatchListener } from "../agent-run-backend.js";
+import type {
+  AgentRunBackendInputDispatch,
+  AgentRunBackendInputDispatchResult,
+} from "../../input/agent-run-input-contract.js";
 import { AutoByteusStreamEventConverter } from "./events/autobyteus-stream-event-converter.js";
 import { projectAutoByteusAgentLifecycleSnapshot } from "./events/autobyteus-status-projector.js";
 
@@ -65,6 +69,7 @@ const buildCommandFailure = (operation: string, error: unknown): AgentOperationR
 export class AutoByteusAgentRunBackend implements AgentRunBackend {
   readonly runId: string;
   readonly runtimeKind = RuntimeKind.AUTOBYTEUS;
+  readonly inputCapabilities = { activeTurnAppend: "unsupported" } as const;
   private readonly eventConverter: AutoByteusStreamEventConverter;
   private readonly context: AgentRunContext<RuntimeAgentRunContext>;
   private readonly sourceListeners = new Set<AgentRunSourceEventBatchListener>();
@@ -114,17 +119,41 @@ export class AutoByteusAgentRunBackend implements AgentRunBackend {
     };
   }
 
-  async postUserMessage(message: AgentInputUserMessage): Promise<AgentOperationResult> {
+  async dispatchUserInput(
+    dispatch: AgentRunBackendInputDispatch,
+  ): Promise<AgentRunBackendInputDispatchResult> {
+    if (dispatch.kind !== "start_turn") {
+      return {
+        forwarded: false,
+        code: "UNSUPPORTED_RUNTIME_COMMAND",
+        message: "AutoByteus does not support active-turn input append.",
+        turnId: null,
+      };
+    }
     if (!this.agent.postUserMessage || !this.isActive()) {
-      return buildRunNotFoundResult(this.runId);
+      const result = buildRunNotFoundResult(this.runId);
+      return {
+        forwarded: false,
+        code: result.code,
+        message: result.message,
+        turnId: null,
+      };
     }
     try {
-      await this.agent.postUserMessage(message);
+      await this.agent.postUserMessage(dispatch.message);
       return {
-        accepted: true,
+        forwarded: true,
+        turnId: null,
+        platformAgentRunId: this.getPlatformAgentRunId(),
       };
     } catch (error) {
-      return buildCommandFailure("send user input", error);
+      const result = buildCommandFailure("send user input", error);
+      return {
+        forwarded: false,
+        code: result.code,
+        message: result.message,
+        turnId: null,
+      };
     }
   }
 
@@ -149,7 +178,7 @@ export class AutoByteusAgentRunBackend implements AgentRunBackend {
     }
   }
 
-  async interrupt(turnId?: string | null): Promise<AgentOperationResult> {
+  async interrupt(turnId: string | null): Promise<AgentOperationResult> {
     if (!this.isActive()) {
       return buildRunNotFoundResult(this.runId);
     }
@@ -162,7 +191,7 @@ export class AutoByteusAgentRunBackend implements AgentRunBackend {
     }
     try {
       const result = await this.agent.interrupt({
-        turnId: turnId ?? null,
+        turnId,
         reason: "user_interrupt",
       });
       return {

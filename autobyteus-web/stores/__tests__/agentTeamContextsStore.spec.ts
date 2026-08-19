@@ -1,304 +1,143 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { createPinia, setActivePinia } from 'pinia'
-import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore'
-import { useAgentSelectionStore } from '~/stores/agentSelectionStore'
-import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore'
-import { indexTeamMemberNodesByRouteKey } from '~/utils/teamDefinitionMembers'
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { createPinia, setActivePinia } from 'pinia';
+import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
+import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
+import {
+  buildTestTeamContext,
+  testAgentContext,
+  testAgentNode,
+  testSubTeamNode,
+  testTaskRecord,
+} from '~/test-support/currentTeamTestFixtures';
 
-const { ensureHistoricalTeamMemberHydratedMock } = vi.hoisted(() => ({
-  ensureHistoricalTeamMemberHydratedMock: vi.fn().mockResolvedValue(undefined),
-}))
+const {
+  primeRecentEventMonitorBaselineMock,
+  resetRecentEventMonitorBaselineMock,
+  refreshRunNavigationTopologyMock,
+} = vi.hoisted(() => ({
+  primeRecentEventMonitorBaselineMock: vi.fn(),
+  resetRecentEventMonitorBaselineMock: vi.fn(),
+  refreshRunNavigationTopologyMock: vi.fn(),
+}));
 
-vi.mock('~/services/runHydration/teamRunContextHydrationService', () => ({
-  ensureHistoricalTeamMemberHydrated: ensureHistoricalTeamMemberHydratedMock,
-}))
+vi.mock('~/services/eventMonitor/recentEventMonitorMutationCoordinator', () => ({
+  primeRecentEventMonitorBaseline: primeRecentEventMonitorBaselineMock,
+  resetRecentEventMonitorBaseline: resetRecentEventMonitorBaselineMock,
+}));
+vi.mock('~/stores/runHistoryStore', () => ({
+  useRunHistoryStore: () => ({ refreshRunNavigationTopology: refreshRunNavigationTopologyMock }),
+}));
 
-vi.mock('~/stores/agentTeamDefinitionStore', () => ({
-  useAgentTeamDefinitionStore: () => ({
-    getAgentTeamDefinitionById: (id: string) => {
-      if (id === 'team-def-1') return {
-        id: 'team-def-1',
-        name: 'Test Team',
-        coordinatorMemberName: 'agent-1',
-        nodes: [
-          { memberName: 'agent-1', refType: 'AGENT', ref: 'def-1' },
-          { memberName: 'agent-2', refType: 'AGENT', ref: 'def-2' },
-        ],
-      }
-      if (id === 'team-def-nested') return {
-        id: 'team-def-nested',
-        name: 'Nested Team',
-        coordinatorMemberName: 'nested-group',
-        nodes: [
-          { memberName: 'nested-group', refType: 'AGENT_TEAM', ref: 'sub-team-1' },
-        ],
-      }
-      if (id === 'sub-team-1') return {
-        id: 'sub-team-1',
-        name: 'Sub Team',
-        coordinatorMemberName: 'leaf-a',
-        nodes: [
-          { memberName: 'leaf-a', refType: 'AGENT', ref: 'def-1' },
-          { memberName: 'leaf-b', refType: 'AGENT', ref: 'def-2' },
-        ],
-      }
-      return null
-    },
-  }),
-}))
-
-vi.mock('~/stores/agentDefinitionStore', () => ({
-  useAgentDefinitionStore: () => ({
-    getAgentDefinitionById: (id: string) => ({ id, name: 'Agent ' + id }),
-  }),
-}))
-
-const buildAgentNode = (memberRouteKey: string) => ({
-  memberKind: 'agent',
-  memberName: memberRouteKey.split('/').at(-1) || memberRouteKey,
-  displayName: memberRouteKey.split('/').at(-1) || memberRouteKey,
-  memberPath: memberRouteKey.split('/'),
-  memberRouteKey,
-  agentDefinitionId: `${memberRouteKey}-def`,
-})
-
-const buildMemberContext = (overrides: Record<string, unknown> = {}) => ({
-  config: {},
-  state: {
-    runId: '',
-    conversation: { id: '', messages: [], updatedAt: '', createdAt: '' },
-    compactionStatus: null,
-  },
-  requirement: '',
-  contextFilePaths: [],
-  ...overrides,
-})
-
-const buildTeamContext = (params: {
-  teamRunId: string
-  memberRouteKeys: string[]
-  focusedMemberRouteKey: string
-  historicalHydration?: Record<string, unknown> | null
-  memberContexts?: Record<string, Record<string, unknown>>
-}) => {
-  const memberTree = params.memberRouteKeys.map(buildAgentNode)
-  const leafAgentContextsByRouteKey = new Map(
-    params.memberRouteKeys.map((memberRouteKey) => [
-      memberRouteKey,
-      buildMemberContext(params.memberContexts?.[memberRouteKey]) as any,
-    ]),
-  )
-
-  return {
-    teamRunId: params.teamRunId,
-    config: {} as any,
-    memberTree: memberTree as any,
-    memberNodesByRouteKey: indexTeamMemberNodesByRouteKey(memberTree as any),
-    leafAgentContextsByRouteKey,
-    coordinatorMemberRouteKey: params.memberRouteKeys[0],
-    historicalHydration: params.historicalHydration ?? null,
-    focusedMemberRouteKey: params.focusedMemberRouteKey,
-    isActive: false,
-    isSubscribed: false,
-  }
-}
-
-describe('agentTeamContextsStore', () => {
+describe('agentTeamContextsStore current Team execution view', () => {
   beforeEach(() => {
-    setActivePinia(createPinia())
-    vi.clearAllMocks()
-  })
+    setActivePinia(createPinia());
+    vi.clearAllMocks();
+  });
 
-  describe('createRunFromTemplate', () => {
-    it('creates a team context with mixed member runtimes from overrides', async () => {
-      const store = useAgentTeamContextsStore()
-      const selectionStore = useAgentSelectionStore()
-      const runConfigStore = useTeamRunConfigStore()
+  it('indexes by exact root TeamRun identity and exposes current focused/member getters', () => {
+    const store = useAgentTeamContextsStore();
+    const selection = useAgentSelectionStore();
+    const team = buildTestTeamContext({
+      teamRunId: 'team-1', coordinatorAddress: '/coordinator',
+      rootChildren: [
+        testAgentNode('/coordinator', { displayName: 'Coordinator', agentRunId: 'coordinator-run' }),
+        testAgentNode('/worker', { displayName: 'Worker', agentRunId: 'worker-run' }),
+      ],
+    });
 
-      runConfigStore.setTemplate({
-        id: 'team-def-1',
-        name: 'Test Team',
-        coordinatorMemberName: 'agent-1',
-        nodes: [
-          { memberName: 'agent-1', refType: 'AGENT', ref: 'def-1' },
-          { memberName: 'agent-2', refType: 'AGENT', ref: 'def-2' },
-        ],
-      } as any)
+    store.addTeamContext(team);
+    selection.selectRunWithoutShellNavigation('team-1', 'team');
 
-      runConfigStore.updateConfig({
-        workspaceId: 'ws-1',
-        runtimeKind: 'autobyteus',
-        llmModelIdentifier: 'gpt-5.4',
-        llmConfig: { reasoning_effort: 'high' },
-        autoExecuteTools: false,
-        memberOverrides: {
-          'agent-2': {
-            agentDefinitionId: 'def-2',
-            runtimeKind: 'claude_agent_sdk',
-            llmModelIdentifier: 'claude-sonnet',
-            llmConfig: { thinking_enabled: true },
-          },
-        },
-      })
-      runConfigStore.setRuntimeModelCatalog('autobyteus', ['gpt-5.4'])
-      runConfigStore.setRuntimeModelCatalog('claude_agent_sdk', ['claude-sonnet'])
+    expect(store.getTeamContextById('team-1')).toBe(team);
+    expect(store.activeTeamContext).toBe(team);
+    expect(store.activeExecutionFocusedMemberAddress).toBe('/coordinator');
+    expect(store.focusedMemberContext?.state.runId).toBe('coordinator-run');
+    expect(store.teamMembers.map((entry) => entry.memberAddress)).toEqual(['/coordinator', '/worker']);
+    expect(primeRecentEventMonitorBaselineMock).toHaveBeenCalledTimes(2);
+    expect(refreshRunNavigationTopologyMock).toHaveBeenCalledWith('team-context-add');
+  });
 
-      await store.createRunFromTemplate()
+  it('preserves rooted nested topology and exact AgentRun lookup', () => {
+    const store = useAgentTeamContextsStore();
+    const team = buildTestTeamContext({
+      teamRunId: 'nested-team-1', coordinatorAddress: '/program_manager',
+      rootChildren: [
+        testAgentNode('/program_manager', { agentRunId: 'program-manager-run' }),
+        testSubTeamNode('/BuildSquad', [
+          testAgentNode('/BuildSquad/reviewer', { agentRunId: 'reviewer-run' }),
+          testAgentNode('/BuildSquad/implementer', { agentRunId: 'implementer-run' }),
+        ], { teamRunId: 'build-squad-run', coordinatorAddress: '/BuildSquad/reviewer' }),
+      ],
+    });
+    store.addTeamContext(team);
 
-      const [teamId] = Array.from(store.teams.keys())
-      expect(teamId).toMatch(/^temp-team-/)
+    expect(team.view.getExecutionTree().root_team.members).toMatchObject([
+      { kind: 'configured_agent', address: '/program_manager' },
+      { kind: 'configured_team', address: '/BuildSquad', members: [
+        { kind: 'configured_agent', address: '/BuildSquad/reviewer' },
+        { kind: 'configured_agent', address: '/BuildSquad/implementer' },
+      ] },
+    ]);
+    expect(team.view.getAgentContext('reviewer-run')?.state.runId).toBe('reviewer-run');
+    expect(team.view.getMemberAddress('implementer-run')).toBe('/BuildSquad/implementer');
+  });
 
-      const team = store.teams.get(teamId!)
-      expect(team?.leafAgentContextsByRouteKey.size).toBe(2)
+  it('focuses exact AgentRun identity while preserving independent composer state', () => {
+    const store = useAgentTeamContextsStore();
+    const coordinatorContext = testAgentContext({ runId: 'coordinator-run', displayName: 'Coordinator' });
+    coordinatorContext.requirement = 'keep this coordinator draft';
+    const team = buildTestTeamContext({
+      teamRunId: 'history-team-1', coordinatorAddress: '/coordinator',
+      rootChildren: [
+        testAgentNode('/coordinator', { agentRunId: 'coordinator-run' }),
+        testAgentNode('/worker', { agentRunId: 'worker-run' }),
+      ],
+      contexts: [{ agentRunId: 'coordinator-run', context: coordinatorContext }],
+    });
+    store.addTeamContext(team);
 
-      const agent1 = team?.leafAgentContextsByRouteKey.get('agent-1')
-      expect(agent1?.config.llmModelIdentifier).toBe('gpt-5.4')
-      expect(agent1?.config.llmConfig).toEqual({ reasoning_effort: 'high' })
-      expect(agent1?.config.runtimeKind).toBe('autobyteus')
+    store.focusMember('history-team-1', 'worker-run');
 
-      const agent2 = team?.leafAgentContextsByRouteKey.get('agent-2')
-      expect(agent2?.config.llmModelIdentifier).toBe('claude-sonnet')
-      expect(agent2?.config.llmConfig).toEqual({ thinking_enabled: true })
-      expect(agent2?.config.runtimeKind).toBe('claude_agent_sdk')
+    expect(team.view.getFocusedAgentRunId()).toBe('worker-run');
+    expect(team.view.getAgentContext('coordinator-run')?.requirement).toBe('keep this coordinator draft');
+    expect(team.view.getAgentContext('worker-run')?.requirement).toBe('');
+  });
 
-      expect(selectionStore.selectedRunId).toBe(teamId)
-      expect(selectionStore.selectedType).toBe('team')
-    })
+  it('focuses a concrete task Agent without substituting its configured placement', () => {
+    const store = useAgentTeamContextsStore();
+    const team = buildTestTeamContext({
+      teamRunId: 'task-team-1', coordinatorAddress: '/coordinator',
+      rootChildren: [
+        testAgentNode('/coordinator', { agentRunId: 'coordinator-run' }),
+        testAgentNode('/worker', { agentRunId: 'worker-run' }),
+      ],
+      tasks: [testTaskRecord({
+        taskId: 'task-1', delegatorAgentRunId: 'coordinator-run',
+        recipientAddress: '/worker', target: { agentRunId: 'task-agent-run-1' },
+      })],
+    });
+    store.addTeamContext(team);
 
-    it('keeps nested team topology while indexing leaf member contexts by route key', async () => {
-      const store = useAgentTeamContextsStore()
-      const runConfigStore = useTeamRunConfigStore()
+    store.focusMember('task-team-1', 'task-agent-run-1');
 
-      runConfigStore.setTemplate({
-        id: 'team-def-nested',
-        name: 'Nested Team',
-        coordinatorMemberName: 'nested-group',
-        nodes: [
-          { memberName: 'nested-group', refType: 'AGENT_TEAM', ref: 'sub-team-1' },
-        ],
-      } as any)
+    expect(team.view.getFocusedAgentRunId()).toBe('task-agent-run-1');
+    expect(team.view.getAgentContext('task-agent-run-1')?.state.runId).toBe('task-agent-run-1');
+    expect(team.view.getAgentContext('worker-run')?.state.runId).toBe('worker-run');
+  });
 
-      runConfigStore.updateConfig({
-        workspaceId: 'ws-1',
-        llmModelIdentifier: 'gpt-4',
-        llmConfig: null,
-        autoExecuteTools: false,
-        memberOverrides: {},
-      })
-      runConfigStore.setRuntimeModelCatalog('autobyteus', ['gpt-4'])
+  it('fails closed for a foreign AgentRun focus and removes only the exact root context', () => {
+    const store = useAgentTeamContextsStore();
+    const team = buildTestTeamContext({
+      teamRunId: 'team-1', coordinatorAddress: '/coordinator',
+      rootChildren: [testAgentNode('/coordinator'), testAgentNode('/worker')],
+    });
+    store.addTeamContext(team);
+    const initialFocus = team.view.getFocusedAgentRunId();
 
-      await store.createRunFromTemplate()
-
-      const [teamId] = Array.from(store.teams.keys())
-      const team = store.teams.get(teamId!)
-      expect(team?.memberTree).toMatchObject([
-        {
-          memberKind: 'agent_team',
-          memberName: 'nested-group',
-          memberRouteKey: 'nested-group',
-          children: [
-            { memberKind: 'agent', memberName: 'leaf-a', memberRouteKey: 'nested-group/leaf-a' },
-            { memberKind: 'agent', memberName: 'leaf-b', memberRouteKey: 'nested-group/leaf-b' },
-          ],
-        },
-      ])
-      expect(team?.leafAgentContextsByRouteKey.size).toBe(2)
-      expect(team?.leafAgentContextsByRouteKey.has('nested-group/leaf-a')).toBe(true)
-      expect(team?.leafAgentContextsByRouteKey.has('nested-group/leaf-b')).toBe(true)
-      expect(team?.focusedMemberRouteKey).toBe('nested-group')
-    })
-  })
-
-  describe('activeTeamContext', () => {
-    it('returns null if no team selected', () => {
-      const store = useAgentTeamContextsStore()
-      expect(store.activeTeamContext).toBeNull()
-    })
-
-    it('returns context if team selected', async () => {
-      const store = useAgentTeamContextsStore()
-      const runConfigStore = useTeamRunConfigStore()
-      runConfigStore.setTemplate({
-        id: 'team-def-1',
-        name: 'Test Team',
-        coordinatorMemberName: 'agent-1',
-        nodes: [
-          { memberName: 'agent-1', refType: 'AGENT', ref: 'def-1' },
-        ],
-      } as any)
-      runConfigStore.updateConfig({
-        workspaceId: 'ws-1',
-        llmModelIdentifier: 'gpt-4',
-        llmConfig: null,
-        autoExecuteTools: false,
-        memberOverrides: {},
-      })
-      runConfigStore.setRuntimeModelCatalog('autobyteus', ['gpt-4'])
-
-      await store.createRunFromTemplate()
-
-      const [teamId] = Array.from(store.teams.keys())
-      expect(store.activeTeamContext?.teamRunId).toBe(teamId)
-    })
-  })
-
-  describe('setFocusedMember', () => {
-    it('keeps unsent draft text and context files on the original member', () => {
-      const store = useAgentTeamContextsStore()
-      const selectionStore = useAgentSelectionStore()
-
-      store.addTeamContext(buildTeamContext({
-        teamRunId: 'team-1',
-        memberRouteKeys: ['agent-1', 'agent-2'],
-        focusedMemberRouteKey: 'agent-1',
-        memberContexts: {
-          'agent-1': {
-            requirement: 'draft text',
-            contextFilePaths: [{ kind: 'workspace_path', id: '/tmp/a.txt', locator: '/tmp/a.txt', displayName: 'a.txt', type: 'Text' }],
-          },
-        },
-      }) as any)
-
-      selectionStore.selectRun('team-1', 'team')
-      store.setFocusedMember('agent-2')
-
-      const team = store.activeTeamContext!
-      expect(team.focusedMemberRouteKey).toBe('agent-2')
-      expect(team.leafAgentContextsByRouteKey.get('agent-1')?.requirement).toBe('draft text')
-      expect(team.leafAgentContextsByRouteKey.get('agent-2')?.requirement).toBe('')
-    })
-  })
-
-  describe('focusMemberAndEnsureHydrated', () => {
-    it('focuses the requested member and triggers lazy historical hydration', async () => {
-      const store = useAgentTeamContextsStore()
-      const selectionStore = useAgentSelectionStore()
-
-      store.addTeamContext(buildTeamContext({
-        teamRunId: 'team-history-1',
-        memberRouteKeys: ['member-a', 'member-b'],
-        focusedMemberRouteKey: 'member-a',
-        historicalHydration: {
-          createdAt: '2026-01-01T00:00:00.000Z',
-          updatedAt: '2026-01-01T00:00:00.000Z',
-          memberMetadataByRouteKey: {} as any,
-          memberProjectionLoadStateByRouteKey: {
-            'member-a': 'loaded',
-            'member-b': 'unloaded',
-          },
-        },
-      }) as any)
-
-      selectionStore.selectRun('team-history-1', 'team')
-
-      await store.focusMemberAndEnsureHydrated('team-history-1', 'member-b')
-
-      expect(store.activeTeamContext?.focusedMemberRouteKey).toBe('member-b')
-      expect(ensureHistoricalTeamMemberHydratedMock).toHaveBeenCalledWith({
-        teamContext: expect.objectContaining({ teamRunId: 'team-history-1' }),
-        memberRouteKey: 'member-b',
-      })
-    })
-  })
-
-})
+    store.focusMember('team-1', 'foreign-run');
+    expect(team.view.getFocusedAgentRunId()).toBe(initialFocus);
+    store.removeTeamContext('team-1');
+    expect(store.getTeamContextById('team-1')).toBeUndefined();
+    expect(resetRecentEventMonitorBaselineMock).toHaveBeenCalledTimes(2);
+  });
+});

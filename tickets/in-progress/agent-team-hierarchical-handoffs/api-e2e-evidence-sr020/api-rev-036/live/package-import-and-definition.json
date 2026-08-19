@@ -1,0 +1,88 @@
+{
+  "sourceKind": "LOCAL_PATH",
+  "source": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-036-live-20260813-1/staged-package",
+  "importedPackages": [
+    {
+      "packageId": "built-in:default",
+      "displayName": "Built-in Storage",
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-036-live-20260813-1",
+      "sourceKind": "BUILT_IN",
+      "source": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-036-live-20260813-1",
+      "sharedAgentCount": 2,
+      "teamLocalAgentCount": 0,
+      "agentTeamCount": 0,
+      "applicationCount": 0,
+      "isDefault": true,
+      "isRemovable": false
+    },
+    {
+      "packageId": "local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-worktrees%2Fagent-team-hierarchical-handoffs%2Fautobyteus-server-ts%2Ftests%2F.tmp%2Fapi-rev-036-live-20260813-1%2Fstaged-package",
+      "displayName": "staged-package",
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-036-live-20260813-1/staged-package",
+      "sourceKind": "LOCAL_PATH",
+      "source": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-036-live-20260813-1/staged-package",
+      "sharedAgentCount": 0,
+      "teamLocalAgentCount": 1,
+      "agentTeamCount": 1,
+      "applicationCount": 0,
+      "isDefault": false,
+      "isRemovable": true
+    }
+  ],
+  "refreshed": true,
+  "nestedDefinition": {
+    "id": "nested-classroom-test",
+    "name": "Nested Classroom Test Team",
+    "description": "Minimal nested-team fixture for testing delegate_task to an agent-team target.",
+    "coordinatorMemberName": "Teacher",
+    "handoffs": [
+      {
+        "from": "/Teacher",
+        "to": "/StudentStudyGroup",
+        "rules": [
+          "When the user asks to send the classroom handoff token to the study group."
+        ]
+      },
+      {
+        "from": "/StudentStudyGroup/student_one",
+        "to": "/Teacher",
+        "rules": [
+          "When the delegated classroom task is finished and the teacher needs the outcome."
+        ]
+      }
+    ],
+    "ownershipScope": "SHARED",
+    "ownerPackageId": null,
+    "nodes": [
+      {
+        "memberName": "Teacher",
+        "ref": "teacher",
+        "refType": "AGENT",
+        "refScope": "TEAM_LOCAL"
+      },
+      {
+        "memberName": "StudentStudyGroup",
+        "ref": "student-study-group",
+        "refType": "AGENT_TEAM",
+        "refScope": "TEAM_LOCAL"
+      }
+    ]
+  },
+  "runtimeAvailabilities": [
+    {
+      "runtimeKind": "autobyteus",
+      "enabled": true,
+      "reason": null
+    },
+    {
+      "runtimeKind": "codex_app_server",
+      "enabled": true,
+      "reason": null
+    },
+    {
+      "runtimeKind": "claude_agent_sdk",
+      "enabled": true,
+      "reason": null
+    }
+  ]
+}

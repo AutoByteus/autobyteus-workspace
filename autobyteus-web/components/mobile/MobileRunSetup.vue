@@ -1,5 +1,5 @@
 <template>
-  <form class="space-y-4 rounded-3xl border border-blue-200 bg-blue-50 p-4" data-testid="mobile-run-setup" @submit.prevent="createRun">
+  <form class="space-y-4 rounded-3xl border border-blue-200 bg-blue-50 p-4" data-testid="mobile-run-setup" :inert="creating" :aria-busy="creating" @submit.prevent="createRun">
     <div class="flex justify-end">
       <button type="button" class="rounded-lg border border-blue-200 px-3 py-1.5 text-xs font-semibold text-blue-700" @click="$emit('cancel')">
         Hide

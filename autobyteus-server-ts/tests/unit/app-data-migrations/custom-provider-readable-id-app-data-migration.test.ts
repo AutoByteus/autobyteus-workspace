@@ -4,13 +4,8 @@ import path from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
 import { LLMProvider } from 'autobyteus-ts/llm/providers.js';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import type { AppDataMigrationRecordSnapshot } from '../../../src/app-data-migrations/domain/app-data-migration-types.js';
 import { CustomProviderV1AppDataMigration } from '../../../src/app-data-migrations/migrations/custom-provider-v1-app-data-migration.js';
 import { CustomProviderReadableIdAppDataMigration } from '../../../src/app-data-migrations/migrations/custom-provider-readable-id-app-data-migration.js';
-import {
-  CUSTOM_PROVIDER_READABLE_ID_PREREQUISITE_IDS,
-  CustomProviderReadableIdPrerequisiteGuard,
-} from '../../../src/app-data-migrations/migrations/custom-provider-readable-id-prerequisite-guard.js';
 
 const OLD_ID = 'provider_5b8b1ce1baf945c483248bdef87c554e';
 const NEW_ID = 'provider_alibaba_cloud_token_plan';
@@ -18,26 +13,6 @@ const MODEL_SUFFIX = 'deepseek-v4-flash-0731';
 const oldIdentifier = `openai-compatible:${OLD_ID}:${MODEL_SUFFIX}`;
 const newIdentifier = `openai-compatible:${NEW_ID}:${MODEL_SUFFIX}`;
 const directories: string[] = [];
-
-const record = (migrationId: string): AppDataMigrationRecordSnapshot => ({
-  migrationId,
-  displayName: migrationId,
-  status: 'SUCCEEDED',
-  attempts: 1,
-  startedAt: new Date(),
-  completedAt: new Date(),
-  summaryJson: null,
-  errorMessage: null,
-  logPath: null,
-});
-
-const terminalGuard = (): CustomProviderReadableIdPrerequisiteGuard =>
-  new CustomProviderReadableIdPrerequisiteGuard({
-    getRecord: async (migrationId) => CUSTOM_PROVIDER_READABLE_ID_PREREQUISITE_IDS
-      .includes(migrationId as typeof CUSTOM_PROVIDER_READABLE_ID_PREREQUISITE_IDS[number])
-      ? record(migrationId)
-      : null,
-  });
 
 const writeJson = async (filePath: string, value: unknown): Promise<Buffer> => {
   await fs.mkdir(path.dirname(filePath), { recursive: true });
@@ -185,7 +160,6 @@ const setupFixture = async () => {
   const getSecretOwner = vi.fn(() => secretOwner);
   const migration = new CustomProviderReadableIdAppDataMigration(
     directory,
-    terminalGuard(),
     getSecretOwner,
     [directory],
     [],
@@ -456,28 +430,6 @@ describe('CustomProviderReadableIdAppDataMigration', () => {
     expect(await readJson(fixture.providerPath)).toEqual({ version: 3, providers: [] });
     expect(fixture.secretOwner.resolveForUse).not.toHaveBeenCalled();
     expect(fixture.secretOwner.saveForConsumer).not.toHaveBeenCalled();
-  });
-
-  it('does not read or mutate provider/selectors while a prerequisite is incomplete', async () => {
-    const fixture = await setupFixture();
-    const blocked = new CustomProviderReadableIdAppDataMigration(
-      fixture.directory,
-      new CustomProviderReadableIdPrerequisiteGuard({ getRecord: async () => null }),
-      fixture.getSecretOwner,
-      [fixture.directory],
-      [],
-    );
-    const selectorBytes = await fs.readFile(fixture.selectorPaths.agent);
-
-    const result = await blocked.execute();
-
-    expect(result).toMatchObject({
-      status: 'FAILED',
-      errorMessage: expect.stringContaining('CUSTOM_PROVIDER_READABLE_ID_PREREQUISITE_INCOMPLETE'),
-    });
-    expect(await fs.readFile(fixture.providerPath)).toEqual(fixture.providerBytes);
-    expect(await fs.readFile(fixture.selectorPaths.agent)).toEqual(selectorBytes);
-    expect(fixture.getSecretOwner).not.toHaveBeenCalled();
   });
 
   it('resets malformed legacy provider data with sanitized warnings and no endpoint leakage', async () => {

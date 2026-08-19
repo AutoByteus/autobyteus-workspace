@@ -1,0 +1,813 @@
+{
+  "schemaVersion": 2,
+  "slug": "autobyteus",
+  "runtime": "autobyteus",
+  "model": "gpt-5.6-luna",
+  "startedAt": "2026-08-12T12:17:00.985Z",
+  "completedAt": "2026-08-12T12:24:34.971Z",
+  "passed": false,
+  "fatalError": "Error: page.waitForTimeout: Target page, context or browser has been closed\npage.waitForTimeout: Target page, context or browser has been closed\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr018/api-rev-030/live/run-one-team-browser-row.mjs:244:16",
+  "rootRun": {
+    "teamRunId": "nested_classroom_test_team_4a590c28284f4d4187df490d76d8965a",
+    "teamDefinitionId": "nested-classroom-test",
+    "teamDefinitionName": "Nested Classroom Test Team",
+    "coordinatorAddress": "/Teacher",
+    "createdAt": "2026-08-12T12:17:04.548Z",
+    "terminatedAt": null,
+    "isActive": true,
+    "rootTeam": {
+      "kind": "agent_team",
+      "address": "/",
+      "teamDefinitionId": "nested-classroom-test",
+      "teamRunId": "nested_classroom_test_team_4a590c28284f4d4187df490d76d8965a",
+      "coordinatorAddress": "/Teacher",
+      "children": [
+        {
+          "kind": "agent",
+          "address": "/Teacher",
+          "agentDefinitionId": "team-local-agent:nested-classroom-test:teacher",
+          "agentRunId": "test_teacher_be621e8081bc49719ed7f1c7edb5958c",
+          "platformAgentRunId": null,
+          "role": null,
+          "description": null,
+          "runtimeKind": "autobyteus",
+          "llmModelIdentifier": "gpt-5.6-luna",
+          "llmConfig": null,
+          "autoExecuteTools": true,
+          "skillAccessMode": "PRELOADED_ONLY",
+          "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-030-live-20260812-1/temp_workspace",
+          "applicationExecutionContext": null
+        },
+        {
+          "kind": "agent_team",
+          "address": "/StudentStudyGroup",
+          "teamDefinitionId": "team-local-team:nested-classroom-test:student-study-group",
+          "teamRunId": "student_study_group_352a4f75c22a4f62b989830ffb0a0d85",
+          "coordinatorAddress": "/StudentStudyGroup/student_one",
+          "role": null,
+          "description": null,
+          "children": [
+            {
+              "kind": "agent",
+              "address": "/StudentStudyGroup/student_one",
+              "agentDefinitionId": "team-local-agent:team-local-team%3Anested-classroom-test%3Astudent-study-group:student-one",
+              "agentRunId": "student_one_cb424bc2b3594c148137be79c437ef5b",
+              "platformAgentRunId": null,
+              "role": null,
+              "description": null,
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "gpt-5.6-luna",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-030-live-20260812-1/temp_workspace",
+              "applicationExecutionContext": null
+            },
+            {
+              "kind": "agent",
+              "address": "/StudentStudyGroup/student_two",
+              "agentDefinitionId": "team-local-agent:team-local-team%3Anested-classroom-test%3Astudent-study-group:student-two",
+              "agentRunId": "student_two_927aa2bf1134478ba39f371a980b3ae8",
+              "platformAgentRunId": null,
+              "role": null,
+              "description": null,
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "gpt-5.6-luna",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-030-live-20260812-1/temp_workspace",
+              "applicationExecutionContext": null
+            }
+          ]
+        }
+      ]
+    },
+    "members": [
+      {
+        "memberAddress": "/Teacher",
+        "displayName": "Teacher",
+        "agentRunId": "test_teacher_be621e8081bc49719ed7f1c7edb5958c",
+        "status": "offline",
+        "runtimeKind": "autobyteus",
+        "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-030-live-20260812-1/temp_workspace"
+      },
+      {
+        "memberAddress": "/StudentStudyGroup/student_one",
+        "displayName": "student_one",
+        "agentRunId": "student_one_cb424bc2b3594c148137be79c437ef5b",
+        "status": "offline",
+        "runtimeKind": "autobyteus",
+        "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-030-live-20260812-1/temp_workspace"
+      },
+      {
+        "memberAddress": "/StudentStudyGroup/student_two",
+        "displayName": "student_two",
+        "agentRunId": "student_two_927aa2bf1134478ba39f371a980b3ae8",
+        "status": "offline",
+        "runtimeKind": "autobyteus",
+        "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-030-live-20260812-1/temp_workspace"
+      }
+    ]
+  },
+  "consoleEvents": [],
+  "graphqlResponseSummaries": [
+    {
+      "at": "2026-08-12T12:17:02.086Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:17:02.086Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:17:04.586Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:17:04.593Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:17:04.650Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": true,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:17:04.650Z",
+      "status": 200,
+      "containsTaskDelegation": true,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:17:04.808Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:17:07.116Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:17:12.096Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:17:17.097Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:17:22.099Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:17:27.094Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:17:32.097Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:17:37.212Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:17:38.582Z",
+      "status": 200,
+      "containsTaskDelegation": true,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:17:42.101Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:17:44.680Z",
+      "status": 200,
+      "containsTaskDelegation": true,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:17:47.094Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:17:52.098Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:17:57.095Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:18:02.100Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:18:07.098Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:18:12.099Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:18:17.097Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:18:22.104Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:18:27.097Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:18:32.095Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:18:37.094Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:18:42.094Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:18:47.099Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:18:52.100Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:18:57.097Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:19:02.096Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:19:07.094Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:19:12.098Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:19:17.096Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:19:22.101Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:19:27.097Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:19:32.094Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:19:37.094Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:19:42.091Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:19:47.094Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:19:52.095Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:19:57.092Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:20:02.093Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:20:07.094Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:20:12.098Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:20:17.093Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:20:22.094Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:20:27.094Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:20:32.091Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:20:37.093Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:20:42.091Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:20:47.092Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:20:52.091Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:20:57.092Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:21:02.091Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:21:07.100Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:21:12.092Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:21:17.088Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:21:22.090Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:21:27.089Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:21:32.090Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:21:37.093Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:21:42.099Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:21:47.088Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:21:52.095Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:21:57.088Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:22:02.093Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:22:07.092Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:22:12.088Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:22:17.088Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:22:22.092Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:22:27.088Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:22:32.089Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:22:37.087Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:22:42.088Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:22:47.087Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:22:52.091Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:22:57.088Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:23:02.089Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:23:07.088Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:23:12.090Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:23:17.086Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:23:22.092Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:23:27.087Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:23:32.088Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:23:37.093Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:23:42.091Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:23:47.088Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:23:52.090Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:23:57.086Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:24:02.087Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:24:07.088Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:24:12.089Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:24:17.090Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:24:22.086Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:24:27.086Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T12:24:32.088Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    }
+  ],
+  "termination": {
+    "success": true,
+    "message": "Agent team run terminated successfully."
+  }
+}

@@ -1,7 +1,8 @@
-import { ServerMessageType, type ServerMessage } from "../models.js";
+import { ServerMessageType } from "../models.js";
 import type {
   AgentStreamEgressForward,
   AgentStreamEgressScheduler,
+  StreamEgressMessage,
 } from "./agent-stream-egress-control.js";
 import {
   appendStreamContent,
@@ -18,9 +19,9 @@ const SAFE_COMPANION_TYPES = new Set<ServerMessageType>([
   ServerMessageType.TOKEN_USAGE_UPDATED,
 ]);
 
-const classifyMessage = (message: ServerMessage): CadenceAction => {
+const classifyMessage = (message: StreamEgressMessage): CadenceAction => {
   if (isCoalescibleStreamContent(message)) return "COALESCE";
-  if (SAFE_COMPANION_TYPES.has(message.type)) return "FORWARD_WITHOUT_FLUSH";
+  if (SAFE_COMPANION_TYPES.has(message.type as ServerMessageType)) return "FORWARD_WITHOUT_FLUSH";
   if (message.type === ServerMessageType.AGENT_STATUS) {
     return message.payload.status === "initializing" || message.payload.status === "running"
       ? "FORWARD_WITHOUT_FLUSH"
@@ -35,13 +36,13 @@ export type AgentStreamContentCadenceSchedulerOptions = {
 };
 
 export class AgentStreamContentCadenceScheduler implements AgentStreamEgressScheduler {
-  private pendingContent: ServerMessage[] = [];
+  private pendingContent: StreamEgressMessage[] = [];
   private flushTimer: ReturnType<typeof setTimeout> | null = null;
   private disposed = false;
 
   constructor(private readonly options: AgentStreamContentCadenceSchedulerOptions) {}
 
-  accept(message: ServerMessage, forward: AgentStreamEgressForward): void {
+  accept(message: StreamEgressMessage, forward: AgentStreamEgressForward): void {
     if (this.disposed) return;
     const action = classifyMessage(message);
     if (action === "COALESCE") {
@@ -68,10 +69,13 @@ export class AgentStreamContentCadenceScheduler implements AgentStreamEgressSche
     this.pendingContent = [];
   }
 
-  private enqueueContent(message: ServerMessage, forward: AgentStreamEgressForward): void {
+  private enqueueContent(
+    message: StreamEgressMessage,
+    forward: AgentStreamEgressForward,
+  ): void {
     const tail = this.pendingContent[this.pendingContent.length - 1];
     if (tail && canAppendStreamContent(tail, message)) {
-      appendStreamContent(tail, message);
+      this.pendingContent[this.pendingContent.length - 1] = appendStreamContent(tail, message);
     } else {
       this.pendingContent.push(cloneStreamContentMessage(message));
     }

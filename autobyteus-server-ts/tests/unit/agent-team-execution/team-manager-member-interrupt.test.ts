@@ -1,321 +1,128 @@
 import { describe, expect, it, vi } from "vitest";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { MixedTeamManager } from "../../../src/agent-team-execution/backends/mixed/mixed-team-manager.js";
-import {
-  MixedAgentMemberContext,
-  MixedTeamRunContext,
-} from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-context.js";
-import type {
-  InterAgentMessageDeliveryIntent,
-  ResolvedInterAgentMessageDeliveryRequest,
-} from "../../../src/agent-team-execution/domain/inter-agent-message-delivery.js";
+import { MixedAgentMemberContext, MixedTeamRunContext } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-context.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
-import { TeamRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
-import { disposeTaskAgentDirectory, getTaskAgentDirectory } from "../../../src/agent-team-execution/task-delegation/task-agent-directory.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import { address, testAgentNode, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
 
-const teamRunId = "team-focused-interrupt-1";
+const teamRunId = "team-focused-command-1";
+const solutionDesignerAddress = address("/solution_designer");
+const codeReviewerAddress = address("/code_reviewer");
+const solutionDesignerRunId = "team-1::solution_designer";
+const codeReviewerRunId = "team-1::code_reviewer";
 
-const memberInputs = [
-  {
-    memberName: "Solution Designer",
-    memberPath: ["solution_designer"],
-    memberRouteKey: "solution_designer",
-    memberRunId: "team-1::solution_designer",
-    runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-  },
-  {
-    memberName: "Code Reviewer",
-    memberPath: ["code_reviewer"],
-    memberRouteKey: "code_reviewer",
-    memberRunId: "team-1::code_reviewer",
-    runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
-  },
-];
-
-const createTeamRunConfig = () => new TeamRunConfig({
-  teamDefinitionId: "team-def-focused-interrupt",
-  teamBackendKind: TeamBackendKind.MIXED,
-  coordinatorMemberName: "Solution Designer",
-  memberConfigs: memberInputs.map((member) => ({
-    ...member,
-    agentDefinitionId: `agent-${member.memberRouteKey}`,
-    llmModelIdentifier:
-      member.runtimeKind === RuntimeKind.CLAUDE_AGENT_SDK ? "claude-sonnet" : "gpt-5.4-mini",
-    autoExecuteTools: false,
-    workspaceId: `workspace-${member.memberRouteKey}`,
-    skillAccessMode: SkillAccessMode.NONE,
+const createFakeAgentRun = (runId: string) => ({
+  runId,
+  isActive: () => true,
+  getPlatformAgentRunId: () => null,
+  getStatusSnapshot: () => ({ status: "idle" }),
+  subscribeToEvents: vi.fn(() => () => undefined),
+  postUserMessage: vi.fn(async () => ({ accepted: true as const })),
+  reserveUserMessage: vi.fn(async () => ({
+    reserved: true as const,
+    commit: vi.fn(async () => ({ accepted: true as const })),
+    cancel: vi.fn(),
+  })),
+  approveToolInvocation: vi.fn(async () => ({ accepted: true as const })),
+  interrupt: vi.fn(async () => ({ accepted: true as const })),
+  prepareTermination: vi.fn(async () => ({
+    cancel: vi.fn(),
+    commit: vi.fn(() => ({ finish: vi.fn(async () => ({ accepted: true as const })) })),
   })),
 });
 
-const createFakeAgentRun = () => ({
-  isActive: vi.fn(() => true),
-  postUserMessage: vi.fn().mockResolvedValue({ accepted: true }),
-  approveToolInvocation: vi.fn().mockResolvedValue({ accepted: true }),
-  interrupt: vi.fn().mockResolvedValue({ accepted: true }),
-  terminate: vi.fn().mockResolvedValue({ accepted: true }),
-  getStatusSnapshot: vi.fn(() => ({ status: "running" })),
-  subscribeToEvents: vi.fn(() => () => undefined),
-});
-
 const createMixedManager = () => {
-  disposeTaskAgentDirectory(teamRunId);
+  const solutionNode = testAgentNode(solutionDesignerAddress, {
+    agentRunId: solutionDesignerRunId,
+    runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+  });
+  const reviewerNode = testAgentNode(codeReviewerAddress, {
+    agentRunId: codeReviewerRunId,
+    runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+  });
+  const config = testTeamRunConfig({
+    rootTeamRunId: teamRunId,
+    coordinatorAddress: solutionDesignerAddress,
+    children: [solutionNode, reviewerNode],
+  });
   const context = new TeamRunContext({
-    runId: teamRunId,
+    rootTeamRunId: teamRunId,
+    teamRunId,
     teamBackendKind: TeamBackendKind.MIXED,
-    config: createTeamRunConfig(),
+    teamNode: config.rootTeam,
+    handoffs: config.handoffs,
     runtimeContext: new MixedTeamRunContext({
-      coordinatorMemberRouteKey: "solution_designer",
-      memberContexts: memberInputs.map((member) => new MixedAgentMemberContext({
-        memberName: member.memberName,
-        memberPath: member.memberPath,
-        memberRouteKey: member.memberRouteKey,
-        memberRunId: member.memberRunId,
-        runtimeKind: member.runtimeKind,
+      memberContexts: [solutionNode, reviewerNode].map((node) => new MixedAgentMemberContext({
+        address: node.address,
+        agentRunId: node.agentRunId,
+        runtimeKind: node.runtimeKind,
         platformAgentRunId: null,
       })),
     }),
   });
-
-  return new MixedTeamManager(context);
+  const runs = new Map<string, ReturnType<typeof createFakeAgentRun>>();
+  const createAgentRun = vi.fn(async (_config, runId: string) => {
+    const run = createFakeAgentRun(runId);
+    runs.set(runId, run);
+    return run;
+  });
+  const manager = new MixedTeamManager(context, {
+    subTeamRunFactory: { createOrRestore: vi.fn() } as never,
+    agentRunManager: { createAgentRun } as never,
+    publish: vi.fn(),
+    deliverInterAgentMessage: vi.fn(async () => ({ accepted: true })),
+  });
+  return { manager, runs, reviewerNode };
 };
 
-const attachMemberRuns = (manager: MixedTeamManager) => {
-  const solutionDesignerRun = createFakeAgentRun();
-  const codeReviewerRun = createFakeAgentRun();
-  const mixed = manager as unknown as {
-    teamContext: TeamRunContext<MixedTeamRunContext>;
-    persistentMembers: { handles: Map<string, unknown> };
-  };
-  const contexts = mixed.teamContext.runtimeContext.memberContexts;
-  const makeHandle = (
-    context: MixedAgentMemberContext,
-    run: ReturnType<typeof createFakeAgentRun>,
-  ) => ({
-    context,
-    isActive: () => true,
-    getStatusSnapshot: run.getStatusSnapshot,
-    postMessage: vi.fn(async (message: AgentInputUserMessage) => run.postUserMessage(message)),
-    deliverInterMemberMessage: vi.fn(),
-    approveToolInvocation: vi.fn(),
-    interrupt: vi.fn(async () => run.interrupt()),
-    terminate: vi.fn(async () => run.terminate()),
-    dispose: vi.fn(),
+describe("MixedTeamManager exact direct AgentRun routing", () => {
+  it("routes configured post/approval/interrupt only to the exact AgentRun ID", async () => {
+    const { manager, runs } = createMixedManager();
+    const message = new AgentInputUserMessage("review this");
+
+    await expect(manager.executeDirectAgentCommand(codeReviewerRunId, { kind: "post_message", message }))
+      .resolves.toMatchObject({ accepted: true, agentRunId: codeReviewerRunId });
+    await expect(manager.executeDirectAgentCommand(codeReviewerRunId, {
+      kind: "approve_tool", invocationId: "inv-1", approved: true, reason: "approved",
+    })).resolves.toEqual({ accepted: true });
+    await expect(manager.executeDirectAgentCommand(codeReviewerRunId, { kind: "interrupt" }))
+      .resolves.toEqual({ accepted: true });
+
+    expect(runs.get(codeReviewerRunId)?.postUserMessage).toHaveBeenCalledWith(message);
+    expect(runs.get(codeReviewerRunId)?.approveToolInvocation).toHaveBeenCalledWith("inv-1", true, "approved");
+    expect(runs.get(codeReviewerRunId)?.interrupt).toHaveBeenCalledOnce();
+    expect(runs.has(solutionDesignerRunId)).toBe(false);
   });
 
-  const solutionDesignerContext = contexts.find(
-    (context) => context.memberRouteKey === "solution_designer",
-  ) as MixedAgentMemberContext;
-  const codeReviewerContext = contexts.find(
-    (context) => context.memberRouteKey === "code_reviewer",
-  ) as MixedAgentMemberContext;
+  it("rejects an unknown AgentRun ID without falling back to a configured peer", async () => {
+    const { manager, runs } = createMixedManager();
 
-  mixed.persistentMembers.handles.set(
-    "solution_designer",
-    makeHandle(solutionDesignerContext, solutionDesignerRun),
-  );
-  mixed.persistentMembers.handles.set(
-    "code_reviewer",
-    makeHandle(codeReviewerContext, codeReviewerRun),
-  );
-
-  return { solutionDesignerRun, codeReviewerRun };
-};
-
-const attachTaskAgentRun = (manager: MixedTeamManager) => {
-  const taskAgentRun = createFakeAgentRun();
-  const logicalRouteKey = "code_reviewer";
-  const taskAgentRunId = "team-1::code_reviewer::task-agent-1";
-  const mixed = manager as unknown as {
-    teamContext: TeamRunContext<MixedTeamRunContext>;
-    taskAgentInstances: { handles: Map<string, unknown> };
-  };
-  const logicalContext = mixed.teamContext.runtimeContext.memberContexts.find(
-    (context) => context.memberRouteKey === logicalRouteKey,
-  ) as MixedAgentMemberContext;
-  const identity = {
-    taskAgentInstanceId: "task-agent-instance-1",
-    taskAgentRunId,
-    teamRunId,
-    taskId: "task_0001",
-    logicalMember: {
-      memberName: logicalContext.memberName,
-      memberPath: logicalContext.memberPath,
-      memberRouteKey: logicalContext.memberRouteKey,
-      templateMemberRunId: logicalContext.memberRunId,
-      runtimeKind: logicalContext.runtimeKind,
-    },
-    createdAt: "2026-01-01T00:00:00.000Z",
-  };
-  const directory = getTaskAgentDirectory(teamRunId);
-  directory.registerStartingTask({
-    taskId: identity.taskId,
-    logicalMember: {
-      memberName: logicalContext.memberName,
-      memberPath: logicalContext.memberPath,
-      memberRouteKey: logicalContext.memberRouteKey,
-      memberRunId: logicalContext.memberRunId,
-      runtimeKind: logicalContext.runtimeKind,
-    },
-    delegator: {
-      memberName: "Solution Designer",
-      memberPath: ["solution_designer"],
-      memberRouteKey: "solution_designer",
-      memberRunId: "team-1::solution_designer",
-      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-    },
-    taskAgentInstance: identity,
-    delegatorReplyRecipientName: "solution_designer",
-  });
-  directory.markActive(identity.taskId);
-  mixed.taskAgentInstances.handles.set(taskAgentRunId, {
-    context: {
-      ...logicalContext,
-      memberRunId: taskAgentRunId,
-      getPlatformAgentRunId: () => null,
-    },
-    isActive: () => true,
-    getStatusSnapshot: taskAgentRun.getStatusSnapshot,
-    postMessage: vi.fn(async (message: AgentInputUserMessage) => ({
-      ...(await taskAgentRun.postUserMessage(message)),
-      memberRunId: taskAgentRunId,
-      memberName: logicalContext.memberName,
-    })),
-    deliverInterMemberMessage: vi.fn(async (request: ResolvedInterAgentMessageDeliveryRequest, beforeCommit?: (() => void) | null) => {
-      const result = await taskAgentRun.postUserMessage(expect.objectContaining({
-        content: expect.stringContaining(request.content),
-      }) as never);
-      if (result.accepted) beforeCommit?.();
-      return { ...result, memberRunId: taskAgentRunId, memberName: logicalContext.memberName };
-    }),
-    approveToolInvocation: vi.fn(async (
-      _target: unknown,
-      invocationId: string,
-      approved: boolean,
-      reason: string | null,
-    ) => taskAgentRun.approveToolInvocation(invocationId, approved, reason)),
-    interrupt: vi.fn(),
-    terminate: vi.fn(),
-    dispose: vi.fn(),
-  });
-  return { taskAgentRun, taskAgentRunId, logicalRouteKey };
-};
-
-describe("MixedTeamManager focused member routing", () => {
-  it("interrupts only the requested member route key", async () => {
-    const manager = createMixedManager();
-    const { solutionDesignerRun, codeReviewerRun } = attachMemberRuns(manager);
-
-    await expect(
-      manager.interruptMember("code_reviewer", "team-1::code_reviewer"),
-    ).resolves.toEqual({ accepted: true });
-
-    expect(codeReviewerRun.interrupt).toHaveBeenCalledTimes(1);
-    expect(solutionDesignerRun.interrupt).not.toHaveBeenCalled();
+    await expect(manager.executeDirectAgentCommand("unknown-task-run", { kind: "interrupt" }))
+      .resolves.toMatchObject({ accepted: false, code: "RUN_NOT_FOUND" });
+    expect(runs.size).toBe(0);
   });
 
-  it("rejects interrupt run-id guard mismatches without retargeting by run id", async () => {
-    const manager = createMixedManager();
-    const { solutionDesignerRun, codeReviewerRun } = attachMemberRuns(manager);
-
-    await expect(
-      manager.interruptMember("code_reviewer", "team-1::solution_designer"),
-    ).resolves.toMatchObject({
-      accepted: false,
-      code: "TARGET_MEMBER_RUN_MISMATCH",
+  it("routes a committed task Agent independently from the configured Agent at the same address", async () => {
+    const { manager, runs, reviewerNode } = createMixedManager();
+    const taskAgentRunId = "task-code-reviewer-run-1";
+    const initial = new AgentInputUserMessage("start delegated review");
+    const prepared = await manager.prepareTaskAgent({
+      taskId: "task-1",
+      address: reviewerNode.address,
+      agentRunId: taskAgentRunId,
+      sourceNode: reviewerNode,
+      message: initial,
     });
+    prepared.sealForCommit();
+    prepared.commit().releaseWork();
+    await vi.waitFor(() => expect(runs.get(taskAgentRunId)?.postUserMessage).toHaveBeenCalledWith(initial));
 
-    expect(codeReviewerRun.interrupt).not.toHaveBeenCalled();
-    expect(solutionDesignerRun.interrupt).not.toHaveBeenCalled();
-  });
+    await expect(manager.executeDirectAgentCommand(taskAgentRunId, { kind: "interrupt" }))
+      .resolves.toEqual({ accepted: true });
 
-  it("settles only the requested member route key", async () => {
-    const manager = createMixedManager();
-    const { solutionDesignerRun, codeReviewerRun } = attachMemberRuns(manager);
-
-    await expect(
-      manager.settleMember("code_reviewer", "team-1::code_reviewer"),
-    ).resolves.toMatchObject({
-      accepted: true,
-      memberRunId: "team-1::code_reviewer",
-      memberName: "Code Reviewer",
-    });
-
-    expect(codeReviewerRun.terminate).toHaveBeenCalledTimes(1);
-    expect(solutionDesignerRun.terminate).not.toHaveBeenCalled();
-  });
-
-  it("routes approval to the concrete task-agent run instead of the logical member run", async () => {
-    const manager = createMixedManager();
-    const { codeReviewerRun } = attachMemberRuns(manager);
-    const { taskAgentRun, taskAgentRunId, logicalRouteKey } = attachTaskAgentRun(manager);
-
-    await expect(
-      manager.approveToolInvocation(
-        { kind: "route_key", memberRouteKey: logicalRouteKey },
-        "inv-task-agent",
-        true,
-        "approved",
-        taskAgentRunId,
-      ),
-    ).resolves.toEqual({ accepted: true });
-
-    expect(taskAgentRun.approveToolInvocation).toHaveBeenCalledWith(
-      "inv-task-agent",
-      true,
-      "approved",
-    );
-    expect(codeReviewerRun.approveToolInvocation).not.toHaveBeenCalled();
-  });
-
-  it("routes messages to the concrete task-agent run instead of the logical member run", async () => {
-    const manager = createMixedManager();
-    const { codeReviewerRun } = attachMemberRuns(manager);
-    const { taskAgentRun, taskAgentRunId, logicalRouteKey } = attachTaskAgentRun(manager);
-    const message = new AgentInputUserMessage("Delegated child task completed.");
-
-    await expect(
-      manager.postMessage(
-        message,
-        { kind: "route_key", memberRouteKey: logicalRouteKey },
-        taskAgentRunId,
-      ),
-    ).resolves.toEqual({ accepted: true, memberRunId: taskAgentRunId, memberName: "Code Reviewer" });
-
-    expect(taskAgentRun.postUserMessage).toHaveBeenCalledWith(message);
-    expect(codeReviewerRun.postUserMessage).not.toHaveBeenCalled();
-  });
-
-  it("routes inter-agent revision messages to the concrete task-agent run", async () => {
-    const manager = createMixedManager();
-    const { codeReviewerRun } = attachMemberRuns(manager);
-    const { taskAgentRun, taskAgentRunId, logicalRouteKey } = attachTaskAgentRun(manager);
-    const request: InterAgentMessageDeliveryIntent = {
-      teamRunId,
-      sender: {
-        participant: {
-          memberKind: "agent",
-          memberName: "Solution Designer",
-          memberPath: ["solution_designer"],
-          memberRouteKey: "solution_designer",
-          memberRunId: "team-1::solution_designer",
-          address: { teamRunId, memberPath: ["solution_designer"], memberRouteKey: "solution_designer" },
-        },
-        selector: { kind: "route_key", memberRouteKey: "solution_designer" },
-      },
-      target: { kind: "target_agent_run_id", targetAgentRunId: taskAgentRunId },
-      content: "Please revise the completed task.",
-      messageType: "task_revision",
-    };
-
-    await expect(manager.deliverInterAgentMessage(request))
-      .resolves.toMatchObject({ accepted: true, memberRunId: taskAgentRunId });
-
-    expect(taskAgentRun.postUserMessage).toHaveBeenCalledWith(
-      expect.objectContaining({ content: expect.stringContaining("Please revise the completed task.") }),
-    );
-    expect(codeReviewerRun.postUserMessage).not.toHaveBeenCalled();
+    expect(runs.get(taskAgentRunId)?.interrupt).toHaveBeenCalledOnce();
+    expect(runs.has(codeReviewerRunId)).toBe(false);
   });
 });

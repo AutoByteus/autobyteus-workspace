@@ -24,6 +24,12 @@ const allowedRowKeys = new Set([
 
 const createEmptyIndex = (): TeamRunIndexFileRecord => [];
 
+export type TeamRunHistoryIndexSnapshot = Readonly<{
+  rows: readonly Readonly<TeamRunIndexRowRecord>[];
+  sourceExists: boolean;
+  sourcePath: string;
+}>;
+
 const normalizeSafeTeamRunId = (value: string): string => {
   const teamRunId = value.trim();
   if (
@@ -132,6 +138,37 @@ export class TeamRunHistoryIndexStore {
   async readIndex(): Promise<TeamRunIndexFileRecord> {
     await this.writeQueue;
     return this.readIndexFile();
+  }
+
+  async readIndexStrict(): Promise<TeamRunHistoryIndexSnapshot> {
+    await this.writeQueue;
+    try {
+      const raw = await fs.readFile(this.indexFilePath, "utf-8");
+      let parsed: unknown;
+      try {
+        parsed = JSON.parse(raw) as unknown;
+      } catch (error) {
+        throw new Error(`Invalid team run history index JSON '${this.indexFilePath}': ${String(error)}`);
+      }
+      const validated = parseIndexFile(parsed);
+      if (!validated) {
+        throw new Error(`Invalid team run history index format: ${this.indexFilePath}`);
+      }
+      return Object.freeze({
+        rows: Object.freeze(validated.map((row) => Object.freeze(row))),
+        sourceExists: true,
+        sourcePath: this.indexFilePath,
+      });
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code === "ENOENT") {
+        return Object.freeze({
+          rows: Object.freeze([]),
+          sourceExists: false,
+          sourcePath: this.indexFilePath,
+        });
+      }
+      throw error;
+    }
   }
 
   async listRows(): Promise<TeamRunIndexRowRecord[]> {

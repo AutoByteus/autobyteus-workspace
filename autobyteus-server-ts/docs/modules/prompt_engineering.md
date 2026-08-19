@@ -46,20 +46,20 @@ Each section has one owner:
 | --- | --- | --- |
 | `Agent Identity` | Selected `AgentDefinition`: required name, optional description, optional `agent.md` body | Always |
 | `Team Instruction` | Exact non-blank selected `team.md` body | Team runs only, when non-blank |
-| `Team Collaboration` | Validated `MemberTeamContext`, fixed communication/delegation renderer, and current rosters | Team runs only, shared across runtimes |
+| `AgentTeam Addressing` then `AgentTeam Collaboration` | Validated `MemberTeamContext` and one fixed canonical-address, collaboration, handoff, and task-eligibility renderer | Team runs only, shared across runtimes |
 | `Working Environment` | Exact absolute effective workspace selected for the run | Native AutoByteus only |
 | `Bash Operating Practice` | Platform-owned fixed Carpenter text | Native AutoByteus only |
 | `File And Directory Practice` | Platform-owned fixed Carpenter text | Native AutoByteus only |
 | `Skills` | Ordinary configured skill resolver and provider-specific skill projection | Only when configured skills apply |
 
-The shared logical order is Agent Identity, optional Team Instruction, and
-optional Team Collaboration. Native AutoByteus appends Working Environment,
-Bash Operating Practice, and File And Directory Practice in that order, then
-the native core appends its terminal configured-skills catalog. Blank optional
-values omit their line, subsection, or section; they do not produce empty
-headings. An invalid required name, native workspace, team member name, team
-delivery binding, or unresolved Carpenter placeholder stops bootstrap before
-provider invocation.
+The shared logical order is Agent Identity, optional Team Instruction,
+AgentTeam Addressing, and AgentTeam Collaboration. Native AutoByteus appends
+Working Environment, Bash Operating Practice, and File And Directory Practice
+in that order, then the native core appends its terminal configured-skills
+catalog. Blank optional values omit their line, subsection, or section; they do
+not produce empty headings. An invalid required name, native workspace, Team
+identity/delivery binding, or unresolved Carpenter placeholder stops bootstrap
+before provider invocation.
 
 Authored ATX headings in `agent.md` and `team.md` are shifted beneath their
 owning section. A heading inside a same-or-longer Markdown fence remains content,
@@ -155,39 +155,40 @@ The authoritative full fixed text is
 instructions can narrow the work, but agent authors must not replace this
 platform foundation with a second generic advice block.
 
-## Team Instruction And Team Collaboration
+## Team Instruction And AgentTeam Collaboration
 
 A team run inserts the exact non-blank `team.md` body under `Team Instruction`
-and then renders `Team Collaboration` from the validated current member context.
-`Team Collaboration` contains only:
+and then renders two sibling sections from the validated current member context:
+`AgentTeam Addressing` followed by `AgentTeam Collaboration`. They appear before
+native `Working Environment`. The first teaches one canonical absolute non-root
+address grammar and the member's exact address. The second explains universal
+same-root `send_message_to` and `delegate_task`, ordered `get_handoff_rules`,
+task result/review tools, and delivery confirmation. The renderer contains no
+flat recipient or delegation-target roster.
 
-- the current team member alias;
-- the fixed `send_message_to` selector and delivery rules plus the allowed
-  logical recipient roster; and
-- the fixed `delegate_task` assignment protocol plus the allowed member/team
-  target roster.
-
-For example, a member named `release_reviewer` can receive this shape:
+For example, a Team-bound Agent can receive this shape:
 
 ```markdown
-## Team Collaboration
+## AgentTeam Addressing
 
-Current team member: release_reviewer
+Every Agent and nested AgentTeam is identified by one canonical absolute address beginning with `/` at the root AgentTeam. Copy that exact address when a tool asks for `recipient_address`. Relative addresses, bare names, `../`, backslashes, and the structural root `/` itself are not valid recipients.
 
-If you use `send_message_to`, choose exactly one target selector.
-Set `recipient_name` to one allowed roster name for a logical teammate.
-Set `target_agent_run_id` to an exact currently active AgentRun id supplied by runtime context when that exact live run is required.
+Your Agent address is:
 
-Team membership roster
-- release_manager
+/release_team/release_reviewer
 
-Delegation target roster
-- member: release_manager
+## AgentTeam Collaboration
+
+Use `send_message_to` with `recipient_address` to contact any mounted Agent or AgentTeam in your rooted AgentTeam.
+
+Use `delegate_task` with `recipient_address` to create a fresh dedicated task execution for any mounted Agent or AgentTeam in your rooted AgentTeam, except your own exact Agent address.
 ```
 
-The runtime renderer owns the complete exact wording. Agent/team authors should
-not copy these dynamic rosters or schemas into `agent.md` or `team.md`.
-Standalone runs render neither Team Instruction nor Team Collaboration.
+The runtime renderer owns the complete exact wording and is shared by
+AutoByteus, Codex App Server, and Claude Agent SDK composition. Agent/team
+authors should not copy dynamic member addresses or tool schemas into `agent.md`
+or `team.md`. Standalone runs render neither Team Instruction nor either
+AgentTeam section.
 
 The shared composition used by Codex App Server and Claude Agent SDK stops
 after the shared identity/team sections. Those adapters place the resulting
@@ -237,9 +238,9 @@ rules, and result shape.
 
 - A standalone run receives its explicitly configured effective tool set.
 - Every valid team member context automatically unions exactly
-  `send_message_to` and `delegate_task` into runtime exposure, even when the
-  selected agent definition omitted both names. Duplicate configured names are
-  normalized and deduplicated.
+  `get_handoff_rules`, `send_message_to`, and `delegate_task` into runtime
+  exposure, even when the selected agent definition omitted those names.
+  Duplicate configured names are normalized and deduplicated.
 - Other task lifecycle tools such as `submit_task_result` and
   `review_task_result`, and browser/media/publishing/configured MCP tools, remain
   explicitly configured and availability-gated.
@@ -247,16 +248,18 @@ rules, and result shape.
 Concrete team tool calls still follow their out-of-band schemas:
 
 ```text
-send_message_to({ recipient_name: "release_manager", content: "Checks passed." })
+get_handoff_rules({})
+
+send_message_to({ recipient_address: "./release_manager", content: "Checks passed." })
 
 delegate_task({
-  target: { kind: "member", name: "release_manager" },
+  recipient_address: "./release_manager",
   description: "Verify the release notes against the tested change and report mismatches.",
   reference_files: ["/work/releases/release-notes.md"]
 })
 ```
 
-`send_message_to` accepts exactly one of `recipient_name` or an exact currently
+`send_message_to` accepts exactly one of `recipient_address` or an exact currently
 active `target_agent_run_id`. Delegation references are absolute local paths.
 The runtime exposes native AutoByteus schemas locally and routes Codex/Claude
 through the session-scoped `autobyteus_agent_tools` MCP descriptor. Provider

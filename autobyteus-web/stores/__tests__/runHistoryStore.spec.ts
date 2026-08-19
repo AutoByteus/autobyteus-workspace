@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
 import { useRunHistoryStore } from '../runHistoryStore';
+import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures';
 
 const buildWorkspaceHistoryGroup = (workspace: Record<string, any>): any => {
   const {
@@ -37,14 +38,43 @@ const buildWorkspaceHistoryGroup = (workspace: Record<string, any>): any => {
 
   const normalizedTeamDefinitions = groupedTeamDefinitions.map((definition: any) => ({
     ...definition,
-    runs: (definition.runs ?? []).map((teamRun: any) => ({
-      ...teamRun,
-      createdAt: teamRun.createdAt ?? teamRun.lastActivityAt ?? '2026-01-01T00:00:00.000Z',
-      members: (teamRun.members ?? []).map((member: any) => ({
+    runs: (definition.runs ?? []).map((teamRun: any) => {
+      const members = (teamRun.members ?? []).map((member: any) => ({
         ...member,
         status: member.status ?? 'offline',
-      })),
-    })),
+      }));
+      const coordinatorAddress = teamRun.coordinatorAddress ?? members[0]?.memberAddress ?? '/';
+      return {
+        ...teamRun,
+        coordinatorAddress,
+        createdAt: teamRun.createdAt ?? teamRun.lastActivityAt ?? '2026-01-01T00:00:00.000Z',
+        members,
+        rootTeam: teamRun.rootTeam ?? {
+          team_definition_id: teamRun.teamDefinitionId,
+          team_definition_name: teamRun.teamDefinitionName,
+          team_run_id: teamRun.teamRunId,
+          coordinator_address: coordinatorAddress,
+          members: members.map((member: any) => ({
+            kind: 'configured_agent',
+            address: member.memberAddress,
+            agent_definition_id: member.agentDefinitionId ?? 'agent-def-1',
+            role: null,
+            description: null,
+            agent_run_id: member.agentRunId,
+            platform_agent_run_id: null,
+            launch_configuration: {
+              runtime_kind: 'AUTOBYTEUS',
+              llm_model_identifier: 'model-x',
+              llm_config: null,
+              auto_execute_tools: false,
+              skill_access_mode: 'NONE',
+              workspace_root_path: member.workspaceRootPath ?? teamRun.workspaceRootPath ?? null,
+            },
+          })),
+          task_executions: [],
+        },
+      };
+    }),
   }));
 
   return {
@@ -57,44 +87,44 @@ const buildWorkspaceHistoryGroup = (workspace: Record<string, any>): any => {
 const flattenWorkspaceGroupTeamRuns = (workspaceGroup: Record<string, any> | undefined): Array<any> =>
   workspaceGroup?.teamDefinitions?.flatMap((definition: any) => definition.runs) ?? [];
 
-const asTeamMemberTreeRow = (row: Record<string, any>): any => ({
-  memberKind: 'agent',
-  memberPath: [row.memberRouteKey],
-  displayName: row.memberName,
-  currentStatus: 'offline',
-  children: [],
-  ...row,
-});
+const asRunTreeRow = (row: Record<string, any>): any => row;
 
 const buildTeamResumeMetadata = (input: {
   teamRunId?: string;
   teamDefinitionId?: string;
   teamDefinitionName?: string;
-  coordinatorMemberRouteKey?: string;
+  coordinatorAddress?: string;
   createdAt?: string;
   members?: Array<Record<string, any>>;
 } = {}): any => ({
-  teamRunId: input.teamRunId ?? 'team-1',
-  teamDefinitionId: input.teamDefinitionId ?? 'team-def-1',
+  schemaVersion: 3,
   teamDefinitionName: input.teamDefinitionName ?? 'Team Alpha',
-  coordinatorMemberRouteKey: input.coordinatorMemberRouteKey ?? 'super_agent',
   createdAt: input.createdAt ?? '2026-01-01T00:00:00.000Z',
   archivedAt: null,
-  memberTree: (input.members ?? []).map((member) => ({
-    memberKind: 'agent',
-    memberRouteKey: member.memberRouteKey,
-    memberPath: member.memberPath ?? [member.memberRouteKey],
-    memberName: member.memberName,
-    memberRunId: member.memberRunId,
-    runtimeKind: member.runtimeKind ?? 'codex_app_server',
-    platformAgentRunId: member.platformAgentRunId ?? null,
-    agentDefinitionId: member.agentDefinitionId,
-    llmModelIdentifier: member.llmModelIdentifier ?? 'model-x',
-    autoExecuteTools: member.autoExecuteTools ?? false,
-    skillAccessMode: member.skillAccessMode ?? 'PRELOADED_ONLY',
-    llmConfig: member.llmConfig ?? null,
-    workspaceRootPath: member.workspaceRootPath ?? '/ws/a',
-  })),
+  rootTeam: {
+    kind: 'agent_team',
+    address: '/',
+    teamDefinitionId: input.teamDefinitionId ?? 'team-def-1',
+    teamRunId: input.teamRunId ?? 'team-1',
+    coordinatorAddress: input.coordinatorAddress ?? '/super_agent',
+    children: (input.members ?? []).map((member) => ({
+      kind: 'agent',
+      address: member.memberAddress,
+      role: null,
+      description: null,
+      agentRunId: member.agentRunId,
+      runtimeKind: member.runtimeKind ?? 'codex_app_server',
+      platformAgentRunId: member.platformAgentRunId ?? null,
+      agentDefinitionId: member.agentDefinitionId,
+      llmModelIdentifier: member.llmModelIdentifier ?? 'model-x',
+      autoExecuteTools: member.autoExecuteTools ?? false,
+      skillAccessMode: member.skillAccessMode ?? 'PRELOADED_ONLY',
+      llmConfig: member.llmConfig ?? null,
+      workspaceRootPath: member.workspaceRootPath ?? '/ws/a',
+      applicationExecutionContext: null,
+    })),
+  },
+  handoffs: [],
 });
 
 const {
@@ -218,27 +248,15 @@ const {
         return Array.from(teams.values());
       },
       addTeamContext: vi.fn((context: any) => {
-        teams.set(context.teamRunId, context);
+        teams.set(context.view.getRootTeamRunId(), context);
       }),
       removeTeamContext: vi.fn((teamRunId: string) => {
         teams.delete(teamRunId);
       }),
       getTeamContextById: vi.fn((teamRunId: string) => teams.get(teamRunId)),
-      setFocusedMember: vi.fn((memberName: string) => {
-        const activeTeam = Array.from(teams.values())[0];
-        if (activeTeam?.members?.has(memberName)) {
-          activeTeam.focusedMemberName = memberName;
-        }
-      }),
-      focusMemberAndEnsureHydrated: vi.fn(async (teamRunId: string, memberName: string) => {
+      focusMemberAndEnsureHydrated: vi.fn(async (teamRunId: string, agentRunId: string) => {
         const teamContext = teams.get(teamRunId);
-        if (teamContext?.members?.has(memberName)) {
-          teamContext.focusedMemberName = memberName;
-          teamContext.focusedMemberRouteKey = memberName;
-        }
-        if (teamContext?.memberNodesByRouteKey?.has(memberName)) {
-          teamContext.focusedMemberRouteKey = memberName;
-        }
+        teamContext?.view.focusAgent(agentRunId);
       }),
     },
     selectionStoreMock: selection,
@@ -250,14 +268,18 @@ const {
     },
     teamRunConfigStoreMock: {
       clearConfig: vi.fn(),
+      selectDraft: vi.fn(),
     },
     agentRunStoreMock: {
       connectToAgentStream: vi.fn(),
       disconnectAgentStream: vi.fn(),
+      isAgentStreamReady: vi.fn().mockReturnValue(false),
     },
     agentTeamRunStoreMock: {
       connectToTeamStream: vi.fn(),
       disconnectTeamStream: vi.fn(),
+      isTeamStreamReady: vi.fn().mockReturnValue(false),
+      isTeamStreamReopenRequired: vi.fn().mockReturnValue(false),
     },
     llmProviderConfigStoreMock: {
       models: ['model-default'],
@@ -395,86 +417,42 @@ describe('runHistoryStore', () => {
     hydrateLiveRunContextMock.mockResolvedValue(undefined);
     hydrateLiveTeamRunContextMock.mockReset();
     hydrateTeamMemberActivitiesFromProjectionMock.mockReset();
-    hydrateLiveTeamRunContextMock.mockImplementation(async ({ teamRunId }: { teamRunId: string }) => ({
-      teamRunId,
-      focusedMemberRouteKey: 'super_agent',
-      resumeConfig: {
+    hydrateLiveTeamRunContextMock.mockImplementation(async ({ teamRunId }: { teamRunId: string }) => {
+      const member = testAgentNode('/super_agent', {
+        displayName: 'Super Agent',
+        agentDefinitionId: 'agent-def-1',
+        agentRunId: 'member-run-live-1',
+        currentStatus: 'offline' as any,
+      });
+      const hydratedContext = buildTestTeamContext({
         teamRunId,
+        teamDefinitionId: 'team-def-1',
+        teamDefinitionName: 'Team Alpha',
+        rootChildren: [member],
+        coordinatorAddress: member.address,
+        focusedAgentRunId: member.agentRunId,
+        workspaceRootPath: '/ws/a',
         isActive: true,
-        metadata: {
-          teamRunId,
-          teamDefinitionId: 'team-def-1',
-          teamDefinitionName: 'Team Alpha',
-          coordinatorMemberRouteKey: 'super_agent',
-          createdAt: '2026-01-01T00:00:00.000Z',
-          archivedAt: null,
-          memberTree: [
-            {
-              memberKind: 'agent',
-              memberRouteKey: 'super_agent',
-              memberPath: ['super_agent'],
-              memberName: 'Super Agent',
-              memberRunId: 'member-run-live-1',
-              runtimeKind: 'codex_app_server',
-              platformAgentRunId: null,
-              agentDefinitionId: 'agent-def-1',
-              llmModelIdentifier: 'model-x',
-              autoExecuteTools: false,
-              skillAccessMode: 'PRELOADED_ONLY',
-              llmConfig: null,
-              workspaceRootPath: '/ws/a',
-            },
-          ],
-        },
-      },
-      hydratedContext: {
+      });
+      const metadata = buildTeamResumeMetadata({
         teamRunId,
-        config: {
-          teamDefinitionId: 'team-def-1',
-          teamDefinitionName: 'Team Alpha',
-          runtimeKind: 'codex_app_server',
-          workspaceId: 'ws-1',
-          llmModelIdentifier: 'model-x',
-          autoExecuteTools: false,
-          memberOverrides: {},
-          isLocked: true,
-        },
-        memberTree: [
-          {
-            memberKind: 'agent',
-            memberRouteKey: 'super_agent',
-            memberPath: ['super_agent'],
-            memberName: 'Super Agent',
-            displayName: 'Super Agent',
-            memberRunId: 'member-run-live-1',
-            agentDefinitionId: 'agent-def-1',
-          },
-        ],
-        memberNodesByRouteKey: new Map([
-          ['super_agent', {
-            memberKind: 'agent',
-            memberRouteKey: 'super_agent',
-            memberPath: ['super_agent'],
-            memberName: 'Super Agent',
-            displayName: 'Super Agent',
-            memberRunId: 'member-run-live-1',
-            agentDefinitionId: 'agent-def-1',
-          }],
-        ]),
-        leafAgentContextsByRouteKey: new Map([
-          ['super_agent', {
-            config: { workspaceId: 'ws-1', agentDefinitionId: 'agent-def-1', agentDefinitionName: 'Super Agent' },
-            state: { runId: 'member-run-live-1', conversation: { messages: [] }, currentStatus: 'offline' },
-          }],
-        ]),
-        historicalHydration: null,
-        focusedMemberRouteKey: 'super_agent',
-        isActive: true,
-        isSubscribed: false,
-      },
-      projectionByMemberRouteKey: new Map(),
-    }));
+        members: [{
+          memberAddress: member.address,
+          agentRunId: member.agentRunId,
+          agentDefinitionId: member.agentDefinitionId,
+        }],
+      });
+      return {
+        teamRunId,
+        focusedAgentRunId: hydratedContext.view.getFocusedAgentRunId(),
+        resumeConfig: { teamRunId, isActive: true, metadata },
+        hydratedContext,
+        projectionByMemberAddress: new Map(),
+      };
+    });
     mutateMock.mockReset();
+    agentRunStoreMock.isAgentStreamReady.mockReturnValue(false);
+    agentTeamRunStoreMock.isTeamStreamReady.mockReturnValue(false);
   });
 
   it('publishes the asynchronously loaded initial workspace catalog with exactly one topology refresh', async () => {
@@ -565,9 +543,9 @@ describe('runHistoryStore', () => {
                     isActive: false,
                     members: [
                       {
-                        memberRouteKey: 'super_agent',
-                        memberName: 'Super Agent',
-                        memberRunId: 'member-run-1',
+                        memberAddress: '/super_agent',
+                        displayName: 'Super Agent',
+                        agentRunId: 'member-run-1',
                         workspaceRootPath: '/ws/a',
                       },
                     ],
@@ -630,9 +608,9 @@ describe('runHistoryStore', () => {
                 isActive: true,
                 members: [
                   {
-                    memberRouteKey: 'super_agent',
-                    memberName: 'Super Agent',
-                    memberRunId: 'member-run-live-1',
+                    memberAddress: '/super_agent',
+                    displayName: 'Super Agent',
+                    agentRunId: 'member-run-live-1',
                     workspaceRootPath: '/ws/a',
                   },
                 ],
@@ -657,15 +635,9 @@ describe('runHistoryStore', () => {
     expect(agentRunStoreMock.connectToAgentStream).toHaveBeenCalledWith('run-live-1');
     expect(hydrateLiveTeamRunContextMock).toHaveBeenCalledWith({
       teamRunId: 'team-live-1',
-      memberRouteKey: null,
+      agentRunId: 'member-run-live-1',
       resolveWorkspaceMetadataByRootPath: expect.any(Function),
       ensureWorkspaceByRootPath: expect.any(Function),
-      memberStatuses: [{
-        memberRouteKey: 'super_agent',
-        memberName: 'Super Agent',
-        memberRunId: 'member-run-live-1',
-        currentStatus: 'offline',
-      }],
     });
     expect(agentTeamRunStoreMock.connectToTeamStream).toHaveBeenCalledWith('team-live-1');
   });
@@ -695,22 +667,21 @@ describe('runHistoryStore', () => {
       },
       isSubscribed: true,
     };
-    const activeTeamMemberContext = {
-      config: { workspaceId: 'ws-b', agentDefinitionId: 'agent-def-1' },
-      state: {
-        currentStatus: 'running',
-        conversation: { messages: [] },
-      },
-    };
-    const activeTeamContext = {
+    const activeTeamNode = testAgentNode('/member_b', {
+      agentDefinitionId: 'agent-def-1',
+      agentRunId: 'member-b-run',
+      currentStatus: 'running' as any,
+    });
+    const activeTeamContext = buildTestTeamContext({
       teamRunId: 'team-b-active',
+      rootChildren: [activeTeamNode],
+      coordinatorAddress: activeTeamNode.address,
+      workspaceRootPath: '/ws/b',
       isActive: true,
-      isSubscribed: true,
-      config: { workspaceId: 'ws-b', isLocked: true },
-      leafAgentContextsByRouteKey: new Map([
-        ['member_b', activeTeamMemberContext],
-      ]),
-    };
+      configuration: { workspaceId: 'ws-b' },
+    });
+    const activeTeamMemberContext = activeTeamContext.view.getAgentContext(activeTeamNode.agentRunId)!;
+    activeTeamMemberContext.state.currentStatus = 'running' as any;
     agentContextsStoreMock.runs.set('run-b-active', activeAgentContext);
     teamContextsStoreMock.teams.set('team-b-active', activeTeamContext);
 
@@ -722,7 +693,7 @@ describe('runHistoryStore', () => {
     expect(agentRunStoreMock.disconnectAgentStream).not.toHaveBeenCalled();
     expect(agentTeamRunStoreMock.disconnectTeamStream).not.toHaveBeenCalled();
     expect(activeAgentContext.state.currentStatus).toBe('running');
-    expect(activeTeamContext.isActive).toBe(true);
+    expect(activeTeamContext.view.isRootTeamActive()).toBe(true);
     expect(activeTeamMemberContext.state.currentStatus).toBe('running');
   });
 
@@ -912,7 +883,7 @@ describe('runHistoryStore', () => {
     expect(store.getTreeNodes()).toEqual([]);
   });
 
-  it('preserves subscribed live member statuses while refreshing root team activity', async () => {
+  it('preserves failed-stream member statuses without background stream resurrection', async () => {
     queryMock.mockResolvedValue({
       data: {
         listWorkspaceRunHistory: [
@@ -925,7 +896,7 @@ describe('runHistoryStore', () => {
                 teamRunId: 'team-live-1',
                 teamDefinitionId: 'team-def-1',
                 teamDefinitionName: 'Team Alpha',
-                coordinatorMemberRouteKey: 'solution_designer',
+                coordinatorAddress: '/solution_designer',
                 workspaceRootPath: '/ws/a',
                 summary: 'Live team task',
                 lastActivityAt: '2026-01-01T00:00:00.000Z',
@@ -935,23 +906,23 @@ describe('runHistoryStore', () => {
                 isActive: true,
                 members: [
                   {
-                    memberRouteKey: 'solution_designer',
-                    memberName: 'Solution Designer',
-                    memberRunId: 'member-run-solution',
+                    memberAddress: '/solution_designer',
+                    displayName: 'Solution Designer',
+                    agentRunId: 'member-run-solution',
                     workspaceRootPath: '/ws/a',
                     status: 'running',
                   },
                   {
-                    memberRouteKey: 'implementation_engineer',
-                    memberName: 'Implementation Engineer',
-                    memberRunId: 'member-run-implementation',
+                    memberAddress: '/implementation_engineer',
+                    displayName: 'Implementation Engineer',
+                    agentRunId: 'member-run-implementation',
                     workspaceRootPath: '/ws/a',
                     status: 'offline',
                   },
                   {
-                    memberRouteKey: 'code_reviewer',
-                    memberName: 'Code Reviewer',
-                    memberRunId: 'member-run-review',
+                    memberAddress: '/code_reviewer',
+                    displayName: 'Code Reviewer',
+                    agentRunId: 'member-run-review',
                     workspaceRootPath: '/ws/a',
                     status: 'offline',
                   },
@@ -963,65 +934,47 @@ describe('runHistoryStore', () => {
       },
       errors: [],
     });
-    teamContextsStoreMock.teams.set('team-live-1', {
+    const solution = testAgentNode('/solution_designer', { displayName: 'Solution Designer', agentRunId: 'member-run-solution' });
+    const implementation = testAgentNode('/implementation_engineer', { displayName: 'Implementation Engineer', agentRunId: 'member-run-implementation' });
+    const review = testAgentNode('/code_reviewer', { displayName: 'Code Reviewer', agentRunId: 'member-run-review' });
+    const liveTeam = buildTestTeamContext({
       teamRunId: 'team-live-1',
-      config: {
-        teamDefinitionId: 'team-def-1',
-        teamDefinitionName: 'Team Alpha',
-        workspaceId: 'ws-1',
-        isLocked: false,
-      },
-      members: new Map([
-        ['solution_designer', {
-          config: { agentDefinitionName: 'Solution Designer', workspaceId: 'ws-1', isLocked: false },
-          state: {
-            runId: 'member-run-solution',
-            conversation: { id: 'member-run-solution', messages: [] },
-            currentStatus: 'offline',
-          },
-        }],
-        ['implementation_engineer', {
-          config: { agentDefinitionName: 'Implementation Engineer', workspaceId: 'ws-1', isLocked: false },
-          state: {
-            runId: 'member-run-implementation',
-            conversation: { id: 'member-run-implementation', messages: [] },
-            currentStatus: 'idle',
-          },
-        }],
-        ['code_reviewer', {
-          config: { agentDefinitionName: 'Code Reviewer', workspaceId: 'ws-1', isLocked: false },
-          state: {
-            runId: 'member-run-review',
-            conversation: { id: 'member-run-review', messages: [] },
-            currentStatus: 'running',
-          },
-        }],
-      ]),
-      coordinatorMemberRouteKey: 'solution_designer',
-      historicalHydration: null,
-      focusedMemberName: 'solution_designer',
+      teamDefinitionId: 'team-def-1',
+      teamDefinitionName: 'Team Alpha',
+      rootChildren: [solution, implementation, review],
+      coordinatorAddress: solution.address,
+      workspaceRootPath: '/ws/a',
       isActive: true,
-      isSubscribed: true,
+      configuration: { workspaceId: 'ws-1', isLocked: false },
     });
+    const liveMember = (agentRunId: string) => liveTeam.view.getAgentContext(agentRunId)!;
+    liveMember(solution.agentRunId).state.currentStatus = 'offline' as any;
+    liveMember(implementation.agentRunId).state.currentStatus = 'idle' as any;
+    liveMember(review.agentRunId).state.currentStatus = 'running' as any;
+    teamContextsStoreMock.teams.set('team-live-1', liveTeam);
+    agentTeamRunStoreMock.isTeamStreamReady.mockReturnValue(false);
+    agentTeamRunStoreMock.isTeamStreamReopenRequired.mockImplementation(
+      (teamRunId: string) => teamRunId === 'team-live-1',
+    );
 
     const store = useRunHistoryStore();
     await store.fetchTree();
 
     const context = teamContextsStoreMock.teams.get('team-live-1');
-    expect(context.isActive).toBe(true);
-    expect(context.members.get('solution_designer')?.state.currentStatus).toBe('offline');
-    expect(context.members.get('implementation_engineer')?.state.currentStatus).toBe('idle');
-    expect(context.members.get('code_reviewer')?.state.currentStatus).toBe('running');
+    expect(context.view.isRootTeamActive()).toBe(true);
+    expect(liveMember(solution.agentRunId).state.currentStatus).toBe('offline');
+    expect(liveMember(implementation.agentRunId).state.currentStatus).toBe('idle');
+    expect(liveMember(review.agentRunId).state.currentStatus).toBe('running');
     expect(agentTeamRunStoreMock.connectToTeamStream).not.toHaveBeenCalledWith('team-live-1');
 
     const teamNode = store.getTeamNodes().find((node) => node.teamRunId === 'team-live-1');
     expect(teamNode?.isActive).toBe(true);
     expect(Object.fromEntries(
-      (teamNode?.members || []).map((member) => [member.memberRouteKey, member.currentStatus]),
+      (teamNode?.members || []).map((member) => [member.memberAddress, member.currentStatus]),
     )).toEqual({
-      solution_designer: 'offline',
-      implementation_engineer: 'idle',
-      code_reviewer: 'running',
+      '/solution_designer': 'offline',
+      '/implementation_engineer': 'idle',
+      '/code_reviewer': 'running',
     });
   });
 
@@ -1063,6 +1016,7 @@ describe('runHistoryStore', () => {
       },
       isSubscribed: true,
     });
+    agentRunStoreMock.isAgentStreamReady.mockImplementation((runId: string) => runId === 'run-live-1');
 
     const store = useRunHistoryStore();
     await store.fetchTree();
@@ -1515,6 +1469,7 @@ describe('runHistoryStore', () => {
         },
       },
     });
+    agentRunStoreMock.isAgentStreamReady.mockImplementation((runId: string) => runId === 'run-1');
     const store = useRunHistoryStore();
     await store.openRun('run-1');
 
@@ -1887,7 +1842,7 @@ describe('runHistoryStore', () => {
       }),
     ];
     store.selectedTeamRunId = 'team-removed';
-    store.selectedTeamMemberRouteKey = 'super_agent';
+    store.selectedTeamMemberAddress = '/super_agent';
     selectionStoreMock.selectedType = 'team';
     selectionStoreMock.selectedRunId = 'team-removed';
 
@@ -1895,7 +1850,7 @@ describe('runHistoryStore', () => {
 
     expect(selectionStoreMock.clearSelection).toHaveBeenCalledTimes(1);
     expect(store.selectedTeamRunId).toBeNull();
-    expect(store.selectedTeamMemberRouteKey).toBeNull();
+    expect(store.selectedTeamMemberAddress).toBeNull();
     expect(store.workspaceGroups.map((group) => group.workspaceRootPath)).toEqual(['/ws/b']);
   });
 
@@ -2002,7 +1957,7 @@ describe('runHistoryStore', () => {
     const store = useRunHistoryStore();
     const openRunSpy = vi.spyOn(store, 'openRun').mockResolvedValue(undefined);
 
-    await store.selectTreeRun(asTeamMemberTreeRow({
+    await store.selectTreeRun(asRunTreeRow({
       runId: 'run-1',
       summary: 'Persisted run',
       lastActivityAt: '2026-01-01T00:00:00.000Z',
@@ -2023,7 +1978,7 @@ describe('runHistoryStore', () => {
       state: { conversation: { messages: [] } },
     });
 
-    await store.selectTreeRun(asTeamMemberTreeRow({
+    await store.selectTreeRun(asRunTreeRow({
       runId: 'temp-1',
       summary: 'New - SuperAgent',
       lastActivityAt: '2026-01-01T00:00:00.000Z',
@@ -2040,1581 +1995,9 @@ describe('runHistoryStore', () => {
     expect(teamRunConfigStoreMock.clearConfig).toHaveBeenCalled();
   });
 
-  it('projects persisted team history into team nodes for a workspace', () => {
-    const store = useRunHistoryStore();
-    store.workspaceGroups = [buildWorkspaceHistoryGroup({
-      workspaceRootPath: '/ws/a',
-      workspaceName: 'a',
-      agents: [],
-      teamRuns: [
-        {
-          teamRunId: 'team-1',
-          teamDefinitionId: 'team-def-1',
-          teamDefinitionName: 'Team Alpha',
-          coordinatorMemberRouteKey: 'solution_designer',
-          workspaceRootPath: '/ws/a',
-          summary: 'Persisted team task',
-          lastActivityAt: '2026-01-01T00:00:00.000Z',
-          lastKnownStatus: 'IDLE',
-          deleteLifecycle: 'READY',
-          isActive: false,
-          members: [
-            {
-              memberRouteKey: 'architect_reviewer',
-              memberName: 'Architect Reviewer',
-              memberRunId: 'member-run-2',
-              workspaceRootPath: '/ws/a',
-            },
-            {
-              memberRouteKey: 'solution_designer',
-              memberName: 'Solution Designer',
-              memberRunId: 'member-run-1',
-              workspaceRootPath: '/ws/a',
-            },
-          ],
-        },
-      ],
-    })];
-
-    const teamNodes = store.getTeamNodes('/ws/a');
-    expect(teamNodes).toHaveLength(1);
-    expect(teamNodes[0]).toEqual(
-      expect.objectContaining({
-        teamRunId: 'team-1',
-        teamDefinitionName: 'Team Alpha',
-        focusedMemberRouteKey: 'solution_designer',
-        workspaceRootPath: '/ws/a',
-      }),
-    );
-    expect(teamNodes[0]?.members[0]).toEqual(
-      expect.objectContaining({
-        memberRouteKey: 'architect_reviewer',
-        memberRunId: 'member-run-2',
-      }),
-    );
-    expect(teamNodes[0]?.members[1]).toEqual(
-      expect.objectContaining({
-        memberRouteKey: 'solution_designer',
-        memberRunId: 'member-run-1',
-      }),
-    );
-  });
-
-  it('updates root team activity without changing member statuses', () => {
-    const store = useRunHistoryStore();
-    store.workspaceGroups = [buildWorkspaceHistoryGroup({
-      workspaceRootPath: '/ws/a',
-      workspaceName: 'a',
-      agents: [],
-      teamRuns: [
-        {
-          teamRunId: 'team-1',
-          teamDefinitionId: 'team-def-1',
-          teamDefinitionName: 'Team Alpha',
-          coordinatorMemberRouteKey: 'solution_designer',
-          workspaceRootPath: '/ws/a',
-          summary: 'Persisted team task',
-          lastActivityAt: '2026-01-01T00:00:00.000Z',
-          lastKnownStatus: 'IDLE',
-          deleteLifecycle: 'READY',
-          isActive: false,
-          members: [
-            {
-              memberRouteKey: 'solution_designer',
-              memberName: 'Solution Designer',
-              memberRunId: 'member-run-1',
-              workspaceRootPath: '/ws/a',
-              status: 'running',
-            },
-            {
-              memberRouteKey: 'implementation_engineer',
-              memberName: 'Implementation Engineer',
-              memberRunId: 'member-run-2',
-              workspaceRootPath: '/ws/a',
-              status: 'offline',
-            },
-          ],
-        },
-      ],
-    })];
-
-    store.markTeamAsActive('team-1');
-    let team = flattenWorkspaceGroupTeamRuns(store.workspaceGroups[0])[0];
-    expect(team.isActive).toBe(true);
-    expect(team).not.toHaveProperty('status');
-    expect(team.members.map((member: any) => [member.memberRouteKey, member.status])).toEqual([
-      ['solution_designer', 'running'],
-      ['implementation_engineer', 'offline'],
-    ]);
-
-    store.reconcileActiveTeamRunIds(['team-1']);
-    team = flattenWorkspaceGroupTeamRuns(store.workspaceGroups[0])[0];
-    expect(team.isActive).toBe(true);
-    expect(team).not.toHaveProperty('status');
-    expect(team.members.map((member: any) => [member.memberRouteKey, member.status])).toEqual([
-      ['solution_designer', 'running'],
-      ['implementation_engineer', 'offline'],
-    ]);
-  });
-
-  it('keeps the persisted team summary when a stored team run is also hydrated locally', () => {
-    const store = useRunHistoryStore();
-    workspaceStoreMock.allWorkspaces = [
-      { workspaceId: 'ws-1', absolutePath: '/ws/a', name: 'Alpha' },
-    ];
-    workspaceStoreMock.workspaces = {
-      'ws-1': { workspaceId: 'ws-1', absolutePath: '/ws/a', name: 'Alpha', workspaceConfig: {} },
-    };
-
-    store.workspaceGroups = [buildWorkspaceHistoryGroup({
-      workspaceRootPath: '/ws/a',
-      workspaceName: 'a',
-      agents: [],
-      teamRuns: [
-        {
-          teamRunId: 'team-1',
-          teamDefinitionId: 'team-def-1',
-          teamDefinitionName: 'Team Alpha',
-          workspaceRootPath: '/ws/a',
-          summary: 'Persisted team task',
-          lastActivityAt: '2026-01-01T00:00:00.000Z',
-          lastKnownStatus: 'IDLE',
-          deleteLifecycle: 'READY',
-          isActive: false,
-          members: [
-            {
-              memberRouteKey: 'super_agent',
-              memberName: 'Super Agent',
-              memberRunId: 'member-run-1',
-              workspaceRootPath: '/ws/a',
-            },
-          ],
-        },
-      ],
-    })];
-
-    teamContextsStoreMock.teams.set('team-1', {
-      teamRunId: 'team-1',
-      config: {
-        teamDefinitionId: 'team-def-1',
-        teamDefinitionName: 'Team Alpha',
-        runtimeKind: 'codex_app_server',
-        workspaceId: 'ws-1',
-        llmModelIdentifier: 'model-x',
-        autoExecuteTools: false,
-        memberOverrides: {},
-        isLocked: true,
-      },
-      members: new Map([
-        ['super_agent', {
-          config: { workspaceId: 'ws-1', agentDefinitionName: 'Super Agent' },
-          state: {
-            runId: 'member-run-1',
-            currentStatus: 'idle',
-            conversation: {
-              id: 'member-run-1',
-              messages: [
-                { type: 'user', text: 'Live conversation summary should not replace history' },
-              ],
-              createdAt: '2026-01-02T00:00:00.000Z',
-              updatedAt: '2026-01-02T00:01:00.000Z',
-            },
-          },
-        }],
-      ]),
-      focusedMemberName: 'super_agent',
-      isActive: true,
-      isSubscribed: false,
-    });
-
-    const teamNodes = store.getTeamNodes('/ws/a');
-    expect(teamNodes).toHaveLength(1);
-    expect(teamNodes[0]?.summary).toBe('Persisted team task');
-    expect(teamNodes[0]?.members[0]?.summary).toBe('Persisted team task');
-  });
-
-  it('uses the coordinator first message for live team summaries instead of the focused member', () => {
-    const store = useRunHistoryStore();
-    workspaceStoreMock.allWorkspaces = [
-      { workspaceId: 'ws-1', absolutePath: '/ws/a', name: 'Alpha' },
-    ];
-    workspaceStoreMock.workspaces = {
-      'ws-1': { workspaceId: 'ws-1', absolutePath: '/ws/a', name: 'Alpha', workspaceConfig: {} },
-    };
-
-    teamContextsStoreMock.teams.set('team-live-1', {
-      teamRunId: 'team-live-1',
-      config: {
-        teamDefinitionId: 'team-def-1',
-        teamDefinitionName: 'Team Alpha',
-        runtimeKind: 'codex_app_server',
-        workspaceId: 'ws-1',
-        llmModelIdentifier: 'model-x',
-        autoExecuteTools: false,
-        memberOverrides: {},
-        isLocked: true,
-      },
-      coordinatorMemberRouteKey: 'coordinator',
-      members: new Map([
-        ['coordinator', {
-          config: { workspaceId: 'ws-1', agentDefinitionName: 'Coordinator' },
-          state: {
-            runId: 'member-run-1',
-            currentStatus: 'running',
-            conversation: {
-              id: 'member-run-1',
-              messages: [
-                { type: 'user', text: 'Coordinator opening brief' },
-              ],
-              createdAt: '2026-01-01T00:00:00.000Z',
-              updatedAt: '2026-01-01T00:01:00.000Z',
-            },
-          },
-        }],
-        ['worker', {
-          config: { workspaceId: 'ws-1', agentDefinitionName: 'Worker' },
-          state: {
-            runId: 'member-run-2',
-            currentStatus: 'running',
-            conversation: {
-              id: 'member-run-2',
-              messages: [
-                { type: 'user', text: 'Focused worker prompt should not replace the team summary' },
-              ],
-              createdAt: '2026-01-01T00:00:00.000Z',
-              updatedAt: '2026-01-01T00:02:00.000Z',
-            },
-          },
-        }],
-      ]),
-      focusedMemberName: 'worker',
-      isActive: true,
-      isSubscribed: true,
-    });
-
-    const teamNodes = store.getTeamNodes('/ws/a');
-    expect(teamNodes).toHaveLength(1);
-    expect(teamNodes[0]?.summary).toBe('Coordinator opening brief');
-    expect(teamNodes[0]?.members[0]?.summary).toBe('Coordinator opening brief');
-    expect(teamNodes[0]?.members[1]?.summary).toBe('Coordinator opening brief');
-  });
-
-  it('keeps team node order stable instead of re-sorting by last activity time', () => {
-    const store = useRunHistoryStore();
-    store.workspaceGroups = [buildWorkspaceHistoryGroup({
-      workspaceRootPath: '/ws/a',
-      workspaceName: 'a',
-      agents: [],
-      teamRuns: [
-        {
-          teamRunId: 'team-older',
-          teamDefinitionId: 'team-def-1',
-          teamDefinitionName: 'Team Alpha',
-          workspaceRootPath: '/ws/a',
-          summary: 'Older team',
-          lastActivityAt: '2026-01-01T00:00:00.000Z',
-          lastKnownStatus: 'IDLE',
-          deleteLifecycle: 'READY',
-          isActive: false,
-          members: [],
-        },
-        {
-          teamRunId: 'team-newer',
-          teamDefinitionId: 'team-def-2',
-          teamDefinitionName: 'Team Beta',
-          workspaceRootPath: '/ws/a',
-          summary: 'Newer team',
-          lastActivityAt: '2026-01-02T00:00:00.000Z',
-          lastKnownStatus: 'IDLE',
-          deleteLifecycle: 'READY',
-          isActive: false,
-          members: [],
-        },
-      ],
-    })];
-
-    const teamNodes = store.getTeamNodes('/ws/a');
-    expect(teamNodes.map((team) => team.teamRunId)).toEqual(['team-older', 'team-newer']);
-  });
-
-  it('uses live member status for team member rows when a team context is active', () => {
-    const store = useRunHistoryStore();
-    workspaceStoreMock.allWorkspaces = [
-      { workspaceId: 'ws-1', absolutePath: '/ws/a', name: 'Alpha' },
-    ];
-    workspaceStoreMock.workspaces = {
-      'ws-1': { workspaceId: 'ws-1', absolutePath: '/ws/a', name: 'Alpha', workspaceConfig: {} },
-    };
-
-    teamContextsStoreMock.teams.set('team-live-1', {
-      teamRunId: 'team-live-1',
-      config: {
-        teamDefinitionId: 'team-def-1',
-        teamDefinitionName: 'Team Alpha',
-        runtimeKind: 'codex_app_server',
-        workspaceId: 'ws-1',
-        llmModelIdentifier: 'model-x',
-        autoExecuteTools: false,
-        memberOverrides: {},
-        isLocked: true,
-      },
-      members: new Map([
-        ['professor', {
-          config: { workspaceId: 'ws-1', agentDefinitionName: 'Professor' },
-          state: {
-            runId: 'member-professor-1',
-            currentStatus: 'running',
-            conversation: {
-              id: 'member-professor-1',
-              messages: [],
-              createdAt: '2026-01-01T00:00:00.000Z',
-              updatedAt: '2026-01-01T00:01:00.000Z',
-            },
-          },
-        }],
-        ['student', {
-          config: { workspaceId: 'ws-1', agentDefinitionName: 'Student' },
-          state: {
-            runId: 'member-student-1',
-            currentStatus: 'idle',
-            conversation: {
-              id: 'member-student-1',
-              messages: [],
-              createdAt: '2026-01-01T00:00:00.000Z',
-              updatedAt: '2026-01-01T00:00:30.000Z',
-            },
-          },
-        }],
-      ]),
-      focusedMemberName: 'professor',
-      isActive: true,
-      isSubscribed: true,
-    });
-
-    const teamNodes = store.getTeamNodes('/ws/a');
-    const teamNode = teamNodes.find((team) => team.teamRunId === 'team-live-1');
-    const professorRow = teamNode?.members.find((member) => member.memberRouteKey === 'professor');
-    const studentRow = teamNode?.members.find((member) => member.memberRouteKey === 'student');
-
-    expect(teamNode?.isActive).toBe(true);
-    expect(professorRow).toEqual(
-      expect.objectContaining({
-        isActive: true,
-        currentStatus: 'running',
-      }),
-    );
-    expect(studentRow).toEqual(
-      expect.objectContaining({
-        isActive: true,
-        currentStatus: 'idle',
-      }),
-    );
-  });
-
-  it('keeps an initializing task-delegation-only worker in roster rows with roster visual focus', () => {
-    const store = useRunHistoryStore();
-    workspaceStoreMock.allWorkspaces = [
-      { workspaceId: 'ws-1', absolutePath: '/ws/a', name: 'Alpha' },
-    ];
-    workspaceStoreMock.workspaces = {
-      'ws-1': { workspaceId: 'ws-1', absolutePath: '/ws/a', name: 'Alpha', workspaceConfig: {} },
-    };
-
-    const coordinatorNode = {
-      memberKind: 'agent',
-      memberRouteKey: 'coordinator',
-      memberPath: ['coordinator'],
-      memberName: 'coordinator',
-      displayName: 'Coordinator',
-      memberRunId: 'coordinator-run',
-      agentDefinitionId: 'coordinator-def',
-    };
-    const workerNode = {
-      memberKind: 'agent',
-      memberRouteKey: 'worker',
-      memberPath: ['worker'],
-      memberName: 'worker',
-      displayName: 'Worker',
-      memberRunId: 'worker-run',
-      agentDefinitionId: 'worker-def',
-    };
-
-    teamContextsStoreMock.teams.set('team-task-delegation-only-1', {
-      teamRunId: 'team-task-delegation-only-1',
-      config: {
-        teamDefinitionId: 'team-def-1',
-        teamDefinitionName: 'Team Alpha',
-        runtimeKind: 'codex_app_server',
-        workspaceId: 'ws-1',
-        llmModelIdentifier: 'model-x',
-        autoExecuteTools: false,
-        memberOverrides: {},
-        isLocked: true,
-      },
-      coordinatorMemberRouteKey: 'coordinator',
-      memberTree: [coordinatorNode, workerNode],
-      memberNodesByRouteKey: new Map([
-        ['coordinator', coordinatorNode],
-        ['worker', workerNode],
-      ]),
-      leafAgentContextsByRouteKey: new Map([
-        ['coordinator', {
-          config: { workspaceId: 'ws-1', agentDefinitionName: 'Coordinator' },
-          state: {
-            runId: 'coordinator-run',
-            currentStatus: 'running',
-            conversation: {
-              id: 'coordinator-run',
-              messages: [{ type: 'user', text: 'delegate work' }],
-              createdAt: '2026-01-01T00:00:00.000Z',
-              updatedAt: '2026-01-01T00:01:00.000Z',
-            },
-          },
-        }],
-        ['worker', {
-          config: { workspaceId: 'ws-1', agentDefinitionName: 'Worker' },
-          state: {
-            runId: 'worker-run',
-            currentStatus: 'initializing',
-            conversation: {
-              id: 'worker-run',
-              messages: [],
-              createdAt: '2026-01-01T00:00:00.000Z',
-              updatedAt: '2026-01-01T00:00:00.000Z',
-            },
-          },
-        }],
-      ]),
-      focusedMemberRouteKey: 'worker',
-      isActive: true,
-      isSubscribed: true,
-      historicalHydration: null,
-    });
-
-    const teamNode = store.getTeamNodes('/ws/a').find((team) => team.teamRunId === 'team-task-delegation-only-1');
-
-    expect(teamNode?.focusedMemberRouteKey).toBe('worker');
-    expect(teamNode?.members.map((member) => member.memberRouteKey)).toEqual(['coordinator', 'worker']);
-    expect(teamNode?.memberTree.map((member) => member.memberRouteKey)).toEqual(['coordinator', 'worker']);
-  });
-
-  it('selectTreeRun opens persisted team member when local team context is absent', async () => {
-    const store = useRunHistoryStore();
-    const openTeamMemberRunSpy = vi.spyOn(store, 'openTeamMemberRun').mockResolvedValue(undefined);
-
-    await store.selectTreeRun(asTeamMemberTreeRow({
-      teamRunId: 'team-1',
-      memberRouteKey: 'super_agent',
-      memberName: 'Super Agent',
-      memberRunId: 'member-run-1',
-      workspaceRootPath: '/ws/a',
-      summary: 'Persisted team task',
-      lastActivityAt: '2026-01-01T00:00:00.000Z',
-      lastKnownStatus: 'IDLE',
-      isActive: false,
-      deleteLifecycle: 'READY',
-    }));
-
-    expect(openTeamMemberRunSpy).toHaveBeenCalledWith('team-1', 'super_agent');
-  });
-
-  it('selectTreeRun keeps a subscribed live team context and only changes focus', async () => {
-    const store = useRunHistoryStore();
-    const openTeamMemberRunSpy = vi.spyOn(store, 'openTeamMemberRun').mockResolvedValue(undefined);
-
-    teamContextsStoreMock.teams.set('team-1', {
-      teamRunId: 'team-1',
-      config: {
-        teamDefinitionId: 'team-def-1',
-        teamDefinitionName: 'Team Alpha',
-        runtimeKind: 'codex_app_server',
-        workspaceId: 'ws-1',
-        llmModelIdentifier: 'model-x',
-        autoExecuteTools: false,
-        memberOverrides: {},
-        isLocked: true,
-      },
-      members: new Map([
-        ['super_agent', {
-          config: { workspaceId: 'ws-1', agentDefinitionName: 'Super Agent' },
-          state: { runId: 'member-run-1', conversation: { messages: [] } },
-        }],
-      ]),
-      focusedMemberName: 'super_agent',
-      isActive: true,
-      isSubscribed: true,
-    });
-
-    await store.selectTreeRun(asTeamMemberTreeRow({
-      teamRunId: 'team-1',
-      memberRouteKey: 'super_agent',
-      memberName: 'Super Agent',
-      memberRunId: 'member-run-1',
-      workspaceRootPath: '/ws/a',
-      summary: 'Persisted team task',
-      lastActivityAt: '2026-01-01T00:00:00.000Z',
-      lastKnownStatus: 'IDLE',
-      isActive: false,
-      deleteLifecycle: 'READY',
-    }));
-
-    expect(openTeamMemberRunSpy).not.toHaveBeenCalled();
-    expect(teamContextsStoreMock.focusMemberAndEnsureHydrated).toHaveBeenCalledWith('team-1', 'super_agent');
-    expect(selectionStoreMock.selectRun).toHaveBeenCalledWith('team-1', 'team');
-    expect(store.selectedTeamRunId).toBe('team-1');
-    expect(store.selectedTeamMemberRouteKey).toBe('super_agent');
-  });
-
-  it('selectTreeRun focuses a live transient task-agent target through the local team context', async () => {
-    const store = useRunHistoryStore();
-    const openTeamMemberRunSpy = vi.spyOn(store, 'openTeamMemberRun').mockResolvedValue(undefined);
-    const workerNode = {
-      memberKind: 'agent',
-      memberRouteKey: 'worker',
-      memberPath: ['worker'],
-      memberName: 'worker',
-      displayName: 'Worker',
-      memberRunId: 'worker-run',
-      agentDefinitionId: 'worker-def',
-    };
-    const taskAgentNode = {
-      memberKind: 'agent',
-      memberRouteKey: 'task-agent-run-1',
-      memberPath: ['worker', 'task-agent-run-1'],
-      memberName: 'worker · task_0001',
-      displayName: 'worker · task_0001',
-      memberRunId: 'task-agent-run-1',
-      agentDefinitionId: 'worker-def',
-      isTaskAgentInstance: true,
-      taskAgentRunId: 'task-agent-run-1',
-      taskId: 'task_0001',
-      logicalMemberRouteKey: 'worker',
-    };
-
-    teamContextsStoreMock.teams.set('team-1', {
-      teamRunId: 'team-1',
-      config: {
-        teamDefinitionId: 'team-def-1',
-        teamDefinitionName: 'Team Alpha',
-        runtimeKind: 'codex_app_server',
-        workspaceId: 'ws-1',
-        llmModelIdentifier: 'model-x',
-        autoExecuteTools: false,
-        memberOverrides: {},
-        isLocked: true,
-      },
-      coordinatorMemberRouteKey: 'worker',
-      memberTree: [workerNode, taskAgentNode],
-      memberNodesByRouteKey: new Map([
-        ['worker', workerNode],
-        ['task-agent-run-1', taskAgentNode],
-      ]),
-      leafAgentContextsByRouteKey: new Map([
-        ['task-agent-run-1', {
-          config: { workspaceId: 'ws-1', agentDefinitionName: 'Worker' },
-          state: {
-            runId: 'task-agent-run-1',
-            currentStatus: 'running',
-            conversation: { messages: [] },
-          },
-        }],
-      ]),
-      focusedMemberRouteKey: 'worker',
-      isActive: true,
-      isSubscribed: true,
-    });
-
-    await store.selectTreeRun({
-      teamRunId: 'team-1',
-      memberRouteKey: 'task-agent-run-1',
-    });
-
-    expect(openTeamMemberRunSpy).not.toHaveBeenCalled();
-    expect(teamContextsStoreMock.focusMemberAndEnsureHydrated).toHaveBeenCalledWith('team-1', 'task-agent-run-1');
-    expect(selectionStoreMock.selectRun).toHaveBeenCalledWith('team-1', 'team');
-    expect(store.selectedTeamRunId).toBe('team-1');
-    expect(store.selectedTeamMemberRouteKey).toBe('task-agent-run-1');
-    expect(teamContextsStoreMock.teams.get('team-1')?.focusedMemberRouteKey).toBe('task-agent-run-1');
-  });
-
-  it('selectTreeRun keeps a clicked roster member as visual focus instead of active-execution-normalizing to coordinator', async () => {
-    const store = useRunHistoryStore();
-    const openTeamMemberRunSpy = vi.spyOn(store, 'openTeamMemberRun').mockResolvedValue(undefined);
-    const coordinatorNode = {
-      memberKind: 'agent',
-      memberRouteKey: 'coordinator',
-      memberPath: ['coordinator'],
-      memberName: 'coordinator',
-      displayName: 'Coordinator',
-      memberRunId: 'coordinator-run',
-      agentDefinitionId: 'coordinator-def',
-    };
-    const workerNode = {
-      memberKind: 'agent',
-      memberRouteKey: 'worker',
-      memberPath: ['worker'],
-      memberName: 'worker',
-      displayName: 'Worker',
-      memberRunId: 'worker-run',
-      agentDefinitionId: 'worker-def',
-    };
-
-    teamContextsStoreMock.teams.set('team-1', {
-      teamRunId: 'team-1',
-      config: {
-        teamDefinitionId: 'team-def-1',
-        teamDefinitionName: 'Team Alpha',
-        runtimeKind: 'codex_app_server',
-        workspaceId: 'ws-1',
-        llmModelIdentifier: 'model-x',
-        autoExecuteTools: false,
-        memberOverrides: {},
-        isLocked: true,
-      },
-      coordinatorMemberRouteKey: 'coordinator',
-      memberTree: [coordinatorNode, workerNode],
-      memberNodesByRouteKey: new Map([
-        ['coordinator', coordinatorNode],
-        ['worker', workerNode],
-      ]),
-      leafAgentContextsByRouteKey: new Map([
-        ['coordinator', {
-          config: { workspaceId: 'ws-1', agentDefinitionName: 'Coordinator' },
-          state: { runId: 'coordinator-run', currentStatus: 'running', conversation: { messages: [{ type: 'user', text: 'task done' }] } },
-        }],
-        ['worker', {
-          config: { workspaceId: 'ws-1', agentDefinitionName: 'Worker' },
-          state: { runId: 'worker-run', currentStatus: 'initializing', conversation: { messages: [] } },
-        }],
-      ]),
-      focusedMemberRouteKey: 'worker',
-      isActive: true,
-      isSubscribed: true,
-    });
-
-    await store.selectTreeRun(asTeamMemberTreeRow({
-      teamRunId: 'team-1',
-      memberRouteKey: 'worker',
-      memberName: 'Worker',
-      memberRunId: 'worker-run',
-      workspaceRootPath: '/ws/a',
-      summary: 'Persisted team task',
-      lastActivityAt: '2026-01-01T00:00:00.000Z',
-      lastKnownStatus: 'IDLE',
-      isActive: false,
-      deleteLifecycle: 'READY',
-    }));
-
-    expect(openTeamMemberRunSpy).not.toHaveBeenCalled();
-    expect(teamContextsStoreMock.focusMemberAndEnsureHydrated).toHaveBeenCalledWith('team-1', 'worker');
-    expect(selectionStoreMock.selectRun).toHaveBeenCalledWith('team-1', 'team');
-    expect(store.selectedTeamRunId).toBe('team-1');
-    expect(store.selectedTeamMemberRouteKey).toBe('worker');
-    expect(teamContextsStoreMock.teams.get('team-1')?.focusedMemberRouteKey).toBe('worker');
-  });
-
-  it('selectTreeRun switches inactive all-offline historical Software Engineering Team roster focus between non-coordinator members', async () => {
-    const store = useRunHistoryStore();
-    const openTeamMemberRunSpy = vi.spyOn(store, 'openTeamMemberRun').mockResolvedValue(undefined);
-    workspaceStoreMock.allWorkspaces = [
-      { workspaceId: 'ws-1', absolutePath: '/ws/a', name: 'Alpha' },
-    ];
-    workspaceStoreMock.workspaces = {
-      'ws-1': { workspaceId: 'ws-1', absolutePath: '/ws/a', name: 'Alpha', workspaceConfig: {} },
-    };
-    const routeKeys = [
-      'solution_designer',
-      'architecture_reviewer',
-      'implementation_engineer',
-      'code_reviewer',
-      'api_e2e_engineer',
-      'delivery_engineer',
-    ];
-    const memberTree = routeKeys.map((memberRouteKey) => ({
-      memberKind: 'agent',
-      memberRouteKey,
-      memberPath: [memberRouteKey],
-      memberName: memberRouteKey,
-      displayName: memberRouteKey,
-      memberRunId: `${memberRouteKey}-run`,
-      agentDefinitionId: `${memberRouteKey}-def`,
-    }));
-    const teamContext = {
-      teamRunId: 'team-software-engineering-offline-1',
-      config: {
-        teamDefinitionId: 'software-engineering-team',
-        teamDefinitionName: 'Software Engineering Team',
-        runtimeKind: 'codex_app_server',
-        workspaceId: 'ws-1',
-        llmModelIdentifier: 'model-x',
-        autoExecuteTools: false,
-        memberOverrides: {},
-        isLocked: true,
-      },
-      coordinatorMemberRouteKey: 'solution_designer',
-      memberTree,
-      memberNodesByRouteKey: new Map(memberTree.map((node) => [node.memberRouteKey, node])),
-      leafAgentContextsByRouteKey: new Map(routeKeys.map((memberRouteKey) => [
-        memberRouteKey,
-        {
-          config: { workspaceId: 'ws-1', agentDefinitionName: memberRouteKey },
-          state: {
-            runId: `${memberRouteKey}-run`,
-            currentStatus: 'offline',
-            conversation: {
-              id: `${memberRouteKey}-run`,
-              messages: [],
-              createdAt: '2026-06-01T00:00:00.000Z',
-              updatedAt: '2026-06-01T00:00:00.000Z',
-            },
-          },
-        },
-      ])),
-      focusedMemberRouteKey: 'solution_designer',
-      isActive: false,
-      isSubscribed: false,
-      historicalHydration: {
-        createdAt: '2026-06-01T00:00:00.000Z',
-        updatedAt: '2026-06-01T00:00:00.000Z',
-        memberMetadataByRouteKey: {} as any,
-        memberProjectionLoadStateByRouteKey: Object.fromEntries(
-          routeKeys.map((memberRouteKey) => [memberRouteKey, 'loaded']),
-        ),
-        memberWorkspaceMetadatasByRouteKey: {} as any,
-      },
-    };
-    teamContextsStoreMock.teams.set(teamContext.teamRunId, teamContext);
-
-    await store.selectTreeRun(asTeamMemberTreeRow({
-      teamRunId: teamContext.teamRunId,
-      memberRouteKey: 'api_e2e_engineer',
-      memberName: 'api_e2e_engineer',
-      memberRunId: 'api_e2e_engineer-run',
-      workspaceRootPath: '/ws/a',
-      summary: 'Historical team task',
-      lastActivityAt: '2026-06-01T00:00:00.000Z',
-      lastKnownStatus: 'IDLE',
-      isActive: false,
-      deleteLifecycle: 'READY',
-    }));
-
-    let teamNode = store.getTeamNodes('/ws/a').find((team) => team.teamRunId === teamContext.teamRunId);
-    expect(openTeamMemberRunSpy).not.toHaveBeenCalled();
-    expect(teamContextsStoreMock.focusMemberAndEnsureHydrated).toHaveBeenLastCalledWith(teamContext.teamRunId, 'api_e2e_engineer');
-    expect(teamContext.focusedMemberRouteKey).toBe('api_e2e_engineer');
-    expect(store.selectedTeamMemberRouteKey).toBe('api_e2e_engineer');
-    expect(teamNode?.focusedMemberRouteKey).toBe('api_e2e_engineer');
-
-    await store.selectTreeRun(asTeamMemberTreeRow({
-      teamRunId: teamContext.teamRunId,
-      memberRouteKey: 'delivery_engineer',
-      memberName: 'delivery_engineer',
-      memberRunId: 'delivery_engineer-run',
-      workspaceRootPath: '/ws/a',
-      summary: 'Historical team task',
-      lastActivityAt: '2026-06-01T00:00:00.000Z',
-      lastKnownStatus: 'IDLE',
-      isActive: false,
-      deleteLifecycle: 'READY',
-    }));
-
-    teamNode = store.getTeamNodes('/ws/a').find((team) => team.teamRunId === teamContext.teamRunId);
-    expect(teamContextsStoreMock.focusMemberAndEnsureHydrated).toHaveBeenLastCalledWith(teamContext.teamRunId, 'delivery_engineer');
-    expect(teamContext.focusedMemberRouteKey).toBe('delivery_engineer');
-    expect(store.selectedTeamMemberRouteKey).toBe('delivery_engineer');
-    expect(teamNode?.focusedMemberRouteKey).toBe('delivery_engineer');
-    expect(teamNode?.members.map((member) => member.memberRouteKey)).toEqual(routeKeys);
-  });
-
-  it('selectTreeRun keeps a local draft temp team context even when it is not subscribed', async () => {
-    const store = useRunHistoryStore();
-    const openTeamMemberRunSpy = vi.spyOn(store, 'openTeamMemberRun').mockResolvedValue(undefined);
-
-    teamContextsStoreMock.teams.set('temp-team-1', {
-      teamRunId: 'temp-team-1',
-      config: {
-        teamDefinitionId: 'team-def-1',
-        teamDefinitionName: 'Team Alpha',
-        runtimeKind: 'codex_app_server',
-        workspaceId: 'ws-1',
-        llmModelIdentifier: 'model-x',
-        autoExecuteTools: false,
-        memberOverrides: {},
-        isLocked: false,
-      },
-      members: new Map([
-        ['super_agent', {
-          config: { workspaceId: 'ws-1', agentDefinitionName: 'Super Agent' },
-          state: { runId: 'temp-team-1::super_agent', conversation: { messages: [] } },
-        }],
-      ]),
-      focusedMemberName: 'super_agent',
-      isActive: false,
-      isSubscribed: false,
-    });
-
-    await store.selectTreeRun(asTeamMemberTreeRow({
-      teamRunId: 'temp-team-1',
-      memberRouteKey: 'super_agent',
-      memberName: 'Super Agent',
-      memberRunId: 'temp-team-1::super_agent',
-      workspaceRootPath: '/ws/a',
-      summary: 'New - Team Alpha',
-      lastActivityAt: '2026-01-01T00:00:00.000Z',
-      lastKnownStatus: 'IDLE',
-      isActive: false,
-      deleteLifecycle: 'READY',
-    }));
-
-    expect(openTeamMemberRunSpy).not.toHaveBeenCalled();
-    expect(teamContextsStoreMock.focusMemberAndEnsureHydrated).toHaveBeenCalledWith('temp-team-1', 'super_agent');
-    expect(selectionStoreMock.selectRun).toHaveBeenCalledWith('temp-team-1', 'team');
-    expect(store.selectedTeamRunId).toBe('temp-team-1');
-    expect(store.selectedTeamMemberRouteKey).toBe('super_agent');
-  });
-
-  it('selectTreeRun reuses the currently selected historical team context when switching members', async () => {
-    const store = useRunHistoryStore();
-    const openTeamMemberRunSpy = vi.spyOn(store, 'openTeamMemberRun').mockResolvedValue(undefined);
-
-    selectionStoreMock.selectedType = 'team';
-    selectionStoreMock.selectedRunId = 'team-1';
-
-    teamContextsStoreMock.teams.set('team-1', {
-      teamRunId: 'team-1',
-      config: {
-        teamDefinitionId: 'team-def-1',
-        teamDefinitionName: 'Team Alpha',
-        runtimeKind: 'codex_app_server',
-        workspaceId: 'ws-1',
-        llmModelIdentifier: 'model-x',
-        autoExecuteTools: false,
-        memberOverrides: {},
-        isLocked: true,
-      },
-      members: new Map([
-        ['api_e2e_engineer', {
-          config: { workspaceId: 'ws-1', agentDefinitionName: 'API E2E Engineer' },
-          state: { runId: 'member-run-1', conversation: { messages: [] } },
-        }],
-        ['architect_reviewer', {
-          config: { workspaceId: 'ws-1', agentDefinitionName: 'Architect Reviewer' },
-          state: { runId: 'member-run-2', conversation: { messages: [] } },
-        }],
-      ]),
-      focusedMemberName: 'api_e2e_engineer',
-      isActive: false,
-      isSubscribed: false,
-    });
-
-    await store.selectTreeRun(asTeamMemberTreeRow({
-      teamRunId: 'team-1',
-      memberRouteKey: 'architect_reviewer',
-      memberName: 'Architect Reviewer',
-      memberRunId: 'member-run-2',
-      workspaceRootPath: '/ws/a',
-      summary: 'Persisted team task',
-      lastActivityAt: '2026-01-01T00:00:00.000Z',
-      lastKnownStatus: 'IDLE',
-      isActive: false,
-      deleteLifecycle: 'READY',
-    }));
-
-    expect(openTeamMemberRunSpy).not.toHaveBeenCalled();
-    expect(teamContextsStoreMock.focusMemberAndEnsureHydrated).toHaveBeenCalledWith('team-1', 'architect_reviewer');
-    expect(selectionStoreMock.selectRun).toHaveBeenCalledWith('team-1', 'team');
-    expect(store.selectedTeamRunId).toBe('team-1');
-    expect(store.selectedTeamMemberRouteKey).toBe('architect_reviewer');
-  });
-
-  it('selectTreeRun exposes openingRun while a reused historical team member is lazy-loading', async () => {
-    const store = useRunHistoryStore();
-    let resolveHydration: (() => void) | null = null;
-    teamContextsStoreMock.focusMemberAndEnsureHydrated.mockImplementationOnce(
-      () => new Promise<void>((resolve) => {
-        resolveHydration = resolve;
-      }),
-    );
-
-    selectionStoreMock.selectedType = 'team';
-    selectionStoreMock.selectedRunId = 'team-1';
-
-    teamContextsStoreMock.teams.set('team-1', {
-      teamRunId: 'team-1',
-      config: {
-        teamDefinitionId: 'team-def-1',
-        teamDefinitionName: 'Team Alpha',
-        runtimeKind: 'codex_app_server',
-        workspaceId: 'ws-1',
-        llmModelIdentifier: 'model-x',
-        autoExecuteTools: false,
-        memberOverrides: {},
-        isLocked: true,
-      },
-      members: new Map([
-        ['api_e2e_engineer', {
-          config: { workspaceId: 'ws-1', agentDefinitionName: 'API E2E Engineer' },
-          state: { runId: 'member-run-1', conversation: { messages: [] } },
-        }],
-        ['architect_reviewer', {
-          config: { workspaceId: 'ws-1', agentDefinitionName: 'Architect Reviewer' },
-          state: { runId: 'member-run-2', conversation: { messages: [] } },
-        }],
-      ]),
-      historicalHydration: {
-        createdAt: '2026-01-01T00:00:00.000Z',
-        updatedAt: '2026-01-01T00:05:00.000Z',
-        memberMetadataByRouteKey: {} as any,
-        memberProjectionLoadStateByRouteKey: {
-          api_e2e_engineer: 'loaded',
-          architect_reviewer: 'unloaded',
-        },
-      },
-      focusedMemberName: 'api_e2e_engineer',
-      isActive: false,
-      isSubscribed: false,
-    });
-
-    const selectionPromise = store.selectTreeRun(asTeamMemberTreeRow({
-      teamRunId: 'team-1',
-      memberRouteKey: 'architect_reviewer',
-      memberName: 'Architect Reviewer',
-      memberRunId: 'member-run-2',
-      workspaceRootPath: '/ws/a',
-      summary: 'Persisted team task',
-      lastActivityAt: '2026-01-01T00:00:00.000Z',
-      lastKnownStatus: 'IDLE',
-      isActive: false,
-      deleteLifecycle: 'READY',
-    }));
-
-    await Promise.resolve();
-    expect(store.openingRun).toBe(true);
-
-    (resolveHydration as unknown as () => void)();
-    await selectionPromise;
-
-    expect(store.openingRun).toBe(false);
-    expect(store.selectedTeamRunId).toBe('team-1');
-    expect(store.selectedTeamMemberRouteKey).toBe('architect_reviewer');
-  });
-
-  it('selectTreeRun reuses an existing historical team context instead of reopening it', async () => {
-    const store = useRunHistoryStore();
-    const openTeamMemberRunSpy = vi.spyOn(store, 'openTeamMemberRun').mockResolvedValue(undefined);
-
-    teamContextsStoreMock.teams.set('team-1', {
-      teamRunId: 'team-1',
-      config: {
-        teamDefinitionId: 'team-def-1',
-        teamDefinitionName: 'Team Alpha',
-        runtimeKind: 'codex_app_server',
-        workspaceId: 'ws-1',
-        llmModelIdentifier: 'model-x',
-        autoExecuteTools: false,
-        memberOverrides: {},
-        isLocked: true,
-      },
-      members: new Map([
-        ['super_agent', {
-          config: { workspaceId: 'ws-1', agentDefinitionName: 'Super Agent' },
-          state: { runId: 'member-run-1', conversation: { messages: [] } },
-        }],
-      ]),
-      focusedMemberName: 'super_agent',
-      isActive: false,
-      isSubscribed: false,
-    });
-
-    await store.selectTreeRun(asTeamMemberTreeRow({
-      teamRunId: 'team-1',
-      memberRouteKey: 'super_agent',
-      memberName: 'Super Agent',
-      memberRunId: 'member-run-1',
-      workspaceRootPath: '/ws/a',
-      summary: 'Persisted team task',
-      lastActivityAt: '2026-01-01T00:00:00.000Z',
-      lastKnownStatus: 'IDLE',
-      isActive: false,
-      deleteLifecycle: 'READY',
-    }));
-
-    expect(openTeamMemberRunSpy).not.toHaveBeenCalled();
-    expect(teamContextsStoreMock.focusMemberAndEnsureHydrated).toHaveBeenCalledWith('team-1', 'super_agent');
-  });
-
-  it('openTeamMemberRun hydrates only the focused historical member and keeps siblings as shells', async () => {
-    const projectionQueryCalls: string[] = [];
-    queryMock.mockImplementation(async ({ query, variables }: { query: string; variables?: Record<string, unknown> }) => {
-      if (query === 'GetTeamRunResumeConfig') {
-        return {
-          data: {
-            getTeamRunResumeConfig: {
-              teamRunId: 'team-1',
-              isActive: false,
-              metadata: buildTeamResumeMetadata({
-                teamRunId: 'team-1',
-                members: [
-                  {
-                    memberRouteKey: 'super_agent',
-                    memberName: 'Super Agent',
-                    memberRunId: 'member-run-1',
-                    agentDefinitionId: 'agent-def-1',
-                    llmModelIdentifier: 'model-x',
-                    autoExecuteTools: false,
-                    llmConfig: null,
-                    workspaceRootPath: '/ws/a',
-                  },
-                  {
-                    memberRouteKey: 'architect_reviewer',
-                    memberName: 'Architect Reviewer',
-                    memberRunId: 'member-run-2',
-                    agentDefinitionId: 'agent-def-2',
-                    llmModelIdentifier: 'model-y',
-                    autoExecuteTools: false,
-                    llmConfig: null,
-                    workspaceRootPath: '/ws/a',
-                  },
-                ],
-              }),
-            },
-          },
-          errors: [],
-        };
-      }
-      if (query === 'GetTeamMemberRunProjection') {
-        projectionQueryCalls.push(String(variables?.memberRouteKey));
-        expect(variables).toEqual({
-          teamRunId: 'team-1',
-          memberRouteKey: 'super_agent',
-        });
-        return {
-          data: {
-            getTeamMemberRunProjection: {
-              agentRunId: 'member-run-1',
-              summary: 'Team member history',
-              lastActivityAt: '2026-01-01T00:05:00.000Z',
-              conversation: [
-                { kind: 'message', role: 'user', content: 'hello', ts: 1700000000 },
-                { kind: 'message', role: 'assistant', content: 'hi', ts: 1700000010 },
-              ],
-            },
-          },
-          errors: [],
-        };
-      }
-      if (query === 'GetTeamCommunicationMessages') {
-        return { data: { getTeamCommunicationMessages: [] } };
-      }
-      throw new Error(`Unexpected query: ${String(query)}`);
-    });
-
-    workspaceStoreMock.createWorkspace.mockResolvedValue('ws-1');
-
-    const store = useRunHistoryStore();
-    await store.openTeamMemberRun('team-1', 'super_agent');
-
-    const hydratedTeam = teamContextsStoreMock.teams.get('team-1');
-    expect(hydratedTeam).toBeTruthy();
-    expect(hydratedTeam.focusedMemberName).toBe('super_agent');
-    expect(hydratedTeam.members.get('super_agent')?.state.conversation.messages.length).toBe(2);
-    expect(hydratedTeam.members.get('super_agent')?.state.currentStatus).toBe('offline');
-    expect(hydratedTeam.members.get('architect_reviewer')?.state.conversation.messages.length).toBe(0);
-    expect(hydratedTeam.historicalHydration?.memberProjectionLoadStateByRouteKey).toEqual({
-      super_agent: 'loaded',
-      architect_reviewer: 'unloaded',
-    });
-    expect(workspaceStoreMock.resolveWorkspaceMetadataByRootPath).toHaveBeenCalledWith('/ws/a');
-    expect(workspaceStoreMock.createWorkspace).not.toHaveBeenCalled();
-    expect(hydratedTeam.config.workspaceMetadata).toEqual(
-      expect.objectContaining({
-        workspaceId: 'ref:/ws/a',
-        workspaceRootPath: '/ws/a',
-      }),
-    );
-    expect(hydratedTeam.historicalHydration?.memberWorkspaceMetadatasByRouteKey.super_agent).toEqual(
-      expect.objectContaining({
-        workspaceId: 'ref:/ws/a',
-        workspaceRootPath: '/ws/a',
-      }),
-    );
-    expect(projectionQueryCalls).toEqual(['super_agent']);
-    expect(selectionStoreMock.selectRun).toHaveBeenCalledWith('team-1', 'team');
-    expect(store.selectedTeamRunId).toBe('team-1');
-    expect(store.selectedTeamMemberRouteKey).toBe('super_agent');
-    expect(teamRunConfigStoreMock.clearConfig).toHaveBeenCalled();
-    expect(agentRunConfigStoreMock.clearConfig).toHaveBeenCalled();
-    expect(agentTeamRunStoreMock.connectToTeamStream).not.toHaveBeenCalled();
-  });
-
-  it('openTeamMemberRun uses non-running member placeholders and connects stream for active teams', async () => {
-    queryMock.mockImplementation(async ({ query, variables }: { query: string; variables?: Record<string, unknown> }) => {
-      if (query === 'GetTeamRunResumeConfig') {
-        return {
-          data: {
-            getTeamRunResumeConfig: {
-              teamRunId: 'team-1',
-              isActive: true,
-              metadata: buildTeamResumeMetadata({
-                teamRunId: 'team-1',
-                members: [
-                  {
-                    memberRouteKey: 'super_agent',
-                    memberName: 'Super Agent',
-                    memberRunId: 'member-run-1',
-                    agentDefinitionId: 'agent-def-1',
-                    llmModelIdentifier: 'model-x',
-                    autoExecuteTools: false,
-                    llmConfig: null,
-                    workspaceRootPath: '/ws/a',
-                  },
-                ],
-              }),
-            },
-          },
-          errors: [],
-        };
-      }
-      if (query === 'GetTeamMemberRunProjection') {
-        expect(variables).toEqual({
-          teamRunId: 'team-1',
-          memberRouteKey: 'super_agent',
-        });
-        return {
-          data: {
-            getTeamMemberRunProjection: {
-              agentRunId: 'member-run-1',
-              summary: 'Team member history',
-              lastActivityAt: '2026-01-01T00:05:00.000Z',
-              conversation: [
-                { kind: 'message', role: 'user', content: 'hello', ts: 1700000000 },
-                { kind: 'message', role: 'assistant', content: 'hi', ts: 1700000010 },
-              ],
-            },
-          },
-          errors: [],
-        };
-      }
-      if (query === 'GetTeamCommunicationMessages') {
-        return { data: { getTeamCommunicationMessages: [] } };
-      }
-      throw new Error(`Unexpected query: ${String(query)}`);
-    });
-
-    workspaceStoreMock.createWorkspace.mockResolvedValue('ws-1');
-
-    const store = useRunHistoryStore();
-    await store.openTeamMemberRun('team-1', 'super_agent');
-
-    const hydratedTeam = teamContextsStoreMock.teams.get('team-1');
-    expect(hydratedTeam).toBeTruthy();
-    expect(hydratedTeam.isActive).toBe(true);
-    expect(hydratedTeam.members.get('super_agent')?.state.currentStatus).toBe('offline');
-    expect(agentTeamRunStoreMock.connectToTeamStream).toHaveBeenCalledWith('team-1');
-  });
-
-  it('openTeamMemberRun normalizes task-agent-only logical parent focus to the coordinator without promoting task-agent history', async () => {
-    queryMock.mockImplementation(async ({ query, variables }: { query: string; variables?: Record<string, unknown> }) => {
-      if (query === 'GetTeamRunResumeConfig') {
-        return {
-          data: {
-            getTeamRunResumeConfig: {
-              teamRunId: 'team-stale-route-1',
-              isActive: true,
-              metadata: buildTeamResumeMetadata({
-                teamRunId: 'team-stale-route-1',
-                coordinatorMemberRouteKey: 'coordinator',
-                members: [
-                  {
-                    memberRouteKey: 'coordinator',
-                    memberName: 'Coordinator',
-                    memberRunId: 'coordinator-run',
-                    agentDefinitionId: 'agent-coordinator',
-                  },
-                  {
-                    memberRouteKey: 'worker',
-                    memberName: 'Worker',
-                    memberRunId: 'worker-run',
-                    agentDefinitionId: 'agent-worker',
-                  },
-                ],
-              }),
-            },
-          },
-          errors: [],
-        };
-      }
-      if (query === 'GetTeamMemberRunProjection') {
-        if (variables?.memberRouteKey === 'worker') {
-          return {
-            data: {
-              getTeamMemberRunProjection: {
-                agentRunId: 'worker-run',
-                summary: 'Task-agent-only projection',
-                lastActivityAt: '2026-01-01T00:05:00.000Z',
-                conversation: [
-                  {
-                    kind: 'message',
-                    role: 'user',
-                    content: 'You have been activated as task agent task_agent_task_0001.\nTask-agent run: team-stale-route-1__worker__task_0001',
-                    ts: 1700000000,
-                  },
-                ],
-                activities: [],
-              },
-            },
-          };
-        }
-        return {
-          data: {
-            getTeamMemberRunProjection: {
-              agentRunId: 'coordinator-run',
-              summary: 'Coordinator work',
-              lastActivityAt: '2026-01-01T00:04:00.000Z',
-              conversation: [
-                { kind: 'message', role: 'user', content: 'delegate work', ts: 1700000000 },
-              ],
-              activities: [],
-            },
-          },
-        };
-      }
-      if (query === 'GetTeamCommunicationMessages') {
-        return { data: { getTeamCommunicationMessages: [] } };
-      }
-      throw new Error(`Unexpected query: ${String(query)}`);
-    });
-
-    const store = useRunHistoryStore();
-    await store.openTeamMemberRun('team-stale-route-1', 'worker');
-
-    const hydratedTeam = teamContextsStoreMock.teams.get('team-stale-route-1');
-    expect(hydratedTeam?.focusedMemberRouteKey).toBe('coordinator');
-    expect(hydratedTeam?.members.get('worker')?.state.conversation.messages).toHaveLength(1);
-    expect(store.selectedTeamMemberRouteKey).toBe('coordinator');
-    const teamNode = store.getTeamNodes('/ws/a').find((team) => team.teamRunId === 'team-stale-route-1');
-    expect(teamNode?.focusedMemberRouteKey).toBe('coordinator');
-    expect(teamNode?.members.map((member) => member.memberRouteKey)).toEqual(['coordinator', 'worker']);
-  });
-
-  it('openTeamMemberRun normalizes task-agent-only logical parent focus for an existing unsubscribed active context', async () => {
-    const existingContext = {
-      teamRunId: 'team-stale-route-2',
-      config: {},
-      coordinatorMemberRouteKey: 'coordinator',
-      memberTree: [],
-      memberNodesByRouteKey: new Map(),
-      leafAgentContextsByRouteKey: new Map([
-        ['worker', {
-          config: { agentDefinitionName: 'Worker' },
-          state: {
-            runId: 'worker-run',
-            currentStatus: 'offline',
-            conversation: { id: 'worker-run', messages: [] },
-            resetEventMonitorPresentationRevision: vi.fn(),
-          },
-        }],
-      ]),
-      focusedMemberRouteKey: 'worker',
-      isActive: true,
-      isSubscribed: false,
-      historicalHydration: null,
-    };
-    teamContextsStoreMock.teams.set('team-stale-route-2', existingContext);
-    queryMock.mockImplementation(async ({ query, variables }: { query: string; variables?: Record<string, unknown> }) => {
-      if (query === 'GetTeamRunResumeConfig') {
-        return {
-          data: {
-            getTeamRunResumeConfig: {
-              teamRunId: 'team-stale-route-2',
-              isActive: true,
-              metadata: buildTeamResumeMetadata({
-                teamRunId: 'team-stale-route-2',
-                coordinatorMemberRouteKey: 'coordinator',
-                members: [
-                  {
-                    memberRouteKey: 'coordinator',
-                    memberName: 'Coordinator',
-                    memberRunId: 'coordinator-run',
-                    agentDefinitionId: 'agent-coordinator',
-                  },
-                  {
-                    memberRouteKey: 'worker',
-                    memberName: 'Worker',
-                    memberRunId: 'worker-run',
-                    agentDefinitionId: 'agent-worker',
-                  },
-                ],
-              }),
-            },
-          },
-          errors: [],
-        };
-      }
-      if (query === 'GetTeamMemberRunProjection') {
-        const isWorker = variables?.memberRouteKey === 'worker';
-        return {
-          data: {
-            getTeamMemberRunProjection: {
-              agentRunId: isWorker ? 'worker-run' : 'coordinator-run',
-              summary: null,
-              lastActivityAt: '2026-01-01T00:05:00.000Z',
-              conversation: isWorker
-                ? [{
-                    kind: 'message',
-                    role: 'user',
-                    content: 'You have been activated as task agent task_agent_task_0001.\nTask-agent run: team-stale-route-2__worker__task_0001',
-                    ts: 1700000000,
-                  }]
-                : [{ kind: 'message', role: 'user', content: 'delegate work', ts: 1700000000 }],
-              activities: [],
-            },
-          },
-        };
-      }
-      if (query === 'GetTeamCommunicationMessages') {
-        return { data: { getTeamCommunicationMessages: [] } };
-      }
-      throw new Error(`Unexpected query: ${String(query)}`);
-    });
-
-    const store = useRunHistoryStore();
-    await store.openTeamMemberRun('team-stale-route-2', 'worker');
-
-    const hydratedTeam = teamContextsStoreMock.teams.get('team-stale-route-2');
-    expect(hydratedTeam).toBe(existingContext);
-    expect(hydratedTeam.focusedMemberRouteKey).toBe('coordinator');
-    expect(store.selectedTeamMemberRouteKey).toBe('coordinator');
-    const teamNode = store.getTeamNodes('/ws/a').find((team) => team.teamRunId === 'team-stale-route-2');
-    expect(teamNode?.members.map((member) => member.memberRouteKey)).toEqual(['coordinator', 'worker']);
-  });
-
-  it('openTeamMemberRun trusts history active state and reconnects a team stream', async () => {
-    queryMock.mockImplementation(async ({ query, variables }: { query: string; variables?: Record<string, unknown> }) => {
-      if (query === 'GetTeamRunResumeConfig') {
-        return {
-          data: {
-            getTeamRunResumeConfig: {
-              teamRunId: 'team-stale-1',
-              isActive: true,
-              metadata: buildTeamResumeMetadata({
-                teamRunId: 'team-stale-1',
-                members: [
-                  {
-                    memberRouteKey: 'super_agent',
-                    memberName: 'Super Agent',
-                    memberRunId: 'member-run-1',
-                    agentDefinitionId: 'agent-def-1',
-                    llmModelIdentifier: 'model-x',
-                    autoExecuteTools: false,
-                    llmConfig: null,
-                    workspaceRootPath: '/ws/a',
-                  },
-                ],
-              }),
-            },
-          },
-          errors: [],
-        };
-      }
-      if (query === 'GetTeamMemberRunProjection') {
-        expect(variables).toEqual({
-          teamRunId: 'team-stale-1',
-          memberRouteKey: 'super_agent',
-        });
-        return {
-          data: {
-            getTeamMemberRunProjection: {
-              agentRunId: 'member-run-1',
-              summary: 'Team member history',
-              lastActivityAt: '2026-01-01T00:05:00.000Z',
-              conversation: [
-                { kind: 'message', role: 'user', content: 'hello', ts: 1700000000 },
-              ],
-            },
-          },
-          errors: [],
-        };
-      }
-      if (query === 'GetTeamCommunicationMessages') {
-        return { data: { getTeamCommunicationMessages: [] } };
-      }
-      throw new Error(`Unexpected query: ${String(query)}`);
-    });
-
-    workspaceStoreMock.createWorkspace.mockResolvedValue('ws-1');
-
-    const store = useRunHistoryStore();
-    await store.openTeamMemberRun('team-stale-1', 'super_agent');
-
-    const hydratedTeam = teamContextsStoreMock.teams.get('team-stale-1');
-    expect(hydratedTeam).toBeTruthy();
-    expect(agentTeamRunStoreMock.connectToTeamStream).toHaveBeenCalledWith('team-stale-1');
-    expect(hydratedTeam.isActive).toBe(true);
-    expect(hydratedTeam.config.isLocked).toBe(true);
-  });
-
-  it('openTeamMemberRun refreshes an existing team context in place', async () => {
-    queryMock.mockImplementation(async ({ query, variables }: { query: string; variables?: Record<string, unknown> }) => {
-      if (query === 'GetTeamRunResumeConfig') {
-        return {
-          data: {
-            getTeamRunResumeConfig: {
-              teamRunId: 'team-1',
-              isActive: false,
-              metadata: buildTeamResumeMetadata({
-                teamRunId: 'team-1',
-                coordinatorMemberRouteKey: 'super_agent',
-                members: [
-                  {
-                    memberRouteKey: 'solution_designer',
-                    memberName: 'Solution Designer',
-                    memberRunId: 'member-run-1',
-                    agentDefinitionId: 'agent-def-1',
-                    llmModelIdentifier: 'model-x',
-                    autoExecuteTools: false,
-                    llmConfig: null,
-                    workspaceRootPath: '/ws/a',
-                  },
-                  {
-                    memberRouteKey: 'implementation_engineer',
-                    memberName: 'Implementation Engineer',
-                    memberRunId: 'member-run-2',
-                    agentDefinitionId: 'agent-def-1',
-                    llmModelIdentifier: 'model-y',
-                    autoExecuteTools: false,
-                    llmConfig: null,
-                    workspaceRootPath: '/ws/a',
-                  },
-                ],
-              }),
-            },
-          },
-          errors: [],
-        };
-      }
-      if (query === 'GetTeamMemberRunProjection') {
-        if (variables?.memberRouteKey === 'solution_designer') {
-          return {
-            data: {
-              getTeamMemberRunProjection: {
-                agentRunId: 'member-run-1',
-                summary: 'Solution history',
-                lastActivityAt: '2026-01-01T00:05:00.000Z',
-                conversation: [
-                  { kind: 'message', role: 'user', content: 'hello again', ts: 1700000000 },
-                  { kind: 'message', role: 'assistant', content: 'hi again', ts: 1700000010 },
-                ],
-              },
-            },
-            errors: [],
-          };
-        }
-
-        if (variables?.memberRouteKey === 'implementation_engineer') {
-          return {
-            data: {
-              getTeamMemberRunProjection: {
-                agentRunId: 'member-run-2',
-                summary: 'Implementation history',
-                lastActivityAt: '2026-01-01T00:05:00.000Z',
-                conversation: [
-                  { kind: 'message', role: 'user', content: 'implement it', ts: 1700000020 },
-                ],
-              },
-            },
-            errors: [],
-          };
-        }
-
-        throw new Error(`Unexpected member projection request: ${JSON.stringify(variables)}`);
-      }
-      if (query === 'GetTeamCommunicationMessages') {
-        return { data: { getTeamCommunicationMessages: [] } };
-      }
-      throw new Error(`Unexpected query: ${String(query)}`);
-    });
-
-    workspaceStoreMock.createWorkspace.mockResolvedValue('ws-1');
-
-    const existingTeamContextUnsubscribeSpy = vi.fn(function (this: any) {
-      this.isSubscribed = false;
-    });
-
-    const existingTeamContext = {
-      teamRunId: 'team-1',
-      config: {
-        teamDefinitionId: 'team-def-old',
-        teamDefinitionName: 'Team Old',
-        runtimeKind: 'codex_app_server',
-        workspaceId: 'ws-old',
-        llmModelIdentifier: 'old-model',
-        autoExecuteTools: true,
-        memberOverrides: {},
-        isLocked: true,
-      },
-      members: new Map([
-        ['solution_designer', {
-          config: { workspaceId: 'ws-old', agentDefinitionName: 'Solution Designer' },
-          state: {
-            runId: 'member-run-1',
-            conversation: {
-              id: 'member-run-1',
-              messages: [{ type: 'assistant', text: 'stale' }],
-              createdAt: '2026-01-01T00:00:00.000Z',
-              updatedAt: '2026-01-01T00:00:00.000Z',
-            },
-            currentStatus: 'idle',
-            resetEventMonitorPresentationRevision: vi.fn(),
-          },
-          requirement: 'please review the screenshot',
-          contextFilePaths: [{ kind: 'workspace_path', id: '/tmp/screenshot.png', locator: '/tmp/screenshot.png', displayName: 'screenshot.png', type: 'Image' }],
-        }],
-        ['implementation_engineer', {
-          config: { workspaceId: 'ws-old', agentDefinitionName: 'Implementation Engineer' },
-          state: {
-            runId: 'member-run-2',
-            conversation: {
-              id: 'member-run-2',
-              messages: [{ type: 'assistant', text: 'old implementation state' }],
-              createdAt: '2026-01-01T00:00:00.000Z',
-              updatedAt: '2026-01-01T00:00:00.000Z',
-            },
-            currentStatus: 'idle',
-            resetEventMonitorPresentationRevision: vi.fn(),
-          },
-          requirement: '',
-          contextFilePaths: [],
-        }],
-      ]),
-      focusedMemberName: 'solution_designer',
-      isActive: true,
-      isSubscribed: true,
-      unsubscribe: existingTeamContextUnsubscribeSpy,
-    };
-    teamContextsStoreMock.teams.set('team-1', existingTeamContext);
-
-    const store = useRunHistoryStore();
-    await store.openTeamMemberRun('team-1', 'implementation_engineer');
-
-    expect(teamContextsStoreMock.teams.get('team-1')).toBe(existingTeamContext);
-    expect(teamContextsStoreMock.addTeamContext).not.toHaveBeenCalled();
-    expect(existingTeamContext.config.teamDefinitionId).toBe('team-def-1');
-    expect(existingTeamContext.members.get('solution_designer')?.state.conversation.messages).toHaveLength(0);
-    expect(existingTeamContext.members.get('implementation_engineer')?.state.conversation.messages).toHaveLength(1);
-    expect(existingTeamContext.members.get('solution_designer')?.requirement).toBe('please review the screenshot');
-    expect(existingTeamContext.members.get('solution_designer')?.contextFilePaths).toEqual([
-      { kind: 'workspace_path', id: '/tmp/screenshot.png', locator: '/tmp/screenshot.png', displayName: 'screenshot.png', type: 'Image' },
-    ]);
-    expect(existingTeamContext.members.get('implementation_engineer')?.requirement).toBe('');
-    expect(existingTeamContext.members.get('implementation_engineer')?.contextFilePaths).toEqual([]);
-    expect(existingTeamContext.focusedMemberName).toBe('implementation_engineer');
-    expect(existingTeamContextUnsubscribeSpy).toHaveBeenCalledTimes(1);
-    expect(existingTeamContext.unsubscribe).toBeUndefined();
-    expect(existingTeamContext.isActive).toBe(false);
-    expect(existingTeamContext.isSubscribed).toBe(false);
-    expect((existingTeamContext as any).historicalHydration).not.toBeNull();
-  });
+  // Current rooted Team history, selection, transient task execution, and lazy hydration
+  // are maintained in the focused runHistoryNavigationProjection, runHistoryTeamRows,
+  // runHistoryTeamExecutionRows, teamRunOpenCoordinator, and historical integration suites.
 
   it('deleteRun removes local state and refreshes tree when backend succeeds', async () => {
     mutateMock.mockResolvedValueOnce({
@@ -3913,7 +2296,7 @@ describe('runHistoryStore', () => {
       },
     };
     store.selectedTeamRunId = 'team-1';
-    store.selectedTeamMemberRouteKey = 'super_agent';
+    store.selectedTeamMemberAddress = '/super_agent';
     selectionStoreMock.selectedType = 'team';
     selectionStoreMock.selectedRunId = 'team-1';
     teamContextsStoreMock.teams.set('team-1', { teamRunId: 'team-1' });
@@ -3928,7 +2311,7 @@ describe('runHistoryStore', () => {
     expect(teamContextsStoreMock.removeTeamContext).toHaveBeenCalledWith('team-1');
     expect(selectionStoreMock.clearSelection).toHaveBeenCalledTimes(1);
     expect(store.selectedTeamRunId).toBeNull();
-    expect(store.selectedTeamMemberRouteKey).toBeNull();
+    expect(store.selectedTeamMemberAddress).toBeNull();
     expect(store.teamResumeConfigByTeamRunId['team-1']).toBeUndefined();
     expect(store.workspaceGroups).toEqual([]);
     expect(refreshSpy).toHaveBeenCalledTimes(1);
@@ -3975,11 +2358,4 @@ describe('runHistoryStore', () => {
     expect(teamContextsStoreMock.removeTeamContext).not.toHaveBeenCalled();
   });
 
-  it('archiveTeamRun rejects draft team IDs without backend mutation call', async () => {
-    const store = useRunHistoryStore();
-    const archived = await store.archiveTeamRun('temp-team-123');
-
-    expect(archived).toBe(false);
-    expect(mutateMock).not.toHaveBeenCalled();
-  });
 });

@@ -1,0 +1,206 @@
+{
+  "revision": "API-REV-014",
+  "generatedAt": "2026-08-09T15:18:09Z",
+  "stagedPackage": {
+    "sourceKind": "LOCAL_PATH",
+    "digestAlgorithmNote": "Per-file hashes exactly match the prior approved staged overlay; current local aggregate manifest digest is separately retained.",
+    "manifestPath": "live/staged-package-manifest.json"
+  },
+  "secretImport": {
+    "actualRepositoryImporter": true,
+    "source": "/Users/normy/.autobyteus/server-data/.env",
+    "disposableDatabase": "sr015-api-rev-014-20260809.db",
+    "configuredIdentifiers": 9,
+    "blockedIdentifiers": 0,
+    "valuesCaptured": false
+  },
+  "rows": [
+    {
+      "scenario": "AutoByteus",
+      "status": "Pass",
+      "rootTeamRunId": "nested_classroom_test_team_002ab7c6e52e489e9144098c4359babb",
+      "runtimeKind": "autobyteus",
+      "modelIdentifier": "gpt-5.6-luna",
+      "llmConfig": null,
+      "autoExecuteTools": true,
+      "persistentAgentRuns": [
+        {
+          "memberAddress": "/Teacher",
+          "agentRunId": "test_teacher_c0ebc0a5f7be41bebcf1c7207ab8e297",
+          "runtimeKind": "autobyteus",
+          "llmModelIdentifier": "gpt-5.6-luna",
+          "llmConfig": null
+        },
+        {
+          "memberAddress": "/StudentStudyGroup/student_one",
+          "agentRunId": "student_one_a898da1ed0bf4a15a78f45b8bf1b28f7",
+          "runtimeKind": "autobyteus",
+          "llmModelIdentifier": "gpt-5.6-luna",
+          "llmConfig": null
+        },
+        {
+          "memberAddress": "/StudentStudyGroup/student_two",
+          "agentRunId": "student_two_deeb18c796cb4bb7a2c39fbcb96ae1c2",
+          "runtimeKind": "autobyteus",
+          "llmModelIdentifier": "gpt-5.6-luna",
+          "llmConfig": null
+        }
+      ],
+      "taskId": "task_0001",
+      "taskTeamRunId": "team_local_team_nested_classroom_test_student_st_ec7efe47c1e940c4bab229f0d6a05448",
+      "taskAgentRuns": [
+        {
+          "memberAddress": "/StudentStudyGroup/student_one",
+          "agentRunId": "student_one_765bb9e7db7245b2be06897f98f07b68"
+        },
+        {
+          "memberAddress": "/StudentStudyGroup/student_two",
+          "agentRunId": "student_two_cf2e483deef14406b5b67664a2282871"
+        }
+      ],
+      "startedAt": "2026-08-09T14:53:43.533Z",
+      "completedAt": "2026-08-09T14:54:24.032Z",
+      "durationSeconds": 41,
+      "assertions": {
+        "persistentHandoff": true,
+        "sameTaskTeamPeer": true,
+        "taskAccepted": true,
+        "submittedExact": true,
+        "reviewAccepted": true,
+        "allPersistentLeavesExact": true
+      }
+    },
+    {
+      "scenario": "Codex App Server",
+      "status": "Pass",
+      "rootTeamRunId": "nested_classroom_test_team_6d8bbd89677e43faaeef9148ee01dd0b",
+      "runtimeKind": "codex_app_server",
+      "modelIdentifier": "gpt-5.6-luna",
+      "llmConfig": {
+        "reasoning_effort": "medium"
+      },
+      "autoExecuteTools": true,
+      "persistentAgentRuns": [
+        {
+          "memberAddress": "/Teacher",
+          "agentRunId": "test_teacher_20a53481aa32429499a10093211b7ce3",
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "gpt-5.6-luna",
+          "llmConfig": {
+            "reasoning_effort": "medium"
+          }
+        },
+        {
+          "memberAddress": "/StudentStudyGroup/student_one",
+          "agentRunId": "student_one_439c95e7cfed49e0938e4e700f9eede2",
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "gpt-5.6-luna",
+          "llmConfig": {
+            "reasoning_effort": "medium"
+          }
+        },
+        {
+          "memberAddress": "/StudentStudyGroup/student_two",
+          "agentRunId": "student_two_682ff626afd846499b1e4a0c6bfe18d7",
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "gpt-5.6-luna",
+          "llmConfig": {
+            "reasoning_effort": "medium"
+          }
+        }
+      ],
+      "taskId": "task_0001",
+      "taskTeamRunId": "team_local_team_nested_classroom_test_student_st_cdd39438b87c4a779c9a19839a0e6bcb",
+      "taskAgentRuns": [
+        {
+          "memberAddress": "/StudentStudyGroup/student_one",
+          "agentRunId": "student_one_604388180fc643f2b6ba5ce442f304b0"
+        },
+        {
+          "memberAddress": "/StudentStudyGroup/student_two",
+          "agentRunId": "student_two_9f90f0dee9124295902b18319e0f8e84"
+        }
+      ],
+      "startedAt": "2026-08-09T15:02:01.191Z",
+      "completedAt": "2026-08-09T15:03:08.867Z",
+      "durationSeconds": 67,
+      "assertions": {
+        "allPersistentLeavesExact": true,
+        "persistentHandoff": true,
+        "sameTaskTeamPeer": true,
+        "taskAccepted": true,
+        "submittedExact": true,
+        "reviewAccepted": true
+      }
+    },
+    {
+      "scenario": "Claude Agent SDK",
+      "status": "Pass",
+      "rootTeamRunId": "nested_classroom_test_team_32b1109444ab4f3886a09951f0b27b0c",
+      "runtimeKind": "claude_agent_sdk",
+      "modelIdentifier": "sonnet",
+      "llmConfig": {
+        "reasoning_effort": "medium"
+      },
+      "autoExecuteTools": true,
+      "persistentAgentRuns": [
+        {
+          "memberAddress": "/Teacher",
+          "agentRunId": "test_teacher_a101c794cee94e86b277f3ad31a6c208",
+          "runtimeKind": "claude_agent_sdk",
+          "llmModelIdentifier": "sonnet",
+          "llmConfig": {
+            "reasoning_effort": "medium"
+          }
+        },
+        {
+          "memberAddress": "/StudentStudyGroup/student_one",
+          "agentRunId": "student_one_3f2c3185db6a4247ac7ade8187af97f3",
+          "runtimeKind": "claude_agent_sdk",
+          "llmModelIdentifier": "sonnet",
+          "llmConfig": {
+            "reasoning_effort": "medium"
+          }
+        },
+        {
+          "memberAddress": "/StudentStudyGroup/student_two",
+          "agentRunId": "student_two_d783e806597f42c0824858d7a8489638",
+          "runtimeKind": "claude_agent_sdk",
+          "llmModelIdentifier": "sonnet",
+          "llmConfig": {
+            "reasoning_effort": "medium"
+          }
+        }
+      ],
+      "taskId": "task_0001",
+      "taskTeamRunId": "team_local_team_nested_classroom_test_student_st_b3a6edecec904a9dafa26a68e310660d",
+      "taskAgentRuns": [
+        {
+          "memberAddress": "/StudentStudyGroup/student_one",
+          "agentRunId": "student_one_51f132a2b9294dfb9987dcc6d2acc244"
+        },
+        {
+          "memberAddress": "/StudentStudyGroup/student_two",
+          "agentRunId": "student_two_cf93fd4ee529425997286c7f84f01b32"
+        }
+      ],
+      "startedAt": "2026-08-09T15:05:29.881Z",
+      "completedAt": "2026-08-09T15:06:50.565Z",
+      "durationSeconds": 81,
+      "assertions": {
+        "catalogAuthenticatedSelection": true,
+        "allPersistentLeavesExact": true,
+        "persistentHandoff": true,
+        "sameTaskTeamPeer": true,
+        "taskAccepted": true,
+        "submittedExact": true,
+        "reviewAccepted": true
+      }
+    }
+  ],
+  "lifecycle": {
+    "autoByteusTerminateRestore": "Pass",
+    "allFinalRowsInactive": true
+  },
+  "result": "Pass"
+}

@@ -1,0 +1,27 @@
+timestamp=2026-08-10T18:12:29Z
+head=33b9b1e28e1c7f666dffdbcd349d394b2bfef875
+expected_head=true
+investigation_current_pass=true
+execution_report_current_pass=true
+revision_index_single_entry=true
+revision_detail_single_entry=true
+inventory_61_rows=true
+inventory_six_pending_delta=true
+pending_patch_six_files=true
+focused_web_5_26=true
+affected_web_7_60=true
+cadence_harness_2_43=true
+safe_server_lsof=true
+config_only_no_database_init=true
+owned_cleanup=true
+owned_target_absent=true
+retained_manifest_110_verified=true
+COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    71461 normy   26u  IPv4 0xbe9eaf34a35017b1      0t0  TCP 127.0.0.1:60004 (LISTEN)
+COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    73207 normy   12u  IPv4 0xe0271daf60061249      0t0  TCP 127.0.0.1:31004 (LISTEN)
+owned_server_port_closed=true
+owned_frontend_port_closed=true
+git_diff_check=true
+operational_database_action=none
+incident_disclosures_preserved=true

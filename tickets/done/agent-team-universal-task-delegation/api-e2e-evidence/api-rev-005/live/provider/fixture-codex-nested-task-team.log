@@ -1,0 +1,66 @@
+{
+  "teamRunId": "utd_root_team_api_rev_005_1786807916040_ba144d09043d4474b8a3ec1d69c31b72",
+  "agentRunId": "utd_coordinator_api_rev_005_1786807916040_27182aa100294bab8045c8125a33b848",
+  "durationMs": 16054,
+  "sent": true,
+  "terminalAt": {
+    "type": "TURN_COMPLETED",
+    "atMs": 4045
+  },
+  "websocketError": null,
+  "messageCount": 41,
+  "typeCounts": {
+    "CONNECTED": 1,
+    "TEAM_EXECUTION_VIEW_SNAPSHOT": 1,
+    "TEAM_RUN_LIFECYCLE": 1,
+    "MEMBER_INPUT_MESSAGE": 2,
+    "TURN_STARTED": 2,
+    "SEGMENT_START": 5,
+    "SEGMENT_CONTENT": 11,
+    "SEGMENT_END": 5,
+    "TOOL_EXECUTION_STARTED": 2,
+    "TASK_DELEGATION_EVENT": 2,
+    "TOOL_EXECUTION_SUCCEEDED": 2,
+    "TOKEN_USAGE_UPDATED": 6,
+    "TURN_COMPLETED": 1
+  },
+  "tasks": [
+    {
+      "taskId": "task_ab2a61c664e64111a100ae243122c4af",
+      "delegatorAgentRunId": "utd_coordinator_api_rev_005_1786807916040_27182aa100294bab8045c8125a33b848",
+      "recipientAddress": "/worker",
+      "targetAgentRunId": "utd_worker_api_rev_005_1786807916040_a4e9c8b125134412bfb98d5a99cb2725",
+      "targetTeamRunId": null,
+      "status": "active",
+      "description": "Return E2E_DIRECT_TASK_RESULT_42 through submit_task_result.",
+      "createdAt": "2026-08-15T15:38:14.662Z",
+      "referenceFiles": [],
+      "updates": []
+    },
+    {
+      "taskId": "task_ac22136d97d749db919285df5fd5c3d8",
+      "delegatorAgentRunId": "utd_coordinator_api_rev_005_1786807916040_27182aa100294bab8045c8125a33b848",
+      "recipientAddress": "/lab",
+      "targetAgentRunId": null,
+      "targetTeamRunId": "utd_child_team_api_rev_005_1786807916040_b52e56f737b249cebe290be70c9701c9",
+      "status": "active",
+      "description": "Coordinate the nested validation and return E2E_NESTED_TEAM_RESULT through submit_task_result.",
+      "createdAt": "2026-08-15T15:40:01.082Z",
+      "referenceFiles": [],
+      "updates": []
+    },
+    {
+      "taskId": "task_712826331bc2489dae7e7b0f25a1e504",
+      "delegatorAgentRunId": "utd_nested_coordinator_api_rev_005_1786807916040_8c3089e130f34148a4fb26eeeca11617",
+      "recipientAddress": "/lab/researcher",
+      "targetAgentRunId": "utd_nested_worker_api_rev_005_1786807916040_f1a9a0f80f87457cae541db50f4e65bf",
+      "targetTeamRunId": null,
+      "status": "active",
+      "description": "Return E2E_NESTED_CHILD_RESULT. Complete the nested validation task and provide the formal child result exactly as requested. Do not delegate further; return your result through the formal task lifecycle.",
+      "createdAt": "2026-08-15T15:40:13.186Z",
+      "referenceFiles": [],
+      "updates": []
+    }
+  ],
+  "communications": []
+}

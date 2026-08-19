@@ -33,7 +33,7 @@ export type MobileWorkContext =
       title: string;
       summary: string;
       workspaceRootPath: string;
-      focusedMemberRouteKey: string;
+      focusedAgentRunId: string;
       isActive: boolean;
       lastActivityAt: string;
       statusLabel: string;
@@ -104,7 +104,7 @@ export function mobileWorkContextKey(context: MobileWorkContext): string {
     case 'agent-run':
       return `agent-run:${context.runId}`;
     case 'team-run':
-      return `team-run:${context.teamRunId}:${context.focusedMemberRouteKey}`;
+      return `team-run:${context.teamRunId}:${context.focusedAgentRunId}`;
     case 'agent-definition':
       return `agent-definition:${context.agentDefinitionId}`;
     case 'team-definition':

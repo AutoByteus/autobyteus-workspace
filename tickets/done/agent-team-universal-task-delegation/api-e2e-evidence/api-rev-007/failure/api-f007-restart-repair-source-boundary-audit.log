@@ -1,0 +1,417 @@
+at=2026-08-15T21:00:13Z
+head=c853559929470e3455a7f7c160d4bd02a6a380dd
+--- requirements restart contract ---
+    32	| BEH-006 | Frontend runtime state uses a map keyed by serialized composite execution addresses and separately materializes task nodes; Team WebSocket open separately reads leaf Agent status from `TeamRun`. | One root snapshot barrier projects immutable execution containment, task/message overlays, and recursively collected canonical Agent status into one frontend aggregate; live events use the same mapper/DTO/reducer. | The configured topology remains immutable and address-based; `TeamRun.getLeafAgentStatusSnapshots()` remains the status source. | R-015–R-016, R-036–R-037, R-047–R-048; AC-017–AC-018, AC-039–AC-041, AC-052–AC-055 |
+    33	| BEH-007 | Prompt/tool copy teaches two address forms and a direct-child task restriction. | Every Agent-facing surface teaches one action: copy an exact canonical absolute address. Both tools allow any mounted same-root recipient; providers do not own targeting policy. | AutoByteus, Codex, and Claude receive the same contract. | R-013–R-014; AC-019–AC-021 |
+    34	| BEH-008 | Handoffs are optional guidance, not authorization. | Preserve that behavior. Omitted or empty handoffs do not restrict correct direct tool use. | `get_handoff_rules` remains minimal ordered `{when,recipient_address}` rows. | R-022; AC-022 |
+    35	| BEH-009 | Runtime history is split across schema-v3 `team_run_metadata.json`, task records, communication records, token rows, external-channel state, and application copies. | A root TeamRun has exactly three JSON authorities: execution tree, task delegation records, and communication messages. Task commands derive cumulatively inside one root task queue; terminal status and execution settlement use their existing separate file authorities rather than a two-file settlement snapshot; message appends derive cumulatively inside the root mutation lock; every runtime write reports `not_renamed`, `renamed_finalization_indeterminate`, or `committed`. Token/external/application projections use exact run IDs and root context rather than composite execution addresses. | Existing physical Agent memory directories and run IDs are preserved. | R-032–R-044; AC-033–AC-048 |
+    36	| BEH-010 | Non-direct recipients return an adjacency error; relative forms are normalized. | Remove adjacency and relative admission. Reject malformed, relative, root-only, absent, foreign-root, self-Agent, forged, contradictory, and lifecycle-invalid calls before active mutation. | No global search, kind guess, route alias, or fallback is introduced. | R-006, R-017, R-019; AC-003–AC-004, AC-024 |
+    37	| BEH-011 | Successful delegation does not expose active assignee contact; work packets do not expose exact delegator contact; Team messages dispatch before accepted-message history can be made durable. | Active delegation exposes exact bidirectional contact, and same-root Team messages reserve the receiver FIFO, enter one root-ordered append plan, derive and durably record one exact-endpoint row from the current state, then release that reservation. Ordinary quiescence waits for every already-submitted reservation to commit or cancel; it never deletes that reservation. A post-rename finalization-indeterminate outcome fail-stops the root and emits no ordinary accepted/rejected result. | Formal task state changes remain exclusive to task tools; AgentRun remains the sole FIFO/admission owner. | R-025–R-031, R-037, R-040; AC-025–AC-032, AC-037 |
+    38	| BEH-012 | A server restart does not restore live task runtimes, but predecessor records can remain nonterminal. | Startup or explicit reopen strictly reloads the three files, repairs whichever final pathname survived an interrupted or finalization-indeterminate commit, marks stale nonterminal tasks `interrupted`, settles their task executions, removes orphan unreleased task nodes, and validates before exposure. | Live task recovery and message replay remain out of scope. | R-040–R-041; AC-042–AC-044 |
+    39	| BEH-013 | Current released framework-owned stores contain composite execution addresses and historical task-Team identities. | One new isolated migration reconstructs each three-file target where evidence is unambiguous, converts its dependent framework-owned rows, excludes and preserves an ambiguous root for retry, then exposes only validated V1 roots to forward-only runtime. | Application framework data is unsupported/disposable and rebuilt; no application compatibility reader or migration exists. | R-042–R-046; AC-045–AC-051 |
+    40	| BEH-014 | Every materialized TeamRun already has one `MixedTeamManager`, but that manager also owns or reaches into root routing, task directories, composite-chain resolution, listener/barrier, and root disposal concerns. | Preserve one manager per TeamRun and narrow it to direct local execution handles/lifecycle. One `RootTeamRun` public boundary owns root subject services; exact cross-tree work reaches the selected local `TeamRun` through the execution index and one root `TeamRunResolver`. | Recursive TeamRun composition, lazy configured-member launch, provider handles, local status/open-work checks, and recursive local termination remain. | R-007, R-012, R-040, R-048; AC-055–AC-056 |
+    41	
+    42	## Investigation Findings
+    43	
+   122	- **UC-012:** Multiple tasks to the same logical target create independent run identities and lifecycles.
+   123	- **UC-013:** Root teardown removes only that root's state, indexes, and live task executions.
+   124	- **UC-014:** A root with no tasks persists an execution tree plus empty task/message files.
+   125	- **UC-015:** Active Agent and AgentTeam tasks persist exact task roots and can be projected after read.
+   126	- **UC-016:** Settled task executions remain durable history but are excluded from the live UI tree.
+   127	- **UC-017:** Startup terminalizes nonrecoverable live tasks and removes orphan unreleased nodes before listening.
+   128	- **UC-018:** Supported predecessor Team/history/task/message/token/external data migrates once to the current schema without runtime dual readers.
+   129	- **UC-019:** Application framework packages take a direct V6 current-contract cut; unsupported application data is discarded/rebuilt.
+   130	- **UC-020:** In live Team navigation, an Agent task appears underneath its logical Agent placement and focuses its exact AgentRun; an AgentTeam task appears underneath its logical Team placement and expands into the exact fresh TeamRun members.
+   131	- **UC-021:** A cross-branch message, command, task activation, or settlement is authorized at `RootTeamRun`, resolved to one exact containing `TeamRun`, and executed by that TeamRun's local manager without child-to-root bubbling or global-directory access from the manager.
+   184	- **R-036 — Task-record schema:** The task file shall store root TeamRun ID and ordered records containing task ID, delegator AgentRun ID, recipient address, one structural AgentRun/TeamRun task-execution reference, description, reference paths, materialized status, immutable updates, and creation time.
+   185	- **R-037 — Message schema and meaning:** The communication file shall store root TeamRun ID and ordered messages containing message ID, sender AgentRun ID, receiver AgentRun ID, content, message type, reference paths, and creation time. Same-root Team delivery shall first obtain one unreleased reservation from the receiver AgentRun's existing FIFO owner and immediately submit one sealed append plan containing the immutable row, reservation, and prevalidated event slot. Under the root mutation lock, the plan shall validate the current root/endpoints/reservation and message-ID absence, derive the next snapshot from the authoritative current message state, write it to a phase-aware durable result, then on `committed` synchronously swap memory, commit the event slot and exact reservation, release the FIFO entry, and return accepted. Current-reference/message-ID conflict shall cancel with `TEAM_MESSAGE_COMMIT_CONFLICT`; `not_renamed` shall cancel with `TEAM_MESSAGE_HISTORY_COMMIT_FAILED`; `renamed_finalization_indeterminate` shall preserve the hidden reservation/event state until root fail-stop teardown and shall emit no ordinary collaboration result. A row means the exact receiver AgentRun accepted the input into its FIFO admission boundary, not that a provider processed it; the file is communication history, not an input/outbox queue, and shall never replay delivery.
+   186	- **R-038 — Tight task execution bindings:** Task Agent/Team nodes shall inherit immutable definition, role/description, coordinator, and launch facts through their canonical configured placement. Task nodes persist only fresh execution bindings, nested containment, and task-execution timestamps.
+   187	- **R-039 — Strict cross-file validation:** All three files shall reject unknown/mixed fields and validate root correlation, unique run IDs, configured placement references, coordinator membership, task-to-execution correlation, status/update replay, timestamps, and exact message endpoints before exposure.
+   188	- **R-040 — Serialized logical and physical commits:** One private FIFO task-command queue inside `TaskDelegationService` shall linearize every activation, submit, review, interruption, and settlement against authoritative current task/tree state. One `TeamRunPersistenceCoordinator` belonging to `RootTeamRun` shall serialize subject-specific physical commits with the root mutation lock. Its task boundary shall accept only typed activation, record-transition, and tree-only settlement plans produced at the task-queue head; its message boundary shall accept only `PreparedTeamMessageAppend`; neither shall accept a caller-derived stale full snapshot or generic mutate callback. Before a settlement write, the selected local `TeamRun` shall return one `PreparedTaskSettlement` that reserves the exact execution, closes new Agent input, waits for every earlier reservation/dispatch to resolve, rechecks idle/open-work eligibility, and performs no backend termination, registry deletion, or TeamRun unregistration. Each of the three Team JSON stores shall use one strict phase-aware writer returning `not_renamed`, `renamed_finalization_indeterminate`, or `committed` after same-directory temp write, file sync, rename, and directory sync. For settlement, `not_renamed` shall synchronously cancel the prepared capability and reopen the unchanged execution before releasing the root lock; `committed` shall synchronously swap tree/event state and make quiescence irrevocable before returning a committed local-teardown capability; provider/handle teardown shall run only after the root lock unwinds. Teardown failure after committed truth fail-stops that root and cannot be mapped as a clean persistence rejection. `renamed_finalization_indeterminate` shall synchronously fail-stop the root, retain hidden preparation, publish/release nothing, produce no normal domain result, and defer authority selection to strict reload/reconciliation. Activation `finalization_indeterminate` likewise preserves hidden preparation and has no ordinary `not_started` mapping; successful activation opens its already-prevalidated work gate synchronously inside the commit closure. No persisted settlement state, persisted revision, retry/replay loop, outbox, second task ledger/input queue, or fourth Team file is permitted.
+   189	- **R-041 — Restart/reopen repair:** Before listening or re-exposing a failed root, package discovery shall exclude/remove any incomplete target-only root-creation residue that has no predecessor source, then strict-load all three final paths for each complete target package; remove unreferenced unreleased task nodes; interrupt every stale nonterminal task; settle its execution; retain accepted/terminal history; retain but never replay any surviving communication row; persist any repairs through the same phase-aware writer; and validate the complete package. A repair `not_renamed` or `renamed_finalization_indeterminate` outcome keeps the root unavailable. Do not resume task work.
+   190	- **R-042 — Migration required:** A new independently pending migration record shall own predecessor schema-v3 Team metadata/task/message conversion and dependent token/external identity conversion. It shall not rely on changing or rerunning a completed predecessor migration ID.
+   191	- **R-043 — Evidence-only reconstruction:** Migration may correlate predecessor IDs using Team metadata, task records, physical Agent memory paths, token `run_id`, external records, and root/task TeamRun ancestry only when all available facts agree. It shall never invent an unobserved AgentRun/TeamRun binding or guess between conflicting fields.
+   192	- **R-044 — Isolated, retryable migration:** Migration shall discover roots independently, stage and strictly validate each complete target package, create protected backups, promote only complete roots, and remain idempotent. The token schema cut is independent of root catalog admission because every supported token row already owns exact `run_id` and derives optional root context directly; one protected predecessor token backup shall retain correlation evidence, and one store-owned transaction shall convert the complete supported token cohort to target columns with rollback proof. A transient failure may receive bounded in-run retries. A still-failing or ambiguous root shall retain its predecessor Team-package bytes, produce an actionable diagnostic, remain excluded from the target root catalog, and keep the migration record `FAILED`/retryable for the next startup or explicit retry; it shall not block unrelated valid roots, new Team creation, or server listen after the migration attempt finishes. If no predecessor root succeeds, the server starts with no restored historical TeamRun rather than a legacy runtime path.
+   193	- **R-045 — Target-only runtime:** After migration, production readers/writers, GraphQL, events, WebSocket, providers, applications, and frontend accept only target models. Historical knowledge remains isolated in migration code; no dual reader/writer, alias, fallback serializer, or lazy conversion is allowed.
+   194	- **R-046 — Forward-only application cut:** Application backend-definition and frontend SDK Team execution contracts shall move atomically from V5 to V6 exact run-ID models. Project-owned packages/artifacts/manifests move together; unsupported application data/bundles are discarded/rebuilt, not migrated or adapted.
+   238	- **AC-039:** Initial backend snapshot and live events use the same exact tree/task/message/status projector, canonical `TeamAgentStatusSnapshot` mapping, and strict status DTO; frontend uses one reducer and no separate task or status materializer. Initial status includes configured lazy leaves, active task Agents, and active task-Team Agents, while settled task executions are absent.
+   239	- **AC-040:** Focus/open/history/status/timeline operate by AgentRun/TeamRun IDs; repeated tasks to one address remain distinct; a status change racing initial snapshot capture is either represented in the snapshot or delivered as the next queued `changeSequence`, never lost or reconstructed in the browser.
+   240	- **AC-041:** Accepted/interrupted task records remain in durable history but are absent from the live execution projection only after the tree-only settlement commit. Before that commit, the exact task execution remains registered and reversible-quiesced; after `committed`, it becomes non-routable synchronously and the same local capability owns recursive teardown. No new persisted `settling` status exists.
+   241	- **AC-042:** Activation phase injection retains the established two-file behavior: a task-record `not_renamed` result after a committed activation-tree write returns `not_started`, never releases work, and restart removes the unreleased orphan; activation `renamed_finalization_indeterminate` produces no normal result and preserves hidden preparation for fail-stop/reload. Settlement phase injection is one-file and different: `not_renamed` synchronously cancels reversible quiescence before root-lock release and leaves the terminal task record plus live execution unchanged; `committed` swaps tree/event state and irrevocably detaches the execution before post-lock local teardown; `renamed_finalization_indeterminate` retains hidden quiescence and fail-stops with no ordinary result. Forced local teardown rejection after a committed settlement does not restore the execution or report persistence failure; it fail-stops the affected root for cleanup. Process loss after durable activation or settlement returns no false clean result and reload never replays task work.
+   242	- **AC-043:** Restart converts active/awaiting-review records to interrupted exactly once and writes matching settled timestamps.
+   243	- **AC-044:** Root package validation completes before GraphQL/WebSocket/runtime exposure. An injected new-root write failure never publishes that root; strict package scan admits a fully committed three-file package and removes/excludes an incomplete target-only creation residue.
+   244	- **AC-045:** Representative persistent, task-Agent, task-Team, nested-task, communication, token, and external-channel predecessor data migrates to exact target models while preserving known run IDs/content/timestamps.
+   245	- **AC-046:** A previously completed older migration record does not suppress the new migration owner.
+   246	- **AC-047:** Forced failure in the all-supported-row token table conversion rolls back every target row/table change; its bounded retry succeeds from the protected predecessor backup without a mixed-schema runtime. Forced unsafe JSON correlation for one root leaves that root's Team-package source bytes unchanged, excludes it from target catalog admission, records exact identifiers, and leaves the migration retryable without blocking other valid roots or new Team use.
+   268	- **Physical Agent memory directories:** directly retained; no relayout.
+   269	- **Application framework data and old application bundles:** `Discard or Rebuild`; no migration or compatibility admission.
+   270	- **Application association already embedded in a supported TeamRun history package:** preserved as that root execution tree's single `applicationBinding`; this does not make the separate application catalog/database a supported predecessor cohort.
+   271	- Must preserve: known root TeamRun IDs, persistent and provable task AgentRun/TeamRun IDs, logical addresses, launch settings, task/message content, reference paths, timestamps, token amounts, and unambiguous external-channel bindings.
+   272	- Unacceptable loss: silently dropping known history, inventing execution IDs, guessing contradictory topology, partial token conversion, or admitting mixed old/new runtime data.
+   273	- Availability: the current migration attempt and restart repair for admitted target roots complete before server listen. Unsafe or failed predecessor roots are diagnosed and excluded/retryable without blocking unrelated target roots or new Team creation.
+   274	- Transformation mechanics are authoritative in `team-run-persistence-architecture-contract.md` and `design-spec.md`.
+   275	
+   276	## Assumptions
+   277	
+--- design restart contract ---
+   730	```
+   731	
+   732	The local manager never parses `recipient_address`, chooses a task host, reads task/message stores, or bubbles to a parent. `TeamRunResolver.requireConfigured()` follows only the unique root-to-target configured TeamRun chain supplied by `TeamExecutionIndex`; a missing task TeamRun is rejected rather than recreated.
+   733	
+   734	### DS-009 — restart repair
+   735	
+   736	```text
+   737	strict load three files
+   738	  -> remove task roots with no task record
+   739	  -> for each unsettled execution: settle at recovery time
+   740	  -> active/awaiting task: append interruption and set interrupted
+   741	  -> accepted: preserve accepted, only finish settlement
+   742	  -> validate every reference/index
+   743	  -> persist repaired affected files through TeamRunFileCommitWriter
+   744	  -> committed: revalidate and expose this root
+   745	  -> not_renamed | renamed_finalization_indeterminate: keep this root unavailable with actionable diagnostic
+   746	```
+   747	
+   748	Explicit reopen and server restart use this same current-schema loader. It is crash/finalization repair, not a predecessor reader. Other roots remain cataloged and available.
+   749	
+   750	## Off-Spine Concerns Around The Spine
+   751	
+   752	| Concern | Owner | Placement | Must Not Invade |
+--- server startup catalog only validates/admit ---
+   184	    await initializePrisma({
+   185	      datasourceUrl: databaseLocation.databaseUrl,
+   186	    });
+   187	  } catch (error) {
+   188	    logger.error(`Failed to initialize application database: ${String(error)}`);
+   189	    process.exit(1);
+   190	  }
+   191	  await getSecretVaultRuntime().initialize(databaseLocation);
+   192	
+   193	  try {
+   194	    const statuses = await getAppDataMigrationRunner().runPending();
+   195	    await new TeamRunV1PackageCatalog(appConfigProvider.config.getMemoryDir()).rebuild();
+   196	    const canonicalStatus = statuses.find(
+   197	      (status) => status.migrationId === TEAM_CANONICAL_IDENTITY_MIGRATION_ID,
+   198	    );
+   199	    if (canonicalStatus?.status !== "SUCCEEDED") {
+   200	      logger.error(
+   201	        `Canonical identity migration did not complete successfully; startup halted: ${JSON.stringify({
+   202	          migrationId: TEAM_CANONICAL_IDENTITY_MIGRATION_ID,
+    48	    if (!normalized) throw new Error("rootTeamRunId is required.");
+    49	    this.state.admitted.add(normalized);
+    50	    this.state.diagnostics.delete(normalized);
+    51	  }
+    52	
+    53	  exclude(rootTeamRunId: string, reason: string): void {
+    54	    const normalized = rootTeamRunId.trim();
+    55	    if (!normalized) return;
+    56	    this.state.admitted.delete(normalized);
+    57	    this.state.diagnostics.set(normalized, reason);
+    58	  }
+    59	
+    60	  async rebuild(): Promise<void> {
+    61	    this.state.initialized = true;
+    62	    this.state.admitted.clear();
+    63	    this.state.diagnostics.clear();
+    64	    const treeStore = new TeamRunExecutionTreeStore();
+    65	    const taskStore = new TaskDelegationRecordsV1Store();
+    66	    const messageStore = new TeamCommunicationV1Store();
+    67	    let entries: import("node:fs").Dirent[] = [];
+    68	    try {
+    69	      entries = await fs.readdir(this.layout.getTeamRootDirPath(), { withFileTypes: true });
+    70	    } catch (error) {
+    71	      if (missing(error)) return;
+    72	      throw error;
+    73	    }
+    74	    for (const entry of entries.filter((item) => item.isDirectory()).sort((a, b) => a.name.localeCompare(b.name))) {
+    75	      const rootTeamRunId = entry.name;
+    76	      const rootDir = this.layout.getTeamDirPath({ rootTeamRunId, ancestorTeamRunIds: [] });
+    77	      try {
+    78	        // The predecessor file is the promotion marker: while it remains, the
+    79	        // root is migration-owned even if a crash left target files behind.
+    80	        await fs.access(path.join(rootDir, "team_run_metadata.json"));
+    81	        this.exclude(rootTeamRunId, "Predecessor TeamRun metadata remains pending migration.");
+    82	        continue;
+    83	      } catch (error) {
+    84	        if (!missing(error)) throw error;
+    85	      }
+    86	      try {
+    87	        const [executionTree, taskRecords, communicationMessages] = await Promise.all([
+    88	          treeStore.read(rootDir, rootTeamRunId),
+    89	          taskStore.read(rootDir, rootTeamRunId),
+    90	          messageStore.read(rootDir, rootTeamRunId),
+    91	        ]);
+    92	        if (!executionTree || !taskRecords || !communicationMessages) {
+    93	          this.exclude(rootTeamRunId, "Current TeamRun V1 package is incomplete.");
+    94	          continue;
+    95	        }
+    96	        validateTeamRunStatePackage({ executionTree, taskRecords, communicationMessages });
+    97	        this.admit(rootTeamRunId);
+    98	      } catch (error) {
+    99	        this.exclude(rootTeamRunId, error instanceof Error ? error.message : String(error));
+   100	      }
+   101	    }
+   102	  }
+   103	}
+   104	
+   105	export const resetTeamRunV1PackageCatalog = (memoryDir: string): void => {
+--- strict repair loader exists ---
+    20	
+    21	export type TeamRunStatePackageLoadResult =
+    22	  | Readonly<{ loaded: true; state: ValidatedTeamRunStatePackage; repaired: boolean }>
+    23	  | Readonly<{ loaded: false; code: string; message: string }>;
+    24	
+    25	const taskRunId = (task: TaskExecution): string =>
+    26	  "agentRunId" in task ? task.agentRunId : task.teamRunId;
+    27	
+    28	const repairTree = (input: {
+    29	  tree: TeamRunExecutionTreeSnapshot;
+    30	  referencedTaskRuns: ReadonlySet<string>;
+    31	  settledAtByRunId: ReadonlyMap<string, string>;
+    32	}): TeamRunExecutionTreeSnapshot => {
+    33	  const repairTask = (task: TaskExecution): TaskExecution | null => {
+    34	    const runId = taskRunId(task);
+    35	    if (!input.referencedTaskRuns.has(runId)) return null;
+    36	    const settledAt = task.settledAt ?? input.settledAtByRunId.get(runId) ?? null;
+    37	    if ("agentRunId" in task) return { ...task, settledAt };
+    38	    return {
+    39	      ...task,
+    40	      settledAt,
+    41	      members: task.members.map(repairTaskMember),
+    42	      taskExecutions: task.taskExecutions.map(repairTask).filter(notNull),
+    43	    };
+    44	  };
+    45	  const repairTaskMember = (member: TaskTeamMemberExecution): TaskTeamMemberExecution =>
+    46	    "agentRunId" in member ? member : {
+    47	      ...member,
+    48	      members: member.members.map(repairTaskMember),
+    49	      taskExecutions: member.taskExecutions.map(repairTask).filter(notNull),
+    50	    };
+    51	  const repairConfiguredMember = (member: ConfiguredMemberExecution): ConfiguredMemberExecution =>
+    52	    "agentRunId" in member ? member : {
+    53	      ...member,
+    54	      members: member.members.map(repairConfiguredMember),
+    55	      taskExecutions: member.taskExecutions.map(repairTask).filter(notNull),
+    56	    };
+    57	  const notNull = <T>(value: T | null): value is T => value !== null;
+    58	
+    59	  return validateTeamRunExecutionTreePayload({
+    60	    ...input.tree,
+    61	    rootTeam: {
+    62	      ...input.tree.rootTeam,
+    63	      members: input.tree.rootTeam.members.map(repairConfiguredMember),
+    64	      taskExecutions: input.tree.rootTeam.taskExecutions.map(repairTask).filter(notNull),
+    65	    },
+    66	  }, input.tree.rootTeam.teamRunId);
+    67	};
+    68	
+    69	const repairTasks = (input: {
+    70	  tasks: TaskDelegationRecordsSnapshot;
+    71	  recoveryTimestamp: string;
+    72	}): {
+    73	  tasks: TaskDelegationRecordsSnapshot;
+    74	  referencedTaskRuns: ReadonlySet<string>;
+    75	  settledAtByRunId: ReadonlyMap<string, string>;
+    76	  changed: boolean;
+    77	} => {
+    78	  const referencedTaskRuns = new Set<string>();
+    79	  const settledAtByRunId = new Map<string, string>();
+    80	  let changed = false;
+    81	  const records = input.tasks.records.map((task): TaskDelegationRecordV1 => {
+    82	    const runId = "agentRunId" in task.taskExecution
+    83	      ? task.taskExecution.agentRunId
+    84	      : task.taskExecution.teamRunId;
+    85	    referencedTaskRuns.add(runId);
+    86	    settledAtByRunId.set(runId, input.recoveryTimestamp);
+    87	    if (task.status !== "active" && task.status !== "awaiting_review") return task;
+    88	    changed = true;
+    89	    return {
+    90	      ...task,
+    91	      status: "interrupted",
+    92	      updates: [...task.updates, {
+    93	        interruptionId: `${task.taskId}_interruption_restart`,
+    94	        reason: "Interrupted because live task recovery is not supported after TeamRun reopen.",
+    95	        createdAt: input.recoveryTimestamp,
+    96	      }],
+    97	    };
+    98	  });
+    99	  return {
+   100	    tasks: validateTaskDelegationRecordsV1Payload({ ...input.tasks, records }, input.tasks.rootTeamRunId),
+   120	    recoveryTimestamp?: string;
+   121	  }): Promise<TeamRunStatePackageLoadResult> {
+   122	    const [executionTree, taskRecords, communicationMessages] = await Promise.all([
+   123	      this.options.executionTreeStore.read(input.teamMemoryDir, input.rootTeamRunId),
+   124	      this.options.taskRecordsStore.read(input.teamMemoryDir, input.rootTeamRunId),
+   125	      this.options.communicationStore.read(input.teamMemoryDir, input.rootTeamRunId),
+   126	    ]);
+   127	    if (!executionTree || !taskRecords || !communicationMessages) {
+   128	      return {
+   129	        loaded: false,
+   130	        code: "TEAM_RUN_STATE_PACKAGE_INCOMPLETE",
+   131	        message: `TeamRun '${input.rootTeamRunId}' does not have all three V1 authorities.`,
+   132	      };
+   133	    }
+   134	
+   135	    const recoveredTasks = repairTasks({
+   136	      tasks: taskRecords,
+   137	      recoveryTimestamp: input.recoveryTimestamp ?? new Date().toISOString(),
+   138	    });
+   139	    const recoveredTree = repairTree({
+   140	      tree: executionTree,
+   141	      referencedTaskRuns: recoveredTasks.referencedTaskRuns,
+   142	      settledAtByRunId: recoveredTasks.settledAtByRunId,
+   143	    });
+   144	    const treeChanged = !sameJson(executionTree, recoveredTree);
+   145	    const tasksChanged = recoveredTasks.changed || !sameJson(taskRecords, recoveredTasks.tasks);
+   146	
+   147	    if (treeChanged) {
+   148	      const result = await this.options.executionTreeStore.write(input.teamMemoryDir, recoveredTree);
+   149	      if (result.outcome !== "committed") return this.repairFailure(input.rootTeamRunId, result.outcome);
+   150	    }
+   151	    if (tasksChanged) {
+   152	      const result = await this.options.taskRecordsStore.write(input.teamMemoryDir, recoveredTasks.tasks);
+   153	      if (result.outcome !== "committed") return this.repairFailure(input.rootTeamRunId, result.outcome);
+   154	    }
+   155	
+   156	    return {
+   157	      loaded: true,
+   158	      repaired: treeChanged || tasksChanged,
+   159	      state: validateTeamRunStatePackage({
+   160	        executionTree: recoveredTree,
+   161	        taskRecords: recoveredTasks.tasks,
+   162	        communicationMessages,
+   163	      }),
+   164	    };
+   165	  }
+   166	
+   167	  private repairFailure(
+   168	    rootTeamRunId: string,
+   169	    outcome: "not_renamed" | "renamed_finalization_indeterminate",
+   170	  ): TeamRunStatePackageLoadResult {
+   171	    return {
+   172	      loaded: false,
+   173	      code: "TEAM_RUN_STATE_REPAIR_FAILED",
+   174	      message: `TeamRun '${rootTeamRunId}' repair did not commit (${outcome}).`,
+   175	    };
+   176	  }
+   177	}
+--- but manager invokes loader only on explicit restore ---
+    86	    this.packageCatalog.admit(rootTeamRunId);
+    87	    const root = await this.materializeRoot({ config: input.config, tree, tasks, messages, teamMemoryDir });
+    88	    this.register(root);
+    89	    return root;
+    90	  }
+    91	
+    92	  async restoreTeamRun(rootTeamRunIdInput: string): Promise<RootTeamRun> {
+    93	    const rootTeamRunId = required(rootTeamRunIdInput, "rootTeamRunId");
+    94	    if (this.getTeamRun(rootTeamRunId)) throw new Error(`RootTeamRun '${rootTeamRunId}' is already active.`);
+    95	    if (this.packageCatalog.isInitialized() && !this.packageCatalog.isAdmitted(rootTeamRunId)) {
+    96	      throw new Error(`TEAM_RUN_STATE_PACKAGE_NOT_CATALOGED: TeamRun '${rootTeamRunId}' is not an admitted V1 package.`);
+    97	    }
+    98	    const teamMemoryDir = this.teamMemoryDir(rootTeamRunId);
+    99	    const loaded = await new TeamRunStatePackageLoader({
+   100	      executionTreeStore: this.executionTreeStore,
+   101	      taskRecordsStore: this.taskRecordsStore,
+   102	      communicationStore: this.communicationStore,
+   103	    }).loadAndRepair({ teamMemoryDir, rootTeamRunId });
+   104	    if (!loaded.loaded) throw new Error(`${loaded.code}: ${loaded.message}`);
+   105	    const config = buildTeamRunConfigFromExecutionTree(loaded.state.executionTree);
+   106	    const root = await this.materializeRoot({
+   107	      config,
+   108	      tree: loaded.state.executionTree,
+   109	      tasks: loaded.state.taskRecords,
+   110	      messages: loaded.state.communicationMessages,
+   111	      teamMemoryDir,
+   112	    });
+   113	    this.register(root);
+   114	    return root;
+   115	  }
+   116	
+   117	  getTeamRun(rootTeamRunIdInput: string): RootTeamRun | null {
+   118	    const rootTeamRunId = required(rootTeamRunIdInput, "rootTeamRunId");
+   119	    const root = this.activeRoots.get(rootTeamRunId) ?? null;
+   120	    if (!root?.isActive()) {
+   121	      if (root) this.unregister(rootTeamRunId, root);
+   122	      return null;
+--- call sites ---
+autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts:99:    const loaded = await new TeamRunStatePackageLoader({
+autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts:103:    }).loadAndRepair({ teamMemoryDir, rootTeamRunId });
+--- observed pre-explicit-restore state after restart ---
+{
+  "at": "2026-08-15T20:55:50.043Z",
+  "teamRunId": "stale_team_stale_1786827145248_1b9224423bd4447ca6298e7bad2c3677",
+  "isActive": false,
+  "task": {
+    "taskId": "task_70257a0a02f445acadf6e44fd3acddf3",
+    "delegatorAgentRunId": "stale_coordinator_stale_1786827145248_db8dc5f4ab854dae8ff65f74bea32fea",
+    "recipientAddress": "/worker",
+    "targetAgentRunId": "stale_worker_stale_1786827145248_3e7f14e77ec043e1bc03db7fcd40f129",
+    "targetTeamRunId": null,
+    "status": "active",
+    "description": "REMAIN_ACTIVE_UNTIL_RESTART",
+    "createdAt": "2026-08-15T20:52:34.757Z",
+    "updates": [],
+    "referenceFiles": []
+  },
+  "execution": {
+    "kind": "task_agent",
+    "address": "/worker",
+    "agent_run_id": "stale_worker_stale_1786827145248_3e7f14e77ec043e1bc03db7fcd40f129",
+    "platform_agent_run_id": null,
+    "started_at": "2026-08-15T20:52:34.757Z",
+    "settled_at": null
+  }
+}
+--- observed explicit restore repair ---
+{
+  "at": "2026-08-15T20:56:37.442Z",
+  "teamRunId": "stale_team_stale_1786827145248_1b9224423bd4447ca6298e7bad2c3677",
+  "restore": {
+    "success": true,
+    "message": "Agent team run restored successfully.",
+    "teamRunId": "stale_team_stale_1786827145248_1b9224423bd4447ca6298e7bad2c3677"
+  },
+  "postRestore": {
+    "isActive": true,
+    "task": {
+      "taskId": "task_70257a0a02f445acadf6e44fd3acddf3",
+      "delegatorAgentRunId": "stale_coordinator_stale_1786827145248_db8dc5f4ab854dae8ff65f74bea32fea",
+      "recipientAddress": "/worker",
+      "targetAgentRunId": "stale_worker_stale_1786827145248_3e7f14e77ec043e1bc03db7fcd40f129",
+      "targetTeamRunId": null,
+      "status": "interrupted",
+      "description": "REMAIN_ACTIVE_UNTIL_RESTART",
+      "createdAt": "2026-08-15T20:52:34.757Z",
+      "updates": [
+        {
+          "kind": "interruption",
+          "submissionId": null,
+          "reviewId": null,
+          "reviewedSubmissionId": null,
+          "decision": null,
+          "content": "Interrupted because live task recovery is not supported after TeamRun reopen.",
+          "createdAt": "2026-08-15T20:56:37.386Z"
+        }
+      ]
+    },
+    "execution": {
+      "kind": "task_agent",
+      "address": "/worker",
+      "agent_run_id": "stale_worker_stale_1786827145248_3e7f14e77ec043e1bc03db7fcd40f129",
+      "platform_agent_run_id": null,
+      "started_at": "2026-08-15T20:52:34.757Z",
+      "settled_at": "2026-08-15T20:56:37.386Z"
+    }
+  },
+  "assertions": {
+    "preWasInactive": true,
+    "preTaskWasActive": true,
+    "restoreSucceeded": true,
+    "taskInterrupted": true,
+    "exactlyOneInterruption": true,
+    "exactReason": true,
+    "executionSettled": true
+  },
+  "pass": true
+}
+RESULT=SOURCE_ORIGIN_CONFIRMED

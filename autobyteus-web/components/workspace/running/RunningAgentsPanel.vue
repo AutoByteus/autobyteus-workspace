@@ -29,7 +29,6 @@
             :definition-name="group.definitionName"
             :runs="group.runs"
             :selected-run-id="selectedTeamRunId"
-            :coordinator-route-key="getCoordinatorRouteKey(group.runs[0] || null)"
             @create="createTeamRun"
             @select="selectTeamRun"
             @delete="deleteTeamRun"
@@ -91,13 +90,13 @@ const agentGroups = computed(() => {
 const teamGroups = computed(() => {
   const grouped = new Map<string, AgentTeamContext[]>();
   for (const team of teamContextsStore.allTeamRuns) {
-    const defId = team.config.teamDefinitionId;
+    const defId = team.view.getConfigurationView().teamDefinitionId;
     if (!grouped.has(defId)) grouped.set(defId, []);
     grouped.get(defId)!.push(team);
   }
   return Array.from(grouped.entries()).map(([definitionId, runs]) => ({
     definitionId,
-    definitionName: runs[0]?.config.teamDefinitionName || 'Team',
+    definitionName: runs[0]?.view.getTeamDefinitionName() || 'Team',
     runs,
   }));
 });
@@ -147,16 +146,12 @@ const getSelectedTeamSourceForDefinition = (definitionId: string): AgentTeamCont
   }
 
   const selectedTeam = teamContextsStore.getTeamContextById(selectionStore.selectedRunId);
-  return selectedTeam?.config.teamDefinitionId === definitionId ? selectedTeam : null;
+  return selectedTeam?.view.getConfigurationView().teamDefinitionId === definitionId ? selectedTeam : null;
 };
 
 const getTeamUpdatedAt = (team: AgentTeamContext): string | null | undefined => {
-  if (team.historicalHydration?.updatedAt) {
-    return team.historicalHydration.updatedAt;
-  }
-
-  return Array.from(team.leafAgentContextsByRouteKey.values())
-    .map((member) => member.state.conversation?.updatedAt)
+  return team.view.listAgentContextEntries()
+    .map(({ agentContext }) => agentContext.state.conversation?.updatedAt)
     .sort((left, right) => toTimestamp(right) - toTimestamp(left))[0] ?? null;
 };
 
@@ -192,7 +187,7 @@ const createTeamRun = (definitionId: string) => {
       : null);
 
   if (sourceTeam) {
-    teamRunConfigStore.setConfig(buildEditableTeamRunSeed(sourceTeam.config));
+    teamRunConfigStore.setConfig(buildEditableTeamRunSeed(sourceTeam.view.getConfigurationView()));
   } else {
     teamRunConfigStore.setTemplate(definition);
   }
@@ -212,14 +207,10 @@ const selectTeamRun = (runId: string) => {
   emit('run-selected', { type: 'team', runId });
 };
 
-const selectTeamMember = (teamRunId: string, memberRouteKey: string) => {
+const selectTeamMember = (teamRunId: string, agentRunId: string) => {
   selectionStore.selectRun(teamRunId, 'team');
-  void runHistoryStore.focusTeamMemberAndEnsureHydrated(teamRunId, memberRouteKey);
+  void runHistoryStore.focusTeamMemberAndEnsureHydrated(teamRunId, agentRunId);
   emit('run-selected', { type: 'team', runId: teamRunId });
-};
-
-const getCoordinatorRouteKey = (team: AgentTeamContext | null): string | undefined => {
-  return team?.coordinatorMemberRouteKey || undefined;
 };
 
 const deleteAgentRun = async (runId: string) => {

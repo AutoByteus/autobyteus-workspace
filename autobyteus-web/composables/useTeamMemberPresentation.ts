@@ -5,27 +5,27 @@ import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 export function useTeamMemberPresentation() {
   const agentDefinitionStore = useAgentDefinitionStore();
 
-  const getRouteLeaf = (memberRouteKey: string): string => {
-    return memberRouteKey
+  const getRouteLeaf = (memberAddress: string): string => {
+    return memberAddress
       .split('/')
       .map((segment) => segment.trim())
       .filter((segment) => segment.length > 0)
-      .pop() || memberRouteKey;
+      .pop() || memberAddress;
   };
 
   const getMemberDisplayName = (
-    memberRouteKey: string,
+    memberAddress: string,
     memberContext?: AgentContext | null,
   ): string => {
-    return getRouteLeaf(memberRouteKey)
+    return getRouteLeaf(memberAddress)
       || memberContext?.state.conversation.agentName?.trim()
       || memberContext?.config.agentDefinitionName?.trim()
-      || memberRouteKey
+      || memberAddress
       || 'Team member';
   };
 
   const getMemberAvatarUrl = (
-    memberRouteKey: string,
+    memberAddress: string,
     memberContext?: AgentContext | null,
   ): string => {
     const fromContext = memberContext?.config.agentAvatarUrl?.trim();
@@ -41,7 +41,7 @@ export function useTeamMemberPresentation() {
       }
     }
 
-    const normalizedName = getMemberDisplayName(memberRouteKey, memberContext).trim().toLowerCase();
+    const normalizedName = getMemberDisplayName(memberAddress, memberContext).trim().toLowerCase();
     if (!normalizedName) {
       return '';
     }
@@ -73,13 +73,10 @@ export function useTeamMemberPresentation() {
     }
 
     const mapping: Record<string, string> = {};
-    team.leafAgentContextsByRouteKey.forEach((memberContext, memberRouteKey) => {
-      const memberRunId = String(memberContext.state.runId || '').trim();
-      if (!memberRunId || mapping[memberRunId]) {
-        return;
-      }
-      const memberNode = team.memberNodesByRouteKey.get(memberRouteKey) || null;
-      mapping[memberRunId] = memberNode?.displayName || getMemberDisplayName(memberRouteKey, memberContext);
+    team.view.listAgentContextEntries().forEach(({ agentRunId, memberAddress, agentContext }) => {
+      const exactAgentRunId = agentRunId.trim();
+      if (!exactAgentRunId || exactAgentRunId !== agentContext.state.runId?.trim() || mapping[exactAgentRunId]) return;
+      mapping[exactAgentRunId] = getMemberDisplayName(memberAddress, agentContext);
     });
 
     return mapping;

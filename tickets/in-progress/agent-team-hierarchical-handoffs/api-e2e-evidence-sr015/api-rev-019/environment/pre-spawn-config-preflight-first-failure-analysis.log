@@ -1,0 +1,14 @@
+{
+  "expectedDatabaseUrl": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/sr015-api-rev-019-20260810-1.db",
+  "result": {
+    "databaseUrl": "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/sr015-api-rev-019-20260810-1.db",
+    "appDataDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/sr015-api-rev-019-20260810-1"
+  }
+}\nfile:///private/tmp/api-rev019-preflight-debug.mjs:73
+  throw new Error('CONFIG_ONLY_PREFLIGHT_TARGET_MISMATCH');
+        ^
+
+Error: CONFIG_ONLY_PREFLIGHT_TARGET_MISMATCH
+    at file:///private/tmp/api-rev019-preflight-debug.mjs:73:9
+
+Node.js v22.23.1

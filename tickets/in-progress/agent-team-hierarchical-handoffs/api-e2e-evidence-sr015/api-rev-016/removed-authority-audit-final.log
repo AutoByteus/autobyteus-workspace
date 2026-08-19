@@ -1,0 +1,5 @@
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-execution-address-backfill-graphql.e2e.test.ts ABSENT_AS_APPROVED
+autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-execution-address-backfill-migration.test.ts ABSENT_AS_APPROVED
+retired_registry_authority=absent
+canonical_owner=TeamCanonicalIdentityMigration
+result=pass

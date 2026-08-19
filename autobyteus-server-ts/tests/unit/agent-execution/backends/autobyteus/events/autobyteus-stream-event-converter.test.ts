@@ -260,7 +260,6 @@ describe("AutoByteusStreamEventConverter", () => {
         id: "seg-1",
         turn_id: "turn-1",
         segment_type: "assistant_text",
-        content: "hello",
       },
       statusHint: null,
     });
@@ -272,7 +271,7 @@ describe("AutoByteusStreamEventConverter", () => {
           event_type: "content",
           segment_id: "seg-2",
           turn_id: "turn-2",
-          payload: { text: "chunk" },
+          payload: { delta: "chunk" },
         },
       } as any),
     )?.toMatchObject({
@@ -280,7 +279,7 @@ describe("AutoByteusStreamEventConverter", () => {
       payload: {
         id: "seg-2",
         turn_id: "turn-2",
-        text: "chunk",
+        delta: "chunk",
       },
     });
 
@@ -356,7 +355,7 @@ describe("AutoByteusStreamEventConverter", () => {
     });
   });
 
-  it("drops unknown segment types", () => {
+  it("drops unknown segment variants and rejects missing canonical segment identity at provider ingress", () => {
     const converter = new AutoByteusStreamEventConverter("run-1");
     expect(
       converter.convert({
@@ -365,12 +364,10 @@ describe("AutoByteusStreamEventConverter", () => {
       } as any),
     ).toBeNull();
 
-    expect(
-      converter.convert({
-        event_type: StreamEventType.SEGMENT_EVENT,
-        data: { event_type: "start", segment_id: "seg-5" },
-      } as any),
-    ).toBeNull();
+    expect(converter.convert({
+      event_type: StreamEventType.SEGMENT_EVENT,
+      data: { event_type: "start", segment_id: "seg-5" },
+    } as any)).toBeNull();
   });
 
   it("keeps native turn lifecycle payloads intact", () => {

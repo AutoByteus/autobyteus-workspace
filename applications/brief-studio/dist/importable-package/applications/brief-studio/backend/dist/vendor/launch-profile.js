@@ -61,9 +61,8 @@ export const buildConfiguredTeamMemberLaunchConfigs = (input) => {
         workspaceRootPath: input.workspaceRootPath,
     });
     return input.launchProfile.memberProfiles.map((memberProfile) => ({
-        llmModelIdentifier: requireNonEmptyString(normalizeOptionalString(memberProfile.llmModelIdentifier) ?? defaultLlmModelIdentifier, `llmModelIdentifier for team member '${memberProfile.memberName}'`),
-        memberName: memberProfile.memberName,
-        memberRouteKey: memberProfile.memberRouteKey,
+        llmModelIdentifier: requireNonEmptyString(normalizeOptionalString(memberProfile.llmModelIdentifier) ?? defaultLlmModelIdentifier, `llmModelIdentifier for team member '${memberProfile.memberAddress}'`),
+        memberAddress: memberProfile.memberAddress,
         agentDefinitionId: memberProfile.agentDefinitionId,
         autoExecuteTools: true,
         skillAccessMode,

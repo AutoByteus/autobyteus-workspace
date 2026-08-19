@@ -1,0 +1,140 @@
+API-F-003 MixedTeamManager task lifecycle gate analysis
+utc=2026-08-05T01:03:11Z
+head=d980e000fd7e1282178b2effc85a633255793ea6
+
+Approved/inherited lifecycle authority:
+- API-REV-004 integrated latest-base leaf/open-work termination lifecycle as current durable behavior.
+- The unchanged pre-SR-012 durable scenario requires repeated terminate calls to join and new task work to be rejected while lifecycleState=terminating.
+- Pre-SR-012 production guarded all five task operation entry points with getRoutableTeamContext().
+
+Pre-SR-012 production guards (3927e878d^):
+        this.persistentMembers.listHandles()
+          .find((handle) => handle.context.memberRouteKey === routeKey) ?? null,
+      removeMember: (routeKey) => { this.persistentMembers.remove(routeKey); },
+    });
+  }
+
+  async startTaskAgentInstance(request: StartTaskAgentInstanceRequest): Promise<AgentOperationResult> {
+    if (!this.getRoutableTeamContext()) {
+      return buildRunNotFoundResult("unknown");
+    }
+    return this.taskAgentInstances.start(request);
+  }
+
+  async settleTaskAgentInstance(logicalMemberRouteKey: string, taskAgentRunId: string, _reason: string | null = null): Promise<AgentOperationResult> {
+    const teamContext = this.getRoutableTeamContext();
+    if (!teamContext) return buildRunNotFoundResult("unknown");
+    const result = await this.taskAgentInstances.settle(logicalMemberRouteKey, taskAgentRunId);
+    if (result.accepted) getTaskAgentDirectory(teamContext.runId).markSettledByTaskAgentRunId(taskAgentRunId);
+    return result;
+  }
+
+  async startTaskTeamInstance(request: StartTaskTeamInstanceRequest): Promise<AgentOperationResult> {
+    if (!this.getRoutableTeamContext()) return buildRunNotFoundResult("unknown");
+    return this.taskTeamInstances.start(request);
+  }
+
+  async postMessageToTaskTeamInstance(logicalTeamRouteKey: string, taskTeamRunId: string, message: AgentInputUserMessage): Promise<AgentOperationResult> {
+    if (!this.getRoutableTeamContext()) return buildRunNotFoundResult("unknown");
+    return this.taskTeamInstances.postMessage(logicalTeamRouteKey, taskTeamRunId, message);
+  }
+
+  async settleTaskTeamInstance(logicalTeamRouteKey: string, taskTeamRunId: string, _reason: string | null = null): Promise<AgentOperationResult> {
+    if (!this.getRoutableTeamContext()) return buildRunNotFoundResult("unknown");
+    return this.taskTeamInstances.settle(logicalTeamRouteKey, taskTeamRunId);
+  }
+
+  async terminate(): Promise<AgentOperationResult> {
+
+Current production task entry points:
+   148	    if (isAgentOperationResult(resolved)) return resolved;
+   149	    const handle = this.persistentMembers.getOrCreate(resolved);
+   150	    const result = await handle.terminate();
+   151	    if (result.accepted) this.persistentMembers.remove(resolved.address);
+   152	    return result;
+   153	  }
+   154	
+   155	  startTaskAgentInstance(request: StartTaskAgentInstanceRequest) { return this.taskAgentInstances.start(request); }
+   156	  async settleTaskAgentInstance(target: AgentTeamAddress, taskAgentRunId: string) {
+   157	    const result = await this.taskAgentInstances.settle(target, taskAgentRunId);
+   158	    if (result.accepted && this.teamContext) getTaskAgentDirectory(this.teamContext.config.rootTeam.teamRunId).markSettledByTaskAgentRunId(taskAgentRunId);
+   159	    return result;
+   160	  }
+   161	  startTaskTeamInstance(request: StartTaskTeamInstanceRequest) { return this.taskTeamInstances.start(request); }
+   162	  postMessageToTaskTeamInstance(target: AgentTeamAddress, taskTeamRunId: string, message: AgentInputUserMessage) { return this.taskTeamInstances.postMessage(target, taskTeamRunId, message); }
+   163	  settleTaskTeamInstance(target: AgentTeamAddress, taskTeamRunId: string) { return this.taskTeamInstances.settle(target, taskTeamRunId); }
+   164	
+   165	  async terminate(): Promise<AgentOperationResult> {
+   166	    if (this.lifecycleState === "terminated") return { accepted: true };
+   167	    if (this.terminationPromise) return this.terminationPromise;
+   168	    this.lifecycleState = "terminating";
+   169	    return this.terminationPromise = this.runTermination();
+   170	  }
+   171	
+   172	  publishEvent(event: TeamRunEvent): void { this.publish(event); }
+   173	  subscribeToEvents(listener: TeamRunEventListener): TeamRunEventUnsubscribe { this.eventListeners.add(listener); return () => this.eventListeners.delete(listener); }
+   174	
+
+Current lifecycle context gate:
+   180	    const node = context.index.getAgent(address);
+   181	    if (!node) throw new CollaborationContractError("COLLABORATION_TARGET_NOT_FOUND", `Collaboration target '${address}' has no executable Agent runtime.`);
+   182	    const memberContext = this.persistentMembers.resolveContext(address);
+   183	    if (isAgentOperationResult(memberContext)) throw new CollaborationContractError("COLLABORATION_TARGET_NOT_FOUND", `Collaboration target '${address}' is not reachable.`);
+   184	    const runtimeContext = memberContext.kind === "agent" && memberContext.address === address ? memberContext : null;
+   185	    const participant: InterAgentMessageParticipant = Object.freeze({
+   186	      kind: "agent",
+   187	      executionAddress: createTeamExecutionAddress({ rootTeamRunId: context.config.rootTeam.teamRunId, taskTeamRunIds: context.taskTeamRunIds, memberAddress: address }),
+   188	      agentRunId: node.agentRunId,
+   189	      displayName: getAgentTeamAddressBasename(address) ?? node.agentRunId,
+   190	      runtimeKind: node.runtimeKind,
+   191	      platformAgentRunId: runtimeContext?.platformAgentRunId ?? node.platformAgentRunId,
+   192	    });
+   193	    return { memberContext, endpoint: buildDeliveryEndpointForParticipant(participant), targetAgentRunId: node.agentRunId };
+   194	  }
+   195	
+   196	  private async runTermination(): Promise<AgentOperationResult> {
+   197	    const context = this.teamContext;
+   198	    try {
+   199	      for (const registry of [this.taskAgentInstances, this.taskTeamInstances]) {
+   200	        const result = await registry.terminateAll();
+   201	        if (!result.accepted) { this.lifecycleState = "active"; this.terminationPromise = null; return result; }
+   202	      }
+   203	      for (const handle of this.persistentMembers.listHandles()) {
+   204	        const result = await handle.terminate();
+   205	        if (!result.accepted) { this.lifecycleState = "active"; this.terminationPromise = null; return result; }
+   206	      }
+   207	      this.persistentMembers.dispose(); this.taskAgentInstances.dispose(); this.taskTeamInstances.dispose();
+   208	      if (context) {
+   209	        disposeTaskAgentDirectory(context.config.rootTeam.teamRunId);
+   210	        disposeTaskTeamActiveRunDirectoryForParentTeamRun(context.teamRunId);
+   211	      }
+   212	      this.teamContext = null; this.eventListeners.clear(); this.lifecycleState = "terminated"; this.terminationPromise = null;
+   213	      return { accepted: true };
+   214	    } catch (error) {
+   215	      this.lifecycleState = "active"; this.terminationPromise = null;
+   216	      return { accepted: false, code: "RUNTIME_COMMAND_FAILED", message: `Failed to terminate TeamRun: ${String(error)}` };
+   217	    }
+   218	  }
+   219	
+   220	  private publish(event: TeamRunEvent): void { for (const listener of this.eventListeners) listener(event); }
+   221	}
+
+Focused durable result:
+ ❯ tests/unit/agent-team-execution/mixed-team-manager.test.ts (6 tests | 1 failed) 11ms
+     ✓ forwards one root-canonical intent unchanged with the actual nested Agent identity 3ms
+     ✓ forwards a foreign-root intent unchanged so only the collaboration root validates it 0ms
+     ✓ materializes an AgentTeam recipient through its exact canonical coordinator 2ms
+     ✓ keeps active task-Team handles in snapshots until accepted settlement removes them 3ms
+     × joins repeated termination and rejects new work while terminating without aggregate events 2ms
+     ✓ keeps the Team active when active child termination is rejected 0ms
+AssertionError: expected { accepted: true } to deeply equal { accepted: false, …(2) }
+ Test Files  1 failed (1)
+      Tests  1 failed | 5 passed (6)
+
+Origin conclusion:
+- Current startTaskAgentInstance calls taskAgentInstances.start directly while terminating.
+- The test stubs that registry call to accepted:true; observed accepted:true proves the manager invoked it instead of returning RUN_NOT_FOUND.
+- Current startTaskTeamInstance, postMessageToTaskTeamInstance, settleTaskTeamInstance, and settleTaskAgentInstance likewise lack the lifecycle gate that existed before SR-012.
+- This is a source regression, not a stale expected identity/fixture assertion. No production source was edited by API/E2E.
+
+PASS git diff --check

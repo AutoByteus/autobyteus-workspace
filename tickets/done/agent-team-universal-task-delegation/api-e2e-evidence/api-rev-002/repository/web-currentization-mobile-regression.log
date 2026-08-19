@@ -1,0 +1,26 @@
+
+> autobyteus@1.4.51 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run components/mobile/__tests__/MobileContextSelectionRegression.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web
+
+stderr | components/mobile/__tests__/MobileContextSelectionRegression.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/mobile/__tests__/MobileContextSelectionRegression.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/mobile/__tests__/MobileContextSelectionRegression.spec.ts (11 tests) 76ms
+
+ Test Files  1 passed (1)
+      Tests  11 passed (11)
+   Start at  14:32:41
+   Duration  4.94s (transform 2.69s, setup 4.22s, collect 176ms, tests 76ms, environment 127ms, prepare 133ms)
+

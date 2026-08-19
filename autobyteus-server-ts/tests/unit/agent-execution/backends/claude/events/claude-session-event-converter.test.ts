@@ -58,7 +58,6 @@ describe("ClaudeSessionEventConverter", () => {
       payload: {
         id: "invoke-bash",
         turn_id: "turn-1",
-        segment_type: "tool_call",
         metadata: {
           tool_name: "Bash",
           arguments: {
@@ -135,10 +134,11 @@ describe("ClaudeSessionEventConverter", () => {
       method: ClaudeSessionEventName.ITEM_ADDED,
       params: {
         id: "invoke-send-message",
+        turn_id: "turn-1",
         segment_type: "tool_call",
         tool_name: "mcp__autobyteus_agent_tools__send_message_to",
         arguments: {
-          recipient_name: "pong",
+          recipient_address: "pong",
           content: "hello",
           message_type: "roundtrip_ping",
         },
@@ -150,7 +150,7 @@ describe("ClaudeSessionEventConverter", () => {
         invocation_id: "invoke-send-message",
         tool_name: "mcp__autobyteus_agent_tools__send_message_to",
         arguments: {
-          recipient_name: "pong",
+          recipient_address: "pong",
           content: "hello",
         },
       },
@@ -167,10 +167,11 @@ describe("ClaudeSessionEventConverter", () => {
       method: ClaudeSessionEventName.ITEM_COMPLETED,
       params: {
         id: "invoke-send-message",
+        turn_id: "turn-1",
         segment_type: "tool_call",
         tool_name: "mcp__autobyteus_agent_tools__send_message_to",
         arguments: {
-          recipient_name: "pong",
+          recipient_address: "pong",
           content: "hello",
         },
       },
@@ -179,11 +180,10 @@ describe("ClaudeSessionEventConverter", () => {
     expect(segmentStart).toMatchObject({
       eventType: AgentRunEventType.SEGMENT_START,
       payload: {
-        tool_name: "send_message_to",
         metadata: {
           tool_name: "send_message_to",
           arguments: {
-            recipient_name: "pong",
+            recipient_address: "pong",
             content: "hello",
             message_type: "roundtrip_ping",
           },
@@ -196,11 +196,12 @@ describe("ClaudeSessionEventConverter", () => {
         invocation_id: "invoke-send-message",
         tool_name: "send_message_to",
         arguments: {
-          recipient_name: "pong",
+          recipient_address: "pong",
           content: "hello",
         },
       },
     });
+    expect(segmentStart.payload).not.toHaveProperty("tool_name");
     expect(completed).toMatchObject({
       eventType: AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
       payload: {
@@ -212,16 +213,17 @@ describe("ClaudeSessionEventConverter", () => {
     expect(segmentEnd).toMatchObject({
       eventType: AgentRunEventType.SEGMENT_END,
       payload: {
-        tool_name: "send_message_to",
         metadata: {
           tool_name: "send_message_to",
           arguments: {
-            recipient_name: "pong",
+            recipient_address: "pong",
             content: "hello",
           },
         },
       },
     });
+    expect(segmentEnd.payload).not.toHaveProperty("tool_name");
+    expect(segmentEnd.payload).not.toHaveProperty("segment_type");
     expect(JSON.stringify([segmentStart, started, completed, segmentEnd])).not.toContain(
       "mcp__autobyteus_agent_tools__send_message_to",
     );
@@ -234,10 +236,11 @@ describe("ClaudeSessionEventConverter", () => {
       method: ClaudeSessionEventName.ITEM_ADDED,
       params: {
         id: "invoke-send-message",
+        turn_id: "turn-1",
         segment_type: "tool_call",
         tool_name: "send_message_to",
         arguments: {
-          recipient_name: "pong",
+          recipient_address: "pong",
           content: "hello",
           message_type: "roundtrip_ping",
         },
@@ -249,7 +252,7 @@ describe("ClaudeSessionEventConverter", () => {
         invocation_id: "invoke-send-message",
         tool_name: "send_message_to",
         arguments: {
-          recipient_name: "pong",
+          recipient_address: "pong",
           content: "hello",
           message_type: "roundtrip_ping",
         },
@@ -261,29 +264,48 @@ describe("ClaudeSessionEventConverter", () => {
       payload: {
         id: "invoke-send-message",
         segment_type: "tool_call",
-        tool_name: "send_message_to",
         metadata: {
           tool_name: "send_message_to",
           arguments: {
-            recipient_name: "pong",
+            recipient_address: "pong",
             content: "hello",
             message_type: "roundtrip_ping",
           },
         },
       },
     });
+    expect(segmentStart.payload).not.toHaveProperty("tool_name");
     expect(started).toMatchObject({
       eventType: AgentRunEventType.TOOL_EXECUTION_STARTED,
       payload: {
         invocation_id: "invoke-send-message",
         tool_name: "send_message_to",
         arguments: {
-          recipient_name: "pong",
+          recipient_address: "pong",
           content: "hello",
           message_type: "roundtrip_ping",
         },
       },
     });
+  });
+
+  it("preserves every non-empty native text delta byte without trimming", () => {
+    const converter = new ClaudeSessionEventConverter("run-claude-converter");
+    const deltas = [" hello ", " ", "\n", "foo\n", "x", "x", "ab", "bc"];
+
+    const projected = deltas.map((delta) => {
+      const [event] = converter.convert({
+        method: ClaudeSessionEventName.ITEM_OUTPUT_TEXT_DELTA,
+        params: {
+          id: "claude-text-1",
+          turn_id: "turn-1",
+          delta,
+        },
+      });
+      return event;
+    });
+
+    expect(projected.map((event) => event?.payload.delta)).toEqual(deltas);
   });
 
   it("passes canonical send_message_to success and failure lifecycle events with arguments", () => {
@@ -295,7 +317,7 @@ describe("ClaudeSessionEventConverter", () => {
         invocation_id: "invoke-send-message-success",
         tool_name: "send_message_to",
         arguments: {
-          recipient_name: "pong",
+          recipient_address: "pong",
           content: "hello",
         },
         result: {
@@ -311,7 +333,7 @@ describe("ClaudeSessionEventConverter", () => {
         invocation_id: "invoke-send-message-failed",
         tool_name: "send_message_to",
         arguments: {
-          recipient_name: "missing",
+          recipient_address: "missing",
           content: "hello",
         },
         error: "Recipient missing was not found.",
@@ -324,7 +346,7 @@ describe("ClaudeSessionEventConverter", () => {
         invocation_id: "invoke-send-message-success",
         tool_name: "send_message_to",
         arguments: {
-          recipient_name: "pong",
+          recipient_address: "pong",
           content: "hello",
         },
         result: {
@@ -340,7 +362,7 @@ describe("ClaudeSessionEventConverter", () => {
         invocation_id: "invoke-send-message-failed",
         tool_name: "send_message_to",
         arguments: {
-          recipient_name: "missing",
+          recipient_address: "missing",
           content: "hello",
         },
         error: "Recipient missing was not found.",
@@ -780,7 +802,7 @@ describe("ClaudeSessionEventConverter", () => {
     });
   });
 
-  it("normalizes browser MCP tool names in segment start metadata and top-level payload", () => {
+  it("normalizes browser MCP tool names in canonical segment start metadata", () => {
     const converter = new ClaudeSessionEventConverter("run-claude-converter");
 
     const [segmentStart] = converter.convert({
@@ -801,7 +823,6 @@ describe("ClaudeSessionEventConverter", () => {
       payload: {
         id: "invoke-browser",
         segment_type: "tool_call",
-        tool_name: "open_tab",
         metadata: {
           tool_name: "open_tab",
           arguments: {
@@ -810,6 +831,7 @@ describe("ClaudeSessionEventConverter", () => {
         },
       },
     });
+    expect(segmentStart.payload).not.toHaveProperty("tool_name");
     expect(JSON.stringify(segmentStart.payload)).not.toContain("mcp__autobyteus_agent_tools__open_tab");
   });
 
@@ -837,8 +859,6 @@ describe("ClaudeSessionEventConverter", () => {
       eventType: AgentRunEventType.SEGMENT_END,
       payload: {
         id: "invoke-browser",
-        segment_type: "tool_call",
-        tool_name: "open_tab",
         metadata: {
           tool_name: "open_tab",
           result: {
@@ -848,6 +868,8 @@ describe("ClaudeSessionEventConverter", () => {
         },
       },
     });
+    expect(segmentEnd.payload).not.toHaveProperty("tool_name");
+    expect(segmentEnd.payload).not.toHaveProperty("segment_type");
     expect(JSON.stringify(segmentEnd.payload)).not.toContain("mcp__autobyteus_agent_tools__open_tab");
   });
 

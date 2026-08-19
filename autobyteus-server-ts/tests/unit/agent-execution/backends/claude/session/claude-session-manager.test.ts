@@ -11,6 +11,8 @@ import { buildRuntimeAgentToolExposure } from "../../../../../../src/agent-execu
 import { RuntimeKind } from "../../../../../../src/runtime-management/runtime-kind-enum.js";
 import type { ClaudeSdkQueryLike } from "../../../../../../src/runtime-management/claude/client/claude-sdk-client.js";
 
+const RESTORED_SESSION_ID = "22222222-2222-4222-8222-222222222222";
+
 const waitFor = async (predicate: () => boolean, label: string): Promise<void> => {
   const deadline = Date.now() + 1_000;
   while (Date.now() < deadline) {
@@ -63,7 +65,7 @@ const createRunContext = (input: { runId: string; sessionId?: string }) =>
   });
 
 describe("ClaudeSessionManager", () => {
-  it("creates a run session and initializes runtime context to a fresh local placeholder session id", async () => {
+  it("creates a run session with a reserved provider UUID and no local-id placeholder", async () => {
     const manager = new ClaudeSessionManager({} as never, {
       getSessionMessages: vi.fn(async () => []),
       listModels: vi.fn(async () => []),
@@ -73,23 +75,28 @@ describe("ClaudeSessionManager", () => {
     const session = await manager.createRunSession(runContext as never);
 
     expect(manager.hasRunSession("run-create")).toBe(true);
-    expect(session.runContext.runtimeContext.sessionId).toBe("run-create");
+    expect(session.sessionId).toMatch(
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/,
+    );
+    expect(session.sessionId).not.toBe("run-create");
+    expect(session.runContext.runtimeContext.sessionId).toBeNull();
     expect(session.runContext.runtimeContext.hasCompletedTurn).toBe(false);
     expect(session.runContext.runtimeContext.activeTurnId).toBe(null);
   });
 
-  it("restores a run session and marks it as having completed a prior turn", async () => {
+  it("restores a run session with the exact persisted provider UUID ready for resume", async () => {
     const manager = new ClaudeSessionManager({} as never, {
       getSessionMessages: vi.fn(async () => []),
       listModels: vi.fn(async () => []),
     } as never);
     const runContext = createRunContext({ runId: "run-restore" });
 
-    const session = await manager.restoreRunSession(runContext as never, "claude-session-7");
+    const session = await manager.restoreRunSession(runContext as never, RESTORED_SESSION_ID);
 
     expect(manager.hasRunSession("run-restore")).toBe(true);
-    expect(session.runContext.runtimeContext.sessionId).toBe("claude-session-7");
-    expect(session.runContext.runtimeContext.hasCompletedTurn).toBe(true);
+    expect(session.sessionId).toBe(RESTORED_SESSION_ID);
+    expect(session.runContext.runtimeContext.sessionId).toBeNull();
+    expect(session.runContext.runtimeContext.hasCompletedTurn).toBe(false);
     expect(session.runContext.runtimeContext.activeTurnId).toBe(null);
   });
 
@@ -210,7 +217,7 @@ describe("ClaudeSessionManager", () => {
     (manager as any).toolingCoordinator.clearPendingToolApprovals =
       clearPendingToolApprovals;
 
-    const { turnId } = await session.sendTurn(new AgentInputUserMessage("hello"));
+    const { turnId } = await session.startTurn(new AgentInputUserMessage("hello"));
     await waitFor(
       () =>
         (manager as any).activeQueriesByRunId.get("run-active-terminate") ===
@@ -253,6 +260,8 @@ describe("ClaudeSessionManager", () => {
         ?.activeTurnId,
     ).toBeNull();
     expect(manager.hasRunSession("run-active-terminate")).toBe(false);
-    expect(closeQuery).not.toHaveBeenCalled();
+    expect(closeQuery).toHaveBeenCalledTimes(1);
+    expect(closeQuery).toHaveBeenCalledWith(controlledQuery.query);
+    expect(controlledQuery.query.interrupt).not.toHaveBeenCalled();
   });
 });

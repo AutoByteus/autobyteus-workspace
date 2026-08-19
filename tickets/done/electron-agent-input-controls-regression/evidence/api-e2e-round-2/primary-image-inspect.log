@@ -1,0 +1,3 @@
+# API-REV-002 primary image inspection
+timestamp_utc=2026-08-18T13:21:47Z
+id=sha256:73ee17c213a718d90560940de39755a453b9b8e198835557af2a5c7bbf72aadc os=linux architecture=arm64 working_dir=/app entrypoint=["/usr/local/bin/entrypoint.sh"] size_bytes=1837740238

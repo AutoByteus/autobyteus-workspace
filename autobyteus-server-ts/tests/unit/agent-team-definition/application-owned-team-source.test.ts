@@ -75,7 +75,18 @@ describe("application-owned-team-source", () => {
               refType: "agent",
               refScope: "team_local",
             },
+            {
+              memberName: "reviewer",
+              ref: "reviewer",
+              refType: "agent",
+              refScope: "team_local",
+            },
           ],
+          handoffs: [{
+            from: "/lead",
+            to: "/reviewer",
+            rules: ["When the launch plan needs independent review."],
+          }],
         },
         null,
         2,
@@ -108,7 +119,18 @@ describe("application-owned-team-source", () => {
           refType: "agent",
           refScope: "team_local",
         },
+        {
+          memberName: "reviewer",
+          ref: "reviewer",
+          refType: "agent",
+          refScope: "team_local",
+        },
       ],
+      handoffs: [{
+        from: "/lead",
+        to: "/reviewer",
+        rules: ["When the launch plan needs independent review."],
+      }],
     });
   });
 
@@ -146,6 +168,11 @@ describe("application-owned-team-source", () => {
           refScope: "application_owned",
         }),
       ],
+      handoffs: [{
+        from: "/lead",
+        to: "/subteam",
+        rules: ["When the application review team should take ownership."],
+      }],
     });
 
     const result = buildApplicationOwnedTeamWriteContent(definition, {
@@ -164,6 +191,11 @@ describe("application-owned-team-source", () => {
           reasoning_effort: "medium",
         },
       },
+      handoffs: [{
+        from: "/lead",
+        to: "/subteam",
+        rules: ["When the application review team should take ownership."],
+      }],
       members: [
         {
           memberName: "lead",

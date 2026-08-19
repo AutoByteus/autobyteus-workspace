@@ -1,0 +1,1 @@
+{"query":"query CurrentTeam($teamRunId: String!) { getTeamRunResumeConfig(teamRunId: $teamRunId) { teamRunId isActive executionTree } }","variables":{"teamRunId":"classroom_simulation_team_d442e900ba09450a9f84c286eca7c45d"}}

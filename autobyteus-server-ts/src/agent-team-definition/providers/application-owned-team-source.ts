@@ -9,6 +9,11 @@ import {
 import { readJsonFile } from "../../persistence/file/store-utils.js";
 import type { DefaultLaunchConfig } from "../../launch-preferences/default-launch-config.js";
 import { normalizeDefaultLaunchConfig } from "../../launch-preferences/default-launch-config.js";
+import {
+  cloneCollaborationHandoffs,
+  normalizeCollaborationHandoffs,
+  type CollaborationHandoff,
+} from "../../agent-collaboration/domain/collaboration-handoff.js";
 
 export type ApplicationOwnedTeamSourcePaths = {
   definitionId: string;
@@ -26,6 +31,7 @@ export type ApplicationOwnedTeamSourcePaths = {
 type ApplicationOwnedTeamConfigRecord = {
   coordinatorMemberName?: string;
   members?: ApplicationOwnedTeamConfigMember[];
+  handoffs?: CollaborationHandoff[];
   avatarUrl?: string | null;
   defaultLaunchConfig?: DefaultLaunchConfig | null;
 };
@@ -104,6 +110,7 @@ export const readApplicationOwnedTeamConfigFile = async (
       typeof record.coordinatorMemberName === "string" ? record.coordinatorMemberName : "",
     avatarUrl: typeof record.avatarUrl === "string" ? record.avatarUrl : null,
     members: normalizeMembers(record.members),
+    handoffs: normalizeCollaborationHandoffs(record.handoffs),
     defaultLaunchConfig: normalizeDefaultLaunchConfig(record.defaultLaunchConfig),
   };
 };
@@ -132,6 +139,7 @@ export const readApplicationOwnedTeamDefinitionFromSource = async (
       nodes: canonicalizeApplicationOwnedTeamMembers(config.members ?? [], {
         canonicalizeTeamRef: options.canonicalizeTeamRef,
       }),
+      handoffs: config.handoffs ?? [],
       ownershipScope: "application_owned",
       ownerApplicationId: options.sourcePaths.applicationId,
       ownerApplicationName: options.sourcePaths.applicationName,
@@ -173,6 +181,7 @@ export const buildApplicationOwnedTeamWriteContent = (
     coordinatorMemberName: definition.coordinatorMemberName,
     avatarUrl: definition.avatarUrl ?? null,
     defaultLaunchConfig: definition.defaultLaunchConfig ?? null,
+    handoffs: cloneCollaborationHandoffs(definition.handoffs),
     members: localizeApplicationOwnedTeamMembers(definition.nodes, {
       localizeTeamRef: options.localizeTeamRef,
     }),

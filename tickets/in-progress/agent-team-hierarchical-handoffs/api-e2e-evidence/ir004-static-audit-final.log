@@ -1,0 +1,62 @@
+$ integrated static audit for IR-004 / API-REV-004
+PASS merge identity: ef32724ddb50db9858cb92ca1e61f3bac1eddbd1 parents a5ef1d5bba271da23cb32db74a68829d1c0c63a8 ed3aa872303ccef5d8a097acd19876323ff795ab
+PASS unmerged index: none
+PASS git diff --check
+PASS durable API/E2E delta: 0 added / 7 updated / 0 removed
+ UPDATED autobyteus-server-ts/tests/e2e/external-channel/external-channel-team-open-delivery.e2e.test.ts
+ UPDATED autobyteus-server-ts/tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts
+ UPDATED autobyteus-server-ts/tests/integration/agent-team-execution/mixed-team-run-backend.integration.test.ts
+ UPDATED autobyteus-server-ts/tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts
+ UPDATED autobyteus-server-ts/tests/integration/agent-team-execution/team-run-service.integration.test.ts
+ UPDATED autobyteus-server-ts/tests/integration/api/runtime-selection-top-level.integration.test.ts
+ UPDATED autobyteus-server-ts/tests/integration/run-history/memory-layout-and-projection.integration.test.ts
+PASS changed TeamRun fixtures use no removed aggregate status snapshot API
+PASS maintained memory fixture uses current Agent lifecycle/source-batch/public-event seams
+PASS runtime-selection fixture retains exact create/restore addresses and current Agent/Team lifecycle seams
+PASS obsolete aggregate Team event/status owners absent
+PASS both merge-resolved durable tests assert current leaf/open-work lifecycle
+PASS merge-resolved mixed-manager test retains root-private collaboration delivery materialization
+PASS initial affected selection: 7 failing files; zero ticket/API-delta intersection; every failing file byte-identical to integrated-base parent
+ BASELINE_ONLY tests/integration/agent-execution/agent-run-manager.integration.test.ts
+ BASELINE_ONLY tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts
+ BASELINE_ONLY tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts
+ BASELINE_ONLY tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts
+ BASELINE_ONLY tests/integration/agent-execution/agent-run-service.integration.test.ts
+ BASELINE_ONLY tests/integration/agent-execution/compaction/compaction-agent-parent-fallback.integration.test.ts
+ BASELINE_ONLY tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts
+PASS whole-server baseline: 26 failing files; zero ticket/API-delta intersection; every failing file byte-identical to integrated-base parent
+ BASELINE_ONLY tests/skill-improvement/skill-improvement-target-notification-service.test.ts
+ BASELINE_ONLY tests/integration/api/run-file-changes-api.integration.test.ts
+ BASELINE_ONLY tests/integration/agent-execution/agent-run-manager.integration.test.ts
+ BASELINE_ONLY tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts
+ BASELINE_ONLY tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts
+ BASELINE_ONLY tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts
+ BASELINE_ONLY tests/integration/agent-execution/agent-run-service.integration.test.ts
+ BASELINE_ONLY tests/integration/app-data-migrations/team-run-metadata-member-tree-history.integration.test.ts
+ BASELINE_ONLY tests/integration/file-explorer/file-explorer.integration.test.ts
+ BASELINE_ONLY tests/integration/file-explorer/nested-folder-move-watcher.integration.test.ts
+ BASELINE_ONLY tests/integration/services/media-storage-service.integration.test.ts
+ BASELINE_ONLY tests/unit/agent-execution/agent-run-termination-service.test.ts
+ BASELINE_ONLY tests/unit/agent-packages/package-root-summary.test.ts
+ BASELINE_ONLY tests/unit/file-explorer/file-explorer.test.ts
+ BASELINE_ONLY tests/unit/llm-management/gemini-configuration-service.test.ts
+ BASELINE_ONLY tests/unit/llm-management/model-metadata-provisioning-service.test.ts
+ BASELINE_ONLY tests/unit/services/media-storage-service.test.ts
+ BASELINE_ONLY tests/unit/workspaces/workspace-manager-skill-integration.test.ts
+ BASELINE_ONLY tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts
+ BASELINE_ONLY tests/integration/agent-execution/compaction/compaction-agent-parent-fallback.integration.test.ts
+ BASELINE_ONLY tests/integration/api/rest/upload-file.integration.test.ts
+ BASELINE_ONLY tests/integration/token-usage/providers/default-agent-run-event-pipeline-lifecycle.integration.test.ts
+ BASELINE_ONLY tests/unit/api/rest/application-backends-execution-resource-configurations.test.ts
+ BASELINE_ONLY tests/unit/api/rest/application-backends-prefix.test.ts
+ BASELINE_ONLY tests/unit/agent-customization/processors/response-customization/media-url-transformer-processor.test.ts
+ BASELINE_ONLY tests/unit/api/graphql/converters/workspace-converter.test.ts
+PASS delivery protected stash and backup remain present; backup bytes 214528
+PASS integrated static audit complete
+
+$ post-report artifact consistency audit
+PASS API-REV-004 identifiers, lineage, confidence, and durable delta are consistent
+PASS all canonical absolute reference paths exist
+PASS all 11 API-REV-004 evidence logs exist
+PASS current durable test diff still contains exactly seven updated paths
+PASS post-report artifact consistency audit complete

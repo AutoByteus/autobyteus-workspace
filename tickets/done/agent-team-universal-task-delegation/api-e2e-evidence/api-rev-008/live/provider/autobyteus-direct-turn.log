@@ -1,0 +1,68 @@
+{
+  "teamRunId": "utd_root_team_api_rev_008_1786830349955_378377f03758411599aee067dae67977",
+  "agentRunId": "utd_coordinator_api_rev_008_1786830349955_2a4779f90c5542ed84277191a076c6ce",
+  "durationMs": 6051,
+  "sent": true,
+  "terminalAt": {
+    "type": "TURN_COMPLETED",
+    "atMs": 5431
+  },
+  "websocketError": null,
+  "messageCount": 142,
+  "typeCounts": {
+    "CONNECTED": 1,
+    "TEAM_EXECUTION_VIEW_SNAPSHOT": 1,
+    "TEAM_RUN_LIFECYCLE": 1,
+    "MEMBER_INPUT_MESSAGE": 2,
+    "TURN_STARTED": 2,
+    "SEGMENT_START": 4,
+    "SEGMENT_CONTENT": 104,
+    "SEGMENT_END": 4,
+    "TOKEN_USAGE_UPDATED": 4,
+    "TOOL_EXECUTION_STARTED": 2,
+    "TOOL_LOG": 6,
+    "TASK_DELEGATION_EVENT": 4,
+    "TOOL_EXECUTION_SUCCEEDED": 2,
+    "ASSISTANT_COMPLETE": 2,
+    "TURN_COMPLETED": 2,
+    "SYSTEM_TASK_NOTIFICATION": 1
+  },
+  "tasks": [
+    {
+      "taskId": "task_feabba21c36f436aa3c9cf0085a6a92c",
+      "delegatorAgentRunId": "utd_coordinator_api_rev_008_1786830349955_2a4779f90c5542ed84277191a076c6ce",
+      "recipientAddress": "/worker",
+      "targetAgentRunId": "utd_worker_api_rev_008_1786830349955_4bc5e32c122a452b9b4f4aa7a9570cae",
+      "targetTeamRunId": null,
+      "status": "accepted",
+      "description": "Return E2E_DIRECT_TASK_RESULT_42",
+      "createdAt": "2026-08-15T21:46:12.301Z",
+      "referenceFiles": [],
+      "updates": [
+        {
+          "kind": "submission",
+          "submissionId": "submission_2ebf72b4492140c6b626f8d7f1be5921",
+          "reviewId": null,
+          "interruptionId": null,
+          "reviewedSubmissionId": null,
+          "decision": null,
+          "content": "E2E_DIRECT_TASK_RESULT_42",
+          "createdAt": "2026-08-15T21:46:13.719Z",
+          "referenceFiles": []
+        },
+        {
+          "kind": "review",
+          "submissionId": null,
+          "reviewId": "review_bb22183969594d0bb4066f9f04110015",
+          "interruptionId": null,
+          "reviewedSubmissionId": "submission_2ebf72b4492140c6b626f8d7f1be5921",
+          "decision": "accept",
+          "content": "Accepted: result contains the requested marker E2E_DIRECT_TASK_RESULT_42.",
+          "createdAt": "2026-08-15T21:46:14.987Z",
+          "referenceFiles": []
+        }
+      ]
+    }
+  ],
+  "communications": []
+}

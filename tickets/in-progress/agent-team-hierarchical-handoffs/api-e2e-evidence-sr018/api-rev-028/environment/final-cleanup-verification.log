@@ -1,0 +1,10 @@
+2026-08-12T09:46:11Z
+owned_port_60228=CLOSED
+owned_port_31228=CLOSED
+protected_port_60004=ABSENT_UNTOUCHED
+protected_port_31004=ABSENT_UNTOUCHED
+runtime_removed=true
+disposable_db_removed=true
+temporary_probe_removed=true
+operational_database_action=NONE
+source_fixture_integrity=PASS

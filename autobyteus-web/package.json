@@ -87,6 +87,7 @@
   },
   "devDependencies": {
     "@autobyteus/application-sdk-contracts": "workspace:*",
+    "@autobyteus/team-stream-contracts": "workspace:*",
     "@electron/rebuild": "4.0.4",
     "@graphql-codegen/cli": "^5.0.2",
     "@graphql-codegen/typescript": "^4.0.9",

@@ -1,0 +1,21 @@
+Malformed whole-web invocation caused by unavailable bash mapfile; it is not authoritative.
+Owned process tree before termination:
+76570 76126 S          02:27 node /Users/normy/.nvm/versions/node/v22.21.1/bin/pnpm exec vitest run
+76572 76570 R          02:27 node (vitest)  
+94327 76572 R          00:06 node (vitest 4)     
+95000 76572 R          00:06 node (vitest 1)     
+96093 76572 R          00:04 node (vitest 9)     
+96112 76572 R          00:03 node (vitest 6)     
+96140 76572 R          00:03 node (vitest 2)     
+96157 76572 R          00:03 node (vitest 5)     
+96161 76572 R          00:02 node (vitest 3)     
+96163 76572 R          00:02 node (vitest 7)     
+96182 76572 R          00:01 node (vitest 8)     
+Owned process tree after termination:
+76570     1 S          02:30 node /Users/normy/.nvm/versions/node/v22.21.1/bin/pnpm exec vitest run
+76572 76570 R          02:30 node (vitest)  
+Replacement authoritative selection:
+ Test Files  48 passed (48)
+      Tests  343 passed (343)
+Explicit orphan cleanup after parent-shell termination:
+none

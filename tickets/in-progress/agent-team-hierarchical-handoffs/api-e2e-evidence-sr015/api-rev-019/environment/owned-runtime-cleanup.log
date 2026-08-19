@@ -1,0 +1,24 @@
+{
+  "result": "Pass",
+  "cleanupOwner": "API-REV-019",
+  "checkedWrapper": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/test-support/live-e2e/test-runtime-bootstrap.mjs",
+  "checkedFunction": "removeOwnedTestRuntime",
+  "operationalDatabaseTargetMatch": false,
+  "before": {
+    "runtimeRootExists": true,
+    "databaseExists": true,
+    "rootKeyExists": true
+  },
+  "after": {
+    "runtimeRootExists": false,
+    "databaseExists": false,
+    "rootKeyExists": false,
+    "walExists": false,
+    "shmExists": false,
+    "journalExists": false
+  }
+}
+COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    71461 normy   26u  IPv4 0xbe9eaf34a35017b1      0t0  TCP 127.0.0.1:60004 (LISTEN)
+COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    73207 normy   12u  IPv4 0xe0271daf60061249      0t0  TCP 127.0.0.1:31004 (LISTEN)

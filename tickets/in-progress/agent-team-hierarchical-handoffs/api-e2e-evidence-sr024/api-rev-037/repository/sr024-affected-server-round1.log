@@ -1,0 +1,608 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+
+stderr | tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread MCP tool approval bridge > emits a local MCP completion event when a pending MCP tool call completes
+[CodexSegmentTurnAdmissionRejected] {
+  runtimeKind: 'codex_app_server',
+  runId: 'run-auto',
+  nativeEventName: 'item/completed',
+  reasonCode: 'CODEX_SEGMENT_TURN_INACTIVE'
+}
+
+stdout | tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread turn payload > passes open reasoning effort max to turn/start
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+AppConfig instance created.
+
+ ❯ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts (38 tests | 1 failed) 134ms
+     ✓ auto-accepts MCP tool approvals when autoExecuteTools is enabled 2ms
+     ✓ auto-accepts MCP tool approvals for team members when autoExecuteTools is enabled 1ms
+     ✓ emits approval events for MCP tool calls and answers with the MCP elicitation action 1ms
+     × emits a local MCP completion event when a pending MCP tool call completes 6ms
+     ✓ auto-accepts terminal approvals when autoExecuteTools is enabled 0ms
+     ✓ auto-accepts Codex local runtime tools for team members while preserving dynamic-tool auto execution 54ms
+     ✓ gates file-change approvals in manual mode and returns decline on denial 0ms
+     ✓ gates dynamic tools in manual mode until approval 1ms
+     ✓ claims manual dynamic approvals before awaited handler execution 2ms
+     ✓ denies dynamic tools in manual mode without invoking the handler 0ms
+     ✓ executes dynamic tools immediately when autoExecuteTools is enabled 52ms
+     ✓ grants permission requests automatically in auto mode 1ms
+     ✓ grants permission requests automatically for team members in auto mode 1ms
+     ✓ queues permission requests in manual mode and grants only after approval 1ms
+     ✓ denies permission requests in manual mode with a no-grant response 0ms
+     ✓ stores Codex terminal approvals by exact item id while keeping approvalId as metadata 0ms
+     ✓ passes open reasoning effort max to turn/start 1ms
+     ✓ passes open reasoning effort ultra to turn/start 0ms
+     ✓ passes open reasoning effort Future-Custom to turn/start 0ms
+     ✓ passes an unset reasoning effort as null to turn/start 0ms
+     ✓ passes the configured Codex serviceTier to turn/start 0ms
+     ✓ starts only while idle and returns the strict nested turn identity 0ms
+     ✓ rejects malformed start responses without installing anonymous running state 1ms
+     ✓ steers the exact active turn without lifecycle replacement and settles canonically 1ms
+     ✓ serializes concurrent idle submissions so the second observes the first active turn 1ms
+     ✓ preserves active identity on steer rejection and mismatch without start fallback 1ms
+     ✓ rejects a steer response without its method-specific top-level turnId 0ms
+     ✓ does not reopen a start response after its terminal notification wins the race 0ms
+     ✓ preserves a newer notification identity when an older start response arrives 0ms
+     ✓ queues Codex cumulative snapshot updates immediately without waiting for idle 1ms
+     ✓ maps Codex app-server total fields into cumulative snapshots and last fields into provider-delta metadata 0ms
+     ✓ keeps absent Codex cache writes out of source records and null in reconciliation metadata 1ms
+     ✓ queues multiple same-turn cumulative advancements instead of overwriting by turn id 1ms
+     ✓ keeps late token usage as an immediately consumable cumulative snapshot after turn completion 0ms
+     ✓ flags provider-delta metadata missing when a Codex cumulative total has no last payload 0ms
+     ✓ does not let an old completion or terminal error clear a newer active turn 0ms
+     ✓ classifies an error status change before clearing the matching active turn 0ms
+     ✓ classifies client loss as runtime-global before clearing native identity 0ms
+ ❯ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts (57 tests | 7 failed) 28ms
+     ✓ projects authoritative command arguments for a result-first completed command 3ms
+     ✓ preserves explicit empty arguments for a result-first dynamic terminal 1ms
+     ✓ omits arguments for a genuinely argument-absent dynamic terminal 0ms
+     ✓ ignores codex-prefixed internal events at the dispatcher boundary 0ms
+     ✓ does not map token-usage telemetry into AGENT_STATUS 0ms
+     ✓ normalizes thread/compacted into provider compaction boundary status 1ms
+     ✓ normalizes contextCompaction item start into a non-rotating provider compaction status 0ms
+     ✓ normalizes contextCompaction item completion into a rotating provider compaction boundary 0ms
+     ✓ does not let contextCompaction start suppress the later completed boundary 1ms
+     ✓ normalizes raw context_compaction items into provider compaction boundaries 0ms
+     ✓ dedupes completed contextCompaction and raw context_compaction surfaces for the same item 0ms
+     ✓ ignores compaction_trigger items as non-boundary signals 0ms
+     ✓ dedupes raw compaction items when thread/compacted already reported the boundary 0ms
+     ✓ dedupes raw no-stable compaction items when thread/compacted already reported the boundary 0ms
+     ✓ dedupes later thread/compacted when a raw no-stable compaction item arrived first 0ms
+     ✓ dedupes repeated raw no-stable compaction items in the same converter window 0ms
+     ✓ dedupes stable-id compaction boundaries when the raw item arrives before thread/compacted 0ms
+     ✓ keeps raw compaction items with a distinct stable id after thread/compacted in the same window 0ms
+     ✓ keeps thread/compacted with a distinct stable id after a raw compaction item in the same window 0ms
+     ✓ emits thread status changes as neutral lifecycle facts 0ms
+     ✓ emits only neutral explicit turn lifecycle events 0ms
+     ✓ emits effect-aware Codex errors without a backend status companion 0ms
+     ✓ keeps unclassified Codex errors as content without a guessed status 0ms
+     ✓ does not emit a status companion for a terminal error rejected by native turn guards 0ms
+     ✓ maps local MCP tool approval requests into TOOL_APPROVAL_REQUESTED 1ms
+     ✓ maps local Agent Tools MCP approval requests into TOOL_APPROVAL_REQUESTED with canonical arguments 1ms
+     ✓ maps local permission approval requests into TOOL_APPROVAL_REQUESTED with requested profile context 0ms
+     ✓ fans out mcpToolCall starts into tool_call segment and lifecycle start 0ms
+     ✓ maps local MCP completion events into TOOL_EXECUTION_SUCCEEDED with arguments 0ms
+     ✓ normalizes observed local MCP open_tab completion envelopes into direct browser results 1ms
+     ✓ normalizes Agent Tools MCP delegate_task completion envelopes into direct task results 0ms
+     ✓ normalizes Agent Tools MCP review_task_result completion envelopes into direct task results 0ms
+     ✓ projects generic Codex MCP JSON text envelopes into parsed results 0ms
+     ✓ projects generic Codex MCP plain text envelopes into text results 0ms
+     ✓ projects generic Codex MCP structuredContent before text fallback 0ms
+     ✓ projects generic Codex MCP multi-text envelopes with deterministic separators 0ms
+     ✓ projects generic Codex MCP rich content envelopes into sanitized items 0ms
+     ✓ maps Codex MCP isError result envelopes into failure events without result 0ms
+     × does not project exact envelope-shaped non-MCP Codex dynamic tool results 5ms
+     ✓ normalizes aliased Browser MCP completion results without circular placeholders 2ms
+     ✓ maps failed local MCP completion events into TOOL_EXECUTION_FAILED with arguments 1ms
+     ✓ fans out webSearch starts into tool_call segment and lifecycle start 0ms
+     ✓ omits arguments from the captured hosted webSearch placeholder start 0ms
+     ✓ emits card-capable identity and name without inventing arguments for an unseen webSearch terminal 0ms
+     ✓ fans out successful webSearch completions into terminal success and segment end 0ms
+     ✓ fans out failed webSearch completions into terminal failure and segment end 0ms
+     ✓ fans out Agent Tools MCP send_message_to starts into tool_call segment and canonical lifecycle start 0ms
+     ✓ maps successful Agent Tools MCP send_message_to completions into canonical terminal success 0ms
+     ✓ normalizes non-send Agent Tools MCP completions into canonical tool lifecycle events 0ms
+     ✓ redacts prefixed free-form text and raw secret fields in Agent Tools MCP payloads 0ms
+     ✓ maps failed Agent Tools MCP send_message_to completions into canonical terminal failure 0ms
+     × sanitizes Agent Tools MCP ITEM_COMPLETED segment-end payloads 1ms
+     × maps generic dynamic tool completions into terminal success and segment end 1ms
+     × parses generic dynamic tool JSON text results from contentItems 0ms
+     × fans out fileChange start into segment and lifecycle events 1ms
+     × fans out fileChange completion into success and segment end 0ms
+     × preserves edit_file metadata when converting file-change segments 0ms
+ ❯ tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts (54 tests | 1 failed) 23ms
+     ✓ groups completed provider snapshots and ignores repeated known-item completion 3ms
+     × emits adjacent content and end with one identity when a completed snapshot has no turn 4ms
+     ✓ treats current and legacy reasoning text deltas as permanent state-free no-ops 1ms
+     ✓ groups missing provider identities and separates them only at a real boundary 0ms
+     ✓ clears for ordered-card creation: user message start 1ms
+     ✓ clears for ordered-card creation: ordinary item start 1ms
+     ✓ clears for ordered-card creation: tool start 1ms
+     ✓ clears for ordered-card creation: empty assistant delta 0ms
+     ✓ clears for ordered-card creation: approval request 0ms
+     ✓ clears for ordered-card creation: result-first completion 1ms
+     ✓ clears for ordered-card creation: result-first approval update 0ms
+     ✓ clears for ordered-card creation: result-first local completion 0ms
+     ✓ clears for ordered-card creation: identity-missing local completion 1ms
+     ✓ clears for ordered-card creation: result-first file log 0ms
+     ✓ clears for ordered-card creation: result-first raw log 0ms
+     ✓ clears for ordered-card creation: turn completion 0ms
+     ✓ clears for ordered-card creation: turn start 0ms
+     ✓ clears for ordered-card creation: terminal error 0ms
+     ✓ keeps the reasoning end neutral before lifecycle turn completion output 0ms
+     ✓ keeps the reasoning end neutral before lifecycle turn start output 0ms
+     ✓ keeps the reasoning end neutral before lifecycle terminal error output 1ms
+     ✓ preserves for in-place or no-effect event: non-tool completion 0ms
+     ✓ preserves for in-place or no-effect event: ignored tool call request 0ms
+     ✓ preserves for in-place or no-effect event: ignored permission request 0ms
+     ✓ preserves for in-place or no-effect event: empty file output 0ms
+     ✓ preserves for in-place or no-effect event: empty raw output 0ms
+     ✓ preserves for in-place or no-effect event: reasoning start 0ms
+     ✓ preserves for in-place or no-effect event: compaction start 0ms
+     ✓ preserves for in-place or no-effect event: compaction completion 0ms
+     ✓ preserves for in-place or no-effect event: compaction trigger 0ms
+     ✓ preserves for in-place or no-effect event: plan delta 0ms
+     ✓ preserves for in-place or no-effect event: turn diff 0ms
+     ✓ preserves for in-place or no-effect event: turn progress 0ms
+     ✓ preserves for in-place or no-effect event: raw compaction 0ms
+     ✓ preserves for in-place or no-effect event: thread compacted 0ms
+     ✓ preserves for in-place or no-effect event: thread started 0ms
+     ✓ preserves for in-place or no-effect event: thread status 0ms
+     ✓ preserves for in-place or no-effect event: thread tokens 0ms
+     ✓ preserves for in-place or no-effect event: unknown item 0ms
+     ✓ preserves for in-place or no-effect event: unknown raw 0ms
+     ✓ preserves for in-place or no-effect event: unknown thread 0ms
+     ✓ preserves for in-place or no-effect event: internal notification 0ms
+     ✓ preserves reasoning for matching existing-card success result 0ms
+     ✓ preserves reasoning for matching existing-card failure result 0ms
+     ✓ preserves reasoning for matching existing-card denial result 0ms
+     ✓ preserves reasoning for matching existing-card approval update 0ms
+     ✓ preserves reasoning for matching existing-card start after approval 0ms
+     ✓ preserves reasoning for matching existing-card local MCP completion 0ms
+     ✓ preserves reasoning for matching existing-card file log 0ms
+     ✓ preserves reasoning for matching existing-card raw output 0ms
+     ✓ keeps one block through the exact long-running-tool result sequence 0ms
+     ✓ clears every active turn when an ordered boundary has no turn id 0ms
+     ✓ closes all tracked identities deterministically before reachable turn/started output 0ms
+     ✓ closes all tracked identities deterministically before reachable error output 0ms
+stdout | tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+stderr | tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts > AutoByteusStreamEventConverter > drops unknown segment variants and preserves missing identity for run-owned validation
+[ProviderSegmentAdmissionRejected] {
+  runtimeKind: 'autobyteus',
+  runId: 'run-1',
+  nativeEventName: 'start',
+  reasonCode: 'AUTOBYTEUS_SEGMENT_IDENTITY_INVALID'
+}
+
+ ❯ tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts (27 tests | 1 failed) 10ms
+     ✓ maps turn_started to TURN_STARTED 1ms
+     ✓ maps turn_completed to TURN_COMPLETED 0ms
+     ✓ maps agent_status to AGENT_STATUS 0ms
+     ✓ maps compaction_status to COMPACTION_STATUS 0ms
+     ✓ maps assistant_complete_response to ASSISTANT_COMPLETE 0ms
+     ✓ maps tool_approval_requested to TOOL_APPROVAL_REQUESTED 0ms
+     ✓ maps tool_approved to TOOL_APPROVED 0ms
+     ✓ maps tool_denied to TOOL_DENIED 0ms
+     ✓ maps tool_execution_started to TOOL_EXECUTION_STARTED 0ms
+     ✓ maps tool_execution_succeeded to TOOL_EXECUTION_SUCCEEDED 0ms
+     ✓ maps tool_execution_failed to TOOL_EXECUTION_FAILED 0ms
+     ✓ maps tool_interaction_log_entry to TOOL_LOG 0ms
+     ✓ maps system_task_notification to SYSTEM_TASK_NOTIFICATION 0ms
+     ✓ maps inter_agent_message to INTER_AGENT_MESSAGE 0ms
+     ✓ maps artifact_persisted to ARTIFACT_PERSISTED 0ms
+     ✓ maps error_event to ERROR 0ms
+     ✓ preserves effect-aware errors without owning lifecycle state 0ms
+     ✓ does not grant status or lifecycle authority to malformed terminal error payloads 0ms
+     ✓ uses explicit current status payloads before stale snapshots 0ms
+     ✓ normalizes explicit fine-grained native statuses through the AutoByteus status projector 0ms
+     ✓ preserves semantic compaction operation identity from native compaction statuses 0ms
+     ✓ keeps raw conversion stateless so run-owned reconciliation decides active status 0ms
+     ✓ ignores deprecated artifact_updated stream events 0ms
+     ✓ maps segment events into start, content, and end events 0ms
+     ✓ canonicalizes native segment payloads to turn_id for all segment event variants 0ms
+     × drops unknown segment variants and preserves missing identity for run-owned validation 4ms
+     ✓ keeps native turn lifecycle payloads intact 0ms
+ ❯ tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-tracker.test.ts (7 tests | 1 failed) 7ms
+     ✓ joins adjacent provider items under one allocator-owned id with completed-item separators 1ms
+     ✓ ignores repeated completion of the same known provider item 0ms
+     ✓ returns one ordered end, closes idempotently, and allocates a new id after close 0ms
+     ✓ closes all active blocks in insertion order and has no later duplicate effects 0ms
+     × emits adjacent content and end for missing turn identity without retaining the block 4ms
+     ✓ uses a distinct namespace for each tracker instance 0ms
+     ✓ allocates a fresh id when an active turn is evicted 0ms
+stdout | tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:5355) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts (10 tests) 14ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts (32 tests) 9ms
+ ✓ tests/unit/services/agent-streaming/team-run-event-websocket-message-mapper.test.ts (5 tests) 6ms
+ ✓ tests/unit/application-agent-streaming/application-agent-stream-event-projector.test.ts (14 tests) 4ms
+ ✓ tests/unit/services/agent-streaming/team-runtime-snapshot-service.test.ts (1 test) 4ms
+ ✓ tests/unit/services/agent-streaming/agent-run-event-message-mapper.test.ts (6 tests) 4ms
+ ✓ tests/unit/external-channel/runtime/channel-run-output-event-collector.test.ts (6 tests) 2ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 11 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts > AutoByteusStreamEventConverter > drops unknown segment variants and preserves missing identity for run-owned validation
+AssertionError: expected null to match object { eventType: 'SEGMENT_START', …(2) }
+
+- Expected: 
+{
+  "eventType": "SEGMENT_START",
+  "payload": {
+    "id": "seg-5",
+  },
+  "runId": "run-1",
+}
+
++ Received: 
+null
+
+ ❯ tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts:361:29
+    359|       data: { event_type: "start", segment_id: "seg-5" },
+    360|     } as any);
+    361|     expect(missingIdentity).toMatchObject({
+       |                             ^
+    362|       eventType: AgentRunEventType.SEGMENT_START,
+    363|       runId: "run-1",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/11]⎯
+
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts > Codex reasoning block conversion > emits adjacent content and end with one identity when a completed snapshot has no turn
+AssertionError: expected [] to deeply equal [ 'SEGMENT_START', …(2) ]
+
+- Expected
++ Received
+
+- [
+-   "SEGMENT_START",
+-   "SEGMENT_CONTENT",
+-   "SEGMENT_END",
+- ]
++ []
+
+ ❯ tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts:129:52
+    127|     });
+    128| 
+    129|     expect(events.map((event) => event.eventType)).toEqual([
+       |                                                    ^
+    130|       AgentRunEventType.SEGMENT_START,
+    131|       AgentRunEventType.SEGMENT_CONTENT,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/11]⎯
+
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-tracker.test.ts > CodexReasoningBlockTracker > emits adjacent content and end for missing turn identity without retaining the block
+AssertionError: expected [ { kind: 'start', …(2) }, …(1) ] to deeply equal [ { kind: 'start', …(2) }, …(2) ]
+
+- Expected
++ Received
+
+@@ -8,11 +8,6 @@
+      "delta": "first",
+      "kind": "content",
+      "segmentId": "reasoning-block:nonce-a:1",
+      "turnId": null,
+    },
+-   {
+-     "kind": "end",
+-     "segmentId": "reasoning-block:nonce-a:1",
+-     "turnId": null,
+-   },
+  ]
+
+ ❯ tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-tracker.test.ts:87:19
+     85|     const second = appendCompleted(tracker, null, null, "second");
+     86| 
+     87|     expect(first).toEqual([
+       |                   ^
+     88|       { kind: "start", segmentId: "reasoning-block:nonce-a:1", turnId:…
+     89|       { kind: "content", segmentId: "reasoning-block:nonce-a:1", turnI…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/11]⎯
+
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > does not project exact envelope-shaped non-MCP Codex dynamic tool results
+AssertionError: expected undefined to match object { …(2) }
+
+- Expected: 
+{
+  "eventType": "TOOL_EXECUTION_SUCCEEDED",
+  "payload": {
+    "invocation_id": "call_non_mcp_envelope",
+    "result": {
+      "_meta": {
+        "domain": true,
+      },
+      "content": [
+        {
+          "text": "{\"should\":\"stay wrapped\"}",
+          "type": "text",
+        },
+      ],
+      "structuredContent": null,
+    },
+    "tool_name": "custom_dynamic_tool",
+  },
+}
+
++ Received: 
+undefined
+
+ ❯ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts:1279:26
+    1277|     });
+    1278| 
+    1279|     expect(converted[0]).toMatchObject({
+       |                          ^
+    1280|       eventType: AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+    1281|       payload: {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/11]⎯
+
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > sanitizes Agent Tools MCP ITEM_COMPLETED segment-end payloads
+AssertionError: expected [] to deeply equal [ 'SEGMENT_END' ]
+
+- Expected
++ Received
+
+- [
+-   "SEGMENT_END",
+- ]
++ []
+
+ ❯ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts:1961:55
+    1959|     });
+    1960| 
+    1961|     expect(converted.map((event) => event.eventType)).toEqual([
+       |                                                       ^
+    1962|       AgentRunEventType.SEGMENT_END,
+    1963|     ]);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/11]⎯
+
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > maps generic dynamic tool completions into terminal success and segment end
+AssertionError: expected [] to deeply equal [ 'TOOL_EXECUTION_SUCCEEDED', …(1) ]
+
+- Expected
++ Received
+
+- [
+-   "TOOL_EXECUTION_SUCCEEDED",
+-   "SEGMENT_END",
+- ]
++ []
+
+ ❯ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts:2000:55
+    1998|     });
+    1999| 
+    2000|     expect(converted.map((event) => event.eventType)).toEqual([
+       |                                                       ^
+    2001|       AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+    2002|       AgentRunEventType.SEGMENT_END,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/11]⎯
+
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > parses generic dynamic tool JSON text results from contentItems
+AssertionError: expected [] to deeply equal [ 'TOOL_EXECUTION_SUCCEEDED', …(1) ]
+
+- Expected
++ Received
+
+- [
+-   "TOOL_EXECUTION_SUCCEEDED",
+-   "SEGMENT_END",
+- ]
++ []
+
+ ❯ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts:2054:55
+    2052|     });
+    2053| 
+    2054|     expect(converted.map((event) => event.eventType)).toEqual([
+       |                                                       ^
+    2055|       AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+    2056|       AgentRunEventType.SEGMENT_END,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/11]⎯
+
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > fans out fileChange start into segment and lifecycle events
+AssertionError: expected [] to deeply equal [ 'SEGMENT_START', …(1) ]
+
+- Expected
++ Received
+
+- [
+-   "SEGMENT_START",
+-   "TOOL_EXECUTION_STARTED",
+- ]
++ []
+
+ ❯ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts:2104:55
+    2102|     });
+    2103| 
+    2104|     expect(converted.map((event) => event.eventType)).toEqual([
+       |                                                       ^
+    2105|       AgentRunEventType.SEGMENT_START,
+    2106|       AgentRunEventType.TOOL_EXECUTION_STARTED,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/11]⎯
+
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > fans out fileChange completion into success and segment end
+AssertionError: expected [] to deeply equal [ 'TOOL_EXECUTION_SUCCEEDED', …(1) ]
+
+- Expected
++ Received
+
+- [
+-   "TOOL_EXECUTION_SUCCEEDED",
+-   "SEGMENT_END",
+- ]
++ []
+
+ ❯ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts:2147:55
+    2145|     });
+    2146| 
+    2147|     expect(converted.map((event) => event.eventType)).toEqual([
+       |                                                       ^
+    2148|       AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+    2149|       AgentRunEventType.SEGMENT_END,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/11]⎯
+
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > preserves edit_file metadata when converting file-change segments
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts:2179:23
+    2177|     });
+    2178| 
+    2179|     expect(converted).toHaveLength(1);
+       |                       ^
+    2180|     expect(converted[0]).toMatchObject({
+    2181|       eventType: AgentRunEventType.SEGMENT_START,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/11]⎯
+
+ FAIL  tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread MCP tool approval bridge > emits a local MCP completion event when a pending MCP tool call completes
+AssertionError: expected [] to deep equally contain ObjectContaining{…}
+
+- Expected: 
+ObjectContaining {
+  "method": "codex/local/mcpToolExecutionCompleted",
+  "params": ObjectContaining {
+    "arguments": {
+      "play": true,
+      "text": "codex unit speak probe",
+    },
+    "invocation_id": "call_speak_done",
+    "item": ObjectContaining {
+      "id": "call_speak_done",
+      "status": "completed",
+      "type": "mcpToolCall",
+    },
+    "tool_name": "speak",
+    "turn_id": "turn-1",
+  },
+}
+
++ Received: 
+[]
+
+ ❯ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts:293:22
+    291|     } as never);
+    292| 
+    293|     expect(messages).toContainEqual(
+       |                      ^
+    294|       expect.objectContaining({
+    295|         method: CodexThreadEventName.LOCAL_MCP_TOOL_EXECUTION_COMPLETE…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/11]⎯
+
+
+ Test Files  5 failed | 7 passed (12)
+      Tests  11 failed | 246 passed (257)
+   Start at  09:59:52
+   Duration  6.31s (transform 2.90s, setup 47ms, import 4.63s, tests 246ms, environment 1ms)
+

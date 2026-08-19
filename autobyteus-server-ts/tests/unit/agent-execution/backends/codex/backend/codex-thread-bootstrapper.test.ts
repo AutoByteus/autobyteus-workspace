@@ -16,7 +16,6 @@ import {
 } from "../../../../../../src/agent-tools/browser/browser-tool-contract.js";
 import { RuntimeKind } from "../../../../../../src/runtime-management/runtime-kind-enum.js";
 import { MemberTeamContext } from "../../../../../../src/agent-team-execution/domain/member-team-context.js";
-import { TeamBackendKind } from "../../../../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { Skill } from "../../../../../../src/skills/domain/models.js";
 import type { CodexWorkspaceSkillMaterializer } from "../../../../../../src/agent-execution/backends/codex/codex-workspace-skill-materializer.js";
 import type { CodexWorkspaceResolver } from "../../../../../../src/agent-execution/backends/codex/codex-workspace-resolver.js";
@@ -25,6 +24,7 @@ import type { SkillService } from "../../../../../../src/skills/services/skill-s
 import type { CodexAppServerClientManager } from "../../../../../../src/runtime-management/codex/client/codex-app-server-client-manager.js";
 import type { AgentToolMcpSessionService } from "../../../../../../src/agent-tools/mcp/agent-tool-mcp-session-service.js";
 import type { AgentToolMcpDescriptor } from "../../../../../../src/agent-tools/mcp/agent-tool-mcp-session.js";
+import { testMemberTeamContext } from "../../../../../fixtures/current-team-run-fixtures.js";
 
 const WORKING_DIRECTORY = "/tmp/codex-workspace";
 
@@ -82,15 +82,14 @@ const createRestoreRunContext = (input: {
   });
 
 const createMemberTeamContext = () =>
-  new MemberTeamContext({
+  testMemberTeamContext({
     teamRunId: "team-1",
+    rootTeamRunId: "team-1",
     teamDefinitionId: "team-def-1",
-    teamName: "Codex team",
-    teamBackendKind: TeamBackendKind.MIXED,
-    memberName: "ping",
-    memberRouteKey: "ping",
-    memberRunId: "ping-run-1",
-    sendMessageToEnabled: true,
+    memberAddress: "/ping",
+    coordinatorAddress: "/ping",
+    agentRunId: "ping-run-1",
+    runtimeKind: RuntimeKind.CODEX_APP_SERVER,
     deliverInterAgentMessage: vi.fn(async () => undefined) as any,
   });
 
@@ -295,7 +294,13 @@ describe("CodexThreadBootstrapper", () => {
     expect(createdRunContext.runtimeContext.codexThreadConfig.approvalPolicy).toBe("never");
     expect(createdRunContext.runtimeContext.codexThreadConfig.sandbox).toBe("danger-full-access");
     expect(createdRunContext.runtimeContext.codexThreadConfig.baseInstructions).toContain(
-      "## Team Collaboration",
+      "## AgentTeam Addressing",
+    );
+    expect(createdRunContext.runtimeContext.codexThreadConfig.baseInstructions).toContain(
+      "## AgentTeam Collaboration",
+    );
+    expect(createdRunContext.runtimeContext.codexThreadConfig.baseInstructions).not.toContain(
+      "## Team Runtime",
     );
     expect(createdRunContext.runtimeContext.codexThreadConfig.baseInstructions).not.toContain(
       "## Working Environment",
@@ -309,8 +314,8 @@ describe("CodexThreadBootstrapper", () => {
     expect(restoredRunContext.runtimeContext.threadId).toBe("thread-existing");
     expect(restoredRunContext.runtimeContext.codexThreadConfig.approvalPolicy).toBe("never");
     expect(restoredRunContext.runtimeContext.codexThreadConfig.sandbox).toBe("danger-full-access");
-    expect(restoredRunContext.runtimeContext.codexThreadConfig.baseInstructions).toContain(
-      "## Team Collaboration",
+    expect(restoredRunContext.runtimeContext.codexThreadConfig.baseInstructions).toBe(
+      createdRunContext.runtimeContext.codexThreadConfig.baseInstructions,
     );
   });
 

@@ -52,9 +52,9 @@ export class SkillImprovementResolver {
   @Query(() => GraphqlSkillImprovementEligibility)
   async getTeamMemberSkillImprovementEligibility(
     @Arg("teamRunId", () => String) teamRunId: string,
-    @Arg("memberRunId", () => String) memberRunId: string,
+    @Arg("agentRunId", () => String) agentRunId: string,
   ): Promise<GraphqlSkillImprovementEligibility> {
-    return toGraphqlEligibility(await this.service.getTeamMemberEligibility(teamRunId, memberRunId));
+    return toGraphqlEligibility(await this.service.getTeamMemberEligibility(teamRunId, agentRunId));
   }
 
   @Query(() => GraphqlSkillImprovementRunRecord, { nullable: true })
@@ -82,7 +82,7 @@ export class SkillImprovementResolver {
   ): Promise<GraphqlSkillImprovementStartResult> {
     const result = await this.service.startForTeamMember({
       teamRunId: input.teamRunId,
-      memberRunId: input.memberRunId,
+      agentRunId: input.agentRunId,
       requestedFrom: "team_run_detail",
     });
     return { improvementRunId: result.improvementRunId, improverRunId: result.improverRunId ?? null, record: toGraphqlRecord(result.record) };

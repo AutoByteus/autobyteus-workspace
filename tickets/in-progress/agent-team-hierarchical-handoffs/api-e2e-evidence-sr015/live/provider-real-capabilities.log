@@ -1,0 +1,135 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+
+[90mstdout[2m | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:41789) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts[2m > [22m[2mvalue-safe one-database-vault managed-provider capabilities
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/sr015-api-rev-012-20260809
+Config file path: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/sr015-api-rev-012-20260809/.env
+Loading environment from: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/sr015-api-rev-012-20260809/.env
+[dotenv@17.3.1] injecting env (5) from tests/.tmp/sr015-api-rev-012-20260809/.env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:60001
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:60001
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+APP DATA DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/sr015-api-rev-012-20260809
+DB DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/sr015-api-rev-012-20260809/db
+LOGS DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/sr015-api-rev-012-20260809/logs
+DOWNLOAD DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/sr015-api-rev-012-20260809/download
+MEMORY DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/sr015-api-rev-012-20260809/memory
+============================================================
+AppConfig initialization completed successfully
+
+[90mstdout[2m | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts[2m > [22m[2mvalue-safe one-database-vault managed-provider capabilities
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+{"scenarioId":"autobyteus.remote-llm","health":"READY","configured":["provider.autobyteus.api-key"],"missing":[],"instructionCode":null}
+[90mstdout[2m | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts[2m > [22m[2mvalue-safe one-database-vault managed-provider capabilities[2m > [22m[2mexecutes autobyteus.remote-llm through its reviewed product boundary
+[22m[39mDiscovering Autobyteus models from host: https://api.autobyteus.com
+
+[90mstderr[2m | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts[2m > [22m[2mvalue-safe one-database-vault managed-provider capabilities[2m > [22m[2mexecutes autobyteus.remote-llm through its reviewed product boundary
+[22m[39mSECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+[90mstderr[2m | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts[2m > [22m[2mvalue-safe one-database-vault managed-provider capabilities[2m > [22m[2mexecutes autobyteus.remote-llm through its reviewed product boundary
+[22m[39mAUTOBYTEUS_LLM_DISCOVERY_REMOTE_FAILED
+
+{"scenarioId":"autobyteus.remote-llm","status":"SKIPPED_CAPABILITY_UNAVAILABLE","capability":"llm-model-discovery","instructionCode":"AUTOBYTEUS_LLM_DISCOVERY_FAILED"}
+{"scenarioId":"anthropic.claude-agent-sdk-api-key","health":"READY","configured":["provider.anthropic.api-key"],"missing":[],"instructionCode":null}
+ [32m✓[39m tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts [2m([22m[2m4 tests[22m[2m | [22m[33m1 skipped[39m[2m)[22m[33m 3832[2mms[22m[39m
+     [33m[2m✓[22m[39m executes anthropic.claude-agent-sdk-api-key through its reviewed product boundary [33m 3721[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m3 passed[39m[22m[2m | [22m[33m1 skipped[39m[90m (4)[39m
+[2m   Start at [22m 12:02:28
+[2m   Duration [22m 8.10s[2m (transform 2.85s, setup 9ms, import 3.80s, tests 3.83s, environment 0ms)[22m
+

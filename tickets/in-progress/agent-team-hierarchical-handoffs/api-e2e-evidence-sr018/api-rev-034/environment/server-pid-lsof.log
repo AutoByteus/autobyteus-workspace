@@ -1,0 +1,43 @@
+COMMAND   PID  USER   FD      TYPE             DEVICE  SIZE/OFF                NODE NAME
+node    45388 normy  cwd       DIR               1,13      1024           322907275 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+node    45388 normy  txt       REG               1,13 112928848           255287132 /Users/normy/.hermes/node/bin/node
+node    45388 normy  txt       REG               1,13   2374000 1152921500312573276 /usr/lib/dyld
+node    45388 normy  txt       REG               1,13     72984           293325547 /Library/Preferences/Logging/.plist-cache.TQHe3XLT
+node    45388 normy  txt       REG               1,13  17251592           339927056 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/.prisma/client/libquery_engine-darwin-arm64.dylib.node
+node    45388 normy    0u     unix 0xff7d2fbb80be43c2       0t0                     ->0x1d673f9200e1cd1a
+node    45388 normy    1u     unix 0xfc25783c1c3c2d05       0t0                     ->0x1784dd3f52c85ec6
+node    45388 normy    2u     unix 0x6e22f23c4a277474       0t0                     ->0x9be0fdfb4e3e1029
+node    45388 normy    3u   KQUEUE                                                  count=0, state=0x8
+node    45388 normy    4      PIPE 0x27dcd9d0f2c725db     16384                     ->0x4e1eda9e9f11611
+node    45388 normy    5      PIPE  0x4e1eda9e9f11611     16384                     ->0x27dcd9d0f2c725db
+node    45388 normy    6r      DIR               1,13       704                   2 /
+node    45388 normy    7u   KQUEUE                                                  count=0, state=0xa
+node    45388 normy    8r      DIR               1,13       704                   2 /
+node    45388 normy    9u   KQUEUE                                                  count=0, state=0xa
+node    45388 normy   10r      DIR               1,13       704                   2 /
+node    45388 normy   11r      CHR                3,2       0t0                 336 /dev/null
+node    45388 normy   12w      REG               1,13      5944           339929399 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-034-live-20260812-1/logs/server.log
+node    45388 normy   13u   KQUEUE                                                  count=0, state=0xa
+node    45388 normy   14u   KQUEUE                                                  count=0, state=0xa
+node    45388 normy   15u   KQUEUE                                                  count=0, state=0xa
+node    45388 normy   16u     unix 0xf7eb0aae110bbe20       0t0                     ->0x3009546c11bc508
+node    45388 normy   17u     unix  0x3009546c11bc508       0t0                     ->0xf7eb0aae110bbe20
+node    45388 normy   18u     unix 0xf7eb0aae110bbe20       0t0                     ->0x3009546c11bc508
+node    45388 normy   19u      REG               1,13    217088           339913817 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-034-live-20260812-1.db
+node    45388 normy   20u      REG               1,13    217088           339913817 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-034-live-20260812-1.db
+node    45388 normy   21u      REG               1,13    217088           339913817 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-034-live-20260812-1.db
+node    45388 normy   22u      REG               1,13    217088           339913817 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-034-live-20260812-1.db
+node    45388 normy   23      PIPE 0x76d7f7037fd5940b     16384                     ->0xe001d5e0fba3f645
+node    45388 normy   24u      REG               1,13    217088           339913817 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-034-live-20260812-1.db
+node    45388 normy   25u      REG               1,13    217088           339913817 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-034-live-20260812-1.db
+node    45388 normy   26u      REG               1,13    217088           339913817 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-034-live-20260812-1.db
+node    45388 normy   27u      REG               1,13    217088           339913817 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-034-live-20260812-1.db
+node    45388 normy   28u      REG               1,13    217088           339913817 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-034-live-20260812-1.db
+node    45388 normy   29      PIPE 0xe001d5e0fba3f645     16384                     ->0x76d7f7037fd5940b
+node    45388 normy   30u     IPv4 0x7fa3c03de0267c96       0t0                 TCP 127.0.0.1:60234 (LISTEN)
+node    45388 normy   31u    systm 0x5bba384a4d89b628       0t0                     [ctl com.apple.netsrc id 7 unit 102]
+node    45388 normy   32u     IPv4 0x3d63a6fbe20946f9       0t0                 TCP 127.0.0.1:56446->127.0.0.1:1234 (ESTABLISHED)
+node    45388 normy   33u     unix 0xdd8409901d79b2a4       0t0                     ->0x5d24612b165b5623
+node    45388 normy   34   NPOLICY                                                  
+node    45388 normy   35u     IPv6  0x375d78558392a7f       0t0                 TCP [2003:ca:5732:5aa1:9ab:769a:f04a:9a2c]:56447->[2607:6bc0::10]:443 (ESTABLISHED)
+node    45388 normy   36u     IPv6 0xe88a09661d462df7       0t0                 TCP [2003:ca:5732:5aa1:9ab:769a:f04a:9a2c]:56448->[2606:4700::6812:1c88]:443 (ESTABLISHED)

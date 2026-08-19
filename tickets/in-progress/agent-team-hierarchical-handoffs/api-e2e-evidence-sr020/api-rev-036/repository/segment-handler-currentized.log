@@ -1,0 +1,76 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web
+
+stderr | services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts (22 tests | 1 failed) 16ms
+   ✓ segmentHandler > handleSegmentStart > creates a tool_call conversation segment and seeds Activity state from metadata 3ms
+   ✓ segmentHandler > handleSegmentStart > hydrates tool_call arguments from metadata.arguments/query fields 0ms
+   ✓ segmentHandler > handleSegmentStart > hydrates tool_call arguments when metadata.arguments is serialized JSON 0ms
+   ✓ segmentHandler > handleSegmentStart > does not treat missing tool_name as an Activity-store backend bug 1ms
+   ✓ segmentHandler > handleSegmentStart > replaces unknown_tool when a later SEGMENT_START provides the concrete tool name 0ms
+   ✓ segmentHandler > handleSegmentStart > creates write_file/edit_file/run_bash transcript segments from metadata 1ms
+   ✓ segmentHandler > handleSegmentStart > deduplicates repeated SEGMENT_START with same id 1ms
+   ✓ segmentHandler > handleSegmentStart > deduplicates cross-type start collisions and keeps a single segment 0ms
+   ✓ segmentHandler > handleSegmentContent > appends adjacent reasoning updates with one normalized id to one think segment 1ms
+   ✓ segmentHandler > handleSegmentContent > streams write_file content into the segment state 0ms
+   ✓ segmentHandler > handleSegmentContent > creates a typed late-subscriber segment when canonical content arrives before segment start 0ms
+   ✓ segmentHandler > handleSegmentContent > rejects a conflicting type for the same turn and segment id without mutation 0ms
+   ✓ segmentHandler > handleSegmentContent > preserves text-tool-text order when text segment ids differ around a tool 0ms
+   × segmentHandler > handleSegmentEnd > marks a non-empty reasoning segment presentation-complete through the generic end contract 4ms
+     → expected null to be { type: 'think', …(2) } // Object.is equality
+   ✓ segmentHandler > handleSegmentEnd > retains write_file content when the segment ends 1ms
+   ✓ segmentHandler > handleSegmentEnd > removes empty think segment on end 0ms
+   ✓ segmentHandler > handleSegmentEnd > applies end metadata path/patch to edit_file segment only 0ms
+   ✓ segmentHandler > handleSegmentEnd > applies end metadata command to run_bash segment only 0ms
+   ✓ segmentHandler > handleSegmentEnd > applies end metadata arguments to tool_call segment only 0ms
+   ✓ segmentHandler > handleSegmentEnd > does not downgrade an already-approved tool segment back to parsed on end 0ms
+   ✓ segmentHandler > handleSegmentEnd > marks tool segment interrupted from segment-end interruption metadata 0ms
+   ✓ segmentHandler > handleSegmentEnd > marks partial tool segment failed from segment-end failure metadata 0ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts > segmentHandler > handleSegmentEnd > marks a non-empty reasoning segment presentation-complete through the generic end contract
+AssertionError: expected null to be { type: 'think', …(2) } // Object.is equality
+
+- Expected: 
+{
+  "_streamSegmentIdentity": {
+    "id": "reasoning-block:test:1",
+    "presentationComplete": true,
+    "segmentType": "reasoning",
+    "turnId": "turn-1",
+  },
+  "content": "inspect the tool result",
+  "type": "think",
+}
+
++ Received: 
+null
+
+ ❯ services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts:505:70
+    503| 
+    504|       expect(getStreamSegmentIdentity(segment)?.presentationComplete).…
+    505|       expect(findSegmentById(mockContext, 'reasoning-block:test:1')).t…
+       |                                                                      ^
+    506|     });
+    507| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 21 passed (22)
+   Start at  03:47:10
+   Duration  4.51s (transform 2.43s, setup 3.98s, collect 16ms, tests 16ms, environment 189ms, prepare 124ms)
+

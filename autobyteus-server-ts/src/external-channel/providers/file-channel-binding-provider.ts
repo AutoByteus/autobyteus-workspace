@@ -25,6 +25,7 @@ import {
   prepareExternalChannelStorage,
   resolveExternalChannelStoragePath,
 } from "./external-channel-storage.js";
+import { assertAgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 
 type ChannelBindingRecord = {
   id: string;
@@ -39,8 +40,7 @@ type ChannelBindingRecord = {
   launchPreset?: ChannelBindingLaunchPresetRecord | null;
   agentRunId: string | null;
   teamRunId: string | null;
-  targetMemberRouteKey: string | null;
-  targetMemberPath: string[] | null;
+  targetMemberAddress: string | null;
   allowTransportFallback: boolean;
   createdAt: string;
   updatedAt: string;
@@ -163,17 +163,8 @@ const toRecordTeamLaunchPreset = (
   };
 };
 
-const normalizeMemberPathInput = (
-  value: readonly string[] | null | undefined,
-): string[] | null => {
-  if (!Array.isArray(value)) {
-    return null;
-  }
-  const normalized = value
-    .map((segment) => normalizeNullableString(segment))
-    .filter((segment): segment is string => Boolean(segment));
-  return normalized.length > 0 ? normalized : null;
-};
+const normalizeMemberAddress = (value: string | null | undefined) =>
+  value == null || !value.trim() ? null : assertAgentTeamAddress(value);
 
 const toDomain = (value: ChannelBindingRecord): ChannelBinding => ({
   id: value.id,
@@ -191,8 +182,7 @@ const toDomain = (value: ChannelBindingRecord): ChannelBinding => ({
   teamLaunchPreset:
     value.targetType === "TEAM" ? toDomainTeamLaunchPreset(value.launchPreset) : null,
   teamRunId: value.teamRunId,
-  targetMemberRouteKey: value.targetMemberRouteKey,
-  targetMemberPath: Array.isArray(value.targetMemberPath) ? value.targetMemberPath : null,
+  targetMemberAddress: normalizeMemberAddress(value.targetMemberAddress),
   allowTransportFallback: value.allowTransportFallback,
   createdAt: parseDate(value.createdAt),
   updatedAt: parseDate(value.updatedAt),
@@ -404,8 +394,9 @@ export class FileChannelBindingProvider implements ChannelBindingProvider {
                 ? null
                 : normalizeNullableString(input.teamRunId ?? null) ?? current.teamRunId
               : null,
-          targetMemberRouteKey: normalizeNullableString(input.targetMemberRouteKey ?? null),
-          targetMemberPath: normalizeMemberPathInput(input.targetMemberPath ?? null),
+          targetMemberAddress: nextTargetType === "TEAM"
+            ? normalizeMemberAddress(input.targetMemberAddress)
+            : null,
           allowTransportFallback: input.allowTransportFallback ?? false,
           updatedAt: now,
         };
@@ -445,8 +436,9 @@ export class FileChannelBindingProvider implements ChannelBindingProvider {
           input.targetType === "TEAM"
             ? normalizeNullableString(input.teamRunId ?? null)
             : null,
-        targetMemberRouteKey: normalizeNullableString(input.targetMemberRouteKey ?? null),
-        targetMemberPath: normalizeMemberPathInput(input.targetMemberPath ?? null),
+        targetMemberAddress: input.targetType === "TEAM"
+          ? normalizeMemberAddress(input.targetMemberAddress)
+          : null,
         allowTransportFallback: input.allowTransportFallback ?? false,
         createdAt: now,
         updatedAt: now,

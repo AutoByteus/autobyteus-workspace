@@ -1,0 +1,36 @@
+{
+  "runtimeKind": "autobyteus",
+  "model": "gpt-5.6-luna",
+  "runId": "daily_assistant_1ac07face5134d52bf3b0eecd3560d7e",
+  "sent": true,
+  "terminal": "TURN_COMPLETED",
+  "error": null,
+  "typeCounts": {
+    "CONNECTED": 1,
+    "AGENT_STATUS": 4,
+    "AGENT_COMMAND_ACK": 1,
+    "TURN_STARTED": 1,
+    "SEGMENT_START": 1,
+    "SEGMENT_CONTENT": 1,
+    "SEGMENT_END": 1,
+    "TOKEN_USAGE_UPDATED": 1,
+    "ASSISTANT_COMPLETE": 1,
+    "TURN_COMPLETED": 1
+  },
+  "conversation": [
+    {
+      "kind": "message",
+      "role": "user",
+      "content": "Reply with exactly STANDALONE_autobyteus_OK and do not call tools.",
+      "media": null,
+      "ts": 1786826473.56
+    },
+    {
+      "kind": "message",
+      "role": "assistant",
+      "content": "STANDALONE_autobyteus_OK",
+      "media": null,
+      "ts": 1786826474.461
+    }
+  ]
+}

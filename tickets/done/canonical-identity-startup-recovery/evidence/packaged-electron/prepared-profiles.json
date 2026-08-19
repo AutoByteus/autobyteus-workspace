@@ -1,0 +1,127 @@
+{
+  "status": "ReadyForManualLaunch",
+  "preparedAt": "2026-08-18T09:46:33.537Z",
+  "app": "/Users/normy/autobyteus_org/autobyteus-worktrees/canonical-identity-startup-recovery/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app",
+  "executable": "/Users/normy/autobyteus_org/autobyteus-worktrees/canonical-identity-startup-recovery/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+  "packagedServer": "/Users/normy/autobyteus_org/autobyteus-worktrees/canonical-identity-startup-recovery/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server",
+  "artifacts": {
+    "dmg": "/Users/normy/autobyteus_org/autobyteus-worktrees/canonical-identity-startup-recovery/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.52.dmg",
+    "zip": "/Users/normy/autobyteus_org/autobyteus-worktrees/canonical-identity-startup-recovery/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.52.zip"
+  },
+  "hashes": {
+    "executable": "c0bf182389ea930585e3b0bf5c4f16529461e02bf3be751cb364d0e25f2257e0",
+    "packagedServerEntry": "e8229f8dcdd4d4109310653c20851ac9b293d42190efc9a7a949779a0c752fc4",
+    "sourceServerEntry": "e8229f8dcdd4d4109310653c20851ac9b293d42190efc9a7a949779a0c752fc4",
+    "packagedMatchesSource": true
+  },
+  "productionProfile": "/Users/normy/.autobyteus/server-data",
+  "productionBefore": {
+    "exists": true,
+    "dev": 16777229,
+    "ino": 12014671,
+    "mode": 16877,
+    "size": 992,
+    "mtimeMs": 1786648600712.3284
+  },
+  "profiles": {
+    "warning": {
+      "home": "/tmp/autobyteus-team-v1-packaged-validation/warning-home",
+      "data": "/tmp/autobyteus-team-v1-packaged-validation/warning-home/.autobyteus/server-data",
+      "dbPath": "/tmp/autobyteus-team-v1-packaged-validation/warning-home/.autobyteus/server-data/db/production.db",
+      "kind": "warning",
+      "rows": [
+        {
+          "migration_id": "20260727_custom_provider_v1_secret_migration",
+          "status": "SUCCEEDED",
+          "attempts": 1
+        },
+        {
+          "migration_id": "20260706_remove_global_skill_discovery_mode",
+          "status": "SUCCEEDED",
+          "attempts": 1
+        },
+        {
+          "migration_id": "20260517_team_run_metadata_member_tree",
+          "status": "SUCCEEDED",
+          "attempts": 1
+        },
+        {
+          "migration_id": "20260731_remove_external_runtime_working_context_snapshots",
+          "status": "SUCCEEDED",
+          "attempts": 1
+        },
+        {
+          "migration_id": "20260617_raw_trace_rotation_layout",
+          "status": "SUCCEEDED",
+          "attempts": 1
+        },
+        {
+          "migration_id": "20260707_raw_trace_active_file_name",
+          "status": "SUCCEEDED",
+          "attempts": 1
+        },
+        {
+          "migration_id": "20260731_migrate_native_working_context_snapshots_v5",
+          "status": "SUCCEEDED_WITH_WARNINGS",
+          "attempts": 1
+        },
+        {
+          "migration_id": "20260701_team_communication_projection_addresses",
+          "status": "SUCCEEDED_WITH_WARNINGS",
+          "attempts": 1
+        },
+        {
+          "migration_id": "20260730_token_usage_custom_provider_model_value_backfill",
+          "status": "SUCCEEDED",
+          "attempts": 1
+        },
+        {
+          "migration_id": "20260730_token_usage_provider_name_snapshot_backfill",
+          "status": "SUCCEEDED",
+          "attempts": 1
+        },
+        {
+          "migration_id": "20260623_remove_self_evolution_run_metadata",
+          "status": "SUCCEEDED",
+          "attempts": 1
+        },
+        {
+          "migration_id": "20260521_team_run_history_index_v2",
+          "status": "SUCCEEDED",
+          "attempts": 1
+        },
+        {
+          "migration_id": "20260521_run_history_index_v2",
+          "status": "SUCCEEDED_WITH_WARNINGS",
+          "attempts": 1
+        },
+        {
+          "migration_id": "20260803_custom_provider_readable_identity",
+          "status": "SUCCEEDED_WITH_WARNINGS",
+          "attempts": 1
+        },
+        {
+          "migration_id": "20260814_team_run_execution_tree_v1",
+          "status": "SUCCEEDED_WITH_WARNINGS",
+          "attempts": 1
+        },
+        {
+          "migration_id": "20260801_team_canonical_identity",
+          "status": "FAILED",
+          "attempts": 6
+        }
+      ]
+    },
+    "fatal": {
+      "home": "/tmp/autobyteus-team-v1-packaged-validation/fatal-home",
+      "data": "/tmp/autobyteus-team-v1-packaged-validation/fatal-home/.autobyteus/server-data",
+      "dbPath": "/tmp/autobyteus-team-v1-packaged-validation/fatal-home/.autobyteus/server-data/db/production.db",
+      "kind": "fatal"
+    }
+  },
+  "launch": {
+    "warning": "HOME='/tmp/autobyteus-team-v1-packaged-validation/warning-home' '/Users/normy/autobyteus_org/autobyteus-worktrees/canonical-identity-startup-recovery/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus' --remote-debugging-port=39281",
+    "fatal": "HOME='/tmp/autobyteus-team-v1-packaged-validation/fatal-home' '/Users/normy/autobyteus_org/autobyteus-worktrees/canonical-identity-startup-recovery/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus' --remote-debugging-port=39282"
+  },
+  "fixedServerPort": 29695
+}

@@ -1,0 +1,166 @@
+{
+  "teamRunId": "utd_root_team_api_rev_007_1786826064862_58134fcbc99e4f98b812ae8e63cd5e12",
+  "agentRunId": "utd_coordinator_api_rev_007_1786826064862_9bc676f1aa9f4632898df8c3f297d329",
+  "durationMs": 32060,
+  "sent": true,
+  "terminalAt": null,
+  "websocketError": null,
+  "messageCount": 64,
+  "typeCounts": {
+    "CONNECTED": 1,
+    "TEAM_EXECUTION_VIEW_SNAPSHOT": 1,
+    "TEAM_RUN_LIFECYCLE": 1,
+    "MEMBER_INPUT_MESSAGE": 2,
+    "TURN_STARTED": 1,
+    "SEGMENT_START": 5,
+    "SEGMENT_CONTENT": 35,
+    "TOKEN_USAGE_UPDATED": 6,
+    "SEGMENT_END": 4,
+    "TOOL_EXECUTION_STARTED": 2,
+    "TASK_DELEGATION_EVENT": 4,
+    "TOOL_EXECUTION_SUCCEEDED": 2
+  },
+  "tasks": [
+    {
+      "taskId": "task_b535c1b0a150475e9da15beaafbec1fc",
+      "delegatorAgentRunId": "utd_coordinator_api_rev_007_1786826064862_9bc676f1aa9f4632898df8c3f297d329",
+      "recipientAddress": "/worker",
+      "targetAgentRunId": "utd_worker_api_rev_007_1786826064862_93d9f347efcf43578dea94b31188a275",
+      "targetTeamRunId": null,
+      "status": "accepted",
+      "description": "Return E2E_DIRECT_TASK_RESULT_42",
+      "createdAt": "2026-08-15T20:35:56.940Z",
+      "referenceFiles": [],
+      "updates": [
+        {
+          "kind": "submission",
+          "submissionId": "submission_253eb8eaff7b484db17fb9345d27a069",
+          "reviewId": null,
+          "interruptionId": null,
+          "reviewedSubmissionId": null,
+          "decision": null,
+          "content": "E2E_DIRECT_TASK_RESULT_42",
+          "createdAt": "2026-08-15T20:36:04.063Z",
+          "referenceFiles": []
+        },
+        {
+          "kind": "review",
+          "submissionId": null,
+          "reviewId": "review_d17c1369b4f945b49b925904ac76c840",
+          "interruptionId": null,
+          "reviewedSubmissionId": "submission_253eb8eaff7b484db17fb9345d27a069",
+          "decision": "accept",
+          "content": null,
+          "createdAt": "2026-08-15T20:36:10.680Z",
+          "referenceFiles": []
+        }
+      ]
+    },
+    {
+      "taskId": "task_be036653cd7f4b449b4eb30e9848f9ff",
+      "delegatorAgentRunId": "utd_coordinator_api_rev_007_1786826064862_9bc676f1aa9f4632898df8c3f297d329",
+      "recipientAddress": "/lab",
+      "targetAgentRunId": null,
+      "targetTeamRunId": "utd_child_team_api_rev_007_1786826064862_8ae314d4a7894688b838b08ddcf90423",
+      "status": "accepted",
+      "description": "Return E2E_NESTED_TEAM_RESULT after delegating the required child task",
+      "createdAt": "2026-08-15T20:38:28.604Z",
+      "referenceFiles": [],
+      "updates": [
+        {
+          "kind": "submission",
+          "submissionId": "submission_8ea6c35f97e34a878356b564304e1ee1",
+          "reviewId": null,
+          "interruptionId": null,
+          "reviewedSubmissionId": null,
+          "decision": null,
+          "content": "E2E_NESTED_TEAM_RESULT",
+          "createdAt": "2026-08-15T20:39:03.716Z",
+          "referenceFiles": []
+        },
+        {
+          "kind": "review",
+          "submissionId": null,
+          "reviewId": "review_a68aa120efa54a63a930140065f4883e",
+          "interruptionId": null,
+          "reviewedSubmissionId": "submission_8ea6c35f97e34a878356b564304e1ee1",
+          "decision": "accept",
+          "content": null,
+          "createdAt": "2026-08-15T20:39:05.202Z",
+          "referenceFiles": []
+        }
+      ]
+    },
+    {
+      "taskId": "task_ed6ba8642e9a4064962fe67be3c0ba38",
+      "delegatorAgentRunId": "utd_nested_coordinator_api_rev_007_1786826064862_571effc4204a4525ad438c75ad068ec1",
+      "recipientAddress": "/lab/researcher",
+      "targetAgentRunId": "utd_nested_worker_api_rev_007_1786826064862_857b5fb48e0e410a8e73c095a92c9845",
+      "targetTeamRunId": null,
+      "status": "accepted",
+      "description": "Return E2E_NESTED_CHILD_RESULT",
+      "createdAt": "2026-08-15T20:38:35.318Z",
+      "referenceFiles": [],
+      "updates": [
+        {
+          "kind": "submission",
+          "submissionId": "submission_3001715abb76402db14976a5307f5863",
+          "reviewId": null,
+          "interruptionId": null,
+          "reviewedSubmissionId": null,
+          "decision": null,
+          "content": "E2E_NESTED_CHILD_RESULT",
+          "createdAt": "2026-08-15T20:38:42.258Z",
+          "referenceFiles": []
+        },
+        {
+          "kind": "review",
+          "submissionId": null,
+          "reviewId": "review_ece050e517a240fa885aed89b95353fe",
+          "interruptionId": null,
+          "reviewedSubmissionId": "submission_3001715abb76402db14976a5307f5863",
+          "decision": "accept",
+          "content": null,
+          "createdAt": "2026-08-15T20:39:01.785Z",
+          "referenceFiles": []
+        }
+      ]
+    },
+    {
+      "taskId": "task_19c928f1c5d44aee8858ecd0677f66e5",
+      "delegatorAgentRunId": "utd_coordinator_api_rev_007_1786826064862_9bc676f1aa9f4632898df8c3f297d329",
+      "recipientAddress": "/worker",
+      "targetAgentRunId": "utd_worker_api_rev_007_1786826064862_074005b1cfad45ee8cc4da43ac3995c0",
+      "targetTeamRunId": null,
+      "status": "accepted",
+      "description": "Return E2E_DIRECT_TASK_RESULT_42 for second identity proof.",
+      "createdAt": "2026-08-15T20:50:14.345Z",
+      "referenceFiles": [],
+      "updates": [
+        {
+          "kind": "submission",
+          "submissionId": "submission_8df158f8059b4a74ba7a2b9b49b47776",
+          "reviewId": null,
+          "interruptionId": null,
+          "reviewedSubmissionId": null,
+          "decision": null,
+          "content": "E2E_DIRECT_TASK_RESULT_42",
+          "createdAt": "2026-08-15T20:50:21.219Z",
+          "referenceFiles": []
+        },
+        {
+          "kind": "review",
+          "submissionId": null,
+          "reviewId": "review_7e1816786404472bb980f3bc21f27289",
+          "interruptionId": null,
+          "reviewedSubmissionId": "submission_8df158f8059b4a74ba7a2b9b49b47776",
+          "decision": "accept",
+          "content": null,
+          "createdAt": "2026-08-15T20:50:37.769Z",
+          "referenceFiles": []
+        }
+      ]
+    }
+  ],
+  "communications": []
+}

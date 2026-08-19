@@ -31,6 +31,7 @@ import { OLD_RAW_TRACES_ACTIVE_MEMORY_FILE_NAME } from "../../../src/app-data-mi
 import { RawTraceRotationLayoutMigration } from "../../../src/app-data-migrations/migrations/raw-trace-rotation-layout-migration.js";
 import { RemoveExternalRuntimeWorkingContextSnapshotsMigration } from "../../../src/app-data-migrations/migrations/remove-external-runtime-working-context-snapshots-migration.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import { testAgentNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
 
 const obsoleteFiles = ["episodic.jsonl", "semantic.jsonl", "compacted_memory_manifest.json"];
 let memoryDir: string;
@@ -72,31 +73,29 @@ const writeStandaloneMetadata = async (runId: string, runtimeKind = RuntimeKind.
 
 const writeTeamMetadata = async (teamRunId: string, memberRunId: string): Promise<string> => {
   const teamDir = path.join(memoryDir, "agent_teams", teamRunId);
-  await writeJson(path.join(teamDir, "team_run_metadata.json"), {
-    teamRunId,
-    teamDefinitionId: `team-def-${teamRunId}`,
+  await writeJson(path.join(teamDir, "team_run_execution_tree.json"), testExecutionTree({
+    rootTeamRunId: teamRunId,
+    rootTeamDefinitionId: `team-def-${teamRunId}`,
     teamDefinitionName: "Native Migration Team",
-    coordinatorMemberRouteKey: "lead",
+    coordinatorAddress: "/lead",
     createdAt: "2026-07-31T00:00:00.000Z",
-    archivedAt: null,
-    memberTree: [{
-      memberKind: "agent",
-      memberRouteKey: "lead",
-      memberPath: ["lead"],
-      memberName: "Lead",
-      memberRunId,
+    children: [testAgentNode("/lead", {
+      agentRunId: memberRunId,
       runtimeKind: RuntimeKind.AUTOBYTEUS,
-      platformAgentRunId: null,
-      agentDefinitionId: `agent-${memberRunId}`,
-      llmModelIdentifier: "model-test",
-      autoExecuteTools: false,
       skillAccessMode: SkillAccessMode.NONE,
-      llmConfig: null,
+      autoExecuteTools: false,
       workspaceRootPath: "/workspace/team",
-      applicationExecutionContext: null,
-      role: null,
-      description: null,
-    }],
+    })],
+  }));
+  await writeJson(path.join(teamDir, "task_delegation_records.json"), {
+    schemaVersion: 1,
+    rootTeamRunId: teamRunId,
+    records: [],
+  });
+  await writeJson(path.join(teamDir, "team_communication_messages.json"), {
+    schemaVersion: 1,
+    rootTeamRunId: teamRunId,
+    messages: [],
   });
   return path.join(teamDir, memberRunId);
 };
@@ -272,7 +271,6 @@ describe("MigrateNativeWorkingContextSnapshotsV5Migration", () => {
     await seedObsolete(runDir);
 
     const result = await new MigrateNativeWorkingContextSnapshotsV5Migration(memoryDir).execute();
-
     expect(result.status).toBe("SUCCEEDED_WITH_WARNINGS");
     expect(result.summary.details).toEqual(expect.arrayContaining([
       expect.objectContaining({
@@ -343,7 +341,12 @@ describe("MigrateNativeWorkingContextSnapshotsV5Migration", () => {
     const rotationIndex = defaultDefinitions.findIndex((item) => item instanceof RawTraceRotationLayoutMigration);
     const activeNameIndex = defaultDefinitions.findIndex((item) => item instanceof RawTraceActiveFileNameMigration);
     const nativeIndex = defaultDefinitions.findIndex((item) => item instanceof MigrateNativeWorkingContextSnapshotsV5Migration);
-    expect([externalIndex, rotationIndex, activeNameIndex, nativeIndex]).toEqual([3, 4, 5, 6]);
+    expect(externalIndex).toBeGreaterThanOrEqual(0);
+    expect([rotationIndex, activeNameIndex, nativeIndex]).toEqual([
+      externalIndex + 1,
+      externalIndex + 2,
+      externalIndex + 3,
+    ]);
 
     const runId = "ordinary-runner-direct-upgrade";
     const runDir = standaloneDir(runId);

@@ -1,0 +1,9 @@
+{
+  "slug": "autobyteus",
+  "runtime": "autobyteus",
+  "model": "gpt-5.6-luna",
+  "passed": false,
+  "runId": null,
+  "fatalError": "Error: FRESH_STANDALONE_RUN_NOT_DISCOVERED\nError: FRESH_STANDALONE_RUN_NOT_DISCOVERED\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr018/api-rev-029/live/run-one-standalone-browser-row.mjs:105:21",
+  "termination": null
+}

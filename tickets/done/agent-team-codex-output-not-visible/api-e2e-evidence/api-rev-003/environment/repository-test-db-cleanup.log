@@ -1,0 +1,7 @@
+removed_at=2026-08-17T09:27:26.654095+00:00
+scope=repository test database created by API-REV-003 focused Vitest selection
+database=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db
+database_existed=true
+journal_existed=true
+operational_database_action=NONE
+residue_after=0

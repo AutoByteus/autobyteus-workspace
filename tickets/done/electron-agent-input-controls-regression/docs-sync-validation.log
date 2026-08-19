@@ -1,0 +1,35 @@
+Delivery docs/no-impact and finalization validation
+Ticket: electron-agent-input-controls-regression
+git diff --check: PASS
+Exact implementation boundary: PASS — 1 production file / 4 implementation-owned durable tests
+Docker follow-up boundary: PASS — 3 Dockerfiles / 1 API/E2E-owned durable packaging test
+API/E2E round-1 durable coverage delta: NONE (per API-REV-001 / CRR-002)
+API/E2E round-2 durable coverage delta: 1 UPDATED / CRR-004 PASS
+Long-lived documentation changed: NO
+No-impact rationale present: PASS
+DR-001 baseline: PASS
+DR-002 user acceptance/authorization: PASS
+DR-003 repository finalization/cleanup: PASS
+DR-004 refreshed-target local Electron build: PASS
+DR-005 current-source Docker server build/start: BLOCKED — Local Fix routed to /implementation_engineer
+DR-006 Docker repair/build/start/health: PASS
+Ticket archive: PASS — tickets/done/electron-agent-input-controls-regression
+Ticket commit: 83ff52cbff61225b4a486a8850b34763b4bf939c
+Target merge: ac6e277a73eabb04e6240d6fc820b2325600e45b
+Remote ancestry and cleanup: PASS
+Requested post-finalization local Electron build: PASS — exit 0; macOS arm64 app/DMG/ZIP/blockmaps produced
+DMG verification: PASS — hdiutil checksum VALID
+ZIP verification: PASS — unzip compressed-data test clean
+Developer ID signing/notarization/release/deployment: NOT PERFORMED (out of scope)
+Docker source refresh/isolation: PASS — target current at 469b0b26b; unique Compose project/ports
+DR-005 Docker image build: FAIL — workspace package omitted from Docker builder context
+DR-005 Docker container/health/URL: NOT REACHED
+Docker blocker resolution gates: PASS — IR-002; CRR-003 9.6; API-REV-002 97.2%; CRR-004
+Reviewed Docker repair finalization: PASS — c7dc4e73e pushed; remote divergence 0 0
+Current-source Docker image build/load: PASS — linux/arm64
+Persistent isolated container: PASS — running; restart count 0; unless-stopped
+REST/GraphQL health: PASS — HTTP 200/status ok; GraphQL status ok
+Nodes Backend URL: http://localhost:52704
+Existing Docker container/volume preservation: PASS
+Bounded safety/residual-risk wording: PASS
+Validated: 2026-08-18T15:35:58+02:00

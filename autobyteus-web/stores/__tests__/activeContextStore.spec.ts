@@ -10,6 +10,7 @@ import { useAgentSelectionStore } from '../agentSelectionStore';
 import { useAgentTeamContextsStore } from '../agentTeamContextsStore';
 import { useAgentRunStore } from '../agentRunStore';
 import { useAgentTeamRunStore } from '../agentTeamRunStore';
+import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures';
 
 vi.mock('~/stores/workspaceCenterViewStore', () => ({
   useWorkspaceCenterViewStore: () => ({ showChat: vi.fn() }),
@@ -39,33 +40,21 @@ const createAgentContext = (runId: string): AgentContext => {
   return context;
 };
 
-const buildAgentNode = (memberRouteKey: string) => ({
-  memberKind: 'agent' as const,
-  memberName: memberRouteKey.split('/').at(-1) || memberRouteKey,
-  displayName: memberRouteKey.split('/').at(-1) || memberRouteKey,
-  memberPath: memberRouteKey.split('/'),
-  memberRouteKey,
-  agentDefinitionId: `def-${memberRouteKey}`,
-});
-
 const buildTeamContext = (
   members: Array<[string, AgentContext]>,
-  focusedMemberRouteKey: string,
-) => {
-  const memberTree = members.map(([memberRouteKey]) => buildAgentNode(memberRouteKey));
-  return {
-    teamRunId: 'team-1',
-    config: { teamDefinitionId: 'team-def-1' } as any,
-    memberTree,
-    memberNodesByRouteKey: new Map(memberTree.map((member) => [member.memberRouteKey, member])),
-    leafAgentContextsByRouteKey: new Map(members),
-    coordinatorMemberRouteKey: 'solution_designer',
-    historicalHydration: null,
-    focusedMemberRouteKey,
-    isActive: true,
-    isSubscribed: true,
-  };
-};
+  focusedAgentRunId: string,
+  isActive = true,
+) => buildTestTeamContext({
+  teamRunId: 'team-1',
+  teamDefinitionId: 'team-def-1',
+  rootChildren: members.map(([memberAddress, context]) => testAgentNode(
+    memberAddress.startsWith('/') ? memberAddress : `/${memberAddress}`,
+    { agentRunId: context.state.runId, currentStatus: context.state.currentStatus },
+  )),
+  contexts: members.map(([, context]) => ({ agentRunId: context.state.runId, context })),
+  focusedAgentRunId,
+  isActive,
+});
 
 describe('activeContextStore interrupt routing', () => {
   beforeEach(() => {
@@ -83,11 +72,11 @@ describe('activeContextStore interrupt routing', () => {
     teamContextsStore.addTeamContext(buildTeamContext([
       ['solution_designer', solutionDesigner],
       ['code_reviewer', codeReviewer],
-    ], 'solution_designer'));
+    ], solutionDesigner.state.runId));
     selectionStore.selectRun('team-1', 'team');
 
     expect(activeContextStore.activeAgentContext?.state.runId).toBe('team-1::solution_designer');
-    teamContextsStore.setFocusedMember('code_reviewer');
+    teamContextsStore.focusMember('team-1', codeReviewer.state.runId);
 
     const interruptFocusedMember = vi
       .spyOn(teamRunStore, 'interruptFocusedMemberGeneration')
@@ -98,8 +87,7 @@ describe('activeContextStore interrupt routing', () => {
     expect(result).toBe(true);
     expect(interruptFocusedMember).toHaveBeenCalledWith({
       teamRunId: 'team-1',
-      targetMemberRouteKey: 'code_reviewer',
-      targetMemberRunId: 'team-1::code_reviewer',
+      agentRunId: 'team-1::code_reviewer',
     });
   });
 
@@ -124,7 +112,7 @@ describe('activeContextStore interrupt routing', () => {
     expect(interruptTeam).not.toHaveBeenCalled();
   });
 
-  it('routes stale logical focus through the active-execution team target', () => {
+  it('routes only the exact focused AgentRun through the team target', () => {
     const selectionStore = useAgentSelectionStore();
     const teamContextsStore = useAgentTeamContextsStore();
     const teamRunStore = useAgentTeamRunStore();
@@ -133,11 +121,11 @@ describe('activeContextStore interrupt routing', () => {
 
     teamContextsStore.addTeamContext(buildTeamContext([
       ['solution_designer', solutionDesigner],
-    ], 'solution_designer'));
+    ], solutionDesigner.state.runId));
     selectionStore.selectRun('team-1', 'team');
 
     const activeTeam = teamContextsStore.activeTeamContext!;
-    activeTeam.focusedMemberRouteKey = 'missing_member';
+    activeTeam.view.focusAgent(solutionDesigner.state.runId);
     const interruptFocusedMember = vi
       .spyOn(teamRunStore, 'interruptFocusedMemberGeneration')
       .mockReturnValue(true);
@@ -146,8 +134,7 @@ describe('activeContextStore interrupt routing', () => {
     expect(activeContextStore.interruptGeneration()).toBe(true);
     expect(interruptFocusedMember).toHaveBeenCalledWith({
       teamRunId: 'team-1',
-      targetMemberRouteKey: 'solution_designer',
-      targetMemberRunId: 'team-1::solution_designer',
+      agentRunId: 'team-1::solution_designer',
     });
   });
 
@@ -164,14 +151,109 @@ describe('activeContextStore interrupt routing', () => {
       ...buildTeamContext([
         ['solution_designer', solutionDesigner],
         ['delivery_engineer', deliveryEngineer],
-      ], 'delivery_engineer'),
-      isActive: false,
-      isSubscribed: false,
+      ], deliveryEngineer.state.runId, false),
     });
     selectionStore.selectRun('team-1', 'team');
 
-    expect(teamContextsStore.activeTeamContext?.focusedMemberRouteKey).toBe('delivery_engineer');
-    expect(teamContextsStore.activeExecutionFocusedMemberRouteKey).toBe('solution_designer');
+    expect(teamContextsStore.activeTeamContext?.view.getFocusedMemberAddress()).toBe('/delivery_engineer');
+    expect(teamContextsStore.activeExecutionFocusedMemberAddress).toBe('/delivery_engineer');
     expect(activeContextStore.activeAgentContext?.state.runId).toBe('team-1::delivery_engineer');
+  });
+
+  it('observes exact-member Team composer mutations and keeps a captured voice target isolated across focus changes', () => {
+    const selectionStore = useAgentSelectionStore();
+    const teamContextsStore = useAgentTeamContextsStore();
+    const activeContextStore = useActiveContextStore();
+    const solutionRaw = createAgentContext('team-1::solution_designer');
+    const implementationRaw = createAgentContext('team-1::implementation_engineer');
+    const team = buildTeamContext([
+      ['solution_designer', solutionRaw],
+      ['implementation_engineer', implementationRaw],
+    ], solutionRaw.state.runId);
+    teamContextsStore.addTeamContext(team);
+    selectionStore.selectRun('team-1', 'team');
+
+    const solution = team.view.getAgentContext(solutionRaw.state.runId)!;
+    const implementation = team.view.getAgentContext(implementationRaw.state.runId)!;
+    const solutionFile = {
+      kind: 'workspace_path', id: 'solution-file', locator: '/tmp/solution.txt',
+      displayName: 'solution.txt', type: 'Text',
+    } as const;
+    const solutionImage = {
+      kind: 'workspace_path', id: 'solution-image', locator: '/tmp/solution.png',
+      displayName: 'solution.png', type: 'Image',
+    } as const;
+    const implementationFile = {
+      kind: 'workspace_path', id: 'implementation-file', locator: '/tmp/implementation.txt',
+      displayName: 'implementation.txt', type: 'Text',
+    } as const;
+
+    expect(activeContextStore.activeAgentContext).toBe(solution);
+    expect(activeContextStore.currentRequirement).toBe('');
+    expect(activeContextStore.currentContextPaths).toEqual([]);
+    expect(activeContextStore.submissionPending).toBe(false);
+    expect(activeContextStore.currentStatus).toBe(AgentStatus.Running);
+
+    activeContextStore.updateRequirement('Solution draft');
+    activeContextStore.addContextFilePath(solutionFile);
+    activeContextStore.addContextFilePath(solutionImage);
+    solution.submissionPending = true;
+    expect(activeContextStore.currentRequirement).toBe('Solution draft');
+    expect(activeContextStore.currentContextPaths.map((attachment) => attachment.id))
+      .toEqual(['solution-file', 'solution-image']);
+    expect(activeContextStore.submissionPending).toBe(true);
+
+    const capturedVoiceTarget = activeContextStore.activeAgentContext;
+    teamContextsStore.focusMember('team-1', implementation.state.runId);
+    expect(activeContextStore.activeAgentContext).toBe(implementation);
+    expect(activeContextStore.currentRequirement).toBe('');
+    expect(activeContextStore.currentContextPaths).toEqual([]);
+    expect(activeContextStore.submissionPending).toBe(false);
+
+    activeContextStore.updateRequirement('Implementation draft');
+    activeContextStore.addContextFilePath(implementationFile);
+    implementation.submissionPending = true;
+    activeContextStore.updateRequirementForContext(
+      capturedVoiceTarget,
+      'Solution draft Voice transcript',
+    );
+    activeContextStore.removeContextFilePathForContext(capturedVoiceTarget, 0);
+
+    expect(activeContextStore.currentRequirement).toBe('Implementation draft');
+    expect(activeContextStore.currentContextPaths.map((attachment) => attachment.id))
+      .toEqual(['implementation-file']);
+    expect(activeContextStore.submissionPending).toBe(true);
+    expect(solution.requirement).toBe('Solution draft Voice transcript');
+    expect(solution.contextFilePaths.map((attachment) => attachment.id)).toEqual(['solution-image']);
+
+    activeContextStore.clearContextFilePathsForContext(capturedVoiceTarget);
+    solution.submissionPending = false;
+    teamContextsStore.focusMember('team-1', solution.state.runId);
+    expect(activeContextStore.activeAgentContext).toBe(capturedVoiceTarget);
+    expect(activeContextStore.currentRequirement).toBe('Solution draft Voice transcript');
+    expect(activeContextStore.currentContextPaths).toEqual([]);
+    expect(activeContextStore.submissionPending).toBe(false);
+    expect(implementation.requirement).toBe('Implementation draft');
+    expect(implementation.contextFilePaths.map((attachment) => attachment.id))
+      .toEqual(['implementation-file']);
+    expect(implementation.submissionPending).toBe(true);
+  });
+
+  it('preserves observable standalone Agent draft clearing and transcript insertion', () => {
+    const selectionStore = useAgentSelectionStore();
+    const agentContextsStore = useAgentContextsStore();
+    const activeContextStore = useActiveContextStore();
+    agentContextsStore.runs.set('agent-run-standalone', createAgentContext('agent-run-standalone'));
+    selectionStore.selectRun('agent-run-standalone', 'agent');
+    const standalone = agentContextsStore.runs.get('agent-run-standalone')!;
+
+    expect(activeContextStore.activeAgentContext).toBe(standalone);
+    expect(activeContextStore.currentRequirement).toBe('');
+    activeContextStore.updateRequirement('Standalone draft');
+    expect(activeContextStore.currentRequirement).toBe('Standalone draft');
+    activeContextStore.updateRequirementForContext(standalone, 'Standalone draft Voice transcript');
+    expect(activeContextStore.currentRequirement).toBe('Standalone draft Voice transcript');
+    standalone.requirement = '';
+    expect(activeContextStore.currentRequirement).toBe('');
   });
 });

@@ -1,0 +1,59 @@
+{
+  "revision": "API-REV-016",
+  "generatedAt": "2026-08-09T20:20:44.192Z",
+  "result": "Pass",
+  "rows": [
+    {
+      "scenario": "Codex App Server",
+      "status": "Pass",
+      "teamRunId": "nested_classroom_test_team_b9f6646a1d2b46499fc34e673e47b909",
+      "assertions": {
+        "exactRootedAddresses": true,
+        "allPersistentLeavesExact": true,
+        "coordinatorsExact": true,
+        "oneTask": true,
+        "taskAccepted": true,
+        "taskTeamTarget": true,
+        "rootToNestedHandoff": true,
+        "persistentPeerRequest": true,
+        "persistentPeerResponse": true,
+        "persistentSummaryToTeacher": true,
+        "taskPeerRequest": true,
+        "taskPeerResponse": true,
+        "exactSubmission": true,
+        "acceptedReview": true,
+        "exactTeacherFinal": true,
+        "teacherHandoffRules": true,
+        "noUnexpectedRoot": true,
+        "terminated": true,
+        "inactiveAfterTerminate": true
+      }
+    },
+    {
+      "scenario": "Claude Agent SDK",
+      "status": "Pass",
+      "teamRunId": "nested_classroom_test_team_f07e2d520480467db0a35fd59ab481bb",
+      "assertions": {
+        "exactRootedAddresses": true,
+        "allPersistentLeavesExact": true,
+        "coordinatorsExact": true,
+        "oneTask": true,
+        "taskAccepted": true,
+        "taskTeamTarget": true,
+        "rootToNestedHandoff": true,
+        "persistentPeerRequest": true,
+        "persistentPeerResponse": true,
+        "persistentSummaryToTeacher": true,
+        "taskPeerRequest": true,
+        "taskPeerResponse": true,
+        "exactSubmission": true,
+        "acceptedReview": true,
+        "exactTeacherFinal": true,
+        "teacherHandoffRules": true,
+        "noUnexpectedRoot": true,
+        "terminated": true,
+        "inactiveAfterTerminate": true
+      }
+    }
+  ]
+}

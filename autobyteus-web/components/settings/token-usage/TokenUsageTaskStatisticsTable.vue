@@ -345,17 +345,14 @@ const rowMetadata = (row: TokenUsageTaskStatisticsRow): string => {
   if (row.rowKind === 'TEAM_RUN' && row.rootTeamRunId) {
     return $t('settings.components.settings.TokenUsageStatistics.teamIdSuffix', { id: shortId(row.rootTeamRunId) });
   }
-  if (row.rowKind === 'TASK_TEAM_RUN' && row.taskTeamRunId) {
-    return $t('settings.components.settings.TokenUsageStatistics.taskTeamRunIdSuffix', { id: shortId(row.taskTeamRunId) });
+  if (row.rowKind === 'TASK_TEAM_RUN' && row.runId) {
+    return $t('settings.components.settings.TokenUsageStatistics.taskTeamRunIdSuffix', { id: shortId(row.runId) });
   }
-  if (row.rowKind === 'TASK_AGENT_RUN' && row.taskAgentRunId) {
-    return $t('settings.components.settings.TokenUsageStatistics.taskAgentRunIdSuffix', { id: shortId(row.taskAgentRunId) });
+  if (row.rowKind === 'TASK_AGENT_RUN' && row.runId) {
+    return $t('settings.components.settings.TokenUsageStatistics.taskAgentRunIdSuffix', { id: shortId(row.runId) });
   }
   if (row.rowKind === 'MEMBER_RUN') {
-    if (row.memberAgentRunId) {
-      return $t('settings.components.settings.TokenUsageStatistics.memberRunIdSuffix', { id: shortId(row.memberAgentRunId) });
-    }
-    return shortId(row.memberRouteKey);
+    return row.summary ?? row.displayName;
   }
   return $t('settings.components.settings.TokenUsageStatistics.runIdSuffix', { id: shortId(row.runId) });
 };

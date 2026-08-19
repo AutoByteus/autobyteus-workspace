@@ -1,0 +1,14 @@
+recorded_at=2026-08-09T14:41:29Z
+round=sr015-api-rev-014-20260809
+artifact_head=6b829e3d9aed63a24cd2f1e50c37a3457f9c0718
+source_commit=035fba611e6895187f7f6d4644993e22efd8c38c
+app_data_root=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/sr015-api-rev-014-20260809
+database=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/sr015-api-rev-014-20260809.db
+staged_root=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/sr015-api-rev-014-20260809/staged-agent-package-01
+server_url=http://127.0.0.1:60003
+frontend_url=http://127.0.0.1:31003
+source_env_sha256=3ece3faee6acd2d696401b204de0954ba31576f4132ea81a21472d8d399476ed
+source_fixture=/Users/normy/autobyteus_org/autobyteus-private-agents/agent-teams/nested-classroom-test
+owned_ports_60003_31003=AVAILABLE
+new_env_names=APP_ENV,DB_TYPE,DATABASE_URL,AUTOBYTEUS_SERVER_HOST,AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,ENABLE_APPLICATIONS,ENABLE_SKILL_IMPROVEMENT,AUTOBYTEUS_AGENT_PACKAGE_ROOTS
+agent_package_roots_preload=EMPTY

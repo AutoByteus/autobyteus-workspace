@@ -1,0 +1,5 @@
+# First AutoByteus browser probe analysis
+
+The real product/API lifecycle passed: fresh exact rooted TeamRun, exact task Team, active/awaiting-review/accepted UI, exact submission/review, persistent communication record and reference, refresh/restore, terminal transient cleanup, and termination. The staged prompt still did not make the probabilistic student model elect the peer call; under CRR-061 that remains a nonblocking model-behavior observation because the deterministic bound production-tool request/reply probe passes.
+
+The temporary browser probe itself incorrectly expected message/reference rows without opening the default-collapsed Messages disclosure. The structured public API proved the record/reference existed. The probe was corrected to open `[data-test="team-messages-header"]` before inspecting `[data-test="team-communication-message-list"]`; no production or durable file changed. The first row remains retained as non-authoritative probe evidence and the runtime was successfully terminated.

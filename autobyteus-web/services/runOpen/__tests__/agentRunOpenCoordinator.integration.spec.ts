@@ -14,6 +14,7 @@ const {
   selectRunMock,
   clearTeamRunConfigMock,
   clearAgentRunConfigMock,
+  isAgentStreamReadyMock,
 } = vi.hoisted(() => ({
   loadRunContextHydrationPayloadMock: vi.fn(),
   hydrateActivitiesFromProjectionMock: vi.fn(),
@@ -24,6 +25,7 @@ const {
   selectRunMock: vi.fn(),
   clearTeamRunConfigMock: vi.fn(),
   clearAgentRunConfigMock: vi.fn(),
+  isAgentStreamReadyMock: vi.fn(),
 }));
 
 vi.mock('~/services/runHydration/runContextHydrationService', () => ({
@@ -43,6 +45,7 @@ vi.mock('~/stores/agentRunStore', () => ({
   useAgentRunStore: () => ({
     connectToAgentStream: connectToAgentStreamMock,
     disconnectAgentStream: disconnectAgentStreamMock,
+    isAgentStreamReady: isAgentStreamReadyMock,
   }),
 }));
 
@@ -87,12 +90,7 @@ describe('openAgentRun integration with real agent context store', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
     vi.clearAllMocks();
-    disconnectAgentStreamMock.mockImplementation((runId: string) => {
-      const context = useAgentContextsStore().getRun(runId);
-      if (context) {
-        context.isSubscribed = false;
-      }
-    });
+    isAgentStreamReadyMock.mockReturnValue(true);
   });
 
   it('clears stale interrupt permission when an existing subscribed run is reopened as inactive/offline', async () => {
@@ -105,7 +103,6 @@ describe('openAgentRun integration with real agent context store', () => {
       status: AgentStatus.Running,
     });
     const existing = store.getRun(runId)!;
-    existing.isSubscribed = true;
 
     const offlineConversation = buildConversation('2026-05-16T00:02:00.000Z');
     loadRunContextHydrationPayloadMock.mockResolvedValue({
@@ -132,7 +129,6 @@ describe('openAgentRun integration with real agent context store', () => {
     expect(existing.state.currentStatus).toBe(AgentStatus.Offline);
     expect(existing.state.conversation).toEqual(offlineConversation);
     expect(disconnectAgentStreamMock).toHaveBeenCalledWith(runId);
-    expect(existing.isSubscribed).toBe(false);
     expect(connectToAgentStreamMock).not.toHaveBeenCalled();
   });
 });

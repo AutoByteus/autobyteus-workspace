@@ -1,0 +1,36 @@
+{
+  "timestamp": "2026-08-15T15:56:05.192062+00:00",
+  "rootGuard": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation",
+  "items": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/tests/.tmp/api-rev-005-live-20260815-1",
+      "before": true,
+      "after": false
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/db/api-rev-005-live-20260815-1.db",
+      "before": true,
+      "after": false
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/db/api-rev-005-live-20260815-1.db.secret.key",
+      "before": true,
+      "after": false
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/db/api-rev-005-live-20260815-1.db-wal",
+      "before": false,
+      "after": false
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/db/api-rev-005-live-20260815-1.db-shm",
+      "before": false,
+      "after": false
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/db/api-rev-005-live-20260815-1.db-journal",
+      "before": false,
+      "after": false
+    }
+  ]
+}

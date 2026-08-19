@@ -1,0 +1,14 @@
+API-REV-006 current-contract static audit
+HEAD=8a0494e8b55a3debc7acbee7b61d286d5311d1a8
+unmerged_count=0
+active_skip_only_todo:
+none
+retired identity symbols in forward runtime owners (migration subtree intentionally excluded):
+none
+diff_check_unstaged:
+PASS
+diff_check_staged:
+PASS
+diff_check_HEAD:
+PASS
+RESULT=PASS

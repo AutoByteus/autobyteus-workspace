@@ -1,0 +1,50 @@
+[
+  {
+    "type": "debug",
+    "text": "[vite] connecting..."
+  },
+  {
+    "type": "debug",
+    "text": "[vite] connected."
+  },
+  {
+    "type": "log",
+    "text": "serverStore: Initializing server config"
+  },
+  {
+    "type": "log",
+    "text": "serverStore: Not in Electron environment. Skipping server initialization."
+  },
+  {
+    "type": "info",
+    "text": "<Suspense> is an experimental feature and its API will likely change."
+  },
+  {
+    "type": "log",
+    "text": "ServerLoading: Component mounted with status: running"
+  },
+  {
+    "type": "log",
+    "text": "Workspace.vue: Mounted. Fetching server settings and loading profiles..."
+  },
+  {
+    "type": "log",
+    "text": "[useTerminalSession] Connecting to: ws://127.0.0.1:60418/ws/terminal/8cd1524a-6ddf-4c0d-98a6-2244c49b9023"
+  },
+  {
+    "type": "log",
+    "text": "[useTerminalSession] Connected"
+  },
+  {
+    "type": "log",
+    "text": "serverStore: Checking server health at /rest/health"
+  },
+  {
+    "type": "log",
+    "text": "Download the Apollo DevTools for a better development experience: %s https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm"
+  },
+  {
+    "type": "log",
+    "text": "Team WebSocket transport connected"
+  }
+]

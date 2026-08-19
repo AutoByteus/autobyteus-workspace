@@ -1,0 +1,381 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+
+stdout | tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:14981) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts (5 tests | 1 failed) 10ms
+     ✓ interrupts only the persistent Agent selected by its exact execution address 3ms
+     × rejects an unknown task AgentRun selection without falling back to the persistent Agent 4ms
+     ✓ settles only the requested canonical member address 0ms
+     ✓ routes approval to the exact task AgentRun at the logical address 1ms
+     ✓ routes messages to the exact task AgentRun at the logical address 1ms
+stdout | tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:14985) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts > cross-runtime memory persistence integration > persists open Codex reasoning before visible backend events and reloads it from local projection
+AgentRunManager initialized.
+
+stdout | tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts > cross-runtime memory persistence integration > persists open Codex reasoning before visible backend events and reloads it from local projection
+Successfully created codex_app_server agent run 'codex-reasoning-memory-run'.
+
+stderr | tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts > cross-runtime memory persistence integration > persists open Codex reasoning before visible backend events and reloads it from local projection
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-runtime-memory-persistence-2F6WtR/working_context_snapshot.json
+
+stdout | tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts > cross-runtime memory persistence integration > persists standalone codex_app_server memory from AgentRunManager without websocket attachment
+AgentRunManager initialized.
+
+stdout | tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts > cross-runtime memory persistence integration > persists standalone codex_app_server memory from AgentRunManager without websocket attachment
+Successfully created codex_app_server agent run 'memory-persistence-codex_app_server'.
+
+stderr | tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts > cross-runtime memory persistence integration > persists standalone codex_app_server memory from AgentRunManager without websocket attachment
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-runtime-memory-persistence-WFp5uE/working_context_snapshot.json
+
+stdout | tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts > cross-runtime memory persistence integration > persists standalone claude_agent_sdk memory from AgentRunManager without websocket attachment
+AgentRunManager initialized.
+
+stdout | tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts > cross-runtime memory persistence integration > persists standalone claude_agent_sdk memory from AgentRunManager without websocket attachment
+Successfully created claude_agent_sdk agent run 'memory-persistence-claude_agent_sdk'.
+
+stderr | tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts > cross-runtime memory persistence integration > persists standalone claude_agent_sdk memory from AgentRunManager without websocket attachment
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-runtime-memory-persistence-H7y96j/working_context_snapshot.json
+
+stdout | tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts > cross-runtime memory persistence integration > does not duplicate native Autobyteus memory through the server recorder
+AgentRunManager initialized.
+
+stdout | tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts > cross-runtime memory persistence integration > does not duplicate native Autobyteus memory through the server recorder
+Successfully created autobyteus agent run 'native-memory-owned-run'.
+
+stdout | tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts > cross-runtime memory persistence integration > uses Codex thread/raw compaction duplicate-window conversion to write one marker and one archive segment
+AgentRunManager initialized.
+
+stdout | tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts > cross-runtime memory persistence integration > uses Codex thread/raw compaction duplicate-window conversion to write one marker and one archive segment
+Successfully created codex_app_server agent run 'codex-compaction-memory-run'.
+
+stderr | tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts > cross-runtime memory persistence integration > uses Codex thread/raw compaction duplicate-window conversion to write one marker and one archive segment
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-runtime-memory-persistence-1LLhyS/working_context_snapshot.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-runtime-memory-persistence-1LLhyS/working_context_snapshot.json
+
+stdout | tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts > cross-runtime memory persistence integration > defers a captured Codex hosted-search placeholder and writes the terminal call before its name-bearing result
+AgentRunManager initialized.
+
+stdout | tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts > cross-runtime memory persistence integration > defers a captured Codex hosted-search placeholder and writes the terminal call before its name-bearing result
+Successfully created codex_app_server agent run 'codex-hosted-search-memory-run'.
+
+stdout | tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts > cross-runtime memory persistence integration > persists a normalized Claude MCP tool name on both the observed call and later result
+AgentRunManager initialized.
+
+stdout | tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts > cross-runtime memory persistence integration > persists a normalized Claude MCP tool name on both the observed call and later result
+Successfully created claude_agent_sdk agent run 'claude-tool-memory-run'.
+
+stdout | tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts > cross-runtime memory persistence integration > keeps Codex contextCompaction start non-rotating in the recorder flow
+AgentRunManager initialized.
+
+stdout | tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts > cross-runtime memory persistence integration > keeps Codex contextCompaction start non-rotating in the recorder flow
+Successfully created codex_app_server agent run 'codex-context-compaction-start-memory-run'.
+
+stdout | tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts > cross-runtime memory persistence integration > rotates Codex raw traces at item/completed contextCompaction boundaries
+AgentRunManager initialized.
+
+stdout | tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts > cross-runtime memory persistence integration > rotates Codex raw traces at item/completed contextCompaction boundaries
+Successfully created codex_app_server agent run 'codex-context-compaction-completed-memory-run'.
+
+stderr | tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts > cross-runtime memory persistence integration > rotates Codex raw traces at item/completed contextCompaction boundaries
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-runtime-memory-persistence-uiDLzi/working_context_snapshot.json
+
+stdout | tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts > cross-runtime memory persistence integration > rotates Codex raw traces at rawResponseItem/completed context_compaction boundaries
+AgentRunManager initialized.
+
+stdout | tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts > cross-runtime memory persistence integration > rotates Codex raw traces at rawResponseItem/completed context_compaction boundaries
+Successfully created codex_app_server agent run 'codex-raw-context-compaction-memory-run'.
+
+stdout | tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts > cross-runtime memory persistence integration > dedupes duplicate Codex contextCompaction and raw context_compaction completed surfaces before rotation
+AgentRunManager initialized.
+
+stdout | tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts > cross-runtime memory persistence integration > dedupes duplicate Codex contextCompaction and raw context_compaction completed surfaces before rotation
+Successfully created codex_app_server agent run 'codex-context-compaction-duplicate-memory-run'.
+
+stderr | tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts > cross-runtime memory persistence integration > dedupes duplicate Codex contextCompaction and raw context_compaction completed surfaces before rotation
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-runtime-memory-persistence-SI4LF2/working_context_snapshot.json
+
+stdout | tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts > cross-runtime memory persistence integration > keeps distinct Codex stable completed IDs as separate provider boundaries
+AgentRunManager initialized.
+
+stdout | tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts > cross-runtime memory persistence integration > keeps distinct Codex stable completed IDs as separate provider boundaries
+Successfully created codex_app_server agent run 'codex-context-compaction-distinct-memory-run'.
+
+stderr | tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts > cross-runtime memory persistence integration > keeps distinct Codex stable completed IDs as separate provider boundaries
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-runtime-memory-persistence-DCjL1z/working_context_snapshot.json
+
+stdout | tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts > cross-runtime memory persistence integration > does not rotate or record provider markers for Codex compaction_trigger alone
+AgentRunManager initialized.
+
+stdout | tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts > cross-runtime memory persistence integration > does not rotate or record provider markers for Codex compaction_trigger alone
+Successfully created codex_app_server agent run 'codex-compaction-trigger-memory-run'.
+
+stderr | tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts > cross-runtime memory persistence integration > does not rotate or record provider markers for Codex compaction_trigger alone
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-runtime-memory-persistence-4oVoIX/working_context_snapshot.json
+
+stdout | tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts > cross-runtime memory persistence integration > keeps Claude compacting status non-rotating and rotates only at compact_boundary
+AgentRunManager initialized.
+
+stdout | tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts > cross-runtime memory persistence integration > keeps Claude compacting status non-rotating and rotates only at compact_boundary
+Successfully created claude_agent_sdk agent run 'claude-compaction-memory-run'.
+
+stderr | tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts > cross-runtime memory persistence integration > keeps Claude compacting status non-rotating and rotates only at compact_boundary
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-runtime-memory-persistence-ajVDWN/working_context_snapshot.json
+
+stdout | tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts > cross-runtime memory persistence integration > records one denied tool result when duplicate tool lifecycle events are observed
+AgentRunManager initialized.
+
+stdout | tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts > cross-runtime memory persistence integration > records one denied tool result when duplicate tool lifecycle events are observed
+Successfully created codex_app_server agent run 'codex-denied-tool-memory-run'.
+
+stderr | tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts > cross-runtime memory persistence integration > records one denied tool result when duplicate tool lifecycle events are observed
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-runtime-memory-persistence-0RbcMH/working_context_snapshot.json
+
+stdout | tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts > cross-runtime memory persistence integration > persists mixed Claude team member memory under the member memory directory
+AgentRunManager initialized.
+
+stdout | tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts > cross-runtime memory persistence integration > persists mixed Claude team member memory under the member memory directory
+Successfully created claude_agent_sdk agent run 'team-run-memory-1::coordinator'.
+
+stderr | tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts > cross-runtime memory persistence integration > persists mixed Claude team member memory under the member memory directory
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-runtime-memory-persistence-cgM16Z/agent_teams/team-run-memory-1/team-run-memory-1::coordinator/working_context_snapshot.json
+
+ ✓ tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts (16 tests) 122ms
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:14989) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > connects through TeamRunService and publishes the current lifecycle snapshot
+Created agent session a24122b5-230d-455e-9c86-cbfd16329cb8 for run team-1
+Agent Team WebSocket connected: session=a24122b5-230d-455e-9c86-cbfd16329cb8, run=team-1
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > preserves the complete 'persistent member' address across send, approval, and interrupt
+Created agent session 3a25843c-29c7-44e2-a3b3-8414cacba490 for run team-1
+Agent Team WebSocket connected: session=3a25843c-29c7-44e2-a3b3-8414cacba490, run=team-1
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > preserves the complete 'direct task Agent' address across send, approval, and interrupt
+Created agent session ea898b65-ed4d-4a24-bfa4-d32513773596 for run team-1
+Agent Team WebSocket connected: session=ea898b65-ed4d-4a24-bfa4-d32513773596, run=team-1
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > preserves the complete 'outer task AgentTeam member' address across send, approval, and interrupt
+Created agent session d6fad001-19e3-465d-b652-4c5c77ffd589 for run team-1
+Agent Team WebSocket connected: session=d6fad001-19e3-465d-b652-4c5c77ffd589, run=team-1
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > preserves the complete 'nested task AgentTeam member' address across send, approval, and interrupt
+Created agent session 94a92339-46be-42d9-98bc-9fa38e9f7348 for run team-1
+Agent Team WebSocket connected: session=94a92339-46be-42d9-98bc-9fa38e9f7348, run=team-1
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > rejects SEND_MESSAGE before effect when execution_address is incomplete
+Created agent session 485d02a1-6045-49a3-972c-e212d3f6fc78 for run team-1
+Agent Team WebSocket connected: session=485d02a1-6045-49a3-972c-e212d3f6fc78, run=team-1
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > rejects SEND_MESSAGE before effect when execution_address is incomplete
+SEND_MESSAGE rejected for team run team-1: The command requires one exact execution_address object.
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > rejects APPROVE_TOOL before effect when execution_address is incomplete
+Created agent session 890d5262-43be-4820-ae4f-4606530734c9 for run team-1
+Agent Team WebSocket connected: session=890d5262-43be-4820-ae4f-4606530734c9, run=team-1
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > rejects APPROVE_TOOL before effect when execution_address is incomplete
+TOOL_APPROVAL rejected for team run team-1: The command requires one exact execution_address object.
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > rejects INTERRUPT_GENERATION before effect when execution_address is incomplete
+Created agent session 4a8469aa-421c-4c52-bf16-a3617c50fab7 for run team-1
+Agent Team WebSocket connected: session=4a8469aa-421c-4c52-bf16-a3617c50fab7, run=team-1
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > rejects SEND_MESSAGE before effect when execution_address names a foreign root
+Created agent session 11359ddc-4d52-4e60-8102-ea969cdcbfd6 for run team-1
+Agent Team WebSocket connected: session=11359ddc-4d52-4e60-8102-ea969cdcbfd6, run=team-1
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > rejects SEND_MESSAGE before effect when execution_address names a foreign root
+SEND_MESSAGE rejected for team run team-1: The command requires one exact execution_address object.
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > rejects APPROVE_TOOL before effect when execution_address names a foreign root
+Created agent session 65d5940e-30ba-4916-a7cd-8ac6576a8d0f for run team-1
+Agent Team WebSocket connected: session=65d5940e-30ba-4916-a7cd-8ac6576a8d0f, run=team-1
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > rejects APPROVE_TOOL before effect when execution_address names a foreign root
+TOOL_APPROVAL rejected for team run team-1: The command requires one exact execution_address object.
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > rejects INTERRUPT_GENERATION before effect when execution_address names a foreign root
+Created agent session 9b81970d-5aff-4296-89c6-5f3702508b74 for run team-1
+Agent Team WebSocket connected: session=9b81970d-5aff-4296-89c6-5f3702508b74, run=team-1
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > passes an exact stale nested task chain once and surfaces rejection without fallback
+Created agent session 21b4f938-46b3-4c0c-b77d-44bdf8ac8a37 for run team-1
+Agent Team WebSocket connected: session=21b4f938-46b3-4c0c-b77d-44bdf8ac8a37, run=team-1
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > passes an exact stale nested task chain once and surfaces rejection without fallback
+SEND_MESSAGE rejected for team run team-1: [TASK_TEAM_INSTANCE_NOT_ACTIVE] Nested task TeamRun is stale.
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > returns one failed interrupt acknowledgement for an exact stale address
+Created agent session ec8e798f-1fe3-4fcc-868c-59c685c46acd for run team-1
+Agent Team WebSocket connected: session=ec8e798f-1fe3-4fcc-868c-59c685c46acd, run=team-1
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > projects the exact execution address on Agent events
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > coalesces metadata refresh work across a burst of streamed Team events
+Created agent session 4a370d58-e343-4665-bf88-3cd025f80219 for run team-1
+Agent Team WebSocket connected: session=4a370d58-e343-4665-bf88-3cd025f80219, run=team-1
+
+ ✓ tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts (17 tests) 17ms
+stdout | tests/unit/agent-team-execution/mixed-team-manager.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:14990) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/agent-team-execution/mixed-team-manager.test.ts (8 tests) 11ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts > MixedTeamManager focused member routing > rejects an unknown task AgentRun selection without falling back to the persistent Agent
+AssertionError: expected { accepted: false, …(2) } to match object { accepted: false, …(1) }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "accepted": false,
+-   "code": "TASK_AGENT_RUN_NOT_FOUND",
++   "code": "TEAM_EXECUTION_ADDRESS_INVALID",
+  }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 3 passed (4)
+      Tests  1 failed | 45 passed (46)
+   Start at  21:41:16
+   Duration  6.86s (transform 2.82s, setup 19ms, import 5.93s, tests 160ms, environment 0ms)
+

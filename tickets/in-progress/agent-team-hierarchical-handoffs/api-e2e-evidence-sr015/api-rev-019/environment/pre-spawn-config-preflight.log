@@ -1,0 +1,14 @@
+{
+  "result": "Pass",
+  "ambientDatabaseUrlPresentInParent": true,
+  "ambientDatabaseUrlTestPresentInParent": false,
+  "childDatabaseUrlExcluded": true,
+  "childDatabaseUrlTestExcluded": true,
+  "runtimeEnvironmentPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/sr015-api-rev-019-20260810-1/.env",
+  "materializedDatabaseUrlMatchesExactDisposableTarget": true,
+  "configurationOnlyResolvedDatabaseUrl": "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/sr015-api-rev-019-20260810-1.db",
+  "configurationOnlyResolvedExactDisposablePath": true,
+  "configurationOnlyResolvedAppDataDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/sr015-api-rev-019-20260810-1",
+  "databaseAbsentBeforeAndAfterConfigurationOnlyPreflight": true,
+  "operationalDatabasePathWasNotAccessed": true
+}

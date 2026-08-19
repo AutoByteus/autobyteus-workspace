@@ -4,7 +4,6 @@ import {
 } from "@prisma/client";
 import { BaseRepository } from "repository_prisma";
 import type { TokenUsageUpdatedPayload } from "../../../agent-execution/domain/agent-run-token-usage.js";
-import { normalizeTokenUsageExecutionAddress } from "../../domain/execution-address.js";
 import { isCacheState, isInputTokenSemantic } from "../../domain/token-usage-component-basis.js";
 
 const toJsonString = (value: unknown): string | null =>
@@ -41,23 +40,18 @@ const toCreateInput = (payload: TokenUsageUpdatedPayload): Prisma.TokenUsageLedg
   observedAt: normalizeDate(payload.observed_at),
   persistedAt: new Date(),
   runId: payload.run_id,
+  rootTeamRunId: payload.root_team_run_id,
   turnId: payload.turn_id,
   llmCallId: payload.llm_call_id,
   callSequence: payload.call_sequence,
-  rootTeamRunId: payload.root_team_run_id,
-  executionAddressJson: toJsonString(payload.execution_address),
-  memberAgentRunId: payload.member_agent_run_id,
-  memberRouteKey: payload.member_route_key,
   agentDefinitionId: payload.agent_definition_id,
   workspaceId: payload.workspace_id,
-  taskAgentInstanceId: payload.task_agent_instance_id,
-  taskAgentRunId: payload.task_agent_run_id,
   taskId: payload.task_id,
   teamName: payload.team_name,
   agentName: payload.agent_name,
   runSummary: payload.run_summary,
   runCreatedAt: normalizeNullableDate(payload.run_created_at),
-  memberName: payload.member_name,
+  memberDisplayName: payload.member_display_name,
   runtimeKind: payload.runtime_kind,
   modelProvider: payload.model_provider,
   providerName: payload.provider_name,
@@ -144,23 +138,18 @@ export const toDomainPayload = (record: PrismaTokenUsageLedgerEvent): TokenUsage
     idempotency_key: record.idempotencyKey,
     observed_at: record.observedAt.toISOString(),
     run_id: record.runId,
+    root_team_run_id: record.rootTeamRunId,
     turn_id: record.turnId,
     llm_call_id: record.llmCallId,
     call_sequence: record.callSequence,
-    root_team_run_id: record.rootTeamRunId,
-    execution_address: normalizeTokenUsageExecutionAddress(parseJson(record.executionAddressJson)),
-    member_agent_run_id: record.memberAgentRunId,
-    member_route_key: record.memberRouteKey,
     agent_definition_id: record.agentDefinitionId,
     workspace_id: record.workspaceId,
-    task_agent_instance_id: record.taskAgentInstanceId,
-    task_agent_run_id: record.taskAgentRunId,
     task_id: record.taskId,
     team_name: record.teamName,
     agent_name: record.agentName,
     run_summary: record.runSummary,
     run_created_at: record.runCreatedAt?.toISOString() ?? null,
-    member_name: record.memberName,
+    member_display_name: record.memberDisplayName,
     runtime_kind: record.runtimeKind,
     model_provider: record.modelProvider,
     provider_name: record.providerName,
@@ -258,7 +247,7 @@ export class SqlTokenUsageLedgerRepository extends BaseRepository.forModel(
         agentName: payload.agent_name,
         runSummary: payload.run_summary,
         runCreatedAt: normalizeNullableDate(payload.run_created_at),
-        memberName: payload.member_name,
+        memberDisplayName: payload.member_display_name,
       },
     });
     return toDomainPayload(updated);
@@ -291,8 +280,10 @@ export class SqlTokenUsageLedgerRepository extends BaseRepository.forModel(
   }
 
   async listEventsByTeamRunId(rootTeamRunId: string): Promise<TokenUsageUpdatedPayload[]> {
+    const normalized = rootTeamRunId.trim();
+    if (!normalized) return [];
     const records = await this.findMany({
-      where: { rootTeamRunId },
+      where: { rootTeamRunId: normalized },
       orderBy: [{ observedAt: "asc" }, { id: "asc" }],
     });
     return records.map(toDomainPayload);

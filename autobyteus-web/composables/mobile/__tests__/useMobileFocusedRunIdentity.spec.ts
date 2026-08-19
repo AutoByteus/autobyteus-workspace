@@ -8,9 +8,10 @@ import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { AgentContext } from '~/types/agent/AgentContext';
 import { AgentRunState } from '~/types/agent/AgentRunState';
 import { DEFAULT_AGENT_RUNTIME_KIND, type AgentRunConfig } from '~/types/agent/AgentRunConfig';
-import type { AgentTeamContext, AgentTeamMemberNode } from '~/types/agent/AgentTeamContext';
+import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import type { Conversation } from '~/types/conversation';
 import type { MobileWorkContext } from '~/types/mobileWork';
+import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures';
 
 function makeAgentRunConfig(agentDefinitionId = 'agent-1'): AgentRunConfig {
   return {
@@ -52,60 +53,31 @@ function makeAgentRunMobileContext(runId = 'run-1'): MobileWorkContext {
 }
 
 function seedTeamRun(): AgentTeamContext {
-  const leadNode: AgentTeamMemberNode = {
-    memberKind: 'agent',
-    memberName: 'lead',
-    displayName: 'Lead',
-    memberPath: ['lead'],
-    memberRouteKey: 'lead',
-    memberRunId: 'lead-run',
-    agentDefinitionId: 'agent-1',
-  };
-  const reviewerNode: AgentTeamMemberNode = {
-    memberKind: 'agent',
-    memberName: 'reviewer',
-    displayName: 'Reviewer',
-    memberPath: ['reviewer'],
-    memberRouteKey: 'reviewer',
-    memberRunId: 'reviewer-run',
-    agentDefinitionId: 'agent-1',
-  };
-  const context: AgentTeamContext = {
+  const leadNode = testAgentNode('/lead', {
+    displayName: 'Lead', agentRunId: 'lead-run', agentDefinitionId: 'agent-1',
+  });
+  const reviewerNode = testAgentNode('/reviewer', {
+    displayName: 'Reviewer', agentRunId: 'reviewer-run', agentDefinitionId: 'agent-1',
+  });
+  const context = buildTestTeamContext({
     teamRunId: 'team-run-1',
-    config: {
-      teamDefinitionId: 'team-1',
-      teamDefinitionName: 'Software Team',
-      runtimeKind: DEFAULT_AGENT_RUNTIME_KIND,
-      workspaceId: 'workspace-1',
-      workspaceMetadata: null,
-      llmModelIdentifier: 'test-model',
-      llmConfig: null,
-      autoExecuteTools: false,
-      skillAccessMode: 'PRELOADED_ONLY',
-      memberOverrides: {},
-      isLocked: false,
-    },
-    memberTree: [leadNode, reviewerNode],
-    memberNodesByRouteKey: new Map([
-      ['lead', leadNode],
-      ['reviewer', reviewerNode],
-    ]),
-    leafAgentContextsByRouteKey: new Map([
-      ['lead', makeAgentContext('lead-run')],
-      ['reviewer', makeAgentContext('reviewer-run')],
-    ]),
-    coordinatorMemberRouteKey: 'lead',
-    historicalHydration: null,
-    focusedMemberRouteKey: 'lead',
+    teamDefinitionId: 'team-1',
+    teamDefinitionName: 'Software Team',
+    coordinatorAddress: leadNode.address,
+    focusedAgentRunId: 'lead-run',
+    rootChildren: [leadNode, reviewerNode],
     isActive: false,
-    isSubscribed: false,
-  };
-  useAgentTeamContextsStore().teams.set(context.teamRunId, context);
-  useAgentSelectionStore().selectRunWithoutShellNavigation(context.teamRunId, 'team');
+    contexts: [
+      { agentRunId: 'lead-run', context: makeAgentContext('lead-run') },
+      { agentRunId: 'reviewer-run', context: makeAgentContext('reviewer-run') },
+    ],
+  });
+  useAgentTeamContextsStore().addTeamContext(context);
+  useAgentSelectionStore().selectRunWithoutShellNavigation(context.view.getRootTeamRunId(), 'team');
   return context;
 }
 
-function makeTeamRunMobileContext(focusedMemberRouteKey = 'lead'): MobileWorkContext {
+function makeTeamRunMobileContext(focusedAgentRunId = 'lead-run'): MobileWorkContext {
   return {
     kind: 'team-run',
     teamRunId: 'team-run-1',
@@ -113,7 +85,7 @@ function makeTeamRunMobileContext(focusedMemberRouteKey = 'lead'): MobileWorkCon
     title: 'Software Team',
     summary: 'Existing team run',
     workspaceRootPath: '/Users/normy/project',
-    focusedMemberRouteKey,
+    focusedAgentRunId,
     isActive: true,
     lastActivityAt: '2026-05-18T16:00:00.000Z',
     statusLabel: 'Running',
@@ -163,28 +135,30 @@ describe('useMobileFocusedRunIdentity', () => {
 
   it('resolves the focused leaf member run for selected team contexts', () => {
     const team = seedTeamRun();
-    const context = ref<MobileWorkContext | null>(makeTeamRunMobileContext('lead'));
+    const context = ref<MobileWorkContext | null>(makeTeamRunMobileContext('lead-run'));
 
     const { focusedRunId } = useMobileFocusedRunIdentity(context);
 
     expect(focusedRunId.value).toBe('lead-run');
 
-    team.focusedMemberRouteKey = 'reviewer';
-    context.value = makeTeamRunMobileContext('reviewer');
+    expect(team.view.focusAgent('reviewer-run').disposition)
+      .toBe('applied');
+    context.value = makeTeamRunMobileContext('reviewer-run');
 
     expect(focusedRunId.value).toBe('reviewer-run');
   });
 
   it('rejects team contexts when selected team or focused route is stale', () => {
     const team = seedTeamRun();
-    const context = ref<MobileWorkContext | null>(makeTeamRunMobileContext('lead'));
+    const context = ref<MobileWorkContext | null>(makeTeamRunMobileContext('lead-run'));
     const { focusedRunId } = useMobileFocusedRunIdentity(context);
 
     useAgentSelectionStore().selectRunWithoutShellNavigation('other-team-run', 'team');
     expect(focusedRunId.value).toBe('');
 
     useAgentSelectionStore().selectRunWithoutShellNavigation('team-run-1', 'team');
-    team.focusedMemberRouteKey = 'reviewer';
+    expect(team.view.focusAgent('reviewer-run').disposition)
+      .toBe('applied');
     expect(focusedRunId.value).toBe('');
   });
 });

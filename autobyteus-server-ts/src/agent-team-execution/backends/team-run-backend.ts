@@ -1,74 +1,34 @@
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
-import type { InterAgentMessageDeliveryIntent } from "../domain/inter-agent-message-delivery.js";
-import type { RuntimeTeamRunContext } from "../domain/team-run-context.js";
-import type { TeamMemberSelector } from "../domain/team-run-member-identity.js";
-import type { TeamRunEventListener, TeamRunEventUnsubscribe } from "../domain/team-run-event.js";
+import type { AgentRunInputOptions, AgentRunInputReservationResult } from "../../agent-execution/input/agent-run-input-contract.js";
 import type { TeamBackendKind } from "../domain/team-backend-kind.js";
-import type { TeamLeafAgentStatusSnapshot } from "../domain/team-leaf-agent-status-snapshot.js";
-import type { StartTaskAgentInstanceRequest } from "../domain/task-agent-instance.js";
-import type { StartTaskTeamInstanceRequest } from "../domain/task-team-instance.js";
-import type { ConversationTargetAddress } from "../domain/conversation-target-address.js";
+import type { TeamAgentStatusSnapshot } from "../domain/team-agent-status.js";
+import type { PrepareTaskAgentInput } from "../domain/task-agent-execution.js";
+import type { PrepareTaskTeamInput } from "../domain/task-team-execution.js";
+import type { PreparedTaskExecution } from "../domain/prepared-task-execution.js";
+import type { PreparedLocalExecutionTermination } from "../domain/prepared-local-execution-termination.js";
+import type { PreparedTaskSettlement } from "../domain/prepared-task-settlement.js";
+import type { TeamMemberExecutionCommand } from "../domain/team-member-execution-command.js";
+import type { RuntimeTeamRunContext } from "../domain/team-run-context.js";
 
+/** Exact local boundary for one concrete TeamRun. */
 export interface TeamRunBackend {
-  readonly runId: string;
+  readonly teamRunId: string;
   readonly teamBackendKind: TeamBackendKind;
-
   getRuntimeContext(): RuntimeTeamRunContext | null;
   isActive(): boolean;
-  getLeafAgentStatusSnapshots(): TeamLeafAgentStatusSnapshot[];
+  getLeafAgentStatusSnapshots(): readonly TeamAgentStatusSnapshot[];
   hasOpenExecutionWork(): boolean;
-  subscribeToEvents(listener: TeamRunEventListener): TeamRunEventUnsubscribe;
-  postMessage(
-    message: AgentInputUserMessage,
-    target?: TeamMemberSelector | null,
-    targetMemberRunId?: string | null,
-  ): Promise<AgentOperationResult>;
-  postMessageToConversationTarget(
-    message: AgentInputUserMessage,
-    address: ConversationTargetAddress,
-  ): Promise<AgentOperationResult>;
-  deliverInterAgentMessage(
-    intent: InterAgentMessageDeliveryIntent,
-  ): Promise<AgentOperationResult>;
-  approveToolInvocation(
-    target: TeamMemberSelector,
-    invocationId: string,
-    approved: boolean,
-    reason?: string | null,
-    targetMemberRunId?: string | null,
-    taskTeamRunId?: string | null,
-  ): Promise<AgentOperationResult>;
-  interruptMember(
-    targetMemberRouteKey: string,
-    targetMemberRunId?: string | null,
-  ): Promise<AgentOperationResult>;
-  settleMember(
-    targetMemberRouteKey: string,
-    targetMemberRunId?: string | null,
-    reason?: string | null,
-  ): Promise<AgentOperationResult>;
-  startTaskAgentInstance(
-    request: StartTaskAgentInstanceRequest,
-  ): Promise<AgentOperationResult>;
-  settleTaskAgentInstance(
-    logicalMemberRouteKey: string,
-    taskAgentRunId: string,
-    reason?: string | null,
-  ): Promise<AgentOperationResult>;
-  startTaskTeamInstance(
-    request: StartTaskTeamInstanceRequest,
-  ): Promise<AgentOperationResult>;
-  postMessageToTaskTeamInstance(
-    logicalTeamRouteKey: string,
-    taskTeamRunId: string,
-    message: AgentInputUserMessage,
-  ): Promise<AgentOperationResult>;
-  settleTaskTeamInstance(
-    logicalTeamRouteKey: string,
-    taskTeamRunId: string,
-    reason?: string | null,
-  ): Promise<AgentOperationResult>;
+  getOrCreateConfiguredChildTeam(teamRunId: string): Promise<import("../domain/team-run.js").TeamRun>;
+  reserveDirectAgentInput(agentRunId: string, message: AgentInputUserMessage, options?: AgentRunInputOptions): Promise<AgentRunInputReservationResult>;
+  deliverToDirectAgent(agentRunId: string, message: AgentInputUserMessage): Promise<AgentOperationResult>;
+  executeDirectAgentCommand(agentRunId: string, command: TeamMemberExecutionCommand): Promise<AgentOperationResult>;
+  prepareTaskAgent(input: PrepareTaskAgentInput): Promise<PreparedTaskExecution>;
+  prepareTaskTeam(input: PrepareTaskTeamInput): Promise<PreparedTaskExecution>;
+  prepareDirectTaskSettlement(
+    taskId: string,
+    binding: { agentRunId: string } | { teamRunId: string },
+  ): Promise<PreparedTaskSettlement | null>;
+  prepareTermination(): Promise<PreparedLocalExecutionTermination>;
   terminate(): Promise<AgentOperationResult>;
-  publishEvent(event: import("../domain/team-run-event.js").TeamRunEvent): void;
 }

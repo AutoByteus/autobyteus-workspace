@@ -32,7 +32,7 @@ const BRIEF_QUERY = `query BriefQuery($briefId: ID!) {
       path
       description
       body
-      producerMemberRouteKey
+      producerMemberAddress
       updatedAt
     }
     reviewNotes {

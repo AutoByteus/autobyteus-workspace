@@ -66,6 +66,7 @@ import {
   executeGraphql,
   persistentTestRuntimeRoot,
   readTrackedTestEnvironment,
+  resolveTestDatabaseLocation,
   testRuntimeRoot,
 } from './test-runtime-bootstrap.mjs';
 
@@ -547,6 +548,15 @@ const serverUrlFromEnvironment = (): string => {
     throw new Error('TEST_SERVER_URL_INVALID');
   }
   return parsed.origin;
+};
+
+const databaseTargetFromEnvironment = (): Readonly<{
+  databasePath: string;
+}> => {
+  const value = process.env.AUTOBYTEUS_TEST_DATABASE_URL?.trim();
+  return value
+    ? resolveTestDatabaseLocation(value)
+    : readTrackedTestEnvironment().database;
 };
 
 export const withoutAmbientTestDatabaseUrls = async <T>(
@@ -1338,9 +1348,9 @@ export class LiveE2eHarness {
   ) {}
 
   static async open(): Promise<LiveE2eHarness> {
-    const tracked = readTrackedTestEnvironment();
     const runtimeRoot = runtimeRootFromEnvironment();
     const serverUrl = serverUrlFromEnvironment();
+    const expectedDatabaseTarget = databaseTargetFromEnvironment();
     await resetSecretVaultRuntimeForTests();
     const runtime = await withoutAmbientTestDatabaseUrls(async () => {
       appConfigProvider.resetForTests();
@@ -1348,7 +1358,7 @@ export class LiveE2eHarness {
       config.initialize();
       if (!databaseTargetsMatch(
         config.getOperationalDatabaseLocation(),
-        tracked.database,
+        expectedDatabaseTarget,
       )) {
         throw new Error('LIVE_E2E_DATABASE_TARGET_MISMATCH');
       }

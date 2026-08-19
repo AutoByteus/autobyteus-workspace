@@ -123,6 +123,11 @@ export function handleError(
   payload: ErrorPayload,
   context: AgentContext
 ): RecentEventMonitorEffect {
+  if (payload.error_effect === 'diagnostic') {
+    const aiMessage = findOrCreateAIMessage(context);
+    aiMessage.segments.push({ type: 'error', source: payload.code, message: payload.message });
+    return 'STRUCTURAL';
+  }
   const toolErrorInfo = parseToolExecutionError(payload.message);
   if (toolErrorInfo) {
     const changed = applyToolError(toolErrorInfo, context);

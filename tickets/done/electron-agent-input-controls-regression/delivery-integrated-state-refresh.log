@@ -1,0 +1,39 @@
+Delivery integrated-state refresh
+Ticket: electron-agent-input-controls-regression
+Ticket branch: codex/electron-agent-input-controls-regression
+Recorded base: origin/codex/agent-team-universal-task-delegation
+Bootstrap/ticket HEAD before delivery-owned edits: cc4e0611a03ad5e123fe561c64ed56a4784492ef
+
+Command: git fetch origin codex/agent-team-universal-task-delegation
+Result: PASS
+Fetched remote base revision: cc4e0611a03ad5e123fe561c64ed56a4784492ef
+
+Command: git rev-list --left-right --count HEAD...origin/codex/agent-team-universal-task-delegation
+Result: 0  0
+
+Command: git merge --no-edit origin/codex/agent-team-universal-task-delegation
+Result: PASS — Already up to date.
+Ticket HEAD after integration check: cc4e0611a03ad5e123fe561c64ed56a4784492ef
+
+Base advanced since bootstrap/reviewed state: No
+New base commits integrated: No
+Checkpoint commit: Not needed; the reviewed candidate remained uncommitted, but the fetch and already-current merge could not mutate or endanger it.
+Integration method: Already current
+Integration result: PASS
+Post-integration executable rerun: Not required because no base commit, implementation source, or durable test changed. The current candidate remains the CRR-001/API-REV-001 state: 11 focused files / 76 tests, production Nuxt build, isolated Chrome semantic journeys, cleanup, and git diff check passed; CRR-002 found no API/E2E-owned durable test delta to review.
+Delivery-owned edits started only after refresh: Yes
+Safety boundary: no Electron process, embedded port 29695, ~/.autobyteus, production profile, or production data was touched.
+Recorded: 2026-08-18T14:27:12+02:00
+
+DR-002 post-acceptance finalization-target refresh
+Trigger: User reported the candidate tested, declared the task done, and authorized finalization to the base branch.
+Recorded target: origin/codex/agent-team-universal-task-delegation
+Command: git fetch origin codex/agent-team-universal-task-delegation
+Result: PASS
+Ticket HEAD: cc4e0611a03ad5e123fe561c64ed56a4784492ef
+Refreshed remote target: cc4e0611a03ad5e123fe561c64ed56a4784492ef
+Ancestry count HEAD...remote: 0  0
+Target advanced after acceptance: No
+Renewed verification required: No; the accepted implementation, durable tests, and delivery handoff did not change.
+Post-finalization request: refresh the surviving target worktree and build Electron locally after repository finalization.
+Recorded: 2026-08-18T14:30:50+02:00

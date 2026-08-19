@@ -7,7 +7,6 @@ import { buildTokenUsageCostSummaryAggregate } from "./token-usage-cost-summary-
 export interface BuildTokenUsageRunSummaryInput {
   runId: string;
   events: TokenUsageUpdatedPayload[];
-  rootTeamRunIdOverride?: string | null;
 }
 
 const latestEvent = (events: TokenUsageUpdatedPayload[]): TokenUsageUpdatedPayload | null => (
@@ -25,10 +24,7 @@ export const buildTokenUsageRunSummary = (
 
   return {
     run_id: input.runId,
-    root_team_run_id: input.rootTeamRunIdOverride ?? latest?.root_team_run_id ?? null,
-    execution_address: latest?.execution_address ?? null,
-    member_agent_run_id: latest?.member_agent_run_id ?? null,
-    member_route_key: latest?.member_route_key ?? null,
+    root_team_run_id: latest?.root_team_run_id ?? null,
     agent_definition_id: latest?.agent_definition_id ?? null,
     workspace_id: latest?.workspace_id ?? null,
     gross_input_tokens: aggregate.gross_input_tokens,

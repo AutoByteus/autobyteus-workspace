@@ -1,0 +1,93 @@
+
+> autobyteus@1.4.51 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run stores/__tests__/runHistoryNavigationProjection.spec.ts stores/__tests__/runHistoryTeamExecutionRows.spec.ts stores/__tests__/runHistoryStore.spec.ts stores/__tests__/runHistoryTeamRows.spec.ts components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts composables/__tests__/useWorkspaceHistoryTreeState.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web
+
+stderr | stores/__tests__/runHistoryStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useWorkspaceHistoryTreeState.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/runHistoryTeamRows.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/runHistoryNavigationProjection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/runHistoryTeamExecutionRows.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | composables/__tests__/useWorkspaceHistoryTreeState.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/runHistoryNavigationProjection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/runHistoryTeamExecutionRows.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/runHistoryTeamRows.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/runHistoryStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts (2 tests) 4ms
+ ✓ stores/__tests__/runHistoryTeamExecutionRows.spec.ts (2 tests) 6ms
+ ✓ composables/__tests__/useWorkspaceHistoryTreeState.spec.ts (7 tests) 6ms
+ ✓ stores/__tests__/runHistoryTeamRows.spec.ts (2 tests) 5ms
+ ✓ stores/__tests__/runHistoryNavigationProjection.spec.ts (6 tests) 28ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts (36 tests) 80ms
+ ✓ components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts (6 tests) 136ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts (3 tests) 105ms
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > shows an error toast when terminate fails
+Failed to terminate run 'run-1'.
+
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts (50 tests) 610ms
+
+ Test Files  9 passed (9)
+      Tests  114 passed (114)
+   Start at  15:20:02
+   Duration  7.83s (transform 4.30s, setup 51.32s, collect 3.17s, tests 981ms, environment 2.95s, prepare 2.59s)
+

@@ -1,6 +1,11 @@
 import type { AgentTeamDefinition, TeamMemberRefScope } from "../domain/models.js";
 import type { DefaultLaunchConfig } from "../../launch-preferences/default-launch-config.js";
 import { normalizeDefaultLaunchConfig } from "../../launch-preferences/default-launch-config.js";
+import {
+  cloneCollaborationHandoffs,
+  normalizeCollaborationHandoffs,
+  type CollaborationHandoff,
+} from "../../agent-collaboration/domain/collaboration-handoff.js";
 
 export type TeamConfigMember = {
   memberName: string;
@@ -12,6 +17,7 @@ export type TeamConfigMember = {
 export type TeamConfigRecord = {
   coordinatorMemberName?: string;
   members?: TeamConfigMember[];
+  handoffs?: CollaborationHandoff[];
   avatarUrl?: string | null;
   defaultLaunchConfig?: DefaultLaunchConfig | null;
 };
@@ -67,6 +73,7 @@ export const normalizeMembers = (value: unknown): TeamConfigMember[] => {
 export const defaultTeamConfig = (): TeamConfigRecord => ({
   coordinatorMemberName: "",
   members: [],
+  handoffs: [],
   avatarUrl: null,
   defaultLaunchConfig: null,
 });
@@ -77,6 +84,7 @@ export const normalizeTeamConfigRecord = (
   coordinatorMemberName:
     typeof value?.coordinatorMemberName === "string" ? value.coordinatorMemberName : "",
   members: normalizeMembers(value?.members),
+  handoffs: normalizeCollaborationHandoffs(value?.handoffs),
   avatarUrl: typeof value?.avatarUrl === "string" ? value.avatarUrl : null,
   defaultLaunchConfig: normalizeDefaultLaunchConfig(value?.defaultLaunchConfig),
 });
@@ -85,6 +93,7 @@ export const buildTeamConfigRecord = (domainObj: AgentTeamDefinition): TeamConfi
   coordinatorMemberName: domainObj.coordinatorMemberName,
   avatarUrl: domainObj.avatarUrl ?? null,
   defaultLaunchConfig: domainObj.defaultLaunchConfig ?? null,
+  handoffs: cloneCollaborationHandoffs(domainObj.handoffs),
   members: domainObj.nodes.map((member) => {
     if (!member.refScope) {
       throw new TeamConfigParseError(

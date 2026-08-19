@@ -1,0 +1,97 @@
+{
+  "teamRunId": "nested_classroom_test_team_16794ce8f3a144ca8478c403887907fe",
+  "messages": [
+    {
+      "messageId": "teammsg_eHQuy2yXiNKUkHvJYrrjJ6oOrjc_wF9a",
+      "senderAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_16794ce8f3a144ca8478c403887907fe",
+        "taskTeamRunIds": [],
+        "memberAddress": "/Teacher",
+        "taskAgentRunId": null
+      },
+      "receiverAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_16794ce8f3a144ca8478c403887907fe",
+        "taskTeamRunIds": [],
+        "memberAddress": "/StudentStudyGroup/student_one",
+        "taskAgentRunId": null
+      },
+      "content": "Hello StudentStudyGroup coordinator (student_one), this is Teacher. Please have the study group reply to /Teacher with exactly the token: CLASSROOM_REPLY_CLAUDE. The reference file at claude-reference.txt is attached for context.",
+      "messageType": "classroom_message",
+      "createdAt": "2026-08-13T02:13:58.485Z",
+      "referenceFiles": [
+        {
+          "referenceId": "teamref_CMotXnt1Fsksbz6jD_xX-iMKULFNDyJ9",
+          "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr020/api-rev-036/live/claude-reference.txt",
+          "type": "file",
+          "createdAt": "2026-08-13T02:13:58.485Z",
+          "updatedAt": "2026-08-13T02:13:58.485Z"
+        }
+      ]
+    },
+    {
+      "messageId": "teammsg_7Md3x6Ya1BY--DW6bs_AZFufQuoyqR_5",
+      "senderAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_16794ce8f3a144ca8478c403887907fe",
+        "taskTeamRunIds": [],
+        "memberAddress": "/StudentStudyGroup/student_one",
+        "taskAgentRunId": null
+      },
+      "receiverAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_16794ce8f3a144ca8478c403887907fe",
+        "taskTeamRunIds": [],
+        "memberAddress": "/Teacher",
+        "taskAgentRunId": null
+      },
+      "content": "CLASSROOM_REPLY_CLAUDE",
+      "messageType": "task_result",
+      "createdAt": "2026-08-13T02:14:52.507Z",
+      "referenceFiles": []
+    },
+    {
+      "messageId": "teammsg_STiMq-CPw8BvAClib3gBysI4ulANJjJe",
+      "senderAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_16794ce8f3a144ca8478c403887907fe",
+        "taskTeamRunIds": [
+          "team_local_team_nested_classroom_test_student_st_8ae5b8978a544e1a8ccf07a094eba0f0"
+        ],
+        "memberAddress": "/StudentStudyGroup/student_one",
+        "taskAgentRunId": null
+      },
+      "receiverAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_16794ce8f3a144ca8478c403887907fe",
+        "taskTeamRunIds": [
+          "team_local_team_nested_classroom_test_student_st_8ae5b8978a544e1a8ccf07a094eba0f0"
+        ],
+        "memberAddress": "/StudentStudyGroup/student_two",
+        "taskAgentRunId": null
+      },
+      "content": "TASK_PEER_CLAUDE",
+      "messageType": "agent_message",
+      "createdAt": "2026-08-13T02:15:00.555Z",
+      "referenceFiles": []
+    },
+    {
+      "messageId": "teammsg_MdBHw9USZTTfHtMgvfYG0pQlC8FE45JF",
+      "senderAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_16794ce8f3a144ca8478c403887907fe",
+        "taskTeamRunIds": [
+          "team_local_team_nested_classroom_test_student_st_8ae5b8978a544e1a8ccf07a094eba0f0"
+        ],
+        "memberAddress": "/StudentStudyGroup/student_two",
+        "taskAgentRunId": null
+      },
+      "receiverAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_16794ce8f3a144ca8478c403887907fe",
+        "taskTeamRunIds": [
+          "team_local_team_nested_classroom_test_student_st_8ae5b8978a544e1a8ccf07a094eba0f0"
+        ],
+        "memberAddress": "/StudentStudyGroup/student_one",
+        "taskAgentRunId": null
+      },
+      "content": "Confirmed: the requested token is TASK_PEER_CLAUDE.",
+      "messageType": "peer_task_response",
+      "createdAt": "2026-08-13T02:15:16.081Z",
+      "referenceFiles": []
+    }
+  ]
+}

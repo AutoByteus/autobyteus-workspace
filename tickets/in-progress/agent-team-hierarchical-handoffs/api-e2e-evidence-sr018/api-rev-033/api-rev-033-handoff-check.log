@@ -1,0 +1,30 @@
+API-REV-033 handoff check
+utc=2026-08-12T17:30:15Z
+head=8475924fd28c4091824308b24a716d80f672fb5c
+source_commit=9e05920d226c19259f404de18acc057a0ed747f2
+result=PASS
+confidence=98
+baseline=66cfe11e9057b0276c95cb5e9a01784d74b07499
+inventory_paths=92
+diff_paths=92
+A=3
+D=6
+M=83
+server=38
+web=54
+focused_tests=Tests 30 passed (30)
+affected_tests=Tests 83 passed (83)
+web_current=Tests 349 passed (349)
+web_build=└ ✨ Build complete!
+server_build=Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+browser_matrix_passed=true
+browser_matrix_rows=3
+source_fixture_integrity=source_fixture_integrity=PASS;source_mutation=NONE;
+cleanup_disposable_runtime_removed=true
+cleanup_disposable_database_removed=true
+operational_database_action=NONE
+protected_stack_action=NONE
+production_delta_api_rev_033=NONE
+typecheck_claim=NOT_PASS_PRE_DIAGNOSTIC_TOOLCHAIN_FAILURE
+canonical_artifacts=PASS
+diff_check=PASS

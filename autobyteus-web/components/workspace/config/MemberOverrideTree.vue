@@ -1,20 +1,20 @@
 <template>
   <div :class="treeClass" data-test="member-override-tree">
-    <template v-for="node in memberNodes" :key="node.memberRouteKey">
+    <template v-for="node in memberNodes" :key="node.address">
       <div
-        v-if="node.memberKind === 'agent_team'"
+        v-if="node.kind === 'agent_team'"
         class="bg-slate-50/70 p-3"
         data-test="member-override-group"
       >
         <div class="flex min-w-0 flex-wrap items-center gap-2">
-          <span class="truncate text-sm font-semibold text-slate-800" :title="node.memberRouteKey">
-            {{ node.displayName || node.memberName }}
+          <span class="truncate text-sm font-semibold text-slate-800" :title="node.address">
+            {{ node.displayName || node.displayName }}
           </span>
           <span class="rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[0.625rem] font-semibold uppercase tracking-wide text-slate-500">
             Team
           </span>
-          <span class="truncate font-mono text-xs text-slate-500" :title="node.memberRouteKey">
-            {{ node.memberRouteKey }}
+          <span class="truncate font-mono text-xs text-slate-500" :title="node.address">
+            {{ node.address }}
           </span>
         </div>
         <div class="mt-3">
@@ -24,7 +24,7 @@
             :global-runtime-kind="globalRuntimeKind"
             :global-llm-model="globalLlmModel"
             :global-llm-config="globalLlmConfig"
-            :coordinator-member-route-key="coordinatorMemberRouteKey"
+            :coordinator-address="coordinatorAddress"
             :disabled="disabled"
             :advanced-initially-expanded="advancedInitiallyExpanded"
             :read-only-mode="readOnlyMode"
@@ -36,18 +36,18 @@
 
       <MemberOverrideItem
         v-else
-        :member-name="node.memberName"
-        :member-route-key="node.memberRouteKey"
-        :member-breadcrumb="node.memberPath.join(' / ')"
+        :member-name="node.displayName"
+        :member-address="node.address"
+        :member-breadcrumb="node.address.split('/').filter(Boolean).join(' / ')"
         :agent-definition-id="node.agentDefinitionId"
-        :override="config.memberOverrides[node.memberRouteKey]"
+        :override="config.memberOverrides[node.address]"
         :global-runtime-kind="globalRuntimeKind"
         :global-llm-model="globalLlmModel"
         :global-llm-config="globalLlmConfig"
-        :is-coordinator="node.memberRouteKey === coordinatorMemberRouteKey"
+        :is-coordinator="node.address === coordinatorAddress"
         :disabled="disabled"
         :advanced-initially-expanded="advancedInitiallyExpanded"
-        :missing-historical-config="memberMissingHistoricalConfig(node.memberRouteKey)"
+        :missing-historical-config="memberMissingHistoricalConfig(node.address)"
         @update:override="forwardOverrideUpdate"
       />
     </template>
@@ -57,19 +57,19 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import type { MemberConfigOverride, TeamRunConfig } from '~/types/agent/TeamRunConfig';
-import type { TeamMemberNode } from '~/types/agent/AgentTeamContext';
+import type { TeamDefinitionMemberNode } from '~/utils/teamDefinitionMembers';
 import MemberOverrideItem from './MemberOverrideItem.vue';
 import {
   hasExplicitMemberLlmConfigOverride,
 } from '~/utils/teamRunConfigUtils';
 
 const props = defineProps<{
-  memberNodes: TeamMemberNode[];
-  config: TeamRunConfig;
+  memberNodes: readonly TeamDefinitionMemberNode[];
+  config: Readonly<TeamRunConfig>;
   globalRuntimeKind: string;
   globalLlmModel: string;
   globalLlmConfig?: Record<string, unknown> | null;
-  coordinatorMemberRouteKey: string;
+  coordinatorAddress: string;
   disabled: boolean;
   advancedInitiallyExpanded?: boolean;
   readOnlyMode?: boolean;
@@ -77,7 +77,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (e: 'update:override', memberRouteKey: string, override: MemberConfigOverride | null): void;
+  (e: 'update:override', memberAddress: string, override: MemberConfigOverride | null): void;
 }>();
 
 const treeClass = computed(() => [
@@ -87,16 +87,16 @@ const treeClass = computed(() => [
     : 'overflow-hidden rounded-lg border border-slate-300 bg-white shadow-sm divide-slate-300',
 ]);
 
-const memberMissingHistoricalConfig = (memberRouteKey: string) => {
+const memberMissingHistoricalConfig = (memberAddress: string) => {
   if (!props.readOnlyMode) return false;
-  const override = props.config.memberOverrides[memberRouteKey];
+  const override = props.config.memberOverrides[memberAddress];
   if (hasExplicitMemberLlmConfigOverride(override)) {
     return override?.llmConfig == null;
   }
   return props.config.llmConfig == null;
 };
 
-const forwardOverrideUpdate = (memberRouteKey: string, override: MemberConfigOverride | null) => {
-  emit('update:override', memberRouteKey, override);
+const forwardOverrideUpdate = (memberAddress: string, override: MemberConfigOverride | null) => {
+  emit('update:override', memberAddress, override);
 };
 </script>

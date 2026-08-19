@@ -14,7 +14,7 @@
     <p
       v-if="memberBreadcrumb && memberBreadcrumb !== memberName"
       class="-mt-2 mb-3 truncate font-mono text-xs text-gray-500"
-      :title="memberRouteKey"
+      :title="memberAddress"
       data-test="member-override-breadcrumb"
     >
       {{ memberBreadcrumb }}
@@ -121,7 +121,7 @@ import { getThinkingControlState } from '~/utils/llmThinkingConfigAdapter'
 
 const props = defineProps<{
   memberName: string
-  memberRouteKey: string
+  memberAddress: string
   memberBreadcrumb?: string
   agentDefinitionId: string
   override: MemberConfigOverride | undefined
@@ -135,7 +135,7 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  (e: 'update:override', memberRouteKey: string, override: MemberConfigOverride | null): void
+  (e: 'update:override', memberAddress: string, override: MemberConfigOverride | null): void
 }>()
 const { t } = useLocalization()
 
@@ -151,7 +151,7 @@ const {
 })
 
 const storedRuntimeOverrideValue = computed(() => props.override?.runtimeKind || '')
-const inputIdSuffix = computed(() => props.memberRouteKey.replace(/[^a-zA-Z0-9_-]+/g, '-'))
+const inputIdSuffix = computed(() => props.memberAddress.replace(/[^a-zA-Z0-9_-]+/g, '-'))
 const explicitModelIdentifier = computed(() => props.override?.llmModelIdentifier || '')
 const memberAdvancedExplicitlyExpanded = ref(false)
 const hasOverride = computed(() => hasMeaningfulMemberOverride(props.override))
@@ -306,7 +306,7 @@ watch(
 
     emit(
       'update:override',
-      props.memberRouteKey,
+      props.memberAddress,
       buildOverride({
         runtimeKind: props.override?.runtimeKind,
         autoExecuteTools: props.override?.autoExecuteTools,
@@ -337,7 +337,7 @@ const handleRuntimeChange = async (value: string) => {
 
   emit(
     'update:override',
-    props.memberRouteKey,
+    props.memberAddress,
     buildOverride({
       runtimeKind: nextRuntimeKind,
       llmModelIdentifier: retainedExplicitModel,
@@ -365,7 +365,7 @@ const emitOverrideWithConfig = (nextConfig: Record<string, unknown> | null | und
 
   emit(
     'update:override',
-    props.memberRouteKey,
+    props.memberAddress,
     buildOverride({
       runtimeKind: props.override?.runtimeKind,
       llmModelIdentifier: props.override?.llmModelIdentifier,
@@ -387,7 +387,7 @@ const handleModelChange = (value: string) => {
 
   emit(
     'update:override',
-    props.memberRouteKey,
+    props.memberAddress,
     buildOverride({
       runtimeKind: props.override?.runtimeKind,
       llmModelIdentifier: value || undefined,
@@ -413,7 +413,7 @@ const handleAutoExecuteChange = () => {
 
   emit(
     'update:override',
-    props.memberRouteKey,
+    props.memberAddress,
     buildOverride({
       runtimeKind: props.override?.runtimeKind,
       llmModelIdentifier: props.override?.llmModelIdentifier,

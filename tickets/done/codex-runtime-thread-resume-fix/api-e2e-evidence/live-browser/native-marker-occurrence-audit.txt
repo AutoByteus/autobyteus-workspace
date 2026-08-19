@@ -1,0 +1,25 @@
+Native persisted working-context ordered-message audit
+
+Classroom Simulation Team / Professor
+file=autobyteus-team-working-context-post-restart.json
+agent_id=professor_124d75241ce246c2875c9b8e3120a067
+total_messages=5 non_system_messages=4
+non_system_role_order=user,assistant,user,assistant
+marker_bearing_message_count=3
+exact_ack_count=1 exact_post_restart_recall_count=1
+  message[1] role=user content='Remember exact marker NATIVE-FIX-817-N4M8. Do not use tools or delegate. Reply exactly: ACK NATIVE-FIX-817-N4M8'
+  message[2] role=assistant content='ACK NATIVE-FIX-817-N4M8'
+  message[4] role=assistant content='NATIVE-FIX-817-N4M8'
+
+Daily Assistant standalone
+file=daily-autobyteus-working-context-post-restart.json
+agent_id=daily_assistant_a0606e36a7164d799b125b5d651c06df
+total_messages=5 non_system_messages=4
+non_system_role_order=user,assistant,user,assistant
+marker_bearing_message_count=3
+exact_ack_count=1 exact_post_restart_recall_count=1
+  message[1] role=user content='Remember exact marker DAILY-NATIVE-817-D2P9. Do not use tools. Reply exactly: ACK DAILY-NATIVE-817-D2P9'
+  message[2] role=assistant content='ACK DAILY-NATIVE-817-D2P9'
+  message[4] role=assistant content='DAILY-NATIVE-817-D2P9'
+
+Interpretation: each retained snapshot has exactly one pre-restart user turn, one pre-restart ACK, one post-restart recall question, and one exact recall response in order. The marker appears twice inside each instruction string because it is named in both the fact and reply format; literal substring frequency is therefore not a message-duplication measure.

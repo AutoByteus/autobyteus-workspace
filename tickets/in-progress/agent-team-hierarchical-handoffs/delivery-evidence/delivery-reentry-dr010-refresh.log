@@ -1,0 +1,17 @@
+start_utc=2026-08-13T15:39:23Z
+branch=codex/agent-team-hierarchical-handoffs
+reviewed_head=632c503188cb9dbb8eecf4422fa174499519ad89
+delivery_checkpoint=3297a0df56eaf403d9e6d6a98e1e5236d77b6b10
+origin_personal_before=54890a07f74e941a7a12b6daaa26364f4c927b72
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+origin_personal_after=54890a07f74e941a7a12b6daaa26364f4c927b72
+merge_base=54890a07f74e941a7a12b6daaa26364f4c927b72
+left_right=0/104
+latest_base_ancestor=YES
+unmerged_count=0
+worktree_status_count=1
+review_lineage=SR-028; ARCH-REV-021; IR-048; CRR-089; API-REV-040; CRR-090
+current_package=5 updated durable tests; API/E2E Pass/98; proportional review Pass
+integration_action=NONE if latest_base_ancestor=YES
+end_utc=2026-08-13T15:39:25Z

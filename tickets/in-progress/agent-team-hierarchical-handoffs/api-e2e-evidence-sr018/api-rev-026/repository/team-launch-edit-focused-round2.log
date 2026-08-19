@@ -1,0 +1,145 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web
+
+stderr | components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/teamRunConfigStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/teamRunConfigStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/RunConfigPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/teamRunConfigStore.spec.ts (10 tests) 8ms
+ ✓ components/workspace/config/__tests__/RunConfigPanel.spec.ts (16 tests) 57ms
+ ❯ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts (12 tests | 3 failed) 99ms
+   ✓ TeamRunConfigForm > places team auto approve before a collapsed accessible member override disclosure 27ms
+   ✓ TeamRunConfigForm > toggles the member override disclosure without mutating config fields 6ms
+   ✓ TeamRunConfigForm > renders runtime selector and member override entries 4ms
+   ✓ TeamRunConfigForm > loads models for the team runtime and syncs runtime catalogs for explicit member runtimes 4ms
+   × TeamRunConfigForm > changes runtime kind and reloads runtime-scoped models 9ms
+     → expected [ { kind: 'set_runtime', …(1) }, …(2) ] to deeply equal [ { kind: 'set_runtime', …(1) } ]
+   ✓ TeamRunConfigForm > renders Codex effort-only reasoning defaults visibly on the team-global config path 11ms
+   ✓ TeamRunConfigForm > starts team-global advanced collapsed for OpenAI Responses off defaults 14ms
+   × TeamRunConfigForm > emits the closed model edit while leaving inherited-config pruning to the store owner 5ms
+     → expected [ { kind: 'set_model', …(1) }, …(1) ] to deeply equal [ { kind: 'set_model', …(1) } ]
+   × TeamRunConfigForm > emits the closed runtime edit while leaving inherited-config pruning to the store owner 4ms
+     → expected [ { kind: 'set_runtime', …(1) }, …(2) ] to deeply equal [ { kind: 'set_runtime', …(1) } ]
+   ✓ TeamRunConfigForm > renders nested leaf overrides under their subteam group and keeps canonical-address override identity 5ms
+   ✓ TeamRunConfigForm > renders selected existing team run configuration as read-only while keeping member overrides inspectable 7ms
+   ✓ TeamRunConfigForm > marks historical team member config as missing when read-only metadata has null llmConfig 4ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/workspace/config/__tests__/TeamRunConfigForm.spec.ts > TeamRunConfigForm > changes runtime kind and reloads runtime-scoped models
+AssertionError: expected [ { kind: 'set_runtime', …(1) }, …(2) ] to deeply equal [ { kind: 'set_runtime', …(1) } ]
+
+- Expected
++ Received
+
+  [
+    {
+      "kind": "set_runtime",
+      "runtimeKind": "codex_app_server",
+    },
++   {
++     "kind": "set_model",
++     "llmModelIdentifier": "",
++   },
++   {
++     "kind": "set_llm_config",
++     "llmConfig": null,
++   },
+  ]
+
+ ❯ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts:377:41
+    375|     await wrapper.vm.$nextTick()
+    376| 
+    377|     expect(emittedConfigEdits(wrapper)).toEqual([
+       |                                         ^
+    378|       { kind: 'set_runtime', runtimeKind: 'codex_app_server' },
+    379|     ])
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  components/workspace/config/__tests__/TeamRunConfigForm.spec.ts > TeamRunConfigForm > emits the closed model edit while leaving inherited-config pruning to the store owner
+AssertionError: expected [ { kind: 'set_model', …(1) }, …(1) ] to deeply equal [ { kind: 'set_model', …(1) } ]
+
+- Expected
++ Received
+
+  [
+    {
+      "kind": "set_model",
+      "llmModelIdentifier": "gpt-5.3-codex",
+    },
++   {
++     "kind": "set_llm_config",
++     "llmConfig": null,
++   },
+  ]
+
+ ❯ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts:464:41
+    462|     await wrapper.vm.$nextTick()
+    463| 
+    464|     expect(emittedConfigEdits(wrapper)).toEqual([
+       |                                         ^
+    465|       { kind: 'set_model', llmModelIdentifier: 'gpt-5.3-codex' },
+    466|     ])
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  components/workspace/config/__tests__/TeamRunConfigForm.spec.ts > TeamRunConfigForm > emits the closed runtime edit while leaving inherited-config pruning to the store owner
+AssertionError: expected [ { kind: 'set_runtime', …(1) }, …(2) ] to deeply equal [ { kind: 'set_runtime', …(1) } ]
+
+- Expected
++ Received
+
+  [
+    {
+      "kind": "set_runtime",
+      "runtimeKind": "codex_app_server",
+    },
++   {
++     "kind": "set_model",
++     "llmModelIdentifier": "",
++   },
++   {
++     "kind": "set_llm_config",
++     "llmConfig": null,
++   },
+  ]
+
+ ❯ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts:493:41
+    491|     await wrapper.vm.$nextTick()
+    492| 
+    493|     expect(emittedConfigEdits(wrapper)).toEqual([
+       |                                         ^
+    494|       { kind: 'set_runtime', runtimeKind: 'codex_app_server' },
+    495|     ])
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed | 2 passed (3)
+      Tests  3 failed | 35 passed (38)
+   Start at  08:02:17
+   Duration  5.14s (transform 2.70s, setup 12.76s, collect 538ms, tests 164ms, environment 594ms, prepare 446ms)
+

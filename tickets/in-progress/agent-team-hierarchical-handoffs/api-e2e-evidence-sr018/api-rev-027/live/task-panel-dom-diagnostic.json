@@ -1,0 +1,86 @@
+{
+  "rootTeamRunId": "nested_classroom_test_team_03d75094a7744ba8ba349e0581310805",
+  "headerText": "Tasks\n1 task",
+  "headerAria": "true",
+  "summaryCount": 1,
+  "visibleSummaryCount": 1,
+  "data": [
+    {
+      "text": "Perform exactly this nested classroom task. student_one must use send_message_to to send exactly TASK_PEER_AUTOBYTEUS to ./student_two, then wait for the peer reply. After receiving the peer reply, student_one must submit exactly NESTED_CLASSROOM_OK_AUTOBYTEUS using submit_task_result. Do not submit any other result or delegate any additional task. The coordinator should return that exact token as the task result.",
+      "display": "inline-block",
+      "visibility": "visible",
+      "opacity": "1",
+      "height": 60,
+      "width": 245,
+      "parents": [
+        {
+          "tag": "ARTICLE",
+          "cls": "border-l-2 transition-colors border-blue-500 bg-blue-50",
+          "test": "team-delegated-task-team-entry",
+          "display": "block",
+          "visibility": "visible",
+          "overflow": "visible",
+          "height": 88,
+          "width": 247,
+          "aria": null
+        },
+        {
+          "tag": "DIV",
+          "cls": "pb-1",
+          "test": "team-delegated-task-navigator",
+          "display": "block",
+          "visibility": "visible",
+          "overflow": "visible",
+          "height": 92,
+          "width": 247,
+          "aria": null
+        },
+        {
+          "tag": "ASIDE",
+          "cls": "min-h-0 shrink-0 overflow-y-auto border-r border-slate-200 pb-2",
+          "test": "team-delegated-tasks-navigator",
+          "display": "block",
+          "visibility": "visible",
+          "overflow": "auto",
+          "height": 1076,
+          "width": 248,
+          "aria": null
+        },
+        {
+          "tag": "DIV",
+          "cls": "flex h-full min-h-0 overflow-hidden",
+          "test": "team-delegated-tasks-split",
+          "display": "flex",
+          "visibility": "visible",
+          "overflow": "hidden",
+          "height": 1076,
+          "width": 450,
+          "aria": null
+        },
+        {
+          "tag": "DIV",
+          "cls": "min-h-0 flex-1 overflow-hidden",
+          "test": "team-delegated-tasks-body",
+          "display": "block",
+          "visibility": "visible",
+          "overflow": "hidden",
+          "height": 1076,
+          "width": 450,
+          "aria": null
+        },
+        {
+          "tag": "SECTION",
+          "cls": "flex min-h-0 flex-col overflow-hidden bg-white h-full",
+          "test": "team-delegated-tasks-section",
+          "display": "flex",
+          "visibility": "visible",
+          "overflow": "hidden",
+          "height": 1109,
+          "width": 450,
+          "aria": null
+        }
+      ]
+    }
+  ],
+  "body": "Agents\nAgent Teams\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nTEAMS\nNC\nNested Classroom Test Team\n(2)\nFirst call get_handoff_rules for your current /Teacher address and follow the returned guidance. ...\n8m\nT\nTeacher\n8m\nS\nStudentStudyGroup\nTEAM\n8m\nFirst call get_handoff_rules for your current /Teacher address and follow the returned guidance. ...\n9m\nSettings\nT\nTeacher\nOffline\nYou\n**[User Requirement]**\nFirst call get_handoff_rules for your current /Teacher address and follow the returned guidance. Then use send_message_to to send an ordinary message to ./StudentStudyGroup with reference_files:[\"/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr018/api-rev-027/live/autobyteus-reference.txt\"] asking its coordinator to reply to /Teacher with exactly CLASSROOM_REPLY_AUTOBYTEUS. Wait for that reply. Then delegate exactly one task to ./StudentStudyGroup. The task must require student_one to send exactly TASK_PEER_AUTOBYTEUS to ./student_two using send_message_to, wait for the peer reply, and submit exactly NESTED_CLASSROOM_OK_AUTOBYTEUS with submit_task_result. Accept that exact result with review_task_result. Do not delegate another task. After acceptance, reply with exactly LIVE_ROW_COMPLETE_AUTOBYTEUS.\nT\nTeacher\nget_handoff_rules\nsend_message_to\nrun_bash\n· sleep 2\nError executing tool 'run_bash' (ID: call_ygc5Qe3EPZz0yH9EonyYy3Wp): Error: FILE_TOOL_PATH_OUTSIDE_AUTHORIZED_ROOT\ndelegate_task\nrun_bash\n· sleep 3\nError executing tool 'run_bash' (ID: call_1A3wbZCvRqvvK2IeXUQw74FC): Error: Parameter 'cwd' for terminal tool must be a non-empty string when provided.\nrun_bash\n· sleep 3\nreview_task_result\nError executing tool 'review_task_result' (ID: call_PKcPVmLGdf3ViFjVklUpurOn): Error: { \"error\": { \"code\": \"TASK_NOT_AWAITING_REVIEW\", \"message\": \"Delegated task 'task_0001' is active, not awaiting_review.\" } }\nrun_bash\n· sleep 10\nreview_task_result\n\nLIVE_ROW_COMPLETE_AUTOBYTEUS\n\nYou\n**[Message From Agent]**\nYou received a message from sender name: student_one, sender id: student_one_0ab5ede246e74ec7a79a90250caf71f3\nmessage:\nCLASSROOM_REPLY_AUTOBYTEUS\nT\nTeacher\n\nLIVE_ROW_COMPLETE_AUTOBYTEUS\n\nYou\n**[System Notification]**\nTask result submitted for review.\n\nTask ID: task_0001\nTask:\nPerform exactly this nested classroom task. student_one must use send_message_to to send exactly TASK_PEER_AUTOBYTEUS to ./student_two, then wait for the peer reply. After receiving the peer reply, student_one must submit exactly NESTED_CLASSROOM_OK_AUTOBYTEUS using submit_task_result. Do not submit any other result or delegate any additional task. The coordinator should return that exact token as the task result.\n\nSubmitted result:\nNESTED_CLASSROOM_OK_AUTOBYTEUS\n\nReference files:\n- None specified\n\nTask review guidance:\n- Use review_task_result with decision=accept when the result is ready to finalize.\n- Use review_task_result with decision=request_revision and a non-empty comment when the task result needs changes.\nT\nTeacher\nreview_task_result\nError executing tool 'review_task_result' (ID: call_g9wfgV4ypFRytWsFQ9TaiaNw): Error: { \"error\": { \"code\": \"TASK_NOT_AWAITING_REVIEW\", \"message\": \"Delegated task 'task_0001' is accepted, not awaiting_review.\" } }\n\nLIVE_ROW_COMPLETE_AUTOBYTEUS\n\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n0 Messages\nTasks\n1 task\nPerform exactly this nested classroom task. student_one must use send_message_to to send exactly TASK_PEER_AUTOBYTEUS to ./student_two, then wait for the peer reply. After receiving the peer reply, student_one must submit exactly NESTED_CLASSROOM_OK_AUTOBYTEUS using submit_task_result. Do not submit any other result or delegate any additional task. The coordinator should return that exact token as the task result.\nTECHNICAL DETAILS\n\nPerform exactly this nested classroom task. student_one must use send_message_to to send exactly TASK_PEER_AUTOBYTEUS to ./student_two, then wait for the peer reply. After receiving the peer reply, student_one must submit exactly NESTED_CLASSROOM_OK_AUTOBYTEUS using submit_task_result. Do not submit any other result or delegate any additional task. The coordinator should return that exact token as the task result."
+}

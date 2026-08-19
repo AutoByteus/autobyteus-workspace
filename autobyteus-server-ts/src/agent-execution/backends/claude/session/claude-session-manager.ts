@@ -1,7 +1,6 @@
 import type { WorkspaceManager } from "../../../../workspaces/workspace-manager.js";
 import { getWorkspaceManager } from "../../../../workspaces/workspace-manager.js";
 import {
-  asString,
   type ClaudeSessionEvent,
 } from "../claude-runtime-shared.js";
 import { normalizeSessionMessages } from "../claude-runtime-message-normalizers.js";
@@ -17,6 +16,7 @@ import {
   type ClaudeSdkQueryLike,
 } from "../../../../runtime-management/claude/client/claude-sdk-client.js";
 import type { ClaudeRunContext } from "../backend/claude-agent-run-context.js";
+import { ClaudeProviderSessionLifecycle } from "./claude-provider-session-lifecycle.js";
 import {
   getAgentToolMcpSessionService,
   type AgentToolMcpSessionService,
@@ -53,11 +53,12 @@ export class ClaudeSessionManager {
     runContext: ClaudeRunContext,
   ): Promise<ClaudeSession> {
     await this.closeRunSession(runContext.runId);
-    runContext.runtimeContext.sessionId = runContext.runId;
     runContext.runtimeContext.hasCompletedTurn = false;
     runContext.runtimeContext.activeTurnId = null;
+    const providerSessionLifecycle = ClaudeProviderSessionLifecycle.reserveNew();
     const session = new ClaudeSession({
       runContext,
+      providerSessionLifecycle,
       dependencies: this.buildSessionDependencies(runContext.runId),
     });
     this.sessions.set(runContext.runId, session);
@@ -70,16 +71,16 @@ export class ClaudeSessionManager {
     sessionId: string,
   ): Promise<ClaudeSession> {
     await this.closeRunSession(runContext.runId);
-    const resolvedSessionId = asString(sessionId) ?? runContext.runId;
-    runContext.runtimeContext.sessionId = resolvedSessionId;
-    runContext.runtimeContext.hasCompletedTurn = resolvedSessionId !== runContext.runId;
+    const providerSessionLifecycle = ClaudeProviderSessionLifecycle.restore(sessionId, runContext.runId);
+    runContext.runtimeContext.hasCompletedTurn = false;
     runContext.runtimeContext.activeTurnId = null;
     const session = new ClaudeSession({
       runContext,
+      providerSessionLifecycle,
       dependencies: this.buildSessionDependencies(runContext.runId),
     });
     this.sessions.set(runContext.runId, session);
-    this.sessionMessageCache.ensureSession(resolvedSessionId);
+    this.sessionMessageCache.ensureSession(providerSessionLifecycle.sessionId);
     return session;
   }
 
@@ -122,7 +123,7 @@ export class ClaudeSessionManager {
   async getSessionMessages(
     sessionId: string,
   ): Promise<Array<Record<string, unknown>>> {
-    const normalizedSessionId = asString(sessionId);
+    const normalizedSessionId = sessionId.trim();
     if (!normalizedSessionId) {
       return [];
     }

@@ -1,15 +1,6 @@
 import { defineStore } from 'pinia';
 import { useWorkspaceStore } from '~/stores/workspace';
-import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
-import { useAgentContextsStore } from '~/stores/agentContextsStore';
-import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
-import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
-import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
-import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
-import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig';
-import { DEFAULT_AGENT_RUNTIME_KIND } from '~/types/agent/AgentRunConfig';
 import { AgentStatus } from '~/types/agent/AgentStatus';
-import { buildEditableAgentRunSeed } from '~/composables/useDefinitionLaunchDefaults';
 import type {
   RunEditableFieldFlags,
   RunHistoryWorkspaceGroup,
@@ -25,10 +16,6 @@ import {
   type RunTreeRow,
   type RunTreeWorkspaceNode,
 } from '~/utils/runTreeProjection';
-import {
-  pickPreferredRunTemplate,
-  resolveRunnableModelIdentifier,
-} from '~/utils/runLaunchPolicy';
 import {
   ensureRunHistoryWorkspaceByRootPath,
   fetchRunHistoryTree,
@@ -50,15 +37,14 @@ import {
   type RunHistoryTeamNavigationAncestry,
 } from './runHistoryNavigationProjection';
 import type { RunNavigationEffect } from '~/services/agentStreaming/agentStreamMutationEffects';
-import type { TaskExecutionProjectionMutation } from '~/services/agentStreaming/teamTaskExecutionProjection';
 import type { RunNavigationTarget } from './runHistoryNavigationPatches';
 import {
   applyRunNavigationEffectForStore,
   applyRunNavigationTeamFocusForStore,
-  commitTaskProjectionNavigationMutationForStore,
   focusTeamMemberAndEnsureHydratedForStore,
   refreshRunNavigationTopologyForStore,
 } from './runHistoryNavigationStoreActions';
+import { createDraftRunForHistoryStore } from './runHistoryDraftActions';
 
 const FALSE_EDITABLE_FIELDS: RunEditableFieldFlags = {
   llmModelIdentifier: false,
@@ -79,7 +65,7 @@ export const useRunHistoryStore = defineStore('runHistory', {
     teamResumeConfigByTeamRunId: {} as Record<string, TeamRunResumeConfigPayload>,
     selectedRunId: null as string | null,
     selectedTeamRunId: null as string | null,
-    selectedTeamMemberRouteKey: null as string | null,
+    selectedTeamMemberAddress: null as string | null,
     navigationProjection: null as RunHistoryNavigationProjectionState | null,
     navigationTopologyRevision: 0,
     navigationPatchRevision: 0,
@@ -141,91 +127,7 @@ export const useRunHistoryStore = defineStore('runHistory', {
       workspaceRootPath: string;
       agentDefinitionId: string;
     }): Promise<void> {
-      const agentDefinitionStore = useAgentDefinitionStore();
-      if (agentDefinitionStore.agentDefinitions.length === 0) {
-        await agentDefinitionStore.fetchAllAgentDefinitions();
-      }
-
-      const definition = agentDefinitionStore.getAgentDefinitionById(options.agentDefinitionId);
-      if (!definition) {
-        throw new Error(`Agent definition '${options.agentDefinitionId}' was not found.`);
-      }
-
-      const workspaceId = await this.ensureWorkspaceByRootPath(options.workspaceRootPath);
-      if (!workspaceId) {
-        throw new Error(`Workspace '${options.workspaceRootPath}' could not be resolved.`);
-      }
-      const workspaceMetadata = await this.resolveWorkspaceMetadataByRootPath(options.workspaceRootPath);
-      if (!workspaceMetadata) {
-        throw new Error(`Workspace '${options.workspaceRootPath}' reference could not be resolved.`);
-      }
-
-      const agentRunConfigStore = useAgentRunConfigStore();
-      const llmProviderConfigStore = useLLMProviderConfigStore();
-      const teamRunConfigStore = useTeamRunConfigStore();
-      const selectionStore = useAgentSelectionStore();
-      const agentContextsStore = useAgentContextsStore();
-
-      const selectedTemplate = selectionStore.selectedType === 'agent' && selectionStore.selectedRunId
-        ? agentContextsStore.runs.get(selectionStore.selectedRunId) ?? null : null;
-      const selectedSameDefinitionTemplate = selectedTemplate?.config.agentDefinitionId === options.agentDefinitionId
-        ? selectedTemplate
-        : null;
-      const templateCandidates = Array.from(agentContextsStore.runs.values()).filter(
-        (context) => context.config.agentDefinitionId === options.agentDefinitionId,
-      );
-      const preferredTemplate = selectedSameDefinitionTemplate ?? pickPreferredRunTemplate(templateCandidates, workspaceId);
-
-      const bufferedModelCandidate =
-        agentRunConfigStore.config?.agentDefinitionId === options.agentDefinitionId
-          ? agentRunConfigStore.config.llmModelIdentifier
-          : '';
-      const resolvedModelIdentifier = await resolveRunnableModelIdentifier({
-        candidateModels: [
-          preferredTemplate?.config.llmModelIdentifier,
-          bufferedModelCandidate,
-        ],
-        getKnownModels: () => llmProviderConfigStore.models,
-        ensureModelsLoaded: async () => {
-          await llmProviderConfigStore.fetchProvidersWithModels(
-            preferredTemplate?.config.runtimeKind ?? DEFAULT_AGENT_RUNTIME_KIND,
-          );
-        },
-      });
-
-      if (!resolvedModelIdentifier) {
-        throw new Error('No model is available to start a new run.');
-      }
-
-      teamRunConfigStore.clearConfig();
-      if (preferredTemplate) {
-        const seed = buildEditableAgentRunSeed(preferredTemplate.config);
-        const preserveSeedLlmConfig =
-          (seed.llmModelIdentifier || '').trim() === (resolvedModelIdentifier || '').trim();
-        agentRunConfigStore.setAgentConfig({
-          ...seed,
-          agentDefinitionId: definition.id,
-          agentDefinitionName: definition.name,
-          agentAvatarUrl: definition.avatarUrl ?? seed.agentAvatarUrl ?? null,
-          workspaceId,
-          workspaceMetadata,
-          llmModelIdentifier: resolvedModelIdentifier,
-          llmConfig: preserveSeedLlmConfig ? (seed.llmConfig ?? null) : null,
-          isLocked: false,
-        });
-      } else {
-        agentRunConfigStore.setTemplate(definition);
-        agentRunConfigStore.updateAgentConfig({
-          workspaceId,
-          workspaceMetadata,
-          llmModelIdentifier: resolvedModelIdentifier,
-        });
-      }
-
-      selectionStore.clearSelection();
-      this.selectedRunId = null;
-      this.selectedTeamRunId = null;
-      this.selectedTeamMemberRouteKey = null;
+      await createDraftRunForHistoryStore(this, options);
     },
 
     async createWorkspace(rootPath: string): Promise<string> {
@@ -489,11 +391,15 @@ export const useRunHistoryStore = defineStore('runHistory', {
       return this.navigationProjection?.teamAncestryById[teamRunId] ?? null;
     },
 
-    getTeamMemberNavigationAncestorRouteKeys(teamRunId: string, memberRouteKey: string): string[] {
+    getTeamMemberNavigationAncestorRowKeys(
+      teamRunId: string,
+      agentRunId: string,
+    ): string[] {
       if (!this.navigationProjection) this.refreshRunNavigationTopology('lazy-member-ancestry-read');
-      return this.navigationProjection?.memberAncestorRouteKeysByIdentity[
-        runHistoryMemberIndexKey(teamRunId, memberRouteKey)
+      const keys = this.navigationProjection?.memberAncestorExecutionKeysByIdentity[
+        runHistoryMemberIndexKey(teamRunId, agentRunId)
       ] ?? [];
+      return [...keys];
     },
 
     refreshRunNavigationTopology(reason: string): void {
@@ -504,27 +410,23 @@ export const useRunHistoryStore = defineStore('runHistory', {
       return applyRunNavigationEffectForStore(this, target, effect);
     },
 
-    commitTaskProjectionNavigationMutation(
+    applyRunNavigationTeamFocus(teamRunId: string, agentRunId: string): boolean {
+      return applyRunNavigationTeamFocusForStore(this, teamRunId, agentRunId);
+    },
+
+    async focusTeamMemberAndEnsureHydrated(
       teamRunId: string,
-      mutation: TaskExecutionProjectionMutation,
-    ): boolean {
-      return commitTaskProjectionNavigationMutationForStore(this, teamRunId, mutation);
-    },
-
-    applyRunNavigationTeamFocus(teamRunId: string, memberRouteKey: string): boolean {
-      return applyRunNavigationTeamFocusForStore(this, teamRunId, memberRouteKey);
-    },
-
-    async focusTeamMemberAndEnsureHydrated(teamRunId: string, memberRouteKey: string): Promise<boolean> {
-      return focusTeamMemberAndEnsureHydratedForStore(this, teamRunId, memberRouteKey);
+      agentRunId: string,
+    ): Promise<boolean> {
+      return focusTeamMemberAndEnsureHydratedForStore(this, teamRunId, agentRunId);
     },
 
     async openTeamMemberRun(
       teamRunId: string,
-      memberRouteKey: string,
+      agentRunId: string,
       options: { selectionMode?: RunHistorySelectionMode } = {},
     ): Promise<void> {
-      await openTeamMemberRunFromHistory(this, teamRunId, memberRouteKey, options);
+      await openTeamMemberRunFromHistory(this, teamRunId, agentRunId, options);
       this.refreshRunNavigationTopology('team-open');
     },
 

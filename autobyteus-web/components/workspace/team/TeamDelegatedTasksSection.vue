@@ -84,19 +84,17 @@
 import { computed, ref, watch } from 'vue';
 import { Icon } from '@iconify/vue';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
-import type { ConversationTargetAddress } from '~/types/agent/ConversationTargetAddress';
 import { useHorizontalSplitResize } from '~/composables/useHorizontalSplitResize';
 import { deriveDelegatedTaskEntries, type DelegatedTaskEntry } from '~/utils/teamDelegatedTaskEntries';
-import { useTaskDelegationStore } from '~/stores/taskDelegationStore';
 import TeamDelegatedTaskDetailPane from '~/components/workspace/team/TeamDelegatedTaskDetailPane.vue';
 import TeamDelegatedTaskNavigator from '~/components/workspace/team/TeamDelegatedTaskNavigator.vue';
 
 const props = withDefaults(defineProps<{
   teamContext: AgentTeamContext;
-  focusedAddress?: ConversationTargetAddress | null;
+  focusedAgentRunId?: string | null;
   collapsed?: boolean;
 }>(), {
-  focusedAddress: undefined,
+  focusedAgentRunId: undefined,
   collapsed: false,
 });
 
@@ -113,11 +111,10 @@ const { paneWidth: leftPaneWidth, startResize } = useHorizontalSplitResize({
   maxWidth: 360,
 });
 
-const taskDelegationStore = useTaskDelegationStore();
+const rootTeamRunId = computed(() => props.teamContext.view.getRootTeamRunId());
 const delegatedTaskEntries = computed<DelegatedTaskEntry[]>(() => deriveDelegatedTaskEntries(
   props.teamContext,
-  taskDelegationStore.getRecordsForTeam(props.teamContext.teamRunId),
-  props.focusedAddress,
+  props.focusedAgentRunId,
 ));
 const selectedEntry = computed(() => (
   delegatedTaskEntries.value.find((entry) => entry.entryKey === selectedEntryKey.value) ?? null
@@ -129,14 +126,14 @@ const delegatedTaskSelectionSignature = computed(() => delegatedTaskEntries.valu
   .map((entry) => `${entry.entryKey}:${entry.taskReferenceFiles.map((reference) => reference.referenceId).join(',')}`)
   .join('\n'));
 
-watch(() => props.teamContext.teamRunId, () => {
+watch(rootTeamRunId, () => {
   selectedEntryKey.value = null;
   selectedReferenceId.value = null;
   referenceRefreshSignal.value = 0;
 });
 
 watch(
-  () => [props.teamContext.teamRunId, delegatedTaskSelectionSignature.value],
+  () => [rootTeamRunId.value, delegatedTaskSelectionSignature.value],
   () => {
     if (!delegatedTaskEntries.value.length) {
       selectedEntryKey.value = null;

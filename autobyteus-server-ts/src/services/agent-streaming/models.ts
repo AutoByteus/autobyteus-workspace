@@ -69,5 +69,8 @@ export function createErrorMessage(code: string, message: string): ServerMessage
   return new ServerMessage(ServerMessageType.ERROR, {
     code,
     message,
+    error_scope: null,
+    error_effect: null,
+    turn_id: null,
   });
 }

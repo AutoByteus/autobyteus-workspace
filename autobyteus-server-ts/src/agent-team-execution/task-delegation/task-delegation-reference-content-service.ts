@@ -1,18 +1,12 @@
 import fs from "node:fs";
 import path from "node:path";
 import { lookup as lookupMime } from "mime-types";
+import type { TaskDelegationRecordV1 } from "./task-delegation-record-v1.js";
 import {
-  getTaskDelegationRunRegistry,
-  type TaskDelegationRunRegistry,
-} from "./task-delegation-run-registry.js";
-import {
-  getTaskDelegationRecordsService,
-  type TaskDelegationRecordsService,
-} from "./records/task-delegation-records-service.js";
-import type {
-  TaskDelegationRecord,
-  TaskDelegationReferenceFilePayload,
-} from "./task-delegation-record.js";
+  getTaskDelegationProjectionService,
+  type TaskDelegationProjectionService,
+  type TaskReferenceProjection,
+} from "./task-delegation-projection-service.js";
 
 export type TaskDelegationReferenceContentErrorCode =
   | "REFERENCE_NOT_FOUND"
@@ -31,8 +25,8 @@ export class TaskDelegationReferenceContentError extends Error {
 }
 
 export interface ResolvedTaskDelegationReferenceContent {
-  record: TaskDelegationRecord;
-  reference: TaskDelegationReferenceFilePayload;
+  record: TaskDelegationRecordV1;
+  reference: TaskReferenceProjection;
   absolutePath: string;
   mimeType: string;
   stream: fs.ReadStream;
@@ -57,8 +51,7 @@ const isReadableFile = (absolutePath: string): boolean => {
 
 export class TaskDelegationReferenceContentService {
   constructor(
-    private readonly runRegistry: Pick<TaskDelegationRunRegistry, "getExisting"> = getTaskDelegationRunRegistry(),
-    private readonly recordsService: Pick<TaskDelegationRecordsService, "resolveReference"> = getTaskDelegationRecordsService(),
+    private readonly projections: Pick<TaskDelegationProjectionService, "resolveReference"> = getTaskDelegationProjectionService(),
   ) {}
 
   async resolveContent(input: {
@@ -67,11 +60,7 @@ export class TaskDelegationReferenceContentService {
     referenceId: string;
   }): Promise<ResolvedTaskDelegationReferenceContent> {
     const teamRunId = input.teamRunId.trim();
-    const service = this.runRegistry.getExisting(teamRunId);
-    const resolved = service?.resolveTaskReference({
-      taskId: input.taskId,
-      referenceId: input.referenceId,
-    }) ?? await this.recordsService.resolveReference({
+    const resolved = await this.projections.resolveReference({
       rootTeamRunId: teamRunId,
       taskId: input.taskId,
       referenceId: input.referenceId,

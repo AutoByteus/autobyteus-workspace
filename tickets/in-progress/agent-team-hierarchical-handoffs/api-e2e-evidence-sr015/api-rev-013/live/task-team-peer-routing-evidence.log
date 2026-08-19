@@ -1,0 +1,45 @@
+API-REV-013 task-Team peer routing failure evidence
+captured_at_utc=2026-08-09T11:40:56Z
+reviewed_artifact_head=ced0270908c620f0d186e61d294080f89e08bb7d
+reviewed_source_revision=b877d343b30fe01bd2f39546c0e8279adbd00dff
+root_team_run_id=nested_classroom_test_team_20ce2140b0124e5abb2e3bf4ee04d12c
+task_id=task_0001
+task_team_run_id=team_local_team_nested_classroom_test_student_st_5c812d9dde5444e69a635bec25f001c2
+task_coordinator_agent_run_id=student_one_e1e50bc80221425d93a62e9ec6dd96a1
+persistent_peer_agent_run_id=student_two_c238025ae9df4a17800ec6d75d68d3d4
+
+--- task sender/receiver projection ---
+{
+  "messageId": "teammsg_TNFjoWNMY5mkbLyE_tiqgTkb5yoRKHKG",
+  "senderAddress": {
+    "rootTeamRunId": "nested_classroom_test_team_20ce2140b0124e5abb2e3bf4ee04d12c",
+    "taskTeamRunIds": [
+      "team_local_team_nested_classroom_test_student_st_5c812d9dde5444e69a635bec25f001c2"
+    ],
+    "memberAddress": "/StudentStudyGroup/student_one",
+    "taskAgentRunId": null
+  },
+  "receiverAddress": {
+    "rootTeamRunId": "nested_classroom_test_team_20ce2140b0124e5abb2e3bf4ee04d12c",
+    "taskTeamRunIds": [],
+    "memberAddress": "/StudentStudyGroup/student_two",
+    "taskAgentRunId": null
+  },
+  "content": "Please reply with the exact token AB13_AUTO_TASK_PEER_OK",
+  "messageType": "ordinary",
+  "createdAt": "2026-08-09T11:35:51.851Z",
+  "referenceFiles": []
+}
+
+--- tool accepted delivery ---
+{"tool_args": {}, "tool_call_id": "call_R9eInS4tsA0ArQYLTz9VUEUB", "tool_name": "get_handoff_rules", "trace_type": "tool_call", "ts": 1786275222.973, "turn_id": "turn_0001"}
+{"tool_call_id": "call_R9eInS4tsA0ArQYLTz9VUEUB", "tool_error": null, "tool_name": "get_handoff_rules", "tool_result": "{\"handoffs\":[{\"when\":\"When the delegated classroom task is finished and the teacher needs the outcome.\",\"recipient_address\":\"/Teacher\"},{\"when\":\"When the delegated classroom task asks the coordinator to consult the supporting student.\",\"recipient_address\":\"/StudentStudyGroup/student_two\"}]}", "trace_type": "tool_result", "ts": 1786275340.555, "turn_id": "turn_0001"}
+{"tool_args": {"content": "Please reply with the exact token AB13_AUTO_TASK_PEER_OK", "message_type": "ordinary", "recipient_address": "./student_two", "reference_files": [], "target_agent_run_id": ""}, "tool_call_id": "call_AP0QcowLn7n8K9o5H8W3y4ss", "tool_name": "send_message_to", "trace_type": "tool_call", "ts": 1786275341.817, "turn_id": "turn_0001"}
+{"tool_call_id": "call_AP0QcowLn7n8K9o5H8W3y4ss", "tool_error": null, "tool_name": "send_message_to", "tool_result": "{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Delivered message to ./student_two.\",\"result\":null}", "trace_type": "tool_result", "ts": 1786275351.856, "turn_id": "turn_0001"}
+
+--- server recipient identity ---
+714:AgentExternalEventNotifier (NotifierID: 38487989-9f64-42de-aa5e-f88de1e81761, AgentID: student_two_c238025ae9df4a17800ec6d75d68d3d4) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+952:Agent 'student_one_e1e50bc80221425d93a62e9ec6dd96a1': Stored pending tool invocation 'call_AP0QcowLn7n8K9o5H8W3y4ss' (send_message_to).
+959:Agent 'student_one_e1e50bc80221425d93a62e9ec6dd96a1': Retrieved pending tool invocation 'call_AP0QcowLn7n8K9o5H8W3y4ss' (send_message_to).
+964:AgentExternalEventNotifier (NotifierID: 38487989-9f64-42de-aa5e-f88de1e81761, AgentID: student_two_c238025ae9df4a17800ec6d75d68d3d4) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+975:[team-communication] projection inserted teamRunId=nested_classroom_test_team_20ce2140b0124e5abb2e3bf4ee04d12c messageId=teammsg_TNFjoWNMY5mkbLyE_tiqgTkb5yoRKHKG referenceCount=0 projectionPath=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/sr015-api-rev-013-20260809/memory/agent_teams/nested_classroom_test_team_20ce2140b0124e5abb2e3bf4ee04d12c/team_communication_messages.json

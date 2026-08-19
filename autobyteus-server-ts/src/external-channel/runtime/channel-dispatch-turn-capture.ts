@@ -9,9 +9,7 @@ export type RuntimeEventSubscription = (
 
 export type TeamDispatchTurnCapture = {
   turnId: string;
-  memberRunId: string | null;
-  memberRouteKey: string | null;
-  memberPath: string[] | null;
+  agentRunId: string;
 };
 
 export const startDirectDispatchTurnCapture = (
@@ -30,28 +28,21 @@ export const startDirectDispatchTurnCapture = (
 
 export const startTeamDispatchTurnCapture = (
   subscribeToEvents: RuntimeEventSubscription,
-  targetMemberRouteKey: string | null,
+  targetMemberAddress: string | null,
 ): {
   promise: Promise<TeamDispatchTurnCapture | null>;
   dispose: () => void;
 } => {
-  const normalizedTargetMemberRouteKey = normalizeOptionalString(targetMemberRouteKey);
+  const normalizedTargetMemberAddress = normalizeOptionalString(targetMemberAddress);
   return createScopedCapture(subscribeToEvents, (event) => {
     const parsed = parseTeamChannelOutputEvent(event);
     if (!parsed || !parsed.turnId || parsed.eventType !== AgentRunEventType.TURN_STARTED) {
       return null;
     }
-    const memberRouteKey = normalizeOptionalString(parsed.memberRouteKey);
-    if (normalizedTargetMemberRouteKey) {
-      if (!memberRouteKey || memberRouteKey !== normalizedTargetMemberRouteKey) {
-        return null;
-      }
-    }
+    if (normalizedTargetMemberAddress && parsed.memberAddress !== normalizedTargetMemberAddress) return null;
     return {
       turnId: parsed.turnId,
-      memberRunId: normalizeOptionalString(parsed.memberRunId),
-      memberRouteKey,
-      memberPath: parsed.memberPath ?? null,
+      agentRunId: parsed.agentRunId,
     };
   });
 };

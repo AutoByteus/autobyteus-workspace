@@ -1,0 +1,53 @@
+{
+  "slug": "autobyteus",
+  "runtime": "autobyteus",
+  "model": "gpt-5.6-luna",
+  "passed": false,
+  "rootTeamRunId": "nested_classroom_test_team_a968b9b53c3b494d95910257e61bed5b",
+  "resultConditions": {
+    "freshRootTeamRun": true,
+    "rootedTopology": true,
+    "exactTaskAddress": true,
+    "exactOneDelegatedTask": true,
+    "acceptedStatus": true,
+    "exactOneSubmission": true,
+    "acceptedReview": true,
+    "exactOnePersistentReply": true,
+    "taskPeerDeliveredObservation": true,
+    "taskPeerReplyDeliveredObservation": true,
+    "referenceDelivered": true,
+    "observedTaskSummaryObservation": false,
+    "observedTaskTeamSummaryObservation": false,
+    "observedTransientTaskExecutionObservation": true,
+    "observedActiveTaskUiObservation": false,
+    "observedAwaitingReviewUiObservation": false,
+    "observedAcceptedTaskUiObservation": false,
+    "observedSelectedDetailObservation": false,
+    "observedTeamCommunicationUiObservation": true,
+    "observedReferenceUiObservation": true,
+    "taskDetailVisibleObservation": false,
+    "teamCommunicationVisibleObservation": true,
+    "noSyntheticInterAgentInline": true,
+    "noTeamProtocolErrors": false,
+    "noSerializedAddressLeak": true,
+    "completionMarkerVisible": true,
+    "refreshRetainedTaskHeaderCount": true,
+    "refreshRetainedVisibleTaskCountObservation": false,
+    "refreshRetainedTaskTeamSummaryObservation": false,
+    "terminalTransientCleanup": true,
+    "effectiveRuntimeMatches": true,
+    "effectiveCodexReasoningMatches": true,
+    "noBrowserConsoleErrors": true
+  },
+  "observedStatuses": [
+    "none",
+    "active",
+    "awaiting_review",
+    "accepted"
+  ],
+  "termination": {
+    "success": true,
+    "message": "Agent team run terminated successfully."
+  },
+  "fatalError": null
+}

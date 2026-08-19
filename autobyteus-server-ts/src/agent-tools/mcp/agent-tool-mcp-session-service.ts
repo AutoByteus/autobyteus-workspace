@@ -87,12 +87,12 @@ export class AgentToolMcpSessionService {
     return this.registry.revokeSessionsForOwner({ runId: normalizedRunId });
   }
 
-  revokeAgentToolMcpSessionsForMemberRun(memberRunId: string): number {
-    const normalizedMemberRunId = memberRunId.trim();
-    if (!normalizedMemberRunId) {
+  revokeAgentToolMcpSessionsForAgentRun(agentRunId: string): number {
+    const normalizedAgentRunId = agentRunId.trim();
+    if (!normalizedAgentRunId) {
       return 0;
     }
-    return this.registry.revokeSessionsForOwner({ memberRunId: normalizedMemberRunId });
+    return this.registry.revokeSessionsForOwner({ runId: normalizedAgentRunId });
   }
 
   revokeAgentToolMcpSessionsForOwner(owner: Partial<AgentToolMcpSessionOwnerIdentity>): number {

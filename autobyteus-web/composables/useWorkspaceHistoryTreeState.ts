@@ -22,9 +22,9 @@ interface RunHistoryTreeStoreLike {
     workspaceId: string;
     teamDefinitionGroupKey: string;
   } | null;
-  getTeamMemberNavigationAncestorRouteKeys: (
+  getTeamMemberNavigationAncestorRowKeys: (
     teamRunId: string,
-    memberRouteKey: string,
+    agentRunId: string,
   ) => string[];
 }
 
@@ -121,13 +121,13 @@ export const useWorkspaceHistoryTreeState = (params: {
   const teamMemberKey = (
     workspaceId: string,
     teamRunId: string,
-    memberRouteKey: string,
+    rowKey: string,
   ): string => {
     const normalizedWorkspace = workspaceKey(workspaceId);
     const normalizedTeamRunId = teamRunId.trim();
-    const normalizedMemberRouteKey = memberRouteKey.trim();
-    return normalizedWorkspace && normalizedTeamRunId && normalizedMemberRouteKey
-      ? `${normalizedWorkspace}::team-member::${normalizedTeamRunId}::${normalizedMemberRouteKey}`
+    const normalizedRowKey = rowKey.trim();
+    return normalizedWorkspace && normalizedTeamRunId && normalizedRowKey
+      ? `${normalizedWorkspace}::team-member::${normalizedTeamRunId}::${normalizedRowKey}`
       : '';
   };
 
@@ -235,19 +235,19 @@ export const useWorkspaceHistoryTreeState = (params: {
   const isTeamMemberExpanded = (
     workspaceId: string,
     teamRunId: string,
-    memberRouteKey: string,
+    rowKey: string,
   ): boolean => {
-    const key = teamMemberKey(workspaceId, teamRunId, memberRouteKey);
+    const key = teamMemberKey(workspaceId, teamRunId, rowKey);
     return key ? expandedTeamMembers.value[key] ?? false : false;
   };
 
   const setTeamMemberExpanded = (
     workspaceId: string,
     teamRunId: string,
-    memberRouteKey: string,
+    rowKey: string,
     expanded: boolean,
   ): void => {
-    const key = teamMemberKey(workspaceId, teamRunId, memberRouteKey);
+    const key = teamMemberKey(workspaceId, teamRunId, rowKey);
     if (!key) {
       return;
     }
@@ -261,27 +261,27 @@ export const useWorkspaceHistoryTreeState = (params: {
   const toggleTeamMember = (
     workspaceId: string,
     teamRunId: string,
-    memberRouteKey: string,
+    rowKey: string,
   ): void => {
     setTeamMemberExpanded(
       workspaceId,
       teamRunId,
-      memberRouteKey,
-      !isTeamMemberExpanded(workspaceId, teamRunId, memberRouteKey),
+      rowKey,
+      !isTeamMemberExpanded(workspaceId, teamRunId, rowKey),
     );
   };
 
   const expandTeamMemberAncestors = (
     workspaceId: string,
     teamRunId: string,
-    memberRouteKey: string,
+    agentRunId: string,
   ): boolean => {
-    const ancestorRouteKeys = params.runHistoryStore
-      .getTeamMemberNavigationAncestorRouteKeys(teamRunId, memberRouteKey);
-    for (const ancestorRouteKey of ancestorRouteKeys) {
-      setTeamMemberExpanded(workspaceId, teamRunId, ancestorRouteKey, true);
+    const ancestorRowKeys = params.runHistoryStore
+      .getTeamMemberNavigationAncestorRowKeys(teamRunId, agentRunId);
+    for (const ancestorRowKey of ancestorRowKeys) {
+      setTeamMemberExpanded(workspaceId, teamRunId, ancestorRowKey, true);
     }
-    return ancestorRouteKeys.length > 0;
+    return ancestorRowKeys.length > 0;
   };
 
   const revealAgentRunAncestry = (runId: string): boolean => {

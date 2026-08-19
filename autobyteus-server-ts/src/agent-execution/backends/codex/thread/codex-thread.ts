@@ -14,7 +14,9 @@ import {
   respondToPendingCodexToolApproval,
 } from "./codex-tool-approval-coordinator.js";
 import type { CodexApprovalRecord } from "./codex-approval-record.js";
-import type { CodexAppServerMessage } from "./codex-app-server-message.js";
+import type {
+  CodexLocalDerivedEventInput,
+} from "./codex-app-server-message.js";
 import { CodexThreadEventName } from "../events/codex-thread-event-name.js";
 import type { CodexThreadStartupGate } from "./codex-thread-startup-gate.js";
 import type { JsonObject } from "../codex-app-server-json.js";
@@ -22,6 +24,18 @@ import { toCodexUserInput } from "./codex-user-input-mapper.js";
 import type { CodexRunContext } from "../backend/codex-agent-run-context.js";
 import { dispatchRuntimeEvent } from "../../shared/runtime-event-dispatch.js";
 import { CodexInputSubmissionError } from "./codex-input-submission-error.js";
+import {
+  isCodexSegmentTurnAdmissionEventName,
+  resolveCodexSegmentTurnAdmission,
+} from "./codex-segment-turn-admission.js";
+import { logCodexSegmentTurnAdmissionRejection } from "../events/codex-thread-event-debug.js";
+import { RuntimeKind } from "../../../../runtime-management/runtime-kind-enum.js";
+import {
+  CodexPendingMcpToolCallRegistry,
+  type CodexPendingMcpToolCall,
+} from "./codex-pending-mcp-tool-call-registry.js";
+
+export type { CodexPendingMcpToolCall } from "./codex-pending-mcp-tool-call-registry.js";
 
 const STARTUP_READY_TIMEOUT_MS = 60_000;
 const isRuntimeRawEventDebugEnabled = process.env.RUNTIME_RAW_EVENT_DEBUG === "1";
@@ -29,20 +43,33 @@ const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
 };
 
-export type CodexPendingMcpToolCall = {
-  invocationId: string;
-  turnId: string | null;
-  serverName: string | null;
-  toolName: string | null;
-  arguments: JsonObject;
-};
+const codexThreadEventMessageBrand: unique symbol = Symbol("CodexThreadEventMessage");
+const codexThreadEventMessageBrandValue: true = true;
+
+type BrandedThreadEventMessage<T> = Readonly<T & {
+  readonly [codexThreadEventMessageBrand]: true;
+}>;
+
+export type CodexNativeAdmittedThreadEventMessage = BrandedThreadEventMessage<{
+  source: "native_admitted";
+  method: string;
+  params: Readonly<JsonObject>;
+}>;
+
+export type CodexLocalDerivedThreadEventMessage = BrandedThreadEventMessage<{
+  source: "local_derived";
+  method: string;
+  params: Readonly<JsonObject>;
+  request_id?: string | number;
+}>;
+
+export type CodexThreadEventMessage =
+  | CodexNativeAdmittedThreadEventMessage
+  | CodexLocalDerivedThreadEventMessage;
 
 export type CodexInputSubmissionResult =
   | { kind: "started"; turnId: string }
   | { kind: "steered"; turnId: string };
-
-const normalizeLookupToken = (value: string | null): string | null =>
-  value ? value.trim().toLowerCase() : null;
 
 export class CodexThread {
   readonly runContext: CodexRunContext;
@@ -50,12 +77,11 @@ export class CodexThread {
   currentStatus: string | null;
   readonly startup: CodexThreadStartupGate;
   readonly approvalRecords: Map<string, CodexApprovalRecord>;
-  readonly pendingMcpToolCalls: Map<string, CodexPendingMcpToolCall>;
+  private readonly pendingMcpToolCalls: CodexPendingMcpToolCallRegistry;
   readonly pendingTokenUsageUpdates: Map<string, CodexReadyTokenUsageUpdate>;
-  readonly listeners: Set<(message: CodexAppServerMessage) => void>;
+  readonly listeners: Set<(message: CodexThreadEventMessage) => void>;
   readonly unbindHandlers: Array<() => void>;
   lastTerminalTurnId: string | null;
-  private inputSubmissionTail: Promise<void> = Promise.resolve();
 
   constructor(input: {
     runContext: CodexRunContext;
@@ -65,7 +91,7 @@ export class CodexThread {
     approvalRecords?: Map<string, CodexApprovalRecord>;
     pendingMcpToolCalls?: Map<string, CodexPendingMcpToolCall>;
     pendingTokenUsageUpdates?: Map<string, CodexReadyTokenUsageUpdate>;
-    listeners?: Set<(message: CodexAppServerMessage) => void>;
+    listeners?: Set<(message: CodexThreadEventMessage) => void>;
     unbindHandlers?: Array<() => void>;
     lastTerminalTurnId?: string | null;
   }) {
@@ -74,46 +100,30 @@ export class CodexThread {
     this.currentStatus = input.currentStatus ?? "IDLE";
     this.startup = input.startup;
     this.approvalRecords = input.approvalRecords ?? new Map();
-    this.pendingMcpToolCalls = input.pendingMcpToolCalls ?? new Map();
+    this.pendingMcpToolCalls = new CodexPendingMcpToolCallRegistry(input.pendingMcpToolCalls);
     this.pendingTokenUsageUpdates = input.pendingTokenUsageUpdates ?? new Map();
     this.listeners = input.listeners ?? new Set();
     this.unbindHandlers = input.unbindHandlers ?? [];
     this.lastTerminalTurnId = input.lastTerminalTurnId ?? null;
   }
 
-  get runId(): string {
-    return this.runContext.runId;
-  }
+  get runId(): string { return this.runContext.runId; }
 
-  get threadId(): string {
-    return this.runContext.runtimeContext.threadId ?? this.runId;
-  }
+  get threadId(): string { return this.runContext.runtimeContext.threadId ?? this.runId; }
 
-  get activeTurnId(): string | null {
-    return this.runContext.runtimeContext.activeTurnId;
-  }
+  get activeTurnId(): string | null { return this.runContext.runtimeContext.activeTurnId; }
 
-  get config() {
-    return this.runContext.runtimeContext.codexThreadConfig;
-  }
+  get config() { return this.runContext.runtimeContext.codexThreadConfig; }
 
-  get model(): string | null {
-    return this.config.model;
-  }
+  get model(): string | null { return this.config.model; }
 
-  get workingDirectory(): string {
-    return this.config.workingDirectory;
-  }
+  get workingDirectory(): string { return this.config.workingDirectory; }
 
-  get reasoningEffort(): string | null {
-    return this.config.reasoningEffort;
-  }
+  get reasoningEffort(): string | null { return this.config.reasoningEffort; }
 
-  get serviceTier(): string | null {
-    return this.config.serviceTier ?? null;
-  }
+  get serviceTier(): string | null { return this.config.serviceTier ?? null; }
 
-  subscribeAppServerMessages(listener: (message: CodexAppServerMessage) => void): () => void {
+  subscribeAppServerMessages(listener: (message: CodexThreadEventMessage) => void): () => void {
     this.listeners.add(listener);
     return () => {
       this.listeners.delete(listener);
@@ -190,18 +200,7 @@ export class CodexThread {
     this.pendingTokenUsageUpdates.delete(idempotencyKey);
   }
 
-  submitInput(message: AgentInputUserMessage): Promise<CodexInputSubmissionResult> {
-    const submission = this.inputSubmissionTail.then(() => this.performInputSubmission(message));
-    this.inputSubmissionTail = submission.then(
-      () => undefined,
-      () => undefined,
-    );
-    return submission;
-  }
-
-  private async performInputSubmission(
-    message: AgentInputUserMessage,
-  ): Promise<CodexInputSubmissionResult> {
+  async startInput(message: AgentInputUserMessage): Promise<CodexInputSubmissionResult> {
     if (isRuntimeRawEventDebugEnabled) {
       console.log("[CodexSendTurnStart]", {
         runId: this.runId,
@@ -213,14 +212,12 @@ export class CodexThread {
     }
 
     await this.awaitStartupReady();
-    const activeTurnId = this.activeTurnId;
-    if (activeTurnId) {
-      return this.steerInput(message, activeTurnId);
+    if (this.activeTurnId) {
+      throw new CodexInputSubmissionError(
+        "CODEX_TURN_START_IDENTITY_CONFLICT",
+        `Codex turn/start cannot run while exact turn '${this.activeTurnId}' is active.`,
+      );
     }
-    return this.startInput(message);
-  }
-
-  private async startInput(message: AgentInputUserMessage): Promise<CodexInputSubmissionResult> {
     const payload = await this.client.request<unknown>("turn/start", {
       threadId: this.threadId,
       input: toCodexUserInput(message),
@@ -258,10 +255,17 @@ export class CodexThread {
     return { kind: "started", turnId };
   }
 
-  private async steerInput(
+  async appendInput(
     message: AgentInputUserMessage,
     expectedTurnId: string,
   ): Promise<CodexInputSubmissionResult> {
+    await this.awaitStartupReady();
+    if (this.activeTurnId !== expectedTurnId) {
+      throw new CodexInputSubmissionError(
+        "CODEX_TURN_STEER_ID_MISMATCH",
+        `Codex turn/steer expected active turn '${expectedTurnId}' but '${this.activeTurnId ?? "none"}' is current.`,
+      );
+    }
     let payload: unknown;
     try {
       payload = await this.client.request<unknown>("turn/steer", {
@@ -288,14 +292,18 @@ export class CodexThread {
     return { kind: "steered", turnId: expectedTurnId };
   }
 
-  async interrupt(turnId?: string | null): Promise<void> {
-    const activeTurnId = asString(turnId) ?? this.activeTurnId;
-    if (!activeTurnId) {
+  async interrupt(turnId: string): Promise<void> {
+    if (!turnId) {
       throw new Error("No active turn id is available for interruption.");
+    }
+    if (this.activeTurnId !== turnId) {
+      throw new Error(
+        `Codex active turn is '${this.activeTurnId ?? "none"}', not '${turnId}'.`,
+      );
     }
     await this.client.request("turn/interrupt", {
       threadId: this.threadId,
-      turnId: activeTurnId,
+      turnId,
     });
   }
 
@@ -311,15 +319,40 @@ export class CodexThread {
       approval,
       approved,
       emitEvent: (event) => {
-        this.emitThreadAppServerMessage(event);
+        this.emitLocalDerivedEvent(event);
       },
     });
   }
 
   handleAppServerNotification(method: string, params: JsonObject): void {
-    applyAppServerNotification(this, method, params, (_codexThread, event) => {
-      this.emitThreadAppServerMessage(event);
-    });
+    const nativeEventName = method.trim();
+    let admittedParams: Readonly<JsonObject> = Object.freeze({ ...params });
+    if (isCodexSegmentTurnAdmissionEventName(nativeEventName)) {
+      const admission = resolveCodexSegmentTurnAdmission(
+        nativeEventName,
+        params,
+        this.activeTurnId,
+      );
+      if (!admission.accepted) {
+        logCodexSegmentTurnAdmissionRejection({
+          runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+          runId: this.runId,
+          nativeEventName,
+          reasonCode: admission.reason,
+        });
+        return;
+      }
+      admittedParams = admission.paramsWithExactTurn;
+    }
+
+    const nativeMessage = this.createNativeAdmittedEvent(nativeEventName, admittedParams);
+    const handling = applyAppServerNotification(this, nativeMessage);
+    for (const localEvent of handling.localDerivedEvents) {
+      this.emitLocalDerivedEvent(localEvent);
+    }
+    if (handling.emitNativeMessage) {
+      this.emitThreadEventMessage(nativeMessage);
+    }
   }
 
   handleAppServerRequest(
@@ -333,7 +366,7 @@ export class CodexThread {
       method,
       params,
       emitEvent: (_codexThread, event) => {
-        this.emitThreadAppServerMessage(event);
+        this.emitLocalDerivedEvent(event);
       },
     });
   }
@@ -341,7 +374,7 @@ export class CodexThread {
 
   emitRuntimeError(code: string, message: string): void {
     this.markRuntimeFailed();
-    this.emitThreadAppServerMessage({
+    this.emitLocalDerivedEvent({
       method: CodexThreadEventName.ERROR,
       params: {
         code,
@@ -365,7 +398,7 @@ export class CodexThread {
       new Error(`Codex app server closed before startup completed: ${message}`),
     );
     this.markRuntimeFailed();
-    this.emitThreadAppServerMessage({
+    this.emitLocalDerivedEvent({
       method: CodexThreadEventName.ERROR,
       params: {
         code: "CODEX_APP_SERVER_CLOSED",
@@ -415,8 +448,8 @@ export class CodexThread {
     this.listeners.clear();
   }
 
-  emitAppServerMessage(
-    message: CodexAppServerMessage,
+  private dispatchThreadEventMessage(
+    message: CodexThreadEventMessage,
     onListenerError?: (error: unknown) => void,
   ): void {
     dispatchRuntimeEvent({
@@ -431,16 +464,11 @@ export class CodexThread {
   }
 
   trackPendingMcpToolCall(call: CodexPendingMcpToolCall): void {
-    this.pendingMcpToolCalls.set(call.invocationId, call);
+    this.pendingMcpToolCalls.track(call);
   }
 
   completePendingMcpToolCall(invocationId: string | null): CodexPendingMcpToolCall | null {
-    if (!invocationId) {
-      return null;
-    }
-    const pending = this.pendingMcpToolCalls.get(invocationId) ?? null;
-    this.pendingMcpToolCalls.delete(invocationId);
-    return pending;
+    return this.pendingMcpToolCalls.complete(invocationId);
   }
 
   findPendingMcpToolCall(input: {
@@ -448,22 +476,7 @@ export class CodexThread {
     serverName: string | null;
     toolName: string | null;
   }): CodexPendingMcpToolCall | null {
-    const turnId = normalizeLookupToken(input.turnId);
-    const serverName = normalizeLookupToken(input.serverName);
-    const toolName = normalizeLookupToken(input.toolName);
-    const candidates = Array.from(this.pendingMcpToolCalls.values()).filter((call) => {
-      if (turnId && normalizeLookupToken(call.turnId) !== turnId) {
-        return false;
-      }
-      if (serverName && normalizeLookupToken(call.serverName) !== serverName) {
-        return false;
-      }
-      if (toolName && normalizeLookupToken(call.toolName) !== toolName) {
-        return false;
-      }
-      return true;
-    });
-    return candidates.at(-1) ?? null;
+    return this.pendingMcpToolCalls.find(input);
   }
 
   findApprovalRecord(invocationId: string): CodexApprovalRecord | null {
@@ -508,7 +521,30 @@ export class CodexThread {
     }
   }
 
-  private emitThreadAppServerMessage(message: CodexAppServerMessage): void {
+  private emitLocalDerivedEvent(input: CodexLocalDerivedEventInput): void {
+    const message: CodexLocalDerivedThreadEventMessage = Object.freeze({
+      source: "local_derived",
+      method: input.method.trim(),
+      params: Object.freeze({ ...input.params }),
+      ...(input.request_id !== undefined ? { request_id: input.request_id } : {}),
+      [codexThreadEventMessageBrand]: codexThreadEventMessageBrandValue,
+    });
+    this.emitThreadEventMessage(message);
+  }
+
+  private createNativeAdmittedEvent(
+    method: string,
+    params: Readonly<JsonObject>,
+  ): CodexNativeAdmittedThreadEventMessage {
+    return Object.freeze({
+      source: "native_admitted",
+      method,
+      params,
+      [codexThreadEventMessageBrand]: codexThreadEventMessageBrandValue,
+    });
+  }
+
+  private emitThreadEventMessage(message: CodexThreadEventMessage): void {
     if (isRuntimeRawEventDebugEnabled) {
       console.log("[CodexEmitAppServerMessage]", {
         runId: this.runId,
@@ -517,7 +553,7 @@ export class CodexThread {
         paramKeys: Object.keys(message.params ?? {}),
       });
     }
-    this.emitAppServerMessage(message, (error) => {
+    this.dispatchThreadEventMessage(message, (error) => {
       logger.warn(`Codex app server message listener failed: ${String(error)}`);
     });
   }

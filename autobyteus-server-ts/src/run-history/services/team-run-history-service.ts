@@ -1,200 +1,124 @@
+import { getAgentTeamAddressBasename } from "../../agent-collaboration/domain/agent-team-address.js";
+import type { ConfiguredAgentExecution, ConfiguredMemberExecution, TeamRunExecutionTreeSnapshot } from "../../agent-team-execution/domain/team-run-execution-tree.js";
 import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
-import type {
-  AgentApiStatus,
-  AgentStatusPayload,
-} from "../../agent-execution/domain/agent-status-payload.js";
+import type { AgentApiStatus } from "../../agent-execution/domain/agent-status-payload.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
-import type { TeamRunHistoryItem } from "../domain/team-run-history-index-types.js";
-import type { TeamRunIndexRow } from "../domain/team-run-history-index-types.js";
-import type {
-  TeamRunMetadata,
-  TeamRunAgentMemberMetadata,
-} from "../store/team-run-metadata-types.js";
-import {
-  isUnsupportedLegacyTeamRunMetadataError,
-  TeamRunMetadataStore,
-  toLegacyTeamRunMetadataUpgradeRequiredError,
-} from "../store/team-run-metadata-store.js";
-import {
-  TeamRunHistoryCatalogService,
-  getTeamRunHistoryCatalogService,
-} from "./team-run-history-catalog-service.js";
-import { TeamRunLiveProjectionService } from "./team-run-live-projection-service.js";
-import {
-  getTeamRunLeafAgentMetadata,
-  resolveTeamWorkspaceRootPath,
-} from "./team-run-metadata-flattener.js";
+import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
+import type { TeamRunHistoryItem, TeamRunIndexRow } from "../domain/team-run-history-index-types.js";
+import { TeamRunExecutionTreeStore } from "../store/team-run-execution-tree-store.js";
+import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
+import { TeamRunHistoryCatalogService, getTeamRunHistoryCatalogService } from "./team-run-history-catalog-service.js";
+import { TeamRunLiveProjectionService, type TeamRunMemberStatusProjection } from "./team-run-live-projection-service.js";
+import { projectExecutionTree } from "../../services/agent-streaming/team-execution-view-projector.js";
 
-const logger = {
-  warn: (...args: unknown[]) => console.warn(...args),
-};
-
-export interface DeleteStoredTeamRunResult {
-  success: boolean;
-  message: string;
-}
-
-export interface ArchiveStoredTeamRunResult {
-  success: boolean;
-  message: string;
-}
-
+export interface DeleteStoredTeamRunResult { success: boolean; message: string }
+export interface ArchiveStoredTeamRunResult { success: boolean; message: string }
 export interface TeamRunResumeConfig {
   teamRunId: string;
   isActive: boolean;
-  metadata: TeamRunMetadata;
+  executionTree: TeamRunExecutionTreeSnapshot;
 }
 
 export class TeamRunHistoryService {
-  private readonly metadataStore: TeamRunMetadataStore;
-  private readonly catalogService: TeamRunHistoryCatalogService;
-  private readonly teamRunManager: AgentTeamRunManager;
-  private readonly liveProjectionService: TeamRunLiveProjectionService;
+  private readonly treeStore: TeamRunExecutionTreeStore;
+  private readonly catalog: TeamRunHistoryCatalogService;
+  private readonly manager: AgentTeamRunManager;
+  private readonly live: TeamRunLiveProjectionService;
+  private readonly layout: AgentMemoryLayout;
 
-  constructor(
-    memoryDir: string,
-    options: {
-      metadataStore?: TeamRunMetadataStore;
-      catalogService?: TeamRunHistoryCatalogService;
-      teamRunManager?: AgentTeamRunManager;
-      liveProjectionService?: TeamRunLiveProjectionService;
-    } = {},
-  ) {
-    this.metadataStore = options.metadataStore ?? new TeamRunMetadataStore(memoryDir);
-    this.catalogService = options.catalogService ?? getTeamRunHistoryCatalogService();
-    this.teamRunManager = options.teamRunManager ?? AgentTeamRunManager.getInstance();
-    this.liveProjectionService = options.liveProjectionService ??
-      new TeamRunLiveProjectionService(this.teamRunManager);
+  constructor(memoryDir: string, options: {
+    executionTreeStore?: TeamRunExecutionTreeStore;
+    catalogService?: TeamRunHistoryCatalogService;
+    teamRunManager?: AgentTeamRunManager;
+    liveProjectionService?: TeamRunLiveProjectionService;
+  } = {}) {
+    this.treeStore = options.executionTreeStore ?? new TeamRunExecutionTreeStore();
+    this.catalog = options.catalogService ?? getTeamRunHistoryCatalogService();
+    this.manager = options.teamRunManager ?? AgentTeamRunManager.getInstance();
+    this.live = options.liveProjectionService ?? new TeamRunLiveProjectionService(this.manager);
+    this.layout = new AgentMemoryLayout(memoryDir);
   }
 
   async listTeamRunHistory(): Promise<TeamRunHistoryItem[]> {
-    const rows = await this.catalogService.listCatalogRows();
     const items: TeamRunHistoryItem[] = [];
-
-    for (const row of rows) {
-      const projection = this.liveProjectionService.getCatalogListLiveProjection(row.teamRunId);
-      if (row.archivedAt && !projection.isActive) {
-        continue;
-      }
-
-      let metadata: TeamRunMetadata | null = null;
-      try {
-        metadata = await this.metadataStore.readMetadata(row.teamRunId);
-      } catch (error) {
-        if (isUnsupportedLegacyTeamRunMetadataError(error)) {
-          logger.warn(
-            `Skipping unmigrated legacy team run metadata '${row.teamRunId}'. Open Settings -> Server -> Migrations for details.`,
-          );
-          continue;
-        }
-        throw error;
-      }
-      if (!metadata) {
-        logger.warn(
-          `Skipping indexed team run '${row.teamRunId}' because team_run_metadata.json is missing. Run the app-data migration or repair script if history is incomplete.`,
-        );
-        continue;
-      }
-
-      items.push(this.toHistoryItem(row, metadata, projection));
+    for (const row of await this.catalog.listCatalogRows()) {
+      const projection = this.live.getCatalogListLiveProjection(row.teamRunId);
+      if (row.archivedAt && !projection.isActive) continue;
+      const tree = await this.readTree(row.teamRunId);
+      if (!tree) continue;
+      items.push(this.toHistoryItem(row, tree, projection));
     }
-
     return items.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
   }
 
   async getTeamRunResumeConfig(teamRunId: string): Promise<TeamRunResumeConfig> {
-    let metadata: TeamRunMetadata | null = null;
-    try {
-      metadata = await this.metadataStore.readMetadata(teamRunId);
-    } catch (error) {
-      if (isUnsupportedLegacyTeamRunMetadataError(error)) {
-        throw toLegacyTeamRunMetadataUpgradeRequiredError(error);
-      }
-      throw error;
-    }
-    if (!metadata) {
-      throw new Error(`Team run metadata not found for '${teamRunId}'.`);
-    }
-    return {
-      teamRunId,
-      isActive: this.isTeamRunActive(teamRunId),
-      metadata,
-    };
+    const tree = await this.readTree(teamRunId);
+    if (!tree) throw new Error(`Team run execution tree not found for '${teamRunId}'.`);
+    return { teamRunId, isActive: this.manager.getTeamRun(teamRunId) !== null, executionTree: tree };
   }
 
-  async archiveStoredTeamRun(teamRunId: string): Promise<ArchiveStoredTeamRunResult> {
-    return this.catalogService.archiveTeamRun(teamRunId);
+  archiveStoredTeamRun(teamRunId: string): Promise<ArchiveStoredTeamRunResult> {
+    return this.catalog.archiveTeamRun(teamRunId);
   }
 
-  async deleteStoredTeamRun(teamRunId: string): Promise<DeleteStoredTeamRunResult> {
-    return this.catalogService.deleteTeamRun(teamRunId);
+  deleteStoredTeamRun(teamRunId: string): Promise<DeleteStoredTeamRunResult> {
+    return this.catalog.deleteTeamRun(teamRunId);
+  }
+
+  private readTree(rootTeamRunId: string): Promise<TeamRunExecutionTreeSnapshot | null> {
+    return this.treeStore.read(
+      this.layout.getTeamDirPath({ rootTeamRunId, ancestorTeamRunIds: [] }),
+      rootTeamRunId,
+    );
   }
 
   private toHistoryItem(
     row: TeamRunIndexRow,
-    metadata: TeamRunMetadata,
-    projection: {
-      isActive: boolean;
-      memberStatusSnapshots: AgentStatusPayload[];
-    },
+    tree: TeamRunExecutionTreeSnapshot,
+    projection: { isActive: boolean; memberStatusSnapshots: TeamRunMemberStatusProjection[] },
   ): TeamRunHistoryItem {
-    const coordinatorMemberRouteKey = resolveCoordinatorMemberRouteKey(metadata);
+    const members = collectConfiguredAgents(tree.rootTeam.members);
     return {
       teamRunId: row.teamRunId,
       teamDefinitionId: row.teamDefinitionId,
       teamDefinitionName: row.teamDefinitionName,
-      coordinatorMemberRouteKey,
-      workspaceRootPath: row.workspaceRootPath ?? resolveTeamWorkspaceRootPath(metadata) ?? null,
+      coordinatorAddress: tree.rootTeam.coordinatorAddress,
+      workspaceRootPath: row.workspaceRootPath ?? members.find((member) => member.launchConfiguration.workspaceRootPath)?.launchConfiguration.workspaceRootPath ?? null,
       summary: row.summary,
       createdAt: row.createdAt,
       archivedAt: row.archivedAt ?? null,
       terminatedAt: row.terminatedAt ?? null,
       isActive: projection.isActive,
-      members: getTeamRunLeafAgentMetadata(metadata).map((member) => ({
-        memberRouteKey: member.memberRouteKey,
-        memberName: member.memberName,
-        memberRunId: member.memberRunId,
-        status: this.resolveMemberHistoryStatus(member, projection.memberStatusSnapshots),
-        runtimeKind: member.runtimeKind,
+      members: members.map((member) => ({
+        memberAddress: member.address,
+        displayName: getAgentTeamAddressBasename(member.address) ?? member.address,
+        agentRunId: member.agentRunId,
+        status: statusFor(member.agentRunId, projection.memberStatusSnapshots),
+        runtimeKind: member.launchConfiguration.runtimeKind as RuntimeKind,
         platformAgentRunId: member.platformAgentRunId,
         agentDefinitionId: member.agentDefinitionId,
-        llmModelIdentifier: member.llmModelIdentifier,
-        autoExecuteTools: member.autoExecuteTools,
-        llmConfig: member.llmConfig ?? null,
-        workspaceRootPath: member.workspaceRootPath,
+        llmModelIdentifier: member.launchConfiguration.llmModelIdentifier,
+        autoExecuteTools: member.launchConfiguration.autoExecuteTools,
+        llmConfig: member.launchConfiguration.llmConfig as Record<string, unknown> | null,
+        workspaceRootPath: member.launchConfiguration.workspaceRootPath,
       })),
-      memberTree: metadata.memberTree,
+      rootTeam: projectExecutionTree(tree).root_team,
     };
-  }
-
-  private isTeamRunActive(teamRunId: string): boolean {
-    return this.teamRunManager.getActiveRun(teamRunId) !== null;
-  }
-
-  private resolveMemberHistoryStatus(
-    member: TeamRunAgentMemberMetadata,
-    statusSnapshots: AgentStatusPayload[],
-  ): AgentApiStatus {
-    const snapshot = statusSnapshots.find((candidate) =>
-      candidate.agent_id === member.memberRunId ||
-      candidate.agent_id === member.platformAgentRunId,
-    );
-    return snapshot?.status ?? "offline";
   }
 }
 
-const resolveCoordinatorMemberRouteKey = (metadata: TeamRunMetadata): string =>
-  metadata.coordinatorMemberRouteKey.trim() ||
-  getTeamRunLeafAgentMetadata(metadata)[0]?.memberRouteKey?.trim() ||
-  "";
+const collectConfiguredAgents = (members: readonly ConfiguredMemberExecution[]): ConfiguredAgentExecution[] => {
+  const output: ConfiguredAgentExecution[] = [];
+  for (const member of members) {
+    if ("agentRunId" in member) output.push(member);
+    else output.push(...collectConfiguredAgents(member.members));
+  }
+  return output;
+};
+
+const statusFor = (agentRunId: string, snapshots: TeamRunMemberStatusProjection[]): AgentApiStatus =>
+  snapshots.find((snapshot) => snapshot.agentRunId === agentRunId)?.status ?? "offline";
 
 let cachedTeamRunHistoryService: TeamRunHistoryService | null = null;
-
-export const getTeamRunHistoryService = (): TeamRunHistoryService => {
-  if (!cachedTeamRunHistoryService) {
-    cachedTeamRunHistoryService = new TeamRunHistoryService(
-      appConfigProvider.config.getMemoryDir(),
-    );
-  }
-  return cachedTeamRunHistoryService;
-};
+export const getTeamRunHistoryService = (): TeamRunHistoryService => cachedTeamRunHistoryService ??=
+  new TeamRunHistoryService(appConfigProvider.config.getMemoryDir());

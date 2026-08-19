@@ -43,7 +43,7 @@ export const useWorkspaceRouteSelection = () => {
     () => [
       route.query.workspaceExecutionKind,
       route.query.workspaceExecutionRunId,
-      route.query.workspaceExecutionMemberRouteKey,
+      route.query.workspaceExecutionMemberAddress,
     ].map((value) => (Array.isArray(value) ? value.join('|') : value ?? '')).join('::'),
     () => {
       void applyRouteSelection()

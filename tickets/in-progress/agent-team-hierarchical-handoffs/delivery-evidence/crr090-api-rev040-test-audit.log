@@ -1,0 +1,31 @@
+CRR-090 API-REV-040 proportional durable-test review audit
+2026-08-13T15:35:29Z
+HEAD=632c503188cb9dbb8eecf4422fa174499519ad89
+expected_head=632c503188cb9dbb8eecf4422fa174499519ad89
+inventory_rows=5
+inventory_sha256=bb6b78a475ff53b17bc6bc1044b9f2b32b28b31486f2726ece6d924f3aefa182
+patch_sha256=0ed1b1006299dcfb51b00b748f9a3ec05b5f4d6cdb3936a9616eea0b3a4ceb7b
+current_delta_sha256=0ed1b1006299dcfb51b00b748f9a3ec05b5f4d6cdb3936a9616eea0b3a4ceb7b
+current_delta_equals_supplied_patch=PASS
+reverse_apply=PASS
+diff_check=PASS
+active_skip_only_todo=ZERO
+scenario_counts:
+3	autobyteus-server-ts/tests/integration/api/runtime-selection-top-level.integration.test.ts
+3	autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-task-notification-projection.test.ts
+2	autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-termination.test.ts
+6	autobyteus-server-ts/tests/unit/application-orchestration/application-orchestration-host-service.test.ts
+7	autobyteus-server-ts/tests/unit/external-channel/runtime/channel-agent-run-facade.test.ts
+evidence:
+ Test Files  4 passed (4)
+      Tests  18 passed (18)
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+ Test Files  24 passed (24)
+      Tests  223 passed (223)
+ Test Files  67 passed | 1 skipped (68)
+      Tests  620 passed | 9 skipped (629)
+ Test Files  73 passed (73)
+      Tests  540 passed (540)
+review_disposition=PASS
+review_note=No test-source finding; no reviewer rerun required because exact diff and final focused/broad/live evidence make assertion intent and boundary fidelity directly judgeable.

@@ -1,0 +1,15 @@
+captured_at=2026-08-17T09:17:21Z
+workspace=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible
+head=00b471bc24e6a6d06d3af7c38cf9f50536af1b60
+server_port=60420
+web_port=31420
+runtime=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/autobyteus-server-ts/tests/.tmp/api-rev-003-live-20260817-1
+database=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/autobyteus-server-ts/db/api-rev-003-live-20260817-1.db
+operational_database_action=NONE
+home_autobyteus_action=NONE_EXCEPT_USER_AUTHORIZED_ENV_SOURCE_VIA_IMPORTER
+protected_60004_31004_action=NONE
+target_60420_listener_count=0
+target_31420_listener_count=0
+runtime_exists=false
+database_exists=false
+built_adapter_exact_internal=true

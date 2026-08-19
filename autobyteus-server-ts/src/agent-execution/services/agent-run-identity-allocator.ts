@@ -3,8 +3,7 @@ import { AgentDefinitionService } from "../../agent-definition/services/agent-de
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
 import { AgentRunMetadataService, getAgentRunMetadataService } from "../../run-history/services/agent-run-metadata-service.js";
-import { TeamRunMetadataService, getTeamRunMetadataService } from "../../run-history/services/team-run-metadata-service.js";
-import type { TeamRunMemberMetadata } from "../../run-history/store/team-run-metadata-types.js";
+import { TeamRunExecutionTreeLocationService } from "../../run-history/services/team-run-execution-tree-location-service.js";
 import { AgentRunManager } from "./agent-run-manager.js";
 import {
   createUuidIdentityToken,
@@ -26,7 +25,7 @@ type AgentRunIdentityAllocatorOptions = {
   agentDefinitionService?: Pick<AgentDefinitionService, "getAgentDefinitionById">;
   agentRunManager?: Pick<AgentRunManager, "hasActiveRun">;
   agentRunMetadataService?: Pick<AgentRunMetadataService, "readMetadata">;
-  teamRunMetadataService?: Pick<TeamRunMetadataService, "listTeamRunIds" | "readMetadata">;
+  teamRunExecutionTreeLocationService?: Pick<TeamRunExecutionTreeLocationService, "containsRunId">;
   memoryDir?: string;
   createToken?: () => string;
 };
@@ -44,7 +43,7 @@ export class AgentRunIdentityAllocator {
   private readonly agentDefinitionService: Pick<AgentDefinitionService, "getAgentDefinitionById">;
   private readonly agentRunManager: Pick<AgentRunManager, "hasActiveRun">;
   private readonly agentRunMetadataService: Pick<AgentRunMetadataService, "readMetadata">;
-  private readonly teamRunMetadataService: Pick<TeamRunMetadataService, "listTeamRunIds" | "readMetadata">;
+  private readonly teamRunExecutionTreeLocations: Pick<TeamRunExecutionTreeLocationService, "containsRunId">;
   private readonly memoryLayout: AgentMemoryLayout;
   private readonly createToken: () => string;
   private readonly reservations = new Set<string>();
@@ -55,7 +54,8 @@ export class AgentRunIdentityAllocator {
       options.agentDefinitionService ?? AgentDefinitionService.getInstance();
     this.agentRunManager = options.agentRunManager ?? AgentRunManager.getInstance();
     this.agentRunMetadataService = options.agentRunMetadataService ?? getAgentRunMetadataService();
-    this.teamRunMetadataService = options.teamRunMetadataService ?? getTeamRunMetadataService();
+    this.teamRunExecutionTreeLocations = options.teamRunExecutionTreeLocationService
+      ?? new TeamRunExecutionTreeLocationService({ memoryDir });
     this.memoryLayout = new AgentMemoryLayout(memoryDir);
     this.createToken = options.createToken ?? createUuidIdentityToken;
   }
@@ -108,43 +108,7 @@ export class AgentRunIdentityAllocator {
   }
 
   private async hasTeamRunCollision(runId: string): Promise<boolean> {
-    const teamRunIds = await this.teamRunMetadataService.listTeamRunIds();
-    for (const teamRunId of teamRunIds) {
-      if (teamRunId === runId) {
-        return true;
-      }
-      if (await this.pathExists(this.memoryLayout.getTeamAgentRunDirPath({
-        rootTeamRunId: teamRunId,
-        teamRunPath: [],
-      }, runId))) {
-        return true;
-      }
-      const metadata = await this.teamRunMetadataService.readMetadata(teamRunId);
-      if (metadata && this.memberTreeContainsRunId(metadata.memberTree, runId)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  private memberTreeContainsRunId(
-    members: readonly TeamRunMemberMetadata[],
-    runId: string,
-  ): boolean {
-    for (const member of members) {
-      if (member.memberRunId === runId) {
-        return true;
-      }
-      if (member.memberKind === "agent_team") {
-        if (member.teamRunId === runId) {
-          return true;
-        }
-        if (this.memberTreeContainsRunId(member.memberTree, runId)) {
-          return true;
-        }
-      }
-    }
-    return false;
+    return this.teamRunExecutionTreeLocations.containsRunId(runId);
   }
 
   private async pathExists(filePath: string): Promise<boolean> {

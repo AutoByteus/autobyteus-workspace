@@ -208,6 +208,68 @@ describe("AgentTeamDefinitionService", () => {
     expect(updated.nodes[1].refType).toBe("agent_team");
   });
 
+  it("leaves the current definition unchanged when an invalid handoff update is rejected", async () => {
+    const service = buildService();
+    const existing = buildDefinition("def-123");
+    existing.defaultLaunchConfig = {
+      runtimeKind: "autobyteus",
+      llmModelIdentifier: "gpt-5.4-mini",
+      llmConfig: { reasoning_effort: "medium" },
+    };
+    mockDefinitionGraph(existing);
+    const beforeUpdate = structuredClone(existing);
+
+    await expect(service.updateDefinition(
+      "def-123",
+      new AgentTeamDefinitionUpdate({
+        description: "This rejected value must not leak",
+        handoffs: [{
+          from: "coord1",
+          to: "./subteam2/leaf",
+          rules: ["Invalid bare source address"],
+        }],
+      }),
+    )).rejects.toMatchObject({ code: "COLLABORATION_ADDRESS_INVALID" });
+
+    expect(provider.update).not.toHaveBeenCalled();
+    expect(await service.getDefinitionById("def-123")).toBe(existing);
+    expect(existing).toEqual(beforeUpdate);
+  });
+
+  it("persists and returns a detached valid handoff update", async () => {
+    const service = buildService();
+    const existing = buildDefinition("def-123");
+    const leaf = buildLeafDefinition("team2");
+    let stored = existing;
+    provider.getById.mockImplementation(async (id: string) => {
+      if (id === stored.id) {
+        return stored;
+      }
+      return id === leaf.id ? leaf : null;
+    });
+    provider.update.mockImplementation(async (definition: AgentTeamDefinition) => {
+      stored = definition;
+      return definition;
+    });
+    const handoffs = [{
+      from: "/coord1",
+      to: "/subteam2/leaf",
+      rules: ["Send completed work to the leaf reviewer."],
+    }];
+
+    const updated = await service.updateDefinition(
+      "def-123",
+      new AgentTeamDefinitionUpdate({ handoffs }),
+    );
+
+    expect(provider.update).toHaveBeenCalledOnce();
+    expect(provider.update).toHaveBeenCalledWith(updated);
+    expect(updated).not.toBe(existing);
+    expect(updated.handoffs).toEqual(handoffs);
+    expect(await service.getDefinitionById("def-123")).toBe(updated);
+    expect(existing.handoffs).toEqual([]);
+  });
+
   it("clears defaultLaunchConfig when the update explicitly sets null", async () => {
     const service = buildService();
     const existing = buildDefinition("def-123");

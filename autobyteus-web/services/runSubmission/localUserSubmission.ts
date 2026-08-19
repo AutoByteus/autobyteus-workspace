@@ -17,8 +17,7 @@ export type LocalUserSubmissionNavigationTarget =
   | {
       kind: 'team_member';
       teamRunId: string;
-      memberRouteKey: string;
-      memberRunId?: string | null;
+      agentRunId: string;
     };
 
 export interface LocalUserSubmissionHandle {

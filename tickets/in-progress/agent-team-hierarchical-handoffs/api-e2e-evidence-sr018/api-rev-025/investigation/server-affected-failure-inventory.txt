@@ -1,0 +1,43 @@
+API-REV-025 affected server failure inventory
+head=f7e825cc64a862555b0e26ea529599fe85d2f8b5
+command=env -u DATABASE_URL -u DATABASE_URL_TEST pnpm exec vitest run <82 ticket-affected files> --no-watch
+database_target=autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db (Vitest global setup)
+result=36 failed / 38 passed / 7 skipped files; 132 failed / 315 passed / 20 skipped tests; 1 worker-start error
+
+Failing files:
+tests/e2e/external-channel/external-channel-team-open-delivery.e2e.test.ts
+tests/e2e/token-usage/token-usage-canonical-execution-address-graphql.e2e.test.ts
+tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts
+tests/integration/agent-team-execution/mixed-team-run-backend.integration.test.ts
+tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts
+tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts
+tests/integration/agent-team-execution/team-run-service.integration.test.ts
+tests/integration/api/runtime-selection-top-level.integration.test.ts
+tests/integration/app-data-migrations/team-run-metadata-member-tree-history.integration.test.ts
+tests/integration/run-history/memory-layout-and-projection.integration.test.ts
+tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts
+tests/unit/agent-execution/backends/claude/backend/claude-session-bootstrapper.test.ts
+tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts
+tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts
+tests/unit/agent-execution/backends/codex/thread/codex-thread-manager.test.ts
+tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts
+tests/unit/agent-execution/events/token-usage-event-enrichment-transformer.test.ts [ tests/unit/agent-execution/events/token-usage-event-enrichment-transformer.test.ts ]
+tests/unit/agent-team-execution/inter-agent-message-delivery.test.ts
+tests/unit/agent-team-execution/member-team-context-builder.test.ts
+tests/unit/agent-team-execution/mixed-agent-member-handle-memory-invariant.test.ts
+tests/unit/agent-team-execution/mixed-team-manager.test.ts [ tests/unit/agent-team-execution/mixed-team-manager.test.ts ]
+tests/unit/agent-team-execution/mixed-team-member-registry-task-agent-memory.test.ts [ tests/unit/agent-team-execution/mixed-team-member-registry-task-agent-memory.test.ts ]
+tests/unit/agent-team-execution/sub-team-active-run-directory.test.ts
+tests/unit/agent-team-execution/task-delegation-address-builder.test.ts
+tests/unit/agent-team-execution/task-delegation-service.test.ts
+tests/unit/agent-team-execution/team-definition-topology-planner.test.ts
+tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts
+tests/unit/agent-team-execution/team-member-delivery-coordinator.test.ts
+tests/unit/agent-team-execution/team-run-config-localization.test.ts
+tests/unit/agent-team-execution/team-run-metadata-mapper.test.ts
+tests/unit/agent-team-execution/team-run-service.test.ts
+tests/unit/agent-tools/team-communication/get-handoff-rules.test.ts [ tests/unit/agent-tools/team-communication/get-handoff-rules.test.ts ]
+tests/unit/app-data-migrations/token-usage-canonical-execution-address-migration.test.ts [ tests/unit/app-data-migrations/token-usage-canonical-execution-address-migration.test.ts ]
+tests/unit/app-data-migrations/token-usage-legacy-path-columns-drop-migration.test.ts [ tests/unit/app-data-migrations/token-usage-legacy-path-columns-drop-migration.test.ts ]
+tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts
+tests/unit/services/agent-streaming/team-run-event-websocket-message-mapper.test.ts

@@ -5,7 +5,7 @@ import {
 } from "../codex-dynamic-tool.js";
 import { CodexThreadEventName } from "../events/codex-thread-event-name.js";
 import type { CodexApprovalRecord } from "./codex-approval-record.js";
-import type { CodexAppServerMessage } from "./codex-app-server-message.js";
+import type { CodexLocalDerivedEventInput } from "./codex-app-server-message.js";
 import {
   buildCodexPermissionApprovalArguments,
   buildCodexPermissionGrantResponse,
@@ -18,14 +18,14 @@ type CodexToolApprovalCoordinatorInput = {
   requestId: string | number;
   method: string;
   params: JsonObject;
-  emitEvent: (codexThread: CodexThread, event: CodexAppServerMessage) => void;
+  emitEvent: (codexThread: CodexThread, event: CodexLocalDerivedEventInput) => void;
 };
 
 type PendingApprovalResponseInput = {
   codexThread: CodexThread;
   approval: CodexApprovalRecord;
   approved: boolean;
-  emitEvent: (event: CodexAppServerMessage) => void;
+  emitEvent: (event: CodexLocalDerivedEventInput) => void;
 };
 
 const REQUEST_PERMISSIONS_TOOL_NAME = "request_permissions";
@@ -78,7 +78,7 @@ const respondDynamicToolResult = (
 };
 
 const emitLocalToolApproved = (
-  emitEvent: (event: CodexAppServerMessage) => void,
+  emitEvent: (event: CodexLocalDerivedEventInput) => void,
   approval: Pick<CodexApprovalRecord, "invocationId" | "approvalId" | "requestId" | "toolName">,
   params: JsonObject = {},
 ): void => {

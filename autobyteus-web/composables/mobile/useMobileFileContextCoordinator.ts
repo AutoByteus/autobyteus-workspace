@@ -45,7 +45,7 @@ export function useMobileFileContextCoordinator() {
       return selectionStore.selectedType === 'team'
         && selectionStore.selectedRunId === context.teamRunId
         && Boolean(team)
-        && team?.focusedMemberRouteKey === context.focusedMemberRouteKey
+        && Boolean(team && team.view.getFocusedAgentRunId() === context.focusedAgentRunId)
         && Boolean(activeContextStore.activeAgentContext);
     }
     return false;

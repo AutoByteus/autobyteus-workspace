@@ -1,0 +1,95 @@
+{
+  "request": {
+    "teamDefinitionId": "classroom-simulation-team",
+    "memberConfigs": [
+      {
+        "memberAddress": "/professor",
+        "agentDefinitionId": "team-local-agent:classroom-simulation-team:professor",
+        "llmModelIdentifier": "gpt-5.6-luna",
+        "autoExecuteTools": true,
+        "skillAccessMode": "NONE",
+        "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-007/live/workspaces/classroom-api-rev-007/",
+        "runtimeKind": "autobyteus"
+      },
+      {
+        "memberAddress": "/student",
+        "agentDefinitionId": "team-local-agent:classroom-simulation-team:student",
+        "llmModelIdentifier": "gpt-5.6-luna",
+        "autoExecuteTools": true,
+        "skillAccessMode": "NONE",
+        "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-007/live/workspaces/classroom-api-rev-007/",
+        "runtimeKind": "autobyteus"
+      }
+    ]
+  },
+  "response": {
+    "data": {
+      "createAgentTeamRun": {
+        "success": true,
+        "message": "Agent team run created successfully.",
+        "teamRunId": "classroom_simulation_team_4901faf6cb294ec98282d4378c71f3cd"
+      }
+    }
+  },
+  "resume": {
+    "data": {
+      "getTeamRunResumeConfig": {
+        "teamRunId": "classroom_simulation_team_4901faf6cb294ec98282d4378c71f3cd",
+        "isActive": true,
+        "executionTree": {
+          "schema_version": 1,
+          "created_at": "2026-08-15T20:40:13.172Z",
+          "archived_at": null,
+          "application_binding": null,
+          "handoffs": [],
+          "root_team": {
+            "team_definition_id": "classroom-simulation-team",
+            "team_definition_name": "Classroom Simulation Team",
+            "team_run_id": "classroom_simulation_team_4901faf6cb294ec98282d4378c71f3cd",
+            "coordinator_address": "/professor",
+            "members": [
+              {
+                "kind": "configured_agent",
+                "address": "/professor",
+                "agent_definition_id": "team-local-agent:classroom-simulation-team:professor",
+                "role": null,
+                "description": null,
+                "agent_run_id": "professor_3a00d490e2894051929adf570de55718",
+                "platform_agent_run_id": null,
+                "launch_configuration": {
+                  "runtime_kind": "AUTOBYTEUS",
+                  "llm_model_identifier": "gpt-5.6-luna",
+                  "llm_config": null,
+                  "auto_execute_tools": true,
+                  "skill_access_mode": "NONE",
+                  "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-007/live/workspaces/classroom-api-rev-007"
+                }
+              },
+              {
+                "kind": "configured_agent",
+                "address": "/student",
+                "agent_definition_id": "team-local-agent:classroom-simulation-team:student",
+                "role": null,
+                "description": null,
+                "agent_run_id": "student_98c2d75d701f4526a5acca564cd9f026",
+                "platform_agent_run_id": null,
+                "launch_configuration": {
+                  "runtime_kind": "AUTOBYTEUS",
+                  "llm_model_identifier": "gpt-5.6-luna",
+                  "llm_config": null,
+                  "auto_execute_tools": true,
+                  "skill_access_mode": "NONE",
+                  "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-007/live/workspaces/classroom-api-rev-007"
+                }
+              }
+            ],
+            "task_executions": []
+          }
+        }
+      }
+    }
+  },
+  "teamRunId": "classroom_simulation_team_4901faf6cb294ec98282d4378c71f3cd",
+  "coordinatorAgentRunId": "professor_3a00d490e2894051929adf570de55718",
+  "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-007/live/workspaces/classroom-api-rev-007/"
+}

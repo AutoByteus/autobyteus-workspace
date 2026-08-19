@@ -39,10 +39,10 @@ file, not Agent Artifacts or Team Communication.
   - `src/run-history/services/run-file-change-projection-service.ts`
   - `src/api/graphql/types/run-file-changes.ts`
   - `src/api/rest/run-file-changes.ts`
-- Team Communication references for accepted `recipient_name` deliveries:
+- Team Communication references for accepted `recipient_address` deliveries:
   - `src/agent-execution/events/processors/team-communication/team-communication-message-event-processor.ts`
   - `src/services/team-communication/team-communication-service.ts`
-  - `src/services/team-communication/team-communication-projection-store.ts`
+  - `src/services/team-communication/team-communication-v1-store.ts`
   - `src/services/team-communication/team-communication-projection-service.ts`
   - `src/services/team-communication/team-communication-content-service.ts`
   - `src/api/graphql/types/team-communication.ts`
@@ -68,8 +68,10 @@ file, not Agent Artifacts or Team Communication.
 - Persist Agent Artifact metadata-only projection state to
   `<run-memory-dir>/file_changes.json`.
 - For team-member runs of any runtime, persist produced Agent Artifact metadata
-  to the resolved member memory directory, for example
-  `agent_teams/<rootTeamRunId>/<...teamRunPath>/<memberRunId>/file_changes.json`.
+  to the canonical member memory directory resolved from
+  `{rootTeamRunId, ancestorTeamRunIds, agentRunId, memberAddress}`. The physical
+  directory lineage uses TeamRun ids; it is deliberately not a logical member
+  path or address encoding.
 - Hydrate active and historical Agent Artifact rows through
   `RunFileChangeProjectionService` and `getRunFileChanges(runId)`.
 - Serve Agent Artifact bytes by `runId + canonical path` through
@@ -93,7 +95,7 @@ file, not Agent Artifacts or Team Communication.
 Paths mentioned only in inter-agent message prose are ordinary text. Explicit
 reference files may be visible to recipient runtimes through a generated
 `Reference files:` block, but the durable Team Communication metadata source is
-the structured `reference_files` list on accepted `recipient_name` team-route
+the structured `reference_files` list on accepted `recipient_address` team-route
 message payloads. Direct exact-run message references remain direct runtime
 input/event metadata unless a separate future projection is designed.
 

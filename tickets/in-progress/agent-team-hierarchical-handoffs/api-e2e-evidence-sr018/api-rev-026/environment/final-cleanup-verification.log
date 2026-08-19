@@ -1,0 +1,6 @@
+owned_runtime_exists=false
+owned_database_exists=false
+owned_vault_key_exists=false
+owned_port_60226=CLOSED
+owned_port_31226=CLOSED
+operational_database_action=NONE

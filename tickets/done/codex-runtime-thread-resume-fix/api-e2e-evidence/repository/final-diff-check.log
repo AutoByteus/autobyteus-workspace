@@ -1,0 +1,22 @@
+$ git diff --check
+RESULT: PASS
+$ git status --short (scope inventory)
+ M autobyteus-server-ts/tests/e2e/agent/agent-command-correlated-status.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts
+ M autobyteus-server-ts/tests/integration/agent-execution/agent-run-service.integration.test.ts
+ M autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/agent-run-manager.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/codex/thread/codex-thread-manager.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-native-activation.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-current-invariants.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/team-run-persistence-coordinator.test.ts
+ M autobyteus-server-ts/tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts
+ M tickets/in-progress/codex-runtime-thread-resume-fix/code-review-report.md
+ M tickets/in-progress/codex-runtime-thread-resume-fix/code-review-revision-record.md
+?? autobyteus-server-ts/tests/unit/agent-execution/standalone-agent-run-activation-service.test.ts
+?? autobyteus-server-ts/tests/unit/agent-memory/agent-conversation-activity-inspector.test.ts
+?? autobyteus-server-ts/tests/unit/agent-team-execution/team-run-execution-tree-mutator.test.ts
+?? tickets/in-progress/codex-runtime-thread-resume-fix/api-e2e-coverage-investigation.md
+?? tickets/in-progress/codex-runtime-thread-resume-fix/api-e2e-evidence/

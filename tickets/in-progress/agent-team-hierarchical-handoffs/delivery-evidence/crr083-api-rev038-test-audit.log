@@ -1,0 +1,332 @@
+CRR-083 API-REV-038 proportional durable-test re-review audit
+HEAD=258d18cdba0bf7ae08bde134fe09586a8906870d
+
+Inventory:
+status	scope	path	decision	evidence
+A	server	autobyteus-server-ts/tests/fixtures/codex-thread-event-harness.ts	Add Durable Coverage	API-REV-038 shared real CodexThread native/request/listener/converter driver; focused/production TypeScript; no-fabrication audit
+M	server	autobyteus-server-ts/tests/e2e/external-channel/external-channel-team-open-delivery.e2e.test.ts	Needs Update / Currentized / Revalidated	API-REV-037 focused affected selection; current server selection; production build; fresh six-row browser/provider matrix
+M	server	autobyteus-server-ts/tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts	Needs Update / Currentized / Revalidated	API-REV-037 focused affected selection; current server selection; production build; fresh six-row browser/provider matrix
+M	server	autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts	Needs Update / Currentized / Revalidated	API-REV-037 focused affected selection; current server selection; production build; fresh six-row browser/provider matrix
+M	server	autobyteus-server-ts/tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts	Needs Update / Currentized / Revalidated	API-REV-037 focused affected selection; current server selection; production build; fresh six-row browser/provider matrix
+M	server	autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts	Needs Update / Real CodexThread Boundary / Revalidated	API-REV-038 real CodexThread listener harness; 147/147 focused tests; no-fabrication audit; focused/production TypeScript
+M	server	autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-tracker.test.ts	Needs Update / Currentized / Revalidated	API-REV-037 focused affected selection; current server selection; production build; fresh six-row browser/provider matrix
+M	server	autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts	Needs Update / Real CodexThread Boundary / Revalidated	API-REV-038 real CodexThread listener harness; 147/147 focused tests; no-fabrication audit; focused/production TypeScript
+M	server	autobyteus-server-ts/tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts	Needs Update / Currentized / Revalidated	API-REV-037 focused affected selection; current server selection; production build; fresh six-row browser/provider matrix
+M	server	autobyteus-server-ts/tests/unit/external-channel/runtime/channel-run-output-event-collector.test.ts	Needs Update / Currentized / Revalidated	API-REV-037 focused affected selection; current server selection; production build; fresh six-row browser/provider matrix
+
+Inventory audit:
+API-REV-038 exact durable inventory audit
+inventory_rows=10
+patch_paths=10
+added=1
+updated=9
+removed=0
+path_equality=True
+duplicate_inventory=0
+duplicate_patch=0
+missing_active_files=0
+reverse_apply=PASS
+diff_check=PASS
+operational_database_action=NONE
+operational_database_inspection=NONE
+
+Current approved Codex boundary:
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/agent-segment-lifecycle-contract.md-324-
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/agent-segment-lifecycle-contract.md:325:`CodexThread` owns the unexported brand and the only private production constructors/emitters. Downstream code may import the opaque type but cannot structurally manufacture it. `codex-thread-notification-handler.ts` accepts an admitted message instead of raw `(method,params)`, reads the canonical params for pending-MCP coordination, and requests local-derived emission through the thread. `CodexAgentRunBackend` and `CodexThreadEventConverter` accept only this union. Converter-local admission, direct raw-native conversion, generic listener input, and casts/fabricated branded test messages are removed; the converter passes the admitted turn into item/reasoning normalization and never substitutes the raw payload after a segment-normalization rejection.
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/agent-segment-lifecycle-contract.md-326-
+--
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/agent-segment-lifecycle-contract.md-470-2. **AutoByteus actual boundary:** native `start(type) -> content(no type) -> end(no type)` through converter, AgentRun queue/pipeline, Team adapter, strict Team serialization/parsing, and browser transition. Do not inject content type in the fixture.
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/agent-segment-lifecycle-contract.md:471:3. **Provider turn admission and Codex/Claude normalization:** AutoByteus required native turn and Claude session/projector turn construct exact-turn source events. Codex tests enter through client/router -> real `CodexThread.handleAppServerNotification()` -> notification handler -> backend listener -> converter. They parameterize exactly the four governed native names, every explicit candidate location, agreeing duplicates, blank/non-string, disagreement, explicit-active conflict, and inactive explicit/omitted input across MCP/non-MCP start/completion plus reasoning. Established current non-segment item and non-item tests preserve their existing operation-owned results and prove the resolver is not invoked for those paths; there is no exemption registry or synthetic unknown-event case. Rejected governed start never adds pending MCP; rejected governed completion never removes a preseeded pending MCP; neither emits `LOCAL_MCP_TOOL_EXECUTION_COMPLETED`, the original thread message, an AgentRun event, or raw/debug payload, and neither mutates reasoning/lifecycle. Only the four-key sanitized rejection record is observed, and the raw-file sink call count remains zero. Valid omitted-turn MCP start adds canonical pending state; valid completion removes it and emits local-derived then original-admitted messages; valid non-MCP/reasoning results remain; admitted-event raw/debug capture writes the canonical accepted message. Compile/type and current-source scans prove the thread alone privately constructs the branded value; converter contract tests accept only the opaque thread-emitted union and prove no cast/fabrication, generic/direct native bypass, converter-local policy, broad-prefix segment construction, or raw fallback. Real normalized text/reasoning/tool sequences prove one explicit start and minimal content/end; unknown item kinds/types fail without a text default.
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/agent-segment-lifecycle-contract.md-472-4. **Standalone wire:** the same admitted canonical sequence reaches standalone browser state; missing/unknown/surplus content fields reject before mutation.
+--
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/agent-segment-lifecycle-contract.md-488-- Add a provider-specific Team branch.
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/agent-segment-lifecycle-contract.md:489:- Invoke Codex segment-turn policy in the converter or for a native name outside the exact four-name set; add a second non-segment/exemption registry; let the handler mutate pending MCP before governed admission; structurally manufacture/cast the branded listener value; pass raw native notifications directly to listeners/converter; or log a rejected raw payload.
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/agent-segment-lifecycle-contract.md-490-- Put type back on every provider content event merely to satisfy the Team DTO.
+--
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/requirements.md-231-- **R-052 — Contract, ownership, and removal proof:** Durable coverage shall use real Team publishers/builders, `AgentTeamStreamHandler.sendInitialStatusSnapshot`, `TeamRuntimeSnapshotService`, mixed persistent/task/task-Team status enumeration, `MemberCommandStatusOverlayStore`, the real mapper/projector/serializer, the shared strict parser, and the real frontend aggregate/consumer for Agent status, every current task subtype, communication, and member input. Connection/open/restore coverage shall prove every initial persistent/task-Agent/task-Team-Agent status uses the exact same binding/status DTO as live events, includes the genuine task-Team AgentRun ID once, and contains no TeamRun/name/runtime/raw-ID/execution duplicate. Unmaterialized persistent/task/task-Team send/delegation coverage shall prove initializing/error status uses the correlated constructor, activation ordering is preserved, and the first matching real Agent status clears/replaces the overlay through the same browser status transition. It shall prove malformed/aliased/surplus/identity-inconsistent inputs mutate nothing; live/restore convergence, exact same-address task separation, nested task materialization, focus/selection, complete-root-record-confirmed terminal cleanup with retained descendant history, draft success transfer, and draft failure preservation remain correct. It shall prove activation uses the durable record timestamps/base facts, later result-submission/review signals cannot create partial projections, active/history presentation derives from one task projection, concurrent older/missing snapshot rows do not erase newer known tasks, equal-time conflicts reject atomically, and terminal task-Team cleanup waits for terminal candidates for every materialized descendant. It shall also prove the one closed-input projection builder yields exact run-ID-free topology plus one-to-one persistent execution bindings, Agent-local state is not copied into execution records, launched context root/lifecycle/config/hydration/subscription facts have the one assigned execution/topology/transport owner, and active configuration views derive from topology. A current-production source allowlist shall fail every removed route/alias/raw-key/placeholder/duplicate/provisional-run construct outside exact migration, rejection-fixture, historical-display, definition-authoring, storage-encoding, and canonical private-serializer paths.
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/requirements.md:232:- **R-053 — One AgentRun segment lifecycle authority and exact-turn ingress:** `AgentRun` shall own one non-persisted `AgentSegmentLifecycleState` and pass it through its existing per-run `AgentRunEventDispatchQueue` before every processor/listener. AutoByteus, Codex, and Claude adapters shall emit one minimal current source contract: `SEGMENT_START {id,turn_id,segment_type,metadata?}` establishes a finite `AgentSegmentType`; `SEGMENT_CONTENT {id,turn_id,delta}` and `SEGMENT_END {id,turn_id,...}` shall not repeat type. All segment IDs and turn IDs are non-empty; identity is exact `(AgentRun.runId,turn_id,id)`. AutoByteus shall retain its required handler/native turn; Claude shall use its session/projector-owned turn. Codex shall keep one pure `resolveCodexSegmentTurnAdmission` policy. Its production applicability and active-turn-inheritance set are the same exact four established segment-producing names: `item/started`, `item/agentMessage/delta`, `item/completed`, and `item/reasoning/completed`. `CodexThread.handleAppServerNotification()` shall invoke the resolver only for those four names, at the first per-thread native-notification boundary before `codex-thread-notification-handler.ts`, pending-MCP/item/reasoning mutation, locally derived emission, listener dispatch, converter entry, or raw event capture. Every other current item and non-item notification shall retain its existing operation-owned route without entering segment-turn admission and without a second exemption registry. The policy shall inspect every present candidate at `params.turn_id`, `params.turnId`, `params.item.turn_id`, `params.item.turnId`, and `params.turn.id`: every present field must be a non-empty string and all normalized values must equal the one current non-empty `CodexThread.activeTurnId`. Its stable inactive, explicit-invalid, conflicting, and unlisted-omission reason vocabulary remains unchanged; unlisted omission is an internal pure-policy misuse guard, not a supported provider event branch or a basis for runtime unknown-event machinery. A rejected governed candidate shall return at the thread boundary, produce zero provider-state change or emitted event, and record only `{runtimeKind,runId,nativeEventName,reasonCode}` without raw payload. An admitted governed result shall construct one immutable canonical thread notification containing `paramsWithExactTurn`; a non-governed current native fact shall be copied readonly at that same boundary without applying segment policy. `CodexThread` shall own an unexported brand plus the only private constructors/emitters for the closed `native_admitted | local_derived` listener value. The same branded value shall be the only input to notification handling and the listener/converter path; downstream code may import its opaque type but may not structurally manufacture or cast one. Locally derived notifications shall remain explicitly distinguished and may be constructed only by `CodexThread` from an admitted native fact or separately supported local operation. The converter shall not re-resolve, re-read raw params, accept a generic/direct-native bypass, or accept fabricated branded test input, and its admitted-event raw debugger shall run only after the first-boundary decision. A rejected normalization shall never reach `logRawCodexThreadEventDetails`, `appendRuntimeRawEventLog`, or a generic/raw payload fallback. Valid admitted MCP start/completion shall retain pending-state coordination and derived local completion, and valid admitted native/local events shall retain debug behavior over their accepted canonical values. Codex/Claude normalization shall emit explicit text/reasoning starts, reject unknown item kind/type instead of defaulting to text, and remain independent of Team code. The common transformer shall be the sole owner that correlates admitted content/end with start and emits canonical content `{id,turn_id,segment_type,delta}`.
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/requirements.md-233-- **R-054 — Exact segment order, replay, failure, and cleanup:** The run-owned state shall implement absent/active/ended per exact turn/segment identity. Matching start opens; a repeated active start with the same type is a replay no-op and is not dispatched, so no downstream accumulator can reset; a conflicting type rejects; content requires active state and each accepted arrival emits once; end changes active to ended; repeated ended start/end is a replay no-op; content after end, missing start, wrong/retired turn, surplus source type, or malformed exact-turn fact rejects without state mutation. Turn completion/interruption/turn-terminal error retires that turn and clears its segments; a different turn start retires the previous turn; runtime-global terminal/offline/accepted termination clears all state. Processing follows dispatch order with no reorder buffer. An admitted exact-turn lifecycle violation may become the existing safe `AGENT_SEGMENT_LIFECYCLE_INVALID` `{error_scope:"turn",error_effect:"diagnostic",turn_id:<exact>}` / `TURN_DIAGNOSTIC` without raw provider payload; it does not change turn/run status, settle a command, fail a compaction/improver, terminate browser presentation, or clear lifecycle state. No `RUNTIME_DIAGNOSTIC` variant or runtime/diagnostic wire combination exists. Identical content bytes are not deduplicated because the source has no event ID.
+--
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/design-spec.md-91-
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/design-spec.md:92:SR-023 keeps that exact resolver and moves only its invocation/accepted-value construction to the real owner. `CodexThread.handleAppServerNotification()` trims the native name, reads its owned `activeTurnId`, and applies the resolver to the exact four established segment-producing names before invoking the notification handler. Rejection calls a sanitized rejection logger and returns. Admission constructs one readonly listener-facing `native_admitted` message whose params are exactly `paramsWithExactTurn`; the handler uses that same object for pending-MCP coordination and original-event emission. Established local events are separately tagged `local_derived`. `CodexThread` owns the unexported brand/private constructors, and the backend listener and converter accept only this opaque thread-emitted union, so neither can receive raw native input, fabricate a value, or re-run admission. Converter raw JSONL/debug capture remains after the boundary and records admitted canonical/derived messages only; the generic file sink owns no provider policy. Every other current native event is wrapped readonly at the same thread boundary and preserves its existing operation-owned handling without entering the segment resolver. This corrects dominance without adding state, fallback, compatibility, or another error variant.
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/design-spec.md-93-
+--
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/design-spec.md-937-
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/design-spec.md:938:`CodexThread` owns the unexported brand and the only private production constructors/emitters of this union; downstream code can import the opaque type but cannot structurally manufacture it. For any governed native name, the first variant can be constructed only from an accepted resolver result and uses its exact `paramsWithExactTurn`; for an exact non-governed name it carries one readonly shallow copy made at the same thread boundary. The notification handler accepts that admitted value rather than raw `(method,params)` arguments; it may request that `CodexThread` construct an established local-derived event, but it cannot invoke or bypass admission. `CodexAgentRunBackend` and `CodexThreadEventConverter` consume only `CodexThreadEventMessage`. Direct native-to-converter construction, generic listener input, and casts/fabricated branded values are removed from production and current tests.
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/design-spec.md-939-
+--
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/design-spec.md-1903-- Team/standalone/application/browser code accepts only post-lifecycle canonical segment/error events. Keep Team/application adapters stateless; require type on canonical content; use exact turn+segment browser lookup and stored-type agreement; support late subscription only from required canonical type.
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/design-spec.md:1904:- Require authoritative provider turn admission before any provider mutation or AgentRun enqueue and preserve the original three `AgentRunErrorEvidence` variants. For Codex, invoke only the thread-owned `resolveCodexSegmentTurnAdmission` from `CodexThread.handleAppServerNotification()` when the name belongs to the exact four-event production-applicability/inheritance set. Every other current event keeps its operation-owned route without a non-segment exemption registry or unknown-event policy. Governed rejection must return before notification handling, pending MCP, local/original emission, listener/converter, reasoning, and raw debug. Forward only the immutable admitted canonical params through the opaque thread-branded union; do not re-resolve, structurally manufacture/cast the value, or permit generic/raw/direct converter input. Preserve admitted MCP coordination and admitted-event debugging. Require scope/effect/turn fields on Agent error wire DTOs (nullable only by established semantics), reject runtime/diagnostic, and keep the sole downstream turn diagnostic visible but non-terminal across browser/application/external/command/lifecycle/compaction/skill consumers.
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/design-spec.md-1905-- Apply command-accepted turn IDs, explicit turn facts, ordered terminal facts, and accepted termination to the segment state at the exact AgentRun queue boundary. Do not pre-clear final batch content from an already-advanced runtime snapshot, buffer/reorder missing starts, or dedupe equal content bytes.
+
+Harness real boundary and actual opaque listener consumption:
+    74	/**
+    75	 * Drives converter coverage through the production-owned CodexThread boundary.
+    76	 * It admits native or operation-owned facts through the real thread and gives
+    77	 * the converter only the values emitted to that thread's listener.
+    78	 */
+    79	export const createCodexThreadEventHarness = (
+    80	  runId = "run-1",
+    81	  workspaceRoot = "/tmp/codex-thread-event-harness",
+    82	) => {
+    83	  const client = new CodexAppServerClient({
+    84	    command: "false",
+    85	    args: [],
+    86	    cwd: "/tmp/codex-thread-event-harness",
+    87	    env: {},
+    88	  });
+    89	  const thread = new CodexThread({
+    90	    runContext: createRunContext(runId),
+    91	    client,
+    92	    startup: createCodexThreadStartupGate(),
+    93	  });
+    94	  const converter = new CodexThreadEventConverter(
+    95	    runId,
+    96	    workspaceRoot,
+    97	    () => projectCodexAgentLifecycleSnapshot({
+    98	      ...thread.getStatusSnapshotSource(),
+    99	      isActive: true,
+   100	    }),
+   101	  );
+   102	  const convertedEvents: AgentRunEvent[] = [];
+   103	  const convertedBatches: Array<Readonly<{
+   104	    source: "native_admitted" | "local_derived";
+   105	    method: string;
+   106	    events: readonly AgentRunEvent[];
+   107	  }>> = [];
+   108	  let listenerMessageCount = 0;
+   109	  let requestId = 1;
+   110	
+   111	  thread.subscribeAppServerMessages((message) => {
+   112	    listenerMessageCount += 1;
+   113	    const events = converter.convert(message);
+   114	    convertedEvents.push(...events);
+   115	    convertedBatches.push({
+   116	      source: message.source,
+   117	      method: message.method,
+   118	      events,
+   119	    });
+   120	  });
+   121	
+   122	  const emitNative = (input: ThreadEventInput): AgentRunEvent[] => {
+   123	    const batchStart = convertedBatches.length;
+   124	    const explicitTurnId = governedEventNames.has(input.method)
+   125	      ? resolveExplicitTurnId(input.params)
+   126	      : null;
+   127	    if (explicitTurnId && thread.activeTurnId !== explicitTurnId) {
+   128	      thread.markTurnStarted(explicitTurnId);
+   129	    }
+   130	    thread.handleAppServerNotification(input.method, input.params);
+   131	    return convertedBatches
+   132	      .slice(batchStart)
+   133	      .filter((batch) => batch.method === input.method)
+   134	      .flatMap((batch) => batch.events);
+   135	  };
+   136	
+   137	  const emitLocalMcpCompletion = (params: JsonObject): AgentRunEvent[] => {
+   138	    const item = asObject(params.item);
+   139	    const invocationId = asNonEmptyString(params.invocation_id) ?? asNonEmptyString(item?.id);
+   140	    if (!item || !invocationId) {
+   141	      throw new Error("Local MCP completion fixture requires an item and invocation identity.");
+   142	    }
+   143	    const turnId = resolveExplicitTurnId(params) ?? "turn-1";
+   144	    if (thread.activeTurnId !== turnId) {
+   145	      thread.markTurnStarted(turnId);
+   146	    }
+   147	    thread.trackPendingMcpToolCall({
+   148	      invocationId,
+   149	      turnId,
+   150	      serverName: asNonEmptyString(item.server),
+   151	      toolName: asNonEmptyString(params.tool_name) ?? asNonEmptyString(item.tool),
+   152	      arguments: asObject(params.arguments) ?? {},
+   153	    });
+   154	    const batchStart = convertedBatches.length;
+   155	    emitNative({
+   156	      method: CodexThreadEventName.ITEM_COMPLETED,
+   157	      params,
+   158	    });
+   159	    return convertedBatches
+   160	      .slice(batchStart)
+   161	      .filter((batch) =>
+   162	        batch.source === "local_derived" &&
+   163	        batch.method === CodexThreadEventName.LOCAL_MCP_TOOL_EXECUTION_COMPLETED,
+   164	      )
+   165	      .flatMap((batch) => batch.events);
+   166	  };
+   168	  const emitLocalApprovalRequest = (params: JsonObject): AgentRunEvent[] => {
+   169	    const batchStart = convertedBatches.length;
+   170	    const invocationId = asNonEmptyString(params.invocation_id);
+   171	    const toolName = asNonEmptyString(params.tool_name);
+   172	    const argumentsPayload = asObject(params.arguments) ?? {};
+   173	    if (!invocationId || !toolName) {
+   174	      throw new Error("Local approval fixture requires invocation_id and tool_name.");
+   175	    }
+   176	
+   177	    if (toolName === "request_permissions") {
+   178	      thread.handleAppServerRequest(
+   179	        requestId++,
+   180	        CodexThreadEventName.ITEM_PERMISSIONS_REQUEST_APPROVAL,
+   181	        {
+   182	          threadId: "thread-1",
+   183	          turnId: "turn-1",
+   184	          itemId: invocationId,
+   185	          cwd: argumentsPayload.cwd ?? "/tmp/codex-thread-event-harness",
+   186	          permissions: argumentsPayload.permissions ?? {},
+   187	          reason: argumentsPayload.reason ?? null,
+   188	          startedAtMs: 1,
+   189	        },
+   190	      );
+   191	      return convertedBatches
+   192	        .slice(batchStart)
+   193	        .filter((batch) => batch.method === CodexThreadEventName.LOCAL_TOOL_APPROVAL_REQUESTED)
+   194	        .flatMap((batch) => batch.events);
+   195	    }
+   196	
+   197	    const turnId = resolveExplicitTurnId(params) ?? "turn-1";
+   198	    thread.trackPendingMcpToolCall({
+   199	      invocationId,
+   200	      turnId,
+   201	      serverName: "test-server",
+   202	      toolName,
+   203	      arguments: argumentsPayload,
+   204	    });
+   205	    thread.handleAppServerRequest(requestId++, "mcpServer/elicitation/request", {
+   206	      threadId: "thread-1",
+   207	      turnId,
+   208	      serverName: "test-server",
+   209	      mode: "form",
+   210	      _meta: {
+   211	        codex_approval_kind: "mcp_tool_call",
+   212	        tool_params: argumentsPayload,
+   213	      },
+   214	      message: `Allow the test MCP server to run tool "${toolName}"?`,
+   215	      requestedSchema: {
+   216	        type: "object",
+   217	        properties: {},
+   218	      },
+   219	    });
+   220	    return convertedBatches
+   221	      .slice(batchStart)
+   222	      .filter((batch) => batch.method === CodexThreadEventName.LOCAL_TOOL_APPROVAL_REQUESTED)
+   223	      .flatMap((batch) => batch.events);
+   224	  };
+   225	
+   226	  return {
+   227	    thread,
+   228	    get listenerMessageCount() {
+   229	      return listenerMessageCount;
+   230	    },
+   231	    get convertedEventCount() {
+   232	      return convertedEvents.length;
+   233	    },
+   234	    emitThroughThread(input: ThreadEventInput): AgentRunEvent[] {
+   235	      if (input.method === CodexThreadEventName.LOCAL_MCP_TOOL_EXECUTION_COMPLETED) {
+   236	        return emitLocalMcpCompletion(input.params);
+   237	      }
+   238	      if (input.method === CodexThreadEventName.LOCAL_TOOL_APPROVAL_REQUESTED) {
+   239	        return emitLocalApprovalRequest(input.params);
+   240	      }
+   241	      return emitNative(input);
+   242	    },
+   243	  };
+   244	};
+
+Missing-turn rejection assertion:
+   116	    expect(repeated).toEqual([]);
+   117	  });
+   118	
+   119	  it("rejects a completed reasoning snapshot without exact turn identity", () => {
+   120	    const converter = createCodexThreadEventHarness("run-1");
+   121	    const listenerMessagesBefore = converter.listenerMessageCount;
+   122	    const convertedEventsBefore = converter.convertedEventCount;
+   123	    const events = converter.emitThroughThread({
+   124	      method: CodexThreadEventName.ITEM_COMPLETED,
+   125	      params: {
+   126	        timestamp: 123,
+   127	        item: { type: "reasoning", id: "provider-a", summary: [{ text: "first" }] },
+   128	      },
+   129	    });
+   130	
+   131	    expect(events).toEqual([]);
+   132	    expect(converter.listenerMessageCount).toBe(listenerMessagesBefore);
+   133	    expect(converter.convertedEventCount).toBe(convertedEventsBefore);
+   134	  });
+   135	
+   136	  it("treats current and legacy reasoning text deltas as permanent state-free no-ops", () => {
+
+No-fabrication audit:
+API-REV-038 Codex nominal-boundary static audit
+HEAD=258d18cdba0bf7ae08bde134fe09586a8906870d
+
+Changed converter suites direct converter construction:
+PASS: zero
+
+Changed converter suites direct structural .convert calls:
+PASS: zero
+
+Affected suite/harness casts or opaque brand fabrication:
+PASS: zero
+
+Real thread boundary calls:
+3
+
+Diff check:
+PASS
+
+Reviewer scans:
+PASS: no forbidden cast/brand/type construction
+PASS: corrected suites have no direct converter seam
+111:  thread.subscribeAppServerMessages((message) => {
+113:    const events = converter.convert(message);
+130:    thread.handleAppServerNotification(input.method, input.params);
+178:      thread.handleAppServerRequest(
+205:    thread.handleAppServerRequest(requestId++, "mcpServer/elicitation/request", {
+
+Focused execution evidence:
+
+stdout | tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread turn payload > passes open reasoning effort max to turn/start
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+AppConfig instance created.
+
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts (38 tests) 127ms
+stderr | tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > does not map token-usage telemetry into AGENT_STATUS
+Run 'run-1': Codex token-usage update arrived without a turn id. Skipping persistence.
+
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts (57 tests) 27ms
+stderr | tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts > Codex reasoning block conversion > rejects a completed reasoning snapshot without exact turn identity
+[CodexSegmentTurnAdmissionRejected] {
+  runtimeKind: 'codex_app_server',
+  runId: 'run-1',
+  nativeEventName: 'item/completed',
+  reasonCode: 'CODEX_SEGMENT_TURN_INACTIVE'
+}
+
+stderr | tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts > Codex reasoning block conversion > preserves for in-place or no-effect event: thread tokens
+Run 'run-1': Codex token-usage update for turn 'turn-1' did not include usable token counts.
+
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts (52 tests) 25ms
+
+ Test Files  3 passed (3)
+      Tests  147 passed (147)
+   Start at  10:53:29
+   Duration  1.34s (transform 390ms, setup 15ms, import 542ms, tests 178ms, environment 0ms)
+
+
+Focused test TypeScript:
+$ pnpm exec tsc -p tests/.tmp/api-rev-038-codex-tests-tsconfig.json --noEmit --pretty false
+exit_code=0
+result=PASS
+temporary_config_removed_after_execution=true
+
+Production TypeScript:
+$ pnpm exec tsc -p tsconfig.build.json --noEmit --pretty false
+exit_code=0
+result=PASS
+
+Diff hygiene:
+PASS
+
+Conclusion:
+TR-F-006 resolved. Shared fixture uses public production thread operations, consumes the actual opaque listener message, and invokes the converter only in the listener. Missing-turn governed reasoning produces zero listener/converter effect. No cast, brand fabrication, overload, or direct converter seam remains. API-REV-038 proportional test review: Pass.

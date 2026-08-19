@@ -1,4 +1,3 @@
-import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { CodexThreadManager } from "../thread/codex-thread-manager.js";
 import type { CodexThread } from "../thread/codex-thread.js";
 import {
@@ -8,9 +7,13 @@ import type { AgentOperationResult } from "../../../domain/agent-operation-resul
 import type { AgentRunBackend, AgentRunSourceEventBatchListener } from "../../agent-run-backend.js";
 import type { CodexRunContext } from "./codex-agent-run-context.js";
 import { projectCodexAgentLifecycleSnapshot } from "../events/codex-status-projector.js";
-import type { CodexAppServerMessage } from "../thread/codex-app-server-message.js";
+import type { CodexThreadEventMessage } from "../thread/codex-thread.js";
 import { AgentRunEventType, type AgentRunEvent } from "../../../domain/agent-run-event.js";
 import { CodexInputSubmissionError } from "../thread/codex-input-submission-error.js";
+import type {
+  AgentRunBackendInputDispatch,
+  AgentRunBackendInputDispatchResult,
+} from "../../../input/agent-run-input-contract.js";
 
 const buildCommandFailure = (operation: string, error: unknown): AgentOperationResult => {
   if (error instanceof CodexInputSubmissionError) {
@@ -28,6 +31,7 @@ const logger = {
 };
 
 export class CodexAgentRunBackend implements AgentRunBackend {
+  readonly inputCapabilities = { activeTurnAppend: "supported" } as const;
   private readonly runContext: CodexRunContext;
   private readonly codexThread: CodexThread;
   private readonly threadManager: CodexThreadManager;
@@ -101,28 +105,27 @@ export class CodexAgentRunBackend implements AgentRunBackend {
     });
   }
 
-  async postUserMessage(message: AgentInputUserMessage): Promise<AgentOperationResult> {
+  async dispatchUserInput(
+    dispatch: AgentRunBackendInputDispatch,
+  ): Promise<AgentRunBackendInputDispatchResult> {
     try {
-      const result = await this.sendTurn(message);
+      const result = dispatch.kind === "start_turn"
+        ? await this.codexThread.startInput(dispatch.message)
+        : await this.codexThread.appendInput(dispatch.message, dispatch.turnId);
       return {
-        accepted: true,
+        forwarded: true,
         turnId: result.turnId,
-        platformAgentRunId: result.platformAgentRunId,
+        platformAgentRunId: this.getPlatformAgentRunId(),
       };
     } catch (error) {
-      return buildCommandFailure("send user input", error);
+      const result = buildCommandFailure("send user input", error);
+      return {
+        forwarded: false,
+        code: result.code,
+        message: result.message,
+        turnId: null,
+      };
     }
-  }
-
-  async sendTurn(message: AgentInputUserMessage): Promise<{
-    turnId: string | null;
-    platformAgentRunId: string | null;
-  }> {
-    const result = await this.codexThread.submitInput(message);
-    return {
-      turnId: result.turnId,
-      platformAgentRunId: this.getPlatformAgentRunId(),
-    };
   }
 
   async approveToolInvocation(
@@ -141,17 +144,24 @@ export class CodexAgentRunBackend implements AgentRunBackend {
     await this.codexThread.approveTool(invocationId, approved);
   }
 
-  async interrupt(turnId?: string | null): Promise<AgentOperationResult> {
+  async interrupt(turnId: string | null): Promise<AgentOperationResult> {
+    if (!turnId) {
+      return {
+        accepted: false,
+        code: "NO_ACTIVE_TURN",
+        message: "Codex interrupt requires the canonical active turn id from AgentRun.",
+      };
+    }
     try {
-      await this.interruptRun(turnId ?? null);
-      return { accepted: true };
+      await this.interruptRun(turnId);
+      return { accepted: true, turnId };
     } catch (error) {
       return buildCommandFailure("interrupt run", error);
     }
   }
 
-  async interruptRun(turnId?: string | null): Promise<void> {
-    await this.codexThread.interrupt(turnId ?? null);
+  async interruptRun(turnId: string): Promise<void> {
+    await this.codexThread.interrupt(turnId);
   }
 
   async terminate(): Promise<AgentOperationResult> {
@@ -173,7 +183,7 @@ export class CodexAgentRunBackend implements AgentRunBackend {
     return platformAgentRunId;
   }
 
-  private async handleAppServerMessage(event: CodexAppServerMessage): Promise<void> {
+  private async handleAppServerMessage(event: CodexThreadEventMessage): Promise<void> {
     const convertedEvents = this.eventConverter.convert(event);
     const tokenUsageEvents = this.consumeReadyTokenUsageEvents();
     const events = [...convertedEvents, ...tokenUsageEvents];

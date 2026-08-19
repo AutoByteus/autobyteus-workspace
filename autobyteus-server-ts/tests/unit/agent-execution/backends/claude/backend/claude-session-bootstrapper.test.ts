@@ -4,20 +4,20 @@ import { AgentRunConfig } from "../../../../../../src/agent-execution/domain/age
 import { AgentRunContext } from "../../../../../../src/agent-execution/domain/agent-run-context.js";
 import { ClaudeSessionBootstrapper } from "../../../../../../src/agent-execution/backends/claude/backend/claude-session-bootstrapper.js";
 import { MemberTeamContext } from "../../../../../../src/agent-team-execution/domain/member-team-context.js";
-import { TeamBackendKind } from "../../../../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { RuntimeKind } from "../../../../../../src/runtime-management/runtime-kind-enum.js";
+import { testMemberTeamContext } from "../../../../../fixtures/current-team-run-fixtures.js";
 
 const WORKING_DIRECTORY = "/tmp/claude-bootstrapper-workspace";
 
 const createMemberTeamContext = () =>
-  new MemberTeamContext({
+  testMemberTeamContext({
     teamRunId: "team-run-1",
+    rootTeamRunId: "team-run-1",
     teamDefinitionId: "team-def-1",
-    teamBackendKind: TeamBackendKind.MIXED,
-    memberName: "Professor",
-    memberRouteKey: "professor",
-    memberRunId: "run-claude-team",
-    sendMessageToEnabled: true,
+    memberAddress: "/Professor",
+    coordinatorAddress: "/Professor",
+    agentRunId: "run-claude-team",
+    runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
     deliverInterAgentMessage: vi.fn(async () => undefined) as any,
   });
 
@@ -26,7 +26,7 @@ const createRunContext = (input: {
   memberTeamContext?: MemberTeamContext | null;
 }) =>
   new AgentRunContext({
-    runId: input.memberTeamContext?.memberRunId ?? "run-claude-standalone",
+    runId: input.memberTeamContext?.agentRunId ?? "run-claude-standalone",
     config: new AgentRunConfig({
       runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
       agentDefinitionId: "agent-def-claude",
@@ -76,7 +76,9 @@ describe("ClaudeSessionBootstrapper", () => {
     expect(runContext.runtimeContext.autoExecuteTools).toBe(true);
     expect(runContext.config.memberTeamContext).toBe(memberTeamContext);
     expect(runContext.runtimeContext.carpenterSystemPrompt).toContain("## Agent Identity");
-    expect(runContext.runtimeContext.carpenterSystemPrompt).toContain("## Team Collaboration");
+    expect(runContext.runtimeContext.carpenterSystemPrompt).toContain("## AgentTeam Addressing");
+    expect(runContext.runtimeContext.carpenterSystemPrompt).toContain("## AgentTeam Collaboration");
+    expect(runContext.runtimeContext.carpenterSystemPrompt).not.toContain("## Team Runtime");
     expect(runContext.runtimeContext.carpenterSystemPrompt).not.toContain("## Working Environment");
     expect(runContext.runtimeContext.carpenterSystemPrompt).not.toContain("## Bash Operating Practice");
     expect(runContext.runtimeContext.carpenterSystemPrompt).not.toContain("## File And Directory Practice");

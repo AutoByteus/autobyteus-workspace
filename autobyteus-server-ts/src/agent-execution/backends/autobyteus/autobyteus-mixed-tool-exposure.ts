@@ -1,7 +1,6 @@
 import { ToolCategory } from "autobyteus-ts/tools/tool-category.js";
 import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.js";
 import type { MemberTeamContext } from "../../../agent-team-execution/domain/member-team-context.js";
-import { TeamBackendKind } from "../../../agent-team-execution/domain/team-backend-kind.js";
 import { TASK_DELEGATION_TOOL_NAMES } from "../../../agent-tools/task-delegation/task-delegation-tool-contract.js";
 
 const LEGACY_LOCAL_TASK_PLAN_TOOL_NAMES = new Set<string>([
@@ -21,7 +20,7 @@ const REMOVED_TASK_DELEGATION_RESULT_TOOL_NAMES = new Set<string>([
 
 export const isMixedAutoByteusStandaloneMember = (
   memberTeamContext: MemberTeamContext | null | undefined,
-): boolean => memberTeamContext?.teamBackendKind === TeamBackendKind.MIXED;
+): boolean => memberTeamContext != null;
 
 export const resolveAutoByteusStandaloneToolNames = (input: {
   toolNames: Iterable<string> | null | undefined;

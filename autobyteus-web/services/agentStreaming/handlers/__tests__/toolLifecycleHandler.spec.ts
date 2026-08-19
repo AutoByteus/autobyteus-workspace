@@ -292,7 +292,7 @@ describe('toolLifecycleHandler', () => {
         tool_name: 'send_message_to',
         turn_id: 'turn-1',
         arguments: {
-          recipient_name: 'Student',
+          recipient_address: 'Student',
           content: 'Hard question',
         },
       },

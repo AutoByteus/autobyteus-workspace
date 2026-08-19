@@ -23,9 +23,9 @@ export function useMobilePendingTeamRunAttachments(contextRef: Ref<MobileWorkCon
     },
   );
 
-  async function flushPendingTeamRunAttachmentsToFocusedMember(teamRunId: string, memberRouteKey: string): Promise<void> {
+  async function flushPendingTeamRunAttachmentsToFocusedMember(teamRunId: string, agentRunId: string): Promise<void> {
     const normalizedTeamRunId = teamRunId.trim();
-    const normalizedMemberRouteKey = memberRouteKey.trim();
+    const normalizedAgentRunId = agentRunId.trim();
     const attachments = mobileWorkStore.getPendingTeamRunAttachments(normalizedTeamRunId);
     if (attachments.length === 0) {
       error.value = null;
@@ -38,9 +38,8 @@ export function useMobilePendingTeamRunAttachments(contextRef: Ref<MobileWorkCon
       throw new Error(error.value);
     }
 
-    const focusedNode = teamContext.memberNodesByRouteKey.get(normalizedMemberRouteKey) || null;
-    const focusedMember = teamContext.leafAgentContextsByRouteKey.get(normalizedMemberRouteKey) || null;
-    if (!focusedNode || focusedNode.memberKind !== 'agent' || !focusedMember) {
+    const focusedMember = teamContext.view.getAgentContext(normalizedAgentRunId);
+    if (!focusedMember) {
       error.value = 'Choose a team member before sending with pending context files.';
       throw new Error(error.value);
     }
@@ -62,8 +61,8 @@ export function useMobilePendingTeamRunAttachments(contextRef: Ref<MobileWorkCon
     }
 
     const teamContext = teamContextsStore.getTeamContextById(context.teamRunId);
-    const focusedMemberRouteKey = teamContext?.focusedMemberRouteKey || context.focusedMemberRouteKey;
-    await flushPendingTeamRunAttachmentsToFocusedMember(context.teamRunId, focusedMemberRouteKey || '');
+    const focusedAgentRunId = teamContext?.view.getFocusedAgentRunId() || context.focusedAgentRunId;
+    await flushPendingTeamRunAttachmentsToFocusedMember(context.teamRunId, focusedAgentRunId);
   }
 
   return {

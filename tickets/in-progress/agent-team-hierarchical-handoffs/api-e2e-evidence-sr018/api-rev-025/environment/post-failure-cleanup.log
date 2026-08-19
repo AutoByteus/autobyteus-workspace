@@ -1,0 +1,9 @@
+# API-REV-025 post-failure cleanup verification
+timestamp_utc=2026-08-12T05:13:59Z
+owned_port_60225=CLOSED
+owned_port_31225=CLOSED
+protected_port_60004=ABSENT_AS_AT_PREFLIGHT
+protected_port_31004=ABSENT_AS_AT_PREFLIGHT
+owned_path_removed=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-025-live-20260812-1
+owned_path_removed=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-025-live-20260812-1.db
+operational_database_action=NONE

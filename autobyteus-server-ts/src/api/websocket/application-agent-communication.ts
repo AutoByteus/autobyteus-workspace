@@ -1,7 +1,7 @@
 import type { FastifyInstance, FastifyRequest } from "fastify";
 import {
   APPLICATION_AGENT_COMMUNICATION_PROTOCOL,
-  decodeApplicationAgentTargetPath,
+  decodeApplicationAgentTargetUrl,
 } from "@autobyteus/application-sdk-contracts";
 import {
   applicationAgentConnectionError,
@@ -26,7 +26,7 @@ export async function registerApplicationAgentCommunicationWebsocket(app: Fastif
       const pendingSocket = observePendingWebSocketState(socket);
       void authorizeRemoteAccessWebSocket(req).then(() => {
         if (pendingSocket.isClosed()) return;
-        const address = decodeApplicationAgentTargetPath(`/${req.params["*"] ?? ""}`);
+        const address = decodeApplicationAgentTargetUrl(`/${req.params["*"] ?? ""}`);
         if (!address) {
           socket.send(JSON.stringify({
             protocol: APPLICATION_AGENT_COMMUNICATION_PROTOCOL,

@@ -7,7 +7,7 @@
   >
     <MobileLaunchTargetPicker
       v-if="memberItems.length > 0"
-      :model-value="focusedMemberRouteKey"
+      :model-value="focusedAgentRunId"
       label="Message target"
       placeholder="Choose a member"
       :items="memberItems"
@@ -44,25 +44,25 @@ const props = defineProps<{
 
 const {
   error,
-  focusedMemberRouteKey,
+  focusedAgentRunId,
   focusMember,
   isUpdating,
   memberRows,
 } = useMobileTeamMemberFocusCoordinator(toRef(props, 'context'))
 
 const memberItems = computed(() => memberRows.value.map((member) => ({
-  id: member.routeKey,
+  id: member.agentRunId,
   label: member.label,
   detail: member.detail,
   group: 'Team members',
 })))
 
-async function handleFocusChange(memberRouteKey: string): Promise<void> {
-  if (isUpdating.value || memberRouteKey === focusedMemberRouteKey.value) {
+async function handleFocusChange(agentRunId: string): Promise<void> {
+  if (isUpdating.value || agentRunId === focusedAgentRunId.value) {
     return
   }
   try {
-    await focusMember(memberRouteKey)
+    await focusMember(agentRunId)
   } catch {
     // The coordinator exposes the actionable error copy for the bar.
   }

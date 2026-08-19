@@ -6,6 +6,7 @@ import type { AgentRunEventPipeline } from "./agent-run-event-pipeline.js";
 import { getDefaultAgentRunEventPipeline } from "./default-agent-run-event-pipeline.js";
 import { AgentRunEventDispatchQueue } from "./agent-run-event-dispatch-queue.js";
 import type { AgentTurnLifecycleState } from "./processors/lifecycle-status/agent-turn-lifecycle-state.js";
+import type { AgentSegmentLifecycleState } from "./processors/segment-lifecycle/agent-segment-lifecycle-state.js";
 
 export const dispatchProcessedAgentRunEvents = async (input: {
   runContext: AgentRunContext<RuntimeAgentRunContext>;
@@ -14,7 +15,9 @@ export const dispatchProcessedAgentRunEvents = async (input: {
   pipeline?: AgentRunEventPipeline;
   dispatchQueue: AgentRunEventDispatchQueue;
   lifecycleState: AgentTurnLifecycleState;
+  segmentLifecycleState: AgentSegmentLifecycleState;
   getRuntimeLifecycleSnapshot: () => AgentRuntimeLifecycleSnapshot;
+  onCanonicalEventsDispatched?: (events: readonly AgentRunEvent[]) => void;
   onListenerError?: (error: unknown) => void;
 }): Promise<void> => {
   if (input.events.length === 0) {
@@ -29,6 +32,7 @@ export const dispatchProcessedAgentRunEvents = async (input: {
         runContext: input.runContext,
         events: input.events,
         lifecycleState: input.lifecycleState,
+        segmentLifecycleState: input.segmentLifecycleState,
         runtimeLifecycleSnapshot,
       });
 
@@ -39,6 +43,7 @@ export const dispatchProcessedAgentRunEvents = async (input: {
           onListenerError: input.onListenerError,
         });
       }
+      input.onCanonicalEventsDispatched?.(finalEvents);
     },
   );
 };

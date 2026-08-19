@@ -1,0 +1,1357 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > persists one trace for adjacent reasoning deltas and a new trace after a tool boundary
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-ZPAtFh/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > tolerates lifecycle-before-command ordering and flushes text and reasoning on turn completion
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-9n7Rvx/working_context_snapshot.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-9n7Rvx/raw_traces_active.jsonl
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > persists open reasoning before a following tool call without duplicating later flushes
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-0deunz/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > persists open reasoning before an inferred tool call from a terminal tool result
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-PGZjCi/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > keeps reasoning open across a matching result and flushes one trace at the next tool
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-AhIeRy/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > preserves post-card reasoning when authoritative call arguments arrive only at result
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-Bszb81/working_context_snapshot.json
+
+ ❯ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts (21 tests | 20 failed) 43ms
+     × persists converter-owned reasoning closure exactly once before the next tool 11ms
+     × projects adjacent missing-turn reasoning content and end onto one fallback turn 1ms
+     × persists one trace for adjacent reasoning deltas and a new trace after a tool boundary 2ms
+     × tolerates lifecycle-before-command ordering and flushes text and reasoning on turn completion 1ms
+     × persists open reasoning before a following tool call without duplicating later flushes 1ms
+     × persists open reasoning before an inferred tool call from a terminal tool result 9ms
+     × keeps reasoning open across a matching result and flushes one trace at the next tool 1ms
+     × preserves post-card reasoning when authoritative call arguments arrive only at result 1ms
+     × keeps the first boundary for an unseen insufficient terminal when readiness arrives later 2ms
+     × keeps reasoning open across matching TOOL_EXECUTION_FAILED updates 1ms
+     × keeps reasoning open across matching TOOL_DENIED updates 1ms
+     × persists open reasoning before assistant text without requiring turn completion 1ms
+     × persists open reasoning before assistant complete output 1ms
+     × uses an active turn when accepted command notification arrives after lifecycle start 1ms
+     ✓ records tool traces once from lifecycle events when matching tool segments are present 1ms
+     × preserves assistant-tool-assistant raw trace order from distinct text segment ids 1ms
+     × creates deterministic fallback turns when no turn id is active 0ms
+     × ignores provider compaction/status payloads without local raw-trace pruning 1ms
+     × writes provider compaction markers and rotates settled active traces into segmented archives 1ms
+     × dedupes replayed provider boundaries without dropping post-boundary active records 1ms
+     × retries rotation from an existing provider boundary marker when no complete segment exists 1ms
+ ❯ tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts (54 tests | 53 failed) 24ms
+     × groups completed provider snapshots and ignores repeated known-item completion 6ms
+     × emits adjacent content and end with one identity when a completed snapshot has no turn 2ms
+     × treats current and legacy reasoning text deltas as permanent state-free no-ops 1ms
+     ✓ groups missing provider identities and separates them only at a real boundary 1ms
+     × clears for ordered-card creation: user message start 1ms
+     × clears for ordered-card creation: ordinary item start 0ms
+     × clears for ordered-card creation: tool start 0ms
+     × clears for ordered-card creation: empty assistant delta 0ms
+     × clears for ordered-card creation: approval request 1ms
+     × clears for ordered-card creation: result-first completion 0ms
+     × clears for ordered-card creation: result-first approval update 0ms
+     × clears for ordered-card creation: result-first local completion 0ms
+     × clears for ordered-card creation: identity-missing local completion 0ms
+     × clears for ordered-card creation: result-first file log 0ms
+     × clears for ordered-card creation: result-first raw log 0ms
+     × clears for ordered-card creation: turn completion 0ms
+     × clears for ordered-card creation: turn start 0ms
+     × clears for ordered-card creation: terminal error 0ms
+     × keeps the reasoning end neutral before lifecycle turn completion output 1ms
+     × keeps the reasoning end neutral before lifecycle turn start output 0ms
+     × keeps the reasoning end neutral before lifecycle terminal error output 0ms
+     × preserves for in-place or no-effect event: non-tool completion 0ms
+     × preserves for in-place or no-effect event: ignored tool call request 0ms
+     × preserves for in-place or no-effect event: ignored permission request 0ms
+     × preserves for in-place or no-effect event: empty file output 0ms
+     × preserves for in-place or no-effect event: empty raw output 0ms
+     × preserves for in-place or no-effect event: reasoning start 0ms
+     × preserves for in-place or no-effect event: compaction start 0ms
+     × preserves for in-place or no-effect event: compaction completion 0ms
+     × preserves for in-place or no-effect event: compaction trigger 0ms
+     × preserves for in-place or no-effect event: plan delta 0ms
+     × preserves for in-place or no-effect event: turn diff 0ms
+     × preserves for in-place or no-effect event: turn progress 0ms
+     × preserves for in-place or no-effect event: raw compaction 0ms
+     × preserves for in-place or no-effect event: thread compacted 0ms
+     × preserves for in-place or no-effect event: thread started 0ms
+     × preserves for in-place or no-effect event: thread status 0ms
+     × preserves for in-place or no-effect event: thread tokens 0ms
+     × preserves for in-place or no-effect event: unknown item 0ms
+     × preserves for in-place or no-effect event: unknown raw 0ms
+     × preserves for in-place or no-effect event: unknown thread 0ms
+     × preserves for in-place or no-effect event: internal notification 0ms
+     × preserves reasoning for matching existing-card success result 1ms
+     × preserves reasoning for matching existing-card failure result 0ms
+     × preserves reasoning for matching existing-card denial result 0ms
+     × preserves reasoning for matching existing-card approval update 0ms
+     × preserves reasoning for matching existing-card start after approval 0ms
+     × preserves reasoning for matching existing-card local MCP completion 0ms
+     × preserves reasoning for matching existing-card file log 0ms
+     × preserves reasoning for matching existing-card raw output 0ms
+     × keeps one block through the exact long-running-tool result sequence 0ms
+     × clears every active turn when an ordered boundary has no turn id 0ms
+     × closes all tracked identities deterministically before reachable turn/started output 0ms
+     × closes all tracked identities deterministically before reachable error output 0ms
+ ❯ tests/unit/services/agent-streaming/agent-run-event-message-mapper.test.ts (12 tests | 9 failed) 13ms
+     ✓ maps compaction status events to the compaction websocket message type 1ms
+     ✓ preserves provider compaction boundary payload fields on websocket messages 0ms
+     × preserves provider compaction payload fields when team member events are mapped 3ms
+     × flattens task-delegation websocket identity from current target and execution shapes 0ms
+     × does not flatten legacy top-level task-delegation identity fields 0ms
+     × strictly flattens a multi-boundary task-team leaf without prefix fallback 0ms
+     × rejects a live task-team agent mapped at the task-team root 3ms
+     × strictly flattens the same task-team scope for every non-agent event variant 0ms
+     ✓ maps derived team communication messages without routing them through file changes 0ms
+     × normalizes SEGMENT_START segment payloads to canonical turn_id 2ms
+     × normalizes SEGMENT_CONTENT segment payloads to canonical turn_id 1ms
+     × normalizes SEGMENT_END segment payloads to canonical turn_id 1ms
+ ❯ tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-tracker.test.ts (7 tests | 6 failed) 9ms
+     × joins adjacent provider items under one allocator-owned id with completed-item separators 5ms
+     ✓ ignores repeated completion of the same known provider item 0ms
+     × returns one ordered end, closes idempotently, and allocates a new id after close 1ms
+     × closes all active blocks in insertion order and has no later duplicate effects 0ms
+     × emits adjacent content and end for missing turn identity without retaining the block 1ms
+     × uses a distinct namespace for each tracker instance 0ms
+     × allocates a fresh id when an active turn is evicted 1ms
+ ❯ tests/unit/agent-execution/compaction/compaction-run-output-collector.test.ts (7 tests | 2 failed) 6ms
+     ✓ collects AutoByteus assistant-complete output 1ms
+     × collects Codex text segment deltas while ignoring reasoning 3ms
+     × collects Claude text deltas and completes on idle status 1ms
+     ✓ keeps classified diagnostics as content-only before normal completion 0ms
+     ✓ fails immediately on classified terminal error evidence 1ms
+     ✓ fails clearly when the compactor asks for tool approval 0ms
+     ✓ fails clearly when a run finishes without assistant output 0ms
+ ❯ tests/unit/external-channel/runtime/channel-run-output-event-collector.test.ts (9 tests | 1 failed) 6ms
+     ✓ appends true delta fragments normally 1ms
+     ✓ uses the latest cumulative snapshot fragment 0ms
+     ✓ dedupes suffix/prefix-overlapping stream fragments 0ms
+     ✓ dedupes punctuation overlaps without rewriting one-character word splits 1ms
+     ✓ collects overlapping stream fragments without duplicated words 0ms
+     ✓ keeps cumulative stream snapshots clean 0ms
+     × uses final text snapshots before accumulated stream fragments 3ms
+     ✓ preserves collected output across recoverable diagnostic errors 0ms
+     ✓ does not clear newer-turn output for an older terminal error 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts (57 tests) 19ms
+ ✓ tests/unit/services/agent-streaming/agent-stream-websocket-egress.test.ts (31 tests) 10ms
+stdout | tests/unit/agent-execution/events/file-change-event-processor.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:77658) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/agent-execution/events/file-change-event-processor.test.ts (13 tests) 9ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts (31 tests) 8ms
+stdout | tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts (27 tests) 5ms
+ ✓ tests/unit/application-agent-streaming/application-agent-stream-event-projector.test.ts (14 tests) 4ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 91 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > persists converter-owned reasoning closure exactly once before the next tool
+AssertionError: expected [ Array(3) ] to deeply equal [ 'SEGMENT_END', …(1) ]
+
+- Expected
++ Received
+
+  [
+    "SEGMENT_END",
++   "SEGMENT_START",
+    "TOOL_EXECUTION_STARTED",
+  ]
+
+ ❯ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts:92:66
+     90|     });
+     91| 
+     92|     expect(nextToolEvents.map((runEvent) => runEvent.eventType)).toEqu…
+       |                                                                  ^
+     93|       AgentRunEventType.SEGMENT_END,
+     94|       AgentRunEventType.TOOL_EXECUTION_STARTED,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/91]⎯
+
+ FAIL  tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > projects adjacent missing-turn reasoning content and end onto one fallback turn
+AssertionError: expected [ 'SEGMENT_START', …(2) ] to deeply equal [ 'SEGMENT_CONTENT', 'SEGMENT_END' ]
+
+- Expected
++ Received
+
+  [
++   "SEGMENT_START",
+    "SEGMENT_CONTENT",
+    "SEGMENT_END",
+  ]
+
+ ❯ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts:132:58
+    130|     }));
+    131| 
+    132|     expect(events.map((runEvent) => runEvent.eventType)).toEqual([
+       |                                                          ^
+    133|       AgentRunEventType.SEGMENT_CONTENT,
+    134|       AgentRunEventType.SEGMENT_END,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/91]⎯
+
+ FAIL  tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > persists one trace for adjacent reasoning deltas and a new trace after a tool boundary
+AssertionError: expected [] to deeply equal [ 'first\n\nsecond', 'third' ]
+
+- Expected
++ Received
+
+- [
+-   "first
+-
+- second",
+-   "third",
+- ]
++ []
+
+ ❯ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts:178:59
+    176|     const reasoningTraces = (readView(memoryDir).rawTraces ?? [])
+    177|       .filter((trace) => trace.traceType === "reasoning");
+    178|     expect(reasoningTraces.map((trace) => trace.content)).toEqual([
+       |                                                           ^
+    179|       "first\n\nsecond",
+    180|       "third",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/91]⎯
+
+ FAIL  tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > tolerates lifecycle-before-command ordering and flushes text and reasoning on turn completion
+AssertionError: expected [] to deeply equal [ …(2) ]
+
+- Expected
++ Received
+
+- [
+-   [
+-     "reasoning",
+-     "because ",
+-     "turn-1",
+-   ],
+-   [
+-     "assistant",
+-     "hello",
+-     "turn-1",
+-   ],
+- ]
++ []
+
+ ❯ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts:202:92
+    200| 
+    201|     const view = readView(memoryDir);
+    202|     expect(view.rawTraces?.map((trace) => [trace.traceType, trace.cont…
+       |                                                                                            ^
+    203|       ["reasoning", "because ", "turn-1"],
+    204|       ["assistant", "hello", "turn-1"],
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/91]⎯
+
+ FAIL  tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > persists open reasoning before a following tool call without duplicating later flushes
+AssertionError: expected [ [ 'tool_call', '', …(1) ] ] to deeply equal [ [ 'reasoning', …(2) ], …(1) ]
+
+- Expected
++ Received
+
+  [
+    [
+-     "reasoning",
+-     "inspect before tool",
+-     null,
+-   ],
+-   [
+      "tool_call",
+      "",
+      "tool-after-reasoning",
+    ],
+  ]
+
+ ❯ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts:234:87
+    232| 
+    233|     const traces = readView(memoryDir).rawTraces ?? [];
+    234|     expect(traces.map((trace) => [trace.traceType, trace.content, trac…
+       |                                                                                       ^
+    235|       ["reasoning", "inspect before tool", null],
+    236|       ["tool_call", "", "tool-after-reasoning"],
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/91]⎯
+
+ FAIL  tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > persists open reasoning before an inferred tool call from a terminal tool result
+AssertionError: expected [ [ 'tool_call', '', …(1) ], …(1) ] to deeply equal [ [ 'reasoning', …(2) ], …(2) ]
+
+- Expected
++ Received
+
+@@ -1,12 +1,7 @@
+  [
+    [
+-     "reasoning",
+-     "tool result will imply a call",
+-     null,
+-   ],
+-   [
+      "tool_call",
+      "",
+      "inferred-tool-after-reasoning",
+    ],
+    [
+
+ ❯ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts:261:87
+    259| 
+    260|     const traces = readView(memoryDir).rawTraces ?? [];
+    261|     expect(traces.map((trace) => [trace.traceType, trace.content, trac…
+       |                                                                                       ^
+    262|       ["reasoning", "tool result will imply a call", null],
+    263|       ["tool_call", "", "inferred-tool-after-reasoning"],
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/91]⎯
+
+ FAIL  tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > keeps reasoning open across a matching result and flushes one trace at the next tool
+AssertionError: expected [ [ 'tool_call', '', 'tool-1' ], …(2) ] to deeply equal [ [ 'tool_call', '', 'tool-1' ], …(3) ]
+
+- Expected
++ Received
+
+@@ -8,17 +8,10 @@
+      "tool_result",
+      "",
+      "tool-1",
+    ],
+    [
+-     "reasoning",
+-     "A
+-
+- B",
+-     null,
+-   ],
+-   [
+      "tool_call",
+      "",
+      "tool-2",
+    ],
+  ]
+
+ ❯ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts:311:87
+    309| 
+    310|     const traces = readView(memoryDir).rawTraces ?? [];
+    311|     expect(traces.map((trace) => [trace.traceType, trace.content, trac…
+       |                                                                                       ^
+    312|       ["tool_call", "", "tool-1"],
+    313|       ["tool_result", "", "tool-1"],
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/91]⎯
+
+ FAIL  tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > preserves post-card reasoning when authoritative call arguments arrive only at result
+AssertionError: expected [ …(3) ] to deeply equal [ [ 'reasoning', …(2) ], …(4) ]
+
+- Expected
++ Received
+
+@@ -1,27 +1,15 @@
+  [
+    [
+-     "reasoning",
+-     "before card",
+-     null,
+-   ],
+-   [
+      "tool_call",
+      "",
+      "search-1",
+    ],
+    [
+      "tool_result",
+      "",
+      "search-1",
+-   ],
+-   [
+-     "reasoning",
+-     "A
+-
+- B",
+-     null,
+    ],
+    [
+      "tool_call",
+      "",
+      "tool-2",
+
+ ❯ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts:362:87
+    360| 
+    361|     const traces = readView(memoryDir).rawTraces ?? [];
+    362|     expect(traces.map((trace) => [trace.traceType, trace.content, trac…
+       |                                                                                       ^
+    363|       ["reasoning", "before card", null],
+    364|       ["tool_call", "", "search-1"],
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/91]⎯
+
+ FAIL  tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > keeps the first boundary for an unseen insufficient terminal when readiness arrives later
+AssertionError: expected [ [ 'tool_call', '', …(1) ], …(2) ] to deeply equal [ [ 'reasoning', 'A', null ], …(4) ]
+
+- Expected
++ Received
+
+@@ -1,25 +1,15 @@
+  [
+    [
+-     "reasoning",
+-     "A",
+-     null,
+-   ],
+-   [
+      "tool_call",
+      "",
+      "search-result-first",
+    ],
+    [
+      "tool_result",
+      "",
+      "search-result-first",
+-   ],
+-   [
+-     "reasoning",
+-     "B",
+-     null,
+    ],
+    [
+      "tool_call",
+      "",
+      "tool-2",
+
+ ❯ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts:409:87
+    407| 
+    408|     const traces = readView(memoryDir).rawTraces ?? [];
+    409|     expect(traces.map((trace) => [trace.traceType, trace.content, trac…
+       |                                                                                       ^
+    410|       ["reasoning", "A", null],
+    411|       ["tool_call", "", "search-result-first"],
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/91]⎯
+
+ FAIL  tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > keeps reasoning open across matching TOOL_EXECUTION_FAILED updates
+ FAIL  tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > keeps reasoning open across matching TOOL_DENIED updates
+AssertionError: expected [ 'tool_call', 'tool_result' ] to deeply equal [ 'tool_call', 'tool_result', …(1) ]
+
+- Expected
++ Received
+
+  [
+    "tool_call",
+    "tool_result",
+-   "reasoning",
+  ]
+
+ ❯ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts:457:52
+    455| 
+    456|     const traces = readView(memoryDir).rawTraces ?? [];
+    457|     expect(traces.map((trace) => trace.traceType)).toEqual([
+       |                                                    ^
+    458|       "tool_call",
+    459|       "tool_result",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/91]⎯
+
+ FAIL  tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > persists open reasoning before assistant text without requiring turn completion
+AssertionError: expected [] to deeply equal [ [ 'reasoning', …(1) ], …(1) ]
+
+- Expected
++ Received
+
+- [
+-   [
+-     "reasoning",
+-     "think before answer",
+-   ],
+-   [
+-     "assistant",
+-     "visible answer",
+-   ],
+- ]
++ []
+
+ ❯ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts:494:78
+    492| 
+    493|     const view = readView(memoryDir);
+    494|     expect(view.rawTraces?.map((trace) => [trace.traceType, trace.cont…
+       |                                                                              ^
+    495|       ["reasoning", "think before answer"],
+    496|       ["assistant", "visible answer"],
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/91]⎯
+
+ FAIL  tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > persists open reasoning before assistant complete output
+AssertionError: expected [ [ 'assistant', …(1) ] ] to deeply equal [ [ 'reasoning', …(1) ], …(1) ]
+
+- Expected
++ Received
+
+  [
+    [
+-     "reasoning",
+-     "think before final complete",
+-   ],
+-   [
+      "assistant",
+      "final complete answer",
+    ],
+  ]
+
+ ❯ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts:524:78
+    522| 
+    523|     const view = readView(memoryDir);
+    524|     expect(view.rawTraces?.map((trace) => [trace.traceType, trace.cont…
+       |                                                                              ^
+    525|       ["reasoning", "think before final complete"],
+    526|       ["assistant", "final complete answer"],
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/91]⎯
+
+ FAIL  tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > uses an active turn when accepted command notification arrives after lifecycle start
+AssertionError: expected undefined to match object { traceType: 'user', …(2) }
+
+- Expected: 
+{
+  "content": "hello after lifecycle",
+  "traceType": "user",
+  "turnId": "turn-claude",
+}
+
++ Received: 
+undefined
+
+ ❯ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts:555:48
+    553|     });
+    554| 
+    555|     expect(readView(memoryDir).rawTraces?.[0]).toMatchObject({
+       |                                                ^
+    556|       traceType: "user",
+    557|       turnId: "turn-claude",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/91]⎯
+
+ FAIL  tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > preserves assistant-tool-assistant raw trace order from distinct text segment ids
+AssertionError: expected [ 'tool_call', 'tool_result' ] to deeply equal [ 'assistant', 'tool_call', …(2) ]
+
+- Expected
++ Received
+
+  [
+-   "assistant",
+    "tool_call",
+    "tool_result",
+-   "assistant",
+  ]
+
+ ❯ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts:657:52
+    655| 
+    656|     const traces = readView(memoryDir).rawTraces ?? [];
+    657|     expect(traces.map((trace) => trace.traceType)).toEqual([
+       |                                                    ^
+    658|       "assistant",
+    659|       "tool_call",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/91]⎯
+
+ FAIL  tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > creates deterministic fallback turns when no turn id is active
+AssertionError: expected undefined to match object { traceType: 'assistant', …(2) }
+
+- Expected: 
+{
+  "content": "orphan text",
+  "traceType": "assistant",
+  "turnId": "fallback-turn-1",
+}
+
++ Received: 
+undefined
+
+ ❯ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts:681:48
+    679|     accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_END, { …
+    680| 
+    681|     expect(readView(memoryDir).rawTraces?.[0]).toMatchObject({
+       |                                                ^
+    682|       traceType: "assistant",
+    683|       turnId: "fallback-turn-1",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/91]⎯
+
+ FAIL  tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > ignores provider compaction/status payloads without local raw-trace pruning
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts:710:20
+    708| 
+    709|     const traces = readView(memoryDir).rawTraces ?? [];
+    710|     expect(traces).toHaveLength(1);
+       |                    ^
+    711|     expect(traces[0]).toMatchObject({ traceType: "assistant", content:…
+    712|     expect(new RunMemoryFileStore(memoryDir).getRawTraceArchiveRevisio…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/91]⎯
+
+ FAIL  tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > writes provider compaction markers and rotates settled active traces into segmented archives
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts:756:31
+    754| 
+    755|     const manifest = store.readRawTraceArchiveManifest();
+    756|     expect(manifest.segments).toHaveLength(1);
+       |                               ^
+    757|     expect(manifest.segments[0]).toMatchObject({
+    758|       boundary_type: "provider_compaction_boundary",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/91]⎯
+
+ FAIL  tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > dedupes replayed provider boundaries without dropping post-boundary active records
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts:814:58
+    812| 
+    813|     const store = new RunMemoryFileStore(memoryDir);
+    814|     expect(store.readRawTraceArchiveManifest().segments).toHaveLength(…
+       |                                                          ^
+    815|     expect(store.listRawTracesOrdered().map((trace) => [trace.traceTyp…
+    816|       ["provider_compaction_boundary", "Provider-owned context compact…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/91]⎯
+
+ FAIL  tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > retries rotation from an existing provider boundary marker when no complete segment exists
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts:873:58
+    871|       ["provider_compaction_boundary", "Provider-owned context compact…
+    872|     ]);
+    873|     expect(store.readRawTraceArchiveManifest().segments).toHaveLength(…
+       |                                                          ^
+    874|     expect(store.readRawTraceArchiveManifest().segments[0]).toMatchObj…
+    875|       boundary_key: boundaryKey,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/91]⎯
+
+ FAIL  tests/unit/agent-execution/compaction/compaction-run-output-collector.test.ts > CompactionRunOutputCollector > collects Codex text segment deltas while ignoring reasoning
+AssertionError: promise rejected "Error: Compactor agent run 'compaction-ru…" instead of resolving
+ ❯ tests/unit/agent-execution/compaction/compaction-run-output-collector.test.ts:51:24
+     49|     collector.observe(event(AgentRunEventType.TURN_COMPLETED, { turnId…
+     50| 
+     51|     await expect(output).resolves.toBe('{"episodes":[{"summary":"codex…
+       |                        ^
+     52|   });
+     53| 
+
+Caused by: Error: Compactor agent run 'compaction-run-1' finished without a final assistant output.
+ ❯ CompactionRunOutputCollector.resolveImmediateResult src/agent-execution/compaction/compaction-run-output-collector.ts:172:29
+ ❯ CompactionRunOutputCollector.notifyWaiters src/agent-execution/compaction/compaction-run-output-collector.ts:183:25
+ ❯ CompactionRunOutputCollector.markTerminal src/agent-execution/compaction/compaction-run-output-collector.ts:155:10
+ ❯ CompactionRunOutputCollector.observe src/agent-execution/compaction/compaction-run-output-collector.ts:79:14
+ ❯ tests/unit/agent-execution/compaction/compaction-run-output-collector.test.ts:49:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/91]⎯
+
+ FAIL  tests/unit/agent-execution/compaction/compaction-run-output-collector.test.ts > CompactionRunOutputCollector > collects Claude text deltas and completes on idle status
+AssertionError: promise rejected "Error: Compactor agent run 'compaction-ru…" instead of resolving
+ ❯ tests/unit/agent-execution/compaction/compaction-run-output-collector.test.ts:67:24
+     65|     }, "IDLE"));
+     66| 
+     67|     await expect(output).resolves.toBe('{"episodes":[{"summary":"claud…
+       |                        ^
+     68|   });
+     69| 
+
+Caused by: Error: Compactor agent run 'compaction-run-1' finished without a final assistant output.
+ ❯ CompactionRunOutputCollector.resolveImmediateResult src/agent-execution/compaction/compaction-run-output-collector.ts:172:29
+ ❯ CompactionRunOutputCollector.notifyWaiters src/agent-execution/compaction/compaction-run-output-collector.ts:183:25
+ ❯ CompactionRunOutputCollector.markTerminal src/agent-execution/compaction/compaction-run-output-collector.ts:155:10
+ ❯ CompactionRunOutputCollector.observe src/agent-execution/compaction/compaction-run-output-collector.ts:83:16
+ ❯ tests/unit/agent-execution/compaction/compaction-run-output-collector.test.ts:63:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/91]⎯
+
+ FAIL  tests/unit/external-channel/runtime/channel-run-output-event-collector.test.ts > ChannelRunOutputEventCollector > uses final text snapshots before accumulated stream fragments
+AssertionError: expected 'noisy partial' to be 'clean final reply' // Object.is equality
+
+Expected: "clean final reply"
+Received: "noisy partial"
+
+ ❯ tests/unit/external-channel/runtime/channel-run-output-event-collector.test.ts:154:30
+    152|     });
+    153| 
+    154|     expect(final?.replyText).toBe("clean final reply");
+       |                              ^
+    155|   });
+    156| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/91]⎯
+
+ FAIL  tests/unit/services/agent-streaming/agent-run-event-message-mapper.test.ts > AgentRunEventMessageMapper > preserves provider compaction payload fields when team member events are mapped
+TypeError: Cannot read properties of undefined (reading 'kind')
+ ❯ projectTeamAgentExecutionBindingDto src/services/agent-streaming/team-agent-event-websocket-projector.ts:23:44
+     21| export const projectTeamAgentExecutionBindingDto = (
+     22|   binding: TeamAgentExecutionBinding,
+     23| ): TeamAgentExecutionBindingDto => binding.kind === "task_team_agent"
+       |                                            ^
+     24|   ? Object.freeze({ kind: binding.kind, execution_address: projectTeam…
+     25|   : Object.freeze({ kind: binding.kind, execution_address: projectTeam…
+ ❯ withExecution src/services/agent-streaming/team-agent-event-websocket-projector.ts:78:3
+ ❯ projectTeamAgentEventMessage src/services/agent-streaming/team-agent-event-websocket-projector.ts:98:27
+ ❯ convertTeamRunEventToServerMessage src/services/agent-streaming/team-run-event-websocket-message-mapper.ts:23:14
+ ❯ tests/unit/services/agent-streaming/agent-run-event-message-mapper.test.ts:88:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[23/91]⎯
+
+ FAIL  tests/unit/services/agent-streaming/agent-run-event-message-mapper.test.ts > AgentRunEventMessageMapper > flattens task-delegation websocket identity from current target and execution shapes
+TypeError: Cannot read properties of undefined (reading 'rootTeamRunId')
+ ❯ projectTeamExecutionAddressDto src/services/agent-streaming/team-agent-event-websocket-projector.ts:15:29
+     13|   address: TeamExecutionAddress,
+     14| ): TeamExecutionAddressDto => ({
+     15|   root_team_run_id: address.rootTeamRunId,
+       |                             ^
+     16|   task_team_run_ids: [...address.taskTeamRunIds],
+     17|   member_address: address.memberAddress,
+ ❯ convertTeamRunEventToServerMessage src/services/agent-streaming/team-run-event-websocket-message-mapper.ts:25:33
+ ❯ tests/unit/services/agent-streaming/agent-run-event-message-mapper.test.ts:143:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[24/91]⎯
+
+ FAIL  tests/unit/services/agent-streaming/agent-run-event-message-mapper.test.ts > AgentRunEventMessageMapper > does not flatten legacy top-level task-delegation identity fields
+TypeError: Cannot read properties of undefined (reading 'rootTeamRunId')
+ ❯ projectTeamExecutionAddressDto src/services/agent-streaming/team-agent-event-websocket-projector.ts:15:29
+     13|   address: TeamExecutionAddress,
+     14| ): TeamExecutionAddressDto => ({
+     15|   root_team_run_id: address.rootTeamRunId,
+       |                             ^
+     16|   task_team_run_ids: [...address.taskTeamRunIds],
+     17|   member_address: address.memberAddress,
+ ❯ convertTeamRunEventToServerMessage src/services/agent-streaming/team-run-event-websocket-message-mapper.ts:25:33
+ ❯ tests/unit/services/agent-streaming/agent-run-event-message-mapper.test.ts:208:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[25/91]⎯
+
+ FAIL  tests/unit/services/agent-streaming/agent-run-event-message-mapper.test.ts > AgentRunEventMessageMapper > strictly flattens a multi-boundary task-team leaf without prefix fallback
+TypeError: Cannot read properties of undefined (reading 'kind')
+ ❯ projectTeamAgentExecutionBindingDto src/services/agent-streaming/team-agent-event-websocket-projector.ts:23:44
+     21| export const projectTeamAgentExecutionBindingDto = (
+     22|   binding: TeamAgentExecutionBinding,
+     23| ): TeamAgentExecutionBindingDto => binding.kind === "task_team_agent"
+       |                                            ^
+     24|   ? Object.freeze({ kind: binding.kind, execution_address: projectTeam…
+     25|   : Object.freeze({ kind: binding.kind, execution_address: projectTeam…
+ ❯ withExecution src/services/agent-streaming/team-agent-event-websocket-projector.ts:78:3
+ ❯ projectTeamAgentEventMessage src/services/agent-streaming/team-agent-event-websocket-projector.ts:98:27
+ ❯ convertTeamRunEventToServerMessage src/services/agent-streaming/team-run-event-websocket-message-mapper.ts:23:14
+ ❯ tests/unit/services/agent-streaming/agent-run-event-message-mapper.test.ts:263:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[26/91]⎯
+
+ FAIL  tests/unit/services/agent-streaming/agent-run-event-message-mapper.test.ts > AgentRunEventMessageMapper > rejects a live task-team agent mapped at the task-team root
+AssertionError: expected [Function] to throw error including 'with a nonempty relative member path' but got 'Cannot read properties of undefined (…'
+
+Expected: "with a nonempty relative member path"
+Received: "Cannot read properties of undefined (reading 'kind')"
+
+ ❯ tests/unit/services/agent-streaming/agent-run-event-message-mapper.test.ts:331:17
+    329|         },
+    330|       },
+    331|     }, mapper)).toThrow("with a nonempty relative member path");
+       |                 ^
+    332|   });
+    333| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[27/91]⎯
+
+ FAIL  tests/unit/services/agent-streaming/agent-run-event-message-mapper.test.ts > AgentRunEventMessageMapper > strictly flattens the same task-team scope for every non-agent event variant
+TypeError: Cannot read properties of undefined (reading 'rootTeamRunId')
+ ❯ projectTeamExecutionAddressDto src/services/agent-streaming/team-agent-event-websocket-projector.ts:15:29
+     13|   address: TeamExecutionAddress,
+     14| ): TeamExecutionAddressDto => ({
+     15|   root_team_run_id: address.rootTeamRunId,
+       |                             ^
+     16|   task_team_run_ids: [...address.taskTeamRunIds],
+     17|   member_address: address.memberAddress,
+ ❯ convertTeamRunEventToServerMessage src/services/agent-streaming/team-run-event-websocket-message-mapper.ts:25:33
+ ❯ tests/unit/services/agent-streaming/agent-run-event-message-mapper.test.ts:392:14
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[28/91]⎯
+
+ FAIL  tests/unit/services/agent-streaming/agent-run-event-message-mapper.test.ts > AgentRunEventMessageMapper > normalizes SEGMENT_START segment payloads to canonical turn_id
+AssertionError: expected { id: 'seg-1', …(3) } to deeply equal { id: 'seg-1', …(3) }
+
+- Expected
++ Received
+
+@@ -2,7 +2,7 @@
+    "id": "seg-1",
+    "metadata": {
+      "source": "llm",
+    },
+    "segment_type": "text",
+-   "turn_id": "turn-segment-1",
++   "turn_id": undefined,
+  }
+
+ ❯ tests/unit/services/agent-streaming/agent-run-event-message-mapper.test.ts:461:29
+    459| 
+    460|     expect(message.type).toBe(messageType);
+    461|     expect(message.payload).toEqual({
+       |                             ^
+    462|       id: "seg-1",
+    463|       turn_id: "turn-segment-1",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[29/91]⎯
+
+ FAIL  tests/unit/services/agent-streaming/agent-run-event-message-mapper.test.ts > AgentRunEventMessageMapper > normalizes SEGMENT_CONTENT segment payloads to canonical turn_id
+AssertionError: expected { id: 'seg-1', …(3) } to deeply equal { id: 'seg-1', …(2) }
+
+- Expected
++ Received
+
+  {
+    "delta": "hello",
+    "id": "seg-1",
+-   "turn_id": "turn-segment-1",
++   "segment_type": undefined,
++   "turn_id": undefined,
+  }
+
+ ❯ tests/unit/services/agent-streaming/agent-run-event-message-mapper.test.ts:461:29
+    459| 
+    460|     expect(message.type).toBe(messageType);
+    461|     expect(message.payload).toEqual({
+       |                             ^
+    462|       id: "seg-1",
+    463|       turn_id: "turn-segment-1",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[30/91]⎯
+
+ FAIL  tests/unit/services/agent-streaming/agent-run-event-message-mapper.test.ts > AgentRunEventMessageMapper > normalizes SEGMENT_END segment payloads to canonical turn_id
+AssertionError: expected { id: 'seg-1', …(6) } to deeply equal { id: 'seg-1', …(4) }
+
+- Expected
++ Received
+
+  {
++   "error": null,
++   "failed": false,
+    "id": "seg-1",
+    "interrupted": true,
+    "metadata": {
+      "tool_name": "search_web",
+    },
+    "reason": "user_interrupt",
+-   "turn_id": "turn-segment-1",
++   "turn_id": undefined,
+  }
+
+ ❯ tests/unit/services/agent-streaming/agent-run-event-message-mapper.test.ts:461:29
+    459| 
+    460|     expect(message.type).toBe(messageType);
+    461|     expect(message.payload).toEqual({
+       |                             ^
+    462|       id: "seg-1",
+    463|       turn_id: "turn-segment-1",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[31/91]⎯
+
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts > Codex reasoning block conversion > groups completed provider snapshots and ignores repeated known-item completion
+AssertionError: expected [ { …(4) }, { …(4) } ] to have a length of 1 but got 2
+
+- Expected
++ Received
+
+- 1
++ 2
+
+ ❯ emitCompletedReasoning tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts:24:18
+     22|     },
+     23|   });
+     24|   expect(events).toHaveLength(1);
+       |                  ^
+     25|   return events[0]!;
+     26| };
+ ❯ tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts:86:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[32/91]⎯
+
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts > Codex reasoning block conversion > emits adjacent content and end with one identity when a completed snapshot has no turn
+AssertionError: expected [ 'SEGMENT_START', …(2) ] to deeply equal [ 'SEGMENT_CONTENT', 'SEGMENT_END' ]
+
+- Expected
++ Received
+
+  [
++   "SEGMENT_START",
+    "SEGMENT_CONTENT",
+    "SEGMENT_END",
+  ]
+
+ ❯ tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts:122:52
+    120|     });
+    121| 
+    122|     expect(events.map((event) => event.eventType)).toEqual([
+       |                                                    ^
+    123|       AgentRunEventType.SEGMENT_CONTENT,
+    124|       AgentRunEventType.SEGMENT_END,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[33/91]⎯
+
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts > Codex reasoning block conversion > treats current and legacy reasoning text deltas as permanent state-free no-ops
+AssertionError: expected [ { …(4) }, { …(4) } ] to have a length of 1 but got 2
+
+- Expected
++ Received
+
+- 1
++ 2
+
+ ❯ emitCompletedReasoning tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts:24:18
+     22|     },
+     23|   });
+     24|   expect(events).toHaveLength(1);
+       |                  ^
+     25|   return events[0]!;
+     26| };
+ ❯ tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts:156:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[34/91]⎯
+
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts > Codex reasoning block conversion > clears for ordered-card creation: user message start
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts > Codex reasoning block conversion > clears for ordered-card creation: ordinary item start
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts > Codex reasoning block conversion > clears for ordered-card creation: tool start
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts > Codex reasoning block conversion > clears for ordered-card creation: empty assistant delta
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts > Codex reasoning block conversion > clears for ordered-card creation: approval request
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts > Codex reasoning block conversion > clears for ordered-card creation: result-first completion
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts > Codex reasoning block conversion > clears for ordered-card creation: result-first approval update
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts > Codex reasoning block conversion > clears for ordered-card creation: result-first local completion
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts > Codex reasoning block conversion > clears for ordered-card creation: identity-missing local completion
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts > Codex reasoning block conversion > clears for ordered-card creation: result-first file log
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts > Codex reasoning block conversion > clears for ordered-card creation: result-first raw log
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts > Codex reasoning block conversion > clears for ordered-card creation: turn completion
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts > Codex reasoning block conversion > clears for ordered-card creation: turn start
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts > Codex reasoning block conversion > clears for ordered-card creation: terminal error
+AssertionError: expected [ { …(4) }, { …(4) } ] to have a length of 1 but got 2
+
+- Expected
++ Received
+
+- 1
++ 2
+
+ ❯ emitCompletedReasoning tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts:24:18
+     22|     },
+     23|   });
+     24|   expect(events).toHaveLength(1);
+       |                  ^
+     25|   return events[0]!;
+     26| };
+ ❯ expectBoundaryDisposition tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts:34:18
+ ❯ tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts:207:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[35/91]⎯
+
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts > Codex reasoning block conversion > keeps the reasoning end neutral before lifecycle turn completion output
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts > Codex reasoning block conversion > keeps the reasoning end neutral before lifecycle turn start output
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts > Codex reasoning block conversion > keeps the reasoning end neutral before lifecycle terminal error output
+AssertionError: expected [ { …(4) }, { …(4) } ] to have a length of 1 but got 2
+
+- Expected
++ Received
+
+- 1
++ 2
+
+ ❯ emitCompletedReasoning tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts:24:18
+     22|     },
+     23|   });
+     24|   expect(events).toHaveLength(1);
+       |                  ^
+     25|   return events[0]!;
+     26| };
+ ❯ tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts:240:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[36/91]⎯
+
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts > Codex reasoning block conversion > preserves for in-place or no-effect event: non-tool completion
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts > Codex reasoning block conversion > preserves for in-place or no-effect event: ignored tool call request
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts > Codex reasoning block conversion > preserves for in-place or no-effect event: ignored permission request
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts > Codex reasoning block conversion > preserves for in-place or no-effect event: empty file output
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts > Codex reasoning block conversion > preserves for in-place or no-effect event: empty raw output
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts > Codex reasoning block conversion > preserves for in-place or no-effect event: reasoning start
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts > Codex reasoning block conversion > preserves for in-place or no-effect event: compaction start
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts > Codex reasoning block conversion > preserves for in-place or no-effect event: compaction completion
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts > Codex reasoning block conversion > preserves for in-place or no-effect event: compaction trigger
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts > Codex reasoning block conversion > preserves for in-place or no-effect event: plan delta
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts > Codex reasoning block conversion > preserves for in-place or no-effect event: turn diff
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts > Codex reasoning block conversion > preserves for in-place or no-effect event: turn progress
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts > Codex reasoning block conversion > preserves for in-place or no-effect event: raw compaction
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts > Codex reasoning block conversion > preserves for in-place or no-effect event: thread compacted
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts > Codex reasoning block conversion > preserves for in-place or no-effect event: thread started
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts > Codex reasoning block conversion > preserves for in-place or no-effect event: thread status
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts > Codex reasoning block conversion > preserves for in-place or no-effect event: thread tokens
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts > Codex reasoning block conversion > preserves for in-place or no-effect event: unknown item
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts > Codex reasoning block conversion > preserves for in-place or no-effect event: unknown raw
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts > Codex reasoning block conversion > preserves for in-place or no-effect event: unknown thread
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts > Codex reasoning block conversion > preserves for in-place or no-effect event: internal notification
+AssertionError: expected [ { …(4) }, { …(4) } ] to have a length of 1 but got 2
+
+- Expected
++ Received
+
+- 1
++ 2
+
+ ❯ emitCompletedReasoning tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts:24:18
+     22|     },
+     23|   });
+     24|   expect(events).toHaveLength(1);
+       |                  ^
+     25|   return events[0]!;
+     26| };
+ ❯ expectBoundaryDisposition tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts:34:18
+ ❯ tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts:277:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[37/91]⎯
+
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts > Codex reasoning block conversion > preserves reasoning for matching existing-card success result
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts > Codex reasoning block conversion > preserves reasoning for matching existing-card failure result
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts > Codex reasoning block conversion > preserves reasoning for matching existing-card denial result
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts > Codex reasoning block conversion > preserves reasoning for matching existing-card approval update
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts > Codex reasoning block conversion > preserves reasoning for matching existing-card start after approval
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts > Codex reasoning block conversion > preserves reasoning for matching existing-card local MCP completion
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts > Codex reasoning block conversion > preserves reasoning for matching existing-card file log
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts > Codex reasoning block conversion > preserves reasoning for matching existing-card raw output
+AssertionError: expected [ { …(4) }, { …(4) } ] to have a length of 1 but got 2
+
+- Expected
++ Received
+
+- 1
++ 2
+
+ ❯ emitCompletedReasoning tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts:24:18
+     22|     },
+     23|   });
+     24|   expect(events).toHaveLength(1);
+       |                  ^
+     25|   return events[0]!;
+     26| };
+ ❯ expectMatchingToolUpdatePreserves tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts:71:18
+ ❯ tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts:323:32
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[38/91]⎯
+
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts > Codex reasoning block conversion > keeps one block through the exact long-running-tool result sequence
+AssertionError: expected [ { …(4) }, { …(4) } ] to have a length of 1 but got 2
+
+- Expected
++ Received
+
+- 1
++ 2
+
+ ❯ emitCompletedReasoning tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts:24:18
+     22|     },
+     23|   });
+     24|   expect(events).toHaveLength(1);
+       |                  ^
+     25|   return events[0]!;
+     26| };
+ ❯ tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts:332:24
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[39/91]⎯
+
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts > Codex reasoning block conversion > clears every active turn when an ordered boundary has no turn id
+AssertionError: expected [ { …(4) }, { …(4) } ] to have a length of 1 but got 2
+
+- Expected
++ Received
+
+- 1
++ 2
+
+ ❯ emitCompletedReasoning tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts:24:18
+     22|     },
+     23|   });
+     24|   expect(events).toHaveLength(1);
+       |                  ^
+     25|   return events[0]!;
+     26| };
+ ❯ tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts:356:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[40/91]⎯
+
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts > Codex reasoning block conversion > closes all tracked identities deterministically before reachable turn/started output
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts > Codex reasoning block conversion > closes all tracked identities deterministically before reachable error output
+AssertionError: expected [ { …(4) }, { …(4) } ] to have a length of 1 but got 2
+
+- Expected
++ Received
+
+- 1
++ 2
+
+ ❯ emitCompletedReasoning tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts:24:18
+     22|     },
+     23|   });
+     24|   expect(events).toHaveLength(1);
+       |                  ^
+     25|   return events[0]!;
+     26| };
+ ❯ tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts:381:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[41/91]⎯
+
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-tracker.test.ts > CodexReasoningBlockTracker > joins adjacent provider items under one allocator-owned id with completed-item separators
+AssertionError: expected [ { kind: 'start', …(2) }, …(1) ] to deeply equal [ { kind: 'content', …(3) } ]
+
+- Expected
++ Received
+
+@@ -1,7 +1,12 @@
+  [
+    {
++     "kind": "start",
++     "segmentId": "reasoning-block:nonce-a:1",
++     "turnId": "turn-1",
++   },
++   {
+      "delta": "first",
+      "kind": "content",
+      "segmentId": "reasoning-block:nonce-a:1",
+      "turnId": "turn-1",
+    },
+
+ ❯ tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-tracker.test.ts:23:19
+     21|     const second = appendCompleted(tracker, "turn-1", "provider-b", "s…
+     22| 
+     23|     expect(first).toEqual([{
+       |                   ^
+     24|       kind: "content",
+     25|       segmentId: "reasoning-block:nonce-a:1",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[42/91]⎯
+
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-tracker.test.ts > CodexReasoningBlockTracker > returns one ordered end, closes idempotently, and allocates a new id after close
+AssertionError: expected 'start' to be 'content' // Object.is equality
+
+Expected: "content"
+Received: "start"
+
+ ❯ contentAction tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-tracker.test.ts:12:28
+     10| 
+     11| const contentAction = (actions: ReturnType<CodexReasoningBlockTracker[…
+     12|   expect(actions[0]?.kind).toBe("content");
+       |                            ^
+     13|   return actions[0]!;
+     14| };
+ ❯ tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-tracker.test.ts:48:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[43/91]⎯
+
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-tracker.test.ts > CodexReasoningBlockTracker > closes all active blocks in insertion order and has no later duplicate effects
+AssertionError: expected 'start' to be 'content' // Object.is equality
+
+Expected: "content"
+Received: "start"
+
+ ❯ contentAction tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-tracker.test.ts:12:28
+     10| 
+     11| const contentAction = (actions: ReturnType<CodexReasoningBlockTracker[…
+     12|   expect(actions[0]?.kind).toBe("content");
+       |                            ^
+     13|   return actions[0]!;
+     14| };
+ ❯ tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-tracker.test.ts:63:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[44/91]⎯
+
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-tracker.test.ts > CodexReasoningBlockTracker > emits adjacent content and end for missing turn identity without retaining the block
+AssertionError: expected [ { kind: 'start', …(2) }, …(2) ] to deeply equal [ { kind: 'content', …(3) }, …(1) ]
+
+- Expected
++ Received
+
+@@ -1,7 +1,12 @@
+  [
+    {
++     "kind": "start",
++     "segmentId": "reasoning-block:nonce-a:1",
++     "turnId": null,
++   },
++   {
+      "delta": "first",
+      "kind": "content",
+      "segmentId": "reasoning-block:nonce-a:1",
+      "turnId": null,
+    },
+
+ ❯ tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-tracker.test.ts:79:19
+     77|     const second = appendCompleted(tracker, null, null, "second");
+     78| 
+     79|     expect(first).toEqual([
+       |                   ^
+     80|       { kind: "content", segmentId: "reasoning-block:nonce-a:1", turnI…
+     81|       { kind: "end", segmentId: "reasoning-block:nonce-a:1", turnId: n…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[45/91]⎯
+
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-tracker.test.ts > CodexReasoningBlockTracker > uses a distinct namespace for each tracker instance
+AssertionError: expected 'start' to be 'content' // Object.is equality
+
+Expected: "content"
+Received: "start"
+
+ ❯ contentAction tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-tracker.test.ts:12:28
+     10| 
+     11| const contentAction = (actions: ReturnType<CodexReasoningBlockTracker[…
+     12|   expect(actions[0]?.kind).toBe("content");
+       |                            ^
+     13|   return actions[0]!;
+     14| };
+ ❯ tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-tracker.test.ts:91:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[46/91]⎯
+
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-tracker.test.ts > CodexReasoningBlockTracker > allocates a fresh id when an active turn is evicted
+AssertionError: expected 'start' to be 'content' // Object.is equality
+
+Expected: "content"
+Received: "start"
+
+ ❯ contentAction tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-tracker.test.ts:12:28
+     10| 
+     11| const contentAction = (actions: ReturnType<CodexReasoningBlockTracker[…
+     12|   expect(actions[0]?.kind).toBe("content");
+       |                            ^
+     13|   return actions[0]!;
+     14| };
+ ❯ tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-tracker.test.ts:110:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[47/91]⎯
+
+
+ Test Files  6 failed | 6 passed (12)
+      Tests  91 failed | 192 passed (283)
+   Start at  03:49:27
+   Duration  5.25s (transform 2.36s, setup 37ms, import 3.81s, tests 156ms, environment 1ms)
+

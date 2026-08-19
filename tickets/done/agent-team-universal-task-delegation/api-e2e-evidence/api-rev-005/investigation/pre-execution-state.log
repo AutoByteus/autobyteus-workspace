@@ -1,0 +1,11 @@
+HEAD=8a0494e8b55a3debc7acbee7b61d286d5311d1a8
+CRR=CRR-013
+API_REV=API-REV-005
+operational_database_action=NONE
+protected_port_process_action=NONE
+port=60310 listener_absent
+port=31310 listener_absent
+port=60004 listener_absent
+port=31004 listener_absent
+git_diff_check=PASS
+git_diff_cached_check=PASS

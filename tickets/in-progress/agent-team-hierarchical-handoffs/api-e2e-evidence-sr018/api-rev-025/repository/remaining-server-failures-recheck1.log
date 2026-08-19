@@ -1,0 +1,1582 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+
+stdout | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:62076) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > team conversation target websocket integration > routes flat structural and typed runtime targets through the websocket address boundary
+Agent team websocket attached for team run team-run-1
+Created agent session 818f80c0-f7d0-4a3f-9e1d-d40f2979fcd2 for run team-run-1
+Closed agent session 818f80c0-f7d0-4a3f-9e1d-d40f2979fcd2
+
+stderr | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > team conversation target websocket integration > routes flat structural and typed runtime targets through the websocket address boundary
+Failed to subscribe to team lifecycle: TypeError: this.teamRunManager.subscribeToLifecycle is not a function
+
+stdout | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > team conversation target websocket integration > keeps concurrent runtime ids distinct and does not choose a latest-run fallback
+Agent team websocket attached for team run team-run-1
+Created agent session df55bcf8-a59c-4d92-a18f-e8252af6e4c6 for run team-run-1
+Closed agent session df55bcf8-a59c-4d92-a18f-e8252af6e4c6
+
+stderr | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > team conversation target websocket integration > keeps concurrent runtime ids distinct and does not choose a latest-run fallback
+Failed to subscribe to team lifecycle: TypeError: this.teamRunManager.subscribeToLifecycle is not a function
+
+stdout | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > team conversation target websocket integration > reports backend invalid runtime targets over the websocket without structural fallback or activity recording
+Agent team websocket attached for team run team-run-1
+Created agent session df4aed93-c211-4b8c-825d-18f4418ed132 for run team-run-1
+Closed agent session df4aed93-c211-4b8c-825d-18f4418ed132
+
+stderr | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > team conversation target websocket integration > reports backend invalid runtime targets over the websocket without structural fallback or activity recording
+Failed to subscribe to team lifecycle: TypeError: this.teamRunManager.subscribeToLifecycle is not a function
+
+ ❯ tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts (3 tests | 3 failed) 6067ms
+     × routes flat structural and typed runtime targets through the websocket address boundary 2043ms
+     × keeps concurrent runtime ids distinct and does not choose a latest-run fallback 2011ms
+     × reports backend invalid runtime targets over the websocket without structural fallback or activity recording 2011ms
+stdout | tests/integration/app-data-migrations/team-run-metadata-member-tree-history.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:62082) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/integration/app-data-migrations/team-run-metadata-member-tree-history.integration.test.ts (4 tests | 4 failed) 52ms
+     × runs fresh Program Manager flat data through predecessor then final v3 with two atomic backups 20ms
+     × skips a terminal-success predecessor record and lets the pending canonical ID write final v3 9ms
+     × skips a terminal-warning stable record and converts residual flat input directly to final v3 6ms
+     × keeps unsafe residual flat bytes stable, then retries only canonical after repair and skips current v3 16ms
+stdout | tests/integration/api/runtime-selection-top-level.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:62083) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/api/runtime-selection-top-level.integration.test.ts > runtime-selection top-level integration > keeps standalone agent create + websocket messaging working
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+stdout | tests/integration/api/runtime-selection-top-level.integration.test.ts > runtime-selection top-level integration > keeps standalone agent create + websocket messaging working
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+stdout | tests/integration/api/runtime-selection-top-level.integration.test.ts > runtime-selection top-level integration > keeps standalone agent create + websocket messaging working
+Agent websocket attached for run agent_standalone_00000000000000000000000000000001
+Created agent session 2baadd5e-2c78-4942-b9dc-ff34b8ca71ee for run agent_standalone_00000000000000000000000000000001
+Agent WebSocket connected: session=2baadd5e-2c78-4942-b9dc-ff34b8ca71ee, run=agent_standalone_00000000000000000000000000000001
+
+stdout | tests/integration/api/runtime-selection-top-level.integration.test.ts > runtime-selection top-level integration > keeps standalone agent create + websocket messaging working
+Closed agent session 2baadd5e-2c78-4942-b9dc-ff34b8ca71ee
+Agent WebSocket disconnected: 2baadd5e-2c78-4942-b9dc-ff34b8ca71ee
+
+stdout | tests/integration/api/runtime-selection-top-level.integration.test.ts > runtime-selection top-level integration > keeps same-runtime autobyteus team creation and websocket messaging on the mixed team backend
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+stdout | tests/integration/api/runtime-selection-top-level.integration.test.ts > runtime-selection top-level integration > keeps same-runtime autobyteus team creation and websocket messaging on the mixed team backend
+Successfully created mixed team run 'autobyteus_team_ba5dd34f34ee40dcb18ac2ddb6a63474'.
+
+stdout | tests/integration/api/runtime-selection-top-level.integration.test.ts > runtime-selection top-level integration > keeps same-runtime autobyteus team creation and websocket messaging on the mixed team backend
+Agent team websocket attached for team run autobyteus_team_ba5dd34f34ee40dcb18ac2ddb6a63474
+Created agent session be30985f-469b-4a88-b837-1d8a25714faf for run autobyteus_team_ba5dd34f34ee40dcb18ac2ddb6a63474
+Agent Team WebSocket connected: session=be30985f-469b-4a88-b837-1d8a25714faf, run=autobyteus_team_ba5dd34f34ee40dcb18ac2ddb6a63474
+
+stdout | tests/integration/api/runtime-selection-top-level.integration.test.ts > runtime-selection top-level integration > keeps same-runtime autobyteus team creation and websocket messaging on the mixed team backend
+Closed agent session be30985f-469b-4a88-b837-1d8a25714faf
+
+stdout | tests/integration/api/runtime-selection-top-level.integration.test.ts > runtime-selection top-level integration > keeps same-runtime autobyteus team creation and websocket messaging on the mixed team backend
+Agent Team WebSocket disconnected: be30985f-469b-4a88-b837-1d8a25714faf
+
+stdout | tests/integration/api/runtime-selection-top-level.integration.test.ts > runtime-selection top-level integration > creates, restores, and routes a mixed autobyteus+codex team through top-level graphql + websocket surfaces
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+stdout | tests/integration/api/runtime-selection-top-level.integration.test.ts > runtime-selection top-level integration > creates, restores, and routes a mixed autobyteus+codex team through top-level graphql + websocket surfaces
+Successfully created mixed team run 'mixed_runtime_team_aa9f58eb2624463dbf2b541f7e793160'.
+
+stdout | tests/integration/api/runtime-selection-top-level.integration.test.ts > runtime-selection top-level integration > creates, restores, and routes a mixed autobyteus+codex team through top-level graphql + websocket surfaces
+Agent team websocket attached for team run mixed_runtime_team_aa9f58eb2624463dbf2b541f7e793160
+Created agent session 2cf9c784-35c2-444b-909f-35e8b0208158 for run mixed_runtime_team_aa9f58eb2624463dbf2b541f7e793160
+Agent Team WebSocket connected: session=2cf9c784-35c2-444b-909f-35e8b0208158, run=mixed_runtime_team_aa9f58eb2624463dbf2b541f7e793160
+
+stdout | tests/integration/api/runtime-selection-top-level.integration.test.ts > runtime-selection top-level integration > creates, restores, and routes a mixed autobyteus+codex team through top-level graphql + websocket surfaces
+Closed agent session 2cf9c784-35c2-444b-909f-35e8b0208158
+
+stdout | tests/integration/api/runtime-selection-top-level.integration.test.ts > runtime-selection top-level integration > creates, restores, and routes a mixed autobyteus+codex team through top-level graphql + websocket surfaces
+Agent Team WebSocket disconnected: 2cf9c784-35c2-444b-909f-35e8b0208158
+
+ ❯ tests/integration/api/runtime-selection-top-level.integration.test.ts (3 tests | 2 failed) 236ms
+     ✓ keeps standalone agent create + websocket messaging working 162ms
+     × keeps same-runtime autobyteus team creation and websocket messaging on the mixed team backend 43ms
+     × creates, restores, and routes a mixed autobyteus+codex team through top-level graphql + websocket surfaces 30ms
+stdout | tests/unit/agent-team-execution/task-delegation-service.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:62086) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/unit/agent-team-execution/task-delegation-service.test.ts (17 tests | 14 failed) 34ms
+     × delegates repeated singular active work with explicit member targets and submit_task_result work-packet protocol 13ms
+     × resolves task-owned reference files by task identity without message IDs 1ms
+     ✓ rejects relative delegate_task reference files before task creation 2ms
+     ✓ rejects invalid absolute-looking delegate_task reference files before task creation 1ms
+     × rejects relative submit_task_result reference files before submission persistence 1ms
+     × rejects relative review_task_result reference files before review persistence 1ms
+     × delegates to an explicit team target and binds a task-team execution instance 2ms
+     × keeps activation visible content task-centered instead of sender-framed 2ms
+     × submits, revises, submits again, accepts latest pending submission, and settles after idle 1ms
+     × commits result submission and returns a concise message when notification delivery fails 1ms
+     × returns only a concise message when revision notification delivery fails 1ms
+     × keeps rejected activations not_started and does not publish active exact-run targets 1ms
+     × rolls back task-agent directory and ledger state when activation throws 1ms
+     × supports task-agent delegators and blocks parent settlement while child delegation is open 0ms
+     × rejects settled task-agent delegate_task before creating child work 0ms
+     × rejects settled task-agent review identity before recording a child review 0ms
+     ✓ exposes only delegate_task, submit_task_result, and review_task_result parsers/tools 4ms
+stdout | tests/integration/run-history/memory-layout-and-projection.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:62087) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/run-history/memory-layout-and-projection.integration.test.ts > memory layout and projection integration > builds a autobyteus team member projection from the local team member memory layout
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+ ❯ tests/integration/run-history/memory-layout-and-projection.integration.test.ts (13 tests | 7 failed) 170ms
+     ✓ writes current single-agent metadata and history index files for autobyteus 45ms
+     ✓ writes current single-agent metadata and history index files for codex_app_server 43ms
+     ✓ writes current single-agent metadata and history index files for claude_agent_sdk 43ms
+     ✓ builds a single-agent autobyteus projection from the local replay memory layout 9ms
+     ✓ builds a single-agent codex_app_server projection from the local replay memory layout 4ms
+     ✓ builds a single-agent claude_agent_sdk projection from the local replay memory layout 4ms
+     × writes current team metadata and team history index files for autobyteus 6ms
+     × writes current team metadata and team history index files for codex_app_server 1ms
+     × writes current team metadata and team history index files for claude_agent_sdk 1ms
+     × builds a autobyteus team member projection from the local team member memory layout 5ms
+     × builds a codex_app_server team member projection from the local team member memory layout 2ms
+     × builds a claude_agent_sdk team member projection from the local team member memory layout 3ms
+     × builds a nested team member projection from the hierarchical root team memory directory 3ms
+stdout | tests/e2e/token-usage/token-usage-canonical-execution-address-graphql.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:62089) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/token-usage/token-usage-canonical-execution-address-graphql.e2e.test.ts > canonical token execution-address migration GraphQL integration
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/token-canonical-graphql-e2e-x4bhN7
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/token-canonical-graphql-e2e-x4bhN7/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/token-canonical-graphql-e2e-x4bhN7/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/token-canonical-graphql-e2e-x4bhN7/.env -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/token-canonical-graphql-e2e-x4bhN7
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/token-canonical-graphql-e2e-x4bhN7/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/token-canonical-graphql-e2e-x4bhN7/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/token-canonical-graphql-e2e-x4bhN7/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/token-canonical-graphql-e2e-x4bhN7/memory
+============================================================
+AppConfig initialization completed successfully
+
+ ❯ tests/e2e/token-usage/token-usage-canonical-execution-address-graphql.e2e.test.ts (1 test | 1 failed) 103ms
+     × preserves the terminal historical record while canonical owner reparents rows and GraphQL exposes exact hierarchy 29ms
+stdout | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:62097) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts (6 tests | 5 failed) 34ms
+     × routes manifest parsing through durable delegate, submit, review, persistence, event, and idle-settlement boundaries 16ms
+     × authorizes active task-agent nested delegation by its exact directory-backed run identity 2ms
+     × enforces absolute reference paths before mutation and serves persisted content through the REST boundary 7ms
+     × materializes task-Team identity from the rooted snapshot without a parallel route authority 4ms
+     × does not persist a rejected activation and allocates the next singular task cleanly 3ms
+     ✓ keeps the model-facing task surface limited to the three current lifecycle tools 1ms
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:62107) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > connects through TeamRunService and publishes the current lifecycle snapshot
+Created agent session b6de333f-9409-41a9-85df-2bc34275ffb6 for run team-1
+Closed agent session b6de333f-9409-41a9-85df-2bc34275ffb6
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > connects through TeamRunService and publishes the current lifecycle snapshot
+Failed to subscribe to team lifecycle: TypeError: this.teamRunManager.subscribeToLifecycle is not a function
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > preserves the complete 'persistent member' address across send, approval, and interrupt
+Created agent session 04be71cf-49a4-44d9-831c-58d852674c15 for run team-1
+Closed agent session 04be71cf-49a4-44d9-831c-58d852674c15
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > preserves the complete 'persistent member' address across send, approval, and interrupt
+Failed to subscribe to team lifecycle: TypeError: this.teamRunManager.subscribeToLifecycle is not a function
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > preserves the complete 'direct task Agent' address across send, approval, and interrupt
+Created agent session a5fb21d3-1eaa-4dad-9a6c-bdd7e371fc47 for run team-1
+Closed agent session a5fb21d3-1eaa-4dad-9a6c-bdd7e371fc47
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > preserves the complete 'direct task Agent' address across send, approval, and interrupt
+Failed to subscribe to team lifecycle: TypeError: this.teamRunManager.subscribeToLifecycle is not a function
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > preserves the complete 'outer task AgentTeam member' address across send, approval, and interrupt
+Created agent session 46043003-058a-4922-a5d6-3273b82f31b8 for run team-1
+Closed agent session 46043003-058a-4922-a5d6-3273b82f31b8
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > preserves the complete 'outer task AgentTeam member' address across send, approval, and interrupt
+Failed to subscribe to team lifecycle: TypeError: this.teamRunManager.subscribeToLifecycle is not a function
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > preserves the complete 'nested task AgentTeam member' address across send, approval, and interrupt
+Created agent session b8d16395-4214-44e5-8cc5-49e5b0cbc7ff for run team-1
+Closed agent session b8d16395-4214-44e5-8cc5-49e5b0cbc7ff
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > preserves the complete 'nested task AgentTeam member' address across send, approval, and interrupt
+Failed to subscribe to team lifecycle: TypeError: this.teamRunManager.subscribeToLifecycle is not a function
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > rejects SEND_MESSAGE before effect when execution_address is incomplete
+Created agent session e7a1ec67-ffaa-420a-8147-48d93b0287b6 for run team-1
+Closed agent session e7a1ec67-ffaa-420a-8147-48d93b0287b6
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > rejects SEND_MESSAGE before effect when execution_address is incomplete
+Failed to subscribe to team lifecycle: TypeError: this.teamRunManager.subscribeToLifecycle is not a function
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > rejects APPROVE_TOOL before effect when execution_address is incomplete
+Created agent session 0d4db4f6-ed7c-4883-afc0-3d5bc0d97d51 for run team-1
+Closed agent session 0d4db4f6-ed7c-4883-afc0-3d5bc0d97d51
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > rejects APPROVE_TOOL before effect when execution_address is incomplete
+Failed to subscribe to team lifecycle: TypeError: this.teamRunManager.subscribeToLifecycle is not a function
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > rejects INTERRUPT_GENERATION before effect when execution_address is incomplete
+Created agent session eeebfa43-f0e8-4e89-a888-168f75fdd5f8 for run team-1
+Closed agent session eeebfa43-f0e8-4e89-a888-168f75fdd5f8
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > rejects INTERRUPT_GENERATION before effect when execution_address is incomplete
+Failed to subscribe to team lifecycle: TypeError: this.teamRunManager.subscribeToLifecycle is not a function
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > rejects SEND_MESSAGE before effect when execution_address names a foreign root
+Created agent session 090de6a9-8966-418a-9472-c1cf15b991c4 for run team-1
+Closed agent session 090de6a9-8966-418a-9472-c1cf15b991c4
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > rejects SEND_MESSAGE before effect when execution_address names a foreign root
+Failed to subscribe to team lifecycle: TypeError: this.teamRunManager.subscribeToLifecycle is not a function
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > rejects APPROVE_TOOL before effect when execution_address names a foreign root
+Created agent session ffc94155-380b-4df0-87ad-ac3397be9dbf for run team-1
+Closed agent session ffc94155-380b-4df0-87ad-ac3397be9dbf
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > rejects APPROVE_TOOL before effect when execution_address names a foreign root
+Failed to subscribe to team lifecycle: TypeError: this.teamRunManager.subscribeToLifecycle is not a function
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > rejects INTERRUPT_GENERATION before effect when execution_address names a foreign root
+Created agent session ee965292-7008-4e49-8246-af9159d13435 for run team-1
+Closed agent session ee965292-7008-4e49-8246-af9159d13435
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > rejects INTERRUPT_GENERATION before effect when execution_address names a foreign root
+Failed to subscribe to team lifecycle: TypeError: this.teamRunManager.subscribeToLifecycle is not a function
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > passes an exact stale nested task chain once and surfaces rejection without fallback
+Created agent session 6b2f7c35-e124-4103-b64e-014293fe2819 for run team-1
+Closed agent session 6b2f7c35-e124-4103-b64e-014293fe2819
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > passes an exact stale nested task chain once and surfaces rejection without fallback
+Failed to subscribe to team lifecycle: TypeError: this.teamRunManager.subscribeToLifecycle is not a function
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > returns one failed interrupt acknowledgement for an exact stale address
+Created agent session 68f1fd60-cf0c-41ed-b154-d9ddb25c718a for run team-1
+Closed agent session 68f1fd60-cf0c-41ed-b154-d9ddb25c718a
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > returns one failed interrupt acknowledgement for an exact stale address
+Failed to subscribe to team lifecycle: TypeError: this.teamRunManager.subscribeToLifecycle is not a function
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > projects the exact execution address on Agent events
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > coalesces metadata refresh work across a burst of streamed Team events
+Created agent session 20bc1e9d-75c8-43a0-92fd-d5782b615791 for run team-1
+Closed agent session 20bc1e9d-75c8-43a0-92fd-d5782b615791
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > coalesces metadata refresh work across a burst of streamed Team events
+Failed to subscribe to team lifecycle: TypeError: this.teamRunManager.subscribeToLifecycle is not a function
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > coalesces metadata refresh work across a burst of streamed Team events
+Error sending team event: TypeError: Cannot read properties of undefined (reading 'kind')
+Error sending team event: TypeError: Cannot read properties of undefined (reading 'kind')
+Error sending team event: TypeError: Cannot read properties of undefined (reading 'kind')
+
+ ❯ tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts (17 tests | 15 failed) 27ms
+     × parses valid messages and rejects malformed envelopes 6ms
+     × connects through TeamRunService and publishes the current lifecycle snapshot 5ms
+     ✓ closes with TEAM_NOT_FOUND when the TeamRun identity cannot be resolved 1ms
+     × preserves the complete 'persistent member' address across send, approval, and interrupt 1ms
+     × preserves the complete 'direct task Agent' address across send, approval, and interrupt 1ms
+     × preserves the complete 'outer task AgentTeam member' address across send, approval, and interrupt 1ms
+     × preserves the complete 'nested task AgentTeam member' address across send, approval, and interrupt 1ms
+     × rejects SEND_MESSAGE before effect when execution_address is incomplete 1ms
+     × rejects APPROVE_TOOL before effect when execution_address is incomplete 1ms
+     × rejects INTERRUPT_GENERATION before effect when execution_address is incomplete 1ms
+     × rejects SEND_MESSAGE before effect when execution_address names a foreign root 1ms
+     × rejects APPROVE_TOOL before effect when execution_address names a foreign root 1ms
+     × rejects INTERRUPT_GENERATION before effect when execution_address names a foreign root 1ms
+     × passes an exact stale nested task chain once and surfaces rejection without fallback 0ms
+     × returns one failed interrupt acknowledgement for an exact stale address 1ms
+     × projects the exact execution address on Agent events 2ms
+     ✓ coalesces metadata refresh work across a burst of streamed Team events 3ms
+stdout | tests/integration/agent-team-execution/team-run-service.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:62108) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/agent-team-execution/team-run-service.integration.test.ts > TeamRunService integration > builds launch preset member configs through mixed topology
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+
+ ❯ tests/integration/agent-team-execution/team-run-service.integration.test.ts (8 tests | 7 failed) 23ms
+     × builds launch preset member configs through mixed topology 15ms
+     × creates a autobyteus team run through the mixed backend and persists member metadata 2ms
+     × creates a codex_app_server team run through the mixed backend and persists member metadata 1ms
+     × creates a claude_agent_sdk team run through the mixed backend and persists member metadata 0ms
+     × restores historical autobyteus metadata as MixedTeamRunContext 2ms
+     × restores historical codex_app_server metadata as MixedTeamRunContext 1ms
+     × restores historical claude_agent_sdk metadata as MixedTeamRunContext 0ms
+     ✓ records termination history only when team termination succeeds 1ms
+stdout | tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:62111) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager integration > creates and registers a mixed team for runtime composition ["autobyteus"]
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+stdout | tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager integration > creates and registers a mixed team for runtime composition ["codex_app_server"]
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+stdout | tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager integration > creates and registers a mixed team for runtime composition ["claude_agent_sdk"]
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+stdout | tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager integration > creates and registers a mixed team for runtime composition ["autobyteus","codex_app_server","claude_agent_sdk"]
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+stdout | tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager integration > routes inter-agent delivery through the mixed backend
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+stdout | tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager integration > evicts inactive team runs when queried or listed
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+stdout | tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager integration > wraps backend termination failures
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+ ❯ tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts (8 tests | 8 failed) 9ms
+     × creates and registers a mixed team for runtime composition ["autobyteus"] 4ms
+     × creates and registers a mixed team for runtime composition ["codex_app_server"] 1ms
+     × creates and registers a mixed team for runtime composition ["claude_agent_sdk"] 1ms
+     × creates and registers a mixed team for runtime composition ["autobyteus","codex_app_server","claude_agent_sdk"] 0ms
+     × restores through the mixed backend and normalizes the restored context 0ms
+     × routes inter-agent delivery through the mixed backend 1ms
+     × evicts inactive team runs when queried or listed 1ms
+     × wraps backend termination failures 0ms
+ ❯ tests/integration/agent-team-execution/mixed-team-run-backend.integration.test.ts (3 tests | 3 failed) 6ms
+     × routes backend operations through the team manager and exposes runtime state 4ms
+     × returns validation and inactive-run failures before delegating 1ms
+     × forwards team events from the manager subscription 1ms
+ ❯ tests/unit/services/agent-streaming/team-run-event-websocket-message-mapper.test.ts (2 tests | 2 failed) 5ms
+     × carries the unchanged exact persistent execution address 3ms
+     × carries the unchanged exact task-Team member execution address 1ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 71 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager integration > creates and registers a mixed team for runtime composition ["autobyteus"]
+ FAIL  tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager integration > creates and registers a mixed team for runtime composition ["codex_app_server"]
+ FAIL  tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager integration > creates and registers a mixed team for runtime composition ["claude_agent_sdk"]
+ FAIL  tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager integration > creates and registers a mixed team for runtime composition ["autobyteus","codex_app_server","claude_agent_sdk"]
+TypeError: Cannot read properties of undefined (reading 'address')
+ ❯ cloneTeamRunNode src/agent-team-execution/domain/team-run-config.ts:81:47
+     79| 
+     80| export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
+     81|   const address = assertAgentTeamAddress(node.address);
+       |                                               ^
+     82|   if (node.kind === "agent") {
+     83|     if (address === "/") throw new Error("The root TeamRun node must b…
+ ❯ new TeamRunConfig src/agent-team-execution/domain/team-run-config.ts:176:21
+ ❯ createConfig tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts:13:76
+ ❯ tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts:103:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/71]⎯
+
+ FAIL  tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager integration > restores through the mixed backend and normalizes the restored context
+TypeError: Cannot read properties of undefined (reading 'address')
+ ❯ cloneTeamRunNode src/agent-team-execution/domain/team-run-config.ts:81:47
+     79| 
+     80| export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
+     81|   const address = assertAgentTeamAddress(node.address);
+       |                                               ^
+     82|   if (node.kind === "agent") {
+     83|     if (address === "/") throw new Error("The root TeamRun node must b…
+ ❯ new TeamRunConfig src/agent-team-execution/domain/team-run-config.ts:176:21
+ ❯ createConfig tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts:13:76
+ ❯ tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts:128:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/71]⎯
+
+ FAIL  tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager integration > routes inter-agent delivery through the mixed backend
+TypeError: Cannot read properties of undefined (reading 'address')
+ ❯ cloneTeamRunNode src/agent-team-execution/domain/team-run-config.ts:81:47
+     79| 
+     80| export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
+     81|   const address = assertAgentTeamAddress(node.address);
+       |                                               ^
+     82|   if (node.kind === "agent") {
+     83|     if (address === "/") throw new Error("The root TeamRun node must b…
+ ❯ new TeamRunConfig src/agent-team-execution/domain/team-run-config.ts:176:21
+ ❯ createConfig tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts:13:76
+ ❯ tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts:151:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/71]⎯
+
+ FAIL  tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager integration > evicts inactive team runs when queried or listed
+TypeError: Cannot read properties of undefined (reading 'address')
+ ❯ cloneTeamRunNode src/agent-team-execution/domain/team-run-config.ts:81:47
+     79| 
+     80| export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
+     81|   const address = assertAgentTeamAddress(node.address);
+       |                                               ^
+     82|   if (node.kind === "agent") {
+     83|     if (address === "/") throw new Error("The root TeamRun node must b…
+ ❯ new TeamRunConfig src/agent-team-execution/domain/team-run-config.ts:176:21
+ ❯ createConfig tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts:13:76
+ ❯ tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts:174:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/71]⎯
+
+ FAIL  tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager integration > wraps backend termination failures
+TypeError: Cannot read properties of undefined (reading 'address')
+ ❯ cloneTeamRunNode src/agent-team-execution/domain/team-run-config.ts:81:47
+     79| 
+     80| export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
+     81|   const address = assertAgentTeamAddress(node.address);
+       |                                               ^
+     82|   if (node.kind === "agent") {
+     83|     if (address === "/") throw new Error("The root TeamRun node must b…
+ ❯ new TeamRunConfig src/agent-team-execution/domain/team-run-config.ts:176:21
+ ❯ createConfig tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts:13:76
+ ❯ tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts:191:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/71]⎯
+
+ FAIL  tests/integration/agent-team-execution/mixed-team-run-backend.integration.test.ts > MixedTeamRunBackend integration > routes backend operations through the team manager and exposes runtime state
+TypeError: Cannot read properties of undefined (reading 'address')
+ ❯ cloneTeamRunNode src/agent-team-execution/domain/team-run-config.ts:81:47
+     79| 
+     80| export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
+     81|   const address = assertAgentTeamAddress(node.address);
+       |                                               ^
+     82|   if (node.kind === "agent") {
+     83|     if (address === "/") throw new Error("The root TeamRun node must b…
+ ❯ new TeamRunConfig src/agent-team-execution/domain/team-run-config.ts:176:21
+ ❯ createBackendContext tests/integration/agent-team-execution/mixed-team-run-backend.integration.test.ts:21:18
+ ❯ tests/integration/agent-team-execution/mixed-team-run-backend.integration.test.ts:117:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/71]⎯
+
+ FAIL  tests/integration/agent-team-execution/mixed-team-run-backend.integration.test.ts > MixedTeamRunBackend integration > returns validation and inactive-run failures before delegating
+TypeError: Cannot read properties of undefined (reading 'address')
+ ❯ cloneTeamRunNode src/agent-team-execution/domain/team-run-config.ts:81:47
+     79| 
+     80| export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
+     81|   const address = assertAgentTeamAddress(node.address);
+       |                                               ^
+     82|   if (node.kind === "agent") {
+     83|     if (address === "/") throw new Error("The root TeamRun node must b…
+ ❯ new TeamRunConfig src/agent-team-execution/domain/team-run-config.ts:176:21
+ ❯ createBackendContext tests/integration/agent-team-execution/mixed-team-run-backend.integration.test.ts:21:18
+ ❯ tests/integration/agent-team-execution/mixed-team-run-backend.integration.test.ts:195:45
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/71]⎯
+
+ FAIL  tests/integration/agent-team-execution/mixed-team-run-backend.integration.test.ts > MixedTeamRunBackend integration > forwards team events from the manager subscription
+TypeError: Cannot read properties of undefined (reading 'address')
+ ❯ cloneTeamRunNode src/agent-team-execution/domain/team-run-config.ts:81:47
+     79| 
+     80| export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
+     81|   const address = assertAgentTeamAddress(node.address);
+       |                                               ^
+     82|   if (node.kind === "agent") {
+     83|     if (address === "/") throw new Error("The root TeamRun node must b…
+ ❯ new TeamRunConfig src/agent-team-execution/domain/team-run-config.ts:176:21
+ ❯ createBackendContext tests/integration/agent-team-execution/mixed-team-run-backend.integration.test.ts:21:18
+ ❯ tests/integration/agent-team-execution/mixed-team-run-backend.integration.test.ts:255:45
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/71]⎯
+
+ FAIL  tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > task delegation tool lifecycle integration > routes manifest parsing through durable delegate, submit, review, persistence, event, and idle-settlement boundaries
+AssertionError: expected { task_id: 'task_0001', …(2) } to deeply equal { task_id: 'task_0001', …(1) }
+
+- Expected
++ Received
+
+  {
+-   "status": "active",
++   "message": "this.backend.openTaskActivationEventLease is not a function",
++   "status": "not_started",
+    "task_id": "task_0001",
+  }
+
+ ❯ tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts:398:21
+    396|       description: "Draft a validation note.",
+    397|     });
+    398|     expect(created).toEqual({ task_id: "task_0001", status: "active" }…
+       |                     ^
+    399|     const start = harness.backend.taskAgentStarts[0]!;
+    400|     expect(start).toMatchObject({
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/71]⎯
+
+ FAIL  tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > task delegation tool lifecycle integration > authorizes active task-agent nested delegation by its exact directory-backed run identity
+Error: Task 'task_0001' was not activated.
+ ❯ taskAgentContext tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts:287:21
+    285| const taskAgentContext = (harness: Harness, taskId: string): TaskDeleg…
+    286|   const start = harness.backend.taskAgentStarts.find((candidate) => ca…
+    287|   if (!start) throw new Error(`Task '${taskId}' was not activated.`);
+       |                     ^
+    288|   const identity = start.identity;
+    289|   const active = getTaskAgentDirectory(rootTeamRunId).resolveTaskAgent…
+ ❯ tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts:457:27
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/71]⎯
+
+ FAIL  tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > task delegation tool lifecycle integration > enforces absolute reference paths before mutation and serves persisted content through the REST boundary
+TypeError: Cannot read properties of undefined (reading 'referenceFiles')
+ ❯ tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts:510:30
+    508|     });
+    509|     const record = (await harness.recordsService.getTaskDelegationReco…
+    510|     const reference = record.referenceFiles[0]!;
+       |                              ^
+    511|     expect(reference).toMatchObject({ path: referencePath, type: "file…
+    512|     expect(reference.referenceId).not.toContain(referencePath);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/71]⎯
+
+ FAIL  tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > task delegation tool lifecycle integration > materializes task-Team identity from the rooted snapshot without a parallel route authority
+AssertionError: expected { task_id: 'task_0001', …(2) } to deeply equal { task_id: 'task_0001', …(1) }
+
+- Expected
++ Received
+
+  {
+-   "status": "active",
++   "message": "this.backend.openTaskActivationEventLease is not a function",
++   "status": "not_started",
+    "task_id": "task_0001",
+  }
+
+ ❯ tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts:532:5
+    530|   it("materializes task-Team identity from the rooted snapshot without…
+    531|     const harness = await createHarness();
+    532|     await expect(executeDelegate(harness, harness.coordinatorContext, {
+       |     ^
+    533|       recipient_address: "./design_team",
+    534|       description: "Coordinate the design review.",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/71]⎯
+
+ FAIL  tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > task delegation tool lifecycle integration > does not persist a rejected activation and allocates the next singular task cleanly
+AssertionError: expected { task_id: 'task_0001', …(2) } to deeply equal { task_id: 'task_0001', …(2) }
+
+- Expected
++ Received
+
+  {
+-   "message": "worker rejected activation",
++   "message": "this.backend.openTaskActivationEventLease is not a function",
+    "status": "not_started",
+    "task_id": "task_0001",
+  }
+
+ ❯ tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts:581:5
+    579|     );
+    580| 
+    581|     await expect(executeDelegate(harness, harness.coordinatorContext, {
+       |     ^
+    582|       recipient_address: "./worker",
+    583|       description: "Rejected work.",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/71]⎯
+
+ FAIL  tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > team conversation target websocket integration > routes flat structural and typed runtime targets through the websocket address boundary
+Error: Timed out waiting for websocket message 'CONNECTED'. messages=[{"type":"ERROR","payload":{"code":"TEAM_STREAM_UNAVAILABLE","message":"Team run 'team-run-1' stream not available","agent_execution":null}}]
+ ❯ waitForMessage tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts:56:9
+     54|     await wait(10);
+     55|   }
+     56|   throw new Error(`Timed out waiting for websocket message '${label}'.…
+       |         ^
+     57| };
+     58| 
+ ❯ startHarness tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts:134:3
+ ❯ tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts:148:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/71]⎯
+
+ FAIL  tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > team conversation target websocket integration > keeps concurrent runtime ids distinct and does not choose a latest-run fallback
+Error: Timed out waiting for websocket message 'CONNECTED'. messages=[{"type":"ERROR","payload":{"code":"TEAM_STREAM_UNAVAILABLE","message":"Team run 'team-run-1' stream not available","agent_execution":null}}]
+ ❯ waitForMessage tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts:56:9
+     54|     await wait(10);
+     55|   }
+     56|   throw new Error(`Timed out waiting for websocket message '${label}'.…
+       |         ^
+     57| };
+     58| 
+ ❯ startHarness tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts:134:3
+ ❯ tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts:224:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/71]⎯
+
+ FAIL  tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > team conversation target websocket integration > reports backend invalid runtime targets over the websocket without structural fallback or activity recording
+Error: Timed out waiting for websocket message 'CONNECTED'. messages=[{"type":"ERROR","payload":{"code":"TEAM_STREAM_UNAVAILABLE","message":"Team run 'team-run-1' stream not available","agent_execution":null}}]
+ ❯ waitForMessage tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts:56:9
+     54|     await wait(10);
+     55|   }
+     56|   throw new Error(`Timed out waiting for websocket message '${label}'.…
+       |         ^
+     57| };
+     58| 
+ ❯ startHarness tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts:134:3
+ ❯ tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts:282:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/71]⎯
+
+ FAIL  tests/integration/agent-team-execution/team-run-service.integration.test.ts > TeamRunService integration > builds launch preset member configs through mixed topology
+AssertionError: expected [ { …(9) } ] to deeply equal [ ObjectContaining{…} ]
+
+- Expected
++ Received
+
+  [
+    {
+-     "memberName": "Coordinator",
++     "agentDefinitionId": "agent-Coordinator",
++     "applicationExecutionContext": null,
++     "autoExecuteTools": true,
++     "llmConfig": null,
++     "llmModelIdentifier": "gpt-5.4-mini",
++     "memberAddress": "/Coordinator",
+      "runtimeKind": "claude_agent_sdk",
++     "skillAccessMode": "NONE",
++     "workspaceRootPath": "/tmp/team-workspace",
+    },
+  ]
+
+ ❯ tests/integration/agent-team-execution/team-run-service.integration.test.ts:250:21
+    248|     });
+    249| 
+    250|     expect(configs).toEqual([
+       |                     ^
+    251|       expect.objectContaining({
+    252|         memberName: "Coordinator",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/71]⎯
+
+ FAIL  tests/integration/agent-team-execution/team-run-service.integration.test.ts > TeamRunService integration > creates a autobyteus team run through the mixed backend and persists member metadata
+ FAIL  tests/integration/agent-team-execution/team-run-service.integration.test.ts > TeamRunService integration > creates a codex_app_server team run through the mixed backend and persists member metadata
+ FAIL  tests/integration/agent-team-execution/team-run-service.integration.test.ts > TeamRunService integration > creates a claude_agent_sdk team run through the mixed backend and persists member metadata
+TypeError: Cannot read properties of undefined (reading 'address')
+ ❯ cloneTeamRunNode src/agent-team-execution/domain/team-run-config.ts:81:47
+     79| 
+     80| export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
+     81|   const address = assertAgentTeamAddress(node.address);
+       |                                               ^
+     82|   if (node.kind === "agent") {
+     83|     if (address === "/") throw new Error("The root TeamRun node must b…
+ ❯ new TeamRunConfig src/agent-team-execution/domain/team-run-config.ts:176:21
+ ❯ tests/integration/agent-team-execution/team-run-service.integration.test.ts:263:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/71]⎯
+
+ FAIL  tests/integration/agent-team-execution/team-run-service.integration.test.ts > TeamRunService integration > restores historical autobyteus metadata as MixedTeamRunContext
+ FAIL  tests/integration/agent-team-execution/team-run-service.integration.test.ts > TeamRunService integration > restores historical codex_app_server metadata as MixedTeamRunContext
+ FAIL  tests/integration/agent-team-execution/team-run-service.integration.test.ts > TeamRunService integration > restores historical claude_agent_sdk metadata as MixedTeamRunContext
+AssertionError: promise rejected "TypeError: Cannot read properties of unde…" instead of resolving
+ ❯ tests/integration/agent-team-execution/team-run-service.integration.test.ts:367:60
+    365|     });
+    366| 
+    367|     await expect(service.restoreTeamRun(metadata.teamRunId)).resolves.…
+       |                                                            ^
+    368|       runId: metadata.teamRunId,
+    369|       teamBackendKind: TeamBackendKind.MIXED,
+
+Caused by: TypeError: Cannot read properties of undefined (reading 'address')
+ ❯ cloneTeamRunNode src/agent-team-execution/domain/team-run-config.ts:81:47
+ ❯ new TeamRunConfig src/agent-team-execution/domain/team-run-config.ts:176:21
+ ❯ TeamRunMetadataMapper.buildRestoreContext src/agent-team-execution/services/team-run-metadata-mapper.ts:26:20
+ ❯ TeamRunService.restoreTeamRun src/agent-team-execution/services/team-run-service.ts:272:42
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/71]⎯
+
+ FAIL  tests/e2e/token-usage/token-usage-canonical-execution-address-graphql.e2e.test.ts > canonical token execution-address migration GraphQL integration > preserves the terminal historical record while canonical owner reparents rows and GraphQL exposes exact hierarchy
+AssertionError: expected { …(13) } to match object { …(4) }
+(9 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "attempts": 1,
+    "migrationId": "20260801_team_canonical_identity",
+-   "status": "SUCCEEDED",
++   "status": "FAILED",
+    "summary": {
+      "failedCount": 0,
+    },
+  }
+
+ ❯ tests/e2e/token-usage/token-usage-canonical-execution-address-graphql.e2e.test.ts:333:23
+    331|     const [migration] = await runner.runPending();
+    332| 
+    333|     expect(migration).toMatchObject({
+       |                       ^
+    334|       migrationId: TEAM_CANONICAL_IDENTITY_MIGRATION_ID,
+    335|       status: "SUCCEEDED",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/71]⎯
+
+ FAIL  tests/integration/api/runtime-selection-top-level.integration.test.ts > runtime-selection top-level integration > keeps same-runtime autobyteus team creation and websocket messaging on the mixed team backend
+AssertionError: expected undefined to be 'autobyteus_team_ba5dd34f34ee40dcb18ac…' // Object.is equality
+
+- Expected: 
+"autobyteus_team_ba5dd34f34ee40dcb18ac2ddb6a63474"
+
++ Received: 
+undefined
+
+ ❯ tests/integration/api/runtime-selection-top-level.integration.test.ts:743:50
+    741|         };
+    742|         expect(connectedMessage.type).toBe("CONNECTED");
+    743|         expect(connectedMessage.payload.team_id).toBe(teamRunId);
+       |                                                  ^
+    744| 
+    745|         socket.send(
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/71]⎯
+
+ FAIL  tests/integration/api/runtime-selection-top-level.integration.test.ts > runtime-selection top-level integration > creates, restores, and routes a mixed autobyteus+codex team through top-level graphql + websocket surfaces
+AssertionError: expected undefined to be 'mixed_runtime_team_aa9f58eb2624463dbf…' // Object.is equality
+
+- Expected: 
+"mixed_runtime_team_aa9f58eb2624463dbf2b541f7e793160"
+
++ Received: 
+undefined
+
+ ❯ tests/integration/api/runtime-selection-top-level.integration.test.ts:838:50
+    836|         };
+    837|         expect(connectedMessage.type).toBe("CONNECTED");
+    838|         expect(connectedMessage.payload.team_id).toBe(teamRunId);
+       |                                                  ^
+    839| 
+    840|         socket.send(
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/71]⎯
+
+ FAIL  tests/integration/app-data-migrations/team-run-metadata-member-tree-history.integration.test.ts > SR-013 two-ID TeamRun metadata transition > runs fresh Program Manager flat data through predecessor then final v3 with two atomic backups
+AssertionError: expected [ { …(3) }, { …(3) } ] to deeply equal [ { …(3) }, { …(3) } ]
+
+- Expected
++ Received
+
+@@ -5,8 +5,8 @@
+      "status": "SUCCEEDED",
+    },
+    {
+      "attempts": 1,
+      "migrationId": "20260801_team_canonical_identity",
+-     "status": "SUCCEEDED",
++     "status": "FAILED",
+    },
+  ]
+
+ ❯ tests/integration/app-data-migrations/team-run-metadata-member-tree-history.integration.test.ts:242:8
+    240| 
+    241|     expect(results.map(({ migrationId, status, attempts }) => ({ migra…
+    242|       .toEqual([
+       |        ^
+    243|         { migrationId: TEAM_RUN_METADATA_MEMBER_TREE_MIGRATION_ID, sta…
+    244|         { migrationId: TEAM_CANONICAL_IDENTITY_MIGRATION_ID, status: "…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[23/71]⎯
+
+ FAIL  tests/integration/app-data-migrations/team-run-metadata-member-tree-history.integration.test.ts > SR-013 two-ID TeamRun metadata transition > skips a terminal-success predecessor record and lets the pending canonical ID write final v3
+AssertionError: expected [ { …(13) }, { …(13) } ] to match object [ { …(3) }, { …(3) } ]
+(15 matching properties omitted from actual)
+
+- Expected
++ Received
+
+@@ -5,8 +5,8 @@
+      "status": "SUCCEEDED",
+    },
+    {
+      "attempts": 1,
+      "migrationId": "20260801_team_canonical_identity",
+-     "status": "SUCCEEDED",
++     "status": "FAILED",
+    },
+  ]
+
+ ❯ tests/integration/app-data-migrations/team-run-metadata-member-tree-history.integration.test.ts:284:21
+    282| 
+    283|     expect(stableExecute).not.toHaveBeenCalled();
+    284|     expect(results).toMatchObject([
+       |                     ^
+    285|       { migrationId: TEAM_RUN_METADATA_MEMBER_TREE_MIGRATION_ID, statu…
+    286|       { migrationId: TEAM_CANONICAL_IDENTITY_MIGRATION_ID, status: "SU…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[24/71]⎯
+
+ FAIL  tests/integration/app-data-migrations/team-run-metadata-member-tree-history.integration.test.ts > SR-013 two-ID TeamRun metadata transition > skips a terminal-warning stable record and converts residual flat input directly to final v3
+AssertionError: expected [ { …(13) }, { …(13) } ] to match object [ { …(3) }, { …(3) } ]
+(15 matching properties omitted from actual)
+
+- Expected
++ Received
+
+@@ -5,8 +5,8 @@
+      "status": "SUCCEEDED_WITH_WARNINGS",
+    },
+    {
+      "attempts": 1,
+      "migrationId": "20260801_team_canonical_identity",
+-     "status": "SUCCEEDED",
++     "status": "FAILED",
+    },
+  ]
+
+ ❯ tests/integration/app-data-migrations/team-run-metadata-member-tree-history.integration.test.ts:315:21
+    313| 
+    314|     expect(stableExecute).not.toHaveBeenCalled();
+    315|     expect(results).toMatchObject([
+       |                     ^
+    316|       {
+    317|         migrationId: TEAM_RUN_METADATA_MEMBER_TREE_MIGRATION_ID,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[25/71]⎯
+
+ FAIL  tests/integration/app-data-migrations/team-run-metadata-member-tree-history.integration.test.ts > SR-013 two-ID TeamRun metadata transition > keeps unsafe residual flat bytes stable, then retries only canonical after repair and skips current v3
+AssertionError: expected { …(13) } to match object { …(5) }
+(11 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "attempts": 2,
+-   "canRetry": false,
++   "canRetry": true,
+    "migrationId": "20260801_team_canonical_identity",
+-   "status": "SUCCEEDED",
++   "status": "FAILED",
+    "summary": {
+      "failedCount": 0,
+-     "migratedCount": 1,
++     "migratedCount": 0,
+    },
+  }
+
+ ❯ tests/integration/app-data-migrations/team-run-metadata-member-tree-history.integration.test.ts:371:25
+    369| 
+    370|     expect(stableExecute).not.toHaveBeenCalled();
+    371|     expect(repaired[1]).toMatchObject({
+       |                         ^
+    372|       migrationId: TEAM_CANONICAL_IDENTITY_MIGRATION_ID,
+    373|       status: "SUCCEEDED",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[26/71]⎯
+
+ FAIL  tests/integration/run-history/memory-layout-and-projection.integration.test.ts > memory layout and projection integration > writes current team metadata and team history index files for autobyteus
+ FAIL  tests/integration/run-history/memory-layout-and-projection.integration.test.ts > memory layout and projection integration > writes current team metadata and team history index files for codex_app_server
+ FAIL  tests/integration/run-history/memory-layout-and-projection.integration.test.ts > memory layout and projection integration > writes current team metadata and team history index files for claude_agent_sdk
+TypeError: Cannot read properties of undefined (reading 'slice')
+ ❯ TeamDefinitionTopologyPlanner.buildPlan src/agent-team-execution/services/team-definition-topology-planner.ts:67:66
+     65|     for (const launch of input.memberConfigs) {
+     66|       const address = createAgentTeamAddress(
+     67|         launch.memberAddress === "/" ? [] : launch.memberAddress.slice…
+       |                                                                  ^
+     68|       );
+     69|       if (settingsByAddress.has(address)) throw new Error(`Duplicate l…
+ ❯ TeamRunService.createTeamRun src/agent-team-execution/services/team-run-service.ts:224:18
+ ❯ tests/integration/run-history/memory-layout-and-projection.integration.test.ts:388:23
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[27/71]⎯
+
+ FAIL  tests/integration/run-history/memory-layout-and-projection.integration.test.ts > memory layout and projection integration > builds a autobyteus team member projection from the local team member memory layout
+ FAIL  tests/integration/run-history/memory-layout-and-projection.integration.test.ts > memory layout and projection integration > builds a codex_app_server team member projection from the local team member memory layout
+ FAIL  tests/integration/run-history/memory-layout-and-projection.integration.test.ts > memory layout and projection integration > builds a claude_agent_sdk team member projection from the local team member memory layout
+LegacyTeamRunMetadataUpgradeRequiredError: This team run uses an obsolete metadata schema. Complete the required server data migration before starting runtime services.
+ ❯ toLegacyTeamRunMetadataUpgradeRequiredError src/run-history/store/team-run-metadata-schema.ts:53:3
+     51|   error: UnsupportedLegacyTeamRunMetadataError,
+     52| ): LegacyTeamRunMetadataUpgradeRequiredError =>
+     53|   new LegacyTeamRunMetadataUpgradeRequiredError(error.teamRunId, error…
+       |   ^
+     54| 
+     55| const required = (value: unknown, fieldName: string): string => {
+ ❯ TeamRunHistoryService.getTeamRunResumeConfig src/run-history/services/team-run-history-service.ts:114:15
+ ❯ TeamMemberRunViewProjectionService.getProjection src/run-history/services/team-member-run-view-projection-service.ts:129:26
+ ❯ tests/integration/run-history/memory-layout-and-projection.integration.test.ts:503:24
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[28/71]⎯
+
+ FAIL  tests/integration/run-history/memory-layout-and-projection.integration.test.ts > memory layout and projection integration > builds a nested team member projection from the hierarchical root team memory directory
+LegacyTeamRunMetadataUpgradeRequiredError: This team run uses an obsolete metadata schema. Complete the required server data migration before starting runtime services.
+ ❯ toLegacyTeamRunMetadataUpgradeRequiredError src/run-history/store/team-run-metadata-schema.ts:53:3
+     51|   error: UnsupportedLegacyTeamRunMetadataError,
+     52| ): LegacyTeamRunMetadataUpgradeRequiredError =>
+     53|   new LegacyTeamRunMetadataUpgradeRequiredError(error.teamRunId, error…
+       |   ^
+     54| 
+     55| const required = (value: unknown, fieldName: string): string => {
+ ❯ TeamRunHistoryService.getTeamRunResumeConfig src/run-history/services/team-run-history-service.ts:114:15
+ ❯ TeamMemberRunViewProjectionService.getProjection src/run-history/services/team-member-run-view-projection-service.ts:129:26
+ ❯ tests/integration/run-history/memory-layout-and-projection.integration.test.ts:587:24
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[29/71]⎯
+
+ FAIL  tests/unit/agent-team-execution/task-delegation-service.test.ts > TaskDelegationService > delegates repeated singular active work with explicit member targets and submit_task_result work-packet protocol
+AssertionError: expected { task_id: 'task_0001', …(2) } to deeply equal { task_id: 'task_0001', …(1) }
+
+- Expected
++ Received
+
+  {
+-   "status": "active",
++   "message": "this.backend.openTaskActivationEventLease is not a function",
++   "status": "not_started",
+    "task_id": "task_0001",
+  }
+
+ ❯ tests/unit/agent-team-execution/task-delegation-service.test.ts:366:19
+    364|     const second = await delegateTask(service,buildContext(), delegate…
+    365| 
+    366|     expect(first).toEqual({
+       |                   ^
+    367|       task_id: "task_0001",
+    368|       status: "active",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[30/71]⎯
+
+ FAIL  tests/unit/agent-team-execution/task-delegation-service.test.ts > TaskDelegationService > resolves task-owned reference files by task identity without message IDs
+TypeError: Cannot read properties of undefined (reading 'tasks')
+ ❯ tests/unit/agent-team-execution/task-delegation-service.test.ts:451:37
+    449|     await delegateTask(service,buildContext(), delegateMemberTask("wor…
+    450|     const activated = taskDelegationPayloads(backend, "TASK_DELEGATION…
+    451|     const reference = activated[0]!.tasks[0]!.referenceFiles[0]!;
+       |                                     ^
+    452| 
+    453|     expect(service.resolveTaskReference({ taskId: "task_0001", referen…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[31/71]⎯
+
+ FAIL  tests/unit/agent-team-execution/task-delegation-service.test.ts > TaskDelegationService > rejects relative submit_task_result reference files before submission persistence
+TypeError: Cannot read properties of undefined (reading 'identity')
+ ❯ tests/unit/agent-team-execution/task-delegation-service.test.ts:506:78
+    504|     const service = createService(backend, persistedRecords);
+    505|     await delegateTask(service,buildContext(), delegateMemberTask("wor…
+    506|     const taskAgentCaller = buildTaskAgentCaller(backend.taskAgentStar…
+       |                                                                              ^
+    507| 
+    508|     await expect(
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[32/71]⎯
+
+ FAIL  tests/unit/agent-team-execution/task-delegation-service.test.ts > TaskDelegationService > rejects relative review_task_result reference files before review persistence
+TypeError: Cannot read properties of undefined (reading 'identity')
+ ❯ tests/unit/agent-team-execution/task-delegation-service.test.ts:531:78
+    529|     const service = createService(backend, persistedRecords);
+    530|     await delegateTask(service,buildContext(), delegateMemberTask("wor…
+    531|     const taskAgentCaller = buildTaskAgentCaller(backend.taskAgentStar…
+       |                                                                              ^
+    532|     await service.submitTaskResult(buildContext(taskAgentCaller), {
+    533|       message: "Implemented the requested work.",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[33/71]⎯
+
+ FAIL  tests/unit/agent-team-execution/task-delegation-service.test.ts > TaskDelegationService > delegates to an explicit team target and binds a task-team execution instance
+AssertionError: expected { task_id: 'task_0001', …(2) } to deeply equal { task_id: 'task_0001', …(1) }
+
+- Expected
++ Received
+
+  {
+-   "status": "active",
++   "message": "this.backend.openTaskActivationEventLease is not a function",
++   "status": "not_started",
+    "task_id": "task_0001",
+  }
+
+ ❯ tests/unit/agent-team-execution/task-delegation-service.test.ts:572:21
+    570|     );
+    571| 
+    572|     expect(created).toEqual({
+       |                     ^
+    573|       task_id: "task_0001",
+    574|       status: "active",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[34/71]⎯
+
+ FAIL  tests/unit/agent-team-execution/task-delegation-service.test.ts > TaskDelegationService > keeps activation visible content task-centered instead of sender-framed
+AssertionError: expected { task_id: 'task_0001', …(2) } to deeply equal { task_id: 'task_0001', …(1) }
+
+- Expected
++ Received
+
+  {
+-   "status": "active",
++   "message": "this.backend.openTaskActivationEventLease is not a function",
++   "status": "not_started",
+    "task_id": "task_0001",
+  }
+
+ ❯ tests/unit/agent-team-execution/task-delegation-service.test.ts:679:21
+    677|     );
+    678| 
+    679|     expect(created).toEqual({
+       |                     ^
+    680|       task_id: "task_0001",
+    681|       status: "active",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[35/71]⎯
+
+ FAIL  tests/unit/agent-team-execution/task-delegation-service.test.ts > TaskDelegationService > submits, revises, submits again, accepts latest pending submission, and settles after idle
+TypeError: Cannot read properties of undefined (reading 'identity')
+ ❯ tests/unit/agent-team-execution/task-delegation-service.test.ts:705:78
+    703|     const service = createService(backend, persistedRecords);
+    704|     await delegateTask(service,buildContext(), delegateMemberTask("wor…
+    705|     const taskAgentCaller = buildTaskAgentCaller(backend.taskAgentStar…
+       |                                                                              ^
+    706| 
+    707|     await expect(
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[36/71]⎯
+
+ FAIL  tests/unit/agent-team-execution/task-delegation-service.test.ts > TaskDelegationService > commits result submission and returns a concise message when notification delivery fails
+TypeError: Cannot read properties of undefined (reading 'identity')
+ ❯ tests/unit/agent-team-execution/task-delegation-service.test.ts:888:78
+    886|     const service = createService(backend);
+    887|     await delegateTask(service,buildContext(), delegateMemberTask("wor…
+    888|     const taskAgentCaller = buildTaskAgentCaller(backend.taskAgentStar…
+       |                                                                              ^
+    889| 
+    890|     const submitted = await service.submitTaskResult(buildContext(task…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[37/71]⎯
+
+ FAIL  tests/unit/agent-team-execution/task-delegation-service.test.ts > TaskDelegationService > returns only a concise message when revision notification delivery fails
+TypeError: Cannot read properties of undefined (reading 'identity')
+ ❯ tests/unit/agent-team-execution/task-delegation-service.test.ts:914:78
+    912|     const service = createService(backend);
+    913|     await delegateTask(service,buildContext(), delegateMemberTask("wor…
+    914|     const taskAgentCaller = buildTaskAgentCaller(backend.taskAgentStar…
+       |                                                                              ^
+    915|     await service.submitTaskResult(buildContext(taskAgentCaller), {
+    916|       message: "Ready for review.",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[38/71]⎯
+
+ FAIL  tests/unit/agent-team-execution/task-delegation-service.test.ts > TaskDelegationService > keeps rejected activations not_started and does not publish active exact-run targets
+AssertionError: expected { task_id: 'task_0001', …(2) } to deeply equal { task_id: 'task_0001', …(2) }
+
+- Expected
++ Received
+
+  {
+-   "message": "No",
++   "message": "this.backend.openTaskActivationEventLease is not a function",
+    "status": "not_started",
+    "task_id": "task_0001",
+  }
+
+ ❯ tests/unit/agent-team-execution/task-delegation-service.test.ts:949:21
+    947|     const created = await delegateTask(service,buildContext(), delegat…
+    948| 
+    949|     expect(created).toEqual({
+       |                     ^
+    950|       task_id: "task_0001",
+    951|       status: "not_started",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[39/71]⎯
+
+ FAIL  tests/unit/agent-team-execution/task-delegation-service.test.ts > TaskDelegationService > rolls back task-agent directory and ledger state when activation throws
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/unit/agent-team-execution/task-delegation-service.test.ts:966:37
+    964|     const created = await delegateTask(service,buildContext(), delegat…
+    965| 
+    966|     expect(backend.taskAgentStarts).toHaveLength(1);
+       |                                     ^
+    967|     expect(created).toEqual({
+    968|       task_id: "task_0001",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[40/71]⎯
+
+ FAIL  tests/unit/agent-team-execution/task-delegation-service.test.ts > TaskDelegationService > supports task-agent delegators and blocks parent settlement while child delegation is open
+TypeError: Cannot read properties of undefined (reading 'identity')
+ ❯ tests/unit/agent-team-execution/task-delegation-service.test.ts:980:56
+    978|     const service = createService(backend);
+    979|     await delegateTask(service,buildContext(), delegateMemberTask("wor…
+    980|     const parentIdentity = backend.taskAgentStarts[0]!.identity;
+       |                                                        ^
+    981|     const parentCaller = buildTaskAgentCaller(parentIdentity);
+    982| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[41/71]⎯
+
+ FAIL  tests/unit/agent-team-execution/task-delegation-service.test.ts > TaskDelegationService > rejects settled task-agent delegate_task before creating child work
+TypeError: Cannot read properties of undefined (reading 'identity')
+ ❯ tests/unit/agent-team-execution/task-delegation-service.test.ts:1020:75
+    1018|     const service = createService(backend);
+    1019|     await delegateTask(service,buildContext(), delegateMemberTask("wor…
+    1020|     const parentCaller = buildTaskAgentCaller(backend.taskAgentStarts[…
+       |                                                                           ^
+    1021| 
+    1022|     await service.submitTaskResult(buildContext(parentCaller), { messa…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[42/71]⎯
+
+ FAIL  tests/unit/agent-team-execution/task-delegation-service.test.ts > TaskDelegationService > rejects settled task-agent review identity before recording a child review
+TypeError: Cannot read properties of undefined (reading 'identity')
+ ❯ tests/unit/agent-team-execution/task-delegation-service.test.ts:1042:75
+    1040|     const service = createService(backend);
+    1041|     await delegateTask(service,buildContext(), delegateMemberTask("wor…
+    1042|     const parentCaller = buildTaskAgentCaller(backend.taskAgentStarts[…
+       |                                                                           ^
+    1043|     await delegateTask(service,buildContext(parentCaller), delegateMem…
+    1044| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[43/71]⎯
+
+ FAIL  tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > parses valid messages and rejects malformed envelopes
+ZodError: [
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "context_file_paths"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "image_urls"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "execution_address"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "string",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "message_id"
+    ],
+    "message": "Invalid input: expected string, received undefined"
+  },
+  {
+    "expected": "string",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "dedupe_key"
+    ],
+    "message": "Invalid input: expected string, received undefined"
+  }
+]
+ ❯ parseTeamStreamClientMessage ../autobyteus-team-stream-contracts/src/team-stream-client-message.ts:20:55
+ ❯ Function.parseMessage src/services/agent-streaming/agent-team-stream-handler.ts:312:12
+    310| 
+    311|   static parseMessage(raw: string): TeamStreamClientMessage {
+    312|     return parseTeamStreamClientMessage(raw);
+       |            ^
+    313|   }
+    314| 
+ ❯ tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts:126:35
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[44/71]⎯
+
+ FAIL  tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > connects through TeamRunService and publishes the current lifecycle snapshot
+AssertionError: expected null to be truthy
+
+- Expected: 
+true
+
++ Received: 
+null
+
+ ❯ tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts:137:31
+    135|     const harness = await createHarness();
+    136| 
+    137|     expect(harness.sessionId).toBeTruthy();
+       |                               ^
+    138|     expect(harness.teamRunService.resolveTeamRun).toHaveBeenCalledWith…
+    139|     expect(harness.teamRun.subscribeToEvents).toHaveBeenCalledWith(exp…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[45/71]⎯
+
+ FAIL  tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > preserves the complete 'persistent member' address across send, approval, and interrupt
+ FAIL  tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > preserves the complete 'direct task Agent' address across send, approval, and interrupt
+ FAIL  tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > preserves the complete 'outer task AgentTeam member' address across send, approval, and interrupt
+ FAIL  tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > preserves the complete 'nested task AgentTeam member' address across send, approval, and interrupt
+AssertionError: expected null to be truthy
+
+- Expected: 
+true
+
++ Received: 
+null
+
+ ❯ handle tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts:115:29
+    113|   payload: Record<string, unknown>,
+    114| ) => {
+    115|   expect(harness.sessionId).toBeTruthy();
+       |                             ^
+    116|   await harness.handler.handleMessage(
+    117|     harness.sessionId as string,
+ ❯ tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts:166:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[46/71]⎯
+
+ FAIL  tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > rejects SEND_MESSAGE before effect when execution_address is incomplete
+ FAIL  tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > rejects APPROVE_TOOL before effect when execution_address is incomplete
+ FAIL  tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > rejects INTERRUPT_GENERATION before effect when execution_address is incomplete
+AssertionError: expected null to be truthy
+
+- Expected: 
+true
+
++ Received: 
+null
+
+ ❯ handle tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts:115:29
+    113|   payload: Record<string, unknown>,
+    114| ) => {
+    115|   expect(harness.sessionId).toBeTruthy();
+       |                             ^
+    116|   await harness.handler.handleMessage(
+    117|     harness.sessionId as string,
+ ❯ tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts:224:11
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[47/71]⎯
+
+ FAIL  tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > rejects SEND_MESSAGE before effect when execution_address names a foreign root
+ FAIL  tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > rejects APPROVE_TOOL before effect when execution_address names a foreign root
+ FAIL  tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > rejects INTERRUPT_GENERATION before effect when execution_address names a foreign root
+AssertionError: expected null to be truthy
+
+- Expected: 
+true
+
++ Received: 
+null
+
+ ❯ handle tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts:115:29
+    113|   payload: Record<string, unknown>,
+    114| ) => {
+    115|   expect(harness.sessionId).toBeTruthy();
+       |                             ^
+    116|   await harness.handler.handleMessage(
+    117|     harness.sessionId as string,
+ ❯ tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts:248:11
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[48/71]⎯
+
+ FAIL  tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > passes an exact stale nested task chain once and surfaces rejection without fallback
+AssertionError: expected null to be truthy
+
+- Expected: 
+true
+
++ Received: 
+null
+
+ ❯ handle tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts:115:29
+    113|   payload: Record<string, unknown>,
+    114| ) => {
+    115|   expect(harness.sessionId).toBeTruthy();
+       |                             ^
+    116|   await harness.handler.handleMessage(
+    117|     harness.sessionId as string,
+ ❯ tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts:282:11
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[49/71]⎯
+
+ FAIL  tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > returns one failed interrupt acknowledgement for an exact stale address
+AssertionError: expected null to be truthy
+
+- Expected: 
+true
+
++ Received: 
+null
+
+ ❯ handle tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts:115:29
+    113|   payload: Record<string, unknown>,
+    114| ) => {
+    115|   expect(harness.sessionId).toBeTruthy();
+       |                             ^
+    116|   await harness.handler.handleMessage(
+    117|     harness.sessionId as string,
+ ❯ tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts:312:11
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[50/71]⎯
+
+ FAIL  tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > projects the exact execution address on Agent events
+TypeError: Cannot read properties of undefined (reading 'kind')
+ ❯ projectTeamAgentExecutionBindingDto src/services/agent-streaming/team-agent-event-websocket-projector.ts:23:44
+     21| export const projectTeamAgentExecutionBindingDto = (
+     22|   binding: TeamAgentExecutionBinding,
+     23| ): TeamAgentExecutionBindingDto => binding.kind === "task_team_agent"
+       |                                            ^
+     24|   ? Object.freeze({ kind: binding.kind, execution_address: projectTeam…
+     25|   : Object.freeze({ kind: binding.kind, execution_address: projectTeam…
+ ❯ withExecution src/services/agent-streaming/team-agent-event-websocket-projector.ts:78:3
+ ❯ projectTeamAgentEventMessage src/services/agent-streaming/team-agent-event-websocket-projector.ts:98:27
+ ❯ convertTeamRunEventToServerMessage src/services/agent-streaming/team-run-event-websocket-message-mapper.ts:23:14
+ ❯ AgentTeamStreamHandler.convertTeamEvent src/services/agent-streaming/agent-team-stream-handler.ts:308:12
+ ❯ tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts:344:29
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[51/71]⎯
+
+ FAIL  tests/unit/services/agent-streaming/team-run-event-websocket-message-mapper.test.ts > TeamRun member-input WebSocket identity > carries the unchanged exact persistent execution address
+ FAIL  tests/unit/services/agent-streaming/team-run-event-websocket-message-mapper.test.ts > TeamRun member-input WebSocket identity > carries the unchanged exact task-Team member execution address
+TypeError: Cannot read properties of undefined (reading 'messageId')
+ ❯ convertTeamRunEventToServerMessage src/services/agent-streaming/team-run-event-websocket-message-mapper.ts:83:35
+     81|       return parseTeamStreamServerMessage({ type: "MEMBER_INPUT_MESSAG…
+     82|         execution_address: projectTeamExecutionAddressDto(event.execut…
+     83|         message_id: event.payload.messageId,
+       |                                   ^
+     84|         dedupe_key: event.payload.dedupeKey,
+     85|         content: event.payload.content,
+ ❯ tests/unit/services/agent-streaming/team-run-event-websocket-message-mapper.test.ts:49:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[52/71]⎯
+
+
+ Test Files  12 failed (12)
+      Tests  71 failed | 14 passed (85)
+   Start at  06:22:57
+   Duration  24.79s (transform 4.91s, setup 58ms, import 16.16s, tests 6.77s, environment 1ms)
+

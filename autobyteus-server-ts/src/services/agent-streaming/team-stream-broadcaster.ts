@@ -1,9 +1,9 @@
-import { ServerMessage } from "./models.js";
+import type { TeamStreamServerMessage } from "@autobyteus/team-stream-contracts";
 import type { AgentStreamServerMessageSink } from "./websocket-egress/agent-stream-websocket-egress.js";
 
 type RegisteredConnection = {
   teamRunId: string;
-  sink: AgentStreamServerMessageSink;
+  sink: AgentStreamServerMessageSink<TeamStreamServerMessage>;
 };
 
 const logger = {
@@ -16,7 +16,7 @@ export class TeamStreamBroadcaster {
   registerConnection(
     sessionId: string,
     teamRunId: string,
-    sink: AgentStreamServerMessageSink,
+    sink: AgentStreamServerMessageSink<TeamStreamServerMessage>,
   ): void {
     this.connectionsBySessionId.set(sessionId, {
       teamRunId,
@@ -28,7 +28,7 @@ export class TeamStreamBroadcaster {
     this.connectionsBySessionId.delete(sessionId);
   }
 
-  publishToTeamRun(teamRunId: string, message: ServerMessage): number {
+  publishToTeamRun(teamRunId: string, message: TeamStreamServerMessage): number {
     let delivered = 0;
 
     for (const [sessionId, registered] of this.connectionsBySessionId.entries()) {

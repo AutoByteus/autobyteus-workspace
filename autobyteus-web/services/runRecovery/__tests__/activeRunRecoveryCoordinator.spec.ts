@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { recoverActiveRunsFromHistory } from '~/services/runRecovery/activeRunRecoveryCoordinator';
+import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures';
 
 const {
   agentContextsStoreMock,
@@ -18,6 +19,7 @@ const {
     },
     agentRunStoreMock: {
       connectToAgentStream: vi.fn(),
+      isAgentStreamReady: vi.fn(),
     },
     teamContextsStoreMock: {
       teams,
@@ -25,6 +27,7 @@ const {
     },
     agentTeamRunStoreMock: {
       connectToTeamStream: vi.fn(),
+      isTeamStreamReady: vi.fn(),
     },
     openAgentRunMock: vi.fn(),
     openTeamRunMock: vi.fn(),
@@ -66,7 +69,7 @@ const activeTeamWorkspaceGroups = [{
       teamRunId: 'team-live-1',
       teamDefinitionId: 'team-def-1',
       teamDefinitionName: 'Team Alpha',
-      coordinatorMemberRouteKey: 'solution_designer',
+      coordinatorAddress: '/solution_designer',
       workspaceRootPath: '/ws/a',
       summary: 'Live team task',
       lastActivityAt: '2026-01-01T00:00:00.000Z',
@@ -76,21 +79,21 @@ const activeTeamWorkspaceGroups = [{
       isActive: true,
       members: [
         {
-          memberRouteKey: 'solution_designer',
-          memberName: 'Solution Designer',
-          memberRunId: 'member-run-solution',
+          memberAddress: '/solution_designer',
+          displayName: 'Solution Designer',
+          agentRunId: 'member-run-solution',
           status: 'running',
         },
         {
-          memberRouteKey: 'implementation_engineer',
-          memberName: 'Implementation Engineer',
-          memberRunId: 'member-run-implementation',
+          memberAddress: '/implementation_engineer',
+          displayName: 'Implementation Engineer',
+          agentRunId: 'member-run-implementation',
           status: 'offline',
         },
         {
-          memberRouteKey: 'code_reviewer',
-          memberName: 'Code Reviewer',
-          memberRunId: 'member-run-review',
+          memberAddress: '/code_reviewer',
+          displayName: 'Code Reviewer',
+          agentRunId: 'member-run-review',
           status: 'offline',
         },
       ],
@@ -103,32 +106,23 @@ describe('recoverActiveRunsFromHistory', () => {
     vi.clearAllMocks();
     agentContextsStoreMock.runs.clear();
     teamContextsStoreMock.teams.clear();
+    agentRunStoreMock.isAgentStreamReady.mockReturnValue(true);
+    agentTeamRunStoreMock.isTeamStreamReady.mockReturnValue(true);
   });
 
   it('preserves subscribed live member statuses while recovering root team activity', async () => {
-    teamContextsStoreMock.teams.set('team-live-1', {
+    teamContextsStoreMock.teams.set('team-live-1', buildTestTeamContext({
       teamRunId: 'team-live-1',
-      config: { isLocked: false },
-      leafAgentContextsByRouteKey: new Map([
-        ['solution_designer', {
-          config: { isLocked: false },
-          state: { runId: 'member-run-solution', currentStatus: 'offline' },
-        }],
-        ['implementation_engineer', {
-          config: { isLocked: false },
-          state: { runId: 'member-run-implementation', currentStatus: 'offline' },
-        }],
-        ['code_reviewer', {
-          config: { isLocked: false },
-          state: { runId: 'member-run-review', currentStatus: 'offline' },
-        }],
-      ]),
-      coordinatorMemberRouteKey: 'solution_designer',
-      historicalHydration: null,
-      focusedMemberRouteKey: 'solution_designer',
+      teamDefinitionId: 'team-def-1',
+      teamDefinitionName: 'Team Alpha',
+      coordinatorAddress: '/solution_designer',
+      rootChildren: [
+        testAgentNode('/solution_designer', { agentRunId: 'member-run-solution', currentStatus: 'offline' as any }),
+        testAgentNode('/implementation_engineer', { agentRunId: 'member-run-implementation', currentStatus: 'offline' as any }),
+        testAgentNode('/code_reviewer', { agentRunId: 'member-run-review', currentStatus: 'offline' as any }),
+      ],
       isActive: true,
-      isSubscribed: true,
-    });
+    }));
 
     await recoverActiveRunsFromHistory({
       workspaceGroups: activeTeamWorkspaceGroups as any,
@@ -140,10 +134,10 @@ describe('recoverActiveRunsFromHistory', () => {
     });
 
     const context = teamContextsStoreMock.teams.get('team-live-1');
-    expect(context.isActive).toBe(true);
-    expect(context.leafAgentContextsByRouteKey.get('solution_designer')?.state.currentStatus).toBe('offline');
-    expect(context.leafAgentContextsByRouteKey.get('implementation_engineer')?.state.currentStatus).toBe('offline');
-    expect(context.leafAgentContextsByRouteKey.get('code_reviewer')?.state.currentStatus).toBe('offline');
+    expect(context.view.isRootTeamActive()).toBe(true);
+    expect(context.view.getAgentContext('member-run-solution')?.state.currentStatus).toBe('offline');
+    expect(context.view.getAgentContext('member-run-implementation')?.state.currentStatus).toBe('offline');
+    expect(context.view.getAgentContext('member-run-review')?.state.currentStatus).toBe('offline');
     expect(agentTeamRunStoreMock.connectToTeamStream).not.toHaveBeenCalledWith('team-live-1');
     expect(openTeamRunMock).not.toHaveBeenCalled();
   });
@@ -155,7 +149,6 @@ describe('recoverActiveRunsFromHistory', () => {
         runId: 'run-live-1',
         currentStatus: 'running',
       },
-      isSubscribed: true,
     });
 
     await recoverActiveRunsFromHistory({

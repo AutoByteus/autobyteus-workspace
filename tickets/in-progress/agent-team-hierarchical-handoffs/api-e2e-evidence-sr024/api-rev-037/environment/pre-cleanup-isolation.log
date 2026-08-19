@@ -1,0 +1,12 @@
+api_revision=API-REV-037
+stage=pre-cleanup-isolation
+server_marker={"status":"READY","pid":45687,"serverUrl":"http://127.0.0.1:60237","runtimeRoot":"/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1","runtimeEnvironmentPath":"/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/.env","databasePath":"/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-037-live-20260813-1.db","lsofExactDisposableTarget":true,"lsofOperationalTarget":false}
+owned_port_60237:
+COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    45687 normy   30u  IPv4 0x1068f24458195ef3      0t0  TCP 127.0.0.1:60237 (LISTEN)
+owned_port_31237:
+COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    50468 normy   13u  IPv4 0xf18fe33c5c48d2b5      0t0  TCP 127.0.0.1:31237 (LISTEN)
+protected_ports_action=NONE
+operational_database_action=NONE
+operational_database_inspection=NONE

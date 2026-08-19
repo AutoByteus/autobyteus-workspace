@@ -1,0 +1,11 @@
+API-REV-012 cleanup verification
+timestamp_utc=2026-08-09T10:31:16Z
+port_60001=STOPPED
+port_31001=STOPPED
+browser_tab_c298c9=CLOSED
+standalone_agents=TERMINATED_THROUGH_FRONTEND
+nested_team=TERMINATED_RESTORED_VERIFIED_TERMINATED
+isolated_failure_state=RETAINED_FOR_REPRODUCTION
+isolated_root=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/sr015-api-rev-012-20260809
+source_env_sha256=3ece3faee6acd2d696401b204de0954ba31576f4132ea81a21472d8d399476ed
+secrets_logged=NO

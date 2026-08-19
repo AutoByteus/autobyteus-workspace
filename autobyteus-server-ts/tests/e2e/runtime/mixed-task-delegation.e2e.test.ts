@@ -585,7 +585,7 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
     expect(workerMember).toMatchObject({ runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: autoByteusModel });
 
     const delegateArgs = {
-      target: { kind: "member", name: "worker" },
+      recipient_name: "./worker",
       description: `Produce exactly one delegated task result whose content is "${initialResultToken}". Use no reference files. Do this immediately without reading files or writing prose.`,
     };
     const connection = await openTeamSocket(teamRunId);
@@ -602,17 +602,12 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
         targetMemberRouteKey: "coordinator",
         reason: "approved by mixed task delegation e2e",
         label: "coordinator delegate_task",
-        argumentPredicate: (args) => {
-          const target = args.target;
-          return target !== null &&
-            typeof target === "object" &&
-            !Array.isArray(target) &&
-            (target as Record<string, unknown>).kind === delegateArgs.target.kind &&
-            (target as Record<string, unknown>).name === delegateArgs.target.name &&
+        argumentPredicate: (args) =>
+          args.recipient_name === delegateArgs.recipient_name &&
             args.description === delegateArgs.description &&
+            !Object.prototype.hasOwnProperty.call(args, "target") &&
             !Object.prototype.hasOwnProperty.call(args, "member_name") &&
-            !Object.prototype.hasOwnProperty.call(args, "tasks");
-        },
+            !Object.prototype.hasOwnProperty.call(args, "tasks"),
         timeoutMs: 240_000,
       });
       await waitForMessageAfter(connection.messages, startIndex, (message) =>
@@ -848,7 +843,7 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
     });
 
     const delegateArgs = {
-      target: { kind: "team", name: teamTargetRouteKey },
+      recipient_name: `./${teamTargetRouteKey}`,
       description: teamTaskDescription,
     };
     const connection = await openTeamSocket(teamRunId);
@@ -865,17 +860,12 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
         targetMemberRouteKey: "coordinator",
         reason: "approved by mixed task-team target activation e2e",
         label: "coordinator delegate_task to team target",
-        argumentPredicate: (args) => {
-          const target = args.target;
-          return target !== null &&
-            typeof target === "object" &&
-            !Array.isArray(target) &&
-            (target as Record<string, unknown>).kind === delegateArgs.target.kind &&
-            (target as Record<string, unknown>).name === delegateArgs.target.name &&
+        argumentPredicate: (args) =>
+          args.recipient_name === delegateArgs.recipient_name &&
             args.description === delegateArgs.description &&
+            !Object.prototype.hasOwnProperty.call(args, "target") &&
             !Object.prototype.hasOwnProperty.call(args, "member_name") &&
-            !Object.prototype.hasOwnProperty.call(args, "tasks");
-        },
+            !Object.prototype.hasOwnProperty.call(args, "tasks"),
         timeoutMs: 240_000,
       });
       await waitForMessageAfter(connection.messages, startIndex, (message) =>

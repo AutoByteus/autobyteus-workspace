@@ -1,0 +1,62 @@
+{
+  "data": {
+    "getTeamRunResumeConfig": {
+      "teamRunId": "classroom_simulation_team_3f163762ea344e6d8ddd89393a53a208",
+      "isActive": true,
+      "executionTree": {
+        "schema_version": 1,
+        "created_at": "2026-08-15T15:22:40.260Z",
+        "archived_at": null,
+        "application_binding": null,
+        "handoffs": [],
+        "root_team": {
+          "team_definition_id": "classroom-simulation-team",
+          "team_definition_name": "Classroom Simulation Team",
+          "team_run_id": "classroom_simulation_team_3f163762ea344e6d8ddd89393a53a208",
+          "coordinator_address": "/professor",
+          "members": [
+            {
+              "kind": "configured_agent",
+              "address": "/professor",
+              "agent_definition_id": "team-local-agent:classroom-simulation-team:professor",
+              "role": null,
+              "description": null,
+              "agent_run_id": "professor_901fb9899c2a4b11883934db3cc86836",
+              "platform_agent_run_id": null,
+              "launch_configuration": {
+                "runtime_kind": "AUTOBYTEUS",
+                "llm_model_identifier": "gpt-5.6-luna",
+                "llm_config": {
+                  "reasoningEffort": "low"
+                },
+                "auto_execute_tools": true,
+                "skill_access_mode": "NONE",
+                "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-005/live/workspaces/classroom-autobyteus"
+              }
+            },
+            {
+              "kind": "configured_agent",
+              "address": "/student",
+              "agent_definition_id": "team-local-agent:classroom-simulation-team:student",
+              "role": null,
+              "description": null,
+              "agent_run_id": "student_83bdbb9647c34d988794e4055154900b",
+              "platform_agent_run_id": null,
+              "launch_configuration": {
+                "runtime_kind": "AUTOBYTEUS",
+                "llm_model_identifier": "gpt-5.6-luna",
+                "llm_config": {
+                  "reasoningEffort": "low"
+                },
+                "auto_execute_tools": true,
+                "skill_access_mode": "NONE",
+                "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-005/live/workspaces/classroom-autobyteus"
+              }
+            }
+          ],
+          "task_executions": []
+        }
+      }
+    }
+  }
+}

@@ -85,7 +85,9 @@ export class SkillImprovementImproverSessionService {
     const unsubscribe = run.subscribeToEvents((event) => watcher.observe(event));
     try {
       const triggerMessage = await this.triggerMessageBuilder.build(request, session);
-      const postResult = await run.postUserMessage(triggerMessage);
+      const postResult = await run.postUserMessage(triggerMessage, {
+        lifecycleObserver: (fact) => watcher.observeInputLifecycle(fact),
+      });
       if (!postResult.accepted) {
         throw new Error(postResult.message ?? `Retrospective Skill Improver '${session.improverRunId}' rejected the request.`);
       }
@@ -209,7 +211,7 @@ export class SkillImprovementImproverSessionService {
   }
 
   private resolveTargetAgentRunId(target: SkillImprovementTargetRef): string {
-    return target.kind === "agent_run" ? target.runId : target.memberRunId;
+    return target.kind === "agent_run" ? target.runId : target.agentRunId;
   }
 
   buildTriggerRequest(input: {

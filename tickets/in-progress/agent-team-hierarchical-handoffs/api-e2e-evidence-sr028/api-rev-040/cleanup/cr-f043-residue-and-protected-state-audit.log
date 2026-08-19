@@ -1,0 +1,20 @@
+timestamp_utc=2026-08-13T14:59:15Z
+head=632c503188cb9dbb8eecf4422fa174499519ad89
+named_residue=autobyteus-server-ts/autobyteus-server-ts/db/api-rev-035-live-20260812-1.db-journal
+named_residue_present=false
+named_residue_lsof_begin
+lsof: status error on /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/autobyteus-server-ts/db/api-rev-035-live-20260812-1.db-journal: No such file or directory
+lsof 4.91
+ latest revision: ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof/
+ latest FAQ: ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof/FAQ
+ latest man page: ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof/lsof_man
+ usage: [-?abhlnNoOPRtUvVX] [+|-c c] [+|-d s] [+D D] [+|-f[cgG]]
+ [-F [f]] [-g [s]] [-i [i]] [+|-L [l]] [+|-M] [-o [o]] [-p s]
+ [+|-r [t]] [-s [p:s]] [-S [t]] [-T [t]] [-u s] [+|-w] [-x [fl]] [--] [names]
+Use the ``-h'' option to get more help information.
+named_residue_lsof_end
+operational_database_action=NONE
+historical_sr015_artifact_action=NONE
+protected_ports_action=NONE
+protected_60004=absent
+protected_31004=absent

@@ -406,14 +406,12 @@ describe('agentRunStore', () => {
     
     it('closeAgent should disconnect and remove context', async () => {
         const store = useAgentRunStore();
-        mockAgentContext.isSubscribed = true;
         mockAgentContext.state.runId = 'agent-1';
         store.connectToAgentStream('agent-1');
         
         await store.closeAgent('agent-1', { terminate: false });
         
         expect(mockDisconnect).toHaveBeenCalled();
-        expect(mockAgentContext.isSubscribed).toBe(false);
         expect(mockContextsStore.removeRun).toHaveBeenCalledWith('agent-1');
     });
 
@@ -425,7 +423,6 @@ describe('agentRunStore', () => {
         store.disconnectAgentStream('agent-1');
 
         expect(mockDisconnect).toHaveBeenCalledTimes(1);
-        expect(mockAgentContext.isSubscribed).toBe(false);
         expect(mockAgentContext.unsubscribe).toBeUndefined();
         expect(mockContextsStore.removeRun).not.toHaveBeenCalled();
     });

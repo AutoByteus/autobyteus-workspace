@@ -1,0 +1,17 @@
+timestamp=2026-08-19T03:47:27Z
+command=git fetch origin personal codex/agent-team-universal-task-delegation
+source_worktree=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation
+## codex/agent-team-universal-task-delegation...origin/codex/agent-team-universal-task-delegation
+?? tickets/done/electron-agent-input-controls-regression/evidence/personal-promotion-refresh.log
+source_local=eb79671448e7a2485f30476155e9f7cb6ea363ff
+source_remote=eb79671448e7a2485f30476155e9f7cb6ea363ff
+source_divergence=0	0
+target_worktree=/Users/normy/autobyteus_org/autobyteus-workspace-superrepo
+## personal...origin/personal
+?? .article-work/
+target_local=acb8985930ccce49b632cdca22b92f5b237e35bf
+target_remote=acb8985930ccce49b632cdca22b92f5b237e35bf
+target_divergence=0	0
+remote_target_to_source=0	146
+target_is_source_ancestor=yes
+merge_base=acb8985930ccce49b632cdca22b92f5b237e35bf

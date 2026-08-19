@@ -1,0 +1,45 @@
+Local Electron build artifact manifest
+Ticket: electron-agent-input-controls-regression
+Source branch: codex/agent-team-universal-task-delegation
+Source revision: 66f7755000763c6179e2e99dceb2955cf4822861
+Build command: NO_TIMESTAMP=1 APPLE_TEAM_ID= pnpm -C autobyteus-web build:electron:mac
+Build result: PASS (exit 0)
+Started: 2026-08-18T14:34:45+02:00
+Finished: 2026-08-18T14:40:31+02:00
+Target: macOS arm64, enterprise flavor
+Application version: 1.4.52
+Bundle build version: 1.4.52
+CFBundleExecutable: AutoByteus
+
+Application bundle: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+Application bundle size: 1.4G
+Application executable file type: Mach-O 64-bit executable arm64
+Application executable SHA-256: c0bf182389ea930585e3b0bf5c4f16529461e02bf3be751cb364d0e25f2257e0
+
+Artifact: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.52.dmg
+Size bytes: 463304392
+Modified: 2026-08-18T14:37:50+0200
+SHA-256: 48b7b96167250cc1425ef97ff0fe3f691ff33aa3605bc7fe5a437edfc7d27433
+
+Artifact: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.52.dmg.blockmap
+Size bytes: 482363
+Modified: 2026-08-18T14:37:52+0200
+SHA-256: 6c38432e46b47a95a9ea9472a1ae309a79305c6ae0862911aa51d5c9c94323a9
+
+Artifact: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.52.zip
+Size bytes: 457642536
+Modified: 2026-08-18T14:40:28+0200
+SHA-256: 7229f33b432edcc90f73f9327580d6f8d286b1454dde5576b0f699f9e4adbbcd
+
+Artifact: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.52.zip.blockmap
+Size bytes: 471282
+Modified: 2026-08-18T14:40:30+0200
+SHA-256: c1162a592f633b709a54d429e663f9d23ac8a3e56edb6586461655740de64c45
+
+DMG verification: PASS (hdiutil verify exit 0; checksum VALID)
+DMG verification evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/evidence/local-electron-build/dmg-verify.log
+ZIP verification: PASS (unzip -tq exit 0; no errors detected)
+ZIP verification evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/evidence/local-electron-build/zip-verify.log
+Signing: electron-builder skipped macOS Developer ID signing because identity was explicitly null; no distribution signature/team identity was applied. The launcher retains only its compiler/linker-generated ad hoc signature.
+Notarization: not requested and not performed.
+Release/publication/deployment: not requested and not performed; all binaries remain local and ignored by Git.

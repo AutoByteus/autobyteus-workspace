@@ -1,0 +1,20 @@
+API-REV-033 final cleanup verification
+utc=2026-08-12T17:21:47Z
+port_60233=CLOSED
+port_31233=CLOSED
+protected_port_60004=STATE_UNCHANGED_NOT_ASSERTED
+protected_port_31004=STATE_UNCHANGED_NOT_ASSERTED
+owned_server_process=STOPPED
+owned_frontend_process=STOPPED
+operational_database_action=NONE
+protected_stack_action=NONE
+disposable_database_retained_for_evidence=true
+
+final_owned_resource_cleanup_utc=2026-08-12T17:24:19Z
+disposable_runtime_removed=true
+disposable_database_removed=true
+disposable_root_key_removed=true
+temporary_mobile_credential_removed=true
+provider_trace_evidence_copied_before_cleanup=true
+operational_database_action=NONE
+protected_stack_action=NONE

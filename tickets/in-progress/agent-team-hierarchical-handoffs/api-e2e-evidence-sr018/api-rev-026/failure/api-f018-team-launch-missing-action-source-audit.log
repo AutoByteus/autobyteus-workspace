@@ -1,0 +1,44 @@
+# API-F-018 exact source and durable-boundary audit
+## Production call sites
+autobyteus-web/composables/mobile/useMobileRunLaunchCoordinator.ts:174:    const temporaryRunId = agentContextsStore.createRunFromTemplate({ selectionMode: 'mobile' });
+autobyteus-web/stores/agentContextsStore.ts:76:    createRunFromTemplate(options: { selectionMode?: 'desktop' | 'mobile' } = {}): string {
+autobyteus-web/stores/__tests__/agentContextsStore.spec.ts:55:            const runId = store.createRunFromTemplate();
+autobyteus-web/stores/__tests__/agentContextsStore.spec.ts:79:            expect(() => store.createRunFromTemplate()).toThrowError("No run config template available");
+autobyteus-web/stores/__tests__/agentContextsStore.spec.ts:90:            const id1 = store.createRunFromTemplate();
+autobyteus-web/stores/__tests__/agentContextsStore.spec.ts:91:            const id2 = store.createRunFromTemplate();
+autobyteus-web/stores/__tests__/agentContextsStore.spec.ts:110:            const id = store.createRunFromTemplate();
+autobyteus-web/stores/__tests__/agentContextsStore.spec.ts:127:            const id1 = store.createRunFromTemplate();
+autobyteus-web/stores/__tests__/agentContextsStore.spec.ts:128:            const id2 = store.createRunFromTemplate();
+autobyteus-web/stores/__tests__/agentContextsStore.spec.ts:146:            const id = store.createRunFromTemplate();
+autobyteus-web/stores/__tests__/agentContextsStore.spec.ts:164:            const tempId = store.createRunFromTemplate();
+autobyteus-web/stores/__tests__/agentContextsStore.spec.ts:238:            const id = store.createRunFromTemplate();
+autobyteus-web/components/workspace/config/RunConfigPanel.vue:375:        teamContextsStore.createRunFromTemplate()
+autobyteus-web/components/workspace/config/RunConfigPanel.vue:381:        contextsStore.createRunFromTemplate()
+## AgentTeamContextsStore actions
+49:  actions: {
+50:    addTeamContext(context: AgentTeamContext) {
+56:    removeTeamContext(rootTeamRunId: string) {
+## AgentTeamRunStore launch owner
+110:    async sendMessageToFocusedMember(text: string, contextAttachments: ContextAttachment[]) {
+125:          const launched = await this.launchDraft(draft);
+192:    async launchDraft(draft: TeamLaunchDraft) {
+## RunConfigPanel durable mock
+10:const { agentRunState, teamRunState, agentContextState, teamContextState } = vi.hoisted(() => ({
+77:    createRunFromTemplate: vi.fn(),
+79:  teamContextState: {
+81:    createRunFromTemplate: vi.fn(),
+122:  return { useAgentTeamContextsStore: () => reactive(teamContextState) }
+174:    agentContextState.createRunFromTemplate.mockReset()
+175:    teamContextState.activeTeamContext = null
+176:    teamContextState.createRunFromTemplate.mockReset()
+257:    expect(contextStore.createRunFromTemplate).toHaveBeenCalled()
+304:    expect(agentContextState.createRunFromTemplate).toHaveBeenCalledTimes(1)
+342:    expect(agentContextState.createRunFromTemplate).not.toHaveBeenCalled()
+417:    expect(teamContextState.createRunFromTemplate).toHaveBeenCalledTimes(1)
+495:    expect(agentContextState.createRunFromTemplate).not.toHaveBeenCalled()
+## Browser observed
+{
+  "passed": false,
+  "fatalError": "TimeoutError: locator.waitFor: Timeout 180000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByPlaceholder('Type a message...') to be visible\u001b[22m\n\nlocator.waitFor: Timeout 180000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByPlaceholder('Type a message...') to be visible\u001b[22m\n\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr018/api-rev-026/live/run-one-team-browser-row.mjs:185:52",
+  "consoleEvents": []
+}

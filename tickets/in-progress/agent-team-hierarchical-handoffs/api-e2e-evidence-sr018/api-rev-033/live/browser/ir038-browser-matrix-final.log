@@ -1,0 +1,24 @@
+{
+  "passed": true,
+  "rows": [
+    {
+      "scenario": "autobyteus-first-send-failure-pending-success",
+      "runtime": "autobyteus",
+      "passed": true,
+      "rootTeamRunId": "nested_classroom_test_team_fb3045ca79b64d27b426c561ca0f4515"
+    },
+    {
+      "scenario": "codex-desktop-run",
+      "runtime": "codex_app_server",
+      "passed": true,
+      "rootTeamRunId": "nested_classroom_test_team_6536825afbaa4c09941ec0fe6cbb187f"
+    },
+    {
+      "scenario": "claude-mobile-run",
+      "runtime": "claude_agent_sdk",
+      "passed": true,
+      "rootTeamRunId": "nested_classroom_test_team_f73ecf571f804628bbe0ffba04a8abea"
+    }
+  ],
+  "fatalError": null
+}

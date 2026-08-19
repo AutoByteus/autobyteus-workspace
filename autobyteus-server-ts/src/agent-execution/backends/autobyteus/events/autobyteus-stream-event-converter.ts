@@ -11,6 +11,8 @@ import {
 import { serializePayload } from "../../../../services/agent-streaming/payload-serialization.js";
 import type { AgentApiStatus } from "../../../domain/agent-status-payload.js";
 import { projectAutoByteusAgentLifecycleSnapshot } from "./autobyteus-status-projector.js";
+import { RuntimeKind } from "../../../../runtime-management/runtime-kind-enum.js";
+import { logProviderSegmentAdmissionRejection } from "../../shared/provider-segment-admission-debug.js";
 
 const resolveStatusHint = (
   eventType: StreamEventType,
@@ -63,6 +65,9 @@ const resolveSegmentEventType = (payload: Record<string, unknown>): AgentRunEven
   return null;
 };
 
+const nonEmpty = (value: unknown): string | null =>
+  typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
+
 const eventTypeByStreamEvent = new Map<StreamEventType, AgentRunEventType>([
   [StreamEventType.TURN_STARTED, AgentRunEventType.TURN_STARTED],
   [StreamEventType.TURN_COMPLETED, AgentRunEventType.TURN_COMPLETED],
@@ -104,36 +109,57 @@ export class AutoByteusStreamEventConverter {
       if (!eventType) {
         return null;
       }
-      const turnId =
-        typeof payload.turn_id === "string" && payload.turn_id.length > 0
-          ? payload.turn_id
-          : null;
-      if (!turnId) {
-        return null;
-      }
+      const turnId = nonEmpty(payload.turn_id);
       const nestedPayload =
         payload.payload &&
         typeof payload.payload === "object" &&
         !Array.isArray(payload.payload)
           ? (payload.payload as Record<string, unknown>)
           : {};
-      const {
-        turnId: _nestedCamelTurnId,
-        turn_id: _nestedTurnId,
-        ...canonicalNestedPayload
-      } = nestedPayload;
+      const segmentId = nonEmpty(payload.segment_id);
+      if (!turnId || !segmentId) {
+        logProviderSegmentAdmissionRejection({
+          runtimeKind: RuntimeKind.AUTOBYTEUS,
+          runId: this.runId,
+          nativeEventName: typeof payload.event_type === "string"
+            ? payload.event_type
+            : event.event_type,
+          reasonCode: "AUTOBYTEUS_SEGMENT_IDENTITY_INVALID",
+        });
+        return null;
+      }
+      const sourcePayload = eventType === AgentRunEventType.SEGMENT_START
+        ? {
+            id: segmentId,
+            turn_id: turnId,
+            segment_type: payload.segment_type,
+            ...(nestedPayload.metadata !== undefined
+              ? { metadata: nestedPayload.metadata }
+              : {}),
+          }
+        : eventType === AgentRunEventType.SEGMENT_CONTENT
+          ? {
+              id: segmentId,
+              turn_id: turnId,
+              delta: nestedPayload.delta,
+            }
+          : {
+              id: segmentId,
+              turn_id: turnId,
+              ...(nestedPayload.metadata !== undefined
+                ? { metadata: nestedPayload.metadata }
+                : {}),
+              ...(nestedPayload.interrupted !== undefined
+                ? { interrupted: nestedPayload.interrupted }
+                : {}),
+              ...(nestedPayload.reason !== undefined ? { reason: nestedPayload.reason } : {}),
+              ...(nestedPayload.failed !== undefined ? { failed: nestedPayload.failed } : {}),
+              ...(nestedPayload.error !== undefined ? { error: nestedPayload.error } : {}),
+            };
       return {
         eventType,
         runId: this.runId,
-        payload: {
-          id:
-            typeof payload.segment_id === "string" && payload.segment_id.length > 0
-              ? payload.segment_id
-              : "",
-          turn_id: turnId,
-          ...(payload.segment_type !== undefined ? { segment_type: payload.segment_type } : {}),
-          ...canonicalNestedPayload,
-        },
+        payload: sourcePayload,
         statusHint,
       };
     }

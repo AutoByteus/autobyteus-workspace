@@ -5,12 +5,18 @@ import type {
 import { buildTokenUsageRunSummary } from "../projections/token-usage-run-summary-adapter.js";
 import { SqlTokenUsageLedgerRepository } from "../repositories/sql/token-usage-ledger-repository.js";
 import { TokenUsageDisplayFieldCapturer } from "./token-usage-display-field-capturer.js";
+import {
+  TokenUsageTeamRunV1MigrationRepository,
+  type TokenUsageRuntimeSchemaSnapshot,
+  type TokenUsageTeamRunV1ApplyResult,
+  type TokenUsageTeamRunV1RootUpdate,
+} from "../repositories/sql/token-usage-team-run-v1-migration-repository.js";
 
 const hasMissingDisplayField = (event: TokenUsageUpdatedPayload): boolean => (
   event.root_team_run_id
     ? !event.team_name ||
       !event.run_created_at ||
-      Boolean((event.member_agent_run_id || event.member_route_key) && !event.member_name)
+      Boolean(event.root_team_run_id && !event.member_display_name)
     : !event.agent_name || !event.run_created_at
 );
 
@@ -22,14 +28,30 @@ const hasDisplayFieldChange = (
   original.agent_name !== captured.agent_name ||
   original.run_summary !== captured.run_summary ||
   original.run_created_at !== captured.run_created_at ||
-  original.member_name !== captured.member_name
+  original.member_display_name !== captured.member_display_name
 );
 
 export class TokenUsageLedgerStore {
   constructor(
     private readonly repository = new SqlTokenUsageLedgerRepository(),
     private readonly displayFieldCapturer = new TokenUsageDisplayFieldCapturer(),
+    private readonly teamRunV1Migration = new TokenUsageTeamRunV1MigrationRepository(),
   ) {}
+
+  inspectTeamRunV1Migration(): Promise<TokenUsageRuntimeSchemaSnapshot> {
+    return this.teamRunV1Migration.inspectRuntimeSchemaAndEvidence();
+  }
+
+  applyTeamRunV1RootUpdates(
+    updates: readonly TokenUsageTeamRunV1RootUpdate[],
+    snapshot: TokenUsageRuntimeSchemaSnapshot,
+  ): Promise<TokenUsageTeamRunV1ApplyResult> {
+    return this.teamRunV1Migration.applyResolvedRootUpdates(updates, snapshot);
+  }
+
+  disconnectTeamRunV1Migration(): Promise<void> {
+    return this.teamRunV1Migration.disconnect();
+  }
 
   async appendTokenUsageEvent(payload: TokenUsageUpdatedPayload): Promise<TokenUsageUpdatedPayload> {
     const capturedPayload = await this.displayFieldCapturer.capture(payload);
@@ -53,24 +75,18 @@ export class TokenUsageLedgerStore {
     return buildTokenUsageRunSummary({
       runId: events[0]?.run_id ?? rootTeamRunId,
       events,
-      rootTeamRunIdOverride: rootTeamRunId,
     });
   }
 
   async getTeamMemberSummary(input: {
     rootTeamRunId: string;
-    memberAgentRunId?: string | null;
-    memberRouteKey?: string | null;
+    agentRunId: string;
   }): Promise<TokenUsageRunSummaryPayload> {
-    const events = (await this.repository.listEventsByTeamRunId(input.rootTeamRunId)).filter((event) => {
-      if (input.memberAgentRunId && event.member_agent_run_id !== input.memberAgentRunId) return false;
-      if (input.memberRouteKey && event.member_route_key !== input.memberRouteKey) return false;
-      return true;
-    });
+    const events = (await this.repository.listEventsByTeamRunId(input.rootTeamRunId))
+      .filter((event) => event.run_id === input.agentRunId);
     return buildTokenUsageRunSummary({
-      runId: events[0]?.run_id ?? input.memberAgentRunId ?? input.rootTeamRunId,
+      runId: input.agentRunId,
       events,
-      rootTeamRunIdOverride: input.rootTeamRunId,
     });
   }
 

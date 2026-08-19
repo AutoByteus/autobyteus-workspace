@@ -1,0 +1,12 @@
+timestamp=2026-08-13T12:00:55+02:00
+owned_runtime_present=no
+owned_db_present=no
+owned_key_present=no
+owned_port_60239_listeners=0
+owned_port_31239_listeners=0
+protected_port_60004_action=NONE
+protected_port_60004_listeners=0
+protected_port_31004_action=NONE
+protected_port_31004_listeners=0
+operational_database_action=NONE
+automatic_rollback_or_repair=NONE

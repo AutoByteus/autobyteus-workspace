@@ -47,7 +47,7 @@ const buildItems = (): RecentEventMonitorPresentationItem[] => [{
       { type: 'think', content: 'reasoning' },
       {
         type: 'tool_call', invocationId: 'tool-1', toolName: 'search', arguments: { query: 'weather' },
-        status: 'awaiting-approval', approvalTarget: { memberRouteKey: 'member-a', memberPath: ['root', 'member-a'] },
+        status: 'awaiting-approval', approvalTarget: { agentRunId: 'member-run-a' },
         logs: [], result: null, error: null,
       },
       {
@@ -115,7 +115,7 @@ describe('recent Event Monitor presentation witness', () => {
     ['tool summary', (items: any[]) => { aiSegments(items)[2].arguments.query = 'forecast'; }],
     ['tool status', (items: any[]) => { aiSegments(items)[2].status = 'approved'; }],
     ['tool error', (items: any[]) => { aiSegments(items)[2].error = 'visible error'; }],
-    ['tool approval target', (items: any[]) => { aiSegments(items)[2].approvalTarget.memberPath[1] = 'member-b'; }],
+    ['tool approval target', (items: any[]) => { aiSegments(items)[2].approvalTarget.agentRunId = 'member-run-b'; }],
     ['terminal command', (items: any[]) => { aiSegments(items)[3].command = 'ls'; }],
     ['write path', (items: any[]) => { aiSegments(items)[4].path = '/workspace/new.txt'; }],
     ['edit path', (items: any[]) => { aiSegments(items)[5].path = '/workspace/new-edit.txt'; }],

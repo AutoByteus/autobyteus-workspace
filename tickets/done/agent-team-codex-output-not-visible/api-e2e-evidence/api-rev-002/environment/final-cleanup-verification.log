@@ -1,0 +1,19 @@
+cleanup_started_at=2026-08-17T08:45:27Z
+owned_server_port=60419 pid=2593
+owned_web_port=31419 pid=77378
+browser_tab=8b0ced status=closed
+pre_stop_server=node    2593 normy   23u  IPv4 0x950f81bcbdeb4101      0t0  TCP 127.0.0.1:60419 (LISTEN);
+pre_stop_web=node    77378 normy   17u  IPv4 0x8c07ad7d0bcb5999      0t0  TCP 127.0.0.1:31419 (LISTEN);
+post_stop_server_listener_count=0
+post_stop_web_listener_count=0
+owned_server_pid_alive=0
+owned_web_pid_alive=0
+owned_runtime_exists_after=0
+owned_db_residue_after=0
+browser_known_tab_count_after_cleanup=verified_separately_by_open_tab_close
+operational_database_action=NONE
+home_autobyteus_action=NONE
+protected_60004_31004_action=NONE
+cleanup_completed_at=2026-08-17T08:45:50Z
+browser_known_tab_count_after_cleanup=0
+browser_list_tabs_rechecked=true

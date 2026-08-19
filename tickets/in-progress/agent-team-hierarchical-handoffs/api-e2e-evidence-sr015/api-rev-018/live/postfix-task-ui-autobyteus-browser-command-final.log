@@ -1,0 +1,24 @@
+{
+  "result": "Pass",
+  "rows": [
+    {
+      "scenario": "AutoByteus",
+      "teamRunId": "delegated_task_ui_validation_team_4d4381848fec4433bb3031aedc5f9964",
+      "assertions": {
+        "currentTaskTeamVisibleActive": true,
+        "currentTaskTeamTransientRowVisible": true,
+        "nestedTaskAgentTransientRowVisible": true,
+        "exactTaskAgentSelection": true,
+        "nestedTaskAgentAcceptedPersisted": true,
+        "nestedTaskAgentTerminalCleanup": true,
+        "awaitingReviewVisible": true,
+        "refreshRestoreVisible": true,
+        "exactTaskTeamSelection": true,
+        "acceptedPersisted": true,
+        "terminalTransientCleanup": true,
+        "exactRootedAddresses": true,
+        "allPersistentLeavesExact": true
+      }
+    }
+  ]
+}

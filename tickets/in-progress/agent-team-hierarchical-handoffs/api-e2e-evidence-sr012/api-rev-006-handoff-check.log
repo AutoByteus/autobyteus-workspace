@@ -1,0 +1,55 @@
+API-REV-006 handoff verification
+utc=2026-08-05T00:36:38Z
+head=a72b7f7212f42763fc0a5f6dd8bc9864b690a92f
+
+revision-id checks
+API-REV-006 index rows: 1
+API-REV-006 detailed entries: 1
+14:| API-REV-006 | `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md`; Round 6 | SR-012; ARCH-REV-007; IR-007; CRR-012 | Fail / 18% (API-REV-005) | Fail / 22% |
+138:### API-REV-006 — Traversal fix passes; AutoByteus native task caller context fails
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-coverage-investigation.md:19:- Current API/E2E Revision ID: `API-REV-006`.
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-coverage-investigation.md:20:- Current Investigation Round: `6` (API-REV-005 failure continuation; completed result recorded as `API-REV-006`).
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md:21:- Current API/E2E Revision ID: `API-REV-006`
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md:22:- Current Execution Round: `6`
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md:186:- Result: `Fail`.
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md:187:- Final validation confidence: `22%`.
+
+upstream lineage checks
+305:  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/investigation-notes.md` — recorded ARCH-REV-006, current V4 contracts/gates/artifacts, existing diagnostic/quarantine and physical DB inventory evidence, design finding 29, and SR-012 risks/review questions.
+308:  - Updated `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/team-run-canonical-identity-refactor.md` with cases 10.9–10.13, V5 SDK/admission contract, DB independence, removal/forbidden/test/sequence guidance, and SR-012 status.
+312:- Remaining gaps or risks: No known requirement/design ambiguity remains. Implementation risks are stale generated/vendor/importable copies, manifests falsely claiming V5 while exporting V4, silently skipped platform DBs when bundles are quarantined, and overly broad version renaming. All have explicit owners, case spines, rejection rules, and coverage seams. No code, artifact rebuild, migration, or test execution is claimed in SR-012.
+164:| `DR-002` | Resolved | Remains Resolved | `SR-002`; `SR-010`; `SR-012`; `ARCH-REV-007` | Send delivery/exact-run codes remain independently preserved while handoff retrieval keeps its approved minimal result. |
+165:| `DR-003` | Resolved | Remains Resolved | `SR-005`; `SR-008`; `SR-012`; `ARCH-REV-007` | Shared recipient values remain operation-neutral/address-only and do not expose config, handles, or lifecycle identity. |
+166:| `DR-004` | Open | Resolved | `SR-012`; `ARCH-REV-007` | Exact V5 owner/types; independent unchanged version domains; ordered manifest/provider/quarantine/definition gates; actionable V4 rejection; atomic project artifact checkpoint; catalog-independent DB migration; DS-012A–E; and focused coverage seams are explicit. |
+15:| IR-007 | `code_reviewer` / `code-review-report.md` / `CRR-011` | `CR-F-005` / `API-F-001` | `Local Fix` | `SR-012`; `ARCH-REV-007`; `CRR-010`–`CRR-011`; `API-REV-005`; prior `DR-003` applies only to SR-006 | `Rooted traversal classification corrected; ready for source re-review` |
+139:### IR-007 — Restore Agent-intermediate rooted traversal classification
+18:| `CRR-012` | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md` | IR-007 source re-review of `CR-F-005` / `API-F-001` | `Fail — Local Fix` | `Pass` | `CR-F-005`, `API-F-001` |
+287:### CRR-012 — IR-007 restores exact rooted traversal classification
+
+required current evidence paths
+OK /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-coverage-investigation.md
+OK /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md
+OK /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-revision-record.md
+OK /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr012/address-resolver-crr012-recheck.log
+OK /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr012/dirty-unit-discovery-after-crr012.log
+OK /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr012/autobyteus-task-context-failure-focused.log
+OK /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr012/autobyteus-task-context-failure-final.log
+OK /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr012/autobyteus-task-context-failure-analysis.log
+OK /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/fixtures/current-team-run-fixtures.ts
+OK /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/unit/agent-tools/task-delegation/task-delegation-autobyteus-context.test.ts
+OK /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-managed-team-context-builder.ts
+OK /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-autobyteus-context.ts
+
+focused evidence summaries
+ Test Files  2 passed (2)
+      Tests  14 passed (14)
+ Test Files  1 failed (1)
+      Tests  3 failed | 1 passed (4)
+
+diff check
+PASS git diff --check
+
+canonical artifact hashes
+2bc5ca31017f5f85d7df166d047ad9ee2daeda525d624ceebfcc2aa577d632c7  /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-coverage-investigation.md
+dcbd07238bde7d5471fcf4e4d89a8d1cd27e93a9762a355da54518e7bd800633  /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md
+4828d41140dcb771d5078bd2a85f99a5243119ae51764dde738553dbd06eac34  /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-revision-record.md

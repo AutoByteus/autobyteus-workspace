@@ -37,7 +37,7 @@ export type AgentRunStatusProjection = {
   statusPayload: AgentStatusPayload;
   command?: {
     messageId: string;
-    state: "STARTING" | "FORWARDED" | "FAILED";
+    state: "STARTING" | "ADMITTED" | "FORWARDED" | "FAILED";
     updatedAt: string;
   } | null;
 };
@@ -108,7 +108,7 @@ export class AgentRunStatusProjectionService {
     const commandRegistry = this.deps.commandRegistry ?? getAgentRunCommandRegistry();
 
     const activeRun = agentRunManager.getActiveRun(normalizedRunId);
-    const inFlight = commandRegistry.getInFlightRecord(normalizedRunId);
+    const outstanding = commandRegistry.getPresentedOutstandingRecord(normalizedRunId);
 
     if (activeRun) {
       const snapshot = activeRun.getStatusSnapshot();
@@ -120,10 +120,10 @@ export class AgentRunStatusProjectionService {
         lastKnownStatus: snapshot.status === "error" ? "ERROR" : "ACTIVE",
         statusSource: "ACTIVE_RUNTIME",
         statusPayload: snapshot,
-        command: inFlight ? {
-          messageId: inFlight.messageId,
-          state: inFlight.state === "FORWARDED" ? "FORWARDED" : "STARTING",
-          updatedAt: inFlight.updatedAt,
+        command: outstanding ? {
+          messageId: outstanding.messageId,
+          state: this.toProjectedCommandState(outstanding.state),
+          updatedAt: outstanding.updatedAt,
         } : null,
       });
     }
@@ -132,7 +132,7 @@ export class AgentRunStatusProjectionService {
     if (overlay) {
       const overlayRecord = overlay.messageId
         ? commandRegistry.getRecord(normalizedRunId, overlay.messageId)
-        : inFlight;
+        : outstanding;
       return this.buildProjection({
         runId: normalizedRunId,
         status: overlay.status,
@@ -154,12 +154,15 @@ export class AgentRunStatusProjectionService {
 
 
   private toProjectedCommandState(
-    state: "STARTING" | "FORWARDED" | "COMPLETED" | "FAILED" | "REJECTED",
-  ): "STARTING" | "FORWARDED" | "FAILED" {
+    state: "STARTING" | "ADMITTED" | "FORWARDED" | "COMPLETED" | "FAILED" | "REJECTED" | "CANCELLED",
+  ): "STARTING" | "ADMITTED" | "FORWARDED" | "FAILED" {
     if (state === "FORWARDED") {
       return "FORWARDED";
     }
-    if (state === "FAILED" || state === "REJECTED") {
+    if (state === "ADMITTED") {
+      return "ADMITTED";
+    }
+    if (state === "FAILED" || state === "REJECTED" || state === "CANCELLED") {
       return "FAILED";
     }
     return "STARTING";

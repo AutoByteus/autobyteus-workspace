@@ -1,0 +1,7 @@
+owned server:
+COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    22700 normy   30u  IPv4 0x1526d69c7a4de966      0t0  TCP 127.0.0.1:60312 (LISTEN)
+owned web:
+COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    36808 normy   17u  IPv4 0x67b2871102409edb      0t0  TCP 127.0.0.1:31312 (LISTEN)
+protected observation only:

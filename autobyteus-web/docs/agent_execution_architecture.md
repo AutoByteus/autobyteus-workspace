@@ -57,14 +57,47 @@ The Pinia stores act as the primary interface for the UI components to interact 
 
 ### `agentTeamRunStore.ts` (Agent Teams)
 
-- **Role**: Manages multi-agent team sessions.
+- **Role**: Owns Team launch, restore, exact execution focus, Team stream
+  attachment, message submission, interrupt, and termination.
 - **Key Actions**:
-  - `createAndLaunchTeam()`: Orchestrates the creation of a new team run configuration and starts the session.
-  - `launchExistingTeam()`: Resumes or starts a session from an existing team instance.
-  - `connectToTeamStream(teamRunId)`: Listens for team-level events (for example server task-delegation lifecycle events, root `TEAM_RUN_LIFECYCLE`, and exact member events) via WebSocket. `AgentTeamContext.isSubscribed` records transport attachment separately from root `isActive`.
-  - `sendMessageToFocusedMember()`: Routes user input through `resolveTeamConversationTargetAddressResult(...)`, which returns a typed `ConversationTargetAddress` for backend routing and a separate local target key for composer, draft-attachment, and optimistic-message ownership. The address can target structural leaf members, structural subteams, task-agent executions, task-team roots, or members inside task-team executions by composing `member`, `task_team`, and `task_agent` segments from the focused projection. A new/all-offline team can still send its first message to a focused non-coordinator structural member, and a valid runtime projection can now receive ordinary chat without falling back to the structural template. Missing/stale focused targets or incomplete runtime identity fail validation instead of silently retargeting; the active-execution safety fallback remains reserved for task-agent-only logical-member conversations that should not receive ordinary user chat. After validation, the store immediately begins a local submission for the selected local target by appending the user message when a local leaf context exists, clearing that target's composer/staged context files, and setting `isSending`. Backend create/restore, attachment finalization, stream connection, and WebSocket send then continue; finalized attachment locators are reconciled onto the already-visible member message rather than appended as a duplicate. Frontend team chat emits `SEND_MESSAGE.conversation_target_address`; backend WebSocket `SEND_MESSAGE` provides the authoritative final recovery and target-validation boundary when the local resume cache is stale or absent, exact member `AGENT_STATUS` events own visible `initializing`/`running`, and root `TEAM_RUN_LIFECYCLE` owns only team liveness.
-  - `interruptGeneration()`: Generates a fresh `client_interrupt_*` command id and sends team `INTERRUPT_GENERATION` for the exact active-execution command member. `TeamStreamingService` correlates command id plus team/member route/run target before completing it. Rejected/failed server results and local transport completion produce one member-aware localized error toast; accepted does not clear that member's `isSending`. The member becomes send-ready only from later backend lifecycle/status events.
-  - `terminateTeamRun()`: Calls backend termination before local teardown for persisted teams. A per-run `stopPending` guard suppresses duplicate Stop while the request is in flight. On success it disconnects the team stream, marks members shut down, marks root `isActive=false`, updates run-history resume state, and refreshes the tree; on failure it clears pending but preserves the active local team state.
+  - `launchDraft()`: synchronously admits the selected immutable draft before
+    allocation, validates rooted member-address launch readiness, creates the
+    backend TeamRun, hydrates its canonical topology/execution state, transfers
+    draft inputs, promotes the draft exactly once, and releases the launch lock
+    on success or failure. Pending edits, focus/input/workspace/removal/clear,
+    selection changes, and duplicate launch allocation are rejected.
+  - `connectToTeamStream(rootTeamRunId)`: attaches one `TeamStreamingService` to
+    the root TeamRun and its canonical `AgentTeamContext`. Transport readiness is
+    separate from root Team liveness and leaf Agent status. The service accepts
+    the initial structural snapshot as its sequence base and then requires exact
+    next-sequence admission for every live execution message. The first gap is
+    rejected before Team or Agent conversation mutation, enters the persistent
+    `reopen_required` phase once, closes the stale transport, and blocks commands
+    and ordinary reconnect rather than silently dropping later output.
+  - Team-stream recovery is an explicit history-selection workflow, not a
+    structural-snapshot refresh. Reselecting a member performs a root execution
+    checkpoint, exact per-Agent conversation hydration, and a second checkpoint;
+    open work or a changed checkpoint produces localized wait/retry feedback and
+    leaves the failed context selected. Only a candidate stream whose snapshot
+    base equals the stable checkpoint can atomically replace the failed service
+    and fully hydrated context.
+  - `sendMessageToFocusedMember()`: uses the focused exact
+    `TeamExecutionAddress` (`rootTeamRunId`, ordered `taskTeamRunIds`, rooted
+    `memberAddress`, and nullable `taskAgentRunId`). It launches or restores when
+    necessary, requires an exact Agent execution, begins one local submission,
+    finalizes attachments, and emits `SEND_MESSAGE` with `execution_address`,
+    required `message_id`, and required `dedupe_key`. Invalid, stale, non-Agent,
+    or cross-root identity fails closed; there is no structural-template,
+    route-key, display-name, or generated-id fallback.
+  - `interruptFocusedMemberGeneration()`: emits `INTERRUPT_GENERATION` with a
+    fresh command id and the exact execution address. `TeamStreamingService`
+    completes the pending command only when `AGENT_COMMAND_ACK` matches both.
+    Accepted acknowledgement is admission, not an optimistic status change.
+  - `postToolExecutionApproval()`: reuses the exact execution address captured
+    from the authoritative `agent_execution` event. It never rebuilds a target
+    from current focus or invocation-id/display aliases.
+  - `terminateTeamRun()`: calls backend termination before local teardown for a
+    persisted TeamRun and preserves the active local state on failure.
 
 ### Stopped-Run Follow-Up Recovery
 
@@ -79,27 +112,16 @@ principle, but the standalone runtime activation boundary is now the
 - interrupt/tool-approval control messages are active-only and should not be used as implicit restore operations.
 
 Tool approval controls use the selected active context only. Inline approval
-buttons call the active context store, which routes to the single-agent or team
-run store and emits `APPROVE_TOOL` / `DENY_TOOL` to the backend. The frontend
-must not treat a click as local execution success, local denial finality beyond
-the immediate requested command, or stopped-run recovery. Authoritative state
-comes back through backend `TOOL_APPROVED`, `TOOL_DENIED`,
-`TOOL_EXECUTION_*`, `ERROR`, and status/lifecycle projections; stale/no-active
-or interrupted approval attempts remain backend-rejected control outcomes. A
-visible tool row is not itself approval authority: approval buttons should be
-shown only for `awaiting-approval` rows, and backend rejection remains
-authoritative when a stale client attempts to approve an active-but-not-pending
-tool invocation. For team streams, approval dispatch must use the structured
-`ToolApprovalTarget` captured from the backend approval event, such as a member
-route key/path. When the pending approval belongs to a delegated task-agent run,
-the target must also carry the concrete `task_agent_run_id` emitted by the
-backend so approval/denial routes to that task-scoped runtime rather than the
-logical member template. When the pending approval belongs to a task-team scoped
-child, the target must carry `task_team_run_id` plus the emitted
-`task_team_relative_member_path` or `task_team_relative_member_route_key`; a
-nested task-agent approval can also carry `task_agent_run_id` as the concrete
-child-run guard. The frontend must not rebuild approval targets from the current
-focused member, scalar aliases, or invocation-id fallbacks after focus changes.
+buttons route `APPROVE_TOOL` / `DENY_TOOL` through the appropriate streaming
+service. For Team streams, each tool event carries a strict `agent_execution`
+binding. `TeamToolApprovalTargetTracker` captures its exact
+`TeamExecutionAddress` by invocation id, and approval/denial serializes
+`{invocation_id, execution_address, reason}`. A focus change cannot retarget the
+command. Missing or malformed execution identity fails closed; the frontend does
+not reconstruct it from member paths, route aliases, generated instance ids, or
+invocation ids. Authoritative lifecycle remains the backend's later
+`TOOL_APPROVED`, `TOOL_DENIED`, `TOOL_EXECUTION_*`, `ERROR`, and status events.
+A visible tool card is not by itself approval authority.
 
 Interrupt dispatch and interrupt result are control traffic, not lifecycle or
 transcript events. Both streaming services register the fresh command id and
@@ -113,6 +135,15 @@ An accepted result means provider/runtime admission only. The frontend keeps the
 affected single run or focused team member in its current sending state until
 `TURN_COMPLETED`, `AGENT_STATUS`, or terminal stream handling clears that state,
 so Stop remains visible until the provider cancellation boundary has settled.
+
+`SEND_MESSAGE` acceptance is likewise admission rather than completion. Once an
+exact live AgentRun exists, the server owns one ordered FIFO and may retain an
+accepted entry while another turn or interrupt is active. The browser does not
+choose provider start/append/wait policy, reject a second backend command as
+"run busy", or infer a new turn id. It continues to correlate acknowledgements
+by command/message identity and renders lifecycle from the later canonical
+status/turn/error stream. Accepted waiting input is not duplicated locally when
+the server later forwards or associates it with a turn.
 
 ### Runtime Status And Interrupt Authority
 
@@ -152,22 +183,15 @@ Startup tokens such as `bootstrapping`, `starting`, `startup`, `initializing`,
 and active `uninitialized` project as active non-interruptible
 `initializing`; they keep send readiness blocked without granting the red
 interrupt affordance. Active processing/tool/LLM tokens project as `running`.
-When the selected context is a team, text send and stop/interrupt dispatch use
-separate target resolvers. Text send uses the conversation-target address
-resolver so a valid roster-focused offline member, structural subteam, or
-runtime task projection can receive ordinary chat through a typed
-`ConversationTargetAddress`; stop/interrupt dispatch resolves the
-active-execution command member at click time. That interrupt command member can
-intentionally differ from roster/history visual focus: for example, an
-all-offline historical team row can show `api_e2e_engineer` in the focus pane
-while interrupt safety remains on the active-execution command target. The
-frontend sends team
-`INTERRUPT_GENERATION` with
-`target_member_route_key` set to the active-execution command member route key
-and `target_member_run_id` set only as an optional member run-id guard. If there
-is no command-eligible focused leaf member, the focused context is stale, or no
-active team streaming service exists, the frontend must not send a team
-interrupt command.
+When the selected context is a Team, text send and stop/interrupt dispatch use
+the same focused exact `TeamExecutionAddress`, but remain separate commands.
+`SEND_MESSAGE` carries that address with message/dedupe identity;
+`INTERRUPT_GENERATION` carries it with a fresh command id. The focused address
+must resolve to an exact Agent execution in the current root TeamRun. Missing,
+stale, structural-Team, or cross-root targets are rejected locally or by the
+strict server boundary instead of falling back to another member. Tool approval
+uses the execution address recorded for the invocation rather than current focus.
+
 Run-history refresh, active recovery, and run-open hydration must preserve an
 already-live `initializing/canInterrupt=false` or `running/canInterrupt=true`
 single run or focused team member while that live stream remains authoritative,
@@ -195,21 +219,16 @@ definition field. Representative ordering, leaf-agent status, socket
 subscription, and Stop/pending state must not influence either the exact-run
 cue or the group projection.
 
-Delegated task executions are task-scoped transient child entities rather than
-structural team topology. When team stream payloads carry explicit task-agent
-identity (`execution_kind: "task_agent"`, `task_agent_instance_id`,
-`task_agent_run_id`, `task_id`) plus logical member metadata (`member_path` /
-`member_route_key` and `source_path` / `source_route_key`),
-`TeamStreamingService` creates a temporary task-agent context/node keyed by the
-task-agent run id. When payloads carry task-team identity
-(`execution_kind: "task_team"`, `task_team_instance_id`, `task_team_run_id`,
-`task_id`, `team_path`, and `team_route_key`), the service creates a temporary
-task-team root node distinct from the structural `agent_team` member. Events
-inside that task-team child run must carry `task_team_run_id` plus
-`task_team_relative_member_path` or `task_team_relative_member_route_key`; the
-frontend clones scoped child member nodes/contexts under the task-team root and
-drops task-team scoped events that lack a task-team run id instead of guessing
-from the structural route.
+Delegated task executions are task-scoped execution projections rather than
+structural topology. Every Team Agent event carries one `agent_execution`
+binding with `kind`, exact `execution_address`, and an `agent_run_id` only when
+that execution owns an Agent runtime. A task-Agent address keeps the rooted
+logical member and sets `taskAgentRunId`; a task-Team child appends the concrete
+child TeamRun id to ordered `taskTeamRunIds` and carries the rooted child Agent
+address. The strict contract contains no task instance ids, execution-kind
+aliases, member/source path or route-key fallbacks, represented-subteam fields,
+or generated-run-id inference. Complete task snapshots and live events reconcile
+through the same execution model and exact serialized address.
 
 Delegated task visibility is intentionally split across two surfaces. The
 global Workspaces/run-history tree owns live execution identity and hierarchy:
@@ -1030,8 +1049,8 @@ A key architectural pattern is the **Sidecar Store Pattern** for runtime data. I
     - Keeps transient `write_file` buffers only until committed previews are fetched from the server-backed run preview route.
 2.  **Team Communication (`TeamCommunicationStore`)**:
     - Listens to derived `TEAM_COMMUNICATION_MESSAGE` live payloads plus team reopen hydration from `getTeamCommunicationMessages(teamRunId)`.
-    - Owns the canonical team-level address-first message projection and child `referenceFiles` declared by explicit `send_message_to.reference_files` on `recipient_name` deliveries.
-    - Exposes focused-member sent/received message perspectives by comparing the focused `ConversationTargetAddress` with each message's `senderAddress` and `receiverAddress`, grouped by counterpart address label.
+    - Owns the canonical team-level address-first message projection and child `referenceFiles` declared by explicit `send_message_to.reference_files` on `recipient_address` deliveries.
+    - Exposes focused-member sent/received message perspectives by comparing the focused `TeamExecutionAddress` with each message's `senderAddress` and `receiverAddress`, grouped by counterpart address label.
     - Keeps reference files under their parent message in the Team tab instead of inserting them into `RunFileChangesStore` or the Artifacts tab.
     - Opens reference content by persisted message identity (`teamRunId + messageId + referenceId`) through `/team-runs/:teamRunId/team-communication/messages/:messageId/references/:referenceId/content`.
     - Does not parse chat text in the frontend and does not make raw paths in `InterAgentMessageSegment` clickable.

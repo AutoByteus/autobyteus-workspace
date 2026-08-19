@@ -1,0 +1,250 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web
+
+stderr | components/mobile/__tests__/MobileContextSelectionRegression.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/mobile/__tests__/MobileContextSelectionRegression.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts (8 tests | 8 failed) 15ms
+   × TeamDelegatedTasksSection > uses controlled collapsed state with human task count and no approval summary 8ms
+     → Rejected test task snapshot: Task 'task_0002' status or updatedAt does not match its ordered timeline.
+   × TeamDelegatedTasksSection > renders task detail navigation without duplicating execution hierarchy rows 1ms
+     → Rejected test task snapshot: Task 'task_0002' status or updatedAt does not match its ordered timeline.
+   × TeamDelegatedTasksSection > switches the whole right pane to a task-owned reference preview and refreshes repeated reference selections 1ms
+     → Rejected test task snapshot: Task 'task_0002' status or updatedAt does not match its ordered timeline.
+   × TeamDelegatedTasksSection > returns from reference preview to task body when a summary row is selected 1ms
+     → Rejected test task snapshot: Task 'task_0002' status or updatedAt does not match its ordered timeline.
+   × TeamDelegatedTasksSection > adds a message-style horizontal split resize handle for the task navigator 1ms
+     → Rejected test task snapshot: Task 'task_0002' status or updatedAt does not match its ordered timeline.
+   × TeamDelegatedTasksSection > selects task summaries for reading without focusing execution targets 0ms
+     → Rejected test task snapshot: Task 'task_0002' status or updatedAt does not match its ordered timeline.
+   × TeamDelegatedTasksSection > keeps task-team summary selection detail-only with no member navigation 0ms
+     → Rejected test task snapshot: Task 'task_0002' status or updatedAt does not match its ordered timeline.
+   × TeamDelegatedTasksSection > shows the empty delegated-task state 0ms
+     → Rejected test task snapshot: Task 'task_0002' status or updatedAt does not match its ordered timeline.
+ ❯ components/mobile/__tests__/MobileContextSelectionRegression.spec.ts (11 tests | 4 failed) 67ms
+   ✓ mobile context selection stale-run regression > does not show an existing run monitor after switching mobile Chat to a non-run context 14ms
+   ✓ mobile context selection stale-run regression > routes non-run file attachments to mobile draft state instead of the stale selected run 3ms
+   ✓ mobile context selection stale-run regression > shows composer attachments from the current mobile context only 4ms
+   × mobile context selection stale-run regression > keeps pending team run attachments visible across focus changes and flushes them to the focused leaf before send 5ms
+     → Cannot read properties of undefined (reading 'trim')
+   × mobile context selection stale-run regression > blocks pending team run attachment flush for non-leaf focus without consuming pending files 1ms
+     → Cannot read properties of undefined (reading 'trim')
+   ✓ mobile context selection stale-run regression > uses draft attachment count for run setup and launches with the next-run draft 19ms
+   × mobile context selection stale-run regression > updates both team focus and the mobile work context when changing an existing team-run target 1ms
+     → Cannot read properties of undefined (reading 'trim')
+   × mobile context selection stale-run regression > hides existing-run target selector on Runs while keeping compact target controls on focused work tabs 2ms
+     → Cannot read properties of undefined (reading 'trim')
+   ✓ mobile context selection stale-run regression > keeps non-chat tabs in a bounded block task surface so h-full roots fill the viewport 11ms
+   ✓ mobile context selection stale-run regression > prefers remembered valid team focus when mapping Recent team runs and falls back safely when stale 2ms
+   ✓ mobile context selection stale-run regression > does not leak stale run or tool activity into non-run mobile activity contexts 4ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 12 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/mobile/__tests__/MobileContextSelectionRegression.spec.ts > mobile context selection stale-run regression > keeps pending team run attachments visible across focus changes and flushes them to the focused leaf before send
+TypeError: Cannot read properties of undefined (reading 'trim')
+ ❯ Proxy.setRunSelection stores/agentSelectionStore.ts:33:32
+     31|   actions: {
+     32|     setRunSelection(runId: string, type: Exclude<SelectionType, 'team_…
+     33|       const normalized = runId.trim();
+       |                                ^
+     34|       if (!normalized) throw new Error('Run selection requires a real …
+     35|       this.subject = type === 'agent'
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ Proxy.selectRunWithoutShellNavigation stores/agentSelectionStore.ts:43:113
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ seedActiveTeamRun components/mobile/__tests__/MobileContextSelectionRegression.spec.ts:135:28
+ ❯ components/mobile/__tests__/MobileContextSelectionRegression.spec.ts:330:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/12]⎯
+
+ FAIL  components/mobile/__tests__/MobileContextSelectionRegression.spec.ts > mobile context selection stale-run regression > blocks pending team run attachment flush for non-leaf focus without consuming pending files
+TypeError: Cannot read properties of undefined (reading 'trim')
+ ❯ Proxy.setRunSelection stores/agentSelectionStore.ts:33:32
+     31|   actions: {
+     32|     setRunSelection(runId: string, type: Exclude<SelectionType, 'team_…
+     33|       const normalized = runId.trim();
+       |                                ^
+     34|       if (!normalized) throw new Error('Run selection requires a real …
+     35|       this.subject = type === 'agent'
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ Proxy.selectRunWithoutShellNavigation stores/agentSelectionStore.ts:43:113
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ seedActiveTeamRun components/mobile/__tests__/MobileContextSelectionRegression.spec.ts:135:28
+ ❯ components/mobile/__tests__/MobileContextSelectionRegression.spec.ts:380:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/12]⎯
+
+ FAIL  components/mobile/__tests__/MobileContextSelectionRegression.spec.ts > mobile context selection stale-run regression > updates both team focus and the mobile work context when changing an existing team-run target
+TypeError: Cannot read properties of undefined (reading 'trim')
+ ❯ Proxy.setRunSelection stores/agentSelectionStore.ts:33:32
+     31|   actions: {
+     32|     setRunSelection(runId: string, type: Exclude<SelectionType, 'team_…
+     33|       const normalized = runId.trim();
+       |                                ^
+     34|       if (!normalized) throw new Error('Run selection requires a real …
+     35|       this.subject = type === 'agent'
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ Proxy.selectRunWithoutShellNavigation stores/agentSelectionStore.ts:43:113
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ seedActiveTeamRun components/mobile/__tests__/MobileContextSelectionRegression.spec.ts:135:28
+ ❯ components/mobile/__tests__/MobileContextSelectionRegression.spec.ts:460:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/12]⎯
+
+ FAIL  components/mobile/__tests__/MobileContextSelectionRegression.spec.ts > mobile context selection stale-run regression > hides existing-run target selector on Runs while keeping compact target controls on focused work tabs
+TypeError: Cannot read properties of undefined (reading 'trim')
+ ❯ Proxy.setRunSelection stores/agentSelectionStore.ts:33:32
+     31|   actions: {
+     32|     setRunSelection(runId: string, type: Exclude<SelectionType, 'team_…
+     33|       const normalized = runId.trim();
+       |                                ^
+     34|       if (!normalized) throw new Error('Run selection requires a real …
+     35|       this.subject = type === 'agent'
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ Proxy.selectRunWithoutShellNavigation stores/agentSelectionStore.ts:43:113
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ seedActiveTeamRun components/mobile/__tests__/MobileContextSelectionRegression.spec.ts:135:28
+ ❯ components/mobile/__tests__/MobileContextSelectionRegression.spec.ts:501:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/12]⎯
+
+ FAIL  components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts > TeamDelegatedTasksSection > uses controlled collapsed state with human task count and no approval summary
+Error: Rejected test task snapshot: Task 'task_0002' status or updatedAt does not match its ordered timeline.
+ ❯ buildTestTeamContext test-support/currentTeamTestFixtures.ts:290:50
+    288|   if (input.tasks?.length) {
+    289|     const result = reconcileTestTaskSnapshot(context, input.tasks);
+    290|     if (result.disposition === 'rejected') throw new Error(`Rejected t…
+       |                                                  ^
+    291|   }
+    292|   if (!sameTeamExecutionAddress(focusedAddress, context.executions.get…
+ ❯ buildTeamContext components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts:88:10
+ ❯ components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts:126:34
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/12]⎯
+
+ FAIL  components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts > TeamDelegatedTasksSection > renders task detail navigation without duplicating execution hierarchy rows
+Error: Rejected test task snapshot: Task 'task_0002' status or updatedAt does not match its ordered timeline.
+ ❯ buildTestTeamContext test-support/currentTeamTestFixtures.ts:290:50
+    288|   if (input.tasks?.length) {
+    289|     const result = reconcileTestTaskSnapshot(context, input.tasks);
+    290|     if (result.disposition === 'rejected') throw new Error(`Rejected t…
+       |                                                  ^
+    291|   }
+    292|   if (!sameTeamExecutionAddress(focusedAddress, context.executions.get…
+ ❯ buildTeamContext components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts:88:10
+ ❯ mountSubject components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts:100:37
+ ❯ components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts:145:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/12]⎯
+
+ FAIL  components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts > TeamDelegatedTasksSection > switches the whole right pane to a task-owned reference preview and refreshes repeated reference selections
+Error: Rejected test task snapshot: Task 'task_0002' status or updatedAt does not match its ordered timeline.
+ ❯ buildTestTeamContext test-support/currentTeamTestFixtures.ts:290:50
+    288|   if (input.tasks?.length) {
+    289|     const result = reconcileTestTaskSnapshot(context, input.tasks);
+    290|     if (result.disposition === 'rejected') throw new Error(`Rejected t…
+       |                                                  ^
+    291|   }
+    292|   if (!sameTeamExecutionAddress(focusedAddress, context.executions.get…
+ ❯ buildTeamContext components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts:88:10
+ ❯ mountSubject components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts:100:37
+ ❯ components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts:171:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/12]⎯
+
+ FAIL  components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts > TeamDelegatedTasksSection > returns from reference preview to task body when a summary row is selected
+Error: Rejected test task snapshot: Task 'task_0002' status or updatedAt does not match its ordered timeline.
+ ❯ buildTestTeamContext test-support/currentTeamTestFixtures.ts:290:50
+    288|   if (input.tasks?.length) {
+    289|     const result = reconcileTestTaskSnapshot(context, input.tasks);
+    290|     if (result.disposition === 'rejected') throw new Error(`Rejected t…
+       |                                                  ^
+    291|   }
+    292|   if (!sameTeamExecutionAddress(focusedAddress, context.executions.get…
+ ❯ buildTeamContext components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts:88:10
+ ❯ mountSubject components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts:100:37
+ ❯ components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts:189:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/12]⎯
+
+ FAIL  components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts > TeamDelegatedTasksSection > adds a message-style horizontal split resize handle for the task navigator
+Error: Rejected test task snapshot: Task 'task_0002' status or updatedAt does not match its ordered timeline.
+ ❯ buildTestTeamContext test-support/currentTeamTestFixtures.ts:290:50
+    288|   if (input.tasks?.length) {
+    289|     const result = reconcileTestTaskSnapshot(context, input.tasks);
+    290|     if (result.disposition === 'rejected') throw new Error(`Rejected t…
+       |                                                  ^
+    291|   }
+    292|   if (!sameTeamExecutionAddress(focusedAddress, context.executions.get…
+ ❯ buildTeamContext components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts:88:10
+ ❯ mountSubject components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts:100:37
+ ❯ components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts:200:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/12]⎯
+
+ FAIL  components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts > TeamDelegatedTasksSection > selects task summaries for reading without focusing execution targets
+Error: Rejected test task snapshot: Task 'task_0002' status or updatedAt does not match its ordered timeline.
+ ❯ buildTestTeamContext test-support/currentTeamTestFixtures.ts:290:50
+    288|   if (input.tasks?.length) {
+    289|     const result = reconcileTestTaskSnapshot(context, input.tasks);
+    290|     if (result.disposition === 'rejected') throw new Error(`Rejected t…
+       |                                                  ^
+    291|   }
+    292|   if (!sameTeamExecutionAddress(focusedAddress, context.executions.get…
+ ❯ buildTeamContext components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts:88:10
+ ❯ mountSubject components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts:100:37
+ ❯ components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts:222:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/12]⎯
+
+ FAIL  components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts > TeamDelegatedTasksSection > keeps task-team summary selection detail-only with no member navigation
+Error: Rejected test task snapshot: Task 'task_0002' status or updatedAt does not match its ordered timeline.
+ ❯ buildTestTeamContext test-support/currentTeamTestFixtures.ts:290:50
+    288|   if (input.tasks?.length) {
+    289|     const result = reconcileTestTaskSnapshot(context, input.tasks);
+    290|     if (result.disposition === 'rejected') throw new Error(`Rejected t…
+       |                                                  ^
+    291|   }
+    292|   if (!sameTeamExecutionAddress(focusedAddress, context.executions.get…
+ ❯ buildTeamContext components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts:88:10
+ ❯ mountSubject components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts:100:37
+ ❯ components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts:233:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/12]⎯
+
+ FAIL  components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts > TeamDelegatedTasksSection > shows the empty delegated-task state
+Error: Rejected test task snapshot: Task 'task_0002' status or updatedAt does not match its ordered timeline.
+ ❯ buildTestTeamContext test-support/currentTeamTestFixtures.ts:290:50
+    288|   if (input.tasks?.length) {
+    289|     const result = reconcileTestTaskSnapshot(context, input.tasks);
+    290|     if (result.disposition === 'rejected') throw new Error(`Rejected t…
+       |                                                  ^
+    291|   }
+    292|   if (!sameTeamExecutionAddress(focusedAddress, context.executions.get…
+ ❯ buildTeamContext components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts:88:10
+ ❯ components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts:243:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/12]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  12 failed | 7 passed (19)
+   Start at  21:54:15
+   Duration  7.06s (transform 3.46s, setup 11.79s, collect 558ms, tests 82ms, environment 588ms, prepare 339ms)
+

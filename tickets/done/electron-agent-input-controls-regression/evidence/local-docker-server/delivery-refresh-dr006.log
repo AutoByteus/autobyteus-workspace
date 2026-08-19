@@ -1,0 +1,28 @@
+DR-006 reviewed follow-up integrated-state refresh and finalization
+Ticket: electron-agent-input-controls-regression
+Target branch: codex/agent-team-universal-task-delegation
+Recorded remote target: origin/codex/agent-team-universal-task-delegation
+
+Pre-finalization fetch result: PASS
+Local target before reviewed follow-up commit: 59d294838c44f8bb365a26d388ad66cb6ef382c9
+Refreshed remote target before reviewed follow-up commit: 59d294838c44f8bb365a26d388ad66cb6ef382c9
+Divergence: 0  0
+Remote target advanced: No
+Integration/merge required: No
+Reviewed follow-up state: IR-002; CRR-003 Pass / 9.6; API-REV-002 Pass / 97.2%; CRR-004 Pass with no findings
+
+Finalized follow-up commit: c7dc4e73e350f9941106837e3d890273a0e0c176
+Commit message: fix(docker): package team stream contracts
+Push result: PASS
+Local target after push: c7dc4e73e350f9941106837e3d890273a0e0c176
+Refreshed remote target after push: c7dc4e73e350f9941106837e3d890273a0e0c176
+Divergence after push: 0  0
+
+Post-finalization executable operation: PASS
+Command: ./docker-start.sh up -p electron-agent-input-controls-regression-dr005 --build-local
+Image build/load: PASS
+Persistent isolated container start: PASS
+REST health: PASS — HTTP 200, status ok
+GraphQL health: PASS — status ok
+Existing container/volume preservation: PASS
+Recorded: 2026-08-18T15:33:24+02:00

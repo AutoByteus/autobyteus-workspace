@@ -1,0 +1,66 @@
+
+> autobyteus@1.4.51 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run stores/__tests__/mobileWorkStore.spec.ts composables/mobile/__tests__/useMobileWorkCatalog.spec.ts composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts components/workspace/running/__tests__/RunningTeamRow.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web
+
+stderr | composables/mobile/__tests__/useMobileWorkCatalog.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/running/__tests__/RunningTeamRow.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/mobileWorkStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/running/__tests__/RunningTeamRow.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/mobile/__tests__/useMobileWorkCatalog.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/mobileWorkStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/mobileWorkStore.spec.ts (5 tests) 5ms
+ ✓ composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts (2 tests) 6ms
+ ✓ services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts (5 tests) 11ms
+ ✓ components/workspace/running/__tests__/RunningTeamRow.spec.ts (3 tests) 43ms
+ ✓ composables/mobile/__tests__/useMobileWorkCatalog.spec.ts (2 tests) 6ms
+ ✓ composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts (4 tests) 14ms
+
+ Test Files  6 passed (6)
+      Tests  21 passed (21)
+   Start at  14:30:14
+   Duration  7.24s (transform 3.80s, setup 38.14s, collect 767ms, tests 85ms, environment 1.37s, prepare 1.09s)
+

@@ -1,0 +1,1 @@
+{"query":"mutation ImportAgentPackage($input: ImportAgentPackageInput!) { importAgentPackage(input: $input) { packageId displayName path sourceKind source sharedAgentCount teamLocalAgentCount agentTeamCount applicationCount isDefault isRemovable } }","variables":{"input":{"sourceKind":"LOCAL_PATH","source":"/Users/normy/autobyteus_org/autobyteus-agents"}}}

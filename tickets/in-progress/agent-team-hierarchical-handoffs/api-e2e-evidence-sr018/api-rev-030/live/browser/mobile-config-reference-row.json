@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "passed": false,
+  "rootTeamRunId": "nested_classroom_test_team_eeceab75d5cb483cab682be1841176c8",
+  "fatalError": "TimeoutError: locator.waitFor: Timeout 120000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"mobile-team-reference-row\"]').filter({ hasText: 'mobile-config-reference.txt' }).first() to be visible\u001b[22m\n\nlocator.waitFor: Timeout 120000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"mobile-team-reference-row\"]').filter({ hasText: 'mobile-config-reference.txt' }).first() to be visible\u001b[22m\n\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr018/api-rev-030/live/run-config-mobile-reference.mjs:127:22",
+  "consoleEvents": [],
+  "termination": {
+    "success": true,
+    "message": "Agent team run terminated successfully."
+  }
+}

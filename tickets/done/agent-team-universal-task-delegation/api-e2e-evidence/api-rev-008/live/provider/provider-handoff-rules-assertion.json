@@ -1,0 +1,103 @@
+{
+  "autobyteus": {
+    "terminal": {
+      "type": "TURN_COMPLETED",
+      "atMs": 3682
+    },
+    "error": null,
+    "tool": [
+      {
+        "type": "TOOL_EXECUTION_STARTED",
+        "payload": {
+          "change_sequence": 1315,
+          "agent_run_id": "utd_coordinator_api_rev_008_1786830349955_2a4779f90c5542ed84277191a076c6ce",
+          "invocation_id": "call_CgLA7E7RYhLEn4MxjDhHNSo0",
+          "tool_name": "get_handoff_rules",
+          "turn_id": "turn_0005",
+          "arguments": {}
+        }
+      },
+      {
+        "type": "TOOL_EXECUTION_SUCCEEDED",
+        "payload": {
+          "change_sequence": 1322,
+          "agent_run_id": "utd_coordinator_api_rev_008_1786830349955_2a4779f90c5542ed84277191a076c6ce",
+          "invocation_id": "call_CgLA7E7RYhLEn4MxjDhHNSo0",
+          "tool_name": "get_handoff_rules",
+          "turn_id": "turn_0005",
+          "arguments": null,
+          "result": "{\"handoffs\":[]}"
+        }
+      }
+    ],
+    "text": "{}No markdown section headings were returned."
+  },
+  "codex": {
+    "terminal": {
+      "type": "TURN_COMPLETED",
+      "atMs": 3963
+    },
+    "error": null,
+    "tool": [
+      {
+        "type": "TOOL_EXECUTION_STARTED",
+        "payload": {
+          "change_sequence": 375,
+          "agent_run_id": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+          "invocation_id": "exec-a8132860-b127-4852-b65c-7a74e3e1cf23",
+          "tool_name": "get_handoff_rules",
+          "turn_id": "01a00768-0c9b-7713-afca-578302e7da77",
+          "arguments": {}
+        }
+      },
+      {
+        "type": "TOOL_EXECUTION_SUCCEEDED",
+        "payload": {
+          "change_sequence": 377,
+          "agent_run_id": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+          "invocation_id": "exec-a8132860-b127-4852-b65c-7a74e3e1cf23",
+          "tool_name": "get_handoff_rules",
+          "turn_id": "01a00768-0c9b-7713-afca-578302e7da77",
+          "arguments": {},
+          "result": {
+            "handoffs": []
+          }
+        }
+      }
+    ],
+    "text": "**Planning single get_handoff_rules call****Extracting first two markdown headings**No markdown section headings were returned."
+  },
+  "claude": {
+    "terminal": {
+      "type": "TURN_COMPLETED",
+      "atMs": 3530
+    },
+    "error": null,
+    "tool": [
+      {
+        "type": "TOOL_EXECUTION_STARTED",
+        "payload": {
+          "change_sequence": 189,
+          "agent_run_id": "utd_coordinator_api_rev_008_1786830349955_54de8235d93a411587e95c435cfc3336",
+          "invocation_id": "call_00_ET_FZ7Wc9Jm2sf1BLiwdz3w0163",
+          "tool_name": "get_handoff_rules",
+          "turn_id": "utd_coordinator_api_rev_008_1786830349955_54de8235d93a411587e95c435cfc3336:turn:1786830670719",
+          "arguments": {}
+        }
+      },
+      {
+        "type": "TOOL_EXECUTION_SUCCEEDED",
+        "payload": {
+          "change_sequence": 193,
+          "agent_run_id": "utd_coordinator_api_rev_008_1786830349955_54de8235d93a411587e95c435cfc3336",
+          "invocation_id": "call_00_ET_FZ7Wc9Jm2sf1BLiwdz3w0163",
+          "tool_name": "get_handoff_rules",
+          "turn_id": "utd_coordinator_api_rev_008_1786830349955_54de8235d93a411587e95c435cfc3336:turn:1786830670719",
+          "arguments": {},
+          "result": "{\"handoffs\":[]}"
+        }
+      }
+    ],
+    "text": "No handoff rules were returned; no markdown section headings to state."
+  }
+}

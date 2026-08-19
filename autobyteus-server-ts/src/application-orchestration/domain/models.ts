@@ -10,11 +10,7 @@ import type {
 
 export const APPLICATION_EXECUTION_CONTEXT_KEY = "application_execution_context" as const;
 
-export type ApplicationExecutionContext = {
-  applicationId: string;
-  bindingId: string;
-  producer: ApplicationExecutionProducer;
-};
+export type { ApplicationExecutionContext } from "@autobyteus/application-sdk-contracts";
 
 export type ApplicationExecutionEventPayload =
   { reason?: string | null; errorMessage?: string | null };
@@ -37,10 +33,9 @@ export type ApplicationRunLookupRecord = {
   bindingId: string;
 };
 
-export type BoundRunRuntimeDescriptor = {
-  runtimeSubject: "AGENT_RUN" | "TEAM_RUN";
-  runId: string;
-};
+export type BoundRunRuntimeDescriptor =
+  | { runtimeSubject: "AGENT_RUN"; agentRunId: string }
+  | { runtimeSubject: "TEAM_RUN"; teamRunId: string };
 
 export type ApplicationAgentBindingRecord = {
   bindingId: string;
@@ -49,8 +44,13 @@ export type ApplicationAgentBindingRecord = {
   status: ApplicationAgentBindingStatus;
   executionResourceRef: ApplicationExecutionResourceRef;
   runtime: {
-    subject: "AGENT_RUN" | "TEAM_RUN";
-    runId: string;
+    subject: "AGENT_RUN";
+    agentRunId: string;
+    definitionId: string;
+    members: [];
+  } | {
+    subject: "TEAM_RUN";
+    teamRunId: string;
     definitionId: string;
     members: ApplicationAgentTeamBindingMember[];
   };
@@ -75,7 +75,7 @@ export const toPublicApplicationAgentBinding = (
     lastErrorMessage: record.lastErrorMessage,
   };
   return record.runtime.subject === "AGENT_RUN"
-    ? { ...common, runtime: { subject: "AGENT_RUN", runId: record.runtime.runId, definitionId: record.runtime.definitionId, members: [] } }
+    ? { ...common, runtime: { subject: "AGENT_RUN", agentRunId: record.runtime.agentRunId, definitionId: record.runtime.definitionId, members: [] } }
     : { ...common, runtime: { ...record.runtime, subject: "TEAM_RUN", members: structuredClone(record.runtime.members) } };
 };
 export type PersistedBindingRecord = ApplicationAgentBindingRecord;

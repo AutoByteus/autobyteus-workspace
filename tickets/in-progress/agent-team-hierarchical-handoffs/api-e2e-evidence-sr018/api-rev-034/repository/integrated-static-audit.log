@@ -1,0 +1,34 @@
+API-REV-034 integrated static audit
+head=817956ba4b097d1e9792a264ec7df839fc81a461
+merge_commit=80830b9a70922364b45cd897ed062f41a25cdef9
+parents=3dbddf54ddc38e8de0e3a79ad5ad74dd71e63364 54890a07f74e941a7a12b6daaa26364f4c927b72
+reviewed_parent_ancestor_rc=0
+latest_base_parent_ancestor_rc=0
+unmerged_paths:
+tracked_dirty_production_paths:
+current_expected_test_delta:
+ M autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts
+ M autobyteus-server-ts/tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts
+removed-owner residue:
+autobyteus-member-system-prompt-composer=0
+configured-agent-tool-exposure=0
+member-run-instruction-composer=0
+selectorToRouteKey=0
+team-run-member-identity=0
+current canonical owners:
+autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts:22:import { buildRuntimeAgentToolExposure } from "../shared/runtime-agent-tool-exposure.js";
+autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts:252:        runtimeToolExposure: buildRuntimeAgentToolExposure([], config.memberTeamContext),
+autobyteus-server-ts/src/agent-team-execution/services/member-collaboration-instruction-renderer.ts:3:export const renderMemberCollaborationInstruction = (input: {
+autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts:43:import { composeCarpenterPrompt } from "../../prompt/carpenter-prompt-composer.js";
+autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts:334:    const resolvedPrompt = composeCarpenterPrompt({
+autobyteus-server-ts/src/agent-team-execution/services/team-runtime-instruction-renderer.ts:2:import { renderMemberCollaborationInstruction } from "./member-collaboration-instruction-renderer.js";
+autobyteus-server-ts/src/agent-team-execution/services/team-runtime-instruction-renderer.ts:11:    renderMemberCollaborationInstruction({
+autobyteus-server-ts/src/agent-execution/shared/runtime-agent-tool-exposure.ts:34:  buildRuntimeAgentToolExposure(agentDefinition?.toolNames ?? null, memberTeamContext);
+autobyteus-server-ts/src/agent-execution/shared/runtime-agent-tool-exposure.ts:36:export const buildRuntimeAgentToolExposure = (
+autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts:58:import { composeCarpenterPrompt } from "../../../prompt/carpenter-prompt-composer.js";
+autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts:231:    const carpenterSystemPrompt = composeCarpenterPrompt({
+autobyteus-server-ts/src/agent-execution/prompt/carpenter-prompt-composer.ts:25:export const composeCarpenterPrompt = (input: CarpenterPromptComposerInput): string => {
+autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-session-bootstrapper.ts:22:import { composeCarpenterPrompt } from "../../../prompt/carpenter-prompt-composer.js";
+autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-session-bootstrapper.ts:84:    const carpenterSystemPrompt = composeCarpenterPrompt({
+diff-check:
+diff_check_rc=0

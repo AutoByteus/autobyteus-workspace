@@ -1,0 +1,366 @@
+{
+  "row": "Claude Agent SDK",
+  "catalogSelection": {
+    "modelIdentifier": "sonnet",
+    "name": "deepseek-v4-flash",
+    "value": "sonnet",
+    "providerId": "ANTHROPIC",
+    "providerName": "Anthropic",
+    "providerType": "ANTHROPIC",
+    "runtime": "api",
+    "configSchema": {
+      "type": "object",
+      "properties": {
+        "thinking_enabled": {
+          "description": "Enable Claude extended thinking.",
+          "type": "boolean",
+          "default": false
+        },
+        "reasoning_effort": {
+          "description": "Controls Claude thinking depth. Higher effort may improve quality but increase latency.",
+          "type": "string",
+          "default": "medium",
+          "enum": [
+            "low",
+            "medium",
+            "high",
+            "xhigh",
+            "max"
+          ]
+        }
+      },
+      "required": []
+    }
+  },
+  "expected": {
+    "runtimeKind": "claude_agent_sdk",
+    "model": "sonnet",
+    "llmConfig": {
+      "reasoning_effort": "medium"
+    },
+    "autoExecuteTools": true
+  },
+  "metadata": {
+    "schemaVersion": 3,
+    "teamDefinitionName": "Nested Classroom Test Team",
+    "createdAt": "2026-08-09T15:05:29.881Z",
+    "archivedAt": null,
+    "rootTeam": {
+      "kind": "agent_team",
+      "address": "/",
+      "teamDefinitionId": "nested-classroom-test",
+      "teamRunId": "nested_classroom_test_team_32b1109444ab4f3886a09951f0b27b0c",
+      "coordinatorAddress": "/Teacher",
+      "children": [
+        {
+          "kind": "agent",
+          "address": "/Teacher",
+          "agentDefinitionId": "team-local-agent:nested-classroom-test:teacher",
+          "agentRunId": "test_teacher_a101c794cee94e86b277f3ad31a6c208",
+          "platformAgentRunId": "bd5432d4-0244-42ac-a1e8-0f5f38d5d28c",
+          "role": null,
+          "description": null,
+          "runtimeKind": "claude_agent_sdk",
+          "llmModelIdentifier": "sonnet",
+          "llmConfig": {
+            "reasoning_effort": "medium"
+          },
+          "autoExecuteTools": true,
+          "skillAccessMode": "PRELOADED_ONLY",
+          "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/sr015-api-rev-014-20260809/temp_workspace",
+          "applicationExecutionContext": null
+        },
+        {
+          "kind": "agent_team",
+          "address": "/StudentStudyGroup",
+          "teamDefinitionId": "team-local-team:nested-classroom-test:student-study-group",
+          "teamRunId": "student_study_group_5fb722dc438e4036aee98263d56e7363",
+          "coordinatorAddress": "/StudentStudyGroup/student_one",
+          "role": null,
+          "description": null,
+          "children": [
+            {
+              "kind": "agent",
+              "address": "/StudentStudyGroup/student_one",
+              "agentDefinitionId": "team-local-agent:team-local-team%3Anested-classroom-test%3Astudent-study-group:student-one",
+              "agentRunId": "student_one_3f2c3185db6a4247ac7ade8187af97f3",
+              "platformAgentRunId": "ade49156-8117-4344-a68c-6efd4f6fa4ed",
+              "role": null,
+              "description": null,
+              "runtimeKind": "claude_agent_sdk",
+              "llmModelIdentifier": "sonnet",
+              "llmConfig": {
+                "reasoning_effort": "medium"
+              },
+              "autoExecuteTools": true,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/sr015-api-rev-014-20260809/temp_workspace",
+              "applicationExecutionContext": null
+            },
+            {
+              "kind": "agent",
+              "address": "/StudentStudyGroup/student_two",
+              "agentDefinitionId": "team-local-agent:team-local-team%3Anested-classroom-test%3Astudent-study-group:student-two",
+              "agentRunId": "student_two_d783e806597f42c0824858d7a8489638",
+              "platformAgentRunId": "78badba0-7ec0-4354-a759-b2603363560a",
+              "role": null,
+              "description": null,
+              "runtimeKind": "claude_agent_sdk",
+              "llmModelIdentifier": "sonnet",
+              "llmConfig": {
+                "reasoning_effort": "medium"
+              },
+              "autoExecuteTools": true,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/sr015-api-rev-014-20260809/temp_workspace",
+              "applicationExecutionContext": null
+            }
+          ]
+        }
+      ]
+    },
+    "handoffs": [
+      {
+        "from": "/Teacher",
+        "to": "/StudentStudyGroup",
+        "rules": [
+          "When the user asks to send the classroom handoff token to the study group."
+        ]
+      },
+      {
+        "from": "/StudentStudyGroup/student_one",
+        "to": "/Teacher",
+        "rules": [
+          "When the delegated classroom task is finished and the teacher needs the outcome."
+        ]
+      },
+      {
+        "from": "/StudentStudyGroup/student_one",
+        "to": "/StudentStudyGroup/student_two",
+        "rules": [
+          "When the delegated classroom task asks the coordinator to consult the supporting student."
+        ]
+      }
+    ]
+  },
+  "communications": {
+    "teamRunId": "nested_classroom_test_team_32b1109444ab4f3886a09951f0b27b0c",
+    "messages": [
+      {
+        "messageId": "teammsg_4gZBsiHEDrDeAlCB-S1g4E0Q2Iazy67j",
+        "senderAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_32b1109444ab4f3886a09951f0b27b0c",
+          "taskTeamRunIds": [],
+          "memberAddress": "/Teacher",
+          "taskAgentRunId": null
+        },
+        "receiverAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_32b1109444ab4f3886a09951f0b27b0c",
+          "taskTeamRunIds": [],
+          "memberAddress": "/StudentStudyGroup/student_one",
+          "taskAgentRunId": null
+        },
+        "content": "Coordinator task: Please call get_handoff_rules, then send exactly one message to ./student_two requesting the token PEER-CLAUDE, wait for its reply, then send a summary back to /Teacher.",
+        "messageType": "agent_message",
+        "createdAt": "2026-08-09T15:05:34.695Z",
+        "referenceFiles": []
+      },
+      {
+        "messageId": "teammsg_b2oFAvn9Xe57zl0cHtMbSLkAmAVzWsfI",
+        "senderAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_32b1109444ab4f3886a09951f0b27b0c",
+          "taskTeamRunIds": [],
+          "memberAddress": "/StudentStudyGroup/student_one",
+          "taskAgentRunId": null
+        },
+        "receiverAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_32b1109444ab4f3886a09951f0b27b0c",
+          "taskTeamRunIds": [],
+          "memberAddress": "/StudentStudyGroup/student_two",
+          "taskAgentRunId": null
+        },
+        "content": "Hi student_two, could you please reply with the token PEER-CLAUDE? That's all I need from you for this task.",
+        "messageType": "token-request",
+        "createdAt": "2026-08-09T15:05:41.361Z",
+        "referenceFiles": []
+      },
+      {
+        "messageId": "teammsg_F7j9tnaatY6EVC1pwPUIk6GiZ15_CrY1",
+        "senderAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_32b1109444ab4f3886a09951f0b27b0c",
+          "taskTeamRunIds": [],
+          "memberAddress": "/StudentStudyGroup/student_two",
+          "taskAgentRunId": null
+        },
+        "receiverAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_32b1109444ab4f3886a09951f0b27b0c",
+          "taskTeamRunIds": [],
+          "memberAddress": "/StudentStudyGroup/student_one",
+          "taskAgentRunId": null
+        },
+        "content": "PEER-CLAUDE",
+        "messageType": "smoke-test-reply",
+        "createdAt": "2026-08-09T15:05:51.547Z",
+        "referenceFiles": []
+      },
+      {
+        "messageId": "teammsg_IIg_cU2RoCAqUt97H9k0oq6QYZON4-HY",
+        "senderAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_32b1109444ab4f3886a09951f0b27b0c",
+          "taskTeamRunIds": [],
+          "memberAddress": "/StudentStudyGroup/student_one",
+          "taskAgentRunId": null
+        },
+        "receiverAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_32b1109444ab4f3886a09951f0b27b0c",
+          "taskTeamRunIds": [],
+          "memberAddress": "/Teacher",
+          "taskAgentRunId": null
+        },
+        "content": "Summary: I called get_handoff_rules, sent exactly one message to student_two requesting the token PEER-CLAUDE, waited for the reply, and received it. student_two replied with the token: PEER-CLAUDE.",
+        "messageType": "task-summary",
+        "createdAt": "2026-08-09T15:06:14.010Z",
+        "referenceFiles": []
+      },
+      {
+        "messageId": "teammsg_imK3Ar8BdSQzxzvq-ATNC-Vu4kOosd9v",
+        "senderAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_32b1109444ab4f3886a09951f0b27b0c",
+          "taskTeamRunIds": [
+            "team_local_team_nested_classroom_test_student_st_b3a6edecec904a9dafa26a68e310660d"
+          ],
+          "memberAddress": "/StudentStudyGroup/student_one",
+          "taskAgentRunId": null
+        },
+        "receiverAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_32b1109444ab4f3886a09951f0b27b0c",
+          "taskTeamRunIds": [
+            "team_local_team_nested_classroom_test_student_st_b3a6edecec904a9dafa26a68e310660d"
+          ],
+          "memberAddress": "/StudentStudyGroup/student_two",
+          "taskAgentRunId": null
+        },
+        "content": "Hi student_two, I need the token TASKPEER-CLAUDE for the delegated classroom task. Please reply with it.",
+        "messageType": "agent_message",
+        "createdAt": "2026-08-09T15:06:24.460Z",
+        "referenceFiles": []
+      },
+      {
+        "messageId": "teammsg_p4GGCnEsoyUH-7PBupHX-qZkGisrGwDd",
+        "senderAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_32b1109444ab4f3886a09951f0b27b0c",
+          "taskTeamRunIds": [
+            "team_local_team_nested_classroom_test_student_st_b3a6edecec904a9dafa26a68e310660d"
+          ],
+          "memberAddress": "/StudentStudyGroup/student_two",
+          "taskAgentRunId": null
+        },
+        "receiverAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_32b1109444ab4f3886a09951f0b27b0c",
+          "taskTeamRunIds": [
+            "team_local_team_nested_classroom_test_student_st_b3a6edecec904a9dafa26a68e310660d"
+          ],
+          "memberAddress": "/StudentStudyGroup/student_one",
+          "taskAgentRunId": null
+        },
+        "content": "Hi student_one, confirmed: the requested token for the delegated classroom task is TASKPEER-CLAUDE.",
+        "messageType": "teammate_reply",
+        "createdAt": "2026-08-09T15:06:43.953Z",
+        "referenceFiles": []
+      }
+    ]
+  },
+  "tasks": {
+    "teamRunId": "nested_classroom_test_team_32b1109444ab4f3886a09951f0b27b0c",
+    "records": [
+      {
+        "taskId": "task_0001",
+        "status": "accepted",
+        "senderAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_32b1109444ab4f3886a09951f0b27b0c",
+          "taskTeamRunIds": [],
+          "memberAddress": "/Teacher",
+          "taskAgentRunId": null
+        },
+        "receiverAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_32b1109444ab4f3886a09951f0b27b0c",
+          "taskTeamRunIds": [
+            "team_local_team_nested_classroom_test_student_st_b3a6edecec904a9dafa26a68e310660d"
+          ],
+          "memberAddress": "/StudentStudyGroup/student_one",
+          "taskAgentRunId": null
+        },
+        "receiverTargetKind": "agent_team",
+        "content": "Task for StudentStudyGroup: The active task coordinator must call get_handoff_rules, then send exactly one message to ./student_two requesting the token TASKPEER-CLAUDE, wait for its reply, then call submit_task_result with the token RESULT-CLAUDE. The expected final result token is RESULT-CLAUDE.",
+        "referenceFiles": [],
+        "taskRun": {
+          "address": {
+            "rootTeamRunId": "nested_classroom_test_team_32b1109444ab4f3886a09951f0b27b0c",
+            "taskTeamRunIds": [
+              "team_local_team_nested_classroom_test_student_st_b3a6edecec904a9dafa26a68e310660d"
+            ],
+            "memberAddress": "/StudentStudyGroup",
+            "taskAgentRunId": null
+          },
+          "startedAt": "2026-08-09T15:06:17.554Z"
+        },
+        "updates": [
+          {
+            "kind": "submission",
+            "submissionId": "task_0001_submission_0001",
+            "senderAddress": {
+              "rootTeamRunId": "nested_classroom_test_team_32b1109444ab4f3886a09951f0b27b0c",
+              "taskTeamRunIds": [
+                "team_local_team_nested_classroom_test_student_st_b3a6edecec904a9dafa26a68e310660d"
+              ],
+              "memberAddress": "/StudentStudyGroup",
+              "taskAgentRunId": null
+            },
+            "receiverAddress": {
+              "rootTeamRunId": "nested_classroom_test_team_32b1109444ab4f3886a09951f0b27b0c",
+              "taskTeamRunIds": [],
+              "memberAddress": "/Teacher",
+              "taskAgentRunId": null
+            },
+            "content": "RESULT-CLAUDE",
+            "referenceFiles": [],
+            "createdAt": "2026-08-09T15:06:47.061Z"
+          },
+          {
+            "kind": "review",
+            "reviewId": "task_0001_review_0001",
+            "senderAddress": {
+              "rootTeamRunId": "nested_classroom_test_team_32b1109444ab4f3886a09951f0b27b0c",
+              "taskTeamRunIds": [],
+              "memberAddress": "/Teacher",
+              "taskAgentRunId": null
+            },
+            "receiverAddress": {
+              "rootTeamRunId": "nested_classroom_test_team_32b1109444ab4f3886a09951f0b27b0c",
+              "taskTeamRunIds": [
+                "team_local_team_nested_classroom_test_student_st_b3a6edecec904a9dafa26a68e310660d"
+              ],
+              "memberAddress": "/StudentStudyGroup",
+              "taskAgentRunId": null
+            },
+            "reviewedSubmissionId": "task_0001_submission_0001",
+            "decision": "accept",
+            "content": "Result matches the expected token RESULT-CLAUDE. Accepting the nested team delegation task.",
+            "referenceFiles": [],
+            "createdAt": "2026-08-09T15:06:50.565Z"
+          }
+        ],
+        "createdAt": "2026-08-09T15:06:17.541Z"
+      }
+    ]
+  },
+  "assertions": {
+    "catalogAuthenticatedSelection": true,
+    "allPersistentLeavesExact": true,
+    "persistentHandoff": true,
+    "sameTaskTeamPeer": true,
+    "taskAccepted": true,
+    "submittedExact": true,
+    "reviewAccepted": true
+  }
+}

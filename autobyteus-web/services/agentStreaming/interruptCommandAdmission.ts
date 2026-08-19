@@ -85,8 +85,7 @@ export const interruptCommandTargetsEqual = (
   }
   if (left.target_kind === 'team_member' && right.target_kind === 'team_member') {
     return left.team_run_id === right.team_run_id
-      && left.member_route_key === right.member_route_key
-      && left.member_run_id === right.member_run_id;
+      && left.agent_run_id === right.agent_run_id;
   }
   return false;
 };

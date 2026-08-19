@@ -1,0 +1,11 @@
+AutoByteus FILE_CHANGE post-fix audit 2026-08-17T09:22:33Z
+team_run_id=classroom_simulation_team_6461520955364b2c9f689d11be032555
+old_error_count=0
+admission_failed_count=0
+file_change_projection_count=1 (public getRunFileChanges exact current projection; see classroom-autobyteus-file-change-fixed.json)
+browser_old_error=false
+browser_marker=AUTOBYTEUS_FILE_CHANGE_FIXED
+screenshot_inspected=true
+--- matching error lines ---
+AutoByteus file content verification 2026-08-17T09:26:04Z
+file_content=AUTO_FILE_CHANGE_OK

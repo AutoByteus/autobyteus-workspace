@@ -32,6 +32,7 @@ import {
   parseTransport,
   validateDiscordIdentityOrThrow,
 } from "./validator.js";
+import { assertAgentTeamAddress } from "../../../../agent-collaboration/domain/agent-team-address.js";
 
 @Resolver()
 export class ExternalChannelSetupResolver {
@@ -104,8 +105,7 @@ export class ExternalChannelSetupResolver {
         teamDefinitionId: targetTeamDefinitionId,
         teamLaunchPreset: normalizeTeamLaunchPreset(input.teamLaunchPreset),
         teamRunId: null,
-        targetMemberRouteKey: normalizeOptionalString(input.targetMemberRouteKey ?? null),
-        targetMemberPath: normalizeMemberPathInput(input.targetMemberPath ?? null),
+        targetMemberAddress: normalizeMemberAddress(input.targetMemberAddress),
       });
 
       return toGraphqlBinding(binding);
@@ -198,12 +198,7 @@ const normalizeTeamLaunchPreset = (
   };
 };
 
-const normalizeMemberPathInput = (
-  value: readonly string[] | null | undefined,
-): string[] | null => {
-  if (!Array.isArray(value)) {
-    return null;
-  }
-  const path = value.map((segment) => normalizeOptionalString(segment)).filter(Boolean) as string[];
-  return path.length > 0 ? path : null;
+const normalizeMemberAddress = (value: string | null | undefined): string | null => {
+  const normalized = normalizeOptionalString(value ?? null);
+  return normalized ? assertAgentTeamAddress(normalized) : null;
 };

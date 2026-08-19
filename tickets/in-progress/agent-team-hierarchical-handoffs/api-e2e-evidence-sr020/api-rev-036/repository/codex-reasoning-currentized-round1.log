@@ -1,0 +1,180 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+
+ ❯ tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts (54 tests | 2 failed) 22ms
+     ✓ groups completed provider snapshots and ignores repeated known-item completion 3ms
+     × emits adjacent content and end with one identity when a completed snapshot has no turn 5ms
+     ✓ treats current and legacy reasoning text deltas as permanent state-free no-ops 1ms
+     ✓ groups missing provider identities and separates them only at a real boundary 0ms
+     ✓ clears for ordered-card creation: user message start 1ms
+     ✓ clears for ordered-card creation: ordinary item start 1ms
+     ✓ clears for ordered-card creation: tool start 1ms
+     ✓ clears for ordered-card creation: empty assistant delta 0ms
+     ✓ clears for ordered-card creation: approval request 1ms
+     ✓ clears for ordered-card creation: result-first completion 1ms
+     ✓ clears for ordered-card creation: result-first approval update 0ms
+     ✓ clears for ordered-card creation: result-first local completion 0ms
+     ✓ clears for ordered-card creation: identity-missing local completion 0ms
+     ✓ clears for ordered-card creation: result-first file log 0ms
+     ✓ clears for ordered-card creation: result-first raw log 0ms
+     ✓ clears for ordered-card creation: turn completion 0ms
+     ✓ clears for ordered-card creation: turn start 0ms
+     ✓ clears for ordered-card creation: terminal error 0ms
+     ✓ keeps the reasoning end neutral before lifecycle turn completion output 0ms
+     ✓ keeps the reasoning end neutral before lifecycle turn start output 0ms
+     ✓ keeps the reasoning end neutral before lifecycle terminal error output 0ms
+     ✓ preserves for in-place or no-effect event: non-tool completion 1ms
+     ✓ preserves for in-place or no-effect event: ignored tool call request 0ms
+     ✓ preserves for in-place or no-effect event: ignored permission request 0ms
+     ✓ preserves for in-place or no-effect event: empty file output 0ms
+     ✓ preserves for in-place or no-effect event: empty raw output 0ms
+     ✓ preserves for in-place or no-effect event: reasoning start 0ms
+     ✓ preserves for in-place or no-effect event: compaction start 0ms
+     ✓ preserves for in-place or no-effect event: compaction completion 0ms
+     ✓ preserves for in-place or no-effect event: compaction trigger 0ms
+     ✓ preserves for in-place or no-effect event: plan delta 0ms
+     ✓ preserves for in-place or no-effect event: turn diff 0ms
+     ✓ preserves for in-place or no-effect event: turn progress 0ms
+     ✓ preserves for in-place or no-effect event: raw compaction 0ms
+     ✓ preserves for in-place or no-effect event: thread compacted 0ms
+     ✓ preserves for in-place or no-effect event: thread started 0ms
+     ✓ preserves for in-place or no-effect event: thread status 0ms
+     ✓ preserves for in-place or no-effect event: thread tokens 0ms
+     ✓ preserves for in-place or no-effect event: unknown item 0ms
+     ✓ preserves for in-place or no-effect event: unknown raw 0ms
+     ✓ preserves for in-place or no-effect event: unknown thread 0ms
+     ✓ preserves for in-place or no-effect event: internal notification 0ms
+     ✓ preserves reasoning for matching existing-card success result 0ms
+     ✓ preserves reasoning for matching existing-card failure result 0ms
+     ✓ preserves reasoning for matching existing-card denial result 0ms
+     ✓ preserves reasoning for matching existing-card approval update 0ms
+     ✓ preserves reasoning for matching existing-card start after approval 0ms
+     ✓ preserves reasoning for matching existing-card local MCP completion 0ms
+     ✓ preserves reasoning for matching existing-card file log 0ms
+     ✓ preserves reasoning for matching existing-card raw output 0ms
+     × keeps one block through the exact long-running-tool result sequence 1ms
+     ✓ clears every active turn when an ordered boundary has no turn id 0ms
+     ✓ closes all tracked identities deterministically before reachable turn/started output 0ms
+     ✓ closes all tracked identities deterministically before reachable error output 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-tracker.test.ts (7 tests) 3ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts > Codex reasoning block conversion > emits adjacent content and end with one identity when a completed snapshot has no turn
+AssertionError: expected { …(3) } to match object { …(3) }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "delta": "first",
+    "id": "reasoning-block:1329eeba-ee06-4b23-b0b5-e512059a5533:1",
+-   "timestamp": 123,
+  }
+
+ ❯ tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts:139:32
+    137|       segment_type: "reasoning",
+    138|     });
+    139|     expect(events[1]!.payload).toMatchObject({
+       |                                ^
+    140|       id: events[2]!.payload.id,
+    141|       timestamp: 123,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts > Codex reasoning block conversion > keeps one block through the exact long-running-tool result sequence
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts:357:8
+    355|     expect(reasoningB.payload).toMatchObject({ id: reasoningA.payload.…
+    356|     expect(matchingResult.some((event) => event.eventType === AgentRun…
+    357|       .toBe(false);
+       |        ^
+    358|     expect(nextTool[0]).toMatchObject({
+    359|       eventType: AgentRunEventType.SEGMENT_END,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  2 failed | 59 passed (61)
+   Start at  03:52:05
+   Duration  704ms (transform 143ms, setup 12ms, import 176ms, tests 25ms, environment 0ms)
+

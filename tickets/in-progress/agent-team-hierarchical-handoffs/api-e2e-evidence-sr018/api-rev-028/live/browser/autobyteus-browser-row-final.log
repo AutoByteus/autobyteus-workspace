@@ -1,0 +1,51 @@
+{
+  "slug": "autobyteus",
+  "runtime": "autobyteus",
+  "model": "gpt-5.6-luna",
+  "passed": false,
+  "rootTeamRunId": "nested_classroom_test_team_caf3bb02596d46bda550f14406957ff0",
+  "resultConditions": {
+    "freshRootTeamRun": true,
+    "rootedTopology": true,
+    "exactTaskAddress": true,
+    "exactOneDelegatedTask": true,
+    "acceptedStatus": true,
+    "exactOneSubmission": true,
+    "acceptedReview": true,
+    "exactOnePersistentReply": true,
+    "taskPeerDeliveredObservation": false,
+    "taskPeerReplyDeliveredObservation": false,
+    "referenceDelivered": true,
+    "observedTaskSummary": true,
+    "observedTaskTeamSummary": true,
+    "observedTransientTaskExecution": true,
+    "observedActiveTaskUi": true,
+    "observedAwaitingReviewUi": false,
+    "observedAcceptedTaskUi": false,
+    "observedSelectedDetail": true,
+    "observedTeamCommunicationUi": true,
+    "observedReferenceUi": true,
+    "taskDetailVisible": false,
+    "teamCommunicationVisible": true,
+    "noSyntheticInterAgentInline": true,
+    "noSerializedAddressLeak": true,
+    "completionMarkerVisible": true,
+    "refreshRetainedTaskCount": false,
+    "refreshRetainedTaskTeamSummary": false,
+    "terminalTransientCleanup": true,
+    "effectiveRuntimeMatches": true,
+    "effectiveCodexReasoningMatches": true,
+    "noBrowserConsoleErrors": true
+  },
+  "observedStatuses": [
+    "none",
+    "active",
+    "awaiting_review",
+    "accepted"
+  ],
+  "termination": {
+    "success": true,
+    "message": "Agent team run terminated successfully."
+  },
+  "fatalError": null
+}

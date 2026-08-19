@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "slug": "claude",
+  "runtime": "claude_agent_sdk",
+  "model": "sonnet",
+  "agentDefinitionId": "api-rev-030-browser-agent",
+  "runId": "api_rev_030_browser_agent_6a97a77ad8ef4ca395b8be1453a3b715",
+  "expectedToken": "STANDALONE_CLAUDE_OK",
+  "startedAt": "2026-08-12T12:15:04.266Z",
+  "completedAt": "2026-08-12T12:15:13.911Z",
+  "passed": true,
+  "conditions": {
+    "freshRun": true,
+    "effectiveRuntime": true,
+    "effectiveReasoning": true,
+    "exactTokenBeforeRefresh": true,
+    "exactTokenAfterRefresh": true,
+    "resumeRunMatches": true,
+    "resumeActive": true,
+    "resumeRuntimeMatches": true,
+    "resumeModelMatches": true,
+    "persistedProjectionRunMatches": true,
+    "persistedAssistantTokenExactlyOnce": true,
+    "noBrowserConsoleErrors": true
+  },
+  "effective": {
+    "runtimeKind": "claude_agent_sdk",
+    "model": "sonnet",
+    "reasoningEffort": "medium",
+    "autoExecuteClass": "relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 bg-blue-600"
+  },
+  "resume": {
+    "runId": "api_rev_030_browser_agent_6a97a77ad8ef4ca395b8be1453a3b715",
+    "isActive": true,
+    "metadataConfig": {
+      "runtimeKind": "claude_agent_sdk",
+      "llmModelIdentifier": "sonnet",
+      "agentDefinitionId": "api-rev-030-browser-agent",
+      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-030-live-20260812-1/temp_workspace",
+      "autoExecuteTools": true,
+      "llmConfig": null,
+      "skillAccessMode": "PRELOADED_ONLY",
+      "runtimeReference": {
+        "runtimeKind": "claude_agent_sdk",
+        "sessionId": "api_rev_030_browser_agent_6a97a77ad8ef4ca395b8be1453a3b715",
+        "threadId": null,
+        "metadata": null
+      }
+    }
+  },
+  "projection": {
+    "runId": "api_rev_030_browser_agent_6a97a77ad8ef4ca395b8be1453a3b715",
+    "summary": "Reply with exactly STANDALONE_CLAUDE_OK and nothing else.",
+    "lastActivityAt": "2026-08-12T12:15:11.498Z",
+    "conversation": [
+      {
+        "kind": "message",
+        "role": "user",
+        "content": "Reply with exactly STANDALONE_CLAUDE_OK and nothing else.",
+        "media": null,
+        "ts": 1786536908.626
+      },
+      {
+        "kind": "message",
+        "role": "assistant",
+        "content": "STANDALONE_CLAUDE_OK",
+        "media": null,
+        "ts": 1786536911.498
+      }
+    ]
+  },
+  "consoleEvents": [],
+  "termination": {
+    "success": true,
+    "message": "Agent run terminated successfully."
+  }
+}

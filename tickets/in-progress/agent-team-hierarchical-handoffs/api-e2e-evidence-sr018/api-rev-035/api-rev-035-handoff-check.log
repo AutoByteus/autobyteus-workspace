@@ -1,0 +1,8 @@
+head=e29625f69d2b090ab1839baccdc595fdcac03eff
+git_diff_check=PASS
+owned_port_60235=ABSENT
+owned_port_31235=ABSENT
+owned_resources_removed=true
+canonical_artifacts_present=true
+operational_database_action=NONE
+protected_stack_action=NONE

@@ -1,0 +1,8 @@
+worktree_entries=31
+outside_delivery_docs_scope=0
+retired_term_negative_mentions=1
+retired_term_unsafe_mentions=0
+backup_sha256=da300460f02c1d95965118fbe2ed8f68d549836d9f18d36bf23cdc418103a8d6
+protected_stashes_missing=0
+merge_in_progress=False
+scope_safety_audit=PASS

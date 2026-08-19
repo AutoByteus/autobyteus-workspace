@@ -1,0 +1,103 @@
+API-REV-015 final audit
+2026-08-09T15:44:38Z
+head=6b829e3d9aed63a24cd2f1e50c37a3457f9c0718
+## diff check
+PASS git diff --check
+## exact inventory summary
+current_delta_total=53
+current_added=4
+current_removed=2
+current_updated=47
+component_live-e2e_support=2
+component_server=49
+component_web=2
+restored_out_of_delta=9
+inventory_rows_total=62
+PASS 53 current + 9 restored inventory rows
+## exact current Git status counts
+ M autobyteus-server-ts/tests/e2e/external-channel/external-channel-team-open-delivery.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts
+ D autobyteus-server-ts/tests/e2e/token-usage/token-usage-execution-address-backfill-graphql.e2e.test.ts
+ M autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts
+ M autobyteus-server-ts/tests/integration/api/runtime-selection-top-level.integration.test.ts
+ M autobyteus-server-ts/tests/integration/app-data-migrations/team-run-metadata-member-tree-history.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/application-backend-custom-websocket.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/application-backend-mount-route-transport.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/application-backend-rest-ws.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/application-context-capabilities.integration.test.ts
+ M autobyteus-server-ts/tests/unit/agent-collaboration/collaboration-logical-address.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session-tool-use-coordinator.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/claude/team-communication/team-member-claude-session-bootstrap-strategy.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/codex/history/codex-thread-history-item-normalizer.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/codex/team-communication/team-member-codex-thread-bootstrap-strategy.test.ts
+ M autobyteus-server-ts/tests/unit/agent-memory/agent-run-memory-recorder.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/inter-agent-message-delivery-intent-builder.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/inter-agent-message-runtime-builders.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/member-run-instruction-composer.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/mixed-sub-team-member-handle.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-manager.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/send-message-to-tool-argument-parser.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-service.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-target-mapper.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/team-logical-placement-resolver.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/team-member-delivery-coordinator.test.ts
+ M autobyteus-server-ts/tests/unit/agent-tools/task-delegation/task-delegation-autobyteus-context.test.ts
+ M autobyteus-server-ts/tests/unit/agent-tools/task-delegation/task-delegation-runtime-descriptions.test.ts
+ M autobyteus-server-ts/tests/unit/agent-tools/team-communication/send-message-to.test.ts
+ M autobyteus-server-ts/tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts
+ M autobyteus-server-ts/tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts
+ M autobyteus-server-ts/tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts
+ M autobyteus-server-ts/tests/unit/app-data-migrations/team-communication-projection-address-migration.test.ts
+ M autobyteus-server-ts/tests/unit/app-data-migrations/team-run-history-index-v2-migration.test.ts
+ D autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-execution-address-backfill-migration.test.ts
+ M autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-legacy-path-columns-drop-migration.test.ts
+ M autobyteus-server-ts/tests/unit/application-bundles/file-application-bundle-provider.test.ts
+ M autobyteus-server-ts/tests/unit/application-engine/application-backend-definition-loader.test.ts
+ M autobyteus-server-ts/tests/unit/application-engine/application-engine-host-service.test.ts
+ M autobyteus-server-ts/tests/unit/run-history/projection/codex-run-view-projection-provider.test.ts
+ M autobyteus-server-ts/tests/unit/server-runtime-app-data-migration-gate.test.ts
+ M autobyteus-web/services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts
+ M autobyteus-web/services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts
+ M test-support/live-e2e/live-e2e-harness.ts
+ M test-support/live-e2e/run-live-e2e.mjs
+?? autobyteus-server-ts/tests/e2e/token-usage/token-usage-canonical-execution-address-graphql.e2e.test.ts
+?? autobyteus-server-ts/tests/fixtures/current-team-run-fixtures.ts
+?? autobyteus-server-ts/tests/unit/agent-team-execution/member-collaboration-instruction-provider-parity.test.ts
+?? autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-canonical-execution-address-migration.test.ts
+PASS 53 current delta paths
+## restored zero-diff paths
+PASS autobyteus-server-ts/tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts
+PASS autobyteus-server-ts/tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts
+PASS autobyteus-server-ts/tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts
+PASS autobyteus-server-ts/tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts
+PASS autobyteus-server-ts/tests/e2e/runtime/mixed-task-delegation.e2e.test.ts
+PASS autobyteus-server-ts/tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts
+PASS autobyteus-server-ts/tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts
+PASS autobyteus-server-ts/tests/unit/agent-tools/prompt-engineering/states/xml-patch-prompt-tool-parsing-state.test.js
+PASS autobyteus-server-ts/tests/unit/agent-tools/prompt-engineering/states/xml-patch-prompt-tool-parsing-state.test.ts
+## execution summaries
+ Test Files  46 passed (46)
+      Tests  298 passed (298)
+ Test Files  2 passed (2)
+      Tests  34 passed (34)
+  "result": "PASS",
+  "matchingExplicitDatabaseAccepted": true,
+  "mismatchedExplicitDatabaseRejectedBeforeScenario": true,
+  "operationalDatabaseReferenced": false,
+  "acceptedSummary": "Test Files  1 passed (1)",
+  "rejectedStatus": 1
+PASS execution summaries
+## revision/report consistency
+PASS revision/report consistency
+## source secret file identity (hash only)
+source_env_sha256=3ece3faee6acd2d696401b204de0954ba31576f4132ea81a21472d8d399476ed
+PASS source env unchanged from API-REV-014 preflight
+## cleanup
+PASS focused runtime/database cleanup
+## operational disclosure retained
+92:- Mandatory operational disclosure remains: an initial API-REV-014 setup attempt inherited `DATABASE_URL` and mutated `/Users/normy/.autobyteus/server-data/db/production.db` by applying pending Prisma migration `20260801090000_token_usage_member_display_name` and writing a failed canonical migration record with 203 failures. No automatic rollback was attempted. All accepted results, including this round's harness proof, use isolated test-owned databases.
+PASS operational disclosure retained

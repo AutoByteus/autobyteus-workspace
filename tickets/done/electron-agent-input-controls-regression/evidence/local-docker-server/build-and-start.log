@@ -1,0 +1,312 @@
+Local Docker server build and start
+Ticket: electron-agent-input-controls-regression
+Project: electron-agent-input-controls-regression-dr005
+Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation
+Source branch: codex/agent-team-universal-task-delegation
+Source revision: 469b0b26b133ab4c5246a4e819ab90efa9b65ea1
+Command: ./docker-start.sh up -p electron-agent-input-controls-regression-dr005 --build-local
+Started: 2026-08-18T14:48:41+02:00
+
+[2026-08-18 14:48:41] Picking unique ports for new project: electron-agent-input-controls-regression-dr005
+[2026-08-18 14:48:41] Building variant: latest
+#0 building with "multi-platform-builder" instance using docker-container driver
+
+#1 [internal] load build definition from Dockerfile.monorepo
+#1 transferring dockerfile: 4.09kB done
+#1 DONE 0.1s
+
+#2 resolve image config for docker-image://docker.io/docker/dockerfile:1
+#2 ...
+
+#3 [auth] docker/dockerfile:pull token for registry-1.docker.io
+#3 DONE 0.0s
+
+#2 resolve image config for docker-image://docker.io/docker/dockerfile:1
+#2 DONE 3.3s
+
+#4 docker-image://docker.io/docker/dockerfile:1@sha256:ecfaec9ed6d810b56388c508f4121597bfbba70d41a6dfeee4d8cad5f295fc32
+#4 resolve docker.io/docker/dockerfile:1@sha256:ecfaec9ed6d810b56388c508f4121597bfbba70d41a6dfeee4d8cad5f295fc32 0.0s done
+#4 sha256:48ca54f0226d3b90064659efd4391d107ad948df73aed877309530e6f3ef19df 0B / 13.01MB 0.2s
+#4 sha256:48ca54f0226d3b90064659efd4391d107ad948df73aed877309530e6f3ef19df 1.05MB / 13.01MB 0.3s
+#4 sha256:48ca54f0226d3b90064659efd4391d107ad948df73aed877309530e6f3ef19df 2.10MB / 13.01MB 0.5s
+#4 sha256:48ca54f0226d3b90064659efd4391d107ad948df73aed877309530e6f3ef19df 4.19MB / 13.01MB 0.6s
+#4 sha256:48ca54f0226d3b90064659efd4391d107ad948df73aed877309530e6f3ef19df 6.29MB / 13.01MB 0.8s
+#4 sha256:48ca54f0226d3b90064659efd4391d107ad948df73aed877309530e6f3ef19df 7.34MB / 13.01MB 0.9s
+#4 sha256:48ca54f0226d3b90064659efd4391d107ad948df73aed877309530e6f3ef19df 8.39MB / 13.01MB 1.1s
+#4 sha256:48ca54f0226d3b90064659efd4391d107ad948df73aed877309530e6f3ef19df 10.49MB / 13.01MB 1.2s
+#4 sha256:48ca54f0226d3b90064659efd4391d107ad948df73aed877309530e6f3ef19df 13.01MB / 13.01MB 1.4s
+#4 sha256:48ca54f0226d3b90064659efd4391d107ad948df73aed877309530e6f3ef19df 13.01MB / 13.01MB 1.4s done
+#4 extracting sha256:48ca54f0226d3b90064659efd4391d107ad948df73aed877309530e6f3ef19df 0.1s done
+#4 DONE 1.6s
+
+#5 [internal] load metadata for docker.io/autobyteus/chrome-vnc:latest
+#5 ...
+
+#6 [auth] autobyteus/chrome-vnc:pull token for registry-1.docker.io
+#6 DONE 0.0s
+
+#7 [auth] library/node:pull token for registry-1.docker.io
+#7 DONE 0.0s
+
+#8 [internal] load metadata for docker.io/library/node:22-bookworm
+#8 ...
+
+#5 [internal] load metadata for docker.io/autobyteus/chrome-vnc:latest
+#5 DONE 0.6s
+
+#8 [internal] load metadata for docker.io/library/node:22-bookworm
+#8 DONE 1.2s
+
+#9 [internal] load .dockerignore
+#9 transferring context: 282B done
+#9 DONE 0.1s
+
+#10 [runtime  1/23] FROM docker.io/autobyteus/chrome-vnc:latest@sha256:f5a12a4fc553d40158b6d6c5f87e3ea0a2bcfbc71e3cb8153f7a3aa310241029
+#10 resolve docker.io/autobyteus/chrome-vnc:latest@sha256:f5a12a4fc553d40158b6d6c5f87e3ea0a2bcfbc71e3cb8153f7a3aa310241029 0.1s done
+#10 DONE 0.1s
+
+#11 [runtime  2/23] WORKDIR /app
+#11 CACHED
+
+#12 [builder  1/19] FROM docker.io/library/node:22-bookworm@sha256:0557ac14e0d45d02ed563067b82856ca5e7aa3437fa28d98d4350ea9c3d9494a
+#12 resolve docker.io/library/node:22-bookworm@sha256:0557ac14e0d45d02ed563067b82856ca5e7aa3437fa28d98d4350ea9c3d9494a 0.0s done
+#12 sha256:7cbb9128249385b1230f283b2ed9b786d821f9780d41f0da1e12da7690a74042 444B / 444B 0.1s done
+#12 sha256:fe7b6a938574416a756cfff56a40b93c2e70b973429426f2c9d2783c486eff65 1.25MB / 1.25MB 0.3s done
+#12 sha256:b1b2f7d74a7029b6b1c973442e63985504c0f975bb505853ef1b130435aea7f9 0B / 58.68MB 0.2s
+#12 sha256:dc19a06fcc069b76c092cc0f6e56bebf300e1c2f53c53104ed8567b838d7f9c7 0B / 3.32kB 0.2s
+#12 sha256:dc19a06fcc069b76c092cc0f6e56bebf300e1c2f53c53104ed8567b838d7f9c7 3.32kB / 3.32kB 0.3s done
+#12 sha256:2c9a098bd6416b43625806c3a6a005297e2cd5b9b5664e389da30661f6acfb30 0B / 64.50MB 0.2s
+#12 sha256:225a0a6c500bfb3b4e92e3971bd6e5d097e6b511817e446098aa783c771a70e9 0B / 23.61MB 0.2s
+#12 sha256:a75326012c0e46bc6e0ebd4e16aaeed57151bdb35abecfaf1536077110c99c56 0B / 203.18MB 0.2s
+#12 sha256:b1b2f7d74a7029b6b1c973442e63985504c0f975bb505853ef1b130435aea7f9 3.15MB / 58.68MB 0.8s
+#12 sha256:b1b2f7d74a7029b6b1c973442e63985504c0f975bb505853ef1b130435aea7f9 6.29MB / 58.68MB 1.2s
+#12 ...
+
+#13 [internal] load build context
+#13 transferring context: 50.26MB 2.3s done
+#13 DONE 2.5s
+
+#12 [builder  1/19] FROM docker.io/library/node:22-bookworm@sha256:0557ac14e0d45d02ed563067b82856ca5e7aa3437fa28d98d4350ea9c3d9494a
+#12 sha256:225a0a6c500bfb3b4e92e3971bd6e5d097e6b511817e446098aa783c771a70e9 2.10MB / 23.61MB 1.8s
+#12 sha256:b1b2f7d74a7029b6b1c973442e63985504c0f975bb505853ef1b130435aea7f9 9.44MB / 58.68MB 2.1s
+#12 sha256:b1b2f7d74a7029b6b1c973442e63985504c0f975bb505853ef1b130435aea7f9 12.58MB / 58.68MB 2.9s
+#12 sha256:2c9a098bd6416b43625806c3a6a005297e2cd5b9b5664e389da30661f6acfb30 4.19MB / 64.50MB 3.3s
+#12 sha256:b1b2f7d74a7029b6b1c973442e63985504c0f975bb505853ef1b130435aea7f9 15.73MB / 58.68MB 3.6s
+#12 sha256:225a0a6c500bfb3b4e92e3971bd6e5d097e6b511817e446098aa783c771a70e9 4.19MB / 23.61MB 3.5s
+#12 sha256:b1b2f7d74a7029b6b1c973442e63985504c0f975bb505853ef1b130435aea7f9 18.87MB / 58.68MB 4.4s
+#12 sha256:225a0a6c500bfb3b4e92e3971bd6e5d097e6b511817e446098aa783c771a70e9 6.29MB / 23.61MB 5.0s
+#12 sha256:b1b2f7d74a7029b6b1c973442e63985504c0f975bb505853ef1b130435aea7f9 22.02MB / 58.68MB 5.3s
+#12 sha256:a75326012c0e46bc6e0ebd4e16aaeed57151bdb35abecfaf1536077110c99c56 9.44MB / 203.18MB 5.3s
+#12 sha256:b1b2f7d74a7029b6b1c973442e63985504c0f975bb505853ef1b130435aea7f9 25.17MB / 58.68MB 6.0s
+#12 sha256:2c9a098bd6416b43625806c3a6a005297e2cd5b9b5664e389da30661f6acfb30 8.39MB / 64.50MB 6.5s
+#12 sha256:225a0a6c500bfb3b4e92e3971bd6e5d097e6b511817e446098aa783c771a70e9 8.39MB / 23.61MB 6.5s
+#12 sha256:b1b2f7d74a7029b6b1c973442e63985504c0f975bb505853ef1b130435aea7f9 28.31MB / 58.68MB 6.9s
+#12 sha256:b1b2f7d74a7029b6b1c973442e63985504c0f975bb505853ef1b130435aea7f9 31.46MB / 58.68MB 7.7s
+#12 sha256:225a0a6c500bfb3b4e92e3971bd6e5d097e6b511817e446098aa783c771a70e9 10.49MB / 23.61MB 7.8s
+#12 sha256:b1b2f7d74a7029b6b1c973442e63985504c0f975bb505853ef1b130435aea7f9 34.60MB / 58.68MB 8.6s
+#12 sha256:2c9a098bd6416b43625806c3a6a005297e2cd5b9b5664e389da30661f6acfb30 12.58MB / 64.50MB 9.2s
+#12 sha256:b1b2f7d74a7029b6b1c973442e63985504c0f975bb505853ef1b130435aea7f9 37.75MB / 58.68MB 9.5s
+#12 sha256:225a0a6c500bfb3b4e92e3971bd6e5d097e6b511817e446098aa783c771a70e9 12.58MB / 23.61MB 9.2s
+#12 ...
+
+#14 [runtime  3/23] RUN apt-get update   && apt-get install -y --no-install-recommends git ripgrep   && rm -rf /var/lib/apt/lists/*
+#14 0.500 Get:1 https://deb.nodesource.com/node_22.x nodistro InRelease [12.1 kB]
+#14 0.511 Get:2 https://ppa.launchpadcontent.net/deadsnakes/ppa/ubuntu jammy InRelease [18.1 kB]
+#14 0.576 Get:3 http://ports.ubuntu.com/ubuntu-ports jammy InRelease [270 kB]
+#14 0.589 Get:4 https://ppa.launchpadcontent.net/xtradeb/apps/ubuntu jammy InRelease [24.3 kB]
+#14 0.637 Get:5 https://deb.nodesource.com/node_22.x nodistro/main arm64 Packages [12.0 kB]
+#14 0.715 Get:6 https://ppa.launchpadcontent.net/deadsnakes/ppa/ubuntu jammy/main arm64 Packages [44.3 kB]
+#14 0.869 Get:7 https://ppa.launchpadcontent.net/xtradeb/apps/ubuntu jammy/main arm64 Packages [65.7 kB]
+#14 1.146 Get:8 http://ports.ubuntu.com/ubuntu-ports jammy-updates InRelease [128 kB]
+#14 1.391 Get:9 http://ports.ubuntu.com/ubuntu-ports jammy-backports InRelease [127 kB]
+#14 1.581 Get:10 http://ports.ubuntu.com/ubuntu-ports jammy-security InRelease [129 kB]
+#14 1.774 Get:11 http://ports.ubuntu.com/ubuntu-ports jammy/multiverse arm64 Packages [224 kB]
+#14 1.820 Get:12 http://ports.ubuntu.com/ubuntu-ports jammy/restricted arm64 Packages [24.2 kB]
+#14 1.918 Get:13 http://ports.ubuntu.com/ubuntu-ports jammy/universe arm64 Packages [17.2 MB]
+#14 8.242 Get:14 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 Packages [1,758 kB]
+#14 8.582 Get:15 http://ports.ubuntu.com/ubuntu-ports jammy-updates/multiverse arm64 Packages [69.7 kB]
+#14 8.594 Get:16 http://ports.ubuntu.com/ubuntu-ports jammy-updates/universe arm64 Packages [1,696 kB]
+#14 9.056 Get:17 http://ports.ubuntu.com/ubuntu-ports jammy-updates/restricted arm64 Packages [7,979 kB]
+#14 ...
+
+#12 [builder  1/19] FROM docker.io/library/node:22-bookworm@sha256:0557ac14e0d45d02ed563067b82856ca5e7aa3437fa28d98d4350ea9c3d9494a
+#12 sha256:b1b2f7d74a7029b6b1c973442e63985504c0f975bb505853ef1b130435aea7f9 40.89MB / 58.68MB 10.5s
+#12 sha256:225a0a6c500bfb3b4e92e3971bd6e5d097e6b511817e446098aa783c771a70e9 14.68MB / 23.61MB 10.4s
+#12 sha256:a75326012c0e46bc6e0ebd4e16aaeed57151bdb35abecfaf1536077110c99c56 16.78MB / 203.18MB 10.4s
+#12 sha256:225a0a6c500bfb3b4e92e3971bd6e5d097e6b511817e446098aa783c771a70e9 16.78MB / 23.61MB 11.3s
+#12 sha256:2c9a098bd6416b43625806c3a6a005297e2cd5b9b5664e389da30661f6acfb30 16.78MB / 64.50MB 11.4s
+#12 sha256:b1b2f7d74a7029b6b1c973442e63985504c0f975bb505853ef1b130435aea7f9 44.04MB / 58.68MB 12.2s
+#12 sha256:225a0a6c500bfb3b4e92e3971bd6e5d097e6b511817e446098aa783c771a70e9 18.87MB / 23.61MB 12.2s
+#12 sha256:b1b2f7d74a7029b6b1c973442e63985504c0f975bb505853ef1b130435aea7f9 47.19MB / 58.68MB 13.7s
+#12 sha256:2c9a098bd6416b43625806c3a6a005297e2cd5b9b5664e389da30661f6acfb30 20.97MB / 64.50MB 13.5s
+#12 sha256:225a0a6c500bfb3b4e92e3971bd6e5d097e6b511817e446098aa783c771a70e9 20.97MB / 23.61MB 13.4s
+#12 sha256:225a0a6c500bfb3b4e92e3971bd6e5d097e6b511817e446098aa783c771a70e9 23.07MB / 23.61MB 14.4s
+#12 sha256:225a0a6c500bfb3b4e92e3971bd6e5d097e6b511817e446098aa783c771a70e9 23.61MB / 23.61MB 14.7s done
+#12 sha256:c6cbf97176c58c741329cd787e932a1e47931b35f5dc0f23db3e6e82924fef0f 0B / 48.38MB 0.2s
+#12 sha256:b1b2f7d74a7029b6b1c973442e63985504c0f975bb505853ef1b130435aea7f9 50.33MB / 58.68MB 15.3s
+#12 sha256:2c9a098bd6416b43625806c3a6a005297e2cd5b9b5664e389da30661f6acfb30 25.17MB / 64.50MB 15.5s
+#12 sha256:a75326012c0e46bc6e0ebd4e16aaeed57151bdb35abecfaf1536077110c99c56 25.17MB / 203.18MB 15.5s
+#12 sha256:b1b2f7d74a7029b6b1c973442e63985504c0f975bb505853ef1b130435aea7f9 53.48MB / 58.68MB 16.5s
+#12 sha256:c6cbf97176c58c741329cd787e932a1e47931b35f5dc0f23db3e6e82924fef0f 3.15MB / 48.38MB 1.7s
+#12 sha256:2c9a098bd6416b43625806c3a6a005297e2cd5b9b5664e389da30661f6acfb30 29.36MB / 64.50MB 17.0s
+#12 sha256:b1b2f7d74a7029b6b1c973442e63985504c0f975bb505853ef1b130435aea7f9 56.62MB / 58.68MB 17.6s
+#12 sha256:c6cbf97176c58c741329cd787e932a1e47931b35f5dc0f23db3e6e82924fef0f 6.29MB / 48.38MB 2.9s
+#12 ...
+
+#14 [runtime  3/23] RUN apt-get update   && apt-get install -y --no-install-recommends git ripgrep   && rm -rf /var/lib/apt/lists/*
+#14 11.67 Get:18 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 Packages [4,368 kB]
+#14 12.93 Get:19 http://ports.ubuntu.com/ubuntu-ports jammy-backports/universe arm64 Packages [33.7 kB]
+#14 12.93 Get:20 http://ports.ubuntu.com/ubuntu-ports jammy-backports/main arm64 Packages [82.4 kB]
+#14 12.93 Get:21 http://ports.ubuntu.com/ubuntu-ports jammy-security/multiverse arm64 Packages [62.9 kB]
+#14 12.93 Get:22 http://ports.ubuntu.com/ubuntu-ports jammy-security/restricted arm64 Packages [7,612 kB]
+#14 14.78 Get:23 http://ports.ubuntu.com/ubuntu-ports jammy-security/main arm64 Packages [4,026 kB]
+#14 15.60 Get:24 http://ports.ubuntu.com/ubuntu-ports jammy-security/universe arm64 Packages [1,397 kB]
+#14 15.98 Fetched 47.4 MB in 16s (3,017 kB/s)
+#14 15.98 Reading package lists...
+#14 17.07 Reading package lists...
+#14 18.16 Building dependency tree...
+#14 18.48 Reading state information...
+#14 18.80 git is already the newest version (1:2.34.1-1ubuntu1.17).
+#14 18.80 ripgrep is already the newest version (13.0.0-2ubuntu0.1).
+#14 18.80 0 upgraded, 0 newly installed, 0 to remove and 59 not upgraded.
+#14 DONE 18.9s
+
+#12 [builder  1/19] FROM docker.io/library/node:22-bookworm@sha256:0557ac14e0d45d02ed563067b82856ca5e7aa3437fa28d98d4350ea9c3d9494a
+#12 sha256:b1b2f7d74a7029b6b1c973442e63985504c0f975bb505853ef1b130435aea7f9 58.68MB / 58.68MB 18.4s done
+#12 sha256:2c9a098bd6416b43625806c3a6a005297e2cd5b9b5664e389da30661f6acfb30 33.55MB / 64.50MB 18.3s
+#12 ...
+
+#15 [runtime  4/23] RUN echo "CLI install cache buster: 20260818124841"   && npm install -g   "@openai/codex@latest"   "@anthropic-ai/claude-code@latest"
+#15 0.069 CLI install cache buster: 20260818124841
+#15 ...
+
+#12 [builder  1/19] FROM docker.io/library/node:22-bookworm@sha256:0557ac14e0d45d02ed563067b82856ca5e7aa3437fa28d98d4350ea9c3d9494a
+#12 sha256:2c9a098bd6416b43625806c3a6a005297e2cd5b9b5664e389da30661f6acfb30 54.53MB / 64.50MB 23.4s
+#12 sha256:a75326012c0e46bc6e0ebd4e16aaeed57151bdb35abecfaf1536077110c99c56 44.04MB / 203.18MB 23.3s
+#12 sha256:c6cbf97176c58c741329cd787e932a1e47931b35f5dc0f23db3e6e82924fef0f 23.07MB / 48.38MB 8.6s
+#12 sha256:2c9a098bd6416b43625806c3a6a005297e2cd5b9b5664e389da30661f6acfb30 58.72MB / 64.50MB 25.1s
+#12 sha256:c6cbf97176c58c741329cd787e932a1e47931b35f5dc0f23db3e6e82924fef0f 26.21MB / 48.38MB 10.7s
+#12 sha256:2c9a098bd6416b43625806c3a6a005297e2cd5b9b5664e389da30661f6acfb30 62.91MB / 64.50MB 27.5s
+#12 sha256:a75326012c0e46bc6e0ebd4e16aaeed57151bdb35abecfaf1536077110c99c56 54.53MB / 203.18MB 27.6s
+#12 sha256:c6cbf97176c58c741329cd787e932a1e47931b35f5dc0f23db3e6e82924fef0f 29.36MB / 48.38MB 13.5s
+#12 sha256:2c9a098bd6416b43625806c3a6a005297e2cd5b9b5664e389da30661f6acfb30 64.50MB / 64.50MB 28.4s done
+#12 sha256:c6cbf97176c58c741329cd787e932a1e47931b35f5dc0f23db3e6e82924fef0f 32.51MB / 48.38MB 15.3s
+#12 sha256:c6cbf97176c58c741329cd787e932a1e47931b35f5dc0f23db3e6e82924fef0f 35.65MB / 48.38MB 17.0s
+#12 sha256:a75326012c0e46bc6e0ebd4e16aaeed57151bdb35abecfaf1536077110c99c56 65.01MB / 203.18MB 31.8s
+#12 sha256:c6cbf97176c58c741329cd787e932a1e47931b35f5dc0f23db3e6e82924fef0f 38.80MB / 48.38MB 18.8s
+#12 sha256:c6cbf97176c58c741329cd787e932a1e47931b35f5dc0f23db3e6e82924fef0f 41.94MB / 48.38MB 20.3s
+#12 sha256:a75326012c0e46bc6e0ebd4e16aaeed57151bdb35abecfaf1536077110c99c56 75.50MB / 203.18MB 36.6s
+#12 sha256:c6cbf97176c58c741329cd787e932a1e47931b35f5dc0f23db3e6e82924fef0f 45.09MB / 48.38MB 21.9s
+#12 sha256:c6cbf97176c58c741329cd787e932a1e47931b35f5dc0f23db3e6e82924fef0f 48.38MB / 48.38MB 23.9s done
+#12 extracting sha256:c6cbf97176c58c741329cd787e932a1e47931b35f5dc0f23db3e6e82924fef0f
+#12 extracting sha256:c6cbf97176c58c741329cd787e932a1e47931b35f5dc0f23db3e6e82924fef0f 1.2s done
+#12 extracting sha256:225a0a6c500bfb3b4e92e3971bd6e5d097e6b511817e446098aa783c771a70e9
+#12 extracting sha256:225a0a6c500bfb3b4e92e3971bd6e5d097e6b511817e446098aa783c771a70e9 0.6s done
+#12 extracting sha256:2c9a098bd6416b43625806c3a6a005297e2cd5b9b5664e389da30661f6acfb30
+#12 sha256:a75326012c0e46bc6e0ebd4e16aaeed57151bdb35abecfaf1536077110c99c56 85.98MB / 203.18MB 41.6s
+#12 extracting sha256:2c9a098bd6416b43625806c3a6a005297e2cd5b9b5664e389da30661f6acfb30 1.9s done
+#12 sha256:a75326012c0e46bc6e0ebd4e16aaeed57151bdb35abecfaf1536077110c99c56 96.47MB / 203.18MB 45.5s
+#12 sha256:a75326012c0e46bc6e0ebd4e16aaeed57151bdb35abecfaf1536077110c99c56 106.95MB / 203.18MB 48.5s
+#12 sha256:a75326012c0e46bc6e0ebd4e16aaeed57151bdb35abecfaf1536077110c99c56 117.44MB / 203.18MB 50.9s
+#12 ...
+
+#15 [runtime  4/23] RUN echo "CLI install cache buster: 20260818124841"   && npm install -g   "@openai/codex@latest"   "@anthropic-ai/claude-code@latest"
+#15 34.72
+#15 34.72 added 4 packages in 34s
+#15 34.73 npm notice
+#15 34.73 npm notice New major version of npm available! 10.9.8 -> 12.0.2
+#15 34.73 npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.0.2
+#15 34.73 npm notice To update run: npm install -g npm@12.0.2
+#15 34.73 npm notice
+#15 DONE 35.1s
+
+#12 [builder  1/19] FROM docker.io/library/node:22-bookworm@sha256:0557ac14e0d45d02ed563067b82856ca5e7aa3437fa28d98d4350ea9c3d9494a
+#12 ...
+
+#16 [runtime  5/23] RUN mkdir -p /home/autobyteus/workspace /home/autobyteus/data /root
+#16 DONE 0.1s
+
+#12 [builder  1/19] FROM docker.io/library/node:22-bookworm@sha256:0557ac14e0d45d02ed563067b82856ca5e7aa3437fa28d98d4350ea9c3d9494a
+#12 sha256:a75326012c0e46bc6e0ebd4e16aaeed57151bdb35abecfaf1536077110c99c56 127.93MB / 203.18MB 53.6s
+#12 sha256:a75326012c0e46bc6e0ebd4e16aaeed57151bdb35abecfaf1536077110c99c56 138.41MB / 203.18MB 54.5s
+#12 sha256:a75326012c0e46bc6e0ebd4e16aaeed57151bdb35abecfaf1536077110c99c56 149.95MB / 203.18MB 55.5s
+#12 sha256:a75326012c0e46bc6e0ebd4e16aaeed57151bdb35abecfaf1536077110c99c56 161.48MB / 203.18MB 56.6s
+#12 sha256:a75326012c0e46bc6e0ebd4e16aaeed57151bdb35abecfaf1536077110c99c56 171.97MB / 203.18MB 57.6s
+#12 sha256:a75326012c0e46bc6e0ebd4e16aaeed57151bdb35abecfaf1536077110c99c56 183.50MB / 203.18MB 58.7s
+#12 sha256:a75326012c0e46bc6e0ebd4e16aaeed57151bdb35abecfaf1536077110c99c56 195.04MB / 203.18MB 59.7s
+#12 sha256:a75326012c0e46bc6e0ebd4e16aaeed57151bdb35abecfaf1536077110c99c56 203.18MB / 203.18MB 60.5s done
+#12 extracting sha256:a75326012c0e46bc6e0ebd4e16aaeed57151bdb35abecfaf1536077110c99c56
+#12 extracting sha256:a75326012c0e46bc6e0ebd4e16aaeed57151bdb35abecfaf1536077110c99c56 3.0s done
+#12 DONE 64.4s
+
+#12 [builder  1/19] FROM docker.io/library/node:22-bookworm@sha256:0557ac14e0d45d02ed563067b82856ca5e7aa3437fa28d98d4350ea9c3d9494a
+#12 extracting sha256:dc19a06fcc069b76c092cc0f6e56bebf300e1c2f53c53104ed8567b838d7f9c7 0.0s done
+#12 extracting sha256:b1b2f7d74a7029b6b1c973442e63985504c0f975bb505853ef1b130435aea7f9
+#12 extracting sha256:b1b2f7d74a7029b6b1c973442e63985504c0f975bb505853ef1b130435aea7f9 1.6s done
+#12 DONE 66.0s
+
+#12 [builder  1/19] FROM docker.io/library/node:22-bookworm@sha256:0557ac14e0d45d02ed563067b82856ca5e7aa3437fa28d98d4350ea9c3d9494a
+#12 extracting sha256:fe7b6a938574416a756cfff56a40b93c2e70b973429426f2c9d2783c486eff65 0.0s done
+#12 extracting sha256:7cbb9128249385b1230f283b2ed9b786d821f9780d41f0da1e12da7690a74042 done
+#12 DONE 66.1s
+
+#17 [builder  2/19] WORKDIR /app
+#17 DONE 0.2s
+
+#18 [builder  3/19] RUN corepack enable
+#18 DONE 0.1s
+
+#19 [builder  4/19] COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
+#19 DONE 0.0s
+
+#20 [builder  5/19] COPY autobyteus-ts/package.json autobyteus-ts/tsconfig.build.json autobyteus-ts/tsconfig.json ./autobyteus-ts/
+#20 DONE 0.0s
+
+#21 [builder  6/19] COPY autobyteus-ts/scripts ./autobyteus-ts/scripts
+#21 DONE 0.0s
+
+#22 [builder  7/19] COPY autobyteus-application-sdk-contracts/package.json autobyteus-application-sdk-contracts/tsconfig.build.json autobyteus-application-sdk-contracts/tsconfig.json ./autobyteus-application-sdk-contracts/
+#22 DONE 0.0s
+
+#23 [builder  8/19] COPY autobyteus-application-backend-sdk/package.json autobyteus-application-backend-sdk/tsconfig.build.json autobyteus-application-backend-sdk/tsconfig.json ./autobyteus-application-backend-sdk/
+#23 DONE 0.0s
+
+#24 [builder  9/19] COPY autobyteus-server-ts/package.json autobyteus-server-ts/tsconfig.json ./autobyteus-server-ts/
+#24 DONE 0.0s
+
+#25 [builder 10/19] COPY autobyteus-web/package.json ./autobyteus-web/
+#25 DONE 0.0s
+
+#26 [builder 11/19] RUN pnpm install --no-frozen-lockfile
+#26 0.091 ! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+#26 1.770 Scope: all 6 workspace projects
+#26 2.002 /app/autobyteus-server-ts:
+#26 2.002  ERR_PNPM_WORKSPACE_PKG_NOT_FOUND  In autobyteus-server-ts: "@autobyteus/team-stream-contracts@workspace:*" is in the dependencies but no package named "@autobyteus/team-stream-contracts" is present in the workspace
+#26 2.002
+#26 2.002 This error happened while installing a direct dependency of /app/autobyteus-server-ts
+#26 2.002
+#26 2.002 Packages found in the workspace:
+#26 ERROR: process "/bin/sh -c pnpm install --no-frozen-lockfile" did not complete successfully: exit code: 1
+------
+ > [builder 11/19] RUN pnpm install --no-frozen-lockfile:
+0.091 ! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+1.770 Scope: all 6 workspace projects
+2.002 /app/autobyteus-server-ts:
+2.002  ERR_PNPM_WORKSPACE_PKG_NOT_FOUND  In autobyteus-server-ts: "@autobyteus/team-stream-contracts@workspace:*" is in the dependencies but no package named "@autobyteus/team-stream-contracts" is present in the workspace
+2.002
+2.002 This error happened while installing a direct dependency of /app/autobyteus-server-ts
+2.002
+2.002 Packages found in the workspace:
+------
+Dockerfile.monorepo:23
+--------------------
+  21 |     COPY autobyteus-web/package.json ./autobyteus-web/
+  22 |
+  23 | >>> RUN pnpm install --no-frozen-lockfile
+  24 |
+  25 |     COPY autobyteus-ts ./autobyteus-ts
+--------------------
+ERROR: failed to build: failed to solve: process "/bin/sh -c pnpm install --no-frozen-lockfile" did not complete successfully: exit code: 1
+
+Exit status: 1
+Finished/recorded: 2026-08-18T14:51:07+02:00

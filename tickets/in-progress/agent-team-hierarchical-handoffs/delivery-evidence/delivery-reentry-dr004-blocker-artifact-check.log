@@ -1,0 +1,65 @@
+DR-004 blocker artifact check
+utc=2026-08-09T15:58:48Z
+HEAD=7e7d6a7b4cd55188f548c9e6a8c616f2e0b4e3bb
+MERGE_HEAD=3cddeec6b93602da172fec2e7b9a80acc7c05117
+origin_personal=3cddeec6b93602da172fec2e7b9a80acc7c05117
+unresolved_count=7
+unresolved=U	autobyteus-server-ts/src/memory-lineage/services/agent-memory-origin-service.ts
+unresolved=U	autobyteus-server-ts/src/services/agent-streaming/agent-team-stream-handler.ts
+unresolved=U	autobyteus-server-ts/src/services/agent-streaming/team-interrupt-generation-command-handler.ts
+unresolved=U	autobyteus-server-ts/src/services/agent-streaming/team-tool-approval-command-handler.ts
+unresolved=U	autobyteus-server-ts/tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts
+unresolved=U	autobyteus-web/services/agentStreaming/TeamStreamingService.ts
+unresolved=U	test-support/live-e2e/live-e2e-harness.ts
+merge_state=pass
+
+checkpoint_inventory:
+current_durable_inventory=pass_53
+restored_dispositions=9
+checkpoint_file_count=273
+
+protected_state:
+stash_and_backup=pass
+
+review_evidence:
+reviewer_audit_and_removed_patch=pass
+
+canonical_artifacts:
+requirements.md=present
+investigation-notes.md=present
+design-spec.md=present
+agent-team-addressing-handoff-contract.md=present
+agent-team-collaboration-system-instruction.md=present
+team-run-canonical-identity-refactor.md=present
+nested-classroom-live-validation-contract.md=present
+solution-revision-record.md=present
+design-review-report.md=present
+architecture-review-revision-record.md=present
+implementation-handoff.md=present
+implementation-revision-record.md=present
+code-review-report.md=present
+code-review-revision-record.md=present
+api-e2e-coverage-investigation.md=present
+api-e2e-execution-coverage-report.md=present
+api-e2e-revision-record.md=present
+api-e2e-test-review-report.md=present
+delivery-revision-record.md=present
+delivery-integration-blocker.md=present
+docs-sync-report.md=present
+handoff-summary.md=present
+release-deployment-report.md=present
+release-notes.md=present
+sr015_evidence=present
+
+current_status_assertions:
+blocked_status_and_disclosures=pass
+
+artifact_markdown:
+delivery-integration-blocker.md=pass
+delivery-revision-record.md=pass
+docs-sync-report.md=pass
+handoff-summary.md=pass
+release-deployment-report.md=pass
+release-notes.md=pass
+git_diff_check=not_run_expected_unresolved_merge_conflicts
+result=PASS_FOR_BLOCKER_HANDOFF_ONLY

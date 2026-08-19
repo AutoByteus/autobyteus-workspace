@@ -1,0 +1,176 @@
+{
+  "request": {
+    "teamDefinitionId": "utd-root-team-api-rev-005-1786807916040",
+    "memberConfigs": [
+      {
+        "memberAddress": "/coordinator",
+        "agentDefinitionId": "utd-coordinator-api-rev-005-1786807916040",
+        "llmModelIdentifier": "gpt-5.6-luna",
+        "autoExecuteTools": true,
+        "skillAccessMode": "NONE",
+        "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-005/live/workspaces/api_rev_005_1786807916040",
+        "runtimeKind": "autobyteus",
+        "llmConfig": {
+          "tool_choice": "required"
+        }
+      },
+      {
+        "memberAddress": "/worker",
+        "agentDefinitionId": "utd-worker-api-rev-005-1786807916040",
+        "llmModelIdentifier": "gpt-5.6-luna",
+        "autoExecuteTools": true,
+        "skillAccessMode": "NONE",
+        "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-005/live/workspaces/api_rev_005_1786807916040",
+        "runtimeKind": "autobyteus",
+        "llmConfig": {
+          "tool_choice": "required"
+        }
+      },
+      {
+        "memberAddress": "/lab/lead",
+        "agentDefinitionId": "utd-nested-coordinator-api-rev-005-1786807916040",
+        "llmModelIdentifier": "gpt-5.6-luna",
+        "autoExecuteTools": true,
+        "skillAccessMode": "NONE",
+        "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-005/live/workspaces/api_rev_005_1786807916040",
+        "runtimeKind": "autobyteus",
+        "llmConfig": {
+          "tool_choice": "required"
+        }
+      },
+      {
+        "memberAddress": "/lab/researcher",
+        "agentDefinitionId": "utd-nested-worker-api-rev-005-1786807916040",
+        "llmModelIdentifier": "gpt-5.6-luna",
+        "autoExecuteTools": true,
+        "skillAccessMode": "NONE",
+        "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-005/live/workspaces/api_rev_005_1786807916040",
+        "runtimeKind": "autobyteus",
+        "llmConfig": {
+          "tool_choice": "required"
+        }
+      }
+    ]
+  },
+  "response": {
+    "data": {
+      "createAgentTeamRun": {
+        "success": true,
+        "message": "Agent team run created successfully.",
+        "teamRunId": "utd_root_team_api_rev_005_1786807916040_afc6dc91e21f44a2b3e4a62f8d92c955"
+      }
+    }
+  },
+  "resume": {
+    "data": {
+      "getTeamRunResumeConfig": {
+        "teamRunId": "utd_root_team_api_rev_005_1786807916040_afc6dc91e21f44a2b3e4a62f8d92c955",
+        "isActive": true,
+        "executionTree": {
+          "schema_version": 1,
+          "created_at": "2026-08-15T15:35:44.538Z",
+          "archived_at": null,
+          "application_binding": null,
+          "handoffs": [],
+          "root_team": {
+            "team_definition_id": "utd-root-team-api-rev-005-1786807916040",
+            "team_definition_name": "utd_root_team_api_rev_005_1786807916040",
+            "team_run_id": "utd_root_team_api_rev_005_1786807916040_afc6dc91e21f44a2b3e4a62f8d92c955",
+            "coordinator_address": "/coordinator",
+            "members": [
+              {
+                "kind": "configured_agent",
+                "address": "/coordinator",
+                "agent_definition_id": "utd-coordinator-api-rev-005-1786807916040",
+                "role": null,
+                "description": null,
+                "agent_run_id": "utd_coordinator_api_rev_005_1786807916040_e959994e95c14734a536fc1c2381d244",
+                "platform_agent_run_id": null,
+                "launch_configuration": {
+                  "runtime_kind": "AUTOBYTEUS",
+                  "llm_model_identifier": "gpt-5.6-luna",
+                  "llm_config": {
+                    "tool_choice": "required"
+                  },
+                  "auto_execute_tools": true,
+                  "skill_access_mode": "NONE",
+                  "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-005/live/workspaces/api_rev_005_1786807916040"
+                }
+              },
+              {
+                "kind": "configured_agent",
+                "address": "/worker",
+                "agent_definition_id": "utd-worker-api-rev-005-1786807916040",
+                "role": null,
+                "description": null,
+                "agent_run_id": "utd_worker_api_rev_005_1786807916040_0778791461b142148dfdc4266edae736",
+                "platform_agent_run_id": null,
+                "launch_configuration": {
+                  "runtime_kind": "AUTOBYTEUS",
+                  "llm_model_identifier": "gpt-5.6-luna",
+                  "llm_config": {
+                    "tool_choice": "required"
+                  },
+                  "auto_execute_tools": true,
+                  "skill_access_mode": "NONE",
+                  "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-005/live/workspaces/api_rev_005_1786807916040"
+                }
+              },
+              {
+                "kind": "configured_team",
+                "address": "/lab",
+                "team_definition_id": "utd-child-team-api-rev-005-1786807916040",
+                "role": null,
+                "description": null,
+                "team_run_id": "utd_child_team_api_rev_005_1786807916040_d55b2747c9d24708a41d1e84911ec744",
+                "coordinator_address": "/lab/lead",
+                "members": [
+                  {
+                    "kind": "configured_agent",
+                    "address": "/lab/lead",
+                    "agent_definition_id": "utd-nested-coordinator-api-rev-005-1786807916040",
+                    "role": null,
+                    "description": null,
+                    "agent_run_id": "utd_nested_coordinator_api_rev_005_1786807916040_50ec681da3154befabadfad788dc759c",
+                    "platform_agent_run_id": null,
+                    "launch_configuration": {
+                      "runtime_kind": "AUTOBYTEUS",
+                      "llm_model_identifier": "gpt-5.6-luna",
+                      "llm_config": {
+                        "tool_choice": "required"
+                      },
+                      "auto_execute_tools": true,
+                      "skill_access_mode": "NONE",
+                      "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-005/live/workspaces/api_rev_005_1786807916040"
+                    }
+                  },
+                  {
+                    "kind": "configured_agent",
+                    "address": "/lab/researcher",
+                    "agent_definition_id": "utd-nested-worker-api-rev-005-1786807916040",
+                    "role": null,
+                    "description": null,
+                    "agent_run_id": "utd_nested_worker_api_rev_005_1786807916040_64477bbae2a448ef81fbcc03dd9c3d89",
+                    "platform_agent_run_id": null,
+                    "launch_configuration": {
+                      "runtime_kind": "AUTOBYTEUS",
+                      "llm_model_identifier": "gpt-5.6-luna",
+                      "llm_config": {
+                        "tool_choice": "required"
+                      },
+                      "auto_execute_tools": true,
+                      "skill_access_mode": "NONE",
+                      "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-005/live/workspaces/api_rev_005_1786807916040"
+                    }
+                  }
+                ],
+                "task_executions": []
+              }
+            ],
+            "task_executions": []
+          }
+        }
+      }
+    }
+  }
+}

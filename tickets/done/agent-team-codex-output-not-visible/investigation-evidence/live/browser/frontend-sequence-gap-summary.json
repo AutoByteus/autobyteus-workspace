@@ -1,0 +1,48 @@
+{
+  "captured_at": "2026-08-17T04:05:13.777Z",
+  "root_team_run_id": "classroom_simulation_team_d442e900ba09450a9f84c286eca7c45d",
+  "focused_agent_run_id": "professor_787b8f4c06aa4693b9d22ae78ec7f014",
+  "baseline_change_sequence": 32,
+  "final_change_sequence": 32,
+  "snapshot_refresh_required": true,
+  "events": [
+    { "type": "MEMBER_INPUT_MESSAGE", "received_change_sequence": 34 },
+    { "type": "TURN_STARTED", "received_change_sequence": 38 },
+    { "type": "SEGMENT_START", "received_change_sequence": 40 },
+    { "type": "SEGMENT_CONTENT", "received_change_sequence": 42 },
+    { "type": "SEGMENT_CONTENT", "received_change_sequence": 44 },
+    { "type": "SEGMENT_CONTENT", "received_change_sequence": 46 },
+    { "type": "SEGMENT_CONTENT", "received_change_sequence": 48 },
+    { "type": "SEGMENT_CONTENT", "received_change_sequence": 50 },
+    { "type": "SEGMENT_CONTENT", "received_change_sequence": 52 },
+    { "type": "SEGMENT_CONTENT", "received_change_sequence": 54 },
+    { "type": "SEGMENT_CONTENT", "received_change_sequence": 56 },
+    { "type": "SEGMENT_END", "received_change_sequence": 58 },
+    { "type": "TOKEN_USAGE_UPDATED", "received_change_sequence": 60 },
+    { "type": "TURN_COMPLETED", "received_change_sequence": 62 }
+  ],
+  "common_apply_result": {
+    "disposition": "rejected",
+    "code": "TEAM_EXECUTION_CHANGE_SEQUENCE_GAP",
+    "expected_first_change_sequence": 33,
+    "effects": [
+      { "kind": "snapshot_refresh_required" }
+    ]
+  },
+  "visible_conversation_after_turn": [
+    {
+      "type": "user",
+      "text": "Reply with exactly CODEX_TEAM_VISIBLE_20260817 and no other text."
+    },
+    {
+      "type": "ai",
+      "text": "CODEX_TEAM_VISIBLE_20260817",
+      "observation": "This earlier response became visible only after a manual browser refresh and Team-run reopen."
+    },
+    {
+      "type": "user",
+      "text": "Reply with exactly CODEX_TEAM_SECOND_20260817 and no other text."
+    }
+  ],
+  "observation": "Every live event for the second supported Codex Team turn was rejected because sequence 33 was never delivered. The reducer requested snapshot refresh, but the connection service did not execute that effect and the second assistant response remained absent."
+}

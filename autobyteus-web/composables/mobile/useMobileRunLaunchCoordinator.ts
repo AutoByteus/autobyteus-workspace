@@ -3,6 +3,7 @@ import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
 import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
+import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import { useAgentTeamDefinitionStore, type AgentTeamDefinition } from '~/stores/agentTeamDefinitionStore';
 import { useMobileWorkStore } from '~/stores/mobileWorkStore';
@@ -50,6 +51,7 @@ export function useMobileRunLaunchCoordinator() {
   const agentRunConfigStore = useAgentRunConfigStore();
   const selectionStore = useAgentSelectionStore();
   const teamContextsStore = useAgentTeamContextsStore();
+  const teamRunStore = useAgentTeamRunStore();
   const runHistoryStore = useRunHistoryStore();
   const teamDefinitionStore = useAgentTeamDefinitionStore();
   const teamRunConfigStore = useTeamRunConfigStore();
@@ -123,7 +125,8 @@ export function useMobileRunLaunchCoordinator() {
     }
     if (!teamRunConfigStore.config) {
       teamRunConfigStore.setTemplate(definition);
-      teamRunConfigStore.updateConfig({
+      teamRunConfigStore.applyConfigEdit({
+        kind: 'set_workspace',
         workspaceId: draft.workspaceId,
         workspaceMetadata: workspaceMetadataForId(workspaceStore, draft.workspaceId),
       });
@@ -138,20 +141,20 @@ export function useMobileRunLaunchCoordinator() {
       throw new Error('Created team run is not available.');
     }
 
-    const currentFocus = team.focusedMemberRouteKey?.trim() || '';
-    if (currentFocus && team.leafAgentContextsByRouteKey.has(currentFocus)) {
+    const currentFocus = team.view.getFocusedAgentRunId();
+    if (team.view.getAgentContext(currentFocus)) {
       mobileWorkStore.rememberFocusedTeamMember(teamRunId, currentFocus);
       return currentFocus;
     }
 
-    const fallbackRouteKey = Array.from(team.leafAgentContextsByRouteKey.keys())[0] || '';
-    if (!fallbackRouteKey) {
+    const fallback = team.view.listAgentContextEntries()[0]?.agentRunId;
+    if (!fallback) {
       throw new Error('This team has no focusable member for mobile Chat.');
     }
-
-    await runHistoryStore.focusTeamMemberAndEnsureHydrated(teamRunId, fallbackRouteKey);
-    mobileWorkStore.rememberFocusedTeamMember(teamRunId, fallbackRouteKey);
-    return teamContextsStore.getTeamContextById(teamRunId)?.focusedMemberRouteKey || fallbackRouteKey;
+    await runHistoryStore.focusTeamMemberAndEnsureHydrated(teamRunId, fallback);
+    const focused = teamContextsStore.getTeamContextById(teamRunId)?.view.getFocusedAgentRunId() ?? fallback;
+    mobileWorkStore.rememberFocusedTeamMember(teamRunId, focused);
+    return focused;
   }
 
   async function createAgentRun(draft: Extract<MobileRunCreationDraft, { kind: 'agent' }>): Promise<MobileRunCreationResult> {
@@ -199,13 +202,12 @@ export function useMobileRunLaunchCoordinator() {
     const definition = ensureTeamDraftConfig(draft);
     agentRunConfigStore.clearConfig();
 
-    const temporaryTeamRunId = teamContextsStore.createRunFromTemplate({ selectionMode: 'mobile' });
-    const teamRunId = selectionStore.selectedType === 'team' && selectionStore.selectedRunId
-      ? selectionStore.selectedRunId
-      : temporaryTeamRunId;
-    const focusedMemberRouteKey = await ensureValidLeafTeamFocus(teamRunId);
+    const launchDraft = teamRunConfigStore.selectedDraft;
+    if (!launchDraft) throw new Error('Team launch draft is unavailable.');
+    const launched = await teamRunStore.launchDraft(launchDraft);
+    const teamRunId = launched.rootTeamRunId;
+    const focusedAgentRunId = await ensureValidLeafTeamFocus(teamRunId);
     mobileWorkStore.moveDraftAttachmentsToPendingTeamRun(teamRunId);
-    teamRunConfigStore.clearConfig();
 
     return {
       context: {
@@ -215,7 +217,7 @@ export function useMobileRunLaunchCoordinator() {
         title: definition.name,
         summary: 'New team run',
         workspaceRootPath: workspaceRootPath(workspaceStore, draft.workspaceId),
-        focusedMemberRouteKey,
+        focusedAgentRunId,
         isActive: true,
         lastActivityAt: new Date().toISOString(),
         statusLabel: 'Ready',

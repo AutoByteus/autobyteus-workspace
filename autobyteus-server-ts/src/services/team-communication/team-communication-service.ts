@@ -1,260 +1,129 @@
-import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
-import { TeamRun } from "../../agent-team-execution/domain/team-run.js";
+import { createHash } from "node:crypto";
+import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
+import type { InterAgentMessageDeliveryIntent, ResolvedInterAgentMessageDeliveryRequest } from "../../agent-team-execution/domain/inter-agent-message-delivery.js";
+import { buildDeliveryEndpointForParticipant } from "../../agent-team-execution/domain/inter-agent-message-delivery.js";
+import type { TeamMemberExecutionIdentity } from "../../agent-team-execution/domain/team-member-execution-identity.js";
+import type { TeamRunEvent } from "../../agent-team-execution/domain/team-run-event.js";
+import type { TeamRun } from "../../agent-team-execution/domain/team-run.js";
 import {
-  TeamRunEventSourceType,
-  type TeamRunAgentEventPayload,
-  type TeamRunCommunicationEventPayload,
-  type TeamRunEvent,
-} from "../../agent-team-execution/domain/team-run-event.js";
-import {
-  AgentRunEventType,
-  isAgentRunEvent,
-  type AgentRunEvent,
-} from "../../agent-execution/domain/agent-run-event.js";
-import { appConfigProvider } from "../../config/app-config-provider.js";
-import {
-  cloneTeamCommunicationProjection,
-  normalizeTeamCommunicationMessage,
-  normalizeTeamCommunicationProjection,
-} from "./team-communication-normalizer.js";
-import {
-  TeamCommunicationProjectionStore,
-  getTeamCommunicationProjectionPath,
-  getTeamCommunicationProjectionStore,
-} from "./team-communication-projection-store.js";
-import type {
-  TeamCommunicationMessage,
-  TeamCommunicationProjection,
-} from "./team-communication-types.js";
+  TeamRunPersistenceFailStoppedError,
+  type PreparedTeamMessageAppend,
+  type TeamMessageCommitResult,
+} from "../../agent-team-execution/services/team-run-persistence-contract.js";
+import { buildInterAgentDeliveryInputMessage } from "../../agent-team-execution/services/inter-agent-message-runtime-builders.js";
+import { createTeamCommunicationMessageAppendPlan } from "./team-communication-message-append-plan.js";
+import { validateTeamCommunicationMessagesV1Payload } from "./team-communication-v1-schema.js";
+import type { TeamCommunicationMessageV1, TeamCommunicationMessagesSnapshot } from "./team-communication-v1-types.js";
 
-const logger = {
-  info: (...args: unknown[]) => console.info(...args),
-  warn: (...args: unknown[]) => console.warn(...args),
-};
-const LOG_PREFIX = "[team-communication]";
+const messageId = (input: {
+  rootTeamRunId: string;
+  senderAgentRunId: string;
+  receiverAgentRunId: string;
+  content: string;
+  createdAt: string;
+}) => `teammsg_${createHash("sha256").update(Object.values(input).join("\0")).digest("base64url").slice(0, 32)}`;
 
+/** Root-owned accepted Team-message history and one-shot append-plan owner. */
 export class TeamCommunicationService {
-  private readonly projectionStore: TeamCommunicationProjectionStore;
-  private readonly teamLayout: AgentMemoryLayout;
-  private readonly projectionByTeamRunId = new Map<string, TeamCommunicationProjection>();
-  private readonly operationQueueByTeamRunId = new Map<string, Promise<void>>();
+  private current: TeamCommunicationMessagesSnapshot;
+  private accepting = true;
 
-  constructor(options: {
-    projectionStore?: TeamCommunicationProjectionStore;
-    memoryDir?: string;
-  } = {}) {
-    this.projectionStore = options.projectionStore ?? getTeamCommunicationProjectionStore();
-    this.teamLayout = new AgentMemoryLayout(
-      options.memoryDir ?? appConfigProvider.config.getMemoryDir(),
-    );
+  constructor(private readonly options: {
+    rootTeamRunId: string;
+    initial: TeamCommunicationMessagesSnapshot;
+    isCurrentAgent(identity: TeamMemberExecutionIdentity): boolean;
+    requireContainingTeamRun(agentRunId: string): Promise<TeamRun>;
+    commit(plan: PreparedTeamMessageAppend): Promise<TeamMessageCommitResult>;
+    publish(event: TeamRunEvent): void;
+    replaceSnapshot(messages: TeamCommunicationMessagesSnapshot): void;
+  }) {
+    this.current = validateTeamCommunicationMessagesV1Payload(options.initial, options.rootTeamRunId);
   }
 
-  attachToTeamRun(teamRun: TeamRun): () => void {
-    const unsubscribe = teamRun.subscribeToEvents((event) => {
-      if (!this.isTeamCommunicationMessageTeamEvent(event)) {
-        return;
-      }
-      void this.enqueueTeamEvent(teamRun, event);
+  getSnapshot(): TeamCommunicationMessagesSnapshot { return this.current; }
+  closeAdmission(): void { this.accepting = false; }
+
+  async deliver(input: {
+    intent: InterAgentMessageDeliveryIntent;
+    receiverIdentity: TeamMemberExecutionIdentity;
+    receiverDisplayName: string;
+  }): Promise<AgentOperationResult> {
+    const { intent, receiverIdentity } = input;
+    const senderIdentity = intent.sender.participant.identity;
+    if (!this.accepting || intent.rootTeamRunId !== this.options.rootTeamRunId) {
+      return { accepted: false, code: "TEAM_RUN_NOT_ACCEPTING_MESSAGES", message: `Root TeamRun '${this.options.rootTeamRunId}' is not accepting messages.` };
+    }
+    if (!this.options.isCurrentAgent(senderIdentity) || !this.options.isCurrentAgent(receiverIdentity)) {
+      return { accepted: false, code: "COLLABORATION_CONTEXT_REQUIRED", message: "Sender and receiver must be exact live executions in the same root TeamRun." };
+    }
+    if (senderIdentity.agentRunId === receiverIdentity.agentRunId) {
+      return { accepted: false, code: "COLLABORATION_SELF_TARGET_REJECTED", message: "An AgentRun cannot send an ordinary Team message to itself." };
+    }
+    const createdAt = new Date().toISOString();
+    const message: TeamCommunicationMessageV1 = Object.freeze({
+      messageId: messageId({
+        rootTeamRunId: this.options.rootTeamRunId,
+        senderAgentRunId: senderIdentity.agentRunId,
+        receiverAgentRunId: receiverIdentity.agentRunId,
+        content: intent.content,
+        createdAt,
+      }),
+      senderAgentRunId: senderIdentity.agentRunId,
+      receiverAgentRunId: receiverIdentity.agentRunId,
+      content: intent.content,
+      messageType: intent.messageType?.trim() || "agent_message",
+      referenceFiles: Object.freeze([...(intent.referenceFiles ?? [])]),
+      createdAt,
     });
-
-    return () => {
-      unsubscribe();
-      this.clearTeamRunState(teamRun.runId);
-    };
-  }
-
-  async getProjectionForTeamRun(teamRun: TeamRun): Promise<TeamCommunicationProjection> {
-    await this.waitForPendingProjectionUpdates(teamRun.runId);
-    return this.loadProjection(teamRun.runId);
-  }
-
-  private isTeamCommunicationMessageTeamEvent(event: TeamRunEvent): boolean {
-    if (event.eventSourceType === TeamRunEventSourceType.COMMUNICATION) {
-      return true;
-    }
-    if (event.eventSourceType !== TeamRunEventSourceType.AGENT) {
-      return false;
-    }
-    const payload = event.data as TeamRunAgentEventPayload;
-    return (
-      isAgentRunEvent(payload.agentEvent) &&
-      payload.agentEvent.eventType === AgentRunEventType.TEAM_COMMUNICATION_MESSAGE
-    );
-  }
-
-  private enqueueTeamEvent(teamRun: TeamRun, event: TeamRunEvent): Promise<void> {
-    const key = teamRun.runId;
-    const previous = this.operationQueueByTeamRunId.get(key) ?? Promise.resolve();
-    const next = previous
-      .catch(() => undefined)
-      .then(async () => {
-        try {
-          await this.handleTeamCommunicationEvent(teamRun.runId, event);
-        } catch (error) {
-          logger.warn(
-            `TeamCommunicationService: failed processing message for team '${teamRun.runId}': ${String(error)}`,
-          );
-        }
-      });
-
-    this.operationQueueByTeamRunId.set(key, next);
-    void next.finally(() => {
-      if (this.operationQueueByTeamRunId.get(key) === next) {
-        this.operationQueueByTeamRunId.delete(key);
-      }
+    const request: ResolvedInterAgentMessageDeliveryRequest = Object.freeze({
+      ...intent,
+      recipient: buildDeliveryEndpointForParticipant(Object.freeze({
+        kind: "agent",
+        identity: receiverIdentity,
+        displayName: input.receiverDisplayName,
+      })),
+      senderIdentity,
+      receiverIdentity,
+      parentCommunicationMessageId: message.messageId,
     });
-    return next;
-  }
-
-  private async handleTeamCommunicationEvent(
-    teamRunId: string,
-    event: TeamRunEvent,
-  ): Promise<void> {
-    if (event.eventSourceType === TeamRunEventSourceType.COMMUNICATION) {
-      await this.handleCanonicalTeamCommunicationEvent(
-        teamRunId,
-        event.data as TeamRunCommunicationEventPayload,
-      );
-      return;
-    }
-
-    const payload = event.data as TeamRunAgentEventPayload;
-    await this.handleTeamCommunicationMessageEvent(teamRunId, payload.agentEvent);
-  }
-
-  private async handleCanonicalTeamCommunicationEvent(
-    teamRunId: string,
-    payload: TeamRunCommunicationEventPayload,
-  ): Promise<void> {
-    const message = normalizeTeamCommunicationMessage({
-      messageId: payload.messageId,
-      teamRunId,
-      senderAddress: payload.senderAddress,
-      receiverAddress: payload.receiverAddress,
-      content: payload.content,
-      messageType: payload.messageType,
-      createdAt: payload.createdAt,
-      referenceFileEntries: payload.referenceFiles,
-    }, {
-      teamRunId,
-      timestampFallback: payload.createdAt,
+    const receiverRun = await this.options.requireContainingTeamRun(receiverIdentity.agentRunId);
+    const inputMessage = buildInterAgentDeliveryInputMessage(request);
+    const reservationResult = await receiverRun.reserveDirectAgentInput(receiverIdentity.agentRunId, inputMessage);
+    if (!reservationResult.reserved) return { accepted: false, code: reservationResult.code, message: reservationResult.message };
+    const plan = createTeamCommunicationMessageAppendPlan({
+      rootTeamRunId: this.options.rootTeamRunId,
+      message,
+      inputMessage,
+      reservation: reservationResult.reservation,
+      isAccepting: () => this.accepting,
+      getCurrent: () => this.current,
+      replaceCurrent: (messages) => {
+        this.current = messages;
+        this.options.replaceSnapshot(messages);
+      },
+      publish: (event) => this.options.publish(event),
     });
-    if (!message) {
-      logger.warn(
-        `${LOG_PREFIX} skipped COMMUNICATION teamRunId=${teamRunId} messageId=${payload.messageId} reason=missing_required_metadata`,
-      );
-      return;
+    let result: TeamMessageCommitResult;
+    try {
+      result = await this.options.commit(plan);
+    } catch (error) {
+      if (error instanceof TeamRunPersistenceFailStoppedError) plan.disposeAfterRootFailStop();
+      throw error;
     }
-
-    await this.persistMessage(teamRunId, message);
+    if (result.outcome === "finalization_indeterminate") {
+      plan.disposeAfterRootFailStop();
+    }
+    return this.mapCommitResult(result, receiverIdentity, input.receiverDisplayName);
   }
 
-  private async handleTeamCommunicationMessageEvent(
-    teamRunId: string,
-    event: AgentRunEvent,
-  ): Promise<void> {
-    const message = normalizeTeamCommunicationMessage(event.payload, {
-      teamRunId,
-    });
-    if (!message) {
-      logger.warn(
-        `${LOG_PREFIX} skipped TEAM_COMMUNICATION_MESSAGE teamRunId=${teamRunId} runId=${event.runId} reason=missing_required_metadata`,
-      );
-      return;
-    }
-
-    await this.persistMessage(teamRunId, message);
-  }
-
-  private async persistMessage(
-    teamRunId: string,
-    message: TeamCommunicationMessage,
-  ): Promise<void> {
-    const projection = await this.loadProjection(teamRunId);
-    projection.teamRunId = teamRunId;
-    const upsertAction = this.upsertMessage(projection, message);
-    if (upsertAction === "unchanged") {
-      return;
-    }
-
-    this.projectionByTeamRunId.set(teamRunId, projection);
-    const teamMemoryDir = this.teamLayout.getTeamDirPath({ rootTeamRunId: teamRunId, teamRunPath: [] });
-    const projectionPath = getTeamCommunicationProjectionPath(teamMemoryDir);
-    await this.projectionStore.writeProjection(teamMemoryDir, projection);
-    logger.info(
-      `${LOG_PREFIX} projection ${upsertAction} teamRunId=${teamRunId} messageId=${message.messageId} referenceCount=${message.referenceFiles.length} projectionPath=${projectionPath}`,
-    );
-  }
-
-  private async loadProjection(teamRunId: string): Promise<TeamCommunicationProjection> {
-    const cached = this.projectionByTeamRunId.get(teamRunId);
-    if (cached) {
-      return cloneTeamCommunicationProjection(cached);
-    }
-
-    const loaded = normalizeTeamCommunicationProjection(
-      await this.projectionStore.readProjection(
-        this.teamLayout.getTeamDirPath({ rootTeamRunId: teamRunId, teamRunPath: [] }),
-      ),
-      { teamRunId },
-    );
-    this.projectionByTeamRunId.set(teamRunId, loaded);
-    return cloneTeamCommunicationProjection(loaded);
-  }
-
-  private async waitForPendingProjectionUpdates(teamRunId: string): Promise<void> {
-    let pending = this.operationQueueByTeamRunId.get(teamRunId);
-    while (pending) {
-      await pending.catch(() => undefined);
-
-      const nextPending = this.operationQueueByTeamRunId.get(teamRunId);
-      if (!nextPending || nextPending === pending) {
-        return;
-      }
-      pending = nextPending;
-    }
-  }
-
-  private upsertMessage(
-    projection: TeamCommunicationProjection,
-    incoming: TeamCommunicationMessage,
-  ): "inserted" | "updated" | "unchanged" {
-    const existing = projection.messages.find(
-      (message) => message.messageId === incoming.messageId,
-    );
-    if (!existing) {
-      projection.messages.push(incoming);
-      return "inserted";
-    }
-    if (incoming.createdAt.localeCompare(existing.createdAt) < 0) {
-      return "unchanged";
-    }
-
-    const nextMessage = {
-      ...existing,
-      ...incoming,
-      createdAt: existing.createdAt || incoming.createdAt,
-      referenceFiles: incoming.referenceFiles,
-    };
-    if (JSON.stringify(existing) === JSON.stringify(nextMessage)) {
-      return "unchanged";
-    }
-
-    Object.assign(existing, nextMessage);
-    return "updated";
-  }
-
-  private clearTeamRunState(teamRunId: string): void {
-    this.projectionByTeamRunId.delete(teamRunId);
-    this.operationQueueByTeamRunId.delete(teamRunId);
+  private mapCommitResult(
+    result: TeamMessageCommitResult,
+    receiver: TeamMemberExecutionIdentity,
+    displayName: string,
+  ): AgentOperationResult {
+    if (result.outcome === "committed") return { accepted: true, agentRunId: receiver.agentRunId, displayName };
+    if (result.outcome === "conflict") return { accepted: false, code: result.code, message: result.message };
+    if (result.outcome === "not_committed") return { accepted: false, code: "TEAM_MESSAGE_HISTORY_COMMIT_FAILED", message: result.cause.message };
+    throw new Error(`Team message finalization is indeterminate at '${result.stage}'.`);
   }
 }
-
-let cachedService: TeamCommunicationService | null = null;
-
-export const getTeamCommunicationService = (): TeamCommunicationService => {
-  if (!cachedService) {
-    cachedService = new TeamCommunicationService();
-  }
-  return cachedService;
-};

@@ -33,9 +33,9 @@
             <div class="mt-4 border-t border-gray-100 pt-3">
               <h4 class="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">{{ $t('memory.components.memory.AgentTeamMemoryDetail.members') }}</h4>
               <div class="flex flex-wrap gap-2">
-                <button v-for="member in run.memberTargets" :key="`${run.teamRunId}:${member.memberRunId}`" class="rounded-lg border border-gray-200 px-3 py-2 text-left text-xs hover:border-blue-300 hover:bg-blue-50" @click="$emit('inspectMember', run, member)">
+                <button v-for="member in run.memberTargets" :key="`${run.teamRunId}:${member.agentRunId}`" class="rounded-lg border border-gray-200 px-3 py-2 text-left text-xs hover:border-blue-300 hover:bg-blue-50" @click="$emit('inspectMember', run, member)">
                   <span class="block font-semibold text-gray-800">{{ member.memberName }}</span>
-                  <span class="block font-mono text-gray-500">{{ member.memberRunId }}</span>
+                  <span class="block font-mono text-gray-500">{{ member.agentRunId }}</span>
                 </button>
               </div>
             </div>

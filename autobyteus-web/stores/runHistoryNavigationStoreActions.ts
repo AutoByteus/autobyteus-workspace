@@ -4,7 +4,6 @@ import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import type { AgentStatus } from '~/types/agent/AgentStatus';
 import type { RunHistoryWorkspaceGroup } from './runHistoryTypes';
 import type { RunNavigationEffect } from '~/services/agentStreaming/agentStreamMutationEffects';
-import type { TaskExecutionProjectionMutation } from '~/services/agentStreaming/teamTaskExecutionProjection';
 import {
   buildRunHistoryNavigationProjection,
   type RunHistoryNavigationProjectionState,
@@ -12,7 +11,6 @@ import {
 import {
   applyRunNavigationEffectToProjection,
   applyRunNavigationTeamFocusToProjection,
-  applyTaskExecutionRowPresentationToProjection,
   type RunNavigationTarget,
 } from './runHistoryNavigationPatches';
 
@@ -57,35 +55,13 @@ export const applyRunNavigationEffectForStore = (
   return true;
 };
 
-export const commitTaskProjectionNavigationMutationForStore = (
-  store: RunHistoryNavigationStoreState,
-  teamRunId: string,
-  mutation: TaskExecutionProjectionMutation,
-): boolean => {
-  if (mutation.kind === 'NONE') return false;
-  if (mutation.kind === 'TOPOLOGY') {
-    refreshRunNavigationTopologyForStore(store, `task:${mutation.reason}`);
-    return true;
-  }
-  const result = applyTaskExecutionRowPresentationToProjection(
-    ensureProjection(store),
-    teamRunId,
-    mutation.memberRouteKey,
-    mutation.changes,
-  );
-  if (!result.changed) return false;
-  store.navigationProjection = result.state;
-  store.navigationPatchRevision += 1;
-  return true;
-};
-
 export const applyRunNavigationTeamFocusForStore = (
   store: RunHistoryNavigationStoreState,
   teamRunId: string,
-  memberRouteKey: string,
+  agentRunId: string,
 ): boolean => {
   const result = applyRunNavigationTeamFocusToProjection(
-    ensureProjection(store), teamRunId, memberRouteKey,
+    ensureProjection(store), teamRunId, agentRunId,
   );
   if (!result.changed) return false;
   store.navigationProjection = result.state;
@@ -96,16 +72,14 @@ export const applyRunNavigationTeamFocusForStore = (
 export const focusTeamMemberAndEnsureHydratedForStore = async (
   store: RunHistoryNavigationStoreState,
   teamRunId: string,
-  memberRouteKey: string,
+  agentRunId: string,
 ): Promise<boolean> => {
-  const normalized = memberRouteKey.trim();
   const teamStore = useAgentTeamContextsStore();
   const context = teamStore.getTeamContextById(teamRunId);
-  if (!normalized || !context) return false;
-  await teamStore.focusMemberAndEnsureHydrated(teamRunId, normalized);
-  const acceptedRouteKey = context.focusedMemberRouteKey ?? '';
-  if (acceptedRouteKey !== normalized) return false;
-  return applyRunNavigationTeamFocusForStore(store, teamRunId, normalized);
+  if (!context || context.view.getRootTeamRunId() !== teamRunId) return false;
+  const result = context.view.focusAgent(agentRunId);
+  if (result.disposition === 'rejected' || context.view.getFocusedAgentRunId() !== agentRunId) return false;
+  return applyRunNavigationTeamFocusForStore(store, teamRunId, agentRunId);
 };
 
 export const standaloneNavigationTarget = (input: {

@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 2,
+  "slug": "autobyteus",
+  "runtime": "autobyteus",
+  "model": "gpt-5.6-luna",
+  "startedAt": "2026-08-12T05:08:22.628Z",
+  "completedAt": "2026-08-12T05:10:27.054Z",
+  "passed": false,
+  "fatalError": "TimeoutError: page.waitForURL: Timeout 120000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation to \"**/workspace**\" until \"load\"\n  navigated to \"http://127.0.0.1:31225/agent-teams?view=team-list\"\n  navigated to \"http://127.0.0.1:31225/agent-teams?view=team-list\"\n  navigated to \"http://127.0.0.1:31225/agent-teams?view=team-list\"\n  navigated to \"http://127.0.0.1:31225/agent-teams?view=team-list\"\n============================================================\npage.waitForURL: Timeout 120000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation to \"**/workspace**\" until \"load\"\n  navigated to \"http://127.0.0.1:31225/agent-teams?view=team-list\"\n  navigated to \"http://127.0.0.1:31225/agent-teams?view=team-list\"\n  navigated to \"http://127.0.0.1:31225/agent-teams?view=team-list\"\n  navigated to \"http://127.0.0.1:31225/agent-teams?view=team-list\"\n============================================================\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr018/api-rev-025/live/run-one-team-browser-row.mjs:159:14",
+  "rootRun": null,
+  "consoleEvents": [
+    {
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep)"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep)"
+    }
+  ],
+  "graphqlResponseSummaries": [
+    {
+      "at": "2026-08-12T05:08:26.023Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T05:08:26.024Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T05:08:30.512Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T05:08:30.512Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    }
+  ],
+  "termination": null
+}

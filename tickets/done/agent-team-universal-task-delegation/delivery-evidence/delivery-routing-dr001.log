@@ -1,0 +1,14 @@
+# DR-001 implementation routing record
+date=2026-08-15
+recipient=implementation_engineer
+message_type=handoff
+delivery_result=DELIVERED
+classification=LOCAL_FIX_INTEGRATION
+merge_head=acb8985930ccce49b632cdca22b92f5b237e35bf
+unresolved_path_count=2
+next_required_gate=integrated implementation -> source review -> safe-target API/E2E -> proportional durable-test review -> delivery re-entry
+operational_database_action=NONE
+home_autobyteus_action=NONE
+protected_60004_31004_action=NONE
+rollback_repair_action=NONE
+push_release_deployment_cleanup_action=NONE

@@ -1,0 +1,1000 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web
+
+stderr | utils/__tests__/teamRunConfigUtils.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentTeamContextsStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentTeamRunStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/runHistoryStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/__tests__/MobileUxRefinement.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | graphql/queries/__tests__/runHistoryQueries.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/mobile/__tests__/MobileUxRefinement.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/__tests__/teamRunConfigUtils.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/agentTeamRunStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/runHistoryStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/__tests__/TeamStreamingService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | graphql/queries/__tests__/runHistoryQueries.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/agentTeamContextsStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ graphql/queries/__tests__/runHistoryQueries.spec.ts (5 tests | 4 failed) 16ms
+   × Event Monitor active-trace page queries > exposes only explicit standalone/team subject identity and an opaque cursor 8ms
+     → expected '\n  query GetTeamMemberEventMonitorAc…' to contain '$memberRouteKey: String!'
+   ✓ GetRunFileChanges query > requests inline content for live buffered file-change hydration without legacy artifact ids 0ms
+   × ListWorkspaceRunHistory query > uses V2 standalone and team history catalog shapes without persisted live fields 1ms
+     → expected 'teamDefinitions {\n        teamDefini…' to contain 'status'
+   × GetTeamCommunicationMessages query > requests address-first sender and receiver fields without removed flat participant identity 1ms
+     → expected '\n  query GetTeamCommunicationMessage…' to contain 'segments'
+   × GetTaskDelegationRecords query > requests durable address-first task records with updates and references 1ms
+     → expected '\n  query GetTaskDelegationRecords($t…' to contain 'memberRouteKey'
+ ❯ utils/__tests__/teamRunConfigUtils.spec.ts (8 tests | 4 failed) 19ms
+   ✓ teamRunConfigUtils > treats only property presence as an explicit member llmConfig override 1ms
+   ✓ teamRunConfigUtils > resolves effective member config from explicit override or global fallback 1ms
+   ✓ teamRunConfigUtils > compares model configs independent of key order 8ms
+   ✓ teamRunConfigUtils > treats explicit null llmConfig as a meaningful member override 0ms
+   × teamRunConfigUtils > reconstructs global defaults and only keeps divergent overrides from member metadata 3ms
+     → Cannot read properties of undefined (reading 'children')
+   × teamRunConfigUtils > reconstructs member runtime overrides when one member runtime differs from the dominant team runtime 0ms
+     → Cannot read properties of undefined (reading 'children')
+   × teamRunConfigUtils > does not synthesize member override keys from bare member names 2ms
+     → Cannot read properties of undefined (reading 'children')
+   × teamRunConfigUtils > reconstructs a coherent default runtime/model/config tuple for mixed metadata and stays launch-ready 2ms
+     → Cannot read properties of undefined (reading 'children')
+ ❯ components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts (1 test | 1 failed) 26ms
+   × ApplicationTeamLaunchProfileEditor > repairs stale saved member overrides by exact route/id match and drops stale carry-forward overrides 26ms
+     → expected { kind: 'AGENT_TEAM', …(2) } to deeply equal { kind: 'AGENT_TEAM', …(2) }
+stderr | stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore > marks team as offline but keeps context for history restore after terminate
+Error terminating team team-1 on backend: TypeError: Cannot read properties of undefined (reading 'forEach')
+    at teardownLocalRuntime (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/stores/agentTeamRunStore.ts:212:44)
+    at Proxy.terminateTeamRun (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/stores/agentTeamRunStore.ts:235:9)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/stores/__tests__/agentTeamRunStore.spec.ts:380:20
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+stderr | stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore > does not mark a persisted team inactive when backend termination fails
+Error terminating team team-terminate-fails-1 on backend: Error: not found
+    at Proxy.terminateTeamRun (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/stores/agentTeamRunStore.ts:232:17)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/stores/__tests__/agentTeamRunStore.spec.ts:421:20
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+stderr | stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore > deduplicates concurrent team Stop requests through the shared store-owned pending state
+Error terminating team team-stop-pending-1 on backend: TypeError: Cannot read properties of undefined (reading 'forEach')
+    at teardownLocalRuntime (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/stores/agentTeamRunStore.ts:212:44)
+    at Proxy.terminateTeamRun (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/stores/agentTeamRunStore.ts:235:9)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+ ❯ stores/__tests__/agentTeamRunStore.spec.ts (22 tests | 17 failed) 30ms
+   ✓ agentTeamRunStore > connects team stream using bound node team WS endpoint 3ms
+   × agentTeamRunStore > marks team as offline but keeps context for history restore after terminate 6ms
+     → expected false to be true // Object.is equality
+   ✓ agentTeamRunStore > does not mark a persisted team inactive when backend termination fails 1ms
+   × agentTeamRunStore > deduplicates concurrent team Stop requests through the shared store-owned pending state 1ms
+     → expected false to be true // Object.is equality
+   × agentTeamRunStore > discardDraftTeamRun removes a temporary team locally without backend termination 3ms
+     → Cannot read properties of undefined (reading 'forEach')
+   × agentTeamRunStore > reconnects and sends over WebSocket for a persisted team 1ms
+     → Cannot read properties of undefined (reading 'rootTeamRunId')
+   × agentTeamRunStore > publishes the authoritative Error status with exact navigation when team restore fails 0ms
+     → Cannot read properties of undefined (reading 'rootTeamRunId')
+   × agentTeamRunStore > launches a temporary team send to the focused offline non-coordinator instead of active-execution fallback 1ms
+     → Cannot read properties of undefined (reading 'rootTeamRunId')
+   × agentTeamRunStore > rejects stale focused routes instead of sending to an active-execution fallback 3ms
+     → expected [Function] to throw error including 'No valid focused team message target …' but got 'Cannot read properties of undefined (…'
+   × agentTeamRunStore > sends to active-execution focus instead of stale task-only logical focus 0ms
+     → Cannot read properties of undefined (reading 'rootTeamRunId')
+   ✓ agentTeamRunStore > does not synthesize a focused-member approval target when no event target is supplied 0ms
+   ✓ agentTeamRunStore > approves nested tool requests using the event source target after focus changes 0ms
+   × agentTeamRunStore > restores persisted inactive team runs before sending 0ms
+     → Cannot read properties of undefined (reading 'rootTeamRunId')
+   × agentTeamRunStore > acknowledges a restored team-member send locally before restore resolves 1ms
+     → expected [] to have a length of 1 but got +0
+   × agentTeamRunStore > reconnects stale disconnected team stream after successful send 0ms
+     → Cannot read properties of undefined (reading 'rootTeamRunId')
+   ✓ agentTeamRunStore > reattaches an existing team stream service to the latest team context 0ms
+   × agentTeamRunStore > interruptFocusedMemberGeneration should send the exact member target without clearing submission pending optimistically 0ms
+     → Cannot read properties of undefined (reading 'rootTeamRunId')
+   × agentTeamRunStore > shows one member-aware interrupt failure toast without changing team activity 1ms
+     → expected "spy" to be called with arguments: [ Array(2) ]
+
+Received: 
+
+  1st spy call:
+
+  [
+-   StringContaining "reviewer",
++   "Could not send Stop to team-toast-1: Connection closed.",
+    "error",
+  ]
+
+
+Number of calls: 1
+
+   × agentTeamRunStore > interruptFocusedMemberGeneration rejects missing member target without using active-team fallback 0ms
+     → Cannot read properties of undefined (reading 'rootTeamRunId')
+   × agentTeamRunStore > fans out mixed member runtimes when launching a temporary team 0ms
+     → Cannot read properties of undefined (reading 'rootTeamRunId')
+   × agentTeamRunStore > reconciles temporary team member contexts to backend member run IDs before streaming direct sends 2ms
+     → Cannot read properties of undefined (reading 'rootTeamRunId')
+   × agentTeamRunStore > uses nested route keys in mixed leaf member configs when launching a temporary team 2ms
+     → Cannot read properties of undefined (reading 'rootTeamRunId')
+ ❯ stores/__tests__/runHistoryStore.spec.ts (59 tests | 28 failed) 126ms
+   ✓ runHistoryStore > publishes the asynchronously loaded initial workspace catalog with exactly one topology refresh 3ms
+   × runHistoryStore > fetches run history tree from GraphQL 16ms
+     → Cannot read properties of undefined (reading 'children')
+   × runHistoryStore > hydrates and connects newly discovered active runs from workspace history 4ms
+     → Cannot read properties of undefined (reading 'children')
+   × runHistoryStore > fetchWorkspaceHistory does not reconcile unrelated active contexts outside the scoped workspace 1ms
+     → Cannot read properties of undefined (reading 'values')
+   ✓ runHistoryStore > projects backend-visible temp workspace descriptors as non-removable roots with local drafts 1ms
+   ✓ runHistoryStore > prefers fixed temp identity and non-removability when temp and filesystem descriptors share one root 1ms
+   ✓ runHistoryStore > keeps permanent local standalone contexts visible until history reconciliation dedupes them 1ms
+   ✓ runHistoryStore > does not project history-only removed workspace roots without visible descriptors 0ms
+   × runHistoryStore > preserves subscribed live member statuses while refreshing root team activity 1ms
+     → Cannot read properties of undefined (reading 'children')
+   ✓ runHistoryStore > preserves subscribed single-agent live status during active history refresh 1ms
+   ✓ runHistoryStore > returns backend readiness error on fetchTree when backend is not ready 1ms
+   ✓ runHistoryStore > opens a run, hydrates projection, selects runContext, and connects stream when active 15ms
+   ✓ runHistoryStore > opens an inactive run and hydrates offline status without connecting stream 1ms
+   ✓ runHistoryStore > trusts history active state and reconnects an agent stream when reopening an active run 1ms
+   ✓ runHistoryStore > does not clobber live active context state when reopening an already subscribed run 1ms
+   ✓ runHistoryStore > creates draft run for selected workspace and agent 1ms
+   ✓ runHistoryStore > reuses model from existing context when creating draft run 0ms
+   ✓ runHistoryStore > prefers the selected same-definition context and deep-clones its llmConfig when creating a draft run 29ms
+   ✓ runHistoryStore > clears copied llmConfig when model resolution changes the source model for a draft run 0ms
+   ✓ runHistoryStore > reuses an existing workspace id when local cache has matching root path 0ms
+   ✓ runHistoryStore > fetches workspaces before creating one when cache is not loaded yet 0ms
+   ✓ runHistoryStore > projects persisted history and temp drafts into workspace tree 1ms
+   ✓ runHistoryStore > pruneWorkspace clears global agent selection when the selected run belongs to the removed workspace 3ms
+   × runHistoryStore > pruneWorkspace clears global team selection when the selected team belongs to the removed workspace 1ms
+     → expected 'super_agent' to be null
+   ✓ runHistoryStore > overlays persisted run status with matching live context only 1ms
+   ✓ runHistoryStore > projects offline draft contexts as inactive in tree projection 0ms
+   ✓ runHistoryStore > selectTreeRun delegates to openRun for history rows 0ms
+   ✓ runHistoryStore > selectTreeRun selects local temp context for draft rows 0ms
+   × runHistoryStore > projects persisted team history into team nodes for a workspace 0ms
+     → Cannot read properties of undefined (reading 'children')
+   × runHistoryStore > updates root team activity without changing member statuses 0ms
+     → Cannot read properties of undefined (reading 'children')
+   × runHistoryStore > keeps the persisted team summary when a stored team run is also hydrated locally 8ms
+     → Cannot read properties of undefined (reading 'children')
+   × runHistoryStore > uses the coordinator first message for live team summaries instead of the focused member 1ms
+     → Cannot read properties of undefined (reading 'coordinatorAddress')
+   × runHistoryStore > keeps team node order stable instead of re-sorting by last activity time 0ms
+     → Cannot read properties of undefined (reading 'children')
+   × runHistoryStore > uses live member status for team member rows when a team context is active 0ms
+     → Cannot read properties of undefined (reading 'coordinatorAddress')
+   × runHistoryStore > keeps an initializing task-delegation-only worker in roster rows with roster visual focus 0ms
+     → Cannot read properties of undefined (reading 'coordinatorAddress')
+   × runHistoryStore > selectTreeRun opens persisted team member when local team context is absent 1ms
+     → Invalid AgentTeam address 'undefined'.
+   × runHistoryStore > selectTreeRun keeps a subscribed live team context and only changes focus 0ms
+     → Invalid AgentTeam address 'undefined'.
+   × runHistoryStore > selectTreeRun focuses a live transient task-agent target through the local team context 0ms
+     → Invalid AgentTeam address 'undefined'.
+   × runHistoryStore > selectTreeRun keeps a clicked roster member as visual focus instead of active-execution-normalizing to coordinator 0ms
+     → Invalid AgentTeam address 'undefined'.
+   × runHistoryStore > selectTreeRun switches inactive all-offline historical Software Engineering Team roster focus between non-coordinator members 0ms
+     → Invalid AgentTeam address 'undefined'.
+   × runHistoryStore > selectTreeRun keeps a local draft temp team context even when it is not subscribed 0ms
+     → Invalid AgentTeam address 'undefined'.
+   × runHistoryStore > selectTreeRun reuses the currently selected historical team context when switching members 0ms
+     → Invalid AgentTeam address 'undefined'.
+   × runHistoryStore > selectTreeRun exposes openingRun while a reused historical team member is lazy-loading 1ms
+     → expected false to be true // Object.is equality
+   × runHistoryStore > selectTreeRun reuses an existing historical team context instead of reopening it 15ms
+     → Invalid AgentTeam address 'undefined'.
+   × runHistoryStore > openTeamMemberRun hydrates only the focused historical member and keeps siblings as shells 1ms
+     → Cannot read properties of undefined (reading 'forEach')
+   × runHistoryStore > openTeamMemberRun uses non-running member placeholders and connects stream for active teams 1ms
+     → Cannot read properties of undefined (reading 'forEach')
+   × runHistoryStore > openTeamMemberRun normalizes task-agent-only logical parent focus to the coordinator without promoting task-agent history 1ms
+     → Cannot read properties of undefined (reading 'forEach')
+   × runHistoryStore > openTeamMemberRun normalizes task-agent-only logical parent focus for an existing unsubscribed active context 1ms
+     → Cannot read properties of undefined (reading 'forEach')
+   × runHistoryStore > openTeamMemberRun trusts history active state and reconnects a team stream 0ms
+     → Cannot read properties of undefined (reading 'forEach')
+   × runHistoryStore > openTeamMemberRun refreshes an existing team context in place 0ms
+     → Cannot read properties of undefined (reading 'forEach')
+   ✓ runHistoryStore > deleteRun removes local state and refreshes tree when backend succeeds 1ms
+   ✓ runHistoryStore > deleteRun does not mutate local state when backend rejects deletion 0ms
+   ✓ runHistoryStore > deleteRun rejects draft run IDs without backend mutation call 1ms
+   ✓ runHistoryStore > archiveRun removes local state and refreshes tree when backend succeeds 1ms
+   ✓ runHistoryStore > archiveRun does not mutate local state when backend rejects archive 1ms
+   ✓ runHistoryStore > archiveRun rejects draft run IDs without backend mutation call 0ms
+   × runHistoryStore > archiveTeamRun removes local team state and refreshes tree when backend succeeds 1ms
+     → expected 'super_agent' to be null
+   ✓ runHistoryStore > archiveTeamRun leaves local state unchanged when backend rejects archive 1ms
+   ✓ runHistoryStore > archiveTeamRun rejects draft team IDs without backend mutation call 0ms
+ ❯ stores/__tests__/agentTeamContextsStore.spec.ts (6 tests | 4 failed) 26ms
+   × agentTeamContextsStore > createRunFromTemplate > creates a team context with mixed member runtimes from overrides 15ms
+     → Cannot read properties of undefined (reading 'size')
+   × agentTeamContextsStore > createRunFromTemplate > keeps nested team topology while indexing leaf member contexts by route key 6ms
+     → expected undefined to match object [ { memberKind: 'agent_team', …(3) } ]
+   ✓ agentTeamContextsStore > activeTeamContext > returns null if no team selected 0ms
+   ✓ agentTeamContextsStore > activeTeamContext > returns context if team selected 1ms
+   × agentTeamContextsStore > setFocusedMember > keeps unsent draft text and context files on the original member 1ms
+     → indexTeamMemberNodesByRouteKey is not a function
+   × agentTeamContextsStore > focusMemberAndEnsureHydrated > focuses the requested member and triggers lazy historical hydration 0ms
+     → indexTeamMemberNodesByRouteKey is not a function
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > echoes captured approval token when approving tool invocation
+No member context found for message, skipping
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > uses the approval request source route when approving after focus changes
+No member context found for message, skipping
+
+stdout | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > keeps subscription transport state separate from backend-owned team lifecycle
+Team WebSocket connected
+Team WebSocket disconnected: closed
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > projects each server-shaped team content message immediately
+No member context found for message, skipping
+No member context found for message, skipping
+No member context found for message, skipping
+No member context found for message, skipping
+No member context found for message, skipping
+No member context found for message, skipping
+
+stdout | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > reattaches lifecycle callbacks to the latest team context
+Team WebSocket connected
+Team WebSocket disconnected: closed
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > mirrors external user messages into the targeted team member conversation
+No member context found for message, skipping
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > routes successful tool execution through the browser-owned post-success handler
+No member context found for message, skipping
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > does not clear stale team/member error from live non-status activity
+No member context found for message, skipping
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > does not repair stale member error from focused-member fallback without explicit identity
+No member context found for message, skipping
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > does not promote non-error team/member lifecycle status from live activity alone
+No member context found for message, skipping
+
+stdout | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > does not convert team transport errors into lifecycle errors
+Team WebSocket connected
+Team WebSocket disconnected: network reset
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > does not convert team transport errors into lifecycle errors
+Team WebSocket error: Error: socket failed
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/TeamStreamingService.spec.ts:1122:32
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:155:11
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:26
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1897:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1863:10)
+    at runTest (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1574:12)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at runSuite (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1729:8)
+    at runSuite (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1729:8)
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > routes raw inter-agent messages only to the targeted member conversation
+No member context found for message, skipping
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > renders team member system task notifications as conversation segments
+No member context found for message, skipping
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > routes live member input echoes to the resolved nested leaf and upserts duplicate echoes by identity
+No member context found for message, skipping
+No member context found for message, skipping
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > projects task-agent stream identity into a transient context and removes it after offline settlement
+No member context found for message, skipping
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > defers a first task-agent offline create/remove journey to one final topology build
+No member context found for message, skipping
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > creates the transient task-agent context from a work-packet echo that carries task-agent identity
+No member context found for message, skipping
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > creates the transient task-agent context from a task-delegation event with task-agent identity
+Task delegation event is missing execution_address.
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > preserves task-team ancestry for scoped task-agent delegation events and refreshes existing nodes
+Task delegation event is missing execution_address.
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > creates a visible task-team projection from a task-team delegation event
+Task delegation event is missing execution_address.
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > routes stamped task-team child status to the scoped child context and leaves structural context unchanged
+Task delegation event is missing execution_address.
+No member context found for message, skipping
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > settles and removes a task-team projection from its terminal task event
+Task delegation event is missing execution_address.
+Task delegation event is missing execution_address.
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > cascades terminal task-team cleanup through scoped children and nested task-agent contexts only
+Task delegation event is missing execution_address.
+Task delegation event is missing execution_address.
+No member context found for message, skipping
+No member context found for message, skipping
+No member context found for message, skipping
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > allows sequential delegations to the same logical team after task-team terminal cleanup
+Task delegation event is missing execution_address.
+Task delegation event is missing execution_address.
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > allows sequential delegations to the same logical team after task-team terminal cleanup
+Task delegation event is missing execution_address.
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > repairs a missing task-agent node when the task-agent context already exists
+No member context found for message, skipping
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > routes typed task-agent tool approval requests and approval commands by task-agent run identity
+No member context found for message, skipping
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > serializes task-team scoped approval and denial commands with relative child selectors
+Task delegation event is missing execution_address.
+No member context found for message, skipping
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > keeps parallel same-member task-agent instances distinct until each settles
+No member context found for message, skipping
+No member context found for message, skipping
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > routes compaction lifecycle messages to the targeted member context
+No member context found for message, skipping
+
+ ❯ services/agentStreaming/__tests__/TeamStreamingService.spec.ts (43 tests | 34 failed) 100ms
+   × TeamStreamingService > echoes captured approval token when approving tool invocation 8ms
+     → Cannot read properties of undefined (reading 'rootTeamRunId')
+   × TeamStreamingService > uses the approval request source route when approving after focus changes 12ms
+     → expected [] to have a length of 1 but got +0
+   × TeamStreamingService > serializes focused member interrupt with route-key target and optional run guard 1ms
+     → Cannot read properties of undefined (reading 'rootTeamRunId')
+   × TeamStreamingService > serializes send messages with canonical conversation target addresses 1ms
+     → Cannot read properties of undefined (reading 'trim')
+   × TeamStreamingService > requires a focused member route key for team interrupt serialization 2ms
+     → expected [Function] to throw error including 'target member route key is required' but got 'Cannot read properties of undefined (…'
+   × TeamStreamingService > rejects team interrupt while disconnected without sending 0ms
+     → Cannot read properties of undefined (reading 'rootTeamRunId')
+   × TeamStreamingService > rejects team interrupt while connecting without sending 0ms
+     → Cannot read properties of undefined (reading 'rootTeamRunId')
+   × TeamStreamingService > rejects team interrupt while reconnecting without sending 0ms
+     → Cannot read properties of undefined (reading 'rootTeamRunId')
+   × TeamStreamingService > intercepts exact team interrupt acks before member projection and drains only pending commands 0ms
+     → Cannot read properties of undefined (reading 'rootTeamRunId')
+   × TeamStreamingService > completes a team reentrant disconnect-plus-send-throw only once 0ms
+     → Cannot read properties of undefined (reading 'rootTeamRunId')
+   ✓ TeamStreamingService > keeps subscription transport state separate from backend-owned team lifecycle 2ms
+   × TeamStreamingService > projects each server-shaped team content message immediately 3ms
+     → Cannot read properties of undefined (reading 'segments')
+   ✓ TeamStreamingService > reattaches lifecycle callbacks to the latest team context 0ms
+   × TeamStreamingService > mirrors external user messages into the targeted team member conversation 1ms
+     → expected [] to have a length of 1 but got +0
+   ✓ TeamStreamingService > does not route live member events through the focused member when canonical identity is absent 0ms
+   × TeamStreamingService > routes successful tool execution through the browser-owned post-success handler 1ms
+     → expected "spy" to be called with arguments: [ ObjectContaining{…} ]
+
+Number of calls: 0
+
+   ✓ TeamStreamingService > does not clear stale team/member error from live non-status activity 0ms
+   ✓ TeamStreamingService > does not repair stale member error from focused-member fallback without explicit identity 0ms
+   ✓ TeamStreamingService > does not promote non-error team/member lifecycle status from live activity alone 0ms
+   ✓ TeamStreamingService > does not convert team transport errors into lifecycle errors 0ms
+   × TeamStreamingService > routes raw inter-agent messages only to the targeted member conversation 0ms
+     → expected [] to have a length of 1 but got +0
+   × TeamStreamingService > renders team member system task notifications as conversation segments 0ms
+     → expected [] to have a length of 1 but got +0
+   ✓ TeamStreamingService > routes derived team communication messages to the team communication store 0ms
+   ✓ TeamStreamingService > routes live parent-to-subteam communication payloads to the team communication store 0ms
+   × TeamStreamingService > routes live member input echoes to the resolved nested leaf and upserts duplicate echoes by identity 1ms
+     → expected [] to have a length of 1 but got +0
+   × TeamStreamingService > projects task-agent stream identity into a transient context and removes it after offline settlement 1ms
+     → expected undefined to be truthy
+   × TeamStreamingService > does not let identity-less mismatched status poison the logical member context before projection exists 0ms
+     → expected undefined to be truthy
+   × TeamStreamingService > defers a first task-agent offline create/remove journey to one final topology build 0ms
+     → expected "wrappedAction" to be called 1 times, but got 0 times
+   × TeamStreamingService > creates the transient task-agent context from a work-packet echo that carries task-agent identity 0ms
+     → expected undefined to be truthy
+   × TeamStreamingService > creates the transient task-agent context from a task-delegation event with task-agent identity 0ms
+     → expected undefined to be truthy
+   × TeamStreamingService > preserves task-team ancestry for scoped task-agent delegation events and refreshes existing nodes 1ms
+     → expected undefined to match object { isTaskAgentInstance: true, …(2) }
+   × TeamStreamingService > creates a visible task-team projection from a task-team delegation event 1ms
+     → expected undefined to match object { isTaskTeamInstance: true, …(4) }
+   × TeamStreamingService > routes stamped task-team child status to the scoped child context and leaves structural context unchanged 0ms
+     → expected undefined to be truthy
+   × TeamStreamingService > drops malformed task-team scoped child events instead of updating structural members 1ms
+     → expected "warn" to be called with arguments: [ Array(1) ]
+
+Received: 
+
+  1st warn call:
+
+  [
+-   "Task-team scoped event missing task_team_run_id.",
++   "No member context found for message, skipping",
+  ]
+
+
+Number of calls: 1
+
+   × TeamStreamingService > routes concurrent same-logical task-team child events by task_team_run_id only 1ms
+     → expected undefined to match object { Object (runId, currentStatus) }
+   × TeamStreamingService > settles and removes a task-team projection from its terminal task event 0ms
+     → expected undefined to match object { taskExecutionStatus: 'accepted' }
+   × TeamStreamingService > cascades terminal task-team cleanup through scoped children and nested task-agent contexts only 1ms
+     → expected undefined to match object { taskExecutionStatus: 'accepted' }
+   × TeamStreamingService > allows sequential delegations to the same logical team after task-team terminal cleanup 55ms
+     → expected undefined to match object { isTaskTeamInstance: true, …(2) }
+   × TeamStreamingService > repairs a missing task-agent node when the task-agent context already exists 0ms
+     → expected undefined to be truthy
+   × TeamStreamingService > routes typed task-agent tool approval requests and approval commands by task-agent run identity 0ms
+     → expected undefined to be truthy
+   × TeamStreamingService > serializes task-team scoped approval and denial commands with relative child selectors 1ms
+     → expected { type: 'APPROVE_TOOL', …(1) } to match object { type: 'APPROVE_TOOL', …(1) }
+   × TeamStreamingService > keeps parallel same-member task-agent instances distinct until each settles 0ms
+     → expected undefined to be truthy
+   × TeamStreamingService > routes compaction lifecycle messages to the targeted member context 1ms
+     → expected null to match object { …(19) }
+ ❯ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts (12 tests | 1 failed) 680ms
+   ✓ TeamRunConfigForm > places team auto approve before a collapsed accessible member override disclosure 36ms
+   ✓ TeamRunConfigForm > toggles the member override disclosure without mutating config fields 17ms
+   ✓ TeamRunConfigForm > renders runtime selector and member override entries 5ms
+   ✓ TeamRunConfigForm > loads models for the team runtime and syncs runtime catalogs for explicit member runtimes 14ms
+   ✓ TeamRunConfigForm > changes runtime kind and reloads runtime-scoped models 67ms
+   ✓ TeamRunConfigForm > renders Codex effort-only reasoning defaults visibly on the team-global config path 132ms
+   ✓ TeamRunConfigForm > starts team-global advanced collapsed for OpenAI Responses off defaults 79ms
+   ✓ TeamRunConfigForm > prunes inherited member-only llmConfig overrides when the global model changes 5ms
+   ✓ TeamRunConfigForm > prunes inherited member llmConfig overrides when the global runtime changes 137ms
+   × TeamRunConfigForm > renders nested leaf overrides under their subteam group and keeps route-key override identity 56ms
+     → expected undefined to be 'program_manager' // Object.is equality
+   ✓ TeamRunConfigForm > renders selected existing team run configuration as read-only while keeping member overrides inspectable 52ms
+   ✓ TeamRunConfigForm > marks historical team member config as missing when read-only metadata has null llmConfig 74ms
+ ❯ components/mobile/__tests__/MobileUxRefinement.spec.ts (15 tests | 1 failed) 803ms
+   ✓ mobile Round 4 UX refinements > shows mixed-success reachability instead of claiming the desktop is unreachable 9ms
+   ✓ mobile Round 4 UX refinements > uses concise configure-only mobile setup without first-message entry or launch summary 81ms
+   ✓ mobile Round 4 UX refinements > removes team launch first-message target from setup while keeping searchable team selection 159ms
+   ✓ mobile Round 4 UX refinements > keeps mobile launch disabled instead of silently choosing a model for unconfigured agents 20ms
+   ✓ mobile Round 4 UX refinements > consumes a single-use setup intent so selected agents open visible setup preselected 93ms
+   ✓ mobile Round 4 UX refinements > binds agent Auto approve tools to the launch config and created context 73ms
+   × mobile Round 4 UX refinements > binds team Auto approve tools to the launch config, team context, and member configs 110ms
+     → Cannot read properties of undefined (reading 'values')
+   ✓ mobile Round 4 UX refinements > lists launch workspaces from the workspace store and loads an unlisted server path into the active config 39ms
+   ✓ mobile Round 4 UX refinements > keeps context visibility adjacent to the mobile composer send decision 63ms
+   ✓ mobile Round 4 UX refinements > keeps mobile Files browse-first while preserving secondary filters and deliberate deep search 58ms
+   ✓ mobile Round 4 UX refinements > renders Activity as a compact digest without secondary issue filters or redundant headers 20ms
+   ✓ mobile Round 4 UX refinements > renders compaction rows in the mobile run Activity list and count 63ms
+   ✓ mobile Round 4 UX refinements > opens mobile Files from run root-path metadata with an empty workspace store 9ms
+   ✓ mobile Round 4 UX refinements > releases the mobile Files live session when the visible context changes 7ms
+   ✓ mobile Round 4 UX refinements > keeps interactive Terminal and VNC out of mobile refinement surfaces 0ms
+stderr | components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/teamCommunicationStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/running/__tests__/RunningTeamRow.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/workspace/__tests__/workspaceNavigationService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/runOpen/__tests__/teamRunOpenCoordinator.primeOwnership.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/runHistoryTeamMemberProjectionHydrator.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/teamCommunicationStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/running/__tests__/RunningTeamRow.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ stores/__tests__/teamCommunicationStore.spec.ts (7 tests | 7 failed) 44ms
+   × teamCommunicationStore > hydrates and groups focused-member sent and received messages by counterpart address 12ms
+     → expected [] to deeply equal [ ObjectContaining{…} ]
+   × teamCommunicationStore > matches static nested members by exact normalized address 4ms
+     → expected [] to deeply equal [ ObjectContaining{…} ]
+   × teamCommunicationStore > matches task-agent messages by member plus task_agent segment 23ms
+     → expected [] to deeply equal [ ObjectContaining{…} ]
+   × teamCommunicationStore > matches task-team root messages by member plus task_team segment 1ms
+     → expected [] to deeply equal [ ObjectContaining{…} ]
+   × teamCommunicationStore > isolates concurrent task-team child runs by exact task_team segment 1ms
+     → expected [] to deeply equal [ 'run-1-message' ]
+   × teamCommunicationStore > matches task-agent messages inside task-team children by the full address 1ms
+     → expected [] to deeply equal [ ObjectContaining{…} ]
+   × teamCommunicationStore > upserts live address-first payloads with reference files 1ms
+     → expected [] to deeply equal [ ObjectContaining{…} ]
+stderr | stores/__tests__/runHistoryMetadata.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+ ❯ components/workspace/running/__tests__/RunningTeamRow.spec.ts (4 tests | 4 failed) 17ms
+   × RunningTeamRow > renders exact-run activity independently from subscription, members, and row action 7ms
+     → Cannot read properties of undefined (reading 'children')
+   × RunningTeamRow > filters initializing task-only logical members from active running rows 3ms
+     → Cannot read properties of undefined (reading 'children')
+   × RunningTeamRow > keeps logical members with direct conversation history visible in the running sidebar 1ms
+     → Cannot read properties of undefined (reading 'children')
+   × RunningTeamRow > does not keep a settled task-only logical worker as an active row when poisoned by a task-agent run id 4ms
+     → Cannot read properties of undefined (reading 'children')
+ ❯ components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts (3 tests | 3 failed) 24ms
+   × TeamCommunicationPanel.vue > renders compact newest-first address-based message rows with reference icons 18ms
+     → expected [] to have a length of 2 but got +0
+   × TeamCommunicationPanel.vue > shows the empty state when no exact address match exists 3ms
+     → expected 'Select a team member to view communic…' to contain 'No team messages yet'
+   × TeamCommunicationPanel.vue > opens a selected reference using the selected message and reference ids 1ms
+     → Cannot read properties of undefined (reading 'trigger')
+stdout | components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/workspace/__tests__/workspaceNavigationService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/runOpen/__tests__/teamRunOpenCoordinator.primeOwnership.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ services/workspace/__tests__/workspaceNavigationService.spec.ts (5 tests | 3 failed) 58ms
+   ✓ workspaceNavigationService > builds and parses agent execution routes 1ms
+   × workspaceNavigationService > builds and parses team execution routes with member focus 54ms
+     → expected { kind: 'team', …(2) } to deeply equal { kind: 'team', …(2) }
+   × workspaceNavigationService > strips workspace execution query params without disturbing others 1ms
+     → expected { …(2) } to deeply equal { preserved: 'value' }
+   ✓ workspaceNavigationService > routes agent execution links through the agent open coordinator 1ms
+   × workspaceNavigationService > routes team execution links through the team open coordinator 1ms
+     → expected "spy" to be called with arguments: [ { teamRunId: 'team-run-1', …(3) } ]
+
+Received: 
+
+  1st spy call:
+
+  [
+    {
+      "ensureWorkspaceByRootPath": [Function spy],
+-     "memberRouteKey": "writer",
++     "memberAddress": undefined,
+      "resolveWorkspaceMetadataByRootPath": [Function spy],
+      "teamRunId": "team-run-1",
+    },
+  ]
+
+
+Number of calls: 1
+
+ ❯ services/runOpen/__tests__/teamRunOpenCoordinator.primeOwnership.spec.ts (6 tests | 6 failed) 8ms
+   × openTeamRun real loader/builder Event Monitor prime ownership > primes the final member exactly once for 'historical projection-present open' 4ms
+     → unsupported legacy TeamRun metadata: schemaVersion 3 is required.
+   × openTeamRun real loader/builder Event Monitor prime ownership > primes the final member exactly once for 'active projection-present open' 1ms
+     → unsupported legacy TeamRun metadata: schemaVersion 3 is required.
+   × openTeamRun real loader/builder Event Monitor prime ownership > primes the final member exactly once for 'active projection-absent open' 0ms
+     → unsupported legacy TeamRun metadata: schemaVersion 3 is required.
+   × openTeamRun real loader/builder Event Monitor prime ownership > primes an existing replacement once after reset and projected activity hydration 1ms
+     → Cannot read properties of undefined (reading 'split')
+   × openTeamRun real loader/builder Event Monitor prime ownership > primes a preserved subscribed member once without reset or projected activity replacement 0ms
+     → Cannot read properties of undefined (reading 'split')
+   × openTeamRun real loader/builder Event Monitor prime ownership > owns a separate final prime after lazy historical projection hydration 0ms
+     → unsupported legacy TeamRun metadata: schemaVersion 3 is required.
+ ❯ components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts (4 tests | 4 failed) 18ms
+   × AgentTeamEventMonitor.vue > passes sender-id to member-name mapping to AgentEventMonitor 7ms
+     → Cannot read properties of undefined (reading 'children')
+   × AgentTeamEventMonitor.vue > passes focused member display name and avatar to AgentEventMonitor 5ms
+     → Cannot read properties of undefined (reading 'children')
+   × AgentTeamEventMonitor.vue > uses roster focus for displayed Focus history while active execution can remain on the coordinator 2ms
+     → Cannot read properties of undefined (reading 'children')
+   × AgentTeamEventMonitor.vue > does not render task-agent work packets as the logical parent conversation 3ms
+     → Cannot read properties of undefined (reading 'children')
+stdout | stores/__tests__/runHistoryTeamMemberProjectionHydrator.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts (2 tests | 2 failed) 22ms
+   × Team Tasks Focus + send-message workflow > selects task details from Tasks without changing the focused send target 7ms
+     → Cannot read properties of undefined (reading 'values')
+   × Team Tasks Focus + send-message workflow > selects task-team summaries inside Tasks without focusing or reintroducing right-side member navigation 2ms
+     → Cannot read properties of undefined (reading 'values')
+ ❯ stores/__tests__/runHistoryTeamMemberProjectionHydrator.spec.ts (1 test | 1 failed) 5ms
+   × runHistoryTeamMemberProjectionHydrator > applies active member projection while preserving canonical live status 5ms
+     → expected [Function] to not throw an error but 'TypeError: Cannot read properties of …' was thrown
+stdout | stores/__tests__/runHistoryMetadata.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ stores/__tests__/runHistoryMetadata.spec.ts (1 test | 1 failed) 9ms
+   × runHistoryMetadata route-key identity > uses canonical memberRouteKey without falling back to bare memberName 8ms
+     → unsupported legacy TeamRun metadata: schemaVersion 3 is required.
+stderr | utils/__tests__/teamConversationTargetAddress.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/__tests__/MobileRemoteAccessShell.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agentTeams/__tests__/AgentTeamDefinitionForm.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/__tests__/MobileTeamMessages.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | utils/__tests__/teamConversationTargetAddress.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | components/workspace/team/__tests__/TeamCommunicationReferenceViewer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agentTeams/__tests__/AgentTeamDetail.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamOverviewPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/mobile/__tests__/MobileRemoteAccessShell.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/agentTeams/__tests__/AgentTeamDefinitionForm.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/mobile/__tests__/MobileTeamMessages.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/agentTeams/__tests__/AgentTeamDefinitionForm.spec.ts (5 tests) 161ms
+stdout | components/workspace/team/__tests__/TeamCommunicationReferenceViewer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/agentTeams/__tests__/AgentTeamDetail.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts (1 test) 151ms
+ ✓ components/mobile/__tests__/MobileRemoteAccessShell.spec.ts (15 tests) 467ms
+stdout | components/workspace/team/__tests__/TeamOverviewPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/team/__tests__/TeamWorkspaceView.spec.ts (12 tests) 83ms
+ ✓ components/mobile/__tests__/MobileTeamMessages.spec.ts (2 tests) 151ms
+ ✓ components/workspace/team/__tests__/TeamCommunicationReferenceViewer.spec.ts (13 tests) 199ms
+ ✓ components/agentTeams/__tests__/AgentTeamDetail.spec.ts (15 tests) 437ms
+ ✓ components/workspace/team/__tests__/TeamOverviewPanel.spec.ts (8 tests) 277ms
+stderr | components/mobile/__tests__/MobileFiles.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/__tests__/MobileArtifactsContentViewerIntegration.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/mobile/__tests__/MobileFiles.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | components/settings/token-usage/__tests__/TokenUsageTaskStatisticsTable.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/__tests__/MobileContextSelectionRegression.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/__tests__/MobileFileViewer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/__tests__/MobileArtifacts.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+ ✓ components/mobile/__tests__/MobileFiles.spec.ts (9 tests) 371ms
+stdout | components/mobile/__tests__/MobileArtifactsContentViewerIntegration.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | components/workspace/team/__tests__/TeamTaskReferenceViewer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/conversation/segments/__tests__/SystemTaskNotificationSegment.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+ ✓ components/mobile/__tests__/MobileArtifactsContentViewerIntegration.spec.ts (1 test) 286ms
+stdout | components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/token-usage/__tests__/TokenUsageTaskStatisticsTable.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/mobile/__tests__/MobileFileViewer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/mobile/__tests__/MobileContextSelectionRegression.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/token-usage/__tests__/TokenUsageTaskStatisticsTable.spec.ts (3 tests) 114ms
+stdout | components/mobile/__tests__/MobileArtifacts.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts (8 tests) 78ms
+ ✓ components/mobile/__tests__/MobileFileViewer.spec.ts (7 tests) 44ms
+stdout | components/conversation/segments/__tests__/SystemTaskNotificationSegment.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamTaskReferenceViewer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/mobile/__tests__/MobileArtifacts.spec.ts (4 tests) 43ms
+ ✓ components/mobile/__tests__/MobileContextSelectionRegression.spec.ts (13 tests) 149ms
+ ✓ components/conversation/segments/__tests__/SystemTaskNotificationSegment.spec.ts (3 tests) 37ms
+ ✓ components/workspace/team/__tests__/TeamTaskReferenceViewer.spec.ts (2 tests) 63ms
+stderr | components/workspace/team/__tests__/TeamDelegatedTaskNavigator.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agentTeams/__tests__/AgentTeamList.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/running/__tests__/RunningTeamGroup.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | pages/__tests__/mobile-root-shell.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/team/__tests__/TeamDelegatedTaskNavigator.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | components/agentTeams/__tests__/SearchableGroupedSelect.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+ ✓ components/workspace/team/__tests__/TeamDelegatedTaskNavigator.spec.ts (2 tests) 24ms
+stdout | components/agentTeams/__tests__/AgentTeamList.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | components/memory/__tests__/AgentTeamMemoryDetail.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useSettingsNavigationResize.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamDelegatedTasksSection.current-contract.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+ ✓ components/agentTeams/__tests__/AgentTeamList.spec.ts (4 tests) 73ms
+stderr | stores/__tests__/runHistoryNavigationProjection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/running/__tests__/RunningTeamGroup.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | pages/__tests__/mobile-root-shell.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/running/__tests__/RunningTeamGroup.spec.ts (4 tests) 38ms
+stdout | components/agentTeams/__tests__/SearchableGroupedSelect.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/agentTeams/__tests__/SearchableGroupedSelect.spec.ts (3 tests) 42ms
+stdout | composables/__tests__/useSettingsNavigationResize.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/memory/__tests__/AgentTeamMemoryDetail.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamDelegatedTasksSection.current-contract.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ composables/__tests__/useSettingsNavigationResize.spec.ts (8 tests) 29ms
+stdout | stores/__tests__/runHistoryNavigationProjection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/memory/__tests__/AgentTeamMemoryDetail.spec.ts (1 test) 39ms
+ ✓ stores/__tests__/runHistoryNavigationProjection.spec.ts (6 tests) 23ms
+ ✓ components/workspace/team/__tests__/TeamDelegatedTasksSection.current-contract.spec.ts (1 test) 67ms
+ ✓ pages/__tests__/mobile-root-shell.spec.ts (2 tests) 75ms
+stderr | pages/__tests__/mobile-root.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/__tests__/mobileFeatureGates.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agentTeams/__tests__/AgentTeamCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | pages/__tests__/mobile-root.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ pages/__tests__/mobile-root.spec.ts (2 tests) 13ms
+stdout | utils/__tests__/mobileFeatureGates.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/__tests__/mobileFeatureGates.spec.ts (3 tests) 5ms
+stderr | composables/mobile/__tests__/useMobileFileContextCoordinator.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/messagingSetupNavigationStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/agentTeams/__tests__/AgentTeamCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+ ✓ components/agentTeams/__tests__/AgentTeamCard.spec.ts (1 test) 11ms
+stderr | stores/__tests__/agentTeamDefinitionStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/common/__tests__/TeamActivityDot.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts > TeamStreamingService exact execution-address serialization > echoes the complete 'persistent member' address for tool approval
+No member context found for message, skipping
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts > TeamStreamingService exact execution-address serialization > echoes the complete 'direct task Agent' address for tool approval
+No exact task Agent source exists at '/worker'.
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts > TeamStreamingService exact execution-address serialization > echoes the complete 'outer task AgentTeam member' address for tool approval
+No exact task Team Agent execution exists at '/BuildSquad/reviewer'.
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts > TeamStreamingService exact execution-address serialization > echoes the complete 'nested task AgentTeam member' address for tool approval
+No exact task Team Agent execution exists at '/BuildSquad/ReviewCell/reviewer'.
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts > TeamStreamingService exact execution-address serialization > accepts only an acknowledgement matching the exact pending execution address
+Ignoring unmatched team interrupt command acknowledgement. {
+  command_type: 'INTERRUPT_GENERATION',
+  command_id: 'interrupt-ack',
+  state: 'accepted',
+  target: {
+    target_kind: 'team_member',
+    team_run_id: 'team-1',
+    execution_address: {
+      rootTeamRunId: 'team-1',
+      taskTeamRunIds: [Array],
+      memberAddress: '/BuildSquad/ReviewCell/reviewer',
+      taskAgentRunId: null
+    }
+  }
+}
+
+ ✓ services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts (16 tests) 9ms
+stdout | stores/__tests__/messagingSetupNavigationStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/mobile/__tests__/useMobileFileContextCoordinator.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/messagingSetupNavigationStore.spec.ts (3 tests) 16ms
+stdout | services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/agentTeamDefinitionStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/common/__tests__/TeamActivityDot.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/agentTeamDefinitionStore.spec.ts (5 tests) 11ms
+ ✓ services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts (4 tests) 80ms
+ ✓ composables/mobile/__tests__/useMobileFileContextCoordinator.spec.ts (1 test) 47ms
+ ✓ components/workspace/common/__tests__/TeamActivityDot.spec.ts (1 test) 10ms
+stderr | stores/__tests__/teamRunConfigStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/runHydration/__tests__/teamRunContextHydrationService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/teamRunConfigStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+

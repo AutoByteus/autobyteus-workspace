@@ -1,161 +1,155 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { MixedTeamRunBackendFactory } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.js";
-import {
-  MixedAgentMemberContext,
-  MixedTeamRunContext,
-} from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-context.js";
+import { MixedTeamRunContext } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-context.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
-import { TeamRunConfig, type TeamMemberRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import {
+  testAgentNode,
+  testAgentTeamNode,
+  testTeamRunConfig,
+} from "../../fixtures/current-team-run-fixtures.js";
 
-const createTeamManagerStub = () => ({
-  hasActiveMembers: vi.fn(() => true),
-  postMessage: vi.fn().mockResolvedValue({ accepted: true }),
-  deliverInterAgentMessage: vi.fn().mockResolvedValue({ accepted: true }),
-  approveToolInvocation: vi.fn().mockResolvedValue({ accepted: true }),
-  interruptMember: vi.fn().mockResolvedValue({ accepted: true }),
-  terminate: vi.fn().mockResolvedValue({ accepted: true }),
-  subscribeToEvents: vi.fn(() => () => {}),
+const createManagerStub = () => ({
+  isActive: vi.fn(() => true),
+  getLeafAgentStatusSnapshots: vi.fn(() => []),
+  hasOpenExecutionWork: vi.fn(() => false),
 });
 
-const createConfig = () =>
-  new TeamRunConfig({
-    teamDefinitionId: "team-def-mixed-1",
-    teamBackendKind: TeamBackendKind.MIXED,
-    memberConfigs: [
-      {
-        memberName: "Coordinator",
-        memberRouteKey: "coord-route",
-        memberRunId: "coord-run",
-        agentDefinitionId: "agent-coordinator",
-        llmModelIdentifier: "gpt-5.4-mini",
-        autoExecuteTools: false,
-        skillAccessMode: SkillAccessMode.NONE,
-        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-        workspaceId: "workspace-coordinator",
-        llmConfig: { reasoning_effort: "medium" },
-      } satisfies TeamMemberRunConfig,
-      {
-        memberName: "Reviewer",
-        memberRunId: "reviewer-run",
-        agentDefinitionId: "agent-reviewer",
-        llmModelIdentifier: "haiku",
-        autoExecuteTools: true,
-        skillAccessMode: SkillAccessMode.WORKSPACE,
-        runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
-        workspaceId: "workspace-reviewer",
-        llmConfig: { reasoning_effort: "high" },
-      } satisfies TeamMemberRunConfig,
-    ],
+const createConfig = () => {
+  const coordinator = testAgentNode("/Coordinator", {
+    agentRunId: "coord-run",
+    runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+    workspaceRootPath: "/tmp/coordinator",
   });
+  const reviewer = testAgentNode("/Reviewer", {
+    agentRunId: "reviewer-run",
+    runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+    workspaceRootPath: "/tmp/reviewer",
+  });
+  const subCoordinator = testAgentNode("/BuildSquad/Builder", {
+    agentRunId: "builder-run",
+    runtimeKind: RuntimeKind.AUTOBYTEUS,
+  });
+  const subTeam = testAgentTeamNode({
+    address: "/BuildSquad",
+    coordinatorAddress: subCoordinator.address,
+    teamRunId: "build-squad-run",
+    teamDefinitionId: "build-squad-definition",
+    children: [subCoordinator],
+  });
+  return testTeamRunConfig({
+    rootTeamRunId: "team-mixed-run-1",
+    rootTeamDefinitionId: "team-def-mixed-1",
+    coordinatorAddress: coordinator.address,
+    children: [coordinator, reviewer, subTeam],
+  });
+};
 
-afterEach(() => {
-  vi.clearAllMocks();
-});
+afterEach(() => vi.clearAllMocks());
 
-describe("MixedTeamRunBackendFactory integration", () => {
-  it("creates a backend with hydrated mixed member runtime context from TeamRunConfig", async () => {
-    const createdContexts: Array<TeamRunContext<MixedTeamRunContext>> = [];
-    const createdManagers: ReturnType<typeof createTeamManagerStub>[] = [];
+describe("MixedTeamRunBackendFactory current execution identity integration", () => {
+  it("hydrates exact AgentRun and configured child TeamRun contexts from the immutable TeamRunConfig", async () => {
+    const contexts: Array<TeamRunContext<MixedTeamRunContext>> = [];
+    const manager = createManagerStub();
     const factory = new MixedTeamRunBackendFactory({
       createTeamManager: ((context: TeamRunContext<MixedTeamRunContext>) => {
-        createdContexts.push(context);
-        const manager = createTeamManagerStub();
-        createdManagers.push(manager);
-        return manager as any;
-      }) as any,
+        contexts.push(context);
+        return manager;
+      }) as never,
     });
 
-    const backend = await factory.createBackend(createConfig(), "team-mixed-run-1");
+    const config = createConfig();
+    const backend = await factory.createBackend(config, config.rootTeam.teamRunId);
 
-    expect(createdContexts).toHaveLength(1);
-    expect(createdManagers).toHaveLength(1);
-
-    const context = createdContexts[0];
-    expect(context.runId).toBe("team-mixed-run-1");
-    expect(context.teamBackendKind).toBe(TeamBackendKind.MIXED);
-    expect(context.config?.teamDefinitionId).toBe("team-def-mixed-1");
-    expect(context.runtimeContext.coordinatorMemberRouteKey).toBeNull();
-    expect(context.runtimeContext.memberContexts).toHaveLength(2);
-
-    const coordinatorContext = context.runtimeContext.memberContexts[0];
-    expect(coordinatorContext).toBeInstanceOf(MixedAgentMemberContext);
-    expect(coordinatorContext.memberName).toBe("Coordinator");
-    expect(coordinatorContext.memberRouteKey).toBe("coord-route");
-    expect(coordinatorContext.memberRunId).toBe("coord-run");
-    expect(coordinatorContext.runtimeKind).toBe(RuntimeKind.CODEX_APP_SERVER);
-    expect(coordinatorContext.platformAgentRunId).toBeNull();
-
-    const reviewerContext = context.runtimeContext.memberContexts[1];
-    expect(reviewerContext.memberName).toBe("Reviewer");
-    expect(reviewerContext.memberRouteKey).toBe("Reviewer");
-    expect(reviewerContext.memberRunId).toBe("reviewer-run");
-    expect(reviewerContext.runtimeKind).toBe(RuntimeKind.CLAUDE_AGENT_SDK);
-    expect(reviewerContext.platformAgentRunId).toBeNull();
-
-    expect(backend.runId).toBe(context.runId);
-    expect(backend.teamBackendKind).toBe(TeamBackendKind.MIXED);
-    expect(backend.getRuntimeContext()).toBe(context.runtimeContext);
+    expect(contexts).toHaveLength(1);
+    const context = contexts[0]!;
+    expect(context).toMatchObject({
+      rootTeamRunId: "team-mixed-run-1",
+      teamRunId: "team-mixed-run-1",
+      teamBackendKind: TeamBackendKind.MIXED,
+      teamAddress: "/",
+      teamNode: config.rootTeam,
+    });
+    expect(context.runtimeContext.memberContexts).toEqual([
+      expect.objectContaining({
+        kind: "agent",
+        address: "/Coordinator",
+        agentRunId: "coord-run",
+        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+        platformAgentRunId: null,
+      }),
+      expect.objectContaining({
+        kind: "agent",
+        address: "/Reviewer",
+        agentRunId: "reviewer-run",
+        runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+        platformAgentRunId: null,
+      }),
+      expect.objectContaining({
+        kind: "agent_team",
+        address: "/BuildSquad",
+        teamDefinitionId: "build-squad-definition",
+        teamRunId: "build-squad-run",
+        childRuntimeContext: null,
+      }),
+    ]);
+    expect(backend.teamRunId).toBe("team-mixed-run-1");
+    expect(backend.getTeamRunContext()).toBe(context);
     expect(backend.isActive()).toBe(true);
   });
 
-  it("rejects create when launch identity assignment did not preassign member IDs", async () => {
-    const factory = new MixedTeamRunBackendFactory({
-      createTeamManager: (() => createTeamManagerStub() as any) as any,
-    });
+  it("rejects a root allocation mismatch before manager construction", async () => {
+    const createTeamManager = vi.fn(() => createManagerStub());
+    const factory = new MixedTeamRunBackendFactory({ createTeamManager: createTeamManager as never });
     const config = createConfig();
-    const staleConfig = new TeamRunConfig({
-      teamDefinitionId: config.teamDefinitionId,
-      teamBackendKind: TeamBackendKind.MIXED,
-      coordinatorMemberName: config.coordinatorMemberName,
-      coordinatorMemberRouteKey: config.coordinatorMemberRouteKey,
-      memberConfigs: config.memberConfigs.map((member) => ({
-        ...member,
-        memberRunId: member.memberName === "Reviewer" ? null : member.memberRunId,
-      })),
-    });
 
-    await expect(
-      factory.createBackend(staleConfig, "team-mixed-run-missing-member-id"),
-    ).rejects.toThrow("memberRunId for member 'Reviewer' is required");
+    await expect(factory.createBackend(config, "foreign-root-run")).rejects.toThrow(
+      "Root TeamRun id 'team-mixed-run-1' does not match 'foreign-root-run'",
+    );
+    expect(createTeamManager).not.toHaveBeenCalled();
   });
 
-  it("restores a backend from the provided mixed runtime context", async () => {
-    const createdContexts: Array<TeamRunContext<MixedTeamRunContext>> = [];
-    const manager = createTeamManagerStub();
+  it("restores configured provenance and exact external identities while ignoring native self-bindings", async () => {
+    const contexts: Array<TeamRunContext<MixedTeamRunContext>> = [];
+    const manager = createManagerStub();
     const factory = new MixedTeamRunBackendFactory({
       createTeamManager: ((context: TeamRunContext<MixedTeamRunContext>) => {
-        createdContexts.push(context);
-        return manager as any;
-      }) as any,
+        contexts.push(context);
+        return manager;
+      }) as never,
     });
-
-    const restoreContext = new TeamRunContext({
-      runId: "team-mixed-restore-1",
-      teamBackendKind: TeamBackendKind.MIXED,
-      config: createConfig(),
-      runtimeContext: new MixedTeamRunContext({
-        coordinatorMemberRouteKey: "coord-route",
-        memberContexts: [
-          new MixedAgentMemberContext({
-            memberName: "Coordinator",
-            memberPath: ["Coordinator"],
-            memberRouteKey: "coord-route",
-            memberRunId: "coord-run",
-            runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-            platformAgentRunId: "thread-coord-1",
-          }),
-        ],
+    const base = createConfig();
+    const config = testTeamRunConfig({
+      rootTeamRunId: base.rootTeam.teamRunId,
+      rootTeamDefinitionId: base.rootTeam.teamDefinitionId,
+      coordinatorAddress: base.rootTeam.coordinatorAddress,
+      children: base.rootTeam.children.map((node) => {
+        if (node.kind === "agent" && node.address === "/Coordinator") {
+          return { ...node, platformAgentRunId: "thread-coordinator" };
+        }
+        if (node.kind === "agent" && node.address === "/Reviewer") {
+          return { ...node, platformAgentRunId: "session-reviewer" };
+        }
+        if (node.kind === "agent_team") {
+          return {
+            ...node,
+            children: node.children.map((child) => child.kind === "agent"
+              ? { ...child, platformAgentRunId: child.agentRunId }
+              : child),
+          };
+        }
+        return node;
       }),
     });
 
-    const backend = await factory.restoreBackend(restoreContext);
+    const backend = await factory.restoreBackend(config, config.rootTeam.teamRunId);
 
-    expect(createdContexts).toEqual([restoreContext]);
-    expect(backend.runId).toBe("team-mixed-restore-1");
-    expect(backend.getRuntimeContext()).toBe(restoreContext.runtimeContext);
-    expect(backend.isActive()).toBe(true);
+    const runtime = contexts[0]!.runtimeContext;
+    expect(runtime.configuredMemberActivationMode).toBe("restore");
+    expect(runtime.memberContexts[0]).toMatchObject({ platformAgentRunId: "thread-coordinator" });
+    expect(runtime.memberContexts[1]).toMatchObject({ platformAgentRunId: "session-reviewer" });
+    expect(runtime.memberContexts[2]).toMatchObject({ childRuntimeContext: null });
+    expect(backend.getRuntimeContext()).toBe(runtime);
   });
 });

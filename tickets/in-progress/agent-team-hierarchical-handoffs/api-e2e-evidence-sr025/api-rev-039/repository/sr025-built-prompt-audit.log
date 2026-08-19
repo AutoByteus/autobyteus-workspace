@@ -1,0 +1,32 @@
+{
+  "result": "PASS",
+  "exactArtifactCopy": true,
+  "cases": [
+    {
+      "kind": "persistent",
+      "memberAddress": "/Teacher",
+      "bytes": 1700
+    },
+    {
+      "kind": "restored",
+      "memberAddress": "/Teacher",
+      "bytes": 1700
+    },
+    {
+      "kind": "task_agent",
+      "memberAddress": "/StudentStudyGroup/student_one",
+      "bytes": 1722
+    },
+    {
+      "kind": "task_agent_team_member",
+      "memberAddress": "/StudentStudyGroup/student_two",
+      "bytes": 1722
+    }
+  ],
+  "positions": {
+    "teamInstruction": 119,
+    "addressing": 192,
+    "collaboration": 1189,
+    "workingEnvironment": 1892
+  }
+}

@@ -1,0 +1,10 @@
+Claude FILE_CHANGE post-fix audit 2026-08-17T09:26:04Z
+team_run_id=classroom_simulation_team_0a8473a3f6e6474b9c8dec3421f9d94f
+old_error_count=0
+admission_failed_count=0
+file_change_projection_count=1 (public getRunFileChanges exact current projection; see classroom-claude-file-change-fixed.json)
+browser_old_error=false
+browser_marker=CLAUDE_FILE_CHANGE_FIXED
+screenshot_inspected=true
+file_content=CLAUDE_FILE_CHANGE_OK
+--- matching admission error lines ---

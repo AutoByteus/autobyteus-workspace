@@ -1,0 +1,818 @@
+diff --git a/autobyteus-server-ts/tests/integration/api/runtime-selection-top-level.integration.test.ts b/autobyteus-server-ts/tests/integration/api/runtime-selection-top-level.integration.test.ts
+index c461b0648..f9f4f80fd 100644
+--- a/autobyteus-server-ts/tests/integration/api/runtime-selection-top-level.integration.test.ts
++++ b/autobyteus-server-ts/tests/integration/api/runtime-selection-top-level.integration.test.ts
+@@ -14,6 +14,7 @@ import { AgentRun } from "../../../src/agent-execution/domain/agent-run.js";
+ import type { AgentRunSourceEventBatchListener } from "../../../src/agent-execution/backends/agent-run-backend.js";
+ import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
+ import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
++import { AgentRunEventType } from "../../../src/agent-execution/domain/agent-run-event.js";
+ import { AgentRunMetadataService } from "../../../src/run-history/services/agent-run-metadata-service.js";
+ import { AgentRunStatusProjectionService } from "../../../src/agent-execution/services/agent-run-status-projection-service.js";
+ import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+@@ -224,6 +225,11 @@ const buildAgentRun = (input: {
+   const backend = {
+     runId: input.runId,
+     runtimeKind: input.config.runtimeKind,
++    inputCapabilities: {
++      activeTurnAppend: input.config.runtimeKind === RuntimeKind.CODEX_APP_SERVER
++        ? "supported" as const
++        : "unsupported" as const,
++    },
+     getContext: () => context,
+     isActive: () => active,
+     getPlatformAgentRunId: () => input.platformAgentRunId,
+@@ -238,20 +244,32 @@ const buildAgentRun = (input: {
+         listeners.delete(listener);
+       };
+     },
+-    postUserMessage: vi.fn(async (message: { content: string; contextFiles?: unknown[] | null }) => {
++    dispatchUserInput: vi.fn(async (dispatch: {
++      message: { content: string; contextFiles?: unknown[] | null };
++    }) => {
+       turnCounter += 1;
++      const turnId = `turn-${input.runId}-${turnCounter}`;
+       input.messages.push({
+         runId: input.runId,
+         runtimeKind: input.config.runtimeKind,
+-        content: message.content,
+-        contextFileCount: message.contextFiles?.length ?? 0,
++        content: dispatch.message.content,
++        contextFileCount: dispatch.message.contextFiles?.length ?? 0,
+         source: input.source,
+       });
++      queueMicrotask(() => {
++        const events = [{
++          eventType: AgentRunEventType.TURN_STARTED,
++          runId: input.runId,
++          payload: { turn_id: turnId },
++          statusHint: "ACTIVE" as const,
++        }];
++        for (const listener of listeners) {
++          void listener(events);
++        }
++      });
+       return {
+-        accepted: true,
+-        code: null,
+-        message: null,
+-        turnId: `turn-${input.runId}-${turnCounter}`,
++        forwarded: true,
++        turnId,
+       };
+     }),
+     approveToolInvocation: vi.fn().mockResolvedValue({ accepted: true }),
+diff --git a/autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-task-notification-projection.test.ts b/autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-task-notification-projection.test.ts
+index e696a7ec3..f72eee5a7 100644
+--- a/autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-task-notification-projection.test.ts
++++ b/autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-task-notification-projection.test.ts
+@@ -1,6 +1,5 @@
+ import { describe, expect, it, vi } from "vitest";
+ import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
+-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
+ import { SenderType } from "autobyteus-ts/agent/sender-type.js";
+ import type { AgentRunBackend } from "../../../src/agent-execution/backends/agent-run-backend.js";
+ import type { AgentOperationResult } from "../../../src/agent-execution/domain/agent-operation-result.js";
+@@ -14,19 +13,21 @@ import {
+   MixedTeamRunContext,
+ } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-context.js";
+ import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
+-import { TeamRunConfig, type TeamMemberRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
++import { createTeamExecutionAddress } from "../../../src/agent-team-execution/domain/team-execution-address.js";
++import type { TeamRunAgentNode } from "../../../src/agent-team-execution/domain/team-run-config.js";
+ import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
+ import {
+   TeamRunEventSourceType,
+-  type TeamRunAgentEventPayload,
+   type TeamRunEvent,
+ } from "../../../src/agent-team-execution/domain/team-run-event.js";
+ import { markTaskDelegationSystemTaskNotificationMetadata } from "../../../src/agent-team-execution/task-delegation/task-delegation-system-message-visibility.js";
+ import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
++import { testAgentNode, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
+ 
+ class FakeAgentRunBackend implements AgentRunBackend {
+   readonly runId = "worker-run-1";
+   readonly runtimeKind: RuntimeKind;
++  readonly inputCapabilities = { activeTurnAppend: "unsupported" as const };
+   readonly postedMessages: AgentInputUserMessage[] = [];
+   private readonly listeners = new Set<(events: readonly AgentRunEvent[]) => void | Promise<void>>();
+ 
+@@ -63,9 +64,9 @@ class FakeAgentRunBackend implements AgentRunBackend {
+     return () => this.listeners.delete(listener);
+   }
+ 
+-  async postUserMessage(message: AgentInputUserMessage): Promise<AgentOperationResult> {
+-    this.postedMessages.push(message);
+-    return { accepted: true };
++  async dispatchUserInput(input: { message: AgentInputUserMessage }) {
++    this.postedMessages.push(input.message);
++    return { forwarded: true, turnId: "turn-1" };
+   }
+ 
+   async approveToolInvocation(): Promise<AgentOperationResult> {
+@@ -81,43 +82,39 @@ class FakeAgentRunBackend implements AgentRunBackend {
+   }
+ }
+ 
+-const buildMemberConfig = (): TeamMemberRunConfig => ({
+-  memberKind: "agent",
+-  memberName: "worker",
+-  memberPath: ["worker"],
+-  memberRouteKey: "worker",
+-  memberRunId: "worker-run-1",
++const buildMemberConfig = (): TeamRunAgentNode => testAgentNode("/worker", {
++  agentRunId: "worker-run-1",
+   agentDefinitionId: "agent-worker",
+   llmModelIdentifier: "model-1",
+   autoExecuteTools: false,
+-  skillAccessMode: SkillAccessMode.NONE,
+   runtimeKind: RuntimeKind.AUTOBYTEUS,
+-  memoryDir: null,
+ });
+ 
+ const buildHandle = () => {
+   const config = buildMemberConfig();
++  const teamConfig = testTeamRunConfig({
++    rootTeamRunId: "team-run-1",
++    rootTeamDefinitionId: "team-def-1",
++    coordinatorAddress: config.address,
++    children: [config],
++  });
+   const memberContext = new MixedAgentMemberContext({
+-    memberName: config.memberName,
+-    memberPath: config.memberPath,
+-    memberRouteKey: config.memberRouteKey,
+-    memberRunId: config.memberRunId!,
++    address: config.address,
++    agentRunId: config.agentRunId,
+     runtimeKind: config.runtimeKind,
+     platformAgentRunId: null,
+   });
+   const teamContext = new TeamRunContext({
+-    runId: "team-run-1",
++    teamRunId: "team-run-1",
++    teamAddress: "/",
+     teamBackendKind: TeamBackendKind.MIXED,
+-    coordinatorMemberName: "worker",
+-    coordinatorMemberRouteKey: "worker",
+-    config: new TeamRunConfig({
+-      teamDefinitionId: "team-def-1",
+-      teamBackendKind: TeamBackendKind.MIXED,
+-      memberConfigs: [config],
+-    }),
++    config: teamConfig,
+     runtimeContext: new MixedTeamRunContext({
+-      coordinatorMemberRouteKey: "worker",
+       memberContexts: [memberContext],
++      teamExecutionAddress: createTeamExecutionAddress({
++        rootTeamRunId: "team-run-1",
++        memberAddress: config.address,
++      }),
+     }),
+   });
+   const publishedEvents: TeamRunEvent[] = [];
+@@ -145,9 +142,9 @@ const buildHandle = () => {
+ 
+ const agentNotificationEvents = (events: readonly TeamRunEvent[]) =>
+   events
+-    .filter((event) => event.eventSourceType === TeamRunEventSourceType.AGENT)
+-    .map((event) => event.data as TeamRunAgentEventPayload)
+-    .filter((payload) => payload.agentEvent.eventType === AgentRunEventType.SYSTEM_TASK_NOTIFICATION);
++    .filter((event): event is Extract<TeamRunEvent, { eventSourceType: TeamRunEventSourceType.AGENT }> =>
++      event.eventSourceType === TeamRunEventSourceType.AGENT)
++    .filter((event) => event.payload.eventType === AgentRunEventType.SYSTEM_TASK_NOTIFICATION);
+ 
+ describe("MixedAgentMemberHandle task-delegation notification projection", () => {
+   it("projects accepted stamped task-delegation system messages as one local system notification without member-input echo", async () => {
+@@ -170,13 +167,17 @@ describe("MixedAgentMemberHandle task-delegation notification projection", () =>
+     expect(publishedEvents.filter((event) => event.eventSourceType === TeamRunEventSourceType.MEMBER_INPUT)).toHaveLength(0);
+     expect(agentNotificationEvents(publishedEvents)).toEqual([
+       expect.objectContaining({
+-        memberName: "worker",
+-        memberRunId: "worker-run-1",
+-        agentEvent: expect.objectContaining({
++        execution: expect.objectContaining({
++          kind: "persistent_agent",
++          executionAddress: expect.objectContaining({
++            rootTeamRunId: "team-run-1",
++            memberAddress: "/worker",
++          }),
++        }),
++        payload: expect.objectContaining({
+           eventType: AgentRunEventType.SYSTEM_TASK_NOTIFICATION,
+-          runId: "worker-run-1",
+-          payload: {
+-            sender_id: "system.task_delegation",
++          details: {
++            sender: { kind: "system" },
+             content: "You have a new task.\n\nTask ID: task_0001",
+           },
+         }),
+@@ -200,10 +201,10 @@ describe("MixedAgentMemberHandle task-delegation notification projection", () =>
+ 
+     expect(agentNotificationEvents(publishedEvents)).toEqual([
+       expect.objectContaining({
+-        agentEvent: expect.objectContaining({
++        payload: expect.objectContaining({
+           eventType: AgentRunEventType.SYSTEM_TASK_NOTIFICATION,
+-          payload: {
+-            sender_id: "system.task_delegation",
++          details: {
++            sender: { kind: "system" },
+             content: "Runtime-only stamped task notification.",
+           },
+         }),
+diff --git a/autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-termination.test.ts b/autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-termination.test.ts
+index 7a28fc089..02f90d56a 100644
+--- a/autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-termination.test.ts
++++ b/autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-termination.test.ts
+@@ -1,49 +1,46 @@
+ import { describe, expect, it, vi } from "vitest";
+-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
+ import { MixedAgentMemberHandle } from "../../../src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.js";
+ import { MixedAgentMemberContext, MixedTeamRunContext } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-context.js";
+ import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
+-import { TeamRunConfig, type TeamMemberRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
++import { createTeamExecutionAddress } from "../../../src/agent-team-execution/domain/team-execution-address.js";
++import type { TeamRunAgentNode } from "../../../src/agent-team-execution/domain/team-run-config.js";
+ import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
+ import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
++import { testAgentNode, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
+ 
+-const buildMemberConfig = (): TeamMemberRunConfig => ({
+-  memberKind: "agent",
+-  memberName: "worker",
+-  memberPath: ["worker"],
+-  memberRouteKey: "worker",
+-  memberRunId: "worker-run-1",
++const buildMemberConfig = (): TeamRunAgentNode => testAgentNode("/worker", {
++  agentRunId: "worker-run-1",
+   agentDefinitionId: "agent-worker",
+   llmModelIdentifier: "model-1",
+   autoExecuteTools: false,
+-  skillAccessMode: SkillAccessMode.NONE,
+   runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+-  memoryDir: "/tmp/worker-memory",
+ });
+ 
+ const buildHandle = (overrides: { platformAgentRunId?: string | null; agentRunManager?: unknown } = {}) => {
+   const config = buildMemberConfig();
++  const teamConfig = testTeamRunConfig({
++    rootTeamRunId: "team-run-1",
++    rootTeamDefinitionId: "team-def-1",
++    coordinatorAddress: config.address,
++    children: [config],
++  });
+   const memberContext = new MixedAgentMemberContext({
+-    memberName: config.memberName,
+-    memberPath: config.memberPath,
+-    memberRouteKey: config.memberRouteKey,
+-    memberRunId: config.memberRunId!,
++    address: config.address,
++    agentRunId: config.agentRunId,
+     runtimeKind: config.runtimeKind,
+     platformAgentRunId: overrides.platformAgentRunId ?? null,
+   });
+   const teamContext = new TeamRunContext({
+-    runId: "team-run-1",
++    teamRunId: "team-run-1",
++    teamAddress: "/",
+     teamBackendKind: TeamBackendKind.MIXED,
+-    coordinatorMemberName: config.memberName,
+-    coordinatorMemberRouteKey: config.memberRouteKey,
+-    config: new TeamRunConfig({
+-      teamDefinitionId: "team-def-1",
+-      teamBackendKind: TeamBackendKind.MIXED,
+-      memberConfigs: [config],
+-    }),
++    config: teamConfig,
+     runtimeContext: new MixedTeamRunContext({
+-      coordinatorMemberRouteKey: config.memberRouteKey,
+       memberContexts: [memberContext],
++      teamExecutionAddress: createTeamExecutionAddress({
++        rootTeamRunId: "team-run-1",
++        memberAddress: config.address,
++      }),
+     }),
+   });
+ 
+diff --git a/autobyteus-server-ts/tests/unit/application-orchestration/application-orchestration-host-service.test.ts b/autobyteus-server-ts/tests/unit/application-orchestration/application-orchestration-host-service.test.ts
+index 006998478..83b619ed0 100644
+--- a/autobyteus-server-ts/tests/unit/application-orchestration/application-orchestration-host-service.test.ts
++++ b/autobyteus-server-ts/tests/unit/application-orchestration/application-orchestration-host-service.test.ts
+@@ -6,7 +6,7 @@ import type {
+ import { ApplicationExecutionEventIngressService } from "../../../src/application-orchestration/services/application-execution-event-ingress-service.js";
+ import { ApplicationOrchestrationHostService } from "../../../src/application-orchestration/services/application-orchestration-host-service.js";
+ import { ApplicationRunObserverService } from "../../../src/application-orchestration/services/application-run-observer-service.js";
+-import { selectorToRouteKey } from "../../../src/agent-team-execution/domain/team-run-member-identity.js";
++import { testAgentNode, testAgentTeamNode } from "../../fixtures/current-team-run-fixtures.js";
+ 
+ const applicationId = "app-1";
+ const runId = "run-1";
+@@ -36,18 +36,9 @@ const buildBinding = (): ApplicationAgentBindingRecord => ({
+   },
+   runtime: {
+     subject: "AGENT_RUN",
+-    runId,
++    agentRunId: runId,
+     definitionId: "agent-def-1",
+-    members: [
+-      {
+-        memberName: "Sample Agent",
+-        memberRouteKey: "sample-agent",
+-        displayName: "Sample Agent",
+-        teamPath: [],
+-        runId,
+-        runtimeKind: "AGENT",
+-      },
+-    ],
++    members: [],
+   },
+   createdAt: new Date("2026-04-19T09:10:00.000Z").toISOString(),
+   updatedAt: new Date("2026-04-19T09:10:00.000Z").toISOString(),
+@@ -67,15 +58,13 @@ const buildTeamBinding = (): ApplicationAgentBindingRecord => ({
+   },
+   runtime: {
+     subject: "TEAM_RUN",
+-    runId: "team-run-1",
++    teamRunId: "team-run-1",
+     definitionId: "team-def-1",
+     members: [
+       {
+-        memberName: "Researcher",
+-        memberRouteKey: "researcher",
++        memberAddress: "/Researcher",
+         displayName: "Researcher",
+-        teamPath: [],
+-        runId: "researcher-member-run-1",
++        agentRunId: "researcher-member-run-1",
+         runtimeKind: "AGENT_TEAM_MEMBER",
+       },
+     ],
+@@ -183,7 +172,7 @@ describe("ApplicationOrchestrationHostService startAgent", () => {
+     const runBindingLaunchService = {
+       startAgentRunBinding: vi.fn(async () => {
+         await bindingStore.persistBinding(binding);
+-        lookupStore.replaceBindingLookups(applicationId, binding.bindingId, [binding.runtime.runId]);
++        lookupStore.replaceBindingLookups(applicationId, binding.bindingId, [runId]);
+         return cloneBinding(binding);
+       }),
+     };
+@@ -271,30 +260,23 @@ describe("ApplicationOrchestrationHostService startAgent", () => {
+     };
+     const teamRunMetadataService = {
+       readMetadata: vi.fn(async () => ({
+-        teamRunId: "team-run-1",
+-        teamDefinitionId: "team-def-1",
++        schemaVersion: 3 as const,
+         teamDefinitionName: "Brief Team",
+-        coordinatorMemberRouteKey: "researcher",
+         createdAt: "2026-04-19T09:10:00.000Z",
+-        updatedAt: "2026-04-19T09:10:00.000Z",
+-        memberTree: [
+-          {
+-            memberKind: "agent",
+-            memberRouteKey: "researcher",
+-            memberPath: ["Researcher"],
+-            memberName: "Researcher",
+-            memberRunId: "researcher-member-run-1",
+-            runtimeKind: "AUTOBYTEUS",
+-            platformAgentRunId: null,
++        archivedAt: null,
++        rootTeam: testAgentTeamNode({
++          address: "/",
++          teamRunId: "team-run-1",
++          teamDefinitionId: "team-def-1",
++          coordinatorAddress: "/Researcher",
++          children: [testAgentNode("/Researcher", {
++            agentRunId: "researcher-member-run-1",
+             agentDefinitionId: "agent-def-1",
+             llmModelIdentifier: "gpt-test",
+-            autoExecuteTools: true,
+-            skillAccessMode: "PRELOADED_ONLY",
+-            llmConfig: null,
+             workspaceRootPath: "/tmp/workspace",
+-            applicationExecutionContext: null,
+-          },
+-        ],
++          })],
++        }),
++        handoffs: [],
+       })),
+     };
+     const publishedArtifactProjectionService = {
+@@ -363,11 +345,9 @@ describe("ApplicationOrchestrationHostService startAgent", () => {
+       runtime: {
+         ...buildTeamBinding().runtime,
+         members: [{
+-          memberName: "Reviewer",
+-          memberRouteKey: "ReviewSquad/reviewer",
++          memberAddress: "/ReviewSquad/Reviewer",
+           displayName: "Reviewer",
+-          teamPath: ["ReviewSquad"],
+-          runId: "reviewer-member-run-1",
++          agentRunId: "reviewer-member-run-1",
+           runtimeKind: "AGENT_TEAM_MEMBER",
+         }],
+       },
+@@ -390,36 +370,32 @@ describe("ApplicationOrchestrationHostService startAgent", () => {
+       } as never,
+       teamRunMetadataService: {
+         readMetadata: vi.fn(async () => ({
+-          teamRunId: "team-run-1",
+-          teamDefinitionId: "team-def-1",
++          schemaVersion: 3 as const,
+           teamDefinitionName: "Brief Team",
+-          coordinatorMemberRouteKey: "ReviewSquad/reviewer",
+           createdAt: "2026-04-19T09:10:00.000Z",
+-          memberTree: [{
+-            memberKind: "agent_team",
+-            memberRouteKey: "ReviewSquad",
+-            memberPath: ["ReviewSquad"],
+-            memberName: "ReviewSquad",
+-            memberRunId: "review-squad-wrapper",
+-            teamDefinitionId: "review-team",
+-            teamRunId: "child-review-team-run",
+-            coordinatorMemberRouteKey: "ReviewSquad/reviewer",
+-            memberTree: [{
+-              memberKind: "agent",
+-              memberRouteKey: "ReviewSquad/reviewer",
+-              memberPath: ["ReviewSquad", "Reviewer"],
+-              memberName: "Reviewer",
+-              memberRunId: "reviewer-member-run-1",
+-              runtimeKind: "AUTOBYTEUS",
+-              platformAgentRunId: null,
+-              agentDefinitionId: "agent-def-reviewer",
+-              llmModelIdentifier: "gpt-test",
+-              autoExecuteTools: true,
+-              skillAccessMode: "PRELOADED_ONLY",
+-              llmConfig: null,
+-              workspaceRootPath: "/tmp/workspace",
+-            }],
+-          }],
++          archivedAt: null,
++          rootTeam: testAgentTeamNode({
++            address: "/",
++            teamRunId: "team-run-1",
++            teamDefinitionId: "team-def-1",
++            coordinatorAddress: "/RootLead",
++            children: [
++              testAgentNode("/RootLead", { agentRunId: "root-lead-run-1" }),
++              testAgentTeamNode({
++                address: "/ReviewSquad",
++                teamDefinitionId: "review-team",
++                teamRunId: "child-review-team-run",
++                coordinatorAddress: "/ReviewSquad/Reviewer",
++                children: [testAgentNode("/ReviewSquad/Reviewer", {
++                  agentRunId: "reviewer-member-run-1",
++                  agentDefinitionId: "agent-def-reviewer",
++                  llmModelIdentifier: "gpt-test",
++                  workspaceRootPath: "/tmp/workspace",
++                })],
++              }),
++            ],
++          }),
++          handoffs: [],
+         })),
+       } as never,
+       publishedArtifactProjectionService: publishedArtifactProjectionService as never,
+@@ -432,12 +408,9 @@ describe("ApplicationOrchestrationHostService startAgent", () => {
+     );
+   });
+ 
+-  it("posts application team input with structured route-key target identity", async () => {
++  it("posts application team input with exact member-address target identity", async () => {
+     const binding = buildTeamBinding();
+-    const postMessage = vi.fn(async (_message, target) => ({
+-      accepted: true,
+-      targetRouteKey: target ? selectorToRouteKey(target) : null,
+-    }));
++    const postMessage = vi.fn(async () => ({ accepted: true }));
+     const hostService = new ApplicationOrchestrationHostService({
+       startupGate: {
+         awaitReady: vi.fn(async () => undefined),
+@@ -456,14 +429,14 @@ describe("ApplicationOrchestrationHostService startAgent", () => {
+     await hostService.sendRunInput(applicationId, {
+       address: {
+         bindingId,
+-        target: { kind: "AGENT_TEAM_MEMBER", memberRouteKey: "researcher" },
++        target: { kind: "AGENT_TEAM_MEMBER", memberAddress: "/Researcher" },
+       },
+       input: { text: "please research" },
+     });
+ 
+     expect(postMessage).toHaveBeenCalledWith(
+       expect.objectContaining({ content: "please research" }),
+-      { kind: "route_key", memberRouteKey: "researcher" },
++      "/Researcher",
+     );
+   });
+ 
+@@ -489,7 +462,7 @@ describe("ApplicationOrchestrationHostService startAgent", () => {
+       hostService.sendRunInput(applicationId, {
+         address: {
+           bindingId,
+-          target: { kind: "AGENT_TEAM_MEMBER", memberRouteKey: "researcher" },
++          target: { kind: "AGENT_TEAM_MEMBER", memberAddress: "/Researcher" },
+         },
+         input: {
+           text: "please research",
+diff --git a/autobyteus-server-ts/tests/unit/external-channel/runtime/channel-agent-run-facade.test.ts b/autobyteus-server-ts/tests/unit/external-channel/runtime/channel-agent-run-facade.test.ts
+index df6a3db90..d4bbda62d 100644
+--- a/autobyteus-server-ts/tests/unit/external-channel/runtime/channel-agent-run-facade.test.ts
++++ b/autobyteus-server-ts/tests/unit/external-channel/runtime/channel-agent-run-facade.test.ts
+@@ -86,15 +86,39 @@ const createAgentBinding = (): ChannelBinding => ({
+ const createActiveRun = (options: {
+   runId?: string;
+   runtimeKind?: string;
+-  postUserMessage?: ReturnType<typeof vi.fn>;
++  active?: boolean;
++  dispatchUserInput?: ReturnType<typeof vi.fn>;
+   subscribeToEvents?: ReturnType<typeof vi.fn>;
+-}) =>
+-  new AgentRun({
++}) => {
++  const runId = options.runId ?? "agent-1";
++  let sourceListener: ((events: readonly unknown[]) => void | Promise<void>) | null = null;
++  const dispatchUserInput = options.dispatchUserInput ?? vi.fn().mockResolvedValue({
++    forwarded: true,
++    turnId: "turn-1",
++  });
++  const backendDispatch = vi.fn(async (input) => {
++    const result = await dispatchUserInput(input);
++    if (result.forwarded && result.turnId) {
++      queueMicrotask(() => {
++        void sourceListener?.([{
++          eventType: AgentRunEventType.TURN_STARTED,
++          runId,
++          payload: { turn_id: result.turnId },
++          statusHint: "ACTIVE",
++        }]);
++      });
++    }
++    return result;
++  });
++  return new AgentRun({
+     context: { runId: options.runId ?? "agent-1", config: { runtimeKind: options.runtimeKind ?? "codex_app_server" }, runtimeContext: null } as any,
+     backend: {
+       runId: options.runId ?? "agent-1",
+       runtimeKind: options.runtimeKind ?? "codex_app_server",
+-      isActive: () => true,
++      inputCapabilities: {
++        activeTurnAppend: options.runtimeKind === "codex_app_server" ? "supported" : "unsupported",
++      },
++      isActive: () => options.active ?? true,
+       getContext: () => ({ runId: options.runId ?? "agent-1", config: { runtimeKind: options.runtimeKind ?? "codex_app_server" }, runtimeContext: null }) as any,
+       getPlatformAgentRunId: () => options.runId ?? "agent-1",
+       getLifecycleSnapshot: () => ({
+@@ -102,23 +126,23 @@ const createActiveRun = (options: {
+         phase: "idle" as const,
+         currentTurn: { kind: "NONE" as const },
+       }),
+-      subscribeToSourceEventBatches: (listener: (events: readonly unknown[]) => void | Promise<void>) =>
+-        (options.subscribeToEvents ?? vi.fn().mockReturnValue(() => undefined))(
++      subscribeToSourceEventBatches: (listener: (events: readonly unknown[]) => void | Promise<void>) => {
++        sourceListener = listener;
++        const unsubscribe = (options.subscribeToEvents ?? vi.fn().mockReturnValue(() => undefined))(
+           (event: unknown) => listener([event]),
+-        ),
+-      postUserMessage:
+-        options.postUserMessage ??
+-        vi.fn().mockResolvedValue({
+-          accepted: true,
+-          turnId: "turn-1",
+-          code: null,
+-          message: null,
+-        }),
++        );
++        return () => {
++          sourceListener = null;
++          unsubscribe();
++        };
++      },
++      dispatchUserInput: backendDispatch,
+       approveToolInvocation: vi.fn(),
+       interrupt: vi.fn(),
+       terminate: vi.fn(),
+     },
+   });
++};
+ 
+ const buildFacade = (options: {
+   activeRun: AgentRun;
+@@ -171,16 +195,14 @@ const buildFacade = (options: {
+ 
+ describe("ChannelAgentRunFacade", () => {
+   it("dispatches to agent run through the run launcher and command coordinator", async () => {
+-    const postUserMessage = vi.fn().mockResolvedValue({
+-      accepted: true,
++    const dispatchUserInput = vi.fn().mockResolvedValue({
++      forwarded: true,
+       turnId: "turn-1",
+-      code: null,
+-      message: null,
+     });
+     const activeRun = createActiveRun({
+       runId: "agent-1",
+       runtimeKind: "codex_app_server",
+-      postUserMessage,
++      dispatchUserInput,
+     });
+     const { facade, resolveOrStartAgentRun, publishExternalUserMessage, recordRunActivity } = buildFacade({ activeRun });
+ 
+@@ -190,7 +212,7 @@ describe("ChannelAgentRunFacade", () => {
+     expect(result.agentRunId).toBe("agent-1");
+     expect(result.turnId).toBe("turn-1");
+     expect(resolveOrStartAgentRun).toHaveBeenCalledWith(createAgentBinding());
+-    expect(postUserMessage).toHaveBeenCalledOnce();
++    expect(dispatchUserInput).toHaveBeenCalledOnce();
+     expect(recordRunActivity).toHaveBeenCalledWith(
+       activeRun,
+       {
+@@ -202,26 +224,27 @@ describe("ChannelAgentRunFacade", () => {
+       runId: "agent-1",
+       envelope: createEnvelope(),
+     });
+-    expect(postUserMessage.mock.calls[0]?.[0]).toMatchObject({
+-      content: "hello",
+-      metadata: expect.objectContaining({
+-        message_id: expect.stringMatching(/^external_/),
+-        dedupe_key: expect.stringMatching(/^external_channel:/),
++    expect(dispatchUserInput.mock.calls[0]?.[0]).toMatchObject({
++      kind: "start_turn",
++      message: expect.objectContaining({
++        content: "hello",
++        metadata: expect.objectContaining({
++          message_id: expect.stringMatching(/^external_/),
++          dedupe_key: expect.stringMatching(/^external_channel:/),
++        }),
+       }),
+     });
+   });
+ 
+   it("maps inbound attachments to context files through the coordinator send path", async () => {
+-    const postUserMessage = vi.fn().mockResolvedValue({
+-      accepted: true,
++    const dispatchUserInput = vi.fn().mockResolvedValue({
++      forwarded: true,
+       turnId: "turn-1",
+-      code: null,
+-      message: null,
+     });
+     const activeRun = createActiveRun({
+       runId: "agent-1",
+       runtimeKind: "codex_app_server",
+-      postUserMessage,
++      dispatchUserInput,
+     });
+     const { facade, publishExternalUserMessage, recordRunActivity } = buildFacade({ activeRun });
+ 
+@@ -230,7 +253,7 @@ describe("ChannelAgentRunFacade", () => {
+       createEnvelopeWithAttachments(),
+     );
+ 
+-    const message = postUserMessage.mock.calls[0]?.[0];
++    const message = dispatchUserInput.mock.calls[0]?.[0]?.message;
+     expect(message?.contextFiles).toHaveLength(2);
+     expect(message?.contextFiles?.[0]?.toDict()).toMatchObject({
+       file_type: "audio",
+@@ -247,16 +270,14 @@ describe("ChannelAgentRunFacade", () => {
+ 
+   it("subscribes for authoritative turn capture before posting the external message", async () => {
+     const subscribeToEvents = vi.fn().mockReturnValue(() => undefined);
+-    const postUserMessage = vi.fn().mockResolvedValue({
+-      accepted: true,
++    const dispatchUserInput = vi.fn().mockResolvedValue({
++      forwarded: true,
+       turnId: "turn-1",
+-      code: null,
+-      message: null,
+     });
+     const activeRun = createActiveRun({
+       runId: "agent-1",
+       runtimeKind: "codex_app_server",
+-      postUserMessage,
++      dispatchUserInput,
+       subscribeToEvents,
+     });
+     const { facade } = buildFacade({ activeRun });
+@@ -265,41 +286,38 @@ describe("ChannelAgentRunFacade", () => {
+ 
+     expect(subscribeToEvents).toHaveBeenCalled();
+     expect(subscribeToEvents.mock.invocationCallOrder[0]).toBeLessThan(
+-      postUserMessage.mock.invocationCallOrder[0] ?? Number.MAX_SAFE_INTEGER,
++      dispatchUserInput.mock.invocationCallOrder[0] ?? Number.MAX_SAFE_INTEGER,
+     );
+   });
+ 
+-  it("throws when agent runtime rejects external dispatch", async () => {
++  it("throws when the AgentRun admission boundary rejects an inactive runtime", async () => {
+     const publishExternalUserMessage = vi.fn();
++    const dispatchUserInput = vi.fn();
+     const activeRun = createActiveRun({
+       runId: "agent-1",
+       runtimeKind: "codex_app_server",
+-      postUserMessage: vi.fn().mockResolvedValue({
+-        accepted: false,
+-        code: "RUN_SESSION_NOT_FOUND",
+-        message: "Run session 'agent-1' is not active.",
+-      }),
++      active: false,
++      dispatchUserInput,
+     });
+     const { facade } = buildFacade({ activeRun, publishExternalUserMessage });
+ 
+     await expect(
+       facade.dispatchToAgentBinding(createAgentBinding(), createEnvelope()),
+-    ).rejects.toThrow("Run session 'agent-1' is not active.");
++    ).rejects.toThrow("AgentRun is not accepting input.");
++    expect(dispatchUserInput).not.toHaveBeenCalled();
+     expect(publishExternalUserMessage).not.toHaveBeenCalled();
+   });
+ 
+   it("continues agent dispatch when live external-user publish fails", async () => {
+     const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+-    const postUserMessage = vi.fn().mockResolvedValue({
+-      accepted: true,
++    const dispatchUserInput = vi.fn().mockResolvedValue({
++      forwarded: true,
+       turnId: "turn-1",
+-      code: null,
+-      message: null,
+     });
+     const activeRun = createActiveRun({
+       runId: "agent-1",
+       runtimeKind: "codex_app_server",
+-      postUserMessage,
++      dispatchUserInput,
+     });
+     const publishExternalUserMessage = vi.fn(() => {
+       throw new Error("socket write failed");
+@@ -309,7 +327,7 @@ describe("ChannelAgentRunFacade", () => {
+     const result = await facade.dispatchToAgentBinding(createAgentBinding(), createEnvelope());
+ 
+     expect(result.agentRunId).toBe("agent-1");
+-    expect(postUserMessage).toHaveBeenCalledOnce();
++    expect(dispatchUserInput).toHaveBeenCalledOnce();
+     expect(publishExternalUserMessage).toHaveBeenCalledOnce();
+     expect(warnSpy).toHaveBeenCalledTimes(1);
+ 
+@@ -327,21 +345,20 @@ describe("ChannelAgentRunFacade", () => {
+           runtimeListener = null;
+         };
+       }),
+-      postUserMessage: vi.fn().mockImplementation(async () => {
++      dispatchUserInput: vi.fn().mockImplementation(async () => {
+         queueMicrotask(() => {
+           runtimeListener?.({
+             eventType: AgentRunEventType.TURN_STARTED,
+             runId: "agent-1",
+             payload: {
+-              turnId: "turn-captured",
++              turn_id: "turn-captured",
+             },
+             statusHint: "ACTIVE",
+           });
+         });
+         return {
+-          accepted: true,
+-          code: null,
+-          message: null,
++          forwarded: true,
++          turnId: null,
+         };
+       }),
+     });
+@@ -362,27 +379,26 @@ describe("ChannelAgentRunFacade", () => {
+         runtimeListener = null;
+       };
+     });
+-    const postUserMessage = vi.fn().mockImplementation(async () => {
++    const dispatchUserInput = vi.fn().mockImplementation(async () => {
+       queueMicrotask(() => {
+         runtimeListener?.({
+           eventType: AgentRunEventType.TURN_STARTED,
+           runId: "agent-1",
+           payload: {
+-            turnId: "turn-42",
++            turn_id: "turn-42",
+           },
+           statusHint: "ACTIVE",
+         });
+       });
+       return {
+-        accepted: true,
+-        code: null,
+-        message: null,
++        forwarded: true,
++        turnId: null,
+       };
+     });
+     const activeRun = createActiveRun({
+       runId: "agent-1",
+       runtimeKind: "autobyteus",
+-      postUserMessage,
++      dispatchUserInput,
+       subscribeToEvents,
+     });
+     const { facade } = buildFacade({ activeRun });

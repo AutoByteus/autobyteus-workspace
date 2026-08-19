@@ -1,0 +1,17 @@
+API-REV-030 final artifact verification 2026-08-12T14:12:43Z
+head=67551df6ba020b86c65b4716335d90f28d40f72e
+revision_index=1
+revision_entry=1
+coverage_investigation=1
+execution_revision=1
+failure_analysis=present
+inventory_rows=91
+inventory_counts=A=2,M=83,D=6
+fixture_integrity_diff_bytes=0
+owned_runtime_exists=no
+owned_db_exists=no
+owned_port_60230=CLOSED
+owned_port_31230=CLOSED
+operational_database_action=none
+protected_stack_action=none
+git_diff_check=PASS

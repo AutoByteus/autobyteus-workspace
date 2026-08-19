@@ -1,0 +1,1 @@
+{"version":3,"file":"application-agent-target-url.d.ts","sourceRoot":"","sources":["../src/application-agent-target-url.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,6BAA6B,EAAE,MAAM,iCAAiC,CAAC;AAWrF,eAAO,MAAM,oCAAoC,GAAI,SAAS,6BAA6B,KAAG,MAAM,EAQnG,CAAC;AAEF,eAAO,MAAM,+BAA+B,GAAI,SAAS,6BAA6B,KAAG,MACF,CAAC;AAExF,eAAO,MAAM,+BAA+B,GAAI,MAAM,MAAM,KAAG,6BAA6B,GAAG,IAsB9F,CAAC"}

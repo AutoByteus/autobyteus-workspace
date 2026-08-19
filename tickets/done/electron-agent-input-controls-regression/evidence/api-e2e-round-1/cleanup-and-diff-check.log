@@ -1,0 +1,12 @@
+cleanup_checked=2026-08-18T12:20:20Z
+dependency_symlink=absent
+temporary_probe_page=absent
+owned_process_scan=clean
+git_diff_check=pass
+git_status:
+ M components/agentInput/__tests__/ContextFilePathInputArea.spec.ts
+ M services/teamExecution/__tests__/teamExecutionViewState.spec.ts
+ M services/teamExecution/teamExecutionViewState.ts
+ M stores/__tests__/activeContextStore.spec.ts
+ M stores/__tests__/agentTeamRunStore.spec.ts
+?? ../tickets/in-progress/electron-agent-input-controls-regression/

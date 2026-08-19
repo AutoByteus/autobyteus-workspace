@@ -1,0 +1,22 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web
+
+stderr | services/runHydration/__tests__/teamCommunicationHydrationService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/runHydration/__tests__/teamCommunicationHydrationService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/runHydration/__tests__/teamCommunicationHydrationService.spec.ts (2 tests) 12ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  16:40:12
+   Duration  4.25s (transform 2.45s, setup 3.79s, collect 10ms, tests 12ms, environment 122ms, prepare 135ms)
+

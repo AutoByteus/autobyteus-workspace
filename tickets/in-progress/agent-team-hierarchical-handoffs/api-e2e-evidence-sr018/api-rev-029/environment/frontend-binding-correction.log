@@ -1,0 +1,16 @@
+API-REV-029 frontend binding correction
+Initial frontend attempt used non-authoritative NUXT_PUBLIC_* names and rendered Bound backend is not ready.
+That attempt was stopped before a TeamRun or provider call was created.
+nuxt.config.ts authoritative development binding is BACKEND_NODE_BASE_URL.
+Replacement command: BACKEND_NODE_BASE_URL=http://127.0.0.1:60229 pnpm exec nuxt dev --host 127.0.0.1 --port 31229
+Disposable backend only: 127.0.0.1:60229.
+No operational database action was performed.
+
+Frontend listen:
+COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    33904 normy   17u  IPv4 0x9fc08e3d0d364952      0t0  TCP 127.0.0.1:31229 (LISTEN)
+
+Frontend proxied health:
+{"status":"ok","message":"Server is running"}
+Backend direct health:
+{"status":"ok","message":"Server is running"}

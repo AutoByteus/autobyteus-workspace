@@ -1,0 +1,126 @@
+{
+  "startedAt": "2026-08-18T12:19:35.558Z",
+  "result": "Pass",
+  "webDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/electron-agent-input-controls-regression/autobyteus-web",
+  "fixturePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/electron-agent-input-controls-regression/tickets/in-progress/electron-agent-input-controls-regression/evidence/api-e2e-round-1/team-composer-browser.page.vue",
+  "installedPagePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/electron-agent-input-controls-regression/autobyteus-web/pages/api-e2e-team-composer.vue",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "scenarios": {
+    "BR-003A": {
+      "description": "successful individual remove and Clear all keep visible and authoritative Team attachment state equal",
+      "result": "Pass",
+      "startedAt": "2026-08-18T12:19:47.829Z",
+      "details": {
+        "deletedIds": "success-one,success-two",
+        "visible": "",
+        "authoritative": ""
+      }
+    },
+    "BR-003B": {
+      "description": "delete failure retains only the failed Team attachment after Clear all",
+      "result": "Pass",
+      "startedAt": "2026-08-18T12:19:47.943Z",
+      "details": {
+        "deletedIds": "success-one,success-two,failure-keep,failure-remove",
+        "retained": "failure-keep",
+        "memberB": ""
+      }
+    },
+    "BR-001_BR-004": {
+      "description": "actual Team send action admits once, clears visible draft, exposes pending, and sends only retained attachment state",
+      "result": "Pass",
+      "startedAt": "2026-08-18T12:19:47.991Z",
+      "details": {
+        "eventCount": "1",
+        "eventAttachmentIds": "retained-image,retained-file",
+        "pendingA": "true",
+        "focusedB": {
+          "draft": "",
+          "pending": "false",
+          "attachments": ""
+        },
+        "send": {
+          "text": "Submit exactly once",
+          "agentRunId": "browser-member-a-run",
+          "contextFilePaths": [
+            "/synthetic/retained-file.txt"
+          ],
+          "imageUrls": [
+            "/synthetic/retained-image.png"
+          ],
+          "options": {
+            "messageId": "client_3411298d-c0c3-4e6e-840e-7fe325973020",
+            "dedupeKey": "member_input:browser-team-run:browser-member-a-run:client_3411298d-c0c3-4e6e-840e-7fe325973020"
+          }
+        }
+      }
+    },
+    "BR-002": {
+      "description": "actual voice result processing writes captured member A while B is focused and does not auto-submit",
+      "result": "Pass",
+      "startedAt": "2026-08-18T12:19:48.102Z",
+      "details": {
+        "outcome": "transcript-ready",
+        "memberA": "Voice base captured transcript",
+        "memberB": "",
+        "sendCount": "1",
+        "eventCount": "1",
+        "visibleOnRefocus": "Voice base captured transcript"
+      }
+    },
+    "BR-005": {
+      "description": "standalone Agent draft, transcript insertion, and clear remain browser-observable",
+      "result": "Pass",
+      "startedAt": "2026-08-18T12:19:48.164Z",
+      "details": {
+        "transcriptVisible": true,
+        "cleared": true,
+        "sendCount": "1"
+      }
+    }
+  },
+  "browserEvents": [
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "type": "console:error",
+      "text": "Error deleting draft context file during clear: Error: synthetic draft delete failure\n    at uploadStore.deleteDraftAttachment (http://127.0.0.1:51933/_nuxt/pages/api-e2e-team-composer.vue:62:15)\n    at clearCurrentTargetAttachments (http://127.0.0.1:51933/_nuxt/composables/useContextAttachmentComposer.ts:236:38)\n    at clearAllContextFilePaths (http://127.0.0.1:51933/_nuxt/components/agentInput/ContextFilePathInputArea.vue:131:13)\n    at http://127.0.0.1:51933/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/node_modules/.pnpm/@vue+runtime-dom@3.5.28/node_modules/@vue/runtime-dom/dist/runtime-dom.esm-bundler.js?v=42176b6d:1758:12\n    at callWithErrorHandling (http://127.0.0.1:51933/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=42176b6d:197:19)\n    at callWithAsyncErrorHandling (http://127.0.0.1:51933/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=42176b6d:204:17)\n    at HTMLButtonElement.invoker (http://127.0.0.1:51933/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/node_modules/.pnpm/@vue+runtime-dom@3.5.28/node_modules/@vue/runtime-dom/dist/runtime-dom.esm-bundler.js?v=42176b6d:721:5)"
+    }
+  ],
+  "cleanup": {
+    "browser": "closed",
+    "nuxt": {
+      "status": "terminated",
+      "pid": 38861,
+      "exitCode": null,
+      "signalCode": "SIGTERM"
+    },
+    "temporaryPage": "removed"
+  },
+  "port": 51933,
+  "baseUrl": "http://127.0.0.1:51933",
+  "completedAt": "2026-08-18T12:19:48.295Z",
+  "finishedAt": "2026-08-18T12:19:48.428Z"
+}

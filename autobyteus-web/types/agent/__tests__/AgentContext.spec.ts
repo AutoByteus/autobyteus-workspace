@@ -35,7 +35,6 @@ describe('AgentContext', () => {
         expect(context.requirement).toBe('');
         expect(context.contextFilePaths).toEqual([]);
         expect(context.submissionPending).toBe(false);
-        expect(context.isSubscribed).toBe(false);
     });
 
     it('should provide access to conversation via getter', () => {

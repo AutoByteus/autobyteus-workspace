@@ -108,6 +108,7 @@ class FakeCompactorRun {
     private readonly events: AgentRunEvent[] = [
       createCompactorEvent("visible-compaction-run-1", AgentRunEventType.SEGMENT_CONTENT, {
         id: "message-1",
+        turn_id: "compaction-turn-1",
         segment_type: "text",
         delta: COMPACTION_OUTPUT,
       }),
@@ -336,10 +337,11 @@ describe("compaction agent parent runtime/model fallback executable validation",
 
     try {
       for (let turnIndex = 1; turnIndex <= 3; turnIndex += 1) {
-        const result = await backend.postUserMessage(new AgentInputUserMessage(
-          promptSizedUserMessage(`Seed turn ${turnIndex}`),
-        ));
-        expect(result.accepted).toBe(true);
+        const result = await backend.dispatchUserInput({
+          kind: "start_turn",
+          message: new AgentInputUserMessage(promptSizedUserMessage(`Seed turn ${turnIndex}`)),
+        });
+        expect(result.forwarded).toBe(true);
         await waitFor(() =>
           parentLLM.requests.length === turnIndex &&
           backend.getLifecycleSnapshot().phase === "idle" &&
@@ -347,7 +349,10 @@ describe("compaction agent parent runtime/model fallback executable validation",
         );
       }
 
-      await backend.postUserMessage(new AgentInputUserMessage("Please remember the fallback behavior."));
+      await backend.dispatchUserInput({
+        kind: "start_turn",
+        message: new AgentInputUserMessage("Please remember the fallback behavior."),
+      });
       await waitFor(() =>
         parentLLM.requests.length === 4 &&
         backend.getLifecycleSnapshot().phase === "idle" &&
@@ -360,7 +365,10 @@ describe("compaction agent parent runtime/model fallback executable validation",
       expect((backend.getContext().runtimeContext as any)?.state?.memoryManager?.hasPendingCompaction())
         .toBe(false);
 
-      await backend.postUserMessage(new AgentInputUserMessage("Continue after compaction."));
+      await backend.dispatchUserInput({
+        kind: "start_turn",
+        message: new AgentInputUserMessage("Continue after compaction."),
+      });
       await waitFor(() =>
         parentLLM.requests.length === 5 &&
         (backend.getContext().runtimeContext as any)?.state?.memoryManager?.hasPendingCompaction() === false &&
@@ -412,6 +420,7 @@ describe("compaction agent parent runtime/model fallback executable validation",
     const visibleCompactorRun = new FakeCompactorRun("visible-compaction-run-2", [
       createCompactorEvent("visible-compaction-run-2", AgentRunEventType.SEGMENT_CONTENT, {
         id: "message-1",
+        turn_id: "compaction-turn-1",
         segment_type: "text",
         delta: COMPACTION_OUTPUT,
       }),
@@ -457,6 +466,7 @@ describe("compaction agent parent runtime/model fallback executable validation",
     const visibleCompactorRun = new FakeCompactorRun("visible-compaction-run-3", [
       createCompactorEvent("visible-compaction-run-3", AgentRunEventType.SEGMENT_CONTENT, {
         id: "message-1",
+        turn_id: "compaction-turn-1",
         segment_type: "text",
         delta: COMPACTION_OUTPUT,
       }),

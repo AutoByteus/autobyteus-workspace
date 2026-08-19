@@ -6,9 +6,11 @@ import {
 } from "../../agent-tools/task-delegation/task-delegation-tool-contract.js";
 import { PUBLISH_ARTIFACTS_TOOL_NAME } from "../../services/published-artifacts/published-artifact-tool-contract.js";
 import { SEND_MESSAGE_TO_TOOL_NAME } from "../../agent-communication/services/send-message-to-tool-contract.js";
+import { GET_HANDOFF_RULES_TOOL_NAME } from "../../agent-communication/services/get-handoff-rules-tool-contract.js";
 import type { MemberTeamContext } from "../../agent-team-execution/domain/member-team-context.js";
 
 export const AUTOMATIC_TEAM_TOOL_NAMES = [
+  GET_HANDOFF_RULES_TOOL_NAME,
   SEND_MESSAGE_TO_TOOL_NAME,
   DELEGATE_TASK_TOOL_NAME,
 ] as const;
@@ -22,6 +24,7 @@ export type RuntimeAgentToolExposure = {
   enabledMediaToolNames: string[];
   enabledTaskDelegationToolNames: string[];
   sendMessageToEnabled: boolean;
+  getHandoffRulesEnabled: boolean;
   publishArtifactsEnabled: boolean;
 };
 
@@ -55,6 +58,7 @@ export const buildRuntimeAgentToolExposure = (
       TASK_DELEGATION_TOOL_NAMES.has(toolName),
     ),
     sendMessageToEnabled: requestedToolNameSet.has(SEND_MESSAGE_TO_TOOL_NAME),
+    getHandoffRulesEnabled: requestedToolNameSet.has(GET_HANDOFF_RULES_TOOL_NAME),
     publishArtifactsEnabled: requestedToolNameSet.has(PUBLISH_ARTIFACTS_TOOL_NAME),
   };
 };

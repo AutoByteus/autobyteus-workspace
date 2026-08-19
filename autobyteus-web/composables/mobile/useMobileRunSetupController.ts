@@ -6,6 +6,7 @@ import { useTeamRunRuntimeCatalogSync } from '~/composables/useTeamRunRuntimeCat
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore'
 import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore'
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore'
+import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore'
 import { useMobileWorkStore } from '~/stores/mobileWorkStore'
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore'
 import type { AgentRunConfig } from '~/types/agent/AgentRunConfig'
@@ -24,6 +25,7 @@ export function useMobileRunSetupController(options: MobileRunSetupControllerOpt
   const agentDefinitionStore = useAgentDefinitionStore()
   const agentRunConfigStore = useAgentRunConfigStore()
   const teamDefinitionStore = useAgentTeamDefinitionStore()
+  const teamRunStore = useAgentTeamRunStore()
   const teamRunConfigStore = useTeamRunConfigStore()
   const mobileWorkStore = useMobileWorkStore()
   const { agentItems, teamItems } = useMobileWorkCatalog()
@@ -34,8 +36,13 @@ export function useMobileRunSetupController(options: MobileRunSetupControllerOpt
   const selectedAgentId = ref('')
   const selectedTeamId = ref('')
   const selectedWorkspaceId = ref('')
-  const creating = ref(false)
+  const creationRequestPending = ref(false)
   const error = ref<string | null>(null)
+
+  const selectedTeamDraftLaunchPending = computed(() => (
+    teamRunStore.isDraftLaunchPending(teamRunConfigStore.selectedDraft?.draftId ?? null)
+  ))
+  const creating = computed(() => creationRequestPending.value || selectedTeamDraftLaunchPending.value)
 
   const draftAttachments = computed(() => mobileWorkStore.draftContextAttachments)
 
@@ -127,6 +134,7 @@ export function useMobileRunSetupController(options: MobileRunSetupControllerOpt
   }
 
   function applyContextDefaults(): void {
+    if (creating.value) return
     const context = options.context.value
     if (context?.kind === 'agent-definition' && !selectedAgentId.value) {
       mode.value = 'agent'
@@ -160,6 +168,7 @@ export function useMobileRunSetupController(options: MobileRunSetupControllerOpt
   }
 
   function applySetupIntentDefaults(intent: MobileRunSetupIntent | null | undefined): void {
+    if (creating.value) return
     if (!intent) {
       return
     }
@@ -178,6 +187,7 @@ export function useMobileRunSetupController(options: MobileRunSetupControllerOpt
   }
 
   function clearInvalidSelections(): void {
+    if (creating.value) return
     if (selectedAgentId.value && !agentChoices.value.some((item) => item.id === selectedAgentId.value)) {
       selectedAgentId.value = ''
     }
@@ -190,15 +200,17 @@ export function useMobileRunSetupController(options: MobileRunSetupControllerOpt
   }
 
   function updateActiveWorkspaceConfig(): void {
+    if (creating.value) return
     const workspaceId = selectedWorkspaceId.value || null
     if (mode.value === 'agent' && agentRunConfigStore.config) {
       agentRunConfigStore.updateAgentConfig({ workspaceId })
     } else if (mode.value === 'team' && teamRunConfigStore.config) {
-      teamRunConfigStore.updateConfig({ workspaceId })
+      teamRunConfigStore.applyConfigEdit({ kind: 'set_workspace', workspaceId, workspaceMetadata: null })
     }
   }
 
   function syncSelectedConfig(): void {
+    if (creating.value) return
     if (mode.value === 'agent') {
       teamRunConfigStore.clearConfig()
       if (!selectedAgentId.value) {
@@ -232,48 +244,55 @@ export function useMobileRunSetupController(options: MobileRunSetupControllerOpt
   }
 
   function setMode(nextMode: MobileLaunchMode): void {
+    if (creating.value) return
     mode.value = nextMode
   }
 
   function selectWorkspace(workspaceId: string): void {
+    if (creating.value) return
     selectedWorkspaceId.value = workspaceId
     error.value = null
     updateActiveWorkspaceConfig()
   }
 
   function setAutoExecuteTools(checked: boolean): void {
+    if (creating.value) return
     if (mode.value === 'agent') {
       agentRunConfigStore.updateAgentConfig({ autoExecuteTools: checked })
     } else {
-      teamRunConfigStore.updateConfig({ autoExecuteTools: checked })
+      teamRunConfigStore.applyConfigEdit({ kind: 'set_auto_execute_tools', autoExecuteTools: checked })
     }
   }
 
   function updateRuntimeKind(runtimeKind: string): void {
+    if (creating.value) return
     if (mode.value === 'agent') {
       agentRunConfigStore.updateAgentConfig({ runtimeKind })
     } else {
-      teamRunConfigStore.updateConfig({ runtimeKind })
+      teamRunConfigStore.applyConfigEdit({ kind: 'set_runtime', runtimeKind })
     }
   }
 
   function updateLlmModelIdentifier(llmModelIdentifier: string): void {
+    if (creating.value) return
     if (mode.value === 'agent') {
       agentRunConfigStore.updateAgentConfig({ llmModelIdentifier })
     } else {
-      teamRunConfigStore.updateConfig({ llmModelIdentifier })
+      teamRunConfigStore.applyConfigEdit({ kind: 'set_model', llmModelIdentifier })
     }
   }
 
   function updateLlmConfig(llmConfig: Record<string, unknown> | null): void {
+    if (creating.value) return
     if (mode.value === 'agent') {
       agentRunConfigStore.updateAgentConfig({ llmConfig })
     } else {
-      teamRunConfigStore.updateConfig({ llmConfig })
+      teamRunConfigStore.applyConfigEdit({ kind: 'set_llm_config', llmConfig })
     }
   }
 
   async function loadWorkspacePath(path: string): Promise<void> {
+    if (creating.value) return
     const loadingStore = mode.value === 'agent' ? agentRunConfigStore : teamRunConfigStore
     const hasActiveConfig = Boolean(activeConfig.value)
     if (hasActiveConfig) {
@@ -297,12 +316,13 @@ export function useMobileRunSetupController(options: MobileRunSetupControllerOpt
   }
 
   async function createRun(): Promise<void> {
+    if (creating.value) return
     error.value = null
     if (!canLaunch.value) {
       error.value = blockingIssue.value || 'Choose a target, workspace, and model before creating the run.'
       return
     }
-    creating.value = true
+    creationRequestPending.value = true
     try {
       const result = await createMobileRunFromConfig(
         mode.value === 'agent'
@@ -321,11 +341,12 @@ export function useMobileRunSetupController(options: MobileRunSetupControllerOpt
     } catch (cause) {
       error.value = cause instanceof Error ? cause.message : 'Failed to create mobile run.'
     } finally {
-      creating.value = false
+      creationRequestPending.value = false
     }
   }
 
   watch(() => options.context.value, () => {
+    if (creating.value) return
     selectedAgentId.value = ''
     selectedTeamId.value = ''
     selectedWorkspaceId.value = ''
@@ -334,12 +355,14 @@ export function useMobileRunSetupController(options: MobileRunSetupControllerOpt
   }, { immediate: true })
 
   watch([agentItems, teamItems, launchWorkspaces.workspaceItems], () => {
+    if (creating.value) return
     clearInvalidSelections()
     applyContextDefaults()
     applySetupIntentDefaults(options.setupIntent.value)
   })
 
   watch(() => options.setupIntent.value?.revision, (revision) => {
+    if (creating.value) return
     if (!revision) {
       return
     }

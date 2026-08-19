@@ -1,6 +1,6 @@
 import { AgentRunManager } from "../agent-execution/services/agent-run-manager.js";
 import { AgentTeamRunManager } from "../agent-team-execution/services/agent-team-run-manager.js";
-import type { TeamMemberRunConfig, TeamRunMemberConfig } from "../agent-team-execution/domain/team-run-config.js";
+import type { ConfiguredAgentExecution, ConfiguredMemberExecution } from "../agent-team-execution/domain/team-run-execution-tree.js";
 import { buildFilesystemWorkspaceId } from "./workspace-registry-store.js";
 import { canonicalizeWorkspaceRootPath } from "./workspace-path-utils.js";
 
@@ -51,10 +51,7 @@ export class WorkspaceRemovalGuard {
 
     for (const teamRunId of teamRunManager.listActiveRuns()) {
       const teamRun = teamRunManager.getActiveRun(teamRunId);
-      if (!teamRun?.config) {
-        continue;
-      }
-      if (teamMemberTreeUsesWorkspace(teamRun.config.memberTree, workspaceRootPath)) {
+      if (teamRun && teamMemberTreeUsesWorkspace(teamRun.getExecutionTreeSnapshot().rootTeam.members, workspaceRootPath)) {
         blockers.push({ kind: "team_run", runId: teamRunId });
       }
     }
@@ -95,25 +92,25 @@ const workspaceIdUsesRoot = (
 };
 
 const teamMemberTreeUsesWorkspace = (
-  members: readonly TeamRunMemberConfig[],
+  members: readonly ConfiguredMemberExecution[],
   workspaceRootPath: string,
 ): boolean => members.some((member) => teamMemberUsesWorkspace(member, workspaceRootPath));
 
 const teamMemberUsesWorkspace = (
-  member: TeamRunMemberConfig,
+  member: ConfiguredMemberExecution,
   workspaceRootPath: string,
 ): boolean => {
-  if (member.memberKind === "agent_team") {
-    return teamMemberTreeUsesWorkspace(member.memberConfigs, workspaceRootPath);
+  if ("teamRunId" in member) {
+    return teamMemberTreeUsesWorkspace(member.members, workspaceRootPath);
   }
   return agentMemberUsesWorkspace(member, workspaceRootPath);
 };
 
 const agentMemberUsesWorkspace = (
-  member: TeamMemberRunConfig,
+  member: ConfiguredAgentExecution,
   workspaceRootPath: string,
 ): boolean => {
-  const candidateRoot = member.workspaceRootPath?.trim();
+  const candidateRoot = member.launchConfiguration.workspaceRootPath?.trim();
   if (!candidateRoot) {
     return false;
   }

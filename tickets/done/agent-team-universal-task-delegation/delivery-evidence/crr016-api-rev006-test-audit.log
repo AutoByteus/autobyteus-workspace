@@ -1,0 +1,180 @@
+CRR-016 API-REV-006 proportional durable test audit
+inventory_rows 164
+status_counts {'M': 122, 'A': 11, 'D': 31}
+content_integrity PASS
+patch_diff_entries 164 unique 164
+path_set_match True
+path_order_match False
+active_paths 133
+all_in_test_roots True
+active_declared_case_sites 697
+active_test_files_without_case []
+active_test_files_without_expect []
+focused_or_disabled 0 []
+todo_fixme_hack 0 []
+snapshots 0 []
+empty_catch 0 []
+added_fixed_wait 1
+  autobyteus-server-ts/tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts : await wait(100);
+added_set_timeout 3
+  autobyteus-server-ts/tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts : const wait = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
+  autobyteus-server-ts/tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts : const timer = setTimeout(() => reject(new Error("WebSocket open timeout")), 2_000);
+  autobyteus-server-ts/tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts : const timer = setTimeout(resolve, 500);
+added_random_uuid 2
+  autobyteus-server-ts/tests/unit/token-usage/token-usage-execution-identity-migration-repository.test.ts : import { randomUUID } from "node:crypto";
+  autobyteus-server-ts/tests/unit/token-usage/token-usage-execution-identity-migration-repository.test.ts : const filePath = path.join(os.tmpdir(), `autobyteus-token-identity-${randomUUID()}.db`);
+added_as_any 20
+  autobyteus-server-ts/tests/unit/agent-team-execution/team-run-service.test.ts : } as any;
+  autobyteus-server-ts/tests/unit/agent-team-execution/team-run-service.test.ts : } as any;
+  autobyteus-server-ts/tests/unit/agent-team-execution/team-run-service.test.ts : } as any;
+  autobyteus-server-ts/tests/unit/agent-team-execution/team-run-service.test.ts : } as any;
+  autobyteus-web/components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts : const localState = { activeTeamContext: null as any };
+  autobyteus-web/components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts : }] as any,
+  autobyteus-web/components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts : expect((monitor.props('conversation') as any).messages[0].text).toBe('Dedicated task packet');
+  autobyteus-web/components/workspace/team/__tests__/TeamWorkspaceView.spec.ts : const localState = { activeTeamContext: null as any };
+  autobyteus-web/components/workspace/team/__tests__/TeamWorkspaceView.spec.ts : expect((sourceConfig.llmConfig as any).nested.values).toEqual(['xhigh']);
+  autobyteus-web/components/workspace/team/__tests__/TeamWorkspaceView.spec.ts : expect((sourceConfig.memberOverrides['/Professor']!.llmConfig as any).nested.values).toEqual(['medium']);
+  autobyteus-web/services/agentStreaming/__tests__/AgentStreamingService.spec.ts : const clientMock = (service as any).wsClient;
+  autobyteus-web/services/agentStreaming/__tests__/AgentStreamingService.spec.ts : expect((service as any).context).toBe(mockAgentContext);
+  autobyteus-web/services/agentStreaming/__tests__/AgentStreamingService.spec.ts : expect((scheduledService as any).context).toBe(replacementContext);
+  autobyteus-web/services/runRecovery/__tests__/activeRunRecoveryCoordinator.spec.ts : testAgentNode('/solution_designer', { agentRunId: 'member-run-solution', currentStatus: 'offline' as any }),
+  autobyteus-web/services/runRecovery/__tests__/activeRunRecoveryCoordinator.spec.ts : testAgentNode('/implementation_engineer', { agentRunId: 'member-run-implementation', currentStatus: 'offline' as any }),
+  autobyteus-web/services/runRecovery/__tests__/activeRunRecoveryCoordinator.spec.ts : testAgentNode('/code_reviewer', { agentRunId: 'member-run-review', currentStatus: 'offline' as any }),
+  autobyteus-web/stores/__tests__/runHistoryStore.spec.ts : liveMember(solution.agentRunId).state.currentStatus = 'offline' as any;
+  autobyteus-web/stores/__tests__/runHistoryStore.spec.ts : liveMember(implementation.agentRunId).state.currentStatus = 'idle' as any;
+  autobyteus-web/stores/__tests__/runHistoryStore.spec.ts : liveMember(review.agentRunId).state.currentStatus = 'running' as any;
+  autobyteus-web/stores/__tests__/runHistoryTeamExecutionRows.spec.ts : const rows = buildRunHistoryTeamExecutionRows(historyTeam(stableChildren) as any, context);
+added_weak_truthy_defined 4
+  autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts : })).rejects.toBeTruthy();
+  autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts : })).rejects.toBeTruthy();
+  autobyteus-server-ts/tests/unit/agent-tools/task-delegation/task-delegation-runtime-descriptions.test.ts : expect(delegateAdapter).toBeDefined();
+  autobyteus-server-ts/tests/unit/run-history/services/team-run-history-catalog-service.test.ts : await expect(fs.stat(rootDir)).resolves.toBeDefined();
+ADDED autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts lines 182 names 5
+ - Codex TOOL_LOG correlation
+ - correlates started/local-completed/raw output and admits it through the strict Team boundary
+ - uses an exact direct raw provider tool name without inventing correlation
+ - suppresses incomplete, uncorrelated, wrong-turn, and post-terminal raw output
+ - fails closed when lifecycle facts conflict for the same invocation
+ADDED autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-command-queue.test.ts lines 73 names 4
+ - TaskDelegationCommandQueue
+ - serializes every lifecycle command in admission order
+ - closes public admission but retains the same FIFO for shutdown
+ - makes root fail-stop terminal for already-admitted and later shutdown work
+ADDED autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-current-invariants.test.ts lines 475 names 9
+ - current task delegation invariants
+ - builds the exact assignee packet from delegator identity without exposing task IDs
+ - blocks parent settlement for a cross-scope child and orders shutdown child-first
+ - retains an accepted task until exact local work becomes idle
+ - settles root shutdown from deepest child through the same task FIFO
+ - cancels reversible settlement on not_renamed and retries the same live execution later
+ - fail-stops the root when committed local cleanup rejects without rolling back settledAt
+ - does not settle or retry trailing terminal tasks after the first indeterminate tree write
+ - keeps indeterminate activation hidden and flips committed work release synchronously
+ADDED autobyteus-server-ts/tests/unit/agent-team-execution/team-run-persistence-coordinator.test.ts lines 109 names 5
+ - TeamRunPersistenceCoordinator task settlement
+ - cancels synchronously and preserves the live capability on not_renamed
+ - retains hidden preparation and fail-stops on indeterminate finalization
+ - rejects a trailing root mutation after indeterminate finalization
+ - detaches and swaps current tree/event under the lock but leaves teardown to the caller
+ADDED autobyteus-server-ts/tests/unit/app-data-migrations/team-run-execution-tree-v1-app-data-migration.test.ts lines 109 names 3
+ - TeamRunExecutionTreeV1AppDataMigration
+ - keeps unresolved predecessor bytes retryable while admitting an independent valid root
+ - does not promote partial target residue without its protected predecessor backup
+ADDED autobyteus-server-ts/tests/unit/run-history/team-run-file-commit-writer.test.ts lines 84 names 3
+ - TeamRunFileCommitWriter
+ - reports committed only after the renamed file and directory are synchronized
+ - distinguishes a rename failure from a post-rename finalization failure
+ADDED autobyteus-server-ts/tests/unit/run-history/team-run-v1-package-schema.test.ts lines 54 names 3
+ - TeamRun V1 state package
+ - strictly validates ${scenario}
+ - rejects unknown fields instead of normalizing them
+ADDED autobyteus-server-ts/tests/unit/services/agent-streaming/team-execution-view-projector.test.ts lines 174 names 5
+ - Team execution view strict projection
+ - projects one atomic initial V1 execution/task/message/status snapshot
+ - projects exact current AgentRun identity for provider segment events
+ - locates a nested task Agent under its concrete containing task TeamRun
+ - projects exact same-root communication and recipient input correlation
+ADDED autobyteus-server-ts/tests/unit/services/team-communication/team-communication-message-append-plan-current.test.ts lines 47 names 2
+ - current Team communication append plan
+ - releases a retained indeterminate reservation only after root fail-stop disposal
+ADDED autobyteus-server-ts/tests/unit/token-usage/token-usage-execution-identity-migration-repository.test.ts lines 109 names 3
+ - TokenUsageExecutionIdentityMigrationRepository
+ - transactionally retains root correlation and removes predecessor identity columns
+ - rolls back every schema and row mutation when predecessor evidence is invalid
+ADDED autobyteus-web/services/teamExecution/__tests__/teamExecutionViewState.spec.ts lines 236 names 4
+ - TeamExecutionViewState
+ - materializes fresh task-Team and nested task-Agent identities without replacing configured placement
+ - keeps accepted history visible until the exact execution settlement and then repairs focus
+ - rejects sequence gaps and invalid snapshots without partially replacing authoritative state
+REMOVED autobyteus-server-ts/tests/unit/agent-team-execution/backends/mixed/conversation-target/mixed-conversation-target-router.test.ts deleted_source_imports 2 ../../../../../../src/agent-team-execution/domain/team-run-member-identity.js,../../../../../../src/agent-team-execution/backends/mixed/conversation-target/mixed-conversation-target-router.js
+REMOVED autobyteus-server-ts/tests/unit/agent-team-execution/mixed-task-team-member-handle-termination.test.ts deleted_source_imports 3 ../../../src/agent-team-execution/backends/mixed/members/mixed-task-team-member-handle.js,../../../src/agent-team-execution/domain/task-team-instance.js,../../../src/agent-team-execution/task-delegation/task-team-active-run-directory.js
+REMOVED autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-event-bridge.test.ts deleted_source_imports 4 ../../../src/agent-team-execution/backends/mixed/events/mixed-team-event-bridge.js,../../../src/agent-team-execution/domain/team-leaf-agent-status-snapshot.js,../../../src/agent-team-execution/domain/task-team-instance.js,../../../src/agent-team-execution/domain/task-team-stream-scope.js
+REMOVED autobyteus-server-ts/tests/unit/agent-team-execution/sub-team-active-run-directory.test.ts deleted_source_imports 1 ../../../src/agent-team-execution/services/sub-team-active-run-directory.js
+REMOVED autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-address-builder.test.ts deleted_source_imports 2 ../../../src/agent-team-execution/domain/team-execution-address.js,../../../src/agent-team-execution/task-delegation/task-delegation-address-builder.js
+REMOVED autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-records-service.test.ts deleted_source_imports 2 ../../../src/agent-team-execution/task-delegation/records/task-delegation-records-service.js,../../../src/agent-team-execution/task-delegation/task-delegation-persistence-scope.js
+REMOVED autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-reference-file.test.ts deleted_source_imports 1 ../../../src/agent-team-execution/task-delegation/task-delegation-reference-file.js
+REMOVED autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-service.test.ts deleted_source_imports 5 ../../../src/agent-team-execution/domain/team-execution-address.js,../../../src/agent-team-execution/services/task-activation-event-barrier.js,../../../src/agent-team-execution/task-delegation/task-agent-directory.js,../../../src/agent-team-execution/services/team-run-tree-index.js,../../../src/agent-team-execution/task-delegation/task-team-active-run-directory.js
+REMOVED autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-settlement-coordinator.test.ts deleted_source_imports 1 ../../../src/agent-team-execution/task-delegation/task-delegation-settlement-coordinator.js
+REMOVED autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-target-mapper.test.ts deleted_source_imports 2 ../../../src/agent-team-execution/domain/team-execution-address.js,../../../src/agent-team-execution/task-delegation/task-delegation-target-mapper.js
+REMOVED autobyteus-server-ts/tests/unit/agent-team-execution/task-team-active-run-directory.test.ts deleted_source_imports 2 ../../../src/agent-team-execution/domain/task-team-instance.js,../../../src/agent-team-execution/task-delegation/task-team-active-run-directory.js
+REMOVED autobyteus-server-ts/tests/unit/agent-team-execution/task-team-settlement-coordinator.test.ts deleted_source_imports 4 ../../../src/agent-team-execution/domain/task-team-instance.js,../../../src/agent-team-execution/task-delegation/task-team-active-run-directory.js,../../../src/agent-team-execution/task-delegation/task-team-settlement-coordinator.js,../../../src/agent-team-execution/task-delegation/task-agent-directory.js
+REMOVED autobyteus-server-ts/tests/unit/agent-team-execution/team-logical-placement-resolver.test.ts deleted_source_imports 1 ../../../src/agent-team-execution/services/team-run-tree-index.js
+REMOVED autobyteus-server-ts/tests/unit/agent-team-execution/team-member-delivery-coordinator.test.ts deleted_source_imports 2 ../../../src/agent-team-execution/backends/mixed/delivery/team-member-delivery-coordinator.js,../../../src/agent-team-execution/domain/team-execution-address.js
+REMOVED autobyteus-server-ts/tests/unit/agent-team-execution/team-run-launch-identity-assignment.test.ts deleted_source_imports 1 ../../../src/agent-team-execution/services/team-run-launch-identity-assignment.js
+REMOVED autobyteus-server-ts/tests/unit/agent-team-execution/team-run-metadata-mapper.test.ts deleted_source_imports 3 ../../../src/agent-team-execution/domain/team-execution-address.js,../../../src/agent-team-execution/services/team-run-metadata-mapper.js,../../../src/run-history/store/team-run-metadata-types.js
+REMOVED autobyteus-server-ts/tests/unit/agent-team-execution/team-run-runtime-context-support.test.ts deleted_source_imports 1 ../../../src/agent-team-execution/services/team-run-runtime-context-support.js
+REMOVED autobyteus-server-ts/tests/unit/run-history/services/team-run-metadata-flattener.test.ts deleted_source_imports 2 ../../../../src/run-history/services/team-run-metadata-flattener.js,../../../../src/run-history/store/team-run-metadata-types.js
+REMOVED autobyteus-server-ts/tests/unit/run-history/store/team-run-metadata-store.test.ts deleted_source_imports 2 ../../../../src/run-history/store/team-run-metadata-store.js,../../../../src/run-history/store/team-run-metadata-types.js
+REMOVED autobyteus-server-ts/tests/unit/run-history/team-run-metadata-service.test.ts deleted_source_imports 2 ../../../src/run-history/store/team-run-metadata-types.js,../../../src/run-history/services/team-run-metadata-service.js
+REMOVED autobyteus-server-ts/tests/unit/services/agent-streaming/team-conversation-target-address-parser.test.ts deleted_source_imports 1 ../../../../src/services/agent-streaming/team-conversation-target-address-parser.js
+REMOVED autobyteus-server-ts/tests/unit/services/agent-streaming/team-run-event-websocket-message-mapper.test.ts deleted_source_imports 2 ../../../../src/agent-team-execution/domain/team-execution-address.js,../../../../src/services/agent-streaming/team-run-event-websocket-message-mapper.js
+REMOVED autobyteus-server-ts/tests/unit/services/agent-streaming/team-runtime-snapshot-service.test.ts deleted_source_imports 2 ../../../../src/agent-team-execution/domain/team-execution-address.js,../../../../src/services/agent-streaming/team-runtime-snapshot-service.js
+REMOVED autobyteus-web/services/agentStreaming/__tests__/teamStreamMemberContextResolver.spec.ts deleted_source_imports 0 
+REMOVED autobyteus-web/services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts deleted_source_imports 0 
+REMOVED autobyteus-web/services/teamExecution/__tests__/teamExecutionState.task-lifecycle.spec.ts deleted_source_imports 0 
+REMOVED autobyteus-web/stores/__tests__/runHistoryMetadata.spec.ts deleted_source_imports 0 
+REMOVED autobyteus-web/stores/__tests__/runHistoryTeamMemberProjectionHydrator.spec.ts deleted_source_imports 0 
+REMOVED autobyteus-web/stores/__tests__/teamCommunicationStore.spec.ts deleted_source_imports 0 
+REMOVED autobyteus-web/utils/__tests__/teamActiveExecutionMembers.spec.ts deleted_source_imports 0 
+REMOVED autobyteus-web/utils/__tests__/teamConversationTargetAddress.spec.ts deleted_source_imports 0 
+GROUPS
+41 autobyteus-server-ts/tests/unit/agent-team-execution
+17 autobyteus-web/components/workspace
+14 autobyteus-web/stores/__tests__
+9 autobyteus-server-ts/tests/unit/run-history
+8 autobyteus-server-ts/tests/unit/agent-execution
+8 autobyteus-server-ts/tests/unit/services
+7 autobyteus-server-ts/tests/integration/agent-team-execution
+6 autobyteus-server-ts/tests/unit/agent-tools
+6 autobyteus-web/services/agentStreaming
+5 autobyteus-server-ts/tests/unit/app-data-migrations
+5 autobyteus-web/utils/__tests__
+3 autobyteus-server-ts/tests/unit/agent-memory
+3 autobyteus-web/components/memory
+3 autobyteus-web/components/mobile
+3 autobyteus-web/services/runHydration
+3 autobyteus-web/services/runOpen
+2 autobyteus-web/components/agentInput
+2 autobyteus-web/composables/__tests__
+2 autobyteus-web/composables/mobile
+2 autobyteus-web/services/teamExecution
+1 autobyteus-server-ts/tests/fixtures/current-team-run-fixtures.ts
+1 autobyteus-server-ts/tests/unit/agent-collaboration
+1 autobyteus-server-ts/tests/unit/token-usage
+1 autobyteus-web/components/applications
+1 autobyteus-web/components/layout
+1 autobyteus-web/components/settings
+1 autobyteus-web/composables/workspace
+1 autobyteus-web/graphql/queries
+1 autobyteus-web/pages/__tests__
+1 autobyteus-web/services/eventMonitor
+1 autobyteus-web/services/runRecovery
+1 autobyteus-web/services/workspace
+1 autobyteus-web/tests/integration
+1 autobyteus-web/tests/stores
+1 autobyteus-web/types/agent
+git_diff_checks
+git diff --check 0  
+git diff --cached --check 0  
+git diff HEAD --check 0  
+unmerged 

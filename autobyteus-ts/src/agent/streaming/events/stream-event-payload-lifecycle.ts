@@ -110,10 +110,15 @@ export class SegmentEventData extends BaseStreamPayload {
       'SegmentEventData'
     );
     super(data);
+    const segmentId = typeof data.segment_id === 'string' ? data.segment_id.trim() : '';
+    const turnId = typeof data.turn_id === 'string' ? data.turn_id.trim() : '';
+    if (!segmentId || !turnId) {
+      throw new Error('SegmentEventData requires non-empty segment_id and turn_id');
+    }
     this.event_type = eventType;
-    this.segment_id = String(data.segment_id ?? '');
+    this.segment_id = segmentId;
     this.segment_type = data.segment_type ?? undefined;
-    this.turn_id = String(data.turn_id ?? '');
+    this.turn_id = turnId;
     this.payload = data.payload ?? {};
   }
 }

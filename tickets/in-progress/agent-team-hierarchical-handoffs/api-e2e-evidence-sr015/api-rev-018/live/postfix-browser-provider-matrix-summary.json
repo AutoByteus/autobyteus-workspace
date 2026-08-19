@@ -1,0 +1,230 @@
+{
+  "revision": "API-REV-018",
+  "generatedAt": "2026-08-10T17:42:46.758Z",
+  "productResult": "Pass",
+  "environmentSafetyResult": "Fail",
+  "overallResult": "Fail",
+  "reason": "A post-fix environment-start guard failure targeted the operational production.db before accepted isolated rows; no accepted row targeted it.",
+  "environment": {
+    "server": "http://127.0.0.1:60018",
+    "frontend": "http://127.0.0.1:31018",
+    "disposableDatabase": "sr015-api-rev-018-20260810-1.db",
+    "actualRepositorySecretImport": true,
+    "importedSecretIdentifiers": 9,
+    "secretValuesCaptured": false,
+    "acceptedRowsTargetedOperationalDatabase": false
+  },
+  "testOwnedNestedTaskUiRows": [
+    {
+      "scenario": "AutoByteus",
+      "status": "Pass",
+      "teamRunId": "delegated_task_ui_validation_team_4d4381848fec4433bb3031aedc5f9964",
+      "expected": {
+        "runtimeKind": "autobyteus",
+        "modelIdentifier": "gpt-5.6-luna",
+        "reasoningEffort": null
+      },
+      "uiConfig": {
+        "runtimeKind": "autobyteus",
+        "selectedModel": "OpenAI / gpt-5.6-luna",
+        "reasoningEffort": "medium",
+        "autoExecuteTools": true
+      },
+      "assertions": {
+        "currentTaskTeamVisibleActive": true,
+        "currentTaskTeamTransientRowVisible": true,
+        "nestedTaskAgentTransientRowVisible": true,
+        "exactTaskAgentSelection": true,
+        "nestedTaskAgentAcceptedPersisted": true,
+        "nestedTaskAgentTerminalCleanup": true,
+        "awaitingReviewVisible": true,
+        "refreshRestoreVisible": true,
+        "exactTaskTeamSelection": true,
+        "acceptedPersisted": true,
+        "terminalTransientCleanup": true,
+        "exactRootedAddresses": true,
+        "allPersistentLeavesExact": true
+      },
+      "lifecycle": {
+        "terminated": true,
+        "restored": true,
+        "topologyExact": true,
+        "terminatedAfterRestore": true
+      },
+      "browserErrorCount": 0
+    },
+    {
+      "scenario": "Codex App Server",
+      "status": "Pass",
+      "teamRunId": "delegated_task_ui_validation_team_946b3b5d18c742e68e53472436a31a7a",
+      "expected": {
+        "runtimeKind": "codex_app_server",
+        "modelIdentifier": "gpt-5.6-luna",
+        "reasoningEffort": "medium"
+      },
+      "uiConfig": {
+        "runtimeKind": "codex_app_server",
+        "selectedModel": "OpenAI / GPT-5.6-Luna (default reasoning: medium)",
+        "reasoningEffort": "medium",
+        "autoExecuteTools": true
+      },
+      "assertions": {
+        "currentTaskTeamVisibleActive": true,
+        "currentTaskTeamTransientRowVisible": true,
+        "nestedTaskAgentTransientRowVisible": true,
+        "exactTaskAgentSelection": true,
+        "nestedTaskAgentAcceptedPersisted": true,
+        "nestedTaskAgentTerminalCleanup": true,
+        "awaitingReviewVisible": true,
+        "refreshRestoreVisible": true,
+        "exactTaskTeamSelection": true,
+        "acceptedPersisted": true,
+        "terminalTransientCleanup": true,
+        "exactRootedAddresses": true,
+        "allPersistentLeavesExact": true
+      },
+      "lifecycle": {
+        "terminated": true
+      },
+      "browserErrorCount": 0
+    },
+    {
+      "scenario": "Claude Agent SDK",
+      "status": "Pass",
+      "teamRunId": "delegated_task_ui_validation_team_8a8251c18aaa41809ba09f7899c25fa1",
+      "expected": {
+        "runtimeKind": "claude_agent_sdk",
+        "modelIdentifier": "sonnet",
+        "reasoningEffort": "medium"
+      },
+      "uiConfig": {
+        "runtimeKind": "claude_agent_sdk",
+        "selectedModel": "Anthropic / deepseek-v4-flash",
+        "reasoningEffort": "medium",
+        "autoExecuteTools": true
+      },
+      "assertions": {
+        "currentTaskTeamVisibleActive": true,
+        "currentTaskTeamTransientRowVisible": true,
+        "nestedTaskAgentTransientRowVisible": true,
+        "exactTaskAgentSelection": true,
+        "nestedTaskAgentAcceptedPersisted": true,
+        "nestedTaskAgentTerminalCleanup": true,
+        "awaitingReviewVisible": true,
+        "refreshRestoreVisible": true,
+        "exactTaskTeamSelection": true,
+        "acceptedPersisted": true,
+        "terminalTransientCleanup": true,
+        "exactRootedAddresses": true,
+        "allPersistentLeavesExact": true
+      },
+      "lifecycle": {
+        "terminated": true
+      },
+      "browserErrorCount": 0
+    }
+  ],
+  "importedNestedClassroomRows": [
+    {
+      "scenario": "AutoByteus",
+      "status": "Pass",
+      "teamRunId": "nested_classroom_test_team_b71e7338427b4e28b641f3a64ff9fd5d",
+      "expected": {
+        "runtimeKind": "autobyteus",
+        "modelIdentifier": "gpt-5.6-luna",
+        "reasoningEffort": null
+      },
+      "uiConfig": {
+        "runtimeKind": "autobyteus",
+        "selectedModel": "OpenAI / gpt-5.6-luna",
+        "reasoningEffort": "medium",
+        "autoExecuteTools": true
+      },
+      "assertions": {
+        "currentTaskTeamVisibleActive": true,
+        "currentTaskTeamTransientRowVisible": true,
+        "awaitingReviewVisible": true,
+        "refreshRestoreVisible": true,
+        "exactTaskTeamSelection": true,
+        "acceptedPersisted": true,
+        "terminalTransientCleanup": true,
+        "exactRootedAddresses": true,
+        "allPersistentLeavesExact": true
+      },
+      "lifecycle": {
+        "terminated": true,
+        "restored": true,
+        "topologyExact": true,
+        "terminatedAfterRestore": true
+      },
+      "browserErrorCount": 0
+    },
+    {
+      "scenario": "Codex App Server",
+      "status": "Pass",
+      "teamRunId": "nested_classroom_test_team_4182b55c4d2b49ff9129c4046e0e4d82",
+      "expected": {
+        "runtimeKind": "codex_app_server",
+        "modelIdentifier": "gpt-5.6-luna",
+        "reasoningEffort": "medium"
+      },
+      "uiConfig": {
+        "runtimeKind": "codex_app_server",
+        "selectedModel": "OpenAI / GPT-5.6-Luna (default reasoning: medium)",
+        "reasoningEffort": "medium",
+        "autoExecuteTools": true
+      },
+      "assertions": {
+        "currentTaskTeamVisibleActive": true,
+        "currentTaskTeamTransientRowVisible": true,
+        "awaitingReviewVisible": true,
+        "refreshRestoreVisible": true,
+        "exactTaskTeamSelection": true,
+        "acceptedPersisted": true,
+        "terminalTransientCleanup": true,
+        "exactRootedAddresses": true,
+        "allPersistentLeavesExact": true
+      },
+      "lifecycle": {
+        "terminated": true
+      },
+      "browserErrorCount": 0
+    },
+    {
+      "scenario": "Claude Agent SDK",
+      "status": "Pass",
+      "teamRunId": "nested_classroom_test_team_01f11e8745dc41d49bbbd1ba251bfed9",
+      "expected": {
+        "runtimeKind": "claude_agent_sdk",
+        "modelIdentifier": "sonnet",
+        "reasoningEffort": "medium"
+      },
+      "uiConfig": {
+        "runtimeKind": "claude_agent_sdk",
+        "selectedModel": "Anthropic / deepseek-v4-flash",
+        "reasoningEffort": "medium",
+        "autoExecuteTools": true
+      },
+      "assertions": {
+        "currentTaskTeamVisibleActive": true,
+        "currentTaskTeamTransientRowVisible": true,
+        "awaitingReviewVisible": true,
+        "refreshRestoreVisible": true,
+        "exactTaskTeamSelection": true,
+        "acceptedPersisted": true,
+        "terminalTransientCleanup": true,
+        "exactRootedAddresses": true,
+        "allPersistentLeavesExact": true
+      },
+      "lifecycle": {
+        "terminated": true
+      },
+      "browserErrorCount": 0
+    }
+  ],
+  "disclosures": [
+    "The imported fixture is the exact isolated staged copy but was registered by AUTOBYTEUS_AGENT_PACKAGE_ROOTS for this post-fix run; API-REV-016 separately proves the public GraphQL LOCAL_PATH import boundary.",
+    "The initial AutoByteus task-UI attempt requested unsupported nested task delegation from the imported student_one and is rejected exploratory evidence.",
+    "The task Agent row is nested under a collapsible task-Team row; the corrected browser assertion explicitly expands that row before checking and selecting the task Agent."
+  ]
+}

@@ -11,7 +11,6 @@ import type { AgentContext } from '~/types/agent/AgentContext';
 import type { AgentRunConfig } from '~/types/agent/AgentRunConfig';
 import type { ContextFilePath } from '~/types/conversation';
 import type { ToolApprovalTarget } from '~/types/segments';
-import { resolveTeamConversationTargetAddress } from '~/utils/teamConversationTargetAddress';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { resolveAgentPrimaryAction } from '~/services/runSubmission/agentPrimaryAction';
 
@@ -39,10 +38,7 @@ export const useActiveContextStore = defineStore('activeContext', () => {
         return null;
       }
 
-      const messageTarget = resolveTeamConversationTargetAddress(activeTeam, {
-        allowActiveExecutionSafetyFallback: true,
-      });
-      return messageTarget?.context || agentTeamContextsStore.activeExecutionFocusedMemberContext || null;
+      return agentTeamContextsStore.activeExecutionFocusedMemberContext || null;
     }
     return null;
   });
@@ -217,18 +213,14 @@ export const useActiveContextStore = defineStore('activeContext', () => {
       if (!activeTeam) {
         throw new Error('Cannot interrupt generation: No active team context.');
       }
-      const targetMemberRouteKey = agentTeamContextsStore.activeExecutionFocusedMemberRouteKey?.trim() ?? '';
-      if (!targetMemberRouteKey || !activeTeam.leafAgentContextsByRouteKey.has(targetMemberRouteKey)) {
-        throw new Error('Cannot interrupt generation: No focused team member target.');
-      }
-      const focusedMember = activeTeam.leafAgentContextsByRouteKey.get(targetMemberRouteKey);
+      const agentRunId = activeTeam.view.getFocusedAgentRunId();
+      const focusedMember = agentTeamContextsStore.activeExecutionFocusedMemberContext;
       if (!focusedMember || focusedMember !== context) {
         throw new Error('Cannot interrupt generation: Focused team member target is stale.');
       }
       return agentTeamRunStore.interruptFocusedMemberGeneration({
-        teamRunId: activeTeam.teamRunId,
-        targetMemberRouteKey,
-        targetMemberRunId: context.state.runId,
+        teamRunId: activeTeam.view.getRootTeamRunId(),
+        agentRunId,
       });
     }
 

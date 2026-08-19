@@ -21,7 +21,7 @@ export const useMobileWorkStore = defineStore('mobileWork', () => {
   const activeTab = ref<MobileTaskTab>('chat');
   const draftContextAttachments = ref<ContextAttachment[]>([]);
   const pendingTeamRunAttachmentsByTeamRunId = ref<Record<string, ContextAttachment[]>>({});
-  const focusedMemberRouteKeyByTeamRunId = ref<Record<string, string>>({});
+  const focusedAgentRunIdByTeamRunId = ref<Record<string, string>>({});
   const runSetupIntent = ref<MobileRunSetupIntent | null>(null);
   const nextRunSetupRevision = ref(0);
   const pendingFilePreviewRequest = ref<MobileFilePreviewRequest | null>(null);
@@ -165,30 +165,30 @@ export const useMobileWorkStore = defineStore('mobileWork', () => {
     return attachments;
   }
 
-  function rememberFocusedTeamMember(teamRunId: string, memberRouteKey: string): boolean {
+  function rememberFocusedTeamMember(teamRunId: string, agentRunId: string): boolean {
     const normalizedTeamRunId = teamRunId.trim();
-    const normalizedMemberRouteKey = memberRouteKey.trim();
-    if (!normalizedTeamRunId || !normalizedMemberRouteKey) {
+    const normalizedAgentRunId = agentRunId.trim();
+    if (!normalizedTeamRunId || !normalizedAgentRunId) {
       return false;
     }
-    focusedMemberRouteKeyByTeamRunId.value = {
-      ...focusedMemberRouteKeyByTeamRunId.value,
-      [normalizedTeamRunId]: normalizedMemberRouteKey,
+    focusedAgentRunIdByTeamRunId.value = {
+      ...focusedAgentRunIdByTeamRunId.value,
+      [normalizedTeamRunId]: normalizedAgentRunId,
     };
     return true;
   }
 
-  function getRememberedFocusedTeamMember(teamRunId: string): string {
-    return focusedMemberRouteKeyByTeamRunId.value[teamRunId.trim()] || '';
+  function getRememberedFocusedTeamMember(teamRunId: string): string | null {
+    return focusedAgentRunIdByTeamRunId.value[teamRunId.trim()] || null;
   }
 
-  function updateFocusedTeamMember(teamRunId: string, memberRouteKey: string): boolean {
+  function updateFocusedTeamMember(teamRunId: string, agentRunId: string): boolean {
     const normalizedTeamRunId = teamRunId.trim();
-    const normalizedMemberRouteKey = memberRouteKey.trim();
+    const normalizedAgentRunId = agentRunId.trim();
     const current = currentContext.value;
     if (
       !normalizedTeamRunId ||
-      !normalizedMemberRouteKey ||
+      !normalizedAgentRunId ||
       current?.kind !== 'team-run' ||
       current.teamRunId !== normalizedTeamRunId
     ) {
@@ -197,10 +197,10 @@ export const useMobileWorkStore = defineStore('mobileWork', () => {
 
     currentContext.value = {
       ...current,
-      focusedMemberRouteKey: normalizedMemberRouteKey,
+      focusedAgentRunId: normalizedAgentRunId,
     };
     pendingFilePreviewRequest.value = null;
-    rememberFocusedTeamMember(normalizedTeamRunId, normalizedMemberRouteKey);
+    rememberFocusedTeamMember(normalizedTeamRunId, normalizedAgentRunId);
     return true;
   }
 
@@ -218,7 +218,7 @@ export const useMobileWorkStore = defineStore('mobileWork', () => {
     activeTab,
     draftContextAttachments,
     pendingTeamRunAttachmentsByTeamRunId,
-    focusedMemberRouteKeyByTeamRunId,
+    focusedAgentRunIdByTeamRunId,
     runSetupIntent,
     pendingFilePreviewRequest,
     draftContextAttachmentCount,

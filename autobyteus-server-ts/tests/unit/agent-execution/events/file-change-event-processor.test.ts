@@ -157,6 +157,7 @@ describe("FileChangeEventProcessor", () => {
       ...converter.convert({
         method: CodexThreadEventName.ITEM_STARTED,
         params: {
+          turnId: "turn-1",
           item: {
             type: "fileChange",
             id: "call_1",
@@ -168,6 +169,7 @@ describe("FileChangeEventProcessor", () => {
       ...converter.convert({
         method: CodexThreadEventName.ITEM_COMPLETED,
         params: {
+          turnId: "turn-1",
           item: {
             type: "fileChange",
             id: "call_1",

@@ -1,0 +1,74 @@
+{
+  "at": "2026-08-15T20:56:37.442Z",
+  "teamRunId": "stale_team_stale_1786827145248_1b9224423bd4447ca6298e7bad2c3677",
+  "preRestore": {
+    "isActive": false,
+    "task": {
+      "taskId": "task_70257a0a02f445acadf6e44fd3acddf3",
+      "delegatorAgentRunId": "stale_coordinator_stale_1786827145248_db8dc5f4ab854dae8ff65f74bea32fea",
+      "recipientAddress": "/worker",
+      "targetAgentRunId": "stale_worker_stale_1786827145248_3e7f14e77ec043e1bc03db7fcd40f129",
+      "targetTeamRunId": null,
+      "status": "active",
+      "description": "REMAIN_ACTIVE_UNTIL_RESTART",
+      "createdAt": "2026-08-15T20:52:34.757Z",
+      "updates": [],
+      "referenceFiles": []
+    },
+    "execution": {
+      "kind": "task_agent",
+      "address": "/worker",
+      "agent_run_id": "stale_worker_stale_1786827145248_3e7f14e77ec043e1bc03db7fcd40f129",
+      "platform_agent_run_id": null,
+      "started_at": "2026-08-15T20:52:34.757Z",
+      "settled_at": null
+    }
+  },
+  "restore": {
+    "success": true,
+    "message": "Agent team run restored successfully.",
+    "teamRunId": "stale_team_stale_1786827145248_1b9224423bd4447ca6298e7bad2c3677"
+  },
+  "postRestore": {
+    "isActive": true,
+    "task": {
+      "taskId": "task_70257a0a02f445acadf6e44fd3acddf3",
+      "delegatorAgentRunId": "stale_coordinator_stale_1786827145248_db8dc5f4ab854dae8ff65f74bea32fea",
+      "recipientAddress": "/worker",
+      "targetAgentRunId": "stale_worker_stale_1786827145248_3e7f14e77ec043e1bc03db7fcd40f129",
+      "targetTeamRunId": null,
+      "status": "interrupted",
+      "description": "REMAIN_ACTIVE_UNTIL_RESTART",
+      "createdAt": "2026-08-15T20:52:34.757Z",
+      "updates": [
+        {
+          "kind": "interruption",
+          "submissionId": null,
+          "reviewId": null,
+          "reviewedSubmissionId": null,
+          "decision": null,
+          "content": "Interrupted because live task recovery is not supported after TeamRun reopen.",
+          "createdAt": "2026-08-15T20:56:37.386Z"
+        }
+      ]
+    },
+    "execution": {
+      "kind": "task_agent",
+      "address": "/worker",
+      "agent_run_id": "stale_worker_stale_1786827145248_3e7f14e77ec043e1bc03db7fcd40f129",
+      "platform_agent_run_id": null,
+      "started_at": "2026-08-15T20:52:34.757Z",
+      "settled_at": "2026-08-15T20:56:37.386Z"
+    }
+  },
+  "assertions": {
+    "preWasInactive": true,
+    "preTaskWasActive": true,
+    "restoreSucceeded": true,
+    "taskInterrupted": true,
+    "exactlyOneInterruption": true,
+    "exactReason": true,
+    "executionSettled": true
+  },
+  "pass": true
+}

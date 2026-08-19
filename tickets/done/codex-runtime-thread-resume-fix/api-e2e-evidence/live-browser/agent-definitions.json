@@ -1,0 +1,790 @@
+{
+  "data": {
+    "agentDefinitions": [
+      {
+        "id": "autobyteus-memory-compactor",
+        "name": "Memory Compactor",
+        "ownershipScope": "SHARED",
+        "ownerTeamId": null,
+        "ownerTeamName": null,
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "autobyteus-retrospective-skill-improver",
+        "name": "Retrospective Skill Improver",
+        "ownershipScope": "SHARED",
+        "ownerTeamId": null,
+        "ownerTeamName": null,
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "codex",
+        "name": "Codex",
+        "ownershipScope": "SHARED",
+        "ownerTeamId": null,
+        "ownerTeamName": null,
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "daily-assistant",
+        "name": "Daily Assistant",
+        "ownershipScope": "SHARED",
+        "ownerTeamId": null,
+        "ownerTeamName": null,
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "product-prototyper",
+        "name": "Product Prototyper",
+        "ownershipScope": "SHARED",
+        "ownerTeamId": null,
+        "ownerTeamName": null,
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "research-engineer",
+        "name": "research engineer",
+        "ownershipScope": "SHARED",
+        "ownerTeamId": null,
+        "ownerTeamName": null,
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "resume-designer",
+        "name": "Resume Designer",
+        "ownershipScope": "SHARED",
+        "ownerTeamId": null,
+        "ownerTeamName": null,
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "skill-optimizer",
+        "name": "Skill Optimizer",
+        "ownershipScope": "SHARED",
+        "ownerTeamId": null,
+        "ownerTeamName": null,
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "software-tutorial-video-maker",
+        "name": "Software Tutorial Video Maker",
+        "ownershipScope": "SHARED",
+        "ownerTeamId": null,
+        "ownerTeamName": null,
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:article-writing-team:article-reviewer",
+        "name": "article reviewer",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "article-writing-team",
+        "ownerTeamName": "Article Writing Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:article-writing-team:article-writer",
+        "name": "article writer",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "article-writing-team",
+        "ownerTeamName": "Article Writing Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:bible-learning-team:bible-researcher",
+        "name": "bible researcher",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "bible-learning-team",
+        "ownerTeamName": "Bible Learning Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:bible-learning-team:bible-teaching-preparer",
+        "name": "bible teaching preparer",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "bible-learning-team",
+        "ownerTeamName": "Bible Learning Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:bible-learning-team:bible-teaching-reviewer",
+        "name": "bible teaching reviewer",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "bible-learning-team",
+        "ownerTeamName": "Bible Learning Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:classroom-simulation-team:professor",
+        "name": "Professor",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "classroom-simulation-team",
+        "ownerTeamName": "Classroom Simulation Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:classroom-simulation-team:student",
+        "name": "Student",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "classroom-simulation-team",
+        "ownerTeamName": "Classroom Simulation Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:kids-coloring-story-team:child-experience-reviewer",
+        "name": "child-experience-reviewer",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "kids-coloring-story-team",
+        "ownerTeamName": "Kids Coloring Story Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:kids-coloring-story-team:coloring-page-illustrator",
+        "name": "coloring-page-illustrator",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "kids-coloring-story-team",
+        "ownerTeamName": "Kids Coloring Story Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:kids-coloring-story-team:printable-pack-producer",
+        "name": "printable-pack-producer",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "kids-coloring-story-team",
+        "ownerTeamName": "Kids Coloring Story Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:kids-coloring-story-team:story-activity-designer",
+        "name": "story-activity-designer",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "kids-coloring-story-team",
+        "ownerTeamName": "Kids Coloring Story Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:kids-picture-story-team:book-production-editor",
+        "name": "book-production-editor",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "kids-picture-story-team",
+        "ownerTeamName": "Kids Picture Story Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:kids-picture-story-team:picture-book-illustrator",
+        "name": "picture-book-illustrator",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "kids-picture-story-team",
+        "ownerTeamName": "Kids Picture Story Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:kids-picture-story-team:picture-book-reviewer",
+        "name": "picture-book-reviewer",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "kids-picture-story-team",
+        "ownerTeamName": "Kids Picture Story Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:kids-picture-story-team:story-picture-book-author",
+        "name": "story-picture-book-author",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "kids-picture-story-team",
+        "ownerTeamName": "Kids Picture Story Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:manga-video-studio-team:manga-illustrator",
+        "name": "manga illustrator",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "manga-video-studio-team",
+        "ownerTeamName": "Manga Video Studio Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:manga-video-studio-team:manga-showrunner",
+        "name": "manga showrunner",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "manga-video-studio-team",
+        "ownerTeamName": "Manga Video Studio Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:manga-video-studio-team:storyboard-director",
+        "name": "storyboard director",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "manga-video-studio-team",
+        "ownerTeamName": "Manga Video Studio Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:manga-video-studio-team:voice-video-producer",
+        "name": "voice and video producer",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "manga-video-studio-team",
+        "ownerTeamName": "Manga Video Studio Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:narrated-presentation-video-team:narration-script-reviewer",
+        "name": "narration-script-reviewer",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "narrated-presentation-video-team",
+        "ownerTeamName": "Narrated Presentation Video Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:narrated-presentation-video-team:presentation-director",
+        "name": "presentation-director",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "narrated-presentation-video-team",
+        "ownerTeamName": "Narrated Presentation Video Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:narrated-presentation-video-team:slide-video-producer",
+        "name": "slide-video-producer",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "narrated-presentation-video-team",
+        "ownerTeamName": "Narrated Presentation Video Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:northstar-operating-company:ceo",
+        "name": "CEO",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "northstar-operating-company",
+        "ownerTeamName": "Northstar Operating Company",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:northstar-operating-company:cfo",
+        "name": "CFO",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "northstar-operating-company",
+        "ownerTeamName": "Northstar Operating Company",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:northstar-operating-company:chief-of-staff",
+        "name": "Chief of Staff",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "northstar-operating-company",
+        "ownerTeamName": "Northstar Operating Company",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:northstar-operating-company:chief-people-officer",
+        "name": "Chief People Officer",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "northstar-operating-company",
+        "ownerTeamName": "Northstar Operating Company",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:northstar-operating-company:cmo",
+        "name": "CMO",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "northstar-operating-company",
+        "ownerTeamName": "Northstar Operating Company",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:northstar-operating-company:coo",
+        "name": "COO",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "northstar-operating-company",
+        "ownerTeamName": "Northstar Operating Company",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:northstar-operating-company:cpo",
+        "name": "CPO",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "northstar-operating-company",
+        "ownerTeamName": "Northstar Operating Company",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:northstar-operating-company:cro",
+        "name": "CRO",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "northstar-operating-company",
+        "ownerTeamName": "Northstar Operating Company",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:northstar-operating-company:cto",
+        "name": "CTO",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "northstar-operating-company",
+        "ownerTeamName": "Northstar Operating Company",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:picture-book-studio-team:book-production-editor",
+        "name": "book-production-editor",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "picture-book-studio-team",
+        "ownerTeamName": "Picture Book Studio Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:picture-book-studio-team:picture-book-concept-director",
+        "name": "picture-book-concept-director",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "picture-book-studio-team",
+        "ownerTeamName": "Picture Book Studio Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:picture-book-studio-team:picture-book-illustrator",
+        "name": "picture-book-illustrator",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "picture-book-studio-team",
+        "ownerTeamName": "Picture Book Studio Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:picture-book-studio-team:picture-book-reviewer",
+        "name": "picture-book-reviewer",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "picture-book-studio-team",
+        "ownerTeamName": "Picture Book Studio Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:requirements-engineering-team:product-prototyper",
+        "name": "product prototyper",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "requirements-engineering-team",
+        "ownerTeamName": "Requirements Engineering Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:requirements-engineering-team:prototype-bootstrapper",
+        "name": "prototype bootstrapper",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "requirements-engineering-team",
+        "ownerTeamName": "Requirements Engineering Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:requirements-engineering-team:requirements-engineer",
+        "name": "requirements engineer",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "requirements-engineering-team",
+        "ownerTeamName": "Requirements Engineering Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:research-to-deck-team:deck-reviewer",
+        "name": "deck reviewer",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "research-to-deck-team",
+        "ownerTeamName": "Research To Deck Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:research-to-deck-team:deep-researcher",
+        "name": "deep researcher",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "research-to-deck-team",
+        "ownerTeamName": "Research To Deck Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:research-to-deck-team:infographic-powerpoint-designer",
+        "name": "infographic PowerPoint designer",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "research-to-deck-team",
+        "ownerTeamName": "Research To Deck Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:software-engineering-team:api-e2e-engineer",
+        "name": "api e2e engineer",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "software-engineering-team",
+        "ownerTeamName": "Software Engineering Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:software-engineering-team:architecture-reviewer",
+        "name": "architecture reviewer",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "software-engineering-team",
+        "ownerTeamName": "Software Engineering Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:software-engineering-team:code-reviewer",
+        "name": "code reviewer",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "software-engineering-team",
+        "ownerTeamName": "Software Engineering Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:software-engineering-team:delivery-engineer",
+        "name": "delivery engineer",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "software-engineering-team",
+        "ownerTeamName": "Software Engineering Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:software-engineering-team:implementation-engineer",
+        "name": "implementation engineer",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "software-engineering-team",
+        "ownerTeamName": "Software Engineering Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:software-engineering-team:solution-designer",
+        "name": "solution designer",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "software-engineering-team",
+        "ownerTeamName": "Software Engineering Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:software-product-promo-video-team:promo-director",
+        "name": "promo-director",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "software-product-promo-video-team",
+        "ownerTeamName": "Software Product Promo Video Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:software-product-promo-video-team:promo-video-producer",
+        "name": "promo-video-producer",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "software-product-promo-video-team",
+        "ownerTeamName": "Software Product Promo Video Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:software-product-promo-video-team:visual-director",
+        "name": "visual-director",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "software-product-promo-video-team",
+        "ownerTeamName": "Software Product Promo Video Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:software-product-promo-video-team:visual-reviewer",
+        "name": "visual-reviewer",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "software-product-promo-video-team",
+        "ownerTeamName": "Software Product Promo Video Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:storm-team:article-polisher-verifier",
+        "name": "article polisher verifier",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "storm-team",
+        "ownerTeamName": "STORM Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:storm-team:cited-article-writer",
+        "name": "cited article writer",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "storm-team",
+        "ownerTeamName": "STORM Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:storm-team:expert-interviewer",
+        "name": "expert interviewer",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "storm-team",
+        "ownerTeamName": "STORM Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:storm-team:outline-architect",
+        "name": "outline architect",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "storm-team",
+        "ownerTeamName": "STORM Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:storm-team:perspective-miner",
+        "name": "perspective miner",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "storm-team",
+        "ownerTeamName": "STORM Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:storm-team:topic-research-coordinator",
+        "name": "topic research coordinator",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "storm-team",
+        "ownerTeamName": "STORM Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Aengineering-org:infrastructure-security-lead",
+        "name": "Infrastructure & Security Lead",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "team-local-team:northstar-operating-company:engineering-org",
+        "ownerTeamName": "Northstar Engineering Org Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Aengineering-org:platform-engineering-manager",
+        "name": "Platform Engineering Manager",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "team-local-team:northstar-operating-company:engineering-org",
+        "ownerTeamName": "Northstar Engineering Org Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Aengineering-org:product-engineering-manager",
+        "name": "Product Engineering Manager",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "team-local-team:northstar-operating-company:engineering-org",
+        "ownerTeamName": "Northstar Engineering Org Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Aengineering-org:qa-release-manager",
+        "name": "QA & Release Manager",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "team-local-team:northstar-operating-company:engineering-org",
+        "ownerTeamName": "Northstar Engineering Org Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Aengineering-org:vp-engineering",
+        "name": "VP Engineering",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "team-local-team:northstar-operating-company:engineering-org",
+        "ownerTeamName": "Northstar Engineering Org Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Afinance-people-org:controller",
+        "name": "Controller",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "team-local-team:northstar-operating-company:finance-people-org",
+        "ownerTeamName": "Northstar Finance & People Org Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Afinance-people-org:legal-compliance-lead",
+        "name": "Legal & Compliance Lead",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "team-local-team:northstar-operating-company:finance-people-org",
+        "ownerTeamName": "Northstar Finance & People Org Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Afinance-people-org:people-ops-lead",
+        "name": "People Operations Lead",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "team-local-team:northstar-operating-company:finance-people-org",
+        "ownerTeamName": "Northstar Finance & People Org Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Afinance-people-org:talent-acquisition-lead",
+        "name": "Talent Acquisition Lead",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "team-local-team:northstar-operating-company:finance-people-org",
+        "ownerTeamName": "Northstar Finance & People Org Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Afinance-people-org:vp-finance",
+        "name": "VP Finance",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "team-local-team:northstar-operating-company:finance-people-org",
+        "ownerTeamName": "Northstar Finance & People Org Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Amarketing-org:brand-content-lead",
+        "name": "Brand & Content Lead",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "team-local-team:northstar-operating-company:marketing-org",
+        "ownerTeamName": "Northstar Marketing Org Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Amarketing-org:demand-generation-lead",
+        "name": "Demand Generation Lead",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "team-local-team:northstar-operating-company:marketing-org",
+        "ownerTeamName": "Northstar Marketing Org Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Amarketing-org:facebook-marketer",
+        "name": "Facebook Marketer",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "team-local-team:northstar-operating-company:marketing-org",
+        "ownerTeamName": "Northstar Marketing Org Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Amarketing-org:linkedin-marketer",
+        "name": "LinkedIn Marketer",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "team-local-team:northstar-operating-company:marketing-org",
+        "ownerTeamName": "Northstar Marketing Org Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Amarketing-org:marketing-operations-analytics-lead",
+        "name": "Marketing Operations & Analytics Lead",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "team-local-team:northstar-operating-company:marketing-org",
+        "ownerTeamName": "Northstar Marketing Org Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Amarketing-org:product-marketing-lead",
+        "name": "Product Marketing Lead",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "team-local-team:northstar-operating-company:marketing-org",
+        "ownerTeamName": "Northstar Marketing Org Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Amarketing-org:vp-marketing",
+        "name": "VP Marketing",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "team-local-team:northstar-operating-company:marketing-org",
+        "ownerTeamName": "Northstar Marketing Org Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Amarketing-org:x-marketer",
+        "name": "X Marketer",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "team-local-team:northstar-operating-company:marketing-org",
+        "ownerTeamName": "Northstar Marketing Org Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Aoperations-org:business-operations-lead",
+        "name": "Business Operations Lead",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "team-local-team:northstar-operating-company:operations-org",
+        "ownerTeamName": "Northstar Operations Org Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Aoperations-org:customer-operations-lead",
+        "name": "Customer Operations Lead",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "team-local-team:northstar-operating-company:operations-org",
+        "ownerTeamName": "Northstar Operations Org Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Aoperations-org:data-analytics-lead",
+        "name": "Data Analytics Lead",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "team-local-team:northstar-operating-company:operations-org",
+        "ownerTeamName": "Northstar Operations Org Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Aoperations-org:vendor-operations-lead",
+        "name": "Vendor Operations Lead",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "team-local-team:northstar-operating-company:operations-org",
+        "ownerTeamName": "Northstar Operations Org Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Aoperations-org:vp-operations",
+        "name": "VP Operations",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "team-local-team:northstar-operating-company:operations-org",
+        "ownerTeamName": "Northstar Operations Org Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Aproduct-org:growth-product-manager",
+        "name": "Growth Product Manager",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "team-local-team:northstar-operating-company:product-org",
+        "ownerTeamName": "Northstar Product Org Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Aproduct-org:platform-product-manager",
+        "name": "Platform Product Manager",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "team-local-team:northstar-operating-company:product-org",
+        "ownerTeamName": "Northstar Product Org Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Aproduct-org:product-design-lead",
+        "name": "Product Design Lead",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "team-local-team:northstar-operating-company:product-org",
+        "ownerTeamName": "Northstar Product Org Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Aproduct-org:ux-research-lead",
+        "name": "UX Research Lead",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "team-local-team:northstar-operating-company:product-org",
+        "ownerTeamName": "Northstar Product Org Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Aproduct-org:vp-product",
+        "name": "VP Product",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "team-local-team:northstar-operating-company:product-org",
+        "ownerTeamName": "Northstar Product Org Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Arevenue-org:account-executive-manager",
+        "name": "Account Executive Manager",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "team-local-team:northstar-operating-company:revenue-org",
+        "ownerTeamName": "Northstar Revenue Org Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Arevenue-org:customer-success-lead",
+        "name": "Customer Success Lead",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "team-local-team:northstar-operating-company:revenue-org",
+        "ownerTeamName": "Northstar Revenue Org Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Arevenue-org:partnerships-lead",
+        "name": "Partnerships Lead",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "team-local-team:northstar-operating-company:revenue-org",
+        "ownerTeamName": "Northstar Revenue Org Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local-agent:team-local-team%3Anorthstar-operating-company%3Arevenue-org:vp-sales",
+        "name": "VP Sales",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamId": "team-local-team:northstar-operating-company:revenue-org",
+        "ownerTeamName": "Northstar Revenue Org Team",
+        "defaultLaunchConfig": null
+      }
+    ]
+  }
+}

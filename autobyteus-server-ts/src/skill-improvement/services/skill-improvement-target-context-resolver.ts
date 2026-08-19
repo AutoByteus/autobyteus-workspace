@@ -4,9 +4,8 @@ import { AgentDefinitionService } from "../../agent-definition/services/agent-de
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import { AgentMemoryLocationService } from "../../agent-memory/services/agent-memory-location-service.js";
 import { AgentRunMetadataService, getAgentRunMetadataService } from "../../run-history/services/agent-run-metadata-service.js";
-import { TeamRunMetadataService, getTeamRunMetadataService } from "../../run-history/services/team-run-metadata-service.js";
 import type { AgentRunMetadata } from "../../run-history/store/agent-run-metadata-types.js";
-import type { TeamRunAgentMemberMetadata, TeamRunMetadata } from "../../run-history/store/team-run-metadata-types.js";
+import type { ConfiguredAgentExecution } from "../../agent-team-execution/domain/team-run-execution-tree.js";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { SkillImprovementEffectiveConfig, SkillImprovementTargetRef } from "../domain/models.js";
 
@@ -24,8 +23,7 @@ export type SkillImprovementTargetContext = {
   llmConfig: Record<string, unknown> | null;
   skillAccessMode?: string | null;
   effectiveConfig: SkillImprovementEffectiveConfig | null;
-  targetMetadata: AgentRunMetadata | TeamRunAgentMemberMetadata;
-  teamMetadata?: TeamRunMetadata | null;
+  targetMetadata: AgentRunMetadata | ConfiguredAgentExecution;
 };
 
 export class SkillImprovementTargetContextResolver {
@@ -33,7 +31,6 @@ export class SkillImprovementTargetContextResolver {
 
   constructor(private readonly deps: {
     agentRunMetadataService?: AgentRunMetadataService;
-    teamRunMetadataService?: TeamRunMetadataService;
     agentDefinitionService?: Pick<AgentDefinitionService, "getFreshAgentDefinitionById">;
     memoryLocationService?: AgentMemoryLocationService;
     memoryDir?: string;
@@ -45,7 +42,7 @@ export class SkillImprovementTargetContextResolver {
   async resolve(target: SkillImprovementTargetRef): Promise<SkillImprovementTargetContext> {
     return target.kind === "agent_run"
       ? this.resolveAgentRun(target.runId)
-      : this.resolveTeamMember(target.teamRunId, target.memberRunId);
+      : this.resolveTeamMember(target.teamRunId, target.agentRunId);
   }
 
   private async resolveAgentRun(runId: string): Promise<SkillImprovementTargetContext> {
@@ -74,38 +71,32 @@ export class SkillImprovementTargetContextResolver {
 
   private async resolveTeamMember(
     teamRunId: string,
-    memberRunId: string,
+    agentRunId: string,
   ): Promise<SkillImprovementTargetContext> {
-    const metadata = await this.teamRunMetadataService.readMetadata(teamRunId);
-    if (!metadata) {
-      throw new Error(`Team run '${teamRunId}' metadata was not found.`);
-    }
-    const target = this.memoryLocationService.resolveTeamMemberLocationFromMetadata(
-      metadata,
-      { memberRunId },
-      teamRunId,
-    );
+    const target = await this.memoryLocationService.resolveTeamMemberLocation({ teamRunId, agentRunId });
     if (!target) {
-      throw new Error(`Agent member run '${memberRunId}' was not found in team run '${teamRunId}'.`);
+      throw new Error(`Agent member run '${agentRunId}' was not found in team run '${teamRunId}'.`);
     }
-    const member = target.member;
+    const member = target.configuredPlacement;
+    if (!member) {
+      throw new Error(`Agent member run '${agentRunId}' is not a configured Team member and cannot own skill improvement.`);
+    }
     const definition = await this.loadAgentDefinition(member.agentDefinitionId);
     return {
-      target: { kind: "team_member_run", teamRunId, memberRunId },
-      sourceRunIds: [memberRunId],
+      target: { kind: "team_member_run", teamRunId, agentRunId },
+      sourceRunIds: [agentRunId],
       targetAgentDefinition: definition,
       agentDefinitionId: member.agentDefinitionId,
       agentName: definition.name,
-      workspaceRootPath: member.workspaceRootPath || appConfigProvider.config.getTempWorkspaceDir(),
+      workspaceRootPath: member.launchConfiguration.workspaceRootPath || appConfigProvider.config.getTempWorkspaceDir(),
       memoryDir: target.memoryDir,
       runMetadataPath: null,
-      runtimeKind: member.runtimeKind,
-      llmModelIdentifier: member.llmModelIdentifier,
-      llmConfig: member.llmConfig ?? null,
-      skillAccessMode: member.skillAccessMode ?? null,
+      runtimeKind: member.launchConfiguration.runtimeKind,
+      llmModelIdentifier: member.launchConfiguration.llmModelIdentifier,
+      llmConfig: member.launchConfiguration.llmConfig as Record<string, unknown> | null,
+      skillAccessMode: member.launchConfiguration.skillAccessMode ?? null,
       effectiveConfig: null,
       targetMetadata: member,
-      teamMetadata: metadata,
     };
   }
 
@@ -119,10 +110,6 @@ export class SkillImprovementTargetContextResolver {
 
   private get agentRunMetadataService(): AgentRunMetadataService {
     return this.deps.agentRunMetadataService ?? getAgentRunMetadataService();
-  }
-
-  private get teamRunMetadataService(): TeamRunMetadataService {
-    return this.deps.teamRunMetadataService ?? getTeamRunMetadataService();
   }
 
   private get agentDefinitionService(): Pick<AgentDefinitionService, "getFreshAgentDefinitionById"> {

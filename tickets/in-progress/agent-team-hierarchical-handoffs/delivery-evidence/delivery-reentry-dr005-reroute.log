@@ -1,0 +1,9 @@
+DR-005 reroute
+Date: 2026-08-10
+Recipient: implementation_engineer
+Result: Delivered
+Classification: Local Fix
+Authoritative blocker: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/delivery-integration-blocker.md
+Reviewed checkpoint: 7c6e6e6e1996522f4151407ca9064c28f2acdd4a
+MERGE_HEAD: d0bcd0dab2263fa284cf07de8d98214e5d19af73
+Conflict count: 31 (29 production, 2 durable tests)

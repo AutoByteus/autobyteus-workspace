@@ -1,0 +1,346 @@
+{
+  "revision": "API-REV-016",
+  "generatedAt": "2026-08-09T20:22:01.809Z",
+  "result": "Pass",
+  "environment": {
+    "frontend": "http://127.0.0.1:31004",
+    "server": "http://127.0.0.1:60004",
+    "disposableAppRoot": "autobyteus-server-ts/tests/.tmp/sr015-api-rev-016-20260809-1",
+    "disposableDatabase": "autobyteus-server-ts/db/sr015-api-rev-016-20260809-1.db",
+    "operationalDatabaseTargeted": false,
+    "actualRepositorySecretImport": true,
+    "secretSource": "/Users/normy/.autobyteus/server-data/.env",
+    "importedSecretCount": 9,
+    "secretValuesCaptured": false
+  },
+  "packageImport": {
+    "sourceKind": "LOCAL_PATH",
+    "definitionId": "nested-classroom-test",
+    "discoveredDefinitionCount": 2,
+    "stagedFileCount": 10,
+    "stagedPackageContentDigestSha256": "a7ca00b18252dee20e153b93b83d3d144cc52d8b7e681247953f35510b9bfa14",
+    "evidence": [
+      "runtime-package-import.json",
+      "staged-package-manifest.json"
+    ]
+  },
+  "standalone": [
+    {
+      "id": "autobyteus",
+      "scenario": "AutoByteus",
+      "status": "Pass",
+      "runId": "api_rev_016_browser_agent_d1133e1ba3b241afbf70a855b5a0fb4f",
+      "startedAt": "2026-08-09T20:06:41.888Z",
+      "completedAt": "2026-08-09T20:06:47.061Z",
+      "expected": {
+        "runtimeKind": "autobyteus",
+        "modelIdentifier": "gpt-5.6-luna",
+        "reasoningEffort": null,
+        "token": "STANDALONE-AUTOBYTEUS"
+      },
+      "uiConfig": {
+        "runtimeKind": "autobyteus",
+        "selectedModelLabel": "OpenAI / gpt-5.6-luna",
+        "reasoningEffort": "medium",
+        "autoExecuteTools": true
+      },
+      "resumeConfig": {
+        "runId": "api_rev_016_browser_agent_d1133e1ba3b241afbf70a855b5a0fb4f",
+        "isActive": true,
+        "metadataConfig": {
+          "agentDefinitionId": "api-rev-016-browser-agent",
+          "llmModelIdentifier": "gpt-5.6-luna",
+          "llmConfig": null,
+          "autoExecuteTools": true,
+          "runtimeKind": "autobyteus"
+        }
+      },
+      "assertions": {
+        "exactAssistantToken": true,
+        "terminated": true
+      },
+      "browserErrors": [],
+      "evidence": "standalone-autobyteus.json",
+      "screenshots": [
+        "browser/standalone-autobyteus-config.png",
+        "browser/standalone-autobyteus-completed.png"
+      ]
+    },
+    {
+      "id": "codex",
+      "scenario": "Codex App Server",
+      "status": "Pass",
+      "runId": "api_rev_016_browser_agent_f6f283aef41445c5a40cb83777c79971",
+      "startedAt": "2026-08-09T20:06:47.061Z",
+      "completedAt": "2026-08-09T20:06:50.667Z",
+      "expected": {
+        "runtimeKind": "codex_app_server",
+        "modelIdentifier": "gpt-5.6-luna",
+        "reasoningEffort": "medium",
+        "token": "STANDALONE-CODEX"
+      },
+      "uiConfig": {
+        "runtimeKind": "codex_app_server",
+        "selectedModelLabel": "OpenAI / GPT-5.6-Luna (default reasoning: medium)",
+        "reasoningEffort": "medium",
+        "autoExecuteTools": true
+      },
+      "resumeConfig": {
+        "runId": "api_rev_016_browser_agent_f6f283aef41445c5a40cb83777c79971",
+        "isActive": true,
+        "metadataConfig": {
+          "agentDefinitionId": "api-rev-016-browser-agent",
+          "llmModelIdentifier": "gpt-5.6-luna",
+          "llmConfig": {
+            "reasoning_effort": "medium"
+          },
+          "autoExecuteTools": true,
+          "runtimeKind": "codex_app_server"
+        }
+      },
+      "assertions": {
+        "exactAssistantToken": true,
+        "terminated": false
+      },
+      "browserErrors": [],
+      "evidence": "standalone-codex.json",
+      "screenshots": [
+        "browser/standalone-codex-config.png",
+        "browser/standalone-codex-completed.png"
+      ]
+    },
+    {
+      "id": "claude",
+      "scenario": "Claude Agent SDK",
+      "status": "Pass",
+      "runId": "api_rev_016_browser_agent_dc0e75e5e39d431cb63a5ca3d9e15324",
+      "startedAt": "2026-08-09T20:06:50.668Z",
+      "completedAt": "2026-08-09T20:06:56.630Z",
+      "expected": {
+        "runtimeKind": "claude_agent_sdk",
+        "modelIdentifier": "sonnet",
+        "reasoningEffort": "medium",
+        "token": "STANDALONE-CLAUDE"
+      },
+      "uiConfig": {
+        "runtimeKind": "claude_agent_sdk",
+        "selectedModelLabel": "Anthropic / deepseek-v4-flash",
+        "reasoningEffort": "medium",
+        "autoExecuteTools": true
+      },
+      "resumeConfig": {
+        "runId": "api_rev_016_browser_agent_dc0e75e5e39d431cb63a5ca3d9e15324",
+        "isActive": true,
+        "metadataConfig": {
+          "agentDefinitionId": "api-rev-016-browser-agent",
+          "llmModelIdentifier": "sonnet",
+          "llmConfig": {
+            "reasoning_effort": "medium"
+          },
+          "autoExecuteTools": true,
+          "runtimeKind": "claude_agent_sdk"
+        }
+      },
+      "assertions": {
+        "exactAssistantToken": true,
+        "terminated": true
+      },
+      "browserErrors": [],
+      "evidence": "standalone-claude.json",
+      "screenshots": [
+        "browser/standalone-claude-config.png",
+        "browser/standalone-claude-completed.png"
+      ]
+    }
+  ],
+  "teams": [
+    {
+      "id": "autobyteus",
+      "scenario": "AutoByteus",
+      "status": "Pass",
+      "teamRunId": "nested_classroom_test_team_291ff7d8898c442794c65fa476443561",
+      "startedAt": "2026-08-09T20:06:56.630Z",
+      "completedAt": "2026-08-09T20:07:37.196Z",
+      "expected": {
+        "runtimeKind": "autobyteus",
+        "modelIdentifier": "gpt-5.6-luna",
+        "reasoningEffort": null,
+        "autoExecuteTools": true
+      },
+      "uiConfig": {
+        "runtimeKind": "autobyteus",
+        "selectedModelLabel": "OpenAI / gpt-5.6-luna",
+        "reasoningEffort": "medium",
+        "autoExecuteTools": true
+      },
+      "taskTeamRunIds": [
+        "team_local_team_nested_classroom_test_student_st_8ad6a7fc21a34092b77e4726d6afac31"
+      ],
+      "counts": {
+        "messages": 6,
+        "persistentMessages": 4,
+        "taskMessages": 2,
+        "tasks": 1,
+        "taskUpdates": 2
+      },
+      "assertions": {
+        "inactiveAfterTerminate": true,
+        "exactRootedAddresses": true,
+        "coordinatorsExact": true,
+        "allLeavesExact": true,
+        "teacherIntrinsicHandoff": true,
+        "nestedIntrinsicHandoff": true,
+        "oneTask": true,
+        "taskAccepted": true,
+        "taskTeamTarget": true,
+        "rootToNestedHandoff": true,
+        "persistentPeerRequest": true,
+        "persistentPeerResponse": true,
+        "persistentSummaryToTeacher": true,
+        "taskPeerRequest": true,
+        "taskPeerResponse": true,
+        "exactSubmission": true,
+        "acceptedReview": true,
+        "exactTeacherFinal": true,
+        "noUnexpectedRoot": true
+      },
+      "lifecycle": {
+        "terminated": true,
+        "restored": true,
+        "restoredTopologyExact": true,
+        "terminatedAfterRestore": true
+      },
+      "browserErrors": [],
+      "evidence": "team-autobyteus.json",
+      "screenshots": [
+        "browser/team-autobyteus-config.png",
+        "browser/team-autobyteus-completed.png"
+      ]
+    },
+    {
+      "id": "codex",
+      "scenario": "Codex App Server",
+      "status": "Pass",
+      "teamRunId": "nested_classroom_test_team_b9f6646a1d2b46499fc34e673e47b909",
+      "startedAt": "2026-08-09T20:13:17.810Z",
+      "completedAt": "2026-08-09T20:14:04.752Z",
+      "expected": {
+        "runtimeKind": "codex_app_server",
+        "modelIdentifier": "gpt-5.6-luna",
+        "reasoningEffort": "medium"
+      },
+      "uiConfig": {
+        "runtimeKind": "codex_app_server",
+        "reasoningEffort": "medium",
+        "autoExecuteTools": true
+      },
+      "taskTeamRunIds": [
+        "team_local_team_nested_classroom_test_student_st_2767d353ee934123aafc8d39ffc42d04"
+      ],
+      "counts": {
+        "messages": 6,
+        "persistentMessages": 4,
+        "taskMessages": 2,
+        "tasks": 1,
+        "taskUpdates": 2
+      },
+      "assertions": {
+        "inactiveAfterTerminate": true,
+        "exactRootedAddresses": true,
+        "coordinatorsExact": true,
+        "allLeavesExact": true,
+        "teacherIntrinsicHandoff": true,
+        "nestedIntrinsicHandoff": true,
+        "oneTask": true,
+        "taskAccepted": true,
+        "taskTeamTarget": true,
+        "rootToNestedHandoff": true,
+        "persistentPeerRequest": true,
+        "persistentPeerResponse": true,
+        "persistentSummaryToTeacher": true,
+        "taskPeerRequest": true,
+        "taskPeerResponse": true,
+        "exactSubmission": true,
+        "acceptedReview": true,
+        "exactTeacherFinal": true,
+        "noUnexpectedRoot": true
+      },
+      "lifecycle": {
+        "terminated": true,
+        "inactiveAfterTerminate": true
+      },
+      "browserErrors": [],
+      "evidence": "team-codex-authoritative-rerun.json",
+      "screenshots": [
+        "browser/team-codex-rerun-config.png",
+        "browser/team-codex-rerun-completed.png"
+      ]
+    },
+    {
+      "id": "claude",
+      "scenario": "Claude Agent SDK",
+      "status": "Pass",
+      "teamRunId": "nested_classroom_test_team_f07e2d520480467db0a35fd59ab481bb",
+      "startedAt": "2026-08-09T20:14:04.754Z",
+      "completedAt": "2026-08-09T20:20:44.115Z",
+      "expected": {
+        "runtimeKind": "claude_agent_sdk",
+        "modelIdentifier": "sonnet",
+        "reasoningEffort": "medium"
+      },
+      "uiConfig": {
+        "runtimeKind": "claude_agent_sdk",
+        "reasoningEffort": "medium",
+        "autoExecuteTools": true
+      },
+      "taskTeamRunIds": [
+        "team_local_team_nested_classroom_test_student_st_8f0382c69d19496fa1943bfda0c52cfc"
+      ],
+      "counts": {
+        "messages": 6,
+        "persistentMessages": 4,
+        "taskMessages": 2,
+        "tasks": 1,
+        "taskUpdates": 2
+      },
+      "assertions": {
+        "inactiveAfterTerminate": true,
+        "exactRootedAddresses": true,
+        "coordinatorsExact": true,
+        "allLeavesExact": true,
+        "teacherIntrinsicHandoff": true,
+        "nestedIntrinsicHandoff": true,
+        "oneTask": true,
+        "taskAccepted": true,
+        "taskTeamTarget": true,
+        "rootToNestedHandoff": true,
+        "persistentPeerRequest": true,
+        "persistentPeerResponse": true,
+        "persistentSummaryToTeacher": true,
+        "taskPeerRequest": true,
+        "taskPeerResponse": true,
+        "exactSubmission": true,
+        "acceptedReview": true,
+        "exactTeacherFinal": true,
+        "noUnexpectedRoot": true
+      },
+      "lifecycle": {
+        "terminated": true,
+        "inactiveAfterTerminate": true
+      },
+      "browserErrors": [],
+      "evidence": "team-claude-authoritative-rerun.json",
+      "screenshots": [
+        "browser/team-claude-rerun-config.png",
+        "browser/team-claude-rerun-completed.png"
+      ]
+    }
+  ],
+  "authoritativePublicSurfaceEvidence": "team-public-surface-evidence.json",
+  "initialAutomationClassification": "initial-browser-automation-public-surface-classification.md",
+  "notes": [
+    "AutoByteus row includes terminate, restore, exact rooted topology restoration, and second terminate.",
+    "Initial incomplete Codex and Claude runs are retained but excluded; fresh authoritative reruns passed.",
+    "Claude completion used browser-delivered follow-ups after public records showed a delayed task-review notification and missing persistent peer response; the final record proves exact accepted lifecycle and peer delivery."
+  ]
+}

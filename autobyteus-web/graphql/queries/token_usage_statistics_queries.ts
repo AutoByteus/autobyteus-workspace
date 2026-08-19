@@ -45,13 +45,8 @@ export const GET_TOKEN_USAGE_TASK_STATISTICS = gql`
     rowId
     rowKind
     runId
-    rootTeamRunId
-    memberRouteKey
-    memberAgentRunId
-    taskAgentRunId
-    taskTeamRunId
     taskId
-    executionAddress
+    rootTeamRunId
     displayName
     summary
     createdAt

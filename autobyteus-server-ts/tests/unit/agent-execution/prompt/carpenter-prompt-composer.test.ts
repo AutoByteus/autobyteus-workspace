@@ -1,12 +1,11 @@
 import { describe, expect, it, vi } from "vitest";
 import { AgentDefinition } from "../../../../src/agent-definition/domain/models.js";
-import { MemberTeamContext } from "../../../../src/agent-team-execution/domain/member-team-context.js";
-import { TeamBackendKind } from "../../../../src/agent-team-execution/domain/team-backend-kind.js";
 import {
   composeNativeAutoByteusPrompt,
   composeSharedCarpenterPrompt,
 } from "../../../../src/agent-execution/prompt/carpenter-prompt-composer.js";
 import { containAuthoredMarkdownHeadings } from "../../../../src/agent-execution/prompt/markdown-heading-containment.js";
+import { testMemberTeamContext } from "../../../fixtures/current-team-run-fixtures.js";
 
 const definition = (input: Partial<ConstructorParameters<typeof AgentDefinition>[0]> = {}) =>
   new AgentDefinition({
@@ -17,16 +16,14 @@ const definition = (input: Partial<ConstructorParameters<typeof AgentDefinition>
   });
 
 const teamContext = (teamInstruction: string | null = "## Coordination\n\nShare results.") =>
-  new MemberTeamContext({
+  testMemberTeamContext({
     teamRunId: "team-run",
+    rootTeamRunId: "team-run",
     teamDefinitionId: "team-def",
-    teamName: "Builders",
-    teamBackendKind: TeamBackendKind.MIXED,
-    memberName: " worker\nmember ",
-    memberRouteKey: "worker",
-    memberRunId: "run-worker",
+    memberAddress: "/worker",
+    coordinatorAddress: "/worker",
+    agentRunId: "run-worker",
     teamInstruction,
-    sendMessageToEnabled: true,
     deliverInterAgentMessage: vi.fn(async () => undefined) as any,
   });
 
@@ -39,7 +36,6 @@ describe("composeNativeAutoByteusPrompt", () => {
     });
 
     expect(prompt.indexOf("## Agent Identity")).toBeLessThan(prompt.indexOf("## Working Environment"));
-    expect(prompt.indexOf("## Team Collaboration")).toBeLessThan(prompt.indexOf("## Working Environment"));
     expect(prompt.indexOf("## Working Environment")).toBeLessThan(prompt.indexOf("## Bash Operating Practice"));
     expect(prompt.indexOf("## Bash Operating Practice")).toBeLessThan(prompt.indexOf("## File And Directory Practice"));
     expect(prompt).toContain("- Name: Builder Agent");
@@ -68,11 +64,12 @@ describe("composeNativeAutoByteusPrompt", () => {
     );
     expect(prompt).not.toContain("Ignored role");
     expect(prompt).not.toContain("## Team Instruction");
-    expect(prompt).not.toContain("## Team Collaboration");
+    expect(prompt).not.toContain("## AgentTeam Addressing");
+    expect(prompt).not.toContain("## AgentTeam Collaboration");
     expect(prompt).not.toContain("## Skills");
   });
 
-  it("renders team instruction and fixed team runtime from context only", () => {
+  it("renders the authored Team instruction before the exact sibling AgentTeam sections", () => {
     const prompt = composeNativeAutoByteusPrompt({
       agentDefinition: definition(),
       workspaceRootPath: "/tmp/carpenter-workspace",
@@ -80,12 +77,25 @@ describe("composeNativeAutoByteusPrompt", () => {
     });
 
     expect(prompt).toContain("## Team Instruction\n\n### Coordination");
-    expect(prompt).toContain("## Team Collaboration\n\nCurrent team member: worker member");
-    expect(prompt).toContain("No logical `recipient_name` roster recipients are currently listed for this run.");
-    expect(prompt).toContain("You can delegate tasks with delegate_task:");
-    expect(prompt).toContain("Task delegation protocol");
-    expect(prompt).not.toContain("submit_task_result");
-    expect(prompt).not.toContain("review_task_result");
+    expect(prompt).toContain("## AgentTeam Addressing\n\nAgentTeams use filesystem-like logical addresses.");
+    expect(prompt).toContain("Your Agent address is:\n\n/worker");
+    expect(prompt).toContain("Relative addresses, bare names, `../`, backslashes");
+    expect(prompt).toContain("The root AgentTeam is represented by `/`");
+    expect(prompt).toContain("├── /A              (Agent)");
+    expect(prompt).toContain("└── /C              (nested AgentTeam)");
+    expect(prompt).toContain("The letters in this example are placeholders only.");
+    expect(prompt).not.toContain("requirements_engineering");
+    expect(prompt).toContain("## AgentTeam Collaboration\n\nUse `send_message_to` with `recipient_address`");
+    expect(prompt.indexOf("## Team Instruction")).toBeLessThan(prompt.indexOf("## AgentTeam Addressing"));
+    expect(prompt.indexOf("## AgentTeam Addressing")).toBeLessThan(prompt.indexOf("## AgentTeam Collaboration"));
+    expect(prompt.indexOf("## AgentTeam Collaboration")).toBeLessThan(prompt.indexOf("## Working Environment"));
+    expect(prompt.match(/^## AgentTeam Addressing$/gm)).toHaveLength(1);
+    expect(prompt.match(/^## AgentTeam Collaboration$/gm)).toHaveLength(1);
+    expect(prompt).not.toContain("## Team Runtime");
+    expect(prompt).not.toContain("recipient_name");
+    expect(prompt).not.toContain("You can message:");
+    expect(prompt).toContain("submit_task_result");
+    expect(prompt).toContain("review_task_result");
   });
 
   it("omits blank optional identity and team bodies", () => {
@@ -97,7 +107,9 @@ describe("composeNativeAutoByteusPrompt", () => {
     expect(prompt).not.toContain("- Description:");
     expect(prompt).not.toContain("### Responsibilities and Boundaries");
     expect(prompt).not.toContain("## Team Instruction");
-    expect(prompt).toContain("## Team Collaboration");
+    expect(prompt).toContain("## AgentTeam Addressing");
+    expect(prompt).toContain("## AgentTeam Collaboration");
+    expect(prompt).not.toContain("## Team Runtime");
   });
 
   it("fails required scalars and unresolved placeholders before provider projection", () => {
@@ -125,7 +137,8 @@ describe("composeSharedCarpenterPrompt", () => {
 
     expect(prompt).toContain("## Agent Identity");
     expect(prompt).toContain("## Team Instruction\n\n### Coordination");
-    expect(prompt).toContain("## Team Collaboration\n\nCurrent team member: worker member");
+    expect(prompt).toContain("## AgentTeam Addressing");
+    expect(prompt).toContain("## AgentTeam Collaboration");
     expect(prompt).not.toContain("## Working Environment");
     expect(prompt).not.toContain("## Bash Operating Practice");
     expect(prompt).not.toContain("## File And Directory Practice");

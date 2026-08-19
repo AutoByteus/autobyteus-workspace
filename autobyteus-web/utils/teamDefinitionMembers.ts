@@ -1,206 +1,86 @@
-import type {
-  AgentTeamDefinition,
-} from '~/stores/agentTeamDefinitionStore';
-import type {
-  AgentTeamMemberNode,
-  SubTeamMemberNode,
-  TeamMemberNode,
-} from '~/types/agent/AgentTeamContext';
+import type { AgentTeamDefinition } from '~/stores/agentTeamDefinitionStore';
+import { memberAddressBasename, type AgentTeamAddress } from '~/types/agent/AgentTeamAddress';
 import { buildTeamLocalAgentDefinitionId, buildTeamLocalTeamDefinitionId } from '~/utils/teamLocalDefinitionId';
 
+export interface TeamDefinitionAgentNode {
+  readonly kind: 'agent';
+  readonly address: AgentTeamAddress;
+  readonly displayName: string;
+  readonly agentDefinitionId: string;
+}
+export interface TeamDefinitionAgentTeamNode {
+  readonly kind: 'agent_team';
+  readonly address: AgentTeamAddress;
+  readonly displayName: string;
+  readonly teamDefinitionId: string;
+  readonly coordinatorAddress: AgentTeamAddress;
+  readonly children: readonly TeamDefinitionMemberNode[];
+}
+export type TeamDefinitionMemberNode = TeamDefinitionAgentNode | TeamDefinitionAgentTeamNode;
+
 export interface TeamDefinitionLeafMember {
-  memberName: string;
-  memberRouteKey: string;
-  memberPath: string[];
+  displayName: string;
+  address: AgentTeamAddress;
   agentDefinitionId: string;
 }
+interface ResolveLeafMembersOptions { getTeamDefinitionById: (id: string) => AgentTeamDefinition | null }
 
-interface ResolveLeafMembersOptions {
-  getTeamDefinitionById: (id: string) => AgentTeamDefinition | null;
-}
-
-export const normalizeMemberRouteKey = (memberRouteKey: string): string => {
-  const normalized = memberRouteKey
-    .trim()
-    .replace(/\\/g, '/')
-    .replace(/\/{2,}/g, '/')
-    .replace(/^\/+|\/+$/g, '');
-
-  if (!normalized) {
-    throw new Error('memberRouteKey cannot be empty.');
+export const normalizeMemberAddress = (value: string): AgentTeamAddress => {
+  const segments = value.trim().replace(/\\/g, '/').split('/').filter(Boolean);
+  if (!segments.length || segments.some((segment) => segment === '.' || segment === '..' || segment !== segment.trim())) {
+    throw new Error(`Invalid member address '${value}'.`);
   }
-
-  return normalized;
+  return `/${segments.join('/')}`;
 };
-
-export const buildMemberRouteKeyFromPath = (memberPath: readonly string[]): string =>
-  normalizeMemberRouteKey(memberPath.join('/'));
-
-const normalizeMemberName = (memberName: string): string => {
-  const normalized = memberName.trim();
-  if (!normalized) {
-    throw new Error('memberName cannot be empty.');
-  }
-  return normalized;
-};
-
-const resolveAgentDefinitionId = (
-  definitionId: string,
-  node: { ref: string; refScope?: string | null },
-): string => (
-  node.refScope === 'TEAM_LOCAL'
-    ? buildTeamLocalAgentDefinitionId(definitionId, node.ref)
-    : node.ref.trim()
-);
-
-const resolveTeamDefinitionId = (
-  definitionId: string,
-  node: { ref: string; refScope?: string | null },
-): string => (
-  node.refScope === 'TEAM_LOCAL'
-    ? buildTeamLocalTeamDefinitionId(definitionId, node.ref)
-    : node.ref.trim()
-);
+const appendAddress = (parent: AgentTeamAddress, name: string): AgentTeamAddress =>
+  normalizeMemberAddress(`${parent}/${name.trim()}`);
+const agentDefinitionId = (definitionId: string, node: { ref: string; refScope?: string | null }): string =>
+  node.refScope === 'TEAM_LOCAL' ? buildTeamLocalAgentDefinitionId(definitionId, node.ref) : node.ref.trim();
+const teamDefinitionId = (definitionId: string, node: { ref: string; refScope?: string | null }): string =>
+  node.refScope === 'TEAM_LOCAL' ? buildTeamLocalTeamDefinitionId(definitionId, node.ref) : node.ref.trim();
 
 export const buildTeamMemberTreeFromDefinition = (
   teamDefinition: AgentTeamDefinition,
   options: ResolveLeafMembersOptions,
-): TeamMemberNode[] => {
-  const visited = new Set<string>();
-
-  const visit = (
-    definition: AgentTeamDefinition,
-    parentPath: string[] = [],
-  ): TeamMemberNode[] => {
-    const normalizedDefinitionId = definition.id.trim();
-    if (!normalizedDefinitionId) {
-      throw new Error('teamDefinition.id cannot be empty.');
-    }
-    if (visited.has(normalizedDefinitionId)) {
-      throw new Error(
-        `Circular dependency detected in team definitions involving ID: ${normalizedDefinitionId}`,
-      );
-    }
-
-    visited.add(normalizedDefinitionId);
-
-    const members: TeamMemberNode[] = [];
-    for (const node of definition.nodes) {
-      const memberName = normalizeMemberName(node.memberName);
-      const memberPath = [...parentPath, memberName];
-      const memberRouteKey = buildMemberRouteKeyFromPath(memberPath);
-
-      if (node.refType === 'AGENT') {
-        members.push({
-          memberKind: 'agent',
-          memberName,
-          displayName: memberName,
-          memberPath,
-          memberRouteKey,
-          memberRunId: null,
-          agentDefinitionId: resolveAgentDefinitionId(normalizedDefinitionId, node),
-        } satisfies AgentTeamMemberNode);
-        continue;
-      }
-
-      const nestedDefinitionId = resolveTeamDefinitionId(normalizedDefinitionId, node);
-      const nestedDefinition = options.getTeamDefinitionById(nestedDefinitionId);
-      if (!nestedDefinition) {
-        throw new Error(`Nested team definition '${nestedDefinitionId}' not found.`);
-      }
-
-      members.push({
-        memberKind: 'agent_team',
-        memberName,
-        displayName: memberName,
-        memberPath,
-        memberRouteKey,
-        memberRunId: null,
-        teamRunId: null,
-        teamDefinitionId: nestedDefinition.id.trim(),
-        coordinatorMemberRouteKey: nestedDefinition.coordinatorMemberName
-          ? buildMemberRouteKeyFromPath([...memberPath, nestedDefinition.coordinatorMemberName])
-          : null,
-        children: visit(nestedDefinition, memberPath),
-      } satisfies SubTeamMemberNode);
-    }
-
-    visited.delete(normalizedDefinitionId);
-    return members;
+): readonly TeamDefinitionMemberNode[] => {
+  const ancestors = new Set<string>();
+  const visit = (definition: AgentTeamDefinition, parentAddress: AgentTeamAddress): readonly TeamDefinitionMemberNode[] => {
+    const definitionId = definition.id.trim();
+    if (!definitionId || ancestors.has(definitionId)) throw new Error(`Circular or invalid team definition '${definitionId}'.`);
+    ancestors.add(definitionId);
+    const members = definition.nodes.map((definitionNode): TeamDefinitionMemberNode => {
+      const displayName = definitionNode.memberName.trim();
+      const address = appendAddress(parentAddress, displayName);
+      if (definitionNode.refType === 'AGENT') return Object.freeze({
+        kind: 'agent', address, displayName,
+        agentDefinitionId: agentDefinitionId(definitionId, definitionNode),
+      });
+      const childDefinitionId = teamDefinitionId(definitionId, definitionNode);
+      const nested = options.getTeamDefinitionById(childDefinitionId);
+      if (!nested) throw new Error(`Nested team definition '${childDefinitionId}' not found.`);
+      return Object.freeze({
+        kind: 'agent_team', address, displayName,
+        teamDefinitionId: nested.id.trim(),
+        coordinatorAddress: appendAddress(address, nested.coordinatorMemberName || ''),
+        children: visit(nested, address),
+      });
+    });
+    ancestors.delete(definitionId);
+    return Object.freeze(members);
   };
-
-  return visit(teamDefinition);
+  return visit(teamDefinition, '/');
 };
 
-export const flattenLeafAgentMemberNodes = (
-  memberTree: readonly TeamMemberNode[],
-): AgentTeamMemberNode[] => {
-  const leaves: AgentTeamMemberNode[] = [];
-  const visit = (members: readonly TeamMemberNode[]): void => {
-    for (const member of members) {
-      if (member.memberKind === 'agent') {
-        leaves.push(member);
-      } else {
-        visit(member.children);
-      }
-    }
-  };
-  visit(memberTree);
-  return leaves;
+export const flattenLeafAgentMemberNodes = (nodes: readonly TeamDefinitionMemberNode[]): TeamDefinitionAgentNode[] => {
+  const result: TeamDefinitionAgentNode[] = [];
+  const visit = (node: TeamDefinitionMemberNode): void => { if (node.kind === 'agent') result.push(node); else node.children.forEach(visit); };
+  nodes.forEach(visit); return result;
 };
-
-export const indexTeamMemberNodesByRouteKey = (
-  memberTree: readonly TeamMemberNode[],
-): Map<string, TeamMemberNode> => {
-  const byRouteKey = new Map<string, TeamMemberNode>();
-  const visit = (members: readonly TeamMemberNode[]): void => {
-    for (const member of members) {
-      byRouteKey.set(member.memberRouteKey, member);
-      if (member.memberKind === 'agent_team') {
-        visit(member.children);
-      }
-    }
-  };
-  visit(memberTree);
-  return byRouteKey;
-};
-
-export const flattenTeamMemberNodesForDisplay = (
-  memberTree: readonly TeamMemberNode[],
-  depth = 0,
-): Array<{ node: TeamMemberNode; depth: number }> =>
-  memberTree.flatMap((node) => [
-    { node, depth },
-    ...(node.memberKind === 'agent_team'
-      ? flattenTeamMemberNodesForDisplay(node.children, depth + 1)
-      : []),
-  ]);
-
-export const resolveInitialFocusedMemberRouteKey = (params: {
-  memberTree: readonly TeamMemberNode[];
-  coordinatorMemberRouteKey?: string | null;
-}): string => {
-  const nodeIndex = indexTeamMemberNodesByRouteKey(params.memberTree);
-  const coordinatorRouteKey = params.coordinatorMemberRouteKey?.trim() || '';
-  if (coordinatorRouteKey && nodeIndex.has(coordinatorRouteKey)) {
-    return coordinatorRouteKey;
-  }
-
-  return flattenLeafAgentMemberNodes(params.memberTree)[0]?.memberRouteKey
-    || params.memberTree[0]?.memberRouteKey
-    || '';
-};
-
-export const resolveLeafTeamMembers = (
-  teamDefinition: AgentTeamDefinition,
-  options: ResolveLeafMembersOptions,
-): TeamDefinitionLeafMember[] => {
-  return flattenLeafAgentMemberNodes(
-    buildTeamMemberTreeFromDefinition(teamDefinition, options),
-  ).map((node) => ({
-    memberName: node.memberName,
-    memberRouteKey: node.memberRouteKey,
-    memberPath: [...node.memberPath],
+export const flattenTeamMemberNodesForDisplay = (nodes: readonly TeamDefinitionMemberNode[], depth = 0): Array<{ node: TeamDefinitionMemberNode; depth: number }> =>
+  nodes.flatMap((node) => [{ node, depth }, ...(node.kind === 'agent_team' ? flattenTeamMemberNodesForDisplay(node.children, depth + 1) : [])]);
+export const resolveLeafTeamMembers = (teamDefinition: AgentTeamDefinition, options: ResolveLeafMembersOptions): TeamDefinitionLeafMember[] =>
+  flattenLeafAgentMemberNodes(buildTeamMemberTreeFromDefinition(teamDefinition, options)).map((node) => ({
+    displayName: node.displayName || memberAddressBasename(node.address),
+    address: node.address,
     agentDefinitionId: node.agentDefinitionId,
   }));
-};

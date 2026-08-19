@@ -80,8 +80,7 @@ describe('RunningAgentsPanel', () => {
   it('prefers the selected same-definition run when preparing a new agent run config', async () => {
     const wrapper = mountComponent({
       agentSelection: {
-        selectedType: 'agent',
-        selectedRunId: 'inst-selected',
+        subject: { kind: 'agent_run', runId: 'inst-selected' },
       },
       agentContexts: {
         runs: new Map([

@@ -76,6 +76,10 @@ export class AgentStreamingService {
     return this.wsClient.state;
   }
 
+  get isReady(): boolean {
+    return this.wsClient.state === ConnectionState.CONNECTED;
+  }
+
   attachContext(context: AgentContext): void {
     this.context = context;
   }
@@ -204,9 +208,6 @@ export class AgentStreamingService {
 
   private handleConnect = (): void => {
     console.log('Agent WebSocket connected');
-    if (this.context) {
-      this.context.isSubscribed = true;
-    }
   };
 
   private handleDisconnect = (reason?: string): void => {
@@ -214,9 +215,6 @@ export class AgentStreamingService {
     this.drainPendingInterruptCommands(
       reason || 'Interrupt result was lost because the stream disconnected.',
     );
-    if (this.context) {
-      this.context.isSubscribed = false;
-    }
   };
 
   private handleError = (error: Error): void => {

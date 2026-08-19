@@ -58,8 +58,7 @@ type VisualDescriptor = ConversationDescriptor | CompactionDescriptor;
 
 export const getRecentEventMonitorSegmentStableIdentity = (segment: AIResponseSegment): string | null => {
   const streamIdentity = getStreamSegmentIdentity(segment);
-  if (streamIdentity?.lookupKey) return `stream:${streamIdentity.lookupKey}`;
-  if (streamIdentity?.id) return `stream:${streamIdentity.id}`;
+  if (streamIdentity) return `stream:${JSON.stringify([streamIdentity.turnId, streamIdentity.id])}`;
   if (isEventMonitorToolSegment(segment) && segment.invocationId) return `tool:${segment.invocationId}`;
   if (segment.type === 'inter_agent_message' && segment.messageId) return `inter-agent:${segment.messageId}`;
   return null;

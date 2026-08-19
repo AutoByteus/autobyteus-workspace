@@ -1,0 +1,20 @@
+{
+  "result": "Pass",
+  "rows": [
+    {
+      "scenario": "Claude Agent SDK",
+      "teamRunId": "nested_classroom_test_team_01f11e8745dc41d49bbbd1ba251bfed9",
+      "assertions": {
+        "currentTaskTeamVisibleActive": true,
+        "currentTaskTeamTransientRowVisible": true,
+        "awaitingReviewVisible": true,
+        "refreshRestoreVisible": true,
+        "exactTaskTeamSelection": true,
+        "acceptedPersisted": true,
+        "terminalTransientCleanup": true,
+        "exactRootedAddresses": true,
+        "allPersistentLeavesExact": true
+      }
+    }
+  ]
+}

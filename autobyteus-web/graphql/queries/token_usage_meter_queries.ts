@@ -4,9 +4,6 @@ export const TOKEN_USAGE_RUN_SUMMARY_FIELDS = gql`
   fragment TokenUsageRunSummaryFields on TokenUsageRunSummaryGraphql {
     runId
     rootTeamRunId
-    executionAddress
-    memberAgentRunId
-    memberRouteKey
     agentDefinitionId
     workspaceId
     grossInputTokens
@@ -99,11 +96,10 @@ export const GET_TEAM_RUN_TOKEN_USAGE_SUMMARY = gql`
 
 export const GET_TEAM_MEMBER_TOKEN_USAGE_SUMMARY = gql`
   ${TOKEN_USAGE_RUN_SUMMARY_FIELDS}
-  query GetTeamMemberTokenUsageSummary($teamRunId: String!, $memberAgentRunId: String, $memberRouteKey: String) {
+  query GetTeamMemberTokenUsageSummary($teamRunId: String!, $agentRunId: String!) {
     getTeamMemberTokenUsageSummary(
       teamRunId: $teamRunId,
-      memberAgentRunId: $memberAgentRunId,
-      memberRouteKey: $memberRouteKey
+      agentRunId: $agentRunId
     ) {
       ...TokenUsageRunSummaryFields
     }

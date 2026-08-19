@@ -1,0 +1,54 @@
+# Server correlation for user-reported root and current tasks
+Source: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/manual-user-20260810-2/logs/server.log
+
+154:Successfully created mixed team run 'nested_classroom_test_team_2e9666611150438f83f3a45fddf2e8b8'.
+155:Agent team websocket attached for team run nested_classroom_test_team_2e9666611150438f83f3a45fddf2e8b8
+156:Created agent session 05281281-a3e9-4bef-a720-7511d9f40bcc for run nested_classroom_test_team_2e9666611150438f83f3a45fddf2e8b8
+157:Agent Team WebSocket connected: session=05281281-a3e9-4bef-a720-7511d9f40bcc, run=nested_classroom_test_team_2e9666611150438f83f3a45fddf2e8b8
+198:- `StudentStudyGroup` is a nested agent team with two students.
+206:> Please test nested team delegation. Delegate one task to StudentStudyGroup and ask the students to return exactly NESTED_CLASSROOM_OK. Accept the result if it matches.
+211:   `delegate_task({"target":{"kind":"team","name":"StudentStudyGroup"},"description":"..."})`.
+212:2. The runtime creates a task-team execution for `StudentStudyGroup`.
+226:Your main purpose is to test nested team delegation. The nested team target is exactly named `StudentStudyGroup`.
+232:`delegate_task({"target":{"kind":"team","name":"StudentStudyGroup"},"description":"..."})`
+245:- For this fixture, prefer the team target `{ "kind": "team", "name": "StudentStudyGroup" }`.
+337:You are `student_one`, coordinator of the nested `StudentStudyGroup` team.
+368:/StudentStudyGroup/student_one
+463:You are `student_two`, a supporting member of `StudentStudyGroup`.
+476:/StudentStudyGroup/student_two
+512:[team-communication] projection inserted teamRunId=nested_classroom_test_team_2e9666611150438f83f3a45fddf2e8b8 messageId=teammsg_tPJ2AdDvtTtQEQO5IEDR69vIuRcHBnzp referenceCount=0 projectionPath=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/manual-user-20260810-2/memory/agent_teams/nested_classroom_test_team_2e9666611150438f83f3a45fddf2e8b8/team_communication_messages.json
+546:[team-communication] projection inserted teamRunId=nested_classroom_test_team_2e9666611150438f83f3a45fddf2e8b8 messageId=teammsg_ZzqOdWTsA7Mgc1kwhobH4CFxLkhMFuM4 referenceCount=0 projectionPath=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/manual-user-20260810-2/memory/agent_teams/nested_classroom_test_team_2e9666611150438f83f3a45fddf2e8b8/team_communication_messages.json
+690:You are `student_one`, coordinator of the nested `StudentStudyGroup` team.
+721:/StudentStudyGroup/student_one
+816:You are `student_two`, a supporting member of `StudentStudyGroup`.
+829:/StudentStudyGroup/student_two
+861:[team-communication] projection inserted teamRunId=nested_classroom_test_team_2e9666611150438f83f3a45fddf2e8b8 messageId=teammsg_QK-c4IU-LoOf-CklMv_nR6N66HoMZpPt referenceCount=0 projectionPath=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/manual-user-20260810-2/memory/agent_teams/nested_classroom_test_team_2e9666611150438f83f3a45fddf2e8b8/team_communication_messages.json
+932:[team-communication] projection inserted teamRunId=nested_classroom_test_team_2e9666611150438f83f3a45fddf2e8b8 messageId=teammsg_qFurAUyCFQ7AP1Gt6ZQQ455qn2ymZTxb referenceCount=0 projectionPath=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/manual-user-20260810-2/memory/agent_teams/nested_classroom_test_team_2e9666611150438f83f3a45fddf2e8b8/team_communication_messages.json
+1026:You are `student_one`, coordinator of the nested `StudentStudyGroup` team.
+1057:/StudentStudyGroup/student_one
+1215:Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/manual-user-20260810-2/memory/agent_teams/nested_classroom_test_team_2e9666611150438f83f3a45fddf2e8b8/student_study_group_0e70dbb3c2f048058dc375b8b75719e2/student_two_b8b72cc9e8ed455c9cab658fcc1f22f6/raw_traces_active.jsonl
+1216:Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/manual-user-20260810-2/memory/agent_teams/nested_classroom_test_team_2e9666611150438f83f3a45fddf2e8b8/student_study_group_0e70dbb3c2f048058dc375b8b75719e2/student_one_0ee5b9a896ef4f97b894e6cb5fec3ffa/raw_traces_active.jsonl
+1217:Agent team websocket attached for team run nested_classroom_test_team_2e9666611150438f83f3a45fddf2e8b8
+1218:Created agent session 33ded460-034d-4feb-ad93-d68b8b12444b for run nested_classroom_test_team_2e9666611150438f83f3a45fddf2e8b8
+1219:Agent Team WebSocket connected: session=33ded460-034d-4feb-ad93-d68b8b12444b, run=nested_classroom_test_team_2e9666611150438f83f3a45fddf2e8b8
+1260:- `StudentStudyGroup` is a nested agent team with two students.
+1268:> Please test nested team delegation. Delegate one task to StudentStudyGroup and ask the students to return exactly NESTED_CLASSROOM_OK. Accept the result if it matches.
+1273:   `delegate_task({"target":{"kind":"team","name":"StudentStudyGroup"},"description":"..."})`.
+1274:2. The runtime creates a task-team execution for `StudentStudyGroup`.
+1288:Your main purpose is to test nested team delegation. The nested team target is exactly named `StudentStudyGroup`.
+1294:`delegate_task({"target":{"kind":"team","name":"StudentStudyGroup"},"description":"..."})`
+1307:- For this fixture, prefer the team target `{ "kind": "team", "name": "StudentStudyGroup" }`.
+1396:Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/manual-user-20260810-2/memory/agent_teams/nested_classroom_test_team_2e9666611150438f83f3a45fddf2e8b8/student_study_group_0e70dbb3c2f048058dc375b8b75719e2/student_one_0ee5b9a896ef4f97b894e6cb5fec3ffa/raw_traces_active.jsonl
+1397:Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/manual-user-20260810-2/memory/agent_teams/nested_classroom_test_team_2e9666611150438f83f3a45fddf2e8b8/student_study_group_0e70dbb3c2f048058dc375b8b75719e2/student_two_b8b72cc9e8ed455c9cab658fcc1f22f6/raw_traces_active.jsonl
+1398:Agent team websocket attached for team run nested_classroom_test_team_2e9666611150438f83f3a45fddf2e8b8
+1399:Created agent session 6701a9bc-e1c2-48fd-bc87-41767e17f0ed for run nested_classroom_test_team_2e9666611150438f83f3a45fddf2e8b8
+1400:Agent Team WebSocket connected: session=6701a9bc-e1c2-48fd-bc87-41767e17f0ed, run=nested_classroom_test_team_2e9666611150438f83f3a45fddf2e8b8
+1441:- `StudentStudyGroup` is a nested agent team with two students.
+1449:> Please test nested team delegation. Delegate one task to StudentStudyGroup and ask the students to return exactly NESTED_CLASSROOM_OK. Accept the result if it matches.
+1454:   `delegate_task({"target":{"kind":"team","name":"StudentStudyGroup"},"description":"..."})`.
+1455:2. The runtime creates a task-team execution for `StudentStudyGroup`.
+1469:Your main purpose is to test nested team delegation. The nested team target is exactly named `StudentStudyGroup`.
+1475:`delegate_task({"target":{"kind":"team","name":"StudentStudyGroup"},"description":"..."})`
+1488:- For this fixture, prefer the team target `{ "kind": "team", "name": "StudentStudyGroup" }`.
+1585:You are `student_one`, coordinator of the nested `StudentStudyGroup` team.
+1616:/StudentStudyGroup/student_one

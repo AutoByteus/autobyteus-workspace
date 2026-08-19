@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "revision": "API-REV-031",
+  "result": "PASS",
+  "confidencePercent": 98,
+  "currentHead": "66cfe11e9057b0276c95cb5e9a01784d74b07499",
+  "runtime": "autobyteus",
+  "model": "gpt-5.6-luna",
+  "exactRootTeamRunId": "nested_classroom_test_team_eeeb98d0f6134d70a50eb512a9563ed5",
+  "activeDesktop": "PASS",
+  "activeMobile": "PASS",
+  "persistedDesktop": "PASS",
+  "persistedMobile": "PASS",
+  "selectedTeamConfig": "PASS",
+  "exactMessageCount": 2,
+  "exactReplyOnce": true,
+  "referencePathAndContent": "PASS",
+  "referenceCloseBack": "PASS",
+  "browserConsoleErrors": 0,
+  "termination": "PASS",
+  "cleanup": "PASS",
+  "operationalDatabaseAction": "NONE",
+  "protectedStackAction": "NONE",
+  "retainedProviderEvidence": {
+    "standaloneAutoByteusCodexClaude": "API-REV-030 PASS; no IR-037 source intersection",
+    "importedTeamAutoByteusCodexClaude": "API-REV-029 PASS; provider-neutral IR-037 boundary rechecked by current service seam and fresh AutoByteus"
+  }
+}

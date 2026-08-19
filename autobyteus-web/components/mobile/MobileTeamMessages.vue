@@ -45,7 +45,7 @@
 
     <MobileTeamReferenceViewer
       v-if="selectedReferenceContext && activeTeamContext"
-      :team-run-id="activeTeamContext.teamRunId"
+      :team-run-id="activeTeamContext.view.getRootTeamRunId()"
       :message-id="selectedReferenceContext.message.messageId"
       :reference="selectedReferenceContext.reference"
       :refresh-signal="referenceRefreshSignal"
@@ -60,7 +60,6 @@ import { Icon } from '@iconify/vue';
 import MobileTeamReferenceViewer from '~/components/mobile/MobileTeamReferenceViewer.vue';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
-import { useTeamCommunicationStore } from '~/stores/teamCommunicationStore';
 import type {
   TeamCommunicationPerspectiveMessage,
   TeamCommunicationReferenceFile,
@@ -70,7 +69,7 @@ import {
   referenceFileIcon,
   referenceFileName,
 } from '~/utils/teamCommunication/referenceFilePresentation';
-import { resolveTeamConversationTargetAddressResult } from '~/utils/teamConversationTargetAddress';
+import { projectTeamCommunicationPerspective } from '~/utils/teamCommunication/teamCommunicationPerspective';
 
 const props = defineProps<{
   context: MobileWorkContext | null;
@@ -78,7 +77,6 @@ const props = defineProps<{
 
 const selectionStore = useAgentSelectionStore();
 const teamContextsStore = useAgentTeamContextsStore();
-const teamCommunicationStore = useTeamCommunicationStore();
 const selectedReferenceContext = ref<{
   message: TeamCommunicationPerspectiveMessage;
   reference: TeamCommunicationReferenceFile;
@@ -93,11 +91,11 @@ const activeTeamContext = computed(() => {
 const messages = computed(() => {
   const team = activeTeamContext.value;
   if (!team) return [];
-  const focusedAddress = resolveTeamConversationTargetAddressResult(team, {
-    allowSubteam: true,
-    allowActiveExecutionSafetyFallback: true,
-  }).target?.address ?? null;
-  return teamCommunicationStore.getPerspectiveForAddress(team.teamRunId, focusedAddress).messages;
+  return projectTeamCommunicationPerspective({
+    view: team.view,
+    messages: team.view.listCommunicationMessages(),
+    focusedAgentRunId: team.view.getFocusedAgentRunId(),
+  }).messages;
 });
 
 function openReference(

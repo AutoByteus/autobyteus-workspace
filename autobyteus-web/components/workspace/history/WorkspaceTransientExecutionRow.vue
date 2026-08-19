@@ -7,7 +7,7 @@
     data-row-kind="transient_execution"
     :data-transient-kind="row.transientKind"
     :data-team-run-id="row.teamRunId"
-    :data-member-route-key="row.memberRouteKey"
+    :data-member-address="row.memberAddress"
     :title="$t('workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.temporary_execution_title')"
     :aria-label="ariaLabel"
     :aria-current="isSelected ? 'true' : undefined"
@@ -23,7 +23,7 @@
       class="ml-2 mr-1 inline-flex h-3.5 w-3.5 flex-shrink-0 items-center justify-center rounded text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
       data-test="workspace-team-transient-disclosure"
       :data-team-run-id="row.teamRunId"
-      :data-member-route-key="row.memberRouteKey"
+      :data-member-address="row.memberAddress"
       :aria-expanded="expanded"
       @click.stop="$emit('toggle', row)"
       @keydown.enter.stop
@@ -81,7 +81,7 @@ const rowStyle = computed(() => ({
   marginLeft: `${props.row.depth * 12}px`,
 }));
 
-const ariaLabel = computed(() => `${props.row.displayName}. ${props.row.memberRouteKey}`);
+const ariaLabel = computed(() => `${props.row.displayName}. ${props.row.memberAddress}`);
 
 const activateRow = (): void => {
   if (props.hasChildren) {

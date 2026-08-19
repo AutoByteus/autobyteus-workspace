@@ -5,6 +5,7 @@ import {
 import { ServerMessage, ServerMessageType } from "./models.js";
 import { buildAgentStatusPayload } from "../../agent-execution/domain/agent-status-payload.js";
 import { serializePayload } from "./payload-serialization.js";
+import { resolveAgentRunErrorEvidence } from "../../agent-execution/domain/agent-run-error-evidence.js";
 
 const normalizeStatusPayload = (payload: Record<string, unknown>): Record<string, unknown> => {
   return buildAgentStatusPayload({
@@ -48,25 +49,13 @@ const normalizeTurnPayload = (payload: Record<string, unknown>): Record<string, 
   };
 };
 
-const normalizeSegmentPayload = (payload: Record<string, unknown>): Record<string, unknown> => {
-  const turnId =
-    typeof payload.turn_id === "string"
-      ? payload.turn_id.trim()
-      : typeof payload.turnId === "string"
-        ? payload.turnId.trim()
-        : payload.turn_id === null || payload.turnId === null
-          ? null
-          : null;
-  const {
-    turnId: _camelTurnId,
-    turn_id: _rawTurnId,
-    ...payloadWithoutTurnAliases
-  } = payload;
-
-  return {
-    ...payloadWithoutTurnAliases,
-    turn_id: turnId,
-  };
+const projectErrorEvidence = (event: AgentRunEvent) => {
+  switch (resolveAgentRunErrorEvidence(event)?.kind) {
+    case "TURN_DIAGNOSTIC": return { error_scope: "turn", error_effect: "diagnostic", turn_id: event.payload.turn_id };
+    case "TURN_TERMINAL": return { error_scope: "turn", error_effect: "terminal", turn_id: event.payload.turn_id };
+    case "RUNTIME_GLOBAL": return { error_scope: "runtime", error_effect: "terminal", turn_id: null };
+    default: return { error_scope: null, error_effect: null, turn_id: null };
+  }
 };
 
 export class AgentRunEventMessageMapper {
@@ -81,11 +70,11 @@ export class AgentRunEventMessageMapper {
       case AgentRunEventType.TURN_INTERRUPTED:
         return new ServerMessage(ServerMessageType.TURN_INTERRUPTED, normalizeTurnPayload(payload));
       case AgentRunEventType.SEGMENT_START:
-        return new ServerMessage(ServerMessageType.SEGMENT_START, normalizeSegmentPayload(payload));
+        return new ServerMessage(ServerMessageType.SEGMENT_START, { id: payload.id, turn_id: payload.turn_id, segment_type: payload.segment_type, metadata: payload.metadata ?? null });
       case AgentRunEventType.SEGMENT_CONTENT:
-        return new ServerMessage(ServerMessageType.SEGMENT_CONTENT, normalizeSegmentPayload(payload));
+        return new ServerMessage(ServerMessageType.SEGMENT_CONTENT, { id: payload.id, turn_id: payload.turn_id, segment_type: payload.segment_type, delta: payload.delta });
       case AgentRunEventType.SEGMENT_END:
-        return new ServerMessage(ServerMessageType.SEGMENT_END, normalizeSegmentPayload(payload));
+        return new ServerMessage(ServerMessageType.SEGMENT_END, { id: payload.id, turn_id: payload.turn_id, metadata: payload.metadata ?? null, interrupted: payload.interrupted ?? false, reason: payload.reason ?? null, failed: payload.failed ?? false, error: payload.error ?? null });
       case AgentRunEventType.AGENT_STATUS:
         return new ServerMessage(ServerMessageType.AGENT_STATUS, normalizeStatusPayload(payload));
       case AgentRunEventType.COMPACTION_STATUS:
@@ -123,11 +112,14 @@ export class AgentRunEventMessageMapper {
       case AgentRunEventType.FILE_CHANGE:
         return new ServerMessage(ServerMessageType.FILE_CHANGE, payload);
       case AgentRunEventType.ERROR:
-        return new ServerMessage(ServerMessageType.ERROR, payload);
+        return new ServerMessage(ServerMessageType.ERROR, { code: payload.code, message: payload.message, ...projectErrorEvidence(event) });
       default:
         return new ServerMessage(ServerMessageType.ERROR, {
           code: "UNKNOWN_AGENT_RUN_EVENT",
           message: `Unmapped AgentRunEvent: ${String(event.eventType)}`,
+          error_scope: null,
+          error_effect: null,
+          turn_id: null,
         });
     }
   }

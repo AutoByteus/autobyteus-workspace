@@ -1,0 +1,85 @@
+{
+  "schemaVersion": 1,
+  "passed": true,
+  "rootTeamRunId": "nested_classroom_test_team_9d14472d93da4d1eb16c0409b76acded",
+  "conditions": {
+    "freshActiveTeam": true,
+    "referencedMessagePresent": true,
+    "exactReplyReceivedOnce": true,
+    "exactRootOnAllRecords": true,
+    "desktopActiveReference": true,
+    "selectedTeamConfigReadOnly": true,
+    "mobileActiveReference": true,
+    "noBrowserConsoleErrors": true
+  },
+  "desktopActive": {
+    "messageCount": 2,
+    "exactReferencePathVisible": true,
+    "exactReferenceContentVisible": true,
+    "messageDetailRestoredAfterReference": true
+  },
+  "mobileActive": {
+    "phoneAccessEnabled": true,
+    "pairedCredentialIssued": true,
+    "messageSummary": "2 messages; open details for full text.",
+    "messageCount": 2,
+    "exactReferencePathVisible": true,
+    "exactReferenceContentVisible": true,
+    "referenceRowRestoredAfterBack": true
+  },
+  "selectedTeamConfig": {
+    "titleVisible": true,
+    "readOnlyNoticeVisible": true,
+    "runtimeMatches": true,
+    "runtimeDisabled": true,
+    "autoApproveDisabled": true,
+    "runButtonAbsent": true
+  },
+  "communications": [
+    {
+      "messageId": "teammsg_ph8nCO_3uVJ80uutkvfpYua7FdSFHweR",
+      "content": "Please ask your coordinator to reply to /Teacher with exactly API37_REFERENCE_REPLY_AUTOBYTEUS.",
+      "senderAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_9d14472d93da4d1eb16c0409b76acded",
+        "taskTeamRunIds": [],
+        "memberAddress": "/Teacher",
+        "taskAgentRunId": null
+      },
+      "receiverAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_9d14472d93da4d1eb16c0409b76acded",
+        "taskTeamRunIds": [],
+        "memberAddress": "/StudentStudyGroup/student_one",
+        "taskAgentRunId": null
+      },
+      "referenceFiles": [
+        {
+          "referenceId": "teamref_RQc1wnL_T2dT2YAOqUXW5W8psJyvFGV_",
+          "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr024/api-rev-037/live/api37-mobile-desktop-reference.txt",
+          "type": "file"
+        }
+      ]
+    },
+    {
+      "messageId": "teammsg_wH6qS7hRqfHei_Or0VKXnVYoT6hcUbeD",
+      "content": "API37_REFERENCE_REPLY_AUTOBYTEUS",
+      "senderAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_9d14472d93da4d1eb16c0409b76acded",
+        "taskTeamRunIds": [],
+        "memberAddress": "/StudentStudyGroup/student_one",
+        "taskAgentRunId": null
+      },
+      "receiverAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_9d14472d93da4d1eb16c0409b76acded",
+        "taskTeamRunIds": [],
+        "memberAddress": "/Teacher",
+        "taskAgentRunId": null
+      },
+      "referenceFiles": []
+    }
+  ],
+  "consoleEvents": [],
+  "termination": {
+    "success": true,
+    "message": "Agent team run terminated successfully."
+  }
+}

@@ -308,7 +308,7 @@ describe("ClaudeSessionToolUseCoordinator", () => {
             id: "toolu-send-message-1",
             name: "mcp__autobyteus_agent_tools__send_message_to",
             input: {
-              recipient_name: "worker",
+              recipient_address: "worker",
               content: "hello",
             },
           },
@@ -338,7 +338,7 @@ describe("ClaudeSessionToolUseCoordinator", () => {
       id: "toolu-send-message-1",
       tool_name: "mcp__autobyteus_agent_tools__send_message_to",
       arguments: {
-        recipient_name: "worker",
+        recipient_address: "worker",
         content: "hello",
       },
     });

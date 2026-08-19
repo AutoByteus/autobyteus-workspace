@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "slug": "claude",
+  "runtime": "claude_agent_sdk",
+  "model": "haiku",
+  "startedAt": "2026-08-13T15:24:20.426Z",
+  "completedAt": "2026-08-13T15:24:55.703Z",
+  "passed": true,
+  "rootTeamRunId": "classroom_simulation_team_58c6f1ad83044c8dbe17972a1d349989",
+  "conditions": {
+    "freshRun": true,
+    "rootedTopology": true,
+    "effectiveRuntime": true,
+    "effectiveReasoning": true,
+    "exactOneProfessorRequest": true,
+    "requestHasReference": true,
+    "exactOneStudentReply": true,
+    "replyHasReference": true,
+    "exactPersistentAddresses": true,
+    "completionVisible": true,
+    "noConsoleErrors": true
+  },
+  "effective": {
+    "runtimeKind": "claude_agent_sdk",
+    "reasoningEffort": "medium"
+  },
+  "messages": [
+    {
+      "messageId": "teammsg_75MBM5s_yy1B3dYydbMn7hxUq0iX2fGg",
+      "content": "Hello student,\n\nYour homework assignment is ready. Please read the file at:\n/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-040-live-20260813-1/temp_workspace/classroom-runs/api-rev-040-claude/homework.md\n\nComplete the task, write your answer to a file, then reply to /professor using send_message_to with the exact token CLASSROOM_STUDENT_REPLY_CLAUDE and attach your answer file as a reference.",
+      "referenceFiles": [
+        {
+          "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-040-live-20260813-1/temp_workspace/classroom-runs/api-rev-040-claude/homework.md",
+          "type": "file"
+        }
+      ],
+      "senderAddress": {
+        "rootTeamRunId": "classroom_simulation_team_58c6f1ad83044c8dbe17972a1d349989",
+        "taskTeamRunIds": [],
+        "memberAddress": "/professor",
+        "taskAgentRunId": null
+      },
+      "receiverAddress": {
+        "rootTeamRunId": "classroom_simulation_team_58c6f1ad83044c8dbe17972a1d349989",
+        "taskTeamRunIds": [],
+        "memberAddress": "/student",
+        "taskAgentRunId": null
+      }
+    },
+    {
+      "messageId": "teammsg_9TT2Vjyla5bBMv0kI-wGvvcKw6jh31uU",
+      "content": "CLASSROOM_STUDENT_REPLY_CLAUDE\n\nHi professor, I completed the multiplication homework. The answer is 42. My full answer with reasoning is in the attached file:\n\n/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-040-live-20260813-1/temp_workspace/classroom-runs/api-rev-040-claude/student-answer.md\n\nPlease let me know if you'd like any revisions.",
+      "referenceFiles": [
+        {
+          "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-040-live-20260813-1/temp_workspace/classroom-runs/api-rev-040-claude/student-answer.md",
+          "type": "file"
+        }
+      ],
+      "senderAddress": {
+        "rootTeamRunId": "classroom_simulation_team_58c6f1ad83044c8dbe17972a1d349989",
+        "taskTeamRunIds": [],
+        "memberAddress": "/student",
+        "taskAgentRunId": null
+      },
+      "receiverAddress": {
+        "rootTeamRunId": "classroom_simulation_team_58c6f1ad83044c8dbe17972a1d349989",
+        "taskTeamRunIds": [],
+        "memberAddress": "/professor",
+        "taskAgentRunId": null
+      }
+    }
+  ],
+  "consoleEvents": [],
+  "termination": {
+    "success": true,
+    "message": "Agent team run terminated successfully."
+  }
+}

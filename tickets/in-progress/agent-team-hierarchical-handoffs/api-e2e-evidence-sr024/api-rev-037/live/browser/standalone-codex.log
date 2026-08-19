@@ -1,0 +1,24 @@
+{
+  "slug": "codex",
+  "runtime": "codex_app_server",
+  "model": "gpt-5.6-luna",
+  "passed": true,
+  "runId": "api_rev_037_browser_agent_203c6756aed84f69a93a17cccae0eb88",
+  "conditions": {
+    "freshRun": true,
+    "effectiveRuntime": true,
+    "effectiveReasoning": true,
+    "exactTokenBeforeRefresh": true,
+    "exactTokenAfterRefresh": true,
+    "resumeRunMatches": true,
+    "resumeActive": true,
+    "resumeRuntimeMatches": true,
+    "resumeModelMatches": true,
+    "noBrowserConsoleErrors": true
+  },
+  "fatalError": null,
+  "termination": {
+    "success": true,
+    "message": "Agent run terminated successfully."
+  }
+}

@@ -4,16 +4,16 @@ import type {
   TeamRunIndexFileRecord,
   TeamRunIndexRowRecord,
 } from "../store/team-run-history-index-record-types.js";
-import type { TeamRunMemberMetadata } from "../store/team-run-metadata-types.js";
+import type { TeamRunExecutionTreeDto } from "@autobyteus/team-stream-contracts";
 
 export type TeamRunIndexRow = TeamRunIndexRowRecord;
 
 export type TeamRunIndexFile = TeamRunIndexFileRecord;
 
 export interface TeamRunMemberHistoryItem {
-  memberRouteKey: string;
-  memberName: string;
-  memberRunId: string;
+  memberAddress: string;
+  displayName: string;
+  agentRunId: string;
   status: AgentApiStatus;
   runtimeKind: RuntimeKind;
   platformAgentRunId: string | null;
@@ -28,7 +28,7 @@ export interface TeamRunHistoryItem {
   teamRunId: string;
   teamDefinitionId: string;
   teamDefinitionName: string;
-  coordinatorMemberRouteKey: string;
+  coordinatorAddress: string;
   workspaceRootPath: string | null;
   summary: string;
   createdAt: string;
@@ -36,5 +36,5 @@ export interface TeamRunHistoryItem {
   terminatedAt: string | null;
   isActive: boolean;
   members: TeamRunMemberHistoryItem[];
-  memberTree: TeamRunMemberMetadata[];
+  rootTeam: TeamRunExecutionTreeDto["root_team"];
 }

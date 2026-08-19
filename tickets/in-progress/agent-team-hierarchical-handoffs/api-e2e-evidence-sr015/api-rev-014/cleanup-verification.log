@@ -1,0 +1,15 @@
+# Cleanup verification
+2026-08-09T15:12:20Z
+## Ports
+server_port_stopped
+frontend_port_stopped
+## Source assignment
+3ece3faee6acd2d696401b204de0954ba31576f4132ea81a21472d8d399476ed  /Users/normy/.autobyteus/server-data/.env
+## Source fixture compare
+source_fixture_unchanged
+## Git diff check
+git_diff_check_pass
+# Disposable-state removal verification
+2026-08-09T15:13:25.290297+00:00
+app_data_root_removed
+disposable_database_removed

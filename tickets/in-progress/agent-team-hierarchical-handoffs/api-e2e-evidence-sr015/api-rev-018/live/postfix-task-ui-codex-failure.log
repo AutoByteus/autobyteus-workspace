@@ -1,0 +1,16 @@
+locator.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('[data-test="workspace-team-transient-execution-row"][data-transient-kind="task_team"]').first()[22m
+[2m    - locator resolved to <div tabindex="0" role="button" data-transient-kind="task_team" title="Temporary task execution" data-member-route-key="/WorkGroup" aria-label="WorkGroup. /WorkGroup" data-row-kind="transient_execution" data-test="workspace-team-transient-execution-row" data-team-run-id="delegated_task_ui_validation_team_6b15189f0ecb47d5aa00e71f718a0c8f" class="flex w-full cursor-pointer items-center rounded-md bg-indigo-50/40 text-sm transition-colors hover:bg-indigo-50 focus:outline-none focus-visible:ring-1 focu…>…</div>[22m
+[2m  - attempting click action[22m
+[2m    - waiting for element to be visible, enabled and stable[22m
+[2m    - element is visible, enabled and stable[22m
+[2m    - scrolling into view if needed[22m
+[2m    - done scrolling[22m
+[2m    - element is not visible[22m
+[2m  - retrying click action[22m
+[2m    - waiting for element to be visible, enabled and stable[22m
+[2m  - element was detached from the DOM, retrying[22m
+
+    at runRow (/private/tmp/api-rev018-task-ui-browser.cjs:244:21)
+    at async /private/tmp/api-rev018-task-ui-browser.cjs:334:50

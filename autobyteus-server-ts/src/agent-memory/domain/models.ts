@@ -95,9 +95,9 @@ export type AgentTeamWithMemorySummary = {
 };
 
 export type TeamMemberMemoryTargetSummary = {
-  memberRouteKey: string;
-  memberName: string;
-  memberRunId: string;
+  memberAddress: string;
+  displayName: string;
+  agentRunId: string;
   agentDefinitionId?: string | null;
   lastUpdatedAt?: string | null;
   memory: MemoryAvailabilitySummary;

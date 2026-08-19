@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "slug": "autobyteus",
+  "runtime": "autobyteus",
+  "model": "gpt-5.6-luna",
+  "agentDefinitionId": "api-rev-040-browser-agent",
+  "runId": "api_rev_040_browser_agent_7411bddc389141e29e433f793e9d222d",
+  "expectedToken": "STANDALONE_AUTOBYTEUS_OK",
+  "startedAt": "2026-08-13T15:25:10.277Z",
+  "completedAt": "2026-08-13T15:25:15.798Z",
+  "passed": true,
+  "conditions": {
+    "freshRun": true,
+    "effectiveRuntime": true,
+    "effectiveReasoning": true,
+    "exactTokenBeforeRefresh": true,
+    "exactTokenAfterRefresh": true,
+    "resumeRunMatches": true,
+    "resumeActive": true,
+    "resumeRuntimeMatches": true,
+    "resumeModelMatches": true,
+    "noBrowserConsoleErrors": true
+  },
+  "effective": {
+    "runtimeKind": "autobyteus",
+    "model": "gpt-5.6-luna",
+    "reasoningEffort": "medium",
+    "autoExecuteClass": "relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 bg-blue-600"
+  },
+  "resume": {
+    "runId": "api_rev_040_browser_agent_7411bddc389141e29e433f793e9d222d",
+    "isActive": true,
+    "metadataConfig": {
+      "runtimeKind": "autobyteus",
+      "llmModelIdentifier": "gpt-5.6-luna"
+    }
+  },
+  "consoleEvents": [],
+  "termination": {
+    "success": true,
+    "message": "Agent run terminated successfully."
+  }
+}

@@ -42,14 +42,16 @@ runtime-neutral boundary before native schemas or Agent Tools MCP projection.
 It trims and deduplicates configured `AgentDefinition.toolNames`. For every
 valid non-null `MemberTeamContext`, it then automatically unions exactly:
 
+- `get_handoff_rules`
 - `send_message_to`
 - `delegate_task`
 
-This automatic pair is required by the Team Collaboration communication and
-delegation contract and applies even when the agent definition omitted both
-names. Standalone runs receive no automatic pair and preserve their explicitly
-configured set. Browser, media, publishing, configured MCP-origin, and the other
-task lifecycle tools remain explicitly selected and availability-gated.
+This automatic trio is required by the AgentTeam Addressing/Collaboration and
+delegation contract and applies even when the agent definition omitted those
+names. Standalone runs receive no automatic Team tools and preserve their
+explicitly configured set. Browser, media, publishing, configured MCP-origin,
+and the other task lifecycle tools remain explicitly selected and
+availability-gated.
 
 The native AutoByteus backend owns an additional runtime-derived baseline. For
 ordinary native standalone or team runs, it prepends exactly `run_bash`,
@@ -78,22 +80,25 @@ Prompt composition does not inspect configured/effective tool names and does
 not render an `Available Tools` catalog. Tool manifests and schemas are
 provider-native, out-of-band capability contracts.
 
-## Server-Owned Agent Communication Tool
+## Server-Owned Agent Communication Tools
 
-`send_message_to` is the shared first-party agent communication tool. Its
-canonical contract, selector parsing, runtime-neutral dispatcher, direct
-exact-run routing, and optional direct-message grants live under
-`src/agent-communication`; AutoByteus, Codex, and Claude adapters project the
-same contract through their effective runtime surfaces. Codex App Server and
-Claude Agent SDK now project `send_message_to` through the server-hosted
+`send_message_to` and `get_handoff_rules` are the shared first-party Agent
+communication tools. Their canonical contracts, logical-address parsing,
+runtime-neutral services, result projection, direct exact-run routing,
+and optional direct-message grants live under `src/agent-communication`;
+AutoByteus, Codex, and Claude adapters project the same contracts through their
+effective runtime surfaces. Codex App Server and Claude Agent SDK project both
+tools through the server-hosted
 `autobyteus_agent_tools` MCP descriptor instead of runtime-specific
 send-message wrappers/handlers.
 
-The tool accepts exactly one target selector:
+`send_message_to` accepts exactly one target selector:
 
-- `recipient_name` for a team-local roster recipient. This selector requires a
-  current `MemberTeamContext`, routes through team delivery, and is the path that
-  creates Team Communication projection and message-owned `reference_files`.
+- `recipient_address` for a rooted `/...` or immediate-Team-relative `./...`
+  logical Agent-or-Team address. Bare names are invalid. This selector requires
+  a current `MemberTeamContext`, routes through root Team placement/delivery,
+  and is the path that creates Team Communication projection and message-owned
+  `reference_files`. A Team address targets its exact coordinator ingress.
 - `target_agent_run_id` for an exact currently active `AgentRun.runId`. This
   selector routes through `AgentRunManager.getActiveRun(...)`, rejects inactive,
   unknown, preallocated-only, recoverable-only, or lazy-startable-only ids, posts
@@ -101,11 +106,28 @@ The tool accepts exactly one target selector:
   without Team Communication projection fields.
 
 Explicitly configured standalone runs can use `target_agent_run_id` without team context.
-They cannot use `recipient_name` unless the run is actually executing as a team
+They cannot use `recipient_address` unless the run is actually executing as a team
 member. Every valid team context receives `send_message_to` automatically; the
-active delivery binding and roster still govern whether a call succeeds. See
+active delivery binding and root topology resolver still govern whether a call succeeds. See
 [Agent Communication](./agent_communication.md) for the full selector and
 projection contract.
+
+Message and task tools share only the canonical caller coordinate and minimal
+placement result. The caller coordinate is frozen
+`{rootTeamRunId,memberAddress}`. Placement is frozen Agent
+`{kind:"agent",address}` or Team
+`{kind:"team",address,ingressAddress}`; parent Team, segments, local name, route
+selector, and task direct-owner eligibility are derived by the owning operation.
+Tool adapters must not recreate member-path, route-key, owner-config, or handle
+fields beside these canonical addresses.
+
+`get_handoff_rules` takes no arguments and is available only to a Team-bound
+Agent with collaboration context. It returns `{ handoffs }`, where every entry
+is one ordered `{ when, recipient_address }` rule. It succeeds with an empty
+list when no edge exists, does not authorize delivery, and rejects missing Team
+context. `send_message_to` separately returns the canonical
+`{accepted,code,message,result}` operation envelope. The AutoByteus and MCP
+surfaces preserve each tool's own result shape.
 
 ## Server-Hosted Agent Tools MCP Server
 
@@ -133,7 +155,7 @@ descriptors until the runtime materializes a fresh descriptor. `tools/list`
 returns only tools enabled for that session, and `tools/call` rejects unknown or
 unconfigured tools before executor dispatch.
 The default adapter catalog supports
-`send_message_to`, browser, media, task-delegation, and `publish_artifacts`
+`send_message_to`, `get_handoff_rules`, browser, media, task-delegation, and `publish_artifacts`
 tool families by delegating to their existing family manifests/services instead
 of runtime-specific handlers. Configured MCP-origin tools delegate through the
 registry-created tool and existing MCP proxy path, preserving registered names
@@ -179,8 +201,16 @@ Runtime projection is explicit and uses the same manifest/service boundary:
   framework-driven auto-acceptance to compensate for model/prompt behavior.
 
 All task-delegation tool calls must be bound to an active team run and current
-member identity. `delegate_task` creates one internal delegation ledger record
-from explicit `target: { kind: "member" | "team", name }`, ready-to-run
+member identity. `delegate_task` resolves required `recipient_address` through the
+same `/...` / `./...` logical placement authority as `send_message_to`, then
+applies task-owned eligibility before reserving a task id. The resolved target
+must be a direct Agent or AgentTeam child of the caller's immediate Team; self,
+deeper, and cross-branch placements are rejected for task activation even though
+deeper/cross-branch addresses can be valid for ordinary messaging. There is no
+caller-supplied target kind, flat-name lookup, or compatibility input.
+
+After successful placement and eligibility validation, `delegate_task` creates
+one internal delegation ledger record from ready-to-run
 task-centered `description` content (objective, context, constraints, done
 conditions, expected output, and reference guidance), and optional
 `reference_files` work-packet inputs. Member targets start one task-agent
@@ -207,8 +237,9 @@ The task review owner reviews the latest pending submission with
 `review_task_result`, using `decision="accept"` to finalize or
 `decision="request_revision"` plus a task-result `comment` for revision
 instructions. `send_message_to` remains available for ordinary
-communication/handoffs only; it is not task result/review/acceptance, and
-communication recipients are not automatically delegation targets.
+communication/handoffs only; it is not task result/review/acceptance. Message
+and task calls share address parsing and placement, but task delegation adds the
+direct/current-Team eligibility rule before activation.
 
 ## Server-Owned Media Tools
 

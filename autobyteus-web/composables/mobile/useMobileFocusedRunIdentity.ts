@@ -29,11 +29,10 @@ export function useMobileFocusedRunIdentity(context: Ref<MobileWorkContext | nul
       }
 
       const team = teamContextsStore.getTeamContextById(currentContext.teamRunId);
-      if (!team || team.focusedMemberRouteKey !== currentContext.focusedMemberRouteKey) {
+      if (!team || team.view.getFocusedAgentRunId() !== currentContext.focusedAgentRunId) {
         return '';
       }
-
-      return team.leafAgentContextsByRouteKey.get(currentContext.focusedMemberRouteKey)?.state.runId || '';
+      return team.view.getAgentContext(currentContext.focusedAgentRunId)?.state.runId || '';
     }
 
     return '';

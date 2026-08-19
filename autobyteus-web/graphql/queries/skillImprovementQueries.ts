@@ -76,8 +76,8 @@ export const GetAgentRunSkillImprovementEligibility = gql`
 `
 
 export const GetTeamMemberSkillImprovementEligibility = gql`
-  query GetTeamMemberSkillImprovementEligibility($teamRunId: String!, $memberRunId: String!) {
-    getTeamMemberSkillImprovementEligibility(teamRunId: $teamRunId, memberRunId: $memberRunId) {
+  query GetTeamMemberSkillImprovementEligibility($teamRunId: String!, $agentRunId: String!) {
+    getTeamMemberSkillImprovementEligibility(teamRunId: $teamRunId, agentRunId: $agentRunId) {
       ...SkillImprovementEligibilityFields
     }
   }

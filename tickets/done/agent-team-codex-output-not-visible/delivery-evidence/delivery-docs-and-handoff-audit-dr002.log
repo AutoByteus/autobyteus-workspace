@@ -1,0 +1,65 @@
+DR-002 docs and handoff audit
+timestamp_utc=2026-08-17T09:39:56Z
+branch=codex/agent-team-codex-output-not-visible
+head=6daeaf14fa8b1b625c650d24571d5664297815ab
+reviewed_source=00b471bc24e6a6d06d3af7c38cf9f50536af1b60
+checkpoint=6daeaf14fa8b1b625c650d24571d5664297815ab
+base=37739aa2bd718e3e1a53587c1d8604d353d334cb
+--- checkpoint scope audit ---
+checkpoint_non_ticket_non_delivery_doc_paths=0
+--- base ancestor audit ---
+base_is_ancestor=PASS
+divergence_base_vs_head=0	5
+--- canonical source owner assertions ---
+source_owner_assertions=PASS
+--- documentation assertions ---
+documentation_assertions=PASS
+--- delivery artifact assertions ---
+docs-sync-report.md=present
+handoff-summary.md=present
+release-deployment-report.md=present
+release-notes.md=present
+delivery-revision-record.md=present
+delivery_artifact_assertions=PASS
+--- api evidence manifest ---
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/tickets/in-progress/agent-team-codex-output-not-visible/api-e2e-evidence/api-rev-003/api-rev-003-handoff-check.log: OK
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/tickets/in-progress/agent-team-codex-output-not-visible/api-e2e-evidence/api-rev-003/environment/autobyteus-team-termination.json: OK
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/tickets/in-progress/agent-team-codex-output-not-visible/api-e2e-evidence/api-rev-003/environment/final-cleanup-verification.log: OK
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/tickets/in-progress/agent-team-codex-output-not-visible/api-e2e-evidence/api-rev-003/environment/final-owned-run-termination.json: OK
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/tickets/in-progress/agent-team-codex-output-not-visible/api-e2e-evidence/api-rev-003/environment/owned-runtime-cleanup.json: OK
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/tickets/in-progress/agent-team-codex-output-not-visible/api-e2e-evidence/api-rev-003/environment/repository-test-db-cleanup.log: OK
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/tickets/in-progress/agent-team-codex-output-not-visible/api-e2e-evidence/api-rev-003/environment/safe-server-output.log: OK
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/tickets/in-progress/agent-team-codex-output-not-visible/api-e2e-evidence/api-rev-003/environment/safe-server-ready.json: OK
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/tickets/in-progress/agent-team-codex-output-not-visible/api-e2e-evidence/api-rev-003/environment/safe-target-preflight.log: OK
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/tickets/in-progress/agent-team-codex-output-not-visible/api-e2e-evidence/api-rev-003/environment/secret-import-dry-run.log: OK
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/tickets/in-progress/agent-team-codex-output-not-visible/api-e2e-evidence/api-rev-003/environment/secret-import-execution-summary.log: OK
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/tickets/in-progress/agent-team-codex-output-not-visible/api-e2e-evidence/api-rev-003/environment/secret-import-safety-proof.log: OK
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/tickets/in-progress/agent-team-codex-output-not-visible/api-e2e-evidence/api-rev-003/environment/server-pid-lsof.log: OK
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/tickets/in-progress/agent-team-codex-output-not-visible/api-e2e-evidence/api-rev-003/environment/start-safe-server.mjs: OK
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/tickets/in-progress/agent-team-codex-output-not-visible/api-e2e-evidence/api-rev-003/investigation/round-3-baseline.log: OK
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/tickets/in-progress/agent-team-codex-output-not-visible/api-e2e-evidence/api-rev-003/live/browser/classroom-autobyteus-file-change-fixed.png: OK
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/tickets/in-progress/agent-team-codex-output-not-visible/api-e2e-evidence/api-rev-003/live/browser/classroom-claude-file-change-fixed.png: OK
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/tickets/in-progress/agent-team-codex-output-not-visible/api-e2e-evidence/api-rev-003/live/provider/agent-package-import-result.json: OK
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/tickets/in-progress/agent-team-codex-output-not-visible/api-e2e-evidence/api-rev-003/live/provider/capture-file-change-row.mjs: OK
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/tickets/in-progress/agent-team-codex-output-not-visible/api-e2e-evidence/api-rev-003/live/provider/catalog-after-import.json: OK
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/tickets/in-progress/agent-team-codex-output-not-visible/api-e2e-evidence/api-rev-003/live/provider/catalog-before-import.json: OK
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/tickets/in-progress/agent-team-codex-output-not-visible/api-e2e-evidence/api-rev-003/live/provider/classroom-autobyteus-file-change-fixed.json: OK
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/tickets/in-progress/agent-team-codex-output-not-visible/api-e2e-evidence/api-rev-003/live/provider/classroom-autobyteus-file-change-server-audit.log: OK
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/tickets/in-progress/agent-team-codex-output-not-visible/api-e2e-evidence/api-rev-003/live/provider/classroom-claude-file-change-fixed.json: OK
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/tickets/in-progress/agent-team-codex-output-not-visible/api-e2e-evidence/api-rev-003/live/provider/classroom-claude-file-change-server-audit.log: OK
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/tickets/in-progress/agent-team-codex-output-not-visible/api-e2e-evidence/api-rev-003/live/provider/file-change-targeted-rerun-summary.json: OK
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/tickets/in-progress/agent-team-codex-output-not-visible/api-e2e-evidence/api-rev-003/live/provider/final-file-change-error-audit.log: OK
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/tickets/in-progress/agent-team-codex-output-not-visible/api-e2e-evidence/api-rev-003/live/provider/import-and-catalog.log: OK
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/tickets/in-progress/agent-team-codex-output-not-visible/api-e2e-evidence/api-rev-003/live/provider/import-and-catalog.mjs: OK
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/tickets/in-progress/agent-team-codex-output-not-visible/api-e2e-evidence/api-rev-003/live/provider/target-catalog-summary.json: OK
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/tickets/in-progress/agent-team-codex-output-not-visible/api-e2e-evidence/api-rev-003/repository/team-file-change-focused.log: OK
+api_rev_003_manifest=PASS
+--- diff hygiene ---
+delivery_diff_hygiene=PASS
+--- safety ---
+operational_database_action=NONE
+home_autobyteus_action=NONE
+protected_60004_31004_action=NONE
+rollback_repair_action=NONE
+--- result ---
+result=PASS

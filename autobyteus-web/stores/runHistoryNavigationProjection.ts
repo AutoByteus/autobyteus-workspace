@@ -28,7 +28,7 @@ export interface RunHistoryNavigationProjectionState {
   memberIndexByIdentity: Record<string, number>;
   runAncestryById: Record<string, RunHistoryAgentNavigationAncestry>;
   teamAncestryById: Record<string, RunHistoryTeamNavigationAncestry>;
-  memberAncestorRouteKeysByIdentity: Record<string, string[]>;
+  memberAncestorExecutionKeysByIdentity: Record<string, string[]>;
 }
 
 export interface RunHistoryNavigationProjectionBuildInput {
@@ -40,8 +40,11 @@ export interface RunHistoryNavigationProjectionBuildInput {
   teamContexts: AgentTeamContext[];
 }
 
-export const runHistoryMemberIndexKey = (teamRunId: string, memberRouteKey: string): string =>
-  `${teamRunId}\u0000${memberRouteKey}`;
+export const runHistoryExecutionRowIndexKey = (teamRunId: string, rowKey: string): string =>
+  `${teamRunId}\u0000${rowKey}`;
+
+export const runHistoryMemberIndexKey = (teamRunId: string, agentRunId: string): string =>
+  runHistoryExecutionRowIndexKey(teamRunId, `agent:${agentRunId.trim()}`);
 
 const teamDefinitionGroupKey = (
   team: TeamTreeNode,
@@ -109,12 +112,12 @@ export const buildRunHistoryNavigationProjection = (
     teamContexts: input.teamContexts,
     workspacesById: input.workspacesById,
   });
-  const teamContextById = new Map(input.teamContexts.map((context) => [context.teamRunId, context]));
+  const teamContextById = new Map(input.teamContexts.map((context) => [context.view.getRootTeamRunId(), context]));
   const completedTeamNodes = builtTeamNodes.map((team) => {
     const context = teamContextById.get(team.teamRunId) ?? null;
     const focused = {
       ...team,
-      focusedMemberRouteKey: context?.focusedMemberRouteKey ?? team.focusedMemberRouteKey,
+      focusedAgentRunId: context?.view.getFocusedAgentRunId() ?? team.focusedAgentRunId,
     };
     return { ...focused, executionRows: buildRunHistoryTeamExecutionRows(focused, context) };
   });
@@ -142,7 +145,7 @@ export const buildRunHistoryNavigationProjection = (
   const teamIndexById: RunHistoryNavigationProjectionState['teamIndexById'] = {};
   const memberIndexByIdentity: Record<string, number> = {};
   const teamAncestryById: RunHistoryNavigationProjectionState['teamAncestryById'] = {};
-  const memberAncestorRouteKeysByIdentity: Record<string, string[]> = {};
+  const memberAncestorExecutionKeysByIdentity: Record<string, string[]> = {};
   teamNodes.forEach((team, index) => {
     const rows = builtTeamNodesByWorkspaceRoot[team.workspaceRootPath] ?? [];
     teamIndexById[team.teamRunId] = {
@@ -159,12 +162,12 @@ export const buildRunHistoryNavigationProjection = (
     }
     const expandableAncestorByDepth: Array<string | undefined> = [];
     team.executionRows.forEach((row, rowIndex) => {
-      const identity = runHistoryMemberIndexKey(team.teamRunId, row.memberRouteKey);
+      const identity = runHistoryExecutionRowIndexKey(team.teamRunId, row.rowKey);
       memberIndexByIdentity[identity] = rowIndex;
-      memberAncestorRouteKeysByIdentity[identity] = expandableAncestorByDepth
+      memberAncestorExecutionKeysByIdentity[identity] = expandableAncestorByDepth
         .slice(0, row.depth)
-        .filter((routeKey): routeKey is string => Boolean(routeKey));
-      expandableAncestorByDepth[row.depth] = row.hasChildren ? row.memberRouteKey : undefined;
+        .filter((key): key is string => Boolean(key));
+      expandableAncestorByDepth[row.depth] = row.hasChildren ? row.rowKey : undefined;
       expandableAncestorByDepth.length = row.depth + 1;
     });
     builtTeamNodesByWorkspaceRoot[team.workspaceRootPath] = [...rows, team];
@@ -182,6 +185,6 @@ export const buildRunHistoryNavigationProjection = (
     memberIndexByIdentity,
     runAncestryById,
     teamAncestryById,
-    memberAncestorRouteKeysByIdentity,
+    memberAncestorExecutionKeysByIdentity,
   };
 };

@@ -1,0 +1,3 @@
+classification=INVALID_EXECUTION_SELECTION
+reason=macOS bash lacks mapfile; empty explicit list invoked full repository suite unintentionally; interrupted; failures are outside planned current selection and are not acceptance evidence
+action=rerun exact 70-file selection using command substitution

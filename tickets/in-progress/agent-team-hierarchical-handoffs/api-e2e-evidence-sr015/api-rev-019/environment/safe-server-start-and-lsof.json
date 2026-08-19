@@ -1,0 +1,38 @@
+{
+  "result": "Pass",
+  "failure": null,
+  "launcher": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/test-support/live-e2e/test-runtime-bootstrap.mjs",
+  "launcherFunction": "startBuiltTestServer",
+  "parentAmbientDatabaseUrlPresent": true,
+  "childEnvironmentDatabaseUrlExcludedBeforeSpawn": true,
+  "childEnvironmentDatabaseUrlTestExcludedBeforeSpawn": true,
+  "materializedRuntimeEnvironmentExactDatabaseAssignment": true,
+  "databaseUrl": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/sr015-api-rev-019-20260810-1.db",
+  "resolvedDatabasePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/sr015-api-rev-019-20260810-1.db",
+  "operationalDatabaseTargetMatch": false,
+  "port": 60019,
+  "pid": 46829,
+  "pidLsofExactDatabaseTargetPresent": true,
+  "pidLsofOperationalDatabaseTargetPresent": false,
+  "runtimeAvailability": {
+    "runtimeAvailabilities": [
+      {
+        "runtimeKind": "autobyteus",
+        "enabled": true,
+        "reason": null
+      },
+      {
+        "runtimeKind": "codex_app_server",
+        "enabled": true,
+        "reason": null
+      },
+      {
+        "runtimeKind": "claude_agent_sdk",
+        "enabled": true,
+        "reason": null
+      }
+    ]
+  },
+  "agentTeamDefinitionCount": 0,
+  "serverStoppedByOwnedHarness": true
+}

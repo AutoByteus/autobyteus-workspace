@@ -1,0 +1,10 @@
+{
+  "status": "READY",
+  "pid": 23622,
+  "serverUrl": "http://127.0.0.1:60229",
+  "runtimeRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-029-live-20260812-1",
+  "runtimeEnvironmentPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-029-live-20260812-1/.env",
+  "databasePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-029-live-20260812-1.db",
+  "lsofExactDisposableTarget": true,
+  "lsofOperationalTarget": false
+}

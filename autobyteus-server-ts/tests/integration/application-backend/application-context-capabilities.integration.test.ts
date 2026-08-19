@@ -103,8 +103,8 @@ const createBundle = (applicationRootPath: string): ApplicationBundle => ({
     distribution: "self-contained",
     targetRuntime: { engine: "node", semver: ">=22 <23" },
     sdkCompatibility: {
-      backendDefinitionContractVersion: "4",
-      frontendSdkContractVersion: "4",
+      backendDefinitionContractVersion: "5",
+      frontendSdkContractVersion: "5",
     },
     supportedExposures: {
       queries: false,
@@ -131,7 +131,7 @@ const writeCapabilityBackend = async (applicationRootPath: string): Promise<void
     `import { DatabaseSync } from 'node:sqlite'
 
 export default {
-  definitionContractVersion: '4',
+  definitionContractVersion: '5',
   commands: {
     'capabilities.exercise': async (_input, context) => {
       const resources = await context.agentResources.listAvailable({ source: 'bundle' })
@@ -159,8 +159,7 @@ export default {
           kind: 'AGENT_TEAM',
           mode: 'memberConfigs',
           memberConfigs: [{
-            memberName: 'researcher',
-            memberRouteKey: 'researcher',
+            memberAddress: '/researcher',
             llmModelIdentifier: 'gpt-test',
             autoExecuteTools: true,
             skillAccessMode: 'PRELOADED_ONLY',
@@ -169,14 +168,14 @@ export default {
         },
         initialInput: {
           text: 'team initial input',
-          targetMemberRouteKey: 'researcher',
+          targetMemberAddress: '/researcher',
           metadata: { phase: 'initial-team' },
         },
       })
 
       const teamAddress = {
         bindingId: team.bindingId,
-        target: { kind: 'AGENT_TEAM_MEMBER', memberRouteKey: 'researcher' },
+        target: { kind: 'AGENT_TEAM_MEMBER', memberAddress: '/researcher' },
       }
       const sent = await context.agentExecution.sendInput({
         address: teamAddress,
@@ -210,9 +209,9 @@ export default {
       const listed = await context.agentExecution.list({ status: 'ATTACHED' })
       const found = await context.agentExecution.findByLaunchRequestId('team-launch-request-1')
       const notFound = await context.agentExecution.findByLaunchRequestId('missing-launch-request')
-      const artifacts = await context.publishedArtifacts.list(agent.runtime.runId)
+      const artifacts = await context.publishedArtifacts.list(agent.runtime.agentRunId)
       const revision = await context.publishedArtifacts.readRevision({
-        runId: agent.runtime.runId,
+        runId: agent.runtime.agentRunId,
         revisionId: 'revision-1',
       })
 
@@ -249,8 +248,7 @@ export default {
             kind: 'AGENT_TEAM',
             mode: 'memberConfigs',
             memberConfigs: [{
-              memberName: 'researcher',
-              memberRouteKey: 'researcher',
+              memberAddress: '/researcher',
               llmModelIdentifier: 'gpt-test',
               autoExecuteTools: true,
               skillAccessMode: 'PRELOADED_ONLY',
@@ -399,15 +397,32 @@ describe("Application context capability integration", () => {
     };
     let teamRunCount = 0;
     const teamRunService = {
-      createTeamRun: vi.fn(async ({ memberConfigs }: { memberConfigs: Array<Record<string, unknown>> }) => ({
-        runId: `team-run-${++teamRunCount}`,
+      allocateTeamRunId: vi.fn(async () => `team-run-${teamRunCount + 1}`),
+      createTeamRun: vi.fn(async ({
+        teamRunId,
+        memberConfigs,
+      }: {
+        teamRunId: string;
+        memberConfigs: Array<{ memberAddress: string }>;
+      }) => {
+        teamRunCount += 1;
+        return {
+        teamRunId,
         config: {
-          memberConfigs: memberConfigs.map((memberConfig) => ({
-            ...memberConfig,
-            memberRunId: `team-run-${teamRunCount}::researcher`,
-          })),
+          rootTeam: {
+            kind: "agent_team",
+            address: "/",
+            teamRunId,
+            teamDefinitionId: "team-def-1",
+            coordinatorAddress: "/researcher",
+            children: memberConfigs.map((memberConfig) => ({
+              kind: "agent",
+              address: memberConfig.memberAddress,
+              agentRunId: `${teamRunId}::researcher`,
+            })),
+          },
         },
-      })),
+      }; }),
       resolveTeamRun: vi.fn(async (runId: string) => runId === "team-run-1" ? { postMessage: teamPostMessage } : null),
       terminateTeamRun: vi.fn(async () => undefined),
     };
@@ -503,7 +518,7 @@ describe("Application context capability integration", () => {
         subscribe: vi.fn(async (input: {
           applicationId: string;
           subscriptionId: string;
-          address: { bindingId: string; target: { kind: string; memberRouteKey?: string } };
+          address: { bindingId: string; target: { kind: string; memberAddress?: string } };
           emitter: { emitEvent: (event: unknown) => Promise<void> };
         }) => {
           await input.emitter.emitEvent({
@@ -513,12 +528,14 @@ describe("Application context capability integration", () => {
             address: input.address,
             runtimeSubject: "TEAM_RUN",
             producer: {
-              runId: "team-run-1::researcher",
+              executionAddress: {
+                rootTeamRunId: "team-run-1",
+                taskTeamRunIds: [],
+                memberAddress: "/researcher",
+                taskAgentRunId: null,
+              },
               runtimeKind: "AGENT_TEAM_MEMBER",
-              memberRouteKey: "researcher",
-              memberName: "researcher",
               displayName: "researcher",
-              teamPath: ["researcher"],
             },
             event: { type: "TURN_STARTED" },
           });
@@ -543,7 +560,7 @@ describe("Application context capability integration", () => {
       observedEvents: Array<{
         sequence: number;
         applicationId: string;
-        address: { bindingId: string; target: { kind: string; memberRouteKey?: string } };
+        address: { bindingId: string; target: { kind: string; memberAddress?: string } };
         runtimeSubject: string;
         producer: unknown;
         event: { type: string };
@@ -577,7 +594,7 @@ describe("Application context capability integration", () => {
       applicationId: APPLICATION_ID,
       launchRequestId: "agent-launch-request-1",
       status: "ATTACHED",
-      runtime: { subject: "AGENT_RUN", runId: "agent-run-1" },
+      runtime: { subject: "AGENT_RUN", agentRunId: "agent-run-1" },
     });
     expect(result.team).toMatchObject({
       applicationId: APPLICATION_ID,
@@ -585,8 +602,8 @@ describe("Application context capability integration", () => {
       status: "ATTACHED",
       runtime: {
         subject: "TEAM_RUN",
-        runId: "team-run-1",
-        members: [expect.objectContaining({ memberRouteKey: "researcher", runId: "team-run-1::researcher" })],
+        teamRunId: "team-run-1",
+        members: [expect.objectContaining({ memberAddress: "/researcher", agentRunId: "team-run-1::researcher" })],
       },
     });
     expect(result.sent.bindingId).toBe(result.team.bindingId);
@@ -597,16 +614,18 @@ describe("Application context capability integration", () => {
       applicationId: APPLICATION_ID,
       address: {
         bindingId: result.team.bindingId,
-        target: { kind: "AGENT_TEAM_MEMBER", memberRouteKey: "researcher" },
+        target: { kind: "AGENT_TEAM_MEMBER", memberAddress: "/researcher" },
       },
       runtimeSubject: "TEAM_RUN",
       producer: {
-        runId: "team-run-1::researcher",
+        executionAddress: {
+          rootTeamRunId: "team-run-1",
+          taskTeamRunIds: [],
+          memberAddress: "/researcher",
+          taskAgentRunId: null,
+        },
         runtimeKind: "AGENT_TEAM_MEMBER",
-        memberRouteKey: "researcher",
-        memberName: "researcher",
         displayName: "researcher",
-        teamPath: ["researcher"],
       },
       event: { type: "TURN_STARTED" },
     }]);
@@ -624,7 +643,7 @@ describe("Application context capability integration", () => {
     expect(result.recoveryLaunchFailure).toBe("simulated post-persist launch handoff failure");
     expect(result.recovered).toMatchObject({
       launchRequestId: "recovery-launch-request-1",
-      runtime: { subject: "TEAM_RUN", runId: "team-run-2" },
+      runtime: { subject: "TEAM_RUN", teamRunId: "team-run-2" },
     });
     expect(result.recoveryState).toEqual({
       status: "COMMITTED",
@@ -647,7 +666,7 @@ describe("Application context capability integration", () => {
     expect(teamPostMessage).toHaveBeenNthCalledWith(
       1,
       expect.objectContaining({ content: "team initial input", metadata: { phase: "initial-team" } }),
-      { kind: "route_key", memberRouteKey: "researcher" },
+      "/researcher",
     );
     expect(teamPostMessage).toHaveBeenNthCalledWith(
       2,
@@ -661,7 +680,7 @@ describe("Application context capability integration", () => {
         })],
         metadata: { phase: "follow-up" },
       }),
-      { kind: "route_key", memberRouteKey: "researcher" },
+      "/researcher",
     );
     expect(agentRunService.terminateAgentRun).toHaveBeenCalledWith("agent-run-1");
     expect(teamRunService.terminateTeamRun).toHaveBeenCalledWith("team-run-1");

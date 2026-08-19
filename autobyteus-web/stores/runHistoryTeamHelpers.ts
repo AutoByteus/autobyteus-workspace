@@ -1,56 +1,42 @@
-import { AgentContext } from '~/types/agent/AgentContext';
+import type { AgentContext } from '~/types/agent/AgentContext';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
-import type { TeamTreeNode, TeamRunHistoryItem } from '~/stores/runHistoryTypes';
+import type { TeamMemberTreeRow, TeamTreeNode, TeamRunHistoryItem } from '~/stores/runHistoryTypes';
 import { buildTeamRowsFromContext, buildTeamRowsFromHistoryItem, flattenTeamRows } from '~/stores/runHistoryTeamRows';
 
-const getLeafAgentContextsByRouteKey = (
-  teamContext: AgentTeamContext,
-): Map<string, AgentContext> => {
-  const candidate = teamContext.leafAgentContextsByRouteKey;
-  if (candidate instanceof Map) {
-    return candidate;
-  }
-  const legacyMembers = (teamContext as unknown as { members?: unknown }).members;
-  return legacyMembers instanceof Map ? legacyMembers as Map<string, AgentContext> : new Map();
+const leafContexts = (teamContext: AgentTeamContext): readonly AgentContext[] =>
+  teamContext.view.listAgentContextEntries().map((entry) => entry.agentContext);
+
+const persistentMemberContext = (teamContext: AgentTeamContext, memberAddress: string): AgentContext | null => {
+  if (!memberAddress) return null;
+  const entry = teamContext.view.listAgentContextEntries().find(
+    (candidate) => candidate.memberAddress === memberAddress,
+  );
+  return entry?.agentContext ?? null;
 };
 
 export const summarizeTeamDraft = (teamContext: AgentTeamContext, draftSummaryPrefix: string): string => {
-  const coordinatorMemberRouteKey = teamContext.coordinatorMemberRouteKey?.trim() || '';
-  const leafAgentContextsByRouteKey = getLeafAgentContextsByRouteKey(teamContext);
-  const coordinatorContext = coordinatorMemberRouteKey
-    ? leafAgentContextsByRouteKey.get(coordinatorMemberRouteKey) ?? null
-    : null;
-
+  const coordinatorContext = persistentMemberContext(
+    teamContext,
+    teamContext.view.getExecutionTree().root_team.coordinator_address,
+  );
   const firstCoordinatorUserMessage = coordinatorContext?.state.conversation.messages.find(
     (message) => message.type === 'user' && message.text?.trim().length > 0,
   );
-  if (firstCoordinatorUserMessage?.type === 'user') {
-    return firstCoordinatorUserMessage.text.trim();
-  }
-
-  if (!coordinatorContext) {
-    const firstMemberContext = leafAgentContextsByRouteKey.values().next().value ?? null;
-    const firstMemberUserMessage = firstMemberContext?.state.conversation.messages.find(
-      (message) => message.type === 'user' && message.text?.trim().length > 0,
+  if (firstCoordinatorUserMessage?.type === 'user') return firstCoordinatorUserMessage.text.trim();
+  for (const memberContext of leafContexts(teamContext)) {
+    const message = memberContext.state.conversation.messages.find(
+      (candidate) => candidate.type === 'user' && candidate.text?.trim().length > 0,
     );
-    if (firstMemberUserMessage?.type === 'user') {
-      return firstMemberUserMessage.text.trim();
-    }
+    if (message?.type === 'user') return message.text.trim();
   }
-
-  return `${draftSummaryPrefix}${teamContext.config.teamDefinitionName || 'Team'}`.trim();
+  return `${draftSummaryPrefix}${teamContext.view.getTeamDefinitionName() || 'Team'}`.trim();
 };
 
 export const resolveTeamLastActivityAt = (teamContext: AgentTeamContext): string => {
   let latest = '';
-  for (const member of getLeafAgentContextsByRouteKey(teamContext).values()) {
-    const ts = member.state.conversation.updatedAt || member.state.conversation.createdAt || '';
-    if (!ts) {
-      continue;
-    }
-    if (!latest || ts > latest) {
-      latest = ts;
-    }
+  for (const member of leafContexts(teamContext)) {
+    const timestamp = member.state.conversation.updatedAt || member.state.conversation.createdAt || '';
+    if (timestamp > latest) latest = timestamp;
   }
   return latest || new Date().toISOString();
 };
@@ -60,24 +46,44 @@ export const resolveTeamWorkspaceRootPathFromContext = (
   resolveWorkspaceRootPath: (workspaceId: string | null) => string,
   unassignedWorkspaceKey: string,
 ): string => {
-  if (teamContext.config.workspaceMetadata?.workspaceRootPath) {
-    return teamContext.config.workspaceMetadata.workspaceRootPath;
-  }
-  const fromTeamConfig = resolveWorkspaceRootPath(teamContext.config.workspaceId);
-  if (fromTeamConfig) {
-    return fromTeamConfig;
-  }
-  for (const member of getLeafAgentContextsByRouteKey(teamContext).values()) {
-    if (member.config.workspaceMetadata?.workspaceRootPath) {
-      return member.config.workspaceMetadata.workspaceRootPath;
-    }
-    const fromMemberConfig = resolveWorkspaceRootPath(member.config.workspaceId);
-    if (fromMemberConfig) {
-      return fromMemberConfig;
-    }
+  const config = teamContext.view.getConfigurationView();
+  const configured = config.workspaceMetadata?.workspaceRootPath
+    || resolveWorkspaceRootPath(config.workspaceId);
+  if (configured) return configured;
+  for (const member of leafContexts(teamContext)) {
+    const root = member.config.workspaceMetadata?.workspaceRootPath
+      || resolveWorkspaceRootPath(member.config.workspaceId);
+    if (root) return root;
   }
   return unassignedWorkspaceKey;
 };
+
+const rootDisplayRow = (params: {
+  teamRunId: string;
+  displayName: string;
+  teamDefinitionId: string;
+  coordinatorAddress: string;
+  summary: string;
+  lastActivityAt: string;
+  isActive: boolean;
+  children: TeamMemberTreeRow[];
+}): TeamMemberTreeRow => ({
+  teamRunId: params.teamRunId,
+  kind: 'agent_team',
+  memberAddress: '/',
+  displayName: params.displayName,
+  agentRunId: null,
+  teamDefinitionId: params.teamDefinitionId,
+  teamRunIdForNode: params.teamRunId,
+  coordinatorAddress: params.coordinatorAddress,
+  workspaceRootPath: null,
+  summary: params.summary,
+  lastActivityAt: params.lastActivityAt,
+  currentStatus: null,
+  isActive: params.isActive,
+  deleteLifecycle: 'READY',
+  children: params.children,
+});
 
 export const buildTeamNodes = (params: {
   teamRuns: TeamRunHistoryItem[];
@@ -91,79 +97,79 @@ export const buildTeamNodes = (params: {
   unassignedWorkspaceKey: string;
 }): TeamTreeNode[] => {
   const nodesByTeamRunId = new Map<string, TeamTreeNode>();
-
   for (const team of params.teamRuns) {
     const fallbackWorkspaceRootPath = team.members
-      .map((member) => params.normalizeRootPath(member.workspaceRootPath))
-      .find((value) => Boolean(value))
+      .map((member) => params.normalizeRootPath(member.workspaceRootPath)).find(Boolean)
       || params.unassignedWorkspaceKey;
-    const normalizedWorkspaceRootPath =
-      params.normalizeRootPath(team.workspaceRootPath) ||
-      fallbackWorkspaceRootPath;
-    const memberTree = buildTeamRowsFromHistoryItem(team);
-    const sortedMembers = flattenTeamRows(memberTree);
-    const coordinatorMemberRouteKey = team.coordinatorMemberRouteKey?.trim() || '';
-    const focusedMemberRouteKey =
-      sortedMembers.find((member) => member.memberRouteKey === coordinatorMemberRouteKey)?.memberRouteKey ||
-      sortedMembers[0]?.memberRouteKey ||
-      '';
-
+    const workspaceRootPath = params.normalizeRootPath(team.workspaceRootPath) || fallbackWorkspaceRootPath;
+    const children = buildTeamRowsFromHistoryItem(team);
+    const members = flattenTeamRows(children);
+    const memberAddress = members.some((member) => member.memberAddress === team.coordinatorAddress)
+      ? team.coordinatorAddress : members[0]?.memberAddress || '/';
+    const focusedAgentRunId = members.find((member) => member.memberAddress === memberAddress)?.agentRunId
+      ?? members.find((member) => member.agentRunId)?.agentRunId
+      ?? '';
+    const rootTeam = rootDisplayRow({
+      teamRunId: team.teamRunId,
+      displayName: team.teamDefinitionName || 'Team',
+      teamDefinitionId: team.teamDefinitionId,
+      coordinatorAddress: team.coordinatorAddress,
+      summary: team.summary,
+      lastActivityAt: team.createdAt,
+      isActive: team.isActive,
+      children,
+    });
     nodesByTeamRunId.set(team.teamRunId, {
       teamRunId: team.teamRunId,
       teamDefinitionId: team.teamDefinitionId,
       teamDefinitionName: team.teamDefinitionName || 'Team',
-      workspaceRootPath: normalizedWorkspaceRootPath,
+      workspaceRootPath,
       summary: team.summary,
       lastActivityAt: team.createdAt,
       isActive: team.isActive,
-      deleteLifecycle: 'READY' as const,
-      focusedMemberRouteKey,
-      members: sortedMembers,
-      memberTree,
+      deleteLifecycle: 'READY',
+      focusedAgentRunId,
+      rootTeam,
+      members,
       executionRows: [],
     });
   }
-
   for (const teamContext of params.teamContexts) {
-    const existing = nodesByTeamRunId.get(teamContext.teamRunId);
+    const teamRunId = teamContext.view.getRootTeamRunId();
+    const existing = nodesByTeamRunId.get(teamRunId);
     const workspaceRootPath = existing?.workspaceRootPath || params.resolveWorkspaceRootPathFromContext(teamContext);
     const summary = existing?.summary?.trim() || params.summarizeTeamDraft(teamContext);
     const lastActivityAt = existing?.lastActivityAt || params.resolveTeamLastActivityAt(teamContext);
-    const memberTree = buildTeamRowsFromContext(
-      teamContext,
+    const children = buildTeamRowsFromContext(teamContext, summary, lastActivityAt, params.resolveWorkspaceRootPath);
+    const members = flattenTeamRows(children);
+    const rootTeam = rootDisplayRow({
+      teamRunId,
+      displayName: teamContext.view.getTeamDefinitionName(),
+      teamDefinitionId: teamContext.view.getExecutionTree().root_team.team_definition_id,
+      coordinatorAddress: teamContext.view.getExecutionTree().root_team.coordinator_address,
       summary,
       lastActivityAt,
-      params.resolveWorkspaceRootPath,
-    );
-    const members = flattenTeamRows(memberTree);
-    const focusedMemberRouteKey = teamContext.focusedMemberRouteKey || members[0]?.memberRouteKey || '';
-    const deleteLifecycle = existing?.deleteLifecycle ?? ('READY' as const);
-    const teamDefinitionId =
-      existing?.teamDefinitionId ||
-      teamContext.config.teamDefinitionId ||
-      teamContext.teamRunId;
-
-    nodesByTeamRunId.set(teamContext.teamRunId, {
-      teamRunId: teamContext.teamRunId,
-      teamDefinitionId,
-      teamDefinitionName: teamContext.config.teamDefinitionName || existing?.teamDefinitionName || 'Team',
+      isActive: teamContext.view.isRootTeamActive(),
+      children,
+    });
+    const config = teamContext.view.getConfigurationView();
+    nodesByTeamRunId.set(teamRunId, {
+      teamRunId,
+      teamDefinitionId: existing?.teamDefinitionId || config.teamDefinitionId || teamRunId,
+      teamDefinitionName: config.teamDefinitionName || existing?.teamDefinitionName || 'Team',
       workspaceRootPath,
       summary,
       lastActivityAt,
-      isActive: teamContext.isActive,
-      deleteLifecycle,
-      focusedMemberRouteKey,
+      isActive: teamContext.view.isRootTeamActive(),
+      deleteLifecycle: existing?.deleteLifecycle ?? 'READY',
+      focusedAgentRunId: teamContext.view.getFocusedAgentRunId(),
+      rootTeam,
       members,
-      memberTree,
       executionRows: [],
     });
   }
-
-  // Preserve source/insertion order to avoid dynamic recency-based row jumping in the tree.
   const allNodes = Array.from(nodesByTeamRunId.values());
-  if (!params.workspaceRootPath) {
-    return allNodes;
-  }
+  if (!params.workspaceRootPath) return allNodes;
   const normalizedWorkspaceRootPath = params.normalizeRootPath(params.workspaceRootPath);
   return allNodes.filter((node) => node.workspaceRootPath === normalizedWorkspaceRootPath);
 };

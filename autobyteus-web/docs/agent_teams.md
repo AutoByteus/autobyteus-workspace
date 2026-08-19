@@ -136,8 +136,8 @@ That surface owns:
 - a collapsed-by-default **Team Members Override** disclosure with the label
   followed by a visible chevron, leaf-member count, optional active-override
   count, and a recursive member override tree for nested team definitions, with
-  subteam group rows and leaf-member override controls keyed by backend
-  `memberRouteKey`, and
+  subteam group rows and leaf-member override controls keyed by canonical rooted
+  `memberAddress`, and
 - runtime-scoped model catalog loading for the team default plus any explicit member runtime overrides.
 
 `MemberOverrideTree.vue` owns nested grouping and forwards leaf updates to
@@ -225,66 +225,59 @@ The frontend still creates a local temporary team context first, but mixed-runti
 This is the frontend contract that makes the backend `TeamBackendKind.MIXED` path reachable from the actual app UX rather than only from backend/API-only proof.
 
 For nested team definitions, the backend launches through the mixed topology
-path even when all leaf members use the same runtime. Leaf launch configs must
-therefore preserve `memberRouteKey` so duplicate leaf names under different
-subteams stay distinguishable. A top-level subteam is a first-class runtime
-target: sending to that member routes into the child team default/coordinator
-instead of flattening to an arbitrary child leaf. Team communication uses a
-separate scoped roster: parent members can address exposed subteam
-representatives such as `review_lead`, which routes to `BuildSquad/review_lead`,
-while that represented coordinator can report upward to exposed immediate
-parent-boundary recipients such as `program_manager`.
+path even when all leaf members use the same runtime. Leaf launch configs carry
+canonical rooted `memberAddress` values so duplicate leaf names in different
+subteams remain distinct. A subteam is structural topology, not an executable
+Agent target; user messages and runtime commands address an exact leaf Agent
+execution.
 
-Team member focus has three related, intentionally separate meanings. Roster or
-history visual focus is the route key currently selected for display in the
-history tree and focus pane within one owning team run; it is resolved from the
-recursive `memberTree` plus task-execution projections and can point at
-inactive or all-offline logical members so users can inspect their saved member
-history. A history row is selected/current only when its `teamRunId` is the
-authoritative selected team run and its route key matches that run's focused
-member route. This team-run scope prevents identical route keys in separate
-historical runs from appearing selected at once, and the current row carries
-the single `aria-current="true"` navigation state. User-message target focus
-is the typed `ConversationTargetAddress` selected by
-`resolveTeamConversationTargetAddressResult(...)` for the shared composer and
-text send path. It first preserves the valid roster-focused structural leaf or
-subteam target, so the first message in a new/all-offline team can go directly
-to a focused non-coordinator member instead of falling back to the coordinator;
-it also addresses runtime task-agent executions, task-team roots, and members
-inside task-team executions with explicit `task_agent` / `task_team` segments
-instead of encoding runtime ids into route-key strings. Draft context files,
-finalized attachment ownership, and optimistic local user messages use the
-resolver's local target key, while outbound team chat sends
-`SEND_MESSAGE.conversation_target_address` as the backend routing contract.
-The Team Messages perspective uses the same focused
-`ConversationTargetAddress` and exact normalized address equality against
-address-first `senderAddress` / `receiverAddress` message fields, so focused
-task-team and task-agent rows do not rely on display-name or route-key fallback
-matching.
-Missing or stale focused members and incomplete runtime identity fail validation
-instead of silently retargeting; the active-execution safety fallback is only
-used for task-agent-only logical-member conversations that should not receive
-ordinary user chat. Active-execution command focus remains the safe
-runtime-control route key; it is normalized through the active runtime/member
-context so stale task-agent or inactive logical rows are not accidentally used
-as stop/interrupt targets.
+Team focus is one exact `TeamExecutionAddress`:
 
-The active-execution routing contract also applies to the shared composer stop
-control. Team interrupt dispatch resolves the active-execution-focused member at
-action time, sends `target_member_route_key` as that command member route key,
-includes `target_member_run_id` only as a stale-target guard, and does not use a
-team-run-only fallback when the command member target is missing or stale. As a
-result, a selected inactive roster member can be visible in the Focus header
-while stop/interrupt remains pinned to a safe active-execution target; ordinary
-text sends use the user-message target resolver described above.
+```ts
+interface TeamExecutionAddress {
+  rootTeamRunId: string;
+  taskTeamRunIds: readonly string[];
+  memberAddress: string;
+  taskAgentRunId: string | null;
+}
+```
 
-For focused-member sends to an offline or idle member, the backend status stream
-is the visible-status authority: once the command is accepted and the member
-target is known, the team backend publishes member-scoped
-`AGENT_STATUS initializing` before lazy member startup or send work finishes.
-Team containers do not publish a synthetic five-state status. Root team
-liveness remains the manager-owned binary `TEAM_RUN_LIFECYCLE` fact, separate
-from the selected member's status and interrupt authority.
+`memberAddress` is the rooted logical Agent placement (for example
+`/BuildSquad/review_lead`). The ordered `taskTeamRunIds` identify nested task-Team
+execution lineage, and `taskAgentRunId` distinguishes a task-Agent execution
+from its stable logical member. Structural leaf executions use an empty task-Team
+lineage and `null` task-Agent id. The frontend validates and serializes exactly
+these four fields; legacy path, route-key, instance-id, or generated-run-id
+fallbacks are not accepted.
+
+`agentTeamRunStore.sendMessageToFocusedMember()` sends ordinary chat only to the
+focused exact Agent execution. For a draft, the selected immutable draft and its
+focused rooted member address are admitted synchronously before any asynchronous
+allocation; pending edits, focus changes, input changes, removal, selection
+changes, clear, and duplicate launches are rejected until that launch either
+promotes once or releases after failure. After launch or restore, the store
+starts one local submission for the exact focused Agent context, finalizes its
+attachments, connects the Team stream, and emits `SEND_MESSAGE` with
+`execution_address`, required `message_id`, and required `dedupe_key`. Missing,
+stale, non-Agent, or cross-root addresses fail closed rather than retargeting.
+An accepted server result means the exact member AgentRun owns the input. The
+AgentRun may append it to the identified Codex turn or retain it for a later
+AutoByteus/Claude turn; Team frontend state does not choose that policy or
+create another queue.
+
+The same exact address is the identity for focus, run-open hydration, token usage,
+Team Communication perspectives, tool approval, and interrupt. Team
+`INTERRUPT_GENERATION` carries `{command_id, execution_address}`;
+`AGENT_COMMAND_ACK` must match both fields before the pending command completes.
+Team tool approval and denial carry `{invocation_id, execution_address, reason}`;
+the execution address captured from the authoritative `agent_execution` event is
+reused even if UI focus later changes. No command reconstructs identity from a
+display name, a route-key alias, a structural template, or an invocation id.
+
+Root `TEAM_RUN_LIFECYCLE` remains a binary Team-container fact. Exact
+`AGENT_STATUS` events own leaf `offline` / `initializing` / `idle` / `running` /
+`error` state. WebSocket subscription state remains separate from both. This
+keeps Team liveness, leaf status, focus, and interrupt authority independent.
 
 ## Stopped Team Follow-Up And Termination State
 
@@ -306,6 +299,9 @@ root `isActive`; the later canonical member terminal/status event removes the
 interrupt affordance. Rejected/failed acknowledgement or local
 not-connected/send/disconnect completion produces one member-aware localized
 toast without transcript, member-status, root-liveness, or retry side effects.
+Input admitted while Stop is settling remains FIFO-owned on the server and is
+forwarded only after the matching interrupt reservation is rejected/released or
+the accepted interrupt reaches its canonical terminal.
 
 Workspace team history is backed by the server V2 team catalog, not by durable
 live-status fields. `listWorkspaceRunHistory` returns team rows with
@@ -333,55 +329,56 @@ displays. The frontend treats non-null metadata from the backend as authoritativ
 for inspection and treats null metadata as not recorded; backend recovery,
 materialization, or backfill is outside the Agent Teams frontend module.
 
-Backend team-run metadata is recursive for nested teams. Frontend history and
-selected-run surfaces use that tree for subteam grouping while deriving flat
-leaf-agent maps only where a leaf runtime context is required. `AgentTeamContext`
-therefore carries `memberTree`, `memberNodesByRouteKey`,
-`leafAgentContextsByRouteKey`, and `focusedMemberRouteKey`.
-Route-key/path identity from metadata remains authoritative for reconnect,
-stream attribution, focus changes, and command targeting. Stream payloads for
-nested activity can include `member_path`, `member_route_key`, `source_path`,
-and `source_route_key`; one-name aliases are display compatibility only.
-Delegated task execution stream payloads add explicit execution identity.
-Task-agent payloads carry `execution_kind: "task_agent"`,
-`task_agent_instance_id`, `task_agent_run_id`, and `task_id`; the web client
-projects them as transient task-agent child nodes under the stable logical
-member. Task-team payloads carry `execution_kind: "task_team"`,
-`task_team_instance_id`, `task_team_run_id`, `task_id`, `team_path`, and
-`team_route_key`; the client projects them as transient task-team root nodes
-that are distinct from the structural `agent_team` member. Child-member events
-inside a task-team run must carry `task_team_run_id` plus relative child route
-or path fields, and the client scopes those child nodes/contexts under the
-concrete task-team run. Logical member/team parents remain part of the stable
-team topology. The Workspaces tree renders those live task projections inline as
-transient execution identity rows with explicit stable/transient display
-semantics: a ghost row background, exactly one leading explicit eight-dot SVG
-ring status marker, no extra dotted avatar/trailing marker, and no visible
-temporary label. Transient task-team children are revealed through the execution
-row's own identity-keyed disclosure state: row-body activation toggles child
-visibility while selecting/focusing that transient row, and the explicit
-disclosure control remains a stopped toggle-only target. Team → Tasks remains
-the clean persisted delegated-task body/reference/technical-detail surface:
-summary rows show task text without a leading status dot or visible status label, reference
-rows are selectable without a separate visible `References` heading, and
-actor/member hierarchy, focus controls, and approval controls stay out of the
-right pane.
-Active-execution focus, send/approval targeting, interrupt, and run-open
-hydration use explicit task execution identity instead of parsing generated
-run-id formats or guessing from structural team names.
+Backend TeamRun metadata is schema-v3 and recursive. It contains one `rootTeam`
+tree whose Agent nodes carry rooted `address`, stable `agentRunId`, launch
+settings, and physical-memory metadata. Child Team nodes carry their own
+`teamRunId`. Logical topology uses AgentTeam addresses; physical persistence uses
+`rootTeamRunId` plus `ancestorTeamRunIds`. The frontend projects this metadata
+into a stable topology model and a separate execution model keyed only by
+serialized `TeamExecutionAddress`.
 
-Subteam focus is a real UI state. Focusing a subteam such as `BuildSquad`
-shows the subteam Team Messages perspective, while focusing a leaf such as
-`BuildSquad/review_lead` shows that member transcript. Team Messages can carry
-represented-subteam metadata, so parent-to-representative and upward-report
-rows display the responsible subteam badge/breadcrumb while still targeting the
-actual leaf participant path. Display labels use the membership label at the
-current boundary (`BuildSquad`, `review_lead`, `qa_specialist`) rather than
-stale flattened route copies. Subteam/group tiles do not expose an agent
-status; only exact leaf agents render the five-state status vocabulary. Internal
-child team runs are opened
-through their parent subteam node and should not appear as separate top-level
-history rows.
+Every Team Agent stream event carries one strict `agent_execution` binding:
+
+```ts
+{
+  kind: 'structural' | 'task_agent' | 'task_team_member';
+  execution_address: {
+    root_team_run_id: string;
+    task_team_run_ids: string[];
+    member_address: string;
+    task_agent_run_id: string | null;
+  };
+  agent_run_id?: string;
+}
+```
+
+The strict contract does not expose `execution_kind`, task instance ids,
+member/source paths or route keys, represented-subteam fields, or generic
+egress identity aliases. `TeamStreamingService` parses the shared protocol,
+reconciles each binding through the Team execution model, and applies the
+resulting effect to the exact Agent context. Unknown topology, incomplete
+identity, wrong roots, and invalid task lineage are rejected instead of guessed.
+
+Task-Agent and task-Team executions are transient execution projections, not
+structural topology. A task-Agent address keeps the logical `memberAddress` and
+adds its `taskAgentRunId`; a task-Team member address appends the concrete child
+TeamRun id to `taskTeamRunIds` and identifies the exact child Agent with a rooted
+`memberAddress`. Complete task snapshots and live events converge through the
+same canonical address. The Workspaces tree renders execution rows from this
+model and selection/focus uses exact serialized address equality, so identical
+member names, repeated logical placements, and nested task executions cannot
+collide.
+
+Team → Tasks remains the durable delegated-task surface. It renders persisted
+records and reference files, while the Workspaces tree renders the live execution
+hierarchy. The two surfaces share canonical task records and addresses but do
+not derive one another from transient display rows.
+
+Subteam rows remain grouping/navigation structure. The executable focus is an
+exact Agent address such as `/BuildSquad/review_lead`; Team Communication stores
+and compares the complete sender and receiver execution addresses. Display
+labels are derived from canonical topology only after identity has been
+resolved.
 
 ## Store Ownership
 

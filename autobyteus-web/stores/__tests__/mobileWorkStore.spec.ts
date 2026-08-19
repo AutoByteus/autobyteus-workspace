@@ -73,7 +73,7 @@ describe('mobileWorkStore', () => {
       title: 'Team',
       summary: 'Running team',
       workspaceRootPath: '/Users/normy/project',
-      focusedMemberRouteKey: 'builder',
+      focusedAgentRunId: 'builder-run',
       isActive: true,
       lastActivityAt: '2026-05-18T16:00:00.000Z',
       statusLabel: 'Running',
@@ -88,7 +88,7 @@ describe('mobileWorkStore', () => {
       presentation: 'inline',
     });
 
-    expect(store.updateFocusedTeamMember('team-1', 'reviewer')).toBe(true);
+    expect(store.updateFocusedTeamMember('team-1', 'reviewer-run')).toBe(true);
     expect(store.pendingFilePreviewRequest).toBeNull();
   });
 });

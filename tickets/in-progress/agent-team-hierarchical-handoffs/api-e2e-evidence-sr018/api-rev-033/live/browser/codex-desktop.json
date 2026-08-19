@@ -1,0 +1,45 @@
+{
+  "scenario": "codex-desktop-run",
+  "runtime": "codex_app_server",
+  "model": "gpt-5.6-luna",
+  "token": "API33_CODEX_DESKTOP_OK",
+  "rootTeamRunId": "nested_classroom_test_team_6536825afbaa4c09941ec0fe6cbb187f",
+  "configured": {
+    "draftId": "team-draft-2ed60d8b-1f18-4623-9df0-856936d297ef",
+    "runtimeKind": "codex_app_server",
+    "model": "gpt-5.6-luna",
+    "workspaceId": "temp_ws_default",
+    "focusedMemberAddress": "/Teacher",
+    "frozenDraft": true,
+    "frozenConfig": true
+  },
+  "reasoningEffort": "medium",
+  "allocationRequests": 1,
+  "exact": {
+    "draftRemoved": true,
+    "inFlightReleased": true,
+    "selection": {
+      "kind": "team_run",
+      "rootTeamRunId": "nested_classroom_test_team_6536825afbaa4c09941ec0fe6cbb187f"
+    },
+    "rootTeamRunId": "nested_classroom_test_team_6536825afbaa4c09941ec0fe6cbb187f"
+  },
+  "rawProviderEvidence": {
+    "exactAssistant": true,
+    "rawTracePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-033-live-20260812-1/memory/agent_teams/nested_classroom_test_team_6536825afbaa4c09941ec0fe6cbb187f/test_teacher_b6400623f38445d9a50fa07f197875ea/raw_traces_active.jsonl"
+  },
+  "conditions": {
+    "configuredExactFrozenDraft": true,
+    "reasoningEffortMedium": true,
+    "allocationExactlyOnce": true,
+    "canonicalSelection": true,
+    "canonicalContext": true,
+    "draftRemovedAndUnlocked": true,
+    "providerResponseExactInCurrentRawTrace": true
+  },
+  "passed": true,
+  "termination": {
+    "success": true,
+    "message": "Agent team run terminated successfully."
+  }
+}

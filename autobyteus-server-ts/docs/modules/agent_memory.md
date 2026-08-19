@@ -12,13 +12,13 @@ Memory files live under the configured memory root:
 
 - Standalone runs: `memory/agents/<runId>/...`
 - Direct team members: `memory/agent_teams/<rootTeamRunId>/<memberRunId>/...`
-- Nested subteam members: `memory/agent_teams/<rootTeamRunId>/<childTeamRunId>/<memberRunId>/...`; deeper nesting appends each child team run id to that root-relative `teamRunPath` before the member id
-- Task-agent runs: `memory/agent_teams/<rootTeamRunId>/<...teamRunPath>/<taskAgentRunId>/...` using the logical member's team memory scope
+- Nested subteam members: `memory/agent_teams/<rootTeamRunId>/<childTeamRunId>/<memberRunId>/...`; deeper nesting appends each physical ancestor TeamRun id before the AgentRun id
+- Task-Agent runs: `memory/agent_teams/<rootTeamRunId>/<...ancestorTeamRunIds>/<taskAgentRunId>/...` using the logical member's physical Team memory scope
 - Imported Memory Sync sources: `memory/imports/<sourceNodeId>/agents/...` and
   `memory/imports/<sourceNodeId>/agent_teams/...`, with source metadata in
   `source-node.json` and sync state in `sync-manifest.json`.
 
-The `runId`, `memberRunId`, `taskAgentRunId`, `teamRunId`, and `teamRunPath`
+The `runId`, `memberRunId`, `taskAgentRunId`, `teamRunId`, and `ancestorTeamRunIds`
 segments are opaque stored identifiers. Readers must not parse generated id
 shapes or derive nested member storage from a flattened member list; they should
 use the resolved `memoryDir` or `AgentMemoryLocationService`.
@@ -84,6 +84,23 @@ Raw traces, manifests, archives, and lineage are never mutated. Warning/failure
 results are recorded and retryable while ordinary server startup continues.
 
 The old monolithic `raw_traces_archive.jsonl` file is no longer an active read/write target. Historical monolithic archive files are intentionally not read by the approved no-compatibility policy.
+
+## Conversation Activity Classification For Restore
+
+`AgentConversationActivityInspector` is a read-only activation guard over one
+resolved run memory directory. It reports `present` when the active raw-trace
+file or a manifest-declared complete rotated segment contains canonical prior
+activity, `none` when canonical activity is absent, and `indeterminate` when an
+active file, manifest, or complete segment is malformed or unreadable. Pending
+manifest entries do not count as complete history. The inspector never repairs,
+truncates, rotates, or rewrites memory.
+
+Team-member activation uses this classification before candidate construction.
+A restored native AutoByteus member with `present` activity selects local-state
+restore, while `none` permits genuinely fresh materialization. An external
+member with `present` activity but no persisted provider binding fails closed.
+`indeterminate` is always a continuation-safety error rather than permission to
+create a replacement run.
 
 Memory Sync does not move or wrap local runtime memory. `memory/agents` and
 `memory/agent_teams` remain the active local runtime roots. Imported Memory Sync
@@ -407,7 +424,7 @@ Agent explorer summaries include display name, stable ID, run count, latest memo
 
 `TeamMemoryExplorerService` reads team-run metadata and builds member memory targets. It includes a team run only when at least one member target has inspectable memory. Team groups use `teamDefinitionId`; each summary includes the team display name, team-run count, distinct member-memory count, latest memory timestamp, and merged availability.
 
-Team-run summaries include team run metadata, merged availability across member targets, and `memberTargets` containing only members with memory. The backend builds those targets from recursive metadata and `AgentMemoryLocationService`, so nested member availability is resolved from the root-hierarchical `rootTeamRunId + teamRunPath + memberRunId` memory directory rather than from a flattened root-team/member assumption.
+Team-run summaries include TeamRun metadata, merged availability across member targets, and `memberTargets` containing only members with memory. The backend builds those targets from schema-v3 recursive metadata and `AgentMemoryLocationService`: logical selection uses rooted `memberAddress`, while physical lookup uses `rootTeamRunId + ancestorTeamRunIds + agentRunId` rather than a flattened Team/member assumption.
 
 When `AgentMemoryLocationService` is constructed with an explicit `memoryDir`,
 its topology/readback collaborators must use the same memory root. Do not mix a
@@ -544,6 +561,7 @@ above.
 - Raw-trace record normalization: `src/agent-memory/services/raw-trace-record-normalizer.ts`
 - Explorer helpers: `src/agent-memory/services/memory-run-summary-builder.ts`, `src/agent-memory/services/team-memory-member-target-builder.ts`, `src/agent-memory/services/memory-explorer-page.ts`
 - Memory location owner: `src/agent-memory/services/agent-memory-location-service.ts`
+- Conversation activity guard: `src/agent-memory/services/agent-conversation-activity-inspector.ts`
 - Memory layout owner: `src/agent-memory/store/agent-memory-layout.ts`
 - Team memory topology reader: `src/run-history/services/team-run-memory-topology-reader.ts`
 - Explorer GraphQL types/resolver: `src/api/graphql/types/memory-explorer-schema.ts`, `src/api/graphql/types/memory-explorer.ts`

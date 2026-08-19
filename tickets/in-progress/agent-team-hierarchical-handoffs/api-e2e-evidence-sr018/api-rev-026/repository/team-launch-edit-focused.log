@@ -1,0 +1,256 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web
+
+stderr | stores/__tests__/teamRunConfigStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/RunConfigPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/teamRunConfigStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ stores/__tests__/teamRunConfigStore.spec.ts (8 tests | 1 failed) 11ms
+   ✓ teamRunConfigStore > setTemplate > sets team config from definition defaults 2ms
+   ✓ teamRunConfigStore > applyConfigEdit > applies closed typed edits through immutable replacement 1ms
+   ✓ teamRunConfigStore > hasConfig getter > returns false initially 0ms
+   ✓ teamRunConfigStore > hasConfig getter > returns true after setting template 0ms
+   ✓ teamRunConfigStore > launchReadiness getter > blocks launch when workspace is missing 0ms
+   × teamRunConfigStore > launchReadiness getter > blocks launch when a member runtime override breaks inherited default model availability 5ms
+     → expected [ { memberName: '/Reviewer', …(2) } ] to deeply equal [ ObjectContaining{…} ]
+   ✓ teamRunConfigStore > launchReadiness getter > allows launch once the mixed-runtime row has a compatible explicit model 0ms
+   ✓ teamRunConfigStore > clearConfig > resets all state 0ms
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > keeps draft team configuration editable for workspace selection events
+[Vue warn]: Unhandled error during execution of component event handler 
+  at <TeamRunConfigForm key=2 config= {
+  teamDefinitionId: 'team-def-1',
+  teamDefinitionName: 'Team team-def-1',
+  workspaceId: 'ws-original',
+  isLocked: false
+} team-definition= { id: 'team-def-1', name: 'Team team-def-1', nodes: [] }  ... > 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+ ❯ components/workspace/config/__tests__/RunConfigPanel.spec.ts (16 tests | 3 failed) 66ms
+   ✓ RunConfigPanel > renders placeholder when nothing selected 6ms
+   ✓ RunConfigPanel > renders Agent Form when Agent Template set 5ms
+   ✓ RunConfigPanel > renders Team Form when Team Template set 4ms
+   × RunConfigPanel > triggers team run on button click when launch readiness passes 7ms
+     → expected "spy" to be called at least once
+   ✓ RunConfigPanel > loads a pending New workspace path before creating an agent run 6ms
+   ✓ RunConfigPanel > blocks agent run creation when pending New workspace loading fails 3ms
+   ✓ RunConfigPanel > allows Run Agent with a non-empty pending New path even before it is preloaded 2ms
+   × RunConfigPanel > loads a pending New workspace path before creating a team run 4ms
+     → expected "spy" to be called 1 times, but got 0 times
+   ✓ RunConfigPanel > disables team run and shows the blocking message when mixed-runtime readiness fails 5ms
+   ✓ RunConfigPanel > disables team run when workspace is missing 3ms
+   ✓ RunConfigPanel > disables agent run when workspace is missing 3ms
+   ✓ RunConfigPanel > keeps draft agent configuration editable for workspace selection events 3ms
+   × RunConfigPanel > keeps draft team configuration editable for workspace selection events 7ms
+     → teamRunConfigStore.applyConfigEdit is not a function
+   ✓ RunConfigPanel > returns to event view from selection-mode config header action 4ms
+   ✓ RunConfigPanel > passes read-only mode to selected existing run configuration and ignores workspace edit events 2ms
+   ✓ RunConfigPanel > passes read-only mode to selected existing team configuration and ignores workspace edit events 1ms
+ ❯ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts (12 tests | 5 failed) 114ms
+   ✓ TeamRunConfigForm > places team auto approve before a collapsed accessible member override disclosure 28ms
+   ✓ TeamRunConfigForm > toggles the member override disclosure without mutating config fields 6ms
+   ✓ TeamRunConfigForm > renders runtime selector and member override entries 5ms
+   ✓ TeamRunConfigForm > loads models for the team runtime and syncs runtime catalogs for explicit member runtimes 4ms
+   × TeamRunConfigForm > changes runtime kind and reloads runtime-scoped models 8ms
+     → expected 'autobyteus' to be 'codex_app_server' // Object.is equality
+   × TeamRunConfigForm > renders Codex effort-only reasoning defaults visibly on the team-global config path 16ms
+     → expected null to deeply equal { reasoning_effort: 'xhigh' }
+   ✓ TeamRunConfigForm > starts team-global advanced collapsed for OpenAI Responses off defaults 17ms
+   × TeamRunConfigForm > prunes inherited member-only llmConfig overrides when the global model changes 5ms
+     → expected 'gpt-5.4' to be 'gpt-5.3-codex' // Object.is equality
+   × TeamRunConfigForm > prunes inherited member llmConfig overrides when the global runtime changes 5ms
+     → expected 'autobyteus' to be 'codex_app_server' // Object.is equality
+   × TeamRunConfigForm > renders nested leaf overrides under their subteam group and keeps canonical-address override identity 8ms
+     → expected {} to match object { '/BuildSquad/review_lead': { …(2) } }
+   ✓ TeamRunConfigForm > renders selected existing team run configuration as read-only while keeping member overrides inspectable 8ms
+   ✓ TeamRunConfigForm > marks historical team member config as missing when read-only metadata has null llmConfig 4ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 9 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  stores/__tests__/teamRunConfigStore.spec.ts > teamRunConfigStore > launchReadiness getter > blocks launch when a member runtime override breaks inherited default model availability
+AssertionError: expected [ { memberName: '/Reviewer', …(2) } ] to deeply equal [ ObjectContaining{…} ]
+
+- Expected
++ Received
+
+  [
+-   ObjectContaining {
+-     "memberName": "Reviewer",
++   {
++     "memberName": "/Reviewer",
++     "message": "Global model gpt-5.4 is unavailable for Claude Agent SDK; choose a compatible /Reviewer model or clear the runtime override.",
+      "runtimeKind": "claude_agent_sdk",
+    },
+  ]
+
+ ❯ stores/__tests__/teamRunConfigStore.spec.ts:100:55
+     98| 
+     99|       expect(store.launchReadiness.canLaunch).toBe(false)
+    100|       expect(store.launchReadiness.unresolvedMembers).toEqual([
+       |                                                       ^
+    101|         expect.objectContaining({ memberName: 'Reviewer', runtimeKind:…
+    102|       ])
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/9]⎯
+
+ FAIL  components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > triggers team run on button click when launch readiness passes
+AssertionError: expected "spy" to be called at least once
+ ❯ components/workspace/config/__tests__/RunConfigPanel.spec.ts:245:35
+    243|     const contextStore = useAgentTeamContextsStore() as any
+    244|     expect(contextStore.createRunFromTemplate).toHaveBeenCalled()
+    245|     expect(teamStore.clearConfig).toHaveBeenCalled()
+       |                                   ^
+    246|   })
+    247| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/9]⎯
+
+ FAIL  components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > loads a pending New workspace path before creating a team run
+AssertionError: expected "spy" to be called 1 times, but got 0 times
+ ❯ components/workspace/config/__tests__/RunConfigPanel.spec.ts:405:35
+    403|     )
+    404|     expect(teamContextState.createRunFromTemplate).toHaveBeenCalledTim…
+    405|     expect(teamStore.clearConfig).toHaveBeenCalledTimes(1)
+       |                                   ^
+    406|   })
+    407| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/9]⎯
+
+ FAIL  components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > keeps draft team configuration editable for workspace selection events
+TypeError: teamRunConfigStore.applyConfigEdit is not a function
+ ❯ handleSelectExisting components/workspace/config/RunConfigPanel.vue:226:24
+    224| 
+    225|   if (effectiveTeamConfig.value) {
+    226|     teamRunConfigStore.applyConfigEdit({ kind: 'set_workspace', worksp…
+       |                        ^
+    227|     setActiveTab('files')
+    228|   } else if (effectiveAgentConfig.value) {
+ ❯ callWithErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:200:19
+ ❯ callWithAsyncErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:207:17
+ ❯ emit ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:4382:5
+ ❯ components/workspace/config/__tests__/RunConfigPanel.spec.ts:533:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/9]⎯
+
+ FAIL  components/workspace/config/__tests__/TeamRunConfigForm.spec.ts > TeamRunConfigForm > changes runtime kind and reloads runtime-scoped models
+AssertionError: expected 'autobyteus' to be 'codex_app_server' // Object.is equality
+
+Expected: "codex_app_server"
+Received: "autobyteus"
+
+ ❯ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts:374:32
+    372|     await wrapper.vm.$nextTick()
+    373| 
+    374|     expect(config.runtimeKind).toBe('codex_app_server')
+       |                                ^
+    375|     expect(config.llmModelIdentifier).toBe('')
+    376|     expect(llmStore.fetchProvidersWithModels).toHaveBeenCalledWith('co…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/9]⎯
+
+ FAIL  components/workspace/config/__tests__/TeamRunConfigForm.spec.ts > TeamRunConfigForm > renders Codex effort-only reasoning defaults visibly on the team-global config path
+AssertionError: expected null to deeply equal { reasoning_effort: 'xhigh' }
+
+- Expected: 
+{
+  "reasoning_effort": "xhigh",
+}
+
++ Received: 
+null
+
+ ❯ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts:408:30
+    406|     await reasoningSelect.setValue('xhigh')
+    407| 
+    408|     expect(config.llmConfig).toEqual({ reasoning_effort: 'xhigh' })
+       |                              ^
+    409|   })
+    410| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/9]⎯
+
+ FAIL  components/workspace/config/__tests__/TeamRunConfigForm.spec.ts > TeamRunConfigForm > prunes inherited member-only llmConfig overrides when the global model changes
+AssertionError: expected 'gpt-5.4' to be 'gpt-5.3-codex' // Object.is equality
+
+Expected: "gpt-5.3-codex"
+Received: "gpt-5.4"
+
+ ❯ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts:454:39
+    452|     await wrapper.vm.$nextTick()
+    453| 
+    454|     expect(config.llmModelIdentifier).toBe('gpt-5.3-codex')
+       |                                       ^
+    455|     expect(config.llmConfig).toBeNull()
+    456|     expect(config.memberOverrides).toEqual({
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/9]⎯
+
+ FAIL  components/workspace/config/__tests__/TeamRunConfigForm.spec.ts > TeamRunConfigForm > prunes inherited member llmConfig overrides when the global runtime changes
+AssertionError: expected 'autobyteus' to be 'codex_app_server' // Object.is equality
+
+Expected: "codex_app_server"
+Received: "autobyteus"
+
+ ❯ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts:485:32
+    483|     await wrapper.vm.$nextTick()
+    484| 
+    485|     expect(config.runtimeKind).toBe('codex_app_server')
+       |                                ^
+    486|     expect(config.llmModelIdentifier).toBe('')
+    487|     expect(config.llmConfig).toBeNull()
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/9]⎯
+
+ FAIL  components/workspace/config/__tests__/TeamRunConfigForm.spec.ts > TeamRunConfigForm > renders nested leaf overrides under their subteam group and keeps canonical-address override identity
+AssertionError: expected {} to match object { '/BuildSquad/review_lead': { …(2) } }
+
+- Expected
++ Received
+
+- {
+-   "/BuildSquad/review_lead": {
+-     "agentDefinitionId": "agent-review",
+-     "runtimeKind": "codex_app_server",
+-   },
+- }
++ {}
+
+ ❯ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts:522:62
+    520|       runtimeKind: 'codex_app_server',
+    521|     })
+    522|     expect((wrapper.props('config') as any).memberOverrides).toMatchOb…
+       |                                                              ^
+    523|       '/BuildSquad/review_lead': {
+    524|         agentDefinitionId: 'agent-review',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/9]⎯
+
+
+ Test Files  3 failed (3)
+      Tests  9 failed | 27 passed (36)
+   Start at  07:58:32
+   Duration  5.67s (transform 2.94s, setup 14.13s, collect 558ms, tests 191ms, environment 609ms, prepare 448ms)
+

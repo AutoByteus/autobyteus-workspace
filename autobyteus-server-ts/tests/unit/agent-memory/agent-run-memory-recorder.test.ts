@@ -51,6 +51,7 @@ const createRun = (input: {
   const backend: AgentRunBackend = {
     runId: "run-1",
     runtimeKind: input.runtimeKind,
+    inputCapabilities: { activeTurnAppend: "unsupported" },
     getContext: () => context,
     isActive: () => true,
     getPlatformAgentRunId: () => "platform-run-1",
@@ -63,7 +64,10 @@ const createRun = (input: {
       listeners.add(listener);
       return () => listeners.delete(listener);
     },
-    postUserMessage: vi.fn(async () => ({ accepted: true, turnId: input.turnId ?? "turn-1" })),
+    dispatchUserInput: vi.fn(async () => ({
+      forwarded: true,
+      turnId: input.turnId ?? "turn-1",
+    })),
     approveToolInvocation: vi.fn(async () => ({ accepted: true })),
     interrupt: vi.fn(async () => ({ accepted: true })),
     terminate: vi.fn(async () => ({ accepted: true })),
@@ -89,19 +93,19 @@ const readView = (memoryDir: string) =>
     });
 
 describe("AgentRunMemoryRecorder", () => {
-  it("records accepted commands and normalized events without a stream subscriber", async () => {
+  it("records forwarded commands and normalized events without a stream subscriber", async () => {
     const memoryDir = await mkTempDir();
     const recorder = new AgentRunMemoryRecorder();
+    const onUserMessageForwarded = vi.spyOn(recorder, "onUserMessageForwarded");
     const { run } = createRun({ runtimeKind: RuntimeKind.CODEX_APP_SERVER, memoryDir, recorder });
     recorder.attachToRun(run);
 
     await run.postUserMessage(new AgentInputUserMessage("hello"));
-    await run.publishEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
-      id: "text-1",
-      segment_type: "text",
-      delta: "hi there",
+    await vi.waitFor(() => expect(onUserMessageForwarded).toHaveBeenCalledOnce());
+    await run.publishEvent(event(AgentRunEventType.ASSISTANT_COMPLETE, {
+      turn_id: "turn-1",
+      content: "hi there",
     }));
-    await run.publishEvent(event(AgentRunEventType.SEGMENT_END, { id: "text-1" }));
     await recorder.waitForIdle("run-1");
 
     expect(readView(memoryDir).rawTraces?.map((trace) => [trace.traceType, trace.content])).toEqual([
@@ -152,7 +156,7 @@ describe("AgentRunMemoryRecorder", () => {
       turn_id: "turn-send-message",
       tool_name: "send_message_to",
       arguments: {
-        recipient_name: "pong",
+        recipient_address: "pong",
         content: "hello pong",
         message_type: "roundtrip_ping",
       },
@@ -162,7 +166,7 @@ describe("AgentRunMemoryRecorder", () => {
       turn_id: "turn-send-message",
       tool_name: "send_message_to",
       arguments: {
-        recipient_name: "pong",
+        recipient_address: "pong",
         content: "hello pong",
         message_type: "roundtrip_ping",
       },
@@ -183,7 +187,7 @@ describe("AgentRunMemoryRecorder", () => {
     expect(traces[0]).toMatchObject({
       sourceEvent: AgentRunEventType.TOOL_EXECUTION_STARTED,
       toolArgs: {
-        recipient_name: "pong",
+        recipient_address: "pong",
         content: "hello pong",
         message_type: "roundtrip_ping",
       },

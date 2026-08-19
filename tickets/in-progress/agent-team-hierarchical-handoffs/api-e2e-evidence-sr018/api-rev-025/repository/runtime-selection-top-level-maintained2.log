@@ -1,0 +1,267 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+
+stdout | tests/integration/api/runtime-selection-top-level.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:75985) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/api/runtime-selection-top-level.integration.test.ts > runtime-selection top-level integration > keeps standalone agent create + websocket messaging working
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+stdout | tests/integration/api/runtime-selection-top-level.integration.test.ts > runtime-selection top-level integration > keeps standalone agent create + websocket messaging working
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+stdout | tests/integration/api/runtime-selection-top-level.integration.test.ts > runtime-selection top-level integration > keeps standalone agent create + websocket messaging working
+Agent websocket attached for run agent_standalone_00000000000000000000000000000001
+Created agent session 3dd84c85-dac8-44cd-b089-893435adcc73 for run agent_standalone_00000000000000000000000000000001
+Agent WebSocket connected: session=3dd84c85-dac8-44cd-b089-893435adcc73, run=agent_standalone_00000000000000000000000000000001
+
+stdout | tests/integration/api/runtime-selection-top-level.integration.test.ts > runtime-selection top-level integration > keeps standalone agent create + websocket messaging working
+Closed agent session 3dd84c85-dac8-44cd-b089-893435adcc73
+Agent WebSocket disconnected: 3dd84c85-dac8-44cd-b089-893435adcc73
+
+stdout | tests/integration/api/runtime-selection-top-level.integration.test.ts > runtime-selection top-level integration > keeps same-runtime autobyteus team creation and websocket messaging on the mixed team backend
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+stdout | tests/integration/api/runtime-selection-top-level.integration.test.ts > runtime-selection top-level integration > keeps same-runtime autobyteus team creation and websocket messaging on the mixed team backend
+Successfully created mixed team run 'autobyteus_team_fa7e82013c04427aae336720d9cac91e'.
+
+stdout | tests/integration/api/runtime-selection-top-level.integration.test.ts > runtime-selection top-level integration > keeps same-runtime autobyteus team creation and websocket messaging on the mixed team backend
+Agent team websocket attached for team run autobyteus_team_fa7e82013c04427aae336720d9cac91e
+Created agent session b9fb8ff0-efe8-4724-ae1e-95d02042ebdc for run autobyteus_team_fa7e82013c04427aae336720d9cac91e
+Agent Team WebSocket connected: session=b9fb8ff0-efe8-4724-ae1e-95d02042ebdc, run=autobyteus_team_fa7e82013c04427aae336720d9cac91e
+
+stdout | tests/integration/api/runtime-selection-top-level.integration.test.ts > runtime-selection top-level integration > keeps same-runtime autobyteus team creation and websocket messaging on the mixed team backend
+[2026-08-12T04:35:27.227Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-12T04:35:27.227Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/integration/api/runtime-selection-top-level.integration.test.ts > runtime-selection top-level integration > keeps same-runtime autobyteus team creation and websocket messaging on the mixed team backend
+[2026-08-12T04:35:27.264Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 38 items.
+
+stdout | tests/integration/api/runtime-selection-top-level.integration.test.ts > runtime-selection top-level integration > keeps same-runtime autobyteus team creation and websocket messaging on the mixed team backend
+Closed agent session b9fb8ff0-efe8-4724-ae1e-95d02042ebdc
+
+stdout | tests/integration/api/runtime-selection-top-level.integration.test.ts > runtime-selection top-level integration > keeps same-runtime autobyteus team creation and websocket messaging on the mixed team backend
+Agent Team WebSocket disconnected: b9fb8ff0-efe8-4724-ae1e-95d02042ebdc
+
+stdout | tests/integration/api/runtime-selection-top-level.integration.test.ts > runtime-selection top-level integration > creates, restores, and routes a mixed autobyteus+codex team through top-level graphql + websocket surfaces
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+stdout | tests/integration/api/runtime-selection-top-level.integration.test.ts > runtime-selection top-level integration > creates, restores, and routes a mixed autobyteus+codex team through top-level graphql + websocket surfaces
+Successfully created mixed team run 'mixed_runtime_team_a13eb037dae945869d170992a62a4a92'.
+
+stdout | tests/integration/api/runtime-selection-top-level.integration.test.ts > runtime-selection top-level integration > creates, restores, and routes a mixed autobyteus+codex team through top-level graphql + websocket surfaces
+Agent team websocket attached for team run mixed_runtime_team_a13eb037dae945869d170992a62a4a92
+Created agent session 3b22d2f1-23ee-4fd6-82d1-6b7d46c96371 for run mixed_runtime_team_a13eb037dae945869d170992a62a4a92
+Agent Team WebSocket connected: session=3b22d2f1-23ee-4fd6-82d1-6b7d46c96371, run=mixed_runtime_team_a13eb037dae945869d170992a62a4a92
+
+stdout | tests/integration/api/runtime-selection-top-level.integration.test.ts > runtime-selection top-level integration > creates, restores, and routes a mixed autobyteus+codex team through top-level graphql + websocket surfaces
+Successfully restored mixed team run 'mixed_runtime_team_a13eb037dae945869d170992a62a4a92'.
+
+stdout | tests/integration/api/runtime-selection-top-level.integration.test.ts > runtime-selection top-level integration > creates, restores, and routes a mixed autobyteus+codex team through top-level graphql + websocket surfaces
+Agent team websocket attached for team run mixed_runtime_team_a13eb037dae945869d170992a62a4a92
+Created agent session 638b39bd-4a62-4c68-ab41-ded45e9ccb07 for run mixed_runtime_team_a13eb037dae945869d170992a62a4a92
+Agent Team WebSocket connected: session=638b39bd-4a62-4c68-ab41-ded45e9ccb07, run=mixed_runtime_team_a13eb037dae945869d170992a62a4a92
+
+stderr | tests/integration/api/runtime-selection-top-level.integration.test.ts > runtime-selection top-level integration > creates, restores, and routes a mixed autobyteus+codex team through top-level graphql + websocket surfaces
+Error handling team message for 638b39bd-4a62-4c68-ab41-ded45e9ccb07: [
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "context_file_paths"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "image_urls"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  },
+  {
+    "expected": "string",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "execution_address",
+      "root_team_run_id"
+    ],
+    "message": "Invalid input: expected string, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "execution_address",
+      "task_team_run_ids"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  },
+  {
+    "expected": "string",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "execution_address",
+      "member_address"
+    ],
+    "message": "Invalid input: expected string, received undefined"
+  },
+  {
+    "expected": "string",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "execution_address",
+      "task_agent_run_id"
+    ],
+    "message": "Invalid input: expected string, received undefined"
+  },
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "rootTeamRunId",
+      "taskTeamRunIds",
+      "memberAddress",
+      "taskAgentRunId"
+    ],
+    "path": [
+      "payload",
+      "execution_address"
+    ],
+    "message": "Unrecognized keys: \"rootTeamRunId\", \"taskTeamRunIds\", \"memberAddress\", \"taskAgentRunId\""
+  }
+]
+
+stdout | tests/integration/api/runtime-selection-top-level.integration.test.ts > runtime-selection top-level integration > creates, restores, and routes a mixed autobyteus+codex team through top-level graphql + websocket surfaces
+Closed agent session 3b22d2f1-23ee-4fd6-82d1-6b7d46c96371
+
+stdout | tests/integration/api/runtime-selection-top-level.integration.test.ts > runtime-selection top-level integration > creates, restores, and routes a mixed autobyteus+codex team through top-level graphql + websocket surfaces
+Agent Team WebSocket disconnected: 3b22d2f1-23ee-4fd6-82d1-6b7d46c96371
+
+stdout | tests/integration/api/runtime-selection-top-level.integration.test.ts > runtime-selection top-level integration > creates, restores, and routes a mixed autobyteus+codex team through top-level graphql + websocket surfaces
+Closed agent session 638b39bd-4a62-4c68-ab41-ded45e9ccb07
+
+stdout | tests/integration/api/runtime-selection-top-level.integration.test.ts > runtime-selection top-level integration > creates, restores, and routes a mixed autobyteus+codex team through top-level graphql + websocket surfaces
+Agent Team WebSocket disconnected: 638b39bd-4a62-4c68-ab41-ded45e9ccb07
+
+ ❯ tests/integration/api/runtime-selection-top-level.integration.test.ts (3 tests | 1 failed) 3337ms
+     ✓ keeps standalone agent create + websocket messaging working 169ms
+     ✓ keeps same-runtime autobyteus team creation and websocket messaging on the mixed team backend 94ms
+     × creates, restores, and routes a mixed autobyteus+codex team through top-level graphql + websocket surfaces 3072ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/api/runtime-selection-top-level.integration.test.ts > runtime-selection top-level integration > creates, restores, and routes a mixed autobyteus+codex team through top-level graphql + websocket surfaces
+Error: Timed out waiting for condition
+ ❯ waitForCondition tests/integration/api/runtime-selection-top-level.integration.test.ts:84:9
+     82|     await new Promise((resolve) => setTimeout(resolve, 20));
+     83|   }
+     84|   throw new Error("Timed out waiting for condition");
+       |         ^
+     85| };
+     86| 
+ ❯ tests/integration/api/runtime-selection-top-level.integration.test.ts:964:11
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 2 passed (3)
+   Start at  06:35:20
+   Duration  9.43s (transform 3.77s, setup 10ms, import 5.51s, tests 3.34s, environment 0ms)
+

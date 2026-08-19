@@ -1,0 +1,62 @@
+{
+  "revision": "API-REV-006",
+  "result": "PASS",
+  "freshPostFixRows": [
+    {
+      "id": "API-UTD-CODEX-EVENT-006",
+      "runtime": "CODEX",
+      "surface": "Team WebSocket + task lifecycle",
+      "result": "PASS",
+      "facts": ["fresh task Agent", "one formal submission", "one exact delegator acceptance", "coordinator TURN_COMPLETED", "zero ERROR frames", "zero TEAM_AGENT_EVENT_ADMISSION_FAILED"],
+      "evidence": "live/provider/api-f006-recheck-assertion.log"
+    },
+    {
+      "id": "API-UTD-CLASSROOM-006",
+      "runtime": "AUTOBYTEUS",
+      "surface": "real imported Classroom Simulation Team",
+      "result": "PASS",
+      "facts": ["professor-to-student request", "student-to-professor answer", "two exact message rows", "two file references", "answer 42", "coordinator TURN_COMPLETED"],
+      "evidence": "live/provider/classroom-autobyteus-turn.json"
+    },
+    {
+      "id": "API-UTD-RESTORE-006",
+      "runtime": "CODEX + AUTOBYTEUS",
+      "surface": "process reopen, explicit restore, WebSocket snapshot",
+      "result": "PASS",
+      "facts": ["same disposable target", "inactive after process reopen", "explicit restore succeeds", "one authoritative snapshot per reconnect", "tree/tasks/messages byte-structurally stable", "no duplicated records"],
+      "evidence": "live/persistence/restore-no-duplicate-assertion.json"
+    },
+    {
+      "id": "API-UTD-MOBILE-006",
+      "runtime": "AUTOBYTEUS",
+      "surface": "real Chrome /mobile at 390x844 before and after restore",
+      "result": "PASS",
+      "facts": ["paired mobile shell", "two message rows", "two reference rows", "reference opens exact answer content", "Back closes viewer", "same result after restore"],
+      "evidence": "live/browser/mobile-classroom-post-restore-journey.json"
+    },
+    {
+      "id": "API-UTD-DESKTOP-RESTORE-006",
+      "runtime": "CODEX",
+      "surface": "real Chrome /workspace after restore",
+      "result": "PASS",
+      "facts": ["one task entry", "accepted visible", "exact description visible", "worker visible"],
+      "evidence": "live/browser/desktop-codex-post-restore.json"
+    }
+  ],
+  "RetainedUnchangedCurrentStateRows": [
+    {
+      "sourceRevision": "API-REV-005",
+      "result": "PASS",
+      "rows": [
+        "AutoByteus Team task Agent delegation and exact messaging",
+        "Codex direct Agent plus nested AgentTeam and child task",
+        "Claude Team task Agent delegation and exact messaging",
+        "AutoByteus/Codex/Claude formal submit/accept task truth",
+        "standalone AutoByteus/Codex/Claude ordinary turns and persistence",
+        "desktop active task Agent row and exact focus"
+      ],
+      "whyRetained": "IR-010 changes only Codex TOOL_LOG correlation. CRR-015 explicitly requires the Codex defect recheck first and completion of the previously stopped mobile/reopen rows; the retained rows' source/runtime configuration and evidence are otherwise unchanged.",
+      "evidence": "../api-rev-005/live/provider and canonical API-REV-005 report"
+    }
+  ]
+}

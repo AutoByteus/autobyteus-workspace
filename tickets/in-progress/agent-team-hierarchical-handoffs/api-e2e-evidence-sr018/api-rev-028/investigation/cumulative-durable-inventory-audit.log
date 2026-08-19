@@ -1,0 +1,14 @@
+A 2
+D 6
+M 82
+scope_server 37
+scope_web 53
+api_rev_028_new_durable_delta=0
+source_inventory=API-REV-027
+cumulative_paths=90
+added=2
+updated=82
+removed=6
+server_paths=37
+web_paths=53
+status=UNCHANGED_UNREVIEWED

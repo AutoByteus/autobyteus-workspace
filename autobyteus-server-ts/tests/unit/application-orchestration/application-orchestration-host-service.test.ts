@@ -6,7 +6,7 @@ import type {
 import { ApplicationExecutionEventIngressService } from "../../../src/application-orchestration/services/application-execution-event-ingress-service.js";
 import { ApplicationOrchestrationHostService } from "../../../src/application-orchestration/services/application-orchestration-host-service.js";
 import { ApplicationRunObserverService } from "../../../src/application-orchestration/services/application-run-observer-service.js";
-import { selectorToRouteKey } from "../../../src/agent-team-execution/domain/team-run-member-identity.js";
+import { testAgentNode, testAgentTeamNode } from "../../fixtures/current-team-run-fixtures.js";
 
 const applicationId = "app-1";
 const runId = "run-1";
@@ -36,18 +36,9 @@ const buildBinding = (): ApplicationAgentBindingRecord => ({
   },
   runtime: {
     subject: "AGENT_RUN",
-    runId,
+    agentRunId: runId,
     definitionId: "agent-def-1",
-    members: [
-      {
-        memberName: "Sample Agent",
-        memberRouteKey: "sample-agent",
-        displayName: "Sample Agent",
-        teamPath: [],
-        runId,
-        runtimeKind: "AGENT",
-      },
-    ],
+    members: [],
   },
   createdAt: new Date("2026-04-19T09:10:00.000Z").toISOString(),
   updatedAt: new Date("2026-04-19T09:10:00.000Z").toISOString(),
@@ -67,15 +58,13 @@ const buildTeamBinding = (): ApplicationAgentBindingRecord => ({
   },
   runtime: {
     subject: "TEAM_RUN",
-    runId: "team-run-1",
+    teamRunId: "team-run-1",
     definitionId: "team-def-1",
     members: [
       {
-        memberName: "Researcher",
-        memberRouteKey: "researcher",
+        memberAddress: "/Researcher",
         displayName: "Researcher",
-        teamPath: [],
-        runId: "researcher-member-run-1",
+        agentRunId: "researcher-member-run-1",
         runtimeKind: "AGENT_TEAM_MEMBER",
       },
     ],
@@ -183,7 +172,7 @@ describe("ApplicationOrchestrationHostService startAgent", () => {
     const runBindingLaunchService = {
       startAgentRunBinding: vi.fn(async () => {
         await bindingStore.persistBinding(binding);
-        lookupStore.replaceBindingLookups(applicationId, binding.bindingId, [binding.runtime.runId]);
+        lookupStore.replaceBindingLookups(applicationId, binding.bindingId, [runId]);
         return cloneBinding(binding);
       }),
     };
@@ -271,30 +260,23 @@ describe("ApplicationOrchestrationHostService startAgent", () => {
     };
     const teamRunMetadataService = {
       readMetadata: vi.fn(async () => ({
-        teamRunId: "team-run-1",
-        teamDefinitionId: "team-def-1",
+        schemaVersion: 3 as const,
         teamDefinitionName: "Brief Team",
-        coordinatorMemberRouteKey: "researcher",
         createdAt: "2026-04-19T09:10:00.000Z",
-        updatedAt: "2026-04-19T09:10:00.000Z",
-        memberTree: [
-          {
-            memberKind: "agent",
-            memberRouteKey: "researcher",
-            memberPath: ["Researcher"],
-            memberName: "Researcher",
-            memberRunId: "researcher-member-run-1",
-            runtimeKind: "AUTOBYTEUS",
-            platformAgentRunId: null,
+        archivedAt: null,
+        rootTeam: testAgentTeamNode({
+          address: "/",
+          teamRunId: "team-run-1",
+          teamDefinitionId: "team-def-1",
+          coordinatorAddress: "/Researcher",
+          children: [testAgentNode("/Researcher", {
+            agentRunId: "researcher-member-run-1",
             agentDefinitionId: "agent-def-1",
             llmModelIdentifier: "gpt-test",
-            autoExecuteTools: true,
-            skillAccessMode: "PRELOADED_ONLY",
-            llmConfig: null,
             workspaceRootPath: "/tmp/workspace",
-            applicationExecutionContext: null,
-          },
-        ],
+          })],
+        }),
+        handoffs: [],
       })),
     };
     const publishedArtifactProjectionService = {
@@ -363,11 +345,9 @@ describe("ApplicationOrchestrationHostService startAgent", () => {
       runtime: {
         ...buildTeamBinding().runtime,
         members: [{
-          memberName: "Reviewer",
-          memberRouteKey: "ReviewSquad/reviewer",
+          memberAddress: "/ReviewSquad/Reviewer",
           displayName: "Reviewer",
-          teamPath: ["ReviewSquad"],
-          runId: "reviewer-member-run-1",
+          agentRunId: "reviewer-member-run-1",
           runtimeKind: "AGENT_TEAM_MEMBER",
         }],
       },
@@ -390,36 +370,32 @@ describe("ApplicationOrchestrationHostService startAgent", () => {
       } as never,
       teamRunMetadataService: {
         readMetadata: vi.fn(async () => ({
-          teamRunId: "team-run-1",
-          teamDefinitionId: "team-def-1",
+          schemaVersion: 3 as const,
           teamDefinitionName: "Brief Team",
-          coordinatorMemberRouteKey: "ReviewSquad/reviewer",
           createdAt: "2026-04-19T09:10:00.000Z",
-          memberTree: [{
-            memberKind: "agent_team",
-            memberRouteKey: "ReviewSquad",
-            memberPath: ["ReviewSquad"],
-            memberName: "ReviewSquad",
-            memberRunId: "review-squad-wrapper",
-            teamDefinitionId: "review-team",
-            teamRunId: "child-review-team-run",
-            coordinatorMemberRouteKey: "ReviewSquad/reviewer",
-            memberTree: [{
-              memberKind: "agent",
-              memberRouteKey: "ReviewSquad/reviewer",
-              memberPath: ["ReviewSquad", "Reviewer"],
-              memberName: "Reviewer",
-              memberRunId: "reviewer-member-run-1",
-              runtimeKind: "AUTOBYTEUS",
-              platformAgentRunId: null,
-              agentDefinitionId: "agent-def-reviewer",
-              llmModelIdentifier: "gpt-test",
-              autoExecuteTools: true,
-              skillAccessMode: "PRELOADED_ONLY",
-              llmConfig: null,
-              workspaceRootPath: "/tmp/workspace",
-            }],
-          }],
+          archivedAt: null,
+          rootTeam: testAgentTeamNode({
+            address: "/",
+            teamRunId: "team-run-1",
+            teamDefinitionId: "team-def-1",
+            coordinatorAddress: "/RootLead",
+            children: [
+              testAgentNode("/RootLead", { agentRunId: "root-lead-run-1" }),
+              testAgentTeamNode({
+                address: "/ReviewSquad",
+                teamDefinitionId: "review-team",
+                teamRunId: "child-review-team-run",
+                coordinatorAddress: "/ReviewSquad/Reviewer",
+                children: [testAgentNode("/ReviewSquad/Reviewer", {
+                  agentRunId: "reviewer-member-run-1",
+                  agentDefinitionId: "agent-def-reviewer",
+                  llmModelIdentifier: "gpt-test",
+                  workspaceRootPath: "/tmp/workspace",
+                })],
+              }),
+            ],
+          }),
+          handoffs: [],
         })),
       } as never,
       publishedArtifactProjectionService: publishedArtifactProjectionService as never,
@@ -432,12 +408,9 @@ describe("ApplicationOrchestrationHostService startAgent", () => {
     );
   });
 
-  it("posts application team input with structured route-key target identity", async () => {
+  it("posts application team input with exact member-address target identity", async () => {
     const binding = buildTeamBinding();
-    const postMessage = vi.fn(async (_message, target) => ({
-      accepted: true,
-      targetRouteKey: target ? selectorToRouteKey(target) : null,
-    }));
+    const postMessage = vi.fn(async () => ({ accepted: true }));
     const hostService = new ApplicationOrchestrationHostService({
       startupGate: {
         awaitReady: vi.fn(async () => undefined),
@@ -456,14 +429,14 @@ describe("ApplicationOrchestrationHostService startAgent", () => {
     await hostService.sendRunInput(applicationId, {
       address: {
         bindingId,
-        target: { kind: "AGENT_TEAM_MEMBER", memberRouteKey: "researcher" },
+        target: { kind: "AGENT_TEAM_MEMBER", memberAddress: "/Researcher" },
       },
       input: { text: "please research" },
     });
 
     expect(postMessage).toHaveBeenCalledWith(
       expect.objectContaining({ content: "please research" }),
-      { kind: "route_key", memberRouteKey: "researcher" },
+      "/Researcher",
     );
   });
 
@@ -489,7 +462,7 @@ describe("ApplicationOrchestrationHostService startAgent", () => {
       hostService.sendRunInput(applicationId, {
         address: {
           bindingId,
-          target: { kind: "AGENT_TEAM_MEMBER", memberRouteKey: "researcher" },
+          target: { kind: "AGENT_TEAM_MEMBER", memberAddress: "/Researcher" },
         },
         input: {
           text: "please research",

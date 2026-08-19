@@ -9,7 +9,6 @@ import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { createTokenUsageUpdatedPayload } from "../../../src/agent-execution/domain/agent-run-token-usage.js";
 import { TokenUsageLedgerStore } from "../../../src/token-usage/providers/token-usage-ledger-store.js";
 import type { TokenUsageUpdatedPayload } from "../../../src/agent-execution/domain/agent-run-token-usage.js";
-import type { TokenUsageExecutionAddress } from "../../../src/token-usage/domain/execution-address.js";
 
 const store = new TokenUsageLedgerStore();
 const createdRunIds = new Set<string>();
@@ -32,8 +31,6 @@ type UnitPrices = {
 type SummaryResult = {
   runId: string;
   rootTeamRunId: string | null;
-  memberAgentRunId: string | null;
-  memberRouteKey: string | null;
   standardInputTokens: number;
   cacheReadInputTokens: number;
   cacheCreationInputTokens: number;
@@ -73,8 +70,6 @@ const buildEvent = (input: {
   runId: string;
   observedAt: string;
   rootTeamRunId?: string | null;
-  memberRouteKey?: string | null;
-  executionAddress?: TokenUsageExecutionAddress | null;
   grossInputTokens: number;
   standardInputTokens?: number | null;
   cacheReadTokens?: number | null;
@@ -135,9 +130,6 @@ const buildEvent = (input: {
       idempotency_key: `unit-price-graphql:${randomUUID()}`,
       observed_at: input.observedAt,
       root_team_run_id: input.rootTeamRunId ?? null,
-      member_agent_run_id: input.rootTeamRunId ? input.runId : null,
-      member_route_key: input.memberRouteKey ?? null,
-      execution_address: input.executionAddress ?? null,
       runtime_kind: input.runtimeKind ?? "codex_app_server",
       ingestion_kind: "codex_thread_token_usage",
       usage_scope: "per_turn",
@@ -181,7 +173,7 @@ const buildEvent = (input: {
       pricing_policy_key: input.pricingPolicyKey === undefined ? (input.model ? `catalog:openai:${input.model}` : null) : input.pricingPolicyKey,
       selected_pricing_tier_id: null,
       team_name: input.teamName ?? null,
-      member_name: input.memberName ?? null,
+      member_display_name: input.memberName ?? null,
     },
   });
 };
@@ -267,8 +259,6 @@ describe("token usage unit-price GraphQL hydration", () => {
     await store.appendTokenUsageEvent(buildEvent({
       runId: memberOneRunId,
       rootTeamRunId: teamRunId,
-      memberRouteKey: "designer",
-      executionAddress: { segments: [{ kind: "member", memberRouteKey: "designer" }] },
       observedAt: "2042-07-02T09:10:00.000Z",
       grossInputTokens: 100,
       standardInputTokens: 100,
@@ -283,8 +273,6 @@ describe("token usage unit-price GraphQL hydration", () => {
     await store.appendTokenUsageEvent(buildEvent({
       runId: memberTwoRunId,
       rootTeamRunId: teamRunId,
-      memberRouteKey: "builder",
-      executionAddress: { segments: [{ kind: "member", memberRouteKey: "builder" }] },
       observedAt: "2042-07-02T09:11:00.000Z",
       grossInputTokens: 80,
       standardInputTokens: 80,
@@ -352,8 +340,6 @@ describe("token usage unit-price GraphQL hydration", () => {
       fragment SummaryFields on TokenUsageRunSummaryGraphql {
         runId
         rootTeamRunId
-        memberAgentRunId
-        memberRouteKey
         standardInputTokens
         cacheReadInputTokens
         cacheCreationInputTokens
@@ -378,7 +364,7 @@ describe("token usage unit-price GraphQL hydration", () => {
       query UnitPriceHydration($singleRunId: String!, $teamRunId: String!, $memberRunId: String!, $partialRunId: String!, $localRunId: String!, $start: DateTime!, $end: DateTime!) {
         single: getAgentRunTokenUsageSummary(runId: $singleRunId) { ...SummaryFields }
         team: getTeamRunTokenUsageSummary(teamRunId: $teamRunId) { ...SummaryFields }
-        member: getTeamMemberTokenUsageSummary(teamRunId: $teamRunId, memberAgentRunId: $memberRunId) { ...SummaryFields }
+        member: getTeamMemberTokenUsageSummary(teamRunId: $teamRunId, agentRunId: $memberRunId) { ...SummaryFields }
         partial: getAgentRunTokenUsageSummary(runId: $partialRunId) { ...SummaryFields }
         local: getAgentRunTokenUsageSummary(runId: $localRunId) { ...SummaryFields }
         taskStats: tokenUsageTaskStatisticsInPeriod(startTime: $start, endTime: $end) {
@@ -387,9 +373,8 @@ describe("token usage unit-price GraphQL hydration", () => {
             aggregate { ...AggregateFields }
             children {
               rowKind
-              memberAgentRunId
-              memberRouteKey
-              executionAddress
+              runId
+              displayName
               aggregate { ...AggregateFields }
             }
           }
@@ -414,9 +399,8 @@ describe("token usage unit-price GraphQL hydration", () => {
           aggregate: AggregateResult;
           children: Array<{
             rowKind: string;
-            memberAgentRunId: string | null;
-            memberRouteKey: string | null;
-            executionAddress: TokenUsageExecutionAddress | null;
+            runId: string | null;
+            displayName: string;
             aggregate: AggregateResult;
           }>;
         }>;
@@ -449,8 +433,6 @@ describe("token usage unit-price GraphQL hydration", () => {
     expect(result.member).toMatchObject({
       runId: memberTwoRunId,
       rootTeamRunId: teamRunId,
-      memberAgentRunId: memberTwoRunId,
-      memberRouteKey: "builder",
     });
     expect(result.member.unitPrices.standardInput).toEqual(unitPrice("single", 6));
     expect(result.member.unitPrices.output).toEqual(unitPrice("single", 30));
@@ -469,11 +451,11 @@ describe("token usage unit-price GraphQL hydration", () => {
     const teamTaskRow = result.taskStats.rows.find((row) => row.rowId === `team:${teamRunId}`);
     expect(teamTaskRow?.aggregate.unitPrices.standardInput).toEqual(unitPrice("mixed", null));
     expect(teamTaskRow?.aggregate.unitPrices.output).toEqual(unitPrice("single", 30));
-    const builderMember = teamTaskRow?.children.find((member) => member.memberAgentRunId === memberTwoRunId);
+    const builderMember = teamTaskRow?.children.find((member) => member.runId === memberTwoRunId);
     expect(builderMember).toMatchObject({
       rowKind: "MEMBER_RUN",
-      memberRouteKey: "builder",
-      executionAddress: { segments: [{ kind: "member", memberRouteKey: "builder" }] },
+      runId: memberTwoRunId,
+      displayName: "Builder",
     });
     expect(builderMember?.aggregate.unitPrices.standardInput).toEqual(unitPrice("single", 6));
     expect(builderMember?.aggregate.unitPrices.output).toEqual(unitPrice("single", 30));

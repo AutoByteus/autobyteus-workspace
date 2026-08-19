@@ -1,0 +1,32 @@
+[
+  {
+    "provider": {
+      "id": "DEEPSEEK",
+      "name": "DeepSeek",
+      "providerType": "DEEPSEEK",
+      "apiKeyConfigured": true,
+      "status": "NOT_APPLICABLE",
+      "statusMessage": null
+    },
+    "models": [
+      {
+        "modelIdentifier": "deepseek-v4-flash"
+      }
+    ]
+  },
+  {
+    "provider": {
+      "id": "OPENAI",
+      "name": "OpenAI",
+      "providerType": "OPENAI",
+      "apiKeyConfigured": true,
+      "status": "NOT_APPLICABLE",
+      "statusMessage": null
+    },
+    "models": [
+      {
+        "modelIdentifier": "gpt-5.6-luna"
+      }
+    ]
+  }
+]

@@ -1,252 +1,100 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { shallowMount } from '@vue/test-utils';
 import AgentTeamEventMonitor from '../AgentTeamEventMonitor.vue';
+import {
+  buildTestTeamContext,
+  testAgentContext,
+  testAgentNode,
+  testSubTeamNode,
+  testTaskRecord,
+} from '~/test-support/currentTeamTestFixtures';
 
 const { state, teamContextsStoreMock } = vi.hoisted(() => {
-  const localState = {
-    activeTeamContext: null as any,
-    focusedMemberContext: null as any,
-    focusedMemberNode: null as any,
-    activeExecutionFocusedMemberRouteKey: '' as string,
-  };
-
-  return {
-    state: localState,
-    teamContextsStoreMock: {
-      get activeTeamContext() {
-        return localState.activeTeamContext;
-      },
-      get activeExecutionFocusedMemberRouteKey() {
-        return localState.activeExecutionFocusedMemberRouteKey;
-      },
-      get activeExecutionFocusedMemberContext() {
-        const routeKey = localState.activeExecutionFocusedMemberRouteKey;
-        return routeKey
-          ? localState.activeTeamContext?.leafAgentContextsByRouteKey.get(routeKey) ?? null
-          : null;
-      },
-      get activeExecutionFocusedMemberNode() {
-        const routeKey = localState.activeExecutionFocusedMemberRouteKey;
-        return routeKey
-          ? localState.activeTeamContext?.memberNodesByRouteKey.get(routeKey) ?? null
-          : null;
-      },
-      get focusedMemberContext() {
-        return localState.focusedMemberContext;
-      },
-      get focusedMemberNode() {
-        return localState.focusedMemberNode;
-      },
-      focusMemberAndEnsureHydrated: vi.fn().mockResolvedValue(undefined),
-    },
-  };
+  const localState = { activeTeamContext: null as any };
+  return { state: localState, teamContextsStoreMock: {
+    get activeTeamContext() { return localState.activeTeamContext; },
+  } };
 });
-
-vi.mock('~/stores/agentTeamContextsStore', () => ({
-  useAgentTeamContextsStore: () => teamContextsStoreMock,
-}));
+vi.mock('~/stores/agentTeamContextsStore', () => ({ useAgentTeamContextsStore: () => teamContextsStoreMock }));
 
 const agentDefinitionStoreMock = vi.hoisted(() => ({
-  agentDefinitions: [
-    {
-      id: 'agent-professor-def',
-      name: 'Professor',
-      avatarUrl: 'https://example.com/professor.png',
-    },
-  ],
-  getAgentDefinitionById: vi.fn((id: string) => {
-    if (id === 'agent-professor-def') {
-      return {
-        id: 'agent-professor-def',
-        name: 'Professor',
-        avatarUrl: 'https://example.com/professor.png',
-      };
-    }
-    return null;
-  }),
+  agentDefinitions: [{ id: 'agent-professor-def', name: 'Professor', avatarUrl: 'https://example.com/professor.png' }],
+  getAgentDefinitionById: vi.fn((id: string) => id === 'agent-professor-def'
+    ? { id, name: 'Professor', avatarUrl: 'https://example.com/professor.png' } : null),
 }));
+vi.mock('~/stores/agentDefinitionStore', () => ({ useAgentDefinitionStore: () => agentDefinitionStoreMock }));
 
-vi.mock('~/stores/agentDefinitionStore', () => ({
-  useAgentDefinitionStore: () => agentDefinitionStoreMock,
-}));
-
-const createConversation = () => ({
-  id: 'team-1::professor',
-  createdAt: '2026-02-17T00:00:00.000Z',
-  updatedAt: '2026-02-17T00:00:00.000Z',
-  messages: [],
+const mountSubject = () => shallowMount(AgentTeamEventMonitor, {
+  global: { stubs: { AgentEventMonitor: {
+    name: 'AgentEventMonitor',
+    props: ['conversation', 'runId', 'agentName', 'agentAvatarUrl', 'interAgentSenderNameById', 'browseSubject'],
+    template: '<div class="agent-event-monitor-stub" />',
+  } } },
 });
 
-describe('AgentTeamEventMonitor.vue', () => {
+describe('AgentTeamEventMonitor exact AgentRun focus', () => {
   beforeEach(() => {
-    const professorContext = {
-      config: {
-        agentDefinitionId: 'agent-professor-def',
-        agentDefinitionName: 'Professor',
-        agentAvatarUrl: null,
-      },
-      state: {
-        runId: 'member_a111',
-        compactionStatus: {
-          phase: 'requested',
-          message: 'Compaction queued',
-          turnId: 'turn-1',
-        },
-        conversation: createConversation(),
-      },
-    };
-    const studentContext = {
-      config: {
-        agentDefinitionId: 'agent-student-def',
-        agentDefinitionName: 'Student',
-        agentAvatarUrl: null,
-      },
-      state: {
-        runId: 'member_b222',
-        compactionStatus: null,
-        conversation: {
-          ...createConversation(),
-          id: 'team-1::student',
-        },
-      },
-    };
-
-    const professorNode = {
-      memberKind: 'agent',
-      memberName: 'Professor',
-      displayName: 'Professor',
-      memberPath: ['Professor'],
-      memberRouteKey: 'Professor',
-      memberRunId: 'member_a111',
-      agentDefinitionId: 'agent-professor-def',
-    };
-    const studentNode = {
-      memberKind: 'agent',
-      memberName: 'Student',
-      displayName: 'Student',
-      memberPath: ['sub-team', 'Student'],
-      memberRouteKey: 'sub-team/Student',
-      memberRunId: 'member_b222',
-      agentDefinitionId: 'agent-student-def',
-    };
-
-    state.activeTeamContext = {
-      teamRunId: 'team-1',
-      focusedMemberRouteKey: 'Professor',
-      memberTree: [professorNode, studentNode],
-      memberNodesByRouteKey: new Map<string, any>([
-        ['Professor', professorNode],
-        ['sub-team/Student', studentNode],
-      ]),
-      leafAgentContextsByRouteKey: new Map<string, any>([
-        ['Professor', professorContext],
-        ['sub-team/Student', studentContext],
-      ]),
-    };
-    state.focusedMemberContext = professorContext;
-    state.focusedMemberNode = professorNode;
-    state.activeExecutionFocusedMemberRouteKey = 'Professor';
+    const professor = testAgentContext({ runId: 'professor-run', displayName: 'Professor', agentDefinitionId: 'agent-professor-def' });
+    const student = testAgentContext({ runId: 'student-run', displayName: 'Student', agentDefinitionId: 'agent-student-def' });
+    const professorNode = testAgentNode('/Professor', { agentRunId: 'professor-run', agentDefinitionId: 'agent-professor-def' });
+    const studentNode = testAgentNode('/sub-team/Student', { agentRunId: 'student-run', agentDefinitionId: 'agent-student-def' });
+    state.activeTeamContext = buildTestTeamContext({
+      teamRunId: 'team-1', coordinatorAddress: '/Professor', focusedAgentRunId: 'professor-run',
+      rootChildren: [professorNode, testSubTeamNode('/sub-team', [studentNode], { coordinatorAddress: '/sub-team/Student' })],
+      contexts: [
+        { agentRunId: 'professor-run', context: professor },
+        { agentRunId: 'student-run', context: student },
+      ],
+    });
   });
 
-  it('passes sender-id to member-name mapping to AgentEventMonitor', () => {
-    const wrapper = shallowMount(AgentTeamEventMonitor, {
-      global: {
-        stubs: {
-          AgentEventMonitor: {
-            name: 'AgentEventMonitor',
-            props: ['conversation', 'runId', 'agentName', 'agentAvatarUrl', 'interAgentSenderNameById'],
-            template: '<div class="agent-event-monitor-stub" />',
-          },
-        },
-      },
-    });
-
+  it('passes exact run identity, human sender labels, conversation, and avatar to the monitor', () => {
+    const wrapper = mountSubject();
     const monitor = wrapper.findComponent({ name: 'AgentEventMonitor' });
-    expect(monitor.exists()).toBe(true);
-    expect(wrapper.get('[data-testid="agent-team-event-monitor"]').classes()).toEqual(expect.arrayContaining([
-      'h-full',
-      'min-h-0',
-      'flex-col',
-      'overflow-hidden',
-    ]));
-    expect(monitor.classes()).toEqual(expect.arrayContaining(['min-h-0', 'flex-1', 'overflow-hidden']));
-    expect(monitor.props('interAgentSenderNameById')).toEqual({
-      member_a111: 'Professor',
-      member_b222: 'Student',
-    });
-    expect(monitor.props('conversation')).toMatchObject({ id: 'team-1::professor' });
-    expect(monitor.props('runId')).toBe('member_a111');
-  });
-
-  it('passes focused member display name and avatar to AgentEventMonitor', () => {
-    const wrapper = shallowMount(AgentTeamEventMonitor, {
-      global: {
-        stubs: {
-          AgentEventMonitor: {
-            name: 'AgentEventMonitor',
-            props: ['conversation', 'runId', 'agentName', 'agentAvatarUrl', 'interAgentSenderNameById'],
-            template: '<div class="agent-event-monitor-stub" />',
-          },
-        },
-      },
-    });
-
-    const monitor = wrapper.findComponent({ name: 'AgentEventMonitor' });
-    expect(monitor.exists()).toBe(true);
+    expect(monitor.props('runId')).toBe('professor-run');
     expect(monitor.props('agentName')).toBe('Professor');
     expect(monitor.props('agentAvatarUrl')).toBe('https://example.com/professor.png');
+    expect(monitor.props('interAgentSenderNameById')).toEqual({
+      'professor-run': 'Professor', 'student-run': 'Student',
+    });
+    expect(monitor.props('browseSubject')).toEqual({
+      kind: 'teamMember', teamRunId: 'team-1', memberAddress: '/Professor', agentRunId: 'professor-run',
+    });
   });
 
-  it('uses roster focus for displayed Focus history while active execution can remain on the coordinator', () => {
-    state.activeTeamContext.focusedMemberRouteKey = 'sub-team/Student';
-    state.focusedMemberContext = state.activeTeamContext.leafAgentContextsByRouteKey.get('sub-team/Student');
-    state.focusedMemberNode = state.activeTeamContext.memberNodesByRouteKey.get('sub-team/Student');
-    state.activeExecutionFocusedMemberRouteKey = 'Professor';
-
-    const wrapper = shallowMount(AgentTeamEventMonitor, {
-      global: {
-        stubs: {
-          AgentEventMonitor: {
-            name: 'AgentEventMonitor',
-            props: ['conversation', 'agentName', 'agentAvatarUrl', 'interAgentSenderNameById'],
-            template: '<div class="agent-event-monitor-stub" />',
-          },
-        },
-      },
-    });
-
+  it('switches to the exact nested configured AgentRun', async () => {
+    expect(state.activeTeamContext.view.focusAgent('student-run').disposition).toBe('applied');
+    const wrapper = mountSubject();
+    await wrapper.vm.$nextTick();
     const monitor = wrapper.findComponent({ name: 'AgentEventMonitor' });
-    expect(monitor.exists()).toBe(true);
+    expect(monitor.props('runId')).toBe('student-run');
     expect(monitor.props('agentName')).toBe('Student');
-    expect((monitor.props('conversation') as any).id).toBe('team-1::student');
   });
 
-  it('does not render task-agent work packets as the logical parent conversation', () => {
-    const studentContext = state.activeTeamContext.leafAgentContextsByRouteKey.get('sub-team/Student');
-    studentContext.state.conversation.messages.push({
-      type: 'user',
-      text: 'You have been activated as task agent task_agent_task_0001.\nTask-agent run: team-1__student__task_0001',
-      timestamp: new Date('2026-05-30T00:00:00.000Z'),
+  it('renders a task Agent at the same placement as its own conversation, never the persistent substitute', () => {
+    const persistent = state.activeTeamContext;
+    const tree = persistent.view.getExecutionTree();
+    const rebuilt = buildTestTeamContext({
+      teamRunId: 'team-1', coordinatorAddress: '/Professor', focusedAgentRunId: 'task-student-run',
+      rootChildren: [
+        testAgentNode('/Professor', { agentRunId: 'professor-run', agentDefinitionId: 'agent-professor-def' }),
+        testSubTeamNode('/sub-team', [testAgentNode('/sub-team/Student', { agentRunId: 'student-run' })], { coordinatorAddress: '/sub-team/Student' }),
+      ],
+      tasks: [testTaskRecord({
+        taskId: 'task-1', delegatorAgentRunId: 'professor-run', recipientAddress: '/sub-team/Student',
+        target: { agentRunId: 'task-student-run' }, description: 'Dedicated student work.',
+      })],
+      contexts: [{ agentRunId: 'task-student-run', context: testAgentContext({
+        runId: 'task-student-run', displayName: 'Student', messages: [{
+          type: 'user', text: 'Dedicated task packet', timestamp: new Date('2026-08-15T00:00:00.000Z'),
+        }] as any,
+      }) }],
+      configuration: persistent.view.getConfigurationView(),
     });
-    state.activeExecutionFocusedMemberRouteKey = 'sub-team/Student';
-    state.activeTeamContext.focusedMemberRouteKey = 'sub-team/Student';
-
-    const wrapper = shallowMount(AgentTeamEventMonitor, {
-      global: {
-        mocks: {
-          $t: (key: string) => key,
-        },
-        stubs: {
-          AgentEventMonitor: {
-            name: 'AgentEventMonitor',
-            props: ['conversation', 'agentName', 'agentAvatarUrl', 'interAgentSenderNameById'],
-            template: '<div class="agent-event-monitor-stub" />',
-          },
-        },
-      },
-    });
-
-    expect(wrapper.findComponent({ name: 'AgentEventMonitor' }).exists()).toBe(false);
-    expect(wrapper.text()).toContain('workspace.components.workspace.team.AgentTeamEventMonitor.no_activity_yet');
+    expect(tree.root_team.team_run_id).toBe(rebuilt.view.getRootTeamRunId());
+    state.activeTeamContext = rebuilt;
+    const monitor = mountSubject().findComponent({ name: 'AgentEventMonitor' });
+    expect(monitor.props('runId')).toBe('task-student-run');
+    expect((monitor.props('conversation') as any).messages[0].text).toBe('Dedicated task packet');
   });
 });

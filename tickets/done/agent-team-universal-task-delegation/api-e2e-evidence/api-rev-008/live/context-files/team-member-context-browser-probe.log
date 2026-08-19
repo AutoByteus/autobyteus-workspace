@@ -1,0 +1,69 @@
+{
+  "rootTeamRunId": "utd_root_team_api_rev_008_1786830349955_45bb7b4ee1014c9c9f9ea66ea5e30e8c",
+  "nestedTeamRunId": "utd_child_team_api_rev_008_1786830349955_e9491fe561024a59906fcbd8e9f68d8c",
+  "deleted": {
+    "storedFilename": "ctx_1d212fa746ef__Delete_direct_draft.md",
+    "displayName": "Delete direct (draft)!!.md",
+    "locator": "/rest/drafts/team-runs/api-rev-008-direct/members/%2Fcoordinator/context-files/ctx_1d212fa746ef__Delete_direct_draft.md",
+    "phase": "draft"
+  },
+  "deleteStatus": 204,
+  "deletedReadStatus": 404,
+  "direct": {
+    "storedFilename": "ctx_69192e18ac2b__Direct_Context_final.md",
+    "displayName": "Direct Context (final)!!.md",
+    "locator": "/rest/drafts/team-runs/api-rev-008-direct/members/%2Fcoordinator/context-files/ctx_69192e18ac2b__Direct_Context_final.md",
+    "phase": "draft"
+  },
+  "directDraftRead": {
+    "status": 200,
+    "body": "API_REV_008_DIRECT_CONTEXT"
+  },
+  "directFinal": {
+    "status": 200,
+    "body": {
+      "attachments": [
+        {
+          "storedFilename": "ctx_69192e18ac2b__Direct_Context_final.md",
+          "displayName": "Direct Context (final)!!.md",
+          "locator": "/rest/team-runs/utd_root_team_api_rev_008_1786830349955_45bb7b4ee1014c9c9f9ea66ea5e30e8c/members/%2Fcoordinator/context-files/ctx_69192e18ac2b__Direct_Context_final.md",
+          "phase": "final"
+        }
+      ]
+    }
+  },
+  "directFinalRead": {
+    "status": 200,
+    "body": "API_REV_008_DIRECT_CONTEXT"
+  },
+  "nestedAttachment": {
+    "storedFilename": "ctx_99cfc68e6c72__Nested_Context_final.md",
+    "displayName": "Nested Context (final)!!.md",
+    "locator": "/rest/drafts/team-runs/api-rev-008-nested/members/%2Flab%2Flead/context-files/ctx_99cfc68e6c72__Nested_Context_final.md",
+    "phase": "draft"
+  },
+  "invalidFinal": {
+    "status": 400,
+    "body": {
+      "detail": "Unable to resolve context-file owner member '/lab/lead' for TeamRun 'utd_root_team_api_rev_008_1786830349955_45bb7b4ee1014c9c9f9ea66ea5e30e8c'."
+    }
+  },
+  "nestedFinal": {
+    "status": 200,
+    "body": {
+      "attachments": [
+        {
+          "storedFilename": "ctx_99cfc68e6c72__Nested_Context_final.md",
+          "displayName": "Nested Context (final)!!.md",
+          "locator": "/rest/team-runs/utd_child_team_api_rev_008_1786830349955_e9491fe561024a59906fcbd8e9f68d8c/members/%2Flab%2Flead/context-files/ctx_99cfc68e6c72__Nested_Context_final.md",
+          "phase": "final"
+        }
+      ]
+    }
+  },
+  "nestedFinalRead": {
+    "status": 200,
+    "body": "API_REV_008_NESTED_CONTEXT"
+  },
+  "pass": true
+}

@@ -17,11 +17,26 @@ if (!fs.existsSync(packageJsonPath)) {
 
 const pkg = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
 const dependencies = pkg.dependencies ?? {};
+const devDependencies = pkg.devDependencies ?? {};
 
 if (dependencies['autobyteus-ts']) {
   fail(
     "Invalid dependency: package.json dependencies must not include 'autobyteus-ts'. " +
       'Use local frontend utilities instead of cross-workspace imports.',
+  );
+}
+
+if (dependencies['@autobyteus/team-stream-contracts']) {
+  fail(
+    "Invalid production dependency: '@autobyteus/team-stream-contracts' is a Nuxt build input, " +
+      'not an Electron main-process runtime dependency.',
+  );
+}
+
+if (devDependencies['@autobyteus/team-stream-contracts'] !== 'workspace:*') {
+  fail(
+    "Missing build dependency: devDependencies must include " +
+      "'@autobyteus/team-stream-contracts' as 'workspace:*'.",
   );
 }
 
@@ -64,6 +79,11 @@ const importPatterns = [
   /require\(\s*['"]autobyteus-ts(?:\/[^'"]*)?['"]\s*\)/,
   /from\s+['"](?:\.\.\/)+autobyteus-ts\/[^'"]+['"]/,
   /require\(\s*['"](?:\.\.\/)+autobyteus-ts\/[^'"]+['"]\s*\)/,
+];
+const contractRuntimeImportPatterns = [
+  /from\s+['"]@autobyteus\/team-stream-contracts(?:\/[^'"]*)?['"]/,
+  /require\(\s*['"]@autobyteus\/team-stream-contracts(?:\/[^'"]*)?['"]\s*\)/,
+  /import\(\s*['"]@autobyteus\/team-stream-contracts(?:\/[^'"]*)?['"]\s*\)/,
 ];
 
 function walkDir(dirPath, collector, extensions = fileExtensions) {
@@ -117,6 +137,20 @@ walkDir(path.join(appRoot, 'scripts'), (filePath) => {
     }
   }
 }, scriptExtensions);
+
+walkDir(path.join(appRoot, 'electron'), (filePath) => {
+  const content = fs.readFileSync(filePath, 'utf8');
+  const lines = content.split('\n');
+  for (let index = 0; index < lines.length; index += 1) {
+    const line = lines[index];
+    if (contractRuntimeImportPatterns.some((pattern) => pattern.test(line))) {
+      violations.push(
+        `${path.relative(appRoot, filePath)}:${index + 1}: Electron runtime must not import ` +
+          `@autobyteus/team-stream-contracts: ${line.trim()}`,
+      );
+    }
+  }
+});
 
 if (violations.length > 0) {
   fail(

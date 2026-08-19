@@ -6,8 +6,8 @@ Shared TypeScript contract package for AutoByteus application bundles.
 
 - application manifest v4 types and version constants
 - backend bundle manifest v1 types and version constants
-- backend definition contract v4 types
-- frontend SDK contract v4 constants
+- backend definition contract v5 types
+- frontend SDK contract v5 constants
 - iframe/bootstrap contract v4 constants, query hints, payload types, transport shape, and validators/builders
 - shared request/route/GraphQL/notification/storage context types
 - execution-resource, resource-slot, and host-managed launch-default configuration types
@@ -24,8 +24,8 @@ New external custom applications should start with `@autobyteus/application-devk
 
 - `APPLICATION_MANIFEST_VERSION_V4`
 - `APPLICATION_BACKEND_BUNDLE_CONTRACT_VERSION_V1`
-- `APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V4`
-- `APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V4`
+- `APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V6`
+- `APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V6`
 - `APPLICATION_EVENT_DELIVERY_SEMANTICS` (`AT_LEAST_ONCE`)
 
 ## Main shared contracts
@@ -35,7 +35,7 @@ New external custom applications should start with `@autobyteus/application-devk
 - `ApplicationManifestV4`
   - `application.json`
   - requires `manifestVersion: "4"`
-  - requires `ui.frontendSdkContractVersion: "4"`
+  - requires `ui.frontendSdkContractVersion: "6"`
   - requires `backend.bundleManifest`
   - may declare app-consumable `executionResourceSlots[]` for host-managed saved setup
   - does **not** declare a singular launch-time `runtimeTarget`

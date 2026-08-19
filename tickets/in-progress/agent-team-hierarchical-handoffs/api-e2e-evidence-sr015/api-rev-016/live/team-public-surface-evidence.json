@@ -1,0 +1,2745 @@
+{
+  "revision": "API-REV-016",
+  "capturedAt": "2026-08-09T20:21:33.257Z",
+  "endpoint": "http://127.0.0.1:60004/graphql",
+  "classification": "Authoritative post-run GraphQL public-surface evidence. Initial incomplete Codex/Claude runs are excluded and retained separately.",
+  "rows": {
+    "autobyteus": {
+      "teamRunId": "nested_classroom_test_team_291ff7d8898c442794c65fa476443561",
+      "runtimeKind": "autobyteus",
+      "model": "gpt-5.6-luna",
+      "reasoning": null,
+      "peer": "PEER-AUTOBYTEUS-016",
+      "taskPeer": "TASKPEER-AUTOBYTEUS-016",
+      "result": "RESULT-AUTOBYTEUS-016",
+      "final": "FINAL-AUTOBYTEUS-016",
+      "source": "team-autobyteus.json",
+      "taskTeamRunIds": [
+        "team_local_team_nested_classroom_test_student_st_8ad6a7fc21a34092b77e4726d6afac31"
+      ],
+      "counts": {
+        "messages": 6,
+        "persistentMessages": 4,
+        "taskMessages": 2,
+        "tasks": 1,
+        "taskUpdates": 2
+      },
+      "assertions": {
+        "inactiveAfterTerminate": true,
+        "exactRootedAddresses": true,
+        "coordinatorsExact": true,
+        "allLeavesExact": true,
+        "teacherIntrinsicHandoff": true,
+        "nestedIntrinsicHandoff": true,
+        "oneTask": true,
+        "taskAccepted": true,
+        "taskTeamTarget": true,
+        "rootToNestedHandoff": true,
+        "persistentPeerRequest": true,
+        "persistentPeerResponse": true,
+        "persistentSummaryToTeacher": true,
+        "taskPeerRequest": true,
+        "taskPeerResponse": true,
+        "exactSubmission": true,
+        "acceptedReview": true,
+        "exactTeacherFinal": true,
+        "noUnexpectedRoot": true
+      },
+      "failed": [],
+      "data": {
+        "getTeamRunResumeConfig": {
+          "teamRunId": "nested_classroom_test_team_291ff7d8898c442794c65fa476443561",
+          "isActive": false,
+          "metadata": {
+            "schemaVersion": 3,
+            "teamDefinitionName": "Nested Classroom Test Team",
+            "createdAt": "2026-08-09T20:06:59.788Z",
+            "archivedAt": null,
+            "rootTeam": {
+              "kind": "agent_team",
+              "address": "/",
+              "teamDefinitionId": "nested-classroom-test",
+              "teamRunId": "nested_classroom_test_team_291ff7d8898c442794c65fa476443561",
+              "coordinatorAddress": "/Teacher",
+              "children": [
+                {
+                  "kind": "agent",
+                  "address": "/Teacher",
+                  "agentDefinitionId": "team-local-agent:nested-classroom-test:teacher",
+                  "agentRunId": "test_teacher_251ba9303f564636879d684d528b30b4",
+                  "platformAgentRunId": "test_teacher_251ba9303f564636879d684d528b30b4",
+                  "role": null,
+                  "description": null,
+                  "runtimeKind": "autobyteus",
+                  "llmModelIdentifier": "gpt-5.6-luna",
+                  "llmConfig": null,
+                  "autoExecuteTools": true,
+                  "skillAccessMode": "PRELOADED_ONLY",
+                  "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/sr015-api-rev-016-20260809-1/temp_workspace",
+                  "applicationExecutionContext": null
+                },
+                {
+                  "kind": "agent_team",
+                  "address": "/StudentStudyGroup",
+                  "teamDefinitionId": "team-local-team:nested-classroom-test:student-study-group",
+                  "teamRunId": "student_study_group_0154437a67464a328db99e446d167607",
+                  "coordinatorAddress": "/StudentStudyGroup/student_one",
+                  "role": null,
+                  "description": null,
+                  "children": [
+                    {
+                      "kind": "agent",
+                      "address": "/StudentStudyGroup/student_one",
+                      "agentDefinitionId": "team-local-agent:team-local-team%3Anested-classroom-test%3Astudent-study-group:student-one",
+                      "agentRunId": "student_one_9dd5958175ba4fc1be8853d238bf5708",
+                      "platformAgentRunId": null,
+                      "role": null,
+                      "description": null,
+                      "runtimeKind": "autobyteus",
+                      "llmModelIdentifier": "gpt-5.6-luna",
+                      "llmConfig": null,
+                      "autoExecuteTools": true,
+                      "skillAccessMode": "PRELOADED_ONLY",
+                      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/sr015-api-rev-016-20260809-1/temp_workspace",
+                      "applicationExecutionContext": null
+                    },
+                    {
+                      "kind": "agent",
+                      "address": "/StudentStudyGroup/student_two",
+                      "agentDefinitionId": "team-local-agent:team-local-team%3Anested-classroom-test%3Astudent-study-group:student-two",
+                      "agentRunId": "student_two_cd7cc18b3cce4bba9bf603b5df8992c9",
+                      "platformAgentRunId": null,
+                      "role": null,
+                      "description": null,
+                      "runtimeKind": "autobyteus",
+                      "llmModelIdentifier": "gpt-5.6-luna",
+                      "llmConfig": null,
+                      "autoExecuteTools": true,
+                      "skillAccessMode": "PRELOADED_ONLY",
+                      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/sr015-api-rev-016-20260809-1/temp_workspace",
+                      "applicationExecutionContext": null
+                    }
+                  ]
+                }
+              ]
+            },
+            "handoffs": [
+              {
+                "from": "/Teacher",
+                "to": "/StudentStudyGroup",
+                "rules": [
+                  "When the user asks to send the classroom handoff token to the study group."
+                ]
+              },
+              {
+                "from": "/StudentStudyGroup/student_one",
+                "to": "/Teacher",
+                "rules": [
+                  "When the delegated classroom task is finished and the teacher needs the outcome."
+                ]
+              },
+              {
+                "from": "/StudentStudyGroup/student_one",
+                "to": "/StudentStudyGroup/student_two",
+                "rules": [
+                  "When the delegated classroom task asks the coordinator to consult the supporting student."
+                ]
+              }
+            ]
+          }
+        },
+        "teacher": {
+          "agentRunId": "test_teacher_251ba9303f564636879d684d528b30b4",
+          "conversation": [
+            {
+              "kind": "message",
+              "role": "user",
+              "content": "**[User Requirement]**\nLive validation. Follow this exact sequence and do not stop early.\n1. Call get_handoff_rules.\n2. Send exactly one message to ./StudentStudyGroup telling its coordinator to call get_handoff_rules, send exactly one message to ./student_two requesting exactly PEER-AUTOBYTEUS-016, wait for the reply, then send a summary to /Teacher.\n3. Delegate one task to ./StudentStudyGroup. The task description must tell the active task coordinator to call get_handoff_rules, send exactly one message to ./student_two requesting exactly TASKPEER-AUTOBYTEUS-016, wait for the reply, then call submit_task_result with exactly RESULT-AUTOBYTEUS-016.\n4. When the task result arrives, call review_task_result with decision accept.\nAfter acceptance, reply to me with exactly FINAL-AUTOBYTEUS-016.",
+              "media": null,
+              "ts": 1786306019.885
+            },
+            {
+              "kind": "message",
+              "role": "assistant",
+              "content": "",
+              "media": null,
+              "ts": 1786306021.407
+            },
+            {
+              "kind": "tool_call",
+              "invocationId": "call_rBfcn5hRIFIn8UjG034JK2HZ",
+              "role": null,
+              "content": "",
+              "toolName": "get_handoff_rules",
+              "toolArgs": {},
+              "toolResult": "{\"handoffs\":[{\"when\":\"When the user asks to send the classroom handoff token to the study group.\",\"recipient_address\":\"/StudentStudyGroup\"}]}",
+              "toolError": null,
+              "media": null,
+              "ts": 1786306021.41
+            },
+            {
+              "kind": "message",
+              "role": "assistant",
+              "content": "",
+              "media": null,
+              "ts": 1786306023.164
+            },
+            {
+              "kind": "tool_call",
+              "invocationId": "call_cLfEYNuuOtzCl4auNLqd06NT",
+              "role": null,
+              "content": "",
+              "toolName": "send_message_to",
+              "toolArgs": {
+                "recipient_address": "./StudentStudyGroup",
+                "target_agent_run_id": "",
+                "content": "Coordinator: please call get_handoff_rules, then send exactly one message to ./student_two requesting exactly PEER-AUTOBYTEUS-016, wait for the reply, then send a summary to /Teacher.",
+                "message_type": "classroom_instruction",
+                "reference_files": []
+              },
+              "toolResult": "{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Delivered message to ./StudentStudyGroup.\",\"result\":null}",
+              "toolError": null,
+              "media": null,
+              "ts": 1786306023.187
+            },
+            {
+              "kind": "message",
+              "role": "assistant",
+              "content": "",
+              "media": null,
+              "ts": 1786306025.184
+            },
+            {
+              "kind": "tool_call",
+              "invocationId": "call_CaJnoSF3EO8J345hGFDvzF5X",
+              "role": null,
+              "content": "",
+              "toolName": "delegate_task",
+              "toolArgs": {
+                "recipient_address": "./StudentStudyGroup",
+                "description": "Active task coordinator: call get_handoff_rules, then send exactly one message to ./student_two requesting exactly TASKPEER-AUTOBYTEUS-016, wait for the reply, then call submit_task_result with exactly RESULT-AUTOBYTEUS-016. Do not stop early; complete these steps in order.",
+                "reference_files": []
+              },
+              "toolResult": "{\n  \"task_id\": \"task_0001\",\n  \"status\": \"active\"\n}",
+              "toolError": null,
+              "media": null,
+              "ts": 1786306025.222
+            },
+            {
+              "kind": "message",
+              "role": "assistant",
+              "content": "",
+              "media": null,
+              "ts": 1786306029.792
+            },
+            {
+              "kind": "tool_call",
+              "invocationId": "call_7PQMBkvK0cQQk8d2zgMzeC9Q",
+              "role": null,
+              "content": "",
+              "toolName": "review_task_result",
+              "toolArgs": {
+                "task_id": "task_0001",
+                "decision": "accept",
+                "comment": "",
+                "reference_files": []
+              },
+              "toolResult": null,
+              "toolError": "Error executing tool 'review_task_result' (ID: call_7PQMBkvK0cQQk8d2zgMzeC9Q): Error: {\n  \"error\": {\n    \"code\": \"TASK_NOT_AWAITING_REVIEW\",\n    \"message\": \"Delegated task 'task_0001' is active, not awaiting_review.\"\n  }\n}",
+              "media": null,
+              "ts": 1786306029.795
+            },
+            {
+              "kind": "message",
+              "role": "assistant",
+              "content": "",
+              "media": null,
+              "ts": 1786306031.722
+            },
+            {
+              "kind": "tool_call",
+              "invocationId": "call_ezqM4zo6MMLiTGLhucV8432x",
+              "role": null,
+              "content": "",
+              "toolName": "run_bash",
+              "toolArgs": {
+                "command": "sleep 2",
+                "cwd": ".",
+                "timeout_seconds": 5
+              },
+              "toolResult": {
+                "exitCode": 0,
+                "effectiveCwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/sr015-api-rev-016-20260809-1/temp_workspace"
+              },
+              "toolError": null,
+              "media": null,
+              "ts": 1786306033.871
+            },
+            {
+              "kind": "message",
+              "role": "assistant",
+              "content": "",
+              "media": null,
+              "ts": 1786306035.445
+            },
+            {
+              "kind": "tool_call",
+              "invocationId": "call_38HYYWZV9abIhLqgAYSFNecP",
+              "role": null,
+              "content": "",
+              "toolName": "review_task_result",
+              "toolArgs": {
+                "task_id": "task_0001",
+                "decision": "accept",
+                "comment": "",
+                "reference_files": []
+              },
+              "toolResult": null,
+              "toolError": "Error executing tool 'review_task_result' (ID: call_38HYYWZV9abIhLqgAYSFNecP): Error: {\n  \"error\": {\n    \"code\": \"TASK_NOT_AWAITING_REVIEW\",\n    \"message\": \"Delegated task 'task_0001' is active, not awaiting_review.\"\n  }\n}",
+              "media": null,
+              "ts": 1786306035.449
+            },
+            {
+              "kind": "message",
+              "role": "assistant",
+              "content": "",
+              "media": null,
+              "ts": 1786306037.483
+            },
+            {
+              "kind": "tool_call",
+              "invocationId": "call_7lgWpMEhAp0Sw5V6M1M69rIj",
+              "role": null,
+              "content": "",
+              "toolName": "run_bash",
+              "toolArgs": {
+                "command": "sleep 10",
+                "cwd": ".",
+                "timeout_seconds": 15
+              },
+              "toolResult": {
+                "exitCode": 0,
+                "effectiveCwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/sr015-api-rev-016-20260809-1/temp_workspace"
+              },
+              "toolError": null,
+              "media": null,
+              "ts": 1786306047.64
+            },
+            {
+              "kind": "message",
+              "role": "assistant",
+              "content": "",
+              "media": null,
+              "ts": 1786306049.049
+            },
+            {
+              "kind": "tool_call",
+              "invocationId": "call_FDu8m9SZU319oQpMJBwDDnai",
+              "role": null,
+              "content": "",
+              "toolName": "review_task_result",
+              "toolArgs": {
+                "task_id": "task_0001",
+                "decision": "accept",
+                "comment": "",
+                "reference_files": []
+              },
+              "toolResult": "{\n  \"task_id\": \"task_0001\",\n  \"status\": \"accepted\"\n}",
+              "toolError": null,
+              "media": null,
+              "ts": 1786306049.056
+            },
+            {
+              "kind": "message",
+              "role": "assistant",
+              "content": "FINAL-AUTOBYTEUS-016",
+              "media": null,
+              "ts": 1786306050.684
+            },
+            {
+              "kind": "message",
+              "role": "user",
+              "content": "**[Message From Agent]**\nYou received a message from sender name: student_one, sender id: student_one_9dd5958175ba4fc1be8853d238bf5708\nmessage:\nstudent_two replied exactly: PEER-AUTOBYTEUS-016. The requested peer consultation is complete.",
+              "media": null,
+              "ts": 1786306050.686
+            },
+            {
+              "kind": "message",
+              "role": "assistant",
+              "content": "Acknowledged.",
+              "media": null,
+              "ts": 1786306053.32
+            },
+            {
+              "kind": "message",
+              "role": "user",
+              "content": "**[System Notification]**\nTask result submitted for review.\n\nTask ID: task_0001\nTask:\nActive task coordinator: call get_handoff_rules, then send exactly one message to ./student_two requesting exactly TASKPEER-AUTOBYTEUS-016, wait for the reply, then call submit_task_result with exactly RESULT-AUTOBYTEUS-016. Do not stop early; complete these steps in order.\n\nSubmitted result:\nRESULT-AUTOBYTEUS-016\n\nReference files:\n- None specified\n\nTask review guidance:\n- Use review_task_result with decision=accept when the result is ready to finalize.\n- Use review_task_result with decision=request_revision and a non-empty comment when the task result needs changes.",
+              "media": null,
+              "ts": 1786306053.325
+            },
+            {
+              "kind": "message",
+              "role": "assistant",
+              "content": "",
+              "media": null,
+              "ts": 1786306055.109
+            },
+            {
+              "kind": "tool_call",
+              "invocationId": "call_g1eVvjaUsuOys0O6qNMPGv8n",
+              "role": null,
+              "content": "",
+              "toolName": "review_task_result",
+              "toolArgs": {
+                "task_id": "task_0001",
+                "decision": "accept",
+                "comment": "",
+                "reference_files": []
+              },
+              "toolResult": null,
+              "toolError": "Error executing tool 'review_task_result' (ID: call_g1eVvjaUsuOys0O6qNMPGv8n): Error: {\n  \"error\": {\n    \"code\": \"TASK_NOT_AWAITING_REVIEW\",\n    \"message\": \"Delegated task 'task_0001' is accepted, not awaiting_review.\"\n  }\n}",
+              "media": null,
+              "ts": 1786306055.112
+            },
+            {
+              "kind": "message",
+              "role": "assistant",
+              "content": "Task `task_0001` was already accepted.",
+              "media": null,
+              "ts": 1786306056.779
+            }
+          ],
+          "activities": [
+            {
+              "kind": "tool",
+              "invocationId": "call_rBfcn5hRIFIn8UjG034JK2HZ",
+              "toolName": "get_handoff_rules",
+              "type": "tool_call",
+              "status": "success",
+              "contextText": "get_handoff_rules",
+              "arguments": {},
+              "logs": [],
+              "result": "{\"handoffs\":[{\"when\":\"When the user asks to send the classroom handoff token to the study group.\",\"recipient_address\":\"/StudentStudyGroup\"}]}",
+              "error": null,
+              "ts": 1786306021.41,
+              "detailLevel": "source_limited"
+            },
+            {
+              "kind": "tool",
+              "invocationId": "call_cLfEYNuuOtzCl4auNLqd06NT",
+              "toolName": "send_message_to",
+              "type": "tool_call",
+              "status": "success",
+              "contextText": "send_message_to",
+              "arguments": {
+                "recipient_address": "./StudentStudyGroup",
+                "target_agent_run_id": "",
+                "content": "Coordinator: please call get_handoff_rules, then send exactly one message to ./student_two requesting exactly PEER-AUTOBYTEUS-016, wait for the reply, then send a summary to /Teacher.",
+                "message_type": "classroom_instruction",
+                "reference_files": []
+              },
+              "logs": [],
+              "result": "{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Delivered message to ./StudentStudyGroup.\",\"result\":null}",
+              "error": null,
+              "ts": 1786306023.187,
+              "detailLevel": "source_limited"
+            },
+            {
+              "kind": "tool",
+              "invocationId": "call_CaJnoSF3EO8J345hGFDvzF5X",
+              "toolName": "delegate_task",
+              "type": "tool_call",
+              "status": "success",
+              "contextText": "delegate_task",
+              "arguments": {
+                "recipient_address": "./StudentStudyGroup",
+                "description": "Active task coordinator: call get_handoff_rules, then send exactly one message to ./student_two requesting exactly TASKPEER-AUTOBYTEUS-016, wait for the reply, then call submit_task_result with exactly RESULT-AUTOBYTEUS-016. Do not stop early; complete these steps in order.",
+                "reference_files": []
+              },
+              "logs": [],
+              "result": "{\n  \"task_id\": \"task_0001\",\n  \"status\": \"active\"\n}",
+              "error": null,
+              "ts": 1786306025.222,
+              "detailLevel": "source_limited"
+            },
+            {
+              "kind": "tool",
+              "invocationId": "call_7PQMBkvK0cQQk8d2zgMzeC9Q",
+              "toolName": "review_task_result",
+              "type": "tool_call",
+              "status": "error",
+              "contextText": "review_task_result",
+              "arguments": {
+                "task_id": "task_0001",
+                "decision": "accept",
+                "comment": "",
+                "reference_files": []
+              },
+              "logs": [],
+              "result": null,
+              "error": "Error executing tool 'review_task_result' (ID: call_7PQMBkvK0cQQk8d2zgMzeC9Q): Error: {\n  \"error\": {\n    \"code\": \"TASK_NOT_AWAITING_REVIEW\",\n    \"message\": \"Delegated task 'task_0001' is active, not awaiting_review.\"\n  }\n}",
+              "ts": 1786306029.795,
+              "detailLevel": "source_limited"
+            },
+            {
+              "kind": "tool",
+              "invocationId": "call_ezqM4zo6MMLiTGLhucV8432x",
+              "toolName": "run_bash",
+              "type": "terminal_command",
+              "status": "success",
+              "contextText": "sleep 2",
+              "arguments": {
+                "command": "sleep 2",
+                "cwd": ".",
+                "timeout_seconds": 5
+              },
+              "logs": [],
+              "result": {
+                "exitCode": 0,
+                "effectiveCwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/sr015-api-rev-016-20260809-1/temp_workspace"
+              },
+              "error": null,
+              "ts": 1786306033.871,
+              "detailLevel": "source_limited"
+            },
+            {
+              "kind": "tool",
+              "invocationId": "call_38HYYWZV9abIhLqgAYSFNecP",
+              "toolName": "review_task_result",
+              "type": "tool_call",
+              "status": "error",
+              "contextText": "review_task_result",
+              "arguments": {
+                "task_id": "task_0001",
+                "decision": "accept",
+                "comment": "",
+                "reference_files": []
+              },
+              "logs": [],
+              "result": null,
+              "error": "Error executing tool 'review_task_result' (ID: call_38HYYWZV9abIhLqgAYSFNecP): Error: {\n  \"error\": {\n    \"code\": \"TASK_NOT_AWAITING_REVIEW\",\n    \"message\": \"Delegated task 'task_0001' is active, not awaiting_review.\"\n  }\n}",
+              "ts": 1786306035.449,
+              "detailLevel": "source_limited"
+            },
+            {
+              "kind": "tool",
+              "invocationId": "call_7lgWpMEhAp0Sw5V6M1M69rIj",
+              "toolName": "run_bash",
+              "type": "terminal_command",
+              "status": "success",
+              "contextText": "sleep 10",
+              "arguments": {
+                "command": "sleep 10",
+                "cwd": ".",
+                "timeout_seconds": 15
+              },
+              "logs": [],
+              "result": {
+                "exitCode": 0,
+                "effectiveCwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/sr015-api-rev-016-20260809-1/temp_workspace"
+              },
+              "error": null,
+              "ts": 1786306047.64,
+              "detailLevel": "source_limited"
+            },
+            {
+              "kind": "tool",
+              "invocationId": "call_FDu8m9SZU319oQpMJBwDDnai",
+              "toolName": "review_task_result",
+              "type": "tool_call",
+              "status": "success",
+              "contextText": "review_task_result",
+              "arguments": {
+                "task_id": "task_0001",
+                "decision": "accept",
+                "comment": "",
+                "reference_files": []
+              },
+              "logs": [],
+              "result": "{\n  \"task_id\": \"task_0001\",\n  \"status\": \"accepted\"\n}",
+              "error": null,
+              "ts": 1786306049.056,
+              "detailLevel": "source_limited"
+            },
+            {
+              "kind": "tool",
+              "invocationId": "call_g1eVvjaUsuOys0O6qNMPGv8n",
+              "toolName": "review_task_result",
+              "type": "tool_call",
+              "status": "error",
+              "contextText": "review_task_result",
+              "arguments": {
+                "task_id": "task_0001",
+                "decision": "accept",
+                "comment": "",
+                "reference_files": []
+              },
+              "logs": [],
+              "result": null,
+              "error": "Error executing tool 'review_task_result' (ID: call_g1eVvjaUsuOys0O6qNMPGv8n): Error: {\n  \"error\": {\n    \"code\": \"TASK_NOT_AWAITING_REVIEW\",\n    \"message\": \"Delegated task 'task_0001' is accepted, not awaiting_review.\"\n  }\n}",
+              "ts": 1786306055.112,
+              "detailLevel": "source_limited"
+            }
+          ]
+        },
+        "nested": {
+          "agentRunId": "student_one_9dd5958175ba4fc1be8853d238bf5708",
+          "conversation": [
+            {
+              "kind": "message",
+              "role": "user",
+              "content": "**[Message From Agent]**\nYou received a message from sender name: Teacher, sender id: test_teacher_251ba9303f564636879d684d528b30b4\nmessage:\nCoordinator: please call get_handoff_rules, then send exactly one message to ./student_two requesting exactly PEER-AUTOBYTEUS-016, wait for the reply, then send a summary to /Teacher.",
+              "media": null,
+              "ts": 1786306023.184
+            },
+            {
+              "kind": "message",
+              "role": "assistant",
+              "content": "",
+              "media": null,
+              "ts": 1786306024.295
+            },
+            {
+              "kind": "tool_call",
+              "invocationId": "call_LezeDjdkOYWKO5LcpCmqqMLZ",
+              "role": null,
+              "content": "",
+              "toolName": "get_handoff_rules",
+              "toolArgs": {},
+              "toolResult": "{\"handoffs\":[{\"when\":\"When the delegated classroom task is finished and the teacher needs the outcome.\",\"recipient_address\":\"/Teacher\"},{\"when\":\"When the delegated classroom task asks the coordinator to consult the supporting student.\",\"recipient_address\":\"/StudentStudyGroup/student_two\"}]}",
+              "toolError": null,
+              "media": null,
+              "ts": 1786306024.299
+            },
+            {
+              "kind": "message",
+              "role": "assistant",
+              "content": "",
+              "media": null,
+              "ts": 1786306025.724
+            },
+            {
+              "kind": "tool_call",
+              "invocationId": "call_fmytrFG9ii23lMXjfGvXU0g5",
+              "role": null,
+              "content": "",
+              "toolName": "send_message_to",
+              "toolArgs": {
+                "recipient_address": "./student_two",
+                "target_agent_run_id": "",
+                "content": "Please reply with exactly PEER-AUTOBYTEUS-016",
+                "message_type": "request",
+                "reference_files": []
+              },
+              "toolResult": "{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Delivered message to ./student_two.\",\"result\":null}",
+              "toolError": null,
+              "media": null,
+              "ts": 1786306025.747
+            },
+            {
+              "kind": "message",
+              "role": "assistant",
+              "content": "",
+              "media": null,
+              "ts": 1786306027.114
+            },
+            {
+              "kind": "tool_call",
+              "invocationId": "call_EhkPejD3PrQgqPVyYKS8OI6R",
+              "role": null,
+              "content": "",
+              "toolName": "run_bash",
+              "toolArgs": {
+                "command": "sleep 2",
+                "cwd": ".",
+                "timeout_seconds": 5
+              },
+              "toolResult": {
+                "exitCode": 0,
+                "effectiveCwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/sr015-api-rev-016-20260809-1/temp_workspace"
+              },
+              "toolError": null,
+              "media": null,
+              "ts": 1786306029.256
+            },
+            {
+              "kind": "message",
+              "role": "assistant",
+              "content": "",
+              "media": null,
+              "ts": 1786306030.746
+            },
+            {
+              "kind": "tool_call",
+              "invocationId": "call_wv4PecrmXSuWcHTGyEWiOajo",
+              "role": null,
+              "content": "",
+              "toolName": "run_bash",
+              "toolArgs": {
+                "command": "sleep 3",
+                "cwd": ".",
+                "timeout_seconds": 6
+              },
+              "toolResult": {
+                "exitCode": 0,
+                "effectiveCwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/sr015-api-rev-016-20260809-1/temp_workspace"
+              },
+              "toolError": null,
+              "media": null,
+              "ts": 1786306033.889
+            },
+            {
+              "kind": "message",
+              "role": "assistant",
+              "content": "Awaiting student_two’s reply.",
+              "media": null,
+              "ts": 1786306035.359
+            },
+            {
+              "kind": "message",
+              "role": "user",
+              "content": "**[Message From Agent]**\nYou received a message from sender name: student_two, sender id: student_two_cd7cc18b3cce4bba9bf603b5df8992c9\nmessage:\nPEER-AUTOBYTEUS-016",
+              "media": null,
+              "ts": 1786306035.364
+            },
+            {
+              "kind": "message",
+              "role": "assistant",
+              "content": "",
+              "media": null,
+              "ts": 1786306036.942
+            },
+            {
+              "kind": "tool_call",
+              "invocationId": "call_ar5dBxtiG93IEunDpOiOGcQa",
+              "role": null,
+              "content": "",
+              "toolName": "send_message_to",
+              "toolArgs": {
+                "recipient_address": "/Teacher",
+                "target_agent_run_id": "",
+                "content": "student_two replied exactly: PEER-AUTOBYTEUS-016. The requested peer consultation is complete.",
+                "message_type": "summary",
+                "reference_files": []
+              },
+              "toolResult": "{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Delivered message to /Teacher.\",\"result\":null}",
+              "toolError": null,
+              "media": null,
+              "ts": 1786306036.945
+            },
+            {
+              "kind": "message",
+              "role": "assistant",
+              "content": "Sent the summary to /Teacher: student_two replied exactly `PEER-AUTOBYTEUS-016`.",
+              "media": null,
+              "ts": 1786306038.132
+            }
+          ],
+          "activities": [
+            {
+              "kind": "tool",
+              "invocationId": "call_LezeDjdkOYWKO5LcpCmqqMLZ",
+              "toolName": "get_handoff_rules",
+              "type": "tool_call",
+              "status": "success",
+              "contextText": "get_handoff_rules",
+              "arguments": {},
+              "logs": [],
+              "result": "{\"handoffs\":[{\"when\":\"When the delegated classroom task is finished and the teacher needs the outcome.\",\"recipient_address\":\"/Teacher\"},{\"when\":\"When the delegated classroom task asks the coordinator to consult the supporting student.\",\"recipient_address\":\"/StudentStudyGroup/student_two\"}]}",
+              "error": null,
+              "ts": 1786306024.299,
+              "detailLevel": "source_limited"
+            },
+            {
+              "kind": "tool",
+              "invocationId": "call_fmytrFG9ii23lMXjfGvXU0g5",
+              "toolName": "send_message_to",
+              "type": "tool_call",
+              "status": "success",
+              "contextText": "send_message_to",
+              "arguments": {
+                "recipient_address": "./student_two",
+                "target_agent_run_id": "",
+                "content": "Please reply with exactly PEER-AUTOBYTEUS-016",
+                "message_type": "request",
+                "reference_files": []
+              },
+              "logs": [],
+              "result": "{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Delivered message to ./student_two.\",\"result\":null}",
+              "error": null,
+              "ts": 1786306025.747,
+              "detailLevel": "source_limited"
+            },
+            {
+              "kind": "tool",
+              "invocationId": "call_EhkPejD3PrQgqPVyYKS8OI6R",
+              "toolName": "run_bash",
+              "type": "terminal_command",
+              "status": "success",
+              "contextText": "sleep 2",
+              "arguments": {
+                "command": "sleep 2",
+                "cwd": ".",
+                "timeout_seconds": 5
+              },
+              "logs": [],
+              "result": {
+                "exitCode": 0,
+                "effectiveCwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/sr015-api-rev-016-20260809-1/temp_workspace"
+              },
+              "error": null,
+              "ts": 1786306029.256,
+              "detailLevel": "source_limited"
+            },
+            {
+              "kind": "tool",
+              "invocationId": "call_wv4PecrmXSuWcHTGyEWiOajo",
+              "toolName": "run_bash",
+              "type": "terminal_command",
+              "status": "success",
+              "contextText": "sleep 3",
+              "arguments": {
+                "command": "sleep 3",
+                "cwd": ".",
+                "timeout_seconds": 6
+              },
+              "logs": [],
+              "result": {
+                "exitCode": 0,
+                "effectiveCwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/sr015-api-rev-016-20260809-1/temp_workspace"
+              },
+              "error": null,
+              "ts": 1786306033.889,
+              "detailLevel": "source_limited"
+            },
+            {
+              "kind": "tool",
+              "invocationId": "call_ar5dBxtiG93IEunDpOiOGcQa",
+              "toolName": "send_message_to",
+              "type": "tool_call",
+              "status": "success",
+              "contextText": "send_message_to",
+              "arguments": {
+                "recipient_address": "/Teacher",
+                "target_agent_run_id": "",
+                "content": "student_two replied exactly: PEER-AUTOBYTEUS-016. The requested peer consultation is complete.",
+                "message_type": "summary",
+                "reference_files": []
+              },
+              "logs": [],
+              "result": "{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Delivered message to /Teacher.\",\"result\":null}",
+              "error": null,
+              "ts": 1786306036.945,
+              "detailLevel": "source_limited"
+            }
+          ]
+        },
+        "getTeamCommunicationMessages": [
+          {
+            "messageId": "teammsg_yGxN0Hc24A8jOu4wYm20oI-AJBVCIIqI",
+            "senderAddress": {
+              "rootTeamRunId": "nested_classroom_test_team_291ff7d8898c442794c65fa476443561",
+              "taskTeamRunIds": [],
+              "memberAddress": "/Teacher",
+              "taskAgentRunId": null
+            },
+            "receiverAddress": {
+              "rootTeamRunId": "nested_classroom_test_team_291ff7d8898c442794c65fa476443561",
+              "taskTeamRunIds": [],
+              "memberAddress": "/StudentStudyGroup/student_one",
+              "taskAgentRunId": null
+            },
+            "content": "Coordinator: please call get_handoff_rules, then send exactly one message to ./student_two requesting exactly PEER-AUTOBYTEUS-016, wait for the reply, then send a summary to /Teacher.",
+            "messageType": "classroom_instruction",
+            "createdAt": "2026-08-09T20:07:03.167Z"
+          },
+          {
+            "messageId": "teammsg_eShHqTssJ4L6eDeeKV334DIhwnzFSS91",
+            "senderAddress": {
+              "rootTeamRunId": "nested_classroom_test_team_291ff7d8898c442794c65fa476443561",
+              "taskTeamRunIds": [],
+              "memberAddress": "/StudentStudyGroup/student_one",
+              "taskAgentRunId": null
+            },
+            "receiverAddress": {
+              "rootTeamRunId": "nested_classroom_test_team_291ff7d8898c442794c65fa476443561",
+              "taskTeamRunIds": [],
+              "memberAddress": "/StudentStudyGroup/student_two",
+              "taskAgentRunId": null
+            },
+            "content": "Please reply with exactly PEER-AUTOBYTEUS-016",
+            "messageType": "request",
+            "createdAt": "2026-08-09T20:07:05.726Z"
+          },
+          {
+            "messageId": "teammsg_CqLF7Kv38qr3Y1xYjrupAiQzYCSPpIBp",
+            "senderAddress": {
+              "rootTeamRunId": "nested_classroom_test_team_291ff7d8898c442794c65fa476443561",
+              "taskTeamRunIds": [
+                "team_local_team_nested_classroom_test_student_st_8ad6a7fc21a34092b77e4726d6afac31"
+              ],
+              "memberAddress": "/StudentStudyGroup/student_one",
+              "taskAgentRunId": null
+            },
+            "receiverAddress": {
+              "rootTeamRunId": "nested_classroom_test_team_291ff7d8898c442794c65fa476443561",
+              "taskTeamRunIds": [
+                "team_local_team_nested_classroom_test_student_st_8ad6a7fc21a34092b77e4726d6afac31"
+              ],
+              "memberAddress": "/StudentStudyGroup/student_two",
+              "taskAgentRunId": null
+            },
+            "content": "TASKPEER-AUTOBYTEUS-016",
+            "messageType": "request",
+            "createdAt": "2026-08-09T20:07:07.904Z"
+          },
+          {
+            "messageId": "teammsg_FkGhlVs1a6NH-F-I97g3dqOdu61Fr9J-",
+            "senderAddress": {
+              "rootTeamRunId": "nested_classroom_test_team_291ff7d8898c442794c65fa476443561",
+              "taskTeamRunIds": [
+                "team_local_team_nested_classroom_test_student_st_8ad6a7fc21a34092b77e4726d6afac31"
+              ],
+              "memberAddress": "/StudentStudyGroup/student_two",
+              "taskAgentRunId": null
+            },
+            "receiverAddress": {
+              "rootTeamRunId": "nested_classroom_test_team_291ff7d8898c442794c65fa476443561",
+              "taskTeamRunIds": [
+                "team_local_team_nested_classroom_test_student_st_8ad6a7fc21a34092b77e4726d6afac31"
+              ],
+              "memberAddress": "/StudentStudyGroup/student_one",
+              "taskAgentRunId": null
+            },
+            "content": "TASKPEER-AUTOBYTEUS-016",
+            "messageType": "task_result",
+            "createdAt": "2026-08-09T20:07:10.162Z"
+          },
+          {
+            "messageId": "teammsg_yYnDBK6Pi-YLSr8O2ipFMWUsxj0UCOBD",
+            "senderAddress": {
+              "rootTeamRunId": "nested_classroom_test_team_291ff7d8898c442794c65fa476443561",
+              "taskTeamRunIds": [],
+              "memberAddress": "/StudentStudyGroup/student_two",
+              "taskAgentRunId": null
+            },
+            "receiverAddress": {
+              "rootTeamRunId": "nested_classroom_test_team_291ff7d8898c442794c65fa476443561",
+              "taskTeamRunIds": [],
+              "memberAddress": "/StudentStudyGroup/student_one",
+              "taskAgentRunId": null
+            },
+            "content": "PEER-AUTOBYTEUS-016",
+            "messageType": "ordinary",
+            "createdAt": "2026-08-09T20:07:10.208Z"
+          },
+          {
+            "messageId": "teammsg_HtxH4lnXLSrHOuK01EybCOrjtKJ7qw8n",
+            "senderAddress": {
+              "rootTeamRunId": "nested_classroom_test_team_291ff7d8898c442794c65fa476443561",
+              "taskTeamRunIds": [],
+              "memberAddress": "/StudentStudyGroup/student_one",
+              "taskAgentRunId": null
+            },
+            "receiverAddress": {
+              "rootTeamRunId": "nested_classroom_test_team_291ff7d8898c442794c65fa476443561",
+              "taskTeamRunIds": [],
+              "memberAddress": "/Teacher",
+              "taskAgentRunId": null
+            },
+            "content": "student_two replied exactly: PEER-AUTOBYTEUS-016. The requested peer consultation is complete.",
+            "messageType": "summary",
+            "createdAt": "2026-08-09T20:07:16.945Z"
+          }
+        ],
+        "getTaskDelegationRecords": [
+          {
+            "taskId": "task_0001",
+            "status": "accepted",
+            "senderAddress": {
+              "rootTeamRunId": "nested_classroom_test_team_291ff7d8898c442794c65fa476443561",
+              "taskTeamRunIds": [],
+              "memberAddress": "/Teacher",
+              "taskAgentRunId": null
+            },
+            "receiverAddress": {
+              "rootTeamRunId": "nested_classroom_test_team_291ff7d8898c442794c65fa476443561",
+              "taskTeamRunIds": [
+                "team_local_team_nested_classroom_test_student_st_8ad6a7fc21a34092b77e4726d6afac31"
+              ],
+              "memberAddress": "/StudentStudyGroup/student_one",
+              "taskAgentRunId": null
+            },
+            "receiverTargetKind": "agent_team",
+            "content": "Active task coordinator: call get_handoff_rules, then send exactly one message to ./student_two requesting exactly TASKPEER-AUTOBYTEUS-016, wait for the reply, then call submit_task_result with exactly RESULT-AUTOBYTEUS-016. Do not stop early; complete these steps in order.",
+            "taskRun": {
+              "address": {
+                "rootTeamRunId": "nested_classroom_test_team_291ff7d8898c442794c65fa476443561",
+                "taskTeamRunIds": [
+                  "team_local_team_nested_classroom_test_student_st_8ad6a7fc21a34092b77e4726d6afac31"
+                ],
+                "memberAddress": "/StudentStudyGroup",
+                "taskAgentRunId": null
+              },
+              "startedAt": "2026-08-09T20:07:05.219Z"
+            },
+            "updates": [
+              {
+                "kind": "submission",
+                "submissionId": "task_0001_submission_0001",
+                "reviewId": null,
+                "reviewedSubmissionId": null,
+                "decision": null,
+                "senderAddress": {
+                  "rootTeamRunId": "nested_classroom_test_team_291ff7d8898c442794c65fa476443561",
+                  "taskTeamRunIds": [
+                    "team_local_team_nested_classroom_test_student_st_8ad6a7fc21a34092b77e4726d6afac31"
+                  ],
+                  "memberAddress": "/StudentStudyGroup",
+                  "taskAgentRunId": null
+                },
+                "receiverAddress": {
+                  "rootTeamRunId": "nested_classroom_test_team_291ff7d8898c442794c65fa476443561",
+                  "taskTeamRunIds": [],
+                  "memberAddress": "/Teacher",
+                  "taskAgentRunId": null
+                },
+                "content": "RESULT-AUTOBYTEUS-016",
+                "createdAt": "2026-08-09T20:07:20.513Z"
+              },
+              {
+                "kind": "review",
+                "submissionId": null,
+                "reviewId": "task_0001_review_0001",
+                "reviewedSubmissionId": "task_0001_submission_0001",
+                "decision": "accept",
+                "senderAddress": {
+                  "rootTeamRunId": "nested_classroom_test_team_291ff7d8898c442794c65fa476443561",
+                  "taskTeamRunIds": [],
+                  "memberAddress": "/Teacher",
+                  "taskAgentRunId": null
+                },
+                "receiverAddress": {
+                  "rootTeamRunId": "nested_classroom_test_team_291ff7d8898c442794c65fa476443561",
+                  "taskTeamRunIds": [
+                    "team_local_team_nested_classroom_test_student_st_8ad6a7fc21a34092b77e4726d6afac31"
+                  ],
+                  "memberAddress": "/StudentStudyGroup",
+                  "taskAgentRunId": null
+                },
+                "content": null,
+                "createdAt": "2026-08-09T20:07:29.051Z"
+              }
+            ],
+            "createdAt": "2026-08-09T20:07:05.194Z"
+          }
+        ]
+      }
+    },
+    "codex": {
+      "teamRunId": "nested_classroom_test_team_b9f6646a1d2b46499fc34e673e47b909",
+      "runtimeKind": "codex_app_server",
+      "model": "gpt-5.6-luna",
+      "reasoning": "medium",
+      "peer": "PEER-CODEX-RERUN-016",
+      "taskPeer": "TASKPEER-CODEX-RERUN-016",
+      "result": "RESULT-CODEX-RERUN-016",
+      "final": "FINAL-CODEX-RERUN-016",
+      "source": "team-codex-authoritative-rerun.json",
+      "taskTeamRunIds": [
+        "team_local_team_nested_classroom_test_student_st_2767d353ee934123aafc8d39ffc42d04"
+      ],
+      "counts": {
+        "messages": 6,
+        "persistentMessages": 4,
+        "taskMessages": 2,
+        "tasks": 1,
+        "taskUpdates": 2
+      },
+      "assertions": {
+        "inactiveAfterTerminate": true,
+        "exactRootedAddresses": true,
+        "coordinatorsExact": true,
+        "allLeavesExact": true,
+        "teacherIntrinsicHandoff": true,
+        "nestedIntrinsicHandoff": true,
+        "oneTask": true,
+        "taskAccepted": true,
+        "taskTeamTarget": true,
+        "rootToNestedHandoff": true,
+        "persistentPeerRequest": true,
+        "persistentPeerResponse": true,
+        "persistentSummaryToTeacher": true,
+        "taskPeerRequest": true,
+        "taskPeerResponse": true,
+        "exactSubmission": true,
+        "acceptedReview": true,
+        "exactTeacherFinal": true,
+        "noUnexpectedRoot": true
+      },
+      "failed": [],
+      "data": {
+        "getTeamRunResumeConfig": {
+          "teamRunId": "nested_classroom_test_team_b9f6646a1d2b46499fc34e673e47b909",
+          "isActive": false,
+          "metadata": {
+            "schemaVersion": 3,
+            "teamDefinitionName": "Nested Classroom Test Team",
+            "createdAt": "2026-08-09T20:13:21.166Z",
+            "archivedAt": null,
+            "rootTeam": {
+              "kind": "agent_team",
+              "address": "/",
+              "teamDefinitionId": "nested-classroom-test",
+              "teamRunId": "nested_classroom_test_team_b9f6646a1d2b46499fc34e673e47b909",
+              "coordinatorAddress": "/Teacher",
+              "children": [
+                {
+                  "kind": "agent",
+                  "address": "/Teacher",
+                  "agentDefinitionId": "team-local-agent:nested-classroom-test:teacher",
+                  "agentRunId": "test_teacher_d53ef47da25043519c3d840866ddc255",
+                  "platformAgentRunId": "019fe828-93e5-79b1-a6f4-7bb06f7dba6b",
+                  "role": null,
+                  "description": null,
+                  "runtimeKind": "codex_app_server",
+                  "llmModelIdentifier": "gpt-5.6-luna",
+                  "llmConfig": {
+                    "reasoning_effort": "medium"
+                  },
+                  "autoExecuteTools": true,
+                  "skillAccessMode": "PRELOADED_ONLY",
+                  "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/sr015-api-rev-016-20260809-1/temp_workspace",
+                  "applicationExecutionContext": null
+                },
+                {
+                  "kind": "agent_team",
+                  "address": "/StudentStudyGroup",
+                  "teamDefinitionId": "team-local-team:nested-classroom-test:student-study-group",
+                  "teamRunId": "student_study_group_bd8f687dce1642e4918c279aa0368d6a",
+                  "coordinatorAddress": "/StudentStudyGroup/student_one",
+                  "role": null,
+                  "description": null,
+                  "children": [
+                    {
+                      "kind": "agent",
+                      "address": "/StudentStudyGroup/student_one",
+                      "agentDefinitionId": "team-local-agent:team-local-team%3Anested-classroom-test%3Astudent-study-group:student-one",
+                      "agentRunId": "student_one_dd813354a35e4712ae6fa765aaff5279",
+                      "platformAgentRunId": null,
+                      "role": null,
+                      "description": null,
+                      "runtimeKind": "codex_app_server",
+                      "llmModelIdentifier": "gpt-5.6-luna",
+                      "llmConfig": {
+                        "reasoning_effort": "medium"
+                      },
+                      "autoExecuteTools": true,
+                      "skillAccessMode": "PRELOADED_ONLY",
+                      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/sr015-api-rev-016-20260809-1/temp_workspace",
+                      "applicationExecutionContext": null
+                    },
+                    {
+                      "kind": "agent",
+                      "address": "/StudentStudyGroup/student_two",
+                      "agentDefinitionId": "team-local-agent:team-local-team%3Anested-classroom-test%3Astudent-study-group:student-two",
+                      "agentRunId": "student_two_507271371a314afaa59d545ef53b2e56",
+                      "platformAgentRunId": null,
+                      "role": null,
+                      "description": null,
+                      "runtimeKind": "codex_app_server",
+                      "llmModelIdentifier": "gpt-5.6-luna",
+                      "llmConfig": {
+                        "reasoning_effort": "medium"
+                      },
+                      "autoExecuteTools": true,
+                      "skillAccessMode": "PRELOADED_ONLY",
+                      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/sr015-api-rev-016-20260809-1/temp_workspace",
+                      "applicationExecutionContext": null
+                    }
+                  ]
+                }
+              ]
+            },
+            "handoffs": [
+              {
+                "from": "/Teacher",
+                "to": "/StudentStudyGroup",
+                "rules": [
+                  "When the user asks to send the classroom handoff token to the study group."
+                ]
+              },
+              {
+                "from": "/StudentStudyGroup/student_one",
+                "to": "/Teacher",
+                "rules": [
+                  "When the delegated classroom task is finished and the teacher needs the outcome."
+                ]
+              },
+              {
+                "from": "/StudentStudyGroup/student_one",
+                "to": "/StudentStudyGroup/student_two",
+                "rules": [
+                  "When the delegated classroom task asks the coordinator to consult the supporting student."
+                ]
+              }
+            ]
+          }
+        },
+        "teacher": {
+          "agentRunId": "test_teacher_d53ef47da25043519c3d840866ddc255",
+          "conversation": [
+            {
+              "kind": "message",
+              "role": "user",
+              "content": "Live validation. Complete every observable step before finalizing.\n1. Call get_handoff_rules.\n2. Send exactly one message to ./StudentStudyGroup. Tell its coordinator to call get_handoff_rules, message ./student_two requesting exactly PEER-CODEX-RERUN-016, wait for that peer reply, and then send a summary to /Teacher.\n3. Delegate one task to ./StudentStudyGroup. Tell the active task coordinator to call get_handoff_rules, message ./student_two requesting exactly TASKPEER-CODEX-RERUN-016, wait for that same-task-Team peer reply, and submit exactly RESULT-CODEX-RERUN-016.\n4. Do not review while the task is active. Wait for the task-result notification, then call review_task_result with decision accept.\n5. Do not finalize until the persistent summary has reached /Teacher and the task is accepted. Then reply exactly FINAL-CODEX-RERUN-016 and nothing else.",
+              "media": null,
+              "ts": 1786306401.421
+            },
+            {
+              "kind": "reasoning",
+              "role": null,
+              "content": "**Searching for all tool names**\n\n**Planning sequential handoff process**",
+              "media": null,
+              "ts": 1786306411.686
+            },
+            {
+              "kind": "tool_call",
+              "invocationId": "exec-6d9f22b6-9528-4457-bfbf-0973c0ba2177",
+              "role": null,
+              "content": "",
+              "toolName": "get_handoff_rules",
+              "toolArgs": {},
+              "toolResult": {
+                "handoffs": [
+                  {
+                    "when": "When the user asks to send the classroom handoff token to the study group.",
+                    "recipient_address": "/StudentStudyGroup"
+                  }
+                ]
+              },
+              "toolError": null,
+              "media": null,
+              "ts": 1786306411.688
+            },
+            {
+              "kind": "reasoning",
+              "role": null,
+              "content": "**Confirming single message to StudentStudyGroup**",
+              "media": null,
+              "ts": 1786306415.89
+            },
+            {
+              "kind": "tool_call",
+              "invocationId": "exec-53c8a06b-3aab-4b70-b83b-0280756a0505",
+              "role": null,
+              "content": "",
+              "toolName": "send_message_to",
+              "toolArgs": {
+                "recipient_address": "./StudentStudyGroup",
+                "content": "Please call get_handoff_rules, then message ./student_two requesting exactly PEER-CODEX-RERUN-016. Wait for that peer reply, then send a summary to /Teacher."
+              },
+              "toolResult": {
+                "accepted": true,
+                "code": "DELIVERED",
+                "message": "Delivered message to ./StudentStudyGroup.",
+                "result": null
+              },
+              "toolError": null,
+              "media": null,
+              "ts": 1786306416.054
+            },
+            {
+              "kind": "reasoning",
+              "role": null,
+              "content": "**Finalizing target object shape as string**",
+              "media": null,
+              "ts": 1786306419.675
+            },
+            {
+              "kind": "tool_call",
+              "invocationId": "exec-c27cce88-ece8-4402-a6c9-794841666095",
+              "role": null,
+              "content": "",
+              "toolName": "delegate_task",
+              "toolArgs": {
+                "recipient_address": "./StudentStudyGroup",
+                "description": "Active task coordinator: call get_handoff_rules. Then message ./student_two requesting exactly TASKPEER-CODEX-RERUN-016. Wait for that same-task-Team peer reply. After receiving it, submit exactly RESULT-CODEX-RERUN-016 as the task result. Do not submit any other result text."
+              },
+              "toolResult": {
+                "task_id": "task_0001",
+                "status": "active"
+              },
+              "toolError": null,
+              "media": null,
+              "ts": 1786306419.83
+            },
+            {
+              "kind": "message",
+              "role": "user",
+              "content": "You received a message from sender name: student_one, sender id: student_one_dd813354a35e4712ae6fa765aaff5279\nmessage:\nSummary: I called get_handoff_rules, requested exactly PEER-CODEX-RERUN-016 from ./student_two, and received the exact reply PEER-CODEX-RERUN-016.",
+              "media": null,
+              "ts": 1786306435.288
+            },
+            {
+              "kind": "message",
+              "role": "user",
+              "content": "Task result submitted for review.\n\nTask ID: task_0001\nTask:\nActive task coordinator: call get_handoff_rules. Then message ./student_two requesting exactly TASKPEER-CODEX-RERUN-016. Wait for that same-task-Team peer reply. After receiving it, submit exactly RESULT-CODEX-RERUN-016 as the task result. Do not submit any other result text.\n\nSubmitted result:\nRESULT-CODEX-RERUN-016\n\nReference files:\n- None specified\n\nTask review guidance:\n- Use review_task_result with decision=accept when the result is ready to finalize.\n- Use review_task_result with decision=request_revision and a non-empty comment when the task result needs changes.",
+              "media": null,
+              "ts": 1786306439.899
+            },
+            {
+              "kind": "reasoning",
+              "role": null,
+              "content": "**Researching task status polling methods**\n\n**Planning wait implementation for handoff**\n\n**Verifying notification appearance**",
+              "media": null,
+              "ts": 1786306440.179
+            },
+            {
+              "kind": "reasoning",
+              "role": null,
+              "content": "**Reviewing accept task ID**",
+              "media": null,
+              "ts": 1786306442.269
+            },
+            {
+              "kind": "tool_call",
+              "invocationId": "exec-1a9c911d-04ca-448b-a864-f05fee35f605",
+              "role": null,
+              "content": "",
+              "toolName": "review_task_result",
+              "toolArgs": {
+                "task_id": "task_0001",
+                "decision": "accept"
+              },
+              "toolResult": {
+                "task_id": "task_0001",
+                "status": "accepted"
+              },
+              "toolError": null,
+              "media": null,
+              "ts": 1786306442.274
+            },
+            {
+              "kind": "message",
+              "role": "assistant",
+              "content": "FINAL-CODEX-RERUN-016",
+              "media": null,
+              "ts": 1786306443.741
+            }
+          ],
+          "activities": [
+            {
+              "kind": "tool",
+              "invocationId": "exec-6d9f22b6-9528-4457-bfbf-0973c0ba2177",
+              "toolName": "get_handoff_rules",
+              "type": "tool_call",
+              "status": "success",
+              "contextText": "get_handoff_rules",
+              "arguments": {},
+              "logs": [],
+              "result": {
+                "handoffs": [
+                  {
+                    "when": "When the user asks to send the classroom handoff token to the study group.",
+                    "recipient_address": "/StudentStudyGroup"
+                  }
+                ]
+              },
+              "error": null,
+              "ts": 1786306411.688,
+              "detailLevel": "source_limited"
+            },
+            {
+              "kind": "tool",
+              "invocationId": "exec-53c8a06b-3aab-4b70-b83b-0280756a0505",
+              "toolName": "send_message_to",
+              "type": "tool_call",
+              "status": "success",
+              "contextText": "send_message_to",
+              "arguments": {
+                "recipient_address": "./StudentStudyGroup",
+                "content": "Please call get_handoff_rules, then message ./student_two requesting exactly PEER-CODEX-RERUN-016. Wait for that peer reply, then send a summary to /Teacher."
+              },
+              "logs": [],
+              "result": {
+                "accepted": true,
+                "code": "DELIVERED",
+                "message": "Delivered message to ./StudentStudyGroup.",
+                "result": null
+              },
+              "error": null,
+              "ts": 1786306416.054,
+              "detailLevel": "source_limited"
+            },
+            {
+              "kind": "tool",
+              "invocationId": "exec-c27cce88-ece8-4402-a6c9-794841666095",
+              "toolName": "delegate_task",
+              "type": "tool_call",
+              "status": "success",
+              "contextText": "delegate_task",
+              "arguments": {
+                "recipient_address": "./StudentStudyGroup",
+                "description": "Active task coordinator: call get_handoff_rules. Then message ./student_two requesting exactly TASKPEER-CODEX-RERUN-016. Wait for that same-task-Team peer reply. After receiving it, submit exactly RESULT-CODEX-RERUN-016 as the task result. Do not submit any other result text."
+              },
+              "logs": [],
+              "result": {
+                "task_id": "task_0001",
+                "status": "active"
+              },
+              "error": null,
+              "ts": 1786306419.83,
+              "detailLevel": "source_limited"
+            },
+            {
+              "kind": "tool",
+              "invocationId": "exec-1a9c911d-04ca-448b-a864-f05fee35f605",
+              "toolName": "review_task_result",
+              "type": "tool_call",
+              "status": "success",
+              "contextText": "review_task_result",
+              "arguments": {
+                "task_id": "task_0001",
+                "decision": "accept"
+              },
+              "logs": [],
+              "result": {
+                "task_id": "task_0001",
+                "status": "accepted"
+              },
+              "error": null,
+              "ts": 1786306442.274,
+              "detailLevel": "source_limited"
+            }
+          ]
+        },
+        "nested": {
+          "agentRunId": "student_one_dd813354a35e4712ae6fa765aaff5279",
+          "conversation": [
+            {
+              "kind": "message",
+              "role": "user",
+              "content": "You received a message from sender name: Teacher, sender id: test_teacher_d53ef47da25043519c3d840866ddc255\nmessage:\nPlease call get_handoff_rules, then message ./student_two requesting exactly PEER-CODEX-RERUN-016. Wait for that peer reply, then send a summary to /Teacher.",
+              "media": null,
+              "ts": 1786306416.049
+            },
+            {
+              "kind": "reasoning",
+              "role": null,
+              "content": "**Planning tool discovery with ALL_TOOLS filter**\n\n**Planning call handoff implementation**",
+              "media": null,
+              "ts": 1786306421.967
+            },
+            {
+              "kind": "tool_call",
+              "invocationId": "exec-78384680-cf20-4c66-9b14-3fb0edebe674",
+              "role": null,
+              "content": "",
+              "toolName": "get_handoff_rules",
+              "toolArgs": {},
+              "toolResult": {
+                "handoffs": [
+                  {
+                    "when": "When the delegated classroom task is finished and the teacher needs the outcome.",
+                    "recipient_address": "/Teacher"
+                  },
+                  {
+                    "when": "When the delegated classroom task asks the coordinator to consult the supporting student.",
+                    "recipient_address": "/StudentStudyGroup/student_two"
+                  }
+                ]
+              },
+              "toolError": null,
+              "media": null,
+              "ts": 1786306421.971
+            },
+            {
+              "kind": "reasoning",
+              "role": null,
+              "content": "**Sending token to student_two**",
+              "media": null,
+              "ts": 1786306424.253
+            },
+            {
+              "kind": "tool_call",
+              "invocationId": "exec-c967ad05-d2e3-479c-a12c-755fbc7588cb",
+              "role": null,
+              "content": "",
+              "toolName": "send_message_to",
+              "toolArgs": {
+                "recipient_address": "./student_two",
+                "content": "PEER-CODEX-RERUN-016"
+              },
+              "toolResult": {
+                "accepted": true,
+                "code": "DELIVERED",
+                "message": "Delivered message to ./student_two.",
+                "result": null
+              },
+              "toolError": null,
+              "media": null,
+              "ts": 1786306424.396
+            },
+            {
+              "kind": "message",
+              "role": "user",
+              "content": "You received a message from sender name: student_two, sender id: student_two_507271371a314afaa59d545ef53b2e56\nmessage:\nPEER-CODEX-RERUN-016",
+              "media": null,
+              "ts": 1786306430.653
+            },
+            {
+              "kind": "reasoning",
+              "role": null,
+              "content": "**Planning peer reply retrieval**\n\n**Planning message synchronization strategy****Searching tools for autobyteus**",
+              "media": null,
+              "ts": 1786306430.712
+            },
+            {
+              "kind": "reasoning",
+              "role": null,
+              "content": "**Preparing summary message for /Teacher**",
+              "media": null,
+              "ts": 1786306435.284
+            },
+            {
+              "kind": "tool_call",
+              "invocationId": "exec-f493e5a1-2cfc-47a2-b135-417eab6cdc82",
+              "role": null,
+              "content": "",
+              "toolName": "send_message_to",
+              "toolArgs": {
+                "recipient_address": "/Teacher",
+                "content": "Summary: I called get_handoff_rules, requested exactly PEER-CODEX-RERUN-016 from ./student_two, and received the exact reply PEER-CODEX-RERUN-016."
+              },
+              "toolResult": {
+                "accepted": true,
+                "code": "DELIVERED",
+                "message": "Delivered message to /Teacher.",
+                "result": null
+              },
+              "toolError": null,
+              "media": null,
+              "ts": 1786306435.291
+            },
+            {
+              "kind": "tool_call",
+              "invocationId": "exec-2a49245b-71c0-44dc-b27b-ddde798119e7",
+              "role": null,
+              "content": "",
+              "toolName": "submit_task_result",
+              "toolArgs": {
+                "message": "Summary sent to /Teacher: get_handoff_rules was called; ./student_two was requested with exactly PEER-CODEX-RERUN-016 and replied with exactly PEER-CODEX-RERUN-016."
+              },
+              "toolResult": null,
+              "toolError": "submit_task_result is available only to a bound task-agent or task-team ingress context.",
+              "media": null,
+              "ts": 1786306438.378
+            },
+            {
+              "kind": "reasoning",
+              "role": null,
+              "content": "**Verifying final handoff rules call**",
+              "media": null,
+              "ts": 1786306441.981
+            },
+            {
+              "kind": "tool_call",
+              "invocationId": "exec-1a45f652-4e49-4f37-9cdd-7f654113fc80",
+              "role": null,
+              "content": "",
+              "toolName": "get_handoff_rules",
+              "toolArgs": {},
+              "toolResult": {
+                "handoffs": [
+                  {
+                    "when": "When the delegated classroom task is finished and the teacher needs the outcome.",
+                    "recipient_address": "/Teacher"
+                  },
+                  {
+                    "when": "When the delegated classroom task asks the coordinator to consult the supporting student.",
+                    "recipient_address": "/StudentStudyGroup/student_two"
+                  }
+                ]
+              },
+              "toolError": null,
+              "media": null,
+              "ts": 1786306441.983
+            },
+            {
+              "kind": "message",
+              "role": "assistant",
+              "content": "Summary sent to `/Teacher`; peer replied exactly `PEER-CODEX-RERUN-016`.",
+              "media": null,
+              "ts": 1786306443.296
+            }
+          ],
+          "activities": [
+            {
+              "kind": "tool",
+              "invocationId": "exec-78384680-cf20-4c66-9b14-3fb0edebe674",
+              "toolName": "get_handoff_rules",
+              "type": "tool_call",
+              "status": "success",
+              "contextText": "get_handoff_rules",
+              "arguments": {},
+              "logs": [],
+              "result": {
+                "handoffs": [
+                  {
+                    "when": "When the delegated classroom task is finished and the teacher needs the outcome.",
+                    "recipient_address": "/Teacher"
+                  },
+                  {
+                    "when": "When the delegated classroom task asks the coordinator to consult the supporting student.",
+                    "recipient_address": "/StudentStudyGroup/student_two"
+                  }
+                ]
+              },
+              "error": null,
+              "ts": 1786306421.971,
+              "detailLevel": "source_limited"
+            },
+            {
+              "kind": "tool",
+              "invocationId": "exec-c967ad05-d2e3-479c-a12c-755fbc7588cb",
+              "toolName": "send_message_to",
+              "type": "tool_call",
+              "status": "success",
+              "contextText": "send_message_to",
+              "arguments": {
+                "recipient_address": "./student_two",
+                "content": "PEER-CODEX-RERUN-016"
+              },
+              "logs": [],
+              "result": {
+                "accepted": true,
+                "code": "DELIVERED",
+                "message": "Delivered message to ./student_two.",
+                "result": null
+              },
+              "error": null,
+              "ts": 1786306424.396,
+              "detailLevel": "source_limited"
+            },
+            {
+              "kind": "tool",
+              "invocationId": "exec-f493e5a1-2cfc-47a2-b135-417eab6cdc82",
+              "toolName": "send_message_to",
+              "type": "tool_call",
+              "status": "success",
+              "contextText": "send_message_to",
+              "arguments": {
+                "recipient_address": "/Teacher",
+                "content": "Summary: I called get_handoff_rules, requested exactly PEER-CODEX-RERUN-016 from ./student_two, and received the exact reply PEER-CODEX-RERUN-016."
+              },
+              "logs": [],
+              "result": {
+                "accepted": true,
+                "code": "DELIVERED",
+                "message": "Delivered message to /Teacher.",
+                "result": null
+              },
+              "error": null,
+              "ts": 1786306435.291,
+              "detailLevel": "source_limited"
+            },
+            {
+              "kind": "tool",
+              "invocationId": "exec-2a49245b-71c0-44dc-b27b-ddde798119e7",
+              "toolName": "submit_task_result",
+              "type": "tool_call",
+              "status": "error",
+              "contextText": "submit_task_result",
+              "arguments": {
+                "message": "Summary sent to /Teacher: get_handoff_rules was called; ./student_two was requested with exactly PEER-CODEX-RERUN-016 and replied with exactly PEER-CODEX-RERUN-016."
+              },
+              "logs": [],
+              "result": null,
+              "error": "submit_task_result is available only to a bound task-agent or task-team ingress context.",
+              "ts": 1786306438.378,
+              "detailLevel": "source_limited"
+            },
+            {
+              "kind": "tool",
+              "invocationId": "exec-1a45f652-4e49-4f37-9cdd-7f654113fc80",
+              "toolName": "get_handoff_rules",
+              "type": "tool_call",
+              "status": "success",
+              "contextText": "get_handoff_rules",
+              "arguments": {},
+              "logs": [],
+              "result": {
+                "handoffs": [
+                  {
+                    "when": "When the delegated classroom task is finished and the teacher needs the outcome.",
+                    "recipient_address": "/Teacher"
+                  },
+                  {
+                    "when": "When the delegated classroom task asks the coordinator to consult the supporting student.",
+                    "recipient_address": "/StudentStudyGroup/student_two"
+                  }
+                ]
+              },
+              "error": null,
+              "ts": 1786306441.983,
+              "detailLevel": "source_limited"
+            }
+          ]
+        },
+        "getTeamCommunicationMessages": [
+          {
+            "messageId": "teammsg_lixSHrE_CFRoAqr-ztIGPNkOJ8t35LHb",
+            "senderAddress": {
+              "rootTeamRunId": "nested_classroom_test_team_b9f6646a1d2b46499fc34e673e47b909",
+              "taskTeamRunIds": [],
+              "memberAddress": "/Teacher",
+              "taskAgentRunId": null
+            },
+            "receiverAddress": {
+              "rootTeamRunId": "nested_classroom_test_team_b9f6646a1d2b46499fc34e673e47b909",
+              "taskTeamRunIds": [],
+              "memberAddress": "/StudentStudyGroup/student_one",
+              "taskAgentRunId": null
+            },
+            "content": "Please call get_handoff_rules, then message ./student_two requesting exactly PEER-CODEX-RERUN-016. Wait for that peer reply, then send a summary to /Teacher.",
+            "messageType": "agent_message",
+            "createdAt": "2026-08-09T20:13:35.892Z"
+          },
+          {
+            "messageId": "teammsg_FvwUbkvZreTzCWGGXSZPovUbdESMoRVh",
+            "senderAddress": {
+              "rootTeamRunId": "nested_classroom_test_team_b9f6646a1d2b46499fc34e673e47b909",
+              "taskTeamRunIds": [],
+              "memberAddress": "/StudentStudyGroup/student_one",
+              "taskAgentRunId": null
+            },
+            "receiverAddress": {
+              "rootTeamRunId": "nested_classroom_test_team_b9f6646a1d2b46499fc34e673e47b909",
+              "taskTeamRunIds": [],
+              "memberAddress": "/StudentStudyGroup/student_two",
+              "taskAgentRunId": null
+            },
+            "content": "PEER-CODEX-RERUN-016",
+            "messageType": "agent_message",
+            "createdAt": "2026-08-09T20:13:44.254Z"
+          },
+          {
+            "messageId": "teammsg_ggtf-ZZHfdc-xFGuDTp1FIhWtw3X10MP",
+            "senderAddress": {
+              "rootTeamRunId": "nested_classroom_test_team_b9f6646a1d2b46499fc34e673e47b909",
+              "taskTeamRunIds": [
+                "team_local_team_nested_classroom_test_student_st_2767d353ee934123aafc8d39ffc42d04"
+              ],
+              "memberAddress": "/StudentStudyGroup/student_one",
+              "taskAgentRunId": null
+            },
+            "receiverAddress": {
+              "rootTeamRunId": "nested_classroom_test_team_b9f6646a1d2b46499fc34e673e47b909",
+              "taskTeamRunIds": [
+                "team_local_team_nested_classroom_test_student_st_2767d353ee934123aafc8d39ffc42d04"
+              ],
+              "memberAddress": "/StudentStudyGroup/student_two",
+              "taskAgentRunId": null
+            },
+            "content": "TASKPEER-CODEX-RERUN-016",
+            "messageType": "agent_message",
+            "createdAt": "2026-08-09T20:13:47.466Z"
+          },
+          {
+            "messageId": "teammsg_0FZhcoUd5Alvk4NQ_t7nbaL3QBA4sUbv",
+            "senderAddress": {
+              "rootTeamRunId": "nested_classroom_test_team_b9f6646a1d2b46499fc34e673e47b909",
+              "taskTeamRunIds": [],
+              "memberAddress": "/StudentStudyGroup/student_two",
+              "taskAgentRunId": null
+            },
+            "receiverAddress": {
+              "rootTeamRunId": "nested_classroom_test_team_b9f6646a1d2b46499fc34e673e47b909",
+              "taskTeamRunIds": [],
+              "memberAddress": "/StudentStudyGroup/student_one",
+              "taskAgentRunId": null
+            },
+            "content": "PEER-CODEX-RERUN-016",
+            "messageType": "peer_response",
+            "createdAt": "2026-08-09T20:13:50.652Z"
+          },
+          {
+            "messageId": "teammsg_RTLLmamCVSn_2kHyj8XWAklmaUaLbJqz",
+            "senderAddress": {
+              "rootTeamRunId": "nested_classroom_test_team_b9f6646a1d2b46499fc34e673e47b909",
+              "taskTeamRunIds": [],
+              "memberAddress": "/StudentStudyGroup/student_one",
+              "taskAgentRunId": null
+            },
+            "receiverAddress": {
+              "rootTeamRunId": "nested_classroom_test_team_b9f6646a1d2b46499fc34e673e47b909",
+              "taskTeamRunIds": [],
+              "memberAddress": "/Teacher",
+              "taskAgentRunId": null
+            },
+            "content": "Summary: I called get_handoff_rules, requested exactly PEER-CODEX-RERUN-016 from ./student_two, and received the exact reply PEER-CODEX-RERUN-016.",
+            "messageType": "agent_message",
+            "createdAt": "2026-08-09T20:13:55.287Z"
+          },
+          {
+            "messageId": "teammsg_QMagUrk4NEvpzgLq953UKQkKnfDmmwCg",
+            "senderAddress": {
+              "rootTeamRunId": "nested_classroom_test_team_b9f6646a1d2b46499fc34e673e47b909",
+              "taskTeamRunIds": [
+                "team_local_team_nested_classroom_test_student_st_2767d353ee934123aafc8d39ffc42d04"
+              ],
+              "memberAddress": "/StudentStudyGroup/student_two",
+              "taskAgentRunId": null
+            },
+            "receiverAddress": {
+              "rootTeamRunId": "nested_classroom_test_team_b9f6646a1d2b46499fc34e673e47b909",
+              "taskTeamRunIds": [
+                "team_local_team_nested_classroom_test_student_st_2767d353ee934123aafc8d39ffc42d04"
+              ],
+              "memberAddress": "/StudentStudyGroup/student_one",
+              "taskAgentRunId": null
+            },
+            "content": "TASKPEER-CODEX-RERUN-016",
+            "messageType": "agent_message",
+            "createdAt": "2026-08-09T20:13:56.102Z"
+          }
+        ],
+        "getTaskDelegationRecords": [
+          {
+            "taskId": "task_0001",
+            "status": "accepted",
+            "senderAddress": {
+              "rootTeamRunId": "nested_classroom_test_team_b9f6646a1d2b46499fc34e673e47b909",
+              "taskTeamRunIds": [],
+              "memberAddress": "/Teacher",
+              "taskAgentRunId": null
+            },
+            "receiverAddress": {
+              "rootTeamRunId": "nested_classroom_test_team_b9f6646a1d2b46499fc34e673e47b909",
+              "taskTeamRunIds": [
+                "team_local_team_nested_classroom_test_student_st_2767d353ee934123aafc8d39ffc42d04"
+              ],
+              "memberAddress": "/StudentStudyGroup/student_one",
+              "taskAgentRunId": null
+            },
+            "receiverTargetKind": "agent_team",
+            "content": "Active task coordinator: call get_handoff_rules. Then message ./student_two requesting exactly TASKPEER-CODEX-RERUN-016. Wait for that same-task-Team peer reply. After receiving it, submit exactly RESULT-CODEX-RERUN-016 as the task result. Do not submit any other result text.",
+            "taskRun": {
+              "address": {
+                "rootTeamRunId": "nested_classroom_test_team_b9f6646a1d2b46499fc34e673e47b909",
+                "taskTeamRunIds": [
+                  "team_local_team_nested_classroom_test_student_st_2767d353ee934123aafc8d39ffc42d04"
+                ],
+                "memberAddress": "/StudentStudyGroup",
+                "taskAgentRunId": null
+              },
+              "startedAt": "2026-08-09T20:13:39.828Z"
+            },
+            "updates": [
+              {
+                "kind": "submission",
+                "submissionId": "task_0001_submission_0001",
+                "reviewId": null,
+                "reviewedSubmissionId": null,
+                "decision": null,
+                "senderAddress": {
+                  "rootTeamRunId": "nested_classroom_test_team_b9f6646a1d2b46499fc34e673e47b909",
+                  "taskTeamRunIds": [
+                    "team_local_team_nested_classroom_test_student_st_2767d353ee934123aafc8d39ffc42d04"
+                  ],
+                  "memberAddress": "/StudentStudyGroup",
+                  "taskAgentRunId": null
+                },
+                "receiverAddress": {
+                  "rootTeamRunId": "nested_classroom_test_team_b9f6646a1d2b46499fc34e673e47b909",
+                  "taskTeamRunIds": [],
+                  "memberAddress": "/Teacher",
+                  "taskAgentRunId": null
+                },
+                "content": "RESULT-CODEX-RERUN-016",
+                "createdAt": "2026-08-09T20:13:59.895Z"
+              },
+              {
+                "kind": "review",
+                "submissionId": null,
+                "reviewId": "task_0001_review_0001",
+                "reviewedSubmissionId": "task_0001_submission_0001",
+                "decision": "accept",
+                "senderAddress": {
+                  "rootTeamRunId": "nested_classroom_test_team_b9f6646a1d2b46499fc34e673e47b909",
+                  "taskTeamRunIds": [],
+                  "memberAddress": "/Teacher",
+                  "taskAgentRunId": null
+                },
+                "receiverAddress": {
+                  "rootTeamRunId": "nested_classroom_test_team_b9f6646a1d2b46499fc34e673e47b909",
+                  "taskTeamRunIds": [
+                    "team_local_team_nested_classroom_test_student_st_2767d353ee934123aafc8d39ffc42d04"
+                  ],
+                  "memberAddress": "/StudentStudyGroup",
+                  "taskAgentRunId": null
+                },
+                "content": null,
+                "createdAt": "2026-08-09T20:14:02.270Z"
+              }
+            ],
+            "createdAt": "2026-08-09T20:13:39.678Z"
+          }
+        ]
+      }
+    },
+    "claude": {
+      "teamRunId": "nested_classroom_test_team_f07e2d520480467db0a35fd59ab481bb",
+      "runtimeKind": "claude_agent_sdk",
+      "model": "sonnet",
+      "reasoning": "medium",
+      "peer": "PEER-CLAUDE-RERUN-016",
+      "taskPeer": "TASKPEER-CLAUDE-RERUN-016",
+      "result": "RESULT-CLAUDE-RERUN-016",
+      "final": "FINAL-CLAUDE-RERUN-016",
+      "source": "team-claude-authoritative-rerun.json",
+      "taskTeamRunIds": [
+        "team_local_team_nested_classroom_test_student_st_8f0382c69d19496fa1943bfda0c52cfc"
+      ],
+      "counts": {
+        "messages": 6,
+        "persistentMessages": 4,
+        "taskMessages": 2,
+        "tasks": 1,
+        "taskUpdates": 2
+      },
+      "assertions": {
+        "inactiveAfterTerminate": true,
+        "exactRootedAddresses": true,
+        "coordinatorsExact": true,
+        "allLeavesExact": true,
+        "teacherIntrinsicHandoff": true,
+        "nestedIntrinsicHandoff": true,
+        "oneTask": true,
+        "taskAccepted": true,
+        "taskTeamTarget": true,
+        "rootToNestedHandoff": true,
+        "persistentPeerRequest": true,
+        "persistentPeerResponse": true,
+        "persistentSummaryToTeacher": true,
+        "taskPeerRequest": true,
+        "taskPeerResponse": true,
+        "exactSubmission": true,
+        "acceptedReview": true,
+        "exactTeacherFinal": true,
+        "noUnexpectedRoot": true
+      },
+      "failed": [],
+      "data": {
+        "getTeamRunResumeConfig": {
+          "teamRunId": "nested_classroom_test_team_f07e2d520480467db0a35fd59ab481bb",
+          "isActive": false,
+          "metadata": {
+            "schemaVersion": 3,
+            "teamDefinitionName": "Nested Classroom Test Team",
+            "createdAt": "2026-08-09T20:14:07.727Z",
+            "archivedAt": null,
+            "rootTeam": {
+              "kind": "agent_team",
+              "address": "/",
+              "teamDefinitionId": "nested-classroom-test",
+              "teamRunId": "nested_classroom_test_team_f07e2d520480467db0a35fd59ab481bb",
+              "coordinatorAddress": "/Teacher",
+              "children": [
+                {
+                  "kind": "agent",
+                  "address": "/Teacher",
+                  "agentDefinitionId": "team-local-agent:nested-classroom-test:teacher",
+                  "agentRunId": "test_teacher_84943ec9ceab4e04aa97be7170c62113",
+                  "platformAgentRunId": "4ad0fbbc-363c-4ae7-9a19-c6068dec1e6a",
+                  "role": null,
+                  "description": null,
+                  "runtimeKind": "claude_agent_sdk",
+                  "llmModelIdentifier": "sonnet",
+                  "llmConfig": {
+                    "reasoning_effort": "medium"
+                  },
+                  "autoExecuteTools": true,
+                  "skillAccessMode": "PRELOADED_ONLY",
+                  "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/sr015-api-rev-016-20260809-1/temp_workspace",
+                  "applicationExecutionContext": null
+                },
+                {
+                  "kind": "agent_team",
+                  "address": "/StudentStudyGroup",
+                  "teamDefinitionId": "team-local-team:nested-classroom-test:student-study-group",
+                  "teamRunId": "student_study_group_1bd2dfc46f214b5daafe91e4975c501d",
+                  "coordinatorAddress": "/StudentStudyGroup/student_one",
+                  "role": null,
+                  "description": null,
+                  "children": [
+                    {
+                      "kind": "agent",
+                      "address": "/StudentStudyGroup/student_one",
+                      "agentDefinitionId": "team-local-agent:team-local-team%3Anested-classroom-test%3Astudent-study-group:student-one",
+                      "agentRunId": "student_one_c058c30bc0564fd68662b0e3ea97f17f",
+                      "platformAgentRunId": null,
+                      "role": null,
+                      "description": null,
+                      "runtimeKind": "claude_agent_sdk",
+                      "llmModelIdentifier": "sonnet",
+                      "llmConfig": {
+                        "reasoning_effort": "medium"
+                      },
+                      "autoExecuteTools": true,
+                      "skillAccessMode": "PRELOADED_ONLY",
+                      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/sr015-api-rev-016-20260809-1/temp_workspace",
+                      "applicationExecutionContext": null
+                    },
+                    {
+                      "kind": "agent",
+                      "address": "/StudentStudyGroup/student_two",
+                      "agentDefinitionId": "team-local-agent:team-local-team%3Anested-classroom-test%3Astudent-study-group:student-two",
+                      "agentRunId": "student_two_74b80df0af814e3ebc58523bca4b7a0a",
+                      "platformAgentRunId": null,
+                      "role": null,
+                      "description": null,
+                      "runtimeKind": "claude_agent_sdk",
+                      "llmModelIdentifier": "sonnet",
+                      "llmConfig": {
+                        "reasoning_effort": "medium"
+                      },
+                      "autoExecuteTools": true,
+                      "skillAccessMode": "PRELOADED_ONLY",
+                      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/sr015-api-rev-016-20260809-1/temp_workspace",
+                      "applicationExecutionContext": null
+                    }
+                  ]
+                }
+              ]
+            },
+            "handoffs": [
+              {
+                "from": "/Teacher",
+                "to": "/StudentStudyGroup",
+                "rules": [
+                  "When the user asks to send the classroom handoff token to the study group."
+                ]
+              },
+              {
+                "from": "/StudentStudyGroup/student_one",
+                "to": "/Teacher",
+                "rules": [
+                  "When the delegated classroom task is finished and the teacher needs the outcome."
+                ]
+              },
+              {
+                "from": "/StudentStudyGroup/student_one",
+                "to": "/StudentStudyGroup/student_two",
+                "rules": [
+                  "When the delegated classroom task asks the coordinator to consult the supporting student."
+                ]
+              }
+            ]
+          }
+        },
+        "teacher": {
+          "agentRunId": "test_teacher_84943ec9ceab4e04aa97be7170c62113",
+          "conversation": [
+            {
+              "kind": "message",
+              "role": "user",
+              "content": "Live validation. Complete every observable step before finalizing.\n1. Call get_handoff_rules.\n2. Send exactly one message to ./StudentStudyGroup. Tell its coordinator to call get_handoff_rules, message ./student_two requesting exactly PEER-CLAUDE-RERUN-016, wait for that peer reply, and then send a summary to /Teacher.\n3. Delegate one task to ./StudentStudyGroup. Tell the active task coordinator to call get_handoff_rules, message ./student_two requesting exactly TASKPEER-CLAUDE-RERUN-016, wait for that same-task-Team peer reply, and submit exactly RESULT-CLAUDE-RERUN-016.\n4. Do not review while the task is active. Wait for the task-result notification, then call review_task_result with decision accept.\n5. Do not finalize until the persistent summary has reached /Teacher and the task is accepted. Then reply exactly FINAL-CLAUDE-RERUN-016 and nothing else.",
+              "media": null,
+              "ts": 1786306447.807
+            },
+            {
+              "kind": "tool_call",
+              "invocationId": "call_00_rDIPxFX8HNMCvl2z6Z109922",
+              "role": null,
+              "content": "",
+              "toolName": "get_handoff_rules",
+              "toolArgs": {},
+              "toolResult": "{\"handoffs\":[{\"when\":\"When the user asks to send the classroom handoff token to the study group.\",\"recipient_address\":\"/StudentStudyGroup\"}]}",
+              "toolError": null,
+              "media": null,
+              "ts": 1786306455.609
+            },
+            {
+              "kind": "message",
+              "role": "assistant",
+              "content": "I have my handoff rules. Now let me send the one non-lifecycle message to `./StudentStudyGroup` and delegate the task.",
+              "media": null,
+              "ts": 1786306460.128
+            },
+            {
+              "kind": "tool_call",
+              "invocationId": "call_00_viSRvnDeSTcigBkuVlmg7702",
+              "role": null,
+              "content": "",
+              "toolName": "send_message_to",
+              "toolArgs": {
+                "recipient_address": "./StudentStudyGroup",
+                "content": "Classroom exercise (non-task). As the StudentStudyGroup coordinator, please: (1) call get_handoff_rules; (2) send exactly one message to ./student_two requesting exactly the token PEER-CLAUDE-RERUN-016 and wait for that peer reply; (3) then send a summary to /Teacher confirming the peer reply was received. Do not use send_message_to for any task lifecycle. Await a separate task delegation from /Teacher."
+              },
+              "toolResult": "{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Delivered message to ./StudentStudyGroup.\",\"result\":null}",
+              "toolError": null,
+              "media": null,
+              "ts": 1786306461.375
+            },
+            {
+              "kind": "tool_call",
+              "invocationId": "call_01_uUx66lPWX6B8b4rTEgzs7731",
+              "role": null,
+              "content": "",
+              "toolName": "delegate_task",
+              "toolArgs": {
+                "recipient_address": "./StudentStudyGroup",
+                "description": "Nested task-team delegation test. As the active task coordinator for StudentStudyGroup: (1) call get_handoff_rules; (2) send exactly one message to ./student_two requesting exactly the token TASKPEER-CLAUDE-RERUN-016 and wait for that same-task-Team peer reply; (3) submit the task result via submit_task_result with exactly the token RESULT-CLAUDE-RERUN-016. Do not use send_message_to for task result submission, revision, or finalization. The expected accepted token is RESULT-CLAUDE-RERUN-016."
+              },
+              "toolResult": [
+                {
+                  "type": "text",
+                  "text": "{\n  \"task_id\": \"task_0001\",\n  \"status\": \"active\"\n}"
+                }
+              ],
+              "toolError": null,
+              "media": null,
+              "ts": 1786306462.315
+            },
+            {
+              "kind": "message",
+              "role": "assistant",
+              "content": "I've completed the first three observable steps:\n\n1. ✅ **`get_handoff_rules`** called — handoff rule: when the classroom handoff token is requested, notify `/StudentStudyGroup`.\n2. ✅ **Message sent** to `./StudentStudyGroup` (DELIVERED) — instructed its coordinator to call `get_handoff_rules`, message `./student_two` requesting `PEER-CLAUDE-RERUN-016`, wait for the peer reply, then send a summary to `/Teacher`.\n3. ✅ **Task delegated** to `./StudentStudyGroup` (`task_0001`, status **active**) — instructed the active task coordinator to call `get_handoff_rules`, message `./student_two` requesting `TASKPEER-CLAUDE-RERUN-016`, wait for the peer reply, and submit `RESULT-CLAUDE-RERUN-016` via `submit_task_result`.\n\nPer step 4, I will **not** review while the task is active. I'm now waiting for:\n- the task-result notification for `task_0001`, then I'll call `review_task_result` with `decision: \"accept\"`; and\n- the persistent summary reaching `/Teacher`.\n\nI will finalize with `FINAL-CLAUDE-RERUN-016` only after both the task is accepted and the summary has reached `/Teacher`.",
+              "media": null,
+              "ts": 1786306486.766
+            },
+            {
+              "kind": "message",
+              "role": "user",
+              "content": "You received a message from sender name: student_one, sender id: student_one_c058c30bc0564fd68662b0e3ea97f17f\nmessage:\nSummary for Teacher: student_one (StudentStudyGroup coordinator) confirms the peer reply was received. student_two replied with exactly the requested token: PEER-CLAUDE-RERUN-016.",
+              "media": null,
+              "ts": 1786306498.486
+            },
+            {
+              "kind": "message",
+              "role": "assistant",
+              "content": "Received — the persistent summary has reached `/Teacher`:\n\n> **Summary from student_one (StudentStudyGroup coordinator):** `student_two` replied with exactly the requested token `PEER-CLAUDE-RERUN-016`.\n\nSo the classroom-message leg is confirmed complete.\n\nStill waiting on the **task-result notification for `task_0001`** before I call `review_task_result`. I will not review while the task is active, and I won't finalize until the result is accepted. Awaiting that notification now.",
+              "media": null,
+              "ts": 1786306503.433
+            },
+            {
+              "kind": "message",
+              "role": "user",
+              "content": "The public task record is now awaiting_review and the persistent summary has arrived. Continue the required sequence: call review_task_result for task_0001 with decision accept, then reply exactly FINAL-CLAUDE-RERUN-016 and nothing else.",
+              "media": null,
+              "ts": 1786306708.673
+            },
+            {
+              "kind": "tool_call",
+              "invocationId": "call_00_yMw16KHBDgqYk53SBQR15830",
+              "role": null,
+              "content": "",
+              "toolName": "review_task_result",
+              "toolArgs": {
+                "task_id": "task_0001",
+                "decision": "accept",
+                "comment": "Result RESULT-CLAUDE-RERUN-016 received and matches the requested token."
+              },
+              "toolResult": [
+                {
+                  "type": "text",
+                  "text": "{\n  \"task_id\": \"task_0001\",\n  \"status\": \"accepted\"\n}"
+                }
+              ],
+              "toolError": null,
+              "media": null,
+              "ts": 1786306711.451
+            },
+            {
+              "kind": "message",
+              "role": "assistant",
+              "content": "FINAL-CLAUDE-RERUN-016",
+              "media": null,
+              "ts": 1786306712.58
+            }
+          ],
+          "activities": [
+            {
+              "kind": "tool",
+              "invocationId": "call_00_rDIPxFX8HNMCvl2z6Z109922",
+              "toolName": "get_handoff_rules",
+              "type": "tool_call",
+              "status": "success",
+              "contextText": "get_handoff_rules",
+              "arguments": {},
+              "logs": [],
+              "result": "{\"handoffs\":[{\"when\":\"When the user asks to send the classroom handoff token to the study group.\",\"recipient_address\":\"/StudentStudyGroup\"}]}",
+              "error": null,
+              "ts": 1786306455.609,
+              "detailLevel": "source_limited"
+            },
+            {
+              "kind": "tool",
+              "invocationId": "call_00_viSRvnDeSTcigBkuVlmg7702",
+              "toolName": "send_message_to",
+              "type": "tool_call",
+              "status": "success",
+              "contextText": "send_message_to",
+              "arguments": {
+                "recipient_address": "./StudentStudyGroup",
+                "content": "Classroom exercise (non-task). As the StudentStudyGroup coordinator, please: (1) call get_handoff_rules; (2) send exactly one message to ./student_two requesting exactly the token PEER-CLAUDE-RERUN-016 and wait for that peer reply; (3) then send a summary to /Teacher confirming the peer reply was received. Do not use send_message_to for any task lifecycle. Await a separate task delegation from /Teacher."
+              },
+              "logs": [],
+              "result": "{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Delivered message to ./StudentStudyGroup.\",\"result\":null}",
+              "error": null,
+              "ts": 1786306461.375,
+              "detailLevel": "source_limited"
+            },
+            {
+              "kind": "tool",
+              "invocationId": "call_01_uUx66lPWX6B8b4rTEgzs7731",
+              "toolName": "delegate_task",
+              "type": "tool_call",
+              "status": "success",
+              "contextText": "delegate_task",
+              "arguments": {
+                "recipient_address": "./StudentStudyGroup",
+                "description": "Nested task-team delegation test. As the active task coordinator for StudentStudyGroup: (1) call get_handoff_rules; (2) send exactly one message to ./student_two requesting exactly the token TASKPEER-CLAUDE-RERUN-016 and wait for that same-task-Team peer reply; (3) submit the task result via submit_task_result with exactly the token RESULT-CLAUDE-RERUN-016. Do not use send_message_to for task result submission, revision, or finalization. The expected accepted token is RESULT-CLAUDE-RERUN-016."
+              },
+              "logs": [],
+              "result": [
+                {
+                  "type": "text",
+                  "text": "{\n  \"task_id\": \"task_0001\",\n  \"status\": \"active\"\n}"
+                }
+              ],
+              "error": null,
+              "ts": 1786306462.315,
+              "detailLevel": "source_limited"
+            },
+            {
+              "kind": "tool",
+              "invocationId": "call_00_yMw16KHBDgqYk53SBQR15830",
+              "toolName": "review_task_result",
+              "type": "tool_call",
+              "status": "success",
+              "contextText": "review_task_result",
+              "arguments": {
+                "task_id": "task_0001",
+                "decision": "accept",
+                "comment": "Result RESULT-CLAUDE-RERUN-016 received and matches the requested token."
+              },
+              "logs": [],
+              "result": [
+                {
+                  "type": "text",
+                  "text": "{\n  \"task_id\": \"task_0001\",\n  \"status\": \"accepted\"\n}"
+                }
+              ],
+              "error": null,
+              "ts": 1786306711.451,
+              "detailLevel": "source_limited"
+            }
+          ]
+        },
+        "nested": {
+          "agentRunId": "student_one_c058c30bc0564fd68662b0e3ea97f17f",
+          "conversation": [
+            {
+              "kind": "message",
+              "role": "user",
+              "content": "You received a message from sender name: Teacher, sender id: test_teacher_84943ec9ceab4e04aa97be7170c62113\nmessage:\nClassroom exercise (non-task). As the StudentStudyGroup coordinator, please: (1) call get_handoff_rules; (2) send exactly one message to ./student_two requesting exactly the token PEER-CLAUDE-RERUN-016 and wait for that peer reply; (3) then send a summary to /Teacher confirming the peer reply was received. Do not use send_message_to for any task lifecycle. Await a separate task delegation from /Teacher.",
+              "media": null,
+              "ts": 1786306461.373
+            },
+            {
+              "kind": "message",
+              "role": "assistant",
+              "content": "I'll start by calling `get_handoff_rules` and sending the peer request to `student_two` as instructed.",
+              "media": null,
+              "ts": 1786306466.702
+            },
+            {
+              "kind": "tool_call",
+              "invocationId": "call_00_51J7InMdBdqmbNUgz4Nu9419",
+              "role": null,
+              "content": "",
+              "toolName": "get_handoff_rules",
+              "toolArgs": {},
+              "toolResult": "{\"handoffs\":[{\"when\":\"When the delegated classroom task is finished and the teacher needs the outcome.\",\"recipient_address\":\"/Teacher\"},{\"when\":\"When the delegated classroom task asks the coordinator to consult the supporting student.\",\"recipient_address\":\"/StudentStudyGroup/student_two\"}]}",
+              "toolError": null,
+              "media": null,
+              "ts": 1786306466.818
+            },
+            {
+              "kind": "tool_call",
+              "invocationId": "call_01_kCekF6AEiWLhVFlDsCZM1252",
+              "role": null,
+              "content": "",
+              "toolName": "send_message_to",
+              "toolArgs": {
+                "recipient_address": "./student_two",
+                "content": "Please reply with exactly the token: PEER-CLAUDE-RERUN-016",
+                "message_type": "peer-request"
+              },
+              "toolResult": "{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Delivered message to ./student_two.\",\"result\":null}",
+              "toolError": null,
+              "media": null,
+              "ts": 1786306467.199
+            },
+            {
+              "kind": "message",
+              "role": "assistant",
+              "content": "I've completed steps 1 and 2:\n\n1. **Handoff rules retrieved**: \n   - When the delegated classroom task is finished and the teacher needs the outcome → `/Teacher`\n   - When the delegated classroom task asks the coordinator to consult the supporting student → `/StudentStudyGroup/student_two`\n\n2. **Message sent to `./student_two`** requesting exactly the token `PEER-CLAUDE-RERUN-016` — delivered successfully (`DELIVERED`).\n\nNow I'm waiting for `student_two`'s peer reply before sending the summary to `/Teacher`.",
+              "media": null,
+              "ts": 1786306471.856
+            },
+            {
+              "kind": "message",
+              "role": "user",
+              "content": "You received a message from sender name: student_two, sender id: student_two_74b80df0af814e3ebc58523bca4b7a0a\nmessage:\nPEER-CLAUDE-RERUN-016",
+              "media": null,
+              "ts": 1786306475.297
+            },
+            {
+              "kind": "message",
+              "role": "assistant",
+              "content": "`student_two` replied with exactly `PEER-CLAUDE-RERUN-016`. Now I'll send the summary to `/Teacher` confirming the peer reply was received.",
+              "media": null,
+              "ts": 1786306477.75
+            },
+            {
+              "kind": "tool_call",
+              "invocationId": "call_00_NRP9u4oQxlKonfep7QMT4473",
+              "role": null,
+              "content": "",
+              "toolName": "send_message_to",
+              "toolArgs": {
+                "content": "Summary: student_one (coordinator) confirms that student_two replied with the requested peer token PEER-CLAUDE-RERUN-016. The peer reply was received successfully.",
+                "message_type": "summary",
+                "recipient_address": "/Teacher"
+              },
+              "toolResult": null,
+              "toolError": "{\"accepted\":false,\"code\":\"RUNTIME_COMMAND_FAILED\",\"message\":\"Failed to send user input for runtime 'claude_agent_sdk': Error: Claude runtime turn is already active for run 'test_teacher_84943ec9ceab4e04aa97be7170c62113'.\",\"result\":null}",
+              "media": null,
+              "ts": 1786306478.35
+            },
+            {
+              "kind": "message",
+              "role": "assistant",
+              "content": "The send hit a transient runtime error (\"turn is already active\"). Let me retry delivering the summary to `/Teacher`.",
+              "media": null,
+              "ts": 1786306480.377
+            },
+            {
+              "kind": "tool_call",
+              "invocationId": "call_00_pwBisLDCfK671YD5H3WA2060",
+              "role": null,
+              "content": "",
+              "toolName": "send_message_to",
+              "toolArgs": {
+                "content": "Summary: student_one (coordinator) confirms that student_two replied with the requested peer token PEER-CLAUDE-RERUN-016. The peer reply was received successfully.",
+                "message_type": "summary",
+                "recipient_address": "/Teacher"
+              },
+              "toolResult": null,
+              "toolError": "{\"accepted\":false,\"code\":\"RUNTIME_COMMAND_FAILED\",\"message\":\"Failed to send user input for runtime 'claude_agent_sdk': Error: Claude runtime turn is already active for run 'test_teacher_84943ec9ceab4e04aa97be7170c62113'.\",\"result\":null}",
+              "media": null,
+              "ts": 1786306480.829
+            },
+            {
+              "kind": "message",
+              "role": "assistant",
+              "content": "The summary to `/Teacher` is being rejected because the Teacher's runtime turn is currently active. Let me retry once more, as this appears to be a transient contention issue.",
+              "media": null,
+              "ts": 1786306485.862
+            },
+            {
+              "kind": "tool_call",
+              "invocationId": "call_00_9mLRMkMNvANhirERVxlW6051",
+              "role": null,
+              "content": "",
+              "toolName": "send_message_to",
+              "toolArgs": {
+                "content": "Summary: student_one (coordinator) confirms that student_two replied with the requested peer token PEER-CLAUDE-RERUN-016. The peer reply was received successfully.",
+                "message_type": "summary",
+                "recipient_address": "/Teacher"
+              },
+              "toolResult": null,
+              "toolError": "{\"accepted\":false,\"code\":\"RUNTIME_COMMAND_FAILED\",\"message\":\"Failed to send user input for runtime 'claude_agent_sdk': Error: Claude runtime turn is already active for run 'test_teacher_84943ec9ceab4e04aa97be7170c62113'.\",\"result\":null}",
+              "media": null,
+              "ts": 1786306486.315
+            },
+            {
+              "kind": "message",
+              "role": "assistant",
+              "content": "The delivery to `/Teacher` is consistently blocked by a runtime contention error (\"turn is already active\" for the Teacher's run). Let me re-check the handoff rules and retry the delivery once more.",
+              "media": null,
+              "ts": 1786306497.694
+            },
+            {
+              "kind": "tool_call",
+              "invocationId": "call_00_0FyBIBN3laDvpeBhXwR70025",
+              "role": null,
+              "content": "",
+              "toolName": "get_handoff_rules",
+              "toolArgs": {},
+              "toolResult": "{\"handoffs\":[{\"when\":\"When the delegated classroom task is finished and the teacher needs the outcome.\",\"recipient_address\":\"/Teacher\"},{\"when\":\"When the delegated classroom task asks the coordinator to consult the supporting student.\",\"recipient_address\":\"/StudentStudyGroup/student_two\"}]}",
+              "toolError": null,
+              "media": null,
+              "ts": 1786306497.835
+            },
+            {
+              "kind": "tool_call",
+              "invocationId": "call_01_EPdz7sJMfSwW8bvTyWmp2396",
+              "role": null,
+              "content": "",
+              "toolName": "send_message_to",
+              "toolArgs": {
+                "content": "Summary for Teacher: student_one (StudentStudyGroup coordinator) confirms the peer reply was received. student_two replied with exactly the requested token: PEER-CLAUDE-RERUN-016.",
+                "message_type": "summary",
+                "recipient_address": "/Teacher"
+              },
+              "toolResult": "{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Delivered message to /Teacher.\",\"result\":null}",
+              "toolError": null,
+              "media": null,
+              "ts": 1786306498.489
+            },
+            {
+              "kind": "message",
+              "role": "assistant",
+              "content": "All steps of the classroom exercise are now complete:\n\n1. **`get_handoff_rules`** — called successfully. Configured handoffs:\n   - When the delegated classroom task is finished and the teacher needs the outcome → `/Teacher`\n   - When the delegated classroom task asks the coordinator to consult the supporting student → `/StudentStudyGroup/student_two`\n\n2. **Peer request to `./student_two`** — sent exactly one message requesting the token `PEER-CLAUDE-RERUN-016`. `student_two` replied with exactly `PEER-CLAUDE-RERUN-016`, confirming receipt.\n\n3. **Summary to `/Teacher`** — after a transient runtime contention on the first three attempts (the Teacher's run was reported as \"turn already active\"), the summary confirming the peer reply was received was delivered successfully (`DELIVERED`).\n\nNo `send_message_to` calls were used for task lifecycle, and no task was submitted (this was a non-task exercise). I remain ready to await a separate task delegation from `/Teacher`.",
+              "media": null,
+              "ts": 1786306502.003
+            },
+            {
+              "kind": "message",
+              "role": "user",
+              "content": "You received a message from sender name: student_two, sender id: student_two_74b80df0af814e3ebc58523bca4b7a0a\nmessage:\nPEER-CLAUDE-RERUN-016",
+              "media": null,
+              "ts": 1786306843.935
+            }
+          ],
+          "activities": [
+            {
+              "kind": "tool",
+              "invocationId": "call_00_51J7InMdBdqmbNUgz4Nu9419",
+              "toolName": "get_handoff_rules",
+              "type": "tool_call",
+              "status": "success",
+              "contextText": "get_handoff_rules",
+              "arguments": {},
+              "logs": [],
+              "result": "{\"handoffs\":[{\"when\":\"When the delegated classroom task is finished and the teacher needs the outcome.\",\"recipient_address\":\"/Teacher\"},{\"when\":\"When the delegated classroom task asks the coordinator to consult the supporting student.\",\"recipient_address\":\"/StudentStudyGroup/student_two\"}]}",
+              "error": null,
+              "ts": 1786306466.818,
+              "detailLevel": "source_limited"
+            },
+            {
+              "kind": "tool",
+              "invocationId": "call_01_kCekF6AEiWLhVFlDsCZM1252",
+              "toolName": "send_message_to",
+              "type": "tool_call",
+              "status": "success",
+              "contextText": "send_message_to",
+              "arguments": {
+                "recipient_address": "./student_two",
+                "content": "Please reply with exactly the token: PEER-CLAUDE-RERUN-016",
+                "message_type": "peer-request"
+              },
+              "logs": [],
+              "result": "{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Delivered message to ./student_two.\",\"result\":null}",
+              "error": null,
+              "ts": 1786306467.199,
+              "detailLevel": "source_limited"
+            },
+            {
+              "kind": "tool",
+              "invocationId": "call_00_NRP9u4oQxlKonfep7QMT4473",
+              "toolName": "send_message_to",
+              "type": "tool_call",
+              "status": "error",
+              "contextText": "send_message_to",
+              "arguments": {
+                "content": "Summary: student_one (coordinator) confirms that student_two replied with the requested peer token PEER-CLAUDE-RERUN-016. The peer reply was received successfully.",
+                "message_type": "summary",
+                "recipient_address": "/Teacher"
+              },
+              "logs": [],
+              "result": null,
+              "error": "{\"accepted\":false,\"code\":\"RUNTIME_COMMAND_FAILED\",\"message\":\"Failed to send user input for runtime 'claude_agent_sdk': Error: Claude runtime turn is already active for run 'test_teacher_84943ec9ceab4e04aa97be7170c62113'.\",\"result\":null}",
+              "ts": 1786306478.35,
+              "detailLevel": "source_limited"
+            },
+            {
+              "kind": "tool",
+              "invocationId": "call_00_pwBisLDCfK671YD5H3WA2060",
+              "toolName": "send_message_to",
+              "type": "tool_call",
+              "status": "error",
+              "contextText": "send_message_to",
+              "arguments": {
+                "content": "Summary: student_one (coordinator) confirms that student_two replied with the requested peer token PEER-CLAUDE-RERUN-016. The peer reply was received successfully.",
+                "message_type": "summary",
+                "recipient_address": "/Teacher"
+              },
+              "logs": [],
+              "result": null,
+              "error": "{\"accepted\":false,\"code\":\"RUNTIME_COMMAND_FAILED\",\"message\":\"Failed to send user input for runtime 'claude_agent_sdk': Error: Claude runtime turn is already active for run 'test_teacher_84943ec9ceab4e04aa97be7170c62113'.\",\"result\":null}",
+              "ts": 1786306480.829,
+              "detailLevel": "source_limited"
+            },
+            {
+              "kind": "tool",
+              "invocationId": "call_00_9mLRMkMNvANhirERVxlW6051",
+              "toolName": "send_message_to",
+              "type": "tool_call",
+              "status": "error",
+              "contextText": "send_message_to",
+              "arguments": {
+                "content": "Summary: student_one (coordinator) confirms that student_two replied with the requested peer token PEER-CLAUDE-RERUN-016. The peer reply was received successfully.",
+                "message_type": "summary",
+                "recipient_address": "/Teacher"
+              },
+              "logs": [],
+              "result": null,
+              "error": "{\"accepted\":false,\"code\":\"RUNTIME_COMMAND_FAILED\",\"message\":\"Failed to send user input for runtime 'claude_agent_sdk': Error: Claude runtime turn is already active for run 'test_teacher_84943ec9ceab4e04aa97be7170c62113'.\",\"result\":null}",
+              "ts": 1786306486.315,
+              "detailLevel": "source_limited"
+            },
+            {
+              "kind": "tool",
+              "invocationId": "call_00_0FyBIBN3laDvpeBhXwR70025",
+              "toolName": "get_handoff_rules",
+              "type": "tool_call",
+              "status": "success",
+              "contextText": "get_handoff_rules",
+              "arguments": {},
+              "logs": [],
+              "result": "{\"handoffs\":[{\"when\":\"When the delegated classroom task is finished and the teacher needs the outcome.\",\"recipient_address\":\"/Teacher\"},{\"when\":\"When the delegated classroom task asks the coordinator to consult the supporting student.\",\"recipient_address\":\"/StudentStudyGroup/student_two\"}]}",
+              "error": null,
+              "ts": 1786306497.835,
+              "detailLevel": "source_limited"
+            },
+            {
+              "kind": "tool",
+              "invocationId": "call_01_EPdz7sJMfSwW8bvTyWmp2396",
+              "toolName": "send_message_to",
+              "type": "tool_call",
+              "status": "success",
+              "contextText": "send_message_to",
+              "arguments": {
+                "content": "Summary for Teacher: student_one (StudentStudyGroup coordinator) confirms the peer reply was received. student_two replied with exactly the requested token: PEER-CLAUDE-RERUN-016.",
+                "message_type": "summary",
+                "recipient_address": "/Teacher"
+              },
+              "logs": [],
+              "result": "{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Delivered message to /Teacher.\",\"result\":null}",
+              "error": null,
+              "ts": 1786306498.489,
+              "detailLevel": "source_limited"
+            }
+          ]
+        },
+        "getTeamCommunicationMessages": [
+          {
+            "messageId": "teammsg_il4Gqgg2uZOMXCpCvWg1-5Pt15lvcYlH",
+            "senderAddress": {
+              "rootTeamRunId": "nested_classroom_test_team_f07e2d520480467db0a35fd59ab481bb",
+              "taskTeamRunIds": [],
+              "memberAddress": "/Teacher",
+              "taskAgentRunId": null
+            },
+            "receiverAddress": {
+              "rootTeamRunId": "nested_classroom_test_team_f07e2d520480467db0a35fd59ab481bb",
+              "taskTeamRunIds": [],
+              "memberAddress": "/StudentStudyGroup/student_one",
+              "taskAgentRunId": null
+            },
+            "content": "Classroom exercise (non-task). As the StudentStudyGroup coordinator, please: (1) call get_handoff_rules; (2) send exactly one message to ./student_two requesting exactly the token PEER-CLAUDE-RERUN-016 and wait for that peer reply; (3) then send a summary to /Teacher confirming the peer reply was received. Do not use send_message_to for any task lifecycle. Await a separate task delegation from /Teacher.",
+            "messageType": "agent_message",
+            "createdAt": "2026-08-09T20:14:21.370Z"
+          },
+          {
+            "messageId": "teammsg_6G_-tM5mpMX6PAiXn4XrETee0xMJYkJI",
+            "senderAddress": {
+              "rootTeamRunId": "nested_classroom_test_team_f07e2d520480467db0a35fd59ab481bb",
+              "taskTeamRunIds": [
+                "team_local_team_nested_classroom_test_student_st_8f0382c69d19496fa1943bfda0c52cfc"
+              ],
+              "memberAddress": "/StudentStudyGroup/student_one",
+              "taskAgentRunId": null
+            },
+            "receiverAddress": {
+              "rootTeamRunId": "nested_classroom_test_team_f07e2d520480467db0a35fd59ab481bb",
+              "taskTeamRunIds": [
+                "team_local_team_nested_classroom_test_student_st_8f0382c69d19496fa1943bfda0c52cfc"
+              ],
+              "memberAddress": "/StudentStudyGroup/student_two",
+              "taskAgentRunId": null
+            },
+            "content": "Hi student_two, please reply with exactly the token TASKPEER-CLAUDE-RERUN-016.",
+            "messageType": "token-request",
+            "createdAt": "2026-08-09T20:14:26.742Z"
+          },
+          {
+            "messageId": "teammsg_eqcXOeP8hpehenN_KMfce0c103n9aphQ",
+            "senderAddress": {
+              "rootTeamRunId": "nested_classroom_test_team_f07e2d520480467db0a35fd59ab481bb",
+              "taskTeamRunIds": [],
+              "memberAddress": "/StudentStudyGroup/student_one",
+              "taskAgentRunId": null
+            },
+            "receiverAddress": {
+              "rootTeamRunId": "nested_classroom_test_team_f07e2d520480467db0a35fd59ab481bb",
+              "taskTeamRunIds": [],
+              "memberAddress": "/StudentStudyGroup/student_two",
+              "taskAgentRunId": null
+            },
+            "content": "Please reply with exactly the token: PEER-CLAUDE-RERUN-016",
+            "messageType": "peer-request",
+            "createdAt": "2026-08-09T20:14:27.191Z"
+          },
+          {
+            "messageId": "teammsg_tBj0pzmOVytEZY6RZ7nJM7h_aFKXBGw7",
+            "senderAddress": {
+              "rootTeamRunId": "nested_classroom_test_team_f07e2d520480467db0a35fd59ab481bb",
+              "taskTeamRunIds": [
+                "team_local_team_nested_classroom_test_student_st_8f0382c69d19496fa1943bfda0c52cfc"
+              ],
+              "memberAddress": "/StudentStudyGroup/student_two",
+              "taskAgentRunId": null
+            },
+            "receiverAddress": {
+              "rootTeamRunId": "nested_classroom_test_team_f07e2d520480467db0a35fd59ab481bb",
+              "taskTeamRunIds": [
+                "team_local_team_nested_classroom_test_student_st_8f0382c69d19496fa1943bfda0c52cfc"
+              ],
+              "memberAddress": "/StudentStudyGroup/student_one",
+              "taskAgentRunId": null
+            },
+            "content": "TASKPEER-CLAUDE-RERUN-016",
+            "messageType": "agent_message",
+            "createdAt": "2026-08-09T20:14:35.227Z"
+          },
+          {
+            "messageId": "teammsg_cE-04rrJvSEqX2JxDqrf1si6qE0OJcQE",
+            "senderAddress": {
+              "rootTeamRunId": "nested_classroom_test_team_f07e2d520480467db0a35fd59ab481bb",
+              "taskTeamRunIds": [],
+              "memberAddress": "/StudentStudyGroup/student_one",
+              "taskAgentRunId": null
+            },
+            "receiverAddress": {
+              "rootTeamRunId": "nested_classroom_test_team_f07e2d520480467db0a35fd59ab481bb",
+              "taskTeamRunIds": [],
+              "memberAddress": "/Teacher",
+              "taskAgentRunId": null
+            },
+            "content": "Summary for Teacher: student_one (StudentStudyGroup coordinator) confirms the peer reply was received. student_two replied with exactly the requested token: PEER-CLAUDE-RERUN-016.",
+            "messageType": "summary",
+            "createdAt": "2026-08-09T20:14:58.485Z"
+          },
+          {
+            "messageId": "teammsg_44N3dnMNDIzSaXbNhf-AXILi2oCQ-m6v",
+            "senderAddress": {
+              "rootTeamRunId": "nested_classroom_test_team_f07e2d520480467db0a35fd59ab481bb",
+              "taskTeamRunIds": [],
+              "memberAddress": "/StudentStudyGroup/student_two",
+              "taskAgentRunId": null
+            },
+            "receiverAddress": {
+              "rootTeamRunId": "nested_classroom_test_team_f07e2d520480467db0a35fd59ab481bb",
+              "taskTeamRunIds": [],
+              "memberAddress": "/StudentStudyGroup/student_one",
+              "taskAgentRunId": null
+            },
+            "content": "PEER-CLAUDE-RERUN-016",
+            "messageType": "agent_message",
+            "createdAt": "2026-08-09T20:20:43.933Z"
+          }
+        ],
+        "getTaskDelegationRecords": [
+          {
+            "taskId": "task_0001",
+            "status": "accepted",
+            "senderAddress": {
+              "rootTeamRunId": "nested_classroom_test_team_f07e2d520480467db0a35fd59ab481bb",
+              "taskTeamRunIds": [],
+              "memberAddress": "/Teacher",
+              "taskAgentRunId": null
+            },
+            "receiverAddress": {
+              "rootTeamRunId": "nested_classroom_test_team_f07e2d520480467db0a35fd59ab481bb",
+              "taskTeamRunIds": [
+                "team_local_team_nested_classroom_test_student_st_8f0382c69d19496fa1943bfda0c52cfc"
+              ],
+              "memberAddress": "/StudentStudyGroup/student_one",
+              "taskAgentRunId": null
+            },
+            "receiverTargetKind": "agent_team",
+            "content": "Nested task-team delegation test. As the active task coordinator for StudentStudyGroup: (1) call get_handoff_rules; (2) send exactly one message to ./student_two requesting exactly the token TASKPEER-CLAUDE-RERUN-016 and wait for that same-task-Team peer reply; (3) submit the task result via submit_task_result with exactly the token RESULT-CLAUDE-RERUN-016. Do not use send_message_to for task result submission, revision, or finalization. The expected accepted token is RESULT-CLAUDE-RERUN-016.",
+            "taskRun": {
+              "address": {
+                "rootTeamRunId": "nested_classroom_test_team_f07e2d520480467db0a35fd59ab481bb",
+                "taskTeamRunIds": [
+                  "team_local_team_nested_classroom_test_student_st_8f0382c69d19496fa1943bfda0c52cfc"
+                ],
+                "memberAddress": "/StudentStudyGroup",
+                "taskAgentRunId": null
+              },
+              "startedAt": "2026-08-09T20:14:22.312Z"
+            },
+            "updates": [
+              {
+                "kind": "submission",
+                "submissionId": "task_0001_submission_0001",
+                "reviewId": null,
+                "reviewedSubmissionId": null,
+                "decision": null,
+                "senderAddress": {
+                  "rootTeamRunId": "nested_classroom_test_team_f07e2d520480467db0a35fd59ab481bb",
+                  "taskTeamRunIds": [
+                    "team_local_team_nested_classroom_test_student_st_8f0382c69d19496fa1943bfda0c52cfc"
+                  ],
+                  "memberAddress": "/StudentStudyGroup",
+                  "taskAgentRunId": null
+                },
+                "receiverAddress": {
+                  "rootTeamRunId": "nested_classroom_test_team_f07e2d520480467db0a35fd59ab481bb",
+                  "taskTeamRunIds": [],
+                  "memberAddress": "/Teacher",
+                  "taskAgentRunId": null
+                },
+                "content": "RESULT-CLAUDE-RERUN-016",
+                "createdAt": "2026-08-09T20:14:37.705Z"
+              },
+              {
+                "kind": "review",
+                "submissionId": null,
+                "reviewId": "task_0001_review_0001",
+                "reviewedSubmissionId": "task_0001_submission_0001",
+                "decision": "accept",
+                "senderAddress": {
+                  "rootTeamRunId": "nested_classroom_test_team_f07e2d520480467db0a35fd59ab481bb",
+                  "taskTeamRunIds": [],
+                  "memberAddress": "/Teacher",
+                  "taskAgentRunId": null
+                },
+                "receiverAddress": {
+                  "rootTeamRunId": "nested_classroom_test_team_f07e2d520480467db0a35fd59ab481bb",
+                  "taskTeamRunIds": [
+                    "team_local_team_nested_classroom_test_student_st_8f0382c69d19496fa1943bfda0c52cfc"
+                  ],
+                  "memberAddress": "/StudentStudyGroup",
+                  "taskAgentRunId": null
+                },
+                "content": "Result RESULT-CLAUDE-RERUN-016 received and matches the requested token.",
+                "createdAt": "2026-08-09T20:18:31.445Z"
+              }
+            ],
+            "createdAt": "2026-08-09T20:14:22.304Z"
+          }
+        ]
+      }
+    }
+  },
+  "result": "Pass"
+}

@@ -1,0 +1,138 @@
+{
+  "schemaVersion": 1,
+  "apiRevision": "API-REV-037",
+  "sourceHead": "258d18cdba0bf7ae08bde134fe09586a8906870d",
+  "overall": "PASS",
+  "teamRows": [
+    {
+      "slug": "autobyteus",
+      "runtime": "autobyteus",
+      "model": "gpt-5.6-luna",
+      "passed": true,
+      "rootTeamRunId": "nested_classroom_test_team_62d7ad970db9467887a652b3b0d7f8ba",
+      "acceptedTask": true,
+      "taskPeerRequestReply": true,
+      "referenceDelivered": true,
+      "refreshRestore": true,
+      "noProtocolErrors": true,
+      "noBrowserConsoleErrors": true,
+      "termination": true,
+      "nonblockingGenericToolErrorCardsObserved": true,
+      "nonblockingObservation": "One provider-generated tool attempt was rejected before the later exact task-peer request/reply succeeded; one duplicate review after acceptance was rejected. No SEGMENT_START/CONTENT/END admission rejection occurred."
+    },
+    {
+      "slug": "codex",
+      "runtime": "codex_app_server",
+      "model": "gpt-5.6-luna",
+      "passed": true,
+      "rootTeamRunId": "nested_classroom_test_team_bcdd320342794e92963888e965750047",
+      "acceptedTask": true,
+      "taskPeerRequestReply": true,
+      "referenceDelivered": true,
+      "refreshRestore": true,
+      "noProtocolErrors": true,
+      "noBrowserConsoleErrors": true,
+      "termination": true,
+      "nonblockingGenericToolErrorCardsObserved": false
+    },
+    {
+      "slug": "claude",
+      "runtime": "claude_agent_sdk",
+      "model": "sonnet",
+      "passed": true,
+      "rootTeamRunId": "nested_classroom_test_team_c4c0c5b86c1f419db0ab6cd2d00fc71a",
+      "acceptedTask": true,
+      "taskPeerRequestReply": true,
+      "referenceDelivered": true,
+      "refreshRestore": true,
+      "noProtocolErrors": true,
+      "noBrowserConsoleErrors": true,
+      "termination": true,
+      "nonblockingGenericToolErrorCardsObserved": false
+    }
+  ],
+  "standaloneRows": [
+    {
+      "slug": "autobyteus",
+      "runtime": "autobyteus",
+      "model": "gpt-5.6-luna",
+      "passed": true,
+      "runId": "api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9",
+      "firstSend": true,
+      "refreshRestore": true,
+      "runtimeMatches": true,
+      "noBrowserConsoleErrors": true,
+      "termination": true
+    },
+    {
+      "slug": "codex",
+      "runtime": "codex_app_server",
+      "model": "gpt-5.6-luna",
+      "passed": true,
+      "runId": "api_rev_037_browser_agent_203c6756aed84f69a93a17cccae0eb88",
+      "firstSend": true,
+      "refreshRestore": true,
+      "runtimeMatches": true,
+      "noBrowserConsoleErrors": true,
+      "termination": true
+    },
+    {
+      "slug": "claude",
+      "runtime": "claude_agent_sdk",
+      "model": "sonnet",
+      "passed": true,
+      "runId": "api_rev_037_browser_agent_f7355420b03c49a3983e1d86b3bf74cf",
+      "firstSend": true,
+      "refreshRestore": true,
+      "runtimeMatches": true,
+      "noBrowserConsoleErrors": true,
+      "termination": true
+    }
+  ],
+  "mobile": {
+    "active": {
+      "passed": true,
+      "rootTeamRunId": "nested_classroom_test_team_9d14472d93da4d1eb16c0409b76acded",
+      "conditions": {
+        "freshActiveTeam": true,
+        "referencedMessagePresent": true,
+        "exactReplyReceivedOnce": true,
+        "exactRootOnAllRecords": true,
+        "desktopActiveReference": true,
+        "selectedTeamConfigReadOnly": true,
+        "mobileActiveReference": true,
+        "noBrowserConsoleErrors": true
+      }
+    },
+    "persisted": {
+      "passed": true,
+      "rootTeamRunId": "nested_classroom_test_team_9d14472d93da4d1eb16c0409b76acded",
+      "conditions": {
+        "exactRunTerminalAndLatest": true,
+        "exactPersistedRecords": true,
+        "desktopPersistedReference": true,
+        "mobilePersistedReference": true,
+        "noBrowserConsoleErrors": true
+      }
+    }
+  },
+  "environmentObservation": {
+    "initialAutobyteusAttempt": "NOT_COUNTED",
+    "classification": "Nuxt dev dependency optimizer reloaded during navigation and returned HTTP 504 Outdated Optimize Dep; stable warmed server rerun passed.",
+    "evidence": [
+      "browser/autobyteus-browser-row.log",
+      "browser/autobyteus-failure.png",
+      "browser/autobyteus-browser-row-rerun.log"
+    ],
+    "autobyteusToolElection": "NONBLOCKING model/tool-call observation under CR-PREM-032: exact bound capability and final lifecycle succeeded; no segment protocol rejection."
+  },
+  "safety": {
+    "disposableDatabaseOnly": true,
+    "ambientDatabaseVariablesSanitized": true,
+    "pidLsofExactDisposableTarget": true,
+    "operationalDatabaseAction": "NONE",
+    "operationalDatabaseInspection": "NONE",
+    "protectedStackAction": "NONE",
+    "cleanup": "PASS"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "before": [
+    {
+      "teamRunId": "classroom_simulation_team_0c52e51ceffb406faab7acb3fdb6f7d3",
+      "isActive": true,
+      "summary": "Reply with exactly CODEX_TEAM_OPEN_TAB_LIVE_API_REV_001_20260817 and no other text."
+    },
+    {
+      "teamRunId": "classroom_simulation_team_aadbe5a3b3b444d8bbe0ca0cbcddb51c",
+      "isActive": true,
+      "summary": "Reply with exactly CODEX_TEAM_VISIBLE_API_REV_001_FINAL_20260817 and no other text."
+    },
+    {
+      "teamRunId": "classroom_simulation_team_d2ed6e5cfdee4d57964e34370f4d0bc5",
+      "isActive": false,
+      "summary": "Reply with exactly CODEX_TEAM_VISIBLE_API_REV_001_20260817 and no other text."
+    }
+  ],
+  "terminated": [
+    {
+      "teamRunId": "classroom_simulation_team_0c52e51ceffb406faab7acb3fdb6f7d3",
+      "result": {
+        "success": true,
+        "message": "Agent team run terminated successfully."
+      }
+    },
+    {
+      "teamRunId": "classroom_simulation_team_aadbe5a3b3b444d8bbe0ca0cbcddb51c",
+      "result": {
+        "success": true,
+        "message": "Agent team run terminated successfully."
+      }
+    }
+  ],
+  "activeAfter": []
+}

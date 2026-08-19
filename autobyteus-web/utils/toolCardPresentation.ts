@@ -42,22 +42,6 @@ export interface EventMonitorPageToolCardInput {
   approvalTarget: ToolApprovalTarget | null;
 }
 
-const TARGET_SCALAR_KEYS = [
-  'memberRouteKey',
-  'sourceRouteKey',
-  'taskAgentRunId',
-  'taskTeamRunId',
-  'teamRouteKey',
-  'taskTeamRelativeMemberRouteKey',
-] as const;
-
-const TARGET_PATH_KEYS = [
-  'memberPath',
-  'sourcePath',
-  'teamPath',
-  'taskTeamRelativeMemberPath',
-] as const;
-
 export const getToolCardStatusPresentationKey = (
   status: ToolInvocationStatus,
 ): ToolCardStatusPresentationKey => {
@@ -71,16 +55,7 @@ const flattenApprovalTarget = (
   target: ToolApprovalTarget | null | undefined,
 ): ToolCardPresentationPrimitive[] => {
   if (!target) return [];
-  const primitives: ToolCardPresentationPrimitive[] = [];
-  for (const key of TARGET_SCALAR_KEYS) primitives.push(key, target[key] ?? null);
-  for (const key of TARGET_PATH_KEYS) {
-    const path = target[key];
-    primitives.push(key, Array.isArray(path) ? path.length : -1);
-    if (Array.isArray(path)) {
-      for (const part of path) primitives.push(typeof part === 'string' ? part : null);
-    }
-  }
-  return primitives;
+  return ['agentRunId', target.agentRunId];
 };
 
 export const buildEventMonitorPageToolCardPresentation = (

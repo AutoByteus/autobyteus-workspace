@@ -1,0 +1,400 @@
+autobyteus-server-1  | 2026-08-18T13:31:40.913229760Z (wrapper-2.0:369): libactions-WARNING **: 13:31:40.912: Calling CanRestart failed GDBus.Error:org.xfce.SessionManager.Error.Failed: Could not connect: No such file or directory
+autobyteus-server-1  | 2026-08-18T13:31:40.913230968Z
+autobyteus-server-1  | 2026-08-18T13:31:40.915833468Z 2026-08-18 13:31:40,915 DEBG 'xfce' stderr output:
+autobyteus-server-1  | 2026-08-18T13:31:40.915845468Z
+autobyteus-server-1  | 2026-08-18T13:31:40.915846802Z (xfce4-session:35): xfce4-session-WARNING **: 13:31:40.915: failed to run script: Failed to execute child process “/usr/bin/pm-is-supported” (No such file or directory)
+autobyteus-server-1  | 2026-08-18T13:31:40.915848718Z
+autobyteus-server-1  | 2026-08-18T13:31:40.919359718Z 2026-08-18 13:31:40,919 DEBG 'xfce' stderr output:
+autobyteus-server-1  | 2026-08-18T13:31:40.919392677Z
+autobyteus-server-1  | 2026-08-18T13:31:40.919395593Z (xfce4-session:35): xfce4-session-WARNING **: 13:31:40.918: failed to run script: Failed to execute child process “/usr/bin/pm-is-supported” (No such file or directory)
+autobyteus-server-1  | 2026-08-18T13:31:40.919399093Z
+autobyteus-server-1  | 2026-08-18T13:31:40.922047302Z 2026-08-18 13:31:40,921 DEBG 'xfce' stderr output:
+autobyteus-server-1  | 2026-08-18T13:31:40.922062052Z
+autobyteus-server-1  | 2026-08-18T13:31:40.922063552Z (xfce4-session:35): xfce4-session-WARNING **: 13:31:40.921: failed to run script: Failed to execute child process “/usr/bin/pm-is-supported” (No such file or directory)
+autobyteus-server-1  | 2026-08-18T13:31:40.922065302Z
+autobyteus-server-1  | 2026-08-18T13:31:40.928774218Z 2026-08-18 13:31:40,928 DEBG 'xfce' stderr output:
+autobyteus-server-1  | 2026-08-18T13:31:40.928790385Z
+autobyteus-server-1  | 2026-08-18T13:31:40.928791635Z (wrapper-2.0:357): Gtk-WARNING **: 13:31:40.928: Negative content width -3 (allocation 1, extents 2x2) while allocating gadget (node button, owner GtkToggleButton)
+autobyteus-server-1  | 2026-08-18T13:31:40.928792760Z
+autobyteus-server-1  | 2026-08-18T13:31:40.929438218Z 2026-08-18 13:31:40,929 DEBG 'xfce' stderr output:
+autobyteus-server-1  | 2026-08-18T13:31:40.929441760Z
+autobyteus-server-1  | 2026-08-18T13:31:40.929442635Z (wrapper-2.0:369): Gtk-WARNING **: 13:31:40.928: Negative content width -1 (allocation 1, extents 1x1) while allocating gadget (node button, owner XfceArrowButton)
+autobyteus-server-1  | 2026-08-18T13:31:40.929447260Z
+autobyteus-server-1  | 2026-08-18T13:31:40.943568177Z 2026-08-18 13:31:40,943 DEBG 'xfce' stderr output:
+autobyteus-server-1  | 2026-08-18T13:31:40.943585760Z
+autobyteus-server-1  | 2026-08-18T13:31:40.943587093Z (wrapper-2.0:356): Gtk-WARNING **: 13:31:40.943: Negative content width -3 (allocation 1, extents 2x2) while allocating gadget (node button, owner PulseaudioButton)
+autobyteus-server-1  | 2026-08-18T13:31:40.943588218Z
+autobyteus-server-1  | 2026-08-18T13:31:41.030116135Z 2026-08-18 13:31:41,029 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:41.030132343Z Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+autobyteus-server-1  | 2026-08-18T13:31:41.030133593Z
+autobyteus-server-1  | 2026-08-18T13:31:41.052102885Z 2026-08-18 13:31:41,051 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:41.052117760Z Applying migration `20260209213000_remove_agent_conversation_tables`
+autobyteus-server-1  | 2026-08-18T13:31:41.052119093Z
+autobyteus-server-1  | 2026-08-18T13:31:41.071014135Z 2026-08-18 13:31:41,070 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:41.071027593Z Applying migration `20260210101500_add_agent_avatar`
+autobyteus-server-1  | 2026-08-18T13:31:41.071028927Z
+autobyteus-server-1  | 2026-08-18T13:31:41.088176468Z 2026-08-18 13:31:41,087 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:41.088192468Z Applying migration `20260210192000_add_agent_team_avatar`
+autobyteus-server-1  | 2026-08-18T13:31:41.088193677Z
+autobyteus-server-1  | 2026-08-18T13:31:41.107954510Z 2026-08-18 13:31:41,107 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:41.107969635Z Applying migration `20260211214500_add_sync_columns_and_tombstones`
+autobyteus-server-1  | 2026-08-18T13:31:41.107970968Z
+autobyteus-server-1  | 2026-08-18T13:31:41.214388343Z 2026-08-18 13:31:41,214 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:41.214405093Z Applying migration `20260212070000_remove_workflow_definition`
+autobyteus-server-1  | 2026-08-18T13:31:41.214406510Z
+autobyteus-server-1  | 2026-08-18T13:31:41.214407427Z 2026-08-18 13:31:41,214 INFO success: autobyteus_server entered RUNNING state, process has stayed up for > than 3 seconds (startsecs)
+autobyteus-server-1  | 2026-08-18T13:31:41.233424885Z 2026-08-18 13:31:41,233 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:41.233435718Z Applying migration `20260309103000_add_channel_binding_launch_preset`
+autobyteus-server-1  | 2026-08-18T13:31:41.233437052Z
+autobyteus-server-1  | 2026-08-18T13:31:41.311529927Z 2026-08-18 13:31:41,311 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:41.311545677Z Applying migration `20260310153000_add_channel_binding_team_definition_id`
+autobyteus-server-1  | 2026-08-18T13:31:41.311547177Z
+autobyteus-server-1  | 2026-08-18T13:31:41.336078468Z 2026-08-18 13:31:41,335 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:41.336094718Z Applying migration `20260331102000_remove_channel_bindings_table`
+autobyteus-server-1  | 2026-08-18T13:31:41.336096302Z
+autobyteus-server-1  | 2026-08-18T13:31:41.353315968Z 2026-08-18 13:31:41,353 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:41.353337135Z Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+autobyteus-server-1  | 2026-08-18T13:31:41.353338677Z
+autobyteus-server-1  | 2026-08-18T13:31:41.424550968Z 2026-08-18 13:31:41,424 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:41.424566218Z Applying migration `20260517090000_add_app_data_migration_records`
+autobyteus-server-1  | 2026-08-18T13:31:41.424567552Z
+autobyteus-server-1  | 2026-08-18T13:31:41.454120802Z 2026-08-18 13:31:41,453 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:41.454137344Z Applying migration `20260624090000_add_token_usage_ledger_events`
+autobyteus-server-1  | 2026-08-18T13:31:41.454138927Z
+autobyteus-server-1  | 2026-08-18T13:31:41.491004969Z 2026-08-18 13:31:41,490 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:41.491021219Z Applying migration `20260625193000_token_usage_component_pricing_explainability`
+autobyteus-server-1  | 2026-08-18T13:31:41.491023010Z
+autobyteus-server-1  | 2026-08-18T13:31:41.596383969Z 2026-08-18 13:31:41,596 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:41.596399760Z Applying migration `20260629120000_add_token_usage_display_fields`
+autobyteus-server-1  | 2026-08-18T13:31:41.596401052Z
+autobyteus-server-1  | 2026-08-18T13:31:41.640078427Z 2026-08-18 13:31:41,639 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:41.640094594Z Applying migration `20260702093000_token_usage_execution_address`
+autobyteus-server-1  | 2026-08-18T13:31:41.640096135Z
+autobyteus-server-1  | 2026-08-18T13:31:41.659458969Z 2026-08-18 13:31:41,659 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:41.659478469Z Applying migration `20260726090000_add_secret_vault`
+autobyteus-server-1  | 2026-08-18T13:31:41.659479760Z
+autobyteus-server-1  | 2026-08-18T13:31:41.696777427Z 2026-08-18 13:31:41,696 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:41.696796594Z Applying migration `20260730090000_add_token_usage_provider_name`
+autobyteus-server-1  | 2026-08-18T13:31:41.696798135Z
+autobyteus-server-1  | 2026-08-18T13:31:41.721931552Z 2026-08-18 13:31:41,721 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:41.721947802Z Applying migration `20260801090000_token_usage_member_display_name`
+autobyteus-server-1  | 2026-08-18T13:31:41.721949219Z
+autobyteus-server-1  | 2026-08-18T13:31:41.745564135Z 2026-08-18 13:31:41,745 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:41.745582260Z Applying migration `20260814090000_team_run_execution_tree_v1`
+autobyteus-server-1  | 2026-08-18T13:31:41.745583885Z
+autobyteus-server-1  | 2026-08-18T13:31:41.756079177Z 2026-08-18 13:31:41,755 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:41.756094135Z
+autobyteus-server-1  | 2026-08-18T13:31:41.756095302Z
+autobyteus-server-1  | 2026-08-18T13:31:41.756283177Z 2026-08-18 13:31:41,756 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:41.756287594Z The following migration(s) have been applied:
+autobyteus-server-1  | 2026-08-18T13:31:41.756288844Z
+autobyteus-server-1  | 2026-08-18T13:31:41.756289635Z migrations/
+autobyteus-server-1  | 2026-08-18T13:31:41.756290427Z   └─ 20260203074245_init/
+autobyteus-server-1  | 2026-08-18T13:31:41.756292010Z     └─ migration.sql
+autobyteus-server-1  | 2026-08-18T13:31:41.756298302Z   └─ 20260208094000_add_external_channel_tables/
+autobyteus-server-1  | 2026-08-18T13:31:41.756299219Z     └─ migration.sql
+autobyteus-server-1  | 2026-08-18T13:31:41.756300219Z   └─ 20260209174500_add_channel_message_receipt_turn_id/
+autobyteus-server-1  | 2026-08-18T13:31:41.756301094Z     └─ migration.sql
+autobyteus-server-1  | 2026-08-18T13:31:41.756301969Z   └─ 20260209213000_remove_agent_conversation_tables/
+autobyteus-server-1  | 2026-08-18T13:31:41.756302802Z     └─ migration.sql
+autobyteus-server-1  | 2026-08-18T13:31:41.756303552Z   └─ 20260210101500_add_agent_avatar/
+autobyteus-server-1  | 2026-08-18T13:31:41.756304385Z     └─ migration.sql
+autobyteus-server-1  | 2026-08-18T13:31:41.756305135Z   └─ 20260210192000_add_agent_team_avatar/
+autobyteus-server-1  | 2026-08-18T13:31:41.756305969Z     └─ migration.sql
+autobyteus-server-1  | 2026-08-18T13:31:41.756306760Z   └─ 20260211214500_add_sync_columns_and_tombstones/
+autobyteus-server-1  | 2026-08-18T13:31:41.756307635Z     └─ migration.sql
+autobyteus-server-1  | 2026-08-18T13:31:41.756308427Z   └─ 20260212070000_remove_workflow_definition/
+autobyteus-server-1  | 2026-08-18T13:31:41.756309219Z     └─ migration.sql
+autobyteus-server-1  | 2026-08-18T13:31:41.756310010Z   └─ 20260309103000_add_channel_binding_launch_preset/
+autobyteus-server-1  | 2026-08-18T13:31:41.756310844Z     └─ migration.sql
+autobyteus-server-1  | 2026-08-18T13:31:41.756312010Z   └─ 20260310153000_add_channel_binding_team_definition_id/
+autobyteus-server-1  | 2026-08-18T13:31:41.756313135Z     └─ migration.sql
+autobyteus-server-1  | 2026-08-18T13:31:41.756314094Z   └─ 20260331102000_remove_channel_bindings_table/
+autobyteus-server-1  | 2026-08-18T13:31:41.756314927Z     └─ migration.sql
+autobyteus-server-1  | 2026-08-18T13:31:41.756315802Z   └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+autobyteus-server-1  | 2026-08-18T13:31:41.756316719Z     └─ migration.sql
+autobyteus-server-1  | 2026-08-18T13:31:41.756317469Z   └─ 20260517090000_add_app_data_migration_records/
+autobyteus-server-1  | 2026-08-18T13:31:41.756318385Z     └─ migration.sql
+autobyteus-server-1  | 2026-08-18T13:31:41.756319135Z   └─ 20260624090000_add_token_usage_ledger_events/
+autobyteus-server-1  | 2026-08-18T13:31:41.756319927Z     └─ migration.sql
+autobyteus-server-1  | 2026-08-18T13:31:41.756320719Z   └─ 20260625193000_token_usage_component_pricing_explainability/
+autobyteus-server-1  | 2026-08-18T13:31:41.756321552Z     └─ migration.sql
+autobyteus-server-1  | 2026-08-18T13:31:41.756322302Z   └─ 20260629120000_add_token_usage_display_fields/
+autobyteus-server-1  | 2026-08-18T13:31:41.756323302Z     └─ migration.sql
+autobyteus-server-1  | 2026-08-18T13:31:41.756324052Z   └─ 20260702093000_token_usage_execution_address/
+autobyteus-server-1  | 2026-08-18T13:31:41.756324885Z     └─ migration.sql
+autobyteus-server-1  | 2026-08-18T13:31:41.756325760Z   └─ 20260726090000_add_secret_vault/
+autobyteus-server-1  | 2026-08-18T13:31:41.756326552Z     └─ migration.sql
+autobyteus-server-1  | 2026-08-18T13:31:41.756327302Z   └─ 20260730090000_add_token_usage_provider_name/
+autobyteus-server-1  | 2026-08-18T13:31:41.756328135Z     └─ migration.sql
+autobyteus-server-1  | 2026-08-18T13:31:41.756328885Z   └─ 20260801090000_token_usage_member_display_name/
+autobyteus-server-1  | 2026-08-18T13:31:41.756330927Z     └─ migration.sql
+autobyteus-server-1  | 2026-08-18T13:31:41.756331760Z   └─ 20260814090000_team_run_execution_tree_v1/
+autobyteus-server-1  | 2026-08-18T13:31:41.756332594Z     └─ migration.sql
+autobyteus-server-1  | 2026-08-18T13:31:41.756333302Z
+autobyteus-server-1  | 2026-08-18T13:31:41.756334094Z All migrations have been successfully applied.
+autobyteus-server-1  | 2026-08-18T13:31:41.756334927Z
+autobyteus-server-1  | 2026-08-18T13:31:41.775493802Z 2026-08-18 13:31:41,775 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:41.775513052Z Database migrations completed successfully.
+autobyteus-server-1  | 2026-08-18T13:31:41.775514219Z
+autobyteus-server-1  | 2026-08-18T13:31:41.779319469Z 2026-08-18 13:31:41,779 DEBG 'autobyteus_server' stderr output:
+autobyteus-server-1  | 2026-08-18T13:31:41.779331510Z (node:43) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+autobyteus-server-1  | 2026-08-18T13:31:41.779333010Z (Use `node --trace-warnings ...` to show where the warning was created)
+autobyteus-server-1  | 2026-08-18T13:31:41.779334094Z
+autobyteus-server-1  | 2026-08-18T13:31:41.821683010Z 2026-08-18 13:31:41,821 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:41.821700344Z prisma:info Starting a sqlite pool with 21 connections.
+autobyteus-server-1  | 2026-08-18T13:31:41.821701635Z
+autobyteus-server-1  | 2026-08-18T13:31:42.112641719Z 2026-08-18 13:31:42,112 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.112657135Z CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+autobyteus-server-1  | 2026-08-18T13:31:42.112663094Z
+autobyteus-server-1  | 2026-08-18T13:31:42.122319302Z 2026-08-18 13:31:42,122 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.122336969Z Initialized server settings service with 20 predefined settings
+autobyteus-server-1  | 2026-08-18T13:31:42.122343635Z
+autobyteus-server-1  | 2026-08-18T13:31:42.122978844Z 2026-08-18 13:31:42,122 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.122991552Z Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+autobyteus-server-1  | 2026-08-18T13:31:42.122992969Z
+autobyteus-server-1  | 2026-08-18T13:31:42.123209219Z 2026-08-18 13:31:42,123 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.123218427Z Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+autobyteus-server-1  | 2026-08-18T13:31:42.123219802Z Populating agent definition cache for the first time...
+autobyteus-server-1  | 2026-08-18T13:31:42.123221052Z
+autobyteus-server-1  | 2026-08-18T13:31:42.128096844Z 2026-08-18 13:31:42,127 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.128109552Z Agent definition cache populated with 2 items.
+autobyteus-server-1  | 2026-08-18T13:31:42.128110885Z
+autobyteus-server-1  | 2026-08-18T13:31:42.128265969Z 2026-08-18 13:31:42,128 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.128276552Z Successfully registered tool definition: 'search_web'
+autobyteus-server-1  | 2026-08-18T13:31:42.128277885Z
+autobyteus-server-1  | 2026-08-18T13:31:42.128279135Z 2026-08-18 13:31:42,128 DEBG 'autobyteus_server' stderr output:
+autobyteus-server-1  | 2026-08-18T13:31:42.128287302Z Overwriting existing tool definition for name: 'search_web'
+autobyteus-server-1  | 2026-08-18T13:31:42.128288260Z
+autobyteus-server-1  | 2026-08-18T13:31:42.153132886Z 2026-08-18 13:31:42,152 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.153150344Z AgentRunManager initialized.
+autobyteus-server-1  | 2026-08-18T13:31:42.153151469Z
+autobyteus-server-1  | 2026-08-18T13:31:42.154795094Z 2026-08-18 13:31:42,154 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.154806094Z [2026-08-18T13:31:42.154Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+autobyteus-server-1  | 2026-08-18T13:31:42.154807469Z
+autobyteus-server-1  | 2026-08-18T13:31:42.272785927Z 2026-08-18 13:31:42,272 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.272807636Z {"level":30,"time":1787059902272,"pid":43,"hostname":"0ec4a7e360ec","msg":"Server listening at http://0.0.0.0:8000"}
+autobyteus-server-1  | 2026-08-18T13:31:42.272809594Z
+autobyteus-server-1  | 2026-08-18T13:31:42.272829677Z 2026-08-18 13:31:42,272 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.272843969Z [2026-08-18T13:31:42.272Z] [INFO] [server.runtime] Server listening on 0.0.0.0:8000
+autobyteus-server-1  | 2026-08-18T13:31:42.272846761Z
+autobyteus-server-1  | 2026-08-18T13:31:42.273935177Z 2026-08-18 13:31:42,273 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.273945886Z [2026-08-18T13:31:42.273Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:8000
+autobyteus-server-1  | 2026-08-18T13:31:42.273947469Z
+autobyteus-server-1  | 2026-08-18T13:31:42.282123469Z 2026-08-18 13:31:42,281 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.282138677Z Creating temp workspace at: /home/autobyteus/data/temp_workspace
+autobyteus-server-1  | 2026-08-18T13:31:42.282139969Z
+autobyteus-server-1  | 2026-08-18T13:31:42.282141094Z 2026-08-18 13:31:42,282 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.282142177Z Created metadata-only FileSystemWorkspace at /home/autobyteus/data/temp_workspace.
+autobyteus-server-1  | 2026-08-18T13:31:42.282143094Z Initialized TempWorkspace at /home/autobyteus/data/temp_workspace with fixed ID 'temp_ws_default'
+autobyteus-server-1  | 2026-08-18T13:31:42.282144011Z Temp workspace created and cached with ID: temp_ws_default
+autobyteus-server-1  | 2026-08-18T13:31:42.282144802Z
+autobyteus-server-1  | 2026-08-18T13:31:42.283208386Z 2026-08-18 13:31:42,283 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.283214594Z Scheduling non-critical startup tasks to run in the background...
+autobyteus-server-1  | 2026-08-18T13:31:42.283216219Z
+autobyteus-server-1  | 2026-08-18T13:31:42.296028886Z 2026-08-18 13:31:42,295 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.296047219Z Background cache pre-loading process has started.
+autobyteus-server-1  | 2026-08-18T13:31:42.296048802Z
+autobyteus-server-1  | 2026-08-18T13:31:42.296252677Z 2026-08-18 13:31:42,296 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.296256261Z CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.
+autobyteus-server-1  | 2026-08-18T13:31:42.296264552Z AutobyteusModelCatalog initialized.
+autobyteus-server-1  | 2026-08-18T13:31:42.296265469Z
+autobyteus-server-1  | 2026-08-18T13:31:42.296310719Z 2026-08-18 13:31:42,296 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.296318844Z CachedAudioModelProvider initialized.
+autobyteus-server-1  | 2026-08-18T13:31:42.296320136Z AudioModelService initialized.
+autobyteus-server-1  | 2026-08-18T13:31:42.296321136Z
+autobyteus-server-1  | 2026-08-18T13:31:42.296408802Z 2026-08-18 13:31:42,296 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.296417386Z CachedImageModelProvider initialized.
+autobyteus-server-1  | 2026-08-18T13:31:42.296418636Z ImageModelService initialized.
+autobyteus-server-1  | 2026-08-18T13:31:42.296419594Z
+autobyteus-server-1  | 2026-08-18T13:31:42.296437386Z 2026-08-18 13:31:42,296 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.296443594Z CachedVideoModelProvider initialized.
+autobyteus-server-1  | 2026-08-18T13:31:42.296444761Z
+autobyteus-server-1  | 2026-08-18T13:31:42.296612386Z 2026-08-18 13:31:42,296 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.296617761Z VideoModelService initialized.
+autobyteus-server-1  | 2026-08-18T13:31:42.296619011Z Registering agent customization processors...
+autobyteus-server-1  | 2026-08-18T13:31:42.296619969Z
+autobyteus-server-1  | 2026-08-18T13:31:42.296717469Z 2026-08-18 13:31:42,296 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.296722886Z Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+autobyteus-server-1  | 2026-08-18T13:31:42.296724136Z Registered input processor 'WorkspacePathSanitizationProcessor'.
+autobyteus-server-1  | 2026-08-18T13:31:42.296725052Z Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+autobyteus-server-1  | 2026-08-18T13:31:42.296726052Z Registered input processor 'UserInputContextBuildingProcessor'.
+autobyteus-server-1  | 2026-08-18T13:31:42.296726886Z
+autobyteus-server-1  | 2026-08-18T13:31:42.296727719Z 2026-08-18 13:31:42,296 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.296728594Z LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+autobyteus-server-1  | 2026-08-18T13:31:42.296729511Z Registered LLM response processor 'MediaUrlTransformerProcessor'.
+autobyteus-server-1  | 2026-08-18T13:31:42.296730469Z
+autobyteus-server-1  | 2026-08-18T13:31:42.296851594Z 2026-08-18 13:31:42,296 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.296855969Z Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+autobyteus-server-1  | 2026-08-18T13:31:42.296856969Z Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+autobyteus-server-1  | 2026-08-18T13:31:42.296857844Z
+autobyteus-server-1  | 2026-08-18T13:31:42.296858636Z 2026-08-18 13:31:42,296 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.296859511Z Agent customization processor registration complete.
+autobyteus-server-1  | 2026-08-18T13:31:42.296860344Z Loading workspace packages to trigger registration...
+autobyteus-server-1  | 2026-08-18T13:31:42.296861302Z
+autobyteus-server-1  | 2026-08-18T13:31:42.296997802Z 2026-08-18 13:31:42,296 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.297001844Z Loading agent tool definitions...
+autobyteus-server-1  | 2026-08-18T13:31:42.297002677Z
+autobyteus-server-1  | 2026-08-18T13:31:42.297457427Z 2026-08-18 13:31:42,297 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.297461261Z Running MCP tool registration background task...
+autobyteus-server-1  | 2026-08-18T13:31:42.297462219Z
+autobyteus-server-1  | 2026-08-18T13:31:42.297536219Z 2026-08-18 13:31:42,297 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.297539677Z CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+autobyteus-server-1  | 2026-08-18T13:31:42.297540594Z
+autobyteus-server-1  | 2026-08-18T13:31:42.297603386Z 2026-08-18 13:31:42,297 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.297606719Z Loading and registering all MCP server configurations from file...
+autobyteus-server-1  | 2026-08-18T13:31:42.297607844Z Populating MCP server config cache for the first time...
+autobyteus-server-1  | 2026-08-18T13:31:42.297608636Z
+autobyteus-server-1  | 2026-08-18T13:31:42.298054344Z 2026-08-18 13:31:42,297 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.298083261Z Background task 'Agent Customizations' completed successfully.
+autobyteus-server-1  | 2026-08-18T13:31:42.298084761Z
+autobyteus-server-1  | 2026-08-18T13:31:42.298460386Z 2026-08-18 13:31:42,298 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.298466802Z Background task 'Memory Sync Worker' completed successfully.
+autobyteus-server-1  | 2026-08-18T13:31:42.298468094Z
+autobyteus-server-1  | 2026-08-18T13:31:42.299818552Z 2026-08-18 13:31:42,299 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.299827261Z Pre-loaded 2 agent definitions into cache.
+autobyteus-server-1  | 2026-08-18T13:31:42.299828469Z
+autobyteus-server-1  | 2026-08-18T13:31:42.299874886Z 2026-08-18 13:31:42,299 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.299881594Z [2026-08-18T13:31:42.299Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+autobyteus-server-1  | 2026-08-18T13:31:42.299882719Z
+autobyteus-server-1  | 2026-08-18T13:31:42.304247886Z 2026-08-18 13:31:42,304 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.304256927Z Successfully registered tool definition: 'generate_image'
+autobyteus-server-1  | 2026-08-18T13:31:42.304257886Z
+autobyteus-server-1  | 2026-08-18T13:31:42.304361302Z 2026-08-18 13:31:42,304 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.304365344Z Successfully registered tool definition: 'edit_image'
+autobyteus-server-1  | 2026-08-18T13:31:42.304366552Z Successfully registered tool definition: 'generate_speech'
+autobyteus-server-1  | 2026-08-18T13:31:42.304367427Z Successfully registered tool definition: 'generate_video'
+autobyteus-server-1  | 2026-08-18T13:31:42.304368261Z Loaded tool group: Media Tools
+autobyteus-server-1  | 2026-08-18T13:31:42.304369094Z
+autobyteus-server-1  | 2026-08-18T13:31:42.319729552Z 2026-08-18 13:31:42,319 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.319758552Z Successfully loaded workspace packages.
+autobyteus-server-1  | 2026-08-18T13:31:42.319764427Z Background task 'Workspaces' completed successfully.
+autobyteus-server-1  | 2026-08-18T13:31:42.319765594Z
+autobyteus-server-1  | 2026-08-18T13:31:42.320480177Z 2026-08-18 13:31:42,320 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.320490136Z Successfully registered tool definition: 'publish_artifacts'
+autobyteus-server-1  | 2026-08-18T13:31:42.320491219Z
+autobyteus-server-1  | 2026-08-18T13:31:42.320529302Z 2026-08-18 13:31:42,320 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.320535219Z Loaded tool group: Published Artifact Tools
+autobyteus-server-1  | 2026-08-18T13:31:42.320536094Z
+autobyteus-server-1  | 2026-08-18T13:31:42.320592136Z 2026-08-18 13:31:42,320 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.320597302Z Loaded tool group: Browser Tools
+autobyteus-server-1  | 2026-08-18T13:31:42.320598636Z
+autobyteus-server-1  | 2026-08-18T13:31:42.321302552Z 2026-08-18 13:31:42,321 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.321316886Z Successfully registered tool definition: 'delegate_task'
+autobyteus-server-1  | 2026-08-18T13:31:42.321318469Z
+autobyteus-server-1  | 2026-08-18T13:31:42.321319594Z 2026-08-18 13:31:42,321 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.321320469Z Successfully registered tool definition: 'submit_task_result'
+autobyteus-server-1  | 2026-08-18T13:31:42.321321386Z Successfully registered tool definition: 'review_task_result'
+autobyteus-server-1  | 2026-08-18T13:31:42.321322177Z Loaded tool group: Task Delegation Tools
+autobyteus-server-1  | 2026-08-18T13:31:42.321323011Z
+autobyteus-server-1  | 2026-08-18T13:31:42.321527011Z 2026-08-18 13:31:42,321 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.321530344Z Successfully registered tool definition: 'send_message_to'
+autobyteus-server-1  | 2026-08-18T13:31:42.321531302Z Successfully registered tool definition: 'get_handoff_rules'
+autobyteus-server-1  | 2026-08-18T13:31:42.321532344Z Loaded tool group: Agent Communication Tools
+autobyteus-server-1  | 2026-08-18T13:31:42.321533136Z Background task 'Agent Tools' completed successfully.
+autobyteus-server-1  | 2026-08-18T13:31:42.321533969Z
+autobyteus-server-1  | 2026-08-18T13:31:42.322771636Z 2026-08-18 13:31:42,322 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.322782844Z MCP server config cache populated with 0 items.
+autobyteus-server-1  | 2026-08-18T13:31:42.322784011Z Found 0 total MCP server configs.
+autobyteus-server-1  | 2026-08-18T13:31:42.322784886Z
+autobyteus-server-1  | 2026-08-18T13:31:42.322881802Z 2026-08-18 13:31:42,322 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.322889052Z Synchronized cached configurations with the core MCP config service.
+autobyteus-server-1  | 2026-08-18T13:31:42.322890011Z Finished loading and registering all MCP server configurations.
+autobyteus-server-1  | 2026-08-18T13:31:42.322890927Z Background task 'MCP Tool Registration' completed successfully.
+autobyteus-server-1  | 2026-08-18T13:31:42.322891927Z
+autobyteus-server-1  | 2026-08-18T13:31:42.322929261Z 2026-08-18 13:31:42,322 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.322932386Z [2026-08-18T13:31:42.322Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+autobyteus-server-1  | 2026-08-18T13:31:42.322938302Z
+autobyteus-server-1  | 2026-08-18T13:31:42.322944677Z 2026-08-18 13:31:42,322 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.322945802Z Pre-loaded 0 agent team definitions into cache.
+autobyteus-server-1  | 2026-08-18T13:31:42.322946677Z
+autobyteus-server-1  | 2026-08-18T13:31:42.323029302Z 2026-08-18 13:31:42,322 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.323035219Z Pre-loaded 0 MCP server configs into cache.
+autobyteus-server-1  | 2026-08-18T13:31:42.323036511Z
+autobyteus-server-1  | 2026-08-18T13:31:42.323121177Z 2026-08-18 13:31:42,323 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.323125719Z Populating LLM models cache for the first time...
+autobyteus-server-1  | 2026-08-18T13:31:42.323127011Z
+autobyteus-server-1  | 2026-08-18T13:31:42.323127927Z 2026-08-18 13:31:42,323 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.323128802Z Fetching list of available LLM models from LLMFactory...
+autobyteus-server-1  | 2026-08-18T13:31:42.323129636Z
+autobyteus-server-1  | 2026-08-18T13:31:42.324590927Z 2026-08-18 13:31:42,324 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.324597427Z Discovering Ollama models from host: http://localhost:11434
+autobyteus-server-1  | 2026-08-18T13:31:42.324598552Z
+autobyteus-server-1  | 2026-08-18T13:31:42.331073594Z 2026-08-18 13:31:42,330 DEBG 'autobyteus_server' stderr output:
+autobyteus-server-1  | 2026-08-18T13:31:42.331083052Z Could not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed
+autobyteus-server-1  | 2026-08-18T13:31:42.331084052Z
+autobyteus-server-1  | 2026-08-18T13:31:42.331452927Z 2026-08-18 13:31:42,331 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.331462719Z Discovering LM Studio models from host: http://localhost:1234
+autobyteus-server-1  | 2026-08-18T13:31:42.331463886Z
+autobyteus-server-1  | 2026-08-18T13:31:42.332604094Z 2026-08-18 13:31:42,332 DEBG 'autobyteus_server' stderr output:
+autobyteus-server-1  | 2026-08-18T13:31:42.332610094Z Could not connect to LM Studio at http://localhost:1234. Ensure the server is running. fetch failed
+autobyteus-server-1  | 2026-08-18T13:31:42.332611636Z
+autobyteus-server-1  | 2026-08-18T13:31:42.334440719Z 2026-08-18 13:31:42,334 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.334447511Z Successfully fetched 31 models from LLMFactory.
+autobyteus-server-1  | 2026-08-18T13:31:42.334448511Z LLM models cache populated with 31 items.
+autobyteus-server-1  | 2026-08-18T13:31:42.334449594Z
+autobyteus-server-1  | 2026-08-18T13:31:42.338660386Z 2026-08-18 13:31:42,338 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.338670302Z Pre-loaded 31 LLM models into cache.
+autobyteus-server-1  | 2026-08-18T13:31:42.338671552Z
+autobyteus-server-1  | 2026-08-18T13:31:42.338682969Z 2026-08-18 13:31:42,338 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.338687802Z Populating Image models cache for the first time...
+autobyteus-server-1  | 2026-08-18T13:31:42.338689386Z
+autobyteus-server-1  | 2026-08-18T13:31:42.338927344Z 2026-08-18 13:31:42,338 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.338937094Z Fetching list of available Image models from ImageClientFactory...
+autobyteus-server-1  | 2026-08-18T13:31:42.338938177Z
+autobyteus-server-1  | 2026-08-18T13:31:42.339100469Z 2026-08-18 13:31:42,338 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.339105469Z Successfully fetched 7 image models from ImageClientFactory.
+autobyteus-server-1  | 2026-08-18T13:31:42.339106636Z
+autobyteus-server-1  | 2026-08-18T13:31:42.339107469Z 2026-08-18 13:31:42,339 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.339108344Z Image models by provider: OPENAI=2, GEMINI=5
+autobyteus-server-1  | 2026-08-18T13:31:42.339109177Z Image models by runtime: api=7
+autobyteus-server-1  | 2026-08-18T13:31:42.339109969Z Image models cache populated with 7 items.
+autobyteus-server-1  | 2026-08-18T13:31:42.339110761Z
+autobyteus-server-1  | 2026-08-18T13:31:42.339175302Z 2026-08-18 13:31:42,339 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.339185261Z Pre-loaded 7 image models into cache.
+autobyteus-server-1  | 2026-08-18T13:31:42.339186469Z
+autobyteus-server-1  | 2026-08-18T13:31:42.339195636Z 2026-08-18 13:31:42,339 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.339199261Z Populating Audio models cache for the first time...
+autobyteus-server-1  | 2026-08-18T13:31:42.339200177Z
+autobyteus-server-1  | 2026-08-18T13:31:42.339353386Z 2026-08-18 13:31:42,339 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.339356677Z Fetching list of available Audio models from AudioClientFactory...
+autobyteus-server-1  | 2026-08-18T13:31:42.339357594Z
+autobyteus-server-1  | 2026-08-18T13:31:42.339447094Z 2026-08-18 13:31:42,339 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.339452136Z Successfully fetched 4 audio models from AudioClientFactory.
+autobyteus-server-1  | 2026-08-18T13:31:42.339453052Z Audio models by provider: OPENAI=1, GEMINI=3
+autobyteus-server-1  | 2026-08-18T13:31:42.339454094Z Audio models by runtime: api=4
+autobyteus-server-1  | 2026-08-18T13:31:42.339454886Z Audio models cache populated with 4 items.
+autobyteus-server-1  | 2026-08-18T13:31:42.339455761Z Pre-loaded 4 audio models into cache.
+autobyteus-server-1  | 2026-08-18T13:31:42.339456594Z Background application cache pre-loading completed.
+autobyteus-server-1  | 2026-08-18T13:31:42.339457427Z
+autobyteus-server-1  | 2026-08-18T13:31:42.339618261Z 2026-08-18 13:31:42,339 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | 2026-08-18T13:31:42.339622136Z Background task 'Cache Pre-loading' completed successfully.
+autobyteus-server-1  | 2026-08-18T13:31:42.339623011Z
+autobyteus-server-1  | 2026-08-18T13:31:43.156552469Z 2026-08-18 13:31:43,156 DEBG 'chrome' stderr output:
+autobyteus-server-1  | 2026-08-18T13:31:43.156569803Z [39:111:0818/133143.156104:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: PHONE_REGISTRATION_ERROR
+autobyteus-server-1  | 2026-08-18T13:31:43.156571386Z
+autobyteus-server-1  | 2026-08-18T13:31:43.156628719Z 2026-08-18 13:31:43,156 INFO reaped unknown pid 473 (exit status 0)
+autobyteus-server-1  | 2026-08-18T13:31:43.156633761Z 2026-08-18 13:31:43,156 DEBG received SIGCHLD indicating a child quit
+autobyteus-server-1  | 2026-08-18T13:31:43.157381636Z 2026-08-18 13:31:43,157 DEBG 'chrome' stderr output:
+autobyteus-server-1  | 2026-08-18T13:31:43.157405178Z [39:111:0818/133143.157134:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: PHONE_REGISTRATION_ERROR
+autobyteus-server-1  | 2026-08-18T13:31:43.157406803Z
+autobyteus-server-1  | 2026-08-18T13:31:43.158609886Z 2026-08-18 13:31:43,158 DEBG 'chrome' stderr output:
+autobyteus-server-1  | 2026-08-18T13:31:43.158616844Z [39:111:0818/133143.158403:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: PHONE_REGISTRATION_ERROR
+autobyteus-server-1  | 2026-08-18T13:31:43.158618094Z
+autobyteus-server-1  | 2026-08-18T13:31:44.160114803Z 2026-08-18 13:31:44,159 INFO success: dbus entered RUNNING state, process has stayed up for > than 5 seconds (startsecs)
+autobyteus-server-1  | 2026-08-18T13:31:44.160196553Z 2026-08-18 13:31:44,160 INFO success: copyq entered RUNNING state, process has stayed up for > than 5 seconds (startsecs)
+autobyteus-server-1  | 2026-08-18T13:31:54.272426210Z 2026-08-18 13:31:54,272 DEBG 'dbus' stderr output:
+autobyteus-server-1  | 2026-08-18T13:31:54.272444960Z Xlib:  extension "DPMS" missing on display ":99".
+autobyteus-server-1  | 2026-08-18T13:31:54.272446377Z
+autobyteus-server-1  | 2026-08-18T13:32:04.351612173Z 2026-08-18 13:32:04,351 DEBG 'chrome' stderr output:
+autobyteus-server-1  | 2026-08-18T13:32:04.351628132Z [39:111:0818/133204.351308:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: QUOTA_EXCEEDED
+autobyteus-server-1  | 2026-08-18T13:32:04.351629673Z
+autobyteus-server-1  | 2026-08-18T13:32:09.275407009Z 2026-08-18 13:32:09,275 DEBG 'dbus' stderr output:
+autobyteus-server-1  | 2026-08-18T13:32:09.275427134Z Xlib:  extension "DPMS" missing on display ":99".
+autobyteus-server-1  | 2026-08-18T13:32:09.275428842Z
+autobyteus-server-1  | 2026-08-18T13:32:24.259893752Z 2026-08-18 13:32:24,259 DEBG 'dbus' stderr output:
+autobyteus-server-1  | 2026-08-18T13:32:24.259919335Z Xlib:  extension "DPMS" missing on display ":99".
+autobyteus-server-1  | 2026-08-18T13:32:24.259921127Z
+autobyteus-server-1  | 2026-08-18T13:32:39.260823926Z 2026-08-18 13:32:39,260 DEBG 'dbus' stderr output:
+autobyteus-server-1  | 2026-08-18T13:32:39.260840217Z Xlib:  extension "DPMS" missing on display ":99".
+autobyteus-server-1  | 2026-08-18T13:32:39.260841801Z

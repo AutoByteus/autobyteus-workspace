@@ -1,0 +1,98 @@
+
+> autobyteus@1.4.47 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts components/mobile/__tests__/MobileUxRefinement.spec.ts components/workspace/config/__tests__/TeamRunConfigForm.spec.ts components/workspace/running/__tests__/RunningTeamRow.spec.ts components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web
+
+stderr | components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/running/__tests__/RunningTeamRow.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/__tests__/MobileUxRefinement.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/mobile/__tests__/MobileUxRefinement.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/running/__tests__/RunningTeamRow.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts (1 test) 18ms
+ ✓ components/workspace/running/__tests__/RunningTeamRow.spec.ts (4 tests) 29ms
+ ✓ components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts (3 tests) 45ms
+ ❯ components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts (4 tests | 1 failed) 21ms
+   × AgentTeamEventMonitor.vue > passes sender-id to member-name mapping to AgentEventMonitor 15ms
+     → expected { …(2) } to deeply equal { member_a111: 'Professor', …(1) }
+   ✓ AgentTeamEventMonitor.vue > passes focused member display name and avatar to AgentEventMonitor 2ms
+   ✓ AgentTeamEventMonitor.vue > uses roster focus for displayed Focus history while active execution can remain on the coordinator 2ms
+   ✓ AgentTeamEventMonitor.vue > does not render task-agent work packets as the logical parent conversation 2ms
+ ✓ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts (12 tests) 116ms
+ ✓ components/mobile/__tests__/MobileUxRefinement.spec.ts (15 tests) 133ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts > AgentTeamEventMonitor.vue > passes sender-id to member-name mapping to AgentEventMonitor
+AssertionError: expected { …(2) } to deeply equal { member_a111: 'Professor', …(1) }
+
+- Expected
++ Received
+
+  {
+-   "member_a111": "Professor",
+-   "member_b222": "Student",
++   "member_a111": "Professor\",\"taskAgentRunId\":null}",
++   "member_b222": "Student\",\"taskAgentRunId\":null}",
+  }
+
+ ❯ components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts:136:55
+    134|     ]));
+    135|     expect(monitor.classes()).toEqual(expect.arrayContaining(['min-h-0…
+    136|     expect(monitor.props('interAgentSenderNameById')).toEqual({
+       |                                                       ^
+    137|       member_a111: 'Professor',
+    138|       member_b222: 'Student',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 5 passed (6)
+      Tests  1 failed | 38 passed (39)
+   Start at  06:13:48
+   Duration  6.24s (transform 3.12s, setup 29.83s, collect 1.63s, tests 362ms, environment 2.03s, prepare 1.02s)
+
+ ELIFECYCLE  Command failed with exit code 1.

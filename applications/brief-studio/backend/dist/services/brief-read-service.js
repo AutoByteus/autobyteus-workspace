@@ -37,7 +37,7 @@ export const createBriefReadService = (context) => ({
             .map((binding) => ({
             bindingId: binding.bindingId,
             status: binding.status,
-            runId: binding.runtime.runId,
+            runId: binding.runtime.subject === "AGENT_RUN" ? binding.runtime.agentRunId : binding.runtime.teamRunId,
             definitionId: binding.runtime.definitionId,
             createdAt: binding.createdAt,
             updatedAt: binding.updatedAt,

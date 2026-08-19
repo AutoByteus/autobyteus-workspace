@@ -1,0 +1,18 @@
+delivery_revision=DR-010
+artifact=delivery-revision-record.md	fences=0	bytes=48573
+artifact=delivery-integration-blocker.md	fences=0	bytes=2962
+artifact=docs-sync-report.md	fences=0	bytes=7771
+artifact=handoff-summary.md	fences=0	bytes=7251
+artifact=release-deployment-report.md	fences=0	bytes=4336
+artifact=release-notes.md	fences=0	bytes=4845
+dr010_present=PASS
+current_lineage_present=PASS
+verification_pending=PASS
+finalization_hold=PASS
+operational_db_disclosed=PASS
+protected_stack_disclosed=PASS
+current_electron_dmg_disclosed=PASS
+current_electron_zip_disclosed=PASS
+unsigned_notarization_disclosed=PASS
+packaging_recovery_disclosed=PASS
+error_count=0

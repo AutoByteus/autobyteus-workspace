@@ -1,0 +1,22 @@
+DR-003 canonical artifact and checkpoint check
+date=2026-08-04
+HEAD=66b02ae7b9695b3ce21c6c0f01b76f9310bd0cd6
+origin_personal=ed3aa872303ccef5d8a097acd19876323ff795ab
+head_vs_origin=7	0
+merge_base=ed3aa872303ccef5d8a097acd19876323ff795ab
+unmerged_count=0
+repository_relationship=pass
+reviewed_test=autobyteus-server-ts/tests/e2e/external-channel/external-channel-team-open-delivery.e2e.test.ts
+reviewed_test=autobyteus-server-ts/tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts
+reviewed_test=autobyteus-server-ts/tests/integration/agent-team-execution/mixed-team-run-backend.integration.test.ts
+reviewed_test=autobyteus-server-ts/tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts
+reviewed_test=autobyteus-server-ts/tests/integration/agent-team-execution/team-run-service.integration.test.ts
+reviewed_test=autobyteus-server-ts/tests/integration/api/runtime-selection-top-level.integration.test.ts
+reviewed_test=autobyteus-server-ts/tests/integration/run-history/memory-layout-and-projection.integration.test.ts
+checkpoint=pass_7_tests_24_files
+cumulative_package=present
+current_revisions=pass
+protected_state=pass
+release_version=current_v1.4.42_next_v1.4.43
+delivery_checks=pass
+result=PASS

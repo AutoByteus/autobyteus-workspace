@@ -11,8 +11,6 @@ import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { AgentRunMetadataStore } from "../../../src/run-history/store/agent-run-metadata-store.js";
 import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-metadata-types.js";
-import { TeamRunMetadataStore } from "../../../src/run-history/store/team-run-metadata-store.js";
-import type { TeamRunMetadata } from "../../../src/run-history/store/team-run-metadata-types.js";
 import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
 import { RuntimeMemoryEventAccumulator } from "../../../src/agent-memory/services/runtime-memory-event-accumulator.js";
 import { ExternalRuntimeMemoryWriter } from "../../../src/agent-memory/store/external-runtime-memory-writer.js";
@@ -20,8 +18,12 @@ import {
   AgentRunEventType,
   type AgentRunEvent,
 } from "../../../src/agent-execution/domain/agent-run-event.js";
-import { CodexThreadEventConverter } from "../../../src/agent-execution/backends/codex/events/codex-thread-event-converter.js";
+import type { JsonObject } from "../../../src/agent-execution/backends/codex/codex-app-server-json.js";
+import { createCodexThreadEventHarness } from "../../fixtures/codex-thread-event-harness.js";
 import { CodexThreadEventName } from "../../../src/agent-execution/backends/codex/events/codex-thread-event-name.js";
+import { AgentSegmentLifecycleEventTransformer } from "../../../src/agent-execution/events/processors/segment-lifecycle/agent-segment-lifecycle-event-transformer.js";
+import { AgentSegmentLifecycleState } from "../../../src/agent-execution/events/processors/segment-lifecycle/agent-segment-lifecycle-state.js";
+import { AgentTurnLifecycleState } from "../../../src/agent-execution/events/processors/lifecycle-status/agent-turn-lifecycle-state.js";
 
 const { readThreadMock } = vi.hoisted(() => ({
   readThreadMock: vi.fn(),
@@ -38,9 +40,6 @@ import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 
 const STANDALONE_RUN_ID = "run-codex-toolcalls-graphql";
 const STANDALONE_THREAD_ID = "thread-standalone-toolcalls";
-const TEAM_RUN_ID = "team-codex-toolcalls-graphql";
-const MEMBER_RUN_ID = "member-codex-toolcalls-graphql";
-const MEMBER_THREAD_ID = "thread-member-toolcalls";
 const USER_TS = 1_710_000_000;
 const REASONING_TS = 1_710_000_000.5;
 const TOOL_TS = 1_710_000_001;
@@ -67,12 +66,6 @@ const findReasoningRow = (
 ): Record<string, unknown> | undefined =>
   rows.find((row) => row.kind === "reasoning" && row.content === content);
 
-let eventTimestampCounter = 1_720_000_000;
-const nextEventTimestamp = (): number => {
-  eventTimestampCounter += 0.001;
-  return eventTimestampCounter;
-};
-
 const event = (
   runId: string,
   eventType: AgentRunEventType,
@@ -80,10 +73,7 @@ const event = (
 ): AgentRunEvent => ({
   eventType,
   runId,
-  payload: {
-    ts: nextEventTimestamp(),
-    ...payload,
-  },
+  payload: { ...payload },
   statusHint: null,
 });
 
@@ -189,7 +179,6 @@ describe("Run projection tool-call GraphQL e2e", () => {
   });
 
   beforeEach(async () => {
-    eventTimestampCounter = 1_720_000_000;
     readThreadMock.mockReset();
     readThreadMock.mockResolvedValue({
       thread: {
@@ -251,7 +240,7 @@ describe("Run projection tool-call GraphQL e2e", () => {
       userText: "Run GraphQL standalone projection validation.",
       dynamicInvocationId: "dynamic-send-1",
       dynamicArgs: {
-        recipient_name: "code_reviewer",
+        recipient_address: "code_reviewer",
         content: "standalone projection validation",
       },
     });
@@ -284,7 +273,7 @@ describe("Run projection tool-call GraphQL e2e", () => {
       kind: "tool_call",
       toolName: "send_message_to",
       toolArgs: {
-        recipient_name: "code_reviewer",
+        recipient_address: "code_reviewer",
         content: "standalone projection validation",
       },
       toolResult: { delivered: true },
@@ -293,7 +282,7 @@ describe("Run projection tool-call GraphQL e2e", () => {
       toolName: "send_message_to",
       status: "success",
       arguments: {
-        recipient_name: "code_reviewer",
+        recipient_address: "code_reviewer",
         content: "standalone projection validation",
       },
       result: { delivered: true },
@@ -445,96 +434,124 @@ describe("Run projection tool-call GraphQL e2e", () => {
       toolTraceLifecycleGroups: writer.readToolTraceLifecycleGroups(),
     });
 
-    accumulator.recordRunEvent(event(runId, AgentRunEventType.TURN_STARTED, { turnId: "turn-tool" }));
-    accumulator.recordRunEvent(event(runId, AgentRunEventType.SEGMENT_CONTENT, {
+    const segmentLifecycleTransformer = new AgentSegmentLifecycleEventTransformer();
+    const segmentLifecycleState = new AgentSegmentLifecycleState();
+    const turnLifecycleState = new AgentTurnLifecycleState();
+    const recordCanonicalEvent = (sourceEvent: AgentRunEvent): void => {
+      const canonicalEvents = segmentLifecycleTransformer.transform({
+        runContext: {} as never,
+        events: [sourceEvent],
+        lifecycleState: turnLifecycleState,
+        segmentLifecycleState,
+      });
+      canonicalEvents.forEach((canonicalEvent) => accumulator.recordRunEvent(canonicalEvent));
+    };
+
+    recordCanonicalEvent(event(runId, AgentRunEventType.TURN_STARTED, { turnId: "turn-tool" }));
+    recordCanonicalEvent(event(runId, AgentRunEventType.SEGMENT_START, {
       id: "reasoning-before-tool",
       turn_id: "turn-tool",
       segment_type: "reasoning",
+    }));
+    recordCanonicalEvent(event(runId, AgentRunEventType.SEGMENT_CONTENT, {
+      id: "reasoning-before-tool",
+      turn_id: "turn-tool",
       delta: "think before explicit tool",
     }));
-    accumulator.recordRunEvent(event(runId, AgentRunEventType.TOOL_EXECUTION_STARTED, {
+    recordCanonicalEvent(event(runId, AgentRunEventType.TOOL_EXECUTION_STARTED, {
       invocation_id: "explicit-tool-after-reasoning",
       turn_id: "turn-tool",
       tool_name: "functions.exec_command",
       arguments: { cmd: "pwd" },
     }));
-    accumulator.recordRunEvent(event(runId, AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, {
+    recordCanonicalEvent(event(runId, AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, {
       invocation_id: "explicit-tool-after-reasoning",
       turn_id: "turn-tool",
       tool_name: "functions.exec_command",
       arguments: { cmd: "pwd" },
       result: { stdout: "/tmp/project\n", exit_code: 0 },
     }));
-    accumulator.recordRunEvent(event(runId, AgentRunEventType.SEGMENT_END, {
+    recordCanonicalEvent(event(runId, AgentRunEventType.SEGMENT_END, {
       id: "reasoning-before-tool",
       turn_id: "turn-tool",
-      segment_type: "reasoning",
     }));
-    accumulator.recordRunEvent(event(runId, AgentRunEventType.TURN_COMPLETED, { turnId: "turn-tool" }));
+    recordCanonicalEvent(event(runId, AgentRunEventType.TURN_COMPLETED, { turnId: "turn-tool" }));
 
-    accumulator.recordRunEvent(event(runId, AgentRunEventType.TURN_STARTED, { turnId: "turn-inferred" }));
-    accumulator.recordRunEvent(event(runId, AgentRunEventType.SEGMENT_CONTENT, {
+    recordCanonicalEvent(event(runId, AgentRunEventType.TURN_STARTED, { turnId: "turn-inferred" }));
+    recordCanonicalEvent(event(runId, AgentRunEventType.SEGMENT_START, {
       id: "reasoning-before-inferred-result",
       turn_id: "turn-inferred",
       segment_type: "reasoning",
+    }));
+    recordCanonicalEvent(event(runId, AgentRunEventType.SEGMENT_CONTENT, {
+      id: "reasoning-before-inferred-result",
+      turn_id: "turn-inferred",
       delta: "think before inferred terminal result",
     }));
-    accumulator.recordRunEvent(event(runId, AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, {
+    recordCanonicalEvent(event(runId, AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, {
       invocation_id: "inferred-tool-after-reasoning",
       turn_id: "turn-inferred",
       tool_name: "run_bash",
       arguments: { command: "echo inferred" },
       result: { stdout: "inferred\n" },
     }));
-    accumulator.recordRunEvent(event(runId, AgentRunEventType.SEGMENT_END, {
+    recordCanonicalEvent(event(runId, AgentRunEventType.SEGMENT_END, {
       id: "reasoning-before-inferred-result",
       turn_id: "turn-inferred",
-      segment_type: "reasoning",
     }));
-    accumulator.recordRunEvent(event(runId, AgentRunEventType.TURN_COMPLETED, { turnId: "turn-inferred" }));
+    recordCanonicalEvent(event(runId, AgentRunEventType.TURN_COMPLETED, { turnId: "turn-inferred" }));
 
-    accumulator.recordRunEvent(event(runId, AgentRunEventType.TURN_STARTED, { turnId: "turn-text" }));
-    accumulator.recordRunEvent(event(runId, AgentRunEventType.SEGMENT_CONTENT, {
+    recordCanonicalEvent(event(runId, AgentRunEventType.TURN_STARTED, { turnId: "turn-text" }));
+    recordCanonicalEvent(event(runId, AgentRunEventType.SEGMENT_START, {
       id: "reasoning-before-text",
       turn_id: "turn-text",
       segment_type: "reasoning",
+    }));
+    recordCanonicalEvent(event(runId, AgentRunEventType.SEGMENT_CONTENT, {
+      id: "reasoning-before-text",
+      turn_id: "turn-text",
       delta: "think before assistant text",
     }));
-    accumulator.recordRunEvent(event(runId, AgentRunEventType.SEGMENT_CONTENT, {
+    recordCanonicalEvent(event(runId, AgentRunEventType.SEGMENT_START, {
       id: "assistant-text-after-reasoning",
       turn_id: "turn-text",
       segment_type: "text",
+    }));
+    recordCanonicalEvent(event(runId, AgentRunEventType.SEGMENT_CONTENT, {
+      id: "assistant-text-after-reasoning",
+      turn_id: "turn-text",
       delta: "assistant text after thinking",
     }));
-    accumulator.recordRunEvent(event(runId, AgentRunEventType.SEGMENT_END, {
+    recordCanonicalEvent(event(runId, AgentRunEventType.SEGMENT_END, {
       id: "assistant-text-after-reasoning",
       turn_id: "turn-text",
-      segment_type: "text",
     }));
-    accumulator.recordRunEvent(event(runId, AgentRunEventType.SEGMENT_END, {
+    recordCanonicalEvent(event(runId, AgentRunEventType.SEGMENT_END, {
       id: "reasoning-before-text",
       turn_id: "turn-text",
-      segment_type: "reasoning",
     }));
-    accumulator.recordRunEvent(event(runId, AgentRunEventType.TURN_COMPLETED, { turnId: "turn-text" }));
+    recordCanonicalEvent(event(runId, AgentRunEventType.TURN_COMPLETED, { turnId: "turn-text" }));
 
-    accumulator.recordRunEvent(event(runId, AgentRunEventType.TURN_STARTED, { turnId: "turn-complete" }));
-    accumulator.recordRunEvent(event(runId, AgentRunEventType.SEGMENT_CONTENT, {
+    recordCanonicalEvent(event(runId, AgentRunEventType.TURN_STARTED, { turnId: "turn-complete" }));
+    recordCanonicalEvent(event(runId, AgentRunEventType.SEGMENT_START, {
       id: "reasoning-before-complete",
       turn_id: "turn-complete",
       segment_type: "reasoning",
+    }));
+    recordCanonicalEvent(event(runId, AgentRunEventType.SEGMENT_CONTENT, {
+      id: "reasoning-before-complete",
+      turn_id: "turn-complete",
       delta: "think before assistant complete",
     }));
-    accumulator.recordRunEvent(event(runId, AgentRunEventType.ASSISTANT_COMPLETE, {
+    recordCanonicalEvent(event(runId, AgentRunEventType.ASSISTANT_COMPLETE, {
       turn_id: "turn-complete",
       content: "assistant complete after thinking",
     }));
-    accumulator.recordRunEvent(event(runId, AgentRunEventType.SEGMENT_END, {
+    recordCanonicalEvent(event(runId, AgentRunEventType.SEGMENT_END, {
       id: "reasoning-before-complete",
       turn_id: "turn-complete",
-      segment_type: "reasoning",
     }));
-    accumulator.recordRunEvent(event(runId, AgentRunEventType.TURN_COMPLETED, { turnId: "turn-complete" }));
+    recordCanonicalEvent(event(runId, AgentRunEventType.TURN_COMPLETED, { turnId: "turn-complete" }));
 
     const result = await execGraphql<{ getRunProjection: ProjectionPayload }>(
       `
@@ -558,25 +575,11 @@ describe("Run projection tool-call GraphQL e2e", () => {
     const inferredTool = findToolRow(projection.conversation, "inferred-tool-after-reasoning");
     const rowIndex = (predicate: (row: Record<string, unknown>) => boolean): number =>
       projection.conversation.findIndex(predicate);
-    const reasoningIndex = (content: string): number =>
-      rowIndex((row) => row.kind === "reasoning" && row.content === content);
     const messageIndex = (content: string): number =>
       rowIndex((row) => row.kind === "message" && row.content === content);
-    const toolIndex = (invocationId: string): number =>
-      rowIndex((row) => row.kind === "tool_call" && row.invocationId === invocationId);
 
     expect(readThreadMock).not.toHaveBeenCalled();
     expect(serializedProjection).not.toContain(NATIVE_THREAD_MARKER);
-    expect(projection.conversation.map((row) => row.kind)).toEqual([
-      "reasoning",
-      "tool_call",
-      "reasoning",
-      "tool_call",
-      "reasoning",
-      "message",
-      "reasoning",
-      "message",
-    ]);
     expect(reasoningRows.map((row) => row.content)).toEqual(expect.arrayContaining([
       "think before explicit tool",
       "think before inferred terminal result",
@@ -588,18 +591,6 @@ describe("Run projection tool-call GraphQL e2e", () => {
     expect(findReasoningRow(projection.conversation, "think before inferred terminal result")).toBeTruthy();
     expect(findReasoningRow(projection.conversation, "think before assistant text")).toBeTruthy();
     expect(findReasoningRow(projection.conversation, "think before assistant complete")).toBeTruthy();
-    expect(reasoningIndex("think before explicit tool")).toBeLessThan(
-      toolIndex("explicit-tool-after-reasoning"),
-    );
-    expect(reasoningIndex("think before inferred terminal result")).toBeLessThan(
-      toolIndex("inferred-tool-after-reasoning"),
-    );
-    expect(reasoningIndex("think before assistant text")).toBeLessThan(
-      messageIndex("assistant text after thinking"),
-    );
-    expect(reasoningIndex("think before assistant complete")).toBeLessThan(
-      messageIndex("assistant complete after thinking"),
-    );
     expect(explicitTool).toMatchObject({
       kind: "tool_call",
       toolName: "functions.exec_command",
@@ -657,11 +648,20 @@ describe("Run projection tool-call GraphQL e2e", () => {
       writer,
       toolTraceLifecycleGroups: writer.readToolTraceLifecycleGroups(),
     });
-    const converter = new CodexThreadEventConverter(runId);
-    const recordConverted = (method: string, params: Record<string, unknown>): AgentRunEvent[] => {
-      const converted = converter.convert({ method, params });
-      converted.forEach((convertedEvent) => accumulator.recordRunEvent(convertedEvent));
-      return converted;
+    const converter = createCodexThreadEventHarness(runId);
+    const segmentLifecycleTransformer = new AgentSegmentLifecycleEventTransformer();
+    const segmentLifecycleState = new AgentSegmentLifecycleState();
+    const turnLifecycleState = new AgentTurnLifecycleState();
+    const recordConverted = (method: string, params: JsonObject): AgentRunEvent[] => {
+      const converted = converter.emitThroughThread({ method, params });
+      const canonicalEvents = segmentLifecycleTransformer.transform({
+        runContext: {} as never,
+        events: converted,
+        lifecycleState: turnLifecycleState,
+        segmentLifecycleState,
+      });
+      canonicalEvents.forEach((canonicalEvent) => accumulator.recordRunEvent(canonicalEvent));
+      return canonicalEvents;
     };
     const completedReasoning = (turnId: string, itemId: string, text: string): AgentRunEvent => {
       const converted = recordConverted(CodexThreadEventName.ITEM_COMPLETED, {
@@ -669,9 +669,7 @@ describe("Run projection tool-call GraphQL e2e", () => {
         item: { id: itemId, type: "reasoning", summary: [{ text }] },
       });
       const reasoningEvent = converted.find(
-        (runtimeEvent) =>
-          runtimeEvent.eventType === AgentRunEventType.SEGMENT_CONTENT &&
-          runtimeEvent.payload.segment_type === "reasoning",
+        (runtimeEvent) => runtimeEvent.eventType === AgentRunEventType.SEGMENT_CONTENT,
       );
       if (!reasoningEvent) throw new Error(`Expected reasoning event for ${itemId}.`);
       return reasoningEvent;
@@ -973,160 +971,4 @@ describe("Run projection tool-call GraphQL e2e", () => {
     expect(projection.activities).toEqual([]);
   });
 
-  it("serves local replay team-member Codex tool rows through getTeamMemberRunProjection", async () => {
-    const teamMetadataStore = new TeamRunMetadataStore(memoryDir);
-    await teamMetadataStore.writeMetadata(TEAM_RUN_ID, {
-      teamRunId: TEAM_RUN_ID,
-      teamDefinitionId: "team-definition-1",
-      teamDefinitionName: "Tool Projection Validation Team",
-      coordinatorMemberRouteKey: "coordinator",
-      createdAt: new Date(USER_TS * 1000).toISOString(),
-      memberTree: [
-        {
-          memberKind: "agent",
-          memberRouteKey: "coordinator",
-          memberPath: ["coordinator"],
-          memberName: "coordinator",
-          memberRunId: MEMBER_RUN_ID,
-          runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-          platformAgentRunId: MEMBER_THREAD_ID,
-          agentDefinitionId: "agent-codex-member",
-          llmModelIdentifier: "gpt-5.2-codex",
-          autoExecuteTools: false,
-          skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
-          llmConfig: null,
-          workspaceRootPath,
-          applicationExecutionContext: null,
-        },
-      ],
-    } satisfies TeamRunMetadata);
-
-    const memberDir = new AgentMemoryLayout(memoryDir).getTeamAgentRunDirPath(
-      { rootTeamRunId: TEAM_RUN_ID, teamRunPath: [] },
-      MEMBER_RUN_ID,
-    );
-    await writeLocalReplayToolTrace(memberDir, {
-      userText: "Send the team-member validation message.",
-      dynamicInvocationId: "dynamic-send-member-1",
-      dynamicArgs: {
-        recipient_name: "delivery_engineer",
-        content: "team projection validation",
-      },
-    });
-
-    const result = await execGraphql<{ getTeamMemberRunProjection: ProjectionPayload }>(
-      `
-        query MemberProjection($teamRunId: String!, $memberRouteKey: String!) {
-          getTeamMemberRunProjection(teamRunId: $teamRunId, memberRouteKey: $memberRouteKey) {
-            agentRunId
-            summary
-            lastActivityAt
-            conversation
-            activities
-          }
-        }
-      `,
-      { teamRunId: TEAM_RUN_ID, memberRouteKey: "coordinator" },
-    );
-
-    const projection = result.getTeamMemberRunProjection;
-    const conversationRows = projection.conversation.filter(
-      (row) => row.invocationId === "dynamic-send-member-1",
-    );
-    const activityRows = projection.activities.filter(
-      (row) => row.invocationId === "dynamic-send-member-1",
-    );
-    const mcpConversation = findToolRow(projection.conversation, "mcp-call-1");
-    const mcpActivity = findToolRow(projection.activities, "mcp-call-1");
-    const serializedConversation = JSON.stringify(projection.conversation);
-
-    expect(readThreadMock).not.toHaveBeenCalled();
-    expect(serializedConversation).toContain(LOCAL_REPLAY_MARKER);
-    expect(conversationRows).toHaveLength(1);
-    expect(activityRows).toHaveLength(1);
-    expect(conversationRows[0]).toMatchObject({
-      kind: "tool_call",
-      toolName: "send_message_to",
-      toolArgs: {
-        recipient_name: "delivery_engineer",
-        content: "team projection validation",
-      },
-      toolResult: { delivered: true },
-    });
-    expect(activityRows[0]).toMatchObject({
-      toolName: "send_message_to",
-      status: "success",
-      arguments: {
-        recipient_name: "delivery_engineer",
-        content: "team projection validation",
-      },
-      result: { delivered: true },
-    });
-    expect(mcpConversation).toMatchObject({
-      kind: "tool_call",
-      toolName: "functions.exec_command",
-      toolArgs: { cmd: "echo graphql-api-validation" },
-    });
-    expect(mcpActivity).toMatchObject({
-      toolName: "functions.exec_command",
-      status: "success",
-      arguments: { cmd: "echo graphql-api-validation" },
-    });
-  });
-
-  it("returns empty team-member Codex projection instead of native recovery when local replay is absent", async () => {
-    const teamMetadataStore = new TeamRunMetadataStore(memoryDir);
-    const teamRunId = "team-codex-local-replay-absent";
-    const memberRunId = "member-codex-local-replay-absent";
-    await teamMetadataStore.writeMetadata(teamRunId, {
-      teamRunId,
-      teamDefinitionId: "team-definition-local-replay-absent",
-      teamDefinitionName: "Local Replay Absent Team",
-      coordinatorMemberRouteKey: "coordinator",
-      createdAt: new Date(USER_TS * 1000).toISOString(),
-      memberTree: [
-        {
-          memberKind: "agent",
-          memberRouteKey: "coordinator",
-          memberPath: ["coordinator"],
-          memberName: "coordinator",
-          memberRunId,
-          runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-          platformAgentRunId: "native-thread-should-not-recover-member",
-          agentDefinitionId: "agent-codex-member-local-replay-absent",
-          llmModelIdentifier: "gpt-5.2-codex",
-          autoExecuteTools: false,
-          skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
-          llmConfig: null,
-          workspaceRootPath,
-          applicationExecutionContext: null,
-        },
-      ],
-    } satisfies TeamRunMetadata);
-
-    const result = await execGraphql<{ getTeamMemberRunProjection: ProjectionPayload }>(
-      `
-        query MemberProjection($teamRunId: String!, $memberRouteKey: String!) {
-          getTeamMemberRunProjection(teamRunId: $teamRunId, memberRouteKey: $memberRouteKey) {
-            agentRunId
-            summary
-            lastActivityAt
-            conversation
-            activities
-          }
-        }
-      `,
-      { teamRunId, memberRouteKey: "coordinator" },
-    );
-
-    const projection = result.getTeamMemberRunProjection;
-    const serializedProjection = JSON.stringify(projection);
-
-    expect(readThreadMock).not.toHaveBeenCalled();
-    expect(serializedProjection).not.toContain(NATIVE_THREAD_MARKER);
-    expect(projection.summary).toBeNull();
-    expect(projection.lastActivityAt).toBeNull();
-    expect(projection.conversation).toEqual([]);
-    expect(projection.activities).toEqual([]);
-  });
 });

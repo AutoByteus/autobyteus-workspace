@@ -5,3 +5,9 @@ export type CodexAppServerMessage = {
   params: JsonObject;
   request_id?: string | number;
 };
+
+export type CodexLocalDerivedEventInput = Readonly<{
+  method: string;
+  params: Readonly<JsonObject>;
+  request_id?: string | number;
+}>;

@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS brief_artifact_revisions (
   artifact_kind TEXT NOT NULL,
   publication_kind TEXT NOT NULL,
   path TEXT NOT NULL,
-  producer_member_route_key TEXT NOT NULL,
+  producer_member_address TEXT NOT NULL,
   published_at TEXT NOT NULL,
   projected_at TEXT NOT NULL
 );
@@ -24,7 +24,7 @@ CREATE TABLE brief_artifacts_next (
   path TEXT NOT NULL,
   description TEXT,
   body TEXT NOT NULL,
-  producer_member_route_key TEXT NOT NULL,
+  producer_member_address TEXT NOT NULL,
   updated_at TEXT NOT NULL,
   PRIMARY KEY (brief_id, artifact_kind)
 );
@@ -37,7 +37,7 @@ INSERT INTO brief_artifacts_next (
   path,
   description,
   body,
-  producer_member_route_key,
+  producer_member_address,
   updated_at
 )
 SELECT
@@ -65,7 +65,7 @@ SELECT
     title,
     ''
   ),
-  producer_member_route_key,
+  producer_member_address,
   updated_at
 FROM brief_artifacts;
 

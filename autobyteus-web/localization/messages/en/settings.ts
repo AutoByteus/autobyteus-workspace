@@ -481,7 +481,7 @@ const settingsMessages = {
   'settings.components.settings.TokenUsageStatistics.collapseTeam': 'Collapse team members',
   'settings.components.settings.TokenUsageStatistics.teamIdSuffix': 'team {{id}}',
   'settings.components.settings.TokenUsageStatistics.runIdSuffix': 'run {{id}}',
-  'settings.components.settings.TokenUsageStatistics.memberRunIdSuffix': 'member run {{id}}',
+  'settings.components.settings.TokenUsageStatistics.agentRunIdSuffix': 'member run {{id}}',
   'settings.components.settings.TokenUsageStatistics.taskTeamRunIdSuffix': 'task team {{id}}',
   'settings.components.settings.TokenUsageStatistics.taskAgentRunIdSuffix': 'task agent {{id}}',
   'settings.components.settings.TokenUsageStatistics.cacheHitWithCached': 'cache hit {{percent}} · {{cached}} cached',

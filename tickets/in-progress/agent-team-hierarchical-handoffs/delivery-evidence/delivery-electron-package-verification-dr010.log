@@ -1,0 +1,112 @@
+DR-010 Electron package verification
+UTC 2026-08-13T16:01:54Z
+worktree=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs
+reviewed_source_checkpoint=632c503188cb9dbb8eecf4422fa174499519ad89
+delivery_checkpoint=3297a0df56eaf403d9e6d6a98e1e5236d77b6b10
+
+== Package metadata ==
+-rw-r--r--@ 1 normy  staff   442M Aug 13 17:57 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.50.dmg
+-rw-r--r--@ 1 normy  staff   472K Aug 13 17:57 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.50.dmg.blockmap
+-rw-r--r--@ 1 normy  staff   436M Aug 13 17:59 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.50.zip
+-rw-r--r--@ 1 normy  staff   460K Aug 13 17:59 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.50.zip.blockmap
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.50.dmg | bytes=463137735 | modified=2026-08-13T17:57:15+0200
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.50.zip | bytes=457407398 | modified=2026-08-13T17:59:37+0200
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.50.dmg.blockmap | bytes=482898 | modified=2026-08-13T17:57:17+0200
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.50.zip.blockmap | bytes=470721 | modified=2026-08-13T17:59:39+0200
+
+== SHA-256 ==
+c23c75ec6a5f90440b4c085fe762bb8ff37a912835cb47712f3896c11fbe446c  /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.50.dmg
+7513a4ddbea9d1c2955c5ea8b37b18ad6abaf804b06bb5ae7ad46a71d137f5cd  /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.50.zip
+4b942396d6755fcebae3b53bddfb9521361a16ca69b9c6362bd7168347a050a5  /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.50.dmg.blockmap
+4f298f754290fbe80157c7d99da247bcd0233971fa6041b171784458e71d9d55  /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.50.zip.blockmap
+
+== DMG verify ==
+Prüfsumme für Protective Master Boot Record (MBR : 0) berechnen …
+Protective Master Boot Record (MBR :: Die überprüfte CRC32-Prüfsumme ist $27702D0B
+Prüfsumme für GPT Header (Primary GPT Header : 1) berechnen …
+ GPT Header (Primary GPT Header : 1): Die überprüfte CRC32-Prüfsumme ist $C4D8960C
+Prüfsumme für GPT Partition Data (Primary GPT Table : 2) berechnen …
+GPT Partition Data (Primary GPT Tabl: Die überprüfte CRC32-Prüfsumme ist $C3EBA040
+Prüfsumme für  (Apple_Free : 3) berechnen …
+                    (Apple_Free : 3): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für disk image (Apple_APFS : 4) berechnen …
+         disk image (Apple_APFS : 4): Die überprüfte CRC32-Prüfsumme ist $821A3C0D
+Prüfsumme für  (Apple_Free : 5) berechnen …
+                    (Apple_Free : 5): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für GPT Partition Data (Backup GPT Table : 6) berechnen …
+GPT Partition Data (Backup GPT Table: Die überprüfte CRC32-Prüfsumme ist $C3EBA040
+Prüfsumme für GPT Header (Backup GPT Header : 7) berechnen …
+  GPT Header (Backup GPT Header : 7): Die überprüfte CRC32-Prüfsumme ist $F8147780
+Die überprüfte CRC32-Prüfsumme ist $46FEE0B6
+hdiutil: verify: checksum of "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.50.dmg" is VALID
+DMG_VERIFY_EXIT=0
+
+== ZIP integrity ==
+    testing: AutoByteus.app/Contents/Resources/ur.lproj/   OK
+    testing: AutoByteus.app/Contents/Resources/vi.lproj/   OK
+    testing: AutoByteus.app/Contents/Resources/zh_CN.lproj/   OK
+    testing: AutoByteus.app/Contents/Resources/zh_TW.lproj/   OK
+No errors detected in compressed data of /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.50.zip.
+ZIP_TEST_EXIT=0
+
+== Bundle metadata ==
+com.autobyteus.app
+1.4.50
+1.4.50
+
+== Architecture ==
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus: Mach-O 64-bit executable arm64
+arm64
+
+== Code signature ==
+Executable=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+Identifier=Electron
+Format=app bundle with Mach-O thin (arm64)
+CodeDirectory v=20400 size=392 flags=0x20002(adhoc,linker-signed) hashes=9+0 location=embedded
+VersionPlatform=1
+VersionMin=786432
+VersionSDK=1704448
+Hash type=sha256 size=32
+CandidateCDHash sha256=183bce38eb383b21f21c2cdedcf6cd8781b11cdd
+CandidateCDHashFull sha256=183bce38eb383b21f21c2cdedcf6cd8781b11cdd090f942c4eacd6c09b1112f7
+Hash choices=sha256
+CMSDigest=183bce38eb383b21f21c2cdedcf6cd8781b11cdd090f942c4eacd6c09b1112f7
+CMSDigestType=2
+Executable Segment base=0
+Executable Segment limit=16384
+Executable Segment flags=0x1
+Page size=4096
+CDHash=183bce38eb383b21f21c2cdedcf6cd8781b11cdd
+Signature=adhoc
+Info.plist=not bound
+TeamIdentifier=not set
+Sealed Resources=none
+Internal requirements=none
+CODESIGN_DISPLAY_EXIT=0
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app: code has no resources but signature indicates they must be present
+CODESIGN_VERIFY_EXIT=1
+
+== Embedded server sentinels ==
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/app.js | bytes=2079
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/prisma/schema.prisma | bytes=8068
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/package.json | bytes=2004
+
+== Embedded dependency versions ==
+@anthropic-ai/claude-agent-sdk=0.3.231
+@anthropic-ai/sdk=0.116.0
+@modelcontextprotocol/sdk=1.30.0
+
+== Broken symlink audit ==
+BROKEN_SYMLINK_COUNT=0
+
+== node-pty spawn-helper permissions ==
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper | mode=-rwxr-xr-x
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper | mode=-rwxr-xr-x
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-x64/spawn-helper | mode=-rwxr-xr-x
+NONEXECUTABLE_SPAWN_HELPER_COUNT=0
+
+== Source-tree package symlink restored ==
+lrwxr-xr-x@ 1 normy  staff  41 Aug 11 16:21 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/node_modules/@autobyteus/team-stream-contracts -> ../../../autobyteus-team-stream-contracts
+../../../autobyteus-team-stream-contracts
+
+RESULT=PASS_WITH_UNSIGNED_LOCAL_BUILD

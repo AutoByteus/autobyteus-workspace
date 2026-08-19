@@ -1,0 +1,17 @@
+{
+  "sameRunIds": true,
+  "exactRecords": true,
+  "uniqueTaskIds": true,
+  "uniqueMessageIds": true,
+  "counts": {
+    "utd_root_team_api_rev_007_1786826064862_58134fcbc99e4f98b812ae8e63cd5e12": {
+      "tasks": 3,
+      "messages": 0
+    },
+    "classroom_simulation_team_4901faf6cb294ec98282d4378c71f3cd": {
+      "tasks": 0,
+      "messages": 2
+    }
+  },
+  "pass": true
+}

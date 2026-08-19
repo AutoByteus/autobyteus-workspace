@@ -1,6 +1,7 @@
 import {
   AgentTeamDefinition,
   AgentTeamDefinitionUpdate,
+  TeamMember,
   type TeamMemberRefScope,
 } from "../domain/models.js";
 import { AgentTeamDefinitionPersistenceProvider } from "../providers/agent-team-definition-persistence-provider.js";
@@ -61,6 +62,58 @@ const assertValidTeamMembers = (
     }
   }
 };
+
+const hasUpdateValue = <T>(value: T | null | undefined): value is T =>
+  value !== null && value !== undefined;
+
+const cloneTeamMembers = (nodes: readonly TeamMember[]): TeamMember[] =>
+  nodes.map((node) => new TeamMember({
+    memberName: node.memberName,
+    ref: node.ref,
+    refType: node.refType,
+    refScope: node.refScope,
+  }));
+
+const cloneDefaultLaunchConfig = (
+  value: AgentTeamDefinition["defaultLaunchConfig"],
+): AgentTeamDefinition["defaultLaunchConfig"] => value ? {
+  llmModelIdentifier: value.llmModelIdentifier,
+  runtimeKind: value.runtimeKind,
+  llmConfig: value.llmConfig ? structuredClone(value.llmConfig) : null,
+} : null;
+
+const buildDefinitionUpdateCandidate = (
+  existing: AgentTeamDefinition,
+  updateData: AgentTeamDefinitionUpdate,
+): AgentTeamDefinition => new AgentTeamDefinition({
+  id: existing.id,
+  name: hasUpdateValue(updateData.name) ? updateData.name : existing.name,
+  description: hasUpdateValue(updateData.description)
+    ? updateData.description
+    : existing.description,
+  instructions: hasUpdateValue(updateData.instructions)
+    ? updateData.instructions
+    : existing.instructions,
+  category: hasUpdateValue(updateData.category) ? updateData.category : existing.category,
+  nodes: cloneTeamMembers(hasUpdateValue(updateData.nodes) ? updateData.nodes : existing.nodes),
+  coordinatorMemberName: hasUpdateValue(updateData.coordinatorMemberName)
+    ? updateData.coordinatorMemberName
+    : existing.coordinatorMemberName,
+  handoffs: hasUpdateValue(updateData.handoffs) ? updateData.handoffs : existing.handoffs,
+  avatarUrl: hasUpdateValue(updateData.avatarUrl)
+    ? normalizeOptionalString(updateData.avatarUrl)
+    : existing.avatarUrl,
+  defaultLaunchConfig: updateData.defaultLaunchConfig === undefined
+    ? cloneDefaultLaunchConfig(existing.defaultLaunchConfig)
+    : normalizeDefaultLaunchConfigInput(updateData.defaultLaunchConfig) ?? null,
+  ownershipScope: existing.ownershipScope,
+  ownerTeamId: existing.ownerTeamId,
+  ownerTeamName: existing.ownerTeamName,
+  ownerApplicationId: existing.ownerApplicationId,
+  ownerApplicationName: existing.ownerApplicationName,
+  ownerPackageId: existing.ownerPackageId,
+  ownerLocalApplicationId: existing.ownerLocalApplicationId,
+});
 
 export class AgentTeamDefinitionService {
   private static instance: AgentTeamDefinitionService | null = null;
@@ -125,46 +178,18 @@ export class AgentTeamDefinitionService {
       throw new Error(`Agent Team Definition with ID ${definitionId} not found.`);
     }
 
-    if (updateData.name !== null && updateData.name !== undefined) {
-      existing.name = updateData.name;
-    }
-    if (updateData.description !== null && updateData.description !== undefined) {
-      existing.description = updateData.description;
-    }
-    if (updateData.instructions !== null && updateData.instructions !== undefined) {
-      existing.instructions = updateData.instructions;
-    }
-    if (updateData.category !== null && updateData.category !== undefined) {
-      existing.category = updateData.category;
-    }
-    if (updateData.nodes !== null && updateData.nodes !== undefined) {
-      existing.nodes = updateData.nodes;
-    }
-    if (
-      updateData.coordinatorMemberName !== null &&
-      updateData.coordinatorMemberName !== undefined
-    ) {
-      existing.coordinatorMemberName = updateData.coordinatorMemberName;
-    }
-    if (updateData.avatarUrl !== null && updateData.avatarUrl !== undefined) {
-      existing.avatarUrl = normalizeOptionalString(updateData.avatarUrl);
-    }
-    if (updateData.defaultLaunchConfig !== undefined) {
-      existing.defaultLaunchConfig =
-        normalizeDefaultLaunchConfigInput(updateData.defaultLaunchConfig) ?? null;
-    }
-
-    assertValidTeamMembers(existing.nodes);
-    assertValidCoordinatorMember(existing.coordinatorMemberName, existing.nodes);
+    const candidate = buildDefinitionUpdateCandidate(existing, updateData);
+    assertValidTeamMembers(candidate.nodes);
+    assertValidCoordinatorMember(candidate.coordinatorMemberName, candidate.nodes);
     await assertValidTeamDefinitionGraph({
-      rootDefinition: existing,
+      rootDefinition: candidate,
       lookup: {
-        getTeamById: async (id) => id === existing.id ? existing : this.provider.getById(id),
+        getTeamById: async (id) => id === candidate.id ? candidate : this.provider.getById(id),
         getAgentById: async (id) => this.agentDefinitionService.getFreshAgentDefinitionById(id),
       },
     });
 
-    const updated = await this.provider.update(existing);
+    const updated = await this.provider.update(candidate);
     logger.info(`Agent Team Definition with ID ${definitionId} updated successfully.`);
     return updated;
   }

@@ -1,0 +1,12 @@
+{
+  "phase": "post-process-before-restore",
+  "teamRunId": "classroom_simulation_team_aadbe5a3b3b444d8bbe0ca0cbcddb51c",
+  "professorAgentRunId": "professor_7a62e8cb6ed2495291386e2df0b2d1f7",
+  "projectionAgentRunId": "professor_7a62e8cb6ed2495291386e2df0b2d1f7",
+  "runtimeKind": "CODEX",
+  "modelIdentifier": "gpt-5.6-luna",
+  "checkpoint": null,
+  "assistantMarkerCount": 1,
+  "exactIdentity": true,
+  "canonicalStateSha256": "27ce758a954b2265a754f5514f0fe15b992669315a688bb688a823cee75fa049"
+}

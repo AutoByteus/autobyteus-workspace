@@ -1,33 +1,12 @@
-import {
-  AgentRunViewProjectionService,
-  type RunProjection,
-} from "./agent-run-view-projection-service.js";
-import {
-  getTeamRunHistoryService,
-  TeamRunHistoryService,
-} from "./team-run-history-service.js";
-import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
-import {
-  getRuntimeMemberContexts,
-  type RuntimeTeamRunContext,
-  type TeamMemberRuntimeContext,
-  type TeamSubTeamMemberRuntimeContext,
-} from "../../agent-team-execution/domain/team-run-context.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
-import type { TeamRunAgentMemberMetadata } from "../store/team-run-metadata-types.js";
 import type { AgentRunMetadata } from "../store/agent-run-metadata-types.js";
-import { resolveTeamWorkspaceRootPath } from "./team-run-metadata-flattener.js";
-import {
-  AgentMemoryLocationService,
-  getAgentMemoryLocationService,
-} from "../../agent-memory/services/agent-memory-location-service.js";
 import type { EventMonitorActiveTracePage } from "../projection/event-monitor-active-trace-page-types.js";
+import { AgentRunViewProjectionService, type RunProjection } from "./agent-run-view-projection-service.js";
+import { TeamRunExecutionTreeLocationService } from "./team-run-execution-tree-location-service.js";
 
-const normalizeRequiredString = (value: string, fieldName: string): string => {
+const required = (value: string, field: string): string => {
   const normalized = value.trim();
-  if (!normalized) {
-    throw new Error(`${fieldName} is required.`);
-  }
+  if (!normalized) throw new Error(`${field} is required.`);
   return normalized;
 };
 
@@ -40,119 +19,26 @@ export interface TeamMemberRunProjection {
   hasEarlierActiveTraceEvents: boolean;
 }
 
-const resolveMemberWorkspaceRootPath = (
-  member: TeamRunAgentMemberMetadata,
-  teamWorkspaceRootPath: string | null | undefined,
-): string =>
-  member.workspaceRootPath ?? teamWorkspaceRootPath ?? process.cwd();
-
-const toMemberRunMetadata = (
-  member: TeamRunAgentMemberMetadata,
-  teamWorkspaceRootPath: string | null | undefined,
-  memberMemoryDir: string,
-): AgentRunMetadata => ({
-  runId: member.memberRunId,
-  agentDefinitionId: member.agentDefinitionId,
-  workspaceRootPath: resolveMemberWorkspaceRootPath(member, teamWorkspaceRootPath),
-  memoryDir: memberMemoryDir,
-  llmModelIdentifier: member.llmModelIdentifier,
-  llmConfig: member.llmConfig ?? null,
-  autoExecuteTools: member.autoExecuteTools,
-  skillAccessMode: member.skillAccessMode,
-  runtimeKind: member.runtimeKind,
-  platformAgentRunId: member.platformAgentRunId,
-});
-
-const findRuntimeMemberContext = (
-  runtimeContext: RuntimeTeamRunContext | null | undefined,
-  member: TeamRunAgentMemberMetadata,
-): TeamMemberRuntimeContext | null => {
-  for (const candidate of getRuntimeMemberContexts(runtimeContext)) {
-    if (
-      candidate.memberRunId === member.memberRunId ||
-      candidate.memberRouteKey === member.memberRouteKey
-    ) {
-      return candidate;
-    }
-    if (candidate.memberKind === "agent_team") {
-      const nested = findRuntimeMemberContext(
-        (candidate as TeamSubTeamMemberRuntimeContext).childRuntimeContext ?? null,
-        member,
-      );
-      if (nested) {
-        return nested;
-      }
-    }
-  }
-  return null;
-};
-
-const resolveLivePlatformAgentRunId = (
-  teamRunId: string,
-  member: TeamRunAgentMemberMetadata,
-): string | null => {
-  const activeTeamRun = AgentTeamRunManager.getInstance().getActiveRun(teamRunId);
-  if (!activeTeamRun) {
-    return null;
-  }
-
-  const runtimeMemberContext = findRuntimeMemberContext(activeTeamRun.getRuntimeContext(), member);
-  return runtimeMemberContext?.getPlatformAgentRunId() ?? null;
-};
-
 export class TeamMemberRunViewProjectionService {
-  private readonly teamRunHistoryService: TeamRunHistoryService;
-  private readonly agentRunViewProjectionService: AgentRunViewProjectionService;
-  private readonly memoryLocationService: AgentMemoryLocationService;
+  private readonly agentViews: AgentRunViewProjectionService;
+  private readonly locations: TeamRunExecutionTreeLocationService;
 
   constructor(options: {
     memoryDir?: string;
-    teamRunHistoryService?: TeamRunHistoryService;
     agentRunViewProjectionService?: AgentRunViewProjectionService;
-    memoryLocationService?: AgentMemoryLocationService;
+    locations?: TeamRunExecutionTreeLocationService;
   } = {}) {
-    this.teamRunHistoryService = options.teamRunHistoryService ?? getTeamRunHistoryService();
-    this.agentRunViewProjectionService =
-      options.agentRunViewProjectionService ??
-      new AgentRunViewProjectionService(appConfigProvider.config.getMemoryDir());
-    this.memoryLocationService =
-      options.memoryLocationService ??
-      (options.memoryDir
-        ? new AgentMemoryLocationService({ memoryDir: options.memoryDir })
-        : getAgentMemoryLocationService());
+    const memoryDir = options.memoryDir ?? appConfigProvider.config.getMemoryDir();
+    this.agentViews = options.agentRunViewProjectionService ?? new AgentRunViewProjectionService(memoryDir);
+    this.locations = options.locations ?? new TeamRunExecutionTreeLocationService({ memoryDir });
   }
 
-  async getProjection(teamRunId: string, memberRouteKey: string): Promise<TeamMemberRunProjection> {
-    const normalizedTeamRunId = normalizeRequiredString(teamRunId, "teamRunId");
-    const normalizedMemberRouteKey = normalizeRequiredString(memberRouteKey, "memberRouteKey");
-    const resumeConfig = await this.teamRunHistoryService.getTeamRunResumeConfig(normalizedTeamRunId);
-    const target = this.memoryLocationService.resolveTeamMemberLocationFromMetadata(
-      resumeConfig.metadata,
-      { memberRouteKey: normalizedMemberRouteKey },
-      normalizedTeamRunId,
-    );
-
-    if (!target) {
-      throw new Error(
-        `Member route key '${normalizedMemberRouteKey}' not found for team run '${normalizedTeamRunId}'.`,
-      );
-    }
-    const binding = target.member;
-    const memberMetadataWithLivePlatformId: TeamRunAgentMemberMetadata = {
-      ...binding,
-      platformAgentRunId:
-        resolveLivePlatformAgentRunId(normalizedTeamRunId, binding) ?? binding.platformAgentRunId,
-    };
-
-    const projection = await this.agentRunViewProjectionService.getProjectionFromMetadata({
-      runId: binding.memberRunId,
-      metadata: toMemberRunMetadata(
-        memberMetadataWithLivePlatformId,
-        resolveTeamWorkspaceRootPath(resumeConfig.metadata),
-        target.memoryDir,
-      ),
+  async getProjection(rootTeamRunId: string, agentRunId: string): Promise<TeamMemberRunProjection> {
+    const location = await this.requireLocation(rootTeamRunId, agentRunId);
+    const projection = await this.agentViews.getProjectionFromMetadata({
+      runId: location.agentRunId,
+      metadata: metadataFor(location),
     });
-
     return {
       agentRunId: projection.runId,
       conversation: projection.conversation,
@@ -164,40 +50,51 @@ export class TeamMemberRunViewProjectionService {
   }
 
   async getActiveTracePage(
-    teamRunId: string,
-    memberRouteKey: string,
+    rootTeamRunId: string,
+    agentRunId: string,
     beforeCursor?: string | null,
   ): Promise<EventMonitorActiveTracePage> {
-    const normalizedTeamRunId = normalizeRequiredString(teamRunId, "teamRunId");
-    const normalizedMemberRouteKey = normalizeRequiredString(memberRouteKey, "memberRouteKey");
-    const resumeConfig = await this.teamRunHistoryService.getTeamRunResumeConfig(normalizedTeamRunId);
-    const target = this.memoryLocationService.resolveTeamMemberLocationFromMetadata(
-      resumeConfig.metadata,
-      { memberRouteKey: normalizedMemberRouteKey },
-      normalizedTeamRunId,
-    );
-    if (!target) {
-      throw new Error(`Member route key '${normalizedMemberRouteKey}' not found for team run '${normalizedTeamRunId}'.`);
-    }
-    const binding = target.member;
-    return this.agentRunViewProjectionService.getActiveTracePageFromMetadata({
-      runId: binding.memberRunId,
-      metadata: toMemberRunMetadata(
-        binding,
-        resolveTeamWorkspaceRootPath(resumeConfig.metadata),
-        target.memoryDir,
-      ),
+    const location = await this.requireLocation(rootTeamRunId, agentRunId);
+    return this.agentViews.getActiveTracePageFromMetadata({
+      runId: location.agentRunId,
+      metadata: metadataFor(location),
       beforeCursor,
-      canonicalSubject: `team:${normalizedTeamRunId}:member:${normalizedMemberRouteKey}`,
+      canonicalSubject: `team:${location.rootTeamRunId}:agent:${location.agentRunId}`,
     });
+  }
+
+  private async requireLocation(rootTeamRunId: string, agentRunId: string) {
+    const root = required(rootTeamRunId, "rootTeamRunId");
+    const run = required(agentRunId, "agentRunId");
+    const location = await this.locations.findAgent({ agentRunId: run });
+    if (!location || location.rootTeamRunId !== root) {
+      throw new Error(`AgentRun '${run}' was not found in root TeamRun '${root}'.`);
+    }
+    if (!location.configuredPlacement) {
+      throw new Error(`AgentRun '${run}' has no configured launch placement.`);
+    }
+    return location;
   }
 }
 
-let cachedTeamMemberRunViewProjectionService: TeamMemberRunViewProjectionService | null = null;
-
-export const getTeamMemberRunViewProjectionService = (): TeamMemberRunViewProjectionService => {
-  if (!cachedTeamMemberRunViewProjectionService) {
-    cachedTeamMemberRunViewProjectionService = new TeamMemberRunViewProjectionService();
-  }
-  return cachedTeamMemberRunViewProjectionService;
+const metadataFor = (
+  location: import("./team-run-execution-tree-location-service.js").LocatedTeamAgentExecution,
+): AgentRunMetadata => {
+  const configured = location.configuredPlacement!;
+  return {
+    runId: location.agentRunId,
+    agentDefinitionId: configured.agentDefinitionId,
+    workspaceRootPath: configured.launchConfiguration.workspaceRootPath ?? process.cwd(),
+    memoryDir: location.memoryDir,
+    llmModelIdentifier: configured.launchConfiguration.llmModelIdentifier,
+    llmConfig: configured.launchConfiguration.llmConfig as Record<string, unknown> | null,
+    autoExecuteTools: configured.launchConfiguration.autoExecuteTools,
+    skillAccessMode: configured.launchConfiguration.skillAccessMode,
+    runtimeKind: configured.launchConfiguration.runtimeKind as AgentRunMetadata["runtimeKind"],
+    platformAgentRunId: "platformAgentRunId" in configured ? configured.platformAgentRunId : null,
+  };
 };
+
+let cachedTeamMemberRunViewProjectionService: TeamMemberRunViewProjectionService | null = null;
+export const getTeamMemberRunViewProjectionService = (): TeamMemberRunViewProjectionService =>
+  cachedTeamMemberRunViewProjectionService ??= new TeamMemberRunViewProjectionService();

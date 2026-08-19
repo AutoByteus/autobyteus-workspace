@@ -1,0 +1,15 @@
+api_rev_016_durable_delta_files=4
+autobyteus-server-ts/tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts	lines=1428
+	bytes=54955
+
+autobyteus-server-ts/tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts	lines=257
+	bytes=9417
+
+autobyteus-server-ts/tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts	lines=403
+	bytes=14291
+
+autobyteus-web/services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts	lines=212
+	bytes=6827
+
+patch_sha256=d39e9fc64d05641639a2d166d800ca153ab6ce2fdf1f66b959aa5e7dc93e90e9
+result=pass

@@ -1,0 +1,311 @@
+# API-REV-017 current frontend source audit
+
+## Nested task record normalization calls exact TeamExecutionAddress parser
+    18	const references = (value: unknown): TeamReferenceFile[] | null => {
+    19	  if (!Array.isArray(value)) return null;
+    20	  const parsed = value.map((entry) => {
+    21	    const item = object(entry);
+    22	    const referenceId = text(item?.referenceId);
+    23	    const path = text(item?.path);
+    24	    const type = text(item?.type);
+    25	    const createdAt = text(item?.createdAt);
+    26	    const updatedAt = text(item?.updatedAt);
+    27	    return referenceId && path && type && referenceTypes.has(type) && createdAt && updatedAt
+    28	      ? { referenceId, path, type, createdAt, updatedAt } as TeamReferenceFile
+    29	      : null;
+    30	  });
+    31	  return parsed.some((entry) => !entry) ? null : parsed as TeamReferenceFile[];
+    32	};
+    33	
+    34	const update = (value: unknown): TaskDelegationUpdate | null => {
+    35	  const item = object(value);
+    36	  if (!item) return null;
+    37	  const sender = (() => { try { return parseTeamExecutionAddress(item.senderAddress); } catch { return null; } })();
+    38	  const receiver = (() => { try { return parseTeamExecutionAddress(item.receiverAddress); } catch { return null; } })();
+    39	  const referenceFiles = references(item.referenceFiles);
+    40	  const createdAt = text(item.createdAt);
+    41	  if (!sender || !receiver || !referenceFiles || !createdAt) return null;
+    42	  if (item.kind === 'submission') {
+    43	    const submissionId = text(item.submissionId);
+    44	    const content = text(item.content);
+    45	    return submissionId && content ? {
+    46	      kind: 'submission', submissionId, senderAddress: sender, receiverAddress: receiver,
+    47	      content, referenceFiles, createdAt,
+    48	    } satisfies TaskDelegationSubmissionUpdate : null;
+    49	  }
+    50	  if (item.kind === 'review') {
+    51	    const reviewId = text(item.reviewId);
+    52	    const reviewedSubmissionId = text(item.reviewedSubmissionId);
+    53	    const decision = item.decision;
+    54	    return reviewId && reviewedSubmissionId && (decision === 'accept' || decision === 'request_revision') ? {
+    55	      kind: 'review', reviewId, senderAddress: sender, receiverAddress: receiver,
+    56	      reviewedSubmissionId, decision, content: text(item.content), referenceFiles, createdAt,
+    57	    } satisfies TaskDelegationReviewUpdate : null;
+    58	  }
+    59	  return null;
+    60	};
+    61	
+    62	export const normalizeTaskDelegationRecord = (value: unknown): TaskDelegationRecord | null => {
+    63	  const item = object(value);
+    64	  if (!item || !Array.isArray(item.updates)) return null;
+    65	  const taskId = text(item.taskId);
+    66	  const status = text(item.status) as TaskDelegationStatus | null;
+    67	  const receiverTargetKind = item.receiverTargetKind;
+    68	  const content = text(item.content);
+    69	  const referenceFiles = references(item.referenceFiles);
+    70	  const createdAt = text(item.createdAt);
+    71	  const updates = item.updates.map(update);
+    72	  let senderAddress;
+    73	  let receiverAddress;
+    74	  try {
+    75	    senderAddress = parseTeamExecutionAddress(item.senderAddress);
+    76	    receiverAddress = parseTeamExecutionAddress(item.receiverAddress);
+    77	  } catch { return null; }
+    78	  if (!taskId || !status || !['active', 'awaiting_review', 'accepted'].includes(status) ||
+    79	    (receiverTargetKind !== 'agent' && receiverTargetKind !== 'agent_team') || !content || !referenceFiles ||
+    80	    !createdAt || updates.some((entry) => !entry)) return null;
+    81	  let taskRun = null;
+    82	  if (item.taskRun !== null) {
+    83	    const rawTaskRun = object(item.taskRun);
+    84	    const startedAt = text(rawTaskRun?.startedAt);
+    85	    if (!rawTaskRun || !startedAt) return null;
+    86	    try { taskRun = { address: parseTeamExecutionAddress(rawTaskRun.address), startedAt }; } catch { return null; }
+    87	  }
+    88	  return {
+    89	    taskId, status, senderAddress, receiverAddress, receiverTargetKind, content,
+    90	    referenceFiles, taskRun, updates: updates as TaskDelegationUpdate[], createdAt,
+    91	  };
+    92	};
+    93	
+    94	export const useTaskDelegationStore = defineStore('taskDelegation', {
+    95	  state: (): TaskDelegationState => ({ recordsByTeam: new Map() }),
+    96	  getters: {
+    97	    getRecordsForTeam: (state) => (teamRunId: string): TaskDelegationRecord[] =>
+    98	      [...(state.recordsByTeam.get(teamRunId) ?? [])].sort((a, b) => b.createdAt.localeCompare(a.createdAt) || a.taskId.localeCompare(b.taskId)),
+    99	  },
+   100	  actions: {
+   101	    replaceRecords(teamRunId: string, records: unknown[]) {
+   102	      this.recordsByTeam.set(teamRunId, records.map(normalizeTaskDelegationRecord).filter((record): record is TaskDelegationRecord => Boolean(record)));
+   103	    },
+   104	  },
+   105	});
+
+## Exact parser rejects any extra key (including GraphQL/Apollo __typename)
+    34	  const taskAgentRunId = input.taskAgentRunId === null || input.taskAgentRunId === undefined
+    35	    ? null
+    36	    : input.taskAgentRunId.trim();
+    37	  if (taskAgentRunId === '') throw new Error('taskAgentRunId must be non-empty or null.');
+    38	  return {
+    39	    rootTeamRunId,
+    40	    taskTeamRunIds,
+    41	    memberAddress: rootedAddress(input.memberAddress),
+    42	    taskAgentRunId,
+    43	  };
+    44	};
+    45	
+    46	export const parseTeamExecutionAddress = (value: unknown): TeamExecutionAddress => {
+    47	  if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error('TeamExecutionAddress object required.');
+    48	  const record = value as Record<string, unknown>;
+    49	  const keys = ['rootTeamRunId', 'taskTeamRunIds', 'memberAddress', 'taskAgentRunId'];
+    50	  if (Object.keys(record).length !== keys.length || !keys.every((key) => Object.hasOwn(record, key))) {
+    51	    throw new Error('TeamExecutionAddress must contain exactly rootTeamRunId, taskTeamRunIds, memberAddress, and taskAgentRunId.');
+    52	  }
+    53	  if (typeof record.rootTeamRunId !== 'string' || !Array.isArray(record.taskTeamRunIds) ||
+    54	    !record.taskTeamRunIds.every((item) => typeof item === 'string') || typeof record.memberAddress !== 'string' ||
+    55	    (record.taskAgentRunId !== null && typeof record.taskAgentRunId !== 'string')) {
+    56	    throw new Error('Invalid TeamExecutionAddress field types.');
+    57	  }
+    58	  return createTeamExecutionAddress(record as unknown as TeamExecutionAddress);
+    59	};
+    60	
+    61	export const serializeTeamExecutionAddress = (address: TeamExecutionAddress): string =>
+    62	  JSON.stringify(createTeamExecutionAddress(address));
+    63	
+    64	export const sameTeamExecutionAddress = (left: TeamExecutionAddress, right: TeamExecutionAddress): boolean =>
+    65	  serializeTeamExecutionAddress(left) === serializeTeamExecutionAddress(right);
+    66	
+    67	export const memberAddressBasename = (address: string): string =>
+    68	  address === '/' ? '/' : address.split('/').filter(Boolean).at(-1) ?? address;
+
+## Task event routing and task-Team projection
+     1	import type { AgentContext } from '~/types/agent/AgentContext';
+     2	import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
+     3	import type { ServerMessage } from './protocol';
+     4	import { ensureTaskAgentContext, extractTaskAgentIdentity, type TaskAgentStreamIdentity } from './teamTaskAgentContextProjection';
+     5	import { ensureTaskTeamMemberExecutionContext } from './teamTaskTeamExecutionProjection';
+     6	import { createTeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
+     7	
+     8	export type TaskExecutionProjectionMessageResult =
+     9	  | { outcome: 'continue'; taskAgentIdentity?: TaskAgentStreamIdentity | null }
+    10	  | { outcome: 'handled'; taskAgentIdentity?: TaskAgentStreamIdentity | null; cleanupTaskTeamRunId?: string | null }
+    11	  | { outcome: 'drop'; reason: string }
+    12	  | { outcome: 'memberContext'; context: AgentContext; taskAgentIdentity?: TaskAgentStreamIdentity | null; cleanupTaskTeamRunId?: string | null };
+    13	
+    14	export const handleTaskExecutionProjectionMessage = (
+    15	  team: AgentTeamContext,
+    16	  message: ServerMessage,
+    17	): TaskExecutionProjectionMessageResult => {
+    18	  const raw = 'payload' in message && message.payload && typeof message.payload === 'object'
+    19	    ? (message.payload as { execution_address?: unknown }).execution_address
+    20	    : null;
+    21	  if (!raw) return message.type === 'TASK_DELEGATION_EVENT' ? { outcome: 'handled' } : { outcome: 'continue' };
+    22	  let address;
+    23	  try { address = createTeamExecutionAddress(raw as never); }
+    24	  catch { return { outcome: 'drop', reason: 'Team event contains an invalid execution_address.' }; }
+    25	  if (address.rootTeamRunId !== team.teamRunId) return { outcome: 'drop', reason: 'Team event execution_address selects another root TeamRun.' };
+    26	  const taskAgentIdentity = extractTaskAgentIdentity(message);
+    27	  if (taskAgentIdentity) {
+    28	    const context = ensureTaskAgentContext(team, taskAgentIdentity);
+    29	    return message.type === 'TASK_DELEGATION_EVENT'
+    30	      ? { outcome: 'handled', taskAgentIdentity }
+    31	      : { outcome: 'memberContext', context, taskAgentIdentity };
+    32	  }
+    33	  if (address.taskTeamRunIds.length) {
+    34	    const context = ensureTaskTeamMemberExecutionContext(team, address);
+    35	    if (!context) return message.type === 'TASK_DELEGATION_EVENT' ? { outcome: 'handled' } : { outcome: 'drop', reason: `No Agent exists at '${address.memberAddress}'.` };
+    36	    return message.type === 'TASK_DELEGATION_EVENT' ? { outcome: 'handled' } : { outcome: 'memberContext', context };
+    37	  }
+    38	  return message.type === 'TASK_DELEGATION_EVENT' ? { outcome: 'handled' } : { outcome: 'continue' };
+    39	};
+     1	import { AgentContext } from '~/types/agent/AgentContext';
+     2	import type { AgentTeamContext, SubTeamMemberNode } from '~/types/agent/AgentTeamContext';
+     3	import { AgentRunState } from '~/types/agent/AgentRunState';
+     4	import type { Conversation } from '~/types/conversation';
+     5	import type { ServerMessage } from './protocol';
+     6	import { createTeamExecutionAddress, serializeTeamExecutionAddress, type TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
+     7	
+     8	export interface TaskTeamExecutionProjectionIdentity { executionAddress: TeamExecutionAddress }
+     9	export const extractTaskTeamIdentity = (message: ServerMessage): TaskTeamExecutionProjectionIdentity | null => {
+    10	  const raw = 'payload' in message && message.payload && typeof message.payload === 'object'
+    11	    ? (message.payload as { execution_address?: unknown }).execution_address
+    12	    : null;
+    13	  if (!raw) return null;
+    14	  try {
+    15	    const executionAddress = createTeamExecutionAddress(raw as never);
+    16	    return executionAddress.taskTeamRunIds.length ? { executionAddress } : null;
+    17	  } catch { return null; }
+    18	};
+    19	export const ensureTaskTeamMemberExecutionContext = (team: AgentTeamContext, address: TeamExecutionAddress): AgentContext | null => {
+    20	  const key = serializeTeamExecutionAddress(address);
+    21	  const existing = team.agentExecutionsByKey.get(key); if (existing) return existing;
+    22	  const node = team.memberNodesByAddress.get(address.memberAddress);
+    23	  if (!node || node.kind !== 'agent') return null;
+    24	  let base: AgentContext | null = null;
+    25	  for (const [candidateKey, context] of team.agentExecutionsByKey) {
+    26	    try { if ((JSON.parse(candidateKey) as TeamExecutionAddress).memberAddress === address.memberAddress) { base = context; break; } }
+    27	    catch { /* exact keys only */ }
+    28	  }
+    29	  if (!base) return null;
+    30	  const now = new Date().toISOString();
+    31	  const conversation: Conversation = {
+    32	    id: key, messages: [], createdAt: now, updatedAt: now,
+    33	    agentDefinitionId: base.config.agentDefinitionId, agentName: base.config.agentDefinitionName,
+    34	    llmModelIdentifier: base.config.llmModelIdentifier,
+    35	  };
+    36	  const context = new AgentContext({ ...base.config, isLocked: true }, new AgentRunState(key, conversation));
+    37	  context.isSubscribed = true; team.agentExecutionsByKey = new Map(team.agentExecutionsByKey).set(key, context); return context;
+    38	};
+    39	export const ensureTaskTeamExecutionProjection = (team: AgentTeamContext, identity: TaskTeamExecutionProjectionIdentity): SubTeamMemberNode | null => {
+    40	  const node = team.memberNodesByAddress.get(identity.executionAddress.memberAddress); return node?.kind === 'agent_team' ? node : null;
+    41	};
+    42	export const updateTaskTeamExecutionProjectionFromEvent = (team: AgentTeamContext, message: ServerMessage) => {
+    43	  const identity = extractTaskTeamIdentity(message); const node = identity ? ensureTaskTeamExecutionProjection(team, identity) : null;
+    44	  return node ? { node, shouldCleanup: false } : null;
+    45	};
+    46	export const removeTaskTeamExecutionProjection = (team: AgentTeamContext, taskTeamRunId: string): void => {
+    47	  const next = new Map(team.agentExecutionsByKey);
+    48	  for (const key of next.keys()) {
+    49	    try { if ((JSON.parse(key) as TeamExecutionAddress).taskTeamRunIds.includes(taskTeamRunId)) next.delete(key); }
+    50	    catch { /* exact keys only */ }
+    51	  }
+    52	  team.agentExecutionsByKey = next;
+    53	};
+
+## Workspace display requires a node marked isTaskExecution
+    50	
+    51	const flattenStableRows = (rows: readonly TeamMemberTreeRow[], depth = 0): WorkspaceStableMemberDisplayRow[] =>
+    52	  rows.flatMap((row) => [{
+    53	    rowKind: 'stable_member' as const,
+    54	    teamRunId: row.teamRunId,
+    55	    memberAddress: row.memberAddress,
+    56	    executionAddress: stableExecution(row.teamRunId, row.memberAddress),
+    57	    memberKind: row.kind,
+    58	    displayName: row.displayName || row.memberAddress,
+    59	    depth,
+    60	    row,
+    61	  }, ...flattenStableRows(row.children, depth + 1)]);
+    62	
+    63	const buildTransientRow = (teamContext: AgentTeamContext, node: TeamMemberNode, depth: number): WorkspaceTransientExecutionDisplayRow => {
+    64	  const executionAddress = node.executionAddress
+    65	    ?? stableExecution(teamContext.teamRunId, node.address);
+    66	  const context = teamContext.agentExecutionsByKey.get(serializeTeamExecutionAddress(executionAddress));
+    67	  return {
+    68	    rowKind: 'transient_execution',
+    69	    transientKind: transientKindForNode(node),
+    70	    teamRunId: teamContext.teamRunId,
+    71	    memberAddress: node.address,
+    72	    executionAddress,
+    73	    memberKind: node.kind,
+    74	    displayName: node.displayName || node.address,
+    75	    currentStatus: node.kind === 'agent'
+    76	      ? context?.state.currentStatus ?? node.currentStatus ?? AgentStatus.Initializing
+    77	      : null,
+    78	    depth,
+    79	  };
+    80	};
+    81	
+    82	export const buildWorkspaceTeamExecutionDisplayRows = ({ team, teamContext }: BuildWorkspaceTeamExecutionDisplayRowsParams): WorkspaceTeamExecutionDisplayRow[] => {
+    83	  const stableSourceRows = team.rootTeam.children.length > 0 ? team.rootTeam.children : team.members;
+    84	  if (!teamContext || teamContext.rootTeam.children.length === 0) return flattenStableRows(stableSourceRows);
+    85	  const stableRowsByAddress = indexStableRows(stableSourceRows);
+    86	  const visit = (nodes: readonly TeamMemberNode[], depth = 0): WorkspaceTeamExecutionDisplayRow[] => nodes.flatMap((node) => {
+    87	    if (node.isTaskExecution) {
+    88	      return [buildTransientRow(teamContext, node, depth), ...(node.kind === 'agent_team' ? visit(node.children, depth + 1) : [])];
+    89	    }
+    90	    const stableRow = stableRowsByAddress.get(node.address);
+    91	    return [
+    92	      ...(stableRow ? [{
+    93	        rowKind: 'stable_member' as const,
+    94	        teamRunId: stableRow.teamRunId,
+    95	        memberAddress: stableRow.memberAddress,
+    96	        executionAddress: stableExecution(stableRow.teamRunId, stableRow.memberAddress),
+    97	        memberKind: stableRow.kind,
+    98	        displayName: stableRow.displayName || stableRow.memberAddress,
+    99	        depth,
+   100	        row: stableRow,
+   101	      }] : []),
+   102	      ...(node.kind === 'agent_team' ? visit(node.children, depth + 1) : []),
+   103	    ];
+   104	  });
+   105	  return visit(teamContext.rootTeam.children);
+   106	};
+
+## Production consumers of task projection mutators
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/teamTaskTeamExecutionProjection.ts:39:export const ensureTaskTeamExecutionProjection = (team: AgentTeamContext, identity: TaskTeamExecutionProjectionIdentity): SubTeamMemberNode | null => {
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/teamTaskTeamExecutionProjection.ts:42:export const updateTaskTeamExecutionProjectionFromEvent = (team: AgentTeamContext, message: ServerMessage) => {
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/teamTaskTeamExecutionProjection.ts:43:  const identity = extractTaskTeamIdentity(message); const node = identity ? ensureTaskTeamExecutionProjection(team, identity) : null;
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/teamTaskAgentContextProjection.ts:14:import { applyTaskDelegationProjectionDetails, type TaskDelegationProjectionDetails } from './teamTaskExecutionProjection';
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/teamTaskAgentContextProjection.ts:75:export const applyTaskAgentDelegationDetails = (
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/teamTaskAgentContextProjection.ts:84:  applyTaskDelegationProjectionDetails(node, details); return node;
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/teamTaskExecutionProjection.ts:40:export const applyTaskDelegationProjectionDetails = (node: TeamMemberNode, details: TaskDelegationProjectionDetails | null): void => {
+
+## Current generated Apollo shape includes __typename on nested addresses
+3601:export type GetTaskDelegationRecordsQuery = { __typename?: 'Query', getTaskDelegationRecords: Array<{ __typename?: 'TaskDelegationRecordObject', taskId: string, status: string, receiverTargetKind: string, content: string, createdAt: string, senderAddress: { __typename?: 'TaskDelegationTargetAddressObject', rootTeamRunId: string, taskTeamRunIds: Array<string>, memberAddress: string, taskAgentRunId?: string | null }, receiverAddress: { __typename?: 'TaskDelegationTargetAddressObject', rootTeamRunId: string, taskTeamRunIds: Array<string>, memberAddress: string, taskAgentRunId?: string | null }, referenceFiles: Array<{ __typename?: 'TaskDelegationReferenceFileObject', referenceId: string, path: string, type: string, createdAt: string, updatedAt: string }>, taskRun?: { __typename?: 'TaskDelegationTaskRunObject', startedAt: string, address: { __typename?: 'TaskDelegationTargetAddressObject', rootTeamRunId: string, taskTeamRunIds: Array<string>, memberAddress: string, taskAgentRunId?: string | null } } | null, updates: Array<{ __typename?: 'TaskDelegationUpdateObject', kind: string, submissionId?: string | null, reviewId?: string | null, reviewedSubmissionId?: string | null, decision?: string | null, content?: string | null, createdAt: string, senderAddress: { __typename?: 'TaskDelegationTargetAddressObject', rootTeamRunId: string, taskTeamRunIds: Array<string>, memberAddress: string, taskAgentRunId?: string | null }, receiverAddress: { __typename?: 'TaskDelegationTargetAddressObject', rootTeamRunId: string, taskTeamRunIds: Array<string>, memberAddress: string, taskAgentRunId?: string | null }, referenceFiles: Array<{ __typename?: 'TaskDelegationReferenceFileObject', referenceId: string, path: string, type: string, createdAt: string, updatedAt: string }> }> }> };
+
+## Existing old projection specifications still carry removed route/path identity
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/teamTaskExecutionEventRouter.spec.ts:10:    memberPath: ['implementation_engineer'],
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/teamTaskExecutionEventRouter.spec.ts:11:    memberRouteKey: 'implementation_engineer',
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts:37:    memberPath: ['SoftwareEngineeringTeam', 'solution_designer'],
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts:38:    memberRouteKey: 'SoftwareEngineeringTeam/solution_designer',
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts:47:    memberPath: ['SoftwareEngineeringTeam', 'implementation_engineer'],
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts:48:    memberRouteKey: 'SoftwareEngineeringTeam/implementation_engineer',
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts:57:    memberPath: ['SoftwareEngineeringTeam'],
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts:58:    memberRouteKey: 'SoftwareEngineeringTeam',
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts:95:        task_team_run_id: 'task-team-run-7',
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts:99:        team_route_key: 'research_group/review_team',
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts:124:        task_team_run_id: 'task-team-run-1',
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts:137:        team_route_key: 'SoftwareEngineeringTeam',
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts:161:        task_team_run_id: 'task-team-run-1',
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts:174:        team_route_key: 'SoftwareEngineeringTeam',
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts:198:      memberRouteKey: 'task-team-run-1/solution_designer',
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts:199:      memberPath: ['task-team-run-1', 'solution_designer'],

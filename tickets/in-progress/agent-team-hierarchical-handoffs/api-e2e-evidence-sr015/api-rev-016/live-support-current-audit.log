@@ -1,0 +1,17 @@
+$ node --check test-support/live-e2e/run-live-e2e.mjs
+result=node-check-pass
+$ static disposable database guard audit
+test-support/live-e2e/live-e2e-harness.ts:363:  const value = process.env.AUTOBYTEUS_TEST_DATABASE_URL?.trim();
+test-support/live-e2e/live-e2e-harness.ts:372:  const inheritedDatabaseUrl = process.env.DATABASE_URL;
+test-support/live-e2e/live-e2e-harness.ts:373:  const inheritedTestDatabaseUrl = process.env.DATABASE_URL_TEST;
+test-support/live-e2e/live-e2e-harness.ts:374:  delete process.env.DATABASE_URL;
+test-support/live-e2e/live-e2e-harness.ts:375:  delete process.env.DATABASE_URL_TEST;
+test-support/live-e2e/live-e2e-harness.ts:379:    if (inheritedDatabaseUrl === undefined) delete process.env.DATABASE_URL;
+test-support/live-e2e/live-e2e-harness.ts:380:    else process.env.DATABASE_URL = inheritedDatabaseUrl;
+test-support/live-e2e/live-e2e-harness.ts:381:    if (inheritedTestDatabaseUrl === undefined) delete process.env.DATABASE_URL_TEST;
+test-support/live-e2e/live-e2e-harness.ts:382:    else process.env.DATABASE_URL_TEST = inheritedTestDatabaseUrl;
+test-support/live-e2e/run-live-e2e.mjs:45:      AUTOBYTEUS_TEST_DATABASE_URL: server.database.databaseUrl,
+test-support/live-e2e/run-live-e2e.mjs:52:  scanner.assertEvidenceClean(server.output());
+operational_database_literal=absent
+harness_unit_evidence=cadence-harness-final.log (17/17)
+result=pass

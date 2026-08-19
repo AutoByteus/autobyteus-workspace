@@ -29,7 +29,7 @@ type RunHistoryMutationStoreLike = {
   workspaceGroups: RunHistoryWorkspaceGroup[];
   selectedRunId: string | null;
   selectedTeamRunId: string | null;
-  selectedTeamMemberRouteKey: string | null;
+  selectedTeamMemberAddress: string | null;
   refreshTreeQuietly(limitPerAgent?: number): Promise<void>;
 };
 
@@ -85,7 +85,7 @@ const cleanupStoredTeamRunLocalState = (
 
   if (store.selectedTeamRunId === teamRunId) {
     store.selectedTeamRunId = null;
-    store.selectedTeamMemberRouteKey = null;
+    store.selectedTeamMemberAddress = null;
   }
 };
 
@@ -162,7 +162,7 @@ export const deleteTeamRunFromHistoryStore = async (
   teamRunId: string,
 ): Promise<boolean> => {
   const normalizedTeamRunId = teamRunId.trim();
-  if (!normalizedTeamRunId || normalizedTeamRunId.startsWith('temp-')) {
+  if (!normalizedTeamRunId) {
     return false;
   }
 
@@ -196,7 +196,7 @@ export const archiveTeamRunInHistoryStore = async (
   teamRunId: string,
 ): Promise<boolean> => {
   const normalizedTeamRunId = teamRunId.trim();
-  if (!normalizedTeamRunId || normalizedTeamRunId.startsWith('temp-')) {
+  if (!normalizedTeamRunId) {
     return false;
   }
 

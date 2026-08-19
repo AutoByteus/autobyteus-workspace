@@ -10,7 +10,7 @@ const isRecord = (value: unknown): value is RecordValue =>
   Boolean(value) && typeof value === "object" && !Array.isArray(value);
 const isString: ValueValidator = (value) => typeof value === "string";
 const isNullableString: ValueValidator = (value) => value === null || isString(value);
-const isStringArray: ValueValidator = (value) => Array.isArray(value) && value.every(isString);
+const isNonEmptyString: ValueValidator = (value) => typeof value === "string" && value.trim().length > 0;
 const isOneOf = (...allowed: readonly string[]): ValueValidator => (value) =>
   typeof value === "string" && allowed.includes(value);
 const exact = (value: unknown, shape: Record<string, ValueValidator>): boolean => {
@@ -29,17 +29,14 @@ export const isApplicationAgentTargetAddress = (value: unknown): value is Applic
   if (target.kind === "AGENT_TEAM_RUN") return exact(target, { kind: isOneOf("AGENT_TEAM_RUN") });
   return target.kind === "AGENT_TEAM_MEMBER" && exact(target, {
     kind: isOneOf("AGENT_TEAM_MEMBER"),
-    memberRouteKey: (memberRouteKey) => typeof memberRouteKey === "string" && memberRouteKey.trim().length > 0,
+    agentRunId: isNonEmptyString,
   });
 };
 
 const isProducer: ValueValidator = (value) => exact(value, {
-  runId: isString,
-  memberRouteKey: isString,
-  memberName: isNullableString,
+  agentRunId: isNonEmptyString,
   displayName: isNullableString,
   runtimeKind: isOneOf("AGENT", "AGENT_TEAM_MEMBER"),
-  teamPath: isStringArray,
 });
 
 const isStreamEvent: ValueValidator = (value) => {

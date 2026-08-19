@@ -1,0 +1,151 @@
+{
+  "revision": "API-REV-007",
+  "head": "c853559929470e3455a7f7c160d4bd02a6a380dd",
+  "generatedAt": "2026-08-15T21:01:45.998727+00:00",
+  "rows": [
+    {
+      "row": "repository_integrated",
+      "result": "PASS",
+      "evidence": [
+        "repository/ir013-currentized-exact.log",
+        "repository/server-cumulative-current.log",
+        "repository/core-cumulative-current.log",
+        "repository/web-cumulative-current.log"
+      ]
+    },
+    {
+      "row": "production_builds",
+      "result": "PASS",
+      "evidence": [
+        "repository/server-production-typecheck.log",
+        "repository/server-build-full.log",
+        "repository/web-production-build.log"
+      ]
+    },
+    {
+      "row": "autobyteus_team",
+      "result": "PASS",
+      "evidence": [
+        "live/provider/autobyteus-direct-turn.json",
+        "live/provider/autobyteus-nested-turn.json",
+        "live/provider/autobyteus-handoff-rules-turn.json"
+      ]
+    },
+    {
+      "row": "codex_team",
+      "result": "PASS",
+      "evidence": [
+        "live/provider/codex-direct-turn.json",
+        "live/provider/codex-nested-postwait-snapshot.json",
+        "live/provider/codex-repeated-target-turn.json",
+        "live/provider/codex-handoff-rules-turn.json"
+      ]
+    },
+    {
+      "row": "claude_team",
+      "result": "PASS",
+      "evidence": [
+        "live/provider/claude-direct-turn.json",
+        "live/provider/claude-nested-turn.json",
+        "live/provider/claude-handoff-rules-turn.json"
+      ]
+    },
+    {
+      "row": "three_provider_standalone",
+      "result": "PASS",
+      "evidence": [
+        "live/provider/standalone-autobyteus.json",
+        "live/provider/standalone-codex_app_server.json",
+        "live/provider/standalone-claude_agent_sdk.json"
+      ]
+    },
+    {
+      "row": "invalid_relative_address",
+      "result": "PASS",
+      "evidence": [
+        "live/provider/autobyteus-invalid-relative-turn.json"
+      ]
+    },
+    {
+      "row": "real_imported_classroom_send_message",
+      "result": "PASS",
+      "evidence": [
+        "live/provider/classroom-send-message-address-assertion.json",
+        "live/provider/classroom-autobyteus-turn.json"
+      ]
+    },
+    {
+      "row": "context_file_direct_nested_browser_api",
+      "result": "PASS",
+      "evidence": [
+        "live/context-files/team-member-context-browser-probe.json",
+        "live/context-files/owned-layout-proof.log"
+      ]
+    },
+    {
+      "row": "desktop_browser",
+      "result": "PASS",
+      "evidence": [
+        "live/browser/desktop-integrated-pre-reopen.json",
+        "live/browser/desktop-integrated-post-restore.json",
+        "live/browser/desktop-task-navigation-post-restore.json"
+      ]
+    },
+    {
+      "row": "mobile_browser",
+      "result": "PASS",
+      "evidence": [
+        "live/browser/mobile-classroom-pre-reopen-journey.json",
+        "live/browser/mobile-classroom-post-restore-journey.json"
+      ]
+    },
+    {
+      "row": "reopen_persistence_and_explicit_restore",
+      "result": "PASS",
+      "evidence": [
+        "live/persistence/reopen-persistence-assertion.json",
+        "live/persistence/restore-no-duplicate-assertion.json"
+      ]
+    },
+    {
+      "row": "startup_stale_task_repair_before_listen",
+      "result": "FAIL",
+      "evidence": [
+        "live/persistence/stale-task-post-restart.json",
+        "failure/api-f007-startup-repair-timing-analysis.md"
+      ]
+    },
+    {
+      "row": "explicit_restore_repair_idempotence",
+      "result": "PASS",
+      "evidence": [
+        "live/persistence/stale-task-restore-repair-assertion.json",
+        "live/persistence/stale-task-second-restore-idempotence.json"
+      ]
+    },
+    {
+      "row": "migration",
+      "result": "PASS",
+      "evidence": [
+        "environment/prisma-migrate-deploy.log",
+        "live/persistence/app-data-migration-status.json"
+      ]
+    },
+    {
+      "row": "safety_cleanup",
+      "result": "PASS",
+      "evidence": [
+        "environment/safe-target-preflight.log",
+        "environment/server-pid-lsof.log",
+        "environment/final-cleanup-verification.log"
+      ]
+    }
+  ],
+  "summary": {
+    "pass": 15,
+    "fail": 1,
+    "notTested": 0,
+    "overall": "FAIL",
+    "finding": "API-F-007 / API-UTD-RESTART-007"
+  }
+}

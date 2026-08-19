@@ -1,6 +1,12 @@
 import type { TranslationCatalog } from "../../runtime/types";
 
 const messages = {
+  "workspace.components.workspace.team.TeamWorkspaceView.stream_recovery_required":
+    "Live Team updates are out of sync. Wait for the Team to finish its current work, then select this Team member again to reload the complete conversation.",
+  "workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.stream_recovery_wait":
+    "This Team is still working. Wait for it to finish, then select this Team member again.",
+  "workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.stream_recovery_retry":
+    "Team activity changed while the conversation was being reloaded. Select this Team member again to retry.",
   "workspace.components.conversation.segments.renderer.MermaidDiagram.expand_diagram":
     "Expand diagram",
   "workspace.components.conversation.segments.renderer.MermaidDiagram.viewer":

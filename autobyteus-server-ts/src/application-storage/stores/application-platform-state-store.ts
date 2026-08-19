@@ -109,6 +109,14 @@ export class ApplicationPlatformStateStore {
       .sort((left, right) => left.localeCompare(right));
   }
 
+  /** Resolves physical storage identity without consulting application admission/catalog state. */
+  resolveApplicationIdForPlatformDatabasePath(databasePath: string): string | null {
+    const applicationsRoot = path.join(this.appConfig.getAppDataDir(), "applications");
+    const storageKey = path.relative(applicationsRoot, databasePath).split(path.sep)[0]?.trim() ?? "";
+    return readApplicationIdFromDatabase(databasePath)
+      ?? (storageKey ? decodeReadableStorageKey(storageKey) : null);
+  }
+
   async listKnownApplicationIds(): Promise<string[]> {
     const applicationsRoot = path.join(this.appConfig.getAppDataDir(), "applications");
     const knownApplicationIds = new Set<string>();
@@ -119,8 +127,7 @@ export class ApplicationPlatformStateStore {
         continue;
       }
 
-      const resolvedApplicationId = readApplicationIdFromDatabase(databasePath)
-        ?? decodeReadableStorageKey(storageKey);
+      const resolvedApplicationId = this.resolveApplicationIdForPlatformDatabasePath(databasePath);
       if (!resolvedApplicationId) {
         continue;
       }

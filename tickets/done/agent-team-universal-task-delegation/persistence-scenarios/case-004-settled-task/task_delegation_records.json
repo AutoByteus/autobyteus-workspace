@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "rootTeamRunId": "team-run-root",
+  "records": [
+    {
+      "taskId": "task-020",
+      "delegatorAgentRunId": "agent-run-product-manager",
+      "recipientAddress": "/qa/tester",
+      "taskExecution": {
+        "agentRunId": "task-agent-run-tester-002"
+      },
+      "description": "Verify the hotfix.",
+      "referenceFiles": [],
+      "status": "accepted",
+      "updates": [
+        {
+          "submissionId": "task-020_submission_0001",
+          "message": "The hotfix is verified.",
+          "referenceFiles": [],
+          "createdAt": "2026-08-14T11:10:00.000Z"
+        },
+        {
+          "reviewId": "task-020_review_0001",
+          "reviewedSubmissionId": "task-020_submission_0001",
+          "decision": "accept",
+          "comment": "Accepted.",
+          "referenceFiles": [],
+          "createdAt": "2026-08-14T11:15:00.000Z"
+        }
+      ],
+      "createdAt": "2026-08-14T11:00:00.000Z"
+    }
+  ]
+}

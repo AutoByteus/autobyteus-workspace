@@ -1,0 +1,55 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-ts
+
+stdout | tests/unit/agent/system-prompt/append-configured-skills-catalog.test.ts > appendConfiguredSkillsCatalog > returns the original prompt unchanged when no skills are configured
+Agent 'test_agent': No configured skills. Skipping skill catalog.
+
+stdout | tests/unit/agent/system-prompt/append-configured-skills-catalog.test.ts > appendConfiguredSkillsCatalog > does not advertise registry-only skills when no skills are configured
+Agent 'test_agent': No configured skills. Skipping skill catalog.
+
+stdout | tests/unit/agent/system-prompt/append-configured-skills-catalog.test.ts > appendConfiguredSkillsCatalog > returns the original prompt unchanged when skill access mode is NONE
+Agent 'test_agent': Skill access mode is NONE. Skipping skill catalog.
+
+stdout | tests/unit/agent/system-prompt/append-configured-skills-catalog.test.ts > appendConfiguredSkillsCatalog > returns the original prompt unchanged when configured names do not resolve
+Agent 'test_agent': Configured skills produced no catalog entries. Skipping skill catalog.
+
+stdout | tests/unit/agent/system-prompt/append-configured-skills-catalog.test.ts > appendConfiguredSkillsCatalog > omits configured entries with blank required metadata
+Agent 'test_agent': Configured skills produced no catalog entries. Skipping skill catalog.
+
+stderr | tests/unit/agent/system-prompt/append-configured-skills-catalog.test.ts > appendConfiguredSkillsCatalog > omits configured entries with blank required metadata
+Agent 'test_agent': Omitting invalid configured skill catalog entry.
+
+stdout | tests/unit/agent/bootstrap-steps/system-prompt-processing-step.test.ts > SystemPromptProcessingStep > rejects placeholder-shaped metadata from a real configured skill before state or LLM mutation
+SystemPromptProcessingStep initialized.
+Agent 'agent-1': Executing SystemPromptProcessingStep.
+Agent 'agent-1': Retrieved base system prompt.
+Agent 'agent-1': Added 1 configured skill catalog entries with paths. mode='PRELOADED_ONLY'.
+
+stderr | tests/unit/agent/bootstrap-steps/system-prompt-processing-step.test.ts > SystemPromptProcessingStep > rejects placeholder-shaped metadata from a real configured skill before state or LLM mutation
+Agent 'agent-1': Critical failure during system prompt processing step: Error: Final provider instruction contains an unresolved documentation placeholder.
+
+stdout | tests/unit/agent/system-prompt/append-configured-skills-catalog.test.ts > appendConfiguredSkillsCatalog > renders the exact configured catalog contract in configured order without skill bodies
+Agent 'test_agent': Added 2 configured skill catalog entries with paths. mode='PRELOADED_ONLY'.
+
+ ✓ tests/unit/agent/system-prompt/append-configured-skills-catalog.test.ts (6 tests) 4ms
+ ✓ tests/unit/agent/bootstrap-steps/system-prompt-processing-step.test.ts (1 test) 5ms
+stdout | tests/unit/agent/context/agent-config.test.ts > AgentConfig > copy creates a new config with cloned lists and data
+AgentConfig created for name='name', role='role'.
+AgentConfig created for name='name', role='role'.
+
+stdout | tests/unit/agent/context/agent-config.test.ts > AgentConfig > defaults skillAccessMode to PRELOADED_ONLY when skills are configured
+AgentConfig created for name='name', role='role'.
+
+stdout | tests/unit/agent/context/agent-config.test.ts > AgentConfig > defaults skillAccessMode to PRELOADED_ONLY when no skills are configured
+AgentConfig created for name='name', role='role'.
+
+stdout | tests/unit/agent/context/agent-config.test.ts > AgentConfig > respects explicit skillAccessMode
+AgentConfig created for name='name', role='role'.
+
+ ✓ tests/unit/agent/context/agent-config.test.ts (5 tests) 5ms
+
+ Test Files  3 passed (3)
+      Tests  12 passed (12)
+   Start at  20:42:24
+   Duration  197ms (transform 183ms, setup 48ms, import 199ms, tests 14ms, environment 0ms)
+

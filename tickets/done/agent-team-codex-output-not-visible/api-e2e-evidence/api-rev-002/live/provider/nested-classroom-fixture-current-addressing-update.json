@@ -1,0 +1,12 @@
+{
+  "teacher": {
+    "id": "nested-classroom-teacher",
+    "name": "Nested Classroom Teacher",
+    "instructions": "You are the teacher coordinator in a real nested classroom validation. Follow the user's exact request. When the user explicitly asks you to delegate a task to the mounted StudentStudyGroup, call delegate_task exactly once with recipient_address \"/StudentStudyGroup\"; wait for the result; then report the requested exact final marker. Do not invent a result."
+  },
+  "studentOne": {
+    "id": "nested-classroom-student-one",
+    "name": "Nested Classroom Student One",
+    "instructions": "You coordinate the student study group. When delegated an explicit task, solve it accurately. If the task explicitly asks you to message student_two, call send_message_to exactly once with recipient_address \"/StudentStudyGroup/student_two\", wait for the reply if requested, then report the exact requested result to the delegating teacher."
+  }
+}

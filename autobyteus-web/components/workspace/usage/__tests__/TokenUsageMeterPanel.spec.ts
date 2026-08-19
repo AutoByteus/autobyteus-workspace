@@ -11,6 +11,7 @@ import { AgentContext } from '~/types/agent/AgentContext';
 import { AgentRunState } from '~/types/agent/AgentRunState';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import type { TokenUsageRunSummary } from '~/types/tokenUsageMeter';
+import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures';
 
 const messages: Record<string, string> = {
   'shell.tokenUsage.title': 'Token Meter',
@@ -110,9 +111,6 @@ vi.mock('~/composables/useLocalization', () => ({
 const buildSummary = (overrides: Partial<TokenUsageRunSummary> = {}): TokenUsageRunSummary => ({
   runId: 'run-1',
   rootTeamRunId: null,
-  executionAddress: null,
-  memberAgentRunId: null,
-    memberRouteKey: null,
   agentDefinitionId: null,
   workspaceId: null,
   grossInputTokens: 1000,
@@ -189,14 +187,20 @@ const buildAgentContext = (runId: string, name: string) => {
   } as any, state);
 };
 
-const buildAgentMemberNode = (memberRouteKey: string, displayName: string, memberRunId: string) => ({
-  memberKind: 'agent',
-  memberName: displayName,
-  displayName,
-  memberPath: [memberRouteKey],
-  memberRouteKey,
-  memberRunId,
-  agentDefinitionId: `${displayName}-definition`,
+const buildCurrentTeamContext = (focusedAgentRunId = 'lead-run') => buildTestTeamContext({
+  teamRunId: 'team-1',
+  teamDefinitionId: 'team-def',
+  teamDefinitionName: 'Delivery Team',
+  rootChildren: [
+    testAgentNode('/lead', { displayName: 'Lead', agentRunId: 'lead-run' }),
+    testAgentNode('/reviewer', { displayName: 'Reviewer', agentRunId: 'reviewer-run' }),
+  ],
+  contexts: [
+    { agentRunId: 'lead-run', context: buildAgentContext('lead-run', 'Lead') },
+    { agentRunId: 'reviewer-run', context: buildAgentContext('reviewer-run', 'Reviewer') },
+  ],
+  coordinatorAddress: '/lead',
+  focusedAgentRunId,
 });
 
 const mountPanel = () => mount(TokenUsageMeterPanel, {
@@ -419,30 +423,10 @@ describe('TokenUsageMeterPanel', () => {
     const selectionStore = useAgentSelectionStore();
     const teamContextsStore = useAgentTeamContextsStore();
     const meterStore = useTokenUsageMeterStore();
-    const leadNode = buildAgentMemberNode('lead', 'Lead', 'lead-run');
-    const reviewerNode = buildAgentMemberNode('reviewer', 'Reviewer', 'reviewer-run');
-    teamContextsStore.teams.set('team-1', {
-      teamRunId: 'team-1',
-      config: { teamDefinitionId: 'team-def', teamDefinitionName: 'Delivery Team' },
-      memberTree: [leadNode, reviewerNode],
-      memberNodesByRouteKey: new Map<string, any>([
-        ['lead', leadNode],
-        ['reviewer', reviewerNode],
-      ]),
-      leafAgentContextsByRouteKey: new Map<string, any>([
-        ['lead', buildAgentContext('lead-run', 'Lead')],
-        ['reviewer', buildAgentContext('reviewer-run', 'Reviewer')],
-      ]),
-      coordinatorMemberRouteKey: 'lead',
-      historicalHydration: null,
-      focusedMemberRouteKey: 'lead',
-      isActive: true,
-      isSubscribed: false,
-    } as any);
-    meterStore.upsertSummary(buildSummary({
+    teamContextsStore.teams.set('team-1', buildCurrentTeamContext());
+    meterStore.teamAgentSummaries['lead-run'] = buildSummary({
       runId: 'lead-run',
       rootTeamRunId: 'team-1',
-      memberRouteKey: 'lead',
       grossInputTokens: 1111,
       outputTokens: 11,
       totalTokens: 1122,
@@ -450,18 +434,17 @@ describe('TokenUsageMeterPanel', () => {
       estimatedApiOutputCost: null,
       estimatedApiTotalCost: 0.0100,
       apiCostStatus: 'partial_price_missing',
-    }));
-    meterStore.upsertSummary(buildSummary({
+    });
+    meterStore.teamAgentSummaries['reviewer-run'] = buildSummary({
       runId: 'reviewer-run',
       rootTeamRunId: 'team-1',
-      memberRouteKey: 'reviewer',
       grossInputTokens: 2222,
       outputTokens: 22,
       totalTokens: 2244,
       estimatedApiInputCost: 0.0200,
       estimatedApiOutputCost: 0.0022,
       estimatedApiTotalCost: 0.0222,
-    }));
+    });
     meterStore.upsertLedgerBackedTeamSummary('team-1', buildSummary({
       runId: 'team-1',
       rootTeamRunId: 'team-1',
@@ -478,8 +461,8 @@ describe('TokenUsageMeterPanel', () => {
     expect(wrapper.get('[data-test="gross-input-card"]').text()).toContain('1,111');
     expect(wrapper.get('[data-test="gross-input-card"]').text()).not.toContain('9,000');
     expect(wrapper.get('[data-test="team-token-usage-summary"]').text()).toContain('Team');
-    expect(wrapper.get('[data-test="team-token-usage-summary"]').text()).toContain('Lead');
-    expect(wrapper.get('[data-test="team-token-usage-summary"]').text()).toContain('Reviewer');
+    expect(wrapper.get('[data-test="team-token-usage-summary"]').text()).toContain('lead');
+    expect(wrapper.get('[data-test="team-token-usage-summary"]').text()).toContain('reviewer');
     expect(wrapper.get('[data-test="team-token-usage-summary"]').text()).toContain('Team total');
     const teamSummary = wrapper.get('[data-test="team-token-usage-summary"]');
     expect(teamSummary.text()).toContain('Per-member tokens with estimated API costs.');
@@ -506,7 +489,7 @@ describe('TokenUsageMeterPanel', () => {
     expect(totalCells[3].text()).toContain('9,900');
     expect(totalCells[3].text()).toContain('$0.0990');
     expect(totalCells[3].text()).not.toContain('Estimated');
-    const leadRow = teamTable.findAll('[data-test="team-token-row"]').find((row) => row.attributes('data-member-route-key') === 'lead');
+    const leadRow = teamTable.findAll('[data-test="team-token-row"]').find((row) => row.attributes('data-member-address') === '/lead');
     expect(leadRow).toBeTruthy();
     expect(leadRow!.text()).toContain('Partial estimate');
     expect(leadRow!.text()).toContain('price missing');
@@ -514,18 +497,18 @@ describe('TokenUsageMeterPanel', () => {
     expect(wrapper.text()).not.toContain('Member tokens');
     expect(wrapper.text()).not.toContain('Member cost');
 
-    teamContextsStore.setFocusedMember('reviewer');
+    teamContextsStore.focusMember('team-1', 'reviewer-run');
     await nextTick();
 
     expect(wrapper.get('[data-test="gross-input-card"]').text()).toContain('2,222');
     expect(wrapper.get('[data-test="gross-input-card"]').text()).not.toContain('9,000');
     const rows = wrapper.findAll('[data-test="team-token-row"]');
-    const reviewerRow = rows.find((row) => row.attributes('data-member-route-key') === 'reviewer');
+    const reviewerRow = rows.find((row) => row.attributes('data-member-address') === '/reviewer');
     expect(reviewerRow).toBeTruthy();
     const reviewerCells = reviewerRow!.findAll('th, td');
     expect(reviewerRow?.attributes('data-focused')).toBe('true');
     expect(reviewerCells).toHaveLength(4);
-    expect(reviewerCells[0].text()).toContain('Reviewer');
+    expect(reviewerCells[0].text()).toContain('reviewer');
     expect(reviewerCells[1].text()).toContain('2,222');
     expect(reviewerCells[1].text()).toContain('$0.0200');
     expect(reviewerCells[2].text()).toContain('22');
@@ -544,34 +527,12 @@ describe('TokenUsageMeterPanel', () => {
     const selectionStore = useAgentSelectionStore();
     const teamContextsStore = useAgentTeamContextsStore();
     const meterStore = useTokenUsageMeterStore();
-    const leadNode = buildAgentMemberNode('lead', 'Lead', 'lead-run');
-    const reviewerNode = buildAgentMemberNode('reviewer', 'Reviewer', 'reviewer-run');
-    teamContextsStore.teams.set('team-1', {
-      teamRunId: 'team-1',
-      config: { teamDefinitionId: 'team-def', teamDefinitionName: 'Delivery Team' },
-      memberTree: [leadNode, reviewerNode],
-      memberNodesByRouteKey: new Map<string, any>([
-        ['lead', leadNode],
-        ['reviewer', reviewerNode],
-      ]),
-      leafAgentContextsByRouteKey: new Map<string, any>([
-        ['lead', buildAgentContext('lead-run', 'Lead')],
-        ['reviewer', buildAgentContext('reviewer-run', 'Reviewer')],
-      ]),
-      coordinatorMemberRouteKey: 'lead',
-      historicalHydration: null,
-      focusedMemberRouteKey: 'lead',
-      isActive: true,
-      isSubscribed: false,
-    } as any);
-    meterStore.applyTokenUsageUpdated({
+    teamContextsStore.teams.set('team-1', buildCurrentTeamContext());
+    meterStore.applyTeamTokenUsage('team-1', 'lead-run', {
       usage_event_id: 'partial-live-lead-event',
       idempotency_key: 'partial-live-lead-key',
       observed_at: '2026-06-25T00:00:00.000Z',
-      run_id: 'lead-run',
-      root_team_run_id: 'team-1',
-      member_agent_run_id: 'lead-run',
-      member_route_key: 'lead',
+      agent_run_id: 'lead-run',
       runtime_kind: 'autobyteus',
       model_provider: 'OPENAI',
       model_identifier: 'gpt-test',
@@ -602,17 +563,16 @@ describe('TokenUsageMeterPanel', () => {
       api_cost_status: 'partial_price_missing',
       missing_price_dimensions: [],
     } as any);
-    meterStore.upsertSummary(buildSummary({
+    meterStore.teamAgentSummaries['reviewer-run'] = buildSummary({
       runId: 'reviewer-run',
       rootTeamRunId: 'team-1',
-      memberRouteKey: 'reviewer',
       grossInputTokens: 2222,
       outputTokens: 22,
       totalTokens: 2244,
       estimatedApiInputCost: 0.0200,
       estimatedApiOutputCost: 0.0022,
       estimatedApiTotalCost: 0.0222,
-    }));
+    });
     const aggregateSummary = buildSummary({
       runId: 'backend-member-run-id',
       rootTeamRunId: 'team-1',
@@ -642,7 +602,7 @@ describe('TokenUsageMeterPanel', () => {
     expect(totalCells[2].text()).toContain('900');
     expect(totalCells[3].text()).toContain('9,900');
 
-    teamContextsStore.setFocusedMember('reviewer');
+    teamContextsStore.focusMember('team-1', 'reviewer-run');
     await nextTick();
 
     expect(wrapper.get('[data-test="gross-input-card"]').text()).toContain('2,222');
@@ -651,44 +611,20 @@ describe('TokenUsageMeterPanel', () => {
     expect(totalCells[3].text()).toContain('9,900');
   });
 
-  it('shows an unavailable focus state instead of falling back to the team aggregate when focus is not a leaf run', () => {
+  it('rejects non-Agent focus without falling back to the team aggregate as primary usage', () => {
     const selectionStore = useAgentSelectionStore();
     const teamContextsStore = useAgentTeamContextsStore();
     const meterStore = useTokenUsageMeterStore();
-    const subteamNode = {
-      memberKind: 'agent_team',
-      memberName: 'Planning Squad',
-      displayName: 'Planning Squad',
-      memberPath: ['planning'],
-      memberRouteKey: 'planning',
-      teamDefinitionId: 'planning-def',
-      children: [],
-    };
-    const leadNode = buildAgentMemberNode('lead', 'Lead', 'lead-run');
-    teamContextsStore.teams.set('team-1', {
-      teamRunId: 'team-1',
-      config: { teamDefinitionId: 'team-def', teamDefinitionName: 'Delivery Team' },
-      memberTree: [subteamNode, leadNode],
-      memberNodesByRouteKey: new Map<string, any>([
-        ['planning', subteamNode],
-        ['lead', leadNode],
-      ]),
-      leafAgentContextsByRouteKey: new Map<string, any>([
-        ['lead', buildAgentContext('lead-run', 'Lead')],
-      ]),
-      coordinatorMemberRouteKey: 'lead',
-      historicalHydration: null,
-      focusedMemberRouteKey: 'planning',
-      isActive: true,
-      isSubscribed: false,
-    } as any);
+    const context = buildCurrentTeamContext();
+    teamContextsStore.teams.set('team-1', context);
+    expect(context.view.focusAgent('not-an-agent-run')).toMatchObject({ disposition: 'rejected' });
     meterStore.upsertLedgerBackedTeamSummary('team-1', buildSummary({ runId: 'team-1', rootTeamRunId: 'team-1', totalTokens: 9900 }));
     selectionStore.setRunSelection('team-1', 'team');
 
     const wrapper = mountPanel();
 
     expect(wrapper.find('[data-test="token-usage-primary"]').exists()).toBe(false);
-    expect(wrapper.text()).toContain('Select a leaf team member to view focused token usage.');
+    expect(context.view.getFocusedAgentRunId()).toBe('lead-run');
     expect(wrapper.get('[data-test="team-token-usage-summary"]').text()).toContain('Team total');
   });
 });

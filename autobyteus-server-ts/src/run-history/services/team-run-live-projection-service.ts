@@ -1,41 +1,32 @@
 import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
-import type { AgentStatusPayload } from "../../agent-execution/domain/agent-status-payload.js";
+import type { AgentApiStatus } from "../../agent-execution/domain/agent-status-payload.js";
 
 export interface TeamRunListLiveProjection {
   isActive: boolean;
-  memberStatusSnapshots: AgentStatusPayload[];
+  memberStatusSnapshots: TeamRunMemberStatusProjection[];
 }
+
+export type TeamRunMemberStatusProjection = Readonly<{
+  agentRunId: string;
+  memberAddress: string;
+  status: AgentApiStatus;
+}>;
 
 export class TeamRunLiveProjectionService {
   constructor(
-    private readonly teamRunManager: Pick<
-      AgentTeamRunManager,
-      "getActiveRun" | "getLifecycleSnapshot"
-    > = AgentTeamRunManager.getInstance(),
+    private readonly manager: Pick<AgentTeamRunManager, "getTeamRun" | "getLifecycleSnapshot"> = AgentTeamRunManager.getInstance(),
   ) {}
 
   getCatalogListLiveProjection(teamRunId: string): TeamRunListLiveProjection {
-    const lifecycle = this.teamRunManager.getLifecycleSnapshot(teamRunId);
-    if (!lifecycle.isActive) {
-      return {
-        isActive: false,
-        memberStatusSnapshots: [],
-      };
-    }
-
-    const activeTeamRun = this.teamRunManager.getActiveRun(teamRunId);
-    if (!activeTeamRun) {
-      return {
-        isActive: false,
-        memberStatusSnapshots: [],
-      };
-    }
-
-    return {
+    const lifecycle = this.manager.getLifecycleSnapshot(teamRunId);
+    const root = lifecycle.isActive ? this.manager.getTeamRun(teamRunId) : null;
+    return root ? {
       isActive: true,
-      memberStatusSnapshots: activeTeamRun
-        .getLeafAgentStatusSnapshots()
-        .map((snapshot) => snapshot.payload),
-    };
+      memberStatusSnapshots: root.getLeafAgentStatusSnapshots().map((snapshot) => ({
+        status: snapshot.details.status,
+        agentRunId: snapshot.execution.agentRunId,
+        memberAddress: snapshot.execution.memberAddress,
+      })),
+    } : { isActive: false, memberStatusSnapshots: [] };
   }
 }

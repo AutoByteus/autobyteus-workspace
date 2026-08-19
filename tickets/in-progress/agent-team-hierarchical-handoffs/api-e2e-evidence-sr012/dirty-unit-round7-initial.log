@@ -1,0 +1,1539 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+
+(node:70447) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/application-engine/application-engine-host-service.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/unit/application-engine/application-engine-host-service.test.ts (4 tests | 1 failed) 184ms
+     ✓ boots the worker, validates exposures, and invokes app-owned backend handlers through the host boundary 112ms
+     × rejects a v2 backend definition before invoking any handler 57ms
+     ✓ repairs empty app storage before reusing an already-ready runtime handle 12ms
+     ✓ does not rerun storage repair when the ready runtime already has user tables 3ms
+ ❯ tests/unit/application-bundles/file-application-bundle-provider.test.ts (18 tests | 16 failed) 118ms
+     ✓ treats an empty managed built-in application root as a valid steady state 5ms
+     × lists valid bundles from the managed built-in application root with manifest execution resource slots 10ms
+     × surfaces retired frontend SDK compatibility versions as diagnostics 7ms
+     × surfaces retired backend bundle frontend SDK compatibility versions as diagnostics 6ms
+     × rejects an explicit v3 backend-definition compatibility fixture during discovery 5ms
+     × surfaces malformed manifests as diagnostics instead of crashing discovery 5ms
+     ✓ surfaces legacy top-level resourceSlots as diagnostics instead of silently dropping slots 5ms
+     × surfaces legacy slot field 'allowedResourceKinds' as diagnostics 14ms
+     × surfaces legacy slot field 'allowedResourceOwners' as diagnostics 8ms
+     × surfaces legacy slot field 'defaultResourceRef' as diagnostics 5ms
+     × surfaces legacy slot field 'defaultExecutionResourceRef.owner' as diagnostics 6ms
+     × fails package validation when a discovered resource-slot default does not resolve 6ms
+     × rejects bundles whose application-owned team references a missing local agent 5ms
+     × recursively validates team-local child teams without cataloging them as app-owned roots 8ms
+     × rejects malformed team-local child team configs during application bundle validation 7ms
+     × rejects team-local child teams whose own local agents are missing 6ms
+     × ignores nested packaging mirrors under a discovered package root 5ms
+     × preserves built-in application ids when the same root path is also configured as an additional package root 4ms
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:70455) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > passes raw run llmConfig to LLMFactory without wrapping it as extraParams
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+stderr | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > passes raw run llmConfig to LLMFactory without wrapping it as extraParams
+No non-blank definition instructions found for AgentDefinition agent-1. Using agent description as fallback.
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > passes raw run llmConfig to LLMFactory without wrapping it as extraParams
+Using temp workspace (ID: workspace-1) for agent.
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > wires one subject-scoped API-key resolver into the core factory
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > wires one subject-scoped API-key resolver into the core factory
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > wires one subject-scoped API-key resolver into the core factory
+Discovering Ollama models from host: http://127.0.0.1:11434
+
+stderr | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > wires one subject-scoped API-key resolver into the core factory
+Could not connect to Ollama server at http://127.0.0.1:11434. Ensure it's running. fetch failed
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > wires one subject-scoped API-key resolver into the core factory
+Discovering LM Studio models from host: http://127.0.0.1:1234
+
+stderr | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > wires one subject-scoped API-key resolver into the core factory
+Could not connect to LM Studio at http://127.0.0.1:1234. Ensure the server is running. fetch failed
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > filters mixed task-management tools, composes server team prompts, and injects primitive team context
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > advertises strict logical and exact-run selectors without a flat recipient roster
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > keeps task-management tools for standalone AutoByteus runs without member team context
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+stderr | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > keeps task-management tools for standalone AutoByteus runs without member team context
+No non-blank definition instructions found for AgentDefinition agent-1. Using agent description as fallback.
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > keeps task-management tools for standalone AutoByteus runs without member team context
+Using temp workspace (ID: workspace-1) for agent.
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > routes mixed AutoByteus send_message_to through server delivery and reports rejected delivery
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > advertises exact-run send_message_to while warning that recipient_address delivery is disabled
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > propagates mixed AutoByteus task-agent identity into managed custom data and task delegation context
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > injects a server-backed compaction runner using the parent workspace context
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > injects a server-backed compaction runner using the parent workspace context
+Resolved system prompt from fresh definition instructions for AgentDefinition agent-1.
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > injects a server-backed compaction runner using the parent workspace context
+Using temp workspace (ID: workspace-1) for agent.
+
+ ❯ tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts (9 tests | 5 failed) 32ms
+     ✓ passes raw run llmConfig to LLMFactory without wrapping it as extraParams 17ms
+     ✓ wires one subject-scoped API-key resolver into the core factory 9ms
+     × filters mixed task-management tools, composes server team prompts, and injects primitive team context 3ms
+     × advertises strict logical and exact-run selectors without a flat recipient roster 0ms
+     ✓ keeps task-management tools for standalone AutoByteus runs without member team context 1ms
+     × routes mixed AutoByteus send_message_to through server delivery and reports rejected delivery 0ms
+     × advertises exact-run send_message_to while warning that recipient_address delivery is disabled 0ms
+     × propagates mixed AutoByteus task-agent identity into managed custom data and task delegation context 0ms
+     ✓ injects a server-backed compaction runner using the parent workspace context 1ms
+ ❯ tests/unit/application-engine/application-backend-definition-loader.test.ts (3 tests | 1 failed) 16ms
+     ✓ derives the v4 WebSocket exposure summary from exact valid routes 4ms
+     × rejects stale v3 definitions and routes disabled by the bundle authority 7ms
+     ✓ rejects malformed, duplicate-parameter, and ambiguous route declarations 5ms
+stdout | tests/unit/agent-team-execution/task-delegation-service.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:70457) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/unit/agent-team-execution/task-delegation-service.test.ts (17 tests | 16 failed) 12ms
+     × delegates repeated singular active work with explicit member targets and submit_task_result work-packet protocol 4ms
+     × resolves task-owned reference files by task identity without message IDs 0ms
+     × rejects relative delegate_task reference files before task creation 0ms
+     × rejects invalid absolute-looking delegate_task reference files before task creation 0ms
+     × rejects relative submit_task_result reference files before submission persistence 0ms
+     × rejects relative review_task_result reference files before review persistence 0ms
+     × delegates to an explicit team target and binds a task-team execution instance 0ms
+     × keeps activation visible content task-centered instead of sender-framed 0ms
+     × submits, revises, submits again, accepts latest pending submission, and settles after idle 0ms
+     × commits result submission and returns a concise message when notification delivery fails 0ms
+     × returns only a concise message when revision notification delivery fails 0ms
+     × keeps rejected activations not_started and does not publish active exact-run targets 0ms
+     × rolls back task-agent directory and ledger state when activation throws 0ms
+     × supports task-agent delegators and blocks parent settlement while child delegation is open 0ms
+     × rejects settled task-agent delegate_task before creating child work 0ms
+     × rejects settled task-agent review identity before recording a child review 0ms
+     ✓ exposes only delegate_task, submit_task_result, and review_task_result parsers/tools 3ms
+ ❯ tests/unit/agent-team-execution/inter-agent-message-runtime-builders.test.ts (5 tests | 5 failed) 10ms
+     × formats recipient-visible content with sender identity 4ms
+     × appends a generated Reference files block when explicit references exist 1ms
+     × carries recipient member-input identity and parent communication linkage in delivery metadata 3ms
+     × falls back to sender run id when sender name is unavailable 0ms
+     × builds a recipient-owned inter-agent event with persisted team, receiver identity, and explicit references 1ms
+ ❯ tests/unit/agent-team-execution/task-delegation-target-mapper.test.ts (6 tests | 6 failed) 5ms
+     × maps a direct Agent placement to current-Team execution identity 2ms
+     × maps a direct Team placement through its exact localized real coordinator 0ms
+     × rejects a valid cross-branch or deeper placement before task activation identity exists 0ms
+     × rejects the caller Agent even when its direct current-Team config matches 0ms
+     × does not retry a root-prefixed coordinator when current-local topology is inconsistent 0ms
+     × rejects a Team ingress outside the resolved Team before local coordinator mapping 1ms
+stdout | tests/unit/agent-team-execution/mixed-team-manager.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:70460) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/unit/agent-team-execution/mixed-team-manager.test.ts (6 tests | 6 failed) 6ms
+     × forwards one root-canonical intent unchanged with the actual nested Agent identity 3ms
+     × rejects a non-root team id without invoking the parent boundary 0ms
+     × derives its private root selector from the minimal Team ingress address 1ms
+     × keeps active task-team handles in snapshots until accepted settlement removes them 0ms
+     × joins repeated termination and rejects new work while terminating without aggregate status events 0ms
+     × keeps the team active and does not publish offline when active child termination is rejected 0ms
+stdout | tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:70461) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts (5 tests | 5 failed) 4ms
+     × interrupts only the requested member route key 3ms
+     × rejects interrupt run-id guard mismatches without retargeting by run id 0ms
+     × settles only the requested member route key 0ms
+     × routes approval to the concrete task-agent run instead of the logical member run 0ms
+     × routes messages to the concrete task-agent run instead of the logical member run 0ms
+stdout | tests/unit/agent-team-execution/mixed-sub-team-member-handle.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:70462) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/unit/agent-team-execution/mixed-sub-team-member-handle.test.ts (2 tests | 2 failed) 4ms
+     × routes parent-to-subteam messages to the configured child coordinator in multi-member child teams 3ms
+     × strips the parent subteam prefix when delivering to an explicit actual child participant 0ms
+ ❯ tests/unit/agent-team-execution/team-member-delivery-coordinator.test.ts (2 tests | 2 failed) 3ms
+     × commits recipient input once and publishes one accepted communication with actual participants 2ms
+     × publishes no accepted communication when recipient input is rejected 0ms
+stdout | tests/unit/agent-tools/task-delegation/task-delegation-runtime-descriptions.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:70464) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/unit/agent-tools/task-delegation/task-delegation-runtime-descriptions.test.ts (0 test)
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts (57 tests) 18ms
+stdout | tests/unit/agent-memory/agent-run-memory-recorder.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:70467) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stderr | tests/unit/agent-memory/agent-run-memory-recorder.test.ts > AgentRunMemoryRecorder > records accepted commands and normalized events without a stream subscriber
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-run-memory-recorder-ROiPFB/working_context_snapshot.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-run-memory-recorder-ROiPFB/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/agent-run-memory-recorder.test.ts > AgentRunMemoryRecorder > records canonical route-backed send_message_to tool traces with MCP content result shape
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-run-memory-recorder-IIViSh/working_context_snapshot.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-run-memory-recorder-IIViSh/working_context_snapshot.json
+
+ ✓ tests/unit/agent-memory/agent-run-memory-recorder.test.ts (5 tests) 19ms
+ ✓ tests/unit/run-history/projection/codex-run-view-projection-provider.test.ts (8 tests) 12ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts (31 tests) 8ms
+stdout | tests/unit/agent-tools/team-communication/send-message-to.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:70470) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/agent-tools/team-communication/send-message-to.test.ts > AutoByteus server-owned send_message_to > routes a hierarchical recipient_address through Team delivery and returns canonical JSON
+Successfully registered tool definition: 'send_message_to'
+
+ ✓ tests/unit/agent-tools/team-communication/send-message-to.test.ts (6 tests) 7ms
+ ✓ tests/unit/agent-team-execution/team-logical-placement-resolver.test.ts (11 tests) 5ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session-tool-use-coordinator.test.ts (5 tests) 5ms
+ ✓ tests/unit/agent-tools/task-delegation/task-delegation-autobyteus-context.test.ts (4 tests) 3ms
+stderr | tests/unit/agent-team-execution/send-message-to-tool-argument-parser.test.ts > send-message-to-tool-argument-parser > fails malformed reference_files before delivery
+[agent-communication] invalid reference_files validation toolName=send_message_to index=0 reason=path must be absolute
+
+stderr | tests/unit/agent-team-execution/send-message-to-tool-argument-parser.test.ts > send-message-to-tool-argument-parser > rejects absolute-looking reference_files containing URL protocol markers before delivery
+[agent-communication] invalid reference_files validation toolName=send_message_to index=0 reason=path must be a local filesystem path, not a URL or protocol path
+
+ ✓ tests/unit/agent-team-execution/send-message-to-tool-argument-parser.test.ts (6 tests) 3ms
+ ✓ tests/unit/agent-team-execution/member-run-instruction-composer.test.ts (5 tests) 3ms
+ ✓ tests/unit/agent-execution/backends/codex/history/codex-thread-history-item-normalizer.test.ts (3 tests) 2ms
+ ✓ tests/unit/agent-team-execution/inter-agent-message-delivery-intent-builder.test.ts (1 test) 2ms
+ ✓ tests/unit/agent-collaboration/collaboration-logical-address.test.ts (3 tests) 2ms
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/agent-tools/task-delegation/task-delegation-runtime-descriptions.test.ts [ tests/unit/agent-tools/task-delegation/task-delegation-runtime-descriptions.test.ts ]
+TypeError: Cannot convert undefined or null to object
+ ❯ createTeamExecutionAddress src/agent-team-execution/domain/team-execution-address.ts:25:23
+     23|   taskAgentRunId?: string | null;
+     24| }): TeamExecutionAddress => {
+     25|   const keys = Object.keys(input);
+       |                       ^
+     26|   const allowed = new Set(["rootTeamRunId", "taskTeamRunIds", "memberA…
+     27|   if (keys.some((key) => !allowed.has(key))) {
+ ❯ new MemberTeamContext src/agent-team-execution/domain/member-team-context.ts:54:29
+ ❯ tests/unit/agent-tools/task-delegation/task-delegation-runtime-descriptions.test.ts:23:27
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/66]⎯
+
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 65 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/agent-team-execution/inter-agent-message-runtime-builders.test.ts > inter-agent-message-runtime-builders > formats recipient-visible content with sender identity
+AssertionError: expected 'You received a message from sender na…' to be 'You received a message from sender na…' // Object.is equality
+
+- Expected
++ Received
+
+- You received a message from sender name: Writer, sender id: run-writer
++ You received a message from sender name: undefined, sender id: undefined
+  message:
+  Please review the draft.
+
+ ❯ tests/unit/agent-team-execution/inter-agent-message-runtime-builders.test.ts:73:68
+     71|     const request = buildRequest();
+     72| 
+     73|     expect(buildRecipientVisibleInterAgentMessageContent(request)).toB…
+       |                                                                    ^
+     74|       "You received a message from sender name: Writer, sender id: run…
+     75|     );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/66]⎯
+
+ FAIL  tests/unit/agent-team-execution/inter-agent-message-runtime-builders.test.ts > inter-agent-message-runtime-builders > appends a generated Reference files block when explicit references exist
+AssertionError: expected 'You received a message from sender na…' to be 'You received a message from sender na…' // Object.is equality
+
+- Expected
++ Received
+
+@@ -1,6 +1,6 @@
+- You received a message from sender name: Writer, sender id: run-writer
++ You received a message from sender name: undefined, sender id: undefined
+  message:
+  Please review the draft summary.
+
+  Reference files:
+  - /tmp/report.md
+
+ ❯ tests/unit/agent-team-execution/inter-agent-message-runtime-builders.test.ts:98:68
+     96|     });
+     97| 
+     98|     expect(buildRecipientVisibleInterAgentMessageContent(request)).toB…
+       |                                                                    ^
+     99|       "You received a message from sender name: Writer, sender id: run…
+    100|         "message:\nPlease review the draft summary.\n\n" +
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/66]⎯
+
+ FAIL  tests/unit/agent-team-execution/inter-agent-message-runtime-builders.test.ts > inter-agent-message-runtime-builders > carries recipient member-input identity and parent communication linkage in delivery metadata
+AssertionError: expected { message_id: 'member-input-1', …(11) } to deeply equal ObjectContaining{…}
+
+- Expected
++ Received
+
+- ObjectContaining {
++ {
+    "dedupe_key": "member_input:team-1:BuildSquad:member-input-1",
+    "input_origin": "inter_agent_delivery",
+    "message_id": "member-input-1",
++   "original_message_type": "frontend_parent_to_subteam",
+    "parent_communication_message_id": "team-message-1",
+-   "receiver_member_path": [
+-     "BuildSquad",
++   "receiver_execution_address": {
++     "segments": [
++       {
++         "kind": "member",
++         "memberRouteKey": "Reviewer",
++       },
+      ],
+-   "receiver_member_route_key": "BuildSquad",
++   },
+    "recipient_input_message_id": "member-input-1",
+-   "sender_member_path": [
+-     "program_manager",
++   "reference_files": [],
++   "sender_agent_id": undefined,
++   "sender_agent_name": undefined,
++   "sender_execution_address": {
++     "segments": [
++       {
++         "kind": "member",
++         "memberRouteKey": "Writer",
++       },
+      ],
+-   "sender_member_route_key": "program_manager",
++   },
++   "team_run_id": undefined,
+  }
+
+ ❯ tests/unit/agent-team-execution/inter-agent-message-runtime-builders.test.ts:131:35
+    129|     }));
+    130| 
+    131|     expect(inputMessage.metadata).toEqual(expect.objectContaining({
+       |                                   ^
+    132|       message_id: "member-input-1",
+    133|       recipient_input_message_id: "member-input-1",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/66]⎯
+
+ FAIL  tests/unit/agent-team-execution/inter-agent-message-runtime-builders.test.ts > inter-agent-message-runtime-builders > falls back to sender run id when sender name is unavailable
+AssertionError: expected 'You received a message from sender na…' to be 'You received a message from sender na…' // Object.is equality
+
+- Expected
++ Received
+
+- You received a message from sender name: run-123, sender id: run-123
++ You received a message from sender name: undefined, sender id: undefined
+  message:
+  hello
+
+ ❯ tests/unit/agent-team-execution/inter-agent-message-runtime-builders.test.ts:155:68
+    153|     });
+    154| 
+    155|     expect(buildRecipientVisibleInterAgentMessageContent(request)).toB…
+       |                                                                    ^
+    156|       "You received a message from sender name: run-123, sender id: ru…
+    157|     );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/66]⎯
+
+ FAIL  tests/unit/agent-team-execution/inter-agent-message-runtime-builders.test.ts > inter-agent-message-runtime-builders > builds a recipient-owned inter-agent event with persisted team, receiver identity, and explicit references
+TypeError: address.taskTeamRunIds is not iterable
+ ❯ serializeTeamExecutionAddress src/agent-team-execution/domain/team-execution-address.ts:47:33
+     45|   JSON.stringify({
+     46|     rootTeamRunId: address.rootTeamRunId,
+     47|     taskTeamRunIds: [...address.taskTeamRunIds],
+       |                                 ^
+     48|     memberAddress: address.memberAddress,
+     49|     taskAgentRunId: address.taskAgentRunId,
+ ❯ normalizeAddressIdentityPart src/services/team-communication/team-communication-identity.ts:16:3
+ ❯ buildTeamCommunicationMessageId src/services/team-communication/team-communication-identity.ts:34:5
+ ❯ buildInterAgentMessageAgentRunEvent src/agent-team-execution/services/inter-agent-message-runtime-builders.ts:76:21
+ ❯ tests/unit/agent-team-execution/inter-agent-message-runtime-builders.test.ts:167:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/66]⎯
+
+ FAIL  tests/unit/agent-team-execution/mixed-sub-team-member-handle.test.ts > MixedSubTeamMemberHandle > routes parent-to-subteam messages to the configured child coordinator in multi-member child teams
+TypeError: Cannot read properties of undefined (reading 'address')
+ ❯ cloneTeamRunNode src/agent-team-execution/domain/team-run-config.ts:81:47
+     79| 
+     80| export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
+     81|   const address = assertAgentTeamAddress(node.address);
+       |                                               ^
+     82|   if (node.kind === "agent") {
+     83|     if (address === "/") throw new Error("The root TeamRun node must b…
+ ❯ new TeamRunConfig src/agent-team-execution/domain/team-run-config.ts:176:21
+ ❯ tests/unit/agent-team-execution/mixed-sub-team-member-handle.test.ts:60:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/66]⎯
+
+ FAIL  tests/unit/agent-team-execution/mixed-sub-team-member-handle.test.ts > MixedSubTeamMemberHandle > strips the parent subteam prefix when delivering to an explicit actual child participant
+TypeError: Cannot read properties of undefined (reading 'address')
+ ❯ cloneTeamRunNode src/agent-team-execution/domain/team-run-config.ts:81:47
+     79| 
+     80| export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
+     81|   const address = assertAgentTeamAddress(node.address);
+       |                                               ^
+     82|   if (node.kind === "agent") {
+     83|     if (address === "/") throw new Error("The root TeamRun node must b…
+ ❯ new TeamRunConfig src/agent-team-execution/domain/team-run-config.ts:176:21
+ ❯ tests/unit/agent-team-execution/mixed-sub-team-member-handle.test.ts:142:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/66]⎯
+
+ FAIL  tests/unit/agent-team-execution/mixed-team-manager.test.ts > MixedTeamManager parent-boundary delivery > forwards one root-canonical intent unchanged with the actual nested Agent identity
+TypeError: Cannot read properties of undefined (reading 'address')
+ ❯ cloneTeamRunNode src/agent-team-execution/domain/team-run-config.ts:81:47
+     79| 
+     80| export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
+     81|   const address = assertAgentTeamAddress(node.address);
+       |                                               ^
+     82|   if (node.kind === "agent") {
+     83|     if (address === "/") throw new Error("The root TeamRun node must b…
+ ❯ new TeamRunConfig src/agent-team-execution/domain/team-run-config.ts:176:21
+ ❯ createChildManager tests/unit/agent-team-execution/mixed-team-manager.test.ts:49:18
+ ❯ tests/unit/agent-team-execution/mixed-team-manager.test.ts:125:57
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/66]⎯
+
+ FAIL  tests/unit/agent-team-execution/mixed-team-manager.test.ts > MixedTeamManager parent-boundary delivery > rejects a non-root team id without invoking the parent boundary
+TypeError: Cannot read properties of undefined (reading 'address')
+ ❯ cloneTeamRunNode src/agent-team-execution/domain/team-run-config.ts:81:47
+     79| 
+     80| export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
+     81|   const address = assertAgentTeamAddress(node.address);
+       |                                               ^
+     82|   if (node.kind === "agent") {
+     83|     if (address === "/") throw new Error("The root TeamRun node must b…
+ ❯ new TeamRunConfig src/agent-team-execution/domain/team-run-config.ts:176:21
+ ❯ createChildManager tests/unit/agent-team-execution/mixed-team-manager.test.ts:49:18
+ ❯ tests/unit/agent-team-execution/mixed-team-manager.test.ts:142:57
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/66]⎯
+
+ FAIL  tests/unit/agent-team-execution/mixed-team-manager.test.ts > MixedTeamManager logical message materialization > derives its private root selector from the minimal Team ingress address
+TypeError: Cannot read properties of undefined (reading 'address')
+ ❯ cloneTeamRunNode src/agent-team-execution/domain/team-run-config.ts:81:47
+     79| 
+     80| export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
+     81|   const address = assertAgentTeamAddress(node.address);
+       |                                               ^
+     82|   if (node.kind === "agent") {
+     83|     if (address === "/") throw new Error("The root TeamRun node must b…
+ ❯ new TeamRunConfig src/agent-team-execution/domain/team-run-config.ts:176:21
+ ❯ createParentManagerWithTaskTeamTarget tests/unit/agent-team-execution/mixed-team-manager.test.ts:205:18
+ ❯ tests/unit/agent-team-execution/mixed-team-manager.test.ts:270:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/66]⎯
+
+ FAIL  tests/unit/agent-team-execution/mixed-team-manager.test.ts > MixedTeamManager termination lifecycle > keeps active task-team handles in snapshots until accepted settlement removes them
+TypeError: Cannot read properties of undefined (reading 'address')
+ ❯ cloneTeamRunNode src/agent-team-execution/domain/team-run-config.ts:81:47
+     79| 
+     80| export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
+     81|   const address = assertAgentTeamAddress(node.address);
+       |                                               ^
+     82|   if (node.kind === "agent") {
+     83|     if (address === "/") throw new Error("The root TeamRun node must b…
+ ❯ new TeamRunConfig src/agent-team-execution/domain/team-run-config.ts:176:21
+ ❯ createParentManagerWithTaskTeamTarget tests/unit/agent-team-execution/mixed-team-manager.test.ts:205:18
+ ❯ tests/unit/agent-team-execution/mixed-team-manager.test.ts:312:70
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/66]⎯
+
+ FAIL  tests/unit/agent-team-execution/mixed-team-manager.test.ts > MixedTeamManager termination lifecycle > joins repeated termination and rejects new work while terminating without aggregate status events
+TypeError: Cannot read properties of undefined (reading 'address')
+ ❯ cloneTeamRunNode src/agent-team-execution/domain/team-run-config.ts:81:47
+     79| 
+     80| export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
+     81|   const address = assertAgentTeamAddress(node.address);
+       |                                               ^
+     82|   if (node.kind === "agent") {
+     83|     if (address === "/") throw new Error("The root TeamRun node must b…
+ ❯ new TeamRunConfig src/agent-team-execution/domain/team-run-config.ts:176:21
+ ❯ createChildManager tests/unit/agent-team-execution/mixed-team-manager.test.ts:49:18
+ ❯ tests/unit/agent-team-execution/mixed-team-manager.test.ts:373:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/66]⎯
+
+ FAIL  tests/unit/agent-team-execution/mixed-team-manager.test.ts > MixedTeamManager termination lifecycle > keeps the team active and does not publish offline when active child termination is rejected
+TypeError: Cannot read properties of undefined (reading 'address')
+ ❯ cloneTeamRunNode src/agent-team-execution/domain/team-run-config.ts:81:47
+     79| 
+     80| export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
+     81|   const address = assertAgentTeamAddress(node.address);
+       |                                               ^
+     82|   if (node.kind === "agent") {
+     83|     if (address === "/") throw new Error("The root TeamRun node must b…
+ ❯ new TeamRunConfig src/agent-team-execution/domain/team-run-config.ts:176:21
+ ❯ createChildManager tests/unit/agent-team-execution/mixed-team-manager.test.ts:49:18
+ ❯ tests/unit/agent-team-execution/mixed-team-manager.test.ts:403:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/66]⎯
+
+ FAIL  tests/unit/agent-team-execution/task-delegation-service.test.ts > TaskDelegationService > delegates repeated singular active work with explicit member targets and submit_task_result work-packet protocol
+TypeError: Cannot read properties of undefined (reading 'address')
+ ❯ cloneTeamRunNode src/agent-team-execution/domain/team-run-config.ts:81:47
+     79| 
+     80| export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
+     81|   const address = assertAgentTeamAddress(node.address);
+       |                                               ^
+     82|   if (node.kind === "agent") {
+     83|     if (address === "/") throw new Error("The root TeamRun node must b…
+ ❯ new TeamRunConfig src/agent-team-execution/domain/team-run-config.ts:176:21
+ ❯ buildTeamRunConfig tests/unit/agent-team-execution/task-delegation-service.test.ts:106:3
+ ❯ createService tests/unit/agent-team-execution/task-delegation-service.test.ts:175:13
+ ❯ tests/unit/agent-team-execution/task-delegation-service.test.ts:369:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/66]⎯
+
+ FAIL  tests/unit/agent-team-execution/task-delegation-service.test.ts > TaskDelegationService > resolves task-owned reference files by task identity without message IDs
+TypeError: Cannot read properties of undefined (reading 'address')
+ ❯ cloneTeamRunNode src/agent-team-execution/domain/team-run-config.ts:81:47
+     79| 
+     80| export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
+     81|   const address = assertAgentTeamAddress(node.address);
+       |                                               ^
+     82|   if (node.kind === "agent") {
+     83|     if (address === "/") throw new Error("The root TeamRun node must b…
+ ❯ new TeamRunConfig src/agent-team-execution/domain/team-run-config.ts:176:21
+ ❯ buildTeamRunConfig tests/unit/agent-team-execution/task-delegation-service.test.ts:106:3
+ ❯ createService tests/unit/agent-team-execution/task-delegation-service.test.ts:175:13
+ ❯ tests/unit/agent-team-execution/task-delegation-service.test.ts:445:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/66]⎯
+
+ FAIL  tests/unit/agent-team-execution/task-delegation-service.test.ts > TaskDelegationService > rejects relative delegate_task reference files before task creation
+TypeError: Cannot read properties of undefined (reading 'address')
+ ❯ cloneTeamRunNode src/agent-team-execution/domain/team-run-config.ts:81:47
+     79| 
+     80| export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
+     81|   const address = assertAgentTeamAddress(node.address);
+       |                                               ^
+     82|   if (node.kind === "agent") {
+     83|     if (address === "/") throw new Error("The root TeamRun node must b…
+ ❯ new TeamRunConfig src/agent-team-execution/domain/team-run-config.ts:176:21
+ ❯ buildTeamRunConfig tests/unit/agent-team-execution/task-delegation-service.test.ts:106:3
+ ❯ createService tests/unit/agent-team-execution/task-delegation-service.test.ts:175:13
+ ❯ tests/unit/agent-team-execution/task-delegation-service.test.ts:463:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/66]⎯
+
+ FAIL  tests/unit/agent-team-execution/task-delegation-service.test.ts > TaskDelegationService > rejects invalid absolute-looking delegate_task reference files before task creation
+TypeError: Cannot read properties of undefined (reading 'address')
+ ❯ cloneTeamRunNode src/agent-team-execution/domain/team-run-config.ts:81:47
+     79| 
+     80| export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
+     81|   const address = assertAgentTeamAddress(node.address);
+       |                                               ^
+     82|   if (node.kind === "agent") {
+     83|     if (address === "/") throw new Error("The root TeamRun node must b…
+ ❯ new TeamRunConfig src/agent-team-execution/domain/team-run-config.ts:176:21
+ ❯ buildTeamRunConfig tests/unit/agent-team-execution/task-delegation-service.test.ts:106:3
+ ❯ createService tests/unit/agent-team-execution/task-delegation-service.test.ts:175:13
+ ❯ tests/unit/agent-team-execution/task-delegation-service.test.ts:483:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/66]⎯
+
+ FAIL  tests/unit/agent-team-execution/task-delegation-service.test.ts > TaskDelegationService > rejects relative submit_task_result reference files before submission persistence
+TypeError: Cannot read properties of undefined (reading 'address')
+ ❯ cloneTeamRunNode src/agent-team-execution/domain/team-run-config.ts:81:47
+     79| 
+     80| export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
+     81|   const address = assertAgentTeamAddress(node.address);
+       |                                               ^
+     82|   if (node.kind === "agent") {
+     83|     if (address === "/") throw new Error("The root TeamRun node must b…
+ ❯ new TeamRunConfig src/agent-team-execution/domain/team-run-config.ts:176:21
+ ❯ buildTeamRunConfig tests/unit/agent-team-execution/task-delegation-service.test.ts:106:3
+ ❯ createService tests/unit/agent-team-execution/task-delegation-service.test.ts:175:13
+ ❯ tests/unit/agent-team-execution/task-delegation-service.test.ts:502:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/66]⎯
+
+ FAIL  tests/unit/agent-team-execution/task-delegation-service.test.ts > TaskDelegationService > rejects relative review_task_result reference files before review persistence
+TypeError: Cannot read properties of undefined (reading 'address')
+ ❯ cloneTeamRunNode src/agent-team-execution/domain/team-run-config.ts:81:47
+     79| 
+     80| export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
+     81|   const address = assertAgentTeamAddress(node.address);
+       |                                               ^
+     82|   if (node.kind === "agent") {
+     83|     if (address === "/") throw new Error("The root TeamRun node must b…
+ ❯ new TeamRunConfig src/agent-team-execution/domain/team-run-config.ts:176:21
+ ❯ buildTeamRunConfig tests/unit/agent-team-execution/task-delegation-service.test.ts:106:3
+ ❯ createService tests/unit/agent-team-execution/task-delegation-service.test.ts:175:13
+ ❯ tests/unit/agent-team-execution/task-delegation-service.test.ts:527:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/66]⎯
+
+ FAIL  tests/unit/agent-team-execution/task-delegation-service.test.ts > TaskDelegationService > delegates to an explicit team target and binds a task-team execution instance
+TypeError: Cannot read properties of undefined (reading 'address')
+ ❯ cloneTeamRunNode src/agent-team-execution/domain/team-run-config.ts:81:47
+     79| 
+     80| export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
+     81|   const address = assertAgentTeamAddress(node.address);
+       |                                               ^
+     82|   if (node.kind === "agent") {
+     83|     if (address === "/") throw new Error("The root TeamRun node must b…
+ ❯ new TeamRunConfig src/agent-team-execution/domain/team-run-config.ts:176:21
+ ❯ buildTeamRunConfig tests/unit/agent-team-execution/task-delegation-service.test.ts:106:3
+ ❯ createService tests/unit/agent-team-execution/task-delegation-service.test.ts:175:13
+ ❯ tests/unit/agent-team-execution/task-delegation-service.test.ts:560:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/66]⎯
+
+ FAIL  tests/unit/agent-team-execution/task-delegation-service.test.ts > TaskDelegationService > keeps activation visible content task-centered instead of sender-framed
+TypeError: Cannot read properties of undefined (reading 'address')
+ ❯ cloneTeamRunNode src/agent-team-execution/domain/team-run-config.ts:81:47
+     79| 
+     80| export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
+     81|   const address = assertAgentTeamAddress(node.address);
+       |                                               ^
+     82|   if (node.kind === "agent") {
+     83|     if (address === "/") throw new Error("The root TeamRun node must b…
+ ❯ new TeamRunConfig src/agent-team-execution/domain/team-run-config.ts:176:21
+ ❯ buildTeamRunConfig tests/unit/agent-team-execution/task-delegation-service.test.ts:106:3
+ ❯ createService tests/unit/agent-team-execution/task-delegation-service.test.ts:175:13
+ ❯ tests/unit/agent-team-execution/task-delegation-service.test.ts:666:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/66]⎯
+
+ FAIL  tests/unit/agent-team-execution/task-delegation-service.test.ts > TaskDelegationService > submits, revises, submits again, accepts latest pending submission, and settles after idle
+TypeError: Cannot read properties of undefined (reading 'address')
+ ❯ cloneTeamRunNode src/agent-team-execution/domain/team-run-config.ts:81:47
+     79| 
+     80| export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
+     81|   const address = assertAgentTeamAddress(node.address);
+       |                                               ^
+     82|   if (node.kind === "agent") {
+     83|     if (address === "/") throw new Error("The root TeamRun node must b…
+ ❯ new TeamRunConfig src/agent-team-execution/domain/team-run-config.ts:176:21
+ ❯ buildTeamRunConfig tests/unit/agent-team-execution/task-delegation-service.test.ts:106:3
+ ❯ createService tests/unit/agent-team-execution/task-delegation-service.test.ts:175:13
+ ❯ tests/unit/agent-team-execution/task-delegation-service.test.ts:697:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[23/66]⎯
+
+ FAIL  tests/unit/agent-team-execution/task-delegation-service.test.ts > TaskDelegationService > commits result submission and returns a concise message when notification delivery fails
+TypeError: Cannot read properties of undefined (reading 'address')
+ ❯ cloneTeamRunNode src/agent-team-execution/domain/team-run-config.ts:81:47
+     79| 
+     80| export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
+     81|   const address = assertAgentTeamAddress(node.address);
+       |                                               ^
+     82|   if (node.kind === "agent") {
+     83|     if (address === "/") throw new Error("The root TeamRun node must b…
+ ❯ new TeamRunConfig src/agent-team-execution/domain/team-run-config.ts:176:21
+ ❯ buildTeamRunConfig tests/unit/agent-team-execution/task-delegation-service.test.ts:106:3
+ ❯ createService tests/unit/agent-team-execution/task-delegation-service.test.ts:175:13
+ ❯ tests/unit/agent-team-execution/task-delegation-service.test.ts:880:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[24/66]⎯
+
+ FAIL  tests/unit/agent-team-execution/task-delegation-service.test.ts > TaskDelegationService > returns only a concise message when revision notification delivery fails
+TypeError: Cannot read properties of undefined (reading 'address')
+ ❯ cloneTeamRunNode src/agent-team-execution/domain/team-run-config.ts:81:47
+     79| 
+     80| export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
+     81|   const address = assertAgentTeamAddress(node.address);
+       |                                               ^
+     82|   if (node.kind === "agent") {
+     83|     if (address === "/") throw new Error("The root TeamRun node must b…
+ ❯ new TeamRunConfig src/agent-team-execution/domain/team-run-config.ts:176:21
+ ❯ buildTeamRunConfig tests/unit/agent-team-execution/task-delegation-service.test.ts:106:3
+ ❯ createService tests/unit/agent-team-execution/task-delegation-service.test.ts:175:13
+ ❯ tests/unit/agent-team-execution/task-delegation-service.test.ts:906:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[25/66]⎯
+
+ FAIL  tests/unit/agent-team-execution/task-delegation-service.test.ts > TaskDelegationService > keeps rejected activations not_started and does not publish active exact-run targets
+TypeError: Cannot read properties of undefined (reading 'address')
+ ❯ cloneTeamRunNode src/agent-team-execution/domain/team-run-config.ts:81:47
+     79| 
+     80| export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
+     81|   const address = assertAgentTeamAddress(node.address);
+       |                                               ^
+     82|   if (node.kind === "agent") {
+     83|     if (address === "/") throw new Error("The root TeamRun node must b…
+ ❯ new TeamRunConfig src/agent-team-execution/domain/team-run-config.ts:176:21
+ ❯ buildTeamRunConfig tests/unit/agent-team-execution/task-delegation-service.test.ts:106:3
+ ❯ createService tests/unit/agent-team-execution/task-delegation-service.test.ts:175:13
+ ❯ tests/unit/agent-team-execution/task-delegation-service.test.ts:939:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[26/66]⎯
+
+ FAIL  tests/unit/agent-team-execution/task-delegation-service.test.ts > TaskDelegationService > rolls back task-agent directory and ledger state when activation throws
+TypeError: Cannot read properties of undefined (reading 'address')
+ ❯ cloneTeamRunNode src/agent-team-execution/domain/team-run-config.ts:81:47
+     79| 
+     80| export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
+     81|   const address = assertAgentTeamAddress(node.address);
+       |                                               ^
+     82|   if (node.kind === "agent") {
+     83|     if (address === "/") throw new Error("The root TeamRun node must b…
+ ❯ new TeamRunConfig src/agent-team-execution/domain/team-run-config.ts:176:21
+ ❯ buildTeamRunConfig tests/unit/agent-team-execution/task-delegation-service.test.ts:106:3
+ ❯ createService tests/unit/agent-team-execution/task-delegation-service.test.ts:175:13
+ ❯ tests/unit/agent-team-execution/task-delegation-service.test.ts:956:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[27/66]⎯
+
+ FAIL  tests/unit/agent-team-execution/task-delegation-service.test.ts > TaskDelegationService > supports task-agent delegators and blocks parent settlement while child delegation is open
+TypeError: Cannot read properties of undefined (reading 'address')
+ ❯ cloneTeamRunNode src/agent-team-execution/domain/team-run-config.ts:81:47
+     79| 
+     80| export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
+     81|   const address = assertAgentTeamAddress(node.address);
+       |                                               ^
+     82|   if (node.kind === "agent") {
+     83|     if (address === "/") throw new Error("The root TeamRun node must b…
+ ❯ new TeamRunConfig src/agent-team-execution/domain/team-run-config.ts:176:21
+ ❯ buildTeamRunConfig tests/unit/agent-team-execution/task-delegation-service.test.ts:106:3
+ ❯ createService tests/unit/agent-team-execution/task-delegation-service.test.ts:175:13
+ ❯ tests/unit/agent-team-execution/task-delegation-service.test.ts:972:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[28/66]⎯
+
+ FAIL  tests/unit/agent-team-execution/task-delegation-service.test.ts > TaskDelegationService > rejects settled task-agent delegate_task before creating child work
+TypeError: Cannot read properties of undefined (reading 'address')
+ ❯ cloneTeamRunNode src/agent-team-execution/domain/team-run-config.ts:81:47
+     79| 
+     80| export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
+     81|   const address = assertAgentTeamAddress(node.address);
+       |                                               ^
+     82|   if (node.kind === "agent") {
+     83|     if (address === "/") throw new Error("The root TeamRun node must b…
+ ❯ new TeamRunConfig src/agent-team-execution/domain/team-run-config.ts:176:21
+ ❯ buildTeamRunConfig tests/unit/agent-team-execution/task-delegation-service.test.ts:106:3
+ ❯ createService tests/unit/agent-team-execution/task-delegation-service.test.ts:175:13
+ ❯ tests/unit/agent-team-execution/task-delegation-service.test.ts:1006:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[29/66]⎯
+
+ FAIL  tests/unit/agent-team-execution/task-delegation-service.test.ts > TaskDelegationService > rejects settled task-agent review identity before recording a child review
+TypeError: Cannot read properties of undefined (reading 'address')
+ ❯ cloneTeamRunNode src/agent-team-execution/domain/team-run-config.ts:81:47
+     79| 
+     80| export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
+     81|   const address = assertAgentTeamAddress(node.address);
+       |                                               ^
+     82|   if (node.kind === "agent") {
+     83|     if (address === "/") throw new Error("The root TeamRun node must b…
+ ❯ new TeamRunConfig src/agent-team-execution/domain/team-run-config.ts:176:21
+ ❯ buildTeamRunConfig tests/unit/agent-team-execution/task-delegation-service.test.ts:106:3
+ ❯ createService tests/unit/agent-team-execution/task-delegation-service.test.ts:175:13
+ ❯ tests/unit/agent-team-execution/task-delegation-service.test.ts:1028:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[30/66]⎯
+
+ FAIL  tests/unit/agent-team-execution/task-delegation-target-mapper.test.ts > TaskDelegationTargetMapper > maps a direct Agent placement to current-Team execution identity
+CollaborationContractError: AgentTeam address '[object Object]' is invalid: a non-empty already-trimmed value is required
+ ❯ invalidAddress src/agent-collaboration/domain/agent-team-address.ts:11:9
+      9| 
+     10| const invalidAddress = (value: unknown, detail: string): never => {
+     11|   throw new CollaborationContractError(
+       |         ^
+     12|     "COLLABORATION_ADDRESS_INVALID",
+     13|     `AgentTeam address '${String(value)}' is invalid: ${detail}`,
+ ❯ parseRootedSegments src/agent-collaboration/domain/agent-team-address.ts:40:12
+ ❯ assertAgentTeamAddress src/agent-collaboration/domain/agent-team-address.ts:80:3
+ ❯ createResolvedAgentRecipient src/agent-team-execution/services/resolved-team-recipient.ts:15:43
+ ❯ tests/unit/agent-team-execution/task-delegation-target-mapper.test.ts:65:23
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[31/66]⎯
+
+ FAIL  tests/unit/agent-team-execution/task-delegation-target-mapper.test.ts > TaskDelegationTargetMapper > maps a direct Team placement through its exact localized real coordinator
+CollaborationContractError: AgentTeam address 'undefined' is invalid: a non-empty already-trimmed value is required
+ ❯ invalidAddress src/agent-collaboration/domain/agent-team-address.ts:11:9
+      9| 
+     10| const invalidAddress = (value: unknown, detail: string): never => {
+     11|   throw new CollaborationContractError(
+       |         ^
+     12|     "COLLABORATION_ADDRESS_INVALID",
+     13|     `AgentTeam address '${String(value)}' is invalid: ${detail}`,
+ ❯ parseRootedSegments src/agent-collaboration/domain/agent-team-address.ts:40:12
+ ❯ assertAgentTeamAddress src/agent-collaboration/domain/agent-team-address.ts:80:3
+ ❯ createResolvedAgentTeamRecipient src/agent-team-execution/services/resolved-team-recipient.ts:23:23
+ ❯ tests/unit/agent-team-execution/task-delegation-target-mapper.test.ts:88:23
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[32/66]⎯
+
+ FAIL  tests/unit/agent-team-execution/task-delegation-target-mapper.test.ts > TaskDelegationTargetMapper > rejects a valid cross-branch or deeper placement before task activation identity exists
+CollaborationContractError: AgentTeam address '[object Object]' is invalid: a non-empty already-trimmed value is required
+ ❯ invalidAddress src/agent-collaboration/domain/agent-team-address.ts:11:9
+      9| 
+     10| const invalidAddress = (value: unknown, detail: string): never => {
+     11|   throw new CollaborationContractError(
+       |         ^
+     12|     "COLLABORATION_ADDRESS_INVALID",
+     13|     `AgentTeam address '${String(value)}' is invalid: ${detail}`,
+ ❯ parseRootedSegments src/agent-collaboration/domain/agent-team-address.ts:40:12
+ ❯ assertAgentTeamAddress src/agent-collaboration/domain/agent-team-address.ts:80:3
+ ❯ createResolvedAgentRecipient src/agent-team-execution/services/resolved-team-recipient.ts:15:43
+ ❯ tests/unit/agent-team-execution/task-delegation-target-mapper.test.ts:119:23
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[33/66]⎯
+
+ FAIL  tests/unit/agent-team-execution/task-delegation-target-mapper.test.ts > TaskDelegationTargetMapper > rejects the caller Agent even when its direct current-Team config matches
+CollaborationContractError: AgentTeam address '[object Object]' is invalid: a non-empty already-trimmed value is required
+ ❯ invalidAddress src/agent-collaboration/domain/agent-team-address.ts:11:9
+      9| 
+     10| const invalidAddress = (value: unknown, detail: string): never => {
+     11|   throw new CollaborationContractError(
+       |         ^
+     12|     "COLLABORATION_ADDRESS_INVALID",
+     13|     `AgentTeam address '${String(value)}' is invalid: ${detail}`,
+ ❯ parseRootedSegments src/agent-collaboration/domain/agent-team-address.ts:40:12
+ ❯ assertAgentTeamAddress src/agent-collaboration/domain/agent-team-address.ts:80:3
+ ❯ createResolvedAgentRecipient src/agent-team-execution/services/resolved-team-recipient.ts:15:43
+ ❯ tests/unit/agent-team-execution/task-delegation-target-mapper.test.ts:132:23
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[34/66]⎯
+
+ FAIL  tests/unit/agent-team-execution/task-delegation-target-mapper.test.ts > TaskDelegationTargetMapper > does not retry a root-prefixed coordinator when current-local topology is inconsistent
+TypeError: Cannot read properties of undefined (reading 'address')
+ ❯ cloneTeamRunNode src/agent-team-execution/domain/team-run-config.ts:81:47
+     79| 
+     80| export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
+     81|   const address = assertAgentTeamAddress(node.address);
+       |                                               ^
+     82|   if (node.kind === "agent") {
+     83|     if (address === "/") throw new Error("The root TeamRun node must b…
+ ❯ new TeamRunConfig src/agent-team-execution/domain/team-run-config.ts:176:21
+ ❯ buildCurrentResearchConfig tests/unit/agent-team-execution/task-delegation-target-mapper.test.ts:28:42
+ ❯ tests/unit/agent-team-execution/task-delegation-target-mapper.test.ts:145:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[35/66]⎯
+
+ FAIL  tests/unit/agent-team-execution/task-delegation-target-mapper.test.ts > TaskDelegationTargetMapper > rejects a Team ingress outside the resolved Team before local coordinator mapping
+CollaborationContractError: AgentTeam address 'undefined' is invalid: a non-empty already-trimmed value is required
+ ❯ invalidAddress src/agent-collaboration/domain/agent-team-address.ts:11:9
+      9| 
+     10| const invalidAddress = (value: unknown, detail: string): never => {
+     11|   throw new CollaborationContractError(
+       |         ^
+     12|     "COLLABORATION_ADDRESS_INVALID",
+     13|     `AgentTeam address '${String(value)}' is invalid: ${detail}`,
+ ❯ parseRootedSegments src/agent-collaboration/domain/agent-team-address.ts:40:12
+ ❯ assertAgentTeamAddress src/agent-collaboration/domain/agent-team-address.ts:80:3
+ ❯ createResolvedAgentTeamRecipient src/agent-team-execution/services/resolved-team-recipient.ts:23:23
+ ❯ tests/unit/agent-team-execution/task-delegation-target-mapper.test.ts:163:23
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[36/66]⎯
+
+ FAIL  tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts > MixedTeamManager focused member routing > interrupts only the requested member route key
+TypeError: Cannot read properties of undefined (reading 'address')
+ ❯ cloneTeamRunNode src/agent-team-execution/domain/team-run-config.ts:81:47
+     79| 
+     80| export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
+     81|   const address = assertAgentTeamAddress(node.address);
+       |                                               ^
+     82|   if (node.kind === "agent") {
+     83|     if (address === "/") throw new Error("The root TeamRun node must b…
+ ❯ new TeamRunConfig src/agent-team-execution/domain/team-run-config.ts:176:21
+ ❯ createTeamRunConfig tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts:38:35
+ ❯ createMixedManager tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts:68:13
+ ❯ tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts:211:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[37/66]⎯
+
+ FAIL  tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts > MixedTeamManager focused member routing > rejects interrupt run-id guard mismatches without retargeting by run id
+TypeError: Cannot read properties of undefined (reading 'address')
+ ❯ cloneTeamRunNode src/agent-team-execution/domain/team-run-config.ts:81:47
+     79| 
+     80| export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
+     81|   const address = assertAgentTeamAddress(node.address);
+       |                                               ^
+     82|   if (node.kind === "agent") {
+     83|     if (address === "/") throw new Error("The root TeamRun node must b…
+ ❯ new TeamRunConfig src/agent-team-execution/domain/team-run-config.ts:176:21
+ ❯ createTeamRunConfig tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts:38:35
+ ❯ createMixedManager tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts:68:13
+ ❯ tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts:223:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[38/66]⎯
+
+ FAIL  tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts > MixedTeamManager focused member routing > settles only the requested member route key
+TypeError: Cannot read properties of undefined (reading 'address')
+ ❯ cloneTeamRunNode src/agent-team-execution/domain/team-run-config.ts:81:47
+     79| 
+     80| export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
+     81|   const address = assertAgentTeamAddress(node.address);
+       |                                               ^
+     82|   if (node.kind === "agent") {
+     83|     if (address === "/") throw new Error("The root TeamRun node must b…
+ ❯ new TeamRunConfig src/agent-team-execution/domain/team-run-config.ts:176:21
+ ❯ createTeamRunConfig tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts:38:35
+ ❯ createMixedManager tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts:68:13
+ ❯ tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts:238:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[39/66]⎯
+
+ FAIL  tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts > MixedTeamManager focused member routing > routes approval to the concrete task-agent run instead of the logical member run
+TypeError: Cannot read properties of undefined (reading 'address')
+ ❯ cloneTeamRunNode src/agent-team-execution/domain/team-run-config.ts:81:47
+     79| 
+     80| export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
+     81|   const address = assertAgentTeamAddress(node.address);
+       |                                               ^
+     82|   if (node.kind === "agent") {
+     83|     if (address === "/") throw new Error("The root TeamRun node must b…
+ ❯ new TeamRunConfig src/agent-team-execution/domain/team-run-config.ts:176:21
+ ❯ createTeamRunConfig tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts:38:35
+ ❯ createMixedManager tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts:68:13
+ ❯ tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts:254:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[40/66]⎯
+
+ FAIL  tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts > MixedTeamManager focused member routing > routes messages to the concrete task-agent run instead of the logical member run
+TypeError: Cannot read properties of undefined (reading 'address')
+ ❯ cloneTeamRunNode src/agent-team-execution/domain/team-run-config.ts:81:47
+     79| 
+     80| export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
+     81|   const address = assertAgentTeamAddress(node.address);
+       |                                               ^
+     82|   if (node.kind === "agent") {
+     83|     if (address === "/") throw new Error("The root TeamRun node must b…
+ ❯ new TeamRunConfig src/agent-team-execution/domain/team-run-config.ts:176:21
+ ❯ createTeamRunConfig tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts:38:35
+ ❯ createMixedManager tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts:68:13
+ ❯ tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts:277:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[41/66]⎯
+
+ FAIL  tests/unit/agent-team-execution/team-member-delivery-coordinator.test.ts > TeamMemberDeliveryCoordinator > commits recipient input once and publishes one accepted communication with actual participants
+TypeError: Cannot read properties of undefined (reading 'trim')
+ ❯ new TeamRunContext src/agent-team-execution/domain/team-run-context.ts:49:38
+     47| 
+     48|   constructor(input: TeamRunContextInput<TRuntimeContext>) {
+     49|     this.teamRunId = input.teamRunId.trim();
+       |                                      ^
+     50|     if (!this.teamRunId) throw new Error("teamRunId is required.");
+     51|     this.teamAddress = input.teamAddress;
+ ❯ createSubject tests/unit/agent-team-execution/team-member-delivery-coordinator.test.ts:65:19
+ ❯ tests/unit/agent-team-execution/team-member-delivery-coordinator.test.ts:90:50
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[42/66]⎯
+
+ FAIL  tests/unit/agent-team-execution/team-member-delivery-coordinator.test.ts > TeamMemberDeliveryCoordinator > publishes no accepted communication when recipient input is rejected
+TypeError: Cannot read properties of undefined (reading 'trim')
+ ❯ new TeamRunContext src/agent-team-execution/domain/team-run-context.ts:49:38
+     47| 
+     48|   constructor(input: TeamRunContextInput<TRuntimeContext>) {
+     49|     this.teamRunId = input.teamRunId.trim();
+       |                                      ^
+     50|     if (!this.teamRunId) throw new Error("teamRunId is required.");
+     51|     this.teamAddress = input.teamAddress;
+ ❯ createSubject tests/unit/agent-team-execution/team-member-delivery-coordinator.test.ts:65:19
+ ❯ tests/unit/agent-team-execution/team-member-delivery-coordinator.test.ts:117:50
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[43/66]⎯
+
+ FAIL  tests/unit/application-bundles/file-application-bundle-provider.test.ts > FileApplicationBundleProvider > lists valid bundles from the managed built-in application root with manifest execution resource slots
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/unit/application-bundles/file-application-bundle-provider.test.ts:348:21
+    346|     const bundles = await provider.listBundles();
+    347| 
+    348|     expect(bundles).toHaveLength(1);
+       |                     ^
+    349|     expect(bundles[0]).toMatchObject({
+    350|       id: buildCanonicalApplicationId(BUILT_IN_APPLICATION_PACKAGE_ID,…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[44/66]⎯
+
+ FAIL  tests/unit/application-bundles/file-application-bundle-provider.test.ts > FileApplicationBundleProvider > surfaces retired frontend SDK compatibility versions as diagnostics
+AssertionError: expected 'Application manifest \'/var/folders/7…' to contain 'Unsupported ui.frontendSdkContractVer…'
+
+Expected: "Unsupported ui.frontendSdkContractVersion '2'."
+Received: "Application manifest '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-app-bundles-ZhBWjF/app-data/application-packages/platform/applications/sample-app/application.json' declares ui.frontendSdkContractVersion '2', but '5' is required. Rebuild or reinstall the application with the current AutoByteus application SDKs."
+
+ ❯ tests/unit/application-bundles/file-application-bundle-provider.test.ts:409:46
+    407|     expect(snapshot.applications).toHaveLength(0);
+    408|     expect(snapshot.diagnostics).toHaveLength(1);
+    409|     expect(snapshot.diagnostics[0]?.message).toContain(
+       |                                              ^
+    410|       `Unsupported ui.frontendSdkContractVersion '${retiredFrontendSdk…
+    411|     );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[45/66]⎯
+
+ FAIL  tests/unit/application-bundles/file-application-bundle-provider.test.ts > FileApplicationBundleProvider > surfaces retired backend bundle frontend SDK compatibility versions as diagnostics
+AssertionError: expected 'Application manifest \'/var/folders/7…' to contain 'Unsupported frontendSdkContractVersio…'
+
+Expected: "Unsupported frontendSdkContractVersion '2'."
+Received: "Application manifest '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-app-bundles-JoSVXk/app-data/application-packages/platform/applications/sample-app/application.json' declares ui.frontendSdkContractVersion '4', but '5' is required. Rebuild or reinstall the application with the current AutoByteus application SDKs."
+
+ ❯ tests/unit/application-bundles/file-application-bundle-provider.test.ts:449:46
+    447|     expect(snapshot.applications).toHaveLength(0);
+    448|     expect(snapshot.diagnostics).toHaveLength(1);
+    449|     expect(snapshot.diagnostics[0]?.message).toContain(
+       |                                              ^
+    450|       `Unsupported frontendSdkContractVersion '${retiredFrontendSdkVer…
+    451|     );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[46/66]⎯
+
+ FAIL  tests/unit/application-bundles/file-application-bundle-provider.test.ts > FileApplicationBundleProvider > rejects an explicit v3 backend-definition compatibility fixture during discovery
+AssertionError: expected 'Application manifest \'/var/folders/7…' to contain 'Unsupported backendDefinitionContract…'
+
+Expected: "Unsupported backendDefinitionContractVersion '3'."
+Received: "Application manifest '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-app-bundles-MYQDfw/app-data/application-packages/platform/applications/sample-app/application.json' declares ui.frontendSdkContractVersion '4', but '5' is required. Rebuild or reinstall the application with the current AutoByteus application SDKs."
+
+ ❯ tests/unit/application-bundles/file-application-bundle-provider.test.ts:471:46
+    469|     expect(snapshot.applications).toHaveLength(0);
+    470|     expect(snapshot.diagnostics).toHaveLength(1);
+    471|     expect(snapshot.diagnostics[0]?.message).toContain(
+       |                                              ^
+    472|       "Unsupported backendDefinitionContractVersion '3'.",
+    473|     );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[47/66]⎯
+
+ FAIL  tests/unit/application-bundles/file-application-bundle-provider.test.ts > FileApplicationBundleProvider > surfaces malformed manifests as diagnostics instead of crashing discovery
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/unit/application-bundles/file-application-bundle-provider.test.ts:507:35
+    505|     const snapshot = await buildProvider().getCatalogSnapshot();
+    506| 
+    507|     expect(snapshot.applications).toHaveLength(1);
+       |                                   ^
+    508|     expect(snapshot.diagnostics).toHaveLength(1);
+    509|     expect(snapshot.diagnostics[0]).toMatchObject({
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[48/66]⎯
+
+ FAIL  tests/unit/application-bundles/file-application-bundle-provider.test.ts > FileApplicationBundleProvider > surfaces legacy slot field 'allowedResourceKinds' as diagnostics
+AssertionError: expected 'Application manifest \'/var/folders/7…' to contain 'executionResourceSlots[0].allowedReso…'
+
+Expected: "executionResourceSlots[0].allowedResourceKinds is no longer supported"
+Received: "Application manifest '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-app-bundles-sA6UIy/app-data/application-packages/platform/applications/sample-app/application.json' declares ui.frontendSdkContractVersion '4', but '5' is required. Rebuild or reinstall the application with the current AutoByteus application SDKs."
+
+ ❯ tests/unit/application-bundles/file-application-bundle-provider.test.ts:599:46
+    597|     expect(snapshot.applications).toHaveLength(0);
+    598|     expect(snapshot.diagnostics).toHaveLength(1);
+    599|     expect(snapshot.diagnostics[0]?.message).toContain(expectedMessage…
+       |                                              ^
+    600|   });
+    601| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[49/66]⎯
+
+ FAIL  tests/unit/application-bundles/file-application-bundle-provider.test.ts > FileApplicationBundleProvider > surfaces legacy slot field 'allowedResourceOwners' as diagnostics
+AssertionError: expected 'Application manifest \'/var/folders/7…' to contain 'executionResourceSlots[0].allowedReso…'
+
+Expected: "executionResourceSlots[0].allowedResourceOwners is no longer supported"
+Received: "Application manifest '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-app-bundles-wC9Cda/app-data/application-packages/platform/applications/sample-app/application.json' declares ui.frontendSdkContractVersion '4', but '5' is required. Rebuild or reinstall the application with the current AutoByteus application SDKs."
+
+ ❯ tests/unit/application-bundles/file-application-bundle-provider.test.ts:599:46
+    597|     expect(snapshot.applications).toHaveLength(0);
+    598|     expect(snapshot.diagnostics).toHaveLength(1);
+    599|     expect(snapshot.diagnostics[0]?.message).toContain(expectedMessage…
+       |                                              ^
+    600|   });
+    601| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[50/66]⎯
+
+ FAIL  tests/unit/application-bundles/file-application-bundle-provider.test.ts > FileApplicationBundleProvider > surfaces legacy slot field 'defaultResourceRef' as diagnostics
+AssertionError: expected 'Application manifest \'/var/folders/7…' to contain 'executionResourceSlots[0].defaultReso…'
+
+Expected: "executionResourceSlots[0].defaultResourceRef is no longer supported"
+Received: "Application manifest '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-app-bundles-SstAzF/app-data/application-packages/platform/applications/sample-app/application.json' declares ui.frontendSdkContractVersion '4', but '5' is required. Rebuild or reinstall the application with the current AutoByteus application SDKs."
+
+ ❯ tests/unit/application-bundles/file-application-bundle-provider.test.ts:599:46
+    597|     expect(snapshot.applications).toHaveLength(0);
+    598|     expect(snapshot.diagnostics).toHaveLength(1);
+    599|     expect(snapshot.diagnostics[0]?.message).toContain(expectedMessage…
+       |                                              ^
+    600|   });
+    601| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[51/66]⎯
+
+ FAIL  tests/unit/application-bundles/file-application-bundle-provider.test.ts > FileApplicationBundleProvider > surfaces legacy slot field 'defaultExecutionResourceRef.owner' as diagnostics
+AssertionError: expected 'Application manifest \'/var/folders/7…' to contain 'executionResourceSlots[0].defaultExec…'
+
+Expected: "executionResourceSlots[0].defaultExecutionResourceRef.owner is no longer supported"
+Received: "Application manifest '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-app-bundles-Rk1meQ/app-data/application-packages/platform/applications/sample-app/application.json' declares ui.frontendSdkContractVersion '4', but '5' is required. Rebuild or reinstall the application with the current AutoByteus application SDKs."
+
+ ❯ tests/unit/application-bundles/file-application-bundle-provider.test.ts:599:46
+    597|     expect(snapshot.applications).toHaveLength(0);
+    598|     expect(snapshot.diagnostics).toHaveLength(1);
+    599|     expect(snapshot.diagnostics[0]?.message).toContain(expectedMessage…
+       |                                              ^
+    600|   });
+    601| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[52/66]⎯
+
+ FAIL  tests/unit/application-bundles/file-application-bundle-provider.test.ts > FileApplicationBundleProvider > fails package validation when a discovered resource-slot default does not resolve
+AssertionError: expected [Function] to throw error including 'does not resolve to a discovered bund…' but got 'Application manifest \'/var/folders/7…'
+
+Expected: "does not resolve to a discovered bundle-owned agent_team"
+Received: "Application manifest '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-app-bundles-KLEpsH/app-data/application-packages/platform/applications/sample-app/application.json' declares ui.frontendSdkContractVersion '4', but '5' is required. Rebuild or reinstall the application with the current AutoByteus application SDKs."
+
+ ❯ tests/unit/application-bundles/file-application-bundle-provider.test.ts:621:5
+    619|     const provider = buildProvider();
+    620| 
+    621|     await expect(
+       |     ^
+    622|       provider.validatePackageRoot(builtInRoot, BUILT_IN_APPLICATION_P…
+    623|     ).rejects.toThrow("does not resolve to a discovered bundle-owned a…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[53/66]⎯
+
+ FAIL  tests/unit/application-bundles/file-application-bundle-provider.test.ts > FileApplicationBundleProvider > rejects bundles whose application-owned team references a missing local agent
+AssertionError: expected [Function] to throw error including 'must reference a local agent inside i…' but got 'Application manifest \'/var/folders/7…'
+
+Expected: "must reference a local agent inside its own agents/ folder"
+Received: "Application manifest '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-app-bundles-VOXOe0/app-data/application-packages/platform/applications/sample-app/application.json' declares ui.frontendSdkContractVersion '4', but '5' is required. Rebuild or reinstall the application with the current AutoByteus application SDKs."
+
+ ❯ tests/unit/application-bundles/file-application-bundle-provider.test.ts:630:5
+    628|     const provider = buildProvider();
+    629| 
+    630|     await expect(provider.validatePackageRoot(builtInRoot, BUILT_IN_AP…
+       |     ^
+    631|       "must reference a local agent inside its own agents/ folder",
+    632|     );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[54/66]⎯
+
+ FAIL  tests/unit/application-bundles/file-application-bundle-provider.test.ts > FileApplicationBundleProvider > recursively validates team-local child teams without cataloging them as app-owned roots
+AssertionError: promise rejected "Error: Application manifest '/var/folders…" instead of resolving
+ ❯ tests/unit/application-bundles/file-application-bundle-provider.test.ts:670:5
+    668|     await expect(
+    669|       provider.validatePackageRoot(builtInRoot, BUILT_IN_APPLICATION_P…
+    670|     ).resolves.toBeUndefined();
+       |     ^
+    671|     await expect(provider.listBundles()).resolves.toMatchObject([
+    672|       {
+
+Caused by: Error: Application manifest '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-app-bundles-pJPqk5/app-data/application-packages/platform/applications/sample-app/application.json' declares ui.frontendSdkContractVersion '4', but '5' is required. Rebuild or reinstall the application with the current AutoByteus application SDKs.
+ ❯ FileApplicationBundleProvider.validatePackageRoot src/application-bundles/providers/file-application-bundle-provider.ts:486:13
+ ❯ tests/unit/application-bundles/file-application-bundle-provider.test.ts:668:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[55/66]⎯
+
+ FAIL  tests/unit/application-bundles/file-application-bundle-provider.test.ts > FileApplicationBundleProvider > rejects malformed team-local child team configs during application bundle validation
+AssertionError: expected [Function] to throw error including 'must include refScope \'shared\', \'t…' but got 'Application manifest \'/var/folders/7…'
+
+Expected: "must include refScope 'shared', 'team_local', or 'application_owned'"
+Received: "Application manifest '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-app-bundles-DHqiak/app-data/application-packages/platform/applications/sample-app/application.json' declares ui.frontendSdkContractVersion '4', but '5' is required. Rebuild or reinstall the application with the current AutoByteus application SDKs."
+
+ ❯ tests/unit/application-bundles/file-application-bundle-provider.test.ts:693:5
+    691|     const provider = buildProvider();
+    692| 
+    693|     await expect(
+       |     ^
+    694|       provider.validatePackageRoot(builtInRoot, BUILT_IN_APPLICATION_P…
+    695|     ).rejects.toThrow("must include refScope 'shared', 'team_local', o…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[56/66]⎯
+
+ FAIL  tests/unit/application-bundles/file-application-bundle-provider.test.ts > FileApplicationBundleProvider > rejects team-local child teams whose own local agents are missing
+AssertionError: expected [Function] to throw error including 'must reference a local agent inside i…' but got 'Application manifest \'/var/folders/7…'
+
+Expected: "must reference a local agent inside its own agents/ folder"
+Received: "Application manifest '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-app-bundles-6Ce150/app-data/application-packages/platform/applications/sample-app/application.json' declares ui.frontendSdkContractVersion '4', but '5' is required. Rebuild or reinstall the application with the current AutoByteus application SDKs."
+
+ ❯ tests/unit/application-bundles/file-application-bundle-provider.test.ts:713:5
+    711|     const provider = buildProvider();
+    712| 
+    713|     await expect(
+       |     ^
+    714|       provider.validatePackageRoot(builtInRoot, BUILT_IN_APPLICATION_P…
+    715|     ).rejects.toThrow("must reference a local agent inside its own age…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[57/66]⎯
+
+ FAIL  tests/unit/application-bundles/file-application-bundle-provider.test.ts > FileApplicationBundleProvider > ignores nested packaging mirrors under a discovered package root
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/unit/application-bundles/file-application-bundle-provider.test.ts:752:21
+    750|     const bundles = await provider.listBundles();
+    751| 
+    752|     expect(bundles).toHaveLength(1);
+       |                     ^
+    753|     expect(bundles[0]?.localApplicationId).toBe("sample-app");
+    754|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[58/66]⎯
+
+ FAIL  tests/unit/application-bundles/file-application-bundle-provider.test.ts > FileApplicationBundleProvider > preserves built-in application ids when the same root path is also configured as an additional package root
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/unit/application-bundles/file-application-bundle-provider.test.ts:770:21
+    768|     const bundles = await provider.listBundles();
+    769| 
+    770|     expect(bundles).toHaveLength(1);
+       |                     ^
+    771|     expect(bundles[0]).toMatchObject({
+    772|       packageId: BUILT_IN_APPLICATION_PACKAGE_ID,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[59/66]⎯
+
+ FAIL  tests/unit/application-engine/application-backend-definition-loader.test.ts > ApplicationBackendDefinitionLoader WebSocket validation > rejects stale v3 definitions and routes disabled by the bundle authority
+AssertionError: expected [Function] to throw error including 'Unsupported application backend defin…' but got 'Application \'app-1\' backend entry \…'
+
+Expected: "Unsupported application backend definitionContractVersion '3'"
+Received: "Application 'app-1' backend entry '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/application-definition-loader-IIab6j/entry.mjs' exports definitionContractVersion '3', but '5' is required. Rebuild or reinstall the application with the current AutoByteus application SDKs."
+
+ ❯ tests/unit/application-engine/application-backend-definition-loader.test.ts:56:5
+     54|   it("rejects stale v3 definitions and routes disabled by the bundle a…
+     55|     const stale = await writeDefinition(`export default { definitionCo…
+     56|     await expect(new ApplicationBackendDefinitionLoader().load(inputFo…
+       |     ^
+     57|       "Unsupported application backend definitionContractVersion '3'",
+     58|     );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[60/66]⎯
+
+ FAIL  tests/unit/application-engine/application-engine-host-service.test.ts > ApplicationEngineHostService > rejects a v2 backend definition before invoking any handler
+AssertionError: expected [Function] to throw error including 'Unsupported application backend defin…' but got 'Application \'built-in:applications__…'
+
+Expected: "Unsupported application backend definitionContractVersion '2'."
+Received: "Application 'built-in:applications__sample-app' backend entry '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-engine-host-aCHu4X/bundle/applications/sample-app/backend/dist/entry.mjs' exports definitionContractVersion '2', but '5' is required. Rebuild or reinstall the application with the current AutoByteus application SDKs."
+
+ ❯ tests/unit/application-engine/application-engine-host-service.test.ts:302:5
+    300|     });
+    301| 
+    302|     await expect(
+       |     ^
+    303|       service.ensureApplicationEngine("built-in:applications__sample-a…
+    304|     ).rejects.toThrow("Unsupported application backend definitionContr…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[61/66]⎯
+
+ FAIL  tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > filters mixed task-management tools, composes server team prompts, and injects primitive team context
+TypeError: Cannot convert undefined or null to object
+ ❯ createTeamExecutionAddress src/agent-team-execution/domain/team-execution-address.ts:25:23
+     23|   taskAgentRunId?: string | null;
+     24| }): TeamExecutionAddress => {
+     25|   const keys = Object.keys(input);
+       |                       ^
+     26|   const allowed = new Set(["rootTeamRunId", "taskTeamRunIds", "memberA…
+     27|   if (keys.some((key) => !allowed.has(key))) {
+ ❯ new MemberTeamContext src/agent-team-execution/domain/member-team-context.ts:54:29
+ ❯ createMemberTeamContext tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts:72:3
+ ❯ tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts:231:28
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[62/66]⎯
+
+ FAIL  tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > advertises strict logical and exact-run selectors without a flat recipient roster
+TypeError: Cannot convert undefined or null to object
+ ❯ createTeamExecutionAddress src/agent-team-execution/domain/team-execution-address.ts:25:23
+     23|   taskAgentRunId?: string | null;
+     24| }): TeamExecutionAddress => {
+     25|   const keys = Object.keys(input);
+       |                       ^
+     26|   const allowed = new Set(["rootTeamRunId", "taskTeamRunIds", "memberA…
+     27|   if (keys.some((key) => !allowed.has(key))) {
+ ❯ new MemberTeamContext src/agent-team-execution/domain/member-team-context.ts:54:29
+ ❯ createMemberTeamContext tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts:72:3
+ ❯ tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts:301:28
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[63/66]⎯
+
+ FAIL  tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > routes mixed AutoByteus send_message_to through server delivery and reports rejected delivery
+TypeError: Cannot convert undefined or null to object
+ ❯ createTeamExecutionAddress src/agent-team-execution/domain/team-execution-address.ts:25:23
+     23|   taskAgentRunId?: string | null;
+     24| }): TeamExecutionAddress => {
+     25|   const keys = Object.keys(input);
+       |                       ^
+     26|   const allowed = new Set(["rootTeamRunId", "taskTeamRunIds", "memberA…
+     27|   if (keys.some((key) => !allowed.has(key))) {
+ ❯ new MemberTeamContext src/agent-team-execution/domain/member-team-context.ts:54:29
+ ❯ createMemberTeamContext tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts:72:3
+ ❯ tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts:422:28
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[64/66]⎯
+
+ FAIL  tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > advertises exact-run send_message_to while warning that recipient_address delivery is disabled
+TypeError: Cannot convert undefined or null to object
+ ❯ createTeamExecutionAddress src/agent-team-execution/domain/team-execution-address.ts:25:23
+     23|   taskAgentRunId?: string | null;
+     24| }): TeamExecutionAddress => {
+     25|   const keys = Object.keys(input);
+       |                       ^
+     26|   const allowed = new Set(["rootTeamRunId", "taskTeamRunIds", "memberA…
+     27|   if (keys.some((key) => !allowed.has(key))) {
+ ❯ new MemberTeamContext src/agent-team-execution/domain/member-team-context.ts:54:29
+ ❯ createMemberTeamContext tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts:72:3
+ ❯ tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts:500:28
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[65/66]⎯
+
+ FAIL  tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > propagates mixed AutoByteus task-agent identity into managed custom data and task delegation context
+TypeError: Cannot convert undefined or null to object
+ ❯ createTeamExecutionAddress src/agent-team-execution/domain/team-execution-address.ts:25:23
+     23|   taskAgentRunId?: string | null;
+     24| }): TeamExecutionAddress => {
+     25|   const keys = Object.keys(input);
+       |                       ^
+     26|   const allowed = new Set(["rootTeamRunId", "taskTeamRunIds", "memberA…
+     27|   if (keys.some((key) => !allowed.has(key))) {
+ ❯ new MemberTeamContext src/agent-team-execution/domain/member-team-context.ts:54:29
+ ❯ createMemberTeamContext tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts:72:3
+ ❯ tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts:532:31
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[66/66]⎯
+
+
+ Test Files  12 failed | 13 passed (25)
+      Tests  65 failed | 157 passed (222)
+   Start at  02:52:37
+   Duration  11.52s (transform 2.69s, setup 70ms, import 8.13s, tests 482ms, environment 2ms)
+

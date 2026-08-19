@@ -1,0 +1,2024 @@
+diff --git a/autobyteus-server-ts/tests/integration/agent/agent-team-websocket.integration.test.ts b/autobyteus-server-ts/tests/integration/agent/agent-team-websocket.integration.test.ts
+deleted file mode 100644
+index 622c5f0bc..000000000
+--- a/autobyteus-server-ts/tests/integration/agent/agent-team-websocket.integration.test.ts
++++ /dev/null
+@@ -1,1217 +0,0 @@
+-import fastify from "fastify";
+-import websocket from "@fastify/websocket";
+-import { describe, expect, it } from "vitest";
+-import WebSocket from "ws";
+-import {
+-  AgentInputUserMessage,
+-} from "autobyteus-ts";
+-import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+-import { STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY } from "../../../src/config/streaming-content-flush-interval-setting.js";
+-import { AgentRunEventType, type AgentRunEvent } from "../../../src/agent-execution/domain/agent-run-event.js";
+-import { TeamRunEventSourceType, type TeamRunEvent } from "../../../src/agent-team-execution/domain/team-run-event.js";
+-import type { ConversationTargetAddress } from "../../../src/agent-team-execution/domain/conversation-target-address.js";
+-import { AgentTeamStreamHandler } from "../../../src/services/agent-streaming/agent-team-stream-handler.js";
+-import { AgentSessionManager } from "../../../src/services/agent-streaming/agent-session-manager.js";
+-import { TeamStreamBroadcaster } from "../../../src/services/agent-streaming/team-stream-broadcaster.js";
+-import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
+-
+-class FakeTeamStream {
+-  private queue: Array<TeamRunEvent | null> = [];
+-  private waiters: Array<(value: TeamRunEvent | null) => void> = [];
+-  private closed = false;
+-
+-  push(event: TeamRunEvent): void {
+-    if (this.closed) {
+-      return;
+-    }
+-    const waiter = this.waiters.shift();
+-    if (waiter) {
+-      waiter(event);
+-      return;
+-    }
+-    this.queue.push(event);
+-  }
+-
+-  async close(): Promise<void> {
+-    if (this.closed) {
+-      return;
+-    }
+-    this.closed = true;
+-    const waiter = this.waiters.shift();
+-    if (waiter) {
+-      waiter(null);
+-    } else {
+-      this.queue.push(null);
+-    }
+-  }
+-
+-  private async next(): Promise<TeamRunEvent | null> {
+-    if (this.queue.length > 0) {
+-      return this.queue.shift() ?? null;
+-    }
+-    return new Promise((resolve) => this.waiters.push(resolve));
+-  }
+-
+-  async *allEvents(): AsyncGenerator<TeamRunEvent, void, unknown> {
+-    while (true) {
+-      const event = await this.next();
+-      if (!event) {
+-        break;
+-      }
+-      yield event;
+-    }
+-  }
+-}
+-
+-class FakeTeam {
+-  teamRunId: string;
+-  messages: AgentInputUserMessage[] = [];
+-  approvals: Array<{ agentName: string; invocationId: string; approved: boolean; reason: string | null }> = [];
+-  lastTarget: string | null = null;
+-  lastInterruptTarget: string | null = null;
+-  interruptCalls = 0;
+-  stopCalls = 0;
+-
+-  constructor(teamRunId: string) {
+-    this.teamRunId = teamRunId;
+-  }
+-
+-  async postMessage(message: AgentInputUserMessage, targetMemberRouteKey?: string | null): Promise<void> {
+-    this.lastTarget = targetMemberRouteKey ?? null;
+-    this.messages.push(message);
+-  }
+-
+-  async postToolExecutionApproval(
+-    agentName: string,
+-    toolInvocationId: string,
+-    isApproved: boolean,
+-    reason?: string | null,
+-  ): Promise<void> {
+-    this.approvals.push({
+-      agentName,
+-      invocationId: toolInvocationId,
+-      approved: isApproved,
+-      reason: reason ?? null,
+-    });
+-  }
+-
+-  async stop(): Promise<void> {
+-    this.stopCalls += 1;
+-  }
+-
+-  async interrupt(options?: { targetMemberRouteKey?: string | null }): Promise<void> {
+-    this.lastInterruptTarget = options?.targetMemberRouteKey ?? null;
+-    this.interruptCalls += 1;
+-  }
+-}
+-
+-const selectorRouteKey = (selector: unknown): string | null => {
+-  if (!selector || typeof selector !== "object") {
+-    return null;
+-  }
+-  const typed = selector as { kind?: string; memberRouteKey?: string; memberPath?: string[] };
+-  if (typed.kind === "route_key" && typeof typed.memberRouteKey === "string") {
+-    return typed.memberRouteKey;
+-  }
+-  if (typed.kind === "path" && Array.isArray(typed.memberPath)) {
+-    return typed.memberPath.join("/");
+-  }
+-  return null;
+-};
+-
+-class FakeTeamRun {
+-  readonly runId: string;
+-  readonly runtimeKind = "autobyteus";
+-  readonly context = {
+-    runtimeContext: {
+-      memberContexts: [
+-        {
+-          memberName: "alpha",
+-          memberRouteKey: "alpha",
+-          memberRunId: "member-42",
+-          getPlatformAgentRunId: () => null,
+-        },
+-        {
+-          memberName: "beta",
+-          memberRouteKey: "beta",
+-          memberRunId: "member-99",
+-          getPlatformAgentRunId: () => null,
+-        },
+-      ],
+-    },
+-  };
+-  readonly config = {
+-    memberConfigs: [
+-      {
+-        memberName: "alpha",
+-        memberRunId: "member-42",
+-      },
+-      {
+-        memberName: "beta",
+-        memberRunId: "member-99",
+-      },
+-    ],
+-  };
+-
+-  constructor(
+-    private readonly team: FakeTeam,
+-    private readonly stream: FakeTeamStream,
+-  ) {
+-    this.runId = team.teamRunId;
+-  }
+-
+-  getLeafAgentStatusSnapshots() {
+-    return [];
+-  }
+-
+-  hasOpenExecutionWork(): boolean {
+-    return true;
+-  }
+-
+-  subscribeToEvents(listener: (event: TeamRunEvent) => void): () => void {
+-    void (async () => {
+-      for await (const event of this.stream.allEvents()) {
+-        listener(event);
+-      }
+-    })();
+-    return () => {
+-      void this.stream.close();
+-    };
+-  }
+-
+-  async postMessageToConversationTarget(
+-    message: AgentInputUserMessage,
+-    address: ConversationTargetAddress,
+-  ): Promise<{ accepted: true }> {
+-    const target = address.segments.at(-1);
+-    const targetRouteKey = target?.kind === "member"
+-      ? target.memberRouteKey ?? target.memberPath?.join("/") ?? null
+-      : null;
+-    await this.team.postMessage(message, targetRouteKey);
+-    return { accepted: true };
+-  }
+-
+-  async approveToolInvocation(
+-    target: unknown,
+-    invocationId: string,
+-    approved: boolean,
+-    reason?: string | null,
+-  ): Promise<{ accepted: true }> {
+-    await this.team.postToolExecutionApproval(
+-      selectorRouteKey(target) ?? "",
+-      invocationId,
+-      approved,
+-      reason,
+-    );
+-    return { accepted: true };
+-  }
+-
+-  async interruptMember(
+-    targetMemberRouteKey: string,
+-    targetMemberRunId?: string | null,
+-  ): Promise<{ accepted: true } | { accepted: false; code: string }> {
+-    const memberContext = this.context.runtimeContext.memberContexts.find(
+-      (context) => context.memberRouteKey === targetMemberRouteKey,
+-    );
+-    if (!memberContext) {
+-      return { accepted: false, code: "TARGET_MEMBER_NOT_FOUND" };
+-    }
+-    if (targetMemberRunId && targetMemberRunId !== memberContext.memberRunId) {
+-      return { accepted: false, code: "TARGET_MEMBER_RUN_MISMATCH" };
+-    }
+-    await this.team.interrupt({ targetMemberRouteKey });
+-    return { accepted: true };
+-  }
+-}
+-
+-class FakeTeamRunService {
+-  private team: FakeTeam;
+-  private teamRun: FakeTeamRun;
+-
+-  constructor(team: FakeTeam, stream: FakeTeamStream) {
+-    this.team = team;
+-    this.teamRun = new FakeTeamRun(team, stream);
+-  }
+-
+-  getTeamRun(teamRunId: string): FakeTeamRun | null {
+-    return teamRunId === this.team.teamRunId ? this.teamRun : null;
+-  }
+-
+-  async resolveTeamRun(teamRunId: string): Promise<FakeTeamRun | null> {
+-    return this.getTeamRun(teamRunId);
+-  }
+-
+-  async recordRunActivity(): Promise<void> {
+-    return;
+-  }
+-
+-  async refreshRunMetadata(): Promise<void> {
+-    return;
+-  }
+-}
+-
+-const waitForMessage = (socket: WebSocket, timeoutMs: number = 2000): Promise<string> =>
+-  new Promise((resolve, reject) => {
+-    const timer = setTimeout(() => reject(new Error("Timed out waiting for websocket message")), timeoutMs);
+-    socket.once("message", (data) => {
+-      clearTimeout(timer);
+-      resolve(data.toString());
+-    });
+-  });
+-
+-type CapturedMessage = { type: string; payload: Record<string, unknown> };
+-
+-const captureMessages = (socket: WebSocket): CapturedMessage[] => {
+-  const messages: CapturedMessage[] = [];
+-  socket.on("message", (data) => {
+-    messages.push(JSON.parse(data.toString()) as CapturedMessage);
+-  });
+-  return messages;
+-};
+-
+-const waitForCapturedMessage = async (
+-  messages: CapturedMessage[],
+-  predicate: (message: CapturedMessage) => boolean,
+-  timeoutMs = 2_000,
+-): Promise<CapturedMessage> => {
+-  const deadline = Date.now() + timeoutMs;
+-  while (Date.now() < deadline) {
+-    const match = messages.find(predicate);
+-    if (match) return match;
+-    await new Promise((resolve) => setTimeout(resolve, 10));
+-  }
+-  throw new Error("Timed out waiting for captured websocket message");
+-};
+-
+-const waitForClose = (socket: WebSocket, timeoutMs: number = 2000): Promise<number> =>
+-  new Promise((resolve, reject) => {
+-    const timer = setTimeout(() => reject(new Error("Timed out waiting for websocket close")), timeoutMs);
+-    socket.once("close", (code) => {
+-      clearTimeout(timer);
+-      resolve(code);
+-    });
+-  });
+-
+-const waitForOpen = (socket: WebSocket, timeoutMs: number = 2000): Promise<void> =>
+-  new Promise<void>((resolve, reject) => {
+-    const timer = setTimeout(() => reject(new Error("Timed out waiting for websocket open")), timeoutMs);
+-    socket.once("open", () => {
+-      clearTimeout(timer);
+-      resolve();
+-    });
+-    socket.once("error", (error) => {
+-      clearTimeout(timer);
+-      reject(error);
+-    });
+-  });
+-
+-const waitForCondition = async (fn: () => boolean, timeoutMs = 2000): Promise<void> => {
+-  const deadline = Date.now() + timeoutMs;
+-  while (Date.now() < deadline) {
+-    if (fn()) {
+-      return;
+-    }
+-    await new Promise((resolve) => setTimeout(resolve, 20));
+-  }
+-  throw new Error("Timed out waiting for condition");
+-};
+-
+-describe("Agent team websocket integration", () => {
+-  it("preserves ordered A/B/A member groups while coalescing consecutive team content", async () => {
+-    const previousInterval = process.env[STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY];
+-    process.env[STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY] = "100";
+-    const team = new FakeTeam("team-ordered-egress");
+-    const stream = new FakeTeamStream();
+-    const teamRunService = new FakeTeamRunService(team, stream);
+-    const handler = new AgentTeamStreamHandler(
+-      new AgentSessionManager(),
+-      teamRunService as unknown as any,
+-    );
+-    const app = fastify();
+-    await app.register(websocket);
+-    await registerAgentWebsocket(
+-      app,
+-      { connect: async () => null, handleMessage: async () => {}, disconnect: async () => {} } as never,
+-      handler,
+-    );
+-    const address = await app.listen({ port: 0, host: "127.0.0.1" });
+-    const url = new URL(address);
+-    const socket = new WebSocket(`ws://${url.hostname}:${url.port}/ws/agent-team/${team.teamRunId}`);
+-    const messages = captureMessages(socket);
+-
+-    const pushContent = (
+-      memberName: "alpha" | "beta",
+-      memberRunId: "member-42" | "member-99",
+-      segmentId: string,
+-      delta: string,
+-    ): void => {
+-      stream.push({
+-        teamRunId: team.teamRunId,
+-        eventSourceType: TeamRunEventSourceType.AGENT,
+-        data: {
+-          runtimeKind: RuntimeKind.AUTOBYTEUS,
+-          memberName,
+-          memberRunId,
+-          agentEvent: {
+-            runId: memberRunId,
+-            eventType: AgentRunEventType.SEGMENT_CONTENT,
+-            payload: {
+-              id: segmentId,
+-              turn_id: "turn-team-order",
+-              segment_type: "text",
+-              delta,
+-            },
+-            statusHint: null,
+-          },
+-        },
+-      });
+-    };
+-
+-    try {
+-      await waitForOpen(socket);
+-      await waitForCapturedMessage(messages, (message) => message.type === "CONNECTED");
+-      pushContent("alpha", "member-42", "segment-a", "a1");
+-      pushContent("alpha", "member-42", "segment-a", "a2");
+-      pushContent("beta", "member-99", "segment-b", "b1");
+-      pushContent("alpha", "member-42", "segment-a", "a3");
+-
+-      await new Promise((resolve) => setTimeout(resolve, 50));
+-      expect(messages.filter((message) => message.type === "SEGMENT_CONTENT")).toHaveLength(0);
+-      await waitForCondition(
+-        () => messages.filter((message) => message.type === "SEGMENT_CONTENT").length === 3,
+-      );
+-      expect(messages.filter((message) => message.type === "SEGMENT_CONTENT").map(
+-        (message) => [
+-          message.payload.agent_name,
+-          message.payload.agent_id,
+-          message.payload.id,
+-          message.payload.delta,
+-        ],
+-      )).toEqual([
+-        ["alpha", "member-42", "segment-a", "a1a2"],
+-        ["beta", "member-99", "segment-b", "b1"],
+-        ["alpha", "member-42", "segment-a", "a3"],
+-      ]);
+-    } finally {
+-      socket.close();
+-      await app.close();
+-      if (previousInterval === undefined) {
+-        delete process.env[STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY];
+-      } else {
+-        process.env[STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY] = previousInterval;
+-      }
+-    }
+-  });
+-
+-  it("streams team events and routes client messages", async () => {
+-    const team = new FakeTeam("team-1");
+-    const stream = new FakeTeamStream();
+-    const teamRunService = new FakeTeamRunService(team, stream);
+-    const handler = new AgentTeamStreamHandler(
+-      new AgentSessionManager(),
+-      teamRunService as unknown as any,
+-    );
+-
+-    const dummyAgentHandler = {
+-      connect: async () => null,
+-      handleMessage: async () => {},
+-      disconnect: async () => {},
+-    } as unknown as Parameters<typeof registerAgentWebsocket>[1];
+-
+-    const app = fastify();
+-    await app.register(websocket);
+-    await registerAgentWebsocket(app, dummyAgentHandler, handler);
+-
+-    const address = await app.listen({ port: 0, host: "127.0.0.1" });
+-    const url = new URL(address);
+-    const baseUrl = `ws://${url.hostname}:${url.port}`;
+-
+-    const socket = new WebSocket(`${baseUrl}/ws/agent-team/${team.teamRunId}`);
+-    const connectedPromise = waitForMessage(socket);
+-
+-    await waitForOpen(socket);
+-
+-    const connectedMessage = JSON.parse(await connectedPromise) as {
+-      type: string;
+-      payload: { team_id: string; session_id: string };
+-    };
+-
+-    expect(connectedMessage.type).toBe("CONNECTED");
+-    expect(connectedMessage.payload.team_id).toBe(team.teamRunId);
+-
+-    socket.send(
+-      JSON.stringify({
+-        type: "SEND_MESSAGE",
+-        payload: {
+-          content: "hello team",
+-          target_member_route_key: "alpha",
+-          context_file_paths: ["/tmp/info.txt"],
+-          image_urls: ["https://example.com/dog.png"],
+-        },
+-      }),
+-    );
+-
+-    await waitForCondition(() => team.messages.length === 1);
+-    expect(team.messages[0].constructor?.name).toBe("AgentInputUserMessage");
+-    expect(team.messages[0].content).toBe("hello team");
+-    expect(team.messages[0].contextFiles?.length).toBe(2);
+-    expect(team.lastTarget).toBe("alpha");
+-
+-    socket.send(
+-      JSON.stringify({
+-        type: "SEND_MESSAGE",
+-        payload: {
+-          content: "hello camel",
+-          targetMemberPath: ["BuildSquad", "review_lead"],
+-        },
+-      }),
+-    );
+-    await waitForCondition(() => team.messages.length === 2);
+-    expect(team.messages[1].content).toBe("hello camel");
+-    expect(team.lastTarget).toBe("BuildSquad/review_lead");
+-
+-    const invalidSendErrorPromise = waitForMessage(socket);
+-    socket.send(
+-      JSON.stringify({
+-        type: "SEND_MESSAGE",
+-        payload: {
+-          content: "invalid scalar alias",
+-          target_member_name: "alpha",
+-        },
+-      }),
+-    );
+-    const invalidSendError = JSON.parse(await invalidSendErrorPromise) as {
+-      type: string;
+-      payload: { code?: string };
+-    };
+-    expect(invalidSendError).toMatchObject({
+-      type: "ERROR",
+-      payload: { code: "INVALID_TARGET" },
+-    });
+-    expect(team.messages).toHaveLength(2);
+-
+-    const interruptAckPromise = waitForMessage(socket);
+-    socket.send(JSON.stringify({
+-      type: "INTERRUPT_GENERATION",
+-      payload: {
+-        command_id: "client_interrupt_alpha",
+-        target_member_route_key: "alpha",
+-        target_member_run_id: "member-42",
+-      },
+-    }));
+-    const interruptAck = JSON.parse(await interruptAckPromise) as CapturedMessage;
+-    expect(interruptAck).toEqual({
+-      type: "AGENT_COMMAND_ACK",
+-      payload: {
+-        command_type: "INTERRUPT_GENERATION",
+-        command_id: "client_interrupt_alpha",
+-        state: "accepted",
+-        target: {
+-          target_kind: "team_member",
+-          team_run_id: team.teamRunId,
+-          member_route_key: "alpha",
+-          member_run_id: "member-42",
+-        },
+-      },
+-    });
+-    await waitForCondition(() => team.interruptCalls === 1);
+-    expect(team.interruptCalls).toBe(1);
+-    expect(team.lastInterruptTarget).toBe("alpha");
+-    expect(team.stopCalls).toBe(0);
+-
+-    const agentMessagePromise = waitForMessage(socket);
+-    const agentEvent: AgentRunEvent = {
+-      runId: "agent-42",
+-      eventType: AgentRunEventType.SEGMENT_CONTENT,
+-      payload: {
+-        id: "seg-alpha-1",
+-        segment_type: "text",
+-        delta: "hi",
+-      },
+-      statusHint: null,
+-    };
+-    const teamEvent: TeamRunEvent = {
+-      teamRunId: team.teamRunId,
+-      eventSourceType: TeamRunEventSourceType.AGENT,
+-      data: {
+-        runtimeKind: RuntimeKind.AUTOBYTEUS,
+-        memberName: "alpha",
+-        memberRunId: "agent-42",
+-        agentEvent,
+-      },
+-    };
+-    stream.push(teamEvent);
+-
+-    const agentMessage = JSON.parse(await agentMessagePromise) as {
+-      type: string;
+-      payload: {
+-        id?: string;
+-        delta?: string;
+-        segment_type?: string;
+-        agent_name?: string;
+-        agent_id?: string;
+-      };
+-    };
+-
+-    expect(agentMessage.type).toBe("SEGMENT_CONTENT");
+-    expect(agentMessage.payload.delta).toBe("hi");
+-    expect(agentMessage.payload.segment_type).toBe("text");
+-    expect(agentMessage.payload.id).toBe("seg-alpha-1");
+-    expect(agentMessage.payload.agent_name).toBe("alpha");
+-    expect(agentMessage.payload.agent_id).toBe("agent-42");
+-
+-    socket.close();
+-    await app.close();
+-  });
+-
+-  it("restores a stopped team on websocket connect and rebinds before member follow-up SEND_MESSAGE", async () => {
+-    const initialTeam = new FakeTeam("team-recover");
+-    const restoredTeam = new FakeTeam("team-recover");
+-    const initialStream = new FakeTeamStream();
+-    const restoredStream = new FakeTeamStream();
+-    const initialRun = new FakeTeamRun(initialTeam, initialStream);
+-    const restoredRun = new FakeTeamRun(restoredTeam, restoredStream);
+-    const resolvedRuns = [initialRun, restoredRun];
+-    let resolveCalls = 0;
+-    const recordActivities: Array<{ runId: string; summary?: string }> = [];
+-    const teamRunService = {
+-      getTeamRun: () => null,
+-      resolveTeamRun: async () => resolvedRuns[resolveCalls++] ?? null,
+-      recordRunActivity: async (run: { runId: string }, activity: { summary?: string }) => {
+-        recordActivities.push({ runId: run.runId, summary: activity.summary });
+-      },
+-      refreshRunMetadata: async () => {},
+-    };
+-    const handler = new AgentTeamStreamHandler(
+-      new AgentSessionManager(),
+-      teamRunService as unknown as any,
+-    );
+-
+-    const app = fastify();
+-    await app.register(websocket);
+-    await registerAgentWebsocket(
+-      app,
+-      {
+-        connect: async () => null,
+-        handleMessage: async () => {},
+-        disconnect: async () => {},
+-      } as unknown as Parameters<typeof registerAgentWebsocket>[1],
+-      handler,
+-    );
+-    const address = await app.listen({ port: 0, host: "127.0.0.1" });
+-    const url = new URL(address);
+-    const socket = new WebSocket(`ws://${url.hostname}:${url.port}/ws/agent-team/team-recover`);
+-    const connectedPromise = waitForMessage(socket);
+-
+-    await waitForOpen(socket);
+-    const connectedMessage = JSON.parse(await connectedPromise) as {
+-      type: string;
+-      payload: { team_id: string };
+-    };
+-    expect(connectedMessage.type).toBe("CONNECTED");
+-    expect(connectedMessage.payload.team_id).toBe("team-recover");
+-
+-    socket.send(
+-      JSON.stringify({
+-        type: "SEND_MESSAGE",
+-        payload: {
+-          content: "resume team member after stop",
+-          target_member_route_key: "alpha",
+-        },
+-      }),
+-    );
+-
+-    await waitForCondition(() => restoredTeam.messages.length === 1);
+-    expect(initialTeam.messages).toHaveLength(0);
+-    expect(restoredTeam.messages[0].content).toBe("resume team member after stop");
+-    expect(restoredTeam.lastTarget).toBe("alpha");
+-    expect(resolveCalls).toBe(2);
+-    expect(recordActivities).toContainEqual({
+-      runId: "team-recover",
+-      summary: "resume team member after stop",
+-    });
+-
+-    const segmentPromise = waitForMessage(socket);
+-    restoredStream.push({
+-      teamRunId: "team-recover",
+-      eventSourceType: TeamRunEventSourceType.AGENT,
+-      data: {
+-        runtimeKind: RuntimeKind.AUTOBYTEUS,
+-        memberName: "alpha",
+-        memberRunId: "member-42",
+-        agentEvent: {
+-          runId: "member-42",
+-          eventType: AgentRunEventType.SEGMENT_CONTENT,
+-          payload: {
+-            id: "team-restored-seg-1",
+-            segment_type: "text",
+-            delta: "restored team",
+-          },
+-          statusHint: null,
+-        },
+-      },
+-    });
+-    const restoredMessage = JSON.parse(await segmentPromise) as {
+-      type: string;
+-      payload: { id?: string; delta?: string; agent_name?: string; agent_id?: string };
+-    };
+-    expect(restoredMessage.type).toBe("SEGMENT_CONTENT");
+-    expect(restoredMessage.payload).toMatchObject({
+-      id: "team-restored-seg-1",
+-      delta: "restored team",
+-      agent_name: "alpha",
+-      agent_id: "member-42",
+-    });
+-
+-    socket.close();
+-    await app.close();
+-  });
+-
+-  it("closes with TEAM_NOT_FOUND when a websocket connect cannot resolve a missing team run", async () => {
+-    const handler = new AgentTeamStreamHandler(
+-      new AgentSessionManager(),
+-      {
+-        getTeamRun: () => null,
+-        resolveTeamRun: async () => null,
+-        recordRunActivity: async () => {},
+-        refreshRunMetadata: async () => {},
+-      } as unknown as any,
+-    );
+-
+-    const app = fastify();
+-    await app.register(websocket);
+-    await registerAgentWebsocket(
+-      app,
+-      {
+-        connect: async () => null,
+-        handleMessage: async () => {},
+-        disconnect: async () => {},
+-      } as unknown as Parameters<typeof registerAgentWebsocket>[1],
+-      handler,
+-    );
+-    const address = await app.listen({ port: 0, host: "127.0.0.1" });
+-    const url = new URL(address);
+-    const socket = new WebSocket(`ws://${url.hostname}:${url.port}/ws/agent-team/missing-team`);
+-    const errorPromise = waitForMessage(socket);
+-    const closePromise = waitForClose(socket);
+-
+-    await waitForOpen(socket);
+-    const errorMessage = JSON.parse(await errorPromise) as {
+-      type: string;
+-      payload: { code?: string; message?: string };
+-    };
+-    expect(errorMessage).toMatchObject({
+-      type: "ERROR",
+-      payload: {
+-        code: "TEAM_NOT_FOUND",
+-        message: "Team run 'missing-team' not found",
+-      },
+-    });
+-    await expect(closePromise).resolves.toBe(4004);
+-
+-    await app.close();
+-  });
+-
+-  it("closes with TEAM_NOT_FOUND when follow-up SEND_MESSAGE cannot restore the team run", async () => {
+-    const team = new FakeTeam("team-send-missing");
+-    const stream = new FakeTeamStream();
+-    const initialRun = new FakeTeamRun(team, stream);
+-    let resolveCalls = 0;
+-    const teamRunService = {
+-      getTeamRun: () => null,
+-      resolveTeamRun: async () => {
+-        resolveCalls += 1;
+-        return resolveCalls === 1 ? initialRun : null;
+-      },
+-      recordRunActivity: async () => {},
+-      refreshRunMetadata: async () => {},
+-    };
+-    const handler = new AgentTeamStreamHandler(
+-      new AgentSessionManager(),
+-      teamRunService as unknown as any,
+-    );
+-
+-    const app = fastify();
+-    await app.register(websocket);
+-    await registerAgentWebsocket(
+-      app,
+-      {
+-        connect: async () => null,
+-        handleMessage: async () => {},
+-        disconnect: async () => {},
+-      } as unknown as Parameters<typeof registerAgentWebsocket>[1],
+-      handler,
+-    );
+-    const address = await app.listen({ port: 0, host: "127.0.0.1" });
+-    const url = new URL(address);
+-    const socket = new WebSocket(`ws://${url.hostname}:${url.port}/ws/agent-team/team-send-missing`);
+-    const connectedPromise = waitForMessage(socket);
+-
+-    await waitForOpen(socket);
+-    await connectedPromise;
+-
+-    const errorPromise = waitForMessage(socket);
+-    const closePromise = waitForClose(socket);
+-    socket.send(
+-      JSON.stringify({
+-        type: "SEND_MESSAGE",
+-        payload: { content: "still there?", target_member_route_key: "alpha" },
+-      }),
+-    );
+-
+-    const errorMessage = JSON.parse(await errorPromise) as {
+-      type: string;
+-      payload: { code?: string; message?: string };
+-    };
+-    expect(errorMessage).toMatchObject({
+-      type: "ERROR",
+-      payload: {
+-        code: "TEAM_NOT_FOUND",
+-        message: "Team run 'team-send-missing' not found",
+-      },
+-    });
+-    await expect(closePromise).resolves.toBe(4004);
+-    expect(team.messages).toHaveLength(0);
+-
+-    await app.close();
+-  });
+-
+-  it("keeps INTERRUPT_GENERATION active-only and does not restore a stopped team run", async () => {
+-    const team = new FakeTeam("team-stop-active-only");
+-    const stream = new FakeTeamStream();
+-    const teamRun = new FakeTeamRun(team, stream);
+-    let resolveCalls = 0;
+-    const teamRunService = {
+-      getTeamRun: () => null,
+-      resolveTeamRun: async () => {
+-        resolveCalls += 1;
+-        return teamRun;
+-      },
+-      recordRunActivity: async () => {},
+-      refreshRunMetadata: async () => {},
+-    };
+-    const handler = new AgentTeamStreamHandler(
+-      new AgentSessionManager(),
+-      teamRunService as unknown as any,
+-    );
+-
+-    const app = fastify();
+-    await app.register(websocket);
+-    await registerAgentWebsocket(
+-      app,
+-      {
+-        connect: async () => null,
+-        handleMessage: async () => {},
+-        disconnect: async () => {},
+-      } as unknown as Parameters<typeof registerAgentWebsocket>[1],
+-      handler,
+-    );
+-    const address = await app.listen({ port: 0, host: "127.0.0.1" });
+-    const url = new URL(address);
+-    const socket = new WebSocket(`ws://${url.hostname}:${url.port}/ws/agent-team/team-stop-active-only`);
+-    const messages = captureMessages(socket);
+-    const connectedPromise = waitForMessage(socket);
+-
+-    await waitForOpen(socket);
+-    await connectedPromise;
+-
+-    socket.send(
+-      JSON.stringify({
+-        type: "INTERRUPT_GENERATION",
+-        payload: {
+-          command_id: "client_interrupt_stopped_team",
+-          target_member_route_key: "alpha",
+-          target_member_run_id: "member-42",
+-        },
+-      }),
+-    );
+-    const stoppedAck = await waitForCapturedMessage(
+-      messages,
+-      (message) => message.type === "AGENT_COMMAND_ACK" &&
+-        message.payload.command_id === "client_interrupt_stopped_team",
+-    );
+-    expect(stoppedAck.payload).toEqual({
+-      command_type: "INTERRUPT_GENERATION",
+-      command_id: "client_interrupt_stopped_team",
+-      state: "rejected",
+-      code: "RUN_NOT_FOUND",
+-      message: "Team run 'team-stop-active-only' is not active.",
+-      target: {
+-        target_kind: "team_member",
+-        team_run_id: "team-stop-active-only",
+-        member_route_key: "alpha",
+-        member_run_id: "member-42",
+-      },
+-    });
+-    expect(team.interruptCalls).toBe(0);
+-    expect(team.stopCalls).toBe(0);
+-    expect(resolveCalls).toBe(1);
+-
+-    socket.close();
+-    await app.close();
+-  });
+-
+-  it("rejects invalid team websocket interrupt targets without falling back or retargeting", async () => {
+-    const team = new FakeTeam("team-invalid-interrupt-target");
+-    const stream = new FakeTeamStream();
+-    const teamRunService = new FakeTeamRunService(team, stream);
+-    const handler = new AgentTeamStreamHandler(
+-      new AgentSessionManager(),
+-      teamRunService as unknown as any,
+-    );
+-
+-    const app = fastify();
+-    await app.register(websocket);
+-    await registerAgentWebsocket(
+-      app,
+-      {
+-        connect: async () => null,
+-        handleMessage: async () => {},
+-        disconnect: async () => {},
+-      } as unknown as Parameters<typeof registerAgentWebsocket>[1],
+-      handler,
+-    );
+-    const address = await app.listen({ port: 0, host: "127.0.0.1" });
+-    const url = new URL(address);
+-    const socket = new WebSocket(
+-      `ws://${url.hostname}:${url.port}/ws/agent-team/team-invalid-interrupt-target`,
+-    );
+-    const messages = captureMessages(socket);
+-    const connectedPromise = waitForMessage(socket);
+-
+-    await waitForOpen(socket);
+-    await connectedPromise;
+-
+-    socket.send(
+-      JSON.stringify({
+-        type: "INTERRUPT_GENERATION",
+-        payload: { command_id: "client_interrupt_missing_target" },
+-      }),
+-    );
+-    const missingTargetAck = await waitForCapturedMessage(
+-      messages,
+-      (message) => message.type === "AGENT_COMMAND_ACK" &&
+-        message.payload.command_id === "client_interrupt_missing_target",
+-    );
+-    expect(missingTargetAck.payload).toMatchObject({
+-      state: "rejected",
+-      code: "INVALID_TARGET",
+-      target: { member_route_key: "", member_run_id: null },
+-    });
+-    expect(team.interruptCalls).toBe(0);
+-    expect(team.lastInterruptTarget).toBeNull();
+-
+-    socket.send(
+-      JSON.stringify({
+-        type: "INTERRUPT_GENERATION",
+-        payload: {
+-          command_id: "client_interrupt_wrong_run",
+-          target_member_route_key: "beta",
+-          target_member_run_id: "member-42",
+-        },
+-      }),
+-    );
+-    const mismatchAck = await waitForCapturedMessage(
+-      messages,
+-      (message) => message.type === "AGENT_COMMAND_ACK" &&
+-        message.payload.command_id === "client_interrupt_wrong_run",
+-    );
+-    expect(mismatchAck.payload).toMatchObject({
+-      state: "failed",
+-      code: "TARGET_MEMBER_RUN_MISMATCH",
+-      target: { member_route_key: "beta", member_run_id: "member-42" },
+-    });
+-    expect(team.interruptCalls).toBe(0);
+-    expect(team.lastInterruptTarget).toBeNull();
+-
+-    socket.send(
+-      JSON.stringify({
+-        type: "INTERRUPT_GENERATION",
+-        payload: {
+-          command_id: "client_interrupt_valid_beta",
+-          target_member_route_key: "beta",
+-          target_member_run_id: "member-99",
+-        },
+-      }),
+-    );
+-    const validAck = await waitForCapturedMessage(
+-      messages,
+-      (message) => message.type === "AGENT_COMMAND_ACK" &&
+-        message.payload.command_id === "client_interrupt_valid_beta",
+-    );
+-    expect(validAck.payload).toEqual({
+-      command_type: "INTERRUPT_GENERATION",
+-      command_id: "client_interrupt_valid_beta",
+-      state: "accepted",
+-      target: {
+-        target_kind: "team_member",
+-        team_run_id: "team-invalid-interrupt-target",
+-        member_route_key: "beta",
+-        member_run_id: "member-99",
+-      },
+-    });
+-    await waitForCondition(() => team.interruptCalls === 1);
+-    expect(team.lastInterruptTarget).toBe("beta");
+-    expect(team.stopCalls).toBe(0);
+-
+-    socket.close();
+-    await app.close();
+-  });
+-
+-  it("forwards team-scoped live external user messages over the team websocket", async () => {
+-    const team = new FakeTeam("team-live-1");
+-    const stream = new FakeTeamStream();
+-    const teamRunService = new FakeTeamRunService(team, stream);
+-    const broadcaster = new TeamStreamBroadcaster();
+-    const handler = new AgentTeamStreamHandler(
+-      new AgentSessionManager(),
+-      teamRunService as unknown as any,
+-      broadcaster,
+-    );
+-
+-    const app = fastify();
+-    await app.register(websocket);
+-    await registerAgentWebsocket(
+-      app,
+-      {
+-        connect: async () => null,
+-        handleMessage: async () => {},
+-        disconnect: async () => {},
+-      } as unknown as Parameters<typeof registerAgentWebsocket>[1],
+-      handler,
+-    );
+-
+-    const address = await app.listen({ port: 0, host: "127.0.0.1" });
+-    const url = new URL(address);
+-    const socket = new WebSocket(`ws://${url.hostname}:${url.port}/ws/agent-team/${team.teamRunId}`);
+-    const connectedPromise = waitForMessage(socket);
+-
+-    await waitForOpen(socket);
+-
+-    await connectedPromise;
+-
+-    const externalMessagePromise = waitForMessage(socket);
+-    broadcaster.publishToTeamRun(
+-      team.teamRunId,
+-      {
+-        toJson: () =>
+-          JSON.stringify({
+-            type: "EXTERNAL_USER_MESSAGE",
+-            payload: {
+-              content: "hello from telegram",
+-              agent_name: "Professor",
+-              agent_id: "prof-run-1",
+-              member_route_key: "Professor",
+-              member_path: ["Professor"],
+-              source_route_key: "Professor",
+-              source_path: ["Professor"],
+-              received_at: "2026-03-10T20:10:00.000Z",
+-            },
+-          }),
+-      } as any,
+-    );
+-
+-    const externalMessage = JSON.parse(await externalMessagePromise) as {
+-      type: string;
+-      payload: {
+-        content?: string;
+-        agent_name?: string;
+-        agent_id?: string;
+-        member_route_key?: string;
+-        member_path?: string[];
+-        source_route_key?: string;
+-        source_path?: string[];
+-        received_at?: string;
+-      };
+-    };
+-
+-    expect(externalMessage).toMatchObject({
+-      type: "EXTERNAL_USER_MESSAGE",
+-      payload: {
+-        content: "hello from telegram",
+-        agent_name: "Professor",
+-        agent_id: "prof-run-1",
+-        member_route_key: "Professor",
+-        member_path: ["Professor"],
+-        source_route_key: "Professor",
+-        source_path: ["Professor"],
+-        received_at: "2026-03-10T20:10:00.000Z",
+-      },
+-    });
+-
+-    socket.close();
+-    await app.close();
+-  });
+-
+-  it("returns SESSION_NOT_READY for team command before connect handshake", async () => {
+-    const delayedTeamHandler = {
+-      connect: async () => {
+-        await new Promise((resolve) => setTimeout(resolve, 300));
+-        return "team-session-late";
+-      },
+-      handleMessage: async () => {},
+-      disconnect: async () => {},
+-    } as unknown as Parameters<typeof registerAgentWebsocket>[2];
+-
+-    const app = fastify();
+-    await app.register(websocket);
+-    await registerAgentWebsocket(
+-      app,
+-      {
+-        connect: async () => null,
+-        handleMessage: async () => {},
+-        disconnect: async () => {},
+-      } as unknown as Parameters<typeof registerAgentWebsocket>[1],
+-      delayedTeamHandler,
+-    );
+-
+-    const address = await app.listen({ port: 0, host: "127.0.0.1" });
+-    const url = new URL(address);
+-    const socket = new WebSocket(`ws://${url.hostname}:${url.port}/ws/agent-team/any-team`);
+-
+-    await waitForOpen(socket);
+-
+-    socket.send(JSON.stringify({ type: "SEND_MESSAGE", payload: { content: "too early" } }));
+-    const earlyResponse = JSON.parse(await waitForMessage(socket)) as {
+-      type: string;
+-      payload: { code?: string };
+-    };
+-
+-    expect(earlyResponse.type).toBe("ERROR");
+-    expect(earlyResponse.payload.code).toBe("SESSION_NOT_READY");
+-
+-    socket.close();
+-    await app.close();
+-  });
+-
+-  it("routes approval commands only with explicit route selector fields", async () => {
+-    const team = new FakeTeam("team-approvals");
+-    const stream = new FakeTeamStream();
+-    const teamRunService = new FakeTeamRunService(team, stream);
+-    const handler = new AgentTeamStreamHandler(
+-      new AgentSessionManager(),
+-      teamRunService as unknown as any,
+-    );
+-
+-    const app = fastify();
+-    await app.register(websocket);
+-    await registerAgentWebsocket(
+-      app,
+-      {
+-        connect: async () => null,
+-        handleMessage: async () => {},
+-        disconnect: async () => {},
+-      } as unknown as Parameters<typeof registerAgentWebsocket>[1],
+-      handler,
+-    );
+-
+-    const address = await app.listen({ port: 0, host: "127.0.0.1" });
+-    const url = new URL(address);
+-    const socket = new WebSocket(`ws://${url.hostname}:${url.port}/ws/agent-team/${team.teamRunId}`);
+-    const connectedPromise = waitForMessage(socket);
+-
+-    await waitForOpen(socket);
+-
+-    await connectedPromise; // CONNECTED
+-
+-    socket.send(
+-      JSON.stringify({
+-        type: "APPROVE_TOOL",
+-        payload: { invocation_id: "inv-1", member_route_key: "alpha" },
+-      }),
+-    );
+-    await waitForCondition(() => team.approvals.length === 1);
+-    expect(team.approvals[0]).toEqual({
+-      agentName: "alpha",
+-      invocationId: "inv-1",
+-      approved: true,
+-      reason: null,
+-    });
+-
+-    socket.send(
+-      JSON.stringify({
+-        type: "DENY_TOOL",
+-        payload: {
+-          invocation_id: "inv-2",
+-          target_member_route_key: "beta",
+-          reason: "deny",
+-        },
+-      }),
+-    );
+-    await waitForCondition(() => team.approvals.length === 2);
+-    expect(team.approvals[1]).toEqual({
+-      agentName: "beta",
+-      invocationId: "inv-2",
+-      approved: false,
+-      reason: "deny",
+-    });
+-
+-    socket.send(
+-      JSON.stringify({
+-        type: "APPROVE_TOOL",
+-        payload: { invocation_id: "inv-3", member_route_key: "alpha" },
+-      }),
+-    );
+-    await waitForCondition(() => team.approvals.length === 3);
+-    expect(team.approvals[2]).toEqual({
+-      agentName: "alpha",
+-      invocationId: "inv-3",
+-      approved: true,
+-      reason: null,
+-    });
+-
+-    socket.send(
+-      JSON.stringify({
+-        type: "DENY_TOOL",
+-        payload: {
+-          invocation_id: "inv-4",
+-          targetMemberRouteKey: "BuildSquad/review_lead",
+-          reason: "camel",
+-        },
+-      }),
+-    );
+-    await waitForCondition(() => team.approvals.length === 4);
+-    expect(team.approvals[3]).toEqual({
+-      agentName: "BuildSquad/review_lead",
+-      invocationId: "inv-4",
+-      approved: false,
+-      reason: "camel",
+-    });
+-
+-    const missingTargetErrorPromise = waitForMessage(socket);
+-    socket.send(
+-      JSON.stringify({
+-        type: "APPROVE_TOOL",
+-        payload: { invocation_id: "inv-5" },
+-      }),
+-    );
+-    const missingTargetError = JSON.parse(await missingTargetErrorPromise) as {
+-      type: string;
+-      payload: { code?: string };
+-    };
+-    expect(missingTargetError).toMatchObject({
+-      type: "ERROR",
+-      payload: { code: "INVALID_TARGET" },
+-    });
+-
+-    const scalarAliasErrorPromise = waitForMessage(socket);
+-    socket.send(
+-      JSON.stringify({
+-        type: "APPROVE_TOOL",
+-        payload: { invocation_id: "inv-6", target_member_name: "alpha" },
+-      }),
+-    );
+-    const scalarAliasError = JSON.parse(await scalarAliasErrorPromise) as {
+-      type: string;
+-      payload: { code?: string };
+-    };
+-    expect(scalarAliasError).toMatchObject({
+-      type: "ERROR",
+-      payload: { code: "INVALID_TARGET" },
+-    });
+-    expect(team.approvals).toHaveLength(4);
+-
+-    socket.close();
+-    await app.close();
+-  });
+-});
+diff --git a/autobyteus-server-ts/tests/integration/agent/team-lifecycle-websocket.integration.test.ts b/autobyteus-server-ts/tests/integration/agent/team-lifecycle-websocket.integration.test.ts
+deleted file mode 100644
+index 302d414ac..000000000
+--- a/autobyteus-server-ts/tests/integration/agent/team-lifecycle-websocket.integration.test.ts
++++ /dev/null
+@@ -1,519 +0,0 @@
+-import fastify from "fastify";
+-import websocket from "@fastify/websocket";
+-import { describe, expect, it, vi } from "vitest";
+-import WebSocket from "ws";
+-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
+-import type {
+-  AgentRunBackend,
+-  AgentRunSourceEventBatchListener,
+-} from "../../../src/agent-execution/backends/agent-run-backend.js";
+-import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
+-import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
+-import { AgentRun } from "../../../src/agent-execution/domain/agent-run.js";
+-import {
+-  AgentRunEventType,
+-  type AgentRunEvent,
+-} from "../../../src/agent-execution/domain/agent-run-event.js";
+-import type { AgentRuntimeLifecycleSnapshot } from "../../../src/agent-execution/domain/agent-runtime-lifecycle-snapshot.js";
+-import {
+-  buildOrdinaryTeamLeafAgentStatusSnapshot,
+-  type TeamLeafAgentStatusSnapshot,
+-} from "../../../src/agent-team-execution/domain/team-leaf-agent-status-snapshot.js";
+-import type { TaskTeamInstanceIdentity } from "../../../src/agent-team-execution/domain/task-team-instance.js";
+-import { buildTaskTeamStreamScope } from "../../../src/agent-team-execution/domain/task-team-stream-scope.js";
+-import type { TeamRun } from "../../../src/agent-team-execution/domain/team-run.js";
+-import {
+-  TeamRunEventSourceType,
+-  type TeamRunEvent,
+-  type TeamRunEventListener,
+-} from "../../../src/agent-team-execution/domain/team-run-event.js";
+-import {
+-  prefixMixedSubTeamEvent,
+-  prefixMixedTeamLeafAgentStatusSnapshot,
+-} from "../../../src/agent-team-execution/backends/mixed/events/mixed-team-event-bridge.js";
+-import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
+-import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
+-import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+-import { AgentSessionManager } from "../../../src/services/agent-streaming/agent-session-manager.js";
+-import { AgentTeamStreamHandler } from "../../../src/services/agent-streaming/agent-team-stream-handler.js";
+-
+-type WsMessage = {
+-  type: string;
+-  payload: Record<string, unknown>;
+-};
+-
+-const ROOT_TEAM_RUN_ID = "root-team-1";
+-const ORDINARY_TEAM_RUN_ID = "research-run-2";
+-const TASK_TEAM_RUN_ID = "task-team-run-7";
+-const MEMBER_RUN_ID = "critic-runtime-93";
+-const ROOT_MEMBER_PATH = [
+-  "research_group",
+-  "review_team",
+-  "review_group",
+-  "critic",
+-];
+-
+-const idleSnapshot = (): AgentRuntimeLifecycleSnapshot => ({
+-  availability: "active",
+-  phase: "idle",
+-  currentTurn: { kind: "NONE" },
+-});
+-
+-const runningSnapshot = (turnId: string): AgentRuntimeLifecycleSnapshot => ({
+-  availability: "active",
+-  phase: "running",
+-  currentTurn: { kind: "IDENTIFIED", turnId },
+-});
+-
+-const event = (
+-  eventType: AgentRunEventType,
+-  payload: Record<string, unknown>,
+-): AgentRunEvent => ({
+-  runId: MEMBER_RUN_ID,
+-  eventType,
+-  payload,
+-  statusHint: null,
+-});
+-
+-class ScriptedMemberBackend implements AgentRunBackend {
+-  readonly runId = MEMBER_RUN_ID;
+-  readonly runtimeKind = RuntimeKind.CODEX_APP_SERVER;
+-  readonly context = new AgentRunContext({
+-    runId: this.runId,
+-    config: new AgentRunConfig({
+-      runtimeKind: this.runtimeKind,
+-      agentDefinitionId: "critic-agent",
+-      llmModelIdentifier: "codex-test",
+-      autoExecuteTools: true,
+-      workspaceId: null,
+-      memoryDir: null,
+-      llmConfig: null,
+-      skillAccessMode: SkillAccessMode.NONE,
+-    }),
+-    runtimeContext: null,
+-  });
+-  private lifecycleSnapshot: AgentRuntimeLifecycleSnapshot = idleSnapshot();
+-  private readonly sourceListeners = new Set<AgentRunSourceEventBatchListener>();
+-
+-  getContext(): AgentRunContext<null> {
+-    return this.context;
+-  }
+-
+-  isActive(): boolean {
+-    return true;
+-  }
+-
+-  getPlatformAgentRunId(): string {
+-    return `platform-${this.runId}`;
+-  }
+-
+-  getLifecycleSnapshot(): AgentRuntimeLifecycleSnapshot {
+-    return this.lifecycleSnapshot;
+-  }
+-
+-  subscribeToSourceEventBatches(listener: AgentRunSourceEventBatchListener): () => void {
+-    this.sourceListeners.add(listener);
+-    return () => this.sourceListeners.delete(listener);
+-  }
+-
+-  async postUserMessage(): Promise<{ accepted: true }> {
+-    return { accepted: true };
+-  }
+-
+-  async approveToolInvocation(): Promise<{ accepted: true }> {
+-    return { accepted: true };
+-  }
+-
+-  async interrupt(): Promise<{ accepted: true }> {
+-    return { accepted: true };
+-  }
+-
+-  async terminate(): Promise<{ accepted: true }> {
+-    return { accepted: true };
+-  }
+-
+-  setLifecycleSnapshot(snapshot: AgentRuntimeLifecycleSnapshot): void {
+-    this.lifecycleSnapshot = snapshot;
+-  }
+-
+-  async emitSource(events: readonly AgentRunEvent[]): Promise<void> {
+-    for (const listener of this.sourceListeners) {
+-      await listener(events);
+-    }
+-  }
+-}
+-
+-const operationalTaskTeamIdentity = (): TaskTeamInstanceIdentity => ({
+-  taskTeamRunId: TASK_TEAM_RUN_ID,
+-  taskTeamInstanceId: "task-team-instance-7",
+-  parentTeamRunId: ORDINARY_TEAM_RUN_ID,
+-  taskId: "task-42",
+-  logicalTeam: {
+-    memberName: "review_team",
+-    memberPath: ["review_team"],
+-    memberRouteKey: "review_team",
+-    templateMemberRunId: "review-team-template",
+-    teamDefinitionId: "review-team-definition",
+-    coordinatorMemberRouteKey: "review_group/lead",
+-  },
+-  ingress: {
+-    memberName: "critic",
+-    memberPath: ["review_group", "critic"],
+-    memberRouteKey: "review_group/critic",
+-    memberRunId: MEMBER_RUN_ID,
+-  },
+-  createdAt: "2026-08-02T00:00:00.000Z",
+-});
+-
+-const scopeSnapshotToRoot = (memberRun: AgentRun): TeamLeafAgentStatusSnapshot => {
+-  const local = buildOrdinaryTeamLeafAgentStatusSnapshot({
+-    teamRunId: TASK_TEAM_RUN_ID,
+-    payload: {
+-      ...memberRun.getStatusSnapshot(),
+-      agent_id: MEMBER_RUN_ID,
+-      agent_name: "critic",
+-      member_path: ["review_group", "critic"],
+-      member_route_key: "review_group/critic",
+-      source_path: ["review_group", "critic"],
+-      source_route_key: "review_group/critic",
+-    },
+-  });
+-  const taskTeamScope = buildTaskTeamStreamScope({
+-    taskTeamInstance: operationalTaskTeamIdentity(),
+-    parentTeamRunId: ORDINARY_TEAM_RUN_ID,
+-  });
+-  const ordinaryFrame = prefixMixedTeamLeafAgentStatusSnapshot({
+-    parentTeamRunId: ORDINARY_TEAM_RUN_ID,
+-    sourcePrefix: ["review_team"],
+-    snapshot: local,
+-    taskTeamScopeOverride: taskTeamScope,
+-  });
+-  return prefixMixedTeamLeafAgentStatusSnapshot({
+-    parentTeamRunId: ROOT_TEAM_RUN_ID,
+-    sourcePrefix: ["research_group"],
+-    snapshot: ordinaryFrame,
+-  });
+-};
+-
+-const scopeEventToRoot = (agentEvent: AgentRunEvent): TeamRunEvent => {
+-  const local: TeamRunEvent = {
+-    teamRunId: TASK_TEAM_RUN_ID,
+-    eventSourceType: TeamRunEventSourceType.AGENT,
+-    sourcePath: ["review_group", "critic"],
+-    data: {
+-      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+-      memberName: "critic",
+-      memberRunId: MEMBER_RUN_ID,
+-      memberPath: ["review_group", "critic"],
+-      memberRouteKey: "review_group/critic",
+-      agentEvent,
+-    },
+-  };
+-  const taskTeamScope = buildTaskTeamStreamScope({
+-    taskTeamInstance: operationalTaskTeamIdentity(),
+-    parentTeamRunId: ORDINARY_TEAM_RUN_ID,
+-  });
+-  const ordinaryFrame = prefixMixedSubTeamEvent({
+-    parentTeamRunId: ORDINARY_TEAM_RUN_ID,
+-    sourcePrefix: ["review_team"],
+-    event: local,
+-    taskTeamScopeOverride: taskTeamScope,
+-  });
+-  return prefixMixedSubTeamEvent({
+-    parentTeamRunId: ROOT_TEAM_RUN_ID,
+-    sourcePrefix: ["research_group"],
+-    event: ordinaryFrame,
+-  });
+-};
+-
+-class ScopedRootTeamRun {
+-  readonly runId = ROOT_TEAM_RUN_ID;
+-  readonly runtimeKind = RuntimeKind.AUTOBYTEUS;
+-  readonly context = { runtimeContext: { memberContexts: [] } };
+-  readonly config = { memberConfigs: [] };
+-  readonly interruptMember = vi.fn(async () => ({ accepted: true as const }));
+-  private active = true;
+-  private terminationAccepted = false;
+-  private readonly listeners = new Set<TeamRunEventListener>();
+-
+-  constructor(readonly memberRun: AgentRun) {
+-    memberRun.subscribeToEvents((agentEvent) => {
+-      const rootEvent = scopeEventToRoot(agentEvent);
+-      for (const listener of this.listeners) {
+-        listener(rootEvent);
+-      }
+-    });
+-  }
+-
+-  isActive(): boolean {
+-    return this.active;
+-  }
+-
+-  getLeafAgentStatusSnapshots(): TeamLeafAgentStatusSnapshot[] {
+-    return [scopeSnapshotToRoot(this.memberRun)];
+-  }
+-
+-  subscribeToEvents(listener: TeamRunEventListener): () => void {
+-    this.listeners.add(listener);
+-    return () => this.listeners.delete(listener);
+-  }
+-
+-  setTerminationAccepted(accepted: boolean): void {
+-    this.terminationAccepted = accepted;
+-  }
+-
+-  async terminate(): Promise<{ accepted: boolean }> {
+-    if (!this.terminationAccepted) {
+-      return { accepted: false };
+-    }
+-    this.active = false;
+-    // Root manager lifecycle delivery must remain observable after the backend
+-    // event source has already torn down its listeners.
+-    this.listeners.clear();
+-    return { accepted: true };
+-  }
+-
+-  async postMessageToConversationTarget(): Promise<{ accepted: true }> {
+-    return { accepted: true };
+-  }
+-
+-  async approveToolInvocation(): Promise<{ accepted: true }> {
+-    return { accepted: true };
+-  }
+-}
+-
+-const createManager = () => new AgentTeamRunManager({
+-  mixedTeamRunBackendFactory: {} as never,
+-  teamCommunicationService: { attachToTeamRun: vi.fn(() => vi.fn()) } as never,
+-  runFileChangeService: { attachToTeamRun: vi.fn(() => vi.fn()) } as never,
+-});
+-
+-const registerRun = (manager: AgentTeamRunManager, teamRun: TeamRun): void => {
+-  (manager as unknown as { registerActiveRun: (run: TeamRun) => void })
+-    .registerActiveRun(teamRun);
+-};
+-
+-const wait = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
+-
+-const waitForSocketClose = (socket: WebSocket): Promise<void> =>
+-  new Promise((resolve, reject) => {
+-    const timer = setTimeout(
+-      () => reject(new Error("Timed out waiting for websocket close")),
+-      2_000,
+-    );
+-    socket.once("close", () => {
+-      clearTimeout(timer);
+-      resolve();
+-    });
+-  });
+-
+-const captureMessages = (socket: WebSocket): WsMessage[] => {
+-  const messages: WsMessage[] = [];
+-  socket.on("message", (data) => messages.push(JSON.parse(data.toString()) as WsMessage));
+-  return messages;
+-};
+-
+-const openSocket = async (url: string): Promise<{ socket: WebSocket; messages: WsMessage[] }> => {
+-  const socket = new WebSocket(url);
+-  const messages = captureMessages(socket);
+-  await new Promise<void>((resolve, reject) => {
+-    const timer = setTimeout(() => reject(new Error("Timed out waiting for websocket open")), 2_000);
+-    socket.once("open", () => {
+-      clearTimeout(timer);
+-      resolve();
+-    });
+-    socket.once("error", (error) => {
+-      clearTimeout(timer);
+-      reject(error);
+-    });
+-  });
+-  return { socket, messages };
+-};
+-
+-const waitForMessageCount = async (messages: WsMessage[], count: number): Promise<void> => {
+-  const deadline = Date.now() + 2_000;
+-  while (Date.now() < deadline) {
+-    if (messages.length >= count) return;
+-    await wait(10);
+-  }
+-  throw new Error(`Expected ${String(count)} messages, received ${JSON.stringify(messages)}`);
+-};
+-
+-const expectScopedLeafIdentity = (payload: Record<string, unknown>): void => {
+-  expect(payload).toMatchObject({
+-    agent_id: MEMBER_RUN_ID,
+-    agent_name: "critic",
+-    member_path: ROOT_MEMBER_PATH,
+-    member_route_key: ROOT_MEMBER_PATH.join("/"),
+-    source_path: ROOT_MEMBER_PATH,
+-    source_route_key: ROOT_MEMBER_PATH.join("/"),
+-    task_team_run_id: TASK_TEAM_RUN_ID,
+-    task_team_instance_id: "task-team-instance-7",
+-    task_id: "task-42",
+-    team_path: ["research_group", "review_team"],
+-    team_route_key: "research_group/review_team",
+-    task_team_relative_member_path: ["review_group", "critic"],
+-    task_team_relative_member_route_key: "review_group/critic",
+-  });
+-};
+-
+-describe("Team lifecycle and nested task-team WebSocket integration", () => {
+-  it("keeps binary root liveness separate while live/reconnect map the same exact scoped leaf", async () => {
+-    const backend = new ScriptedMemberBackend();
+-    const memberRun = new AgentRun({ context: backend.context, backend });
+-    const teamRun = new ScopedRootTeamRun(memberRun);
+-    const manager = createManager();
+-    registerRun(manager, teamRun as unknown as TeamRun);
+-
+-    const teamRunService = {
+-      getTeamRun: vi.fn(() => manager.getActiveRun(ROOT_TEAM_RUN_ID)),
+-      resolveTeamRun: vi.fn(async () => manager.getActiveRun(ROOT_TEAM_RUN_ID)),
+-      recordRunActivity: vi.fn(async () => {}),
+-      refreshRunMetadata: vi.fn(async () => {}),
+-    };
+-    const handler = new AgentTeamStreamHandler(
+-      new AgentSessionManager(),
+-      teamRunService as never,
+-      undefined,
+-      undefined,
+-      undefined,
+-      manager,
+-    );
+-    let resolvePrimaryDisconnect!: () => void;
+-    const primaryDisconnectCompleted = new Promise<void>((resolve) => {
+-      resolvePrimaryDisconnect = resolve;
+-    });
+-    const disconnect = handler.disconnect.bind(handler);
+-    vi.spyOn(handler, "disconnect").mockImplementation(async (sessionId) => {
+-      await disconnect(sessionId);
+-      resolvePrimaryDisconnect();
+-    });
+-    const app = fastify();
+-    await app.register(websocket);
+-    await registerAgentWebsocket(
+-      app,
+-      { connect: async () => null, handleMessage: async () => {}, disconnect: async () => {} } as never,
+-      handler,
+-    );
+-    const address = await app.listen({ port: 0, host: "127.0.0.1" });
+-    const url = new URL(address);
+-    const socketUrl = `ws://${url.hostname}:${url.port}/ws/agent-team/${ROOT_TEAM_RUN_ID}`;
+-    const primary = await openSocket(socketUrl);
+-
+-    try {
+-      await waitForMessageCount(primary.messages, 3);
+-      expect(primary.messages.map((message) => message.type)).toEqual([
+-        "CONNECTED",
+-        "AGENT_STATUS",
+-        "TEAM_RUN_LIFECYCLE",
+-      ]);
+-      expect(primary.messages[1]?.payload.status).toBe("idle");
+-      expectScopedLeafIdentity(primary.messages[1]!.payload);
+-      expect(primary.messages[2]).toEqual({
+-        type: "TEAM_RUN_LIFECYCLE",
+-        payload: { team_run_id: ROOT_TEAM_RUN_ID, is_active: true },
+-      });
+-      expect(primary.messages.some((message) => message.type === "TEAM_STATUS")).toBe(false);
+-
+-      backend.setLifecycleSnapshot(runningSnapshot("turn-live"));
+-      await backend.emitSource([
+-        event(AgentRunEventType.TURN_STARTED, { turn_id: "turn-live" }),
+-        event(AgentRunEventType.SEGMENT_CONTENT, {
+-          turn_id: "turn-live",
+-          segment_id: "segment-live",
+-          delta: "streamed through every boundary",
+-        }),
+-      ]);
+-      await waitForMessageCount(primary.messages, 7);
+-      const live = primary.messages.slice(3);
+-      expect(live.map((message) => message.type)).toEqual([
+-        "AGENT_STATUS",
+-        "TURN_STARTED",
+-        "AGENT_STATUS",
+-        "SEGMENT_CONTENT",
+-      ]);
+-      for (const message of live) expectScopedLeafIdentity(message.payload);
+-      expect(live[0]?.payload.status).toBe("running");
+-      expect(live[2]?.payload.status).toBe("running");
+-
+-      primary.socket.send(JSON.stringify({
+-        type: "INTERRUPT_GENERATION",
+-        payload: {
+-          command_id: "client_interrupt_nested_leaf",
+-          target_member_route_key: ROOT_MEMBER_PATH.join("/"),
+-          target_member_run_id: MEMBER_RUN_ID,
+-        },
+-      }));
+-      await vi.waitFor(() => {
+-        expect(teamRun.interruptMember).toHaveBeenCalledWith(
+-          ROOT_MEMBER_PATH.join("/"),
+-          MEMBER_RUN_ID,
+-        );
+-      });
+-      await waitForMessageCount(primary.messages, 8);
+-      expect(primary.messages[7]).toEqual({
+-        type: "AGENT_COMMAND_ACK",
+-        payload: {
+-          command_type: "INTERRUPT_GENERATION",
+-          command_id: "client_interrupt_nested_leaf",
+-          state: "accepted",
+-          target: {
+-            target_kind: "team_member",
+-            team_run_id: ROOT_TEAM_RUN_ID,
+-            member_route_key: ROOT_MEMBER_PATH.join("/"),
+-            member_run_id: MEMBER_RUN_ID,
+-          },
+-        },
+-      });
+-
+-      const primaryClosed = waitForSocketClose(primary.socket);
+-      primary.socket.close();
+-      await primaryClosed;
+-      await primaryDisconnectCompleted;
+-      expect(manager.getLifecycleSnapshot(ROOT_TEAM_RUN_ID).isActive).toBe(true);
+-      const reconnectRunning = await openSocket(socketUrl);
+-      try {
+-        await waitForMessageCount(reconnectRunning.messages, 3);
+-        expect(reconnectRunning.messages[1]?.payload.status).toBe("running");
+-        expectScopedLeafIdentity(reconnectRunning.messages[1]!.payload);
+-        expect(reconnectRunning.messages[2]?.payload).toEqual({
+-          team_run_id: ROOT_TEAM_RUN_ID,
+-          is_active: true,
+-        });
+-
+-        backend.setLifecycleSnapshot(idleSnapshot());
+-        await backend.emitSource([
+-          event(AgentRunEventType.TURN_INTERRUPTED, { turn_id: "turn-live" }),
+-        ]);
+-        await waitForMessageCount(reconnectRunning.messages, 5);
+-        expect(reconnectRunning.messages.slice(-2).map((message) => message.type)).toEqual([
+-          "TURN_INTERRUPTED",
+-          "AGENT_STATUS",
+-        ]);
+-        expect(reconnectRunning.messages.at(-1)?.payload.status).toBe("idle");
+-        expect(manager.getLifecycleSnapshot(ROOT_TEAM_RUN_ID).isActive).toBe(true);
+-
+-        teamRun.setTerminationAccepted(false);
+-        await expect(manager.terminateTeamRun(ROOT_TEAM_RUN_ID)).resolves.toBe(false);
+-        expect(manager.getLifecycleSnapshot(ROOT_TEAM_RUN_ID).isActive).toBe(true);
+-        expect(reconnectRunning.messages.some((message) =>
+-          message.type === "TEAM_RUN_LIFECYCLE" && message.payload.is_active === false)).toBe(false);
+-
+-        teamRun.setTerminationAccepted(true);
+-        await expect(manager.terminateTeamRun(ROOT_TEAM_RUN_ID)).resolves.toBe(true);
+-        await waitForMessageCount(reconnectRunning.messages, 6);
+-        expect(reconnectRunning.messages.at(-1)).toEqual({
+-          type: "TEAM_RUN_LIFECYCLE",
+-          payload: { team_run_id: ROOT_TEAM_RUN_ID, is_active: false },
+-        });
+-        expect(manager.getLifecycleSnapshot(ROOT_TEAM_RUN_ID).isActive).toBe(false);
+-        expect(reconnectRunning.messages.some((message) => message.type === "TEAM_STATUS")).toBe(false);
+-      } finally {
+-        reconnectRunning.socket.close();
+-      }
+-    } finally {
+-      primary.socket.close();
+-      await app.close();
+-    }
+-  });
+-});
+diff --git a/autobyteus-server-ts/tests/unit/services/agent-streaming/team-runtime-snapshot-service.test.ts b/autobyteus-server-ts/tests/unit/services/agent-streaming/team-runtime-snapshot-service.test.ts
+index b55b5dceb..3747d2e16 100644
+--- a/autobyteus-server-ts/tests/unit/services/agent-streaming/team-runtime-snapshot-service.test.ts
++++ b/autobyteus-server-ts/tests/unit/services/agent-streaming/team-runtime-snapshot-service.test.ts
+@@ -1,104 +1,63 @@
+ import { describe, expect, it } from "vitest";
++import { createTeamAgentExecutionBinding } from "../../../../src/agent-team-execution/domain/team-agent-execution-binding.js";
++import {
++  createTeamAgentStatusDetails,
++  createTeamAgentStatusSnapshot,
++} from "../../../../src/agent-team-execution/domain/team-agent-status.js";
++import { createTeamExecutionAddress } from "../../../../src/agent-team-execution/domain/team-execution-address.js";
+ import type { TeamRun } from "../../../../src/agent-team-execution/domain/team-run.js";
+-import { ServerMessageType } from "../../../../src/services/agent-streaming/models.js";
+ import { TeamRuntimeSnapshotService } from "../../../../src/services/agent-streaming/team-runtime-snapshot-service.js";
+ 
+-const taskTeamScope = {
+-  taskTeamRunId: "task-team-run-7",
+-  taskTeamInstanceId: "task-team-instance-7",
+-  taskId: "task-42",
+-  logicalTeamPath: ["research_group", "review_team"],
+-  logicalTeamRouteKey: "research_group/review_team",
+-};
+-
+ describe("TeamRuntimeSnapshotService", () => {
+-  it("preserves task-team scope until initial AGENT_STATUS wire mapping", () => {
+-    const teamRun = {
+-      getLeafAgentStatusSnapshots: () => [{
+-        scopeKind: "task_team_member",
+-        teamRunId: "root-team-1",
+-        payload: {
+-          status: "running",
+-          agent_id: "critic-runtime-93",
+-          agent_name: "critic",
+-          member_path: ["research_group", "review_team", "review_group", "critic"],
+-          member_route_key: "research_group/review_team/review_group/critic",
+-          source_path: ["research_group", "review_team", "review_group", "critic"],
+-          source_route_key: "research_group/review_team/review_group/critic",
+-        },
+-        taskTeamScope,
+-      }],
+-    } as unknown as TeamRun;
+-
+-    const messages = new TeamRuntimeSnapshotService().getInitialMessages(teamRun, {
+-      teamRunId: "root-team-1",
+-      isActive: true,
+-    });
+-
+-    expect(messages[0]).toMatchObject({
+-      type: ServerMessageType.AGENT_STATUS,
+-      payload: {
+-        agent_id: "critic-runtime-93",
+-        task_team_run_id: "task-team-run-7",
+-        task_team_instance_id: "task-team-instance-7",
+-        task_id: "task-42",
+-        team_route_key: "research_group/review_team",
+-        team_path: ["research_group", "review_team"],
+-        task_team_relative_member_path: ["review_group", "critic"],
+-        task_team_relative_member_route_key: "review_group/critic",
+-      },
++  it("projects exact current task-Team Agent identity before the root lifecycle snapshot", () => {
++    const executionAddress = createTeamExecutionAddress({
++      rootTeamRunId: "root-team-1",
++      taskTeamRunIds: ["task-team-run-7"],
++      memberAddress: "/research_group/review_team/review_group/critic",
++      taskAgentRunId: null,
+     });
+-    expect(messages[1]).toMatchObject({
+-      type: ServerMessageType.TEAM_RUN_LIFECYCLE,
+-      payload: { team_run_id: "root-team-1", is_active: true },
++    const snapshot = createTeamAgentStatusSnapshot({
++      execution: createTeamAgentExecutionBinding({
++        executionAddress,
++        agentRunId: "critic-agent-run-93",
++      }),
++      details: createTeamAgentStatusDetails({
++        status: "running",
++        trigger: "turn_started",
++      }),
+     });
+-  });
+-
+-  it("rejects a task-team leaf whose source path is outside its logical team scope", () => {
+     const teamRun = {
+-      getLeafAgentStatusSnapshots: () => [{
+-        scopeKind: "task_team_member",
+-        teamRunId: "root-team-1",
+-        payload: {
+-          status: "running",
+-          agent_id: "critic-runtime-93",
+-          agent_name: "critic",
+-          member_path: ["other", "critic"],
+-          member_route_key: "other/critic",
+-          source_path: ["other", "critic"],
+-          source_route_key: "other/critic",
+-        },
+-        taskTeamScope,
+-      }],
++      getLeafAgentStatusSnapshots: () => [snapshot],
+     } as unknown as TeamRun;
+ 
+-    expect(() => new TeamRuntimeSnapshotService().getInitialMessages(teamRun, {
++    expect(new TeamRuntimeSnapshotService().getInitialMessages(teamRun, {
+       teamRunId: "root-team-1",
+       isActive: true,
+-    })).toThrow("must be rooted below 'research_group/review_team'");
+-  });
+-
+-  it("rejects a task-team leaf with no relative selector", () => {
+-    const teamRun = {
+-      getLeafAgentStatusSnapshots: () => [{
+-        scopeKind: "task_team_member",
+-        teamRunId: "root-team-1",
++    })).toEqual([
++      {
++        type: "AGENT_STATUS",
+         payload: {
++          agent_execution: {
++            kind: "task_team_agent",
++            execution_address: {
++              root_team_run_id: "root-team-1",
++              task_team_run_ids: ["task-team-run-7"],
++              member_address: "/research_group/review_team/review_group/critic",
++              task_agent_run_id: null,
++            },
++            agent_run_id: "critic-agent-run-93",
++          },
+           status: "running",
+-          agent_id: "task-team-root",
+-          agent_name: "review_team",
+-          member_path: ["research_group", "review_team"],
+-          member_route_key: "research_group/review_team",
+-          source_path: ["research_group", "review_team"],
+-          source_route_key: "research_group/review_team",
++          trigger: "turn_started",
++          tool_name: null,
++          error_message: null,
++          error_details: null,
+         },
+-        taskTeamScope,
+-      }],
+-    } as unknown as TeamRun;
+-
+-    expect(() => new TeamRuntimeSnapshotService().getInitialMessages(teamRun, {
+-      teamRunId: "root-team-1",
+-      isActive: true,
+-    })).toThrow("with a nonempty relative member path");
++      },
++      {
++        type: "TEAM_RUN_LIFECYCLE",
++        payload: { is_active: true },
++      },
++    ]);
+   });
+ });
+diff --git a/autobyteus-server-ts/tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts b/autobyteus-server-ts/tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts
+new file mode 100644
+index 000000000..76ac8895b
+--- /dev/null
++++ b/autobyteus-server-ts/tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts
+@@ -0,0 +1,115 @@
++import { describe, expect, it } from "vitest";
++import { StreamEventType } from "autobyteus-ts";
++import { AutoByteusStreamEventConverter } from "../../../src/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.js";
++import {
++  AgentRunEventType,
++  type AgentRunEvent,
++} from "../../../src/agent-execution/domain/agent-run-event.js";
++import { createTeamAgentExecutionBinding } from "../../../src/agent-team-execution/domain/team-agent-execution-binding.js";
++import { createTeamExecutionAddress } from "../../../src/agent-team-execution/domain/team-execution-address.js";
++import { TeamAgentEventAdapter } from "../../../src/agent-team-execution/services/team-agent-event-adapter.js";
++import { projectTeamAgentEventMessage } from "../../../src/services/agent-streaming/team-agent-event-websocket-projector.js";
++
++const executionAddress = createTeamExecutionAddress({
++  rootTeamRunId: "root-team-run",
++  taskTeamRunIds: [],
++  memberAddress: "/Teacher",
++  taskAgentRunId: null,
++});
++
++const execution = createTeamAgentExecutionBinding({
++  executionAddress,
++  agentRunId: "teacher-agent-run",
++});
++
++describe("AutoByteus Team segment admission", () => {
++  it.each([
++    {
++      nativeType: "SEGMENT_START",
++      eventType: AgentRunEventType.SEGMENT_START,
++      segmentId: "segment-start",
++      nestedPayload: { segment_type: "assistant_text", metadata: { role: "assistant" } },
++    },
++    {
++      nativeType: "SEGMENT_CONTENT",
++      eventType: AgentRunEventType.SEGMENT_CONTENT,
++      segmentId: "segment-content",
++      nestedPayload: { segment_type: "assistant_text", delta: "visible content" },
++    },
++    {
++      nativeType: "SEGMENT_END",
++      eventType: AgentRunEventType.SEGMENT_END,
++      segmentId: "segment-end",
++      nestedPayload: { interrupted: false, failed: false, metadata: { completed: true } },
++    },
++  ])(
++    "preserves $nativeType identity through converter, Team admission, and strict wire projection",
++    ({ nativeType, eventType, segmentId, nestedPayload }) => {
++      const converted = new AutoByteusStreamEventConverter("teacher-agent-run").convert({
++        event_type: StreamEventType.SEGMENT_EVENT,
++        data: {
++          event_type: nativeType,
++          segment_id: segmentId,
++          segment_type: "assistant_text",
++          turn_id: "turn-1",
++          payload: nestedPayload,
++        },
++      } as any);
++
++      expect(converted).toMatchObject({
++        runId: "teacher-agent-run",
++        eventType,
++        payload: { id: segmentId, turn_id: "turn-1" },
++      });
++      expect(converted?.payload).not.toHaveProperty("segment_id");
++      expect(converted?.payload).not.toHaveProperty("segmentId");
++
++      const admitted = new TeamAgentEventAdapter(() => executionAddress).adapt(converted!);
++      expect(admitted.kind).toBe("publish");
++      if (admitted.kind !== "publish") throw new Error(`Unexpected Team admission result: ${JSON.stringify(admitted)}`);
++      expect(admitted.event.details).toMatchObject({ segmentId });
++
++      const wire = projectTeamAgentEventMessage(execution, admitted.event);
++      expect(wire).toMatchObject({
++        type: eventType,
++        payload: {
++          segment_id: segmentId,
++          agent_execution: {
++            kind: "persistent_agent",
++            execution_address: {
++              root_team_run_id: "root-team-run",
++              task_team_run_ids: [],
++              member_address: "/Teacher",
++              task_agent_run_id: null,
++            },
++          },
++        },
++      });
++      expect(wire.payload).not.toHaveProperty("id");
++      expect(wire.payload).not.toHaveProperty("segmentId");
++    },
++  );
++
++  it.each([
++    ["snake_case", { segment_id: "alias-only" }],
++    ["camelCase", { segmentId: "alias-only" }],
++  ])("rejects an internal %s alias without canonical id", (_label, aliasPayload) => {
++    const internalEvent: AgentRunEvent = {
++      runId: "teacher-agent-run",
++      eventType: AgentRunEventType.SEGMENT_CONTENT,
++      payload: {
++        ...aliasPayload,
++        segment_type: "assistant_text",
++        turn_id: "turn-1",
++        delta: "must reject",
++      },
++      statusHint: null,
++    };
++
++    expect(new TeamAgentEventAdapter(() => executionAddress).adapt(internalEvent)).toEqual({
++      kind: "rejected",
++      code: "TEAM_AGENT_EVENT_ADMISSION_FAILED",
++      message: "Rejected SEGMENT_CONTENT: id is required",
++    });
++  });
++});

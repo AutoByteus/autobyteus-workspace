@@ -1,0 +1,23 @@
+delivery_revision=DR-010
+changed_durable_doc_count=13
+doc=autobyteus-server-ts/docs/ARCHITECTURE.md	fences=0	bytes=16625
+doc=autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md	fences=10	bytes=9759
+doc=autobyteus-server-ts/docs/modules/agent_communication.md	fences=4	bytes=10399
+doc=autobyteus-server-ts/docs/modules/agent_definition.md	fences=2	bytes=8406
+doc=autobyteus-server-ts/docs/modules/agent_execution.md	fences=2	bytes=30032
+doc=autobyteus-server-ts/docs/modules/agent_streaming.md	fences=2	bytes=8434
+doc=autobyteus-server-ts/docs/modules/agent_team_execution.md	fences=4	bytes=14194
+doc=autobyteus-server-ts/docs/modules/agent_tools.md	fences=0	bytes=17004
+doc=autobyteus-server-ts/docs/modules/codex_integration.md	fences=0	bytes=35349
+doc=autobyteus-server-ts/docs/modules/prompt_engineering.md	fences=12	bytes=14208
+doc=autobyteus-web/docs/agent_execution_architecture.md	fences=2	bytes=95512
+doc=autobyteus-web/docs/agent_integration_minimal_bridge.md	fences=8	bytes=12956
+doc=autobyteus-web/docs/agent_teams.md	fences=4	bytes=28422
+agentteam_addressing_present=PASS
+agentteam_collaboration_present=PASS
+agent_run_admission_present=PASS
+claude_sdk_0_3_231_present=PASS
+abort_controller_present=PASS
+retired_team_runtime_absent=PASS
+retired_busy_code_absent=PASS
+error_count=0

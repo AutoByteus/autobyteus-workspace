@@ -42,6 +42,7 @@ try {
       RUN_REAL_E2E: '1',
       AUTOBYTEUS_TEST_RUNTIME_ROOT: server.runtimeRoot,
       AUTOBYTEUS_TEST_SERVER_URL: server.serverUrl,
+      AUTOBYTEUS_TEST_DATABASE_URL: server.database.databaseUrl,
       AUTOBYTEUS_LIVE_E2E_EVIDENCE_DIR: evidenceDirectory,
       ...(preflightOnly ? { AUTOBYTEUS_LIVE_E2E_PREFLIGHT_ONLY: '1' } : {}),
       ...(selectedScenarios ? { AUTOBYTEUS_LIVE_E2E_SCENARIOS: selectedScenarios } : {}),

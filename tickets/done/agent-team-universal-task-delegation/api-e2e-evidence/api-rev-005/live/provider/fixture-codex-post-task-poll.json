@@ -1,0 +1,11 @@
+{
+  "data": {
+    "getTaskDelegationRecords": [
+      {
+        "taskId": "task_ab2a61c664e64111a100ae243122c4af",
+        "status": "active",
+        "updates": []
+      }
+    ]
+  }
+}

@@ -124,46 +124,19 @@ describe("AgentStreamWebSocketEgress", () => {
     ]);
   });
 
-  it("isolates stable-member, task-agent, and nested task-team status identities", () => {
-    const sendRaw = vi.fn();
-    const egress = new AgentStreamWebSocketEgress({ sendRaw });
-    const stableA = { agent_id: "run-a", member_route_key: "root/a" };
-    const stableB = { agent_id: "run-b", member_route_key: "root/b" };
-    const taskAgent = {
-      agent_id: "task-agent-run",
-      task_agent_run_id: "task-agent-run",
-      task_agent_instance_id: "task-agent-instance",
-      source_route_key: "root/lead/task-agent",
-    };
-    const taskTeamLeaf = {
-      agent_id: "leaf-run",
-      task_team_run_id: "task-team-run",
-      task_team_instance_id: "task-team-instance",
-      task_id: "task-1",
-      team_route_key: "root/task-team",
-      task_team_relative_member_route_key: "researcher",
-    };
-
-    [stableA, stableB, taskAgent, taskTeamLeaf].forEach((identity) => {
-      egress.send(status("running", identity));
-      egress.send(status("running", identity));
-    });
-
-    expect(parseSent(sendRaw)).toHaveLength(4);
-    expect(parseSent(sendRaw).map(({ payload }) => payload.agent_id)).toEqual([
-      "run-a",
-      "run-b",
-      "task-agent-run",
-      "leaf-run",
-    ]);
-  });
-
   it("fails open when a status identity is incomplete", () => {
     const sendRaw = vi.fn();
     const egress = new AgentStreamWebSocketEgress({ sendRaw });
     const incompleteTaskTeam = {
-      agent_id: "leaf-run",
-      task_team_run_id: "task-team-run",
+      agent_execution: {
+        kind: "task_team_agent",
+        execution_address: {
+          root_team_run_id: "root-team-run",
+          task_team_run_ids: ["task-team-run"],
+          member_address: "/StudyGroup/student_one",
+          task_agent_run_id: null,
+        },
+      },
     };
 
     egress.send(status("running", incompleteTaskTeam));

@@ -1,0 +1,127 @@
+API-REV-032 final handoff check
+checked_at=2026-08-12T15:33:42Z
+head=66cfe11e9057b0276c95cb5e9a01784d74b07499
+result=Pass
+confidence=98%
+resolved=TR-F-004,TR-F-005
+focused_vitest=4 files / 65 tests passed
+cumulative_package=92 paths; A:3 M:83 D:6; server:38 web:54
+broader_validation=Not Required; API-REV-031 product evidence retained
+server_frontend_browser_provider_vault_live_migration_actions=none
+test_database=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db
+operational_database_action=none
+protected_stack_action=none
+delivery_stash_backup_action=none
+
+ ✓ tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts (17 tests) 23ms
+ ✓ tests/unit/services/agent-streaming/agent-stream-websocket-egress.test.ts (31 tests) 11ms
+
+ Test Files  4 passed (4)
+      Tests  65 passed (65)
+   Start at  17:30:07
+   Duration  8.19s (transform 3.63s, setup 23ms, import 7.02s, tests 155ms, environment 0ms)
+
+
+CRR-068 bounded durable-test static audit
+head=66cfe11e9057b0276c95cb5e9a01784d74b07499
+audited_at=2026-08-12T15:30:52Z
+
+[deleted-symbol and synthetic-instance audit]
+occurrences=0
+result=PASS
+
+[unsupported standalone egress compatibility-payload audit]
+occurrences=0
+result=PASS
+
+[current strict Team identity replacement boundary]
+126:      execution_address: executionAddress,
+134:    ? { execution_address: executionAddress, command_id: "interrupt-invalid" }
+135:    : { execution_address: executionAddress, invocation_id: "invocation-invalid", reason: null };
+147:        execution_address: projectTeamExecutionAddressDto(executionCases[0]!.address),
+189:        execution_address: exactAddress,
+197:        execution_address: exactAddress,
+202:        execution_address: exactAddress,
+230:          execution_address: projectTeamExecutionAddressDto(address),
+240:  ])("rejects %s before effect when execution_address is incomplete", async (type) => {
+256:  ])("rejects %s before effect when execution_address names a foreign root", async (type) => {
+273:          execution_address: expect.objectContaining({ root_team_run_id: "foreign-root" }),
+300:      execution_address: projectTeamExecutionAddressDto(stale),
+334:      execution_address: projectTeamExecutionAddressDto(stale),
+348:          execution_address: projectTeamExecutionAddressDto(stale),
+354:  it("projects the exact execution address on Agent events", () => {
+382:      agent_execution: {
+383:        kind: "task_team_agent",
+384:        execution_address: projectTeamExecutionAddressDto(address),
+result=PASS
+
+[active cumulative durable relative-import resolution]
+active_inventory_paths=86
+missing_relative_import_count=0
+result=PASS
+
+[focused diff hygiene]
+result=PASS
+
+API-REV-032 cumulative durable inventory audit
+total=92
+added=3
+modified=83
+removed=6
+server=38
+web=54
+unique_paths=92
+patch_headers=92
+patch_unique_paths=92
+inventory_patch_path_match=TRUE
+status_mismatch_count=0
+inventory_sha256=dea000058e890454392a9e858f764e7f295dff1bea9e28e5b42746b0edee94c6
+patch_sha256=f4cc44ca9c0aa289174adeee4719cf02d02b6a3a4fde13974530bd282e8121f1
+result=PASS
+diff_check=PASS
+
+[patch integrity]
+reverse_apply_check=PASS
+
+[corrected path patch headers]
+2851:diff --git a/autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts b/autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts
+3884:diff --git a/autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-manager.test.ts b/autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-manager.test.ts
+7921:diff --git a/autobyteus-server-ts/tests/unit/services/agent-streaming/agent-stream-websocket-egress.test.ts b/autobyteus-server-ts/tests/unit/services/agent-streaming/agent-stream-websocket-egress.test.ts
+7981:diff --git a/autobyteus-server-ts/tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts b/autobyteus-server-ts/tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts
+
+[corrected inventory rows]
+13:M	server	autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts	Needs Update / Currentized / Revalidated	crr068-focused-final.log; crr068-static-audit.log
+23:M	server	autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-manager.test.ts	Needs Update / Currentized / Revalidated	crr068-focused-final.log; crr068-static-audit.log
+37:M	server	autobyteus-server-ts/tests/unit/services/agent-streaming/agent-stream-websocket-egress.test.ts	Stale Case Removed / Supported Boundary Revalidated	crr068-focused-final.log; crr068-static-audit.log
+38:M	server	autobyteus-server-ts/tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts	Still Valid / Replacement Boundary Revalidated	crr068-focused-final.log; crr068-static-audit.log
+
+artifact_revision_checks:
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md:9:- Current revision: `API-REV-032`
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md:10:- Prior completed result: `API-REV-031 Pass / 98%`
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md:11:- Current result: **Pass / 98%**
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md:12:- Resolved in this round: `TR-F-004`, `TR-F-005`
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md:18:The canonical investigation was currentized before any API-REV-032 durable edit. The bounded decisions were:
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md:25:API-REV-032 repository-resident delta:
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md:88:No production or environment boundary changed in API-REV-032. The following API-REV-031 evidence remains authoritative rather than being needlessly repeated:
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md:104:API-REV-032 started no server, frontend, browser, provider runtime, checked launcher, vault import, or live migration. The focused Vitest setup reset only the repository-owned test SQLite database:
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md:113:No API-REV-032 process or disposable live resource required cleanup.
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md:125:| Durable regression coverage quality and relevance | 96% | TR-F-004/005 are removed without compatibility restoration; exact current replacement boundaries pass. Proportional re-review remains required. |
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md:131:- Authoritative outcome: **Pass / 98%**.
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md:132:- `TR-F-004`: **resolved**.
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md:133:- `TR-F-005`: **resolved**.
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-revision-record.md:42:| API-REV-031 | `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md`; Round 31 | SR-018; ARCH-REV-011; IR-037; CRR-067 | Fail / 93% (API-REV-030) | Pass / 98% |
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-revision-record.md:759:- Current result/confidence: **Pass / 98%**.
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-revision-record.md:763:### API-REV-032 — CRR-068 bounded durable-test corrections
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-revision-record.md:766:- Triggering findings: `TR-F-004`, `TR-F-005`.
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-revision-record.md:772:- Broader-validation delta: **Not Required** and not executed. API-REV-031 real browser/provider/system evidence remains authoritative because API-REV-032 changes durable tests only.
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-revision-record.md:774:- Prior result/confidence: `Pass / 98%` (`API-REV-031`).
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-revision-record.md:775:- Current result/confidence: **Pass / 98%**.
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-coverage-investigation.md:1694:## API-REV-032 CRR-068 Durable-Test Local-Fix Investigation (Pre-execution)
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-coverage-investigation.md:1696:This section currentizes the coverage decision before the CRR-068 durable-test edits and focused execution. API-REV-031 remains the authoritative product/API result at `Pass / 98%`; this round does not reopen its real browser/provider evidence or CRR-067's source result.
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-coverage-investigation.md:1701:- Trigger: `CRR-068 Fail — Local Fix`, findings `TR-F-004` and `TR-F-005`, confined to three repository-resident server unit-test fixtures.
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-coverage-investigation.md:1707:| Durable boundary | Decision | API-REV-032 action |
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-coverage-investigation.md:1724:## API-REV-032 Completion Update — TR-F-004 and TR-F-005 corrected
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-coverage-investigation.md:1737:Broader validation was **Not Required** and was not repeated. API-REV-031's real active/persisted desktop/mobile Team reference evidence and retained AutoByteus/Codex/Claude matrix remain unchanged because API-REV-032 changes test fixtures only. No production source, browser, provider, server, frontend, vault, checked launcher, or live fixture was touched. The focused Vitest global setup used only the repository test database at `autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db`; it did not target or inspect the operational database.
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-coverage-investigation.md:1741:API-REV-032 result: **Pass / 98%**. `TR-F-004` and `TR-F-005` are resolved in the durable package. Return the complete `92`-path package to `code_reviewer` for proportional re-review; delivery remains blocked until that review passes.
+
+handoff_check=PASS

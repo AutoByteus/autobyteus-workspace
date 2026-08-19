@@ -38,11 +38,13 @@ export const openAgentRun = async (
 
   const agentContextsStore = useAgentContextsStore();
   const existingContext = agentContextsStore.getRun(input.runId);
+  const agentRunStore = useAgentRunStore();
+  const streamConnected = agentRunStore.isAgentStreamReady(input.runId);
   const shouldTreatAsLive = resumeConfig.isActive;
   const strategy = decideRunOpenStrategy({
     isRunActive: shouldTreatAsLive,
     hasExistingContext: Boolean(existingContext),
-    isExistingContextSubscribed: Boolean(existingContext?.isSubscribed),
+    isExistingContextSubscribed: streamConnected,
   });
   config.isLocked = shouldTreatAsLive;
   const liveStatus = shouldTreatAsLive
@@ -62,6 +64,7 @@ export const openAgentRun = async (
       config,
       conversation,
       status: liveStatus,
+      preserveCurrentStatus: streamConnected,
     });
     hydrateActivitiesFromProjection(input.runId, activities);
     primeRecentEventMonitorBaseline(context);
@@ -80,9 +83,9 @@ export const openAgentRun = async (
   }
 
   if (shouldTreatAsLive) {
-    useAgentRunStore().connectToAgentStream(input.runId);
-  } else if (existingContext?.isSubscribed) {
-    useAgentRunStore().disconnectAgentStream(input.runId);
+    agentRunStore.connectToAgentStream(input.runId);
+  } else if (streamConnected) {
+    agentRunStore.disconnectAgentStream(input.runId);
   }
 
   return {

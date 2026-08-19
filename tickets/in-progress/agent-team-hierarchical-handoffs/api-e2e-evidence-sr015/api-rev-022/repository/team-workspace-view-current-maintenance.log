@@ -1,0 +1,33 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web
+
+stderr | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > shows focused member name in header 18ms
+ ✓ components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > does not render the token usage header chip 3ms
+ ✓ components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > shows focused member status in header 1ms
+ ✓ components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > shows focused member avatar in header when available 2ms
+ ✓ components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > does not silently substitute the team title for an unresolved exact focus address 1ms
+ ✓ components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > shows roster focus in the header when active execution falls back to the coordinator 1ms
+ ✓ components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > keeps roster focus in the header after simplifying the shell controls 1ms
+ ✓ components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > opens selected team config from header action 2ms
+ ✓ components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > seeds a new team config from the selected run without sharing nested global or member llmConfig 13ms
+ ✓ components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > renders the focused monitor directly 2ms
+ ✓ components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > passes the focused member run to the composer skill-improvement CTA 1ms
+ ✓ components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > preserves the shared composer only for a focused subteam 4ms
+
+ Test Files  1 passed (1)
+      Tests  12 passed (12)
+   Start at  07:03:19
+   Duration  5.55s (transform 2.98s, setup 4.69s, collect 172ms, tests 50ms, environment 167ms, prepare 179ms)
+

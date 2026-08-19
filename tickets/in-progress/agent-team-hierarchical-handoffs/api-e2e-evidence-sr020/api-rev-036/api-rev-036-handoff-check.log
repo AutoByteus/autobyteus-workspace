@@ -1,0 +1,22 @@
+API-REV-036 environment and live matrix audit
+head=6b578235917700584a6b559cd58763bd3bba9b38
+matrix_all_pass=true
+team_rows_pass=true
+standalone_rows_pass=true
+mobile_active_pass=true
+mobile_persisted_pass=true
+segment_rejection_count=0
+server_pid_exact_database=9
+secret_import_result=PASS
+secret_values_logged=false
+source_fixture_unchanged=true
+owned_cleanup_runtime_removed=1
+operational_database_action=NONE
+operational_database_inspection=NONE
+protected_stack_action=NONE
+stash_action=NONE
+delivery_backup_action=NONE
+stash_count_metadata_only=17
+stash_action=NONE_CONFIRMED
+delivery_backup_action=NONE_CONFIRMED
+historical_operational_incident_disclosures=RETAINED

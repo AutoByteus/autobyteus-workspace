@@ -1,0 +1,45 @@
+{
+  "requestToolNames": [
+    "delegate_task",
+    "submit_task_result",
+    "review_task_result"
+  ],
+  "updated": [
+    {
+      "id": "utd-coordinator-api-rev-005-1786807916040",
+      "name": "utd_coordinator_api_rev_005_1786807916040",
+      "toolNames": [
+        "delegate_task",
+        "submit_task_result",
+        "review_task_result"
+      ]
+    },
+    {
+      "id": "utd-worker-api-rev-005-1786807916040",
+      "name": "utd_worker_api_rev_005_1786807916040",
+      "toolNames": [
+        "delegate_task",
+        "submit_task_result",
+        "review_task_result"
+      ]
+    },
+    {
+      "id": "utd-nested-coordinator-api-rev-005-1786807916040",
+      "name": "utd_nested_coordinator_api_rev_005_1786807916040",
+      "toolNames": [
+        "delegate_task",
+        "submit_task_result",
+        "review_task_result"
+      ]
+    },
+    {
+      "id": "utd-nested-worker-api-rev-005-1786807916040",
+      "name": "utd_nested_worker_api_rev_005_1786807916040",
+      "toolNames": [
+        "delegate_task",
+        "submit_task_result",
+        "review_task_result"
+      ]
+    }
+  ]
+}

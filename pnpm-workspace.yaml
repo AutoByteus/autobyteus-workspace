@@ -7,4 +7,5 @@ packages:
   - "autobyteus-application-backend-sdk"
   - "autobyteus-application-frontend-sdk"
   - "autobyteus-application-devkit"
+  - "autobyteus-team-stream-contracts"
   - "applications/*"

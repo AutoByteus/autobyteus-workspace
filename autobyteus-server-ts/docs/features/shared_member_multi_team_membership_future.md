@@ -2,56 +2,77 @@
 
 ## Status
 
-Future feature / not part of the current nested mixed-team implementation.
+Future feature / not part of the current nested mixed-Team implementation.
 
-The current implementation should keep one canonical structural runtime path for a nested member, for example `BuildSquad/review_lead`, and expose that member to the parent through representative communication descriptors. This document records the cleaner long-term organization model where one agent member instance can belong to multiple teams at the definition/construction level.
+The current runtime gives each Agent placement one canonical structural path,
+for example `/build_squad/review_lead`. It does not duplicate a child Team
+coordinator into the parent as a communication representative. Instead, all
+Team-bound Agents use the root topology and explicit logical addresses:
+
+- `/...` starts at the collaboration root;
+- `./...` starts at the caller's immediate Team;
+- an Agent address targets that Agent;
+- a Team address targets that Team through its exact direct Agent coordinator
+  ingress; and
+- bare names and synthetic representative aliases are invalid.
+
+This document records a different future organization model in which one Agent
+runtime instance could deliberately own multiple Team membership placements.
 
 ## Motivation
 
-Real organizations often have a person who belongs to more than one team:
+Some organizations want one person or Agent instance to participate in several
+Teams without starting independent runtimes:
 
 ```text
 ParentTeam
   program_manager
-  review_lead        # BuildSquad representative in the parent team
 
 BuildSquad
-  review_lead        # same person, coordinator of BuildSquad
+  review_lead
   qa_specialist
+
+Shared membership request:
+  one review_lead runtime participates in both ParentTeam and BuildSquad
 ```
 
-The important product idea is that `review_lead` is not two agents. It is one member instance with multiple team memberships. The parent team sees the person directly, while the child team also sees the same person as its coordinator.
+Current hierarchical addressing does not imply shared membership. From the
+root, `/build_squad/review_lead` reaches the one nested Agent placement, while
+`/program_manager` reaches the parent Agent. That already supports nested,
+upward, and cross-branch messages without inventing a second membership node.
 
-## Current Near-Term Model
-
-The nested mixed-team design currently keeps structural execution tree identity simple:
+## Current Model
 
 ```text
 ParentTeam
-  program_manager
-  BuildSquad
-    review_lead
-    qa_specialist
+  program_manager                 -> /program_manager
+  BuildSquad                      -> /build_squad
+    review_lead                   -> /build_squad/review_lead
+    qa_specialist                 -> /build_squad/qa_specialist
 ```
 
-Runtime identity, metadata identity, event source path, and frontend tree path all point to one canonical nested route:
+`send_message_to({recipient_address:"/build_squad/review_lead",...})` targets the
+Agent placement directly. `send_message_to({recipient_address:"/build_squad",...})`
+targets the Team and delivers through `/build_squad/review_lead` only when that
+Agent is the Team's exact configured coordinator ingress. Sender and receiver
+events retain the actual Agent placements; no parent alias rewrites identity.
 
-```text
-BuildSquad/review_lead
-```
+Task delegation uses the same address parser and placement resolver but applies
+an additional rule: the target must be a direct child of the caller's immediate
+Team. This task eligibility rule is not shared-membership behavior.
 
-Parent communication visibility exposes `review_lead` as the `BuildSquad` representative, but this is a communication roster/exposure edge, not a second structural membership node. This gives the required communication behavior with less risk:
-
-- parent can message `review_lead`;
-- `review_lead` can message parent member `program_manager`;
-- `review_lead` can message local child teammate `qa_specialist`;
-- one runtime instance owns the transcript, lifecycle, and platform run id.
+The current shared runtime boundary deliberately stores only
+`{rootTeamRunId,memberAddress}` for the caller and returns only Agent
+`{kind,address}` or Team `{kind,address,ingressAddress}` placement values.
+Immediate Team, path, basename, route, and task ownership are derived from the
+canonical address or resolved inside the operation owner. A future
+shared-membership design must redefine that canonical-placement relationship
+explicitly instead of adding parallel owner/path aliases to the current values.
 
 ## Future Target Model
 
-A fuller organization model would split runtime instance identity from team membership identity.
-
-### Core Concepts
+A true shared-membership feature would separate runtime instance identity from
+membership placement identity.
 
 ```ts
 type AgentMemberInstance = {
@@ -64,109 +85,49 @@ type TeamMembership = {
   teamId: string;
   memberName: string;
   memberInstanceId: string;
-  role?: 'member' | 'coordinator' | 'representative';
-  representsTeamId?: string | null;
+  role?: "member" | "coordinator";
 };
 ```
 
-Under this model, `review_lead` has one `AgentMemberInstance` and two membership edges:
-
-```text
-AgentMemberInstance: review_lead_instance
-
-TeamMembership:
-  teamId: ParentTeam
-  memberName: review_lead
-  memberInstanceId: review_lead_instance
-  role: representative
-  representsTeamId: BuildSquad
-
-TeamMembership:
-  teamId: BuildSquad
-  memberName: review_lead
-  memberInstanceId: review_lead_instance
-  role: coordinator
-```
-
-### Identity Rule
-
-The canonical runtime identity becomes `memberInstanceId`, not only `memberRouteKey`.
-
-Membership paths become aliases or contextual addresses:
-
-```text
-ParentTeam/review_lead      -> review_lead_instance
-BuildSquad/review_lead      -> review_lead_instance
-```
-
-Events, transcripts, approvals, metadata, and lifecycle ownership must resolve both membership paths to the same runtime instance.
+One `AgentMemberInstance` could then have two explicit membership records. Each
+membership address would resolve to the same runtime instance, while events,
+transcripts, approvals, metadata, lifecycle ownership, and restore would need a
+defined canonical instance identity.
 
 ## Why This Is A Larger Refactor
 
-Today the implementation largely assumes this equivalence:
+The current implementation intentionally aligns these subjects:
 
 ```text
-team member node path = runtime identity = event source path = metadata path = UI tree path
+Agent placement path = runtime ownership = event source path = metadata path
 ```
 
-True shared membership breaks that equivalence. It requires a new identity layer and touches many core boundaries:
+True shared membership breaks that alignment and affects:
 
-- agent-team definition schema;
-- topology planning and validation;
-- duplicate-name and duplicate-membership handling;
-- runtime member registry and handle lifecycle;
-- AgentRun ownership and start/stop semantics;
-- run metadata and restore;
-- event `sourcePath` versus canonical instance id;
-- `send_message_to` recipient resolution;
-- team communication projections;
-- tool approval routing;
+- AgentTeam definition schema and graph validation;
+- lifecycle ownership and start/stop semantics;
+- runtime member registries and concurrency rules;
+- logical address resolution and ambiguity handling;
+- TeamRun metadata and restore;
+- event source placement versus canonical instance identity;
+- Team Communication and task-delegation projections; and
 - frontend tree, focus, history, and transcript hydration.
 
-This should not be added as a small extension to nested team routing. It should be designed as a dedicated organization-membership model.
-
-## Future Data-Flow Spines
-
-### Definition To Runtime Construction
-
-```text
-AgentTeamDefinition with shared member references
--> TeamDefinitionTopologyPlanner builds membership graph
--> AgentMemberInstance registry deduplicates runtime instances
--> TeamRun construction creates one handle per instance
--> TeamMembership indexes expose contextual team rosters
-```
-
-### Communication Resolution
-
-```text
-send_message_to('review_lead') in ParentTeam
--> current team membership roster resolves ParentTeam/review_lead
--> membership address maps to review_lead_instance
--> runtime delivery uses the single member instance
--> communication projection records contextual sender/receiver membership plus canonical instance id
-```
-
-### Event Projection
-
-```text
-AgentRun event from review_lead_instance
--> runtime event carries canonical memberInstanceId
--> projection attaches all relevant contextual membership addresses
--> frontend displays event under the focused team context without duplicating the transcript
-```
+It must not be implemented by restoring flat recipient rosters, bare-name
+fallback, parent representative descriptors, or route-prefix rewriting.
 
 ## Open Design Questions
 
-- Which team owns lifecycle for a shared member instance when multiple teams include it?
-- Can a shared member have different runtime/model/workspace overrides per membership, or must those be instance-owned?
-- How should user-visible duplicate names be handled when two shared members appear in one team context?
-- Should transcripts be strictly instance-owned, or should each membership context have a filtered view over the same transcript?
-- How should metadata restore handle a team that references a member instance whose owning team is not restored?
-- Should shared membership be allowed only for subteam coordinators/representatives first, or for arbitrary members?
+- Which Team owns lifecycle when one instance has multiple memberships?
+- Can runtime/model/workspace overrides differ by membership?
+- How are duplicate membership names disambiguated in one Team?
+- Are transcripts instance-owned or projected per membership context?
+- How does restore handle a membership whose owning Team is not restored?
+- How do handoff rules address one instance through multiple placements?
 
 ## Recommendation
 
-Keep the current nested mixed-team implementation on the simpler representative-exposure model. It provides the needed parent/child communication behavior now without changing the whole identity system.
-
-Treat true shared member instances across multiple teams as a future feature with its own requirements, design review, migration plan, and validation matrix.
+Keep current nested execution on one canonical placement per Agent and use the
+root logical-address contract for communication. Treat shared member instances
+as a separate future feature with explicit requirements, persistence decisions,
+design review, and executable coverage.

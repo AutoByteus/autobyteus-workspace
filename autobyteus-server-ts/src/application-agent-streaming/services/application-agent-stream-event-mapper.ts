@@ -2,7 +2,7 @@ import type {
   ApplicationAgentStreamEvent,
   ApplicationExecutionProducer,
 } from "@autobyteus/application-sdk-contracts";
-import { TeamRunEventSourceType, type TeamRunAgentEventPayload } from "../../agent-team-execution/domain/team-run-event.js";
+import { TeamRunEventSourceType } from "../../agent-team-execution/domain/team-run-event.js";
 import type { ApplicationAgentStreamSourceEvent } from "../domain/application-agent-streaming-models.js";
 import { ApplicationAgentStreamEventProjector } from "./application-agent-stream-event-projector.js";
 
@@ -22,8 +22,7 @@ export class ApplicationAgentEventMapper {
       return event ? { event, producer: source.producer } : null;
     }
     if (source.event.eventSourceType !== TeamRunEventSourceType.AGENT || !source.producer) return null;
-    const payload = source.event.data as TeamRunAgentEventPayload;
-    const event = this.projector.project(payload.agentEvent);
+    const event = this.projector.projectTeam(source.event.payload);
     return event ? { event, producer: source.producer } : null;
   }
 }

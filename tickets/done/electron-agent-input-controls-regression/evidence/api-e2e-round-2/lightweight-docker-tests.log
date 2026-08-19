@@ -1,0 +1,10 @@
+test_direct_copy_sources_exist_in_repository_root_context (scripts.tests.test_docker_build_context_sources.DockerBuildContextSourcesTest) ... ok
+test_team_stream_contracts_dependency_is_built_and_materialized_in_all_server_images (scripts.tests.test_docker_build_context_sources.DockerBuildContextSourcesTest) ... ok
+test_dockerfile_defaults_cli_versions_to_npm_latest (scripts.tests.test_server_docker_cli_latest_defaults.ServerDockerCliLatestDefaultsTest) ... ok
+test_dockerfile_keeps_explicit_version_override_path (scripts.tests.test_server_docker_cli_latest_defaults.ServerDockerCliLatestDefaultsTest) ... ok
+test_scripted_and_release_builds_bust_cli_install_cache (scripts.tests.test_server_docker_cli_latest_defaults.ServerDockerCliLatestDefaultsTest) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.012s
+
+OK

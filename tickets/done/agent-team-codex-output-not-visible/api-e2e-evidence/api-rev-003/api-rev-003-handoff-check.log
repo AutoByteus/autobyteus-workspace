@@ -1,0 +1,20 @@
+API-REV-003 handoff audit
+timestamp_utc=2026-08-17T09:31:19Z
+head=00b471bc24e6a6d06d3af7c38cf9f50536af1b60
+canonical_result=Pass
+canonical_confidence=98
+revision_index_count=1
+revision_entry_count=1
+focused_test_files_passed=3
+focused_tests_passed=24
+screenshot_count=2
+file_change_id_required_count=0
+team_agent_event_admission_failed_count=0
+owned_server_listener_count=0
+owned_web_listener_count=0
+owned_runtime_residue=0
+owned_db_residue=0
+repository_test_db_residue=0
+durable_delta=0_added/0_updated/0_removed
+operational_database_action=NONE
+protected_60004_31004_action=NONE

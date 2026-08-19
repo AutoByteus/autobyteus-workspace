@@ -1,5 +1,6 @@
 import type { AgentContext } from '~/types/agent/AgentContext';
 import type { ServerMessage } from './protocol';
+import type { AgentTeamAddress } from '~/types/agent/AgentTeamAddress';
 import {
   handleSegmentStart,
   handleSegmentContent,
@@ -44,8 +45,8 @@ export type AgentStreamProjectionTarget =
       kind: 'team_member';
       context: AgentContext;
       teamRunId: string;
-      memberRouteKey: string;
-      memberRunId?: string | null;
+      agentRunId: string;
+      memberAddress: AgentTeamAddress;
     };
 
 const conversationResult = (
@@ -132,6 +133,9 @@ const dispatchToHandler = (
         const eventMonitor = handleError({
           code: message.payload.code ?? 'AGENT_COMMAND_REJECTED',
           message: message.payload.message ?? 'Agent command was not accepted.',
+          error_scope: null,
+          error_effect: null,
+          turn_id: null,
         }, context);
         effects = mergeAgentStreamMutationEffects(
           effects,
@@ -209,8 +213,7 @@ export const dispatchAgentStreamMessage = (
         : {
             kind: 'team_member',
             teamRunId: target.teamRunId,
-            memberRouteKey: target.memberRouteKey,
-            memberRunId: target.memberRunId,
+            agentRunId: target.agentRunId,
             currentStatus,
           },
       effects.navigation,

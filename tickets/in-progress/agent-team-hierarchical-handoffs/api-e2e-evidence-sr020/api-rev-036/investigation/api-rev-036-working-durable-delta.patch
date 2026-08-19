@@ -1,0 +1,4393 @@
+diff --git a/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts b/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts
+index 855717616..919c67ddc 100644
+--- a/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts
++++ b/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts
+@@ -24,11 +24,10 @@ import { MixedTeamRunBackend } from "../../../src/agent-team-execution/backends/
+ import { MixedAgentMemberContext, MixedTeamRunContext } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-context.js";
+ import type { TeamManager } from "../../../src/agent-team-execution/backends/team-manager.js";
+ import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
+-import { TeamRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
+ import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
+ import { TeamRun } from "../../../src/agent-team-execution/domain/team-run.js";
+-import { selectorToRouteKey } from "../../../src/agent-team-execution/domain/team-run-member-identity.js";
+ import type { TeamRunEventListener } from "../../../src/agent-team-execution/domain/team-run-event.js";
++import { createTeamExecutionAddress } from "../../../src/agent-team-execution/domain/team-execution-address.js";
+ import { AgentStreamHandler } from "../../../src/services/agent-streaming/agent-stream-handler.js";
+ import { AgentTeamStreamHandler } from "../../../src/services/agent-streaming/agent-team-stream-handler.js";
+ import { AgentSessionManager } from "../../../src/services/agent-streaming/agent-session-manager.js";
+@@ -39,6 +38,11 @@ import {
+ } from "../../../src/runtime-management/claude/client/claude-sdk-client.js";
+ import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+ import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
++import {
++  address as teamAddress,
++  testAgentNode,
++  testTeamRunConfig,
++} from "../../fixtures/current-team-run-fixtures.js";
+ 
+ type SdkQueryCall = {
+   prompt?: unknown;
+@@ -534,96 +538,61 @@ const createClaudeTeamWebSocketHarness = async (input: {
+     skillAccessMode: SkillAccessMode.NONE,
+     runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+   });
++  const memberAddress = teamAddress(`/${input.memberName}`);
++  const memberExecutionAddress = createTeamExecutionAddress({
++    rootTeamRunId: input.teamRunId,
++    memberAddress,
++  });
+   const memberContext = new MixedAgentMemberContext({
+-    memberName: input.memberName,
+-    memberPath: [input.memberName],
+-    memberRouteKey: input.memberName,
+-    memberRunId: input.memberRunId,
++    address: memberAddress,
++    agentRunId: input.memberRunId,
+     runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+     platformAgentRunId: null,
+   });
++  const config = testTeamRunConfig({
++    rootTeamRunId: input.teamRunId,
++    rootTeamDefinitionId: "team-claude-ws",
++    coordinatorAddress: memberAddress,
++    children: [testAgentNode(memberAddress, {
++      agentDefinitionId: memberConfig.agentDefinitionId,
++      agentRunId: input.memberRunId,
++      llmModelIdentifier: memberConfig.llmModelIdentifier,
++      autoExecuteTools: memberConfig.autoExecuteTools,
++      skillAccessMode: memberConfig.skillAccessMode,
++      runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
++    })],
++  });
+   const teamContext = new TeamRunContext({
+-    runId: input.teamRunId,
++    teamRunId: input.teamRunId,
++    teamAddress: teamAddress("/"),
+     teamBackendKind: TeamBackendKind.MIXED,
+-    coordinatorMemberName: input.memberName,
+-    config: new TeamRunConfig({
+-      teamDefinitionId: "team-claude-ws",
+-      teamBackendKind: TeamBackendKind.MIXED,
+-      coordinatorMemberName: input.memberName,
+-      memberConfigs: [
+-        {
+-          memberName: input.memberName,
+-          memberRouteKey: input.memberName,
+-          memberRunId: input.memberRunId,
+-          agentDefinitionId: "agent-claude-team-ws",
+-          llmModelIdentifier: "claude-test-model",
+-          autoExecuteTools: false,
+-          skillAccessMode: SkillAccessMode.NONE,
+-          runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+-        },
+-      ],
+-    }),
++    config,
+     runtimeContext: new MixedTeamRunContext({
+-      coordinatorMemberRouteKey: input.memberName,
+       memberContexts: [memberContext],
++      teamExecutionAddress: createTeamExecutionAddress({
++        rootTeamRunId: input.teamRunId,
++        memberAddress: "/",
++      }),
+     }),
+   });
+   const fakeTeamManager: TeamManager = {
+     hasActiveMembers: () => true,
+-    getLeafAgentStatusSnapshots: () => [{
+-      scopeKind: "ordinary_member",
+-      teamRunId: input.teamRunId,
+-      payload: {
+-        ...agentRun.getStatusSnapshot(),
+-        agent_id: input.memberRunId,
+-        agent_name: input.memberName,
+-        member_route_key: input.memberName,
+-        member_path: [input.memberName],
+-        source_route_key: input.memberName,
+-        source_path: [input.memberName],
+-      },
+-    }],
++    getLeafAgentStatusSnapshots: () => [],
+     hasOpenExecutionWork: () => true,
+-    postMessage: async (message, targetMemberSelector) => {
+-      expect(selectorToRouteKey(targetMemberSelector)).toBe(input.memberName);
+-      const result = await agentRun.postUserMessage(message);
+-      memberContext.platformAgentRunId = agentRun.getPlatformAgentRunId() ?? memberContext.platformAgentRunId;
+-      return {
+-        ...result,
+-        memberRunId: input.memberRunId,
+-        memberName: input.memberName,
+-      };
+-    },
+-    postMessageToConversationTarget: async (message, address) => {
+-      const [segment, ...remainingSegments] = address.segments;
+-      expect(remainingSegments).toHaveLength(0);
+-      expect(segment?.kind).toBe("member");
+-      const targetRouteKey = segment?.kind === "member"
+-        ? segment.memberRouteKey ?? segment.memberPath?.join("/")
+-        : null;
+-      expect(targetRouteKey).toBe(input.memberName);
+-      const result = await agentRun.postUserMessage(message);
+-      memberContext.platformAgentRunId = agentRun.getPlatformAgentRunId() ?? memberContext.platformAgentRunId;
+-      return {
+-        ...result,
+-        memberRunId: input.memberRunId,
+-        memberName: input.memberName,
+-      };
+-    },
+-    deliverInterAgentMessage: async () => ({ accepted: true }),
+-    approveToolInvocation: async () => ({ accepted: true }),
+-    interruptMember: async (targetMemberRouteKey, targetMemberRunId) => {
+-      expect(targetMemberRouteKey).toBe(input.memberName);
+-      expect(targetMemberRunId).toBe(input.memberRunId);
+-      return agentRun.interrupt();
++    executeMemberCommand: async (executionAddress, command) => {
++      expect(executionAddress).toEqual(memberExecutionAddress);
++      if (command.kind === "interrupt") return agentRun.interrupt();
++      if (command.kind !== "post_message") {
++        return { accepted: false, code: "UNSUPPORTED_TEST_COMMAND" };
++      }
++      const result = await agentRun.postUserMessage(command.message);
++      memberContext.platformAgentRunId = agentRun.getPlatformAgentRunId()
++        ?? memberContext.platformAgentRunId;
++      return result;
+     },
+-    settleMember: async () => agentRun.terminate(),
+-    startTaskAgentInstance: async () => ({ accepted: false, code: "UNSUPPORTED_TEST_FAKE" }),
+-    settleTaskAgentInstance: async () => ({ accepted: false, code: "UNSUPPORTED_TEST_FAKE" }),
+     terminate: async () => agentRun.terminate(),
+-    publishEvent: () => {},
+     subscribeToEvents: (_listener: TeamRunEventListener) => () => {},
+-  };
++  } as unknown as TeamManager;
+   const teamRun = new TeamRun({
+     context: teamContext,
+     backend: new MixedTeamRunBackend(teamContext, fakeTeamManager),
+@@ -656,12 +625,10 @@ const createClaudeTeamWebSocketHarness = async (input: {
+   await waitForOpen(socket);
+   const connectedMessage = JSON.parse(await connectedPromise) as {
+     type: string;
+-    payload: { team_id?: string };
++    payload: { session_id?: string };
+   };
+-  expect(connectedMessage).toMatchObject({
+-    type: "CONNECTED",
+-    payload: { team_id: input.teamRunId },
+-  });
++  expect(connectedMessage.type).toBe("CONNECTED");
++  expect(connectedMessage.payload.session_id).toEqual(expect.any(String));
+ 
+   return {
+     app,
+@@ -830,9 +797,16 @@ describe("Claude Agent SDK websocket interrupt/resume integration", () => {
+ 
+     try {
+       sendE2eSendMessageCommand(harness.socket, {
+-            content: "start team member work",
+-            target_member_route_key: memberName,
+-          });
++        content: "start team member work",
++        context_file_paths: [],
++        image_urls: [],
++        execution_address: {
++          root_team_run_id: teamRunId,
++          task_team_run_ids: [],
++          member_address: `/${memberName}`,
++          task_agent_run_id: null,
++        },
++      });
+ 
+       await waitForCondition(
+         () =>
+@@ -847,8 +821,12 @@ describe("Claude Agent SDK websocket interrupt/resume integration", () => {
+           type: "INTERRUPT_GENERATION",
+           payload: {
+             command_id: "client_interrupt_claude_team_member",
+-            target_member_route_key: memberName,
+-            target_member_run_id: memberRunId,
++            execution_address: {
++              root_team_run_id: teamRunId,
++              task_team_run_ids: [],
++              member_address: `/${memberName}`,
++              task_agent_run_id: null,
++            },
+           },
+         }),
+       );
+@@ -860,9 +838,16 @@ describe("Claude Agent SDK websocket interrupt/resume integration", () => {
+       );
+ 
+       sendE2eSendMessageCommand(harness.socket, {
+-            content: "continue team member work",
+-            target_member_route_key: memberName,
+-          });
++        content: "continue team member work",
++        context_file_paths: [],
++        image_urls: [],
++        execution_address: {
++          root_team_run_id: teamRunId,
++          task_team_run_ids: [],
++          member_address: `/${memberName}`,
++          task_agent_run_id: null,
++        },
++      });
+ 
+       await waitForCondition(
+         () => harness.sdkCalls.length === 2,
+diff --git a/autobyteus-server-ts/tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts b/autobyteus-server-ts/tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts
+index e65f40b0d..9d2076760 100644
+--- a/autobyteus-server-ts/tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts
++++ b/autobyteus-server-ts/tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts
+@@ -322,7 +322,11 @@ describe("Agent Tools MCP route configured MCP integration", () => {
+       getInternalBaseUrl: () => `http://127.0.0.1:${address.port}`,
+     });
+     const created = sessionService.createAgentToolMcpSession({
+-      owner: { runId: "run-configured-mcp", memberRunId: "member-configured-mcp" },
++      owner: {
++        runId: "run-configured-mcp",
++        memberRunId: "member-configured-mcp",
++        agentRunId: "member-configured-mcp",
++      },
+       sender,
+       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+       runtimeExposure: buildRuntimeAgentToolExposure(["db_query"]),
+diff --git a/autobyteus-server-ts/tests/integration/agent/agent-team-websocket.integration.test.ts b/autobyteus-server-ts/tests/integration/agent/agent-team-websocket.integration.test.ts
+deleted file mode 100644
+index 622c5f0bc..000000000
+--- a/autobyteus-server-ts/tests/integration/agent/agent-team-websocket.integration.test.ts
++++ /dev/null
+@@ -1,1217 +0,0 @@
+-import fastify from "fastify";
+-import websocket from "@fastify/websocket";
+-import { describe, expect, it } from "vitest";
+-import WebSocket from "ws";
+-import {
+-  AgentInputUserMessage,
+-} from "autobyteus-ts";
+-import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+-import { STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY } from "../../../src/config/streaming-content-flush-interval-setting.js";
+-import { AgentRunEventType, type AgentRunEvent } from "../../../src/agent-execution/domain/agent-run-event.js";
+-import { TeamRunEventSourceType, type TeamRunEvent } from "../../../src/agent-team-execution/domain/team-run-event.js";
+-import type { ConversationTargetAddress } from "../../../src/agent-team-execution/domain/conversation-target-address.js";
+-import { AgentTeamStreamHandler } from "../../../src/services/agent-streaming/agent-team-stream-handler.js";
+-import { AgentSessionManager } from "../../../src/services/agent-streaming/agent-session-manager.js";
+-import { TeamStreamBroadcaster } from "../../../src/services/agent-streaming/team-stream-broadcaster.js";
+-import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
+-
+-class FakeTeamStream {
+-  private queue: Array<TeamRunEvent | null> = [];
+-  private waiters: Array<(value: TeamRunEvent | null) => void> = [];
+-  private closed = false;
+-
+-  push(event: TeamRunEvent): void {
+-    if (this.closed) {
+-      return;
+-    }
+-    const waiter = this.waiters.shift();
+-    if (waiter) {
+-      waiter(event);
+-      return;
+-    }
+-    this.queue.push(event);
+-  }
+-
+-  async close(): Promise<void> {
+-    if (this.closed) {
+-      return;
+-    }
+-    this.closed = true;
+-    const waiter = this.waiters.shift();
+-    if (waiter) {
+-      waiter(null);
+-    } else {
+-      this.queue.push(null);
+-    }
+-  }
+-
+-  private async next(): Promise<TeamRunEvent | null> {
+-    if (this.queue.length > 0) {
+-      return this.queue.shift() ?? null;
+-    }
+-    return new Promise((resolve) => this.waiters.push(resolve));
+-  }
+-
+-  async *allEvents(): AsyncGenerator<TeamRunEvent, void, unknown> {
+-    while (true) {
+-      const event = await this.next();
+-      if (!event) {
+-        break;
+-      }
+-      yield event;
+-    }
+-  }
+-}
+-
+-class FakeTeam {
+-  teamRunId: string;
+-  messages: AgentInputUserMessage[] = [];
+-  approvals: Array<{ agentName: string; invocationId: string; approved: boolean; reason: string | null }> = [];
+-  lastTarget: string | null = null;
+-  lastInterruptTarget: string | null = null;
+-  interruptCalls = 0;
+-  stopCalls = 0;
+-
+-  constructor(teamRunId: string) {
+-    this.teamRunId = teamRunId;
+-  }
+-
+-  async postMessage(message: AgentInputUserMessage, targetMemberRouteKey?: string | null): Promise<void> {
+-    this.lastTarget = targetMemberRouteKey ?? null;
+-    this.messages.push(message);
+-  }
+-
+-  async postToolExecutionApproval(
+-    agentName: string,
+-    toolInvocationId: string,
+-    isApproved: boolean,
+-    reason?: string | null,
+-  ): Promise<void> {
+-    this.approvals.push({
+-      agentName,
+-      invocationId: toolInvocationId,
+-      approved: isApproved,
+-      reason: reason ?? null,
+-    });
+-  }
+-
+-  async stop(): Promise<void> {
+-    this.stopCalls += 1;
+-  }
+-
+-  async interrupt(options?: { targetMemberRouteKey?: string | null }): Promise<void> {
+-    this.lastInterruptTarget = options?.targetMemberRouteKey ?? null;
+-    this.interruptCalls += 1;
+-  }
+-}
+-
+-const selectorRouteKey = (selector: unknown): string | null => {
+-  if (!selector || typeof selector !== "object") {
+-    return null;
+-  }
+-  const typed = selector as { kind?: string; memberRouteKey?: string; memberPath?: string[] };
+-  if (typed.kind === "route_key" && typeof typed.memberRouteKey === "string") {
+-    return typed.memberRouteKey;
+-  }
+-  if (typed.kind === "path" && Array.isArray(typed.memberPath)) {
+-    return typed.memberPath.join("/");
+-  }
+-  return null;
+-};
+-
+-class FakeTeamRun {
+-  readonly runId: string;
+-  readonly runtimeKind = "autobyteus";
+-  readonly context = {
+-    runtimeContext: {
+-      memberContexts: [
+-        {
+-          memberName: "alpha",
+-          memberRouteKey: "alpha",
+-          memberRunId: "member-42",
+-          getPlatformAgentRunId: () => null,
+-        },
+-        {
+-          memberName: "beta",
+-          memberRouteKey: "beta",
+-          memberRunId: "member-99",
+-          getPlatformAgentRunId: () => null,
+-        },
+-      ],
+-    },
+-  };
+-  readonly config = {
+-    memberConfigs: [
+-      {
+-        memberName: "alpha",
+-        memberRunId: "member-42",
+-      },
+-      {
+-        memberName: "beta",
+-        memberRunId: "member-99",
+-      },
+-    ],
+-  };
+-
+-  constructor(
+-    private readonly team: FakeTeam,
+-    private readonly stream: FakeTeamStream,
+-  ) {
+-    this.runId = team.teamRunId;
+-  }
+-
+-  getLeafAgentStatusSnapshots() {
+-    return [];
+-  }
+-
+-  hasOpenExecutionWork(): boolean {
+-    return true;
+-  }
+-
+-  subscribeToEvents(listener: (event: TeamRunEvent) => void): () => void {
+-    void (async () => {
+-      for await (const event of this.stream.allEvents()) {
+-        listener(event);
+-      }
+-    })();
+-    return () => {
+-      void this.stream.close();
+-    };
+-  }
+-
+-  async postMessageToConversationTarget(
+-    message: AgentInputUserMessage,
+-    address: ConversationTargetAddress,
+-  ): Promise<{ accepted: true }> {
+-    const target = address.segments.at(-1);
+-    const targetRouteKey = target?.kind === "member"
+-      ? target.memberRouteKey ?? target.memberPath?.join("/") ?? null
+-      : null;
+-    await this.team.postMessage(message, targetRouteKey);
+-    return { accepted: true };
+-  }
+-
+-  async approveToolInvocation(
+-    target: unknown,
+-    invocationId: string,
+-    approved: boolean,
+-    reason?: string | null,
+-  ): Promise<{ accepted: true }> {
+-    await this.team.postToolExecutionApproval(
+-      selectorRouteKey(target) ?? "",
+-      invocationId,
+-      approved,
+-      reason,
+-    );
+-    return { accepted: true };
+-  }
+-
+-  async interruptMember(
+-    targetMemberRouteKey: string,
+-    targetMemberRunId?: string | null,
+-  ): Promise<{ accepted: true } | { accepted: false; code: string }> {
+-    const memberContext = this.context.runtimeContext.memberContexts.find(
+-      (context) => context.memberRouteKey === targetMemberRouteKey,
+-    );
+-    if (!memberContext) {
+-      return { accepted: false, code: "TARGET_MEMBER_NOT_FOUND" };
+-    }
+-    if (targetMemberRunId && targetMemberRunId !== memberContext.memberRunId) {
+-      return { accepted: false, code: "TARGET_MEMBER_RUN_MISMATCH" };
+-    }
+-    await this.team.interrupt({ targetMemberRouteKey });
+-    return { accepted: true };
+-  }
+-}
+-
+-class FakeTeamRunService {
+-  private team: FakeTeam;
+-  private teamRun: FakeTeamRun;
+-
+-  constructor(team: FakeTeam, stream: FakeTeamStream) {
+-    this.team = team;
+-    this.teamRun = new FakeTeamRun(team, stream);
+-  }
+-
+-  getTeamRun(teamRunId: string): FakeTeamRun | null {
+-    return teamRunId === this.team.teamRunId ? this.teamRun : null;
+-  }
+-
+-  async resolveTeamRun(teamRunId: string): Promise<FakeTeamRun | null> {
+-    return this.getTeamRun(teamRunId);
+-  }
+-
+-  async recordRunActivity(): Promise<void> {
+-    return;
+-  }
+-
+-  async refreshRunMetadata(): Promise<void> {
+-    return;
+-  }
+-}
+-
+-const waitForMessage = (socket: WebSocket, timeoutMs: number = 2000): Promise<string> =>
+-  new Promise((resolve, reject) => {
+-    const timer = setTimeout(() => reject(new Error("Timed out waiting for websocket message")), timeoutMs);
+-    socket.once("message", (data) => {
+-      clearTimeout(timer);
+-      resolve(data.toString());
+-    });
+-  });
+-
+-type CapturedMessage = { type: string; payload: Record<string, unknown> };
+-
+-const captureMessages = (socket: WebSocket): CapturedMessage[] => {
+-  const messages: CapturedMessage[] = [];
+-  socket.on("message", (data) => {
+-    messages.push(JSON.parse(data.toString()) as CapturedMessage);
+-  });
+-  return messages;
+-};
+-
+-const waitForCapturedMessage = async (
+-  messages: CapturedMessage[],
+-  predicate: (message: CapturedMessage) => boolean,
+-  timeoutMs = 2_000,
+-): Promise<CapturedMessage> => {
+-  const deadline = Date.now() + timeoutMs;
+-  while (Date.now() < deadline) {
+-    const match = messages.find(predicate);
+-    if (match) return match;
+-    await new Promise((resolve) => setTimeout(resolve, 10));
+-  }
+-  throw new Error("Timed out waiting for captured websocket message");
+-};
+-
+-const waitForClose = (socket: WebSocket, timeoutMs: number = 2000): Promise<number> =>
+-  new Promise((resolve, reject) => {
+-    const timer = setTimeout(() => reject(new Error("Timed out waiting for websocket close")), timeoutMs);
+-    socket.once("close", (code) => {
+-      clearTimeout(timer);
+-      resolve(code);
+-    });
+-  });
+-
+-const waitForOpen = (socket: WebSocket, timeoutMs: number = 2000): Promise<void> =>
+-  new Promise<void>((resolve, reject) => {
+-    const timer = setTimeout(() => reject(new Error("Timed out waiting for websocket open")), timeoutMs);
+-    socket.once("open", () => {
+-      clearTimeout(timer);
+-      resolve();
+-    });
+-    socket.once("error", (error) => {
+-      clearTimeout(timer);
+-      reject(error);
+-    });
+-  });
+-
+-const waitForCondition = async (fn: () => boolean, timeoutMs = 2000): Promise<void> => {
+-  const deadline = Date.now() + timeoutMs;
+-  while (Date.now() < deadline) {
+-    if (fn()) {
+-      return;
+-    }
+-    await new Promise((resolve) => setTimeout(resolve, 20));
+-  }
+-  throw new Error("Timed out waiting for condition");
+-};
+-
+-describe("Agent team websocket integration", () => {
+-  it("preserves ordered A/B/A member groups while coalescing consecutive team content", async () => {
+-    const previousInterval = process.env[STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY];
+-    process.env[STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY] = "100";
+-    const team = new FakeTeam("team-ordered-egress");
+-    const stream = new FakeTeamStream();
+-    const teamRunService = new FakeTeamRunService(team, stream);
+-    const handler = new AgentTeamStreamHandler(
+-      new AgentSessionManager(),
+-      teamRunService as unknown as any,
+-    );
+-    const app = fastify();
+-    await app.register(websocket);
+-    await registerAgentWebsocket(
+-      app,
+-      { connect: async () => null, handleMessage: async () => {}, disconnect: async () => {} } as never,
+-      handler,
+-    );
+-    const address = await app.listen({ port: 0, host: "127.0.0.1" });
+-    const url = new URL(address);
+-    const socket = new WebSocket(`ws://${url.hostname}:${url.port}/ws/agent-team/${team.teamRunId}`);
+-    const messages = captureMessages(socket);
+-
+-    const pushContent = (
+-      memberName: "alpha" | "beta",
+-      memberRunId: "member-42" | "member-99",
+-      segmentId: string,
+-      delta: string,
+-    ): void => {
+-      stream.push({
+-        teamRunId: team.teamRunId,
+-        eventSourceType: TeamRunEventSourceType.AGENT,
+-        data: {
+-          runtimeKind: RuntimeKind.AUTOBYTEUS,
+-          memberName,
+-          memberRunId,
+-          agentEvent: {
+-            runId: memberRunId,
+-            eventType: AgentRunEventType.SEGMENT_CONTENT,
+-            payload: {
+-              id: segmentId,
+-              turn_id: "turn-team-order",
+-              segment_type: "text",
+-              delta,
+-            },
+-            statusHint: null,
+-          },
+-        },
+-      });
+-    };
+-
+-    try {
+-      await waitForOpen(socket);
+-      await waitForCapturedMessage(messages, (message) => message.type === "CONNECTED");
+-      pushContent("alpha", "member-42", "segment-a", "a1");
+-      pushContent("alpha", "member-42", "segment-a", "a2");
+-      pushContent("beta", "member-99", "segment-b", "b1");
+-      pushContent("alpha", "member-42", "segment-a", "a3");
+-
+-      await new Promise((resolve) => setTimeout(resolve, 50));
+-      expect(messages.filter((message) => message.type === "SEGMENT_CONTENT")).toHaveLength(0);
+-      await waitForCondition(
+-        () => messages.filter((message) => message.type === "SEGMENT_CONTENT").length === 3,
+-      );
+-      expect(messages.filter((message) => message.type === "SEGMENT_CONTENT").map(
+-        (message) => [
+-          message.payload.agent_name,
+-          message.payload.agent_id,
+-          message.payload.id,
+-          message.payload.delta,
+-        ],
+-      )).toEqual([
+-        ["alpha", "member-42", "segment-a", "a1a2"],
+-        ["beta", "member-99", "segment-b", "b1"],
+-        ["alpha", "member-42", "segment-a", "a3"],
+-      ]);
+-    } finally {
+-      socket.close();
+-      await app.close();
+-      if (previousInterval === undefined) {
+-        delete process.env[STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY];
+-      } else {
+-        process.env[STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY] = previousInterval;
+-      }
+-    }
+-  });
+-
+-  it("streams team events and routes client messages", async () => {
+-    const team = new FakeTeam("team-1");
+-    const stream = new FakeTeamStream();
+-    const teamRunService = new FakeTeamRunService(team, stream);
+-    const handler = new AgentTeamStreamHandler(
+-      new AgentSessionManager(),
+-      teamRunService as unknown as any,
+-    );
+-
+-    const dummyAgentHandler = {
+-      connect: async () => null,
+-      handleMessage: async () => {},
+-      disconnect: async () => {},
+-    } as unknown as Parameters<typeof registerAgentWebsocket>[1];
+-
+-    const app = fastify();
+-    await app.register(websocket);
+-    await registerAgentWebsocket(app, dummyAgentHandler, handler);
+-
+-    const address = await app.listen({ port: 0, host: "127.0.0.1" });
+-    const url = new URL(address);
+-    const baseUrl = `ws://${url.hostname}:${url.port}`;
+-
+-    const socket = new WebSocket(`${baseUrl}/ws/agent-team/${team.teamRunId}`);
+-    const connectedPromise = waitForMessage(socket);
+-
+-    await waitForOpen(socket);
+-
+-    const connectedMessage = JSON.parse(await connectedPromise) as {
+-      type: string;
+-      payload: { team_id: string; session_id: string };
+-    };
+-
+-    expect(connectedMessage.type).toBe("CONNECTED");
+-    expect(connectedMessage.payload.team_id).toBe(team.teamRunId);
+-
+-    socket.send(
+-      JSON.stringify({
+-        type: "SEND_MESSAGE",
+-        payload: {
+-          content: "hello team",
+-          target_member_route_key: "alpha",
+-          context_file_paths: ["/tmp/info.txt"],
+-          image_urls: ["https://example.com/dog.png"],
+-        },
+-      }),
+-    );
+-
+-    await waitForCondition(() => team.messages.length === 1);
+-    expect(team.messages[0].constructor?.name).toBe("AgentInputUserMessage");
+-    expect(team.messages[0].content).toBe("hello team");
+-    expect(team.messages[0].contextFiles?.length).toBe(2);
+-    expect(team.lastTarget).toBe("alpha");
+-
+-    socket.send(
+-      JSON.stringify({
+-        type: "SEND_MESSAGE",
+-        payload: {
+-          content: "hello camel",
+-          targetMemberPath: ["BuildSquad", "review_lead"],
+-        },
+-      }),
+-    );
+-    await waitForCondition(() => team.messages.length === 2);
+-    expect(team.messages[1].content).toBe("hello camel");
+-    expect(team.lastTarget).toBe("BuildSquad/review_lead");
+-
+-    const invalidSendErrorPromise = waitForMessage(socket);
+-    socket.send(
+-      JSON.stringify({
+-        type: "SEND_MESSAGE",
+-        payload: {
+-          content: "invalid scalar alias",
+-          target_member_name: "alpha",
+-        },
+-      }),
+-    );
+-    const invalidSendError = JSON.parse(await invalidSendErrorPromise) as {
+-      type: string;
+-      payload: { code?: string };
+-    };
+-    expect(invalidSendError).toMatchObject({
+-      type: "ERROR",
+-      payload: { code: "INVALID_TARGET" },
+-    });
+-    expect(team.messages).toHaveLength(2);
+-
+-    const interruptAckPromise = waitForMessage(socket);
+-    socket.send(JSON.stringify({
+-      type: "INTERRUPT_GENERATION",
+-      payload: {
+-        command_id: "client_interrupt_alpha",
+-        target_member_route_key: "alpha",
+-        target_member_run_id: "member-42",
+-      },
+-    }));
+-    const interruptAck = JSON.parse(await interruptAckPromise) as CapturedMessage;
+-    expect(interruptAck).toEqual({
+-      type: "AGENT_COMMAND_ACK",
+-      payload: {
+-        command_type: "INTERRUPT_GENERATION",
+-        command_id: "client_interrupt_alpha",
+-        state: "accepted",
+-        target: {
+-          target_kind: "team_member",
+-          team_run_id: team.teamRunId,
+-          member_route_key: "alpha",
+-          member_run_id: "member-42",
+-        },
+-      },
+-    });
+-    await waitForCondition(() => team.interruptCalls === 1);
+-    expect(team.interruptCalls).toBe(1);
+-    expect(team.lastInterruptTarget).toBe("alpha");
+-    expect(team.stopCalls).toBe(0);
+-
+-    const agentMessagePromise = waitForMessage(socket);
+-    const agentEvent: AgentRunEvent = {
+-      runId: "agent-42",
+-      eventType: AgentRunEventType.SEGMENT_CONTENT,
+-      payload: {
+-        id: "seg-alpha-1",
+-        segment_type: "text",
+-        delta: "hi",
+-      },
+-      statusHint: null,
+-    };
+-    const teamEvent: TeamRunEvent = {
+-      teamRunId: team.teamRunId,
+-      eventSourceType: TeamRunEventSourceType.AGENT,
+-      data: {
+-        runtimeKind: RuntimeKind.AUTOBYTEUS,
+-        memberName: "alpha",
+-        memberRunId: "agent-42",
+-        agentEvent,
+-      },
+-    };
+-    stream.push(teamEvent);
+-
+-    const agentMessage = JSON.parse(await agentMessagePromise) as {
+-      type: string;
+-      payload: {
+-        id?: string;
+-        delta?: string;
+-        segment_type?: string;
+-        agent_name?: string;
+-        agent_id?: string;
+-      };
+-    };
+-
+-    expect(agentMessage.type).toBe("SEGMENT_CONTENT");
+-    expect(agentMessage.payload.delta).toBe("hi");
+-    expect(agentMessage.payload.segment_type).toBe("text");
+-    expect(agentMessage.payload.id).toBe("seg-alpha-1");
+-    expect(agentMessage.payload.agent_name).toBe("alpha");
+-    expect(agentMessage.payload.agent_id).toBe("agent-42");
+-
+-    socket.close();
+-    await app.close();
+-  });
+-
+-  it("restores a stopped team on websocket connect and rebinds before member follow-up SEND_MESSAGE", async () => {
+-    const initialTeam = new FakeTeam("team-recover");
+-    const restoredTeam = new FakeTeam("team-recover");
+-    const initialStream = new FakeTeamStream();
+-    const restoredStream = new FakeTeamStream();
+-    const initialRun = new FakeTeamRun(initialTeam, initialStream);
+-    const restoredRun = new FakeTeamRun(restoredTeam, restoredStream);
+-    const resolvedRuns = [initialRun, restoredRun];
+-    let resolveCalls = 0;
+-    const recordActivities: Array<{ runId: string; summary?: string }> = [];
+-    const teamRunService = {
+-      getTeamRun: () => null,
+-      resolveTeamRun: async () => resolvedRuns[resolveCalls++] ?? null,
+-      recordRunActivity: async (run: { runId: string }, activity: { summary?: string }) => {
+-        recordActivities.push({ runId: run.runId, summary: activity.summary });
+-      },
+-      refreshRunMetadata: async () => {},
+-    };
+-    const handler = new AgentTeamStreamHandler(
+-      new AgentSessionManager(),
+-      teamRunService as unknown as any,
+-    );
+-
+-    const app = fastify();
+-    await app.register(websocket);
+-    await registerAgentWebsocket(
+-      app,
+-      {
+-        connect: async () => null,
+-        handleMessage: async () => {},
+-        disconnect: async () => {},
+-      } as unknown as Parameters<typeof registerAgentWebsocket>[1],
+-      handler,
+-    );
+-    const address = await app.listen({ port: 0, host: "127.0.0.1" });
+-    const url = new URL(address);
+-    const socket = new WebSocket(`ws://${url.hostname}:${url.port}/ws/agent-team/team-recover`);
+-    const connectedPromise = waitForMessage(socket);
+-
+-    await waitForOpen(socket);
+-    const connectedMessage = JSON.parse(await connectedPromise) as {
+-      type: string;
+-      payload: { team_id: string };
+-    };
+-    expect(connectedMessage.type).toBe("CONNECTED");
+-    expect(connectedMessage.payload.team_id).toBe("team-recover");
+-
+-    socket.send(
+-      JSON.stringify({
+-        type: "SEND_MESSAGE",
+-        payload: {
+-          content: "resume team member after stop",
+-          target_member_route_key: "alpha",
+-        },
+-      }),
+-    );
+-
+-    await waitForCondition(() => restoredTeam.messages.length === 1);
+-    expect(initialTeam.messages).toHaveLength(0);
+-    expect(restoredTeam.messages[0].content).toBe("resume team member after stop");
+-    expect(restoredTeam.lastTarget).toBe("alpha");
+-    expect(resolveCalls).toBe(2);
+-    expect(recordActivities).toContainEqual({
+-      runId: "team-recover",
+-      summary: "resume team member after stop",
+-    });
+-
+-    const segmentPromise = waitForMessage(socket);
+-    restoredStream.push({
+-      teamRunId: "team-recover",
+-      eventSourceType: TeamRunEventSourceType.AGENT,
+-      data: {
+-        runtimeKind: RuntimeKind.AUTOBYTEUS,
+-        memberName: "alpha",
+-        memberRunId: "member-42",
+-        agentEvent: {
+-          runId: "member-42",
+-          eventType: AgentRunEventType.SEGMENT_CONTENT,
+-          payload: {
+-            id: "team-restored-seg-1",
+-            segment_type: "text",
+-            delta: "restored team",
+-          },
+-          statusHint: null,
+-        },
+-      },
+-    });
+-    const restoredMessage = JSON.parse(await segmentPromise) as {
+-      type: string;
+-      payload: { id?: string; delta?: string; agent_name?: string; agent_id?: string };
+-    };
+-    expect(restoredMessage.type).toBe("SEGMENT_CONTENT");
+-    expect(restoredMessage.payload).toMatchObject({
+-      id: "team-restored-seg-1",
+-      delta: "restored team",
+-      agent_name: "alpha",
+-      agent_id: "member-42",
+-    });
+-
+-    socket.close();
+-    await app.close();
+-  });
+-
+-  it("closes with TEAM_NOT_FOUND when a websocket connect cannot resolve a missing team run", async () => {
+-    const handler = new AgentTeamStreamHandler(
+-      new AgentSessionManager(),
+-      {
+-        getTeamRun: () => null,
+-        resolveTeamRun: async () => null,
+-        recordRunActivity: async () => {},
+-        refreshRunMetadata: async () => {},
+-      } as unknown as any,
+-    );
+-
+-    const app = fastify();
+-    await app.register(websocket);
+-    await registerAgentWebsocket(
+-      app,
+-      {
+-        connect: async () => null,
+-        handleMessage: async () => {},
+-        disconnect: async () => {},
+-      } as unknown as Parameters<typeof registerAgentWebsocket>[1],
+-      handler,
+-    );
+-    const address = await app.listen({ port: 0, host: "127.0.0.1" });
+-    const url = new URL(address);
+-    const socket = new WebSocket(`ws://${url.hostname}:${url.port}/ws/agent-team/missing-team`);
+-    const errorPromise = waitForMessage(socket);
+-    const closePromise = waitForClose(socket);
+-
+-    await waitForOpen(socket);
+-    const errorMessage = JSON.parse(await errorPromise) as {
+-      type: string;
+-      payload: { code?: string; message?: string };
+-    };
+-    expect(errorMessage).toMatchObject({
+-      type: "ERROR",
+-      payload: {
+-        code: "TEAM_NOT_FOUND",
+-        message: "Team run 'missing-team' not found",
+-      },
+-    });
+-    await expect(closePromise).resolves.toBe(4004);
+-
+-    await app.close();
+-  });
+-
+-  it("closes with TEAM_NOT_FOUND when follow-up SEND_MESSAGE cannot restore the team run", async () => {
+-    const team = new FakeTeam("team-send-missing");
+-    const stream = new FakeTeamStream();
+-    const initialRun = new FakeTeamRun(team, stream);
+-    let resolveCalls = 0;
+-    const teamRunService = {
+-      getTeamRun: () => null,
+-      resolveTeamRun: async () => {
+-        resolveCalls += 1;
+-        return resolveCalls === 1 ? initialRun : null;
+-      },
+-      recordRunActivity: async () => {},
+-      refreshRunMetadata: async () => {},
+-    };
+-    const handler = new AgentTeamStreamHandler(
+-      new AgentSessionManager(),
+-      teamRunService as unknown as any,
+-    );
+-
+-    const app = fastify();
+-    await app.register(websocket);
+-    await registerAgentWebsocket(
+-      app,
+-      {
+-        connect: async () => null,
+-        handleMessage: async () => {},
+-        disconnect: async () => {},
+-      } as unknown as Parameters<typeof registerAgentWebsocket>[1],
+-      handler,
+-    );
+-    const address = await app.listen({ port: 0, host: "127.0.0.1" });
+-    const url = new URL(address);
+-    const socket = new WebSocket(`ws://${url.hostname}:${url.port}/ws/agent-team/team-send-missing`);
+-    const connectedPromise = waitForMessage(socket);
+-
+-    await waitForOpen(socket);
+-    await connectedPromise;
+-
+-    const errorPromise = waitForMessage(socket);
+-    const closePromise = waitForClose(socket);
+-    socket.send(
+-      JSON.stringify({
+-        type: "SEND_MESSAGE",
+-        payload: { content: "still there?", target_member_route_key: "alpha" },
+-      }),
+-    );
+-
+-    const errorMessage = JSON.parse(await errorPromise) as {
+-      type: string;
+-      payload: { code?: string; message?: string };
+-    };
+-    expect(errorMessage).toMatchObject({
+-      type: "ERROR",
+-      payload: {
+-        code: "TEAM_NOT_FOUND",
+-        message: "Team run 'team-send-missing' not found",
+-      },
+-    });
+-    await expect(closePromise).resolves.toBe(4004);
+-    expect(team.messages).toHaveLength(0);
+-
+-    await app.close();
+-  });
+-
+-  it("keeps INTERRUPT_GENERATION active-only and does not restore a stopped team run", async () => {
+-    const team = new FakeTeam("team-stop-active-only");
+-    const stream = new FakeTeamStream();
+-    const teamRun = new FakeTeamRun(team, stream);
+-    let resolveCalls = 0;
+-    const teamRunService = {
+-      getTeamRun: () => null,
+-      resolveTeamRun: async () => {
+-        resolveCalls += 1;
+-        return teamRun;
+-      },
+-      recordRunActivity: async () => {},
+-      refreshRunMetadata: async () => {},
+-    };
+-    const handler = new AgentTeamStreamHandler(
+-      new AgentSessionManager(),
+-      teamRunService as unknown as any,
+-    );
+-
+-    const app = fastify();
+-    await app.register(websocket);
+-    await registerAgentWebsocket(
+-      app,
+-      {
+-        connect: async () => null,
+-        handleMessage: async () => {},
+-        disconnect: async () => {},
+-      } as unknown as Parameters<typeof registerAgentWebsocket>[1],
+-      handler,
+-    );
+-    const address = await app.listen({ port: 0, host: "127.0.0.1" });
+-    const url = new URL(address);
+-    const socket = new WebSocket(`ws://${url.hostname}:${url.port}/ws/agent-team/team-stop-active-only`);
+-    const messages = captureMessages(socket);
+-    const connectedPromise = waitForMessage(socket);
+-
+-    await waitForOpen(socket);
+-    await connectedPromise;
+-
+-    socket.send(
+-      JSON.stringify({
+-        type: "INTERRUPT_GENERATION",
+-        payload: {
+-          command_id: "client_interrupt_stopped_team",
+-          target_member_route_key: "alpha",
+-          target_member_run_id: "member-42",
+-        },
+-      }),
+-    );
+-    const stoppedAck = await waitForCapturedMessage(
+-      messages,
+-      (message) => message.type === "AGENT_COMMAND_ACK" &&
+-        message.payload.command_id === "client_interrupt_stopped_team",
+-    );
+-    expect(stoppedAck.payload).toEqual({
+-      command_type: "INTERRUPT_GENERATION",
+-      command_id: "client_interrupt_stopped_team",
+-      state: "rejected",
+-      code: "RUN_NOT_FOUND",
+-      message: "Team run 'team-stop-active-only' is not active.",
+-      target: {
+-        target_kind: "team_member",
+-        team_run_id: "team-stop-active-only",
+-        member_route_key: "alpha",
+-        member_run_id: "member-42",
+-      },
+-    });
+-    expect(team.interruptCalls).toBe(0);
+-    expect(team.stopCalls).toBe(0);
+-    expect(resolveCalls).toBe(1);
+-
+-    socket.close();
+-    await app.close();
+-  });
+-
+-  it("rejects invalid team websocket interrupt targets without falling back or retargeting", async () => {
+-    const team = new FakeTeam("team-invalid-interrupt-target");
+-    const stream = new FakeTeamStream();
+-    const teamRunService = new FakeTeamRunService(team, stream);
+-    const handler = new AgentTeamStreamHandler(
+-      new AgentSessionManager(),
+-      teamRunService as unknown as any,
+-    );
+-
+-    const app = fastify();
+-    await app.register(websocket);
+-    await registerAgentWebsocket(
+-      app,
+-      {
+-        connect: async () => null,
+-        handleMessage: async () => {},
+-        disconnect: async () => {},
+-      } as unknown as Parameters<typeof registerAgentWebsocket>[1],
+-      handler,
+-    );
+-    const address = await app.listen({ port: 0, host: "127.0.0.1" });
+-    const url = new URL(address);
+-    const socket = new WebSocket(
+-      `ws://${url.hostname}:${url.port}/ws/agent-team/team-invalid-interrupt-target`,
+-    );
+-    const messages = captureMessages(socket);
+-    const connectedPromise = waitForMessage(socket);
+-
+-    await waitForOpen(socket);
+-    await connectedPromise;
+-
+-    socket.send(
+-      JSON.stringify({
+-        type: "INTERRUPT_GENERATION",
+-        payload: { command_id: "client_interrupt_missing_target" },
+-      }),
+-    );
+-    const missingTargetAck = await waitForCapturedMessage(
+-      messages,
+-      (message) => message.type === "AGENT_COMMAND_ACK" &&
+-        message.payload.command_id === "client_interrupt_missing_target",
+-    );
+-    expect(missingTargetAck.payload).toMatchObject({
+-      state: "rejected",
+-      code: "INVALID_TARGET",
+-      target: { member_route_key: "", member_run_id: null },
+-    });
+-    expect(team.interruptCalls).toBe(0);
+-    expect(team.lastInterruptTarget).toBeNull();
+-
+-    socket.send(
+-      JSON.stringify({
+-        type: "INTERRUPT_GENERATION",
+-        payload: {
+-          command_id: "client_interrupt_wrong_run",
+-          target_member_route_key: "beta",
+-          target_member_run_id: "member-42",
+-        },
+-      }),
+-    );
+-    const mismatchAck = await waitForCapturedMessage(
+-      messages,
+-      (message) => message.type === "AGENT_COMMAND_ACK" &&
+-        message.payload.command_id === "client_interrupt_wrong_run",
+-    );
+-    expect(mismatchAck.payload).toMatchObject({
+-      state: "failed",
+-      code: "TARGET_MEMBER_RUN_MISMATCH",
+-      target: { member_route_key: "beta", member_run_id: "member-42" },
+-    });
+-    expect(team.interruptCalls).toBe(0);
+-    expect(team.lastInterruptTarget).toBeNull();
+-
+-    socket.send(
+-      JSON.stringify({
+-        type: "INTERRUPT_GENERATION",
+-        payload: {
+-          command_id: "client_interrupt_valid_beta",
+-          target_member_route_key: "beta",
+-          target_member_run_id: "member-99",
+-        },
+-      }),
+-    );
+-    const validAck = await waitForCapturedMessage(
+-      messages,
+-      (message) => message.type === "AGENT_COMMAND_ACK" &&
+-        message.payload.command_id === "client_interrupt_valid_beta",
+-    );
+-    expect(validAck.payload).toEqual({
+-      command_type: "INTERRUPT_GENERATION",
+-      command_id: "client_interrupt_valid_beta",
+-      state: "accepted",
+-      target: {
+-        target_kind: "team_member",
+-        team_run_id: "team-invalid-interrupt-target",
+-        member_route_key: "beta",
+-        member_run_id: "member-99",
+-      },
+-    });
+-    await waitForCondition(() => team.interruptCalls === 1);
+-    expect(team.lastInterruptTarget).toBe("beta");
+-    expect(team.stopCalls).toBe(0);
+-
+-    socket.close();
+-    await app.close();
+-  });
+-
+-  it("forwards team-scoped live external user messages over the team websocket", async () => {
+-    const team = new FakeTeam("team-live-1");
+-    const stream = new FakeTeamStream();
+-    const teamRunService = new FakeTeamRunService(team, stream);
+-    const broadcaster = new TeamStreamBroadcaster();
+-    const handler = new AgentTeamStreamHandler(
+-      new AgentSessionManager(),
+-      teamRunService as unknown as any,
+-      broadcaster,
+-    );
+-
+-    const app = fastify();
+-    await app.register(websocket);
+-    await registerAgentWebsocket(
+-      app,
+-      {
+-        connect: async () => null,
+-        handleMessage: async () => {},
+-        disconnect: async () => {},
+-      } as unknown as Parameters<typeof registerAgentWebsocket>[1],
+-      handler,
+-    );
+-
+-    const address = await app.listen({ port: 0, host: "127.0.0.1" });
+-    const url = new URL(address);
+-    const socket = new WebSocket(`ws://${url.hostname}:${url.port}/ws/agent-team/${team.teamRunId}`);
+-    const connectedPromise = waitForMessage(socket);
+-
+-    await waitForOpen(socket);
+-
+-    await connectedPromise;
+-
+-    const externalMessagePromise = waitForMessage(socket);
+-    broadcaster.publishToTeamRun(
+-      team.teamRunId,
+-      {
+-        toJson: () =>
+-          JSON.stringify({
+-            type: "EXTERNAL_USER_MESSAGE",
+-            payload: {
+-              content: "hello from telegram",
+-              agent_name: "Professor",
+-              agent_id: "prof-run-1",
+-              member_route_key: "Professor",
+-              member_path: ["Professor"],
+-              source_route_key: "Professor",
+-              source_path: ["Professor"],
+-              received_at: "2026-03-10T20:10:00.000Z",
+-            },
+-          }),
+-      } as any,
+-    );
+-
+-    const externalMessage = JSON.parse(await externalMessagePromise) as {
+-      type: string;
+-      payload: {
+-        content?: string;
+-        agent_name?: string;
+-        agent_id?: string;
+-        member_route_key?: string;
+-        member_path?: string[];
+-        source_route_key?: string;
+-        source_path?: string[];
+-        received_at?: string;
+-      };
+-    };
+-
+-    expect(externalMessage).toMatchObject({
+-      type: "EXTERNAL_USER_MESSAGE",
+-      payload: {
+-        content: "hello from telegram",
+-        agent_name: "Professor",
+-        agent_id: "prof-run-1",
+-        member_route_key: "Professor",
+-        member_path: ["Professor"],
+-        source_route_key: "Professor",
+-        source_path: ["Professor"],
+-        received_at: "2026-03-10T20:10:00.000Z",
+-      },
+-    });
+-
+-    socket.close();
+-    await app.close();
+-  });
+-
+-  it("returns SESSION_NOT_READY for team command before connect handshake", async () => {
+-    const delayedTeamHandler = {
+-      connect: async () => {
+-        await new Promise((resolve) => setTimeout(resolve, 300));
+-        return "team-session-late";
+-      },
+-      handleMessage: async () => {},
+-      disconnect: async () => {},
+-    } as unknown as Parameters<typeof registerAgentWebsocket>[2];
+-
+-    const app = fastify();
+-    await app.register(websocket);
+-    await registerAgentWebsocket(
+-      app,
+-      {
+-        connect: async () => null,
+-        handleMessage: async () => {},
+-        disconnect: async () => {},
+-      } as unknown as Parameters<typeof registerAgentWebsocket>[1],
+-      delayedTeamHandler,
+-    );
+-
+-    const address = await app.listen({ port: 0, host: "127.0.0.1" });
+-    const url = new URL(address);
+-    const socket = new WebSocket(`ws://${url.hostname}:${url.port}/ws/agent-team/any-team`);
+-
+-    await waitForOpen(socket);
+-
+-    socket.send(JSON.stringify({ type: "SEND_MESSAGE", payload: { content: "too early" } }));
+-    const earlyResponse = JSON.parse(await waitForMessage(socket)) as {
+-      type: string;
+-      payload: { code?: string };
+-    };
+-
+-    expect(earlyResponse.type).toBe("ERROR");
+-    expect(earlyResponse.payload.code).toBe("SESSION_NOT_READY");
+-
+-    socket.close();
+-    await app.close();
+-  });
+-
+-  it("routes approval commands only with explicit route selector fields", async () => {
+-    const team = new FakeTeam("team-approvals");
+-    const stream = new FakeTeamStream();
+-    const teamRunService = new FakeTeamRunService(team, stream);
+-    const handler = new AgentTeamStreamHandler(
+-      new AgentSessionManager(),
+-      teamRunService as unknown as any,
+-    );
+-
+-    const app = fastify();
+-    await app.register(websocket);
+-    await registerAgentWebsocket(
+-      app,
+-      {
+-        connect: async () => null,
+-        handleMessage: async () => {},
+-        disconnect: async () => {},
+-      } as unknown as Parameters<typeof registerAgentWebsocket>[1],
+-      handler,
+-    );
+-
+-    const address = await app.listen({ port: 0, host: "127.0.0.1" });
+-    const url = new URL(address);
+-    const socket = new WebSocket(`ws://${url.hostname}:${url.port}/ws/agent-team/${team.teamRunId}`);
+-    const connectedPromise = waitForMessage(socket);
+-
+-    await waitForOpen(socket);
+-
+-    await connectedPromise; // CONNECTED
+-
+-    socket.send(
+-      JSON.stringify({
+-        type: "APPROVE_TOOL",
+-        payload: { invocation_id: "inv-1", member_route_key: "alpha" },
+-      }),
+-    );
+-    await waitForCondition(() => team.approvals.length === 1);
+-    expect(team.approvals[0]).toEqual({
+-      agentName: "alpha",
+-      invocationId: "inv-1",
+-      approved: true,
+-      reason: null,
+-    });
+-
+-    socket.send(
+-      JSON.stringify({
+-        type: "DENY_TOOL",
+-        payload: {
+-          invocation_id: "inv-2",
+-          target_member_route_key: "beta",
+-          reason: "deny",
+-        },
+-      }),
+-    );
+-    await waitForCondition(() => team.approvals.length === 2);
+-    expect(team.approvals[1]).toEqual({
+-      agentName: "beta",
+-      invocationId: "inv-2",
+-      approved: false,
+-      reason: "deny",
+-    });
+-
+-    socket.send(
+-      JSON.stringify({
+-        type: "APPROVE_TOOL",
+-        payload: { invocation_id: "inv-3", member_route_key: "alpha" },
+-      }),
+-    );
+-    await waitForCondition(() => team.approvals.length === 3);
+-    expect(team.approvals[2]).toEqual({
+-      agentName: "alpha",
+-      invocationId: "inv-3",
+-      approved: true,
+-      reason: null,
+-    });
+-
+-    socket.send(
+-      JSON.stringify({
+-        type: "DENY_TOOL",
+-        payload: {
+-          invocation_id: "inv-4",
+-          targetMemberRouteKey: "BuildSquad/review_lead",
+-          reason: "camel",
+-        },
+-      }),
+-    );
+-    await waitForCondition(() => team.approvals.length === 4);
+-    expect(team.approvals[3]).toEqual({
+-      agentName: "BuildSquad/review_lead",
+-      invocationId: "inv-4",
+-      approved: false,
+-      reason: "camel",
+-    });
+-
+-    const missingTargetErrorPromise = waitForMessage(socket);
+-    socket.send(
+-      JSON.stringify({
+-        type: "APPROVE_TOOL",
+-        payload: { invocation_id: "inv-5" },
+-      }),
+-    );
+-    const missingTargetError = JSON.parse(await missingTargetErrorPromise) as {
+-      type: string;
+-      payload: { code?: string };
+-    };
+-    expect(missingTargetError).toMatchObject({
+-      type: "ERROR",
+-      payload: { code: "INVALID_TARGET" },
+-    });
+-
+-    const scalarAliasErrorPromise = waitForMessage(socket);
+-    socket.send(
+-      JSON.stringify({
+-        type: "APPROVE_TOOL",
+-        payload: { invocation_id: "inv-6", target_member_name: "alpha" },
+-      }),
+-    );
+-    const scalarAliasError = JSON.parse(await scalarAliasErrorPromise) as {
+-      type: string;
+-      payload: { code?: string };
+-    };
+-    expect(scalarAliasError).toMatchObject({
+-      type: "ERROR",
+-      payload: { code: "INVALID_TARGET" },
+-    });
+-    expect(team.approvals).toHaveLength(4);
+-
+-    socket.close();
+-    await app.close();
+-  });
+-});
+diff --git a/autobyteus-server-ts/tests/integration/agent/team-lifecycle-websocket.integration.test.ts b/autobyteus-server-ts/tests/integration/agent/team-lifecycle-websocket.integration.test.ts
+deleted file mode 100644
+index 302d414ac..000000000
+--- a/autobyteus-server-ts/tests/integration/agent/team-lifecycle-websocket.integration.test.ts
++++ /dev/null
+@@ -1,519 +0,0 @@
+-import fastify from "fastify";
+-import websocket from "@fastify/websocket";
+-import { describe, expect, it, vi } from "vitest";
+-import WebSocket from "ws";
+-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
+-import type {
+-  AgentRunBackend,
+-  AgentRunSourceEventBatchListener,
+-} from "../../../src/agent-execution/backends/agent-run-backend.js";
+-import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
+-import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
+-import { AgentRun } from "../../../src/agent-execution/domain/agent-run.js";
+-import {
+-  AgentRunEventType,
+-  type AgentRunEvent,
+-} from "../../../src/agent-execution/domain/agent-run-event.js";
+-import type { AgentRuntimeLifecycleSnapshot } from "../../../src/agent-execution/domain/agent-runtime-lifecycle-snapshot.js";
+-import {
+-  buildOrdinaryTeamLeafAgentStatusSnapshot,
+-  type TeamLeafAgentStatusSnapshot,
+-} from "../../../src/agent-team-execution/domain/team-leaf-agent-status-snapshot.js";
+-import type { TaskTeamInstanceIdentity } from "../../../src/agent-team-execution/domain/task-team-instance.js";
+-import { buildTaskTeamStreamScope } from "../../../src/agent-team-execution/domain/task-team-stream-scope.js";
+-import type { TeamRun } from "../../../src/agent-team-execution/domain/team-run.js";
+-import {
+-  TeamRunEventSourceType,
+-  type TeamRunEvent,
+-  type TeamRunEventListener,
+-} from "../../../src/agent-team-execution/domain/team-run-event.js";
+-import {
+-  prefixMixedSubTeamEvent,
+-  prefixMixedTeamLeafAgentStatusSnapshot,
+-} from "../../../src/agent-team-execution/backends/mixed/events/mixed-team-event-bridge.js";
+-import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
+-import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
+-import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+-import { AgentSessionManager } from "../../../src/services/agent-streaming/agent-session-manager.js";
+-import { AgentTeamStreamHandler } from "../../../src/services/agent-streaming/agent-team-stream-handler.js";
+-
+-type WsMessage = {
+-  type: string;
+-  payload: Record<string, unknown>;
+-};
+-
+-const ROOT_TEAM_RUN_ID = "root-team-1";
+-const ORDINARY_TEAM_RUN_ID = "research-run-2";
+-const TASK_TEAM_RUN_ID = "task-team-run-7";
+-const MEMBER_RUN_ID = "critic-runtime-93";
+-const ROOT_MEMBER_PATH = [
+-  "research_group",
+-  "review_team",
+-  "review_group",
+-  "critic",
+-];
+-
+-const idleSnapshot = (): AgentRuntimeLifecycleSnapshot => ({
+-  availability: "active",
+-  phase: "idle",
+-  currentTurn: { kind: "NONE" },
+-});
+-
+-const runningSnapshot = (turnId: string): AgentRuntimeLifecycleSnapshot => ({
+-  availability: "active",
+-  phase: "running",
+-  currentTurn: { kind: "IDENTIFIED", turnId },
+-});
+-
+-const event = (
+-  eventType: AgentRunEventType,
+-  payload: Record<string, unknown>,
+-): AgentRunEvent => ({
+-  runId: MEMBER_RUN_ID,
+-  eventType,
+-  payload,
+-  statusHint: null,
+-});
+-
+-class ScriptedMemberBackend implements AgentRunBackend {
+-  readonly runId = MEMBER_RUN_ID;
+-  readonly runtimeKind = RuntimeKind.CODEX_APP_SERVER;
+-  readonly context = new AgentRunContext({
+-    runId: this.runId,
+-    config: new AgentRunConfig({
+-      runtimeKind: this.runtimeKind,
+-      agentDefinitionId: "critic-agent",
+-      llmModelIdentifier: "codex-test",
+-      autoExecuteTools: true,
+-      workspaceId: null,
+-      memoryDir: null,
+-      llmConfig: null,
+-      skillAccessMode: SkillAccessMode.NONE,
+-    }),
+-    runtimeContext: null,
+-  });
+-  private lifecycleSnapshot: AgentRuntimeLifecycleSnapshot = idleSnapshot();
+-  private readonly sourceListeners = new Set<AgentRunSourceEventBatchListener>();
+-
+-  getContext(): AgentRunContext<null> {
+-    return this.context;
+-  }
+-
+-  isActive(): boolean {
+-    return true;
+-  }
+-
+-  getPlatformAgentRunId(): string {
+-    return `platform-${this.runId}`;
+-  }
+-
+-  getLifecycleSnapshot(): AgentRuntimeLifecycleSnapshot {
+-    return this.lifecycleSnapshot;
+-  }
+-
+-  subscribeToSourceEventBatches(listener: AgentRunSourceEventBatchListener): () => void {
+-    this.sourceListeners.add(listener);
+-    return () => this.sourceListeners.delete(listener);
+-  }
+-
+-  async postUserMessage(): Promise<{ accepted: true }> {
+-    return { accepted: true };
+-  }
+-
+-  async approveToolInvocation(): Promise<{ accepted: true }> {
+-    return { accepted: true };
+-  }
+-
+-  async interrupt(): Promise<{ accepted: true }> {
+-    return { accepted: true };
+-  }
+-
+-  async terminate(): Promise<{ accepted: true }> {
+-    return { accepted: true };
+-  }
+-
+-  setLifecycleSnapshot(snapshot: AgentRuntimeLifecycleSnapshot): void {
+-    this.lifecycleSnapshot = snapshot;
+-  }
+-
+-  async emitSource(events: readonly AgentRunEvent[]): Promise<void> {
+-    for (const listener of this.sourceListeners) {
+-      await listener(events);
+-    }
+-  }
+-}
+-
+-const operationalTaskTeamIdentity = (): TaskTeamInstanceIdentity => ({
+-  taskTeamRunId: TASK_TEAM_RUN_ID,
+-  taskTeamInstanceId: "task-team-instance-7",
+-  parentTeamRunId: ORDINARY_TEAM_RUN_ID,
+-  taskId: "task-42",
+-  logicalTeam: {
+-    memberName: "review_team",
+-    memberPath: ["review_team"],
+-    memberRouteKey: "review_team",
+-    templateMemberRunId: "review-team-template",
+-    teamDefinitionId: "review-team-definition",
+-    coordinatorMemberRouteKey: "review_group/lead",
+-  },
+-  ingress: {
+-    memberName: "critic",
+-    memberPath: ["review_group", "critic"],
+-    memberRouteKey: "review_group/critic",
+-    memberRunId: MEMBER_RUN_ID,
+-  },
+-  createdAt: "2026-08-02T00:00:00.000Z",
+-});
+-
+-const scopeSnapshotToRoot = (memberRun: AgentRun): TeamLeafAgentStatusSnapshot => {
+-  const local = buildOrdinaryTeamLeafAgentStatusSnapshot({
+-    teamRunId: TASK_TEAM_RUN_ID,
+-    payload: {
+-      ...memberRun.getStatusSnapshot(),
+-      agent_id: MEMBER_RUN_ID,
+-      agent_name: "critic",
+-      member_path: ["review_group", "critic"],
+-      member_route_key: "review_group/critic",
+-      source_path: ["review_group", "critic"],
+-      source_route_key: "review_group/critic",
+-    },
+-  });
+-  const taskTeamScope = buildTaskTeamStreamScope({
+-    taskTeamInstance: operationalTaskTeamIdentity(),
+-    parentTeamRunId: ORDINARY_TEAM_RUN_ID,
+-  });
+-  const ordinaryFrame = prefixMixedTeamLeafAgentStatusSnapshot({
+-    parentTeamRunId: ORDINARY_TEAM_RUN_ID,
+-    sourcePrefix: ["review_team"],
+-    snapshot: local,
+-    taskTeamScopeOverride: taskTeamScope,
+-  });
+-  return prefixMixedTeamLeafAgentStatusSnapshot({
+-    parentTeamRunId: ROOT_TEAM_RUN_ID,
+-    sourcePrefix: ["research_group"],
+-    snapshot: ordinaryFrame,
+-  });
+-};
+-
+-const scopeEventToRoot = (agentEvent: AgentRunEvent): TeamRunEvent => {
+-  const local: TeamRunEvent = {
+-    teamRunId: TASK_TEAM_RUN_ID,
+-    eventSourceType: TeamRunEventSourceType.AGENT,
+-    sourcePath: ["review_group", "critic"],
+-    data: {
+-      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+-      memberName: "critic",
+-      memberRunId: MEMBER_RUN_ID,
+-      memberPath: ["review_group", "critic"],
+-      memberRouteKey: "review_group/critic",
+-      agentEvent,
+-    },
+-  };
+-  const taskTeamScope = buildTaskTeamStreamScope({
+-    taskTeamInstance: operationalTaskTeamIdentity(),
+-    parentTeamRunId: ORDINARY_TEAM_RUN_ID,
+-  });
+-  const ordinaryFrame = prefixMixedSubTeamEvent({
+-    parentTeamRunId: ORDINARY_TEAM_RUN_ID,
+-    sourcePrefix: ["review_team"],
+-    event: local,
+-    taskTeamScopeOverride: taskTeamScope,
+-  });
+-  return prefixMixedSubTeamEvent({
+-    parentTeamRunId: ROOT_TEAM_RUN_ID,
+-    sourcePrefix: ["research_group"],
+-    event: ordinaryFrame,
+-  });
+-};
+-
+-class ScopedRootTeamRun {
+-  readonly runId = ROOT_TEAM_RUN_ID;
+-  readonly runtimeKind = RuntimeKind.AUTOBYTEUS;
+-  readonly context = { runtimeContext: { memberContexts: [] } };
+-  readonly config = { memberConfigs: [] };
+-  readonly interruptMember = vi.fn(async () => ({ accepted: true as const }));
+-  private active = true;
+-  private terminationAccepted = false;
+-  private readonly listeners = new Set<TeamRunEventListener>();
+-
+-  constructor(readonly memberRun: AgentRun) {
+-    memberRun.subscribeToEvents((agentEvent) => {
+-      const rootEvent = scopeEventToRoot(agentEvent);
+-      for (const listener of this.listeners) {
+-        listener(rootEvent);
+-      }
+-    });
+-  }
+-
+-  isActive(): boolean {
+-    return this.active;
+-  }
+-
+-  getLeafAgentStatusSnapshots(): TeamLeafAgentStatusSnapshot[] {
+-    return [scopeSnapshotToRoot(this.memberRun)];
+-  }
+-
+-  subscribeToEvents(listener: TeamRunEventListener): () => void {
+-    this.listeners.add(listener);
+-    return () => this.listeners.delete(listener);
+-  }
+-
+-  setTerminationAccepted(accepted: boolean): void {
+-    this.terminationAccepted = accepted;
+-  }
+-
+-  async terminate(): Promise<{ accepted: boolean }> {
+-    if (!this.terminationAccepted) {
+-      return { accepted: false };
+-    }
+-    this.active = false;
+-    // Root manager lifecycle delivery must remain observable after the backend
+-    // event source has already torn down its listeners.
+-    this.listeners.clear();
+-    return { accepted: true };
+-  }
+-
+-  async postMessageToConversationTarget(): Promise<{ accepted: true }> {
+-    return { accepted: true };
+-  }
+-
+-  async approveToolInvocation(): Promise<{ accepted: true }> {
+-    return { accepted: true };
+-  }
+-}
+-
+-const createManager = () => new AgentTeamRunManager({
+-  mixedTeamRunBackendFactory: {} as never,
+-  teamCommunicationService: { attachToTeamRun: vi.fn(() => vi.fn()) } as never,
+-  runFileChangeService: { attachToTeamRun: vi.fn(() => vi.fn()) } as never,
+-});
+-
+-const registerRun = (manager: AgentTeamRunManager, teamRun: TeamRun): void => {
+-  (manager as unknown as { registerActiveRun: (run: TeamRun) => void })
+-    .registerActiveRun(teamRun);
+-};
+-
+-const wait = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
+-
+-const waitForSocketClose = (socket: WebSocket): Promise<void> =>
+-  new Promise((resolve, reject) => {
+-    const timer = setTimeout(
+-      () => reject(new Error("Timed out waiting for websocket close")),
+-      2_000,
+-    );
+-    socket.once("close", () => {
+-      clearTimeout(timer);
+-      resolve();
+-    });
+-  });
+-
+-const captureMessages = (socket: WebSocket): WsMessage[] => {
+-  const messages: WsMessage[] = [];
+-  socket.on("message", (data) => messages.push(JSON.parse(data.toString()) as WsMessage));
+-  return messages;
+-};
+-
+-const openSocket = async (url: string): Promise<{ socket: WebSocket; messages: WsMessage[] }> => {
+-  const socket = new WebSocket(url);
+-  const messages = captureMessages(socket);
+-  await new Promise<void>((resolve, reject) => {
+-    const timer = setTimeout(() => reject(new Error("Timed out waiting for websocket open")), 2_000);
+-    socket.once("open", () => {
+-      clearTimeout(timer);
+-      resolve();
+-    });
+-    socket.once("error", (error) => {
+-      clearTimeout(timer);
+-      reject(error);
+-    });
+-  });
+-  return { socket, messages };
+-};
+-
+-const waitForMessageCount = async (messages: WsMessage[], count: number): Promise<void> => {
+-  const deadline = Date.now() + 2_000;
+-  while (Date.now() < deadline) {
+-    if (messages.length >= count) return;
+-    await wait(10);
+-  }
+-  throw new Error(`Expected ${String(count)} messages, received ${JSON.stringify(messages)}`);
+-};
+-
+-const expectScopedLeafIdentity = (payload: Record<string, unknown>): void => {
+-  expect(payload).toMatchObject({
+-    agent_id: MEMBER_RUN_ID,
+-    agent_name: "critic",
+-    member_path: ROOT_MEMBER_PATH,
+-    member_route_key: ROOT_MEMBER_PATH.join("/"),
+-    source_path: ROOT_MEMBER_PATH,
+-    source_route_key: ROOT_MEMBER_PATH.join("/"),
+-    task_team_run_id: TASK_TEAM_RUN_ID,
+-    task_team_instance_id: "task-team-instance-7",
+-    task_id: "task-42",
+-    team_path: ["research_group", "review_team"],
+-    team_route_key: "research_group/review_team",
+-    task_team_relative_member_path: ["review_group", "critic"],
+-    task_team_relative_member_route_key: "review_group/critic",
+-  });
+-};
+-
+-describe("Team lifecycle and nested task-team WebSocket integration", () => {
+-  it("keeps binary root liveness separate while live/reconnect map the same exact scoped leaf", async () => {
+-    const backend = new ScriptedMemberBackend();
+-    const memberRun = new AgentRun({ context: backend.context, backend });
+-    const teamRun = new ScopedRootTeamRun(memberRun);
+-    const manager = createManager();
+-    registerRun(manager, teamRun as unknown as TeamRun);
+-
+-    const teamRunService = {
+-      getTeamRun: vi.fn(() => manager.getActiveRun(ROOT_TEAM_RUN_ID)),
+-      resolveTeamRun: vi.fn(async () => manager.getActiveRun(ROOT_TEAM_RUN_ID)),
+-      recordRunActivity: vi.fn(async () => {}),
+-      refreshRunMetadata: vi.fn(async () => {}),
+-    };
+-    const handler = new AgentTeamStreamHandler(
+-      new AgentSessionManager(),
+-      teamRunService as never,
+-      undefined,
+-      undefined,
+-      undefined,
+-      manager,
+-    );
+-    let resolvePrimaryDisconnect!: () => void;
+-    const primaryDisconnectCompleted = new Promise<void>((resolve) => {
+-      resolvePrimaryDisconnect = resolve;
+-    });
+-    const disconnect = handler.disconnect.bind(handler);
+-    vi.spyOn(handler, "disconnect").mockImplementation(async (sessionId) => {
+-      await disconnect(sessionId);
+-      resolvePrimaryDisconnect();
+-    });
+-    const app = fastify();
+-    await app.register(websocket);
+-    await registerAgentWebsocket(
+-      app,
+-      { connect: async () => null, handleMessage: async () => {}, disconnect: async () => {} } as never,
+-      handler,
+-    );
+-    const address = await app.listen({ port: 0, host: "127.0.0.1" });
+-    const url = new URL(address);
+-    const socketUrl = `ws://${url.hostname}:${url.port}/ws/agent-team/${ROOT_TEAM_RUN_ID}`;
+-    const primary = await openSocket(socketUrl);
+-
+-    try {
+-      await waitForMessageCount(primary.messages, 3);
+-      expect(primary.messages.map((message) => message.type)).toEqual([
+-        "CONNECTED",
+-        "AGENT_STATUS",
+-        "TEAM_RUN_LIFECYCLE",
+-      ]);
+-      expect(primary.messages[1]?.payload.status).toBe("idle");
+-      expectScopedLeafIdentity(primary.messages[1]!.payload);
+-      expect(primary.messages[2]).toEqual({
+-        type: "TEAM_RUN_LIFECYCLE",
+-        payload: { team_run_id: ROOT_TEAM_RUN_ID, is_active: true },
+-      });
+-      expect(primary.messages.some((message) => message.type === "TEAM_STATUS")).toBe(false);
+-
+-      backend.setLifecycleSnapshot(runningSnapshot("turn-live"));
+-      await backend.emitSource([
+-        event(AgentRunEventType.TURN_STARTED, { turn_id: "turn-live" }),
+-        event(AgentRunEventType.SEGMENT_CONTENT, {
+-          turn_id: "turn-live",
+-          segment_id: "segment-live",
+-          delta: "streamed through every boundary",
+-        }),
+-      ]);
+-      await waitForMessageCount(primary.messages, 7);
+-      const live = primary.messages.slice(3);
+-      expect(live.map((message) => message.type)).toEqual([
+-        "AGENT_STATUS",
+-        "TURN_STARTED",
+-        "AGENT_STATUS",
+-        "SEGMENT_CONTENT",
+-      ]);
+-      for (const message of live) expectScopedLeafIdentity(message.payload);
+-      expect(live[0]?.payload.status).toBe("running");
+-      expect(live[2]?.payload.status).toBe("running");
+-
+-      primary.socket.send(JSON.stringify({
+-        type: "INTERRUPT_GENERATION",
+-        payload: {
+-          command_id: "client_interrupt_nested_leaf",
+-          target_member_route_key: ROOT_MEMBER_PATH.join("/"),
+-          target_member_run_id: MEMBER_RUN_ID,
+-        },
+-      }));
+-      await vi.waitFor(() => {
+-        expect(teamRun.interruptMember).toHaveBeenCalledWith(
+-          ROOT_MEMBER_PATH.join("/"),
+-          MEMBER_RUN_ID,
+-        );
+-      });
+-      await waitForMessageCount(primary.messages, 8);
+-      expect(primary.messages[7]).toEqual({
+-        type: "AGENT_COMMAND_ACK",
+-        payload: {
+-          command_type: "INTERRUPT_GENERATION",
+-          command_id: "client_interrupt_nested_leaf",
+-          state: "accepted",
+-          target: {
+-            target_kind: "team_member",
+-            team_run_id: ROOT_TEAM_RUN_ID,
+-            member_route_key: ROOT_MEMBER_PATH.join("/"),
+-            member_run_id: MEMBER_RUN_ID,
+-          },
+-        },
+-      });
+-
+-      const primaryClosed = waitForSocketClose(primary.socket);
+-      primary.socket.close();
+-      await primaryClosed;
+-      await primaryDisconnectCompleted;
+-      expect(manager.getLifecycleSnapshot(ROOT_TEAM_RUN_ID).isActive).toBe(true);
+-      const reconnectRunning = await openSocket(socketUrl);
+-      try {
+-        await waitForMessageCount(reconnectRunning.messages, 3);
+-        expect(reconnectRunning.messages[1]?.payload.status).toBe("running");
+-        expectScopedLeafIdentity(reconnectRunning.messages[1]!.payload);
+-        expect(reconnectRunning.messages[2]?.payload).toEqual({
+-          team_run_id: ROOT_TEAM_RUN_ID,
+-          is_active: true,
+-        });
+-
+-        backend.setLifecycleSnapshot(idleSnapshot());
+-        await backend.emitSource([
+-          event(AgentRunEventType.TURN_INTERRUPTED, { turn_id: "turn-live" }),
+-        ]);
+-        await waitForMessageCount(reconnectRunning.messages, 5);
+-        expect(reconnectRunning.messages.slice(-2).map((message) => message.type)).toEqual([
+-          "TURN_INTERRUPTED",
+-          "AGENT_STATUS",
+-        ]);
+-        expect(reconnectRunning.messages.at(-1)?.payload.status).toBe("idle");
+-        expect(manager.getLifecycleSnapshot(ROOT_TEAM_RUN_ID).isActive).toBe(true);
+-
+-        teamRun.setTerminationAccepted(false);
+-        await expect(manager.terminateTeamRun(ROOT_TEAM_RUN_ID)).resolves.toBe(false);
+-        expect(manager.getLifecycleSnapshot(ROOT_TEAM_RUN_ID).isActive).toBe(true);
+-        expect(reconnectRunning.messages.some((message) =>
+-          message.type === "TEAM_RUN_LIFECYCLE" && message.payload.is_active === false)).toBe(false);
+-
+-        teamRun.setTerminationAccepted(true);
+-        await expect(manager.terminateTeamRun(ROOT_TEAM_RUN_ID)).resolves.toBe(true);
+-        await waitForMessageCount(reconnectRunning.messages, 6);
+-        expect(reconnectRunning.messages.at(-1)).toEqual({
+-          type: "TEAM_RUN_LIFECYCLE",
+-          payload: { team_run_id: ROOT_TEAM_RUN_ID, is_active: false },
+-        });
+-        expect(manager.getLifecycleSnapshot(ROOT_TEAM_RUN_ID).isActive).toBe(false);
+-        expect(reconnectRunning.messages.some((message) => message.type === "TEAM_STATUS")).toBe(false);
+-      } finally {
+-        reconnectRunning.socket.close();
+-      }
+-    } finally {
+-      primary.socket.close();
+-      await app.close();
+-    }
+-  });
+-});
+diff --git a/autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts b/autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts
+index f95d87119..5d3176b7f 100644
+--- a/autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts
++++ b/autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts
+@@ -250,7 +250,6 @@ describe("AutoByteusStreamEventConverter", () => {
+         id: "seg-1",
+         turn_id: "turn-1",
+         segment_type: "assistant_text",
+-        content: "hello",
+       },
+       statusHint: null,
+     });
+@@ -262,7 +261,7 @@ describe("AutoByteusStreamEventConverter", () => {
+           event_type: "content",
+           segment_id: "seg-2",
+           turn_id: "turn-2",
+-          payload: { text: "chunk" },
++          payload: { delta: "chunk" },
+         },
+       } as any),
+     )?.toMatchObject({
+@@ -270,7 +269,7 @@ describe("AutoByteusStreamEventConverter", () => {
+       payload: {
+         id: "seg-2",
+         turn_id: "turn-2",
+-        text: "chunk",
++        delta: "chunk",
+       },
+     });
+ 
+@@ -346,7 +345,7 @@ describe("AutoByteusStreamEventConverter", () => {
+     });
+   });
+ 
+-  it("drops unknown segment types", () => {
++  it("drops unknown segment variants and preserves missing identity for run-owned validation", () => {
+     const converter = new AutoByteusStreamEventConverter("run-1");
+     expect(
+       converter.convert({
+@@ -355,12 +354,18 @@ describe("AutoByteusStreamEventConverter", () => {
+       } as any),
+     ).toBeNull();
+ 
+-    expect(
+-      converter.convert({
+-        event_type: StreamEventType.SEGMENT_EVENT,
+-        data: { event_type: "start", segment_id: "seg-5" },
+-      } as any),
+-    ).toBeNull();
++    const missingIdentity = converter.convert({
++      event_type: StreamEventType.SEGMENT_EVENT,
++      data: { event_type: "start", segment_id: "seg-5" },
++    } as any);
++    expect(missingIdentity).toMatchObject({
++      eventType: AgentRunEventType.SEGMENT_START,
++      runId: "run-1",
++      payload: { id: "seg-5" },
++    });
++    expect(missingIdentity?.payload.turn_id).toBeUndefined();
++    expect(missingIdentity?.payload.segment_type).toBeUndefined();
++    expect(JSON.stringify(missingIdentity)).not.toContain("runtime-segment");
+   });
+ 
+   it("keeps native turn lifecycle payloads intact", () => {
+diff --git a/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts b/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts
+index 7198c8cb8..d88a9c7d7 100644
+--- a/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts
++++ b/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts
+@@ -58,7 +58,6 @@ describe("ClaudeSessionEventConverter", () => {
+       payload: {
+         id: "invoke-bash",
+         turn_id: "turn-1",
+-        segment_type: "tool_call",
+         metadata: {
+           tool_name: "Bash",
+           arguments: {
+@@ -179,7 +178,6 @@ describe("ClaudeSessionEventConverter", () => {
+     expect(segmentStart).toMatchObject({
+       eventType: AgentRunEventType.SEGMENT_START,
+       payload: {
+-        tool_name: "send_message_to",
+         metadata: {
+           tool_name: "send_message_to",
+           arguments: {
+@@ -201,6 +199,7 @@ describe("ClaudeSessionEventConverter", () => {
+         },
+       },
+     });
++    expect(segmentStart.payload).not.toHaveProperty("tool_name");
+     expect(completed).toMatchObject({
+       eventType: AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+       payload: {
+@@ -212,7 +211,6 @@ describe("ClaudeSessionEventConverter", () => {
+     expect(segmentEnd).toMatchObject({
+       eventType: AgentRunEventType.SEGMENT_END,
+       payload: {
+-        tool_name: "send_message_to",
+         metadata: {
+           tool_name: "send_message_to",
+           arguments: {
+@@ -222,6 +220,8 @@ describe("ClaudeSessionEventConverter", () => {
+         },
+       },
+     });
++    expect(segmentEnd.payload).not.toHaveProperty("tool_name");
++    expect(segmentEnd.payload).not.toHaveProperty("segment_type");
+     expect(JSON.stringify([segmentStart, started, completed, segmentEnd])).not.toContain(
+       "mcp__autobyteus_agent_tools__send_message_to",
+     );
+@@ -261,7 +261,6 @@ describe("ClaudeSessionEventConverter", () => {
+       payload: {
+         id: "invoke-send-message",
+         segment_type: "tool_call",
+-        tool_name: "send_message_to",
+         metadata: {
+           tool_name: "send_message_to",
+           arguments: {
+@@ -272,6 +271,7 @@ describe("ClaudeSessionEventConverter", () => {
+         },
+       },
+     });
++    expect(segmentStart.payload).not.toHaveProperty("tool_name");
+     expect(started).toMatchObject({
+       eventType: AgentRunEventType.TOOL_EXECUTION_STARTED,
+       payload: {
+@@ -780,7 +780,7 @@ describe("ClaudeSessionEventConverter", () => {
+     });
+   });
+ 
+-  it("normalizes browser MCP tool names in segment start metadata and top-level payload", () => {
++  it("normalizes browser MCP tool names in canonical segment start metadata", () => {
+     const converter = new ClaudeSessionEventConverter("run-claude-converter");
+ 
+     const [segmentStart] = converter.convert({
+@@ -801,7 +801,6 @@ describe("ClaudeSessionEventConverter", () => {
+       payload: {
+         id: "invoke-browser",
+         segment_type: "tool_call",
+-        tool_name: "open_tab",
+         metadata: {
+           tool_name: "open_tab",
+           arguments: {
+@@ -810,6 +809,7 @@ describe("ClaudeSessionEventConverter", () => {
+         },
+       },
+     });
++    expect(segmentStart.payload).not.toHaveProperty("tool_name");
+     expect(JSON.stringify(segmentStart.payload)).not.toContain("mcp__autobyteus_agent_tools__open_tab");
+   });
+ 
+@@ -837,8 +837,6 @@ describe("ClaudeSessionEventConverter", () => {
+       eventType: AgentRunEventType.SEGMENT_END,
+       payload: {
+         id: "invoke-browser",
+-        segment_type: "tool_call",
+-        tool_name: "open_tab",
+         metadata: {
+           tool_name: "open_tab",
+           result: {
+@@ -848,6 +846,8 @@ describe("ClaudeSessionEventConverter", () => {
+         },
+       },
+     });
++    expect(segmentEnd.payload).not.toHaveProperty("tool_name");
++    expect(segmentEnd.payload).not.toHaveProperty("segment_type");
+     expect(JSON.stringify(segmentEnd.payload)).not.toContain("mcp__autobyteus_agent_tools__open_tab");
+   });
+ 
+diff --git a/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts b/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts
+index 31a232cf0..b3e452c91 100644
+--- a/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts
++++ b/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts
+@@ -6,7 +6,8 @@ import { AgentRunEventType } from "../../../../../../src/agent-execution/domain/
+ 
+ const isReasoningEnd = (event: { eventType: AgentRunEventType; payload: Record<string, unknown> }) =>
+   event.eventType === AgentRunEventType.SEGMENT_END &&
+-  event.payload.segment_type === "reasoning";
++  typeof event.payload.id === "string" &&
++  event.payload.id.startsWith("reasoning-block:");
+ 
+ const emitCompletedReasoning = (
+   converter: CodexThreadEventConverter,
+@@ -21,8 +22,19 @@ const emitCompletedReasoning = (
+       item: { type: "reasoning", id: providerItemId, summary: [{ text }] },
+     },
+   });
+-  expect(events).toHaveLength(1);
+-  return events[0]!;
++  expect(events.map((event) => event.eventType)).toEqual(
++    events.length === 2
++      ? [AgentRunEventType.SEGMENT_START, AgentRunEventType.SEGMENT_CONTENT]
++      : [AgentRunEventType.SEGMENT_CONTENT],
++  );
++  if (events.length === 2) {
++    expect(events[0]!.payload).toMatchObject({
++      id: events[1]!.payload.id,
++      turn_id: turnId,
++      segment_type: "reasoning",
++    });
++  }
++  return events.find((event) => event.eventType === AgentRunEventType.SEGMENT_CONTENT)!;
+ };
+ 
+ const expectBoundaryDisposition = (
+@@ -42,14 +54,12 @@ const expectBoundaryDisposition = (
+       payload: {
+         id: before.payload.id,
+         turn_id: "turn-1",
+-        segment_type: "reasoning",
+       },
+     });
+     expect(boundaryEvents.filter(isReasoningEnd))
+       .toHaveLength(1);
+     expect(Object.keys(boundaryEvents[0]!.payload).sort()).toEqual([
+       "id",
+-      "segment_type",
+       "turn_id",
+     ]);
+     expect(after.payload.id).not.toBe(before.payload.id);
+@@ -96,15 +106,12 @@ describe("Codex reasoning block conversion", () => {
+     expect(first.payload.id).toEqual(expect.stringMatching(/^reasoning-block:[^:]+:1$/));
+     expect(first.payload.id).not.toBe("provider-a");
+     expect(first.payload).toMatchObject({
+-      turnId: "turn-1",
+-      item: { type: "reasoning", id: "provider-a", summary: [{ text: "first" }] },
++      turn_id: "turn-1",
+       delta: "first",
+-      segment_type: "reasoning",
+     });
+     expect(second.payload).toMatchObject({
+       id: first.payload.id,
+       delta: "\n\nsecond",
+-      segment_type: "reasoning",
+     });
+     expect(repeated).toEqual([]);
+   });
+@@ -120,19 +127,22 @@ describe("Codex reasoning block conversion", () => {
+     });
+ 
+     expect(events.map((event) => event.eventType)).toEqual([
++      AgentRunEventType.SEGMENT_START,
+       AgentRunEventType.SEGMENT_CONTENT,
+       AgentRunEventType.SEGMENT_END,
+     ]);
+-    expect(events[0]!.payload).toMatchObject({
++    expect(events[0]!.payload).toEqual({
+       id: events[1]!.payload.id,
+-      timestamp: 123,
+-      delta: "first",
++      turn_id: null,
+       segment_type: "reasoning",
+     });
+-    expect(events[1]!.payload).toEqual({
+-      id: events[0]!.payload.id,
++    expect(events[1]!.payload).toMatchObject({
++      id: events[2]!.payload.id,
++      delta: "first",
++    });
++    expect(events[2]!.payload).toEqual({
++      id: events[1]!.payload.id,
+       turn_id: null,
+-      segment_type: "reasoning",
+     });
+     expect(converter.convert({
+       method: CodexThreadEventName.TURN_COMPLETED,
+@@ -173,7 +183,7 @@ describe("Codex reasoning block conversion", () => {
+     const emitWithoutProviderId = (text: string) => converter.convert({
+       method: CodexThreadEventName.ITEM_COMPLETED,
+       params: { turnId: "turn-1", item: { type: "reasoning", summary: [{ text }] } },
+-    })[0]!;
++    }).find((event) => event.eventType === AgentRunEventType.SEGMENT_CONTENT)!;
+ 
+     const first = emitWithoutProviderId("first");
+     const second = emitWithoutProviderId("second");
+@@ -342,7 +352,7 @@ describe("Codex reasoning block conversion", () => {
+     const afterBoundary = emitCompletedReasoning(converter, "turn-1", "provider-c", "C");
+ 
+     expect(reasoningB.payload).toMatchObject({ id: reasoningA.payload.id, delta: "\n\nB" });
+-    expect(matchingResult.some((event) => event.eventType === AgentRunEventType.SEGMENT_END))
++    expect(matchingResult.some(isReasoningEnd))
+       .toBe(false);
+     expect(nextTool[0]).toMatchObject({
+       eventType: AgentRunEventType.SEGMENT_END,
+diff --git a/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-tracker.test.ts b/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-tracker.test.ts
+index 45bbf3375..282804ec1 100644
+--- a/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-tracker.test.ts
++++ b/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-tracker.test.ts
+@@ -9,8 +9,9 @@ const appendCompleted = (
+ ) => tracker.append({ turnId, providerItemId, snapshot });
+ 
+ const contentAction = (actions: ReturnType<CodexReasoningBlockTracker["append"]>) => {
+-  expect(actions[0]?.kind).toBe("content");
+-  return actions[0]!;
++  const action = actions.find((candidate) => candidate.kind === "content");
++  expect(action?.kind).toBe("content");
++  return action!;
+ };
+ 
+ describe("CodexReasoningBlockTracker", () => {
+@@ -20,12 +21,19 @@ describe("CodexReasoningBlockTracker", () => {
+     const first = appendCompleted(tracker, "turn-1", "provider-a", "first");
+     const second = appendCompleted(tracker, "turn-1", "provider-b", "second");
+ 
+-    expect(first).toEqual([{
+-      kind: "content",
+-      segmentId: "reasoning-block:nonce-a:1",
+-      turnId: "turn-1",
+-      delta: "first",
+-    }]);
++    expect(first).toEqual([
++      {
++        kind: "start",
++        segmentId: "reasoning-block:nonce-a:1",
++        turnId: "turn-1",
++      },
++      {
++        kind: "content",
++        segmentId: "reasoning-block:nonce-a:1",
++        turnId: "turn-1",
++        delta: "first",
++      },
++    ]);
+     expect(second).toEqual([{
+       kind: "content",
+       segmentId: "reasoning-block:nonce-a:1",
+@@ -77,10 +85,12 @@ describe("CodexReasoningBlockTracker", () => {
+     const second = appendCompleted(tracker, null, null, "second");
+ 
+     expect(first).toEqual([
++      { kind: "start", segmentId: "reasoning-block:nonce-a:1", turnId: null },
+       { kind: "content", segmentId: "reasoning-block:nonce-a:1", turnId: null, delta: "first" },
+       { kind: "end", segmentId: "reasoning-block:nonce-a:1", turnId: null },
+     ]);
+     expect(second).toEqual([
++      { kind: "start", segmentId: "reasoning-block:nonce-a:2", turnId: null },
+       { kind: "content", segmentId: "reasoning-block:nonce-a:2", turnId: null, delta: "second" },
+       { kind: "end", segmentId: "reasoning-block:nonce-a:2", turnId: null },
+     ]);
+diff --git a/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts b/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts
+index 58ab66f50..a06627df0 100644
+--- a/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts
++++ b/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts
+@@ -1653,9 +1653,6 @@ describe("CodexThreadEventConverter", () => {
+     expect(converted[0]).toMatchObject({
+       runId: "run-1",
+       payload: {
+-        item: {
+-          tool: "send_message_to",
+-        },
+         id: "call_send_message",
+         segment_type: "tool_call",
+         metadata: {
+@@ -1667,11 +1664,7 @@ describe("CodexThreadEventConverter", () => {
+         },
+       },
+     });
+-    expect(converted[0].payload).toMatchObject({
+-      item: expect.not.objectContaining({
+-        server: expect.anything(),
+-      }),
+-    });
++    expect(converted[0].payload).not.toHaveProperty("item");
+     expect(converted[1]).toMatchObject({
+       runId: "run-1",
+       payload: {
+@@ -1972,15 +1965,6 @@ describe("CodexThreadEventConverter", () => {
+     expect(converted[0]).toMatchObject({
+       runId: "run-1",
+       payload: {
+-        item: {
+-          tool: "send_message_to",
+-          contentItems: [
+-            {
+-              type: "inputText",
+-              text: "Delivered message to pong.",
+-            },
+-          ],
+-        },
+         id: "call_send_message_segment_end",
+         metadata: {
+           tool_name: "send_message_to",
+@@ -1991,6 +1975,7 @@ describe("CodexThreadEventConverter", () => {
+         },
+       },
+     });
++    expect(converted[0].payload).not.toHaveProperty("item");
+   });
+ 
+   it("maps generic dynamic tool completions into terminal success and segment end", () => {
+diff --git a/autobyteus-server-ts/tests/unit/agent-execution/compaction/compaction-run-output-collector.test.ts b/autobyteus-server-ts/tests/unit/agent-execution/compaction/compaction-run-output-collector.test.ts
+index 9bf72b44a..6a1e835ca 100644
+--- a/autobyteus-server-ts/tests/unit/agent-execution/compaction/compaction-run-output-collector.test.ts
++++ b/autobyteus-server-ts/tests/unit/agent-execution/compaction/compaction-run-output-collector.test.ts
+@@ -33,16 +33,19 @@ describe("CompactionRunOutputCollector", () => {
+ 
+     collector.observe(event(AgentRunEventType.SEGMENT_CONTENT, {
+       id: "reasoning-1",
++      turn_id: "turn-1",
+       segment_type: "reasoning",
+       delta: "thinking",
+     }));
+     collector.observe(event(AgentRunEventType.SEGMENT_CONTENT, {
+       id: "message-1",
++      turn_id: "turn-1",
+       segment_type: "text",
+       delta: '{"episodes":[{"sum',
+     }));
+     collector.observe(event(AgentRunEventType.SEGMENT_CONTENT, {
+       id: "message-1",
++      turn_id: "turn-1",
+       segment_type: "text",
+       delta: 'mary":"codex"}]}',
+     }));
+@@ -57,6 +60,7 @@ describe("CompactionRunOutputCollector", () => {
+ 
+     collector.observe(event(AgentRunEventType.SEGMENT_CONTENT, {
+       id: "msg-1",
++      turn_id: "turn-1",
+       segment_type: "text",
+       delta: '{"episodes":[{"summary":"claude"}]}',
+     }));
+diff --git a/autobyteus-server-ts/tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts b/autobyteus-server-ts/tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts
+index b0b64cf30..c58e69b46 100644
+--- a/autobyteus-server-ts/tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts
++++ b/autobyteus-server-ts/tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts
+@@ -12,8 +12,6 @@ import { MemoryFileStore } from "../../../src/agent-memory/store/memory-file-sto
+ import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
+ import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+ import { RunMemoryFileStore } from "autobyteus-ts/memory/store/run-memory-file-store.js";
+-import { CodexThreadEventConverter } from "../../../src/agent-execution/backends/codex/events/codex-thread-event-converter.js";
+-import { CodexThreadEventName } from "../../../src/agent-execution/backends/codex/events/codex-thread-event-name.js";
+ 
+ const tempDirs = new Set<string>();
+ 
+@@ -53,48 +51,68 @@ const createAccumulator = (
+   toolTraceLifecycleGroups: writer.readToolTraceLifecycleGroups(),
+ });
+ 
++const startSegment = (
++  accumulator: RuntimeMemoryEventAccumulator,
++  input: {
++    id: string;
++    turnId: string;
++    segmentType: "text" | "reasoning";
++    timestamp?: number;
++  },
++) => accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_START, {
++  id: input.id,
++  turn_id: input.turnId,
++  segment_type: input.segmentType,
++  ...(input.timestamp === undefined ? {} : { timestamp: input.timestamp }),
++}));
++
+ describe("RuntimeMemoryEventAccumulator", () => {
+-  it("persists converter-owned reasoning closure exactly once before the next tool", async () => {
++  it("persists run-owned reasoning closure exactly once before the next tool", async () => {
+     const memoryDir = await mkTempDir();
+     const accumulator = createAccumulator(memoryDir);
+-    const converter = new CodexThreadEventConverter("run-1");
+-    const convertAndRecord = (method: string, params: Record<string, unknown>) => {
+-      const events = converter.convert({ method, params });
+-      events.forEach((runEvent) => accumulator.recordRunEvent(runEvent));
+-      return events;
+-    };
+ 
+-    convertAndRecord(CodexThreadEventName.TURN_STARTED, { turnId: "turn-1" });
+-    convertAndRecord(CodexThreadEventName.ITEM_STARTED, {
+-      turnId: "turn-1",
+-      item: { type: "commandExecution", id: "tool-1", command: "sleep 1" },
+-    });
+-    convertAndRecord(CodexThreadEventName.ITEM_COMPLETED, {
+-      turnId: "turn-1",
+-      item: { type: "reasoning", id: "reason-a", summary: [{ text: "A" }] },
+-    });
+-    convertAndRecord(CodexThreadEventName.ITEM_COMPLETED, {
+-      turnId: "turn-1",
+-      item: { type: "commandExecution", id: "tool-1", command: "sleep 1", status: "completed" },
+-    });
+-    convertAndRecord(CodexThreadEventName.ITEM_REASONING_COMPLETED, {
+-      turnId: "turn-1",
+-      item: { type: "reasoning", id: "reason-b", summary: [{ text: "B" }] },
+-    });
+-    const nextToolEvents = convertAndRecord(CodexThreadEventName.ITEM_STARTED, {
++    accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turnId: "turn-1" }));
++    accumulator.recordRunEvent(event(AgentRunEventType.TOOL_EXECUTION_STARTED, {
+       turnId: "turn-1",
+-      item: { type: "commandExecution", id: "tool-2", command: "pwd" },
+-    });
+-    const turnEvents = convertAndRecord(CodexThreadEventName.TURN_COMPLETED, {
++      turn_id: "turn-1",
++      invocation_id: "tool-1",
++      tool_name: "run_bash",
++      arguments: { command: "sleep 1" },
++    }));
++    startSegment(accumulator, {
++      id: "reasoning-block:test:1",
+       turnId: "turn-1",
++      segmentType: "reasoning",
+     });
+-
+-    expect(nextToolEvents.map((runEvent) => runEvent.eventType)).toEqual([
+-      AgentRunEventType.SEGMENT_END,
+-      AgentRunEventType.TOOL_EXECUTION_STARTED,
+-    ]);
+-    expect(turnEvents.filter((runEvent) => runEvent.eventType === AgentRunEventType.SEGMENT_END))
+-      .toEqual([]);
++    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
++      id: "reasoning-block:test:1",
++      turn_id: "turn-1",
++      segment_type: "reasoning",
++      delta: "A",
++    }));
++    accumulator.recordRunEvent(event(AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, {
++      invocation_id: "tool-1",
++      turn_id: "turn-1",
++      tool_name: "run_bash",
++      result: "done",
++    }));
++    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
++      id: "reasoning-block:test:1",
++      turn_id: "turn-1",
++      segment_type: "reasoning",
++      delta: "\n\nB",
++    }));
++    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_END, {
++      id: "reasoning-block:test:1",
++      turn_id: "turn-1",
++    }));
++    accumulator.recordRunEvent(event(AgentRunEventType.TOOL_EXECUTION_STARTED, {
++      invocation_id: "tool-2",
++      turn_id: "turn-1",
++      tool_name: "run_bash",
++      arguments: { command: "pwd" },
++    }));
++    accumulator.recordRunEvent(event(AgentRunEventType.TURN_COMPLETED, { turnId: "turn-1" }));
+     const view = readView(memoryDir);
+     expect(view.rawTraces?.map((trace) => [trace.traceType, trace.content, trace.toolCallId]))
+       .toEqual([
+@@ -107,38 +125,24 @@ describe("RuntimeMemoryEventAccumulator", () => {
+     expect(view.workingContext).toBeNull();
+   });
+ 
+-  it("projects adjacent missing-turn reasoning content and end onto one fallback turn", async () => {
++  it("rejects segment lifecycle without an exact turn instead of inventing a fallback turn", async () => {
+     const memoryDir = await mkTempDir();
+     const accumulator = createAccumulator(memoryDir);
+-    const converter = new CodexThreadEventConverter("run-1");
+-
+-    const events = converter.convert({
+-      method: CodexThreadEventName.ITEM_REASONING_COMPLETED,
+-      params: {
+-        item: { type: "reasoning", id: "reason-orphan", summary: [{ text: "orphan reasoning" }] },
+-      },
+-    });
+-    events.forEach((runEvent) => accumulator.recordRunEvent(runEvent));
++    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_START, {
++      id: "text-without-turn",
++      segment_type: "text",
++    }));
+     accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+-      id: "text-after-orphan-reasoning",
++      id: "text-without-turn",
+       segment_type: "text",
+-      delta: "fallback answer",
++      delta: "must not be persisted",
+     }));
+     accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_END, {
+-      id: "text-after-orphan-reasoning",
+-      segment_type: "text",
++      id: "text-without-turn",
+     }));
+ 
+-    expect(events.map((runEvent) => runEvent.eventType)).toEqual([
+-      AgentRunEventType.SEGMENT_CONTENT,
+-      AgentRunEventType.SEGMENT_END,
+-    ]);
+-    expect(events.map((runEvent) => runEvent.payload.turn_id)).toEqual([undefined, null]);
+     const view = readView(memoryDir);
+-    expect(view.rawTraces).toEqual([
+-      expect.objectContaining({ traceType: "reasoning", turnId: "fallback-turn-1", content: "orphan reasoning" }),
+-      expect.objectContaining({ traceType: "assistant", turnId: "fallback-turn-1", content: "fallback answer" }),
+-    ]);
++    expect(view.rawTraces).toEqual([]);
+     expect(view.workingContext).toBeNull();
+   });
+ 
+@@ -147,6 +151,11 @@ describe("RuntimeMemoryEventAccumulator", () => {
+     const accumulator = createAccumulator(memoryDir);
+ 
+     accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turnId: "turn-1" }));
++    startSegment(accumulator, {
++      id: "reasoning-block:test:1",
++      turnId: "turn-1",
++      segmentType: "reasoning",
++    });
+     accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+       id: "reasoning-block:test:1",
+       turn_id: "turn-1",
+@@ -165,6 +174,11 @@ describe("RuntimeMemoryEventAccumulator", () => {
+       tool_name: "run_bash",
+       arguments: { command: "pwd" },
+     }));
++    startSegment(accumulator, {
++      id: "reasoning-block:test:2",
++      turnId: "turn-1",
++      segmentType: "reasoning",
++    });
+     accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+       id: "reasoning-block:test:2",
+       turn_id: "turn-1",
+@@ -186,13 +200,25 @@ describe("RuntimeMemoryEventAccumulator", () => {
+     const accumulator = createAccumulator(memoryDir);
+ 
+     accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turnId: "turn-1" }));
++    startSegment(accumulator, {
++      id: "reasoning-1",
++      turnId: "turn-1",
++      segmentType: "reasoning",
++    });
+     accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+       id: "reasoning-1",
++      turn_id: "turn-1",
+       segment_type: "reasoning",
+       delta: "because ",
+     }));
++    startSegment(accumulator, {
++      id: "text-1",
++      turnId: "turn-1",
++      segmentType: "text",
++    });
+     accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+       id: "text-1",
++      turn_id: "turn-1",
+       segment_type: "text",
+       delta: "hello",
+     }));
+@@ -211,6 +237,11 @@ describe("RuntimeMemoryEventAccumulator", () => {
+     const accumulator = createAccumulator(memoryDir);
+ 
+     accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turnId: "turn-reason-tool" }));
++    startSegment(accumulator, {
++      id: "reasoning-before-tool",
++      turnId: "turn-reason-tool",
++      segmentType: "reasoning",
++    });
+     accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+       id: "reasoning-before-tool",
+       turn_id: "turn-reason-tool",
+@@ -243,6 +274,11 @@ describe("RuntimeMemoryEventAccumulator", () => {
+     const accumulator = createAccumulator(memoryDir);
+ 
+     accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turnId: "turn-reason-result" }));
++    startSegment(accumulator, {
++      id: "reasoning-before-result",
++      turnId: "turn-reason-result",
++      segmentType: "reasoning",
++    });
+     accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+       id: "reasoning-before-result",
+       turn_id: "turn-reason-result",
+@@ -282,6 +318,11 @@ describe("RuntimeMemoryEventAccumulator", () => {
+       tool_name: "run_bash",
+       arguments: { command: "sleep 1" },
+     }));
++    startSegment(accumulator, {
++      id: "reasoning-block:test:1",
++      turnId: "turn-1",
++      segmentType: "reasoning",
++    });
+     accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+       id: "reasoning-block:test:1",
+       turn_id: "turn-1",
+@@ -321,6 +362,11 @@ describe("RuntimeMemoryEventAccumulator", () => {
+     const accumulator = createAccumulator(memoryDir);
+ 
+     accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turnId: "turn-1" }));
++    startSegment(accumulator, {
++      id: "reasoning-before-card",
++      turnId: "turn-1",
++      segmentType: "reasoning",
++    });
+     accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+       id: "reasoning-before-card",
+       turn_id: "turn-1",
+@@ -332,6 +378,11 @@ describe("RuntimeMemoryEventAccumulator", () => {
+       turn_id: "turn-1",
+       tool_name: "search_web",
+     }));
++    startSegment(accumulator, {
++      id: "reasoning-after-card",
++      turnId: "turn-1",
++      segmentType: "reasoning",
++    });
+     accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+       id: "reasoning-after-card",
+       turn_id: "turn-1",
+@@ -374,6 +425,11 @@ describe("RuntimeMemoryEventAccumulator", () => {
+     const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+ 
+     accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turnId: "turn-1" }));
++    startSegment(accumulator, {
++      id: "reasoning-before-terminal-card",
++      turnId: "turn-1",
++      segmentType: "reasoning",
++    });
+     accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+       id: "reasoning-before-terminal-card",
+       turn_id: "turn-1",
+@@ -386,6 +442,11 @@ describe("RuntimeMemoryEventAccumulator", () => {
+       tool_name: "search_web",
+       result: null,
+     }));
++    startSegment(accumulator, {
++      id: "reasoning-after-terminal-card",
++      turnId: "turn-1",
++      segmentType: "reasoning",
++    });
+     accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+       id: "reasoning-after-terminal-card",
+       turn_id: "turn-1",
+@@ -436,6 +497,11 @@ describe("RuntimeMemoryEventAccumulator", () => {
+       tool_name: "run_bash",
+       arguments: { command: "false" },
+     }));
++    startSegment(accumulator, {
++      id: "reasoning-block:test:1",
++      turnId: "turn-1",
++      segmentType: "reasoning",
++    });
+     accumulator.recordRunEvent(event(
+       AgentRunEventType.SEGMENT_CONTENT,
+       reasoningPayload("A"),
+@@ -467,12 +533,22 @@ describe("RuntimeMemoryEventAccumulator", () => {
+     const accumulator = createAccumulator(memoryDir);
+ 
+     accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turnId: "turn-reason-text" }));
++    startSegment(accumulator, {
++      id: "reasoning-before-text",
++      turnId: "turn-reason-text",
++      segmentType: "reasoning",
++    });
+     accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+       id: "reasoning-before-text",
+       turn_id: "turn-reason-text",
+       segment_type: "reasoning",
+       delta: "think before answer",
+     }));
++    startSegment(accumulator, {
++      id: "assistant-text-after-reasoning",
++      turnId: "turn-reason-text",
++      segmentType: "text",
++    });
+     accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+       id: "assistant-text-after-reasoning",
+       turn_id: "turn-reason-text",
+@@ -503,6 +579,11 @@ describe("RuntimeMemoryEventAccumulator", () => {
+     const accumulator = createAccumulator(memoryDir);
+ 
+     accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turnId: "turn-reason-complete" }));
++    startSegment(accumulator, {
++      id: "reasoning-before-complete",
++      turnId: "turn-reason-complete",
++      segmentType: "reasoning",
++    });
+     accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+       id: "reasoning-before-complete",
+       turn_id: "turn-reason-complete",
+@@ -530,7 +611,7 @@ describe("RuntimeMemoryEventAccumulator", () => {
+   });
+ 
+ 
+-  it("uses an active turn when accepted command notification arrives after lifecycle start", async () => {
++  it("does not substitute an active turn when an accepted command lacks its exact turn identity", async () => {
+     const memoryDir = await mkTempDir();
+     const accumulator = createAccumulator(memoryDir);
+ 
+@@ -552,11 +633,7 @@ describe("RuntimeMemoryEventAccumulator", () => {
+       acceptedAt: new Date(1000),
+     });
+ 
+-    expect(readView(memoryDir).rawTraces?.[0]).toMatchObject({
+-      traceType: "user",
+-      turnId: "turn-claude",
+-      content: "hello after lifecycle",
+-    });
++    expect(readView(memoryDir).rawTraces).toEqual([]);
+   });
+ 
+   it("records tool traces once from lifecycle events when matching tool segments are present", async () => {
+@@ -617,16 +694,20 @@ describe("RuntimeMemoryEventAccumulator", () => {
+     const accumulator = createAccumulator(memoryDir);
+ 
+     accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turnId: "turn-text-tool-text" }));
+-    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
++    startSegment(accumulator, {
+       id: "turn-text-tool-text:claude-text:msg-pre:0",
+       turnId: "turn-text-tool-text",
++      segmentType: "text",
++    });
++    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
++      id: "turn-text-tool-text:claude-text:msg-pre:0",
++      turn_id: "turn-text-tool-text",
+       segment_type: "text",
+       delta: "Before tool.",
+     }));
+     accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_END, {
+       id: "turn-text-tool-text:claude-text:msg-pre:0",
+-      turnId: "turn-text-tool-text",
+-      segment_type: "text",
++      turn_id: "turn-text-tool-text",
+     }));
+     accumulator.recordRunEvent(event(AgentRunEventType.TOOL_EXECUTION_STARTED, {
+       invocation_id: "tool-bash-text-order",
+@@ -641,16 +722,20 @@ describe("RuntimeMemoryEventAccumulator", () => {
+       arguments: { command: "pwd" },
+       result: "/tmp/project",
+     }));
+-    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
++    startSegment(accumulator, {
+       id: "turn-text-tool-text:claude-text:msg-post:0",
+       turnId: "turn-text-tool-text",
++      segmentType: "text",
++    });
++    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
++      id: "turn-text-tool-text:claude-text:msg-post:0",
++      turn_id: "turn-text-tool-text",
+       segment_type: "text",
+       delta: "After tool.",
+     }));
+     accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_END, {
+       id: "turn-text-tool-text:claude-text:msg-post:0",
+-      turnId: "turn-text-tool-text",
+-      segment_type: "text",
++      turn_id: "turn-text-tool-text",
+     }));
+ 
+     const traces = readView(memoryDir).rawTraces ?? [];
+@@ -667,7 +752,7 @@ describe("RuntimeMemoryEventAccumulator", () => {
+     expect(traces[3]).toMatchObject({ content: "After tool." });
+   });
+ 
+-  it("creates deterministic fallback turns when no turn id is active", async () => {
++  it("does not create a fallback turn for a segment without exact turn identity", async () => {
+     const memoryDir = await mkTempDir();
+     const accumulator = createAccumulator(memoryDir);
+ 
+@@ -678,11 +763,7 @@ describe("RuntimeMemoryEventAccumulator", () => {
+     }));
+     accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_END, { id: "text-1" }));
+ 
+-    expect(readView(memoryDir).rawTraces?.[0]).toMatchObject({
+-      traceType: "assistant",
+-      turnId: "fallback-turn-1",
+-      content: "orphan text",
+-    });
++    expect(readView(memoryDir).rawTraces).toEqual([]);
+   });
+ 
+   it("ignores provider compaction/status payloads without local raw-trace pruning", async () => {
+@@ -690,12 +771,21 @@ describe("RuntimeMemoryEventAccumulator", () => {
+     const accumulator = createAccumulator(memoryDir);
+ 
+     accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turnId: "turn-compact" }));
++    startSegment(accumulator, {
++      id: "text-1",
++      turnId: "turn-compact",
++      segmentType: "text",
++    });
+     accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+       id: "text-1",
++      turn_id: "turn-compact",
+       segment_type: "text",
+       delta: "durable text",
+     }));
+-    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_END, { id: "text-1" }));
++    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_END, {
++      id: "text-1",
++      turn_id: "turn-compact",
++    }));
+     accumulator.recordRunEvent(event(AgentRunEventType.COMPACTION_STATUS, {
+       status: "compacting",
+       compact_boundary: "provider-internal",
+@@ -717,15 +807,22 @@ describe("RuntimeMemoryEventAccumulator", () => {
+     const accumulator = createAccumulator(memoryDir);
+ 
+     accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turnId: "turn-compact" }));
++    startSegment(accumulator, {
++      id: "text-before-boundary",
++      turnId: "turn-compact",
++      segmentType: "text",
++      timestamp: 1,
++    });
+     accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+       id: "text-before-boundary",
++      turn_id: "turn-compact",
+       segment_type: "text",
+       delta: "before boundary",
+       timestamp: 1,
+     }));
+     accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_END, {
+       id: "text-before-boundary",
+-      segment_type: "text",
++      turn_id: "turn-compact",
+     }));
+     accumulator.recordRunEvent(event(AgentRunEventType.COMPACTION_STATUS, {
+       kind: "provider_compaction_boundary",
+@@ -787,26 +884,40 @@ describe("RuntimeMemoryEventAccumulator", () => {
+     };
+ 
+     accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turnId: "turn-compact" }));
++    startSegment(accumulator, {
++      id: "text-before-boundary",
++      turnId: "turn-compact",
++      segmentType: "text",
++      timestamp: 1,
++    });
+     accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+       id: "text-before-boundary",
++      turn_id: "turn-compact",
+       segment_type: "text",
+       delta: "before boundary",
+       timestamp: 1,
+     }));
+     accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_END, {
+       id: "text-before-boundary",
+-      segment_type: "text",
++      turn_id: "turn-compact",
+     }));
+     accumulator.recordRunEvent(event(AgentRunEventType.COMPACTION_STATUS, boundaryPayload));
++    startSegment(accumulator, {
++      id: "text-after-boundary",
++      turnId: "turn-compact",
++      segmentType: "text",
++      timestamp: 3,
++    });
+     accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+       id: "text-after-boundary",
++      turn_id: "turn-compact",
+       segment_type: "text",
+       delta: "after boundary",
+       timestamp: 3,
+     }));
+     accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_END, {
+       id: "text-after-boundary",
+-      segment_type: "text",
++      turn_id: "turn-compact",
+     }));
+     accumulator.recordRunEvent(event(AgentRunEventType.COMPACTION_STATUS, boundaryPayload));
+ 
+@@ -832,15 +943,22 @@ describe("RuntimeMemoryEventAccumulator", () => {
+     const accumulator = createAccumulator(memoryDir, initialWriter);
+ 
+     accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turnId: "turn-compact" }));
++    startSegment(accumulator, {
++      id: "text-before-marker",
++      turnId: "turn-compact",
++      segmentType: "text",
++      timestamp: 1,
++    });
+     accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+       id: "text-before-marker",
++      turn_id: "turn-compact",
+       segment_type: "text",
+       delta: "before marker",
+       timestamp: 1,
+     }));
+     accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_END, {
+       id: "text-before-marker",
+-      segment_type: "text",
++      turn_id: "turn-compact",
+     }));
+     initialWriter.appendRawTrace({
+       traceType: "provider_compaction_boundary",
+diff --git a/autobyteus-server-ts/tests/unit/external-channel/runtime/channel-run-output-event-collector.test.ts b/autobyteus-server-ts/tests/unit/external-channel/runtime/channel-run-output-event-collector.test.ts
+index 660a80d42..50b347b3f 100644
+--- a/autobyteus-server-ts/tests/unit/external-channel/runtime/channel-run-output-event-collector.test.ts
++++ b/autobyteus-server-ts/tests/unit/external-channel/runtime/channel-run-output-event-collector.test.ts
+@@ -20,8 +20,7 @@ const parsedEvent = (input: {
+   errorEvidence: input.errorEvidence ?? null,
+   agentRunId: "agent-run-1",
+   teamRunId: null,
+-  memberName: null,
+-  memberRunId: null,
++  executionAddress: null,
+   turnId: input.turnId ?? "turn-1",
+   text: input.text ?? null,
+   textKind: input.textKind ?? null,
+@@ -127,7 +126,7 @@ describe("ChannelRunOutputEventCollector", () => {
+     expect(final?.replyText).toBe("Glad you liked it!");
+   });
+ 
+-  it("uses final text snapshots before accumulated stream fragments", () => {
++  it("ignores segment-end payload text and retains only admitted stream content", () => {
+     const collector = new ChannelRunOutputEventCollector();
+     collector.processEvent({
+       deliveryKey: "delivery-1",
+@@ -142,7 +141,7 @@ describe("ChannelRunOutputEventCollector", () => {
+       event: parsedEvent({
+         eventType: AgentRunEventType.SEGMENT_END,
+         text: "clean final reply",
+-        textKind: "FINAL_TEXT",
++        textKind: null,
+       }),
+     });
+ 
+@@ -151,7 +150,7 @@ describe("ChannelRunOutputEventCollector", () => {
+       event: parsedEvent({ eventType: AgentRunEventType.TURN_COMPLETED }),
+     });
+ 
+-    expect(final?.replyText).toBe("clean final reply");
++    expect(final?.replyText).toBe("noisy partial");
+   });
+ 
+   it("preserves collected output across recoverable diagnostic errors", () => {
+diff --git a/autobyteus-server-ts/tests/unit/services/agent-streaming/agent-run-event-message-mapper.test.ts b/autobyteus-server-ts/tests/unit/services/agent-streaming/agent-run-event-message-mapper.test.ts
+index 46c36e002..b30111ede 100644
+--- a/autobyteus-server-ts/tests/unit/services/agent-streaming/agent-run-event-message-mapper.test.ts
++++ b/autobyteus-server-ts/tests/unit/services/agent-streaming/agent-run-event-message-mapper.test.ts
+@@ -2,12 +2,6 @@ import { describe, expect, it } from "vitest";
+ import { AgentRunEventMessageMapper } from "../../../../src/services/agent-streaming/agent-run-event-message-mapper.js";
+ import { AgentRunEventType } from "../../../../src/agent-execution/domain/agent-run-event.js";
+ import { ServerMessageType } from "../../../../src/services/agent-streaming/models.js";
+-import { convertTeamRunEventToServerMessage } from "../../../../src/services/agent-streaming/team-run-event-websocket-message-mapper.js";
+-import {
+-  TeamRunEventSourceType,
+-  type TeamRunEvent,
+-} from "../../../../src/agent-team-execution/domain/team-run-event.js";
+-import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
+ 
+ describe("AgentRunEventMessageMapper", () => {
+   it("maps compaction status events to the compaction websocket message type", () => {
+@@ -43,7 +37,7 @@ describe("AgentRunEventMessageMapper", () => {
+     });
+   });
+ 
+-  it("preserves provider compaction boundary payload fields on websocket messages", () => {
++  it("preserves provider compaction boundary payload fields on standalone websocket messages", () => {
+     const mapper = new AgentRunEventMessageMapper();
+ 
+     const message = mapper.map({
+@@ -82,327 +76,7 @@ describe("AgentRunEventMessageMapper", () => {
+     }));
+   });
+ 
+-  it("preserves provider compaction payload fields when team member events are mapped", () => {
+-    const mapper = new AgentRunEventMessageMapper();
+-
+-    const message = convertTeamRunEventToServerMessage({
+-      eventSourceType: TeamRunEventSourceType.AGENT,
+-      teamRunId: "team-1",
+-      sourcePath: ["ReviewTeam", "Coder"],
+-      data: {
+-        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+-        memberName: "Coder",
+-        memberRunId: "member-run-1",
+-        memberPath: ["ReviewTeam", "Coder"],
+-        memberRouteKey: "ReviewTeam/Coder",
+-        agentEvent: {
+-          eventType: AgentRunEventType.COMPACTION_STATUS,
+-          runId: "member-run-1",
+-          payload: {
+-            kind: "provider_compaction_boundary",
+-            status: "compacted",
+-            turnId: " turn-team-provider ",
+-            runtime_kind: "CODEX",
+-            provider: "codex",
+-            source_surface: "codex.raw_response_compaction_item",
+-            boundary_key: "codex:thread-1:raw-context-item-1",
+-            provider_thread_id: "thread-1",
+-            provider_response_id: "response-1",
+-            rotation_eligible: true,
+-          },
+-          statusHint: null,
+-        },
+-      },
+-    }, mapper);
+-
+-    expect(message.type).toBe(ServerMessageType.COMPACTION_STATUS);
+-    expect(message.payload).toEqual(expect.objectContaining({
+-      kind: "provider_compaction_boundary",
+-      status: "compacted",
+-      turnId: " turn-team-provider ",
+-      turn_id: "turn-team-provider",
+-      runtime_kind: "CODEX",
+-      provider: "codex",
+-      source_surface: "codex.raw_response_compaction_item",
+-      boundary_key: "codex:thread-1:raw-context-item-1",
+-      provider_thread_id: "thread-1",
+-      provider_response_id: "response-1",
+-      rotation_eligible: true,
+-      agent_name: "Coder",
+-      agent_id: "member-run-1",
+-      member_route_key: "ReviewTeam/Coder",
+-      member_path: ["ReviewTeam", "Coder"],
+-      source_route_key: "ReviewTeam/Coder",
+-      source_path: ["ReviewTeam", "Coder"],
+-    }));
+-  });
+-
+-  it("flattens task-delegation websocket identity from current target and execution shapes", () => {
+-    const mapper = new AgentRunEventMessageMapper();
+-
+-    const message = convertTeamRunEventToServerMessage({
+-      eventSourceType: TeamRunEventSourceType.TASK_DELEGATION,
+-      teamRunId: "team-1",
+-      sourcePath: ["worker"],
+-      data: {
+-        eventType: "TASK_DELEGATION_ACTIVATED",
+-        payload: {
+-          taskId: "task_0001_top_level",
+-          description: "Implement the websocket projection.",
+-          tasks: [
+-            {
+-              taskId: "task_0001",
+-              taskLabel: "Task 1",
+-              description: "Implement the websocket projection.",
+-            },
+-          ],
+-          target: {
+-            kind: "member",
+-            member: {
+-              memberRouteKey: "worker",
+-              memberPath: ["worker"],
+-            },
+-          },
+-          execution: {
+-            kind: "task_agent",
+-            taskAgentInstance: {
+-              taskAgentInstanceId: "task-agent-instance-1",
+-              taskAgentRunId: "task-agent-run-1",
+-              taskId: "task_0001",
+-              logicalMember: {
+-                memberRouteKey: "worker-logical",
+-                memberPath: ["worker-logical"],
+-              },
+-            },
+-          },
+-        },
+-      },
+-    }, mapper);
+-
+-    expect(message.type).toBe(ServerMessageType.TASK_DELEGATION_EVENT);
+-    expect(message.payload).toEqual(expect.objectContaining({
+-      event_type: "TASK_DELEGATION_ACTIVATED",
+-      description: "Implement the websocket projection.",
+-      tasks: [
+-        {
+-          taskId: "task_0001",
+-          taskLabel: "Task 1",
+-          description: "Implement the websocket projection.",
+-        },
+-      ],
+-      execution_kind: "task_agent",
+-      task_agent_instance_id: "task-agent-instance-1",
+-      task_agent_run_id: "task-agent-run-1",
+-      agent_id: "task-agent-run-1",
+-      task_id: "task_0001",
+-      member_route_key: "worker",
+-      member_path: ["worker"],
+-      source_route_key: "worker",
+-      source_path: ["worker"],
+-    }));
+-  });
+-
+-  it("does not flatten legacy top-level task-delegation identity fields", () => {
+-    const mapper = new AgentRunEventMessageMapper();
+-
+-    const message = convertTeamRunEventToServerMessage({
+-      eventSourceType: TeamRunEventSourceType.TASK_DELEGATION,
+-      teamRunId: "team-1",
+-      sourcePath: [],
+-      data: {
+-        eventType: "TASK_DELEGATION_STATUS_UPDATED",
+-        payload: {
+-          taskId: "task_legacy_top_level",
+-          taskAgentInstance: {
+-            taskAgentInstanceId: "legacy-task-agent-instance",
+-            taskAgentRunId: "legacy-task-agent-run",
+-            taskId: "legacy-task-id",
+-            logicalMember: {
+-              memberRouteKey: "legacy-worker",
+-              memberPath: ["legacy-worker"],
+-            },
+-          },
+-          taskTeamInstance: {
+-            taskTeamInstanceId: "legacy-task-team-instance",
+-            taskTeamRunId: "legacy-task-team-run",
+-            taskId: "legacy-team-task-id",
+-            logicalTeam: {
+-              memberRouteKey: "legacy-team",
+-              memberPath: ["legacy-team"],
+-            },
+-          },
+-          member: {
+-            memberRouteKey: "legacy-member",
+-            memberPath: ["legacy-member"],
+-          },
+-        },
+-      },
+-    }, mapper);
+-
+-    expect(message.type).toBe(ServerMessageType.TASK_DELEGATION_EVENT);
+-    expect(message.payload).toEqual(expect.objectContaining({
+-      event_type: "TASK_DELEGATION_STATUS_UPDATED",
+-      task_id: "task_legacy_top_level",
+-    }));
+-    for (const legacyFlattenedField of [
+-      "execution_kind",
+-      "task_agent_instance_id",
+-      "task_agent_run_id",
+-      "task_team_instance_id",
+-      "task_team_run_id",
+-      "member_route_key",
+-      "member_path",
+-    ]) {
+-      expect(message.payload).not.toHaveProperty(legacyFlattenedField);
+-    }
+-  });
+-
+-  it("strictly flattens a multi-boundary task-team leaf without prefix fallback", () => {
+-    const mapper = new AgentRunEventMessageMapper();
+-
+-    const message = convertTeamRunEventToServerMessage({
+-      eventSourceType: TeamRunEventSourceType.AGENT,
+-      teamRunId: "root-team-1",
+-      sourcePath: ["research_group", "review_team", "review_group", "critic"],
+-      taskTeamScope: {
+-        taskTeamInstanceId: "task-team-instance-7",
+-        taskTeamRunId: "task-team-run-7",
+-        taskId: "task-42",
+-        logicalTeamPath: ["research_group", "review_team"],
+-        logicalTeamRouteKey: "research_group/review_team",
+-      },
+-      data: {
+-        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+-        memberName: "critic",
+-        memberRunId: "critic-runtime-93",
+-        memberPath: ["research_group", "review_team", "review_group", "critic"],
+-        memberRouteKey: "research_group/review_team/review_group/critic",
+-        agentEvent: {
+-          eventType: AgentRunEventType.AGENT_STATUS,
+-          runId: "critic-runtime-93",
+-          payload: {
+-            status: "running",
+-          },
+-          statusHint: "ACTIVE",
+-        },
+-      },
+-    }, mapper);
+-
+-    expect(message.type).toBe(ServerMessageType.AGENT_STATUS);
+-    expect(message.payload).toEqual(expect.objectContaining({
+-      task_team_run_id: "task-team-run-7",
+-      task_team_instance_id: "task-team-instance-7",
+-      task_id: "task-42",
+-      team_route_key: "research_group/review_team",
+-      team_path: ["research_group", "review_team"],
+-      task_team_relative_member_path: ["review_group", "critic"],
+-      task_team_relative_member_route_key: "review_group/critic",
+-      source_route_key: "research_group/review_team/review_group/critic",
+-      source_path: ["research_group", "review_team", "review_group", "critic"],
+-    }));
+-  });
+-
+-  it("rejects a live task-team agent mapped at the task-team root", () => {
+-    const mapper = new AgentRunEventMessageMapper();
+-    expect(() => convertTeamRunEventToServerMessage({
+-      eventSourceType: TeamRunEventSourceType.AGENT,
+-      teamRunId: "root-team-1",
+-      sourcePath: ["research_group", "review_team"],
+-      taskTeamScope: {
+-        taskTeamInstanceId: "task-team-instance-7",
+-        taskTeamRunId: "task-team-run-7",
+-        taskId: "task-42",
+-        logicalTeamPath: ["research_group", "review_team"],
+-        logicalTeamRouteKey: "research_group/review_team",
+-      },
+-      data: {
+-        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+-        memberName: "review_team",
+-        memberRunId: "task-team-run-7",
+-        memberPath: ["research_group", "review_team"],
+-        memberRouteKey: "research_group/review_team",
+-        agentEvent: {
+-          eventType: AgentRunEventType.AGENT_STATUS,
+-          runId: "task-team-run-7",
+-          payload: { status: "running" },
+-          statusHint: "ACTIVE",
+-        },
+-      },
+-    }, mapper)).toThrow("with a nonempty relative member path");
+-  });
+-
+-  it("strictly flattens the same task-team scope for every non-agent event variant", () => {
+-    const mapper = new AgentRunEventMessageMapper();
+-    const scope = {
+-      taskTeamInstanceId: "task-team-instance-7",
+-      taskTeamRunId: "task-team-run-7",
+-      taskId: "task-42",
+-      logicalTeamPath: ["research_group", "review_team"],
+-      logicalTeamRouteKey: "research_group/review_team",
+-    };
+-    const events: TeamRunEvent[] = [
+-      {
+-        eventSourceType: TeamRunEventSourceType.TASK_DELEGATION,
+-        teamRunId: "root-team-1",
+-        sourcePath: ["research_group", "review_team"],
+-        taskTeamScope: scope,
+-        data: {
+-          eventType: "TASK_DELEGATION_STATUS_UPDATED",
+-          payload: { taskId: "task-42" },
+-        },
+-      },
+-      {
+-        eventSourceType: TeamRunEventSourceType.COMMUNICATION,
+-        teamRunId: "root-team-1",
+-        sourcePath: ["research_group", "review_team"],
+-        taskTeamScope: scope,
+-        data: {
+-          messageId: "message-1",
+-          teamRunId: "root-team-1",
+-          senderAddress: { segments: [{ kind: "member", memberRouteKey: "critic" }] },
+-          receiverAddress: { segments: [{ kind: "member", memberRouteKey: "reviewer" }] },
+-          content: "Review this.",
+-          messageType: "handoff",
+-          referenceFiles: [],
+-          createdAt: "2026-08-02T12:00:00.000Z",
+-        },
+-      },
+-      {
+-        eventSourceType: TeamRunEventSourceType.MEMBER_INPUT,
+-        teamRunId: "root-team-1",
+-        sourcePath: ["research_group", "review_team"],
+-        taskTeamScope: scope,
+-        data: {
+-          messageId: "input-1",
+-          dedupeKey: "input-1",
+-          teamRunId: "root-team-1",
+-          recipientMemberRunId: "critic-runtime-93",
+-          recipientMemberName: "critic",
+-          recipientMemberPath: ["review_group", "critic"],
+-          recipientMemberRouteKey: "review_group/critic",
+-          content: "Continue.",
+-          inputOrigin: "user_message",
+-          receivedAt: "2026-08-02T12:00:00.000Z",
+-          contextFilePaths: [],
+-        },
+-      },
+-    ];
+-
+-    for (const event of events) {
+-      expect(convertTeamRunEventToServerMessage(event, mapper).payload).toEqual(
+-        expect.objectContaining({
+-          task_team_run_id: "task-team-run-7",
+-          task_team_instance_id: "task-team-instance-7",
+-          task_id: "task-42",
+-          team_path: ["research_group", "review_team"],
+-          team_route_key: "research_group/review_team",
+-          task_team_relative_member_path: [],
+-        }),
+-      );
+-    }
+-  });
+-
+-  it("maps derived team communication messages without routing them through file changes", () => {
++  it("maps global Agent communication messages without routing them through file changes", () => {
+     const mapper = new AgentRunEventMessageMapper();
+ 
+     const message = mapper.map({
+@@ -436,14 +110,31 @@ describe("AgentRunEventMessageMapper", () => {
+   });
+ 
+   it.each([
+-    [AgentRunEventType.SEGMENT_START, ServerMessageType.SEGMENT_START, { segment_type: "text", metadata: { source: "llm" } }],
+-    [AgentRunEventType.SEGMENT_CONTENT, ServerMessageType.SEGMENT_CONTENT, { delta: "hello" }],
++    [
++      AgentRunEventType.SEGMENT_START,
++      ServerMessageType.SEGMENT_START,
++      { segment_type: "text", metadata: { source: "llm" } },
++      { segment_type: "text", metadata: { source: "llm" } },
++    ],
++    [
++      AgentRunEventType.SEGMENT_CONTENT,
++      ServerMessageType.SEGMENT_CONTENT,
++      { segment_type: "text", delta: "hello" },
++      { segment_type: "text", delta: "hello" },
++    ],
+     [
+       AgentRunEventType.SEGMENT_END,
+       ServerMessageType.SEGMENT_END,
+       { interrupted: true, reason: "user_interrupt", metadata: { tool_name: "search_web" } },
++      {
++        metadata: { tool_name: "search_web" },
++        interrupted: true,
++        reason: "user_interrupt",
++        failed: false,
++        error: null,
++      },
+     ],
+-  ])("normalizes %s segment payloads to canonical turn_id", (eventType, messageType, extraPayload) => {
++  ])("projects current exact %s segment payloads", (eventType, messageType, inputPayload, outputPayload) => {
+     const mapper = new AgentRunEventMessageMapper();
+ 
+     const message = mapper.map({
+@@ -451,8 +142,8 @@ describe("AgentRunEventMessageMapper", () => {
+       runId: "run-1",
+       payload: {
+         id: "seg-1",
+-        turnId: " turn-segment-1 ",
+-        ...extraPayload,
++        turn_id: "turn-segment-1",
++        ...inputPayload,
+       },
+       statusHint: null,
+     });
+@@ -461,7 +152,7 @@ describe("AgentRunEventMessageMapper", () => {
+     expect(message.payload).toEqual({
+       id: "seg-1",
+       turn_id: "turn-segment-1",
+-      ...extraPayload,
++      ...outputPayload,
+     });
+     expect(message.payload).not.toHaveProperty("turnId");
+   });
+diff --git a/autobyteus-server-ts/tests/unit/services/agent-streaming/team-run-event-websocket-message-mapper.test.ts b/autobyteus-server-ts/tests/unit/services/agent-streaming/team-run-event-websocket-message-mapper.test.ts
+index baf9204d1..7a6857ec7 100644
+--- a/autobyteus-server-ts/tests/unit/services/agent-streaming/team-run-event-websocket-message-mapper.test.ts
++++ b/autobyteus-server-ts/tests/unit/services/agent-streaming/team-run-event-websocket-message-mapper.test.ts
+@@ -5,6 +5,8 @@ import {
+   type TeamRunMemberInputEventPayload,
+ } from "../../../../src/agent-team-execution/domain/team-run-event.js";
+ import { createTeamExecutionAddress } from "../../../../src/agent-team-execution/domain/team-execution-address.js";
++import { createTeamAgentExecutionBinding } from "../../../../src/agent-team-execution/domain/team-agent-execution-binding.js";
++import type { TeamAgentEvent } from "../../../../src/agent-team-execution/domain/team-agent-event.js";
+ import { ServerMessageType } from "../../../../src/services/agent-streaming/models.js";
+ import { convertTeamRunEventToServerMessage } from "../../../../src/services/agent-streaming/team-run-event-websocket-message-mapper.js";
+ import { projectTeamExecutionAddressDto } from "../../../../src/services/agent-streaming/team-agent-event-websocket-projector.js";
+@@ -55,4 +57,165 @@ describe("TeamRun member-input WebSocket identity", () => {
+       parent_communication_message_id: "team-message-1",
+     }));
+   });
++
++  it("projects provider compaction through an exact nonempty task-Team Agent binding", () => {
++    const executionAddress = createTeamExecutionAddress({
++      rootTeamRunId: "root-team-run-1",
++      taskTeamRunIds: ["task-team-outer", "task-team-inner"],
++      memberAddress: "/StudentStudyGroup/student_one",
++      taskAgentRunId: null,
++    });
++    const execution = createTeamAgentExecutionBinding({
++      executionAddress,
++      agentRunId: "student-one-task-team-run",
++    });
++    const payload: TeamAgentEvent = {
++      eventType: "COMPACTION_STATUS",
++      statusHint: null,
++      details: {
++        phase: null,
++        kind: "provider_compaction_boundary",
++        status: "compacted",
++        turnId: "turn-provider",
++        compactionOperationId: null,
++        requestedTurnId: null,
++        executionTurnId: null,
++        selectedBlockCount: null,
++        compactedBlockCount: null,
++        rawTraceCount: null,
++        semanticFactCount: null,
++        compactionAgentDefinitionId: null,
++        compactionAgentName: null,
++        compactionRuntimeKind: null,
++        compactionModelIdentifier: null,
++        compactionRunId: null,
++        compactionTaskId: null,
++        errorMessage: null,
++        provider: "codex",
++        sourceSurface: "codex.context_compaction_completed",
++        boundaryKey: "codex:thread-1:context-item-1",
++        providerEventId: "context-item-1",
++        providerSessionId: null,
++        providerThreadId: "thread-1",
++        providerTimestamp: 123,
++        trigger: "auto",
++        preTokens: 120000,
++        rotationEligible: true,
++      },
++    };
++
++    const message = convertTeamRunEventToServerMessage({
++      eventSourceType: TeamRunEventSourceType.AGENT,
++      execution,
++      payload,
++    });
++
++    expect(message.type).toBe(ServerMessageType.COMPACTION_STATUS);
++    expect(message.payload).toEqual(expect.objectContaining({
++      agent_execution: {
++        kind: "task_team_agent",
++        execution_address: projectTeamExecutionAddressDto(executionAddress),
++        agent_run_id: "student-one-task-team-run",
++      },
++      kind: "provider_compaction_boundary",
++      status: "compacted",
++      turn_id: "turn-provider",
++      provider: "codex",
++      source_surface: "codex.context_compaction_completed",
++      boundary_key: "codex:thread-1:context-item-1",
++      provider_thread_id: "thread-1",
++      provider_event_id: "context-item-1",
++      rotation_eligible: true,
++    }));
++  });
++
++  it("projects task delegation from exact current execution and sender addresses", () => {
++    const executionAddress = createTeamExecutionAddress({
++      rootTeamRunId: "root-team-run-1",
++      taskTeamRunIds: ["task-team-outer"],
++      memberAddress: "/StudentStudyGroup",
++      taskAgentRunId: null,
++    });
++    const senderAddress = createTeamExecutionAddress({
++      rootTeamRunId: "root-team-run-1",
++      memberAddress: "/Teacher",
++      taskAgentRunId: null,
++    });
++
++    const message = convertTeamRunEventToServerMessage({
++      eventSourceType: TeamRunEventSourceType.TASK_DELEGATION,
++      executionAddress,
++      payload: {
++        eventType: "TASK_DELEGATION_ACTIVATED",
++        details: {
++          taskId: "task_0001",
++          senderAddress,
++          content: "Solve and return the result.",
++          referenceFiles: [],
++          createdAt: "2026-08-13T00:00:00.000Z",
++          startedAt: "2026-08-13T00:00:01.000Z",
++        },
++      },
++    });
++
++    expect(message.type).toBe(ServerMessageType.TASK_DELEGATION_EVENT);
++    expect(message.payload).toEqual(expect.objectContaining({
++      event_type: "TASK_DELEGATION_ACTIVATED",
++      execution_address: projectTeamExecutionAddressDto(executionAddress),
++      sender_address: projectTeamExecutionAddressDto(senderAddress),
++      task_id: "task_0001",
++      content: "Solve and return the result.",
++    }));
++  });
++
++  it("projects communication with exact current addresses and structured references", () => {
++    const senderAddress = createTeamExecutionAddress({
++      rootTeamRunId: "root-team-run-1",
++      taskTeamRunIds: ["task-team-outer"],
++      memberAddress: "/StudentStudyGroup/student_one",
++      taskAgentRunId: null,
++    });
++    const receiverAddress = createTeamExecutionAddress({
++      rootTeamRunId: "root-team-run-1",
++      taskTeamRunIds: ["task-team-outer"],
++      memberAddress: "/StudentStudyGroup/student_two",
++      taskAgentRunId: null,
++    });
++
++    const message = convertTeamRunEventToServerMessage({
++      eventSourceType: TeamRunEventSourceType.COMMUNICATION,
++      payload: {
++        messageId: "message-1",
++        senderAddress,
++        receiverAddress,
++        content: "Please check the result.",
++        messageType: "request",
++        referenceFiles: [{
++          referenceId: "ref-1",
++          path: "/tmp/result.md",
++          type: "text/markdown",
++          createdAt: "2026-08-13T00:00:00.000Z",
++          updatedAt: "2026-08-13T00:00:00.000Z",
++        }],
++        createdAt: "2026-08-13T00:00:00.000Z",
++      },
++    });
++
++    expect(message.type).toBe(ServerMessageType.TEAM_COMMUNICATION_MESSAGE);
++    expect(message.payload).toEqual({
++      message_id: "message-1",
++      sender_address: projectTeamExecutionAddressDto(senderAddress),
++      receiver_address: projectTeamExecutionAddressDto(receiverAddress),
++      content: "Please check the result.",
++      message_type: "request",
++      reference_files: [{
++        reference_id: "ref-1",
++        path: "/tmp/result.md",
++        type: "text/markdown",
++        created_at: "2026-08-13T00:00:00.000Z",
++        updated_at: "2026-08-13T00:00:00.000Z",
++      }],
++      created_at: "2026-08-13T00:00:00.000Z",
++    });
++  });
+ });
+diff --git a/autobyteus-server-ts/tests/unit/services/agent-streaming/team-runtime-snapshot-service.test.ts b/autobyteus-server-ts/tests/unit/services/agent-streaming/team-runtime-snapshot-service.test.ts
+index b55b5dceb..3747d2e16 100644
+--- a/autobyteus-server-ts/tests/unit/services/agent-streaming/team-runtime-snapshot-service.test.ts
++++ b/autobyteus-server-ts/tests/unit/services/agent-streaming/team-runtime-snapshot-service.test.ts
+@@ -1,104 +1,63 @@
+ import { describe, expect, it } from "vitest";
++import { createTeamAgentExecutionBinding } from "../../../../src/agent-team-execution/domain/team-agent-execution-binding.js";
++import {
++  createTeamAgentStatusDetails,
++  createTeamAgentStatusSnapshot,
++} from "../../../../src/agent-team-execution/domain/team-agent-status.js";
++import { createTeamExecutionAddress } from "../../../../src/agent-team-execution/domain/team-execution-address.js";
+ import type { TeamRun } from "../../../../src/agent-team-execution/domain/team-run.js";
+-import { ServerMessageType } from "../../../../src/services/agent-streaming/models.js";
+ import { TeamRuntimeSnapshotService } from "../../../../src/services/agent-streaming/team-runtime-snapshot-service.js";
+ 
+-const taskTeamScope = {
+-  taskTeamRunId: "task-team-run-7",
+-  taskTeamInstanceId: "task-team-instance-7",
+-  taskId: "task-42",
+-  logicalTeamPath: ["research_group", "review_team"],
+-  logicalTeamRouteKey: "research_group/review_team",
+-};
+-
+ describe("TeamRuntimeSnapshotService", () => {
+-  it("preserves task-team scope until initial AGENT_STATUS wire mapping", () => {
+-    const teamRun = {
+-      getLeafAgentStatusSnapshots: () => [{
+-        scopeKind: "task_team_member",
+-        teamRunId: "root-team-1",
+-        payload: {
+-          status: "running",
+-          agent_id: "critic-runtime-93",
+-          agent_name: "critic",
+-          member_path: ["research_group", "review_team", "review_group", "critic"],
+-          member_route_key: "research_group/review_team/review_group/critic",
+-          source_path: ["research_group", "review_team", "review_group", "critic"],
+-          source_route_key: "research_group/review_team/review_group/critic",
+-        },
+-        taskTeamScope,
+-      }],
+-    } as unknown as TeamRun;
+-
+-    const messages = new TeamRuntimeSnapshotService().getInitialMessages(teamRun, {
+-      teamRunId: "root-team-1",
+-      isActive: true,
+-    });
+-
+-    expect(messages[0]).toMatchObject({
+-      type: ServerMessageType.AGENT_STATUS,
+-      payload: {
+-        agent_id: "critic-runtime-93",
+-        task_team_run_id: "task-team-run-7",
+-        task_team_instance_id: "task-team-instance-7",
+-        task_id: "task-42",
+-        team_route_key: "research_group/review_team",
+-        team_path: ["research_group", "review_team"],
+-        task_team_relative_member_path: ["review_group", "critic"],
+-        task_team_relative_member_route_key: "review_group/critic",
+-      },
++  it("projects exact current task-Team Agent identity before the root lifecycle snapshot", () => {
++    const executionAddress = createTeamExecutionAddress({
++      rootTeamRunId: "root-team-1",
++      taskTeamRunIds: ["task-team-run-7"],
++      memberAddress: "/research_group/review_team/review_group/critic",
++      taskAgentRunId: null,
+     });
+-    expect(messages[1]).toMatchObject({
+-      type: ServerMessageType.TEAM_RUN_LIFECYCLE,
+-      payload: { team_run_id: "root-team-1", is_active: true },
++    const snapshot = createTeamAgentStatusSnapshot({
++      execution: createTeamAgentExecutionBinding({
++        executionAddress,
++        agentRunId: "critic-agent-run-93",
++      }),
++      details: createTeamAgentStatusDetails({
++        status: "running",
++        trigger: "turn_started",
++      }),
+     });
+-  });
+-
+-  it("rejects a task-team leaf whose source path is outside its logical team scope", () => {
+     const teamRun = {
+-      getLeafAgentStatusSnapshots: () => [{
+-        scopeKind: "task_team_member",
+-        teamRunId: "root-team-1",
+-        payload: {
+-          status: "running",
+-          agent_id: "critic-runtime-93",
+-          agent_name: "critic",
+-          member_path: ["other", "critic"],
+-          member_route_key: "other/critic",
+-          source_path: ["other", "critic"],
+-          source_route_key: "other/critic",
+-        },
+-        taskTeamScope,
+-      }],
++      getLeafAgentStatusSnapshots: () => [snapshot],
+     } as unknown as TeamRun;
+ 
+-    expect(() => new TeamRuntimeSnapshotService().getInitialMessages(teamRun, {
++    expect(new TeamRuntimeSnapshotService().getInitialMessages(teamRun, {
+       teamRunId: "root-team-1",
+       isActive: true,
+-    })).toThrow("must be rooted below 'research_group/review_team'");
+-  });
+-
+-  it("rejects a task-team leaf with no relative selector", () => {
+-    const teamRun = {
+-      getLeafAgentStatusSnapshots: () => [{
+-        scopeKind: "task_team_member",
+-        teamRunId: "root-team-1",
++    })).toEqual([
++      {
++        type: "AGENT_STATUS",
+         payload: {
++          agent_execution: {
++            kind: "task_team_agent",
++            execution_address: {
++              root_team_run_id: "root-team-1",
++              task_team_run_ids: ["task-team-run-7"],
++              member_address: "/research_group/review_team/review_group/critic",
++              task_agent_run_id: null,
++            },
++            agent_run_id: "critic-agent-run-93",
++          },
+           status: "running",
+-          agent_id: "task-team-root",
+-          agent_name: "review_team",
+-          member_path: ["research_group", "review_team"],
+-          member_route_key: "research_group/review_team",
+-          source_path: ["research_group", "review_team"],
+-          source_route_key: "research_group/review_team",
++          trigger: "turn_started",
++          tool_name: null,
++          error_message: null,
++          error_details: null,
+         },
+-        taskTeamScope,
+-      }],
+-    } as unknown as TeamRun;
+-
+-    expect(() => new TeamRuntimeSnapshotService().getInitialMessages(teamRun, {
+-      teamRunId: "root-team-1",
+-      isActive: true,
+-    })).toThrow("with a nonempty relative member path");
++      },
++      {
++        type: "TEAM_RUN_LIFECYCLE",
++        payload: { is_active: true },
++      },
++    ]);
+   });
+ });
+diff --git a/autobyteus-web/services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts b/autobyteus-web/services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts
+index c6390fc2d..6801598a9 100644
+--- a/autobyteus-web/services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts
++++ b/autobyteus-web/services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts
+@@ -360,12 +360,13 @@ describe('segmentHandler', () => {
+       expect(segment.originalContent).toBe('hello');
+     });
+ 
+-    it('creates a synthetic text segment when content arrives before segment start', () => {
++    it('creates a typed late-subscriber segment when canonical content arrives before segment start', () => {
+       handleSegmentContent(
+         {
+           id: 'seg-fallback',
+           turn_id: 'turn-1',
+           delta: 'hello from fallback',
++          segment_type: 'text',
+         },
+         mockContext,
+       );
+@@ -375,9 +376,15 @@ describe('segmentHandler', () => {
+       expect(aiMessage.segments).toHaveLength(1);
+       expect(aiMessage.segments[0].type).toBe('text');
+       expect(aiMessage.segments[0].content).toBe('hello from fallback');
++      expect(getStreamSegmentIdentity(aiMessage.segments[0])).toEqual({
++        turnId: 'turn-1',
++        id: 'seg-fallback',
++        segmentType: 'text',
++        presentationComplete: false,
++      });
+     });
+ 
+-    it('creates separate reasoning and tool segments when ids are reused across types', () => {
++    it('rejects a conflicting type for the same turn and segment id without mutation', () => {
+       handleSegmentContent(
+         {
+           id: 'seg-shared',
+@@ -399,11 +406,11 @@ describe('segmentHandler', () => {
+       );
+ 
+       const aiMessage = mockContext.conversation.messages[0] as any;
+-      expect(aiMessage.segments).toHaveLength(2);
++      expect(aiMessage.segments).toHaveLength(1);
+       expect(aiMessage.segments[0].type).toBe('think');
+       expect(aiMessage.segments[0].content).toBe('reasoning burst');
+-      expect(aiMessage.segments[1].type).toBe('terminal_command');
+-      expect(aiMessage.segments[1].command).toBe('echo shared');
++      expect(getStreamSegmentIdentity(aiMessage.segments[0])?.segmentType).toBe('reasoning');
++      expect(useAgentActivityStore().getToolActivities('test-agent-id')).toEqual([]);
+     });
+ 
+     it('preserves text-tool-text order when text segment ids differ around a tool', () => {
+@@ -483,7 +490,7 @@ describe('segmentHandler', () => {
+         mockContext,
+       );
+ 
+-      const segment = findSegmentById(mockContext, 'reasoning-block:test:1')!;
++      const segment = (mockContext.conversation.messages[0] as any).segments[0];
+       expect(getStreamSegmentIdentity(segment)?.presentationComplete).toBe(false);
+ 
+       handleSegmentEnd(
+@@ -495,7 +502,7 @@ describe('segmentHandler', () => {
+       );
+ 
+       expect(getStreamSegmentIdentity(segment)?.presentationComplete).toBe(true);
+-      expect(findSegmentById(mockContext, 'reasoning-block:test:1')).toBe(segment);
++      expect((mockContext.conversation.messages[0] as any).segments[0]).toBe(segment);
+     });
+ 
+     it('retains write_file content when the segment ends', () => {
+diff --git a/autobyteus-web/services/agentStreaming/handlers/__tests__/toolLifecycleParsers.spec.ts b/autobyteus-web/services/agentStreaming/handlers/__tests__/toolLifecycleParsers.spec.ts
+index 5d320a185..3c586b138 100644
+--- a/autobyteus-web/services/agentStreaming/handlers/__tests__/toolLifecycleParsers.spec.ts
++++ b/autobyteus-web/services/agentStreaming/handlers/__tests__/toolLifecycleParsers.spec.ts
+@@ -7,6 +7,7 @@ import {
+   parseToolExecutionStartedPayload,
+   parseToolExecutionSucceededPayload,
+   parseToolLogPayload,
++  parseToolApprovalTarget,
+ } from '../toolLifecycleParsers';
+ 
+ describe('toolLifecycleParsers', () => {
+@@ -134,45 +135,49 @@ describe('toolLifecycleParsers', () => {
+     });
+   });
+ 
+-  it('parses approval source selectors from nested team payloads', () => {
++  it('parses only an exact current Team execution address as an approval target', () => {
+     expect(
+-      parseToolApprovalRequestedPayload({
+-        invocation_id: 'inv-nested',
+-        tool_name: 'run_bash',
+-        turn_id: null,
+-        arguments: { command: 'pnpm test' },
+-        source_path: ['BuildSquad', 'review_lead'],
+-        member_path: ['BuildSquad', 'review_lead'],
+-      } as any),
+-    )?.toMatchObject({
+-      invocationId: 'inv-nested',
+-      approvalTarget: {
+-        memberRouteKey: 'BuildSquad/review_lead',
+-        memberPath: ['BuildSquad', 'review_lead'],
+-        sourceRouteKey: 'BuildSquad/review_lead',
+-        sourcePath: ['BuildSquad', 'review_lead'],
++      parseToolApprovalTarget({
++        execution_address: {
++          rootTeamRunId: 'root-team-run-1',
++          taskTeamRunIds: ['task-team-outer', 'task-team-inner'],
++          memberAddress: '/BuildSquad/review_lead',
++          taskAgentRunId: null,
++        },
++      }),
++    ).toEqual({
++      executionAddress: {
++        rootTeamRunId: 'root-team-run-1',
++        taskTeamRunIds: ['task-team-outer', 'task-team-inner'],
++        memberAddress: '/BuildSquad/review_lead',
++        taskAgentRunId: null,
+       },
+     });
+   });
+ 
+-  it('parses task-agent run identity from approval payloads', () => {
++  it('does not reconstruct approval identity from retired route or task-run selectors', () => {
+     expect(
+       parseToolApprovalRequestedPayload({
+-        invocation_id: 'inv-task-agent',
++        invocation_id: 'inv-legacy',
+         tool_name: 'run_bash',
+         turn_id: null,
+         arguments: { command: 'pwd' },
+         member_route_key: 'worker',
+         source_route_key: 'worker',
+         task_agent_run_id: 'task-agent-run-1',
+-      }),
+-    )?.toMatchObject({
+-      invocationId: 'inv-task-agent',
+-      approvalTarget: {
+-        memberRouteKey: 'worker',
+-        sourceRouteKey: 'worker',
++      } as any),
++    ).toMatchObject({
++      invocationId: 'inv-legacy',
++      approvalTarget: null,
++    });
++    expect(parseToolApprovalTarget({
++      execution_address: {
++        rootTeamRunId: 'root-team-run-1',
++        taskTeamRunIds: [],
++        memberAddress: '/worker',
+         taskAgentRunId: 'task-agent-run-1',
++        memberRouteKey: 'worker',
+       },
+-    });
++    })).toBeNull();
+   });
+ });
+diff --git a/autobyteus-server-ts/tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts b/autobyteus-server-ts/tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts
+new file mode 100644
+index 000000000..bd06d9849
+--- /dev/null
++++ b/autobyteus-server-ts/tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts
+@@ -0,0 +1,472 @@
++import { describe, expect, it } from "vitest";
++import { StreamEventType } from "autobyteus-ts";
++import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
++import type {
++  AgentRunBackend,
++  AgentRunSourceEventBatchListener,
++} from "../../../src/agent-execution/backends/agent-run-backend.js";
++import { AutoByteusStreamEventConverter } from "../../../src/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.js";
++import { AgentRun } from "../../../src/agent-execution/domain/agent-run.js";
++import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
++import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
++import {
++  AgentRunEventType,
++  type AgentRunEvent,
++} from "../../../src/agent-execution/domain/agent-run-event.js";
++import type { AgentRuntimeLifecycleSnapshot } from "../../../src/agent-execution/domain/agent-runtime-lifecycle-snapshot.js";
++import { createTeamAgentExecutionBinding } from "../../../src/agent-team-execution/domain/team-agent-execution-binding.js";
++import { createTeamExecutionAddress } from "../../../src/agent-team-execution/domain/team-execution-address.js";
++import { TeamAgentEventAdapter } from "../../../src/agent-team-execution/services/team-agent-event-adapter.js";
++import { ApplicationAgentStreamEventProjector } from "../../../src/application-agent-streaming/services/application-agent-stream-event-projector.js";
++import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
++import { AgentRunEventMessageMapper } from "../../../src/services/agent-streaming/agent-run-event-message-mapper.js";
++import { projectTeamAgentEventMessage } from "../../../src/services/agent-streaming/team-agent-event-websocket-projector.js";
++
++const runId = "teacher-agent-run";
++const executionAddress = createTeamExecutionAddress({
++  rootTeamRunId: "root-team-run",
++  taskTeamRunIds: [],
++  memberAddress: "/Teacher",
++  taskAgentRunId: null,
++});
++const execution = createTeamAgentExecutionBinding({
++  executionAddress,
++  agentRunId: runId,
++});
++
++const runningSnapshot = (turnId: string): AgentRuntimeLifecycleSnapshot => ({
++  availability: "active",
++  phase: "running",
++  currentTurn: { kind: "IDENTIFIED", turnId },
++});
++
++class SegmentSourceBackend implements AgentRunBackend {
++  readonly runtimeKind = RuntimeKind.AUTOBYTEUS;
++  readonly context = new AgentRunContext({
++    runId,
++    config: new AgentRunConfig({
++      runtimeKind: RuntimeKind.AUTOBYTEUS,
++      agentDefinitionId: "teacher-agent-definition",
++      llmModelIdentifier: "test-model",
++      autoExecuteTools: true,
++      workspaceId: null,
++      memoryDir: null,
++      llmConfig: null,
++      skillAccessMode: SkillAccessMode.NONE,
++    }),
++    runtimeContext: null,
++  });
++  private snapshot = runningSnapshot("turn-1");
++  private readonly listeners = new Set<AgentRunSourceEventBatchListener>();
++
++  getContext(): AgentRunContext<null> {
++    return this.context;
++  }
++
++  isActive(): boolean {
++    return true;
++  }
++
++  getPlatformAgentRunId(): string | null {
++    return "platform-teacher-run";
++  }
++
++  getLifecycleSnapshot(): AgentRuntimeLifecycleSnapshot {
++    return this.snapshot;
++  }
++
++  subscribeToSourceEventBatches(listener: AgentRunSourceEventBatchListener): () => void {
++    this.listeners.add(listener);
++    return () => this.listeners.delete(listener);
++  }
++
++  async postUserMessage(): Promise<{ accepted: true }> {
++    return { accepted: true };
++  }
++
++  async approveToolInvocation(): Promise<{ accepted: true }> {
++    return { accepted: true };
++  }
++
++  async interrupt(): Promise<{ accepted: true }> {
++    return { accepted: true };
++  }
++
++  async terminate(): Promise<{ accepted: true }> {
++    return { accepted: true };
++  }
++
++  setTurn(turnId: string): void {
++    this.snapshot = runningSnapshot(turnId);
++  }
++
++  async emit(events: readonly AgentRunEvent[]): Promise<void> {
++    for (const listener of this.listeners) {
++      await listener(events);
++    }
++  }
++}
++
++const sourceEvent = (
++  eventType: AgentRunEventType,
++  payload: Record<string, unknown>,
++): AgentRunEvent => ({ runId, eventType, payload, statusHint: null });
++
++const createRunHarness = () => {
++  const backend = new SegmentSourceBackend();
++  const run = new AgentRun({ context: backend.context, backend });
++  const observed: AgentRunEvent[] = [];
++  run.subscribeToEvents((event) => observed.push(event));
++  return { backend, run, observed };
++};
++
++const segmentEvents = (events: readonly AgentRunEvent[]): AgentRunEvent[] =>
++  events.filter((event) =>
++    event.eventType === AgentRunEventType.SEGMENT_START ||
++    event.eventType === AgentRunEventType.SEGMENT_CONTENT ||
++    event.eventType === AgentRunEventType.SEGMENT_END
++  );
++
++const diagnosticEvents = (events: readonly AgentRunEvent[]): AgentRunEvent[] =>
++  events.filter((event) =>
++    event.eventType === AgentRunEventType.ERROR &&
++    event.payload.code === "AGENT_SEGMENT_LIFECYCLE_INVALID"
++  );
++
++describe("AgentRun-owned Team segment lifecycle", () => {
++  it("correlates a real AutoByteus native sequence before Team, standalone, and application projection", async () => {
++    const { backend, observed } = createRunHarness();
++    const converter = new AutoByteusStreamEventConverter(runId);
++    const converted = [
++      converter.convert({
++        event_type: StreamEventType.SEGMENT_EVENT,
++        data: {
++          event_type: "SEGMENT_START",
++          segment_id: "segment-1",
++          segment_type: "text",
++          turn_id: "turn-1",
++          payload: { metadata: { role: "assistant" } },
++        },
++      } as any),
++      converter.convert({
++        event_type: StreamEventType.SEGMENT_EVENT,
++        data: {
++          event_type: "SEGMENT_CONTENT",
++          segment_id: "segment-1",
++          turn_id: "turn-1",
++          payload: { delta: "visible content" },
++        },
++      } as any),
++      converter.convert({
++        event_type: StreamEventType.SEGMENT_EVENT,
++        data: {
++          event_type: "SEGMENT_END",
++          segment_id: "segment-1",
++          turn_id: "turn-1",
++          payload: { metadata: { completed: true } },
++        },
++      } as any),
++    ];
++
++    expect(converted.every((event): event is AgentRunEvent => event !== null)).toBe(true);
++    expect(converted[1]?.payload).toEqual({
++      id: "segment-1",
++      turn_id: "turn-1",
++      delta: "visible content",
++    });
++    expect(converted[2]?.payload).not.toHaveProperty("segment_type");
++
++    await backend.emit(converted as AgentRunEvent[]);
++
++    const canonical = segmentEvents(observed);
++    expect(canonical).toEqual([
++      sourceEvent(AgentRunEventType.SEGMENT_START, {
++        id: "segment-1",
++        turn_id: "turn-1",
++        segment_type: "text",
++        metadata: { role: "assistant" },
++      }),
++      sourceEvent(AgentRunEventType.SEGMENT_CONTENT, {
++        id: "segment-1",
++        turn_id: "turn-1",
++        segment_type: "text",
++        delta: "visible content",
++      }),
++      sourceEvent(AgentRunEventType.SEGMENT_END, {
++        id: "segment-1",
++        turn_id: "turn-1",
++        metadata: { completed: true },
++      }),
++    ]);
++
++    const adapter = new TeamAgentEventAdapter(() => executionAddress);
++    const admitted = canonical.map((event) => adapter.adapt(event));
++    expect(admitted.every((result) => result.kind === "publish")).toBe(true);
++    const teamEvents = admitted.map((result) => {
++      if (result.kind !== "publish") throw new Error(`Unexpected result: ${JSON.stringify(result)}`);
++      return result.event;
++    });
++    expect(teamEvents.map((event) => event.details)).toEqual([
++      {
++        segmentId: "segment-1",
++        turnId: "turn-1",
++        segmentType: "text",
++        metadata: { role: "assistant" },
++      },
++      {
++        segmentId: "segment-1",
++        turnId: "turn-1",
++        segmentType: "text",
++        delta: "visible content",
++      },
++      {
++        segmentId: "segment-1",
++        turnId: "turn-1",
++        metadata: { completed: true },
++        interrupted: false,
++        reason: null,
++        failed: false,
++        error: null,
++      },
++    ]);
++
++    const teamWire = teamEvents.map((event) => projectTeamAgentEventMessage(execution, event));
++    expect(teamWire.map((message) => message.payload)).toEqual([
++      expect.objectContaining({ segment_id: "segment-1", turn_id: "turn-1", segment_type: "text" }),
++      expect.objectContaining({ segment_id: "segment-1", turn_id: "turn-1", segment_type: "text", delta: "visible content" }),
++      expect.objectContaining({ segment_id: "segment-1", turn_id: "turn-1" }),
++    ]);
++
++    const standalone = JSON.parse(
++      new AgentRunEventMessageMapper().map(canonical[1]!).toJson(),
++    ) as { type: string; payload: Record<string, unknown> };
++    expect(standalone).toEqual({
++      type: "SEGMENT_CONTENT",
++      payload: {
++        id: "segment-1",
++        turn_id: "turn-1",
++        segment_type: "text",
++        delta: "visible content",
++      },
++    });
++
++    const application = new ApplicationAgentStreamEventProjector();
++    expect(application.project(canonical[1]!)).toEqual({
++      type: "TEXT_DELTA",
++      delta: "visible content",
++    });
++    expect(application.projectTeam(teamEvents[1]!)).toEqual({
++      type: "TEXT_DELTA",
++      delta: "visible content",
++    });
++  });
++
++  it("emits a diagnostic for missing identity and accepts a later valid sequence without generated identity", async () => {
++    const { backend, observed } = createRunHarness();
++    await backend.emit([
++      sourceEvent(AgentRunEventType.SEGMENT_START, {
++        id: null,
++        turn_id: "turn-1",
++        segment_type: "text",
++      }),
++    ]);
++
++    expect(diagnosticEvents(observed)).toHaveLength(1);
++    expect(JSON.stringify(observed)).not.toContain("runtime-segment");
++
++    await backend.emit([
++      sourceEvent(AgentRunEventType.SEGMENT_START, {
++        id: "segment-recovered",
++        turn_id: "turn-1",
++        segment_type: "text",
++      }),
++      sourceEvent(AgentRunEventType.SEGMENT_CONTENT, {
++        id: "segment-recovered",
++        turn_id: "turn-1",
++        delta: "recovered",
++      }),
++    ]);
++
++    expect(segmentEvents(observed).map((event) => event.payload)).toEqual([
++      { id: "segment-recovered", turn_id: "turn-1", segment_type: "text" },
++      {
++        id: "segment-recovered",
++        turn_id: "turn-1",
++        segment_type: "text",
++        delta: "recovered",
++      },
++    ]);
++  });
++
++  it("rejects content before start, then correlates the same exact identity after start", async () => {
++    const { backend, observed } = createRunHarness();
++    await backend.emit([
++      sourceEvent(AgentRunEventType.SEGMENT_CONTENT, {
++        id: "segment-late",
++        turn_id: "turn-1",
++        delta: "too early",
++      }),
++      sourceEvent(AgentRunEventType.SEGMENT_START, {
++        id: "segment-late",
++        turn_id: "turn-1",
++        segment_type: "reasoning",
++      }),
++      sourceEvent(AgentRunEventType.SEGMENT_CONTENT, {
++        id: "segment-late",
++        turn_id: "turn-1",
++        delta: "accepted later",
++      }),
++    ]);
++
++    expect(diagnosticEvents(observed)).toHaveLength(1);
++    expect(segmentEvents(observed).map((event) => event.payload)).toEqual([
++      { id: "segment-late", turn_id: "turn-1", segment_type: "reasoning" },
++      {
++        id: "segment-late",
++        turn_id: "turn-1",
++        segment_type: "reasoning",
++        delta: "accepted later",
++      },
++    ]);
++  });
++
++  it("rejects conflicting type and preserves the original exact segment lifecycle", async () => {
++    const { backend, observed } = createRunHarness();
++    await backend.emit([
++      sourceEvent(AgentRunEventType.SEGMENT_START, {
++        id: "segment-shared",
++        turn_id: "turn-1",
++        segment_type: "reasoning",
++      }),
++      sourceEvent(AgentRunEventType.SEGMENT_START, {
++        id: "segment-shared",
++        turn_id: "turn-1",
++        segment_type: "tool_call",
++      }),
++      sourceEvent(AgentRunEventType.SEGMENT_CONTENT, {
++        id: "segment-shared",
++        turn_id: "turn-1",
++        delta: "still reasoning",
++      }),
++    ]);
++
++    expect(diagnosticEvents(observed)).toHaveLength(1);
++    expect(segmentEvents(observed).map((event) => event.payload)).toEqual([
++      { id: "segment-shared", turn_id: "turn-1", segment_type: "reasoning" },
++      {
++        id: "segment-shared",
++        turn_id: "turn-1",
++        segment_type: "reasoning",
++        delta: "still reasoning",
++      },
++    ]);
++  });
++
++  it("suppresses exact start/end replays and rejects content after terminal end", async () => {
++    const { backend, observed } = createRunHarness();
++    const start = sourceEvent(AgentRunEventType.SEGMENT_START, {
++      id: "segment-terminal",
++      turn_id: "turn-1",
++      segment_type: "text",
++    });
++    const end = sourceEvent(AgentRunEventType.SEGMENT_END, {
++      id: "segment-terminal",
++      turn_id: "turn-1",
++    });
++    await backend.emit([
++      start,
++      start,
++      end,
++      end,
++      sourceEvent(AgentRunEventType.SEGMENT_CONTENT, {
++        id: "segment-terminal",
++        turn_id: "turn-1",
++        delta: "after end",
++      }),
++    ]);
++
++    expect(segmentEvents(observed).map((event) => event.eventType)).toEqual([
++      AgentRunEventType.SEGMENT_START,
++      AgentRunEventType.SEGMENT_END,
++    ]);
++    expect(diagnosticEvents(observed)).toHaveLength(1);
++  });
++
++  it("rejects source content carrying a surplus type instead of treating canonical output as source input", async () => {
++    const { backend, observed } = createRunHarness();
++    await backend.emit([
++      sourceEvent(AgentRunEventType.SEGMENT_START, {
++        id: "segment-surplus",
++        turn_id: "turn-1",
++        segment_type: "text",
++      }),
++      sourceEvent(AgentRunEventType.SEGMENT_CONTENT, {
++        id: "segment-surplus",
++        turn_id: "turn-1",
++        segment_type: "text",
++        delta: "source must not repeat type",
++      }),
++    ]);
++
++    expect(segmentEvents(observed)).toHaveLength(1);
++    expect(diagnosticEvents(observed)).toHaveLength(1);
++  });
++
++  it("retires an ended turn and accepts a fresh exact segment on the next run-owned turn", async () => {
++    const { backend, observed } = createRunHarness();
++    await backend.emit([
++      sourceEvent(AgentRunEventType.SEGMENT_START, {
++        id: "segment-turn-1",
++        turn_id: "turn-1",
++        segment_type: "text",
++      }),
++      sourceEvent(AgentRunEventType.TURN_COMPLETED, { turn_id: "turn-1" }),
++      sourceEvent(AgentRunEventType.SEGMENT_CONTENT, {
++        id: "segment-turn-1",
++        turn_id: "turn-1",
++        delta: "retired",
++      }),
++    ]);
++
++    backend.setTurn("turn-2");
++    await backend.emit([
++      sourceEvent(AgentRunEventType.TURN_STARTED, { turn_id: "turn-2" }),
++      sourceEvent(AgentRunEventType.SEGMENT_START, {
++        id: "segment-turn-2",
++        turn_id: "turn-2",
++        segment_type: "text",
++      }),
++      sourceEvent(AgentRunEventType.SEGMENT_CONTENT, {
++        id: "segment-turn-2",
++        turn_id: "turn-2",
++        delta: "fresh",
++      }),
++    ]);
++
++    expect(diagnosticEvents(observed)).toHaveLength(1);
++    expect(segmentEvents(observed).at(-1)?.payload).toEqual({
++      id: "segment-turn-2",
++      turn_id: "turn-2",
++      segment_type: "text",
++      delta: "fresh",
++    });
++  });
++
++  it.each([
++    ["snake_case", { segment_id: "alias-only" }],
++    ["camelCase", { segmentId: "alias-only" }],
++  ])("rejects an internal %s alias without canonical id", (_label, aliasPayload) => {
++    const internalEvent = sourceEvent(AgentRunEventType.SEGMENT_CONTENT, {
++      ...aliasPayload,
++      segment_type: "text",
++      turn_id: "turn-1",
++      delta: "must reject",
++    });
++
++    expect(new TeamAgentEventAdapter(() => executionAddress).adapt(internalEvent)).toEqual({
++      kind: "rejected",
++      code: "TEAM_AGENT_EVENT_ADMISSION_FAILED",
++      message: "Rejected SEGMENT_CONTENT: segment payload contains unsupported fields",
++    });
++  });
++});

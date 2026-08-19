@@ -1,0 +1,30 @@
+utc=2026-08-13T04:25:38Z
+branch=codex/agent-team-hierarchical-handoffs
+head=0d32ff25502838c28663fc765c3499fc83455eb1
+--- build evidence ---
+documented_initial_attempt=EXPECTED_PACKAGING_FAILURE_RECORDED
+temporary_materialization_packaging=PASS
+package_verification=PASS
+--- dependency restoration ---
+workspace_link=../../../autobyteus-team-stream-contracts
+workspace_link_restored=PASS
+--- package hashes ---
+dmg_sha256=ae9e824969a2bdc4a7d68a05b3e515be67cbc110b9b8638b05eb8d47fb33b17a
+zip_sha256=7d7c3f75446fc3f012b81f4e341d0eb82d3a6137d58e101719c9d4521f33b2e9
+package_hashes=PASS
+--- handoff assertions ---
+handoff_package_disclosure=PASS
+--- repository hygiene ---
+git_diff_check=PASS
+tracked_delta_count=24
+tracked_non_doc_count=0
+untracked_outside_ticket=0
+generated_packages_ignored=PASS
+--- finalization/safety ---
+merge_in_progress=false
+backup_sha256=da300460f02c1d95965118fbe2ed8f68d549836d9f18d36bf23cdc418103a8d6
+protected_state=PASS
+operational_database_action=NONE
+protected_60004_31004_action=NONE
+archive_push_release_deploy_action=NONE
+electron_handoff_audit=PASS

@@ -16,24 +16,32 @@ describe('useMobileWorkCatalog', () => {
       teamRunId: 'team-run-1',
       teamDefinitionId: 'team-1',
       teamDefinitionName: 'Software Team',
-      coordinatorMemberRouteKey: 'lead',
+      coordinatorAddress: '/lead',
       summary: 'Implement mobile QR scanning',
       createdAt: '2026-05-21T17:00:00.000Z',
       isActive: false,
       members: [
         {
-          memberRouteKey: 'lead',
-          memberName: 'lead',
-          memberRunId: 'lead-run',
+          memberAddress: '/lead',
+          displayName: 'lead',
+          agentRunId: 'lead-run',
           status: AgentStatus.Idle,
         },
         {
-          memberRouteKey: 'reviewer',
-          memberName: 'reviewer',
-          memberRunId: 'reviewer-run',
+          memberAddress: '/reviewer',
+          displayName: 'reviewer',
+          agentRunId: 'reviewer-run',
           status: AgentStatus.Offline,
         },
       ],
+      rootTeam: {
+        kind: 'agent_team',
+        address: '/',
+        teamDefinitionId: 'team-1',
+        teamRunId: 'team-run-1',
+        coordinatorAddress: '/lead',
+        children: [],
+      },
     };
     const workspaceGroups: RunHistoryWorkspaceGroup[] = [
       {
@@ -50,7 +58,7 @@ describe('useMobileWorkCatalog', () => {
       },
     ];
     useRunHistoryStore().workspaceGroups = workspaceGroups;
-    useMobileWorkStore().rememberFocusedTeamMember('team-run-1', 'reviewer');
+    useMobileWorkStore().rememberFocusedTeamMember('team-run-1', 'reviewer-run');
 
     const { recentWorkItems } = useMobileWorkCatalog();
 
@@ -61,7 +69,7 @@ describe('useMobileWorkCatalog', () => {
     if (item.context.kind === 'team-run') {
       expect(item.context.lastActivityAt).toBe(teamRun.createdAt);
       expect(item.context.statusLabel).toBe('Inactive');
-      expect(item.context.focusedMemberRouteKey).toBe('reviewer');
+      expect(item.context.focusedAgentRunId).toBe('reviewer-run');
     }
     expect('lastActivityAt' in teamRun).toBe(false);
     expect('lastKnownStatus' in teamRun).toBe(false);

@@ -27,12 +27,12 @@ export * from "./application-iframe-contract.js";
 export * from "./application-agent-bindings.js";
 export * from "./application-agent-events.js";
 export * from "./application-agent-communication.js";
-export * from "./application-agent-target-path.js";
+export * from "./application-agent-target-url.js";
 export * from "./application-websockets.js";
 
 export const APPLICATION_BACKEND_BUNDLE_CONTRACT_VERSION_V1 = "1" as const;
-export const APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V4 = "4" as const;
-export const APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V4 = "4" as const;
+export const APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V6 = "6" as const;
+export const APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V6 = "6" as const;
 export const APPLICATION_EVENT_DELIVERY_SEMANTICS = "AT_LEAST_ONCE" as const;
 
 export type ApplicationRouteMethod =
@@ -65,8 +65,8 @@ export type ApplicationBackendBundleManifestV1 = {
     semver: string;
   };
   sdkCompatibility: {
-    backendDefinitionContractVersion: typeof APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V4;
-    frontendSdkContractVersion: typeof APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V4;
+    backendDefinitionContractVersion: typeof APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V6;
+    frontendSdkContractVersion: typeof APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V6;
   };
   supportedExposures: ApplicationBackendSupportedExposures;
   migrationsDir?: string | null;
@@ -95,8 +95,7 @@ export type ApplicationNotificationMessage = {
 
 export type ApplicationRuntimeInput = {
   text: string;
-  targetMemberRouteKey?: string | null;
-  targetMemberPath?: string[] | null;
+  targetMemberAddress?: string | null;
   contextFiles?: ApplicationRuntimeInputContextFile[] | null;
   metadata?: Record<string, unknown> | null;
 };
@@ -122,8 +121,7 @@ export type ApplicationTeamRunPreset = {
 };
 
 export type ApplicationTeamMemberLaunchConfig = {
-  memberName: string;
-  memberRouteKey?: string | null;
+  memberAddress: string;
   agentDefinitionId?: string | null;
   llmModelIdentifier: string;
   autoExecuteTools: boolean;
@@ -331,7 +329,7 @@ export type ApplicationRouteDefinition = {
 };
 
 export type ApplicationBackendDefinition = {
-  definitionContractVersion: typeof APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V4;
+  definitionContractVersion: typeof APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V6;
   lifecycle?: {
     onStart?: ApplicationLifecycleHook;
     onStop?: ApplicationLifecycleHook;

@@ -1,0 +1,17 @@
+API-REV-038 Codex nominal-boundary static audit
+HEAD=258d18cdba0bf7ae08bde134fe09586a8906870d
+
+Changed converter suites direct converter construction:
+PASS: zero
+
+Changed converter suites direct structural .convert calls:
+PASS: zero
+
+Affected suite/harness casts or opaque brand fabrication:
+PASS: zero
+
+Real thread boundary calls:
+3
+
+Diff check:
+PASS

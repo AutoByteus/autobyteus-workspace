@@ -47,7 +47,7 @@ export const TASK_DELEGATION_TOOL_MANIFEST: TaskDelegationToolManifestEntry[] = 
   {
     name: DELEGATE_TASK_TOOL_NAME,
     description:
-      'Delegate one ready-to-run task to an explicit accountable target. Provide target={kind:"member"|"team", name}, complete task details in description (objective, context, constraints, done conditions, expected output, and reference guidance), and optional reference_files containing absolute local file paths only. Member targets start one task-agent; team targets start one task-scoped team run whose ingress coordinator receives the packet. The execution target later submits its result with submit_task_result.',
+      "Delegate one ready-to-run task to any mounted Agent or AgentTeam in the same rooted AgentTeam. recipient_address must be one exact canonical absolute non-root address beginning with '/'; relative, bare, traversal, and backslash forms are invalid. Provide complete task details in description and optional absolute local reference_files. Agent targets start one fresh task Agent; AgentTeam targets start one fresh task Team through its configured coordinator.",
     parameterSchema: buildTaskDelegationToolParameterSchema(DELEGATE_TASK_TOOL_NAME),
     parseInput: parseDelegateTaskInput,
     execute: (service, context, input) =>

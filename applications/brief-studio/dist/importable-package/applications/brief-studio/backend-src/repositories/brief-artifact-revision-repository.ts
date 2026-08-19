@@ -13,7 +13,7 @@ export const createBriefArtifactRevisionRepository = (db: DatabaseSync) => ({
     artifactKind: BriefArtifactKind;
     publicationKind: BriefArtifactPublicationKind;
     path: string;
-    producerMemberRouteKey: string;
+    producerMemberAddress: string;
     publishedAt: string;
     projectedAt: string;
   }): boolean {
@@ -26,7 +26,7 @@ export const createBriefArtifactRevisionRepository = (db: DatabaseSync) => ({
         artifact_kind,
         publication_kind,
         path,
-        producer_member_route_key,
+        producer_member_address,
         published_at,
         projected_at
       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
@@ -38,7 +38,7 @@ export const createBriefArtifactRevisionRepository = (db: DatabaseSync) => ({
       input.artifactKind,
       input.publicationKind,
       input.path,
-      input.producerMemberRouteKey,
+      input.producerMemberAddress,
       input.publishedAt,
       input.projectedAt,
     );

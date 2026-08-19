@@ -1,0 +1,15 @@
+API-REV-013 cleanup and immutability verification
+captured_at_utc=2026-08-09T11:41:34Z
+browser_tab_closed=true
+server_port_60002_stopped=true
+frontend_port_31002_stopped=true
+root_team_terminated_through_frontend=true
+task_team_agent_runtime_stopped_with_root=true
+isolated_failure_state_retained=true
+isolated_app_data_root=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/sr015-api-rev-013-20260809
+isolated_database=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/sr015-api-rev-013-20260809.db
+retention_reason=critical task-Team routing failure reproduction; contains secret vault and must not be attached
+source_env_sha256=3ece3faee6acd2d696401b204de0954ba31576f4132ea81a21472d8d399476ed
+source_env_expected_sha256=3ece3faee6acd2d696401b204de0954ba31576f4132ea81a21472d8d399476ed
+source_fixture_files_unchanged=true
+secret_values_logged_or_attached=false

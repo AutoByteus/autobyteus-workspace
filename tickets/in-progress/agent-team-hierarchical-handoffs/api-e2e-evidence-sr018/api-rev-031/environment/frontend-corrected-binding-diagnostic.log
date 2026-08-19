@@ -1,0 +1,29 @@
+{
+  "body": "Agents\nAgent Teams\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nSettings\nReload\nCreate Team\nNC\nNested Classroom Test Team\n\nMinimal nested-team fixture for testing delegate_task to an agent-team target.\n\ntesting\nRun\nView Details\n→\nT\nTeacher\nS\nStudentStudyGroup\nTEAM\n\nCoordinator\n\nTeacher\n\nMembers\n\n2\n\nNested Teams\n\n1",
+  "runtime": {
+    "graphqlBaseUrl": "/graphql",
+    "restBaseUrl": "/rest",
+    "defaultNodeBaseUrl": "http://127.0.0.1:60231",
+    "agentWsEndpoint": "ws://127.0.0.1:60231/ws/agent",
+    "teamWsEndpoint": "ws://127.0.0.1:60231/ws/agent-team",
+    "graphqlWsEndpoint": "ws://127.0.0.1:60231/graphql",
+    "terminalWsEndpoint": "ws://127.0.0.1:60231/ws/terminal",
+    "fileExplorerWsEndpoint": "ws://127.0.0.1:60231/ws/file-explorer",
+    "mobileRemoteAccessBuild": false,
+    "showDebugErrorPanel": false,
+    "audio": {
+      "targetSampleRate": 16000,
+      "chunkDuration": 5,
+      "overlapDuration": 0.2,
+      "channels": 1,
+      "transcriptionWsEndpoint": "ws://127.0.0.1:60231/ws/transcribe",
+      "constraints": {
+        "echoCancellation": true,
+        "noiseSuppression": true,
+        "autoGainControl": true
+      }
+    }
+  },
+  "eventCount": 0,
+  "events": []
+}

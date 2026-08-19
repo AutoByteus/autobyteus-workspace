@@ -1,111 +1,151 @@
 import { describe, expect, it, vi } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { SenderType } from "autobyteus-ts/agent/sender-type.js";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
+import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
+import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { MixedAgentMemberHandle } from "../../../src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.js";
 import { MixedAgentMemberContext, MixedTeamRunContext } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-context.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
-import { TeamRunConfig, type TeamMemberRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
+import type { TeamRunAgentNode, TeamRunAgentTeamNode, TeamRunConfig, TeamRunNode } from "../../../src/agent-team-execution/domain/team-run-config.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import {
+  testAgentNode,
+  testAgentTeamNode,
+  testMemberTeamContext,
+  testTeamRunConfig,
+} from "../../fixtures/current-team-run-fixtures.js";
 
-const buildTeamContext = (memberConfig: TeamMemberRunConfig) => {
-  const memberContext = new MixedAgentMemberContext({
-    memberName: memberConfig.memberName,
-    memberPath: memberConfig.memberPath,
-    memberRouteKey: memberConfig.memberRouteKey,
-    memberRunId: memberConfig.memberRunId!,
-    runtimeKind: memberConfig.runtimeKind,
-    platformAgentRunId: null,
-  });
-  return {
-    memberContext,
-    teamContext: new TeamRunContext({
-      runId: "team-run-1",
-      teamBackendKind: TeamBackendKind.MIXED,
-      coordinatorMemberName: memberConfig.memberName,
-      coordinatorMemberRouteKey: memberConfig.memberRouteKey,
-      config: new TeamRunConfig({
-        teamDefinitionId: "team-def-1",
-        teamBackendKind: TeamBackendKind.MIXED,
-        memberConfigs: [memberConfig],
-      }),
-      runtimeContext: new MixedTeamRunContext({
-        coordinatorMemberRouteKey: memberConfig.memberRouteKey,
-        memberContexts: [memberContext],
-      }),
-    }),
-  };
+const createAgentRunManager = () => {
+  const createAgentRun = vi.fn(async (config, runId) => ({
+    runId,
+    config,
+    isActive: () => true,
+    getPlatformAgentRunId: () => null,
+    getStatusSnapshot: () => ({ status: "idle" }),
+    subscribeToEvents: () => () => undefined,
+    postUserMessage: async () => ({ accepted: true }),
+    approveToolInvocation: async () => ({ accepted: true }),
+    interrupt: async () => ({ accepted: true }),
+    terminate: async () => ({ accepted: true }),
+  }));
+  return { createAgentRun };
 };
 
-const buildMemberConfig = (overrides: Partial<TeamMemberRunConfig> = {}): TeamMemberRunConfig => ({
-  memberKind: "agent",
-  memberName: "worker",
-  memberPath: ["worker"],
-  memberRouteKey: "worker",
-  memberRunId: "worker-run-1",
-  agentDefinitionId: "agent-worker",
-  llmModelIdentifier: "model-1",
-  autoExecuteTools: false,
-  skillAccessMode: SkillAccessMode.NONE,
-  runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
-  memoryDir: "/tmp/worker-memory",
-  ...overrides,
-});
+const createHandle = (input: {
+  config: TeamRunConfig;
+  teamRunId: string;
+  teamAddress: string;
+  node: TeamRunAgentNode;
+  createAgentRun: ReturnType<typeof vi.fn>;
+}) => {
+  const findTeam = (node: TeamRunNode): TeamRunAgentTeamNode | null => {
+    if (node.kind === "agent") return null;
+    if (node.address === input.teamAddress) return node;
+    for (const child of node.children) {
+      const found = findTeam(child);
+      if (found) return found;
+    }
+    return null;
+  };
+  const teamNode = findTeam(input.config.rootTeam);
+  if (!teamNode) throw new Error(`missing Team node '${input.teamAddress}'`);
+  const memberContext = new MixedAgentMemberContext({
+    address: input.node.address,
+    agentRunId: input.node.agentRunId,
+    runtimeKind: input.node.runtimeKind,
+    platformAgentRunId: null,
+  });
+  const teamContext = new TeamRunContext({
+    rootTeamRunId: input.config.rootTeam.teamRunId,
+    teamRunId: input.teamRunId,
+    teamBackendKind: TeamBackendKind.MIXED,
+    teamNode,
+    handoffs: input.config.handoffs,
+    runtimeContext: new MixedTeamRunContext({
+      memberContexts: [memberContext],
+    }),
+  });
+  return new MixedAgentMemberHandle({
+    teamContext,
+    context: memberContext,
+    config: input.node,
+    agentRunManager: { createAgentRun: input.createAgentRun } as never,
+    memberTeamContextBuilder: {
+      build: vi.fn(async () => testMemberTeamContext({
+        rootTeamRunId: input.config.rootTeam.teamRunId,
+        memberAddress: input.node.address,
+        agentRunId: input.node.agentRunId,
+      })),
+    } as never,
+    publish: vi.fn(),
+    deliverInterAgentMessage: vi.fn(),
+  });
+};
 
-describe("MixedAgentMemberHandle memoryDir invariant", () => {
-  it("fails fast for recordable non-AutoByteus members missing upstream memoryDir", async () => {
-    const config = buildMemberConfig({ memoryDir: null });
-    const { teamContext, memberContext } = buildTeamContext(config);
-    const createAgentRun = vi.fn();
-    const memberTeamContextBuilder = { build: vi.fn() };
-    const handle = new MixedAgentMemberHandle({
-      teamContext,
-      context: memberContext,
-      config,
-      agentRunManager: { createAgentRun } as never,
-      memberTeamContextBuilder: memberTeamContextBuilder as never,
-      publish: vi.fn(),
-      notifyStatusChange: vi.fn(),
-      deliverInterAgentMessage: vi.fn(),
+describe("MixedAgentMemberHandle memory location", () => {
+  it("derives a direct member memory directory solely from root TeamRun and AgentRun identity", async () => {
+    const worker = testAgentNode("/worker", {
+      agentRunId: "worker-run-1",
+      runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
     });
+    const config = testTeamRunConfig({
+      rootTeamRunId: "team-run-1",
+      coordinatorAddress: worker.address,
+      children: [worker],
+    });
+    const { createAgentRun } = createAgentRunManager();
+    const handle = createHandle({ config, teamRunId: "team-run-1", teamAddress: "/", node: worker, createAgentRun });
 
     await expect(handle.postMessage(new AgentInputUserMessage("hello", SenderType.USER)))
-      .rejects.toThrow(/missing memoryDir before AgentRun creation/);
-    expect(memberTeamContextBuilder.build).not.toHaveBeenCalled();
-    expect(createAgentRun).not.toHaveBeenCalled();
+      .resolves.toMatchObject({ accepted: true });
+    expect(createAgentRun).toHaveBeenCalledWith(
+      expect.objectContaining({
+        memoryDir: new AgentMemoryLayout(appConfigProvider.config.getMemoryDir())
+          .getTeamAgentRunDirPath({ rootTeamRunId: "team-run-1", ancestorTeamRunIds: [] }, "worker-run-1"),
+      }),
+      "worker-run-1",
+    );
   });
 
-  it("passes the supplied memoryDir through to AgentRunManager without deriving a fallback", async () => {
-    const config = buildMemberConfig({ memoryDir: "/tmp/supplied-worker-memory" });
-    const { teamContext, memberContext } = buildTeamContext(config);
-    const createAgentRun = vi.fn(async (agentRunConfig, runId) => ({
-      runId,
-      config: agentRunConfig,
-      isActive: () => true,
-      getPlatformAgentRunId: () => null,
-      getStatusSnapshot: () => ({ status: "idle" }),
-      subscribeToEvents: () => () => undefined,
-      postUserMessage: async () => ({ accepted: true }),
-      approveToolInvocation: async () => ({ accepted: true }),
-      interrupt: async () => ({ accepted: true }),
-      terminate: async () => ({ accepted: true }),
-    }));
-    const handle = new MixedAgentMemberHandle({
-      teamContext,
-      context: memberContext,
+  it("uses the root plus globally unique AgentRun identity for a nested configured member", async () => {
+    const worker = testAgentNode("/sub_team/worker", {
+      agentRunId: "nested-worker-run",
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+    });
+    const config = testTeamRunConfig({
+      rootTeamRunId: "root-run",
+      coordinatorAddress: "/root_lead",
+      children: [
+        testAgentNode("/root_lead"),
+        testAgentTeamNode({
+          address: "/sub_team",
+          coordinatorAddress: worker.address,
+          teamRunId: "sub-team-run",
+          children: [worker],
+        }),
+      ],
+    });
+    const { createAgentRun } = createAgentRunManager();
+    const handle = createHandle({
       config,
-      agentRunManager: { createAgentRun } as never,
-      publish: vi.fn(),
-      notifyStatusChange: vi.fn(),
-      deliverInterAgentMessage: vi.fn(),
+      teamRunId: "sub-team-run",
+      teamAddress: "/sub_team",
+      node: worker,
+      createAgentRun,
     });
 
     await expect(handle.postMessage(new AgentInputUserMessage("hello", SenderType.USER)))
       .resolves.toMatchObject({ accepted: true });
     expect(createAgentRun).toHaveBeenCalledWith(
-      expect.objectContaining({ memoryDir: "/tmp/supplied-worker-memory" }),
-      "worker-run-1",
+      expect.objectContaining({
+        memoryDir: new AgentMemoryLayout(appConfigProvider.config.getMemoryDir())
+          .getTeamAgentRunDirPath({
+            rootTeamRunId: "root-run",
+            ancestorTeamRunIds: [],
+          }, "nested-worker-run"),
+      }),
+      "nested-worker-run",
     );
   });
 });

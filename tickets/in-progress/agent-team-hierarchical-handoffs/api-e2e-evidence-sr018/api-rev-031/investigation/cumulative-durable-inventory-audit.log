@@ -1,0 +1,12 @@
+API-REV-031 cumulative durable inventory audit
+total=92
+added=3
+modified=83
+removed=6
+server=38
+web=54
+unique_paths=92
+inventory_sha256=20288620d8ae246bf956fc6fea0ebc72cc7087fc6016f0b1ec39240094ffa740
+patch_sha256=237a48fc376b30ffc750897ec8f03cecc9b6f589e69c8f0fca7535c523820bb0
+new_test_sha256=ff7b6312eedd60b8bd01e45c84f4b35cba6dca1713f97fc785380e000f7c70cc
+diff_check=PASS

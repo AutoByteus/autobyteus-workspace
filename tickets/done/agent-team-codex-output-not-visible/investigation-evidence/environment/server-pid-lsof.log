@@ -1,0 +1,40 @@
+COMMAND   PID  USER   FD      TYPE             DEVICE  SIZE/OFF                NODE NAME
+node    14814 normy  cwd       DIR               1,13       800           350626818 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/autobyteus-server-ts
+node    14814 normy  txt       REG               1,13 112928848           255287132 /Users/normy/.hermes/node/bin/node
+node    14814 normy  txt       REG               1,13     72984           293325547 /Library/Preferences/Logging/.plist-cache.TQHe3XLT
+node    14814 normy  txt       REG               1,13   2374000 1152921500312573276 /usr/lib/dyld
+node    14814 normy  txt       REG               1,13  17251592           350741633 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/.prisma/client/libquery_engine-darwin-arm64.dylib.node
+node    14814 normy    0u     unix 0x6433a6be31ac4780       0t0                     ->0xc1415a5a5805c88a
+node    14814 normy    1u     unix 0xf6580920accb41bf       0t0                     ->0xbabc3443dc5f4bd0
+node    14814 normy    2u     unix 0xca9564f05dff2143       0t0                     ->0xe7165603cd9b5a4
+node    14814 normy    3u   KQUEUE                                                  count=0, state=0x8
+node    14814 normy    4      PIPE 0x2582bf760322d7d5     16384                     ->0x6b971f53d87e533b
+node    14814 normy    5      PIPE 0x6b971f53d87e533b     16384                     ->0x2582bf760322d7d5
+node    14814 normy    6r      DIR               1,13       704                   2 /
+node    14814 normy    7u   KQUEUE                                                  count=0, state=0xa
+node    14814 normy    8r      DIR               1,13       704                   2 /
+node    14814 normy    9u   KQUEUE                                                  count=0, state=0xa
+node    14814 normy   10r      DIR               1,13       704                   2 /
+node    14814 normy   11r      CHR                3,2       0t0                 336 /dev/null
+node    14814 normy   12w      REG               1,13      5935           350744015 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/autobyteus-server-ts/tests/.tmp/agent-team-codex-output-not-visible-20260817-1/logs/server.log
+node    14814 normy   13u   KQUEUE                                                  count=0, state=0xa
+node    14814 normy   14u   KQUEUE                                                  count=0, state=0xa
+node    14814 normy   15u   KQUEUE                                                  count=0, state=0xa
+node    14814 normy   16u     unix   0x3309448fc7c097       0t0                     ->0xc2d5535287064bc8
+node    14814 normy   17u     unix 0xc2d5535287064bc8       0t0                     ->0x3309448fc7c097
+node    14814 normy   18u     unix   0x3309448fc7c097       0t0                     ->0xc2d5535287064bc8
+node    14814 normy   19u      REG               1,13    221184           350743634 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/autobyteus-server-ts/db/agent-team-codex-output-not-visible-20260817-1.db
+node    14814 normy   20u      REG               1,13    221184           350743634 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/autobyteus-server-ts/db/agent-team-codex-output-not-visible-20260817-1.db
+node    14814 normy   21u      REG               1,13    221184           350743634 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/autobyteus-server-ts/db/agent-team-codex-output-not-visible-20260817-1.db
+node    14814 normy   22u      REG               1,13    221184           350743634 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/autobyteus-server-ts/db/agent-team-codex-output-not-visible-20260817-1.db
+node    14814 normy   23u      REG               1,13    221184           350743634 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/autobyteus-server-ts/db/agent-team-codex-output-not-visible-20260817-1.db
+node    14814 normy   24u      REG               1,13    221184           350743634 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/autobyteus-server-ts/db/agent-team-codex-output-not-visible-20260817-1.db
+node    14814 normy   25      PIPE 0x7eafe92fc3142528     16384                     ->0x7d5f7950e7b62790
+node    14814 normy   26      PIPE 0x7d5f7950e7b62790     16384                     ->0x7eafe92fc3142528
+node    14814 normy   27u     IPv4 0x51e4201e66d5a969       0t0                 TCP 127.0.0.1:60417 (LISTEN)
+node    14814 normy   28u    systm 0x886e9e499789bde2       0t0                     [ctl com.apple.netsrc id 7 unit 85]
+node    14814 normy   29u     IPv4 0x6d48c708ebb6de6d       0t0                 TCP 127.0.0.1:65451->127.0.0.1:1234 (ESTABLISHED)
+node    14814 normy   30u     unix 0x5d24612b165b5623       0t0                     ->0x9af0980e3f5a929f
+node    14814 normy   31   NPOLICY                                                  
+node    14814 normy   32u     IPv4 0x6f3d49b24faccf9a       0t0                 TCP 192.168.2.158:65452->160.79.104.10:443 (SYN_SENT)
+node    14814 normy   33u     IPv4 0xfac71e739424bcd5       0t0                 TCP 192.168.2.158:65453->104.18.28.136:443 (SYN_SENT)

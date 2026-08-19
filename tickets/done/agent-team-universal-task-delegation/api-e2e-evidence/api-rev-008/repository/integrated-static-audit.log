@@ -1,0 +1,15 @@
+head=03b91d079af71b996ab4cadfe985ca2b2fddf049
+expected=03b91d079af71b996ab4cadfe985ca2b2fddf049
+unmerged=0
+production_test_dirty_begin
+production_test_dirty_end
+skip_only_todo_in_selection_begin
+43:  claudeBinaryReady && liveClaudeTestsEnabled ? describe : describe.skip;
+PATH=tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts
+skip_only_todo_in_selection_end
+diff_check_begin
+diff_check_end
+operational_database_action=NONE
+protected_ports_action=NONE
+DECLARED_OPT_IN_SKIP tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:43 — project-declared live Claude binary gate; fresh real Claude Team and standalone rows passed separately in this round.
+STATIC_AUDIT_RESULT PASS

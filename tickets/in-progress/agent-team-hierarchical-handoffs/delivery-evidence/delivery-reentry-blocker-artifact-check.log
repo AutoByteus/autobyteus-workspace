@@ -1,0 +1,66 @@
+Delivery re-entry blocker artifact check
+Date: 2026-08-04
+
+Repository state:
+HEAD=a5ef1d5bba271da23cb32db74a68829d1c0c63a8
+MERGE_HEAD=ed3aa872303ccef5d8a097acd19876323ff795ab
+origin/personal=ed3aa872303ccef5d8a097acd19876323ff795ab
+unresolved_count=5
+unresolved=autobyteus-server-ts/src/agent-team-execution/backends/mixed/delivery/team-member-delivery-coordinator.ts
+unresolved=autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-sub-team-member-handle.ts
+unresolved=autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-manager.ts
+unresolved=autobyteus-server-ts/tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts
+unresolved=autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-manager.test.ts
+
+Protected delivery state:
+stash@{0} On codex/agent-team-hierarchical-handoffs: delivery re-entry protect DR-001 docs and handoff artifacts
+filesystem_backup=present
+
+Canonical blocker artifacts:
+delivery-integration-blocker.md=present
+delivery-revision-record.md=present
+docs-sync-report.md=present
+handoff-summary.md=present
+release-deployment-report.md=present
+release-notes.md=present
+
+DR-002 assertions:
+revision_record_dr002=present
+docs_sync_blocked=present
+handoff_blocked=present
+release_report_dr002=present
+release_notes_suspended=present
+
+Cumulative package presence:
+requirements.md=present
+investigation-notes.md=present
+design-spec.md=present
+agent-team-addressing-handoff-contract.md=present
+solution-revision-record.md=present
+design-review-report.md=present
+architecture-review-revision-record.md=present
+implementation-handoff.md=present
+implementation-revision-record.md=present
+code-review-report.md=present
+code-review-revision-record.md=present
+api-e2e-coverage-investigation.md=present
+api-e2e-execution-coverage-report.md=present
+api-e2e-revision-record.md=present
+api-e2e-test-review-report.md=present
+delivery-revision-record.md=present
+docs-sync-report.md=present
+handoff-summary.md=present
+release-deployment-report.md=present
+release-notes.md=present
+delivery-integration-blocker.md=present
+
+Markdown fence parity:
+delivery-integration-blocker.md=balanced(0)
+delivery-revision-record.md=balanced(0)
+docs-sync-report.md=balanced(0)
+handoff-summary.md=balanced(0)
+release-deployment-report.md=balanced(0)
+release-notes.md=balanced(0)
+
+git_diff_check=not_run_expected_unresolved_merge_conflicts
+result=PASS_FOR_BLOCKER_HANDOFF_ONLY

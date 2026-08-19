@@ -1,0 +1,26 @@
+# Delivery integration refresh evidence
+recorded_at=2026-08-03T21:53:47Z
+command=git fetch origin --prune
+branch=codex/agent-team-hierarchical-handoffs
+bootstrap_base=2a7271c9d78b71b919f7dbfa3b8f97f61c3a2e2b
+implementation_head=93cc7ed346ed7a0be737ed748dbe4dad7e2b6772
+checkpoint_head=c3cafa6a4873224947883d1566ee47978972ae1d
+origin_personal=2a7271c9d78b71b919f7dbfa3b8f97f61c3a2e2b
+bootstrap_vs_origin_personal=0	0
+head_vs_origin_personal=3	0
+merge_base=2a7271c9d78b71b919f7dbfa3b8f97f61c3a2e2b
+integration_method=Already current
+new_base_commits_integrated=No
+checkpoint_commit=c3cafa6a4 (reviewed API/E2E durable coverage and artifacts preserved before delivery edits)
+post_integration_executable_rerun=No
+no_rerun_rationale=The fetched base is byte-identical to the recorded bootstrap base, so no base commit was integrated; API-REV-002/CRR-004 already validate the same implementation and coverage state.
+result=PASS
+
+# Final pre-handoff remote refresh
+recorded_at=2026-08-03T22:01:09Z
+command=git fetch origin --prune
+origin_personal=2a7271c9d78b71b919f7dbfa3b8f97f61c3a2e2b
+bootstrap_vs_origin_personal=0	0
+head_vs_origin_personal=3	0
+handoff_state_current_with_latest_tracked_remote_base=Yes
+result=PASS

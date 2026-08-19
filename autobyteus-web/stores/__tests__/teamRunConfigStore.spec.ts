@@ -41,18 +41,20 @@ describe('teamRunConfigStore', () => {
     })
   })
 
-  describe('updateConfig', () => {
-    it('updates config fields', () => {
+  describe('applyConfigEdit', () => {
+    it('applies closed typed edits through immutable replacement', () => {
       const store = useTeamRunConfigStore()
       store.setTemplate(mockTeamDef)
 
-      store.updateConfig({
-        llmModelIdentifier: 'gpt-5.3-codex',
-        autoExecuteTools: true,
-      })
+      const initialConfig = store.config
+
+      store.applyConfigEdit({ kind: 'set_model', llmModelIdentifier: 'gpt-5.3-codex' })
+      store.applyConfigEdit({ kind: 'set_auto_execute_tools', autoExecuteTools: true })
 
       expect(store.config?.llmModelIdentifier).toBe('gpt-5.3-codex')
       expect(store.config?.autoExecuteTools).toBe(true)
+      expect(store.config).not.toBe(initialConfig)
+      expect(Object.isFrozen(store.config)).toBe(true)
     })
   })
 
@@ -82,21 +84,21 @@ describe('teamRunConfigStore', () => {
     it('blocks launch when a member runtime override breaks inherited default model availability', () => {
       const store = useTeamRunConfigStore()
       store.setTemplate(mockTeamDef)
-      store.updateConfig({
-        workspaceId: 'ws-1',
-        memberOverrides: {
-          Reviewer: {
-            agentDefinitionId: 'agent-reviewer',
-            runtimeKind: 'claude_agent_sdk',
-          },
+      store.applyConfigEdit({ kind: 'set_workspace', workspaceId: 'ws-1', workspaceMetadata: null })
+      store.applyConfigEdit({
+        kind: 'set_member_override',
+        memberAddress: '/Reviewer',
+        override: {
+          agentDefinitionId: 'agent-reviewer',
+          runtimeKind: 'claude_agent_sdk',
         },
-      } as any)
+      })
       store.setRuntimeModelCatalog('codex_app_server', ['gpt-5.4'])
       store.setRuntimeModelCatalog('claude_agent_sdk', ['claude-sonnet'])
 
       expect(store.launchReadiness.canLaunch).toBe(false)
       expect(store.launchReadiness.unresolvedMembers).toEqual([
-        expect.objectContaining({ memberName: 'Reviewer', runtimeKind: 'claude_agent_sdk' }),
+        expect.objectContaining({ memberName: '/Reviewer', runtimeKind: 'claude_agent_sdk' }),
       ])
       expect(store.launchReadiness.blockingIssues[0]?.message).toContain(
         'Global model gpt-5.4 is unavailable for Claude Agent SDK',
@@ -106,16 +108,16 @@ describe('teamRunConfigStore', () => {
     it('allows launch once the mixed-runtime row has a compatible explicit model', () => {
       const store = useTeamRunConfigStore()
       store.setTemplate(mockTeamDef)
-      store.updateConfig({
-        workspaceId: 'ws-1',
-        memberOverrides: {
-          Reviewer: {
-            agentDefinitionId: 'agent-reviewer',
-            runtimeKind: 'claude_agent_sdk',
-            llmModelIdentifier: 'claude-sonnet',
-          },
+      store.applyConfigEdit({ kind: 'set_workspace', workspaceId: 'ws-1', workspaceMetadata: null })
+      store.applyConfigEdit({
+        kind: 'set_member_override',
+        memberAddress: '/Reviewer',
+        override: {
+          agentDefinitionId: 'agent-reviewer',
+          runtimeKind: 'claude_agent_sdk',
+          llmModelIdentifier: 'claude-sonnet',
         },
-      } as any)
+      })
       store.setRuntimeModelCatalog('codex_app_server', ['gpt-5.4'])
       store.setRuntimeModelCatalog('claude_agent_sdk', ['claude-sonnet'])
 
@@ -124,15 +126,111 @@ describe('teamRunConfigStore', () => {
     })
   })
 
+  describe('inherited member LLM-config pruning', () => {
+    it('prunes only inherited member LLM config when the global model changes', () => {
+      const store = useTeamRunConfigStore()
+      store.setConfig({
+        ...storeTemplateConfig(),
+        runtimeKind: 'codex_app_server',
+        llmModelIdentifier: 'gpt-5.4',
+        llmConfig: { reasoning_effort: 'high' },
+        memberOverrides: {
+          '/MemberA': {
+            agentDefinitionId: 'agent-a',
+            llmConfig: { reasoning_effort: 'xhigh' },
+          },
+          '/MemberB': {
+            agentDefinitionId: 'agent-b',
+            autoExecuteTools: true,
+            llmConfig: { reasoning_effort: 'medium' },
+          },
+          '/MemberC': {
+            agentDefinitionId: 'agent-c',
+            llmModelIdentifier: 'member-model',
+            llmConfig: { reasoning_effort: 'low' },
+          },
+        },
+      })
+
+      store.applyConfigEdit({ kind: 'set_model', llmModelIdentifier: 'gpt-5.3-codex' })
+
+      expect(store.config?.memberOverrides).toEqual({
+        '/MemberB': {
+          agentDefinitionId: 'agent-b',
+          autoExecuteTools: true,
+        },
+        '/MemberC': {
+          agentDefinitionId: 'agent-c',
+          llmModelIdentifier: 'member-model',
+          llmConfig: { reasoning_effort: 'low' },
+        },
+      })
+    })
+
+    it('prunes only inherited member LLM config when the global runtime changes', () => {
+      const store = useTeamRunConfigStore()
+      store.setConfig({
+        ...storeTemplateConfig(),
+        runtimeKind: 'autobyteus',
+        llmModelIdentifier: 'gpt-5.4',
+        llmConfig: { thinking_level: 5 },
+        memberOverrides: {
+          '/MemberA': {
+            agentDefinitionId: 'agent-a',
+            llmConfig: { thinking_level: 3 },
+          },
+          '/MemberB': {
+            agentDefinitionId: 'agent-b',
+            llmModelIdentifier: 'gpt-5.4',
+            llmConfig: { thinking_level: 4 },
+          },
+          '/MemberC': {
+            agentDefinitionId: 'agent-c',
+            runtimeKind: 'claude_agent_sdk',
+            llmConfig: { temperature: 0.2 },
+          },
+        },
+      })
+
+      store.applyConfigEdit({ kind: 'set_runtime', runtimeKind: 'codex_app_server' })
+
+      expect(store.config?.memberOverrides).toEqual({
+        '/MemberB': {
+          agentDefinitionId: 'agent-b',
+          llmModelIdentifier: 'gpt-5.4',
+        },
+        '/MemberC': {
+          agentDefinitionId: 'agent-c',
+          runtimeKind: 'claude_agent_sdk',
+          llmConfig: { temperature: 0.2 },
+        },
+      })
+    })
+  })
+
   describe('clearConfig', () => {
     it('resets all state', () => {
       const store = useTeamRunConfigStore()
       store.setTemplate(mockTeamDef)
-      store.updateConfig({ llmModelIdentifier: 'gpt-4' })
+      store.applyConfigEdit({ kind: 'set_model', llmModelIdentifier: 'gpt-4' })
 
       store.clearConfig()
 
       expect(store.config).toBeNull()
     })
   })
+})
+
+const storeTemplateConfig = () => ({
+  teamDefinitionId: 'team-def-1',
+  teamDefinitionName: 'Research Team',
+  runtimeKind: 'autobyteus',
+  llmModelIdentifier: 'gpt-5.4',
+  llmConfig: null,
+  autoExecuteTools: false,
+  skillAccessMode: 'PRELOADED_ONLY' as const,
+  isLocked: false,
+  workspaceId: null,
+  workspaceMetadata: null,
+  memberOverrides: {},
 })

@@ -1,0 +1,13 @@
+at=2026-08-15T22:00:59Z
+owned_listener_absent=60313
+owned_listener_absent=31313
+owned_runtime_absent=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/tests/.tmp/api-rev-008-live-20260815-1
+owned_db_artifact_absent=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/db/api-rev-008-live-20260815-1.db
+owned_db_artifact_absent=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/db/api-rev-008-live-20260815-1.db.secret.key
+owned_db_artifact_absent=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/db/api-rev-008-live-20260815-1.db-journal
+owned_db_artifact_absent=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/db/api-rev-008-live-20260815-1.db-wal
+owned_db_artifact_absent=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/db/api-rev-008-live-20260815-1.db-shm
+operational_database_action=NONE
+operational_database_inspection=NONE
+protected_60004_31004_action=NONE
+cleanup_result=PASS

@@ -29,7 +29,7 @@ const applicationMessages = {
   'applications.shared.pending': '待启动',
   'applications.shared.currentDelivery': '当前交付',
   'applications.shared.route': '路由',
-  'applications.shared.teamPath': '团队路径',
+  'applications.shared.memberAddress': '成员地址',
   'applications.shared.artifacts': '产物',
   'applications.shared.root': '根',
   'applications.shared.progress': '进度',

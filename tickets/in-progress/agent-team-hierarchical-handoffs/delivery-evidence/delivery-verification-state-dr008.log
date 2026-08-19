@@ -1,0 +1,60 @@
+DR-008 user verification state
+UTC 2026-08-13T04:24:30Z
+branch codex/agent-team-hierarchical-handoffs
+HEAD 0d32ff25502838c28663fc765c3499fc83455eb1
+origin/personal 54890a07f74e941a7a12b6daaa26364f4c927b72
+merge-base 54890a07f74e941a7a12b6daaa26364f4c927b72
+left-right 0	90
+unmerged-count 0
+web-version 1.4.50
+electron-dmg /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.50.dmg
+electron-zip /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.50.zip
+ae9e824969a2bdc4a7d68a05b3e515be67cbc110b9b8638b05eb8d47fb33b17a  autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.50.dmg
+7d7c3f75446fc3f012b81f4e341d0eb82d3a6137d58e101719c9d4521f33b2e9  autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.50.zip
+electron-package-verification PASS
+workspace-contract-link ../../../autobyteus-team-stream-contracts
+changed-delivery-doc-scope:
+ M autobyteus-server-ts/docs/FILE_RENDERING_AND_MEDIA_PIPELINE.md
+ M autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md
+ M autobyteus-server-ts/docs/design/streaming_parsing_architecture.md
+ M autobyteus-server-ts/docs/features/artifact_file_serving_design.md
+ M autobyteus-server-ts/docs/features/shared_member_multi_team_membership_future.md
+ M autobyteus-server-ts/docs/features/task_agent_identity_future_improvements.md
+ M autobyteus-server-ts/docs/modules/agent_artifacts.md
+ M autobyteus-server-ts/docs/modules/agent_communication.md
+ M autobyteus-server-ts/docs/modules/agent_execution.md
+ M autobyteus-server-ts/docs/modules/agent_memory.md
+ M autobyteus-server-ts/docs/modules/agent_streaming.md
+ M autobyteus-server-ts/docs/modules/agent_team_definition.md
+ M autobyteus-server-ts/docs/modules/agent_team_execution.md
+ M autobyteus-server-ts/docs/modules/agent_tools.md
+ M autobyteus-server-ts/docs/modules/agent_tools_mcp_server.md
+ M autobyteus-server-ts/docs/modules/codex_integration.md
+ M autobyteus-server-ts/docs/modules/prompt_engineering.md
+ M autobyteus-server-ts/docs/modules/run_history.md
+ M autobyteus-server-ts/docs/modules/token_usage.md
+ M autobyteus-web/docs/agent_artifacts.md
+ M autobyteus-web/docs/agent_execution_architecture.md
+ M autobyteus-web/docs/agent_teams.md
+ M autobyteus-web/docs/memory.md
+ M autobyteus-web/docs/settings.md
+?? tickets/in-progress/agent-team-hierarchical-handoffs/delivery-evidence/
+?? tickets/in-progress/agent-team-hierarchical-handoffs/delivery-integration-blocker.md
+?? tickets/in-progress/agent-team-hierarchical-handoffs/delivery-revision-record.md
+?? tickets/in-progress/agent-team-hierarchical-handoffs/docs-sync-report.md
+?? tickets/in-progress/agent-team-hierarchical-handoffs/handoff-summary.md
+?? tickets/in-progress/agent-team-hierarchical-handoffs/release-deployment-report.md
+?? tickets/in-progress/agent-team-hierarchical-handoffs/release-notes.md
+protected-stashes:
+143e29eafadcb6d7cdb233e61d3f92a1bdbf77ee stash@{0} On codex/agent-team-hierarchical-handoffs: delivery DR-007 protect delivery artifacts before CRR-072 integration
+2c7f3140e36c2fddc80ff1a4a28d9da9c6b33964 stash@{1} On codex/agent-team-hierarchical-handoffs: delivery DR-006 protect unrelated web-ticket deletions and delivery artifacts
+8a46238a0e7480df845f32992f8a281be7ca9e38 stash@{2} On codex/agent-team-hierarchical-handoffs: solution SR-016 protect CRR-050/API state before origin-personal refresh 20260811-102826
+92fe82e95eb123bdfa259c74eeb1c534b26d909b stash@{3} On codex/agent-team-hierarchical-handoffs: delivery DR-004 protect pre-SR-015 docs and delivery artifacts
+backup:
+da300460f02c1d95965118fbe2ed8f68d549836d9f18d36bf23cdc418103a8d6  /tmp/agent-team-hierarchical-handoffs-dr004-preintegrate.EJ9Oli/delivery-protected.tar
+reviewer-audit:
+7604ad8e1cd0b6fa41ff6c87b37003a3e97daaa9b74b541a36001e7da06450fb  tickets/in-progress/agent-team-hierarchical-handoffs/delivery-evidence/crr079-api-rev036-test-audit.log
+git-diff-check PASS
+operational-database-action NONE
+protected-60004-31004-action NONE
+archive-push-release-deploy-action NONE

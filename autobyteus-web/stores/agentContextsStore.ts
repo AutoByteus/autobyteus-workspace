@@ -173,6 +173,7 @@ export const useAgentContextsStore = defineStore('agentContexts', {
       conversation: Conversation;
       status?: AgentStatus;
       hasEarlierActiveTraceEvents?: boolean;
+      preserveCurrentStatus?: boolean;
     }): AgentContext {
       const existing = this.runs.get(options.runId);
       const nextStatus = options.status ?? AgentStatus.Offline;
@@ -186,9 +187,8 @@ export const useAgentContextsStore = defineStore('agentContexts', {
         existing.state.conversation = options.conversation;
         existing.state.resetEventMonitorPresentationRevision();
         existing.state.hasEarlierActiveTraceEvents = options.hasEarlierActiveTraceEvents === true;
-        const shouldPreserveSubscribedLiveStatus = existing.isSubscribed && nextStatus === AgentStatus.Running;
         applyMemberOrHistoryStatusSnapshot(existing, nextStatus, {
-          preserveCurrentStatus: shouldPreserveSubscribedLiveStatus,
+          preserveCurrentStatus: options.preserveCurrentStatus === true && nextStatus === AgentStatus.Running,
         });
         return existing;
       }

@@ -1,0 +1,474 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:82080) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > preserves ordered A/B/A member groups while coalescing consecutive team content
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > preserves ordered A/B/A member groups while coalescing consecutive team content
+Agent team websocket attached for team run team-ordered-egress
+Created agent session 26cfc82c-88a9-428f-b2f8-13a30bd1a8ea for run team-ordered-egress
+Agent Team WebSocket connected: session=26cfc82c-88a9-428f-b2f8-13a30bd1a8ea, run=team-ordered-egress
+
+stderr | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > preserves ordered A/B/A member groups while coalescing consecutive team content
+Error sending team event: TypeError: Cannot read properties of undefined (reading 'kind')
+
+stderr | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > preserves ordered A/B/A member groups while coalescing consecutive team content
+Error sending team event: TypeError: Cannot read properties of undefined (reading 'kind')
+
+stderr | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > preserves ordered A/B/A member groups while coalescing consecutive team content
+Error sending team event: TypeError: Cannot read properties of undefined (reading 'kind')
+
+stderr | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > preserves ordered A/B/A member groups while coalescing consecutive team content
+Error sending team event: TypeError: Cannot read properties of undefined (reading 'kind')
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > streams team events and routes client messages
+Closed agent session 26cfc82c-88a9-428f-b2f8-13a30bd1a8ea
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > streams team events and routes client messages
+Agent Team WebSocket disconnected: 26cfc82c-88a9-428f-b2f8-13a30bd1a8ea
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > streams team events and routes client messages
+Agent team websocket attached for team run team-1
+Created agent session cdc0c37c-e075-46f3-b96b-903b2c2b920a for run team-1
+Agent Team WebSocket connected: session=cdc0c37c-e075-46f3-b96b-903b2c2b920a, run=team-1
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > restores a stopped team on websocket connect and rebinds before member follow-up SEND_MESSAGE
+Agent team websocket attached for team run team-recover
+Created agent session 1496bdc3-0b0b-468f-b929-71de73434225 for run team-recover
+Agent Team WebSocket connected: session=1496bdc3-0b0b-468f-b929-71de73434225, run=team-recover
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > closes with TEAM_NOT_FOUND when a websocket connect cannot resolve a missing team run
+Agent team websocket attached for team run missing-team
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > closes with TEAM_NOT_FOUND when follow-up SEND_MESSAGE cannot restore the team run
+Agent team websocket attached for team run team-send-missing
+Created agent session 2d5867bf-d468-493e-a3ac-42847b833b8d for run team-send-missing
+Agent Team WebSocket connected: session=2d5867bf-d468-493e-a3ac-42847b833b8d, run=team-send-missing
+
+stderr | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > closes with TEAM_NOT_FOUND when follow-up SEND_MESSAGE cannot restore the team run
+Error handling team message for 2d5867bf-d468-493e-a3ac-42847b833b8d: [
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "context_file_paths"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "image_urls"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "execution_address"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "string",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "message_id"
+    ],
+    "message": "Invalid input: expected string, received undefined"
+  },
+  {
+    "expected": "string",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "dedupe_key"
+    ],
+    "message": "Invalid input: expected string, received undefined"
+  },
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "target_member_route_key"
+    ],
+    "path": [
+      "payload"
+    ],
+    "message": "Unrecognized key: \"target_member_route_key\""
+  }
+]
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > keeps INTERRUPT_GENERATION active-only and does not restore a stopped team run
+Agent team websocket attached for team run team-stop-active-only
+Created agent session b01c0074-c053-4c62-94d2-4fbdde6448cb for run team-stop-active-only
+Agent Team WebSocket connected: session=b01c0074-c053-4c62-94d2-4fbdde6448cb, run=team-stop-active-only
+
+stderr | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > keeps INTERRUPT_GENERATION active-only and does not restore a stopped team run
+Error handling team message for b01c0074-c053-4c62-94d2-4fbdde6448cb: [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "execution_address"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "target_member_route_key",
+      "target_member_run_id"
+    ],
+    "path": [
+      "payload"
+    ],
+    "message": "Unrecognized keys: \"target_member_route_key\", \"target_member_run_id\""
+  }
+]
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > rejects invalid team websocket interrupt targets without falling back or retargeting
+Agent team websocket attached for team run team-invalid-interrupt-target
+Created agent session 22e8e4e9-cbe4-40d1-89b2-91c20532a7d5 for run team-invalid-interrupt-target
+Agent Team WebSocket connected: session=22e8e4e9-cbe4-40d1-89b2-91c20532a7d5, run=team-invalid-interrupt-target
+
+stderr | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > rejects invalid team websocket interrupt targets without falling back or retargeting
+Error handling team message for 22e8e4e9-cbe4-40d1-89b2-91c20532a7d5: [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "execution_address"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  }
+]
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > forwards team-scoped live external user messages over the team websocket
+Agent team websocket attached for team run team-live-1
+Created agent session 96851b6b-c60f-4778-bee0-df980b7b8b7f for run team-live-1
+Agent Team WebSocket connected: session=96851b6b-c60f-4778-bee0-df980b7b8b7f, run=team-live-1
+
+stderr | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > forwards team-scoped live external user messages over the team websocket
+Team stream broadcast failed for session '96851b6b-c60f-4778-bee0-df980b7b8b7f' on team run 'team-live-1'. Removing the stale connection. ZodError: [
+  {
+    "code": "invalid_union",
+    "errors": [],
+    "note": "No matching discriminator",
+    "discriminator": "type",
+    "path": [
+      "type"
+    ],
+    "message": "Invalid input"
+  }
+]
+    at parseTeamStreamServerMessage (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-team-stream-contracts/src/team-stream-server-message.ts:73:55)
+    at Object.serialize (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/src/services/agent-streaming/agent-team-stream-handler.ts:101:9)
+    at forward (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/src/services/agent-streaming/websocket-egress/agent-stream-websocket-egress.ts:88:22)
+    at AgentStreamContentCadenceScheduler.accept (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/src/services/agent-streaming/websocket-egress/agent-stream-content-cadence-scheduler.ts:55:5)
+    at AgentStreamWebSocketEgress.send (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/src/services/agent-streaming/websocket-egress/agent-stream-websocket-egress.ts:60:29)
+    at TeamStreamBroadcaster.publishToTeamRun (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/src/services/agent-streaming/team-stream-broadcaster.ts:39:25)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/integration/agent/agent-team-websocket.integration.test.ts:996:17
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:20
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > returns SESSION_NOT_READY for team command before connect handshake
+Agent team websocket attached for team run any-team
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > routes approval commands only with explicit route selector fields
+Agent team websocket attached for team run team-approvals
+Created agent session a3751efa-a915-4e22-a03d-dbd7acf1583b for run team-approvals
+Agent Team WebSocket connected: session=a3751efa-a915-4e22-a03d-dbd7acf1583b, run=team-approvals
+
+stderr | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > routes approval commands only with explicit route selector fields
+Error handling team message for a3751efa-a915-4e22-a03d-dbd7acf1583b: [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "execution_address"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "string",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "reason"
+    ],
+    "message": "Invalid input: expected string, received undefined"
+  },
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "member_route_key"
+    ],
+    "path": [
+      "payload"
+    ],
+    "message": "Unrecognized key: \"member_route_key\""
+  }
+]
+
+ ❯ tests/integration/agent/agent-team-websocket.integration.test.ts (10 tests | 8 failed) 12205ms
+     × preserves ordered A/B/A member groups while coalescing consecutive team content 2101ms
+     × streams team events and routes client messages 11ms
+     × restores a stopped team on websocket connect and rebinds before member follow-up SEND_MESSAGE 5ms
+     ✓ closes with TEAM_NOT_FOUND when a websocket connect cannot resolve a missing team run 7ms
+     × closes with TEAM_NOT_FOUND when follow-up SEND_MESSAGE cannot restore the team run 2005ms
+     × keeps INTERRUPT_GENERATION active-only and does not restore a stopped team run 2008ms
+     × rejects invalid team websocket interrupt targets without falling back or retargeting 2024ms
+     × forwards team-scoped live external user messages over the team websocket 2015ms
+     ✓ returns SESSION_NOT_READY for team command before connect handshake 16ms
+     × routes approval commands only with explicit route selector fields 2012ms
+stdout | tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts (5 tests) 6ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 8 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > preserves ordered A/B/A member groups while coalescing consecutive team content
+Error: Timed out waiting for condition
+ ❯ waitForCondition tests/integration/agent/agent-team-websocket.integration.test.ts:318:9
+    316|     await new Promise((resolve) => setTimeout(resolve, 20));
+    317|   }
+    318|   throw new Error("Timed out waiting for condition");
+       |         ^
+    319| };
+    320| 
+ ❯ tests/integration/agent/agent-team-websocket.integration.test.ts:382:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/8]⎯
+
+ FAIL  tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > streams team events and routes client messages
+AssertionError: expected undefined to be 'team-1' // Object.is equality
+
+- Expected: 
+"team-1"
+
++ Received: 
+undefined
+
+ ❯ tests/integration/agent/agent-team-websocket.integration.test.ts:442:46
+    440| 
+    441|     expect(connectedMessage.type).toBe("CONNECTED");
+    442|     expect(connectedMessage.payload.team_id).toBe(team.teamRunId);
+       |                                              ^
+    443| 
+    444|     socket.send(
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/8]⎯
+
+ FAIL  tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > restores a stopped team on websocket connect and rebinds before member follow-up SEND_MESSAGE
+AssertionError: expected undefined to be 'team-recover' // Object.is equality
+
+- Expected: 
+"team-recover"
+
++ Received: 
+undefined
+
+ ❯ tests/integration/agent/agent-team-websocket.integration.test.ts:614:46
+    612|     };
+    613|     expect(connectedMessage.type).toBe("CONNECTED");
+    614|     expect(connectedMessage.payload.team_id).toBe("team-recover");
+       |                                              ^
+    615| 
+    616|     socket.send(
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/8]⎯
+
+ FAIL  tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > closes with TEAM_NOT_FOUND when follow-up SEND_MESSAGE cannot restore the team run
+ FAIL  tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > forwards team-scoped live external user messages over the team websocket
+Error: Timed out waiting for websocket message
+ ❯ Timeout._onTimeout tests/integration/agent/agent-team-websocket.integration.test.ts:257:43
+    255| const waitForMessage = (socket: WebSocket, timeoutMs: number = 2000): …
+    256|   new Promise((resolve, reject) => {
+    257|     const timer = setTimeout(() => reject(new Error("Timed out waiting…
+       |                                           ^
+    258|     socket.once("message", (data) => {
+    259|       clearTimeout(timer);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/8]⎯
+
+ FAIL  tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > keeps INTERRUPT_GENERATION active-only and does not restore a stopped team run
+Error: Timed out waiting for captured websocket message
+ ❯ waitForCapturedMessage tests/integration/agent/agent-team-websocket.integration.test.ts:285:9
+    283|     await new Promise((resolve) => setTimeout(resolve, 10));
+    284|   }
+    285|   throw new Error("Timed out waiting for captured websocket message");
+       |         ^
+    286| };
+    287| 
+ ❯ tests/integration/agent/agent-team-websocket.integration.test.ts:830:24
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/8]⎯
+
+ FAIL  tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > rejects invalid team websocket interrupt targets without falling back or retargeting
+Error: Timed out waiting for captured websocket message
+ ❯ waitForCapturedMessage tests/integration/agent/agent-team-websocket.integration.test.ts:285:9
+    283|     await new Promise((resolve) => setTimeout(resolve, 10));
+    284|   }
+    285|   throw new Error("Timed out waiting for captured websocket message");
+       |         ^
+    286| };
+    287| 
+ ❯ tests/integration/agent/agent-team-websocket.integration.test.ts:893:30
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/8]⎯
+
+ FAIL  tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > routes approval commands only with explicit route selector fields
+Error: Timed out waiting for condition
+ ❯ waitForCondition tests/integration/agent/agent-team-websocket.integration.test.ts:318:9
+    316|     await new Promise((resolve) => setTimeout(resolve, 20));
+    317|   }
+    318|   throw new Error("Timed out waiting for condition");
+       |         ^
+    319| };
+    320| 
+ ❯ tests/integration/agent/agent-team-websocket.integration.test.ts:1125:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/8]⎯
+
+⎯⎯⎯⎯⎯⎯ Unhandled Errors ⎯⎯⎯⎯⎯⎯
+
+Vitest caught 1 unhandled error during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+Error: Timed out waiting for websocket close
+ ❯ Timeout._onTimeout tests/integration/agent/agent-team-websocket.integration.test.ts:290:43
+    288| const waitForClose = (socket: WebSocket, timeoutMs: number = 2000): Pr…
+    289|   new Promise((resolve, reject) => {
+    290|     const timer = setTimeout(() => reject(new Error("Timed out waiting…
+       |                                           ^
+    291|     socket.once("close", (code) => {
+    292|       clearTimeout(timer);
+ ❯ listOnTimeout node:internal/timers:585:17
+ ❯ processTimers node:internal/timers:521:7
+
+This error originated in "tests/integration/agent/agent-team-websocket.integration.test.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "keeps INTERRUPT_GENERATION active-only and does not restore a stopped team run". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  8 failed | 7 passed (15)
+     Errors  1 error
+   Start at  21:42:32
+   Duration  17.06s (transform 2.63s, setup 11ms, import 4.27s, tests 12.21s, environment 0ms)
+

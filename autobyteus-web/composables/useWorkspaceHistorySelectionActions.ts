@@ -1,5 +1,9 @@
 import type { TeamMemberFocusTarget, TeamMemberTreeRow, TeamTreeNode } from '~/stores/runHistoryTypes';
 import type { RunTreeRow } from '~/utils/runTreeProjection';
+import {
+  getTeamStreamRecoverySelectionFeedback,
+  type TeamStreamRecoverySelectionFeedback,
+} from '~/stores/runHistorySelectionActions';
 
 interface RunHistorySelectionStoreLike {
   selectTreeRun: (row: RunTreeRow | TeamMemberFocusTarget) => Promise<void>;
@@ -10,7 +14,7 @@ interface RunHistorySelectionStoreLike {
 }
 
 interface SelectionStoreLike {
-  selectedType: 'agent' | 'team' | null;
+  selectedType: 'agent' | 'team' | 'team_draft' | null;
   selectedRunId: string | null;
   selectRun: (runId: string, type: 'agent' | 'team') => void;
 }
@@ -23,27 +27,26 @@ export const useWorkspaceHistorySelectionActions = (params: {
   expandTeamMemberAncestors?: (
     workspaceId: string,
     teamRunId: string,
-    memberRouteKey: string,
+    agentRunId: string,
   ) => boolean;
   emitRunSelected: (payload: { type: 'agent' | 'team'; runId: string }) => void;
   emitRunCreated: (payload: { type: 'agent'; definitionId: string }) => void;
+  presentTeamStreamRecoveryFeedback: (feedback: TeamStreamRecoverySelectionFeedback) => void;
 }) => {
   const flattenTeamRows = (rows: readonly TeamMemberTreeRow[]): TeamMemberTreeRow[] =>
     rows.flatMap((row) => [row, ...flattenTeamRows(row.children)]);
 
   const resolveTeamTargetMember = (team: TeamTreeNode): TeamMemberTreeRow | null => {
-    const focusedMemberKey = team.focusedMemberRouteKey.trim();
-    const rows = flattenTeamRows(team.memberTree.length > 0 ? team.memberTree : team.members);
-    if (focusedMemberKey) {
-      const focusedMember = rows.find((member) =>
-        member.memberRouteKey === focusedMemberKey,
-      );
+    const focusedAgentRunId = team.focusedAgentRunId;
+    const rows = flattenTeamRows(team.rootTeam.children.length > 0 ? team.rootTeam.children : team.members);
+    if (focusedAgentRunId) {
+      const focusedMember = rows.find((member) => member.agentRunId === focusedAgentRunId);
       if (focusedMember) {
         return focusedMember;
       }
     }
 
-    return rows[0] ?? null;
+    return rows.find((row) => row.agentRunId) ?? null;
   };
 
   const onSelectRun = async (run: RunTreeRow): Promise<void> => {
@@ -53,6 +56,13 @@ export const useWorkspaceHistorySelectionActions = (params: {
     } catch (error) {
       console.error('Failed to open run:', error);
     }
+  };
+
+  const presentRecoveryFeedback = (error: unknown): boolean => {
+    const feedback = getTeamStreamRecoverySelectionFeedback(error);
+    if (!feedback) return false;
+    params.presentTeamStreamRecoveryFeedback(feedback);
+    return true;
   };
 
   const onSelectTeam = async (team: TeamTreeNode, workspaceId = ''): Promise<void> => {
@@ -74,18 +84,19 @@ export const useWorkspaceHistorySelectionActions = (params: {
       return;
     }
 
-    params.expandTeamMemberAncestors?.(
-      workspaceId,
-      team.teamRunId,
-      targetMember.memberRouteKey,
-    );
+    if (!targetMember.agentRunId) return;
+    params.expandTeamMemberAncestors?.(workspaceId, team.teamRunId, targetMember.agentRunId);
 
     try {
-      await params.runHistoryStore.selectTreeRun(targetMember);
+      await params.runHistoryStore.selectTreeRun({
+        teamRunId: targetMember.teamRunId,
+        memberAddress: targetMember.memberAddress,
+        agentRunId: targetMember.agentRunId,
+      });
       params.selectionStore.selectRun(team.teamRunId, 'team');
       params.emitRunSelected({ type: 'team', runId: team.teamRunId });
     } catch (error) {
-      console.error('Failed to open team:', error);
+      if (!presentRecoveryFeedback(error)) console.error('Failed to open team:', error);
     }
   };
 
@@ -95,15 +106,11 @@ export const useWorkspaceHistorySelectionActions = (params: {
   ): Promise<void> => {
     try {
       params.setTeamExpanded(member.teamRunId, true);
-      params.expandTeamMemberAncestors?.(
-        workspaceId,
-        member.teamRunId,
-        member.memberRouteKey,
-      );
+      params.expandTeamMemberAncestors?.(workspaceId, member.teamRunId, member.agentRunId);
       await params.runHistoryStore.selectTreeRun(member);
       params.emitRunSelected({ type: 'team', runId: member.teamRunId });
     } catch (error) {
-      console.error('Failed to open team member run:', error);
+      if (!presentRecoveryFeedback(error)) console.error('Failed to open team member run:', error);
     }
   };
 

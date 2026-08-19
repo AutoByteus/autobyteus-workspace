@@ -39,8 +39,10 @@ The ledger answers, per usage observation:
   `src/token-usage/repositories/sql/token-usage-ledger-repository.ts`, which
   extends `repository_prisma` `BaseRepository` for
   `TokenUsageLedgerEvent`.
-- Historical execution-address app-data backfill:
-  `src/app-data-migrations/migrations/token-usage-execution-address-backfill-migration.ts`
+- TeamRun V1 production-data transition:
+  - `src/app-data-migrations/migrations/team-run-execution-tree-v1/token-usage-team-run-v1-row-planner.ts`
+  - `src/app-data-migrations/migrations/token-usage-task-team-run-index.ts`
+  - `src/token-usage/repositories/sql/token-usage-team-run-v1-migration-repository.ts`
 - GraphQL API: `src/api/graphql/types/token-usage-stats.ts`
 - Prisma model/migration:
   - `prisma/schema.prisma` model `TokenUsageLedgerEvent`
@@ -58,10 +60,12 @@ payloads into the ledger/event contract:
 1. `createTokenUsageUpdatedPayload(...)` normalizes reported usage, model
    identity, input-token semantic, cache state, latest prompt/context-window
    fields, scope, raw JSON, quality flags, and idempotency fields.
-2. `TokenUsageContextEnricher` adds canonical run/team/member/task/workspace
-   identity from `AgentRunContext` / `AgentRunConfig` / `MemberTeamContext`,
-   including the root-team grouping id and token-usage-owned
-   `execution_address` snapshot for team-context runs.
+2. `TokenUsageContextEnricher` adds current run, root-Team, and workspace
+   identity from `AgentRunContext` / `AgentRunConfig` / `MemberTeamContext`.
+   The concrete `run_id` identifies the Agent execution and
+   `root_team_run_id` groups Team-context usage; execution topology remains
+   owned by the TeamRun execution tree rather than duplicated in new ledger
+   rows.
 3. `TokenUsageComponentBasisResolver` converts provider/runtime readings into
    canonical component fields before pricing. It is the only stage that decides
    whether reported input already includes cache tokens (`gross_includes_cache`)
@@ -249,80 +253,57 @@ estimating cost.
 - `idempotency_key` is unique.
 - run/time, team/time, and snapshot-series indexes support summaries and
   cumulative snapshot diffing.
-- Team-context usage stores `root_team_run_id` as the root grouping key and
-  `execution_address_json` as the canonical ordered execution address for the
-  token-producing run. The address is persisted as Token Usage data, not as a
-  frontend reconstruction or task-record lookup.
+- `run_id` is the concrete AgentRun identity. Team-context usage also stores
+  `root_team_run_id`, and the
+  `token_usage_ledger_events_root_team_run_id_observed_at_idx` index supports
+  root-Team summaries. Current Token Usage storage and APIs do not duplicate
+  the TeamRun execution tree or use an execution address as hierarchy
+  authority.
 
 The old `token_usage_records` table was a lossy role-split storage shape and is
 not used as the current accounting source. `TokenUsageStore`,
 `SqlTokenUsageRecordRepository`, and `TokenUsagePersistenceProcessor` should not
-be reintroduced as compatibility writers. Historical SQLite files created
-before the execution-address migration sequence may temporarily contain dormant
-`team_run_path_json` / `member_path_json` columns, but those columns are not
-active Prisma/domain/API hierarchy authority. Required startup app-data
-migrations backfill deterministic `execution_address_json` values first and
-then physically drop the obsolete path columns when present. After required
-startup migrations complete, `execution_address_json` plus `root_team_run_id`
-is the physical and logical source for Token Statistics hierarchy.
+be reintroduced as compatibility writers. Released SQLite files may still
+contain predecessor-only execution-address, path, member, or task columns.
+Those columns are inert migration evidence: they are absent from the current
+Prisma model and are not selected by normal ingestion, summary, GraphQL, or
+frontend paths.
 
-## Historical Execution-Address Backfill And Schema Contract
+## TeamRun V1 Root-Attribution Transition
 
-The execution-address rollout uses an expand/backfill/contract sequence:
+Required startup app-data migration `20260814_team_run_execution_tree_v1` is the
+single final production transition for released Team metadata, task records,
+communication messages, token root attribution, and Team history. The
+unpublished `20260801_team_canonical_identity` definition is not registered and
+its old ledger row, if present, remains inert.
 
-1. Prisma migration `20260702093000_token_usage_execution_address` expands the
-   ledger with `execution_address_json`.
-2. Required startup app-data migration
-   `20260703_token_usage_execution_address_backfill` materializes deterministic
-   historical addresses after the schema exists.
-3. Required startup app-data migration
-   `20260703_drop_token_usage_legacy_path_columns` runs after the backfill has a
-   terminal-success record and contracts the physical table by dropping
-   `team_run_path_json` and `member_path_json` when those columns are present.
+For Token Usage the final migration:
 
-The physical drop is intentionally guarded in TypeScript app-data migration
-code rather than an unconditional Prisma SQL migration. SQLite does not support
-`DROP COLUMN IF EXISTS`, and local app databases can drift, so the contract
-migration inspects `PRAGMA table_info(token_usage_ledger_events)`, drops only
-present obsolete columns, treats already-absent obsolete columns as successful
-no-ops, verifies `root_team_run_id` and `execution_address_json` remain present,
-and fails rather than guessing if the execution-address backfill prerequisite is
-not `SUCCEEDED` or `SUCCEEDED_WITH_WARNINGS`.
+1. Inspects the current runtime columns and all available predecessor evidence,
+   then gives every row one explicit disposition: standalone, already current,
+   resolved, or preserved-with-warning. It validates task-Team ancestry against
+   retained predecessor or current V1 topology when available. Self-contained
+   retired-row evidence is accepted only within the bounded migration planner;
+   ambiguous, conflicting, or incomplete identity is never guessed.
+2. Treats predecessor execution-address/path/member/task columns as read-only
+   evidence. A resolved row is eligible for a root correction only when the
+   destination root has an independently admitted current V1 package. An
+   unresolved or unsupported row and all of its accounting facts remain
+   unchanged with a truthful warning.
+3. Applies only required `root_team_run_id` corrections in one SQLite
+   transaction. The transaction verifies every updated root, all non-root
+   accounting facts, total row count, retention of every predecessor evidence
+   column that existed at inspection time, and the current
+   `(root_team_run_id, observed_at)` index. A transaction problem is reported as
+   a warning, with native rollback checked against the pre-transaction
+   snapshot; the migration does not contract the table or delete evidence.
 
-The backfill migration is the only Token Usage path that reads historical task
-delegation records. It builds a migration-local task-team run index from
-persisted delegation records, then scans `token_usage_ledger_events` and:
-
-- re-roots old delegated task-team rows from the child task-team run id back to
-  the original root team id and writes
-  `member(...) -> task_team(...) -> member(...)` or task-agent-prefixed
-  addresses;
-- writes direct team member addresses as `member(memberRouteKey)`;
-- writes direct task-agent addresses as
-  `member(memberRouteKey) -> task_agent(taskAgentRunId)` when scalar ledger
-  fields are sufficient;
-- leaves already-addressed rows unchanged;
-- skips standalone rows and unreconstructable/conflicting rows without guessing
-  parentage, so the bounded no-address fallback remains the visibility path for
-  those rows.
-
-The migration records an app-data migration summary with scanned, migrated,
-skipped, and failed counts plus category details for direct-member backfills,
-task-team corrections, task-agent backfills, already-addressed rows, standalone
-skips, insufficient-data skips, task-record-index conflicts, and row failures.
-It preserves token/cost totals; only hierarchy ownership fields
-(`root_team_run_id`, `execution_address_json`) are repaired.
-
-The subsequent legacy-path-column contract migration records prerequisite
-status, dropped columns, already-absent skipped columns, row-count preservation,
-and final schema details. It does not read or migrate data from
-`team_run_path_json` or `member_path_json`; those columns are obsolete
-representations, not compatibility input.
-
-Normal Token Statistics queries must not query task records to reconstruct
-hierarchy. After backfill, runtime/API/frontend hierarchy remains ledger-owned:
-`root_team_run_id` plus `execution_address_json`, with scalar no-address
-fallback only for rows that cannot be deterministically converted.
+Standalone rows keep `root_team_run_id = null`. Current Team rows use the root
+TeamRun ID plus their concrete `run_id`; task identity may remain descriptive
+ledger metadata but is not runtime topology authority. Normal reads never
+repair identity from predecessor columns. Token planning or apply problems
+produce `SUCCEEDED_WITH_WARNINGS` and do not block server health or unrelated
+TeamRun migration work.
 
 ## Custom-Provider Model Metadata Migrations
 
@@ -334,9 +315,9 @@ at ingestion time. Direct Codex and Claude paths keep `provider_name = null` and
 retain their existing non-AutoByteus display behavior. New-event persistence
 does not perform a statistics-time provider-registry lookup.
 
-Two required app-data migrations then repair historical rows, after Prisma
-schema migrations, after the execution-address backfill, and before the
-legacy-path-column contract migration:
+Two required app-data migrations separately repair historical provider/model
+display fields after Prisma schema deployment. They do not contract Team
+identity columns and do not own the TeamRun V1 root-attribution transition:
 
 1. `20260730_token_usage_custom_provider_model_value_backfill` repairs a
    validated legacy composite `model_value` by keeping the complete
@@ -368,19 +349,17 @@ current lookup/deterministic fallback policy.
   standalone agent run or root team run that has ledger usage observed during
   the selected period, with descendant usage nested through recursive
   `children` rows instead of repeated as standalone rows.
-- Task-statistics rows use `rowKind` values `TEAM_RUN`, `AGENT_RUN`,
-  `MEMBER_RUN`, `TASK_TEAM_RUN`, and `TASK_AGENT_RUN`. Team descendant rows
-  expose `executionAddress` when the ledger event had a valid address. A
-  `member -> task_team` segment pair becomes a `TASK_TEAM_RUN` row,
-  `member -> task_agent` becomes a `TASK_AGENT_RUN` row, and terminal member
-  segments become `MEMBER_RUN` rows. Repeated task-team or task-agent
-  executions for the same logical target remain separate by concrete run id /
-  execution-address prefix.
-- Active Token Usage Task statistics does not expose or consume the old
-  one-level `members` child field, `memberPath`, `teamRunPath`,
-  `member_path`, or `team_run_path` as hierarchy surfaces. Legacy rows without
-  a valid execution address remain visible as safe fallback `MEMBER_RUN` rows
-  with `executionAddress: null`; no task-team/task-agent parentage is guessed.
+- The current projection emits `TEAM_RUN`, `AGENT_RUN`, and `MEMBER_RUN` rows.
+  A Team row groups by `root_team_run_id`; its children group by exact
+  `run_id`. A task Agent or task-Team Agent therefore appears as the concrete
+  member run that produced the usage rather than causing Token Usage to rebuild
+  the execution topology. `taskId` remains descriptive row metadata when it was
+  captured.
+- Active Token Usage Task statistics does not expose or consume
+  `executionAddress`, `memberPath`, `teamRunPath`, `member_path`, or
+  `team_run_path` as hierarchy surfaces. The TeamRun execution-tree package is
+  the topology authority; Token Usage owns only its root/run grouping and
+  display fields.
 - Task-statistics row labels come from token-usage-owned display fields
   captured or backfilled at the ledger boundary: `teamName`, `agentName`,
   `runSummary`, `runCreatedAt`, and `memberName`. Runtime/model/scalar member
@@ -407,8 +386,8 @@ current lookup/deterministic fallback policy.
   or use display labels for grouping/accounting.
 - `getAgentRunTokenUsageSummary(runId)` returns a run summary.
 - `getTeamRunTokenUsageSummary(teamRunId)` returns a team aggregate.
-- `getTeamMemberTokenUsageSummary(teamRunId, memberAgentRunId?, memberRouteKey?)`
-  returns focused member usage.
+- `getTeamMemberTokenUsageSummary(teamRunId, agentRunId)` returns rows whose
+  exact `root_team_run_id` and `run_id` match those two arguments.
 
 The period filter is based on ledger `observed_at` / usage observation time.
 The MVP has no `rangeMode` argument and does not implement a "tasks created in
@@ -485,12 +464,11 @@ The frontend treats token usage as display-only state:
   for the selected period: inactive roster members are not emitted, child rows
   remain attached to their parent during sorting, and member/task usage must not
   be double-counted as standalone top-level rows. The frontend consumes
-  backend-provided `children` and `executionAddress` values only; it must not
-  rebuild hierarchy from task records, memory paths, display names, or the
-  removed `members`/path fields. The current GraphQL document requests
-  top-level rows plus five recursive `children` levels; deeper backend trees
-  require an explicit query-depth follow-up before all levels are visible in the
-  web table.
+  backend-provided `children`, `rootTeamRunId`, and `runId` values; it must not
+  rebuild execution topology from task records, predecessor identity columns,
+  memory paths, or display names. The current backend emits one Team-to-member
+  child level; the GraphQL `children` shape remains recursive for the table
+  contract.
 - Primary Task-table `Input` and `Output` cells render full locale-aware
   integer digits so supported safe-integer totals remain exact and inspectable;
   compact formatting is reserved for secondary cache/thinking explanatory
@@ -557,34 +535,20 @@ replacement, Token Meter hierarchy, calculation details, cache-aware input rows,
 price-status labels, reasoning-output display, latest prompt fields, and the
 right-side tab label. Settings > Token Statistics also has focused backend
 GraphQL E2E coverage plus frontend store/component coverage
-for Task default grouping, no `rangeMode`, recursive `children`,
-`executionAddress`, direct members, task-team rows, task-agent rows, nested
-task-agent-under-task-team prefixes, repeated same-target execution separation,
-legacy no-address fallback, first-usage created-time fallback, runtime/model
-grouping, reduced Task columns, compact sort affordances, value-plus-solid-
-triangle Total Cost disclosure controls, cost-inclusive accessible labels,
-status/cost-breakdown display, and Model runtime diagnostics. Live
-browser/runtime/API/UI evidence from 2026-07-02 also exercised `Nested
-Classroom Test Team` with Codex App Server / GPT-5.5 and observed
-`TEAM_RUN -> TASK_TEAM_RUN StudentStudyGroup -> MEMBER_RUN student_one` plus
-the direct `Teacher` member through the Settings Token Statistics UI. That live
-run is supporting evidence, not a committed browser automation harness; broader
-task-agent and repeated same-target edge cases remain guarded by deterministic
-GraphQL E2E coverage.
+for Task default grouping, no `rangeMode`, Team-to-member `children`, exact
+root/run grouping, task IDs as metadata, first-usage created-time fallback,
+runtime/model grouping, reduced Task columns, compact sort affordances,
+value-plus-solid-triangle Total Cost disclosure controls, cost-inclusive
+accessible labels, status/cost-breakdown display, and Model runtime diagnostics.
 
-Historical execution-address cleanup is covered by deterministic migration and
-GraphQL E2E tests. The coverage exercises integrated historical DB shapes
-through the app-data migration runner/status/log path and then verifies Token
-Usage GraphQL output for task-team re-rooting, repeated same-target task-team
-separation, direct task-agent backfill, aggregate total preservation,
-conflict/insufficient-data skip reasons, and fallback visibility. Source scans
-also guard against reintroducing active `team_run_path_json` /
-`member_path_json` hierarchy reads. The physical schema contract coverage uses
-an isolated temporary SQLite runtime and verifies missing-prerequisite
-status/logs, backfill-before-drop ordering, final absence of
-`team_run_path_json` / `member_path_json`, preservation of canonical columns,
-row/token/cost/index preservation, app-data migration status/log details, and
-GraphQL statistics after the guarded drop.
+The final TeamRun V1 transition has deterministic planner, real-SQLite
+repository, and actual-startup E2E coverage. It verifies retained/current task
+topology evidence, supported released row families, resolved root correction,
+preserved unsupported rows, accounting-fact and row-count preservation, the
+current root/time index, predecessor-column retention, native rollback
+observation, warning-ready startup, and relaunch idempotence. Source scans guard
+against restoring the removed canonical-identity migration, runtime predecessor
+readers, legacy-column contraction, or compatibility writers.
 
 ## Runtime E2E Coverage
 

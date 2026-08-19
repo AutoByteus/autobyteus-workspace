@@ -1,82 +1,51 @@
 import { TeamRun } from "../../domain/team-run.js";
-import type { TaskTeamInstanceIdentity } from "../../domain/task-team-instance.js";
-import type { TokenUsageTeamExecutionScope } from "../../domain/token-usage-execution-scope.js";
-import { TeamRunConfig, stripMemberPathPrefix, type TeamSubTeamMemberRunConfig } from "../../domain/team-run-config.js";
+import type { TeamRunAgentTeamNode, TeamRunApplicationBinding } from "../../domain/team-run-config.js";
+import type { CollaborationHandoff } from "../../../agent-collaboration/domain/collaboration-handoff.js";
 import type { TeamRunContext } from "../../domain/team-run-context.js";
-import type { TeamManager } from "../team-manager.js";
 import { MixedTeamRunBackend } from "./mixed-team-run-backend.js";
-import { MixedTeamRunContext, type MixedParentBoundaryContext } from "./mixed-team-run-context.js";
-import { TeamBackendKind } from "../../domain/team-backend-kind.js";
-
-const normalizeRequiredRunId = (value: string | null | undefined, fieldName: string): string => {
-  const normalized = typeof value === "string" ? value.trim() : "";
-  if (!normalized) {
-    throw new Error(`${fieldName} is required.`);
-  }
-  return normalized;
-};
+import type { MixedTeamManager } from "./mixed-team-manager.js";
+import type {
+  MixedConfiguredMemberActivationMode,
+  MixedTeamRunContext,
+} from "./mixed-team-run-context.js";
 
 export type MixedSubTeamRunFactoryOptions = {
-  buildContext: (
-    config: TeamRunConfig,
-    teamRunId: string,
-    restoreRuntimeContext?: MixedTeamRunContext | null,
-    parentBoundary?: MixedParentBoundaryContext | null,
-    taskTeamInstance?: TaskTeamInstanceIdentity | null,
-    tokenUsageTeamScope?: TokenUsageTeamExecutionScope | null,
-  ) => TeamRunContext<MixedTeamRunContext>;
-  createTeamManager: (context: TeamRunContext<MixedTeamRunContext>) => TeamManager;
+  buildContext: (input: {
+    handoffs: readonly CollaborationHandoff[];
+    applicationBinding?: TeamRunApplicationBinding | null;
+    rootTeamRunId: string;
+    teamNode: TeamRunAgentTeamNode;
+    configuredMemberActivationMode: MixedConfiguredMemberActivationMode;
+  }) => TeamRunContext<MixedTeamRunContext>;
+  createTeamManager: (context: TeamRunContext<MixedTeamRunContext>) => MixedTeamManager;
 };
 
 export class MixedSubTeamRunFactory {
   constructor(private readonly options: MixedSubTeamRunFactoryOptions) {}
 
-  async createOrRestore(input: {
-    parentTeamRunId: string;
-    subTeamConfig: TeamSubTeamMemberRunConfig;
-    childTeamRunId: string;
-    restoreRuntimeContext?: MixedTeamRunContext | null;
-    parentBoundary?: MixedParentBoundaryContext | null;
-    taskTeamInstance?: TaskTeamInstanceIdentity | null;
-    tokenUsageTeamScope?: TokenUsageTeamExecutionScope | null;
+  async materializeConfiguredChild(input: {
+    handoffs: readonly CollaborationHandoff[];
+    applicationBinding?: TeamRunApplicationBinding | null;
+    rootTeamRunId: string;
+    teamNode: TeamRunAgentTeamNode;
+    configuredMemberActivationMode: MixedConfiguredMemberActivationMode;
   }): Promise<TeamRun> {
-    const childTeamRunId = normalizeRequiredRunId(input.childTeamRunId, "childTeamRunId");
-    const childTree = stripMemberPathPrefix(
-      input.subTeamConfig.memberConfigs,
-      input.subTeamConfig.memberPath,
+    const context = this.options.buildContext(input);
+    return new TeamRun(
+      context,
+      new MixedTeamRunBackend(context, this.options.createTeamManager(context)),
     );
-    const config = new TeamRunConfig({
-      teamDefinitionId: input.subTeamConfig.teamDefinitionId,
-      teamBackendKind: TeamBackendKind.MIXED,
-      coordinatorMemberRouteKey: input.subTeamConfig.coordinatorMemberRouteKey
-        ? stripRoutePrefix(input.subTeamConfig.coordinatorMemberRouteKey, input.subTeamConfig.memberRouteKey)
-        : null,
-      memberTree: childTree.map((member) => ({
-        ...member,
-        memberRunId: normalizeRequiredRunId(
-          member.memberRunId,
-          `memberRunId for child member '${member.memberRouteKey}'`,
-        ),
-      })),
+  }
+
+  async prepareFreshTaskTeam(input: {
+    handoffs: readonly CollaborationHandoff[];
+    applicationBinding?: TeamRunApplicationBinding | null;
+    rootTeamRunId: string;
+    teamNode: TeamRunAgentTeamNode;
+  }): Promise<TeamRun> {
+    return this.materializeConfiguredChild({
+      ...input,
+      configuredMemberActivationMode: "fresh",
     });
-    const context = this.options.buildContext(
-      config,
-      childTeamRunId,
-      input.restoreRuntimeContext ?? null,
-      input.parentBoundary ?? null,
-      input.taskTeamInstance ?? null,
-      input.tokenUsageTeamScope ?? null,
-    );
-    const manager = this.options.createTeamManager(context);
-    const backend = new MixedTeamRunBackend(context, manager);
-    return new TeamRun({ context, backend });
   }
 }
-
-const stripRoutePrefix = (routeKey: string, prefix: string): string => {
-  if (routeKey === prefix) {
-    return routeKey;
-  }
-  const prefixWithSlash = `${prefix}/`;
-  return routeKey.startsWith(prefixWithSlash) ? routeKey.slice(prefixWithSlash.length) : routeKey;
-};

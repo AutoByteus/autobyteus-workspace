@@ -1,0 +1,9 @@
+{
+  "repositoryTestDatabaseResidue": {
+    "autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db": false,
+    "autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db-journal": false,
+    "autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db-wal": false,
+    "autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db-shm": false
+  },
+  "zeroResidue": true
+}

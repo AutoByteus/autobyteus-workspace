@@ -1,0 +1,269 @@
+=== git diff --check ===
+=== API-REV-014 durable diff ===
+ .../mixed-team-manager.test.ts                     | 633 ++++++++++++---------
+ 1 file changed, 370 insertions(+), 263 deletions(-)
++        receiver: senderAddress,
++        config: taskRootConfig,
++        teamNode: taskBuildSquadNode,
++        message: new AgentInputUserMessage("Start task-Team work."),
++      })).resolves.toEqual({ accepted: true });
++
++      const intent: InterAgentMessageDeliveryIntent = {
++        rootTeamRunId: "parent-1",
++        callerAddressing: {
++          rootTeamRunId: "parent-1",
++          memberAddress: "/BuildSquad/review_lead",
++        },
++        recipientAddress: "./implementer",
++        sender: { participant: {
++          kind: "agent",
++          displayName: "review_lead",
++          agentRunId: "review-lead-task-run",
++          executionAddress: senderAddress,
++          runtimeKind: RuntimeKind.CODEX_APP_SERVER,
++          platformAgentRunId: "platform-review-lead-task-run",
++          taskId: taskTeamInstance.taskId,
++        } },
++        content: "Please verify the task-scoped change.",
++        messageType: "task_peer_request",
++      };
++
++      await expect(manager.deliverInterAgentMessage(intent)).resolves.toMatchObject({
++        accepted: true,
++        code: "DELIVERED",
++        agentRunId: "implementer-task-run",
++        displayName: "implementer",
++      });
++
++      expect(childDeliverResolvedInterAgentMessage).toHaveBeenCalledTimes(1);
++      expect(childDeliverResolvedInterAgentMessage).toHaveBeenCalledWith(
++        expect.objectContaining({
++          rootTeamRunId: "parent-1",
++          recipientAddress: "./implementer",
++          senderAddress,
++          receiverAddress,
++          targetAgentRunId: "implementer-task-run",
++          recipient: { participant: expect.objectContaining({
++            agentRunId: "implementer-task-run",
++            executionAddress: receiverAddress,
++            taskId: taskTeamInstance.taskId,
++          }) },
+         }),
+-      }),
+-    );
++        expect.any(Function),
++      );
++      expect(persistentGetOrCreate).not.toHaveBeenCalled();
++      expect(events).toHaveLength(1);
++      expect(events[0]).toMatchObject({
++        teamRunId: "parent-1",
++        executionAddress: senderAddress,
++        data: {
++          senderAddress,
++          receiverAddress,
++          content: "Please verify the task-scoped change.",
++          messageType: "task_peer_request",
++        },
++      });
++    } finally {
++      clearTaskTeamActiveRunDirectory();
++    }
+   });
+ });
+ 
+-
+ describe("MixedTeamManager termination lifecycle", () => {
+-  it("keeps active task-team handles in snapshots until accepted settlement removes them", async () => {
+-    const { childRun, manager, subTeamRunFactory, taskTeamConfig } = createParentManagerWithTaskTeamTarget();
++  it("keeps active task-Team handles in snapshots until accepted settlement removes them", async () => {
++    const { childRun, manager, subTeamRunFactory, taskSnapshot } = createRootManagerWithTaskTeamTarget();
+     const events: TeamRunEvent[] = [];
+     manager.subscribeToEvents((event) => events.push(event));
+     const directory = getTaskTeamActiveRunDirectory();
++    const receiver = executionAddress(
++      "/BuildSquad/review_lead",
++      [taskTeamInstance.taskTeamRunId],
++    );
+ 
+     try {
+       await expect(manager.startTaskTeamInstance({
+         identity: taskTeamInstance,
+-        teamConfig: taskTeamConfig as never,
+-        message: new AgentInputUserMessage("Start task-team work."),
+-      })).resolves.toEqual({
+-        accepted: true,
+-        memberName: "BuildSquad",
+-        memberRunId: taskTeamInstance.taskTeamRunId,
+-      });
++        receiver,
++        config: taskRootConfig,
++        teamNode: taskBuildSquadNode,
++        message: new AgentInputUserMessage("Start task-Team work."),
++      })).resolves.toEqual({ accepted: true });
+ 
+       expect(subTeamRunFactory.createOrRestore).toHaveBeenCalledWith(expect.objectContaining({
+-        childTeamRunId: taskTeamInstance.taskTeamRunId,
++        config: taskRootConfig,
++        teamNode: taskBuildSquadNode,
+         taskTeamInstance,
++        taskTeamRunIds: [taskTeamInstance.taskTeamRunId],
++        parentBoundary: expect.objectContaining({
++          parentTeamRunId: "parent-1",
++          rootTeamRunId: "parent-1",
++          parentTeamAddress: "/",
++        }),
+       }));
+-      expect(childRun.postMessage).toHaveBeenCalledTimes(1);
+-      expect(directory.resolveActiveRun(taskTeamInstance.taskTeamRunId)?.runId)
++      expect(childRun.postMessage).toHaveBeenCalledWith(
++        expect.any(AgentInputUserMessage),
++        "/BuildSquad/review_lead",
++      );
++      expect(directory.resolveActiveRun(taskTeamInstance.taskTeamRunId)?.teamRunId)
+         .toBe(taskTeamInstance.taskTeamRunId);
+-      expect(manager.getLeafAgentStatusSnapshots()).toEqual(expect.arrayContaining([
+-        expect.objectContaining({
+-          scopeKind: "task_team_member",
+-          teamRunId: "parent-1",
+-          taskTeamScope: {
+-            taskTeamRunId: "task-team-run-1",
+-            taskTeamInstanceId: "task-team-instance-1",
+-            taskId: "task-1",
+-            logicalTeamPath: ["BuildSquad"],
+-            logicalTeamRouteKey: "BuildSquad",
+-          },
+-          payload: expect.objectContaining({
+-            agent_id: "review-lead-run",
+-            agent_name: "review_lead",
+-            member_route_key: "BuildSquad/review_lead",
+-            source_path: ["BuildSquad", "review_lead"],
+-            status: "idle",
+-          }),
+-        }),
+-      ]));
++      expect(manager.getLeafAgentStatusSnapshots()).toContainEqual(taskSnapshot);
+ 
+       await expect(manager.settleTaskTeamInstance(
+-        "BuildSquad",
++        "/BuildSquad",
+         taskTeamInstance.taskTeamRunId,
+-      )).resolves.toEqual({
+-        accepted: true,
+-      });
++      )).resolves.toEqual({ accepted: true });
+ 
+       expect(childRun.terminate).toHaveBeenCalledTimes(1);
+-      expect(manager.getLeafAgentStatusSnapshots()).toEqual([]);
++      expect(manager.getLeafAgentStatusSnapshots()).not.toContainEqual(taskSnapshot);
+       expect(directory.resolveKnownEntryByTaskTeamRunId(taskTeamInstance.taskTeamRunId)).toBeNull();
+       expect(events).toEqual([]);
+     } finally {
+@@ -369,37 +432,82 @@ describe("MixedTeamManager termination lifecycle", () => {
+     }
+   });
+ 
+-  it("joins repeated termination and rejects new work while terminating without aggregate status events", async () => {
+-    const { manager } = createChildManager();
++  it("rejects a task-Team receiver outside its configured coordinator before starting", async () => {
++    const { manager, subTeamRunFactory } = createRootManagerWithTaskTeamTarget();
++
++    try {
++      await expect(manager.startTaskTeamInstance({
++        identity: taskTeamInstance,
++        receiver: executionAddress("/BuildSquad", [taskTeamInstance.taskTeamRunId]),
++        config: taskRootConfig,
++        teamNode: taskBuildSquadNode,
++        message: new AgentInputUserMessage("Start task-Team work."),
++      })).resolves.toEqual({
++        accepted: false,
++        code: "TASK_TEAM_IDENTITY_MISMATCH",
++        message: "Task AgentTeam '/BuildSquad' receiver does not match its coordinator or task execution chain.",
++      });
++      expect(subTeamRunFactory.createOrRestore).not.toHaveBeenCalled();
++    } finally {
++      clearTaskTeamActiveRunDirectory();
++    }
++  });
++
++  it("joins repeated termination and rejects all supported task operations at the TeamRun boundary", async () => {
++    const { context, manager } = createChildManager();
++    const teamRun = new TeamRun({
++      context,
++      backend: new MixedTeamRunBackend(context, manager),
++    });
+     const events: unknown[] = [];
+-    manager.subscribeToEvents((event) => events.push(event));
++    teamRun.subscribeToEvents((event) => events.push(event));
+     let resolveTaskAgents: ((value: { accepted: true }) => void) | null = null;
+     const terminateTaskAgents = vi.fn(() => new Promise<{ accepted: true }>((resolve) => {
+       resolveTaskAgents = resolve;
+     }));
+     (manager as any).taskAgentInstances.terminateAll = terminateTaskAgents;
++    const taskAgentRegistry = (manager as any).taskAgentInstances;
++    const taskTeamRegistry = (manager as any).taskTeamInstances;
++    const registryCalls = [
++      vi.spyOn(taskAgentRegistry, "start").mockResolvedValue({ accepted: true }),
++      vi.spyOn(taskAgentRegistry, "settle").mockResolvedValue({ accepted: true }),
++      vi.spyOn(taskTeamRegistry, "start").mockResolvedValue({ accepted: true }),
++      vi.spyOn(taskTeamRegistry, "postMessage").mockResolvedValue({ accepted: true }),
++      vi.spyOn(taskTeamRegistry, "settle").mockResolvedValue({ accepted: true }),
++    ];
+ 
+-    const firstTerminate = manager.terminate();
+-    const secondTerminate = manager.terminate();
++    const firstTerminate = teamRun.terminate();
++    const secondTerminate = teamRun.terminate();
+ 
+-    expect(manager.hasActiveMembers()).toBe(false);
++    expect(teamRun.isActive()).toBe(false);
+     expect(terminateTaskAgents).toHaveBeenCalledTimes(1);
+-    await expect(manager.startTaskAgentInstance({} as never)).resolves.toEqual({
++    const runNotFound = {
+       accepted: false,
+       code: "RUN_NOT_FOUND",
+-      message: "Run 'unknown' is not active.",
+-    });
++      message: "Run 'build-squad-run' is not active.",
++    };
++    await expect(Promise.all([
++      teamRun.startTaskAgentInstance({} as never),
++      teamRun.settleTaskAgentInstance("/BuildSquad/review_lead", "task-agent-run-1"),
++      teamRun.startTaskTeamInstance({} as never),
++      teamRun.postMessageToTaskTeamInstance(
++        "/BuildSquad",
++        "task-team-run-1",
++        new AgentInputUserMessage("late task-Team work"),
++      ),
++      teamRun.settleTaskTeamInstance("/BuildSquad", "task-team-run-1"),
++    ])).resolves.toEqual(Array.from({ length: 5 }, () => runNotFound));
++    for (const registryCall of registryCalls) expect(registryCall).not.toHaveBeenCalled();
+ 
+     resolveTaskAgents?.({ accepted: true });
+     await expect(firstTerminate).resolves.toEqual({ accepted: true });
+     await expect(secondTerminate).resolves.toEqual({ accepted: true });
+-    await expect(manager.terminate()).resolves.toEqual({ accepted: true });
+-
++    await expect(teamRun.terminate()).resolves.toEqual({ accepted: true });
+     expect(events).toEqual([]);
+-    expect(manager.hasActiveMembers()).toBe(false);
++    expect(teamRun.isActive()).toBe(false);
+   });
+ 
+-  it("keeps the team active and does not publish offline when active child termination is rejected", async () => {
++  it("keeps the Team active when active child termination is rejected", async () => {
+     const { manager } = createChildManager();
+     const events: unknown[] = [];
+     manager.subscribeToEvents((event) => events.push(event));
+@@ -414,7 +522,6 @@ describe("MixedTeamManager termination lifecycle", () => {
+       code: "ACTIVE_TERMINATION_FAILED",
+       message: "child refused termination",
+     });
+-
+     expect(events).toEqual([]);
+     expect(manager.hasActiveMembers()).toBe(true);
+   });
+=== protected fixture corrections present ===
+autobyteus-server-ts/tests/unit/agent-team-execution/mixed-sub-team-member-handle.test.ts:125:  it("forwards the complete resolved child request without path or run reinterpretation", async () => {
+autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-manager.test.ts:300:  it("delivers a same-task-Team peer through the exact active TeamRun without persistent fallback", async () => {
+autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-manager.test.ts:435:  it("rejects a task-Team receiver outside its configured coordinator before starting", async () => {
+=== source working tree delta absent ===

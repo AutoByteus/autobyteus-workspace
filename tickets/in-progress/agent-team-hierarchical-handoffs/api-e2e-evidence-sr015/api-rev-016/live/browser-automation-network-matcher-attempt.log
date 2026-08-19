@@ -1,0 +1,4 @@
+page.waitForResponse: Target page, context or browser has been closed
+    at captureGraphqlOperation (/private/tmp/api-rev016-real-browser.cjs:83:32)
+    at runStandalone (/private/tmp/api-rev016-real-browser.cjs:137:24)
+    at async /private/tmp/api-rev016-real-browser.cjs:277:43

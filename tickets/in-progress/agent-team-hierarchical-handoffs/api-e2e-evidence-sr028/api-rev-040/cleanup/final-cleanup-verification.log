@@ -1,0 +1,17 @@
+API-REV-040 owned disposable cleanup
+2026-08-13T15:28:14Z
+-- listeners after graceful stop (expect absent)
+-- protected listeners (observe only; expect absent)
+runtime_target=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-040-live-20260813-1
+database_target=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-040-live-20260813-1.db
+SAFE_CLEANUP_PREFLIGHT=PASS
+ABSENT=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-040-live-20260813-1
+ABSENT=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-040-live-20260813-1.db
+ABSENT=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-040-live-20260813-1.db-wal
+ABSENT=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-040-live-20260813-1.db-shm
+ABSENT=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-040-live-20260813-1.db-journal
+ABSENT=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-040-live-20260813-1.db.secret.key
+OPERATIONAL_DATABASE_ACTION=NONE
+PROTECTED_STACK_ACTION=NONE
+SOURCE_FIXTURE_ACTION=NONE_AFTER_HASHED_STAGE_COPY
+STATUS=PASS

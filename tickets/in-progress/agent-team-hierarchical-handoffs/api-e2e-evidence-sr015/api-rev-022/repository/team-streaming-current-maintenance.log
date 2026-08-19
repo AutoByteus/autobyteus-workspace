@@ -1,0 +1,95 @@
+
+> autobyteus@1.4.47 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run services/agentStreaming/__tests__/TeamStreamingService.spec.ts services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts services/agentStreaming/__tests__/teamStreamMemberContextResolver.spec.ts services/agentStreaming/__tests__/teamTaskExecutionEventRouter.spec.ts services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/__tests__/teamStreamMemberContextResolver.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/__tests__/teamTaskExecutionEventRouter.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/__tests__/teamStreamMemberContextResolver.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/__tests__/teamTaskExecutionEventRouter.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/__tests__/TeamStreamingService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/agentStreaming/__tests__/teamStreamMemberContextResolver.spec.ts (3 tests) 4ms
+ ✓ services/agentStreaming/__tests__/teamTaskExecutionEventRouter.spec.ts (7 tests) 7ms
+ ✓ services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts (4 tests) 10ms
+stdout | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current rooted event dispatch > keeps subscription transport state separate from backend Team lifecycle
+Team WebSocket connected
+Team WebSocket disconnected: closed
+
+stdout | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current rooted event dispatch > reattaches transport callbacks to the latest exact Team context
+Team WebSocket connected
+Team WebSocket disconnected: closed
+
+ ✓ services/agentStreaming/__tests__/TeamStreamingService.spec.ts (9 tests) 14ms
+stderr | services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts > TeamStreamingService exact execution-address serialization > echoes the complete 'persistent member' address for tool approval
+No member context found for message, skipping
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts > TeamStreamingService exact execution-address serialization > echoes the complete 'direct task Agent' address for tool approval
+No exact task Agent source exists at '/worker'.
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts > TeamStreamingService exact execution-address serialization > echoes the complete 'outer task AgentTeam member' address for tool approval
+No exact task Team Agent execution exists at '/BuildSquad/reviewer'.
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts > TeamStreamingService exact execution-address serialization > echoes the complete 'nested task AgentTeam member' address for tool approval
+No exact task Team Agent execution exists at '/BuildSquad/ReviewCell/reviewer'.
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts > TeamStreamingService exact execution-address serialization > accepts only an acknowledgement matching the exact pending execution address
+Ignoring unmatched team interrupt command acknowledgement. {
+  command_type: 'INTERRUPT_GENERATION',
+  command_id: 'interrupt-ack',
+  state: 'accepted',
+  target: {
+    target_kind: 'team_member',
+    team_run_id: 'team-1',
+    execution_address: {
+      rootTeamRunId: 'team-1',
+      taskTeamRunIds: [Array],
+      memberAddress: '/BuildSquad/ReviewCell/reviewer',
+      taskAgentRunId: null
+    }
+  }
+}
+
+ ✓ services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts (16 tests) 9ms
+
+ Test Files  5 passed (5)
+      Tests  39 passed (39)
+   Start at  06:54:54
+   Duration  5.53s (transform 2.65s, setup 23.46s, collect 344ms, tests 43ms, environment 1.48s, prepare 1.00s)
+

@@ -1,0 +1,24 @@
+$ git diff --check
+
+$ git diff --name-only -- autobyteus-server-ts/tests
+autobyteus-server-ts/tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts
+autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts
+autobyteus-server-ts/tests/integration/api/runtime-selection-top-level.integration.test.ts
+
+$ python3 SR-006 collaboration-fixture and failed-suite intersection audit
+positive obsolete addressing fixtures: 0
+intentional negative addressing fixtures: 1
+EXPECTED_NEGATIVE ('autobyteus-server-ts/tests/unit/agent-tools/task-delegation/task-delegation-autobyteus-context.test.ts', 89, ['memberPath'])
+current durable test delta: ['autobyteus-server-ts/tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts', 'autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts', 'autobyteus-server-ts/tests/integration/api/runtime-selection-top-level.integration.test.ts']
+matches planned three-file delta: True
+full-baseline failed files: 24
+failed-file intersections with SR-006 commit/current test delta: []
+task lifecycle exact persistent context: True
+task lifecycle exact task-agent context: True
+task lifecycle exact task-team ingress context: True
+memory exact created-backend context: True
+api exact initial coordinator context: True
+api exact restored coordinator context: True
+api exact restored specialist context: True
+
+SR-006 static audit: PASS

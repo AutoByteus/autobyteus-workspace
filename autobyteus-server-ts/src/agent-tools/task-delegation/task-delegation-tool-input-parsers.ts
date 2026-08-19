@@ -4,15 +4,13 @@ import {
   type ReviewTaskResultInput,
   type SubmitTaskResultInput,
 } from "../../agent-team-execution/task-delegation/task-delegation-record.js";
+import { CollaborationContractError } from "../../agent-collaboration/domain/collaboration-contract-error.js";
 
 const nonEmptyString = (fieldName: string) =>
   z.string().trim().min(1, `${fieldName} is required`);
 
 const DelegateTaskInputSchema = z.object({
-  target: z.object({
-    kind: z.enum(["member", "team"]),
-    name: nonEmptyString("target.name"),
-  }).strict(),
+  recipient_address: z.string(),
   description: nonEmptyString("description"),
   reference_files: z.array(nonEmptyString("reference_files item")).default([]),
 }).strict();
@@ -44,7 +42,15 @@ export const parseDelegateTaskInput = (
   rawArguments: Record<string, unknown>,
 ): DelegateTaskInput => {
   const result = DelegateTaskInputSchema.safeParse(rawArguments);
-  if (!result.success) throw new Error(`Invalid delegate_task input: ${parseZodIssues(result.error)}`);
+  if (!result.success) {
+    if (typeof rawArguments.recipient_address !== "string") {
+      throw new CollaborationContractError(
+        "COLLABORATION_ADDRESS_INVALID",
+        "delegate_task recipient_address must be a logical address string.",
+      );
+    }
+    throw new Error(`Invalid delegate_task input: ${parseZodIssues(result.error)}`);
+  }
   return result.data;
 };
 

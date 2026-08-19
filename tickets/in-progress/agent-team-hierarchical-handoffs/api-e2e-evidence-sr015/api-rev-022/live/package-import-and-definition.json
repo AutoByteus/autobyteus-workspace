@@ -1,0 +1,69 @@
+{
+  "sourceKind": "LOCAL_PATH",
+  "source": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-022-live-20260811/staged-package",
+  "importedPackages": [
+    {
+      "packageId": "built-in:default",
+      "displayName": "Built-in Storage",
+      "sourceKind": "BUILT_IN",
+      "sharedAgentCount": 2,
+      "teamLocalAgentCount": 0,
+      "agentTeamCount": 0,
+      "applicationCount": 0,
+      "isDefault": true,
+      "isRemovable": false,
+      "sourceMatches": true
+    },
+    {
+      "packageId": "local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-worktrees%2Fagent-team-hierarchical-handoffs%2Fautobyteus-server-ts%2Ftests%2F.tmp%2Fapi-rev-022-live-20260811%2Fstaged-package",
+      "displayName": "staged-package",
+      "sourceKind": "LOCAL_PATH",
+      "sharedAgentCount": 0,
+      "teamLocalAgentCount": 1,
+      "agentTeamCount": 1,
+      "applicationCount": 0,
+      "isDefault": false,
+      "isRemovable": true,
+      "sourceMatches": true
+    }
+  ],
+  "refreshed": true,
+  "nestedDefinition": {
+    "id": "nested-classroom-test",
+    "name": "Nested Classroom Test Team",
+    "description": "Minimal nested-team fixture for testing delegate_task to an agent-team target.",
+    "coordinatorMemberName": "Teacher",
+    "handoffs": [
+      {
+        "from": "/Teacher",
+        "to": "/StudentStudyGroup",
+        "rules": [
+          "When the user asks to send the classroom handoff token to the study group."
+        ]
+      },
+      {
+        "from": "/StudentStudyGroup/student_one",
+        "to": "/Teacher",
+        "rules": [
+          "When the delegated classroom task is finished and the teacher needs the outcome."
+        ]
+      }
+    ],
+    "ownershipScope": "SHARED",
+    "ownerPackageId": null,
+    "nodes": [
+      {
+        "memberName": "Teacher",
+        "ref": "teacher",
+        "refType": "AGENT",
+        "refScope": "TEAM_LOCAL"
+      },
+      {
+        "memberName": "StudentStudyGroup",
+        "ref": "student-study-group",
+        "refType": "AGENT_TEAM",
+        "refScope": "TEAM_LOCAL"
+      }
+    ]
+  }
+}

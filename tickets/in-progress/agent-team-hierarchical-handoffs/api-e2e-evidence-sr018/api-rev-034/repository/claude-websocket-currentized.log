@@ -1,0 +1,207 @@
+
+> autobyteus-server-ts@0.1.1 pretest /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+> pnpm prepare:shared
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 12 workspace projects
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+
+> autobyteus-server-ts@0.1.1 test /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+> vitest --run tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts
+
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:34770) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket interrupt/resume integration > preserves provider conversation memory after interrupt instead of starting a new Claude conversation
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket interrupt/resume integration > preserves provider conversation memory after interrupt instead of starting a new Claude conversation
+Agent websocket attached for run claude-ws-context-memory
+Created agent session b39dcdff-5ad4-4964-9b7c-a80a30dbdd54 for run claude-ws-context-memory
+Agent WebSocket connected: session=b39dcdff-5ad4-4964-9b7c-a80a30dbdd54, run=claude-ws-context-memory
+
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket interrupt/resume integration > resumes the same WebSocket follow-up with the adopted provider session id after INTERRUPT_GENERATION
+Closed agent session b39dcdff-5ad4-4964-9b7c-a80a30dbdd54
+Agent WebSocket disconnected: b39dcdff-5ad4-4964-9b7c-a80a30dbdd54
+
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket interrupt/resume integration > resumes the same WebSocket follow-up with the adopted provider session id after INTERRUPT_GENERATION
+Agent websocket attached for run claude-ws-interrupt-provider
+Created agent session 59739d92-5dde-4d9c-8534-97ec29ce9189 for run claude-ws-interrupt-provider
+Agent WebSocket connected: session=59739d92-5dde-4d9c-8534-97ec29ce9189, run=claude-ws-interrupt-provider
+
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket interrupt/resume integration > resumes a targeted Claude team member follow-up sent on the same team WebSocket after INTERRUPT_GENERATION
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket interrupt/resume integration > resumes a targeted Claude team member follow-up sent on the same team WebSocket after INTERRUPT_GENERATION
+Closed agent session 59739d92-5dde-4d9c-8534-97ec29ce9189
+Agent WebSocket disconnected: 59739d92-5dde-4d9c-8534-97ec29ce9189
+
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket interrupt/resume integration > resumes a targeted Claude team member follow-up sent on the same team WebSocket after INTERRUPT_GENERATION
+Agent team websocket attached for team run claude-team-ws-interrupt
+Created agent session cd14be43-dd21-4b21-bc3c-6468f54003f3 for run claude-team-ws-interrupt
+Agent Team WebSocket connected: session=cd14be43-dd21-4b21-bc3c-6468f54003f3, run=claude-team-ws-interrupt
+
+stderr | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket interrupt/resume integration > resumes a targeted Claude team member follow-up sent on the same team WebSocket after INTERRUPT_GENERATION
+Error handling team message for cd14be43-dd21-4b21-bc3c-6468f54003f3: [
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "context_file_paths"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "image_urls"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  }
+]
+
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket interrupt/resume integration > does not send the local run id as SDK resume when INTERRUPT_GENERATION happens before a provider session id exists
+Closed agent session cd14be43-dd21-4b21-bc3c-6468f54003f3
+
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket interrupt/resume integration > does not send the local run id as SDK resume when INTERRUPT_GENERATION happens before a provider session id exists
+Agent Team WebSocket disconnected: cd14be43-dd21-4b21-bc3c-6468f54003f3
+
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket interrupt/resume integration > does not send the local run id as SDK resume when INTERRUPT_GENERATION happens before a provider session id exists
+Agent websocket attached for run claude-ws-interrupt-placeholder
+Created agent session df72862a-2be0-4326-a621-dc9b878e6525 for run claude-ws-interrupt-placeholder
+Agent WebSocket connected: session=df72862a-2be0-4326-a621-dc9b878e6525, run=claude-ws-interrupt-placeholder
+
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket interrupt/resume live E2E
+Closed agent session df72862a-2be0-4326-a621-dc9b878e6525
+Agent WebSocket disconnected: df72862a-2be0-4326-a621-dc9b878e6525
+
+ ❯ tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts (5 tests | 1 failed | 1 skipped) 2213ms
+     ✓ preserves provider conversation memory after interrupt instead of starting a new Claude conversation 105ms
+     ✓ resumes the same WebSocket follow-up with the adopted provider session id after INTERRUPT_GENERATION 38ms
+     × resumes a targeted Claude team member follow-up sent on the same team WebSocket after INTERRUPT_GENERATION 2025ms
+     ✓ does not send the local run id as SDK resume when INTERRUPT_GENERATION happens before a provider session id exists 44ms
+     ↓ uses the real Claude SDK to preserve context after INTERRUPT_GENERATION interrupts an incomplete turn
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket interrupt/resume integration > resumes a targeted Claude team member follow-up sent on the same team WebSocket after INTERRUPT_GENERATION
+Error: Timed out waiting for team member initial fake Claude query and provider session adoption
+ ❯ waitForCondition tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:408:9
+    406|     await new Promise((resolve) => setTimeout(resolve, 10));
+    407|   }
+    408|   throw new Error(`Timed out waiting for ${label}`);
+       |         ^
+    409| };
+    410| 
+ ❯ tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:809:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 3 passed | 1 skipped (5)
+   Start at  20:47:48
+   Duration  6.19s (transform 2.52s, setup 8ms, import 3.54s, tests 2.21s, environment 0ms)
+
+ ELIFECYCLE  Test failed. See above for more details.

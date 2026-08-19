@@ -13,7 +13,8 @@ const ensureTables = (db: DatabaseSync): void => {
       launch_request_id TEXT NOT NULL,
       status TEXT NOT NULL,
       runtime_subject TEXT NOT NULL,
-      run_id TEXT NOT NULL,
+      agent_run_id TEXT,
+      team_run_id TEXT,
       definition_id TEXT NOT NULL,
       resource_owner TEXT NOT NULL,
       resource_kind TEXT NOT NULL,
@@ -32,13 +33,11 @@ const ensureTables = (db: DatabaseSync): void => {
 
     CREATE TABLE IF NOT EXISTS __autobyteus_run_binding_members (
       binding_id TEXT NOT NULL,
-      member_name TEXT NOT NULL,
-      member_route_key TEXT NOT NULL,
+      member_address TEXT NOT NULL,
       display_name TEXT NOT NULL,
-      team_path_json TEXT NOT NULL,
-      run_id TEXT NOT NULL,
+      agent_run_id TEXT NOT NULL,
       runtime_kind TEXT NOT NULL,
-      PRIMARY KEY (binding_id, member_route_key)
+      PRIMARY KEY (binding_id, member_address)
     );
   `);
 };
@@ -98,7 +97,8 @@ export class ApplicationRunBindingStore {
            launch_request_id,
            status,
            runtime_subject,
-           run_id,
+           agent_run_id,
+           team_run_id,
            definition_id,
            resource_owner,
            resource_kind,
@@ -109,12 +109,13 @@ export class ApplicationRunBindingStore {
            terminated_at,
            last_error_message,
            summary_json
-         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
          ON CONFLICT(binding_id) DO UPDATE SET
            launch_request_id = excluded.launch_request_id,
            status = excluded.status,
            runtime_subject = excluded.runtime_subject,
-           run_id = excluded.run_id,
+           agent_run_id = excluded.agent_run_id,
+           team_run_id = excluded.team_run_id,
            definition_id = excluded.definition_id,
            resource_owner = excluded.resource_owner,
            resource_kind = excluded.resource_kind,
@@ -130,7 +131,8 @@ export class ApplicationRunBindingStore {
         summary.launchRequestId,
         summary.status,
         summary.runtime.subject,
-        summary.runtime.runId,
+        summary.runtime.subject === "AGENT_RUN" ? summary.runtime.agentRunId : null,
+        summary.runtime.subject === "TEAM_RUN" ? summary.runtime.teamRunId : null,
         summary.runtime.definitionId,
         resourceColumns.source,
         resourceColumns.kind,
@@ -147,22 +149,18 @@ export class ApplicationRunBindingStore {
       const insertMember = db.prepare(
         `INSERT INTO __autobyteus_run_binding_members (
            binding_id,
-           member_name,
-           member_route_key,
+           member_address,
            display_name,
-           team_path_json,
-           run_id,
+           agent_run_id,
            runtime_kind
-         ) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+         ) VALUES (?, ?, ?, ?, ?)`,
       );
       for (const member of summary.runtime.members) {
         insertMember.run(
           summary.bindingId,
-          member.memberName,
-          member.memberRouteKey,
+          member.memberAddress,
           member.displayName,
-          JSON.stringify(member.teamPath),
-          member.runId,
+          member.agentRunId,
           member.runtimeKind,
         );
       }

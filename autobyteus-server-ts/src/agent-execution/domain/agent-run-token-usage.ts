@@ -6,8 +6,6 @@ import {
   type InputTokenSemantic,
 } from "../../token-usage/domain/token-usage-component-basis.js";
 import type { TokenUsageUnitPrices } from "../../token-usage/domain/token-usage-unit-price-summary.js";
-import type { TokenUsageExecutionAddress } from "../../token-usage/domain/execution-address.js";
-import { normalizeTokenUsageExecutionAddress } from "../../token-usage/domain/execution-address.js";
 
 export type TokenUsageScope = "per_call" | "per_turn" | "cumulative_snapshot";
 export type TokenUsageRuntimeKind = "autobyteus" | "codex_app_server" | "claude_agent_sdk" | string;
@@ -27,9 +25,6 @@ export type TokenUsageApiCostStatus =
 export interface TokenUsageRunSummaryPayload {
   run_id: string;
   root_team_run_id: string | null;
-  execution_address: TokenUsageExecutionAddress | null;
-  member_agent_run_id: string | null;
-  member_route_key: string | null;
   agent_definition_id: string | null;
   workspace_id: string | null;
   gross_input_tokens: number;
@@ -77,23 +72,18 @@ export interface TokenUsageUpdatedPayload {
   idempotency_key: string;
   observed_at: string;
   run_id: string;
+  root_team_run_id: string | null;
   turn_id: string | null;
   llm_call_id: string | null;
   call_sequence: number | null;
-  root_team_run_id: string | null;
-  execution_address: TokenUsageExecutionAddress | null;
-  member_agent_run_id: string | null;
-  member_route_key: string | null;
   agent_definition_id: string | null;
   workspace_id: string | null;
-  task_agent_instance_id: string | null;
-  task_agent_run_id: string | null;
   task_id: string | null;
   team_name: string | null;
   agent_name: string | null;
   run_summary: string | null;
   run_created_at: string | null;
-  member_name: string | null;
+  member_display_name: string | null;
   runtime_kind: TokenUsageRuntimeKind;
   model_provider: string | null;
   provider_name: string | null;
@@ -279,36 +269,23 @@ export const createTokenUsageUpdatedPayload = (input: {
     qualityFlags.add("provider_name_top_level_nested_conflict");
   }
   const providerName = topLevelProviderName ?? nestedProviderName;
-  const executionAddressSource = source.execution_address ?? source.executionAddress;
-  const executionAddress = executionAddressSource === undefined || executionAddressSource === null
-    ? null
-    : normalizeTokenUsageExecutionAddress(executionAddressSource);
-  if (executionAddressSource !== undefined && executionAddressSource !== null && !executionAddress) {
-    qualityFlags.add("execution_address_invalid");
-  }
-
   return {
     usage_event_id: usageEventId,
     idempotency_key: idempotencyKey,
     observed_at: observedAt,
     run_id: asString(source.run_id) ?? input.runId,
+    root_team_run_id: asString(source.root_team_run_id),
     turn_id: asString(source.turn_id),
     llm_call_id: asString(source.llm_call_id),
     call_sequence: asNonNegativeInt(source.call_sequence),
-    root_team_run_id: asString(source.root_team_run_id),
-    execution_address: executionAddress,
-    member_agent_run_id: asString(source.member_agent_run_id),
-    member_route_key: asString(source.member_route_key),
     agent_definition_id: asString(source.agent_definition_id),
     workspace_id: asString(source.workspace_id),
-    task_agent_instance_id: asString(source.task_agent_instance_id),
-    task_agent_run_id: asString(source.task_agent_run_id),
     task_id: asString(source.task_id),
     team_name: asString(source.team_name),
     agent_name: asString(source.agent_name),
     run_summary: asString(source.run_summary),
     run_created_at: asString(source.run_created_at),
-    member_name: asString(source.member_name),
+    member_display_name: asString(source.member_display_name),
     runtime_kind: runtimeKind,
     model_provider: asString(source.model_provider) ?? asString(usage?.model_provider),
     provider_name: providerName,

@@ -1,0 +1,4 @@
+database=autobyteus-server-ts/db/api-rev-008-live-20260815-1.db
+size=204800 mode=-rw-r--r--
+key_size=32 key_mode=-rw-------
+operational_database_action=NONE

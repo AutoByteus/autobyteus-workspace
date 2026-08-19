@@ -1,0 +1,101 @@
+{
+  "result": "Pass",
+  "rows": {
+    "autobyteus": {
+      "teamRunId": "nested_classroom_test_team_291ff7d8898c442794c65fa476443561",
+      "counts": {
+        "messages": 6,
+        "persistentMessages": 4,
+        "taskMessages": 2,
+        "tasks": 1,
+        "taskUpdates": 2
+      },
+      "assertions": {
+        "inactiveAfterTerminate": true,
+        "exactRootedAddresses": true,
+        "coordinatorsExact": true,
+        "allLeavesExact": true,
+        "teacherIntrinsicHandoff": true,
+        "nestedIntrinsicHandoff": true,
+        "oneTask": true,
+        "taskAccepted": true,
+        "taskTeamTarget": true,
+        "rootToNestedHandoff": true,
+        "persistentPeerRequest": true,
+        "persistentPeerResponse": true,
+        "persistentSummaryToTeacher": true,
+        "taskPeerRequest": true,
+        "taskPeerResponse": true,
+        "exactSubmission": true,
+        "acceptedReview": true,
+        "exactTeacherFinal": true,
+        "noUnexpectedRoot": true
+      },
+      "failed": []
+    },
+    "codex": {
+      "teamRunId": "nested_classroom_test_team_b9f6646a1d2b46499fc34e673e47b909",
+      "counts": {
+        "messages": 6,
+        "persistentMessages": 4,
+        "taskMessages": 2,
+        "tasks": 1,
+        "taskUpdates": 2
+      },
+      "assertions": {
+        "inactiveAfterTerminate": true,
+        "exactRootedAddresses": true,
+        "coordinatorsExact": true,
+        "allLeavesExact": true,
+        "teacherIntrinsicHandoff": true,
+        "nestedIntrinsicHandoff": true,
+        "oneTask": true,
+        "taskAccepted": true,
+        "taskTeamTarget": true,
+        "rootToNestedHandoff": true,
+        "persistentPeerRequest": true,
+        "persistentPeerResponse": true,
+        "persistentSummaryToTeacher": true,
+        "taskPeerRequest": true,
+        "taskPeerResponse": true,
+        "exactSubmission": true,
+        "acceptedReview": true,
+        "exactTeacherFinal": true,
+        "noUnexpectedRoot": true
+      },
+      "failed": []
+    },
+    "claude": {
+      "teamRunId": "nested_classroom_test_team_f07e2d520480467db0a35fd59ab481bb",
+      "counts": {
+        "messages": 6,
+        "persistentMessages": 4,
+        "taskMessages": 2,
+        "tasks": 1,
+        "taskUpdates": 2
+      },
+      "assertions": {
+        "inactiveAfterTerminate": true,
+        "exactRootedAddresses": true,
+        "coordinatorsExact": true,
+        "allLeavesExact": true,
+        "teacherIntrinsicHandoff": true,
+        "nestedIntrinsicHandoff": true,
+        "oneTask": true,
+        "taskAccepted": true,
+        "taskTeamTarget": true,
+        "rootToNestedHandoff": true,
+        "persistentPeerRequest": true,
+        "persistentPeerResponse": true,
+        "persistentSummaryToTeacher": true,
+        "taskPeerRequest": true,
+        "taskPeerResponse": true,
+        "exactSubmission": true,
+        "acceptedReview": true,
+        "exactTeacherFinal": true,
+        "noUnexpectedRoot": true
+      },
+      "failed": []
+    }
+  }
+}

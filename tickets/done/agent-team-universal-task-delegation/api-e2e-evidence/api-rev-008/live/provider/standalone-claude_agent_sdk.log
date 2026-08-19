@@ -1,0 +1,35 @@
+{
+  "runtimeKind": "claude_agent_sdk",
+  "model": "sonnet",
+  "runId": "daily_assistant_d9c0987e59c044049706b0c539ed93bc",
+  "sent": true,
+  "terminal": "TURN_COMPLETED",
+  "error": null,
+  "typeCounts": {
+    "CONNECTED": 1,
+    "AGENT_STATUS": 4,
+    "AGENT_COMMAND_ACK": 1,
+    "TURN_STARTED": 1,
+    "SEGMENT_START": 1,
+    "SEGMENT_CONTENT": 1,
+    "SEGMENT_END": 1,
+    "TOKEN_USAGE_UPDATED": 1,
+    "TURN_COMPLETED": 1
+  },
+  "conversation": [
+    {
+      "kind": "message",
+      "role": "user",
+      "content": "Reply with exactly STANDALONE_claude_agent_sdk_OK and do not call tools.",
+      "media": null,
+      "ts": 1786830818.405
+    },
+    {
+      "kind": "message",
+      "role": "assistant",
+      "content": "STANDALONE_claude_agent_sdk_OK",
+      "media": null,
+      "ts": 1786830820.427
+    }
+  ]
+}

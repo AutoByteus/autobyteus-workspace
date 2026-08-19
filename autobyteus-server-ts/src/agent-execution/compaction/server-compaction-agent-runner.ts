@@ -85,7 +85,9 @@ export class ServerCompactionAgentRunner implements CompactionAgentRunner {
       unsubscribe = run.subscribeToEvents((event) => collector.observe(event));
 
       phase = "post";
-      const postResult = await run.postUserMessage(this.buildTaskMessage(task));
+      const postResult = await run.postUserMessage(this.buildTaskMessage(task), {
+        lifecycleObserver: (fact) => collector.observeInputLifecycle(fact),
+      });
       if (!postResult.accepted) {
         throw new Error(
           postResult.message ??

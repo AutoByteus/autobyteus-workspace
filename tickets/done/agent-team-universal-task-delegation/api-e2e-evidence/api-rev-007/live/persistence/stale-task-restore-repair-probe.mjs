@@ -1,0 +1,16 @@
+import {readFile,writeFile} from 'node:fs/promises';
+const dir=new URL('./',import.meta.url);
+const create=JSON.parse(await readFile(new URL('stale-task-create.json',dir),'utf8'));
+const pre=JSON.parse(await readFile(new URL('stale-task-post-restart.json',dir),'utf8'));
+const base='http://127.0.0.1:60312/graphql';
+const gql=async(query,variables)=>{const r=await fetch(base,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({query,variables})});const j=await r.json();if(!r.ok||j.errors?.length)throw new Error(JSON.stringify(j.errors??j));return j.data};
+const restore=await gql(`mutation($id:String!){restoreAgentTeamRun(teamRunId:$id){success message teamRunId}}`,{id:create.teamRunId});
+const post=await gql(`query($id:String!){getTeamRunResumeConfig(teamRunId:$id){teamRunId isActive executionTree} getTaskDelegationRecords(teamRunId:$id){taskId delegatorAgentRunId recipientAddress targetAgentRunId targetTeamRunId status description createdAt updates{kind submissionId reviewId reviewedSubmissionId decision content createdAt}}}`,{id:create.teamRunId});
+const beforeTask=pre.data.getTaskDelegationRecords[0];const task=post.getTaskDelegationRecords[0];
+const tree=post.getTeamRunResumeConfig.executionTree;
+const flatten=(team,out=[])=>{for(const task of team.task_executions??[]){out.push(task);if(task.kind==='task_team')flatten(task,out)}for(const m of team.members??[]){if(m.kind==='configured_team'||m.kind==='task_team_member')flatten(m,out)}return out};
+const exec=flatten(tree.root_team).find(x=>(x.agent_run_id??x.team_run_id)===task.targetAgentRunId);
+const interruptions=task.updates.filter(x=>x.kind==='interruption');
+const pass=beforeTask.status==='active'&&restore.restoreAgentTeamRun.success===true&&restore.restoreAgentTeamRun.teamRunId===create.teamRunId&&post.getTeamRunResumeConfig.isActive===true&&task.status==='interrupted'&&interruptions.length===1&&interruptions[0].content==='Interrupted because live task recovery is not supported after TeamRun reopen.'&&typeof exec?.settled_at==='string'&&exec.settled_at.length>0;
+const result={at:new Date().toISOString(),teamRunId:create.teamRunId,preRestore:{isActive:pre.data.getTeamRunResumeConfig.isActive,task:beforeTask,execution:pre.data.getTeamRunResumeConfig.executionTree.root_team.task_executions[0]},restore:restore.restoreAgentTeamRun,postRestore:{isActive:post.getTeamRunResumeConfig.isActive,task,execution:exec},assertions:{preWasInactive:pre.data.getTeamRunResumeConfig.isActive===false,preTaskWasActive:beforeTask.status==='active',restoreSucceeded:restore.restoreAgentTeamRun.success===true,taskInterrupted:task.status==='interrupted',exactlyOneInterruption:interruptions.length===1,exactReason:interruptions[0]?.content==='Interrupted because live task recovery is not supported after TeamRun reopen.',executionSettled:typeof exec?.settled_at==='string'&&exec.settled_at.length>0},pass};
+await writeFile(new URL('stale-task-restore-repair-assertion.json',dir),JSON.stringify(result,null,2)+'\n');console.log(JSON.stringify(result,null,2));if(!pass)process.exitCode=1;

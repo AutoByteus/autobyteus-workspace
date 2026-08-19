@@ -1,0 +1,313 @@
+{
+  "capturedAt": "2026-08-17T08:41:54.057Z",
+  "target": {
+    "server": "127.0.0.1:60419",
+    "web": "127.0.0.1:31419",
+    "database": "isolated API-REV-002 only"
+  },
+  "teamRows": [
+    {
+      "fixture": "Classroom Simulation Team",
+      "runtimeModel": "Codex / gpt-5.6-luna",
+      "result": "Pass",
+      "marker": "CLASSROOM_CODEX_OK",
+      "teamRunId": "classroom_simulation_team_ad84e9af4f0547a0b9e2e7cfb432ccd6",
+      "isActive": true,
+      "checkpoint": {
+        "rootTeamRunId": "classroom_simulation_team_ad84e9af4f0547a0b9e2e7cfb432ccd6",
+        "changeSequence": 400,
+        "hasOpenExecutionWork": false
+      },
+      "launches": [
+        {
+          "address": "/professor",
+          "agentRunId": "professor_cef5a2f764394d3fbac6405bdde7be09",
+          "runtimeKind": "CODEX",
+          "llmModelIdentifier": "gpt-5.6-luna"
+        },
+        {
+          "address": "/student",
+          "agentRunId": "student_487f6511c61142d886ff9d00e9c6bc69",
+          "runtimeKind": "CODEX",
+          "llmModelIdentifier": "gpt-5.6-luna"
+        }
+      ],
+      "communicationCount": 2,
+      "evidence": "classroom-codex-gpt56luna.json"
+    },
+    {
+      "fixture": "Classroom Simulation Team",
+      "runtimeModel": "AutoByteus / deepseek-v4-flash",
+      "result": "Fail",
+      "marker": "FILE_CHANGE rejection",
+      "teamRunId": "classroom_simulation_team_6dc903a8ddd64e5e8682ae6a4e43966c",
+      "isActive": true,
+      "checkpoint": {
+        "rootTeamRunId": "classroom_simulation_team_6dc903a8ddd64e5e8682ae6a4e43966c",
+        "changeSequence": 4136,
+        "hasOpenExecutionWork": true
+      },
+      "launches": [
+        {
+          "address": "/professor",
+          "agentRunId": "professor_35985657b310436cae7e1d920ee11e1a",
+          "runtimeKind": "AUTOBYTEUS",
+          "llmModelIdentifier": "deepseek-v4-flash"
+        },
+        {
+          "address": "/student",
+          "agentRunId": "student_8e0bc2ceb729437e9913b79bea5d76e0",
+          "runtimeKind": "AUTOBYTEUS",
+          "llmModelIdentifier": "deepseek-v4-flash"
+        }
+      ],
+      "communicationCount": 1,
+      "evidence": "classroom-autobyteus-deepseek-failure.json"
+    },
+    {
+      "fixture": "Classroom Simulation Team",
+      "runtimeModel": "Claude Agent SDK / deepseek-v4-flash",
+      "result": "Fail",
+      "marker": "CLASSROOM_CLAUDE_OK with FILE_CHANGE rejection",
+      "teamRunId": "classroom_simulation_team_0ff6420e79a140cea07bab44b6d20b78",
+      "isActive": true,
+      "checkpoint": {
+        "rootTeamRunId": "classroom_simulation_team_0ff6420e79a140cea07bab44b6d20b78",
+        "changeSequence": 222,
+        "hasOpenExecutionWork": false
+      },
+      "launches": [
+        {
+          "address": "/professor",
+          "agentRunId": "professor_1b0be0a1ab5644f285c175abf4751072",
+          "runtimeKind": "CLAUDE",
+          "llmModelIdentifier": "haiku"
+        },
+        {
+          "address": "/student",
+          "agentRunId": "student_c98f5f26d7db4454b92e2c57e954a77a",
+          "runtimeKind": "CLAUDE",
+          "llmModelIdentifier": "haiku"
+        }
+      ],
+      "communicationCount": 2,
+      "evidence": "classroom-claude-deepseek-final.json"
+    },
+    {
+      "fixture": "Nested Classroom Test Team",
+      "runtimeModel": "Codex / gpt-5.6-luna",
+      "result": "Pass with model-behavior observation",
+      "marker": "NESTED_CODEX_OK",
+      "teamRunId": "nested_classroom_test_team_d13ae69e40554d698df7f0adbe376db9",
+      "isActive": true,
+      "checkpoint": {
+        "rootTeamRunId": "nested_classroom_test_team_d13ae69e40554d698df7f0adbe376db9",
+        "changeSequence": 399,
+        "hasOpenExecutionWork": true
+      },
+      "launches": [
+        {
+          "address": "/teacher",
+          "agentRunId": "nested_classroom_teacher_bb5499e994604465884446cb01bd51b7",
+          "runtimeKind": "CODEX",
+          "llmModelIdentifier": "gpt-5.6-luna"
+        },
+        {
+          "address": "/StudentStudyGroup/student_one",
+          "agentRunId": "nested_classroom_student_one_2281e0a947ec447eb45383dc9b4b77f0",
+          "runtimeKind": "CODEX",
+          "llmModelIdentifier": "gpt-5.6-luna"
+        },
+        {
+          "address": "/StudentStudyGroup/student_two",
+          "agentRunId": "nested_classroom_student_two_4f469580861947abb27d12c6ebd5ce30",
+          "runtimeKind": "CODEX",
+          "llmModelIdentifier": "gpt-5.6-luna"
+        },
+        {
+          "address": "/StudentStudyGroup/student_one",
+          "agentRunId": "nested_classroom_student_one_1c55e9dee7654f2da6fe9135645c9a37",
+          "runtimeKind": null,
+          "llmModelIdentifier": null
+        },
+        {
+          "address": "/StudentStudyGroup/student_two",
+          "agentRunId": "nested_classroom_student_two_5937d6d70e6d49be99981467bf8e4a6d",
+          "runtimeKind": null,
+          "llmModelIdentifier": null
+        }
+      ],
+      "communicationCount": 2,
+      "evidence": "nested-classroom-codex-gpt56luna.json"
+    },
+    {
+      "fixture": "Nested Classroom Test Team",
+      "runtimeModel": "AutoByteus / deepseek-v4-flash",
+      "result": "Pass capability; formal task remained open",
+      "marker": "NESTED_AUTOBYTEUS_OK",
+      "teamRunId": "nested_classroom_test_team_701e085a17b042cd82e5ef7357c189c9",
+      "isActive": true,
+      "checkpoint": {
+        "rootTeamRunId": "nested_classroom_test_team_701e085a17b042cd82e5ef7357c189c9",
+        "changeSequence": 12397,
+        "hasOpenExecutionWork": true
+      },
+      "launches": [
+        {
+          "address": "/teacher",
+          "agentRunId": "nested_classroom_teacher_9b82faa016334a8589b205c6920c0eb9",
+          "runtimeKind": "AUTOBYTEUS",
+          "llmModelIdentifier": "deepseek-v4-flash"
+        },
+        {
+          "address": "/StudentStudyGroup/student_one",
+          "agentRunId": "nested_classroom_student_one_22bca9ee30cb4645b5a22ee51a7cd595",
+          "runtimeKind": "AUTOBYTEUS",
+          "llmModelIdentifier": "deepseek-v4-flash"
+        },
+        {
+          "address": "/StudentStudyGroup/student_two",
+          "agentRunId": "nested_classroom_student_two_38963097ae9f4daa8f8b743bb3c59377",
+          "runtimeKind": "AUTOBYTEUS",
+          "llmModelIdentifier": "deepseek-v4-flash"
+        },
+        {
+          "address": "/StudentStudyGroup/student_one",
+          "agentRunId": "nested_classroom_student_one_a7b55d7049c741a2a42ca626ff41e166",
+          "runtimeKind": null,
+          "llmModelIdentifier": null
+        },
+        {
+          "address": "/StudentStudyGroup/student_two",
+          "agentRunId": "nested_classroom_student_two_db706db2ac3743c9ad22c414041ddb07",
+          "runtimeKind": null,
+          "llmModelIdentifier": null
+        }
+      ],
+      "communicationCount": 3,
+      "evidence": "nested-classroom-autobyteus-deepseek-rerun-final.json"
+    },
+    {
+      "fixture": "Nested Classroom Test Team",
+      "runtimeModel": "Claude Agent SDK / deepseek-v4-flash",
+      "result": "Pass collaboration; nonblocking provider/model behavior observation",
+      "marker": "NESTED_CLAUDE_OK; provider-native TaskOutput observation excluded from product findings",
+      "teamRunId": "nested_classroom_test_team_47d727e958cd485d89f6454609034226",
+      "isActive": true,
+      "checkpoint": {
+        "rootTeamRunId": "nested_classroom_test_team_47d727e958cd485d89f6454609034226",
+        "changeSequence": 169,
+        "hasOpenExecutionWork": true
+      },
+      "launches": [
+        {
+          "address": "/teacher",
+          "agentRunId": "nested_classroom_teacher_75f131bf71df4894b2fd488057ea296d",
+          "runtimeKind": "CLAUDE",
+          "llmModelIdentifier": "haiku"
+        },
+        {
+          "address": "/StudentStudyGroup/student_one",
+          "agentRunId": "nested_classroom_student_one_e3202c15524e4e03ae57653e66dbd47d",
+          "runtimeKind": "CLAUDE",
+          "llmModelIdentifier": "haiku"
+        },
+        {
+          "address": "/StudentStudyGroup/student_two",
+          "agentRunId": "nested_classroom_student_two_41c25490c34b417b8bb563f4a2af10cb",
+          "runtimeKind": "CLAUDE",
+          "llmModelIdentifier": "haiku"
+        },
+        {
+          "address": "/StudentStudyGroup/student_one",
+          "agentRunId": "nested_classroom_student_one_e8fae4cd7e8c4b019b635eed8714403e",
+          "runtimeKind": null,
+          "llmModelIdentifier": null
+        },
+        {
+          "address": "/StudentStudyGroup/student_two",
+          "agentRunId": "nested_classroom_student_two_af465340ce1f4389b6e46bb4ac1a1221",
+          "runtimeKind": null,
+          "llmModelIdentifier": null
+        }
+      ],
+      "communicationCount": 3,
+      "evidence": "nested-classroom-claude-deepseek.json"
+    }
+  ],
+  "agentRows": [
+    {
+      "fixture": "Daily Assistant",
+      "runtimeModel": "Codex / gpt-5.6-luna",
+      "result": "Pass",
+      "marker": "DAILY_CODEX_OK",
+      "runId": "daily_assistant_2e7f1cf1abae4dc1b4e578962d90cbfa",
+      "config": {
+        "runId": "daily_assistant_2e7f1cf1abae4dc1b4e578962d90cbfa",
+        "isActive": false,
+        "metadataConfig": {
+          "agentDefinitionId": "daily-assistant",
+          "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/autobyteus-server-ts/tests/.tmp/api-rev-002-live-20260817-1/temp_workspace",
+          "llmModelIdentifier": "gpt-5.6-luna",
+          "autoExecuteTools": false,
+          "runtimeKind": "codex_app_server",
+          "runtimeReference": {
+            "runtimeKind": "codex_app_server",
+            "sessionId": null,
+            "threadId": "01a00ede-28bc-7263-8bbd-4ffc367a68bb"
+          }
+        }
+      },
+      "evidence": "daily-assistant-codex-gpt56luna.json"
+    },
+    {
+      "fixture": "Daily Assistant",
+      "runtimeModel": "AutoByteus / deepseek-v4-flash",
+      "result": "Pass",
+      "marker": "DAILY_AUTOBYTEUS_OK",
+      "runId": "daily_assistant_5c70e82fd2f2446daf73371bc8dcb7bf",
+      "config": {
+        "runId": "daily_assistant_5c70e82fd2f2446daf73371bc8dcb7bf",
+        "isActive": false,
+        "metadataConfig": {
+          "agentDefinitionId": "daily-assistant",
+          "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/autobyteus-server-ts/tests/.tmp/api-rev-002-live-20260817-1/temp_workspace",
+          "llmModelIdentifier": "deepseek-v4-flash",
+          "autoExecuteTools": false,
+          "runtimeKind": "autobyteus",
+          "runtimeReference": {
+            "runtimeKind": "autobyteus",
+            "sessionId": null,
+            "threadId": null
+          }
+        }
+      },
+      "evidence": "daily-assistant-autobyteus-deepseek.json"
+    },
+    {
+      "fixture": "Daily Assistant",
+      "runtimeModel": "Claude Agent SDK / deepseek-v4-flash",
+      "result": "Pass",
+      "marker": "DAILY_CLAUDE_OK",
+      "runId": "daily_assistant_8fe177cb96904390b49769641f1a4053",
+      "config": {
+        "runId": "daily_assistant_8fe177cb96904390b49769641f1a4053",
+        "isActive": false,
+        "metadataConfig": {
+          "agentDefinitionId": "daily-assistant",
+          "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible/autobyteus-server-ts/tests/.tmp/api-rev-002-live-20260817-1/temp_workspace",
+          "llmModelIdentifier": "haiku",
+          "autoExecuteTools": false,
+          "runtimeKind": "claude_agent_sdk",
+          "runtimeReference": {
+            "runtimeKind": "claude_agent_sdk",
+            "sessionId": "7aacbc6b-b243-4b72-ae33-00ff2ba2ee4c",
+            "threadId": null
+          }
+        }
+      },
+      "evidence": "daily-assistant-claude-deepseek.json"
+    }
+  ],
+  "overall": "Fail only because API-RUNTIME-TEAM-009B and API-RUNTIME-TEAM-009C expose the shared Team FILE_CHANGE admission defect; seven remaining capability rows passed, with recorded nonblocking model/provider observations."
+}

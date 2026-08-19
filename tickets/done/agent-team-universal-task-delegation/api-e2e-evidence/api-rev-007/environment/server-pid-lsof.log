@@ -1,0 +1,36 @@
+COMMAND   PID  USER   FD      TYPE             DEVICE  SIZE/OFF                NODE NAME
+node    51725 normy  cwd       DIR               1,13      1024           345229709 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+node    51725 normy  txt       REG               1,13 112928848           255287132 /Users/normy/.hermes/node/bin/node
+node    51725 normy  txt       REG               1,13     72984           293325547 /Library/Preferences/Logging/.plist-cache.TQHe3XLT
+node    51725 normy  txt       REG               1,13   2374000 1152921500312573276 /usr/lib/dyld
+node    51725 normy  txt       REG               1,13  17251592           349541905 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/.prisma/client/libquery_engine-darwin-arm64.dylib.node
+node    51725 normy    0u     unix 0x623c6d30dec7eb7e       0t0                     ->0x83a6456a693023ef
+node    51725 normy    1u     unix 0xb56739e66b6b1926       0t0                     ->0xff7d2fbb80be43c2
+node    51725 normy    2u     unix 0xf70db24fbee6d2e0       0t0                     ->0xdceb20303298e6bb
+node    51725 normy    3u   KQUEUE                                                  count=0, state=0x8
+node    51725 normy    4      PIPE 0x4020229f36001356     16384                     ->0x84ac77fb209c42e2
+node    51725 normy    5      PIPE 0x84ac77fb209c42e2     16384                     ->0x4020229f36001356
+node    51725 normy    6r      DIR               1,13       704                   2 /
+node    51725 normy    7u   KQUEUE                                                  count=0, state=0xa
+node    51725 normy    8r      DIR               1,13       704                   2 /
+node    51725 normy    9u   KQUEUE                                                  count=0, state=0xa
+node    51725 normy   10r      DIR               1,13       704                   2 /
+node    51725 normy   11r      CHR                3,2       0t0                 336 /dev/null
+node    51725 normy   12w      REG               1,13    966137           349543472 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/tests/.tmp/api-rev-007-live-20260815-1/logs/server.log
+node    51725 normy   13u   KQUEUE                                                  count=0, state=0xa
+node    51725 normy   14u   KQUEUE                                                  count=0, state=0xa
+node    51725 normy   15u   KQUEUE                                                  count=0, state=0xa
+node    51725 normy   16u     unix 0x9af0980e3f5a929f       0t0                     ->0xae6f0ad561f68019
+node    51725 normy   17u     unix 0xae6f0ad561f68019       0t0                     ->0x9af0980e3f5a929f
+node    51725 normy   18u     unix 0x9af0980e3f5a929f       0t0                     ->0xae6f0ad561f68019
+node    51725 normy   19u      REG               1,13    761856           349529105 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/db/api-rev-007-live-20260815-1.db
+node    51725 normy   20u      REG               1,13    761856           349529105 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/db/api-rev-007-live-20260815-1.db
+node    51725 normy   21      PIPE 0x5435f599c5faedd0     16384                     ->0x873fc3fbbb37095c
+node    51725 normy   22      PIPE 0x873fc3fbbb37095c     16384                     ->0x5435f599c5faedd0
+node    51725 normy   23u     IPv4 0x474f50db6ae63d39       0t0                 TCP 127.0.0.1:60312 (LISTEN)
+node    51725 normy   24u    systm 0x805b787c2f4c6002       0t0                     [ctl com.apple.netsrc id 7 unit 93]
+node    51725 normy   25u     unix 0x5d24612b165b5623       0t0                     ->0x7c959ceb2b7b3c94
+node    51725 normy   26u     IPv4 0x497f654456638660       0t0                 TCP 127.0.0.1:62337->127.0.0.1:1234 (ESTABLISHED)
+node    51725 normy   27   NPOLICY                                                  
+node    51725 normy   28u   KQUEUE                                                  count=0, state=0xa
+node    51725 normy   30u   KQUEUE                                                  count=0, state=0xa

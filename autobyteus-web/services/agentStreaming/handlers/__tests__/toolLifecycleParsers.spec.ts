@@ -134,45 +134,26 @@ describe('toolLifecycleParsers', () => {
     });
   });
 
-  it('parses approval source selectors from nested team payloads', () => {
+  it('does not reconstruct a standalone approval target from Team or retired selectors', () => {
     expect(
       parseToolApprovalRequestedPayload({
-        invocation_id: 'inv-nested',
-        tool_name: 'run_bash',
-        turn_id: null,
-        arguments: { command: 'pnpm test' },
-        source_path: ['BuildSquad', 'review_lead'],
-        member_path: ['BuildSquad', 'review_lead'],
-      } as any),
-    )?.toMatchObject({
-      invocationId: 'inv-nested',
-      approvalTarget: {
-        memberRouteKey: 'BuildSquad/review_lead',
-        memberPath: ['BuildSquad', 'review_lead'],
-        sourceRouteKey: 'BuildSquad/review_lead',
-        sourcePath: ['BuildSquad', 'review_lead'],
-      },
-    });
-  });
-
-  it('parses task-agent run identity from approval payloads', () => {
-    expect(
-      parseToolApprovalRequestedPayload({
-        invocation_id: 'inv-task-agent',
+        invocation_id: 'inv-legacy',
         tool_name: 'run_bash',
         turn_id: null,
         arguments: { command: 'pwd' },
+        execution_address: {
+          rootTeamRunId: 'root-team-run-1',
+          taskTeamRunIds: ['task-team-outer'],
+          memberAddress: '/BuildSquad/review_lead',
+          taskAgentRunId: null,
+        },
         member_route_key: 'worker',
         source_route_key: 'worker',
         task_agent_run_id: 'task-agent-run-1',
-      }),
-    )?.toMatchObject({
-      invocationId: 'inv-task-agent',
-      approvalTarget: {
-        memberRouteKey: 'worker',
-        sourceRouteKey: 'worker',
-        taskAgentRunId: 'task-agent-run-1',
-      },
+      } as any),
+    ).toMatchObject({
+      invocationId: 'inv-legacy',
+      approvalTarget: null,
     });
   });
 });

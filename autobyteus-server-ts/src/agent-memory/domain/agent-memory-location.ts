@@ -1,8 +1,10 @@
-import type { TeamRunAgentMemberMetadata } from "../../run-history/store/team-run-metadata-types.js";
+import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
+import type { ConfiguredAgentExecution } from "../../agent-team-execution/domain/team-run-execution-tree.js";
 
+/** Physical TeamRun directory lineage. It is deliberately not a logical topology path. */
 export type AgentMemoryScope = {
   rootTeamRunId: string;
-  teamRunPath: string[];
+  ancestorTeamRunIds: string[];
 };
 
 export type StandaloneAgentMemoryLocation = {
@@ -19,23 +21,13 @@ export type TeamAgentRunMemoryLocation = AgentMemoryScope & {
 
 export type TeamMemberAgentMemoryLocation = AgentMemoryScope & {
   kind: "team_member";
-  memberRunId: string;
-  memberRouteKey: string;
-  memberPath: string[];
-  member: TeamRunAgentMemberMetadata;
-  memoryDir: string;
-};
-
-export type TaskAgentMemoryLocation = AgentMemoryScope & {
-  kind: "task_agent";
-  taskAgentRunId: string;
-  logicalMemberRunId: string;
-  logicalMemberRouteKey: string;
+  memberAddress: AgentTeamAddress;
+  agentRunId: string;
+  configuredPlacement: ConfiguredAgentExecution | null;
   memoryDir: string;
 };
 
 export type AgentMemoryLocation =
   | StandaloneAgentMemoryLocation
   | TeamAgentRunMemoryLocation
-  | TeamMemberAgentMemoryLocation
-  | TaskAgentMemoryLocation;
+  | TeamMemberAgentMemoryLocation;

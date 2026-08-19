@@ -1,0 +1,6 @@
+status	scope	path	decision	evidence
+M	server	autobyteus-server-ts/tests/integration/api/runtime-selection-top-level.integration.test.ts	Needs Update / Currentized / Revalidated	API-REV-040 top-level integration 3/3; broad server 620/620 active tests; build; checked browser/provider matrix
+M	server	autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-task-notification-projection.test.ts	Needs Update / Currentized / Revalidated	API-REV-040 stale-currentization 18/18; SR-028 selection 223/223; broad server/build/live Team matrix
+M	server	autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-termination.test.ts	Needs Update / Currentized / Revalidated	API-REV-040 stale-currentization 18/18; SR-028 selection 223/223; broad server/build/live termination
+M	server	autobyteus-server-ts/tests/unit/application-orchestration/application-orchestration-host-service.test.ts	Needs Update / Currentized / Revalidated	API-REV-040 stale-currentization 18/18; SR-028 selection 223/223; broad server/build
+M	server	autobyteus-server-ts/tests/unit/external-channel/runtime/channel-agent-run-facade.test.ts	Needs Update / Currentized / Revalidated	API-REV-040 stale-currentization 18/18; SR-028 selection 223/223; broad server/build/configured FIFO

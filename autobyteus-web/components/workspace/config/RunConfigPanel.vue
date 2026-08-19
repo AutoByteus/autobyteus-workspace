@@ -42,9 +42,10 @@
         :team-definition="activeTeamDefinition"
         :workspace-loading-state="effectiveWorkspaceLoadingState"
         :initial-path="initialWorkspacePath"
-        :read-only="isSelectionMode"
+        :read-only="isSelectionMode || isRunPreparationPending || isTeamLaunchPending"
         @select-existing="handleSelectExisting"
         @workspace-input-change="handleWorkspaceInputChange"
+        @edit-config="handleTeamConfigEdit"
       />
 
       <div v-else class="mt-4 text-center text-red-500">{{ $t('workspace.components.workspace.config.RunConfigPanel.error_definition_not_found') }}</div>
@@ -78,6 +79,7 @@ import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore'
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore'
 import { useAgentContextsStore } from '~/stores/agentContextsStore'
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore'
+import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore'
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore'
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore'
 import { useWorkspaceStore } from '~/stores/workspace'
@@ -88,12 +90,14 @@ import AgentRunConfigForm from './AgentRunConfigForm.vue'
 import TeamRunConfigForm from './TeamRunConfigForm.vue'
 import type { AgentRunConfig } from '~/types/agent/AgentRunConfig'
 import type { TeamRunConfig } from '~/types/agent/TeamRunConfig'
+import type { TeamLaunchConfigEdit } from '~/types/agent/TeamLaunchDraft'
 
 const selectionStore = useAgentSelectionStore()
 const runConfigStore = useAgentRunConfigStore()
 const teamRunConfigStore = useTeamRunConfigStore()
 const contextsStore = useAgentContextsStore()
 const teamContextsStore = useAgentTeamContextsStore()
+const teamRunStore = useAgentTeamRunStore()
 const definitionStore = useAgentDefinitionStore()
 const teamDefinitionStore = useAgentTeamDefinitionStore()
 const workspaceStore = useWorkspaceStore()
@@ -105,8 +109,9 @@ const { t: $t } = useLocalization()
 type PendingWorkspaceInput = { mode: 'existing' | 'new'; pendingPath: string }
 
 const pendingWorkspaceInput = ref<PendingWorkspaceInput>({ mode: 'existing', pendingPath: '' })
-const isLaunching = ref(false)
+const isRunPreparationPending = ref(false)
 const isSelectionMode = computed(() => !!selectionStore.selectedRunId)
+const isTeamLaunchPending = computed(() => teamRunStore.isDraftLaunchPending(teamRunConfigStore.selectedDraft?.draftId ?? null))
 
 const effectiveAgentConfig = computed((): AgentRunConfig | null => {
   if (selectionStore.isAgentSelected && selectionStore.selectedRunId) {
@@ -120,7 +125,7 @@ const effectiveAgentConfig = computed((): AgentRunConfig | null => {
 
 const effectiveTeamConfig = computed((): TeamRunConfig | null => {
   if (selectionStore.isTeamSelected && selectionStore.selectedRunId) {
-    return teamContextsStore.activeTeamContext?.config || null
+    return teamContextsStore.activeTeamContext?.view.getConfigurationView() ?? null
   }
   if (!isSelectionMode.value && teamRunConfigStore.config?.teamDefinitionId) {
     return teamRunConfigStore.config
@@ -212,7 +217,7 @@ const initialWorkspacePath = computed(() => {
 })
 
 const handleSelectExisting = (workspaceId: string) => {
-  if (isSelectionMode.value) {
+  if (isSelectionMode.value || isRunPreparationPending.value || isTeamLaunchPending.value) {
     return
   }
   const selectedWorkspace = workspaceStore.workspaces[workspaceId] || null
@@ -221,7 +226,7 @@ const handleSelectExisting = (workspaceId: string) => {
     || null
 
   if (effectiveTeamConfig.value) {
-    teamRunConfigStore.updateConfig({ workspaceId, workspaceMetadata })
+    teamRunConfigStore.applyConfigEdit({ kind: 'set_workspace', workspaceId, workspaceMetadata })
     setActiveTab('files')
   } else if (effectiveAgentConfig.value) {
     runConfigStore.updateAgentConfig({ workspaceId, workspaceMetadata })
@@ -229,7 +234,13 @@ const handleSelectExisting = (workspaceId: string) => {
   }
 }
 
+const handleTeamConfigEdit = (edit: TeamLaunchConfigEdit) => {
+  if (isSelectionMode.value || isRunPreparationPending.value || isTeamLaunchPending.value || !effectiveTeamConfig.value) return
+  teamRunConfigStore.applyConfigEdit(edit)
+}
+
 const handleWorkspaceInputChange = (input: PendingWorkspaceInput) => {
+  if (isRunPreparationPending.value || isTeamLaunchPending.value) return
   pendingWorkspaceInput.value = {
     mode: input.mode,
     pendingPath: input.mode === 'new' ? input.pendingPath.trim() : '',
@@ -332,7 +343,7 @@ const canLaunchAgentBeforeRun = computed(() => {
 })
 
 const isRunDisabled = computed(() => {
-  if (isLaunching.value || effectiveWorkspaceLoadingState.value.isLoading) {
+  if (isRunPreparationPending.value || isTeamLaunchPending.value || effectiveWorkspaceLoadingState.value.isLoading) {
     return true
   }
   if (!isSelectionMode.value) {
@@ -343,12 +354,12 @@ const isRunDisabled = computed(() => {
 })
 
 const handleRun = async () => {
-  if (isLaunching.value) {
+  if (isRunPreparationPending.value || isTeamLaunchPending.value) {
     return
   }
 
   if (!isSelectionMode.value) {
-    isLaunching.value = true
+    isRunPreparationPending.value = true
     try {
       const workspaceReady = await ensurePendingWorkspaceLoadedForRun()
       if (!workspaceReady) {
@@ -365,8 +376,13 @@ const handleRun = async () => {
           }
           return
         }
-        teamContextsStore.createRunFromTemplate()
-        teamRunConfigStore.clearConfig()
+        const draft = teamRunConfigStore.selectedDraft
+        if (!draft) {
+          throw new Error('Team launch draft is unavailable.')
+        }
+        const launch = teamRunStore.launchDraft(draft)
+        isRunPreparationPending.value = false
+        await launch
       } else if (effectiveAgentConfig.value) {
         if (!effectiveAgentConfig.value.workspaceId) {
           runConfigStore.setWorkspaceError('Workspace is required to run an agent.')
@@ -376,7 +392,7 @@ const handleRun = async () => {
         runConfigStore.clearConfig()
       }
     } finally {
-      isLaunching.value = false
+      isRunPreparationPending.value = false
     }
   }
 }

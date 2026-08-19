@@ -1,0 +1,62 @@
+{
+  "teamRunId": "utd_root_team_api_rev_005_1786807916040_18b347831876475cb335a1c89c784d08",
+  "agentRunId": "utd_coordinator_api_rev_005_1786807916040_9617c71255164105adb0af2508161105",
+  "durationMs": 124111,
+  "sent": true,
+  "terminalAt": null,
+  "websocketError": null,
+  "messageCount": 44,
+  "typeCounts": {
+    "CONNECTED": 1,
+    "TEAM_EXECUTION_VIEW_SNAPSHOT": 1,
+    "TEAM_RUN_LIFECYCLE": 1,
+    "MEMBER_INPUT_MESSAGE": 2,
+    "TURN_STARTED": 1,
+    "SEGMENT_START": 5,
+    "SEGMENT_CONTENT": 8,
+    "TOKEN_USAGE_UPDATED": 11,
+    "SEGMENT_END": 5,
+    "TOOL_EXECUTION_STARTED": 2,
+    "TASK_DELEGATION_EVENT": 4,
+    "TOOL_EXECUTION_SUCCEEDED": 2,
+    "ERROR": 1
+  },
+  "tasks": [
+    {
+      "taskId": "task_7748ae12ebb94778adf2dd86a8da048a",
+      "delegatorAgentRunId": "utd_coordinator_api_rev_005_1786807916040_9617c71255164105adb0af2508161105",
+      "recipientAddress": "/worker",
+      "targetAgentRunId": "utd_worker_api_rev_005_1786807916040_6005ed17191f45e89312c1cd14882d17",
+      "targetTeamRunId": null,
+      "status": "accepted",
+      "description": "Return E2E_DIRECT_TASK_RESULT_42",
+      "createdAt": "2026-08-15T15:51:13.729Z",
+      "referenceFiles": [],
+      "updates": [
+        {
+          "kind": "submission",
+          "submissionId": "submission_8360ff61d4514f5a899fc920ea1ae78d",
+          "reviewId": null,
+          "interruptionId": null,
+          "reviewedSubmissionId": null,
+          "decision": null,
+          "content": "E2E_DIRECT_TASK_RESULT_42",
+          "createdAt": "2026-08-15T15:51:20.573Z",
+          "referenceFiles": []
+        },
+        {
+          "kind": "review",
+          "submissionId": null,
+          "reviewId": "review_374a2a9de865485593c0838782417f79",
+          "interruptionId": null,
+          "reviewedSubmissionId": "submission_8360ff61d4514f5a899fc920ea1ae78d",
+          "decision": "accept",
+          "content": null,
+          "createdAt": "2026-08-15T15:53:09.628Z",
+          "referenceFiles": []
+        }
+      ]
+    }
+  ],
+  "communications": []
+}

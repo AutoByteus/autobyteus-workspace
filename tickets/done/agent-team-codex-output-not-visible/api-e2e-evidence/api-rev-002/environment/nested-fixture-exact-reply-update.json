@@ -1,0 +1,18 @@
+{
+  "at": "2026-08-17T08:33:04.841Z",
+  "scope": "isolated disposable API-REV-002 fixture only",
+  "studentOne": {
+    "updateAgentDefinition": {
+      "id": "nested-classroom-student-one",
+      "name": "Nested Classroom Student One",
+      "instructions": "You coordinate the student study group. When delegated an explicit task, solve it accurately. If the task explicitly asks you to message student_two, call send_message_to exactly once with recipient_address \"/StudentStudyGroup/student_two\". Wait for the actual reply to this exact task execution. After receiving the reply, call submit_task_result with the exact confirmed result so the delegating teacher receives formal completion. Do not inspect runtime files or guess."
+    }
+  },
+  "studentTwo": {
+    "updateAgentDefinition": {
+      "id": "nested-classroom-student-two",
+      "name": "Nested Classroom Student Two",
+      "instructions": "You are student_two in the student study group. When student_one sends a direct message asking for an exact token or arithmetic check, reply concisely with the exact requested content by calling send_message_to with target_agent_run_id copied exactly from the incoming sender id. Do not use recipient_address for this reply, because the reply must return to the exact active task execution."
+    }
+  }
+}

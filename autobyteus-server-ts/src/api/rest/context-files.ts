@@ -115,12 +115,12 @@ export async function registerContextFileRoutes(app: FastifyInstance): Promise<v
   });
 
   app.get<{
-    Params: { draftTeamRunId: string; memberRouteKey: string; storedFilename: string };
-  }>("/drafts/team-runs/:draftTeamRunId/members/:memberRouteKey/context-files/:storedFilename", async (request, reply) => {
+    Params: { teamDraftId: string; memberAddress: string; storedFilename: string };
+  }>("/drafts/team-runs/:teamDraftId/members/:memberAddress/context-files/:storedFilename", async (request, reply) => {
     const owner = parseDraftContextFileOwnerDescriptor({
       kind: "team_member_draft",
-      draftTeamRunId: request.params.draftTeamRunId,
-      memberRouteKey: request.params.memberRouteKey,
+      teamDraftId: request.params.teamDraftId,
+      memberAddress: request.params.memberAddress,
     });
     const filePath = await readService.getDraftFilePath(owner, request.params.storedFilename);
     if (!filePath) {
@@ -130,13 +130,13 @@ export async function registerContextFileRoutes(app: FastifyInstance): Promise<v
   });
 
   app.delete<{
-    Params: { draftTeamRunId: string; memberRouteKey: string; storedFilename: string };
-  }>("/drafts/team-runs/:draftTeamRunId/members/:memberRouteKey/context-files/:storedFilename", async (request, reply) => {
+    Params: { teamDraftId: string; memberAddress: string; storedFilename: string };
+  }>("/drafts/team-runs/:teamDraftId/members/:memberAddress/context-files/:storedFilename", async (request, reply) => {
     try {
       const owner = parseDraftContextFileOwnerDescriptor({
         kind: "team_member_draft",
-        draftTeamRunId: request.params.draftTeamRunId,
-        memberRouteKey: request.params.memberRouteKey,
+        teamDraftId: request.params.teamDraftId,
+        memberAddress: request.params.memberAddress,
       });
       await readService.deleteDraftFile(owner, request.params.storedFilename);
       return reply.code(204).send();
@@ -161,12 +161,12 @@ export async function registerContextFileRoutes(app: FastifyInstance): Promise<v
   });
 
   app.get<{
-    Params: { teamRunId: string; memberRouteKey: string; storedFilename: string };
-  }>("/team-runs/:teamRunId/members/:memberRouteKey/context-files/:storedFilename", async (request, reply) => {
+    Params: { teamRunId: string; memberAddress: string; storedFilename: string };
+  }>("/team-runs/:teamRunId/members/:memberAddress/context-files/:storedFilename", async (request, reply) => {
     const owner = parseFinalContextFileOwnerDescriptor({
       kind: "team_member_final",
       teamRunId: request.params.teamRunId,
-      memberRouteKey: request.params.memberRouteKey,
+      memberAddress: request.params.memberAddress,
     });
     const filePath = await readService.getFinalFilePath(owner, request.params.storedFilename);
     if (!filePath) {

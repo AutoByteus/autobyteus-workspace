@@ -82,7 +82,7 @@
 
       <ApplicationTeamMemberOverrideItem
         v-for="member in draft.memberProfiles"
-        :key="`${member.memberRouteKey}:${member.agentDefinitionId}`"
+        :key="`${member.memberAddress}:${member.agentDefinitionId}`"
         :member="member"
         :global-runtime-kind="draft.defaults.runtimeKind"
         :global-llm-model-identifier="draft.defaults.llmModelIdentifier"
@@ -136,7 +136,7 @@ const emit = defineEmits<{
 const { t: $t } = useLocalization()
 const teamDefinitionStore = useAgentTeamDefinitionStore()
 const teamDefinitionError = ref<string | null>(null)
-const resolvedMembers = ref<Array<{ memberName: string; memberRouteKey: string; agentDefinitionId: string }>>([])
+const resolvedMembers = ref<Array<{ displayName: string; address: string; agentDefinitionId: string }>>([])
 const runtimeModelCatalogs = ref<TeamLaunchProfileRuntimeModelCatalogs>({})
 
 const supportsRuntimeKind = computed(() => props.slot.supportedLaunchConfig?.AGENT_TEAM?.runtimeKind === true)
@@ -157,16 +157,16 @@ const {
 })
 
 const repairMemberProfiles = (
-  currentMembers: Array<{ memberName: string; memberRouteKey: string; agentDefinitionId: string }>,
+  currentMembers: Array<{ displayName: string; address: string; agentDefinitionId: string }>,
   memberProfiles: ApplicationTeamMemberProfileDraft[],
 ): ApplicationTeamMemberProfileDraft[] => currentMembers.map((currentMember) => {
   const exactMatch = memberProfiles.find((memberProfile) => (
-    memberProfile.memberRouteKey === currentMember.memberRouteKey
+    memberProfile.memberAddress === currentMember.address
     && memberProfile.agentDefinitionId === currentMember.agentDefinitionId
   ))
   return {
-    memberRouteKey: currentMember.memberRouteKey,
-    memberName: currentMember.memberName,
+    memberAddress: currentMember.address,
+    displayName: currentMember.displayName,
     agentDefinitionId: currentMember.agentDefinitionId,
     runtimeKind: exactMatch?.runtimeKind ?? '',
     llmModelIdentifier: exactMatch?.llmModelIdentifier ?? '',
@@ -208,7 +208,7 @@ const memberProfilesAlignedToCurrentMembers = computed(() => (
   resolvedMembers.value.length > 0
   && resolvedMembers.value.length === props.draft.memberProfiles.length
   && resolvedMembers.value.every((member, index) => (
-    props.draft.memberProfiles[index]?.memberRouteKey === member.memberRouteKey
+    props.draft.memberProfiles[index]?.memberAddress === member.address
     && props.draft.memberProfiles[index]?.agentDefinitionId === member.agentDefinitionId
   ))
 ))
@@ -351,7 +351,7 @@ const updateMember = (member: ApplicationTeamMemberProfileDraft) => {
   emit('update:draft', {
     ...props.draft,
     memberProfiles: props.draft.memberProfiles.map((memberProfile) => (
-      memberProfile.memberRouteKey === member.memberRouteKey ? member : memberProfile
+      memberProfile.memberAddress === member.memberAddress ? member : memberProfile
     )),
   })
 }

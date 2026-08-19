@@ -135,12 +135,12 @@ import { computed, ref, watch } from 'vue';
 import { Icon } from '@iconify/vue';
 import { useLocalization } from '~/composables/useLocalization';
 import { useHorizontalSplitResize } from '~/composables/useHorizontalSplitResize';
-import { useTeamCommunicationStore } from '~/stores/teamCommunicationStore';
 import type {
   TeamCommunicationPerspectiveMessage,
   TeamCommunicationReferenceFile,
 } from '~/stores/teamCommunicationTypes';
-import type { ConversationTargetAddress } from '~/types/agent/ConversationTargetAddress';
+import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
+import { projectTeamCommunicationPerspective } from '~/utils/teamCommunication/teamCommunicationPerspective';
 import MarkdownRenderer from '~/components/conversation/segments/renderer/MarkdownRenderer.vue';
 import {
   referenceFileIcon,
@@ -149,12 +149,11 @@ import {
 import TeamCommunicationReferenceViewer from './TeamCommunicationReferenceViewer.vue';
 
 const props = defineProps<{
-  teamRunId: string;
-  focusedAddress?: ConversationTargetAddress | null;
+  teamContext: AgentTeamContext;
+  focusedAgentRunId: string;
 }>();
 
 const { t } = useLocalization();
-const teamCommunicationStore = useTeamCommunicationStore();
 const selectedMessageId = ref<string | null>(null);
 const selectedReferenceId = ref<string | null>(null);
 const selectedType = ref<'message' | 'reference'>('message');
@@ -166,11 +165,14 @@ const { paneWidth: leftPaneWidth, startResize } = useHorizontalSplitResize({
 });
 
 const hasFocusedMemberIdentity = computed(() => Boolean(
-  props.focusedAddress?.segments?.length,
+  props.focusedAgentRunId && props.teamContext.view.hasAgentRun(props.focusedAgentRunId),
 ));
-const perspective = computed(() =>
-  teamCommunicationStore.getPerspectiveForAddress(props.teamRunId, props.focusedAddress),
-);
+const teamRunId = computed(() => props.teamContext.view.getRootTeamRunId());
+const perspective = computed(() => projectTeamCommunicationPerspective({
+  view: props.teamContext.view,
+  messages: props.teamContext.view.listCommunicationMessages(),
+  focusedAgentRunId: props.focusedAgentRunId,
+}));
 const displayMessages = computed(() => perspective.value.messages);
 const selectedMessage = computed(() =>
   perspective.value.messages.find((message) => message.messageId === selectedMessageId.value) || null,

@@ -12,6 +12,8 @@ import { MemoryFileStore } from "../../../src/agent-memory/store/memory-file-sto
 import { ExternalRuntimeMemoryWriter } from "../../../src/agent-memory/store/external-runtime-memory-writer.js";
 import { RemoveExternalRuntimeWorkingContextSnapshotsMigration } from "../../../src/app-data-migrations/migrations/remove-external-runtime-working-context-snapshots-migration.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import type { TeamRunNode } from "../../../src/agent-team-execution/domain/team-run-config.js";
+import { testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
 
 let memoryDir: string;
 
@@ -61,11 +63,9 @@ const agentMember = (input: {
   memberPath: string[];
   runtimeKind: RuntimeKind;
 }) => ({
-  memberKind: "agent" as const,
-  memberRouteKey: input.memberPath.join("/"),
-  memberPath: input.memberPath,
-  memberName: input.memberPath.at(-1) ?? input.memberRunId,
-  memberRunId: input.memberRunId,
+  kind: "agent" as const,
+  address: `/${input.memberPath.join("/")}`,
+  agentRunId: input.memberRunId,
   runtimeKind: input.runtimeKind,
   platformAgentRunId: null,
   agentDefinitionId: `agent-${input.memberRunId}`,
@@ -85,28 +85,36 @@ const subTeamMember = (input: {
   teamRunId: string;
   memberTree: unknown[];
 }) => ({
-  memberKind: "agent_team" as const,
-  memberRouteKey: input.memberPath.join("/"),
-  memberPath: input.memberPath,
-  memberName: input.memberPath.at(-1) ?? input.memberRunId,
-  memberRunId: input.memberRunId,
+  kind: "agent_team" as const,
+  address: `/${input.memberPath.join("/")}`,
   teamDefinitionId: `team-def-${input.teamRunId}`,
   teamRunId: input.teamRunId,
-  coordinatorMemberRouteKey: null,
-  memberTree: input.memberTree,
+  coordinatorAddress: (input.memberTree[0] as { address: string }).address,
+  children: input.memberTree,
   role: null,
   description: null,
 });
 
 const writeTeamMetadata = async (teamRunId: string, memberTree: unknown[]): Promise<void> => {
-  await writeJson(path.join(memoryDir, "agent_teams", teamRunId, "team_run_metadata.json"), {
-    teamRunId,
-    teamDefinitionId: `team-def-${teamRunId}`,
-    teamDefinitionName: "Cleanup Fixture Team",
-    coordinatorMemberRouteKey: "lead",
-    createdAt: "2026-07-31T00:00:00.000Z",
-    archivedAt: null,
-    memberTree,
+  const teamDir = path.join(memoryDir, "agent_teams", teamRunId);
+  await writeJson(path.join(teamDir, "team_run_execution_tree.json"),
+    testExecutionTree({
+      rootTeamRunId: teamRunId,
+      rootTeamDefinitionId: `team-def-${teamRunId}`,
+      teamDefinitionName: "Cleanup Fixture Team",
+      coordinatorAddress: "/lead",
+      createdAt: "2026-07-31T00:00:00.000Z",
+      children: memberTree as TeamRunNode[],
+    }));
+  await writeJson(path.join(teamDir, "task_delegation_records.json"), {
+    schemaVersion: 1,
+    rootTeamRunId: teamRunId,
+    records: [],
+  });
+  await writeJson(path.join(teamDir, "team_communication_messages.json"), {
+    schemaVersion: 1,
+    rootTeamRunId: teamRunId,
+    messages: [],
   });
 };
 
@@ -219,7 +227,6 @@ describe("RemoveExternalRuntimeWorkingContextSnapshotsMigration", () => {
     await writeText(preservedArtifact, "evidence");
 
     const first = await new RemoveExternalRuntimeWorkingContextSnapshotsMigration(memoryDir).execute();
-
     expect(first.status).toBe("SUCCEEDED");
     expect(first.summary.migratedCount).toBe(6);
     for (const runDir of [
@@ -244,7 +251,7 @@ describe("RemoveExternalRuntimeWorkingContextSnapshotsMigration", () => {
       preservedArchive,
       preservedArtifact,
       path.join(standaloneDir("codex-run"), "run_metadata.json"),
-      path.join(memoryDir, "agent_teams", teamRunId, "team_run_metadata.json"),
+      path.join(memoryDir, "agent_teams", teamRunId, "team_run_execution_tree.json"),
     ]) {
       expect(await exists(filePath)).toBe(true);
     }

@@ -1,0 +1,91 @@
+{
+  "url": "http://127.0.0.1:31311/mobile",
+  "body": "AUTOBYTEUS REMOTE ACCESS\n\nAutoByteus\nRefresh\n\nAutoByteus Desktop\n\nhttp://127.0.0.1:60311\n\nConnected\nRecent work\nSwitch work\nClassroom Simulation Team\nDemonstrate one complete file-backed classroom exchange. Create a short arithmetic assignment ask...\nActive · classroom-api-rev-006\nutd_root_team_api_rev_006_1786811621320\nCall delegate_task exactly once with recipient_address /worker and description Return E2E_DIRECT_...\nActive · api_rev_006_1786811621320\nutd_root_team_api_rev_006_1786811621320\nCall delegate_task exactly once with recipient_address /worker and description Return E2E_DIRECT_...\nActive · api_rev_006_1786811621320\n\nChoose work\n\nRecent, Agents, Teams, Workspaces\n\nFiles\n\nBrowse current workspace\n\nTroubleshoot\n\nConnection diagnostics\n\nUnpair\n\nRemove this phone",
+  "tests": [
+    {
+      "test": "mobile-remote-access-shell",
+      "text": "AutoByteus Remote AccessAutoByteusRefreshAutoByteus Desktophttp://127.0.0.1:60311ConnectedRecent work Switch work Classroom Simulation TeamDemonstrate one complete file-backed classroom exchange. Create a short arithmetic assignment ask...A",
+      "outer": "<main class=\"bg-slate-100 text-slate-900 min-h-screen\" data-testid=\"mobile-remote-access-shell\"><section class=\"mx-auto flex min-h-screen max-w-3xl flex-col px-5 py-6\" data-testid=\"mobile-home\"><header class=\"mb-5 flex items-start justify-between gap-3\"><div><p class=\"text-xs font-semibold uppercase tracking-[0.2em] text-blue-600\">AutoByteus Remote Access</p><h1 class=\"mt-2 text-3xl font-bold text-slate-950\">AutoByteus</h1></div><button type=\"button\" class=\"rounded-full border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 shadow-sm\" data-testid=\"mobile-home-refresh\">Refresh</button></header><div class=\"rounded-3xl border border-slate-200 bg-white p-5 shadow-xl\" data-testid=\"mobile-home-status-card\" aria-label=\"Current node\"><div class=\"flex items-start justify-between gap-3\"><div class=\"min-w-0\"><p class=\"truncate text-base font-semibold text-slate-950\">AutoByteus Desktop</p><p class=\"mt-1 break-all font-mono text-xs text-slate-500\">http://127.0.0.1:60311</p></div><span class=\"shrink-0 rounded-full px-3 py-1 text-xs font-semibold bg-emerald-100 text-emerald-700\">Connected</span></div><!--v-if--><!--v-if--><!--v-if--></div><section class=\"mt-6 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm\"><div class=\"flex items-center justify-between gap-3\"><h2 class=\"text-base font-bold text-slate-950\">Recent work</h2><button type=\"button\" class=\"text-sm"
+    },
+    {
+      "test": "mobile-home",
+      "text": "AutoByteus Remote AccessAutoByteusRefreshAutoByteus Desktophttp://127.0.0.1:60311ConnectedRecent work Switch work Classroom Simulation TeamDemonstrate one complete file-backed classroom exchange. Create a short arithmetic assignment ask...A",
+      "outer": "<section class=\"mx-auto flex min-h-screen max-w-3xl flex-col px-5 py-6\" data-testid=\"mobile-home\"><header class=\"mb-5 flex items-start justify-between gap-3\"><div><p class=\"text-xs font-semibold uppercase tracking-[0.2em] text-blue-600\">AutoByteus Remote Access</p><h1 class=\"mt-2 text-3xl font-bold text-slate-950\">AutoByteus</h1></div><button type=\"button\" class=\"rounded-full border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 shadow-sm\" data-testid=\"mobile-home-refresh\">Refresh</button></header><div class=\"rounded-3xl border border-slate-200 bg-white p-5 shadow-xl\" data-testid=\"mobile-home-status-card\" aria-label=\"Current node\"><div class=\"flex items-start justify-between gap-3\"><div class=\"min-w-0\"><p class=\"truncate text-base font-semibold text-slate-950\">AutoByteus Desktop</p><p class=\"mt-1 break-all font-mono text-xs text-slate-500\">http://127.0.0.1:60311</p></div><span class=\"shrink-0 rounded-full px-3 py-1 text-xs font-semibold bg-emerald-100 text-emerald-700\">Connected</span></div><!--v-if--><!--v-if--><!--v-if--></div><section class=\"mt-6 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm\"><div class=\"flex items-center justify-between gap-3\"><h2 class=\"text-base font-bold text-slate-950\">Recent work</h2><button type=\"button\" class=\"text-sm font-semibold text-blue-700\"> Switch work </button></div><div class=\"mt-3 space-y-2\" data-testi"
+    },
+    {
+      "test": "mobile-home-refresh",
+      "text": "Refresh",
+      "outer": "<button type=\"button\" class=\"rounded-full border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 shadow-sm\" data-testid=\"mobile-home-refresh\">Refresh</button>"
+    },
+    {
+      "test": "mobile-home-status-card",
+      "text": "AutoByteus Desktophttp://127.0.0.1:60311Connected",
+      "outer": "<div class=\"rounded-3xl border border-slate-200 bg-white p-5 shadow-xl\" data-testid=\"mobile-home-status-card\" aria-label=\"Current node\"><div class=\"flex items-start justify-between gap-3\"><div class=\"min-w-0\"><p class=\"truncate text-base font-semibold text-slate-950\">AutoByteus Desktop</p><p class=\"mt-1 break-all font-mono text-xs text-slate-500\">http://127.0.0.1:60311</p></div><span class=\"shrink-0 rounded-full px-3 py-1 text-xs font-semibold bg-emerald-100 text-emerald-700\">Connected</span></div><!--v-if--><!--v-if--><!--v-if--></div>"
+    },
+    {
+      "test": "mobile-home-recent-list",
+      "text": "Classroom Simulation TeamDemonstrate one complete file-backed classroom exchange. Create a short arithmetic assignment ask...Active · classroom-api-rev-006utd_root_team_api_rev_006_1786811621320Call delegate_task exactly once with recipient",
+      "outer": "<div class=\"mt-3 space-y-2\" data-testid=\"mobile-home-recent-list\"><button type=\"button\" class=\"w-full rounded-2xl border p-4 text-left shadow-sm transition hover:border-blue-200 hover:bg-blue-50 border-slate-200 bg-white\" data-testid=\"mobile-readable-work-row\"><span class=\"block min-w-0\"><span class=\"block break-words text-base font-semibold leading-6 text-slate-950\" data-testid=\"mobile-work-row-title\">Classroom Simulation Team</span><span class=\"mt-1 block break-words text-sm leading-5 text-slate-600\" data-testid=\"mobile-work-row-detail\">Demonstrate one complete file-backed classroom exchange. Create a short arithmetic assignment ask...</span><span class=\"mt-3 inline-flex max-w-full rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold leading-4 text-slate-600\" data-testid=\"mobile-work-row-meta\"><span class=\"truncate\">Active · classroom-api-rev-006</span></span></span></button><button type=\"button\" class=\"w-full rounded-2xl border p-4 text-left shadow-sm transition hover:border-blue-200 hover:bg-blue-50 border-slate-200 bg-white\" data-testid=\"mobile-readable-work-row\"><span class=\"block min-w-0\"><span class=\"block break-words text-base font-semibold leading-6 text-slate-950\" data-testid=\"mobile-work-row-title\">utd_root_team_api_rev_006_1786811621320</span><span class=\"mt-1 block break-words text-sm leading-5 text-slate-600\" data-testid=\"mobile-work-row-detail\">Call deleg"
+    },
+    {
+      "test": "mobile-readable-work-row",
+      "text": "Classroom Simulation TeamDemonstrate one complete file-backed classroom exchange. Create a short arithmetic assignment ask...Active · classroom-api-rev-006",
+      "outer": "<button type=\"button\" class=\"w-full rounded-2xl border p-4 text-left shadow-sm transition hover:border-blue-200 hover:bg-blue-50 border-slate-200 bg-white\" data-testid=\"mobile-readable-work-row\"><span class=\"block min-w-0\"><span class=\"block break-words text-base font-semibold leading-6 text-slate-950\" data-testid=\"mobile-work-row-title\">Classroom Simulation Team</span><span class=\"mt-1 block break-words text-sm leading-5 text-slate-600\" data-testid=\"mobile-work-row-detail\">Demonstrate one complete file-backed classroom exchange. Create a short arithmetic assignment ask...</span><span class=\"mt-3 inline-flex max-w-full rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold leading-4 text-slate-600\" data-testid=\"mobile-work-row-meta\"><span class=\"truncate\">Active · classroom-api-rev-006</span></span></span></button>"
+    },
+    {
+      "test": "mobile-work-row-title",
+      "text": "Classroom Simulation Team",
+      "outer": "<span class=\"block break-words text-base font-semibold leading-6 text-slate-950\" data-testid=\"mobile-work-row-title\">Classroom Simulation Team</span>"
+    },
+    {
+      "test": "mobile-work-row-detail",
+      "text": "Demonstrate one complete file-backed classroom exchange. Create a short arithmetic assignment ask...",
+      "outer": "<span class=\"mt-1 block break-words text-sm leading-5 text-slate-600\" data-testid=\"mobile-work-row-detail\">Demonstrate one complete file-backed classroom exchange. Create a short arithmetic assignment ask...</span>"
+    },
+    {
+      "test": "mobile-work-row-meta",
+      "text": "Active · classroom-api-rev-006",
+      "outer": "<span class=\"mt-3 inline-flex max-w-full rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold leading-4 text-slate-600\" data-testid=\"mobile-work-row-meta\"><span class=\"truncate\">Active · classroom-api-rev-006</span></span>"
+    },
+    {
+      "test": "mobile-readable-work-row",
+      "text": "utd_root_team_api_rev_006_1786811621320Call delegate_task exactly once with recipient_address /worker and description Return E2E_DIRECT_...Active · api_rev_006_1786811621320",
+      "outer": "<button type=\"button\" class=\"w-full rounded-2xl border p-4 text-left shadow-sm transition hover:border-blue-200 hover:bg-blue-50 border-slate-200 bg-white\" data-testid=\"mobile-readable-work-row\"><span class=\"block min-w-0\"><span class=\"block break-words text-base font-semibold leading-6 text-slate-950\" data-testid=\"mobile-work-row-title\">utd_root_team_api_rev_006_1786811621320</span><span class=\"mt-1 block break-words text-sm leading-5 text-slate-600\" data-testid=\"mobile-work-row-detail\">Call delegate_task exactly once with recipient_address /worker and description Return E2E_DIRECT_...</span><span class=\"mt-3 inline-flex max-w-full rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold leading-4 text-slate-600\" data-testid=\"mobile-work-row-meta\"><span class=\"truncate\">Active · api_rev_006_1786811621320</span></span></span></button>"
+    },
+    {
+      "test": "mobile-work-row-title",
+      "text": "utd_root_team_api_rev_006_1786811621320",
+      "outer": "<span class=\"block break-words text-base font-semibold leading-6 text-slate-950\" data-testid=\"mobile-work-row-title\">utd_root_team_api_rev_006_1786811621320</span>"
+    },
+    {
+      "test": "mobile-work-row-detail",
+      "text": "Call delegate_task exactly once with recipient_address /worker and description Return E2E_DIRECT_...",
+      "outer": "<span class=\"mt-1 block break-words text-sm leading-5 text-slate-600\" data-testid=\"mobile-work-row-detail\">Call delegate_task exactly once with recipient_address /worker and description Return E2E_DIRECT_...</span>"
+    },
+    {
+      "test": "mobile-work-row-meta",
+      "text": "Active · api_rev_006_1786811621320",
+      "outer": "<span class=\"mt-3 inline-flex max-w-full rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold leading-4 text-slate-600\" data-testid=\"mobile-work-row-meta\"><span class=\"truncate\">Active · api_rev_006_1786811621320</span></span>"
+    },
+    {
+      "test": "mobile-readable-work-row",
+      "text": "utd_root_team_api_rev_006_1786811621320Call delegate_task exactly once with recipient_address /worker and description Return E2E_DIRECT_...Active · api_rev_006_1786811621320",
+      "outer": "<button type=\"button\" class=\"w-full rounded-2xl border p-4 text-left shadow-sm transition hover:border-blue-200 hover:bg-blue-50 border-slate-200 bg-white\" data-testid=\"mobile-readable-work-row\"><span class=\"block min-w-0\"><span class=\"block break-words text-base font-semibold leading-6 text-slate-950\" data-testid=\"mobile-work-row-title\">utd_root_team_api_rev_006_1786811621320</span><span class=\"mt-1 block break-words text-sm leading-5 text-slate-600\" data-testid=\"mobile-work-row-detail\">Call delegate_task exactly once with recipient_address /worker and description Return E2E_DIRECT_...</span><span class=\"mt-3 inline-flex max-w-full rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold leading-4 text-slate-600\" data-testid=\"mobile-work-row-meta\"><span class=\"truncate\">Active · api_rev_006_1786811621320</span></span></span></button>"
+    },
+    {
+      "test": "mobile-work-row-title",
+      "text": "utd_root_team_api_rev_006_1786811621320",
+      "outer": "<span class=\"block break-words text-base font-semibold leading-6 text-slate-950\" data-testid=\"mobile-work-row-title\">utd_root_team_api_rev_006_1786811621320</span>"
+    },
+    {
+      "test": "mobile-work-row-detail",
+      "text": "Call delegate_task exactly once with recipient_address /worker and description Return E2E_DIRECT_...",
+      "outer": "<span class=\"mt-1 block break-words text-sm leading-5 text-slate-600\" data-testid=\"mobile-work-row-detail\">Call delegate_task exactly once with recipient_address /worker and description Return E2E_DIRECT_...</span>"
+    },
+    {
+      "test": "mobile-work-row-meta",
+      "text": "Active · api_rev_006_1786811621320",
+      "outer": "<span class=\"mt-3 inline-flex max-w-full rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold leading-4 text-slate-600\" data-testid=\"mobile-work-row-meta\"><span class=\"truncate\">Active · api_rev_006_1786811621320</span></span>"
+    }
+  ]
+}

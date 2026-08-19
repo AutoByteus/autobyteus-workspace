@@ -1,0 +1,1733 @@
+{
+  "observedAt": "2026-08-09T11:22:57.206Z",
+  "endpoint": "http://127.0.0.1:60002/graphql",
+  "runtimes": {
+    "autobyteus": {
+      "availability": {
+        "runtimeKind": "autobyteus",
+        "enabled": true,
+        "reason": null
+      },
+      "providers": [
+        {
+          "provider": {
+            "id": "ANTHROPIC",
+            "name": "Anthropic",
+            "providerType": "ANTHROPIC",
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": [
+            {
+              "modelIdentifier": "claude-fable-5",
+              "name": "claude-fable-5",
+              "providerId": "ANTHROPIC",
+              "providerName": "Anthropic",
+              "providerType": "ANTHROPIC",
+              "runtime": "api",
+              "configSchema": {
+                "type": "object",
+                "properties": {
+                  "thinking_enabled": {
+                    "description": "Request Anthropic adaptive thinking for current Claude models. No fixed budget is sent.",
+                    "type": "boolean",
+                    "default": false
+                  },
+                  "thinking_display": {
+                    "description": "Controls whether adaptive thinking content is omitted or summarized when an explicit adaptive thinking request is sent.",
+                    "type": "string",
+                    "default": "omitted",
+                    "enum": [
+                      "omitted",
+                      "summarized"
+                    ]
+                  }
+                },
+                "required": []
+              }
+            },
+            {
+              "modelIdentifier": "claude-opus-4.7",
+              "name": "claude-opus-4.7",
+              "providerId": "ANTHROPIC",
+              "providerName": "Anthropic",
+              "providerType": "ANTHROPIC",
+              "runtime": "api",
+              "configSchema": {
+                "type": "object",
+                "properties": {
+                  "thinking_enabled": {
+                    "description": "Request Anthropic adaptive thinking for current Claude models. No fixed budget is sent.",
+                    "type": "boolean",
+                    "default": false
+                  },
+                  "thinking_display": {
+                    "description": "Controls whether adaptive thinking content is omitted or summarized when an explicit adaptive thinking request is sent.",
+                    "type": "string",
+                    "default": "omitted",
+                    "enum": [
+                      "omitted",
+                      "summarized"
+                    ]
+                  }
+                },
+                "required": []
+              }
+            },
+            {
+              "modelIdentifier": "claude-opus-4.8",
+              "name": "claude-opus-4.8",
+              "providerId": "ANTHROPIC",
+              "providerName": "Anthropic",
+              "providerType": "ANTHROPIC",
+              "runtime": "api",
+              "configSchema": {
+                "type": "object",
+                "properties": {
+                  "thinking_enabled": {
+                    "description": "Request Anthropic adaptive thinking for current Claude models. No fixed budget is sent.",
+                    "type": "boolean",
+                    "default": false
+                  },
+                  "thinking_display": {
+                    "description": "Controls whether adaptive thinking content is omitted or summarized when an explicit adaptive thinking request is sent.",
+                    "type": "string",
+                    "default": "omitted",
+                    "enum": [
+                      "omitted",
+                      "summarized"
+                    ]
+                  }
+                },
+                "required": []
+              }
+            },
+            {
+              "modelIdentifier": "claude-opus-5",
+              "name": "claude-opus-5",
+              "providerId": "ANTHROPIC",
+              "providerName": "Anthropic",
+              "providerType": "ANTHROPIC",
+              "runtime": "api",
+              "configSchema": {
+                "type": "object",
+                "properties": {
+                  "thinking_enabled": {
+                    "description": "Request Anthropic adaptive thinking for current Claude models. No fixed budget is sent.",
+                    "type": "boolean",
+                    "default": false
+                  },
+                  "thinking_display": {
+                    "description": "Controls whether adaptive thinking content is omitted or summarized when an explicit adaptive thinking request is sent.",
+                    "type": "string",
+                    "default": "omitted",
+                    "enum": [
+                      "omitted",
+                      "summarized"
+                    ]
+                  }
+                },
+                "required": []
+              }
+            },
+            {
+              "modelIdentifier": "claude-sonnet-4.6",
+              "name": "claude-sonnet-4.6",
+              "providerId": "ANTHROPIC",
+              "providerName": "Anthropic",
+              "providerType": "ANTHROPIC",
+              "runtime": "api",
+              "configSchema": {
+                "type": "object",
+                "properties": {
+                  "thinking_enabled": {
+                    "description": "Enable extended thinking summaries in Claude responses",
+                    "type": "boolean",
+                    "default": false
+                  },
+                  "thinking_budget_tokens": {
+                    "description": "Token budget for extended thinking (min 1024)",
+                    "type": "integer",
+                    "default": 1024,
+                    "minimum": 1024
+                  }
+                },
+                "required": []
+              }
+            },
+            {
+              "modelIdentifier": "claude-sonnet-5",
+              "name": "claude-sonnet-5",
+              "providerId": "ANTHROPIC",
+              "providerName": "Anthropic",
+              "providerType": "ANTHROPIC",
+              "runtime": "api",
+              "configSchema": {
+                "type": "object",
+                "properties": {
+                  "thinking_enabled": {
+                    "description": "Request Anthropic adaptive thinking for current Claude models. No fixed budget is sent.",
+                    "type": "boolean",
+                    "default": false
+                  },
+                  "thinking_display": {
+                    "description": "Controls whether adaptive thinking content is omitted or summarized when an explicit adaptive thinking request is sent.",
+                    "type": "string",
+                    "default": "omitted",
+                    "enum": [
+                      "omitted",
+                      "summarized"
+                    ]
+                  }
+                },
+                "required": []
+              }
+            }
+          ]
+        },
+        {
+          "provider": {
+            "id": "AUTOBYTEUS",
+            "name": "AutoByteus",
+            "providerType": "AUTOBYTEUS",
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": []
+        },
+        {
+          "provider": {
+            "id": "DEEPSEEK",
+            "name": "DeepSeek",
+            "providerType": "DEEPSEEK",
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": [
+            {
+              "modelIdentifier": "deepseek-v4-flash",
+              "name": "deepseek-v4-flash",
+              "providerId": "DEEPSEEK",
+              "providerName": "DeepSeek",
+              "providerType": "DEEPSEEK",
+              "runtime": "api",
+              "configSchema": {
+                "type": "object",
+                "properties": {
+                  "reasoning_effort": {
+                    "description": "Controls DeepSeek V4 thinking effort when thinking mode is enabled.",
+                    "type": "string",
+                    "default": "high",
+                    "enum": [
+                      "high",
+                      "max"
+                    ]
+                  },
+                  "thinking_type": {
+                    "description": "Enable or disable DeepSeek V4 thinking mode.",
+                    "type": "string",
+                    "default": "enabled",
+                    "enum": [
+                      "enabled",
+                      "disabled"
+                    ]
+                  }
+                },
+                "required": []
+              }
+            },
+            {
+              "modelIdentifier": "deepseek-v4-pro",
+              "name": "deepseek-v4-pro",
+              "providerId": "DEEPSEEK",
+              "providerName": "DeepSeek",
+              "providerType": "DEEPSEEK",
+              "runtime": "api",
+              "configSchema": {
+                "type": "object",
+                "properties": {
+                  "reasoning_effort": {
+                    "description": "Controls DeepSeek V4 thinking effort when thinking mode is enabled.",
+                    "type": "string",
+                    "default": "high",
+                    "enum": [
+                      "high",
+                      "max"
+                    ]
+                  },
+                  "thinking_type": {
+                    "description": "Enable or disable DeepSeek V4 thinking mode.",
+                    "type": "string",
+                    "default": "enabled",
+                    "enum": [
+                      "enabled",
+                      "disabled"
+                    ]
+                  }
+                },
+                "required": []
+              }
+            }
+          ]
+        },
+        {
+          "provider": {
+            "id": "GEMINI",
+            "name": "Gemini",
+            "providerType": "GEMINI",
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": [
+            {
+              "modelIdentifier": "gemini-3-flash-preview",
+              "name": "gemini-3-flash-preview",
+              "providerId": "GEMINI",
+              "providerName": "Gemini",
+              "providerType": "GEMINI",
+              "runtime": "api",
+              "configSchema": {
+                "type": "object",
+                "properties": {
+                  "thinking_level": {
+                    "description": "How deeply the model should reason before responding",
+                    "type": "string",
+                    "default": "minimal",
+                    "enum": [
+                      "minimal",
+                      "low",
+                      "medium",
+                      "high"
+                    ]
+                  },
+                  "include_thoughts": {
+                    "description": "Include model thought summaries in responses",
+                    "type": "boolean",
+                    "default": false
+                  }
+                },
+                "required": []
+              }
+            },
+            {
+              "modelIdentifier": "gemini-3.1-pro-preview",
+              "name": "gemini-3.1-pro-preview",
+              "providerId": "GEMINI",
+              "providerName": "Gemini",
+              "providerType": "GEMINI",
+              "runtime": "api",
+              "configSchema": {
+                "type": "object",
+                "properties": {
+                  "thinking_level": {
+                    "description": "How deeply the model should reason before responding",
+                    "type": "string",
+                    "default": "minimal",
+                    "enum": [
+                      "minimal",
+                      "low",
+                      "medium",
+                      "high"
+                    ]
+                  },
+                  "include_thoughts": {
+                    "description": "Include model thought summaries in responses",
+                    "type": "boolean",
+                    "default": false
+                  }
+                },
+                "required": []
+              }
+            },
+            {
+              "modelIdentifier": "gemini-3.5-flash",
+              "name": "gemini-3.5-flash",
+              "providerId": "GEMINI",
+              "providerName": "Gemini",
+              "providerType": "GEMINI",
+              "runtime": "api",
+              "configSchema": {
+                "type": "object",
+                "properties": {
+                  "thinking_level": {
+                    "description": "How deeply the model should reason before responding",
+                    "type": "string",
+                    "default": "minimal",
+                    "enum": [
+                      "minimal",
+                      "low",
+                      "medium",
+                      "high"
+                    ]
+                  },
+                  "include_thoughts": {
+                    "description": "Include model thought summaries in responses",
+                    "type": "boolean",
+                    "default": false
+                  }
+                },
+                "required": []
+              }
+            }
+          ]
+        },
+        {
+          "provider": {
+            "id": "GLM",
+            "name": "GLM",
+            "providerType": "GLM",
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": [
+            {
+              "modelIdentifier": "glm-5.2",
+              "name": "glm-5.2",
+              "providerId": "GLM",
+              "providerName": "GLM",
+              "providerType": "GLM",
+              "runtime": "api",
+              "configSchema": {
+                "type": "object",
+                "properties": {
+                  "reasoning_effort": {
+                    "description": "Controls GLM-5.2 thinking effort when thinking mode is enabled.",
+                    "type": "string",
+                    "default": "max",
+                    "enum": [
+                      "high",
+                      "max"
+                    ]
+                  },
+                  "thinking_type": {
+                    "description": "Enable or disable GLM-5.2 thinking mode.",
+                    "type": "string",
+                    "default": "enabled",
+                    "enum": [
+                      "enabled",
+                      "disabled"
+                    ]
+                  }
+                },
+                "required": []
+              }
+            }
+          ]
+        },
+        {
+          "provider": {
+            "id": "GROK",
+            "name": "Grok",
+            "providerType": "GROK",
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": [
+            {
+              "modelIdentifier": "grok-4.5",
+              "name": "grok-4.5",
+              "providerId": "GROK",
+              "providerName": "Grok",
+              "providerType": "GROK",
+              "runtime": "api",
+              "configSchema": {
+                "type": "object",
+                "properties": {
+                  "reasoning_effort": {
+                    "description": "Controls Grok 4.5 reasoning effort. Reasoning is always enabled.",
+                    "type": "string",
+                    "default": "high",
+                    "enum": [
+                      "low",
+                      "medium",
+                      "high"
+                    ]
+                  }
+                },
+                "required": []
+              }
+            }
+          ]
+        },
+        {
+          "provider": {
+            "id": "KIMI",
+            "name": "Kimi",
+            "providerType": "KIMI",
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": [
+            {
+              "modelIdentifier": "kimi-k2.6",
+              "name": "kimi-k2.6",
+              "providerId": "KIMI",
+              "providerName": "Kimi",
+              "providerType": "KIMI",
+              "runtime": "api",
+              "configSchema": null
+            },
+            {
+              "modelIdentifier": "kimi-k2.7-code",
+              "name": "kimi-k2.7-code",
+              "providerId": "KIMI",
+              "providerName": "Kimi",
+              "providerType": "KIMI",
+              "runtime": "api",
+              "configSchema": null
+            },
+            {
+              "modelIdentifier": "kimi-k2.7-code-highspeed",
+              "name": "kimi-k2.7-code-highspeed",
+              "providerId": "KIMI",
+              "providerName": "Kimi",
+              "providerType": "KIMI",
+              "runtime": "api",
+              "configSchema": null
+            }
+          ]
+        },
+        {
+          "provider": {
+            "id": "LMSTUDIO",
+            "name": "LM Studio",
+            "providerType": "LMSTUDIO",
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": [
+            {
+              "modelIdentifier": "deepseek-ocr:lmstudio@localhost:1234",
+              "name": "deepseek-ocr",
+              "providerId": "LMSTUDIO",
+              "providerName": "LM Studio",
+              "providerType": "LMSTUDIO",
+              "runtime": "lmstudio",
+              "configSchema": null
+            },
+            {
+              "modelIdentifier": "google/gemma-4-26b-a4b:lmstudio@localhost:1234",
+              "name": "google/gemma-4-26b-a4b",
+              "providerId": "LMSTUDIO",
+              "providerName": "LM Studio",
+              "providerType": "LMSTUDIO",
+              "runtime": "lmstudio",
+              "configSchema": null
+            },
+            {
+              "modelIdentifier": "google/gemma-4-31b:lmstudio@localhost:1234",
+              "name": "google/gemma-4-31b",
+              "providerId": "LMSTUDIO",
+              "providerName": "LM Studio",
+              "providerType": "LMSTUDIO",
+              "runtime": "lmstudio",
+              "configSchema": null
+            },
+            {
+              "modelIdentifier": "mlx-qwen3.5-35b-a3b-claude-4.6-opus-reasoning-distilled:lmstudio@localhost:1234",
+              "name": "mlx-qwen3.5-35b-a3b-claude-4.6-opus-reasoning-distilled",
+              "providerId": "LMSTUDIO",
+              "providerName": "LM Studio",
+              "providerType": "LMSTUDIO",
+              "runtime": "lmstudio",
+              "configSchema": null
+            },
+            {
+              "modelIdentifier": "qwen/qwen3.6-27b:lmstudio@localhost:1234",
+              "name": "qwen/qwen3.6-27b",
+              "providerId": "LMSTUDIO",
+              "providerName": "LM Studio",
+              "providerType": "LMSTUDIO",
+              "runtime": "lmstudio",
+              "configSchema": null
+            },
+            {
+              "modelIdentifier": "qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234",
+              "name": "qwen/qwen3.6-35b-a3b",
+              "providerId": "LMSTUDIO",
+              "providerName": "LM Studio",
+              "providerType": "LMSTUDIO",
+              "runtime": "lmstudio",
+              "configSchema": null
+            },
+            {
+              "modelIdentifier": "qwen3.5-27b:lmstudio@localhost:1234",
+              "name": "qwen3.5-27b",
+              "providerId": "LMSTUDIO",
+              "providerName": "LM Studio",
+              "providerType": "LMSTUDIO",
+              "runtime": "lmstudio",
+              "configSchema": null
+            },
+            {
+              "modelIdentifier": "qwen3.5-27b-claude-4.6-opus-distilled-mlx:lmstudio@localhost:1234",
+              "name": "qwen3.5-27b-claude-4.6-opus-distilled-mlx",
+              "providerId": "LMSTUDIO",
+              "providerName": "LM Studio",
+              "providerType": "LMSTUDIO",
+              "runtime": "lmstudio",
+              "configSchema": null
+            },
+            {
+              "modelIdentifier": "qwen3.6-27b:lmstudio@localhost:1234",
+              "name": "qwen3.6-27b",
+              "providerId": "LMSTUDIO",
+              "providerName": "LM Studio",
+              "providerType": "LMSTUDIO",
+              "runtime": "lmstudio",
+              "configSchema": null
+            },
+            {
+              "modelIdentifier": "qwen3.6-27b-mtplx-optimized-speed:lmstudio@localhost:1234",
+              "name": "qwen3.6-27b-mtplx-optimized-speed",
+              "providerId": "LMSTUDIO",
+              "providerName": "LM Studio",
+              "providerType": "LMSTUDIO",
+              "runtime": "lmstudio",
+              "configSchema": null
+            },
+            {
+              "modelIdentifier": "qwen3.6-27b-ud-mlx:lmstudio@localhost:1234",
+              "name": "qwen3.6-27b-ud-mlx",
+              "providerId": "LMSTUDIO",
+              "providerName": "LM Studio",
+              "providerType": "LMSTUDIO",
+              "runtime": "lmstudio",
+              "configSchema": null
+            },
+            {
+              "modelIdentifier": "text-embedding-nomic-embed-text-v1.5:lmstudio@localhost:1234",
+              "name": "text-embedding-nomic-embed-text-v1.5",
+              "providerId": "LMSTUDIO",
+              "providerName": "LM Studio",
+              "providerType": "LMSTUDIO",
+              "runtime": "lmstudio",
+              "configSchema": null
+            },
+            {
+              "modelIdentifier": "unsloth/gemma-4-26b-a4b-it:lmstudio@localhost:1234",
+              "name": "unsloth/gemma-4-26b-a4b-it",
+              "providerId": "LMSTUDIO",
+              "providerName": "LM Studio",
+              "providerType": "LMSTUDIO",
+              "runtime": "lmstudio",
+              "configSchema": null
+            },
+            {
+              "modelIdentifier": "unsloth/gemma-4-31b-it:lmstudio@localhost:1234",
+              "name": "unsloth/gemma-4-31b-it",
+              "providerId": "LMSTUDIO",
+              "providerName": "LM Studio",
+              "providerType": "LMSTUDIO",
+              "runtime": "lmstudio",
+              "configSchema": null
+            }
+          ]
+        },
+        {
+          "provider": {
+            "id": "MINIMAX",
+            "name": "MiniMax",
+            "providerType": "MINIMAX",
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": [
+            {
+              "modelIdentifier": "minimax-m3",
+              "name": "minimax-m3",
+              "providerId": "MINIMAX",
+              "providerName": "MiniMax",
+              "providerType": "MINIMAX",
+              "runtime": "api",
+              "configSchema": null
+            }
+          ]
+        },
+        {
+          "provider": {
+            "id": "MISTRAL",
+            "name": "Mistral",
+            "providerType": "MISTRAL",
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": [
+            {
+              "modelIdentifier": "devstral-2",
+              "name": "devstral-2",
+              "providerId": "MISTRAL",
+              "providerName": "Mistral",
+              "providerType": "MISTRAL",
+              "runtime": "api",
+              "configSchema": null
+            },
+            {
+              "modelIdentifier": "mistral-large-3",
+              "name": "mistral-large-3",
+              "providerId": "MISTRAL",
+              "providerName": "Mistral",
+              "providerType": "MISTRAL",
+              "runtime": "api",
+              "configSchema": null
+            }
+          ]
+        },
+        {
+          "provider": {
+            "id": "OLLAMA",
+            "name": "Ollama",
+            "providerType": "OLLAMA",
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": []
+        },
+        {
+          "provider": {
+            "id": "OPENAI",
+            "name": "OpenAI",
+            "providerType": "OPENAI",
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": [
+            {
+              "modelIdentifier": "gpt-5.4",
+              "name": "gpt-5.4",
+              "providerId": "OPENAI",
+              "providerName": "OpenAI",
+              "providerType": "OPENAI",
+              "runtime": "api",
+              "configSchema": {
+                "type": "object",
+                "properties": {
+                  "reasoning_effort": {
+                    "description": "Controls how hard the model thinks. Higher effort improves quality but can increase latency and cost.",
+                    "type": "string",
+                    "default": "none",
+                    "enum": [
+                      "none",
+                      "low",
+                      "medium",
+                      "high",
+                      "xhigh"
+                    ]
+                  },
+                  "reasoning_summary": {
+                    "description": "Include a reasoning summary in the response when supported.",
+                    "type": "string",
+                    "default": "none",
+                    "enum": [
+                      "none",
+                      "auto",
+                      "concise",
+                      "detailed"
+                    ]
+                  }
+                },
+                "required": []
+              }
+            },
+            {
+              "modelIdentifier": "gpt-5.4-mini",
+              "name": "gpt-5.4-mini",
+              "providerId": "OPENAI",
+              "providerName": "OpenAI",
+              "providerType": "OPENAI",
+              "runtime": "api",
+              "configSchema": {
+                "type": "object",
+                "properties": {
+                  "reasoning_effort": {
+                    "description": "Controls how hard the model thinks. Higher effort improves quality but can increase latency and cost.",
+                    "type": "string",
+                    "default": "none",
+                    "enum": [
+                      "none",
+                      "low",
+                      "medium",
+                      "high",
+                      "xhigh"
+                    ]
+                  },
+                  "reasoning_summary": {
+                    "description": "Include a reasoning summary in the response when supported.",
+                    "type": "string",
+                    "default": "none",
+                    "enum": [
+                      "none",
+                      "auto",
+                      "concise",
+                      "detailed"
+                    ]
+                  }
+                },
+                "required": []
+              }
+            },
+            {
+              "modelIdentifier": "gpt-5.5",
+              "name": "gpt-5.5",
+              "providerId": "OPENAI",
+              "providerName": "OpenAI",
+              "providerType": "OPENAI",
+              "runtime": "api",
+              "configSchema": {
+                "type": "object",
+                "properties": {
+                  "reasoning_effort": {
+                    "description": "Controls how hard the model thinks. Higher effort improves quality but can increase latency and cost.",
+                    "type": "string",
+                    "default": "none",
+                    "enum": [
+                      "none",
+                      "low",
+                      "medium",
+                      "high",
+                      "xhigh"
+                    ]
+                  },
+                  "reasoning_summary": {
+                    "description": "Include a reasoning summary in the response when supported.",
+                    "type": "string",
+                    "default": "none",
+                    "enum": [
+                      "none",
+                      "auto",
+                      "concise",
+                      "detailed"
+                    ]
+                  }
+                },
+                "required": []
+              }
+            },
+            {
+              "modelIdentifier": "gpt-5.6-luna",
+              "name": "gpt-5.6-luna",
+              "providerId": "OPENAI",
+              "providerName": "OpenAI",
+              "providerType": "OPENAI",
+              "runtime": "api",
+              "configSchema": {
+                "type": "object",
+                "properties": {
+                  "reasoning_effort": {
+                    "description": "Controls how hard the model thinks. Higher effort improves quality but can increase latency and cost.",
+                    "type": "string",
+                    "default": "medium",
+                    "enum": [
+                      "none",
+                      "low",
+                      "medium",
+                      "high",
+                      "xhigh",
+                      "max"
+                    ]
+                  },
+                  "reasoning_summary": {
+                    "description": "Include a reasoning summary in the response when supported.",
+                    "type": "string",
+                    "default": "none",
+                    "enum": [
+                      "none",
+                      "auto",
+                      "concise",
+                      "detailed"
+                    ]
+                  }
+                },
+                "required": []
+              }
+            },
+            {
+              "modelIdentifier": "gpt-5.6-sol",
+              "name": "gpt-5.6-sol",
+              "providerId": "OPENAI",
+              "providerName": "OpenAI",
+              "providerType": "OPENAI",
+              "runtime": "api",
+              "configSchema": {
+                "type": "object",
+                "properties": {
+                  "reasoning_effort": {
+                    "description": "Controls how hard the model thinks. Higher effort improves quality but can increase latency and cost.",
+                    "type": "string",
+                    "default": "medium",
+                    "enum": [
+                      "none",
+                      "low",
+                      "medium",
+                      "high",
+                      "xhigh",
+                      "max"
+                    ]
+                  },
+                  "reasoning_summary": {
+                    "description": "Include a reasoning summary in the response when supported.",
+                    "type": "string",
+                    "default": "none",
+                    "enum": [
+                      "none",
+                      "auto",
+                      "concise",
+                      "detailed"
+                    ]
+                  }
+                },
+                "required": []
+              }
+            },
+            {
+              "modelIdentifier": "gpt-5.6-terra",
+              "name": "gpt-5.6-terra",
+              "providerId": "OPENAI",
+              "providerName": "OpenAI",
+              "providerType": "OPENAI",
+              "runtime": "api",
+              "configSchema": {
+                "type": "object",
+                "properties": {
+                  "reasoning_effort": {
+                    "description": "Controls how hard the model thinks. Higher effort improves quality but can increase latency and cost.",
+                    "type": "string",
+                    "default": "medium",
+                    "enum": [
+                      "none",
+                      "low",
+                      "medium",
+                      "high",
+                      "xhigh",
+                      "max"
+                    ]
+                  },
+                  "reasoning_summary": {
+                    "description": "Include a reasoning summary in the response when supported.",
+                    "type": "string",
+                    "default": "none",
+                    "enum": [
+                      "none",
+                      "auto",
+                      "concise",
+                      "detailed"
+                    ]
+                  }
+                },
+                "required": []
+              }
+            }
+          ]
+        },
+        {
+          "provider": {
+            "id": "QWEN",
+            "name": "Qwen",
+            "providerType": "QWEN",
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": [
+            {
+              "modelIdentifier": "qwen3-max",
+              "name": "qwen3-max",
+              "providerId": "QWEN",
+              "providerName": "Qwen",
+              "providerType": "QWEN",
+              "runtime": "api",
+              "configSchema": null
+            },
+            {
+              "modelIdentifier": "qwen3.7-max",
+              "name": "qwen3.7-max",
+              "providerId": "QWEN",
+              "providerName": "Qwen",
+              "providerType": "QWEN",
+              "runtime": "api",
+              "configSchema": null
+            }
+          ]
+        }
+      ]
+    },
+    "codex_app_server": {
+      "availability": {
+        "runtimeKind": "codex_app_server",
+        "enabled": true,
+        "reason": null
+      },
+      "providers": [
+        {
+          "provider": {
+            "id": "ANTHROPIC",
+            "name": "Anthropic",
+            "providerType": "ANTHROPIC",
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": []
+        },
+        {
+          "provider": {
+            "id": "AUTOBYTEUS",
+            "name": "AutoByteus",
+            "providerType": "AUTOBYTEUS",
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": []
+        },
+        {
+          "provider": {
+            "id": "DEEPSEEK",
+            "name": "DeepSeek",
+            "providerType": "DEEPSEEK",
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": []
+        },
+        {
+          "provider": {
+            "id": "GEMINI",
+            "name": "Gemini",
+            "providerType": "GEMINI",
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": []
+        },
+        {
+          "provider": {
+            "id": "GLM",
+            "name": "GLM",
+            "providerType": "GLM",
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": []
+        },
+        {
+          "provider": {
+            "id": "GROK",
+            "name": "Grok",
+            "providerType": "GROK",
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": []
+        },
+        {
+          "provider": {
+            "id": "KIMI",
+            "name": "Kimi",
+            "providerType": "KIMI",
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": []
+        },
+        {
+          "provider": {
+            "id": "LMSTUDIO",
+            "name": "LM Studio",
+            "providerType": "LMSTUDIO",
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": []
+        },
+        {
+          "provider": {
+            "id": "MINIMAX",
+            "name": "MiniMax",
+            "providerType": "MINIMAX",
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": []
+        },
+        {
+          "provider": {
+            "id": "MISTRAL",
+            "name": "Mistral",
+            "providerType": "MISTRAL",
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": []
+        },
+        {
+          "provider": {
+            "id": "OLLAMA",
+            "name": "Ollama",
+            "providerType": "OLLAMA",
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": []
+        },
+        {
+          "provider": {
+            "id": "OPENAI",
+            "name": "OpenAI",
+            "providerType": "OPENAI",
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": [
+            {
+              "modelIdentifier": "gpt-5.3-codex-spark",
+              "name": "GPT-5.3-Codex-Spark (default reasoning: high)",
+              "providerId": "OPENAI",
+              "providerName": "OpenAI",
+              "providerType": "OPENAI",
+              "runtime": "api",
+              "configSchema": {
+                "parameters": [
+                  {
+                    "name": "reasoning_effort",
+                    "type": "enum",
+                    "description": "Controls reasoning depth for Codex turn/start. Higher effort may improve quality but increase latency.",
+                    "required": false,
+                    "default_value": "high",
+                    "enum_values": [
+                      "low",
+                      "medium",
+                      "high",
+                      "xhigh"
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "modelIdentifier": "gpt-5.4",
+              "name": "GPT-5.4 (default reasoning: medium)",
+              "providerId": "OPENAI",
+              "providerName": "OpenAI",
+              "providerType": "OPENAI",
+              "runtime": "api",
+              "configSchema": {
+                "parameters": [
+                  {
+                    "name": "reasoning_effort",
+                    "type": "enum",
+                    "description": "Controls reasoning depth for Codex turn/start. Higher effort may improve quality but increase latency.",
+                    "required": false,
+                    "default_value": "medium",
+                    "enum_values": [
+                      "low",
+                      "medium",
+                      "high",
+                      "xhigh"
+                    ]
+                  },
+                  {
+                    "name": "service_tier",
+                    "label": "Fast mode",
+                    "type": "enum",
+                    "description": "Enable Codex Fast mode for this model. Default leaves Codex service tier unchanged.",
+                    "required": false,
+                    "enum_values": [
+                      "fast"
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "modelIdentifier": "gpt-5.4-mini",
+              "name": "GPT-5.4-Mini (default reasoning: medium)",
+              "providerId": "OPENAI",
+              "providerName": "OpenAI",
+              "providerType": "OPENAI",
+              "runtime": "api",
+              "configSchema": {
+                "parameters": [
+                  {
+                    "name": "reasoning_effort",
+                    "type": "enum",
+                    "description": "Controls reasoning depth for Codex turn/start. Higher effort may improve quality but increase latency.",
+                    "required": false,
+                    "default_value": "medium",
+                    "enum_values": [
+                      "low",
+                      "medium",
+                      "high",
+                      "xhigh"
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "modelIdentifier": "gpt-5.5",
+              "name": "GPT-5.5 (default reasoning: medium)",
+              "providerId": "OPENAI",
+              "providerName": "OpenAI",
+              "providerType": "OPENAI",
+              "runtime": "api",
+              "configSchema": {
+                "parameters": [
+                  {
+                    "name": "reasoning_effort",
+                    "type": "enum",
+                    "description": "Controls reasoning depth for Codex turn/start. Higher effort may improve quality but increase latency.",
+                    "required": false,
+                    "default_value": "medium",
+                    "enum_values": [
+                      "low",
+                      "medium",
+                      "high",
+                      "xhigh"
+                    ]
+                  },
+                  {
+                    "name": "service_tier",
+                    "label": "Fast mode",
+                    "type": "enum",
+                    "description": "Enable Codex Fast mode for this model. Default leaves Codex service tier unchanged.",
+                    "required": false,
+                    "enum_values": [
+                      "fast"
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "modelIdentifier": "gpt-5.6-luna",
+              "name": "GPT-5.6-Luna (default reasoning: medium)",
+              "providerId": "OPENAI",
+              "providerName": "OpenAI",
+              "providerType": "OPENAI",
+              "runtime": "api",
+              "configSchema": {
+                "parameters": [
+                  {
+                    "name": "reasoning_effort",
+                    "type": "enum",
+                    "description": "Controls reasoning depth for Codex turn/start. Higher effort may improve quality but increase latency.",
+                    "required": false,
+                    "default_value": "medium",
+                    "enum_values": [
+                      "low",
+                      "medium",
+                      "high",
+                      "xhigh",
+                      "max"
+                    ]
+                  },
+                  {
+                    "name": "service_tier",
+                    "label": "Fast mode",
+                    "type": "enum",
+                    "description": "Enable Codex Fast mode for this model. Default leaves Codex service tier unchanged.",
+                    "required": false,
+                    "enum_values": [
+                      "fast"
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "modelIdentifier": "gpt-5.6-sol",
+              "name": "GPT-5.6-Sol (default reasoning: low)",
+              "providerId": "OPENAI",
+              "providerName": "OpenAI",
+              "providerType": "OPENAI",
+              "runtime": "api",
+              "configSchema": {
+                "parameters": [
+                  {
+                    "name": "reasoning_effort",
+                    "type": "enum",
+                    "description": "Controls reasoning depth for Codex turn/start. Higher effort may improve quality but increase latency.",
+                    "required": false,
+                    "default_value": "low",
+                    "enum_values": [
+                      "low",
+                      "medium",
+                      "high",
+                      "xhigh",
+                      "max",
+                      "ultra"
+                    ]
+                  },
+                  {
+                    "name": "service_tier",
+                    "label": "Fast mode",
+                    "type": "enum",
+                    "description": "Enable Codex Fast mode for this model. Default leaves Codex service tier unchanged.",
+                    "required": false,
+                    "enum_values": [
+                      "fast"
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "modelIdentifier": "gpt-5.6-terra",
+              "name": "GPT-5.6-Terra (default reasoning: medium)",
+              "providerId": "OPENAI",
+              "providerName": "OpenAI",
+              "providerType": "OPENAI",
+              "runtime": "api",
+              "configSchema": {
+                "parameters": [
+                  {
+                    "name": "reasoning_effort",
+                    "type": "enum",
+                    "description": "Controls reasoning depth for Codex turn/start. Higher effort may improve quality but increase latency.",
+                    "required": false,
+                    "default_value": "medium",
+                    "enum_values": [
+                      "low",
+                      "medium",
+                      "high",
+                      "xhigh",
+                      "max",
+                      "ultra"
+                    ]
+                  },
+                  {
+                    "name": "service_tier",
+                    "label": "Fast mode",
+                    "type": "enum",
+                    "description": "Enable Codex Fast mode for this model. Default leaves Codex service tier unchanged.",
+                    "required": false,
+                    "enum_values": [
+                      "fast"
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "provider": {
+            "id": "QWEN",
+            "name": "Qwen",
+            "providerType": "QWEN",
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": []
+        }
+      ]
+    },
+    "claude_agent_sdk": {
+      "availability": {
+        "runtimeKind": "claude_agent_sdk",
+        "enabled": true,
+        "reason": null
+      },
+      "providers": [
+        {
+          "provider": {
+            "id": "ANTHROPIC",
+            "name": "Anthropic",
+            "providerType": "ANTHROPIC",
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": [
+            {
+              "modelIdentifier": "haiku",
+              "name": "deepseek-v4-flash",
+              "providerId": "ANTHROPIC",
+              "providerName": "Anthropic",
+              "providerType": "ANTHROPIC",
+              "runtime": "api",
+              "configSchema": {
+                "type": "object",
+                "properties": {
+                  "thinking_enabled": {
+                    "description": "Enable Claude extended thinking.",
+                    "type": "boolean",
+                    "default": false
+                  },
+                  "reasoning_effort": {
+                    "description": "Controls Claude thinking depth. Higher effort may improve quality but increase latency.",
+                    "type": "string",
+                    "default": "medium",
+                    "enum": [
+                      "low",
+                      "medium",
+                      "high",
+                      "xhigh",
+                      "max"
+                    ]
+                  }
+                },
+                "required": []
+              }
+            },
+            {
+              "modelIdentifier": "sonnet",
+              "name": "deepseek-v4-flash",
+              "providerId": "ANTHROPIC",
+              "providerName": "Anthropic",
+              "providerType": "ANTHROPIC",
+              "runtime": "api",
+              "configSchema": {
+                "type": "object",
+                "properties": {
+                  "thinking_enabled": {
+                    "description": "Enable Claude extended thinking.",
+                    "type": "boolean",
+                    "default": false
+                  },
+                  "reasoning_effort": {
+                    "description": "Controls Claude thinking depth. Higher effort may improve quality but increase latency.",
+                    "type": "string",
+                    "default": "medium",
+                    "enum": [
+                      "low",
+                      "medium",
+                      "high",
+                      "xhigh",
+                      "max"
+                    ]
+                  }
+                },
+                "required": []
+              }
+            },
+            {
+              "modelIdentifier": "opus",
+              "name": "deepseek-v4-pro",
+              "providerId": "ANTHROPIC",
+              "providerName": "Anthropic",
+              "providerType": "ANTHROPIC",
+              "runtime": "api",
+              "configSchema": {
+                "type": "object",
+                "properties": {
+                  "thinking_enabled": {
+                    "description": "Enable Claude extended thinking.",
+                    "type": "boolean",
+                    "default": false
+                  },
+                  "reasoning_effort": {
+                    "description": "Controls Claude thinking depth. Higher effort may improve quality but increase latency.",
+                    "type": "string",
+                    "default": "medium",
+                    "enum": [
+                      "low",
+                      "medium",
+                      "high",
+                      "xhigh",
+                      "max"
+                    ]
+                  }
+                },
+                "required": []
+              }
+            },
+            {
+              "modelIdentifier": "default",
+              "name": "Default (recommended)",
+              "providerId": "ANTHROPIC",
+              "providerName": "Anthropic",
+              "providerType": "ANTHROPIC",
+              "runtime": "api",
+              "configSchema": {
+                "type": "object",
+                "properties": {
+                  "thinking_enabled": {
+                    "description": "Enable Claude extended thinking.",
+                    "type": "boolean",
+                    "default": false
+                  },
+                  "reasoning_effort": {
+                    "description": "Controls Claude thinking depth. Higher effort may improve quality but increase latency.",
+                    "type": "string",
+                    "default": "medium",
+                    "enum": [
+                      "low",
+                      "medium",
+                      "high",
+                      "xhigh",
+                      "max"
+                    ]
+                  }
+                },
+                "required": []
+              }
+            }
+          ]
+        },
+        {
+          "provider": {
+            "id": "AUTOBYTEUS",
+            "name": "AutoByteus",
+            "providerType": "AUTOBYTEUS",
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": []
+        },
+        {
+          "provider": {
+            "id": "DEEPSEEK",
+            "name": "DeepSeek",
+            "providerType": "DEEPSEEK",
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": []
+        },
+        {
+          "provider": {
+            "id": "GEMINI",
+            "name": "Gemini",
+            "providerType": "GEMINI",
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": []
+        },
+        {
+          "provider": {
+            "id": "GLM",
+            "name": "GLM",
+            "providerType": "GLM",
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": []
+        },
+        {
+          "provider": {
+            "id": "GROK",
+            "name": "Grok",
+            "providerType": "GROK",
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": []
+        },
+        {
+          "provider": {
+            "id": "KIMI",
+            "name": "Kimi",
+            "providerType": "KIMI",
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": []
+        },
+        {
+          "provider": {
+            "id": "LMSTUDIO",
+            "name": "LM Studio",
+            "providerType": "LMSTUDIO",
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": []
+        },
+        {
+          "provider": {
+            "id": "MINIMAX",
+            "name": "MiniMax",
+            "providerType": "MINIMAX",
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": []
+        },
+        {
+          "provider": {
+            "id": "MISTRAL",
+            "name": "Mistral",
+            "providerType": "MISTRAL",
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": []
+        },
+        {
+          "provider": {
+            "id": "OLLAMA",
+            "name": "Ollama",
+            "providerType": "OLLAMA",
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": []
+        },
+        {
+          "provider": {
+            "id": "OPENAI",
+            "name": "OpenAI",
+            "providerType": "OPENAI",
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": []
+        },
+        {
+          "provider": {
+            "id": "QWEN",
+            "name": "Qwen",
+            "providerType": "QWEN",
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": []
+        }
+      ]
+    }
+  },
+  "import": [
+    {
+      "packageId": "built-in:default",
+      "displayName": "Built-in Storage",
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/sr015-api-rev-013-20260809",
+      "sourceKind": "BUILT_IN",
+      "source": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/sr015-api-rev-013-20260809",
+      "sharedAgentCount": 2,
+      "teamLocalAgentCount": 0,
+      "agentTeamCount": 0,
+      "applicationCount": 0,
+      "isDefault": true,
+      "isRemovable": false
+    },
+    {
+      "packageId": "local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-worktrees%2Fagent-team-hierarchical-handoffs%2Fautobyteus-server-ts%2Ftests%2F.tmp%2Fsr015-api-rev-013-20260809%2Fstaged-agent-package-01",
+      "displayName": "staged-agent-package-01",
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/sr015-api-rev-013-20260809/staged-agent-package-01",
+      "sourceKind": "LOCAL_PATH",
+      "source": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/sr015-api-rev-013-20260809/staged-agent-package-01",
+      "sharedAgentCount": 0,
+      "teamLocalAgentCount": 1,
+      "agentTeamCount": 1,
+      "applicationCount": 0,
+      "isDefault": false,
+      "isRemovable": true
+    }
+  ],
+  "teams": [
+    {
+      "id": "nested-classroom-test",
+      "name": "Nested Classroom Test Team",
+      "description": "Minimal nested-team fixture for testing delegate_task to an agent-team target.",
+      "coordinatorMemberName": "Teacher",
+      "ownershipScope": "SHARED",
+      "ownerTeamId": null,
+      "ownerTeamName": null,
+      "handoffs": [
+        {
+          "from": "/Teacher",
+          "to": "/StudentStudyGroup",
+          "rules": [
+            "When the user asks to send the classroom handoff token to the study group."
+          ]
+        },
+        {
+          "from": "/StudentStudyGroup/student_one",
+          "to": "/Teacher",
+          "rules": [
+            "When the delegated classroom task is finished and the teacher needs the outcome."
+          ]
+        }
+      ],
+      "nodes": [
+        {
+          "memberName": "Teacher",
+          "ref": "teacher",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "StudentStudyGroup",
+          "ref": "student-study-group",
+          "refType": "AGENT_TEAM",
+          "refScope": "TEAM_LOCAL"
+        }
+      ]
+    },
+    {
+      "id": "team-local-team:nested-classroom-test:student-study-group",
+      "name": "Student Study Group",
+      "description": "Two-student nested team used as a task-team target in delegation tests.",
+      "coordinatorMemberName": "student_one",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerTeamId": "nested-classroom-test",
+      "ownerTeamName": "Nested Classroom Test Team",
+      "handoffs": [
+        {
+          "from": "/student_one",
+          "to": "/student_two",
+          "rules": [
+            "When the delegated classroom task asks the coordinator to consult the supporting student."
+          ]
+        }
+      ],
+      "nodes": [
+        {
+          "memberName": "student_one",
+          "ref": "student-one",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "student_two",
+          "ref": "student-two",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        }
+      ]
+    }
+  ],
+  "agents": [
+    {
+      "id": "team-local-agent:nested-classroom-test:teacher",
+      "name": "Test Teacher",
+      "role": "Teacher",
+      "description": "Top-level teacher coordinator for nested task-team delegation tests.",
+      "toolNames": [
+        "delegate_task",
+        "review_task_result",
+        "send_message_to",
+        "run_bash"
+      ],
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerTeamId": "nested-classroom-test",
+      "ownerTeamName": "Nested Classroom Test Team"
+    },
+    {
+      "id": "team-local-agent:team-local-team%3Anested-classroom-test%3Astudent-study-group:student-one",
+      "name": "Student One",
+      "role": "Student coordinator",
+      "description": "Coordinator student for the nested Student Study Group test team.",
+      "toolNames": [
+        "submit_task_result",
+        "send_message_to",
+        "run_bash"
+      ],
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerTeamId": "team-local-team:nested-classroom-test:student-study-group",
+      "ownerTeamName": "Student Study Group"
+    },
+    {
+      "id": "team-local-agent:team-local-team%3Anested-classroom-test%3Astudent-study-group:student-two",
+      "name": "Student Two",
+      "role": "Supporting student",
+      "description": "Supporting student for the nested Student Study Group test team.",
+      "toolNames": [
+        "send_message_to",
+        "run_bash"
+      ],
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerTeamId": "team-local-team:nested-classroom-test:student-study-group",
+      "ownerTeamName": "Student Study Group"
+    }
+  ]
+}

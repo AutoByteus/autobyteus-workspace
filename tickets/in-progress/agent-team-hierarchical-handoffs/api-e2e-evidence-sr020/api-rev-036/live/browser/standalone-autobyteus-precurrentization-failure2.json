@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "slug": "autobyteus",
+  "runtime": "autobyteus",
+  "model": "gpt-5.6-luna",
+  "agentDefinitionId": "api-rev-036-browser-agent",
+  "runId": "api_rev_036_browser_agent_b3e614a3baa84811a52d3acc4e524c19",
+  "expectedToken": "STANDALONE_AUTOBYTEUS_OK",
+  "startedAt": "2026-08-13T02:16:26.271Z",
+  "completedAt": "2026-08-13T02:18:31.635Z",
+  "passed": false,
+  "fatalError": "TimeoutError: locator.waitFor: Timeout 120000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByText('STANDALONE_AUTOBYTEUS_OK', { exact: true }).last() to be visible\u001b[22m\n\nlocator.waitFor: Timeout 120000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByText('STANDALONE_AUTOBYTEUS_OK', { exact: true }).last() to be visible\u001b[22m\n\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr020/api-rev-036/live/run-one-standalone-browser-row.mjs:125:63",
+  "consoleEvents": [],
+  "termination": {
+    "success": true,
+    "message": "Agent run terminated successfully."
+  }
+}

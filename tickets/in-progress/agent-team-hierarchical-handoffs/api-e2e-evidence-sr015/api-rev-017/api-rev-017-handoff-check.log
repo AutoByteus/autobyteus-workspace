@@ -1,0 +1,35 @@
+# API-REV-017 handoff check
+UTC 2026-08-10T15:22:12Z
+Expected current revision: API-REV-017
+19:- Current API/E2E Revision ID: `API-REV-017` (`Fail / 72%`; prior `API-REV-016` completed `Pass / 95%`). API-REV-016 remains valid backend/runtime and historical pre-user-report evidence, but it did not assert the critical visible-task UI behavior now proven failing.
+20:- Current API/E2E Revision ID: `API-REV-017`
+25:| API-REV-017 | `user`; supplied live frontend screenshot and reproduction request; Round 17 | SR-015; ARCH-REV-009; IR-020; CRR-035; CRR-036 | Pass / 95% (API-REV-016) | Fail / 72% |
+419:### API-REV-017 — Real delegated-task UI reproduction fails visible task list and execution projection
+
+Result consistency:
+150:- Result: **Fail**
+435:- Current result and confidence: `Fail / 72%`.
+
+Temporary test absent:
+PASS
+
+Evidence manifest verification:
+./apollo-task-normalization-temporary-probe-cleanup.log: OK
+./apollo-task-normalization-temporary-probe.log: OK
+./current-frontend-task-projection-source-audit.log: OK
+./delegated-task-ui-failure-analysis.md: OK
+./live/fresh-browser-task-ui-missing.png: OK
+./live/fresh-browser-task-ui-observations.json: OK
+./live/fresh-browser-task-ui-reproduction.mjs: OK
+./live/fresh-browser-task-ui-stdout.json: OK
+./live/manual-stack-target-audit.log: OK
+./live/user-reported-task-ui-missing.png: OK
+./live/user-root-task-records-apollo-shape-graphql.json: OK
+./live/user-root-task-records-graphql.json: OK
+./live/user-root-task-server-correlation.log: OK
+
+Manual stack still listening:
+{"data":{"__typename":"Query"}}
+HTTP/1.1 200 OK
+
+Git diff whitespace check:

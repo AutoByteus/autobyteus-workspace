@@ -1,0 +1,51 @@
+API-REV-014 initial coverage investigation evidence
+recorded_at=2026-08-09T12:22:59Z
+artifact_head=6b829e3d9aed63a24cd2f1e50c37a3457f9c0718
+source_commit=035fba611e6895187f7f6d4644993e22efd8c38c
+source_commit_present=commit
+prior_completed_revision=API-REV-013
+prior_result=Fail
+prior_confidence=90%
+current_revision=API-REV-014
+current_state=in_progress
+
+Relevant repository status:
+ M autobyteus-server-ts/tests/unit/agent-team-execution/mixed-sub-team-member-handle.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-manager.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/team-member-delivery-coordinator.test.ts
+
+Current same-task peer coverage search:
+autobyteus-server-ts/tests/unit/agent-team-execution/team-member-delivery-coordinator.test.ts:14:  taskTeamRunIds: [],
+autobyteus-server-ts/tests/unit/agent-team-execution/team-member-delivery-coordinator.test.ts:19:  taskTeamRunIds: [],
+autobyteus-server-ts/tests/unit/agent-team-execution/team-member-delivery-coordinator.test.ts:80:        taskTeamRunIds: [],
+autobyteus-server-ts/tests/unit/agent-team-execution/mixed-sub-team-member-handle.test.ts:43:      taskTeamRunIds: [],
+autobyteus-server-ts/tests/unit/agent-team-execution/mixed-sub-team-member-handle.test.ts:55:    deliverResolvedInterAgentMessage: childDeliverResolvedInterAgentMessage,
+autobyteus-server-ts/tests/unit/agent-team-execution/mixed-sub-team-member-handle.test.ts:73:        taskTeamRunIds: [],
+autobyteus-server-ts/tests/unit/agent-team-execution/mixed-sub-team-member-handle.test.ts:129:      taskTeamRunIds: [],
+autobyteus-server-ts/tests/unit/agent-team-execution/mixed-sub-team-member-handle.test.ts:134:      taskTeamRunIds: [],
+autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-manager.test.ts:65:const executionAddress = (memberAddress: string, taskTeamRunIds: string[] = []) =>
+autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-manager.test.ts:66:  createTeamExecutionAddress({ rootTeamRunId: "parent-1", taskTeamRunIds, memberAddress });
+autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-manager.test.ts:81:      taskTeamRunIds: [],
+autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-manager.test.ts:260:  it("keeps active task-Team handles in snapshots until accepted settlement removes them", async () => {
+autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-manager.test.ts:276:        message: new AgentInputUserMessage("Start task-Team work."),
+autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-manager.test.ts:283:        taskTeamRunIds: [taskTeamInstance.taskTeamRunId],
+autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-manager.test.ts:312:  it("rejects a task-Team receiver outside its configured coordinator before starting", async () => {
+autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-manager.test.ts:321:        message: new AgentInputUserMessage("Start task-Team work."),
+autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-manager.test.ts:373:        new AgentInputUserMessage("late task-Team work"),
+
+Source route ownership:
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/delivery/team-member-delivery-coordinator.ts:35:    return this.deliverViaResolvedRoute(intent, {
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/delivery/team-member-delivery-coordinator.ts:44:  async deliverViaResolvedRoute(
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/delivery/task-team-message-execution-resolver.ts:26:export class TaskTeamMessageExecutionResolver {
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-manager.ts:34:  TaskTeamMessageExecutionResolver,
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-manager.ts:51:  private readonly taskTeamMessageExecutionResolver: TaskTeamMessageExecutionResolver;
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-manager.ts:76:    this.taskTeamMessageExecutionResolver = new TaskTeamMessageExecutionResolver({
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-manager.ts:143:        return this.deliveryCoordinator.deliverViaResolvedRoute(
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-manager.ts:145:          this.materializeTaskTeamMessageRecipient(taskTeamExecution, targetAddress),
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-manager.ts:158:  async deliverResolvedInterAgentMessage(
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-manager.ts:286:  private materializeTaskTeamMessageRecipient(
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-manager.ts:319:      ) => execution.activeRun.deliverResolvedInterAgentMessage(
+
+Preserved API-REV-013 test corrections sha256:
+8e2cf94ab2bc486bb7be75cd36ad0d3d115a28837f1b264a1cef0c833c3059d5  autobyteus-server-ts/tests/unit/agent-team-execution/mixed-sub-team-member-handle.test.ts
+7e4fd1b4da1f8c557a8bd136e46673cbec638ed821f914233b3eb7b529459bfb  autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-manager.test.ts

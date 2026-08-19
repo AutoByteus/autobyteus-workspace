@@ -40,9 +40,10 @@
       </button>
 
       <TeamCommunicationPanel
+        v-if="activeTeamContext"
         v-show="messagesExpanded"
-        :team-run-id="activeTeamContext?.teamRunId || ''"
-        :focused-address="focusedCommunicationAddress"
+        :team-context="activeTeamContext"
+        :focused-agent-run-id="focusedAgentRunId"
         class="min-h-0 flex-1"
       />
     </section>
@@ -54,7 +55,7 @@
     >
       <TeamDelegatedTasksSection
         :team-context="activeTeamContext"
-        :focused-address="focusedCommunicationAddress"
+        :focused-agent-run-id="focusedAgentRunId"
         :collapsed="!delegatedTasksExpanded"
         class="h-full"
         @toggle="toggleSection('delegatedTasks')"
@@ -66,39 +67,27 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
-import { useTeamCommunicationStore } from '~/stores/teamCommunicationStore';
-import { useTaskDelegationStore } from '~/stores/taskDelegationStore';
 import TeamCommunicationPanel from '~/components/workspace/team/TeamCommunicationPanel.vue';
 import TeamDelegatedTasksSection from '~/components/workspace/team/TeamDelegatedTasksSection.vue';
 import { deriveDelegatedTaskEntries } from '~/utils/teamDelegatedTaskEntries';
-import { resolveTeamConversationTargetAddressResult } from '~/utils/teamConversationTargetAddress';
+import { projectTeamCommunicationPerspective } from '~/utils/teamCommunication/teamCommunicationPerspective';
 
 type TeamOverviewSection = 'messages' | 'delegatedTasks';
 
 const teamContextsStore = useAgentTeamContextsStore();
-const teamCommunicationStore = useTeamCommunicationStore();
-const taskDelegationStore = useTaskDelegationStore();
 const activeTeamContext = computed(() => teamContextsStore.activeTeamContext);
-const activeTeamRunId = computed(() => activeTeamContext.value?.teamRunId || '');
+const activeTeamRunId = computed(() => activeTeamContext.value?.view.getRootTeamRunId() || '');
 const expandedSection = ref<TeamOverviewSection | null>('messages');
 const lastAutoOpenedDelegatedTaskSignatureKey = ref('');
 const messagesExpanded = computed(() => expandedSection.value === 'messages');
 const delegatedTasksExpanded = computed(() => expandedSection.value === 'delegatedTasks');
-const focusedCommunicationAddress = computed(() => {
-  const teamContext = activeTeamContext.value;
-  if (!teamContext) return null;
-  return resolveTeamConversationTargetAddressResult(teamContext, {
-    allowSubteam: true,
-    allowActiveExecutionSafetyFallback: true,
-  }).target?.address ?? null;
-});
+const focusedAgentRunId = computed(() => activeTeamContext.value?.view.getFocusedAgentRunId() ?? '');
 const delegatedTaskEntries = computed(() => {
   const teamContext = activeTeamContext.value;
   return teamContext
     ? deriveDelegatedTaskEntries(
       teamContext,
-      taskDelegationStore.getRecordsForTeam(teamContext.teamRunId),
-      focusedCommunicationAddress.value,
+      focusedAgentRunId.value,
     )
     : [];
 });
@@ -112,8 +101,13 @@ const delegatedTaskSignature = computed(() => delegatedTaskEntries.value
   .sort()
   .join('|'));
 const messageCount = computed(() => {
-  const teamRunId = activeTeamRunId.value;
-  return teamCommunicationStore.getPerspectiveForAddress(teamRunId, focusedCommunicationAddress.value).messages.length;
+  const teamContext = activeTeamContext.value;
+  if (!teamContext) return 0;
+  return projectTeamCommunicationPerspective({
+    view: teamContext.view,
+    messages: teamContext.view.listCommunicationMessages(),
+    focusedAgentRunId: focusedAgentRunId.value,
+  }).messages.length;
 });
 
 watch(

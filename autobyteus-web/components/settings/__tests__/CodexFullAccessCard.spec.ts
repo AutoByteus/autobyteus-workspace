@@ -63,7 +63,7 @@ describe('CodexFullAccessCard', () => {
     expect(wrapper.text()).toContain('Codex full access')
     expect(wrapper.text()).toContain('Allow full filesystem access')
     expect(wrapper.text()).toContain('danger-full-access')
-    expect(wrapper.text()).toContain('Applies to new sessions.')
+    expect(wrapper.text()).toContain('Applies to new non-auto-approved sessions.')
     expect(wrapper.find('[data-testid="codex-full-access-toggle"]').attributes('role')).toBe('switch')
     expect(wrapper.find('[data-testid="codex-full-access-save"]').exists()).toBe(false)
     expect(wrapper.findAll('input[type="checkbox"]')).toHaveLength(0)

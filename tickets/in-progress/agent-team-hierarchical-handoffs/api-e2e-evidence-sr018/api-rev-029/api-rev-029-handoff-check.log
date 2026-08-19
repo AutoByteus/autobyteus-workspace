@@ -1,0 +1,17 @@
+API-REV-029 final handoff check
+head=41d31e695ca55bc68f60b21e87ed890632929edf
+head_match=true
+cumulative_artifacts_exist=true
+revision_record_present=true
+canonical_result_match=true
+failure_id_match=true
+three_runtime_team_matrix_pass=true
+standalone_persisted_response_exact=true
+durable_inventory_90=true
+temporary_probe_cleanup=true
+disposable_database_cleanup=true
+runtime_absent=true
+database_absent=true
+source_fixture_integrity=true
+git_diff_check=true
+result=PASS_HANDOFF_ARTIFACT_INTEGRITY

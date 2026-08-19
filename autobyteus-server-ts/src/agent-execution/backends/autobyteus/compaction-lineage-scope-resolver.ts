@@ -1,8 +1,10 @@
 import type { CompactionLineageScope } from "autobyteus-ts/memory/lineage/compaction-lineage-scope.js";
 
 type MemberTeamIdentity = {
-  teamRunId: string;
-  memberRunId: string;
+  identity: {
+    rootTeamRunId: string;
+    agentRunId: string;
+  };
 };
 
 const requireText = (value: string, fieldName: string): string => {
@@ -17,8 +19,8 @@ export const resolveCompactionLineageScope = (
 ): CompactionLineageScope => memberTeamContext
   ? {
       targetKind: "team_member",
-      runId: requireText(memberTeamContext.teamRunId, "teamRunId"),
-      memberId: requireText(memberTeamContext.memberRunId, "memberRunId"),
+      runId: requireText(memberTeamContext.identity.rootTeamRunId, "rootTeamRunId"),
+      memberId: requireText(memberTeamContext.identity.agentRunId, "agentRunId"),
     }
   : {
       targetKind: "agent_run",

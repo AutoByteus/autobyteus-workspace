@@ -1,0 +1,16 @@
+API-REV-034 final cleanup verification
+status=PASS
+owned_server_port_60234_listener_after_stop=ABSENT
+owned_frontend_port_31234_listener_after_stop=ABSENT
+owned_runtime=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-034-live-20260812-1
+owned_runtime_exists_after_cleanup=NO
+owned_database_prefix=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-034-live-20260812-1.db
+owned_database_matches_after_cleanup=0
+provider_traces_copied_before_cleanup=YES
+source_fixture_final_integrity=PASS
+operational_database_action=NONE
+protected_127.0.0.1_60004_31004_action=NONE
+delivery_stash_action=NONE
+delivery_backup_action=NONE
+automatic_rollback_action=NONE
+historical_incident_disclosures=PRESERVED

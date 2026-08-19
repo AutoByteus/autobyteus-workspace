@@ -25,6 +25,7 @@ describe("buildClaudeSessionMcpServers", () => {
         headers: {
           Authorization: "Bearer fake-token",
         },
+        alwaysLoad: true,
       },
     });
     expect(Object.keys(result ?? {})).toEqual(["autobyteus_agent_tools"]);

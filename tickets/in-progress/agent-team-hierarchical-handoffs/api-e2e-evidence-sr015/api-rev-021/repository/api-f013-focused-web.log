@@ -1,0 +1,70 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web
+
+stderr | components/workspace/team/__tests__/TeamOverviewPanel.current-task-visibility.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/__tests__/teamDelegatedTaskLiveVisibility.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/__tests__/teamTaskExecutionEventRouter.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamOverviewPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/__tests__/teamDelegatedTaskEntries.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamDelegatedTasksSection.current-contract.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/team/__tests__/TeamOverviewPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/__tests__/teamTaskExecutionEventRouter.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamDelegatedTasksSection.current-contract.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamOverviewPanel.current-task-visibility.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/__tests__/teamDelegatedTaskLiveVisibility.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/__tests__/teamDelegatedTaskEntries.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/__tests__/teamDelegatedTaskEntries.spec.ts (3 tests) 4ms
+ ✓ services/agentStreaming/__tests__/teamTaskExecutionEventRouter.spec.ts (7 tests) 7ms
+ ✓ services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts (4 tests) 11ms
+ ✓ utils/__tests__/teamDelegatedTaskLiveVisibility.spec.ts (7 tests) 10ms
+ ✓ components/workspace/team/__tests__/TeamDelegatedTasksSection.current-contract.spec.ts (1 test) 24ms
+ ✓ components/workspace/team/__tests__/TeamOverviewPanel.current-task-visibility.spec.ts (3 tests) 53ms
+ ✓ components/workspace/team/__tests__/TeamOverviewPanel.spec.ts (8 tests) 74ms
+
+ Test Files  7 passed (7)
+      Tests  33 passed (33)
+   Start at  06:03:44
+   Duration  6.26s (transform 2.97s, setup 35.93s, collect 1.18s, tests 182ms, environment 2.23s, prepare 1.29s)
+

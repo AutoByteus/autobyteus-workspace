@@ -1,4 +1,8 @@
 import type { DefaultLaunchConfig } from "../../launch-preferences/default-launch-config.js";
+import {
+  cloneCollaborationHandoffs,
+  type CollaborationHandoff,
+} from "../../agent-collaboration/domain/collaboration-handoff.js";
 
 export type TeamMemberRefScope = "shared" | "team_local" | "application_owned";
 export type AgentTeamDefinitionOwnershipScope = "shared" | "team_local" | "application_owned";
@@ -30,6 +34,7 @@ export class AgentTeamDefinition {
   category?: string;
   nodes: TeamMember[];
   coordinatorMemberName: string;
+  handoffs: CollaborationHandoff[];
   avatarUrl?: string | null;
   defaultLaunchConfig: DefaultLaunchConfig | null;
   ownershipScope: AgentTeamDefinitionOwnershipScope;
@@ -47,6 +52,7 @@ export class AgentTeamDefinition {
     category?: string;
     nodes: TeamMember[];
     coordinatorMemberName: string;
+    handoffs?: readonly CollaborationHandoff[] | null;
     id?: string | null;
     avatarUrl?: string | null;
     defaultLaunchConfig?: DefaultLaunchConfig | null;
@@ -64,6 +70,7 @@ export class AgentTeamDefinition {
     this.category = options.category;
     this.nodes = options.nodes;
     this.coordinatorMemberName = options.coordinatorMemberName;
+    this.handoffs = cloneCollaborationHandoffs(options.handoffs ?? []);
     this.id = options.id ?? null;
     this.avatarUrl = options.avatarUrl ?? null;
     this.defaultLaunchConfig = options.defaultLaunchConfig ?? null;
@@ -84,6 +91,7 @@ export class AgentTeamDefinitionUpdate {
   category?: string | null;
   nodes?: TeamMember[] | null;
   coordinatorMemberName?: string | null;
+  handoffs?: CollaborationHandoff[] | null;
   avatarUrl?: string | null;
   defaultLaunchConfig?: DefaultLaunchConfig | null;
 
@@ -94,6 +102,7 @@ export class AgentTeamDefinitionUpdate {
     category?: string | null;
     nodes?: TeamMember[] | null;
     coordinatorMemberName?: string | null;
+    handoffs?: readonly CollaborationHandoff[] | null;
     avatarUrl?: string | null;
     defaultLaunchConfig?: DefaultLaunchConfig | null;
   } = {}) {
@@ -103,6 +112,9 @@ export class AgentTeamDefinitionUpdate {
     this.category = options.category ?? null;
     this.nodes = options.nodes ?? null;
     this.coordinatorMemberName = options.coordinatorMemberName ?? null;
+    this.handoffs = options.handoffs === undefined || options.handoffs === null
+      ? null
+      : cloneCollaborationHandoffs(options.handoffs);
     this.avatarUrl = options.avatarUrl ?? null;
     this.defaultLaunchConfig = options.defaultLaunchConfig;
   }

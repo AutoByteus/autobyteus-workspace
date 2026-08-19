@@ -5,8 +5,8 @@ import type {
   MemoryExplorerPage,
   TeamMemberMemoryTargetSummary,
 } from "../domain/models.js";
-import { TeamRunMetadataStore } from "../../run-history/store/team-run-metadata-store.js";
-import type { TeamRunMetadata } from "../../run-history/store/team-run-metadata-types.js";
+import type { TeamRunExecutionTreeSnapshot } from "../../agent-team-execution/domain/team-run-execution-tree.js";
+import { TeamRunExecutionTreeLocationService } from "../../run-history/services/team-run-execution-tree-location-service.js";
 import { TeamRunHistoryCatalogService } from "../../run-history/services/team-run-history-catalog-service.js";
 import type { TeamRunIndexRow } from "../../run-history/domain/team-run-history-index-types.js";
 import { mergeMemoryAvailability } from "./memory-run-summary-builder.js";
@@ -20,10 +20,11 @@ import {
   normalizeMemoryExplorerSearch,
   pageMemoryExplorerEntries,
 } from "./memory-explorer-page.js";
+import { getAgentTeamAddressBasename } from "../../agent-collaboration/domain/agent-team-address.js";
 
 type TeamRunRecord = {
   teamRunId: string;
-  metadata: TeamRunMetadata;
+  tree: TeamRunExecutionTreeSnapshot;
   catalogRow: TeamRunIndexRow | null;
   memory: MemoryAvailabilityBuildResult;
   memberTargets: TeamMemoryMemberTargetRecord[];
@@ -36,23 +37,20 @@ type TeamGroup = {
 };
 
 export class TeamMemoryExplorerService {
-  private readonly metadataStore: TeamRunMetadataStore;
+  private readonly treeLocations: TeamRunExecutionTreeLocationService;
   private readonly catalogService: TeamRunHistoryCatalogService;
   private readonly memberTargetBuilder: TeamMemoryMemberTargetBuilder;
 
   constructor(
     private readonly memoryDir: string,
     dependencies: {
-      metadataStore?: TeamRunMetadataStore;
+      treeLocations?: TeamRunExecutionTreeLocationService;
       catalogService?: TeamRunHistoryCatalogService;
     } = {},
   ) {
-    this.metadataStore = dependencies.metadataStore ?? new TeamRunMetadataStore(memoryDir);
+    this.treeLocations = dependencies.treeLocations ?? new TeamRunExecutionTreeLocationService({ memoryDir });
     this.catalogService = dependencies.catalogService ?? new TeamRunHistoryCatalogService(memoryDir);
-    this.memberTargetBuilder = new TeamMemoryMemberTargetBuilder(
-      this.metadataStore,
-      new AgentMemoryLocationService({ memoryDir }),
-    );
+    this.memberTargetBuilder = new TeamMemoryMemberTargetBuilder(new AgentMemoryLocationService({ memoryDir }));
   }
 
   async listAgentTeamsWithMemory(
@@ -99,18 +97,18 @@ export class TeamMemoryExplorerService {
     const catalogRows = await this.readCatalogRowsByTeamRunId();
     const groups = new Map<string, TeamGroup>();
 
-    for (const teamRunId of await this.metadataStore.listTeamRunIds()) {
-      const metadata = await this.safeReadMetadata(teamRunId);
-      if (!metadata) {
+    for (const teamRunId of await this.treeLocations.listRootTeamRunIds()) {
+      const tree = await this.safeReadTree(teamRunId);
+      if (!tree) {
         continue;
       }
-      const memberTargets = this.memberTargetBuilder.build(teamRunId, metadata);
+      const memberTargets = await this.memberTargetBuilder.build(teamRunId);
       if (memberTargets.length === 0) {
         continue;
       }
       const memory = mergeMemoryAvailability(memberTargets.map((target) => target.memory));
       const catalogRow = catalogRows.get(teamRunId) ?? null;
-      const teamDefinitionId = metadata.teamDefinitionId.trim();
+      const teamDefinitionId = tree.rootTeam.teamDefinitionId.trim();
       if (!teamDefinitionId) {
         continue;
       }
@@ -119,22 +117,22 @@ export class TeamMemoryExplorerService {
         group = {
           teamDefinitionId,
           teamDefinitionName:
-            catalogRow?.teamDefinitionName?.trim() || metadata.teamDefinitionName || teamDefinitionId,
+            catalogRow?.teamDefinitionName?.trim() || tree.rootTeam.teamDefinitionName || teamDefinitionId,
           runs: [],
         };
         groups.set(teamDefinitionId, group);
       } else if (catalogRow?.teamDefinitionName?.trim() && group.teamDefinitionName === teamDefinitionId) {
         group.teamDefinitionName = catalogRow.teamDefinitionName.trim();
       }
-      group.runs.push({ teamRunId, metadata, catalogRow, memory, memberTargets });
+      group.runs.push({ teamRunId, tree, catalogRow, memory, memberTargets });
     }
 
     return Array.from(groups.values());
   }
 
-  private async safeReadMetadata(teamRunId: string): Promise<TeamRunMetadata | null> {
+  private async safeReadTree(teamRunId: string): Promise<TeamRunExecutionTreeSnapshot | null> {
     try {
-      return await this.metadataStore.readMetadata(teamRunId);
+      return await this.treeLocations.readTree(teamRunId);
     } catch (error) {
       console.warn(`Skipping team run '${teamRunId}' in memory explorer: ${String(error)}`);
       return null;
@@ -162,13 +160,13 @@ export class TeamMemoryExplorerService {
   private runMatches(run: TeamRunRecord, query: string): boolean {
     return (
       includesMemoryExplorerQuery(run.teamRunId, query) ||
-      includesMemoryExplorerQuery(run.metadata.teamDefinitionName, query) ||
+      includesMemoryExplorerQuery(run.tree.rootTeam.teamDefinitionName, query) ||
       includesMemoryExplorerQuery(run.catalogRow?.summary, query) ||
       includesMemoryExplorerQuery(run.catalogRow?.workspaceRootPath, query) ||
       run.memberTargets.some(({ member }) =>
-        includesMemoryExplorerQuery(member.memberName, query) ||
-        includesMemoryExplorerQuery(member.memberRouteKey, query) ||
-        includesMemoryExplorerQuery(member.memberRunId, query) ||
+        includesMemoryExplorerQuery(getAgentTeamAddressBasename(member.address), query) ||
+        includesMemoryExplorerQuery(member.address, query) ||
+        includesMemoryExplorerQuery(member.agentRunId, query) ||
         includesMemoryExplorerQuery(member.agentDefinitionId, query),
       )
     );
@@ -179,7 +177,7 @@ export class TeamMemoryExplorerService {
     const memberKeys = new Set<string>();
     for (const run of group.runs) {
       for (const target of run.memberTargets) {
-        memberKeys.add(target.member.memberRouteKey);
+        memberKeys.add(target.member.address);
       }
     }
     return {
@@ -195,11 +193,11 @@ export class TeamMemoryExplorerService {
   private toRunSummary(run: TeamRunRecord): AgentTeamRunMemorySummary {
     return {
       teamRunId: run.teamRunId,
-      teamDefinitionId: run.metadata.teamDefinitionId,
-      teamDefinitionName: run.catalogRow?.teamDefinitionName ?? run.metadata.teamDefinitionName,
+      teamDefinitionId: run.tree.rootTeam.teamDefinitionId,
+      teamDefinitionName: run.catalogRow?.teamDefinitionName ?? run.tree.rootTeam.teamDefinitionName,
       summary: run.catalogRow?.summary ?? null,
       workspaceRootPath: run.catalogRow?.workspaceRootPath ?? null,
-      createdAt: run.catalogRow?.createdAt ?? run.metadata.createdAt ?? null,
+      createdAt: run.catalogRow?.createdAt ?? run.tree.createdAt ?? null,
       lastUpdatedAt: run.memory.availability.latestMemoryAt,
       memory: run.memory.availability,
       memberTargets: run.memberTargets.map((target) => this.toMemberTargetSummary(target)),
@@ -208,9 +206,9 @@ export class TeamMemoryExplorerService {
 
   private toMemberTargetSummary(target: TeamMemoryMemberTargetRecord): TeamMemberMemoryTargetSummary {
     return {
-      memberRouteKey: target.member.memberRouteKey,
-      memberName: target.member.memberName,
-      memberRunId: target.member.memberRunId,
+      memberAddress: target.member.address,
+      displayName: getAgentTeamAddressBasename(target.member.address) ?? target.member.address,
+      agentRunId: target.member.agentRunId,
       agentDefinitionId: target.member.agentDefinitionId,
       lastUpdatedAt: target.memory.availability.latestMemoryAt,
       memory: target.memory.availability,
@@ -229,8 +227,8 @@ export class TeamMemoryExplorerService {
     if (a.memory.latestMemoryMtime !== b.memory.latestMemoryMtime) {
       return b.memory.latestMemoryMtime - a.memory.latestMemoryMtime;
     }
-    const aCreated = a.catalogRow?.createdAt ?? a.metadata.createdAt ?? "";
-    const bCreated = b.catalogRow?.createdAt ?? b.metadata.createdAt ?? "";
+    const aCreated = a.catalogRow?.createdAt ?? a.tree.createdAt ?? "";
+    const bCreated = b.catalogRow?.createdAt ?? b.tree.createdAt ?? "";
     if (aCreated !== bCreated) {
       return bCreated.localeCompare(aCreated);
     }

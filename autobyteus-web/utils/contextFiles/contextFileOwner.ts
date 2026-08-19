@@ -1,10 +1,10 @@
 export type DraftContextFileOwnerDescriptor =
   | { kind: 'agent_draft'; draftRunId: string }
-  | { kind: 'team_member_draft'; draftTeamRunId: string; memberRouteKey: string };
+  | { kind: 'team_member_draft'; teamDraftId: string; memberAddress: string };
 
 export type FinalContextFileOwnerDescriptor =
   | { kind: 'agent_final'; runId: string }
-  | { kind: 'team_member_final'; teamRunId: string; memberRouteKey: string };
+  | { kind: 'team_member_final'; teamRunId: string; memberAddress: string };
 
 const normalizeRequiredString = (value: string, fieldName: string): string => {
   const normalized = value.trim();
@@ -20,12 +20,12 @@ export const buildAgentDraftContextFileOwner = (draftRunId: string): DraftContex
 });
 
 export const buildTeamMemberDraftContextFileOwner = (
-  draftTeamRunId: string,
-  memberRouteKey: string,
+  teamDraftId: string,
+  memberAddress: string,
 ): DraftContextFileOwnerDescriptor => ({
   kind: 'team_member_draft',
-  draftTeamRunId: normalizeRequiredString(draftTeamRunId, 'draftTeamRunId'),
-  memberRouteKey: normalizeRequiredString(memberRouteKey, 'memberRouteKey'),
+  teamDraftId: normalizeRequiredString(teamDraftId, 'teamDraftId'),
+  memberAddress: normalizeRequiredString(memberAddress, 'memberAddress'),
 });
 
 export const buildAgentFinalContextFileOwner = (runId: string): FinalContextFileOwnerDescriptor => ({
@@ -35,11 +35,11 @@ export const buildAgentFinalContextFileOwner = (runId: string): FinalContextFile
 
 export const buildTeamMemberFinalContextFileOwner = (
   teamRunId: string,
-  memberRouteKey: string,
+  memberAddress: string,
 ): FinalContextFileOwnerDescriptor => ({
   kind: 'team_member_final',
   teamRunId: normalizeRequiredString(teamRunId, 'teamRunId'),
-  memberRouteKey: normalizeRequiredString(memberRouteKey, 'memberRouteKey'),
+  memberAddress: normalizeRequiredString(memberAddress, 'memberAddress'),
 });
 
 export const buildDraftContextFileEndpoint = (
@@ -50,5 +50,5 @@ export const buildDraftContextFileEndpoint = (
   if (owner.kind === 'agent_draft') {
     return `/drafts/agent-runs/${encodeURIComponent(owner.draftRunId)}/context-files/${encodedStoredFilename}`;
   }
-  return `/drafts/team-runs/${encodeURIComponent(owner.draftTeamRunId)}/members/${encodeURIComponent(owner.memberRouteKey)}/context-files/${encodedStoredFilename}`;
+  return `/drafts/team-runs/${encodeURIComponent(owner.teamDraftId)}/members/${encodeURIComponent(owner.memberAddress)}/context-files/${encodedStoredFilename}`;
 };

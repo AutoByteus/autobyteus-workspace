@@ -1,0 +1,155 @@
+
+> autobyteus@1.4.51 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web
+
+stderr | components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts (1 test | 1 failed) 79ms
+   × Historical team lazy hydration integration > opens a historical team through the sidebar and lazily hydrates only the newly selected member 79ms
+     → Unable to get [data-test="workspace-team-member-team-1-/architect_reviewer"] within: <div>
+  <div class="flex h-full flex-col bg-white">
+    <div class="flex items-center justify-between border-t border-gray-200 px-3 py-2">
+      <h3 class="text-sm font-semibold text-gray-700">Workspaces</h3><button type="button" class="inline-flex h-6 w-6 items-center justify-center rounded-md text-gray-500 transition-colors hover:bg-indigo-50 hover:text-indigo-600" title="Add workspace"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-4 w-4"></svg></button>
+    </div>
+    <!--v-if-->
+    <div class="min-h-0 flex-1 overflow-y-auto px-1 pb-2">
+      <div class="space-y-1">
+        <section class="rounded-md">
+          <div class="group/workspace-row flex items-center rounded-md text-sm text-gray-700 transition-colors hover:bg-gray-50 focus-within:bg-gray-50" data-test="workspace-row" data-workspace-id="ws-1" data-workspace-root="/ws/a" aria-expanded="true"><button type="button" class="flex min-w-0 flex-1 items-center px-2 py-1.5 text-left" aria-expanded="true"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1.5 h-4 w-4 text-gray-400 transition-transform rotate-0"></svg><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1.5 h-4 w-4 text-gray-500"></svg><span class="truncate">autobyteus-workspace-superrepo</span></button><button type="button" class="mr-1 inline-flex h-6 w-6 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-red-50 hover:text-red-600 focus:opacity-100 md:opacity-0 md:group-hover/workspace-row:opacity-100 md:group-focus-within/workspace-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50" title="Remove from workspaces" aria-label="Remove from workspaces"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-4 w-4"></svg></button></div>
+          <div class="ml-2 mt-0.5 space-y-1">
+            <!--v-if-->
+            <div class="mt-1 space-y-0.5">
+              <div class="px-2 py-1 text-[0.6875rem] font-semibold uppercase tracking-wide text-gray-400"> Teams </div>
+              <div class="rounded-md"><button type="button" class="flex w-full items-center rounded-md px-2 py-1 text-left text-sm text-gray-700 transition-colors hover:bg-gray-50" data-test="workspace-team-definition-row-team-def-1" aria-expanded="true"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1 h-3.5 w-3.5 text-gray-400 transition-transform rotate-0"></svg><span class="h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-1.5" role="img" aria-label="No active team runs" title="No active team runs" data-test="team-activity-dot" data-active="false"></span><span class="mr-1.5 inline-flex h-5 w-5 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[0.625rem] font-semibold text-gray-600"><img src="https://example.com/team.png" alt="Software Engineering Team avatar" class="h-full w-full object-cover"></span><span class="truncate font-medium">Software Engineering Team</span><span class="ml-1 text-xs text-gray-400">(1)</span></button>
+                <div class="ml-3 mt-0.5 space-y-0.5">
+                  <div class="rounded-md">
+                    <div class="group/team-row flex items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition-colors hover:bg-gray-50"><button type="button" class="flex min-w-0 flex-1 items-center text-left" data-test="workspace-team-row-team-1" aria-expanded="true"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1 h-3.5 w-3.5 flex-shrink-0 text-gray-400 transition-transform rotate-0" data-test="workspace-team-run-disclosure"></svg><span class="h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-1.5" role="img" aria-label="Inactive team run" title="Inactive team run" data-test="team-activity-dot" data-active="false"></span><span class="truncate font-medium">Build the demo fruit shop website</span></button>
+                      <div class="ml-2 flex flex-shrink-0 items-center gap-1"><button type="button" class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-amber-50 hover:text-amber-600 md:opacity-0 md:group-hover/team-row:opacity-100 md:group-focus-within/team-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50" title="Archive team history"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-3.5 w-3.5"></svg></button><button type="button" class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-red-50 hover:text-red-600 md:opacity-0 md:group-hover/team-row:opacity-100 md:group-focus-within/team-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50" title="Delete team history permanently"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-3.5 w-3.5"></svg></button><span class="text-xs text-gray-400">32w</span></div>
+                    </div>
+                    <div class="ml-3 space-y-0.5">
+                      <div class="flex w-full cursor-pointer items-center rounded-md bg-indigo-50/40 text-sm transition-colors hover:bg-indigo-50 focus:outline-none focus-visible:ring-1 focus-visible:ring-indigo-300 text-gray-600" style="margin-left: 0px;" data-test="workspace-team-transient-execution-row" data-row-kind="transient_execution" data-transient-kind="task_team_child" data-team-run-id="team-1" data-member-address="/" title="Temporary execution title" aria-label="Software Engineering Team. /" role="button" tabindex="0"><button type="button" class="ml-2 mr-1 inline-flex h-3.5 w-3.5 flex-shrink-0 items-center justify-center rounded text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500" data-test="workspace-team-transient-disclosure" data-team-run-id="team-1" data-member-address="/" aria-expanded="false"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-3.5 w-3.5 transition-transform -rotate-90"></svg></button>
+                        <div class="flex min-w-0 flex-1 items-center py-1 pr-2">
+                          <!--v-if--><span class="truncate">Software Engineering Team</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+    <div data-test="confirmation-modal" show="false" title="" message="Delete this history permanently. This cannot be undone." confirm-button-text="Delete" variant="danger" typography-size="large"></div>
+    <div data-test="confirmation-modal" show="false" title="Remove workspace title" message="" confirm-button-text="Remove workspace confirm" variant="danger" typography-size="large"></div>
+  </div>
+  <div class="flex flex-col h-full bg-white">
+    <div class="flex flex-wrap items-center justify-between gap-2 px-3 py-2 border-b border-gray-200 flex-shrink-0 sm:px-4">
+      <div class="flex items-center space-x-3 min-w-0 flex-1">
+        <div class="h-8 w-8 shrink-0 overflow-hidden rounded-lg bg-slate-100 flex items-center justify-center"><img src="https://example.com/sd.png" alt="solution_designer avatar" class="h-full w-full object-cover"></div>
+        <h4 class="text-base font-medium text-gray-800 truncate" title="solution_designer">solution_designer</h4>
+        <div data-test="header-status">offline</div>
+      </div>
+      <div class="flex flex-shrink-0 flex-wrap items-center justify-end gap-2 sm:gap-3">
+        <div><button type="button" data-test="new-agent"></button><button type="button" data-test="edit-config"></button></div>
+      </div>
+    </div>
+    <div class="flex min-h-0 flex-grow flex-col">
+      <div class="min-h-0 flex-grow">
+        <div data-test="team-event-monitor"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts > Historical team lazy hydration integration > opens a historical team through the sidebar and lazily hydrates only the newly selected member
+Error: Unable to get [data-test="workspace-team-member-team-1-/architect_reviewer"] within: <div>
+  <div class="flex h-full flex-col bg-white">
+    <div class="flex items-center justify-between border-t border-gray-200 px-3 py-2">
+      <h3 class="text-sm font-semibold text-gray-700">Workspaces</h3><button type="button" class="inline-flex h-6 w-6 items-center justify-center rounded-md text-gray-500 transition-colors hover:bg-indigo-50 hover:text-indigo-600" title="Add workspace"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-4 w-4"></svg></button>
+    </div>
+    <!--v-if-->
+    <div class="min-h-0 flex-1 overflow-y-auto px-1 pb-2">
+      <div class="space-y-1">
+        <section class="rounded-md">
+          <div class="group/workspace-row flex items-center rounded-md text-sm text-gray-700 transition-colors hover:bg-gray-50 focus-within:bg-gray-50" data-test="workspace-row" data-workspace-id="ws-1" data-workspace-root="/ws/a" aria-expanded="true"><button type="button" class="flex min-w-0 flex-1 items-center px-2 py-1.5 text-left" aria-expanded="true"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1.5 h-4 w-4 text-gray-400 transition-transform rotate-0"></svg><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1.5 h-4 w-4 text-gray-500"></svg><span class="truncate">autobyteus-workspace-superrepo</span></button><button type="button" class="mr-1 inline-flex h-6 w-6 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-red-50 hover:text-red-600 focus:opacity-100 md:opacity-0 md:group-hover/workspace-row:opacity-100 md:group-focus-within/workspace-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50" title="Remove from workspaces" aria-label="Remove from workspaces"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-4 w-4"></svg></button></div>
+          <div class="ml-2 mt-0.5 space-y-1">
+            <!--v-if-->
+            <div class="mt-1 space-y-0.5">
+              <div class="px-2 py-1 text-[0.6875rem] font-semibold uppercase tracking-wide text-gray-400"> Teams </div>
+              <div class="rounded-md"><button type="button" class="flex w-full items-center rounded-md px-2 py-1 text-left text-sm text-gray-700 transition-colors hover:bg-gray-50" data-test="workspace-team-definition-row-team-def-1" aria-expanded="true"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1 h-3.5 w-3.5 text-gray-400 transition-transform rotate-0"></svg><span class="h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-1.5" role="img" aria-label="No active team runs" title="No active team runs" data-test="team-activity-dot" data-active="false"></span><span class="mr-1.5 inline-flex h-5 w-5 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[0.625rem] font-semibold text-gray-600"><img src="https://example.com/team.png" alt="Software Engineering Team avatar" class="h-full w-full object-cover"></span><span class="truncate font-medium">Software Engineering Team</span><span class="ml-1 text-xs text-gray-400">(1)</span></button>
+                <div class="ml-3 mt-0.5 space-y-0.5">
+                  <div class="rounded-md">
+                    <div class="group/team-row flex items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition-colors hover:bg-gray-50"><button type="button" class="flex min-w-0 flex-1 items-center text-left" data-test="workspace-team-row-team-1" aria-expanded="true"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1 h-3.5 w-3.5 flex-shrink-0 text-gray-400 transition-transform rotate-0" data-test="workspace-team-run-disclosure"></svg><span class="h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-1.5" role="img" aria-label="Inactive team run" title="Inactive team run" data-test="team-activity-dot" data-active="false"></span><span class="truncate font-medium">Build the demo fruit shop website</span></button>
+                      <div class="ml-2 flex flex-shrink-0 items-center gap-1"><button type="button" class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-amber-50 hover:text-amber-600 md:opacity-0 md:group-hover/team-row:opacity-100 md:group-focus-within/team-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50" title="Archive team history"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-3.5 w-3.5"></svg></button><button type="button" class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-red-50 hover:text-red-600 md:opacity-0 md:group-hover/team-row:opacity-100 md:group-focus-within/team-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50" title="Delete team history permanently"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-3.5 w-3.5"></svg></button><span class="text-xs text-gray-400">32w</span></div>
+                    </div>
+                    <div class="ml-3 space-y-0.5">
+                      <div class="flex w-full cursor-pointer items-center rounded-md bg-indigo-50/40 text-sm transition-colors hover:bg-indigo-50 focus:outline-none focus-visible:ring-1 focus-visible:ring-indigo-300 text-gray-600" style="margin-left: 0px;" data-test="workspace-team-transient-execution-row" data-row-kind="transient_execution" data-transient-kind="task_team_child" data-team-run-id="team-1" data-member-address="/" title="Temporary execution title" aria-label="Software Engineering Team. /" role="button" tabindex="0"><button type="button" class="ml-2 mr-1 inline-flex h-3.5 w-3.5 flex-shrink-0 items-center justify-center rounded text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500" data-test="workspace-team-transient-disclosure" data-team-run-id="team-1" data-member-address="/" aria-expanded="false"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-3.5 w-3.5 transition-transform -rotate-90"></svg></button>
+                        <div class="flex min-w-0 flex-1 items-center py-1 pr-2">
+                          <!--v-if--><span class="truncate">Software Engineering Team</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+    <div data-test="confirmation-modal" show="false" title="" message="Delete this history permanently. This cannot be undone." confirm-button-text="Delete" variant="danger" typography-size="large"></div>
+    <div data-test="confirmation-modal" show="false" title="Remove workspace title" message="" confirm-button-text="Remove workspace confirm" variant="danger" typography-size="large"></div>
+  </div>
+  <div class="flex flex-col h-full bg-white">
+    <div class="flex flex-wrap items-center justify-between gap-2 px-3 py-2 border-b border-gray-200 flex-shrink-0 sm:px-4">
+      <div class="flex items-center space-x-3 min-w-0 flex-1">
+        <div class="h-8 w-8 shrink-0 overflow-hidden rounded-lg bg-slate-100 flex items-center justify-center"><img src="https://example.com/sd.png" alt="solution_designer avatar" class="h-full w-full object-cover"></div>
+        <h4 class="text-base font-medium text-gray-800 truncate" title="solution_designer">solution_designer</h4>
+        <div data-test="header-status">offline</div>
+      </div>
+      <div class="flex flex-shrink-0 flex-wrap items-center justify-end gap-2 sm:gap-3">
+        <div><button type="button" data-test="new-agent"></button><button type="button" data-test="edit-config"></button></div>
+      </div>
+    </div>
+    <div class="flex min-h-0 flex-grow flex-col">
+      <div class="min-h-0 flex-grow">
+        <div data-test="team-event-monitor"></div>
+      </div>
+    </div>
+  </div>
+</div>
+ ❯ VueWrapper.BaseWrapper.get ../node_modules/.pnpm/@vue+test-utils@2.4.6/node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7279:15
+    7277|             return result;
+    7278|         }
+    7279|         throw new Error("Unable to get ".concat(selector, " within: ")…
+       |               ^
+    7280|     };
+    7281|     BaseWrapper.prototype.getComponent = function (selector) {
+ ❯ components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts:444:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  14:33:58
+   Duration  4.64s (transform 2.61s, setup 3.82s, collect 295ms, tests 79ms, environment 131ms, prepare 124ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

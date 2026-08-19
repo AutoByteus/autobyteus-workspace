@@ -4,6 +4,8 @@ import type { ApplicationExecutionContext } from "../../application-orchestratio
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { ConfiguredMcpAgentToolSource } from "./configured-mcp/configured-mcp-agent-tool-source.js";
 import type { AgentToolMcpToolRouteTable } from "./agent-tool-mcp-tool-route.js";
+import type { TeamMemberExecutionIdentity } from "../../agent-team-execution/domain/team-member-execution-identity.js";
+import { cloneTeamMemberExecutionIdentity } from "../../agent-team-execution/domain/team-member-execution-identity.js";
 
 export const AGENT_TOOLS_MCP_SERVER_NAME = "autobyteus_agent_tools";
 export const AGENT_TOOLS_MCP_TRANSPORT = "streamable_http";
@@ -32,10 +34,8 @@ export type RedactedAgentToolMcpDescriptor = {
 
 export type AgentToolMcpSessionOwnerIdentity = {
   runId: string;
-  teamRunId?: string | null;
-  memberRunId?: string | null;
-  memberRouteKey?: string | null;
-  memberName?: string | null;
+  teamIdentity?: TeamMemberExecutionIdentity | null;
+  displayName?: string | null;
 };
 
 export type AgentToolMcpToolExecutionEvent = {
@@ -106,10 +106,8 @@ export const cloneAgentToolMcpSessionOwnerIdentity = (
   owner: AgentToolMcpSessionOwnerIdentity,
 ): AgentToolMcpSessionOwnerIdentity => ({
   runId: owner.runId,
-  teamRunId: owner.teamRunId ?? null,
-  memberRunId: owner.memberRunId ?? null,
-  memberRouteKey: owner.memberRouteKey ?? null,
-  memberName: owner.memberName ?? null,
+  teamIdentity: owner.teamIdentity ? cloneTeamMemberExecutionIdentity(owner.teamIdentity) : null,
+  displayName: owner.displayName ?? null,
 });
 
 export const cloneAgentToolMcpExecutionContext = (

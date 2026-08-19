@@ -1,40 +1,15 @@
-import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
-import type { AgentOperationResult } from "../../../../agent-execution/domain/agent-operation-result.js";
-import type { TeamLeafAgentStatusSnapshot } from "../../../domain/team-leaf-agent-status-snapshot.js";
-import type { ResolvedInterAgentMessageDeliveryRequest } from "../../../domain/inter-agent-message-delivery.js";
-import type { TeamMemberSelector } from "../../../domain/team-run-member-identity.js";
-import type { TeamRunEventUnsubscribe } from "../../../domain/team-run-event.js";
-import type { MixedTeamMemberContext } from "../mixed-team-run-context.js";
-import type { ConversationTargetAddress } from "../../../domain/conversation-target-address.js";
+import type { TeamRunEvent } from "../../../domain/team-run-event.js";
+import type { MixedAgentMemberContext, MixedSubTeamMemberContext } from "../mixed-team-run-context.js";
+import type { MixedAgentMemberHandle } from "./mixed-agent-member-handle.js";
+import type { MixedSubTeamMemberHandle } from "./mixed-sub-team-member-handle.js";
 
-export interface MixedTeamMemberHandle {
-  readonly context: MixedTeamMemberContext;
-  isActive(): boolean;
-  getLeafAgentStatusSnapshots(): TeamLeafAgentStatusSnapshot[];
-  hasOpenExecutionWork(): boolean;
-  postMessage(message: AgentInputUserMessage): Promise<AgentOperationResult>;
-  postMessageToConversationTarget(
-    message: AgentInputUserMessage,
-    address: ConversationTargetAddress,
-  ): Promise<AgentOperationResult>;
-  deliverInterMemberMessage(
-    request: ResolvedInterAgentMessageDeliveryRequest,
-    beforePublishMemberInput?: (() => void) | null,
-  ): Promise<AgentOperationResult>;
-  approveToolInvocation(
-    target: TeamMemberSelector | null,
-    invocationId: string,
-    approved: boolean,
-    reason?: string | null,
-    targetMemberRunId?: string | null,
-  ): Promise<AgentOperationResult>;
-  interrupt(
-    target: TeamMemberSelector | null,
-    targetMemberRunId?: string | null,
-  ): Promise<AgentOperationResult>;
-  terminate(): Promise<AgentOperationResult>;
-  dispose(): void;
-}
+export type MixedConfiguredMemberHandle =
+  | MixedAgentMemberHandle
+  | MixedSubTeamMemberHandle;
 
-export type MixedTeamEventPublish = (event: import("../../../domain/team-run-event.js").TeamRunEvent) => void;
-export type MixedTeamUnsubscribe = TeamRunEventUnsubscribe;
+export type MixedConfiguredMemberContext =
+  | MixedAgentMemberContext
+  | MixedSubTeamMemberContext;
+
+/** Local managers inject one root-owned sink; they never own subscribers. */
+export type MixedTeamEventPublish = (event: TeamRunEvent) => void;

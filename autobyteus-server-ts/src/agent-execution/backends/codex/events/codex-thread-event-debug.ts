@@ -1,4 +1,6 @@
-import type { CodexAppServerMessage } from "../thread/codex-app-server-message.js";
+import type { CodexThreadEventMessage } from "../thread/codex-thread.js";
+import type { CodexSegmentTurnRejectionReason } from "../thread/codex-segment-turn-admission.js";
+import type { RuntimeKind } from "../../../../runtime-management/runtime-kind-enum.js";
 import { appendRuntimeRawEventLog } from "../../shared/runtime-raw-event-file-debug.js";
 
 const isCodexThreadEventDebugEnabled = (): boolean => process.env.CODEX_THREAD_EVENT_DEBUG === "1";
@@ -53,7 +55,7 @@ const formatRawCodexThreadEventForDebug = (value: unknown): string =>
 export const logRawCodexThreadEventDetails = (
   runId: string,
   sequence: number,
-  event: CodexAppServerMessage,
+  event: CodexThreadEventMessage,
 ): void => {
   const rawMethod = event.method;
   const eventName = rawMethod.trim();
@@ -96,20 +98,34 @@ export const logRawCodexThreadEventDetails = (
     return;
   }
 
-    debugCodexThreadEvent("Raw Codex event", {
-      sequence,
-      runId,
-      rawMethod,
-      eventName: eventName || null,
-      eventId: asString(payload.id),
-      itemId,
-      itemType,
-      itemName,
-      itemStatus,
-      callId,
-      turnId,
-      payloadKeys: Object.keys(payload),
-      summaryPartLength: summaryPart.length,
+  debugCodexThreadEvent("Raw Codex event", {
+    sequence,
+    runId,
+    rawMethod,
+    eventName: eventName || null,
+    eventId: asString(payload.id),
+    itemId,
+    itemType,
+    itemName,
+    itemStatus,
+    callId,
+    turnId,
+    payloadKeys: Object.keys(payload),
+    summaryPartLength: summaryPart.length,
     rawEventJson: formatRawCodexThreadEventForDebug(event),
+  });
+};
+
+export const logCodexSegmentTurnAdmissionRejection = (input: Readonly<{
+  runtimeKind: RuntimeKind;
+  runId: string;
+  nativeEventName: string;
+  reasonCode: CodexSegmentTurnRejectionReason;
+}>): void => {
+  console.warn("[CodexSegmentTurnAdmissionRejected]", {
+    runtimeKind: input.runtimeKind,
+    runId: input.runId,
+    nativeEventName: input.nativeEventName,
+    reasonCode: input.reasonCode,
   });
 };

@@ -1,0 +1,11 @@
+start_utc=2026-08-13T04:23:55Z
+branch=codex/agent-team-hierarchical-handoffs
+head_before=0d32ff25502838c28663fc765c3499fc83455eb1
+origin_personal_before=54890a07f74e941a7a12b6daaa26364f4c927b72
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+origin_personal_after=54890a07f74e941a7a12b6daaa26364f4c927b72
+merge_base=54890a07f74e941a7a12b6daaa26364f4c927b72
+left_right=0/90
+latest_base_ancestor=YES
+end_utc=2026-08-13T04:23:58Z

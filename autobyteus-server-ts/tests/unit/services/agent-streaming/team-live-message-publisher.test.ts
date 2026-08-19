@@ -4,6 +4,7 @@ import { ExternalChannelTransport } from "autobyteus-ts/external-channel/channel
 import { ExternalPeerType } from "autobyteus-ts/external-channel/peer-type.js";
 import { createChannelRoutingKey } from "autobyteus-ts/external-channel/channel-routing-key.js";
 import { TeamLiveMessagePublisher } from "../../../../src/services/agent-streaming/team-live-message-publisher.js";
+import { assertAgentTeamAddress } from "../../../../src/agent-collaboration/domain/agent-team-address.js";
 
 const createEnvelope = () => ({
   provider: ExternalChannelProvider.TELEGRAM,
@@ -27,7 +28,7 @@ const createEnvelope = () => ({
 });
 
 describe("TeamLiveMessagePublisher", () => {
-  it("publishes external user messages with canonical member route and path identity", () => {
+  it("publishes external user messages with exact current address and AgentRun identity", () => {
     const publishToTeamRun = vi.fn().mockReturnValue(1);
     const publisher = new TeamLiveMessagePublisher({
       broadcaster: {
@@ -38,10 +39,8 @@ describe("TeamLiveMessagePublisher", () => {
     const delivered = publisher.publishExternalUserMessage({
       teamRunId: "team-1",
       envelope: createEnvelope(),
-      agentName: "review_lead",
-      agentId: "review-run-1",
-      memberRouteKey: "BuildSquad/review_lead",
-      memberPath: ["BuildSquad", "review_lead"],
+      agentRunId: "review-run-1",
+      memberAddress: assertAgentTeamAddress("/BuildSquad/review_lead"),
     });
 
     expect(delivered).toBe(1);
@@ -51,12 +50,8 @@ describe("TeamLiveMessagePublisher", () => {
         type: "EXTERNAL_USER_MESSAGE",
         payload: expect.objectContaining({
           content: "hello team",
-          agent_name: "review_lead",
-          agent_id: "review-run-1",
-          member_route_key: "BuildSquad/review_lead",
-          member_path: ["BuildSquad", "review_lead"],
-          source_route_key: "BuildSquad/review_lead",
-          source_path: ["BuildSquad", "review_lead"],
+          agent_run_id: "review-run-1",
+          member_address: "/BuildSquad/review_lead",
         }),
       }),
     );

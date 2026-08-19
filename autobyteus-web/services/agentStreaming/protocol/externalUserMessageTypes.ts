@@ -10,9 +10,6 @@ export interface ExternalUserMessagePayload extends UserMessageProjectionPayload
   peer_id?: string | null;
   thread_id?: string | null;
   external_message_id?: string | null;
-  sender_agent_id?: string | null;
-  sender_agent_name?: string | null;
-  sender_member_route_key?: string | null;
-  sender_member_path?: string[] | null;
-  parent_communication_message_id?: string | null;
+  agent_id?: string | null;
+  agent_name?: string | null;
 }

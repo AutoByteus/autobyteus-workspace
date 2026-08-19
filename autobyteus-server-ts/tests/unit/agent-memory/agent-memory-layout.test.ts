@@ -22,7 +22,7 @@ describe("AgentMemoryLayout", () => {
     expect(layout.getStandaloneRunDirPath("agent-a")).toBe(path.join(memoryDir, "agents", "agent-a"));
     expect(layout.getTeamRootDirPath()).toBe(path.join(memoryDir, "agent_teams"));
     expect(layout.getTeamAgentRunDirPath(
-      { rootTeamRunId: "team-1", teamRunPath: ["child-team-1"] },
+      { rootTeamRunId: "team-1", ancestorTeamRunIds: ["child-team-1"] },
       "member-a",
     )).toBe(path.join(memoryDir, "agent_teams", "team-1", "child-team-1", "member-a"));
   });
@@ -30,25 +30,25 @@ describe("AgentMemoryLayout", () => {
   it("creates standalone and hierarchical team-agent subtrees under canonical directories", async () => {
     await layout.ensureStandaloneRunSubtree("agent-a");
     await layout.ensureTeamAgentRunSubtree(
-      { rootTeamRunId: "team-1", teamRunPath: ["child-team-1"] },
+      { rootTeamRunId: "team-1", ancestorTeamRunIds: ["child-team-1"] },
       "member-a",
     );
 
     expect((await fs.stat(layout.getStandaloneRunDirPath("agent-a"))).isDirectory()).toBe(true);
     expect((await fs.stat(
       layout.getTeamAgentRunDirPath(
-        { rootTeamRunId: "team-1", teamRunPath: ["child-team-1"] },
+        { rootTeamRunId: "team-1", ancestorTeamRunIds: ["child-team-1"] },
         "member-a",
       ),
     )).isDirectory()).toBe(true);
   });
 
   it("guards against path traversal in team path segments", () => {
-    expect(() => layout.getTeamDirPath({ rootTeamRunId: "../escape", teamRunPath: [] })).toThrow("rootTeamRunId is invalid");
+    expect(() => layout.getTeamDirPath({ rootTeamRunId: "../escape", ancestorTeamRunIds: [] })).toThrow("rootTeamRunId is invalid");
     expect(() => layout.getTeamAgentRunDirPath(
-      { rootTeamRunId: "team-1", teamRunPath: ["../escape"] },
+      { rootTeamRunId: "team-1", ancestorTeamRunIds: ["../escape"] },
       "member-a",
-    )).toThrow("teamRunPath[0] is invalid");
+    )).toThrow("ancestorTeamRunIds[0] is invalid");
   });
 
   it("guards against path traversal in standalone run segments", () => {

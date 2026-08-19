@@ -1,0 +1,13 @@
+{
+  "runId": "utd_root_team_api_rev_008_1786830349955_45bb7b4ee1014c9c9f9ea66ea5e30e8c",
+  "stamp": "api_rev_008_1786830349955",
+  "agentTaskEntryCount": 2,
+  "teamTaskEntryCount": 1,
+  "taskSectionText": "Tasks\n3 tasks\nReturn E2E_DIRECT_TASK_RESULT_42\nTECHNICAL DETAILS\nReturn E2E_NESTED_TEAM_RESULT after delegating the required child task.\nTECHNICAL DETAILS\nReturn E2E_DIRECT_TASK_RESULT_42 for second identity proof.\nTECHNICAL DETAILS\n\nReturn E2E_DIRECT_TASK_RESULT_42",
+  "bodyHasAccepted": true,
+  "bodyHasDirectDescription": true,
+  "bodyHasNestedDescription": true,
+  "bodyHasWorker": true,
+  "bodyHasLab": true,
+  "pass": true
+}

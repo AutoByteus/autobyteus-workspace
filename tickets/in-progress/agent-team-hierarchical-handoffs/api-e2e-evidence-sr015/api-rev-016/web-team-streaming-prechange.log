@@ -1,0 +1,829 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/agentStreaming/__tests__/TeamStreamingService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > echoes captured approval token when approving tool invocation
+No member context found for message, skipping
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > uses the approval request source route when approving after focus changes
+No member context found for message, skipping
+
+stdout | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > keeps subscription transport state separate from backend-owned team lifecycle
+Team WebSocket connected
+Team WebSocket disconnected: closed
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > projects each server-shaped team content message immediately
+No member context found for message, skipping
+No member context found for message, skipping
+No member context found for message, skipping
+No member context found for message, skipping
+No member context found for message, skipping
+No member context found for message, skipping
+
+stdout | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > reattaches lifecycle callbacks to the latest team context
+Team WebSocket connected
+Team WebSocket disconnected: closed
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > mirrors external user messages into the targeted team member conversation
+No member context found for message, skipping
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > routes successful tool execution through the browser-owned post-success handler
+No member context found for message, skipping
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > does not clear stale team/member error from live non-status activity
+No member context found for message, skipping
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > does not repair stale member error from focused-member fallback without explicit identity
+No member context found for message, skipping
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > does not promote non-error team/member lifecycle status from live activity alone
+No member context found for message, skipping
+
+stdout | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > does not convert team transport errors into lifecycle errors
+Team WebSocket connected
+Team WebSocket disconnected: network reset
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > does not convert team transport errors into lifecycle errors
+Team WebSocket error: Error: socket failed
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/TeamStreamingService.spec.ts:1094:32
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:155:11
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:26
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1897:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1863:10)
+    at runTest (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1574:12)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at runSuite (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1729:8)
+    at runSuite (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1729:8)
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > routes raw inter-agent messages only to the targeted member conversation
+No member context found for message, skipping
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > renders team member system task notifications as conversation segments
+No member context found for message, skipping
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > routes live member input echoes to the resolved nested leaf and upserts duplicate echoes by identity
+No member context found for message, skipping
+No member context found for message, skipping
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > projects task-agent stream identity into a transient context and removes it after offline settlement
+No member context found for message, skipping
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > creates the transient task-agent context from a work-packet echo that carries task-agent identity
+No member context found for message, skipping
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > routes stamped task-team child status to the scoped child context and leaves structural context unchanged
+No member context found for message, skipping
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > cascades terminal task-team cleanup through scoped children and nested task-agent contexts only
+No member context found for message, skipping
+No member context found for message, skipping
+No member context found for message, skipping
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > repairs a missing task-agent node when the task-agent context already exists
+No member context found for message, skipping
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > routes typed task-agent tool approval requests and approval commands by task-agent run identity
+No member context found for message, skipping
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > serializes task-team scoped approval and denial commands with relative child selectors
+No member context found for message, skipping
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > keeps parallel same-member task-agent instances distinct until each settles
+No member context found for message, skipping
+No member context found for message, skipping
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > routes compaction lifecycle messages to the targeted member context
+No member context found for message, skipping
+
+ ❯ services/agentStreaming/__tests__/TeamStreamingService.spec.ts (42 tests | 33 failed) 34ms
+   × TeamStreamingService > echoes captured approval token when approving tool invocation 6ms
+     → Cannot read properties of undefined (reading 'rootTeamRunId')
+   × TeamStreamingService > uses the approval request source route when approving after focus changes 3ms
+     → expected [] to have a length of 1 but got +0
+   × TeamStreamingService > serializes focused member interrupt with route-key target and optional run guard 0ms
+     → Cannot read properties of undefined (reading 'rootTeamRunId')
+   × TeamStreamingService > serializes send messages with canonical conversation target addresses 1ms
+     → Cannot read properties of undefined (reading 'trim')
+   × TeamStreamingService > requires a focused member route key for team interrupt serialization 2ms
+     → expected [Function] to throw error including 'target member route key is required' but got 'Cannot read properties of undefined (…'
+   × TeamStreamingService > rejects team interrupt while disconnected without sending 0ms
+     → Cannot read properties of undefined (reading 'rootTeamRunId')
+   × TeamStreamingService > rejects team interrupt while connecting without sending 2ms
+     → Cannot read properties of undefined (reading 'rootTeamRunId')
+   × TeamStreamingService > rejects team interrupt while reconnecting without sending 0ms
+     → Cannot read properties of undefined (reading 'rootTeamRunId')
+   × TeamStreamingService > intercepts exact team interrupt acks before member projection and drains only pending commands 0ms
+     → Cannot read properties of undefined (reading 'rootTeamRunId')
+   × TeamStreamingService > completes a team reentrant disconnect-plus-send-throw only once 0ms
+     → Cannot read properties of undefined (reading 'rootTeamRunId')
+   ✓ TeamStreamingService > keeps subscription transport state separate from backend-owned team lifecycle 1ms
+   × TeamStreamingService > projects each server-shaped team content message immediately 1ms
+     → Cannot read properties of undefined (reading 'segments')
+   ✓ TeamStreamingService > reattaches lifecycle callbacks to the latest team context 0ms
+   × TeamStreamingService > mirrors external user messages into the targeted team member conversation 1ms
+     → expected [] to have a length of 1 but got +0
+   ✓ TeamStreamingService > does not route live member events through the focused member when canonical identity is absent 1ms
+   × TeamStreamingService > routes successful tool execution through the browser-owned post-success handler 1ms
+     → expected "spy" to be called with arguments: [ ObjectContaining{…} ]
+
+Number of calls: 0
+
+   ✓ TeamStreamingService > does not clear stale team/member error from live non-status activity 0ms
+   ✓ TeamStreamingService > does not repair stale member error from focused-member fallback without explicit identity 0ms
+   ✓ TeamStreamingService > does not promote non-error team/member lifecycle status from live activity alone 0ms
+   ✓ TeamStreamingService > does not convert team transport errors into lifecycle errors 0ms
+   × TeamStreamingService > routes raw inter-agent messages only to the targeted member conversation 0ms
+     → expected [] to have a length of 1 but got +0
+   × TeamStreamingService > renders team member system task notifications as conversation segments 0ms
+     → expected [] to have a length of 1 but got +0
+   ✓ TeamStreamingService > routes derived team communication messages to the team communication store 1ms
+   ✓ TeamStreamingService > routes live parent-to-subteam communication payloads to the team communication store 0ms
+   × TeamStreamingService > routes live member input echoes to the resolved nested leaf and upserts duplicate echoes by identity 1ms
+     → expected [] to have a length of 1 but got +0
+   × TeamStreamingService > projects task-agent stream identity into a transient context and removes it after offline settlement 0ms
+     → expected undefined to be truthy
+   × TeamStreamingService > does not let identity-less mismatched status poison the logical member context before projection exists 0ms
+     → expected undefined to be truthy
+   × TeamStreamingService > creates the transient task-agent context from a work-packet echo that carries task-agent identity 0ms
+     → expected undefined to be truthy
+   × TeamStreamingService > creates the transient task-agent context from a task-delegation event with task-agent identity 1ms
+     → expected undefined to be truthy
+   × TeamStreamingService > preserves task-team ancestry for scoped task-agent delegation events and refreshes existing nodes 1ms
+     → expected undefined to match object { isTaskAgentInstance: true, …(2) }
+   × TeamStreamingService > creates a visible task-team projection from a task-team delegation event 0ms
+     → expected undefined to match object { isTaskTeamInstance: true, …(4) }
+   × TeamStreamingService > routes stamped task-team child status to the scoped child context and leaves structural context unchanged 0ms
+     → expected undefined to be truthy
+   × TeamStreamingService > drops malformed task-team scoped child events instead of updating structural members 1ms
+     → expected "warn" to be called with arguments: [ Array(1) ]
+
+Received: 
+
+  1st warn call:
+
+  [
+-   "Task-team scoped event missing task_team_run_id.",
++   "No member context found for message, skipping",
+  ]
+
+
+Number of calls: 1
+
+   × TeamStreamingService > routes concurrent same-logical task-team child events by task_team_run_id only 1ms
+     → expected undefined to match object { Object (runId, currentStatus) }
+   × TeamStreamingService > settles and removes a task-team projection from its terminal task event 0ms
+     → expected undefined to match object { taskExecutionStatus: 'accepted' }
+   × TeamStreamingService > cascades terminal task-team cleanup through scoped children and nested task-agent contexts only 0ms
+     → expected undefined to match object { taskExecutionStatus: 'accepted' }
+   × TeamStreamingService > allows sequential delegations to the same logical team after task-team terminal cleanup 2ms
+     → expected undefined to match object { isTaskTeamInstance: true, …(2) }
+   × TeamStreamingService > repairs a missing task-agent node when the task-agent context already exists 0ms
+     → expected undefined to be truthy
+   × TeamStreamingService > routes typed task-agent tool approval requests and approval commands by task-agent run identity 0ms
+     → expected undefined to be truthy
+   × TeamStreamingService > serializes task-team scoped approval and denial commands with relative child selectors 1ms
+     → expected { type: 'APPROVE_TOOL', …(1) } to match object { type: 'APPROVE_TOOL', …(1) }
+   × TeamStreamingService > keeps parallel same-member task-agent instances distinct until each settles 0ms
+     → expected undefined to be truthy
+   × TeamStreamingService > routes compaction lifecycle messages to the targeted member context 1ms
+     → expected null to match object { …(19) }
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 33 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > echoes captured approval token when approving tool invocation
+TypeError: Cannot read properties of undefined (reading 'rootTeamRunId')
+ ❯ createTeamExecutionAddress types/agent/TeamExecutionAddress.ts:30:31
+     28|   taskAgentRunId?: string | null;
+     29| }): TeamExecutionAddress => {
+     30|   const rootTeamRunId = input.rootTeamRunId.trim();
+       |                               ^
+     31|   if (!rootTeamRunId) throw new Error('rootTeamRunId is required.');
+     32|   const taskTeamRunIds = [...(input.taskTeamRunIds ?? [])].map((id) =>…
+ ❯ TeamToolApprovalTracker.toSelectorPayload services/agentStreaming/TeamToolApprovalTracker.ts:21:42
+ ❯ TeamStreamingService.approveTool services/agentStreaming/TeamStreamingService.ts:164:33
+ ❯ services/agentStreaming/__tests__/TeamStreamingService.spec.ts:236:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/33]⎯
+
+ FAIL  services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > uses the approval request source route when approving after focus changes
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ services/agentStreaming/__tests__/TeamStreamingService.spec.ts:305:45
+    303|     service.approveTool('inv-nested');
+    304| 
+    305|     expect(reviewLeadConversation.messages).toHaveLength(1);
+       |                                             ^
+    306|     expect(programManagerConversation.messages).toHaveLength(0);
+    307|     const outbound = JSON.parse(wsClient.send.mock.calls[0][0]);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/33]⎯
+
+ FAIL  services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > serializes focused member interrupt with route-key target and optional run guard
+TypeError: Cannot read properties of undefined (reading 'rootTeamRunId')
+ ❯ createTeamExecutionAddress types/agent/TeamExecutionAddress.ts:30:31
+     28|   taskAgentRunId?: string | null;
+     29| }): TeamExecutionAddress => {
+     30|   const rootTeamRunId = input.rootTeamRunId.trim();
+       |                               ^
+     31|   if (!rootTeamRunId) throw new Error('rootTeamRunId is required.');
+     32|   const taskTeamRunIds = [...(input.taskTeamRunIds ?? [])].map((id) =>…
+ ❯ TeamStreamingService.interruptGeneration services/agentStreaming/TeamStreamingService.ts:191:30
+ ❯ services/agentStreaming/__tests__/TeamStreamingService.spec.ts:331:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/33]⎯
+
+ FAIL  services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > serializes send messages with canonical conversation target addresses
+TypeError: Cannot read properties of undefined (reading 'trim')
+ ❯ createTeamExecutionAddress types/agent/TeamExecutionAddress.ts:30:45
+     28|   taskAgentRunId?: string | null;
+     29| }): TeamExecutionAddress => {
+     30|   const rootTeamRunId = input.rootTeamRunId.trim();
+       |                                             ^
+     31|   if (!rootTeamRunId) throw new Error('rootTeamRunId is required.');
+     32|   const taskTeamRunIds = [...(input.taskTeamRunIds ?? [])].map((id) =>…
+ ❯ TeamStreamingService.sendMessage services/agentStreaming/TeamStreamingService.ts:149:28
+ ❯ services/agentStreaming/__tests__/TeamStreamingService.spec.ts:359:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/33]⎯
+
+ FAIL  services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > requires a focused member route key for team interrupt serialization
+AssertionError: expected [Function] to throw error including 'target member route key is required' but got 'Cannot read properties of undefined (…'
+
+Expected: "target member route key is required"
+Received: "Cannot read properties of undefined (reading 'rootTeamRunId')"
+
+ ❯ services/agentStreaming/__tests__/TeamStreamingService.spec.ts:411:7
+    409|         targetMemberRouteKey: '   ',
+    410|       }),
+    411|     ).toThrow('target member route key is required');
+       |       ^
+    412|     expect(wsClient.send).not.toHaveBeenCalled();
+    413|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/33]⎯
+
+ FAIL  services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > rejects team interrupt while disconnected without sending
+ FAIL  services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > rejects team interrupt while connecting without sending
+ FAIL  services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > rejects team interrupt while reconnecting without sending
+TypeError: Cannot read properties of undefined (reading 'rootTeamRunId')
+ ❯ createTeamExecutionAddress types/agent/TeamExecutionAddress.ts:30:31
+     28|   taskAgentRunId?: string | null;
+     29| }): TeamExecutionAddress => {
+     30|   const rootTeamRunId = input.rootTeamRunId.trim();
+       |                               ^
+     31|   if (!rootTeamRunId) throw new Error('rootTeamRunId is required.');
+     32|   const taskTeamRunIds = [...(input.taskTeamRunIds ?? [])].map((id) =>…
+ ❯ TeamStreamingService.interruptGeneration services/agentStreaming/TeamStreamingService.ts:191:30
+ ❯ services/agentStreaming/__tests__/TeamStreamingService.spec.ts:426:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/33]⎯
+
+ FAIL  services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > intercepts exact team interrupt acks before member projection and drains only pending commands
+TypeError: Cannot read properties of undefined (reading 'rootTeamRunId')
+ ❯ createTeamExecutionAddress types/agent/TeamExecutionAddress.ts:30:31
+     28|   taskAgentRunId?: string | null;
+     29| }): TeamExecutionAddress => {
+     30|   const rootTeamRunId = input.rootTeamRunId.trim();
+       |                               ^
+     31|   if (!rootTeamRunId) throw new Error('rootTeamRunId is required.');
+     32|   const taskTeamRunIds = [...(input.taskTeamRunIds ?? [])].map((id) =>…
+ ❯ TeamStreamingService.interruptGeneration services/agentStreaming/TeamStreamingService.ts:191:30
+ ❯ services/agentStreaming/__tests__/TeamStreamingService.spec.ts:455:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/33]⎯
+
+ FAIL  services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > completes a team reentrant disconnect-plus-send-throw only once
+TypeError: Cannot read properties of undefined (reading 'rootTeamRunId')
+ ❯ createTeamExecutionAddress types/agent/TeamExecutionAddress.ts:30:31
+     28|   taskAgentRunId?: string | null;
+     29| }): TeamExecutionAddress => {
+     30|   const rootTeamRunId = input.rootTeamRunId.trim();
+       |                               ^
+     31|   if (!rootTeamRunId) throw new Error('rootTeamRunId is required.');
+     32|   const taskTeamRunIds = [...(input.taskTeamRunIds ?? [])].map((id) =>…
+ ❯ TeamStreamingService.interruptGeneration services/agentStreaming/TeamStreamingService.ts:191:30
+ ❯ services/agentStreaming/__tests__/TeamStreamingService.spec.ts:497:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/33]⎯
+
+ FAIL  services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > projects each server-shaped team content message immediately
+TypeError: Cannot read properties of undefined (reading 'segments')
+ ❯ services/agentStreaming/__tests__/TeamStreamingService.spec.ts:596:44
+    594|     sendCompanionContent('coordinator', 'coordinator-run-1', 'B', '202…
+    595|     sendCompanionContent('worker', 'worker-run-1', 'A2', '2026-08-01T1…
+    596|     expect(worker.conversation.messages[0].segments[0].content).toBe('…
+       |                                            ^
+    597|     expect(coordinator.conversation.messages[0].segments[0].content).t…
+    598|     expect(worker.state.currentStatus).toBe(AgentStatus.Running);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/33]⎯
+
+ FAIL  services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > mirrors external user messages into the targeted team member conversation
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ services/agentStreaming/__tests__/TeamStreamingService.spec.ts:759:44
+    757|     );
+    758| 
+    759|     expect(professorConversation.messages).toHaveLength(1);
+       |                                            ^
+    760|     expect(professorConversation.messages[0]).toMatchObject({
+    761|       type: 'user',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/33]⎯
+
+ FAIL  services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > routes successful tool execution through the browser-owned post-success handler
+AssertionError: expected "spy" to be called with arguments: [ ObjectContaining{…} ]
+
+Number of calls: 0
+
+ ❯ services/agentStreaming/__tests__/TeamStreamingService.spec.ts:878:53
+    876|     );
+    877| 
+    878|     expect(handleBrowserToolExecutionSucceededMock).toHaveBeenCalledWi…
+       |                                                     ^
+    879|       invocation_id: 'call-1',
+    880|       tool_name: 'open_tab',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/33]⎯
+
+ FAIL  services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > routes raw inter-agent messages only to the targeted member conversation
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ services/agentStreaming/__tests__/TeamStreamingService.spec.ts:1158:35
+    1156| 
+    1157|     expect(upsertTeamCommunicationMessageMock).not.toHaveBeenCalled();
+    1158|     expect(conversation.messages).toHaveLength(1);
+       |                                   ^
+    1159|     expect(conversation.messages[0].segments[0]).toMatchObject({
+    1160|       type: 'inter_agent_message',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/33]⎯
+
+ FAIL  services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > renders team member system task notifications as conversation segments
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ services/agentStreaming/__tests__/TeamStreamingService.spec.ts:1221:41
+    1219|     );
+    1220| 
+    1221|     expect(workerConversation.messages).toHaveLength(1);
+       |                                         ^
+    1222|     expect(workerConversation.messages[0].segments).toHaveLength(1);
+    1223|     expect(workerConversation.messages[0].segments).toContainEqual({
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/33]⎯
+
+ FAIL  services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > routes live member input echoes to the resolved nested leaf and upserts duplicate echoes by identity
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ services/agentStreaming/__tests__/TeamStreamingService.spec.ts:1404:45
+    1402| 
+    1403|     expect(programManagerConversation.messages).toHaveLength(0);
+    1404|     expect(reviewLeadConversation.messages).toHaveLength(1);
+       |                                             ^
+    1405|     expect(reviewLeadConversation.messages[0]).toMatchObject({
+    1406|       type: 'user',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/33]⎯
+
+ FAIL  services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > projects task-agent stream identity into a transient context and removes it after offline settlement
+AssertionError: expected undefined to be truthy
+
+- Expected: 
+true
+
++ Received: 
+undefined
+
+ ❯ services/agentStreaming/__tests__/TeamStreamingService.spec.ts:1440:25
+    1438|     const taskContext = teamContext.leafAgentContextsByRouteKey.get('t…
+    1439|     const taskNode = teamContext.memberNodesByRouteKey.get('task-agent…
+    1440|     expect(taskContext).toBeTruthy();
+       |                         ^
+    1441|     expect(taskContext.state.currentStatus).toBe(AgentStatus.Running);
+    1442|     expect(taskNode).toMatchObject({
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/33]⎯
+
+ FAIL  services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > does not let identity-less mismatched status poison the logical member context before projection exists
+AssertionError: expected undefined to be truthy
+
+- Expected: 
+true
+
++ Received: 
+undefined
+
+ ❯ services/agentStreaming/__tests__/TeamStreamingService.spec.ts:1575:27
+    1573| 
+    1574|       const taskContext = teamContext.leafAgentContextsByRouteKey.get(…
+    1575|       expect(taskContext).toBeTruthy();
+       |                           ^
+    1576|       expect(taskContext?.state.currentStatus).toBe(AgentStatus.Runnin…
+    1577|       expect(workerContext.state.runId).toBe('worker-run-1');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/33]⎯
+
+ FAIL  services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > creates the transient task-agent context from a work-packet echo that carries task-agent identity
+AssertionError: expected undefined to be truthy
+
+- Expected: 
+true
+
++ Received: 
+undefined
+
+ ❯ services/agentStreaming/__tests__/TeamStreamingService.spec.ts:1611:25
+    1609| 
+    1610|     const taskContext = teamContext.leafAgentContextsByRouteKey.get('t…
+    1611|     expect(taskContext).toBeTruthy();
+       |                         ^
+    1612|     expect(taskContext.conversation.messages).toHaveLength(1);
+    1613|     expect(taskContext.conversation.messages[0]).toMatchObject({
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/33]⎯
+
+ FAIL  services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > creates the transient task-agent context from a task-delegation event with task-agent identity
+AssertionError: expected undefined to be truthy
+
+- Expected: 
+true
+
++ Received: 
+undefined
+
+ ❯ services/agentStreaming/__tests__/TeamStreamingService.spec.ts:1654:25
+    1652| 
+    1653|     const taskContext = teamContext.leafAgentContextsByRouteKey.get('t…
+    1654|     expect(taskContext).toBeTruthy();
+       |                         ^
+    1655|     expect(taskContext?.conversation.messages).toHaveLength(0);
+    1656|     expect(teamContext.memberNodesByRouteKey.get('task-agent-run-from-…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/33]⎯
+
+ FAIL  services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > preserves task-team ancestry for scoped task-agent delegation events and refreshes existing nodes
+AssertionError: expected undefined to match object { isTaskAgentInstance: true, …(2) }
+
+- Expected: 
+{
+  "conversationTargetSegments": [
+    {
+      "kind": "member",
+      "memberRouteKey": "SoftwareEngineeringTeam/solution_designer",
+    },
+    {
+      "kind": "task_agent",
+      "taskAgentRunId": "scoped-task-agent-run",
+    },
+  ],
+  "isTaskAgentInstance": true,
+  "parentTaskTeamRunId": null,
+}
+
++ Received: 
+undefined
+
+ ❯ services/agentStreaming/__tests__/TeamStreamingService.spec.ts:1690:76
+    1688|     } satisfies ServerMessage));
+    1689| 
+    1690|     expect(teamContext.memberNodesByRouteKey.get('scoped-task-agent-ru…
+       |                                                                            ^
+    1691|       isTaskAgentInstance: true,
+    1692|       parentTaskTeamRunId: null,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/33]⎯
+
+ FAIL  services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > creates a visible task-team projection from a task-team delegation event
+AssertionError: expected undefined to match object { isTaskTeamInstance: true, …(4) }
+
+- Expected: 
+{
+  "isTaskTeamInstance": true,
+  "logicalTeamRouteKey": "SoftwareEngineeringTeam",
+  "memberRouteKey": "task-team-run-1",
+  "taskExecutionStatus": "active",
+  "taskTeamRunId": "task-team-run-1",
+}
+
++ Received: 
+undefined
+
+ ❯ services/agentStreaming/__tests__/TeamStreamingService.spec.ts:1767:26
+    1765| 
+    1766|     const taskTeamNode = teamContext.memberNodesByRouteKey.get('task-t…
+    1767|     expect(taskTeamNode).toMatchObject({
+       |                          ^
+    1768|       isTaskTeamInstance: true,
+    1769|       memberRouteKey: 'task-team-run-1',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/33]⎯
+
+ FAIL  services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > routes stamped task-team child status to the scoped child context and leaves structural context unchanged
+AssertionError: expected undefined to be truthy
+
+- Expected: 
+true
+
++ Received: 
+undefined
+
+ ❯ services/agentStreaming/__tests__/TeamStreamingService.spec.ts:1822:27
+    1820| 
+    1821|     const scopedContext = teamContext.leafAgentContextsByRouteKey.get(…
+    1822|     expect(scopedContext).toBeTruthy();
+       |                           ^
+    1823|     expect(scopedContext.state.runId).toBe('scoped-solution-run');
+    1824|     expect(scopedContext.state.currentStatus).toBe(AgentStatus.Running…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/33]⎯
+
+ FAIL  services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > drops malformed task-team scoped child events instead of updating structural members
+AssertionError: expected "warn" to be called with arguments: [ Array(1) ]
+
+Received: 
+
+  1st warn call:
+
+  [
+-   "Task-team scoped event missing task_team_run_id.",
++   "No member context found for message, skipping",
+  ]
+
+
+Number of calls: 1
+
+ ❯ services/agentStreaming/__tests__/TeamStreamingService.spec.ts:1853:23
+    1851|       expect(structuralSolutionContext.state.currentStatus).toBe(Agent…
+    1852|       expect(teamContext.leafAgentContextsByRouteKey.has('bad-scoped-r…
+    1853|       expect(warnSpy).toHaveBeenCalledWith('Task-team scoped event mis…
+       |                       ^
+    1854|     } finally {
+    1855|       warnSpy.mockRestore();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/33]⎯
+
+ FAIL  services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > routes concurrent same-logical task-team child events by task_team_run_id only
+AssertionError: expected undefined to match object { Object (runId, currentStatus) }
+
+- Expected: 
+{
+  "currentStatus": "running",
+  "runId": "scoped-solution-run-2",
+}
+
++ Received: 
+undefined
+
+ ❯ services/agentStreaming/__tests__/TeamStreamingService.spec.ts:1902:103
+    1900|       }));
+    1901| 
+    1902|       expect(teamContext.leafAgentContextsByRouteKey.get('task-team-ru…
+       |                                                                                                       ^
+    1903|         runId: 'scoped-solution-run-2',
+    1904|         currentStatus: AgentStatus.Running,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[23/33]⎯
+
+ FAIL  services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > settles and removes a task-team projection from its terminal task event
+AssertionError: expected undefined to match object { taskExecutionStatus: 'accepted' }
+
+- Expected: 
+{
+  "taskExecutionStatus": "accepted",
+}
+
++ Received: 
+undefined
+
+ ❯ services/agentStreaming/__tests__/TeamStreamingService.spec.ts:1974:70
+    1972|     }));
+    1973| 
+    1974|     expect(teamContext.memberNodesByRouteKey.get('task-team-run-1')).t…
+       |                                                                      ^
+    1975|       taskExecutionStatus: 'accepted',
+    1976|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[24/33]⎯
+
+ FAIL  services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > cascades terminal task-team cleanup through scoped children and nested task-agent contexts only
+AssertionError: expected undefined to match object { taskExecutionStatus: 'accepted' }
+
+- Expected: 
+{
+  "taskExecutionStatus": "accepted",
+}
+
++ Received: 
+undefined
+
+ ❯ services/agentStreaming/__tests__/TeamStreamingService.spec.ts:2092:70
+    2090|     }));
+    2091| 
+    2092|     expect(teamContext.memberNodesByRouteKey.get('task-team-run-1')).t…
+       |                                                                      ^
+    2093|       taskExecutionStatus: 'accepted',
+    2094|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[25/33]⎯
+
+ FAIL  services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > allows sequential delegations to the same logical team after task-team terminal cleanup
+AssertionError: expected undefined to match object { isTaskTeamInstance: true, …(2) }
+
+- Expected: 
+{
+  "isTaskTeamInstance": true,
+  "taskExecutionStatus": "active",
+  "taskId": "task_0002",
+}
+
++ Received: 
+undefined
+
+ ❯ services/agentStreaming/__tests__/TeamStreamingService.spec.ts:2182:70
+    2180|     expect(teamContext.memberNodesByRouteKey.has('task-team-run-1')).t…
+    2181|     expect(teamContext.memberNodesByRouteKey.has('task-team-run-1/solu…
+    2182|     expect(teamContext.memberNodesByRouteKey.get('task-team-run-2')).t…
+       |                                                                      ^
+    2183|       isTaskTeamInstance: true,
+    2184|       taskExecutionStatus: 'active',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[26/33]⎯
+
+ FAIL  services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > repairs a missing task-agent node when the task-agent context already exists
+AssertionError: expected undefined to be truthy
+
+- Expected: 
+true
+
++ Received: 
+undefined
+
+ ❯ services/agentStreaming/__tests__/TeamStreamingService.spec.ts:2214:33
+    2212|     );
+    2213|     const existingTaskContext = teamContext.leafAgentContextsByRouteKe…
+    2214|     expect(existingTaskContext).toBeTruthy();
+       |                                 ^
+    2215| 
+    2216|     teamContext.memberNodesByRouteKey.delete('task-agent-run-repair');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[27/33]⎯
+
+ FAIL  services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > routes typed task-agent tool approval requests and approval commands by task-agent run identity
+AssertionError: expected undefined to be truthy
+
+- Expected: 
+true
+
++ Received: 
+undefined
+
+ ❯ services/agentStreaming/__tests__/TeamStreamingService.spec.ts:2275:25
+    2273| 
+    2274|     const taskContext = teamContext.leafAgentContextsByRouteKey.get('t…
+    2275|     expect(taskContext).toBeTruthy();
+       |                         ^
+    2276|     expect(workerContext.conversation.messages).toHaveLength(0);
+    2277|     expect(taskContext.conversation.messages).toHaveLength(1);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[28/33]⎯
+
+ FAIL  services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > serializes task-team scoped approval and denial commands with relative child selectors
+AssertionError: expected { type: 'APPROVE_TOOL', …(1) } to match object { type: 'APPROVE_TOOL', …(1) }
+
+- Expected
++ Received
+
+  {
+    "payload": {
+      "invocation_id": "task-team-approve-1",
+-     "member_route_key": "SoftwareEngineeringTeam/solution_designer",
+-     "source_route_key": "SoftwareEngineeringTeam/solution_designer",
+-     "task_team_relative_member_path": [
+-       "solution_designer",
+-     ],
+-     "task_team_relative_member_route_key": "solution_designer",
+-     "task_team_run_id": "task-team-run-approval",
+-     "team_path": [
+-       "SoftwareEngineeringTeam",
+-     ],
+-     "team_route_key": "SoftwareEngineeringTeam",
+    },
+    "type": "APPROVE_TOOL",
+  }
+
+ ❯ services/agentStreaming/__tests__/TeamStreamingService.spec.ts:2347:56
+    2345|     service.approveTool('task-team-approve-1');
+    2346| 
+    2347|     expect(JSON.parse(wsClient.send.mock.calls[0][0])).toMatchObject({
+       |                                                        ^
+    2348|       type: 'APPROVE_TOOL',
+    2349|       payload: {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[29/33]⎯
+
+ FAIL  services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > keeps parallel same-member task-agent instances distinct until each settles
+AssertionError: expected undefined to be truthy
+
+- Expected: 
+true
+
++ Received: 
+undefined
+
+ ❯ services/agentStreaming/__tests__/TeamStreamingService.spec.ts:2433:26
+    2431|     const firstContext = teamContext.leafAgentContextsByRouteKey.get('…
+    2432|     const secondContext = teamContext.leafAgentContextsByRouteKey.get(…
+    2433|     expect(firstContext).toBeTruthy();
+       |                          ^
+    2434|     expect(secondContext).toBeTruthy();
+    2435|     expect(teamContext.memberNodesByRouteKey.get('task-agent-run-1')?.…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[30/33]⎯
+
+ FAIL  services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > routes compaction lifecycle messages to the targeted member context
+AssertionError: expected null to match object { …(19) }
+
+- Expected: 
+{
+  "activityId": "compaction:turn:prof-run-1:turn-9",
+  "centerTimelineTimestamp": Any<MockDate>,
+  "compactedBlockCount": 2,
+  "compactionAgentDefinitionId": null,
+  "compactionAgentName": null,
+  "compactionModelIdentifier": null,
+  "compactionOperationId": null,
+  "compactionRunId": null,
+  "compactionRuntimeKind": null,
+  "compactionTaskId": null,
+  "errorMessage": null,
+  "executionTurnId": null,
+  "message": "Memory compacted",
+  "phase": "completed",
+  "rawTraceCount": null,
+  "requestedTurnId": null,
+  "selectedBlockCount": 3,
+  "semanticFactCount": null,
+  "turnId": "turn-9",
+}
+
++ Received: 
+null
+
+ ❯ services/agentStreaming/__tests__/TeamStreamingService.spec.ts:2537:53
+    2535| 
+    2536|     expect(professorContext.state.runId).toBe('prof-run-1');
+    2537|     expect(professorContext.state.compactionStatus).toMatchObject({
+       |                                                     ^
+    2538|       activityId: 'compaction:turn:prof-run-1:turn-9',
+    2539|       phase: 'completed',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[31/33]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  33 failed | 9 passed (42)
+   Start at  21:43:47
+   Duration  4.86s (transform 2.64s, setup 4.11s, collect 82ms, tests 34ms, environment 142ms, prepare 155ms)
+

@@ -34,21 +34,16 @@ describe("TaskDelegationReferenceContentService", () => {
     const filePath = path.join(tempDir, "requirements.md");
     await fs.writeFile(filePath, "# Requirements", "utf-8");
     const service = new TaskDelegationReferenceContentService({
-      getExisting: (teamRunId: string) => {
-        expect(teamRunId).toBe("team-1");
+      resolveReference: async (input) => {
+        expect(input).toEqual({ rootTeamRunId: "team-1", taskId: "task_0001", referenceId: "ref-1" });
         return {
-          resolveTaskReference: (input: { taskId: string; referenceId: string }) => {
-            expect(input).toEqual({ taskId: "task_0001", referenceId: "ref-1" });
-            return {
-              record: { taskId: "task_0001" },
-              reference: {
-                referenceId: "ref-1",
-                path: filePath,
-                type: "file",
-                createdAt: "2026-06-28T00:00:00.000Z",
-                updatedAt: "2026-06-28T00:00:00.000Z",
-              },
-            };
+          record: { taskId: "task_0001" },
+          reference: {
+            referenceId: "ref-1",
+            path: filePath,
+            type: "file",
+            createdAt: "2026-06-28T00:00:00.000Z",
+            updatedAt: "2026-06-28T00:00:00.000Z",
           },
         } as any;
       },
@@ -62,7 +57,7 @@ describe("TaskDelegationReferenceContentService", () => {
   });
 
   it("returns not-found when the task delegation service or reference is unavailable", async () => {
-    const service = new TaskDelegationReferenceContentService({ getExisting: () => null });
+    const service = new TaskDelegationReferenceContentService({ resolveReference: async () => null });
 
     await expect(
       service.resolveContent({ teamRunId: "team-1", taskId: "task_0001", referenceId: "missing" }),
@@ -76,10 +71,8 @@ describe("TaskDelegationReferenceContentService", () => {
     const tempDir = await createTempDir();
     const filePath = path.join(tempDir, "persisted-task-reference.md");
     await fs.writeFile(filePath, "# Persisted Reference", "utf-8");
-    const service = new TaskDelegationReferenceContentService(
-      { getExisting: () => null },
-      {
-        resolveReference: async (input) => {
+    const service = new TaskDelegationReferenceContentService({
+      resolveReference: async (input) => {
           expect(input).toEqual({
             rootTeamRunId: "root-team-run",
             taskId: "task_0001",
@@ -95,9 +88,8 @@ describe("TaskDelegationReferenceContentService", () => {
               updatedAt: "2026-07-02T00:00:00.000Z",
             },
           } as any;
-        },
       },
-    );
+    });
 
     const resolved = await service.resolveContent({
       teamRunId: "root-team-run",
@@ -112,8 +104,7 @@ describe("TaskDelegationReferenceContentService", () => {
 
   it("keeps stored non-absolute task reference paths invalid during readback", async () => {
     const service = new TaskDelegationReferenceContentService({
-      getExisting: () => ({
-        resolveTaskReference: () => ({
+      resolveReference: async () => ({
           record: { taskId: "task_0001" },
           reference: {
             referenceId: "legacy-relative-ref",
@@ -122,7 +113,6 @@ describe("TaskDelegationReferenceContentService", () => {
             createdAt: "2026-07-02T00:00:00.000Z",
             updatedAt: "2026-07-02T00:00:00.000Z",
           },
-        }),
       }) as any,
     });
 

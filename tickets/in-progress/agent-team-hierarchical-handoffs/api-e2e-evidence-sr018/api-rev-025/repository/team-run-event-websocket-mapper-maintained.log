@@ -1,0 +1,142 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+
+ ❯ tests/unit/services/agent-streaming/team-run-event-websocket-message-mapper.test.ts (2 tests | 2 failed) 12ms
+     × carries the unchanged exact persistent execution address 9ms
+     × carries the unchanged exact task-Team member execution address 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/services/agent-streaming/team-run-event-websocket-message-mapper.test.ts > TeamRun member-input WebSocket identity > carries the unchanged exact persistent execution address
+AssertionError: expected { …(4) } to deeply equal { …(4) }
+
+- Expected
++ Received
+
+  {
+-   "memberAddress": "/StudentStudyGroup/student_one",
+-   "rootTeamRunId": "root-team-run-1",
+-   "taskAgentRunId": null,
+-   "taskTeamRunIds": [],
++   "member_address": "/StudentStudyGroup/student_one",
++   "root_team_run_id": "root-team-run-1",
++   "task_agent_run_id": null,
++   "task_team_run_ids": [],
+  }
+
+ ❯ tests/unit/services/agent-streaming/team-run-event-websocket-message-mapper.test.ts:49:47
+     47| 
+     48|     expect(message.type).toBe(ServerMessageType.MEMBER_INPUT_MESSAGE);
+     49|     expect(message.payload.execution_address).toEqual(event.executionA…
+       |                                               ^
+     50|     expect(message.payload).toEqual(expect.objectContaining({
+     51|       execution_address: event.executionAddress,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/services/agent-streaming/team-run-event-websocket-message-mapper.test.ts > TeamRun member-input WebSocket identity > carries the unchanged exact task-Team member execution address
+AssertionError: expected { …(4) } to deeply equal { …(4) }
+
+- Expected
++ Received
+
+  {
+-   "memberAddress": "/StudentStudyGroup/student_one",
+-   "rootTeamRunId": "root-team-run-1",
+-   "taskAgentRunId": null,
+-   "taskTeamRunIds": [
++   "member_address": "/StudentStudyGroup/student_one",
++   "root_team_run_id": "root-team-run-1",
++   "task_agent_run_id": null,
++   "task_team_run_ids": [
+      "task-team-outer",
+      "task-team-inner",
+    ],
+  }
+
+ ❯ tests/unit/services/agent-streaming/team-run-event-websocket-message-mapper.test.ts:49:47
+     47| 
+     48|     expect(message.type).toBe(ServerMessageType.MEMBER_INPUT_MESSAGE);
+     49|     expect(message.payload.execution_address).toEqual(event.executionA…
+       |                                               ^
+     50|     expect(message.payload).toEqual(expect.objectContaining({
+     51|       execution_address: event.executionAddress,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed (2)
+   Start at  06:31:05
+   Duration  891ms (transform 97ms, setup 12ms, import 148ms, tests 12ms, environment 0ms)
+

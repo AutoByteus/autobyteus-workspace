@@ -1,0 +1,14 @@
+{
+  "tool": "mcp__autobyteus_agent_tools__open_tab",
+  "tabId": "c8f144",
+  "url": "http://127.0.0.1:31418/workspace",
+  "teamRunId": "classroom_simulation_team_aadbe5a3b3b444d8bbe0ca0cbcddb51c",
+  "professorAgentRunId": "professor_7a62e8cb6ed2495291386e2df0b2d1f7",
+  "restoreTrigger": "send supported follow-up through inactive Team composer",
+  "marker": "CODEX_TEAM_RESTORED_FOLLOWUP_API_REV_001_20260817",
+  "markerVisible": true,
+  "exactAssistantMarkerLeafCount": 1,
+  "terminalStatus": "Idle",
+  "priorMarkerStillVisible": true,
+  "screenshot": "classroom-codex-process-reopen-followup-open-tab.png"
+}

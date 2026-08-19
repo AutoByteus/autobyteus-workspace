@@ -192,6 +192,7 @@ describe('MemberOverrideItem', () => {
   const defaultProps = {
     memberName: 'Reviewer',
     memberRouteKey: 'reviewer',
+    memberAddress: '/reviewer',
     agentDefinitionId: 'agent-reviewer',
     override: undefined,
     globalRuntimeKind: 'autobyteus',
@@ -261,7 +262,7 @@ describe('MemberOverrideItem', () => {
 
     const events = wrapper.emitted('update:override') || []
     expect(events[0]).toEqual([
-      'reviewer',
+      '/reviewer',
       {
         agentDefinitionId: 'agent-reviewer',
         runtimeKind: 'claude_agent_sdk',
@@ -292,7 +293,7 @@ describe('MemberOverrideItem', () => {
 
     const events = wrapper.emitted('update:override') || []
     expect(events.at(-1)).toEqual([
-      'reviewer',
+      '/reviewer',
       {
         agentDefinitionId: 'agent-reviewer',
         llmModelIdentifier: 'gpt-5.3-codex',
@@ -316,12 +317,12 @@ describe('MemberOverrideItem', () => {
     await nextTick()
     await nextTick()
 
-    await wrapper.get('#override-runtime-reviewer').setValue('claude_agent_sdk')
+    await wrapper.get('#override-runtime--reviewer').setValue('claude_agent_sdk')
     await nextTick()
 
     const events = wrapper.emitted('update:override') || []
     expect(events.at(-1)).toEqual([
-      'reviewer',
+      '/reviewer',
       {
         agentDefinitionId: 'agent-reviewer',
         runtimeKind: 'claude_agent_sdk',
@@ -345,12 +346,12 @@ describe('MemberOverrideItem', () => {
     await nextTick()
     await nextTick()
 
-    await wrapper.get('#override-runtime-reviewer').setValue('')
+    await wrapper.get('#override-runtime--reviewer').setValue('')
     await nextTick()
 
     const events = wrapper.emitted('update:override') || []
     expect(events.at(-1)).toEqual([
-      'reviewer',
+      '/reviewer',
       null,
     ])
   })
@@ -381,7 +382,7 @@ describe('MemberOverrideItem', () => {
 
     const events = wrapper.emitted('update:override') || []
     expect(events.at(-1)).toEqual([
-      'reviewer',
+      '/reviewer',
       null,
     ])
   })
@@ -402,13 +403,13 @@ describe('MemberOverrideItem', () => {
     await nextTick()
     await nextTick()
 
-    await wrapper.get('#override-runtime-reviewer').setValue('')
+    await wrapper.get('#override-runtime--reviewer').setValue('')
     await nextTick()
 
     const events = wrapper.emitted('update:override') || []
     const cleanedOverride = (events.at(-1)?.[1] ?? null) as MemberConfigOverride | null
     const memberOverrides: Record<string, MemberConfigOverride> = cleanedOverride
-      ? { reviewer: cleanedOverride }
+      ? { '/reviewer': cleanedOverride }
       : {}
 
     const readiness = evaluateTeamRunLaunchReadiness(
@@ -450,16 +451,16 @@ describe('MemberOverrideItem', () => {
         },
         leafMembers: [
           {
-            memberName: 'Reviewer',
-            memberRouteKey: 'reviewer',
+            displayName: 'Reviewer',
+            address: '/reviewer',
             agentDefinitionId: 'agent-reviewer',
           },
         ],
       }),
     ).toEqual([
       {
-        memberName: 'Reviewer',
-        memberRouteKey: 'reviewer',
+        displayName: 'Reviewer',
+        memberAddress: '/reviewer',
         agentDefinitionId: 'agent-reviewer',
         runtimeKind: 'autobyteus',
         llmModelIdentifier: 'gpt-5.4',
@@ -497,8 +498,8 @@ describe('MemberOverrideItem', () => {
       },
       leafMembers: [
         {
-          memberName: 'Reviewer',
-          memberRouteKey: 'reviewer',
+          displayName: 'Reviewer',
+          address: '/reviewer',
           agentDefinitionId: 'agent-reviewer',
         },
       ],
@@ -578,7 +579,7 @@ describe('MemberOverrideItem', () => {
 
     const advancedToggle = wrapper.get('[data-testid="advanced-params-toggle"]')
     const advancedContainer = wrapper.get('[data-testid="advanced-params-container"]')
-    const reasoningSelect = wrapper.get('select#config-reviewer-reasoning_effort')
+    const reasoningSelect = wrapper.get('select#config--reviewer-reasoning_effort')
     const thinkingRow = wrapper.getComponent({ name: 'ModelConfigBasic' })
 
     expect(thinkingRow.props('enabled')).toBe(true)
@@ -658,7 +659,7 @@ describe('MemberOverrideItem', () => {
     expect(advancedToggle.attributes('aria-expanded')).toBe('true')
     expect(advancedContainer.attributes('style') ?? '').not.toContain('display: none')
     expect(wrapper.emitted('update:override')?.at(-1)).toEqual([
-      'reviewer',
+      '/reviewer',
       {
         agentDefinitionId: 'agent-reviewer',
         llmModelIdentifier: 'gpt-5.3-codex',
@@ -686,7 +687,7 @@ describe('MemberOverrideItem', () => {
     const advancedContainer = wrapper.get('[data-testid="advanced-params-container"]')
     expect(advancedToggle.attributes('aria-expanded')).toBe('false')
 
-    await wrapper.get('#override-runtime-reviewer').setValue('codex_app_server')
+    await wrapper.get('#override-runtime--reviewer').setValue('codex_app_server')
     await nextTick()
     await wrapper.setProps({
       override: wrapper.emitted('update:override')?.at(-1)?.[1] as MemberConfigOverride,
@@ -697,7 +698,7 @@ describe('MemberOverrideItem', () => {
     expect(advancedToggle.attributes('aria-expanded')).toBe('true')
     expect(advancedContainer.attributes('style') ?? '').not.toContain('display: none')
     expect(wrapper.emitted('update:override')?.at(-1)).toEqual([
-      'reviewer',
+      '/reviewer',
       {
         agentDefinitionId: 'agent-reviewer',
         runtimeKind: 'codex_app_server',

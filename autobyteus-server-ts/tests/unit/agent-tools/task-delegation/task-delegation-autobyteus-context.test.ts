@@ -1,175 +1,57 @@
 import { describe, expect, it } from "vitest";
 import { buildAutoByteusManagedTeamContext } from "../../../../src/agent-execution/backends/autobyteus/autobyteus-managed-team-context-builder.js";
-import { MemberTeamContext } from "../../../../src/agent-team-execution/domain/member-team-context.js";
-import { TeamBackendKind } from "../../../../src/agent-team-execution/domain/team-backend-kind.js";
-import { TaskDelegationInputResolver } from "../../../../src/agent-team-execution/task-delegation/task-delegation-input-resolver.js";
-import { TaskDelegationLedger } from "../../../../src/agent-team-execution/task-delegation/task-delegation-ledger.js";
 import { buildTaskDelegationToolContextFromNativeContext } from "../../../../src/agent-tools/task-delegation/task-delegation-autobyteus-context.js";
-import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
+import { testMemberTeamContext } from "../../../fixtures/current-team-run-fixtures.js";
 
-const teamRunId = "delivery-team-run-1";
-
-const memberAddress = (memberPath: string[], memberRouteKey: string) => ({
-  teamRunId,
-  memberPath,
-  memberRouteKey,
+const createContext = () => testMemberTeamContext({
+  rootTeamRunId: "delivery-team-run-1",
+  memberAddress: "/program_manager",
+  agentRunId: "run-program-manager",
 });
 
-const createContextWithBuildSquad = () =>
-  new MemberTeamContext({
-    teamRunId,
-    teamDefinitionId: "delivery-team-def",
-    teamName: "Delivery Team",
-    teamBackendKind: TeamBackendKind.MIXED,
-    memberName: "program_manager",
-    memberPath: ["program_manager"],
-    memberRouteKey: "program_manager",
-    memberRunId: "run-program-manager",
-    coordinatorMemberRouteKey: "program_manager",
-    members: [
-      {
-        memberKind: "agent",
-        memberName: "program_manager",
-        memberPath: ["program_manager"],
-        memberRouteKey: "program_manager",
-        memberRunId: "run-program-manager",
-        runtimeKind: RuntimeKind.AUTOBYTEUS,
-        role: "Program manager",
-        description: "Coordinates delivery.",
-        address: memberAddress(["program_manager"], "program_manager"),
-      },
-      {
-        memberKind: "agent_team",
-        memberName: "BuildSquad",
-        memberPath: ["BuildSquad"],
-        memberRouteKey: "BuildSquad",
-        memberRunId: "run-build-squad-template",
-        teamDefinitionId: "build-squad-def",
-        childTeamRunId: null,
-        coordinatorMemberRouteKey: "BuildSquad/review_lead",
-        representative: {
-          memberKind: "agent",
-          memberName: "review_lead",
-          memberPath: ["BuildSquad", "review_lead"],
-          memberRouteKey: "BuildSquad/review_lead",
-          memberRunId: "run-build-squad-review-lead",
-          runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-          role: "Review lead",
-          description: "Coordinates the build squad.",
-        },
-        role: "Build team",
-        description: "Implements delegated work.",
-        address: memberAddress(["BuildSquad"], "BuildSquad"),
-      },
-    ],
-  });
-
 describe("buildTaskDelegationToolContextFromNativeContext", () => {
-  it("preserves BuildSquad as an agent_team so native delegate_task can resolve the team target", () => {
-    const managedTeamContext = buildAutoByteusManagedTeamContext(createContextWithBuildSquad());
+  it("projects and parses only the exact current execution identity", () => {
+    const managed = buildAutoByteusManagedTeamContext(createContext());
 
-    expect(managedTeamContext.members).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          memberKind: "agent_team",
-          memberName: "BuildSquad",
-          memberRouteKey: "BuildSquad",
-          teamDefinitionId: "build-squad-def",
-          coordinatorMemberRouteKey: "BuildSquad/review_lead",
-          ingress: expect.objectContaining({
-            memberName: "review_lead",
-            memberRouteKey: "BuildSquad/review_lead",
-            memberRunId: "run-build-squad-review-lead",
-          }),
-        }),
-      ]),
-    );
-
-    const delegationContext = buildTaskDelegationToolContextFromNativeContext({
-      config: { name: "program_manager" },
-      customData: { teamContext: managedTeamContext },
+    expect(managed).toEqual({
+      rootTeamRunId: "delivery-team-run-1",
+      memberAddress: "/program_manager",
+      agentRunId: "run-program-manager",
     });
-    const resolver = new TaskDelegationInputResolver(
-      teamRunId,
-      new TaskDelegationLedger(teamRunId),
-    );
-
-    expect(() => resolver.assertContext(delegationContext)).not.toThrow();
-    const createInput = resolver.buildCreateInput(delegationContext, {
-      target: { kind: "team", name: "BuildSquad" },
-      description: "Build the real UI validation path.",
-      reference_files: [],
-    });
-
-    expect(createInput.target).toEqual({
-      kind: "team",
-      team: expect.objectContaining({
-        memberKind: "agent_team",
-        memberName: "BuildSquad",
-        memberRouteKey: "BuildSquad",
-        teamDefinitionId: "build-squad-def",
-        ingress: expect.objectContaining({
-          memberName: "review_lead",
-          memberRouteKey: "BuildSquad/review_lead",
-        }),
-      }),
-    });
+    expect(Object.keys(managed).sort()).toEqual(["agentRunId", "memberAddress", "rootTeamRunId"]);
+    expect(buildTaskDelegationToolContextFromNativeContext({
+      customData: { teamContext: managed },
+    })).toEqual({ identity: managed });
   });
 
-  it("rejects a team row whose memberKind was dropped instead of downgrading it to an agent", () => {
-    const managedTeamContext = buildAutoByteusManagedTeamContext(createContextWithBuildSquad());
-    const malformedTeamContext = {
-      ...managedTeamContext,
-      members: managedTeamContext.members.map((member) =>
-        member.memberName === "BuildSquad"
-          ? { ...member, memberKind: undefined }
-          : member,
-      ),
-    };
+  it("clones and freezes the exact identity value", () => {
+    const source = createContext();
+    const managed = buildAutoByteusManagedTeamContext(source);
 
-    expect(() =>
-      buildTaskDelegationToolContextFromNativeContext({
-        config: { name: "program_manager" },
-        customData: { teamContext: malformedTeamContext as any },
-      }),
-    ).toThrow(/members\[1\]\.memberKind/);
+    expect(managed).not.toBe(source.identity);
+    expect(Object.isFrozen(managed)).toBe(true);
+    expect(() => {
+      (managed as { memberAddress: string }).memberAddress = "/mutated";
+    }).toThrow(/read only property/);
+    expect(source.identity.memberAddress).toBe("/program_manager");
   });
 
-  it("rejects an agent_team row missing its team definition id", () => {
-    const managedTeamContext = buildAutoByteusManagedTeamContext(createContextWithBuildSquad());
-    const malformedTeamContext = {
-      ...managedTeamContext,
-      members: managedTeamContext.members.map((member) =>
-        member.memberName === "BuildSquad"
-          ? { ...member, teamDefinitionId: "", ingress: null }
-          : member,
-      ),
-    };
-
-    expect(() =>
-      buildTaskDelegationToolContextFromNativeContext({
-        config: { name: "program_manager" },
-        customData: { teamContext: malformedTeamContext as any },
-      }),
-    ).toThrow(/members\[1\]\.teamDefinitionId/);
+  it("rejects a native context without the exact Team execution identity", () => {
+    expect(() => buildTaskDelegationToolContextFromNativeContext({
+      customData: { teamContext: {
+        rootTeamRunId: "delivery-team-run-1",
+        memberAddress: "/program_manager",
+      } },
+    })).toThrow(/rootTeamRunId, memberAddress, and agentRunId/);
   });
 
-  it("rejects an agent_team row missing ingress identity", () => {
-    const managedTeamContext = buildAutoByteusManagedTeamContext(createContextWithBuildSquad());
-    const malformedTeamContext = {
-      ...managedTeamContext,
-      members: managedTeamContext.members.map((member) =>
-        member.memberName === "BuildSquad"
-          ? { ...member, ingress: null }
-          : member,
-      ),
-    };
-
-    expect(() =>
-      buildTaskDelegationToolContextFromNativeContext({
-        config: { name: "program_manager" },
-        customData: { teamContext: malformedTeamContext as any },
-      }),
-    ).toThrow(/members\[1\]\.ingress/);
+  it("rejects removed derived addressing fields instead of accepting a compatibility shape", () => {
+    const managed = buildAutoByteusManagedTeamContext(createContext());
+    expect(() => buildTaskDelegationToolContextFromNativeContext({
+      customData: { teamContext: {
+        ...managed,
+        memberPath: ["nested", "program_manager"],
+      } },
+    })).toThrow(/accepts only rootTeamRunId, memberAddress, and agentRunId/);
   });
 });

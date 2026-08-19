@@ -1,0 +1,55 @@
+API-REV-005 API-F-006 source-boundary audit
+HEAD=8a0494e8b55a3debc7acbee7b61d286d5311d1a8
+
+Live strict Team error:
+{"code":"TEAM_AGENT_EVENT_ADMISSION_FAILED","message":"Rejected TOOL_LOG: tool_name is required","change_sequence":58,"agent_run_id":"utd_coordinator_api_rev_005_1786807916040_9617c71255164105adb0af2508161105","error_scope":"runtime","error_effect":"terminal","turn_id":null}
+
+Accepted task truth:
+{"taskId":"task_7748ae12ebb94778adf2dd86a8da048a","delegatorAgentRunId":"utd_coordinator_api_rev_005_1786807916040_9617c71255164105adb0af2508161105","recipientAddress":"/worker","targetAgentRunId":"utd_worker_api_rev_005_1786807916040_6005ed17191f45e89312c1cd14882d17","targetTeamRunId":null,"status":"accepted","description":"Return E2E_DIRECT_TASK_RESULT_42","createdAt":"2026-08-15T15:51:13.729Z","referenceFiles":[],"updates":[{"kind":"submission","submissionId":"submission_8360ff61d4514f5a899fc920ea1ae78d","reviewId":null,"interruptionId":null,"reviewedSubmissionId":null,"decision":null,"content":"E2E_DIRECT_TASK_RESULT_42","createdAt":"2026-08-15T15:51:20.573Z","referenceFiles":[]},{"kind":"review","submissionId":null,"reviewId":"review_374a2a9de865485593c0838782417f79","interruptionId":null,"reviewedSubmissionId":"submission_8360ff61d4514f5a899fc920ea1ae78d","decision":"accept","content":null,"createdAt":"2026-08-15T15:53:09.628Z","referenceFiles":[]}]}
+
+Codex raw-response TOOL_LOG producer:
+    40	
+    41	  const itemType = context.resolveItemType(payload);
+    42	  if (isCodexCompletedCompactionItemType(itemType)) {
+    43	    const event = context.createCompactionBoundaryEvent(
+    44	      "codex.raw_response_compaction_item",
+    45	      payload,
+    46	    );
+    47	    return event ? [event] : [];
+    48	  }
+    49	  if (itemType !== "functioncalloutput") {
+    50	    return [];
+    51	  }
+    52	  const invocationId = context.resolveInvocationId(payload);
+    53	  const logEntry = context.resolveLogEntry(payload);
+    54	  if (!logEntry) {
+    55	    return [];
+    56	  }
+    57	  const reasoningEnds = context.classifyToolLifecycleUpdate(payload) === "result_first_creation"
+    58	    ? context.closeReasoningBlocksForBoundary(codexEventName, payload)
+    59	    : [];
+    60	
+    61	  return [
+    62	    ...reasoningEnds,
+    63	    context.createEvent(codexEventName, AgentRunEventType.TOOL_LOG, {
+    64	      ...serializePayload(payload),
+    65	      ...(invocationId ? { tool_invocation_id: invocationId } : {}),
+    66	      log_entry: logEntry,
+    67	    }),
+    68	  ];
+    69	};
+
+Strict Team adapter TOOL_LOG admission:
+   207	        return correlated({ eventType: "TOOL_EXECUTION_SUCCEEDED", details: { invocationId: required(raw(p, "invocation_id", "invocationId"), "invocation_id"), toolName: required(raw(p, "tool_name", "toolName"), "tool_name"), turnId: text(raw(p, "turn_id", "turnId")), arguments: json(p.arguments), result: json(p.result) }, statusHint: hint });
+   208	      case AgentRunEventType.TOOL_EXECUTION_FAILED:
+   209	        return correlated({ eventType: "TOOL_EXECUTION_FAILED", details: { invocationId: required(raw(p, "invocation_id", "invocationId"), "invocation_id"), toolName: required(raw(p, "tool_name", "toolName"), "tool_name"), turnId: text(raw(p, "turn_id", "turnId")), arguments: json(p.arguments), error: required(p.error, "error") }, statusHint: hint });
+   210	      case AgentRunEventType.TOOL_EXECUTION_INTERRUPTED:
+   211	        return correlated({ eventType: "TOOL_EXECUTION_INTERRUPTED", details: { invocationId: required(raw(p, "invocation_id", "invocationId"), "invocation_id"), toolName: required(raw(p, "tool_name", "toolName"), "tool_name"), turnId: text(raw(p, "turn_id", "turnId")), arguments: json(p.arguments), reason: required(p.reason, "reason") }, statusHint: hint });
+   212	      case AgentRunEventType.TOOL_LOG:
+   213	        return correlated({ eventType: "TOOL_LOG", details: { logEntry: stringValue(raw(p, "log_entry", "logEntry")), toolInvocationId: required(raw(p, "tool_invocation_id", "toolInvocationId"), "tool_invocation_id"), toolName: required(raw(p, "tool_name", "toolName"), "tool_name"), turnId: text(raw(p, "turn_id", "turnId")) }, statusHint: hint });
+   214	      case AgentRunEventType.TODO_LIST_UPDATE: {
+   215	        const entries = Array.isArray(p.todos) ? p.todos : [];
+   216	        const todos = entries.map((entry) => {
+   217	          if (!isRecord(entry)) throw new Error("todos contains an invalid entry");
+
+Changed source diff for exact owners:

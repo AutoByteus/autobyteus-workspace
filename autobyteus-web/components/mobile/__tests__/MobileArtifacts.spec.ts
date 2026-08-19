@@ -10,9 +10,10 @@ import { useRunFileChangesStore, type RunFileChangeArtifact } from '~/stores/run
 import { AgentContext } from '~/types/agent/AgentContext';
 import { AgentRunState } from '~/types/agent/AgentRunState';
 import { DEFAULT_AGENT_RUNTIME_KIND, type AgentRunConfig } from '~/types/agent/AgentRunConfig';
-import type { AgentTeamContext, AgentTeamMemberNode } from '~/types/agent/AgentTeamContext';
+import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import type { Conversation } from '~/types/conversation';
 import type { MobileWorkContext } from '~/types/mobileWork';
+import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures';
 
 let pinia: Pinia;
 
@@ -81,60 +82,31 @@ function seedActiveAgentRun(runId = 'run-1'): void {
 }
 
 function seedActiveTeamRun(): AgentTeamContext {
-  const leadNode: AgentTeamMemberNode = {
-    memberKind: 'agent',
-    memberName: 'lead',
+  const leadNode = testAgentNode('/lead', {
     displayName: 'Lead',
-    memberPath: ['lead'],
-    memberRouteKey: 'lead',
-    memberRunId: 'lead-run',
+    agentRunId: 'lead-run',
     agentDefinitionId: 'agent-1',
-  };
-  const reviewerNode: AgentTeamMemberNode = {
-    memberKind: 'agent',
-    memberName: 'reviewer',
+  });
+  const reviewerNode = testAgentNode('/reviewer', {
     displayName: 'Reviewer',
-    memberPath: ['reviewer'],
-    memberRouteKey: 'reviewer',
-    memberRunId: 'reviewer-run',
+    agentRunId: 'reviewer-run',
     agentDefinitionId: 'agent-1',
-  };
-  const context: AgentTeamContext = {
+  });
+  const context = buildTestTeamContext({
     teamRunId: 'team-run-1',
-    config: {
-      teamDefinitionId: 'team-1',
-      teamDefinitionName: 'Software Team',
-      runtimeKind: DEFAULT_AGENT_RUNTIME_KIND,
-      workspaceId: 'workspace-1',
-      workspaceMetadata: null,
-      llmModelIdentifier: 'test-model',
-      llmConfig: null,
-      autoExecuteTools: false,
-      skillAccessMode: 'PRELOADED_ONLY',
-      memberOverrides: {},
-      isLocked: false,
-    },
-    memberTree: [leadNode, reviewerNode],
-    memberNodesByRouteKey: new Map([
-      ['lead', leadNode],
-      ['reviewer', reviewerNode],
-    ]),
-    leafAgentContextsByRouteKey: new Map([
-      ['lead', makeAgentContext('lead-run')],
-      ['reviewer', makeAgentContext('reviewer-run')],
-    ]),
-    coordinatorMemberRouteKey: 'lead',
-    historicalHydration: null,
-    focusedMemberRouteKey: 'lead',
+    teamDefinitionId: 'team-1',
+    teamDefinitionName: 'Software Team',
+    rootChildren: [leadNode, reviewerNode],
+    coordinatorAddress: '/lead',
+    focusedAgentRunId: 'lead-run',
     isActive: false,
-    isSubscribed: false,
-  };
-  useAgentTeamContextsStore().teams.set(context.teamRunId, context);
-  useAgentSelectionStore().selectRunWithoutShellNavigation(context.teamRunId, 'team');
+  });
+  useAgentTeamContextsStore().addTeamContext(context);
+  useAgentSelectionStore().selectRunWithoutShellNavigation(context.view.getRootTeamRunId(), 'team');
   return context;
 }
 
-function makeTeamRunContext(focusedMemberRouteKey = 'lead'): MobileWorkContext {
+function makeTeamRunContext(focusedAgentRunId = 'lead-run'): MobileWorkContext {
   return {
     kind: 'team-run',
     teamRunId: 'team-run-1',
@@ -142,7 +114,7 @@ function makeTeamRunContext(focusedMemberRouteKey = 'lead'): MobileWorkContext {
     title: 'Software Team',
     summary: 'Existing team run',
     workspaceRootPath: '/Users/normy/project',
-    focusedMemberRouteKey,
+    focusedAgentRunId,
     isActive: true,
     lastActivityAt: '2026-05-18T16:00:00.000Z',
     statusLabel: 'Running',
@@ -231,13 +203,14 @@ describe('MobileArtifacts', () => {
       makeArtifact('reviewer-run', 'review/notes.md', '2026-05-18T16:02:00.000Z'),
     ]);
 
-    const wrapper = mountArtifacts(makeTeamRunContext('lead'));
+    const wrapper = mountArtifacts(makeTeamRunContext('lead-run'));
 
     expect(wrapper.text()).toContain('plan.md');
     expect(wrapper.text()).not.toContain('notes.md');
 
-    team.focusedMemberRouteKey = 'reviewer';
-    await wrapper.setProps({ context: makeTeamRunContext('reviewer') });
+    expect(team.view.focusAgent('reviewer-run').disposition)
+      .toBe('applied');
+    await wrapper.setProps({ context: makeTeamRunContext('reviewer-run') });
     await nextTick();
 
     expect(wrapper.text()).toContain('notes.md');

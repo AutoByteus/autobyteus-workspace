@@ -225,7 +225,7 @@ describe('SkillImprovementComposerCta', () => {
       },
     };
 
-    const wrapper = mountComponent({ kind: 'team-member', teamRunId: 'team-1', memberRunId: 'member-run-1' });
+    const wrapper = mountComponent({ kind: 'team-member', teamRunId: 'team-1', agentRunId: 'member-run-1' });
     await flushPromises();
 
     const button = wrapper.get('[data-test="skill-improvement-composer-cta"]');

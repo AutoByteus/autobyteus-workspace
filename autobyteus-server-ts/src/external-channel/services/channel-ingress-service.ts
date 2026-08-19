@@ -264,24 +264,21 @@ const normalizeDispatchTarget = (
   }
 
   const teamRunId = normalizeRequiredString(dispatch.teamRunId, "dispatch.teamRunId");
-  const memberRunId = normalizeNullableString(dispatch.memberRunId ?? null);
   return {
     dispatch: {
       dispatchTargetType: "TEAM",
       teamRunId,
-      memberRunId,
-      memberRouteKey: normalizeNullableString(dispatch.memberRouteKey ?? null),
-      memberPath: normalizeMemberPath(dispatch.memberPath),
+      agentRunId: dispatch.agentRunId,
       turnId: normalizeRequiredString(dispatch.turnId, "dispatch.turnId"),
       dispatchedAt,
     },
-    persistedAgentRunId: memberRunId,
+    persistedAgentRunId: null,
     persistedTeamRunId: teamRunId,
   };
 };
 
 const toRunOutputTarget = (
-  binding: ChannelBinding,
+  _binding: ChannelBinding,
   dispatch: ChannelRunDispatchResult,
 ): ChannelRunOutputTarget => {
   if (dispatch.dispatchTargetType === "AGENT") {
@@ -290,11 +287,7 @@ const toRunOutputTarget = (
   return {
     targetType: "TEAM",
     teamRunId: dispatch.teamRunId,
-    entryMemberRunId: normalizeNullableString(dispatch.memberRunId ?? null),
-    entryMemberRouteKey:
-      normalizeNullableString(dispatch.memberRouteKey ?? null) ??
-      normalizeNullableString(binding.targetMemberRouteKey ?? null),
-    entryMemberPath: normalizeMemberPath(dispatch.memberPath) ?? normalizeMemberPath(binding.targetMemberPath),
+    entryAgentRunId: dispatch.agentRunId,
   };
 };
 
@@ -313,9 +306,7 @@ const toRunOutputTargetFromReceipt = (
   return {
     targetType: "TEAM",
     teamRunId,
-    entryMemberRunId: normalizeNullableString(receipt.agentRunId),
-    entryMemberRouteKey: normalizeNullableString(binding.targetMemberRouteKey ?? null),
-    entryMemberPath: normalizeMemberPath(binding.targetMemberPath),
+    entryAgentRunId: null,
   };
 };
 
@@ -332,16 +323,6 @@ const normalizeNullableString = (value: string | null | undefined): string | nul
     return null;
   }
   const normalized = value.trim();
-  return normalized.length > 0 ? normalized : null;
-};
-
-const normalizeMemberPath = (value: readonly string[] | null | undefined): string[] | null => {
-  if (!Array.isArray(value)) {
-    return null;
-  }
-  const normalized = value
-    .map((segment) => normalizeNullableString(segment))
-    .filter((segment): segment is string => Boolean(segment));
   return normalized.length > 0 ? normalized : null;
 };
 

@@ -1,0 +1,107 @@
+{
+  "revision": "API-REV-008",
+  "sourceHead": "03b91d079af71b996ab4cadfe985ca2b2fddf049",
+  "result": "PASS",
+  "confidencePercent": 98.3,
+  "ucAc": {
+    "total": 77,
+    "passed": 77,
+    "failed": 0,
+    "notTested": 0,
+    "evidence": "investigation/uc-ac-verification.tsv"
+  },
+  "repository": {
+    "server": "71 files / 320 passed / 1 declared opt-in skip",
+    "core": "33 files / 184 passed",
+    "web": "34 files / 257 passed",
+    "productionTypeScript": "PASS",
+    "serverBuildFull": "PASS",
+    "nuxtProductionBuild": "PASS"
+  },
+  "startupRepair": {
+    "result": "PASS",
+    "repairBeforeListen": true,
+    "repairBeforeFirstPublicRead": true,
+    "activeInterruptedExactlyOnce": true,
+    "awaitingReviewInterruptedExactlyOnce": true,
+    "acceptedPreserved": true,
+    "survivingExecutionsSettled": true,
+    "orphanRemoved": true,
+    "invalidRootIsolated": true,
+    "validSiblingAvailable": true,
+    "newRootCreationAvailable": true,
+    "explicitRestoreIdempotent": true,
+    "evidence": [
+      "live/persistence/startup-repair-public-assertion.json",
+      "live/persistence/startup-repair-before-listen-correlation.log"
+    ]
+  },
+  "providers": {
+    "autobyteus": {
+      "teamDirect": "PASS",
+      "teamNested": "PASS",
+      "handoffRules": "PASS",
+      "invalidRelativeAddressRejected": "PASS",
+      "standalone": "PASS"
+    },
+    "codex": {
+      "teamDirect": "PASS",
+      "teamNested": "PASS",
+      "repeatedLogicalTargetIndependent": "PASS",
+      "handoffRules": "PASS",
+      "standalone": "PASS"
+    },
+    "claude": {
+      "teamDirect": "PASS",
+      "teamNested": "PASS",
+      "handoffRules": "PASS",
+      "standalone": "PASS"
+    }
+  },
+  "classroom": {
+    "result": "PASS",
+    "professorLlmRecipient": "/student",
+    "studentLlmRecipient": "/professor",
+    "exactReciprocalAgentRuns": true,
+    "requestReplyOnceOnly": true,
+    "referenceFilesReadable": true,
+    "evidence": "live/provider/classroom-send-message-address-assertion.json"
+  },
+  "browser": {
+    "desktopPreReopen": "PASS",
+    "desktopPostRestore": "PASS",
+    "taskNavigationAndFocus": "PASS",
+    "mobilePreReopen": "PASS",
+    "mobilePostRestore": "PASS",
+    "mobileReferenceOpenClose": "PASS",
+    "contextFileDirectNestedLifecycle": "PASS"
+  },
+  "persistenceAndMigration": {
+    "reopenSnapshotsStable": true,
+    "restoreReconnect": true,
+    "exactPackageFilesByteIdentical": true,
+    "prismaMigrationsApplied": 21,
+    "applicationDataMigrationsSucceeded": 16,
+    "duplicateMigrationAttempts": false
+  },
+  "safetyAndCleanup": {
+    "checkedDisposableTarget": true,
+    "operationalDatabaseAction": "NONE",
+    "operationalDatabaseInspection": "NONE",
+    "protectedPortsAction": "NONE",
+    "ownedListenersAbsent": true,
+    "ownedRuntimeAbsent": true,
+    "ownedDatabaseAndSidecarsAbsent": true,
+    "result": "PASS"
+  },
+  "durableCoverageDelta": {
+    "added": 0,
+    "updated": 0,
+    "removed": 0
+  },
+  "nonblockingObservations": [
+    "Some nested provider sessions attempted a duplicate or late task-lifecycle call after the formal lifecycle had already succeeded; the current boundary rejected it without corrupting accepted state.",
+    "One repository Claude binary integration case remains an explicitly declared opt-in skip; fresh configured Claude Team, nested Team, handoff-tool, and standalone runtime rows passed.",
+    "Desktop behavior was exercised through the supported browser-equivalent renderer, not an Electron shell; no changed shell-specific boundary was identified."
+  ]
+}

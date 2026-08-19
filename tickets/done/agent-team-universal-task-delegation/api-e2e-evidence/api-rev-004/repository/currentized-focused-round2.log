@@ -1,0 +1,855 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web
+
+stderr | components/workspace/skill-improvement/__tests__/SkillImprovementComposerCta.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentRunStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | types/agent/__tests__/AgentContext.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/MemberOverrideItem.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/running/__tests__/RunningTeamGroup.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/config/__tests__/RunConfigPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/running/__tests__/RunningTeamGroup.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/agentRunStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/skill-improvement/__tests__/SkillImprovementComposerCta.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | types/agent/__tests__/AgentContext.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/MemberOverrideItem.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ types/agent/__tests__/AgentContext.spec.ts (2 tests) 2ms
+stderr | stores/__tests__/agentRunStore.spec.ts > agentRunStore > publishes the authoritative Error status with exact navigation when preparation fails
+Error sending user input: Error: preparation failed
+    at Proxy.sendUserInputAndSubscribe (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web/stores/agentRunStore.ts:189:19)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web/stores/__tests__/agentRunStore.spec.ts:253:9
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+ ✓ components/workspace/running/__tests__/RunningTeamGroup.spec.ts (4 tests) 37ms
+stderr | stores/__tests__/agentRunStore.spec.ts > agentRunStore > terminateRun should not teardown local runtime when persisted termination fails
+Error terminating run 'run-1': Error: failure
+    at Proxy.terminateRun (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web/stores/agentRunStore.ts:404:17)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web/stores/__tests__/agentRunStore.spec.ts:446:24
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+stderr | stores/__tests__/agentRunStore.spec.ts > agentRunStore > closeAgent should keep context when backend termination fails
+Error terminating run 'run-1': Error: failure
+    at Proxy.terminateRun (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web/stores/agentRunStore.ts:404:17)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at Proxy.closeAgent (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web/stores/agentRunStore.ts:428:28)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web/stores/__tests__/agentRunStore.spec.ts:502:9
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+ ✓ components/workspace/skill-improvement/__tests__/SkillImprovementComposerCta.spec.ts (6 tests) 54ms
+ ✓ stores/__tests__/agentRunStore.spec.ts (17 tests) 29ms
+ ❯ components/workspace/config/__tests__/MemberOverrideItem.spec.ts (15 tests | 9 failed) 234ms
+   ✓ MemberOverrideItem > renders concise member override copy 28ms
+   ✓ MemberOverrideItem > renders a blocking warning when a runtime override breaks inherited global model availability 10ms
+   × MemberOverrideItem > emits a resolving explicit model override for an unresolved runtime override 15ms
+     → expected [ '/reviewer', { …(3) } ] to deeply equal [ 'reviewer', { …(3) } ]
+   × MemberOverrideItem > clears stale explicit member llmConfig when the explicit model changes 12ms
+     → expected [ '/reviewer', { …(2) } ] to deeply equal [ 'reviewer', { …(2) } ]
+   × MemberOverrideItem > drops an incompatible explicit model when the runtime override changes 20ms
+     → Unable to get #override-runtime-reviewer within: <div class="bg-white p-3" data-test="member-override-item" memberroutekey="reviewer">
+  <div class="mb-3 flex items-center justify-between">
+    <div class="flex items-center gap-2"><span class="text-[0.95rem] font-semibold text-slate-800">Reviewer</span>
+      <!--v-if-->
+    </div><span class="rounded-full border border-amber-100 bg-amber-50 px-2 py-0.5 text-xs text-amber-600">Overridden</span>
+  </div>
+  <!--v-if-->
+  <div class="mb-3"><label class="mb-1 block text-xs text-gray-500">Runtime</label><select id="override-runtime--reviewer" class="block w-full rounded-md border border-transparent bg-blue-50/40 px-3 py-2 text-sm text-gray-900 ring-1 ring-inset ring-blue-100/80 transition-colors hover:bg-blue-50/70 hover:ring-blue-200 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500" value="autobyteus">
+      <option value="">Global default</option>
+      <option value="autobyteus">AutoByteus</option>
+      <option value="codex_app_server">Codex App Server</option>
+      <option value="claude_agent_sdk">Claude Agent SDK</option>
+    </select>
+    <!--v-if-->
+  </div>
+  <!--v-if-->
+  <div class="mb-3"><label class="mb-1 block text-xs text-gray-500">LLM Model</label>
+    <div class="w-full">
+      <div class="relative"><button type="button" class="flex w-full items-center justify-between rounded-md px-3 py-2 text-left text-sm transition-colors duration-200 focus:outline-none border border-transparent bg-blue-50/40 text-gray-900 ring-1 ring-inset ring-blue-100/80 hover:bg-blue-50/70 hover:ring-blue-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/50"><span class="truncate">OpenAI / gpt-5.4</span><svg class="w-4 h-4 ml-2 text-gray-500 flex-shrink-0 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg></button></div>
+      <!--teleport start-->
+      <!--teleport end-->
+    </div>
+  </div>
+  <div class="mb-3">
+    <div class="mb-1 text-xs text-gray-500">Auto approve</div><input id="override-auto--reviewer" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 disabled:opacity-50"><label for="override-auto--reviewer" class="ml-2 select-none text-xs text-gray-600">Global default</label>
+  </div>
+  <div class="mt-4">
+    <!-- Thinking Toggle Row -->
+    <div class="flex items-center justify-between gap-4 py-2">
+      <div><label class="block text-sm text-gray-900">Thinking</label>
+        <!--v-if-->
+        <p class="text-[0.625rem] text-gray-500">Thinking configuration not available for this model</p>
+      </div>
+      <div class="flex items-center"><button type="button" class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 bg-blue-600" disabled=""><span class="sr-only">Use setting</span><span aria-hidden="true" class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out translate-x-5"></span></button></div>
+    </div><!-- Advanced Expand Button -->
+    <div class="mt-4 text-left"><button type="button" data-testid="advanced-params-toggle" class="inline-flex items-center gap-1.5 rounded-md px-1 py-1 text-sm font-medium text-gray-700 transition-colors hover:text-gray-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 hover:bg-slate-50" aria-expanded="false"><span>Advanced</span><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-4 w-4 text-gray-600 transition-transform duration-200"></svg></button></div><!-- Schema-driven advanced parameters. Non-thinking schemas render directly. -->
+    <div data-testid="advanced-params-container" class="mt-2 border-l border-slate-200 pl-3" style="display: none;">
+      <div class="space-y-3 pt-1">
+        <!-- Clean grid layout for advanced parameters -->
+        <div class="grid items-center gap-3 grid-cols-[minmax(0,1fr),minmax(7rem,0.95fr)]"><label for="config--reviewer-thinking_level" class="text-sm font-normal text-gray-700" title="thinking_level">Thinking Level <span title="Thinking Level" class="ml-1 text-gray-400 cursor-help hover:text-gray-600 transition-colors">ⓘ</span></label>
+          <div><input id="config--reviewer-thinking_level" type="number" class="block w-full rounded-md border px-3 py-2 text-sm text-gray-900 placeholder-gray-400 transition-colors focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500 border-transparent bg-blue-50/40 ring-1 ring-inset ring-blue-100/80 hover:bg-blue-50/70 hover:ring-blue-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/50" value="3"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+   × MemberOverrideItem > clears stale member-only llmConfig when invalid explicit model cleanup falls back to the inherited global runtime 7ms
+     → Unable to get #override-runtime-reviewer within: <div class="bg-white p-3" data-test="member-override-item" memberroutekey="reviewer">
+  <div class="mb-3 flex items-center justify-between">
+    <div class="flex items-center gap-2"><span class="text-[0.95rem] font-semibold text-slate-800">Reviewer</span>
+      <!--v-if-->
+    </div><span class="rounded-full border border-amber-100 bg-amber-50 px-2 py-0.5 text-xs text-amber-600">Overridden</span>
+  </div>
+  <!--v-if-->
+  <div class="mb-3"><label class="mb-1 block text-xs text-gray-500">Runtime</label><select id="override-runtime--reviewer" class="block w-full rounded-md border border-transparent bg-blue-50/40 px-3 py-2 text-sm text-gray-900 ring-1 ring-inset ring-blue-100/80 transition-colors hover:bg-blue-50/70 hover:ring-blue-200 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500" value="codex_app_server">
+      <option value="">Global default</option>
+      <option value="autobyteus">AutoByteus</option>
+      <option value="codex_app_server">Codex App Server</option>
+      <option value="claude_agent_sdk">Claude Agent SDK</option>
+    </select>
+    <!--v-if-->
+  </div>
+  <!--v-if-->
+  <div class="mb-3"><label class="mb-1 block text-xs text-gray-500">LLM Model</label>
+    <div class="w-full">
+      <div class="relative"><button type="button" class="flex w-full items-center justify-between rounded-md px-3 py-2 text-left text-sm transition-colors duration-200 focus:outline-none border border-transparent bg-blue-50/40 text-gray-900 ring-1 ring-inset ring-blue-100/80 hover:bg-blue-50/70 hover:ring-blue-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/50"><span class="truncate">OpenAI / GPT-5.3 Codex</span><svg class="w-4 h-4 ml-2 text-gray-500 flex-shrink-0 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg></button></div>
+      <!--teleport start-->
+      <!--teleport end-->
+    </div>
+  </div>
+  <div class="mb-3">
+    <div class="mb-1 text-xs text-gray-500">Auto approve</div><input id="override-auto--reviewer" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 disabled:opacity-50"><label for="override-auto--reviewer" class="ml-2 select-none text-xs text-gray-600">Global default</label>
+  </div>
+  <div class="mt-4">
+    <!-- Thinking Toggle Row -->
+    <div class="flex items-center justify-between gap-4 py-2">
+      <div><label class="block text-sm text-gray-900">Thinking</label>
+        <!--v-if-->
+        <p class="text-[0.625rem] text-gray-500">Thinking configuration not available for this model</p>
+      </div>
+      <div class="flex items-center"><button type="button" class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 bg-blue-600" disabled=""><span class="sr-only">Use setting</span><span aria-hidden="true" class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out translate-x-5"></span></button></div>
+    </div><!-- Advanced Expand Button -->
+    <div class="mt-4 text-left"><button type="button" data-testid="advanced-params-toggle" class="inline-flex items-center gap-1.5 rounded-md px-1 py-1 text-sm font-medium text-gray-700 transition-colors hover:text-gray-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 hover:bg-slate-50" aria-expanded="false"><span>Advanced</span><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-4 w-4 text-gray-600 transition-transform duration-200"></svg></button></div><!-- Schema-driven advanced parameters. Non-thinking schemas render directly. -->
+    <div data-testid="advanced-params-container" class="mt-2 border-l border-slate-200 pl-3" style="display: none;">
+      <div class="space-y-3 pt-1">
+        <!-- Clean grid layout for advanced parameters -->
+        <div class="grid items-center gap-3 grid-cols-[minmax(0,1fr),minmax(7rem,0.95fr)]"><label for="config--reviewer-reasoning_effort" class="text-sm font-normal text-gray-700" title="reasoning_effort">Reasoning Effort <span title="Reasoning Effort" class="ml-1 text-gray-400 cursor-help hover:text-gray-600 transition-colors">ⓘ</span></label>
+          <div><select id="config--reviewer-reasoning_effort" class="block w-full rounded-md border py-2 pl-3 pr-8 text-sm text-gray-900 transition-colors focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500 border-transparent bg-blue-50/40 ring-1 ring-inset ring-blue-100/80 hover:bg-blue-50/70 hover:ring-blue-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/50" value="medium">
+              <!--v-if-->
+              <option value="low">low</option>
+              <option value="medium">medium</option>
+              <option value="high">high</option>
+              <option value="xhigh">xhigh</option>
+            </select></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+   × MemberOverrideItem > clears stale member-only llmConfig when effective runtime changes invalidate the explicit model 13ms
+     → expected [ '/reviewer', null ] to deeply equal [ 'reviewer', null ]
+   × MemberOverrideItem > feeds cleaned inherited-global fallback rows into readiness and materialization without stale config 14ms
+     → Unable to get #override-runtime-reviewer within: <div class="bg-white p-3" data-test="member-override-item" memberroutekey="reviewer">
+  <div class="mb-3 flex items-center justify-between">
+    <div class="flex items-center gap-2"><span class="text-[0.95rem] font-semibold text-slate-800">Reviewer</span>
+      <!--v-if-->
+    </div><span class="rounded-full border border-amber-100 bg-amber-50 px-2 py-0.5 text-xs text-amber-600">Overridden</span>
+  </div>
+  <!--v-if-->
+  <div class="mb-3"><label class="mb-1 block text-xs text-gray-500">Runtime</label><select id="override-runtime--reviewer" class="block w-full rounded-md border border-transparent bg-blue-50/40 px-3 py-2 text-sm text-gray-900 ring-1 ring-inset ring-blue-100/80 transition-colors hover:bg-blue-50/70 hover:ring-blue-200 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500" value="codex_app_server">
+      <option value="">Global default</option>
+      <option value="autobyteus">AutoByteus</option>
+      <option value="codex_app_server">Codex App Server</option>
+      <option value="claude_agent_sdk">Claude Agent SDK</option>
+    </select>
+    <!--v-if-->
+  </div>
+  <!--v-if-->
+  <div class="mb-3"><label class="mb-1 block text-xs text-gray-500">LLM Model</label>
+    <div class="w-full">
+      <div class="relative"><button type="button" class="flex w-full items-center justify-between rounded-md px-3 py-2 text-left text-sm transition-colors duration-200 focus:outline-none border border-transparent bg-blue-50/40 text-gray-900 ring-1 ring-inset ring-blue-100/80 hover:bg-blue-50/70 hover:ring-blue-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/50"><span class="truncate">OpenAI / GPT-5.3 Codex</span><svg class="w-4 h-4 ml-2 text-gray-500 flex-shrink-0 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg></button></div>
+      <!--teleport start-->
+      <!--teleport end-->
+    </div>
+  </div>
+  <div class="mb-3">
+    <div class="mb-1 text-xs text-gray-500">Auto approve</div><input id="override-auto--reviewer" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 disabled:opacity-50"><label for="override-auto--reviewer" class="ml-2 select-none text-xs text-gray-600">Global default</label>
+  </div>
+  <div class="mt-4">
+    <!-- Thinking Toggle Row -->
+    <div class="flex items-center justify-between gap-4 py-2">
+      <div><label class="block text-sm text-gray-900">Thinking</label>
+        <!--v-if-->
+        <p class="text-[0.625rem] text-gray-500">Thinking configuration not available for this model</p>
+      </div>
+      <div class="flex items-center"><button type="button" class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 bg-blue-600" disabled=""><span class="sr-only">Use setting</span><span aria-hidden="true" class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out translate-x-5"></span></button></div>
+    </div><!-- Advanced Expand Button -->
+    <div class="mt-4 text-left"><button type="button" data-testid="advanced-params-toggle" class="inline-flex items-center gap-1.5 rounded-md px-1 py-1 text-sm font-medium text-gray-700 transition-colors hover:text-gray-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 hover:bg-slate-50" aria-expanded="false"><span>Advanced</span><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-4 w-4 text-gray-600 transition-transform duration-200"></svg></button></div><!-- Schema-driven advanced parameters. Non-thinking schemas render directly. -->
+    <div data-testid="advanced-params-container" class="mt-2 border-l border-slate-200 pl-3" style="display: none;">
+      <div class="space-y-3 pt-1">
+        <!-- Clean grid layout for advanced parameters -->
+        <div class="grid items-center gap-3 grid-cols-[minmax(0,1fr),minmax(7rem,0.95fr)]"><label for="config--reviewer-reasoning_effort" class="text-sm font-normal text-gray-700" title="reasoning_effort">Reasoning Effort <span title="Reasoning Effort" class="ml-1 text-gray-400 cursor-help hover:text-gray-600 transition-colors">ⓘ</span></label>
+          <div><select id="config--reviewer-reasoning_effort" class="block w-full rounded-md border py-2 pl-3 pr-8 text-sm text-gray-900 transition-colors focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500 border-transparent bg-blue-50/40 ring-1 ring-inset ring-blue-100/80 hover:bg-blue-50/70 hover:ring-blue-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/50" value="medium">
+              <!--v-if-->
+              <option value="low">low</option>
+              <option value="medium">medium</option>
+              <option value="high">high</option>
+              <option value="xhigh">xhigh</option>
+            </select></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+   ✓ MemberOverrideItem > serializes team workspace root path from workspace metadata for launch inputs 1ms
+   ✓ MemberOverrideItem > blocks filesystem workspace metadata team launch readiness when the root path is missing 1ms
+   ✓ MemberOverrideItem > passes missing historical config state into member model config display 43ms
+   × MemberOverrideItem > keeps inherited effort-only reasoning compact until expanded and displays the schema default 34ms
+     → Unable to get select#config-reviewer-reasoning_effort within: <div class="bg-white p-3" data-test="member-override-item" memberroutekey="reviewer">
+  <div class="mb-3 flex items-center justify-between">
+    <div class="flex items-center gap-2"><span class="text-[0.95rem] font-semibold text-slate-800">Reviewer</span>
+      <!--v-if-->
+    </div>
+    <!--v-if-->
+  </div>
+  <!--v-if-->
+  <div class="mb-3"><label class="mb-1 block text-xs text-gray-500">Runtime</label><select id="override-runtime--reviewer" class="block w-full rounded-md border border-transparent bg-blue-50/40 px-3 py-2 text-sm text-gray-900 ring-1 ring-inset ring-blue-100/80 transition-colors hover:bg-blue-50/70 hover:ring-blue-200 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500" value="">
+      <option value="">Global default</option>
+      <option value="autobyteus">AutoByteus</option>
+      <option value="codex_app_server">Codex App Server</option>
+      <option value="claude_agent_sdk">Claude Agent SDK</option>
+    </select>
+    <!--v-if-->
+  </div>
+  <!--v-if-->
+  <div class="mb-3"><label class="mb-1 block text-xs text-gray-500">LLM Model</label>
+    <div class="w-full">
+      <div class="relative"><button type="button" class="flex w-full items-center justify-between rounded-md px-3 py-2 text-left text-sm transition-colors duration-200 focus:outline-none border border-transparent bg-blue-50/40 text-gray-900 ring-1 ring-inset ring-blue-100/80 hover:bg-blue-50/70 hover:ring-blue-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/50"><span class="text-gray-500">Global default</span><svg class="w-4 h-4 ml-2 text-gray-500 flex-shrink-0 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg></button></div>
+      <!--teleport start-->
+      <!--teleport end-->
+    </div>
+  </div>
+  <div class="mb-3">
+    <div class="mb-1 text-xs text-gray-500">Auto approve</div><input id="override-auto--reviewer" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 disabled:opacity-50"><label for="override-auto--reviewer" class="ml-2 select-none text-xs text-gray-600">Global default</label>
+  </div>
+  <div class="mt-4">
+    <!-- Thinking Toggle Row -->
+    <div class="flex items-center justify-between gap-4 py-2">
+      <div><label class="block text-sm text-gray-900">Thinking</label>
+        <!--v-if-->
+        <p class="text-[0.625rem] text-gray-500">Thinking configuration not available for this model</p>
+      </div>
+      <div class="flex items-center"><button type="button" class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 bg-blue-600" disabled=""><span class="sr-only">Use setting</span><span aria-hidden="true" class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out translate-x-5"></span></button></div>
+    </div><!-- Advanced Expand Button -->
+    <div class="mt-4 text-left"><button type="button" data-testid="advanced-params-toggle" class="inline-flex items-center gap-1.5 rounded-md px-1 py-1 text-sm font-medium text-gray-700 transition-colors hover:text-gray-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 hover:bg-slate-50" aria-expanded="false"><span>Advanced</span><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-4 w-4 text-gray-600 transition-transform duration-200"></svg></button></div><!-- Schema-driven advanced parameters. Non-thinking schemas render directly. -->
+    <div data-testid="advanced-params-container" class="mt-2 border-l border-slate-200 pl-3" style="display: none;">
+      <div class="space-y-3 pt-1">
+        <!-- Clean grid layout for advanced parameters -->
+        <div class="grid items-center gap-3 grid-cols-[minmax(0,1fr),minmax(7rem,0.95fr)]"><label for="config--reviewer-reasoning_effort" class="text-sm font-normal text-gray-700" title="reasoning_effort">Reasoning Effort <span title="Reasoning Effort" class="ml-1 text-gray-400 cursor-help hover:text-gray-600 transition-colors">ⓘ</span></label>
+          <div><select id="config--reviewer-reasoning_effort" class="block w-full rounded-md border py-2 pl-3 pr-8 text-sm text-gray-900 transition-colors focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500 border-transparent bg-blue-50/40 ring-1 ring-inset ring-blue-100/80 hover:bg-blue-50/70 hover:ring-blue-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/50" value="medium">
+              <!--v-if-->
+              <option value="low">low</option>
+              <option value="medium">medium</option>
+              <option value="high">high</option>
+              <option value="xhigh">xhigh</option>
+            </select></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+   ✓ MemberOverrideItem > keeps compact advanced collapsed when inherited global thinking-on model changes 13ms
+   × MemberOverrideItem > opens compact advanced for an explicit member model selection whose effective thinking is on 13ms
+     → expected [ '/reviewer', { …(2) } ] to deeply equal [ 'reviewer', { …(2) } ]
+   × MemberOverrideItem > opens compact advanced for an explicit member runtime selection to an effective-on model 9ms
+     → Unable to get #override-runtime-reviewer within: <div class="bg-white p-3" data-test="member-override-item" memberroutekey="reviewer">
+  <div class="mb-3 flex items-center justify-between">
+    <div class="flex items-center gap-2"><span class="text-[0.95rem] font-semibold text-slate-800">Reviewer</span>
+      <!--v-if-->
+    </div>
+    <!--v-if-->
+  </div>
+  <!--v-if-->
+  <div class="mb-3"><label class="mb-1 block text-xs text-gray-500">Runtime</label><select id="override-runtime--reviewer" class="block w-full rounded-md border border-transparent bg-blue-50/40 px-3 py-2 text-sm text-gray-900 ring-1 ring-inset ring-blue-100/80 transition-colors hover:bg-blue-50/70 hover:ring-blue-200 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500" value="">
+      <option value="">Global default</option>
+      <option value="autobyteus">AutoByteus</option>
+      <option value="codex_app_server">Codex App Server</option>
+      <option value="claude_agent_sdk">Claude Agent SDK</option>
+    </select>
+    <!--v-if-->
+  </div>
+  <!--v-if-->
+  <div class="mb-3"><label class="mb-1 block text-xs text-gray-500">LLM Model</label>
+    <div class="w-full">
+      <div class="relative"><button type="button" class="flex w-full items-center justify-between rounded-md px-3 py-2 text-left text-sm transition-colors duration-200 focus:outline-none border border-transparent bg-blue-50/40 text-gray-900 ring-1 ring-inset ring-blue-100/80 hover:bg-blue-50/70 hover:ring-blue-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/50"><span class="text-gray-500">Global default</span><svg class="w-4 h-4 ml-2 text-gray-500 flex-shrink-0 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg></button></div>
+      <!--teleport start-->
+      <!--teleport end-->
+    </div>
+  </div>
+  <div class="mb-3">
+    <div class="mb-1 text-xs text-gray-500">Auto approve</div><input id="override-auto--reviewer" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 disabled:opacity-50"><label for="override-auto--reviewer" class="ml-2 select-none text-xs text-gray-600">Global default</label>
+  </div>
+  <div class="mt-4">
+    <!-- Thinking Toggle Row -->
+    <div class="flex items-center justify-between gap-4 py-2">
+      <div><label class="block text-sm text-gray-900">Thinking</label>
+        <!--v-if-->
+        <!--v-if-->
+      </div>
+      <div class="flex items-center"><button type="button" class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 bg-gray-200" disabled=""><span class="sr-only">Use setting</span><span aria-hidden="true" class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out translate-x-0"></span></button></div>
+    </div><!-- Advanced Expand Button -->
+    <div class="mt-4 text-left"><button type="button" data-testid="advanced-params-toggle" class="inline-flex items-center gap-1.5 rounded-md px-1 py-1 text-sm font-medium text-gray-700 transition-colors hover:text-gray-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 hover:bg-slate-50" aria-expanded="false"><span>Advanced</span><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-4 w-4 text-gray-600 transition-transform duration-200"></svg></button></div><!-- Schema-driven advanced parameters. Non-thinking schemas render directly. -->
+    <div data-testid="advanced-params-container" class="mt-2 border-l border-slate-200 pl-3" style="display: none;">
+      <div class="space-y-3 pt-1">
+        <!-- Clean grid layout for advanced parameters -->
+        <div class="grid items-center gap-3 grid-cols-[minmax(0,1fr),minmax(7rem,0.95fr)]"><label for="config--reviewer-thinking_level" class="text-sm font-normal text-gray-700" title="thinking_level">Thinking Level <span title="Thinking Level" class="ml-1 text-gray-400 cursor-help hover:text-gray-600 transition-colors">ⓘ</span></label>
+          <div><input id="config--reviewer-thinking_level" type="number" class="block w-full rounded-md border px-3 py-2 text-sm text-gray-900 placeholder-gray-400 transition-colors focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500 border-transparent bg-blue-50/40 ring-1 ring-inset ring-blue-100/80 hover:bg-blue-50/70 hover:ring-blue-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/50"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+ ❯ components/workspace/config/__tests__/RunConfigPanel.spec.ts (17 tests | 1 failed) 104ms
+   ✓ RunConfigPanel > renders placeholder when nothing selected 7ms
+   ✓ RunConfigPanel > renders Agent Form when Agent Template set 6ms
+   ✓ RunConfigPanel > renders Team Form when Team Template set 5ms
+   ✓ RunConfigPanel > triggers team run on button click when launch readiness passes 7ms
+   ✓ RunConfigPanel > renders the selected draft read-only and rejects duplicate launch/edit/workspace actions while its owner reports pending 3ms
+   ✓ RunConfigPanel > loads a pending New workspace path before creating an agent run 6ms
+   ✓ RunConfigPanel > blocks agent run creation when pending New workspace loading fails 5ms
+   ✓ RunConfigPanel > allows Run Agent with a non-empty pending New path even before it is preloaded 5ms
+   ✓ RunConfigPanel > loads a pending New workspace path before creating a team run 9ms
+   ✓ RunConfigPanel > disables team run and shows the blocking message when mixed-runtime readiness fails 5ms
+   ✓ RunConfigPanel > disables team run when workspace is missing 4ms
+   ✓ RunConfigPanel > disables agent run when workspace is missing 4ms
+   ✓ RunConfigPanel > keeps draft agent configuration editable for workspace selection events 5ms
+   ✓ RunConfigPanel > keeps draft team configuration editable for workspace selection events 9ms
+   ✓ RunConfigPanel > returns to event view from selection-mode config header action 7ms
+   ✓ RunConfigPanel > passes read-only mode to selected existing run configuration and ignores workspace edit events 3ms
+   × RunConfigPanel > passes read-only mode to selected existing team configuration and ignores workspace edit events 12ms
+     → expected false to be true // Object.is equality
+ ❯ components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts (9 tests | 1 failed) 124ms
+   ✓ TokenUsageMeterPanel > renders the approved Token Meter hierarchy with server-owned component values 30ms
+   ✓ TokenUsageMeterPanel > shows prompt usage and an explicit unavailable context limit without a fake denominator 5ms
+   ✓ TokenUsageMeterPanel > expands calculation details with server-provided unit prices and thinking included copy 11ms
+   ✓ TokenUsageMeterPanel > shows server-provided generic cache-write tokens, price, and cost in both disclosure levels 12ms
+   ✓ TokenUsageMeterPanel > omits the thinking-token subline when no reasoning tokens are present 4ms
+   ✓ TokenUsageMeterPanel > shows varies-by-call calculation details for mixed pricing without a fake unit price 9ms
+   × TokenUsageMeterPanel > uses the focused team member as primary and keeps aggregate usage only in the Team section 26ms
+     → expected 'TeamPer-member tokens with estimated …' to contain 'Lead'
+   ✓ TokenUsageMeterPanel > hydrates the team aggregate when only a partial live team summary exists 18ms
+   ✓ TokenUsageMeterPanel > rejects non-Agent focus without falling back to the team aggregate as primary usage 9ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 11 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/workspace/config/__tests__/MemberOverrideItem.spec.ts > MemberOverrideItem > emits a resolving explicit model override for an unresolved runtime override
+AssertionError: expected [ '/reviewer', { …(3) } ] to deeply equal [ 'reviewer', { …(3) } ]
+
+- Expected
++ Received
+
+@@ -1,7 +1,7 @@
+  [
+-   "reviewer",
++   "/reviewer",
+    {
+      "agentDefinitionId": "agent-reviewer",
+      "llmModelIdentifier": "claude-sonnet",
+      "runtimeKind": "claude_agent_sdk",
+    },
+
+ ❯ components/workspace/config/__tests__/MemberOverrideItem.spec.ts:264:23
+    262| 
+    263|     const events = wrapper.emitted('update:override') || []
+    264|     expect(events[0]).toEqual([
+       |                       ^
+    265|       'reviewer',
+    266|       {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/11]⎯
+
+ FAIL  components/workspace/config/__tests__/MemberOverrideItem.spec.ts > MemberOverrideItem > clears stale explicit member llmConfig when the explicit model changes
+AssertionError: expected [ '/reviewer', { …(2) } ] to deeply equal [ 'reviewer', { …(2) } ]
+
+- Expected
++ Received
+
+  [
+-   "reviewer",
++   "/reviewer",
+    {
+      "agentDefinitionId": "agent-reviewer",
+      "llmModelIdentifier": "gpt-5.3-codex",
+    },
+  ]
+
+ ❯ components/workspace/config/__tests__/MemberOverrideItem.spec.ts:295:27
+    293| 
+    294|     const events = wrapper.emitted('update:override') || []
+    295|     expect(events.at(-1)).toEqual([
+       |                           ^
+    296|       'reviewer',
+    297|       {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/11]⎯
+
+ FAIL  components/workspace/config/__tests__/MemberOverrideItem.spec.ts > MemberOverrideItem > drops an incompatible explicit model when the runtime override changes
+Error: Unable to get #override-runtime-reviewer within: <div class="bg-white p-3" data-test="member-override-item" memberroutekey="reviewer">
+  <div class="mb-3 flex items-center justify-between">
+    <div class="flex items-center gap-2"><span class="text-[0.95rem] font-semibold text-slate-800">Reviewer</span>
+      <!--v-if-->
+    </div><span class="rounded-full border border-amber-100 bg-amber-50 px-2 py-0.5 text-xs text-amber-600">Overridden</span>
+  </div>
+  <!--v-if-->
+  <div class="mb-3"><label class="mb-1 block text-xs text-gray-500">Runtime</label><select id="override-runtime--reviewer" class="block w-full rounded-md border border-transparent bg-blue-50/40 px-3 py-2 text-sm text-gray-900 ring-1 ring-inset ring-blue-100/80 transition-colors hover:bg-blue-50/70 hover:ring-blue-200 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500" value="autobyteus">
+      <option value="">Global default</option>
+      <option value="autobyteus">AutoByteus</option>
+      <option value="codex_app_server">Codex App Server</option>
+      <option value="claude_agent_sdk">Claude Agent SDK</option>
+    </select>
+    <!--v-if-->
+  </div>
+  <!--v-if-->
+  <div class="mb-3"><label class="mb-1 block text-xs text-gray-500">LLM Model</label>
+    <div class="w-full">
+      <div class="relative"><button type="button" class="flex w-full items-center justify-between rounded-md px-3 py-2 text-left text-sm transition-colors duration-200 focus:outline-none border border-transparent bg-blue-50/40 text-gray-900 ring-1 ring-inset ring-blue-100/80 hover:bg-blue-50/70 hover:ring-blue-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/50"><span class="truncate">OpenAI / gpt-5.4</span><svg class="w-4 h-4 ml-2 text-gray-500 flex-shrink-0 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg></button></div>
+      <!--teleport start-->
+      <!--teleport end-->
+    </div>
+  </div>
+  <div class="mb-3">
+    <div class="mb-1 text-xs text-gray-500">Auto approve</div><input id="override-auto--reviewer" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 disabled:opacity-50"><label for="override-auto--reviewer" class="ml-2 select-none text-xs text-gray-600">Global default</label>
+  </div>
+  <div class="mt-4">
+    <!-- Thinking Toggle Row -->
+    <div class="flex items-center justify-between gap-4 py-2">
+      <div><label class="block text-sm text-gray-900">Thinking</label>
+        <!--v-if-->
+        <p class="text-[0.625rem] text-gray-500">Thinking configuration not available for this model</p>
+      </div>
+      <div class="flex items-center"><button type="button" class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 bg-blue-600" disabled=""><span class="sr-only">Use setting</span><span aria-hidden="true" class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out translate-x-5"></span></button></div>
+    </div><!-- Advanced Expand Button -->
+    <div class="mt-4 text-left"><button type="button" data-testid="advanced-params-toggle" class="inline-flex items-center gap-1.5 rounded-md px-1 py-1 text-sm font-medium text-gray-700 transition-colors hover:text-gray-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 hover:bg-slate-50" aria-expanded="false"><span>Advanced</span><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-4 w-4 text-gray-600 transition-transform duration-200"></svg></button></div><!-- Schema-driven advanced parameters. Non-thinking schemas render directly. -->
+    <div data-testid="advanced-params-container" class="mt-2 border-l border-slate-200 pl-3" style="display: none;">
+      <div class="space-y-3 pt-1">
+        <!-- Clean grid layout for advanced parameters -->
+        <div class="grid items-center gap-3 grid-cols-[minmax(0,1fr),minmax(7rem,0.95fr)]"><label for="config--reviewer-thinking_level" class="text-sm font-normal text-gray-700" title="thinking_level">Thinking Level <span title="Thinking Level" class="ml-1 text-gray-400 cursor-help hover:text-gray-600 transition-colors">ⓘ</span></label>
+          <div><input id="config--reviewer-thinking_level" type="number" class="block w-full rounded-md border px-3 py-2 text-sm text-gray-900 placeholder-gray-400 transition-colors focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500 border-transparent bg-blue-50/40 ring-1 ring-inset ring-blue-100/80 hover:bg-blue-50/70 hover:ring-blue-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/50" value="3"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+ ❯ VueWrapper.BaseWrapper.get ../node_modules/.pnpm/@vue+test-utils@2.4.6/node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7279:15
+    7277|             return result;
+    7278|         }
+    7279|         throw new Error("Unable to get ".concat(selector, " within: ")…
+       |               ^
+    7280|     };
+    7281|     BaseWrapper.prototype.getComponent = function (selector) {
+ ❯ components/workspace/config/__tests__/MemberOverrideItem.spec.ts:320:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/11]⎯
+
+ FAIL  components/workspace/config/__tests__/MemberOverrideItem.spec.ts > MemberOverrideItem > clears stale member-only llmConfig when invalid explicit model cleanup falls back to the inherited global runtime
+Error: Unable to get #override-runtime-reviewer within: <div class="bg-white p-3" data-test="member-override-item" memberroutekey="reviewer">
+  <div class="mb-3 flex items-center justify-between">
+    <div class="flex items-center gap-2"><span class="text-[0.95rem] font-semibold text-slate-800">Reviewer</span>
+      <!--v-if-->
+    </div><span class="rounded-full border border-amber-100 bg-amber-50 px-2 py-0.5 text-xs text-amber-600">Overridden</span>
+  </div>
+  <!--v-if-->
+  <div class="mb-3"><label class="mb-1 block text-xs text-gray-500">Runtime</label><select id="override-runtime--reviewer" class="block w-full rounded-md border border-transparent bg-blue-50/40 px-3 py-2 text-sm text-gray-900 ring-1 ring-inset ring-blue-100/80 transition-colors hover:bg-blue-50/70 hover:ring-blue-200 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500" value="codex_app_server">
+      <option value="">Global default</option>
+      <option value="autobyteus">AutoByteus</option>
+      <option value="codex_app_server">Codex App Server</option>
+      <option value="claude_agent_sdk">Claude Agent SDK</option>
+    </select>
+    <!--v-if-->
+  </div>
+  <!--v-if-->
+  <div class="mb-3"><label class="mb-1 block text-xs text-gray-500">LLM Model</label>
+    <div class="w-full">
+      <div class="relative"><button type="button" class="flex w-full items-center justify-between rounded-md px-3 py-2 text-left text-sm transition-colors duration-200 focus:outline-none border border-transparent bg-blue-50/40 text-gray-900 ring-1 ring-inset ring-blue-100/80 hover:bg-blue-50/70 hover:ring-blue-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/50"><span class="truncate">OpenAI / GPT-5.3 Codex</span><svg class="w-4 h-4 ml-2 text-gray-500 flex-shrink-0 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg></button></div>
+      <!--teleport start-->
+      <!--teleport end-->
+    </div>
+  </div>
+  <div class="mb-3">
+    <div class="mb-1 text-xs text-gray-500">Auto approve</div><input id="override-auto--reviewer" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 disabled:opacity-50"><label for="override-auto--reviewer" class="ml-2 select-none text-xs text-gray-600">Global default</label>
+  </div>
+  <div class="mt-4">
+    <!-- Thinking Toggle Row -->
+    <div class="flex items-center justify-between gap-4 py-2">
+      <div><label class="block text-sm text-gray-900">Thinking</label>
+        <!--v-if-->
+        <p class="text-[0.625rem] text-gray-500">Thinking configuration not available for this model</p>
+      </div>
+      <div class="flex items-center"><button type="button" class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 bg-blue-600" disabled=""><span class="sr-only">Use setting</span><span aria-hidden="true" class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out translate-x-5"></span></button></div>
+    </div><!-- Advanced Expand Button -->
+    <div class="mt-4 text-left"><button type="button" data-testid="advanced-params-toggle" class="inline-flex items-center gap-1.5 rounded-md px-1 py-1 text-sm font-medium text-gray-700 transition-colors hover:text-gray-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 hover:bg-slate-50" aria-expanded="false"><span>Advanced</span><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-4 w-4 text-gray-600 transition-transform duration-200"></svg></button></div><!-- Schema-driven advanced parameters. Non-thinking schemas render directly. -->
+    <div data-testid="advanced-params-container" class="mt-2 border-l border-slate-200 pl-3" style="display: none;">
+      <div class="space-y-3 pt-1">
+        <!-- Clean grid layout for advanced parameters -->
+        <div class="grid items-center gap-3 grid-cols-[minmax(0,1fr),minmax(7rem,0.95fr)]"><label for="config--reviewer-reasoning_effort" class="text-sm font-normal text-gray-700" title="reasoning_effort">Reasoning Effort <span title="Reasoning Effort" class="ml-1 text-gray-400 cursor-help hover:text-gray-600 transition-colors">ⓘ</span></label>
+          <div><select id="config--reviewer-reasoning_effort" class="block w-full rounded-md border py-2 pl-3 pr-8 text-sm text-gray-900 transition-colors focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500 border-transparent bg-blue-50/40 ring-1 ring-inset ring-blue-100/80 hover:bg-blue-50/70 hover:ring-blue-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/50" value="medium">
+              <!--v-if-->
+              <option value="low">low</option>
+              <option value="medium">medium</option>
+              <option value="high">high</option>
+              <option value="xhigh">xhigh</option>
+            </select></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+ ❯ VueWrapper.BaseWrapper.get ../node_modules/.pnpm/@vue+test-utils@2.4.6/node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7279:15
+    7277|             return result;
+    7278|         }
+    7279|         throw new Error("Unable to get ".concat(selector, " within: ")…
+       |               ^
+    7280|     };
+    7281|     BaseWrapper.prototype.getComponent = function (selector) {
+ ❯ components/workspace/config/__tests__/MemberOverrideItem.spec.ts:349:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/11]⎯
+
+ FAIL  components/workspace/config/__tests__/MemberOverrideItem.spec.ts > MemberOverrideItem > clears stale member-only llmConfig when effective runtime changes invalidate the explicit model
+AssertionError: expected [ '/reviewer', null ] to deeply equal [ 'reviewer', null ]
+
+- Expected
++ Received
+
+  [
+-   "reviewer",
++   "/reviewer",
+    null,
+  ]
+
+ ❯ components/workspace/config/__tests__/MemberOverrideItem.spec.ts:384:27
+    382| 
+    383|     const events = wrapper.emitted('update:override') || []
+    384|     expect(events.at(-1)).toEqual([
+       |                           ^
+    385|       'reviewer',
+    386|       null,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/11]⎯
+
+ FAIL  components/workspace/config/__tests__/MemberOverrideItem.spec.ts > MemberOverrideItem > feeds cleaned inherited-global fallback rows into readiness and materialization without stale config
+Error: Unable to get #override-runtime-reviewer within: <div class="bg-white p-3" data-test="member-override-item" memberroutekey="reviewer">
+  <div class="mb-3 flex items-center justify-between">
+    <div class="flex items-center gap-2"><span class="text-[0.95rem] font-semibold text-slate-800">Reviewer</span>
+      <!--v-if-->
+    </div><span class="rounded-full border border-amber-100 bg-amber-50 px-2 py-0.5 text-xs text-amber-600">Overridden</span>
+  </div>
+  <!--v-if-->
+  <div class="mb-3"><label class="mb-1 block text-xs text-gray-500">Runtime</label><select id="override-runtime--reviewer" class="block w-full rounded-md border border-transparent bg-blue-50/40 px-3 py-2 text-sm text-gray-900 ring-1 ring-inset ring-blue-100/80 transition-colors hover:bg-blue-50/70 hover:ring-blue-200 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500" value="codex_app_server">
+      <option value="">Global default</option>
+      <option value="autobyteus">AutoByteus</option>
+      <option value="codex_app_server">Codex App Server</option>
+      <option value="claude_agent_sdk">Claude Agent SDK</option>
+    </select>
+    <!--v-if-->
+  </div>
+  <!--v-if-->
+  <div class="mb-3"><label class="mb-1 block text-xs text-gray-500">LLM Model</label>
+    <div class="w-full">
+      <div class="relative"><button type="button" class="flex w-full items-center justify-between rounded-md px-3 py-2 text-left text-sm transition-colors duration-200 focus:outline-none border border-transparent bg-blue-50/40 text-gray-900 ring-1 ring-inset ring-blue-100/80 hover:bg-blue-50/70 hover:ring-blue-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/50"><span class="truncate">OpenAI / GPT-5.3 Codex</span><svg class="w-4 h-4 ml-2 text-gray-500 flex-shrink-0 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg></button></div>
+      <!--teleport start-->
+      <!--teleport end-->
+    </div>
+  </div>
+  <div class="mb-3">
+    <div class="mb-1 text-xs text-gray-500">Auto approve</div><input id="override-auto--reviewer" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 disabled:opacity-50"><label for="override-auto--reviewer" class="ml-2 select-none text-xs text-gray-600">Global default</label>
+  </div>
+  <div class="mt-4">
+    <!-- Thinking Toggle Row -->
+    <div class="flex items-center justify-between gap-4 py-2">
+      <div><label class="block text-sm text-gray-900">Thinking</label>
+        <!--v-if-->
+        <p class="text-[0.625rem] text-gray-500">Thinking configuration not available for this model</p>
+      </div>
+      <div class="flex items-center"><button type="button" class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 bg-blue-600" disabled=""><span class="sr-only">Use setting</span><span aria-hidden="true" class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out translate-x-5"></span></button></div>
+    </div><!-- Advanced Expand Button -->
+    <div class="mt-4 text-left"><button type="button" data-testid="advanced-params-toggle" class="inline-flex items-center gap-1.5 rounded-md px-1 py-1 text-sm font-medium text-gray-700 transition-colors hover:text-gray-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 hover:bg-slate-50" aria-expanded="false"><span>Advanced</span><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-4 w-4 text-gray-600 transition-transform duration-200"></svg></button></div><!-- Schema-driven advanced parameters. Non-thinking schemas render directly. -->
+    <div data-testid="advanced-params-container" class="mt-2 border-l border-slate-200 pl-3" style="display: none;">
+      <div class="space-y-3 pt-1">
+        <!-- Clean grid layout for advanced parameters -->
+        <div class="grid items-center gap-3 grid-cols-[minmax(0,1fr),minmax(7rem,0.95fr)]"><label for="config--reviewer-reasoning_effort" class="text-sm font-normal text-gray-700" title="reasoning_effort">Reasoning Effort <span title="Reasoning Effort" class="ml-1 text-gray-400 cursor-help hover:text-gray-600 transition-colors">ⓘ</span></label>
+          <div><select id="config--reviewer-reasoning_effort" class="block w-full rounded-md border py-2 pl-3 pr-8 text-sm text-gray-900 transition-colors focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500 border-transparent bg-blue-50/40 ring-1 ring-inset ring-blue-100/80 hover:bg-blue-50/70 hover:ring-blue-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/50" value="medium">
+              <!--v-if-->
+              <option value="low">low</option>
+              <option value="medium">medium</option>
+              <option value="high">high</option>
+              <option value="xhigh">xhigh</option>
+            </select></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+ ❯ VueWrapper.BaseWrapper.get ../node_modules/.pnpm/@vue+test-utils@2.4.6/node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7279:15
+    7277|             return result;
+    7278|         }
+    7279|         throw new Error("Unable to get ".concat(selector, " within: ")…
+       |               ^
+    7280|     };
+    7281|     BaseWrapper.prototype.getComponent = function (selector) {
+ ❯ components/workspace/config/__tests__/MemberOverrideItem.spec.ts:406:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/11]⎯
+
+ FAIL  components/workspace/config/__tests__/MemberOverrideItem.spec.ts > MemberOverrideItem > keeps inherited effort-only reasoning compact until expanded and displays the schema default
+Error: Unable to get select#config-reviewer-reasoning_effort within: <div class="bg-white p-3" data-test="member-override-item" memberroutekey="reviewer">
+  <div class="mb-3 flex items-center justify-between">
+    <div class="flex items-center gap-2"><span class="text-[0.95rem] font-semibold text-slate-800">Reviewer</span>
+      <!--v-if-->
+    </div>
+    <!--v-if-->
+  </div>
+  <!--v-if-->
+  <div class="mb-3"><label class="mb-1 block text-xs text-gray-500">Runtime</label><select id="override-runtime--reviewer" class="block w-full rounded-md border border-transparent bg-blue-50/40 px-3 py-2 text-sm text-gray-900 ring-1 ring-inset ring-blue-100/80 transition-colors hover:bg-blue-50/70 hover:ring-blue-200 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500" value="">
+      <option value="">Global default</option>
+      <option value="autobyteus">AutoByteus</option>
+      <option value="codex_app_server">Codex App Server</option>
+      <option value="claude_agent_sdk">Claude Agent SDK</option>
+    </select>
+    <!--v-if-->
+  </div>
+  <!--v-if-->
+  <div class="mb-3"><label class="mb-1 block text-xs text-gray-500">LLM Model</label>
+    <div class="w-full">
+      <div class="relative"><button type="button" class="flex w-full items-center justify-between rounded-md px-3 py-2 text-left text-sm transition-colors duration-200 focus:outline-none border border-transparent bg-blue-50/40 text-gray-900 ring-1 ring-inset ring-blue-100/80 hover:bg-blue-50/70 hover:ring-blue-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/50"><span class="text-gray-500">Global default</span><svg class="w-4 h-4 ml-2 text-gray-500 flex-shrink-0 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg></button></div>
+      <!--teleport start-->
+      <!--teleport end-->
+    </div>
+  </div>
+  <div class="mb-3">
+    <div class="mb-1 text-xs text-gray-500">Auto approve</div><input id="override-auto--reviewer" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 disabled:opacity-50"><label for="override-auto--reviewer" class="ml-2 select-none text-xs text-gray-600">Global default</label>
+  </div>
+  <div class="mt-4">
+    <!-- Thinking Toggle Row -->
+    <div class="flex items-center justify-between gap-4 py-2">
+      <div><label class="block text-sm text-gray-900">Thinking</label>
+        <!--v-if-->
+        <p class="text-[0.625rem] text-gray-500">Thinking configuration not available for this model</p>
+      </div>
+      <div class="flex items-center"><button type="button" class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 bg-blue-600" disabled=""><span class="sr-only">Use setting</span><span aria-hidden="true" class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out translate-x-5"></span></button></div>
+    </div><!-- Advanced Expand Button -->
+    <div class="mt-4 text-left"><button type="button" data-testid="advanced-params-toggle" class="inline-flex items-center gap-1.5 rounded-md px-1 py-1 text-sm font-medium text-gray-700 transition-colors hover:text-gray-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 hover:bg-slate-50" aria-expanded="false"><span>Advanced</span><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-4 w-4 text-gray-600 transition-transform duration-200"></svg></button></div><!-- Schema-driven advanced parameters. Non-thinking schemas render directly. -->
+    <div data-testid="advanced-params-container" class="mt-2 border-l border-slate-200 pl-3" style="display: none;">
+      <div class="space-y-3 pt-1">
+        <!-- Clean grid layout for advanced parameters -->
+        <div class="grid items-center gap-3 grid-cols-[minmax(0,1fr),minmax(7rem,0.95fr)]"><label for="config--reviewer-reasoning_effort" class="text-sm font-normal text-gray-700" title="reasoning_effort">Reasoning Effort <span title="Reasoning Effort" class="ml-1 text-gray-400 cursor-help hover:text-gray-600 transition-colors">ⓘ</span></label>
+          <div><select id="config--reviewer-reasoning_effort" class="block w-full rounded-md border py-2 pl-3 pr-8 text-sm text-gray-900 transition-colors focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500 border-transparent bg-blue-50/40 ring-1 ring-inset ring-blue-100/80 hover:bg-blue-50/70 hover:ring-blue-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/50" value="medium">
+              <!--v-if-->
+              <option value="low">low</option>
+              <option value="medium">medium</option>
+              <option value="high">high</option>
+              <option value="xhigh">xhigh</option>
+            </select></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+ ❯ VueWrapper.BaseWrapper.get ../node_modules/.pnpm/@vue+test-utils@2.4.6/node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7279:15
+    7277|             return result;
+    7278|         }
+    7279|         throw new Error("Unable to get ".concat(selector, " within: ")…
+       |               ^
+    7280|     };
+    7281|     BaseWrapper.prototype.getComponent = function (selector) {
+ ❯ components/workspace/config/__tests__/MemberOverrideItem.spec.ts:582:37
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/11]⎯
+
+ FAIL  components/workspace/config/__tests__/MemberOverrideItem.spec.ts > MemberOverrideItem > opens compact advanced for an explicit member model selection whose effective thinking is on
+AssertionError: expected [ '/reviewer', { …(2) } ] to deeply equal [ 'reviewer', { …(2) } ]
+
+- Expected
++ Received
+
+  [
+-   "reviewer",
++   "/reviewer",
+    {
+      "agentDefinitionId": "agent-reviewer",
+      "llmModelIdentifier": "gpt-5.3-codex",
+    },
+  ]
+
+ ❯ components/workspace/config/__tests__/MemberOverrideItem.spec.ts:661:56
+    659|     expect(advancedToggle.attributes('aria-expanded')).toBe('true')
+    660|     expect(advancedContainer.attributes('style') ?? '').not.toContain(…
+    661|     expect(wrapper.emitted('update:override')?.at(-1)).toEqual([
+       |                                                        ^
+    662|       'reviewer',
+    663|       {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/11]⎯
+
+ FAIL  components/workspace/config/__tests__/MemberOverrideItem.spec.ts > MemberOverrideItem > opens compact advanced for an explicit member runtime selection to an effective-on model
+Error: Unable to get #override-runtime-reviewer within: <div class="bg-white p-3" data-test="member-override-item" memberroutekey="reviewer">
+  <div class="mb-3 flex items-center justify-between">
+    <div class="flex items-center gap-2"><span class="text-[0.95rem] font-semibold text-slate-800">Reviewer</span>
+      <!--v-if-->
+    </div>
+    <!--v-if-->
+  </div>
+  <!--v-if-->
+  <div class="mb-3"><label class="mb-1 block text-xs text-gray-500">Runtime</label><select id="override-runtime--reviewer" class="block w-full rounded-md border border-transparent bg-blue-50/40 px-3 py-2 text-sm text-gray-900 ring-1 ring-inset ring-blue-100/80 transition-colors hover:bg-blue-50/70 hover:ring-blue-200 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500" value="">
+      <option value="">Global default</option>
+      <option value="autobyteus">AutoByteus</option>
+      <option value="codex_app_server">Codex App Server</option>
+      <option value="claude_agent_sdk">Claude Agent SDK</option>
+    </select>
+    <!--v-if-->
+  </div>
+  <!--v-if-->
+  <div class="mb-3"><label class="mb-1 block text-xs text-gray-500">LLM Model</label>
+    <div class="w-full">
+      <div class="relative"><button type="button" class="flex w-full items-center justify-between rounded-md px-3 py-2 text-left text-sm transition-colors duration-200 focus:outline-none border border-transparent bg-blue-50/40 text-gray-900 ring-1 ring-inset ring-blue-100/80 hover:bg-blue-50/70 hover:ring-blue-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/50"><span class="text-gray-500">Global default</span><svg class="w-4 h-4 ml-2 text-gray-500 flex-shrink-0 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg></button></div>
+      <!--teleport start-->
+      <!--teleport end-->
+    </div>
+  </div>
+  <div class="mb-3">
+    <div class="mb-1 text-xs text-gray-500">Auto approve</div><input id="override-auto--reviewer" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 disabled:opacity-50"><label for="override-auto--reviewer" class="ml-2 select-none text-xs text-gray-600">Global default</label>
+  </div>
+  <div class="mt-4">
+    <!-- Thinking Toggle Row -->
+    <div class="flex items-center justify-between gap-4 py-2">
+      <div><label class="block text-sm text-gray-900">Thinking</label>
+        <!--v-if-->
+        <!--v-if-->
+      </div>
+      <div class="flex items-center"><button type="button" class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 bg-gray-200" disabled=""><span class="sr-only">Use setting</span><span aria-hidden="true" class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out translate-x-0"></span></button></div>
+    </div><!-- Advanced Expand Button -->
+    <div class="mt-4 text-left"><button type="button" data-testid="advanced-params-toggle" class="inline-flex items-center gap-1.5 rounded-md px-1 py-1 text-sm font-medium text-gray-700 transition-colors hover:text-gray-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 hover:bg-slate-50" aria-expanded="false"><span>Advanced</span><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-4 w-4 text-gray-600 transition-transform duration-200"></svg></button></div><!-- Schema-driven advanced parameters. Non-thinking schemas render directly. -->
+    <div data-testid="advanced-params-container" class="mt-2 border-l border-slate-200 pl-3" style="display: none;">
+      <div class="space-y-3 pt-1">
+        <!-- Clean grid layout for advanced parameters -->
+        <div class="grid items-center gap-3 grid-cols-[minmax(0,1fr),minmax(7rem,0.95fr)]"><label for="config--reviewer-thinking_level" class="text-sm font-normal text-gray-700" title="thinking_level">Thinking Level <span title="Thinking Level" class="ml-1 text-gray-400 cursor-help hover:text-gray-600 transition-colors">ⓘ</span></label>
+          <div><input id="config--reviewer-thinking_level" type="number" class="block w-full rounded-md border px-3 py-2 text-sm text-gray-900 placeholder-gray-400 transition-colors focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500 border-transparent bg-blue-50/40 ring-1 ring-inset ring-blue-100/80 hover:bg-blue-50/70 hover:ring-blue-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/50"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+ ❯ VueWrapper.BaseWrapper.get ../node_modules/.pnpm/@vue+test-utils@2.4.6/node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7279:15
+    7277|             return result;
+    7278|         }
+    7279|         throw new Error("Unable to get ".concat(selector, " within: ")…
+       |               ^
+    7280|     };
+    7281|     BaseWrapper.prototype.getComponent = function (selector) {
+ ❯ components/workspace/config/__tests__/MemberOverrideItem.spec.ts:690:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/11]⎯
+
+ FAIL  components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > passes read-only mode to selected existing team configuration and ignores workspace edit events
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ components/workspace/config/__tests__/RunConfigPanel.spec.ts:724:51
+    722|     expect(form.props('readOnly')).toBe(true)
+    723|     expect(form.props('config')).toBe(topologyConfiguration)
+    724|     expect(Object.isFrozen(form.props('config'))).toBe(true)
+       |                                                   ^
+    725| 
+    726|     form.vm.$emit('select-existing', 'ws-new')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/11]⎯
+
+ FAIL  components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts > TokenUsageMeterPanel > uses the focused team member as primary and keeps aggregate usage only in the Team section
+AssertionError: expected 'TeamPer-member tokens with estimated …' to contain 'Lead'
+
+Expected: "Lead"
+Received: "TeamPer-member tokens with estimated API costs. Total cost is input cost plus output cost. Focus a row for full detail above.MemberGross inputOutputTotalleadFocused/lead1,111$0.010011price missing1,122$0.0100Partial estimatereviewer/reviewer2,222$0.020022$0.00222,244$0.0222Team total9,000$0.0800900$0.01909,900$0.0990"
+
+ ❯ components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts:464:74
+    462|     expect(wrapper.get('[data-test="gross-input-card"]').text()).not.t…
+    463|     expect(wrapper.get('[data-test="team-token-usage-summary"]').text(…
+    464|     expect(wrapper.get('[data-test="team-token-usage-summary"]').text(…
+       |                                                                          ^
+    465|     expect(wrapper.get('[data-test="team-token-usage-summary"]').text(…
+    466|     expect(wrapper.get('[data-test="team-token-usage-summary"]').text(…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/11]⎯
+
+
+ Test Files  3 failed | 4 passed (7)
+      Tests  11 failed | 59 passed (70)
+   Start at  15:42:32
+   Duration  8.40s (transform 4.33s, setup 46.63s, collect 2.54s, tests 585ms, environment 2.85s, prepare 1.84s)
+

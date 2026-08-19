@@ -1,0 +1,38 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web
+
+stderr | services/runHydration/__tests__/teamCommunicationHydrationService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/__tests__/MobileTeamMessages.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/teamCommunicationStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/teamCommunicationStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/runHydration/__tests__/teamCommunicationHydrationService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/mobile/__tests__/MobileTeamMessages.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/teamCommunicationStore.spec.ts (7 tests) 13ms
+ ✓ services/runHydration/__tests__/teamCommunicationHydrationService.spec.ts (2 tests) 12ms
+ ✓ components/mobile/__tests__/MobileTeamMessages.spec.ts (2 tests) 52ms
+
+ Test Files  3 passed (3)
+      Tests  11 passed (11)
+   Start at  16:40:27
+   Duration  4.68s (transform 2.54s, setup 12.01s, collect 166ms, tests 78ms, environment 432ms, prepare 398ms)
+

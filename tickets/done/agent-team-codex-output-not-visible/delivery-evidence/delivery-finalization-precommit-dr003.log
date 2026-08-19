@@ -1,0 +1,24 @@
+DR-003 precommit finalization audit
+timestamp_utc=2026-08-17T09:45:32Z
+user_verification=RECEIVED
+user_finalization_authorization=RECEIVED
+ticket_branch=codex/agent-team-codex-output-not-visible
+ticket_head=6daeaf14fa8b1b625c650d24571d5664297815ab
+finalization_target=origin/codex/agent-team-universal-task-delegation
+target_revision=37739aa2bd718e3e1a53587c1d8604d353d334cb
+excluded_target=origin/personal
+origin_personal_action=NONE
+ticket_archive_state=PASS
+target_is_ancestor=PASS
+target_worktree_clean=PASS
+api_rev_003_manifest_with_archive_prefix=PASS
+delivery_diff_hygiene=PASS
+2287270b430ee90e079529267e73bb9065b92438e5d573d8a33255f54c9a4c71  /tmp/codex-output-pre-finalization-20260817T094312Z-tracked.patch
+fe7c85c411b20f46b2ebcaf0eed91b38d3c7a76b8b62837485536a6937eda170  /tmp/codex-output-pre-finalization-20260817T094312Z-untracked.tar.gz
+delivery_backup=PASS
+remote_ticket_branch_before_push=ABSENT
+operational_database_action=NONE
+home_autobyteus_action=NONE
+protected_60004_31004_action=NONE
+rollback_repair_action=NONE
+result=PASS

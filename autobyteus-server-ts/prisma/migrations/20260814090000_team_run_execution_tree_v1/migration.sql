@@ -1,0 +1,4 @@
+-- The target root_team_run_id column and its index were established with the
+-- original token ledger table. The predecessor execution_address_json column
+-- intentionally remains available until the isolated application-data
+-- migration copies its evidence and performs the transactional table cut.

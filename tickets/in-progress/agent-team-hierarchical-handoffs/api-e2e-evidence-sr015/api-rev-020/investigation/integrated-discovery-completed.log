@@ -1,0 +1,121 @@
+=== completed integrated state inventory ===
+2026-08-10T19:29:51Z
+ M tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-coverage-investigation.md
+ M tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md
+ M tickets/in-progress/agent-team-hierarchical-handoffs/code-review-revision-record.md
+?? tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-020/
+?? tickets/in-progress/agent-team-hierarchical-handoffs/delivery-evidence/
+?? tickets/in-progress/agent-team-hierarchical-handoffs/delivery-integration-blocker.md
+?? tickets/in-progress/agent-team-hierarchical-handoffs/delivery-revision-record.md
+?? tickets/in-progress/agent-team-hierarchical-handoffs/docs-sync-report.md
+?? tickets/in-progress/agent-team-hierarchical-handoffs/handoff-summary.md
+?? tickets/in-progress/agent-team-hierarchical-handoffs/release-deployment-report.md
+?? tickets/in-progress/agent-team-hierarchical-handoffs/release-notes.md
+--- deleted-owner references ---
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts:10:import { buildWorkspaceTeamExecutionDisplayRows } from '~/utils/workspaceTeamExecutionDisplayRows';
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/tickets/done/nested-team-row-expand/api-e2e-execution-coverage-report.md:50:| `utils/__tests__/workspaceTeamExecutionDisplayRows.spec.ts` stable/transient display rows | Still Valid | Executed | Passed in broadened command: 2 tests. |
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/tickets/done/nested-team-row-expand/api-e2e-execution-coverage-report.md:93:| APIE2E-007 | Display-row ordering/depth/kind supports stable/transient child visibility. | `workspaceTeamExecutionDisplayRows.spec.ts` | Pass | Broadened Vitest command passed 15/15 tests. |
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/tickets/done/nested-team-row-expand/api-e2e-execution-coverage-report.md:163:- `pnpm -C autobyteus-web exec vitest --run components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts composables/__tests__/useWorkspaceHistoryTreeState.spec.ts utils/__tests__/workspaceTeamExecutionDisplayRows.spec.ts` — passed (`5` files, `15` tests). Non-fatal logs observed: KaTeX quirks-mode warnings, serverStore non-Electron logs, and a caught/logged task-delegation mock warning in `HistoricalTeamLazyHydration.integration.spec.ts`; command exited 0.
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/tickets/done/nested-team-row-expand/investigation-notes.md:52:| 2026-07-05 | Code | `autobyteus-web/utils/workspaceTeamExecutionDisplayRows.ts` | Understand stable/transient display-row shape | Display rows carry `kind`, `memberKind`, `memberRouteKey`, `depth`; stable agent-team rows and transient task-team rows can be identified by existing `hasChildren` calculation in the section component. | No |
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/tickets/done/nested-team-row-expand/investigation-notes.md:98:| `autobyteus-web/utils/workspaceTeamExecutionDisplayRows.ts` | Builds stable and transient display rows from team tree/context. | Existing display rows plus `hasChildren` calculation are enough to decide whether row activation should toggle. | No utility changes required unless implementation wants helper extraction, which is not necessary. |
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/tickets/done/nested-team-row-expand/api-e2e-coverage-investigation.md:49:| `autobyteus-web/utils/__tests__/workspaceTeamExecutionDisplayRows.spec.ts` | Stable/transient display rows preserve ordering, depth, and transient kind separation. | FR-007 setup, DS-003 display-row basis | Still Valid | Transient has-children detection depends on stable row ordering/depth; utility behavior remains current. | Execute supporting unit coverage. |
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/tickets/done/nested-team-row-expand/api-e2e-coverage-investigation.md:105:   - `pnpm -C autobyteus-web exec vitest --run components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts composables/__tests__/useWorkspaceHistoryTreeState.spec.ts utils/__tests__/workspaceTeamExecutionDisplayRows.spec.ts`
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/tickets/done/nested-team-row-expand/handoff-summary.md:49:  - `pnpm -C autobyteus-web exec vitest --run components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts composables/__tests__/useWorkspaceHistoryTreeState.spec.ts utils/__tests__/workspaceTeamExecutionDisplayRows.spec.ts` — passed (`5` files, `15` tests).
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/tickets/done/nested-team-row-expand/release-deployment-report.md:141:  - `pnpm -C autobyteus-web exec vitest --run components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts composables/__tests__/useWorkspaceHistoryTreeState.spec.ts utils/__tests__/workspaceTeamExecutionDisplayRows.spec.ts`
+--- selected stale/current identity references ---
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/composables/__tests__/useWorkspaceHistoryTreeState.spec.ts:131:    getTeamMemberNavigationAncestorRouteKeys: (teamRunId: string, memberRouteKey: string) => {
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/composables/__tests__/useWorkspaceHistoryTreeState.spec.ts:134:        (row: any) => row.memberRouteKey === memberRouteKey,
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/composables/__tests__/useWorkspaceHistoryTreeState.spec.ts:142:        ancestorRouteKeys.unshift(row.memberRouteKey);
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/composables/__tests__/useWorkspaceHistoryTreeState.spec.ts:278:        { memberRouteKey: 'BuildSquad', depth: 0, hasChildren: true },
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/composables/__tests__/useWorkspaceHistoryTreeState.spec.ts:279:        { memberRouteKey: 'BuildSquad/reviewer', depth: 1, hasChildren: true },
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/composables/__tests__/useWorkspaceHistoryTreeState.spec.ts:280:        { memberRouteKey: 'task-agent-run-1', depth: 2, hasChildren: false },
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts:7:  memberRouteKey: string,
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts:8:  memberPath: string[],
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts:13:  memberRouteKey,
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts:14:  memberPath,
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts:15:  memberName: memberPath.at(-1) || memberRouteKey,
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts:16:  displayName: memberPath.at(-1) || memberRouteKey,
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts:17:  memberRunId: `${memberRouteKey.replace(/\//g, '-')}-run`,
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts:104:      expect.objectContaining({ memberRouteKey: 'program_manager' }),
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts:114:      expect.objectContaining({ memberRouteKey: 'BuildSquad/review_lead' }),
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/stores/__tests__/runHistoryNavigationProjection.spec.ts:46:    memberPath: ['worker'],
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/stores/__tests__/runHistoryNavigationProjection.spec.ts:47:    memberRouteKey: 'worker',
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/stores/__tests__/runHistoryNavigationProjection.spec.ts:55:    memberPath: ['worker', `${teamRunId}-task-run`],
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/stores/__tests__/runHistoryNavigationProjection.spec.ts:56:    memberRouteKey: `${teamRunId}-task-run`,
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/stores/__tests__/runHistoryNavigationProjection.spec.ts:117:    expect(team.executionRows.map((row) => `${row.kind}:${row.memberRouteKey}`)).toEqual([
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/stores/__tests__/runHistoryNavigationProjection.spec.ts:241:      memberRouteKey: 'team-a-task-run',
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/teamStreamMemberContextResolver.spec.ts:46:    memberPath: ['coordinator'],
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/teamStreamMemberContextResolver.spec.ts:47:    memberRouteKey: 'coordinator',
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/teamStreamMemberContextResolver.spec.ts:56:    memberPath: ['worker'],
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/teamStreamMemberContextResolver.spec.ts:57:    memberRouteKey: 'worker',
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts:22:  rootTeamRunId: currentTaskExecutionRootTeamRunId,
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts:29:  rootTeamRunId: currentTaskExecutionRootTeamRunId,
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts:46:    rootTeamRunId: currentTaskExecutionRootTeamRunId,
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts:50:    rootTeamRunId: currentTaskExecutionRootTeamRunId,
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts:76:      rootTeamRunId: team.teamRunId,
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts:129:      rootTeamRunId: team.teamRunId,
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts:213:        rootTeam: {
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts:214:          children: team.rootTeam.children.filter((node) => !node.isTaskExecution).map(toHistoryRow),
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts:239:    team.focusedExecutionAddress = innerRootAddress();
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts:240:    expect(findTeamExecutionNode(team, team.focusedExecutionAddress)).toMatchObject({
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:8:const stableMember = (memberRouteKey: string, overrides: Record<string, any> = {}) => ({
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:11:  memberRouteKey,
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:12:  memberPath: [memberRouteKey],
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:13:  memberName: memberRouteKey,
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:14:  displayName: memberRouteKey,
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:15:  memberRunId: `${memberRouteKey}-run`,
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:58:    memberPath: ['worker', 'task-agent-run-1'],
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:59:    memberRouteKey: 'task-agent-run-1',
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:72:      { memberKind: 'agent', memberName: 'worker', displayName: 'worker', memberPath: ['worker'], memberRouteKey: 'worker', memberRunId: 'worker-run', agentDefinitionId: 'worker-agent' },
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:102:  const expansionKey = (workspaceId: string, teamRunId: string, memberRouteKey: string) =>
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:103:    `${workspaceId}::${teamRunId}::${memberRouteKey}`;
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:123:    isTeamMemberExpanded: vi.fn((workspaceId: string, teamRunId: string, memberRouteKey: string) =>
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:124:      Boolean(expandedTeamMembers[expansionKey(workspaceId, teamRunId, memberRouteKey)])),
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:125:    toggleTeamMember: vi.fn((workspaceId: string, teamRunId: string, memberRouteKey: string) => {
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:126:      const key = expansionKey(workspaceId, teamRunId, memberRouteKey);
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:259:        memberRouteKey: 'worker',
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:293:        memberRouteKey: 'task-agent-run-1',
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:303:      memberPath: ['SoftwareEngineeringTeam', 'review_lead'],
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:309:      memberPath: ['SoftwareEngineeringTeam'],
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:319:      memberPath: ['task-team-run-1', 'review_lead'],
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:320:      memberRouteKey: 'task-team-run-1/review_lead',
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:331:      memberPath: ['task-team-run-1'],
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:332:      memberRouteKey: 'task-team-run-1',
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:351:          { memberKind: 'agent', memberName: 'worker', displayName: 'worker', memberPath: ['worker'], memberRouteKey: 'worker', memberRunId: 'worker-run', agentDefinitionId: 'worker-agent' },
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:356:            memberPath: ['SoftwareEngineeringTeam'],
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:357:            memberRouteKey: 'SoftwareEngineeringTeam',
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:361:              { memberKind: 'agent', memberName: 'review_lead', displayName: 'review_lead', memberPath: ['SoftwareEngineeringTeam', 'review_lead'], memberRouteKey: 'SoftwareEngineeringTeam/review_lead', memberRunId: 'review-lead-run', agentDefinitionId: 'review-lead' },
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:405:        memberRouteKey: 'task-team-run-1',
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:456:          memberRouteKey: 'worker',
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:457:          memberPath: ['worker'],
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:473:      memberPath: ['SoftwareEngineeringTeam', 'review_lead'],
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:479:      memberPath: ['SoftwareEngineeringTeam'],
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:516:        memberRouteKey: 'SoftwareEngineeringTeam',
+--- startup e2e test declarations ---
+7:import { afterEach, describe, expect, it } from 'vitest';
+18:  startBuiltTestServer,
+22:type RunningTestServer = Awaited<ReturnType<typeof startBuiltTestServer>>;
+401:    server.listen(0, '127.0.0.1', () => {
+468:describe('custom-provider readable identity actual startup lifecycle', () => {
+469:  it('takes V1 through secretless staging and exact selector transition to empty V3 across restart', async () => {
+476:    const first = await startBuiltTestServer({
+503:          message: 'CUSTOM_PROVIDER_V1_RECONFIGURATION_REQUIRED',
+517:    const second = await startBuiltTestServer({
+528:  it('orders the real multiversion transition, preserves token identity, and restores selectors through same-name recreation', async () => {
+544:    const server = await startBuiltTestServer({
+560:      ({ message }) => message === 'CUSTOM_PROVIDER_READABLE_ID_EMPTY_V3_PUBLISHED',
+563:      ({ message }) => message === 'CUSTOM_PROVIDER_READABLE_ID_OLD_SECRET_REMOVED',
+646:    const restarted = await startBuiltTestServer({
+668:  it('keeps collision selectors unchanged while removing both trusted old secrets after empty V3', async () => {
+695:    const server = await startBuiltTestServer({
+704:      expect.objectContaining({ message: 'CUSTOM_PROVIDER_READABLE_ID_MAPPING_INVALID' }),
+707:    const resetIndex = messages.indexOf('CUSTOM_PROVIDER_READABLE_ID_EMPTY_V3_PUBLISHED');
+709:      .map((message, index) => message === 'CUSTOM_PROVIDER_READABLE_ID_OLD_SECRET_REMOVED' ? index : -1)
+728:  it('blocks a fresh recent RUNNING record, then converges through the ordinary stale retry', async () => {
+739:          status: 'RUNNING',
+750:    expect(blocked.output).toContain('CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:RUNNING:');
+751:    expect(blocked.output).not.toContain('Server listening on');
+754:    const stalePrisma = new PrismaClient({ datasources: { db: { url: target.database.databaseUrl } } });
+756:      await stalePrisma.appDataMigrationRecord.update({
+761:      await stalePrisma.$disconnect();
+764:    const recovered = await startBuiltTestServer({

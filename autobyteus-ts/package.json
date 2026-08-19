@@ -28,10 +28,10 @@
     "vitest": "^4.0.18"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.78.0",
+    "@anthropic-ai/sdk": "0.116.0",
     "@google/genai": "^1.38.0",
     "@mistralai/mistralai": "^1.13.0",
-    "@modelcontextprotocol/sdk": "^1.25.3",
+    "@modelcontextprotocol/sdk": "1.30.0",
     "axios": "^1.13.2",
     "cheerio": "^1.2.0",
     "hono": "^4.0.0",

@@ -1,0 +1,20 @@
+# DR-002 original hierarchical worktree retirement
+timestamp_utc=2026-08-15T17:41:32Z
+retired_worktree=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs
+retired_branch=codex/agent-team-hierarchical-handoffs
+retired_head=3e121efb32462c314f4ef1c4e051f30d2f9b3e58
+pre_removal_clean=true
+user_authorized_retirement=true
+worktree_path_removed=true
+local_branch_ref=3e121efb32462c314f4ef1c4e051f30d2f9b3e58
+remote_tracking_ref=3e121efb32462c314f4ef1c4e051f30d2f9b3e58
+surviving_worktree=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation
+surviving_branch=codex/agent-team-universal-task-delegation
+surviving_head=babcb4ac54ee9c2dff30dfee27dc163a8fb056a6
+surviving_merge_head=acb8985930ccce49b632cdca22b92f5b237e35bf
+operational_database_action=NONE
+home_autobyteus_action=NONE
+protected_60004_31004_action=NONE
+rollback_repair_action=NONE
+branch_ref_deletion_action=NONE
+RESULT=PASS

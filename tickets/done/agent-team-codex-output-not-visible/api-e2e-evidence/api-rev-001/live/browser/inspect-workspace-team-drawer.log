@@ -1,0 +1,295 @@
+{
+  "text": "Agents\nAgent Teams\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nSettings\nReload\nCreate Team\nAW\nArticle Writing Team\n\nA two-specialist article team for investigation-led understanding, style-aware drafting, critical review, and revision until publication-ready quality.\n\nwriting-and-editing\nRun\nView Details\n→\nA\narticle_writer\nA\narticle_reviewer\n\nCoordinator\n\narticle_writer\n\nMembers\n\n2\n\nNested Teams\n\n0\n\nBL\nBible Learning Team\n\nA context-first Bible-learning team for research, teaching preparation, review, and default visual deck production unless the user explicitly wants teaching-only output.\n\nfaith-and-teaching\nRun\nView Details\n→\nB\nbible_researcher\nB\nbible_teaching_preparer\nB\nbible_teaching_reviewer\n\nCoordinator\n\nbible_researcher\n\nMembers\n\n3\n\nNested Teams\n\n0\n\nCS\nClassroom Simulation Team\n\nA teacher-student classroom simulation for demonstrating agent-to-agent communication with required reply behavior.\n\neducation-simulation\nRun\nView Details\n→\nP\nprofessor\nS\nstudent\n\nCoordinator\n\nprofessor\n\nMembers\n\n2\n\nNested Teams\n\n0\n\nKC\nKids Coloring Story Team\n\nA child-friendly creative production team for multi-page A4 printable coloring stories, coloring bookmarks, activity sheets, and short line-art picture sequences.\n\ncreative-media\nRun\nView Details\n→\nS\nstory_activity_designer\nC\ncoloring_page_illustrator\nC\nchild_experience_reviewer\nP\nprintable_pack_producer\n\nCoordinator\n\nstory_activity_designer\n\nMembers\n\n4\n\nNested Teams\n\n0\n\nKP\nKids Picture Story Team\n\nA child-friendly creative production team for illustrated picture books with approved text composed into each text-bearing page image.\n\ncreative-media\nRun\nView Details\n→\nS\nstory_picture_book_author\nP\npicture_book_illustrator\nP\npicture_book_reviewer\nB\nbook_production_editor\n\nCoordinator\n\nstory_picture_book_author\n\nMembers\n\n4\n\nNested Teams\n\n0\n\nMV\nManga Video Studio Team\n\nA story-first creative production team for original manga canon design, consistent image generation, and optional narrated motion-comic video delivery.\n\ncreative-media\nRun\nView Details\n→\nM\nmanga_showrunner\nS\nstoryboard_director\nM\nmanga_illustrator\nV\nvoice_video_producer\n\nCoordinator\n\nmanga_showrunner\n\nMembers\n\n4\n\nNested Teams\n\n0\n\nNP\nNarrated Presentation Video Team\n\nA slide-based explainer and teaching-style video team for researched narration scripts, clean presentation visuals, voiceover, and simple still-slide video assembly.\n\ncreative-media\nRun\nView Details\n→\nP\npresentation_director\nN\nnarration_script_reviewer\nS\nslide_video_producer\n\nCoordinator\n\npresentation_director\n\nMembers\n\n3\n\nNested Teams\n\n0\n\nNO\nNorthstar Operating Company\n\nA realistic fictional SaaS company simulation with an executive leadership team and nested department organizations.\n\nbusiness-simulation\nRun\nView Details\n→\nC\nceo\nC\nchief_of_staff\nC\ncto\nC\ncpo\n+11 more\n\nCoordinator\n\nceo\n\nMembers\n\n15\n\nNested Teams\n\n6\n\nPB\nPicture Book Studio Team\n\nA creative production team for any illustrated picture book, from concept and global-scene reasoning through approved storyboard, cohesive page illustration, independent review, and ordered digital or print exports.\n\ncreative-media\nRun\nView Details\n→\nP\npicture_book_concept_director\nP\npicture_book_illustrator\nP\npicture_book_reviewer\nB\nbook_production_editor\n\nCoordinator\n\npicture_book_concept_director\n\nMembers\n\n4\n\nNested Teams\n\n0\n\nRE\nRequirements Engineering Team\n\nA focused team for codebase-informed product and technical requirements engineering, conditional product prototyping, user approval, and architecture-ready requirements handoff.\n\nsoftware-engineering\nRun\nView Details\n→\nR\nrequirements_engineer\nP\nproduct_prototyper\nP\nprototype_bootstrapper\n\nCoordinator\n\nrequirements_engineer\n\nMembers\n\n3\n\nNested Teams\n\n0\n\nRT\nResearch To Deck Team\n\nA three-specialist team for deep research, user-approved slide planning, image-only slide production, and independent deck review.\n\ncontent-and-presentations\nRun\nView Details\n→\nD\ndeep_researcher\nI\ninfographic_powerpoint_designer\nD\ndeck_reviewer\n\nCoordinator\n\ndeep_researcher\n\nMembers\n\n3\n\nNested",
+  "buttonCount": 39,
+  "buttons": [
+    {
+      "text": "Agents",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "aria": null,
+      "title": "Collapse left panel",
+      "disabled": false
+    },
+    {
+      "text": "Agent Teams",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "Skills",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "Memory",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "Nodes",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "aria": null,
+      "title": "Add workspace",
+      "disabled": false
+    },
+    {
+      "text": "Temp Workspace",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "Settings",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "Reload",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "Create Team",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "View Details→",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "View Details→",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "View Details→",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "View Details→",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "View Details→",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "View Details→",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "View Details→",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "View Details→",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "View Details→",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "View Details→",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "View Details→",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "View Details→",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "View Details→",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    },
+    {
+      "text": "View Details→",
+      "aria": null,
+      "title": null,
+      "disabled": false
+    }
+  ],
+  "inputs": [
+    {
+      "tag": "INPUT",
+      "type": "text",
+      "placeholder": "Search teams by name",
+      "aria": null,
+      "value": ""
+    }
+  ],
+  "consoleMessages": [
+    {
+      "type": "debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "type": "log",
+      "text": "Workspace.vue: Mounted. Fetching server settings and loading profiles..."
+    },
+    {
+      "type": "log",
+      "text": "[useTerminalSession] Connecting to: ws://127.0.0.1:60418/ws/terminal/33c464f0-0fc5-470a-bfd9-80737fbb5fd4"
+    },
+    {
+      "type": "log",
+      "text": "[useTerminalSession] Connected"
+    },
+    {
+      "type": "log",
+      "text": "serverStore: Checking server health at /rest/health"
+    },
+    {
+      "type": "log",
+      "text": "[useTerminalSession] Disconnected: 1005 "
+    }
+  ]
+}

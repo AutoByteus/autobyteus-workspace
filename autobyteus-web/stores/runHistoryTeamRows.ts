@@ -1,107 +1,90 @@
-import { AgentStatus } from '~/types/agent/AgentStatus';
-import type { AgentTeamContext, TeamMemberNode } from '~/types/agent/AgentTeamContext';
-import type { AgentContext } from '~/types/agent/AgentContext';
 import type {
-  TeamMemberTreeRow,
-  TeamRunHistoryItem,
-  TeamRunMetadataMember,
-} from '~/stores/runHistoryTypes';
+  ConfiguredMemberExecutionDto,
+  TeamRunExecutionTreeDto,
+} from '@autobyteus/team-stream-contracts';
+import { AgentStatus } from '~/types/agent/AgentStatus';
+import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
+import type { TeamMemberTreeRow, TeamRunHistoryItem } from './runHistoryTypes';
 import { normalizeAgentRuntimeStatus } from '~/services/runHydration/runtimeStatusNormalization';
+import { memberAddressBasename } from '~/types/agent/AgentTeamAddress';
 
-const isTeamMemberRunActive = (status: AgentStatus): boolean => (
+const isActiveStatus = (status: AgentStatus): boolean => (
   status !== AgentStatus.Error && status !== AgentStatus.Offline
 );
 
-const buildLeafRowFromHistory = (
-  team: TeamRunHistoryItem,
-  member: TeamRunHistoryItem['members'][number],
-): TeamMemberTreeRow => {
-  const currentStatus = normalizeAgentRuntimeStatus(member.status);
+const projectConfiguredRows = (input: {
+  rootTeamRunId: string;
+  members: readonly ConfiguredMemberExecutionDto[];
+  summary: string;
+  lastActivityAt: string;
+  statusByAgentRunId: ReadonlyMap<string, AgentStatus>;
+  workspaceByAgentRunId: ReadonlyMap<string, string | null>;
+}): TeamMemberTreeRow[] => input.members.map((member): TeamMemberTreeRow => {
+  if (member.kind === 'configured_team') {
+    return {
+      teamRunId: input.rootTeamRunId,
+      kind: 'agent_team',
+      memberAddress: member.address,
+      displayName: memberAddressBasename(member.address),
+      agentRunId: null,
+      teamDefinitionId: member.team_definition_id,
+      teamRunIdForNode: member.team_run_id,
+      coordinatorAddress: member.coordinator_address,
+      workspaceRootPath: null,
+      summary: input.summary,
+      lastActivityAt: input.lastActivityAt,
+      currentStatus: null,
+      isActive: false,
+      deleteLifecycle: 'READY',
+      children: projectConfiguredRows({ ...input, members: member.members }),
+    };
+  }
+  const currentStatus = normalizeAgentRuntimeStatus(
+    input.statusByAgentRunId.get(member.agent_run_id) ?? AgentStatus.Offline,
+  );
   return {
-    isActive: isTeamMemberRunActive(currentStatus),
-    teamRunId: team.teamRunId,
-    memberKind: 'agent',
-    memberRouteKey: member.memberRouteKey,
-    memberPath: member.memberRouteKey.split('/').filter(Boolean),
-    memberName: member.memberName,
-    displayName: member.memberName,
-    memberRunId: member.memberRunId,
-    workspaceRootPath: member.workspaceRootPath ?? null,
-    summary: team.summary,
-    lastActivityAt: team.createdAt,
+    teamRunId: input.rootTeamRunId,
+    kind: 'agent',
+    memberAddress: member.address,
+    displayName: memberAddressBasename(member.address),
+    agentRunId: member.agent_run_id,
+    teamRunIdForNode: null,
+    workspaceRootPath: input.workspaceByAgentRunId.get(member.agent_run_id)
+      ?? member.launch_configuration.workspace_root_path,
+    summary: input.summary,
+    lastActivityAt: input.lastActivityAt,
     currentStatus,
-    deleteLifecycle: 'READY' as const,
+    isActive: isActiveStatus(currentStatus),
+    deleteLifecycle: 'READY',
     children: [],
   };
-};
+});
 
-const buildRowsFromMetadataTree = (
-  team: TeamRunHistoryItem,
-  memberTree: readonly TeamRunMetadataMember[],
-  memberByRouteKey: Map<string, TeamRunHistoryItem['members'][number]>,
-): TeamMemberTreeRow[] =>
-  memberTree.map((member): TeamMemberTreeRow => {
-    if (member.memberKind === 'agent_team') {
-      return {
-        isActive: false,
-        teamRunId: team.teamRunId,
-        memberKind: 'agent_team',
-        memberRouteKey: member.memberRouteKey,
-        memberPath: [...member.memberPath],
-        memberName: member.memberName,
-        displayName: member.memberName,
-        memberRunId: member.memberRunId,
-        teamDefinitionId: member.teamDefinitionId,
-        teamRunIdForNode: member.teamRunId ?? null,
-        coordinatorMemberRouteKey: member.coordinatorMemberRouteKey ?? null,
-        workspaceRootPath: null,
-        summary: team.summary,
-        lastActivityAt: team.createdAt,
-        currentStatus: null,
-        deleteLifecycle: 'READY' as const,
-        children: buildRowsFromMetadataTree(team, member.memberTree, memberByRouteKey),
-      };
-    }
-
-    const historyMember = memberByRouteKey.get(member.memberRouteKey);
-    const currentStatus = normalizeAgentRuntimeStatus(historyMember?.status ?? AgentStatus.Offline);
-    return {
-      isActive: isTeamMemberRunActive(currentStatus),
-      teamRunId: team.teamRunId,
-      memberKind: 'agent',
-      memberRouteKey: member.memberRouteKey,
-      memberPath: [...member.memberPath],
-      memberName: member.memberName,
-      displayName: member.memberName,
-      memberRunId: member.memberRunId,
-      workspaceRootPath: member.workspaceRootPath ?? null,
-      summary: team.summary,
-      lastActivityAt: team.createdAt,
-      currentStatus,
-      deleteLifecycle: 'READY' as const,
-      children: [],
-    };
-  });
+const mapFromHistory = <T>(
+  values: readonly T[],
+  key: (value: T) => string,
+  map: (value: T) => string | null,
+): ReadonlyMap<string, string | null> => new Map(values.map((value) => [key(value), map(value)]));
 
 export const flattenTeamRows = (rows: readonly TeamMemberTreeRow[]): TeamMemberTreeRow[] =>
   rows.flatMap((row) => [row, ...flattenTeamRows(row.children)]);
 
-const isTransientTaskProjectionNode = (node: TeamMemberNode): boolean => Boolean(
-  node.isTaskAgentInstance || node.isTaskTeamInstance || node.isTaskTeamChildProjection,
-);
-
-export const buildTeamRowsFromHistoryItem = (
-  team: TeamRunHistoryItem,
-): TeamMemberTreeRow[] => {
-  if (Array.isArray(team.memberTree) && team.memberTree.length > 0) {
-    const memberByRouteKey = new Map(team.members.map((member) => [member.memberRouteKey, member]));
-    return buildRowsFromMetadataTree(team, team.memberTree, memberByRouteKey);
-  }
-
-  return team.members
-    .map((member) => buildLeafRowFromHistory(team, member))
-    .sort((a, b) => a.memberName.localeCompare(b.memberName));
-};
+export const buildTeamRowsFromHistoryItem = (team: TeamRunHistoryItem): TeamMemberTreeRow[] =>
+  projectConfiguredRows({
+    rootTeamRunId: team.teamRunId,
+    members: team.rootTeam.members,
+    summary: team.summary,
+    lastActivityAt: team.createdAt,
+    statusByAgentRunId: new Map(team.members.map((member) => [
+      member.agentRunId,
+      normalizeAgentRuntimeStatus(member.status),
+    ])),
+    workspaceByAgentRunId: mapFromHistory(
+      team.members,
+      (member) => member.agentRunId,
+      (member) => member.workspaceRootPath ?? null,
+    ),
+  });
 
 export const buildTeamRowsFromContext = (
   teamContext: AgentTeamContext,
@@ -109,73 +92,26 @@ export const buildTeamRowsFromContext = (
   fallbackLastActivityAt: string,
   resolveWorkspaceRootPath: (workspaceId: string | null) => string,
 ): TeamMemberTreeRow[] => {
-  const leafAgentContextsByRouteKey =
-    teamContext.leafAgentContextsByRouteKey instanceof Map
-      ? teamContext.leafAgentContextsByRouteKey
-      : (teamContext as unknown as { members?: unknown }).members instanceof Map
-        ? (teamContext as unknown as { members: Map<string, AgentContext> }).members
-        : new Map<string, AgentContext>();
-  const hasStructuredMemberTree = Array.isArray(teamContext.memberTree) && teamContext.memberTree.length > 0;
-  const sourceTree = hasStructuredMemberTree
-    ? teamContext.memberTree
-    : Array.from(leafAgentContextsByRouteKey.entries()).map(([memberRouteKey, memberContext]) => ({
-      memberKind: 'agent' as const,
-      memberRouteKey,
-      memberPath: [memberRouteKey],
-      memberName: memberContext.config.agentDefinitionName || memberRouteKey,
-      displayName: memberContext.config.agentDefinitionName || memberRouteKey,
-      memberRunId: memberContext.state.runId,
-      agentDefinitionId: memberContext.config.agentDefinitionId || memberRouteKey,
-    }));
-
-  const visit = (nodes: AgentTeamContext['memberTree']): TeamMemberTreeRow[] =>
-    nodes.filter((node) => !isTransientTaskProjectionNode(node)).map((node) => {
-      if (node.memberKind === 'agent_team') {
-        return {
-          isActive: false,
-          teamRunId: teamContext.teamRunId,
-          memberKind: 'agent_team',
-          memberRouteKey: node.memberRouteKey,
-          memberPath: [...node.memberPath],
-          memberName: node.memberName,
-          displayName: node.displayName,
-          memberRunId: node.memberRunId ?? null,
-          teamDefinitionId: node.teamDefinitionId,
-          teamRunIdForNode: node.teamRunId ?? null,
-          coordinatorMemberRouteKey: node.coordinatorMemberRouteKey ?? null,
-          workspaceRootPath: null,
-          summary,
-          lastActivityAt: fallbackLastActivityAt,
-          currentStatus: null,
-          deleteLifecycle: 'READY' as const,
-          children: visit(node.children),
-        };
-      }
-
-      const memberContext = leafAgentContextsByRouteKey.get(node.memberRouteKey);
-      const currentStatus = normalizeAgentRuntimeStatus(memberContext?.state.currentStatus ?? AgentStatus.Offline);
-      return {
-        isActive: isTeamMemberRunActive(currentStatus),
-        teamRunId: teamContext.teamRunId,
-        memberKind: 'agent',
-        memberRouteKey: node.memberRouteKey,
-        memberPath: [...node.memberPath],
-        memberName: node.memberName,
-        displayName: node.displayName || node.memberName,
-        memberRunId: memberContext?.state.runId ?? node.memberRunId ?? null,
-        workspaceRootPath:
-          memberContext?.config.workspaceMetadata?.workspaceRootPath ||
-          resolveWorkspaceRootPath(memberContext?.config.workspaceId ?? null),
-        summary,
-        currentStatus,
-        lastActivityAt:
-          memberContext?.state.conversation.updatedAt ||
-          memberContext?.state.conversation.createdAt ||
-          fallbackLastActivityAt,
-        deleteLifecycle: 'READY' as const,
-        children: [],
-      };
-    });
-
-  return visit(sourceTree);
+  const tree = teamContext.view.getExecutionTree();
+  const entries = teamContext.view.listAgentContextEntries();
+  return projectConfiguredRows({
+    rootTeamRunId: teamContext.view.getRootTeamRunId(),
+    members: tree.root_team.members,
+    summary,
+    lastActivityAt: fallbackLastActivityAt,
+    statusByAgentRunId: new Map(entries.map((entry) => [
+      entry.agentRunId,
+      normalizeAgentRuntimeStatus(entry.agentContext.state.currentStatus),
+    ])),
+    workspaceByAgentRunId: new Map(entries.map((entry) => [
+      entry.agentRunId,
+      entry.agentContext.config.workspaceMetadata?.workspaceRootPath
+        || resolveWorkspaceRootPath(entry.agentContext.config.workspaceId ?? null)
+        || null,
+    ])),
+  });
 };
+
+export const rootConfiguredTeam = (
+  tree: TeamRunExecutionTreeDto,
+): TeamRunExecutionTreeDto['root_team'] => tree.root_team;

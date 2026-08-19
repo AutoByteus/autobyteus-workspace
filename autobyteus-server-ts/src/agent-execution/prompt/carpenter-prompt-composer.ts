@@ -34,17 +34,11 @@ const buildSharedCarpenterPromptSections = (
 
   const sections: string[] = [renderAgentIdentitySection(input.agentDefinition)];
   if (input.memberTeamContext) {
-    const memberName = input.memberTeamContext.memberName?.trim().replace(/\r?\n|\r/g, " ").trim();
-    if (!memberName) {
-      throw new Error("Team member name must be non-blank.");
-    }
-    const teamInstruction = renderTeamInstructionSection(input.memberTeamContext.teamInstruction);
+    const teamInstruction = renderTeamInstructionSection(input.memberTeamContext.authoredTeamInstruction);
     if (teamInstruction) {
       sections.push(teamInstruction);
     }
-    sections.push(
-      `## Team Collaboration\n\n${renderTeamCollaborationInstruction(input.memberTeamContext, memberName)}`,
-    );
+    sections.push(renderTeamCollaborationInstruction(input.memberTeamContext));
   }
   return sections;
 };

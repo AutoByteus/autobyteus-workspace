@@ -1,0 +1,10 @@
+2026-08-10T17:44:49Z
+source_env_current_sha256 (value only; source content not captured):
+317b314a47d282ec5a83e52ab7ca13f4b264bdbac2f5cf5416cd6e22453a29ee  /Users/normy/.autobyteus/server-data/.env
+source_fixture_current_tree_sha256:
+488dbd28750b6bddc2cc3f7fac999704155f8c412cf5627be1cf9884248e3e1c  -
+source_fixture_expected_tree_sha256=488dbd28750b6bddc2cc3f7fac999704155f8c412cf5627be1cf9884248e3e1c
+source_fixture_git_status:
+user_stack_preserved=true
+failure_state_preserved=true
+automatic_production_db_rollback_attempted=false

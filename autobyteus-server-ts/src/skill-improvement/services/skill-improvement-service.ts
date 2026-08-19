@@ -24,7 +24,7 @@ import { SkillImprovementImproverSessionService } from "./improver-session/skill
 
 export type StartSkillImprovementForAgentRunInput = { runId: string; requestedByUserId?: string | null; requestedFrom?: "run_detail" | "api"; };
 
-export type StartSkillImprovementForTeamMemberInput = { teamRunId: string; memberRunId: string; requestedByUserId?: string | null; requestedFrom?: "team_run_detail" | "api"; };
+export type StartSkillImprovementForTeamMemberInput = { teamRunId: string; agentRunId: string; requestedByUserId?: string | null; requestedFrom?: "team_run_detail" | "api"; };
 
 type SkillImprovementServiceDeps = {
   capabilityService?: SkillImprovementCapabilityService;
@@ -64,11 +64,11 @@ export class SkillImprovementService {
     return this.evaluateTarget({ kind: "agent_run", runId: this.normalizeRequired(runId, "runId") });
   }
 
-  async getTeamMemberEligibility(teamRunId: string, memberRunId: string): Promise<SkillImprovementEligibility> {
+  async getTeamMemberEligibility(teamRunId: string, agentRunId: string): Promise<SkillImprovementEligibility> {
     return this.evaluateTarget({
       kind: "team_member_run",
       teamRunId: this.normalizeRequired(teamRunId, "teamRunId"),
-      memberRunId: this.normalizeRequired(memberRunId, "memberRunId"),
+      agentRunId: this.normalizeRequired(agentRunId, "agentRunId"),
     });
   }
 
@@ -85,7 +85,7 @@ export class SkillImprovementService {
       {
         kind: "team_member_run",
         teamRunId: this.normalizeRequired(input.teamRunId, "teamRunId"),
-        memberRunId: this.normalizeRequired(input.memberRunId, "memberRunId"),
+        agentRunId: this.normalizeRequired(input.agentRunId, "agentRunId"),
       },
       input.requestedByUserId ?? null,
       input.requestedFrom ?? "team_run_detail",
@@ -200,7 +200,7 @@ export class SkillImprovementService {
   }
 
   private requireLiveTarget(target: SkillImprovementTargetRef): void {
-    const runId = target.kind === "agent_run" ? target.runId : target.memberRunId;
+    const runId = target.kind === "agent_run" ? target.runId : target.agentRunId;
     if (!this.agentRunManager.getActiveRun(runId)) {
       throw new Error(`Skill Improvement target run '${runId}' is not active.`);
     }

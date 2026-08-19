@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 3,
+  "teamDefinitionName": "Nested Classroom Test Team",
+  "createdAt": "2026-08-13T02:11:24.688Z",
+  "archivedAt": null,
+  "rootTeam": {
+    "kind": "agent_team",
+    "address": "/",
+    "teamDefinitionId": "nested-classroom-test",
+    "teamRunId": "nested_classroom_test_team_b9e8b3c5ea94440f9f420fafd6ce4c2c",
+    "coordinatorAddress": "/Teacher",
+    "children": [
+      {
+        "kind": "agent",
+        "address": "/Teacher",
+        "agentDefinitionId": "team-local-agent:nested-classroom-test:teacher",
+        "agentRunId": "test_teacher_8be2f281c4db4a359ef762284b075f0a",
+        "platformAgentRunId": "test_teacher_8be2f281c4db4a359ef762284b075f0a",
+        "role": null,
+        "description": null,
+        "runtimeKind": "autobyteus",
+        "llmModelIdentifier": "gpt-5.6-luna",
+        "llmConfig": null,
+        "autoExecuteTools": true,
+        "skillAccessMode": "PRELOADED_ONLY",
+        "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-036-live-20260813-1/temp_workspace",
+        "applicationExecutionContext": null
+      },
+      {
+        "kind": "agent_team",
+        "address": "/StudentStudyGroup",
+        "teamDefinitionId": "team-local-team:nested-classroom-test:student-study-group",
+        "teamRunId": "student_study_group_26756aeb9be647628b18cdf4dfe0a655",
+        "coordinatorAddress": "/StudentStudyGroup/student_one",
+        "role": null,
+        "description": null,
+        "children": [
+          {
+            "kind": "agent",
+            "address": "/StudentStudyGroup/student_one",
+            "agentDefinitionId": "team-local-agent:team-local-team%3Anested-classroom-test%3Astudent-study-group:student-one",
+            "agentRunId": "student_one_d9f0a438ec9d4926bd783ce3f03ef506",
+            "platformAgentRunId": null,
+            "role": null,
+            "description": null,
+            "runtimeKind": "autobyteus",
+            "llmModelIdentifier": "gpt-5.6-luna",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "skillAccessMode": "PRELOADED_ONLY",
+            "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-036-live-20260813-1/temp_workspace",
+            "applicationExecutionContext": null
+          },
+          {
+            "kind": "agent",
+            "address": "/StudentStudyGroup/student_two",
+            "agentDefinitionId": "team-local-agent:team-local-team%3Anested-classroom-test%3Astudent-study-group:student-two",
+            "agentRunId": "student_two_707e716d76a34763aa4daa97689bf405",
+            "platformAgentRunId": null,
+            "role": null,
+            "description": null,
+            "runtimeKind": "autobyteus",
+            "llmModelIdentifier": "gpt-5.6-luna",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "skillAccessMode": "PRELOADED_ONLY",
+            "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-036-live-20260813-1/temp_workspace",
+            "applicationExecutionContext": null
+          }
+        ]
+      }
+    ]
+  },
+  "handoffs": [
+    {
+      "from": "/Teacher",
+      "to": "/StudentStudyGroup",
+      "rules": [
+        "When the user asks to send the classroom handoff token to the study group."
+      ]
+    },
+    {
+      "from": "/StudentStudyGroup/student_one",
+      "to": "/Teacher",
+      "rules": [
+        "When the delegated classroom task is finished and the teacher needs the outcome."
+      ]
+    },
+    {
+      "from": "/StudentStudyGroup/student_one",
+      "to": "/StudentStudyGroup/student_two",
+      "rules": [
+        "When the delegated classroom task asks the coordinator to consult the supporting student."
+      ]
+    }
+  ]
+}

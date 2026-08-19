@@ -1,0 +1,422 @@
+{
+  "runtimeKind": "codex_app_server",
+  "model": "gpt-5.6-luna",
+  "input": {
+    "agentDefinitionId": "daily-assistant",
+    "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-005/live/workspaces/standalone-codex_app_server",
+    "llmModelIdentifier": "gpt-5.6-luna",
+    "autoExecuteTools": true,
+    "skillAccessMode": "NONE",
+    "runtimeKind": "codex_app_server"
+  },
+  "created": {
+    "createAgentRun": {
+      "success": true,
+      "message": "Agent run created successfully.",
+      "runId": "daily_assistant_a14434ce769d46b09c850802b70e7b9e"
+    }
+  },
+  "runId": "daily_assistant_a14434ce769d46b09c850802b70e7b9e",
+  "sent": true,
+  "terminal": "TURN_COMPLETED",
+  "error": null,
+  "messages": [
+    {
+      "atMs": 4,
+      "message": {
+        "type": "CONNECTED",
+        "payload": {
+          "agent_id": "daily_assistant_a14434ce769d46b09c850802b70e7b9e",
+          "session_id": "e43c6e10-c3f1-4ffc-9665-0cb99419dff5"
+        }
+      }
+    },
+    {
+      "atMs": 5,
+      "message": {
+        "type": "AGENT_STATUS",
+        "payload": {
+          "status": "idle",
+          "agent_id": "daily_assistant_a14434ce769d46b09c850802b70e7b9e"
+        }
+      }
+    },
+    {
+      "atMs": 5,
+      "message": {
+        "type": "AGENT_STATUS",
+        "payload": {
+          "status": "initializing",
+          "agent_id": "daily_assistant_a14434ce769d46b09c850802b70e7b9e"
+        }
+      }
+    },
+    {
+      "atMs": 5,
+      "message": {
+        "type": "AGENT_COMMAND_ACK",
+        "payload": {
+          "command_type": "SEND_MESSAGE",
+          "run_id": "daily_assistant_a14434ce769d46b09c850802b70e7b9e",
+          "message_id": "standalone-5bdc5577-e946-46a2-a77b-ea85bc6daaa4",
+          "dedupe_key": "standalone-3c9bcd0b-34ed-4ad7-8fd2-dda8ce281ebb",
+          "state": "accepted",
+          "accepted": true,
+          "duplicate": false,
+          "status": {
+            "status": "initializing",
+            "agent_id": "daily_assistant_a14434ce769d46b09c850802b70e7b9e"
+          }
+        }
+      }
+    },
+    {
+      "atMs": 6,
+      "message": {
+        "type": "AGENT_STATUS",
+        "payload": {
+          "status": "running",
+          "agent_id": "daily_assistant_a14434ce769d46b09c850802b70e7b9e"
+        }
+      }
+    },
+    {
+      "atMs": 70,
+      "message": {
+        "type": "TURN_STARTED",
+        "payload": {
+          "turnId": "01a00616-8439-7ad2-900f-ee893ed5d4c5",
+          "turn_id": "01a00616-8439-7ad2-900f-ee893ed5d4c5"
+        }
+      }
+    },
+    {
+      "atMs": 3690,
+      "message": {
+        "type": "SEGMENT_START",
+        "payload": {
+          "id": "msg_08671177e18c3966016a8088d9ccf481919cd1e197bea95296",
+          "turn_id": "01a00616-8439-7ad2-900f-ee893ed5d4c5",
+          "segment_type": "text",
+          "metadata": null
+        }
+      }
+    },
+    {
+      "atMs": 4022,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_08671177e18c3966016a8088d9ccf481919cd1e197bea95296",
+          "turn_id": "01a00616-8439-7ad2-900f-ee893ed5d4c5",
+          "segment_type": "text",
+          "delta": "STANDALONE_codex_app_server_OK"
+        }
+      }
+    },
+    {
+      "atMs": 4022,
+      "message": {
+        "type": "SEGMENT_END",
+        "payload": {
+          "id": "msg_08671177e18c3966016a8088d9ccf481919cd1e197bea95296",
+          "turn_id": "01a00616-8439-7ad2-900f-ee893ed5d4c5",
+          "metadata": null,
+          "interrupted": false,
+          "reason": null,
+          "failed": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "atMs": 4089,
+      "message": {
+        "type": "TOKEN_USAGE_UPDATED",
+        "payload": {
+          "usage_event_id": "f92df5f6-87e6-4426-8400-26fa1bce04e4",
+          "idempotency_key": "codex_token_usage:daily_assistant_a14434ce769d46b09c850802b70e7b9e:01a00616-8308-7fb2-9790-33e7f4894f2d:01a00616-8439-7ad2-900f-ee893ed5d4c5:cumulative_snapshot:9799:0:13:0:9812",
+          "observed_at": "2026-08-15T15:42:18.154Z",
+          "run_id": "daily_assistant_a14434ce769d46b09c850802b70e7b9e",
+          "root_team_run_id": null,
+          "turn_id": "01a00616-8439-7ad2-900f-ee893ed5d4c5",
+          "llm_call_id": null,
+          "call_sequence": null,
+          "agent_definition_id": "daily-assistant",
+          "workspace_id": "agent_ws_26d02ec6c4098c8b706e162af7214fa8daa5db5a5b83460820e4b3ec84706d73",
+          "task_id": null,
+          "team_name": null,
+          "agent_name": null,
+          "run_summary": null,
+          "run_created_at": null,
+          "member_display_name": null,
+          "runtime_kind": "codex_app_server",
+          "model_provider": "OPENAI",
+          "provider_name": null,
+          "model_identifier": "gpt-5.6-luna",
+          "model_value": "gpt-5.6-luna",
+          "ingestion_kind": "codex_thread_token_usage",
+          "usage_scope": "cumulative_snapshot",
+          "snapshot_series_key": "codex_thread:01a00616-8308-7fb2-9790-33e7f4894f2d",
+          "previous_snapshot_event_id": null,
+          "input_token_semantic": "gross_includes_cache",
+          "reported_input_tokens": 9799,
+          "reported_output_tokens": 13,
+          "reported_total_tokens": 9812,
+          "accounting_input_tokens": 9799,
+          "accounting_output_tokens": 13,
+          "accounting_total_tokens": 9812,
+          "standard_input_tokens": 9799,
+          "cache_miss_input_tokens": 9799,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": null,
+          "cache_creation_5m_input_tokens": null,
+          "cache_creation_1h_input_tokens": null,
+          "cache_state": "zero_reported",
+          "reasoning_output_tokens": 0,
+          "billable_input_tokens": 9799,
+          "billable_output_tokens": 13,
+          "cost_basis": "api_price_estimate",
+          "currency": "USD",
+          "input_price_per_million": 0.2,
+          "output_price_per_million": 1.2,
+          "cached_input_read_price_per_million": 0.02,
+          "cached_input_write_price_per_million": 0.25,
+          "cached_input_write_5m_price_per_million": null,
+          "cached_input_write_1h_price_per_million": null,
+          "pricing_source": "autobyteus_model_catalog",
+          "pricing_status": "trusted",
+          "pricing_missing_reason": null,
+          "pricing_snapshot_json": {
+            "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+            "price_config_id": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+            "model_provider": "OPENAI",
+            "model_identifier": "gpt-5.6-luna",
+            "model_value": "gpt-5.6-luna",
+            "canonical_name": "gpt-5.6-luna",
+            "currency": "USD",
+            "input_price_per_million": 0.2,
+            "output_price_per_million": 1.2,
+            "cached_input_read_price_per_million": 0.02,
+            "cached_input_write_price_per_million": 0.25,
+            "cached_input_write_5m_price_per_million": null,
+            "cached_input_write_1h_price_per_million": null,
+            "input_price_tiers": [
+              {
+                "tier_id": "standard_le_272k",
+                "max_input_tokens": 272000,
+                "input_price_per_million": 0.2,
+                "output_price_per_million": 1.2,
+                "cached_input_read_price_per_million": 0.02,
+                "cached_input_write_price_per_million": 0.25,
+                "cached_input_write_5m_price_per_million": null,
+                "cached_input_write_1h_price_per_million": null,
+                "trusted_dimensions": {
+                  "input": true,
+                  "output": true,
+                  "cached_input_read": true,
+                  "cached_input_write": true,
+                  "cached_input_write_5m": false,
+                  "cached_input_write_1h": false
+                }
+              },
+              {
+                "tier_id": "long_context_gt_272k",
+                "max_input_tokens": null,
+                "input_price_per_million": 0.4,
+                "output_price_per_million": 1.8,
+                "cached_input_read_price_per_million": 0.04,
+                "cached_input_write_price_per_million": 0.5,
+                "cached_input_write_5m_price_per_million": null,
+                "cached_input_write_1h_price_per_million": null,
+                "trusted_dimensions": {
+                  "input": true,
+                  "output": true,
+                  "cached_input_read": true,
+                  "cached_input_write": true,
+                  "cached_input_write_5m": false,
+                  "cached_input_write_1h": false
+                }
+              }
+            ],
+            "pricing_status": "trusted",
+            "trusted_dimensions": {
+              "input": true,
+              "output": true,
+              "cached_input_read": true,
+              "cached_input_write": true,
+              "cached_input_write_5m": false,
+              "cached_input_write_1h": false
+            },
+            "missing_reason": null,
+            "source": "autobyteus_model_catalog",
+            "effective_from": null,
+            "effective_to": null,
+            "version": null,
+            "selected_tier_id": "standard_le_272k"
+          },
+          "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+          "selected_pricing_tier_id": "standard_le_272k",
+          "missing_price_dimensions": [],
+          "estimated_api_input_cost": 0.0019598000000000003,
+          "estimated_api_standard_input_cost": 0.0019598000000000003,
+          "estimated_api_cache_read_input_cost": null,
+          "estimated_api_cache_creation_input_cost": null,
+          "estimated_api_cache_creation_5m_input_cost": null,
+          "estimated_api_cache_creation_1h_input_cost": null,
+          "estimated_api_output_cost": 0.0000156,
+          "estimated_api_reasoning_output_cost": null,
+          "estimated_api_total_cost": 0.0019754000000000004,
+          "api_cost_status": "estimated",
+          "meter_delta_input_tokens": 9799,
+          "meter_delta_output_tokens": 13,
+          "meter_delta_total_tokens": 9812,
+          "run_summary_after_event": null,
+          "latest_prompt_tokens": 9799,
+          "effective_context_window_tokens": 258400,
+          "context_window_usage_percent": 3.7921826625387,
+          "raw_usage_json": {
+            "totalTokens": 9812,
+            "inputTokens": 9799,
+            "cachedInputTokens": 0,
+            "cacheWriteInputTokens": 0,
+            "outputTokens": 13,
+            "reasoningOutputTokens": 0
+          },
+          "raw_event_json": {
+            "threadId": "01a00616-8308-7fb2-9790-33e7f4894f2d",
+            "turnId": "01a00616-8439-7ad2-900f-ee893ed5d4c5",
+            "tokenUsage": {
+              "total": {
+                "totalTokens": 9812,
+                "inputTokens": 9799,
+                "cachedInputTokens": 0,
+                "cacheWriteInputTokens": 0,
+                "outputTokens": 13,
+                "reasoningOutputTokens": 0
+              },
+              "last": {
+                "totalTokens": 9812,
+                "inputTokens": 9799,
+                "cachedInputTokens": 0,
+                "cacheWriteInputTokens": 0,
+                "outputTokens": 13,
+                "reasoningOutputTokens": 0
+              },
+              "modelContextWindow": 258400
+            },
+            "autobyteus_cumulative_snapshot_provider_delta_tokens": {
+              "reported_input_tokens": 9799,
+              "reported_output_tokens": 13,
+              "reported_total_tokens": 9812,
+              "accounting_input_tokens": null,
+              "accounting_output_tokens": null,
+              "accounting_total_tokens": null,
+              "standard_input_tokens": null,
+              "cache_miss_input_tokens": null,
+              "cache_read_input_tokens": 0,
+              "cache_creation_input_tokens": null,
+              "cache_creation_5m_input_tokens": null,
+              "cache_creation_1h_input_tokens": null,
+              "reasoning_output_tokens": 0,
+              "billable_input_tokens": null,
+              "billable_output_tokens": null
+            },
+            "autobyteus_cumulative_snapshot_source_tokens": {
+              "reported_input_tokens": 9799,
+              "reported_output_tokens": 13,
+              "reported_total_tokens": 9812,
+              "accounting_input_tokens": 9799,
+              "accounting_output_tokens": 13,
+              "accounting_total_tokens": 9812,
+              "standard_input_tokens": 9799,
+              "cache_miss_input_tokens": 9799,
+              "cache_read_input_tokens": 0,
+              "cache_creation_input_tokens": null,
+              "cache_creation_5m_input_tokens": null,
+              "cache_creation_1h_input_tokens": null,
+              "reasoning_output_tokens": 0,
+              "billable_input_tokens": 9799,
+              "billable_output_tokens": 13
+            }
+          },
+          "quality_flags": [
+            "first_cumulative_snapshot_baselined_from_provider_delta"
+          ]
+        }
+      }
+    },
+    {
+      "atMs": 4089,
+      "message": {
+        "type": "TURN_COMPLETED",
+        "payload": {
+          "turnId": "01a00616-8439-7ad2-900f-ee893ed5d4c5",
+          "turn_id": "01a00616-8439-7ad2-900f-ee893ed5d4c5"
+        }
+      }
+    },
+    {
+      "atMs": 4089,
+      "message": {
+        "type": "AGENT_STATUS",
+        "payload": {
+          "status": "idle",
+          "agent_id": "daily_assistant_a14434ce769d46b09c850802b70e7b9e"
+        }
+      }
+    }
+  ],
+  "resume": {
+    "getAgentRunResumeConfig": {
+      "runId": "daily_assistant_a14434ce769d46b09c850802b70e7b9e",
+      "isActive": true,
+      "metadataConfig": {
+        "agentDefinitionId": "daily-assistant",
+        "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-005/live/workspaces/standalone-codex_app_server",
+        "llmModelIdentifier": "gpt-5.6-luna",
+        "llmConfig": null,
+        "autoExecuteTools": true,
+        "skillAccessMode": "NONE",
+        "runtimeKind": "codex_app_server",
+        "runtimeReference": {
+          "runtimeKind": "codex_app_server",
+          "sessionId": null,
+          "threadId": "01a00616-8308-7fb2-9790-33e7f4894f2d",
+          "metadata": null
+        }
+      },
+      "editableFields": {
+        "llmModelIdentifier": false,
+        "llmConfig": false,
+        "autoExecuteTools": false,
+        "skillAccessMode": false,
+        "workspaceRootPath": false,
+        "runtimeKind": false
+      }
+    },
+    "getRunProjection": {
+      "runId": "daily_assistant_a14434ce769d46b09c850802b70e7b9e",
+      "summary": "Reply with exactly STANDALONE_codex_app_server_OK and do not call tools.",
+      "lastActivityAt": "2026-08-15T15:42:18.088Z",
+      "conversation": [
+        {
+          "kind": "message",
+          "role": "user",
+          "content": "Reply with exactly STANDALONE_codex_app_server_OK and do not call tools.",
+          "media": null,
+          "ts": 1786808534.073
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "content": "STANDALONE_codex_app_server_OK",
+          "media": null,
+          "ts": 1786808538.088
+        }
+      ],
+      "activities": [],
+      "hasEarlierActiveTraceEvents": false
+    }
+  }
+}

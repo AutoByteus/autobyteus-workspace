@@ -5,7 +5,12 @@ import {
 import { resolveAgentRunErrorEvidence } from "../../../domain/agent-run-error-evidence.js";
 import type { AgentRuntimeLifecycleSnapshot } from "../../../domain/agent-runtime-lifecycle-snapshot.js";
 import { serializePayload } from "../../../../services/agent-streaming/payload-serialization.js";
-import { asObject, asString, type ClaudeSessionEvent } from "../claude-runtime-shared.js";
+import {
+  asNonEmptyRawString,
+  asObject,
+  asString,
+  type ClaudeSessionEvent,
+} from "../claude-runtime-shared.js";
 import { normalizeClaudeAgentToolsToolNameForEvent } from "../agent-tools-mcp/claude-agent-tools-mcp-tool-name.js";
 import { normalizeClaudeBrowserToolResult } from "./claude-browser-tool-result-normalizer.js";
 import { normalizeClaudeMediaToolResult } from "../media/claude-media-tool-result-normalizer.js";
@@ -18,6 +23,18 @@ import {
   isMcpWireToolName,
 } from "../../../../agent-tools/mcp/mcp-tool-source.js";
 import { ClaudeSessionEventName } from "./claude-session-event-name.js";
+import { isAgentSegmentType } from "../../../domain/agent-segment.js";
+import { RuntimeKind } from "../../../../runtime-management/runtime-kind-enum.js";
+import {
+  logProviderSegmentAdmissionRejection,
+  type ProviderSegmentAdmissionRejectionReason,
+} from "../../shared/provider-segment-admission-debug.js";
+
+class ClaudeSegmentSourcePayloadRejected extends Error {
+  constructor(readonly reasonCode: ProviderSegmentAdmissionRejectionReason) {
+    super(reasonCode);
+  }
+}
 
 const resolveSegmentId = (payload: Record<string, unknown>): string | null =>
   asString(payload.id);
@@ -177,6 +194,23 @@ export class ClaudeSessionEventConverter {
   ) {}
 
   convert(event: ClaudeSessionEvent): AgentRunEvent[] {
+    try {
+      return this.convertExact(event);
+    } catch (error) {
+      if (error instanceof ClaudeSegmentSourcePayloadRejected) {
+        logProviderSegmentAdmissionRejection({
+          runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+          runId: this.runId,
+          nativeEventName: event.method.trim(),
+          reasonCode: error.reasonCode,
+        });
+        return [];
+      }
+      throw error;
+    }
+  }
+
+  private convertExact(event: ClaudeSessionEvent): AgentRunEvent[] {
     const claudeEventName = event.method.trim();
     const payload = asObject(event.params) ?? {};
     const turnId = resolveTurnId(payload);
@@ -217,46 +251,37 @@ export class ClaudeSessionEventConverter {
         )];
       case ClaudeSessionEventName.ITEM_OUTPUT_TEXT_DELTA: {
         const id = resolveSegmentId(payload);
-        const delta = asString(payload.delta);
-        if (!id || !delta) {
-          return [];
-        }
+        const delta = asNonEmptyRawString(payload.delta);
         return [this.createEvent(claudeEventName, AgentRunEventType.SEGMENT_CONTENT, {
           ...serializePayload(payload),
           id,
           delta,
-          segment_type: "text",
         })];
       }
       case ClaudeSessionEventName.ITEM_OUTPUT_TEXT_COMPLETED: {
         const id = resolveSegmentId(payload);
-        if (!id) {
-          return [];
-        }
         return [this.createEvent(claudeEventName, AgentRunEventType.SEGMENT_END, {
           ...serializePayload(payload),
           id,
-          segment_type: "text",
         })];
       }
-      case ClaudeSessionEventName.ITEM_ADDED:
-      case ClaudeSessionEventName.ITEM_COMPLETED: {
+      case ClaudeSessionEventName.ITEM_ADDED: {
         const id = resolveSegmentId(payload);
         const segmentType = asString(payload.segment_type);
-        const toolName = resolveToolName(payload);
         const segmentMetadata = resolveSegmentMetadata(payload);
-        if (!id || !segmentType) {
-          return [];
-        }
-        const eventType =
-          claudeEventName === ClaudeSessionEventName.ITEM_ADDED
-            ? AgentRunEventType.SEGMENT_START
-            : AgentRunEventType.SEGMENT_END;
-        return [this.createEvent(claudeEventName, eventType, {
+        return [this.createEvent(claudeEventName, AgentRunEventType.SEGMENT_START, {
           ...serializePayload(payload),
           id,
           segment_type: segmentType,
-          ...(toolName ? { tool_name: toolName } : {}),
+          ...(segmentMetadata ? { metadata: segmentMetadata } : {}),
+        })];
+      }
+      case ClaudeSessionEventName.ITEM_COMPLETED: {
+        const id = resolveSegmentId(payload);
+        const segmentMetadata = resolveSegmentMetadata(payload);
+        return [this.createEvent(claudeEventName, AgentRunEventType.SEGMENT_END, {
+          ...serializePayload(payload),
+          id,
           ...(segmentMetadata ? { metadata: segmentMetadata } : {}),
         })];
       }
@@ -383,10 +408,37 @@ export class ClaudeSessionEventConverter {
     eventType: AgentRunEventType,
     payload: Record<string, unknown>,
   ): AgentRunEvent {
+    const isSegmentEvent = eventType === AgentRunEventType.SEGMENT_START ||
+      eventType === AgentRunEventType.SEGMENT_CONTENT ||
+      eventType === AgentRunEventType.SEGMENT_END;
+    const segmentId = isSegmentEvent ? resolveSegmentId(payload) : null;
+    const segmentTurnId = isSegmentEvent ? resolveTurnId(payload) : null;
+    if (isSegmentEvent && (!segmentId || !segmentTurnId)) {
+      throw new ClaudeSegmentSourcePayloadRejected("CLAUDE_SEGMENT_IDENTITY_INVALID");
+    }
+    if (eventType === AgentRunEventType.SEGMENT_START && !isAgentSegmentType(payload.segment_type)) {
+      throw new ClaudeSegmentSourcePayloadRejected("CLAUDE_SEGMENT_TYPE_INVALID");
+    }
+    if (eventType === AgentRunEventType.SEGMENT_CONTENT && typeof payload.delta !== "string") {
+      throw new ClaudeSegmentSourcePayloadRejected("CLAUDE_SEGMENT_CONTENT_INVALID");
+    }
+    const normalizedPayload = eventType === AgentRunEventType.SEGMENT_START
+      ? { id: segmentId, turn_id: segmentTurnId, segment_type: payload.segment_type,
+          ...(payload.metadata !== undefined ? { metadata: payload.metadata } : {}) }
+      : eventType === AgentRunEventType.SEGMENT_CONTENT
+        ? { id: segmentId, turn_id: segmentTurnId, delta: payload.delta }
+        : eventType === AgentRunEventType.SEGMENT_END
+          ? { id: segmentId, turn_id: segmentTurnId,
+              ...(payload.metadata !== undefined ? { metadata: payload.metadata } : {}),
+              ...(payload.interrupted !== undefined ? { interrupted: payload.interrupted } : {}),
+              ...(payload.reason !== undefined ? { reason: payload.reason } : {}),
+              ...(payload.failed !== undefined ? { failed: payload.failed } : {}),
+              ...(payload.error !== undefined ? { error: payload.error } : {}) }
+          : payload;
     const event: AgentRunEvent = {
       eventType,
       runId: this.runId,
-      payload,
+      payload: normalizedPayload,
       statusHint: null,
     };
     if (eventType !== AgentRunEventType.ERROR) {

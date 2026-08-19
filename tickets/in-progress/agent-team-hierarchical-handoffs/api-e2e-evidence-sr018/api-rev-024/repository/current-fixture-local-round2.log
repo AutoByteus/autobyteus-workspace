@@ -1,0 +1,66 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web
+
+stderr | components/mobile/__tests__/MobileContextSelectionRegression.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/mobile/__tests__/MobileContextSelectionRegression.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts (8 tests) 95ms
+ ❯ components/mobile/__tests__/MobileContextSelectionRegression.spec.ts (11 tests | 1 failed) 93ms
+   ✓ mobile context selection stale-run regression > does not show an existing run monitor after switching mobile Chat to a non-run context 17ms
+   ✓ mobile context selection stale-run regression > routes non-run file attachments to mobile draft state instead of the stale selected run 6ms
+   ✓ mobile context selection stale-run regression > shows composer attachments from the current mobile context only 8ms
+   ✓ mobile context selection stale-run regression > keeps pending team run attachments visible across focus changes and flushes them to the focused leaf before send 8ms
+   × mobile context selection stale-run regression > blocks pending team run attachment flush for non-leaf focus without consuming pending files 11ms
+     → promise resolved "undefined" instead of rejecting
+   ✓ mobile context selection stale-run regression > uses draft attachment count for run setup and launches with the next-run draft 16ms
+   ✓ mobile context selection stale-run regression > updates both team focus and the mobile work context when changing an existing team-run target 6ms
+   ✓ mobile context selection stale-run regression > hides existing-run target selector on Runs while keeping compact target controls on focused work tabs 7ms
+   ✓ mobile context selection stale-run regression > keeps non-chat tabs in a bounded block task surface so h-full roots fill the viewport 8ms
+   ✓ mobile context selection stale-run regression > prefers remembered valid team focus when mapping Recent team runs and falls back safely when stale 1ms
+   ✓ mobile context selection stale-run regression > does not leak stale run or tool activity into non-run mobile activity contexts 3ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/mobile/__tests__/MobileContextSelectionRegression.spec.ts > mobile context selection stale-run regression > blocks pending team run attachment flush for non-leaf focus without consuming pending files
+AssertionError: promise resolved "undefined" instead of rejecting
+
+- Expected: 
+Error {
+  "message": "rejected promise",
+}
+
++ Received: 
+undefined
+
+ ❯ components/mobile/__tests__/MobileContextSelectionRegression.spec.ts:405:37
+    403|       ref(mobileWorkStore.currentContext),
+    404|     );
+    405|     await expect(bridge.beforeSend()).rejects.toThrow(
+       |                                     ^
+    406|       "Choose a team member before sending with pending context files.…
+    407|     );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 18 passed (19)
+   Start at  21:55:20
+   Duration  7.09s (transform 3.47s, setup 11.81s, collect 571ms, tests 188ms, environment 618ms, prepare 377ms)
+

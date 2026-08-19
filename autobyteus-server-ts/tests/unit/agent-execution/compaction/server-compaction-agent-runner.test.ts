@@ -10,6 +10,10 @@ import {
   type AgentRunEvent,
 } from "../../../../src/agent-execution/domain/agent-run-event.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
+import type {
+  AgentRunInputLifecycle,
+  AgentRunInputOptions,
+} from "../../../../src/agent-execution/input/agent-run-input-contract.js";
 
 const createEvent = (
   eventType: AgentRunEventType,
@@ -30,7 +34,14 @@ class FakeRun {
   unsubscriptionCount = 0;
   postedMessage: AgentInputUserMessage | null = null;
 
-  constructor(events: AgentRunEvent[]) {
+  constructor(
+    events: AgentRunEvent[],
+    private readonly inputLifecycleFacts: AgentRunInputLifecycle[] = [{
+      kind: "forwarded",
+      dispatchKind: "start_turn",
+      turnId: "turn-1",
+    }],
+  ) {
     this.emittedEvents = events;
   }
 
@@ -48,8 +59,15 @@ class FakeRun {
     };
   }
 
-  async postUserMessage(message: AgentInputUserMessage) {
+  async postUserMessage(
+    message: AgentInputUserMessage,
+    options: AgentRunInputOptions = {},
+  ) {
     this.postedMessage = message;
+    options.lifecycleObserver?.({ kind: "admitted" });
+    for (const fact of this.inputLifecycleFacts) {
+      options.lifecycleObserver?.(fact);
+    }
     for (const event of this.emittedEvents) {
       for (const listener of this.listeners) {
         listener(event);
@@ -164,6 +182,7 @@ describe("ServerCompactionAgentRunner", () => {
     const run = new FakeRun([
       createEvent(AgentRunEventType.SEGMENT_CONTENT, {
         id: "message-1",
+        turn_id: "turn-1",
         segment_type: "text",
         delta: '{"episodes":[{"summary":"ok"}]}',
       }),
@@ -195,8 +214,8 @@ describe("ServerCompactionAgentRunner", () => {
       autoExecuteTools: false,
       llmConfig: { reasoning_effort: "medium" },
       skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
-        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-      });
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+    });
     expect(launchResolver.resolve).toHaveBeenCalledWith(parentLaunchFallback);
     expect(run.postedMessage).toBeInstanceOf(AgentInputUserMessage);
     expect(run.postedMessage).toMatchObject({
@@ -263,6 +282,71 @@ describe("ServerCompactionAgentRunner", () => {
     });
     expect(agentRunService.terminateAgentRun).toHaveBeenCalledWith("compaction-run-1");
   });
+
+  it.each([
+    {
+      name: "dispatch failure",
+      fact: {
+        kind: "failed",
+        code: "RUNTIME_COMMAND_FAILED",
+        message: "provider rejected input",
+        turnId: null,
+      } satisfies AgentRunInputLifecycle,
+      expectedKind: "collection_failed",
+      expectedMessage: /input dispatch failed: provider rejected input/,
+    },
+    {
+      name: "pre-forward cancellation",
+      fact: {
+        kind: "cancelled",
+        code: "AGENT_RUN_TERMINATED_BEFORE_INPUT_FORWARD",
+      } satisfies AgentRunInputLifecycle,
+      expectedKind: "collection_failed",
+      expectedMessage: /terminated before input forwarding/,
+    },
+    {
+      name: "input interruption",
+      fact: {
+        kind: "interrupted",
+        turnId: "turn-1",
+      } satisfies AgentRunInputLifecycle,
+      expectedKind: "interrupted",
+      expectedMessage: /input was interrupted/,
+    },
+  ])(
+    "preserves $name classification from the AgentRun input lifecycle",
+    async ({ fact, expectedKind, expectedMessage }) => {
+      const run = new FakeRun([], [fact]);
+      const agentRunService = createService(run);
+      const runner = new ServerCompactionAgentRunner({
+        launchResolver: createLaunchResolver() as any,
+        agentRunService: agentRunService as any,
+        workspaceRootPath: "/tmp/workspace",
+        parentLaunchFallback,
+        timeoutMs: 1_000,
+      });
+
+      await expect(runner.runCompactionTask({
+        taskId: "task-input-lifecycle",
+        prompt: "compact this",
+        blockCount: 1,
+        traceCount: 1,
+      })).rejects.toMatchObject({
+        name: "CompactionAgentRunnerError",
+        kind: expectedKind,
+        message: expect.stringMatching(expectedMessage),
+        compactionMetadata: {
+          compactionAgentDefinitionId: "autobyteus-memory-compactor",
+          compactionRunId: "compaction-run-1",
+          taskId: "task-input-lifecycle",
+        },
+      });
+
+      expect(run.unsubscriptionCount).toBe(1);
+      expect(agentRunService.recordRunActivity).toHaveBeenCalledOnce();
+      expect(agentRunService.terminateAgentRun).toHaveBeenCalledWith(run.runId);
+    },
+  );
 
   it.each([
     {

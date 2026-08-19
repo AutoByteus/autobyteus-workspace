@@ -186,7 +186,7 @@ describe('memory page', () => {
       workspaceRootPath: '/tmp/team-project',
       lastUpdatedAt: '2026-06-19T10:06:04.000Z',
       memory: { latestMemoryAt: null, hasWorkingContext: true, hasEpisodic: false, hasSemantic: false, hasRawTraces: true, hasRawArchive: false },
-      memberTargets: [{ memberRouteKey: 'lead', memberName: 'Lead', memberRunId: 'member-1', memory: { latestMemoryAt: null, hasWorkingContext: true, hasEpisodic: false, hasSemantic: false, hasRawTraces: true, hasRawArchive: false } }],
+      memberTargets: [{ memberAddress: '/lead', memberName: 'Lead', agentRunId: 'member-1', memory: { latestMemoryAt: null, hasWorkingContext: true, hasEpisodic: false, hasSemantic: false, hasRawTraces: true, hasRawArchive: false } }],
     }];
 
     const wrapper = mount(MemoryPage, { global: { plugins: [pinia] } });
@@ -203,8 +203,8 @@ describe('memory page', () => {
       teamDefinitionId: 'team',
       teamDefinitionName: 'Software Team',
       teamRunId: 'team-run-1',
-      memberRunId: 'member-1',
-      memberRouteKey: 'lead',
+      agentRunId: 'member-1',
+      memberAddress: '/lead',
       memberName: 'Lead',
       lastUpdatedAt: '2026-06-19T10:06:04.000Z',
     }));
@@ -215,8 +215,8 @@ describe('memory page', () => {
         teamDefinitionId: 'team',
         teamName: 'Software Team',
         teamRunId: 'team-run-1',
-        memberRunId: 'member-1',
-        memberRouteKey: 'lead',
+        agentRunId: 'member-1',
+        memberAddress: '/lead',
         memberName: 'Lead',
         updatedAt: '2026-06-19T10:06:04.000Z',
       },

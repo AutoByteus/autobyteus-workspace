@@ -1,0 +1,42 @@
+
+> autobyteus@1.4.42 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web
+> cross-env NUXT_TEST=true vitest services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web
+
+stderr | services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts > toolLifecycleHandler > drops malformed denied payload without state mutation
+[toolLifecycleHandler] Dropping malformed TOOL_DENIED payload {
+  invocation_id: 'tool-4',
+  tool_name: 'delete_file',
+  reason: null,
+  error: null
+}
+
+ ✓ services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts (12 tests) 12ms
+ ✓ services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts (22 tests) 15ms
+
+ Test Files  2 passed (2)
+      Tests  34 passed (34)
+   Start at  13:14:32
+   Duration  6.84s (transform 3.53s, setup 12.14s, collect 67ms, tests 27ms, environment 540ms, prepare 388ms)
+

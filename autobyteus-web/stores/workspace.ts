@@ -43,7 +43,6 @@ import {
 import type { FetchFolderChildrenOptions } from '~/stores/fileExplorerTreeActions'
 import type { FileExplorerStreamingService } from '~/services/fileExplorerStreaming/FileExplorerStreamingService'
 import { removeWorkspaceForStore } from '~/stores/workspaceRemovalActions'
-import { resolveTeamConversationTargetAddress } from '~/utils/teamConversationTargetAddress'
 
 export interface WorkspaceInfo {
   workspaceId: string;
@@ -423,14 +422,11 @@ export const useWorkspaceStore = defineStore('workspace', {
         workspaceId = config?.workspaceId || null;
       } else if (selectionStore.selectedType === 'team') {
         const teamContext = teamContextsStore.activeTeamContext;
-        const messageTarget = teamContext
-          ? resolveTeamConversationTargetAddress(teamContext, { allowActiveExecutionSafetyFallback: true })
-          : null;
-        const focusedConfig = messageTarget?.context?.config
-          || teamContextsStore.activeExecutionFocusedMemberContext?.config
+        const focusedConfig = teamContextsStore.activeExecutionFocusedMemberContext?.config
           || null;
-        metadata = focusedConfig?.workspaceMetadata || teamContext?.config.workspaceMetadata || null;
-        workspaceId = focusedConfig?.workspaceId || teamContext?.config.workspaceId || null;
+        const configuration = teamContext?.view.getConfigurationView() ?? null;
+        metadata = focusedConfig?.workspaceMetadata || configuration?.workspaceMetadata || null;
+        workspaceId = focusedConfig?.workspaceId || configuration?.workspaceId || null;
       } else {
         const config = agentRunConfigStore.config || teamRunConfigStore.config || null;
         metadata = config?.workspaceMetadata || null;

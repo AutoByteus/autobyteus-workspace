@@ -1,0 +1,16 @@
+DR-006 Docker server health verification
+Project: electron-agent-input-controls-regression-dr005
+Backend URL: http://127.0.0.1:52704
+Started: 2026-08-18T15:32:06+02:00
+
+Attempt 01: HTTP 200 body={"status":"ok","message":"Server is running"}
+
+GraphQL health:
+{"data":{"health":{"status":"ok","message":"Server is running"}}}
+
+Container status:
+NAME                                                                 IMAGE                      COMMAND                  SERVICE             CREATED          STATUS          PORTS
+electron-agent-input-controls-regression-dr005-autobyteus-server-1   autobyteus-server:latest   "/usr/local/bin/entr…"   autobyteus-server   31 seconds ago   Up 29 seconds   0.0.0.0:52705->5900/tcp, [::]:52705->5900/tcp, 0.0.0.0:52706->6080/tcp, [::]:52706->6080/tcp, 0.0.0.0:52704->8000/tcp, [::]:52704->8000/tcp, 0.0.0.0:52707->9223/tcp, [::]:52707->9223/tcp
+
+Result: PASS — HTTP 200 and status ok
+Finished: 2026-08-18T15:32:06+02:00

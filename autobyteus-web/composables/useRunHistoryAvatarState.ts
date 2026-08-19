@@ -27,12 +27,12 @@ const toInitials = (value: string, fallback: string): string => {
 };
 
 const toTeamMemberDisplayName = (member: TeamMemberTreeRow): string => {
-  const direct = member.memberName?.trim();
+  const direct = member.displayName.trim();
   if (direct) {
     return direct;
   }
 
-  const routeKey = member.memberRouteKey || '';
+  const routeKey = member.memberAddress || '';
   const routeLeaf = routeKey
     .split('/')
     .map((segment) => segment.trim())
@@ -133,7 +133,7 @@ export const useRunHistoryAvatarState = (params: {
   };
 
   const getTeamMemberAvatarKey = (member: TeamMemberTreeRow, avatarUrl: string): string => {
-    return `${member.teamRunId}::${member.memberRouteKey}::${avatarUrl.trim()}`;
+    return `${member.teamRunId}::${member.memberAddress}::${avatarUrl.trim()}`;
   };
 
   const showTeamMemberAvatar = (member: TeamMemberTreeRow): boolean => {

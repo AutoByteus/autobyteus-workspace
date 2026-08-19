@@ -1,0 +1,4 @@
+database=autobyteus-server-ts/db/agent-team-codex-output-not-visible-20260817-1.db size=204800 mode=-rw-r--r--
+key=autobyteus-server-ts/db/agent-team-codex-output-not-visible-20260817-1.db.secret.key size=32 mode=-rw-------
+operational_database_action=NONE
+protected_ports_action=NONE

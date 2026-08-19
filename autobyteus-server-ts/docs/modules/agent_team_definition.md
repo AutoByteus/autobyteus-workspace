@@ -40,6 +40,43 @@ Team-local identity is subject-specific and nested-safe:
 - local team ids use `team-local-team:<encoded-owner-team-id>:<encoded-local-team-id>`;
 - callers should use the shared identity helpers rather than manually splitting or constructing id strings.
 
+## Collaboration Handoffs
+
+`team-config.json` may contain an ordered top-level `handoffs` array. Each entry
+has this shape:
+
+```json
+{
+  "from": "/research_lead",
+  "to": "/field_team",
+  "rules": [
+    "Delegate field verification when the requirement needs external evidence."
+  ]
+}
+```
+
+- `from` and `to` are definition-root absolute logical addresses. They must use
+  `/` or `/segment/...`; runtime-relative `./...` addresses are not valid in a
+  persisted definition.
+- `from` must resolve to an Agent. `to` may resolve to an Agent or an AgentTeam;
+  a Team target means that Team through its exact direct Agent coordinator
+  ingress.
+- Member names are non-empty, trimmed, path-safe segments. Slash, backslash,
+  `.`/`..`, and case-insensitive sibling collisions are rejected.
+- `rules` is a non-empty ordered array of non-empty, already-trimmed strings.
+  Rule prose is guidance for the Agent; the framework does not interpret it as
+  executable policy or delivery authorization.
+- Self-resolving edges and duplicate effective `(from,to)` pairs are rejected.
+  Nested child definitions are recursively resolved and their handoffs are
+  rebased into the root Team address space before duplicate checking.
+
+The file provider normalizes an omitted `handoffs` field to `[]` and emits the
+canonical array on later writes; no bulk definition migration or rewrite is
+required. Definition create/update validates the complete referenced graph and
+compiled handoff set. Update validation runs against a detached candidate before
+persistence, so a rejected member, graph, or handoff update does not mutate the
+current cached definition.
+
 ## Default Launch Preferences
 
 - Team definitions persist optional `defaultLaunchConfig` at the team config layer.

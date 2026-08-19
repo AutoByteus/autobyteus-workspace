@@ -1,0 +1,10 @@
+head=d21fdeb2717e932d1af591a9396862016117a744
+api_revision_index=1
+api_revision_entry=1
+execution_result=1
+failure_id_mentions=3
+durable_inventory_rows=43
+authoritative_browser_single_failure=1
+cleanup_closed_ports=2
+fixture_unchanged_diff_bytes=0
+manifest_rows=51

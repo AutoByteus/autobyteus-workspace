@@ -6,7 +6,7 @@
   "icon": "ui/icon.svg",
   "ui": {
     "entryHtml": "ui/index.html",
-    "frontendSdkContractVersion": "4"
+    "frontendSdkContractVersion": "6"
   },
   "backend": {
     "bundleManifest": "backend/bundle.json"

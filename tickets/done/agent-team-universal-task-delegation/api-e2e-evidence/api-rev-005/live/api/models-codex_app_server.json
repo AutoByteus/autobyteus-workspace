@@ -1,0 +1,146 @@
+{
+  "data": {
+    "availableLlmProvidersWithModels": [
+      {
+        "provider": {
+          "id": "ANTHROPIC",
+          "name": "Anthropic",
+          "apiKeyConfigured": false
+        },
+        "models": []
+      },
+      {
+        "provider": {
+          "id": "AUTOBYTEUS",
+          "name": "AutoByteus",
+          "apiKeyConfigured": false
+        },
+        "models": []
+      },
+      {
+        "provider": {
+          "id": "DEEPSEEK",
+          "name": "DeepSeek",
+          "apiKeyConfigured": false
+        },
+        "models": []
+      },
+      {
+        "provider": {
+          "id": "GEMINI",
+          "name": "Gemini",
+          "apiKeyConfigured": false
+        },
+        "models": []
+      },
+      {
+        "provider": {
+          "id": "GLM",
+          "name": "GLM",
+          "apiKeyConfigured": false
+        },
+        "models": []
+      },
+      {
+        "provider": {
+          "id": "GROK",
+          "name": "Grok",
+          "apiKeyConfigured": false
+        },
+        "models": []
+      },
+      {
+        "provider": {
+          "id": "KIMI",
+          "name": "Kimi",
+          "apiKeyConfigured": false
+        },
+        "models": []
+      },
+      {
+        "provider": {
+          "id": "LMSTUDIO",
+          "name": "LM Studio",
+          "apiKeyConfigured": false
+        },
+        "models": []
+      },
+      {
+        "provider": {
+          "id": "MINIMAX",
+          "name": "MiniMax",
+          "apiKeyConfigured": false
+        },
+        "models": []
+      },
+      {
+        "provider": {
+          "id": "MISTRAL",
+          "name": "Mistral",
+          "apiKeyConfigured": false
+        },
+        "models": []
+      },
+      {
+        "provider": {
+          "id": "OLLAMA",
+          "name": "Ollama",
+          "apiKeyConfigured": false
+        },
+        "models": []
+      },
+      {
+        "provider": {
+          "id": "OPENAI",
+          "name": "OpenAI",
+          "apiKeyConfigured": false
+        },
+        "models": [
+          {
+            "modelIdentifier": "gpt-5.3-codex-spark",
+            "name": "GPT-5.3-Codex-Spark (default reasoning: high)",
+            "runtime": "api"
+          },
+          {
+            "modelIdentifier": "gpt-5.4",
+            "name": "GPT-5.4 (default reasoning: medium)",
+            "runtime": "api"
+          },
+          {
+            "modelIdentifier": "gpt-5.4-mini",
+            "name": "GPT-5.4-Mini (default reasoning: medium)",
+            "runtime": "api"
+          },
+          {
+            "modelIdentifier": "gpt-5.5",
+            "name": "GPT-5.5 (default reasoning: medium)",
+            "runtime": "api"
+          },
+          {
+            "modelIdentifier": "gpt-5.6-luna",
+            "name": "GPT-5.6-Luna (default reasoning: medium)",
+            "runtime": "api"
+          },
+          {
+            "modelIdentifier": "gpt-5.6-sol",
+            "name": "GPT-5.6-Sol (default reasoning: low)",
+            "runtime": "api"
+          },
+          {
+            "modelIdentifier": "gpt-5.6-terra",
+            "name": "GPT-5.6-Terra (default reasoning: medium)",
+            "runtime": "api"
+          }
+        ]
+      },
+      {
+        "provider": {
+          "id": "QWEN",
+          "name": "Qwen",
+          "apiKeyConfigured": false
+        },
+        "models": []
+      }
+    ]
+  }
+}

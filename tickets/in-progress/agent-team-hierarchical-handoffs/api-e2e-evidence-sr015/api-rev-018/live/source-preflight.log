@@ -1,0 +1,14 @@
+round=sr015-api-rev-018-20260810-1
+artifact_head=33b9b1e28e1c7f666dffdbcd349d394b2bfef875
+app_data_root=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/sr015-api-rev-018-20260810-1
+database=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/sr015-api-rev-018-20260810-1.db
+database_url=file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/sr015-api-rev-018-20260810-1.db
+source_fixture=/Users/normy/autobyteus_org/autobyteus-private-agents/agent-teams/nested-classroom-test
+staged_package_root=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/sr015-api-rev-018-20260810-1/staged-agent-package-01
+server_url=http://127.0.0.1:60018
+frontend_url=http://127.0.0.1:31018
+source_fixture_sha256=488dbd28750b6bddc2cc3f7fac999704155f8c412cf5627be1cf9884248e3e1c
+staged_fixture_sha256=fe0ac934b64d0ff9f7bc9f109aa1fdf22bc7073b86a92bedc7f8b634ccb624b1
+owned_ports_60018_31018=AVAILABLE
+operational_database_targeted=no
+user_held_stack_60004_31004=untouched

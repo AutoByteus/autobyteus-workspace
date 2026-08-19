@@ -1,0 +1,80 @@
+
+> autobyteus@1.4.52 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/electron-agent-input-controls-regression/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/agentInput/__tests__/AgentUserInputTextArea.spec.ts stores/__tests__/voiceInputStore.spec.ts components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts components/conversation/__tests__/UserMessage.spec.ts --run --reporter=verbose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/electron-agent-input-controls-regression/autobyteus-web
+
+stderr | stores/__tests__/voiceInputStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agentInput/__tests__/AgentUserInputTextArea.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/conversation/__tests__/UserMessage.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/agentInput/__tests__/AgentUserInputTextArea.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/voiceInputStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/conversation/__tests__/UserMessage.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/conversation/__tests__/UserMessage.spec.ts > UserMessage > renders uploaded image attachments as thumbnails, routes thumbnail clicks into the file viewer, and falls back to a chip on preview failure 16ms
+ ✓ components/conversation/__tests__/UserMessage.spec.ts > UserMessage > renders unsupported local-file metadata as a non-interactive label chip 4ms
+ ✓ components/agentInput/__tests__/AgentUserInputTextArea.spec.ts > AgentUserInputTextArea > hides the voice button when voice input is not installed 18ms
+ ✓ components/agentInput/__tests__/AgentUserInputTextArea.spec.ts > AgentUserInputTextArea > shows the voice button when voice input is installed and ready 6ms
+ ✓ components/agentInput/__tests__/AgentUserInputTextArea.spec.ts > AgentUserInputTextArea > shows visible recording feedback while voice input is active 8ms
+ ✓ components/agentInput/__tests__/AgentUserInputTextArea.spec.ts > AgentUserInputTextArea > shows immediate starting feedback, guards duplicate activation, and cancels only composer on unmount 11ms
+ ✓ components/agentInput/__tests__/AgentUserInputTextArea.spec.ts > AgentUserInputTextArea > disables send while context files are still uploading 4ms
+ ✓ components/agentInput/__tests__/AgentUserInputTextArea.spec.ts > AgentUserInputTextArea > uses canonical running status to show and trigger stop even without a sendable draft 6ms
+ ✓ components/agentInput/__tests__/AgentUserInputTextArea.spec.ts > AgentUserInputTextArea > keeps send disabled while a submission is pending without presenting stop 4ms
+ ✓ components/agentInput/__tests__/AgentUserInputTextArea.spec.ts > AgentUserInputTextArea > applies the same disabled primary-action policy to Enter 6ms
+ ✓ components/agentInput/__tests__/AgentUserInputTextArea.spec.ts > AgentUserInputTextArea > applies the same running interrupt policy to Enter 7ms
+ ✓ components/agentInput/__tests__/AgentUserInputTextArea.spec.ts > AgentUserInputTextArea > leaves Shift+Enter to the textarea without invoking the primary action 9ms
+ ✓ components/agentInput/__tests__/AgentUserInputTextArea.spec.ts > AgentUserInputTextArea > clears the visible composer when the active send is locally acknowledged while send remains pending 11ms
+ ✓ components/agentInput/__tests__/AgentUserInputTextArea.spec.ts > AgentUserInputTextArea > runs the optional beforeSend seam before sending without changing the synced requirement 8ms
+ ✓ components/agentInput/__tests__/AgentUserInputTextArea.spec.ts > AgentUserInputTextArea > keeps activeContextStore.send untouched when the optional beforeSend seam blocks submission 7ms
+ ✓ components/agentInput/__tests__/AgentUserInputTextArea.spec.ts > AgentUserInputTextArea > keeps a debounced draft with the member that typed it when focus changes 9ms
+ ✓ components/agentInput/__tests__/AgentUserInputTextArea.spec.ts > AgentUserInputTextArea > flushes the previous member draft before a new member starts typing 11ms
+ ✓ stores/__tests__/voiceInputStore.spec.ts > voiceInputStore > commits starting synchronously, guards duplicate starts, and cancels without a late commit 3ms
+ ✓ stores/__tests__/voiceInputStore.spec.ts > voiceInputStore > disposes resources acquired by a startup invalidated before commit 53ms
+ ✓ stores/__tests__/voiceInputStore.spec.ts > voiceInputStore > clears starting state and preserves the permission-denied error path 3ms
+ ✓ stores/__tests__/voiceInputStore.spec.ts > voiceInputStore > disposes acquired resources and clears starting when AudioWorklet setup fails 1ms
+ ✓ stores/__tests__/voiceInputStore.spec.ts > voiceInputStore > cancels only the matching recording source and preserves transcription 1ms
+ ✓ stores/__tests__/voiceInputStore.spec.ts > voiceInputStore > appends transcript text into the current draft without sending 1ms
+ ✓ stores/__tests__/voiceInputStore.spec.ts > voiceInputStore > surfaces transcription failure without mutating the draft 1ms
+ ✓ stores/__tests__/voiceInputStore.spec.ts > voiceInputStore > does not mutate the draft when no speech is detected 2ms
+ ✓ stores/__tests__/voiceInputStore.spec.ts > voiceInputStore > distinguishes empty transcript from true no-speech 1ms
+ ✓ stores/__tests__/voiceInputStore.spec.ts > voiceInputStore > keeps composer transcript text with the member that started recording when focus changes 2ms
+ ✓ stores/__tests__/voiceInputStore.spec.ts > voiceInputStore > uses the selected audio input device when starting recording 1ms
+ ✓ stores/__tests__/voiceInputStore.spec.ts > voiceInputStore > resumes a suspended audio context before marking recording active 1ms
+ ✓ stores/__tests__/voiceInputStore.spec.ts > voiceInputStore > fails with an actionable error when the audio context never reaches running 1ms
+ ✓ stores/__tests__/voiceInputStore.spec.ts > voiceInputStore > fails fast when recording starts but no capture frames ever arrive 4ms
+ ✓ stores/__tests__/voiceInputStore.spec.ts > voiceInputStore > resets the settings-level test state without requiring app restart 1ms
+ ✓ stores/__tests__/voiceInputStore.spec.ts > voiceInputStore > fails early when no audio input devices are available 1ms
+ ✓ components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts > Team Tasks focus and current AgentRun send workflow > selects task-Agent details without changing the exact focused send target 53ms
+ ✓ components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts > Team Tasks focus and current AgentRun send workflow > selects a task-Team summary without making its placement a send target 26ms
+
+ Test Files  4 passed (4)
+      Tests  35 passed (35)
+   Start at  14:10:53
+   Duration  9.98s (transform 4.78s, setup 32.99s, collect 829ms, tests 302ms, environment 1.77s, prepare 1.21s)

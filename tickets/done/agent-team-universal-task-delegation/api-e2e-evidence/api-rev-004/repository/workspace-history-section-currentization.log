@@ -1,0 +1,53 @@
+
+> autobyteus@1.4.51 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web
+
+stderr | components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts (6 tests | 1 failed) 68ms
+   ✓ WorkspaceHistoryWorkspaceSection current execution rows > renders any-active definition activity and exact sibling run activity reactively 23ms
+   ✓ WorkspaceHistoryWorkspaceSection current execution rows > renders and selects exact stable and task-Agent execution identities 10ms
+   ✓ WorkspaceHistoryWorkspaceSection current execution rows > marks only the selected TeamRun current when member addresses repeat 7ms
+   × WorkspaceHistoryWorkspaceSection current execution rows > toggles a task-Team subtree and selects only its concrete task Agent child 15ms
+     → expected 'Workspace A Teams TATeam Alpha(1)Team…' not to contain 'Review design body should stay on the…'
+   ✓ WorkspaceHistoryWorkspaceSection current execution rows > removes transient execution rows when the exact live projection disappears 6ms
+   ✓ WorkspaceHistoryWorkspaceSection current execution rows > toggles stable nested Team children by exact row key and selects the concrete child Agent 5ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts > WorkspaceHistoryWorkspaceSection current execution rows > toggles a task-Team subtree and selects only its concrete task Agent child
+AssertionError: expected 'Workspace A Teams TATeam Alpha(1)Team…' not to contain 'Review design body should stay on the…'
+
+Expected: "Review design body should stay on the right."
+Received: "Workspace A Teams TATeam Alpha(1)Team task summarynowWworkernowWstudy_groupTeamnowWreviewernowTask: Review design body should stay on the right.reviewer"
+
+ ❯ components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:277:32
+    275|       teamRunId: 'team-run-1', memberAddress: '/study_group/reviewer',…
+    276|     }, 'workspace:/ws/a');
+    277|     expect(wrapper.text()).not.toContain('Review design body should st…
+       |                                ^
+    278|     expect(wrapper.text()).not.toContain('/tmp/design-spec.md');
+    279|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 5 passed (6)
+   Start at  15:18:20
+   Duration  5.18s (transform 2.91s, setup 4.48s, collect 119ms, tests 68ms, environment 128ms, prepare 160ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

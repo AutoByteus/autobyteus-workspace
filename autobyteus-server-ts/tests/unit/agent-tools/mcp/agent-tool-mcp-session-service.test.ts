@@ -187,7 +187,7 @@ describe("AgentToolMcpSessionService", () => {
     const registry = new AgentToolMcpSessionRegistry({ now: () => now });
     const service = buildService(registry);
     const created = service.createAgentToolMcpSession({
-      owner: { runId: "run-3", memberRunId: "member-run-3" },
+      owner: { runId: "member-run-3" },
       sender: buildSender(),
       runtimeExposure: buildRuntimeAgentToolExposure([SEND_MESSAGE_TO_TOOL_NAME]),
     });
@@ -208,18 +208,18 @@ describe("AgentToolMcpSessionService", () => {
     });
 
     const second = service.createAgentToolMcpSession({
-      owner: { runId: "run-3", memberRunId: "member-run-3" },
+      owner: { runId: "member-run-3" },
       sender: buildSender(),
       runtimeExposure: buildRuntimeAgentToolExposure([SEND_MESSAGE_TO_TOOL_NAME]),
     });
     const nonMatching = service.createAgentToolMcpSession({
-      owner: { runId: "run-3", memberRunId: "member-run-other" },
+      owner: { runId: "member-run-other" },
       sender: buildSender(),
       runtimeExposure: buildRuntimeAgentToolExposure([SEND_MESSAGE_TO_TOOL_NAME]),
     });
     const secondToken = second.descriptor.headers.Authorization.replace(/^Bearer\s+/, "");
     const nonMatchingToken = nonMatching.descriptor.headers.Authorization.replace(/^Bearer\s+/, "");
-    expect(service.revokeAgentToolMcpSessionsForMemberRun("member-run-3")).toBe(1);
+    expect(service.revokeAgentToolMcpSessionsForAgentRun("member-run-3")).toBe(1);
     expect(registry.resolveSession({ sessionId: second.session.sessionId, bearerToken: secondToken })).toMatchObject({
       ok: false,
       reason: "revoked",

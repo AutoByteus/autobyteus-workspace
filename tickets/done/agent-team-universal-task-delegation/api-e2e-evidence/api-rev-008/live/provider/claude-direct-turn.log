@@ -1,0 +1,65 @@
+{
+  "teamRunId": "utd_root_team_api_rev_008_1786830349955_c3be778aefc044a1a5b4ef38ffc5b529",
+  "agentRunId": "utd_coordinator_api_rev_008_1786830349955_54de8235d93a411587e95c435cfc3336",
+  "durationMs": 10053,
+  "sent": true,
+  "terminalAt": {
+    "type": "TURN_COMPLETED",
+    "atMs": 9717
+  },
+  "websocketError": null,
+  "messageCount": 29,
+  "typeCounts": {
+    "CONNECTED": 1,
+    "TEAM_EXECUTION_VIEW_SNAPSHOT": 1,
+    "TEAM_RUN_LIFECYCLE": 1,
+    "MEMBER_INPUT_MESSAGE": 2,
+    "TURN_STARTED": 2,
+    "SEGMENT_START": 4,
+    "TOOL_EXECUTION_STARTED": 2,
+    "TASK_DELEGATION_EVENT": 4,
+    "SEGMENT_END": 4,
+    "TOOL_EXECUTION_SUCCEEDED": 2,
+    "SEGMENT_CONTENT": 2,
+    "TOKEN_USAGE_UPDATED": 2,
+    "TURN_COMPLETED": 2
+  },
+  "tasks": [
+    {
+      "taskId": "task_5f9af769290542509b51563377c79747",
+      "delegatorAgentRunId": "utd_coordinator_api_rev_008_1786830349955_54de8235d93a411587e95c435cfc3336",
+      "recipientAddress": "/worker",
+      "targetAgentRunId": "utd_worker_api_rev_008_1786830349955_ee669642702644fd9a0f6ba4797b925e",
+      "targetTeamRunId": null,
+      "status": "accepted",
+      "description": "Return E2E_DIRECT_TASK_RESULT_42",
+      "createdAt": "2026-08-15T21:50:03.966Z",
+      "referenceFiles": [],
+      "updates": [
+        {
+          "kind": "submission",
+          "submissionId": "submission_7cf69af698a14044b9fec80091b248b4",
+          "reviewId": null,
+          "interruptionId": null,
+          "reviewedSubmissionId": null,
+          "decision": null,
+          "content": "E2E_DIRECT_TASK_RESULT_42",
+          "createdAt": "2026-08-15T21:50:06.424Z",
+          "referenceFiles": []
+        },
+        {
+          "kind": "review",
+          "submissionId": null,
+          "reviewId": "review_6c9f06ee6d94408cb052676e2130ae22",
+          "interruptionId": null,
+          "reviewedSubmissionId": "submission_7cf69af698a14044b9fec80091b248b4",
+          "decision": "accept",
+          "content": null,
+          "createdAt": "2026-08-15T21:50:08.878Z",
+          "referenceFiles": []
+        }
+      ]
+    }
+  ],
+  "communications": []
+}

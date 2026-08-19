@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "overallTeamProviderResult": "Pass",
+  "rows": [
+    {
+      "runtime": "autobyteus",
+      "model": "gpt-5.6-luna",
+      "result": "Pass",
+      "rootTeamRunId": "nested_classroom_test_team_b9f9f2cace68444aa50b0b56b732958e",
+      "taskPeerRequest": true,
+      "taskPeerReply": true,
+      "accepted": true,
+      "termination": true
+    },
+    {
+      "runtime": "codex_app_server",
+      "model": "gpt-5.6-luna",
+      "reasoningEffort": "medium",
+      "result": "Pass",
+      "rootTeamRunId": "nested_classroom_test_team_ea2b6aa987f2482a80635ff18df59bda",
+      "taskPeerRequest": true,
+      "taskPeerReply": true,
+      "accepted": true,
+      "termination": true
+    },
+    {
+      "runtime": "claude_agent_sdk",
+      "model": "sonnet",
+      "result": "Pass",
+      "rootTeamRunId": "nested_classroom_test_team_5907ca669e294be8be3565771638adc7",
+      "taskPeerRequest": true,
+      "taskPeerReply": true,
+      "accepted": true,
+      "termination": true
+    },
+    {
+      "runtime": "claude_agent_sdk",
+      "model": "haiku",
+      "result": "Nonblocking model-behavior observation",
+      "rootTeamRunId": "nested_classroom_test_team_3cc599df518247c782ab41b2eccee939",
+      "taskPeerRequest": true,
+      "taskPeerReply": false,
+      "accepted": false,
+      "termination": true
+    }
+  ]
+}

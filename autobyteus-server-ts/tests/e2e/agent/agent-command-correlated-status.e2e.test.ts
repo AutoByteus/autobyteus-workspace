@@ -8,6 +8,10 @@ import type {
   AgentRunBackend,
   AgentRunSourceEventBatchListener,
 } from "../../../src/agent-execution/backends/agent-run-backend.js";
+import type {
+  AgentRunBackendInputDispatch,
+  AgentRunBackendInputDispatchResult,
+} from "../../../src/agent-execution/input/agent-run-input-contract.js";
 import { AgentRun } from "../../../src/agent-execution/domain/agent-run.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
@@ -48,6 +52,7 @@ const deferred = <T>(): Deferred<T> => {
 
 class ScriptedAgentRunBackend implements AgentRunBackend {
   readonly runtimeKind = RuntimeKind.CODEX_APP_SERVER;
+  readonly inputCapabilities = { activeTurnAppend: "supported" } as const;
   readonly messages: AgentInputUserMessage[] = [];
   active = true;
 
@@ -87,9 +92,16 @@ class ScriptedAgentRunBackend implements AgentRunBackend {
       }),
       runtimeContext: { threadId: `thread-${runId}`, activeTurnId: null },
     });
-    this.postUserMessage = vi.fn(async (message: AgentInputUserMessage) => {
-      this.messages.push(message);
-      return options.postUserMessage(message);
+    this.dispatchUserInput = vi.fn(async (
+      dispatch: AgentRunBackendInputDispatch,
+    ): Promise<AgentRunBackendInputDispatchResult> => {
+      this.messages.push(dispatch.message);
+      const result = await options.postUserMessage(dispatch.message);
+      return {
+        forwarded: result.accepted,
+        turnId: result.turnId ?? (dispatch.kind === "append_to_active_turn" ? dispatch.turnId : null),
+        ...(result.message ? { message: result.message } : {}),
+      };
     });
   }
 
@@ -116,7 +128,7 @@ class ScriptedAgentRunBackend implements AgentRunBackend {
     };
   }
 
-  postUserMessage: AgentRunBackend["postUserMessage"];
+  dispatchUserInput: AgentRunBackend["dispatchUserInput"];
 
   approveToolInvocation = vi.fn(async () => ({ accepted: true }));
 
@@ -300,6 +312,13 @@ const startHarness = async (input: {
       activeRuns.set(runId, run);
       return { run, metadata: metadataByRunId.get(runId)! };
     }),
+    resolveCommandReadyAgentRun: vi.fn(async (runId: string) => {
+      const active = getActiveRun(runId);
+      if (active) return active;
+      const run = await input.restoreRun();
+      activeRuns.set(runId, run);
+      return run;
+    }),
     activatePreparedRun: vi.fn(async () => {
       throw new Error("Prepared activation is not used by this e2e scenario.");
     }),
@@ -476,7 +495,7 @@ describe("Agent command-correlated status overlay e2e", () => {
         type: "AGENT_STATUS",
         payload: { status: "initializing", agent_id: runId },
       });
-      expect(harness.agentRunService.restoreAgentRun).toHaveBeenCalledWith(runId);
+      expect(harness.agentRunService.resolveCommandReadyAgentRun).toHaveBeenCalledWith(runId);
 
       restoreReady.resolve(buildAgentRun(restoredBackend));
       await waitForCondition(

@@ -1,0 +1,162 @@
+[
+  {
+    "atMs": 1001,
+    "type": "debug",
+    "text": "[vite] connecting..."
+  },
+  {
+    "atMs": 1007,
+    "type": "debug",
+    "text": "[vite] connected."
+  },
+  {
+    "atMs": 1506,
+    "type": "log",
+    "text": "serverStore: Initializing server config"
+  },
+  {
+    "atMs": 1506,
+    "type": "log",
+    "text": "serverStore: Not in Electron environment. Skipping server initialization."
+  },
+  {
+    "atMs": 1507,
+    "type": "info",
+    "text": "<Suspense> is an experimental feature and its API will likely change."
+  },
+  {
+    "atMs": 1567,
+    "type": "log",
+    "text": "ServerLoading: Component mounted with status: running"
+  },
+  {
+    "atMs": 1577,
+    "type": "log",
+    "text": "Workspace.vue: Mounted. Fetching server settings and loading profiles..."
+  },
+  {
+    "atMs": 1601,
+    "type": "log",
+    "text": "[useTerminalSession] Connecting to: ws://127.0.0.1:60418/ws/terminal/a2ba4d35-7ff1-4f66-8a36-3c6eaf32af7a"
+  },
+  {
+    "atMs": 1620,
+    "type": "log",
+    "text": "[useTerminalSession] Connected"
+  },
+  {
+    "atMs": 2738,
+    "type": "log",
+    "text": "[useTerminalSession] Disconnected: 1005 "
+  },
+  {
+    "atMs": 2907,
+    "type": "log",
+    "text": "Workspace.vue: Mounted. Fetching server settings and loading profiles..."
+  },
+  {
+    "atMs": 2908,
+    "type": "log",
+    "text": "[Workspace] Connecting to file system changes for workspace: temp_ws_default"
+  },
+  {
+    "atMs": 2908,
+    "type": "log",
+    "text": "[FileExplorerStreaming] Connecting to ws://127.0.0.1:60418/ws/file-explorer/temp_ws_default..."
+  },
+  {
+    "atMs": 3296,
+    "type": "log",
+    "text": "[FileExplorerStreaming] WebSocket connected"
+  },
+  {
+    "atMs": 3356,
+    "type": "log",
+    "text": "[FileExplorerStreaming] Session established: 7f7d4dfd-e713-48db-bf2f-34ba8da6b006"
+  },
+  {
+    "atMs": 3356,
+    "type": "log",
+    "text": "[Workspace] Connected to file system changes: 7f7d4dfd-e713-48db-bf2f-34ba8da6b006"
+  },
+  {
+    "atMs": 3571,
+    "type": "log",
+    "text": "serverStore: Checking server health at /rest/health"
+  },
+  {
+    "atMs": 4039,
+    "type": "log",
+    "text": "[FileExplorerStreaming] Disconnected"
+  },
+  {
+    "atMs": 4040,
+    "type": "log",
+    "text": "[Workspace] Disconnected from file system watcher for workspace: temp_ws_default"
+  },
+  {
+    "atMs": 4060,
+    "type": "log",
+    "text": "[FileExplorerStreaming] WebSocket disconnected: 1000 Client disconnect"
+  },
+  {
+    "atMs": 4237,
+    "type": "log",
+    "text": "Team WebSocket transport connected"
+  },
+  {
+    "atMs": 4253,
+    "type": "log",
+    "text": "Team WebSocket transport connected"
+  },
+  {
+    "atMs": 8784,
+    "type": "debug",
+    "text": "[vite] connecting..."
+  },
+  {
+    "atMs": 8829,
+    "type": "debug",
+    "text": "[vite] connected."
+  },
+  {
+    "atMs": 9012,
+    "type": "log",
+    "text": "serverStore: Initializing server config"
+  },
+  {
+    "atMs": 9012,
+    "type": "log",
+    "text": "serverStore: Not in Electron environment. Skipping server initialization."
+  },
+  {
+    "atMs": 9012,
+    "type": "info",
+    "text": "<Suspense> is an experimental feature and its API will likely change."
+  },
+  {
+    "atMs": 9064,
+    "type": "log",
+    "text": "ServerLoading: Component mounted with status: running"
+  },
+  {
+    "atMs": 9066,
+    "type": "log",
+    "text": "Workspace.vue: Mounted. Fetching server settings and loading profiles..."
+  },
+  {
+    "atMs": 9075,
+    "type": "log",
+    "text": "[useTerminalSession] Connecting to: ws://127.0.0.1:60418/ws/terminal/31c64b4d-ca7a-4df2-955b-e9c3b47d9649"
+  },
+  {
+    "atMs": 9086,
+    "type": "log",
+    "text": "[useTerminalSession] Connected"
+  },
+  {
+    "atMs": 9785,
+    "type": "log",
+    "text": "Team WebSocket transport connected"
+  }
+]
