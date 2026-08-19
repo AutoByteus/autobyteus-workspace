@@ -1,0 +1,43 @@
+timestamp=2026-08-19T09:52:19Z
+head=48df62e62cc2ffd5c8a99f97feaad8141fba4ee5
+base=0194fb4fffa69037a46aeace491024fdf816dde7
+merge_base=0194fb4fffa69037a46aeace491024fdf816dde7
+base_to_head=0	5
+base_is_ancestor=yes
+
+$ no production or durable-test delta after protected DR-003 checkpoint
+result=pass; paths=0
+
+$ tracked delivery diff check
+result=pass
+
+$ delivery Markdown newline/trailing-whitespace check
+result=pass; files=5
+
+$ current artifact hashes
+dmg_sha256=9bed08785e7530bf067b22e652b5ba757d62d8c19fa30bc1c6dca270178d75d3
+zip_sha256=6bef42a0e301e5b939e5e6402dfb51f85e4f2e8e100f53d9cb0d81613d14b9c5
+result=pass
+
+$ build and corrected verification terminal results
+result=pass
+
+$ current handoff assertions
+result=pass
+
+$ status
+## codex/team-run-offline-delete-action...origin/personal [ahead 5]
+ M tickets/in-progress/team-run-offline-delete-action/delivery-revision-record.md
+ M tickets/in-progress/team-run-offline-delete-action/docs-sync-report.md
+ M tickets/in-progress/team-run-offline-delete-action/electron-build-blocker.md
+ M tickets/in-progress/team-run-offline-delete-action/handoff-summary.md
+ M tickets/in-progress/team-run-offline-delete-action/release-deployment-report.md
+?? tickets/in-progress/team-run-offline-delete-action/delivery-dr003-final-validation.log
+?? tickets/in-progress/team-run-offline-delete-action/delivery-reentry-integrated-state-refresh.log
+?? tickets/in-progress/team-run-offline-delete-action/electron-build-macos-arm64-dr003.log
+?? tickets/in-progress/team-run-offline-delete-action/electron-build-verification-macos-arm64-dr003-corrected.log
+?? tickets/in-progress/team-run-offline-delete-action/electron-build-verification-macos-arm64-dr003.log
+
+final_result=pass
+finalization_held=yes
+user_verification=pending

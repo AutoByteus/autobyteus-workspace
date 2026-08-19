@@ -1,5 +1,7 @@
 # Electron Build Blocker
 
+> **Resolved in DR-003.** `IR-003` commit `78163822944cc44b3c5e2301bbe4f711f36af8fd` fixed M-008; `CRR-004` passed at 95.7/100, `API-REV-002` passed at 98.0%, and `CRR-005` was Not Applicable with no findings. Delivery then rebuilt and strictly verified the current personal macOS ARM64 package. This file remains the historical DR-002 failure record; use `electron-build-macos-arm64-dr003.log` and `electron-build-verification-macos-arm64-dr003-corrected.log` for the current result.
+
 ## Scope
 
 - Ticket: `team-run-offline-delete-action`
@@ -43,7 +45,7 @@ M-008 components/workspace/history/WorkspaceHistoryWorkspaceSection.vue Delete t
 - Process exit: `1`.
 - Build stopped before `prepare-server`, Nuxt generation, Electron transpilation, electron-builder, signing, or packaging.
 - Current verification artifact: none. No `.app`, DMG, or ZIP was produced.
-- Full log: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/tickets/in-progress/team-run-offline-delete-action/electron-build-macos-arm64.log`
+- Full log: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/tickets/done/team-run-offline-delete-action/electron-build-macos-arm64.log`
 
 ## Failure Origin
 

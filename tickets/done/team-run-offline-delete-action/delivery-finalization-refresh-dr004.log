@@ -1,0 +1,77 @@
+finalization_refresh_started=2026-08-19T10:21:33Z
+pre_refresh_head=48df62e62cc2ffd5c8a99f97feaad8141fba4ee5
+pre_refresh_origin_personal=0194fb4fffa69037a46aeace491024fdf816dde7
+pre_refresh_status_begin
+## codex/team-run-offline-delete-action...origin/personal [ahead 5]
+ M tickets/in-progress/team-run-offline-delete-action/delivery-revision-record.md
+ M tickets/in-progress/team-run-offline-delete-action/docs-sync-report.md
+ M tickets/in-progress/team-run-offline-delete-action/electron-build-blocker.md
+ M tickets/in-progress/team-run-offline-delete-action/handoff-summary.md
+ M tickets/in-progress/team-run-offline-delete-action/release-deployment-report.md
+?? tickets/in-progress/team-run-offline-delete-action/delivery-dr003-final-validation.log
+?? tickets/in-progress/team-run-offline-delete-action/delivery-reentry-integrated-state-refresh.log
+?? tickets/in-progress/team-run-offline-delete-action/electron-build-macos-arm64-dr003.log
+?? tickets/in-progress/team-run-offline-delete-action/electron-build-verification-macos-arm64-dr003-corrected.log
+?? tickets/in-progress/team-run-offline-delete-action/electron-build-verification-macos-arm64-dr003.log
+pre_refresh_status_end
+Saved working directory and index state On codex/team-run-offline-delete-action: delivery pre-finalization protection DR-003
+stash_ref=85abdb0b934f84ba6b1e7365ce65932ae6c17261
+post_stash_status_begin
+## codex/team-run-offline-delete-action...origin/personal [ahead 5]
+post_stash_status_end
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+post_fetch_origin_personal=0194fb4fffa69037a46aeace491024fdf816dde7
+post_fetch_merge_base=0194fb4fffa69037a46aeace491024fdf816dde7
+post_fetch_divergence=0/5
+base_delta_begin
+base_delta_end
+merge_begin
+Already up to date.
+merge_end
+post_merge_head=48df62e62cc2ffd5c8a99f97feaad8141fba4ee5
+post_merge_status_begin
+## codex/team-run-offline-delete-action...origin/personal [ahead 5]
+post_merge_status_end
+On branch codex/team-run-offline-delete-action
+Your branch is ahead of 'origin/personal' by 5 commits.
+  (use "git push" to publish your local commits)
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   tickets/in-progress/team-run-offline-delete-action/delivery-revision-record.md
+	modified:   tickets/in-progress/team-run-offline-delete-action/docs-sync-report.md
+	modified:   tickets/in-progress/team-run-offline-delete-action/electron-build-blocker.md
+	modified:   tickets/in-progress/team-run-offline-delete-action/handoff-summary.md
+	modified:   tickets/in-progress/team-run-offline-delete-action/release-deployment-report.md
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	tickets/in-progress/team-run-offline-delete-action/delivery-dr003-final-validation.log
+	tickets/in-progress/team-run-offline-delete-action/delivery-reentry-integrated-state-refresh.log
+	tickets/in-progress/team-run-offline-delete-action/electron-build-macos-arm64-dr003.log
+	tickets/in-progress/team-run-offline-delete-action/electron-build-verification-macos-arm64-dr003-corrected.log
+	tickets/in-progress/team-run-offline-delete-action/electron-build-verification-macos-arm64-dr003.log
+
+no changes added to commit (use "git add" and/or "git commit -a")
+Dropped refs/stash@{0} (85abdb0b934f84ba6b1e7365ce65932ae6c17261)
+post_restore_status_begin
+## codex/team-run-offline-delete-action...origin/personal [ahead 5]
+ M tickets/in-progress/team-run-offline-delete-action/delivery-revision-record.md
+ M tickets/in-progress/team-run-offline-delete-action/docs-sync-report.md
+ M tickets/in-progress/team-run-offline-delete-action/electron-build-blocker.md
+ M tickets/in-progress/team-run-offline-delete-action/handoff-summary.md
+ M tickets/in-progress/team-run-offline-delete-action/release-deployment-report.md
+?? tickets/in-progress/team-run-offline-delete-action/delivery-dr003-final-validation.log
+?? tickets/in-progress/team-run-offline-delete-action/delivery-reentry-integrated-state-refresh.log
+?? tickets/in-progress/team-run-offline-delete-action/electron-build-macos-arm64-dr003.log
+?? tickets/in-progress/team-run-offline-delete-action/electron-build-verification-macos-arm64-dr003-corrected.log
+?? tickets/in-progress/team-run-offline-delete-action/electron-build-verification-macos-arm64-dr003.log
+post_restore_status_end
+remaining_stash_matches=0
+finalization_refresh_completed=2026-08-19T10:21:42Z
+verification_continuity=PASS
+renewed_user_verification_required=NO
+release_requested=NO
+finalization_authorized=YES
