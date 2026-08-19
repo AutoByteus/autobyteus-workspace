@@ -1,0 +1,530 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:83449) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nested-mixed-team-e2e-appdata-xw7TV3
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nested-mixed-team-e2e-appdata-xw7TV3/.env
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus)
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+[2026-08-19T08:31:15.775Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.
+AutobyteusModelCatalog initialized.
+CachedAudioModelProvider initialized.
+AudioModelService initialized.
+CachedImageModelProvider initialized.
+ImageModelService initialized.
+CachedVideoModelProvider initialized.
+VideoModelService initialized.
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+Populating LLM models cache for the first time...
+Fetching list of available LLM models from LLMFactory...
+
+stderr | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+AUTOBYTEUS_LLM_DISCOVERY_FAILED
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+Discovering Ollama models from host: http://127.0.0.1:11434
+
+stderr | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+Could not connect to Ollama server at http://127.0.0.1:11434. Ensure it's running. fetch failed
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+Discovering LM Studio models from host: http://127.0.0.1:1234
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+Finished LM Studio discovery. Total models registered: 15
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+Successfully fetched 46 models from LLMFactory.
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+LLM models cache populated with 46 items.
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+Agent Definition created successfully with ID: nested-program-manager-3a464560-4327-49f8-95d0-816d6cac7483
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+Agent Definition created successfully with ID: nested-review-lead-3a464560-4327-49f8-95d0-816d6cac7483
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+Agent Definition created successfully with ID: nested-qa-specialist-3a464560-4327-49f8-95d0-816d6cac7483
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+Agent Team Definition created successfully with ID: nested-build-squad-3a464560-4327-49f8-95d0-816d6cac7483
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+[2026-08-19T08:31:17.531Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+[2026-08-19T08:31:17.563Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 23 items.
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+Agent Team Definition created successfully with ID: nested-parent-delivery-team-3a464560-4327-49f8-95d0-816d6cac7483
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nested-mixed-team-workspace-PhgP4T
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nested-mixed-team-workspace-PhgP4T.
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+Created and registered workspace ID: agent_ws_0c4940070475d2d9e38e4e75c702385ad5b422ed9ce4dc8527626fa61f8b020c
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+Agent definition cache populated with 10 items.
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+Agent team websocket attached for team run nested_parent_delivery_team_3a464560_4327_49f8_9_e92c7067d96547a5b92a1bcf6698d6f0
+Created agent session ab5e335d-d128-4ce3-868c-e3c983dd499f for run nested_parent_delivery_team_3a464560_4327_49f8_9_e92c7067d96547a5b92a1bcf6698d6f0
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+Agent Team WebSocket connected: session=ab5e335d-d128-4ce3-868c-e3c983dd499f, run=nested_parent_delivery_team_3a464560_4327_49f8_9_e92c7067d96547a5b92a1bcf6698d6f0
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nested-mixed-team-workspace-PhgP4T
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nested-mixed-team-workspace-PhgP4T.
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+Reusing registered workspace ID: agent_ws_0c4940070475d2d9e38e4e75c702385ad5b422ed9ce4dc8527626fa61f8b020c
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'delegate_task'
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+AgentRuntimeState initialized for agent_id 'nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9': LLM instance 'LMStudioLLM' and 7 tools prepared and stored in state.
+AgentContext composed for agent_id 'nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9' with config: 'nested-program-manager-3a464560_4327_49f8_95d0_816d6cac7483'.
+AgentWorker initialized for agent_id 'nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9'.
+Registered AgentContext for agent_id 'nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9'. Context registered.
+Agent facade initialized for agent_id 'nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9'.
+Agent 'nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9' created and stored successfully.
+Agent 'nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9' requesting runtime to start.
+AgentRuntime for 'nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9': Starting worker.
+AgentWorker 'nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9': Starting...
+AgentWorker 'nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9' asyncRun(): Starting.
+Agent 'nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9': Runtime init completed (event store initialized).
+Agent 'nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9': Runtime init completed (status deriver initialized).
+Agent 'nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9': Runtime init completed (AgentEventInbox initialized).
+Agent 'nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9' to become idle (timeout: 30s)...
+AgentEventStream (ID: b96b18f4-9482-4510-899e-9a4560ede082) initialized for agent_id 'nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9'. Subscribed to notifier.
+Agent 'nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+AgentExternalEventNotifier (NotifierID: 9d7d84ed-a214-43fb-81ed-9cb22ca6872a, AgentID: nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+Agent 'nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9': Bootstrapper starting direct lifecycle execution.
+Agent 'nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9': Executing McpServerPrewarmingStep.
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+Agent 'nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9': Executing SystemPromptProcessingStep.
+Agent 'nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9': Skill access mode is NONE. Skipping skill catalog.
+Agent 'nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9': Final processed system prompt configured on LLM instance. Final length: 5984.
+Agent 'nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9': Final processed system prompt:
+---
+## Agent Identity
+
+- Name: nested-program-manager-3a464560_4327_49f8_95d0_816d6cac7483
+- Description: AutoByteus parent coordinator for live nested mixed-team validation.
+
+### Responsibilities and Boundaries
+
+You are participating in a live nested mixed-runtime team validation.
+
+Rules:
+1. Follow direct user instructions exactly.
+2. Do not explore the environment or run diagnostics.
+3. The only tool you may execute is send_message_to.
+4. If the user asks you to call send_message_to with explicit JSON arguments, call send_message_to exactly once with those exact arguments and do not call any other tool.
+5. If you receive a teammate message that asks for an exact token, reply in plain assistant text with that exact token and nothing else.
+6. Do not use send_message_to unless the current direct user instruction explicitly provides JSON arguments for it.
+7. Otherwise keep assistant text responses very short.
+
+## Team Instruction
+
+Program manager delegates work to the nested build squad.
+
+## AgentTeam Addressing
+
+AgentTeams use filesystem-like logical addresses. Think of an AgentTeam as a directory, an Agent inside it as a file, and a nested AgentTeam as a subdirectory. This analogy describes the Team structure and addressing model only; the addresses are not real filesystem paths.
+
+The root AgentTeam is represented by `/`. Its display or metadata name is not included in any address.
+
+The following example illustrates the address structure:
+
+/
+├── /A              (Agent)
+├── /B              (Agent)
+└── /C              (nested AgentTeam)
+    ├── /C/D         (Agent)
+    └── /C/E         (Agent)
+
+In this example:
+
+- `/A` and `/B` are Agents directly under the root AgentTeam.
+- `/C` is an AgentTeam directly under the root AgentTeam.
+- `/C/D` and `/C/E` are Agents directly inside AgentTeam `/C`.
+- Each `/` separates one parent-to-child level.
+
+The letters in this example are placeholders only. They do not identify available recipients. Use only an exact canonical address made available in your current AgentTeam context.
+
+Every Agent and nested AgentTeam is identified by one canonical absolute address beginning with `/` at the root AgentTeam. Copy that exact address when a tool asks for `recipient_address`. Relative addresses, bare names, `../`, backslashes, and the structural root `/` itself are not valid recipients.
+
+Your Agent address is:
+
+/program_manager
+
+Sending a message to an AgentTeam address delivers it through that AgentTeam's configured coordinator.
+
+## AgentTeam Collaboration
+
+Use `send_message_to` with `recipient_address` to contact any mounted Agent or AgentTeam in your rooted AgentTeam. When you know an exact active AgentRun ID, you may instead use `target_agent_run_id` to contact that execution directly.
+
+Use `delegate_task` with `recipient_address` to create a fresh dedicated task execution for any mounted Agent or AgentTeam in your rooted AgentTeam, except your own exact Agent address. An AgentTeam task starts a fresh Team execution through its configured coordinator.
+
+When you finish your work or are blocked, call `get_handoff_rules`. If a returned rule applies, notify its `recipient_address` using `send_message_to`. Combine applicable reasons for the same recipient and follow distinct recipients in their returned order. If no rule applies, finish normally.
+
+Do not claim that a message or handoff was delivered unless `send_message_to` confirms delivery. Use `submit_task_result` and `review_task_result`—not ordinary message wording—for formal task lifecycle changes.
+
+## Working Environment
+
+- Agent workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nested-mixed-team-workspace-PhgP4T`
+- Use skills from their skill package directories to work on tasks in the agent workspace.
+- A skill package directory contains the skill's instructions and bundled assets. It is not the agent workspace, and reading the skill does not change the agent workspace.
+- Resolve skill-package references from the skill package directory. Resolve task and project locations from the agent workspace unless an explicit target says otherwise.
+- Do not modify a skill package unless the task explicitly targets that skill package.
+- With no working-directory override, `pwd` returns the agent workspace. An explicit working directory changes only that command's location; it does not redefine the workspace.
+
+## Bash Operating Practice
+
+- Use Bash for workspace navigation, targeted search, repository and project commands, processes, network operations, and verification. Prefer deterministic, targeted commands over broad directory listings.
+- For file content, follow `File And Directory Practice` and prefer the exposed dedicated file tools. Use Bash for file inspection or modification when those tools are unavailable or cannot complete the operation after recovery.
+- Prefer non-interactive, small, composable, project-native commands.
+
+## File And Directory Practice
+
+- Locate files and directories by intent instead of broadly listing them. For content searches, use `rg -n "term" path`; for filename discovery, use `rg --files path | rg "pattern"`; use constrained `find path -maxdepth N ...` only when filesystem traversal or metadata is the goal.
+- When exposed, use `read_file` for file reading, `edit_file` for targeted regional changes to an existing file, and `write_file` for new files or deliberate whole-file replacement.
+- Before every targeted `edit_file` change, use `read_file` to read the relevant current content of the original file unless it was read recently and has not changed.
+- Build the regional `edit_file` patch from that latest content and preserve unrelated content. If the edit context fails or the file changed, use `read_file` again for the affected content, construct a new patch, and retry; do not blindly retry an unchanged patch.
+- Preserve unrelated content and existing changes. Verify important file changes with an appropriate read, diff, parser, test, or project-native check.
+---
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+Agent 'nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+AgentExternalEventNotifier (NotifierID: 9d7d84ed-a214-43fb-81ed-9cb22ca6872a, AgentID: nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+AgentWorker 'nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+Agent 'nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9' has become idle.
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+AgentEventStream (ID: b96b18f4-9482-4510-899e-9a4560ede082) for 'nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+AgentEventStream (ID: 9904806d-f581-49d1-b258-c400209b99f7) initialized for agent_id 'nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9'. Subscribed to notifier.
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+Published autobyteus agent run 'nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9'.
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+AgentExternalEventNotifier (NotifierID: 9d7d84ed-a214-43fb-81ed-9cb22ca6872a, AgentID: nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+AgentExternalEventNotifier (NotifierID: 9d7d84ed-a214-43fb-81ed-9cb22ca6872a, AgentID: nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+AgentExternalEventNotifier (NotifierID: 9d7d84ed-a214-43fb-81ed-9cb22ca6872a, AgentID: nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+LlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 9d7d84ed-a214-43fb-81ed-9cb22ca6872a, AgentID: nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9',
+  prompt_tokens: 3974,
+  effective_total_context_tokens: 262144,
+  context_derived_input_cap_tokens: 262144,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 262144,
+  reserved_output_tokens: 0,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 261888,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 209510,
+  trigger_headroom_tokens: 20951,
+  quality_retention_cap_tokens: 91660,
+  post_compaction_target_tokens: 91660,
+  budget_key: '261888:209510:91660:20951:91660',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+AgentExternalEventNotifier (NotifierID: 9d7d84ed-a214-43fb-81ed-9cb22ca6872a, AgentID: nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+AgentExternalEventNotifier (NotifierID: 9d7d84ed-a214-43fb-81ed-9cb22ca6872a, AgentID: nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9d7d84ed-a214-43fb-81ed-9cb22ca6872a, AgentID: nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nested-mixed-team-workspace-PhgP4T
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nested-mixed-team-workspace-PhgP4T.
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+Reusing registered workspace ID: agent_ws_0c4940070475d2d9e38e4e75c702385ad5b422ed9ce4dc8527626fa61f8b020c
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+Published codex_app_server agent run 'nested_review_lead_3a464560_4327_49f8_95d0_816d6_df064cfbd77a405ea1ed572d55122ad4'.
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+AgentExternalEventNotifier (NotifierID: 9d7d84ed-a214-43fb-81ed-9cb22ca6872a, AgentID: nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+AgentExternalEventNotifier (NotifierID: 9d7d84ed-a214-43fb-81ed-9cb22ca6872a, AgentID: nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+AgentExternalEventNotifier (NotifierID: 9d7d84ed-a214-43fb-81ed-9cb22ca6872a, AgentID: nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9d7d84ed-a214-43fb-81ed-9cb22ca6872a, AgentID: nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+AgentExternalEventNotifier (NotifierID: 9d7d84ed-a214-43fb-81ed-9cb22ca6872a, AgentID: nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+AgentExternalEventNotifier (NotifierID: 9d7d84ed-a214-43fb-81ed-9cb22ca6872a, AgentID: nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+AgentExternalEventNotifier (NotifierID: 9d7d84ed-a214-43fb-81ed-9cb22ca6872a, AgentID: nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9',
+  prompt_tokens: 4131,
+  effective_total_context_tokens: 262144,
+  context_derived_input_cap_tokens: 262144,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 262144,
+  reserved_output_tokens: 0,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 261888,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 209510,
+  trigger_headroom_tokens: 20951,
+  quality_retention_cap_tokens: 91660,
+  post_compaction_target_tokens: 91660,
+  budget_key: '261888:209510:91660:20951:91660',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+AgentExternalEventNotifier (NotifierID: 9d7d84ed-a214-43fb-81ed-9cb22ca6872a, AgentID: nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+AgentExternalEventNotifier (NotifierID: 9d7d84ed-a214-43fb-81ed-9cb22ca6872a, AgentID: nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+AgentExternalEventNotifier (NotifierID: 9d7d84ed-a214-43fb-81ed-9cb22ca6872a, AgentID: nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+AgentExternalEventNotifier (NotifierID: 9d7d84ed-a214-43fb-81ed-9cb22ca6872a, AgentID: nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+Closed agent session ab5e335d-d128-4ce3-868c-e3c983dd499f
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+AgentEventStream (ID: 9904806d-f581-49d1-b258-c400209b99f7) for 'nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9': close() called. Unsubscribing all listeners and signaling.
+Removing agent 'nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9'. Attempting graceful shutdown.
+Agent 'nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+AgentExternalEventNotifier (NotifierID: 9d7d84ed-a214-43fb-81ed-9cb22ca6872a, AgentID: nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+AgentWorker 'nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9': Stop requested.
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+AgentExternalEventNotifier (NotifierID: 9d7d84ed-a214-43fb-81ed-9cb22ca6872a, AgentID: nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+AgentWorker 'nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9' asyncRun() loop has finished.
+AgentWorker 'nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9': Running shutdown sequence on worker loop.
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+AgentWorker 'nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9': Shutdown resource cleanup completed successfully.
+AgentWorker 'nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9': Shutdown sequence completed.
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+Unregistered AgentContext for agent_id 'nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9'.
+AgentRuntime for 'nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9': Context unregistered.
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+AgentRuntime for 'nested_program_manager_3a464560_4327_49f8_95d0_8_c3af527d76954c64a8fff71fff0b8be9' stop() method completed.
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+[2026-08-19T08:35:51.724Z] [INFO] [agent-team-definition.cache] In-memory cache: Removed agent team definition with ID nested-parent-delivery-team-3a464560-4327-49f8-95d0-816d6cac7483.
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+Agent Team Definition with ID nested-parent-delivery-team-3a464560-4327-49f8-95d0-816d6cac7483 deleted successfully.
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+[2026-08-19T08:35:51.726Z] [INFO] [agent-team-definition.cache] In-memory cache: Removed agent team definition with ID nested-build-squad-3a464560-4327-49f8-95d0-816d6cac7483.
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+Agent Team Definition with ID nested-build-squad-3a464560-4327-49f8-95d0-816d6cac7483 deleted successfully.
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+In-memory cache: Removed agent definition with ID nested-program-manager-3a464560-4327-49f8-95d0-816d6cac7483.
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+Agent Definition with ID nested-program-manager-3a464560-4327-49f8-95d0-816d6cac7483 deleted successfully.
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+In-memory cache: Removed agent definition with ID nested-review-lead-3a464560-4327-49f8-95d0-816d6cac7483.
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+Agent Definition with ID nested-review-lead-3a464560-4327-49f8-95d0-816d6cac7483 deleted successfully.
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+In-memory cache: Removed agent definition with ID nested-qa-specialist-3a464560-4327-49f8-95d0-816d6cac7483.
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+Agent Definition with ID nested-qa-specialist-3a464560-4327-49f8-95d0-816d6cac7483 deleted successfully.
+
+ ❯ tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts (1 test | 1 failed) 276032ms
+     × launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores 275951ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+Error: Timed out waiting for team websocket message 'child coordinator send_message_to tool execution'. preview='AGENT_STATUS:{"change_sequence":621,"agent_run_id":"nested_review_lead_3a464560_4327_49f8_95d0_816d6_df064cfbd77a405ea1ed572d55122ad4","status":"running","trigger":null,"tool_name":null,"error_message":null,"error_details":null} | SEGMENT_START:{"change_sequence":622,"agent_run_id":"nested_review_lead_3a464560_4327_49f8_95d0_816d6_df064cfbd77a405ea1ed572d55122ad4","segment_id":"msg_0e3ff1f5b4b4a794016a8569fd46988191a58415664c910842","turn_id":"01a01925-edcb-7622-a908-974fd79909c0","segment_type":"tex | AGENT_STATUS:{"change_sequence":623,"agent_run_id":"nested_review_lead_3a464560_4327_49f8_95d0_816d6_df064cfbd77a405ea1ed572d55122ad4","status":"running","trigger":null,"tool_name":null,"error_message":null,"error_details":null} | SEGMENT_CONTENT:{"change_sequence":624,"agent_run_id":"nested_review_lead_3a464560_4327_49f8_95d0_816d6_df064cfbd77a405ea1ed572d55122ad4","segment_id":"msg_0e3ff1f5b4b4a794016a8569fd46988191a58415664c910842","turn_id":"01a01925-edcb-7622-a908-974fd79909c0","segment_type":"tex | AGENT_STATUS:{"change_sequence":625,"agent_run_id":"nested_review_lead_3a464560_4327_49f8_95d0_816d6_df064cfbd77a405ea1ed572d55122ad4","status":"running","trigger":null,"tool_name":null,"error_message":null,"error_details":null} | SEGMENT_CONTENT:{"change_sequence":626,"agent_run_id":"nested_review_lead_3a464560_4327_49f8_95d0_816d6_df064cfbd77a405ea1ed572d55122ad4","segment_id":"msg_0e3ff1f5b4b4a794016a8569fd46988191a58415664c910842","turn_id":"01a01925-edcb-7622-a908-974fd79909c0","segment_type":"tex | AGENT_STATUS:{"change_sequence":627,"agent_run_id":"nested_review_lead_3a464560_4327_49f8_95d0_816d6_df064cfbd77a405ea1ed572d55122ad4","status":"running","trigger":null,"tool_name":null,"error_message":null,"error_details":null} | SEGMENT_CONTENT:{"change_sequence":628,"agent_run_id":"nested_review_lead_3a464560_4327_49f8_95d0_816d6_df064cfbd77a405ea1ed572d55122ad4","segment_id":"msg_0e3ff1f5b4b4a794016a8569fd46988191a58415664c910842","turn_id":"01a01925-edcb-7622-a908-974fd79909c0","segment_type":"tex | AGENT_STATUS:{"change_sequence":629,"agent_run_id":"nested_review_lead_3a464560_4327_49f8_95d0_816d6_df064cfbd77a405ea1ed572d55122ad4","status":"running","trigger":null,"tool_name":null,"error_message":null,"error_details":null} | SEGMENT_CONTENT:{"change_sequence":630,"agent_run_id":"nested_review_lead_3a464560_4327_49f8_95d0_816d6_df064cfbd77a405ea1ed572d55122ad4","segment_id":"msg_0e3ff1f5b4b4a794016a8569fd46988191a58415664c910842","turn_id":"01a01925-edcb-7622-a908-974fd79909c0","segment_type":"tex | AGENT_STATUS:{"change_sequence":631,"agent_run_id":"nested_review_lead_3a464560_4327_49f8_95d0_816d6_df064cfbd77a405ea1ed572d55122ad4","status":"running","trigger":null,"tool_name":null,"error_message":null,"error_details":null} | SEGMENT_CONTENT:{"change_sequence":632,"agent_run_id":"nested_review_lead_3a464560_4327_49f8_95d0_816d6_df064cfbd77a405ea1ed572d55122ad4","segment_id":"msg_0e3ff1f5b4b4a794016a8569fd46988191a58415664c910842","turn_id":"01a01925-edcb-7622-a908-974fd79909c0","segment_type":"tex | AGENT_STATUS:{"change_sequence":633,"agent_run_id":"nested_review_lead_3a464560_4327_49f8_95d0_816d6_df064cfbd77a405ea1ed572d55122ad4","status":"running","trigger":null,"tool_name":null,"error_message":null,"error_details":null} | SEGMENT_CONTENT:{"change_sequence":634,"agent_run_id":"nested_review_lead_3a464560_4327_49f8_95d0_816d6_df064cfbd77a405ea1ed572d55122ad4","segment_id":"msg_0e3ff1f5b4b4a794016a8569fd46988191a58415664c910842","turn_id":"01a01925-edcb-7622-a908-974fd79909c0","segment_type":"tex | AGENT_STATUS:{"change_sequence":635,"agent_run_id":"nested_review_lead_3a464560_4327_49f8_95d0_816d6_df064cfbd77a405ea1ed572d55122ad4","status":"running","trigger":null,"tool_name":null,"error_message":null,"error_details":null} | SEGMENT_CONTENT:{"change_sequence":636,"agent_run_id":"nested_review_lead_3a464560_4327_49f8_95d0_816d6_df064cfbd77a405ea1ed572d55122ad4","segment_id":"msg_0e3ff1f5b4b4a794016a8569fd46988191a58415664c910842","turn_id":"01a01925-edcb-7622-a908-974fd79909c0","segment_type":"tex | AGENT_STATUS:{"change_sequence":637,"agent_run_id":"nested_review_lead_3a464560_4327_49f8_95d0_816d6_df064cfbd77a405ea1ed572d55122ad4","status":"running","trigger":null,"tool_name":null,"error_message":null,"error_details":null} | SEGMENT_CONTENT:{"change_sequence":638,"agent_run_id":"nested_review_lead_3a464560_4327_49f8_95d0_816d6_df064cfbd77a405ea1ed572d55122ad4","segment_id":"msg_0e3ff1f5b4b4a794016a8569fd46988191a58415664c910842","turn_id":"01a01925-edcb-7622-a908-974fd79909c0","segment_type":"tex | AGENT_STATUS:{"change_sequence":639,"agent_run_id":"nested_review_lead_3a464560_4327_49f8_95d0_816d6_df064cfbd77a405ea1ed572d55122ad4","status":"running","trigger":null,"tool_name":null,"error_message":null,"error_details":null} | SEGMENT_CONTENT:{"change_sequence":640,"agent_run_id":"nested_review_lead_3a464560_4327_49f8_95d0_816d6_df064cfbd77a405ea1ed572d55122ad4","segment_id":"msg_0e3ff1f5b4b4a794016a8569fd46988191a58415664c910842","turn_id":"01a01925-edcb-7622-a908-974fd79909c0","segment_type":"tex | AGENT_STATUS:{"change_sequence":641,"agent_run_id":"nested_review_lead_3a464560_4327_49f8_95d0_816d6_df064cfbd77a405ea1ed572d55122ad4","status":"running","trigger":null,"tool_name":null,"error_message":null,"error_details":null} | SEGMENT_CONTENT:{"change_sequence":642,"agent_run_id":"nested_review_lead_3a464560_4327_49f8_95d0_816d6_df064cfbd77a405ea1ed572d55122ad4","segment_id":"msg_0e3ff1f5b4b4a794016a8569fd46988191a58415664c910842","turn_id":"01a01925-edcb-7622-a908-974fd79909c0","segment_type":"tex | AGENT_STATUS:{"change_sequence":643,"agent_run_id":"nested_review_lead_3a464560_4327_49f8_95d0_816d6_df064cfbd77a405ea1ed572d55122ad4","status":"running","trigger":null,"tool_name":null,"error_message":null,"error_details":null} | SEGMENT_CONTENT:{"change_sequence":644,"agent_run_id":"nested_review_lead_3a464560_4327_49f8_95d0_816d6_df064cfbd77a405ea1ed572d55122ad4","segment_id":"msg_0e3ff1f5b4b4a794016a8569fd46988191a58415664c910842","turn_id":"01a01925-edcb-7622-a908-974fd79909c0","segment_type":"tex | AGENT_STATUS:{"change_sequence":645,"agent_run_id":"nested_review_lead_3a464560_4327_49f8_95d0_816d6_df064cfbd77a405ea1ed572d55122ad4","status":"running","trigger":null,"tool_name":null,"error_message":null,"error_details":null} | SEGMENT_CONTENT:{"change_sequence":646,"agent_run_id":"nested_review_lead_3a464560_4327_49f8_95d0_816d6_df064cfbd77a405ea1ed572d55122ad4","segment_id":"msg_0e3ff1f5b4b4a794016a8569fd46988191a58415664c910842","turn_id":"01a01925-edcb-7622-a908-974fd79909c0","segment_type":"tex | AGENT_STATUS:{"change_sequence":647,"agent_run_id":"nested_review_lead_3a464560_4327_49f8_95d0_816d6_df064cfbd77a405ea1ed572d55122ad4","status":"running","trigger":null,"tool_name":null,"error_message":null,"error_details":null} | SEGMENT_CONTENT:{"change_sequence":648,"agent_run_id":"nested_review_lead_3a464560_4327_49f8_95d0_816d6_df064cfbd77a405ea1ed572d55122ad4","segment_id":"msg_0e3ff1f5b4b4a794016a8569fd46988191a58415664c910842","turn_id":"01a01925-edcb-7622-a908-974fd79909c0","segment_type":"tex | AGENT_STATUS:{"change_sequence":649,"agent_run_id":"nested_review_lead_3a464560_4327_49f8_95d0_816d6_df064cfbd77a405ea1ed572d55122ad4","status":"running","trigger":null,"tool_name":null,"error_message":null,"error_details":null} | SEGMENT_END:{"change_sequence":650,"agent_run_id":"nested_review_lead_3a464560_4327_49f8_95d0_816d6_df064cfbd77a405ea1ed572d55122ad4","segment_id":"msg_0e3ff1f5b4b4a794016a8569fd46988191a58415664c910842","turn_id":"01a01925-edcb-7622-a908-974fd79909c0","metadata":null,"in | AGENT_STATUS:{"change_sequence":651,"agent_run_id":"nested_review_lead_3a464560_4327_49f8_95d0_816d6_df064cfbd77a405ea1ed572d55122ad4","status":"running","trigger":null,"tool_name":null,"error_message":null,"error_details":null} | TOKEN_USAGE_UPDATED:{"change_sequence":652,"agent_run_id":"nested_review_lead_3a464560_4327_49f8_95d0_816d6_df064cfbd77a405ea1ed572d55122ad4","usage_event_id":"c4ae2772-ba32-4a9f-b716-a9b8af77b39d","idempotency_key":"codex_token_usage:nested_review_lead_3a464560_4327_49f8_95d0_81 | AGENT_STATUS:{"change_sequence":653,"agent_run_id":"nested_review_lead_3a464560_4327_49f8_95d0_816d6_df064cfbd77a405ea1ed572d55122ad4","status":"running","trigger":null,"tool_name":null,"error_message":null,"error_details":null} | TURN_COMPLETED:{"change_sequence":654,"agent_run_id":"nested_review_lead_3a464560_4327_49f8_95d0_816d6_df064cfbd77a405ea1ed572d55122ad4","turn_id":"01a01925-edcb-7622-a908-974fd79909c0","reason":null} | AGENT_STATUS:{"change_sequence":655,"agent_run_id":"nested_review_lead_3a464560_4327_49f8_95d0_816d6_df064cfbd77a405ea1ed572d55122ad4","status":"idle","trigger":null,"tool_name":null,"error_message":null,"error_details":null}'
+ ❯ waitForMessageAfter tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts:135:9
+    133|     )
+    134|     .join(" | ");
+    135|   throw new Error(
+       |         ^
+    136|     `Timed out waiting for team websocket message '${label}'. preview=…
+    137|   );
+ ❯ tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts:850:9
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  10:31:07
+   Duration  283.83s (transform 4.37s, setup 12ms, import 7.17s, tests 276.03s, environment 0ms)
+

@@ -86,7 +86,7 @@
     <ConfirmationModal
       :show="showDeleteConfirmation"
       title=""
-      message="Delete this history permanently. This cannot be undone."
+      :message="deleteConfirmationMessage"
       confirm-button-text="Delete"
       variant="danger"
       typography-size="large"
@@ -211,6 +211,7 @@ const {
   archivingRunIds,
   archivingTeamIds,
   showDeleteConfirmation,
+  deleteConfirmationMessage,
   onTerminateRun,
   onTerminateTeam,
   onArchiveRun,
@@ -231,7 +232,6 @@ const {
   archiveRun: (runId: string) => runHistoryStore.archiveRun(runId),
   archiveTeamRun: (teamRunId: string) => runHistoryStore.archiveTeamRun(teamRunId),
   addToast: addWorkspaceToast,
-  canTerminateTeam: treeState.canTerminateTeam,
   stopPendingTeamIds,
 });
 
@@ -335,7 +335,6 @@ const sectionState: WorkspaceHistorySectionState = {
   isTeamExpanded: treeState.isTeamExpanded,
   isTeamMemberExpanded: treeState.isTeamMemberExpanded,
   toggleTeamMember: treeState.toggleTeamMember,
-  canTerminateTeam: treeState.canTerminateTeam,
 };
 
 

@@ -31,7 +31,7 @@ describe("AgentTeamRunManager root lifecycle", () => {
     const root = createRoot();
 
     register(manager, root);
-    expect(manager.getActiveRun("team-run-1")).toBe(root);
+    expect(manager.getActiveTeamRun("team-run-1")).toBe(root);
     await expect(manager.terminateTeamRun("team-run-1")).resolves.toBe(true);
     expect(root.terminate).toHaveBeenCalledTimes(1);
     expect(lifecycle).toEqual([
@@ -40,13 +40,14 @@ describe("AgentTeamRunManager root lifecycle", () => {
     ]);
   });
 
-  it("keeps the exact root active when termination is rejected", async () => {
+  it("keeps the exact root managed and lifecycle-active when termination is rejected", async () => {
     const manager = createManager();
     const root = createRoot({ terminate: async () => ({ accepted: false, code: "ACTIVE_WORK" }) });
     register(manager, root);
 
     await expect(manager.terminateTeamRun("team-run-1")).resolves.toBe(false);
-    expect(manager.getActiveRun("team-run-1")).toBe(root);
+    expect(manager.getManagedTeamRun("team-run-1")).toBe(root);
+    expect(manager.getLifecycleSnapshot("team-run-1")).toEqual({ teamRunId: "team-run-1", isActive: true });
   });
 
   it("rejects duplicate root registration and makes exact unregister idempotent", () => {
@@ -60,7 +61,7 @@ describe("AgentTeamRunManager root lifecycle", () => {
     expect(unregister(manager, "team-run-1", root)).toBe(false);
   });
 
-  it("removes an inactive root once and isolates lifecycle listener failures", () => {
+  it("never unregisters from an inactive read and isolates lifecycle listener failures", () => {
     const manager = createManager();
     const healthy = vi.fn();
     let active = true;
@@ -71,9 +72,9 @@ describe("AgentTeamRunManager root lifecycle", () => {
     expect(() => register(manager, root)).not.toThrow();
     healthy.mockClear();
     active = false;
-    expect(manager.getActiveRun("team-run-1")).toBeNull();
-    expect(manager.getActiveRun("team-run-1")).toBeNull();
-    expect(healthy).toHaveBeenCalledTimes(1);
-    expect(healthy).toHaveBeenCalledWith({ teamRunId: "team-run-1", isActive: false });
+    expect(manager.getActiveTeamRun("team-run-1")).toBeNull();
+    expect(manager.getManagedTeamRun("team-run-1")).toBe(root);
+    expect(manager.getLifecycleSnapshot("team-run-1")).toEqual({ teamRunId: "team-run-1", isActive: true });
+    expect(healthy).not.toHaveBeenCalled();
   });
 });

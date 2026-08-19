@@ -167,7 +167,7 @@ describe("Application agent communication WebSocket integration", () => {
           : null),
       } as never,
       teamRunService: {
-        resolveTeamRun: vi.fn(async (runId: string) => runId === "team-run"
+        resolveActiveTeamRun: vi.fn(async (runId: string) => runId === "team-run"
           ? { postMessage: teamPostMessage }
           : null),
       } as never,
@@ -182,7 +182,7 @@ describe("Application agent communication WebSocket integration", () => {
         } : null,
       } as never,
       teamRunManager: {
-        getActiveRun: (runId: string) => runId === "team-run" ? {
+        getActiveTeamRun: (runId: string) => runId === "team-run" ? {
           subscribeToEvents: (listener: TeamRunEventListener) => {
             teamListeners.add(listener);
             return () => teamListeners.delete(listener);

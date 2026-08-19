@@ -6,6 +6,7 @@ import { AgentMemoryLayout } from "../../../../src/agent-memory/store/agent-memo
 import { resetTeamRunHistoryCatalogState, TeamRunHistoryCatalogService } from "../../../../src/run-history/services/team-run-history-catalog-service.js";
 import { TeamRunExecutionTreeStore } from "../../../../src/run-history/store/team-run-execution-tree-store.js";
 import { TeamRunHistoryIndexStore } from "../../../../src/run-history/store/team-run-history-index-store.js";
+import { TeamRunV1PackageCatalog } from "../../../../src/run-history/services/team-run-v1-package-catalog.js";
 import { testAgentNode, testExecutionTree } from "../../../fixtures/current-team-run-fixtures.js";
 
 const buildTree = (teamRunId = "team-1") => testExecutionTree({
@@ -20,13 +21,20 @@ const buildTree = (teamRunId = "team-1") => testExecutionTree({
 describe("TeamRunHistoryCatalogService current V1 tree", () => {
   let memoryDir: string;
   let layout: AgentMemoryLayout;
-  const manager = { getActiveRun: vi.fn(() => null) };
+  let managed = false;
+  const manager = {
+    hasManagedTeamRun: vi.fn(() => managed),
+    withUnmanagedHistoryDeletion: vi.fn(async <T>(_teamRunId: string, operation: () => Promise<T>) =>
+      managed ? { kind: "managed" as const } : { kind: "completed" as const, value: await operation() }),
+  };
 
   beforeEach(async () => {
     memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "team-run-history-catalog-current-"));
     layout = new AgentMemoryLayout(memoryDir);
     resetTeamRunHistoryCatalogState(memoryDir);
-    manager.getActiveRun.mockReset().mockReturnValue(null);
+    managed = false;
+    manager.hasManagedTeamRun.mockClear();
+    manager.withUnmanagedHistoryDeletion.mockClear();
   });
 
   afterEach(async () => {
@@ -87,12 +95,52 @@ describe("TeamRunHistoryCatalogService current V1 tree", () => {
     const service = new TeamRunHistoryCatalogService(memoryDir, { teamRunManager: manager });
     await service.recordTeamRunCreated({ tree });
 
-    manager.getActiveRun.mockReturnValue({});
+    managed = true;
     await expect(service.deleteTeamRun("team-1")).resolves.toMatchObject({ success: false, message: expect.stringContaining("active") });
-    manager.getActiveRun.mockReturnValue(null);
+    managed = false;
     await expect(service.deleteTeamRun("../escape")).resolves.toMatchObject({ success: false, message: expect.stringContaining("Invalid") });
     await expect(fs.stat(rootDir)).resolves.toBeDefined();
     await expect(service.deleteTeamRun("team-1")).resolves.toMatchObject({ success: true });
     await expect(fs.stat(rootDir)).rejects.toMatchObject({ code: "ENOENT" });
+  });
+
+  it("keeps the current row and package when the candidate index write fails", async () => {
+    const tree = buildTree();
+    const rootDir = layout.getTeamDirPath({ rootTeamRunId: "team-1", ancestorTeamRunIds: [] });
+    await new TeamRunExecutionTreeStore().write(rootDir, tree);
+    const indexStore = new TeamRunHistoryIndexStore(memoryDir);
+    const service = new TeamRunHistoryCatalogService(memoryDir, { teamRunManager: manager, indexStore });
+    await service.recordTeamRunCreated({ tree });
+    const packageCatalog = new TeamRunV1PackageCatalog(memoryDir);
+    packageCatalog.admit("team-1");
+    vi.spyOn(indexStore, "writeIndex").mockRejectedValueOnce(new Error("candidate write failed"));
+
+    await expect(service.deleteTeamRun("team-1")).resolves.toMatchObject({ success: false, message: expect.stringContaining("index") });
+    await expect(service.getCatalogRow("team-1")).resolves.toMatchObject({ teamRunId: "team-1" });
+    await expect(fs.stat(rootDir)).resolves.toBeDefined();
+    expect(packageCatalog.isAdmitted("team-1")).toBe(true);
+  });
+
+  it("durably compensates and validates the original row before reporting package removal failure", async () => {
+    const tree = buildTree();
+    const rootDir = layout.getTeamDirPath({ rootTeamRunId: "team-1", ancestorTeamRunIds: [] });
+    await new TeamRunExecutionTreeStore().write(rootDir, tree);
+    const indexStore = new TeamRunHistoryIndexStore(memoryDir);
+    const packageCatalog = new TeamRunV1PackageCatalog(memoryDir);
+    packageCatalog.admit("team-1");
+    const service = new TeamRunHistoryCatalogService(memoryDir, {
+      teamRunManager: manager,
+      indexStore,
+      packageCatalog,
+      removePackage: vi.fn(async () => { throw new Error("package busy"); }),
+    });
+    await service.recordTeamRunCreated({ tree });
+    const writeSpy = vi.spyOn(indexStore, "writeIndex");
+
+    await expect(service.deleteTeamRun("team-1")).resolves.toMatchObject({ success: false, message: expect.stringContaining("package") });
+    expect(writeSpy).toHaveBeenCalledTimes(2);
+    await expect(indexStore.getRow("team-1")).resolves.toMatchObject({ teamRunId: "team-1" });
+    await expect(new TeamRunExecutionTreeStore().read(rootDir, "team-1")).resolves.toMatchObject({ rootTeam: { teamRunId: "team-1" } });
+    expect(packageCatalog.isAdmitted("team-1")).toBe(true);
   });
 });

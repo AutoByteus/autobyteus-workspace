@@ -87,13 +87,13 @@ describe("ChannelTeamRunFacade", () => {
     const envelope = createEnvelope();
     const resolveOrStartTeamRun = vi.fn().mockResolvedValue("team-1");
     const teamRun = createTeamRun();
-    const resolveTeamRun = vi.fn().mockResolvedValue(teamRun);
+    const resolveActiveTeamRun = vi.fn().mockResolvedValue(teamRun);
     const recordRunActivity = vi.fn().mockResolvedValue(undefined);
     const publishExternalUserMessage = vi.fn();
     const facade = new ChannelTeamRunFacade({
       runLauncher: { resolveOrStartTeamRun },
       teamRunService: {
-        resolveTeamRun,
+        resolveActiveTeamRun,
         recordRunActivity,
       } as any,
       teamLiveMessagePublisher: { publishExternalUserMessage },
@@ -108,7 +108,7 @@ describe("ChannelTeamRunFacade", () => {
     expect(result.memberPath).toEqual(["support-node"]);
     expect(result.turnId).toBe("turn-1");
     expect(resolveOrStartTeamRun).toHaveBeenCalledWith(binding);
-    expect(resolveTeamRun).toHaveBeenCalledWith("team-1");
+    expect(resolveActiveTeamRun).toHaveBeenCalledWith("team-1");
     expect(teamRun.postMessage).toHaveBeenCalledOnce();
     expect(recordRunActivity).toHaveBeenCalledWith(
       teamRun,
@@ -147,12 +147,12 @@ describe("ChannelTeamRunFacade", () => {
     const envelope = createEnvelope();
     const resolveOrStartTeamRun = vi.fn().mockResolvedValue("team-1");
     const restoredRun = createTeamRun();
-    const resolveTeamRun = vi.fn().mockResolvedValue(restoredRun);
+    const resolveActiveTeamRun = vi.fn().mockResolvedValue(restoredRun);
     const recordRunActivity = vi.fn().mockResolvedValue(undefined);
     const facade = new ChannelTeamRunFacade({
       runLauncher: { resolveOrStartTeamRun },
       teamRunService: {
-        resolveTeamRun,
+        resolveActiveTeamRun,
         recordRunActivity,
       } as any,
       teamLiveMessagePublisher: {
@@ -164,7 +164,7 @@ describe("ChannelTeamRunFacade", () => {
 
     expect(result.teamRunId).toBe("team-1");
     expect(result.memberRunId).toBe("member-1");
-    expect(resolveTeamRun).toHaveBeenCalledWith("team-1");
+    expect(resolveActiveTeamRun).toHaveBeenCalledWith("team-1");
     expect(recordRunActivity).toHaveBeenCalledOnce();
     expect(restoredRun.postMessage).toHaveBeenCalledOnce();
   });
@@ -180,7 +180,7 @@ describe("ChannelTeamRunFacade", () => {
         resolveOrStartTeamRun: vi.fn().mockResolvedValue("team-1"),
       },
       teamRunService: {
-        resolveTeamRun: vi.fn().mockResolvedValue(teamRun),
+        resolveActiveTeamRun: vi.fn().mockResolvedValue(teamRun),
         recordRunActivity: vi.fn().mockResolvedValue(undefined),
       } as any,
       teamLiveMessagePublisher: {
@@ -205,7 +205,7 @@ describe("ChannelTeamRunFacade", () => {
         resolveOrStartTeamRun: vi.fn().mockResolvedValue("team-1"),
       },
       teamRunService: {
-        resolveTeamRun: vi.fn().mockResolvedValue(teamRun),
+        resolveActiveTeamRun: vi.fn().mockResolvedValue(teamRun),
         recordRunActivity: vi.fn().mockResolvedValue(undefined),
       } as any,
       teamLiveMessagePublisher: {
@@ -237,7 +237,7 @@ describe("ChannelTeamRunFacade", () => {
         resolveOrStartTeamRun: vi.fn().mockResolvedValue("team-1"),
       },
       teamRunService: {
-        resolveTeamRun: vi.fn().mockResolvedValue(teamRun),
+        resolveActiveTeamRun: vi.fn().mockResolvedValue(teamRun),
         recordRunActivity: vi.fn().mockResolvedValue(undefined),
       } as any,
       teamLiveMessagePublisher: {
@@ -260,7 +260,7 @@ describe("ChannelTeamRunFacade", () => {
         resolveOrStartTeamRun: vi.fn().mockResolvedValue("team-1"),
       },
       teamRunService: {
-        resolveTeamRun: vi.fn().mockResolvedValue(null),
+        resolveActiveTeamRun: vi.fn().mockResolvedValue(null),
         recordRunActivity: vi.fn(),
       } as any,
       teamLiveMessagePublisher: {
@@ -319,7 +319,7 @@ describe("ChannelTeamRunFacade", () => {
         resolveOrStartTeamRun: vi.fn().mockResolvedValue("team-1"),
       },
       teamRunService: {
-        resolveTeamRun: vi.fn().mockResolvedValue(teamRun),
+        resolveActiveTeamRun: vi.fn().mockResolvedValue(teamRun),
         recordRunActivity: vi.fn().mockResolvedValue(undefined),
       } as any,
       teamLiveMessagePublisher: {

@@ -16,6 +16,7 @@ export class TeamRun {
   get teamRunId(): string { return this.context.teamRunId; }
   get teamBackendKind() { return this.context.teamBackendKind; }
   isActive(): boolean { return this.backend.isActive(); }
+  isTerminated(): boolean { return this.backend.isTerminated(); }
   getRuntimeContext() { return this.context.runtimeContext; }
   getLeafAgentStatusSnapshots() { return this.backend.getLeafAgentStatusSnapshots(); }
   hasOpenExecutionWork(): boolean { return this.backend.hasOpenExecutionWork(); }
@@ -35,5 +36,6 @@ export class TeamRun {
     return this.backend.prepareDirectTaskSettlement(taskId, binding);
   }
   prepareTermination() { return this.backend.prepareTermination(); }
+  freezeForRootTermination() { return this.backend.freezeForRootTermination(); }
   terminate() { return this.backend.terminate(); }
 }

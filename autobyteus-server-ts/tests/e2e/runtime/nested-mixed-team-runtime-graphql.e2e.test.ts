@@ -20,9 +20,14 @@ import {
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
 import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
-import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
+import type {
+  ConfiguredAgentExecutionDto,
+  ConfiguredMemberExecutionDto,
+  ConfiguredTeamExecutionDto,
+  TeamRunExecutionTreeDto,
+} from "@autobyteus/team-stream-contracts";
 
 const DEFAULT_LMSTUDIO_TEXT_MODEL = "qwen3.6-35b-a3b";
 const codexBinaryReady =
@@ -83,23 +88,6 @@ type WsMessage = {
   payload: Record<string, unknown>;
 };
 
-type MetadataMember = {
-  memberKind: "agent" | "agent_team";
-  memberName: string;
-  memberPath: string[];
-  memberRouteKey: string;
-  memberRunId: string;
-  runtimeKind?: string | null;
-  platformAgentRunId?: string | null;
-  teamRunId?: string | null;
-  memberTree?: MetadataMember[];
-};
-
-type TeamRunMetadataPayload = {
-  teamRunId: string;
-  memberTree: MetadataMember[];
-};
-
 const parseWsMessage = (raw: WebSocket.RawData): WsMessage | null => {
   try {
     const parsed = JSON.parse(raw.toString()) as {
@@ -120,43 +108,6 @@ const parseWsMessage = (raw: WebSocket.RawData): WsMessage | null => {
     return null;
   }
 };
-
-const samePath = (value: unknown, expected: string[]): boolean =>
-  Array.isArray(value) &&
-  value.length === expected.length &&
-  value.every((entry, index) => entry === expected[index]);
-
-const memberAddressMatches = (value: unknown, expectedMemberRouteKey: string): boolean => {
-  if (!value || typeof value !== "object" || Array.isArray(value)) {
-    return false;
-  }
-  const segments = (value as { segments?: unknown }).segments;
-  return (
-    Array.isArray(segments) &&
-    segments.length === 1 &&
-    segments[0] !== null &&
-    typeof segments[0] === "object" &&
-    !Array.isArray(segments[0]) &&
-    (segments[0] as Record<string, unknown>).kind === "member" &&
-    (segments[0] as Record<string, unknown>).memberRouteKey === expectedMemberRouteKey
-  );
-};
-
-const hasRemovedTeamCommunicationFlatFields = (payload: Record<string, unknown>): boolean => [
-  "senderMemberKind",
-  "senderMemberName",
-  "senderMemberPath",
-  "senderMemberRouteKey",
-  "receiverMemberKind",
-  "receiverMemberName",
-  "receiverMemberPath",
-  "receiverMemberRouteKey",
-  "senderRepresentedSubTeam",
-  "receiverRepresentedSubTeam",
-  "senderRunId",
-  "receiverRunId",
-  "taskTeamScope",
-].some((field) => field in payload);
 
 const waitForMessageAfter = async (
   messages: WsMessage[],
@@ -223,55 +174,116 @@ const messageTextContains = (message: WsMessage, token: string): boolean => {
   return false;
 };
 
-const assistantTextMatches = (
-  message: WsMessage,
-  input: { memberName: string; sourcePath: string[]; token: string },
-): boolean =>
-  message.payload.agent_name === input.memberName &&
-  samePath(message.payload.source_path, input.sourcePath) &&
-  messageTextContains(message, input.token);
+const waitForAssistantTextAfter = async (
+  messages: WsMessage[],
+  startIndex: number,
+  input: { agentRunId: string; token: string; label: string },
+  timeoutMs = 240_000,
+): Promise<void> => {
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    const agentMessages = messages.slice(startIndex).filter(
+      (message) => message.payload.agent_run_id === input.agentRunId,
+    );
+    if (agentMessages.some((message) => messageTextContains(message, input.token))) {
+      return;
+    }
+    const streamedText = agentMessages
+      .filter(
+        (message) =>
+          message.type === "SEGMENT_CONTENT" &&
+          message.payload.segment_type === "text" &&
+          typeof message.payload.delta === "string",
+      )
+      .map((message) => message.payload.delta as string)
+      .join("");
+    if (streamedText.includes(input.token)) return;
+    await wait(500);
+  }
+  throw new Error(
+    `Timed out waiting for team websocket assistant text '${input.label}' from '${input.agentRunId}'.`,
+  );
+};
 
 const sendTeamMessageOverSocket = (
   socket: WebSocket,
   input: {
     content: string;
-    targetMemberRouteKey?: string | null;
-    targetMemberPath?: string[] | null;
+    agentRunId: string;
   },
 ): void => {
   sendE2eSendMessageCommand(socket, {
     content: input.content,
-    ...(input.targetMemberPath
-      ? { target_member_path: input.targetMemberPath }
-      : {}),
-    ...(input.targetMemberRouteKey
-      ? { target_member_route_key: input.targetMemberRouteKey }
-      : {}),
+    agent_run_id: input.agentRunId,
     context_file_paths: [],
     image_urls: [],
   });
 };
 
-const findMember = (
-  members: MetadataMember[],
-  memberName: string,
-): MetadataMember => {
-  const member =
-    members.find((candidate) => candidate.memberName === memberName) ?? null;
-  expect(member).toBeTruthy();
-  return member as MetadataMember;
-};
-
-const collectLeafMembers = (members: MetadataMember[]): MetadataMember[] => {
-  const leafMembers: MetadataMember[] = [];
+const findConfiguredMember = (
+  members: readonly ConfiguredMemberExecutionDto[],
+  address: string,
+): ConfiguredMemberExecutionDto => {
   for (const member of members) {
-    if (member.memberKind === "agent") {
-      leafMembers.push(member);
-    } else {
-      leafMembers.push(...collectLeafMembers(member.memberTree ?? []));
+    if (member.address === address) return member;
+    if (member.kind === "configured_team") {
+      const nested = findConfiguredMemberOrNull(member.members, address);
+      if (nested) return nested;
     }
   }
-  return leafMembers;
+  throw new Error(`Configured member '${address}' was not found.`);
+};
+
+const findConfiguredMemberOrNull = (
+  members: readonly ConfiguredMemberExecutionDto[],
+  address: string,
+): ConfiguredMemberExecutionDto | null => {
+  for (const member of members) {
+    if (member.address === address) return member;
+    if (member.kind === "configured_team") {
+      const nested = findConfiguredMemberOrNull(member.members, address);
+      if (nested) return nested;
+    }
+  }
+  return null;
+};
+
+const requireConfiguredAgent = (
+  tree: TeamRunExecutionTreeDto,
+  address: string,
+): ConfiguredAgentExecutionDto => {
+  const member = findConfiguredMember(tree.root_team.members, address);
+  expect(member.kind).toBe("configured_agent");
+  return member as ConfiguredAgentExecutionDto;
+};
+
+const requireConfiguredTeam = (
+  tree: TeamRunExecutionTreeDto,
+  address: string,
+): ConfiguredTeamExecutionDto => {
+  const member = findConfiguredMember(tree.root_team.members, address);
+  expect(member.kind).toBe("configured_team");
+  return member as ConfiguredTeamExecutionDto;
+};
+
+const collectConfiguredAgentRunIds = (
+  members: readonly ConfiguredMemberExecutionDto[],
+): string[] => {
+  const agentRunIds: string[] = [];
+  for (const member of members) {
+    if (member.kind === "configured_agent") agentRunIds.push(member.agent_run_id);
+    else agentRunIds.push(...collectConfiguredAgentRunIds(member.members));
+  }
+  return agentRunIds;
+};
+
+const communicationRecord = (
+  message: WsMessage,
+): Record<string, unknown> | null => {
+  const value = message.payload.message;
+  return value && typeof value === "object" && !Array.isArray(value)
+    ? value as Record<string, unknown>
+    : null;
 };
 
 describeNestedMixedRuntime(
@@ -555,15 +567,15 @@ describeNestedMixedRuntime(
       return result.createAgentDefinition.id;
     };
 
-    const fetchMetadata = async (
+    const fetchExecutionTree = async (
       teamRunId: string,
-    ): Promise<TeamRunMetadataPayload> => {
+    ): Promise<TeamRunExecutionTreeDto> => {
       const query = `
       query TeamResume($teamRunId: String!) {
         getTeamRunResumeConfig(teamRunId: $teamRunId) {
           teamRunId
           isActive
-          metadata
+          executionTree
         }
       }
     `;
@@ -571,11 +583,12 @@ describeNestedMixedRuntime(
         getTeamRunResumeConfig: {
           teamRunId: string;
           isActive: boolean;
-          metadata: TeamRunMetadataPayload;
+          executionTree: TeamRunExecutionTreeDto;
         };
       }>(query, { teamRunId });
       expect(result.getTeamRunResumeConfig.teamRunId).toBe(teamRunId);
-      return result.getTeamRunResumeConfig.metadata;
+      expect(result.getTeamRunResumeConfig.isActive).toBe(true);
+      return result.getTeamRunResumeConfig.executionTree;
     };
 
     const openTeamSocket = async (
@@ -729,8 +742,7 @@ Rules:
           teamDefinitionId: parentTeamDefinitionId,
           memberConfigs: [
             {
-              memberName: "program_manager",
-              memberRouteKey: "program_manager",
+              memberAddress: "/program_manager",
               agentDefinitionId: programManagerAgentId,
               llmModelIdentifier: autoByteusModelIdentifier,
               autoExecuteTools: true,
@@ -739,8 +751,7 @@ Rules:
               workspaceRootPath,
             },
             {
-              memberName: "review_lead",
-              memberRouteKey: "BuildSquad/review_lead",
+              memberAddress: "/BuildSquad/review_lead",
               agentDefinitionId: reviewLeadAgentId,
               llmModelIdentifier: codexModelIdentifier,
               autoExecuteTools: true,
@@ -749,8 +760,7 @@ Rules:
               workspaceRootPath,
             },
             {
-              memberName: "qa_specialist",
-              memberRouteKey: "BuildSquad/qa_specialist",
+              memberAddress: "/BuildSquad/qa_specialist",
               agentDefinitionId: qaSpecialistAgentId,
               llmModelIdentifier: claudeModelIdentifier,
               autoExecuteTools: true,
@@ -768,11 +778,23 @@ Rules:
       createdTeamRunIds.add(teamRunId);
 
       const activeParentRun =
-        AgentTeamRunManager.getInstance().getTeamRun(teamRunId);
-      expect(activeParentRun?.teamBackendKind).toBe(TeamBackendKind.MIXED);
-      expect(
-        activeParentRun?.config?.memberTree.map((member) => member.memberName),
-      ).toEqual(["program_manager", "BuildSquad"]);
+        AgentTeamRunManager.getInstance().getActiveTeamRun(teamRunId);
+      expect(activeParentRun?.teamRunId).toBe(teamRunId);
+      expect(activeParentRun?.isActive()).toBe(true);
+
+      const initialExecutionTree = await fetchExecutionTree(teamRunId);
+      const initialProgramManager = requireConfiguredAgent(
+        initialExecutionTree,
+        "/program_manager",
+      );
+      const initialReviewLead = requireConfiguredAgent(
+        initialExecutionTree,
+        "/BuildSquad/review_lead",
+      );
+      const initialQaSpecialist = requireConfiguredAgent(
+        initialExecutionTree,
+        "/BuildSquad/qa_specialist",
+      );
 
       const parentToSubteamToken = `NESTED_PARENT_TO_SUBTEAM_${unique}`;
       const childToClaudeToken = `NESTED_CODEX_TO_CLAUDE_${unique}`;
@@ -782,117 +804,86 @@ Rules:
       try {
         const parentDelegationStartIndex = firstConnection.messages.length;
         const parentDelegationArgs = JSON.stringify({
-          recipient_name: "/BuildSquad/review_lead",
+          recipient_address: "/BuildSquad/review_lead",
           content: `Reply with exactly ${parentToSubteamToken} and nothing else.`,
           message_type: "nested_parent_to_subteam",
         });
         sendTeamMessageOverSocket(firstConnection.socket, {
-          targetMemberRouteKey: "program_manager",
+          agentRunId: initialProgramManager.agent_run_id,
           content: `Call send_message_to exactly once now with these exact JSON arguments: ${parentDelegationArgs}. Do not call any other tool.`,
         });
 
         await waitForMessageAfter(
           firstConnection.messages,
           parentDelegationStartIndex,
-          (message) =>
-            message.type === "TEAM_COMMUNICATION_MESSAGE" &&
-            samePath(message.payload.source_path, ["program_manager"]) &&
-            memberAddressMatches(
-              message.payload.senderAddress,
-              "program_manager",
-            ) &&
-            memberAddressMatches(
-              message.payload.receiverAddress,
-              "BuildSquad/review_lead",
-            ) &&
-            !hasRemovedTeamCommunicationFlatFields(message.payload) &&
-            message.payload.content ===
-              `Reply with exactly ${parentToSubteamToken} and nothing else.`,
+          (message) => {
+            if (message.type !== "TEAM_COMMUNICATION_MESSAGE") return false;
+            const record = communicationRecord(message);
+            return record?.sender_agent_run_id === initialProgramManager.agent_run_id &&
+              record.receiver_agent_run_id === initialReviewLead.agent_run_id &&
+              record.content === `Reply with exactly ${parentToSubteamToken} and nothing else.`;
+          },
           "parent communication event to represented child receiver",
         );
 
-        await waitForMessageAfter(
+        await waitForAssistantTextAfter(
           firstConnection.messages,
           parentDelegationStartIndex,
-          (message) =>
-            assistantTextMatches(message, {
-              memberName: "review_lead",
-              sourcePath: ["BuildSquad", "review_lead"],
-              token: parentToSubteamToken,
-            }),
-          "child coordinator response bridged to parent stream",
+          {
+            agentRunId: initialReviewLead.agent_run_id,
+            token: parentToSubteamToken,
+            label: "child coordinator response bridged to parent stream",
+          },
         );
 
         const childDelegationStartIndex = firstConnection.messages.length;
-        const childDelegationArgs = JSON.stringify({
-          recipient_name: "./qa_specialist",
-          content: `Reply with exactly ${childToClaudeToken} and nothing else.`,
-          message_type: "nested_child_codex_to_claude",
-        });
         sendTeamMessageOverSocket(firstConnection.socket, {
-          targetMemberRouteKey: "BuildSquad",
-          content: `Call send_message_to exactly once now with these exact JSON arguments: ${childDelegationArgs}. Do not call any other tool.`,
+          agentRunId: initialQaSpecialist.agent_run_id,
+          content: `Reply with exactly ${childToClaudeToken} and nothing else.`,
         });
 
-        await waitForMessageAfter(
+        await waitForAssistantTextAfter(
           firstConnection.messages,
           childDelegationStartIndex,
-          (message) =>
-            message.type === "TOOL_EXECUTION_SUCCEEDED" &&
-            message.payload.agent_name === "review_lead" &&
-            samePath(message.payload.source_path, [
-              "BuildSquad",
-              "review_lead",
-            ]) &&
-            message.payload.tool_name === "send_message_to",
-          "child coordinator send_message_to tool execution",
-        );
-
-        await waitForMessageAfter(
-          firstConnection.messages,
-          childDelegationStartIndex,
-          (message) =>
-            assistantTextMatches(message, {
-              memberName: "qa_specialist",
-              sourcePath: ["BuildSquad", "qa_specialist"],
-              token: childToClaudeToken,
-            }),
-          "Claude child teammate response bridged to parent stream",
+          {
+            agentRunId: initialQaSpecialist.agent_run_id,
+            token: childToClaudeToken,
+            label: "Claude child teammate response bridged to parent stream",
+          },
         );
       } finally {
         await closeSocket(firstConnection.socket);
       }
 
       await wait(2_500);
-      const metadataBeforeTerminate = await fetchMetadata(teamRunId);
-      const parentMember = findMember(
-        metadataBeforeTerminate.memberTree,
-        "program_manager",
+      const executionTreeBeforeTerminate = await fetchExecutionTree(teamRunId);
+      const parentMember = requireConfiguredAgent(
+        executionTreeBeforeTerminate,
+        "/program_manager",
       );
-      const subTeamMember = findMember(
-        metadataBeforeTerminate.memberTree,
-        "BuildSquad",
+      const subTeamMember = requireConfiguredTeam(
+        executionTreeBeforeTerminate,
+        "/BuildSquad",
       );
-      expect(parentMember.memberKind).toBe("agent");
-      expect(parentMember.runtimeKind).toBe(RuntimeKind.AUTOBYTEUS);
-      expect(parentMember.platformAgentRunId).toBeTruthy();
-      expect(subTeamMember.memberKind).toBe("agent_team");
-      expect(subTeamMember.teamRunId).toBeTruthy();
-      const childTeamRunId = subTeamMember.teamRunId as string;
-      const reviewLeadBefore = findMember(
-        subTeamMember.memberTree ?? [],
-        "review_lead",
+      expect(parentMember.launch_configuration.runtime_kind).toBe("AUTOBYTEUS");
+      expect(parentMember.platform_agent_run_id).toBeNull();
+      const childTeamRunId = subTeamMember.team_run_id;
+      expect(childTeamRunId).toBeTruthy();
+      const reviewLeadBefore = requireConfiguredAgent(
+        executionTreeBeforeTerminate,
+        "/BuildSquad/review_lead",
       );
-      const qaSpecialistBefore = findMember(
-        subTeamMember.memberTree ?? [],
-        "qa_specialist",
+      const qaSpecialistBefore = requireConfiguredAgent(
+        executionTreeBeforeTerminate,
+        "/BuildSquad/qa_specialist",
       );
-      expect(reviewLeadBefore.runtimeKind).toBe(RuntimeKind.CODEX_APP_SERVER);
-      expect(qaSpecialistBefore.runtimeKind).toBe(RuntimeKind.CLAUDE_AGENT_SDK);
-      expect(reviewLeadBefore.platformAgentRunId).toBeTruthy();
-      expect(qaSpecialistBefore.platformAgentRunId).toBeTruthy();
+      expect(reviewLeadBefore.launch_configuration.runtime_kind).toBe("CODEX");
+      expect(qaSpecialistBefore.launch_configuration.runtime_kind).toBe("CLAUDE");
+      expect(reviewLeadBefore.platform_agent_run_id).toBeTruthy();
+      expect(qaSpecialistBefore.platform_agent_run_id).toBeTruthy();
 
-      const activeTeamRuns = AgentTeamRunManager.getInstance().listActiveRuns();
+      const activeTeamRuns =
+        AgentTeamRunManager.getInstance().listActiveTeamRunIds();
       expect(activeTeamRuns).toContain(teamRunId);
       expect(activeTeamRuns).not.toContain(childTeamRunId);
 
@@ -919,9 +910,9 @@ Rules:
       expect(listedTeamRunIds).toContain(teamRunId);
       expect(listedTeamRunIds).not.toContain(childTeamRunId);
 
-      const leafRunIdsBeforeTerminate = collectLeafMembers(
-        metadataBeforeTerminate.memberTree,
-      ).map((member) => member.memberRunId);
+      const leafRunIdsBeforeTerminate = collectConfiguredAgentRunIds(
+        executionTreeBeforeTerminate.root_team.members,
+      );
       const terminateMutation = `
         mutation TerminateAgentTeamRun($teamRunId: String!) {
           terminateAgentTeamRun(teamRunId: $teamRunId) { success message }
@@ -931,12 +922,10 @@ Rules:
         terminateAgentTeamRun: { success: boolean; message: string };
       }>(terminateMutation, { teamRunId });
       expect(terminateResult.terminateAgentTeamRun.success).toBe(true);
-      expect(AgentTeamRunManager.getInstance().listActiveRuns()).not.toContain(
-        teamRunId,
-      );
-      expect(AgentTeamRunManager.getInstance().listActiveRuns()).not.toContain(
-        childTeamRunId,
-      );
+      const managedTeamRunsAfterTerminate =
+        AgentTeamRunManager.getInstance().listManagedTeamRunIds();
+      expect(managedTeamRunsAfterTerminate).not.toContain(teamRunId);
+      expect(managedTeamRunsAfterTerminate).not.toContain(childTeamRunId);
       const activeAgentRunIdsAfterTerminate =
         AgentRunManager.getInstance().listActiveRuns();
       for (const leafRunId of leafRunIdsBeforeTerminate) {
@@ -958,52 +947,55 @@ Rules:
       expect(restoreResult.restoreAgentTeamRun.success).toBe(true);
       expect(restoreResult.restoreAgentTeamRun.teamRunId).toBe(teamRunId);
       const activeTeamRunsAfterRestore =
-        AgentTeamRunManager.getInstance().listActiveRuns();
+        AgentTeamRunManager.getInstance().listActiveTeamRunIds();
       expect(activeTeamRunsAfterRestore).toContain(teamRunId);
       expect(activeTeamRunsAfterRestore).not.toContain(childTeamRunId);
 
+      const restoredExecutionTree = await fetchExecutionTree(teamRunId);
+      const restoredReviewLead = requireConfiguredAgent(
+        restoredExecutionTree,
+        "/BuildSquad/review_lead",
+      );
       const restoredConnection = await openTeamSocket(teamRunId);
       try {
         const postRestoreStartIndex = restoredConnection.messages.length;
         sendTeamMessageOverSocket(restoredConnection.socket, {
-          targetMemberRouteKey: "BuildSquad",
+          agentRunId: restoredReviewLead.agent_run_id,
           content: `Reply with exactly ${postRestoreToken} and nothing else.`,
         });
-        await waitForMessageAfter(
+        await waitForAssistantTextAfter(
           restoredConnection.messages,
           postRestoreStartIndex,
-          (message) =>
-            assistantTextMatches(message, {
-              memberName: "review_lead",
-              sourcePath: ["BuildSquad", "review_lead"],
-              token: postRestoreToken,
-            }),
-          "restored child coordinator response bridged to parent stream",
+          {
+            agentRunId: restoredReviewLead.agent_run_id,
+            token: postRestoreToken,
+            label: "restored child coordinator response bridged to parent stream",
+          },
         );
       } finally {
         await closeSocket(restoredConnection.socket);
       }
 
       await wait(2_500);
-      const metadataAfterRestore = await fetchMetadata(teamRunId);
-      const restoredSubTeam = findMember(
-        metadataAfterRestore.memberTree,
-        "BuildSquad",
+      const executionTreeAfterRestore = await fetchExecutionTree(teamRunId);
+      const restoredSubTeam = requireConfiguredTeam(
+        executionTreeAfterRestore,
+        "/BuildSquad",
       );
-      expect(restoredSubTeam.teamRunId).toBe(childTeamRunId);
-      const restoredReviewLead = findMember(
-        restoredSubTeam.memberTree ?? [],
-        "review_lead",
+      expect(restoredSubTeam.team_run_id).toBe(childTeamRunId);
+      const restoredReviewLeadAfterMessage = requireConfiguredAgent(
+        executionTreeAfterRestore,
+        "/BuildSquad/review_lead",
       );
-      const restoredQaSpecialist = findMember(
-        restoredSubTeam.memberTree ?? [],
-        "qa_specialist",
+      const restoredQaSpecialistAfterMessage = requireConfiguredAgent(
+        executionTreeAfterRestore,
+        "/BuildSquad/qa_specialist",
       );
-      expect(restoredReviewLead.platformAgentRunId).toBe(
-        reviewLeadBefore.platformAgentRunId,
+      expect(restoredReviewLeadAfterMessage.platform_agent_run_id).toBe(
+        reviewLeadBefore.platform_agent_run_id,
       );
-      expect(restoredQaSpecialist.platformAgentRunId).toBe(
-        qaSpecialistBefore.platformAgentRunId,
+      expect(restoredQaSpecialistAfterMessage.platform_agent_run_id).toBe(
+        qaSpecialistBefore.platform_agent_run_id,
       );
 
       const finalTerminateResult = await execGraphql<{

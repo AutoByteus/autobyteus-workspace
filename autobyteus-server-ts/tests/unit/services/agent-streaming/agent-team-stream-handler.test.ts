@@ -40,8 +40,8 @@ const createHarness = (input: { commandResult?: { accepted: boolean; code?: stri
     getTaskRecordsSnapshot: () => tasks,
   };
   const teamRunService = {
-    resolveTeamRun: vi.fn(async () => root),
-    getTeamRun: vi.fn(() => root),
+    resolveActiveTeamRun: vi.fn(async () => root),
+    getActiveTeamRun: vi.fn(() => root),
     recordRunActivity: vi.fn(async () => undefined),
   };
   const lifecycle = {

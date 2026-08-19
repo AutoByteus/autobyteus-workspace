@@ -53,7 +53,6 @@ const mountSubject = (options: {
   liveContext?: ReturnType<typeof buildTestTeamContext>;
   workspaceTeams?: TeamTreeNode[];
   teamExpanded?: boolean;
-  canTerminateTeam?: (isActive: boolean) => boolean;
   selectedTeamRunId?: string | null;
   selectedType?: 'agent' | 'team' | null;
 } = {}) => {
@@ -123,7 +122,6 @@ const mountSubject = (options: {
       const key = expansionKey(workspaceId, teamRunId, rowKey);
       expandedTeamMembers[key] = !expandedTeamMembers[key];
     }),
-    canTerminateTeam: options.canTerminateTeam ?? ((isActive: boolean) => isActive),
   };
 
   const wrapper = mount(WorkspaceHistoryWorkspaceSection, {
@@ -149,6 +147,7 @@ const mountSubject = (options: {
         'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.no_active_team_runs': 'No active team runs',
         'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.active_team_run': 'Active team run',
         'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.inactive_team_run': 'Inactive team run',
+        'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.delete_team_history_permanently': 'Localized delete team history permanently',
       }[key] ?? key) },
     },
   });
@@ -168,7 +167,7 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
       ...activeRun, teamRunId: 'team-run-inactive', rootTeam: rootRow([], 'team-run-inactive'),
       summary: 'Inactive task', lastActivityAt: '2026-06-30T00:00:00.000Z', isActive: false,
     };
-    const { wrapper } = mountSubject({ workspaceTeams: [activeRun, inactiveRun], teamExpanded: false, canTerminateTeam: () => false });
+    const { wrapper } = mountSubject({ workspaceTeams: [activeRun, inactiveRun], teamExpanded: false });
     const groupRow = wrapper.get('[data-test="workspace-team-definition-row-team-def-1"]');
     expect(groupRow.get('[data-test="team-activity-dot"]').attributes()).toMatchObject({
       'data-active': 'true', 'aria-label': 'Active team runs', title: 'Active team runs',
@@ -178,6 +177,25 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
     await wrapper.setProps({ workspaceTeams: [{ ...activeRun, isActive: false }, inactiveRun] });
     await wrapper.vm.$nextTick();
     expect(groupRow.get('[data-test="team-activity-dot"]').attributes('data-active')).toBe('false');
+  });
+
+  it('renders mutually exclusive active Stop and inactive Archive/Delete actions', async () => {
+    const active = mountSubject();
+    expect(active.wrapper.find('button[title$="terminate_team"]').exists()).toBe(true);
+    expect(active.wrapper.find('button[aria-label="Localized delete team history permanently"]').exists()).toBe(false);
+    expect(active.wrapper.find('button[title$="archive_team_history"]').exists()).toBe(false);
+    active.wrapper.unmount();
+
+    const inactiveTeam = {
+      ...active.team,
+      isActive: false,
+      rootTeam: { ...active.team.rootTeam, isActive: false },
+    };
+    const inactive = mountSubject({ workspaceTeams: [inactiveTeam] });
+    expect(inactive.wrapper.find('button[title$="terminate_team"]').exists()).toBe(false);
+    expect(inactive.wrapper.find('button[title$="archive_team_history"]').exists()).toBe(true);
+    const deleteButton = inactive.wrapper.get('button[aria-label="Localized delete team history permanently"]');
+    expect(deleteButton.attributes('title')).toBe('Localized delete team history permanently');
   });
 
   it('renders and selects exact stable and task-Agent execution identities', async () => {

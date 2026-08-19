@@ -444,7 +444,7 @@ export class ApplicationOrchestrationHostService {
       return;
     }
 
-    const run = await this.teamRunService.resolveTeamRun(binding.runtime.teamRunId);
+    const run = await this.teamRunService.resolveActiveTeamRun(binding.runtime.teamRunId);
     if (!run) {
       throw new Error(`Application runtime '${binding.runtime.teamRunId}' is not available.`);
     }
@@ -474,7 +474,7 @@ export class ApplicationOrchestrationHostService {
     if (address.target.kind === "AGENT_RUN") {
       throw new Error("Application agent input target does not match the bound runtime.");
     }
-    const run = await this.teamRunService.resolveTeamRun(binding.runtime.teamRunId);
+    const run = await this.teamRunService.resolveActiveTeamRun(binding.runtime.teamRunId);
     if (!run) throw new Error(`Application runtime '${binding.runtime.teamRunId}' is not available.`);
     const targetAgentRunId = address.target.kind === "AGENT_TEAM_MEMBER" ? address.target.agentRunId : null;
     const targetMember = targetAgentRunId

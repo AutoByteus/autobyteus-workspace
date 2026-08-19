@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 const mocks = vi.hoisted(() => ({
   history: {},
   getProjection: vi.fn(),
-  getTeamRun: vi.fn(),
+  getActiveTeamRun: vi.fn(),
 }));
 
 vi.mock(
@@ -17,14 +17,14 @@ vi.mock(
 );
 vi.mock(
   "../../../../../src/agent-team-execution/services/agent-team-run-manager.js",
-  () => ({ getAgentTeamRunManager: () => ({ getTeamRun: mocks.getTeamRun }) }),
+  () => ({ getAgentTeamRunManager: () => ({ getActiveTeamRun: mocks.getActiveTeamRun }) }),
 );
 
 import { TeamRunHistoryResolver } from "../../../../../src/api/graphql/types/team-run-history.js";
 
 describe("TeamRunHistoryResolver execution checkpoint", () => {
   beforeEach(() => {
-    mocks.getTeamRun.mockReset();
+    mocks.getActiveTeamRun.mockReset();
     mocks.getProjection.mockReset();
   });
 
@@ -35,15 +35,15 @@ describe("TeamRunHistoryResolver execution checkpoint", () => {
       hasOpenExecutionWork: false,
     });
     const getExecutionCheckpoint = vi.fn(() => checkpoint);
-    mocks.getTeamRun.mockReturnValue({ getExecutionCheckpoint });
+    mocks.getActiveTeamRun.mockReturnValue({ getExecutionCheckpoint });
 
     expect(new TeamRunHistoryResolver().getTeamRunExecutionCheckpoint("team-run-1")).toBe(checkpoint);
-    expect(mocks.getTeamRun).toHaveBeenCalledWith("team-run-1");
+    expect(mocks.getActiveTeamRun).toHaveBeenCalledWith("team-run-1");
     expect(getExecutionCheckpoint).toHaveBeenCalledTimes(1);
   });
 
   it("rejects a checkpoint request for a non-active root", () => {
-    mocks.getTeamRun.mockReturnValue(null);
+    mocks.getActiveTeamRun.mockReturnValue(null);
     expect(() => new TeamRunHistoryResolver().getTeamRunExecutionCheckpoint("team-run-1"))
       .toThrow("Active RootTeamRun 'team-run-1' was not found.");
   });

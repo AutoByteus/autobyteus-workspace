@@ -1,0 +1,33 @@
+NOTE: authoritative rerun from autobyteus-web; the initial root invocation only reported scripts unavailable in the wrong package scope.
+=== pnpm guard:web-boundary ===
+
+> autobyteus@1.4.52 guard:web-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/autobyteus-web
+> node ./scripts/guard-web-boundary.mjs
+
+[guard:web-boundary] Passed.
+=== pnpm guard:localization-boundary ===
+
+> autobyteus@1.4.52 guard:localization-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+
+[guard:localization-boundary] Passed.
+=== pnpm audit:localization-literals ===
+
+> autobyteus@1.4.52 audit:localization-literals /Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/autobyteus-web
+> node ./scripts/audit-localization-literals.mjs
+
+[audit:localization-literals] Passed with zero unresolved findings.
+(node:31892) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/autobyteus-web/localization/audit/migrationScopes.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/autobyteus-web/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+=== precise key/catalog/binding scan ===
+localization/messages/zh-CN/workspace.generated.ts:112:  'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.delete_team_history_permanently': '永久删除团队历史记录',
+components/workspace/history/WorkspaceHistoryWorkspaceSection.vue:271:                    :title="$t('workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.delete_team_history_permanently')"
+components/workspace/history/WorkspaceHistoryWorkspaceSection.vue:272:                    :aria-label="$t('workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.delete_team_history_permanently')"
+localization/messages/en/workspace.generated.ts:112:  'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.delete_team_history_permanently': 'Delete team history permanently',
+components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:150:        'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.delete_team_history_permanently': 'Localized delete team history permanently',
+112:  'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.delete_team_history_permanently': 'Delete team history permanently',
+112:  'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.delete_team_history_permanently': '永久删除团队历史记录',
+binding_count=2
+LOCALIZATION_SCOPE_PASS

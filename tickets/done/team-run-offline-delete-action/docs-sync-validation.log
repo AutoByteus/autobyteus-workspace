@@ -1,0 +1,41 @@
+timestamp=2026-08-19T08:51:34Z
+head=5deade8d8afa1d92a784e4a8f30a147f91487d8b
+base=0194fb4fffa69037a46aeace491024fdf816dde7
+validation_scope=three delivery-owned durable Markdown documents; no production source or durable test changed after reviewed checkpoint
+
+$ git diff --check -- <three durable docs>
+result=pass
+
+$ stale TeamRunService.resolveTeamRun references
+result=pass; count=0
+
+$ current API names documented and implemented
+resolveActiveTeamRun=pass
+getActiveTeamRun=pass
+getManagedTeamRun=pass
+resolveManagedTeamRun=pass
+withUnmanagedHistoryDeletion=pass
+deleteStoredTeamRun=pass
+
+$ active/managed, offline/root, Stop-retain, later Delete assertions
+result=pass
+
+$ git diff --name-only
+autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md
+autobyteus-server-ts/docs/modules/agent_streaming.md
+autobyteus-server-ts/docs/modules/agent_team_execution.md
+
+post_integration_executable_rerun=no
+no_rerun_reason=origin/personal remained the exact merge base and the integration merge was a no-op; post-checkpoint changes are documentation/delivery artifacts only, while API-REV-001 and CRR-003 remain authoritative for behavior and durable tests
+
+$ final delivery-artifact whitespace and newline check
+result=pass; files=7
+
+$ git diff --check
+result=pass
+
+$ post-checkpoint tracked change scope
+autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md
+autobyteus-server-ts/docs/modules/agent_streaming.md
+autobyteus-server-ts/docs/modules/agent_team_execution.md
+result=pass; production_source_changes=0; durable_test_changes=0

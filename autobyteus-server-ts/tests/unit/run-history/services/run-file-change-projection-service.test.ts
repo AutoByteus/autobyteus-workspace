@@ -15,7 +15,7 @@ const harness = (input: { standalone?: boolean; storedStandalone?: boolean; team
   const activeStandalone = input.standalone ? { runId: "run-1", config: { workspaceId: null } } : null;
   const root = input.activeTeam ? { teamRunId: "team-1" } : null;
   const agentRuns = { getActiveRun: vi.fn(() => activeStandalone) };
-  const teamRuns = { getTeamRun: vi.fn(() => root) };
+  const teamRuns = { getManagedTeamRun: vi.fn(() => root) };
   const metadata = { readMetadata: vi.fn(async () => input.storedStandalone ? ({ memoryDir: "/memory/agents/run-1", workspaceRootPath: "/ws/standalone" }) : null) };
   const projectionStore = { readProjection: vi.fn(async () => projection) };
   const changes = {

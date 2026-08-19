@@ -92,7 +92,7 @@ export class TaskDelegationProjectionService {
   private readonly layout: AgentMemoryLayout;
 
   constructor(private readonly options: {
-    manager?: Pick<AgentTeamRunManager, "getTeamRun">;
+    manager?: Pick<AgentTeamRunManager, "getManagedTeamRun">;
     store?: TaskDelegationRecordsV1Store;
     memoryDir?: string;
   } = {}) {
@@ -126,8 +126,8 @@ export class TaskDelegationProjectionService {
   private async read(rootTeamRunIdInput: string): Promise<TaskDelegationRecordsSnapshot> {
     const rootTeamRunId = rootTeamRunIdInput.trim();
     if (!rootTeamRunId) throw new Error("rootTeamRunId is required.");
-    const active = (this.options.manager ?? AgentTeamRunManager.getInstance()).getTeamRun(rootTeamRunId);
-    if (active) return active.getTaskRecordsSnapshot();
+    const managed = (this.options.manager ?? AgentTeamRunManager.getInstance()).getManagedTeamRun(rootTeamRunId);
+    if (managed) return managed.getTaskRecordsSnapshot();
     const stored = await (this.options.store ?? new TaskDelegationRecordsV1Store()).read(
       this.layout.getTeamDirPath({ rootTeamRunId, ancestorTeamRunIds: [] }),
       rootTeamRunId,

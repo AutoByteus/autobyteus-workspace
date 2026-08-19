@@ -1,0 +1,13 @@
+marker_after_stop=ABSENT
+run_directory=PRESENT
+run_files:
+/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/.autobyteus/development/server-data/memory/agent_teams/classroom_simulation_team_e6a6a2652a124749a95fd21ef2664c8b/professor_5683f44703e2433eb06c822eef4043bd/raw_traces_active.jsonl
+/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/.autobyteus/development/server-data/memory/agent_teams/classroom_simulation_team_e6a6a2652a124749a95fd21ef2664c8b/professor_5683f44703e2433eb06c822eef4043bd/working_context_snapshot.json
+/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/.autobyteus/development/server-data/memory/agent_teams/classroom_simulation_team_e6a6a2652a124749a95fd21ef2664c8b/task_delegation_records.json
+/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/.autobyteus/development/server-data/memory/agent_teams/classroom_simulation_team_e6a6a2652a124749a95fd21ef2664c8b/team_communication_messages.json
+/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/.autobyteus/development/server-data/memory/agent_teams/classroom_simulation_team_e6a6a2652a124749a95fd21ef2664c8b/team_run_execution_tree.json
+catalog_refs:
+/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/.autobyteus/development/server-data/memory/team_run_history_index.json:3:    "teamRunId": "classroom_simulation_team_e6a6a2652a124749a95fd21ef2664c8b",
+/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/.autobyteus/development/server-data/memory/agent_teams/classroom_simulation_team_e6a6a2652a124749a95fd21ef2664c8b/team_communication_messages.json:3:  "rootTeamRunId": "classroom_simulation_team_e6a6a2652a124749a95fd21ef2664c8b",
+/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/.autobyteus/development/server-data/memory/agent_teams/classroom_simulation_team_e6a6a2652a124749a95fd21ef2664c8b/team_run_execution_tree.json:10:    "teamRunId": "classroom_simulation_team_e6a6a2652a124749a95fd21ef2664c8b",
+/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/.autobyteus/development/server-data/memory/agent_teams/classroom_simulation_team_e6a6a2652a124749a95fd21ef2664c8b/task_delegation_records.json:3:  "rootTeamRunId": "classroom_simulation_team_e6a6a2652a124749a95fd21ef2664c8b",

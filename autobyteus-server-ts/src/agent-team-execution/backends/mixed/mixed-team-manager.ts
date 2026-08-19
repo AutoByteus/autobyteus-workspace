@@ -23,6 +23,7 @@ import { MixedTaskAgentExecutionRegistry } from "./members/mixed-task-agent-exec
 import { MixedTaskTeamExecutionRegistry } from "./members/mixed-task-team-execution-registry.js";
 import { MixedTeamMemberConfigResolver } from "./members/mixed-team-member-config-resolver.js";
 import type { TeamAgentPlatformBinding } from "../../domain/team-agent-platform-binding.js";
+import type { FrozenTeamRunTerminationScope } from "../../domain/frozen-team-run-termination-scope.js";
 
 /** Provider/local mechanics for exactly one concrete TeamRun. */
 export class MixedTeamManager {
@@ -30,6 +31,7 @@ export class MixedTeamManager {
   private preparingTermination: Promise<PreparedLocalExecutionTermination> | null = null;
   private preparedTermination: PreparedLocalExecutionTermination | null = null;
   private termination: Promise<AgentOperationResult> | null = null;
+  private frozenTerminationScope: FrozenTeamRunTerminationScope | null = null;
   private readonly configured: MixedConfiguredMemberRegistry;
   private readonly taskAgents: MixedTaskAgentExecutionRegistry;
   private readonly taskTeams: MixedTaskTeamExecutionRegistry;
@@ -67,6 +69,7 @@ export class MixedTeamManager {
   }
 
   isActive(): boolean { return this.lifecycle === "active" || this.lifecycle === "quiescing"; }
+  isTerminated(): boolean { return this.lifecycle === "terminated"; }
 
   getLeafAgentStatusSnapshots(): TeamAgentStatusSnapshot[] {
     if (!this.isActive()) return [];
@@ -173,6 +176,32 @@ export class MixedTeamManager {
     return preparation;
   }
 
+  freezeForRootTermination(): FrozenTeamRunTerminationScope {
+    if (this.frozenTerminationScope) return this.frozenTerminationScope;
+    this.configured.freezeMaterialization();
+    this.taskAgents.freezeMaterialization();
+    this.taskTeams.freezeMaterialization();
+
+    const agentHandles = [...new Set([
+      ...this.configured.listHandles().filter((handle): handle is MixedAgentMemberHandle =>
+        handle instanceof MixedAgentMemberHandle),
+      ...this.taskAgents.listHandles(),
+      ...this.taskAgents.listPreparedHandles(),
+    ])];
+    const configuredChildRuns = this.configured.listHandles()
+      .filter((handle): handle is MixedSubTeamMemberHandle => handle instanceof MixedSubTeamMemberHandle)
+      .map((handle) => handle.getMaterializedTeamRun())
+      .filter((run): run is NonNullable<typeof run> => run !== null);
+    const childRuns = [...new Set([
+      ...configuredChildRuns,
+      ...this.taskTeams.listTeamRuns(),
+      ...this.taskTeams.listPreparedTeamRuns(),
+    ])];
+    const childScopes = childRuns.map((run) => run.freezeForRootTermination());
+    this.frozenTerminationScope = this.createFrozenTerminationScope(agentHandles, childScopes);
+    return this.frozenTerminationScope;
+  }
+
   async terminate(): Promise<AgentOperationResult> {
     if (this.lifecycle === "terminated") return Promise.resolve({ accepted: true });
     if (this.termination) return this.termination;
@@ -239,6 +268,11 @@ export class MixedTeamManager {
     if (this.termination) return this.termination;
     const termination = this.finishCommittedTerminationOnce(localCommits);
     this.termination = termination;
+    void termination.then((result) => {
+      if (!result.accepted && this.termination === termination) this.termination = null;
+    }, () => {
+      if (this.termination === termination) this.termination = null;
+    });
     return termination;
   }
 
@@ -261,6 +295,76 @@ export class MixedTeamManager {
       cancel: () => undefined,
       commit: () => Object.freeze({ finish: async () => ({ accepted: true as const }) }),
     });
+  }
+
+  private createFrozenTerminationScope(
+    agentHandles: readonly MixedAgentMemberHandle[],
+    childScopes: readonly FrozenTeamRunTerminationScope[],
+  ): FrozenTeamRunTerminationScope {
+    let prepared: readonly PreparedLocalExecutionTermination[] | null = null;
+    let preparing: Promise<void> | null = null;
+    let finishing: Promise<AgentOperationResult> | null = null;
+
+    const prepareMemberRuns = (): Promise<void> => {
+      if (prepared) return Promise.resolve();
+      if (preparing) return preparing;
+      const attempt = Promise.all([
+        ...agentHandles.map((handle) => handle.prepareTermination()),
+        ...childScopes.map(async (scope) => { await scope.prepareMemberRuns(); return null; }),
+      ]).then((results) => {
+        prepared = Object.freeze(results.filter((item): item is PreparedLocalExecutionTermination => item !== null));
+      });
+      preparing = attempt;
+      void attempt.finally(() => {
+        if (preparing === attempt) preparing = null;
+      }).catch(() => undefined);
+      return attempt;
+    };
+
+    const finishOnce = async (): Promise<AgentOperationResult> => {
+      await prepareMemberRuns();
+      for (const scope of childScopes) {
+        const result = await scope.finish();
+        if (!result.accepted) return result;
+      }
+      for (const local of prepared ?? []) {
+        const result = await local.commit().finish();
+        if (!result.accepted) return result;
+      }
+      this.completeFrozenTermination();
+      return { accepted: true };
+    };
+
+    return Object.freeze({
+      interruptActiveTurns: async () => {
+        const results = await Promise.all([
+          ...agentHandles.map((handle) => handle.interruptForRootTermination()),
+          ...childScopes.map((scope) => scope.interruptActiveTurns()),
+        ]);
+        return results.find((result) => !result.accepted) ?? { accepted: true };
+      },
+      prepareMemberRuns,
+      finish: () => {
+        if (this.lifecycle === "terminated") return Promise.resolve({ accepted: true });
+        if (finishing) return finishing;
+        const attempt = finishOnce();
+        finishing = attempt;
+        void attempt.then((result) => {
+          if (!result.accepted && finishing === attempt) finishing = null;
+        }, () => {
+          if (finishing === attempt) finishing = null;
+        });
+        return attempt;
+      },
+    });
+  }
+
+  private completeFrozenTermination(): void {
+    if (this.lifecycle === "terminated") return;
+    this.configured.dispose();
+    this.taskAgents.dispose();
+    this.taskTeams.dispose();
+    this.lifecycle = "terminated";
   }
 
   private getConfiguredAgent(agentRunId: string): MixedAgentMemberHandle | null {

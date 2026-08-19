@@ -1,0 +1,39 @@
+{
+  "index": {
+    "teamRunId": "classroom_simulation_team_e6a6a2652a124749a95fd21ef2664c8b",
+    "teamDefinitionId": "classroom-simulation-team",
+    "teamDefinitionName": "Classroom Simulation Team",
+    "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/.autobyteus/development/server-data/temp_workspace",
+    "summary": "API/E2E SR-003 interruption test: do not message the student and do not answer in natural languag...",
+    "createdAt": "2026-08-19T08:04:49.346Z",
+    "archivedAt": null,
+    "terminatedAt": "2026-08-19T08:05:40.673Z"
+  },
+  "tree": {
+    "schemaVersion": 1,
+    "createdAt": "2026-08-19T08:04:49.346Z",
+    "archivedAt": null,
+    "rootTeam": {
+      "teamRunId": "classroom_simulation_team_e6a6a2652a124749a95fd21ef2664c8b",
+      "teamDefinitionId": "classroom-simulation-team",
+      "coordinatorAddress": "/professor",
+      "members": [
+        {
+          "address": "/professor",
+          "agentRunId": "professor_5683f44703e2433eb06c822eef4043bd",
+          "platformAgentRunId": null,
+          "runtimeKind": "AUTOBYTEUS",
+          "autoExecuteTools": false
+        },
+        {
+          "address": "/student",
+          "agentRunId": "student_4737e065e770448d9ad7460c115589a7",
+          "platformAgentRunId": null,
+          "runtimeKind": "AUTOBYTEUS",
+          "autoExecuteTools": false
+        }
+      ],
+      "taskExecutionCount": 0
+    }
+  }
+}

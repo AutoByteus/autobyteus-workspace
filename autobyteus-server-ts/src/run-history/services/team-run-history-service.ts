@@ -54,7 +54,7 @@ export class TeamRunHistoryService {
   async getTeamRunResumeConfig(teamRunId: string): Promise<TeamRunResumeConfig> {
     const tree = await this.readTree(teamRunId);
     if (!tree) throw new Error(`Team run execution tree not found for '${teamRunId}'.`);
-    return { teamRunId, isActive: this.manager.getTeamRun(teamRunId) !== null, executionTree: tree };
+    return { teamRunId, isActive: this.manager.hasManagedTeamRun(teamRunId), executionTree: tree };
   }
 
   archiveStoredTeamRun(teamRunId: string): Promise<ArchiveStoredTeamRunResult> {

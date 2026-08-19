@@ -1,0 +1,20 @@
+timestamp=2026-08-19T08:48:11Z
+recorded_base=origin/personal
+finalization_target=personal
+checkpoint=5deade8d8afa1d92a784e4a8f30a147f91487d8b
+command=git fetch origin personal
+base=0194fb4fffa69037a46aeace491024fdf816dde7
+head_before_merge=5deade8d8afa1d92a784e4a8f30a147f91487d8b
+base_to_head_before=0	3
+merge_base_before=0194fb4fffa69037a46aeace491024fdf816dde7
+command=git merge --no-edit origin/personal
+Already up to date.
+head_after_merge=5deade8d8afa1d92a784e4a8f30a147f91487d8b
+head_changed=no
+base_to_head_after=0	3
+base_is_ancestor=yes
+post_integration_rerun_required=no
+no_rerun_reason=refreshed base remained 0194fb4ff and was already an ancestor of the exact reviewed checkpoint; merge was a no-op and no implementation or durable-test behavior changed
+status_after_merge:
+## codex/team-run-offline-delete-action...origin/personal [ahead 3]
+?? tickets/in-progress/team-run-offline-delete-action/delivery-integrated-state-refresh.log

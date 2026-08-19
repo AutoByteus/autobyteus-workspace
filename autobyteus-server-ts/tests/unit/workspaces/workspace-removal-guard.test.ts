@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { WorkspaceRemovalGuard } from "../../../src/workspaces/workspace-removal-guard.js";
 import { buildFilesystemWorkspaceId } from "../../../src/workspaces/workspace-registry-store.js";
+import { testAgentNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
 
 const workspaceRootPath = "/tmp/autobyteus-workspace-removal-guard";
 const workspaceId = buildFilesystemWorkspaceId(workspaceRootPath);
@@ -13,8 +14,8 @@ describe("WorkspaceRemovalGuard", () => {
         getActiveRun: () => ({ config: { workspaceId: "legacy-active-workspace-id" } }) as any,
       },
       {
-        listActiveRuns: () => [],
-        getActiveRun: () => null,
+        listManagedTeamRunIds: () => [],
+        getManagedTeamRun: () => null,
       },
       (activeWorkspaceId) =>
         activeWorkspaceId === "legacy-active-workspace-id"
@@ -38,21 +39,13 @@ describe("WorkspaceRemovalGuard", () => {
         getActiveRun: () => null,
       },
       {
-        listActiveRuns: () => ["team-1"],
-        getActiveRun: () => ({
-          config: {
-            memberTree: [
-              {
-                memberKind: "agent_team",
-                memberConfigs: [
-                  {
-                    memberKind: "agent",
-                    workspaceRootPath: `${workspaceRootPath}/.`,
-                  },
-                ],
-              },
-            ],
-          },
+        listManagedTeamRunIds: () => ["team-1"],
+        getManagedTeamRun: () => ({
+          getExecutionTreeSnapshot: () => testExecutionTree({
+            rootTeamRunId: "team-1",
+            coordinatorAddress: "/worker",
+            children: [testAgentNode("/worker", { workspaceRootPath: `${workspaceRootPath}/.` })],
+          }),
         }) as any,
       },
     );
@@ -73,16 +66,13 @@ describe("WorkspaceRemovalGuard", () => {
         getActiveRun: () => ({ config: { workspaceId: buildFilesystemWorkspaceId("/tmp/other") } }) as any,
       },
       {
-        listActiveRuns: () => ["team-1"],
-        getActiveRun: () => ({
-          config: {
-            memberTree: [
-              {
-                memberKind: "agent",
-                workspaceRootPath: "/tmp/other",
-              },
-            ],
-          },
+        listManagedTeamRunIds: () => ["team-1"],
+        getManagedTeamRun: () => ({
+          getExecutionTreeSnapshot: () => testExecutionTree({
+            rootTeamRunId: "team-1",
+            coordinatorAddress: "/worker",
+            children: [testAgentNode("/worker", { workspaceRootPath: "/tmp/other" })],
+          }),
         }) as any,
       },
     );

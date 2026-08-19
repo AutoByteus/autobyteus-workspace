@@ -13,7 +13,7 @@ import { TaskDelegationToolRunRouter } from "./task-delegation-tool-run-router.j
 
 const buildTaskDelegationToolRunRouter = (): TaskDelegationToolRunRouter =>
   new TaskDelegationToolRunRouter({
-    resolveTeamRun: (teamRunId) => getTeamRunService().resolveTeamRun(teamRunId),
+    resolveTeamRun: (teamRunId) => getTeamRunService().resolveActiveTeamRun(teamRunId),
   });
 
 export const buildTaskDelegationToolContextFromMemberTeamContext = (

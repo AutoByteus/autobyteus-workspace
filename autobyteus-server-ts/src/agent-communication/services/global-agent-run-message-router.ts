@@ -57,7 +57,7 @@ export class GlobalAgentRunMessageRouter {
   constructor(private readonly deps: {
     agentRunManager?: ActiveRunLookup;
     grantRegistry?: DirectAgentRunMessageGrantRegistry;
-    teamRunManager?: Pick<AgentTeamRunManager, "getTeamRun">;
+    teamRunManager?: Pick<AgentTeamRunManager, "getActiveTeamRun">;
   } = {}) {}
 
   async deliver(input: GlobalAgentRunMessageDeliveryInput): Promise<AgentOperationResult> {
@@ -113,7 +113,7 @@ export class GlobalAgentRunMessageRouter {
       targetTeam &&
       senderTeam.identity.rootTeamRunId === targetTeam.identity.rootTeamRunId
     ) {
-      const root = this.teamRunManager.getTeamRun(senderTeam.identity.rootTeamRunId);
+      const root = this.teamRunManager.getActiveTeamRun(senderTeam.identity.rootTeamRunId);
       const result = root
         ? await root.deliverExactAgentMessage({
             sender: Object.freeze({
@@ -236,7 +236,7 @@ export class GlobalAgentRunMessageRouter {
     return this.deps.grantRegistry ?? getDirectAgentRunMessageGrantRegistry();
   }
 
-  private get teamRunManager(): Pick<AgentTeamRunManager, "getTeamRun"> {
+  private get teamRunManager(): Pick<AgentTeamRunManager, "getActiveTeamRun"> {
     return this.deps.teamRunManager ?? AgentTeamRunManager.getInstance();
   }
 }

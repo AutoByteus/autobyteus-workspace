@@ -244,31 +244,33 @@
 
                 <div class="ml-2 flex flex-shrink-0 items-center gap-1">
                   <button
-                    v-if="state.canTerminateTeam(team.isActive)"
+                    v-if="team.isActive"
                     type="button"
                     class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-colors hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-50"
                     :title="$t('workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.terminate_team')"
+                    :aria-label="$t('workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.terminate_team')"
                     :disabled="state.isTeamTerminating(team.teamRunId)"
                     @click.stop="actions.onTerminateTeam(team.teamRunId)"
                   >
                     <Icon icon="heroicons:stop-20-solid" class="h-3.5 w-3.5" />
                   </button>
                   <button
-                    v-else-if="team.deleteLifecycle === 'READY'"
+                    v-if="!team.isActive && team.deleteLifecycle === 'READY'"
                     type="button"
                     class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-amber-50 hover:text-amber-600 md:opacity-0 md:group-hover/team-row:opacity-100 md:group-focus-within/team-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50"
                     :title="$t('workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.archive_team_history')"
-                    :disabled="state.isTeamArchiving(team.teamRunId) || state.isTeamDeleting(team.teamRunId)"
+                    :disabled="state.isTeamArchiving(team.teamRunId) || state.isTeamDeleting(team.teamRunId) || state.isTeamTerminating(team.teamRunId)"
                     @click.stop="actions.onArchiveTeam(team)"
                   >
                     <Icon icon="heroicons:archive-box-20-solid" class="h-3.5 w-3.5" />
                   </button>
                   <button
-                    v-if="!state.canTerminateTeam(team.isActive) && team.deleteLifecycle === 'READY'"
+                    v-if="!team.isActive && team.deleteLifecycle === 'READY'"
                     type="button"
                     class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-red-50 hover:text-red-600 md:opacity-0 md:group-hover/team-row:opacity-100 md:group-focus-within/team-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50"
                     :title="$t('workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.delete_team_history_permanently')"
-                    :disabled="state.isTeamDeleting(team.teamRunId) || state.isTeamArchiving(team.teamRunId)"
+                    :aria-label="$t('workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.delete_team_history_permanently')"
+                    :disabled="state.isTeamDeleting(team.teamRunId) || state.isTeamArchiving(team.teamRunId) || state.isTeamTerminating(team.teamRunId)"
                     @click.stop="actions.onDeleteTeam(team)"
                   >
                     <Icon icon="heroicons:trash-20-solid" class="h-3.5 w-3.5" />

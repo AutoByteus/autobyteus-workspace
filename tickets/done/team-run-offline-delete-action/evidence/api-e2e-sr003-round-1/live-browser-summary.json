@@ -1,0 +1,90 @@
+{
+  "surface": "open_tab browser against isolated worktree Nuxt/backend",
+  "tabId": "fe5151",
+  "frontend": "http://127.0.0.1:13000",
+  "backend": "http://127.0.0.1:18080",
+  "package": {
+    "path": "/Users/normy/autobyteus_org/autobyteus-agents",
+    "observedStatus": "Agent package reloaded.",
+    "team": "Classroom Simulation Team"
+  },
+  "primaryRun": {
+    "teamRunId": "classroom_simulation_team_e6a6a2652a124749a95fd21ef2664c8b",
+    "activePendingApproval": {
+      "stopVisible": 1,
+      "deleteVisible": 0,
+      "archiveVisible": 0,
+      "approvalVisible": true,
+      "combinedCopyVisible": false,
+      "visibleDialogs": 0,
+      "stopTabIndex": 0,
+      "marker": "ABSENT"
+    },
+    "stopActivation": {
+      "stopFocusedBeforeActivation": true,
+      "visibleDialogsImmediatelyAfter": 0,
+      "deleteVisibleWhilePending": 0,
+      "combinedCopyVisible": false
+    },
+    "afterStop": {
+      "sameRowPresent": true,
+      "activity": "inactive",
+      "stopVisible": 0,
+      "deleteVisible": 1,
+      "archiveVisible": 1,
+      "approvalVisible": false,
+      "marker": "ABSENT",
+      "runDirectory": "PRESENT",
+      "indexTerminatedAt": "2026-08-19T08:05:40.673Z",
+      "toolTerminalPresentation": "user_interrupt"
+    },
+    "retainedV1Continuation": {
+      "request": "Reply with exactly RESTORED-SR003 and do not call tools or contact the student.",
+      "responseObserved": "RESTORED-SR003",
+      "activityAfterContinuation": "active",
+      "stopVisible": 1,
+      "deleteVisible": 0,
+      "combinedCopyVisible": false
+    },
+    "secondStop": {
+      "visibleDialogsImmediatelyAfter": 0,
+      "deleteVisibleImmediatelyAfter": 0,
+      "finalActivity": "inactive",
+      "finalDeleteVisible": 1
+    },
+    "inactiveDelete": {
+      "deleteButtonFocused": true,
+      "deleteButtonTabIndex": 0,
+      "confirmation": "Delete this Team history permanently? This cannot be undone.",
+      "cancelPreservedRow": true,
+      "cancelPreservedRunDirectory": true,
+      "cancelPreservedIndexRow": true,
+      "confirmRemovedRow": true,
+      "confirmRemovedRunDirectory": true,
+      "confirmRemovedIndexRow": true,
+      "finalSelection": "No agent or team run selected"
+    }
+  },
+  "sameSummaryExactIdentity": {
+    "targetTeamRunId": "classroom_simulation_team_d7d027924d744ffb8bfea7fe9f8f9af0",
+    "survivorTeamRunId": "classroom_simulation_team_6a51c8f854654c29ab98150eae8a935d",
+    "canonicalSummary": "Same summary isolation SR-003: reply exactly SAME-SUMMARY-SR003 and do not call tools or contact ...",
+    "bothStoppedIndependentlyWithoutDialog": true,
+    "targetRemoved": true,
+    "survivorRetainedAfterTargetDelete": true,
+    "survivorThenCleanedUp": true
+  },
+  "responsiveAndAccessibility": {
+    "desktopViewport": "1023x738",
+    "activeStopSemanticButtonAndTabIndexZero": true,
+    "inactiveDeleteSemanticButtonAndTabIndexZero": true,
+    "narrowRuntimeEmulation": "not available through the currently exposed open_tab tool set",
+    "narrowEvidence": "source uses visible-by-default action opacity below md; focused Nuxt DOM coverage passes"
+  },
+  "productionSafety": {
+    "productionProfileTouched": false,
+    "electronControlled": false,
+    "productionPort29695Touched": false,
+    "unrelatedPorts3000And8000Touched": false
+  }
+}

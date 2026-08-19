@@ -1,0 +1,40 @@
+timestamp=2026-08-19T09:40:57Z
+branch=codex/team-run-offline-delete-action
+head=78163822944cc44b3c5e2301bbe4f711f36af8fd
+recorded_base=origin/personal
+base_before_fetch=0194fb4fffa69037a46aeace491024fdf816dde7
+source_review=CRR-004 Pass 95.7/100
+api_e2e=API-REV-002 Pass 98.0%
+post_api_test_gate=CRR-005 Not Applicable
+implementation=IR-003 commit 78163822944cc44b3c5e2301bbe4f711f36af8fd
+tracked_uncommitted_paths:
+M	autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md
+M	autobyteus-server-ts/docs/modules/agent_streaming.md
+M	autobyteus-server-ts/docs/modules/agent_team_execution.md
+M	tickets/in-progress/team-run-offline-delete-action/api-e2e-coverage-investigation.md
+M	tickets/in-progress/team-run-offline-delete-action/api-e2e-execution-coverage-report.md
+M	tickets/in-progress/team-run-offline-delete-action/api-e2e-revision-record.md
+M	tickets/in-progress/team-run-offline-delete-action/api-e2e-test-review-report.md
+M	tickets/in-progress/team-run-offline-delete-action/code-review-report.md
+M	tickets/in-progress/team-run-offline-delete-action/code-review-revision-record.md
+untracked_paths:
+tickets/in-progress/team-run-offline-delete-action/delivery-integrated-state-refresh.log
+tickets/in-progress/team-run-offline-delete-action/delivery-reentry-preintegration-audit.log
+tickets/in-progress/team-run-offline-delete-action/delivery-revision-record.md
+tickets/in-progress/team-run-offline-delete-action/docs-sync-report.md
+tickets/in-progress/team-run-offline-delete-action/docs-sync-validation.log
+tickets/in-progress/team-run-offline-delete-action/electron-build-blocker.md
+tickets/in-progress/team-run-offline-delete-action/electron-build-macos-arm64.log
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-sr003-round-2/diff-and-scope.log
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-sr003-round-2/localization-boundary.log
+tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-sr003-round-2/web-localized-accessible-name.log
+tickets/in-progress/team-run-offline-delete-action/handoff-summary.md
+tickets/in-progress/team-run-offline-delete-action/release-deployment-report.md
+
+tracked_diff_check:
+result=pass
+
+post_ir003_source_test_delta:
+result=none
+
+checkpoint_reason=preserve the fully reviewed/revalidated API-REV-002/CRR-005 package plus DR-001/DR-002 documentation before the mandatory delivery re-entry base refresh and Electron rebuild

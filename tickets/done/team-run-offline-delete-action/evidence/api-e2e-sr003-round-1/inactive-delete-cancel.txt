@@ -1,0 +1,2 @@
+run_directory_after_cancel=PRESENT
+index_rows_after_cancel=1

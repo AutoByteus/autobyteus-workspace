@@ -52,8 +52,8 @@ export class TeamCommunicationProjectionService {
 
   private async readProjection(teamRunId: string): Promise<TeamCommunicationProjection> {
     const rootTeamRunId = required(teamRunId, "teamRunId");
-    const active = this.manager.getTeamRun(rootTeamRunId);
-    const snapshot = active?.getCommunicationSnapshot() ?? await this.store.read(
+    const managed = this.manager.getManagedTeamRun(rootTeamRunId);
+    const snapshot = managed?.getCommunicationSnapshot() ?? await this.store.read(
       this.layout.getTeamDirPath({ rootTeamRunId, ancestorTeamRunIds: [] }),
       rootTeamRunId,
     );

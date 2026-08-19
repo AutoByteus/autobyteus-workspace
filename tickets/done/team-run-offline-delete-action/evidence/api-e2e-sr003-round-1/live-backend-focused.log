@@ -1,0 +1,31 @@
+=== primary pending-approval run correlation ===
+179:Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/.autobyteus/development/server-data/memory/agent_teams/classroom_simulation_team_e6a6a2652a124749a95fd21ef2664c8b/professor_5683f44703e2433eb06c822eef4043bd/raw_traces_active.jsonl
+180:Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/.autobyteus/development/server-data/memory/agent_teams/classroom_simulation_team_e6a6a2652a124749a95fd21ef2664c8b/student_4737e065e770448d9ad7460c115589a7/raw_traces_active.jsonl
+181:Agent team websocket attached for team run classroom_simulation_team_e6a6a2652a124749a95fd21ef2664c8b
+182:Created agent session 4b438af6-4778-42e0-97e9-0d52e71dd535 for run classroom_simulation_team_e6a6a2652a124749a95fd21ef2664c8b
+183:Agent Team WebSocket connected: session=4b438af6-4778-42e0-97e9-0d52e71dd535, run=classroom_simulation_team_e6a6a2652a124749a95fd21ef2664c8b
+422:AgentExternalEventNotifier (NotifierID: cc8211fc-4dac-413f-897c-ddbb87b06adb, AgentID: professor_5683f44703e2433eb06c822eef4043bd) emitted agent_tool_approval_requested. Kwarg keys for emit: agent_id,payload
+423:Agent 'professor_5683f44703e2433eb06c822eef4043bd' requesting runtime interrupt.
+425:AgentExternalEventNotifier (NotifierID: cc8211fc-4dac-413f-897c-ddbb87b06adb, AgentID: professor_5683f44703e2433eb06c822eef4043bd) emitted agent_tool_execution_interrupted. Kwarg keys for emit: agent_id,payload
+428:AgentExternalEventNotifier (NotifierID: cc8211fc-4dac-413f-897c-ddbb87b06adb, AgentID: professor_5683f44703e2433eb06c822eef4043bd) emitted agent_turn_interrupted. Kwarg keys for emit: agent_id,payload
+443:Closed agent session 4b438af6-4778-42e0-97e9-0d52e71dd535
+444:Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/.autobyteus/development/server-data/memory/agent_teams/classroom_simulation_team_e6a6a2652a124749a95fd21ef2664c8b/student_4737e065e770448d9ad7460c115589a7/raw_traces_active.jsonl
+445:Agent team websocket attached for team run classroom_simulation_team_e6a6a2652a124749a95fd21ef2664c8b
+446:Created agent session d3875520-26ac-42db-bd47-18c15cbe321e for run classroom_simulation_team_e6a6a2652a124749a95fd21ef2664c8b
+447:Agent Team WebSocket connected: session=d3875520-26ac-42db-bd47-18c15cbe321e, run=classroom_simulation_team_e6a6a2652a124749a95fd21ef2664c8b
+706:Closed agent session d3875520-26ac-42db-bd47-18c15cbe321e
+1214:Closed agent session 7aa53bd0-b38e-4449-818d-e6f2d38eba7b
+1228:Closed agent session 6cdb364f-d383-4864-9874-4f19cafdf31e
+=== same-summary run correlation ===
+708:Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/.autobyteus/development/server-data/memory/agent_teams/classroom_simulation_team_6a51c8f854654c29ab98150eae8a935d/professor_a6a039043bab4552a6e5631eb9f50005/raw_traces_active.jsonl
+709:Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/.autobyteus/development/server-data/memory/agent_teams/classroom_simulation_team_6a51c8f854654c29ab98150eae8a935d/student_caf56bc57fcb4bf3b7b07f0d86b75e94/raw_traces_active.jsonl
+711:Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/.autobyteus/development/server-data/memory/agent_teams/classroom_simulation_team_d7d027924d744ffb8bfea7fe9f8f9af0/professor_a749ded5ba6f487a9d67e6cf8577bf80/raw_traces_active.jsonl
+712:Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/.autobyteus/development/server-data/memory/agent_teams/classroom_simulation_team_d7d027924d744ffb8bfea7fe9f8f9af0/student_0a0b0963262c4b318b497385cf5a0f66/raw_traces_active.jsonl
+713:Agent team websocket attached for team run classroom_simulation_team_d7d027924d744ffb8bfea7fe9f8f9af0
+714:Created agent session 6cdb364f-d383-4864-9874-4f19cafdf31e for run classroom_simulation_team_d7d027924d744ffb8bfea7fe9f8f9af0
+715:Agent Team WebSocket connected: session=6cdb364f-d383-4864-9874-4f19cafdf31e, run=classroom_simulation_team_d7d027924d744ffb8bfea7fe9f8f9af0
+716:Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/.autobyteus/development/server-data/memory/agent_teams/classroom_simulation_team_6a51c8f854654c29ab98150eae8a935d/professor_a6a039043bab4552a6e5631eb9f50005/raw_traces_active.jsonl
+717:Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/.autobyteus/development/server-data/memory/agent_teams/classroom_simulation_team_6a51c8f854654c29ab98150eae8a935d/student_caf56bc57fcb4bf3b7b07f0d86b75e94/raw_traces_active.jsonl
+718:Agent team websocket attached for team run classroom_simulation_team_6a51c8f854654c29ab98150eae8a935d
+719:Created agent session 7aa53bd0-b38e-4449-818d-e6f2d38eba7b for run classroom_simulation_team_6a51c8f854654c29ab98150eae8a935d
+720:Agent Team WebSocket connected: session=7aa53bd0-b38e-4449-818d-e6f2d38eba7b, run=classroom_simulation_team_6a51c8f854654c29ab98150eae8a935d

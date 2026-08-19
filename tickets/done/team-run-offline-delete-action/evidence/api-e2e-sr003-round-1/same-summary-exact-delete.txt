@@ -1,0 +1,13 @@
+target_dir=ABSENT
+survivor_dir=PRESENT
+{
+  "targetRows": 0,
+  "survivorRows": 1,
+  "survivor": [
+    {
+      "teamRunId": "classroom_simulation_team_6a51c8f854654c29ab98150eae8a935d",
+      "summary": "Same summary isolation SR-003: reply exactly SAME-SUMMARY-SR003 and do not call tools or contact ...",
+      "terminatedAt": "2026-08-19T08:08:56.398Z"
+    }
+  ]
+}

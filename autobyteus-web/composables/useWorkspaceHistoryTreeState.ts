@@ -357,8 +357,6 @@ export const useWorkspaceHistoryTreeState = (params: {
     { immediate: true },
   );
 
-  const canTerminateTeam = (isActive: boolean): boolean => isActive;
-
   const expandedWorkspaceIds = (): string[] =>
     Object.entries(expandedWorkspaces.value)
       .filter(([, expanded]) => expanded)
@@ -399,7 +397,6 @@ export const useWorkspaceHistoryTreeState = (params: {
     setTeamMemberExpanded,
     toggleTeamMember,
     expandTeamMemberAncestors,
-    canTerminateTeam,
     expandedWorkspaceIds,
     pruneWorkspace,
   };

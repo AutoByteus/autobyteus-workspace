@@ -31,7 +31,6 @@ export interface WorkspaceHistorySectionState {
     teamRunId: string,
     memberAddress: string,
   ) => void;
-  canTerminateTeam: (isActive: boolean) => boolean;
 }
 
 export interface WorkspaceHistoryAvatarBindings {

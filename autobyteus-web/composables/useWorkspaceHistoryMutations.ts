@@ -1,4 +1,4 @@
-import { ref, type Ref } from 'vue';
+import { computed, ref, type Ref } from 'vue';
 import type { RunTreeRow } from '~/utils/runTreeProjection';
 import type { TeamTreeNode } from '~/stores/runHistoryTypes';
 import { useLocalization } from '~/composables/useLocalization';
@@ -12,7 +12,6 @@ export const useWorkspaceHistoryMutations = (params: {
   archiveRun: (runId: string) => Promise<boolean>;
   archiveTeamRun: (teamRunId: string) => Promise<boolean>;
   addToast: (message: string, type: 'success' | 'error' | 'warning' | 'info') => void;
-  canTerminateTeam: (isActive: boolean) => boolean;
   stopPendingTeamIds: Ref<Record<string, boolean>>;
 }) => {
   const { t } = useLocalization();
@@ -25,6 +24,9 @@ export const useWorkspaceHistoryMutations = (params: {
   const showDeleteConfirmation = ref(false);
   const pendingDeleteRunId = ref<string | null>(null);
   const pendingDeleteTeamRunId = ref<string | null>(null);
+  const deleteConfirmationMessage = computed(() => pendingDeleteTeamRunId.value
+    ? 'Delete this Team history permanently? This cannot be undone.'
+    : 'Delete this history permanently. This cannot be undone.');
 
   const removeDraftRun = async (runId: string): Promise<void> => {
     const removeErrorMessage = 'Failed to remove draft run. Please try again.';
@@ -120,12 +122,15 @@ export const useWorkspaceHistoryMutations = (params: {
   };
 
   const onDeleteTeam = (team: TeamTreeNode): void => {
-    if (params.canTerminateTeam(team.isActive) || team.deleteLifecycle !== 'READY') {
+    if (team.isActive || team.deleteLifecycle !== 'READY') {
       return;
     }
 
     const teamRunId = team.teamRunId.trim();
-    if (!teamRunId || deletingTeamIds.value[teamRunId] || archivingTeamIds.value[teamRunId]) {
+    if (
+      !teamRunId || deletingTeamIds.value[teamRunId] || archivingTeamIds.value[teamRunId] ||
+      stopPendingTeamIds.value[teamRunId]
+    ) {
       return;
     }
 
@@ -177,7 +182,7 @@ export const useWorkspaceHistoryMutations = (params: {
 
   const onArchiveTeam = async (team: TeamTreeNode): Promise<void> => {
     if (
-      params.canTerminateTeam(team.isActive) ||
+      team.isActive ||
       team.deleteLifecycle !== 'READY'
     ) {
       return;
@@ -260,7 +265,11 @@ export const useWorkspaceHistoryMutations = (params: {
       return;
     }
 
-    if (!teamRunId || deletingTeamIds.value[teamRunId] || archivingTeamIds.value[teamRunId]) {
+    if (!teamRunId) return;
+    if (
+      deletingTeamIds.value[teamRunId] || archivingTeamIds.value[teamRunId] ||
+      stopPendingTeamIds.value[teamRunId]
+    ) {
       return;
     }
 
@@ -292,6 +301,7 @@ export const useWorkspaceHistoryMutations = (params: {
     deletingRunIds,
     deletingTeamIds,
     showDeleteConfirmation,
+    deleteConfirmationMessage,
     archivingRunIds,
     archivingTeamIds,
     onTerminateRun,

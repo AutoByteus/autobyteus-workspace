@@ -27,7 +27,7 @@ export class ChannelTeamRunFacade {
   async dispatchToTeamBinding(binding: ChannelBinding, envelope: ExternalMessageEnvelope): Promise<ChannelRunDispatchResult> {
     const teamRunId = await this.launcher.resolveOrStartTeamRun(binding);
     return this.locks.runExclusive(`team:${teamRunId}`, async () => {
-      const run = await this.teams.resolveTeamRun(teamRunId);
+      const run = await this.teams.resolveActiveTeamRun(teamRunId);
       if (!run) throw new Error(`Team run '${teamRunId}' is not active.`);
       const target = this.targetAddress(binding, run);
       const capture = startTeamDispatchTurnCapture(run.subscribeToEvents.bind(run), target);
