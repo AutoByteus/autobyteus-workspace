@@ -1,0 +1,61 @@
+=== git diff --check ===
+=== CRR-004 commit production/test scope ===
+M	autobyteus-web/components/workspace/history/WorkspaceHistoryWorkspaceSection.vue
+M	autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts
+M	tickets/in-progress/team-run-offline-delete-action/implementation-handoff.md
+M	tickets/in-progress/team-run-offline-delete-action/implementation-revision-record.md
+=== CRR-004 exact delta stat ===
+781638229 fix: localize team history delete label
+ .../history/WorkspaceHistoryWorkspaceSection.vue   |  2 +-
+ .../WorkspaceHistoryWorkspaceSection.spec.ts       |  6 +-
+ .../implementation-handoff.md                      | 86 ++++++++++++----------
+ .../implementation-revision-record.md              | 22 ++++++
+ 4 files changed, 74 insertions(+), 42 deletions(-)
+=== API/E2E-owned durable paths changed after HEAD ===
+NONE
+=== binding delta ===
+diff --git a/autobyteus-web/components/workspace/history/WorkspaceHistoryWorkspaceSection.vue b/autobyteus-web/components/workspace/history/WorkspaceHistoryWorkspaceSection.vue
+index 929d5a998..feb6d60f4 100644
+--- a/autobyteus-web/components/workspace/history/WorkspaceHistoryWorkspaceSection.vue
++++ b/autobyteus-web/components/workspace/history/WorkspaceHistoryWorkspaceSection.vue
+@@ -269,7 +269,7 @@
+                     type="button"
+                     class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-red-50 hover:text-red-600 md:opacity-0 md:group-hover/team-row:opacity-100 md:group-focus-within/team-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50"
+                     :title="$t('workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.delete_team_history_permanently')"
+-                    aria-label="Delete team history permanently"
++                    :aria-label="$t('workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.delete_team_history_permanently')"
+                     :disabled="state.isTeamDeleting(team.teamRunId) || state.isTeamArchiving(team.teamRunId) || state.isTeamTerminating(team.teamRunId)"
+                     @click.stop="actions.onDeleteTeam(team)"
+                   >
+diff --git a/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts b/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts
+index df8496554..f380c7da4 100644
+--- a/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts
++++ b/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts
+@@ -147,6 +147,7 @@ const mountSubject = (options: {
+         'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.no_active_team_runs': 'No active team runs',
+         'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.active_team_run': 'Active team run',
+         'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.inactive_team_run': 'Inactive team run',
++        'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.delete_team_history_permanently': 'Localized delete team history permanently',
+       }[key] ?? key) },
+     },
+   });
+@@ -181,7 +182,7 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
+   it('renders mutually exclusive active Stop and inactive Archive/Delete actions', async () => {
+     const active = mountSubject();
+     expect(active.wrapper.find('button[title$="terminate_team"]').exists()).toBe(true);
+-    expect(active.wrapper.find('button[aria-label="Delete team history permanently"]').exists()).toBe(false);
++    expect(active.wrapper.find('button[aria-label="Localized delete team history permanently"]').exists()).toBe(false);
+     expect(active.wrapper.find('button[title$="archive_team_history"]').exists()).toBe(false);
+     active.wrapper.unmount();
+ 
+@@ -193,7 +194,8 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
+     const inactive = mountSubject({ workspaceTeams: [inactiveTeam] });
+     expect(inactive.wrapper.find('button[title$="terminate_team"]').exists()).toBe(false);
+     expect(inactive.wrapper.find('button[title$="archive_team_history"]').exists()).toBe(true);
+-    expect(inactive.wrapper.find('button[aria-label="Delete team history permanently"]').exists()).toBe(true);
++    const deleteButton = inactive.wrapper.get('button[aria-label="Localized delete team history permanently"]');
++    expect(deleteButton.attributes('title')).toBe('Localized delete team history permanently');
+   });
+ 
+   it('renders and selects exact stable and task-Agent execution identities', async () => {
+DIFF_SCOPE_PASS

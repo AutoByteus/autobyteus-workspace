@@ -5,6 +5,7 @@
 | Revision ID | Trigger | Related Revisions | Prior Result / Confidence | Current Result / Confidence |
 | --- | --- | --- | --- | --- |
 | API-REV-001 | `/code_reviewer`, `CRR-002`, round 1 | `SR-003 / ARCH-REV-003 / IR-002 / CRR-002` | N/A | Pass / 97.1% |
+| API-REV-002 | `/code_reviewer`, `CRR-004`, round 2 delivery re-entry | `SR-003 / ARCH-REV-003 / IR-003 / CRR-004 / DR-002` | Pass / 97.1% | Pass / 98.0% |
 
 ## Revision Entries
 
@@ -30,3 +31,25 @@ None. No prior completed API/E2E result existed; paused SR-002 work was not trea
 - Remaining failure IDs: none.
 - Recommended recipient: `/code_reviewer` for mandatory proportional durable-test review.
 - Remaining bounded risks: explicit native-restoration and infrastructure-corruption exclusions, no live narrow-device emulation, and unaffected/uncontrolled Electron shell. No critical AC remains unproven.
+
+### API-REV-002 — Localized inactive-Delete accessible-name revalidation
+
+- Triggering role/report/round: `/code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/tickets/in-progress/team-run-offline-delete-action/code-review-report.md`; delivery re-entry round 2.
+- Triggering finding/scenarios: resolved `DR-002 / M-008`; REP-UI-002, REP-I18N-002, REP-DIFF-002.
+- Related revisions: `SR-003`, `ARCH-REV-003`, `IR-003`, `CRR-004`, `DR-002`.
+- Rationale: proportionately revalidate the one production change binding inactive Delete's accessible name to the same existing localized key as its title, while preserving strict active/Stop-pending no-Delete behavior.
+- Coverage decision: API-REV-001 browser/runtime/storage evidence and CRR-003-reviewed API-owned E2Es remain valid. The implementation-owned component-test delta is the CRR-004-reviewed baseline and was executed without API/E2E edits.
+- Execution delta: 2 focused Nuxt files / 63 tests passed; web/localization guards passed; localization literal audit passed with zero unresolved findings; exact EN/ZH catalog and two-binding source scan passed; diff/scope check passed.
+- Broader validation delta: `Not Required`; direct rendered-component proof and independent localization-boundary/catalog proof fully cover the changed declarative attribute.
+
+#### Prior Failure Resolution
+
+`DR-002 / M-008` was resolved in `IR-003 / CRR-004`. API/E2E independently confirmed the localized binding, active/inactive visibility preservation, and catalog/boundary integrity. No API-REV-001 failure existed.
+
+- Canonical artifacts updated: coverage investigation, execution coverage report, revision record, and `evidence/api-e2e-sr003-round-2`.
+- Prior result/confidence: `Pass / 97.1%`.
+- Current result/confidence: `Pass / 98.0%`.
+- Durable test paths changed by API/E2E this round: none.
+- Remaining failure IDs: none.
+- Recommended recipient: `/code_reviewer` for a post-API `Not Applicable` test-code gate before delivery resumes.
+- Remaining risks: the bounded API-REV-001 exclusions are unchanged; none is affected by the localization-only delta.

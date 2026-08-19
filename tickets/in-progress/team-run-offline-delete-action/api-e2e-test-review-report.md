@@ -2,48 +2,47 @@
 
 ## Review Meta
 
-- Review Round: `1`
-- Trigger: Successful `API-REV-001` execution with two updated repository-resident durable E2E files
+- Review Round: `2`
+- Trigger: Successful delivery re-entry validation under `API-REV-002` after `IR-003 / CRR-004`
 - Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/tickets/in-progress/team-run-offline-delete-action/requirements.md`
 - Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/tickets/in-progress/team-run-offline-delete-action/design-spec.md`
-- Supplemental Task Artifacts Reviewed As Context: `ui-ux-spec.md`, `runtime-reproduction-evidence.md`, `design-use-case-validation.md`, and the current API/E2E evidence package
+- Supplemental Task Artifacts Reviewed As Context: `ui-ux-spec.md`, `electron-build-blocker.md`, and the current API/E2E round-2 evidence package
 - Solution Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/tickets/in-progress/team-run-offline-delete-action/solution-revision-record.md` (`SR-003`)
 - Architecture Review Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/tickets/in-progress/team-run-offline-delete-action/architecture-review-revision-record.md` (`ARCH-REV-003`)
-- Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/tickets/in-progress/team-run-offline-delete-action/implementation-revision-record.md` (`IR-002`)
-- Original Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/tickets/in-progress/team-run-offline-delete-action/code-review-report.md` (`CRR-002` source Pass remains authoritative and was not reopened)
+- Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/tickets/in-progress/team-run-offline-delete-action/implementation-revision-record.md` (`IR-003`)
+- Original Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/tickets/in-progress/team-run-offline-delete-action/code-review-report.md` (`CRR-004` source Pass remains authoritative and was not reopened)
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/tickets/in-progress/team-run-offline-delete-action/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-003`
+- Current Code Review Revision ID: `CRR-005`
 - Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/tickets/in-progress/team-run-offline-delete-action/api-e2e-coverage-investigation.md`
 - Execution Coverage Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/tickets/in-progress/team-run-offline-delete-action/api-e2e-execution-coverage-report.md`
-- API/E2E Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/tickets/in-progress/team-run-offline-delete-action/api-e2e-revision-record.md` (`API-REV-001`)
-- Delivery Revision Record Reviewed As Context (delivery re-entry only): `N/A`
+- API/E2E Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/tickets/in-progress/team-run-offline-delete-action/api-e2e-revision-record.md` (`API-REV-002`)
+- Delivery Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/tickets/in-progress/team-run-offline-delete-action/delivery-revision-record.md` (`DR-002` re-entry; `DR-001` historical baseline)
 - API/E2E Result: `Pass`
-- Final Validation Confidence: `97.1%`; every category `>=96%`
-- Prior unresolved test-review findings rechecked: `N/A`; this is the first proportional review for this task
+- Final Validation Confidence: `98.0%`; every category `>=97%`
+- Prior unresolved test-review findings rechecked: None. `CRR-003` passed the two API-owned E2E updates from `API-REV-001`; those files were unchanged in `API-REV-002`.
 
 ## Changed Durable Test Scope
 
-Temporary browser probes, logs, screenshots, generated evidence, and execution-only artifacts were excluded from test-code review.
+Temporary logs, catalog/source scans, and execution artifacts are evidence, not durable test code. The implementation-owned `WorkspaceHistoryWorkspaceSection.spec.ts` delta was committed before API/E2E and already reviewed as part of `CRR-004`; API/E2E only executed it.
 
 | Durable Test Path | Change (`Added`/`Updated`/`Removed`) | Related Scenario / Requirement | Coherent Test Responsibility | Notes |
 | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/autobyteus-server-ts/tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts` | Updated | `DUR-001`; `REQ-014`–`REQ-016`; `AC-012`, `AC-016`, `AC-018`, `AC-019` | One live-gated nested mixed-runtime GraphQL/WebSocket lifecycle: current exact-ID launch/communication, recursive Stop, terminal manager removal, retained restore, and external runtime binding retention | Replaces removed manager/route/projection assumptions with current contracts, aggregates split text deltas, and replaces the redundant nondeterministic second LLM tool hop with direct exact-ID Claude execution while retaining one real AutoByteus-to-Codex communication hop. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/autobyteus-server-ts/tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts` | Updated | `DUR-002`; `REQ-004`–`REQ-006`, `REQ-011`; `AC-003`, `AC-005`, `AC-006`, `AC-011`, `AC-018` | One GraphQL/history-catalog surface covering archive projection and managed-root rejection | Uses the explicit managed-root double and asserts canonical V1 tree `createdAt` authority without adding a compatibility accessor. |
+| None | N/A | `REP-UI-002`, `REP-I18N-002`, `REP-DIFF-002` | N/A | `API-REV-002` added, updated, and removed no repository-resident durable test. |
 
-- No durable test file changed: `No`
-- Review result when no durable test file changed: `N/A`
+- No durable test file changed: `Yes`
+- Review result when no durable test file changed: `Not Applicable`
 
 ## Proportional Test-Code Checks
 
 | Check | Result (`Pass`/`Fail`/`N/A`) | Evidence / Notes |
 | --- | --- | --- |
-| Scenario grouping and names make intent clear | Pass | The nested file remains one named live three-runtime launch/communication/Stop/restore journey; the archive file remains one focused GraphQL history surface with separate success and rejection scenarios. |
-| Assertions prove approved requirements instead of incidental implementation details | Pass | Assertions bind current agent/root IDs, managed/active membership, all configured leaf shutdown, exact root retention/restore, stable child identity, external-only platform bindings, managed-root rejection, and canonical V1 timestamps. They do not reintroduce the rejected active-delete workflow or compatibility API expectations. |
-| Fixtures, setup, helpers, and data builders reuse meaningful repetition | Pass | The nested suite reuses its GraphQL/socket lifecycle, current shared Team execution DTOs, recursive member lookup, text aggregation, exact-ID send helper, and common agent instructions. The archive suite preserves its existing hoisted manager harness, current Team fixtures, stores, and filesystem helpers. |
-| Test isolation and determinism are appropriate for the exercised boundary | Pass | Random definition/run identities, temporary data/workspace roots, explicit live gates, bounded polling, socket closure, reverse definition cleanup, and after-suite environment restoration isolate the provider E2E. Direct exact-ID Claude input avoids the optional second provider tool-call branch. The archive suite recreates and removes a fresh temporary memory root per test. |
-| Large files remain coherent and navigable rather than mixing unrelated scenarios | Pass | The live file is large because it owns one end-to-end nested mixed-runtime lifecycle and keeps setup/helpers adjacent to that journey; the archive file keeps one related GraphQL/catalog surface. Neither change adds an unrelated scenario cluster. |
-| No stale, duplicated, disabled-without-reason, or compatibility-only tests remain | Pass | Removed Team manager accessors, route-key launch/socket selectors, legacy metadata projections, and the invalid local-runtime platform-ID expectation are gone. The live suite is conditionally skipped only when its documented LM Studio/Codex/Claude gates or binaries are absent. No scenario was duplicated or removed. |
-| Added, updated, and removed coverage agrees with the coverage investigation and execution evidence | Pass | The two updated paths exactly match `DUR-001` and `DUR-002`; no durable file was added or removed. `API-REV-001` records archive 2/2 and live-gated nested 1/1 in 36.64 seconds, plus the broader successful repository/browser evidence. |
+| Scenario grouping and names make intent clear | N/A | No API/E2E-authored durable test delta exists in round 2. |
+| Assertions prove approved requirements instead of incidental implementation details | N/A | The executed implementation-owned translation-sentinel assertion was already reviewed under `CRR-004`; this round did not edit it. |
+| Fixtures, setup, helpers, and data builders reuse meaningful repetition | N/A | No durable test fixture or helper changed. |
+| Test isolation and determinism are appropriate for the exercised boundary | N/A | No durable test code changed; execution quality remains owned by `API-REV-002`. |
+| Large files remain coherent and navigable rather than mixing unrelated scenarios | N/A | No durable test file changed. |
+| No stale, duplicated, disabled-without-reason, or compatibility-only tests remain | N/A | No durable test was added, removed, disabled, or modified in this round. |
+| Added, updated, and removed coverage agrees with the coverage investigation and execution evidence | Pass | Coverage investigation, execution report, API revision record, and `diff-and-scope.log` all record no API/E2E-owned durable delta after commit `78163822944cc44b3c5e2301bbe4f711f36af8fd`. |
 
 ## Findings
 
@@ -51,8 +50,8 @@ None.
 
 ## Latest Authoritative Result
 
-- Result: `Pass`
-- Changed durable test paths reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/autobyteus-server-ts/tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts`; `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/autobyteus-server-ts/tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts`
+- Result: `Not Applicable`
+- Changed durable test paths reviewed: None
 - Unresolved finding IDs: None
 - Recommended Recipient: `/delivery_engineer`
-- Notes: The review was limited to the two durable E2E updates. It does not reopen `CRR-002` implementation-source scoring or `API-REV-001` execution confidence. Delivery still owns documentation synchronization for active/managed terminology, removed `TeamRunService.resolveTeamRun` references, and the strict Stop-retain then later separate Delete workflow.
+- Notes: `API-REV-002` passed at 98.0% without changing durable test code, so no proportional test-code review scope exists. `CRR-004` remains the authoritative source/test review for the implementation-owned localization assertion, and `CRR-003` remains the historical Pass for the unchanged API-owned E2Es. Delivery may resume with the complete package, preserving its documentation edits and rebuilding the verification package from reviewed state.

@@ -98,9 +98,11 @@ lifecycle.
   lifecycle, and activity recording. The resolved AgentRun—not the coordinator
   or WebSocket—owns FIFO admission and start/append/wait dispatch selection.
 - Team WebSocket connection (`/ws/agent-team/:teamRunId`) resolves through
-  `TeamRunService.resolveTeamRun(...)`, because restore belongs to the Team
-  container. It subscribes to events and manager lifecycle before reading a
-  fresh snapshot.
+  `TeamRunService.resolveActiveTeamRun(...)`, because supported restore belongs
+  to the Team container. An unmanaged persisted root may be restored, but a
+  manager-owned root that is stopping/non-command-active is not replaced. The
+  handler subscribes to events and manager lifecycle before reading a fresh
+  snapshot.
 - Team `SEND_MESSAGE`, `INTERRUPT_GENERATION`, `APPROVE_TOOL`, and `DENY_TOOL`
   accept exactly one strict `execution_address`. The address root must equal the
   WebSocket-bound Team run. The backend follows the exact task-Team chain and
@@ -114,9 +116,19 @@ lifecycle.
   acknowledgements echo the client `command_id` and exact execution address;
   the frontend accepts an acknowledgement only when both match its pending
   command.
-- Root `TEAM_RUN_LIFECYCLE { is_active }` is separate from exact leaf
-  `AGENT_STATUS`. Connection state, root liveness, Agent lifecycle, task
-  lifecycle, and open-work settlement must not be inferred from one another.
+- Manager lookup distinguishes a command-**active** root from a **managed** root
+  that is still owned during initialization, Stop, or a nonterminal Stop
+  failure. Root `TEAM_RUN_LIFECYCLE { is_active }` represents that manager
+  ownership and stays true until exact unregister. It is separate from exact
+  leaf `AGENT_STATUS`; an all-`offline` member projection does not make the root
+  inactive. Connection state, root liveness, Agent lifecycle, task lifecycle,
+  and open-work settlement must not be inferred from one another.
+- Stop is a non-destructive exact-root lifecycle operation: it interrupts and
+  terminates the admitted recursive runtime, retains Team history, and only
+  then emits terminal inactive. Permanent Delete is not a WebSocket command.
+  It is available only on the later inactive `READY` history row, requires a
+  separate confirmation, and runs through the GraphQL/history catalog boundary.
+  The transport never composes Stop and Delete.
 
 ## WebSocket Content Egress
 

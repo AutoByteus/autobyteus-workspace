@@ -13,13 +13,55 @@
 - Implementation Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/tickets/in-progress/team-run-offline-delete-action/implementation-revision-record.md`
 - Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/tickets/in-progress/team-run-offline-delete-action/code-review-report.md`
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/tickets/in-progress/team-run-offline-delete-action/code-review-revision-record.md`
-- Delivery Revision Record: N/A
+- Delivery Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/tickets/in-progress/team-run-offline-delete-action/delivery-revision-record.md`
 - API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/tickets/in-progress/team-run-offline-delete-action/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-001`
-- Current Investigation Round: restarted round 1 under `SR-003` / `ARCH-REV-003` / `IR-002` / `CRR-002`
-- Trigger: CRR-002 implementation-source Pass at 95.2/100 for commit `dc1838e4e35c7ce31d2eb1a871cfe5b035027b83`, after the user rejected the superseded combined active-delete workflow
-- Prior Investigation Reviewed: Yes. The paused pre-reset investigation and evidence were reviewed as trigger/setup context only; they are not current execution proof and no `API-REV` exists.
+- Current API/E2E Revision ID: `API-REV-002`
+- Current Investigation Round: round 2 delivery re-entry under `SR-003` / `ARCH-REV-003` / `IR-003` / `CRR-004`
+- Trigger: CRR-004 source-review Pass at 95.7/100 for commit `78163822944cc44b3c5e2301bbe4f711f36af8fd`, resolving delivery finding `DR-002 / M-008` with one localized accessible-name binding and its implementation-owned component assertion
+- Prior Investigation Reviewed: Yes. `API-REV-001` Pass at 97.1% and `CRR-003` proportional durable-E2E review Pass were read before this proportional re-entry investigation.
 - Latest Authoritative Investigation: this file
+
+## API-REV-002 Proportional Re-entry Investigation
+
+### Delta And Existing-Evidence Validity
+
+- Changed production boundary: one inactive-only Delete button `aria-label` now resolves through the same existing `workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.delete_team_history_permanently` localization key as its title.
+- Changed durable baseline: the implementation-owned `WorkspaceHistoryWorkspaceSection.spec.ts` uses a translation sentinel, asserts active Delete remains absent, and asserts inactive Delete title/accessible-name equality. CRR-004 already reviewed this production-and-test delta.
+- Unchanged boundaries: active/Stop-pending visibility, inactive `READY` gating, archive/delete click handlers, state/composables/stores, GraphQL/API, runtime ownership/termination, persistence, restore, catalog deletion, styles, Electron shell, and locale catalogs.
+- `API-REV-001` browser/runtime/storage scenarios LIVE-001..005 and LIVE-NESTED-001: `Still Valid`. The commit does not touch their selectors, state transitions, handlers, transport, provider, or persistence boundaries.
+- `API-REV-001` API-owned durable E2Es DUR-001 and DUR-002: `Still Valid`; no rerun is required because no backend/API/runtime/persistence code changed and `CRR-003` already passed their proportional review.
+- Current implementation-owned component test: `Still Valid / Execute`. It directly renders the Vue binding with a non-English-sentinel translation and proves both strict visibility states plus title/ARIA equality.
+- Locale catalogs and localization boundaries: `Still Valid / Execute Guards`. Verify the English and Chinese values exist, the component binds the same key for title/ARIA, and boundary/literal audits remain clean.
+
+### Proportional Execution Plan (Recorded Before Execution)
+
+| Scenario ID | Command / Probe | Required Proof | Planned Evidence |
+| --- | --- | --- | --- |
+| REP-UI-002 | one-shot two-file Nuxt history run | active/Stop-pending Delete absence, inactive `READY` Delete presence, localized title/accessible-name equality, and adjacent row-action regression safety | `evidence/api-e2e-sr003-round-2/web-localized-accessible-name.log` |
+| REP-I18N-002 | `guard:web-boundary`, `guard:localization-boundary`, `audit:localization-literals`, plus precise English/Chinese/source scan | localization key/catalog/binding integrity with zero literal or boundary regression | `evidence/api-e2e-sr003-round-2/localization-boundary.log` |
+| REP-DIFF-002 | `git diff --check` and exact commit/durable-path inventory | clean integrated delta and explicit confirmation that API/E2E changed no durable test | `evidence/api-e2e-sr003-round-2/diff-and-scope.log` |
+
+### Broader Validation Gate
+
+- Preliminary post-repository confidence target: 97% or higher with no category below 95%, provided all focused checks pass.
+- Browser execution decision: `Not Required` for this round. The changed boundary is a declarative Vue attribute binding directly rendered/asserted by the implementation-owned component test with a localization sentinel; the actual English/Chinese catalog values and localization guards are checked independently. `API-REV-001` already supplies current real-browser proof that active Stop and inactive Delete are mutually exclusive. Restarting provider/runtime/storage or touching destructive live fixtures would add negligible evidence for this one binding and reopen unchanged risk.
+- Reroute triggers: any active Delete rendered, inactive title/ARIA mismatch, missing catalog key, unresolved localization literal, boundary-guard failure, focused regression, or unexpected API/E2E durable-file delta.
+- API/E2E durable coverage plan: no add/update/remove. The component test delta is implementation-owned and already reviewed in CRR-004; API/E2E will execute it as the new baseline and will report `Not Applicable` for a new API-owned test-code review if no test file is changed here.
+
+### API-REV-002 Execution Results
+
+| Scenario ID | Result | Direct Evidence |
+| --- | --- | --- |
+| REP-UI-002 | Pass — 2 files / 63 tests | `evidence/api-e2e-sr003-round-2/web-localized-accessible-name.log`; the sentinel proves active Delete absent and inactive title/ARIA equal to the resolved translation |
+| REP-I18N-002 | Pass | `evidence/api-e2e-sr003-round-2/localization-boundary.log`; web/localization guards passed, literal audit had zero unresolved findings, English and Chinese catalogs contain the key, and the component binds it exactly twice for title/ARIA |
+| REP-DIFF-002 | Pass | `evidence/api-e2e-sr003-round-2/diff-and-scope.log`; diff check passed, commit scope is exact, and API/E2E has no uncommitted durable-test delta |
+
+- The first guard invocation from the repository root only demonstrated that the scripts are package-scoped. The authoritative rerun from `autobyteus-web` passed and overwrote the retained guard log; this was an execution-path correction, not a product failure.
+- Post-repository confidence: **98.0%**. Scores: requirement/AC 99, changed-boundary directness 99, cross-boundary realism 97, environment/fixture fidelity 98, failure/lifecycle 98, user/browser/desktop 98, durable coverage 97. Every category is at least 97%.
+- Broader validation: `Not Required`. Direct rendered-component and localization-boundary proof fully exercise the only changed behavior; all API-REV-001 browser/runtime/storage evidence remains valid.
+- Final result: `Pass`, **98.0%** confidence. No critical AC is unproven.
+- Durable coverage changed by API/E2E in this round: `No`. The implementation-owned component test is the CRR-004-reviewed baseline; no API/E2E test-code review scope was created.
+- Required next recipient: `/code_reviewer` to record the applicable post-API `Not Applicable` test-code gate before delivery resumes.
 
 ## Current Requirement And Design Basis
 
@@ -193,7 +235,7 @@ None.
 | LIVE-001..005 | requested Classroom team in isolated live browser/runtime | real approval interruption and strict Stop-retain -> separate Delete journey | credential/provider/UI timing dependent; deterministic owners already have durable tests |
 | LIVE-API-001 | exact catalog/package/log queries around the browser journey | cross-boundary retention/deletion and marker safety | run-specific IDs/paths |
 
-## Broader Validation Execution Results
+## API-REV-001 Broader Validation Execution Results (Retained As Valid)
 
 - Environment: built current server on owned `127.0.0.1:18080`, Nuxt on owned `127.0.0.1:13000`, and opened only AutoByteus browser tab `fe5151`. Health returned exact `status: ok`; the requested `/Users/normy/autobyteus_org/autobyteus-agents` package reloaded normally and exposed Classroom Simulation Team.
 - LIVE-001 / AC-001/002/013/015: exact run `classroom_simulation_team_e6a6a2652a124749a95fd21ef2664c8b` reached a real pending `run_bash` approval. Active row exposed Stop only (`tabIndex=0`), no Delete/Archive/modal/combined copy. The unique marker stayed absent.
@@ -205,7 +247,7 @@ None.
 - Evidence root: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/tickets/in-progress/team-run-offline-delete-action/evidence/api-e2e-sr003-round-1`.
 - Cleanup: all three browser-created Team directories/index rows are absent; the API-owned tab and 13000/18080 processes are closed. Unrelated user listeners on 3000, 8000, and Electron 29695 remain unchanged. Production profile/data were not copied, launched, or mutated.
 
-## Final Confidence Scorecard
+## API-REV-001 Final Confidence Scorecard (Historical Baseline)
 
 | Confidence Category | Score | Final Evidence | Bounded Residual |
 | --- | ---: | --- | --- |
@@ -215,7 +257,7 @@ None.
 | Environment, configuration, identity, and fixture fidelity | 97% | current worktree build, isolated worktree DB/data, exact requested package, provider runtimes, health/log/storage correlation | provider assignments came from the user-authorized isolated secret import rather than a disposable test account |
 | Failure, edge-case, lifecycle, and recovery evidence | 98% | live approval interruption plus deterministic stop/delete/catalog/gate/scope/retry/failure suites | power loss/media corruption remain out of scope |
 | User-surface, browser, and desktop-shell confidence | 96% | real semantic DOM/focus flow and screenshots; renderer is web-equivalent | current `open_tab` tool exposed no narrow-device emulation; below-`md` visibility is proven by source and focused DOM tests, not a second live viewport |
-| Durable regression coverage quality and relevance | 96% | 63 strict UI, 116 client/store, 61 server, archive GraphQL and updated current-contract nested E2E | two durable E2E edits await mandatory proportional code review |
+| Durable regression coverage quality and relevance | 96% | 63 strict UI, 116 client/store, 61 server, archive GraphQL and updated current-contract nested E2E | the two durable E2E edits subsequently passed proportional review under CRR-003 |
 
 - Overall final confidence: **97.1%** (simple average of seven applicable categories).
 - Every critical acceptance criterion directly proven: `Yes`, using real browser/provider execution where the mock gap was material and deterministic lifecycle/failure tests for controlled concurrency/fault positions.
@@ -239,9 +281,9 @@ None currently. Any observed active Delete/combined modal, Stop-caused history l
 ## Investigation Decision
 
 - Proceed To API/E2E Execution: `Yes`
-- Repository-Resident Durable Coverage Will Be Added / Updated / Removed: `Yes` — retain/update DUR-001 and DUR-002 only
+- Repository-Resident Durable Coverage Added / Updated / Removed By API/E2E In Current Round: `No`
 - Final validation result: `Pass`
-- Final confidence: `97.1%`
-- Broader validation decision: `Required — completed successfully`
+- Final confidence: `98.0%`
+- Broader validation decision: `Not Required` for API-REV-002; API-REV-001 live evidence remains valid
 - Reroute Required Before Validation Execution: No
-- Notes: This SR-003 restart supersedes the paused investigation basis. Earlier behavioral evidence was not counted; only safe environment discovery/import setup was reused. Both durable changes must now receive proportional test-code review before delivery.
+- Notes: API-REV-002 directly proves the localized accessible-name delta and strict visibility preservation. No API-owned durable test changed; route to `/code_reviewer` for the applicable `Not Applicable` post-API test-code gate.
