@@ -269,7 +269,7 @@
                     type="button"
                     class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-red-50 hover:text-red-600 md:opacity-0 md:group-hover/team-row:opacity-100 md:group-focus-within/team-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50"
                     :title="$t('workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.delete_team_history_permanently')"
-                    aria-label="Delete team history permanently"
+                    :aria-label="$t('workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.delete_team_history_permanently')"
                     :disabled="state.isTeamDeleting(team.teamRunId) || state.isTeamArchiving(team.teamRunId) || state.isTeamTerminating(team.teamRunId)"
                     @click.stop="actions.onDeleteTeam(team)"
                   >

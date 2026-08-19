@@ -13,31 +13,36 @@
 - Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/tickets/in-progress/team-run-offline-delete-action/solution-revision-record.md`
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/tickets/in-progress/team-run-offline-delete-action/design-review-report.md`
 - Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/tickets/in-progress/team-run-offline-delete-action/architecture-review-revision-record.md`
-- Triggering rework reports and context:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/tickets/in-progress/team-run-offline-delete-action/code-review-report.md` (`CRR-001`; historical pass for superseded SR-002 behavior)
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/tickets/in-progress/team-run-offline-delete-action/code-review-revision-record.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/tickets/in-progress/team-run-offline-delete-action/api-e2e-coverage-investigation.md` (paused trigger context only; not current approval or execution evidence)
+- Triggering rework reports and cumulative downstream context:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/tickets/in-progress/team-run-offline-delete-action/code-review-report.md` (`CRR-002` source Pass)
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/tickets/in-progress/team-run-offline-delete-action/code-review-revision-record.md` (`CRR-003` proportional durable-test Pass)
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/tickets/in-progress/team-run-offline-delete-action/api-e2e-coverage-investigation.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/tickets/in-progress/team-run-offline-delete-action/api-e2e-execution-coverage-report.md` (`API-REV-001` Pass)
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/tickets/in-progress/team-run-offline-delete-action/api-e2e-revision-record.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/tickets/in-progress/team-run-offline-delete-action/api-e2e-test-review-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/tickets/in-progress/team-run-offline-delete-action/electron-build-blocker.md` (`DR-002` Local Fix trigger; delivery-owned artifact preserved unchanged)
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/tickets/in-progress/team-run-offline-delete-action/delivery-revision-record.md`
 
 ## Current Implementation Summary
 
-SR-003 is implemented as a selective rework over IR-001. The reviewed backend lifecycle and catalog corrections remain intact: one manager-owned root, exact-ID transition serialization, the RootTeamRun admitted-materialization gate, one recursively frozen termination scope retained through retry, interrupt-before-quiescence/finish ordering, and compensated inactive catalog deletion. The rejected active-delete client path is removed cleanly. Active or Stop-pending Team rows expose Stop only; Stop invokes only exact-root termination and retains history. Only an authoritative inactive `READY` row exposes Archive/Delete, and Delete is a later separately confirmed inactive-history operation.
+SR-003 remains implemented as the strict Stop-retain-then-separate-Delete workflow. IR-003 fixes DR-002's single localization-boundary defect without changing behavior: the inactive Delete button now derives both its title and accessible name from the existing localization key. The reviewed backend lifecycle and catalog corrections remain intact: one manager-owned root, exact-ID transition serialization, the RootTeamRun admitted-materialization gate, one recursively frozen termination scope retained through retry, interrupt-before-quiescence/finish ordering, and compensated inactive catalog deletion. Active or Stop-pending Team rows still expose Stop only; Stop invokes only exact-root termination and retains history. Only an authoritative inactive `READY` row exposes Archive/Delete, and Delete remains a later separately confirmed inactive-history operation.
 
 - Implementation cycle: `Rework`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/tickets/in-progress/team-run-offline-delete-action/implementation-revision-record.md`
-- Current implementation revision ID: `IR-002`
+- Current implementation revision ID: `IR-003`
 - Related solution revision IDs: `SR-003` (retaining the technical corrections from `SR-002`)
 - Related architecture-review revision IDs: `ARCH-REV-003` (with `ARCH-REV-002` retained as historical technical closure)
-- Related code-review revision IDs: `CRR-001` (historical pass under the superseded SR-002 intent)
-- Related API/E2E revision IDs: `N/A` — investigation paused before a formal revision or execution result
-- Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A` — user-approved downstream Requirement Gap had no formal API finding ID
+- Related code-review revision IDs: `CRR-002` source Pass; `CRR-003` prior durable-test Pass
+- Related API/E2E revision IDs: `API-REV-001` prior Pass
+- Related delivery revision IDs: `DR-002`
+- Triggering finding IDs: `M-008` localization literal audit failure
 - Development commit: the commit containing this handoff; final SHA is reported in the review message because a commit cannot stably self-record its own content hash
 
 ## Reviewed Behavior Implementation Trace
 
 | Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
 | --- | --- | --- | --- |
-| `BEH-001` | Active or Stop-pending root shows Stop only; inactive `READY` history shows Archive/Delete. | `autobyteus-web/components/workspace/history/WorkspaceHistoryWorkspaceSection.vue`; `useWorkspaceHistoryTreeState.ts` | Delete and Archive now share the explicit `!team.isActive && READY` admission; active Delete is unreachable from the row. Stop pending disables only the exact Stop action. |
+| `BEH-001` | Active or Stop-pending root shows Stop only; inactive `READY` history shows Archive/Delete. | `autobyteus-web/components/workspace/history/WorkspaceHistoryWorkspaceSection.vue`; `useWorkspaceHistoryTreeState.ts` | Delete and Archive share the explicit `!team.isActive && READY` admission; active Delete is unreachable from the row. Stop pending disables only the exact Stop action. The inactive Delete title and `aria-label` now resolve from the same approved localization key. |
 | `BEH-002` | Stop fully terminates the exact recursive runtime while retaining history. | Preserved `AgentTeamRunManager`, `RootTeamRun`, admitted-materialization gate, frozen termination scope, mixed runtime, `AgentRun`, and `TeamRunService` corrections from IR-001; `useWorkspaceHistoryMutations.ts` | Stop calls only `terminateTeamRun(teamRunId)`. It never opens deletion confirmation or calls history Delete. Root inactive publication remains after accepted descendant termination and terminal callback. |
 | `BEH-003` | Delete is a later, independently confirmed inactive-history operation. | `WorkspaceHistoryWorkspaceSection.vue`; `useWorkspaceHistoryMutations.ts`; shared `ConfirmationModal` | The composable defensively rejects active/non-READY Teams, retains one inactive `teamRunId`, shows exact Team-history copy, and invokes only `deleteTeamRun`. `wasActive`, Stop-inside-Delete, combined copy, and combined failure branches are removed. |
 | `BEH-004` | Stop/Delete/Archive and cleanup remain exact-root operations; member rows have no destructive history action. | Existing exact-ID server/client boundaries plus focused history component tests | No summary, definition name, member address, or member AgentRun selector is introduced. Same-summary/member isolation from IR-001 remains intact. |
@@ -77,16 +82,18 @@ SR-003 is implemented as a selective rework over IR-001. The reviewed backend li
 - Catalog compensation covers the reviewed ordinary candidate-index/package-removal failures, not power loss, tampering, simultaneous compensation failure, or media corruption.
 - The base retains stale application/external-channel fixture debt recorded in IR-001; no new failure evidence in those unrelated paths was introduced by this UI-only rework.
 - Nuxt source typecheck remains unavailable as a clean gate because the workspace's resolved `vue-tsc`/TypeScript package combination is incompatible. Focused Nuxt tests and direct rendered interaction passed.
-- The worktree intentionally still contains the API/E2E engineer's two pre-existing uncommitted durable-test edits and evidence. Implementation did not edit or stage them. They are not approval/execution evidence and must be reinvestigated after source review.
+- `API-REV-001` and `CRR-003` are valid prior evidence for IR-002. DR-002 requires proportionate revalidation after this production-source fix; IR-003 does not claim that downstream result.
+- Delivery-owned documentation edits and DR-001/DR-002 artifacts remain uncommitted in the shared worktree and were preserved unchanged. They are intentionally excluded from the implementation commit.
+- The implementation build produced unsigned/unnotarized local DMG/ZIP outputs only as a build-boundary check. Delivery must rebuild from the reviewed/revalidated state and remains the authority for any user verification artifact.
 
 ## Task Design Health Assessment Implementation Check
 
-- Reviewed change posture: `Bug Fix / Behavior Change / Requirement Reset`
-- Reviewed root-cause classification: `Missing Invariant` and `Boundary Or Ownership Issue`; SR-003 additionally resolves a downstream `Requirement Gap`
-- Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): `Refactor Needed Now` — preserve bounded backend ownership correction and cleanly remove the rejected UI composition
+- Reviewed change posture: `Bug Fix / Local Fix` over the completed SR-003 behavior change
+- Reviewed root-cause classification: `Local Implementation Defect` for IR-003; the existing component/localization boundary is correct
+- Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): `No Refactor Needed` for IR-003
 - Implementation matched the reviewed assessment (`Yes`/`No`): `Yes`
-- If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): `N/A` — SR-003/ARCH-REV-003 already resolved the requirement basis before rework
-- Evidence / notes: implementation removed only the active-delete row/composable/copy/test path. It did not weaken the exact manager, termination, or catalog owners and introduced no parallel store, protocol, mutation, or fallback.
+- If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): `N/A`
+- Evidence / notes: one static accessible-name literal bypassed the existing localization key already used by the same button's title. Binding `aria-label` to that same key restores the established boundary without altering state admission, mutation sequencing, stores, or server behavior.
 
 ## Legacy / Compatibility Removal Check
 
@@ -96,7 +103,7 @@ SR-003 is implemented as a selective rework over IR-001. The reviewed backend li
 - Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): `Yes`
 - Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`
 - Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`
-- Notes: `wasActive`, active confirmation selection, Stop-inside-Delete sequencing, combined failure branches/copy, and stale active-delete assertions were removed. Effective source sizes are 480 lines for the row component and 283 lines for the composable.
+- Notes: `wasActive`, active confirmation selection, Stop-inside-Delete sequencing, combined failure branches/copy, and stale active-delete assertions remain removed. IR-003 also removes the static accessible-name literal rather than adding a fallback or duplicate localization key. Effective source sizes remain 480 lines for the row component and 283 lines for the composable.
 
 ## Persisted Data Transition Check (When Applicable)
 
@@ -111,38 +118,39 @@ SR-003 is implemented as a selective rework over IR-001. The reviewed backend li
 
 - No manifest, lockfile, database schema, or generated source changed.
 - Prisma client generation and Vitest database reset occurred only inside the ticket worktree/test fixture paths.
-- The Nuxt dev renderer ran with `NUXT_TEST=true` on isolated port `34218`. Its temporary preview page was removed and the browser tab/server were closed before handoff.
+- The prior IR-002 Nuxt dev renderer ran with `NUXT_TEST=true` on isolated port `34218`; its temporary preview page was removed and browser/server were closed.
+- IR-003 ran the README-guided unsigned/non-notarized personal macOS ARM64 build boundary. It prepared only worktree build resources and produced ignored local artifacts under `autobyteus-web/electron-dist`; Electron was not launched.
 - No broader API/E2E environment was established by implementation.
 
 ## Local Implementation Checks Run
 
-- **Pass** — server source typecheck: Prisma generate plus `pnpm exec tsc -p tsconfig.build.json --noEmit --pretty false`.
-- **Pass** — preserved backend lifecycle/catalog focused set: 17 files, 91 unit/narrow integration tests.
-- **Pass** — focused Nuxt component/composable set: 2 files, 63 tests. This covers active Stop-only, direct active-Delete rejection, Stop failure/history retention, Stop pending, inactive confirmation/cancel/Delete/failure, exact IDs, member isolation, and existing history behavior.
-- **Pass** — forbidden active-delete state/copy scan (`wasActive`, active combined confirmation, combined failure copy): no matches.
+- **Pass** — focused Nuxt history suite: 2 files, 63 tests. The component fixture uses a non-production translation sentinel and proves the inactive Delete `title` and `aria-label` resolve identically while active Delete remains absent.
+- **Pass** — `pnpm guard:web-boundary`.
+- **Pass** — `pnpm guard:localization-boundary`.
+- **Pass** — `pnpm audit:localization-literals`: zero unresolved findings; DR-002 `M-008` no longer reproduces.
+- **Pass** — full README-guided implementation build boundary: `NO_TIMESTAMP=1 APPLE_TEAM_ID= APPLE_SIGNING_IDENTITY= APPLE_ID= APPLE_APP_SPECIFIC_PASSWORD= AUTOBYTEUS_BUILD_FLAVOR=personal DEBUG='electron-builder,electron-builder:*,app-builder-lib*,builder-util*' pnpm build:electron:mac -- --arm64`. Server preparation, mobile/electron Nuxt generation, Electron/build TypeScript compilation, unsigned ARM64 `.app`, DMG, ZIP, and blockmaps completed with exit 0 and no publish. This is local build evidence, not delivery sign-off.
+- **Pass** — source scan confirms no static `aria-label="Delete team history permanently"`; title and accessible name reference the same localization key.
 - **Pass** — `git diff --check`.
-- **Pass** — changed production source-size scan: 480 and 283 effective nonempty/noncomment lines; neither exceeds 500.
-- **Unavailable as a clean gate** — Nuxt source typecheck for the existing dependency mismatch noted above.
+- **Pass** — changed production source remains 480 effective nonempty/noncomment lines, below the 500-line guard.
 
 ## Frontend Rendered-Result Check (When Applicable)
 
-- Affected surfaces / journeys: Workspace history Team parent rows; active Stop; Stop-pending disabled state; inactive Archive/Delete; separate permanent-deletion confirmation.
-- Approved UI/UX, interaction, requirement, or design references: `ui-ux-spec.md`; `BEH-001`–`BEH-005`; `DS-001`, `DS-003`, `DS-004`, `DS-006`; `AC-001`–`AC-014`, `AC-018`.
-- Existing design system, shared components, and adjacent product surfaces reviewed: real `WorkspaceHistoryWorkspaceSection`, `WorkspaceAgentRunsTreePanel`, shared `ConfirmationModal`, Team activity dots, and existing row hover/focus action treatment.
-- Project development / preview instructions and rendered surface used: backend-free Nuxt development renderer with `NUXT_TEST=true`; temporary uncommitted page mounting the real row component and modal against isolated active, Stop-pending, and inactive Team fixtures.
-- States, layouts, viewports, and interactions inspected: 2048x1152 capture; active row exposed one enabled `Terminate team`; Stop-pending exposed the same disabled action; inactive row exposed Archive plus keyboard-focused `Delete team history permanently`. Active Stop produced a retained-history marker with no dialog. Inactive Delete opened the exact approved Team-history modal; cancel made no mutation and a later independent confirm produced the exact inactive Delete marker.
-- Visual or interaction issues found and corrected: active Delete was absent, state distinction was clear, focused inactive actions remained discoverable, and the shared danger modal/copy/spacing were visually coherent. No additional production CSS or component workaround was needed.
-- Supporting evidence and remaining unverified states or limitations: row-state screenshot `/Users/normy/.autobyteus/browser-artifacts/f27af6-1787124284105.png`; inactive confirmation screenshot `/Users/normy/.autobyteus/browser-artifacts/f27af6-1787124364416.png`. The backend-free render does not establish real API/storage execution; that remains downstream API/E2E work.
+- Affected surfaces / journeys: inactive Workspace history Team Delete accessible name; strict active Stop / inactive Delete visibility and behavior are otherwise unchanged.
+- Approved UI/UX, interaction, requirement, or design references: `ui-ux-spec.md`; `BEH-001`, `BEH-003`; `DS-003`, `DS-006`; `AC-003`, `AC-013`, `AC-018`.
+- Existing design system, shared components, and adjacent product surfaces reviewed: the real `WorkspaceHistoryWorkspaceSection` button already localized its title with the canonical key; the Stop button already localized both title and `aria-label` using the same established pattern.
+- Project development / preview instructions and rendered surface used: focused Nuxt mounting of the real row component plus the README-guided production Electron renderer/package build. IR-002's direct browser render remains visually applicable because IR-003 changes only the accessibility binding and no layout, style, icon, visibility, or interaction code.
+- States, layouts, viewports, and interactions inspected: the mounted active state has no Delete accessible name; the mounted inactive state resolves a non-English-sentinel translation into identical title and `aria-label`. The full Electron renderer generated successfully with the real English and Chinese localization catalogs.
+- Visual or interaction issues found and corrected: the only defect was the unresolved static accessible-name literal. It is now localization-bound without altering inactive-only admission, focus discoverability, or Delete confirmation behavior.
+- Supporting evidence and remaining unverified states or limitations: existing IR-002 screenshots remain `/Users/normy/.autobyteus/browser-artifacts/f27af6-1787124284105.png` and `/Users/normy/.autobyteus/browser-artifacts/f27af6-1787124364416.png`. Implementation did not launch the built desktop app or claim delivery/API/E2E verification.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
-- Reinvestigate the existing API/E2E suite against SR-003 before editing or executing durable coverage; the paused investigation and its two current E2E edits are not authoritative coverage decisions.
-- Execute `VAL-001`–`VAL-014` with isolated roots/packages only.
-- Prioritize the strict transition `active Stop only -> Stop pending -> terminal retained inactive row -> optional separately confirmed Delete` and explicit absence of active Delete, combined modal copy, or Stop-inside-Delete behavior.
-- Preserve deep runtime proof: approval-pending configured Agent, prepared/delegated Agent, configured nested Team, task Team, already-admitted message/delegation, same-object failure/retry, and no inactive publication before every descendant accepts termination.
-- Prove exact-ID inactive Delete, both DS-007 failure positions, restore/delete serialization, same-summary/member isolation, confirmation cancel, singular Stop/Delete errors, stream/selection cleanup, and retained-history restore.
-- Include keyboard/focus and narrow/touch action availability without touching production roots/profile/Electron.
+- Reassess `API-REV-001` proportionately for the one production localization-binding change and one focused component-test fixture/assertion update.
+- Confirm the inactive Delete accessible name resolves from the localization catalog and remains distinct/keyboard reachable under `AC-013`; active and Stop-pending states must still expose no Delete.
+- The reviewed state admission, Stop/Delete sequencing, GraphQL, runtime, persistence, and migration behavior are unchanged. Reuse prior evidence where valid rather than rerunning unrelated deep runtime/storage scenarios without a concrete impact.
+- The focused component test is repository-resident durable coverage changed after prior `CRR-003`; include it in proportional test-code review according to the team routing rule.
+- Continue to use isolated fixtures and do not touch production roots/profile/Electron or port 29695.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-API/E2E coverage investigation, durable coverage decisions, realistic execution, environment setup, and final evidence remain owned by `api_e2e_engineer` after this rework passes source review. The prior investigation was paused by the requirement reset and must be revised or replaced; this handoff records implementation-scoped checks only and claims no API/E2E sign-off.
+After IR-003 passes source review, `api_e2e_engineer` owns proportionate impact assessment/execution against the prior `API-REV-001` baseline. Because IR-003 updates repository-resident component coverage, the cumulative package must return through proportional test-code review before delivery resumes. This handoff records implementation checks only and claims no new API/E2E or delivery result.

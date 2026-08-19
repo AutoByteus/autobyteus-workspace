@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- | --- |
 | `IR-001` | `architecture_reviewer` / `design-review-report.md` / initial implementation | `N/A` | `Initial Baseline` | `SR-002`, `ARCH-REV-002` | Implementation complete; ready for source review |
 | `IR-002` | `architecture_reviewer` / `ARCH-REV-003` / selective SR-003 rework | `N/A` (user-approved Requirement Gap) | `Requirement Gap` | `SR-003`, `ARCH-REV-003`, historical `CRR-001`; `API-REV N/A` | Strict Stop-retain-then-separate-Delete rework complete; ready for source re-review |
+| `IR-003` | `delivery_engineer` / `electron-build-blocker.md` / `DR-002` | `M-008` | `Local Fix` | `SR-003`, `ARCH-REV-003`, `CRR-002`, `CRR-003`, `API-REV-001`, `DR-002` | Localization-bound accessible-name fix complete; ready for source re-review |
 
 ## Revision Entries
 
@@ -49,3 +50,24 @@
 - Local validation and result: server source typecheck passed; 17 preserved server files / 91 tests passed; 2 focused Nuxt files / 63 tests passed; direct isolated Nuxt render/interaction passed for active, Stop-pending, inactive, Stop-without-modal, and separately confirmed Delete states; forbidden-copy scan, source-size guard, and `git diff --check` passed.
 - Next recipient or routing: `/code_reviewer`
 - Remaining limitations or risks: downstream API/E2E coverage must be reinvestigated after source review. The paused investigation and its two pre-existing uncommitted E2E edits are not approval/execution evidence and were not modified or staged. Native conversation restoration, compound storage recovery, stale unrelated consumer fixtures, and the existing Nuxt typecheck dependency mismatch remain as documented in `implementation-handoff.md`.
+
+
+### IR-003 — Localize the inactive Delete accessible name
+
+- Triggering role, report path, and round: `delivery_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/tickets/in-progress/team-run-offline-delete-action/electron-build-blocker.md`; `DR-002` README-guided Electron build Local Fix
+- Triggering finding IDs: `M-008`
+- Classification: `Local Fix`
+- Prior authoritative result: IR-002 passed source review as `CRR-002`, API/E2E as `API-REV-001` at 97.1%, proportional durable-test review as `CRR-003`, and delivery integration/docs as `DR-001`; `DR-002` then blocked packaging when the mandatory localization audit found the static Delete `aria-label`
+- Current authoritative result: the localization-bound accessible-name correction and focused implementation/build checks are complete; ready for source re-review before proportionate API/E2E and delivery resume
+- Related solution revision IDs: `SR-003`
+- Related architecture-review revision IDs: `ARCH-REV-003`
+- Related code-review revision IDs: `CRR-002` source baseline; `CRR-003` prior durable-test baseline
+- Related API/E2E revision IDs: `API-REV-001` prior Pass
+- Related delivery revision IDs: `DR-002`
+- Why this baseline or implementation revision is recorded: the inactive Delete button already localized its title but bypassed the same established boundary for its accessible name, causing the required packaging audit to fail before server preparation or Electron generation.
+- Approved behavior or requirement IDs affected: `BEH-001`, `BEH-003`; `REQ-004`, `REQ-006`; `AC-003`, `AC-013`, `AC-018`; no runtime, persistence, state-admission, or sequencing requirement changes
+- Implementation delta: replaced the static `aria-label="Delete team history permanently"` with the same existing `$t(...delete_team_history_permanently)` binding used by the button title. Updated the focused component fixture to return a localization sentinel and assert the inactive button's title and accessible name resolve identically while active Delete remains absent. No key/catalog, composable, store, server, wire, migration, style, or interaction change was made.
+- Changed files or areas: `autobyteus-web/components/workspace/history/WorkspaceHistoryWorkspaceSection.vue`; `autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts`; canonical implementation handoff/revision artifacts
+- Local validation and result: 2 focused Nuxt files / 63 tests passed; web-boundary and localization-boundary guards passed; localization literal audit passed with zero findings; source scan found no static Delete accessible-name literal; full README-guided unsigned/non-notarized personal macOS ARM64 Electron build completed with exit 0 through server preparation, Nuxt generation, TypeScript compilation, `.app`, DMG, ZIP, and blockmaps; `git diff --check` and 480-line source guard passed. Electron was not launched and nothing was published.
+- Next recipient or routing: `/code_reviewer`
+- Remaining limitations or risks: `API-REV-001` must be reassessed proportionately after source review. Because repository-resident component coverage changed after the prior `CRR-003`, include this test delta in proportional review before delivery resumes. Delivery-owned docs and DR artifacts remain unmodified/uncommitted and must be preserved. Delivery remains responsible for rebuilding and presenting any user verification package from the reviewed state.
