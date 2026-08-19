@@ -3,9 +3,10 @@
 ## Ticket And Handoff State
 
 - Ticket: `electron-agent-input-controls-regression`
-- Delivery revision: `DR-006`
-- Current disposition: repository finalization, local Electron build, reviewed Docker packaging repair, isolated Docker server build/start, and REST/GraphQL health verification all passed. The Docker node is running for user testing.
+- Delivery revision: `DR-007`
+- Current disposition: repository finalization, local Electron build, reviewed Docker packaging repair, isolated Docker server build/start, and REST/GraphQL health verification all passed. The user also tested the Docker node and authorized promotion of the completed integration branch to `origin/personal`.
 - Repository finalization target: `codex/agent-team-universal-task-delegation`, as recorded in `ticket-description.md`.
+- Aggregate promotion target: `origin/personal`, explicitly authorized after successful Docker testing.
 - Explicit user finalization authorization received: `Yes` — “i tested. the task is done. finalize to the base branch”.
 - Post-finalization local build requested: `Yes` — refresh the surviving target worktree and build Electron there after repository finalization.
 
@@ -130,3 +131,6 @@
 - Follow-up local build: `Pass`; completed as unsigned/non-notarized local validation from the refreshed target worktree.
 - Finalization result: `Pass`; repository finalization, cleanup, local Electron build, and artifact integrity verification remain complete.
 - Docker follow-up: `Pass`; reviewed packaging fix finalized, node running, health verified, and Backend URL ready for Nodes testing at `http://localhost:52704`.
+- Docker user verification: `Pass`; the user explicitly reported testing it successfully and declared the overall task finally done.
+- Personal promotion authorization: `Yes`; refreshed `origin/personal@acb898593` is an ancestor of the complete integration source at `eb7967144`, so no target-only change or renewed acceptance is required before the authorized merge.
+- Personal promotion refresh evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/evidence/personal-promotion-refresh.log`.

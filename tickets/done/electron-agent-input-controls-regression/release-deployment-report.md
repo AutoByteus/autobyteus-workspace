@@ -2,15 +2,15 @@
 
 ## Release / Publication / Deployment Scope
 
-Initial delivery-stage latest-base refresh, explicit no-impact documentation assessment, integrated verification handoff, user acceptance, repository finalization, completed post-finalization local Electron build, reviewed Docker packaging repair, and the explicitly requested isolated current-source Docker server build/start/health handoff for `electron-agent-input-controls-regression`. Public release/publication remains outside scope.
+Initial delivery-stage latest-base refresh, explicit no-impact documentation assessment, integrated verification handoff, user acceptance, repository finalization, completed post-finalization local Electron build, reviewed Docker packaging repair, the explicitly requested isolated current-source Docker server build/start/health handoff, and the now-authorized repository promotion of the completed integration branch to `origin/personal` for `electron-agent-input-controls-regression`. Public release/publication remains outside scope.
 
 ## Handoff Summary
 
 - Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/delivery-revision-record.md`
-- Current delivery revision ID: `DR-006`
-- Notes: Repository finalization and local Electron build remain complete; the reviewed Docker repair is finalized and the isolated Docker node is running and healthy for user testing.
+- Current delivery revision ID: `DR-007`
+- Notes: Repository finalization and local Electron build remain complete; the reviewed Docker repair is finalized, the isolated Docker node is running and healthy, the user tested it successfully, and promotion to `origin/personal` is authorized.
 
 ## Initial Delivery Integration Refresh
 
@@ -80,8 +80,8 @@ Initial delivery-stage latest-base refresh, explicit no-impact documentation ass
 - Applicable: `No` in the currently authorized scope.
 - Method: `Other` — not selected.
 - Method reference / command: N/A
-- Release/publication result: `Not required` at DR-006.
-- Release notes handoff result: `Not required` at DR-006.
+- Release/publication result: `Not required` at DR-007.
+- Release notes handoff result: `Not required` at DR-007.
 - Local Docker runtime result: `Pass`; explicitly authorized test node only.
 - Blocker: None for the requested local runtime. Any public release/deployment requires separate explicit user direction.
 
@@ -126,6 +126,17 @@ Initial delivery-stage latest-base refresh, explicit no-impact documentation ass
 - noVNC URL: `http://localhost:52706`.
 - Persisted state: four project-scoped named volumes plus the ignored saved port state; fresh isolated database migrations completed. No production profile/data or existing Docker volume was touched.
 - Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/evidence/local-docker-server/docker-node-manifest.txt`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/evidence/local-docker-server/health-check-dr006.log`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/evidence/local-docker-server/resource-preservation-dr006.log`.
+
+## Personal Branch Promotion Authorization
+
+- User authorization: `Yes`; after successfully testing the Docker node, the user declared the overall task finally done and requested finalization to `origin/personal`.
+- Refreshed integration source: local and remote `codex/agent-team-universal-task-delegation` match at `eb79671448e7a2485f30476155e9f7cb6ea363ff` before this delivery checkpoint.
+- Refreshed target: local and remote `personal` match at `acb8985930ccce49b632cdca22b92f5b237e35bf`.
+- Target relationship: `origin/personal` is the exact merge base and an ancestor of the source; divergence is `0 146`. There is no target-only change to reintegrate.
+- Renewed verification: `Not required`; the tested source behavior is unchanged, and this delivery checkpoint changes records only.
+- Local target safety: unrelated untracked `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/.article-work/` content has no path overlap with the source delta and will remain untouched.
+- Promotion status: `Authorized / pending checkpoint commit, merge, push, and remote verification`.
+- Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/done/electron-agent-input-controls-regression/evidence/personal-promotion-refresh.log`.
 
 ## Escalation / Reroute
 
@@ -180,4 +191,4 @@ Before finalization, reject or revise the local candidate if user verification s
 
 ## Final Status
 
-`DR-006 Pass — reviewed Docker repair finalized; current-source linux/arm64 image built; isolated persistent Docker node running and REST/GraphQL healthy at http://localhost:52704; existing nodes/data preserved; no public release.`
+`DR-007 Pass — user-verified Docker result accepted; completed integration source and origin/personal refreshed with target as a strict ancestor; personal promotion authorized; checkpoint/merge/push verification next; no public release.`
