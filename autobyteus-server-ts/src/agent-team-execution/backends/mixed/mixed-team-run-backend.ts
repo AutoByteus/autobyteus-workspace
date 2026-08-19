@@ -19,6 +19,7 @@ export class MixedTeamRunBackend implements TeamRunBackend {
   get teamBackendKind() { return TeamBackendKind.MIXED; }
   getRuntimeContext() { return this.context.runtimeContext; }
   isActive(): boolean { return this.manager.isActive(); }
+  isTerminated(): boolean { return this.manager.isTerminated(); }
   getLeafAgentStatusSnapshots() { return this.manager.getLeafAgentStatusSnapshots(); }
   hasOpenExecutionWork(): boolean { return this.manager.hasOpenExecutionWork(); }
   getOrCreateConfiguredChildTeam(teamRunId: string) { return this.manager.getOrCreateConfiguredChildTeam(teamRunId); }
@@ -37,5 +38,6 @@ export class MixedTeamRunBackend implements TeamRunBackend {
     return this.manager.prepareDirectTaskSettlement(taskId, binding);
   }
   prepareTermination() { return this.manager.prepareTermination(); }
+  freezeForRootTermination() { return this.manager.freezeForRootTermination(); }
   terminate() { return this.manager.terminate(); }
 }

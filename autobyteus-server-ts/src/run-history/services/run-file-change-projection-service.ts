@@ -90,9 +90,9 @@ export class RunFileChangeProjectionService {
     const team = await this.teamLocations.findAgent({ agentRunId: runId });
     if (!team) return { projection: { version: 2, entries: [] }, workspaceRootPath: null, isActiveRun: false };
     const workspaceRootPath = team.configuredPlacement?.launchConfiguration.workspaceRootPath ?? null;
-    const activeRoot = this.teamRuns.getTeamRun(team.rootTeamRunId);
-    if (activeRoot) return {
-      projection: await this.changes.getProjectionForTeamMemberRun(activeRoot, runId),
+    const managedRoot = this.teamRuns.getManagedTeamRun(team.rootTeamRunId);
+    if (managedRoot) return {
+      projection: await this.changes.getProjectionForTeamMemberRun(managedRoot, runId),
       workspaceRootPath,
       isActiveRun: true,
     };

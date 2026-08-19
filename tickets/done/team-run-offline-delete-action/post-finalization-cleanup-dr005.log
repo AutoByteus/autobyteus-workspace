@@ -1,0 +1,32 @@
+cleanup_audit_started=2026-08-19T10:24:45Z
+target_head=424687b1189b0bf9dd0bf8b94847c672b3d2477c
+target_remote=424687b1189b0bf9dd0bf8b94847c672b3d2477c
+ticket_commit_remote_target_ancestor=PASS
+ticket_worktree_status_begin
+## codex/team-run-offline-delete-action...origin/codex/team-run-offline-delete-action
+ticket_worktree_status_end
+active_executable_paths_begin
+75948 /Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+75949 /Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper
+75950 /Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper
+75952 /Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Renderer).app/Contents/MacOS/AutoByteus Helper (Renderer)
+76560 /Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+76721 /Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper
+76722 /Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper
+active_executable_paths_end
+worktree_in_use=NO
+generated_electron_app_present=YES
+base_untracked_article_work_present=YES
+corrected_active_executable_count=7
+corrected_worktree_in_use=YES
+worktree_cleanup=RETAINED_FOR_LIVE_ELECTRON_SAFETY
+local_ticket_branch_cleanup=RETAINED_WITH_LIVE_WORKTREE
+remote: 
+remote: GitHub found 818 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (20 critical, 347 high, 385 moderate, 66 low). To find out more, visit:        
+remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot        
+remote: 
+To github.com-ryan:AutoByteus/autobyteus-workspace.git
+ - [deleted]             codex/team-run-offline-delete-action
+remote_ticket_branch_cleanup=PASS
+base_untracked_article_work_preserved=YES
+cleanup_audit_completed=2026-08-19T10:25:02Z

@@ -10,6 +10,7 @@ import type { PreparedLocalExecutionTermination } from "../domain/prepared-local
 import type { PreparedTaskSettlement } from "../domain/prepared-task-settlement.js";
 import type { TeamMemberExecutionCommand } from "../domain/team-member-execution-command.js";
 import type { RuntimeTeamRunContext } from "../domain/team-run-context.js";
+import type { FrozenTeamRunTerminationScope } from "../domain/frozen-team-run-termination-scope.js";
 
 /** Exact local boundary for one concrete TeamRun. */
 export interface TeamRunBackend {
@@ -17,6 +18,7 @@ export interface TeamRunBackend {
   readonly teamBackendKind: TeamBackendKind;
   getRuntimeContext(): RuntimeTeamRunContext | null;
   isActive(): boolean;
+  isTerminated(): boolean;
   getLeafAgentStatusSnapshots(): readonly TeamAgentStatusSnapshot[];
   hasOpenExecutionWork(): boolean;
   getOrCreateConfiguredChildTeam(teamRunId: string): Promise<import("../domain/team-run.js").TeamRun>;
@@ -30,5 +32,6 @@ export interface TeamRunBackend {
     binding: { agentRunId: string } | { teamRunId: string },
   ): Promise<PreparedTaskSettlement | null>;
   prepareTermination(): Promise<PreparedLocalExecutionTermination>;
+  freezeForRootTermination(): FrozenTeamRunTerminationScope;
   terminate(): Promise<AgentOperationResult>;
 }

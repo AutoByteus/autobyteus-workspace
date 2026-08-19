@@ -23,12 +23,12 @@ export type ChannelBindingServiceOptions = {
 };
 
 export type ChannelBindingServiceDependencies = {
-  teamRunService?: Pick<TeamRunService, "resolveTeamRun">;
+  teamRunService?: Pick<TeamRunService, "resolveActiveTeamRun">;
 };
 
 export class ChannelBindingService {
   private readonly allowTransportFallback: boolean;
-  private teamRunService: Pick<TeamRunService, "resolveTeamRun"> | null;
+  private teamRunService: Pick<TeamRunService, "resolveActiveTeamRun"> | null;
 
   constructor(
     private readonly provider: ChannelBindingProvider = getProviderProxySet().bindingProvider,
@@ -149,12 +149,12 @@ export class ChannelBindingService {
       return false;
     }
 
-    const teamRun = await this.getTeamRunService().resolveTeamRun(target.teamRunId);
+    const teamRun = await this.getTeamRunService().resolveActiveTeamRun(target.teamRunId);
     if (!teamRun || !target.entryAgentRunId) return false;
     return resolveTeamBindingCurrentOutputIdentity(binding, teamRun).entryAgentRunId === target.entryAgentRunId;
   }
 
-  private getTeamRunService(): Pick<TeamRunService, "resolveTeamRun"> {
+  private getTeamRunService(): Pick<TeamRunService, "resolveActiveTeamRun"> {
     if (!this.teamRunService) {
       this.teamRunService = getTeamRunService();
     }

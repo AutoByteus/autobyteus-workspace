@@ -1,0 +1,37 @@
+timestamp=2026-08-19T09:21:25Z
+worktree=/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action
+head=5deade8d8afa1d92a784e4a8f30a147f91487d8b
+base=0194fb4fffa69037a46aeace491024fdf816dde7
+platform=Darwin arm64
+node=v22.23.1
+pnpm=10.28.1
+build_flavor=personal
+signing=disabled
+notarization=disabled
+command=NO_TIMESTAMP=1 APPLE_TEAM_ID= APPLE_SIGNING_IDENTITY= APPLE_ID= APPLE_APP_SPECIFIC_PASSWORD= AUTOBYTEUS_BUILD_FLAVOR=personal DEBUG='electron-builder,electron-builder:*,app-builder-lib*,builder-util*' pnpm build:electron:mac -- --arm64
+
+
+> autobyteus@1.4.52 build:electron:mac /Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/autobyteus-web
+> cross-env NODE_ENV=production pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals && pnpm prepare-server && pnpm generate:electron && pnpm transpile-electron && tsc -p build/tsconfig.json && node build/dist/build.js --mac -- --arm64
+
+
+> autobyteus@1.4.52 guard:web-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/autobyteus-web
+> node ./scripts/guard-web-boundary.mjs
+
+[guard:web-boundary] Passed.
+
+> autobyteus@1.4.52 guard:localization-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+
+[guard:localization-boundary] Passed.
+
+> autobyteus@1.4.52 audit:localization-literals /Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/autobyteus-web
+> node ./scripts/audit-localization-literals.mjs
+
+[audit:localization-literals] Unresolved product literals found.
+M-008	components/workspace/history/WorkspaceHistoryWorkspaceSection.vue	Delete team history permanently	unresolved
+ ELIFECYCLE  Command failed with exit code 1.
+ ELIFECYCLE  Command failed with exit code 1.
+
+exit_code=1
+completed_at=2026-08-19T09:21:27Z

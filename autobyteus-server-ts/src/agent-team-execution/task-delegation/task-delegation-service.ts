@@ -468,7 +468,7 @@ export class TaskDelegationService {
         `Task '${task.taskId}' execution cleanup failed: ${taskErrorMessage(error)}`,
       );
     }
-    this.options.teamRunResolver.unregisterInactive();
+    this.options.teamRunResolver.unregisterTerminated();
     this.scheduleTerminalSettlementSweep();
     return true;
   }

@@ -1,0 +1,991 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+
+(node:9577) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/application-backend/brief-studio-imported-package.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > discovers Brief Studio as an imported package, drives the app-owned GraphQL API, and projects live execution events through REST/WS
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-brief-studio-iWQmMc/app-data
+
+stdout | tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > preserves same-binding early final projection when the packaged Brief Studio GraphQL client launches through the hosted backend mount
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-brief-studio-XLMzj3/app-data
+
+Sourcemap for "/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-frontend-sdk.js" points to missing source files
+Sourcemap for "/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-client.js" points to missing source files
+Sourcemap for "/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/hosted-application-startup.js" points to missing source files
+Sourcemap for "/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/index.js" points to missing source files
+Sourcemap for "/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/manifests.js" points to missing source files
+Sourcemap for "/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/application-iframe-contract.js" points to missing source files
+Sourcemap for "/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/application-agent-communication.js" points to missing source files
+Sourcemap for "/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/application-agent-target-url.js" points to missing source files
+Sourcemap for "/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/create-application-backend-mount-transport.js" points to missing source files
+Sourcemap for "/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-backend-websocket-connection.js" points to missing source files
+Sourcemap for "/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-backend-websocket-transport.js" points to missing source files
+Sourcemap for "/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-agent-connection.js" points to missing source files
+Sourcemap for "/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-agent-server-frame-parser.js" points to missing source files
+Sourcemap for "/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-agent-event-validator.js" points to missing source files
+Sourcemap for "/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-agent-connection-transport.js" points to missing source files
+Sourcemap for "/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-websocket-url.js" points to missing source files
+Sourcemap for "/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/default-startup-screen.js" points to missing source files
+stdout | tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > rejects unexpected Brief Studio producers without committing projection state
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-brief-studio-syyFio/app-data
+
+ ❯ tests/integration/application-backend/brief-studio-imported-package.integration.test.ts (3 tests | 3 failed) 366ms
+     × discovers Brief Studio as an imported package, drives the app-owned GraphQL API, and projects live execution events through REST/WS 136ms
+     × preserves same-binding early final projection when the packaged Brief Studio GraphQL client launches through the hosted backend mount 145ms
+     × rejects unexpected Brief Studio producers without committing projection state 84ms
+(node:9583) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/application-backend/application-context-capabilities.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/integration/application-backend/application-context-capabilities.integration.test.ts (2 tests | 1 failed) 100ms
+     × executes all named capabilities and both explicit starts through the real worker/host boundary 75ms
+     ✓ creates only canonical launch-request tables and columns from both built-in fresh baselines 24ms
+stdout | tests/unit/external-channel/runtime/channel-run-output-delivery-runtime.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:9585) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/unit/external-channel/runtime/channel-run-output-delivery-runtime.test.ts (6 tests | 5 failed) 85ms
+     ✓ recovers and publishes an accepted direct reply when stream events arrived before attach 45ms
+     × publishes coordinator follow-up outputs without leaking worker turns 3ms
+     × publishes clean callback text from overlapping coordinator stream fragments 1ms
+     × restores durable output records after restart and skips records already published 1ms
+     × does not publish recovered team output after the same route is rebound to another target node 16ms
+     × does not publish explicit member output after the same route is rebound to the default team target 19ms
+(node:9586) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/application-orchestration/application-orchestration-host-service.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/application-orchestration/application-orchestration-host-service.test.ts > ApplicationOrchestrationHostService startAgent > reads published artifacts for bound team-member runs through the binding-owned member runtime path
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/autobyteus-server-ts
+
+ ❯ tests/unit/application-orchestration/application-orchestration-host-service.test.ts (6 tests | 3 failed) 66ms
+     ✓ waits for RUN_STARTED journaling before initialInput is forwarded to the runtime 56ms
+     ✓ resolves bindings by launchRequestId through the host boundary 1ms
+     × reads published artifacts for bound team-member runs through the binding-owned member runtime path 5ms
+     × reads published artifacts for nested bound members from the hierarchical root team memory path 2ms
+     × posts application team input with exact member-address target identity 1ms
+     ✓ rejects legacy targetMemberName application runtime input before dispatch 1ms
+stdout | tests/unit/external-channel/services/channel-binding-service.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:9590) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/unit/external-channel/services/channel-binding-service.test.ts (8 tests | 1 failed) 8ms
+     ✓ resolves exact transport binding 2ms
+     ✓ returns null when exact binding missing and fallback disabled 0ms
+     ✓ resolves provider default when fallback enabled 0ms
+     ✓ delegates upsert methods to provider 1ms
+     ✓ delegates dispatch-target lookup after normalization 0ms
+     ✓ rejects lookup when neither agentRunId nor teamRunId is provided 1ms
+     ✓ checks active route bindings with output target identity 0ms
+     × checks explicit and default team route bindings against member identity 3ms
+stdout | tests/unit/external-channel/runtime/channel-binding-run-launcher.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:9591) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/unit/external-channel/runtime/channel-binding-run-launcher.test.ts (8 tests | 2 failed) 8ms
+     ✓ reuses a cached agent run identity only when the binding owns it in this process 2ms
+     ✓ prepares a fresh agent run identity through AgentRunService and persists the binding run id 1ms
+     ✓ reclaims a persisted agent run identity without restoring runtime before dispatch 0ms
+     ✓ rejects bindings that do not carry an AGENT launch target 1ms
+     ✓ reuses a cached active team run only when the binding owns it in this process 0ms
+     × restores a cached team run from persisted binding state before creating a new one 3ms
+     × creates a fresh team run when cached restore fails 1ms
+     ✓ rejects bindings that do not carry a TEAM launch target 0ms
+stdout | tests/unit/agent-execution/agent-run.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:9592) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/agent-execution/agent-run.test.ts (23 tests) 676ms
+(node:9593) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/application-backend/application-agent-communication-ws.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/integration/application-backend/application-agent-communication-ws.integration.test.ts (1 test | 1 failed) 19ms
+     × routes agent, team, and selected-member input/events through the real SDK and WebSocket boundary 18ms
+stdout | tests/unit/external-channel/runtime/channel-team-run-facade.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:9595) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/unit/external-channel/runtime/channel-team-run-facade.test.ts (7 tests | 6 failed) 7ms
+     × uses an active team run when already present 3ms
+     × resolves the team run through TeamRunService 0ms
+     × continues team dispatch when live team external-user publish fails 1ms
+     × subscribes for authoritative team turn capture before posting the external message 0ms
+     × uses the binding route key when runtime member route metadata is absent 0ms
+     ✓ throws when TeamRunService cannot resolve the team run 1ms
+     × captures the targeted member turn through the dispatch-scoped listener when the backend response has no turn id 0ms
+stdout | tests/unit/application-agent-streaming/application-agent-runtime-source.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:9596) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/unit/application-agent-streaming/application-agent-runtime-source.test.ts (2 tests | 1 failed) 5ms
+     × attributes nested task-agent events through the closed producer envelope and filters selected members 4ms
+     ✓ drops every non-agent team source before public projection 0ms
+stdout | tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:9597) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts (7 tests) 287ms
+stdout | tests/unit/run-history/services/team-run-history-catalog-service.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:9598) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/run-history/services/team-run-history-catalog-service.test.ts (6 tests) 242ms
+stdout | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:9602) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > Team WebSocket exact AgentRun command integration > preserves persistent, task Agent, outer task-Team, and nested task-Team AgentRun targets
+Agent team websocket attached for team run team-run-1
+Created agent session 65c2225a-e321-41ea-8f3f-a1abadbfede0 for run team-run-1
+
+stdout | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > Team WebSocket exact AgentRun command integration > preserves persistent, task Agent, outer task-Team, and nested task-Team AgentRun targets
+Agent Team WebSocket connected: session=65c2225a-e321-41ea-8f3f-a1abadbfede0, run=team-run-1
+
+stdout | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > Team WebSocket exact AgentRun command integration > returns INVALID_TARGET for a stale exact AgentRun without retry or persistent substitution
+Closed agent session 65c2225a-e321-41ea-8f3f-a1abadbfede0
+
+stdout | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > Team WebSocket exact AgentRun command integration > returns INVALID_TARGET for a stale exact AgentRun without retry or persistent substitution
+Agent team websocket attached for team run team-run-1
+Created agent session e6f62630-9e59-4d03-89b0-034746bb3490 for run team-run-1
+
+stdout | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > Team WebSocket exact AgentRun command integration > returns INVALID_TARGET for a stale exact AgentRun without retry or persistent substitution
+Agent Team WebSocket connected: session=e6f62630-9e59-4d03-89b0-034746bb3490, run=team-run-1
+
+stdout | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > Team WebSocket exact AgentRun command integration > rejects a legacy selector at the strict WebSocket contract before root execution
+Closed agent session e6f62630-9e59-4d03-89b0-034746bb3490
+
+stdout | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > Team WebSocket exact AgentRun command integration > rejects a legacy selector at the strict WebSocket contract before root execution
+Agent team websocket attached for team run team-run-1
+Created agent session 61b643cd-5964-46b6-9b9a-0d71950f5b20 for run team-run-1
+
+stdout | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > Team WebSocket exact AgentRun command integration > rejects a legacy selector at the strict WebSocket contract before root execution
+Agent Team WebSocket connected: session=61b643cd-5964-46b6-9b9a-0d71950f5b20, run=team-run-1
+
+stderr | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > Team WebSocket exact AgentRun command integration > rejects a legacy selector at the strict WebSocket contract before root execution
+Error handling team message for 61b643cd-5964-46b6-9b9a-0d71950f5b20: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "member_route_key"
+    ],
+    "path": [
+      "payload"
+    ],
+    "message": "Unrecognized key: \"member_route_key\""
+  }
+]
+
+stdout | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts
+Closed agent session 61b643cd-5964-46b6-9b9a-0d71950f5b20
+
+ ✓ tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts (3 tests) 159ms
+stdout | tests/unit/agent-team-execution/mixed-team-manager.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:9604) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/agent-team-execution/mixed-team-manager.test.ts > MixedTeamManager current local execution mechanics > freezes configured and delegated descendants once, dispatches every interrupt, and retries the same scope
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/autobyteus-server-ts
+
+ ✓ tests/unit/agent-team-execution/mixed-team-manager.test.ts (5 tests) 63ms
+stdout | tests/unit/agent-team-execution/root-team-run-termination.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:9605) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/agent-team-execution/root-team-run-termination.test.ts > RootTeamRun termination stabilization > closes admission synchronously and joins an admitted materializing command before freezing
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/autobyteus-server-ts
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+
+ ✓ tests/unit/agent-team-execution/root-team-run-termination.test.ts (2 tests) 64ms
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:9607) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > connects with one atomic V1 snapshot before lifecycle changes
+Created agent session 89d460d5-2234-4978-b966-d9e4c45c407e for run team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > connects with one atomic V1 snapshot before lifecycle changes
+Agent Team WebSocket connected: session=89d460d5-2234-4978-b966-d9e4c45c407e, run=team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > connects with one atomic V1 snapshot before lifecycle changes
+Closed agent session 89d460d5-2234-4978-b966-d9e4c45c407e
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > streams strict live status N and the following Agent event N+1 after the snapshot barrier
+Created agent session 7cf7f090-def7-45b3-93e9-8ecb39c8fb56 for run team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > streams strict live status N and the following Agent event N+1 after the snapshot barrier
+Agent Team WebSocket connected: session=7cf7f090-def7-45b3-93e9-8ecb39c8fb56, run=team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > streams strict live status N and the following Agent event N+1 after the snapshot barrier
+Closed agent session 7cf7f090-def7-45b3-93e9-8ecb39c8fb56
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > routes SEND_MESSAGE by the exact concrete AgentRun ID and records activity once
+Created agent session 8370e197-ad0f-4c70-be04-f830f50a23f1 for run team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > routes SEND_MESSAGE by the exact concrete AgentRun ID and records activity once
+Agent Team WebSocket connected: session=8370e197-ad0f-4c70-be04-f830f50a23f1, run=team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > routes SEND_MESSAGE by the exact concrete AgentRun ID and records activity once
+Closed agent session 8370e197-ad0f-4c70-be04-f830f50a23f1
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > reports exact-target rejection without persistent or address fallback
+Created agent session f5ec451e-5501-42c7-96c5-fdace159cbeb for run team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > reports exact-target rejection without persistent or address fallback
+Agent Team WebSocket connected: session=f5ec451e-5501-42c7-96c5-fdace159cbeb, run=team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > reports exact-target rejection without persistent or address fallback
+Closed agent session f5ec451e-5501-42c7-96c5-fdace159cbeb
+
+ ✓ tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts (5 tests) 18ms
+stdout | tests/integration/agent-team-execution/team-run-service.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:9617) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/agent-team-execution/team-run-service.integration.test.ts > TeamRunService current recursive topology integration > projects one launch preset across every exact recursive Agent address
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/autobyteus-server-ts
+
+ ✓ tests/integration/agent-team-execution/team-run-service.integration.test.ts (5 tests) 12ms
+stdout | tests/unit/agent-team-execution/team-run-service.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:9618) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/agent-team-execution/team-run-service.test.ts > TeamRunService current root lifecycle > returns an active RootTeamRun without attempting restore
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/autobyteus-server-ts
+
+ ✓ tests/unit/agent-team-execution/team-run-service.test.ts (5 tests) 9ms
+stdout | tests/unit/run-history/services/run-file-change-projection-service.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:9619) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/run-history/services/run-file-change-projection-service.test.ts (5 tests) 7ms
+stdout | tests/unit/agent-team-execution/agent-team-run-manager-lifecycle.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:9620) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stderr | tests/unit/agent-team-execution/agent-team-run-manager-lifecycle.test.ts > AgentTeamRunManager root lifecycle > never unregisters from an inactive read and isolates lifecycle listener failures
+RootTeamRun lifecycle listener failed: Error: listener failure
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/autobyteus-server-ts/tests/unit/agent-team-execution/agent-team-run-manager-lifecycle.test.ts:69:62
+    at AgentTeamRunManager.notify (/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts:260:13)
+    at AgentTeamRunManager.register (/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts:248:10)
+    at register (/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/autobyteus-server-ts/tests/unit/agent-team-execution/agent-team-run-manager-lifecycle.test.ts:21:65)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/autobyteus-server-ts/tests/unit/agent-team-execution/agent-team-run-manager-lifecycle.test.ts:72:18
+    at Proxy.assertThrows (file:///Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/node_modules/.pnpm/chai@6.2.2/node_modules/chai/index.js:2798:5)
+    at Proxy.methodWrapper (file:///Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/node_modules/.pnpm/chai@6.2.2/node_modules/chai/index.js:1700:25)
+    at Proxy.<anonymous> (file:///Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/node_modules/.pnpm/@vitest+expect@4.0.18/node_modules/@vitest/expect/dist/index.js:1149:12)
+    at Proxy.overwritingMethodWrapper (file:///Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/node_modules/.pnpm/chai@6.2.2/node_modules/chai/index.js:1750:33)
+    at Proxy.<anonymous> (file:///Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action/node_modules/.pnpm/@vitest+expect@4.0.18/node_modules/@vitest/expect/dist/index.js:1485:16)
+
+ ✓ tests/unit/agent-team-execution/agent-team-run-manager-lifecycle.test.ts (4 tests) 7ms
+stdout | tests/unit/run-history/services/team-run-history-service.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:9621) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/run-history/services/team-run-history-service.test.ts (5 tests) 6ms
+stdout | tests/unit/agent-team-execution/mixed-agent-member-handle-termination.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:9622) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/agent-team-execution/mixed-agent-member-handle-termination.test.ts (4 tests) 5ms
+stdout | tests/unit/workspaces/workspace-removal-guard.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:9626) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/workspaces/workspace-removal-guard.test.ts (3 tests) 4ms
+ ✓ tests/unit/api/graphql/types/team-run-history.test.ts (3 tests) 4ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 23 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/application-backend/application-agent-communication-ws.integration.test.ts > Application agent communication WebSocket integration > routes agent, team, and selected-member input/events through the real SDK and WebSocket boundary
+ApplicationAgentConnectionError: The application agent connection transport failed.
+ ❯ Object.connectAgentCommunication ../autobyteus-application-frontend-sdk/src/create-application-backend-mount-transport.ts:314:15
+    312|         });
+    313|       } catch {
+    314|         throw new ApplicationAgentConnectionError({
+       |               ^
+    315|           code: "TRANSPORT_FAILED",
+    316|           message: "The application agent connection transport failed.…
+ ❯ Object.connect ../autobyteus-application-frontend-sdk/src/application-client.ts:30:27
+ ❯ tests/integration/application-backend/application-agent-communication-ws.integration.test.ts:240:56
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/23]⎯
+
+ FAIL  tests/integration/application-backend/application-context-capabilities.integration.test.ts > Application context capability integration > executes all named capabilities and both explicit starts through the real worker/host boundary
+Error: Application worker process closed unexpectedly (code=1, signal=null).
+ ❯ ChildProcess.<anonymous> src/application-engine/runtime/application-engine-client.ts:59:21
+     57|         return;
+     58|       }
+     59|       const error = new Error(
+       |                     ^
+     60|         `Application worker process closed unexpectedly (code=${String…
+     61|       );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/23]⎯
+
+ FAIL  tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > discovers Brief Studio as an imported package, drives the app-owned GraphQL API, and projects live execution events through REST/WS
+Error: Brief Studio empty list query failed with status 500: {"detail":"Application worker process closed unexpectedly (code=1, signal=null)."}
+ ❯ expectOkJson tests/integration/application-backend/brief-studio-imported-package.integration.test.ts:214:11
+    212| const expectOkJson = async <T>(response: Response, label: string): Pro…
+    213|   if (!response.ok) {
+    214|     throw new Error(`${label} failed with status ${response.status}: $…
+       |           ^
+    215|   }
+    216|   return readJson<T>(response);
+ ❯ expectGraphqlField tests/integration/application-backend/brief-studio-imported-package.integration.test.ts:243:19
+ ❯ tests/integration/application-backend/brief-studio-imported-package.integration.test.ts:805:23
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/23]⎯
+
+ FAIL  tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > preserves same-binding early final projection when the packaged Brief Studio GraphQL client launches through the hosted backend mount
+Error: Application worker process closed unexpectedly (code=1, signal=null).
+ ❯ invokeJsonResult ../applications/brief-studio/dist/importable-package/applications/brief-studio/ui/src/create-application-backend-mount-transport.ts:162:11
+ ❯ readGraphqlField ../applications/brief-studio/dist/importable-package/applications/brief-studio/ui/generated/graphql-client.js:104:18
+    102| 
+    103| const readGraphqlField = async (promise, fieldName) => {
+    104|   const result = await promise;
+       |                  ^
+    105|   if (Array.isArray(result?.errors) && result.errors.length > 0) {
+    106|     throw new Error(result.errors.map((error) => error.message || Stri…
+ ❯ tests/integration/application-backend/brief-studio-imported-package.integration.test.ts:1401:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/23]⎯
+
+ FAIL  tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > rejects unexpected Brief Studio producers without committing projection state
+AssertionError: expected [Function] to throw error including 'Unexpected Brief Studio artifact prod…' but got 'Application worker process closed une…'
+
+Expected: "Unexpected Brief Studio artifact producer '/unexpected-member'"
+Received: "Application worker process closed unexpectedly (code=1, signal=null)."
+
+ ❯ tests/integration/application-backend/brief-studio-imported-package.integration.test.ts:1632:5
+    1630|     };
+    1631| 
+    1632|     await expect(
+       |     ^
+    1633|       engineHostService.invokeApplicationArtifactHandler(
+    1634|         applicationId,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/23]⎯
+
+ FAIL  tests/unit/application-agent-streaming/application-agent-runtime-source.test.ts > ApplicationAgentStreamRuntimeSource team attribution > attributes nested task-agent events through the closed producer envelope and filters selected members
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/unit/application-agent-streaming/application-agent-runtime-source.test.ts:55:22
+     53|     });
+     54| 
+     55|     expect(captured).toHaveLength(1);
+       |                      ^
+     56|     const mapped = new ApplicationAgentEventMapper().map(captured[0]);
+     57|     expect(mapped).toEqual({
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/23]⎯
+
+ FAIL  tests/unit/application-orchestration/application-orchestration-host-service.test.ts > ApplicationOrchestrationHostService startAgent > reads published artifacts for bound team-member runs through the binding-owned member runtime path
+AssertionError: expected undefined to deeply equal [ ObjectContaining{…} ]
+
+- Expected: 
+[
+  ObjectContaining {
+    "path": "brief-studio/research.md",
+    "runId": "researcher-member-run-1",
+  },
+]
+
++ Received: 
+undefined
+
+ ❯ tests/unit/application-orchestration/application-orchestration-host-service.test.ts:313:5
+    311|     });
+    312| 
+    313|     await expect(
+       |     ^
+    314|       hostService.listRunPublishedArtifacts(applicationId, "researcher…
+    315|     ).resolves.toEqual([
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/23]⎯
+
+ FAIL  tests/unit/application-orchestration/application-orchestration-host-service.test.ts > ApplicationOrchestrationHostService startAgent > reads published artifacts for nested bound members from the hierarchical root team memory path
+AssertionError: expected "vi.fn()" to be called with arguments: [ StringContaining{…} ]
+
+Number of calls: 0
+
+ ❯ tests/unit/application-orchestration/application-orchestration-host-service.test.ts:406:83
+    404|     await hostService.listRunPublishedArtifacts(applicationId, "review…
+    405| 
+    406|     expect(publishedArtifactProjectionService.getPublishedArtifactsFro…
+       |                                                                                   ^
+    407|       expect.stringContaining("agent_teams/team-run-1/child-review-tea…
+    408|     );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/23]⎯
+
+ FAIL  tests/unit/application-orchestration/application-orchestration-host-service.test.ts > ApplicationOrchestrationHostService startAgent > posts application team input with exact member-address target identity
+ApplicationAgentTargetAuthorizationError: The application agent target is invalid.
+ ❯ fail src/application-orchestration/services/application-agent-target-authorization-service.ts:23:85
+     21| };
+     22| export type ApplicationAgentTargetAuthorizationLease = { descriptor: A…
+     23| const fail = (code: ApplicationAgentTargetAuthorizationErrorCode): nev…
+       |                                                                                     ^
+     24| const exact = (value: object, keys: readonly string[]): boolean => Obj…
+     25| const validateAddress = (address: ApplicationAgentTargetAddress): void…
+ ❯ validateAddress src/application-orchestration/services/application-agent-target-authorization-service.ts:29:95
+ ❯ ApplicationAgentTargetAuthorizationService.readAuthorizedTarget src/application-orchestration/services/application-agent-target-authorization-service.ts:68:5
+ ❯ ApplicationAgentTargetAuthorizationService.authorizeTarget src/application-orchestration/services/application-agent-target-authorization-service.ts:54:63
+ ❯ ApplicationOrchestrationHostService.sendRunInput src/application-orchestration/services/application-orchestration-host-service.ts:336:24
+ ❯ tests/unit/application-orchestration/application-orchestration-host-service.test.ts:429:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/23]⎯
+
+ FAIL  tests/unit/external-channel/runtime/channel-binding-run-launcher.test.ts > ChannelBindingRunLauncher > restores a cached team run from persisted binding state before creating a new one
+AssertionError: expected undefined to be 'team-run-1' // Object.is equality
+
+- Expected: 
+"team-run-1"
+
++ Received: 
+undefined
+
+ ❯ tests/unit/external-channel/runtime/channel-binding-run-launcher.test.ts:206:23
+    204|     const teamRunId = await launcher.resolveOrStartTeamRun(binding);
+    205| 
+    206|     expect(teamRunId).toBe("team-run-1");
+       |                       ^
+    207|     expect(restoreTeamRun).toHaveBeenCalledWith("team-run-1");
+    208|     expect(upsertBindingTeamRunId).toHaveBeenCalledWith("binding-1", "…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/23]⎯
+
+ FAIL  tests/unit/external-channel/runtime/channel-binding-run-launcher.test.ts > ChannelBindingRunLauncher > creates a fresh team run when cached restore fails
+AssertionError: expected undefined to be 'team-run-fresh' // Object.is equality
+
+- Expected: 
+"team-run-fresh"
+
++ Received: 
+undefined
+
+ ❯ tests/unit/external-channel/runtime/channel-binding-run-launcher.test.ts:237:23
+    235|     const teamRunId = await launcher.resolveOrStartTeamRun(binding);
+    236| 
+    237|     expect(teamRunId).toBe("team-run-fresh");
+       |                       ^
+    238|     expect(restoreTeamRun).toHaveBeenCalledWith("team-run-1");
+    239|     expect(createTeamRun).toHaveBeenCalledWith({
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/23]⎯
+
+ FAIL  tests/unit/external-channel/runtime/channel-run-output-delivery-runtime.test.ts > ChannelRunOutputDeliveryRuntime > publishes coordinator follow-up outputs without leaking worker turns
+TypeError: run.getCoordinatorAgentRunId is not a function
+ ❯ resolveTeamBindingCurrentOutputIdentity src/external-channel/services/channel-team-output-target-identity.ts:24:67
+     22|   run: RootTeamRun,
+     23| ): ChannelTeamOutputTargetIdentity => {
+     24|   if (!binding.targetMemberAddress) return { entryAgentRunId: run.getC…
+       |                                                                   ^
+     25|   const placement = run.resolveRecipient(assertAgentTeamAddress(bindin…
+     26|   const address = placement.kind === "agent" ? placement.address : pla…
+ ❯ resolveTeamRunOutputTarget src/external-channel/services/channel-team-output-target-identity.ts:13:20
+ ❯ ChannelRunOutputDeliveryRuntime.attachLink src/external-channel/runtime/channel-run-output-delivery-runtime.ts:205:20
+ ❯ ChannelRunOutputDeliveryRuntime.attachAcceptedDispatch src/external-channel/runtime/channel-run-output-delivery-runtime.ts:117:18
+ ❯ tests/unit/external-channel/runtime/channel-run-output-delivery-runtime.test.ts:235:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/23]⎯
+
+ FAIL  tests/unit/external-channel/runtime/channel-run-output-delivery-runtime.test.ts > ChannelRunOutputDeliveryRuntime > publishes clean callback text from overlapping coordinator stream fragments
+TypeError: run.getCoordinatorAgentRunId is not a function
+ ❯ resolveTeamBindingCurrentOutputIdentity src/external-channel/services/channel-team-output-target-identity.ts:24:67
+     22|   run: RootTeamRun,
+     23| ): ChannelTeamOutputTargetIdentity => {
+     24|   if (!binding.targetMemberAddress) return { entryAgentRunId: run.getC…
+       |                                                                   ^
+     25|   const placement = run.resolveRecipient(assertAgentTeamAddress(bindin…
+     26|   const address = placement.kind === "agent" ? placement.address : pla…
+ ❯ resolveTeamRunOutputTarget src/external-channel/services/channel-team-output-target-identity.ts:13:20
+ ❯ ChannelRunOutputDeliveryRuntime.attachLink src/external-channel/runtime/channel-run-output-delivery-runtime.ts:205:20
+ ❯ ChannelRunOutputDeliveryRuntime.attachAcceptedDispatch src/external-channel/runtime/channel-run-output-delivery-runtime.ts:117:18
+ ❯ tests/unit/external-channel/runtime/channel-run-output-delivery-runtime.test.ts:315:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/23]⎯
+
+ FAIL  tests/unit/external-channel/runtime/channel-run-output-delivery-runtime.test.ts > ChannelRunOutputDeliveryRuntime > restores durable output records after restart and skips records already published
+Error: Team output delivery keys require entryAgentRunId.
+ ❯ normalizeDeliveryKeyTarget src/external-channel/services/channel-run-output-delivery-service.ts:178:38
+    176|     };
+    177|   }
+    178|   if (!target.entryAgentRunId) throw new Error("Team output delivery k…
+       |                                      ^
+    179|   return {
+    180|     targetType: "TEAM",
+ ❯ ChannelRunOutputDeliveryService.buildDeliveryKey src/external-channel/services/channel-run-output-delivery-service.ts:51:15
+ ❯ ChannelRunOutputDeliveryService.upsertObservedTurn src/external-channel/services/channel-run-output-delivery-service.ts:71:25
+ ❯ tests/unit/external-channel/runtime/channel-run-output-delivery-runtime.test.ts:385:45
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/23]⎯
+
+ FAIL  tests/unit/external-channel/runtime/channel-run-output-delivery-runtime.test.ts > ChannelRunOutputDeliveryRuntime > does not publish recovered team output after the same route is rebound to another target node
+Error: Team output delivery keys require entryAgentRunId.
+ ❯ normalizeDeliveryKeyTarget src/external-channel/services/channel-run-output-delivery-service.ts:178:38
+    176|     };
+    177|   }
+    178|   if (!target.entryAgentRunId) throw new Error("Team output delivery k…
+       |                                      ^
+    179|   return {
+    180|     targetType: "TEAM",
+ ❯ ChannelRunOutputDeliveryService.buildDeliveryKey src/external-channel/services/channel-run-output-delivery-service.ts:51:15
+ ❯ ChannelRunOutputDeliveryService.upsertObservedTurn src/external-channel/services/channel-run-output-delivery-service.ts:71:25
+ ❯ tests/unit/external-channel/runtime/channel-run-output-delivery-runtime.test.ts:509:58
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/23]⎯
+
+ FAIL  tests/unit/external-channel/runtime/channel-run-output-delivery-runtime.test.ts > ChannelRunOutputDeliveryRuntime > does not publish explicit member output after the same route is rebound to the default team target
+Error: Team output delivery keys require entryAgentRunId.
+ ❯ normalizeDeliveryKeyTarget src/external-channel/services/channel-run-output-delivery-service.ts:178:38
+    176|     };
+    177|   }
+    178|   if (!target.entryAgentRunId) throw new Error("Team output delivery k…
+       |                                      ^
+    179|   return {
+    180|     targetType: "TEAM",
+ ❯ ChannelRunOutputDeliveryService.buildDeliveryKey src/external-channel/services/channel-run-output-delivery-service.ts:51:15
+ ❯ ChannelRunOutputDeliveryService.upsertObservedTurn src/external-channel/services/channel-run-output-delivery-service.ts:71:25
+ ❯ tests/unit/external-channel/runtime/channel-run-output-delivery-runtime.test.ts:611:53
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/23]⎯
+
+ FAIL  tests/unit/external-channel/runtime/channel-team-run-facade.test.ts > ChannelTeamRunFacade > uses an active team run when already present
+ FAIL  tests/unit/external-channel/runtime/channel-team-run-facade.test.ts > ChannelTeamRunFacade > resolves the team run through TeamRunService
+ FAIL  tests/unit/external-channel/runtime/channel-team-run-facade.test.ts > ChannelTeamRunFacade > continues team dispatch when live team external-user publish fails
+ FAIL  tests/unit/external-channel/runtime/channel-team-run-facade.test.ts > ChannelTeamRunFacade > subscribes for authoritative team turn capture before posting the external message
+ FAIL  tests/unit/external-channel/runtime/channel-team-run-facade.test.ts > ChannelTeamRunFacade > uses the binding route key when runtime member route metadata is absent
+ FAIL  tests/unit/external-channel/runtime/channel-team-run-facade.test.ts > ChannelTeamRunFacade > captures the targeted member turn through the dispatch-scoped listener when the backend response has no turn id
+TypeError: run.getCoordinatorAgentRunId is not a function
+ ❯ ChannelTeamRunFacade.targetAddress src/external-channel/runtime/channel-team-run-facade.ts:62:51
+     60|   private targetAddress(binding: ChannelBinding, run: RootTeamRun): Ag…
+     61|     if (binding.targetMemberAddress) return assertAgentTeamAddress(bin…
+     62|     const coordinator = run.getAgentExecution(run.getCoordinatorAgentR…
+       |                                                   ^
+     63|     if (!coordinator) throw new Error(`Team run '${run.teamRunId}' has…
+     64|     return coordinator;
+ ❯ src/external-channel/runtime/channel-team-run-facade.ts:32:27
+ ❯ ChannelDispatchLockRegistry.runExclusive src/external-channel/runtime/channel-dispatch-lock-registry.ts:23:14
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/23]⎯
+
+ FAIL  tests/unit/external-channel/services/channel-binding-service.test.ts > ChannelBindingService > checks explicit and default team route bindings against member identity
+AssertionError: promise rejected "TypeError: Cannot read properties of unde…" instead of resolving
+ ❯ tests/unit/external-channel/services/channel-binding-service.test.ts:326:67
+    324| 
+    325|     vi.mocked(provider.findBinding).mockResolvedValue(createTeamBindin…
+    326|     await expect(service.isRouteBoundToTarget(route, workerTarget)).re…
+       |                                                                   ^
+    327|     await expect(service.isRouteBoundToTarget(route, workerRunIdOnlyTa…
+    328|     await expect(service.isRouteBoundToTarget(route, coordinatorTarget…
+
+Caused by: TypeError: Cannot read properties of undefined (reading 'trim')
+ ❯ normalizeNullableString src/external-channel/services/channel-binding-service.ts:177:28
+ ❯ normalizeOutputTarget src/external-channel/services/channel-binding-service.ts:193:22
+ ❯ ChannelBindingService.isRouteBoundToTarget src/external-channel/services/channel-binding-service.ts:132:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/23]⎯
+
+
+ Test Files  9 failed | 15 passed (24)
+      Tests  23 failed | 105 passed (128)
+   Start at  08:47:14
+   Duration  29.85s (transform 3.58s, setup 81ms, import 24.86s, tests 2.23s, environment 2ms)
+

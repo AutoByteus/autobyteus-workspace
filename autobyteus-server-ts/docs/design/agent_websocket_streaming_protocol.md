@@ -193,13 +193,28 @@ later runtime events own terminal status.
 A standalone connection binds to the durable run ID, emits `CONNECTED`, projects
 current status, and subscribes if a runtime is active. It does not restore or
 start the runtime. A Team connection resolves through
-`TeamRunService.resolveTeamRun(...)`, because the Team container owns supported
-restore. Team event and lifecycle listeners bind before a fresh snapshot is
-read, preventing create/restore/termination races.
+`TeamRunService.resolveActiveTeamRun(...)`, because the Team container owns
+supported restore. It may restore an unmanaged persisted root, but it does not
+create a replacement while the exact root is still manager-owned and
+stopping/non-command-active. Team event and lifecycle listeners bind before a
+fresh snapshot is read, preventing create/restore/termination races.
 
 If a send materializes or restores a runtime, the existing socket is rebound to
 that stream. Command overlays remain until command-correlated runtime evidence
 or coordinator failure replaces them.
+
+Manager lookup distinguishes a command-**active** root from a **managed** root
+still owned during initialization, Stop, or a nonterminal Stop failure. The
+wire `TEAM_RUN_LIFECYCLE {is_active}` reports manager ownership, remains true
+through Stop, and becomes false only after exact unregister. Leaf
+`AGENT_STATUS: offline` is not root terminality.
+
+Stop and permanent history deletion are not one protocol operation. Stop
+terminates the exact admitted recursive runtime and retains its stored history;
+only after authoritative terminal inactivity may the user separately confirm
+Delete on the `READY` history row through the GraphQL/history catalog boundary.
+The Team WebSocket defines no Delete command, combined confirmation, or
+stop-then-delete sequence.
 
 ## Client-Bound Content Cadence
 

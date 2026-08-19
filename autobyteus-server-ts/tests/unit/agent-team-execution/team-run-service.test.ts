@@ -33,10 +33,17 @@ const launchConfig = (
 const createSubject = (
   activeRun: unknown = null,
   definitions: Map<string, unknown> = new Map([["team-def-1", rootDefinition]]),
+  tokenUsageReadiness?: {
+    assertCurrentSchemaReady(): void;
+    assertExistingRunRestoreReady(): void;
+  },
+  managedRun: unknown = activeRun,
 ) => {
   const executionTree = { schemaVersion: 1, rootTeam: { teamRunId: "team-mixed-1" } };
   const agentTeamRunManager = {
-    getTeamRun: vi.fn().mockReturnValue(activeRun),
+    getActiveTeamRun: vi.fn().mockReturnValue(activeRun),
+    getManagedTeamRun: vi.fn().mockReturnValue(managedRun),
+    hasManagedTeamRun: vi.fn().mockReturnValue(Boolean(managedRun)),
     createTeamRun: vi.fn(async ({ config }) => ({
       teamRunId: config.rootTeam.teamRunId,
       config,
@@ -72,6 +79,7 @@ const createSubject = (
     workspaceManager,
     memoryDir: "/tmp/team-run-service-current-test",
     agentRunIdentityAllocator,
+    tokenUsageReadiness,
   });
   return {
     service,
@@ -80,6 +88,45 @@ const createSubject = (
 };
 
 describe("TeamRunService current root lifecycle", () => {
+  it("rejects current-schema admission before constructing a new team run", async () => {
+    const tokenUsageReadiness = {
+      assertCurrentSchemaReady: vi.fn(() => {
+        throw new Error("TOKEN_USAGE_CURRENT_SCHEMA_REQUIRED");
+      }),
+      assertExistingRunRestoreReady: vi.fn(),
+    };
+    const { service, mocks } = createSubject(null, undefined, tokenUsageReadiness);
+
+    await expect(service.createTeamRun({
+      teamDefinitionId: "team-def-1",
+      teamRunId: "team-new-1",
+      memberConfigs: [launchConfig("/Coordinator")],
+    })).rejects.toThrow("TOKEN_USAGE_CURRENT_SCHEMA_REQUIRED");
+
+    expect(tokenUsageReadiness.assertCurrentSchemaReady).toHaveBeenCalledOnce();
+    expect(mocks.workspaceManager.ensureWorkspaceByRootPath).not.toHaveBeenCalled();
+    expect(mocks.agentTeamRunManager.createTeamRun).not.toHaveBeenCalled();
+  });
+
+  it("rejects a managed offline run before consulting pre-existing-run readiness", async () => {
+    const managedRun = { teamRunId: "team-offline-1" };
+    const tokenUsageReadiness = {
+      assertCurrentSchemaReady: vi.fn(),
+      assertExistingRunRestoreReady: vi.fn(() => {
+        throw new Error("TOKEN_USAGE_EXISTING_RUN_RESTORE_MIGRATION_REQUIRED");
+      }),
+    };
+    const { service, mocks } = createSubject(null, undefined, tokenUsageReadiness, managedRun);
+
+    await expect(service.restoreTeamRun("team-offline-1")).rejects.toThrow(
+      "Team run 'team-offline-1' is already managed and cannot be restored.",
+    );
+
+    expect(mocks.agentTeamRunManager.hasManagedTeamRun).toHaveBeenCalledWith("team-offline-1");
+    expect(tokenUsageReadiness.assertExistingRunRestoreReady).not.toHaveBeenCalled();
+    expect(mocks.agentTeamRunManager.restoreTeamRun).not.toHaveBeenCalled();
+  });
+
   it("blocks root, nested, delegated, and task-team restoration before the team backend constructs providers", async () => {
     configureTokenUsageMigrationReadiness({
       kind: "CURRENT_SCHEMA_DEGRADED",
@@ -102,8 +149,8 @@ describe("TeamRunService current root lifecycle", () => {
     const { service, mocks } = createSubject(activeRun);
     const restoreSpy = vi.spyOn(service, "restoreTeamRun");
 
-    await expect(service.resolveTeamRun("team-1")).resolves.toBe(activeRun);
-    expect(mocks.agentTeamRunManager.getTeamRun).toHaveBeenCalledWith("team-1");
+    await expect(service.resolveActiveTeamRun("team-1")).resolves.toBe(activeRun);
+    expect(mocks.agentTeamRunManager.getActiveTeamRun).toHaveBeenCalledWith("team-1");
     expect(restoreSpy).not.toHaveBeenCalled();
   });
 
@@ -111,7 +158,7 @@ describe("TeamRunService current root lifecycle", () => {
     const { service } = createSubject();
     vi.spyOn(service, "restoreTeamRun").mockRejectedValue(new Error("missing V1 package"));
 
-    await expect(service.resolveTeamRun("team-1")).resolves.toBeNull();
+    await expect(service.resolveActiveTeamRun("team-1")).resolves.toBeNull();
   });
 
   it("projects one exact current Agent error into a failed lifecycle result", async () => {

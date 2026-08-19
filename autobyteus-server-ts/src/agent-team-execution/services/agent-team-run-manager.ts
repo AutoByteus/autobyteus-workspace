@@ -43,7 +43,8 @@ export class AgentTeamRunManager {
   private readonly taskRecordsStore: TaskDelegationRecordsV1Store;
   private readonly communicationStore: TeamCommunicationV1Store;
   private readonly packageCatalog: TeamRunV1PackageCatalog;
-  private readonly activeRoots = new Map<string, RootTeamRun>();
+  private readonly managedRoots = new Map<string, RootTeamRun>();
+  private readonly rootTransitionLanes = new Map<string, Promise<void>>();
   private readonly lifecycleListeners = new Map<string, Set<TeamRunLifecycleListener>>();
 
   static getInstance(options: AgentTeamRunManagerOptions = {}): AgentTeamRunManager {
@@ -65,80 +66,102 @@ export class AgentTeamRunManager {
     teamDefinitionName: string;
   }): Promise<RootTeamRun> {
     const rootTeamRunId = required(input.config.rootTeam.teamRunId, "rootTeamRunId");
-    if (this.getTeamRun(rootTeamRunId)) throw new Error(`RootTeamRun '${rootTeamRunId}' is already active.`);
-    const tree = buildInitialTeamRunExecutionTree({
-      config: input.config,
-      teamDefinitionName: required(input.teamDefinitionName, "teamDefinitionName"),
+    return this.withRootTransition(rootTeamRunId, async () => {
+      if (this.hasManagedTeamRun(rootTeamRunId)) throw new Error(`RootTeamRun '${rootTeamRunId}' is already managed.`);
+      const tree = buildInitialTeamRunExecutionTree({
+        config: input.config,
+        teamDefinitionName: required(input.teamDefinitionName, "teamDefinitionName"),
+      });
+      const tasks: TaskDelegationRecordsSnapshot = Object.freeze({
+        schemaVersion: 1,
+        rootTeamRunId,
+        records: Object.freeze([]),
+      });
+      const messages: TeamCommunicationMessagesSnapshot = Object.freeze({
+        schemaVersion: 1,
+        rootTeamRunId,
+        messages: Object.freeze([]),
+      });
+      const teamMemoryDir = this.teamMemoryDir(rootTeamRunId);
+      await this.requireCommitted(this.executionTreeStore.write(teamMemoryDir, tree), "execution tree");
+      await this.requireCommitted(this.taskRecordsStore.write(teamMemoryDir, tasks), "task records");
+      await this.requireCommitted(this.communicationStore.write(teamMemoryDir, messages), "communication messages");
+      this.packageCatalog.admit(rootTeamRunId);
+      const root = await this.materializeRoot({
+        config: input.config,
+        tree,
+        tasks,
+        messages,
+        teamMemoryDir,
+        mode: "fresh",
+      });
+      this.register(root);
+      return root;
     });
-    const tasks: TaskDelegationRecordsSnapshot = Object.freeze({
-      schemaVersion: 1,
-      rootTeamRunId,
-      records: Object.freeze([]),
-    });
-    const messages: TeamCommunicationMessagesSnapshot = Object.freeze({
-      schemaVersion: 1,
-      rootTeamRunId,
-      messages: Object.freeze([]),
-    });
-    const teamMemoryDir = this.teamMemoryDir(rootTeamRunId);
-    await this.requireCommitted(this.executionTreeStore.write(teamMemoryDir, tree), "execution tree");
-    await this.requireCommitted(this.taskRecordsStore.write(teamMemoryDir, tasks), "task records");
-    await this.requireCommitted(this.communicationStore.write(teamMemoryDir, messages), "communication messages");
-    this.packageCatalog.admit(rootTeamRunId);
-    const root = await this.materializeRoot({
-      config: input.config,
-      tree,
-      tasks,
-      messages,
-      teamMemoryDir,
-      mode: "fresh",
-    });
-    this.register(root);
-    return root;
   }
 
   async restoreTeamRun(rootTeamRunIdInput: string): Promise<RootTeamRun> {
     const rootTeamRunId = required(rootTeamRunIdInput, "rootTeamRunId");
-    if (this.getTeamRun(rootTeamRunId)) throw new Error(`RootTeamRun '${rootTeamRunId}' is already active.`);
-    if (this.packageCatalog.isInitialized() && !this.packageCatalog.isAdmitted(rootTeamRunId)) {
-      throw new Error(`TEAM_RUN_STATE_PACKAGE_NOT_CATALOGED: TeamRun '${rootTeamRunId}' is not an admitted V1 package.`);
-    }
-    const teamMemoryDir = this.teamMemoryDir(rootTeamRunId);
-    const loaded = await new TeamRunStatePackageLoader({
-      executionTreeStore: this.executionTreeStore,
-      taskRecordsStore: this.taskRecordsStore,
-      communicationStore: this.communicationStore,
-    }).loadAndRepair({ teamMemoryDir, rootTeamRunId });
-    if (!loaded.loaded) throw new Error(`${loaded.code}: ${loaded.message}`);
-    const config = buildTeamRunConfigFromExecutionTree(loaded.state.executionTree);
-    const root = await this.materializeRoot({
-      config,
-      tree: loaded.state.executionTree,
-      tasks: loaded.state.taskRecords,
-      messages: loaded.state.communicationMessages,
-      teamMemoryDir,
-      mode: "restore",
+    return this.withRootTransition(rootTeamRunId, async () => {
+      if (this.hasManagedTeamRun(rootTeamRunId)) throw new Error(`RootTeamRun '${rootTeamRunId}' is already managed.`);
+      if (this.packageCatalog.isInitialized() && !this.packageCatalog.isAdmitted(rootTeamRunId)) {
+        throw new Error(`TEAM_RUN_STATE_PACKAGE_NOT_CATALOGED: TeamRun '${rootTeamRunId}' is not an admitted V1 package.`);
+      }
+      const teamMemoryDir = this.teamMemoryDir(rootTeamRunId);
+      const loaded = await new TeamRunStatePackageLoader({
+        executionTreeStore: this.executionTreeStore,
+        taskRecordsStore: this.taskRecordsStore,
+        communicationStore: this.communicationStore,
+      }).loadAndRepair({ teamMemoryDir, rootTeamRunId });
+      if (!loaded.loaded) throw new Error(`${loaded.code}: ${loaded.message}`);
+      const config = buildTeamRunConfigFromExecutionTree(loaded.state.executionTree);
+      const root = await this.materializeRoot({
+        config,
+        tree: loaded.state.executionTree,
+        tasks: loaded.state.taskRecords,
+        messages: loaded.state.communicationMessages,
+        teamMemoryDir,
+        mode: "restore",
+      });
+      this.register(root);
+      return root;
     });
-    this.register(root);
-    return root;
   }
 
-  getTeamRun(rootTeamRunIdInput: string): RootTeamRun | null {
+  getActiveTeamRun(rootTeamRunIdInput: string): RootTeamRun | null {
     const rootTeamRunId = required(rootTeamRunIdInput, "rootTeamRunId");
-    const root = this.activeRoots.get(rootTeamRunId) ?? null;
-    if (!root?.isActive()) {
-      if (root) this.unregister(rootTeamRunId, root);
-      return null;
-    }
-    return root;
+    const root = this.managedRoots.get(rootTeamRunId) ?? null;
+    return root?.isActive() ? root : null;
   }
 
-  getActiveRun(rootTeamRunId: string): RootTeamRun | null { return this.getTeamRun(rootTeamRunId); }
-  listActiveRuns(): string[] { return [...this.activeRoots.keys()].filter((id) => this.getTeamRun(id)); }
+  getManagedTeamRun(rootTeamRunIdInput: string): RootTeamRun | null {
+    return this.managedRoots.get(required(rootTeamRunIdInput, "rootTeamRunId")) ?? null;
+  }
+
+  hasManagedTeamRun(rootTeamRunIdInput: string): boolean {
+    return this.getManagedTeamRun(rootTeamRunIdInput) !== null;
+  }
+
+  listActiveTeamRunIds(): string[] {
+    return [...this.managedRoots.keys()].filter((id) => this.getActiveTeamRun(id));
+  }
+
+  listManagedTeamRunIds(): string[] { return [...this.managedRoots.keys()]; }
+
+  async withUnmanagedHistoryDeletion<T>(
+    rootTeamRunIdInput: string,
+    operation: () => Promise<T>,
+  ): Promise<{ kind: "managed" } | { kind: "completed"; value: T }> {
+    const rootTeamRunId = required(rootTeamRunIdInput, "rootTeamRunId");
+    return this.withRootTransition(rootTeamRunId, async () => {
+      if (this.hasManagedTeamRun(rootTeamRunId)) return { kind: "managed" };
+      return { kind: "completed", value: await operation() };
+    });
+  }
 
   getLifecycleSnapshot(rootTeamRunId: string): TeamRunLifecycleSnapshot {
     const teamRunId = required(rootTeamRunId, "rootTeamRunId");
-    return { teamRunId, isActive: this.getTeamRun(teamRunId) !== null };
+    return { teamRunId, isActive: this.hasManagedTeamRun(teamRunId) };
   }
 
   subscribeToLifecycle(rootTeamRunId: string, listener: TeamRunLifecycleListener): TeamRunLifecycleUnsubscribe {
@@ -153,17 +176,17 @@ export class AgentTeamRunManager {
   }
 
   subscribeToEvents(rootTeamRunId: string, listener: RootEventListener<TeamRunEvent>): (() => void) | null {
-    return this.getTeamRun(rootTeamRunId)?.subscribeToEvents(listener) ?? null;
+    return this.getManagedTeamRun(rootTeamRunId)?.subscribeToEvents(listener) ?? null;
   }
 
   async terminateTeamRun(rootTeamRunIdInput: string): Promise<boolean> {
     const rootTeamRunId = required(rootTeamRunIdInput, "rootTeamRunId");
     try {
-      const root = this.getTeamRun(rootTeamRunId);
+      const root = this.getManagedTeamRun(rootTeamRunId);
       if (!root) return false;
       const result = await root.terminate();
       if (!result.accepted) return false;
-      return this.unregister(rootTeamRunId, root) || !this.activeRoots.has(rootTeamRunId);
+      return this.unregister(rootTeamRunId, root) || !this.managedRoots.has(rootTeamRunId);
     } catch (error) {
       throw new AgentTeamTerminationError(String(error));
     }
@@ -218,16 +241,16 @@ export class AgentTeamRunManager {
   }
 
   private register(root: RootTeamRun): void {
-    if (!root.isActive() || this.activeRoots.has(root.teamRunId)) {
+    if (!root.isActive() || this.managedRoots.has(root.teamRunId)) {
       throw new Error(`Cannot register RootTeamRun '${root.teamRunId}'.`);
     }
-    this.activeRoots.set(root.teamRunId, root);
+    this.managedRoots.set(root.teamRunId, root);
     this.notify({ teamRunId: root.teamRunId, isActive: true });
   }
 
   private unregister(rootTeamRunId: string, expected: RootTeamRun): boolean {
-    if (this.activeRoots.get(rootTeamRunId) !== expected) return false;
-    this.activeRoots.delete(rootTeamRunId);
+    if (this.managedRoots.get(rootTeamRunId) !== expected) return false;
+    this.managedRoots.delete(rootTeamRunId);
     this.notify({ teamRunId: rootTeamRunId, isActive: false });
     return true;
   }
@@ -235,6 +258,21 @@ export class AgentTeamRunManager {
   private notify(snapshot: TeamRunLifecycleSnapshot): void {
     for (const listener of [...(this.lifecycleListeners.get(snapshot.teamRunId) ?? [])]) {
       try { listener(snapshot); } catch (error) { console.error("RootTeamRun lifecycle listener failed:", error); }
+    }
+  }
+
+  private async withRootTransition<T>(rootTeamRunId: string, operation: () => Promise<T>): Promise<T> {
+    const previous = this.rootTransitionLanes.get(rootTeamRunId) ?? Promise.resolve();
+    let release!: () => void;
+    const current = new Promise<void>((resolve) => { release = resolve; });
+    const tail = previous.then(() => current);
+    this.rootTransitionLanes.set(rootTeamRunId, tail);
+    await previous;
+    try {
+      return await operation();
+    } finally {
+      release();
+      if (this.rootTransitionLanes.get(rootTeamRunId) === tail) this.rootTransitionLanes.delete(rootTeamRunId);
     }
   }
 

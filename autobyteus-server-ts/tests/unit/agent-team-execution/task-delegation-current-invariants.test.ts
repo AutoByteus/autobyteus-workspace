@@ -164,7 +164,7 @@ const createSettlementHarness = (input: {
       commitAfterDurability: commit,
     });
   });
-  const unregisterInactive = vi.fn();
+  const unregisterTerminated = vi.fn();
   const enterLifecycleFailStop = vi.fn();
   const owner = { prepareDirectTaskSettlement };
   let service!: TaskDelegationService;
@@ -181,7 +181,7 @@ const createSettlementHarness = (input: {
     isRootOpen: () => true,
     authorize: () => undefined,
     requireTeamRun: async () => owner as never,
-    teamRunResolver: { unregisterInactive } as never,
+    teamRunResolver: { unregisterTerminated } as never,
     commitTaskMutation: async (command) => {
       if (command.kind !== "record_transition") throw new Error(`Unexpected ${command.kind} commit.`);
       command.commitAfterDurability();
@@ -218,7 +218,7 @@ const createSettlementHarness = (input: {
     preparations,
     finishLocalTeardown,
     enterLifecycleFailStop,
-    unregisterInactive,
+    unregisterTerminated,
     records: () => currentRecords,
     tree: () => currentTree,
   };
@@ -290,7 +290,7 @@ describe("current task delegation invariants", () => {
 
     await vi.waitFor(() => expect(harness.prepareDirectTaskSettlement).toHaveBeenCalledTimes(2));
     expect(harness.tree().rootTeam.taskExecutions[0]!.settledAt).not.toBeNull();
-    expect(harness.unregisterInactive).toHaveBeenCalledOnce();
+    expect(harness.unregisterTerminated).toHaveBeenCalledOnce();
   });
 
   it("settles root shutdown from deepest child through the same task FIFO", async () => {
@@ -341,7 +341,7 @@ describe("current task delegation invariants", () => {
     await expect(harness.service.settle(parent.taskId)).rejects.toThrow("cleanup rejected");
     expect(harness.tree().rootTeam.taskExecutions[0]!.settledAt).not.toBeNull();
     expect(harness.enterLifecycleFailStop).toHaveBeenCalledOnce();
-    expect(harness.unregisterInactive).not.toHaveBeenCalled();
+    expect(harness.unregisterTerminated).not.toHaveBeenCalled();
   });
 
   it("does not settle or retry trailing terminal tasks after the first indeterminate tree write", async () => {
@@ -441,7 +441,7 @@ describe("current task delegation invariants", () => {
         isRootOpen: () => true,
         authorize: () => undefined,
         requireTeamRun: async () => ({ prepareTaskAgent: async () => prepared }) as never,
-        teamRunResolver: { unregisterInactive: vi.fn() } as never,
+        teamRunResolver: { unregisterTerminated: vi.fn() } as never,
         commitTaskMutation: async (command) => {
           if (command.kind !== "activation") throw new Error("Expected activation.");
           command.activation.assertCommitReady();

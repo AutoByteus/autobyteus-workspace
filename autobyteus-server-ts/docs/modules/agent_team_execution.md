@@ -145,10 +145,22 @@ terminal status has already been projected.
 
 ## Root And Agent Lifecycle
 
-`AgentTeamRunManager` alone owns root Team liveness and publishes
-`TeamRunLifecycleSnapshot {teamRunId,isActive}`. Active-to-active replacement
-does not flicker false/true; stale cleanup cannot deactivate a replacement; and
-accepted termination publishes inactive after exact unregister.
+`AgentTeamRunManager` alone owns root Team liveness. Its lookup vocabulary is
+deliberately precise:
+
+- **active** means `getActiveTeamRun(...)` can return a command-capable root;
+- **managed** means `getManagedTeamRun(...)` / `hasManagedTeamRun(...)` still
+  owns the exact root while it is active, initializing, stopping, or retained
+  after a nonterminal Stop failure; and
+- **terminal inactive** means the exact root is no longer manager-owned.
+
+The public `TeamRunLifecycleSnapshot {teamRunId,isActive}` and Team history
+`isActive` projection represent manager ownership, so they remain true while
+Stop is pending and become false only after exact unregister. This public
+"active" state must not be confused with an individual member doing work or
+with the narrower command-active lookup. Active-to-active replacement does not
+flicker false/true, stale cleanup cannot deactivate a replacement, and accepted
+termination publishes terminal inactive only after exact unregister.
 
 Root `TEAM_RUN_LIFECYCLE`, transport connection state, exact Agent
 `AGENT_STATUS`, command overlays, task status, and open-work settlement are
@@ -176,6 +188,35 @@ exact AgentRun FIFO while another turn is active without a provider-specific
 busy rejection. Codex may append to the exact active turn when AgentRun selects
 that capability; AutoByteus and Claude wait for a later turn. Team managers do
 not own another input queue or infer this policy from provider state.
+
+## Stop, Retained History, And Later Delete
+
+The root lifecycle and stored-history lifecycle are intentionally separate:
+
+1. A manager-owned root, including a root whose configured members all report
+   `offline` or whose Stop is pending, exposes **Stop** only. Member status is
+   not root terminality and never authorizes deletion.
+2. Stop targets the exact root TeamRun ID, closes new materialization admission,
+   joins work already admitted, freezes one recursive scope, interrupts active
+   turns before quiescence, and terminates every materialized configured,
+   delegated, and nested descendant. Stop retains the V1 package, catalog row,
+   task/communication history, context, and resume identity.
+3. The root remains managed and the lifecycle/history projection remains
+   `isActive: true` until that whole scope reaches accepted terminal completion
+   and the manager unregisters the exact root. A failed Stop retains the same
+   managed root and history for retry; it does not make Delete available.
+4. Only the later terminal-inactive `READY` history row exposes **Archive** and
+   **Delete**. Delete is a new user decision with permanent-deletion
+   confirmation; Stop never opens that confirmation and never invokes Delete.
+5. `TeamRunHistoryService.deleteStoredTeamRun(...)` delegates physical removal
+   to the history catalog. `AgentTeamRunManager.withUnmanagedHistoryDeletion(...)`
+   serializes the exact-ID exclusion through the complete catalog/package
+   transition, rejects active or stopping roots, and lets compensated storage
+   failure preserve a truthful inactive retry target.
+
+Thus the supported journey is `Stop -> terminal retained inactive history ->`
+an optional, separately confirmed `Delete`. There is no combined
+stop-and-delete command, mutation, modal, or transport operation.
 
 ## Server-Owned Task Delegation
 
@@ -312,8 +353,12 @@ pipeline passes, or projection writes.
 - Persistent nested TeamRuns restore through their parent topology. Task
   executions are represented by their concrete address and retained task
   records; stale records alone do not recreate an active execution.
-- `TeamRunService.resolveTeamRun(teamRunId)` is the supported restore-aware root
-  lookup for connection/send flows. Active-only controls use active lookup.
+- `TeamRunService.resolveActiveTeamRun(teamRunId)` is the supported
+  restore-aware root lookup for Team connection/send flows. It may restore an
+  unmanaged persisted root, but it returns no replacement while the exact root
+  remains managed and is not command-active. Active-only controls use
+  `getActiveTeamRun(...)`; owners that must observe a stopping/nonterminal root
+  use `getManagedTeamRun(...)` or `resolveManagedTeamRun(...)` explicitly.
 - Member memory paths are resolved through `AgentMemoryLocationService`; no
   manager, stream, browser, or history consumer reconstructs them from names or
   provider IDs.

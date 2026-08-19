@@ -106,7 +106,7 @@ export class ChannelBindingRunLauncher {
     if (
       cachedTeamRunId &&
       this.bindingRunRegistry.ownsTeamRun(binding.id, cachedTeamRunId) &&
-      this.teamRunService.getTeamRun(cachedTeamRunId)
+      this.teamRunService.getActiveTeamRun(cachedTeamRunId)
     ) {
       return cachedTeamRunId;
     }

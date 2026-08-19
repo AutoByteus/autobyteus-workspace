@@ -20,7 +20,7 @@ export type WorkspaceRootPathResolver = (workspaceId: string) => string | null |
 export class WorkspaceRemovalGuard {
   constructor(
     private readonly agentRunManager?: Pick<AgentRunManager, "listActiveRuns" | "getActiveRun">,
-    private readonly teamRunManager?: Pick<AgentTeamRunManager, "listActiveRuns" | "getActiveRun">,
+    private readonly teamRunManager?: Pick<AgentTeamRunManager, "listManagedTeamRunIds" | "getManagedTeamRun">,
     private readonly workspaceRootPathResolver: WorkspaceRootPathResolver = () => null,
   ) {}
 
@@ -49,8 +49,8 @@ export class WorkspaceRemovalGuard {
       }
     }
 
-    for (const teamRunId of teamRunManager.listActiveRuns()) {
-      const teamRun = teamRunManager.getActiveRun(teamRunId);
+    for (const teamRunId of teamRunManager.listManagedTeamRunIds()) {
+      const teamRun = teamRunManager.getManagedTeamRun(teamRunId);
       if (teamRun && teamMemberTreeUsesWorkspace(teamRun.getExecutionTreeSnapshot().rootTeam.members, workspaceRootPath)) {
         blockers.push({ kind: "team_run", runId: teamRunId });
       }

@@ -14,12 +14,12 @@ export type TeamRunMemberStatusProjection = Readonly<{
 
 export class TeamRunLiveProjectionService {
   constructor(
-    private readonly manager: Pick<AgentTeamRunManager, "getTeamRun" | "getLifecycleSnapshot"> = AgentTeamRunManager.getInstance(),
+    private readonly manager: Pick<AgentTeamRunManager, "getManagedTeamRun" | "getLifecycleSnapshot"> = AgentTeamRunManager.getInstance(),
   ) {}
 
   getCatalogListLiveProjection(teamRunId: string): TeamRunListLiveProjection {
     const lifecycle = this.manager.getLifecycleSnapshot(teamRunId);
-    const root = lifecycle.isActive ? this.manager.getTeamRun(teamRunId) : null;
+    const root = lifecycle.isActive ? this.manager.getManagedTeamRun(teamRunId) : null;
     return root ? {
       isActive: true,
       memberStatusSnapshots: root.getLeafAgentStatusSnapshots().map((snapshot) => ({

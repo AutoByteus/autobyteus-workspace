@@ -47,7 +47,9 @@ const createHarness = () => {
   let allocation = 0;
   let activeRoot: Record<string, unknown> | null = null;
   const manager = {
-    getTeamRun: vi.fn(() => activeRoot),
+    getActiveTeamRun: vi.fn(() => activeRoot),
+    getManagedTeamRun: vi.fn(() => activeRoot),
+    hasManagedTeamRun: vi.fn(() => activeRoot !== null),
     createTeamRun: vi.fn(async ({ config, teamDefinitionName }) => {
       const tree = buildInitialTeamRunExecutionTree({ config, teamDefinitionName });
       activeRoot = {

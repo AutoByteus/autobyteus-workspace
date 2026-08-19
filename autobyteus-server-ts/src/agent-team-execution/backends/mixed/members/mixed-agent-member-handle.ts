@@ -129,6 +129,14 @@ export class MixedAgentMemberHandle {
     return (await this.ensureReady()).approveToolInvocation(invocationId, approved, reason);
   }
   async interrupt(): Promise<AgentOperationResult> { return this.agentRun ? this.agentRun.interrupt() : { accepted: true }; }
+  async interruptForRootTermination(): Promise<AgentOperationResult> {
+    if (this.readinessAttempt) await this.readinessAttempt.catch(() => null);
+    if (!this.agentRun) return { accepted: true };
+    const result = await this.agentRun.interrupt();
+    return !result.accepted && result.code === "NO_ACTIVE_TURN"
+      ? { accepted: true }
+      : result;
+  }
 
   async prepareForTaskActivation(): Promise<PreparedMixedTaskAgentActivation> {
     if (this.agentRun || this.readinessAttempt) {

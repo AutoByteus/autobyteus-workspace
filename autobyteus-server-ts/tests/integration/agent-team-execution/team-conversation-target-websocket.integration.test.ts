@@ -75,8 +75,8 @@ const startHarness = async () => {
     getTaskRecordsSnapshot: () => tasks,
   };
   const teamRunService = {
-    getTeamRun: vi.fn(() => root),
-    resolveTeamRun: vi.fn(async () => root),
+    getActiveTeamRun: vi.fn(() => root),
+    resolveActiveTeamRun: vi.fn(async () => root),
     recordRunActivity: vi.fn(async () => undefined),
   };
   const lifecycle = {

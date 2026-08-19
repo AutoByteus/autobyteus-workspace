@@ -644,7 +644,7 @@ describe("Brief Studio imported package integration", () => {
         };
       }),
       terminateTeamRun: vi.fn(async () => undefined),
-      resolveTeamRun: vi.fn(async (runId: string) => (
+      resolveActiveTeamRun: vi.fn(async (runId: string) => (
         teamRunById.get(runId)
         ?? null
       )),

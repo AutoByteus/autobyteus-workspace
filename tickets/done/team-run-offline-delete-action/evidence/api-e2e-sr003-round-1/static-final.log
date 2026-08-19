@@ -1,0 +1,5 @@
+== git diff --check ==
+== forbidden active combined flow strings in changed strict UI/source ==
+PASS: no forbidden combined active-delete residue
+== obsolete Team manager accessors in updated durable E2E ==
+autobyteus-server-ts/tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts:930:        AgentRunManager.getInstance().listActiveRuns();

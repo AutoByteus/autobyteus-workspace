@@ -23,6 +23,7 @@ export class MixedSubTeamMemberHandle {
   getLeafAgentStatusSnapshots() { return this.childRun?.getLeafAgentStatusSnapshots() ?? []; }
   hasOpenExecutionWork(): boolean { return this.childRun?.hasOpenExecutionWork() ?? false; }
   getOrCreateTeamRun(): Promise<TeamRun> { return this.ensureReady(); }
+  getMaterializedTeamRun(): TeamRun | null { return this.childRun; }
 
   async prepareTermination(): Promise<PreparedLocalExecutionTermination> {
     if (this.materializationAttempt) await this.materializationAttempt.catch(() => null);

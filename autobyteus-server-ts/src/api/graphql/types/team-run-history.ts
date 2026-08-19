@@ -106,7 +106,7 @@ export class TeamRunHistoryResolver {
   getTeamRunExecutionCheckpoint(
     @Arg("teamRunId", () => String) teamRunId: string,
   ): TeamRunExecutionCheckpointPayload {
-    const root = getAgentTeamRunManager().getTeamRun(teamRunId);
+    const root = getAgentTeamRunManager().getActiveTeamRun(teamRunId);
     if (!root) throw new Error(`Active RootTeamRun '${teamRunId}' was not found.`);
     return root.getExecutionCheckpoint();
   }
