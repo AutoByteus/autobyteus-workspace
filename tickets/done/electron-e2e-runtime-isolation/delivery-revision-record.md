@@ -8,6 +8,7 @@
 | `DR-002` | User requested a README-grounded Electron build for hands-on testing | `DR-001 — Pass / awaiting verification` | `Pass — personal macOS arm64 package built, verified, and isolated-smoke tested; finalization held` | `electron-test-build-report.md`, `handoff-summary.md`, `release-deployment-report.md`, corrected E2E command examples, `delivery-evidence/dr-002-*` |
 | `DR-003` | User asked whether the root README exposes the Electron setup for future API/E2E engineers | `DR-002 — Pass / awaiting verification` | `Pass — root-workspace Electron test discovery and setup synchronized; finalization held` | `README.md`, `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/dr-003-root-readme-checks.log` |
 | `DR-004` | Explicit user completion/finalization authorization after a healthy read-only running-app/server-log observation | `DR-003 — Pass / awaiting verification` | `Pass — verification accepted, final base unchanged, ticket archived, repository finalization authorized` | `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/final-base-refresh.txt`, `delivery-evidence/user-verification-and-final-health.txt` |
+| `DR-005` | Completed ticket-branch push and target-branch merge/push | `DR-004 — Pass / finalization authorized` | `Pass — repository finalized to origin/personal; no release; running-app cleanup deferred` | `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/repository-finalization.txt` |
 
 ## Revision Entries
 
@@ -166,3 +167,35 @@
 - Next action: Commit and push the ticket branch, update/merge/push `personal`,
   then record the exact repository hashes and safe-cleanup result in the next
   delivery revision.
+
+### DR-005 — Repository finalization completed
+
+- Delivery round and trigger: Execute the repository-only finalization directly
+  authorized by the user after DR-004; no release, publication, tag, version
+  bump, or deployment was requested.
+- Prior authoritative result: `DR-004 — user verification accepted, final base
+  unchanged, ticket archived, and repository finalization authorized.`
+- Current authoritative result: `Pass — the archived ticket and reviewed change
+  set were committed and pushed on the ticket branch, merged without conflict
+  into personal, and the updated personal branch was pushed to origin.`
+- Ticket branch result: Commit
+  `6ac051d1eb0b6aa1e322bc623be9293cd477054b` was pushed to
+  `origin/codex/electron-e2e-runtime-isolation`.
+- Target result: `personal` was already current with its refreshed remote, then
+  merged the ticket with `--no-ff` as
+  `f1f3da12b698341954b4def4606647ba44df4c16`; that merge was pushed to
+  `origin/personal`.
+- Verification after merge: The merged diff passed whitespace/error checking;
+  durable launcher scripts passed Node syntax checks; the remote branch heads
+  matched the recorded ticket and merge commits.
+- Release/deployment result: `Not required / not performed`, as explicitly
+  requested by the user.
+- Cleanup result: Worktree removal/prune and local/remote ticket-branch deletion
+  are deferred, not failed. Electron PID `57441` is still running the ignored
+  delivery-built package from the ticket worktree, and cleanup must not stop it
+  or remove its backing files. The app/backend remained healthy after target
+  push.
+- Evidence:
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/electron-e2e-runtime-isolation/delivery-evidence/repository-finalization.txt`.
+- Remaining residuals: DR-001 bounded Windows/updater/broad-Nuxt residuals are
+  unchanged and remain explicit rather than inferred passes.

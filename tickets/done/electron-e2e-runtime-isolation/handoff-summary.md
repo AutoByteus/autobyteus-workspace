@@ -4,8 +4,8 @@
 
 - Ticket: `electron-e2e-runtime-isolation`
 - Date: `2026-08-20`
-- Current Status: `Explicitly user-verified; ticket archived and repository finalization in progress`
-- Current delivery revision: `DR-004`
+- Current Status: `Repository finalized to origin/personal; no release performed; running-app cleanup deferred`
+- Current delivery revision: `DR-005`
 - Ticket branch: `codex/electron-e2e-runtime-isolation`
 - Finalization target: `origin/personal`
 
@@ -148,8 +148,16 @@
 - Finalization scope: Commit and push the ticket branch, merge it into
   `origin/personal`, and push `personal`; no release, publication, tag, version
   bump, or deployment.
+- Repository finalization: `Completed`. Ticket commit
+  `6ac051d1eb0b6aa1e322bc623be9293cd477054b` was pushed to
+  `origin/codex/electron-e2e-runtime-isolation`; merge commit
+  `f1f3da12b698341954b4def4606647ba44df4c16` was pushed to
+  `origin/personal`.
 - Running-app constraint: Do not stop PID `57441` or remove its ticket worktree
   while it is executing from the ignored `electron-dist` artifact there.
+- Cleanup result: Worktree/local/remote ticket-branch cleanup is intentionally
+  deferred until the user closes the running app. This does not block the
+  completed target-branch finalization.
 
 ## Authoritative Artifacts
 

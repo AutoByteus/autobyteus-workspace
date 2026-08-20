@@ -1,0 +1,22 @@
+# Repository finalization result
+recorded_at=2026-08-20T14:14:23Z
+finalization_target=origin/personal
+final_base_refresh_result=unchanged at 1b2e9b94d1de3b7f38aa2803082e0166a469a978
+ticket_branch=codex/electron-e2e-runtime-isolation
+ticket_commit=6ac051d1eb0b6aa1e322bc623be9293cd477054b
+remote_ticket_head=6ac051d1eb0b6aa1e322bc623be9293cd477054b
+target_update=git pull --ff-only origin personal; already up to date
+merge_method=git merge --no-ff codex/electron-e2e-runtime-isolation
+merge_commit=f1f3da12b698341954b4def4606647ba44df4c16
+remote_personal_after_merge_push=f1f3da12b698341954b4def4606647ba44df4c16
+merged_diff_check=pass
+durable_launcher_node_syntax=pass
+release_publication_deployment=not requested; not performed
+ticket_archive=tickets/done/electron-e2e-runtime-isolation
+worktree_cleanup=deferred to avoid stopping/deleting files under running Electron PID 57441
+ticket_branch_cleanup=deferred with worktree cleanup
+running_app_action=none; no stop or signal requested/performed
+57441     1 S    /Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+58045 57441 S    /Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus /Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/app.js --port 29695 --data-dir /Users/normy/.autobyteus/server-data
+{"status":"ok","message":"Server is running"}
+health_http_status=200
