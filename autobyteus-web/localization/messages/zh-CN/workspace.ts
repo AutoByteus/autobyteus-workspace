@@ -146,18 +146,10 @@ const messages = {
     "聚焦团队",
   "workspace.components.workspace.team.TeamDelegatedTasksSection.focus":
     "聚焦",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.technical_details":
-    "技术详情",
   "workspace.components.workspace.team.TeamDelegatedTasksSection.select_task":
     "选择一个任务进行阅读。",
   "workspace.components.workspace.team.TeamDelegatedTasksSection.waiting_activity_notice":
     "正在等待在 Activity 中处理用户操作。",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.target_kind":
-    "目标类型",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.task_type":
-    "任务类型",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.target":
-    "目标",
   "workspace.components.workspace.team.TeamDelegatedTasksSection.empty":
     "暂无委派任务",
   "workspace.components.workspace.team.TeamDelegatedTasksSection.empty_detail":
@@ -168,16 +160,44 @@ const messages = {
     "任务团队",
   "workspace.components.workspace.team.TeamDelegatedTasksSection.approval_required":
     "需要审批",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.task_id":
-    "任务 ID",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.agent_run_id":
-    "智能体运行 ID",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.agent_team_run_id":
-    "智能体团队运行 ID",
   "workspace.components.workspace.team.TeamDelegatedTasksSection.description_unavailable":
     "任务描述不可用",
   "workspace.components.workspace.team.TeamDelegatedTasksSection.members":
     "成员",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.task_assigned":
+    "已分配任务",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.result_submitted":
+    "已提交结果 · 结果 {{ordinal}}",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.revised_result_submitted":
+    "已提交修订结果 · 结果 {{ordinal}}",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.revision_requested":
+    "已请求修订 · 结果 {{ordinal}}",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.revision_requested_for":
+    "已请求修订结果 {{ordinal}}",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.result_accepted":
+    "结果 {{ordinal}} 已接受",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.task_interrupted":
+    "任务已中断",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.status_in_progress":
+    "进行中",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.status_awaiting_review":
+    "等待评审",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.status_revision_requested":
+    "已请求修订",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.status_accepted":
+    "已接受",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.status_interrupted":
+    "已中断",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.task_delegator":
+    "任务委派者",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.task_assignee":
+    "任务执行者",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.system_lifecycle_event":
+    "系统生命周期事件",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.result_accepted_fallback":
+    "结果已接受。",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.updated_at":
+    "更新于 {{time}}",
   "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.temporary_execution_title":
     "临时任务执行",
   "workspace.components.workspace.team.TeamWorkspaceView.send_subteam_placeholder":
