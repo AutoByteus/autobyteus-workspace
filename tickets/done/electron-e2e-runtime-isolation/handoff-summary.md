@@ -4,8 +4,8 @@
 
 - Ticket: `electron-e2e-runtime-isolation`
 - Date: `2026-08-20`
-- Current Status: `Repository finalized; replacement personal build ready; ticket worktree and branches cleaned`
-- Current delivery revision: `DR-006`
+- Current Status: `Repository finalized; replacement main-personal app running and healthy; ticket cleanup complete`
+- Current delivery revision: `DR-007`
 - Ticket branch: `codex/electron-e2e-runtime-isolation` (`deleted after merge`)
 - Finalization target: `origin/personal`
 
@@ -169,6 +169,11 @@
   worktree.
 - Current app location for manual use:
   `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`.
+- Current runtime verification: The user had already launched that app. Electron
+  PID `22115` owns embedded backend child PID `22745`; the backend listens on
+  `*:29695`, `/rest/health` returns HTTP 200, the executable hash matches the
+  reviewed candidate, and the bounded server-log scan found no fatal pattern.
+  Delivery did not start a duplicate instance or signal either process.
 
 ## Authoritative Artifacts
 

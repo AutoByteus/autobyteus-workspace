@@ -14,7 +14,7 @@ cleanup. No release, publication, version bump, tag, or deployment was requested
 - Handoff summary status: `Updated`
 - Delivery revision record:
   `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/electron-e2e-runtime-isolation/delivery-revision-record.md`
-- Current delivery revision ID: `DR-006`
+- Current delivery revision ID: `DR-007`
 - Notes: Repository finalization to `origin/personal` completed. A replacement
   personal macOS arm64 package was then built in the main worktree and the old
   ticket worktree plus local/remote ticket branches were removed. Release,
@@ -219,6 +219,10 @@ None. No deployment or publication is in scope.
 - DR-006 ticket cleanup: Pass; old exact PIDs exited gracefully, port `29695`
   became free, worktree path/registration disappeared, and local/remote ticket
   branches were deleted.
+- DR-007 main-personal runtime: Pass. The user had already launched the
+  replacement app; Electron PID `22115`, backend child PID `22745`, exact
+  executable hash, `*:29695` listener, HTTP 200 `/rest/health`, and bounded
+  server-log scan were healthy. No duplicate launch or process action occurred.
 
 ## Rollback Criteria
 
@@ -239,8 +243,9 @@ Reroute or roll back before finalization if verification shows any of the follow
 ## Final Status
 
 `Pass — repository finalized on origin/personal; replacement personal-worktree
-Electron package built and verified; ticket worktree and branches cleaned.` The
-local package is unsigned, unnotarized, and not published; no release or
-deployment was performed. Residuals remain explicit: real Windows host behavior
-is not tested, the E2E renderer updater notice is non-blocking with no updater
-side effects, and three broad Nuxt failures are unrelated repository baseline.
+Electron package built, verified, and currently running healthy; ticket
+worktree and branches cleaned.` The local package is unsigned, unnotarized, and
+not published; no release or deployment was performed. Residuals remain
+explicit: real Windows host behavior is not tested, the E2E renderer updater
+notice is non-blocking with no updater side effects, and three broad Nuxt
+failures are unrelated repository baseline.

@@ -10,6 +10,7 @@
 | `DR-004` | Explicit user completion/finalization authorization after a healthy read-only running-app/server-log observation | `DR-003 — Pass / awaiting verification` | `Pass — verification accepted, final base unchanged, ticket archived, repository finalization authorized` | `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/final-base-refresh.txt`, `delivery-evidence/user-verification-and-final-health.txt` |
 | `DR-005` | Completed ticket-branch push and target-branch merge/push | `DR-004 — Pass / finalization authorized` | `Pass — repository finalized to origin/personal; no release; running-app cleanup deferred` | `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/repository-finalization.txt` |
 | `DR-006` | User requested latest-personal replacement build followed by full ticket-worktree cleanup | `DR-005 — Pass / cleanup deferred` | `Pass — replacement package verified in main personal worktree; old app closed gracefully; worktree and branches cleaned` | `electron-test-build-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/dr-006-*` |
+| `DR-007` | User continued after starting the replacement main-personal app | `DR-006 — Pass / replacement ready` | `Pass — running replacement app/backend health and identity verified without duplicate launch or process action` | `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/dr-007-main-personal-runtime-verification.log` |
 
 ## Revision Entries
 
@@ -230,3 +231,23 @@
   remain unchanged. The replacement build was integrity-verified but not
   separately launched by delivery; its executable hash matches the already
   reviewed and executed candidate.
+
+### DR-007 — Running main-personal replacement verification
+
+- Delivery round and trigger: User requested continuation after the replacement
+  build and cleanup. Read-only inspection found that the user had already
+  launched the main-personal `AutoByteus.app`.
+- Prior authoritative result: `DR-006 — replacement package verified in the
+  main personal worktree and ticket cleanup completed.`
+- Current authoritative result: `Pass — Electron PID 22115 is the exact
+  main-personal executable, embedded backend PID 22745 is its child and owns
+  the 29695 listener, and /rest/health returned HTTP 200.`
+- Integrity/log result: Executable SHA-256 remained
+  `c0bf182389ea930585e3b0bf5c4f16529461e02bf3be751cb364d0e25f2257e0`;
+  the last 500 server-log lines had zero fatal/panic/unhandled/uncaught/
+  segmentation/crash pattern matches.
+- Process action: None. Delivery neither started a duplicate instance nor
+  signaled/stopped the user's running app.
+- Release/deployment result: `Not required / not performed`.
+- Evidence:
+  `delivery-evidence/dr-007-main-personal-runtime-verification.log`.
