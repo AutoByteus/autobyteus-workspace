@@ -5,10 +5,7 @@ import { setActivePinia } from 'pinia'
 import { nextTick } from 'vue'
 import McpGatewayPanel from '../McpGatewayPanel.vue'
 import { useToolManagementStore } from '~/stores/toolManagementStore'
-
-vi.mock('~/utils/serverConfig', () => ({
-  getServerBaseUrl: () => 'http://127.0.0.1:8000/',
-}))
+import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 
 const flushPromises = async () => {
   await nextTick()
@@ -43,6 +40,9 @@ describe('McpGatewayPanel', () => {
       },
     })
     setActivePinia(pinia)
+    const windowNodeContextStore = useWindowNodeContextStore()
+    windowNodeContextStore.initialized = true
+    windowNodeContextStore.nodeBaseUrl = 'http://127.0.0.1:8000/'
 
     const wrapper = mount(McpGatewayPanel, { global: { plugins: [pinia] } })
     await flushPromises()
@@ -74,6 +74,9 @@ describe('McpGatewayPanel', () => {
       stubActions: true,
     })
     setActivePinia(pinia)
+    const windowNodeContextStore = useWindowNodeContextStore()
+    windowNodeContextStore.initialized = true
+    windowNodeContextStore.nodeBaseUrl = 'http://127.0.0.1:8000/'
 
     const wrapper = mount(McpGatewayPanel, { global: { plugins: [pinia] } })
     await flushPromises()

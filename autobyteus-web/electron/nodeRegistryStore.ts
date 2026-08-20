@@ -6,7 +6,6 @@ import type {
 } from './nodeRegistryTypes'
 import { EMBEDDED_NODE_ID } from './nodeRegistryTypes'
 import { logger } from './logger'
-import { INTERNAL_SERVER_BASE_URL } from '../shared/embeddedServerConfig'
 
 const NODE_REGISTRY_FILE_NAME = 'node-registry.v1.json'
 
@@ -22,12 +21,12 @@ export function sanitizeBaseUrl(baseUrl: string): string {
   return baseUrl.trim().replace(/\/+$/, '')
 }
 
-function getEmbeddedNodeProfile(): NodeProfile {
+function getEmbeddedNodeProfile(activeEmbeddedBaseUrl: string): NodeProfile {
   const now = nowIsoString()
   return {
     id: EMBEDDED_NODE_ID,
     name: 'Embedded Node',
-    baseUrl: INTERNAL_SERVER_BASE_URL,
+    baseUrl: sanitizeBaseUrl(activeEmbeddedBaseUrl),
     nodeType: 'embedded',
     capabilities: {
       terminal: true,
@@ -42,17 +41,22 @@ function getEmbeddedNodeProfile(): NodeProfile {
 
 export function ensureEmbeddedNode(
   snapshot: NodeRegistrySnapshot,
+  activeEmbeddedBaseUrl: string,
 ): NodeRegistrySnapshot {
+  const normalizedActiveBaseUrl = sanitizeBaseUrl(activeEmbeddedBaseUrl)
+  if (!normalizedActiveBaseUrl) {
+    throw new Error('Active embedded client base URL is required')
+  }
   const existingIndex = snapshot.nodes.findIndex((node) => node.id === EMBEDDED_NODE_ID)
   if (existingIndex === -1) {
     return {
       version: snapshot.version + 1,
-      nodes: [getEmbeddedNodeProfile(), ...snapshot.nodes],
+      nodes: [getEmbeddedNodeProfile(normalizedActiveBaseUrl), ...snapshot.nodes],
     }
   }
 
   const existing = snapshot.nodes[existingIndex]
-  if (sanitizeBaseUrl(existing.baseUrl) === INTERNAL_SERVER_BASE_URL) {
+  if (sanitizeBaseUrl(existing.baseUrl) === normalizedActiveBaseUrl) {
     return snapshot
   }
 
@@ -62,7 +66,7 @@ export function ensureEmbeddedNode(
       index === existingIndex
         ? {
             ...node,
-            baseUrl: INTERNAL_SERVER_BASE_URL,
+            baseUrl: normalizedActiveBaseUrl,
             updatedAt: nowIsoString(),
           }
         : node
@@ -132,13 +136,14 @@ function normalizeLoadedNode(rawNode: unknown): NodeProfile | null {
 
 export function loadNodeRegistrySnapshot(
   userDataPath: string,
+  activeEmbeddedBaseUrl: string,
 ): NodeRegistrySnapshot {
   const filePath = getRegistryFilePath(userDataPath)
   if (!fsSync.existsSync(filePath)) {
     return ensureEmbeddedNode({
       version: 0,
       nodes: [],
-    })
+    }, activeEmbeddedBaseUrl)
   }
 
   try {
@@ -149,7 +154,7 @@ export function loadNodeRegistrySnapshot(
       return ensureEmbeddedNode({
         version: 0,
         nodes: [],
-      })
+      }, activeEmbeddedBaseUrl)
     }
 
     const normalizedNodes = parsed.nodes
@@ -165,13 +170,13 @@ export function loadNodeRegistrySnapshot(
     return ensureEmbeddedNode({
       version: parsed.version,
       nodes: normalizedNodes,
-    })
+    }, activeEmbeddedBaseUrl)
   } catch (error) {
     logger.error('Failed to read node registry file:', error)
     return ensureEmbeddedNode({
       version: 0,
       nodes: [],
-    })
+    }, activeEmbeddedBaseUrl)
   }
 }
 

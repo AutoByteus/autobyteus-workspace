@@ -1,0 +1,34 @@
+DR-002 newly built exact-artifact isolated launch smoke
+Recorded at: 2026-08-20T13:49:09Z
+Executable: /Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+Executable SHA-256: c0bf182389ea930585e3b0bf5c4f16529461e02bf3be751cb364d0e25f2257e0
+ELECTRON_RUN_AS_NODE: 1
+
+$ ordinary listener before
+COMMAND     PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+AutoByteu 98429 normy   26u  IPv4 0xa9653d33e68007ec      0t0  TCP *:29695 (LISTEN)
+
+$ pnpm test:e2e:electron -- --skip-build --adapter direct --executable <exact-app-executable>
+
+> autobyteus@1.4.52 test:e2e:electron /Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web
+> node scripts/run-electron-e2e.mjs -- --skip-build --adapter direct --executable /Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+
+[electron-e2e] Unknown argument: --
+ ELIFECYCLE  Command failed with exit code 1.
+
+Attempt 2: corrected pnpm argument form and cleared caller API discriminator for GUI execution
+Recorded at: 2026-08-20T13:50:01Z
+$ env -u ELECTRON_RUN_AS_NODE pnpm test:e2e:electron --skip-build --adapter direct --executable <exact-app-executable>
+
+> autobyteus@1.4.52 test:e2e:electron /Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web
+> node scripts/run-electron-e2e.mjs --skip-build --adapter direct --executable /Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+
+{"type":"electron-e2e-ready","executablePath":"/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus","port":60984,"dataRoot":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-ggb4Do","ownsDataRoot":true,"clientBaseUrl":"http://127.0.0.1:60984","healthUrl":"http://127.0.0.1:60984/rest/health"}
+Launch command exit: 0
+
+$ ordinary listener after successful isolated smoke
+COMMAND     PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+AutoByteu 98429 normy   26u  IPv4 0xa9653d33e68007ec      0t0  TCP *:29695 (LISTEN)
+
+$ no remaining processes from ticket-worktree package
+PASS: isolated launch became ready, cleaned its process tree/root, and left no package process

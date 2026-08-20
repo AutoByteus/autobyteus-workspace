@@ -3,10 +3,9 @@ import { existsSync, mkdirSync, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import { applyElectronConfig } from './nuxt.electron.config'
 import {
-  INTERNAL_SERVER_BASE_URL,
-  INTERNAL_SERVER_PORT,
-  INTERNAL_SERVER_WS_BASE_URL,
-} from './shared/embeddedServerConfig'
+  PRODUCTION_EMBEDDED_SERVER_BASE_URL,
+  PRODUCTION_EMBEDDED_SERVER_WS_BASE_URL,
+} from './shared/embeddedServerClientEndpoint'
 const isDevelopment = process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'test'
 const isElectronBuild = process.env.BUILD_TARGET === 'electron'
 const isTest = process.env.NODE_ENV === 'test' || process.env.NUXT_TEST === 'true' || process.env.VITEST === 'true'
@@ -55,16 +54,16 @@ let serverUrls = {
 let defaultNodeBaseUrl = '';
 
 if (isElectronBuild) {
-  defaultNodeBaseUrl = INTERNAL_SERVER_BASE_URL;
+  defaultNodeBaseUrl = PRODUCTION_EMBEDDED_SERVER_BASE_URL;
   serverUrls = {
-    graphqlBaseUrl: `${INTERNAL_SERVER_BASE_URL}/graphql`,
-    restBaseUrl: `${INTERNAL_SERVER_BASE_URL}/rest`,
-    agentWsEndpoint: `${INTERNAL_SERVER_WS_BASE_URL}/ws/agent`,
-    teamWsEndpoint: `${INTERNAL_SERVER_WS_BASE_URL}/ws/agent-team`,
-    graphqlWsEndpoint: `${INTERNAL_SERVER_WS_BASE_URL}/graphql`,
-    transcriptionWsEndpoint: `${INTERNAL_SERVER_WS_BASE_URL}/transcribe`,
-    terminalWsEndpoint: `${INTERNAL_SERVER_WS_BASE_URL}/ws/terminal`,
-    fileExplorerWsEndpoint: `${INTERNAL_SERVER_WS_BASE_URL}/ws/file-explorer`
+    graphqlBaseUrl: `${PRODUCTION_EMBEDDED_SERVER_BASE_URL}/graphql`,
+    restBaseUrl: `${PRODUCTION_EMBEDDED_SERVER_BASE_URL}/rest`,
+    agentWsEndpoint: `${PRODUCTION_EMBEDDED_SERVER_WS_BASE_URL}/ws/agent`,
+    teamWsEndpoint: `${PRODUCTION_EMBEDDED_SERVER_WS_BASE_URL}/ws/agent-team`,
+    graphqlWsEndpoint: `${PRODUCTION_EMBEDDED_SERVER_WS_BASE_URL}/graphql`,
+    transcriptionWsEndpoint: `${PRODUCTION_EMBEDDED_SERVER_WS_BASE_URL}/transcribe`,
+    terminalWsEndpoint: `${PRODUCTION_EMBEDDED_SERVER_WS_BASE_URL}/ws/terminal`,
+    fileExplorerWsEndpoint: `${PRODUCTION_EMBEDDED_SERVER_WS_BASE_URL}/ws/file-explorer`
   };
 } else if (isDevelopment) {
   defaultNodeBaseUrl = backendProxyUrl;

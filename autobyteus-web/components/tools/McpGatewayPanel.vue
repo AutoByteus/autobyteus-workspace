@@ -67,17 +67,23 @@
 
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref } from 'vue';
-import { getServerBaseUrl } from '~/utils/serverConfig';
+import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import { useLocalization } from '~/composables/useLocalization';
 
 type CopyTarget = 'endpoint' | 'config';
 
 const { t } = useLocalization();
+const windowNodeContextStore = useWindowNodeContextStore();
 
 const copiedTarget = ref<CopyTarget | null>(null);
 let copyResetTimer: ReturnType<typeof setTimeout> | null = null;
 
-const gatewayUrl = computed(() => `${getServerBaseUrl().replace(/\/+$/, '')}/mcp/gateway`);
+const gatewayUrl = computed(() => {
+  if (!windowNodeContextStore.initialized) {
+    throw new Error('MCP gateway endpoint requested before window node binding.');
+  }
+  return `${windowNodeContextStore.nodeBaseUrl.replace(/\/+$/, '')}/mcp/gateway`;
+});
 
 const configSnippet = computed(() => JSON.stringify({
   mcpServers: {

@@ -36,7 +36,11 @@ BACKEND_FILE_EXPLORER_WS_ENDPOINT=ws://localhost:8000/ws/file-explorer
 ENABLE_APPLICATIONS=false
 ```
 
-> **Note for Electron App**: When running as an Electron application with the integrated backend server, these endpoint URLs are automatically configured to the bundled loopback server at `http://127.0.0.1:29695`.
+> **Note for Electron App**: A normal Electron launch configures these endpoints
+> to the bundled loopback server at `http://127.0.0.1:29695`. An explicit
+> packaged E2E launch uses the selected non-default loopback port instead; the
+> main process supplies that active endpoint to the renderer. See
+> [Packaged Electron E2E Launches](#packaged-electron-e2e-launches).
 
 ### Messaging Setup
 
@@ -154,9 +158,9 @@ The internal server is a bundled backend server that runs within the Electron ap
 - Completely self-contained with no additional setup required
 - Automatically started and managed by the application
 
-#### Data Storage Location
+#### Default Production Data Storage Location
 
-The internal server stores its data in the following locations based on your operating system:
+An ordinary internal-server launch stores server data in the following locations:
 
 - **Windows**: `C:\Users\<username>\.autobyteus\server-data`
 - **macOS**: `~/.autobyteus/server-data`
@@ -168,12 +172,19 @@ These directories contain:
 - `logs/`: Server log files
 - `download/`: Downloaded content
 
+Electron/Chromium also keeps its normal product-named `userData` and session
+state in the operating system's application-data location. An explicit E2E
+launch does not use any of these production paths: its backend, AutoByteus,
+Electron, Chromium, registry, local-storage, and session state are descendants
+of the caller-selected isolated root documented below.
+
 #### Configuration
 
 No additional configuration is needed for internal server mode. The application automatically:
 
 - Starts the bundled server
-- Uses the canonical embedded base URL `http://127.0.0.1:29695`
+- Uses the production embedded base URL `http://127.0.0.1:29695` unless the
+  explicit packaged E2E launch profile is selected
 - Configures the frontend to connect to that embedded node automatically
 
 #### Phone Access / Remote Access
@@ -294,14 +305,21 @@ pnpm build:electron:mac
 
 #### Embedded Runtime Contract
 
-When the Electron application starts, it:
+With no E2E selector, the Electron application:
 
 1. Starts the bundled backend server on the embedded port `29695`
 2. Treats the embedded node as `http://127.0.0.1:29695`
 3. Automatically configures the frontend to connect to that stable loopback URL
 4. Shows a loading screen until the server is ready
 
-The embedded server still binds broadly by default, but the frontend and generated local server URLs use the stable loopback address so Wi-Fi or LAN-IP changes do not make the embedded node URL stale.
+The embedded server retains its existing broad bind policy, but the frontend
+and generated local server URLs use loopback so Wi-Fi or LAN-IP changes do not
+make the embedded-node URL stale. In explicit E2E mode, the same packaged
+artifact starts the backend on the selected non-default port and supplies the
+corresponding `http://127.0.0.1:<port>` endpoint to status, registry, HTTP, and
+WebSocket consumers. E2E mode also redirects all application-owned mutable
+state under its isolated root and suppresses updater activity. Production
+defaults, data, and updater behavior remain unchanged.
 
 ## Testing
 
@@ -356,6 +374,59 @@ pnpm test:nuxt components/settings --run
 
 > **Note**: Use `--run` flag to run once and exit (non-watch mode).
 
+### Packaged Electron E2E Launches
+
+Use the reusable packaged launcher when a real Electron instance needs a
+non-default backend port and isolated state. It builds the current host package
+by default, chooses a safe free port and temporary root, waits for backend
+health, prints machine-readable launch metadata, and cleans up only its owned
+process tree and temporary root:
+
+```bash
+pnpm test:e2e:electron --adapter direct
+pnpm test:e2e:electron --adapter playwright
+```
+
+To reuse an existing current-worktree artifact, pass `--skip-build`. An explicit
+executable, port, or already-existing absolute data root may also be supplied:
+
+```bash
+pnpm test:e2e:electron \
+  --skip-build \
+  --adapter playwright \
+  --executable /absolute/path/to/AutoByteus \
+  --port 31001 \
+  --data-root /absolute/path/to/existing-safe-e2e-root
+```
+
+The launcher preserves the caller environment and overlays only
+`AUTOBYTEUS_ELECTRON_LAUNCH_PROFILE=e2e`,
+`AUTOBYTEUS_ELECTRON_SERVER_PORT`, and
+`AUTOBYTEUS_ELECTRON_DATA_ROOT`. It does not define an API-key, provider,
+search, Codex, or other credential policy; existing application/server
+provisioning remains authoritative. Do not place the three isolation values in
+a repository `.env`, production data-root `.env`, build profile, or alternate
+product name.
+
+For the complete five-scenario coexistence, routing, invalid-profile,
+parallelism, updater, and cleanup probe, run:
+
+```bash
+pnpm test:e2e:electron:isolation \
+  --skip-build \
+  --executable /absolute/path/to/AutoByteus \
+  --output-dir test-results/electron-launch-profile
+```
+
+The application requires an explicit data root to exist already and rejects a
+symlink, filesystem root, relative path, or overlap with protected production
+paths before stateful startup. Preparation-created temporary roots are removed
+only after the selected adapter affirmatively confirms its whole process tree
+is gone. Caller-supplied roots are retained. Port state is diagnostic only and
+never authorizes process signaling or root deletion. See
+[`docs/electron_packaging.md`](docs/electron_packaging.md#packaged-e2e-launch-profile)
+for the full launch and ownership contract.
+
 ### Running Specific Test Cases
 
 ```bash
@@ -407,6 +478,8 @@ pnpm codegen
 - `pnpm dev`: Start development server (browser-based)
 - `pnpm build`: Build for web production
 - `pnpm test`: Run tests
+- `pnpm test:e2e:electron`: Build or reuse a packaged app and run one isolated direct/Playwright launch smoke
+- `pnpm test:e2e:electron:isolation`: Run the complete packaged Electron isolation probe and write evidence
 - `pnpm test:e2e:workspace-responsive`: Run the standard workspace responsive browser probe against a running frontend/backend target
 - `pnpm test:e2e:diagram-zoom-viewer`: Run the self-starting shared Markdown Mermaid viewer browser probe
 - `pnpm preview`: Preview web production build
@@ -425,9 +498,11 @@ pnpm codegen
 - `store/`: Pinia stores
 - `electron/`: Electron-specific code
   - `main.ts`: Main Electron process
+  - `launch-profile/`: Early production/E2E profile validation and path planning
   - `preload.ts`: Preload script for renderer process
   - `nodeRegistryStore.ts`: Embedded/remote node registry persistence for Electron
   - `server/`: Backend server lifecycle management
+- `scripts/electron-e2e/`: Shared preparation, direct/Playwright adapters, owned process-tree control, and cleanup session
 - `shared/`: Shared Electron/Nuxt runtime constants such as the embedded server URL contract
 - `resources/`: External resources
   - `server/`: Backend server files (populated by prepare-server script)

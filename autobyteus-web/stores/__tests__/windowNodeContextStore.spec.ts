@@ -7,7 +7,7 @@ describe('windowNodeContextStore', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
     vi.restoreAllMocks();
-    delete (window as typeof window & { electronAPI?: Window['electronAPI'] }).electronAPI;
+    Reflect.deleteProperty(window, 'electronAPI');
   });
 
   it('defaults to embedded context', () => {
@@ -113,7 +113,7 @@ describe('windowNodeContextStore', () => {
     });
     (window as typeof window & { electronAPI?: Window['electronAPI'] }).electronAPI = {
       checkServerHealth,
-    } as Window['electronAPI'];
+    } as unknown as Window['electronAPI'];
 
     const fetchMock = vi.fn();
     vi.stubGlobal('fetch', fetchMock);
@@ -134,7 +134,7 @@ describe('windowNodeContextStore', () => {
     );
     (window as typeof window & { electronAPI?: Window['electronAPI'] }).electronAPI = {
       checkServerHealth,
-    } as Window['electronAPI'];
+    } as unknown as Window['electronAPI'];
 
     const resultPromise = store.waitForBoundBackendReady({ timeoutMs: 5, pollMs: 1 });
     await vi.advanceTimersByTimeAsync(20);
@@ -158,7 +158,7 @@ describe('windowNodeContextStore', () => {
       });
     (window as typeof window & { electronAPI?: Window['electronAPI'] }).electronAPI = {
       checkServerHealth,
-    } as Window['electronAPI'];
+    } as unknown as Window['electronAPI'];
 
     const firstProbe = store.waitForBoundBackendReady({ timeoutMs: 5, pollMs: 1 });
     await vi.advanceTimersByTimeAsync(20);
@@ -189,7 +189,7 @@ describe('windowNodeContextStore', () => {
     });
     (window as typeof window & { electronAPI?: Window['electronAPI'] }).electronAPI = {
       checkServerHealth,
-    } as Window['electronAPI'];
+    } as unknown as Window['electronAPI'];
 
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,

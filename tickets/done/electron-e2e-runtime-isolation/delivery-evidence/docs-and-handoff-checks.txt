@@ -1,0 +1,31 @@
+Delivery docs and handoff checks
+Recorded at: 2026-08-20T13:40:22Z
+
+$ git diff --check
+PASS: tracked diff whitespace check
+
+$ node --check autobyteus-web/tests/e2e/electron-launch-profile-probe.mjs
+PASS: durable probe syntax
+
+$ node -e package JSON parse and scripts
+PASS: package JSON and Electron E2E scripts
+
+$ required durable documentation contract scan
+PASS: documented token: AUTOBYTEUS_ELECTRON_LAUNCH_PROFILE
+PASS: documented token: AUTOBYTEUS_ELECTRON_SERVER_PORT
+PASS: documented token: AUTOBYTEUS_ELECTRON_DATA_ROOT
+PASS: documented token: test:e2e:electron:isolation
+PASS: documented token: caller environment
+PASS: documented token: whole process tree
+PASS: documented token: real supported Windows
+
+$ obsolete unconditional fixed-port wording scan
+PASS: obsolete unconditional fixed-port wording absent
+
+$ trailing whitespace scan for delivery-owned markdown
+PASS: no trailing whitespace in delivery-owned markdown
+
+Ticket HEAD: edb123b47f86d69ea7ceb1aaefa799321760cde4
+Latest origin/personal: 1b2e9b94d1de3b7f38aa2803082e0166a469a978
+Divergence: 3	0
+PASS: delivery docs and handoff checks complete

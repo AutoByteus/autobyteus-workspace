@@ -34,6 +34,19 @@ vi.mock('~/composables/useToasts', () => ({
   }),
 }))
 
+vi.mock('~/electron/logger', () => {
+  const logger = {
+    child: vi.fn(() => logger),
+    trace: vi.fn(),
+    debug: vi.fn(),
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+    fatal: vi.fn(),
+  }
+  return { logger }
+})
+
 import { ManagedExtensionService } from '~/electron/extensions/managedExtensionService'
 import { useExtensionsStore } from '~/stores/extensionsStore'
 import { useVoiceInputStore } from '~/stores/voiceInputStore'

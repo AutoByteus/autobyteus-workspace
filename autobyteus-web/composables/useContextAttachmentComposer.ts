@@ -11,7 +11,7 @@ import {
 } from '~/utils/contextFiles/contextAttachmentModel';
 import { contextAttachmentPresentation } from '~/utils/contextFiles/contextAttachmentPresentation';
 import type { DraftContextFileOwnerDescriptor } from '~/utils/contextFiles/contextFileOwner';
-import { getServerBaseUrl } from '~/utils/serverConfig';
+import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import { authorizedFetch } from '~/utils/remoteAccess/authorizedTransport';
 
 export type ContextAttachmentComposerTarget<TSubject> = {
@@ -64,19 +64,6 @@ const sameDraftOwner = (
   return false;
 };
 
-const resolveAttachmentFetchUrl = (locator: string): string => {
-  if (/^[a-zA-Z][a-zA-Z\d+.-]*:/.test(locator)) {
-    return locator;
-  }
-
-  const baseUrl = getServerBaseUrl().replace(/\/$/, '');
-  if (locator.startsWith('/')) {
-    return `${baseUrl}${locator}`;
-  }
-
-  return `${baseUrl}/${locator}`;
-};
-
 export function useContextAttachmentComposer<TSubject>(options: {
   getCurrentTarget: () => ContextAttachmentComposerTarget<TSubject> | null;
   commitAttachments: (
@@ -88,8 +75,20 @@ export function useContextAttachmentComposer<TSubject>(options: {
   getIsEmbeddedElectronRuntime: () => boolean;
 }) {
   const contextFileUploadStore = useContextFileUploadStore();
+  const windowNodeContextStore = useWindowNodeContextStore();
   const failedPreviewKeys = ref(new Set<string>());
   const uploadPlaceholders = ref<UploadPlaceholder[]>([]);
+
+  const resolveAttachmentFetchUrl = (locator: string): string => {
+    if (/^[a-zA-Z][a-zA-Z\d+.-]*:/.test(locator)) {
+      return locator;
+    }
+    if (!windowNodeContextStore.initialized) {
+      throw new Error('Attachment fetch requested before window node binding.');
+    }
+    const baseUrl = windowNodeContextStore.nodeBaseUrl.replace(/\/$/, '');
+    return locator.startsWith('/') ? `${baseUrl}${locator}` : `${baseUrl}/${locator}`;
+  };
 
   const resolveAttachmentPreviewUrl = (attachment: ContextAttachment): string | null =>
     contextAttachmentPresentation.resolveImagePreviewUrl(attachment, {

@@ -1,20 +1,21 @@
-import { ChildProcess } from 'child_process'
-import * as net from 'net'
+import type { ChildProcess } from 'child_process'
 import axios from 'axios'
 import { EventEmitter } from 'events'
 import { logger as rootLogger } from '../logger'
-import { getCanonicalBaseDataPath } from '../appDataPaths'
-import { INTERNAL_SERVER_BASE_URL, INTERNAL_SERVER_PORT } from '../../shared/embeddedServerConfig'
+import {
+  formatEmbeddedServerClientBaseUrl,
+  formatEmbeddedServerClientWebSocketBaseUrl,
+} from '../../shared/embeddedServerClientEndpoint'
+import { assertEmbeddedServerListenerPortAvailable } from '../launch-profile/e2eLaunchPreflight'
 import { AppDataService } from './services/AppDataService'
 import { createServerProcessOutputForwarder } from './serverOutputLogging'
 import { parseEmbeddedServerPlatformFatal, platformFatalError } from './embeddedServerPlatformFatal'
+import type { EmbeddedServerLaunchConfig } from './embeddedServerLaunchConfig'
+import type { EmbeddedServerUrls } from '../../types/serverStatus'
 
 const logger = rootLogger.child('server.base-server-manager')
 const stdoutLogger = rootLogger.child('embedded-server.stdout')
 const stderrLogger = rootLogger.child('embedded-server.stderr')
-
-// Fixed server port
-export const FIXED_SERVER_PORT = INTERNAL_SERVER_PORT
 
 /**
  * Base server manager with platform-agnostic functionality.
@@ -24,8 +25,9 @@ export const FIXED_SERVER_PORT = INTERNAL_SERVER_PORT
 export abstract class BaseServerManager extends EventEmitter {
   protected serverProcess: ChildProcess | null = null
   protected isServerRunning: boolean = false
-  protected serverPort: number = FIXED_SERVER_PORT
-  protected serverUrl: string = INTERNAL_SERVER_BASE_URL
+  protected readonly serverPort: number
+  protected readonly serverUrl: string
+  protected readonly serverWebSocketUrl: string
   protected ready: boolean = false
   protected serverStartTime: number = 0
   protected maxStartupTime: number = 100000 // 100 seconds timeout
@@ -40,16 +42,18 @@ export abstract class BaseServerManager extends EventEmitter {
   private settledStartupGeneration: number = 0
   private lastStartupError: Error | null = null
 
-  constructor() {
+  constructor(protected readonly launchConfig: EmbeddedServerLaunchConfig) {
     super()
-    this.appDataService = new AppDataService(this.getBaseDataDir())
+    if (launchConfig.listenerPolicy !== 'preserve-backend-default') {
+      throw new Error(`Unsupported embedded server listener policy: ${launchConfig.listenerPolicy}`)
+    }
+    this.serverPort = launchConfig.clientEndpoint.port
+    this.serverUrl = formatEmbeddedServerClientBaseUrl(launchConfig.clientEndpoint)
+    this.serverWebSocketUrl = formatEmbeddedServerClientWebSocketBaseUrl(launchConfig.clientEndpoint)
+    this.appDataService = new AppDataService(launchConfig.baseDataRoot, this.serverUrl)
     this.appDataDir = this.appDataService.getAppDataDir()
     this.firstRun = this.appDataService.isFirstRun()
     this.appDataService.initialize()
-  }
-
-  private getBaseDataDir(): string {
-    return getCanonicalBaseDataPath()
   }
 
   /**
@@ -66,16 +70,8 @@ export abstract class BaseServerManager extends EventEmitter {
   protected async waitForPortToBeFree(timeoutMs: number = (process.platform === 'linux' ? 10000 : 5000)): Promise<void> {
     const startTime = Date.now();
     while (Date.now() - startTime < timeoutMs) {
-      const isFree = await new Promise<boolean>((resolve) => {
-        const tester = net.createServer()
-          .once('error', () => {
-            resolve(false);
-          })
-          .once('listening', () => {
-            tester.close(() => resolve(true));
-          })
-          .listen(this.serverPort);
-      });
+      const isFree = await assertEmbeddedServerListenerPortAvailable(this.serverPort)
+        .then(() => true, () => false)
       if (isFree) {
         logger.info(`Port ${this.serverPort} is free.`);
         return;
@@ -102,7 +98,6 @@ export abstract class BaseServerManager extends EventEmitter {
     this.isServerRunning = false
 
     try {
-      this.serverUrl = INTERNAL_SERVER_BASE_URL
       const serverRoot = this.getServerRoot()
       this.serverDir = serverRoot
       
@@ -259,18 +254,13 @@ export abstract class BaseServerManager extends EventEmitter {
   /**
    * Get the server API URLs for all required endpoints.
    */
-  public getServerUrls(): {
-    graphql: string;
-    rest: string;
-    ws: string;
-    transcription: string;
-    health: string;
-  } {
+  public getServerUrls(): EmbeddedServerUrls {
     return {
       graphql: `${this.serverUrl}/graphql`,
       rest: `${this.serverUrl}/rest`,
-      ws: `ws://localhost:${this.serverPort}/graphql`,
-      transcription: `ws://localhost:${this.serverPort}/transcribe`,
+      graphqlWs: `${this.serverWebSocketUrl}/graphql`,
+      transcription: `${this.serverWebSocketUrl}/ws/transcribe`,
+      terminalWs: `${this.serverWebSocketUrl}/ws/terminal`,
       health: `${this.serverUrl}/rest/health`
     }
   }

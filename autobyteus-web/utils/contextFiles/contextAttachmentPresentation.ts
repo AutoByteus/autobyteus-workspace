@@ -1,5 +1,5 @@
 import type { ContextAttachment } from '~/types/conversation';
-import { getServerBaseUrl, getServerUrls } from '~/utils/serverConfig';
+import { getBrowserServerBaseUrl, getBrowserServerUrls } from '~/utils/browserServerConfig';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import { buildLocalFileUrl, LOCAL_FILE_SCHEME, parseLocalFileUrl } from '~/shared/localFileUrl';
 import { isBrowserOpenableContextAttachment } from '~/utils/contextFiles/contextAttachmentModel';
@@ -64,9 +64,12 @@ const resolveBoundNodeBaseUrl = (): string => {
       return contextStore.nodeBaseUrl.replace(/\/$/, '');
     }
   } catch {
-    // Tests and non-Pinia utility use fall back to legacy server config.
+    // A non-Pinia browser utility can still use browser runtime configuration.
   }
-  return getServerBaseUrl().replace(/\/$/, '');
+  if (typeof window !== 'undefined' && window.electronAPI) {
+    throw new Error('Electron attachment URL requested before window node binding.');
+  }
+  return getBrowserServerBaseUrl().replace(/\/$/, '');
 };
 
 const resolveBoundRestBaseUrl = (): string => {
@@ -76,9 +79,12 @@ const resolveBoundRestBaseUrl = (): string => {
       return contextStore.getBoundEndpoints().rest.replace(/\/$/, '');
     }
   } catch {
-    // Tests and non-Pinia utility use fall back to legacy server config.
+    // A non-Pinia browser utility can still use browser runtime configuration.
   }
-  return getServerUrls().rest.replace(/\/$/, '');
+  if (typeof window !== 'undefined' && window.electronAPI) {
+    throw new Error('Electron attachment REST URL requested before window node binding.');
+  }
+  return getBrowserServerUrls().rest.replace(/\/$/, '');
 };
 
 export const contextAttachmentPresentation = {

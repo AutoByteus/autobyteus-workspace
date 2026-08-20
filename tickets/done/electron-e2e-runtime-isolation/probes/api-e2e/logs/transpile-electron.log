@@ -1,0 +1,3 @@
+
+> autobyteus@1.4.52 transpile-electron /Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web
+> tsc -p electron/tsconfig.json

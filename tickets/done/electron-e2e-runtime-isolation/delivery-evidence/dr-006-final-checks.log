@@ -1,0 +1,24 @@
+# DR-006 final checks
+checked_at=2026-08-20T14:34:00Z
+
+## personal synchronization
+local_personal=42e38d42f11350aaaea52995dee3c704a8439297
+origin_personal=42e38d42f11350aaaea52995dee3c704a8439297
+PASS
+
+## replacement artifact
+dmg_sha256=e1757b3b2331d146e13245bf00d4007915c20f29906141fb9290f157770bc1e6
+zip_sha256=87de1775ef27c9686017b510c8b8f90fb808665e36ae4024275f8d77889ad4bd
+executable_sha256=c0bf182389ea930585e3b0bf5c4f16529461e02bf3be751cb364d0e25f2257e0
+PASS
+
+## old runtime shutdown
+PASS: old exact PIDs absent and port 29695 free
+
+## worktree and branch cleanup
+PASS: path, registration, local branch, and remote branch absent
+
+## durable launcher and staged record
+PASS: syntax/static checks; unrelated and ignored outputs unstaged
+
+release_publication_deployment=not performed

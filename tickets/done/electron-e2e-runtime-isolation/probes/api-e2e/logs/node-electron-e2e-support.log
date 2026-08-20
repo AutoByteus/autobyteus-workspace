@@ -1,0 +1,112 @@
+TAP version 13
+# Subtest: direct adapter spawns the exact artifact in a controllable process tree
+ok 1 - direct adapter spawns the exact artifact in a controllable process tree
+  ---
+  duration_ms: 5.923458
+  type: 'test'
+  ...
+# Subtest: direct launch failure preserves its primary error and retains the root when tree completion fails
+ok 2 - direct launch failure preserves its primary error and retains the root when tree completion fails
+  ---
+  duration_ms: 0.379959
+  type: 'test'
+  ...
+# Subtest: E2E environment preserves caller provisioning values and forces only isolation values
+ok 3 - E2E environment preserves caller provisioning values and forces only isolation values
+  ---
+  duration_ms: 0.685875
+  type: 'test'
+  ...
+# Subtest: session disposes its owned root only after affirmative whole-tree completion
+ok 4 - session disposes its owned root only after affirmative whole-tree completion
+  ---
+  duration_ms: 5.931625
+  type: 'test'
+  ...
+# Subtest: session retains the root and fails when whole-tree completion is unconfirmed
+ok 5 - session retains the root and fails when whole-tree completion is unconfirmed
+  ---
+  duration_ms: 0.282125
+  type: 'test'
+  ...
+# Subtest: session rejects a non-affirmative controller result without disposing the root
+ok 6 - session rejects a non-affirmative controller result without disposing the root
+  ---
+  duration_ms: 0.101041
+  type: 'test'
+  ...
+# Subtest: foreign port occupancy is diagnostic and cannot veto owned-root disposal
+ok 7 - foreign port occupancy is diagnostic and cannot veto owned-root disposal
+  ---
+  duration_ms: 2.078834
+  type: 'test'
+  ...
+# Subtest: whole-tree controller waits for a delayed descendant after the root has exited
+ok 8 - whole-tree controller waits for a delayed descendant after the root has exited
+  ---
+  duration_ms: 103.081875
+  type: 'test'
+  ...
+# Subtest: whole-tree controller force-escalates the same owned tree when a descendant ignores graceful close
+ok 9 - whole-tree controller force-escalates the same owned tree when a descendant ignores graceful close
+  ---
+  duration_ms: 5.42575
+  type: 'test'
+  ...
+# Subtest: whole-tree controller fails when absence cannot be confirmed
+ok 10 - whole-tree controller fails when absence cannot be confirmed
+  ---
+  duration_ms: 3.538792
+  type: 'test'
+  ...
+# Subtest: Playwright adapter lets Playwright own launch and exposes its application
+ok 11 - Playwright adapter lets Playwright own launch and exposes its application
+  ---
+  duration_ms: 0.98875
+  type: 'test'
+  ...
+# Subtest: verified Playwright launch rejection disposes an owned root and preserves the primary error
+ok 12 - verified Playwright launch rejection disposes an owned root and preserves the primary error
+  ---
+  duration_ms: 0.129
+  type: 'test'
+  ...
+# Subtest: Playwright rejection retains caller-owned roots
+ok 13 - Playwright rejection retains caller-owned roots
+  ---
+  duration_ms: 0.2475
+  type: 'test'
+  ...
+# Subtest: Playwright rejection never replaces its primary error with disposal failure
+ok 14 - Playwright rejection never replaces its primary error with disposal failure
+  ---
+  duration_ms: 0.114833
+  type: 'test'
+  ...
+# Subtest: Windows cleanup fails closed when a late child remains after the root exits
+ok 15 - Windows cleanup fails closed when a late child remains after the root exits
+  ---
+  duration_ms: 4.998
+  type: 'test'
+  ...
+# Subtest: Windows cleanup never targets a reused root PID with another creation identity
+ok 16 - Windows cleanup never targets a reused root PID with another creation identity
+  ---
+  duration_ms: 0.236041
+  type: 'test'
+  ...
+# Subtest: Windows cleanup accepts root absence only after targeting the captured creation identity
+ok 17 - Windows cleanup accepts root absence only after targeting the captured creation identity
+  ---
+  duration_ms: 0.196125
+  type: 'test'
+  ...
+1..17
+# tests 17
+# suites 0
+# pass 17
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 164.523208

@@ -17,6 +17,7 @@ import type {
   VoiceInputTranscriptionRequest,
   VoiceInputTranscriptionResult,
 } from './extensions/types'
+import type { ServerStatusSnapshot } from '../types/serverStatus'
 
 type Cleanup = () => void
 
@@ -37,7 +38,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // Server-related methods
   getServerStatus: () => ipcRenderer.invoke('get-server-status'),
   restartServer: () => ipcRenderer.invoke('restart-server'),
-  onServerStatus: (callback: (status: any) => void) => {
+  onServerStatus: (callback: (status: ServerStatusSnapshot) => void) => {
     return registerIpcListener('server-status', callback)
   },
 
