@@ -1,0 +1,28 @@
+# DR-003 root README checks
+checked_at=2026-08-20T13:59:34Z
+
+## git diff --check
+PASS
+
+## Required root README entry points
+306:## Packaged Electron API/E2E testing
+315:pnpm test:e2e:electron --adapter direct
+344:example `env -u ELECTRON_RUN_AS_NODE pnpm test:e2e:electron --adapter direct`.
+316:pnpm test:e2e:electron --adapter playwright
+335:pnpm test:e2e:electron:isolation \
+341:Do not insert a standalone `--` after either package-script name; these thin
+343:inherited `ELECTRON_RUN_AS_NODE=1`, clear it for the real GUI launch, for
+PASS
+
+## Canonical link targets
+377:### Packaged Electron E2E Launches
+765:### Packaged E2E Launch Profile
+PASS
+
+## Thin-CLI separator and trailing-whitespace guards
+PASS: no unsupported standalone separator or trailing whitespace
+
+## Integrated-state reference
+origin/personal=1b2e9b94d1de3b7f38aa2803082e0166a469a978
+merge_base=1b2e9b94d1de3b7f38aa2803082e0166a469a978
+origin_personal_behind_ahead_HEAD=0	3

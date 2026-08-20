@@ -1,0 +1,22 @@
+Delivery integration refresh DR-001
+timestamp=2026-08-19T10:08:31Z
+worktree=/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run
+ticket_branch=codex/token-usage-one-row-per-agent-run
+upstream=origin/personal
+bootstrap_base=0194fb4fffa69037a46aeace491024fdf816dde7
+tracked_remote_base_before_fetch=0194fb4fffa69037a46aeace491024fdf816dde7
+$ git fetch origin personal
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+tracked_remote_base_after_fetch=0194fb4fffa69037a46aeace491024fdf816dde7
+ticket_head=0194fb4fffa69037a46aeace491024fdf816dde7
+merge_base=0194fb4fffa69037a46aeace491024fdf816dde7
+head_vs_base_left_right=0	0
+latest_base_is_ticket_ancestor=yes
+unmerged_paths=none
+base_advanced_since_bootstrap=no
+new_base_commits_integrated=no
+integration_method=already-current
+checkpoint_commit=not-needed
+post_integration_rerun=no
+no_rerun_rationale=fetch left origin/personal and HEAD identical; no base commit was integrated and delivery edits are documentation/artifacts only

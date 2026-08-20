@@ -1,0 +1,34 @@
+DR-002 Electron build summary
+Build started: 2026-08-20T13:43:10Z
+Build finished: 2026-08-20T13:48:11Z
+Exit code: 0
+Working directory: /Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web
+Command: AUTOBYTEUS_BUILD_FLAVOR=personal NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG='electron-builder,electron-builder:*,app-builder-lib*,builder-util*' pnpm build:electron:mac
+
+Successful stages observed:
+- guard:web-boundary: Passed
+- guard:localization-boundary: Passed
+- audit:localization-literals: Passed with zero unresolved findings
+- Prisma client generation: Passed
+- shared/server TypeScript build: Passed
+- built-in agents/bootstrap smoke: Passed without DATABASE_URL
+- mobile web generation: Passed
+- Electron server resource deployment: Passed
+- Electron native module rebuild: Passed
+- Electron renderer generation: Passed
+- Electron/build TypeScript compilation: Passed
+- electron-builder macOS arm64 app/DMG/ZIP packaging: Passed
+
+Artifacts:
+- electron-dist/mac-arm64/AutoByteus.app
+- electron-dist/AutoByteus_personal_macos-arm64-1.4.52.dmg
+- electron-dist/AutoByteus_personal_macos-arm64-1.4.52.dmg.blockmap
+- electron-dist/AutoByteus_personal_macos-arm64-1.4.52.zip
+- electron-dist/AutoByteus_personal_macos-arm64-1.4.52.zip.blockmap
+
+Expected/non-blocking observations:
+- macOS code signing skipped because local APPLE_TEAM_ID/signing identity was empty.
+- Browserslist age, large-chunk, deprecated-subdependency, and pnpm peer/build-script warnings were emitted but did not fail any build stage.
+- No publication, notarization, tag, or release action occurred.
+
+The original verbose DEBUG stream was intentionally condensed after successful completion to avoid retaining a 13 MB generated build log in the ticket package. Artifact hashes, metadata, DMG verification, and launch evidence are recorded in the adjacent DR-002 verification logs.

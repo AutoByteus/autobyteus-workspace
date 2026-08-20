@@ -1,0 +1,25 @@
+# DR-006 requirement-gap handoff audit
+UTC 2026-08-19T14:40:06Z
+absolute_handoff_refs=28
+classification=Requirement Gap / Design Impact
+recipient=/solution_designer
+ticket_scope_technical_result=pass
+explicit_user_finalization_instruction=no
+finalization=blocked
+overall_result=pass-ready-to-route
+## codex/token-usage-one-row-per-agent-run...origin/personal [ahead 4]
+ M autobyteus-server-ts/README.md
+ M autobyteus-server-ts/docs/design/production_data_migration_conventions.md
+ M tickets/in-progress/token-usage-one-row-per-agent-run/delivery-integration-blocker.md
+ M tickets/in-progress/token-usage-one-row-per-agent-run/delivery-revision-record.md
+ M tickets/in-progress/token-usage-one-row-per-agent-run/delivery-rework-record.md
+ M tickets/in-progress/token-usage-one-row-per-agent-run/docs-sync-report.md
+ M tickets/in-progress/token-usage-one-row-per-agent-run/handoff-summary.md
+ M tickets/in-progress/token-usage-one-row-per-agent-run/release-deployment-report.md
+?? tickets/in-progress/token-usage-one-row-per-agent-run/delivery-evidence/15-dr005-base-docs-preflight.log
+?? tickets/in-progress/token-usage-one-row-per-agent-run/delivery-evidence/16-electron-build-macos-arm64-dr005.log
+?? tickets/in-progress/token-usage-one-row-per-agent-run/delivery-evidence/17-electron-package-integrity-dr005.log
+?? tickets/in-progress/token-usage-one-row-per-agent-run/delivery-evidence/18-final-base-docs-handoff-audit-dr005.log
+?? tickets/in-progress/token-usage-one-row-per-agent-run/delivery-evidence/19-live-dr005-technical-verification-and-residual-dr006.log
+?? tickets/in-progress/token-usage-one-row-per-agent-run/delivery-evidence/20-dr006-requirement-gap-handoff-audit.log
+?? tickets/in-progress/token-usage-one-row-per-agent-run/delivery-requirement-gap.md

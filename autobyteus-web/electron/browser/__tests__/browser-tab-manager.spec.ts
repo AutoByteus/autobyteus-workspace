@@ -1,9 +1,22 @@
 import { EventEmitter } from "events";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import {
   BrowserTabError,
   BrowserTabManager,
 } from "../browser-tab-manager";
+
+vi.mock('../../logger', () => {
+  const logger = {
+    child: vi.fn(() => logger),
+    trace: vi.fn(),
+    debug: vi.fn(),
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+    fatal: vi.fn(),
+  };
+  return { logger };
+});
 
 class FakeWebContents extends EventEmitter {
   private title = "";

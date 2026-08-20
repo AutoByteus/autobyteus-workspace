@@ -11,6 +11,8 @@ import type {
 import {
   AppDataMigrationDuplicateRunError,
   AppDataMigrationPrerequisiteError,
+  AppDataMigrationRecoveryAction,
+  AppDataMigrationRestartRequiredError,
 } from "./domain/app-data-migration-types.js";
 import {
   AppDataMigrationRegistry,
@@ -46,11 +48,6 @@ const parseSummary = (summaryJson: string | null): AppDataMigrationSummary | nul
     return null;
   }
 };
-
-const canRetryStatus = (status: string): boolean =>
-  status === "NOT_RUN" ||
-  status === "FAILED" ||
-  status === "SUCCEEDED_WITH_WARNINGS";
 
 export class AppDataMigrationRunner {
   private readonly inFlight = new Map<string, Promise<AppDataMigrationRecordSnapshot>>();
@@ -100,6 +97,9 @@ export class AppDataMigrationRunner {
     const definition = this.registry.getDefinition(migrationId);
     if (!definition) {
       throw new Error(`Unknown app data migration '${migrationId}'.`);
+    }
+    if (definition.executionPolicy === "STARTUP_ONLY") {
+      throw new AppDataMigrationRestartRequiredError(definition.id);
     }
     const record = await this.runDefinition(definition);
     return this.toStatusSnapshot(definition, record);
@@ -159,6 +159,30 @@ export class AppDataMigrationRunner {
     return Date.now() - record.startedAt.getTime() < staleMs;
   }
 
+  private classifyRecoveryAction(
+    definition: AppDataMigrationDefinition,
+    record: AppDataMigrationRecordSnapshot | null,
+  ): AppDataMigrationRecoveryAction {
+    if (this.isCurrentlyRunning(record)) {
+      return AppDataMigrationRecoveryAction.NONE;
+    }
+
+    const status = record?.status ?? "NOT_RUN";
+    if ((definition.executionPolicy ?? "ANYTIME") === "ANYTIME") {
+      return status === "SUCCEEDED"
+        ? AppDataMigrationRecoveryAction.NONE
+        : AppDataMigrationRecoveryAction.MANUAL_RETRY;
+    }
+
+    if (!definition.requiredOnStartup) {
+      return AppDataMigrationRecoveryAction.NONE;
+    }
+
+    return status === "NOT_RUN" || status === "FAILED" || status === "RUNNING"
+      ? AppDataMigrationRecoveryAction.RESTART_TO_RETRY
+      : AppDataMigrationRecoveryAction.NONE;
+  }
+
   private async executeDefinition(
     definition: AppDataMigrationDefinition,
   ): Promise<AppDataMigrationRecordSnapshot> {
@@ -201,6 +225,7 @@ export class AppDataMigrationRunner {
     record: AppDataMigrationRecordSnapshot | null,
   ): AppDataMigrationStatusSnapshot {
     const status = record?.status ?? "NOT_RUN";
+    const recoveryAction = this.classifyRecoveryAction(definition, record);
     return {
       migrationId: definition.id,
       displayName: record?.displayName ?? definition.displayName,
@@ -214,7 +239,8 @@ export class AppDataMigrationRunner {
       summary: parseSummary(record?.summaryJson ?? null),
       errorMessage: record?.errorMessage ?? null,
       logPath: record?.logPath ?? null,
-      canRetry: canRetryStatus(status),
+      recoveryAction,
+      canRetry: recoveryAction === AppDataMigrationRecoveryAction.MANUAL_RETRY,
     };
   }
 

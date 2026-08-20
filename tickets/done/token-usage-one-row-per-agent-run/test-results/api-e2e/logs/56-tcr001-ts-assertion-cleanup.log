@@ -1,0 +1,26 @@
+=== server TypeScript ===
+=== git diff check ===
+=== TCR-001 assertion fields ===
+PASS migrationId asserted in both paths
+PASS displayName asserted in both paths
+PASS status asserted in both paths
+PASS attempts asserted in both paths
+PASS startedAt asserted in both paths
+PASS completedAt asserted in both paths
+PASS errorState asserted in both paths
+PASS statusSummary asserted in both paths
+PASS detailsOmitted asserted in both paths
+PASS reason asserted in both paths
+autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-migration-audit-compaction-v1.test.ts:112:  `detailsOmitted=${input.detailCount}`,
+autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-migration-audit-compaction-v1.test.ts:113:  "reason=historical audit detail exceeded 65,536 bytes",
+autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-migration-audit-compaction-v1.test.ts:201:      await expect(fs.readFile(raw["log_path"] as string, "utf8")).resolves.toBe(expectedCanonicalLog({
+autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-migration-audit-compaction-v1.test.ts:389:    await expect(fs.readFile(outsidePath, "utf8")).resolves.toBe("outside evidence");
+autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-migration-audit-compaction-v1.test.ts:434:    const serverRuntime = await fs.readFile(path.resolve("src", "server-runtime.ts"), "utf8");
+autobyteus-server-ts/tests/e2e/app-data-migrations/token-usage-migration-audit-compaction-startup.e2e.test.ts:64:const frontendDocumentSource = fs.readFileSync(frontendDocumentPath, "utf8");
+autobyteus-server-ts/tests/e2e/app-data-migrations/token-usage-migration-audit-compaction-startup.e2e.test.ts:151:  `detailsOmitted=${input.detailCount}`,
+autobyteus-server-ts/tests/e2e/app-data-migrations/token-usage-migration-audit-compaction-startup.e2e.test.ts:152:  "reason=historical audit detail exceeded 65,536 bytes",
+autobyteus-server-ts/tests/e2e/app-data-migrations/token-usage-migration-audit-compaction-startup.e2e.test.ts:323:      expect(fs.readFileSync(logPaths.get(migrationId)!, "utf8")).toBe(expectedCanonicalLog({
+=== no disabled focused coverage ===
+PASS
+=== cleanup ===
+PASS: no owned runtime/database/process residue

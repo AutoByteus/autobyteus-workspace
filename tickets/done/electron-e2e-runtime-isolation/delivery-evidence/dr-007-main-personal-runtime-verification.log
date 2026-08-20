@@ -1,0 +1,14 @@
+# DR-007 main-personal runtime verification
+checked_at=2026-08-20T14:38:28Z
+personal_commit=d147e5262060665a3b8ecc292c4600155e99335f
+app=/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+app_pid=22115
+server_pid=22745
+server_parent_pid=22115
+executable_sha256=c0bf182389ea930585e3b0bf5c4f16529461e02bf3be751cb364d0e25f2257e0
+health_response_and_status={"status":"ok","message":"Server is running"}|200
+listener=AutoByteu:22745:*:29695
+server_log_last_500_fatal_pattern_count=0
+launch_action=none; user had already started the main-personal app
+process_action=none; no process was signaled or stopped
+result=PASS

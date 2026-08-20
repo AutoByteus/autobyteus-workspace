@@ -15,6 +15,8 @@ const { storeSlot, messages } = vi.hoisted(() => ({
     loadingStatistics: 'Loading…',
     fetchStatistics: 'Fetch Statistics',
     loadingStatisticsLong: 'Loading token usage statistics…',
+    rangeMeaning: 'The date range selects runs by creation time; totals show each selected run’s lifetime usage.',
+    historyMigrationRequired: 'Stored token history is temporarily unavailable while its data migration is incomplete. New runs remain available.',
     noTaskUsage: 'No agent or team usage found for this date range.',
     tryWiderRangeOrModel: 'Try a wider date range or switch to Model.',
     noModelUsage: 'No runtime/model usage found for this date range.',
@@ -103,6 +105,7 @@ describe('TokenUsageStatistics settings page', () => {
     expect(wrapper.text()).not.toContain('Token Statistics');
     expect(wrapper.text()).not.toContain('Select date range');
     expect(wrapper.text()).not.toContain('Usage during period');
+    expect(wrapper.text()).toContain('The date range selects runs by creation time; totals show each selected run’s lifetime usage.');
     expect(wrapper.text()).not.toMatch(/By task/i);
     expect(wrapper.text()).not.toMatch(/By model/i);
     expect(wrapper.text()).not.toContain('Group by');
@@ -165,5 +168,17 @@ describe('TokenUsageStatistics settings page', () => {
     await wrapper.find('select').setValue('model');
     expect(wrapper.text()).toContain('No runtime/model usage found for this date range.');
     expect(wrapper.find('[data-test="model-table"]').exists()).toBe(false);
+  });
+
+  it('maps migration-incomplete history errors to an actionable alert', async () => {
+    storeSlot.store = createStore({
+      error: 'TOKEN_USAGE_HISTORY_MIGRATION_REQUIRED: Migration status is FAILED.',
+    });
+    const wrapper = await mountPage();
+
+    const alert = wrapper.get('[role="alert"]');
+    expect(alert.text()).toContain('Stored token history is temporarily unavailable');
+    expect(alert.text()).toContain('New runs remain available');
+    expect(alert.text()).not.toContain('TOKEN_USAGE_HISTORY_MIGRATION_REQUIRED');
   });
 });

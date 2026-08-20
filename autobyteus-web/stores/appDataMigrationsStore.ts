@@ -3,6 +3,7 @@ import { getApolloClient } from '~/utils/apolloClient'
 import { GetAppDataMigrations } from '~/graphql/queries/app_data_migrations_queries'
 import { RunAppDataMigration } from '~/graphql/mutations/app_data_migrations_mutations'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
+import type { AppDataMigrationRecoveryAction } from '~/generated/graphql'
 
 export type AppDataMigrationStatus =
   | 'NOT_RUN'
@@ -31,6 +32,7 @@ export interface AppDataMigrationRecord {
   description: string
   status: AppDataMigrationStatus
   requiredOnStartup: boolean
+  recoveryAction: AppDataMigrationRecoveryAction
   canRetry: boolean
   attempts: number
   startedAt: string | null

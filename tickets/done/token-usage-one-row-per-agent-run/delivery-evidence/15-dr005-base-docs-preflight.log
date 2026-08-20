@@ -1,0 +1,29 @@
+# DR-005 latest-base and durable-doc preflight
+UTC 2026-08-19T14:17:56Z
+
+## Revisions
+HEAD: bb31e469270ee2b032d19c6dbf8a2c9bea91a18a
+origin/personal: 1f5663ddb86e478d0b4ffdd878d57dee72d67b4b
+merge-base: 1f5663ddb86e478d0b4ffdd878d57dee72d67b4b
+divergence (base...HEAD): 0	4
+Integration: no merge required; latest tracked base is already the reviewed package ancestor.
+Post-integration server rerun: not required because no base commit was integrated; API-REV-005 and CRR-012 validate this reviewed implementation state.
+
+## Durable documentation diff check
+PASS: git diff --check
+
+## Relative Markdown links
+PASS: autobyteus-server-ts/README.md
+PASS: autobyteus-server-ts/docs/design/production_data_migration_conventions.md
+
+## Promoted convention markers
+autobyteus-server-ts/docs/design/production_data_migration_conventions.md:119:## Database Adapter And Transport Representations
+autobyteus-server-ts/docs/design/production_data_migration_conventions.md:126:leading `NULL` rows.
+autobyteus-server-ts/docs/design/production_data_migration_conventions.md:147:defect. For a nullable expression, include leading `NULL` rows followed by
+autobyteus-server-ts/README.md:185:  scalars, choose a deterministic SQL transport, preserve the source type,
+
+## Current worktree
+## codex/token-usage-one-row-per-agent-run...origin/personal [ahead 4]
+ M autobyteus-server-ts/README.md
+ M autobyteus-server-ts/docs/design/production_data_migration_conventions.md
+?? tickets/in-progress/token-usage-one-row-per-agent-run/delivery-evidence/15-dr005-base-docs-preflight.log

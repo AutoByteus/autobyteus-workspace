@@ -1,7 +1,10 @@
 import { defineStore } from 'pinia'
 import axios from 'axios'
-import { INTERNAL_SERVER_PORT, getServerUrls, isElectronEnvironment } from '~/utils/serverConfig'
-import { ServerStatus } from '~/types/serverStatus'
+import {
+  getBrowserServerUrls,
+  isElectronEnvironment,
+} from '~/utils/browserServerConfig'
+import { ServerStatus, type ServerStatusSnapshot } from '~/types/serverStatus'
 
 // Define the state interface
 interface ServerState {
@@ -24,19 +27,33 @@ interface ServerState {
   logFilePath: string
 }
 
-export const useServerStore = defineStore('server', {
-  state: (): ServerState => ({
+const emptyElectronUrls = () => ({
+  graphql: '',
+  rest: '',
+  graphqlWs: '',
+  transcription: '',
+  terminalWs: '',
+  health: '',
+})
+
+const createInitialServerState = (): ServerState => {
+  const isElectron = isElectronEnvironment()
+  return {
     status: ServerStatus.STARTING,
-    port: INTERNAL_SERVER_PORT,
-    urls: getServerUrls(),
+    port: 0,
+    urls: isElectron ? emptyElectronUrls() : getBrowserServerUrls(),
     errorMessage: '',
-    isElectron: isElectronEnvironment(),
+    isElectron,
     healthCheckStatus: '',
     connectionAttempts: 0,
     maxConnectionAttempts: 5,
     isInitialStartup: true,
-    logFilePath: ''
-  }),
+    logFilePath: '',
+  }
+}
+
+export const useServerStore = defineStore('server', {
+  state: createInitialServerState,
   
   getters: {
     userFriendlyError: (state): string => {
@@ -85,7 +102,7 @@ export const useServerStore = defineStore('server', {
       this.errorMessage = ''
       this.connectionAttempts = 0
       this.isInitialStartup = true
-      this.urls = getServerUrls()
+      this.urls = this.isElectron ? emptyElectronUrls() : getBrowserServerUrls()
       this.isElectron = isElectronEnvironment()
       
       if (this.isElectron && window.electronAPI?.getLogFilePath) {
@@ -258,7 +275,7 @@ export const useServerStore = defineStore('server', {
     /**
      * Update the server status.
      */
-    updateServerStatus(serverStatus: any): void {
+    updateServerStatus(serverStatus: ServerStatusSnapshot): void {
       if (!serverStatus) {
         console.warn('serverStore: Received empty server status')
         return
@@ -270,6 +287,19 @@ export const useServerStore = defineStore('server', {
           this.isInitialStartup = false
         }
         this.status = serverStatus.status
+      }
+
+      if (serverStatus.baseUrl) {
+        const parsedBaseUrl = new URL(serverStatus.baseUrl)
+        this.port = Number(parsedBaseUrl.port)
+        this.urls = {
+          graphql: serverStatus.urls.graphql,
+          rest: serverStatus.urls.rest,
+          graphqlWs: serverStatus.urls.graphqlWs,
+          transcription: serverStatus.urls.transcription,
+          terminalWs: serverStatus.urls.terminalWs,
+          health: serverStatus.urls.health,
+        }
       }
       
       if (serverStatus.status === ServerStatus.ERROR && serverStatus.message) {
@@ -341,7 +371,11 @@ export const useServerStore = defineStore('server', {
           }
           
           if (result.status === 'ok') {
-            this.healthCheckStatus = `Healthy: ${result.data?.status || 'OK'}`
+            const healthDetail =
+              result.data && typeof result.data === 'object' && 'status' in result.data
+                ? String(result.data.status)
+                : 'OK'
+            this.healthCheckStatus = `Healthy: ${healthDetail}`
             if (this.status !== ServerStatus.RUNNING) {
               try {
                 const serverStatus = await window.electronAPI.getServerStatus()

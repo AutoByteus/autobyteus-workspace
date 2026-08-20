@@ -1,0 +1,85 @@
+{
+  "schemaVersion": 1,
+  "scenarioId": "E2E-LIVE-006",
+  "mode": "run",
+  "startedAt": "2026-08-20T13:10:29.056Z",
+  "completedAt": "2026-08-20T13:10:47.225Z",
+  "result": "FAIL",
+  "artifact": {
+    "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "sha256": "c0bf182389ea930585e3b0bf5c4f16529461e02bf3be751cb364d0e25f2257e0"
+  },
+  "launch": {
+    "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "port": 59238,
+    "dataRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/tickets/in-progress/electron-e2e-runtime-isolation/probes/api-e2e/live-provider/isolated-electron-data-root",
+    "ownsDataRoot": false,
+    "clientBaseUrl": "http://127.0.0.1:59238",
+    "healthUrl": "http://127.0.0.1:59238/rest/health"
+  },
+  "databasePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/tickets/in-progress/electron-e2e-runtime-isolation/probes/api-e2e/live-provider/isolated-electron-data-root/server-data/db/production.db",
+  "secretKeyPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/tickets/in-progress/electron-e2e-runtime-isolation/probes/api-e2e/live-provider/isolated-electron-data-root/server-data/db/production.db.secret.key",
+  "packageSource": "/Users/normy/autobyteus_org/autobyteus-agents",
+  "packageSourceBefore": {
+    "fileCount": 568,
+    "sha256": "68d5c5e776c9e087232706576d3fd0e554d223a76d2c662b71f502ba940a883d"
+  },
+  "ordinaryBefore": {
+    "label": "run-before",
+    "healthStatus": 200,
+    "listenerPids": [
+      98429
+    ],
+    "identities": [
+      {
+        "pid": 98429,
+        "fingerprint": "ebeda19895d06c482766ff54c5f38405512464b3329f02f8b4ed93f786b2246d",
+        "commandIsAutoByteus": true
+      }
+    ]
+  },
+  "failure": {
+    "message": "GRAPHQL_FAILED:200:[{\"message\":\"Cannot query field \\\"senderAddress\\\" on type \\\"TeamCommunicationMessageObject\\\".\",\"locations\":[{\"line\":3,\"column\":3}]},{\"message\":\"Cannot query field \\\"receiverAddress\\\" on type \\\"TeamCommunicationMessageObject\\\".\",\"locations\":[{\"line\":4,\"column\":3}]}]",
+    "stack": "Error: GRAPHQL_FAILED:200:[{\"message\":\"Cannot query field \\\"senderAddress\\\" on type \\\"TeamCommunicationMessageObject\\\".\",\"locations\":[{\"line\":3,\"column\":3}]},{\"message\":\"Cannot query field \\\"receiverAddress\\\" on type \\\"TeamCommunicationMessageObject\\\".\",\"locations\":[{\"line\":4,\"column\":3}]}]\n    at gql (file:///Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/tickets/in-progress/electron-e2e-runtime-isolation/probes/api-e2e/live-provider/run-packaged-classroom-live.mjs:55:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async run (file:///Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/tickets/in-progress/electron-e2e-runtime-isolation/probes/api-e2e/live-provider/run-packaged-classroom-live.mjs:300:19)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/tickets/in-progress/electron-e2e-runtime-isolation/probes/api-e2e/live-provider/run-packaged-classroom-live.mjs:433:3"
+  },
+  "consoleEvents": [],
+  "termination": {
+    "success": true,
+    "message": "Agent team run terminated successfully."
+  },
+  "cleanupResult": {
+    "processTreeCompletion": {
+      "status": "complete",
+      "identity": "posix-process-group:23487",
+      "forced": false,
+      "gracefulError": null
+    },
+    "portObservation": {
+      "status": "available",
+      "port": 59238,
+      "detail": null
+    }
+  },
+  "packageSourceAfter": {
+    "fileCount": 568,
+    "sha256": "68d5c5e776c9e087232706576d3fd0e554d223a76d2c662b71f502ba940a883d"
+  },
+  "packageSourceUnchanged": true,
+  "ordinaryAfter": {
+    "label": "run-after",
+    "healthStatus": 200,
+    "listenerPids": [
+      98429
+    ],
+    "identities": [
+      {
+        "pid": 98429,
+        "fingerprint": "ebeda19895d06c482766ff54c5f38405512464b3329f02f8b4ed93f786b2246d",
+        "commandIsAutoByteus": true
+      }
+    ]
+  },
+  "ordinaryIdentityUnchanged": true,
+  "isolatedRootDisposed": false,
+  "isolatedRootRetainedAfterFailure": true
+}

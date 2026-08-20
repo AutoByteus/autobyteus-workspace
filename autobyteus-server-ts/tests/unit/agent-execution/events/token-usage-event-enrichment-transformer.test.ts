@@ -9,7 +9,6 @@ import { TokenUsageSnapshotDeltaNormalizer } from '../../../../src/token-usage/p
 import { TokenUsageComponentBasisResolver } from '../../../../src/token-usage/projections/token-usage-component-basis-resolver.js';
 import { TokenCostCalculator } from '../../../../src/token-usage/pricing/token-cost-calculator.js';
 import { MemberTeamContext } from '../../../../src/agent-team-execution/domain/member-team-context.js';
-import { TeamBackendKind } from '../../../../src/agent-team-execution/domain/team-backend-kind.js';
 import { RuntimeKind } from '../../../../src/runtime-management/runtime-kind-enum.js';
 import type { AgentRunEvent } from '../../../../src/agent-execution/domain/agent-run-event.js';
 import type { TokenUsageUpdatedPayload } from '../../../../src/agent-execution/domain/agent-run-token-usage.js';
@@ -26,28 +25,12 @@ const runContext = new AgentRunContext({
     skillAccessMode: SkillAccessMode.NONE,
     runtimeKind: RuntimeKind.CODEX_APP_SERVER,
     memberTeamContext: new MemberTeamContext({
-      teamRunId: 'team-run-1',
-      teamDefinitionId: 'team-def-1',
-      teamName: 'Planner team',
-      teamBackendKind: TeamBackendKind.MIXED,
-      teamAddress: '/planner',
-      memberAddress: '/planner/worker',
-      agentRunId: 'member-run-1',
-      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-      coordinatorAddress: '/planner/worker',
-      collaboration: {
-        addressing: {
-          rootTeamRunId: 'team-run-1',
-          memberAddress: '/planner/worker',
-        },
-      },
-      executionAddress: {
+      identity: {
         rootTeamRunId: 'team-run-1',
-        taskTeamRunIds: [],
         memberAddress: '/planner/worker',
-        taskAgentRunId: 'task-agent-run-1',
+        agentRunId: 'member-run-1',
       },
-      taskId: 'task-1',
+      collaboration: { outgoingHandoffs: [] },
     }),
   }),
 });
@@ -125,13 +108,8 @@ describe('TokenUsageEventEnrichmentTransformer', () => {
     const payload = output[0]!.payload as unknown as TokenUsageUpdatedPayload;
     expect(payload.run_id).toBe('member-run-1');
     expect(payload.runtime_kind).toBe(RuntimeKind.CODEX_APP_SERVER);
-    expect(payload.execution_address).toEqual({
-      rootTeamRunId: 'team-run-1',
-      taskTeamRunIds: [],
-      memberAddress: '/planner/worker',
-      taskAgentRunId: 'task-agent-run-1',
-    });
-    expect(payload.task_id).toBe('task-1');
+    expect(payload.root_team_run_id).toBe('team-run-1');
+    expect(payload.task_id).toBeNull();
     expect(payload.agent_definition_id).toBe('agent-def-1');
     expect(payload.workspace_id).toBe('workspace-1');
     expect(payload.provider_name).toBe('Codex snapshot should survive enrichment');
@@ -146,24 +124,11 @@ describe('TokenUsageEventEnrichmentTransformer', () => {
     expect(payload.quality_flags).toContain('runtime_kind_overridden_by_run_context');
   });
 
-  it('converts cumulative snapshots into accounting deltas before pricing', async () => {
+  it('preserves cumulative source counters and defers missing provider deltas to the durable fold', async () => {
     const transformer = new TokenUsageEventEnrichmentTransformer(
       new TokenUsageContextEnricher(),
       new TokenUsageComponentBasisResolver(),
-      new TokenUsageSnapshotDeltaNormalizer({
-        getLatestCumulativeSnapshot: async () => ({
-          usage_event_id: 'previous-snapshot-event',
-          reported_input_tokens: 80,
-          reported_output_tokens: 20,
-          reported_total_tokens: 100,
-          accounting_input_tokens: 80,
-          accounting_output_tokens: 20,
-          accounting_total_tokens: 100,
-          standard_input_tokens: 80,
-          billable_input_tokens: 80,
-          billable_output_tokens: 20,
-        }),
-      } as never),
+      new TokenUsageSnapshotDeltaNormalizer(),
       new TokenCostCalculator(trustedPriceProvider),
     );
 
@@ -191,10 +156,18 @@ describe('TokenUsageEventEnrichmentTransformer', () => {
     });
 
     const payload = output[0]!.payload as unknown as TokenUsageUpdatedPayload;
-    expect(payload.previous_snapshot_event_id).toBe('previous-snapshot-event');
-    expect(payload.accounting_input_tokens).toBe(60);
-    expect(payload.accounting_output_tokens).toBe(30);
-    expect(payload.accounting_total_tokens).toBe(90);
-    expect(payload.estimated_api_total_cost).toBe(0.00018);
+    expect(payload.previous_snapshot_event_id).toBeNull();
+    expect(payload.accounting_input_tokens).toBeNull();
+    expect(payload.accounting_output_tokens).toBeNull();
+    expect(payload.accounting_total_tokens).toBeNull();
+    expect(payload.estimated_api_total_cost).toBeNull();
+    expect(payload.quality_flags).toContain('cumulative_snapshot_provider_delta_missing');
+    expect(payload.raw_event_json).toMatchObject({
+      autobyteus_cumulative_snapshot_source_tokens: expect.objectContaining({
+        reported_input_tokens: 140,
+        reported_output_tokens: 50,
+        reported_total_tokens: 190,
+      }),
+    });
   });
 });

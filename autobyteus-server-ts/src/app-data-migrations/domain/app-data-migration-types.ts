@@ -5,6 +5,12 @@ export type AppDataMigrationStatus =
   | "FAILED"
   | "SUCCEEDED_WITH_WARNINGS";
 
+export enum AppDataMigrationRecoveryAction {
+  MANUAL_RETRY = "MANUAL_RETRY",
+  RESTART_TO_RETRY = "RESTART_TO_RETRY",
+  NONE = "NONE",
+}
+
 export type AppDataMigrationItemStatus = "MIGRATED" | "SKIPPED" | "FAILED";
 
 export interface AppDataMigrationItemDetail {
@@ -34,8 +40,18 @@ export interface AppDataMigrationDefinition {
   displayName: string;
   description: string;
   requiredOnStartup: boolean;
+  executionPolicy?: "ANYTIME" | "STARTUP_ONLY";
   prerequisiteMigrationIds?: readonly string[];
   execute(): Promise<AppDataMigrationExecutionResult>;
+}
+
+export class AppDataMigrationRestartRequiredError extends Error {
+  readonly code = "APP_DATA_MIGRATION_RESTART_REQUIRED";
+
+  constructor(readonly migrationId: string) {
+    super(`App data migration '${migrationId}' can run only during startup. Restart the application to retry it safely.`);
+    this.name = "AppDataMigrationRestartRequiredError";
+  }
 }
 
 export interface AppDataMigrationRecordSnapshot {
@@ -53,6 +69,7 @@ export interface AppDataMigrationRecordSnapshot {
 export interface AppDataMigrationStatusSnapshot extends AppDataMigrationRecordSnapshot {
   description: string;
   requiredOnStartup: boolean;
+  recoveryAction: AppDataMigrationRecoveryAction;
   canRetry: boolean;
   summary: AppDataMigrationSummary | null;
 }

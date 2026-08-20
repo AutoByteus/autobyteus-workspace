@@ -1,0 +1,26 @@
+timestamp=2026-08-19T11:25:30Z
+worktree=/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run
+branch=codex/token-usage-one-row-per-agent-run
+head=11b861de677200fe7441ed189934f7776804c04d
+checkpoint=11b861de677200fe7441ed189934f7776804c04d
+tracked_base=origin/personal
+base=1f5663ddb86e478d0b4ffdd878d57dee72d67b4b
+merge_base=1f5663ddb86e478d0b4ffdd878d57dee72d67b4b
+divergence_base_to_ticket=0/3
+unmerged_paths=0
+reviewed_checkpoint_worktree_status=clean-before-delivery-evidence
+current_worktree_delta=untracked-preflight-evidence-only
+host_arch=arm64
+macos=26.5.2
+node=v22.23.1
+pnpm=10.28.2
+web_version=1.4.52
+readme=/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/README.md
+readme_lines=Desktop Application Build 231-292; local macOS no-notarization command 252-258
+selected_command=NO_TIMESTAMP=1 APPLE_TEAM_ID= APPLE_SIGNING_IDENTITY= APPLE_ID= APPLE_APP_SPECIFIC_PASSWORD= AUTOBYTEUS_BUILD_FLAVOR=personal DEBUG=electron-builder,electron-builder:*,app-builder-lib*,builder-util* pnpm build:electron:mac -- --arm64
+signing=disabled
+notarization=disabled
+publishing=disabled_by_build_config
+expected_outputs=/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.{dmg,zip}
+post_integration_rerun_rationale=No new base commit was fetched after API-REV-004/CRR-010; latest base is already merge-base and the reviewed integrated focused suite already passed 7 files/37 tests. The user-requested Electron build is the additional integrated-state executable packaging check.
+result=pass

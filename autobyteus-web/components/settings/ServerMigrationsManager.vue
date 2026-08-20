@@ -85,17 +85,26 @@
               <div class="mt-1 text-xs text-slate-500">{{ formatDate(migration.completedAt) }}</div>
             </td>
             <td class="px-5 py-4 text-right">
-              <button
-                type="button"
-                class="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-blue-700 hover:bg-blue-50 disabled:cursor-not-allowed disabled:text-slate-400"
-                :disabled="!migration.canRetry || Boolean(store.isRunningById[migration.migrationId])"
-                :data-testid="`app-data-migration-run-${migration.migrationId}`"
-                @click="retry(migration.migrationId)"
-              >
-                <span v-if="store.isRunningById[migration.migrationId]" class="inline-block h-4 w-4 animate-spin rounded-full border-b-2 border-blue-600"></span>
-                <span v-else class="i-heroicons-play-20-solid h-4 w-4"></span>
-                {{ $t('settings.components.settings.ServerMigrationsManager.retry') }}
-              </button>
+              <div class="ml-auto max-w-xs">
+                <button
+                  type="button"
+                  class="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-blue-700 hover:bg-blue-50 disabled:cursor-not-allowed disabled:text-slate-400"
+                  :disabled="!migration.canRetry || Boolean(store.isRunningById[migration.migrationId])"
+                  :data-testid="`app-data-migration-run-${migration.migrationId}`"
+                  @click="retry(migration)"
+                >
+                  <span v-if="store.isRunningById[migration.migrationId]" class="inline-block h-4 w-4 animate-spin rounded-full border-b-2 border-blue-600"></span>
+                  <span v-else class="i-heroicons-play-20-solid h-4 w-4"></span>
+                  {{ $t('settings.components.settings.ServerMigrationsManager.retry') }}
+                </button>
+                <p
+                  v-if="migration.recoveryAction === 'RESTART_TO_RETRY'"
+                  class="mt-2 text-left text-xs leading-5 text-amber-700"
+                  :data-testid="`app-data-migration-restart-guidance-${migration.migrationId}`"
+                >
+                  {{ $t('settings.components.settings.ServerMigrationsManager.restartToRetry') }}
+                </p>
+              </div>
             </td>
           </tr>
           <tr v-if="store.migrations.length === 0">
@@ -111,7 +120,11 @@
 
 <script setup lang="ts">
 import { onMounted } from 'vue'
-import { useAppDataMigrationsStore, type AppDataMigrationStatus } from '~/stores/appDataMigrationsStore'
+import {
+  useAppDataMigrationsStore,
+  type AppDataMigrationRecord,
+  type AppDataMigrationStatus,
+} from '~/stores/appDataMigrationsStore'
 
 const store = useAppDataMigrationsStore()
 
@@ -119,8 +132,9 @@ const refresh = async () => {
   await store.fetchMigrations().catch(() => undefined)
 }
 
-const retry = async (migrationId: string) => {
-  await store.runMigration(migrationId).catch(() => undefined)
+const retry = async (migration: AppDataMigrationRecord) => {
+  if (!migration.canRetry) return
+  await store.runMigration(migration.migrationId).catch(() => undefined)
 }
 
 const statusClass = (status: AppDataMigrationStatus): string => {

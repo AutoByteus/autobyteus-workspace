@@ -32,7 +32,7 @@ graph TB
 
     subgraph Resources
         Server[Bundled Server<br/>Node.js app]
-        Data[App Data Directory]
+        Data[Profile-selected Mutable State Root]
     end
 
     Main --> Factory
@@ -55,6 +55,9 @@ autobyteus-web/
 │   ├── preload.ts              # Secure API bridge to renderer
 │   ├── logger.ts               # File and console logging
 │   ├── types.d.ts              # TypeScript definitions
+│   ├── application/
+│   │   └── electronApplication.ts  # Post-profile app lifecycle owner
+│   ├── launch-profile/             # Early production/E2E profile and path safety
 │   ├── shared/
 │   │   └── embeddedServerConfig.ts  # Stable embedded server URL/port defaults
 │   ├── server/
@@ -73,6 +76,11 @@ autobyteus-web/
 │   └── utils/
 │       ├── shellEnv.ts         # PATH from login shell
 │       └── __tests__/          # Utils tests
+├── scripts/
+│   ├── run-electron-e2e.mjs        # Thin packaged E2E command
+│   └── electron-e2e/                # Preparation, adapters, process ownership, cleanup
+├── tests/e2e/
+│   └── electron-launch-profile-probe.mjs  # Durable packaged isolation probe
 ├── build/
 │   ├── scripts/
 │   │   ├── build.ts                # electron-builder script
@@ -99,13 +107,14 @@ Abstract class providing platform-agnostic server lifecycle management:
 | `stopServer()`    | Gracefully stop the server process      |
 | `isRunning()`     | Check if server is running and ready    |
 | `getServerUrls()` | Get all API endpoint URLs               |
-| `getServerPort()` | Return the fixed port (29695)           |
+| `getServerPort()` | Return the active profile-selected port |
 | `getAppDataDir()` | Application data directory              |
 
 Key features:
 
 - **EventEmitter-based**: Emits `ready`, `error`, and `stopped` events
-- **Fixed port**: Uses port `29695` for the server
+- **Profile-selected port**: Uses `29695` in production and the validated
+  non-default port in an explicit E2E launch
 - **First-run initialization**: Copies required config files on first launch
 - **Validation**: Checks for required server files before starting
 - **Port waiting**: Ensures port is free before binding
@@ -147,6 +156,13 @@ Methods:
 ---
 
 ## Main Process (main.ts)
+
+Startup is ordered so no path-owning service can write before the launch profile
+is known. The entry registers the privileged scheme, resolves and validates the
+`production` or `e2e` profile, applies verified Electron paths, configures the
+logger, checks the selected listener port in E2E mode, and only then dynamically
+loads the application lifecycle owner. A malformed or partial E2E profile fails
+before a backend, persistent session, or renderer window is created.
 
 ### Window Creation
 
@@ -459,6 +475,10 @@ npx ts-node build/scripts/build.ts --mac
 npx ts-node build/scripts/build.ts
 ```
 
+The package keeps the ordinary `AutoByteus` product name, app ID, signing
+configuration, and release/update channel in both runtime profiles. E2E values
+are launch inputs; there is no separate E2E artifact or artifact naming scheme.
+
 `scripts/prepare-server.sh` / `scripts/prepare-server.mjs` build the Node server, deploy it into `resources/server`, and rebuild native modules (e.g., `node-pty`) for the Electron runtime. Native rebuilds use the direct `@electron/rebuild` dev dependency, exposed through the `electron-rebuild` CLI, and the scripts fail if that workspace-provided CLI is unavailable. Do not add a `pnpm dlx electron-rebuild` fallback: ad-hoc fallback installs can resolve a rebuild stack that is not reviewed with the pinned Electron ABI.
 The web project only calls the server packaging boundary; any shared server-side prerequisites remain owned by `autobyteus-server-ts` rather than being prepared directly from `autobyteus-web`.
 
@@ -649,8 +669,10 @@ On macOS, the packaged server's `node_modules` includes `node-pty` native binari
 
 At runtime, the server:
 
-1. Runs on a fixed port (`29695`)
-2. Stores data in `~/.autobyteus/server-data/`
+1. Runs on the active launch-profile port: production uses `29695`; explicit
+   E2E uses its required non-default port
+2. Stores data in the active launch-profile server-data directory: production
+   uses `~/.autobyteus/server-data/`; E2E uses `<isolated-root>/server-data/`
 3. Runs the normal Prisma/vault/app-data startup sequence before provider
    consumers
 4. Provides endpoints: `/graphql`, `/rest`, `/transcribe`
@@ -676,8 +698,9 @@ scripts/migrate-legacy-db.sh --from /path/to/production.db --to ~/.autobyteus/se
 
 ### Embedded Server Config (`shared/embeddedServerConfig.ts`)
 
-- Defines the stable embedded server loopback host and port
-- Provides shared HTTP/WS base URLs for Electron runtime defaults
+- Defines the stable production embedded-server loopback host and port defaults
+- Provides shared production HTTP/WS defaults; an active E2E endpoint comes
+  from the resolved main-process profile and is not synthesized by renderer code
 
 ### Shell Environment (`shellEnv.ts`)
 
@@ -692,7 +715,8 @@ scripts/migrate-legacy-db.sh --from /path/to/production.db --to ~/.autobyteus/se
 
 ### Logger (`logger.ts`)
 
-- Writes to both console and `~/.autobyteus/logs/app.log`
+- Writes to both console and the active profile log path: production uses
+  `~/.autobyteus/logs/app.log`; E2E uses `<isolated-root>/logs/app.log`
 - Overwrites log on each app start
 - Methods: `debug()`, `info()`, `warn()`, `error()`
 
@@ -700,21 +724,111 @@ scripts/migrate-legacy-db.sh --from /path/to/production.db --to ~/.autobyteus/se
 
 ## Data Directories
 
-| Directory                          | Purpose                                |
-| ---------------------------------- | -------------------------------------- |
-| `~/.autobyteus/`                      | Canonical AutoByteus desktop data root |
-| `~/.autobyteus/server-data/`          | Server runtime data                    |
-| `~/.autobyteus/extensions/`           | Managed extension install root         |
+### Production Profile
+
+| Directory                             | Purpose                                               |
+| ------------------------------------- | ----------------------------------------------------- |
+| `~/.autobyteus/`                      | Canonical AutoByteus desktop data root                |
+| `~/.autobyteus/server-data/`          | Server runtime data                                   |
+| `~/.autobyteus/extensions/`           | Managed extension install root                        |
 | `~/.autobyteus/extensions/voice-input/` | Voice Input runtime, model, temp, and download assets |
-| `~/.autobyteus/server-data/db/`       | SQLite databases                       |
-| `~/.autobyteus/server-data/logs/`     | Server logs                            |
-| `~/.autobyteus/server-data/download/` | Downloaded assets                      |
+| `~/.autobyteus/server-data/db/`       | SQLite databases                                      |
+| `~/.autobyteus/server-data/logs/`     | Server logs                                           |
+| `~/.autobyteus/server-data/download/` | Downloaded assets                                     |
 
 Where:
 
 - **Linux**: `~/.autobyteus/`
 - **macOS**: `~/.autobyteus/`
 - **Windows**: `%USERPROFILE%\\.autobyteus\\`
+
+Electron/Chromium production `userData` remains in the normal product-named OS
+application-data directory. Existing production state is directly usable; this
+launch-profile change does not relocate or migrate it.
+
+### E2E Profile
+
+For `AUTOBYTEUS_ELECTRON_DATA_ROOT=<isolated-root>`, the application creates
+only these verified descendants of the already-authorized root:
+
+| Directory | Purpose |
+| --- | --- |
+| `<isolated-root>/server-data/` | Backend database, config, logs, downloads, memory, skills, and workspaces |
+| `<isolated-root>/logs/` | Electron main-process logs |
+| `<isolated-root>/extensions/` | Managed extension state |
+| `<isolated-root>/browser-artifacts/` | Application-owned browser artifacts |
+| `<isolated-root>/electron/user-data/` | Chromium profile, registry, local storage, cookies, caches, and persistent partitions |
+| `<isolated-root>/electron/session-data/` | Electron session data |
+| `<isolated-root>/electron/crash-dumps/` | Crash diagnostics |
+| `<isolated-root>/electron/downloads/` | Electron downloads |
+
+### Packaged E2E Launch Profile
+
+The production profile is selected when no E2E-only values are present. The
+explicit E2E profile requires all three process environment values:
+
+```text
+AUTOBYTEUS_ELECTRON_LAUNCH_PROFILE=e2e
+AUTOBYTEUS_ELECTRON_SERVER_PORT=<1024..65535, except 29695>
+AUTOBYTEUS_ELECTRON_DATA_ROOT=<existing absolute safe directory>
+```
+
+The selected root must already exist, must not be a symlink or filesystem root,
+and must not overlap the canonical AutoByteus root or an Electron production
+profile/log root. Supplying only a port/root, selecting the production port,
+using a relative or missing root, or choosing an occupied listener fails closed
+before stateful startup. The backend keeps its current listener-bind policy;
+Electron and renderer clients use `127.0.0.1:<selected-port>`. E2E mode disables
+automatic update checks, downloads, and install-on-quit side effects, while the
+production updater remains unchanged.
+
+Do not persist these values in repository or production-data `.env` files, bake
+them into Nuxt/electron-builder output, or create an alternate app/product name.
+The supported caller is the process-neutral preparation boundary:
+
+```bash
+# Build a host-native package, allocate port/root, launch directly, wait, clean up.
+pnpm test:e2e:electron --adapter direct
+
+# Use Playwright as the process adapter.
+pnpm test:e2e:electron --adapter playwright
+
+# Reuse one exact current-worktree artifact and a caller-owned existing root.
+pnpm test:e2e:electron \
+  --skip-build \
+  --adapter playwright \
+  --executable /absolute/path/to/AutoByteus \
+  --port 31001 \
+  --data-root /absolute/path/to/existing-safe-e2e-root
+
+# Run the durable five-scenario packaged isolation probe and record evidence.
+pnpm test:e2e:electron:isolation \
+  --skip-build \
+  --executable /absolute/path/to/AutoByteus \
+  --output-dir test-results/electron-launch-profile
+```
+
+`prepareElectronE2ELaunch()` builds by default or reuses the selected exact
+artifact, chooses or validates a non-default port, and creates a unique safe
+temporary root when the caller does not provide one. It returns one single-use
+prepared resource consumed unchanged by either the direct or Playwright adapter.
+The launch environment starts with the caller environment (plus caller-supplied
+extras) and forces only the three isolation keys. Existing pnpm/import,
+application, internal-server, API-key, provider, search, and Codex provisioning
+remain unchanged; this isolation boundary adds no credential filtering,
+allowlist/denylist, secret seeding, or `CODEX_HOME` policy.
+
+Cleanup is process-identity based. The adapter first requests graceful shutdown,
+then confirms the entire owned process group/tree and may target only that same
+tree if escalation is needed. A preparation-owned temporary root is removed
+only after affirmative whole-tree completion; a caller-provided root is retained.
+Selected-port availability after shutdown is diagnostic only: it does not
+identify an owner, authorize a signal, or veto disposal of an otherwise-owned
+root. Never replace this contract with product-name or port-based process killing.
+
+Deterministic Windows process-history and `taskkill` contracts are covered in
+the repository, but a real supported Windows-host CIM/`taskkill` run is still a
+platform validation responsibility rather than an inferred pass.
 
 ### Managed Voice Input Extension
 

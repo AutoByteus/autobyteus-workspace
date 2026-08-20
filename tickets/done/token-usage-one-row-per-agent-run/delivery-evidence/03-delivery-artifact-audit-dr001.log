@@ -1,0 +1,25 @@
+Delivery artifact audit DR-001
+timestamp=2026-08-19T10:10:56Z
+docs-sync-report.md=present_nonempty_dr001
+handoff-summary.md=present_nonempty_dr001
+release-deployment-report.md=present_nonempty_dr001
+delivery-revision-record.md=present_nonempty_dr001
+ticket_state=in-progress
+$ git diff --check
+git_diff_check=pass
+head=0194fb4fffa69037a46aeace491024fdf816dde7
+tracked_base=0194fb4fffa69037a46aeace491024fdf816dde7
+divergence=0	0
+unmerged_paths=0
+delivery_status_summary:
+ M autobyteus-server-ts/README.md
+ M autobyteus-server-ts/docs/ARCHITECTURE.md
+ M autobyteus-server-ts/docs/modules/README.md
+ M autobyteus-server-ts/docs/modules/token_usage.md
+ M autobyteus-web/docs/agent_execution_architecture.md
+ M autobyteus-web/docs/settings.md
+ M ui-prototypes/token-statistics-task-cost/ui-behavior-test-matrix.md
+ M ui-prototypes/token-statistics-task-cost/ui-prototype-spec.md
+?? autobyteus-server-ts/docs/design/production_data_migration_conventions.md
+?? tickets/in-progress/token-usage-one-row-per-agent-run/
+artifact_audit=pass

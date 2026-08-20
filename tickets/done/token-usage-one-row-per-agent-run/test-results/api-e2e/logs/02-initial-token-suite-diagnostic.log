@@ -1,0 +1,521 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+
+stdout | tests/unit/token-usage/projections/token-usage-snapshot-delta-normalizer.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+ × tests/unit/token-usage/projections/token-usage-snapshot-delta-normalizer.test.ts > TokenUsageSnapshotDeltaNormalizer > uses provider-delta metadata as the first cumulative snapshot baseline 6ms
+   → expected [] to include 'first_cumulative_snapshot_baselined_f…'
+ × tests/unit/token-usage/projections/token-usage-snapshot-delta-normalizer.test.ts > TokenUsageSnapshotDeltaNormalizer > uses cumulative movement after a previous snapshot and flags provider-delta mismatch 1ms
+   → expected [] to include 'cumulative_snapshot_provider_delta_mi…'
+ × tests/unit/token-usage/projections/token-usage-snapshot-delta-normalizer.test.ts > TokenUsageSnapshotDeltaNormalizer > delta-normalizes cumulative cost-affecting fields and keeps source cumulative fields for restarted lookups 1ms
+   → expected null to be 50 // Object.is equality
+ × tests/unit/token-usage/projections/token-usage-snapshot-delta-normalizer.test.ts > TokenUsageSnapshotDeltaNormalizer > clears every calculator-consumed field for regressed cumulative snapshots 1ms
+   → expected [ Array(1) ] to include 'cumulative_snapshot_regressed'
+ ✓ tests/unit/token-usage/projections/token-usage-snapshot-delta-normalizer.test.ts > TokenUsageSnapshotDeltaNormalizer > clears cost-affecting fields when a cumulative snapshot lacks a series key 1ms
+stdout | tests/unit/token-usage/pricing/token-cost-calculator.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/token-usage/pricing/token-cost-calculator.test.ts > TokenCostCalculator > calculates estimated API input/output/total costs only for trusted dimensions 3ms
+ ✓ tests/unit/token-usage/pricing/token-cost-calculator.test.ts > TokenCostCalculator > keeps missing/default-zero pricing token-only instead of showing zero estimated cost 0ms
+ ✓ tests/unit/token-usage/pricing/token-cost-calculator.test.ts > TokenCostCalculator > marks cache-priced rows partial when standard prices are trusted but cache prices are absent 0ms
+ ✓ tests/unit/token-usage/pricing/token-cost-calculator.test.ts > TokenCostCalculator > uses billable output tokens for output cost and reports reasoning as a subcost without double counting 0ms
+ ✓ tests/unit/token-usage/pricing/token-cost-calculator.test.ts > TokenCostCalculator > prices cache creation input when the cache-write dimension is trusted 0ms
+ ✓ tests/unit/token-usage/pricing/token-cost-calculator.test.ts > TokenCostCalculator > marks positive cache creation tokens partial when cache-write pricing is missing 0ms
+ ✓ tests/unit/token-usage/pricing/token-cost-calculator.test.ts > TokenCostCalculator > prices cache read input when the cache dimension is trusted 0ms
+ ✓ tests/unit/token-usage/pricing/token-cost-calculator.test.ts > TokenCostCalculator > selects input-size pricing tiers from event input tokens 0ms
+ × tests/unit/token-usage/projections/token-usage-unit-price-summary.test.ts > token usage unit-price summary projection > summarizes single component unit prices and ignores zero-token price churn 2ms
+   → (0 , __vite_ssr_import_1__.buildTokenUsageCostSummaryAggregate) is not a function
+ × tests/unit/token-usage/projections/token-usage-unit-price-summary.test.ts > token usage unit-price summary projection > marks component-relevant differing positive-token prices as mixed 0ms
+   → (0 , __vite_ssr_import_1__.buildTokenUsageCostSummaryAggregate) is not a function
+ × tests/unit/token-usage/projections/token-usage-unit-price-summary.test.ts > token usage unit-price summary projection > distinguishes missing, partial-missing, and local/no-bill component prices 0ms
+   → (0 , __vite_ssr_import_1__.buildTokenUsageCostSummaryAggregate) is not a function
+ × tests/unit/token-usage/projections/token-usage-unit-price-summary.test.ts > token usage unit-price summary projection > uses stable price comparison tolerance for equivalent decimal prices 0ms
+   → (0 , __vite_ssr_import_1__.buildTokenUsageCostSummaryAggregate) is not a function
+stdout | tests/e2e/token-usage/token-usage-model-list.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/token-usage/projections/token-usage-run-fold.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/token-usage/projections/token-usage-run-fold.test.ts > token usage current run fold > replays cumulative snapshots without changing totals, reports, or revision 5ms
+ ✓ tests/unit/token-usage/projections/token-usage-run-fold.test.ts > token usage current run fold > keeps checkpoint and digest state within hard count and byte limits 7ms
+ ✓ tests/unit/token-usage/projections/token-usage-run-fold.test.ts > token usage current run fold > rejects unsafe input numbers and refuses to narrow persisted BigInt totals 1ms
+stdout | tests/integration/token-usage/providers/token-usage-display-field-capturer.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/token-usage/projections/token-usage-model-display-projection.test.ts > token usage model display projection > parses the complete colon-containing suffix with the anchored grammar 1ms
+ ✓ tests/unit/token-usage/projections/token-usage-model-display-projection.test.ts > token usage model display projection > resolves custom, built-in, and non-AutoByteus labels without changing raw identity 0ms
+ ✓ tests/unit/token-usage/projections/token-usage-model-display-projection.test.ts > token usage model display projection > uses deterministic deleted-provider and malformed-value fallbacks 0ms
+ ✓ tests/unit/token-usage/projections/token-usage-model-display-projection.test.ts > token usage model display projection > keeps task raw/display entries aligned and falls back on cross-runtime collisions 0ms
+stdout | tests/unit/token-usage/pricing/token-price-config-provider.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/token-usage/pricing/token-price-config-provider.test.ts > TokenPriceConfigProvider Anthropic catalog policies > exposes cache-aware Anthropic pricing dimensions for claude-fable-5 to server token-pricing consumers 3ms
+ ✓ tests/unit/token-usage/pricing/token-price-config-provider.test.ts > TokenPriceConfigProvider Anthropic catalog policies > exposes cache-aware Anthropic pricing dimensions for claude-opus-4.8 to server token-pricing consumers 0ms
+ ✓ tests/unit/token-usage/pricing/token-price-config-provider.test.ts > TokenPriceConfigProvider Anthropic catalog policies > exposes cache-aware Anthropic pricing dimensions for claude-opus-5 to server token-pricing consumers 1ms
+ ✓ tests/unit/token-usage/pricing/token-price-config-provider.test.ts > TokenPriceConfigProvider Anthropic catalog policies > exposes cache-aware Anthropic pricing dimensions for claude-sonnet-5 to server token-pricing consumers 0ms
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 14 ⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/token-usage/gpt56-token-usage-accounting-graphql.e2e.test.ts [ tests/e2e/token-usage/gpt56-token-usage-accounting-graphql.e2e.test.ts ]
+SyntaxError: Named export 'Prisma' not found. The requested module '@prisma/client' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from '@prisma/client';
+const { Prisma } = pkg;
+
+ ❯ tests/e2e/token-usage/gpt56-token-usage-accounting-graphql.e2e.test.ts:7:1
+      5| import { afterAll, beforeAll, describe, expect, it } from "vitest";
+      6| import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
+      7| import { initializePrisma, rootPrismaClient, shutdownPrisma } from "re…
+       | ^
+      8| import { LLMFactory } from "autobyteus-ts/llm/llm-factory.js";
+      9| import { LLMModel } from "autobyteus-ts/llm/models.js";
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/22]⎯
+
+ FAIL  tests/e2e/token-usage/token-usage-custom-provider-model-value-backfill-startup.e2e.test.ts [ tests/e2e/token-usage/token-usage-custom-provider-model-value-backfill-startup.e2e.test.ts ]
+SyntaxError: Named export 'Prisma' not found. The requested module '@prisma/client' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from '@prisma/client';
+const { Prisma } = pkg;
+
+ ❯ tests/e2e/token-usage/token-usage-custom-provider-model-value-backfill-startup.e2e.test.ts:7:1
+      5| import { randomUUID } from 'node:crypto';
+      6| import { afterAll, afterEach, beforeAll, describe, expect, it } from '…
+      7| import { initializePrisma, rootPrismaClient, shutdownPrisma } from 're…
+       | ^
+      8| import { AppDataMigrationRecordRepository } from '../../../src/app-dat…
+      9| import { AppDataMigrationRegistry } from '../../../src/app-data-migrat…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/22]⎯
+
+ FAIL  tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts [ tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts ]
+SyntaxError: Named export 'Prisma' not found. The requested module '@prisma/client' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from '@prisma/client';
+const { Prisma } = pkg;
+
+ ❯ tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts:8:1
+      6| import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+      7| import type { graphql as graphqlFn, GraphQLSchema } from 'graphql';
+      8| import { initializePrisma, rootPrismaClient, shutdownPrisma } from 're…
+       | ^
+      9| import { buildGraphqlSchema } from '../../../src/api/graphql/schema.js…
+     10| import { createTokenUsageUpdatedPayload } from '../../../src/agent-exe…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/22]⎯
+
+ FAIL  tests/e2e/token-usage/token-usage-ledger-provider-semantics.e2e.test.ts [ tests/e2e/token-usage/token-usage-ledger-provider-semantics.e2e.test.ts ]
+SyntaxError: Named export 'Prisma' not found. The requested module '@prisma/client' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from '@prisma/client';
+const { Prisma } = pkg;
+
+ ❯ tests/e2e/token-usage/token-usage-ledger-provider-semantics.e2e.test.ts:9:1
+      7| import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+      8| import type { graphql as graphqlFn, GraphQLSchema } from 'graphql';
+      9| import { initializePrisma, rootPrismaClient, shutdownPrisma } from 're…
+       | ^
+     10| import { buildGraphqlSchema } from '../../../src/api/graphql/schema.js…
+     11| import { appConfigProvider } from '../../../src/config/app-config-prov…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/22]⎯
+
+ FAIL  tests/e2e/token-usage/token-usage-model-list.e2e.test.ts [ tests/e2e/token-usage/token-usage-model-list.e2e.test.ts ]
+ FAIL  tests/integration/token-usage/providers/token-usage-display-field-capturer.integration.test.ts [ tests/integration/token-usage/providers/token-usage-display-field-capturer.integration.test.ts ]
+SyntaxError: Named export 'Prisma' not found. The requested module '@prisma/client' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from '@prisma/client';
+const { Prisma } = pkg;
+
+ ❯ src/secret-management/persistence/secret-vault-repository.ts:1:1
+      1| import {
+       | ^
+      2|   runInTransaction,
+      3|   type RunInTransactionOptions,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/22]⎯
+
+ FAIL  tests/e2e/token-usage/token-usage-provider-name-snapshot-backfill-startup.e2e.test.ts [ tests/e2e/token-usage/token-usage-provider-name-snapshot-backfill-startup.e2e.test.ts ]
+SyntaxError: Named export 'Prisma' not found. The requested module '@prisma/client' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from '@prisma/client';
+const { Prisma } = pkg;
+
+ ❯ tests/e2e/token-usage/token-usage-provider-name-snapshot-backfill-startup.e2e.test.ts:7:1
+      5| import path from 'node:path';
+      6| import { afterAll, afterEach, beforeAll, describe, expect, it } from '…
+      7| import { initializePrisma, rootPrismaClient, shutdownPrisma } from 're…
+       | ^
+      8| import { LLMProvider } from 'autobyteus-ts/llm/providers.js';
+      9| import { AppDataMigrationRecordRepository } from '../../../src/app-dat…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/22]⎯
+
+ FAIL  tests/e2e/token-usage/token-usage-unit-prices-graphql.e2e.test.ts [ tests/e2e/token-usage/token-usage-unit-prices-graphql.e2e.test.ts ]
+SyntaxError: Named export 'Prisma' not found. The requested module '@prisma/client' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from '@prisma/client';
+const { Prisma } = pkg;
+
+ ❯ tests/e2e/token-usage/token-usage-unit-prices-graphql.e2e.test.ts:7:1
+      5| import { afterAll, beforeAll, describe, expect, it } from "vitest";
+      6| import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
+      7| import { initializePrisma, rootPrismaClient, shutdownPrisma } from "re…
+       | ^
+      8| import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js…
+      9| import { createTokenUsageUpdatedPayload } from "../../../src/agent-exe…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/22]⎯
+
+ FAIL  tests/unit/token-usage/token-usage-team-run-v1-migration-repository.test.ts [ tests/unit/token-usage/token-usage-team-run-v1-migration-repository.test.ts ]
+ FAIL  tests/unit/token-usage/services/token-usage-run-accumulator.test.ts [ tests/unit/token-usage/services/token-usage-run-accumulator.test.ts ]
+Error: Cannot find module '.prisma/client/default'
+Require stack:
+- /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/default.js
+ ❯ Object.<anonymous> ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/default.js:2:6
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: 'MODULE_NOT_FOUND', requireStack: [ '/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/default.js' ] }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/22]⎯
+
+ FAIL  tests/integration/token-usage/providers/default-agent-run-event-pipeline-lifecycle.integration.test.ts [ tests/integration/token-usage/providers/default-agent-run-event-pipeline-lifecycle.integration.test.ts ]
+SyntaxError: Named export 'Prisma' not found. The requested module '@prisma/client' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from '@prisma/client';
+const { Prisma } = pkg;
+
+ ❯ tests/integration/token-usage/providers/default-agent-run-event-pipeline-lifecycle.integration.test.ts:4:1
+      2| import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
+      3| import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-acc…
+      4| import { initializePrisma, rootPrismaClient, shutdownPrisma } from "re…
+       | ^
+      5| import { AgentRunConfig } from "../../../../src/agent-execution/domain…
+      6| import { AgentRunContext } from "../../../../src/agent-execution/domai…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/22]⎯
+
+ FAIL  tests/integration/token-usage/providers/statistics-provider.integration.test.ts [ tests/integration/token-usage/providers/statistics-provider.integration.test.ts ]
+SyntaxError: Named export 'Prisma' not found. The requested module '@prisma/client' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from '@prisma/client';
+const { Prisma } = pkg;
+
+ ❯ src/token-usage/repositories/sql/token-usage-run-repository.ts:5:1
+      3|   PrismaClient,
+      4| } from "@prisma/client";
+      5| import { rootPrismaClient } from "repository_prisma";
+       | ^
+      6| import type { TokenUsageRunRecord } from "../../domain/token-usage-run…
+      7| import {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/22]⎯
+
+ FAIL  tests/integration/token-usage/providers/token-usage-store.integration.test.ts [ tests/integration/token-usage/providers/token-usage-store.integration.test.ts ]
+SyntaxError: Named export 'Prisma' not found. The requested module '@prisma/client' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from '@prisma/client';
+const { Prisma } = pkg;
+
+ ❯ tests/integration/token-usage/providers/token-usage-store.integration.test.ts:3:1
+      1| import { afterAll, afterEach, beforeAll, describe, expect, it } from "…
+      2| import { randomUUID } from "node:crypto";
+      3| import { initializePrisma, rootPrismaClient, shutdownPrisma } from "re…
+       | ^
+      4| import { createTokenUsageUpdatedPayload } from "../../../../src/agent-…
+      5| import { TokenUsageLedgerStore } from "../../../../src/token-usage/pro…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/22]⎯
+
+ FAIL  tests/integration/token-usage/repositories/token-usage-record-repository.integration.test.ts [ tests/integration/token-usage/repositories/token-usage-record-repository.integration.test.ts ]
+SyntaxError: Named export 'Prisma' not found. The requested module '@prisma/client' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from '@prisma/client';
+const { Prisma } = pkg;
+
+ ❯ tests/integration/token-usage/repositories/token-usage-record-repository.integration.test.ts:3:1
+      1| import { describe, expect, it, afterAll, afterEach, beforeAll } from "…
+      2| import { randomUUID } from "node:crypto";
+      3| import { initializePrisma, rootPrismaClient, shutdownPrisma } from "re…
+       | ^
+      4| import { createTokenUsageUpdatedPayload } from "../../../../src/agent-…
+      5| import { SqlTokenUsageLedgerRepository } from "../../../../src/token-u…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/22]⎯
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 8 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/token-usage/projections/token-usage-snapshot-delta-normalizer.test.ts > TokenUsageSnapshotDeltaNormalizer > uses provider-delta metadata as the first cumulative snapshot baseline
+AssertionError: expected [] to include 'first_cumulative_snapshot_baselined_f…'
+ ❯ tests/unit/token-usage/projections/token-usage-snapshot-delta-normalizer.test.ts:142:38
+    140|     }));
+    141| 
+    142|     expect(normalized.quality_flags).toContain('first_cumulative_snaps…
+       |                                      ^
+    143|     expect(normalized.reported_input_tokens).toBe(100);
+    144|     expect(normalized.accounting_input_tokens).toBe(100);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/22]⎯
+
+ FAIL  tests/unit/token-usage/projections/token-usage-snapshot-delta-normalizer.test.ts > TokenUsageSnapshotDeltaNormalizer > uses cumulative movement after a previous snapshot and flags provider-delta mismatch
+AssertionError: expected [] to include 'cumulative_snapshot_provider_delta_mi…'
+ ❯ tests/unit/token-usage/projections/token-usage-snapshot-delta-normalizer.test.ts:220:38
+    218|     }));
+    219| 
+    220|     expect(normalized.quality_flags).toContain('cumulative_snapshot_pr…
+       |                                      ^
+    221|     expect(normalized.reported_input_tokens).toBe(300);
+    222|     expect(normalized.accounting_input_tokens).toBe(300);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/22]⎯
+
+ FAIL  tests/unit/token-usage/projections/token-usage-snapshot-delta-normalizer.test.ts > TokenUsageSnapshotDeltaNormalizer > delta-normalizes cumulative cost-affecting fields and keeps source cumulative fields for restarted lookups
+AssertionError: expected null to be 50 // Object.is equality
+
+- Expected: 
+50
+
++ Received: 
+null
+
+ ❯ tests/unit/token-usage/projections/token-usage-snapshot-delta-normalizer.test.ts:242:44
+    240|     }));
+    241| 
+    242|     expect(second.accounting_input_tokens).toBe(50);
+       |                                            ^
+    243|     expect(second.accounting_output_tokens).toBe(40);
+    244|     expect(second.accounting_total_tokens).toBe(90);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/22]⎯
+
+ FAIL  tests/unit/token-usage/projections/token-usage-snapshot-delta-normalizer.test.ts > TokenUsageSnapshotDeltaNormalizer > clears every calculator-consumed field for regressed cumulative snapshots
+AssertionError: expected [ Array(1) ] to include 'cumulative_snapshot_regressed'
+ ❯ tests/unit/token-usage/projections/token-usage-snapshot-delta-normalizer.test.ts:310:37
+    308|     }));
+    309| 
+    310|     expect(regressed.quality_flags).toContain('cumulative_snapshot_reg…
+       |                                     ^
+    311|     expect(regressed.accounting_input_tokens).toBeNull();
+    312|     expect(regressed.accounting_output_tokens).toBeNull();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/22]⎯
+
+ FAIL  tests/unit/token-usage/projections/token-usage-unit-price-summary.test.ts > token usage unit-price summary projection > summarizes single component unit prices and ignores zero-token price churn
+TypeError: (0 , __vite_ssr_import_1__.buildTokenUsageCostSummaryAggregate) is not a function
+ ❯ tests/unit/token-usage/projections/token-usage-unit-price-summary.test.ts:94:23
+     92| describe("token usage unit-price summary projection", () => {
+     93|   it("summarizes single component unit prices and ignores zero-token p…
+     94|     const aggregate = buildTokenUsageCostSummaryAggregate([
+       |                       ^
+     95|       buildEvent({
+     96|         cache_read_input_tokens: 40,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/22]⎯
+
+ FAIL  tests/unit/token-usage/projections/token-usage-unit-price-summary.test.ts > token usage unit-price summary projection > marks component-relevant differing positive-token prices as mixed
+TypeError: (0 , __vite_ssr_import_1__.buildTokenUsageCostSummaryAggregate) is not a function
+ ❯ tests/unit/token-usage/projections/token-usage-unit-price-summary.test.ts:127:23
+    125| 
+    126|   it("marks component-relevant differing positive-token prices as mixe…
+    127|     const aggregate = buildTokenUsageCostSummaryAggregate([
+       |                       ^
+    128|       buildEvent({ usage_event_id: "input-5", idempotency_key: "input-…
+    129|       buildEvent({ usage_event_id: "input-6", idempotency_key: "input-…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/22]⎯
+
+ FAIL  tests/unit/token-usage/projections/token-usage-unit-price-summary.test.ts > token usage unit-price summary projection > distinguishes missing, partial-missing, and local/no-bill component prices
+TypeError: (0 , __vite_ssr_import_1__.buildTokenUsageCostSummaryAggregate) is not a function
+ ❯ tests/unit/token-usage/projections/token-usage-unit-price-summary.test.ts:137:30
+    135| 
+    136|   it("distinguishes missing, partial-missing, and local/no-bill compon…
+    137|     const missingAggregate = buildTokenUsageCostSummaryAggregate([
+       |                              ^
+    138|       buildEvent({
+    139|         input_price_per_million: null,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/22]⎯
+
+ FAIL  tests/unit/token-usage/projections/token-usage-unit-price-summary.test.ts > token usage unit-price summary projection > uses stable price comparison tolerance for equivalent decimal prices
+TypeError: (0 , __vite_ssr_import_1__.buildTokenUsageCostSummaryAggregate) is not a function
+ ❯ tests/unit/token-usage/projections/token-usage-unit-price-summary.test.ts:170:23
+    168| 
+    169|   it("uses stable price comparison tolerance for equivalent decimal pr…
+    170|     const aggregate = buildTokenUsageCostSummaryAggregate([
+       |                       ^
+    171|       buildEvent({ usage_event_id: "input-a", idempotency_key: "input-…
+    172|       buildEvent({ usage_event_id: "input-b", idempotency_key: "input-…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/22]⎯
+
+
+ Test Files  16 failed | 4 passed (20)
+      Tests  8 failed | 20 passed (28)
+   Start at  10:20:58
+   Duration  8.30s (transform 1.89s, setup 94ms, import 3.75s, tests 41ms, environment 1ms)
+
+
+real	0m9.924s
+user	0m9.006s
+sys	0m2.097s

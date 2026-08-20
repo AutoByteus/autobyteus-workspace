@@ -2,7 +2,11 @@ import { EventEmitter } from 'events'
 import { BaseServerManager } from './baseServerManager'
 import { logger } from '../logger'
 import axios from 'axios'
-import { ServerStatus } from './serverStatusEnum'
+import {
+  ServerStatus,
+  type ServerHealthResult,
+  type ServerStatusSnapshot,
+} from '../../types/serverStatus'
 
 /**
  * ServerStatusManager acts as a bridge between the Electron main process and renderer
@@ -50,6 +54,7 @@ export class ServerStatusManager extends EventEmitter {
     } catch (error) {
       logger.error('ServerStatusManager: Server initialization failed:', error)
       // 'error' event from manager will trigger ERROR status change
+      throw error
     } finally {
       this.isInitializing = false
     }
@@ -58,7 +63,7 @@ export class ServerStatusManager extends EventEmitter {
   /**
    * Restart the internal server with a clean and simple flow.
    */
-  async restartServer(): Promise<any> {
+  async restartServer(): Promise<ServerStatusSnapshot> {
     logger.info('ServerStatusManager: Restarting server')
     
     // Immediately tell the frontend we are restarting.
@@ -89,7 +94,7 @@ export class ServerStatusManager extends EventEmitter {
   /**
    * Check server health.
    */
-  async checkServerHealth(): Promise<any> {
+  async checkServerHealth(): Promise<ServerHealthResult> {
     try {
       logger.info('ServerStatusManager: Checking server health')
       if (!this.manager.isRunning()) {
@@ -134,11 +139,12 @@ export class ServerStatusManager extends EventEmitter {
   /**
    * Get the current server status.
    */
-  getStatus(): any {
+  getStatus(): ServerStatusSnapshot {
     const urls = this.manager.getServerUrls()
     
     return {
       status: this.currentStatus,
+      baseUrl: this.manager.getServerBaseUrl(),
       urls,
       healthCheckStatus: this.healthCheckStatus,
       message: this.statusMessage
@@ -152,8 +158,9 @@ export class ServerStatusManager extends EventEmitter {
     this.currentStatus = status
     this.statusMessage = message
     const urls = this.manager.getServerUrls()
-    const statusObject = {
+    const statusObject: ServerStatusSnapshot = {
       status,
+      baseUrl: this.manager.getServerBaseUrl(),
       urls,
       message,
       healthCheckStatus: this.healthCheckStatus

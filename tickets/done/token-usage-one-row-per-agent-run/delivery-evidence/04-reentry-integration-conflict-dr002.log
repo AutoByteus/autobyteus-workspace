@@ -1,0 +1,41 @@
+Delivery re-entry integration refresh DR-002
+timestamp=2026-08-19T10:59:02Z
+user_request=refresh latest origin/personal, read Electron README, build Electron verification artifact
+recorded_base_before_reentry=0194fb4fffa69037a46aeace491024fdf816dde7
+latest_fetched_base=1f5663ddb86e478d0b4ffdd878d57dee72d67b4b
+base_advance_count=8
+checkpoint_commit=b68170cf608364bbcd264dde198ad83e030a3bb2
+merge_head=1f5663ddb86e478d0b4ffdd878d57dee72d67b4b
+merge_base=0194fb4fffa69037a46aeace491024fdf816dde7
+unmerged_paths:
+autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts
+unmerged_index_stages:
+100644 20c23a7e4206717bd0dc4d0b4636246beabcb058 1	autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts
+100644 ebcc1f02d1b13eb55ce016001674771d22d2e9f4 2	autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts
+100644 ac6e13677b8e42ef973b8c2892460e3ee29ff5d3 3	autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts
+conflict_diff:
+diff --cc autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts
+index ebcc1f02d,ac6e13677..000000000
+--- a/autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts
++++ b/autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts
+@@@ -135,8 -128,7 +135,12 @@@ export class TeamRunService 
+  
+    async restoreTeamRun(teamRunId: string): Promise<RootTeamRun> {
+      const normalized = required(teamRunId, "teamRunId");
+++<<<<<<< HEAD
+ +    if (this.manager.getTeamRun(normalized)) throw new Error(`Team run '${normalized}' is already active and does not need restore.`);
+ +    this.tokenUsageReadiness.assertExistingRunRestoreReady();
+++=======
++     if (this.manager.hasManagedTeamRun(normalized)) throw new Error(`Team run '${normalized}' is already managed and cannot be restored.`);
+++>>>>>>> origin/personal
+      const root = await this.manager.restoreTeamRun(normalized);
+      try {
+        await this.catalog.recordTeamRunRestored({ tree: root.getExecutionTreeSnapshot() });
+auto_merged_intersection_paths:
+autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-service.ts
+autobyteus-server-ts/tests/unit/agent-team-execution/team-run-service.test.ts
+electron_readme_read=no
+electron_build_started=no
+classification=Local Fix
+required_recipient=/implementation_engineer

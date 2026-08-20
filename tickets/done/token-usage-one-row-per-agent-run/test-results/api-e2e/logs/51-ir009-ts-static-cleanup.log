@@ -1,0 +1,36 @@
+=== server TypeScript ===
+=== git diff check ===
+=== compactor production token-table exclusion ===
+PASS: no token table/model reference in compactor production source
+=== explicit fatal gate exclusion ===
+PASS: no compactor ID in server-runtime fatal gates
+=== exact frontend document shape ===
+export const GetAppDataMigrations = gql`
+  query GetAppDataMigrations {
+    getAppDataMigrations {
+      migrationId
+      displayName
+      description
+      status
+      requiredOnStartup
+      canRetry
+      attempts
+      startedAt
+      completedAt
+      summary
+      errorMessage
+      logPath
+    }
+  }
+`
+=== focused test exclusivity scan ===
+PASS: no exclusive/skipped scenario in changed focused coverage
+=== owned runtime cleanup ===
+PASS: no owned token-audit-compaction runtime/database remains
+=== durable coverage delta ===
+ M autobyteus-server-ts/tests/unit/app-data-migrations/app-data-migration-runner.test.ts
+?? autobyteus-server-ts/tests/e2e/app-data-migrations/token-usage-migration-audit-compaction-startup.e2e.test.ts
+?? autobyteus-server-ts/tests/helpers/app-data-migration-audit-fixtures.ts
+?? autobyteus-server-ts/tests/unit/app-data-migrations/app-data-migration-record-repository-bounds.test.ts
+?? autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-migration-audit-compaction-v1.test.ts
+?? autobyteus-web/components/settings/__tests__/ServerMigrationsManager.spec.ts

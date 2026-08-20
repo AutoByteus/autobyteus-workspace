@@ -39,7 +39,8 @@ describe('appDataMigrationsStore', () => {
             description: 'Converts metadata',
             status: 'FAILED',
             requiredOnStartup: true,
-            canRetry: true,
+            recoveryAction: 'RESTART_TO_RETRY',
+            canRetry: false,
             attempts: 1,
             startedAt: null,
             completedAt: null,
@@ -55,7 +56,8 @@ describe('appDataMigrationsStore', () => {
     await store.fetchMigrations()
 
     expect(store.migrations).toHaveLength(1)
-    expect(store.migrations[0]?.canRetry).toBe(true)
+    expect(store.migrations[0]?.recoveryAction).toBe('RESTART_TO_RETRY')
+    expect(store.migrations[0]?.canRetry).toBe(false)
     expect(apolloClientMock.query).toHaveBeenCalledWith(expect.objectContaining({ fetchPolicy: 'network-only' }))
   })
 

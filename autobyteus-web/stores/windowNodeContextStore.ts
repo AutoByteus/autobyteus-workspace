@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 import { deriveNodeEndpoints } from '~/utils/nodeEndpoints';
-import { resolveDefaultEmbeddedBaseUrl } from '~/utils/embeddedNodeBaseUrl';
+import { getBrowserServerBaseUrl, isElectronEnvironment } from '~/utils/browserServerConfig';
 import { EMBEDDED_NODE_ID, type NodeEndpoints, type WindowNodeContext } from '~/types/node';
 
 function delay(ms: number): Promise<void> {
@@ -46,7 +46,7 @@ async function withTimeout<T>(promise: Promise<T>, timeoutMs: number): Promise<T
 export const useWindowNodeContextStore = defineStore('windowNodeContext', () => {
   const windowId = ref<number | null>(null);
   const nodeId = ref<string>(EMBEDDED_NODE_ID);
-  const nodeBaseUrl = ref<string>(resolveDefaultEmbeddedBaseUrl());
+  const nodeBaseUrl = ref<string>(isElectronEnvironment() ? '' : getBrowserServerBaseUrl());
   const bindingRevision = ref(0);
   const initialized = ref(false);
   const lastReadyError = ref<string | null>(null);
@@ -63,14 +63,12 @@ export const useWindowNodeContextStore = defineStore('windowNodeContext', () => 
     bindingRevision.value += 1;
   }
 
-  function initializeFromWindowContext(context: WindowNodeContext, baseUrl?: string): void {
+  function initializeFromWindowContext(context: WindowNodeContext, baseUrl: string): void {
     const resolvedNodeId = context.nodeId || EMBEDDED_NODE_ID;
-    const resolvedBaseUrl =
-      baseUrl && baseUrl.trim()
-        ? baseUrl.trim()
-        : resolvedNodeId === EMBEDDED_NODE_ID
-          ? resolveDefaultEmbeddedBaseUrl()
-          : nodeBaseUrl.value;
+    const resolvedBaseUrl = baseUrl.trim();
+    if (!resolvedBaseUrl) {
+      throw new Error('Window node context requires an explicit client base URL.');
+    }
 
     bumpBindingRevisionIfChanged(resolvedNodeId, resolvedBaseUrl);
 
@@ -95,7 +93,7 @@ export const useWindowNodeContextStore = defineStore('windowNodeContext', () => 
       return electronHealthCheckPromise;
     }
 
-    if (typeof window === 'undefined' || !window.electronAPI?.checkServerHealth) {
+    if (typeof window === 'undefined' || !Object.prototype.hasOwnProperty.call(window, 'electronAPI')) {
       return Promise.reject(new Error('Electron health bridge is not available'));
     }
 
@@ -113,7 +111,7 @@ export const useWindowNodeContextStore = defineStore('windowNodeContext', () => 
     if (
       nodeId.value === EMBEDDED_NODE_ID &&
       typeof window !== 'undefined' &&
-      window.electronAPI?.checkServerHealth
+      Object.prototype.hasOwnProperty.call(window, 'electronAPI')
     ) {
       try {
         const result = await withTimeout(getElectronHealthCheckPromise(), requestTimeoutMs) as {

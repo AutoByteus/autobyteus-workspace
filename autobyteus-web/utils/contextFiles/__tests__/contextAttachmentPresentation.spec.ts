@@ -11,9 +11,9 @@ const { getServerBaseUrlMock, getServerUrlsMock } = vi.hoisted(() => ({
   getServerUrlsMock: vi.fn(() => ({ rest: 'https://api.example/rest' })),
 }));
 
-vi.mock('~/utils/serverConfig', () => ({
-  getServerBaseUrl: getServerBaseUrlMock,
-  getServerUrls: getServerUrlsMock,
+vi.mock('~/utils/browserServerConfig', () => ({
+  getBrowserServerBaseUrl: getServerBaseUrlMock,
+  getBrowserServerUrls: getServerUrlsMock,
 }));
 
 describe('contextAttachmentPresentation.openAttachment', () => {

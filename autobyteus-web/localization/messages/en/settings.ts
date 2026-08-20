@@ -459,6 +459,8 @@ const settingsMessages = {
   'settings.components.settings.TokenUsageStatistics.endDateAriaLabel': 'End date',
   'settings.components.settings.TokenUsageStatistics.loadingStatistics': 'Loading…',
   'settings.components.settings.TokenUsageStatistics.loadingStatisticsLong': 'Loading token usage statistics…',
+  'settings.components.settings.TokenUsageStatistics.rangeMeaning': 'The date range selects runs by creation time; totals show each selected run’s lifetime usage.',
+  'settings.components.settings.TokenUsageStatistics.historyMigrationRequired': 'Stored token history is temporarily unavailable while its data migration is incomplete. New runs remain available. Restart after installing the corrected version to retry.',
   'settings.components.settings.TokenUsageStatistics.noTaskUsage': 'No agent or team usage found for this date range.',
   'settings.components.settings.TokenUsageStatistics.tryWiderRangeOrModel': 'Try a wider date range or switch to Model.',
   'settings.components.settings.TokenUsageStatistics.noModelUsage': 'No runtime/model usage found for this date range.',
@@ -617,6 +619,7 @@ const settingsMessages = {
   'settings.components.settings.ServerMigrationsManager.showDetails': 'Show details',
   'settings.components.settings.ServerMigrationsManager.noSummary': 'No summary yet',
   'settings.components.settings.ServerMigrationsManager.retry': 'Retry',
+  'settings.components.settings.ServerMigrationsManager.restartToRetry': 'This migration can only be retried during startup. Restart AutoByteus to try again.',
   'settings.components.settings.ServerMigrationsManager.empty': 'No app data migrations are registered.',
   'settings.components.settings.ServerMigrationsManager.noDate': 'Not available',
 } satisfies TranslationCatalog;

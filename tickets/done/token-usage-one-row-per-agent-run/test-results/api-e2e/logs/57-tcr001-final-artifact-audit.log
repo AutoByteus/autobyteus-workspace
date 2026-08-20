@@ -1,0 +1,17 @@
+=== API-REV-007 canonical markers ===
+tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-coverage-investigation.md:14:- Current API/E2E Revision: `API-REV-007` Pass at 97.7%
+tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-execution-coverage-report.md:12:- Final validation confidence: `97.7%`.
+tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-execution-coverage-report.md:587:## Latest Authoritative Result — API-REV-007
+tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-execution-coverage-report.md:590:- Final validation confidence: `97.7%`.
+15:| API-REV-007 | `code_reviewer` / CRR-015 / round 7 Local Fix | SR-009; IR-009; CRR-014; CRR-015/TCR-001; DR-006 | Pass / 97.6% | Pass / 97.7% |
+187:### API-REV-007 — Canonical compacted-log evidence is durably asserted
+190:- Triggering finding or scenario IDs: `TCR-001`; successful oversized owned-log compaction under `REQ-028` / `AC-027`.
+201:| `TCR-001` / compacted log content not asserted | Open Local Fix under `CRR-015`; API-REV-006 execution otherwise passed | Resolved in both durable successful paths with complete canonical body equality tied to seeded source tuple/counts | `test-results/api-e2e/logs/53-tcr001-unit-compacted-log-content.log`; `logs/54-tcr001-built-startup-compacted-log-content.log`; `logs/55-tcr001-final-two-file-rerun.log`; `logs/56-tcr001-ts-assertion-cleanup.log` |
+209:- New or remaining failure IDs: `None`; `TCR-001` resolved in API/E2E evidence pending proportional re-review.
+=== changed durable assertions ===
+=== evidence ===
+53-tcr001-unit-compacted-log-content.log
+54-tcr001-built-startup-compacted-log-content.log
+55-tcr001-final-two-file-rerun.log
+56-tcr001-ts-assertion-cleanup.log
+PASS: artifact/diff/cleanup audit

@@ -254,6 +254,41 @@ describe('nodeStore', () => {
     expect(onRegistryUpdated).toHaveBeenCalledTimes(1);
   });
 
+  it('trusts the main-process embedded URL instead of rewriting it to the build default', async () => {
+    const isolatedBaseUrl = 'http://127.0.0.1:31041';
+    setElectronApiMock({
+      getNodeRegistrySnapshot: vi.fn().mockResolvedValue({
+        version: 1,
+        nodes: [{
+          id: EMBEDDED_NODE_ID,
+          name: 'Embedded Node',
+          baseUrl: isolatedBaseUrl,
+          nodeType: 'embedded',
+          isSystem: true,
+          createdAt: '2026-08-20T00:00:00.000Z',
+          updatedAt: '2026-08-20T00:00:00.000Z',
+        }],
+      }),
+      onNodeRegistryUpdated: vi.fn().mockReturnValue(vi.fn()),
+    });
+
+    const store = useNodeStore();
+    await store.initializeRegistry();
+
+    expect(store.getNodeById(EMBEDDED_NODE_ID)?.baseUrl).toBe(isolatedBaseUrl);
+  });
+
+  it('fails Electron bootstrap instead of synthesizing an embedded default', async () => {
+    setElectronApiMock({
+      getNodeRegistrySnapshot: vi.fn().mockRejectedValue(new Error('registry unavailable')),
+    });
+    const store = useNodeStore();
+
+    await expect(store.initializeRegistry()).rejects.toThrow('registry unavailable');
+    expect(store.initialized).toBe(false);
+    expect(store.nodes).toHaveLength(0);
+  });
+
   it('adds remote node through electron upsert and opens node window', async () => {
     const upsertNodeRegistry = vi.fn().mockImplementation(async (change) => {
       return {

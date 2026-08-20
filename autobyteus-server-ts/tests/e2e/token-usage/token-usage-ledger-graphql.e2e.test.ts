@@ -8,11 +8,12 @@ import type { graphql as graphqlFn, GraphQLSchema } from 'graphql';
 import { initializePrisma, rootPrismaClient, shutdownPrisma } from 'repository_prisma';
 import { buildGraphqlSchema } from '../../../src/api/graphql/schema.js';
 import { createTokenUsageUpdatedPayload } from '../../../src/agent-execution/domain/agent-run-token-usage.js';
-import { TokenUsageLedgerStore } from '../../../src/token-usage/providers/token-usage-ledger-store.js';
+import { createCurrentTokenUsageTestHarness } from '../../helpers/token-usage-run-record-fixtures.js';
+import { configureTokenUsageMigrationReadiness } from '../../../src/token-usage/providers/token-usage-migration-readiness.js';
 import type { TokenUsageUpdatedPayload } from '../../../src/agent-execution/domain/agent-run-token-usage.js';
 import { appConfigProvider } from '../../../src/config/app-config-provider.js';
 
-const store = new TokenUsageLedgerStore();
+const { store } = createCurrentTokenUsageTestHarness(rootPrismaClient);
 const createdRunIds = new Set<string>();
 const createdTeamRunIds = new Set<string>();
 
@@ -138,6 +139,7 @@ describe('token usage ledger GraphQL projections', () => {
   beforeAll(async () => {
     await shutdownPrisma();
     await initializePrisma({ datasourceUrl: process.env.DATABASE_URL });
+    configureTokenUsageMigrationReadiness({ kind: 'READY' });
     schema = await buildGraphqlSchema();
     const require = createRequire(import.meta.url);
     const typeGraphqlRoot = path.dirname(require.resolve('type-graphql'));
@@ -149,7 +151,7 @@ describe('token usage ledger GraphQL projections', () => {
   afterAll(async () => {
     const runIds = Array.from(createdRunIds);
     if (runIds.length > 0) {
-      await rootPrismaClient.tokenUsageLedgerEvent.deleteMany({ where: { runId: { in: runIds } } });
+      await rootPrismaClient.tokenUsageRunRecord.deleteMany({ where: { runId: { in: runIds } } });
     }
     createdRunIds.clear();
     createdTeamRunIds.clear();
@@ -172,7 +174,7 @@ describe('token usage ledger GraphQL projections', () => {
     const start = '2026-06-24T10:00:00.000Z';
     const end = '2026-06-24T10:10:00.000Z';
 
-    await store.appendTokenUsageEvent(buildEvent({
+    await store.recordObservation(buildEvent({
       runId: standaloneRunId,
       observedAt: '2026-06-24T10:01:00.000Z',
       grossInputTokens: 115_908,
@@ -195,7 +197,7 @@ describe('token usage ledger GraphQL projections', () => {
       effectiveContextWindowTokens: 1_000_000,
       contextWindowUsagePercent: 1.3206,
     }));
-    await store.appendTokenUsageEvent(buildEvent({
+    await store.recordObservation(buildEvent({
       runId: memberRunId,
       rootTeamRunId: teamRunId,
       observedAt: '2026-06-24T10:02:00.000Z',
@@ -374,20 +376,19 @@ describe('token usage ledger GraphQL projections', () => {
       }),
     ]));
 
-    const persistedEvents = await store.listEventsInPeriod(new Date(start), new Date(end));
-    const standaloneEvent = persistedEvents.find((event) => event.run_id === standaloneRunId);
+    const persistedRuns = await store.listRunsCreatedInRange(new Date(start), new Date(end));
+    const standaloneRecord = persistedRuns.find((record) => record.runId === standaloneRunId);
 
-    expect(standaloneEvent).toMatchObject({
-      runtime_kind: 'codex_app_server',
-      ingestion_kind: 'codex_thread_token_usage',
-      usage_scope: 'per_turn',
-      input_token_semantic: 'gross_includes_cache',
-      standard_input_tokens: 13_444,
-      cache_read_input_tokens: 102_464,
-      cache_state: 'positive',
-      latest_prompt_tokens: 13_206,
-      effective_context_window_tokens: 1_000_000,
-      context_window_usage_percent: 1.3206,
+    expect(standaloneRecord).toMatchObject({
+      latestRuntimeKind: 'codex_app_server',
+      tokenTotals: {
+        standard_input_tokens: 13_444n,
+        cache_read_input_tokens: 102_464n,
+      },
+      cacheState: 'positive',
+      latestPromptTokens: 13_206n,
+      effectiveContextWindowTokens: 1_000_000n,
+      contextWindowUsagePercent: 1.3206,
     });
   });
 
@@ -397,7 +398,7 @@ describe('token usage ledger GraphQL projections', () => {
     const start = '2040-06-24T10:00:00.000Z';
     const end = '2040-06-24T10:10:00.000Z';
 
-    await store.appendTokenUsageEvent(buildEvent({
+    await store.recordObservation(buildEvent({
       runId,
       observedAt: '2040-06-24T10:01:00.000Z',
       grossInputTokens: 100,
@@ -411,7 +412,7 @@ describe('token usage ledger GraphQL projections', () => {
       model: 'glm-5.2',
       currency: 'USD',
     }));
-    await store.appendTokenUsageEvent(buildEvent({
+    await store.recordObservation(buildEvent({
       runId,
       observedAt: '2040-06-24T10:02:00.000Z',
       grossInputTokens: 200,
@@ -514,7 +515,7 @@ describe('token usage ledger GraphQL projections', () => {
     const start = '2041-07-01T09:55:00.000Z';
     const end = '2041-07-01T11:30:00.000Z';
 
-    await store.appendTokenUsageEvent(buildEvent({
+    await store.recordObservation(buildEvent({
       runId: olderMemberRunId,
       rootTeamRunId: olderTeamRunId,
       observedAt: '2041-07-01T10:00:00.000Z',
@@ -527,7 +528,7 @@ describe('token usage ledger GraphQL projections', () => {
       runtimeKind: 'codex_app_server',
       missingPriceDimensions: ['model_pricing'],
     }));
-    await store.appendTokenUsageEvent(buildEvent({
+    await store.recordObservation(buildEvent({
       runId: standaloneRunId,
       observedAt: '2041-07-01T10:30:00.000Z',
       grossInputTokens: 200,
@@ -549,7 +550,7 @@ describe('token usage ledger GraphQL projections', () => {
       runSummary: 'Prototype task statistics',
       runCreatedAt: '2041-07-01T10:20:00.000Z',
     }));
-    await store.appendTokenUsageEvent(buildEvent({
+    await store.recordObservation(buildEvent({
       runId: designerMemberRunId,
       rootTeamRunId: newerTeamRunId,
       observedAt: '2041-07-01T11:00:00.000Z',
@@ -572,7 +573,7 @@ describe('token usage ledger GraphQL projections', () => {
       runCreatedAt: '2041-07-01T10:58:00.000Z',
       memberName: 'GraphQL Designer',
     }));
-    await store.appendTokenUsageEvent(buildEvent({
+    await store.recordObservation(buildEvent({
       runId: builderMemberRunId,
       rootTeamRunId: newerTeamRunId,
       observedAt: '2041-07-01T11:05:00.000Z',
@@ -593,7 +594,7 @@ describe('token usage ledger GraphQL projections', () => {
       runCreatedAt: '2041-07-01T10:58:00.000Z',
       memberName: 'GraphQL Builder',
     }));
-    await store.appendTokenUsageEvent(buildEvent({
+    await store.recordObservation(buildEvent({
       runId: studentOneRunId,
       rootTeamRunId: newerTeamRunId,
       observedAt: '2041-07-01T11:06:00.000Z',
@@ -610,7 +611,7 @@ describe('token usage ledger GraphQL projections', () => {
       teamName: 'GraphQL Engineering Team',
       memberName: 'student_one',
     }));
-    await store.appendTokenUsageEvent(buildEvent({
+    await store.recordObservation(buildEvent({
       runId: studentTwoRunId,
       rootTeamRunId: newerTeamRunId,
       observedAt: '2041-07-01T11:07:00.000Z',
@@ -627,7 +628,7 @@ describe('token usage ledger GraphQL projections', () => {
       teamName: 'GraphQL Engineering Team',
       memberName: 'student_two',
     }));
-    await store.appendTokenUsageEvent(buildEvent({
+    await store.recordObservation(buildEvent({
       runId: nestedTaskAgentRunId,
       rootTeamRunId: newerTeamRunId,
       taskId: `task-nested-agent-${suffix}`,
@@ -645,7 +646,7 @@ describe('token usage ledger GraphQL projections', () => {
       teamName: 'GraphQL Engineering Team',
       memberName: 'student_one',
     }));
-    await store.appendTokenUsageEvent(buildEvent({
+    await store.recordObservation(buildEvent({
       runId: repeatedStudentRunId,
       rootTeamRunId: newerTeamRunId,
       observedAt: '2041-07-01T11:11:00.000Z',
@@ -662,7 +663,7 @@ describe('token usage ledger GraphQL projections', () => {
       teamName: 'GraphQL Engineering Team',
       memberName: 'student_one',
     }));
-    await store.appendTokenUsageEvent(buildEvent({
+    await store.recordObservation(buildEvent({
       runId: codexTaskAgentRunIdOne,
       rootTeamRunId: newerTeamRunId,
       taskId: `task-codex-agent-1-${suffix}`,
@@ -680,7 +681,7 @@ describe('token usage ledger GraphQL projections', () => {
       teamName: 'GraphQL Engineering Team',
       memberName: 'Codex',
     }));
-    await store.appendTokenUsageEvent(buildEvent({
+    await store.recordObservation(buildEvent({
       runId: codexTaskAgentRunIdTwo,
       rootTeamRunId: newerTeamRunId,
       taskId: `task-codex-agent-2-${suffix}`,
@@ -821,7 +822,7 @@ describe('token usage ledger GraphQL projections', () => {
       createdAt: '2041-07-01T10:58:00.000Z',
       createdTimeSource: 'RUN_HISTORY',
       models: ['gpt-shared'],
-      runtimeKinds: ['autobyteus', 'codex_app_server'],
+      runtimeKinds: ['Mixed'],
     });
     expect(newerTeam.aggregate).toMatchObject({
       grossInputTokens: 340,
@@ -832,7 +833,7 @@ describe('token usage ledger GraphQL projections', () => {
       currency: 'USD',
       apiCostStatus: 'estimated',
       missingPriceDimensions: [],
-      observedRuntimeKinds: ['autobyteus', 'codex_app_server'],
+      observedRuntimeKinds: ['Mixed'],
       observedModelIdentifiers: ['gpt-shared'],
     });
     expect(newerTeam.aggregate.estimatedApiInputCost).toBeCloseTo(3.4, 10);
@@ -1022,7 +1023,7 @@ describe('token usage ledger GraphQL projections', () => {
     const end = '2046-07-30T10:10:00.000Z';
 
     try {
-      await store.appendTokenUsageEvent(buildEvent({
+      await store.recordObservation(buildEvent({
         runId: standaloneRunId,
         observedAt: '2046-07-30T10:01:00.000Z',
         grossInputTokens: 100,
@@ -1035,7 +1036,7 @@ describe('token usage ledger GraphQL projections', () => {
         providerName: 'alibaba_cloud',
         runtimeKind: 'autobyteus',
       }));
-      await store.appendTokenUsageEvent(buildEvent({
+      await store.recordObservation(buildEvent({
         runId: standaloneRunId,
         observedAt: '2046-07-30T10:02:00.000Z',
         grossInputTokens: 80,
@@ -1047,7 +1048,7 @@ describe('token usage ledger GraphQL projections', () => {
         modelProvider: 'DEEPSEEK',
         runtimeKind: 'autobyteus',
       }));
-      await store.appendTokenUsageEvent(buildEvent({
+      await store.recordObservation(buildEvent({
         runId: standaloneRunId,
         observedAt: '2046-07-30T10:03:00.000Z',
         grossInputTokens: 60,
@@ -1059,7 +1060,7 @@ describe('token usage ledger GraphQL projections', () => {
         modelProvider: 'OPENAI',
         runtimeKind: 'codex_app_server',
       }));
-      await store.appendTokenUsageEvent(buildEvent({
+      await store.recordObservation(buildEvent({
         runId: customMemberRunId,
         rootTeamRunId: teamRunId,
         observedAt: '2046-07-30T10:04:00.000Z',
@@ -1074,7 +1075,7 @@ describe('token usage ledger GraphQL projections', () => {
         runtimeKind: 'autobyteus',
         memberName: 'custom',
       }));
-      await store.appendTokenUsageEvent(buildEvent({
+      await store.recordObservation(buildEvent({
         runId: builtInMemberRunId,
         rootTeamRunId: teamRunId,
         observedAt: '2046-07-30T10:05:00.000Z',
@@ -1088,7 +1089,7 @@ describe('token usage ledger GraphQL projections', () => {
         runtimeKind: 'autobyteus',
         memberName: 'built-in',
       }));
-      await store.appendTokenUsageEvent(buildEvent({
+      await store.recordObservation(buildEvent({
         runId: collisionMemberRunId,
         rootTeamRunId: teamRunId,
         observedAt: '2046-07-30T10:06:00.000Z',
@@ -1159,27 +1160,46 @@ describe('token usage ledger GraphQL projections', () => {
 
       expect(result.usageStatisticsInPeriod).toEqual(expect.arrayContaining([
         expect.objectContaining({
+          runtimeKind: 'Mixed',
+          llmModel: 'Mixed',
+          modelDisplayName: 'Mixed',
+          inputTokens: 240,
+          outputTokens: 24,
+          totalCost: expect.closeTo(2.64, 10),
+        }),
+        expect.objectContaining({
           runtimeKind: 'autobyteus',
           llmModel: customModel,
           modelDisplayName: 'alibaba_cloud:qwen3.8-max-preview',
-          inputTokens: 130,
-          outputTokens: 13,
-          totalCost: expect.closeTo(1.43, 10),
+          inputTokens: 30,
+          outputTokens: 3,
+          totalCost: expect.closeTo(0.33, 10),
         }),
         expect.objectContaining({
           runtimeKind: 'autobyteus',
           llmModel: 'deepseek-v4-flash',
           modelDisplayName: 'DeepSeek:deepseek-v4-flash',
+          inputTokens: 20,
+          outputTokens: 2,
+          totalCost: expect.closeTo(0.22, 10),
         }),
         expect.objectContaining({
           runtimeKind: 'codex_app_server',
-          llmModel: 'gpt-5.6-luna',
-          modelDisplayName: 'gpt-5.6-luna',
+          llmModel: customModel,
+          modelDisplayName: customModel,
+          inputTokens: 10,
+          outputTokens: 1,
+          totalCost: expect.closeTo(0.11, 10),
         }),
       ]));
       const taskTeam = result.tokenUsageTaskStatisticsInPeriod.rows.find((row) => row.rowId === `team:${teamRunId}`);
       expect(taskTeam).toBeDefined();
-      expect(taskTeam?.models).toHaveLength(taskTeam?.modelDisplayNames.length ?? -1);
+      expect(taskTeam?.models).toEqual(['deepseek-v4-flash', customModel]);
+      expect(taskTeam?.modelDisplayNames).toEqual([
+        'DeepSeek:deepseek-v4-flash',
+        'alibaba_cloud:qwen3.8-max-preview',
+        customModel,
+      ]);
       expect(taskTeam?.children).toHaveLength(3);
       const customMember = taskTeam?.children.find((row) => row.runId === customMemberRunId);
       expect(customMember).toMatchObject({
@@ -1201,16 +1221,6 @@ describe('token usage ledger GraphQL projections', () => {
       });
       expect(result.totalCostInPeriod).toBeCloseTo(3.3, 10);
 
-      const persistedCustomEvent = await rootPrismaClient.tokenUsageLedgerEvent.findFirst({
-        where: { runId: standaloneRunId, modelIdentifier: customModel },
-        select: { modelIdentifier: true, modelValue: true, providerName: true },
-      });
-      expect(persistedCustomEvent).toEqual({
-        modelIdentifier: customModel,
-        modelValue: 'qwen3.8-max-preview',
-        providerName: 'alibaba_cloud',
-      });
-
       await fs.rm(customProviderPath, { force: true });
       const snapshotAfterProviderDeletion = await execGraphql<{
         usageStatisticsInPeriod: Array<{ llmModel: string; modelDisplayName: string }>;
@@ -1229,7 +1239,7 @@ describe('token usage ledger GraphQL projections', () => {
         }),
       ]));
     } finally {
-      await rootPrismaClient.tokenUsageLedgerEvent.deleteMany({ where: { runId: { in: [standaloneRunId, teamRunId, customMemberRunId, builtInMemberRunId, collisionMemberRunId] } } });
+      await rootPrismaClient.tokenUsageRunRecord.deleteMany({ where: { runId: { in: [standaloneRunId, teamRunId, customMemberRunId, builtInMemberRunId, collisionMemberRunId] } } });
       if (originalProviderConfig) {
         await fs.writeFile(customProviderPath, originalProviderConfig);
       } else {

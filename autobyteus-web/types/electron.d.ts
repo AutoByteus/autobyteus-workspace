@@ -1,4 +1,5 @@
 import type { AppUpdateState } from '../shared/appUpdateTypes';
+import type { ServerHealthResult, ServerStatusSnapshot } from './serverStatus';
 import type {
   NodeRegistryChange,
   NodeRegistrySnapshot,
@@ -22,21 +23,6 @@ import type {
 
 type Cleanup = () => void;
 
-type ServerStatusPayload = {
-  status: 'starting' | 'running' | 'error' | 'restarting' | 'shutting-down';
-  port: number;
-  urls: Record<string, string>;
-  message?: string;
-  isExternalServerDetected?: boolean;
-};
-
-type ServerHealthPayload = {
-  status: 'ok' | 'error';
-  data?: any;
-  message?: string;
-  isExternalServerDetected?: boolean;
-};
-
 export {};
 
 declare global {
@@ -45,10 +31,10 @@ declare global {
       sendPing: (message: string) => void;
       onPong: (callback: (response: string) => void) => void;
 
-      getServerStatus: () => Promise<ServerStatusPayload>;
-      restartServer: () => Promise<ServerStatusPayload>;
-      onServerStatus: (callback: (status: ServerStatusPayload) => void) => Cleanup;
-      checkServerHealth: () => Promise<ServerHealthPayload>;
+      getServerStatus: () => Promise<ServerStatusSnapshot>;
+      restartServer: () => Promise<ServerStatusSnapshot>;
+      onServerStatus: (callback: (status: ServerStatusSnapshot) => void) => Cleanup;
+      checkServerHealth: () => Promise<ServerHealthResult>;
 
       openNodeWindow: (nodeId: string) => Promise<{ windowId: number; created: boolean }>;
       focusNodeWindow: (nodeId: string) => Promise<{ focused: boolean; reason?: string }>;

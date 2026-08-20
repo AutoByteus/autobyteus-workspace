@@ -1,0 +1,27 @@
+{
+  "chromeVersion": "151.0.7922.138",
+  "normal": {
+    "taskRowObserved": true,
+    "lifetimeRangeCopyObserved": true,
+    "modelRowObserved": true,
+    "input42Observed": true,
+    "output8Observed": true,
+    "consoleErrors": [],
+    "screenshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/test-results/api-e2e/screenshots/normal-token-statistics-chrome.png"
+  },
+  "degraded": {
+    "alertText": "Stored token history is temporarily unavailable while its data migration is incomplete. New runs remain available. Restart after installing the corrected version to retry.",
+    "migrationGuidanceObserved": true,
+    "navigationStillAvailable": true,
+    "screenshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/test-results/api-e2e/screenshots/degraded-token-statistics-chrome.png"
+  },
+  "fatal": {
+    "serverExitCode": 1,
+    "fatalProtocolObserved": true,
+    "currentSchemaReasonObserved": true,
+    "browserAlertText": "Failed to fetch",
+    "browserErrorObserved": true,
+    "navigationStillAvailable": true,
+    "screenshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/test-results/api-e2e/screenshots/fatal-server-unavailable-token-statistics-chrome.png"
+  }
+}

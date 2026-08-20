@@ -47,9 +47,8 @@ describe("AgentRunIdentityAllocator", () => {
           return null;
         }),
       },
-      teamRunMetadataService: {
-        listTeamRunIds: vi.fn().mockResolvedValue([]),
-        readMetadata: vi.fn(),
+      teamRunExecutionTreeLocationService: {
+        containsRunId: vi.fn().mockResolvedValue(false),
       },
       memoryDir,
       createToken: vi.fn()
@@ -84,9 +83,8 @@ describe("AgentRunIdentityAllocator", () => {
       agentRunMetadataService: {
         readMetadata: vi.fn().mockResolvedValue(null),
       },
-      teamRunMetadataService: {
-        listTeamRunIds: vi.fn().mockResolvedValue([]),
-        readMetadata: vi.fn(),
+      teamRunExecutionTreeLocationService: {
+        containsRunId: vi.fn().mockResolvedValue(false),
       },
       memoryDir,
       createToken: vi.fn()
@@ -99,14 +97,7 @@ describe("AgentRunIdentityAllocator", () => {
     );
   });
 
-  it("skips candidates that already have a team-scoped memory directory", async () => {
-    await fs.mkdir(
-      memoryLayout.getTeamAgentRunDirPath(
-        { rootTeamRunId: "team-root", teamRunPath: [] },
-        "worker_00000000000000000000000000000001",
-      ),
-      { recursive: true },
-    );
+  it("skips candidates found in the team execution-tree index", async () => {
     const allocator = new AgentRunIdentityAllocator({
       agentDefinitionService: {
         getAgentDefinitionById: vi.fn().mockResolvedValue({ name: "Worker" }),
@@ -117,9 +108,10 @@ describe("AgentRunIdentityAllocator", () => {
       agentRunMetadataService: {
         readMetadata: vi.fn().mockResolvedValue(null),
       },
-      teamRunMetadataService: {
-        listTeamRunIds: vi.fn().mockResolvedValue(["team-root"]),
-        readMetadata: vi.fn().mockResolvedValue(null),
+      teamRunExecutionTreeLocationService: {
+        containsRunId: vi.fn()
+          .mockResolvedValueOnce(true)
+          .mockResolvedValueOnce(false),
       },
       memoryDir,
       createToken: vi.fn()

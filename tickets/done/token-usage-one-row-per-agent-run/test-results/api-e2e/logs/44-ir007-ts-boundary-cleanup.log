@@ -1,0 +1,117 @@
+== server TypeScript build-config check ==
+
+== git diff check ==
+
+== base ancestry ==
+11b861de677200fe7441ed189934f7776804c04d
+latest-base-ancestor=yes
+0	3
+
+== closed cumulative source field set ==
+cumulative-source-field-count=15
+
+== current-runtime legacy transport boundary ==
+current-runtime-legacy-transport-reference=none
+
+== strict source decoder coercion check ==
+broad-source-coercion=none
+
+== refreshed scale result ==
+{
+  "rowCount": 154100,
+  "runCount": 1269,
+  "consolidation": {
+    "name": "run-record-consolidation",
+    "elapsedMs": 12804,
+    "peakWalBytes": 12112832,
+    "peakTmpBytes": 0,
+    "peakRssBytes": 193183744,
+    "freeDiskDeltaBytes": 29536256,
+    "result": {
+      "status": "SUCCEEDED",
+      "summary": {
+        "scannedCount": 154100,
+        "migratedCount": 1269,
+        "skippedCount": 0,
+        "failedCount": 0,
+        "details": [
+          {
+            "itemId": "token-usage-run-records-v1:summary",
+            "status": "MIGRATED",
+            "message": "Consolidated 154100 legacy rows into 1269 current run records and emptied the source atomically."
+          }
+        ]
+      },
+      "errorMessage": null
+    }
+  },
+  "validation": {
+    "legacyRows": 0,
+    "currentRows": 1269,
+    "totalReports": 154100,
+    "totalInputTokens": 154100,
+    "totalOutputTokens": 154100,
+    "integrityCheck": "ok"
+  },
+  "completed": {
+    "pageSize": 4096,
+    "pageCount": 217767,
+    "freelistCount": 215037,
+    "journalMode": "wal",
+    "databaseBytes": 891973632,
+    "walBytes": 0,
+    "shmBytes": 32768,
+    "logicalPageBytes": 891973632
+  },
+  "probeRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-token-scale-8AoIWy"
+}
+scale-probe-residue=none
+
+== run-specific database residue ==
+run-specific-db-residue=none
+
+== owned Node-process residue ==
+owned-process-residue=none
+
+== repository status ==
+ M autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-run-records-v1/legacy-token-usage-consolidation-repository.ts
+ M autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-run-records-v1/legacy-token-usage-row.ts
+ M tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-coverage-investigation.md
+ M tickets/in-progress/token-usage-one-row-per-agent-run/architecture-review-revision-record.md
+ M tickets/in-progress/token-usage-one-row-per-agent-run/code-review-report.md
+ M tickets/in-progress/token-usage-one-row-per-agent-run/code-review-revision-record.md
+ M tickets/in-progress/token-usage-one-row-per-agent-run/data-migration-conventions.md
+ M tickets/in-progress/token-usage-one-row-per-agent-run/delivery-integration-blocker.md
+ M tickets/in-progress/token-usage-one-row-per-agent-run/delivery-revision-record.md
+ M tickets/in-progress/token-usage-one-row-per-agent-run/design-review-report.md
+ M tickets/in-progress/token-usage-one-row-per-agent-run/design-spec.md
+ M tickets/in-progress/token-usage-one-row-per-agent-run/docs-sync-report.md
+ M tickets/in-progress/token-usage-one-row-per-agent-run/handoff-summary.md
+ M tickets/in-progress/token-usage-one-row-per-agent-run/implementation-handoff.md
+ M tickets/in-progress/token-usage-one-row-per-agent-run/implementation-revision-record.md
+ M tickets/in-progress/token-usage-one-row-per-agent-run/investigation-notes.md
+ M tickets/in-progress/token-usage-one-row-per-agent-run/release-deployment-report.md
+ M tickets/in-progress/token-usage-one-row-per-agent-run/requirements.md
+ M tickets/in-progress/token-usage-one-row-per-agent-run/solution-revision-record.md
+ M tickets/in-progress/token-usage-one-row-per-agent-run/test-results/api-e2e/scale-probe-result.json
+ M tickets/in-progress/token-usage-one-row-per-agent-run/token-usage-data-model-analysis.md
+?? autobyteus-server-ts/tests/unit/app-data-migrations/legacy-token-usage-source-decoder.test.ts
+?? autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts
+?? tickets/in-progress/token-usage-one-row-per-agent-run/delivery-evidence/05-electron-readme-preflight-dr003.log
+?? tickets/in-progress/token-usage-one-row-per-agent-run/delivery-evidence/06-electron-build-macos-arm64-dr003.log
+?? tickets/in-progress/token-usage-one-row-per-agent-run/delivery-evidence/07-electron-package-integrity-dr003.log
+?? tickets/in-progress/token-usage-one-row-per-agent-run/delivery-evidence/08-final-base-and-docs-audit-dr003.log
+?? tickets/in-progress/token-usage-one-row-per-agent-run/delivery-evidence/09-final-handoff-audit-dr003.log
+?? tickets/in-progress/token-usage-one-row-per-agent-run/delivery-evidence/10-user-verification-failure-dr004.log
+?? tickets/in-progress/token-usage-one-row-per-agent-run/delivery-evidence/11-production-migration-failure-dr004.log
+?? tickets/in-progress/token-usage-one-row-per-agent-run/delivery-evidence/12-delivery-rework-audit-dr004.log
+?? tickets/in-progress/token-usage-one-row-per-agent-run/delivery-evidence/13-exact-root-cause-dr004.log
+?? tickets/in-progress/token-usage-one-row-per-agent-run/delivery-evidence/14-exact-root-cause-handoff-audit-dr004.log
+?? tickets/in-progress/token-usage-one-row-per-agent-run/delivery-rework-record.md
+?? tickets/in-progress/token-usage-one-row-per-agent-run/test-results/api-e2e/logs/38-ir007-integrated-server-build.log
+?? tickets/in-progress/token-usage-one-row-per-agent-run/test-results/api-e2e/logs/39-ir007-ds009-leading-null-decoder.log
+?? tickets/in-progress/token-usage-one-row-per-agent-run/test-results/api-e2e/logs/40-ir007-four-file-migration-regression.log
+?? tickets/in-progress/token-usage-one-row-per-agent-run/test-results/api-e2e/logs/41-ir007-built-server-production-upgrade-lifecycle.log
+?? tickets/in-progress/token-usage-one-row-per-agent-run/test-results/api-e2e/logs/42-ir007-released-scale-154k.log
+?? tickets/in-progress/token-usage-one-row-per-agent-run/test-results/api-e2e/logs/43-ir007-final-migration-lifecycle-suite.log
+?? tickets/in-progress/token-usage-one-row-per-agent-run/test-results/api-e2e/logs/44-ir007-ts-boundary-cleanup.log

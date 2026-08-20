@@ -1,0 +1,158 @@
+started_at=2026-08-20T06:35:16Z
+head=d4ec609132cf075d513c9754269e76ff267a43d4
+base=1f5663ddb86e478d0b4ffdd878d57dee72d67b4b
+artifact_generation=isolated-worktree; existing package directories and running application state were not overwritten
+
+$ artifact existence and SHA-256
+-rw-r--r--@ 1 normy  wheel   442M Aug 20 08:30 /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist-dr008/AutoByteus_personal_macos-arm64-1.4.52.dmg
+-rw-r--r--@ 1 normy  wheel   469K Aug 20 08:30 /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist-dr008/AutoByteus_personal_macos-arm64-1.4.52.dmg.blockmap
+-rw-r--r--@ 1 normy  wheel   437M Aug 20 08:32 /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist-dr008/AutoByteus_personal_macos-arm64-1.4.52.zip
+-rw-r--r--@ 1 normy  wheel   461K Aug 20 08:32 /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist-dr008/AutoByteus_personal_macos-arm64-1.4.52.zip.blockmap
+-rw-r--r--@ 1 normy  wheel   555B Aug 20 08:32 /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist-dr008/latest-mac.yml
+ab8527310441033e8b0ce12af54f65b2c688d48e965f035470b6e0fed136d48c  /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist-dr008/AutoByteus_personal_macos-arm64-1.4.52.dmg
+dae1bef14bb773d3986fc6dfea18be9556f4eff49f4cb6c309fb913bb08accd6  /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist-dr008/AutoByteus_personal_macos-arm64-1.4.52.zip
+dcd243a07faff2564c0db535443d0f586c02ade254e0e3e02da871cda5dfba11  /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist-dr008/AutoByteus_personal_macos-arm64-1.4.52.dmg.blockmap
+1689693f744ee02e9ff7ddf65ec6debc36ddafea3ce9d74525cb5612d3bca064  /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist-dr008/AutoByteus_personal_macos-arm64-1.4.52.zip.blockmap
+result=pass
+
+$ bundle identity/version/architecture
+bundle_id=com.autobyteus.app
+version=1.4.52
+build_version=1.4.52
+executable=AutoByteus
+/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist-dr008/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus: Mach-O 64-bit executable arm64
+result=pass
+
+$ packaged renderer, integrated server, Prisma runtime, and recovery-action contract
+server_package_main=dist/index.js
+-rw-r--r--@ 1 normy  wheel   298M Aug 20 08:29 /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist-dr008/mac-arm64/AutoByteus.app/Contents/Resources/app.asar
+-rw-r--r--@ 1 normy  wheel   2.4K Aug 20 08:29 /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist-dr008/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/app.js
+-rw-r--r--@ 1 normy  wheel   112B Aug 20 08:29 /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist-dr008/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/index.js
+-rw-r--r--@ 1 normy  wheel    13K Aug 20 08:29 /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist-dr008/mac-arm64/AutoByteus.app/Contents/Resources/server/prisma/schema.prisma
+/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist-dr008/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/app-data-migrations/app-data-migration-runner.js:140:            ? AppDataMigrationRecoveryAction.RESTART_TO_RETRY
+/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist-dr008/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/app-data-migrations/domain/app-data-migration-types.js:4:    AppDataMigrationRecoveryAction["RESTART_TO_RETRY"] = "RESTART_TO_RETRY";
+settings_renderer_recovery_marker=/dist/renderer/_nuxt/settings.BUvmnKEg.js
+/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist-dr008/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/prisma@5.22.0/node_modules/prisma/libquery_engine-darwin-arm64.dylib.node: Mach-O 64-bit dynamically linked shared library arm64
+result=pass
+
+$ withdrawn audit projection/compactor owners stay absent from packaged and source trees
+absent=/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist-dr008/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/app-data-migrations/migrations/token-usage-migration-audit-compaction-v1
+absent=/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist-dr008/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/app-data-migrations/repositories/app-data-migration-summary-projection.js
+absent=/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-migration-audit-compaction-v1
+absent=/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts/src/app-data-migrations/repositories/app-data-migration-summary-projection.ts
+result=pass
+
+$ packaged terminal runtime including spawn probe
+[terminal-runtime] node-pty root: /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist-dr008/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist-dr008/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist-dr008/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] ok: node-pty spawn probe
+result=pass
+
+$ broken bundle symlink scan
+broken_symlinks=0
+result=pass
+
+$ DMG integrity
+Prüfsumme für Protective Master Boot Record (MBR : 0) berechnen …
+Protective Master Boot Record (MBR :: Die überprüfte CRC32-Prüfsumme ist $E0D3806D
+Prüfsumme für GPT Header (Primary GPT Header : 1) berechnen …
+ GPT Header (Primary GPT Header : 1): Die überprüfte CRC32-Prüfsumme ist $E2ADD7F8
+Prüfsumme für GPT Partition Data (Primary GPT Table : 2) berechnen …
+GPT Partition Data (Primary GPT Tabl: Die überprüfte CRC32-Prüfsumme ist $853FCFF5
+Prüfsumme für  (Apple_Free : 3) berechnen …
+                    (Apple_Free : 3): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für disk image (Apple_APFS : 4) berechnen …
+         disk image (Apple_APFS : 4): Die überprüfte CRC32-Prüfsumme ist $E4D720F6
+Prüfsumme für  (Apple_Free : 5) berechnen …
+                    (Apple_Free : 5): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für GPT Partition Data (Backup GPT Table : 6) berechnen …
+GPT Partition Data (Backup GPT Table: Die überprüfte CRC32-Prüfsumme ist $853FCFF5
+Prüfsumme für GPT Header (Backup GPT Header : 7) berechnen …
+  GPT Header (Backup GPT Header : 7): Die überprüfte CRC32-Prüfsumme ist $C09890B0
+Die überprüfte CRC32-Prüfsumme ist $996279EA
+hdiutil: verify: checksum of "/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist-dr008/AutoByteus_personal_macos-arm64-1.4.52.dmg" is VALID
+result=pass
+
+$ DMG mounted payload identity/architecture/current-scope audit
+Die erwartete CRC32-Prüfsumme ist $996279EA
+/dev/disk7          	GUID_partition_scheme          	
+/dev/disk7s1        	Apple_APFS                     	
+/dev/disk8          	EF57347C-0000-11AA-AA11-0030654	
+/dev/disk8s1        	41504653-0000-11AA-AA11-0030654	/private/tmp/autobyteus-dmg-verify-dr008.2fWUFw
+/private/tmp/autobyteus-dmg-verify-dr008.2fWUFw/AutoByteus.app/Contents/MacOS/AutoByteus: Mach-O 64-bit executable arm64
+"disk7" ejected.
+result=pass
+
+$ ZIP integrity
+No errors detected in compressed data of /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist-dr008/AutoByteus_personal_macos-arm64-1.4.52.zip.
+result=pass
+
+$ updater metadata SHA-512/size consistency
+zip_sha512=erpXvEjiwuNV0NmtLp5uaa1lckbl7sQjeQNqOSCoBwxE/l7KEetOLAAjibVbgIx6h52mchrKb7wSGT9h+PpAXQ==
+dmg_sha512=6og1kBc/Ap6HZhlmFtulcWW9uhIrZ22Vk4OYFHO/YNaFKASCY+XCFTj9ueKgCBHfZjtrMlCEdI9gAlEPfXrujw==
+zip_size=457724769
+dmg_size=463833653
+version: 1.4.52
+files:
+  - url: AutoByteus_personal_macos-arm64-1.4.52.zip
+    sha512: erpXvEjiwuNV0NmtLp5uaa1lckbl7sQjeQNqOSCoBwxE/l7KEetOLAAjibVbgIx6h52mchrKb7wSGT9h+PpAXQ==
+    size: 457724769
+  - url: AutoByteus_personal_macos-arm64-1.4.52.dmg
+    sha512: 6og1kBc/Ap6HZhlmFtulcWW9uhIrZ22Vk4OYFHO/YNaFKASCY+XCFTj9ueKgCBHfZjtrMlCEdI9gAlEPfXrujw==
+    size: 463833653
+path: AutoByteus_personal_macos-arm64-1.4.52.zip
+sha512: erpXvEjiwuNV0NmtLp5uaa1lckbl7sQjeQNqOSCoBwxE/l7KEetOLAAjibVbgIx6h52mchrKb7wSGT9h+PpAXQ==
+releaseDate: '2026-08-20T06:32:44.915Z'
+result=pass
+
+$ signing/notarization state (informational; local test build expected unsigned/ad-hoc)
+Executable=/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist-dr008/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+Identifier=Electron
+Format=app bundle with Mach-O thin (arm64)
+CodeDirectory v=20400 size=392 flags=0x20002(adhoc,linker-signed) hashes=9+0 location=embedded
+VersionPlatform=1
+VersionMin=786432
+VersionSDK=1704448
+Hash type=sha256 size=32
+CandidateCDHash sha256=183bce38eb383b21f21c2cdedcf6cd8781b11cdd
+CandidateCDHashFull sha256=183bce38eb383b21f21c2cdedcf6cd8781b11cdd090f942c4eacd6c09b1112f7
+Hash choices=sha256
+CMSDigest=183bce38eb383b21f21c2cdedcf6cd8781b11cdd090f942c4eacd6c09b1112f7
+CMSDigestType=2
+Executable Segment base=0
+Executable Segment limit=16384
+Executable Segment flags=0x1
+Page size=4096
+CDHash=183bce38eb383b21f21c2cdedcf6cd8781b11cdd
+Signature=adhoc
+Info.plist=not bound
+TeamIdentifier=not set
+Sealed Resources=none
+Internal requirements=none
+/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist-dr008/mac-arm64/AutoByteus.app: code has no resources but signature indicates they must be present
+/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist-dr008/mac-arm64/AutoByteus.app: code has no resources but signature indicates they must be present
+Processing: /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist-dr008/mac-arm64/AutoByteus.app
+AutoByteus.app does not have a ticket stapled to it.
+codesign_display_exit=0
+codesign_strict_verify_exit=1
+spctl_exit=1
+stapler_exit=65
+expected_signing_state=ad-hoc/linker-signed local package; not Developer ID signed or notarized
+result=pass-expected-local-unsigned
+
+$ process/isolation audit
+23312     1 /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+23313 23312 /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper --type=gpu-process --user-data-dir=/Users/normy/Library/Application Support/autobyteus --gpu-preferences=SAAAAAAAAAAgAQAEAAAAAAAAAAAAAGAAAwAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAQAAAAAAAAABAAAAAAAAAACAAAAAAAAAAIAAAAAAAAAA== --shared-files --field-trial-handle=1718379636,r,885524891110664380,16501588738493194805,262144 --enable-features=PdfUseShowSaveFilePicker,ScreenCaptureKitPickerScreen,ScreenCaptureKitStreamPickerSonoma --disable-features=DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TimeoutHangingVideoCaptureStarts,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=1935764596,r,10648956473767588158,2850091626530844865,4 --trace-process-track-uuid=3190708988185955192 --seatbelt-client=31
+23314 23312 /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper --type=utility --utility-sub-type=network.mojom.NetworkService --lang=de --service-sandbox-type=network --user-data-dir=/Users/normy/Library/Application Support/autobyteus --standard-schemes=local-file --cors-schemes=local-file --fetch-schemes=local-file --streaming-schemes=local-file --shared-files --field-trial-handle=1718379636,r,885524891110664380,16501588738493194805,262144 --enable-features=PdfUseShowSaveFilePicker,ScreenCaptureKitPickerScreen,ScreenCaptureKitStreamPickerSonoma --disable-features=DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TimeoutHangingVideoCaptureStarts,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=1935764596,r,10648956473767588158,2850091626530844865,4 --trace-process-track-uuid=3190708989122997041 --seatbelt-client=31
+23318 23312 /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Renderer).app/Contents/MacOS/AutoByteus Helper (Renderer) --type=renderer --user-data-dir=/Users/normy/Library/Application Support/autobyteus --standard-schemes=local-file --cors-schemes=local-file --fetch-schemes=local-file --streaming-schemes=local-file --app-path=/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar --enable-sandbox --lang=de --num-raster-threads=4 --enable-zero-copy --enable-gpu-memory-buffer-compositor-resources --enable-main-frame-before-activation --renderer-client-id=4 --time-ticks-at-unix-epoch=-1785091481780264 --launch-time-ticks=2114521767096 --shared-files --field-trial-handle=1718379636,r,885524891110664380,16501588738493194805,262144 --enable-features=PdfUseShowSaveFilePicker,ScreenCaptureKitPickerScreen,ScreenCaptureKitStreamPickerSonoma --disable-features=DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TimeoutHangingVideoCaptureStarts,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=1935764596,r,10648956473767588158,2850091626530844865,4 --trace-process-track-uuid=3190708990060038890 --seatbelt-client=66
+23919 23312 /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/app.js --port 29695 --data-dir /Users/normy/.autobyteus/server-data
+24046 23312 /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper --type=utility --utility-sub-type=audio.mojom.AudioService --lang=de --service-sandbox-type=audio --message-loop-type-ui --user-data-dir=/Users/normy/Library/Application Support/autobyteus --standard-schemes=local-file --cors-schemes=local-file --fetch-schemes=local-file --streaming-schemes=local-file --shared-files --field-trial-handle=1718379636,r,885524891110664380,16501588738493194805,262144 --enable-features=PdfUseShowSaveFilePicker,ScreenCaptureKitPickerScreen,ScreenCaptureKitStreamPickerSonoma --disable-features=DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TimeoutHangingVideoCaptureStarts,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=1935764596,r,10648956473767588158,2850091626530844865,4 --trace-process-track-uuid=3190708990997080739 --seatbelt-client=62
+24047 23312 /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper --type=utility --utility-sub-type=video_capture.mojom.VideoCaptureService --lang=de --service-sandbox-type=none --message-loop-type-ui --user-data-dir=/Users/normy/Library/Application Support/autobyteus --standard-schemes=local-file --cors-schemes=local-file --fetch-schemes=local-file --streaming-schemes=local-file --shared-files --field-trial-handle=1718379636,r,885524891110664380,16501588738493194805,262144 --enable-features=PdfUseShowSaveFilePicker,ScreenCaptureKitPickerScreen,ScreenCaptureKitStreamPickerSonoma --disable-features=DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TimeoutHangingVideoCaptureStarts,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=1935764596,r,10648956473767588158,2850091626530844865,4 --trace-process-track-uuid=3190708991934122588
+57083 23312 /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Renderer).app/Contents/MacOS/AutoByteus Helper (Renderer) --type=renderer --user-data-dir=/Users/normy/Library/Application Support/autobyteus --standard-schemes=local-file --cors-schemes=local-file --fetch-schemes=local-file --streaming-schemes=local-file --app-path=/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar --enable-sandbox --lang=de --num-raster-threads=4 --enable-zero-copy --enable-gpu-memory-buffer-compositor-resources --enable-main-frame-before-activation --renderer-client-id=8 --time-ticks-at-unix-epoch=-1785091481780264 --launch-time-ticks=2115195226293 --shared-files --field-trial-handle=1718379636,r,885524891110664380,16501588738493194805,262144 --enable-features=PdfUseShowSaveFilePicker,ScreenCaptureKitPickerScreen,ScreenCaptureKitStreamPickerSonoma --disable-features=DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TimeoutHangingVideoCaptureStarts,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=1935764596,r,10648956473767588158,2850091626530844865,4 --trace-process-track-uuid=3190708993808206286 --seatbelt-client=80
+dr008_electron_launched=no
+dr008_bundled_server_started=no
+existing_application_or_artifact_overwritten=no
+live_user_database_or_profile_mutated_by_delivery_checks=no
+overall_result=pass
+completed_at=2026-08-20T06:35:54Z

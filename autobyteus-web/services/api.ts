@@ -5,7 +5,7 @@ import axios, {
   type InternalAxiosRequestConfig,
 } from 'axios';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
-import { getServerUrls } from '~/utils/serverConfig';
+import { getBrowserServerUrls } from '~/utils/browserServerConfig';
 import { addRemoteAccessAxiosAuth } from '~/utils/remoteAccess/authorizedTransport';
 
 class ApiService {
@@ -25,7 +25,7 @@ class ApiService {
     }
 
     // Non-electron/dev fallback keeps browser-mode compatibility.
-    return getServerUrls().rest;
+    return getBrowserServerUrls().rest;
   }
 
   private getOrCreateClient(baseURL: string): AxiosInstance {

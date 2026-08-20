@@ -1,0 +1,43 @@
+=== canonical metadata ===
+5:- API/E2E Revision: `API-REV-008`
+12:- Final validation confidence: `97.9%`.
+618:| RECOVERY-008 | Canonical report/revision metadata, all seven execution logs, exact nine-path durable delta, `git diff --check`, database/runtime/process cleanup | Pass | `logs/65-ir011-final-artifact-audit.log` |
+690:## Latest Authoritative Result — API-REV-008
+693:- Final validation confidence: `97.9%`.
+213:### API-REV-008 — Current startup-recovery contract and audit withdrawal pass
+237:- Current result and confidence: `Pass / 97.9%`.
+15:- Investigation Round: `8` (planned `API-REV-008`)
+78:- Overall final confidence: `97.9%` (simple average, rounded from 97.86%).
+82:- Result: `Pass`; no failure ID opened.
+PASS: one API-REV-008 revision entry
+=== evidence files ===
+PASS nonempty: tickets/in-progress/token-usage-one-row-per-agent-run/test-results/api-e2e/logs/58-ir011-integrated-server-build.log
+PASS nonempty: tickets/in-progress/token-usage-one-row-per-agent-run/test-results/api-e2e/logs/59-ir011-runner-graphql-suite.log
+PASS nonempty: tickets/in-progress/token-usage-one-row-per-agent-run/test-results/api-e2e/logs/60-ir011-built-server-recovery-action-restart.log
+PASS nonempty: tickets/in-progress/token-usage-one-row-per-agent-run/test-results/api-e2e/logs/61-ir011-settings-store-localized-suite.log
+PASS nonempty: tickets/in-progress/token-usage-one-row-per-agent-run/test-results/api-e2e/logs/62-ir011-full-built-production-upgrade-suite.log
+PASS nonempty: tickets/in-progress/token-usage-one-row-per-agent-run/test-results/api-e2e/logs/63-ir011-nuxt-production-build.log
+PASS nonempty: tickets/in-progress/token-usage-one-row-per-agent-run/test-results/api-e2e/logs/64-ir011-static-localization-cleanup-audit.log
+=== current durable coverage changes ===
+ M autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts
+ D autobyteus-server-ts/tests/e2e/app-data-migrations/token-usage-migration-audit-compaction-startup.e2e.test.ts
+ D autobyteus-server-ts/tests/helpers/app-data-migration-audit-fixtures.ts
+ D autobyteus-server-ts/tests/unit/app-data-migrations/app-data-migration-record-repository-bounds.test.ts
+ M autobyteus-server-ts/tests/unit/app-data-migrations/app-data-migration-runner.test.ts
+ D autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-migration-audit-compaction-v1.test.ts
+ M autobyteus-web/components/settings/__tests__/ServerMigrationsManager.spec.ts
+ M autobyteus-web/stores/__tests__/appDataMigrationsStore.spec.ts
+?? autobyteus-server-ts/tests/unit/api/graphql/types/app-data-migrations.test.ts
+PASS: nine changed durable paths recorded in report
+=== latest result has all durable paths ===
+PASS recorded: autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts
+PASS recorded: autobyteus-server-ts/tests/unit/app-data-migrations/app-data-migration-runner.test.ts
+PASS recorded: autobyteus-server-ts/tests/unit/api/graphql/types/app-data-migrations.test.ts
+PASS recorded: autobyteus-web/components/settings/__tests__/ServerMigrationsManager.spec.ts
+PASS recorded: autobyteus-web/stores/__tests__/appDataMigrationsStore.spec.ts
+PASS recorded: autobyteus-server-ts/tests/e2e/app-data-migrations/token-usage-migration-audit-compaction-startup.e2e.test.ts
+PASS recorded: autobyteus-server-ts/tests/helpers/app-data-migration-audit-fixtures.ts
+PASS recorded: autobyteus-server-ts/tests/unit/app-data-migrations/app-data-migration-record-repository-bounds.test.ts
+PASS recorded: autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-migration-audit-compaction-v1.test.ts
+=== diff and cleanup ===
+PASS: diff and cleanup audit

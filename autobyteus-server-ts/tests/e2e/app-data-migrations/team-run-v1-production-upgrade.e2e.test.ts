@@ -6,6 +6,10 @@ import { afterEach, describe, expect, it } from "vitest";
 import { EMBEDDED_SERVER_PLATFORM_FATAL_PROTOCOL } from "../../../src/startup/embedded-server-platform-fatal.js";
 import { runMigrations } from "../../../src/startup/migrations.js";
 import {
+  buildCurrentTokenUsagePayload,
+  createCurrentTokenUsageTestHarness,
+} from "../../helpers/token-usage-run-record-fixtures.js";
+import {
   createSanitizedTestEnvironment,
   executeGraphql,
   removeOwnedTestRuntime,
@@ -21,6 +25,8 @@ type DatabaseLocation = ReturnType<typeof resolveTestDatabaseLocation>;
 type MigrationStatus = {
   migrationId: string;
   status: string;
+  recoveryAction: "MANUAL_RETRY" | "RESTART_TO_RETRY" | "NONE";
+  canRetry: boolean;
   attempts: number;
   summary: {
     scannedCount: number;
@@ -34,8 +40,11 @@ type MigrationStatus = {
 };
 
 const FINAL_MIGRATION_ID = "20260814_team_run_execution_tree_v1";
+const TOKEN_USAGE_CONSOLIDATION_MIGRATION_ID = "20260819_token_usage_run_records_v1";
+const HISTORICAL_AUDIT_SENTINEL_MIGRATION_ID = "20260730_token_usage_provider_name_snapshot_backfill";
 const REMOVED_CANONICAL_MIGRATION_ID = "20260801_team_canonical_identity";
 const PRODUCTION_PROFILE = path.resolve(process.env.HOME ?? "", ".autobyteus/server-data");
+const WITHDRAWN_AUDIT_BOUND_BYTES = 64 * 1024;
 
 const RELEASED_COHORT = Object.freeze([
   ["20260727_custom_provider_v1_secret_migration", "SUCCEEDED"],
@@ -96,12 +105,39 @@ const deploySchema = (database: DatabaseLocation): void => runMigrations({
   databaseUrl: database.databaseUrl,
 });
 
-const seedReleasedLedger = async (database: DatabaseLocation): Promise<void> => {
+const seedReleasedLedger = async (
+  database: DatabaseLocation,
+  runtimeRoot: string,
+): Promise<{
+  migrationId: string;
+  summary: MigrationStatus["summary"];
+  logPath: string;
+  logBytes: Buffer;
+}> => {
   const prisma = new PrismaClient({ datasources: { db: { url: database.databaseUrl } } });
   const startedAt = new Date("2026-08-17T09:00:00.000Z");
   const completedAt = new Date("2026-08-17T09:00:01.000Z");
+  const historicalSummary: NonNullable<MigrationStatus["summary"]> = {
+    scannedCount: 1,
+    migratedCount: 1,
+    skippedCount: 0,
+    failedCount: 0,
+    details: [{
+      itemId: "accepted-historical-audit-sentinel",
+      status: "MIGRATED",
+      message: `accepted-unchanged:${"s".repeat(WITHDRAWN_AUDIT_BOUND_BYTES)}`,
+    }],
+  };
+  const historicalLogPath = path.join(runtimeRoot, "historical-audit", "released-provider-name.log");
+  const historicalLogBytes = Buffer.from(
+    `accepted historical audit log must remain byte-exact\n${"l".repeat(WITHDRAWN_AUDIT_BOUND_BYTES)}\n`,
+    "utf8",
+  );
+  fs.mkdirSync(path.dirname(historicalLogPath), { recursive: true, mode: 0o700 });
+  fs.writeFileSync(historicalLogPath, historicalLogBytes, { mode: 0o600 });
   try {
     for (const [migrationId, status] of RELEASED_COHORT) {
+      const isHistoricalAuditSentinel = migrationId === HISTORICAL_AUDIT_SENTINEL_MIGRATION_ID;
       await prisma.appDataMigrationRecord.create({
         data: {
           migrationId,
@@ -110,7 +146,7 @@ const seedReleasedLedger = async (database: DatabaseLocation): Promise<void> => 
           attempts: 1,
           startedAt,
           completedAt,
-          summaryJson: JSON.stringify({
+          summaryJson: JSON.stringify(isHistoricalAuditSentinel ? historicalSummary : {
             scannedCount: 1,
             migratedCount: status === "SUCCEEDED" ? 1 : 0,
             skippedCount: 0,
@@ -118,7 +154,9 @@ const seedReleasedLedger = async (database: DatabaseLocation): Promise<void> => 
             details: [{ itemId: `released:${migrationId}`, status: status === "SUCCEEDED" ? "MIGRATED" : "FAILED", message: "synthetic released cohort evidence" }],
           }),
           errorMessage: status === "SUCCEEDED_WITH_WARNINGS" ? "synthetic released warning" : null,
-          logPath: `/synthetic/released/${migrationId}.log`,
+          logPath: isHistoricalAuditSentinel
+            ? historicalLogPath
+            : `/synthetic/released/${migrationId}.log`,
         },
       });
     }
@@ -138,6 +176,12 @@ const seedReleasedLedger = async (database: DatabaseLocation): Promise<void> => 
   } finally {
     await prisma.$disconnect();
   }
+  return {
+    migrationId: HISTORICAL_AUDIT_SENTINEL_MIGRATION_ID,
+    summary: historicalSummary,
+    logPath: historicalLogPath,
+    logBytes: historicalLogBytes,
+  };
 };
 
 const readMigrationLedger = (databasePath: string): Array<Record<string, unknown>> => {
@@ -310,10 +354,25 @@ const readSyntheticTokenRows = (databasePath: string): Array<Record<string, unkn
   }
 };
 
+const readCurrentSyntheticTokenRows = (databasePath: string): Array<Record<string, unknown>> => {
+  const database = new DatabaseSync(databasePath, { readOnly: true });
+  try {
+    return database.prepare(`
+      SELECT run_id, root_team_run_id, usage_report_count,
+             accounting_input_tokens, accounting_output_tokens, accounting_total_tokens
+        FROM token_usage_run_records
+       WHERE run_id LIKE 'team-v1-%'
+       ORDER BY run_id ASC
+    `).all() as unknown as Array<Record<string, unknown>>;
+  } finally {
+    database.close();
+  }
+};
+
 const seedScenario = async (target: ReturnType<typeof makeTarget>, warning: boolean) => {
   fs.mkdirSync(target.isolatedHome, { recursive: true, mode: 0o700 });
   deploySchema(target.database);
-  await seedReleasedLedger(target.database);
+  const historicalAudit = await seedReleasedLedger(target.database, target.runtimeRoot);
   const rootTeamRunId = warning ? "team-v1-warning-root" : "team-v1-supported-root";
   const supported = writeSupportedPredecessor(target.runtimeRoot, rootTeamRunId);
   insertTokenRow(target.database.databasePath, {
@@ -350,14 +409,22 @@ const seedScenario = async (target: ReturnType<typeof makeTarget>, warning: bool
     });
     warningEvidence = { path: invalidPath, bytes: invalidBytes, historyPath, historyBytes };
   }
-  return { rootTeamRunId, supported, warningEvidence };
+  const historicalAuditRecord = readMigrationLedger(target.database.databasePath)
+    .find(({ migration_id }) => migration_id === historicalAudit.migrationId);
+  expect(historicalAuditRecord).toBeDefined();
+  return {
+    rootTeamRunId,
+    supported,
+    warningEvidence,
+    historicalAudit: { ...historicalAudit, record: historicalAuditRecord! },
+  };
 };
 
 const migrationStatuses = async (serverUrl: string): Promise<MigrationStatus[]> => {
   const result = await executeGraphql<{ getAppDataMigrations: MigrationStatus[] }>(serverUrl, `
     query TeamRunV1MigrationStatuses {
       getAppDataMigrations {
-        migrationId status attempts summary errorMessage logPath
+        migrationId status recoveryAction canRetry attempts summary errorMessage logPath
       }
     }
   `);
@@ -372,10 +439,136 @@ const finalStatus = async (serverUrl: string): Promise<MigrationStatus> => {
   return status;
 };
 
+const tokenConsolidationStatus = async (serverUrl: string): Promise<MigrationStatus> => {
+  const statuses = await migrationStatuses(serverUrl);
+  const status = statuses.find(({ migrationId }) => migrationId === TOKEN_USAGE_CONSOLIDATION_MIGRATION_ID);
+  if (!status) throw new Error("TOKEN_USAGE_CONSOLIDATION_STATUS_MISSING");
+  return status;
+};
+
+const expectHistoricalAuditUnchanged = async (
+  serverUrl: string,
+  databasePath: string,
+  scenario: Awaited<ReturnType<typeof seedScenario>>,
+): Promise<void> => {
+  const status = (await migrationStatuses(serverUrl))
+    .find(({ migrationId }) => migrationId === scenario.historicalAudit.migrationId);
+  expect(status).toMatchObject({
+    status: "SUCCEEDED",
+    attempts: 1,
+    recoveryAction: "NONE",
+    canRetry: false,
+    summary: scenario.historicalAudit.summary,
+    logPath: scenario.historicalAudit.logPath,
+  });
+  expect(Buffer.byteLength(JSON.stringify(status!.summary), "utf8"))
+    .toBeGreaterThan(WITHDRAWN_AUDIT_BOUND_BYTES);
+  expect(readMigrationLedger(databasePath)
+    .find(({ migration_id }) => migration_id === scenario.historicalAudit.migrationId))
+    .toEqual(scenario.historicalAudit.record);
+  expect(fs.readFileSync(scenario.historicalAudit.logPath))
+    .toEqual(scenario.historicalAudit.logBytes);
+};
+
 const expectHealthy = async (serverUrl: string): Promise<void> => {
   const response = await fetch(`${serverUrl}/rest/health`);
   expect(response.status).toBe(200);
   expect(await response.json()).toEqual(expect.objectContaining({ status: "ok" }));
+};
+
+const expectTokenHistoryUnavailable = async (serverUrl: string): Promise<void> => {
+  const response = await fetch(`${serverUrl}/graphql`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({
+      query: `query DegradedTokenHistory($start: DateTime!, $end: DateTime!) {
+        usageStatisticsInPeriod(startTime: $start, endTime: $end) { runtimeKind inputTokens }
+      }`,
+      variables: {
+        start: "2026-01-01T00:00:00.000Z",
+        end: "2049-01-01T00:00:00.000Z",
+      },
+    }),
+  });
+  const payload = await response.json() as { errors?: Array<{ message?: string }> };
+  expect(payload.errors?.map(({ message }) => message).join("\n"))
+    .toContain("TOKEN_USAGE_HISTORY_MIGRATION_REQUIRED");
+};
+
+const createCurrentAgentRun = async (serverUrl: string, runtimeRoot: string, label: string): Promise<string> => {
+  const createdAgent = await executeGraphql<{ createAgentDefinition: { id: string } }>(serverUrl, `
+    mutation CreateDegradedAgent($input: CreateAgentDefinitionInput!) {
+      createAgentDefinition(input: $input) { id }
+    }
+  `, {
+    input: {
+      name: `${label}-${Date.now()}`,
+      role: "migration validation agent",
+      description: "Proves current-run admission during token-history degradation.",
+      instructions: "No external work.",
+      category: "api-e2e",
+    },
+  });
+  const models = await executeGraphql<{
+    availableLlmProvidersWithModels: Array<{ models: Array<{ modelIdentifier: string }> }>;
+  }>(serverUrl, `
+    query DegradedModels($runtimeKind: String) {
+      availableLlmProvidersWithModels(runtimeKind: $runtimeKind) { models { modelIdentifier } }
+    }
+  `, { runtimeKind: "autobyteus" });
+  const modelIdentifier = models.availableLlmProvidersWithModels
+    .flatMap(({ models: values }) => values.map(({ modelIdentifier: value }) => value))
+    .find((value) => value.trim());
+  expect(modelIdentifier).toBeTruthy();
+  const workspaceRootPath = path.join(runtimeRoot, "degraded-current-workspace");
+  fs.mkdirSync(workspaceRootPath, { recursive: true, mode: 0o700 });
+  const created = await executeGraphql<{
+    createAgentRun: { success: boolean; runId: string | null; message: string };
+  }>(serverUrl, `
+    mutation CreateDegradedAgentRun($input: CreateAgentRunInput!) {
+      createAgentRun(input: $input) { success runId message }
+    }
+  `, {
+    input: {
+      agentDefinitionId: createdAgent.createAgentDefinition.id,
+      workspaceRootPath,
+      llmModelIdentifier: modelIdentifier,
+      autoExecuteTools: false,
+      skillAccessMode: "NONE",
+      runtimeKind: "autobyteus",
+    },
+  });
+  expect(created.createAgentRun).toMatchObject({ success: true, runId: expect.any(String) });
+  return created.createAgentRun.runId!;
+};
+
+const terminateAgentRun = async (serverUrl: string, runId: string): Promise<void> => {
+  const terminated = await executeGraphql<{ terminateAgentRun: { success: boolean } }>(serverUrl, `
+    mutation TerminateDegradedAgentRun($runId: String!) {
+      terminateAgentRun(agentRunId: $runId) { success }
+    }
+  `, { runId });
+  expect(terminated.terminateAgentRun.success).toBe(true);
+};
+
+const restoreTeamRun = async (serverUrl: string, teamRunId: string) => executeGraphql<{
+  restoreAgentTeamRun: { success: boolean; teamRunId: string | null; message: string };
+}>(serverUrl, `
+  mutation RestoreMigrationLifecycleTeam($teamRunId: String!) {
+    restoreAgentTeamRun(teamRunId: $teamRunId) { success teamRunId message }
+  }
+`, { teamRunId });
+
+const countTokenRows = (databasePath: string): { legacy: number; current: number } => {
+  const database = new DatabaseSync(databasePath, { readOnly: true });
+  try {
+    return {
+      legacy: Number((database.prepare(`SELECT COUNT(*) AS count FROM token_usage_ledger_events`).get() as { count: number }).count),
+      current: Number((database.prepare(`SELECT COUNT(*) AS count FROM token_usage_run_records`).get() as { count: number }).count),
+    };
+  } finally {
+    database.close();
+  }
 };
 
 const assertConvertedPackage = (scenario: Awaited<ReturnType<typeof seedScenario>>): void => {
@@ -421,13 +614,18 @@ const assertLedgerTransition = (
   beforeRows: Array<Record<string, unknown>>,
 ): Array<Record<string, unknown>> => {
   const afterRows = readMigrationLedger(databasePath);
-  expect(afterRows).toHaveLength(beforeRows.length + 1);
+  expect(afterRows).toHaveLength(beforeRows.length + 2);
   expect(afterRows.slice(0, beforeRows.length)).toEqual(beforeRows);
-  expect(afterRows.at(-1)).toMatchObject({
-    migration_id: FINAL_MIGRATION_ID,
-    attempts: 1,
-  });
+  expect(afterRows.slice(beforeRows.length)).toEqual(expect.arrayContaining([
+    expect.objectContaining({ migration_id: FINAL_MIGRATION_ID, attempts: 1 }),
+    expect.objectContaining({
+      migration_id: TOKEN_USAGE_CONSOLIDATION_MIGRATION_ID,
+      status: "SUCCEEDED",
+      attempts: 1,
+    }),
+  ]));
   expect(afterRows.filter(({ migration_id }) => migration_id === FINAL_MIGRATION_ID)).toHaveLength(1);
+  expect(afterRows.filter(({ migration_id }) => migration_id === TOKEN_USAGE_CONSOLIDATION_MIGRATION_ID)).toHaveLength(1);
   expect(afterRows.find(({ migration_id }) => migration_id === REMOVED_CANONICAL_MIGRATION_ID)).toMatchObject({
     status: "FAILED",
     attempts: 6,
@@ -635,7 +833,18 @@ describe("TeamRun V1 released-shape production upgrade through actual startup", 
     expect(first.output()).not.toContain(EMBEDDED_SERVER_PLATFORM_FATAL_PROTOCOL);
     assertConvertedPackage(scenario);
     const ledgerAfterFirst = assertLedgerTransition(target.database.databasePath, ledgerBefore);
-    expect(readSyntheticTokenRows(target.database.databasePath)).toEqual(tokensBefore);
+    expect(readSyntheticTokenRows(target.database.databasePath)).toEqual([]);
+    expect(readCurrentSyntheticTokenRows(target.database.databasePath)).toEqual([
+      expect.objectContaining({
+        run_id: `${scenario.rootTeamRunId}-lead-run`,
+        root_team_run_id: scenario.rootTeamRunId,
+        usage_report_count: 1,
+        accounting_input_tokens: 13,
+        accounting_output_tokens: 8,
+        accounting_total_tokens: 21,
+      }),
+    ]);
+    expect(tokensBefore).toHaveLength(1);
     await exerciseHistoryAndNewWork(first.serverUrl, target.runtimeRoot, scenario.rootTeamRunId);
 
     await first.stop();
@@ -644,7 +853,8 @@ describe("TeamRun V1 released-shape production upgrade through actual startup", 
     await expectHealthy(second.serverUrl);
     expect(await finalStatus(second.serverUrl)).toMatchObject({ status: "SUCCEEDED", attempts: 1 });
     expect(readMigrationLedger(target.database.databasePath)).toEqual(ledgerAfterFirst);
-    expect(readSyntheticTokenRows(target.database.databasePath)).toEqual(tokensBefore);
+    expect(readSyntheticTokenRows(target.database.databasePath)).toEqual([]);
+    expect(readCurrentSyntheticTokenRows(target.database.databasePath)).toHaveLength(1);
     assertConvertedPackage(scenario);
     expect(productionProfileMetadata()).toEqual(productionBefore);
   }, 360_000);
@@ -684,7 +894,20 @@ describe("TeamRun V1 released-shape production upgrade through actual startup", 
     expect(fs.readFileSync(scenario.warningEvidence!.path)).toEqual(scenario.warningEvidence!.bytes);
     expect(fs.readFileSync(scenario.warningEvidence!.historyPath)).toEqual(scenario.warningEvidence!.historyBytes);
     const ledgerAfterFirst = assertLedgerTransition(target.database.databasePath, ledgerBefore);
-    expect(readSyntheticTokenRows(target.database.databasePath)).toEqual(tokensBefore);
+    expect(readSyntheticTokenRows(target.database.databasePath)).toEqual([]);
+    expect(readCurrentSyntheticTokenRows(target.database.databasePath)).toHaveLength(tokensBefore.length);
+    expect(readCurrentSyntheticTokenRows(target.database.databasePath)).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        run_id: `${scenario.rootTeamRunId}-lead-run`,
+        usage_report_count: 1,
+        accounting_total_tokens: 21,
+      }),
+      expect.objectContaining({
+        run_id: "team-v1-warning-unsupported-run",
+        usage_report_count: 1,
+        accounting_total_tokens: 21,
+      }),
+    ]));
     await exerciseHistoryAndNewWork(first.serverUrl, target.runtimeRoot, scenario.rootTeamRunId);
 
     await first.stop();
@@ -693,8 +916,121 @@ describe("TeamRun V1 released-shape production upgrade through actual startup", 
     await expectHealthy(second.serverUrl);
     expect(await finalStatus(second.serverUrl)).toMatchObject({ status: "SUCCEEDED_WITH_WARNINGS", attempts: 1 });
     expect(readMigrationLedger(target.database.databasePath)).toEqual(ledgerAfterFirst);
-    expect(readSyntheticTokenRows(target.database.databasePath)).toEqual(tokensBefore);
+    expect(readSyntheticTokenRows(target.database.databasePath)).toEqual([]);
+    expect(readCurrentSyntheticTokenRows(target.database.databasePath)).toHaveLength(tokensBefore.length);
     expect(fs.readFileSync(scenario.warningEvidence!.path)).toEqual(scenario.warningEvidence!.bytes);
     expect(productionProfileMetadata()).toEqual(productionBefore);
+  }, 360_000);
+
+  it("keeps the server healthy after failed consolidation, admits a new current run, and imports disjoint legacy rows on restart retry", async () => {
+    const target = makeTarget("token-consolidation-retry-startup");
+    const scenario = await seedScenario(target, false);
+    insertTokenRow(target.database.databasePath, {
+      usageEventId: "team-v1-e2e-blank-run",
+      runId: " ",
+      rootTeamRunId: null,
+      executionAddressJson: null,
+      memberAgentRunId: null,
+      memberRouteKey: null,
+    });
+
+    const first = await startScenarioServer(target);
+    await expectHealthy(first.serverUrl);
+    expect(await tokenConsolidationStatus(first.serverUrl)).toMatchObject({
+      status: "FAILED",
+      recoveryAction: "RESTART_TO_RETRY",
+      canRetry: false,
+      attempts: 1,
+      errorMessage: expect.stringContaining("blank canonical run ID"),
+    });
+    await expectHistoricalAuditUnchanged(first.serverUrl, target.database.databasePath, scenario);
+    await expectTokenHistoryUnavailable(first.serverUrl);
+    const blockedRestore = await restoreTeamRun(first.serverUrl, scenario.rootTeamRunId);
+    expect(blockedRestore.restoreAgentTeamRun).toMatchObject({
+      success: false,
+      teamRunId: null,
+      message: expect.stringContaining("TOKEN_USAGE_EXISTING_RUN_RESTORE_MIGRATION_REQUIRED"),
+    });
+
+    const currentRunId = await createCurrentAgentRun(first.serverUrl, target.runtimeRoot, "degraded-current-agent");
+    const currentPrisma = new PrismaClient({ datasources: { db: { url: target.database.databaseUrl } } });
+    try {
+      const { store } = createCurrentTokenUsageTestHarness(currentPrisma);
+      await store.recordObservation(buildCurrentTokenUsagePayload({
+        runId: currentRunId,
+        eventId: "degraded-current-observation",
+        inputTokens: 17,
+        outputTokens: 5,
+        totalCost: null,
+      }));
+    } finally {
+      await currentPrisma.$disconnect();
+    }
+    expect(countTokenRows(target.database.databasePath)).toEqual({ legacy: 2, current: 1 });
+    await terminateAgentRun(first.serverUrl, currentRunId);
+    await first.stop();
+    ownedServers.delete(first);
+
+    const database = new DatabaseSync(target.database.databasePath);
+    try {
+      const updated = database.prepare(`
+        UPDATE token_usage_ledger_events SET run_id = ? WHERE trim(run_id) = ''
+      `).run("legacy-repaired-after-failure");
+      expect(updated.changes).toBe(1);
+    } finally {
+      database.close();
+    }
+
+    const second = await startScenarioServer(target);
+    await expectHealthy(second.serverUrl);
+    expect(await tokenConsolidationStatus(second.serverUrl)).toMatchObject({
+      status: "SUCCEEDED",
+      recoveryAction: "NONE",
+      canRetry: false,
+      attempts: 2,
+      errorMessage: null,
+    });
+    await expectHistoricalAuditUnchanged(second.serverUrl, target.database.databasePath, scenario);
+    expect(countTokenRows(target.database.databasePath)).toEqual({ legacy: 0, current: 3 });
+    const restored = await restoreTeamRun(second.serverUrl, scenario.rootTeamRunId);
+    expect(restored.restoreAgentTeamRun).toMatchObject({
+      success: true,
+      teamRunId: scenario.rootTeamRunId,
+    });
+    const terminated = await executeGraphql<{ terminateAgentTeamRun: { success: boolean } }>(second.serverUrl, `
+      mutation TerminateMigrationLifecycleTeam($teamRunId: String!) {
+        terminateAgentTeamRun(teamRunId: $teamRunId) { success }
+      }
+    `, { teamRunId: scenario.rootTeamRunId });
+    expect(terminated.terminateAgentTeamRun.success).toBe(true);
+  }, 360_000);
+
+  it("rejects a legacy/current run-ID overlap before source cleanup while preserving both stores", async () => {
+    const target = makeTarget("token-consolidation-overlap-startup");
+    const scenario = await seedScenario(target, false);
+    const overlappingRunId = `${scenario.rootTeamRunId}-lead-run`;
+    const prisma = new PrismaClient({ datasources: { db: { url: target.database.databaseUrl } } });
+    try {
+      const { store } = createCurrentTokenUsageTestHarness(prisma);
+      await store.recordObservation(buildCurrentTokenUsagePayload({
+        runId: overlappingRunId,
+        eventId: "overlapping-current-observation",
+        inputTokens: 3,
+        outputTokens: 2,
+        totalCost: null,
+      }));
+    } finally {
+      await prisma.$disconnect();
+    }
+
+    const server = await startScenarioServer(target);
+    await expectHealthy(server.serverUrl);
+    expect(await tokenConsolidationStatus(server.serverUrl)).toMatchObject({
+      status: "FAILED",
+      attempts: 1,
+      errorMessage: expect.stringContaining("TOKEN_USAGE_RUN_ID_INTERSECTION"),
+    });
+    expect(countTokenRows(target.database.databasePath)).toEqual({ legacy: 1, current: 1 });
+    await expectTokenHistoryUnavailable(server.serverUrl);
   }, 360_000);
 });

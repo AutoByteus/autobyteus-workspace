@@ -4,7 +4,7 @@ import path from "node:path";
 import { randomUUID } from "node:crypto";
 import { PrismaClient } from "@prisma/client";
 import { afterEach, describe, expect, it } from "vitest";
-import { TokenUsageTeamRunV1MigrationRepository } from "../../../src/token-usage/repositories/sql/token-usage-team-run-v1-migration-repository.js";
+import { TokenUsageTeamRunV1MigrationRepository } from "../../../src/app-data-migrations/migrations/team-run-execution-tree-v1/token-usage-team-run-v1-migration-repository.js";
 
 const disposablePaths: string[] = [];
 

@@ -3,6 +3,7 @@ import { WindowsServerManager } from './windowsServerManager'
 import { MacOSServerManager } from './macOSServerManager'
 import { BaseServerManager } from './baseServerManager'
 import { logger } from '../logger'
+import type { EmbeddedServerLaunchConfig } from './embeddedServerLaunchConfig'
 
 /**
  * Factory to create the appropriate server manager based on platform
@@ -11,24 +12,21 @@ export class ServerManagerFactory {
   /**
    * Create a server manager instance appropriate for the current platform
    */
-  static createServerManager(): BaseServerManager {
+  static createServerManager(config: EmbeddedServerLaunchConfig): BaseServerManager {
     const platform = process.platform
     
     logger.info(`Creating server manager for platform: ${platform}`)
     
     switch (platform) {
       case 'linux':
-        return new LinuxServerManager()
+        return new LinuxServerManager(config)
       case 'win32':
-        return new WindowsServerManager()
+        return new WindowsServerManager(config)
       case 'darwin':
-        return new MacOSServerManager()
+        return new MacOSServerManager(config)
       default:
         logger.warn(`Unknown platform: ${platform}, falling back to Linux server manager`)
-        return new LinuxServerManager()
+        return new LinuxServerManager(config)
     }
   }
 }
-
-// Create and export a singleton instance
-export const serverManager = ServerManagerFactory.createServerManager()

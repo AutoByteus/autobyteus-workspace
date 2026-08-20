@@ -1,0 +1,18 @@
+timestamp=2026-08-19T11:32:17Z
+head=11b861de677200fe7441ed189934f7776804c04d
+origin_personal_before=1f5663ddb86e478d0b4ffdd878d57dee72d67b4b
+origin_personal_after=1f5663ddb86e478d0b4ffdd878d57dee72d67b4b
+base_advanced=no
+merge_base=1f5663ddb86e478d0b4ffdd878d57dee72d67b4b
+divergence_base_to_ticket=0/3
+unmerged_paths=0
+
+$ durable docs stale-owner/period scan
+stale_scan=pass
+
+$ local Markdown link audit (nine durable docs)
+documents=9
+local_links_checked=55
+link_audit=pass
+
+result=pass

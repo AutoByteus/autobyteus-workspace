@@ -303,6 +303,54 @@ pnpm --filter autobyteus-server-ts build
 pnpm --filter autobyteus-message-gateway build
 ```
 
+## Packaged Electron API/E2E testing
+
+After the root [`Setup`](#setup), run packaged Electron checks from the frontend
+project. The thin launcher builds the current host package by default, selects a
+free non-`29695` loopback port and isolated temporary data root, waits for
+readiness, and cleans up only the process tree and temporary root it owns:
+
+```bash
+cd autobyteus-web
+pnpm test:e2e:electron --adapter direct
+pnpm test:e2e:electron --adapter playwright
+```
+
+Add `--hold-ms <milliseconds>` for hands-on inspection. To exercise an existing
+current-worktree artifact without rebuilding it, pass its executable rather
+than a DMG/ZIP:
+
+```bash
+pnpm test:e2e:electron \
+  --skip-build \
+  --adapter playwright \
+  --executable /absolute/path/to/AutoByteus
+```
+
+Run the durable five-scenario isolation probe when validating coexistence,
+renderer routing, parallel launches, rejected configurations, updater
+suppression, and cleanup ownership:
+
+```bash
+pnpm test:e2e:electron:isolation \
+  --skip-build \
+  --executable /absolute/path/to/AutoByteus \
+  --output-dir test-results/electron-launch-profile
+```
+
+Do not insert a standalone `--` after either package-script name; these thin
+CLIs receive their options directly. If a macOS/Linux automation shell has
+inherited `ELECTRON_RUN_AS_NODE=1`, clear it for the real GUI launch, for
+example `env -u ELECTRON_RUN_AS_NODE pnpm test:e2e:electron --adapter direct`.
+The launcher preserves the rest of the caller environment and overlays only
+the three documented isolation variables; it does not introduce API-key,
+provider, search, Codex, or other credential assumptions.
+
+See the frontend [packaged Electron E2E guide](autobyteus-web/README.md#packaged-electron-e2e-launches)
+and the [canonical launch/ownership contract](autobyteus-web/docs/electron_packaging.md#packaged-e2e-launch-profile)
+for platform executable paths, explicit port/data-root options, safe-root
+validation, and cleanup behavior.
+
 ## Local full-stack development
 
 Start the real built backend and Nuxt development frontend with the one

@@ -1,0 +1,526 @@
+{
+  "startedAt": "2026-08-20T12:34:12.042Z",
+  "completedAt": "2026-08-20T12:34:34.555Z",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "webRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web",
+  "skipBuild": true,
+  "artifact": {
+    "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "size": 33968,
+    "sha256": "c0bf182389ea930585e3b0bf5c4f16529461e02bf3be751cb364d0e25f2257e0"
+  },
+  "ordinaryApplication": {
+    "before": {
+      "label": "before packaged validation",
+      "listenerPids": [
+        98429
+      ],
+      "health": {
+        "ok": true,
+        "status": 200
+      },
+      "identities": [
+        {
+          "pid": 98429,
+          "fingerprint": "ebeda19895d06c482766ff54c5f38405512464b3329f02f8b4ed93f786b2246d",
+          "commandIsAutoByteus": true
+        }
+      ]
+    }
+  },
+  "scenarios": {
+    "E2E-PKG-001": {
+      "id": "E2E-PKG-001",
+      "title": "Direct same-artifact coexistence, isolated paths, and caller-root retention",
+      "startedAt": "2026-08-20T12:34:12.582Z",
+      "completedAt": "2026-08-20T12:34:17.732Z",
+      "result": "pass",
+      "details": {
+        "metadata": {
+          "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+          "port": 56125,
+          "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-electron-profile-probe-RMtKAa/caller-retained-direct-root",
+          "ownsDataRoot": false,
+          "clientBaseUrl": "http://127.0.0.1:56125",
+          "healthUrl": "http://127.0.0.1:56125/rest/health"
+        },
+        "preparedEnvironment": {
+          "preservedMarkerKeys": [
+            "CODEX_HOME",
+            "OPENAI_API_KEY",
+            "GOOGLE_API_KEY",
+            "SERPER_API_KEY",
+            "AUTOBYTEUS_E2E_CALLER_SENTINEL"
+          ],
+          "isolationKeysForced": true
+        },
+        "ordinaryDuring": {
+          "label": "during direct E2E",
+          "listenerPids": [
+            98429
+          ],
+          "health": {
+            "ok": true,
+            "status": 200
+          },
+          "identities": [
+            {
+              "pid": 98429,
+              "fingerprint": "ebeda19895d06c482766ff54c5f38405512464b3329f02f8b4ed93f786b2246d",
+              "commandIsAutoByteus": true
+            }
+          ]
+        },
+        "ordinaryAfter": {
+          "label": "after direct E2E",
+          "listenerPids": [
+            98429
+          ],
+          "health": {
+            "ok": true,
+            "status": 200
+          },
+          "identities": [
+            {
+              "pid": 98429,
+              "fingerprint": "ebeda19895d06c482766ff54c5f38405512464b3329f02f8b4ed93f786b2246d",
+              "commandIsAutoByteus": true
+            }
+          ]
+        },
+        "processTree": {
+          "supported": true,
+          "rootPid": 78593,
+          "processTreeIdentity": "posix-process-group:78593",
+          "processCount": 5,
+          "backendPid": 78599,
+          "backendSelectedPort": true,
+          "backendSelectedDataRoot": true,
+          "backendHostOverrideAbsent": true,
+          "chromiumUserDataIsolated": true,
+          "backendEnvironment": {
+            "supported": true,
+            "matches": {
+              "CODEX_HOME": true,
+              "OPENAI_API_KEY": true,
+              "GOOGLE_API_KEY": true,
+              "SERPER_API_KEY": true,
+              "AUTOBYTEUS_E2E_CALLER_SENTINEL": true
+            }
+          }
+        },
+        "isolatedPaths": {
+          "baseDataRoot": true,
+          "serverData": true,
+          "logs": true,
+          "extensions": true,
+          "browserArtifacts": true,
+          "userData": true,
+          "sessionData": true,
+          "crashDumps": true,
+          "downloads": true
+        },
+        "registryBaseUrlMatches": true,
+        "cleanupResult": {
+          "processTreeCompletion": {
+            "status": "complete",
+            "identity": "posix-process-group:78593",
+            "forced": false,
+            "gracefulError": null
+          },
+          "portObservation": {
+            "status": "available",
+            "port": 56125,
+            "detail": null
+          }
+        },
+        "callerRootRetained": true,
+        "sentinel": {
+          "unchanged": true,
+          "count": 3
+        }
+      }
+    },
+    "E2E-PKG-002": {
+      "id": "E2E-PKG-002",
+      "title": "Playwright renderer endpoint, provider, environment, profile, and updater journey",
+      "startedAt": "2026-08-20T12:34:17.733Z",
+      "completedAt": "2026-08-20T12:34:30.191Z",
+      "result": "pass",
+      "details": {
+        "metadata": {
+          "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+          "port": 56155,
+          "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-ql6vxZ",
+          "ownsDataRoot": true,
+          "clientBaseUrl": "http://127.0.0.1:56155",
+          "healthUrl": "http://127.0.0.1:56155/rest/health"
+        },
+        "preparedEnvironment": {
+          "preservedMarkerKeys": [
+            "CODEX_HOME",
+            "OPENAI_API_KEY",
+            "GOOGLE_API_KEY",
+            "SERPER_API_KEY",
+            "AUTOBYTEUS_E2E_CALLER_SENTINEL"
+          ],
+          "isolationKeysForced": true
+        },
+        "journey": {
+          "bridge": {
+            "status": "running",
+            "statusBaseUrlMatches": true,
+            "healthUrlMatches": true,
+            "registryBaseUrlMatches": true,
+            "health": "ok",
+            "windowNodeId": "embedded-local"
+          },
+          "rendererGraphql": {
+            "ok": true,
+            "status": 200
+          },
+          "rendererWebSocket": {
+            "opened": true
+          },
+          "providerSettings": {
+            "visible": true,
+            "loadFailureAbsent": true,
+            "screenshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/tickets/in-progress/electron-e2e-runtime-isolation/probes/api-e2e/electron-launch-profile/provider-settings.png"
+          },
+          "updater": {
+            "handlerAbsentBeforeDelay": true,
+            "handlerAbsentAfterDelay": true,
+            "logActivityAbsent": true
+          },
+          "mainSnapshot": {
+            "isPackaged": true,
+            "paths": {
+              "userData": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-ql6vxZ/electron/user-data",
+              "sessionData": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-ql6vxZ/electron/session-data",
+              "logs": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-ql6vxZ/logs",
+              "crashDumps": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-ql6vxZ/electron/crash-dumps",
+              "downloads": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-ql6vxZ/electron/downloads"
+            },
+            "environmentMatches": {
+              "CODEX_HOME": true,
+              "OPENAI_API_KEY": true,
+              "GOOGLE_API_KEY": true,
+              "SERPER_API_KEY": true,
+              "AUTOBYTEUS_E2E_CALLER_SENTINEL": true
+            }
+          },
+          "endpointTraffic": {
+            "observedSelectedEndpoint": true,
+            "observedProductionEndpoint": false
+          },
+          "traffic": {
+            "requests": [
+              {
+                "method": "POST",
+                "url": "http://127.0.0.1:56155/graphql"
+              },
+              {
+                "method": "POST",
+                "url": "http://127.0.0.1:56155/graphql"
+              },
+              {
+                "method": "POST",
+                "url": "http://127.0.0.1:56155/graphql"
+              },
+              {
+                "method": "POST",
+                "url": "http://127.0.0.1:56155/graphql"
+              },
+              {
+                "method": "POST",
+                "url": "http://127.0.0.1:56155/graphql"
+              },
+              {
+                "method": "POST",
+                "url": "http://127.0.0.1:56155/graphql"
+              },
+              {
+                "method": "POST",
+                "url": "http://127.0.0.1:56155/graphql"
+              },
+              {
+                "method": "POST",
+                "url": "http://127.0.0.1:56155/graphql"
+              },
+              {
+                "method": "POST",
+                "url": "http://127.0.0.1:56155/graphql"
+              }
+            ],
+            "responses": [
+              {
+                "status": 200,
+                "url": "http://127.0.0.1:56155/graphql"
+              },
+              {
+                "status": 200,
+                "url": "http://127.0.0.1:56155/graphql"
+              },
+              {
+                "status": 200,
+                "url": "http://127.0.0.1:56155/graphql"
+              },
+              {
+                "status": 200,
+                "url": "http://127.0.0.1:56155/graphql"
+              },
+              {
+                "status": 200,
+                "url": "http://127.0.0.1:56155/graphql"
+              },
+              {
+                "status": 200,
+                "url": "http://127.0.0.1:56155/graphql"
+              },
+              {
+                "status": 200,
+                "url": "http://127.0.0.1:56155/graphql"
+              },
+              {
+                "status": 200,
+                "url": "http://127.0.0.1:56155/graphql"
+              },
+              {
+                "status": 200,
+                "url": "http://127.0.0.1:56155/graphql"
+              }
+            ],
+            "websockets": [
+              "ws://127.0.0.1:56155/graphql"
+            ],
+            "failures": [],
+            "pageErrors": []
+          }
+        },
+        "processTree": {
+          "supported": true,
+          "rootPid": 78718,
+          "processTreeIdentity": "posix-process-group:78718",
+          "processCount": 5,
+          "backendPid": 78726,
+          "backendSelectedPort": true,
+          "backendSelectedDataRoot": true,
+          "backendHostOverrideAbsent": true,
+          "chromiumUserDataIsolated": true,
+          "backendEnvironment": {
+            "supported": true,
+            "matches": {
+              "CODEX_HOME": true,
+              "OPENAI_API_KEY": true,
+              "GOOGLE_API_KEY": true,
+              "SERPER_API_KEY": true,
+              "AUTOBYTEUS_E2E_CALLER_SENTINEL": true
+            }
+          }
+        },
+        "isolatedPaths": {
+          "baseDataRoot": true,
+          "serverData": true,
+          "logs": true,
+          "extensions": true,
+          "browserArtifacts": true,
+          "userData": true,
+          "sessionData": true,
+          "crashDumps": true,
+          "downloads": true
+        },
+        "cleanupResult": {
+          "processTreeCompletion": {
+            "status": "complete",
+            "identity": "posix-process-group:78718",
+            "forced": false,
+            "gracefulError": null
+          },
+          "portObservation": {
+            "status": "available",
+            "port": 56155,
+            "detail": null
+          }
+        },
+        "ownedRootDisposed": true,
+        "ordinaryAfter": {
+          "label": "after Playwright E2E",
+          "listenerPids": [
+            98429
+          ],
+          "health": {
+            "ok": true,
+            "status": 200
+          },
+          "identities": [
+            {
+              "pid": 98429,
+              "fingerprint": "ebeda19895d06c482766ff54c5f38405512464b3329f02f8b4ed93f786b2246d",
+              "commandIsAutoByteus": true
+            }
+          ]
+        },
+        "sentinel": {
+          "unchanged": true,
+          "count": 3
+        }
+      }
+    },
+    "E2E-PKG-003": {
+      "id": "E2E-PKG-003",
+      "title": "Two simultaneous Playwright instances keep ports, roots, and renderer state isolated",
+      "startedAt": "2026-08-20T12:34:30.192Z",
+      "completedAt": "2026-08-20T12:34:33.873Z",
+      "result": "pass",
+      "details": {
+        "exactArtifactPaths": [
+          "/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+          "/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus"
+        ],
+        "distinctPorts": [
+          56191,
+          56192
+        ],
+        "distinctRoots": [
+          "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-KfxYY0",
+          "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-0Egtp1"
+        ],
+        "localStorageMarkers": [
+          "parallel-instance-one",
+          "parallel-instance-two"
+        ],
+        "distinctUserData": true,
+        "health": [
+          {
+            "ok": true,
+            "status": 200
+          },
+          {
+            "ok": true,
+            "status": 200
+          }
+        ],
+        "ordinaryDuring": {
+          "label": "during parallel E2E",
+          "listenerPids": [
+            98429
+          ],
+          "health": {
+            "ok": true,
+            "status": 200
+          },
+          "identities": [
+            {
+              "pid": 98429,
+              "fingerprint": "ebeda19895d06c482766ff54c5f38405512464b3329f02f8b4ed93f786b2246d",
+              "commandIsAutoByteus": true
+            }
+          ]
+        },
+        "ordinaryAfter": {
+          "label": "after parallel E2E",
+          "listenerPids": [
+            98429
+          ],
+          "health": {
+            "ok": true,
+            "status": 200
+          },
+          "identities": [
+            {
+              "pid": 98429,
+              "fingerprint": "ebeda19895d06c482766ff54c5f38405512464b3329f02f8b4ed93f786b2246d",
+              "commandIsAutoByteus": true
+            }
+          ]
+        },
+        "cleanupResults": [
+          {
+            "processTreeCompletion": {
+              "status": "complete",
+              "identity": "posix-process-group:78814",
+              "forced": false,
+              "gracefulError": null
+            },
+            "portObservation": {
+              "status": "available",
+              "port": 56191,
+              "detail": null
+            }
+          },
+          {
+            "processTreeCompletion": {
+              "status": "complete",
+              "identity": "posix-process-group:78821",
+              "forced": false,
+              "gracefulError": null
+            },
+            "portObservation": {
+              "status": "available",
+              "port": 56192,
+              "detail": null
+            }
+          }
+        ],
+        "ownedRootsDisposed": true
+      }
+    },
+    "E2E-PKG-004": {
+      "id": "E2E-PKG-004",
+      "title": "Raw packaged invalid and partial profiles fail closed",
+      "startedAt": "2026-08-20T12:34:33.874Z",
+      "completedAt": "2026-08-20T12:34:34.532Z",
+      "result": "fail",
+      "details": {
+        "message": "Invalid packaged diagnostic did not identify the expected field/problem",
+        "details": {
+          "expectedMessage": "must be absolute",
+          "output": "[electron-bootstrap] Startup failed: E2E data root must be an absolute path: relative/e2e-root\n"
+        },
+        "stack": "Error: Invalid packaged diagnostic did not identify the expected field/problem\n    at assert (file:///Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/tests/e2e/electron-launch-profile-probe.mjs:54:17)\n    at runRawPackagedFailure (file:///Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/tests/e2e/electron-launch-profile-probe.mjs:628:3)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/tests/e2e/electron-launch-profile-probe.mjs:944:15\n    at async runScenario (file:///Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/tests/e2e/electron-launch-profile-probe.mjs:124:22)\n    at async execute (file:///Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/tests/e2e/electron-launch-profile-probe.mjs:888:3)\n    at async main (file:///Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/tests/e2e/electron-launch-profile-probe.mjs:1020:5)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/tests/e2e/electron-launch-profile-probe.mjs:1054:1"
+      }
+    }
+  },
+  "failures": [
+    {
+      "id": "E2E-PKG-004",
+      "message": "Invalid packaged diagnostic did not identify the expected field/problem",
+      "details": {
+        "expectedMessage": "must be absolute",
+        "output": "[electron-bootstrap] Startup failed: E2E data root must be an absolute path: relative/e2e-root\n"
+      },
+      "stack": "Error: Invalid packaged diagnostic did not identify the expected field/problem\n    at assert (file:///Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/tests/e2e/electron-launch-profile-probe.mjs:54:17)\n    at runRawPackagedFailure (file:///Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/tests/e2e/electron-launch-profile-probe.mjs:628:3)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/tests/e2e/electron-launch-profile-probe.mjs:944:15\n    at async runScenario (file:///Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/tests/e2e/electron-launch-profile-probe.mjs:124:22)\n    at async execute (file:///Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/tests/e2e/electron-launch-profile-probe.mjs:888:3)\n    at async main (file:///Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/tests/e2e/electron-launch-profile-probe.mjs:1020:5)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/tests/e2e/electron-launch-profile-probe.mjs:1054:1"
+    }
+  ],
+  "cleanup": [
+    {
+      "label": "direct Electron session",
+      "result": "pass"
+    },
+    {
+      "label": "Playwright Electron session",
+      "result": "pass"
+    },
+    {
+      "label": "parallel Playwright session 1",
+      "result": "pass"
+    },
+    {
+      "label": "parallel Playwright session 2",
+      "result": "pass"
+    },
+    {
+      "label": "invalid-profile occupied-port fixture",
+      "result": "pass"
+    },
+    {
+      "label": "controlled caller root",
+      "result": "pass"
+    },
+    {
+      "label": "probe temporary root",
+      "result": "pass"
+    }
+  ]
+}

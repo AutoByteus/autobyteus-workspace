@@ -1,0 +1,39 @@
+# DR-006 old ticket-worktree app shutdown and cleanup
+started_at=2026-08-20T14:27:27Z
+reason=user requested ticket-worktree cleanup after replacement personal build succeeded
+replacement_executable=/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+replacement_executable_sha256=c0bf182389ea930585e3b0bf5c4f16529461e02bf3be751cb364d0e25f2257e0
+old_processes_before:
+57441     1 S    /Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+58045 57441 S    /Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus /Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/app.js --port 29695 --data-dir /Users/normy/.autobyteus/server-data
+shutdown_method=AppleScript quit for bundle id com.autobyteus.app
+applescript_exit=0
+resumed_at=2026-08-20T14:28:33Z
+shutdown_complete=yes; AppleScript quit completed gracefully before interrupted command returned
+port_29695_listener_after_shutdown=absent
+ticket_worktree_status_before_removal:
+## codex/electron-e2e-runtime-isolation...origin/codex/electron-e2e-runtime-isolation
+command=git worktree remove --force /Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation
+error: failed to delete '/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation': Directory not empty
+residual_cleanup_resumed_at=2026-08-20T14:29:23Z
+git_worktree_remove_registration=removed
+git_worktree_remove_filesystem_result=partial; ignored/generated/read-only residue remained (908M)
+fallback=exact-path recursive removal after registration removal and process shutdown
+recursive_cleanup_result=all contents removed except Finder-created .DS_Store race
+fallback_2=unlink exact residual .DS_Store and remove now-empty exact worktree directory
+ticket_worktree_removed=yes
+command=git branch -d codex/electron-e2e-runtime-isolation
+Deleted branch codex/electron-e2e-runtime-isolation (was 6ac051d1e).
+local_ticket_branch_removed=yes
+command=git push origin --delete codex/electron-e2e-runtime-isolation
+remote:
+remote: GitHub found 818 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (20 critical, 347 high, 385 moderate, 66 low). To find out more, visit:
+remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot
+remote:
+To github.com-ryan:AutoByteus/autobyteus-workspace.git
+ - [deleted]             codex/electron-e2e-runtime-isolation
+local_ticket_branch_absent=yes
+remote_ticket_branch_absent=yes
+worktree_registration_absent=yes
+worktree_prune=not needed; worktree registration is absent
+cleanup_completed_at=2026-08-20T14:29:52Z

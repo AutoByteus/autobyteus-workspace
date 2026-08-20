@@ -9,20 +9,6 @@ type LocalFileProtocolInstallOptions = {
   isOwnedMainFrame: (webContentsId: number, frame: WebFrameMain) => boolean;
 };
 
-export function registerLocalFileProtocolScheme(): void {
-  protocol.registerSchemesAsPrivileged([
-    {
-      scheme: LOCAL_FILE_SCHEME,
-      privileges: {
-        standard: true,
-        stream: true,
-        supportFetchAPI: true,
-        corsEnabled: true,
-      },
-    },
-  ]);
-}
-
 export function installLocalFileProtocol({
   isOwnedMainFrame,
 }: LocalFileProtocolInstallOptions): void {
