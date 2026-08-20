@@ -25,6 +25,11 @@ type CreateElectronLoggerOptions = {
   rootLoggerName?: string
 }
 
+type ConfigureElectronLoggerOptions = {
+  baseDataPath: string
+  env?: NodeJS.ProcessEnv
+}
+
 export type ElectronAppLogger = {
   child: (scope: string) => ElectronAppLogger
   trace: (message?: unknown, ...args: unknown[]) => void
@@ -347,4 +352,77 @@ export const createElectronLogger = (
   return new ElectronScopedLogger(root, rootLoggerName)
 }
 
-export const logger = createElectronLogger()
+class DeferredElectronLogger implements ElectronAppLogger {
+  constructor(private readonly scope: string) {}
+
+  child(scope: string): ElectronAppLogger {
+    return new DeferredElectronLogger(joinLoggerScope(this.scope, scope))
+  }
+
+  private configured(): ElectronAppLogger {
+    if (!configuredLogger) {
+      throw new Error('Electron logger used before configureElectronLogger()')
+    }
+    if (this.scope === DEFAULT_ROOT_LOGGER_NAME) {
+      return configuredLogger
+    }
+    const relativeScope = this.scope.startsWith(`${DEFAULT_ROOT_LOGGER_NAME}.`)
+      ? this.scope.slice(DEFAULT_ROOT_LOGGER_NAME.length + 1)
+      : this.scope
+    return configuredLogger.child(relativeScope)
+  }
+
+  trace(message?: unknown, ...args: unknown[]): void {
+    this.configured().trace(message, ...args)
+  }
+
+  debug(message?: unknown, ...args: unknown[]): void {
+    this.configured().debug(message, ...args)
+  }
+
+  info(message?: unknown, ...args: unknown[]): void {
+    this.configured().info(message, ...args)
+  }
+
+  warn(message?: unknown, ...args: unknown[]): void {
+    this.configured().warn(message, ...args)
+  }
+
+  error(message?: unknown, ...args: unknown[]): void {
+    this.configured().error(message, ...args)
+  }
+
+  fatal(message?: unknown, ...args: unknown[]): void {
+    this.configured().fatal(message, ...args)
+  }
+
+  isLevelEnabled(level: ElectronLogLevel): boolean {
+    return this.configured().isLevelEnabled(level)
+  }
+
+  getLogPath(): string {
+    return this.configured().getLogPath()
+  }
+
+  close(): void {
+    this.configured().close()
+  }
+}
+
+let configuredLogger: ElectronAppLogger | null = null
+
+export function configureElectronLogger({
+  baseDataPath,
+  env = process.env,
+}: ConfigureElectronLoggerOptions): ElectronAppLogger {
+  if (configuredLogger) {
+    throw new Error('Electron logger is already configured')
+  }
+  configuredLogger = createElectronLogger({
+    baseDataPath,
+    env,
+  })
+  return configuredLogger
+}
+
+export const logger: ElectronAppLogger = new DeferredElectronLogger(DEFAULT_ROOT_LOGGER_NAME)

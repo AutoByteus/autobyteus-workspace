@@ -10,6 +10,7 @@ import type {
 } from '~/types/remoteAccess';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import { normalizeNodeBaseUrl } from '~/utils/nodeEndpoints';
+import { getBrowserServerBaseUrl } from '~/utils/browserServerConfig';
 import { mobileCredentialStorage } from '~/utils/remoteAccess/mobileCredentialStorage';
 import {
   diagnosticForKind,
@@ -21,7 +22,7 @@ const MOBILE_NODE_ID = 'mobile-paired-node';
 
 const resolveSameOriginBaseUrl = (): string => {
   if (typeof window === 'undefined') {
-    return 'http://127.0.0.1:29695';
+    return getBrowserServerBaseUrl();
   }
   return window.location.origin;
 };

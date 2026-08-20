@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "scenarioId": "E2E-LIVE-006",
+  "mode": "run",
+  "startedAt": "2026-08-20T13:15:42.769Z",
+  "completedAt": "2026-08-20T13:16:17.947Z",
+  "result": "FAIL",
+  "artifact": {
+    "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "sha256": "c0bf182389ea930585e3b0bf5c4f16529461e02bf3be751cb364d0e25f2257e0"
+  },
+  "launch": {
+    "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "port": 59574,
+    "dataRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/tickets/in-progress/electron-e2e-runtime-isolation/probes/api-e2e/live-provider/isolated-electron-data-root",
+    "ownsDataRoot": false,
+    "clientBaseUrl": "http://127.0.0.1:59574",
+    "healthUrl": "http://127.0.0.1:59574/rest/health"
+  },
+  "databasePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/tickets/in-progress/electron-e2e-runtime-isolation/probes/api-e2e/live-provider/isolated-electron-data-root/server-data/db/production.db",
+  "secretKeyPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/tickets/in-progress/electron-e2e-runtime-isolation/probes/api-e2e/live-provider/isolated-electron-data-root/server-data/db/production.db.secret.key",
+  "packageSource": "/Users/normy/autobyteus_org/autobyteus-agents",
+  "packageSourceBefore": {
+    "fileCount": 568,
+    "sha256": "68d5c5e776c9e087232706576d3fd0e554d223a76d2c662b71f502ba940a883d"
+  },
+  "ordinaryBefore": {
+    "label": "run-before",
+    "healthStatus": 200,
+    "listenerPids": [
+      98429
+    ],
+    "identities": [
+      {
+        "pid": 98429,
+        "fingerprint": "ebeda19895d06c482766ff54c5f38405512464b3329f02f8b4ed93f786b2246d",
+        "commandIsAutoByteus": true
+      }
+    ]
+  },
+  "failure": {
+    "message": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#team-auto-execute')\u001b[22m\n\u001b[2m    - locator resolved to <button type=\"button\" id=\"team-auto-execute\" class=\"relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 bg-gray-200\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <p data-v-ab690480=\"\" class=\"text-sm text-slate-700\" data-testid=\"app-update-message\">AutoByteus couldn’t complete the update check. Tr…</p> from <section data-v-ab690480=\"\" data-testid=\"app-update-notice\" class=\"fixed bottom-6 right-6 z-[95] w-[360px] max-w-[calc(100vw-2rem)] rounded-xl border border-sky-200 bg-gradient-to-br from-white to-sky-50 p-4 shadow-2xl\">…</section> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <header data-v-ab690480=\"\" class=\"mb-2 flex items-start justify-between gap-3\">…</header> from <section data-v-ab690480=\"\" data-testid=\"app-update-notice\" class=\"fixed bottom-6 right-6 z-[95] w-[360px] max-w-[calc(100vw-2rem)] rounded-xl border border-sky-200 bg-gradient-to-br from-white to-sky-50 p-4 shadow-2xl\">…</section> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    14 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is visible, enabled and stable\u001b[22m\n\u001b[2m       - scrolling into view if needed\u001b[22m\n\u001b[2m       - done scrolling\u001b[22m\n\u001b[2m       - <header data-v-ab690480=\"\" class=\"mb-2 flex items-start justify-between gap-3\">…</header> from <section data-v-ab690480=\"\" data-testid=\"app-update-notice\" class=\"fixed bottom-6 right-6 z-[95] w-[360px] max-w-[calc(100vw-2rem)] rounded-xl border border-sky-200 bg-gradient-to-br from-white to-sky-50 p-4 shadow-2xl\">…</section> subtree intercepts pointer events\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\u001b[2m       - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is visible, enabled and stable\u001b[22m\n\u001b[2m       - scrolling into view if needed\u001b[22m\n\u001b[2m       - done scrolling\u001b[22m\n\u001b[2m       - <p data-v-ab690480=\"\" class=\"text-sm text-slate-700\" data-testid=\"app-update-message\">AutoByteus couldn’t complete the update check. Tr…</p> from <section data-v-ab690480=\"\" data-testid=\"app-update-notice\" class=\"fixed bottom-6 right-6 z-[95] w-[360px] max-w-[calc(100vw-2rem)] rounded-xl border border-sky-200 bg-gradient-to-br from-white to-sky-50 p-4 shadow-2xl\">…</section> subtree intercepts pointer events\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\u001b[2m       - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is visible, enabled and stable\u001b[22m\n\u001b[2m       - scrolling into view if needed\u001b[22m\n\u001b[2m       - done scrolling\u001b[22m\n\u001b[2m       - <header data-v-ab690480=\"\" class=\"mb-2 flex items-start justify-between gap-3\">…</header> from <section data-v-ab690480=\"\" data-testid=\"app-update-notice\" class=\"fixed bottom-6 right-6 z-[95] w-[360px] max-w-[calc(100vw-2rem)] rounded-xl border border-sky-200 bg-gradient-to-br from-white to-sky-50 p-4 shadow-2xl\">…</section> subtree intercepts pointer events\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\u001b[2m       - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is visible, enabled and stable\u001b[22m\n\u001b[2m       - scrolling into view if needed\u001b[22m\n\u001b[2m       - done scrolling\u001b[22m\n\u001b[2m       - <header data-v-ab690480=\"\" class=\"mb-2 flex items-start justify-between gap-3\">…</header> from <section data-v-ab690480=\"\" data-testid=\"app-update-notice\" class=\"fixed bottom-6 right-6 z-[95] w-[360px] max-w-[calc(100vw-2rem)] rounded-xl border border-sky-200 bg-gradient-to-br from-white to-sky-50 p-4 shadow-2xl\">…</section> subtree intercepts pointer events\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m    - element is visible, enabled and stable\u001b[22m\n\u001b[2m    - scrolling into view if needed\u001b[22m\n\u001b[2m    - done scrolling\u001b[22m\n\u001b[2m    - <header data-v-ab690480=\"\" class=\"mb-2 flex items-start justify-between gap-3\">…</header> from <section data-v-ab690480=\"\" data-testid=\"app-update-notice\" class=\"fixed bottom-6 right-6 z-[95] w-[360px] max-w-[calc(100vw-2rem)] rounded-xl border border-sky-200 bg-gradient-to-br from-white to-sky-50 p-4 shadow-2xl\">…</section> subtree intercepts pointer events\u001b[22m\n\u001b[2m  - retrying click action\u001b[22m\n\u001b[2m    - waiting 500ms\u001b[22m\n",
+    "stack": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#team-auto-execute')\u001b[22m\n\u001b[2m    - locator resolved to <button type=\"button\" id=\"team-auto-execute\" class=\"relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 bg-gray-200\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <p data-v-ab690480=\"\" class=\"text-sm text-slate-700\" data-testid=\"app-update-message\">AutoByteus couldn’t complete the update check. Tr…</p> from <section data-v-ab690480=\"\" data-testid=\"app-update-notice\" class=\"fixed bottom-6 right-6 z-[95] w-[360px] max-w-[calc(100vw-2rem)] rounded-xl border border-sky-200 bg-gradient-to-br from-white to-sky-50 p-4 shadow-2xl\">…</section> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <header data-v-ab690480=\"\" class=\"mb-2 flex items-start justify-between gap-3\">…</header> from <section data-v-ab690480=\"\" data-testid=\"app-update-notice\" class=\"fixed bottom-6 right-6 z-[95] w-[360px] max-w-[calc(100vw-2rem)] rounded-xl border border-sky-200 bg-gradient-to-br from-white to-sky-50 p-4 shadow-2xl\">…</section> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    14 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is visible, enabled and stable\u001b[22m\n\u001b[2m       - scrolling into view if needed\u001b[22m\n\u001b[2m       - done scrolling\u001b[22m\n\u001b[2m       - <header data-v-ab690480=\"\" class=\"mb-2 flex items-start justify-between gap-3\">…</header> from <section data-v-ab690480=\"\" data-testid=\"app-update-notice\" class=\"fixed bottom-6 right-6 z-[95] w-[360px] max-w-[calc(100vw-2rem)] rounded-xl border border-sky-200 bg-gradient-to-br from-white to-sky-50 p-4 shadow-2xl\">…</section> subtree intercepts pointer events\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\u001b[2m       - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is visible, enabled and stable\u001b[22m\n\u001b[2m       - scrolling into view if needed\u001b[22m\n\u001b[2m       - done scrolling\u001b[22m\n\u001b[2m       - <p data-v-ab690480=\"\" class=\"text-sm text-slate-700\" data-testid=\"app-update-message\">AutoByteus couldn’t complete the update check. Tr…</p> from <section data-v-ab690480=\"\" data-testid=\"app-update-notice\" class=\"fixed bottom-6 right-6 z-[95] w-[360px] max-w-[calc(100vw-2rem)] rounded-xl border border-sky-200 bg-gradient-to-br from-white to-sky-50 p-4 shadow-2xl\">…</section> subtree intercepts pointer events\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\u001b[2m       - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is visible, enabled and stable\u001b[22m\n\u001b[2m       - scrolling into view if needed\u001b[22m\n\u001b[2m       - done scrolling\u001b[22m\n\u001b[2m       - <header data-v-ab690480=\"\" class=\"mb-2 flex items-start justify-between gap-3\">…</header> from <section data-v-ab690480=\"\" data-testid=\"app-update-notice\" class=\"fixed bottom-6 right-6 z-[95] w-[360px] max-w-[calc(100vw-2rem)] rounded-xl border border-sky-200 bg-gradient-to-br from-white to-sky-50 p-4 shadow-2xl\">…</section> subtree intercepts pointer events\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\u001b[2m       - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is visible, enabled and stable\u001b[22m\n\u001b[2m       - scrolling into view if needed\u001b[22m\n\u001b[2m       - done scrolling\u001b[22m\n\u001b[2m       - <header data-v-ab690480=\"\" class=\"mb-2 flex items-start justify-between gap-3\">…</header> from <section data-v-ab690480=\"\" data-testid=\"app-update-notice\" class=\"fixed bottom-6 right-6 z-[95] w-[360px] max-w-[calc(100vw-2rem)] rounded-xl border border-sky-200 bg-gradient-to-br from-white to-sky-50 p-4 shadow-2xl\">…</section> subtree intercepts pointer events\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m    - element is visible, enabled and stable\u001b[22m\n\u001b[2m    - scrolling into view if needed\u001b[22m\n\u001b[2m    - done scrolling\u001b[22m\n\u001b[2m    - <header data-v-ab690480=\"\" class=\"mb-2 flex items-start justify-between gap-3\">…</header> from <section data-v-ab690480=\"\" data-testid=\"app-update-notice\" class=\"fixed bottom-6 right-6 z-[95] w-[360px] max-w-[calc(100vw-2rem)] rounded-xl border border-sky-200 bg-gradient-to-br from-white to-sky-50 p-4 shadow-2xl\">…</section> subtree intercepts pointer events\u001b[22m\n\u001b[2m  - retrying click action\u001b[22m\n\u001b[2m    - waiting 500ms\u001b[22m\n\n    at run (/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/tickets/in-progress/electron-e2e-runtime-isolation/probes/api-e2e/live-provider/run-packaged-classroom-live.mjs:270:91)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/tickets/in-progress/electron-e2e-runtime-isolation/probes/api-e2e/live-provider/run-packaged-classroom-live.mjs:453:3"
+  },
+  "consoleEvents": [],
+  "termination": null,
+  "cleanupResult": {
+    "processTreeCompletion": {
+      "status": "complete",
+      "identity": "posix-process-group:26940",
+      "forced": false,
+      "gracefulError": null
+    },
+    "portObservation": {
+      "status": "available",
+      "port": 59574,
+      "detail": null
+    }
+  },
+  "packageSourceAfter": {
+    "fileCount": 568,
+    "sha256": "68d5c5e776c9e087232706576d3fd0e554d223a76d2c662b71f502ba940a883d"
+  },
+  "packageSourceUnchanged": true,
+  "ordinaryAfter": {
+    "label": "run-after",
+    "healthStatus": 200,
+    "listenerPids": [
+      98429
+    ],
+    "identities": [
+      {
+        "pid": 98429,
+        "fingerprint": "ebeda19895d06c482766ff54c5f38405512464b3329f02f8b4ed93f786b2246d",
+        "commandIsAutoByteus": true
+      }
+    ]
+  },
+  "ordinaryIdentityUnchanged": true,
+  "isolatedRootDisposed": false,
+  "isolatedRootRetainedAfterFailure": true
+}

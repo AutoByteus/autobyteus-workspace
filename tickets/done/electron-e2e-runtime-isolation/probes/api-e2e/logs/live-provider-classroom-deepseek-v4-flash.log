@@ -1,0 +1,35 @@
+{
+  "scenarioId": "E2E-LIVE-006",
+  "mode": "run",
+  "result": "PASS",
+  "rootTeamRunId": "classroom_simulation_team_baa195e612514452b09b8f2ffddc7695",
+  "conditions": {
+    "isolatedEndpoint": true,
+    "providerCredentialConfigured": true,
+    "requestedModelCatalogued": true,
+    "localPackageImportedViaPackagedUi": true,
+    "classroomTeamImported": true,
+    "freshRun": true,
+    "rootedTopology": true,
+    "effectiveRuntime": true,
+    "effectiveModelPersisted": true,
+    "exactOneProfessorRequest": true,
+    "requestHasReference": true,
+    "exactOneStudentReply": true,
+    "replyHasReference": true,
+    "exactMemberRunRouting": true,
+    "completionVisible": true,
+    "noUnexpectedConsoleErrors": true
+  },
+  "termination": {
+    "success": true,
+    "message": "Agent team run terminated successfully."
+  },
+  "cleanupStatus": "complete",
+  "isolatedRootDisposed": true,
+  "ordinaryIdentityUnchanged": true,
+  "packageSourceUnchanged": true,
+  "evidencePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/tickets/in-progress/electron-e2e-runtime-isolation/probes/api-e2e/live-provider/classroom-deepseek-v4-flash.json"
+}
+
+LIVE_PROVIDER_CLASSROOM_EXIT=0

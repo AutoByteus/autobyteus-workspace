@@ -1,7 +1,6 @@
 import * as path from 'path'
 import * as fs from 'fs'
 import { logger as rootLogger } from '../../logger'
-import { INTERNAL_SERVER_BASE_URL } from '../../../shared/embeddedServerConfig'
 import { toPrismaSqliteUrl } from '../prismaSqliteUrl'
 
 const logger = rootLogger.child('server.app-data')
@@ -15,7 +14,10 @@ export class AppDataService {
   private firstRun: boolean
   private requiredDataDirs = ['db', 'logs', 'download']
 
-  constructor(baseDataPath: string) {
+  constructor(
+    baseDataPath: string,
+    private readonly publicServerUrl: string,
+  ) {
     this.appDataDir = path.join(baseDataPath, 'server-data')
     const dataDirExists = fs.existsSync(this.appDataDir)
     const hasEnvFile = dataDirExists && fs.existsSync(path.join(this.appDataDir, '.env'))
@@ -189,7 +191,6 @@ export class AppDataService {
   }
 
   private buildDefaultEnvFileContents(): string {
-    const defaultHost = process.env.AUTOBYTEUS_SERVER_HOST ?? INTERNAL_SERVER_BASE_URL
     const dbPath = path.join(this.appDataDir, 'db', 'production.db')
 
     const lines = [
@@ -197,7 +198,7 @@ export class AppDataService {
       'LOG_LEVEL=INFO',
       'DB_TYPE=sqlite',
       `DATABASE_URL=${toPrismaSqliteUrl(dbPath)}`,
-      `AUTOBYTEUS_SERVER_HOST=${defaultHost}`
+      `AUTOBYTEUS_SERVER_HOST=${this.publicServerUrl}`
     ]
 
     return `${lines.join('\n')}\n`

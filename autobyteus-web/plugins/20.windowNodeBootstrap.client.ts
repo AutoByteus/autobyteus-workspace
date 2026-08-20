@@ -24,7 +24,9 @@ export default defineNuxtPlugin(async () => {
     try {
       context = await window.electronAPI.getWindowContext();
     } catch (error) {
-      console.warn('[windowNodeBootstrap] Failed to fetch window context; fallback to embedded.', error);
+      throw new Error(
+        `[windowNodeBootstrap] Failed to fetch Electron window context: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   }
 
@@ -35,4 +37,3 @@ export default defineNuxtPlugin(async () => {
 
   windowNodeContextStore.initializeFromWindowContext(context, boundNode.baseUrl);
 });
-

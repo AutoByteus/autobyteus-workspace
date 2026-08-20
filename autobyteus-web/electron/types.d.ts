@@ -12,6 +12,7 @@ import type {
   BrowserShellSetDeviceEmulationRequest,
   BrowserShellSnapshot,
 } from '../types/browserShell';
+import type { ServerHealthResult, ServerStatusSnapshot } from '../types/serverStatus';
 
 type Cleanup = () => void;
 
@@ -20,10 +21,10 @@ interface Window {
     sendPing: (message: string) => void;
     onPong: (callback: (response: string) => void) => void;
 
-    getServerStatus: () => Promise<any>;
-    restartServer: () => Promise<any>;
-    onServerStatus: (callback: (status: any) => void) => Cleanup;
-    checkServerHealth: () => Promise<any>;
+    getServerStatus: () => Promise<ServerStatusSnapshot>;
+    restartServer: () => Promise<ServerStatusSnapshot>;
+    onServerStatus: (callback: (status: ServerStatusSnapshot) => void) => Cleanup;
+    checkServerHealth: () => Promise<ServerHealthResult>;
 
     openNodeWindow: (nodeId: string) => Promise<{ windowId: number; created: boolean }>;
     focusNodeWindow: (nodeId: string) => Promise<{ focused: boolean; reason?: string }>;

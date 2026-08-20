@@ -43,7 +43,7 @@ describe('AppDataService', () => {
     it('should detect first run when directory does not exist', () => {
       mockedFs.existsSync.mockReturnValue(false)
 
-      const service = new AppDataService(testUserDataPath)
+      const service = new AppDataService(testUserDataPath, EMBEDDED_SERVER_BASE_URL)
 
       expect(service.isFirstRun()).toBe(true)
       expect(service.getAppDataDir()).toBe(expectedAppDataDir)
@@ -54,7 +54,7 @@ describe('AppDataService', () => {
         return filePath !== path.join(expectedAppDataDir, '.env')
       })
 
-      const service = new AppDataService(testUserDataPath)
+      const service = new AppDataService(testUserDataPath, EMBEDDED_SERVER_BASE_URL)
 
       expect(service.isFirstRun()).toBe(true)
       expect(service.getAppDataDir()).toBe(expectedAppDataDir)
@@ -63,7 +63,7 @@ describe('AppDataService', () => {
     it('should detect non-first run when env file exists', () => {
       mockedFs.existsSync.mockReturnValue(true)
 
-      const service = new AppDataService(testUserDataPath)
+      const service = new AppDataService(testUserDataPath, EMBEDDED_SERVER_BASE_URL)
 
       expect(service.isFirstRun()).toBe(false)
       expect(service.getAppDataDir()).toBe(expectedAppDataDir)
@@ -74,7 +74,7 @@ describe('AppDataService', () => {
     it('should create app data directory and data dirs when missing', () => {
       mockedFs.existsSync.mockReturnValue(false)
 
-      const service = new AppDataService(testUserDataPath)
+      const service = new AppDataService(testUserDataPath, EMBEDDED_SERVER_BASE_URL)
       service.initialize()
 
       expect(mockedFs.mkdirSync).toHaveBeenCalledWith(expectedAppDataDir, { recursive: true })
@@ -95,7 +95,7 @@ describe('AppDataService', () => {
         return true
       })
 
-      const service = new AppDataService(testUserDataPath)
+      const service = new AppDataService(testUserDataPath, EMBEDDED_SERVER_BASE_URL)
       service.initialize()
 
       expect(mockedFs.mkdirSync).not.toHaveBeenCalled()
@@ -107,7 +107,7 @@ describe('AppDataService', () => {
         throw new Error('Permission denied')
       })
 
-      const service = new AppDataService(testUserDataPath)
+      const service = new AppDataService(testUserDataPath, EMBEDDED_SERVER_BASE_URL)
 
       expect(() => service.initialize()).toThrow('Failed to create app data directory')
     })
@@ -119,7 +119,7 @@ describe('AppDataService', () => {
     it('should return empty array when all required files exist', () => {
       mockedFs.existsSync.mockReturnValue(true)
 
-      const service = new AppDataService(testUserDataPath)
+      const service = new AppDataService(testUserDataPath, EMBEDDED_SERVER_BASE_URL)
       const errors = service.validateEnvironment(testServerDir)
 
       expect(errors).toEqual([])
@@ -130,7 +130,7 @@ describe('AppDataService', () => {
         return filePath !== path.join(testServerDir, 'dist', 'app.js')
       })
 
-      const service = new AppDataService(testUserDataPath)
+      const service = new AppDataService(testUserDataPath, EMBEDDED_SERVER_BASE_URL)
       const errors = service.validateEnvironment(testServerDir)
 
       expect(errors).toContain(`Required server entrypoint not found: ${path.join(testServerDir, 'dist', 'app.js')}`)
@@ -139,7 +139,7 @@ describe('AppDataService', () => {
     it('should return errors for multiple missing files', () => {
       mockedFs.existsSync.mockReturnValue(false)
 
-      const service = new AppDataService(testUserDataPath)
+      const service = new AppDataService(testUserDataPath, EMBEDDED_SERVER_BASE_URL)
       const errors = service.validateEnvironment(testServerDir)
 
       expect(errors.length).toBeGreaterThan(1)
@@ -163,7 +163,7 @@ describe('AppDataService', () => {
         return false
       })
 
-      const service = new AppDataService(testUserDataPath)
+      const service = new AppDataService(testUserDataPath, EMBEDDED_SERVER_BASE_URL)
       service.initializeFirstRun(testServerDir)
 
       expect(mockedFs.writeFileSync).toHaveBeenCalledTimes(1)
@@ -191,7 +191,7 @@ describe('AppDataService', () => {
         return false
       })
 
-      const service = new AppDataService(testUserDataPath)
+      const service = new AppDataService(testUserDataPath, EMBEDDED_SERVER_BASE_URL)
       service.initializeFirstRun(testServerDir)
 
       expect(mockedFs.writeFileSync).toHaveBeenCalledTimes(1)
@@ -219,7 +219,7 @@ describe('AppDataService', () => {
       // For constructor check
       mockedFs.existsSync.mockReturnValueOnce(true)
       
-      const service = new AppDataService(testUserDataPath)
+      const service = new AppDataService(testUserDataPath, EMBEDDED_SERVER_BASE_URL)
       
       // Clear again after construction
       vi.clearAllMocks()
@@ -256,7 +256,7 @@ describe('AppDataService', () => {
         }
       })
 
-      const service = new AppDataService(testUserDataPath)
+      const service = new AppDataService(testUserDataPath, EMBEDDED_SERVER_BASE_URL)
       const resetPromise = service.resetAppDataDir()
       await vi.runAllTimersAsync()
       await resetPromise

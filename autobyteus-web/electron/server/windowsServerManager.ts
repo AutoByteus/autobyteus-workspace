@@ -1,10 +1,10 @@
-import { spawn, ChildProcess, StdioOptions } from 'child_process'
+import { spawn } from 'child_process'
+import type { ChildProcess, StdioOptions } from 'child_process'
 import * as path from 'path'
 import * as fs from 'fs'
 import isDev from 'electron-is-dev'
 import { BaseServerManager } from './baseServerManager'
 import { logger } from '../logger'
-import { INTERNAL_SERVER_BASE_URL } from '../../shared/embeddedServerConfig'
 import { buildServerRuntimeEnv } from './serverRuntimeEnv'
 
 export class WindowsServerManager extends BaseServerManager {
@@ -49,8 +49,7 @@ export class WindowsServerManager extends BaseServerManager {
       throw new Error(`Server entrypoint not found at: ${serverEntry}`)
     }
     
-    const publicServerUrl = INTERNAL_SERVER_BASE_URL
-
+    const publicServerUrl = this.serverUrl
     const env = {
       ...process.env,
       ELECTRON_RUN_AS_NODE: '1',
@@ -87,7 +86,7 @@ export class WindowsServerManager extends BaseServerManager {
    * Stop the backend server on Windows with graceful-to-forceful fallback.
    * First tries graceful taskkill (without /f), then escalates to forceful kill after timeout.
    */
-  public stopServer(): Promise<void> {
+  public override stopServer(): Promise<void> {
     if (!this.serverProcess) {
       logger.info('Server is not running');
       return Promise.resolve();

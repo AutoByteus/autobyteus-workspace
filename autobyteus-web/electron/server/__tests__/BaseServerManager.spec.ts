@@ -7,6 +7,8 @@ import { PassThrough } from 'stream'
 import type { ChildProcess } from 'child_process'
 import { BaseServerManager } from '../baseServerManager'
 import { EMBEDDED_SERVER_PLATFORM_FATAL_PROTOCOL } from '../embeddedServerPlatformFatal'
+import { createEmbeddedServerClientEndpoint } from '../../../shared/embeddedServerClientEndpoint'
+import type { EmbeddedServerLaunchConfig } from '../embeddedServerLaunchConfig'
 
 const { axiosGet } = vi.hoisted(() => ({ axiosGet: vi.fn() }))
 
@@ -51,6 +53,12 @@ vi.mock('../../logger', () => ({
 
 const mockedFs = vi.mocked(fs)
 const mockedOs = vi.mocked(os)
+
+const launchConfig: EmbeddedServerLaunchConfig = {
+  clientEndpoint: createEmbeddedServerClientEndpoint(29695),
+  listenerPolicy: 'preserve-backend-default',
+  baseDataRoot: path.join('/user/home', '.autobyteus'),
+}
 
 class TestServerManager extends BaseServerManager {
   protected async launchServerProcess(): Promise<void> {
@@ -130,7 +138,7 @@ describe('BaseServerManager', () => {
       if (dataDirPaths.includes(p)) return existingDataDirs.has(p)
       return true
     })
-    const manager = new TestServerManager()
+    const manager = new TestServerManager(launchConfig)
     appDataExists = true
     envExists = true
     dataDirPaths.forEach((p) => existingDataDirs.add(p))
@@ -149,7 +157,7 @@ describe('BaseServerManager', () => {
   it('ignores ready-looking logs and settles only after current-process health succeeds', async () => {
     mockedFs.existsSync.mockReturnValue(true)
     axiosGet.mockRejectedValue(new Error('not healthy yet'))
-    const manager = new LifecycleServerManager()
+    const manager = new LifecycleServerManager(launchConfig)
     manager.configureStartupTiming(5, 500)
     const ready = vi.fn()
     manager.on('ready', ready)
@@ -170,7 +178,7 @@ describe('BaseServerManager', () => {
   it('reports one prompt startup error when the child closes with code zero before health', async () => {
     mockedFs.existsSync.mockReturnValue(true)
     axiosGet.mockRejectedValue(new Error('not healthy yet'))
-    const manager = new LifecycleServerManager()
+    const manager = new LifecycleServerManager(launchConfig)
     manager.configureStartupTiming(5, 500)
     const errors: Error[] = []
     manager.on('error', (error) => errors.push(error))
@@ -190,7 +198,7 @@ describe('BaseServerManager', () => {
   it('returns one current-generation structured platform fatal with identity, summary, and log path', async () => {
     mockedFs.existsSync.mockReturnValue(true)
     axiosGet.mockRejectedValue(new Error('not healthy yet'))
-    const manager = new LifecycleServerManager()
+    const manager = new LifecycleServerManager(launchConfig)
     manager.configureStartupTiming(5, 500)
     const errors: Error[] = []
     manager.on('error', (error) => errors.push(error))

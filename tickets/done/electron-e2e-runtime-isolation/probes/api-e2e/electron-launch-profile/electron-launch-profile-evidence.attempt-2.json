@@ -1,0 +1,182 @@
+{
+  "startedAt": "2026-08-20T12:30:02.728Z",
+  "completedAt": "2026-08-20T12:32:11.687Z",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "webRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web",
+  "skipBuild": true,
+  "artifact": {
+    "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "size": 33968,
+    "sha256": "c0bf182389ea930585e3b0bf5c4f16529461e02bf3be751cb364d0e25f2257e0"
+  },
+  "ordinaryApplication": {
+    "before": {
+      "label": "before packaged validation",
+      "listenerPids": [
+        98429
+      ],
+      "health": {
+        "ok": true,
+        "status": 200
+      },
+      "identities": [
+        {
+          "pid": 98429,
+          "fingerprint": "ebeda19895d06c482766ff54c5f38405512464b3329f02f8b4ed93f786b2246d",
+          "commandIsAutoByteus": true
+        }
+      ]
+    }
+  },
+  "scenarios": {
+    "E2E-PKG-001": {
+      "id": "E2E-PKG-001",
+      "title": "Direct same-artifact coexistence, isolated paths, and caller-root retention",
+      "startedAt": "2026-08-20T12:30:03.261Z",
+      "completedAt": "2026-08-20T12:30:08.894Z",
+      "result": "pass",
+      "details": {
+        "metadata": {
+          "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+          "port": 55868,
+          "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-electron-profile-probe-QDBByu/caller-retained-direct-root",
+          "ownsDataRoot": false,
+          "clientBaseUrl": "http://127.0.0.1:55868",
+          "healthUrl": "http://127.0.0.1:55868/rest/health"
+        },
+        "preparedEnvironment": {
+          "preservedMarkerKeys": [
+            "CODEX_HOME",
+            "OPENAI_API_KEY",
+            "GOOGLE_API_KEY",
+            "SERPER_API_KEY",
+            "AUTOBYTEUS_E2E_CALLER_SENTINEL"
+          ],
+          "isolationKeysForced": true
+        },
+        "ordinaryDuring": {
+          "label": "during direct E2E",
+          "listenerPids": [
+            98429
+          ],
+          "health": {
+            "ok": true,
+            "status": 200
+          },
+          "identities": [
+            {
+              "pid": 98429,
+              "fingerprint": "ebeda19895d06c482766ff54c5f38405512464b3329f02f8b4ed93f786b2246d",
+              "commandIsAutoByteus": true
+            }
+          ]
+        },
+        "ordinaryAfter": {
+          "label": "after direct E2E",
+          "listenerPids": [
+            98429
+          ],
+          "health": {
+            "ok": true,
+            "status": 200
+          },
+          "identities": [
+            {
+              "pid": 98429,
+              "fingerprint": "ebeda19895d06c482766ff54c5f38405512464b3329f02f8b4ed93f786b2246d",
+              "commandIsAutoByteus": true
+            }
+          ]
+        },
+        "processTree": {
+          "supported": true,
+          "rootPid": 73841,
+          "processTreeIdentity": "posix-process-group:73841",
+          "processCount": 5,
+          "backendPid": 73847,
+          "backendSelectedPort": true,
+          "backendSelectedDataRoot": true,
+          "backendHostOverrideAbsent": true,
+          "chromiumUserDataIsolated": true,
+          "backendEnvironment": {
+            "supported": true,
+            "matches": {
+              "CODEX_HOME": true,
+              "OPENAI_API_KEY": true,
+              "GOOGLE_API_KEY": true,
+              "SERPER_API_KEY": true,
+              "AUTOBYTEUS_E2E_CALLER_SENTINEL": true
+            }
+          }
+        },
+        "isolatedPaths": {
+          "baseDataRoot": true,
+          "serverData": true,
+          "logs": true,
+          "extensions": true,
+          "browserArtifacts": true,
+          "userData": true,
+          "sessionData": true,
+          "crashDumps": true,
+          "downloads": true
+        },
+        "registryBaseUrlMatches": true,
+        "cleanupResult": {
+          "processTreeCompletion": {
+            "status": "complete",
+            "identity": "posix-process-group:73841",
+            "forced": false,
+            "gracefulError": null
+          },
+          "portObservation": {
+            "status": "available",
+            "port": 55868,
+            "detail": null
+          }
+        },
+        "callerRootRetained": true,
+        "sentinel": {
+          "unchanged": true,
+          "count": 3
+        }
+      }
+    },
+    "E2E-PKG-002": {
+      "id": "E2E-PKG-002",
+      "title": "Playwright renderer endpoint, provider, environment, profile, and updater journey",
+      "startedAt": "2026-08-20T12:30:08.894Z",
+      "completedAt": "2026-08-20T12:32:11.677Z",
+      "result": "fail",
+      "details": {
+        "message": "locator.click: Timeout 120000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-nav-key=\"settings\"]:visible').first()\u001b[22m\n",
+        "stack": "locator.click: Timeout 120000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-nav-key=\"settings\"]:visible').first()\u001b[22m\n\n    at exerciseRendererJourney (/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/tests/e2e/electron-launch-profile-probe.mjs:487:67)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/tests/e2e/electron-launch-profile-probe.mjs:797:23\n    at async runScenario (/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/tests/e2e/electron-launch-profile-probe.mjs:124:22)\n    at async execute (/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/tests/e2e/electron-launch-profile-probe.mjs:780:3)\n    at async main (/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/tests/e2e/electron-launch-profile-probe.mjs:1015:5)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/tests/e2e/electron-launch-profile-probe.mjs:1049:1"
+      }
+    }
+  },
+  "failures": [
+    {
+      "id": "E2E-PKG-002",
+      "message": "locator.click: Timeout 120000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-nav-key=\"settings\"]:visible').first()\u001b[22m\n",
+      "stack": "locator.click: Timeout 120000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-nav-key=\"settings\"]:visible').first()\u001b[22m\n\n    at exerciseRendererJourney (/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/tests/e2e/electron-launch-profile-probe.mjs:487:67)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/tests/e2e/electron-launch-profile-probe.mjs:797:23\n    at async runScenario (/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/tests/e2e/electron-launch-profile-probe.mjs:124:22)\n    at async execute (/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/tests/e2e/electron-launch-profile-probe.mjs:780:3)\n    at async main (/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/tests/e2e/electron-launch-profile-probe.mjs:1015:5)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/tests/e2e/electron-launch-profile-probe.mjs:1049:1"
+    }
+  ],
+  "cleanup": [
+    {
+      "label": "direct Electron session",
+      "result": "pass"
+    },
+    {
+      "label": "Playwright Electron session",
+      "result": "pass"
+    },
+    {
+      "label": "controlled caller root",
+      "result": "pass"
+    },
+    {
+      "label": "probe temporary root",
+      "result": "pass"
+    }
+  ]
+}

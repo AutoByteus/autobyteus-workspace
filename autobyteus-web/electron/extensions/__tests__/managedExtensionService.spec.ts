@@ -7,6 +7,19 @@ import { createHash } from 'crypto'
 import { createServer, type Server } from 'http'
 import { ManagedExtensionService } from '../managedExtensionService'
 
+vi.mock('../../logger', () => {
+  const logger = {
+    child: vi.fn(() => logger),
+    trace: vi.fn(),
+    debug: vi.fn(),
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+    fatal: vi.fn(),
+  }
+  return { logger }
+})
+
 async function createWorkerArchive(targetPath: string): Promise<void> {
   const stagingDir = await fs.mkdtemp(path.join(os.tmpdir(), 'voice-input-worker-'))
   const binDir = path.join(stagingDir, 'bin')

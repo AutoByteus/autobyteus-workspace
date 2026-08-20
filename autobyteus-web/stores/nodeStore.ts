@@ -7,7 +7,7 @@ import {
   type NodeRegistryChange,
   type NodeRegistrySnapshot,
 } from '~/types/node';
-import { resolveDefaultEmbeddedBaseUrl } from '~/utils/embeddedNodeBaseUrl';
+import { getBrowserServerBaseUrl } from '~/utils/browserServerConfig';
 import { normalizeNodeBaseUrl } from '~/utils/nodeEndpoints';
 
 function nowIsoString(): string {
@@ -123,8 +123,8 @@ export const useNodeStore = defineStore('nodeStore', () => {
     return true;
   }
 
-  function ensureEmbeddedNodePresent(): void {
-    const desiredBaseUrl = resolveDefaultEmbeddedBaseUrl();
+  function ensureBrowserEmbeddedNodePresent(): void {
+    const desiredBaseUrl = getBrowserServerBaseUrl();
     const existingEmbeddedIndex = nodes.value.findIndex((node) => node.id === EMBEDDED_NODE_ID);
 
     if (existingEmbeddedIndex === -1) {
@@ -162,9 +162,9 @@ export const useNodeStore = defineStore('nodeStore', () => {
     lastError.value = null;
 
     if (!window.electronAPI?.getNodeRegistrySnapshot) {
-      const fallbackSnapshot = readLocalRegistrySnapshot() ?? createDefaultSnapshot(resolveDefaultEmbeddedBaseUrl());
+      const fallbackSnapshot = readLocalRegistrySnapshot() ?? createDefaultSnapshot(getBrowserServerBaseUrl());
       replaceSnapshot(fallbackSnapshot);
-      ensureEmbeddedNodePresent();
+      ensureBrowserEmbeddedNodePresent();
       persistCurrentSnapshotToLocalStorage();
       initialized.value = true;
       return;
@@ -173,7 +173,10 @@ export const useNodeStore = defineStore('nodeStore', () => {
     try {
       const snapshot = await window.electronAPI.getNodeRegistrySnapshot();
       replaceSnapshot(snapshot);
-      ensureEmbeddedNodePresent();
+      const embeddedNode = nodeMap.value.get(EMBEDDED_NODE_ID);
+      if (!embeddedNode?.baseUrl?.trim()) {
+        throw new Error('Electron node registry did not provide an embedded client base URL.');
+      }
       initialized.value = true;
 
       if (window.electronAPI.onNodeRegistryUpdated && !listenerCleanup.value) {
@@ -183,8 +186,7 @@ export const useNodeStore = defineStore('nodeStore', () => {
       }
     } catch (error) {
       lastError.value = error instanceof Error ? error.message : String(error);
-      replaceSnapshot(createDefaultSnapshot(resolveDefaultEmbeddedBaseUrl()));
-      initialized.value = true;
+      throw error;
     }
   }
 

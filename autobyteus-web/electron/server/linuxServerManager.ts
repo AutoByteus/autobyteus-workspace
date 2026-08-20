@@ -2,11 +2,10 @@ import { spawn } from 'child_process'
 import * as path from 'path'
 import * as fs from 'fs'
 import isDev from 'electron-is-dev'
-import { StdioOptions } from 'child_process'
+import type { StdioOptions } from 'child_process'
 import { BaseServerManager } from './baseServerManager'
 import { logger } from '../logger'
 import { getLoginShellPath } from '../utils/shellEnv'
-import { INTERNAL_SERVER_BASE_URL } from '../../shared/embeddedServerConfig'
 import { buildServerRuntimeEnv } from './serverRuntimeEnv'
 
 export class LinuxServerManager extends BaseServerManager {
@@ -29,13 +28,11 @@ export class LinuxServerManager extends BaseServerManager {
       throw new Error(`Server entrypoint not found at: ${serverEntry}`)
     }
     
-    const publicServerUrl = INTERNAL_SERVER_BASE_URL
-    
+    const publicServerUrl = this.serverUrl
     const loginShellPath = getLoginShellPath()
     if (loginShellPath) {
       logger.info('Using PATH from login shell')
     }
-
     const env = {
       ...process.env,
       ...(loginShellPath ? { PATH: loginShellPath } : {}),
