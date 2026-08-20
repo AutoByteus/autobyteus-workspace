@@ -1,0 +1,92 @@
+import { z } from "zod";
+import {
+  nonEmptyStringSchema,
+  nullableFiniteNumberSchema,
+  nullableNonEmptyStringSchema,
+} from "./schema-helpers.js";
+
+const nonNegativeSafeIntegerSchema = z.number().int().nonnegative().safe();
+const nullableNonNegativeSafeIntegerSchema = nonNegativeSafeIntegerSchema.nullable();
+
+export const tokenUsageUnitPriceSummaryDtoSchema = z.object({
+  status: z.enum([
+    "single",
+    "mixed",
+    "missing",
+    "partial_missing",
+    "not_applicable",
+    "local_no_api_bill",
+  ]),
+  price_per_million: nullableFiniteNumberSchema,
+}).strict();
+
+export const tokenUsageUnitPricesDtoSchema = z.object({
+  standard_input: tokenUsageUnitPriceSummaryDtoSchema,
+  cache_read_input: tokenUsageUnitPriceSummaryDtoSchema,
+  cache_creation_input: tokenUsageUnitPriceSummaryDtoSchema,
+  cache_creation_5m_input: tokenUsageUnitPriceSummaryDtoSchema,
+  cache_creation_1h_input: tokenUsageUnitPriceSummaryDtoSchema,
+  output: tokenUsageUnitPriceSummaryDtoSchema,
+  reasoning_output: tokenUsageUnitPriceSummaryDtoSchema,
+}).strict();
+
+export const tokenUsageRunSummaryDtoSchema = z.object({
+  run_id: nonEmptyStringSchema,
+  root_team_run_id: nullableNonEmptyStringSchema,
+  agent_definition_id: nullableNonEmptyStringSchema,
+  workspace_id: nullableNonEmptyStringSchema,
+  gross_input_tokens: nonNegativeSafeIntegerSchema,
+  standard_input_tokens: nonNegativeSafeIntegerSchema,
+  cache_miss_input_tokens: nonNegativeSafeIntegerSchema,
+  cache_read_input_tokens: nonNegativeSafeIntegerSchema,
+  cache_creation_input_tokens: nonNegativeSafeIntegerSchema,
+  cache_creation_5m_input_tokens: nonNegativeSafeIntegerSchema,
+  cache_creation_1h_input_tokens: nonNegativeSafeIntegerSchema,
+  output_tokens: nonNegativeSafeIntegerSchema,
+  reasoning_output_tokens: nonNegativeSafeIntegerSchema,
+  billable_output_tokens: nonNegativeSafeIntegerSchema,
+  total_tokens: nonNegativeSafeIntegerSchema,
+  cache_read_input_token_rate: nullableFiniteNumberSchema,
+  standard_input_token_rate: nullableFiniteNumberSchema,
+  cache_creation_input_token_rate: nullableFiniteNumberSchema,
+  cache_state: z.enum([
+    "positive",
+    "zero_reported",
+    "not_reported",
+    "unsupported_or_local",
+    "unknown",
+  ]),
+  estimated_api_input_cost: nullableFiniteNumberSchema,
+  estimated_api_standard_input_cost: nullableFiniteNumberSchema,
+  estimated_api_cache_read_input_cost: nullableFiniteNumberSchema,
+  estimated_api_cache_creation_input_cost: nullableFiniteNumberSchema,
+  estimated_api_cache_creation_5m_input_cost: nullableFiniteNumberSchema,
+  estimated_api_cache_creation_1h_input_cost: nullableFiniteNumberSchema,
+  estimated_api_output_cost: nullableFiniteNumberSchema,
+  estimated_api_reasoning_output_cost: nullableFiniteNumberSchema,
+  estimated_api_total_cost: nullableFiniteNumberSchema,
+  currency: nullableNonEmptyStringSchema,
+  api_cost_status: z.enum([
+    "estimated",
+    "price_missing",
+    "partial_price_missing",
+    "mixed",
+    "local_no_api_bill",
+  ]),
+  missing_price_dimensions: z.array(nonEmptyStringSchema),
+  pricing_policy_key: nullableNonEmptyStringSchema,
+  selected_pricing_tier_id: nullableNonEmptyStringSchema,
+  unit_prices: tokenUsageUnitPricesDtoSchema,
+  latest_prompt_tokens: nullableNonNegativeSafeIntegerSchema,
+  effective_context_window_tokens: nullableNonNegativeSafeIntegerSchema,
+  context_window_usage_percent: nullableFiniteNumberSchema,
+  latest_model_provider: nullableNonEmptyStringSchema,
+  latest_model_identifier: nullableNonEmptyStringSchema,
+  latest_runtime_kind: nullableNonEmptyStringSchema,
+  usage_report_count: nonNegativeSafeIntegerSchema,
+  updated_at: nullableNonEmptyStringSchema,
+}).strict();
+
+export type TokenUsageUnitPriceSummaryDto = Readonly<z.infer<typeof tokenUsageUnitPriceSummaryDtoSchema>>;
+export type TokenUsageUnitPricesDto = Readonly<z.infer<typeof tokenUsageUnitPricesDtoSchema>>;
+export type TokenUsageRunSummaryDto = Readonly<z.infer<typeof tokenUsageRunSummaryDtoSchema>>;
