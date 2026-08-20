@@ -11,6 +11,7 @@ export const RunAppDataMigration = gql`
         description
         status
         requiredOnStartup
+        recoveryAction
         canRetry
         attempts
         startedAt

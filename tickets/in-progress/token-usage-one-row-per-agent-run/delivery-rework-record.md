@@ -2,15 +2,14 @@
 
 ## Current Result
 
-- Delivery revision: `DR-006`
+- Delivery revision: `DR-007`
 - Trigger: explicit user verification of the DR-003 Electron package
 - Historical result: `DR-004 Failed — production-shaped token consolidation
   did not start`
 - Rework result: `Resolved through reviewed and executed IR-007`
-- Current state: `Token rework technically verified live; separate reachable
-  historical migration-status payload requires requirement/design
-  classification; explicit user acceptance not received`
-- Finalization state: `Blocked / held`
+- Current state: `Nullable scalar and terminal-audit rework both resolved;
+  fresh Electron package ready for renewed explicit user verification`
+- Finalization state: `Held`
 
 ## Rework Resolution
 
@@ -39,8 +38,9 @@ DR-006 read-only live evidence subsequently verified that the corrected
 consolidation succeeded and current Token Statistics operates correctly. A
 separate old-successful-record status-payload gap is recorded in
 `delivery-requirement-gap.md`; it does not reopen the nullable scalar defect,
-but it blocks finalization until upstream classification and explicit user
-acceptance.
+and is now resolved by the SR-009 bounded read/registered compactor chain
+through `CRR-016` and the DR-007 rebuild. Explicit user acceptance remains
+required.
 
 ## Failure Summary
 
@@ -155,5 +155,5 @@ are retained as the authoritative repair checklist:
   verification.
 - The DR-003 DMG/ZIP remain useful only as failure reproduction artifacts and
   must not be presented as verification-passed candidates.
-- The DR-005 DMG/ZIP are ready for renewed user verification but are not yet
-  acceptance-passed or public release candidates.
+- The DR-005 DMG/ZIP are now stale for terminal-audit compaction. Use only the
+  DR-007 artifact recorded in `handoff-summary.md`.

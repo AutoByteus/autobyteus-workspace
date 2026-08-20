@@ -15,6 +15,9 @@ The latest `design-review-report.md` remains authoritative. This record indexes 
 | ARCH-REV-007 | Round 7 / SR-007 production-adapter re-review after DR-004 | SR-007 | Pass | Pass | AR-001, AR-002, AR-003, AR-004 |
 | ARCH-REV-008 | Round 8 / SR-008 terminal-audit re-review after DR-006 | SR-008 | Pass | Fail | AR-001, AR-002, AR-003, AR-004, AR-005 |
 | ARCH-REV-009 | Round 9 / SR-009 startup-scheduling re-review | SR-009 | Fail | Pass | AR-001, AR-002, AR-003, AR-004, AR-005 |
+| ARCH-REV-010 | Round 10 / user-directed SR-010 scope restoration after CRR-017 | SR-010 | Pass | Pass | AR-001, AR-002, AR-003, AR-004, AR-005; CR-008 / MP-CR-007 trigger |
+| ARCH-REV-011 | Round 11 / SR-011 startup-only retry-capability re-review after CRR-018 | SR-011 | Pass | Fail | AR-001, AR-002, AR-003, AR-004, AR-005, AR-006; CR-009 / MP-CR-008 trigger |
+| ARCH-REV-012 | Round 12 / SR-012 restart-recovery presentation re-review | SR-012 | Fail | Pass | AR-001, AR-002, AR-003, AR-004, AR-005, AR-006 |
 
 ## Revision Entries
 
@@ -225,3 +228,79 @@ None.
 - Material classification changes: `MP-005` remains `Reachable`, and the corrected target production path now handles it proportionately. `AR-005` is resolved; the authoritative decision changes from `Fail` to `Pass`.
 - Recommended recipient: `/implementation_engineer`
 - Remaining risks or uncertainty: Implementation must prove DS-010 before compactor enumeration, DS-011 execution through the actual startup runner, nonfatal/prerequisite absence, exact status-based partial retry, terminal-warning skip, outcome/count preservation, owned-log confinement, bounded results, and token-table immutability. The overloaded `requiredOnStartup` name remains a maintenance smell but does not justify a runner API redesign in this ticket.
+
+### ARCH-REV-010 — User-directed scope restoration removes the audit expansion cleanly
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/design-review-report.md`
+- Review round and trigger: Round 10; `SR-010` re-review after `/code_reviewer` recorded `CRR-017` / `CR-008` / `MP-CR-007` and the user explicitly withdrew the entire `SR-008`/`SR-009` migration-audit expansion.
+- Triggering role, report path, and finding IDs: `/solution_designer` following user rescoping; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/code-review-report.md` (`CRR-017`, `CR-008`, `MP-CR-007`) and `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/code-review-revision-record.md`; historical architecture finding `AR-005` / `MP-005` reclassified as moot in current scope, not erased.
+- Relevant solution revision IDs: `SR-010`; `SR-007` restored as the implementation boundary; `SR-008`/`SR-009` retained as superseded history only.
+- Prior authoritative decision: `Pass`
+- Current authoritative decision: `Pass`
+- What changed in the review result or what baseline was established: The user accepts the measured two approximately 14 MiB terminal summaries and approximately 31 MiB current migration-status response as a residual for this ticket and requires all stored summaries, the generic read/API/UI path, `log_path`, and historical log files to remain untouched. The current solution therefore removes DS-010/DS-011, `REQ-028`, `AC-027`, the summary projection, the audit compactor, its registry/runner/repository integration, tests/UI assertions, and audit-only documentation claims. The cleanup inventory matches the exact post-`SR-007` source/test delta and preserves the already-live-verified one-row token implementation, DS-009, forward-only runtime, migration-only legacy boundary, readiness gate, disjoint retry, and failure classification.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001 | Resolved | Remains resolved | SR-002, SR-007, SR-010; REQ-005; AC-005 | The scope contraction changes no checkpoint/digest structure, byte cap, or ninth/reappearing-series behavior. |
+| AR-002 | Resolved | Remains resolved | SR-002, SR-007, SR-010; REQ-012–REQ-016, REQ-022; AC-011–AC-015, AC-021 | Both unchanged-ID source-shaping repairs remain narrow, keyset-batched, CAS/scalar-validated, and ordered before consolidation. Removing later audit machinery does not rerun or weaken them. |
+| AR-003 | Resolved | Remains resolved | SR-002, SR-007, SR-010; AC-004, AC-007 | Current facts retain committed per-run revision ordering, legacy facts retain numeric ledger-row ordering, and event ID remains identity/deduplication only. |
+| AR-004 | Resolved under superseding restore-gate policy | Remains resolved | SR-003, SR-005–SR-007, SR-010; REQ-023–REQ-027; AC-022–AC-026; MP-003 | Incomplete consolidation still rejects pre-existing-run restoration before provider creation, admits only globally new run IDs, and rejects legacy/current intersection before import. No runtime overlap guard, checkpoint seed, legacy adapter, or marker returns. |
+| AR-005 | Resolved under SR-009 scheduling design | Moot in current scope; historical resolution preserved | SR-008–SR-010; MP-005 | The user withdraws the compactor and its requirement rather than relying on an unreachable definition. `SR-010` names deletion of the compactor folder, registry/runner/repository changes, projection, tests, and documentation claims. The observed oversized response remains reachable but is an expressly accepted residual, so no compactor execution contract remains to review or implement. |
+
+- New or remaining finding IDs: None.
+- Material classification changes: `MP-005` remains factually `Reachable` as the observed current migration-status payload, but its former compaction consequence is outside the user-approved current scope; it cannot drive current machinery. `MP-CR-007` is `Not Reachable` for historical log-file content consumption because the supported product returns/displays only `logPath` and has no caller that reads or transmits the contents. `MP-003` remains `Not Reachable` under the restore gate; `MP-004` remains `Reachable` and is handled by DS-009.
+- Recommended recipient: `/implementation_engineer`
+- Remaining risks or uncertainty: Cleanup must restore the exact reviewed `SR-007` runner/registry/repository behavior, remove all post-`SR-007` audit-specific source/tests/docs without deleting historical review evidence, and never mutate live or fixture `summary_json`, `log_path`, or historical log files. The accepted large status response remains. Existing long-transaction, temporary history/restore unavailability, allocator/disjointness, bounded-series, SQLite physical-size, BigInt/API, and focused revalidation risks remain.
+
+### ARCH-REV-011 — Startup-only capability needs a complete restart-recovery contract
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/design-review-report.md`
+- Review round and trigger: Round 11; `SR-011` re-review after `/code_reviewer` recorded `CRR-018` / `CR-009` / `MP-CR-008` against the implementation cleanup passed by `ARCH-REV-010`.
+- Triggering role, report path, and finding IDs: `/solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/code-review-report.md` and `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/code-review-revision-record.md`; `CR-009` / `MP-CR-008`.
+- Relevant solution revision IDs: `SR-011`; `SR-010` audit withdrawal and restored `SR-007` token boundary remain authoritative.
+- Prior authoritative decision: `Pass`
+- Current authoritative decision: `Fail`
+- What changed in the review result or what baseline was established: CRR-018 established a supported degraded path omitted by the exact SR-007 runner restoration: failed startup-only consolidation -> healthy Settings -> status-only `canRetry=true` -> enabled manual Retry -> runner restart-required rejection. SR-011 correctly makes `canRetry` a runner-owned manual-command capability derived from status plus execution policy, keeps automatic `runPending()` scheduling separate, preserves direct rejection, and keeps all audit work removed. Review found one remaining gap against the updated approved recovery behavior: `canRetry=false` only disables the action; the design defines no server-owned restart disposition/instruction or Settings copy that presents the migration as restart-retryable and directs the user to restart.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001 | Resolved | Remains resolved | SR-002, SR-007, SR-011; REQ-005; AC-005 | DS-012 adds no checkpoint, digest, or persisted token state. |
+| AR-002 | Resolved | Remains resolved | SR-002, SR-007, SR-011; REQ-012–REQ-016, REQ-022; AC-011–AC-015, AC-021 | Both same-ID source-shaping repairs remain bounded and unchanged. |
+| AR-003 | Resolved | Remains resolved | SR-002, SR-007, SR-011; AC-004, AC-007 | Admission ordering and event-identity separation are unaffected. |
+| AR-004 | Resolved under restore-gate policy | Remains resolved | SR-003, SR-005–SR-007, SR-011; REQ-023–REQ-027; AC-022–AC-026; MP-003 | Failed consolidation still gates pre-existing-run restoration before provider creation and validates current/legacy run-ID disjointness on retry. DS-012 adds no runtime legacy path. |
+| AR-005 | Historical/moot after compactor withdrawal | Remains historical/moot | SR-008–SR-011; MP-005 | DS-010/DS-011 and all audit projection/compactor/log behavior remain removed. The accepted oversized response does not justify restoring them. |
+
+- New or remaining finding IDs: `AR-006`.
+- Material classification changes: `MP-CR-008` is `Reachable` through ordinary startup failure and the exposed Settings surface. SR-011 handles the false manual command but not the required restart guidance. `MP-003` remains `Not Reachable`; `MP-004` remains `Reachable` and handled; `MP-005` remains an accepted residual; `MP-CR-007` remains Not Reachable for historical log-content consumption.
+- Recommended recipient: `/solution_designer`
+- Remaining risks or uncertainty: The next revision should define one generic runner-owned recovery disposition or equivalent instruction, carry it through the public status/GraphQL boundary, and render localized restart guidance while keeping `canRetry=false`, disabled/no-dispatch behavior, direct rejection, and ordinary `runPending()` retry. It must not infer policy in Settings or reintroduce any audit-summary/log machinery or persisted-data mutation.
+
+### ARCH-REV-012 — Closed recovery action completes the supported restart journey
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/design-review-report.md`
+- Review round and trigger: Round 12; `SR-012` re-review after `ARCH-REV-011` found that the boolean-only SR-011 correction disabled the false manual command but did not present restart as the supported recovery.
+- Triggering role, report path, and finding IDs: `/solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/design-review-report.md` and `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/architecture-review-revision-record.md`; `AR-006` on `MP-CR-008`.
+- Relevant solution revision IDs: `SR-012`; SR-010 audit withdrawal and the verified SR-007 token boundary remain authoritative.
+- Prior authoritative decision: `Fail`
+- Current authoritative decision: `Pass`
+- What changed in the review result or what baseline was established: SR-012 adds one closed nonpersisted `AppDataMigrationRecoveryAction` owned by `AppDataMigrationRunner`: `MANUAL_RETRY`, `RESTART_TO_RETRY`, or `NONE`. The runner classifies from the registered definition, scheduling policy, persisted status, and its existing active/stale-running rule, then derives `canRetry` exactly from `MANUAL_RETRY`. Required startup-only pending/failed/stale states advertise restart; unscheduled startup-only, active, and terminal states do not. GraphQL/client state transport the enum without reclassification. Settings localizes exact English/zh-CN restart guidance for `RESTART_TO_RETRY`, disables/no-dispatches the manual action, and infers no migration policy. Direct restart-required rejection and ordinary `runPending()` retry stay independent and unchanged.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001 | Resolved | Remains resolved | SR-002, SR-007, SR-012; REQ-005; AC-005 | The nonpersisted recovery enum adds no token reconciliation state. |
+| AR-002 | Resolved | Remains resolved | SR-002, SR-007, SR-012; REQ-012–REQ-016, REQ-022; AC-011–AC-015, AC-021 | Both same-ID source-shaping repairs remain bounded and unchanged. |
+| AR-003 | Resolved | Remains resolved | SR-002, SR-007, SR-012; AC-004, AC-007 | Admission ordering and event-identity separation remain unaffected. |
+| AR-004 | Resolved under restore-gate policy | Remains resolved | SR-003, SR-005–SR-007, SR-012; REQ-023–REQ-027; AC-022–AC-026; MP-003 | Restore gating and migration-owned disjointness remain unchanged; DS-012 introduces no runtime legacy path. |
+| AR-005 | Historical/moot after compactor withdrawal | Remains historical/moot | SR-008–SR-012; MP-005 | DS-010/DS-011 and all audit projection/compactor/log behavior remain removed; the accepted oversized response remains out of scope. |
+| AR-006 | Open / blocking | Resolved | SR-012; REQ-019, REQ-023, REQ-025; AC-017, AC-019; MP-CR-008 | The closed classifier distinguishes manual/restart/none; GraphQL carries it; Settings renders exact localized restart guidance only for `RESTART_TO_RETRY`, disables/no-dispatches manual Retry, and later ordinary startup remains executable. File mapping and focused runner/API/UI coverage are explicit. |
+
+- New or remaining finding IDs: None.
+- Material classification changes: `MP-CR-008` remains `Reachable` and is now handled by the complete DS-012 path. `MP-003` remains Not Reachable; `MP-004` remains Reachable and handled by DS-009; `MP-005` remains an accepted residual; `MP-CR-007` remains Not Reachable for historical log-content consumption.
+- Recommended recipient: `/implementation_engineer`
+- Remaining risks or uncertainty: Implementation must keep the enum as sole semantic authority, derive `canRetry` exactly, reuse the runner's active/stale rule, map default/non-startup-only policies to the existing manual behavior, and keep Settings free of policy/ID inference. The accepted large response and all prior token migration risks remain. No audit-summary/log or persisted-data work may return.

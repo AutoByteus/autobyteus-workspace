@@ -619,6 +619,7 @@ const settingsMessages = {
   'settings.components.settings.ServerMigrationsManager.showDetails': 'Show details',
   'settings.components.settings.ServerMigrationsManager.noSummary': 'No summary yet',
   'settings.components.settings.ServerMigrationsManager.retry': 'Retry',
+  'settings.components.settings.ServerMigrationsManager.restartToRetry': 'This migration can only be retried during startup. Restart AutoByteus to try again.',
   'settings.components.settings.ServerMigrationsManager.empty': 'No app data migrations are registered.',
   'settings.components.settings.ServerMigrationsManager.noDate': 'Not available',
 } satisfies TranslationCatalog;

@@ -5,6 +5,12 @@ export type AppDataMigrationStatus =
   | "FAILED"
   | "SUCCEEDED_WITH_WARNINGS";
 
+export enum AppDataMigrationRecoveryAction {
+  MANUAL_RETRY = "MANUAL_RETRY",
+  RESTART_TO_RETRY = "RESTART_TO_RETRY",
+  NONE = "NONE",
+}
+
 export type AppDataMigrationItemStatus = "MIGRATED" | "SKIPPED" | "FAILED";
 
 export interface AppDataMigrationItemDetail {
@@ -63,6 +69,7 @@ export interface AppDataMigrationRecordSnapshot {
 export interface AppDataMigrationStatusSnapshot extends AppDataMigrationRecordSnapshot {
   description: string;
   requiredOnStartup: boolean;
+  recoveryAction: AppDataMigrationRecoveryAction;
   canRetry: boolean;
   summary: AppDataMigrationSummary | null;
 }

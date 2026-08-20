@@ -22,6 +22,10 @@ The latest canonical review report remains authoritative. This record preserves 
 | `CRR-014` | `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/code-review-report.md` | Source re-review of `IR-009` after `CRR-013` | `Fail` | `Pass` | `CR-007` resolved |
 | `CRR-015` | `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-test-review-report.md` | Proportional review of six SR-009 durable paths after `API-REV-006` Pass | `Pass` | `Fail — Local Fix` | `TCR-001` |
 | `CRR-016` | `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-test-review-report.md` | Proportional re-review of two corrected paths after `API-REV-007` Pass | `Fail — Local Fix` | `Pass` | `TCR-001` resolved |
+| `CRR-017` | `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/code-review-report.md` | User-directed data-migration-convention proportionality audit | `Pass` | `Fail — Design Impact` | `CR-008` |
+| `CRR-018` | `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/code-review-report.md` | Source review of `IR-010` after `SR-010` / `ARCH-REV-010` scope restoration | `Fail — Design Impact` | `Fail — Design Impact` | `CR-008` resolved; `CR-009` |
+| `CRR-019` | `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/code-review-report.md` | Source re-review of `IR-011` after `SR-012` / `ARCH-REV-012` | `Fail — Design Impact` | `Pass` | `CR-009` resolved; `AR-006` implemented |
+| `CRR-020` | `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-test-review-report.md` | Proportional review of nine current additions/updates/removals after `API-REV-008` Pass | `Pass` | `Pass` | None; historical `TCR-001` remains obsolete |
 
 ## Revision Entries
 
@@ -426,3 +430,112 @@ None — prior proportional reviews had no unresolved test-code finding. Source 
 - Material score or classification changes: no implementation-source scorecard change; source remains `CRR-014` Pass. Proportional test-review changes from `Fail — Local Fix` to `Pass`; `API-REV-007` is the latest successful execution result at 97.7%.
 - Recommended recipient: `/delivery_engineer`
 - Remaining risks or uncertainty: delivery must refresh the ticket branch against the latest tracked base, preserve the reviewed package, synchronize durable migration documentation, build and integrity-check a fresh Electron artifact, and obtain renewed explicit user verification. The known independent Nuxt typecheck limitation and unchanged external-provider opt-in exclusions remain recorded but do not block this review.
+
+### CRR-017 — User-directed proportionality audit reopens historical log compaction
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/code-review-report.md`
+- Review entry point and round: `User-Directed Design Proportionality Audit`, round `17`
+- Triggering role, report path, and finding or scenario IDs: user clarification on 2026-08-20; current report; `CR-008`; `MP-CR-007`.
+- Relevant solution revision IDs: `SR-008`–`SR-009`; `SR-007` and earlier core migration remain applicable.
+- Relevant architecture-review revision IDs: `ARCH-REV-008`–`ARCH-REV-009`
+- Relevant implementation revision IDs: `IR-008`–`IR-009` for audit compaction; earlier implementation remains applicable.
+- Relevant API/E2E revision IDs: `API-REV-007` is the old-contract passed baseline.
+- Relevant delivery revision IDs: `DR-007` is built but held from finalization pending this upstream correction.
+- Prior authoritative result: source `CRR-014` Pass; proportional `CRR-016` Pass; both were correct against the then-approved `REQ-028` / `AC-027` contract.
+- Current authoritative result: `Fail — Design Impact`
+- What changed in the review result and why: the user explicitly clarified that historical migration log files need not be shrunk; future writers should prevent new large summaries/logs, while database `summary_json` may be bounded or compacted. Current application code reads the database summary through GraphQL but only displays the log path, so historical filesystem rewriting and its edge/retry/serialization matrix exceed the newly clarified target. The original solution through SR-007 remains proportionate; the issue is cumulative scope governance after DR-006, not sole solution-designer fault.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-001`–`CR-007` | Resolved | Remain resolved | `CRR-002`–`CRR-014` | No core token/consolidation/current-runtime or bounded database-read defect is reopened. |
+| `TCR-001` | Resolved | Expected obsolete or narrowed | `CRR-015`–`CRR-016` | Exact compacted-log assertion matched old AC-027; the underlying historical log-rewrite requirement is now under Design Impact. |
+
+- New or remaining finding IDs: `CR-008`
+- Material score or classification changes: prior implementation score remains historical; focused current result is `Fail — Design Impact` without an implementation scorecard.
+- Recommended recipient: `/solution_designer`
+- Remaining risks or uncertainty: solution design must decide whether database-only at-rest summary compaction remains worthwhile or bounded reads alone suffice, and must define a central future-write bound. Delivery/finalization remains held until the revised scope completes its applicable downstream gates.
+
+### CRR-018 — Audit removal is clean, but the exact runner rollback removes a still-reachable policy guard
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/code-review-report.md`
+- Review entry point and round: `Implementation Review`, round `18`
+- Triggering role, report path, and finding or scenario IDs: `/implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/implementation-revision-record.md`; `IR-010`; triggering `CRR-017` / `CR-008`; new `CR-009` / `MP-CR-008`.
+- Relevant solution revision IDs: `SR-010` current; `SR-007` restored baseline; `SR-008`–`SR-009` superseded.
+- Relevant architecture-review revision IDs: `ARCH-REV-010` current; `ARCH-REV-007` restored baseline.
+- Relevant implementation revision IDs: `IR-010` current; `IR-007` restored token baseline.
+- Relevant API/E2E revision IDs: `API-REV-005` restored baseline; `API-REV-007` withdrawn audit evidence.
+- Relevant delivery revision IDs: `DR-007` withdrawn package; `DR-005` restored baseline context.
+- Prior authoritative result: `CRR-017` `Fail — Design Impact` on the later audit expansion.
+- Current authoritative result: `Fail — Design Impact`
+- What changed in the review result and why: IR-010 completely removes the audit projection, compactor, historical-log replacement, registration, source/tests/UI assertions, and audit-only durable claims without touching persisted audit data; `CR-008` is resolved. However, the exact `bb31e4692` runner restoration also removes the generic execution-policy-aware public capability mapping. The retained `TokenUsageRunRecordsV1AppDataMigration` is itself `STARTUP_ONLY`. In its approved capability-scoped `FAILED` lifecycle, the healthy Settings surface now receives `canRetry=true`, enables Retry, dispatches the manual mutation, and receives restart-required from the same runner. Static tracing and a removed-after-run disposable probe confirmed this composition; TypeScript and the restored `5 files / 58 tests` otherwise pass.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-008` | Open / Design Impact | Resolved | `SR-010`, `ARCH-REV-010`, `IR-010`, `CRR-017` | All withdrawn audit source, projection, compactor, filesystem behavior, source/tests/UI paths, registry entries, durable claims, and emitted server modules are absent; existing summaries/log paths/files remain untouched. |
+| `CR-007` | Resolved for the SR-009 compactor warning | Scenario moot; generic concern now represented by `CR-009` | `CRR-013`–`CRR-014`, `SR-010`, `IR-010` | The compactor is gone, but the retained consolidation independently uses `STARTUP_ONLY`; removing the generic predicate reintroduces a different supported false-action path. |
+| `CR-001`–`CR-006` | Resolved | Remain resolved | `IR-002`–`IR-005`, `CRR-002`–`CRR-011`, `API-REV-003`–`API-REV-005` | IR-010 does not change token commit boundaries, pricing/cache semantics, released-row normalization, DS-009, or run lifecycle owners. |
+| `TCR-001` | Resolved under withdrawn `AC-027` | Obsolete | `CRR-015`–`CRR-017`, `SR-010`, `IR-010` | Both compacted-log assertion paths and the underlying production behavior are deleted. |
+
+- New or remaining finding IDs: `CR-009`
+- Material score or classification changes: result remains `Fail — Design Impact`; `CR-008` is resolved, but `CR-009` records the over-broad cleanup inventory. Current score is `9.0/10` (`90.3/100`), with API/interface, API/E2E readiness, runtime fidelity, and cleanup completeness below `9.0`.
+- Recommended recipient: `/solution_designer`
+- Remaining risks or uncertainty: retain the complete audit removal and accepted large-summary/status residual. The only required correction is the small generic manual-capability policy plus current consolidation/Settings coverage. API/E2E and delivery remain paused until the corrected package passes their gates; no live data was accessed.
+
+### CRR-019 — Closed recovery action resolves the retained startup-only retry contradiction
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/code-review-report.md`
+- Review entry point and round: `Implementation Review`, round `19`
+- Triggering role, report path, and finding or scenario IDs: `/implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/implementation-revision-record.md`; `IR-011`; triggering `CRR-018` / `CR-009` / `MP-CR-008`; resolved architecture finding `AR-006`.
+- Relevant solution revision IDs: `SR-012` current; `SR-010` audit-withdrawal baseline; `SR-007` token/DS-009 baseline.
+- Relevant architecture-review revision IDs: `ARCH-REV-012` current; `ARCH-REV-011` / `AR-006` resolved; `ARCH-REV-010` cleanup baseline.
+- Relevant implementation revision IDs: `IR-011` current; `IR-010` cleanup baseline; `IR-007` token/DS-009 baseline.
+- Relevant API/E2E revision IDs: `API-REV-005` prior token/DS-009 baseline; `API-REV-007` withdrawn audit evidence.
+- Relevant delivery revision IDs: `DR-007` withdrawn package; `DR-005` restored live-token baseline context.
+- Prior authoritative result: `CRR-018` implementation-review `Fail — Design Impact`.
+- Current authoritative result: `Pass`.
+- What changed in the review result and why: the runner now owns one closed, nonpersisted `MANUAL_RETRY | RESTART_TO_RETRY | NONE` classification and derives `canRetry` only from `MANUAL_RETRY`. Startup-only FAILED/stale RUNNING remains scheduled by the next ordinary `runPending()` while direct manual execution remains restart-required. GraphQL, both web documents, generated types, and the Pinia store carry the action without reclassification; Settings shows the reviewed localized restart guidance, keeps Retry disabled, and dispatches no mutation. The audit projection/compactor/filesystem behavior remains completely absent.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-009` | Open / Design Impact | Resolved | `SR-012`, `ARCH-REV-012`, `IR-011`, `CRR-018`, `MP-CR-008` | Static trace confirms the runner-only recovery matrix, derived boolean, unchanged startup/manual execution, direct GraphQL mapping, generated/store transport, and localized disabled/no-dispatch Settings behavior. Reviewer reruns passed server TypeScript; runner/GraphQL `2 files / 20 tests`; Settings/store `2 files / 4 tests`; localization guards and `git diff --check`. |
+| `CR-008` | Resolved | Remains resolved | `SR-010`, `ARCH-REV-010`, `IR-010`–`IR-011` | Search and source inspection confirm no audit summary projection, compactor, filesystem rewrite, audit-only registration, UI behavior, or durable claim returned. |
+| `CR-001`–`CR-006` | Resolved | Remain resolved | `IR-002`–`IR-005`, `CRR-002`–`CRR-011`, `API-REV-003`–`API-REV-005` | IR-011 changes generic migration recovery presentation only; token persistence, pricing/cache semantics, released-row normalization, DS-009, and run lifecycle owners remain unchanged. |
+| `CR-007` | Historical compactor finding | Moot | `SR-010`, `IR-010`–`IR-011` | The compactor remains deleted; its warning scenario no longer exists. |
+| `TCR-001` | Resolved under withdrawn audit behavior | Obsolete | `CRR-015`–`CRR-017`, `SR-010` | The compacted-log behavior and both associated durable paths remain removed. |
+
+- New or remaining finding IDs: None.
+- Material score or classification changes: `9.0/10` (`90.3/100`) `Fail — Design Impact` -> `9.4/10` (`93.6/100`) `Pass`; every category is `>=9.0`. `MP-CR-008` remains independently reachable and now ends in truthful restart guidance rather than a false manual action.
+- Recommended recipient: `/api_e2e_engineer`
+- Remaining risks or uncertainty: API/E2E must exercise actual GraphQL enum transport, failed required startup-only consolidation, visible localized Settings guidance, disabled/no-dispatch behavior, and the later ordinary restart retry while confirming the SR-010 removals/nonmutation. The accepted large historical summaries/status response remain unchanged. No live database was accessed during review.
+
+### CRR-020 — Current recovery coverage passes and withdrawn audit coverage stays removed
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-test-review-report.md`
+- Review entry point and round: successful API/E2E proportional test-code review, round `6`
+- Triggering role, report path, and finding or scenario IDs: `/api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-execution-coverage-report.md`; `API-REV-008`; `REQ-019`, `REQ-025`, `AC-017`, `AC-019`; no failure ID.
+- Relevant solution revision IDs: `SR-012` current; `SR-010` audit withdrawal; `SR-007` token/DS-009 baseline.
+- Relevant architecture-review revision IDs: `ARCH-REV-012` current.
+- Relevant implementation revision IDs: `IR-011` current; `IR-010` audit-removal baseline.
+- Relevant API/E2E revision IDs: `API-REV-008` current; `API-REV-005` applicable token/DS-009 baseline; `API-REV-006`/`API-REV-007` withdrawn audit evidence.
+- Relevant delivery revision IDs: `DR-007` withdrawn package; `DR-005` applicable live-token baseline context.
+- Prior authoritative result: source `CRR-019` Pass; prior proportional result `CRR-016` Pass applied to now-withdrawn audit behavior; API execution `API-REV-008` Pass at 97.9%.
+- Current authoritative result: `Pass`.
+- What changed in the review result and why: five present durable paths now cover the complete runner recovery matrix, non-null GraphQL mapping, store transport, exact localized disabled/no-dispatch Settings behavior, retained manual action, and the actual built-server FAILED -> ordinary restart -> SUCCEEDED lifecycle. The existing production-upgrade E2E adds one regular test-owned oversized summary/log sentinel and proves exact database/GraphQL/file nonmutation without recreating the withdrawn filesystem edge matrix. Four audit-only coverage paths are correctly deleted with their withdrawn production behavior.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `TCR-001` | Resolved under the former audit-compaction requirement | Obsolete / no longer applicable | `CRR-015`–`CRR-017`, `SR-010`, `IR-010`–`IR-011`, `API-REV-008` | The compactor, compacted-log contract, audit fixture, compactor unit file, and compactor startup E2E are absent. The current E2E asserts only that a normal historical log remains unchanged. |
+| `CR-009` | Resolved in source | Remains resolved | `CRR-019`, `IR-011`, `API-REV-008` | Actual built GraphQL returns `RESTART_TO_RETRY/canRetry=false` after failed consolidation and `NONE/false` after ordinary restart success; mounted Settings/store tests cover exact en/zh-CN guidance and no-dispatch/manual action. |
+
+- New or remaining finding IDs: None.
+- Material score or classification changes: no implementation-source scorecard change; source remains `CRR-019` Pass. Proportional durable-test result is `Pass`; API/E2E remains `API-REV-008` Pass at 97.9%.
+- Recommended recipient: `/delivery_engineer`
+- Remaining risks or uncertainty: delivery must refresh the integrated state, reconcile durable docs without restoring withdrawn audit claims, produce and integrity-check a fresh Electron artifact, and obtain renewed explicit user verification. The accepted large historical summaries/status response remain unchanged, and the known independent Nuxt typecheck limitation remains recorded.

@@ -2,155 +2,141 @@
 
 ## Status
 
-- Delivery revision: `DR-006`
+- Delivery revision: `DR-007`
 - Ticket: `token-usage-one-row-per-agent-run`
-- State: `Ticket-scope live technical verification passed; finalization blocked
-  pending requirement/design classification and explicit user acceptance`
-- Ticket folder: remains in `tickets/in-progress`
-- Validated chain: `SR-007` / `ARCH-REV-007` / `IR-007` / `CRR-011`
-  source Pass / `API-REV-005` Pass at `97.4%` / `CRR-012` durable-test Pass.
-- Required recipient: `/solution_designer`.
-- Push/archive/finalization/release/deployment/cleanup: all held.
+- State: `Fresh bounded-audit Electron package ready for renewed explicit user
+  verification`
+- Validated chain: `SR-009` / `ARCH-REV-009` / `IR-008` / `IR-009` /
+  `CRR-014` source Pass / `API-REV-007` Pass at `97.7%` / `CRR-016`
+  durable-test Pass.
+- Requirement gap: `Resolved` in this package.
+- Ticket folder: remains in `tickets/in-progress`.
+- Push/archive/finalization/release/deployment/cleanup: all held pending the
+  user's explicit result.
 
-## DR-006 Live Technical Result
+## Fresh DR-007 Electron Package
 
-Read-only verification of the running DR-005 package passed the primary ticket
-path: the migration succeeded on attempt `6`, consolidated `158,025` source
-rows into `1,283` unique current rows, emptied the legacy source atomically,
-and left the database healthy. REST/GraphQL health and exact task/model
-statistics queries passed; current writes continue updating one row per run.
-The database file remaining large is expected because about `95.2%` of its
-pages are reusable on the freelist and VACUUM was not required.
-
-This evidence is not an explicit user instruction to finalize.
-
-## Reachable Requirement Gap
-
-Two old already-`SUCCEEDED` 20260730 migration records retain historical
-`summary_json` payloads of about `14 MB` each. The current frontend migration-
-status query succeeds but returns `31,387,995` bytes. The repaired definitions
-bound new/retry evidence but cannot rewrite a record the runner already regards
-as successful.
-
-Because `REQ-014` / `REQ-025` require bounded evidence and the current UI/API
-observes this old payload, delivery classified it as `Requirement Gap / Design
-Impact`, not inert residue. See:
-`/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/delivery-requirement-gap.md`.
-
-Upstream must decide whether to correct preservation/read-bounding behavior or
-explicitly accept and follow up the historical residue. Do not manually edit
-the successful migration records.
-
-## New Electron Verification Package
-
-This package was rebuilt after the nullable Prisma/SQLite scalar-decoding fix.
-The DR-003 artifact and its failed user-verification result are stale and are
-not acceptance evidence.
+This package includes the bounded current migration-status projection and the
+startup-scheduled terminal-audit compactor. All earlier Electron artifacts,
+including the currently running DR-005 bundle, are stale for this final fix.
 
 - DMG:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.dmg`
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist-dr007/AutoByteus_personal_macos-arm64-1.4.52.dmg`
 - DMG SHA-256:
-  `8990b9c4b5c5fd931ce3a119e1e0c7e9f0741ca27f18eae8ff6d276487596c47`
+  `055ba0bff64ccde219851508e61c0f19facfde8176a46035cd7649281016e631`
 - ZIP fallback:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.zip`
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist-dr007/AutoByteus_personal_macos-arm64-1.4.52.zip`
 - ZIP SHA-256:
-  `cd6acbf1eb56c9808d939ac29a902b06ba6df5f62a95b2e4c2b59bfb3b92f241`
+  `9957923d32f06f14f3ebe7a424e16764f1455e685b1a4fddcf4dc9d864171b5b`
 - Platform/version: personal macOS ARM64, `1.4.52`.
-- Signing: local unsigned/ad-hoc package, not notarized and not intended for
-  public distribution.
+- Signing: intentionally local unsigned/ad-hoc package; not notarized and not a
+  public release candidate.
+
+## What The Final Fix Does
+
+- Every current migration status/prerequisite/API/UI read projects a summary of
+  at most `65,536` bytes before Node materialization.
+- Ordinary startup reaches the separate
+  `20260819_token_usage_migration_audit_compaction_v1` migration.
+- The compactor preserves the complete original migration identity, display
+  name, terminal status, attempts, timestamps, error state, four aggregate
+  counts, and owned-log meaning.
+- It replaces only repetitive row-by-row historical details with deterministic
+  bounded evidence.
+- It does not rerun the completed 20260730 business migrations, alter Token
+  Usage totals, or touch the successful one-row consolidation record.
+- Invalid/unowned evidence produces a bounded nonfatal warning rather than
+  blocking unrelated startup.
+- Startup-only migrations do not advertise a manual Retry action; failed/stale
+  attempts retry on a later ordinary startup and terminal warnings remain
+  terminal.
+
+`API-REV-007` covered the real Prisma/SQLite path and an actual rebuilt-server
+startup. `CRR-016` confirmed that the tests read every replaced owned log and
+compare its complete deterministic contents while retaining the byte limit.
 
 ## Integration And Package Evidence
 
-- Reviewed state protected locally at
-  `bb31e469270ee2b032d19c6dbf8a2c9bea91a18a`; it was not pushed.
-- Latest tracked base is
+- Reviewed package checkpoint:
+  `0e2eb777d1071f00fa8016696349536ba4709616` (local only; not pushed).
+- Latest base:
   `origin/personal@1f5663ddb86e478d0b4ffdd878d57dee72d67b4b`.
-- Repeated fetches before and after packaging showed no base advancement. The
-  base is the branch merge base; divergence is `0 behind / 4 ahead`.
-- No new base commit was integrated, so `API-REV-005` / `CRR-012` remained the
-  current server gate. The new Electron packaging run is the additional
-  integrated-state executable check.
+- Repeated pre/post-build fetches showed no advancement; divergence is
+  `0 behind / 5 ahead`.
+- No duplicate server rerun was needed because no base commit was integrated
+  after `API-REV-007` / `CRR-016`.
+- The DR-007 build ran in an isolated temporary worktree and was promoted to a
+  separate `electron-dist-dr007` destination. Delivery did not stop, overwrite,
+  or modify the user's running DR-005 process.
+- Base/docs evidence:
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/delivery-evidence/21-dr007-latest-base-refresh.log`;
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/delivery-evidence/22-dr007-docs-sync-preflight.log`
 - Build evidence:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/delivery-evidence/16-electron-build-macos-arm64-dr005.log`
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/delivery-evidence/23-electron-build-macos-arm64-dr007.log`
 - Integrity evidence:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/delivery-evidence/17-electron-package-integrity-dr005.log`
-- Base/docs/handoff evidence:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/delivery-evidence/15-dr005-base-docs-preflight.log`;
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/delivery-evidence/18-final-base-docs-handoff-audit-dr005.log`
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/delivery-evidence/24-electron-package-integrity-dr007.log`
+- Final audit:
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/delivery-evidence/25-dr007-final-base-docs-handoff-audit.log`
 
-The build passed web/localization guards, server preparation/build, renderer
-and Electron compilation, and DMG/ZIP generation. Integrity checks passed for
-DMG and ZIP structure, mounted bundle identity, version and ARM64 architecture,
-embedded server entry, Prisma ARM64 engine, packaged terminal spawn, broken
-symlinks, and updater hashes/sizes. Delivery did not launch the application or
-bundled server.
+Build and integrity passed for web/localization guards, integrated server build,
+Electron compilation, DMG/ZIP creation, DMG/mounted payload, ZIP, bundle
+identity/version/ARM64, embedded server, packaged compactor/projection owners,
+Prisma ARM64 engine, terminal spawn, broken symlinks, and updater hashes/sizes.
+Delivery did not launch the DR-007 package.
 
-## Corrected Failure
+## Renewed User Verification
 
-DR-004 proved that Prisma can represent later safe SQLite integers as decimal
-strings when a nullable computed result set begins with `NULL` rows. The
-migration-only decoder now admits only the exact supported tag/decimal grammar,
-parses through `BigInt`, enforces nonnegative SafeInt/domain bounds, and narrows
-only afterward. Broad coercion remains prohibited.
-
-The two real-adapter/decoder DS-009 files passed unchanged at `2 files / 32
-tests`, within the four-file `43`-test migration regression, and within the
-final five-file `47`-test migration/lifecycle selection. Built-server and
-`154,100`-row scale evidence also passed. No automated validation accessed or
-mutated the user's live database.
-
-## User Verification / Finalization Procedure
-
-1. The DR-005 migration and statistics path has now passed technical live
-   verification.
-2. `/solution_designer` must classify the reachable historical migration-
-   status payload against the approved requirements.
-3. The user must then provide explicit informed acceptance or request the
-   resulting correction. Technical evidence alone is not finalization consent.
+1. Quit the currently running older AutoByteus bundle completely. It is still
+   using the stale `electron-dist` path and embedded port `29695`.
+2. Open the exact DR-007 DMG above. Because it is unsigned, macOS may require
+   Finder **right-click -> Open**.
+3. Let ordinary startup finish. The new audit compactor should run
+   automatically; do not edit the database, migration records, or logs.
+4. Confirm AutoByteus becomes healthy, Token Statistics still works, and the
+   Server Migrations/status view opens normally without the prior very large
+   response behavior.
+5. Report an explicit **Pass**, or provide the visible error and approximate
+   time.
 
 ## Safety And Finalization Hold
 
-- Do not manually mark the migration successful, bypass SafeInt validation,
-  delete legacy source rows, or populate current rows.
-- The user's prior failed state is retained for normal corrected-release retry.
+- The successful one-row token consolidation remains intact.
+- Do not manually truncate or rewrite historical audit rows/logs; the registered
+  migration owns that transformation.
 - No push, ticket archive, target merge/push, tag, release, publication,
-  deployment, or cleanup is authorized until renewed explicit verification.
-- After a user Pass, delivery must fetch `origin/personal` again and revalidate
+  deployment, or cleanup until explicit user approval.
+- After approval, delivery must fetch `origin/personal` again and revalidate
   before finalization.
 
 ## Canonical Cumulative Package
 
-- Requirements:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/requirements.md`
-- Investigation notes:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/investigation-notes.md`
-- Design specification:
+- Requirements/investigation/design:
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/requirements.md`;
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/investigation-notes.md`;
   `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/design-spec.md`
-- Data-model analysis:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/token-usage-data-model-analysis.md`
-- Approved migration conventions:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/data-migration-conventions.md`
-- Solution revision record:
+- Supplemental solution artifacts:
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/token-usage-data-model-analysis.md`;
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/data-migration-conventions.md`;
   `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/solution-revision-record.md`
-- Design review and architecture revisions:
+- Architecture review:
   `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/design-review-report.md`;
   `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/architecture-review-revision-record.md`
-- Delivery rework record:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/delivery-rework-record.md`
-- Implementation handoff and revisions:
+- Delivery rework/gap history:
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/delivery-rework-record.md`;
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/delivery-requirement-gap.md`
+- Implementation handoff/revisions:
   `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/implementation-handoff.md`;
   `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/implementation-revision-record.md`
-- Code review and revisions:
+- Code review/revisions:
   `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/code-review-report.md`;
   `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/code-review-revision-record.md`
-- API/E2E coverage investigation, execution, revisions, and test review:
+- API/E2E investigation/execution/revisions/test review:
   `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-coverage-investigation.md`;
   `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-execution-coverage-report.md`;
   `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-revision-record.md`;
   `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-test-review-report.md`
-- Delivery docs, release, revisions, and rework:
+- Delivery artifacts:
   `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/docs-sync-report.md`;
   `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/handoff-summary.md`;
   `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/release-deployment-report.md`;
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/delivery-revision-record.md`;
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/delivery-rework-record.md`
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/delivery-revision-record.md`

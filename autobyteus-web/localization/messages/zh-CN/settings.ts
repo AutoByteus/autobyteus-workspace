@@ -619,6 +619,7 @@ const settingsMessages = {
   'settings.components.settings.ServerMigrationsManager.showDetails': '显示详情',
   'settings.components.settings.ServerMigrationsManager.noSummary': '暂无摘要',
   'settings.components.settings.ServerMigrationsManager.retry': '重试',
+  'settings.components.settings.ServerMigrationsManager.restartToRetry': '此迁移只能在启动时重试。请重启 AutoByteus 后再试。',
   'settings.components.settings.ServerMigrationsManager.empty': '没有已注册的应用数据迁移。',
   'settings.components.settings.ServerMigrationsManager.noDate': '不可用',
 } satisfies TranslationCatalog;

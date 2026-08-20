@@ -2,16 +2,16 @@
 
 ## Execution Round Meta
 
-- API/E2E Revision: `API-REV-007`
-- Trigger: `CRR-015` / `TCR-001` bounded Local Fix after successful `API-REV-006`; canonical compacted-log content needed durable assertions at the real compactor and actual built-startup boundaries.
-- Upstream revisions: `SR-009`; `ARCH-REV-009`; `IR-009` (cumulative `IR-008`); source `CRR-014` Pass; test review `CRR-015` Local Fix; prior `API-REV-006`; delivery residual `DR-006`.
+- API/E2E Revision: `API-REV-008`
+- Trigger: `CRR-019` requested current-scope executable proof after `SR-012` / `ARCH-REV-012` / `IR-011`: actual GraphQL recovery-action transport, failed required startup-only consolidation, localized disabled/no-dispatch Settings guidance, later ordinary-startup retry, and preservation of the complete `SR-010` audit removal/nonmutation boundary.
+- Upstream revisions: `SR-012` current; `SR-010` audit withdrawal; `ARCH-REV-012`; `IR-011` current; source `CRR-019` Pass. `API-REV-005` remains the applicable token/DS-009 baseline; `API-REV-006`/`API-REV-007` audit-compaction behavior and `DR-007` are withdrawn evidence.
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run`
 - Ticket: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run`
-- Execution date / host: 2026-08-19; macOS 26.5.2 arm64; Europe/Berlin.
+- Execution date / host: 2026-08-20; macOS arm64; Europe/Berlin.
 - Result: `Pass`.
-- Final validation confidence: `97.7%`.
-- Broader validation: `Required` and completed through the focused actual-built-server restart rerun. Scale/API/Chrome repetition was not required; Electron rebuild/user verification remains delivery-owned.
-- Durable coverage changed in this Local Fix round: `Yes`; two existing candidate test paths updated, no additions or removals.
+- Final validation confidence: `97.9%`.
+- Broader validation: `Required` and completed through the actual rebuilt-server GraphQL/degraded/restart lifecycle. Scale/pricing/SafeInt/Chrome repetition was not required; Electron rebuild/user verification remains delivery-owned.
+- Durable coverage changed in the current candidate: `Yes`; five current durable paths updated/added and four withdrawn audit-only durable paths removed. API/E2E updated one of the five current paths.
 - Required next gate: `/code_reviewer` proportional test-code review before delivery.
 
 ## Prior API-REV-005 Investigation And Execution Basis
@@ -593,3 +593,105 @@ No implementation source, shared fixture, other test, requirement, or runtime co
 - New or remaining failure IDs: `None`.
 - Durable Local Fix: exactly two updated test paths, no additions/removals and no production-source change.
 - Required next recipient: `/code_reviewer` for proportional re-review of the two corrected paths. Delivery/Electron work remains paused through that gate.
+
+## API-REV-008 Current Recovery Action And Audit-Withdrawal Revalidation
+
+### Scope Correction And Evidence Applicability
+
+- `API-REV-006`/`API-REV-007` validated a later audit-summary projection/compactor that the user withdrew in `SR-010`. Their compactor, response-bound, and log-rewrite results are historical only and are not current acceptance evidence. `TCR-001` is obsolete because the implementation and both tests it concerned are deleted.
+- `API-REV-005` remains the applicable direct DS-009/token transition baseline: exact nullable Prisma/SQLite scalar transport, invalid-source rollback/retry, 154,100-row scale/WAL/temp/freelist, built-server history/restore gating, and current one-row output. `IR-011` changes none of those storage, fold, pricing, SafeInt, or scale boundaries.
+- `API-REV-003` current token API/pricing/SafeInt/Chrome evidence and `API-REV-004` TeamRun/task evidence remain applicable to unchanged surfaces. The affected consolidation/degraded/restore lifecycle was nevertheless rerun through the actual current built server.
+
+### Execution Matrix
+
+All commands ran from the assigned worktree with repository-locked dependencies, isolated test HOME/runtime/database/log paths, and the repository live-E2E harness. No command opened or mutated the user's live profile, database, migration records, summaries, log paths, or historical log files.
+
+| ID | Command / execution surface | Result | Evidence |
+| --- | --- | --- | --- |
+| RECOVERY-001 | `pnpm -C autobyteus-server-ts run build:full` | Pass: clean TypeScript build, managed assets, built-in bootstrap smoke, sanitized built-module bootstrap | `test-results/api-e2e/logs/58-ir011-integrated-server-build.log` |
+| RECOVERY-002 | Focused runner plus GraphQL schema/resolver selection | Pass: 2 files / 20 tests | `logs/59-ir011-runner-graphql-suite.log` |
+| RECOVERY-003 | Selected actual built-server failed-consolidation/restart case | Pass: 1 selected test; 3 unrelated cases filtered | `logs/60-ir011-built-server-recovery-action-restart.log` |
+| RECOVERY-004 | Mounted Settings plus Pinia store selection | Pass: 2 files / 4 tests, exact English and zh-CN guidance, disabled/no-dispatch startup action, retained manual action | `logs/61-ir011-settings-store-localized-suite.log` |
+| RECOVERY-005 | Complete actual built production-upgrade suite | Pass: 1 file / 4 tests covering supported relaunch, warning isolation, failed consolidation/retry, and overlap rejection | `logs/62-ir011-full-built-production-upgrade-suite.log` |
+| RECOVERY-006 | `pnpm -C autobyteus-web build` | Pass: Nuxt client/server production build and 15-route prerender including `/settings` | `logs/63-ir011-nuxt-production-build.log` |
+| RECOVERY-007 | Server build TypeScript; localization guards; recovery transport trace; withdrawn source/test/build residue scan; exact deletion checks; no `.only`/`.skip`; `git diff --check`; owned database/runtime cleanup | Pass | `logs/64-ir011-static-localization-cleanup-audit.log` |
+| RECOVERY-008 | Canonical report/revision metadata, all seven execution logs, exact nine-path durable delta, `git diff --check`, database/runtime/process cleanup | Pass | `logs/65-ir011-final-artifact-audit.log` |
+
+### Actual GraphQL, Degraded Lifecycle, And Restart Proof
+
+The API/E2E-owned update extends the existing cohesive production-upgrade E2E instead of adding another lifecycle harness. Its actual `getAppDataMigrations` document now requests `recoveryAction` and `canRetry`.
+
+1. A disposable released-shape database contains the supported legacy team/token cohort plus a deliberate blank canonical run ID. Ordinary rebuilt-server startup executes registered `runPending()` and leaves consolidation `FAILED`, `attempts=1`.
+2. The actual live GraphQL record returns `recoveryAction=RESTART_TO_RETRY` and `canRetry=false`, with the exact blank-ID failure. Token history and old TeamRun restore remain rejected, while a globally new AgentRun is admitted and persists one current token row.
+3. The first server is stopped normally; the test repairs only its deliberate invalid test row. A second ordinary rebuilt-server startup, not a direct migration mutation, executes `runPending()` again.
+4. The actual live GraphQL record returns `SUCCEEDED`, `attempts=2`, `recoveryAction=NONE`, and `canRetry=false`. The source is empty, all three current rows are present, and the pre-existing TeamRun restore succeeds and terminates cleanly.
+5. The complete file also passes supported immutable relaunch, mixed warning isolation, and mandatory legacy/current run-ID overlap rejection with both stores preserved.
+
+This closes the resolver-local/mock gap: the recovery enum is registered in the rebuilt schema, serialized by the actual server, and changes across the real process restart according to the same scheduling path that executes the migration.
+
+### Visible Localized Settings And No-Dispatch Proof
+
+- The tracked web query requests `recoveryAction`; the generated client and Pinia record carry it without migration-ID, status, or execution-policy inference.
+- Mounted `ServerMigrationsManager` renders the exact English text, **“This migration can only be retried during startup. Restart AutoByteus to try again.”**, and the exact Simplified Chinese text, **“此迁移只能在启动时重试。请重启 AutoByteus 后再试。”**
+- The `RESTART_TO_RETRY` button is disabled and clicking it causes no store mutation. A `MANUAL_RETRY` row remains enabled and dispatches exactly once; `MANUAL_RETRY` and `NONE` rows render no restart guidance.
+- The Nuxt production build succeeds through the real generated-query/component/localization bundling path. A new Chrome or Electron execution was not selected: the delta has no browser API, layout, IPC, preload, or shell behavior; mounted semantic DOM plus the production build directly proves the changed renderer contract. Delivery remains responsible for the fresh Electron package and renewed user verification.
+
+### SR-010 Removal And Nonmutation Proof
+
+- Static and rebuilt-output scans find no audit compactor ID/class, summary-projection module, omission-marker implementation, or historical-log rewrite code in current server source/tests/web or rebuilt `dist`.
+- The compactor folder, summary-projection file, audit fixture, bounds unit test, compactor unit test, and compactor startup E2E are all absent. The registry contains no audit-only migration.
+- The actual built-server fixture seeds one terminal released migration with a parsed summary exceeding 64 KiB and a real test-owned historical log exceeding 64 KiB. Before and after both the failed startup and successful restart:
+  - live GraphQL returns the exact complete summary rather than a projection;
+  - the complete persisted migration-record tuple, including `summary_json` and `log_path`, remains byte/value exact;
+  - the historical log path and bytes remain exact;
+  - the terminal source record stays `SUCCEEDED/attempts=1/recoveryAction=NONE/canRetry=false`.
+- The >64 KiB sentinel is only a regression detector for removed projection/compaction behavior. The accepted production-scale approximately 14 MiB summaries and approximately 31 MiB response are not reclassified as an acceptance bound and were not copied or mutated.
+
+### Durable Coverage Delta
+
+Current repository-resident durable coverage changes that must receive proportional review are:
+
+1. Updated by API/E2E: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts`
+2. Updated upstream: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts/tests/unit/app-data-migrations/app-data-migration-runner.test.ts`
+3. Added upstream: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts/tests/unit/api/graphql/types/app-data-migrations.test.ts`
+4. Updated upstream: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/components/settings/__tests__/ServerMigrationsManager.spec.ts`
+5. Updated upstream: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/stores/__tests__/appDataMigrationsStore.spec.ts`
+6. Removed as stale/withdrawn: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts/tests/e2e/app-data-migrations/token-usage-migration-audit-compaction-startup.e2e.test.ts`
+7. Removed as stale/withdrawn: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts/tests/helpers/app-data-migration-audit-fixtures.ts`
+8. Removed as stale/withdrawn: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts/tests/unit/app-data-migrations/app-data-migration-record-repository-bounds.test.ts`
+9. Removed as stale/withdrawn: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-migration-audit-compaction-v1.test.ts`
+
+No other durable coverage path was added, updated, or removed by API/E2E. Ticket execution logs and the coverage artifacts are evidence, not product test code.
+
+### Final Confidence Scorecard
+
+| Confidence category | Score | Evidence / residual uncertainty |
+| --- | ---: | --- |
+| Requirement and acceptance-criteria proof | 98% | DS-012 failure/restart/UI behavior and SR-010 nonmutation pass directly; the complete applicable API-REV-005 token baseline is retained |
+| Changed-boundary execution directness | 99% | Actual rebuilt schema/server/GraphQL plus ordinary process restart; semantic mounted UI in both locales |
+| Cross-boundary integration realism and mock gap | 97% | Real runner/repository/process/API lifecycle and production web build; UI/backend are correlated rather than one browser-hosted journey |
+| Environment, configuration, identity, and fixture fidelity | 98% | Production Prisma migrations/registry/build output, isolated HOME/runtime/SQLite, real historical file, exact released-shape lifecycle |
+| Failure, edge-case, lifecycle, and recovery evidence | 99% | Failed consolidation, blocked old restore/history, new-run admission, restart retry, overlap rejection, immutable relaunch, no audit mutation |
+| User-surface, browser, and desktop-shell confidence | 96% | Exact mounted English/zh-CN visibility/action semantics and Nuxt build; no changed browser/shell boundary, fresh Electron verification remains delivery-owned |
+| Durable regression coverage quality and relevance | 98% | Closed runner matrix, schema mapping, store/component contract, and one cohesive actual-system lifecycle; proportional review pending |
+
+- Overall final confidence: `97.9%` (simple average, rounded from 97.86%).
+- Critical acceptance criteria unproven: `None`.
+- Applicable category below 90%: `None`.
+- Default 95% clean target met: `Yes`.
+- Broader validation: `Required and completed` through the durable actual built-server/GraphQL/restart journey.
+
+### Cleanup And Residual Risk
+
+- Every spawned server stopped; each API/E2E-owned SQLite database, runtime root, isolated HOME, and historical-audit sentinel was removed by the harness. Static cleanup found no matching database/runtime residue. The production profile metadata and live user data were never accessed or changed.
+- The known independent Nuxt `vue-tsc`/TypeScript package-export incompatibility remains a typecheck limitation; the production build passes. External provider opt-in runtime and Electron shell/package execution are unchanged/not selected.
+- Delivery must remain paused until proportional review of all nine current durable coverage changes passes.
+
+## Latest Authoritative Result — API-REV-008
+
+- Result: `Pass`.
+- Final validation confidence: `97.9%`.
+- New or remaining failure IDs: `None`.
+- `CR-009` / `DS-012`: actual transport, visible localized disabled/no-dispatch UI, and later ordinary-startup recovery are directly proven.
+- `SR-010`: withdrawn audit source/tests remain absent; a real >64 KiB summary/log sentinel remains unprojected and unmodified across failed/successful startups.
+- Required next recipient: `/code_reviewer` for proportional review of all nine current durable coverage changes before delivery/Electron/user verification resumes.

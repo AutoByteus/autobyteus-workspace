@@ -25,6 +25,8 @@ type DatabaseLocation = ReturnType<typeof resolveTestDatabaseLocation>;
 type MigrationStatus = {
   migrationId: string;
   status: string;
+  recoveryAction: "MANUAL_RETRY" | "RESTART_TO_RETRY" | "NONE";
+  canRetry: boolean;
   attempts: number;
   summary: {
     scannedCount: number;
@@ -39,8 +41,10 @@ type MigrationStatus = {
 
 const FINAL_MIGRATION_ID = "20260814_team_run_execution_tree_v1";
 const TOKEN_USAGE_CONSOLIDATION_MIGRATION_ID = "20260819_token_usage_run_records_v1";
+const HISTORICAL_AUDIT_SENTINEL_MIGRATION_ID = "20260730_token_usage_provider_name_snapshot_backfill";
 const REMOVED_CANONICAL_MIGRATION_ID = "20260801_team_canonical_identity";
 const PRODUCTION_PROFILE = path.resolve(process.env.HOME ?? "", ".autobyteus/server-data");
+const WITHDRAWN_AUDIT_BOUND_BYTES = 64 * 1024;
 
 const RELEASED_COHORT = Object.freeze([
   ["20260727_custom_provider_v1_secret_migration", "SUCCEEDED"],
@@ -101,12 +105,39 @@ const deploySchema = (database: DatabaseLocation): void => runMigrations({
   databaseUrl: database.databaseUrl,
 });
 
-const seedReleasedLedger = async (database: DatabaseLocation): Promise<void> => {
+const seedReleasedLedger = async (
+  database: DatabaseLocation,
+  runtimeRoot: string,
+): Promise<{
+  migrationId: string;
+  summary: MigrationStatus["summary"];
+  logPath: string;
+  logBytes: Buffer;
+}> => {
   const prisma = new PrismaClient({ datasources: { db: { url: database.databaseUrl } } });
   const startedAt = new Date("2026-08-17T09:00:00.000Z");
   const completedAt = new Date("2026-08-17T09:00:01.000Z");
+  const historicalSummary: NonNullable<MigrationStatus["summary"]> = {
+    scannedCount: 1,
+    migratedCount: 1,
+    skippedCount: 0,
+    failedCount: 0,
+    details: [{
+      itemId: "accepted-historical-audit-sentinel",
+      status: "MIGRATED",
+      message: `accepted-unchanged:${"s".repeat(WITHDRAWN_AUDIT_BOUND_BYTES)}`,
+    }],
+  };
+  const historicalLogPath = path.join(runtimeRoot, "historical-audit", "released-provider-name.log");
+  const historicalLogBytes = Buffer.from(
+    `accepted historical audit log must remain byte-exact\n${"l".repeat(WITHDRAWN_AUDIT_BOUND_BYTES)}\n`,
+    "utf8",
+  );
+  fs.mkdirSync(path.dirname(historicalLogPath), { recursive: true, mode: 0o700 });
+  fs.writeFileSync(historicalLogPath, historicalLogBytes, { mode: 0o600 });
   try {
     for (const [migrationId, status] of RELEASED_COHORT) {
+      const isHistoricalAuditSentinel = migrationId === HISTORICAL_AUDIT_SENTINEL_MIGRATION_ID;
       await prisma.appDataMigrationRecord.create({
         data: {
           migrationId,
@@ -115,7 +146,7 @@ const seedReleasedLedger = async (database: DatabaseLocation): Promise<void> => 
           attempts: 1,
           startedAt,
           completedAt,
-          summaryJson: JSON.stringify({
+          summaryJson: JSON.stringify(isHistoricalAuditSentinel ? historicalSummary : {
             scannedCount: 1,
             migratedCount: status === "SUCCEEDED" ? 1 : 0,
             skippedCount: 0,
@@ -123,7 +154,9 @@ const seedReleasedLedger = async (database: DatabaseLocation): Promise<void> => 
             details: [{ itemId: `released:${migrationId}`, status: status === "SUCCEEDED" ? "MIGRATED" : "FAILED", message: "synthetic released cohort evidence" }],
           }),
           errorMessage: status === "SUCCEEDED_WITH_WARNINGS" ? "synthetic released warning" : null,
-          logPath: `/synthetic/released/${migrationId}.log`,
+          logPath: isHistoricalAuditSentinel
+            ? historicalLogPath
+            : `/synthetic/released/${migrationId}.log`,
         },
       });
     }
@@ -143,6 +176,12 @@ const seedReleasedLedger = async (database: DatabaseLocation): Promise<void> => 
   } finally {
     await prisma.$disconnect();
   }
+  return {
+    migrationId: HISTORICAL_AUDIT_SENTINEL_MIGRATION_ID,
+    summary: historicalSummary,
+    logPath: historicalLogPath,
+    logBytes: historicalLogBytes,
+  };
 };
 
 const readMigrationLedger = (databasePath: string): Array<Record<string, unknown>> => {
@@ -333,7 +372,7 @@ const readCurrentSyntheticTokenRows = (databasePath: string): Array<Record<strin
 const seedScenario = async (target: ReturnType<typeof makeTarget>, warning: boolean) => {
   fs.mkdirSync(target.isolatedHome, { recursive: true, mode: 0o700 });
   deploySchema(target.database);
-  await seedReleasedLedger(target.database);
+  const historicalAudit = await seedReleasedLedger(target.database, target.runtimeRoot);
   const rootTeamRunId = warning ? "team-v1-warning-root" : "team-v1-supported-root";
   const supported = writeSupportedPredecessor(target.runtimeRoot, rootTeamRunId);
   insertTokenRow(target.database.databasePath, {
@@ -370,14 +409,22 @@ const seedScenario = async (target: ReturnType<typeof makeTarget>, warning: bool
     });
     warningEvidence = { path: invalidPath, bytes: invalidBytes, historyPath, historyBytes };
   }
-  return { rootTeamRunId, supported, warningEvidence };
+  const historicalAuditRecord = readMigrationLedger(target.database.databasePath)
+    .find(({ migration_id }) => migration_id === historicalAudit.migrationId);
+  expect(historicalAuditRecord).toBeDefined();
+  return {
+    rootTeamRunId,
+    supported,
+    warningEvidence,
+    historicalAudit: { ...historicalAudit, record: historicalAuditRecord! },
+  };
 };
 
 const migrationStatuses = async (serverUrl: string): Promise<MigrationStatus[]> => {
   const result = await executeGraphql<{ getAppDataMigrations: MigrationStatus[] }>(serverUrl, `
     query TeamRunV1MigrationStatuses {
       getAppDataMigrations {
-        migrationId status attempts summary errorMessage logPath
+        migrationId status recoveryAction canRetry attempts summary errorMessage logPath
       }
     }
   `);
@@ -397,6 +444,30 @@ const tokenConsolidationStatus = async (serverUrl: string): Promise<MigrationSta
   const status = statuses.find(({ migrationId }) => migrationId === TOKEN_USAGE_CONSOLIDATION_MIGRATION_ID);
   if (!status) throw new Error("TOKEN_USAGE_CONSOLIDATION_STATUS_MISSING");
   return status;
+};
+
+const expectHistoricalAuditUnchanged = async (
+  serverUrl: string,
+  databasePath: string,
+  scenario: Awaited<ReturnType<typeof seedScenario>>,
+): Promise<void> => {
+  const status = (await migrationStatuses(serverUrl))
+    .find(({ migrationId }) => migrationId === scenario.historicalAudit.migrationId);
+  expect(status).toMatchObject({
+    status: "SUCCEEDED",
+    attempts: 1,
+    recoveryAction: "NONE",
+    canRetry: false,
+    summary: scenario.historicalAudit.summary,
+    logPath: scenario.historicalAudit.logPath,
+  });
+  expect(Buffer.byteLength(JSON.stringify(status!.summary), "utf8"))
+    .toBeGreaterThan(WITHDRAWN_AUDIT_BOUND_BYTES);
+  expect(readMigrationLedger(databasePath)
+    .find(({ migration_id }) => migration_id === scenario.historicalAudit.migrationId))
+    .toEqual(scenario.historicalAudit.record);
+  expect(fs.readFileSync(scenario.historicalAudit.logPath))
+    .toEqual(scenario.historicalAudit.logBytes);
 };
 
 const expectHealthy = async (serverUrl: string): Promise<void> => {
@@ -867,9 +938,12 @@ describe("TeamRun V1 released-shape production upgrade through actual startup", 
     await expectHealthy(first.serverUrl);
     expect(await tokenConsolidationStatus(first.serverUrl)).toMatchObject({
       status: "FAILED",
+      recoveryAction: "RESTART_TO_RETRY",
+      canRetry: false,
       attempts: 1,
       errorMessage: expect.stringContaining("blank canonical run ID"),
     });
+    await expectHistoricalAuditUnchanged(first.serverUrl, target.database.databasePath, scenario);
     await expectTokenHistoryUnavailable(first.serverUrl);
     const blockedRestore = await restoreTeamRun(first.serverUrl, scenario.rootTeamRunId);
     expect(blockedRestore.restoreAgentTeamRun).toMatchObject({
@@ -911,9 +985,12 @@ describe("TeamRun V1 released-shape production upgrade through actual startup", 
     await expectHealthy(second.serverUrl);
     expect(await tokenConsolidationStatus(second.serverUrl)).toMatchObject({
       status: "SUCCEEDED",
+      recoveryAction: "NONE",
+      canRetry: false,
       attempts: 2,
       errorMessage: null,
     });
+    await expectHistoricalAuditUnchanged(second.serverUrl, target.database.databasePath, scenario);
     expect(countTokenRows(target.database.databasePath)).toEqual({ legacy: 0, current: 3 });
     const restored = await restoreTeamRun(second.serverUrl, scenario.rootTeamRunId);
     expect(restored.restoreAgentTeamRun).toMatchObject({

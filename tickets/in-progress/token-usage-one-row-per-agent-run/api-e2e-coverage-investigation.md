@@ -8,13 +8,78 @@
 - Supplemental Artifacts:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/token-usage-data-model-analysis.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/data-migration-conventions.md`
-- Solution / Architecture Revisions: `SR-009`; `ARCH-REV-009`
-- Implementation / Source Review Revisions: `IR-009` (cumulative `IR-008`); `CRR-014` Pass at 93.2/100 with no open source finding
-- Prior API/E2E Revisions: `API-REV-001` Fail at 70.0%; `API-REV-002` Fail at 75.0%; `API-REV-003` Pass at 97.1%; `API-REV-004` Pass at 97.3%
-- Current API/E2E Revision: `API-REV-007` Pass at 97.7%
-- Investigation Round: `6`
-- Trigger: `DR-006` reachable oversized terminal audit residue, reviewed `SR-009` / `ARCH-REV-009` / cumulative `IR-008`–`IR-009` / `CRR-014`, bounded status projection `DS-010`, and reachable startup audit compactor `DS-011`.
-- Investigation timing: this round-6 decision was recorded before any API-REV-006 execution or API/E2E-owned durable edit. All fixtures will be disposable production-repository/runtime targets. The user's live database will not be accessed or mutated, and the pre-SR-009 Electron artifact is excluded from acceptance evidence.
+- Solution / Architecture Revisions: `SR-012` current; `SR-010` audit-withdrawal boundary; `ARCH-REV-012`
+- Implementation / Source Review Revisions: `IR-011` current; `IR-010` cleanup baseline; `CRR-019` Pass at 93.6/100 with no open source finding
+- Prior API/E2E Revisions: `API-REV-001` Fail at 70.0%; `API-REV-002` Fail at 75.0%; `API-REV-003` Pass at 97.1%; `API-REV-004` Pass at 97.3%; `API-REV-005` Pass at 97.4% remains the applicable token/DS-009 baseline
+- Latest recorded API/E2E Revision: `API-REV-007` Pass at 97.7%, but its SR-009 audit-compaction behavior is withdrawn and is not current acceptance evidence
+- Investigation Round: `8` (planned `API-REV-008`)
+- Trigger: reviewed `SR-012` / `ARCH-REV-012` / `IR-011` / `CRR-019`, resolving `CR-009` with the generic closed recovery action while preserving the complete user-directed `SR-010` audit removal.
+- Investigation timing: this round-8 decision was recorded before any API-REV-008 execution or API/E2E-owned durable edit. All database, runtime, server, and historical-audit sentinels will be disposable test-owned fixtures. The user's live database/profile will not be accessed or mutated, and `API-REV-006`/`API-REV-007` plus `DR-007` are excluded wherever they assert withdrawn audit behavior.
+
+## Round 8 SR-012 / IR-011 Coverage Investigation Before Durable Edit Or Execution
+
+### Changed Boundary And Required Proof
+
+- `DS-012` adds one nonpersisted runner-owned `AppDataMigrationRecoveryAction`: `MANUAL_RETRY`, `RESTART_TO_RETRY`, or `NONE`. `canRetry` must be exactly the manual-action predicate, while automatic `runPending()` eligibility remains separate.
+- The critical reachable path is the required `STARTUP_ONLY` token consolidation failing during an ordinary built-server startup. Its actual GraphQL record must expose `status=FAILED`, `recoveryAction=RESTART_TO_RETRY`, and `canRetry=false`; direct UI Retry must remain disabled and dispatch no mutation; exact English and Simplified Chinese restart guidance must be visible.
+- A later ordinary built-server startup must retry the same failed record through `runPending()` and publish `status=SUCCEEDED`, `attempts=2`, `recoveryAction=NONE`, and `canRetry=false`. Existing degraded history/old-run restore rejection, new-current-run admission, successful import, and restored-run admission remain part of that real lifecycle.
+- `SR-010` removes the summary projection, audit compactor, audit-only registry/scheduling/UI behavior, log rewriting, and all audit-specific durable coverage. Current startup must not project or mutate existing `summary_json`, `log_path`, or historical log bytes. The accepted large historical response is a residual, not a size acceptance condition.
+
+### Durable Coverage Inventory And Validity Decisions
+
+| Coverage path / group | Decision before execution | Reason / planned evidence |
+| --- | --- | --- |
+| `autobyteus-server-ts/tests/unit/app-data-migrations/app-data-migration-runner.test.ts` | `Needs Update` completed upstream in IR-011; execute unchanged | Direct classifier matrix covers ANYTIME manual recovery, required/unscheduled STARTUP_ONLY states, active/stale RUNNING, terminal states, exact derived boolean, direct restart-required defense, and later `runPending()` retry. |
+| `autobyteus-server-ts/tests/unit/api/graphql/types/app-data-migrations.test.ts` | `Add Durable Coverage` completed upstream in IR-011; execute unchanged | Proves the registered non-null GraphQL enum and resolver mapping, but does not by itself prove transport through the built server. |
+| `autobyteus-web/stores/__tests__/appDataMigrationsStore.spec.ts` | `Needs Update` completed upstream in IR-011; execute unchanged | Proves the frontend query result carries `recoveryAction` without reclassification. It remains mocked at Apollo. |
+| `autobyteus-web/components/settings/__tests__/ServerMigrationsManager.spec.ts` | `Needs Update` completed upstream in IR-011; execute unchanged | Mounted DOM proves exact English/zh-CN restart copy, disabled/no-dispatch startup recovery, no restart copy for `MANUAL_RETRY`/`NONE`, and retained enabled manual dispatch. |
+| `autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts` | `Needs Update` by API/E2E | Its existing real failed-consolidation/restart case directly exercises the required process lifecycle but its GraphQL document omits `recoveryAction`/`canRetry`. Add those fields and assertions at failure/success. Add a >64 KiB historical-summary plus real log sentinel so the same built startups prove the withdrawn projection/compactor does not alter or hide accepted historical audit data. |
+| Removed audit fixture/unit/E2E files and `token-usage-migration-audit-compaction-v1` source | `Stale / Remove` completed upstream in SR-010/IR-010 | These protect withdrawn `REQ-028`/`AC-027` behavior. They must remain deleted, with no replacement compactor coverage. Static absence/registry/build-output scans will confirm the removal. |
+| API-REV-005 DS-009 migration/source-shaping/scale evidence | `Still Valid`; retain without repetition unless the focused lifecycle fails | IR-011 changes no legacy transport, fold, consolidation SQL, current token tables, scale characteristics, pricing, or SafeInt boundary. The selected built lifecycle reruns the affected consolidation path. |
+| API-REV-003 current token API/SafeInt/Chrome evidence and API-REV-004 integrated TeamRun/task evidence | `Still Valid` for unchanged surfaces | IR-011 changes only generic migration recovery transport/presentation. Actual built startup and restore/new-run lifecycle is rechecked; repeating token statistics Chrome layout, released scale, pricing, or SafeInt would not add DS-012 evidence. |
+| API-REV-006/API-REV-007 audit compaction and DR-007 Electron package | `Stale / not acceptance evidence` | The user withdrew that behavior in SR-010. No compactor, bound, rewritten log, or Electron observation from that package can support current acceptance. |
+
+### Planned Durable Delta, Execution Order, And Broader Gate
+
+- Planned API/E2E-owned durable update: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts` only. No durable file will be added or removed by API/E2E in this round.
+- The update will remain in the existing cohesive production-upgrade owner: extend its actual GraphQL status type/document; assert `RESTART_TO_RETRY/false` after the first failed startup and `NONE/false` after the successful restart; seed a test-owned >64 KiB summary and real historical log; assert exact GraphQL summary, database tuple, log path, and log bytes before/after both startups.
+- Execute in order: full integrated server build; focused runner/GraphQL tests; the selected actual built-server failure/restart case; mounted Settings/store tests; complete four-case actual production-upgrade file; server TypeScript/build residue/diff/no-disabled-test/cleanup audits. Recheck prior broad evidence only if a focused failure widens impact.
+- Initial broader-validation decision: `Required`, satisfied by the repository-resident actual built-server/GraphQL/restart journey because resolver-local and mounted tests otherwise leave a material process/transport gap. A new Chrome/Electron run is not initially selected: the semantic UI delta is directly mounted in both locales, introduces no browser API or shell behavior, and delivery owns a fresh Electron rebuild/user verification after this gate.
+- Reroute rule: a critical implementation failure stops the round and returns the cumulative failure evidence to `/code_reviewer`. A successful round becomes `API-REV-008` and returns every currently changed durable test path, including the one API/E2E-owned E2E update, for proportional review before delivery.
+
+### Round 8 Executed Evidence And Final Coverage Decision
+
+- Full integrated server build passed, including TypeScript, managed assets, built-in bootstrap smoke, and sanitized built-module bootstrap.
+- Focused runner/GraphQL coverage passed `2 files / 20 tests`. The complete recovery matrix, direct STARTUP_ONLY guard, later `runPending()` retry, non-null enum registration, and snapshot mapping are current.
+- The selected actual built-server failure/restart case passed. The first ordinary startup exposed `FAILED/attempts=1/RESTART_TO_RETRY/canRetry=false`; history and old restore were rejected while a new current run persisted. The second ordinary startup exposed `SUCCEEDED/attempts=2/NONE/canRetry=false`, imported all disjoint source rows, preserved the new row, and admitted old restore.
+- The API/E2E-owned durable update also seeds a real terminal >64 KiB historical summary and log. Actual GraphQL returns the complete summary and both the database tuple and log bytes stay exact through failed and successful startups, directly proving no withdrawn projection/compactor/nonmutation regression.
+- Mounted Settings/store coverage passed `2 files / 4 tests`: exact English and Simplified Chinese guidance is visible; startup-only Retry is disabled and dispatches nothing; manual Retry stays enabled and dispatches exactly once; the store carries the enum without policy inference.
+- The complete actual production-upgrade E2E passed `1 file / 4 tests`; Nuxt client/server/15-route prerender production build passed; server TypeScript, localization guards, recovery-path trace, withdrawn source/test/rebuilt-output residue scan, exact deletion audit, `git diff --check`, no-disabled-test scan, canonical artifact audit, and owned runtime/database/process cleanup passed.
+
+Final decisions:
+
+- `Needs Update` is complete for `team-run-v1-production-upgrade.e2e.test.ts`; no additional durable path was added or removed by API/E2E.
+- The runner, new GraphQL schema test, component, and store changes remain valid and passed. The four audit-only durable paths plus the audit fixture remain correctly removed as stale current-scope coverage.
+- API-REV-005 DS-009/scale evidence and unchanged API-REV-003/004 token/UI/team evidence remain applicable. Focused current execution found no widened pricing, SafeInt, scale, token-statistics layout, delegated-task, or shell impact.
+- Broader validation is `Required and completed` through the actual built-server/API/restart journey. Additional Chrome/Electron execution is `Not Required` at API/E2E: mounted DOM/localization plus production build directly prove the semantic UI change, and delivery owns the fresh Electron artifact/user verification.
+
+Final confidence scorecard:
+
+| Confidence category | Final | Evidence / residual uncertainty |
+| --- | ---: | --- |
+| Requirement and acceptance-criteria proof | 98% | DS-012 and SR-010 current-scope material paths pass directly; prior applicable token evidence retained |
+| Changed-boundary execution directness | 99% | Actual rebuilt schema/server/GraphQL/process restart plus mounted semantic UI |
+| Cross-boundary integration realism and mock gap | 97% | Real process/API/database and production frontend build; correlated UI/backend rather than one browser-hosted journey |
+| Environment, configuration, identity, and fixture fidelity | 98% | Production migrations/registry/build, isolated HOME/runtime/SQLite, real historical file sentinel |
+| Failure, edge-case, lifecycle, and recovery evidence | 99% | Failure, degraded gates, new run, restart retry, overlap, immutable relaunch, audit nonmutation |
+| User-surface, browser, and desktop-shell confidence | 96% | Exact mounted en/zh-CN state/action plus Nuxt build; Electron verification remains delivery-owned |
+| Durable regression coverage quality and relevance | 98% | Cohesive runner/schema/store/component/process coverage; proportional review pending |
+
+- Overall final confidence: `97.9%` (simple average, rounded from 97.86%).
+- Every critical acceptance criterion directly proven: `Yes`.
+- Applicable category below 90%: `No`.
+- Default 95% clean target met: `Yes`.
+- Result: `Pass`; no failure ID opened.
 
 ## Round 6 SR-009 / IR-008 / IR-009 Coverage Investigation Before Execution
 

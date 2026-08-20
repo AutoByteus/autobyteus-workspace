@@ -2,15 +2,50 @@
 
 ## Current Result
 
-- Delivery revision: `DR-006`
+- Delivery revision: `DR-007`
 - Trigger: live DR-005 technical verification reported by
   `/solution_designer`.
 - Ticket-scope migration result: `Pass`.
 - Explicit user finalization instruction: `Not received`.
-- Residual classification: `Requirement Gap / Design Impact`.
-- Required recipient: `/solution_designer`.
-- Finalization state: `Blocked pending upstream classification and explicit
-  user verification`.
+- Historical classification: `Requirement Gap / Design Impact`.
+- Resolution: `SR-008` / `SR-009` / `ARCH-REV-009` / `IR-008` / `IR-009` /
+  `CRR-014` / `API-REV-007` / `CRR-016` all passed.
+- Current result: `Resolved in the fresh DR-007 verification package`.
+- Finalization state: `Held pending renewed explicit user verification`.
+
+## Resolution
+
+The approved in-scope correction uses the two-owner posture identified by this
+record:
+
+1. Every current migration status, prerequisite, scheduling, API, and UI read
+   SQL-projects a uniform summary of at most `65,536` bytes before Node
+   materialization. Oversized or malformed historical details become truthful
+   bounded omission/unavailable markers rather than a multi-megabyte response.
+2. A separate registered
+   `20260819_token_usage_migration_audit_compaction_v1` startup-only migration
+   owns the two known terminal 20260730 summaries and their owned regular log
+   files. It preserves the complete original identity/display/status/attempt/
+   timestamp/error/count tuple and replaces only row-linear detail evidence
+   with deterministic bounded content.
+
+The compactor is scheduled by ordinary `runPending()` via
+`requiredOnStartup=true` plus `STARTUP_ONLY`, but it remains noncritical because
+it is absent from Token Usage consolidation prerequisites and explicit runtime
+fatal gates. `FAILED` and stale `RUNNING` states retry on later ordinary
+startup; terminal success/warning states do not advertise impossible manual
+retry.
+
+`API-REV-007` passed at `97.7%`, including actual rebuilt-server startup. The
+real Prisma/SQLite and startup E2E assertions read every replaced owned log and
+compare the complete deterministic body while retaining the 64 KiB limit.
+`CRR-016` passed proportional review of all six cumulative SR-009 durable test
+paths with no remaining finding.
+
+Delivery refreshed the base, synchronized the durable convention/README, and
+built a new isolated DR-007 Electron package without stopping or overwriting
+the user's currently running DR-005 app. Package integrity passed. Earlier
+Electron evidence remains historical and stale for this correction.
 
 ## Passed Technical Evidence
 

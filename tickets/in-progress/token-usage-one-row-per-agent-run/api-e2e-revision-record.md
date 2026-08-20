@@ -209,3 +209,32 @@ None.
 - New or remaining failure IDs: `None`; `TCR-001` resolved in API/E2E evidence pending proportional re-review.
 - Recommended recipient: `/code_reviewer` for proportional re-review of the two corrected durable paths.
 - Remaining risks, blocked evidence, or untested scope: delivery/Electron/user verification remains paused through the review gate. The independent Nuxt typecheck limitation and unchanged external-provider opt-in runtime remain as previously recorded.
+
+### API-REV-008 — Current startup-recovery contract and audit withdrawal pass
+
+- Triggering role, report path, and round: `/code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/code-review-report.md`; API/E2E round 8 after `CRR-019`.
+- Triggering finding or scenario IDs: resolved source finding `CR-009`; approved `DS-012`; user-directed audit withdrawal `SR-010`. No new API/E2E failure ID.
+- Related revision IDs: `SR-012`, `ARCH-REV-012`, `IR-011`, `CRR-019`; `SR-010`/`IR-010` removal boundary; prior applicable token baseline `API-REV-005`. `API-REV-006`/`API-REV-007` and `DR-007` are withdrawn wherever they assert audit compaction.
+- Why this revision was recorded: API-REV-007 predates the complete current-scope reset and does not validate DS-012. The actual built-server GraphQL enum, failed STARTUP_ONLY consolidation, localized disabled/no-dispatch guidance, later ordinary-startup retry, and nonmutation after compactor removal required fresh executable proof.
+- Coverage decisions or durable paths changed: API/E2E updated `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts`. The existing failed-consolidation lifecycle now asserts real GraphQL `RESTART_TO_RETRY/false` then `NONE/false` across ordinary restart and protects one >64 KiB historical summary/log from projection or mutation. Upstream runner, GraphQL, Settings, and store test changes passed. Four withdrawn audit tests and their fixture remain deleted as stale coverage.
+- Scenarios added, changed, removed, or rechecked: actual GraphQL recovery transport; failed consolidation/history and old-restore gate; new current-run admission; restart retry/import/restore; terminal historical summary and log byte/value exactness; full supported/warning/overlap built-server suite; exact English/zh-CN Settings guidance; disabled/no-dispatch startup action; retained manual action; withdrawn source/test/build-output absence.
+- Commands, environment, fixture, or broader-validation delta: full server build passed; runner/GraphQL passed 2 files/20 tests; selected built-server lifecycle passed 1 selected test; Settings/store passed 2 files/4 tests; full built-server suite passed 1 file/4 tests; Nuxt production build passed; TypeScript/localization/static/diff/cleanup and canonical artifact audits passed. All database/runtime/log fixtures were disposable and removed; the user's live profile/database was not accessed or mutated.
+
+#### Prior Finding And Evidence Disposition
+
+| Prior scenario / reference | Previous status | Current resolution | Evidence |
+| --- | --- | --- | --- |
+| `CR-009` / false or unexplained public recovery action | Resolved in source by IR-011/CRR-019; API/E2E pending | Actual built GraphQL returns `RESTART_TO_RETRY/canRetry=false` on failed startup consolidation and `NONE/false` after ordinary restart; mounted UI shows exact localized guidance and dispatches nothing | `test-results/api-e2e/logs/59-ir011-runner-graphql-suite.log`; `logs/60-ir011-built-server-recovery-action-restart.log`; `logs/61-ir011-settings-store-localized-suite.log` |
+| SR-010 audit withdrawal/nonmutation | Source/tests removed in IR-010; current executable confirmation pending | No withdrawn identifiers/paths exist in source/tests/rebuilt dist; a real >64 KiB summary/log remains exact through failed and successful built startups | `logs/60-ir011-built-server-recovery-action-restart.log`; `logs/62-ir011-full-built-production-upgrade-suite.log`; `logs/64-ir011-static-localization-cleanup-audit.log` |
+| `TCR-001` | Resolved for withdrawn compactor in API-REV-007 | Obsolete, not current acceptance; compactor source/tests remain deleted | `logs/64-ir011-static-localization-cleanup-audit.log` |
+| API-REV-005 DS-009/scale and API-REV-003/004 unchanged token/team evidence | Passed before DS-012 | Remains applicable; affected consolidation/restore path was directly rechecked and no broader impact emerged | `logs/62-ir011-full-built-production-upgrade-suite.log`; prior canonical evidence retained |
+
+- Canonical artifacts updated:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-coverage-investigation.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-execution-coverage-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-revision-record.md`
+- Prior recorded result and confidence: `Pass / 97.7%`, but its audit-compaction scope is withdrawn; `API-REV-005 Pass / 97.4%` remains the applicable token/DS-009 baseline.
+- Current result and confidence: `Pass / 97.9%`.
+- New or remaining failure IDs: `None`.
+- Recommended recipient: `/code_reviewer` for proportional review of all nine current durable coverage changes before delivery.
+- Remaining risks, blocked evidence, or untested scope: the known independent Nuxt `vue-tsc`/TypeScript package-export incompatibility; unchanged external-provider opt-in runtime; fresh Electron packaging and renewed explicit user verification remain delivery-owned. None blocks the current DS-012/SR-010 API/E2E result.

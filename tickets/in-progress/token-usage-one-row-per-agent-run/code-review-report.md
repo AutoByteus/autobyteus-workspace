@@ -6,111 +6,105 @@
 - Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/requirements.md`
 - Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/investigation-notes.md`
 - Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/design-spec.md`
-- Supplemental Task Artifacts Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/token-usage-data-model-analysis.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/data-migration-conventions.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/delivery-requirement-gap.md`; delivery evidence `19-live-dr005-technical-verification-and-residual-dr006.log` and `20-dr006-requirement-gap-handoff-audit.log`
+- Supplemental Task Artifacts Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/data-migration-conventions.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/token-usage-data-model-analysis.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/delivery-requirement-gap.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/delivery-rework-record.md`
 - Solution Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/solution-revision-record.md`
-- Relevant Solution Revision IDs: `SR-009` (current), `SR-008`, `SR-007` (prior baseline)
+- Relevant Solution Revision IDs: `SR-012` current; `SR-011` superseded intermediate; `SR-010` audit withdrawal; `SR-007` token/DS-009 baseline.
 - Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/design-review-report.md`
 - Architecture Review Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/architecture-review-revision-record.md`
-- Relevant Architecture Review Revision IDs: `ARCH-REV-009` (current), `ARCH-REV-008`, `ARCH-REV-007`
+- Relevant Architecture Review Revision IDs: `ARCH-REV-012` current; `ARCH-REV-011` / `AR-006` resolved; `ARCH-REV-010` cleanup baseline.
 - Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/implementation-revision-record.md`
-- Relevant Implementation Revision IDs: `IR-009` (current), `IR-001`–`IR-008` (reviewed baseline)
+- Relevant Implementation Revision IDs: `IR-011` current; `IR-010` cleanup baseline; `IR-007` token/DS-009 baseline.
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-014`
-- Current Review Round: `14`
-- Trigger: `CRR-013` failed IR-008 on `CR-007`: the startup-only compactor's terminal warning was exposed as manually retryable even though both supported runner paths rejected/skipped it. `IR-009` returns the execution-policy-aware public retry correction for source re-review.
-- Prior Review Round Reviewed: `CRR-013` implementation-review Fail; prior source `CRR-011` and successful-test review `CRR-012` Pass baselines remain applicable to DS-009.
-- Latest Authoritative Round: `CRR-014`
-- Coverage Investigation Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-coverage-investigation.md` (`API-REV-005` baseline predates SR-009/IR-008/IR-009)
-- Execution Coverage Report Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-execution-coverage-report.md`
-- API/E2E Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-revision-record.md`
-- Relevant API/E2E Revision IDs: `API-REV-005` (prior baseline; does not cover IR-008/IR-009)
+- Current Code Review Revision ID: `CRR-019`
+- Current Review Round: `19`
+- Trigger: `/implementation_engineer` returned `IR-011` for `CRR-018` / `CR-009` / `MP-CR-008` after `SR-012` / `ARCH-REV-012` completed the public restart-recovery contract.
+- Prior Review Round Reviewed: `CRR-018` `Fail — Design Impact`.
+- Latest Authoritative Round: `CRR-019`
+- Relevant API/E2E Revision IDs: `API-REV-005` remains the prior token/DS-009 baseline; `API-REV-007` covers withdrawn audit behavior and is not current acceptance.
 - Delivery Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/delivery-revision-record.md`
-- Relevant Delivery Revision IDs: `DR-006`, `DR-005`
-- Failing Scenario IDs: no API/E2E failure ID; source finding `CR-007` returned resolved.
-- Exact Failing Commands / Execution Mode: N/A.
-- Failure Evidence Paths: `CRR-013` in this report/revision record; current runner and focused server/frontend tests cited below.
-- Reviewer Commands / Evidence: reviewer reran server `tsconfig.build.json` TypeScript checking (passed); the focused repository/runner/compactor selection (`3 files / 33 tests`, all passed); mounted Settings/store coverage (`2 files / 3 tests`, all passed); `git diff --check`; current `origin/personal` ancestry (`0 behind / 4 ahead`); and effective source-line counts. Static tracing confirms the same execution-policy predicate now governs the returned manual capability while `runPending()` and `runMigration()` retain their separate approved lifecycles.
+- Relevant Delivery Revision IDs: `DR-007` withdrawn package; `DR-005` restored live-token baseline context.
+- Reviewer Commands / Evidence: server no-emit TypeScript passed; focused runner/GraphQL suite passed `2 files / 20 tests`; mounted Settings/store suite passed `2 files / 4 tests`; localization boundary and literal audits passed; effective source-line audit, withdrawn-audit search, recovery-owner/use trace, generated-client diff, and `git diff --check` passed. No live database or persisted migration/audit record was accessed or mutated.
 
 ## Review Scope
 
-- Changed implementation and behavior reviewed: full cumulative DS-010/DS-011 behavior plus IR-009's execution-policy-aware `canRetry` correction, terminal warning lifecycle, failed/stale startup retry preservation, and existing Settings action behavior.
-- Files / areas reviewed: `app-data-migration-summary-projection.ts`; `app-data-migration-record-repository.ts`; `token-usage-migration-audit-compaction-v1/*`; `app-data-migration-registry.ts`; `app-data-migration-runner.ts`; app-data GraphQL types/resolver; frontend migration query/store/manager; the IR-008/IR-009 repository, runner, compactor, and mounted Settings test paths; `REQ-014`, `REQ-024`, `REQ-025`, `REQ-028`, `AC-027`; `SR-009`; `ARCH-REV-009`; `DR-006`.
-- Explicit exclusions: unchanged current token folding, pricing, SafeInt API projection, historical consolidation, GraphQL token summaries, TeamRun/task lifecycle, and frontend Token Statistics behavior retain the prior `CRR-011` / `CRR-012` / `API-REV-005` baseline. Tests and fixtures are excluded from implementation-source size thresholds. The user's live database was not accessed or mutated.
+- Changed implementation and behavior reviewed: DS-012's nonpersisted recovery action, runner classification matrix, derived manual capability, unchanged startup/manual entrypoint behavior, GraphQL mapping, generated client/store transport, localized Settings restart guidance, disabled/no-dispatch behavior, and preservation of the complete SR-010 audit removal.
+- Files / areas reviewed: app-data migration types/runner/registry/repository; app-data GraphQL resolver/schema; both web GraphQL documents and generated types; Pinia migration store; Settings migration component; English/Chinese catalogs; focused backend/frontend durable coverage; cumulative design/review/delivery artifacts.
+- Explicit exclusions: unchanged token folding, pricing, current record schema, statistics, restore/history gates, DS-009 transport, and consolidation transaction retain their prior source baseline. Static localization catalogs and generated GraphQL output are declarative/generated artifacts and are excluded from implementation-source line thresholds. The accepted large historical summaries/status response/logs remain out of scope.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Approved requirements basis understood: `Confirmed`. DS-010 bounds `getRecord`/`listRecords` before Node materialization. DS-011 runs only through ordinary startup `runPending()`, preserves exact terminal outcome facts, compacts supported evidence, leaves unsupported evidence behind a bounded warning, retries only `FAILED`/stale `RUNNING`, and makes no manual or automatic retry claim for terminal warning.
-- Design-spec behavior map verified against the implementation: `Confirmed`. IR-009 closes the only CRR-013 contradiction without changing the approved read, compaction, scheduling, retry, or nonfatality paths.
-- Design review report and round confirmed: `ARCH-REV-009` passed `SR-009`; `AR-005` / `MP-005` are resolved by actual `requiredOnStartup=true` registration and nonfatal dependency/gate absence.
+- Approved requirements basis understood: `Confirmed`. `REQ-025`, `AC-017`, and `AC-019` now require one executable public recovery classification: manual retry, restart retry, or none.
+- Design-spec behavior map verified against the implementation: `Confirmed`. The runner is the sole classifier; GraphQL/store transport without reclassification; Settings renders only the localized consequence.
+- Design review report and round confirmed: `ARCH-REV-012` passed `SR-012` and resolved `AR-006`; the approved scope remains narrow and preserves all SR-010 removals.
 - Behavior-basis status: `Confirmed`
-- Changed or newly discovered behavior: None. Public `canRetry` is now explicitly the manual Settings-command capability; automatic startup eligibility remains owned separately by `runPending()`.
-- Remaining material ambiguity: None. The approved contract and current UI/mutation path are explicit.
+- Changed or newly discovered behavior: none.
+- Remaining material ambiguity: none. The closed enum is a public presentation contract, not persisted migration state or a recovery state machine.
 
 | Behavior ID | Current Status | Current Implementation Path And Lifecycle Evidence | Contradicting Or Newly Discovered Supported Behavior Evidence |
 | --- | --- | --- | --- |
-| `BEH-001` | `Confirmed` | Current observations still use the awaited one-run accumulator/current repository; IR-008 has no current token write dependency. | N/A |
-| `BEH-002` | `Confirmed` | Current token record/statistics/GraphQL projections are unchanged. | N/A |
-| `BEH-003` | `Confirmed` | Run-created-range/lifetime-total behavior is unchanged. | N/A |
-| `BEH-004` | `Confirmed` | Startup enumerates bounded records, then runs the registered compactor after the two source definitions and before consolidation. Valid terminal rows are scalar-inspected and their summaries/logs compacted with exact outcome preservation; unsupported rows yield terminal warning and are skipped later. `toStatusSnapshot()` now returns `canRetry=false` for every `STARTUP_ONLY` state, so Settings disables the impossible manual action while `FAILED`/stale `RUNNING` still retry on a later ordinary startup. | N/A |
-| `BEH-005` | `Confirmed` | Consolidation remains after the two source repairs and compactor; the compactor is not a prerequisite and never accesses token tables. | N/A |
-| `BEH-006` | `Confirmed` | The compactor ID is absent from consolidation prerequisites and explicit ServerRuntime fatal gates; a failed/warning audit cleanup does not change token readiness or global health. | N/A |
+| `BEH-001` | `Confirmed` | Current observations remain on the awaited one-row accumulator/current repository path. | N/A |
+| `BEH-002` | `Confirmed` | Current run/member/team/statistics reads are unchanged and current-record-only. | N/A |
+| `BEH-003` | `Confirmed` | Run-created-range/lifetime-total UI/API semantics are unchanged. | N/A |
+| `BEH-004` | `Confirmed` | Only the bounded same-ID repairs remain; audit summary projection/compaction/log handling stays absent. | N/A |
+| `BEH-005` | `Confirmed` | Failed required startup-only consolidation maps to `RESTART_TO_RETRY`/`canRetry=false`; later ordinary `runPending()` retries it, while direct manual execution remains restart-required. DS-009 and consolidation mechanics are unchanged. | N/A |
+| `BEH-006` | `Confirmed` | GraphQL carries the runner action; Settings shows exact localized restart guidance, keeps Retry disabled, and its click guard dispatches no mutation. Manual-retryable migrations retain the enabled command. | N/A |
 
 ## Structural / Design Checks
 
 | Check | Result | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Task design health assessment is present, evidence-backed, and preserved by the implementation | `Pass` | DS-010 corrects the current materialization boundary; DS-011 is a separate migration-owned contraction rather than a same-ID rerun or runtime fallback. | None. |
-| Implementation matches approved behavior-defining supplemental artifacts | `Pass` | Core bounding/compaction matches the migration convention, and IR-009 now keeps the startup-only terminal warning non-retryable on the public manual-action boundary as required by `REQ-028` / `SR-009`. | None. |
-| Data-flow spine inventory clarity and preservation under shared principles | `Pass` | `ServerRuntime -> runPending -> bounded record repository -> registered compactor -> scalar source/log owners -> preserved bounded evidence`; status reads follow `GraphQL -> runner -> bounded repository`. | None. |
-| Ownership boundary preservation and clarity | `Pass` | Generic current projection, historical two-ID mutation, filesystem replacement, runner sequencing, and public mapping remain separate owners. | None. |
-| Off-spine concern clarity | `Pass` | SQL shape validation and log ownership checks serve the compactor without entering token runtime. | None. |
-| Existing capability/subsystem reuse check | `Pass` | The implementation reuses the registry, runner, record table/repository, and ordinary startup path; it adds no second scheduler or manual repair tool. | None. |
-| Reusable owned structures check | `Pass` | The 64 KiB constants/markers and bounded projection have one repository-owned source; the compactor reuses that bound. | None. |
-| Shared-structure/data-model tightness check | `Pass` | `TerminalMigrationAuditRecord` contains only the scalar terminal tuple and supported aggregate facts needed for compaction; raw details never enter it. | None. |
-| Repeated coordination ownership check | `Pass` | Runner owns lifecycle/status persistence; the compactor owns only two-record sequencing. | None. |
-| Empty indirection check | `Pass` | Projection, repository, and log compactor each enforce a concrete invariant. | None. |
-| Scope-appropriate separation of concerns and file responsibility clarity | `Pass` | All new files are cohesive; the runner's 249-line investigation is recorded below and does not justify an empty split. | None. |
-| Ownership-driven dependency check | `Pass` | Current repository is migration-ID-agnostic; only the compactor imports the two historical migration IDs. | None. |
-| Authoritative Boundary Rule check | `Pass` | Runner and GraphQL consume the record-repository/status boundary; no caller bypasses it to load raw summaries. | None. |
-| File placement check | `Pass` | Generic projection is under app-data repositories; historical mutation is under the registered token audit migration. | None. |
-| Flat-vs-over-split layout judgment | `Pass` | Three DS-011 files correspond to orchestration, database scalar/transaction ownership, and filesystem ownership without artificial fragmentation. | None. |
-| Interface/API/query/command/service-method boundary clarity | `Pass` | `canRetry` now means manual execution is both status-eligible and policy-allowed. `STARTUP_ONLY` stays false for every status; default/ANYTIME warning remains true and executable. | None. |
-| Naming quality and naming-to-responsibility alignment check | `Pass` | Projection, record, compaction, and log names identify their exact responsibilities. | None. |
-| No unjustified duplication of code / repeated structures in changed scope | `Pass` | Count validation is centrally generated for generic reads; the historical repository has its own closed scalar predicate because it owns mutation validation. | None. |
-| Patch-on-patch complexity control | `Pass` | The 31 MiB residual is fixed at the read boundary and via one explicit compaction transition, not UI truncation or compatibility fallback. | None. |
-| Dead/obsolete code cleanup completeness in changed scope | `Pass` | Raw-summary current reads are replaced; no unused compaction entrypoint or legacy runtime branch is introduced. | None. |
-| Relevant test scenarios and assertions are clear and requirement-aligned | `Pass` | Runner coverage proves startup-only NOT_RUN/FAILED/stale RUNNING/SUCCEEDED/warning capability and lifecycle; the actual compactor warning asserts false on first/later results; mounted Settings coverage proves disabled/non-dispatching versus enabled/dispatching behavior. | None. |
-| Test fixtures/helpers are reasonably reusable and test structure remains coherent | `Pass` | One disposable Prisma/SQLite fixture owns large audit records, logs, and token sentinels. | None. |
-| No stale, duplicated, or compatibility-only tests are retained in changed scope | `Pass` | New coverage is current-boundary and migration-only. | None. |
-| API/E2E readiness for the next workflow stage | `Pass` | Source/build and focused real-repository/runner/frontend checks pass; the exact GraphQL/frontend document and built startup path are clearly specified for downstream execution. | Route to `/api_e2e_engineer`. |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | `Pass` | DS-012 addresses the independently reachable false-action path without reopening summary/log scope or changing persisted data. | None. |
+| Implementation matches approved behavior-defining supplemental artifacts | `Pass` | The closed action and convention application match `SR-012`; all audit mechanics remain removed. | None. |
+| Data-flow spine inventory clarity and preservation under shared principles | `Pass` | `startup failure -> runner classification -> GraphQL -> store -> localized Settings guidance -> later startup runPending` is explicit and complete. | None. |
+| Ownership boundary preservation and clarity | `Pass` | Runner classifies; GraphQL/store carry; Settings presents. No layer reconstructs another owner's policy. | None. |
+| Off-spine concern clarity | `Pass` | Localization and presentation stay off the migration execution spine; no filesystem/audit concern returns. | None. |
+| Existing capability/subsystem reuse check | `Pass` | Existing runner, GraphQL object, documents, store, Settings component, and localization catalogs are extended; no new scheduler/service is added. | None. |
+| Reusable owned structures check | `Pass` | One domain enum is reused through the server/API/generated-client boundary instead of repeating status-policy rules. | None. |
+| Shared-structure/data-model tightness check | `Pass` | Three mutually exclusive actions are the complete supported set; `canRetry` is derived rather than a second classifier. | None. |
+| Repeated coordination ownership check | `Pass` | Policy/status/staleness coordination occurs once in `AppDataMigrationRunner.classifyRecoveryAction`. | None. |
+| Empty indirection check | `Pass` | The enum carries a user-visible distinction a boolean cannot express; transport layers perform mapping only. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | `Pass` | Domain contract, lifecycle classifier, API mapping, state transport, and presentation remain cohesive. | None. |
+| Ownership-driven dependency check | `Pass` | Web imports the generated enum type and does not depend on server internals or migration IDs. | None. |
+| Authoritative Boundary Rule check | `Pass` | Settings consumes the public runner-derived contract only; it does not bypass GraphQL or inspect registry policy. | None. |
+| File placement check | `Pass` | Each delta is placed under its existing owning subsystem. | None. |
+| Flat-vs-over-split layout judgment | `Pass` | No new folder/service/helper hierarchy is added; the enum and focused classifier fit existing owners. | None. |
+| Interface/API/query/command/service-method boundary clarity | `Pass` | `recoveryAction` describes the supported recovery surface; `canRetry` precisely means manual command executability. | None. |
+| Naming quality and naming-to-responsibility alignment check | `Pass` | `MANUAL_RETRY`, `RESTART_TO_RETRY`, and `NONE` are explicit; the classifier name identifies its responsibility. | None. |
+| No unjustified duplication of code / repeated structures in changed scope | `Pass` | Only the generated client duplicates schema representation mechanically; no policy duplication exists. | None. |
+| Patch-on-patch complexity control | `Pass` | DS-012 is a small generic contract, not audit machinery, a state machine, or another retry executor. | None. |
+| Dead/obsolete code cleanup completeness in changed scope | `Pass` | Withdrawn projection/compactor/log source, tests, identifiers, and UI behavior remain absent. | None. |
+| Relevant test scenarios and assertions are clear and requirement-aligned | `Pass` | Tests cover the complete action matrix, staleness, direct defense, next-startup execution, GraphQL field, exact English/Chinese guidance, disabled/no-dispatch, and retained manual retry. | None. |
+| Test fixtures/helpers are reasonably reusable and test structure remains coherent | `Pass` | Existing in-memory runner repository and one compact component record builder cover the new contract; no audit fixture is restored. | None. |
+| No stale, duplicated, or compatibility-only tests are retained in changed scope | `Pass` | Audit-only tests remain deleted; current runner/API/UI tests replace only behavior that remains supported. | None. |
+| API/E2E readiness for the next workflow stage | `Pass` | Source, schema mapping, mounted interaction, localization, and build evidence pass; actual GraphQL/restart/browser execution is clearly bounded downstream work. | Route to `/api_e2e_engineer`. |
 
 ## Source File Size And Structure Audit
 
-Effective lines count non-empty current lines. Tests, fixtures, generated output, logs, and task artifacts are excluded.
+Effective lines count non-empty current implementation-source lines. Static translation catalogs and generated GraphQL output are excluded; tests are not subject to source limits. Deleted audit source is absent.
 
 | Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
 | --- | ---: | --- | --- | --- | --- | --- | --- |
-| `autobyteus-server-ts/src/app-data-migrations/app-data-migration-runner.ts` | 249 | `Pass` | `Triggered`; current file exceeds 220, while IR-009 adds only the focused policy predicate/use | `Pass`; registry enumeration, manual/startup lifecycle, prerequisite enforcement, attempt persistence, and public status mapping are one cohesive runner owner | `Pass` | No finding: extracting a four-line capability predicate would add empty indirection, while the file remains well below 500 and its responsibilities form one lifecycle boundary. | Keep unrelated concerns out; reassess if another independent policy is added. |
-| `autobyteus-server-ts/src/app-data-migrations/app-data-migration-registry.ts` | 98 | `Pass` | `Pass` | `Pass`; registry composition only | `Pass` | N/A | None. |
-| `autobyteus-server-ts/src/app-data-migrations/repositories/app-data-migration-record-repository.ts` | 141 | `Pass` | `Pass` | `Pass`; current record persistence/read boundary | `Pass` | N/A | None. |
-| `autobyteus-server-ts/src/app-data-migrations/repositories/app-data-migration-summary-projection.ts` | 66 | `Pass` | `Pass` | `Pass`; generic bounded SQL projection | `Pass` | N/A | None. |
-| `autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-migration-audit-compaction-v1/token-usage-migration-audit-compaction-v1-app-data-migration.ts` | 127 | `Pass` | `Pass` | `Pass`; closed two-record orchestration/status result | `Pass` | N/A | None. |
-| `autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-migration-audit-compaction-v1/token-usage-migration-audit-compaction-repository.ts` | 195 | `Pass` | `Pass` | `Pass`; scalar inspection, guarded transaction, validation | `Pass` | N/A | None. |
-| `autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-migration-audit-compaction-v1/token-usage-migration-audit-log-compactor.ts` | 82 | `Pass` | `Pass` | `Pass`; owned regular-log replacement | `Pass` | N/A | None. |
-
-No changed implementation source exceeds 500 effective lines. The runner's existing 249-line size triggers investigation but not a split/finding because IR-009's delta is focused and the file retains one cohesive lifecycle owner.
+| `autobyteus-server-ts/src/app-data-migrations/domain/app-data-migration-types.ts` | 123 | `Pass` | `Pass` | `Pass`; generic migration contracts/errors only | `Pass` | N/A | None. |
+| `autobyteus-server-ts/src/app-data-migrations/app-data-migration-runner.ts` | 263 | `Pass` | `Triggered`; existing file already exceeded 220 and DS-012 adds one focused classifier | `Pass`; registry execution, status/staleness, attempt persistence, and public recovery are one lifecycle owner | `Pass` | No split finding: extracting the classifier would separate it from the exact entrypoint facts it must govern and add indirection. | Keep unrelated presentation/persistence policy out. |
+| `autobyteus-server-ts/src/api/graphql/types/app-data-migrations.ts` | 106 | `Pass` | `Pass` | `Pass`; schema registration/direct mapping only | `Pass` | N/A | None. |
+| `autobyteus-server-ts/src/app-data-migrations/app-data-migration-registry.ts` | 96 | `Pass` | `Pass` | `Pass`; composition only, audit registration absent | `Pass` | N/A | None. |
+| `autobyteus-server-ts/src/app-data-migrations/repositories/app-data-migration-record-repository.ts` | 143 | `Pass` | `Pass` | `Pass`; generic record storage/read, no projection/compaction | `Pass` | N/A | None. |
+| `autobyteus-web/components/settings/ServerMigrationsManager.vue` | 145 | `Pass` | `Pass` | `Pass`; presentation/interaction only | `Pass` | N/A | None. |
+| `autobyteus-web/stores/appDataMigrationsStore.ts` | 131 | `Pass` | `Pass` | `Pass`; transports generated action without classification | `Pass` | N/A | None. |
+| `autobyteus-web/graphql/queries/app_data_migrations_queries.ts` | 20 | `Pass` | `Pass` | `Pass`; query selection only | `Pass` | N/A | None. |
+| `autobyteus-web/graphql/mutations/app_data_migrations_mutations.ts` | 24 | `Pass` | `Pass` | `Pass`; mutation selection only | `Pass` | N/A | None. |
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Check | Result | Notes |
 | --- | --- | --- |
-| No backward-compatibility mechanisms in changed scope | `Pass` | DS-010 is a current generic projection; DS-011 is a registered startup transition, not a request-time old-shape fallback. |
-| No legacy old-behavior retention in changed scope | `Pass` | Old per-row audit details may remain at rest only when unsupported and are hidden behind the bounded current projection. |
-| Dead/obsolete code cleanup completeness in changed scope | `Pass` | Raw current status selection of oversized summaries is removed. |
-| Approved persisted-data transition decision is followed without unnecessary migration work | `Pass` | The observed already-terminal residue requires a separate transition because same-ID source definitions are terminal/skipped. |
-| No version-specific dual reads/writes or request-time old-shape fallback exists | `Pass` | Only the closed compactor knows the historical IDs/shape; current consumers see one bounded summary contract. |
-| Approved transition mechanics match the reviewed design, including migration safety only when required | `Pass` | Scalar inspection, exact tuple/count preservation, guarded update, owned-log handling, failure/retry, idempotence, and token-table nonaccess match `REQ-028` / `AC-027`. |
+| No backward-compatibility mechanisms in changed scope | `Pass` | DS-012 is a current public capability contract, not an old-schema path. |
+| No legacy old-behavior retention in changed scope | `Pass` | Legacy token knowledge remains migration-only. |
+| Dead/obsolete code cleanup completeness in changed scope | `Pass` | Withdrawn audit source/tests/UI/docs remain removed. |
+| Approved persisted-data transition decision is followed without unnecessary migration work | `Pass` | No new migration or persisted field is introduced. |
+| No version-specific dual reads/writes or request-time old-shape fallback exists | `Pass` | Runtime remains forward-only/current-only. |
+| Approved transition mechanics match the reviewed design, including migration safety only when required | `Pass` | Startup retry/manual defense are unchanged; only their public recovery presentation is made truthful. |
 
 ## Dead / Obsolete / Legacy Items Requiring Removal
 
@@ -118,56 +112,56 @@ None.
 
 ## Docs-Impact Verdict
 
-- Docs impact: `Yes`.
-- Why: SR-009 adds a reusable convention for bounding status reads before materialization and separating startup scheduling from fatality. `CR-007` also requires the existing retry status/affordance to remain truthful for startup-only migrations.
-- Files or areas likely affected: task-local `data-migration-conventions.md` is current; delivery-owned `autobyteus-server-ts/docs/design/production_data_migration_conventions.md`, README references, and final handoff/docs should be refreshed only after integrated validation.
+- Docs impact: `Yes`
+- Why: the task-local convention/design already records the recovery-action contract and continued audit exclusion. Delivery must reconcile durable documentation against the integrated final state without reviving withdrawn audit claims.
+- Files or areas likely affected: `autobyteus-server-ts/README.md`, `autobyteus-server-ts/docs/design/production_data_migration_conventions.md`, and final delivery artifacts only as warranted by integrated-state review.
 
 ## Material Premise Validation
 
-### Upstream And Prior Review Decisions
+### Upstream Design-Review Material-Premise Decisions
 
 | Premise ID | Current Status | Changed Evidence / Reason |
 | --- | --- | --- |
-| `MP-005` | `Confirmed` | Ordinary Electron startup reaches registry `runPending()` and the supported Settings migration-status surface. IR-008 resolves the former unreachable-compactor defect via `requiredOnStartup=true` while preserving nonfatality. |
-| `MP-004` | `Confirmed` | The live production-shaped nullable-scalar migration defect remains resolved and is outside IR-008. |
-| `MP-003` | `Confirmed` | Incomplete consolidation still gates pre-existing-run restore; IR-008 adds no overlap runtime machinery. |
-| `MP-CR-001`–`MP-CR-005` | `Confirmed` | IR-008 does not alter exact BigInt commit, mixed pricing/currency, first cache-state retention, released unknown-input normalization, or managed/unmanaged TeamRun lifecycle. |
+| `MP-003` | `Confirmed` | Restore remains gated while consolidation is incomplete; DS-012 adds no overlap compatibility. |
+| `MP-004` | `Confirmed` | DS-009 remains unchanged and passed its prior real-adapter coverage. |
+| `MP-005` | `No Longer Relevant` | Audit compactor scheduling is outside current source. |
+| `MP-CR-007` | `No Longer Relevant` | Historical log contents remain unconsumed and no rewrite machinery exists. |
+| `MP-CR-008` | `Confirmed` | Failed consolidation -> healthy Settings is supported; IR-011 now ends that path in visible restart guidance, disabled/no-dispatch manual control, and later startup retry. |
 
-### `MP-CR-006` — A terminal compactor warning reaches the public manual-capability surface
-
-- Origin: `New`
-- Related approved requirement or established contract: `REQ-014`, `REQ-025`, `REQ-028`, `AC-027`, and `SR-009` require truthful bounded status, define unsupported summary/path results as terminal `SUCCEEDED_WITH_WARNINGS`, require later startup to skip that state, and explicitly reject a false retry promise.
-- Relevant behavior ID(s): `BEH-004`
-- Initiating basis kind: `Contract` and `User`
-- Independent product-supported initiating trigger or applicable governing contract: the approved audit-compaction contract applies when ordinary Electron startup encounters either of the two supported released terminal audit records with an unsupported summary or unowned/unrewritable log. The user-facing trigger is opening the supported Settings > Server Migrations surface after that startup.
-- Support evidence: `REQ-028` / `AC-027` explicitly require bounded terminal warning for those source dispositions; `ServerMigrationsManager.vue` renders the migration table and enables its Retry button only when `migration.canRetry`; the store sends the existing `RunAppDataMigration` mutation only after that action.
-- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: `Electron startup -> ServerRuntime -> AppDataMigrationRunner.runPending() -> registered DS-011 compactor -> unsupported source disposition -> compactor record SUCCEEDED_WITH_WARNINGS -> getAppDataMigrations -> toStatusSnapshot(canRetry=false because STARTUP_ONLY) -> Settings > Server Migrations disabled Retry/no mutation dispatch`. A later startup also correctly skips the terminal warning. Under prior IR-008, the same path returned true and ended in restart-required; that historical contradiction is the resolved `CR-007` basis.
-- Lifecycle preconditions and material consequence at the claimed point: the compactor completed with the specifically approved nonfatal terminal warning, so neither supported runner path can rerun it. Under IR-008 the status API/button falsely offered retry; IR-009 makes the returned manual capability false for every startup-only definition, so the existing Settings button is disabled and cannot dispatch.
-- Reachability: `Reachable`
-- Review consequence / proportionate response: `CR-007` is resolved. The bounded Local Fix aligns the public manual capability with execution policy while preserving later-startup retries for `FAILED`/stale `RUNNING` and terminal skip for warnings; focused runner, actual-compactor, and mounted Settings regressions pass.
+No new or reclassified material premise is needed. IR-011 handles the already-established reachable path without introducing machinery for any unsupported premise.
 
 ## Review Scorecard
 
-- Overall score (`/10`): `9.3`
-- Overall score (`/100`): `93.2`
-- Score calculation note: simple average of the ten categories, rounded for summary visibility. Every category is now at or above the clean-pass threshold and no finding remains.
+- Overall score (`/10`): `9.4`
+- Overall score (`/100`): `93.6`
+- Score calculation note: simple average of the ten categories, rounded for visibility. Every category is at or above the clean-pass threshold.
 
 | Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | ---: | --- | --- | --- |
-| `1` | `Data-Flow Spine Inventory and Clarity` | `9.4` | Both read and compaction spines are short, explicit, and use ordinary production owners. | Final API/E2E evidence is not yet refreshed. | Revalidate the current source-passed state downstream. |
-| `2` | `Ownership Clarity and Boundary Encapsulation` | `9.4` | Generic reads and historical mutation are correctly separated; raw summaries do not cross the repository; the runner owns execution-policy-aware public capability. | The runner remains a moderately sized lifecycle owner. | Keep unrelated policies out of it. |
-| `3` | `API / Interface / Query / Command Clarity` | `9.2` | The bounded query shape is truthful about omitted/unavailable counts, and `canRetry` now matches manual execution policy plus status. | Automatic startup eligibility remains a separate internal lifecycle rather than an exposed field. | Preserve that semantic separation in future status changes. |
-| `4` | `Separation of Concerns and File Placement` | `9.4` | Projection, orchestration, database, and filesystem responsibilities are cohesive and well placed. | No material structural weakness. | No source split required. |
-| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | `9.3` | Closed scalar audit records and shared current-read bounds avoid raw-body and kitchen-sink shapes. | Historical and current count predicates are intentionally separate and require synchronized review. | Keep each predicate scoped to its owner and covered by real SQLite tests. |
-| `6` | `Naming Quality and Local Readability` | `9.3` | Names make omission, unavailable, compacted, and ownership dispositions explicit. | Dense SQL predicates still require careful review. | Preserve focused tests and comments rather than adding indirection. |
-| `7` | `API/E2E Readiness` | `9.1` | Focused real Prisma/SQLite/build checks and mounted Settings interaction pass; the exact frontend document/startup journey is directly executable downstream. | `API-REV-005` still predates SR-009/IR-009. | Refresh API/E2E coverage and execution before delivery. |
-| `8` | `Runtime Correctness And Behavioral Fidelity` | `9.4` | Summary/log compaction, outcome preservation, nonfatality, startup retries, terminal skip, and manual capability now agree across runner and Settings. | Full built-server/frontend integration remains downstream evidence. | Execute AC-027 through the actual GraphQL/startup path. |
-| `9` | `No Backward-Compatibility / No Legacy Retention` | `9.5` | Historical knowledge remains inside one registered migration and no current token fallback is added. | Unsupported residue can remain at rest by approved policy. | Keep it bounded/hidden as designed. |
-| `10` | `Cleanup Completeness` | `9.2` | Raw oversized current reads are removed and supported residue is compacted without token-data changes. | Refreshed API/E2E, durable docs, and a new Electron package remain outstanding. | Complete the gated downstream sequence. |
+| `1` | `Data-Flow Spine Inventory and Clarity` | `9.4` | The previously omitted return/recovery spine is now complete from runner through later startup. | Actual network/restart execution remains downstream. | Revalidate the exact production spine in API/E2E. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | `9.5` | Runner classifies; transport layers carry; Settings presents. | Runner is moderately sized. | Keep UI copy and unrelated policy outside it. |
+| `3` | `API / Interface / Query / Command Clarity` | `9.4` | Closed recovery action distinguishes manual, restart, and none; `canRetry` has one exact meaning. | Existing API carries both enum and derived boolean. | Preserve derivation so they cannot diverge. |
+| `4` | `Separation of Concerns and File Placement` | `9.4` | The delta uses existing owners without new orchestration/filesystem layers. | No material weakness. | No split required. |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | `9.4` | Three closed values cover the supported states without persisted or kitchen-sink state. | None material. | Keep the enum nonpersisted and generic. |
+| `6` | `Naming Quality and Local Readability` | `9.3` | Names and exact localized guidance are explicit. | The runner's lifecycle logic requires careful reading around active/stale state. | Preserve matrix coverage. |
+| `7` | `API/E2E Readiness` | `9.1` | Source/build/schema/mounted checks pass and exact downstream scenarios are identified. | Actual GraphQL transport, ordinary restart, and browser rendering are not yet rerun. | Execute focused API/E2E before delivery. |
+| `8` | `Runtime Correctness And Behavioral Fidelity` | `9.4` | Classification matches executable entrypoints and preserves automatic/manual lifecycles. | Packaged restart remains downstream evidence. | Confirm built-server transition end to end. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | `9.5` | DS-012 adds no persisted or legacy runtime path; SR-010 removal remains complete. | None material. | Preserve current-only boundaries. |
+| `10` | `Cleanup Completeness` | `9.4` | Audit machinery remains absent while the independently needed generic capability is retained. | Superseded downstream package/evidence still requires delivery reconciliation. | Complete downstream revalidation and rebuild. |
 
 ## Findings
 
-None. `CR-007` is resolved by IR-009 and recorded in `CRR-014`.
+None. `CR-009` is resolved by `IR-011`; `AR-006` is implemented as reviewed.
+
+## Prior Finding Status
+
+| Finding ID | Prior Status | Current Status | Notes |
+| --- | --- | --- | --- |
+| `CR-001`–`CR-006` | Resolved | Remain resolved | IR-011 changes only generic recovery presentation and transport. |
+| `CR-007` | Historical resolved compactor scenario | Moot | Compactor remains deleted. |
+| `CR-008` | Resolved | Remains resolved | No audit projection/compaction/log behavior returns. |
+| `CR-009` | Open / Design Impact | Resolved | Runner now publishes `RESTART_TO_RETRY`, derives `canRetry=false`, preserves direct rejection, and supports later startup retry; GraphQL/Settings present it truthfully. |
+| `TCR-001` | Obsolete | Remains obsolete | Historical compacted-log behavior/tests remain deleted. |
 
 ## Classification
 
@@ -179,16 +173,17 @@ None. `CR-007` is resolved by IR-009 and recorded in `CRR-014`.
 
 ## Residual Risks
 
-- API/E2E must execute the exact `GetAppDataMigrations` frontend document before/after compaction, bounded full response, real startup scheduling, terminal-warning action semantics, both partial-progression retries, token-table immutability, and applicable delivery/live rebuild sequence.
-- The implementation did not access or mutate the user's live database, which is correct for source review. The prior Electron package predates SR-009 and is not final acceptance evidence.
-- Three unrelated latest-base app-data test failures and the independent Nuxt `vue-tsc`/TypeScript package-export incompatibility remain recorded limitations; neither is attributed to IR-008/IR-009.
+- API/E2E must refresh coverage for actual GraphQL enum transport, failed startup-only consolidation, visible localized Settings guidance, disabled/no-dispatch behavior, later ordinary restart retry, and preservation of SR-010 removal/nonmutation.
+- The accepted approximately 14 MiB historical summaries and approximately 31 MiB status response remain intentionally unchanged and are not an acceptance condition.
+- `API-REV-007` / `DR-007` remain withdrawn audit-package evidence. Delivery must rebuild only after current API/E2E plus proportional durable-test review.
+- The independent Nuxt `vue-tsc`/TypeScript package-export limitation and external-provider opt-in exclusions remain recorded.
 
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
 - Review Entry Point: `Implementation Review`
-- Material-Premise Gate: `Pass`
-- Score Summary: `9.3/10` (`93.2/100`); every category is `>=9.0`.
-- Failure Origin: N/A. IR-009 resolves implementation-owned `CR-007`.
+- Material-Premise Gate: `Pass`; `MP-CR-008` is reachable and handled without unsupported recovery machinery.
+- Score Summary: `9.4/10` (`93.6/100`); every category is `>=9.0`.
+- Failure Origin: N/A. `IR-011` resolves `CR-009` and implements resolved architecture finding `AR-006`.
 - Recommended Recipient: `/api_e2e_engineer`
-- Notes: IR-009 makes public retry capability execution-policy-aware without altering startup retry or terminal-warning semantics. The cumulative DS-010/DS-011 implementation follows the approved migration conventions and is ready for refreshed API/E2E investigation/execution.
+- Notes: DS-012 is proportionate. It adds one three-value nonpersisted public meaning and localized guidance; it does not add a migration, retry engine, state machine, audit compactor, filesystem edge matrix, or historical data mutation.

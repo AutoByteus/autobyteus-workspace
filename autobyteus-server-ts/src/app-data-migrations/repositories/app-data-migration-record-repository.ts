@@ -5,7 +5,6 @@ import type {
   AppDataMigrationRecordSnapshot,
   AppDataMigrationStatus,
 } from "../domain/app-data-migration-types.js";
-import { boundedMigrationRecordSelect } from "./app-data-migration-summary-projection.js";
 
 type RawMigrationRecord = {
   migration_id: string;
@@ -50,7 +49,9 @@ export class AppDataMigrationRecordRepository implements AppDataMigrationRecordR
 
   private async queryRecordById(migrationId: string): Promise<AppDataMigrationRecordSnapshot | null> {
     const rows = await this.client.$queryRawUnsafe<RawMigrationRecord[]>(
-      `${boundedMigrationRecordSelect("WHERE migration_id = ?")}
+      `SELECT migration_id, display_name, status, attempts, started_at, completed_at, summary_json, error_message, log_path
+         FROM app_data_migration_records
+        WHERE migration_id = ?
         LIMIT 1`,
       migrationId,
     );
@@ -63,7 +64,8 @@ export class AppDataMigrationRecordRepository implements AppDataMigrationRecordR
 
   async listRecords(): Promise<AppDataMigrationRecordSnapshot[]> {
     const rows = await this.client.$queryRawUnsafe<RawMigrationRecord[]>(
-      `${boundedMigrationRecordSelect()}
+      `SELECT migration_id, display_name, status, attempts, started_at, completed_at, summary_json, error_message, log_path
+         FROM app_data_migration_records
         ORDER BY migration_id ASC`,
     );
     return rows.map(toRecord);

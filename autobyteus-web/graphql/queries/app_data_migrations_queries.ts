@@ -8,6 +8,7 @@ export const GetAppDataMigrations = gql`
       description
       status
       requiredOnStartup
+      recoveryAction
       canRetry
       attempts
       startedAt

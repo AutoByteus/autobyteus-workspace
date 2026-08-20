@@ -2,113 +2,99 @@
 
 ## Current Result
 
-- Delivery revision: `DR-006`
-- Result: `Pass — integrated durable docs are synchronized`
+- Delivery revision: `DR-007`
+- Result: `Pass — integrated durable migration documentation synchronized`
 - Ticket: `token-usage-one-row-per-agent-run`
-- Validated chain: `SR-007` / `ARCH-REV-007` / `IR-007` / `CRR-011`
-  source Pass / `API-REV-005` Pass at `97.4%` / `CRR-012` durable-test
-  Pass.
+- Validated chain: `SR-009` / `ARCH-REV-009` / `IR-008` / `IR-009` /
+  `CRR-014` source Pass / `API-REV-007` Pass at `97.7%` / `CRR-016`
+  durable-test Pass.
 - Reviewed-state checkpoint:
-  `bb31e469270ee2b032d19c6dbf8a2c9bea91a18a` (local only; not pushed and
+  `0e2eb777d1071f00fa8016696349536ba4709616` (local only; not pushed and
   not repository finalization).
 - Latest tracked base:
   `origin/personal@1f5663ddb86e478d0b4ffdd878d57dee72d67b4b`.
-- Integration result: no merge was required. The fetched base is the checkpoint
-  branch's merge base, with divergence `0 behind / 4 ahead`.
-- Post-integration server rerun: not duplicated because no new base commit was
-  integrated after `API-REV-005` / `CRR-012`. The new Electron build and
+- Integration result: no merge required. The fetched base is the checkpoint
+  branch's merge base; divergence is `0 behind / 5 ahead`.
+- Post-integration server rerun: not duplicated because no base commit was
+  integrated after `API-REV-007` / `CRR-016`. The fresh Electron build and
   package-integrity suite are the additional integrated-state executable check.
-- Live ticket-scope technical verification: Pass.
-- Current delivery blocker: `delivery-requirement-gap.md`. Two old successful
-  migration summaries remain observable as a 31 MB current status response;
-  upstream must clarify their retention/bounding contract before docs can make
-  a truthful final claim.
-- Explicit user acceptance: not received. Documentation Pass is not user
-  acceptance or repository-finalization authorization.
+- Explicit user verification: pending. Documentation Pass is not authorization
+  to archive, push, finalize, release, or deploy.
 
 ## Why Docs Were Updated
 
-The corrected migration proved a reusable database-adapter rule that did not
-exist in the original durable convention: database meaning, SQLite storage
-class, ORM result representation, and TypeScript annotation are distinct
-contracts. A nullable computed SQLite expression can cause Prisma to represent
-safe integers as decimal strings when an ordered result begins with `NULL`
-rows. This belongs in canonical migration guidance rather than only in ticket
-or incident evidence.
+Live DR-006 evidence proved that already-terminal released migration summaries
+are a reachable current status/API source. A repaired same-ID definition cannot
+reach an already-successful record. SR-009 therefore established a reusable
+ownership rule that belongs in durable project guidance:
 
-The one-row-per-AgentRun Token Usage runtime and user-facing contracts promoted
-in `DR-001` remain accurate. `DR-005` adds the approved adapter/transport
-convention and README entry; it does not change current Token Usage semantics.
+- current migration status/prerequisite/API/UI reads are bounded before Node
+  materialization;
+- a separate registered migration owns explicitly supported historical
+  terminal audit shapes and preserves the complete outcome tuple while
+  compacting only row-linear evidence;
+- generic current repositories do not learn migration-specific legacy detail
+  semantics or mutate audit records opportunistically on read; and
+- startup selection, retryability, capability gating, and failure criticality
+  are derived from verified caller/gate paths rather than a metadata field name.
+
+The one-row Token Usage model, scalar-adapter convention, successful live
+consolidation, and user-facing statistics semantics are unchanged.
 
 ## Long-Lived Docs Reviewed And Disposition
 
-| Doc Path | DR-005 Result | Disposition |
+| Doc Path | DR-007 Result | Disposition |
 | --- | --- | --- |
-| `autobyteus-server-ts/docs/design/production_data_migration_conventions.md` | `Updated` | Added the database adapter/transport representation contract, strict exact decoding rules, real-adapter nullable-result regression guidance, and checklist items. |
-| `autobyteus-server-ts/README.md` | `Updated` | Added concise operator/maintainer guidance and retained the canonical convention link. |
-| `autobyteus-server-ts/docs/modules/token_usage.md` | `No additional edit` | Existing one-row model, consolidation, readiness, and retry contract remains accurate; adapter mechanics belong in the canonical migration convention. |
-| `autobyteus-server-ts/docs/ARCHITECTURE.md` | `No additional edit` | Existing startup, persistence, and migration ownership remains accurate. |
-| `autobyteus-server-ts/docs/modules/README.md` | `No additional edit` | Existing current module owner and canonical convention link remain accurate. |
-| `autobyteus-web/docs/agent_execution_architecture.md` | `No additional edit` | Current-record hydration and lifetime-total contract is unchanged. |
-| `autobyteus-web/docs/settings.md` | `No additional edit` | Token Statistics behavior is unchanged. |
-| `ui-prototypes/token-statistics-task-cost/ui-prototype-spec.md` | `No additional edit` | UI contract is unchanged. |
-| `ui-prototypes/token-statistics-task-cost/ui-behavior-test-matrix.md` | `No additional edit` | Behavior matrix is unchanged. |
+| `autobyteus-server-ts/docs/design/production_data_migration_conventions.md` | `Updated` | Added terminal audit records/bounded current reads, the two-owner split, complete-outcome preservation, log ownership, and scheduling-versus-criticality rules plus review checklist items. |
+| `autobyteus-server-ts/README.md` | `Updated` | Added concise current-read, separate-compactor, and scheduling/criticality guidance while retaining the canonical link. |
+| `autobyteus-server-ts/docs/design/startup_initialization_and_lazy_services.md` | `No additional edit` | Existing registry-order and noncritical migration behavior remains accurate; reusable scheduling nuance belongs in the canonical convention. |
+| `autobyteus-server-ts/docs/modules/token_usage.md` | `No additional edit` | Current one-row store, consolidation, readiness, statistics, and retry semantics are unchanged; historical audit compaction is app-data infrastructure rather than token accounting. |
+| Other DR-001 server/web/UI documents | `No additional edit` | No runtime Token Usage or UI-statistics behavior changed. |
 
 ## Durable Knowledge Promoted
 
-The canonical convention now requires migrations that consume derived database
-scalars to:
+The canonical convention now requires:
 
-1. reproduce behavior through the real production ORM/driver and a disposable
-   database;
-2. choose a deterministic SQL-boundary representation when adapter inference is
-   unstable and preserve source type where needed;
-3. validate the complete transport grammar;
-4. parse integers exactly through `BigInt` or an equivalent mechanism;
-5. enforce sign, range, and domain constraints before narrowing;
-6. keep adapter-specific decoding migration-only; and
-7. preserve exposing result-set conditions, including leading `NULL` rows
-   followed by valid values in the same ordered batch.
-
-The guidance explicitly rejects broad `Number(...)`, `parseInt(...)`, truthy
-coercion, permissive numeric regexes, unchecked casts, and automated coverage
-against a user's live database.
+1. a bounded uniform current summary envelope at the repository/query boundary;
+2. no loading of oversized historical detail arrays merely to obtain status or
+   aggregate counts;
+3. a separate registered migration for each supported historical terminal
+   audit shape;
+4. preservation of migration identity, display name, terminal status, attempts,
+   timestamps, error state, log ownership, and aggregate counts;
+5. deterministic replacement only of row-linear detail evidence;
+6. preservation of malformed/unowned evidence with bounded warning status;
+7. no opportunistic write-on-read, same-ID business rerun, or generic current
+   migration-specific legacy decoder; and
+8. explicit separation of startup scheduling from failure criticality and
+   status-specific retry semantics.
 
 ## Prior Durable Sync Retained
 
-The `DR-001` durable baseline remains authoritative for:
-
-- one cumulative current record per canonical AgentRun;
-- awaited per-run transactional folding and current-only repositories;
-- startup-only legacy consolidation with truthful readiness classification;
-- run-creation-time selection with lifetime Token Statistics totals; and
-- removal of append-ledger runtime and observed-period semantics.
+- DR-001: one cumulative current record per AgentRun, forward-only current
+  runtime, run-created range/lifetime totals, and removal of event-ledger
+  runtime semantics.
+- DR-005: deterministic typed scalar transport, exact parsing/range validation,
+  and real leading-`NULL` Prisma/SQLite regression guidance.
 
 ## Validation
 
-- `git diff --check` over the DR-005 README and canonical convention edits:
-  Pass.
-- Local Markdown-link audit over both edited files: Pass.
-- Promoted-convention marker audit: Pass.
-- Initial evidence:
-  `delivery-evidence/15-dr005-base-docs-preflight.log`.
-- Final base and handoff audit:
-  `delivery-evidence/18-final-base-docs-handoff-audit-dr005.log`.
-- Original nine-document sync evidence remains
-  `delivery-evidence/02-docs-sync-audit-dr001.log`; integrated revalidation
-  remains `delivery-evidence/08-final-base-and-docs-audit-dr003.log`.
+- `git diff --check` over both DR-007 durable documentation edits: Pass.
+- Relative Markdown link audit over both edited files: Pass.
+- Promoted-section marker audit: Pass.
+- Base/docs preflight: `delivery-evidence/21-dr007-latest-base-refresh.log` and
+  `delivery-evidence/22-dr007-docs-sync-preflight.log`.
+- Build/integrity evidence: `delivery-evidence/23-*` and `24-*`.
+- Final audit: `delivery-evidence/25-dr007-final-base-docs-handoff-audit.log`.
 
 ## Delivery Continuation
 
-- Docs-sync result: `Pass`.
-- New Electron build and package integrity: `Pass`; see
-  `delivery-evidence/16-electron-build-macos-arm64-dr005.log` and
-  `delivery-evidence/17-electron-package-integrity-dr005.log`.
-- Technical live gate: Pass for consolidation and current statistics.
-- Remaining gates: requirement/design classification of the reachable old
-  migration-status payload and explicit informed user acceptance.
-- Hold: no push, ticket archival, target merge/push, tag, release, deployment,
-  or worktree cleanup until that explicit signal and a final latest-base
-  refresh.
+- Docs sync: `Pass`.
+- Fresh DR-007 Electron build/integrity: `Pass`.
+- Remaining gate: renewed explicit user verification of the DR-007 package and
+  ordinary startup audit compaction/status behavior.
+- Hold: no push, archive, target merge/push, version/tag, release, deployment,
+  or ticket-worktree cleanup before that explicit signal and another final
+  latest-base refresh.
 - Known non-product limitations remain unchanged: Nuxt `vue-tsc`/TypeScript
   package-export incompatibility and opt-in external-provider exclusions.
