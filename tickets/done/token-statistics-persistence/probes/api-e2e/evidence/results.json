@@ -1,0 +1,1067 @@
+{
+  "startedAt": "2026-08-20T15:56:27.869Z",
+  "workspaceRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "runtime": {
+    "node": "v22.23.1",
+    "platform": "darwin-arm64"
+  },
+  "identities": {
+    "standaloneRunId": "browser-standalone-91291-1787241387874-98b0f72a74c46",
+    "teamRunId": "browser-team-a-91291-1787241387874-98b0f72a74c46",
+    "memberRunId": "browser-member-a-91291-1787241387874-98b0f72a74c46",
+    "otherMemberRunId": "browser-member-a2-91291-1787241387874-98b0f72a74c46",
+    "foreignTeamRunId": "browser-team-b-91291-1787241387874-98b0f72a74c46",
+    "foreignMemberRunId": "browser-member-b-91291-1787241387874-98b0f72a74c46"
+  },
+  "scenarios": {
+    "BROWSER-TS-001": {
+      "result": "Pass",
+      "state": {
+        "selectionType": "agent",
+        "runSummary": {
+          "__typename": "TokenUsageRunSummaryGraphql",
+          "runId": "browser-standalone-91291-1787241387874-98b0f72a74c46",
+          "rootTeamRunId": null,
+          "agentDefinitionId": null,
+          "workspaceId": null,
+          "grossInputTokens": 150,
+          "standardInputTokens": 150,
+          "cacheMissInputTokens": 150,
+          "cacheReadInputTokens": 0,
+          "cacheCreationInputTokens": 0,
+          "cacheCreation5mInputTokens": 0,
+          "cacheCreation1hInputTokens": 0,
+          "outputTokens": 25,
+          "reasoningOutputTokens": 5,
+          "billableOutputTokens": 25,
+          "totalTokens": 175,
+          "cacheReadInputTokenRate": 0,
+          "standardInputTokenRate": 1,
+          "cacheCreationInputTokenRate": 0,
+          "cacheState": "not_reported",
+          "estimatedApiInputCost": 0.0015,
+          "estimatedApiStandardInputCost": 0.0015,
+          "estimatedApiCacheReadInputCost": null,
+          "estimatedApiCacheCreationInputCost": null,
+          "estimatedApiCacheCreation5mInputCost": null,
+          "estimatedApiCacheCreation1hInputCost": null,
+          "estimatedApiOutputCost": 0.0025,
+          "estimatedApiReasoningOutputCost": 0.0005,
+          "estimatedApiTotalCost": 0.0045,
+          "currency": "USD",
+          "apiCostStatus": "estimated",
+          "missingPriceDimensions": [],
+          "pricingPolicyKey": "catalog:openai:gpt-5.6-sol:standard",
+          "selectedPricingTierId": null,
+          "unitPrices": {
+            "standardInput": {
+              "status": "single",
+              "pricePerMillion": 10
+            },
+            "cacheReadInput": {
+              "status": "not_applicable",
+              "pricePerMillion": null
+            },
+            "cacheCreationInput": {
+              "status": "not_applicable",
+              "pricePerMillion": null
+            },
+            "cacheCreation5mInput": {
+              "status": "not_applicable",
+              "pricePerMillion": null
+            },
+            "cacheCreation1hInput": {
+              "status": "not_applicable",
+              "pricePerMillion": null
+            },
+            "output": {
+              "status": "single",
+              "pricePerMillion": 100
+            },
+            "reasoningOutput": {
+              "status": "single",
+              "pricePerMillion": 100
+            }
+          },
+          "latestPromptTokens": 90,
+          "effectiveContextWindowTokens": 200000,
+          "contextWindowUsagePercent": 0.00045,
+          "latestModelProvider": "OPENAI",
+          "latestModelIdentifier": "gpt-5.6-sol",
+          "latestRuntimeKind": "codex_app_server",
+          "usageReportCount": 2,
+          "updatedAt": "2026-08-20T10:05:00.000Z"
+        },
+        "memberSummary": null,
+        "foreignMemberSummary": null,
+        "teamSummary": null,
+        "teamState": null,
+        "teamNeedsHydration": true
+      },
+      "primaryText": "Latest prompt\n0.0%\n\n90 / 200,000 context tokens\n\nGROSS INPUT\n\n150 Tokens\n\nCache not reported\n\nCost $0.0015\n\nOUTPUT\n\n25 Tokens\n\nThinking 5 tokens\n\nCost $0.0025\n\nTOTAL ESTIMATE\n\n175 Tokens\n\nEstimate $0.0045\n\nComplete estimate\nInput breakdown\nUncached / full-price input\n150 tok\n$0.0015\nTotal input cost\n$0.0015\nPricing details\nLatest model\ngpt-5.6-sol\nRuntime\ncodex_app_server\nPrice status\nComplete estimate\nUsage reports\n2 model calls\nCalculation details"
+    },
+    "BROWSER-TS-003": {
+      "result": "Pass",
+      "staleResponseGeneration": 2,
+      "finalState": {
+        "selectionType": "agent",
+        "runSummary": {
+          "runId": "browser-standalone-91291-1787241387874-98b0f72a74c46",
+          "rootTeamRunId": null,
+          "agentDefinitionId": null,
+          "workspaceId": null,
+          "grossInputTokens": 180,
+          "standardInputTokens": 180,
+          "cacheMissInputTokens": 180,
+          "cacheReadInputTokens": 0,
+          "cacheCreationInputTokens": 0,
+          "cacheCreation5mInputTokens": 0,
+          "cacheCreation1hInputTokens": 0,
+          "outputTokens": 35,
+          "reasoningOutputTokens": 5,
+          "billableOutputTokens": 35,
+          "totalTokens": 215,
+          "cacheReadInputTokenRate": 0,
+          "standardInputTokenRate": 1,
+          "cacheCreationInputTokenRate": 0,
+          "cacheState": "not_reported",
+          "estimatedApiInputCost": 0.0018,
+          "estimatedApiStandardInputCost": 0.0018,
+          "estimatedApiCacheReadInputCost": null,
+          "estimatedApiCacheCreationInputCost": null,
+          "estimatedApiCacheCreation5mInputCost": null,
+          "estimatedApiCacheCreation1hInputCost": null,
+          "estimatedApiOutputCost": 0.0035,
+          "estimatedApiReasoningOutputCost": 0.0005,
+          "estimatedApiTotalCost": 0.0058,
+          "currency": "USD",
+          "apiCostStatus": "estimated",
+          "missingPriceDimensions": [],
+          "pricingPolicyKey": "catalog:openai:gpt-5.6-sol:standard",
+          "selectedPricingTierId": null,
+          "unitPrices": {
+            "standardInput": {
+              "status": "single",
+              "pricePerMillion": 10
+            },
+            "cacheReadInput": {
+              "status": "not_applicable",
+              "pricePerMillion": null
+            },
+            "cacheCreationInput": {
+              "status": "not_applicable",
+              "pricePerMillion": null
+            },
+            "cacheCreation5mInput": {
+              "status": "not_applicable",
+              "pricePerMillion": null
+            },
+            "cacheCreation1hInput": {
+              "status": "not_applicable",
+              "pricePerMillion": null
+            },
+            "output": {
+              "status": "single",
+              "pricePerMillion": 100
+            },
+            "reasoningOutput": {
+              "status": "single",
+              "pricePerMillion": 100
+            }
+          },
+          "latestPromptTokens": 110,
+          "effectiveContextWindowTokens": 200000,
+          "contextWindowUsagePercent": 0.00055,
+          "latestModelProvider": "OPENAI",
+          "latestModelIdentifier": "gpt-5.6-sol",
+          "latestRuntimeKind": "codex_app_server",
+          "usageReportCount": 3,
+          "updatedAt": "2026-08-20T10:07:00.000Z"
+        },
+        "memberSummary": null,
+        "foreignMemberSummary": null,
+        "teamSummary": null,
+        "teamState": null,
+        "teamNeedsHydration": true
+      }
+    },
+    "BROWSER-TS-004": {
+      "result": "Pass",
+      "finalState": {
+        "selectionType": "agent",
+        "runSummary": {
+          "runId": "browser-standalone-91291-1787241387874-98b0f72a74c46",
+          "rootTeamRunId": null,
+          "agentDefinitionId": null,
+          "workspaceId": null,
+          "grossInputTokens": 190,
+          "standardInputTokens": 190,
+          "cacheMissInputTokens": 190,
+          "cacheReadInputTokens": 0,
+          "cacheCreationInputTokens": 0,
+          "cacheCreation5mInputTokens": 0,
+          "cacheCreation1hInputTokens": 0,
+          "outputTokens": 40,
+          "reasoningOutputTokens": 5,
+          "billableOutputTokens": 40,
+          "totalTokens": 230,
+          "cacheReadInputTokenRate": 0,
+          "standardInputTokenRate": 1,
+          "cacheCreationInputTokenRate": 0,
+          "cacheState": "not_reported",
+          "estimatedApiInputCost": 0.0019,
+          "estimatedApiStandardInputCost": 0.0019,
+          "estimatedApiCacheReadInputCost": null,
+          "estimatedApiCacheCreationInputCost": null,
+          "estimatedApiCacheCreation5mInputCost": null,
+          "estimatedApiCacheCreation1hInputCost": null,
+          "estimatedApiOutputCost": 0.004,
+          "estimatedApiReasoningOutputCost": 0.0005,
+          "estimatedApiTotalCost": 0.006399999999999999,
+          "currency": "USD",
+          "apiCostStatus": "estimated",
+          "missingPriceDimensions": [],
+          "pricingPolicyKey": "catalog:openai:gpt-5.6-sol:standard",
+          "selectedPricingTierId": null,
+          "unitPrices": {
+            "standardInput": {
+              "status": "single",
+              "pricePerMillion": 10
+            },
+            "cacheReadInput": {
+              "status": "not_applicable",
+              "pricePerMillion": null
+            },
+            "cacheCreationInput": {
+              "status": "not_applicable",
+              "pricePerMillion": null
+            },
+            "cacheCreation5mInput": {
+              "status": "not_applicable",
+              "pricePerMillion": null
+            },
+            "cacheCreation1hInput": {
+              "status": "not_applicable",
+              "pricePerMillion": null
+            },
+            "output": {
+              "status": "single",
+              "pricePerMillion": 100
+            },
+            "reasoningOutput": {
+              "status": "single",
+              "pricePerMillion": 100
+            }
+          },
+          "latestPromptTokens": 120,
+          "effectiveContextWindowTokens": 200000,
+          "contextWindowUsagePercent": 0.0006,
+          "latestModelProvider": "OPENAI",
+          "latestModelIdentifier": "gpt-5.6-sol",
+          "latestRuntimeKind": "codex_app_server",
+          "usageReportCount": 4,
+          "updatedAt": "2026-08-20T10:08:00.000Z"
+        },
+        "memberSummary": null,
+        "foreignMemberSummary": null,
+        "teamSummary": null,
+        "teamState": null,
+        "teamNeedsHydration": true
+      }
+    },
+    "BROWSER-TS-002": {
+      "result": "Pass",
+      "state": {
+        "selectionType": "team",
+        "runSummary": null,
+        "memberSummary": {
+          "__typename": "TokenUsageRunSummaryGraphql",
+          "runId": "browser-member-a-91291-1787241387874-98b0f72a74c46",
+          "rootTeamRunId": "browser-team-a-91291-1787241387874-98b0f72a74c46",
+          "agentDefinitionId": null,
+          "workspaceId": null,
+          "grossInputTokens": 60,
+          "standardInputTokens": 60,
+          "cacheMissInputTokens": 60,
+          "cacheReadInputTokens": 0,
+          "cacheCreationInputTokens": 0,
+          "cacheCreation5mInputTokens": 0,
+          "cacheCreation1hInputTokens": 0,
+          "outputTokens": 15,
+          "reasoningOutputTokens": 0,
+          "billableOutputTokens": 15,
+          "totalTokens": 75,
+          "cacheReadInputTokenRate": 0,
+          "standardInputTokenRate": 1,
+          "cacheCreationInputTokenRate": 0,
+          "cacheState": "not_reported",
+          "estimatedApiInputCost": 0.0006000000000000001,
+          "estimatedApiStandardInputCost": 0.0006000000000000001,
+          "estimatedApiCacheReadInputCost": null,
+          "estimatedApiCacheCreationInputCost": null,
+          "estimatedApiCacheCreation5mInputCost": null,
+          "estimatedApiCacheCreation1hInputCost": null,
+          "estimatedApiOutputCost": 0.0015,
+          "estimatedApiReasoningOutputCost": null,
+          "estimatedApiTotalCost": 0.0021,
+          "currency": "USD",
+          "apiCostStatus": "estimated",
+          "missingPriceDimensions": [],
+          "pricingPolicyKey": "catalog:openai:gpt-5.6-sol:standard",
+          "selectedPricingTierId": null,
+          "unitPrices": {
+            "standardInput": {
+              "status": "single",
+              "pricePerMillion": 10
+            },
+            "cacheReadInput": {
+              "status": "not_applicable",
+              "pricePerMillion": null
+            },
+            "cacheCreationInput": {
+              "status": "not_applicable",
+              "pricePerMillion": null
+            },
+            "cacheCreation5mInput": {
+              "status": "not_applicable",
+              "pricePerMillion": null
+            },
+            "cacheCreation1hInput": {
+              "status": "not_applicable",
+              "pricePerMillion": null
+            },
+            "output": {
+              "status": "single",
+              "pricePerMillion": 100
+            },
+            "reasoningOutput": {
+              "status": "not_applicable",
+              "pricePerMillion": null
+            }
+          },
+          "latestPromptTokens": 42,
+          "effectiveContextWindowTokens": 200000,
+          "contextWindowUsagePercent": 0.00021,
+          "latestModelProvider": "OPENAI",
+          "latestModelIdentifier": "gpt-5.6-sol",
+          "latestRuntimeKind": "codex_app_server",
+          "usageReportCount": 2,
+          "updatedAt": "2026-08-20T10:06:00.000Z"
+        },
+        "foreignMemberSummary": null,
+        "teamSummary": {
+          "__typename": "TokenUsageRunSummaryGraphql",
+          "runId": "browser-team-a-91291-1787241387874-98b0f72a74c46",
+          "rootTeamRunId": "browser-team-a-91291-1787241387874-98b0f72a74c46",
+          "agentDefinitionId": null,
+          "workspaceId": null,
+          "grossInputTokens": 85,
+          "standardInputTokens": 85,
+          "cacheMissInputTokens": 85,
+          "cacheReadInputTokens": 0,
+          "cacheCreationInputTokens": 0,
+          "cacheCreation5mInputTokens": 0,
+          "cacheCreation1hInputTokens": 0,
+          "outputTokens": 20,
+          "reasoningOutputTokens": 0,
+          "billableOutputTokens": 20,
+          "totalTokens": 105,
+          "cacheReadInputTokenRate": 0,
+          "standardInputTokenRate": 1,
+          "cacheCreationInputTokenRate": 0,
+          "cacheState": "not_reported",
+          "estimatedApiInputCost": 0.0008500000000000001,
+          "estimatedApiStandardInputCost": 0.0008500000000000001,
+          "estimatedApiCacheReadInputCost": null,
+          "estimatedApiCacheCreationInputCost": null,
+          "estimatedApiCacheCreation5mInputCost": null,
+          "estimatedApiCacheCreation1hInputCost": null,
+          "estimatedApiOutputCost": 0.002,
+          "estimatedApiReasoningOutputCost": null,
+          "estimatedApiTotalCost": 0.00285,
+          "currency": "USD",
+          "apiCostStatus": "estimated",
+          "missingPriceDimensions": [],
+          "pricingPolicyKey": "catalog:openai:gpt-5.6-sol:standard",
+          "selectedPricingTierId": null,
+          "unitPrices": {
+            "standardInput": {
+              "status": "single",
+              "pricePerMillion": 10
+            },
+            "cacheReadInput": {
+              "status": "not_applicable",
+              "pricePerMillion": null
+            },
+            "cacheCreationInput": {
+              "status": "not_applicable",
+              "pricePerMillion": null
+            },
+            "cacheCreation5mInput": {
+              "status": "not_applicable",
+              "pricePerMillion": null
+            },
+            "cacheCreation1hInput": {
+              "status": "not_applicable",
+              "pricePerMillion": null
+            },
+            "output": {
+              "status": "single",
+              "pricePerMillion": 100
+            },
+            "reasoningOutput": {
+              "status": "not_applicable",
+              "pricePerMillion": null
+            }
+          },
+          "latestPromptTokens": 42,
+          "effectiveContextWindowTokens": 200000,
+          "contextWindowUsagePercent": 0.00021,
+          "latestModelProvider": "OPENAI",
+          "latestModelIdentifier": "gpt-5.6-sol",
+          "latestRuntimeKind": "codex_app_server",
+          "usageReportCount": 3,
+          "updatedAt": "2026-08-20T10:06:00.000Z"
+        },
+        "teamState": "record_backed",
+        "teamNeedsHydration": false
+      },
+      "primaryText": "Latest prompt\n0.0%\n\n42 / 200,000 context tokens\n\nGROSS INPUT\n\n60 Tokens\n\nCache not reported\n\nCost $0.0006\n\nOUTPUT\n\n15 Tokens\n\nCost $0.0015\n\nTOTAL ESTIMATE\n\n75 Tokens\n\nEstimate $0.0021\n\nComplete estimate\nInput breakdown\nUncached / full-price input\n60 tok\n$0.0006\nTotal input cost\n$0.0006\nPricing details\nLatest model\ngpt-5.6-sol\nRuntime\ncodex_app_server\nPrice status\nComplete estimate\nUsage reports\n2 model calls\nCalculation details",
+      "totalText": "Team total\n\t\n85\n$0.0009\n\t\n20\n$0.0020\n\t\n105\n$0.0029"
+    },
+    "BROWSER-TS-005": {
+      "result": "Pass",
+      "aggregateRequests": 3,
+      "maxActiveAggregateRequests": 1,
+      "finalState": {
+        "selectionType": null,
+        "runSummary": null,
+        "memberSummary": {
+          "runId": "browser-member-a-91291-1787241387874-98b0f72a74c46",
+          "rootTeamRunId": "browser-team-a-91291-1787241387874-98b0f72a74c46",
+          "agentDefinitionId": null,
+          "workspaceId": null,
+          "grossInputTokens": 80,
+          "standardInputTokens": 80,
+          "cacheMissInputTokens": 80,
+          "cacheReadInputTokens": 0,
+          "cacheCreationInputTokens": 0,
+          "cacheCreation5mInputTokens": 0,
+          "cacheCreation1hInputTokens": 0,
+          "outputTokens": 20,
+          "reasoningOutputTokens": 0,
+          "billableOutputTokens": 20,
+          "totalTokens": 100,
+          "cacheReadInputTokenRate": 0,
+          "standardInputTokenRate": 1,
+          "cacheCreationInputTokenRate": 0,
+          "cacheState": "not_reported",
+          "estimatedApiInputCost": 0.0008,
+          "estimatedApiStandardInputCost": 0.0008,
+          "estimatedApiCacheReadInputCost": null,
+          "estimatedApiCacheCreationInputCost": null,
+          "estimatedApiCacheCreation5mInputCost": null,
+          "estimatedApiCacheCreation1hInputCost": null,
+          "estimatedApiOutputCost": 0.002,
+          "estimatedApiReasoningOutputCost": null,
+          "estimatedApiTotalCost": 0.0028,
+          "currency": "USD",
+          "apiCostStatus": "estimated",
+          "missingPriceDimensions": [],
+          "pricingPolicyKey": "catalog:openai:gpt-5.6-sol:standard",
+          "selectedPricingTierId": null,
+          "unitPrices": {
+            "standardInput": {
+              "status": "single",
+              "pricePerMillion": 10
+            },
+            "cacheReadInput": {
+              "status": "not_applicable",
+              "pricePerMillion": null
+            },
+            "cacheCreationInput": {
+              "status": "not_applicable",
+              "pricePerMillion": null
+            },
+            "cacheCreation5mInput": {
+              "status": "not_applicable",
+              "pricePerMillion": null
+            },
+            "cacheCreation1hInput": {
+              "status": "not_applicable",
+              "pricePerMillion": null
+            },
+            "output": {
+              "status": "single",
+              "pricePerMillion": 100
+            },
+            "reasoningOutput": {
+              "status": "not_applicable",
+              "pricePerMillion": null
+            }
+          },
+          "latestPromptTokens": 55,
+          "effectiveContextWindowTokens": 200000,
+          "contextWindowUsagePercent": 0.000275,
+          "latestModelProvider": "OPENAI",
+          "latestModelIdentifier": "gpt-5.6-sol",
+          "latestRuntimeKind": "codex_app_server",
+          "usageReportCount": 4,
+          "updatedAt": "2026-08-20T10:10:00.000Z"
+        },
+        "foreignMemberSummary": null,
+        "teamSummary": {
+          "__typename": "TokenUsageRunSummaryGraphql",
+          "runId": "browser-team-a-91291-1787241387874-98b0f72a74c46",
+          "rootTeamRunId": "browser-team-a-91291-1787241387874-98b0f72a74c46",
+          "agentDefinitionId": null,
+          "workspaceId": null,
+          "grossInputTokens": 105,
+          "standardInputTokens": 105,
+          "cacheMissInputTokens": 105,
+          "cacheReadInputTokens": 0,
+          "cacheCreationInputTokens": 0,
+          "cacheCreation5mInputTokens": 0,
+          "cacheCreation1hInputTokens": 0,
+          "outputTokens": 25,
+          "reasoningOutputTokens": 0,
+          "billableOutputTokens": 25,
+          "totalTokens": 130,
+          "cacheReadInputTokenRate": 0,
+          "standardInputTokenRate": 1,
+          "cacheCreationInputTokenRate": 0,
+          "cacheState": "not_reported",
+          "estimatedApiInputCost": 0.0010500000000000002,
+          "estimatedApiStandardInputCost": 0.0010500000000000002,
+          "estimatedApiCacheReadInputCost": null,
+          "estimatedApiCacheCreationInputCost": null,
+          "estimatedApiCacheCreation5mInputCost": null,
+          "estimatedApiCacheCreation1hInputCost": null,
+          "estimatedApiOutputCost": 0.0025,
+          "estimatedApiReasoningOutputCost": null,
+          "estimatedApiTotalCost": 0.00355,
+          "currency": "USD",
+          "apiCostStatus": "estimated",
+          "missingPriceDimensions": [],
+          "pricingPolicyKey": "catalog:openai:gpt-5.6-sol:standard",
+          "selectedPricingTierId": null,
+          "unitPrices": {
+            "standardInput": {
+              "status": "single",
+              "pricePerMillion": 10
+            },
+            "cacheReadInput": {
+              "status": "not_applicable",
+              "pricePerMillion": null
+            },
+            "cacheCreationInput": {
+              "status": "not_applicable",
+              "pricePerMillion": null
+            },
+            "cacheCreation5mInput": {
+              "status": "not_applicable",
+              "pricePerMillion": null
+            },
+            "cacheCreation1hInput": {
+              "status": "not_applicable",
+              "pricePerMillion": null
+            },
+            "output": {
+              "status": "single",
+              "pricePerMillion": 100
+            },
+            "reasoningOutput": {
+              "status": "not_applicable",
+              "pricePerMillion": null
+            }
+          },
+          "latestPromptTokens": 55,
+          "effectiveContextWindowTokens": 200000,
+          "contextWindowUsagePercent": 0.000275,
+          "latestModelProvider": "OPENAI",
+          "latestModelIdentifier": "gpt-5.6-sol",
+          "latestRuntimeKind": "codex_app_server",
+          "usageReportCount": 5,
+          "updatedAt": "2026-08-20T10:10:00.000Z"
+        },
+        "teamState": "record_backed",
+        "teamNeedsHydration": false
+      }
+    },
+    "BROWSER-TS-006": {
+      "result": "Pass",
+      "reopenedState": {
+        "selectionType": "agent",
+        "runSummary": {
+          "__typename": "TokenUsageRunSummaryGraphql",
+          "runId": "browser-standalone-91291-1787241387874-98b0f72a74c46",
+          "rootTeamRunId": null,
+          "agentDefinitionId": null,
+          "workspaceId": null,
+          "grossInputTokens": 190,
+          "standardInputTokens": 190,
+          "cacheMissInputTokens": 190,
+          "cacheReadInputTokens": 0,
+          "cacheCreationInputTokens": 0,
+          "cacheCreation5mInputTokens": 0,
+          "cacheCreation1hInputTokens": 0,
+          "outputTokens": 40,
+          "reasoningOutputTokens": 5,
+          "billableOutputTokens": 40,
+          "totalTokens": 230,
+          "cacheReadInputTokenRate": 0,
+          "standardInputTokenRate": 1,
+          "cacheCreationInputTokenRate": 0,
+          "cacheState": "not_reported",
+          "estimatedApiInputCost": 0.0019,
+          "estimatedApiStandardInputCost": 0.0019,
+          "estimatedApiCacheReadInputCost": null,
+          "estimatedApiCacheCreationInputCost": null,
+          "estimatedApiCacheCreation5mInputCost": null,
+          "estimatedApiCacheCreation1hInputCost": null,
+          "estimatedApiOutputCost": 0.004,
+          "estimatedApiReasoningOutputCost": 0.0005,
+          "estimatedApiTotalCost": 0.006399999999999999,
+          "currency": "USD",
+          "apiCostStatus": "estimated",
+          "missingPriceDimensions": [],
+          "pricingPolicyKey": "catalog:openai:gpt-5.6-sol:standard",
+          "selectedPricingTierId": null,
+          "unitPrices": {
+            "standardInput": {
+              "status": "single",
+              "pricePerMillion": 10
+            },
+            "cacheReadInput": {
+              "status": "not_applicable",
+              "pricePerMillion": null
+            },
+            "cacheCreationInput": {
+              "status": "not_applicable",
+              "pricePerMillion": null
+            },
+            "cacheCreation5mInput": {
+              "status": "not_applicable",
+              "pricePerMillion": null
+            },
+            "cacheCreation1hInput": {
+              "status": "not_applicable",
+              "pricePerMillion": null
+            },
+            "output": {
+              "status": "single",
+              "pricePerMillion": 100
+            },
+            "reasoningOutput": {
+              "status": "single",
+              "pricePerMillion": 100
+            }
+          },
+          "latestPromptTokens": 120,
+          "effectiveContextWindowTokens": 200000,
+          "contextWindowUsagePercent": 0.0006,
+          "latestModelProvider": "OPENAI",
+          "latestModelIdentifier": "gpt-5.6-sol",
+          "latestRuntimeKind": "codex_app_server",
+          "usageReportCount": 4,
+          "updatedAt": "2026-08-20T10:08:00.000Z"
+        },
+        "memberSummary": null,
+        "foreignMemberSummary": null,
+        "teamSummary": null,
+        "teamState": null,
+        "teamNeedsHydration": true
+      }
+    },
+    "BROWSER-TS-007": {
+      "result": "Pass",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "totalCard": {
+        "x": 66,
+        "y": 532,
+        "width": 308,
+        "height": 150.5
+      }
+    }
+  },
+  "graphql": {
+    "requestCount": 29,
+    "operations": [
+      {
+        "label": "primary",
+        "operation": "GetAgentRunTokenUsageSummary",
+        "url": "http://127.0.0.1:49573/graphql",
+        "at": "2026-08-20T15:56:48.156Z"
+      },
+      {
+        "label": "primary",
+        "operation": "GetApplicationsCapability",
+        "url": "http://127.0.0.1:49573/graphql",
+        "at": "2026-08-20T15:56:48.161Z"
+      },
+      {
+        "label": "primary",
+        "operation": "GetAllWorkspaces",
+        "url": "http://127.0.0.1:49573/graphql",
+        "at": "2026-08-20T15:56:48.162Z"
+      },
+      {
+        "label": "primary",
+        "operation": "GetAgentDefinitions",
+        "url": "http://127.0.0.1:49573/graphql",
+        "at": "2026-08-20T15:56:48.163Z"
+      },
+      {
+        "label": "primary",
+        "operation": "GetAgentTeamDefinitions",
+        "url": "http://127.0.0.1:49573/graphql",
+        "at": "2026-08-20T15:56:48.164Z"
+      },
+      {
+        "label": "race",
+        "operation": "GetApplicationsCapability",
+        "url": "http://127.0.0.1:49573/graphql",
+        "at": "2026-08-20T15:56:49.374Z"
+      },
+      {
+        "label": "race",
+        "operation": "GetAllWorkspaces",
+        "url": "http://127.0.0.1:49573/graphql",
+        "at": "2026-08-20T15:56:49.375Z"
+      },
+      {
+        "label": "race",
+        "operation": "GetAgentDefinitions",
+        "url": "http://127.0.0.1:49573/graphql",
+        "at": "2026-08-20T15:56:49.376Z"
+      },
+      {
+        "label": "race",
+        "operation": "GetAgentTeamDefinitions",
+        "url": "http://127.0.0.1:49573/graphql",
+        "at": "2026-08-20T15:56:49.376Z"
+      },
+      {
+        "label": "race",
+        "operation": "GetAgentRunTokenUsageSummary",
+        "url": "http://127.0.0.1:49573/graphql",
+        "at": "2026-08-20T15:56:49.421Z"
+      },
+      {
+        "label": "team",
+        "operation": "GetTeamMemberTokenUsageSummary",
+        "url": "http://127.0.0.1:49573/graphql",
+        "at": "2026-08-20T15:56:49.981Z"
+      },
+      {
+        "label": "team",
+        "operation": "GetTeamMemberTokenUsageSummary",
+        "url": "http://127.0.0.1:49573/graphql",
+        "at": "2026-08-20T15:56:49.981Z"
+      },
+      {
+        "label": "team",
+        "operation": "GetTeamRunTokenUsageSummary",
+        "url": "http://127.0.0.1:49573/graphql",
+        "at": "2026-08-20T15:56:49.981Z"
+      },
+      {
+        "label": "team",
+        "operation": "GetApplicationsCapability",
+        "url": "http://127.0.0.1:49573/graphql",
+        "at": "2026-08-20T15:56:49.985Z"
+      },
+      {
+        "label": "team",
+        "operation": "GetAllWorkspaces",
+        "url": "http://127.0.0.1:49573/graphql",
+        "at": "2026-08-20T15:56:49.986Z"
+      },
+      {
+        "label": "team",
+        "operation": "GetAgentDefinitions",
+        "url": "http://127.0.0.1:49573/graphql",
+        "at": "2026-08-20T15:56:49.988Z"
+      },
+      {
+        "label": "team",
+        "operation": "GetAgentTeamDefinitions",
+        "url": "http://127.0.0.1:49573/graphql",
+        "at": "2026-08-20T15:56:49.991Z"
+      },
+      {
+        "label": "aggregate",
+        "operation": "GetApplicationsCapability",
+        "url": "http://127.0.0.1:49573/graphql",
+        "at": "2026-08-20T15:56:50.839Z"
+      },
+      {
+        "label": "aggregate",
+        "operation": "GetAllWorkspaces",
+        "url": "http://127.0.0.1:49573/graphql",
+        "at": "2026-08-20T15:56:50.840Z"
+      },
+      {
+        "label": "aggregate",
+        "operation": "GetAgentDefinitions",
+        "url": "http://127.0.0.1:49573/graphql",
+        "at": "2026-08-20T15:56:50.842Z"
+      },
+      {
+        "label": "aggregate",
+        "operation": "GetAgentTeamDefinitions",
+        "url": "http://127.0.0.1:49573/graphql",
+        "at": "2026-08-20T15:56:50.843Z"
+      },
+      {
+        "label": "aggregate",
+        "operation": "GetTeamRunTokenUsageSummary",
+        "url": "http://127.0.0.1:49573/graphql",
+        "at": "2026-08-20T15:56:50.898Z"
+      },
+      {
+        "label": "aggregate",
+        "operation": "GetTeamRunTokenUsageSummary",
+        "url": "http://127.0.0.1:49573/graphql",
+        "at": "2026-08-20T15:56:50.925Z"
+      },
+      {
+        "label": "aggregate",
+        "operation": "GetTeamRunTokenUsageSummary",
+        "url": "http://127.0.0.1:49573/graphql",
+        "at": "2026-08-20T15:56:50.944Z"
+      },
+      {
+        "label": "primary",
+        "operation": "GetAgentRunTokenUsageSummary",
+        "url": "http://127.0.0.1:49573/graphql",
+        "at": "2026-08-20T15:56:53.831Z"
+      },
+      {
+        "label": "primary",
+        "operation": "GetApplicationsCapability",
+        "url": "http://127.0.0.1:49573/graphql",
+        "at": "2026-08-20T15:56:53.835Z"
+      },
+      {
+        "label": "primary",
+        "operation": "GetAllWorkspaces",
+        "url": "http://127.0.0.1:49573/graphql",
+        "at": "2026-08-20T15:56:53.837Z"
+      },
+      {
+        "label": "primary",
+        "operation": "GetAgentDefinitions",
+        "url": "http://127.0.0.1:49573/graphql",
+        "at": "2026-08-20T15:56:53.845Z"
+      },
+      {
+        "label": "primary",
+        "operation": "GetAgentTeamDefinitions",
+        "url": "http://127.0.0.1:49573/graphql",
+        "at": "2026-08-20T15:56:53.848Z"
+      }
+    ]
+  },
+  "browserEvents": [
+    {
+      "label": "primary",
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "label": "primary",
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "label": "primary",
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "label": "primary",
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "label": "primary",
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "label": "primary",
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "label": "race",
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "label": "race",
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "label": "race",
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "label": "race",
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "label": "race",
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "label": "race",
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "label": "team",
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "label": "team",
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "label": "team",
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "label": "team",
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "label": "team",
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "label": "team",
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "label": "primary",
+      "type": "console:log",
+      "text": "serverStore: Checking server health at /rest/health"
+    },
+    {
+      "label": "aggregate",
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "label": "aggregate",
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "label": "aggregate",
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "label": "aggregate",
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "label": "aggregate",
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "label": "aggregate",
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "label": "race",
+      "type": "console:log",
+      "text": "serverStore: Checking server health at /rest/health"
+    },
+    {
+      "label": "race",
+      "type": "console:error",
+      "text": "Failed to load resource: the server responded with a status of 500 (Internal Server Error)"
+    },
+    {
+      "label": "team",
+      "type": "console:log",
+      "text": "serverStore: Checking server health at /rest/health"
+    },
+    {
+      "label": "team",
+      "type": "console:error",
+      "text": "Failed to load resource: the server responded with a status of 500 (Internal Server Error)"
+    },
+    {
+      "label": "aggregate",
+      "type": "console:log",
+      "text": "serverStore: Checking server health at /rest/health"
+    },
+    {
+      "label": "aggregate",
+      "type": "console:error",
+      "text": "Failed to load resource: the server responded with a status of 500 (Internal Server Error)"
+    },
+    {
+      "label": "primary",
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "label": "primary",
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "label": "primary",
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "label": "primary",
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "label": "primary",
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "label": "primary",
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    }
+  ],
+  "cleanup": {
+    "prisma": "closed",
+    "browser": "closed",
+    "nuxt": "stopped",
+    "backend": "stopped",
+    "runtime": "removed",
+    "fixtureRoute": "removed"
+  },
+  "result": "Pass",
+  "completedAt": "2026-08-20T15:56:54.354Z"
+}

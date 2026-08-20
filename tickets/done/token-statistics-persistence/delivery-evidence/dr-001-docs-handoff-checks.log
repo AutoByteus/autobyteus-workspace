@@ -1,0 +1,51 @@
+DR-001 docs and handoff checks
+checked_utc=2026-08-20T16:22:52Z
+
+CHECK: tracked durable-doc whitespace
+
+CHECK: mirrored Token Usage Meter sections
+mirror_result=Pass
+
+CHECK: stale durable wording
+stale_wording_result=Pass
+
+CHECK: required durable wording
+run_summary_after_event files=3
+usageReportCount files=3
+live_partial files=3
+refresh_required files=3
+record_backed files=3
+
+CHECK: delivery artifact existence and DR-001 headings
+present tickets/token-statistics-persistence/docs-sync-report.md
+present tickets/token-statistics-persistence/handoff-summary.md
+present tickets/token-statistics-persistence/release-deployment-report.md
+present tickets/token-statistics-persistence/delivery-revision-record.md
+present tickets/token-statistics-persistence/delivery-evidence/dr-001-integration-refresh.txt
+present tickets/token-statistics-persistence/delivery-evidence/dr-001-post-integration-web-focused.log
+7:| `DR-001` | `CRR-001` source Pass, `API-REV-001` Pass at `97.3%`, and `CRR-002` proportional durable-test review Pass | N/A | `Pass — latest base integrated, relevant smoke passed, docs synchronized, and handoff ready for explicit user verification; finalization held` | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, three long-lived Token Usage docs, `delivery-evidence/dr-001-*` |
+11:### DR-001 — Integrated record-backed Token Meter delivery baseline
+dr_001_result=Pass
+
+CHECK: authored untracked artifact whitespace
+whitespace_pass tickets/token-statistics-persistence/docs-sync-report.md
+whitespace_pass tickets/token-statistics-persistence/handoff-summary.md
+whitespace_pass tickets/token-statistics-persistence/release-deployment-report.md
+whitespace_pass tickets/token-statistics-persistence/delivery-revision-record.md
+whitespace_pass tickets/token-statistics-persistence/delivery-evidence/dr-001-integration-refresh.txt
+
+CHECK: integrated branch state
+head=f0ddf442569b6bd9eecd590516506bc0bccd9bbc
+origin_personal=3b81b5ebdc4c5eae64e221aff9c578adc7e7fb74
+divergence=3	0
+## codex/token-statistics-persistence...origin/personal [ahead 3]
+ M autobyteus-server-ts/docs/modules/token_usage.md
+ M autobyteus-web/docs/agent_execution_architecture.md
+ M autobyteus-web/docs/settings.md
+?? tickets/token-statistics-persistence/delivery-evidence/
+?? tickets/token-statistics-persistence/delivery-revision-record.md
+?? tickets/token-statistics-persistence/docs-sync-report.md
+?? tickets/token-statistics-persistence/handoff-summary.md
+?? tickets/token-statistics-persistence/release-deployment-report.md
+
+overall_exit_code=0

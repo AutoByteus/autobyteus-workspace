@@ -6,6 +6,7 @@ import {
   GET_TEAM_MEMBER_TOKEN_USAGE_SUMMARY,
   GET_TEAM_RUN_TOKEN_USAGE_SUMMARY,
 } from '~/graphql/queries/token_usage_meter_queries';
+import { mapTokenUsageRunSummaryDto } from '~/services/agentStreaming/tokenUsageRunSummaryMapper';
 import type {
   TeamTokenUsageDetails,
   TokenUsageApiCostStatus,
@@ -20,9 +21,23 @@ import {
   unitPricesOrEmpty,
 } from '~/stores/tokenUsageUnitPriceSummary';
 
-const emptySummary = (runId: string | null): TokenUsageRunSummary => ({
-  runId,
-  rootTeamRunId: null,
+export interface TeamTokenUsageMemberIdentity {
+  teamRunId: string;
+  agentRunId: string;
+}
+
+export type TeamTokenUsageAggregateState = 'live_partial' | 'refresh_required' | 'record_backed';
+
+type TeamTokenUsageAggregateEntry = {
+  summary: TokenUsageRunSummary | null;
+  state: TeamTokenUsageAggregateState;
+  liveGeneration: number;
+  fetchGeneration: number | null;
+};
+
+const emptyTeamAggregate = (teamRunId: string): TokenUsageRunSummary => ({
+  runId: teamRunId,
+  rootTeamRunId: teamRunId,
   agentDefinitionId: null,
   workspaceId: null,
   grossInputTokens: 0,
@@ -65,263 +80,330 @@ const emptySummary = (runId: string | null): TokenUsageRunSummary => ({
   updatedAt: null,
 });
 
-const addCost = (current: number | null, delta: number | null | undefined): number | null => {
-  if (current === null && (delta === null || delta === undefined)) return null;
-  return (current ?? 0) + (delta ?? 0);
-};
+const normalizedId = (value: string | null | undefined): string => value?.trim() || '';
+const memberCacheKey = (identity: TeamTokenUsageMemberIdentity): string =>
+  `${identity.teamRunId}\u0000${identity.agentRunId}`;
+const rate = (numerator: number, denominator: number): number | null =>
+  denominator > 0 ? numerator / denominator : null;
+const addCost = (current: number | null, delta: number | null): number | null =>
+  current === null && delta === null ? null : (current ?? 0) + (delta ?? 0);
 
-const normalizedStatus = (status?: string | null): TokenUsageApiCostStatus => {
+const normalizedStatus = (status: string): TokenUsageApiCostStatus => {
   if (status === 'estimated' || status === 'price_missing' || status === 'partial_price_missing' || status === 'mixed' || status === 'local_no_api_bill') {
     return status;
   }
   return 'price_missing';
 };
 
-const normalizedCacheState = (state?: string | null): TokenUsageCacheState => {
-  if (state === 'positive' || state === 'zero_reported' || state === 'not_reported' || state === 'unsupported_or_local' || state === 'unknown') {
-    return state;
-  }
-  return 'unknown';
-};
-
-const mergeStatus = (current: TokenUsageApiCostStatus, next?: string | null, priorReportCount = 0): TokenUsageApiCostStatus => {
+const mergeStatus = (
+  current: TokenUsageApiCostStatus,
+  next: string,
+  priorReportCount: number,
+): TokenUsageApiCostStatus => {
   const normalized = normalizedStatus(next);
   if (priorReportCount === 0) return normalized;
-  if (current === normalized) return current;
-  return 'mixed';
+  return current === normalized ? current : 'mixed';
 };
 
-const mergeCurrency = (current: string | null, next?: string | null): { currency: string | null; mixed: boolean } => {
+const mergeCurrency = (
+  current: string | null,
+  next: string | null,
+): { currency: string | null; mixed: boolean } => {
   if (!next || next === current) return { currency: current, mixed: false };
   if (!current) return { currency: next, mixed: false };
   return { currency: null, mixed: true };
 };
 
-const mergeCacheState = (current: TokenUsageCacheState, next?: string | null): TokenUsageCacheState => {
-  const incoming = normalizedCacheState(next);
-  if (current === 'positive' || incoming === 'positive') return 'positive';
-  if (current === 'zero_reported' || incoming === 'zero_reported') return 'zero_reported';
-  if (current === 'unsupported_or_local' && incoming === 'unsupported_or_local') return 'unsupported_or_local';
-  if (current === 'not_reported' || incoming === 'not_reported') return 'not_reported';
+const mergeCacheState = (current: TokenUsageCacheState, next: string): TokenUsageCacheState => {
+  if (current === 'positive' || next === 'positive') return 'positive';
+  if (current === 'zero_reported' || next === 'zero_reported') return 'zero_reported';
+  if (current === 'unsupported_or_local' && next === 'unsupported_or_local') return 'unsupported_or_local';
+  if (current === 'not_reported' || next === 'not_reported') return 'not_reported';
   return 'unknown';
 };
 
-const rate = (numerator: number, denominator: number): number | null =>
-  denominator > 0 ? numerator / denominator : null;
+const mergeUniqueStrings = (current: string[], next: string[]): string[] =>
+  Array.from(new Set([...current, ...next].filter(Boolean))).sort();
 
-const mergeUniqueStrings = (current: string[], next?: string[] | null): string[] =>
-  Array.from(new Set([...current, ...(next ?? [])].filter(Boolean))).sort();
+const applyPersistedEventToPartialTeamAggregate = (
+  summary: TokenUsageRunSummary,
+  details: TeamTokenUsageDetails,
+): TokenUsageRunSummary => {
+  const grossInputDelta = details.meter_delta_input_tokens ?? 0;
+  const outputDelta = details.meter_delta_output_tokens ?? 0;
+  const totalDelta = details.meter_delta_total_tokens ?? grossInputDelta + outputDelta;
+  const standardDelta = details.standard_input_tokens ?? 0;
+  const cacheReadDelta = details.cache_read_input_tokens ?? 0;
+  const cacheCreationDelta = details.cache_creation_input_tokens ?? 0;
+  const cacheCreation5mDelta = details.cache_creation_5m_input_tokens ?? 0;
+  const cacheCreation1hDelta = details.cache_creation_1h_input_tokens ?? 0;
+  const reasoningDelta = details.reasoning_output_tokens ?? 0;
+  const currencyMerge = summary.apiCostStatus === 'mixed' && summary.currency === null && summary.usageReportCount > 0
+    ? { currency: null, mixed: true }
+    : mergeCurrency(summary.currency, details.currency);
+  const grossInputTokens = summary.grossInputTokens + grossInputDelta;
+  const standardInputTokens = summary.standardInputTokens + standardDelta;
+  const cacheReadInputTokens = summary.cacheReadInputTokens + cacheReadDelta;
+  const cacheCreationInputTokens = summary.cacheCreationInputTokens + cacheCreationDelta;
+  const cacheCreation5mInputTokens = summary.cacheCreation5mInputTokens + cacheCreation5mDelta;
+  const cacheCreation1hInputTokens = summary.cacheCreation1hInputTokens + cacheCreation1hDelta;
+  const outputTokens = summary.outputTokens + outputDelta;
+  const reasoningOutputTokens = summary.reasoningOutputTokens + reasoningDelta;
+  const mergedUnitPrices = mergeUnitPrices(summary.unitPrices, details);
 
-type TeamSummarySource = 'live_partial' | 'ledger_backed';
-type UsageDelta = TokenUsageUpdatedPayload | TeamTokenUsageDetails;
+  return {
+    ...summary,
+    grossInputTokens,
+    standardInputTokens,
+    cacheMissInputTokens: summary.cacheMissInputTokens + (details.cache_miss_input_tokens ?? standardDelta),
+    cacheReadInputTokens,
+    cacheCreationInputTokens,
+    cacheCreation5mInputTokens,
+    cacheCreation1hInputTokens,
+    outputTokens,
+    reasoningOutputTokens,
+    billableOutputTokens: summary.billableOutputTokens + (details.billable_output_tokens ?? outputDelta),
+    totalTokens: summary.totalTokens + totalDelta,
+    cacheReadInputTokenRate: rate(cacheReadInputTokens, grossInputTokens),
+    standardInputTokenRate: rate(standardInputTokens, grossInputTokens),
+    cacheCreationInputTokenRate: rate(cacheCreationInputTokens, grossInputTokens),
+    cacheState: mergeCacheState(summary.cacheState, details.cache_state),
+    estimatedApiInputCost: currencyMerge.mixed ? null : addCost(summary.estimatedApiInputCost, details.estimated_api_input_cost),
+    estimatedApiStandardInputCost: currencyMerge.mixed ? null : addCost(summary.estimatedApiStandardInputCost, details.estimated_api_standard_input_cost),
+    estimatedApiCacheReadInputCost: currencyMerge.mixed ? null : addCost(summary.estimatedApiCacheReadInputCost, details.estimated_api_cache_read_input_cost),
+    estimatedApiCacheCreationInputCost: currencyMerge.mixed ? null : addCost(summary.estimatedApiCacheCreationInputCost, details.estimated_api_cache_creation_input_cost),
+    estimatedApiCacheCreation5mInputCost: currencyMerge.mixed ? null : addCost(summary.estimatedApiCacheCreation5mInputCost, details.estimated_api_cache_creation_5m_input_cost),
+    estimatedApiCacheCreation1hInputCost: currencyMerge.mixed ? null : addCost(summary.estimatedApiCacheCreation1hInputCost, details.estimated_api_cache_creation_1h_input_cost),
+    estimatedApiOutputCost: currencyMerge.mixed ? null : addCost(summary.estimatedApiOutputCost, details.estimated_api_output_cost),
+    estimatedApiReasoningOutputCost: currencyMerge.mixed ? null : addCost(summary.estimatedApiReasoningOutputCost, details.estimated_api_reasoning_output_cost),
+    estimatedApiTotalCost: currencyMerge.mixed ? null : addCost(summary.estimatedApiTotalCost, details.estimated_api_total_cost),
+    currency: currencyMerge.currency,
+    apiCostStatus: currencyMerge.mixed
+      ? 'mixed'
+      : mergeStatus(summary.apiCostStatus, details.api_cost_status, summary.usageReportCount),
+    missingPriceDimensions: mergeUniqueStrings(summary.missingPriceDimensions, details.missing_price_dimensions),
+    pricingPolicyKey: details.pricing_policy_key ?? summary.pricingPolicyKey,
+    selectedPricingTierId: details.selected_pricing_tier_id ?? summary.selectedPricingTierId,
+    unitPrices: currencyMerge.mixed
+      ? forceMixedUnitPrices({
+          standardInputTokens,
+          cacheReadInputTokens,
+          cacheCreationInputTokens,
+          cacheCreation5mInputTokens,
+          cacheCreation1hInputTokens,
+          outputTokens,
+          reasoningOutputTokens,
+        })
+      : mergedUnitPrices,
+    usageReportCount: summary.usageReportCount + 1,
+    updatedAt: details.observed_at,
+  };
+};
+
+const normalizeRecordBackedSummary = (summary: TokenUsageRunSummary): TokenUsageRunSummary => {
+  if (!summary.runId?.trim()) throw new Error('Record-backed token summary requires a run ID.');
+  if (!Number.isSafeInteger(summary.usageReportCount) || summary.usageReportCount < 0) {
+    throw new Error('Record-backed token summary requires a non-negative safe-integer usage report count.');
+  }
+  return { ...summary, unitPrices: unitPricesOrEmpty(summary.unitPrices) };
+};
 
 export const useTokenUsageMeterStore = defineStore('tokenUsageMeter', () => {
   const runSummaries = reactive<Record<string, TokenUsageRunSummary>>({});
-  const teamSummaries = reactive<Record<string, TokenUsageRunSummary>>({});
-  const teamAgentSummaries = reactive<Record<string, TokenUsageRunSummary>>({});
-  const teamSummarySources = reactive<Record<string, TeamSummarySource>>({});
-  const seenUsageKeys = reactive<Record<string, true>>({});
-
-  const normalizedTeamRunId = (teamRunId: string | null | undefined): string => teamRunId?.trim() || '';
+  const teamMemberSummaries = reactive<Record<string, TokenUsageRunSummary>>({});
+  const teamAggregateEntries = reactive<Record<string, TeamTokenUsageAggregateEntry>>({});
+  const seenUsageKeys = new Set<string>();
+  const teamAggregateRequests = new Map<string, Promise<TokenUsageRunSummary | null>>();
 
   function getRunSummary(runId: string | null | undefined): TokenUsageRunSummary | null {
-    if (!runId) return null;
-    return runSummaries[runId] ?? null;
+    const id = normalizedId(runId);
+    return id ? runSummaries[id] ?? null : null;
+  }
+
+  function getTeamMemberSummary(identity: TeamTokenUsageMemberIdentity): TokenUsageRunSummary | null {
+    const teamRunId = normalizedId(identity.teamRunId);
+    const agentRunId = normalizedId(identity.agentRunId);
+    return teamRunId && agentRunId
+      ? teamMemberSummaries[memberCacheKey({ teamRunId, agentRunId })] ?? null
+      : null;
   }
 
   function getTeamSummary(teamRunId: string | null | undefined): TokenUsageRunSummary | null {
-    if (!teamRunId) return null;
-    return teamSummaries[teamRunId] ?? null;
+    const id = normalizedId(teamRunId);
+    return id ? teamAggregateEntries[id]?.summary ?? null : null;
   }
 
-  function getTeamAgentSummary(agentRunId: string | null | undefined): TokenUsageRunSummary | null {
-    const id = agentRunId?.trim() || '';
-    return id ? teamAgentSummaries[id] ?? null : null;
+  function getTeamRunSummaryState(teamRunId: string | null | undefined): TeamTokenUsageAggregateState | null {
+    const id = normalizedId(teamRunId);
+    return id ? teamAggregateEntries[id]?.state ?? null : null;
   }
 
-  function hasLedgerBackedTeamSummary(teamRunId: string | null | undefined): boolean {
-    const normalized = normalizedTeamRunId(teamRunId);
-    return Boolean(normalized && teamSummaries[normalized] && teamSummarySources[normalized] === 'ledger_backed');
+  function getTeamRunSummaryHydrationGeneration(teamRunId: string | null | undefined): number {
+    const id = normalizedId(teamRunId);
+    return id ? teamAggregateEntries[id]?.liveGeneration ?? 0 : 0;
+  }
+
+  function needsAgentRunSummaryHydration(runId: string | null | undefined): boolean {
+    const id = normalizedId(runId);
+    return Boolean(id && !runSummaries[id]);
+  }
+
+  function needsTeamMemberSummaryHydration(identity: TeamTokenUsageMemberIdentity): boolean {
+    const teamRunId = normalizedId(identity.teamRunId);
+    const agentRunId = normalizedId(identity.agentRunId);
+    return Boolean(teamRunId && agentRunId && !getTeamMemberSummary({ teamRunId, agentRunId }));
   }
 
   function needsTeamRunSummaryHydration(teamRunId: string | null | undefined): boolean {
-    const normalized = normalizedTeamRunId(teamRunId);
-    return Boolean(normalized && !hasLedgerBackedTeamSummary(normalized));
+    const id = normalizedId(teamRunId);
+    return Boolean(id && teamAggregateEntries[id]?.state !== 'record_backed');
   }
 
-  function upsertLedgerBackedTeamSummary(teamRunId: string, summary: TokenUsageRunSummary): TokenUsageRunSummary {
-    const normalizedRunId = normalizedTeamRunId(teamRunId);
-    const normalizedSummary = {
-      ...summary,
-      unitPrices: unitPricesOrEmpty(summary.unitPrices),
-    };
-    teamSummaries[normalizedRunId] = normalizedSummary;
-    teamSummarySources[normalizedRunId] = 'ledger_backed';
-    return normalizedSummary;
+  function upsertRecordBackedAgentRunSummary(input: {
+    runId: string;
+    summary: TokenUsageRunSummary;
+  }): boolean {
+    const runId = normalizedId(input.runId);
+    const summary = normalizeRecordBackedSummary(input.summary);
+    if (!runId || summary.runId !== runId) {
+      throw new Error('Standalone token summary returned a different AgentRun ID.');
+    }
+    const current = runSummaries[runId];
+    if (current && summary.usageReportCount <= current.usageReportCount) return false;
+    runSummaries[runId] = summary;
+    return true;
   }
 
-  function upsertSummary(summary: TokenUsageRunSummary): void {
-    const normalizedSummary = { ...summary, unitPrices: unitPricesOrEmpty(summary.unitPrices) };
-    if (!normalizedSummary.runId?.trim()) throw new Error('Standalone token summary requires an AgentRun ID.');
-    runSummaries[normalizedSummary.runId] = normalizedSummary;
-  }
-
-  function applyToSummary(
-    summary: TokenUsageRunSummary,
-    payload: UsageDelta,
-    identity: Readonly<{ rootTeamRunId?: string | null }> = {},
-  ): TokenUsageRunSummary {
-    const grossInputDelta = payload.meter_delta_input_tokens ?? 0;
-    const outputDelta = payload.meter_delta_output_tokens ?? 0;
-    const totalDelta = payload.meter_delta_total_tokens ?? (grossInputDelta + outputDelta);
-    const standardDelta = payload.standard_input_tokens ?? 0;
-    const cacheMissDelta = payload.cache_miss_input_tokens ?? standardDelta;
-    const cacheReadDelta = payload.cache_read_input_tokens ?? 0;
-    const cacheCreationDelta = payload.cache_creation_input_tokens ?? 0;
-    const cacheCreation5mDelta = payload.cache_creation_5m_input_tokens ?? 0;
-    const cacheCreation1hDelta = payload.cache_creation_1h_input_tokens ?? 0;
-    const reasoningDelta = payload.reasoning_output_tokens ?? 0;
-    const billableOutputDelta = payload.billable_output_tokens ?? outputDelta;
-    const currencyMerge = summary.apiCostStatus === 'mixed' && summary.currency === null && summary.usageReportCount > 0
-      ? { currency: null, mixed: true }
-      : mergeCurrency(summary.currency, payload.currency);
-    const status = currencyMerge.mixed
-      ? 'mixed'
-      : mergeStatus(summary.apiCostStatus, payload.api_cost_status, summary.usageReportCount);
-    const grossInputTokens = summary.grossInputTokens + grossInputDelta;
-    const standardInputTokens = summary.standardInputTokens + standardDelta;
-    const cacheReadInputTokens = summary.cacheReadInputTokens + cacheReadDelta;
-    const cacheCreationInputTokens = summary.cacheCreationInputTokens + cacheCreationDelta;
-    const cacheCreation5mInputTokens = summary.cacheCreation5mInputTokens + cacheCreation5mDelta;
-    const cacheCreation1hInputTokens = summary.cacheCreation1hInputTokens + cacheCreation1hDelta;
-    const outputTokens = summary.outputTokens + outputDelta;
-    const reasoningOutputTokens = summary.reasoningOutputTokens + reasoningDelta;
-    const mergedUnitPrices = mergeUnitPrices(unitPricesOrEmpty(summary.unitPrices), payload);
-    const unitPrices = currencyMerge.mixed
-      ? forceMixedUnitPrices({
-        standardInputTokens,
-        cacheReadInputTokens,
-        cacheCreationInputTokens,
-        cacheCreation5mInputTokens,
-        cacheCreation1hInputTokens,
-        outputTokens,
-        reasoningOutputTokens,
-      })
-      : mergedUnitPrices;
-
-    return {
-      ...summary,
-      rootTeamRunId: identity.rootTeamRunId
-        ?? ('root_team_run_id' in payload ? payload.root_team_run_id : null)
-        ?? summary.rootTeamRunId,
-      agentDefinitionId: 'agent_definition_id' in payload
-        ? payload.agent_definition_id ?? summary.agentDefinitionId
-        : summary.agentDefinitionId,
-      workspaceId: 'workspace_id' in payload
-        ? payload.workspace_id ?? summary.workspaceId
-        : summary.workspaceId,
-      grossInputTokens,
-      standardInputTokens,
-      cacheMissInputTokens: summary.cacheMissInputTokens + cacheMissDelta,
-      cacheReadInputTokens,
-      cacheCreationInputTokens,
-      cacheCreation5mInputTokens,
-      cacheCreation1hInputTokens,
-      outputTokens,
-      reasoningOutputTokens,
-      billableOutputTokens: summary.billableOutputTokens + billableOutputDelta,
-      totalTokens: summary.totalTokens + totalDelta,
-      cacheReadInputTokenRate: rate(cacheReadInputTokens, grossInputTokens),
-      standardInputTokenRate: rate(standardInputTokens, grossInputTokens),
-      cacheCreationInputTokenRate: rate(cacheCreationInputTokens, grossInputTokens),
-      cacheState: mergeCacheState(summary.cacheState, payload.cache_state),
-      estimatedApiInputCost: currencyMerge.mixed ? null : addCost(summary.estimatedApiInputCost, payload.estimated_api_input_cost),
-      estimatedApiStandardInputCost: currencyMerge.mixed ? null : addCost(summary.estimatedApiStandardInputCost, payload.estimated_api_standard_input_cost),
-      estimatedApiCacheReadInputCost: currencyMerge.mixed ? null : addCost(summary.estimatedApiCacheReadInputCost, payload.estimated_api_cache_read_input_cost),
-      estimatedApiCacheCreationInputCost: currencyMerge.mixed ? null : addCost(summary.estimatedApiCacheCreationInputCost, payload.estimated_api_cache_creation_input_cost),
-      estimatedApiCacheCreation5mInputCost: currencyMerge.mixed ? null : addCost(summary.estimatedApiCacheCreation5mInputCost, payload.estimated_api_cache_creation_5m_input_cost),
-      estimatedApiCacheCreation1hInputCost: currencyMerge.mixed ? null : addCost(summary.estimatedApiCacheCreation1hInputCost, payload.estimated_api_cache_creation_1h_input_cost),
-      estimatedApiOutputCost: currencyMerge.mixed ? null : addCost(summary.estimatedApiOutputCost, payload.estimated_api_output_cost),
-      estimatedApiReasoningOutputCost: currencyMerge.mixed ? null : addCost(summary.estimatedApiReasoningOutputCost, payload.estimated_api_reasoning_output_cost),
-      estimatedApiTotalCost: currencyMerge.mixed ? null : addCost(summary.estimatedApiTotalCost, payload.estimated_api_total_cost),
-      currency: currencyMerge.currency,
-      apiCostStatus: status,
-      missingPriceDimensions: mergeUniqueStrings(summary.missingPriceDimensions, payload.missing_price_dimensions),
-      pricingPolicyKey: payload.pricing_policy_key ?? summary.pricingPolicyKey,
-      selectedPricingTierId: payload.selected_pricing_tier_id ?? summary.selectedPricingTierId,
-      unitPrices,
-      latestPromptTokens: payload.latest_prompt_tokens ?? summary.latestPromptTokens,
-      effectiveContextWindowTokens: payload.effective_context_window_tokens ?? summary.effectiveContextWindowTokens,
-      contextWindowUsagePercent: payload.context_window_usage_percent ?? summary.contextWindowUsagePercent,
-      latestModelProvider: payload.model_provider ?? summary.latestModelProvider,
-      latestModelIdentifier: payload.model_identifier ?? payload.model_value ?? summary.latestModelIdentifier,
-      latestRuntimeKind: 'runtime_kind' in payload
-        ? payload.runtime_kind ?? summary.latestRuntimeKind
-        : summary.latestRuntimeKind,
-      usageReportCount: summary.usageReportCount + 1,
-      updatedAt: payload.observed_at ?? new Date().toISOString(),
-    };
+  function upsertRecordBackedTeamMemberSummary(input: TeamTokenUsageMemberIdentity & {
+    summary: TokenUsageRunSummary;
+  }): boolean {
+    const teamRunId = normalizedId(input.teamRunId);
+    const agentRunId = normalizedId(input.agentRunId);
+    const summary = normalizeRecordBackedSummary(input.summary);
+    if (!teamRunId || !agentRunId || summary.runId !== agentRunId || summary.rootTeamRunId !== teamRunId) {
+      throw new Error('Team member token summary returned a different run identity.');
+    }
+    const key = memberCacheKey({ teamRunId, agentRunId });
+    const current = teamMemberSummaries[key];
+    if (current && summary.usageReportCount <= current.usageReportCount) return false;
+    teamMemberSummaries[key] = summary;
+    return true;
   }
 
   function applyTokenUsageUpdated(payload: TokenUsageUpdatedPayload): boolean {
-    const runId = payload.run_id.trim();
-    if (!runId) return false;
+    const runId = normalizedId(payload.run_id);
+    if (!runId || !payload.run_summary_after_event) return false;
     const seenKey = payload.usage_event_id || payload.idempotency_key;
-    if (seenKey && seenUsageKeys[seenKey]) return false;
-    if (seenKey) seenUsageKeys[seenKey] = true;
-
-    runSummaries[runId] = applyToSummary(runSummaries[runId] ?? emptySummary(runId), payload);
-    return true;
+    if (seenKey && seenUsageKeys.has(seenKey)) return false;
+    const summary = mapTokenUsageRunSummaryDto(payload.run_summary_after_event, { runId });
+    if (seenKey) seenUsageKeys.add(seenKey);
+    return upsertRecordBackedAgentRunSummary({ runId, summary });
   }
 
-  function applyTeamTokenUsage(rootTeamRunId: string, agentRunId: string, details: TeamTokenUsageDetails): boolean {
-    const rootId = rootTeamRunId.trim();
-    const runId = agentRunId.trim();
-    if (!rootId || !runId || details.agent_run_id !== runId) return false;
+  function applyTeamTokenUsage(
+    rootTeamRunId: string,
+    agentRunId: string,
+    details: TeamTokenUsageDetails,
+  ): boolean {
+    const teamRunId = normalizedId(rootTeamRunId);
+    const runId = normalizedId(agentRunId);
+    if (!teamRunId || !runId || details.agent_run_id !== runId || !details.run_summary_after_event) return false;
     const seenKey = details.usage_event_id || details.idempotency_key;
-    if (seenUsageKeys[seenKey]) return false;
-    seenUsageKeys[seenKey] = true;
+    if (seenUsageKeys.has(seenKey)) return false;
+    const summary = mapTokenUsageRunSummaryDto(details.run_summary_after_event, {
+      runId,
+      rootTeamRunId: teamRunId,
+    });
+    seenUsageKeys.add(seenKey);
+    upsertRecordBackedTeamMemberSummary({ teamRunId, agentRunId: runId, summary });
 
-    teamAgentSummaries[runId] = applyToSummary(
-      teamAgentSummaries[runId] ?? emptySummary(runId),
-      details,
-      { rootTeamRunId: rootId },
-    );
-    teamSummaries[rootId] = applyToSummary(
-      teamSummaries[rootId] ?? emptySummary(null),
-      details,
-      { rootTeamRunId: rootId },
-    );
-    if (teamSummarySources[rootId] !== 'ledger_backed') {
-      teamSummarySources[rootId] = 'live_partial';
+    const current = teamAggregateEntries[teamRunId];
+    const liveGeneration = (current?.liveGeneration ?? 0) + 1;
+    if (!current || current.state === 'live_partial') {
+      teamAggregateEntries[teamRunId] = {
+        summary: applyPersistedEventToPartialTeamAggregate(
+          current?.summary ?? emptyTeamAggregate(teamRunId),
+          details,
+        ),
+        state: 'live_partial',
+        liveGeneration,
+        fetchGeneration: current?.fetchGeneration ?? null,
+      };
+    } else {
+      teamAggregateEntries[teamRunId] = {
+        ...current,
+        state: 'refresh_required',
+        liveGeneration,
+      };
     }
     return true;
   }
 
-  async function fetchAgentRunSummary(runId: string): Promise<TokenUsageRunSummary | null> {
+  async function fetchAgentRunSummary(runIdValue: string): Promise<TokenUsageRunSummary | null> {
+    const runId = normalizedId(runIdValue);
+    if (!runId) return null;
     const client = getApolloClient();
-    const { data } = await client.query({ query: GET_AGENT_RUN_TOKEN_USAGE_SUMMARY, variables: { runId }, fetchPolicy: 'network-only' });
+    const { data } = await client.query({
+      query: GET_AGENT_RUN_TOKEN_USAGE_SUMMARY,
+      variables: { runId },
+      fetchPolicy: 'network-only',
+    });
     const summary = data?.getAgentRunTokenUsageSummary as TokenUsageRunSummary | undefined;
     if (!summary) return null;
-    const normalizedSummary = { ...summary, unitPrices: unitPricesOrEmpty(summary.unitPrices) };
-    if (!normalizedSummary.runId?.trim() || normalizedSummary.runId !== runId) {
-      throw new Error('Agent token summary returned a different AgentRun ID.');
+    upsertRecordBackedAgentRunSummary({ runId, summary });
+    return getRunSummary(runId);
+  }
+
+  async function refreshTeamRunSummaryUntilStable(teamRunId: string): Promise<TokenUsageRunSummary | null> {
+    let result: TokenUsageRunSummary | null = null;
+    let stable = false;
+    while (!stable) {
+      const fetchGeneration = teamAggregateEntries[teamRunId]?.liveGeneration ?? 0;
+      const current = teamAggregateEntries[teamRunId];
+      if (current) current.fetchGeneration = fetchGeneration;
+      const client = getApolloClient();
+      const { data } = await client.query({
+        query: GET_TEAM_RUN_TOKEN_USAGE_SUMMARY,
+        variables: { teamRunId },
+        fetchPolicy: 'network-only',
+      });
+      const response = data?.getTeamRunTokenUsageSummary as TokenUsageRunSummary | undefined;
+      if (!response) return null;
+      result = normalizeRecordBackedSummary(response);
+      if (result.runId !== teamRunId || (result.rootTeamRunId !== null && result.rootTeamRunId !== teamRunId)) {
+        throw new Error('Team token summary returned a different TeamRun identity.');
+      }
+      const liveGeneration = teamAggregateEntries[teamRunId]?.liveGeneration ?? 0;
+      stable = liveGeneration === fetchGeneration;
+      teamAggregateEntries[teamRunId] = {
+        summary: result,
+        state: stable ? 'record_backed' : 'refresh_required',
+        liveGeneration,
+        fetchGeneration,
+      };
     }
-    runSummaries[normalizedSummary.runId] = normalizedSummary;
-    return normalizedSummary;
+    return result;
   }
 
-  async function fetchTeamRunSummary(teamRunId: string): Promise<TokenUsageRunSummary | null> {
-    const client = getApolloClient();
-    const { data } = await client.query({ query: GET_TEAM_RUN_TOKEN_USAGE_SUMMARY, variables: { teamRunId }, fetchPolicy: 'network-only' });
-    const summary = data?.getTeamRunTokenUsageSummary as TokenUsageRunSummary | undefined;
-    if (!summary) return null;
-    return upsertLedgerBackedTeamSummary(teamRunId, summary);
+  function fetchTeamRunSummary(teamRunIdValue: string): Promise<TokenUsageRunSummary | null> {
+    const teamRunId = normalizedId(teamRunIdValue);
+    if (!teamRunId) return Promise.resolve(null);
+    const existing = teamAggregateRequests.get(teamRunId);
+    if (existing) return existing;
+    const request = (async () => {
+      try {
+        return await refreshTeamRunSummaryUntilStable(teamRunId);
+      } finally {
+        teamAggregateRequests.delete(teamRunId);
+      }
+    })();
+    teamAggregateRequests.set(teamRunId, request);
+    return request;
   }
 
-  async function fetchTeamMemberSummary(input: { teamRunId: string; agentRunId: string }): Promise<TokenUsageRunSummary | null> {
-    const teamRunId = input.teamRunId.trim();
-    const agentRunId = input.agentRunId.trim();
+  async function fetchTeamMemberSummary(input: TeamTokenUsageMemberIdentity): Promise<TokenUsageRunSummary | null> {
+    const teamRunId = normalizedId(input.teamRunId);
+    const agentRunId = normalizedId(input.agentRunId);
     if (!teamRunId || !agentRunId) return null;
     const client = getApolloClient();
     const { data } = await client.query({
@@ -331,33 +413,26 @@ export const useTokenUsageMeterStore = defineStore('tokenUsageMeter', () => {
     });
     const summary = data?.getTeamMemberTokenUsageSummary as TokenUsageRunSummary | undefined;
     if (!summary) return null;
-    if (summary.runId !== agentRunId || summary.rootTeamRunId !== teamRunId) {
-      throw new Error('Team member token summary returned a different run identity.');
-    }
-    const normalizedSummary = {
-      ...summary,
-      unitPrices: unitPricesOrEmpty(summary.unitPrices),
-    };
-    teamAgentSummaries[agentRunId] = normalizedSummary;
-    return normalizedSummary;
+    upsertRecordBackedTeamMemberSummary({ teamRunId, agentRunId, summary });
+    return getTeamMemberSummary({ teamRunId, agentRunId });
   }
 
   const hasAnyUsage = computed(() => Object.keys(runSummaries).length > 0
-    || Object.keys(teamSummaries).length > 0
-    || Object.keys(teamAgentSummaries).length > 0);
+    || Object.keys(teamAggregateEntries).length > 0
+    || Object.keys(teamMemberSummaries).length > 0);
 
   return {
-    runSummaries,
-    teamSummaries,
-    teamAgentSummaries,
     hasAnyUsage,
     getRunSummary,
+    getTeamMemberSummary,
     getTeamSummary,
-    getTeamAgentSummary,
-    hasLedgerBackedTeamSummary,
+    getTeamRunSummaryState,
+    getTeamRunSummaryHydrationGeneration,
+    needsAgentRunSummaryHydration,
+    needsTeamMemberSummaryHydration,
     needsTeamRunSummaryHydration,
-    upsertSummary,
-    upsertLedgerBackedTeamSummary,
+    upsertRecordBackedAgentRunSummary,
+    upsertRecordBackedTeamMemberSummary,
     applyTokenUsageUpdated,
     applyTeamTokenUsage,
     fetchAgentRunSummary,

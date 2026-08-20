@@ -1,0 +1,7 @@
+===== RUN: pnpm --filter autobyteus guard:web-boundary =====
+
+> autobyteus@1.4.52 guard:web-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/autobyteus-web
+> node ./scripts/guard-web-boundary.mjs
+
+[guard:web-boundary] Passed.
+===== EXIT: 0 =====

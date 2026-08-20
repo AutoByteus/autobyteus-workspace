@@ -1,0 +1,6 @@
+FILE tickets/token-statistics-persistence/probes/api-e2e/real-provider-evidence-api-rev-003/backend-open-tab.log
+PASS: no matching strict-event rejection
+FILE tickets/token-statistics-persistence/probes/api-e2e/real-provider-evidence-api-rev-003/backend-open-tab-restart.log
+PASS: no matching strict-event rejection
+FILE tickets/token-statistics-persistence/probes/api-e2e/real-provider-evidence-api-rev-003/nuxt-open-tab.log
+PASS: no matching strict-event rejection

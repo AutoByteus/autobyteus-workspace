@@ -1,0 +1,9 @@
+$ env -u ELECTRON_RUN_AS_NODE pnpm test:e2e:electron --skip-build --adapter direct --executable <exact personal executable>
+started_utc=2026-08-20T16:48:41Z
+
+> autobyteus@1.4.52 test:e2e:electron /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/autobyteus-web
+> node scripts/run-electron-e2e.mjs --skip-build --adapter direct --executable /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+
+{"type":"electron-e2e-ready","executablePath":"/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus","port":51299,"dataRoot":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-JM68h4","ownsDataRoot":true,"clientBaseUrl":"http://127.0.0.1:51299","healthUrl":"http://127.0.0.1:51299/rest/health"}
+finished_utc=2026-08-20T16:48:51Z
+exit_code=0

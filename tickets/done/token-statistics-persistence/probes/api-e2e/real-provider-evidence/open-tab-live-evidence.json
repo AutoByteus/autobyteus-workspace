@@ -1,0 +1,152 @@
+{
+  "capturedAt": "2026-08-20T18:23:50.850Z",
+  "endpoint": "http://127.0.0.1:52967/graphql",
+  "variables": {
+    "teamRunId": "classroom_simulation_team_a7e9c09e4ff54008aeaf0c09c54def91",
+    "professorRunId": "professor_9e43b788fc6844a2b7084700a172823d",
+    "studentRunId": "student_e2c25131512c42768130326ffc8e3aa3"
+  },
+  "httpStatus": 200,
+  "data": {
+    "resume": {
+      "teamRunId": "classroom_simulation_team_a7e9c09e4ff54008aeaf0c09c54def91",
+      "isActive": true,
+      "executionTree": {
+        "schema_version": 1,
+        "created_at": "2026-08-20T18:21:32.322Z",
+        "archived_at": null,
+        "application_binding": null,
+        "handoffs": [
+          {
+            "from": "/professor",
+            "to": "/student",
+            "rules": [
+              "When the professor gives the student a question or problem to solve, including a math problem, conceptual question, quiz item, or challenge, and expects an answer or worked reasoning.",
+              "When the professor assigns homework, an exercise, project, reading, writing, experiment, practice task, or other work that requires the student to produce a result.",
+              "When the professor requests student participation such as an explanation, reflection, example, interpretation, correction, revision, or follow-up response.",
+              "When the professor asks the student to clarify understanding, inspect feedback, retry an answer, or resolve a misunderstanding before the lesson can continue."
+            ]
+          },
+          {
+            "from": "/student",
+            "to": "/professor",
+            "rules": [
+              "When the student has completed or attempted assigned work and has an answer, solution, explanation, reflection, or other result for the professor to review.",
+              "When the student has a question, needs clarification, identifies a misunderstanding, or requests an example or hint from the professor.",
+              "When the student cannot complete the assignment, encounters a blocker, or needs to report what was tried and what is needed next."
+            ]
+          }
+        ],
+        "root_team": {
+          "team_definition_id": "classroom-simulation-team",
+          "team_definition_name": "Classroom Simulation Team",
+          "team_run_id": "classroom_simulation_team_a7e9c09e4ff54008aeaf0c09c54def91",
+          "coordinator_address": "/professor",
+          "members": [
+            {
+              "kind": "configured_agent",
+              "address": "/professor",
+              "agent_definition_id": "team-local-agent:classroom-simulation-team:professor",
+              "role": null,
+              "description": null,
+              "agent_run_id": "professor_9e43b788fc6844a2b7084700a172823d",
+              "platform_agent_run_id": null,
+              "launch_configuration": {
+                "runtime_kind": "AUTOBYTEUS",
+                "llm_model_identifier": "deepseek-v4-flash",
+                "llm_config": null,
+                "auto_execute_tools": true,
+                "skill_access_mode": "PRELOADED_ONLY",
+                "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/autobyteus-server-ts/tests/.tmp/api-rev-002-real-20260820T200155-64294/temp_workspace"
+              }
+            },
+            {
+              "kind": "configured_agent",
+              "address": "/student",
+              "agent_definition_id": "team-local-agent:classroom-simulation-team:student",
+              "role": null,
+              "description": null,
+              "agent_run_id": "student_e2c25131512c42768130326ffc8e3aa3",
+              "platform_agent_run_id": "01a02069-0413-7d02-8b2b-3010e2adf3ba",
+              "launch_configuration": {
+                "runtime_kind": "CODEX",
+                "llm_model_identifier": "gpt-5.6-luna",
+                "llm_config": null,
+                "auto_execute_tools": true,
+                "skill_access_mode": "PRELOADED_ONLY",
+                "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/autobyteus-server-ts/tests/.tmp/api-rev-002-real-20260820T200155-64294/temp_workspace"
+              }
+            }
+          ],
+          "task_executions": []
+        }
+      }
+    },
+    "professor": {
+      "runId": "professor_9e43b788fc6844a2b7084700a172823d",
+      "rootTeamRunId": "classroom_simulation_team_a7e9c09e4ff54008aeaf0c09c54def91",
+      "totalTokens": 44254,
+      "usageReportCount": 6,
+      "latestModelProvider": "DEEPSEEK",
+      "latestModelIdentifier": "deepseek-v4-flash",
+      "latestRuntimeKind": "autobyteus",
+      "updatedAt": "2026-08-20T18:22:56.487Z"
+    },
+    "student": {
+      "runId": "student_e2c25131512c42768130326ffc8e3aa3",
+      "rootTeamRunId": "classroom_simulation_team_a7e9c09e4ff54008aeaf0c09c54def91",
+      "totalTokens": 169894,
+      "usageReportCount": 8,
+      "latestModelProvider": "OPENAI",
+      "latestModelIdentifier": "gpt-5.6-luna",
+      "latestRuntimeKind": "codex_app_server",
+      "updatedAt": "2026-08-20T18:22:55.396Z"
+    },
+    "team": {
+      "runId": "classroom_simulation_team_a7e9c09e4ff54008aeaf0c09c54def91",
+      "rootTeamRunId": "classroom_simulation_team_a7e9c09e4ff54008aeaf0c09c54def91",
+      "totalTokens": 214148,
+      "usageReportCount": 14,
+      "latestModelProvider": "DEEPSEEK",
+      "latestModelIdentifier": "deepseek-v4-flash",
+      "latestRuntimeKind": "autobyteus",
+      "updatedAt": "2026-08-20T18:22:56.487Z"
+    },
+    "messages": [
+      {
+        "messageId": "teammsg_t8m-g5rlId67-9IEP71jfCALZb5Vj5oK",
+        "senderAgentRunId": "professor_9e43b788fc6844a2b7084700a172823d",
+        "receiverAgentRunId": "student_e2c25131512c42768130326ffc8e3aa3",
+        "content": "Hello! Quick warm-up question. Please read the assignment at /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/autobyteus-server-ts/tests/.tmp/api-rev-002-real-20260820T200155-64294/temp_workspace/classroom-runs/arithmetic-demo/homework.md, then write your answer to a file (e.g. student-answer.md) in that same folder and send it back to /professor with send_message_to. Your reply must include the numeric result of 17 + 25 and a one-sentence explanation.",
+        "messageType": "classroom-assignment",
+        "createdAt": "2026-08-20T18:22:28.298Z",
+        "referenceFiles": [
+          {
+            "referenceId": "108ffa30914b4e85eae5813c6cfe841def27d84da85fcd254edcbc29334cbf2a",
+            "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/autobyteus-server-ts/tests/.tmp/api-rev-002-real-20260820T200155-64294/temp_workspace/classroom-runs/arithmetic-demo/homework.md",
+            "type": "file",
+            "createdAt": "2026-08-20T18:22:28.298Z",
+            "updatedAt": "2026-08-20T18:22:28.298Z"
+          }
+        ]
+      },
+      {
+        "messageId": "teammsg_JwwoXzGy1m6A6sZfc8rPOuS9-Xw6Mo72",
+        "senderAgentRunId": "student_e2c25131512c42768130326ffc8e3aa3",
+        "receiverAgentRunId": "professor_9e43b788fc6844a2b7084700a172823d",
+        "content": "Completed the arithmetic warm-up. The answer is in /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/autobyteus-server-ts/tests/.tmp/api-rev-002-real-20260820T200155-64294/temp_workspace/classroom-runs/arithmetic-demo/student-answer.md.",
+        "messageType": "agent_message",
+        "createdAt": "2026-08-20T18:22:51.788Z",
+        "referenceFiles": [
+          {
+            "referenceId": "8db55699d0d1cc6dbece0b382a9f7a0a537cdafbc3cb5993e64af3786f3e8d8e",
+            "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/autobyteus-server-ts/tests/.tmp/api-rev-002-real-20260820T200155-64294/temp_workspace/classroom-runs/arithmetic-demo/student-answer.md",
+            "type": "file",
+            "createdAt": "2026-08-20T18:22:51.788Z",
+            "updatedAt": "2026-08-20T18:22:51.788Z"
+          }
+        ]
+      }
+    ]
+  }
+}

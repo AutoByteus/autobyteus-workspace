@@ -1,0 +1,54 @@
+DR-004 corrected final handoff checks
+timestamp_utc=2026-08-20T19:45:02Z
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+head=0ce9d17b75195b0142abadc4593f6fea47893be0
+origin_personal=fc5ce18bc202012280dcbf5b4bcd6c5c52948ad6
+merge_base=fc5ce18bc202012280dcbf5b4bcd6c5c52948ad6
+divergence=6 ahead, 0 behind
+integrated_state_check=pass
+review_authority_check=pass
+## codex/token-statistics-persistence...origin/personal [ahead 6]
+ M autobyteus-server-ts/docs/modules/token_usage.md
+ M autobyteus-web/docs/agent_execution_architecture.md
+ M autobyteus-web/docs/settings.md
+ M tickets/token-statistics-persistence/api-e2e-coverage-investigation.md
+ M tickets/token-statistics-persistence/api-e2e-execution-coverage-report.md
+ M tickets/token-statistics-persistence/api-e2e-revision-record.md
+ M tickets/token-statistics-persistence/api-e2e-test-review-report.md
+ M tickets/token-statistics-persistence/code-review-report.md
+ M tickets/token-statistics-persistence/code-review-revision-record.md
+ M tickets/token-statistics-persistence/delivery-revision-record.md
+ M tickets/token-statistics-persistence/docs-sync-report.md
+ M tickets/token-statistics-persistence/electron-test-build-report.md
+ M tickets/token-statistics-persistence/handoff-summary.md
+ M tickets/token-statistics-persistence/release-deployment-report.md
+?? tickets/token-statistics-persistence/delivery-evidence/dr-003-electron-mac-personal-rebuild.log
+?? tickets/token-statistics-persistence/delivery-evidence/dr-003-final-checks.log
+?? tickets/token-statistics-persistence/delivery-evidence/dr-003-personal-artifact-verification.log
+?? tickets/token-statistics-persistence/delivery-evidence/dr-003-personal-isolated-launch-smoke-rust-log.log
+?? tickets/token-statistics-persistence/delivery-evidence/dr-003-personal-isolated-launch-smoke.log
+?? tickets/token-statistics-persistence/delivery-evidence/dr-003-post-second-integration-web-focused.log
+?? tickets/token-statistics-persistence/delivery-evidence/dr-004-corrected-electron-mac-personal-build.log
+?? tickets/token-statistics-persistence/delivery-evidence/dr-004-corrected-personal-artifact-verification.log
+?? tickets/token-statistics-persistence/delivery-evidence/dr-004-corrected-personal-isolated-launch-smoke.log
+?? tickets/token-statistics-persistence/delivery-evidence/dr-004-corrected-state-initial-refresh.log
+?? tickets/token-statistics-persistence/delivery-evidence/dr-004-final-handoff-checks.log
+?? tickets/token-statistics-persistence/probes/api-e2e/real-provider-evidence-api-rev-003/
+?? tickets/token-statistics-persistence/probes/api-e2e/real-provider-evidence/
+working_tree_scope_check=pass
+git_diff_check=pass
+delivery_artifact_whitespace_check=pass
+corrected_docs_content_check=pass
+dmg_sha256=1ac54ff957fb3b6114a6adff02c38de610f787c7477f5fd86ac27d76f7f1705b
+zip_sha256=fed8c3ea43e87e6b7903f7e92a36b32a766de26d71aea777e0e96e45660c0dca
+exec_sha256=c0bf182389ea930585e3b0bf5c4f16529461e02bf3be751cb364d0e25f2257e0
+artifact_hash_check=pass
+exit_code=0
+dmg_verify=pass
+zip_integrity=pass
+exit_code=0
+build_runtime_outcome_check=pass
+artifact_process_check=pass
+isolated_port_check=pass
+final_handoff_checks=pass

@@ -1,0 +1,11 @@
+DR-004 corrected-state initial target refresh
+timestamp_utc=2026-08-20T19:30:43Z
+pre_fetch_head=0ce9d17b75195b0142abadc4593f6fea47893be0
+pre_fetch_origin_personal=fc5ce18bc202012280dcbf5b4bcd6c5c52948ad6
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+post_fetch_origin_personal=fc5ce18bc202012280dcbf5b4bcd6c5c52948ad6
+merge_base=fc5ce18bc202012280dcbf5b4bcd6c5c52948ad6
+divergence=6 ahead, 0 behind
+--- new base commits since prior DR-003 target ---
+--- new base changed paths ---
