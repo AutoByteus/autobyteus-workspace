@@ -189,6 +189,15 @@ runtime v1 reader, partial migration, or automatic `.env` import.
   disposable database. Preserve exposing result-set conditions such as leading
   `NULL` rows followed by valid values in one ordered batch; never substitute
   broad numeric coercion or run automated proof against a live user database.
+- Keep automatic startup scheduling separate from public recovery capability.
+  The runner publishes `MANUAL_RETRY`, `RESTART_TO_RETRY`, or `NONE`; derive
+  `canRetry` only from a currently executable manual retry, and reject direct
+  invocation of startup-only definitions.
+- Transport the server-owned recovery action through the API. Settings may
+  show localized restart guidance and a disabled Retry control for
+  `RESTART_TO_RETRY`, but must not infer migration policy or dispatch a manual
+  mutation. Do not expand this recovery path into unrelated historical-summary,
+  audit-log, retention, or filesystem-recovery work without separate scope.
 - Classify the final persisted state against the facts current application
   owners actually require. Missing current platform/core invariants may stop
   startup; a bounded capability-data failure gates only that capability;

@@ -1,0 +1,14 @@
+# DR-008 latest-base refresh
+UTC 2026-08-20T06:24:53Z
+checkpoint=d4ec609132cf075d513c9754269e76ff267a43d4
+before_origin_personal=1f5663ddb86e478d0b4ffdd878d57dee72d67b4b
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+after_origin_personal=1f5663ddb86e478d0b4ffdd878d57dee72d67b4b
+merge_base=1f5663ddb86e478d0b4ffdd878d57dee72d67b4b
+divergence=0	6
+1f5663ddb docs(delivery): record offline delete finalization
+424687b11 Merge branch 'codex/team-run-offline-delete-action' into personal
+f14a06846 chore(delivery): finalize offline team run deletion
+48df62e62 chore(delivery): checkpoint localized verification state
+781638229 fix: localize team history delete label

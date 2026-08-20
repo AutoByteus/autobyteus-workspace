@@ -1,0 +1,42 @@
+recorded_at=2026-08-20T06:49:50Z
+delivery_revision=DR-009
+verification_source=/solution_designer relay of explicit user confirmation and read-only live DR-008 verification
+explicit_user_completion_authorization=yes
+verified_package=/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist-dr008/mac-arm64/AutoByteus.app
+version=1.4.52
+platform=macOS ARM64
+rest_health=HTTP 200
+graphql_health=HTTP 200
+sqlite_quick_check=ok
+migration_20260730_source_shaping_1=SUCCEEDED
+migration_20260730_source_shaping_2=SUCCEEDED
+migration_20260819_token_usage_run_records_v1=SUCCEEDED attempt=6 error=none
+public_recovery_action=NONE
+public_can_retry=false
+legacy_rows=0
+current_rows=1287
+distinct_current_run_ids=1287
+duplicate_run_ids=0
+blank_run_ids=0
+max_checkpoint_series=3 limit=8
+max_checkpoint_bytes=2170 limit=16384
+checkpoint_or_digest_bound_violations=0
+negative_counters=0
+total_component_mismatches=0
+token_statistics_graphql=HTTP 200 current_task_and_model_data_present
+live_data_mutated=no
+accepted_oversized_historical_status_residual=unchanged separate_ticket
+unrelated_teamrun_warnings=nonblocking
+
+finalization_refresh:
+head=d4ec609132cf075d513c9754269e76ff267a43d4
+origin_personal_before=1f5663ddb86e478d0b4ffdd878d57dee72d67b4b
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+origin_personal_after=1f5663ddb86e478d0b4ffdd878d57dee72d67b4b
+merge_base=1f5663ddb86e478d0b4ffdd878d57dee72d67b4b
+divergence=0	6
+base_advanced_after_user_verification=no
+renewed_verification_required_before_finalization=no
+delivery_live_database_access=none
+result=pass-finalization-authorized

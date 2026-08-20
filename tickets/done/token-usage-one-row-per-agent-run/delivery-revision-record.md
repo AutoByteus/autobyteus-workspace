@@ -4,7 +4,9 @@
 
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
-| `DR-007` | `CRR-016` Pass after SR-009 terminal-audit compaction and bounded-read correction | `DR-006` ticket-scope technical Pass but finalization blocked on reachable 31 MB migration-status evidence | Pass at renewed-user-verification checkpoint — requirement gap resolved, base current, durable docs synchronized, isolated fresh Electron build/integrity passed; explicit user result pending | `delivery-requirement-gap.md`, `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/21-*` through `25-*`, server README and canonical convention |
+| `DR-009` | Explicit user confirmation relayed with read-only live verification of the exact running DR-008 package | `DR-008` package/integrity Pass awaiting renewed user result | Pass / accepted — live health, migration state, one-row invariants, compact-state bounds, and Token Statistics passed; finalization authorized after unchanged-base refresh | `delivery-evidence/31-*`, `handoff-summary.md`, `release-deployment-report.md`, `docs-sync-report.md`, archived ticket package |
+| `DR-008` | `CRR-020` Pass after user-directed audit-scope withdrawal and completion of the runner-owned restart-recovery contract | `DR-007` package became stale when SR-010 withdrew its audit projection/compactor behavior | Pass at renewed-user-verification checkpoint — latest base current, durable docs reconciled without withdrawn audit claims, fresh isolated Electron build/integrity passed; explicit user result pending | `delivery-requirement-gap.md`, `delivery-rework-record.md`, `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-integration-blocker.md`, `delivery-evidence/26-*` through `30-*`, server README, canonical convention, web Settings doc |
+| `DR-007` | `CRR-016` Pass after SR-009 terminal-audit compaction and bounded-read correction | `DR-006` ticket-scope technical Pass but finalization blocked on reachable 31 MB migration-status evidence | Superseded / stale — SR-010 withdrew the audit projection/compactor expansion; DR-007 must not be used as the current verification candidate | `delivery-requirement-gap.md`, `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/21-*` through `25-*`, server README and canonical convention |
 | `DR-006` | Read-only live technical verification of DR-005 plus discovery of reachable old successful migration summaries | `DR-005` Pass at renewed-user-verification checkpoint | Ticket-scope technical Pass; finalization Blocked — consolidation and current statistics passed, but two old `SUCCEEDED` 20260730 summaries produce a reachable 31 MB status response and require Requirement Gap / Design Impact classification; no explicit user finalization instruction | `delivery-requirement-gap.md`, `delivery-evidence/19-*`, `handoff-summary.md`, `release-deployment-report.md`, `docs-sync-report.md` |
 | `DR-005` | `CRR-012` Pass after the IR-007 nullable-adapter correction, plus renewed Electron verification packaging | `DR-004` Failed / Blocked on real production-shaped migration decoding | Pass at renewed-user-verification checkpoint — latest base current, durable adapter convention synchronized, fresh ARM64 Electron package and integrity checks passed; user result pending | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-rework-record.md`, `delivery-evidence/15-*` through `18-*`, server README and canonical migration convention |
 | `DR-004` | Explicit user verification of the DR-003 personal macOS ARM64 Electron package | `DR-003` Pass at package-build/integrity checkpoint, awaiting user test | Failed / Blocked — live production-shaped migration failed three times; safe-backup reproduction confirmed nullable Prisma decimal-string decoding defect; route `Local Fix` to implementation | `delivery-rework-record.md`, `delivery-evidence/10-*`, `11-*`, `13-*`, `handoff-summary.md`, `release-deployment-report.md`, `docs-sync-report.md` |
@@ -14,7 +16,94 @@
 
 ## Revision Entries
 
-### DR-007 — Bounded-audit Electron verification package is ready
+### DR-009 — DR-008 accepted; repository finalization authorized
+
+- Trigger: the user explicitly confirmed the current DR-008 Electron result
+  and directed delivery to finalize. `/solution_designer` relayed that
+  authorization together with read-only verification of the exact running
+  DR-008 application.
+- Runtime identity: personal macOS ARM64 version `1.4.52` from
+  `electron-dist-dr008/mac-arm64/AutoByteus.app`.
+- Live result: REST and GraphQL health returned HTTP 200; SQLite
+  `quick_check` was `ok`; both 20260730 source-shaping migrations and
+  `20260819_token_usage_run_records_v1` were `SUCCEEDED`; the consolidation is
+  at attempt `6` without error; public recovery is `NONE` with
+  `canRetry=false`.
+- Current-data result: legacy rows `0`; current rows `1,287`; distinct run IDs
+  `1,287`; duplicate and blank IDs `0`; maximum checkpoint series `3 / 8` and
+  bytes `2,170 / 16,384`; no checkpoint/digest bound violation, negative
+  counter, or total/component mismatch. Token Statistics GraphQL returned
+  current task/model data with HTTP 200.
+- Safety: verification was read-only. The accepted oversized historical
+  summary/status-response residual remains untouched and belongs to the
+  separate summary/log ticket. Unrelated pre-existing TeamRun warnings are
+  nonblocking.
+- Finalization refresh: `origin/personal` remained
+  `1f5663ddb86e478d0b4ffdd878d57dee72d67b4b`, still the merge base, with
+  divergence `0 behind / 6 ahead`. The user-verified candidate did not change,
+  so renewed verification is not required before finalization.
+- Evidence: `delivery-evidence/31-dr009-user-verification-and-finalization-refresh.log`.
+- Current result: `Pass / explicit acceptance received; archive and repository
+  finalization authorized.`
+
+### DR-008 — Current restart-recovery Electron verification package is ready
+
+- Trigger/lineage: user-directed `SR-010` withdrew the migration-audit
+  projection/compactor expansion and accepted the already-successful oversized
+  historical summaries/status response as a visible residual for separate
+  future scope. `SR-012` / `ARCH-REV-012` completed the retained runner-owned
+  recovery contract; `IR-011` implemented it; `CRR-019` source review passed;
+  `API-REV-008` passed at `97.9%`; and `CRR-020` passed proportional review of
+  the current `1` added, `4` updated, and `4` removed durable paths.
+- Reviewed-state protection: delivery checkpointed the complete returned state
+  at `d4ec609132cf075d513c9754269e76ff267a43d4`. This local commit was not
+  pushed and is not repository finalization.
+- Latest-base refresh: pre- and post-build fetches kept
+  `origin/personal@1f5663ddb86e478d0b4ffdd878d57dee72d67b4b` as the merge base;
+  divergence is `0 behind / 6 ahead`. No merge was required. Evidence:
+  `delivery-evidence/26-*` and `30-*`.
+- Post-integration check decision: no new base commit was integrated after
+  `API-REV-008` / `CRR-020`, so duplicating the same server selection was not
+  required. The current gate already includes the full server build, runner /
+  GraphQL `2 files / 20 tests`, built-server FAILED -> ordinary restart ->
+  SUCCEEDED, mounted Settings/store `2 / 4`, full production-upgrade `1 / 4`,
+  Nuxt production build, and removal/static/cleanup audits.
+- Docs result: `Pass`. The canonical production-data migration convention,
+  server README, and web Settings doc now describe `MANUAL_RETRY`,
+  `RESTART_TO_RETRY`, and `NONE`, exact `canRetry` derivation, localized
+  restart-only disabled/no-dispatch behavior, and the boundary against
+  unrelated audit/log/retention/filesystem work. Withdrawn compactor and
+  bounded-read claims were not restored. Evidence: `delivery-evidence/27-*`.
+- Build result: `Pass`. A detached temporary worktree at the reviewed
+  checkpoint received the integrated docs and locked dependencies, then built
+  personal macOS ARM64 version `1.4.52`; guards, server preparation/build,
+  Electron compilation, DMG/ZIP, blockmaps, and updater metadata exited `0`.
+  Output was promoted only to `electron-dist-dr008`. Evidence:
+  `delivery-evidence/28-*`.
+- Integrity result: `Pass`. DMG/ZIP and mounted payload, bundle identity,
+  version, ARM64 executable, embedded server, packaged recovery action and
+  Settings marker, Prisma ARM64 engine, terminal spawn, zero broken symlinks,
+  updater metadata, and expected local unsigned state passed. Both withdrawn
+  audit owners are absent from source and package. DR-008 and its bundled
+  server were not launched; the live profile/database was not touched.
+  Evidence: `delivery-evidence/29-*`.
+- DMG SHA-256:
+  `ab8527310441033e8b0ce12af54f65b2c688d48e965f035470b6e0fed136d48c`.
+- ZIP SHA-256:
+  `dae1bef14bb773d3986fc6dfea18be9556f4eff49f4cb6c309fb913bb08accd6`.
+- Residual disposition: the two old successful oversized summaries and the
+  reachable roughly `31 MB` migration-status response remain intentionally
+  unchanged and accepted for this ticket. DR-008 does not claim to bound,
+  compact, or rewrite them.
+- Current result: `Pass — ready for renewed explicit user verification.`
+- Hold: ticket remains in progress. No push, archive, target merge/push,
+  version/tag, release, deployment, or cleanup until the user's explicit result
+  and a final latest-base refresh.
+
+### DR-007 — Bounded-audit Electron verification package (superseded)
+
+> Historical only. SR-010 subsequently withdrew this audit behavior and DR-008
+> is the current verification candidate. Do not use DR-007 for acceptance.
 
 - Trigger/lineage: `SR-008` accepted DR-006 as an in-scope requirement gap;
   `SR-009` / `ARCH-REV-009` established reachable startup scheduling and
@@ -54,9 +143,10 @@
   `055ba0bff64ccde219851508e61c0f19facfde8176a46035cd7649281016e631`.
 - ZIP SHA-256:
   `9957923d32f06f14f3ebe7a424e16764f1455e685b1a4fddcf4dc9d864171b5b`.
-- Requirement-gap disposition: resolved by the fresh package. Earlier Electron
-  artifacts are stale for SR-009.
-- Current result: `Pass — ready for renewed explicit user verification.`
+- Requirement-gap disposition at this historical checkpoint: treated as
+  resolved by SR-009; SR-010 later superseded that disposition by explicitly
+  accepting the residual and withdrawing the correction.
+- Current result: `Superseded / stale; not an acceptance candidate.`
 - Hold: ticket remains in progress. No push, archive, target merge/push,
   version/tag, release, deployment, or cleanup until the user's result and a
   final latest-base refresh.

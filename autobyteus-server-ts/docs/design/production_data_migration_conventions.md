@@ -149,6 +149,35 @@ valid values in the same ordered batch. Cover admitted and rejected source
 types and ranges through a real disposable database plus the production
 ORM/driver. Never use or mutate a user's live database for automated coverage.
 
+## Startup Scheduling And Public Recovery Actions
+
+Automatic startup scheduling and public recovery capability are separate
+contracts. The migration runner owns one closed, nonpersisted recovery action
+for each current status snapshot:
+
+- `MANUAL_RETRY` when the public/manual command can execute the migration now;
+- `RESTART_TO_RETRY` when an ordinary later startup is the supported executor;
+  or
+- `NONE` when no truthful public recovery action is available.
+
+Derive legacy `canRetry` only from `MANUAL_RETRY`. A required `STARTUP_ONLY`
+migration in `NOT_RUN`, `FAILED`, or stale `RUNNING` state may publish
+`RESTART_TO_RETRY` only when the ordinary startup runner will actually select
+it. Active attempts and terminal success/warning states publish `NONE`.
+Direct manual invocation of a startup-only definition remains rejected rather
+than silently taking a different path.
+
+Carry the server-owned action through GraphQL and client state. Settings may
+render localized restart guidance and a disabled Retry control for
+`RESTART_TO_RETRY`, but it must dispatch no manual mutation. The UI must not
+infer policy from a migration ID, metadata field, execution policy, or local
+status combination.
+
+Do not use a migration-specific recovery question to authorize unrelated
+migration-framework redesign. Historical summary projection, audit/log
+compaction, retention, or filesystem-recovery work needs its own approved
+scope; it is not implied by bounded execution evidence or restart guidance.
+
 ## Classify The Final Current State
 
 Do not treat every migration failure as globally fatal or automatically
@@ -259,6 +288,10 @@ a separately approved reachable contract.
   complete grammar, exact parsing, and explicit source/range checks?
 - Does real-adapter coverage preserve nullable result ordering such as leading
   `NULL` rows followed by valid values in the same batch?
+- Is every advertised recovery action executable through the entrypoint it
+  names, with startup-only work distinguished from manual retry?
+- Does the UI consume server-owned recovery policy without inferring it or
+  dispatching a disabled action?
 - Is every warning based on an independently valid current result?
 - Are capability-scoped and critical failures classified by actual current
   owners rather than by a blanket startup rule?

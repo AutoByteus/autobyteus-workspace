@@ -111,6 +111,25 @@ inherits its blank runtime/model launch fields from the parent run. The card
 stacks navigation/content and uses full-width controls on narrow screens while
 retaining the desktop sidebar row.
 
+## Server Migrations: Recovery Actions
+
+Settings -> Server Migrations renders recovery policy supplied by the server;
+it does not derive policy from migration IDs, statuses, or execution metadata.
+Each migration status carries one action:
+
+- `MANUAL_RETRY`: Retry is enabled and dispatches the existing retry mutation;
+- `RESTART_TO_RETRY`: Retry stays disabled, no mutation is dispatched, and the
+  card shows localized guidance that AutoByteus must be restarted for another
+  ordinary startup attempt; or
+- `NONE`: no retry action or restart promise is presented.
+
+The restart-only guidance is available in English and zh-CN. It describes the
+actual startup runner path, not a frontend workaround: a failed or stale
+required startup-only migration may run on the next ordinary application
+startup, while direct manual execution remains unavailable. Transport and UI
+state retain the non-null server action; `canRetry` remains true only for
+`MANUAL_RETRY`.
+
 ## Server Settings: Live Response Streaming
 
 Settings -> Server Settings -> Basics contains a node-bound **Live response

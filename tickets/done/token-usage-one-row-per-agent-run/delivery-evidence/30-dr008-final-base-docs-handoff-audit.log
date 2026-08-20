@@ -1,0 +1,123 @@
+started_at=2026-08-20T06:40:42Z
+head=d4ec609132cf075d513c9754269e76ff267a43d4
+base=1f5663ddb86e478d0b4ffdd878d57dee72d67b4b
+merge_base=1f5663ddb86e478d0b4ffdd878d57dee72d67b4b
+divergence=0	6
+latest_base_result=pass-unchanged-no-merge-required
+
+$ git diff --check
+result=pass
+
+$ durable docs, relative links, and current-scope markers
+relative_links=pass
+152:## Startup Scheduling And Public Recovery Actions
+autobyteus-server-ts/README.md:193:  The runner publishes `MANUAL_RETRY`, `RESTART_TO_RETRY`, or `NONE`; derive
+autobyteus-server-ts/README.md:198:  `RESTART_TO_RETRY`, but must not infer migration policy or dispatch a manual
+autobyteus-server-ts/docs/design/production_data_migration_conventions.md:159:- `RESTART_TO_RETRY` when an ordinary later startup is the supported executor;
+autobyteus-server-ts/docs/design/production_data_migration_conventions.md:165:`RESTART_TO_RETRY` only when the ordinary startup runner will actually select
+autobyteus-server-ts/docs/design/production_data_migration_conventions.md:172:`RESTART_TO_RETRY`, but it must dispatch no manual mutation. The UI must not
+autobyteus-web/docs/settings.md:121:- `RESTART_TO_RETRY`: Retry stays disabled, no mutation is dispatched, and the
+126:The restart-only guidance is available in English and zh-CN. It describes the
+withdrawn_durable_claims=absent
+result=pass
+
+$ withdrawn source/test/package owner absence
+absent=autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-migration-audit-compaction-v1
+absent=autobyteus-server-ts/src/app-data-migrations/repositories/app-data-migration-summary-projection.ts
+absent=autobyteus-server-ts/tests/e2e/app-data-migrations/token-usage-migration-audit-compaction-startup.e2e.test.ts
+absent=autobyteus-server-ts/tests/helpers/app-data-migration-audit-fixtures.ts
+absent=autobyteus-server-ts/tests/unit/app-data-migrations/app-data-migration-record-repository-bounds.test.ts
+absent=autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-migration-audit-compaction-v1.test.ts
+absent=/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist-dr008/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/app-data-migrations/migrations/token-usage-migration-audit-compaction-v1
+absent=/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist-dr008/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/app-data-migrations/repositories/app-data-migration-summary-projection.js
+result=pass
+
+$ build and package evidence completion
+Build exit code: 0
+overall_result=pass
+overall_result=pass
+dr008_electron_launched=no
+live_user_database_or_profile_mutated_by_delivery_checks=no
+result=pass
+
+$ artifact hash and handoff consistency
+dmg_sha256=ab8527310441033e8b0ce12af54f65b2c688d48e965f035470b6e0fed136d48c
+zip_sha256=dae1bef14bb773d3986fc6dfea18be9556f4eff49f4cb6c309fb913bb08accd6
+result=pass
+
+$ cumulative canonical artifact existence
+exists=/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/requirements.md
+exists=/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/investigation-notes.md
+exists=/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/design-spec.md
+exists=/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/token-usage-data-model-analysis.md
+exists=/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/data-migration-conventions.md
+exists=/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/solution-revision-record.md
+exists=/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/design-review-report.md
+exists=/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/architecture-review-revision-record.md
+exists=/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/delivery-requirement-gap.md
+exists=/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/delivery-rework-record.md
+exists=/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/implementation-handoff.md
+exists=/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/implementation-revision-record.md
+exists=/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/code-review-report.md
+exists=/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/code-review-revision-record.md
+exists=/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-coverage-investigation.md
+exists=/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-execution-coverage-report.md
+exists=/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-revision-record.md
+exists=/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-test-review-report.md
+exists=/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/docs-sync-report.md
+exists=/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/handoff-summary.md
+exists=/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/release-deployment-report.md
+exists=/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/delivery-revision-record.md
+exists=/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/delivery-integration-blocker.md
+exists=/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist-dr008/AutoByteus_personal_macos-arm64-1.4.52.dmg
+exists=/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist-dr008/AutoByteus_personal_macos-arm64-1.4.52.zip
+result=pass
+
+$ delivery authority, accepted residual, and hold markers
+13:| `DR-002` | User requested a fresh latest-base refresh and local Electron verification build | `DR-001` Pass — prior base current, docs synchronized, verification handoff ready | Blocked — latest base advanced 8 commits; protected candidate checkpointed; merge had one source conflict in `team-run-service.ts`; routed as `Local Fix` | `delivery-integration-blocker.md`, `delivery-evidence/04-reentry-integration-conflict-dr002.log` |
+14:| `DR-001` | `CRR-008` Pass over the 17-path `API-REV-003` durable coverage delta, after authoritative `CRR-007` source Pass | N/A — initial delivery baseline | Pass — latest tracked base unchanged/current, durable docs synchronized, user-verification handoff ready; archival/finalization/release held | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/01-*`, `delivery-evidence/02-*`, nine long-lived docs |
+7:| `DR-008` | `CRR-020` Pass after user-directed audit-scope withdrawal and completion of the runner-owned restart-recovery contract | `DR-007` package became stale when SR-010 withdrew its audit projection/compactor behavior | Pass at renewed-user-verification checkpoint — latest base current, durable docs reconciled without withdrawn audit claims, fresh isolated Electron build/integrity passed; explicit user result pending | `delivery-requirement-gap.md`, `delivery-rework-record.md`, `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-integration-blocker.md`, `delivery-evidence/26-*` through `30-*`, server README, canonical convention, web Settings doc |
+18:### DR-008 — Current restart-recovery Electron verification package is ready
+56:  audit owners are absent from source and package. DR-008 and its bundled
+10:- Current disposition: `Explicit accepted residual / separately bootstrapped
+/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/handoff-summary.md:14:  `31 MB` migration-status response remain unchanged for separate future scope.
+/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/release-deployment-report.md:37:`31 MB` migration-status response remain unchanged. SR-010 withdrew the
+/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/handoff-summary.md:15:- Explicit user verification: `Pending`.
+/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/release-deployment-report.md:7:- Explicit user verification: `Pending`
+/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/handoff-summary.md:17:- Push/archive/finalization/release/deployment/cleanup: all held pending the
+/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/handoff-summary.md:103:- No push, ticket archive, target merge/push, tag, release, publication,
+result=pass
+
+$ package/output isolation status
+/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/.git/info/exclude:21:/autobyteus-web/electron-dist-dr008/	autobyteus-web/electron-dist-dr008/AutoByteus_personal_macos-arm64-1.4.52.dmg
+23312     1 /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+23313 23312 /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper --type=gpu-process --user-data-dir=/Users/normy/Library/Application Support/autobyteus --gpu-preferences=SAAAAAAAAAAgAQAEAAAAAAAAAAAAAGAAAwAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAQAAAAAAAAABAAAAAAAAAACAAAAAAAAAAIAAAAAAAAAA== --shared-files --field-trial-handle=1718379636,r,885524891110664380,16501588738493194805,262144 --enable-features=PdfUseShowSaveFilePicker,ScreenCaptureKitPickerScreen,ScreenCaptureKitStreamPickerSonoma --disable-features=DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TimeoutHangingVideoCaptureStarts,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=1935764596,r,10648956473767588158,2850091626530844865,4 --trace-process-track-uuid=3190708988185955192 --seatbelt-client=31
+23314 23312 /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper --type=utility --utility-sub-type=network.mojom.NetworkService --lang=de --service-sandbox-type=network --user-data-dir=/Users/normy/Library/Application Support/autobyteus --standard-schemes=local-file --cors-schemes=local-file --fetch-schemes=local-file --streaming-schemes=local-file --shared-files --field-trial-handle=1718379636,r,885524891110664380,16501588738493194805,262144 --enable-features=PdfUseShowSaveFilePicker,ScreenCaptureKitPickerScreen,ScreenCaptureKitStreamPickerSonoma --disable-features=DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TimeoutHangingVideoCaptureStarts,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=1935764596,r,10648956473767588158,2850091626530844865,4 --trace-process-track-uuid=3190708989122997041 --seatbelt-client=31
+23318 23312 /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Renderer).app/Contents/MacOS/AutoByteus Helper (Renderer) --type=renderer --user-data-dir=/Users/normy/Library/Application Support/autobyteus --standard-schemes=local-file --cors-schemes=local-file --fetch-schemes=local-file --streaming-schemes=local-file --app-path=/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar --enable-sandbox --lang=de --num-raster-threads=4 --enable-zero-copy --enable-gpu-memory-buffer-compositor-resources --enable-main-frame-before-activation --renderer-client-id=4 --time-ticks-at-unix-epoch=-1785091481780264 --launch-time-ticks=2114521767096 --shared-files --field-trial-handle=1718379636,r,885524891110664380,16501588738493194805,262144 --enable-features=PdfUseShowSaveFilePicker,ScreenCaptureKitPickerScreen,ScreenCaptureKitStreamPickerSonoma --disable-features=DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TimeoutHangingVideoCaptureStarts,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=1935764596,r,10648956473767588158,2850091626530844865,4 --trace-process-track-uuid=3190708990060038890 --seatbelt-client=66
+23919 23312 /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/app.js --port 29695 --data-dir /Users/normy/.autobyteus/server-data
+24046 23312 /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper --type=utility --utility-sub-type=audio.mojom.AudioService --lang=de --service-sandbox-type=audio --message-loop-type-ui --user-data-dir=/Users/normy/Library/Application Support/autobyteus --standard-schemes=local-file --cors-schemes=local-file --fetch-schemes=local-file --streaming-schemes=local-file --shared-files --field-trial-handle=1718379636,r,885524891110664380,16501588738493194805,262144 --enable-features=PdfUseShowSaveFilePicker,ScreenCaptureKitPickerScreen,ScreenCaptureKitStreamPickerSonoma --disable-features=DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TimeoutHangingVideoCaptureStarts,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=1935764596,r,10648956473767588158,2850091626530844865,4 --trace-process-track-uuid=3190708990997080739 --seatbelt-client=62
+24047 23312 /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper --type=utility --utility-sub-type=video_capture.mojom.VideoCaptureService --lang=de --service-sandbox-type=none --message-loop-type-ui --user-data-dir=/Users/normy/Library/Application Support/autobyteus --standard-schemes=local-file --cors-schemes=local-file --fetch-schemes=local-file --streaming-schemes=local-file --shared-files --field-trial-handle=1718379636,r,885524891110664380,16501588738493194805,262144 --enable-features=PdfUseShowSaveFilePicker,ScreenCaptureKitPickerScreen,ScreenCaptureKitStreamPickerSonoma --disable-features=DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TimeoutHangingVideoCaptureStarts,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=1935764596,r,10648956473767588158,2850091626530844865,4 --trace-process-track-uuid=3190708991934122588
+57083 23312 /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Renderer).app/Contents/MacOS/AutoByteus Helper (Renderer) --type=renderer --user-data-dir=/Users/normy/Library/Application Support/autobyteus --standard-schemes=local-file --cors-schemes=local-file --fetch-schemes=local-file --streaming-schemes=local-file --app-path=/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar --enable-sandbox --lang=de --num-raster-threads=4 --enable-zero-copy --enable-gpu-memory-buffer-compositor-resources --enable-main-frame-before-activation --renderer-client-id=8 --time-ticks-at-unix-epoch=-1785091481780264 --launch-time-ticks=2115195226293 --shared-files --field-trial-handle=1718379636,r,885524891110664380,16501588738493194805,262144 --enable-features=PdfUseShowSaveFilePicker,ScreenCaptureKitPickerScreen,ScreenCaptureKitStreamPickerSonoma --disable-features=DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TimeoutHangingVideoCaptureStarts,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=1935764596,r,10648956473767588158,2850091626530844865,4 --trace-process-track-uuid=3190708993808206286 --seatbelt-client=80
+dr008_process=absent
+existing_running_package_preserved=yes
+result=pass
+
+$ final git status
+## codex/token-usage-one-row-per-agent-run...origin/personal [ahead 6]
+ M autobyteus-server-ts/README.md
+ M autobyteus-server-ts/docs/design/production_data_migration_conventions.md
+ M autobyteus-web/docs/settings.md
+ M tickets/in-progress/token-usage-one-row-per-agent-run/delivery-integration-blocker.md
+ M tickets/in-progress/token-usage-one-row-per-agent-run/delivery-requirement-gap.md
+ M tickets/in-progress/token-usage-one-row-per-agent-run/delivery-revision-record.md
+ M tickets/in-progress/token-usage-one-row-per-agent-run/delivery-rework-record.md
+ M tickets/in-progress/token-usage-one-row-per-agent-run/docs-sync-report.md
+ M tickets/in-progress/token-usage-one-row-per-agent-run/handoff-summary.md
+ M tickets/in-progress/token-usage-one-row-per-agent-run/release-deployment-report.md
+?? tickets/in-progress/token-usage-one-row-per-agent-run/delivery-evidence/26-dr008-latest-base-refresh.log
+?? tickets/in-progress/token-usage-one-row-per-agent-run/delivery-evidence/27-dr008-docs-sync-preflight.log
+?? tickets/in-progress/token-usage-one-row-per-agent-run/delivery-evidence/28-electron-build-macos-arm64-dr008.log
+?? tickets/in-progress/token-usage-one-row-per-agent-run/delivery-evidence/29-electron-package-integrity-dr008.log
+?? tickets/in-progress/token-usage-one-row-per-agent-run/delivery-evidence/30-dr008-final-base-docs-handoff-audit.log
+completed_at=2026-08-20T06:40:46Z
+overall_result=pass-ready-for-explicit-user-verification
