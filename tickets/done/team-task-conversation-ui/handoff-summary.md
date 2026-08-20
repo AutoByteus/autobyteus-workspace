@@ -4,9 +4,9 @@
 
 - Ticket: `team-task-conversation-ui`
 - Date: `2026-08-20`
-- Current Status: `User verified; ticket archived; repository finalization authorized without release`
-- Current delivery revision: `DR-003`
-- Ticket branch: `codex/team-task-conversation-ui-design`
+- Current Status: `Repository finalized on personal; cleanup complete; no release`
+- Current delivery revision: `DR-004`
+- Ticket branch: `codex/team-task-conversation-ui-design` (merged and deleted)
 - Finalization target: `origin/personal`
 
 ## Delivered Scope
@@ -54,47 +54,34 @@
 - Delivery-owned docs and handoff edits began only after this merge and the
   post-integration checks passed.
 - Integration evidence:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/done/team-task-conversation-ui/delivery-evidence/dr-001-initial-integration-refresh.log`.
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-task-conversation-ui/delivery-evidence/dr-001-initial-integration-refresh.log`.
 
 ## Documentation Sync
 
 - Result: `Pass / Updated`.
 - Report:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/done/team-task-conversation-ui/docs-sync-report.md`.
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-task-conversation-ui/docs-sync-report.md`.
 - Updated:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/autobyteus-web/docs/agent_execution_architecture.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/autobyteus-web/docs/settings.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/autobyteus-web/docs/agent_artifacts.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/agent_execution_architecture.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/settings.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/agent_artifacts.md`
 - The long-lived docs now describe the complete lifecycle conversation, exact
   selection and reference ownership, single-detail-pane rule, technical-metadata
   removal, and unchanged Messages/Workspaces/Activity boundaries.
 
 ## Local Electron Test Package
 
-- Build report:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/done/team-task-conversation-ui/electron-test-build-report.md`
-- README-supported build result: `Pass` using the local no-notarization macOS
-  arm64 path at integrated head
-  `002c83c418dec05c428b2e53ed4161c8d2192621`.
-- Recommended DMG:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.dmg`
-- DMG SHA-256:
+- `DR-002` produced and verified a local unsigned/unnotarized macOS arm64
+  package from the integrated ticket worktree; its DMG SHA-256 was
   `77b277a8086ab6dd47154452446b8e55f7835ce254b55b04af891cb9b307eb7a`.
-- ZIP:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.zip`
-- ZIP SHA-256:
-  `1c0217d2ba928940dd7ddbacca8415b9b25e9a6dfe3637ad5287aa4e134b1363`.
-- Integrity: DMG verification, ZIP integrity, arm64 app metadata, packaged
-  node-pty architecture/execute-bit checks, and real node-pty spawn all passed.
-- Exact-artifact isolated launch: passed; backend health became ready on owned
-  port `50665`, then the test process tree, listener, and temporary root were
-  fully cleaned.
-- Signing: local unsigned/unnotarized test package. macOS may require
-  right-click **Open** confirmation.
-- Existing application safety: An older main-workspace AutoByteus application
-  remains active on production port `29695` and was not stopped or modified.
-  Quit it before opening this build normally, or use the isolated hold command
-  in the build report to test alongside it with temporary state.
+- That package was an ignored, worktree-scoped verification artifact and was
+  removed with the dedicated worktree after repository finalization.
+- The user requested a fresh local package built from the updated main
+  `personal` workspace. This build is pending under the next delivery revision
+  and does not authorize release, publication, or deployment.
+- Historical build and integrity evidence remain in
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-task-conversation-ui/electron-test-build-report.md`
+  and `delivery-evidence/dr-002-*`.
 
 ## Verification Summary
 
@@ -110,9 +97,9 @@
   bounds. Browser/context/Nuxt/fixture cleanup passed.
 - Delivery post-integration focused Nuxt suite: Pass — 7 files / 31 tests.
 - Browser evidence:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/done/team-task-conversation-ui/delivery-evidence/dr-001-post-integration-browser-result.json`.
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-task-conversation-ui/delivery-evidence/dr-001-post-integration-browser-result.json`.
 - Focused test evidence:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/done/team-task-conversation-ui/delivery-evidence/dr-001-post-integration-focused-vitest.log`.
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-task-conversation-ui/delivery-evidence/dr-001-post-integration-focused-vitest.log`.
 - Persisted-data decision: `Not Affected`; current V1 task records are consumed
   unchanged and no migration, rebuild, or operator action is required.
 
@@ -128,7 +115,7 @@
 - Renewed verification: `Not required`; no newer target commit was integrated
   and the verified product/package state did not change.
 - Evidence:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/done/team-task-conversation-ui/delivery-evidence/dr-003-user-verification-and-final-refresh.log`.
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-task-conversation-ui/delivery-evidence/dr-003-user-verification-and-final-refresh.log`.
 
 ## Bounded Residual Risks
 
@@ -145,52 +132,56 @@
 
 ## Repository / Release State
 
-- Ticket is archived at `tickets/done/team-task-conversation-ui`.
-- Final ticket-branch commit/push and merge/push into `personal` are authorized
-  and in progress.
-- The local Electron DMG/ZIP and unpacked app are generated ignored artifacts;
-  they have not been published or released.
-- No version bump, release commit, tag, publication, or deployment is required
-  or authorized.
-- The verified worktree-built app remains active and will be closed gracefully
-  after repository finalization so the dedicated worktree can be removed safely.
-- Release notes: `Not required`; no release/publication/deployment is in scope.
+- Archived ticket commit:
+  `ff5b38544520607e9d22ea5f572c583d32849f1f`; it was pushed before target
+  integration.
+- Final target: `personal`; merge commit
+  `4f586f2e7fe3a6034063b1f44bf41a8c7797549c` was pushed to
+  `origin/personal`.
+- Ticket app/backend cleanup passed; no process from the removed worktree and no
+  listener on port `29695` remained.
+- Dedicated ticket worktree, its local branch, and its remote branch were
+  removed after successful target integration.
+- The DR-002 local Electron package was cleanup-scoped to the removed ticket
+  worktree. The user requested a new package from the updated main `personal`
+  workspace; that follow-up build is pending and does not change release scope.
+- No version bump, release commit, tag, publication, deployment, or release
+  notes were required or performed.
 
 ## Rollback Visibility
 
-- Before the final merge, rollback is refusal of the ticket branch;
-  `origin/personal` is unchanged.
-- After the final merge, repository rollback would revert the ticket merge
-  on `personal`; there is no schema or persisted-data rollback step.
+- Repository rollback would revert merge commit
+  `4f586f2e7fe3a6034063b1f44bf41a8c7797549c` on `personal`; there is no
+  schema or persisted-data rollback step.
 
 ## Authoritative Artifact Package
 
 - Requirements:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/done/team-task-conversation-ui/requirements.md`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-task-conversation-ui/requirements.md`
 - Investigation:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/done/team-task-conversation-ui/investigation-notes.md`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-task-conversation-ui/investigation-notes.md`
 - Design:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/done/team-task-conversation-ui/design-spec.md`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-task-conversation-ui/design-spec.md`
 - UI/UX specification and prototype:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/done/team-task-conversation-ui/ui-ux-spec.md`;
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/done/team-task-conversation-ui/task-timeline-ui-prototype.html`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-task-conversation-ui/ui-ux-spec.md`;
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-task-conversation-ui/task-timeline-ui-prototype.html`
 - Design review:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/done/team-task-conversation-ui/design-review-report.md`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-task-conversation-ui/design-review-report.md`
 - Implementation handoff:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/done/team-task-conversation-ui/implementation-handoff.md`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-task-conversation-ui/implementation-handoff.md`
 - Source review:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/done/team-task-conversation-ui/code-review-report.md`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-task-conversation-ui/code-review-report.md`
 - API/E2E coverage investigation:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/done/team-task-conversation-ui/api-e2e-coverage-investigation.md`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-task-conversation-ui/api-e2e-coverage-investigation.md`
 - API/E2E execution:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/done/team-task-conversation-ui/api-e2e-execution-coverage-report.md`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-task-conversation-ui/api-e2e-execution-coverage-report.md`
 - Proportional test review:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/done/team-task-conversation-ui/api-e2e-test-review-report.md`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-task-conversation-ui/api-e2e-test-review-report.md`
 - Docs sync:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/done/team-task-conversation-ui/docs-sync-report.md`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-task-conversation-ui/docs-sync-report.md`
 - Electron test build:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/done/team-task-conversation-ui/electron-test-build-report.md`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-task-conversation-ui/electron-test-build-report.md`
 - Delivery report:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/done/team-task-conversation-ui/release-deployment-report.md`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-task-conversation-ui/release-deployment-report.md`
 - Delivery revision record:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/done/team-task-conversation-ui/delivery-revision-record.md`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-task-conversation-ui/delivery-revision-record.md`

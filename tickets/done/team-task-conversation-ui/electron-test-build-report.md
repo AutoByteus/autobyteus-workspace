@@ -159,3 +159,15 @@ runs or provider configuration.
 - Ticket archived at `tickets/done/team-task-conversation-ui`.
 - Repository finalization is authorized without a release.
 - No version bump, tag, release, publication, or deployment is required.
+
+
+## Post-Finalization Artifact State
+
+- The DR-002 package was an ignored local test artifact scoped to the dedicated
+  ticket worktree.
+- Repository finalization completed under `DR-004`, after which that worktree
+  and its generated package were removed safely.
+- The original paths and checksums above remain historical evidence; they are
+  not current filesystem locations.
+- A fresh build from the updated main `personal` workspace was requested after
+  finalization and will be recorded as a later delivery revision.

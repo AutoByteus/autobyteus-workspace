@@ -13,7 +13,7 @@
   without conflict into the ticket branch at
   `002c83c418dec05c428b2e53ed4161c8d2192621`.
 - Post-integration verification reference:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/done/team-task-conversation-ui/delivery-evidence/dr-001-initial-integration-refresh.log`.
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-task-conversation-ui/delivery-evidence/dr-001-initial-integration-refresh.log`.
   The integrated branch is 6 commits ahead and 0 behind the checked base. The
   durable browser probe passed 6/6 scenarios, and the focused Nuxt suite passed
   7 files / 31 tests after integration.
@@ -37,12 +37,12 @@
 
 | Doc Path | Why It Was Reviewed | Result (`Updated`/`No change`/`Needs follow-up`) | Notes |
 | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/autobyteus-web/docs/agent_execution_architecture.md` | Canonical frontend execution, task projection, focus, and Team-tab ownership contract. | `Updated` | Records the strict ordered lifecycle projection, human task statuses, item-owned references, stable section-local selection, single-item detail behavior, and complete technical-metadata removal. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/autobyteus-web/docs/settings.md` | Contains the repository's parallel durable workspace/runtime behavior reference used from Settings documentation. | `Updated` | Synchronized its delegated-task section with the same integrated behavior so the two long-lived references no longer conflict. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/autobyteus-web/docs/agent_artifacts.md` | Canonical ownership and routing documentation for task-owned references and viewers. | `Updated` | Extends reference ownership from assignment-only navigation to every lifecycle owner and updates the frontend-owner table. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/autobyteus-web/docs/agent_teams.md` | High-level Team definition/run behavior and link to execution architecture. | `No change` | It does not define the Team-tab Tasks presentation; its existing link to the updated execution chapter remains correct. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/autobyteus-web/README.md` | Contributor commands and top-level frontend behavior discovery. | `No change` | The change adds no setup, dependency, launch, build, migration, or operator procedure; detailed durable behavior belongs in the existing execution/artifact chapters. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/autobyteus-web/ARCHITECTURE.md` | High-level concern boundaries and testing strategy. | `No change` | No subsystem boundary or high-level architecture changed; the existing concern docs are the correct detail owners. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/agent_execution_architecture.md` | Canonical frontend execution, task projection, focus, and Team-tab ownership contract. | `Updated` | Records the strict ordered lifecycle projection, human task statuses, item-owned references, stable section-local selection, single-item detail behavior, and complete technical-metadata removal. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/settings.md` | Contains the repository's parallel durable workspace/runtime behavior reference used from Settings documentation. | `Updated` | Synchronized its delegated-task section with the same integrated behavior so the two long-lived references no longer conflict. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/agent_artifacts.md` | Canonical ownership and routing documentation for task-owned references and viewers. | `Updated` | Extends reference ownership from assignment-only navigation to every lifecycle owner and updates the frontend-owner table. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/agent_teams.md` | High-level Team definition/run behavior and link to execution architecture. | `No change` | It does not define the Team-tab Tasks presentation; its existing link to the updated execution chapter remains correct. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/README.md` | Contributor commands and top-level frontend behavior discovery. | `No change` | The change adds no setup, dependency, launch, build, migration, or operator procedure; detailed durable behavior belongs in the existing execution/artifact chapters. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/ARCHITECTURE.md` | High-level concern boundaries and testing strategy. | `No change` | No subsystem boundary or high-level architecture changed; the existing concern docs are the correct detail owners. |
 
 ## Docs Updated
 
@@ -79,9 +79,9 @@ were updated against the integrated branch.
 ## Delivery Continuation
 
 - Result: `Pass`
-- Next delivery action: User verification was received on 2026-08-20. Finalize
-  the archived ticket into `personal`, perform safe ticket worktree/branch
-  cleanup, and record the completed repository state. Do not release or deploy.
+- Next delivery action: Repository finalization and cleanup completed under
+  `DR-004`. Build the user-requested local Electron test package from updated
+  main `personal`; do not release or deploy.
 - Notes: No release notes are required because no release/publication/deployment
   request or versioned distribution scope exists.
 
@@ -95,9 +95,9 @@ were updated against the integrated branch.
 
 - Trigger: User requested a local Electron build for hands-on verification.
 - Long-lived docs reviewed:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/README.md`;
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/autobyteus-web/README.md`;
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/autobyteus-web/AGENTS.md`.
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/README.md`;
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/README.md`;
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/AGENTS.md`.
 - DR-002 docs impact: `No impact`.
 - Rationale: The root/frontend READMEs correctly specify the macOS Electron
   build, integrated backend preparation, local no-notarization environment,
@@ -106,4 +106,4 @@ were updated against the integrated branch.
   The passing build and isolated smoke required no command or behavior
   correction.
 - Build report:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/done/team-task-conversation-ui/electron-test-build-report.md`.
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-task-conversation-ui/electron-test-build-report.md`.
