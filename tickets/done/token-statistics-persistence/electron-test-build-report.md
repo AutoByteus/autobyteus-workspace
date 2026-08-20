@@ -1,6 +1,88 @@
 # Electron Test Build Report
 
-## Current Corrected Build Snapshot — DR-004
+## Current Finalized-Main Build Snapshot — DR-006
+
+- Ticket: `token-statistics-persistence`
+- Source repository/branch: Main workspace `personal` after the accepted ticket
+  was merged and pushed.
+- Product source revision:
+  `c57bf44b01a4f322f3241de86954e237cad58911`.
+- Result: `Pass — finalized-main personal macOS arm64 package built,
+  integrity-verified, and exact-artifact isolated-smoke tested.`
+- This is the user-requested local build from finalized main. It is not a
+  release, publication, version bump, tag, Apple-signed/notarized distribution,
+  or deployment.
+
+### README And Command
+
+Delivery reread the root and frontend README Electron guidance and ran from
+`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web`:
+
+```sh
+AUTOBYTEUS_BUILD_FLAVOR=personal \
+NO_TIMESTAMP=1 APPLE_TEAM_ID= \
+DEBUG='electron-builder,electron-builder:*' \
+DEBUG='app-builder-lib*' DEBUG='builder-util*' \
+pnpm build:electron:mac
+```
+
+Result: `Pass`, exit 0. The pipeline passed web/localization guards,
+localization audit, shared and corrected server builds, sanitized built-in-agent
+bootstrap smoke, mobile/static and Electron renderer generation, Electron
+TypeScript transpilation, native-module rebuild, and personal DMG/ZIP packaging.
+
+Evidence:
+`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-persistence/delivery-evidence/dr-006-main-personal-electron-build.log`.
+
+### Current Main-Workspace Artifacts
+
+- DMG:
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.dmg`
+  - Size: `461190182` bytes
+  - SHA-256:
+    `8d0f1125ea4f22576bc86cabd8d83042d8836b9cc986f5cdd2917ebd9e8a640b`
+- ZIP:
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.zip`
+  - Size: `457753752` bytes
+  - SHA-256:
+    `80a1cf2f52571268cb3f21475b4d8468bda70723b7bb367181f13cca31801a69`
+- Unpacked app:
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
+- Main executable:
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus`
+  - SHA-256:
+    `c0bf182389ea930585e3b0bf5c4f16529461e02bf3be751cb364d0e25f2257e0`
+  - Architecture: Mach-O arm64
+  - Bundle ID: `com.autobyteus.app`
+  - Version/build: `1.4.52` / `1.4.52`
+
+### Verification
+
+- `hdiutil verify` on the current DMG: `Pass`.
+- `unzip -tq` on the current ZIP: `Pass`.
+- Bundle metadata, executable presence/permissions, arm64 architecture, and
+  local ad-hoc signature metadata: `Pass`.
+- Exact executable isolated launch with README direct adapter and the existing
+  host workaround `RUST_LOG=info`: `Pass`, exit 0. The packaged backend became
+  healthy on isolated port `58285`, used an owned temporary data root, and was
+  cleaned by the launcher.
+- Integrity evidence:
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-persistence/delivery-evidence/dr-006-main-personal-artifact-verification.log`.
+- Runtime evidence:
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-persistence/delivery-evidence/dr-006-main-personal-isolated-launch-smoke.log`.
+
+### Status And Limitations
+
+- Repository finalization and this main-personal build completed successfully.
+- The package is linker/ad-hoc signed, has no Apple Team ID, is not timestamped,
+  and is not notarized.
+- The inherited Prisma 5.22 blank-profile limitation remains bounded: default
+  initialization of a truly blank profile is not certified on this host, while
+  the `RUST_LOG=info` isolated path and the user's existing profile pass.
+- No release, publication, tag, version bump, notarization, or deployment was
+  requested or performed.
+
+## Historical Corrected Ticket-Worktree Build Snapshot — DR-004
 
 - Ticket: `token-statistics-persistence`
 - Trigger: Corrected implementation commit
@@ -16,13 +98,13 @@
 ## README And Packaging Guidance Used
 
 - Root build/test/release guidance:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/README.md`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/README.md`
   (`Build examples`, `Packaged Electron API/E2E testing`, and `Release workflow`).
 - Frontend build guidance:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/autobyteus-web/README.md`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/README.md`
   (`Desktop Application Build`, `macOS Build With Logs`, and integrated backend).
 - Canonical flavor/runtime guidance:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/autobyteus-web/docs/electron_packaging.md`.
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/electron_packaging.md`.
 - The documented `AUTOBYTEUS_BUILD_FLAVOR=personal` override was used because
   the ticket's recorded finalization target is `personal`.
 
@@ -40,7 +122,7 @@
   post-merge executable rerun was required because API-REV-003 validated this
   exact HEAD after the last integration and no new target commits existed.
 - Refresh evidence:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/tickets/done/token-statistics-persistence/delivery-evidence/dr-004-corrected-state-initial-refresh.log`.
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-persistence/delivery-evidence/dr-004-corrected-state-initial-refresh.log`.
 
 ## Corrected Behavior Authority
 
@@ -73,23 +155,23 @@ bootstrap smoke, mobile/static and Electron renderer generation, Electron
 TypeScript transpilation, native module rebuild, and personal DMG/ZIP generation.
 
 Evidence:
-`/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/tickets/done/token-statistics-persistence/delivery-evidence/dr-004-corrected-electron-mac-personal-build.log`.
+`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-persistence/delivery-evidence/dr-004-corrected-electron-mac-personal-build.log`.
 
-## Current User-Test Artifacts
+## Historical DR-004 User-Test Artifacts
 
-- DMG:
+- Former DMG path (removed with the ticket worktree):
   `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.dmg`
   - Size: `464013763` bytes (about 443 MiB)
   - SHA-256:
     `1ac54ff957fb3b6114a6adff02c38de610f787c7477f5fd86ac27d76f7f1705b`
-- ZIP:
+- Former ZIP path (removed with the ticket worktree):
   `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.zip`
   - Size: `457754576` bytes (about 437 MiB)
   - SHA-256:
     `fed8c3ea43e87e6b7903f7e92a36b32a766de26d71aea777e0e96e45660c0dca`
-- Unpacked app:
+- Former unpacked app (removed with the ticket worktree):
   `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
-- Main executable:
+- Former main executable (removed with the ticket worktree):
   `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus`
   - SHA-256:
     `c0bf182389ea930585e3b0bf5c4f16529461e02bf3be751cb364d0e25f2257e0`
@@ -104,16 +186,16 @@ Evidence:
 - Bundle metadata, executable presence/permissions, version, arm64, and ad-hoc
   signature metadata: `Pass`.
 - Integrity evidence:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/tickets/done/token-statistics-persistence/delivery-evidence/dr-004-corrected-personal-artifact-verification.log`.
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-persistence/delivery-evidence/dr-004-corrected-personal-artifact-verification.log`.
 - Exact unpacked executable isolated launch using the README `direct` adapter
   with the existing host workaround `RUST_LOG=info`: `Pass`, exit 0. The
   corrected packaged backend became healthy at isolated port `57579`, used an
   owned temporary data root, and was cleaned by the launcher.
 - Runtime evidence:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/tickets/done/token-statistics-persistence/delivery-evidence/dr-004-corrected-personal-isolated-launch-smoke.log`.
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-persistence/delivery-evidence/dr-004-corrected-personal-isolated-launch-smoke.log`.
 - Final target-currentness, review-authority, working-tree scope, documentation,
   hash, command-outcome, and cleanup audit: `Pass`. Evidence:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/tickets/done/token-statistics-persistence/delivery-evidence/dr-004-final-handoff-checks.log`.
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-persistence/delivery-evidence/dr-004-final-handoff-checks.log`.
 
 ## Signing And User Guidance
 
@@ -141,9 +223,13 @@ is not certified.
 
 - DR-002 package: Superseded when `origin/personal` advanced.
 - DR-003 package: Superseded by corrected implementation commit `0ce9d17b7`.
-- Only the DR-004 hashes in this report identify the current files.
+- DR-004 ticket-worktree package: Accepted by the user, then superseded by the
+  DR-006 finalized-main package. Its worktree was removed during cleanup.
+- Only the DR-006 paths and hashes at the top of this report identify the
+  current main-workspace files.
 
 ## Final Status
 
-`Pass — corrected integrated personal macOS arm64 Electron test package is ready
-for explicit user verification; repository finalization remains held.`
+`Pass — repository finalized and the requested main-personal macOS arm64
+Electron package built, integrity-verified, and isolated-smoke tested; no
+release performed.`

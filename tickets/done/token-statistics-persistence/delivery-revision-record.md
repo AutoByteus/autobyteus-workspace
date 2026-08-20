@@ -9,6 +9,7 @@
 | `DR-003` | `origin/personal` advanced by ten commits while DR-002 handoff checks were completing | `DR-002 — Pass / superseded package` | `Pass with bounded blank-profile limitation — new base integrated, combined suite passed 51/51, personal package rebuilt and verified; finalization held` | `electron-test-build-report.md`, `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/dr-003-*`, overwritten ignored Electron artifacts |
 | `DR-004` | Corrected implementation `0ce9d17b7`, `CRR-004` Pass, `API-REV-003` Pass at `98.3%`, and `CRR-005` Pass | `DR-003 — historical / package superseded` | `Pass — corrected HEAD current with target, docs resynchronized, corrected personal package rebuilt and verified; explicit user verification pending` | Three long-lived Token Usage docs, all delivery reports, `delivery-evidence/dr-004-*`, overwritten ignored Electron artifacts |
 | `DR-005` | User explicitly reported the corrected package working and requested finalization without release | `DR-004 — Pass / awaiting verification` | `Pass — user acceptance recorded, final target refresh current at 6 ahead / 0 behind, archival and repository finalization authorized` | `delivery-revision-record.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/dr-005-user-verification-final-refresh.log` |
+| `DR-006` | User-authorized repository finalization plus a fresh Electron build from finalized main `personal` | `DR-005 — Pass / finalization authorized` | `Pass — ticket archived, committed, pushed, merged and pushed to personal; main package built and verified; ticket worktree/branches cleaned; no release performed` | All delivery reports, `delivery-evidence/dr-006-*`, ignored main-workspace `autobyteus-web/electron-dist/` artifacts |
 
 ## Revision Entries
 
@@ -19,9 +20,9 @@
   `API-REV-001` passed at `97.3%`, and proportional durable-test review
   `CRR-002` passed with no findings.
 - Triggering upstream reports:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/tickets/done/token-statistics-persistence/api-e2e-execution-coverage-report.md`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-persistence/api-e2e-execution-coverage-report.md`
   and
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/tickets/done/token-statistics-persistence/api-e2e-test-review-report.md`.
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-persistence/api-e2e-test-review-report.md`.
 - Prior authoritative result: `N/A`.
 - Current authoritative result: `Pass — delivery refreshed origin/personal from
   bootstrap 1b2e9b94d... to 3b81b5ebd..., checkpointed the reviewed untracked
@@ -37,11 +38,11 @@
 - Post-integration verification: The exact command
   `pnpm --filter autobyteus exec vitest run stores/__tests__/tokenUsageMeterStore.spec.ts components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts`
   passed 20/20 tests with exit 0. Evidence:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/tickets/done/token-statistics-persistence/delivery-evidence/dr-001-integration-refresh.txt`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-persistence/delivery-evidence/dr-001-integration-refresh.txt`
   and
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/tickets/done/token-statistics-persistence/delivery-evidence/dr-001-post-integration-web-focused.log`.
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-persistence/delivery-evidence/dr-001-post-integration-web-focused.log`.
 - Docs sync report:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/tickets/done/token-statistics-persistence/docs-sync-report.md`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-persistence/docs-sync-report.md`
   — `Updated / Pass`.
 - Docs delta: Updated the canonical server Token Usage module doc and both web
   Token Meter architecture mirrors to document post-persist cumulative event
@@ -49,10 +50,10 @@
   monotonic individual generation admission, stable single-flight Team
   convergence, and direct-use restart coverage.
 - Handoff summary:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/tickets/done/token-statistics-persistence/handoff-summary.md`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-persistence/handoff-summary.md`
   — ready for explicit user verification.
 - Release/publication/deployment report:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/tickets/done/token-statistics-persistence/release-deployment-report.md`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-persistence/release-deployment-report.md`
   — finalization held; release/deployment not requested.
 - Persisted-data decision: `Directly Usable — No Migration`; delivery action is
   `None`.
@@ -90,7 +91,7 @@
   turn interruption ended the personal wrapper after artifact blockmaps were
   generated; delivery resumed the packaging entry point with the same explicit
   personal/no-signing configuration and obtained exit 0.
-- Recommended artifact:
+- Former ticket-worktree artifact (removed during DR-006 cleanup):
   `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.dmg`,
   SHA-256
   `085292e4b1ff22c57cd84c8c9f3a649cadda3021d5ffc12dc8dd77a2d1b314a6`.
@@ -103,9 +104,9 @@
   fetch detected that the target had just advanced and the branch was now 10
   behind. That currentness finding superseded the DR-002 package and triggered
   DR-003 integration/rebuild. Evidence:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/tickets/done/token-statistics-persistence/delivery-evidence/dr-002-final-checks.log`.
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-persistence/delivery-evidence/dr-002-final-checks.log`.
 - Build report:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/tickets/done/token-statistics-persistence/electron-test-build-report.md`.
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-persistence/electron-test-build-report.md`.
 - Signing/publication state: Local linker/ad-hoc signature only; no Apple Team
   ID, timestamp, notarization, release, tag, publication, or deployment.
 - User verification/finalization state: Still pending. The build request is not
@@ -139,12 +140,12 @@
   retained both feature descriptions.
 - Post-integration verification: The combined focused Nuxt command passed 9
   files / 51 tests with exit 0. Evidence:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/tickets/done/token-statistics-persistence/delivery-evidence/dr-003-post-second-integration-web-focused.log`.
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-persistence/delivery-evidence/dr-003-post-second-integration-web-focused.log`.
 - Current build: The full README-grounded personal/no-signing macOS pipeline
   completed with exit 0 from integrated HEAD
   `6076fb2d0d192b5da38877a18c8c10e1abab3d58`. Evidence:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/tickets/done/token-statistics-persistence/delivery-evidence/dr-003-electron-mac-personal-rebuild.log`.
-- Recommended artifact:
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-persistence/delivery-evidence/dr-003-electron-mac-personal-rebuild.log`.
+- Former ticket-worktree artifact (removed during DR-006 cleanup):
   `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.dmg`,
   SHA-256
   `070c164d3198da6c4f716f6686ae6ae0f5ec3a1764efd8df8ff6cf383a9e0b0f`.
@@ -156,11 +157,11 @@
   and does not block an existing-profile test, but default brand-new-profile
   launch is not certified.
 - Build report:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/tickets/done/token-statistics-persistence/electron-test-build-report.md`.
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-persistence/electron-test-build-report.md`.
 - Final checks: A fresh target fetch remained at `fc5ce18bc...`; the ticket was
   5 ahead / 0 behind. Working-tree scope, static checks, stable hashes, retained
   command outcomes, and process/port cleanup passed. Evidence:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/tickets/done/token-statistics-persistence/delivery-evidence/dr-003-final-checks.log`.
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-persistence/delivery-evidence/dr-003-final-checks.log`.
 - Signing/publication state: Local linker/ad-hoc signature only; no Apple Team
   ID, timestamp, notarization, release, tag, publication, or deployment.
 - User verification/finalization state: Still pending. No final delivery commit,
@@ -189,7 +190,7 @@
   matched that target and corrected HEAD remained 6 ahead / 0 behind. No merge
   occurred, so no post-merge test rerun was required; API-REV-003 had already
   validated this exact HEAD. Evidence:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/tickets/done/token-statistics-persistence/delivery-evidence/dr-004-corrected-state-initial-refresh.log`.
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-persistence/delivery-evidence/dr-004-corrected-state-initial-refresh.log`.
 - Corrected behavior: `buildTokenUsageRunSummaryFromRecords` explicitly projects
   only canonical public fields from the broader aggregate. Statistics-only
   `observed_runtime_kinds`, `observed_model_identifiers`, and
@@ -206,8 +207,8 @@
   production-builder-to-strict-parser regression seam.
 - Corrected package build: Full README-grounded personal/no-signing macOS
   pipeline passed with exit 0 from corrected HEAD. Evidence:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/tickets/done/token-statistics-persistence/delivery-evidence/dr-004-corrected-electron-mac-personal-build.log`.
-- Recommended artifact:
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-persistence/delivery-evidence/dr-004-corrected-electron-mac-personal-build.log`.
+- Former ticket-worktree artifact (removed during DR-006 cleanup):
   `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.dmg`,
   SHA-256
   `1ac54ff957fb3b6114a6adff02c38de610f787c7477f5fd86ac27d76f7f1705b`.
@@ -215,14 +216,14 @@
   version, arm64, and hashes passed. The exact corrected app became healthy on
   isolated port `57579` with the established host `RUST_LOG=info` workaround
   and cleaned up with exit 0. Evidence:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/tickets/done/token-statistics-persistence/delivery-evidence/dr-004-corrected-personal-artifact-verification.log`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-persistence/delivery-evidence/dr-004-corrected-personal-artifact-verification.log`
   and
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/tickets/done/token-statistics-persistence/delivery-evidence/dr-004-corrected-personal-isolated-launch-smoke.log`.
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-persistence/delivery-evidence/dr-004-corrected-personal-isolated-launch-smoke.log`.
 - Final handoff audit: Fresh target state remained unchanged/current at 6 ahead
   / 0 behind; review authority, shared-worktree scope, static/docs checks,
   artifact hashes, build/runtime outcomes, and process/port cleanup passed.
   Evidence:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/tickets/done/token-statistics-persistence/delivery-evidence/dr-004-final-handoff-checks.log`.
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-persistence/delivery-evidence/dr-004-final-handoff-checks.log`.
 - Signing/publication state: Local linker/ad-hoc signature only; no Apple Team
   ID, timestamp, notarization, release, tag, publication, or deployment.
 - User verification/finalization state: Explicit verification of this corrected
@@ -252,12 +253,12 @@
   merge base and remained 6 ahead / 0 behind. No re-integration or renewed
   verification was required.
 - Evidence:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/tickets/done/token-statistics-persistence/delivery-evidence/dr-005-user-verification-final-refresh.log`.
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-persistence/delivery-evidence/dr-005-user-verification-final-refresh.log`.
 - Archive/precommit audit: Ticket exists only under `tickets/done`, diff and
   working-tree scope checks passed, delivery artifacts have no trailing
   whitespace or stale in-progress absolute paths, and user-acceptance/archive
   records are present. Evidence:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/tickets/done/token-statistics-persistence/delivery-evidence/dr-005-archive-precommit-audit.log`.
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-persistence/delivery-evidence/dr-005-archive-precommit-audit.log`.
 - Persisted-data/release decision: `Directly Usable — No Migration`; no release,
   tag, publication, deployment, or version bump requested.
 - Authorized next sequence: Archive the ticket under `tickets/done`, complete
@@ -267,3 +268,76 @@
   record the truthful post-finalization results in the archived delivery record.
 - Blocker: None. The unrelated untracked main-workspace `.article-work/` path is
   preserved and excluded from this ticket's commits/build reporting.
+
+### DR-006 — Repository finalization, main-personal build, and cleanup
+
+- Trigger: Complete the user-authorized finalization sequence, make the main
+  repository `personal` branch current, and build Electron from that finalized
+  main workspace without performing a release.
+- Prior authoritative result: `DR-005 — user acceptance recorded, final target
+  refresh current, archival and finalization authorized.`
+- Current authoritative result: `Pass — repository finalization, requested
+  main-personal build verification, and ticket cleanup completed.`
+- Final ticket commit: Archived package and final delivery state were committed
+  on `codex/token-statistics-persistence` as
+  `4350f6bb1a41505625f183ab3817d6926c6e6948`
+  (`chore(delivery): finalize token statistics persistence`).
+- Ticket push: The final ticket branch was pushed successfully to
+  `origin/codex/token-statistics-persistence` before target integration.
+- Final target refresh: A new `git fetch origin personal --prune` confirmed
+  local and remote `personal` both remained at
+  `fc5ce18bc202012280dcbf5b4bcd6c5c52948ad6` with divergence 0/0. No target
+  advance occurred after user acceptance.
+- Target integration: Local `personal` was already current, then merged the
+  ticket branch without conflict as
+  `c57bf44b01a4f322f3241de86954e237cad58911`. Its parents are the accepted
+  target `fc5ce18bc...` and final ticket commit `4350f6bb1...`. The merge was
+  pushed successfully to `origin/personal`.
+- Requested finalized-main build: From merge commit `c57bf44b0`, the README
+  personal macOS arm64 pipeline passed with exit 0, including guards, shared and
+  server build/bootstrap, mobile/Electron generation, TypeScript compilation,
+  native rebuild, and DMG/ZIP packaging. Evidence:
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-persistence/delivery-evidence/dr-006-main-personal-electron-build.log`.
+- Current main-workspace DMG:
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.dmg`,
+  size `461190182` bytes, SHA-256
+  `8d0f1125ea4f22576bc86cabd8d83042d8836b9cc986f5cdd2917ebd9e8a640b`.
+- Current main-workspace ZIP:
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.zip`,
+  size `457753752` bytes, SHA-256
+  `80a1cf2f52571268cb3f21475b4d8468bda70723b7bb367181f13cca31801a69`.
+- Artifact verification: DMG checksum, ZIP integrity, bundle ID/version,
+  executable permissions, Mach-O arm64 architecture, and ad-hoc signature
+  metadata passed. Evidence:
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-persistence/delivery-evidence/dr-006-main-personal-artifact-verification.log`.
+- Exact-artifact runtime verification: The main-workspace executable started
+  through the isolated direct adapter with the established `RUST_LOG=info` host
+  workaround, became healthy on port `58285`, used an owned temporary data root,
+  cleaned up, and exited 0. Evidence:
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-persistence/delivery-evidence/dr-006-main-personal-isolated-launch-smoke.log`.
+- Cleanup: The ticket worktree registration, local ticket branch, and remote
+  ticket branch were removed. The initial `git worktree remove` removed the Git
+  registration but reported a non-empty residual build directory; delivery
+  verified that the branch was merged, then removed that exact residual path.
+  Final checks show the worktree path absent and both ticket branches absent.
+  Evidence:
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-persistence/delivery-evidence/dr-006-ticket-cleanup.log`.
+- Docs sync recheck: The target merge introduced no state beyond the already
+  synchronized, reviewed ticket package. The three durable Token Usage docs
+  remain authoritative; no additional product-document delta was required.
+- Release/publication/deployment: `Not applicable / not run` per the user's
+  explicit instruction. No version bump, release commit, tag, notarization,
+  publication, or deployment was performed.
+- Workspace hygiene: The unrelated main-workspace `.article-work/` path was
+  preserved and excluded from all ticket staging. Electron outputs remain
+  intentionally ignored local artifacts.
+- Final audit: Target ancestry/currentness, archive state, branch/worktree
+  removal, current artifact hashes, retained command outcomes, isolated-port
+  cleanup, absence of a release tag, delivery diff scope, and whitespace checks
+  passed. Evidence:
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-persistence/delivery-evidence/dr-006-finalization-build-cleanup-audit.log`.
+- Remaining bounded limitation: Default first launch with a truly blank profile
+  is not certified on this host because of the previously recorded Prisma 5.22
+  initialization issue; the verified `RUST_LOG=info` isolated path and the
+  user's existing-profile run pass.
+- Blocker/next recipient: None. Ticket delivery is complete.

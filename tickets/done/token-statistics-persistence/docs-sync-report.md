@@ -21,11 +21,11 @@
   conflict as `6076fb2d0d192b5da38877a18c8c10e1abab3d58`, and confirmed the incoming
   Team Task Conversation documentation coexists with the Token Meter updates.
 - Post-integration verification reference:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/tickets/done/token-statistics-persistence/delivery-evidence/dr-001-integration-refresh.txt`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-persistence/delivery-evidence/dr-001-integration-refresh.txt`
   and
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/tickets/done/token-statistics-persistence/delivery-evidence/dr-001-post-integration-web-focused.log`.
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-persistence/delivery-evidence/dr-001-post-integration-web-focused.log`.
 - Second-refresh verification reference:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/tickets/done/token-statistics-persistence/delivery-evidence/dr-003-post-second-integration-web-focused.log`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-persistence/delivery-evidence/dr-003-post-second-integration-web-focused.log`
   — the combined Token Meter and incoming Team UI suite passed 9 files / 51
   tests.
 - Corrected-state DR-004 refresh: `git fetch origin personal` left the target
@@ -33,7 +33,7 @@
   `0ce9d17b75195b0142abadc4593f6fea47893be0` remained 6 ahead / 0 behind with
   the target as its exact merge base. No post-merge rerun was needed because no
   merge occurred and API-REV-003 had validated that exact HEAD. Evidence:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/tickets/done/token-statistics-persistence/delivery-evidence/dr-004-corrected-state-initial-refresh.log`.
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-persistence/delivery-evidence/dr-004-corrected-state-initial-refresh.log`.
 
 ## Why Docs Were Updated
 
@@ -59,19 +59,19 @@
 
 | Doc Path | Why It Was Reviewed | Result (`Updated`/`No change`/`Needs follow-up`) | Notes |
 | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/autobyteus-server-ts/docs/modules/token_usage.md` | Canonical server token persistence, GraphQL, live-event, frontend-contract, and operational documentation. | `Updated` | Records `run_summary_after_event` authority plus the corrected exact public-summary projection that excludes statistics-only `observed_*` diagnostics. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/autobyteus-web/docs/agent_execution_architecture.md` | Canonical runtime-sidecar architecture for the Token Meter. | `Updated` | Documents the record-backed cache/generation model, exact builder narrowing before transport branching, fail-closed DTO rule, and production-builder regression seam. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/autobyteus-web/docs/settings.md` | Durable settings/runtime architecture mirror containing the same Token Meter section. | `Updated` | Kept synchronized with `agent_execution_architecture.md`, including the corrected exact-projection rule. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/autobyteus-server-ts/docs/modules/README.md` | Token Usage module discovery and common persistence-owner summary. | `No change` | It already points to the canonical module doc and accurately states the one-current-row, migration-only legacy boundary. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/README.md` and subproject READMEs | User setup, build, release, and general persistence guidance. | `No change` | This change does not alter setup, commands, schema deployment, configuration, packaging, or release operation. Detailed runtime truth belongs in the existing Token Usage architecture docs. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/docs/modules/token_usage.md` | Canonical server token persistence, GraphQL, live-event, frontend-contract, and operational documentation. | `Updated` | Records `run_summary_after_event` authority plus the corrected exact public-summary projection that excludes statistics-only `observed_*` diagnostics. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/agent_execution_architecture.md` | Canonical runtime-sidecar architecture for the Token Meter. | `Updated` | Documents the record-backed cache/generation model, exact builder narrowing before transport branching, fail-closed DTO rule, and production-builder regression seam. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/settings.md` | Durable settings/runtime architecture mirror containing the same Token Meter section. | `Updated` | Kept synchronized with `agent_execution_architecture.md`, including the corrected exact-projection rule. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/docs/modules/README.md` | Token Usage module discovery and common persistence-owner summary. | `No change` | It already points to the canonical module doc and accurately states the one-current-row, migration-only legacy boundary. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/README.md` and subproject READMEs | User setup, build, release, and general persistence guidance. | `No change` | This change does not alter setup, commands, schema deployment, configuration, packaging, or release operation. Detailed runtime truth belongs in the existing Token Usage architecture docs. |
 
 ## Docs Updated
 
 | Doc Path | Type Of Update | What Changed | Why |
 | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/autobyteus-server-ts/docs/modules/token_usage.md` | Server architecture/runtime contract | Documents the post-persist cumulative snapshot, missing/unsafe fallback, explicit canonical field projection, exclusion of aggregate-only diagnostics, exact identity, monotonic generations, stable Team refresh, and built-process direct-use evidence. | Align the canonical server/frontend boundary with corrected implementation `0ce9d17b7` and the `Directly Usable — No Migration` decision. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/autobyteus-web/docs/agent_execution_architecture.md` | Frontend architecture | Documents record-backed caches, exact builder narrowing before transport branching, fail-closed strict DTOs, production-builder seam coverage, higher-only generations, exact member identity, and Team convergence. | Prevent recurrence of the real Team red-rejection defect as well as cache-readiness/race regressions. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/autobyteus-web/docs/settings.md` | Frontend architecture mirror | Applies the same corrected Token Meter runtime and coverage wording. | Avoid contradictory durable documentation for the same store. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/docs/modules/token_usage.md` | Server architecture/runtime contract | Documents the post-persist cumulative snapshot, missing/unsafe fallback, explicit canonical field projection, exclusion of aggregate-only diagnostics, exact identity, monotonic generations, stable Team refresh, and built-process direct-use evidence. | Align the canonical server/frontend boundary with corrected implementation `0ce9d17b7` and the `Directly Usable — No Migration` decision. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/agent_execution_architecture.md` | Frontend architecture | Documents record-backed caches, exact builder narrowing before transport branching, fail-closed strict DTOs, production-builder seam coverage, higher-only generations, exact member identity, and Team convergence. | Prevent recurrence of the real Team red-rejection defect as well as cache-readiness/race regressions. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/settings.md` | Frontend architecture mirror | Applies the same corrected Token Meter runtime and coverage wording. | Avoid contradictory durable documentation for the same store. |
 
 ## Durable Design / Runtime Knowledge Promoted
 
@@ -101,9 +101,12 @@
 ## Delivery Continuation
 
 - Result: `Pass`
-- Next delivery action: Present the integrated handoff for explicit user
-  verification and hold repository finalization, archival, release, deployment,
-  and cleanup until that signal is received.
+- User verification: Received; the user reported the corrected package working.
+- Repository continuation: Completed under `DR-006`. The ticket was archived,
+  committed, pushed, merged and pushed to `personal`; the requested
+  finalized-main Electron build passed; ticket worktree/branches were cleaned.
+- Release/deployment: Not requested and not performed.
+- Next delivery action: None; ticket delivery is complete.
 - Notes: Docs were synchronized only after the initial latest-base merge. When
   the target later advanced again, the two touched architecture mirrors merged
   cleanly with the incoming Team UI documentation, retained all Token Meter
@@ -111,6 +114,21 @@
   DR-004 then revalidated the corrected reviewed/API-tested HEAD against the
   unchanged target and added the exact public-projection/runtime-test rule
   exposed by the resolved CR-001 failure.
+
+## Finalized-State Recheck — DR-006
+
+- Final target merge:
+  `c57bf44b01a4f322f3241de86954e237cad58911` on `personal`.
+- Docs result: `No additional product-doc delta required`. The target was
+  unchanged after user acceptance, and the merge contained the already reviewed
+  and synchronized ticket state. The canonical server Token Usage doc and both
+  web architecture mirrors therefore remain authoritative without another
+  behavioral edit.
+- Archived docs-sync authority:
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-persistence/docs-sync-report.md`.
+- Evidence and finalization authority:
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-persistence/delivery-revision-record.md`
+  (`DR-006`).
 
 ## Blocked Or Escalated Follow-Up (Use Only If Docs Sync Cannot Complete)
 
