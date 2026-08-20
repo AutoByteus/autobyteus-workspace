@@ -35,14 +35,42 @@ async function listWindowsProcesses() {
     pid: Number(entry.ProcessId),
     parentPid: Number(entry.ParentProcessId),
     createdAt: String(entry.CreationDate ?? ''),
-  })).filter((entry) => Number.isInteger(entry.pid) && entry.pid > 0)
+  })).filter((entry) => (
+    Number.isInteger(entry.pid) && entry.pid > 0 && entry.createdAt.length > 0
+  ))
 }
 
-export async function createWindowsOwnedProcessTree(rootPid) {
-  const tracked = new Map()
+async function terminateWindowsProcessTree(pid, force) {
+  await execFileOutput('taskkill', [
+    '/pid', String(pid), '/t', ...(force ? ['/f'] : []),
+  ])
+}
 
+function createUnconfirmedHistoryError(rootPid, reason) {
+  const error = new Error(
+    `Windows process-tree history for root PID ${rootPid} is incomplete: ${reason}`,
+  )
+  error.code = 'ELECTRON_E2E_WINDOWS_TREE_HISTORY_UNCONFIRMED'
+  return error
+}
+
+export async function createWindowsOwnedProcessTree(rootPid, dependencies = {}) {
+  const getProcessSnapshot = dependencies.listProcesses ?? listWindowsProcesses
+  const terminateProcessTree = dependencies.terminateProcessTree
+    ?? terminateWindowsProcessTree
+  const wait = dependencies.delay ?? delay
+  const now = dependencies.now ?? Date.now
+  const captureTimeoutMs = dependencies.captureTimeoutMs ?? 2000
+  const tracked = new Map()
+  let rootCreatedAt = null
+  let rootTreeShutdownTargeted = false
+  let historyError = null
+
+  // Snapshot ancestry is safe only while every captured creation identity is
+  // still qualified. A successful /t command against the exact root seals that
+  // gap; otherwise any captured-identity loss makes completion fail closed.
   const refresh = async (requireRoot = false) => {
-    const processes = await listWindowsProcesses()
+    const processes = await getProcessSnapshot()
     const byPid = new Map(processes.map((entry) => [entry.pid, entry]))
     if (tracked.size === 0) {
       const root = byPid.get(rootPid)
@@ -51,6 +79,7 @@ export async function createWindowsOwnedProcessTree(rootPid) {
         return
       }
       tracked.set(root.pid, root.createdAt)
+      rootCreatedAt = root.createdAt
     }
 
     const trackedAlive = new Set()
@@ -67,16 +96,38 @@ export async function createWindowsOwnedProcessTree(rootPid) {
         changed = true
       }
     }
+
+    if (!trackedAlive.has(rootPid) && !rootTreeShutdownTargeted && !historyError) {
+      historyError = createUnconfirmedHistoryError(
+        rootPid,
+        'the captured root disappeared before a creation-qualified tree shutdown completed',
+      )
+    }
+
+    if (!rootTreeShutdownTargeted) {
+      const deadTrackedPids = new Set(
+        [...tracked.keys()].filter((pid) => !trackedAlive.has(pid)),
+      )
+      const disappearedTrackedPid = deadTrackedPids.values().next().value
+      if (disappearedTrackedPid && !historyError) {
+        historyError = createUnconfirmedHistoryError(
+          rootPid,
+          `captured PID ${disappearedTrackedPid} disappeared before qualified tree shutdown`,
+        )
+      }
+    }
+
+    return { processes, byPid, trackedAlive }
   }
 
   let captureError = null
-  const deadline = Date.now() + 2000
-  while (tracked.size === 0 && Date.now() < deadline) {
+  const deadline = now() + captureTimeoutMs
+  while (tracked.size === 0 && now() < deadline) {
     try {
       await refresh(true)
     } catch (error) {
       captureError = error
-      await delay(100)
+      await wait(100)
     }
   }
   if (tracked.size === 0) {
@@ -84,21 +135,30 @@ export async function createWindowsOwnedProcessTree(rootPid) {
   }
 
   const matchingProcesses = async () => {
-    const processes = await listWindowsProcesses()
-    const byPid = new Map(processes.map((entry) => [entry.pid, entry]))
+    const { byPid } = await refresh()
     return [...tracked].filter(([pid, createdAt]) => byPid.get(pid)?.createdAt === createdAt)
       .map(([pid]) => byPid.get(pid))
   }
   const terminate = async (force) => {
-    await refresh()
     const processes = await matchingProcesses()
     const ownedPids = new Set(processes.map((entry) => entry.pid))
     const topLevelProcesses = processes.filter((entry) => !ownedPids.has(entry.parentPid))
     for (const entry of topLevelProcesses) {
       try {
-        await execFileOutput('taskkill', [
-          '/pid', String(entry.pid), '/t', ...(force ? ['/f'] : []),
-        ])
+        const { byPid } = await refresh()
+        if (byPid.get(entry.pid)?.createdAt !== entry.createdAt) {
+          if (!historyError) {
+            historyError = createUnconfirmedHistoryError(
+              rootPid,
+              `PID ${entry.pid} changed creation identity before targeted shutdown`,
+            )
+          }
+          continue
+        }
+        await terminateProcessTree(entry.pid, force)
+        if (entry.pid === rootPid && entry.createdAt === rootCreatedAt) {
+          rootTreeShutdownTargeted = true
+        }
       } catch {
         // Verification below, not taskkill's exit code, determines completion.
       }
@@ -108,7 +168,12 @@ export async function createWindowsOwnedProcessTree(rootPid) {
   return Object.freeze({
     identity: `windows-process-tree:${rootPid}`,
     refreshOwnedTree: refresh,
-    isOwnedTreeAbsent: async () => (await matchingProcesses()).length === 0,
+    isOwnedTreeAbsent: async () => {
+      const matches = await matchingProcesses()
+      if (matches.length > 0) return false
+      if (historyError) throw historyError
+      return true
+    },
     requestDefaultGracefulClose: () => terminate(false),
     forceOwnedTree: () => terminate(true),
   })
