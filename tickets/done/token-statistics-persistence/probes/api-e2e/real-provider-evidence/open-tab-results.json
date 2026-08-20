@@ -1,0 +1,129 @@
+{
+  "revision": "API-REV-002",
+  "capturedAt": "2026-08-20T18:30:47Z",
+  "overallResult": "FAIL",
+  "failureOrigin": "IMPLEMENTATION_SOURCE_DEFECT",
+  "environment": {
+    "worktree": "/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence",
+    "backend": "built autobyteus-server-ts dist/app.js at http://127.0.0.1:52967 with isolated SQLite and app-data directory",
+    "frontend": "Nuxt development server at http://127.0.0.1:52968",
+    "browserDriver": "mcp__autobyteus_agent_tools__open_tab",
+    "credentialImport": {
+      "source": "/Users/normy/.autobyteus/server-data/.env",
+      "command": "pnpm secrets:import",
+      "result": "READY; configured 9; skipped 0; replaced 0",
+      "secretValuesRecorded": false
+    },
+    "agentPackageRoot": "/Users/normy/autobyteus_org/autobyteus-agents",
+    "database": "isolated API-REV-002 SQLite database; no product/home database used by the authoritative run"
+  },
+  "scenarios": [
+    {
+      "id": "LIVE-BROWSER-TS-008",
+      "name": "Real-provider Classroom Simulation Team live run through open_tab",
+      "result": "FAIL",
+      "teamRunId": "classroom_simulation_team_a7e9c09e4ff54008aeaf0c09c54def91",
+      "members": {
+        "/professor": {
+          "agentRunId": "professor_9e43b788fc6844a2b7084700a172823d",
+          "runtime": "autobyteus",
+          "modelProvider": "DEEPSEEK",
+          "model": "deepseek-v4-flash",
+          "totalTokens": 44254,
+          "usageReportCount": 6
+        },
+        "/student": {
+          "agentRunId": "student_e2c25131512c42768130326ffc8e3aa3",
+          "runtime": "codex_app_server",
+          "modelProvider": "OPENAI",
+          "model": "gpt-5.6-luna",
+          "totalTokens": 169894,
+          "usageReportCount": 8
+        }
+      },
+      "teamAggregate": {
+        "totalTokens": 214148,
+        "usageReportCount": 14
+      },
+      "journey": {
+        "prompt": "Run a short live classroom simulation. Professor: use send_message_to to ask /student to calculate 17 + 25 and reply. Student: answer with the number and a one-sentence explanation. Professor: report the student answer. This must invoke the configured live runtimes.",
+        "professorToStudentMessagePersisted": true,
+        "studentToProfessorMessagePersisted": true,
+        "studentAnswer": "42; I added 17 and 25 to get 42.",
+        "finalProfessorReportRendered": true,
+        "tokenLedgerPersisted": true
+      },
+      "expected": "Every valid live TOKEN_USAGE_UPDATED event is admitted and rendered without an error card while the token meter updates.",
+      "observed": "The provider journey completed, but every live token usage update produced a red An Error Occurred card: strict team-stream parsing rejected observed_runtime_kinds, observed_model_identifiers, and observed_model_providers as unrecognized keys. Ten visible rejection-text occurrences were counted after the completed exchange.",
+      "rejectedKeys": [
+        "observed_runtime_kinds",
+        "observed_model_identifiers",
+        "observed_model_providers"
+      ],
+      "preliminarySourceSeam": [
+        "autobyteus-server-ts/src/token-usage/projections/token-usage-run-aggregate.ts:118-120,124-145",
+        "autobyteus-server-ts/src/agent-team-execution/services/team-agent-event-adapter.ts:141-155",
+        "autobyteus-team-stream-contracts/src/token-usage-run-summary-dto.ts:33-88"
+      ]
+    },
+    {
+      "id": "LIVE-BROWSER-TS-009",
+      "name": "Fresh backend process and fresh open_tab historical reopen",
+      "result": "PASS_WITH_LINKED_LIVE_FAILURE",
+      "steps": [
+        "Terminate the owned team run through GraphQL",
+        "Stop the owned backend process",
+        "Start a fresh built backend process against the same isolated SQLite database",
+        "Close the original open_tab and open a fresh open_tab",
+        "Expand Temp Workspace / Classroom Simulation Team and select the exact historical run",
+        "Open the Token tab"
+      ],
+      "observed": {
+        "resumeIsActive": false,
+        "professorTotalTokens": 44254,
+        "studentTotalTokens": 169894,
+        "teamTotalTokens": 214148,
+        "usageReportCount": 14,
+        "communicationMessageCount": 2,
+        "finalProfessorReportHydrated": true,
+        "tokenMeterHydrated": true,
+        "historicalErrorCardsHydrated": false
+      },
+      "note": "Persistence and fresh-process hydration pass. The live rejection remains a release-blocking UI defect even though the rejected diagnostic cards are not persisted into historical event hydration."
+    }
+  ],
+  "evidence": [
+    "server-build.log",
+    "secret-import-dry-run.log",
+    "secret-import-execute.log",
+    "backend-open-tab.log",
+    "nuxt-open-tab.log",
+    "backend-open-tab-restart.log",
+    "open-tab-config-student-luna.png",
+    "open-tab-live-token-rejection.png",
+    "open-tab-live-complete-with-token-rejection.png",
+    "open-tab-professor-token-meter-with-rejection.png",
+    "open-tab-student-token-meter-with-rejection.png",
+    "open-tab-student-codex-luna-pricing.png",
+    "open-tab-team-token-summary.png",
+    "open-tab-fresh-process-reopen-history.png",
+    "open-tab-fresh-process-reopen-token-meter.png",
+    "open-tab-live-evidence.json",
+    "open-tab-restart-evidence.json",
+    "open-tab-termination.json",
+    "classroom-homework.md",
+    "classroom-student-answer.md"
+  ],
+  "durableCoverageChange": "NONE_IN_API_REV_002",
+  "routing": "Send cumulative package to code_reviewer for focused failure-origin review; do not route to delivery.",
+  "cleanup": {
+    "teamTermination": "PASS \u2014 GraphQL success true",
+    "browserTabs": "PASS \u2014 both open_tab tabs closed",
+    "backendProcesses": "PASS \u2014 owned initial and restarted backend processes stopped",
+    "frontendProcess": "PASS \u2014 owned Nuxt development process stopped",
+    "listeners": "PASS \u2014 no listeners remain on 52967 or 52968",
+    "isolatedData": "PASS \u2014 owned runtime, requested workspace, SQLite database, vault key, and sidecars removed",
+    "unownedProcesses": "UNTOUCHED \u2014 occupied fixed ports 8000 and 3000 were not modified",
+    "userData": "UNTOUCHED \u2014 no authoritative journey used or modified the home product database"
+  }
+}

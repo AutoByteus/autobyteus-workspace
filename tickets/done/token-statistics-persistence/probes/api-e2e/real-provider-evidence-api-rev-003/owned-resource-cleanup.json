@@ -1,0 +1,41 @@
+{
+  "capturedAt": "2026-08-20T19:18:43.020776+00:00",
+  "paths": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/autobyteus-server-ts/tests/.tmp/api-rev-003-real-20260820T210418-16128",
+      "existedBefore": true,
+      "existsAfter": false
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/autobyteus-server-ts/tests/.tmp/api-rev-003-real-20260820T210418-16128-workspace",
+      "existedBefore": true,
+      "existsAfter": false
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/autobyteus-server-ts/db/api-rev-003-real-20260820T210418-16128.db",
+      "existedBefore": true,
+      "existsAfter": false
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/autobyteus-server-ts/db/api-rev-003-real-20260820T210418-16128.db.secret.key",
+      "existedBefore": true,
+      "existsAfter": false
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/autobyteus-server-ts/db/api-rev-003-real-20260820T210418-16128.db-shm",
+      "existedBefore": false,
+      "existsAfter": false
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/autobyteus-server-ts/db/api-rev-003-real-20260820T210418-16128.db-wal",
+      "existedBefore": false,
+      "existsAfter": false
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/autobyteus-server-ts/db/api-rev-003-real-20260820T210418-16128.db-journal",
+      "existedBefore": false,
+      "existsAfter": false
+    }
+  ],
+  "cleanupSuccess": true
+}

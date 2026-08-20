@@ -85,6 +85,12 @@ websocket paths preserve that snapshot through their strict transport
 contracts. A persistence-unavailable event or a snapshot that cannot be
 projected safely carries no public cumulative summary; consumers must keep or
 load the current GraphQL record instead of fabricating a complete cache entry.
+The public summary builder projects only the canonical
+`TokenUsageRunSummaryPayload` fields explicitly; it must not spread the broader
+statistics aggregate into a live snapshot. Statistics-only diagnostics such as
+`observed_runtime_kinds`, `observed_model_identifiers`, and
+`observed_model_providers` remain outside both standalone and Team strict event
+DTOs.
 
 Persistence is not detached with `setImmediate`; a completed pipeline transform
 has completed its token fold. A failed fold is logged and the live event still
