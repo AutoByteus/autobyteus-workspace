@@ -1,0 +1,22 @@
+build_started_utc=2026-08-20T06:59:08Z
+source_root=/Users/normy/autobyteus_org/autobyteus-workspace-superrepo
+branch=personal
+head=d61183c9bc9d9a94277a50fbf64d479ab9f88c30
+origin_personal=d61183c9bc9d9a94277a50fbf64d479ab9f88c30
+command=NO_TIMESTAMP=1 APPLE_TEAM_ID= APPLE_SIGNING_IDENTITY= APPLE_ID= APPLE_APP_SPECIFIC_PASSWORD= AUTOBYTEUS_BUILD_FLAVOR=personal DEBUG=electron-builder,electron-builder:*,app-builder-lib*,builder-util* pnpm build:electron:mac -- --arm64
+stale_main_electron_dist_removed=yes
+[guard:web-boundary] Passed.
+[guard:localization-boundary] Passed.
+[audit:localization-literals] Passed with zero unresolved findings.
+[0;32m   Server files prepared successfully!   [0m
+  • skipped macOS code signing  reason=identity explicitly is set to null
+  • building        target=DMG arch=arm64 file=electron-dist/AutoByteus_personal_macos-arm64-1.4.52.dmg
+  • building        target=macOS zip arch=arm64 file=electron-dist/AutoByteus_personal_macos-arm64-1.4.52.zip
+Build completed: [
+  '/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.dmg.blockmap',
+  '/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.dmg',
+  '/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.zip.blockmap',
+  '/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.zip'
+]
+build_exit_code=0
+build_finished_utc=2026-08-20T07:04:05Z

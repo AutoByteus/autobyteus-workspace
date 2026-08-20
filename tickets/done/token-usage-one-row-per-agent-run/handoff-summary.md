@@ -2,10 +2,10 @@
 
 ## Status
 
-- Delivery revision: `DR-009`
+- Delivery revision: `DR-010`
 - Ticket: `token-usage-one-row-per-agent-run`
-- State: `Complete — DR-008 accepted, ticket archived, and repository
-  finalization pushed`
+- State: `Complete — ticket finalized, main personal rebuilt, and deferred
+  cleanup completed`
 - Validated chain: `SR-012` / `ARCH-REV-012` / `IR-011` / `CRR-019` source
   Pass / `API-REV-008` Pass at `97.9%` / `CRR-020` durable-test Pass.
 - Historical DR-007 package: `Stale; do not use`. Its audit projection/compactor
@@ -16,20 +16,24 @@
 - Ticket disposition: archived in `tickets/done`.
 - Repository finalization: complete; results are recorded in
   `release-deployment-report.md`.
+- Deferred cleanup: complete; the old DR-008 process, ticket worktree, local
+  ticket branch, and remote ticket branch are gone.
 
-## Fresh DR-008 Electron Package
+## Fresh Main-Repository Electron Package
 
 - DMG:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist-dr008/AutoByteus_personal_macos-arm64-1.4.52.dmg`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.dmg`
 - DMG SHA-256:
-  `ab8527310441033e8b0ce12af54f65b2c688d48e965f035470b6e0fed136d48c`
+  `a17dea464b31150908aaf3e47634375fa278b336389e3f1bc74c2ae0d79bf211`
 - ZIP fallback:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist-dr008/AutoByteus_personal_macos-arm64-1.4.52.zip`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.zip`
 - ZIP SHA-256:
-  `dae1bef14bb773d3986fc6dfea18be9556f4eff49f4cb6c309fb913bb08accd6`
+  `69b442579c2aa6d3be7d45bcbb06a4637860cf9376a8f3a48acc1364bc3d5070`
 - Platform/version: personal macOS ARM64, `1.4.52`.
 - Signing: intentionally local unsigned/ad-hoc package; not notarized and not a
   public release candidate. Finder may require **right-click -> Open**.
+- Direct app path for the user's local run:
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`.
 
 ## What This Candidate Contains
 
@@ -52,29 +56,24 @@ historical migration-status payload.
 
 ## Integration And Package Evidence
 
-- Reviewed checkpoint:
-  `d4ec609132cf075d513c9754269e76ff267a43d4` (local only; not pushed).
-- Latest tracked base:
-  `origin/personal@1f5663ddb86e478d0b4ffdd878d57dee72d67b4b`.
-- Pre/post-build fetches: unchanged; divergence `0 behind / 6 ahead`; no merge
-  required.
-- No duplicate server selection was run because no new base commit was
-  integrated after `API-REV-008` / `CRR-020`.
-- Build isolation: detached temporary worktree; output promoted only to
-  `electron-dist-dr008`; existing `electron-dist` and DR-007 outputs were not
-  overwritten. Delivery did not stop the currently running older package.
+- Finalized build commit:
+  `personal@d61183c9bc9d9a94277a50fbf64d479ab9f88c30`.
+- Latest tracked remote: `origin/personal` is identical; divergence `0 / 0`;
+  fast-forward-only refresh required no merge.
+- Build location: directly in the main repository requested by the user.
+  Existing stale ignored `electron-dist` outputs were removed first.
 - Build evidence:
-  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-usage-one-row-per-agent-run/delivery-evidence/28-electron-build-macos-arm64-dr008.log`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-usage-one-row-per-agent-run/delivery-evidence/34-electron-build-main-personal-dr010-summary.log`
 - Integrity evidence:
-  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-usage-one-row-per-agent-run/delivery-evidence/29-electron-package-integrity-dr008.log`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-usage-one-row-per-agent-run/delivery-evidence/35-electron-package-integrity-main-personal-dr010.log`
 
 The build passed web/localization guards, integrated server preparation/build,
 Electron generation/transpilation, and DMG/ZIP generation. Integrity passed for
 DMG/mounted payload, ZIP, bundle ID/version/ARM64, embedded server entry,
-packaged runner and Settings recovery markers, absence of both withdrawn audit
-owners, Prisma ARM64 engine, terminal spawn, zero broken symlinks, and updater
-hash/size consistency. DR-008 and its bundled server were not launched by
-delivery. No delivery check accessed or mutated the live database/profile.
+packaged runner recovery markers, absence of both withdrawn audit owners,
+Prisma ARM64 engine, terminal spawn, zero broken symlinks, and updater hash/size
+consistency. Delivery did not launch the new main-repository package. No
+delivery check accessed or mutated the live database/profile.
 
 ## Accepted User Verification
 
@@ -101,8 +100,11 @@ No live data was mutated. Evidence:
   `e4f41e398e234f58e2687639763ee5c0cc028539`.
 - Finalization evidence:
   `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-usage-one-row-per-agent-run/delivery-evidence/33-dr009-repository-finalization.log`.
-- Worktree/local-branch and remote ticket-branch deletion are safely deferred
-  because the user is still running the accepted DR-008 app from that worktree.
+- Cleanup is complete. The old DR-008 process was stopped after the replacement
+  main-repository package passed integrity; the ticket worktree, local ticket
+  branch, and remote ticket branch were removed and their absence verified.
+- Cleanup evidence:
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-usage-one-row-per-agent-run/delivery-evidence/36-ticket-worktree-branch-cleanup-dr010.log`.
 
 ## Canonical Cumulative Package
 

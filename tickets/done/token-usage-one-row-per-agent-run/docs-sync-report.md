@@ -2,7 +2,7 @@
 
 ## Current Result
 
-- Delivery revision: `DR-009`
+- Delivery revision: `DR-010`
 - Result: `Pass — integrated durable documentation matches the current
   restart-recovery scope`
 - Ticket: `token-usage-one-row-per-agent-run`
@@ -11,10 +11,11 @@
 - Reviewed-state checkpoint:
   `d4ec609132cf075d513c9754269e76ff267a43d4` (local only; not pushed and
   not repository finalization).
-- Latest tracked base:
-  `origin/personal@1f5663ddb86e478d0b4ffdd878d57dee72d67b4b`.
-- Integration result: no merge required. Repeated pre/post-build fetches kept
-  the base unchanged and the branch at `0 behind / 6 ahead`.
+- Latest finalized main state:
+  `personal@d61183c9bc9d9a94277a50fbf64d479ab9f88c30`, identical to
+  `origin/personal` at DR-010 (`0 / 0` divergence).
+- Integration result: no merge required. The fresh Electron package was built
+  directly from that exact finalized main-repository commit.
 - Post-integration server rerun: not duplicated because no base commit was
   integrated after `API-REV-008` / `CRR-020`. The fresh Electron build and
   nonlaunch integrity suite supply the delivery-stage executable package check.
@@ -93,11 +94,16 @@ The durable docs now require:
 ## Delivery Continuation
 
 - Docs sync: `Pass`.
-- Fresh DR-008 Electron build/integrity: `Pass`.
+- DR-010 docs impact: `No product-doc change`; package location and cleanup
+  state only.
+- Fresh main-`personal` Electron build/integrity: `Pass`.
 - Remaining gate: none. DR-009 records explicit acceptance, and the final
   latest-base refresh found no advancement.
 - Finalization: complete. The archived ticket branch was pushed, merged into
   `personal`, and the merge was pushed. No version/tag/release/deployment scope
   was requested.
+- Cleanup: complete. The old DR-008 process, ticket worktree, local ticket
+  branch, and remote ticket branch were removed after the main-repository
+  replacement package passed integrity checks.
 - Known unchanged non-product limitations: Nuxt `vue-tsc`/TypeScript package-
   export incompatibility and opt-in external-provider exclusions.

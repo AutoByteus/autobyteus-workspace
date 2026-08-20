@@ -2,12 +2,13 @@
 
 ## Current Result
 
-- Delivery revision: `DR-009`
+- Delivery revision: `DR-010`
 - Delivery gate: `Pass — DR-008 explicitly accepted`
 - Explicit user verification: `Pass`
 - Historical requirement gap: `Explicit accepted residual / separate future
   scope`; not corrected by this package
 - Repository finalization: `Complete`
+- Deferred worktree/branch cleanup: `Complete`
 - Release/publication/deployment: `Not authorized and not executed`
 - Ticket state: archived in `tickets/done`
 
@@ -16,11 +17,13 @@
 - Chain: `SR-012` / `ARCH-REV-012` / `IR-011` / `CRR-019` source Pass /
   `API-REV-008` Pass at `97.9%` / `CRR-020` durable-test Pass.
 - Reviewed-state checkpoint:
-  `d4ec609132cf075d513c9754269e76ff267a43d4`.
-- Latest tracked base:
-  `origin/personal@1f5663ddb86e478d0b4ffdd878d57dee72d67b4b`.
-- Integration: base already an ancestor; `0 behind / 6 ahead`; repeated post-
-  build fetch showed no advancement.
+  `d4ec609132cf075d513c9754269e76ff267a43d4`; historical integration base
+  `1f5663ddb86e478d0b4ffdd878d57dee72d67b4b`.
+- Finalized build source:
+  `personal@d61183c9bc9d9a94277a50fbf64d479ab9f88c30`.
+- Latest tracked remote at DR-010 build and pre-record verification:
+  `origin/personal@d61183c9bc9d9a94277a50fbf64d479ab9f88c30`;
+  divergence `0 / 0`, so no merge was required.
 - Post-integration rerun: no server selection duplicated because no new base
   commit was integrated after the current review gate. The fresh Electron build
   and package-integrity suite are the delivery-stage executable checks.
@@ -42,28 +45,31 @@ historical-compaction claim.
 
 ## Electron Package
 
-- Build: `Pass`, isolated local personal macOS ARM64, version `1.4.52`.
+- Build: `Pass`, directly from finalized main-repository `personal` at
+  `d61183c9bc9d9a94277a50fbf64d479ab9f88c30`, macOS ARM64 version `1.4.52`.
 - DMG:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist-dr008/AutoByteus_personal_macos-arm64-1.4.52.dmg`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.dmg`
 - DMG SHA-256:
-  `ab8527310441033e8b0ce12af54f65b2c688d48e965f035470b6e0fed136d48c`
+  `a17dea464b31150908aaf3e47634375fa278b336389e3f1bc74c2ae0d79bf211`
 - ZIP:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/electron-dist-dr008/AutoByteus_personal_macos-arm64-1.4.52.zip`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.zip`
 - ZIP SHA-256:
-  `dae1bef14bb773d3986fc6dfea18be9556f4eff49f4cb6c309fb913bb08accd6`
+  `69b442579c2aa6d3be7d45bcbb06a4637860cf9376a8f3a48acc1364bc3d5070`
 - Build evidence:
-  `delivery-evidence/28-electron-build-macos-arm64-dr008.log`.
+  `delivery-evidence/34-electron-build-main-personal-dr010-summary.log` and
+  compressed full output `delivery-evidence/34-electron-build-main-personal-dr010.log.gz`.
 - Integrity evidence:
-  `delivery-evidence/29-electron-package-integrity-dr008.log`.
+  `delivery-evidence/35-electron-package-integrity-main-personal-dr010.log`.
 
 The build passed web/localization guards, integrated server preparation/build,
 Electron generation/transpilation, DMG/ZIP creation, and updater metadata.
 Integrity passed DMG/ZIP/mounted payload, bundle identity/version/ARM64,
 embedded server, packaged recovery markers, absence of both withdrawn audit
 owners, Prisma ARM64 engine, terminal spawn, zero broken symlinks, and updater
-SHA-512/size checks. Delivery itself did not launch DR-008. Existing package
-outputs and the package running during the isolated build were not overwritten
-or stopped; the user subsequently launched and accepted the exact DR-008 app.
+SHA-512/size checks. Delivery did not launch the new main-repository package or
+access the live profile/database. The earlier DR-008 acceptance remains the
+repository-finalization authorization; this rebuild uses the finalized source
+and is ready for the user's requested local run.
 
 ## Signing / Distribution Scope
 
@@ -101,12 +107,15 @@ status-response residual remains untouched. Evidence:
 - Target `personal` merged/pushed: `Yes` at
   `e4f41e398e234f58e2687639763ee5c0cc028539`.
 - Version bump/tag/release/publication/deployment: `None`.
-- Ticket worktree/local branch and remote ticket-branch deletion: `Safely
-  deferred`; the accepted DR-008 app and embedded server are still running from
-  the worktree, so destructive cleanup would disrupt the user.
+- Ticket worktree/local branch and remote ticket-branch deletion: `Complete`.
+  The old DR-008 root process was stopped gracefully after the replacement
+  package passed integrity; application/server/helper processes exited; the
+  worktree and both ticket-branch refs were removed and absence verified.
 - Rollout: none, so no deployment rollback applies.
 - Finalization evidence:
   `delivery-evidence/33-dr009-repository-finalization.log`.
+- Cleanup evidence:
+  `delivery-evidence/36-ticket-worktree-branch-cleanup-dr010.log`.
 
 The required finalization refresh found `origin/personal` unchanged at
 `1f5663ddb86e478d0b4ffdd878d57dee72d67b4b`; no material change or renewed
@@ -115,6 +124,6 @@ verification is required.
 ## Final Status
 
 `Complete. DR-008 was accepted; the ticket was archived; the ticket branch and
-personal merge were pushed and remotely verified. No public release or
-deployment scope was requested. Destructive worktree/branch cleanup is safely
-deferred while the accepted app is running.`
+personal merge were pushed and remotely verified; main personal was refreshed
+and rebuilt for Electron; deferred worktree/branch cleanup completed. No public
+release or deployment scope was requested.`

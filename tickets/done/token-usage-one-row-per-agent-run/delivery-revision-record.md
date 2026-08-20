@@ -4,6 +4,7 @@
 
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
+| `DR-010` | User requested that local `personal` be made current, a fresh Electron package be built directly from the main repository, and deferred ticket cleanup be completed | `DR-009` complete with cleanup deferred while DR-008 was running | Complete — `personal` confirmed identical to `origin/personal`; fresh main-repository personal ARM64 package and integrity checks passed; old DR-008 process stopped; ticket worktree plus local/remote ticket branches removed | `delivery-evidence/34-*` through `36-*`, `handoff-summary.md`, `release-deployment-report.md`, `docs-sync-report.md` |
 | `DR-009` | Explicit user confirmation relayed with read-only live verification of the exact running DR-008 package | `DR-008` package/integrity Pass awaiting renewed user result | Complete — live acceptance passed; ticket archived; ticket branch pushed; merged and pushed to `personal`; no release/deployment requested; destructive cleanup safely deferred while accepted app runs | `delivery-evidence/31-*` through `33-*`, `handoff-summary.md`, `release-deployment-report.md`, `docs-sync-report.md`, archived ticket package |
 | `DR-008` | `CRR-020` Pass after user-directed audit-scope withdrawal and completion of the runner-owned restart-recovery contract | `DR-007` package became stale when SR-010 withdrew its audit projection/compactor behavior | Pass at renewed-user-verification checkpoint — latest base current, durable docs reconciled without withdrawn audit claims, fresh isolated Electron build/integrity passed; explicit user result pending | `delivery-requirement-gap.md`, `delivery-rework-record.md`, `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-integration-blocker.md`, `delivery-evidence/26-*` through `30-*`, server README, canonical convention, web Settings doc |
 | `DR-007` | `CRR-016` Pass after SR-009 terminal-audit compaction and bounded-read correction | `DR-006` ticket-scope technical Pass but finalization blocked on reachable 31 MB migration-status evidence | Superseded / stale — SR-010 withdrew the audit projection/compactor expansion; DR-007 must not be used as the current verification candidate | `delivery-requirement-gap.md`, `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/21-*` through `25-*`, server README and canonical convention |
@@ -15,6 +16,58 @@
 | `DR-001` | `CRR-008` Pass over the 17-path `API-REV-003` durable coverage delta, after authoritative `CRR-007` source Pass | N/A — initial delivery baseline | Pass — latest tracked base unchanged/current, durable docs synchronized, user-verification handoff ready; archival/finalization/release held | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/01-*`, `delivery-evidence/02-*`, nine long-lived docs |
 
 ## Revision Entries
+
+### DR-010 — Main `personal` Electron rebuild and deferred cleanup complete
+
+- Trigger: the user requested a current main-repository `personal` checkout, a
+  fresh Electron build from that checkout, and completion of the deferred
+  ticket cleanup.
+- Latest-base result: `git fetch origin personal` followed by a fast-forward-
+  only update confirmed both local `personal` and `origin/personal` at
+  `d61183c9bc9d9a94277a50fbf64d479ab9f88c30`; divergence was `0 / 0` and
+  no merge was required. The unrelated untracked `.article-work/` directory
+  was preserved.
+- Build source: the primary repository at
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`, branch
+  `personal`, exact commit `d61183c9bc9d9a94277a50fbf64d479ab9f88c30`.
+  Stale ignored outputs in the main repository's `electron-dist` were removed
+  before packaging so the result is unambiguous.
+- Build result: `Pass`. The documented local no-timestamp/no-notarization
+  macOS command built personal ARM64 version `1.4.52` directly into
+  `autobyteus-web/electron-dist`. Web/localization guards, integrated server
+  preparation/build, Electron generation/transpilation, DMG/ZIP creation,
+  blockmaps, and updater metadata completed with exit `0`. Full and concise
+  evidence: `delivery-evidence/34-*`.
+- Integrity result: `Pass`. Bundle ID `com.autobyteus.app`, version/build
+  `1.4.52`, ARM64 application and Prisma engine, embedded server entry,
+  recovery markers, absence of withdrawn audit owners, terminal spawn probe,
+  zero broken symlinks, DMG verification/mounted payload, ZIP integrity, and
+  updater SHA-512/size consistency all passed. The new package was not
+  launched and no live profile/database was accessed or mutated. Evidence:
+  `delivery-evidence/35-*`.
+- DMG:
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.dmg`;
+  SHA-256
+  `a17dea464b31150908aaf3e47634375fa278b336389e3f1bc74c2ae0d79bf211`.
+- ZIP:
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.zip`;
+  SHA-256
+  `69b442579c2aa6d3be7d45bcbb06a4637860cf9376a8f3a48acc1364bc3d5070`.
+- Cleanup result: `Pass`. The old DR-008 Electron root process received
+  `SIGTERM` and its application/server/helper processes exited. The clean
+  ticket worktree was unregistered; its remaining `30 MB` of ignored/untracked
+  build/test residue was removed; local and remote
+  `codex/token-usage-one-row-per-agent-run` branches were deleted; worktree
+  metadata and remote refs were pruned and absence verified. Evidence:
+  `delivery-evidence/36-*`.
+- Docs impact: no product documentation change. The source/runtime contract is
+  identical to the accepted finalized state; only package location and cleanup
+  status changed.
+- Release/deployment: no version bump, tag, public release, publication, or
+  deployment was requested or executed. The fresh main-repository package is
+  ready for the user's local run.
+- Current result: `Complete — main personal is current, the fresh Electron
+  package passed integrity checks, and deferred task cleanup is complete.`
 
 ### DR-009 — DR-008 accepted; repository finalization authorized
 
