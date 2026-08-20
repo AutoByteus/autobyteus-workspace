@@ -1,0 +1,16 @@
+# DR-003 archive precommit audit
+Recorded: 2026-08-20T18:52:08+02:00
+branch=codex/team-task-conversation-ui-design
+head=002c83c418dec05c428b2e53ed4161c8d2192621
+origin_personal=3b81b5ebdc4c5eae64e221aff9c578adc7e7fb74
+divergence=6	0 (ahead behind)
+PASS: final target is unchanged and is an ancestor of verified head
+PASS: ticket archived and in-progress path absent
+PASS: top-level canonical artifacts use archived/verified state
+PASS: DR-003 authority synchronized
+PASS: git diff --check
+
+## Ticket app process observation
+490 /Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus /Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/app.js --port 29695 --data-dir /Users/normy/.autobyteus/server-data
+99725 /Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+Cleanup deferred until after repository finalization; only exact ticket app will be closed.

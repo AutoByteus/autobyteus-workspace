@@ -37,8 +37,8 @@ Human-readable participants, current task status, result/review labels, timestam
 
 | Artifact Path | Type / Purpose | Related Requirement IDs | Related Acceptance-Criteria IDs | Status / Approval | Relationship To Requirements |
 | --- | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/in-progress/team-task-conversation-ui/ui-ux-spec.md` | Intended UI/UX behavior, interaction states, content rules, and Markdown wireframes | REQ-001–REQ-015 | AC-001–AC-015 | `Refined` / user-approved behavior basis; final solution package review pending | Defines the approved observable task-conversation experience constrained by these requirements. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/in-progress/team-task-conversation-ui/task-timeline-ui-prototype.html` | Production-fidelity interactive rendering of two tasks and their click/result states | REQ-003–REQ-014 | AC-001–AC-014 | `Validated` / user-approved behavior basis | Makes the intended left-timeline/right-detail interaction visually reviewable without changing production source. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/done/team-task-conversation-ui/ui-ux-spec.md` | Intended UI/UX behavior, interaction states, content rules, and Markdown wireframes | REQ-001–REQ-015 | AC-001–AC-015 | `Refined` / user-approved behavior basis; final solution package review pending | Defines the approved observable task-conversation experience constrained by these requirements. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/done/team-task-conversation-ui/task-timeline-ui-prototype.html` | Production-fidelity interactive rendering of two tasks and their click/result states | REQ-003–REQ-014 | AC-001–AC-014 | `Validated` / user-approved behavior basis | Makes the intended left-timeline/right-detail interaction visually reviewable without changing production source. |
 
 ## Design Health Assessment (Mandatory)
 

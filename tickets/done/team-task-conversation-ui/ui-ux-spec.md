@@ -93,7 +93,7 @@ Without disturbing the current task interaction, let a user answer:
 
 The interactive prototype is the reviewable rendering contract for this proposal:
 
-`/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/in-progress/team-task-conversation-ui/task-timeline-ui-prototype.html`
+`/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/done/team-task-conversation-ui/task-timeline-ui-prototype.html`
 
 It is grounded in the current production components rather than a greenfield mockup:
 

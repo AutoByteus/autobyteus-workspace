@@ -4,17 +4,17 @@
 
 | Revision ID | Canonical Review Report | Entry Point / Trigger | Prior Result | Current Result | Affected Finding IDs |
 | --- | --- | --- | --- | --- | --- |
-| `CRR-001` | `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/in-progress/team-task-conversation-ui/code-review-report.md` | Implementation review of `IR-001` / commit `d8bf1a6cdcd3eaf7f8ff523a7665851cd7fc7859` | `N/A` | `Fail — Local Fix` | `CR-001` |
-| `CRR-002` | `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/in-progress/team-task-conversation-ui/code-review-report.md` | Implementation re-review of `IR-002` / source-fix commit `a5a44cf09f5dd02e354b71af80cab045661034ac` | `Fail — Local Fix` | `Pass` | `CR-001` |
-| `CRR-003` | `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/in-progress/team-task-conversation-ui/api-e2e-test-review-report.md` | Successful API/E2E test-code review of `API-REV-001` / commit `3566a956752799e0a0c9e60f91c5dc3c3d3bb3f5` | `N/A` | `Pass` | None |
+| `CRR-001` | `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/done/team-task-conversation-ui/code-review-report.md` | Implementation review of `IR-001` / commit `d8bf1a6cdcd3eaf7f8ff523a7665851cd7fc7859` | `N/A` | `Fail — Local Fix` | `CR-001` |
+| `CRR-002` | `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/done/team-task-conversation-ui/code-review-report.md` | Implementation re-review of `IR-002` / source-fix commit `a5a44cf09f5dd02e354b71af80cab045661034ac` | `Fail — Local Fix` | `Pass` | `CR-001` |
+| `CRR-003` | `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/done/team-task-conversation-ui/api-e2e-test-review-report.md` | Successful API/E2E test-code review of `API-REV-001` / commit `3566a956752799e0a0c9e60f91c5dc3c3d3bb3f5` | `N/A` | `Pass` | None |
 
 ## Revision Entries
 
 ### CRR-001 — Initial task-lifecycle implementation source-review baseline
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/in-progress/team-task-conversation-ui/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/done/team-task-conversation-ui/code-review-report.md`
 - Review entry point and round: `Implementation Review`, round `1`
-- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/in-progress/team-task-conversation-ui/implementation-handoff.md`; initial finding `CR-001`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/done/team-task-conversation-ui/implementation-handoff.md`; initial finding `CR-001`
 - Relevant solution revision IDs: `SR-003`, `SR-004`, `SR-005`
 - Relevant architecture-review revision IDs: `ARCH-REV-001`
 - Relevant implementation revision IDs: `IR-001`
@@ -35,9 +35,9 @@ None.
 
 ### CRR-002 — Verify obsolete assignment fallback cleanup and pass source review
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/in-progress/team-task-conversation-ui/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/done/team-task-conversation-ui/code-review-report.md`
 - Review entry point and round: `Implementation Review`, round `2`
-- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/in-progress/team-task-conversation-ui/implementation-handoff.md`; `CR-001`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/done/team-task-conversation-ui/implementation-handoff.md`; `CR-001`
 - Relevant solution revision IDs: `SR-003`, `SR-004`, `SR-005`
 - Relevant architecture-review revision IDs: `ARCH-REV-001`
 - Relevant implementation revision IDs: `IR-001`, `IR-002`
@@ -60,9 +60,9 @@ None.
 
 ### CRR-003 — Pass proportional review of durable team-task browser coverage
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/in-progress/team-task-conversation-ui/api-e2e-test-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/done/team-task-conversation-ui/api-e2e-test-review-report.md`
 - Review entry point and round: `Successful API/E2E Test-Code Review`, round `1`
-- Triggering role, report path, and finding or scenario IDs: `/api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/in-progress/team-task-conversation-ui/api-e2e-execution-coverage-report.md`; `API-TASK-REPO-001`, `API-TASK-BROWSER-001`, `API-TASK-LIVE-001`, `API-TASK-INTERRUPT-002`, `API-TASK-RESTORE-003`, `API-TASK-FOCUS-004`, `API-TASK-I18N-A11Y-005`, `API-TASK-MESSAGES-006`, `API-TASK-NO-TECH-007`
+- Triggering role, report path, and finding or scenario IDs: `/api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/done/team-task-conversation-ui/api-e2e-execution-coverage-report.md`; `API-TASK-REPO-001`, `API-TASK-BROWSER-001`, `API-TASK-LIVE-001`, `API-TASK-INTERRUPT-002`, `API-TASK-RESTORE-003`, `API-TASK-FOCUS-004`, `API-TASK-I18N-A11Y-005`, `API-TASK-MESSAGES-006`, `API-TASK-NO-TECH-007`
 - Relevant solution revision IDs: `SR-003`, `SR-004`, `SR-005`
 - Relevant architecture-review revision IDs: `ARCH-REV-001`
 - Relevant implementation revision IDs: `IR-001`, `IR-002`

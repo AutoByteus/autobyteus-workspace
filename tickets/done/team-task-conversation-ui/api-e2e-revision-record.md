@@ -12,7 +12,7 @@ The canonical coverage investigation and execution coverage report remain the cu
 
 ### API-REV-001 — Real task-conversation lifecycle and durable browser baseline
 
-- Triggering role, report path, and round: `/code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/in-progress/team-task-conversation-ui/code-review-report.md`; API/E2E round `1` after source-review pass `CRR-002`.
+- Triggering role, report path, and round: `/code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/done/team-task-conversation-ui/code-review-report.md`; API/E2E round `1` after source-review pass `CRR-002`.
 - Triggering finding or scenario IDs: no open source finding; planned scenarios `API-TASK-REPO-001`, `API-TASK-BROWSER-001`, `API-TASK-LIVE-001`, `API-TASK-INTERRUPT-002`, `API-TASK-RESTORE-003`, `API-TASK-FOCUS-004`, `API-TASK-I18N-A11Y-005`, `API-TASK-MESSAGES-006`, and `API-TASK-NO-TECH-007`.
 - Related solution, architecture-review, implementation, code-review, or delivery revision IDs: `SR-003`, `SR-004`, `SR-005`; `ARCH-REV-001`; `IR-001`, `IR-002`; `CRR-001`, `CRR-002`; delivery `N/A`.
 - Why this baseline or coverage/execution revision was recorded: establish the first completed API/E2E result after mandatory coverage investigation, close the repository mock/environment gaps with an authorized real nested-classroom lifecycle, and preserve repeatable browser regression coverage for the changed task-conversation UI.
@@ -29,9 +29,9 @@ The canonical coverage investigation and execution coverage report remain the cu
 None. `API-REV-001` has no prior completed API/E2E result. The main live harness's `temp_workspace` versus visible `Temp Workspace` locator error occurred within this round, was classified as a temporary harness defect, and was resolved by a passing targeted fresh-context rerun before the authoritative result was recorded.
 
 - Canonical artifacts and sections updated:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/in-progress/team-task-conversation-ui/api-e2e-coverage-investigation.md` — repository decisions/results, post-repository `90.6%` gate, and broader-validation completion;
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/in-progress/team-task-conversation-ui/api-e2e-execution-coverage-report.md` — authoritative execution, confidence, evidence, cleanup, and Pass result;
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/in-progress/team-task-conversation-ui/api-e2e-evidence/api-rev-001/` — structured results, logs, screenshots, public API snapshots, reproducibility scaffolding, and cleanup audit.
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/done/team-task-conversation-ui/api-e2e-coverage-investigation.md` — repository decisions/results, post-repository `90.6%` gate, and broader-validation completion;
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/done/team-task-conversation-ui/api-e2e-execution-coverage-report.md` — authoritative execution, confidence, evidence, cleanup, and Pass result;
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/done/team-task-conversation-ui/api-e2e-evidence/api-rev-001/` — structured results, logs, screenshots, public API snapshots, reproducibility scaffolding, and cleanup audit.
 - Prior result and confidence: `N/A`
 - Current result and confidence: `Pass` / `96.9%`
 - New or remaining failure IDs: `None`

@@ -1,0 +1,294 @@
+{
+  "startedAt": "2026-08-20T16:10:36.756Z",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "scenarios": {
+    "empty-and-messages-baseline": {
+      "result": "Pass",
+      "durationMs": 5,
+      "messageRows": 1,
+      "taskCount": 0
+    },
+    "restored-snapshot-and-focus-filter": {
+      "result": "Pass",
+      "durationMs": 36,
+      "taskEntries": 2,
+      "restoredLifecycleRows": 3
+    },
+    "keyboard-selection-and-live-replacement": {
+      "result": "Pass",
+      "durationMs": 114,
+      "totalVisibleLifecycleRows": 5,
+      "stableSelection": true,
+      "acceptanceFallback": true
+    },
+    "exact-reference-route-viewer-and-owner-return": {
+      "result": "Pass",
+      "durationMs": 574,
+      "referenceRequests": 4,
+      "maximizeEscapeRestore": true
+    },
+    "focus-perspectives-and-messages-no-change": {
+      "result": "Pass",
+      "durationMs": 49,
+      "teacherTasks": 2,
+      "studentTaskTasks": 1,
+      "observerTasks": 1,
+      "messages": 1
+    },
+    "localization-accessibility-and-technical-absence": {
+      "result": "Pass",
+      "durationMs": 911,
+      "chineseLabels": [
+        "已提交结果 · 结果 1",
+        "已请求修订 · 结果 1",
+        "已提交修订结果 · 结果 2",
+        "结果 2 已接受"
+      ],
+      "technicalDetailsAbsent": true,
+      "rightPaneNavigationAbsent": true,
+      "splitWidths": {
+        "initialWidth": 248,
+        "minWidth": 168,
+        "maxWidth": 360
+      }
+    }
+  },
+  "referenceRequests": [
+    {
+      "method": "GET",
+      "url": "http://localhost:8000/rest/team-runs/browser-team-run/task-delegations/task-accepted-lifecycle/references/assignment-ref/content",
+      "referenceId": "assignment-ref"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:8000/rest/team-runs/browser-team-run/task-delegations/task-accepted-lifecycle/references/result-v1-ref/content",
+      "referenceId": "result-v1-ref"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:8000/rest/team-runs/browser-team-run/task-delegations/task-accepted-lifecycle/references/result-v1-ref/content",
+      "referenceId": "result-v1-ref"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:8000/rest/team-runs/browser-team-run/task-delegations/task-accepted-lifecycle/references/review-ref/content",
+      "referenceId": "review-ref"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:8000/rest/team-runs/browser-team-run/task-delegations/task-accepted-lifecycle/references/review-ref/content",
+      "referenceId": "review-ref"
+    }
+  ],
+  "browserEvents": [
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://localhost:8000/rest/health net::ERR_EMPTY_RESPONSE"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_EMPTY_RESPONSE"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://localhost:8000/rest/health net::ERR_EMPTY_RESPONSE"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_EMPTY_RESPONSE"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://localhost:8000/rest/health net::ERR_EMPTY_RESPONSE"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_EMPTY_RESPONSE"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://localhost:8000/rest/health net::ERR_EMPTY_RESPONSE"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_EMPTY_RESPONSE"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://localhost:8000/rest/health net::ERR_EMPTY_RESPONSE"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_EMPTY_RESPONSE"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://localhost:8000/rest/health net::ERR_EMPTY_RESPONSE"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_EMPTY_RESPONSE"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://localhost:8000/rest/health net::ERR_EMPTY_RESPONSE"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_EMPTY_RESPONSE"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://localhost:8000/rest/health net::ERR_EMPTY_RESPONSE"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_EMPTY_RESPONSE"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://localhost:8000/rest/health net::ERR_EMPTY_RESPONSE"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_EMPTY_RESPONSE"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://localhost:8000/rest/health net::ERR_EMPTY_RESPONSE"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_EMPTY_RESPONSE"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://localhost:8000/rest/health net::ERR_EMPTY_RESPONSE"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_EMPTY_RESPONSE"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://localhost:8000/rest/health net::ERR_EMPTY_RESPONSE"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_EMPTY_RESPONSE"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://localhost:8000/rest/health net::ERR_EMPTY_RESPONSE"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_EMPTY_RESPONSE"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://localhost:8000/rest/health net::ERR_EMPTY_RESPONSE"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_EMPTY_RESPONSE"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://localhost:8000/rest/health net::ERR_EMPTY_RESPONSE"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_EMPTY_RESPONSE"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://localhost:8000/rest/health net::ERR_EMPTY_RESPONSE"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_EMPTY_RESPONSE"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://localhost:8000/rest/health net::ERR_EMPTY_RESPONSE"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_EMPTY_RESPONSE"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://localhost:8000/rest/health net::ERR_EMPTY_RESPONSE"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_EMPTY_RESPONSE"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://localhost:8000/rest/health net::ERR_EMPTY_RESPONSE"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_EMPTY_RESPONSE"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://localhost:8000/rest/health net::ERR_EMPTY_RESPONSE"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_EMPTY_RESPONSE"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Checking server health at /rest/health"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: the server responded with a status of 500 (Internal Server Error)"
+    }
+  ],
+  "failures": [],
+  "cleanup": {
+    "browserContext": "closed",
+    "browser": "closed",
+    "nuxt": {
+      "status": "terminated",
+      "pid": 45790,
+      "exitCode": 0,
+      "signalCode": null
+    },
+    "fixturePage": "removed"
+  },
+  "baseUrl": "http://127.0.0.1:50126",
+  "result": "Pass",
+  "finishedAt": "2026-08-20T16:10:55.399Z"
+}

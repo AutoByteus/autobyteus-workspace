@@ -10,7 +10,7 @@
 
 ### ARCH-REV-001 — SR-005 implementation-readiness baseline
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/in-progress/team-task-conversation-ui/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/done/team-task-conversation-ui/design-review-report.md`
 - Review round and trigger: Round 1; direct user authorization on 2026-08-20 to continue after the final SR-005 package was prepared.
 - Triggering role, report path, and finding IDs: User continuation in the task conversation; no prior design-review report; finding IDs `None`.
 - Relevant solution revision IDs: `SR-003`, `SR-004`, `SR-005`; withdrawn `SR-001`/`SR-002` were not used as current authority.

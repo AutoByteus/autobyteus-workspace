@@ -13,7 +13,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 
 ### IR-001 — Initial Team task lifecycle UI baseline
 
-- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/in-progress/team-task-conversation-ui/design-review-report.md`; round 1.
+- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/done/team-task-conversation-ui/design-review-report.md`; round 1.
 - Triggering finding IDs: N/A — architecture review passed without findings.
 - Classification: `Initial Baseline`
 - Prior authoritative result: N/A
@@ -33,7 +33,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 
 ### IR-002 — Remove obsolete assignment-description fallback residue
 
-- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/in-progress/team-task-conversation-ui/code-review-report.md`; implementation review round 1 / `CRR-001`.
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/done/team-task-conversation-ui/code-review-report.md`; implementation review round 1 / `CRR-001`.
 - Triggering finding IDs: `CR-001`
 - Classification: `Local Fix`
 - Prior authoritative result: `IR-001` implementation prepared for review; `CRR-001` returned `Fail — Local Fix` because the deleted assignment-description fallback still had dead locale/test residue.
