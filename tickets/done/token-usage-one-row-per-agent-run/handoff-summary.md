@@ -4,7 +4,8 @@
 
 - Delivery revision: `DR-009`
 - Ticket: `token-usage-one-row-per-agent-run`
-- State: `DR-008 explicitly accepted; repository finalization authorized`
+- State: `Complete — DR-008 accepted, ticket archived, and repository
+  finalization pushed`
 - Validated chain: `SR-012` / `ARCH-REV-012` / `IR-011` / `CRR-019` source
   Pass / `API-REV-008` Pass at `97.9%` / `CRR-020` durable-test Pass.
 - Historical DR-007 package: `Stale; do not use`. Its audit projection/compactor
@@ -13,7 +14,7 @@
   `31 MB` migration-status response remain unchanged for separate future scope.
 - Explicit user verification: `Pass`.
 - Ticket disposition: archived in `tickets/done`.
-- Repository finalization: authorized; results are recorded in
+- Repository finalization: complete; results are recorded in
   `release-deployment-report.md`.
 
 ## Fresh DR-008 Electron Package
@@ -63,9 +64,9 @@ historical migration-status payload.
   `electron-dist-dr008`; existing `electron-dist` and DR-007 outputs were not
   overwritten. Delivery did not stop the currently running older package.
 - Build evidence:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/done/token-usage-one-row-per-agent-run/delivery-evidence/28-electron-build-macos-arm64-dr008.log`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-usage-one-row-per-agent-run/delivery-evidence/28-electron-build-macos-arm64-dr008.log`
 - Integrity evidence:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/done/token-usage-one-row-per-agent-run/delivery-evidence/29-electron-package-integrity-dr008.log`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-usage-one-row-per-agent-run/delivery-evidence/29-electron-package-integrity-dr008.log`
 
 The build passed web/localization guards, integrated server preparation/build,
 Electron generation/transpilation, and DMG/ZIP generation. Integrity passed for
@@ -94,37 +95,44 @@ No live data was mutated. Evidence:
 - Explicit approval has been received. Delivery refreshed `origin/personal`
   and confirmed that it did not advance beyond the user-verified candidate.
 - Ticket archival plus ticket-branch and `personal` repository finalization are
-  authorized. No version bump, tag, public release, or deployment was requested.
+  complete. No version bump, tag, public release, or deployment was requested.
+- Ticket branch commit:
+  `73eab531e43c3b4b13ed0c39266672718b6bccab`; `personal` merge commit:
+  `e4f41e398e234f58e2687639763ee5c0cc028539`.
+- Finalization evidence:
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-usage-one-row-per-agent-run/delivery-evidence/33-dr009-repository-finalization.log`.
+- Worktree/local-branch and remote ticket-branch deletion are safely deferred
+  because the user is still running the accepted DR-008 app from that worktree.
 
 ## Canonical Cumulative Package
 
 - Requirements and investigation:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/done/token-usage-one-row-per-agent-run/requirements.md`;
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/done/token-usage-one-row-per-agent-run/investigation-notes.md`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-usage-one-row-per-agent-run/requirements.md`;
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-usage-one-row-per-agent-run/investigation-notes.md`
 - Design and supplements:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/done/token-usage-one-row-per-agent-run/design-spec.md`;
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/done/token-usage-one-row-per-agent-run/token-usage-data-model-analysis.md`;
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/done/token-usage-one-row-per-agent-run/data-migration-conventions.md`;
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/done/token-usage-one-row-per-agent-run/solution-revision-record.md`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-usage-one-row-per-agent-run/design-spec.md`;
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-usage-one-row-per-agent-run/token-usage-data-model-analysis.md`;
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-usage-one-row-per-agent-run/data-migration-conventions.md`;
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-usage-one-row-per-agent-run/solution-revision-record.md`
 - Architecture review:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/done/token-usage-one-row-per-agent-run/design-review-report.md`;
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/done/token-usage-one-row-per-agent-run/architecture-review-revision-record.md`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-usage-one-row-per-agent-run/design-review-report.md`;
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-usage-one-row-per-agent-run/architecture-review-revision-record.md`
 - Delivery rework/gap history:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/done/token-usage-one-row-per-agent-run/delivery-rework-record.md`;
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/done/token-usage-one-row-per-agent-run/delivery-requirement-gap.md`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-usage-one-row-per-agent-run/delivery-rework-record.md`;
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-usage-one-row-per-agent-run/delivery-requirement-gap.md`
 - Implementation:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/done/token-usage-one-row-per-agent-run/implementation-handoff.md`;
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/done/token-usage-one-row-per-agent-run/implementation-revision-record.md`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-usage-one-row-per-agent-run/implementation-handoff.md`;
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-usage-one-row-per-agent-run/implementation-revision-record.md`
 - Code review:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/done/token-usage-one-row-per-agent-run/code-review-report.md`;
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/done/token-usage-one-row-per-agent-run/code-review-revision-record.md`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-usage-one-row-per-agent-run/code-review-report.md`;
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-usage-one-row-per-agent-run/code-review-revision-record.md`
 - API/E2E:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/done/token-usage-one-row-per-agent-run/api-e2e-coverage-investigation.md`;
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/done/token-usage-one-row-per-agent-run/api-e2e-execution-coverage-report.md`;
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/done/token-usage-one-row-per-agent-run/api-e2e-revision-record.md`;
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/done/token-usage-one-row-per-agent-run/api-e2e-test-review-report.md`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-usage-one-row-per-agent-run/api-e2e-coverage-investigation.md`;
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-usage-one-row-per-agent-run/api-e2e-execution-coverage-report.md`;
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-usage-one-row-per-agent-run/api-e2e-revision-record.md`;
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-usage-one-row-per-agent-run/api-e2e-test-review-report.md`
 - Delivery:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/done/token-usage-one-row-per-agent-run/docs-sync-report.md`;
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/done/token-usage-one-row-per-agent-run/handoff-summary.md`;
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/done/token-usage-one-row-per-agent-run/release-deployment-report.md`;
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/done/token-usage-one-row-per-agent-run/delivery-revision-record.md`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-usage-one-row-per-agent-run/docs-sync-report.md`;
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-usage-one-row-per-agent-run/handoff-summary.md`;
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-usage-one-row-per-agent-run/release-deployment-report.md`;
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-usage-one-row-per-agent-run/delivery-revision-record.md`

@@ -7,7 +7,7 @@
 - Explicit user verification: `Pass`
 - Historical requirement gap: `Explicit accepted residual / separate future
   scope`; not corrected by this package
-- Repository finalization: `Authorized / in progress`
+- Repository finalization: `Complete`
 - Release/publication/deployment: `Not authorized and not executed`
 - Ticket state: archived in `tickets/done`
 
@@ -96,11 +96,17 @@ status-response residual remains untouched. Evidence:
 ## Repository / Release Authorization
 
 - Ticket moved to `tickets/done`: `Yes`.
-- Ticket branch pushed: `Authorized / pending`.
-- Target `personal` merged/pushed: `Authorized / pending`.
+- Ticket branch pushed: `Yes` at
+  `73eab531e43c3b4b13ed0c39266672718b6bccab`.
+- Target `personal` merged/pushed: `Yes` at
+  `e4f41e398e234f58e2687639763ee5c0cc028539`.
 - Version bump/tag/release/publication/deployment: `None`.
-- Ticket worktree/branch cleanup: `No`.
+- Ticket worktree/local branch and remote ticket-branch deletion: `Safely
+  deferred`; the accepted DR-008 app and embedded server are still running from
+  the worktree, so destructive cleanup would disrupt the user.
 - Rollout: none, so no deployment rollback applies.
+- Finalization evidence:
+  `delivery-evidence/33-dr009-repository-finalization.log`.
 
 The required finalization refresh found `origin/personal` unchanged at
 `1f5663ddb86e478d0b4ffdd878d57dee72d67b4b`; no material change or renewed
@@ -108,5 +114,7 @@ verification is required.
 
 ## Final Status
 
-`DR-008 accepted and repository finalization authorized. No public release or
-deployment scope was requested.`
+`Complete. DR-008 was accepted; the ticket was archived; the ticket branch and
+personal merge were pushed and remotely verified. No public release or
+deployment scope was requested. Destructive worktree/branch cleanup is safely
+deferred while the accepted app is running.`

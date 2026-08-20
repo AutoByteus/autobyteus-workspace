@@ -28,10 +28,10 @@ live profile/database was accessed or mutated by delivery verification.
 
 Evidence:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/done/token-usage-one-row-per-agent-run/delivery-evidence/26-dr008-latest-base-refresh.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/done/token-usage-one-row-per-agent-run/delivery-evidence/27-dr008-docs-sync-preflight.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/done/token-usage-one-row-per-agent-run/delivery-evidence/28-electron-build-macos-arm64-dr008.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/done/token-usage-one-row-per-agent-run/delivery-evidence/29-electron-package-integrity-dr008.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-usage-one-row-per-agent-run/delivery-evidence/26-dr008-latest-base-refresh.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-usage-one-row-per-agent-run/delivery-evidence/27-dr008-docs-sync-preflight.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-usage-one-row-per-agent-run/delivery-evidence/28-electron-build-macos-arm64-dr008.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-usage-one-row-per-agent-run/delivery-evidence/29-electron-package-integrity-dr008.log`
 
 ## Historical DR-002 Blocker
 
@@ -45,7 +45,7 @@ implementation rather than choosing a side.
 `cbbedd6ea0e6d466a3e3741c7216f03887b0182e`; `CRR-009`, `API-REV-004`, and
 `CRR-010` passed. The original conflict evidence remains at:
 
-`/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/done/token-usage-one-row-per-agent-run/delivery-evidence/04-reentry-integration-conflict-dr002.log`
+`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-usage-one-row-per-agent-run/delivery-evidence/04-reentry-integration-conflict-dr002.log`
 
 No current integration blocker remains. DR-009 records explicit acceptance,
 and the required final latest-base refresh found no advancement; repository

@@ -11,7 +11,7 @@
   future scope` under user-directed `SR-010`.
 - Current ticket blocker: `None from this residual`.
 - Explicit user verification of DR-008: `Pass` under DR-009.
-- Repository finalization: `Authorized` after unchanged-base refresh.
+- Repository finalization: `Complete` under DR-009.
 
 ## Authoritative Disposition
 
@@ -70,14 +70,14 @@ repair.
 ## Evidence
 
 - Original live residual evidence:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/done/token-usage-one-row-per-agent-run/delivery-evidence/19-live-dr005-technical-verification-and-residual-dr006.log`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-usage-one-row-per-agent-run/delivery-evidence/19-live-dr005-technical-verification-and-residual-dr006.log`
 - Current solution/design authority:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/done/token-usage-one-row-per-agent-run/solution-revision-record.md` (`SR-010`–`SR-012`);
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/done/token-usage-one-row-per-agent-run/design-review-report.md` (`ARCH-REV-012`)
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-usage-one-row-per-agent-run/solution-revision-record.md` (`SR-010`–`SR-012`);
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-usage-one-row-per-agent-run/design-review-report.md` (`ARCH-REV-012`)
 - Current execution/review authority:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/done/token-usage-one-row-per-agent-run/api-e2e-execution-coverage-report.md` (`API-REV-008`);
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/done/token-usage-one-row-per-agent-run/api-e2e-test-review-report.md` (`CRR-020`)
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-usage-one-row-per-agent-run/api-e2e-execution-coverage-report.md` (`API-REV-008`);
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-usage-one-row-per-agent-run/api-e2e-test-review-report.md` (`CRR-020`)
 - DR-008 package audit:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/done/token-usage-one-row-per-agent-run/delivery-evidence/29-electron-package-integrity-dr008.log`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-usage-one-row-per-agent-run/delivery-evidence/29-electron-package-integrity-dr008.log`
 
 No delivery check accessed or mutated the user's live database or profile.

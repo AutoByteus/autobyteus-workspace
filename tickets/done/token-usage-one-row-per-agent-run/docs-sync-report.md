@@ -87,8 +87,8 @@ The durable docs now require:
   response claim was revived.
 - Four withdrawn durable audit-only paths: confirmed absent.
 - Evidence:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/done/token-usage-one-row-per-agent-run/delivery-evidence/26-dr008-latest-base-refresh.log`;
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/done/token-usage-one-row-per-agent-run/delivery-evidence/27-dr008-docs-sync-preflight.log`.
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-usage-one-row-per-agent-run/delivery-evidence/26-dr008-latest-base-refresh.log`;
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-usage-one-row-per-agent-run/delivery-evidence/27-dr008-docs-sync-preflight.log`.
 
 ## Delivery Continuation
 
@@ -96,8 +96,8 @@ The durable docs now require:
 - Fresh DR-008 Electron build/integrity: `Pass`.
 - Remaining gate: none. DR-009 records explicit acceptance, and the final
   latest-base refresh found no advancement.
-- Continuation: archive the ticket and perform the authorized ticket-branch /
-  `personal` repository finalization. No version/tag/release/deployment scope
+- Finalization: complete. The archived ticket branch was pushed, merged into
+  `personal`, and the merge was pushed. No version/tag/release/deployment scope
   was requested.
 - Known unchanged non-product limitations: Nuxt `vue-tsc`/TypeScript package-
   export incompatibility and opt-in external-provider exclusions.

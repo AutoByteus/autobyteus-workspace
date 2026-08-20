@@ -4,7 +4,7 @@
 
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
-| `DR-009` | Explicit user confirmation relayed with read-only live verification of the exact running DR-008 package | `DR-008` package/integrity Pass awaiting renewed user result | Pass / accepted — live health, migration state, one-row invariants, compact-state bounds, and Token Statistics passed; finalization authorized after unchanged-base refresh | `delivery-evidence/31-*`, `handoff-summary.md`, `release-deployment-report.md`, `docs-sync-report.md`, archived ticket package |
+| `DR-009` | Explicit user confirmation relayed with read-only live verification of the exact running DR-008 package | `DR-008` package/integrity Pass awaiting renewed user result | Complete — live acceptance passed; ticket archived; ticket branch pushed; merged and pushed to `personal`; no release/deployment requested; destructive cleanup safely deferred while accepted app runs | `delivery-evidence/31-*` through `33-*`, `handoff-summary.md`, `release-deployment-report.md`, `docs-sync-report.md`, archived ticket package |
 | `DR-008` | `CRR-020` Pass after user-directed audit-scope withdrawal and completion of the runner-owned restart-recovery contract | `DR-007` package became stale when SR-010 withdrew its audit projection/compactor behavior | Pass at renewed-user-verification checkpoint — latest base current, durable docs reconciled without withdrawn audit claims, fresh isolated Electron build/integrity passed; explicit user result pending | `delivery-requirement-gap.md`, `delivery-rework-record.md`, `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-integration-blocker.md`, `delivery-evidence/26-*` through `30-*`, server README, canonical convention, web Settings doc |
 | `DR-007` | `CRR-016` Pass after SR-009 terminal-audit compaction and bounded-read correction | `DR-006` ticket-scope technical Pass but finalization blocked on reachable 31 MB migration-status evidence | Superseded / stale — SR-010 withdrew the audit projection/compactor expansion; DR-007 must not be used as the current verification candidate | `delivery-requirement-gap.md`, `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/21-*` through `25-*`, server README and canonical convention |
 | `DR-006` | Read-only live technical verification of DR-005 plus discovery of reachable old successful migration summaries | `DR-005` Pass at renewed-user-verification checkpoint | Ticket-scope technical Pass; finalization Blocked — consolidation and current statistics passed, but two old `SUCCEEDED` 20260730 summaries produce a reachable 31 MB status response and require Requirement Gap / Design Impact classification; no explicit user finalization instruction | `delivery-requirement-gap.md`, `delivery-evidence/19-*`, `handoff-summary.md`, `release-deployment-report.md`, `docs-sync-report.md` |
@@ -43,8 +43,20 @@
   divergence `0 behind / 6 ahead`. The user-verified candidate did not change,
   so renewed verification is not required before finalization.
 - Evidence: `delivery-evidence/31-dr009-user-verification-and-finalization-refresh.log`.
-- Current result: `Pass / explicit acceptance received; archive and repository
-  finalization authorized.`
+- Repository finalization: archived ticket commit
+  `73eab531e43c3b4b13ed0c39266672718b6bccab` was pushed to
+  `origin/codex/token-usage-one-row-per-agent-run`; merge commit
+  `e4f41e398e234f58e2687639763ee5c0cc028539` was pushed to
+  `origin/personal`. Remote ancestry and archived-path checks passed.
+- Cleanup: the accepted DR-008 app and embedded server are still running from
+  the ticket worktree. Local worktree/branch and remote ticket-branch deletion
+  are safely deferred rather than disrupting the verified application.
+- Release/deployment: no version bump, tag, publication, release, or deployment
+  was requested or executed.
+- Finalization evidence:
+  `delivery-evidence/33-dr009-repository-finalization.log`.
+- Current result: `Complete — explicit acceptance, archival, ticket-branch
+  push, personal merge/push, and remote verification passed.`
 
 ### DR-008 — Current restart-recovery Electron verification package is ready
 

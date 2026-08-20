@@ -15,7 +15,7 @@
   `ARCH-REV-012` / `IR-011` / `CRR-019` / `API-REV-008` / `CRR-020`.
 - Fresh Electron package: `DR-008 build and integrity Pass`.
 - Explicit user verification: `Pass` under DR-009.
-- Finalization: `Authorized` after unchanged-base refresh.
+- Finalization: `Complete` under DR-009.
 
 ## Historical Production Defect And Resolution
 
