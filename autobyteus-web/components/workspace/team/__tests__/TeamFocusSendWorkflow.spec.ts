@@ -24,7 +24,6 @@ const labels: Record<string, string> = {
   'workspace.components.workspace.team.TeamDelegatedTasksSection.task_count_plural': 'tasks',
   'workspace.components.workspace.team.TeamDelegatedTasksSection.empty': 'No delegated tasks yet',
   'workspace.components.workspace.team.TeamDelegatedTasksSection.empty_detail': 'Delegated work appears here from saved task records.',
-  'workspace.components.workspace.team.TeamDelegatedTasksSection.description_unavailable': 'Task description unavailable',
   'workspace.components.workspace.team.TeamDelegatedTasksSection.focus': 'Focus',
   'workspace.components.workspace.team.TeamDelegatedTasksSection.select_task': 'Select a task to read it.',
   'workspace.components.workspace.team.TeamDelegatedTasksSection.waiting_activity_notice': 'Waiting for user action in Activity.',

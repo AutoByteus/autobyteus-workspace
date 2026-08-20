@@ -161,8 +161,6 @@ const messages = {
     "Task Team",
   "workspace.components.workspace.team.TeamDelegatedTasksSection.approval_required":
     "Approval required",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.description_unavailable":
-    "Task description unavailable",
   "workspace.components.workspace.team.TeamDelegatedTasksSection.members":
     "Members",
   "workspace.components.workspace.team.TeamDelegatedTasksSection.task_assigned":

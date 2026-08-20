@@ -22,7 +22,8 @@ const lifecycleKeys = [
   'result_accepted_fallback',
   'updated_at',
 ].map((key) => `${prefix}${key}`);
-const removedTechnicalKeys = [
+const removedObsoleteKeys = [
+  'description_unavailable',
   'technical_details',
   'task_type',
   'task_id',
@@ -40,8 +41,8 @@ describe('Team task lifecycle catalogs', () => {
     }
   });
 
-  it('removes task technical-detail labels from both catalogs', () => {
-    for (const key of removedTechnicalKeys) {
+  it('removes obsolete task fallback and technical-detail labels from both catalogs', () => {
+    for (const key of removedObsoleteKeys) {
       expect(enWorkspaceMessages).not.toHaveProperty(key);
       expect(zhCnWorkspaceMessages).not.toHaveProperty(key);
     }

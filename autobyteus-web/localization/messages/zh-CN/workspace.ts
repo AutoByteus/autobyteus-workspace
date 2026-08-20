@@ -160,8 +160,6 @@ const messages = {
     "任务团队",
   "workspace.components.workspace.team.TeamDelegatedTasksSection.approval_required":
     "需要审批",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.description_unavailable":
-    "任务描述不可用",
   "workspace.components.workspace.team.TeamDelegatedTasksSection.members":
     "成员",
   "workspace.components.workspace.team.TeamDelegatedTasksSection.task_assigned":
