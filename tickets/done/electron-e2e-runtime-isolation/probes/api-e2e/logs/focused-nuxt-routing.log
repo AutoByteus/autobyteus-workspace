@@ -1,0 +1,81 @@
+
+> autobyteus@1.4.52 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web
+> cross-env NUXT_TEST=true vitest stores/__tests__/nodeStore.spec.ts stores/__tests__/windowNodeContextStore.spec.ts stores/__tests__/serverStore.spec.ts stores/__tests__/mobileNodeSessionStore.spec.ts services/__tests__/api.nodeRouting.spec.ts utils/__tests__/serverConfig.spec.ts utils/__tests__/nodeEndpoints.spec.ts utils/contextFiles/__tests__/contextAttachmentPresentation.spec.ts components/agentInput/__tests__/ContextFilePathInputArea.spec.ts components/tools/__tests__/McpGatewayPanel.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web
+
+stderr | stores/__tests__/nodeStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/__tests__/nodeEndpoints.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agentInput/__tests__/ContextFilePathInputArea.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/__tests__/serverConfig.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/tools/__tests__/McpGatewayPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/__tests__/api.nodeRouting.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/contextFiles/__tests__/contextAttachmentPresentation.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/windowNodeContextStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/nodeStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/__tests__/api.nodeRouting.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/agentInput/__tests__/ContextFilePathInputArea.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/windowNodeContextStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/contextFiles/__tests__/contextAttachmentPresentation.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/tools/__tests__/McpGatewayPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/__tests__/serverConfig.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/__tests__/nodeEndpoints.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/__tests__/nodeEndpoints.spec.ts (6 tests) 3ms
+ ✓ utils/contextFiles/__tests__/contextAttachmentPresentation.spec.ts (6 tests) 4ms
+ ✓ stores/__tests__/nodeStore.spec.ts (10 tests) 9ms
+ ✓ stores/__tests__/windowNodeContextStore.spec.ts (10 tests) 17ms
+ ✓ services/__tests__/api.nodeRouting.spec.ts (3 tests) 58ms
+ ✓ components/agentInput/__tests__/ContextFilePathInputArea.spec.ts (5 tests) 42ms
+ ✓ components/tools/__tests__/McpGatewayPanel.spec.ts (2 tests) 14ms
+ ✓ utils/__tests__/serverConfig.spec.ts (3 tests) 2ms
+
+ Test Files  8 passed (8)
+      Tests  45 passed (45)
+   Start at  14:18:37
+   Duration  6.13s (transform 3.10s, setup 40.63s, collect 926ms, tests 148ms, environment 2.49s, prepare 1.39s)

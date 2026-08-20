@@ -1,0 +1,12 @@
+Initial delivery tracked-base refresh evidence
+Recorded at: 2026-08-20T13:37:07Z
+Command: git fetch origin personal
+Ticket branch: codex/electron-e2e-runtime-isolation
+Ticket HEAD: edb123b47f86d69ea7ceb1aaefa799321760cde4
+Tracked base: origin/personal
+Latest tracked base revision: 1b2e9b94d1de3b7f38aa2803082e0166a469a978
+Merge base: 1b2e9b94d1de3b7f38aa2803082e0166a469a978
+Divergence HEAD...origin/personal (left ahead, right behind): 3	0
+Base commits newer than ticket HEAD:
+Integration method: Already current (no base commit to merge)
+Executable rerun: Not required because no new base commit was integrated

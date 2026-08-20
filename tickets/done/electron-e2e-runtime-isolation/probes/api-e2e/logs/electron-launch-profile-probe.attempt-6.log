@@ -1,0 +1,11 @@
+
+> autobyteus@1.4.52 test:e2e:electron:isolation /Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web
+> node tests/e2e/electron-launch-profile-probe.mjs -- --skip-build --executable electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus --output-dir ../tickets/in-progress/electron-e2e-runtime-isolation/probes/api-e2e/electron-launch-profile
+
+Warning: Detected unsettled top-level await at file:///Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/tests/e2e/electron-launch-profile-probe.mjs:1075
+await main()
+^
+
+
+
+ ELIFECYCLE  Command failed with exit code 13.

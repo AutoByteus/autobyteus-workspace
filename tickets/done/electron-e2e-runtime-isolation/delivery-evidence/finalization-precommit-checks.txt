@@ -1,0 +1,125 @@
+# Finalization pre-commit checks
+checked_at=2026-08-20T14:12:57Z
+
+## staged diff whitespace/error check
+PASS
+
+## durable launcher syntax
+PASS
+
+## archive state
+PASS
+
+## ignored package exclusion
+PASS: local DMG/ZIP/app are not staged
+
+## tracked base
+origin/personal=1b2e9b94d1de3b7f38aa2803082e0166a469a978
+merge_base=1b2e9b94d1de3b7f38aa2803082e0166a469a978
+origin_personal_behind_ahead_ticket_before_final_commit=0	3
+PASS
+
+## running verified app preservation
+57441     1 S    /Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+58045 57441 S    /Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus /Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/app.js --port 29695 --data-dir /Users/normy/.autobyteus/server-data
+executable_sha256=c0bf182389ea930585e3b0bf5c4f16529461e02bf3be751cb364d0e25f2257e0
+{"status":"ok","message":"Server is running"}
+health_http_status=200
+PASS: read-only checks only; no process stop or cleanup attempted
+
+## staged change summary
+ README.md                                          |   48 +
+ autobyteus-web/README.md                           |   87 +-
+ autobyteus-web/docs/electron_packaging.md          |  146 +-
+ .../__tests__/platformServerEnvironment.spec.ts    |   90 +-
+ autobyteus-web/package.json                        |    3 +-
+ .../tests/e2e/electron-launch-profile-probe.mjs    | 1098 ++++++
+ .../api-e2e-coverage-investigation.md              |  261 ++
+ .../api-e2e-execution-coverage-report.md           |  238 ++
+ .../api-e2e-revision-record.md                     |   41 +
+ .../api-e2e-test-review-report.md                  |   63 +
+ .../architecture-review-revision-record.md         |   85 +
+ .../code-review-report.md                          |  178 +
+ .../code-review-revision-record.md                 |  114 +
+ .../delivery-evidence/docs-and-handoff-checks.txt  |   31 +
+ .../dr-002-artifact-verification.log               |   43 +
+ .../delivery-evidence/dr-002-electron-build.log    |   34 +
+ .../delivery-evidence/dr-002-final-checks.log      |   25 +
+ .../dr-002-isolated-launch-smoke.log               |   34 +
+ .../dr-003-root-readme-checks.log                  |   28 +
+ .../delivery-evidence/final-base-refresh.txt       |   11 +
+ .../finalization-precommit-checks.txt              |   56 +
+ .../delivery-evidence/initial-base-refresh.txt     |   12 +
+ .../user-verification-and-final-health.txt         |   19 +
+ .../delivery-revision-record.md                    |  168 +
+ .../design-review-report.md                        |  337 ++
+ .../electron-e2e-runtime-isolation/design-spec.md  |  607 +++
+ .../docs-sync-report.md                            |   90 +
+ .../electron-test-build-report.md                  |  137 +
+ .../handoff-summary.md                             |  177 +
+ .../implementation-handoff.md                      |  132 +
+ .../implementation-revision-record.md              |   73 +
+ .../investigation-notes.md                         |  190 +
+ ...electron-launch-profile-evidence.attempt-1.json |  174 +
+ ...electron-launch-profile-evidence.attempt-2.json |  182 +
+ ...electron-launch-profile-evidence.attempt-3.json |  526 +++
+ ...electron-launch-profile-evidence.attempt-4.json |  526 +++
+ ...electron-launch-profile-evidence.attempt-5.json |  576 +++
+ ...electron-launch-profile-evidence.attempt-6.json |  576 +++
+ ...electron-launch-profile-evidence.attempt-7.json |  576 +++
+ ...electron-launch-profile-evidence.attempt-8.json |  576 +++
+ ...electron-launch-profile-evidence.attempt-9.json |  576 +++
+ .../electron-launch-profile-evidence.json          |  650 ++++
+ .../electron-launch-profile/provider-settings.png  |  Bin 0 -> 303854 bytes
+ .../classroom-deepseek-v4-flash-attempt-1.json     |   81 +
+ .../classroom-deepseek-v4-flash-attempt-2.json     |   81 +
+ .../classroom-deepseek-v4-flash-attempt-3.json     |   85 +
+ .../classroom-deepseek-v4-flash-attempt-4.json     |   82 +
+ .../classroom-deepseek-v4-flash-attempt-5.json     |  310 ++
+ .../classroom-deepseek-v4-flash-final.png          |  Bin 0 -> 300788 bytes
+ .../classroom-deepseek-v4-flash-launch.png         |  Bin 0 -> 192827 bytes
+ .../live-provider/classroom-deepseek-v4-flash.json |  288 ++
+ .../api-e2e/live-provider/initialization.json      |   88 +
+ .../live-provider/run-packaged-classroom-live.mjs  |  461 +++
+ .../secrets-import-dry-run-retry-2.log             |   20 +
+ .../live-provider/secrets-import-dry-run-retry.log |   20 +
+ .../live-provider/secrets-import-dry-run.log       |   73 +
+ .../secrets-import-execution-summary-retry-2.log   |   10 +
+ .../secrets-import-execution-summary-retry.log     |   10 +
+ .../secrets-import-execution-summary.log           |   18 +
+ .../live-provider/secrets-import-postcheck.log     |   20 +
+ .../probes/api-e2e/logs/build-electron.log         |  686 ++++
+ .../electron-launch-profile-probe.attempt-1.log    |    6 +
+ .../electron-launch-profile-probe.attempt-2.log    |    6 +
+ .../electron-launch-profile-probe.attempt-3.log    |    6 +
+ .../electron-launch-profile-probe.attempt-4.log    |    6 +
+ .../electron-launch-profile-probe.attempt-5.log    |   11 +
+ .../electron-launch-profile-probe.attempt-6.log    |   11 +
+ .../electron-launch-profile-probe.attempt-7.log    |   11 +
+ .../electron-launch-profile-probe.attempt-8.log    |   11 +
+ .../electron-launch-profile-probe.attempt-9.log    |   11 +
+ .../api-e2e/logs/electron-launch-profile-probe.log |    5 +
+ .../probes/api-e2e/logs/focused-electron.log       |   50 +
+ .../probes/api-e2e/logs/focused-nuxt-routing.log   |   81 +
+ .../api-e2e/logs/full-nuxt-after-runner-gate.log   | 4031 +++++++++++++++++++
+ .../probes/api-e2e/logs/full-nuxt.log              | 4044 ++++++++++++++++++++
+ .../probes/api-e2e/logs/generate-electron.log      |  249 ++
+ ...vider-classroom-deepseek-v4-flash-attempt-1.log |   15 +
+ ...vider-classroom-deepseek-v4-flash-attempt-2.log |   15 +
+ ...vider-classroom-deepseek-v4-flash-attempt-3.log |   18 +
+ ...vider-classroom-deepseek-v4-flash-attempt-4.log |   15 +
+ ...vider-classroom-deepseek-v4-flash-attempt-5.log |   35 +
+ .../live-provider-classroom-deepseek-v4-flash.log  |   35 +
+ .../logs/live-provider-electron-init-retry-2.log   |   15 +
+ .../logs/live-provider-electron-init-retry.log     |   15 +
+ .../api-e2e/logs/live-provider-electron-init.log   |   13 +
+ .../api-e2e/logs/node-electron-e2e-support.log     |  112 +
+ .../probes/api-e2e/logs/package-mac.log            |   42 +
+ ...rver-environment-electron-config-after-gate.log |   50 +
+ ...m-server-environment-nuxt-config-after-gate.log |   25 +
+ .../platform-server-environment-nuxt-config.log    |   44 +
+ .../probes/api-e2e/logs/transpile-electron.log     |    3 +
+ .../release-deployment-report.md                   |  225 ++
+ .../electron-e2e-runtime-isolation/requirements.md |  194 +
+ .../solution-revision-record.md                    |   59 +
+ 94 files changed, 21331 insertions(+), 65 deletions(-)

@@ -1,0 +1,288 @@
+{
+  "schemaVersion": 1,
+  "scenarioId": "E2E-LIVE-006",
+  "mode": "run",
+  "startedAt": "2026-08-20T13:17:46.618Z",
+  "completedAt": "2026-08-20T13:18:11.853Z",
+  "result": "PASS",
+  "artifact": {
+    "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "sha256": "c0bf182389ea930585e3b0bf5c4f16529461e02bf3be751cb364d0e25f2257e0"
+  },
+  "launch": {
+    "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "port": 59740,
+    "dataRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/tickets/in-progress/electron-e2e-runtime-isolation/probes/api-e2e/live-provider/isolated-electron-data-root",
+    "ownsDataRoot": false,
+    "clientBaseUrl": "http://127.0.0.1:59740",
+    "healthUrl": "http://127.0.0.1:59740/rest/health"
+  },
+  "databasePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/tickets/in-progress/electron-e2e-runtime-isolation/probes/api-e2e/live-provider/isolated-electron-data-root/server-data/db/production.db",
+  "secretKeyPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/tickets/in-progress/electron-e2e-runtime-isolation/probes/api-e2e/live-provider/isolated-electron-data-root/server-data/db/production.db.secret.key",
+  "packageSource": "/Users/normy/autobyteus_org/autobyteus-agents",
+  "packageSourceBefore": {
+    "fileCount": 568,
+    "sha256": "68d5c5e776c9e087232706576d3fd0e554d223a76d2c662b71f502ba940a883d"
+  },
+  "ordinaryBefore": {
+    "label": "run-before",
+    "healthStatus": 200,
+    "listenerPids": [
+      98429
+    ],
+    "identities": [
+      {
+        "pid": 98429,
+        "fingerprint": "ebeda19895d06c482766ff54c5f38405512464b3329f02f8b4ed93f786b2246d",
+        "commandIsAutoByteus": true
+      }
+    ]
+  },
+  "windowReady": {
+    "state": "complete",
+    "hasBridge": true,
+    "textLength": 309
+  },
+  "bridge": {
+    "status": "running",
+    "baseUrlMatches": true,
+    "health": "ok",
+    "nodeId": "embedded-local"
+  },
+  "provider": {
+    "id": "DEEPSEEK",
+    "name": "DeepSeek",
+    "providerType": "DEEPSEEK",
+    "apiKeyConfigured": true,
+    "status": "NOT_APPLICABLE",
+    "model": "deepseek-v4-flash"
+  },
+  "importedPackage": {
+    "packageId": "local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-agents",
+    "displayName": "autobyteus-agents",
+    "path": "/Users/normy/autobyteus_org/autobyteus-agents",
+    "sourceKind": "LOCAL_PATH",
+    "source": "/Users/normy/autobyteus_org/autobyteus-agents",
+    "sharedAgentCount": 7,
+    "teamLocalAgentCount": 57,
+    "agentTeamCount": 14,
+    "isDefault": false,
+    "isRemovable": true
+  },
+  "packageUiEvidence": "verified-existing-link-from-prior-packaged-ui-attempt",
+  "classroomDefinition": {
+    "id": "classroom-simulation-team",
+    "name": "Classroom Simulation Team",
+    "description": "A teacher-student classroom simulation for demonstrating agent-to-agent communication with required reply behavior.",
+    "coordinatorMemberName": "professor",
+    "nodes": [
+      {
+        "memberName": "professor",
+        "ref": "professor",
+        "refType": "AGENT",
+        "refScope": "TEAM_LOCAL"
+      },
+      {
+        "memberName": "student",
+        "ref": "student",
+        "refType": "AGENT",
+        "refScope": "TEAM_LOCAL"
+      }
+    ]
+  },
+  "effective": {
+    "runtimeKind": "autobyteus",
+    "selectedModelText": "DeepSeek / deepseek-v4-flash",
+    "autoExecuteClass": "relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 bg-blue-600"
+  },
+  "rootTeamRunId": "classroom_simulation_team_baa195e612514452b09b8f2ffddc7695",
+  "rootTeamMembers": [
+    {
+      "memberAddress": "/professor",
+      "agentRunId": "professor_5910aad974654b86b2bf65d4f60135fd",
+      "runtimeKind": "AUTOBYTEUS",
+      "status": "offline",
+      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/tickets/in-progress/electron-e2e-runtime-isolation/probes/api-e2e/live-provider/isolated-electron-data-root/server-data/temp_workspace"
+    },
+    {
+      "memberAddress": "/student",
+      "agentRunId": "student_29fc501c53154bfe9bffca7f98187dab",
+      "runtimeKind": "AUTOBYTEUS",
+      "status": "offline",
+      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/tickets/in-progress/electron-e2e-runtime-isolation/probes/api-e2e/live-provider/isolated-electron-data-root/server-data/temp_workspace"
+    }
+  ],
+  "conditions": {
+    "isolatedEndpoint": true,
+    "providerCredentialConfigured": true,
+    "requestedModelCatalogued": true,
+    "localPackageImportedViaPackagedUi": true,
+    "classroomTeamImported": true,
+    "freshRun": true,
+    "rootedTopology": true,
+    "effectiveRuntime": true,
+    "effectiveModelPersisted": true,
+    "exactOneProfessorRequest": true,
+    "requestHasReference": true,
+    "exactOneStudentReply": true,
+    "replyHasReference": true,
+    "exactMemberRunRouting": true,
+    "completionVisible": true,
+    "noUnexpectedConsoleErrors": true
+  },
+  "communications": [
+    {
+      "messageId": "teammsg_6qelQML4BNj45cY2dmZzEryaoRkMa3e1",
+      "senderAgentRunId": "professor_5910aad974654b86b2bf65d4f60135fd",
+      "receiverAgentRunId": "student_29fc501c53154bfe9bffca7f98187dab",
+      "content": "Homework assignment for e2e-live-006 is ready. Please read the assignment at /Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/tickets/in-progress/electron-e2e-runtime-isolation/probes/api-e2e/live-provider/isolated-electron-data-root/server-data/temp_workspace/classroom-runs/e2e-live-006/homework.md, answer the question (6 × 7), write your answer to a file, and reply to /professor using send_message_to with the exact token CLASSROOM_STUDENT_REPLY_DEEPSEEK_V4_FLASH, attaching your answer file as a reference.",
+      "messageType": "agent_message",
+      "createdAt": "2026-08-20T13:17:58.025Z",
+      "referenceFiles": [
+        {
+          "referenceId": "a3bca71bef1d34c313d4bef0bced3b50e27137d99caf97705c98172982933075",
+          "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/tickets/in-progress/electron-e2e-runtime-isolation/probes/api-e2e/live-provider/isolated-electron-data-root/server-data/temp_workspace/classroom-runs/e2e-live-006/homework.md",
+          "type": "file",
+          "createdAt": "2026-08-20T13:17:58.025Z",
+          "updatedAt": "2026-08-20T13:17:58.025Z"
+        }
+      ],
+      "senderMemberAddress": "/professor",
+      "receiverMemberAddress": "/student"
+    },
+    {
+      "messageId": "teammsg_LOeOYHcsGQto6YHe5cewme7sGHI4x3Pb",
+      "senderAgentRunId": "student_29fc501c53154bfe9bffca7f98187dab",
+      "receiverAgentRunId": "professor_5910aad974654b86b2bf65d4f60135fd",
+      "content": "Hi professor, I've completed the homework for e2e-live-006. The answer to 6 × 7 is 42, with my reasoning written to /Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/tickets/in-progress/electron-e2e-runtime-isolation/probes/api-e2e/live-provider/isolated-electron-data-root/server-data/temp_workspace/classroom-runs/e2e-live-006/student-answer.md. Please find the answer file attached. Token: CLASSROOM_STUDENT_REPLY_DEEPSEEK_V4_FLASH",
+      "messageType": "agent_message",
+      "createdAt": "2026-08-20T13:18:07.181Z",
+      "referenceFiles": [
+        {
+          "referenceId": "6cf78599f5c5ababcee0f32a239a476812adeb81b93263c4508ecf81acb3ff3f",
+          "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/tickets/in-progress/electron-e2e-runtime-isolation/probes/api-e2e/live-provider/isolated-electron-data-root/server-data/temp_workspace/classroom-runs/e2e-live-006/student-answer.md",
+          "type": "file",
+          "createdAt": "2026-08-20T13:18:07.181Z",
+          "updatedAt": "2026-08-20T13:18:07.181Z"
+        }
+      ],
+      "senderMemberAddress": "/student",
+      "receiverMemberAddress": "/professor"
+    }
+  ],
+  "resumeConfig": {
+    "teamRunId": "classroom_simulation_team_baa195e612514452b09b8f2ffddc7695",
+    "isActive": true,
+    "executionTree": {
+      "schema_version": 1,
+      "created_at": "2026-08-20T13:17:50.186Z",
+      "archived_at": null,
+      "application_binding": null,
+      "handoffs": [
+        {
+          "from": "/professor",
+          "to": "/student",
+          "rules": [
+            "When the professor gives the student a question or problem to solve, including a math problem, conceptual question, quiz item, or challenge, and expects an answer or worked reasoning.",
+            "When the professor assigns homework, an exercise, project, reading, writing, experiment, practice task, or other work that requires the student to produce a result.",
+            "When the professor requests student participation such as an explanation, reflection, example, interpretation, correction, revision, or follow-up response.",
+            "When the professor asks the student to clarify understanding, inspect feedback, retry an answer, or resolve a misunderstanding before the lesson can continue."
+          ]
+        },
+        {
+          "from": "/student",
+          "to": "/professor",
+          "rules": [
+            "When the student has completed or attempted assigned work and has an answer, solution, explanation, reflection, or other result for the professor to review.",
+            "When the student has a question, needs clarification, identifies a misunderstanding, or requests an example or hint from the professor.",
+            "When the student cannot complete the assignment, encounters a blocker, or needs to report what was tried and what is needed next."
+          ]
+        }
+      ],
+      "root_team": {
+        "team_definition_id": "classroom-simulation-team",
+        "team_definition_name": "Classroom Simulation Team",
+        "team_run_id": "classroom_simulation_team_baa195e612514452b09b8f2ffddc7695",
+        "coordinator_address": "/professor",
+        "members": [
+          {
+            "kind": "configured_agent",
+            "address": "/professor",
+            "agent_definition_id": "team-local-agent:classroom-simulation-team:professor",
+            "role": null,
+            "description": null,
+            "agent_run_id": "professor_5910aad974654b86b2bf65d4f60135fd",
+            "platform_agent_run_id": null,
+            "launch_configuration": {
+              "runtime_kind": "AUTOBYTEUS",
+              "llm_model_identifier": "deepseek-v4-flash",
+              "llm_config": null,
+              "auto_execute_tools": true,
+              "skill_access_mode": "PRELOADED_ONLY",
+              "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/tickets/in-progress/electron-e2e-runtime-isolation/probes/api-e2e/live-provider/isolated-electron-data-root/server-data/temp_workspace"
+            }
+          },
+          {
+            "kind": "configured_agent",
+            "address": "/student",
+            "agent_definition_id": "team-local-agent:classroom-simulation-team:student",
+            "role": null,
+            "description": null,
+            "agent_run_id": "student_29fc501c53154bfe9bffca7f98187dab",
+            "platform_agent_run_id": null,
+            "launch_configuration": {
+              "runtime_kind": "AUTOBYTEUS",
+              "llm_model_identifier": "deepseek-v4-flash",
+              "llm_config": null,
+              "auto_execute_tools": true,
+              "skill_access_mode": "PRELOADED_ONLY",
+              "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/tickets/in-progress/electron-e2e-runtime-isolation/probes/api-e2e/live-provider/isolated-electron-data-root/server-data/temp_workspace"
+            }
+          }
+        ],
+        "task_executions": []
+      }
+    }
+  },
+  "consoleEvents": [],
+  "unexpectedConsoleErrors": [],
+  "termination": {
+    "success": true,
+    "message": "Agent team run terminated successfully."
+  },
+  "cleanupResult": {
+    "processTreeCompletion": {
+      "status": "complete",
+      "identity": "posix-process-group:29369",
+      "forced": false,
+      "gracefulError": null
+    },
+    "portObservation": {
+      "status": "available",
+      "port": 59740,
+      "detail": null
+    }
+  },
+  "packageSourceAfter": {
+    "fileCount": 568,
+    "sha256": "68d5c5e776c9e087232706576d3fd0e554d223a76d2c662b71f502ba940a883d"
+  },
+  "packageSourceUnchanged": true,
+  "ordinaryAfter": {
+    "label": "run-after",
+    "healthStatus": 200,
+    "listenerPids": [
+      98429
+    ],
+    "identities": [
+      {
+        "pid": 98429,
+        "fingerprint": "ebeda19895d06c482766ff54c5f38405512464b3329f02f8b4ed93f786b2246d",
+        "commandIsAutoByteus": true
+      }
+    ]
+  },
+  "ordinaryIdentityUnchanged": true,
+  "isolatedRootDisposed": true,
+  "isolatedRootRetainedAfterFailure": false
+}

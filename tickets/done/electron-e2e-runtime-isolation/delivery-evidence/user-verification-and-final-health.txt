@@ -1,0 +1,19 @@
+# Explicit user verification and final read-only health check
+verification_source=solution_designer relay of explicit user completion/finalization authorization
+verification_observed_at=2026-08-20T14:05:00Z..2026-08-20T14:06:59Z
+verification_result=accepted; running delivered app and server log showed no ticket issue
+verification_scope=read-only current-app/process/health/log observation; no UI automation or second E2E launch
+final_check_at=2026-08-20T14:08:55Z
+app_pid=57441
+server_pid=58045
+server_parent_pid=57441
+executable=/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+executable_sha256=c0bf182389ea930585e3b0bf5c4f16529461e02bf3be751cb364d0e25f2257e0
+app_process_present=yes
+server_process_present=yes
+health_response_and_status={"status":"ok","message":"Server is running"}|200
+listener=AutoByteu:58045:*:29695
+server_log=/Users/normy/.autobyteus/server-data/logs/server.log
+server_log_last_500_fatal_pattern_count=0
+process_actions=none; no process was signaled or stopped
+app_preservation_constraint=do not remove ticket worktree while this executable is running

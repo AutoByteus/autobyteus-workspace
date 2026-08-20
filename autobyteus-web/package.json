@@ -47,7 +47,8 @@
     "test:e2e:diagram-zoom-viewer": "node tests/e2e/diagram-zoom-viewer-probe.mjs",
     "test:e2e:vnc-live": "node tests/e2e/vnc-live-probe.mjs",
     "test:e2e:background-contention": "node tests/e2e/background-agent-renderer-contention-probe.mjs",
-    "test:e2e:electron": "node scripts/run-electron-e2e.mjs"
+    "test:e2e:electron": "node scripts/run-electron-e2e.mjs",
+    "test:e2e:electron:isolation": "node tests/e2e/electron-launch-profile-probe.mjs"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
