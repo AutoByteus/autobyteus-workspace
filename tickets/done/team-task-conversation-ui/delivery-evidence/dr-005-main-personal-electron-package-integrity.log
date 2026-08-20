@@ -1,0 +1,55 @@
+# DR-005 main personal macOS arm64 package integrity
+Recorded: 2026-08-20T19:04:41+02:00
+Source HEAD: fbb60fe37ba3f7a90f5561a940a87a45c9c90b3b
+Remote personal: fbb60fe37ba3f7a90f5561a940a87a45c9c90b3b
+
+## Artifact existence and metadata
+PASS DMG: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.dmg
+PASS ZIP: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.zip
+PASS app: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+dmg_size=463867255
+zip_size=457732656
+version=1.4.52
+bundle_id=com.autobyteus.app
+/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus: Mach-O 64-bit executable arm64
+
+## SHA-256
+daa26af981f7f274f81eacbfbb91b9e1bff8c35faaed8d0164098ef6409355c2  /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.dmg
+1b80f47805d1e71590c86cf95c591c4a947ad47062c1da74fd509660a28c99ba  /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.zip
+f753cc0ea68564e50be7f6172b1f518462998b4e07a984349f0739f07083691f  /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar
+c0bf182389ea930585e3b0bf5c4f16529461e02bf3be751cb364d0e25f2257e0  /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+
+## DMG verification
+Prüfsumme für Protective Master Boot Record (MBR : 0) berechnen …
+Protective Master Boot Record (MBR :: Die überprüfte CRC32-Prüfsumme ist $3836A627
+Prüfsumme für GPT Header (Primary GPT Header : 1) berechnen …
+ GPT Header (Primary GPT Header : 1): Die überprüfte CRC32-Prüfsumme ist $0780BE2B
+Prüfsumme für GPT Partition Data (Primary GPT Table : 2) berechnen …
+GPT Partition Data (Primary GPT Tabl: Die überprüfte CRC32-Prüfsumme ist $2D2E1228
+Prüfsumme für  (Apple_Free : 3) berechnen …
+                    (Apple_Free : 3): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für disk image (Apple_APFS : 4) berechnen …
+         disk image (Apple_APFS : 4): Die überprüfte CRC32-Prüfsumme ist $76315632
+Prüfsumme für  (Apple_Free : 5) berechnen …
+                    (Apple_Free : 5): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für GPT Partition Data (Backup GPT Table : 6) berechnen …
+GPT Partition Data (Backup GPT Table: Die überprüfte CRC32-Prüfsumme ist $2D2E1228
+Prüfsumme für GPT Header (Backup GPT Header : 7) berechnen …
+  GPT Header (Backup GPT Header : 7): Die überprüfte CRC32-Prüfsumme ist $23DF005A
+Die überprüfte CRC32-Prüfsumme ist $E38C0A7E
+hdiutil: verify: checksum of "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.dmg" is VALID
+
+## ZIP integrity
+PASS unzip -tqq
+
+## Packaged terminal runtime
+node-pty root: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+PASS executable target helper: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+PASS executable selected helper: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper: Mach-O 64-bit executable arm64
+/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper:          Mach-O 64-bit executable arm64
+PASS node-pty spawn probe
+
+## Signing state
+/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app: code has no resources but signature indicates they must be present
+codesign verification: expected local unsigned/ad-hoc package state; no release signing requested

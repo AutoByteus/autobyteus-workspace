@@ -107,3 +107,18 @@ were updated against the integrated branch.
   correction.
 - Build report:
   `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-task-conversation-ui/electron-test-build-report.md`.
+
+
+## DR-005 Main-Personal Build Follow-Up
+
+- Trigger: User requested a fresh local Electron package from the updated main
+  `personal` workspace after repository finalization.
+- Long-lived docs impact: `No impact`.
+- Rationale: The documented local no-notarization command remained correct and
+  produced the package successfully. The observed blank-profile Prisma engine
+  behavior is recorded as build evidence/residual rather than asserted as a
+  durable supported workflow change; the user's existing-profile launch passed.
+- Delivery artifacts updated: `electron-test-build-report.md`,
+  `handoff-summary.md`, `release-deployment-report.md`,
+  `delivery-revision-record.md`, and `delivery-evidence/dr-005-*`.
+- Release impact: `None`; package is an ignored local test artifact only.

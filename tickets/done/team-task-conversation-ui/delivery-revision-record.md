@@ -8,6 +8,7 @@
 | `DR-002` | User requested a README-grounded Electron build for hands-on testing | `DR-001 — Pass / awaiting verification` | `Pass — personal macOS arm64 package built, integrity checked, and isolated-smoke tested; finalization held` | `electron-test-build-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `docs-sync-report.md`, `delivery-evidence/dr-002-*` |
 | `DR-003` | User confirmed completion and authorized finalization without release | `DR-002 — Pass / awaiting verification` | `Pass — verification accepted, final target unchanged, ticket archived, repository finalization authorized` | `handoff-summary.md`, `release-deployment-report.md`, `electron-test-build-report.md`, `docs-sync-report.md`, `delivery-evidence/dr-003-user-verification-and-final-refresh.log` |
 | `DR-004` | Execute the user-authorized repository finalization and cleanup | `DR-003 — Pass / finalization authorized` | `Pass — ticket and target pushed, personal merged and pushed, ticket worktree/branches removed; no release performed` | `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/dr-004-repository-finalization-and-cleanup.log` |
+| `DR-005` | User requested a fresh Electron build from updated main `personal` after finalization | `DR-004 — Pass / finalized` | `Pass for existing-profile user test — build/integrity/normal launch passed; fresh blank-profile Prisma initialization has a bounded host-specific residual` | `electron-test-build-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/dr-005-*` |
 
 ## Revision Entries
 
@@ -184,3 +185,53 @@
   scope.
 - Remaining risks: Product residuals recorded under `DR-003` remain bounded;
   there is no repository-finalization or cleanup blocker.
+
+
+### DR-005 — Main-personal Electron user-test package
+
+- Delivery round and trigger: After repository finalization, the user requested
+  confirmation that main `personal` was updated and a fresh Electron build from
+  that workspace.
+- Prior authoritative result: `DR-004 — repository finalized and pushed;
+  dedicated ticket worktree/branches removed; no release performed.`
+- Current authoritative result: `Pass for the user's existing-profile test path
+  — local personal macOS arm64 version 1.4.52 built successfully from main
+  personal head fbb60fe37ba3f7a90f5561a940a87a45c9c90b3b, which matched
+  origin/personal at build start. DMG/ZIP integrity, arm64 metadata, packaged
+  node-pty, an isolated seeded-profile exact-artifact launch, and a normal launch
+  against the user's existing profile all passed.`
+- Build command: `NO_TIMESTAMP=1 APPLE_TEAM_ID=
+  AUTOBYTEUS_BUILD_FLAVOR=personal pnpm build:electron:mac` from main
+  `autobyteus-web`; exit `0`.
+- Recommended DMG:
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.dmg`;
+  SHA-256 `daa26af981f7f274f81eacbfbb91b9e1bff8c35faaed8d0164098ef6409355c2`.
+- ZIP SHA-256:
+  `1b80f47805d1e71590c86cf95c591c4a947ad47062c1da74fd509660a28c99ba`.
+- User-test launch: The exact main-workspace app is running as PID `27867`; its
+  packaged backend PID `28501` is healthy on `http://127.0.0.1:29695/rest/health`
+  using `/Users/normy/.autobyteus/server-data`.
+- Bounded verification residual: Two default isolated launches against a blank
+  temporary profile failed before readiness with a blank Prisma 5.22 schema-
+  engine error. The packaged migration completed all 22 migrations when
+  `RUST_LOG=info` was present; default migration of a copy of the user's existing
+  database passed with no pending migrations; and the exact application became
+  healthy with default environment after the isolated database was seeded.
+  This residual is outside the Team Task Conversation UI change and does not
+  block the requested existing-profile test, but a brand-new-profile package
+  launch is not certified by DR-005.
+- Evidence: `delivery-evidence/dr-005-main-personal-electron-build-macos-arm64.log`,
+  `delivery-evidence/dr-005-main-personal-electron-package-integrity.log`,
+  `delivery-evidence/dr-005-prisma-fresh-root-diagnostic.log`,
+  `delivery-evidence/dr-005-main-personal-seeded-isolated-electron-smoke.log`,
+  and `delivery-evidence/dr-005-main-personal-normal-state-launch.log`. The two
+  failed default fresh-root launch attempts are retained explicitly in the
+  corresponding `dr-005-main-personal-isolated-electron-launch-smoke*.log` files.
+- Documentation impact: `No long-lived docs impact`; README build commands and
+  release separation remain accurate. Delivery artifacts were updated with the
+  concrete package and residual.
+- Release decision/result: `Not required / not performed`; package remains local,
+  unsigned/unnotarized, ignored, and uncommitted.
+- Follow-up classification: `Local Fix` to `/implementation_engineer` for the
+  non-blocking fresh-blank-profile Prisma startup behavior; current task
+  finalization and existing-profile testing remain complete.

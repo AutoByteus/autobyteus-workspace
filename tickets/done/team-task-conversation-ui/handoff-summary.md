@@ -4,8 +4,8 @@
 
 - Ticket: `team-task-conversation-ui`
 - Date: `2026-08-20`
-- Current Status: `Repository finalized on personal; cleanup complete; no release`
-- Current delivery revision: `DR-004`
+- Current Status: `Finalized on personal; fresh main-workspace Electron build running for user testing; no release`
+- Current delivery revision: `DR-005`
 - Ticket branch: `codex/team-task-conversation-ui-design` (merged and deleted)
 - Finalization target: `origin/personal`
 
@@ -71,17 +71,34 @@
 
 ## Local Electron Test Package
 
-- `DR-002` produced and verified a local unsigned/unnotarized macOS arm64
-  package from the integrated ticket worktree; its DMG SHA-256 was
-  `77b277a8086ab6dd47154452446b8e55f7835ce254b55b04af891cb9b307eb7a`.
-- That package was an ignored, worktree-scoped verification artifact and was
-  removed with the dedicated worktree after repository finalization.
-- The user requested a fresh local package built from the updated main
-  `personal` workspace. This build is pending under the next delivery revision
-  and does not authorize release, publication, or deployment.
-- Historical build and integrity evidence remain in
-  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-task-conversation-ui/electron-test-build-report.md`
-  and `delivery-evidence/dr-002-*`.
+- Current build source: main workspace branch `personal` at
+  `fbb60fe37ba3f7a90f5561a940a87a45c9c90b3b`; it matched
+  `origin/personal` at build start.
+- Build result: `Pass`, local personal macOS arm64 version `1.4.52`.
+- Recommended DMG:
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.dmg`
+- DMG SHA-256:
+  `daa26af981f7f274f81eacbfbb91b9e1bff8c35faaed8d0164098ef6409355c2`.
+- ZIP:
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.zip`
+- ZIP SHA-256:
+  `1b80f47805d1e71590c86cf95c591c4a947ad47062c1da74fd509660a28c99ba`.
+- Integrity: DMG verification, ZIP integrity, arm64 metadata, package hashes,
+  node-pty helper architecture/execute bits, and a real packaged node-pty spawn
+  all passed.
+- Current user-test process: exact app PID `27867` and packaged backend PID
+  `28501`; health passed at `http://127.0.0.1:29695/rest/health` against the
+  user's existing data directory.
+- Seeded isolated exact-artifact launch: passed and cleaned up.
+- Fresh-profile residual: two unseeded isolated launches failed during blank
+  Prisma 5.22 schema-engine initialization on this host. Packaged migration
+  passes with `RUST_LOG=info`, and default migration passes on the existing
+  database copy. Existing-profile testing is ready; DR-005 does not certify a
+  brand-new empty profile.
+- Signing: local unsigned/unnotarized test package. macOS may require
+  right-click **Open** confirmation. No release/publication occurred.
+- Report:
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-task-conversation-ui/electron-test-build-report.md`.
 
 ## Verification Summary
 
@@ -142,9 +159,9 @@
   listener on port `29695` remained.
 - Dedicated ticket worktree, its local branch, and its remote branch were
   removed after successful target integration.
-- The DR-002 local Electron package was cleanup-scoped to the removed ticket
-  worktree. The user requested a new package from the updated main `personal`
-  workspace; that follow-up build is pending and does not change release scope.
+- A fresh ignored Electron package was built from main `personal` under `DR-005`;
+  the exact app is healthy on port `29695` for user testing. This does not change
+  release scope.
 - No version bump, release commit, tag, publication, deployment, or release
   notes were required or performed.
 
