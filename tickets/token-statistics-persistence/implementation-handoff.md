@@ -5,81 +5,85 @@
 - Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/tickets/token-statistics-persistence/requirements.md`
 - Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/tickets/token-statistics-persistence/investigation-notes.md`
 - Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/tickets/token-statistics-persistence/design-spec.md`
-- Supplemental task artifacts: `N/A`
+- Supplemental task artifacts:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/tickets/token-statistics-persistence/api-e2e-test-review-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/tickets/token-statistics-persistence/api-e2e-coverage-investigation.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/tickets/token-statistics-persistence/api-e2e-execution-coverage-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/tickets/token-statistics-persistence/api-e2e-revision-record.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/tickets/token-statistics-persistence/delivery-revision-record.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/tickets/token-statistics-persistence/docs-sync-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/tickets/token-statistics-persistence/electron-test-build-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/tickets/token-statistics-persistence/handoff-summary.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/tickets/token-statistics-persistence/release-deployment-report.md`
+  - API/E2E failure evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/tickets/token-statistics-persistence/probes/api-e2e/real-provider-evidence`
 - Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/tickets/token-statistics-persistence/solution-revision-record.md`
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/tickets/token-statistics-persistence/design-review-report.md`
 - Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/tickets/token-statistics-persistence/architecture-review-revision-record.md`
-- Triggering rework report, revision record, or evidence, when applicable: `N/A`
+- Triggering rework report, revision record, or evidence:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/tickets/token-statistics-persistence/code-review-report.md` (`CRR-003`, `CR-001`)
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/tickets/token-statistics-persistence/code-review-revision-record.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/tickets/token-statistics-persistence/api-e2e-execution-coverage-report.md` (`API-REV-002`, `LIVE-BROWSER-TS-008/009`)
 
 ## Current Implementation Summary
 
-The implementation preserves the persisted post-event run summary across standalone and team streams, validates it once at the frontend transport boundary, and admits it only into exact record-backed run/member caches. Store-owned readiness now drives GraphQL hydration. Individual delta folding and the duplicate composable member cache are removed. Team totals retain only a clearly provisional pre-hydration delta fold; a post-hydration event makes the aggregate refresh-required, and the store coalesces callers into one generation-aware sequential refresh loop until a response spans a quiet generation.
+The complete IR-001 record-backed Token Meter implementation remains in place. IR-002 corrects CR-001 at its source: `buildTokenUsageRunSummaryFromRecords` now constructs the exact runtime `TokenUsageRunSummaryPayload` through an explicit approved-field projection instead of spreading the wider statistics aggregate. `observed_runtime_kinds`, `observed_model_identifiers`, and `observed_model_providers` remain owned by `TokenUsageCostSummaryAggregate` and cannot cross into the strict Team summary. The durable Team transport regression now creates a real `TokenUsageRunRecord` through the production fold, builds the real summary, injects it into a real token event, and verifies adapter admission plus strict websocket projection.
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/tickets/token-statistics-persistence/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002`
 - Related solution revision IDs: `SR-001`
 - Related architecture-review revision IDs: `ARCH-REV-001`
-- Related code-review revision IDs: `N/A`
-- Related API/E2E revision IDs: `N/A`
-- Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A`
+- Related code-review revision IDs: `CRR-003` (trigger; `CRR-001/002` historical)
+- Related API/E2E revision IDs: `API-REV-002` (current failed result; `API-REV-001` superseded)
+- Related delivery revision IDs: `DR-001`, `DR-002`, `DR-003` (historical; delivery remains stopped)
+- Triggering finding IDs: `CR-001`
 
 ## Reviewed Behavior Implementation Trace
 
 | Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
 | --- | --- | --- | --- |
-| BEH-001 | Preserve the current-record persistence/GraphQL authority and expose its post-persist cumulative snapshot. | Existing accumulator/current-record writer; shared summary DTO; server team adapter/domain/projector. | Persistence and GraphQL calculations are unchanged; the existing `run_summary_after_event` is transported losslessly. |
-| BEH-002 | Standalone cache is record-backed only; missing snapshots keep hydration required. | `tokenUsageRunSummaryMapper.ts`; `tokenUsageMeterStore.ts`; `useTokenUsageWorkspaceScope.ts`. | Standalone events no longer fold deltas. Non-null exact snapshots admit; null leaves the run absent and GraphQL hydration eligible. |
-| BEH-003 | Preserve exact team/member identity and admit only complete member snapshots. | Team event adapter/projector and strict contract; compound member keys/admission in the store. | Adapter validates execution run/root identity, frontend mapper revalidates the selected team/member, and the old duplicate composable member cache is removed. |
-| BEH-004 | Keep backend ownership of the team total and do not extend an inclusive hydrated total blindly. | `tokenUsageMeterStore.ts` team aggregate entry and `fetchTeamRunSummary`. | States are `live_partial`, `refresh_required`, and `record_backed`; only pre-hydration partial state folds deltas. Later persisted events dirty an existing total for GraphQL refresh. |
-| BEH-005 | Render only display-ready individual summaries while preserving the Token Meter hierarchy and interaction. | Store readiness/getters; workspace composable; existing `TokenUsageMeterPanel.vue` and `TeamTokenUsageSummary.vue`. | Existing presentation components/layout/localization remain unchanged; regression coverage proves lifetime values reach standalone and focused-member views after null post-restart events. |
-| BEH-006 | Resolve duplicates and live/GraphQL races deterministically. | Store event identity set, `usageReportCount` admission, aggregate live/fetch generations, per-team request map. | Equal/lower individual generations are ignored. Team aggregate callers share one request and dirty generations cause serial, not parallel, follow-up reads until stable. |
+| BEH-001 | Preserve current-record persistence/GraphQL authority and expose an exact post-persist cumulative snapshot. | `token-usage-run-aggregate.ts`; existing accumulator/current-record writer; shared summary DTO. | IR-002 makes the builder's runtime key set exact without changing persistence, aggregate calculations, or GraphQL meaning. |
+| BEH-002 | Standalone cache is record-backed only; missing snapshots keep hydration required. | Frontend mapper/store/workspace scope from IR-001. | Unchanged by IR-002. |
+| BEH-003 | Preserve an exact Team member cumulative snapshot through the strict Team transport. | Exact builder projection -> `TeamAgentEventAdapter` -> `projectTeamAgentEventMessage` -> strict shared parser. | CR-001 fixed: valid persisted events no longer carry the three statistics-only keys that caused `TEAM_AGENT_EVENT_ADMISSION_FAILED`. |
+| BEH-004 | Backend owns team totals; do not blindly extend inclusive hydrated totals. | Team aggregate state/generation logic from IR-001. | Unchanged by IR-002. |
+| BEH-005 | Render only display-ready summaries and report live failures truthfully. | Existing frontend presentation and cache behavior; corrected server event path. | No frontend code changed. The server correction removes the specific live red error origin; independent live-browser confirmation remains downstream. |
+| BEH-006 | Resolve duplicates and live/GraphQL races deterministically. | IR-001 store admission and aggregate generation logic; IR-002 exact builder boundary. | Cache/race behavior unchanged; the valid Team event can now reach it. |
 
 ## Key Files Or Areas
 
-- Shared exact transport contract:
+- IR-002 production correction:
+  - `autobyteus-server-ts/src/token-usage/projections/token-usage-run-aggregate.ts`
+- IR-002 durable builder-to-strict-Team regression:
+  - `autobyteus-server-ts/tests/unit/agent-team-execution/team-agent-token-usage-event-transport.test.ts`
+- Preserved statistics aggregate owner:
+  - `autobyteus-server-ts/src/token-usage/projections/token-usage-cost-summary-aggregate.ts`
+- Preserved strict transport boundary:
   - `autobyteus-team-stream-contracts/src/token-usage-run-summary-dto.ts`
-  - `autobyteus-team-stream-contracts/src/team-agent-message-dtos.ts`
-  - `autobyteus-team-stream-contracts/src/index.ts`
-  - tracked generated `autobyteus-team-stream-contracts/dist/*` outputs
-- Server team-stream preservation and identity admission:
-  - `autobyteus-server-ts/src/agent-team-execution/domain/team-agent-event.ts`
   - `autobyteus-server-ts/src/agent-team-execution/services/team-agent-event-adapter.ts`
   - `autobyteus-server-ts/src/services/agent-streaming/team-agent-event-websocket-projector.ts`
-- Frontend mapping, cache policy, and orchestration:
-  - `autobyteus-web/services/agentStreaming/tokenUsageRunSummaryMapper.ts`
-  - `autobyteus-web/types/tokenUsageMeter.ts`
-  - `autobyteus-web/stores/tokenUsageMeterStore.ts`
-  - `autobyteus-web/composables/useTokenUsageWorkspaceScope.ts`
-- Focused implementation regressions:
-  - `autobyteus-team-stream-contracts/tests/token-usage-run-summary-dto.test.mjs`
-  - `autobyteus-server-ts/tests/unit/agent-team-execution/team-agent-token-usage-event-transport.test.ts`
-  - `autobyteus-web/stores/__tests__/tokenUsageMeterStore.spec.ts`
-  - `autobyteus-web/components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts`
+- Complete IR-001 areas remain the shared contracts/generated output, server Team transport, frontend mapper/store/workspace composable, and focused contract/server/store/component regressions recorded in IR-001.
 
 ## Important Assumptions
 
-- `usageReportCount` remains monotonic for one canonical agent run and is not used to order a team aggregate.
-- A non-null `run_summary_after_event` is emitted only after the current record was persisted successfully; null means the event is not eligible to create record-backed frontend state.
-- Existing GraphQL run/member/team summary fields remain the complete camel-case frontend summary shape.
-- Team websocket session identity plus `agent_run_id`, and the nested summary's exact `root_team_run_id`, identify the member subject without adding a second team identifier to the message envelope.
+- `TokenUsageCostSummaryAggregate` intentionally remains wider than `TokenUsageRunSummaryPayload`; summary construction is the explicit narrowing boundary.
+- The three `observed_*` arrays are statistics-only and are not part of the approved current-run summary DTO.
+- `usageReportCount` remains the monotonic generation for one canonical agent run.
+- A non-null `run_summary_after_event` remains eligible for record-backed frontend state only after successful persistence.
 
 ## Known Risks
 
-- The generation-aware team loop is intentionally sequential and may remain active during uninterrupted event traffic; focused tests prove coalescing and maximum concurrency one, while realistic long-running traffic remains for downstream coverage.
-- The exact nested DTO and mapper now enumerate every current field and unit price, but future server-summary fields must update the shared strict contract, mapper, and tests together.
-- The ticket worktree is eight commits behind `origin/personal`; architecture review found no intervening token-path changes. Delivery still owns refreshing/integrating against the tracked base.
-- Repository-wide frontend type checking is not currently clean; details are recorded under local checks. Production builds and changed-path-focused validation pass.
+- `LIVE-BROWSER-TS-008` and linked fresh-process `LIVE-BROWSER-TS-009` must be rerun by API/E2E after source review; implementation checks do not supersede `API-REV-002`.
+- Future payload fields must be added explicitly to the domain payload, production projection, strict DTO, frontend mapper, and regression. Future statistics-only aggregate fields will no longer leak automatically.
+- API/E2E and delivery reroute artifacts were already modified/untracked in the shared worktree. IR-002 preserved them and did not stage, overwrite, or discard them.
 
 ## Task Design Health Assessment Implementation Check
 
 - Reviewed change posture: `Correctness/refactor change with unchanged persisted model and presentation design`
-- Reviewed root-cause classification: `Frontend cache provenance/readiness defect plus loss of the post-persist member snapshot at the team transport boundary`
-- Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): `Refactor Needed Now`
+- Reviewed root-cause classification: `CR-001 implementation-source defect: over-wide statistics aggregate spread across an exact run-summary boundary`
+- Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): `Refactor Needed Now` (IR-001); IR-002 is a bounded `Local Fix`
 - Implementation matched the reviewed assessment (`Yes`/`No`): `Yes`
 - If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): `N/A`
-- Evidence / notes: The ambiguous individual delta cache, raw-object readiness checks, duplicate member cache, generic upsert seam, parallel team-source metadata, and blind hydrated-total extension were removed rather than wrapped. No design mismatch was discovered.
+- Evidence / notes: CRR-003 confirmed that the reviewed design is adequate and already forbids the unknown/unvalidated spread. IR-002 fixes the implementation without loosening the contract or moving the observed arrays.
 
 ## Legacy / Compatibility Removal Check
 
@@ -89,14 +93,14 @@ The implementation preserves the persisted post-event run summary across standal
 - Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): `Yes`
 - Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`
 - Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`
-- Notes: The largest changed production source is `tokenUsageMeterStore.ts` at 409 effective non-empty lines. Its refactor exceeds the 220 changed-line signal because it replaces the governing cache lifecycle in one owner; splitting admission/readiness/generation across another stateful module would weaken the reviewed boundary. All changed production files remain under 500 effective lines. Searches found no retained `memberSummaryByKey`, `teamAgentSummaries`, `teamSummarySources`, `ledger_backed`, generic `upsertSummary`, or external raw cache writes.
+- Notes: IR-002 adds 31 explicit projection lines to `token-usage-run-aggregate.ts`; the file remains below 220 effective non-empty lines and the local delta remains below the split signal. The explicit projection is intentional boundary hardening, not duplication of aggregate ownership.
 
 ## Persisted Data Transition Check (When Applicable)
 
 - Approved decision (`Not Affected`/`Directly Usable — No Migration`/`Discard or Rebuild`/`Migration Required`): `Directly Usable — No Migration`
 - Design-spec decision reference: `design-spec.md`, “Persisted Data / State Transition Decision”
 - Implementation follows the approved decision without an unapproved migration or version-specific runtime fallback: `Yes`
-- Direct-use evidence or discard/rebuild result, when applicable: Existing current-record GraphQL readers are reused unchanged; live cache entries consume the same complete persisted-record projection. No schema, migration, writer, or historical-shape reader changed.
+- Direct-use evidence or discard/rebuild result, when applicable: IR-002 changes only the public in-memory projection key set. Current records, statistics aggregate fields, repository encoding, schema, GraphQL readers, and migration behavior are unchanged. API-REV-002 already proved fresh-process record restoration.
 - Migration implementation and focused checks, only when `Migration Required`: `N/A`
 - Deviation from the reviewed transition decision: `None`
 
@@ -104,54 +108,36 @@ The implementation preserves the persisted post-event run summary across standal
 
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence`
 - Branch: `codex/token-statistics-persistence`
-- Starting commit: `1b2e9b94d`
-- Dependencies were provisioned with `pnpm install --frozen-lockfile`; no lockfile change resulted.
-- Nuxt metadata and Prisma client generation were prepared locally for build/test execution. Generated build/test state is ignored and is not part of the change.
-- The worktree was `0 ahead / 8 behind` `origin/personal` before the implementation commit.
+- Rework starting HEAD: `6076fb2d0` (delivery-integrated state; branch was five commits ahead of `origin/personal`)
+- Existing dependencies and generated Prisma client were sufficient. No dependency or lockfile change was made.
+- Pre-existing API/E2E, code-review, delivery, and evidence changes remain in the shared worktree and are intentionally excluded from the implementation-owned commit.
 
 ## Local Implementation Checks Run
 
-Passed implementation-scoped checks:
+IR-002 passed implementation-scoped checks:
 
-- `pnpm install --frozen-lockfile`
-- `pnpm --filter @autobyteus/team-stream-contracts test` — build plus 2 contract tests passed.
-- `pnpm --filter autobyteus-server-ts exec vitest run tests/unit/agent-team-execution/team-agent-token-usage-event-transport.test.ts` — 3 tests passed.
-- `pnpm --filter autobyteus exec vitest run stores/__tests__/tokenUsageMeterStore.spec.ts components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts` — 20 tests passed.
-- `pnpm --filter autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit`
-- `pnpm --filter autobyteus-server-ts build` — full build and sanitized built-in-agent bootstrap smoke passed.
-- `pnpm --filter autobyteus guard:web-boundary`
-- `pnpm --filter autobyteus guard:localization-boundary`
-- `pnpm --filter autobyteus build` — Nuxt production build/prerender passed.
-- `git diff --check`
-- Focused source searches for removed APIs and raw cache bypasses returned no matches outside the owning store.
+- Focused builder-to-strict-Team regression only: `pnpm --filter autobyteus-server-ts exec vitest run tests/unit/agent-team-execution/team-agent-token-usage-event-transport.test.ts -t "preserves the exact production-builder summary"` — 1 passed, 2 skipped by filter.
+- Shared strict contract: `pnpm --filter @autobyteus/team-stream-contracts test` — build plus 2 tests passed.
+- Affected server suites: `pnpm --filter autobyteus-server-ts exec vitest run tests/unit/agent-team-execution/team-agent-token-usage-event-transport.test.ts tests/unit/token-usage/projections/token-usage-run-fold.test.ts tests/unit/token-usage/services/token-usage-run-accumulator.test.ts` — 14 tests passed across 3 files.
+- `pnpm --filter autobyteus-server-ts build` — production TypeScript build, managed asset copy, and sanitized built-in-agent bootstrap smoke passed.
+- Scoped `git diff --check` and patch inspection for the production builder, regression, and implementation artifacts passed.
+- Source guard confirmed `buildTokenUsageRunSummaryFromRecords` no longer spreads `aggregate`; regression proves the statistics aggregate still contains all three `observed_*` arrays while the built/projected strict summary contains none.
 
-Known repository typecheck limitations, not presented as passing checks:
-
-- `pnpm --filter autobyteus-server-ts typecheck` fails on the existing `tsconfig.json` test inclusion/`rootDir: src` mismatch (`TS6059` across test files); the production `tsconfig.build.json` check and full server build pass.
-- An explicit frontend `vue-tsc` run reports 304 existing repository-wide type errors. Filtering its output produced no hits for the changed production/test paths. The Nuxt production build and focused Vitest suites pass.
-
-These are local implementation checks only, not API/E2E sign-off.
+These are local implementation checks only. No API/E2E environment or live provider rerun was performed.
 
 ## Frontend Rendered-Result Check (When Applicable)
 
-- Affected surfaces / journeys: Standalone and focused team-member Token Meter values after reopen/restart; team total refresh state affects the team table total.
-- Approved UI/UX, interaction, requirement, or design references: `requirements.md` REQ-001–REQ-006 / AC-001–AC-009 and `design-spec.md` BEH-001–BEH-006. The reviewed design explicitly preserves the existing hierarchy, status semantics, localization, accessibility, and responsive layout.
-- Existing design system, shared components, and adjacent product surfaces reviewed: Existing `TokenUsageMeterPanel.vue`, `TeamTokenUsageSummary.vue`, token formatting helpers, localization messages, and focused component regressions.
-- Project development / preview instructions and rendered surface used: Read root/frontend README instructions; ran the supported Nuxt browser development renderer and temporarily mounted the unchanged production Token Meter component with a record-backed store state. The temporary preview page was removed after inspection.
-- States, layouts, viewports, and interactions inspected: At the available 841×738 browser viewport, inspected a durable lifetime state showing 25,000,000 gross input tokens, 800,000 output tokens, $22.60 total, `codex_app_server`, and 199 reports. Verified card hierarchy, prompt progress, input breakdown, pricing metadata, scroll layout, localized number/currency formatting, calculation-details expand/collapse, `aria-expanded`, and retained button focus. Happy-DOM component regressions additionally exercise standalone/member post-restart hydration, partial team state, loading/error/empty presentation, and calculation-details behavior.
-- Visual or interaction issues found and corrected: No production presentation defect was observed; this implementation changes data authority/readiness rather than component markup or styling.
-- Supporting evidence and remaining unverified states or limitations: Browser DOM and full-page screenshots confirmed the inspected state. No credentialed real provider run was launched, and the browser tool exposed one fixed desktop-width viewport; full live restart, mobile-width, and full team workspace journeys remain for downstream API/E2E investigation. This is implementation self-validation, not E2E sign-off.
+- Current IR-002 check: `Not Applicable` — this Local Fix changes only the server runtime projection and its server regression; no frontend component, styling, interaction, or client state code changed.
+- The IR-001 browser-rendered self-check is historical and does not supersede the real Team failure captured by `API-REV-002`.
+- The specific user-visible live Team red-error journey requires independent rerun of `LIVE-BROWSER-TS-008`, followed by the linked fresh-process `LIVE-BROWSER-TS-009`, after source review passes.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
-- Reopen a standalone run with durable history, receive two post-restart events with null snapshots, and confirm the Token tab retains the full GraphQL lifetime totals rather than showing two reports.
-- Repeat for a focused member in a team and verify compound team/member identity prevents another team from satisfying readiness.
-- Race GraphQL run/member reads against equal, lower, and higher `usageReportCount` websocket snapshots.
-- Deliver a team event during an in-flight team-total query; verify at most one query is active, the first response cannot mark readiness complete, and the coalesced stable response wins.
-- Deliver a persisted event after a record-backed team total and confirm the displayed total is not incremented blindly before refresh.
-- Exercise persistence-unavailable/null summaries, malformed/unsafe generations, wrong run/root identity, duplicate event delivery, and full nested unit-price fidelity.
-- Validate the above across standalone browser mode and web-equivalent desktop rendering, including mobile-width Token Meter layout.
+- Required: rerun `LIVE-BROWSER-TS-008` through the real mixed-runtime Team and confirm no red `Rejected TOKEN_USAGE_UPDATED` card appears while live member totals update.
+- Required: rerun `LIVE-BROWSER-TS-009` after a fresh backend/browser lifecycle and reconfirm exact durable member/team totals and messages.
+- Retain strict rejection coverage for genuinely malformed, unsafe-generation, and wrong run/root identity summaries.
+- When adding future aggregate statistics, verify the statistics aggregate retains them while the exact current-run summary runtime key set remains equal to the strict DTO key set.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-Yes. The implementation engineer ran only focused unit/contract/component/build checks and a browser-rendered self-inspection. `api_e2e_engineer` still owns coverage investigation, durable API/E2E decisions, realistic environment setup/execution, and independent evidence after source review passes.
+Yes. `API-REV-002` remains the authoritative failed execution result until API/E2E reruns `LIVE-BROWSER-TS-008` and `LIVE-BROWSER-TS-009` after source review. Delivery remains stopped.
