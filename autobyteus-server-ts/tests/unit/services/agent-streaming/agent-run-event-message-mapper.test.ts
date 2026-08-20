@@ -4,6 +4,23 @@ import { AgentRunEventType } from "../../../../src/agent-execution/domain/agent-
 import { ServerMessageType } from "../../../../src/services/agent-streaming/models.js";
 
 describe("AgentRunEventMessageMapper", () => {
+  it("maps the canonical system instruction event without altering its raw identity or content", () => {
+    const mapper = new AgentRunEventMessageMapper();
+    const content = "  exact system prompt\n\nwith spacing  ";
+
+    const message = mapper.map({
+      eventType: AgentRunEventType.SYSTEM_INSTRUCTIONS_SUPPLIED,
+      runId: "run-1",
+      payload: { trace_id: "raw-system-id", content, ts: 12.5 },
+      statusHint: null,
+    });
+
+    expect(message).toEqual({
+      type: ServerMessageType.SYSTEM_INSTRUCTIONS_SUPPLIED,
+      payload: { trace_id: "raw-system-id", content, ts: 12.5 },
+    });
+  });
+
   it("maps compaction status events to the compaction websocket message type", () => {
     const mapper = new AgentRunEventMessageMapper();
 

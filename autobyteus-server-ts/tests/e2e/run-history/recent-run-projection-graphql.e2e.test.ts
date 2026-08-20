@@ -151,6 +151,18 @@ const boundaryTrace = (id: string, index: number): Record<string, unknown> => ({
   source_event: "api-e2e",
 });
 
+const systemInstructionTrace = (
+  id: string,
+  content: string,
+  ts = 1_800_000_000.25,
+): Record<string, unknown> => ({
+  id,
+  ts,
+  trace_type: "system_instruction",
+  content,
+  source_event: "SYSTEM_INSTRUCTIONS_SUPPLIED",
+});
+
 const assistantTrace = (
   id: string,
   index: number,
@@ -394,6 +406,126 @@ describe("recent run projection GraphQL e2e", () => {
       expect.objectContaining({ kind: "thinking", content: "team member private reasoning" }),
       expect.objectContaining({ kind: "assistant_text", content: "team member visible answer" }),
     ]);
+  });
+
+  it("hydrates active system instructions with raw-ID parity for standalone and team runs without changing Event Monitor visuals", async () => {
+    const instructionId = "rt-system-shared-parity";
+    const instructionContent = "System preface\n\n  preserve indentation\nfinal line";
+    const sharedTurnRows = [
+      userTrace("system-parity-user", 1, "same user message"),
+      assistantTrace("system-parity-assistant", 2, "same assistant answer"),
+    ];
+
+    const baselineRunId = "system-instruction-baseline";
+    const baselineRunDir = path.join(memoryDir, "agents", baselineRunId);
+    await writeStandaloneMetadata(baselineRunId, baselineRunDir);
+    await writeJsonl(path.join(baselineRunDir, RAW_TRACES_ACTIVE_MEMORY_FILE_NAME), sharedTurnRows);
+    const baselinePage = (await execGraphql<{
+      getRunEventMonitorActiveTracePage: ActiveTracePagePayload;
+    }>(STANDALONE_ACTIVE_TRACE_PAGE_QUERY, {
+      runId: baselineRunId,
+      beforeCursor: null,
+    })).getRunEventMonitorActiveTracePage;
+
+    const standaloneRunId = "system-instruction-standalone";
+    const standaloneRunDir = path.join(memoryDir, "agents", standaloneRunId);
+    await writeStandaloneMetadata(standaloneRunId, standaloneRunDir);
+    await writeJsonl(path.join(standaloneRunDir, RAW_TRACES_ACTIVE_MEMORY_FILE_NAME), [
+      systemInstructionTrace(instructionId, instructionContent),
+      ...sharedTurnRows,
+    ]);
+    const standaloneProjection = (await execGraphql<{
+      getRunProjection: ProjectionPayload;
+    }>(GRAPHQL_QUERY, { runId: standaloneRunId })).getRunProjection;
+    expect(standaloneProjection.activities).toEqual([
+      {
+        kind: "system_instruction",
+        activityId: instructionId,
+        content: instructionContent,
+        ts: 1_800_000_000.25,
+      },
+    ]);
+    const standalonePage = (await execGraphql<{
+      getRunEventMonitorActiveTracePage: ActiveTracePagePayload;
+    }>(STANDALONE_ACTIVE_TRACE_PAGE_QUERY, {
+      runId: standaloneRunId,
+      beforeCursor: null,
+    })).getRunEventMonitorActiveTracePage;
+    expect(standalonePage.events).toEqual(baselinePage.events);
+
+    const teamRunId = "system-instruction-team";
+    const memberRunId = "system-instruction-member";
+    const memberDir = await writeTeamMetadata({
+      teamRunId,
+      memberRunId,
+      memberRouteKey: "worker",
+    });
+    await writeJsonl(path.join(memberDir, RAW_TRACES_ACTIVE_MEMORY_FILE_NAME), [
+      systemInstructionTrace(instructionId, instructionContent),
+      ...sharedTurnRows,
+    ]);
+    const teamProjection = (await execGraphql<{
+      getTeamMemberRunProjection: ProjectionPayload;
+    }>(TEAM_GRAPHQL_QUERY, {
+      teamRunId,
+      agentRunId: memberRunId,
+    })).getTeamMemberRunProjection;
+    expect(teamProjection.activities).toEqual(standaloneProjection.activities);
+    const teamPage = (await execGraphql<{
+      getTeamMemberEventMonitorActiveTracePage: ActiveTracePagePayload;
+    }>(TEAM_ACTIVE_TRACE_PAGE_QUERY, {
+      teamRunId,
+      agentRunId: memberRunId,
+      beforeCursor: null,
+    })).getTeamMemberEventMonitorActiveTracePage;
+    expect(teamPage.events).toEqual(baselinePage.events);
+  });
+
+  it("omits a rotated system instruction from active hydration without reading its archive", async () => {
+    const runId = "system-instruction-rotated";
+    const runDir = path.join(memoryDir, "agents", runId);
+    await writeStandaloneMetadata(runId, runDir);
+    const activePath = path.join(runDir, RAW_TRACES_ACTIVE_MEMORY_FILE_NAME);
+    await writeJsonl(activePath, [
+      systemInstructionTrace("rt-system-rotated", "ARCHIVED-SYSTEM-INSTRUCTION-SENTINEL"),
+      boundaryTrace("system-instruction-boundary", 1),
+      userTrace("system-instruction-active-user", 2, "active user remains"),
+    ]);
+    const store = new RunMemoryFileStore(runDir);
+    const segment = store.rotateActiveRawTracesBeforeBoundary({
+      boundaryType: "provider_compaction_boundary",
+      boundaryKey: "system-instruction:boundary",
+      boundaryTraceId: "system-instruction-boundary",
+      runtimeKind: "AUTOBYTEUS",
+      sourceEvent: "api-e2e",
+    });
+    if (!segment) throw new Error("Expected the system-instruction prefix to rotate");
+    const archivePath = path.join(runDir, segment.file_name);
+    expect(await fs.readFile(archivePath, "utf-8")).toContain("ARCHIVED-SYSTEM-INSTRUCTION-SENTINEL");
+    expect(await fs.readFile(activePath, "utf-8")).not.toContain("ARCHIVED-SYSTEM-INSTRUCTION-SENTINEL");
+
+    const reads = trackRawTraceReads();
+    let projection: ProjectionPayload;
+    try {
+      projection = (await execGraphql<{ getRunProjection: ProjectionPayload }>(
+        GRAPHQL_QUERY,
+        { runId },
+      )).getRunProjection;
+    } finally {
+      reads.restore();
+    }
+    expect(projection.activities).toEqual([
+      expect.objectContaining({
+        kind: "compaction",
+        activityId: "compaction:boundary:system-instruction-boundary",
+      }),
+    ]);
+    expect(projection.activities.some((activity) => activity.kind === "system_instruction")).toBe(false);
+    expect(projection.conversation).toEqual([
+      expect.objectContaining({ kind: "message", role: "user", content: "active user remains" }),
+    ]);
+    expect(reads.paths).toContain(path.resolve(activePath));
+    expect(reads.paths).not.toContain(path.resolve(archivePath));
   });
 
   it("projects the newest 100 events from a >=5 MB active file without reading or changing its standalone archive", async () => {

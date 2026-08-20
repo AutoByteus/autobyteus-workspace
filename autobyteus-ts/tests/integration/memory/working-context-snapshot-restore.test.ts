@@ -209,7 +209,7 @@ describe('current-only recurrent compaction lifecycle integration', () => {
       'raw-r1',
       'raw-r2',
     ]);
-    expect(store.listRawTracesOrdered().map(({ id }) => id)).toEqual(['raw-unselected']);
+    expect(store.listTurnRawTracesOrdered().map(({ id }) => id)).toEqual(['raw-unselected']);
     expect(store.list(MemoryType.EPISODIC)).toHaveLength(2);
     expect(store.list(MemoryType.SEMANTIC)).toHaveLength(2);
 

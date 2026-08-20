@@ -11,6 +11,20 @@ export function useMobileFocusedRunIdentity(context: Ref<MobileWorkContext | nul
 
   const isRunContext = computed(() => context.value?.kind === 'agent-run' || context.value?.kind === 'team-run');
 
+  const focusedAgentContext = computed(() => {
+    const currentContext = context.value;
+    if (currentContext?.kind === 'agent-run') {
+      return activeContextStore.activeAgentContext?.state.runId === currentContext.runId
+        ? activeContextStore.activeAgentContext
+        : null;
+    }
+    if (currentContext?.kind === 'team-run') {
+      return teamContextsStore.getTeamContextById(currentContext.teamRunId)
+        ?.view.getAgentContext(currentContext.focusedAgentRunId) ?? null;
+    }
+    return null;
+  });
+
   const focusedRunId = computed(() => {
     const currentContext = context.value;
 
@@ -40,6 +54,7 @@ export function useMobileFocusedRunIdentity(context: Ref<MobileWorkContext | nul
 
   return {
     focusedRunId,
+    focusedAgentContext,
     isRunContext,
   };
 }

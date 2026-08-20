@@ -10,6 +10,7 @@ import {
 } from "autobyteus-ts/memory/store/raw-trace-archive-manifest.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
 import type { AgentRunMetadata } from "../../../../src/run-history/store/agent-run-metadata-types.js";
+import { buildActiveTraceGeneration } from "../../../../src/run-history/projection/active-trace-event-page-policy.js";
 
 const tempDirs = new Set<string>();
 
@@ -130,6 +131,38 @@ describe("LocalMemoryRunViewProjectionProvider", () => {
     expect(projection.conversation).toEqual([
       expect.objectContaining({ content: "from local memory", role: "user" }),
     ]);
+  });
+
+  it("restores exact system instructions from active-only memory into Activity without conversation leakage", async () => {
+    const getRunMemoryView = vi.fn().mockReturnValue({
+      rawTraces: [{
+        scope: "run", id: "raw-system-id", traceType: "system_instruction",
+        sourceEvent: "SYSTEM_INSTRUCTIONS_SUPPLIED", content: "  exact\nactive prompt  ",
+        turnId: null, seq: null, ts: 5,
+      }],
+    });
+    const provider = new LocalMemoryRunViewProjectionProvider("/tmp/memory", {
+      getRunMemoryView,
+    } as never);
+
+    const projection = await provider.buildProjection({
+      source: {
+        runId: "server-run-1", runtimeKind: RuntimeKind.AUTOBYTEUS,
+        workspaceRootPath: "/tmp/workspace", memoryDir: null, platformRunId: null,
+        metadata: createMetadata(),
+      },
+    });
+
+    expect(getRunMemoryView).toHaveBeenCalledWith("server-run-1", expect.objectContaining({
+      includeArchive: false,
+    }));
+    expect(projection.conversation).toEqual([]);
+    expect(projection.activities).toEqual([{
+      kind: "system_instruction",
+      activityId: "raw-system-id",
+      content: "  exact\nactive prompt  ",
+      ts: 5,
+    }]);
   });
 
   it("reconstructs all active lifecycle evidence before selecting the newest 100 events", async () => {
@@ -314,5 +347,42 @@ describe("LocalMemoryRunViewProjectionProvider", () => {
     expect(page.events).toHaveLength(150);
     expect(page.events.every(event => event.eventId.includes("active-"))).toBe(true);
     expect(page.activeGeneration).toMatch(/^[a-f0-9]{64}$/);
+  });
+
+  it("excludes run-scoped system instructions before Event Monitor generation and selection", async () => {
+    const getActiveRawTraceSnapshot = vi.fn().mockReturnValue({
+      rawTraces: [
+        {
+          scope: "run", id: "raw-system-id", traceType: "system_instruction",
+          sourceEvent: "SYSTEM_INSTRUCTIONS_SUPPLIED", content: "private prompt",
+          turnId: null, seq: null, ts: 1,
+        },
+        {
+          scope: "turn", id: "user-1", traceType: "user", content: "hello",
+          turnId: "turn-1", seq: 1, ts: 2,
+        },
+      ],
+      records: [], device: "1", inode: "2", manifestGeneration: "3:boundary",
+    });
+    const provider = new LocalMemoryRunViewProjectionProvider("/tmp/memory", {
+      getActiveRawTraceSnapshot,
+    } as never);
+
+    const page = await provider.buildActiveTracePage({
+      source: {
+        runId: "server-run-1", runtimeKind: RuntimeKind.AUTOBYTEUS,
+        workspaceRootPath: "/tmp/workspace", memoryDir: null, platformRunId: null,
+        metadata: createMetadata(),
+      },
+      subjectFingerprint: "subject",
+      beforeCursor: null,
+    });
+
+    expect(page.events.map((event) => event.eventId)).toEqual(["raw:v1:6:user-1"]);
+    expect(JSON.stringify(page)).not.toContain("private prompt");
+    expect(page.activeGeneration).toBe(buildActiveTraceGeneration({
+      device: "1", inode: "2", manifestGeneration: "3:boundary",
+      earliestEventId: "raw:v1:6:user-1",
+    }));
   });
 });

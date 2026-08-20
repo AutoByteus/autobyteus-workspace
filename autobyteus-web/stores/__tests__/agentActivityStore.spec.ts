@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
-import { useAgentActivityStore, type ToolActivity } from '../agentActivityStore';
+import { useAgentActivityStore } from '../agentActivityStore';
+import type { ToolActivity } from '~/types/activity/RunActivity';
 
 const buildToolActivity = (overrides: Partial<ToolActivity> = {}): ToolActivity => ({
   kind: 'tool',
@@ -157,6 +158,25 @@ describe('agentActivityStore', () => {
     expect(activity.timestamp).toBe(firstTimestamp);
     expect(activity.centerTimelineTimestamp).toBe(firstCenterTimestamp);
     expect(store.getToolActivities(agentId)).toHaveLength(0);
+  });
+
+  it('deduplicates exact system activity and rejects conflicting raw ID reuse', () => {
+    const store = useAgentActivityStore();
+    const runId = 'system-run';
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const activity = {
+      kind: 'system_instruction' as const,
+      activityId: 'raw-system-id',
+      content: ' exact\ncontent ',
+      timestamp: new Date(12_500),
+    };
+
+    expect(store.upsertSystemInstructionActivity(runId, activity)).toBe(true);
+    expect(store.upsertSystemInstructionActivity(runId, { ...activity })).toBe(false);
+    expect(store.upsertSystemInstructionActivity(runId, { ...activity, content: 'conflict' })).toBe(false);
+
+    expect(store.getActivities(runId)).toEqual([activity]);
+    expect(warn).toHaveBeenCalledOnce();
   });
 
   it('caps Activity at 100 by evicting completed records before older mutable records and repairs derived state', () => {

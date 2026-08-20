@@ -30,13 +30,16 @@ export class SystemPromptProcessingStep extends BaseBootstrapStep {
 
       context.state.processedSystemPrompt = currentSystemPrompt;
 
+      const suppliedAt = Date.now() / 1000;
       llmInstance.configureSystemPrompt(currentSystemPrompt);
+      const memoryManager = context.state.memoryManager;
+      if (!memoryManager) {
+        throw new Error('Memory manager not found while recording supplied system instructions.');
+      }
+      const capture = memoryManager.recordSystemInstructionSupply(currentSystemPrompt, suppliedAt);
+      context.state.pendingSystemInstructionCapture = capture.created ? capture.trace : null;
       console.info(
-        `Agent '${agentId}': Final processed system prompt configured on LLM instance. Final length: ${currentSystemPrompt.length}.`
-      );
-
-      console.info(
-        `Agent '${agentId}': Final processed system prompt:\n---\n${currentSystemPrompt}\n---`
+        `Agent '${agentId}': Final processed system prompt configured and captured. Trace ID: ${capture.trace.id}. Final length: ${currentSystemPrompt.length}.`
       );
       return true;
     } catch (error) {

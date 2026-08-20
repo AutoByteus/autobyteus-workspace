@@ -3,7 +3,10 @@ import type {
   RunProjectionActivityEntry,
   RunProjectionConversationEntry,
 } from "./run-projection-types.js";
-import type { HistoricalReplayEvent } from "./historical-replay-event-types.js";
+import {
+  isEventMonitorReplayEvent,
+  type HistoricalReplayEvent,
+} from "./historical-replay-event-types.js";
 import { buildRunProjectionActivities } from "./transformers/historical-replay-events-to-activities.js";
 import { buildRunProjectionConversation } from "./transformers/historical-replay-events-to-conversation.js";
 
@@ -78,9 +81,10 @@ export const buildRunProjectionBundle = (
 export const buildRunProjectionBundleFromEvents = (
   runId: string,
   events: HistoricalReplayEvent[],
+  activityEvents: HistoricalReplayEvent[] = events,
 ): RunProjection =>
   buildRunProjectionBundle(
     runId,
-    buildRunProjectionConversation(events),
-    buildRunProjectionActivities(events),
+    buildRunProjectionConversation(events.filter(isEventMonitorReplayEvent)),
+    buildRunProjectionActivities(activityEvents),
   );

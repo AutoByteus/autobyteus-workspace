@@ -28,6 +28,9 @@ export class MemoryMessage {
 
 @ObjectType()
 export class MemoryTraceEvent {
+  @Field(() => String)
+  scope!: string;
+
   @Field(() => String, { nullable: true })
   id?: string | null;
 
@@ -58,11 +61,11 @@ export class MemoryTraceEvent {
   @Field(() => GraphQLJSON, { nullable: true })
   media?: Record<string, string[]> | null;
 
-  @Field(() => String)
-  turnId!: string;
+  @Field(() => String, { nullable: true })
+  turnId!: string | null;
 
-  @Field(() => Int)
-  seq!: number;
+  @Field(() => Int, { nullable: true })
+  seq!: number | null;
 
   @Field(() => Float)
   ts!: number;

@@ -1,0 +1,21 @@
+import { createRequire } from 'node:module';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+const outputDir = new URL('.', import.meta.url).pathname;
+const require=createRequire(new URL('../../../../../../autobyteus-web/package.json',import.meta.url));
+const {chromium}=require('playwright-core');
+const browser=await chromium.launch({headless:true,executablePath:'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'});
+const context=await browser.newContext({viewport:{width:1280,height:900}});
+const page=await context.newPage();
+const logs=[],errors=[],failed=[];
+page.on('console',m=>logs.push({type:m.type(),text:m.text()})); page.on('pageerror',e=>errors.push(String(e))); page.on('requestfailed',r=>failed.push({url:r.url(),error:r.failure()?.errorText}));
+await page.goto('http://127.0.0.1:54588/agents',{waitUntil:'domcontentloaded',timeout:90000}); await page.waitForTimeout(8000);
+const workspaceButton=page.getByRole('button',{name:'workspace',exact:true});
+console.log('workspace buttons',await workspaceButton.count());
+if(await workspaceButton.count()) { await workspaceButton.first().click(); await page.waitForTimeout(10000); }
+console.log('url',page.url());
+console.log((await page.locator('body').innerText()).slice(0,15000));
+console.log('buttons',JSON.stringify(await page.locator('button').evaluateAll(bs=>bs.map((b,i)=>({i,text:b.innerText,aria:b.getAttribute('aria-label'),title:b.getAttribute('title')})).filter(x=>x.text||x.aria||x.title)),null,2));
+await page.screenshot({path:path.join(outputDir,'real-workspace-history.png'),fullPage:true});
+await fs.writeFile(path.join(outputDir,'real-workspace-history-inspection.json'),JSON.stringify({url:page.url(),bodyText:await page.locator('body').innerText(),buttons:await page.locator('button').evaluateAll(bs=>bs.map((b,i)=>({i,text:b.innerText,aria:b.getAttribute('aria-label'),title:b.getAttribute('title'),expanded:b.getAttribute('aria-expanded'),controls:b.getAttribute('aria-controls')}))),logs,errors,failed},null,2)+'\n');
+await browser.close();

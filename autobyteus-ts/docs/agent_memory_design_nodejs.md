@@ -348,7 +348,7 @@ remain a separate evidence corpus owned by `RunMemoryFileStore` and
 `RawTraceArchiveManager`; there is no supported direct or recursive
 episode/semantic-to-raw origin resolver or server origin service.
 
-Before output publication, `archiveExactRawTraces(...)` validates and archives
+Before output publication, `archiveCompactedRawTraces(...)` validates and archives
 the exact selected active raw IDs. Its stable operation identity is
 `native_compaction_selection:<sha256>` where the digest is computed from the JSON
 encoding of the sorted selected IDs. The archive manager alone chooses the

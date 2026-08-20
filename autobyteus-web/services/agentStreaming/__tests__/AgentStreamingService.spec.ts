@@ -85,6 +85,40 @@ describe('AgentStreamingService', () => {
         expect(service.isReady).toBe(false);
     });
 
+    it('logs system-instruction diagnostics without serializing exact prompt content', () => {
+        const debugWindow = window as typeof window & { __AUTOBYTEUS_DEBUG_STREAMING__?: boolean };
+        const previousDebugValue = debugWindow.__AUTOBYTEUS_DEBUG_STREAMING__;
+        const sentinel = 'SYSTEM_PROMPT_SENTINEL_🔒_DO_NOT_LOG';
+        const consoleLog = vi.spyOn(console, 'log').mockImplementation(() => undefined);
+        debugWindow.__AUTOBYTEUS_DEBUG_STREAMING__ = true;
+
+        try {
+            (service as any).logMessage({
+                type: 'SYSTEM_INSTRUCTIONS_SUPPLIED',
+                payload: {
+                    trace_id: 'rt_debug_1',
+                    content: sentinel,
+                    ts: 1_776_000_000.25,
+                },
+            });
+
+            expect(consoleLog).toHaveBeenCalledWith('[stream][system-instructions]', {
+                type: 'SYSTEM_INSTRUCTIONS_SUPPLIED',
+                trace_id: 'rt_debug_1',
+                ts: 1_776_000_000.25,
+                contentLength: Array.from(sentinel).length,
+            });
+            expect(JSON.stringify(consoleLog.mock.calls)).not.toContain(sentinel);
+        } finally {
+            consoleLog.mockRestore();
+            if (previousDebugValue === undefined) {
+                delete debugWindow.__AUTOBYTEUS_DEBUG_STREAMING__;
+            } else {
+                debugWindow.__AUTOBYTEUS_DEBUG_STREAMING__ = previousDebugValue;
+            }
+        }
+    });
+
     it('mirrors external user messages into the open conversation', () => {
         (service as any).dispatchMessage(
             {

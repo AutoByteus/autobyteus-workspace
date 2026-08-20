@@ -1,0 +1,6 @@
+migrationId=20260803_custom_provider_readable_identity
+displayName=Custom provider readable identity reset
+statusSummary={"scannedCount":1,"migratedCount":0,"skippedCount":1,"failedCount":0}
+error=
+details=
+{"itemId":"readable-provider-reset","status":"SKIPPED","message":"CUSTOM_PROVIDER_READABLE_ID_NOT_REQUIRED","filePath":"/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/data/llm/custom-llm-providers.json"}

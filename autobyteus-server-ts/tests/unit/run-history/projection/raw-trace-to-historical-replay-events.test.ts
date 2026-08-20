@@ -4,6 +4,33 @@ import { buildRunProjectionActivities } from "../../../../src/run-history/projec
 import { buildHistoricalReplayEvents } from "../../../../src/run-history/projection/transformers/raw-trace-to-historical-replay-events.js";
 
 describe("raw trace to historical replay events", () => {
+  it("uses the persisted raw ID for a run-scoped system activity without a turn group", () => {
+    const events = buildHistoricalReplayEvents([{
+      scope: "run",
+      id: "system-raw-id",
+      traceType: "system_instruction",
+      sourceEvent: "SYSTEM_INSTRUCTIONS_SUPPLIED",
+      content: " exact\ncontent ",
+      turnId: null,
+      seq: null,
+      ts: 10,
+    }]);
+
+    expect(events).toEqual([{
+      eventId: "system-raw-id",
+      kind: "system_instruction",
+      activityId: "system-raw-id",
+      content: " exact\ncontent ",
+      ts: 10,
+    }]);
+    expect(buildRunProjectionActivities(events)).toEqual([{
+      kind: "system_instruction",
+      activityId: "system-raw-id",
+      content: " exact\ncontent ",
+      ts: 10,
+    }]);
+  });
+
   it("merges tool call and result into one canonical tool replay event", () => {
     const events = buildHistoricalReplayEvents([
       {

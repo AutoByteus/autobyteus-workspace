@@ -9,6 +9,7 @@ import type {
 import type { ContextFileLocalPathResolver } from "../../../../context-files/services/context-file-local-path-resolver.js";
 import type { ClaudeAgentToolsMcpSessionServiceLike } from "../agent-tools-mcp/claude-agent-tools-mcp-session-state.js";
 import type { ClaudeProviderSessionLifecycle } from "./claude-provider-session-lifecycle.js";
+import type { SystemInstructionCaptureService } from "../../../../agent-memory/services/system-instruction-capture-service.js";
 
 type ContextFilePathResolverLike = Pick<ContextFileLocalPathResolver, "resolve">;
 
@@ -19,6 +20,7 @@ export type ClaudeSessionDependencies = {
   toolingCoordinator: ClaudeSessionToolUseCoordinator;
   contextFileLocalPathResolver?: ContextFilePathResolverLike;
   agentToolMcpSessionService?: ClaudeAgentToolsMcpSessionServiceLike;
+  systemInstructionCaptureService?: SystemInstructionCaptureService;
   isRunSessionActive: () => boolean;
   terminateRunSession: () => Promise<void>;
 };

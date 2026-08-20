@@ -121,7 +121,7 @@
 <script setup lang="ts">
 import { ref, computed, reactive } from 'vue';
 import { Icon } from '@iconify/vue';
-import type { ToolActivity } from '~/stores/agentActivityStore';
+import type { ToolActivity } from '~/types/activity/RunActivity';
 
 const props = defineProps<{
   activity: ToolActivity;

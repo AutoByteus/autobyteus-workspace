@@ -8,6 +8,10 @@ const createBackend = (overrides: {
   agent?: Partial<ConstructorParameters<typeof AutoByteusAgentRunBackend>[1]>;
   isActive?: () => boolean;
   removeAgent?: (runId: string) => Promise<boolean>;
+  pendingSystemInstructionCapture?: {
+    id: string; ts: number; trace_type: "system_instruction"; content: string;
+    source_event: "SYSTEM_INSTRUCTIONS_SUPPLIED";
+  };
 } = {}) => {
   const agent = {
     agentId: "agent-1",
@@ -41,6 +45,7 @@ const createBackend = (overrides: {
   const backend = new AutoByteusAgentRunBackend(context, agent as any, {
     isActive: overrides.isActive ?? (() => true),
     removeAgent,
+    pendingSystemInstructionCapture: overrides.pendingSystemInstructionCapture,
   });
 
   return {
@@ -52,6 +57,29 @@ const createBackend = (overrides: {
 };
 
 describe("AutoByteusAgentRunBackend", () => {
+  it("publishes the committed system instruction after listener binding and before the first input exactly once", async () => {
+    const order: string[] = [];
+    const { backend } = createBackend({
+      agent: { postUserMessage: vi.fn(async () => { order.push("input"); }) },
+      pendingSystemInstructionCapture: {
+        id: "raw-native-system", ts: 10, trace_type: "system_instruction",
+        content: " exact native prompt ", source_event: "SYSTEM_INSTRUCTIONS_SUPPLIED",
+      },
+    });
+    const listener = vi.fn(async () => { order.push("event"); });
+    backend.subscribeToSourceEventBatches(listener);
+
+    await backend.dispatchUserInput({ kind: "start_turn", message: new AgentInputUserMessage("first") });
+    await backend.dispatchUserInput({ kind: "start_turn", message: new AgentInputUserMessage("second") });
+
+    expect(order).toEqual(["event", "input", "input"]);
+    expect(listener).toHaveBeenCalledTimes(1);
+    expect(listener).toHaveBeenCalledWith([expect.objectContaining({
+      eventType: "SYSTEM_INSTRUCTIONS_SUPPLIED",
+      payload: { trace_id: "raw-native-system", content: " exact native prompt ", ts: 10 },
+    })]);
+  });
+
   it("delegates send and approval commands to the native agent", async () => {
     const { backend, agent, context } = createBackend();
 

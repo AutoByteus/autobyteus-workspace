@@ -14,10 +14,8 @@ import { useMobileWorkCatalog } from "~/composables/mobile/useMobileWorkCatalog"
 import { useAgentContextsStore } from "~/stores/agentContextsStore";
 import { useAgentSelectionStore } from "~/stores/agentSelectionStore";
 import { useAgentTeamContextsStore } from "~/stores/agentTeamContextsStore";
-import {
-  useAgentActivityStore,
-  type ToolActivity,
-} from "~/stores/agentActivityStore";
+import { useAgentActivityStore } from "~/stores/agentActivityStore";
+import type { ToolActivity } from "~/types/activity/RunActivity";
 import { useAgentDefinitionStore } from "~/stores/agentDefinitionStore";
 import { useAgentTeamDefinitionStore } from "~/stores/agentTeamDefinitionStore";
 import { useMobileWorkStore } from "~/stores/mobileWorkStore";

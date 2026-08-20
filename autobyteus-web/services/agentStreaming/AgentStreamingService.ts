@@ -247,6 +247,16 @@ export class AgentStreamingService {
     if (!shouldLogStreaming()) return;
 
     switch (message.type) {
+      case 'SYSTEM_INSTRUCTIONS_SUPPLIED': {
+        const { trace_id, ts, content } = message.payload;
+        console.log('[stream][system-instructions]', {
+          type: message.type,
+          trace_id,
+          ts,
+          contentLength: Array.from(content).length,
+        });
+        break;
+      }
       case 'SEGMENT_START': {
         const { id, turn_id, segment_type, metadata } = message.payload;
         console.log('[stream][segment:start]', { id, turn_id, segment_type, metadata });

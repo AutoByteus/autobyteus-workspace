@@ -44,6 +44,7 @@ export const toAgentProjectionMessage = (message: TeamAgentProjectionMessage, ag
   const exactAgentRunId = agentRunId.trim();
   if (!exactAgentRunId) throw new Error('Team Agent projection requires the exact AgentRun ID.');
   switch (message.type) {
+    case 'SYSTEM_INSTRUCTIONS_SUPPLIED': return { type: message.type, payload: { trace_id: message.payload.trace_id, content: message.payload.content, ts: message.payload.ts } };
     case 'SEGMENT_START': return { type: message.type, payload: { id: message.payload.segment_id, turn_id: message.payload.turn_id, segment_type: segmentType(message.payload.segment_type), metadata: message.payload.metadata } };
     case 'SEGMENT_CONTENT': return { type: message.type, payload: { id: message.payload.segment_id, turn_id: message.payload.turn_id, segment_type: segmentType(message.payload.segment_type), delta: message.payload.delta } };
     case 'SEGMENT_END': return { type: message.type, payload: { id: message.payload.segment_id, turn_id: message.payload.turn_id, metadata: message.payload.metadata, interrupted: message.payload.interrupted, reason: message.payload.reason, failed: message.payload.failed, error: message.payload.error } };

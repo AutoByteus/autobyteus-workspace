@@ -73,7 +73,7 @@ describe('MemoryManager', () => {
       const turnId = manager.startTurn();
       const invocation = new ToolInvocation('write_file', { path: 'x.txt' }, 'call_1', turnId);
       manager.ingestToolIntent(invocation, turnId);
-      expect(manager.listRawTracesOrdered()).toHaveLength(1);
+      expect(manager.listTurnRawTracesOrdered()).toHaveLength(1);
 
       const toolResult = new ToolResultEvent('write_file', 'ok', 'call_1', undefined, { path: 'x.txt' }, turnId);
       manager.ingestToolResult(toolResult, turnId);
@@ -82,7 +82,7 @@ describe('MemoryManager', () => {
       expect(snapshot).toHaveLength(2);
       expect(snapshot[0].role).toBe(MessageRole.ASSISTANT);
       expect(snapshot[1].role).toBe(MessageRole.TOOL);
-      const raw = manager.listRawTracesOrdered();
+      const raw = manager.listTurnRawTracesOrdered();
       expect(raw).toHaveLength(2);
       expect(raw[0]).toMatchObject({
         traceType: 'tool_call', toolCallId: 'call_1', toolName: 'write_file',
@@ -138,7 +138,7 @@ describe('MemoryManager', () => {
         true,
       ), turnId);
 
-      const result = manager.listRawTracesOrdered()[1]!.toDict();
+      const result = manager.listTurnRawTracesOrdered()[1]!.toDict();
       expect(result).toMatchObject({
         trace_type: 'tool_result',
         tool_call_id: 'call_denied',
@@ -201,7 +201,7 @@ describe('MemoryManager', () => {
 
       expect(fs.readFileSync(rawPath, 'utf-8')).toBe(rawBefore);
       expect(JSON.stringify(manager.getWorkingContextMessages())).toBe(workingContextBefore);
-      expect(manager.listRawTracesOrdered()).toHaveLength(1);
+      expect(manager.listTurnRawTracesOrdered()).toHaveLength(1);
     } finally {
       fs.rmSync(tempDir, { recursive: true, force: true });
     }
@@ -365,7 +365,7 @@ describe('MemoryManager', () => {
         makeTrace('turn_0002', 1, 'user', 't2 user'),
       ]);
 
-      const rawItems = manager.listRawTracesOrdered();
+      const rawItems = manager.listTurnRawTracesOrdered();
       expect(rawItems.map((item) => [item.turnId, item.seq])).toEqual([
         ['turn_0001', 1],
         ['turn_0001', 2],
@@ -398,7 +398,7 @@ describe('MemoryManager', () => {
       ]);
 
       const reloadedManager = new MemoryManager({ store });
-      const rawItems = reloadedManager.listRawTracesOrdered();
+      const rawItems = reloadedManager.listTurnRawTracesOrdered();
       expect(rawItems.map((item) => item.traceType)).toEqual(['tool_call', 'tool_result', 'tool_continuation']);
       expect(rawItems[2]?.content).toBe('Native API tool continuation');
       expect(reloadedManager.getToolInteractions(turnId)).toHaveLength(1);
@@ -458,7 +458,7 @@ describe('MemoryManager', () => {
       expect(syntheticResult.toolError).toBe(
         SYNTHETIC_TOOL_RESULT_ERROR('generate_image', 'call_crash')
       );
-      const terminalResults = manager.listRawTracesOrdered().filter((item) =>
+      const terminalResults = manager.listTurnRawTracesOrdered().filter((item) =>
         item.traceType === 'tool_result' && item.toolCallId === 'call_crash'
       );
       expect(terminalResults).toHaveLength(1);
@@ -516,7 +516,7 @@ describe('MemoryManager', () => {
       expect(syntheticResult?.toolResult).toBeNull();
       expect(syntheticResult?.toolError).toBe('user_interrupt');
 
-      const rawItems = manager.listRawTracesOrdered();
+      const rawItems = manager.listTurnRawTracesOrdered();
       expect(rawItems.some((item) => item.traceType === 'user' && item.content === 'interrupted user input')).toBe(true);
       expect(rawItems.some((item) =>
         item.traceType === 'operation_boundary' &&
@@ -599,7 +599,7 @@ describe('MemoryManager', () => {
       expect((messages[2].tool_payload as ToolResultPayload).toolError).toBe('user_interrupt');
       expect(messages.at(-1)?.content).toContain(`turn '${turnId}' was interrupted`);
       expect(messages.at(-1)?.role).toBe(MessageRole.SYSTEM);
-      const rawItems = manager.listRawTracesOrdered();
+      const rawItems = manager.listTurnRawTracesOrdered();
       expect(rawItems.some((item) =>
         item.traceType === 'tool_result' &&
         item.toolCallId === 'call_A' &&
@@ -630,12 +630,12 @@ describe('MemoryManager', () => {
         { input_images: ['/absolute/relative.png'] }, turnId,
       ), turnId);
 
-      expect(manager.listRawTracesOrdered()).toHaveLength(2);
-      expect(manager.listRawTracesOrdered()[0]).toMatchObject({
+      expect(manager.listTurnRawTracesOrdered()).toHaveLength(2);
+      expect(manager.listTurnRawTracesOrdered()[0]).toMatchObject({
         traceType: 'tool_call',
         toolArgs: { input: 'relative.png' },
       });
-      expect(manager.listRawTracesOrdered()[1]).toMatchObject({
+      expect(manager.listTurnRawTracesOrdered()[1]).toMatchObject({
         traceType: 'tool_result',
         toolName: 'edit_image',
         toolArgs: { input_images: ['/absolute/relative.png'] },
@@ -666,8 +666,8 @@ describe('MemoryManager', () => {
         new ToolResultEvent('tool_B', 'bad', '   ', undefined, {}, turnId),
       ], turnId)).toThrow(/batch was rejected/);
 
-      expect(manager.listRawTracesOrdered()).toHaveLength(2);
-      expect(manager.listRawTracesOrdered().every((trace) => trace.traceType === 'tool_call')).toBe(true);
+      expect(manager.listTurnRawTracesOrdered()).toHaveLength(2);
+      expect(manager.listTurnRawTracesOrdered().every((trace) => trace.traceType === 'tool_call')).toBe(true);
       expect(manager.getWorkingContextMessages()).toHaveLength(messageCount);
     } finally {
       fs.rmSync(tempDir, { recursive: true, force: true });
@@ -692,7 +692,7 @@ describe('MemoryManager', () => {
         `Native tool result 'call_B' in turn '${turnId}' names 'wrong_tool' but the persisted tool call names 'tool_B'`,
       );
 
-      expect(manager.listRawTracesOrdered().map((trace) => trace.traceType)).toEqual([
+      expect(manager.listTurnRawTracesOrdered().map((trace) => trace.traceType)).toEqual([
         'tool_call', 'tool_call',
       ]);
       expect(manager.getWorkingContextMessages()).toHaveLength(messageCount);
@@ -701,11 +701,11 @@ describe('MemoryManager', () => {
         new ToolResultEvent('tool_A', 'ok', 'call_A', undefined, undefined, turnId),
         new ToolResultEvent('   ', 'ok', 'call_B', undefined, undefined, turnId),
       ], turnId);
-      expect(manager.listRawTracesOrdered().slice(2).map((trace) => trace.toDict())).toEqual([
+      expect(manager.listTurnRawTracesOrdered().slice(2).map((trace) => trace.toDict())).toEqual([
         expect.objectContaining({ tool_call_id: 'call_A', tool_name: 'tool_A', tool_result: 'ok' }),
         expect.objectContaining({ tool_call_id: 'call_B', tool_name: 'tool_B', tool_result: 'ok' }),
       ]);
-      expect(manager.listRawTracesOrdered().slice(2).every((trace) => !('tool_args' in trace.toDict()))).toBe(true);
+      expect(manager.listTurnRawTracesOrdered().slice(2).every((trace) => !('tool_args' in trace.toDict()))).toBe(true);
     } finally {
       fs.rmSync(tempDir, { recursive: true, force: true });
     }
@@ -719,7 +719,7 @@ describe('MemoryManager', () => {
       const manager = new MemoryManager({ store });
       const terminal = new ToolResultEvent('search_web', 'done', 'call_web', undefined, { query: 'cats' }, turnId);
       expect(() => manager.ingestToolResult(terminal, turnId)).toThrow(/no persisted tool call/);
-      expect(manager.listRawTracesOrdered()).toHaveLength(0);
+      expect(manager.listTurnRawTracesOrdered()).toHaveLength(0);
 
       manager.ingestToolIntent(new ToolInvocation('search_web', { query: 'cats' }, 'call_web', turnId), turnId);
       manager.ingestToolResult(terminal, turnId);
@@ -727,11 +727,11 @@ describe('MemoryManager', () => {
       expect(manager.getWorkingContextMessages().map((message) => message.role)).toEqual([
         MessageRole.ASSISTANT, MessageRole.TOOL,
       ]);
-      expect(manager.listRawTracesOrdered()).toHaveLength(2);
+      expect(manager.listTurnRawTracesOrdered()).toHaveLength(2);
 
       const reconstructed = new MemoryManager({ store });
       reconstructed.ingestToolResult(terminal, turnId);
-      expect(reconstructed.listRawTracesOrdered()).toHaveLength(2);
+      expect(reconstructed.listTurnRawTracesOrdered()).toHaveLength(2);
     } finally {
       fs.rmSync(tempDir, { recursive: true, force: true });
     }
@@ -744,7 +744,7 @@ describe('MemoryManager', () => {
       const turnId = 'turn_archive';
       const first = new MemoryManager({ store });
       first.ingestToolIntent(new ToolInvocation('read_file', { path: 'archived.txt' }, 'call_archive', turnId), turnId);
-      const call = first.listRawTracesOrdered()[0]!;
+      const call = first.listTurnRawTracesOrdered()[0]!;
       first.pruneRawTracesById([call.id]);
 
       const reconstructed = new MemoryManager({ store });
@@ -753,12 +753,12 @@ describe('MemoryManager', () => {
         turnId,
       );
 
-      expect(reconstructed.listRawTracesOrdered()).toHaveLength(1);
-      expect(reconstructed.listRawTracesOrdered()[0]).toMatchObject({
+      expect(reconstructed.listTurnRawTracesOrdered()).toHaveLength(1);
+      expect(reconstructed.listTurnRawTracesOrdered()[0]).toMatchObject({
         traceType: 'tool_result', toolCallId: 'call_archive', toolName: 'read_file',
         toolResult: 'contents', toolError: null,
       });
-      expect(reconstructed.listRawTraceCorpusOrdered().map((trace) => trace.traceType)).toEqual([
+      expect(reconstructed.listTurnRawTraceCorpusOrdered().map((trace) => trace.traceType)).toEqual([
         'tool_call', 'tool_result',
       ]);
     } finally {

@@ -1,0 +1,16 @@
+{
+  "toolNames": [
+    "run_bash",
+    "send_message_to"
+  ],
+  "skillNames": [
+    "retrospective-skill-improver"
+  ],
+  "inputProcessorNames": [],
+  "llmResponseProcessorNames": [],
+  "toolExecutionResultProcessorNames": [],
+  "toolInvocationPreprocessorNames": [],
+  "lifecycleProcessorNames": [],
+  "avatarUrl": null,
+  "defaultLaunchConfig": null
+}

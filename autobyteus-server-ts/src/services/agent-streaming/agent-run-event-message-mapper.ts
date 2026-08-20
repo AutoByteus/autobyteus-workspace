@@ -6,6 +6,7 @@ import { ServerMessage, ServerMessageType } from "./models.js";
 import { buildAgentStatusPayload } from "../../agent-execution/domain/agent-status-payload.js";
 import { serializePayload } from "./payload-serialization.js";
 import { resolveAgentRunErrorEvidence } from "../../agent-execution/domain/agent-run-error-evidence.js";
+import { parseSystemInstructionsSuppliedPayload } from "../../agent-execution/domain/system-instructions-supplied-event.js";
 
 const normalizeStatusPayload = (payload: Record<string, unknown>): Record<string, unknown> => {
   return buildAgentStatusPayload({
@@ -63,6 +64,11 @@ export class AgentRunEventMessageMapper {
     const payload = serializePayload(event.payload);
 
     switch (event.eventType) {
+      case AgentRunEventType.SYSTEM_INSTRUCTIONS_SUPPLIED: {
+        const systemPayload = parseSystemInstructionsSuppliedPayload(payload);
+        if (!systemPayload) throw new Error('Invalid system instruction event payload.');
+        return new ServerMessage(ServerMessageType.SYSTEM_INSTRUCTIONS_SUPPLIED, systemPayload);
+      }
       case AgentRunEventType.TURN_STARTED:
         return new ServerMessage(ServerMessageType.TURN_STARTED, normalizeTurnPayload(payload));
       case AgentRunEventType.TURN_COMPLETED:

@@ -21,7 +21,7 @@ export class AcceptedCompactionCommitter {
     accepted: AcceptedWorkingContextCompaction,
     hooks: AcceptedCompactionCommitHooks,
   ): void {
-    this.store.archiveExactRawTraces(accepted.selectedNewRawTraceIds);
+    this.store.archiveCompactedRawTraces(accepted.selectedNewRawTraceIds);
     this.store.add([...accepted.episodicItems, ...accepted.semanticItems]);
     this.store.findEpisodicItemsByIds(accepted.episodicItems.map(({ id }) => id));
     this.store.findSemanticItemsByIds(accepted.semanticItems.map(({ id }) => id));

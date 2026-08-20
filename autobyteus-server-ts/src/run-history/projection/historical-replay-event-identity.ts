@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import type { MemoryTraceEvent } from "../../agent-memory/domain/models.js";
+import type { MemoryTurnTraceEvent } from "../../agent-memory/domain/models.js";
 import type { RawTraceMedia } from "autobyteus-ts/memory/models/raw-trace-item.js";
 
 const digest = (value: string): string => createHash("sha256").update(value).digest("hex");
@@ -27,7 +27,7 @@ export const buildReplayTurnGroupId = (turnId: string | null | undefined, eventI
   return value ? `turn:v1:${lengthPrefixed(value)}` : `ungrouped:${eventId}`;
 };
 
-export const buildLegacyTraceFingerprint = (trace: MemoryTraceEvent): string => digest([
+export const buildLegacyTraceFingerprint = (trace: MemoryTurnTraceEvent): string => digest([
   normalized(trace.traceType),
   normalized(trace.turnId),
   String(trace.seq),
@@ -76,7 +76,7 @@ export const createLegacyOccurrenceAllocator = (): ((fingerprint: string) => num
 };
 
 export const resolveTraceReplayIdentity = (
-  trace: MemoryTraceEvent,
+  trace: MemoryTurnTraceEvent,
   nextOccurrence: (fingerprint: string) => number,
 ): { eventId: string; turnGroupId: string } => {
   const rawId = normalized(trace.id);

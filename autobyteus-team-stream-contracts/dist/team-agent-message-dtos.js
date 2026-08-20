@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { jsonValueSchema, nonEmptyStringSchema, nullableFiniteNumberSchema, nullableNonEmptyStringSchema, } from "./schema-helpers.js";
+import { finiteNumberSchema, jsonValueSchema, nonEmptyStringSchema, nullableFiniteNumberSchema, nullableNonEmptyStringSchema, } from "./schema-helpers.js";
 import { teamMemberExecutionIdentityDtoSchema } from "./team-execution-view-dtos.js";
 const turnId = nullableNonEmptyStringSchema;
 export const teamAgentSegmentTypeSchema = z.enum([
@@ -108,6 +108,11 @@ const toolCore = {
     turn_id: turnId,
 };
 export const teamAgentPayloadSchemas = {
+    SYSTEM_INSTRUCTIONS_SUPPLIED: withExecution({
+        trace_id: nonEmptyStringSchema,
+        content: z.string(),
+        ts: finiteNumberSchema.refine((value) => value > 0, "ts must be positive"),
+    }),
     TURN_STARTED: withExecution({ turn_id: turnId }),
     TURN_COMPLETED: withExecution({ turn_id: turnId, reason: nullableNonEmptyStringSchema }),
     TURN_INTERRUPTED: withExecution({ turn_id: turnId, reason: nullableNonEmptyStringSchema }),

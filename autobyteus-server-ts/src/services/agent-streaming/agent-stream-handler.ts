@@ -4,7 +4,11 @@ import {
   ContextFile,
   ContextFileType,
 } from "autobyteus-ts";
-import { isAgentRunEvent, type AgentRunEvent } from "../../agent-execution/domain/agent-run-event.js";
+import {
+  AgentRunEventType,
+  isAgentRunEvent,
+  type AgentRunEvent,
+} from "../../agent-execution/domain/agent-run-event.js";
 import { AgentRun } from "../../agent-execution/domain/agent-run.js";
 import {
   AgentRunService,
@@ -73,6 +77,16 @@ const stringifyForDebug = (value: unknown): string => {
   } catch {
     return "[unserializable-runtime-event]";
   }
+};
+
+const systemInstructionDebugDetails = (event: AgentRunEvent) => {
+  const { trace_id, ts, content } = event.payload;
+  return {
+    eventType: event.eventType,
+    trace_id: typeof trace_id === "string" ? trace_id : null,
+    ts: typeof ts === "number" && Number.isFinite(ts) ? ts : null,
+    contentLength: typeof content === "string" ? Array.from(content).length : null,
+  };
 };
 
 export class AgentStreamHandler {
@@ -275,15 +289,19 @@ export class AgentStreamHandler {
     try {
       if (isRuntimeRawEventDebugEnabled) {
         this.runtimeEventSequence += 1;
-        const payload = event.payload;
-        console.log("[RuntimeEvent]", {
-          sequence: this.runtimeEventSequence,
-          runId,
-          eventType: event.eventType,
-          statusHint: event.statusHint,
-          payloadKeys: Object.keys(payload),
-          rawEventJson: truncateForDebug(stringifyForDebug(event)),
-        });
+        if (event.eventType === AgentRunEventType.SYSTEM_INSTRUCTIONS_SUPPLIED) {
+          console.log("[RuntimeEvent]", systemInstructionDebugDetails(event));
+        } else {
+          const payload = event.payload;
+          console.log("[RuntimeEvent]", {
+            sequence: this.runtimeEventSequence,
+            runId,
+            eventType: event.eventType,
+            statusHint: event.statusHint,
+            payloadKeys: Object.keys(payload),
+            rawEventJson: truncateForDebug(stringifyForDebug(event)),
+          });
+        }
       }
 
       const message = this.eventMessageMapper.map(event);

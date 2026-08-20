@@ -1,0 +1,13 @@
+[
+  {
+    "packageId": "local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-agents%2Fagent-teams%2Fclassroom-simulation-team",
+    "rootPath": "/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/classroom-simulation-team",
+    "sourceKind": "LOCAL_PATH",
+    "source": "/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/classroom-simulation-team",
+    "normalizedSource": "/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/classroom-simulation-team",
+    "managedInstallPath": null,
+    "sourceMetadata": null,
+    "createdAt": "2026-08-20T18:45:17.884Z",
+    "updatedAt": "2026-08-20T18:45:17.884Z"
+  }
+]

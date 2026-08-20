@@ -9,6 +9,7 @@ const memoryMessages = {
   'memory.components.memory.RawTracesTab.raw_trace_file': 'Raw trace file',
   'memory.components.memory.RawTracesTab.active_file': 'active',
   'memory.components.memory.RawTracesTab.records': 'records',
+  'memory.components.memory.RawTracesTab.run_scope': 'Run scope',
 } satisfies TranslationCatalog;
 
 export default memoryMessages;

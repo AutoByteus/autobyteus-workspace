@@ -212,6 +212,63 @@ describe("Memory view GraphQL e2e", () => {
     });
   });
 
+  it("returns an exact run-scoped system-instruction record with nullable turn identity", async () => {
+    const agentId = "memory-view-system-instruction";
+    createdAgentIds.push(agentId);
+    const agentDir = path.join(memoryDir, "agents", agentId);
+    const rawRecord = {
+      id: "rt-system-memory-view",
+      ts: 1_800_000_000.5,
+      trace_type: "system_instruction",
+      content: "exact system content\n  with indentation",
+      source_event: "SYSTEM_INSTRUCTIONS_SUPPLIED",
+    };
+    writeJsonl(path.join(agentDir, "raw_traces_active.jsonl"), [rawRecord]);
+
+    const query = `
+      query SystemInstructionMemoryView($runId: String!) {
+        getAgentRunMemoryView(
+          runId: $runId
+          includeWorkingContext: false
+          includeEpisodic: false
+          includeSemantic: false
+          includeRawTraces: true
+          includeArchive: false
+        ) {
+          rawTraces { scope id traceType sourceEvent content turnId seq ts }
+        }
+      }
+    `;
+    const data = await execGraphql<{
+      getAgentRunMemoryView: {
+        rawTraces: Array<{
+          scope: string;
+          id: string | null;
+          traceType: string;
+          sourceEvent: string | null;
+          content: string | null;
+          turnId: string | null;
+          seq: number | null;
+          ts: number;
+        }>;
+      };
+    }>(query, { runId: agentId });
+
+    expect(Object.keys(rawRecord).sort()).toEqual([
+      "content", "id", "source_event", "trace_type", "ts",
+    ]);
+    expect(data.getAgentRunMemoryView.rawTraces).toEqual([{
+      scope: "run",
+      id: rawRecord.id,
+      traceType: rawRecord.trace_type,
+      sourceEvent: rawRecord.source_event,
+      content: rawRecord.content,
+      turnId: null,
+      seq: null,
+      ts: rawRecord.ts,
+    }]);
+  });
+
   it("returns absent external WorkingContext after success, retained stale content after failure, independent raws, and native content", async () => {
     const runFixtures = [
       {

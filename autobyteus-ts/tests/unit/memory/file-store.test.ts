@@ -32,7 +32,7 @@ describe('FileMemoryStore', () => {
     });
 
     store.add([trace]);
-    const items = store.listRawTracesOrdered();
+    const items = store.listTurnRawTracesOrdered();
     expect(items).toHaveLength(1);
     expect(items[0].turnId).toBe('turn_0001');
     expect(items[0].content).toBe('hello');
@@ -129,7 +129,7 @@ describe('FileMemoryStore', () => {
       store.add([trace]);
     }
 
-    const items = store.listRawTracesOrdered(2);
+    const items = store.listTurnRawTracesOrdered(2);
     expect(items).toHaveLength(2);
     expect(items[0].seq).toBe(2);
     expect(items[1].seq).toBe(3);
@@ -159,7 +159,7 @@ describe('FileMemoryStore', () => {
     store.add([trace1, trace2]);
     store.pruneRawTracesById(['rt-1'], false);
 
-    const remaining = store.listRawTracesOrdered();
+    const remaining = store.listTurnRawTracesOrdered();
     expect(remaining).toHaveLength(1);
     expect(remaining[0].id).toBe('rt-2');
     expect(store.readArchiveRawTraces()).toEqual([]);
@@ -200,7 +200,7 @@ describe('FileMemoryStore', () => {
     store.add(traces);
     store.pruneRawTracesById(['rt-2'], true);
 
-    const remaining = store.listRawTracesOrdered().map((item) => item.id);
+    const remaining = store.listTurnRawTracesOrdered().map((item) => item.id);
     expect(remaining).toEqual(['rt-1', 'rt-3']);
 
     const archive = store.readArchiveRawTraces();

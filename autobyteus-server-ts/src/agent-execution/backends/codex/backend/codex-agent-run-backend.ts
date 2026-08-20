@@ -14,6 +14,7 @@ import type {
   AgentRunBackendInputDispatch,
   AgentRunBackendInputDispatchResult,
 } from "../../../input/agent-run-input-contract.js";
+import { PendingSystemInstructionEvent } from "../../../events/pending-system-instruction-event.js";
 
 const buildCommandFailure = (operation: string, error: unknown): AgentOperationResult => {
   if (error instanceof CodexInputSubmissionError) {
@@ -38,6 +39,7 @@ export class CodexAgentRunBackend implements AgentRunBackend {
   private readonly sourceListeners = new Set<AgentRunSourceEventBatchListener>();
   private readonly eventConverter: CodexThreadEventConverter;
   private unsubscribeFromThread: (() => void) | null = null;
+  private readonly pendingSystemInstructionEvent: PendingSystemInstructionEvent;
 
   constructor(
     runContext: CodexRunContext,
@@ -47,6 +49,9 @@ export class CodexAgentRunBackend implements AgentRunBackend {
     this.runContext = runContext;
     this.codexThread = codexThread;
     this.threadManager = threadManager;
+    this.pendingSystemInstructionEvent = new PendingSystemInstructionEvent(
+      codexThread.takePendingSystemInstructionCapture(),
+    );
     this.eventConverter = new CodexThreadEventConverter(
       this.runId,
       this.codexThread.workingDirectory,
@@ -109,6 +114,7 @@ export class CodexAgentRunBackend implements AgentRunBackend {
     dispatch: AgentRunBackendInputDispatch,
   ): Promise<AgentRunBackendInputDispatchResult> {
     try {
+      await this.pendingSystemInstructionEvent.publishOnce(this.runId, this.sourceListeners);
       const result = dispatch.kind === "start_turn"
         ? await this.codexThread.startInput(dispatch.message)
         : await this.codexThread.appendInput(dispatch.message, dispatch.turnId);

@@ -72,6 +72,7 @@ export type TeamTokenUsageDetails = Readonly<{
 }>;
 
 export type TeamAgentEvent =
+  | Correlated<"SYSTEM_INSTRUCTIONS_SUPPLIED", { traceId: string; content: string; ts: number }>
   | Correlated<"TURN_STARTED", { turnId: string | null }>
   | Correlated<"TURN_COMPLETED", { turnId: string | null; reason: string | null }>
   | Correlated<"TURN_INTERRUPTED", { turnId: string | null; reason: string | null }>

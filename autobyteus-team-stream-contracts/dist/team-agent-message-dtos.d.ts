@@ -9,6 +9,13 @@ export declare const teamAgentSegmentTypeSchema: z.ZodEnum<{
     media: "media";
 }>;
 export declare const teamAgentPayloadSchemas: {
+    readonly SYSTEM_INSTRUCTIONS_SUPPLIED: z.ZodObject<{
+        change_sequence: z.ZodNumber;
+        agent_run_id: z.ZodString;
+        trace_id: z.ZodString;
+        content: z.ZodString;
+        ts: z.ZodNumber;
+    }, z.core.$strict>;
     readonly TURN_STARTED: z.ZodObject<{
         change_sequence: z.ZodNumber;
         agent_run_id: z.ZodString;

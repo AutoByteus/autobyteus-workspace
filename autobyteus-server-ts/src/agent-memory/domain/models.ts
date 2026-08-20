@@ -8,7 +8,7 @@ export type MemoryMessage = {
   ts?: number | null;
 };
 
-export type MemoryTraceEvent = {
+type MemoryTraceEventBase = {
   id?: string | null;
   traceType: string;
   sourceEvent?: string | null;
@@ -19,10 +19,26 @@ export type MemoryTraceEvent = {
   toolResult?: unknown | null;
   toolError?: string | null;
   media?: RawTraceMedia | null;
-  turnId: string;
-  seq: number;
   ts: number;
 };
+
+export type MemoryTurnTraceEvent = MemoryTraceEventBase & {
+  scope: "turn";
+  turnId: string;
+  seq: number;
+};
+
+export type MemoryRunTraceEvent = MemoryTraceEventBase & {
+  scope: "run";
+  id: string;
+  traceType: "system_instruction";
+  sourceEvent: "SYSTEM_INSTRUCTIONS_SUPPLIED";
+  content: string;
+  turnId: null;
+  seq: null;
+};
+
+export type MemoryTraceEvent = MemoryTurnTraceEvent | MemoryRunTraceEvent;
 
 export type RawTraceFileSummary = {
   fileName: string;

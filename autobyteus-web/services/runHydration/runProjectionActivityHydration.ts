@@ -1,10 +1,16 @@
-import { useAgentActivityStore, type CompactionActivity, type ToolActivity } from '~/stores/agentActivityStore';
+import { useAgentActivityStore } from '~/stores/agentActivityStore';
+import type {
+  CompactionActivity,
+  RunActivity,
+  SystemInstructionActivity,
+  ToolActivity,
+} from '~/types/activity/RunActivity';
 import type { CompactionStatusPhase } from '~/types/agent/AgentRunState';
 import type { ToolInvocationStatus } from '~/types/segments';
 import { getCompactionMessage } from '~/utils/compactionActivityPresentation';
 
 export interface RunProjectionToolActivityEntry {
-  kind?: 'tool' | null;
+  kind: 'tool';
   invocationId: string;
   toolName?: string | null;
   type?: ToolActivity['type'] | null;
@@ -16,6 +22,13 @@ export interface RunProjectionToolActivityEntry {
   error?: string | null;
   ts?: number | null;
   detailLevel?: 'full' | 'source_limited' | null;
+}
+
+export interface RunProjectionSystemInstructionActivityEntry {
+  kind: 'system_instruction';
+  activityId: string;
+  content: string;
+  ts: number;
 }
 
 export interface RunProjectionCompactionActivityEntry {
@@ -53,7 +66,8 @@ export interface RunProjectionCompactionActivityEntry {
 
 export type RunProjectionActivityEntry =
   | RunProjectionToolActivityEntry
-  | RunProjectionCompactionActivityEntry;
+  | RunProjectionCompactionActivityEntry
+  | RunProjectionSystemInstructionActivityEntry;
 
 const asRecord = (value: unknown): Record<string, unknown> => {
   if (!value || typeof value !== 'object' || Array.isArray(value)) {
@@ -223,11 +237,32 @@ const toCompactionActivity = (entry: RunProjectionCompactionActivityEntry): Comp
   };
 };
 
-const toRunActivity = (entry: RunProjectionActivityEntry): ToolActivity | CompactionActivity | null => {
-  if (entry.kind === 'compaction') {
-    return toCompactionActivity(entry);
+const toSystemInstructionActivity = (
+  entry: RunProjectionSystemInstructionActivityEntry,
+): SystemInstructionActivity | null => {
+  if (typeof entry.activityId !== 'string' || entry.activityId.trim().length === 0
+    || typeof entry.content !== 'string'
+    || typeof entry.ts !== 'number' || !Number.isFinite(entry.ts) || entry.ts <= 0) {
+    console.warn('[runProjectionActivityHydration] Omitted malformed system instruction activity.');
+    return null;
   }
-  return toToolActivity(entry as RunProjectionToolActivityEntry);
+  return {
+    kind: 'system_instruction',
+    activityId: entry.activityId,
+    content: entry.content,
+    timestamp: new Date(entry.ts * 1000),
+  };
+};
+
+const toRunActivity = (entry: RunProjectionActivityEntry): RunActivity | null => {
+  switch (entry.kind) {
+    case 'tool': return toToolActivity(entry);
+    case 'compaction': return toCompactionActivity(entry);
+    case 'system_instruction': return toSystemInstructionActivity(entry);
+    default:
+      console.warn('[runProjectionActivityHydration] Omitted unknown activity kind.');
+      return null;
+  }
 };
 
 export const hydrateActivitiesFromProjection = (
@@ -242,6 +277,10 @@ export const hydrateActivitiesFromProjection = (
     if (!activity) {
       return;
     }
-    store.addActivity(runId, activity);
+    if (activity.kind === 'system_instruction') {
+      store.upsertSystemInstructionActivity(runId, activity);
+    } else {
+      store.addActivity(runId, activity);
+    }
   });
 };

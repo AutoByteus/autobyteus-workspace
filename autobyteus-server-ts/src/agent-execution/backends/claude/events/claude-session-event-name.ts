@@ -1,4 +1,5 @@
 export enum ClaudeSessionEventName {
+  SYSTEM_INSTRUCTIONS_SUPPLIED = "system/instructionsSupplied",
   TURN_STARTED = "turn/started",
   TURN_COMPLETED = "turn/completed",
   TURN_INTERRUPTED = "turn/interrupted",

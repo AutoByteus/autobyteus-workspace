@@ -63,6 +63,9 @@ export class RuntimeMemoryEventAccumulator {
 
   recordRunEvent(event: AgentRunEvent): void {
     switch (event.eventType) {
+      case AgentRunEventType.SYSTEM_INSTRUCTIONS_SUPPLIED:
+        // The runtime handoff path persists this run-scoped evidence before publication.
+        return;
       case AgentRunEventType.TURN_STARTED:
         this.activeTurnId = extractTurnId(event.payload);
         return;

@@ -30,6 +30,7 @@ import type { TokenUsageUpdatedPayload as TokenUsageUpdatedPayloadBase } from '~
 
 export type ServerMessageType =
   | 'CONNECTED'
+  | 'SYSTEM_INSTRUCTIONS_SUPPLIED'
   | 'TURN_STARTED'
   | 'TURN_COMPLETED'
   | 'TURN_INTERRUPTED'
@@ -73,6 +74,12 @@ export interface ConnectedPayload {
   agent_id?: string;
   team_id?: string;
   session_id: string;
+}
+
+export interface SystemInstructionsSuppliedPayload {
+  trace_id: string;
+  content: string;
+  ts: number;
 }
 
 export interface SegmentStartPayload {
@@ -251,6 +258,7 @@ export type TokenUsageUpdatedPayload = TokenUsageUpdatedPayloadBase;
 
 export type ServerMessage =
   | { type: 'CONNECTED'; payload: ConnectedPayload }
+  | { type: 'SYSTEM_INSTRUCTIONS_SUPPLIED'; payload: SystemInstructionsSuppliedPayload }
   | { type: 'TURN_STARTED'; payload: TurnLifecyclePayload }
   | { type: 'TURN_COMPLETED'; payload: TurnLifecyclePayload }
   | { type: 'TURN_INTERRUPTED'; payload: TurnLifecyclePayload }

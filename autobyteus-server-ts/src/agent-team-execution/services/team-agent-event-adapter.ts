@@ -220,6 +220,21 @@ export class TeamAgentEventAdapter {
     const p = event.payload;
     const hint = statusHint(event);
     switch (event.eventType) {
+      case AgentRunEventType.SYSTEM_INSTRUCTIONS_SUPPLIED: {
+        exactKeys(p, ["trace_id", "content", "ts"]);
+        if (typeof p.trace_id !== "string" || p.trace_id.trim().length === 0) {
+          throw new Error("trace_id is invalid");
+        }
+        if (typeof p.content !== "string") throw new Error("content is invalid");
+        if (typeof p.ts !== "number" || !Number.isFinite(p.ts) || p.ts <= 0) {
+          throw new Error("ts is invalid");
+        }
+        return correlated({
+          eventType: "SYSTEM_INSTRUCTIONS_SUPPLIED",
+          details: { traceId: p.trace_id, content: p.content, ts: p.ts },
+          statusHint: null,
+        });
+      }
       case AgentRunEventType.TURN_STARTED:
         return correlated({ eventType: "TURN_STARTED", details: { turnId: text(raw(p, "turn_id", "turnId")) }, statusHint: hint });
       case AgentRunEventType.TURN_COMPLETED:

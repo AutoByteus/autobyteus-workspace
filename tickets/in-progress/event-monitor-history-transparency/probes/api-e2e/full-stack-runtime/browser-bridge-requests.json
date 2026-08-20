@@ -1,0 +1,12 @@
+[
+  {
+    "at": "2026-08-20T18:51:05.027Z",
+    "path": "/browser/open",
+    "body": {
+      "url": "http://127.0.0.1:54588/",
+      "title": null,
+      "reuse_existing": false,
+      "wait_until": "domcontentloaded"
+    }
+  }
+]

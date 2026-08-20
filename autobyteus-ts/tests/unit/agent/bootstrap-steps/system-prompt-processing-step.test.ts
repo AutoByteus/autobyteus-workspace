@@ -16,6 +16,46 @@ afterEach(() => {
 });
 
 describe('SystemPromptProcessingStep', () => {
+  it('persists the exact configured prompt after handoff and stages the committed raw identity', async () => {
+    const order: string[] = [];
+    const recordSystemInstructionSupply = vi.fn((content: string, suppliedAt: number) => {
+      order.push(`persist:${content}`);
+      return {
+        created: true,
+        trace: {
+          id: 'system-raw', ts: suppliedAt, trace_type: 'system_instruction' as const,
+          content, source_event: 'SYSTEM_INSTRUCTIONS_SUPPLIED' as const,
+        },
+      };
+    });
+    const context = {
+      agentId: 'agent-system',
+      config: { systemPrompt: ' exact native prompt ', skills: [] },
+      state: {
+        processedSystemPrompt: null,
+        pendingSystemInstructionCapture: null,
+        memoryManager: { recordSystemInstructionSupply },
+        agentEventInbox: { postLifecycleEvent: vi.fn() },
+      },
+      llmInstance: {
+        config: { systemMessage: null },
+        configureSystemPrompt: vi.fn((content: string) => order.push(`handoff:${content}`)),
+      },
+      toolInstances: {},
+    } as any;
+
+    await expect(new SystemPromptProcessingStep().execute(context)).resolves.toBe(true);
+
+    expect(order).toEqual(['handoff: exact native prompt ', 'persist: exact native prompt ']);
+    expect(context.state.pendingSystemInstructionCapture).toEqual(expect.objectContaining({
+      id: 'system-raw', content: ' exact native prompt ',
+    }));
+    expect(recordSystemInstructionSupply).toHaveBeenCalledWith(
+      ' exact native prompt ',
+      expect.any(Number),
+    );
+  });
+
   it('rejects placeholder-shaped metadata from a real configured skill before state or LLM mutation', async () => {
     const skillDirectory = fs.mkdtempSync(path.join(os.tmpdir(), 'final-prompt-skill-'));
     tempDirectories.push(skillDirectory);

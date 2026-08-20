@@ -105,7 +105,14 @@ const createBackend = (overrides: Record<string, unknown> = {}) => {
     startup: startup as any,
   });
 
-  Object.assign(codexThread, overrides);
+  const pendingSystemInstructionCapture = overrides.pendingSystemInstructionCapture as Parameters<
+    CodexThread["setPendingSystemInstructionCapture"]
+  >[0] | undefined;
+  const { pendingSystemInstructionCapture: _pending, ...threadOverrides } = overrides;
+  Object.assign(codexThread, threadOverrides);
+  if (pendingSystemInstructionCapture) {
+    codexThread.setPendingSystemInstructionCapture(pendingSystemInstructionCapture);
+  }
 
   return {
     codexThread,
@@ -125,6 +132,35 @@ const createBackend = (overrides: Record<string, unknown> = {}) => {
 };
 
 describe("CodexAgentRunBackend", () => {
+  it("publishes the committed system instruction after listener binding and before the first input exactly once", async () => {
+    const order: string[] = [];
+    const { backend, codexThread } = createBackend({
+      pendingSystemInstructionCapture: {
+        id: "raw-codex-system", ts: 10, trace_type: "system_instruction",
+        content: " exact Codex prompt ", source_event: "SYSTEM_INSTRUCTIONS_SUPPLIED",
+      },
+    });
+    (codexThread.client as any).request.mockImplementation(async (method: string) => {
+      order.push("input");
+      return method === "turn/start" ? { turn: { id: "turn-1" } } : { turnId: "turn-1" };
+    });
+    const listener = vi.fn(async () => { order.push("event"); });
+    backend.subscribeToSourceEventBatches(listener);
+
+    await backend.dispatchUserInput({ kind: "start_turn", message: new AgentInputUserMessage("first") });
+    await backend.dispatchUserInput({
+      kind: "append_to_active_turn", turnId: "turn-1",
+      message: new AgentInputUserMessage("second"),
+    });
+
+    expect(order).toEqual(["event", "input", "input"]);
+    expect(listener).toHaveBeenCalledTimes(1);
+    expect(listener).toHaveBeenCalledWith([expect.objectContaining({
+      eventType: AgentRunEventType.SYSTEM_INSTRUCTIONS_SUPPLIED,
+      payload: { trace_id: "raw-codex-system", content: " exact Codex prompt ", ts: 10 },
+    })]);
+  });
+
   it("returns the accepted platform run id from the codex thread", async () => {
     const { backend, codexThread } = createBackend();
 

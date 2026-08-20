@@ -22,6 +22,7 @@ import type {
   ClaudeSdkQueryLike,
   ClaudeSdkStartQueryTurnOptions,
 } from "../../../../../../src/runtime-management/claude/client/claude-sdk-client.js";
+import type { SystemInstructionCaptureService } from "../../../../../../src/agent-memory/services/system-instruction-capture-service.js";
 
 const waitFor = async (predicate: () => boolean, label: string): Promise<void> => {
   const deadline = Date.now() + 1_000;
@@ -157,6 +158,8 @@ const createSession = (input: {
     options: ClaudeSdkStartQueryTurnOptions,
   ) => Promise<ClaudeSdkQueryLike>;
   contextFileLocalPathResolver?: { resolve: (uri: string) => string | null };
+  memoryDir?: string | null;
+  systemInstructionCaptureService?: SystemInstructionCaptureService;
 } = {}) => {
   const sessionMessageCache = new ClaudeSessionMessageCache();
   const queryQueue = [...(input.queries ?? (input.query ? [input.query] : []))];
@@ -187,6 +190,7 @@ const createSession = (input: {
       autoExecuteTools: input.autoExecuteTools ?? false,
       skillAccessMode: SkillAccessMode.NONE,
       runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+      memoryDir: input.memoryDir ?? null,
     }),
     runtimeContext: new ClaudeAgentRunContext({
       sessionConfig: buildClaudeSessionConfig({
@@ -217,6 +221,7 @@ const createSession = (input: {
       activeQueriesByRunId,
       toolingCoordinator,
       contextFileLocalPathResolver: input.contextFileLocalPathResolver,
+      systemInstructionCaptureService: input.systemInstructionCaptureService,
       isRunSessionActive: () => true,
       terminateRunSession,
     },
@@ -235,6 +240,84 @@ const createSession = (input: {
 };
 
 describe("ClaudeSession", () => {
+  it("captures and publishes the exact SDK systemPrompt after a usable query is returned", async () => {
+    const captureService = {
+      capture: vi.fn((input) => ({
+        created: true,
+        trace: {
+          id: "raw-claude-system", ts: input.suppliedAt, trace_type: "system_instruction" as const,
+          content: input.content, source_event: "SYSTEM_INSTRUCTIONS_SUPPLIED" as const,
+        },
+      })),
+    } as SystemInstructionCaptureService;
+    const { session, startQueryTurn } = createSession({
+      query: createResultQuery(),
+      memoryDir: "/tmp/memory/run-1",
+      systemInstructionCaptureService: captureService,
+    });
+    const events: Array<{ method: string; params: Record<string, unknown> }> = [];
+    session.subscribeRuntimeEvents((event) => events.push(event as typeof events[number]));
+
+    await session.startTurn(new AgentInputUserMessage("hello"));
+    await waitFor(
+      () => events.some((event) => event.method === ClaudeSessionEventName.SYSTEM_INSTRUCTIONS_SUPPLIED),
+      "Claude system instruction event",
+    );
+
+    expect(startQueryTurn).toHaveBeenCalledWith(expect.objectContaining({
+      systemPrompt: "## Agent Identity\n\n- Name: Test agent",
+    }));
+    expect(captureService.capture).toHaveBeenCalledWith(expect.objectContaining({
+      memoryDir: "/tmp/memory/run-1",
+      content: "## Agent Identity\n\n- Name: Test agent",
+    }));
+    expect(events).toContainEqual({
+      method: ClaudeSessionEventName.SYSTEM_INSTRUCTIONS_SUPPLIED,
+      params: {
+        trace_id: "raw-claude-system",
+        content: "## Agent Identity\n\n- Name: Test agent",
+        ts: expect.any(Number),
+      },
+    });
+  });
+
+  it("closes the usable query without iteration when post-handoff persistence fails", async () => {
+    const iteratorStarted = vi.fn();
+    const query = {
+      async *[Symbol.asyncIterator]() {
+        iteratorStarted();
+        yield { type: "result", session_id: RESERVED_SESSION_ID, result: "done" };
+      },
+      interrupt: vi.fn(async () => undefined),
+      close: vi.fn(() => undefined),
+    } as ClaudeSdkQueryLike;
+    const captureService = {
+      capture: vi.fn(() => { throw new Error("persist failed"); }),
+    } as unknown as SystemInstructionCaptureService;
+    const { session, startQueryTurn, closeQuery } = createSession({
+      query,
+      memoryDir: "/tmp/memory/run-1",
+      systemInstructionCaptureService: captureService,
+    });
+    const events: string[] = [];
+    session.subscribeRuntimeEvents((event) => events.push(event.method));
+
+    await session.startTurn(new AgentInputUserMessage("hello"));
+    await waitFor(() => closeQuery.mock.calls.length === 1, "Claude failed capture cleanup");
+
+    expect(startQueryTurn).toHaveBeenCalledWith(expect.objectContaining({
+      systemPrompt: "## Agent Identity\n\n- Name: Test agent",
+    }));
+    expect(captureService.capture).toHaveBeenCalledWith(expect.objectContaining({
+      memoryDir: "/tmp/memory/run-1",
+      content: "## Agent Identity\n\n- Name: Test agent",
+    }));
+    expect(closeQuery).toHaveBeenCalledWith(query);
+    expect(iteratorStarted).not.toHaveBeenCalled();
+    expect(events).not.toContain(ClaudeSessionEventName.SYSTEM_INSTRUCTIONS_SUPPLIED);
+    expect(events).toContain(ClaudeSessionEventName.ERROR);
+  });
+
   it("defensively rejects an impossible explicit start while another turn is active", async () => {
     const { session } = createSession({ activeTurnId: "run-1:turn:active" });
 

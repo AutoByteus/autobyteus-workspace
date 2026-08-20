@@ -1,4 +1,5 @@
-import type { RunActivity } from '~/stores/agentActivityStore';
+import type { RunActivity } from '~/types/activity/RunActivity';
+import { isRunActivityComplete } from '~/services/activity/runActivityWindowPolicy';
 import type { AIResponseSegment, ToolInvocationStatus } from '~/types/segments';
 import { getStreamSegmentIdentity } from '~/services/agentStreaming/handlers/segmentIdentity';
 
@@ -32,6 +33,5 @@ export const isRecentEventMonitorSegmentComplete = (
 };
 
 export const isRecentEventMonitorActivityComplete = (activity: RunActivity): boolean => {
-  if (activity.kind === 'tool') return TERMINAL_TOOL_STATUSES.has(activity.status);
-  return activity.phase === 'completed' || activity.phase === 'failed';
+  return isRunActivityComplete(activity);
 };

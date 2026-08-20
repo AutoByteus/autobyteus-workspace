@@ -51,6 +51,15 @@ export type { CompactedMemoryProjectionBundle } from './projection/compacted-mem
 
 export { MemoryType } from './models/memory-types.js';
 export { RawTraceItem } from './models/raw-trace-item.js';
+export {
+  parseSystemInstructionTraceRecord,
+  SYSTEM_INSTRUCTION_TRACE_TYPE,
+  SYSTEM_INSTRUCTIONS_SUPPLIED_SOURCE_EVENT,
+} from './models/system-instruction-trace.js';
+export type {
+  SystemInstructionCaptureResult,
+  SystemInstructionTraceRecord,
+} from './models/system-instruction-trace.js';
 export { createToolCallIdentity, toolCallIdentityKey } from './models/tool-call-identity.js';
 export type { ToolCallIdentity } from './models/tool-call-identity.js';
 export { EpisodicItem } from './models/episodic-item.js';

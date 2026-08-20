@@ -8,13 +8,14 @@ import type {
 } from "../run-projection-types.js";
 import { buildRunProjectionBundleFromEvents } from "../run-projection-utils.js";
 import { buildHistoricalReplayEvents } from "../transformers/raw-trace-to-historical-replay-events.js";
-import { selectRecentReplayEvents } from "../recent-run-projection-policy.js";
+import { selectRecentRunProjectionEvents } from "../recent-run-projection-policy.js";
 import {
   buildActiveTraceGeneration,
   selectActiveTraceEventPage,
 } from "../active-trace-event-page-policy.js";
 import { buildEventMonitorActiveTracePageEvents } from "../event-monitor-active-trace-page-projection.js";
 import type { EventMonitorActiveTracePage } from "../event-monitor-active-trace-page-types.js";
+import { isEventMonitorReplayEvent } from "../historical-replay-event-types.js";
 
 const asString = (value: unknown): string | null =>
   typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
@@ -45,11 +46,13 @@ export class LocalMemoryRunViewProjectionProvider implements RunProjectionProvid
       includeArchive: false,
     });
     const replayEvents = buildHistoricalReplayEvents(view.rawTraces ?? []);
+    const selected = selectRecentRunProjectionEvents(replayEvents);
     const projection = buildRunProjectionBundleFromEvents(
       input.source.runId,
-      selectRecentReplayEvents(replayEvents),
+      selected.eventMonitorEvents,
+      selected.activityEvents,
     );
-    projection.hasEarlierActiveTraceEvents = replayEvents.length > 100;
+    projection.hasEarlierActiveTraceEvents = replayEvents.filter(isEventMonitorReplayEvent).length > 100;
     return projection;
   }
 
@@ -59,7 +62,7 @@ export class LocalMemoryRunViewProjectionProvider implements RunProjectionProvid
   }): Promise<EventMonitorActiveTracePage> {
     const { memoryService, localRunId } = this.resolveMemorySource(input);
     const snapshot = memoryService.getActiveRawTraceSnapshot(localRunId);
-    const replayEvents = buildHistoricalReplayEvents(snapshot.rawTraces);
+    const replayEvents = buildHistoricalReplayEvents(snapshot.rawTraces).filter(isEventMonitorReplayEvent);
     const activeGeneration = buildActiveTraceGeneration({
       device: snapshot.device,
       inode: snapshot.inode,

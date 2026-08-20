@@ -54,7 +54,7 @@ const makeHarness = (input: {
     findEpisodicItemsByIds: vi.fn(() => input.episodeRows ?? episodes),
     findSemanticItemsByIds: vi.fn(() => input.semanticRows ?? semantics),
     readArchiveRawTraces: rawArchiveAccess,
-    listRawTraceCorpusOrdered: rawArchiveAccess,
+    listTurnRawTraceCorpusOrdered: rawArchiveAccess,
   } as unknown as MemoryStore;
   return {
     lineageStore,

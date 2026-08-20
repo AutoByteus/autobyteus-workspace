@@ -63,7 +63,7 @@ export class ExternalRuntimeMemoryWriter {
   }
 
   readToolTraceLifecycleGroups(): ReadonlyMap<string, ToolTraceLifecycleGroup> {
-    return buildToolTraceLifecycleIndex(this.store.listRawTraceCorpusOrdered());
+    return buildToolTraceLifecycleIndex(this.store.listTurnRawTraceCorpusOrdered());
   }
 
   getProviderCompactionBoundaryState(boundaryKey: string): {
@@ -106,10 +106,10 @@ export class ExternalRuntimeMemoryWriter {
   }
 
   private initializeSequences(): void {
-    for (const trace of this.store.listRawTracesOrdered()) {
+    for (const trace of this.store.listTurnRawTracesOrdered()) {
       this.rememberSeq(trace.turnId, trace.seq);
     }
-    for (const trace of this.store.listArchiveRawTracesOrdered()) {
+    for (const trace of this.store.listArchiveTurnRawTracesOrdered()) {
       this.rememberSeq(trace.turnId, trace.seq);
     }
   }

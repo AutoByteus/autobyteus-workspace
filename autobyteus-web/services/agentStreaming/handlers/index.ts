@@ -43,6 +43,10 @@ export {
 } from './systemTaskNotificationHandler';
 
 export {
+  handleSystemInstructionsSupplied,
+} from './systemInstructionActivityHandler';
+
+export {
   handleInterAgentMessage,
 } from './teamHandler';
 

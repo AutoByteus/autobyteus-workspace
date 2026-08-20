@@ -11,6 +11,7 @@ import type { CodexAppServerClientManager } from "../../../../../../src/runtime-
 import type { CodexClientThreadRouter } from "../../../../../../src/agent-execution/backends/codex/thread/codex-client-thread-router.js";
 import type { CodexThreadCleanup } from "../../../../../../src/agent-execution/backends/codex/backend/codex-thread-cleanup.js";
 import { MemberTeamContext } from "../../../../../../src/agent-team-execution/domain/member-team-context.js";
+import type { SystemInstructionCaptureService } from "../../../../../../src/agent-memory/services/system-instruction-capture-service.js";
 
 const createRunContext = (
   runId: string,
@@ -23,6 +24,8 @@ const createRunContext = (
     threadId?: string | null;
     teamRunId?: string | null;
     appServerConfig?: Record<string, unknown> | null;
+    baseInstructions?: string | null;
+    memoryDir?: string | null;
   } = {},
 ) =>
   new AgentRunContext({
@@ -33,6 +36,7 @@ const createRunContext = (
       llmModelIdentifier: "",
       autoExecuteTools: input.autoExecuteTools ?? false,
       workspaceId: workingDirectory,
+      memoryDir: input.memoryDir ?? null,
       llmConfig: null,
       skillAccessMode: SkillAccessMode.NONE,
       memberTeamContext: input.teamRunId
@@ -54,7 +58,7 @@ const createRunContext = (
         serviceTier: input.serviceTier ?? null,
         approvalPolicy: input.approvalPolicy ?? CodexApprovalPolicy.ON_REQUEST,
         sandbox: input.sandbox ?? "workspace-write",
-        baseInstructions: null,
+        baseInstructions: input.baseInstructions ?? null,
         developerInstructions: null,
         appServerConfig: input.appServerConfig ?? null,
         dynamicTools: [],
@@ -64,6 +68,51 @@ const createRunContext = (
   });
 
 describe("CodexThreadManager", () => {
+  it("captures the exact baseInstructions after successful handoff and stages only created evidence", async () => {
+    const order: string[] = [];
+    const client = {
+      request: vi.fn(async (_method: string, params: Record<string, unknown>) => {
+        order.push(`handoff:${String(params.baseInstructions)}`);
+        return { thread: { id: "thread-system" } };
+      }),
+    } as unknown as CodexAppServerClient;
+    const clientManager = {
+      acquireClient: vi.fn(async () => client), releaseClient: vi.fn(async () => undefined),
+    } as unknown as CodexAppServerClientManager;
+    const cleanup = { cleanupThreadResources: vi.fn(async () => undefined) } as unknown as CodexThreadCleanup;
+    const router = { registerThread: vi.fn(() => () => {}) } as unknown as CodexClientThreadRouter;
+    const captureService = {
+      capture: vi.fn((input) => {
+        order.push(`persist:${input.content}`);
+        return {
+          created: true,
+          trace: {
+            id: "system-raw", ts: input.suppliedAt, trace_type: "system_instruction",
+            content: input.content, source_event: "SYSTEM_INSTRUCTIONS_SUPPLIED",
+          },
+        };
+      }),
+    } as SystemInstructionCaptureService;
+    const manager = new CodexThreadManager(clientManager, cleanup, router, captureService);
+
+    const thread = await manager.createThread(createRunContext("run-system", "/tmp/workspace", {
+      baseInstructions: " exact Codex instructions ", memoryDir: "/tmp/memory/run-system",
+    }));
+
+    expect(order).toEqual([
+      "handoff: exact Codex instructions ",
+      "persist: exact Codex instructions ",
+    ]);
+    expect(captureService.capture).toHaveBeenCalledWith(expect.objectContaining({
+      memoryDir: "/tmp/memory/run-system",
+      content: " exact Codex instructions ",
+    }));
+    expect(thread.takePendingSystemInstructionCapture()).toEqual(expect.objectContaining({
+      id: "system-raw", content: " exact Codex instructions ",
+    }));
+    expect(thread.takePendingSystemInstructionCapture()).toBeNull();
+  });
+
   it("registers the thread with the shared router before starting the remote thread", async () => {
     let routerRegistered = false;
     const request = vi.fn(async () => {

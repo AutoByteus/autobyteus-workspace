@@ -72,6 +72,7 @@ export const projectTeamAgentEventMessage = (
 ): TeamStreamServerMessage => {
   const base = { change_sequence: changeSequence, agent_run_id: execution.agentRunId };
   switch (event.eventType) {
+    case "SYSTEM_INSTRUCTIONS_SUPPLIED": return parseTeamStreamServerMessage({ type: event.eventType, payload: { ...base, trace_id: event.details.traceId, content: event.details.content, ts: event.details.ts } });
     case "TURN_STARTED": return parseTeamStreamServerMessage({ type: event.eventType, payload: { ...base, turn_id: event.details.turnId } });
     case "TURN_COMPLETED": return parseTeamStreamServerMessage({ type: event.eventType, payload: { ...base, turn_id: event.details.turnId, reason: event.details.reason } });
     case "TURN_INTERRUPTED": return parseTeamStreamServerMessage({ type: event.eventType, payload: { ...base, turn_id: event.details.turnId, reason: event.details.reason } });
