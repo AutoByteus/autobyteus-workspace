@@ -1,0 +1,237 @@
+# Delivery Revision Record
+
+## Revision Index
+
+| Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
+| --- | --- | --- | --- | --- |
+| `DR-001` | `CRR-002` implementation source Pass, `API-REV-001` Pass at 96.9%, and `CRR-003` proportional durable test review Pass | N/A | `Pass — latest base integrated, post-integration checks passed, docs synchronized, handoff ready; finalization held for user verification` | `autobyteus-web/docs/agent_execution_architecture.md`, `autobyteus-web/docs/settings.md`, `autobyteus-web/docs/agent_artifacts.md`, `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/` |
+| `DR-002` | User requested a README-grounded Electron build for hands-on testing | `DR-001 — Pass / awaiting verification` | `Pass — personal macOS arm64 package built, integrity checked, and isolated-smoke tested; finalization held` | `electron-test-build-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `docs-sync-report.md`, `delivery-evidence/dr-002-*` |
+| `DR-003` | User confirmed completion and authorized finalization without release | `DR-002 — Pass / awaiting verification` | `Pass — verification accepted, final target unchanged, ticket archived, repository finalization authorized` | `handoff-summary.md`, `release-deployment-report.md`, `electron-test-build-report.md`, `docs-sync-report.md`, `delivery-evidence/dr-003-user-verification-and-final-refresh.log` |
+| `DR-004` | Execute the user-authorized repository finalization and cleanup | `DR-003 — Pass / finalization authorized` | `Pass — ticket and target pushed, personal merged and pushed, ticket worktree/branches removed; no release performed` | `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/dr-004-repository-finalization-and-cleanup.log` |
+| `DR-005` | User requested a fresh Electron build from updated main `personal` after finalization | `DR-004 — Pass / finalized` | `Pass for existing-profile user test — build/integrity/normal launch passed; fresh blank-profile Prisma initialization has a bounded host-specific residual` | `electron-test-build-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/dr-005-*` |
+
+## Revision Entries
+
+### DR-001 — Integrated Team Task Conversation delivery baseline
+
+- Delivery round and trigger: Initial delivery round after implementation source
+  review `CRR-002` passed at `9.5/10` (`95.0/100`), API/E2E
+  `API-REV-001` passed at `96.9%` with every applicable confidence category at
+  least `96%`, and proportional durable test-code review `CRR-003` passed with
+  no findings.
+- Triggering upstream reports:
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-task-conversation-ui/code-review-report.md`;
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-task-conversation-ui/api-e2e-execution-coverage-report.md`;
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-task-conversation-ui/api-e2e-test-review-report.md`.
+- Prior authoritative result: `N/A`.
+- Current authoritative result: `Pass — delivery fetched origin/personal at
+  3b81b5ebdc4c5eae64e221aff9c578adc7e7fb74, checkpointed the reviewed
+  candidate, merged 18 newer base commits without conflict, and established
+  integrated head 002c83c418dec05c428b2e53ed4161c8d2192621. The durable browser
+  probe passed 6/6 and the focused Nuxt suite passed 7 files / 31 tests. Long-
+  lived docs are synchronized and the handoff is ready for explicit user
+  verification.`
+- Bootstrap and integration: Bootstrap `origin/personal` was
+  `1f5663ddb86e478d0b4ffdd878d57dee72d67b4b`; reviewed/API-E2E head was
+  `3566a956752799e0a0c9e60f91c5dc3c3d3bb3f5`; local safety checkpoint is
+  `1fafdf3a7f5f31f33b2628e46a4f958403d43ae3`; merge head is
+  `002c83c418dec05c428b2e53ed4161c8d2192621`; the branch is 6 ahead / 0
+  behind and contains the checked base.
+- Post-integration verification: `pnpm test:e2e:team-task-conversation --
+  --output-dir /tmp/team-task-conversation-delivery-integration-probe` passed all
+  six browser scenarios with cleanup; the seven-file focused Nuxt command passed
+  all 31 tests. Evidence is in
+  `delivery-evidence/dr-001-initial-integration-refresh.log`,
+  `delivery-evidence/dr-001-post-integration-browser-result.json`, and
+  `delivery-evidence/dr-001-post-integration-focused-vitest.log`.
+- Docs sync report:
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-task-conversation-ui/docs-sync-report.md`
+  — `Updated / Pass`.
+- Handoff summary:
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-task-conversation-ui/handoff-summary.md`
+  — `Ready for explicit user verification`.
+- Release/publication/deployment report:
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-task-conversation-ui/release-deployment-report.md`
+  — repository finalization held; release/deployment not required.
+- Docs delta: Updated the execution architecture, Settings workspace behavior,
+  and Agent Artifacts chapters to replace obsolete assignment-only/Technical-
+  details guidance with the full ordered task conversation, human lifecycle,
+  exact selection/reference ownership, single-detail-pane, technical-removal,
+  and unchanged Messages/Workspaces/Activity contracts.
+- Persisted-data result: `Not Affected`; current V1 task records remain directly
+  consumed and no delivery action or rollback migration exists.
+- User verification/finalization state: Explicit user verification has not yet
+  been received. The ticket remains in `tickets/in-progress`; delivery-owned
+  edits remain uncommitted; no push, target merge/push, version bump, tag,
+  release, deployment, worktree removal, or branch cleanup has occurred.
+- Why this baseline was recorded: Establish the mandatory `DR-001` authority for
+  the integrated delivery state, make the base refresh, executable recheck, docs
+  sync, and user-verification hold durable, and prevent finalization of a stale
+  reviewed branch.
+- Next recipient/action: User verifies the integrated Team Tasks journey and
+  explicitly confirms completion. Delivery then refreshes `origin/personal`
+  again and finalizes only if the verified state remains current.
+- Remaining risks or uncertainty: Low external-provider timing nondeterminism;
+  the live browser did not capture task-Team coordinator focus, though the
+  durable production-component probe passed it and live Teacher/unrelated-member
+  filtering passed; long histories rely on existing scrolling; optional
+  `nuxi typecheck` remains blocked by the recorded external toolchain
+  incompatibility. No critical acceptance criterion is open.
+
+### DR-002 — README-grounded macOS arm64 user-test package
+
+- Delivery round and trigger: User asked delivery to read the README and build
+  Electron so the integrated ticket could be tested hands-on.
+- Prior authoritative result: `DR-001 — integrated, documented handoff ready;
+  explicit user verification pending.`
+- Current authoritative result: `Pass — root/frontend README and web AGENTS
+  guidance were reviewed; origin/personal remained unchanged at
+  3b81b5ebdc4c5eae64e221aff9c578adc7e7fb74; the personal macOS arm64 1.4.52
+  DMG/ZIP were built from integrated head
+  002c83c418dec05c428b2e53ed4161c8d2192621; package integrity, terminal
+  runtime, exact-artifact isolated health, and cleanup passed.`
+- Build report:
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-task-conversation-ui/electron-test-build-report.md`.
+- README command: Local no-notarization environment with
+  `pnpm build:electron:mac`; build flavor was explicitly `personal` and no
+  release/version/tag action was used.
+- Recommended artifact:
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.dmg`;
+  SHA-256
+  `77b277a8086ab6dd47154452446b8e55f7835ce254b55b04af891cb9b307eb7a`.
+- ZIP SHA-256:
+  `1c0217d2ba928940dd7ddbacca8415b9b25e9a6dfe3637ad5287aa4e134b1363`.
+- Verification: Build guards and generation passed; `hdiutil verify` passed;
+  ZIP integrity passed; app metadata is arm64/version 1.4.52; packaged node-pty
+  helper selection/architecture/execute bits and a real spawn passed; exact
+  built executable became healthy on isolated port `50665`; its process tree,
+  listener, and preparation-owned root were then fully removed.
+- Existing application safety: Main-workspace AutoByteus PID `22115` and
+  backend PID `22745` on ordinary port `29695` were observed read-only and left
+  untouched. Normal-state hands-on testing requires quitting that application
+  first; coexistence testing can use the isolated hold command in the build
+  report.
+- Documentation impact: `No impact for DR-002`. The README commands, integrated
+  backend behavior, isolation contract, and release guardrails were already
+  correct; no long-lived documentation correction was needed.
+- Signing/publication state: Local unsigned/unnotarized test build; no release,
+  publication, tag, version bump, push, or deployment occurred.
+- User verification/finalization state: Still pending. Ticket, branch, delivery
+  edits, and generated artifacts remain held; repository finalization and
+  cleanup have not begun.
+- Next action: User tests the DMG/unpacked app or the README-supported isolated
+  hold launch and explicitly confirms completion before finalization.
+- Remaining risks: DR-001 residuals remain. macOS may require right-click
+  **Open** confirmation for the unsigned package; the isolated temporary profile
+  does not contain the user's ordinary persisted runs or provider settings.
+
+### DR-003 — User verification accepted and finalization authorized
+
+- Delivery round and trigger: User explicitly confirmed that the task is done
+  and requested finalization without a release.
+- Prior authoritative result: `DR-002 — integrated macOS arm64 test package
+  built, integrity checked, and ready for hands-on verification.`
+- Current authoritative result: `Pass — user verification accepted; mandatory
+  final git fetch left origin/personal unchanged at
+  3b81b5ebdc4c5eae64e221aff9c578adc7e7fb74; no re-integration, executable
+  rerun, or renewed verification was required; the ticket moved to
+  tickets/done/team-task-conversation-ui before the final ticket-branch commit.`
+- Verification evidence:
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-task-conversation-ui/delivery-evidence/dr-003-user-verification-and-final-refresh.log`.
+- Finalization target: `origin/personal`; the verified integrated head
+  `002c83c418dec05c428b2e53ed4161c8d2192621` remained 6 commits ahead / 0
+  behind and contained the target.
+- Persisted-data result: `Not Affected`; no migration or rollback data action.
+- Release decision: Explicitly `No release`; no version bump, tag, publication,
+  deployment, or release workflow is authorized.
+- Cleanup plan: After repository finalization, gracefully close only the exact
+  verified ticket-worktree AutoByteus application, then remove the dedicated
+  worktree and ticket branches.
+- Next action: Commit/push the archived ticket branch, update/merge/push
+  `personal`, perform safe cleanup, and record exact final hashes/results under
+  the next delivery revision.
+
+
+### DR-004 — Repository finalization and cleanup complete
+
+- Delivery round and trigger: Execute the repository finalization authorized by
+  the user's explicit completion signal under `DR-003`; release remained
+  explicitly out of scope.
+- Prior authoritative result: `DR-003 — verification accepted, final target
+  unchanged, ticket archived, finalization authorized.`
+- Current authoritative result: `Pass — archived ticket commit
+  ff5b38544520607e9d22ea5f572c583d32849f1f was pushed to the ticket branch;
+  current origin/personal was confirmed at
+  3b81b5ebdc4c5eae64e221aff9c578adc7e7fb74; merge commit
+  4f586f2e7fe3a6034063b1f44bf41a8c7797549c was created on personal and pushed;
+  the verified ticket app/backend exited, port 29695 was clear, and the
+  dedicated worktree plus local/remote ticket branches were removed.`
+- Repository result: `origin/personal` contains ticket commit
+  `ff5b38544520607e9d22ea5f572c583d32849f1f` through merge commit
+  `4f586f2e7fe3a6034063b1f44bf41a8c7797549c`.
+- Cleanup result: The exact ticket-worktree AutoByteus process received TERM;
+  the subsequent audit found no process from that executable and no listener on
+  port `29695`. `git worktree remove --force` removed the registered worktree
+  and its contents but initially reported a Finder-created `.DS_Store`; that
+  residual file/directory was removed safely, `git worktree prune` completed,
+  and both ticket branch refs were deleted.
+- Evidence:
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-task-conversation-ui/delivery-evidence/dr-004-repository-finalization-and-cleanup.log`.
+- Release decision/result: `Not required / not performed`; no release commit,
+  version bump, tag, publication, deployment, or release notes were created.
+- Follow-up requested after finalization: Build a fresh local Electron test
+  package directly from the updated main `personal` workspace. This is a local
+  test artifact only and will be recorded separately without changing release
+  scope.
+- Remaining risks: Product residuals recorded under `DR-003` remain bounded;
+  there is no repository-finalization or cleanup blocker.
+
+
+### DR-005 — Main-personal Electron user-test package
+
+- Delivery round and trigger: After repository finalization, the user requested
+  confirmation that main `personal` was updated and a fresh Electron build from
+  that workspace.
+- Prior authoritative result: `DR-004 — repository finalized and pushed;
+  dedicated ticket worktree/branches removed; no release performed.`
+- Current authoritative result: `Pass for the user's existing-profile test path
+  — local personal macOS arm64 version 1.4.52 built successfully from main
+  personal head fbb60fe37ba3f7a90f5561a940a87a45c9c90b3b, which matched
+  origin/personal at build start. DMG/ZIP integrity, arm64 metadata, packaged
+  node-pty, an isolated seeded-profile exact-artifact launch, and a normal launch
+  against the user's existing profile all passed.`
+- Build command: `NO_TIMESTAMP=1 APPLE_TEAM_ID=
+  AUTOBYTEUS_BUILD_FLAVOR=personal pnpm build:electron:mac` from main
+  `autobyteus-web`; exit `0`.
+- Recommended DMG:
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.dmg`;
+  SHA-256 `daa26af981f7f274f81eacbfbb91b9e1bff8c35faaed8d0164098ef6409355c2`.
+- ZIP SHA-256:
+  `1b80f47805d1e71590c86cf95c591c4a947ad47062c1da74fd509660a28c99ba`.
+- User-test launch: The exact main-workspace app is running as PID `27867`; its
+  packaged backend PID `28501` is healthy on `http://127.0.0.1:29695/rest/health`
+  using `/Users/normy/.autobyteus/server-data`.
+- Bounded verification residual: Two default isolated launches against a blank
+  temporary profile failed before readiness with a blank Prisma 5.22 schema-
+  engine error. The packaged migration completed all 22 migrations when
+  `RUST_LOG=info` was present; default migration of a copy of the user's existing
+  database passed with no pending migrations; and the exact application became
+  healthy with default environment after the isolated database was seeded.
+  This residual is outside the Team Task Conversation UI change and does not
+  block the requested existing-profile test, but a brand-new-profile package
+  launch is not certified by DR-005.
+- Evidence: `delivery-evidence/dr-005-main-personal-electron-build-macos-arm64.log`,
+  `delivery-evidence/dr-005-main-personal-electron-package-integrity.log`,
+  `delivery-evidence/dr-005-prisma-fresh-root-diagnostic.log`,
+  `delivery-evidence/dr-005-main-personal-seeded-isolated-electron-smoke.log`,
+  and `delivery-evidence/dr-005-main-personal-normal-state-launch.log`. The two
+  failed default fresh-root launch attempts are retained explicitly in the
+  corresponding `dr-005-main-personal-isolated-electron-launch-smoke*.log` files.
+- Documentation impact: `No long-lived docs impact`; README build commands and
+  release separation remain accurate. Delivery artifacts were updated with the
+  concrete package and residual.
+- Release decision/result: `Not required / not performed`; package remains local,
+  unsigned/unnotarized, ignored, and uncommitted.
+- Follow-up classification: `Local Fix` to `/implementation_engineer` for the
+  non-blocking fresh-blank-profile Prisma startup behavior; current task
+  finalization and existing-profile testing remain complete.

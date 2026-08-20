@@ -1,0 +1,41 @@
+COMMAND   PID  USER   FD      TYPE             DEVICE  SIZE/OFF                NODE NAME
+node    25379 normy  cwd       DIR               1,13       800           356337956 /Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/autobyteus-server-ts
+node    25379 normy  txt       REG               1,13 112928848           255287132 /Users/normy/.hermes/node/bin/node
+node    25379 normy  txt       REG               1,13     72984           293325547 /Library/Preferences/Logging/.plist-cache.TQHe3XLT
+node    25379 normy  txt       REG               1,13   2374000 1152921500312573276 /usr/lib/dyld
+node    25379 normy  txt       REG               1,13  17251592           358078041 /Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/.prisma/client/libquery_engine-darwin-arm64.dylib.node
+node    25379 normy    0u     unix 0xf1f20ca4315a190f       0t0                     ->0x847b1a851bd6e71
+node    25379 normy    1u     unix 0x3e1f06f93f772d81       0t0                     ->0x31756765c9540b91
+node    25379 normy    2u     unix 0xd628a6e285319be0       0t0                     ->0xd76fc847a315f381
+node    25379 normy    3u   KQUEUE                                                  count=0, state=0x8
+node    25379 normy    4      PIPE 0x530bc271f551ddb1     16384                     ->0x9d80b2c5752362f0
+node    25379 normy    5      PIPE 0x9d80b2c5752362f0     16384                     ->0x530bc271f551ddb1
+node    25379 normy    6r      DIR               1,13       704                   2 /
+node    25379 normy    7u   KQUEUE                                                  count=0, state=0xa
+node    25379 normy    8r      DIR               1,13       704                   2 /
+node    25379 normy    9u   KQUEUE                                                  count=0, state=0xa
+node    25379 normy   10r      DIR               1,13       704                   2 /
+node    25379 normy   11r      CHR                3,2       0t0                 336 /dev/null
+node    25379 normy   12w      REG               1,13      5837           358080432 /Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/autobyteus-server-ts/tests/.tmp/api-rev-001-team-task-live/logs/server.log
+node    25379 normy   13u   KQUEUE                                                  count=0, state=0xa
+node    25379 normy   14u   KQUEUE                                                  count=0, state=0xa
+node    25379 normy   15u   KQUEUE                                                  count=0, state=0xa
+node    25379 normy   16u     unix 0xdb57ea7325c10ea7       0t0                     ->0x1d1ca6fb3b1905ce
+node    25379 normy   17u     unix 0x1d1ca6fb3b1905ce       0t0                     ->0xdb57ea7325c10ea7
+node    25379 normy   18u     unix 0xdb57ea7325c10ea7       0t0                     ->0x1d1ca6fb3b1905ce
+node    25379 normy   19u      REG               1,13    217088           358079595 /Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/autobyteus-server-ts/db/api-rev-001-team-task-live.db
+node    25379 normy   20u      REG               1,13    217088           358079595 /Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/autobyteus-server-ts/db/api-rev-001-team-task-live.db
+node    25379 normy   21u      REG               1,13    217088           358079595 /Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/autobyteus-server-ts/db/api-rev-001-team-task-live.db
+node    25379 normy   22u      REG               1,13    217088           358079595 /Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/autobyteus-server-ts/db/api-rev-001-team-task-live.db
+node    25379 normy   23u      REG               1,13    217088           358079595 /Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/autobyteus-server-ts/db/api-rev-001-team-task-live.db
+node    25379 normy   24u      REG               1,13    217088           358079595 /Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/autobyteus-server-ts/db/api-rev-001-team-task-live.db
+node    25379 normy   25u      REG               1,13    217088           358079595 /Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/autobyteus-server-ts/db/api-rev-001-team-task-live.db
+node    25379 normy   26      PIPE 0x7a9cee5b9115116b     16384                     ->0x280f3e889de447b9
+node    25379 normy   27      PIPE 0x280f3e889de447b9     16384                     ->0x7a9cee5b9115116b
+node    25379 normy   28u     IPv4 0x67b2871102409edb       0t0                 TCP 127.0.0.1:60321 (LISTEN)
+node    25379 normy   29u    systm 0x11790781b95de545       0t0                     [ctl com.apple.netsrc id 7 unit 99]
+node    25379 normy   30u     unix 0x7b3dcbf764a86adc       0t0                     ->0x7dbc8d116ee79881
+node    25379 normy   31u     IPv4  0xed59fa348e85e47       0t0                 TCP 127.0.0.1:64657->127.0.0.1:1234 (ESTABLISHED)
+node    25379 normy   32   NPOLICY
+node    25379 normy   33u     IPv6 0xdf42dbc40debc932       0t0                 TCP [2003:ca:5732:5a24:c31:8e22:91d4:ff99]:64658->[2606:4700::6812:1c88]:443 (ESTABLISHED)
+node    25379 normy   34u     IPv6 0xf7f1600033a19ec1       0t0                 TCP [2003:ca:5732:5a24:c31:8e22:91d4:ff99]:64659->[2607:6bc0::10]:443 (ESTABLISHED)

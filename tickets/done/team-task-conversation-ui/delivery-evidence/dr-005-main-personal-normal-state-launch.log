@@ -1,0 +1,14 @@
+DR-005 main personal normal-state launch for user testing
+Date: 2026-08-20T19:08:12+02:00
+Source HEAD: fbb60fe37ba3f7a90f5561a940a87a45c9c90b3b
+App: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+Pre-launch port 29695: clear
+Health ready after poll 9
+Exact executable processes:
+27867 /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+28501 /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/app.js --port 29695 --data-dir /Users/normy/.autobyteus/server-data
+Port 29695 listener:
+COMMAND     PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+AutoByteu 28501 normy   26u  IPv4 0xe1b785c98b62bddf      0t0  TCP *:29695 (LISTEN)
+Health response:
+{"status":"ok","message":"Server is running"}

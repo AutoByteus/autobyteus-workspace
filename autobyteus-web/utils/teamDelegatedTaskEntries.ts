@@ -1,36 +1,85 @@
 import type {
   TaskTeamMemberExecutionDto,
+  TeamReferenceFileDto,
   TeamRunExecutionTreeDto,
 } from '@autobyteus/team-stream-contracts';
-import type { AgentContext } from '~/types/agent/AgentContext';
 import type { TeamReferenceFile } from '~/types/teamReferenceFile';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
-import { AgentStatus } from '~/types/agent/AgentStatus';
 import { memberAddressBasename } from '~/types/agent/AgentTeamAddress';
 import type { TeamTaskHistoryRow } from '~/services/teamExecution/teamExecutionViewModels';
 
 export type DelegatedTaskEntryKind = 'task_agent' | 'task_team';
-export interface DelegatedTaskEntry {
-  kind: DelegatedTaskEntryKind;
-  entryKey: string;
-  context: AgentContext | null;
-  teamRunId: string;
-  targetDisplayName: string;
-  taskId: string;
-  taskLabel: string;
-  taskDescription: string;
-  taskReferenceFiles: TeamReferenceFile[];
-  taskArguments: Record<string, unknown>;
-  taskTargetKind: 'agent' | 'agent_team';
-  taskTargetName: string;
-  runId: string;
-  status: AgentStatus;
-  statusLabel: string;
+export type DelegatedTaskDisplayStatus =
+  | 'in_progress'
+  | 'awaiting_review'
+  | 'revision_requested'
+  | 'accepted'
+  | 'interrupted';
+
+export type DelegatedTaskParticipant =
+  | Readonly<{ kind: 'named'; label: string }>
+  | Readonly<{ kind: 'delegator_fallback' }>
+  | Readonly<{ kind: 'assignee_fallback' }>;
+
+export type DelegatedTaskDirection =
+  | Readonly<{
+    kind: 'directed';
+    from: DelegatedTaskParticipant;
+    to: DelegatedTaskParticipant;
+  }>
+  | Readonly<{ kind: 'system' }>;
+
+interface DelegatedTaskLifecycleItemBase<TContent extends string | null = string> {
+  readonly itemKey: string;
+  readonly createdAt: string;
+  readonly content: TContent;
+  readonly direction: DelegatedTaskDirection;
+  readonly referenceFiles: readonly TeamReferenceFile[];
 }
 
-const formatStatus = (value: string): string => value
-  .replace(/[-_]+/g, ' ')
-  .replace(/^./, (letter) => letter.toUpperCase());
+export type DelegatedTaskLifecycleItem =
+  | (DelegatedTaskLifecycleItemBase & Readonly<{ kind: 'assignment' }>)
+  | (DelegatedTaskLifecycleItemBase & Readonly<{
+    kind: 'submission';
+    resultOrdinal: number;
+    revised: boolean;
+  }>)
+  | (DelegatedTaskLifecycleItemBase<string | null> & Readonly<{
+    kind: 'review';
+    decision: 'accept';
+    reviewedResultOrdinal: number;
+  }>)
+  | (DelegatedTaskLifecycleItemBase & Readonly<{
+    kind: 'review';
+    decision: 'request_revision';
+    reviewedResultOrdinal: number;
+  }>)
+  | (DelegatedTaskLifecycleItemBase & Readonly<{
+    kind: 'interruption';
+    referenceFiles: readonly [];
+  }>);
+
+export interface DelegatedTaskEntry {
+  readonly kind: DelegatedTaskEntryKind;
+  readonly entryKey: string;
+  readonly teamRunId: string;
+  readonly taskId: string;
+  readonly runId: string;
+  readonly displayStatus: DelegatedTaskDisplayStatus;
+  readonly lastActivityAt: string;
+  readonly lifecycleItems: readonly [DelegatedTaskLifecycleItem, ...DelegatedTaskLifecycleItem[]];
+}
+
+export type DelegatedTaskItemLocator = Readonly<{
+  entryKey: string;
+  itemKey: string;
+}>;
+
+export type DelegatedTaskReferenceLocator = Readonly<{
+  entryKey: string;
+  itemKey: string;
+  referenceId: string;
+}>;
 
 const agentIdsInTaskTeam = (
   tree: TeamRunExecutionTreeDto,
@@ -88,7 +137,7 @@ const visibleForAgent = (
     : false;
 };
 
-const referenceFiles = (task: TeamTaskHistoryRow): TeamReferenceFile[] => task.task.reference_files.map((reference) => ({
+const referenceFiles = (references: readonly TeamReferenceFileDto[]): TeamReferenceFile[] => references.map((reference) => ({
   referenceId: reference.reference_id,
   path: reference.path,
   type: reference.type,
@@ -96,32 +145,124 @@ const referenceFiles = (task: TeamTaskHistoryRow): TeamReferenceFile[] => task.t
   updatedAt: reference.updated_at,
 }));
 
+const namedParticipant = (label: string): DelegatedTaskParticipant => ({ kind: 'named', label });
+
+const delegatorParticipant = (
+  team: AgentTeamContext,
+  task: TeamTaskHistoryRow,
+): DelegatedTaskParticipant => {
+  const address = team.view.getMemberAddress(task.delegatorAgentRunId);
+  return address ? namedParticipant(memberAddressBasename(address)) : { kind: 'delegator_fallback' };
+};
+
+const assigneeParticipant = (task: TeamTaskHistoryRow): DelegatedTaskParticipant => {
+  const label = memberAddressBasename(task.targetAddress);
+  return label ? namedParticipant(label) : { kind: 'assignee_fallback' };
+};
+
+const displayStatus = (task: TeamTaskHistoryRow): DelegatedTaskDisplayStatus => {
+  if (task.task.status !== 'active') return task.task.status;
+  const latestUpdate = task.task.updates.at(-1);
+  return latestUpdate?.kind === 'review' && latestUpdate.decision === 'request_revision'
+    ? 'revision_requested'
+    : 'in_progress';
+};
+
 const toEntry = (team: AgentTeamContext, task: TeamTaskHistoryRow): DelegatedTaskEntry => {
   const kind: DelegatedTaskEntryKind = task.targetAgentRunId ? 'task_agent' : 'task_team';
   const runId = task.targetAgentRunId ?? task.targetTeamRunId;
   if (!runId) throw new Error(`Task '${task.task.task_id}' has no exact execution identity.`);
-  const context = task.targetAgentRunId ? team.view.getAgentContext(task.targetAgentRunId) : null;
-  const targetDisplayName = memberAddressBasename(task.targetAddress);
+
+  const taskId = task.task.task_id;
+  const delegator = delegatorParticipant(team, task);
+  const assignee = assigneeParticipant(task);
+  const assignmentDirection: DelegatedTaskDirection = { kind: 'directed', from: delegator, to: assignee };
+  const submissionDirection: DelegatedTaskDirection = { kind: 'directed', from: assignee, to: delegator };
+  const lifecycleItems: DelegatedTaskLifecycleItem[] = [{
+    kind: 'assignment',
+    itemKey: `task:${taskId}:assignment`,
+    createdAt: task.task.created_at,
+    content: task.task.description,
+    direction: assignmentDirection,
+    referenceFiles: referenceFiles(task.task.reference_files),
+  }];
+  const resultOrdinals = new Map<string, number>();
+  let resultOrdinal = 0;
+  let revisionPending = false;
+
+  for (const update of task.task.updates) {
+    if (update.kind === 'submission') {
+      resultOrdinal += 1;
+      resultOrdinals.set(update.submission_id, resultOrdinal);
+      lifecycleItems.push({
+        kind: 'submission',
+        itemKey: `task:${taskId}:submission:${update.submission_id}`,
+        createdAt: update.created_at,
+        content: update.message,
+        direction: submissionDirection,
+        referenceFiles: referenceFiles(update.reference_files),
+        resultOrdinal,
+        revised: revisionPending,
+      });
+      revisionPending = false;
+      continue;
+    }
+
+    if (update.kind === 'review') {
+      const reviewedResultOrdinal = resultOrdinals.get(update.reviewed_submission_id);
+      if (reviewedResultOrdinal === undefined) {
+        throw new Error(`Task '${taskId}' review '${update.review_id}' references an unknown submission.`);
+      }
+      if (update.decision === 'request_revision') {
+        if (update.comment === null) {
+          throw new Error(`Task '${taskId}' revision review '${update.review_id}' has no comment.`);
+        }
+        lifecycleItems.push({
+          kind: 'review',
+          decision: 'request_revision',
+          itemKey: `task:${taskId}:review:${update.review_id}`,
+          createdAt: update.created_at,
+          content: update.comment,
+          direction: assignmentDirection,
+          referenceFiles: referenceFiles(update.reference_files),
+          reviewedResultOrdinal,
+        });
+        revisionPending = true;
+      } else {
+        lifecycleItems.push({
+          kind: 'review',
+          decision: 'accept',
+          itemKey: `task:${taskId}:review:${update.review_id}`,
+          createdAt: update.created_at,
+          content: update.comment,
+          direction: assignmentDirection,
+          referenceFiles: referenceFiles(update.reference_files),
+          reviewedResultOrdinal,
+        });
+        revisionPending = false;
+      }
+      continue;
+    }
+
+    lifecycleItems.push({
+      kind: 'interruption',
+      itemKey: `task:${taskId}:interruption:${update.interruption_id}`,
+      createdAt: update.created_at,
+      content: update.reason,
+      direction: { kind: 'system' },
+      referenceFiles: [],
+    });
+  }
+
   return {
     kind,
-    entryKey: `task:${task.task.task_id}`,
-    context,
+    entryKey: `task:${taskId}`,
     teamRunId: team.view.getRootTeamRunId(),
-    targetDisplayName,
-    taskId: task.task.task_id,
-    taskLabel: task.label,
-    taskDescription: task.task.description,
-    taskReferenceFiles: referenceFiles(task),
-    taskArguments: {
-      recipient_address: task.task.recipient_address,
-      description: task.task.description,
-      reference_files: task.task.reference_files.map((reference) => reference.path),
-    },
-    taskTargetKind: kind === 'task_team' ? 'agent_team' : 'agent',
-    taskTargetName: targetDisplayName,
+    taskId,
     runId,
-    status: context?.state.currentStatus ?? (task.task.status === 'active' ? AgentStatus.Running : AgentStatus.Offline),
-    statusLabel: formatStatus(task.task.status),
+    displayStatus: displayStatus(task),
+    lastActivityAt: task.task.updates.at(-1)?.created_at ?? task.task.created_at,
+    lifecycleItems: lifecycleItems as [DelegatedTaskLifecycleItem, ...DelegatedTaskLifecycleItem[]],
   };
 };
 

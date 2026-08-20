@@ -1,0 +1,115 @@
+[
+  {
+    "taskId": "task_38b40d9ef02e4c7fafa5e0bd06e4d92c",
+    "delegatorAgentRunId": "test_teacher_619ff8275c3d48458bd9820830f65e35",
+    "recipientAddress": "/StudentStudyGroup",
+    "targetAgentRunId": null,
+    "targetTeamRunId": "team_local_team_nested_classroom_test_student_st_7da1414887ef49138a2861c47b75881d",
+    "status": "accepted",
+    "description": "LIVE_REVISION_CYCLE. Complete the nested classroom task and submit FIRST_SUBMISSION_NEEDS_REVISION first. After receiving a revision request, provide REVISED_SUBMISSION_ACCEPTABLE only after revision. Require and include the referenced result files in your task work: assignment.md and review.md as applicable.",
+    "createdAt": "2026-08-20T15:50:40.249Z",
+    "referenceFiles": [
+      {
+        "referenceId": "ca905e4d93f01dabaf37601864bd1617688a373fe2bfedcaeb616844b290d2f1",
+        "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/in-progress/team-task-conversation-ui/api-e2e-evidence/api-rev-001/live/workspace/nested-classroom-live/assignment.md",
+        "type": "file",
+        "createdAt": "2026-08-20T15:50:40.249Z",
+        "updatedAt": "2026-08-20T15:50:40.249Z"
+      }
+    ],
+    "updates": [
+      {
+        "kind": "submission",
+        "submissionId": "submission_512f49e9688b4a23b2967a52ef5078c8",
+        "reviewId": null,
+        "interruptionId": null,
+        "reviewedSubmissionId": null,
+        "decision": null,
+        "content": "FIRST_SUBMISSION_NEEDS_REVISION",
+        "createdAt": "2026-08-20T15:50:46.061Z",
+        "referenceFiles": [
+          {
+            "referenceId": "21b4548c7cacad6eb5ef68aec707a536623ab9c69aa34ee61a5cc978362921f8",
+            "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/in-progress/team-task-conversation-ui/api-e2e-evidence/api-rev-001/live/workspace/nested-classroom-live/result-v1.md",
+            "type": "file",
+            "createdAt": "2026-08-20T15:50:46.061Z",
+            "updatedAt": "2026-08-20T15:50:46.061Z"
+          }
+        ]
+      },
+      {
+        "kind": "review",
+        "submissionId": null,
+        "reviewId": "review_57b2018597e141a199cd0cb29a1e4f1a",
+        "interruptionId": null,
+        "reviewedSubmissionId": "submission_512f49e9688b4a23b2967a52ef5078c8",
+        "decision": "request_revision",
+        "content": "Add final verification evidence.",
+        "createdAt": "2026-08-20T15:50:49.064Z",
+        "referenceFiles": [
+          {
+            "referenceId": "4508720e858e5c68500780d78bbd2d6545465279c2bf0690004c32ad1352bdf4",
+            "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/in-progress/team-task-conversation-ui/api-e2e-evidence/api-rev-001/live/workspace/nested-classroom-live/review.md",
+            "type": "file",
+            "createdAt": "2026-08-20T15:50:49.064Z",
+            "updatedAt": "2026-08-20T15:50:49.064Z"
+          }
+        ]
+      },
+      {
+        "kind": "submission",
+        "submissionId": "submission_73c6aff330b745df837c6424e45ff48f",
+        "reviewId": null,
+        "interruptionId": null,
+        "reviewedSubmissionId": null,
+        "decision": null,
+        "content": "REVISED_SUBMISSION_ACCEPTABLE",
+        "createdAt": "2026-08-20T15:50:53.984Z",
+        "referenceFiles": [
+          {
+            "referenceId": "9e138049ee5b5293ad5cb22759f73b48065fce43300e808010b0c113be0f1a22",
+            "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/in-progress/team-task-conversation-ui/api-e2e-evidence/api-rev-001/live/workspace/nested-classroom-live/result-v2.md",
+            "type": "file",
+            "createdAt": "2026-08-20T15:50:53.984Z",
+            "updatedAt": "2026-08-20T15:50:53.984Z"
+          }
+        ]
+      },
+      {
+        "kind": "review",
+        "submissionId": null,
+        "reviewId": "review_cc388f4972b5477a93e13338de6be410",
+        "interruptionId": null,
+        "reviewedSubmissionId": "submission_73c6aff330b745df837c6424e45ff48f",
+        "decision": "accept",
+        "content": null,
+        "createdAt": "2026-08-20T15:50:54.688Z",
+        "referenceFiles": []
+      }
+    ]
+  },
+  {
+    "taskId": "task_1a5edee40531487898489a5b795a696f",
+    "delegatorAgentRunId": "test_teacher_619ff8275c3d48458bd9820830f65e35",
+    "recipientAddress": "/StudentStudyGroup",
+    "targetAgentRunId": null,
+    "targetTeamRunId": "team_local_team_nested_classroom_test_student_st_a2c102912eae46a4af5e1767b9a25b46",
+    "status": "interrupted",
+    "description": "LIVE_INTERRUPTION_HOLD. Keep this task active without submitting a result. Do not finalize or submit task results; hold the task until further instruction.",
+    "createdAt": "2026-08-20T15:53:16.604Z",
+    "referenceFiles": [],
+    "updates": [
+      {
+        "kind": "interruption",
+        "submissionId": null,
+        "reviewId": null,
+        "interruptionId": "interrupt_3efe8114177248b6bcbad9b3b5b6998a",
+        "reviewedSubmissionId": null,
+        "decision": null,
+        "content": "Root TeamRun terminated.",
+        "createdAt": "2026-08-20T15:53:16.916Z",
+        "referenceFiles": []
+      }
+    ]
+  }
+]

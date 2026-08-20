@@ -1,0 +1,191 @@
+
+> autobyteus@1.4.52 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/workspace/team services/teamExecution/__tests__ services/runHydration/__tests__ services/agentStreaming/__tests__/TeamStreamingService.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/autobyteus-web
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/teamExecution/__tests__/teamExecutionViewState.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/runHydration/__tests__/teamRunContextHydrationService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/runHydration/__tests__/runProjectionConversation.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamCommunicationReferenceViewer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamOverviewPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/runHydration/__tests__/runProjectionConversation.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/teamExecution/__tests__/teamExecutionViewState.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamOverviewPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamCommunicationReferenceViewer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/runHydration/__tests__/teamRunContextHydrationService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/__tests__/TeamStreamingService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/runHydration/__tests__/runProjectionConversation.spec.ts (10 tests) 10ms
+ ✓ services/teamExecution/__tests__/teamExecutionViewState.spec.ts (4 tests) 14ms
+stderr | services/runHydration/__tests__/teamRunContextHydrationService.spec.ts > hydrateLiveTeamRunContext current V1 aggregate > hydrates one exact AgentRun 'without a persisted projection'
+[teamRunContextHydration] Failed to fetch AgentRun projection 'run-a'. Error: Team member projection payload missing for 'run-a'.
+    at fetchExactProjection (/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/autobyteus-web/services/runHydration/teamRunContextHydrationService.ts:87:26)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at fetchBestEffortProjection (/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/autobyteus-web/services/runHydration/teamRunContextHydrationService.ts:99:12)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/autobyteus-web/services/runHydration/teamRunContextHydrationService.ts:220:9
+    at async Promise.all (index 0)
+    at hydrateCurrentTeamRunContext (/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/autobyteus-web/services/runHydration/teamRunContextHydrationService.ts:217:3)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/autobyteus-web/services/runHydration/__tests__/teamRunContextHydrationService.spec.ts:87:20
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+ ✓ services/runHydration/__tests__/teamRunContextHydrationService.spec.ts (8 tests) 20ms
+stdout | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current AgentRun event dispatch > becomes ready only after the exact connected root and complete authoritative snapshot
+Team WebSocket transport connected
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current AgentRun event dispatch > acts on the first rejected gap effect once and cannot revive the failed instance
+Rejected Team execution message (TEAM_EXECUTION_CHANGE_SEQUENCE_GAP): Expected change sequence 1, received 2.
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current AgentRun event dispatch > rejects and stops a candidate whose snapshot base does not match
+Rejected invalid Team WebSocket message: Error: TEAM_STREAM_SNAPSHOT_BASE_MISMATCH: Expected 7, received 8.
+    at TeamStreamingService.dispatchMessage (/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/autobyteus-web/services/agentStreaming/TeamStreamingService.ts:257:15)
+    at handleMessage (/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/autobyteus-web/services/agentStreaming/TeamStreamingService.ts:212:16)
+    at emit (/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/autobyteus-web/services/agentStreaming/__tests__/TeamStreamingService.spec.ts:63:31)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/autobyteus-web/services/agentStreaming/__tests__/TeamStreamingService.spec.ts:378:5
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:155:11
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:26
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1897:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1863:10)
+    at runTest (file:///Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1574:12)
+
+ ✓ services/agentStreaming/__tests__/TeamStreamingService.spec.ts (12 tests) 41ms
+ ✓ components/workspace/team/__tests__/TeamCommunicationReferenceViewer.spec.ts (13 tests) 131ms
+ ✓ components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts (5 tests) 134ms
+ ✓ components/workspace/team/__tests__/TeamWorkspaceView.spec.ts (7 tests) 74ms
+ ✓ components/workspace/team/__tests__/TeamOverviewPanel.spec.ts (5 tests) 117ms
+ ✓ components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts (2 tests) 152ms
+stderr | components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamDelegatedTaskNavigator.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamTaskReferenceViewer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamDelegatedTaskItemDetail.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/runHydration/__tests__/taskDelegationGraphqlDtoProjection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/runHydration/__tests__/runProjectionActivityHydration.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/runHydration/__tests__/teamCommunicationHydrationService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/runHydration/__tests__/runtimeStatusNormalization.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamDelegatedTaskItemDetail.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamTaskReferenceViewer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamDelegatedTaskNavigator.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/team/__tests__/TeamDelegatedTaskNavigator.spec.ts (4 tests) 62ms
+ ✓ components/workspace/team/__tests__/TeamDelegatedTaskItemDetail.spec.ts (8 tests) 58ms
+ ✓ components/workspace/team/__tests__/TeamTaskReferenceViewer.spec.ts (2 tests) 38ms
+stdout | services/runHydration/__tests__/taskDelegationGraphqlDtoProjection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts (3 tests) 52ms
+stdout | services/runHydration/__tests__/teamCommunicationHydrationService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/runHydration/__tests__/taskDelegationGraphqlDtoProjection.spec.ts (2 tests) 8ms
+stdout | services/runHydration/__tests__/runtimeStatusNormalization.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/runHydration/__tests__/runProjectionActivityHydration.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/runHydration/__tests__/teamCommunicationHydrationService.spec.ts (2 tests) 7ms
+ ✓ services/runHydration/__tests__/runtimeStatusNormalization.spec.ts (2 tests) 3ms
+ ✓ components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts (3 tests) 26ms
+ ✓ services/runHydration/__tests__/runProjectionActivityHydration.spec.ts (3 tests) 10ms
+
+ Test Files  18 passed (18)
+      Tests  95 passed (95)
+   Start at  17:25:59
+   Duration  10.22s (transform 4.02s, setup 73.19s, collect 4.23s, tests 957ms, environment 5.01s, prepare 3.51s)

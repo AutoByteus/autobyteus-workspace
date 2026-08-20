@@ -147,18 +147,10 @@ const messages = {
     "Focus team",
   "workspace.components.workspace.team.TeamDelegatedTasksSection.focus":
     "Focus",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.technical_details":
-    "Technical details",
   "workspace.components.workspace.team.TeamDelegatedTasksSection.select_task":
     "Select a task to read it.",
   "workspace.components.workspace.team.TeamDelegatedTasksSection.waiting_activity_notice":
     "Waiting for user action in Activity.",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.target_kind":
-    "Target kind",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.task_type":
-    "Task type",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.target":
-    "Target",
   "workspace.components.workspace.team.TeamDelegatedTasksSection.empty":
     "No delegated tasks yet",
   "workspace.components.workspace.team.TeamDelegatedTasksSection.empty_detail":
@@ -169,16 +161,42 @@ const messages = {
     "Task Team",
   "workspace.components.workspace.team.TeamDelegatedTasksSection.approval_required":
     "Approval required",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.task_id":
-    "Task ID",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.agent_run_id":
-    "Agent run ID",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.agent_team_run_id":
-    "Agent team run ID",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.description_unavailable":
-    "Task description unavailable",
   "workspace.components.workspace.team.TeamDelegatedTasksSection.members":
     "Members",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.task_assigned":
+    "Task assigned",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.result_submitted":
+    "Result submitted · Result {{ordinal}}",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.revised_result_submitted":
+    "Revised result submitted · Result {{ordinal}}",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.revision_requested":
+    "Revision requested · Result {{ordinal}}",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.revision_requested_for":
+    "Revision requested for Result {{ordinal}}",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.result_accepted":
+    "Result {{ordinal}} accepted",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.task_interrupted":
+    "Task interrupted",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.status_in_progress":
+    "In progress",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.status_awaiting_review":
+    "Awaiting review",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.status_revision_requested":
+    "Revision requested",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.status_accepted":
+    "Accepted",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.status_interrupted":
+    "Interrupted",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.task_delegator":
+    "Task delegator",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.task_assignee":
+    "Task assignee",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.system_lifecycle_event":
+    "System lifecycle event",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.result_accepted_fallback":
+    "Result accepted.",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.updated_at":
+    "Updated {{time}}",
   "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.temporary_execution_title":
     "Temporary task execution",
   "workspace.components.workspace.team.TeamWorkspaceView.send_subteam_placeholder":
