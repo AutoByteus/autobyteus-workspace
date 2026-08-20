@@ -1,0 +1,10 @@
+{
+  "capturedAt": "2026-08-20T19:18:12.184552+00:00",
+  "httpStatus": 200,
+  "data": {
+    "terminateAgentTeamRun": {
+      "success": true,
+      "message": "Agent team run terminated successfully."
+    }
+  }
+}

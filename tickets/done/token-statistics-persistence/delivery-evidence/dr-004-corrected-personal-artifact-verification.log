@@ -1,0 +1,59 @@
+DR-004 corrected personal artifact verification
+timestamp_utc=2026-08-20T19:38:46Z
+head=0ce9d17b75195b0142abadc4593f6fea47893be0
+dmg_size_bytes=464013763
+zip_size_bytes=457754576
+dmg_sha256=1ac54ff957fb3b6114a6adff02c38de610f787c7477f5fd86ac27d76f7f1705b
+zip_sha256=fed8c3ea43e87e6b7903f7e92a36b32a766de26d71aea777e0e96e45660c0dca
+exec_sha256=c0bf182389ea930585e3b0bf5c4f16529461e02bf3be751cb364d0e25f2257e0
+bundle_id=com.autobyteus.app
+short_version=1.4.52
+bundle_version=1.4.52
+/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus: Mach-O 64-bit executable arm64
+Executable=/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+Identifier=Electron
+Format=app bundle with Mach-O thin (arm64)
+CodeDirectory v=20400 size=392 flags=0x20002(adhoc,linker-signed) hashes=9+0 location=embedded
+VersionPlatform=1
+VersionMin=786432
+VersionSDK=1704448
+Hash type=sha256 size=32
+CandidateCDHash sha256=183bce38eb383b21f21c2cdedcf6cd8781b11cdd
+CandidateCDHashFull sha256=183bce38eb383b21f21c2cdedcf6cd8781b11cdd090f942c4eacd6c09b1112f7
+Hash choices=sha256
+CMSDigest=183bce38eb383b21f21c2cdedcf6cd8781b11cdd090f942c4eacd6c09b1112f7
+CMSDigestType=2
+Executable Segment base=0
+Executable Segment limit=16384
+Executable Segment flags=0x1
+Page size=4096
+CDHash=183bce38eb383b21f21c2cdedcf6cd8781b11cdd
+Signature=adhoc
+Info.plist=not bound
+TeamIdentifier=not set
+Sealed Resources=none
+Internal requirements=none
+--- DMG verify ---
+Prüfsumme für Protective Master Boot Record (MBR : 0) berechnen …
+Protective Master Boot Record (MBR :: Die überprüfte CRC32-Prüfsumme ist $7DB72858
+Prüfsumme für GPT Header (Primary GPT Header : 1) berechnen …
+ GPT Header (Primary GPT Header : 1): Die überprüfte CRC32-Prüfsumme ist $662A8E5A
+Prüfsumme für GPT Partition Data (Primary GPT Table : 2) berechnen …
+GPT Partition Data (Primary GPT Tabl: Die überprüfte CRC32-Prüfsumme ist $24E376D3
+Prüfsumme für  (Apple_Free : 3) berechnen …
+                    (Apple_Free : 3): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für disk image (Apple_APFS : 4) berechnen …
+         disk image (Apple_APFS : 4): Die überprüfte CRC32-Prüfsumme ist $81A588DA
+Prüfsumme für  (Apple_Free : 5) berechnen …
+                    (Apple_Free : 5): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für GPT Partition Data (Backup GPT Table : 6) berechnen …
+GPT Partition Data (Backup GPT Table: Die überprüfte CRC32-Prüfsumme ist $24E376D3
+Prüfsumme für GPT Header (Backup GPT Header : 7) berechnen …
+  GPT Header (Backup GPT Header : 7): Die überprüfte CRC32-Prüfsumme ist $DC8D357A
+Die überprüfte CRC32-Prüfsumme ist $87348828
+hdiutil: verify: checksum of "/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.dmg" is VALID
+dmg_verify=pass
+--- ZIP integrity ---
+No errors detected in compressed data of /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.zip.
+zip_integrity=pass
+exit_code=0

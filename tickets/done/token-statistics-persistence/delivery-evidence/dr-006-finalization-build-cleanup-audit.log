@@ -1,0 +1,47 @@
+DR-006 pre-record-commit finalization/build/cleanup audit
+timestamp_utc=2026-08-20T20:06:53Z
+branch=personal
+product_merge_head=c57bf44b01a4f322f3241de86954e237cad58911
+origin_personal=c57bf44b01a4f322f3241de86954e237cad58911
+ticket_final_commit=4350f6bb1a41505625f183ab3817d6926c6e6948
+merge_parents=fc5ce18bc202012280dcbf5b4bcd6c5c52948ad6 4350f6bb1a41505625f183ab3817d6926c6e6948
+ticket_commit_ancestor_of_target_merge=yes
+target_remote_current=yes
+ticket_archive_state=pass
+ticket_worktree_path_absent=yes
+local_ticket_branch_absent=yes
+remote_ticket_branch_absent=yes
+dmg_sha256=8d0f1125ea4f22576bc86cabd8d83042d8836b9cc986f5cdd2917ebd9e8a640b
+zip_sha256=80a1cf2f52571268cb3f21475b4d8468bda70723b7bb367181f13cca31801a69
+evidence_outcomes=pass
+isolated_port_58285_listener_count=0
+release_tag_at_product_merge=none
+git_diff_check=pass
+
+delivery_owned_diff_names:
+tickets/done/token-statistics-persistence/delivery-revision-record.md
+tickets/done/token-statistics-persistence/docs-sync-report.md
+tickets/done/token-statistics-persistence/electron-test-build-report.md
+tickets/done/token-statistics-persistence/handoff-summary.md
+tickets/done/token-statistics-persistence/release-deployment-report.md
+
+working_tree_status:
+## personal...origin/personal
+ M tickets/done/token-statistics-persistence/delivery-revision-record.md
+ M tickets/done/token-statistics-persistence/docs-sync-report.md
+ M tickets/done/token-statistics-persistence/electron-test-build-report.md
+ M tickets/done/token-statistics-persistence/handoff-summary.md
+ M tickets/done/token-statistics-persistence/release-deployment-report.md
+?? .article-work/
+?? tickets/done/token-statistics-persistence/delivery-evidence/dr-006-finalization-build-cleanup-audit.log
+?? tickets/done/token-statistics-persistence/delivery-evidence/dr-006-main-personal-artifact-verification.log
+?? tickets/done/token-statistics-persistence/delivery-evidence/dr-006-main-personal-electron-build.log
+?? tickets/done/token-statistics-persistence/delivery-evidence/dr-006-main-personal-isolated-launch-smoke.log
+?? tickets/done/token-statistics-persistence/delivery-evidence/dr-006-ticket-cleanup.log
+
+note=.article-work/ is unrelated, preserved, and excluded
+audit_result=pass
+post_audit_remote_refresh_local=c57bf44b01a4f322f3241de86954e237cad58911
+post_audit_remote_refresh_origin_personal=c57bf44b01a4f322f3241de86954e237cad58911
+post_audit_remote_refresh_divergence=0 0
+post_audit_remote_refresh_result=pass

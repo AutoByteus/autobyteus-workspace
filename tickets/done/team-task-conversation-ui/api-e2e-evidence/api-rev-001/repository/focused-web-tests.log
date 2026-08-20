@@ -1,0 +1,73 @@
+
+> autobyteus@1.4.52 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/autobyteus-web
+> cross-env NUXT_TEST=true vitest utils/__tests__/teamDelegatedTaskEntries.spec.ts components/workspace/team/__tests__/TeamDelegatedTaskNavigator.spec.ts components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts components/workspace/team/__tests__/TeamDelegatedTaskItemDetail.spec.ts components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts components/workspace/team/__tests__/TeamOverviewPanel.spec.ts localization/messages/__tests__/teamTaskLifecycleCatalog.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/autobyteus-web
+
+stderr | components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/__tests__/teamDelegatedTaskEntries.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamDelegatedTaskNavigator.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamDelegatedTaskItemDetail.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamOverviewPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | localization/messages/__tests__/teamTaskLifecycleCatalog.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/__tests__/teamDelegatedTaskEntries.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamDelegatedTaskNavigator.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamDelegatedTaskItemDetail.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | localization/messages/__tests__/teamTaskLifecycleCatalog.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamOverviewPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ localization/messages/__tests__/teamTaskLifecycleCatalog.spec.ts (2 tests) 3ms
+ ✓ utils/__tests__/teamDelegatedTaskEntries.spec.ts (5 tests) 9ms
+ ✓ components/workspace/team/__tests__/TeamDelegatedTaskNavigator.spec.ts (4 tests) 60ms
+ ✓ components/workspace/team/__tests__/TeamDelegatedTaskItemDetail.spec.ts (8 tests) 54ms
+ ✓ components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts (5 tests) 111ms
+ ✓ components/workspace/team/__tests__/TeamOverviewPanel.spec.ts (5 tests) 95ms
+ ✓ components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts (2 tests) 91ms
+
+ Test Files  7 passed (7)
+      Tests  31 passed (31)
+   Start at  17:25:41
+   Duration  6.95s (transform 3.63s, setup 39.69s, collect 1.50s, tests 423ms, environment 2.40s, prepare 1.47s)

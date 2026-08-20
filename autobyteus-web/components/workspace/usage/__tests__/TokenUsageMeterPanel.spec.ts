@@ -12,6 +12,11 @@ import { AgentRunState } from '~/types/agent/AgentRunState';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import type { TokenUsageRunSummary } from '~/types/tokenUsageMeter';
 import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures';
+import { getApolloClient } from '~/utils/apolloClient';
+
+vi.mock('~/utils/apolloClient', () => ({
+  getApolloClient: vi.fn(),
+}));
 
 const messages: Record<string, string> = {
   'shell.tokenUsage.title': 'Token Meter',
@@ -162,6 +167,64 @@ const buildSummary = (overrides: Partial<TokenUsageRunSummary> = {}): TokenUsage
   ...overrides,
 });
 
+const upsertAgentSummary = (
+  store: ReturnType<typeof useTokenUsageMeterStore>,
+  summary: TokenUsageRunSummary,
+) => store.upsertRecordBackedAgentRunSummary({ runId: summary.runId!, summary });
+
+const buildSummaryDto = (summary: TokenUsageRunSummary) => ({
+  run_id: summary.runId,
+  root_team_run_id: summary.rootTeamRunId,
+  agent_definition_id: summary.agentDefinitionId,
+  workspace_id: summary.workspaceId,
+  gross_input_tokens: summary.grossInputTokens,
+  standard_input_tokens: summary.standardInputTokens,
+  cache_miss_input_tokens: summary.cacheMissInputTokens,
+  cache_read_input_tokens: summary.cacheReadInputTokens,
+  cache_creation_input_tokens: summary.cacheCreationInputTokens,
+  cache_creation_5m_input_tokens: summary.cacheCreation5mInputTokens,
+  cache_creation_1h_input_tokens: summary.cacheCreation1hInputTokens,
+  output_tokens: summary.outputTokens,
+  reasoning_output_tokens: summary.reasoningOutputTokens,
+  billable_output_tokens: summary.billableOutputTokens,
+  total_tokens: summary.totalTokens,
+  cache_read_input_token_rate: summary.cacheReadInputTokenRate,
+  standard_input_token_rate: summary.standardInputTokenRate,
+  cache_creation_input_token_rate: summary.cacheCreationInputTokenRate,
+  cache_state: summary.cacheState,
+  estimated_api_input_cost: summary.estimatedApiInputCost,
+  estimated_api_standard_input_cost: summary.estimatedApiStandardInputCost,
+  estimated_api_cache_read_input_cost: summary.estimatedApiCacheReadInputCost,
+  estimated_api_cache_creation_input_cost: summary.estimatedApiCacheCreationInputCost,
+  estimated_api_cache_creation_5m_input_cost: summary.estimatedApiCacheCreation5mInputCost,
+  estimated_api_cache_creation_1h_input_cost: summary.estimatedApiCacheCreation1hInputCost,
+  estimated_api_output_cost: summary.estimatedApiOutputCost,
+  estimated_api_reasoning_output_cost: summary.estimatedApiReasoningOutputCost,
+  estimated_api_total_cost: summary.estimatedApiTotalCost,
+  currency: summary.currency,
+  api_cost_status: summary.apiCostStatus,
+  missing_price_dimensions: summary.missingPriceDimensions,
+  pricing_policy_key: summary.pricingPolicyKey,
+  selected_pricing_tier_id: summary.selectedPricingTierId,
+  unit_prices: {
+    standard_input: { status: summary.unitPrices.standardInput.status, price_per_million: summary.unitPrices.standardInput.pricePerMillion },
+    cache_read_input: { status: summary.unitPrices.cacheReadInput.status, price_per_million: summary.unitPrices.cacheReadInput.pricePerMillion },
+    cache_creation_input: { status: summary.unitPrices.cacheCreationInput.status, price_per_million: summary.unitPrices.cacheCreationInput.pricePerMillion },
+    cache_creation_5m_input: { status: summary.unitPrices.cacheCreation5mInput.status, price_per_million: summary.unitPrices.cacheCreation5mInput.pricePerMillion },
+    cache_creation_1h_input: { status: summary.unitPrices.cacheCreation1hInput.status, price_per_million: summary.unitPrices.cacheCreation1hInput.pricePerMillion },
+    output: { status: summary.unitPrices.output.status, price_per_million: summary.unitPrices.output.pricePerMillion },
+    reasoning_output: { status: summary.unitPrices.reasoningOutput.status, price_per_million: summary.unitPrices.reasoningOutput.pricePerMillion },
+  },
+  latest_prompt_tokens: summary.latestPromptTokens,
+  effective_context_window_tokens: summary.effectiveContextWindowTokens,
+  context_window_usage_percent: summary.contextWindowUsagePercent,
+  latest_model_provider: summary.latestModelProvider,
+  latest_model_identifier: summary.latestModelIdentifier,
+  latest_runtime_kind: summary.latestRuntimeKind,
+  usage_report_count: summary.usageReportCount,
+  updated_at: summary.updatedAt,
+});
+
 const buildAgentContext = (runId: string, name: string) => {
   const conversation = {
     id: runId,
@@ -214,6 +277,7 @@ const mountPanel = () => mount(TokenUsageMeterPanel, {
 describe('TokenUsageMeterPanel', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
+    vi.clearAllMocks();
   });
 
   it('renders the approved Token Meter hierarchy with server-owned component values', () => {
@@ -221,7 +285,7 @@ describe('TokenUsageMeterPanel', () => {
     const selectionStore = useAgentSelectionStore();
     const meterStore = useTokenUsageMeterStore();
     agentContextsStore.runs.set('run-1', buildAgentContext('run-1', 'Story Agent'));
-    meterStore.upsertSummary(buildSummary());
+    upsertAgentSummary(meterStore, buildSummary());
     selectionStore.setRunSelection('run-1', 'agent');
 
     const wrapper = mountPanel();
@@ -263,12 +327,61 @@ describe('TokenUsageMeterPanel', () => {
     expect(wrapper.find('[data-test="calculation-details-panel"]').exists()).toBe(false);
   });
 
+  it('hydrates lifetime standalone values after two post-restart events have no persisted snapshot', async () => {
+    const agentContextsStore = useAgentContextsStore();
+    const selectionStore = useAgentSelectionStore();
+    const meterStore = useTokenUsageMeterStore();
+    agentContextsStore.runs.set('run-1', buildAgentContext('run-1', 'Story Agent'));
+    meterStore.applyTokenUsageUpdated({
+      usage_event_id: 'restart-event-1',
+      idempotency_key: 'restart-key-1',
+      run_id: 'run-1',
+      run_summary_after_event: null,
+    } as any);
+    meterStore.applyTokenUsageUpdated({
+      usage_event_id: 'restart-event-2',
+      idempotency_key: 'restart-key-2',
+      run_id: 'run-1',
+      run_summary_after_event: null,
+    } as any);
+    const durableSummary = buildSummary({
+      grossInputTokens: 25_000_000,
+      outputTokens: 800_000,
+      totalTokens: 25_800_000,
+      estimatedApiInputCost: 20.5,
+      estimatedApiOutputCost: 2.1,
+      estimatedApiTotalCost: 22.6,
+      latestRuntimeKind: 'codex_app_server',
+      usageReportCount: 199,
+    });
+    const queryMock = vi.fn().mockResolvedValue({
+      data: { getAgentRunTokenUsageSummary: durableSummary },
+    });
+    vi.mocked(getApolloClient).mockReturnValue({ query: queryMock } as any);
+    selectionStore.setRunSelection('run-1', 'agent');
+
+    const wrapper = mountPanel();
+    await flushPromises();
+    await nextTick();
+
+    expect(queryMock).toHaveBeenCalledWith(expect.objectContaining({
+      variables: { runId: 'run-1' },
+      fetchPolicy: 'network-only',
+    }));
+    const primary = wrapper.get('[data-test="token-usage-primary"]').text();
+    expect(primary).toContain('25M');
+    expect(primary).toContain('$22.60');
+    expect(primary).toContain('codex_app_server');
+    expect(primary).toContain('199 reports');
+    expect(primary).not.toContain('2 reports');
+  });
+
   it('shows prompt usage and an explicit unavailable context limit without a fake denominator', () => {
     const agentContextsStore = useAgentContextsStore();
     const selectionStore = useAgentSelectionStore();
     const meterStore = useTokenUsageMeterStore();
     agentContextsStore.runs.set('run-1', buildAgentContext('run-1', 'Story Agent'));
-    meterStore.upsertSummary(buildSummary({
+    upsertAgentSummary(meterStore, buildSummary({
       effectiveContextWindowTokens: null,
       contextWindowUsagePercent: null,
       latestPromptTokens: 67_772,
@@ -289,7 +402,7 @@ describe('TokenUsageMeterPanel', () => {
     const selectionStore = useAgentSelectionStore();
     const meterStore = useTokenUsageMeterStore();
     agentContextsStore.runs.set('run-1', buildAgentContext('run-1', 'Story Agent'));
-    meterStore.upsertSummary(buildSummary());
+    upsertAgentSummary(meterStore, buildSummary());
     selectionStore.setRunSelection('run-1', 'agent');
 
     const wrapper = mountPanel();
@@ -319,7 +432,7 @@ describe('TokenUsageMeterPanel', () => {
     const selectionStore = useAgentSelectionStore();
     const meterStore = useTokenUsageMeterStore();
     agentContextsStore.runs.set('run-1', buildAgentContext('run-1', 'Story Agent'));
-    meterStore.upsertSummary(buildSummary({
+    upsertAgentSummary(meterStore, buildSummary({
       standardInputTokens: 0,
       cacheMissInputTokens: 0,
       cacheReadInputTokens: 0,
@@ -372,7 +485,7 @@ describe('TokenUsageMeterPanel', () => {
     const selectionStore = useAgentSelectionStore();
     const meterStore = useTokenUsageMeterStore();
     agentContextsStore.runs.set('run-1', buildAgentContext('run-1', 'Story Agent'));
-    meterStore.upsertSummary(buildSummary({ reasoningOutputTokens: 0, estimatedApiReasoningOutputCost: null }));
+    upsertAgentSummary(meterStore, buildSummary({ reasoningOutputTokens: 0, estimatedApiReasoningOutputCost: null }));
     selectionStore.setRunSelection('run-1', 'agent');
 
     const wrapper = mountPanel();
@@ -385,7 +498,7 @@ describe('TokenUsageMeterPanel', () => {
     const selectionStore = useAgentSelectionStore();
     const meterStore = useTokenUsageMeterStore();
     agentContextsStore.runs.set('run-1', buildAgentContext('run-1', 'Story Agent'));
-    meterStore.upsertSummary(buildSummary({
+    upsertAgentSummary(meterStore, buildSummary({
       apiCostStatus: 'mixed',
       cacheCreationInputTokens: 1000,
       cacheCreationInputTokenRate: 0.5,
@@ -424,9 +537,10 @@ describe('TokenUsageMeterPanel', () => {
     const teamContextsStore = useAgentTeamContextsStore();
     const meterStore = useTokenUsageMeterStore();
     teamContextsStore.teams.set('team-1', buildCurrentTeamContext());
-    meterStore.teamAgentSummaries['lead-run'] = buildSummary({
-      runId: 'lead-run',
-      rootTeamRunId: 'team-1',
+    meterStore.upsertRecordBackedTeamMemberSummary({
+      teamRunId: 'team-1',
+      agentRunId: 'lead-run',
+      summary: buildSummary({ runId: 'lead-run', rootTeamRunId: 'team-1',
       grossInputTokens: 1111,
       outputTokens: 11,
       totalTokens: 1122,
@@ -434,18 +548,21 @@ describe('TokenUsageMeterPanel', () => {
       estimatedApiOutputCost: null,
       estimatedApiTotalCost: 0.0100,
       apiCostStatus: 'partial_price_missing',
+      }),
     });
-    meterStore.teamAgentSummaries['reviewer-run'] = buildSummary({
-      runId: 'reviewer-run',
-      rootTeamRunId: 'team-1',
+    meterStore.upsertRecordBackedTeamMemberSummary({
+      teamRunId: 'team-1',
+      agentRunId: 'reviewer-run',
+      summary: buildSummary({ runId: 'reviewer-run', rootTeamRunId: 'team-1',
       grossInputTokens: 2222,
       outputTokens: 22,
       totalTokens: 2244,
       estimatedApiInputCost: 0.0200,
       estimatedApiOutputCost: 0.0022,
       estimatedApiTotalCost: 0.0222,
+      }),
     });
-    meterStore.upsertLedgerBackedTeamSummary('team-1', buildSummary({
+    const aggregateSummary = buildSummary({
       runId: 'team-1',
       rootTeamRunId: 'team-1',
       grossInputTokens: 9000,
@@ -454,7 +571,11 @@ describe('TokenUsageMeterPanel', () => {
       estimatedApiInputCost: 0.0800,
       estimatedApiOutputCost: 0.0190,
       estimatedApiTotalCost: 0.099,
-    }));
+    });
+    vi.mocked(getApolloClient).mockReturnValue({
+      query: vi.fn().mockResolvedValue({ data: { getTeamRunTokenUsageSummary: aggregateSummary } }),
+    } as any);
+    await meterStore.fetchTeamRunSummary('team-1');
     selectionStore.setRunSelection('team-1', 'team');
 
     const wrapper = mountPanel();
@@ -523,6 +644,67 @@ describe('TokenUsageMeterPanel', () => {
     expect(reviewerRow?.text()).not.toContain('Estimated');
   });
 
+  it('hydrates the exact focused team member when post-restart team events lack a persisted snapshot', async () => {
+    const selectionStore = useAgentSelectionStore();
+    const teamContextsStore = useAgentTeamContextsStore();
+    const meterStore = useTokenUsageMeterStore();
+    teamContextsStore.teams.set('team-1', buildCurrentTeamContext());
+    meterStore.applyTeamTokenUsage('team-1', 'lead-run', {
+      agent_run_id: 'lead-run',
+      usage_event_id: 'team-restart-event-1',
+      idempotency_key: 'team-restart-key-1',
+      run_summary_after_event: null,
+    } as any);
+    meterStore.applyTeamTokenUsage('team-1', 'lead-run', {
+      agent_run_id: 'lead-run',
+      usage_event_id: 'team-restart-event-2',
+      idempotency_key: 'team-restart-key-2',
+      run_summary_after_event: null,
+    } as any);
+    meterStore.upsertRecordBackedTeamMemberSummary({
+      teamRunId: 'team-1',
+      agentRunId: 'reviewer-run',
+      summary: buildSummary({ runId: 'reviewer-run', rootTeamRunId: 'team-1' }),
+    });
+    const focusedSummary = buildSummary({
+      runId: 'lead-run',
+      rootTeamRunId: 'team-1',
+      grossInputTokens: 25_000_000,
+      outputTokens: 800_000,
+      totalTokens: 25_800_000,
+      estimatedApiInputCost: 20.5,
+      estimatedApiOutputCost: 2.1,
+      estimatedApiTotalCost: 22.6,
+      latestRuntimeKind: 'codex_app_server',
+      usageReportCount: 199,
+    });
+    const aggregateSummary = buildSummary({
+      runId: 'team-1',
+      rootTeamRunId: 'team-1',
+      totalTokens: 30_000_000,
+    });
+    const queryMock = vi.fn(({ variables }) => Promise.resolve({ data: variables.agentRunId
+      ? { getTeamMemberTokenUsageSummary: focusedSummary }
+      : { getTeamRunTokenUsageSummary: aggregateSummary } }));
+    vi.mocked(getApolloClient).mockReturnValue({ query: queryMock } as any);
+    selectionStore.setRunSelection('team-1', 'team');
+
+    const wrapper = mountPanel();
+    await flushPromises();
+    await nextTick();
+
+    expect(queryMock).toHaveBeenCalledWith(expect.objectContaining({
+      variables: { teamRunId: 'team-1', agentRunId: 'lead-run' },
+      fetchPolicy: 'network-only',
+    }));
+    const primary = wrapper.get('[data-test="token-usage-primary"]').text();
+    expect(primary).toContain('25M');
+    expect(primary).toContain('$22.60');
+    expect(primary).toContain('codex_app_server');
+    expect(primary).toContain('199 reports');
+    expect(wrapper.get('[data-test="team-token-total-row"]').text()).toContain('30M');
+  });
+
   it('hydrates the team aggregate when only a partial live team summary exists', async () => {
     const selectionStore = useAgentSelectionStore();
     const teamContextsStore = useAgentTeamContextsStore();
@@ -562,19 +744,28 @@ describe('TokenUsageMeterPanel', () => {
       currency: 'USD',
       api_cost_status: 'partial_price_missing',
       missing_price_dimensions: [],
+      run_summary_after_event: buildSummaryDto(buildSummary({
+        runId: 'lead-run',
+        rootTeamRunId: 'team-1',
+        grossInputTokens: 1111,
+        outputTokens: 11,
+        totalTokens: 1122,
+      })),
     } as any);
-    meterStore.teamAgentSummaries['reviewer-run'] = buildSummary({
-      runId: 'reviewer-run',
-      rootTeamRunId: 'team-1',
+    meterStore.upsertRecordBackedTeamMemberSummary({
+      teamRunId: 'team-1',
+      agentRunId: 'reviewer-run',
+      summary: buildSummary({ runId: 'reviewer-run', rootTeamRunId: 'team-1',
       grossInputTokens: 2222,
       outputTokens: 22,
       totalTokens: 2244,
       estimatedApiInputCost: 0.0200,
       estimatedApiOutputCost: 0.0022,
       estimatedApiTotalCost: 0.0222,
+      }),
     });
     const aggregateSummary = buildSummary({
-      runId: 'backend-member-run-id',
+      runId: 'team-1',
       rootTeamRunId: 'team-1',
       grossInputTokens: 9000,
       outputTokens: 900,
@@ -583,10 +774,10 @@ describe('TokenUsageMeterPanel', () => {
       estimatedApiOutputCost: 0.0190,
       estimatedApiTotalCost: 0.099,
     });
-    const fetchTeamSummarySpy = vi.spyOn(meterStore, 'fetchTeamRunSummary')
-      .mockImplementation(async (teamRunId: string) => (
-        meterStore.upsertLedgerBackedTeamSummary(teamRunId, aggregateSummary)
-      ));
+    vi.mocked(getApolloClient).mockReturnValue({
+      query: vi.fn().mockResolvedValue({ data: { getTeamRunTokenUsageSummary: aggregateSummary } }),
+    } as any);
+    const fetchTeamSummarySpy = vi.spyOn(meterStore, 'fetchTeamRunSummary');
     selectionStore.setRunSelection('team-1', 'team');
 
     const wrapper = mountPanel();
@@ -594,7 +785,7 @@ describe('TokenUsageMeterPanel', () => {
     await nextTick();
 
     expect(fetchTeamSummarySpy).toHaveBeenCalledWith('team-1');
-    expect(meterStore.hasLedgerBackedTeamSummary('team-1')).toBe(true);
+    expect(meterStore.getTeamRunSummaryState('team-1')).toBe('record_backed');
     const teamTable = wrapper.get('[data-test="team-token-table"]');
     let totalCells = teamTable.get('[data-test="team-token-total-row"]').findAll('th, td');
     expect(totalCells[1].text()).toContain('9,000');
@@ -611,14 +802,18 @@ describe('TokenUsageMeterPanel', () => {
     expect(totalCells[3].text()).toContain('9,900');
   });
 
-  it('rejects non-Agent focus without falling back to the team aggregate as primary usage', () => {
+  it('rejects non-Agent focus without falling back to the team aggregate as primary usage', async () => {
     const selectionStore = useAgentSelectionStore();
     const teamContextsStore = useAgentTeamContextsStore();
     const meterStore = useTokenUsageMeterStore();
     const context = buildCurrentTeamContext();
     teamContextsStore.teams.set('team-1', context);
     expect(context.view.focusAgent('not-an-agent-run')).toMatchObject({ disposition: 'rejected' });
-    meterStore.upsertLedgerBackedTeamSummary('team-1', buildSummary({ runId: 'team-1', rootTeamRunId: 'team-1', totalTokens: 9900 }));
+    const aggregateSummary = buildSummary({ runId: 'team-1', rootTeamRunId: 'team-1', totalTokens: 9900 });
+    vi.mocked(getApolloClient).mockReturnValue({
+      query: vi.fn().mockResolvedValue({ data: { getTeamRunTokenUsageSummary: aggregateSummary } }),
+    } as any);
+    await meterStore.fetchTeamRunSummary('team-1');
     selectionStore.setRunSelection('team-1', 'team');
 
     const wrapper = mountPanel();

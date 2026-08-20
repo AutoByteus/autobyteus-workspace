@@ -24,7 +24,7 @@ const fetchErrorMessage = (error: unknown): string => (
   error instanceof Error ? error.message : String(error || 'Unknown token usage loading error')
 );
 
-const memberFetchKey = (agentRunId: string): string => agentRunId;
+const memberFetchKey = (teamRunId: string, agentRunId: string): string => `${teamRunId}\u0000${agentRunId}`;
 
 export function useTokenUsageWorkspaceScope() {
   const selectionStore = useAgentSelectionStore();
@@ -36,7 +36,6 @@ export function useTokenUsageWorkspaceScope() {
   const runErrorById = reactive<Record<string, string | null>>({});
   const memberLoadingByKey = reactive<Record<string, boolean>>({});
   const memberErrorByKey = reactive<Record<string, string | null>>({});
-  const memberSummaryByKey = reactive<Record<string, TokenUsageRunSummary | null>>({});
   const teamTotalLoadingById = reactive<Record<string, boolean>>({});
   const teamTotalErrorById = reactive<Record<string, string | null>>({});
 
@@ -64,13 +63,14 @@ export function useTokenUsageWorkspaceScope() {
     .join('|'));
 
   const getMemberSummary = (identity: TokenUsageTeamMemberIdentity): TokenUsageRunSummary | null => {
-    return meterStore.getTeamAgentSummary(identity.agentRunId)
-      ?? memberSummaryByKey[memberFetchKey(identity.agentRunId)]
-      ?? null;
+    const teamRunId = activeTeamRunId.value;
+    return teamRunId
+      ? meterStore.getTeamMemberSummary({ teamRunId, agentRunId: identity.agentRunId })
+      : null;
   };
 
   const teamRows = computed<TokenUsageTeamMemberRow[]>(() => teamMemberIdentities.value.map((identity) => {
-    const key = memberFetchKey(identity.agentRunId);
+    const key = memberFetchKey(activeTeamRunId.value ?? '', identity.agentRunId);
     return {
       ...identity,
       summary: getMemberSummary(identity),
@@ -131,7 +131,11 @@ export function useTokenUsageWorkspaceScope() {
 
   const hydrateAgentRunSummary = async (runId: string | null | undefined): Promise<void> => {
     const normalizedRunId = runId?.trim() || '';
-    if (!normalizedRunId || runLoadingById[normalizedRunId] || meterStore.getRunSummary(normalizedRunId)) {
+    if (
+      !normalizedRunId ||
+      runLoadingById[normalizedRunId] ||
+      !meterStore.needsAgentRunSummaryHydration(normalizedRunId)
+    ) {
       return;
     }
 
@@ -148,8 +152,12 @@ export function useTokenUsageWorkspaceScope() {
 
   const hydrateTeamMemberSummary = async (identity: TokenUsageTeamMemberIdentity): Promise<void> => {
     const teamRunId = activeTeamRunId.value;
-    const key = memberFetchKey(identity.agentRunId);
-    if (memberLoadingByKey[key] || getMemberSummary(identity)) {
+    if (!teamRunId) return;
+    const key = memberFetchKey(teamRunId, identity.agentRunId);
+    if (
+      memberLoadingByKey[key] ||
+      !meterStore.needsTeamMemberSummaryHydration({ teamRunId, agentRunId: identity.agentRunId })
+    ) {
       return;
     }
 
@@ -157,20 +165,15 @@ export function useTokenUsageWorkspaceScope() {
     memberErrorByKey[key] = null;
     let finalError: unknown = null;
     try {
-      let summary: TokenUsageRunSummary | null = null;
-      if (teamRunId) {
-        try {
-          summary = await meterStore.fetchTeamMemberSummary({
-            teamRunId,
-            agentRunId: identity.agentRunId,
-          });
-        } catch (error) {
-          finalError = error;
-        }
+      try {
+        await meterStore.fetchTeamMemberSummary({
+          teamRunId,
+          agentRunId: identity.agentRunId,
+        });
+      } catch (error) {
+        finalError = error;
       }
-      if (summary) {
-        memberSummaryByKey[key] = summary;
-      } else if (finalError) {
+      if (finalError) {
         memberErrorByKey[key] = fetchErrorMessage(finalError);
       }
     } finally {
@@ -209,8 +212,15 @@ export function useTokenUsageWorkspaceScope() {
     }
   }, { immediate: true });
 
-  watch(activeTeamRunId, (teamRunId) => {
-    void hydrateTeamTotalSummary(teamRunId);
+  watch(() => {
+    const teamRunId = activeTeamRunId.value;
+    return [
+      teamRunId,
+      meterStore.needsTeamRunSummaryHydration(teamRunId),
+      meterStore.getTeamRunSummaryHydrationGeneration(teamRunId),
+    ] as const;
+  }, ([teamRunId, needsHydration]) => {
+    if (needsHydration) void hydrateTeamTotalSummary(teamRunId);
   }, { immediate: true });
 
   return {

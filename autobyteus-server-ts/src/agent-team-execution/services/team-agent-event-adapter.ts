@@ -1,4 +1,8 @@
-import { jsonValueSchema, type JsonValue } from "@autobyteus/team-stream-contracts";
+import {
+  jsonValueSchema,
+  tokenUsageRunSummaryDtoSchema,
+  type JsonValue,
+} from "@autobyteus/team-stream-contracts";
 import {
   AgentRunEventType,
   type AgentRunEvent,
@@ -15,6 +19,7 @@ import type {
   AgentRunFileChangeSourceTool,
   AgentRunFileChangeStatus,
 } from "../../agent-execution/domain/agent-run-file-change.js";
+import type { TokenUsageRunSummaryPayload } from "../../agent-execution/domain/agent-run-token-usage.js";
 
 export type TeamAgentEventAdaptationResult =
   | Readonly<{ kind: "publish"; event: TeamAgentEvent }>
@@ -133,7 +138,30 @@ const fileChange = (event: AgentRunEvent): TeamFileChangeDetails => {
   });
 };
 
-const token = (payload: Record<string, unknown>): TeamTokenUsageDetails => Object.freeze({
+const tokenRunSummary = (
+  payload: Record<string, unknown>,
+  expectedIdentity: TeamMemberExecutionIdentity,
+): TokenUsageRunSummaryPayload | null => {
+  const value = Object.prototype.hasOwnProperty.call(payload, "run_summary_after_event")
+    ? payload.run_summary_after_event
+    : payload.runSummaryAfterEvent;
+  if (value === null) return null;
+  const summary = tokenUsageRunSummaryDtoSchema.parse(value) as TokenUsageRunSummaryPayload;
+  if (summary.run_id !== expectedIdentity.agentRunId) throw new Error("run_summary_after_event run_id is invalid");
+  if (summary.root_team_run_id !== expectedIdentity.rootTeamRunId) {
+    throw new Error("run_summary_after_event root_team_run_id is invalid");
+  }
+  return summary;
+};
+
+const token = (payload: Record<string, unknown>, expectedIdentity: TeamMemberExecutionIdentity): TeamTokenUsageDetails => {
+  if (required(raw(payload, "run_id", "runId"), "run_id") !== expectedIdentity.agentRunId) {
+    throw new Error("run_id does not match the AgentRun event");
+  }
+  if (required(raw(payload, "root_team_run_id", "rootTeamRunId"), "root_team_run_id") !== expectedIdentity.rootTeamRunId) {
+    throw new Error("root_team_run_id does not match the TeamRun execution");
+  }
+  return Object.freeze({
   usageEventId: required(raw(payload, "usage_event_id", "usageEventId"), "usage_event_id"),
   idempotencyKey: required(raw(payload, "idempotency_key", "idempotencyKey"), "idempotency_key"),
   observedAt: required(raw(payload, "observed_at", "observedAt"), "observed_at"),
@@ -195,8 +223,10 @@ const token = (payload: Record<string, unknown>): TeamTokenUsageDetails => Objec
   latestPromptTokens: number(raw(payload, "latest_prompt_tokens", "latestPromptTokens")),
   effectiveContextWindowTokens: number(raw(payload, "effective_context_window_tokens", "effectiveContextWindowTokens")),
   contextWindowUsagePercent: number(raw(payload, "context_window_usage_percent", "contextWindowUsagePercent")),
+  runSummaryAfterEvent: tokenRunSummary(payload, expectedIdentity),
   qualityFlags: strings(raw(payload, "quality_flags", "qualityFlags")),
-});
+  });
+};
 
 export class TeamAgentEventAdapter {
   constructor(private readonly resolveIdentityByAgentRunId: ResolveTeamMemberIdentityByAgentRunId) {}
@@ -253,8 +283,11 @@ export class TeamAgentEventAdapter {
           compactionAgentDefinitionId: text(raw(p, "compaction_agent_definition_id", "compactionAgentDefinitionId")), compactionAgentName: text(raw(p, "compaction_agent_name", "compactionAgentName")), compactionRuntimeKind: text(raw(p, "compaction_runtime_kind", "compactionRuntimeKind")), compactionModelIdentifier: text(raw(p, "compaction_model_identifier", "compactionModelIdentifier")), compactionRunId: text(raw(p, "compaction_run_id", "compactionRunId")), compactionTaskId: text(raw(p, "compaction_task_id", "compactionTaskId")),
           errorMessage: text(raw(p, "error_message", "errorMessage")), provider: text(p.provider), sourceSurface: text(raw(p, "source_surface", "sourceSurface")), boundaryKey: text(raw(p, "boundary_key", "boundaryKey")), providerEventId: text(raw(p, "provider_event_id", "providerEventId")), providerSessionId: text(raw(p, "provider_session_id", "providerSessionId")), providerThreadId: text(raw(p, "provider_thread_id", "providerThreadId")), providerTimestamp: number(raw(p, "provider_timestamp", "providerTimestamp")), trigger: text(p.trigger), preTokens: number(raw(p, "pre_tokens", "preTokens")), rotationEligible: boolean(raw(p, "rotation_eligible", "rotationEligible")),
         }, statusHint: hint });
-      case AgentRunEventType.TOKEN_USAGE_UPDATED:
-        return correlated({ eventType: "TOKEN_USAGE_UPDATED", details: token(p), statusHint: hint });
+      case AgentRunEventType.TOKEN_USAGE_UPDATED: {
+        const identity = this.resolveIdentityByAgentRunId(event.runId);
+        if (!identity) throw new Error("run_id does not resolve in the root TeamRun");
+        return correlated({ eventType: "TOKEN_USAGE_UPDATED", details: token(p, identity), statusHint: hint });
+      }
       case AgentRunEventType.ASSISTANT_COMPLETE:
         return correlated({ eventType: "ASSISTANT_COMPLETE", details: { content: typeof p.content === "string" ? p.content : null, reasoning: typeof p.reasoning === "string" ? p.reasoning : null, usage: json(p.usage), imageUrls: strings(raw(p, "image_urls", "imageUrls")), audioUrls: strings(raw(p, "audio_urls", "audioUrls")), videoUrls: strings(raw(p, "video_urls", "videoUrls")) }, statusHint: hint });
       case AgentRunEventType.TOOL_APPROVAL_REQUESTED:

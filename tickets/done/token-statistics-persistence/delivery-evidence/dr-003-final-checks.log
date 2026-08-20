@@ -1,0 +1,44 @@
+DR-003 final checks
+timestamp_utc=2026-08-20T17:41:39Z
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+head=6076fb2d0d192b5da38877a18c8c10e1abab3d58
+origin_personal=fc5ce18bc202012280dcbf5b4bcd6c5c52948ad6
+merge_base=fc5ce18bc202012280dcbf5b4bcd6c5c52948ad6
+divergence=5 ahead, 0 behind
+target_currentness=pass
+--- tracked/untracked delivery state ---
+## codex/token-statistics-persistence...origin/personal [ahead 5]
+ M tickets/token-statistics-persistence/delivery-revision-record.md
+ M tickets/token-statistics-persistence/docs-sync-report.md
+ M tickets/token-statistics-persistence/electron-test-build-report.md
+ M tickets/token-statistics-persistence/handoff-summary.md
+ M tickets/token-statistics-persistence/release-deployment-report.md
+?? tickets/token-statistics-persistence/delivery-evidence/dr-003-electron-mac-personal-rebuild.log
+?? tickets/token-statistics-persistence/delivery-evidence/dr-003-final-checks.log
+?? tickets/token-statistics-persistence/delivery-evidence/dr-003-personal-artifact-verification.log
+?? tickets/token-statistics-persistence/delivery-evidence/dr-003-personal-isolated-launch-smoke-rust-log.log
+?? tickets/token-statistics-persistence/delivery-evidence/dr-003-personal-isolated-launch-smoke.log
+?? tickets/token-statistics-persistence/delivery-evidence/dr-003-post-second-integration-web-focused.log
+working_tree_scope_check=pass
+--- diff/static checks ---
+git_diff_check=pass
+authored_artifact_whitespace_check=pass
+--- artifact existence and stable hashes ---
+dmg_sha256=070c164d3198da6c4f716f6686ae6ae0f5ec3a1764efd8df8ff6cf383a9e0b0f
+zip_sha256=eee322db075c22102f7cc2bce22b15801e699f0a26384d25ccf3e75139650bf4
+exec_sha256=c0bf182389ea930585e3b0bf5c4f16529461e02bf3be751cb364d0e25f2257e0
+artifact_hash_check=pass
+--- recorded command outcomes ---
+exit_code=0
+exit_code=0
+dmg_verify=pass
+zip_integrity=pass
+exit_code=1
+exit_code=0
+recorded_outcome_check=pass
+--- residual process/listener check ---
+artifact_process_check=pass
+isolated_port_52335_check=pass
+isolated_port_52378_check=pass
+final_checks=pass_with_bounded_blank_profile_limitation

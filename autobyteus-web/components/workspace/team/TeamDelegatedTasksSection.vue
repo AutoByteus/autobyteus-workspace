@@ -56,8 +56,9 @@
           <TeamDelegatedTaskNavigator
             :entries="delegatedTaskEntries"
             :selected-entry-key="selectedEntryKey"
+            :selected-item-key="selectedItemKey"
             :selected-reference-id="selectedReferenceId"
-            @select-task="selectTask"
+            @select-item="selectItem"
             @select-reference="selectReference"
           />
         </aside>
@@ -72,6 +73,7 @@
 
         <TeamDelegatedTaskDetailPane
           :selected-entry="selectedEntry"
+          :selected-item="selectedItem"
           :selected-reference="selectedReference"
           :reference-refresh-signal="referenceRefreshSignal"
         />
@@ -85,7 +87,13 @@ import { computed, ref, watch } from 'vue';
 import { Icon } from '@iconify/vue';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import { useHorizontalSplitResize } from '~/composables/useHorizontalSplitResize';
-import { deriveDelegatedTaskEntries, type DelegatedTaskEntry } from '~/utils/teamDelegatedTaskEntries';
+import {
+  deriveDelegatedTaskEntries,
+  type DelegatedTaskEntry,
+  type DelegatedTaskItemLocator,
+  type DelegatedTaskLifecycleItem,
+  type DelegatedTaskReferenceLocator,
+} from '~/utils/teamDelegatedTaskEntries';
 import TeamDelegatedTaskDetailPane from '~/components/workspace/team/TeamDelegatedTaskDetailPane.vue';
 import TeamDelegatedTaskNavigator from '~/components/workspace/team/TeamDelegatedTaskNavigator.vue';
 
@@ -103,6 +111,7 @@ defineEmits<{
 }>();
 
 const selectedEntryKey = ref<string | null>(null);
+const selectedItemKey = ref<string | null>(null);
 const selectedReferenceId = ref<string | null>(null);
 const referenceRefreshSignal = ref(0);
 const { paneWidth: leftPaneWidth, startResize } = useHorizontalSplitResize({
@@ -119,15 +128,23 @@ const delegatedTaskEntries = computed<DelegatedTaskEntry[]>(() => deriveDelegate
 const selectedEntry = computed(() => (
   delegatedTaskEntries.value.find((entry) => entry.entryKey === selectedEntryKey.value) ?? null
 ));
+const selectedItem = computed(() => (
+  selectedEntry.value?.lifecycleItems.find((item) => item.itemKey === selectedItemKey.value) ?? null
+));
 const selectedReference = computed(() => (
-  selectedEntry.value?.taskReferenceFiles.find((reference) => reference.referenceId === selectedReferenceId.value) ?? null
+  selectedItem.value?.referenceFiles.find((reference) => reference.referenceId === selectedReferenceId.value) ?? null
 ));
 const delegatedTaskSelectionSignature = computed(() => delegatedTaskEntries.value
-  .map((entry) => `${entry.entryKey}:${entry.taskReferenceFiles.map((reference) => reference.referenceId).join(',')}`)
+  .map((entry) => `${entry.entryKey}:${entry.lifecycleItems
+    .map((item) => `${item.itemKey}[${item.referenceFiles.map((reference) => reference.referenceId).join(',')}]`)
+    .join(';')}`)
   .join('\n'));
+
+const rootItem = (entry: DelegatedTaskEntry): DelegatedTaskLifecycleItem => entry.lifecycleItems[0];
 
 watch(rootTeamRunId, () => {
   selectedEntryKey.value = null;
+  selectedItemKey.value = null;
   selectedReferenceId.value = null;
   referenceRefreshSignal.value = 0;
 });
@@ -137,12 +154,21 @@ watch(
   () => {
     if (!delegatedTaskEntries.value.length) {
       selectedEntryKey.value = null;
+      selectedItemKey.value = null;
       selectedReferenceId.value = null;
       return;
     }
 
     if (!selectedEntry.value) {
-      selectedEntryKey.value = delegatedTaskEntries.value[0].entryKey;
+      const firstEntry = delegatedTaskEntries.value[0];
+      selectedEntryKey.value = firstEntry.entryKey;
+      selectedItemKey.value = rootItem(firstEntry).itemKey;
+      selectedReferenceId.value = null;
+      return;
+    }
+
+    if (!selectedItem.value) {
+      selectedItemKey.value = rootItem(selectedEntry.value).itemKey;
       selectedReferenceId.value = null;
       return;
     }
@@ -154,26 +180,27 @@ watch(
   { immediate: true },
 );
 
-const selectTask = (entryKey: string): void => {
-  if (!delegatedTaskEntries.value.some((entry) => entry.entryKey === entryKey)) {
-    return;
-  }
-  selectedEntryKey.value = entryKey;
+const selectItem = (locator: DelegatedTaskItemLocator): void => {
+  const entry = delegatedTaskEntries.value.find((candidate) => candidate.entryKey === locator.entryKey);
+  if (!entry || !entry.lifecycleItems.some((item) => item.itemKey === locator.itemKey)) return;
+  selectedEntryKey.value = locator.entryKey;
+  selectedItemKey.value = locator.itemKey;
   selectedReferenceId.value = null;
 };
 
-const selectReference = (payload: { entryKey: string; referenceId: string }): void => {
-  const entry = delegatedTaskEntries.value.find((candidate) => candidate.entryKey === payload.entryKey);
-  if (!entry || !entry.taskReferenceFiles.some((reference) => reference.referenceId === payload.referenceId)) {
-    return;
-  }
+const selectReference = (locator: DelegatedTaskReferenceLocator): void => {
+  const entry = delegatedTaskEntries.value.find((candidate) => candidate.entryKey === locator.entryKey);
+  const item = entry?.lifecycleItems.find((candidate) => candidate.itemKey === locator.itemKey);
+  if (!item?.referenceFiles.some((reference) => reference.referenceId === locator.referenceId)) return;
 
-  if (selectedEntryKey.value === payload.entryKey && selectedReferenceId.value === payload.referenceId) {
+  if (selectedEntryKey.value === locator.entryKey
+    && selectedItemKey.value === locator.itemKey
+    && selectedReferenceId.value === locator.referenceId) {
     referenceRefreshSignal.value += 1;
   }
 
-  selectedEntryKey.value = payload.entryKey;
-  selectedReferenceId.value = payload.referenceId;
+  selectedEntryKey.value = locator.entryKey;
+  selectedItemKey.value = locator.itemKey;
+  selectedReferenceId.value = locator.referenceId;
 };
-
 </script>

@@ -62,6 +62,7 @@ const tokenPayload = (change_sequence: number, agent_run_id: string, details: Te
   latest_prompt_tokens: details.latestPromptTokens,
   effective_context_window_tokens: details.effectiveContextWindowTokens,
   context_window_usage_percent: details.contextWindowUsagePercent,
+  run_summary_after_event: details.runSummaryAfterEvent,
   quality_flags: [...details.qualityFlags],
 });
 

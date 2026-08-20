@@ -1,0 +1,639 @@
+{
+  "apiE2eRevision": "API-REV-003",
+  "capturedAt": "2026-08-20T19:19:47.552575+00:00",
+  "result": "Pass",
+  "commit": "0ce9d17b75195b0142abadc4593f6fea47893be0",
+  "priorAuthoritativeResult": {
+    "revision": "API-REV-002",
+    "result": "Fail",
+    "failureOriginConfidencePercent": 98.0,
+    "failure": "Repeated red Rejected TOKEN_USAGE_UPDATED cards for three observed_* keys"
+  },
+  "repository": {
+    "strictContract": {
+      "result": "Pass",
+      "tests": "2/2",
+      "log": "shared-contract.log"
+    },
+    "affectedServerSuites": {
+      "result": "Pass",
+      "tests": "14/14",
+      "files": "3/3",
+      "log": "affected-server-suites.log"
+    },
+    "serverBuild": {
+      "result": "Pass",
+      "sanitizedBootstrapSmoke": true,
+      "log": "server-build.log"
+    },
+    "sourceBoundary": {
+      "result": "Pass",
+      "noAggregateSpread": true,
+      "strictDtoObservedKeysAbsent": true,
+      "log": "source-boundary-inspection.log"
+    },
+    "diffCheck": {
+      "result": "Pass",
+      "log": "git-diff-check.log"
+    }
+  },
+  "environment": {
+    "backend": "built autobyteus-server-ts dist/app.js",
+    "frontend": "real Nuxt 3.21.1 development server",
+    "browser": "mcp__autobyteus_agent_tools__open_tab",
+    "backendPort": 55972,
+    "frontendPort": 55973,
+    "fixedPort8000OwnerPreserved": "Python PID 27301 at prestart",
+    "fixedPort3000OwnerPreserved": "node PID 37602 at prestart",
+    "database": "isolated migrated SQLite, removed after execution",
+    "secretsImport": {
+      "source": "/Users/normy/.autobyteus/server-data/.env",
+      "dryRun": "Pass",
+      "confirmedImport": "Pass",
+      "configuredAssignments": 9,
+      "secretValuesCaptured": false
+    },
+    "agentPackage": "/Users/normy/autobyteus_org/autobyteus-agents",
+    "agentDefinitionsLoaded": 9,
+    "teamDefinitionsLoaded": 20,
+    "optionalWarnings": [
+      "Ollama discovery unavailable at localhost:11434; not selected; 46 catalog models still loaded"
+    ]
+  },
+  "scenarios": {
+    "LIVE-BROWSER-TS-008": {
+      "result": "Pass",
+      "surface": "real open_tab + built backend + Nuxt + WebSocket + GraphQL + external runtimes",
+      "teamRunId": "classroom_simulation_team_144e2d75dae14478adca5a554302a82b",
+      "members": {
+        "professor": {
+          "runId": "professor_516d09ab235048e7b3e0c1692b32a9fc",
+          "runtime": "AUTOBYTEUS",
+          "model": "deepseek-v4-flash",
+          "summary": {
+            "runId": "professor_516d09ab235048e7b3e0c1692b32a9fc",
+            "rootTeamRunId": "classroom_simulation_team_144e2d75dae14478adca5a554302a82b",
+            "grossInputTokens": 49892,
+            "standardInputTokens": 4324,
+            "cacheMissInputTokens": 4324,
+            "cacheReadInputTokens": 45568,
+            "cacheCreationInputTokens": 0,
+            "cacheCreation5mInputTokens": 0,
+            "cacheCreation1hInputTokens": 0,
+            "outputTokens": 2240,
+            "reasoningOutputTokens": 849,
+            "billableOutputTokens": 2240,
+            "totalTokens": 52132,
+            "cacheReadInputTokenRate": 0.9133327988455063,
+            "standardInputTokenRate": 0.08666720115449371,
+            "cacheCreationInputTokenRate": 0,
+            "cacheState": "positive",
+            "estimatedApiInputCost": 0.0007329503999999998,
+            "estimatedApiOutputCost": 0.0006272,
+            "estimatedApiTotalCost": 0.0013601504,
+            "currency": "USD",
+            "apiCostStatus": "estimated",
+            "missingPriceDimensions": [],
+            "latestPromptTokens": 8412,
+            "effectiveContextWindowTokens": 1000000,
+            "contextWindowUsagePercent": 0.8412,
+            "latestModelProvider": "DEEPSEEK",
+            "latestModelIdentifier": "deepseek-v4-flash",
+            "latestRuntimeKind": "autobyteus",
+            "usageReportCount": 7,
+            "updatedAt": "2026-08-20T19:10:43.122Z",
+            "unitPrices": {
+              "standardInput": {
+                "status": "single",
+                "pricePerMillion": 0.14
+              },
+              "cacheReadInput": {
+                "status": "single",
+                "pricePerMillion": 0.0028
+              },
+              "cacheCreationInput": {
+                "status": "not_applicable",
+                "pricePerMillion": null
+              },
+              "cacheCreation5mInput": {
+                "status": "not_applicable",
+                "pricePerMillion": null
+              },
+              "cacheCreation1hInput": {
+                "status": "not_applicable",
+                "pricePerMillion": null
+              },
+              "output": {
+                "status": "single",
+                "pricePerMillion": 0.28
+              },
+              "reasoningOutput": {
+                "status": "single",
+                "pricePerMillion": 0.28
+              }
+            }
+          }
+        },
+        "student": {
+          "runId": "student_2f80fa9ec98e4564b70e4cf74c92c29f",
+          "runtime": "CODEX",
+          "model": "gpt-5.6-luna",
+          "summary": {
+            "runId": "student_2f80fa9ec98e4564b70e4cf74c92c29f",
+            "rootTeamRunId": "classroom_simulation_team_144e2d75dae14478adca5a554302a82b",
+            "grossInputTokens": 83451,
+            "standardInputTokens": 11259,
+            "cacheMissInputTokens": 11259,
+            "cacheReadInputTokens": 72192,
+            "cacheCreationInputTokens": 0,
+            "cacheCreation5mInputTokens": 0,
+            "cacheCreation1hInputTokens": 0,
+            "outputTokens": 780,
+            "reasoningOutputTokens": 111,
+            "billableOutputTokens": 780,
+            "totalTokens": 84231,
+            "cacheReadInputTokenRate": 0.8650825035050509,
+            "standardInputTokenRate": 0.13491749649494914,
+            "cacheCreationInputTokenRate": 0,
+            "cacheState": "positive",
+            "estimatedApiInputCost": 0.00369564,
+            "estimatedApiOutputCost": 0.000936,
+            "estimatedApiTotalCost": 0.004631639999999999,
+            "currency": "USD",
+            "apiCostStatus": "estimated",
+            "missingPriceDimensions": [],
+            "latestPromptTokens": 14763,
+            "effectiveContextWindowTokens": 258400,
+            "contextWindowUsagePercent": 5.713235294117647,
+            "latestModelProvider": "OPENAI",
+            "latestModelIdentifier": "gpt-5.6-luna",
+            "latestRuntimeKind": "codex_app_server",
+            "usageReportCount": 6,
+            "updatedAt": "2026-08-20T19:10:39.776Z",
+            "unitPrices": {
+              "standardInput": {
+                "status": "single",
+                "pricePerMillion": 0.2
+              },
+              "cacheReadInput": {
+                "status": "single",
+                "pricePerMillion": 0.02
+              },
+              "cacheCreationInput": {
+                "status": "not_applicable",
+                "pricePerMillion": null
+              },
+              "cacheCreation5mInput": {
+                "status": "not_applicable",
+                "pricePerMillion": null
+              },
+              "cacheCreation1hInput": {
+                "status": "not_applicable",
+                "pricePerMillion": null
+              },
+              "output": {
+                "status": "single",
+                "pricePerMillion": 1.2
+              },
+              "reasoningOutput": {
+                "status": "single",
+                "pricePerMillion": 1.2
+              }
+            }
+          }
+        }
+      },
+      "teamSummary": {
+        "runId": "classroom_simulation_team_144e2d75dae14478adca5a554302a82b",
+        "rootTeamRunId": "classroom_simulation_team_144e2d75dae14478adca5a554302a82b",
+        "grossInputTokens": 133343,
+        "standardInputTokens": 15583,
+        "cacheMissInputTokens": 15583,
+        "cacheReadInputTokens": 117760,
+        "cacheCreationInputTokens": 0,
+        "cacheCreation5mInputTokens": 0,
+        "cacheCreation1hInputTokens": 0,
+        "outputTokens": 3020,
+        "reasoningOutputTokens": 960,
+        "billableOutputTokens": 3020,
+        "totalTokens": 136363,
+        "cacheReadInputTokenRate": 0.8831359726419834,
+        "standardInputTokenRate": 0.11686402735801654,
+        "cacheCreationInputTokenRate": 0,
+        "cacheState": "positive",
+        "estimatedApiInputCost": 0.0044285904,
+        "estimatedApiOutputCost": 0.0015631999999999998,
+        "estimatedApiTotalCost": 0.0059917904,
+        "currency": "USD",
+        "apiCostStatus": "estimated",
+        "missingPriceDimensions": [],
+        "latestPromptTokens": 8412,
+        "effectiveContextWindowTokens": 1000000,
+        "contextWindowUsagePercent": 0.8412,
+        "latestModelProvider": "DEEPSEEK",
+        "latestModelIdentifier": "deepseek-v4-flash",
+        "latestRuntimeKind": "autobyteus",
+        "usageReportCount": 13,
+        "updatedAt": "2026-08-20T19:10:43.122Z",
+        "unitPrices": {
+          "standardInput": {
+            "status": "mixed",
+            "pricePerMillion": null
+          },
+          "cacheReadInput": {
+            "status": "mixed",
+            "pricePerMillion": null
+          },
+          "cacheCreationInput": {
+            "status": "not_applicable",
+            "pricePerMillion": null
+          },
+          "cacheCreation5mInput": {
+            "status": "not_applicable",
+            "pricePerMillion": null
+          },
+          "cacheCreation1hInput": {
+            "status": "not_applicable",
+            "pricePerMillion": null
+          },
+          "output": {
+            "status": "mixed",
+            "pricePerMillion": null
+          },
+          "reasoningOutput": {
+            "status": "mixed",
+            "pricePerMillion": null
+          }
+        }
+      },
+      "communicationMessageCount": 2,
+      "answer": 42,
+      "browserAssertions": {
+        "rejectedTokenUsageUpdatedCount": 0,
+        "observedRuntimeKindsCount": 0,
+        "observedModelIdentifiersCount": 0,
+        "observedModelProvidersCount": 0,
+        "anErrorOccurredCount": 0,
+        "tokenMetersEqualGraphql": true
+      },
+      "strictEventLogScanCount": 0
+    },
+    "LIVE-BROWSER-TS-010": {
+      "result": "Pass",
+      "surface": "real standalone open_tab + AutoByteus DeepSeek live update + GraphQL",
+      "agent": "Daily Assistant",
+      "runId": "daily_assistant_3fdb03d270f94beda230b7f7defce931",
+      "runtime": "autobyteus",
+      "model": "deepseek-v4-flash",
+      "response": "standalone token check complete.",
+      "summary": {
+        "runId": "daily_assistant_3fdb03d270f94beda230b7f7defce931",
+        "rootTeamRunId": null,
+        "grossInputTokens": 6114,
+        "standardInputTokens": 6114,
+        "cacheMissInputTokens": 6114,
+        "cacheReadInputTokens": 0,
+        "cacheCreationInputTokens": 0,
+        "outputTokens": 23,
+        "reasoningOutputTokens": 16,
+        "billableOutputTokens": 23,
+        "totalTokens": 6137,
+        "estimatedApiInputCost": 0.00085596,
+        "estimatedApiOutputCost": 6.440000000000001e-06,
+        "estimatedApiTotalCost": 0.0008624,
+        "currency": "USD",
+        "apiCostStatus": "estimated",
+        "missingPriceDimensions": [],
+        "latestPromptTokens": 6114,
+        "effectiveContextWindowTokens": 1000000,
+        "contextWindowUsagePercent": 0.6113999999999999,
+        "latestModelProvider": "DEEPSEEK",
+        "latestModelIdentifier": "deepseek-v4-flash",
+        "latestRuntimeKind": "autobyteus",
+        "usageReportCount": 1,
+        "updatedAt": "2026-08-20T19:13:26.527Z",
+        "unitPrices": {
+          "standardInput": {
+            "status": "single",
+            "pricePerMillion": 0.14
+          },
+          "cacheReadInput": {
+            "status": "not_applicable",
+            "pricePerMillion": null
+          },
+          "output": {
+            "status": "single",
+            "pricePerMillion": 0.28
+          },
+          "reasoningOutput": {
+            "status": "single",
+            "pricePerMillion": 0.28
+          }
+        }
+      },
+      "browserAssertions": {
+        "responsePresent": true,
+        "rejectedTokenUsageUpdatedCount": 0,
+        "observedRuntimeKindsCount": 0,
+        "anErrorOccurredCount": 0
+      }
+    },
+    "LIVE-BROWSER-TS-009": {
+      "result": "Pass",
+      "surface": "terminated runs + fresh built backend process + fresh open_tab history reopen",
+      "exactChecks": {
+        "professorSummaryExact": true,
+        "studentSummaryExact": true,
+        "teamSummaryExact": true,
+        "messagesExact": true,
+        "standaloneInactive": true,
+        "teamModelBindingsExact": true,
+        "browserRejectedTokenUsageUpdatedCountZero": true,
+        "browserAnErrorOccurredCountZero": true,
+        "browserAnswer42Restored": true,
+        "standaloneSummaryExactOnAllPreCapturedFields": true,
+        "teamResumeConfigReadableAfterFreshOpenTab": true
+      },
+      "teamSummary": {
+        "runId": "classroom_simulation_team_144e2d75dae14478adca5a554302a82b",
+        "rootTeamRunId": "classroom_simulation_team_144e2d75dae14478adca5a554302a82b",
+        "grossInputTokens": 133343,
+        "standardInputTokens": 15583,
+        "cacheMissInputTokens": 15583,
+        "cacheReadInputTokens": 117760,
+        "cacheCreationInputTokens": 0,
+        "cacheCreation5mInputTokens": 0,
+        "cacheCreation1hInputTokens": 0,
+        "outputTokens": 3020,
+        "reasoningOutputTokens": 960,
+        "billableOutputTokens": 3020,
+        "totalTokens": 136363,
+        "cacheReadInputTokenRate": 0.8831359726419834,
+        "standardInputTokenRate": 0.11686402735801654,
+        "cacheCreationInputTokenRate": 0,
+        "cacheState": "positive",
+        "estimatedApiInputCost": 0.0044285904,
+        "estimatedApiOutputCost": 0.0015631999999999998,
+        "estimatedApiTotalCost": 0.0059917904,
+        "currency": "USD",
+        "apiCostStatus": "estimated",
+        "missingPriceDimensions": [],
+        "latestPromptTokens": 8412,
+        "effectiveContextWindowTokens": 1000000,
+        "contextWindowUsagePercent": 0.8412,
+        "latestModelProvider": "DEEPSEEK",
+        "latestModelIdentifier": "deepseek-v4-flash",
+        "latestRuntimeKind": "autobyteus",
+        "usageReportCount": 13,
+        "updatedAt": "2026-08-20T19:10:43.122Z",
+        "unitPrices": {
+          "standardInput": {
+            "status": "mixed",
+            "pricePerMillion": null
+          },
+          "cacheReadInput": {
+            "status": "mixed",
+            "pricePerMillion": null
+          },
+          "cacheCreationInput": {
+            "status": "not_applicable",
+            "pricePerMillion": null
+          },
+          "cacheCreation5mInput": {
+            "status": "not_applicable",
+            "pricePerMillion": null
+          },
+          "cacheCreation1hInput": {
+            "status": "not_applicable",
+            "pricePerMillion": null
+          },
+          "output": {
+            "status": "mixed",
+            "pricePerMillion": null
+          },
+          "reasoningOutput": {
+            "status": "mixed",
+            "pricePerMillion": null
+          }
+        }
+      },
+      "professorSummary": {
+        "runId": "professor_516d09ab235048e7b3e0c1692b32a9fc",
+        "rootTeamRunId": "classroom_simulation_team_144e2d75dae14478adca5a554302a82b",
+        "grossInputTokens": 49892,
+        "standardInputTokens": 4324,
+        "cacheMissInputTokens": 4324,
+        "cacheReadInputTokens": 45568,
+        "cacheCreationInputTokens": 0,
+        "cacheCreation5mInputTokens": 0,
+        "cacheCreation1hInputTokens": 0,
+        "outputTokens": 2240,
+        "reasoningOutputTokens": 849,
+        "billableOutputTokens": 2240,
+        "totalTokens": 52132,
+        "cacheReadInputTokenRate": 0.9133327988455063,
+        "standardInputTokenRate": 0.08666720115449371,
+        "cacheCreationInputTokenRate": 0,
+        "cacheState": "positive",
+        "estimatedApiInputCost": 0.0007329503999999998,
+        "estimatedApiOutputCost": 0.0006272,
+        "estimatedApiTotalCost": 0.0013601504,
+        "currency": "USD",
+        "apiCostStatus": "estimated",
+        "missingPriceDimensions": [],
+        "latestPromptTokens": 8412,
+        "effectiveContextWindowTokens": 1000000,
+        "contextWindowUsagePercent": 0.8412,
+        "latestModelProvider": "DEEPSEEK",
+        "latestModelIdentifier": "deepseek-v4-flash",
+        "latestRuntimeKind": "autobyteus",
+        "usageReportCount": 7,
+        "updatedAt": "2026-08-20T19:10:43.122Z",
+        "unitPrices": {
+          "standardInput": {
+            "status": "single",
+            "pricePerMillion": 0.14
+          },
+          "cacheReadInput": {
+            "status": "single",
+            "pricePerMillion": 0.0028
+          },
+          "cacheCreationInput": {
+            "status": "not_applicable",
+            "pricePerMillion": null
+          },
+          "cacheCreation5mInput": {
+            "status": "not_applicable",
+            "pricePerMillion": null
+          },
+          "cacheCreation1hInput": {
+            "status": "not_applicable",
+            "pricePerMillion": null
+          },
+          "output": {
+            "status": "single",
+            "pricePerMillion": 0.28
+          },
+          "reasoningOutput": {
+            "status": "single",
+            "pricePerMillion": 0.28
+          }
+        }
+      },
+      "studentSummary": {
+        "runId": "student_2f80fa9ec98e4564b70e4cf74c92c29f",
+        "rootTeamRunId": "classroom_simulation_team_144e2d75dae14478adca5a554302a82b",
+        "grossInputTokens": 83451,
+        "standardInputTokens": 11259,
+        "cacheMissInputTokens": 11259,
+        "cacheReadInputTokens": 72192,
+        "cacheCreationInputTokens": 0,
+        "cacheCreation5mInputTokens": 0,
+        "cacheCreation1hInputTokens": 0,
+        "outputTokens": 780,
+        "reasoningOutputTokens": 111,
+        "billableOutputTokens": 780,
+        "totalTokens": 84231,
+        "cacheReadInputTokenRate": 0.8650825035050509,
+        "standardInputTokenRate": 0.13491749649494914,
+        "cacheCreationInputTokenRate": 0,
+        "cacheState": "positive",
+        "estimatedApiInputCost": 0.00369564,
+        "estimatedApiOutputCost": 0.000936,
+        "estimatedApiTotalCost": 0.004631639999999999,
+        "currency": "USD",
+        "apiCostStatus": "estimated",
+        "missingPriceDimensions": [],
+        "latestPromptTokens": 14763,
+        "effectiveContextWindowTokens": 258400,
+        "contextWindowUsagePercent": 5.713235294117647,
+        "latestModelProvider": "OPENAI",
+        "latestModelIdentifier": "gpt-5.6-luna",
+        "latestRuntimeKind": "codex_app_server",
+        "usageReportCount": 6,
+        "updatedAt": "2026-08-20T19:10:39.776Z",
+        "unitPrices": {
+          "standardInput": {
+            "status": "single",
+            "pricePerMillion": 0.2
+          },
+          "cacheReadInput": {
+            "status": "single",
+            "pricePerMillion": 0.02
+          },
+          "cacheCreationInput": {
+            "status": "not_applicable",
+            "pricePerMillion": null
+          },
+          "cacheCreation5mInput": {
+            "status": "not_applicable",
+            "pricePerMillion": null
+          },
+          "cacheCreation1hInput": {
+            "status": "not_applicable",
+            "pricePerMillion": null
+          },
+          "output": {
+            "status": "single",
+            "pricePerMillion": 1.2
+          },
+          "reasoningOutput": {
+            "status": "single",
+            "pricePerMillion": 1.2
+          }
+        }
+      },
+      "standaloneSummary": {
+        "runId": "daily_assistant_3fdb03d270f94beda230b7f7defce931",
+        "rootTeamRunId": null,
+        "grossInputTokens": 6114,
+        "standardInputTokens": 6114,
+        "cacheMissInputTokens": 6114,
+        "cacheReadInputTokens": 0,
+        "cacheCreationInputTokens": 0,
+        "cacheCreation5mInputTokens": 0,
+        "cacheCreation1hInputTokens": 0,
+        "outputTokens": 23,
+        "reasoningOutputTokens": 16,
+        "billableOutputTokens": 23,
+        "totalTokens": 6137,
+        "cacheReadInputTokenRate": 0,
+        "standardInputTokenRate": 1,
+        "cacheCreationInputTokenRate": 0,
+        "cacheState": "zero_reported",
+        "estimatedApiInputCost": 0.00085596,
+        "estimatedApiOutputCost": 6.440000000000001e-06,
+        "estimatedApiTotalCost": 0.0008624,
+        "currency": "USD",
+        "apiCostStatus": "estimated",
+        "missingPriceDimensions": [],
+        "latestPromptTokens": 6114,
+        "effectiveContextWindowTokens": 1000000,
+        "contextWindowUsagePercent": 0.6113999999999999,
+        "latestModelProvider": "DEEPSEEK",
+        "latestModelIdentifier": "deepseek-v4-flash",
+        "latestRuntimeKind": "autobyteus",
+        "usageReportCount": 1,
+        "updatedAt": "2026-08-20T19:13:26.527Z",
+        "unitPrices": {
+          "standardInput": {
+            "status": "single",
+            "pricePerMillion": 0.14
+          },
+          "cacheReadInput": {
+            "status": "not_applicable",
+            "pricePerMillion": null
+          },
+          "cacheCreationInput": {
+            "status": "not_applicable",
+            "pricePerMillion": null
+          },
+          "cacheCreation5mInput": {
+            "status": "not_applicable",
+            "pricePerMillion": null
+          },
+          "cacheCreation1hInput": {
+            "status": "not_applicable",
+            "pricePerMillion": null
+          },
+          "output": {
+            "status": "single",
+            "pricePerMillion": 0.28
+          },
+          "reasoningOutput": {
+            "status": "single",
+            "pricePerMillion": 0.28
+          }
+        }
+      },
+      "communicationMessageCount": 2,
+      "observations": {
+        "teamResumeIsActiveAfterFreshHistoryOpen": true,
+        "explanation": "The fresh UI history-open coordinator reopened the terminated Team package, so resume configuration is active while both members remain Offline; persisted totals/messages were unchanged. Standalone remained terminated and its summary remained directly readable."
+      }
+    }
+  },
+  "visualEvidence": [
+    "open-tab-live-team-complete-no-rejection.png",
+    "open-tab-live-team-professor-token-meter-no-rejection.png",
+    "open-tab-live-team-student-token-meter-no-rejection.png",
+    "open-tab-live-standalone-deepseek-token-meter-no-rejection.png",
+    "open-tab-fresh-process-team-reopen-history-no-rejection.png",
+    "open-tab-fresh-process-team-token-meter-no-rejection.png",
+    "open-tab-fresh-process-student-luna-token-meter-no-rejection.png"
+  ],
+  "cleanup": {
+    "tabsClosed": [
+      "872687",
+      "5dbbe9",
+      "d656a1"
+    ],
+    "remainingBrowserSessions": 0,
+    "backendListenerRemoved": true,
+    "frontendListenerRemoved": true,
+    "ownedRuntimeDatabaseKeyWorkspaceRemoved": true,
+    "details": "owned-resource-cleanup.json"
+  },
+  "durableCoverageChangedByApiE2eRound": false,
+  "implementationOwnedDurableCoverageRequiringProportionalReview": "autobyteus-server-ts/tests/unit/agent-team-execution/team-agent-token-usage-event-transport.test.ts"
+}

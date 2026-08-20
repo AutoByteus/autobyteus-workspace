@@ -1,0 +1,259 @@
+{
+  "schemaVersion": 1,
+  "startedAt": "2026-08-20T15:50:33.395Z",
+  "model": "gpt-5.6-luna",
+  "workspacePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/in-progress/team-task-conversation-ui/api-e2e-evidence/api-rev-001/live/workspace/nested-classroom-live",
+  "scenarios": {
+    "API-TASK-LIVE-001-launch": {
+      "result": "Pass",
+      "durationMs": 1670,
+      "teamRunId": "nested_classroom_test_team_78ad44fb026f489fa6f35d1cff5839be",
+      "runtime": "autobyteus",
+      "model": "gpt-5.6-luna",
+      "autoExecuteTools": true,
+      "requestedWorkspacePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/in-progress/team-task-conversation-ui/api-e2e-evidence/api-rev-001/live/workspace/nested-classroom-live",
+      "effectiveWorkspacePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/autobyteus-server-ts/tests/.tmp/api-rev-001-team-task-live/temp_workspace"
+    },
+    "API-TASK-LIVE-001-revision-cycle": {
+      "result": "Pass",
+      "durationMs": 18951,
+      "taskId": "task_38b40d9ef02e4c7fafa5e0bd06e4d92c",
+      "observedStatuses": [
+        "active",
+        "awaiting_review",
+        "accepted"
+      ],
+      "observedTaskUi": true,
+      "observedAwaitingReview": true,
+      "observedTaskCoordinatorFocus": false,
+      "updateKinds": [
+        "submission:",
+        "review:request_revision",
+        "submission:",
+        "review:accept"
+      ],
+      "lifecycleLabels": [
+        "Result submitted · Result 1",
+        "Revision requested · Result 1",
+        "Revised result submitted · Result 2",
+        "Result 2 accepted"
+      ]
+    },
+    "API-TASK-LIVE-001-exact-reference-route": {
+      "result": "Pass",
+      "durationMs": 459,
+      "exactRequests": 4,
+      "referenceIds": [
+        "ca905e4d93f01dabaf37601864bd1617688a373fe2bfedcaeb616844b290d2f1",
+        "21b4548c7cacad6eb5ef68aec707a536623ab9c69aa34ee61a5cc978362921f8",
+        "4508720e858e5c68500780d78bbd2d6545465279c2bf0690004c32ad1352bdf4"
+      ],
+      "maximizeEscapeRestore": true,
+      "reselectRefresh": true
+    },
+    "API-TASK-MESSAGES-006-live-no-change": {
+      "result": "Pass",
+      "durationMs": 1895,
+      "communicationCount": 1,
+      "uiApiCountParity": true,
+      "ordinaryExactCount": 1,
+      "taskRowsRemainSeparate": true
+    },
+    "API-TASK-INTERRUPT-002": {
+      "result": "Pass",
+      "durationMs": 140741,
+      "taskId": "task_1a5edee40531487898489a5b795a696f",
+      "statusBefore": "active",
+      "statusAfter": "interrupted",
+      "finalUpdateKind": "interruption",
+      "termination": {
+        "success": true,
+        "message": "Agent team run terminated successfully."
+      }
+    },
+    "API-TASK-RESTORE-003-focus-i18n-no-tech": {
+      "result": "Fail",
+      "durationMs": 120569,
+      "message": "locator.waitFor: Timeout 120000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-test=\"workspace-row\"]').filter({ hasText: 'temp_workspace' }).first() to be visible\u001b[22m\n"
+    }
+  },
+  "consoleEvents": [],
+  "network": [
+    {
+      "at": "2026-08-20T15:50:54.995Z",
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:60321/rest/team-runs/nested_classroom_test_team_78ad44fb026f489fa6f35d1cff5839be/task-delegations/task_38b40d9ef02e4c7fafa5e0bd06e4d92c/references/ca905e4d93f01dabaf37601864bd1617688a373fe2bfedcaeb616844b290d2f1/content"
+    },
+    {
+      "at": "2026-08-20T15:50:55.077Z",
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:60321/rest/team-runs/nested_classroom_test_team_78ad44fb026f489fa6f35d1cff5839be/task-delegations/task_38b40d9ef02e4c7fafa5e0bd06e4d92c/references/21b4548c7cacad6eb5ef68aec707a536623ab9c69aa34ee61a5cc978362921f8/content"
+    },
+    {
+      "at": "2026-08-20T15:50:55.111Z",
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:60321/rest/team-runs/nested_classroom_test_team_78ad44fb026f489fa6f35d1cff5839be/task-delegations/task_38b40d9ef02e4c7fafa5e0bd06e4d92c/references/21b4548c7cacad6eb5ef68aec707a536623ab9c69aa34ee61a5cc978362921f8/content"
+    },
+    {
+      "at": "2026-08-20T15:50:55.211Z",
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:60321/rest/team-runs/nested_classroom_test_team_78ad44fb026f489fa6f35d1cff5839be/task-delegations/task_38b40d9ef02e4c7fafa5e0bd06e4d92c/references/4508720e858e5c68500780d78bbd2d6545465279c2bf0690004c32ad1352bdf4/content"
+    },
+    {
+      "at": "2026-08-20T15:50:55.494Z",
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:60321/rest/team-runs/nested_classroom_test_team_78ad44fb026f489fa6f35d1cff5839be/task-delegations/task_38b40d9ef02e4c7fafa5e0bd06e4d92c/references/4508720e858e5c68500780d78bbd2d6545465279c2bf0690004c32ad1352bdf4/content"
+    },
+    {
+      "at": "2026-08-20T15:53:16.650Z",
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:60321/rest/team-runs/nested_classroom_test_team_78ad44fb026f489fa6f35d1cff5839be/task-delegations/task_38b40d9ef02e4c7fafa5e0bd06e4d92c/references/4508720e858e5c68500780d78bbd2d6545465279c2bf0690004c32ad1352bdf4/content"
+    },
+    {
+      "at": "2026-08-20T15:53:16.954Z",
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:60321/rest/team-runs/nested_classroom_test_team_78ad44fb026f489fa6f35d1cff5839be/task-delegations/task_38b40d9ef02e4c7fafa5e0bd06e4d92c/references/4508720e858e5c68500780d78bbd2d6545465279c2bf0690004c32ad1352bdf4/content"
+    }
+  ],
+  "samples": [
+    {
+      "at": "2026-08-20T15:50:36.446Z",
+      "taskCount": 0,
+      "status": null,
+      "updateKinds": [],
+      "uiTaskEntries": 0
+    },
+    {
+      "at": "2026-08-20T15:50:36.855Z",
+      "taskCount": 0,
+      "status": null,
+      "updateKinds": [],
+      "uiTaskEntries": 0
+    },
+    {
+      "at": "2026-08-20T15:50:37.267Z",
+      "taskCount": 0,
+      "status": null,
+      "updateKinds": [],
+      "uiTaskEntries": 0
+    },
+    {
+      "at": "2026-08-20T15:50:37.678Z",
+      "taskCount": 0,
+      "status": null,
+      "updateKinds": [],
+      "uiTaskEntries": 0
+    },
+    {
+      "at": "2026-08-20T15:50:38.089Z",
+      "taskCount": 0,
+      "status": null,
+      "updateKinds": [],
+      "uiTaskEntries": 0
+    },
+    {
+      "at": "2026-08-20T15:50:38.499Z",
+      "taskCount": 0,
+      "status": null,
+      "updateKinds": [],
+      "uiTaskEntries": 0
+    },
+    {
+      "at": "2026-08-20T15:50:38.915Z",
+      "taskCount": 0,
+      "status": null,
+      "updateKinds": [],
+      "uiTaskEntries": 0
+    },
+    {
+      "at": "2026-08-20T15:50:39.329Z",
+      "taskCount": 0,
+      "status": null,
+      "updateKinds": [],
+      "uiTaskEntries": 0
+    },
+    {
+      "at": "2026-08-20T15:50:39.735Z",
+      "taskCount": 0,
+      "status": null,
+      "updateKinds": [],
+      "uiTaskEntries": 0
+    },
+    {
+      "at": "2026-08-20T15:50:40.141Z",
+      "taskCount": 0,
+      "status": null,
+      "updateKinds": [],
+      "uiTaskEntries": 0
+    },
+    {
+      "at": "2026-08-20T15:50:40.549Z",
+      "taskCount": 1,
+      "status": "active",
+      "updateKinds": [],
+      "uiTaskEntries": 1
+    },
+    {
+      "at": "2026-08-20T15:50:46.270Z",
+      "taskCount": 1,
+      "status": "awaiting_review",
+      "updateKinds": [
+        "submission:"
+      ],
+      "uiTaskEntries": 1
+    },
+    {
+      "at": "2026-08-20T15:50:49.134Z",
+      "taskCount": 1,
+      "status": "active",
+      "updateKinds": [
+        "submission:",
+        "review:request_revision"
+      ],
+      "uiTaskEntries": 1
+    },
+    {
+      "at": "2026-08-20T15:50:54.031Z",
+      "taskCount": 1,
+      "status": "awaiting_review",
+      "updateKinds": [
+        "submission:",
+        "review:request_revision",
+        "submission:"
+      ],
+      "uiTaskEntries": 1
+    },
+    {
+      "at": "2026-08-20T15:50:54.845Z",
+      "taskCount": 1,
+      "status": "accepted",
+      "updateKinds": [
+        "submission:",
+        "review:request_revision",
+        "submission:",
+        "review:accept"
+      ],
+      "uiTaskEntries": 1
+    }
+  ],
+  "result": "Fail",
+  "failure": {
+    "message": "locator.waitFor: Timeout 120000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-test=\"workspace-row\"]').filter({ hasText: 'temp_workspace' }).first() to be visible\u001b[22m\n",
+    "stack": "locator.waitFor: Timeout 120000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-test=\"workspace-row\"]').filter({ hasText: 'temp_workspace' }).first() to be visible\u001b[22m\n\n    at openHistoryRun (/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/in-progress/team-task-conversation-ui/api-e2e-evidence/api-rev-001/live/run-nested-classroom-browser.mjs:44:22)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/in-progress/team-task-conversation-ui/api-e2e-evidence/api-rev-001/live/run-nested-classroom-browser.mjs:254:5\n    at async scenario (/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/in-progress/team-task-conversation-ui/api-e2e-evidence/api-rev-001/live/run-nested-classroom-browser.mjs:35:85)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/in-progress/team-task-conversation-ui/api-e2e-evidence/api-rev-001/live/run-nested-classroom-browser.mjs:249:3"
+  },
+  "teamRunId": "nested_classroom_test_team_78ad44fb026f489fa6f35d1cff5839be",
+  "termination": {
+    "success": true,
+    "message": "Agent team run terminated successfully."
+  },
+  "completedAt": "2026-08-20T15:55:18.680Z",
+  "browserContextCleanup": "closed",
+  "browserCleanup": "closed"
+}

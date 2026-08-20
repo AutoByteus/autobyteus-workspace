@@ -1,0 +1,19 @@
+{
+  "capturedAt": "2026-08-20T19:14:39.950454+00:00",
+  "endpoint": "http://127.0.0.1:55972/graphql",
+  "variables": {
+    "teamRunId": "classroom_simulation_team_144e2d75dae14478adca5a554302a82b",
+    "agentRunId": "daily_assistant_3fdb03d270f94beda230b7f7defce931"
+  },
+  "httpStatus": 200,
+  "data": {
+    "team": {
+      "success": true,
+      "message": "Agent team run terminated successfully."
+    },
+    "standalone": {
+      "success": true,
+      "message": "Agent run terminated successfully."
+    }
+  }
+}
