@@ -50,13 +50,12 @@ export class WindowsServerManager extends BaseServerManager {
     }
     
     const publicServerUrl = this.serverUrl
-    const baseEnvironment = this.getBaseEnvironment()
     const env = {
-      ...baseEnvironment,
+      ...process.env,
       ELECTRON_RUN_AS_NODE: '1',
       PORT: this.serverPort.toString(),
       SERVER_PORT: this.serverPort.toString(),
-      ...buildServerRuntimeEnv(this.appDataDir, publicServerUrl, baseEnvironment, this.getRuntimeEnvOverrides())
+      ...buildServerRuntimeEnv(this.appDataDir, publicServerUrl, process.env, this.getRuntimeEnvOverrides())
     }
 
     const options = {

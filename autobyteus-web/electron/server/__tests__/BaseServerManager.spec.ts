@@ -58,7 +58,6 @@ const launchConfig: EmbeddedServerLaunchConfig = {
   clientEndpoint: createEmbeddedServerClientEndpoint(29695),
   listenerPolicy: 'preserve-backend-default',
   baseDataRoot: path.join('/user/home', '.autobyteus'),
-  baseEnvironment: {},
 }
 
 class TestServerManager extends BaseServerManager {

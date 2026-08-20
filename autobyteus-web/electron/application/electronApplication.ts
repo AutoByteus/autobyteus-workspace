@@ -37,11 +37,9 @@ import { WorkspaceShellWindow } from '../shell/workspace-shell-window'
 import { WorkspaceShellWindowRegistry } from '../shell/workspace-shell-window-registry'
 import { validateReadableRegularFile } from '../localFileValidation'
 import { installLocalFileProtocol } from '../local-file-protocol/local-file-protocol'
-import { getLoginShellPath } from '../utils/shellEnv'
 
 type ElectronApplicationOptions = {
   profile: ElectronLaunchProfile
-  baseEnvironment: Readonly<NodeJS.ProcessEnv>
 }
 
 const shutdownTimeoutMs = 8000
@@ -54,52 +52,19 @@ export class ElectronApplication {
   private readonly shellWindowRegistry = new WorkspaceShellWindowRegistry()
   private managedExtensionService: ManagedExtensionService | null = null
   private browserRuntime: BrowserRuntime | null = null
-  private isAppQuitting = false
   private hasShutdownRun = false
   private shutdownTimer: NodeJS.Timeout | null = null
   private nodeRegistrySnapshot: NodeRegistrySnapshot = { version: 0, nodes: [] }
 
-  constructor({ profile, baseEnvironment }: ElectronApplicationOptions) {
+  constructor({ profile }: ElectronApplicationOptions) {
     this.profile = profile
     this.serverManager = ServerManagerFactory.createServerManager({
       clientEndpoint: profile.clientEndpoint,
       listenerPolicy: 'preserve-backend-default',
       baseDataRoot: profile.baseDataRoot,
-      baseEnvironment: this.buildBackendBaseEnvironment(baseEnvironment),
     })
     this.serverStatusManager = new ServerStatusManager(this.serverManager)
     this.appUpdater = profile.updaterEnabled ? new AppUpdater() : null
-  }
-
-  private buildBackendBaseEnvironment(
-    sourceEnvironment: Readonly<NodeJS.ProcessEnv>,
-  ): NodeJS.ProcessEnv {
-    const environment = { ...sourceEnvironment }
-    if (this.profile.name === 'production') {
-      if (process.platform !== 'win32') {
-        const loginPath = getLoginShellPath(environment)
-        if (loginPath) {
-          environment.PATH = loginPath
-        }
-      }
-      return environment
-    }
-
-    const { paths } = this.profile
-    environment.HOME = paths.backendHome
-    environment.TMPDIR = paths.backendTemp
-    environment.TMP = paths.backendTemp
-    environment.TEMP = paths.backendTemp
-    environment.XDG_CONFIG_HOME = paths.backendConfig
-    environment.XDG_CACHE_HOME = paths.backendCache
-    if (process.platform === 'win32') {
-      environment.USERPROFILE = paths.backendHome
-      environment.APPDATA = paths.backendConfig
-      environment.LOCALAPPDATA = paths.backendCache
-      environment.HOMEDRIVE = path.parse(paths.backendHome).root.replace(/[\\/]$/, '')
-      environment.HOMEPATH = paths.backendHome.slice(path.parse(paths.backendHome).root.length - 1)
-    }
-    return environment
   }
 
   private get activeEmbeddedBaseUrl(): string {
@@ -362,7 +327,6 @@ export class ElectronApplication {
 
   private installLifecycleHandlers(): void {
     app.on('before-quit', () => {
-      this.isAppQuitting = true
       this.shellWindowRegistry.broadcast('app-quitting', undefined)
       this.shutdownTimer = setTimeout(() => app.quit(), shutdownTimeoutMs)
     })

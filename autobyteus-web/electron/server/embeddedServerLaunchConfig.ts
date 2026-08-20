@@ -6,5 +6,4 @@ export type EmbeddedServerLaunchConfig = Readonly<{
   clientEndpoint: EmbeddedServerClientEndpoint
   listenerPolicy: EmbeddedServerListenerPolicy
   baseDataRoot: string
-  baseEnvironment: Readonly<NodeJS.ProcessEnv>
 }>

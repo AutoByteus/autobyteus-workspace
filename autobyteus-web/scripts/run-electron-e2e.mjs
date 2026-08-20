@@ -39,8 +39,11 @@ async function main() {
     console.log(JSON.stringify({ type: 'electron-e2e-ready', ...session.metadata }))
     if (options.holdMs > 0) await delay(options.holdMs)
   } finally {
-    if (session) await session.cleanup()
-    else await prepared.disposeOwnedDataRoot()
+    if (session) {
+      await session.cleanup()
+    } else if (prepared.getClaimState() === 'prepared') {
+      await prepared.disposeOwnedDataRoot()
+    }
   }
 }
 

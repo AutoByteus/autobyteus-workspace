@@ -1,30 +1,29 @@
 import { spawn } from 'node:child_process'
-import { createElectronE2ESession, terminateOwnedProcessTree } from './electronE2ESession.mjs'
+import { createElectronE2ESession } from './electronE2ESession.mjs'
+import { createOwnedElectronProcessTreeController } from './ownedElectronProcessTree.mjs'
 
-function waitForExit(child, timeoutMs) {
-  if (child.exitCode !== null || child.signalCode !== null) return Promise.resolve(true)
-  return new Promise((resolve) => {
-    const onExit = () => {
-      clearTimeout(timer)
-      resolve(true)
-    }
-    const timer = setTimeout(() => {
-      child.removeListener('exit', onExit)
-      resolve(false)
-    }, timeoutMs)
-    child.once('exit', onExit)
-  })
+function attachCleanupError(primaryError, cleanupError) {
+  if (primaryError && typeof primaryError === 'object' && Object.isExtensible(primaryError)) {
+    Object.defineProperty(primaryError, 'cleanupError', {
+      configurable: true,
+      value: cleanupError,
+    })
+  }
 }
 
-export async function launchPreparedElectronDirect(preparedLaunch) {
+export async function launchPreparedElectronDirect(preparedLaunch, dependencies = {}) {
   const prepared = preparedLaunch.claim('direct adapter')
+  const spawnProcess = dependencies.spawnProcess ?? spawn
+  const createProcessController = dependencies.createProcessController
+    ?? createOwnedElectronProcessTreeController
   let child = null
   let controller = null
   try {
-    child = spawn(prepared.executablePath, prepared.args, {
+    child = spawnProcess(prepared.executablePath, prepared.args, {
       env: prepared.env,
       stdio: ['ignore', 'pipe', 'pipe'],
       windowsHide: true,
+      detached: process.platform !== 'win32',
     })
     await new Promise((resolve, reject) => {
       child.once('spawn', resolve)
@@ -36,34 +35,24 @@ export async function launchPreparedElectronDirect(preparedLaunch) {
     }
     child.stdout?.on('data', append)
     child.stderr?.on('data', append)
-    controller = Object.freeze({
-      pid: child.pid,
-      child,
-      isRunning: () => child.exitCode === null && child.signalCode === null,
-      waitForExit: (timeoutMs) => waitForExit(child, timeoutMs),
-      closeGracefully: async () => {
-        if (child.pid && child.exitCode === null) {
-          await terminateOwnedProcessTree(child.pid, false)
-        }
-      },
+    controller = await createProcessController({
+      rootProcess: child,
       outputSummary: () => output ? `\nRecent output:\n${output}` : '',
     })
     return createElectronE2ESession(prepared, controller)
-  } catch (error) {
-    if (controller) {
-      await createElectronE2ESession(prepared, controller).cleanup()
-    } else if (child?.pid && child.exitCode === null && child.signalCode === null) {
-      const failedLaunchController = Object.freeze({
-        pid: child.pid,
-        isRunning: () => child.exitCode === null && child.signalCode === null,
-        waitForExit: (timeoutMs) => waitForExit(child, timeoutMs),
-        closeGracefully: async () => terminateOwnedProcessTree(child.pid, false),
-        outputSummary: () => '',
-      })
-      await createElectronE2ESession(prepared, failedLaunchController).cleanup()
-    } else {
-      await prepared.disposeOwnedDataRoot()
+  } catch (primaryError) {
+    try {
+      if (!controller && child?.pid) {
+        controller = await createProcessController({ rootProcess: child })
+      }
+      if (controller) {
+        await createElectronE2ESession(prepared, controller).cleanup()
+      } else {
+        await prepared.disposeOwnedDataRoot()
+      }
+    } catch (cleanupError) {
+      attachCleanupError(primaryError, cleanupError)
     }
-    throw error
+    throw primaryError
   }
 }

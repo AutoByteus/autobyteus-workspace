@@ -16,12 +16,6 @@ export const ELECTRON_LAUNCH_PROFILE_ENV = 'AUTOBYTEUS_ELECTRON_LAUNCH_PROFILE'
 export const ELECTRON_SERVER_PORT_ENV = 'AUTOBYTEUS_ELECTRON_SERVER_PORT'
 export const ELECTRON_DATA_ROOT_ENV = 'AUTOBYTEUS_ELECTRON_DATA_ROOT'
 
-export const ELECTRON_LAUNCH_ENV_KEYS = Object.freeze([
-  ELECTRON_LAUNCH_PROFILE_ENV,
-  ELECTRON_SERVER_PORT_ENV,
-  ELECTRON_DATA_ROOT_ENV,
-] as const)
-
 export type E2EElectronPathPlan = Readonly<{
   root: string
   baseDataRoot: string
@@ -33,10 +27,6 @@ export type E2EElectronPathPlan = Readonly<{
   sessionData: string
   crashDumps: string
   downloads: string
-  backendHome: string
-  backendConfig: string
-  backendCache: string
-  backendTemp: string
 }>
 
 type BaseElectronLaunchProfile = Readonly<{
@@ -97,10 +87,6 @@ export function buildE2EElectronPathPlan(
     sessionData: path.join(root, 'electron', 'session-data'),
     crashDumps: path.join(root, 'electron', 'crash-dumps'),
     downloads: path.join(root, 'electron', 'downloads'),
-    backendHome: path.join(root, 'backend-home'),
-    backendConfig: path.join(root, 'backend-home', '.config'),
-    backendCache: path.join(root, 'backend-home', '.cache'),
-    backendTemp: path.join(root, 'backend-home', 'tmp'),
   })
 }
 

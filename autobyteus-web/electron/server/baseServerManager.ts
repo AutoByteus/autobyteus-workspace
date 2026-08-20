@@ -28,7 +28,6 @@ export abstract class BaseServerManager extends EventEmitter {
   protected readonly serverPort: number
   protected readonly serverUrl: string
   protected readonly serverWebSocketUrl: string
-  protected readonly baseEnvironment: Readonly<NodeJS.ProcessEnv>
   protected ready: boolean = false
   protected serverStartTime: number = 0
   protected maxStartupTime: number = 100000 // 100 seconds timeout
@@ -51,7 +50,6 @@ export abstract class BaseServerManager extends EventEmitter {
     this.serverPort = launchConfig.clientEndpoint.port
     this.serverUrl = formatEmbeddedServerClientBaseUrl(launchConfig.clientEndpoint)
     this.serverWebSocketUrl = formatEmbeddedServerClientWebSocketBaseUrl(launchConfig.clientEndpoint)
-    this.baseEnvironment = Object.freeze({ ...launchConfig.baseEnvironment })
     this.appDataService = new AppDataService(launchConfig.baseDataRoot, this.serverUrl)
     this.appDataDir = this.appDataService.getAppDataDir()
     this.firstRun = this.appDataService.isFirstRun()
@@ -292,10 +290,6 @@ export abstract class BaseServerManager extends EventEmitter {
 
   protected getRuntimeEnvOverrides(): Record<string, string> {
     return { ...this.runtimeEnvOverrides }
-  }
-
-  protected getBaseEnvironment(): NodeJS.ProcessEnv {
-    return { ...this.baseEnvironment }
   }
 
   /**

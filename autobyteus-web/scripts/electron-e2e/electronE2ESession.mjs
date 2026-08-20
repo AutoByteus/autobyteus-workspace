@@ -1,74 +1,44 @@
-import { execFile } from 'node:child_process'
 import net from 'node:net'
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
-function execFileResult(command, args) {
+async function observeSelectedPort(port, timeoutMs = 1000) {
   return new Promise((resolve) => {
-    execFile(command, args, (error, stdout) => resolve({ error, stdout }))
-  })
-}
-
-async function descendantPids(rootPid) {
-  if (process.platform === 'win32') return []
-  const { error, stdout } = await execFileResult('ps', ['-axo', 'pid=,ppid='])
-  if (error) return []
-  const children = new Map()
-  for (const line of stdout.split(/\r?\n/)) {
-    const [pidText, parentText] = line.trim().split(/\s+/)
-    const pid = Number(pidText)
-    const parent = Number(parentText)
-    if (!Number.isInteger(pid) || !Number.isInteger(parent)) continue
-    const existing = children.get(parent) ?? []
-    existing.push(pid)
-    children.set(parent, existing)
-  }
-  const ordered = []
-  const visit = (pid) => {
-    for (const child of children.get(pid) ?? []) visit(child)
-    if (pid !== rootPid) ordered.push(pid)
-  }
-  visit(rootPid)
-  return ordered
-}
-
-export async function terminateOwnedProcessTree(pid, force = false) {
-  if (!Number.isInteger(pid) || pid <= 0) return
-  if (process.platform === 'win32') {
-    await execFileResult('taskkill', [
-      '/pid', String(pid), '/t', ...(force ? ['/f'] : []),
-    ])
-    return
-  }
-  const signal = force ? 'SIGKILL' : 'SIGTERM'
-  for (const targetPid of [...await descendantPids(pid), pid]) {
-    try {
-      process.kill(targetPid, signal)
-    } catch (error) {
-      if (error.code !== 'ESRCH') throw error
+    const server = net.createServer()
+    let settled = false
+    const finish = (observation) => {
+      if (settled) return
+      settled = true
+      clearTimeout(timer)
+      resolve(Object.freeze(observation))
     }
-  }
-}
-
-async function waitForPortRelease(port, timeoutMs) {
-  const deadline = Date.now() + timeoutMs
-  let lastError = null
-  while (Date.now() < deadline) {
-    try {
-      await new Promise((resolve, reject) => {
-        const server = net.createServer()
-        server.once('error', reject)
-        server.listen({ host: '0.0.0.0', port, exclusive: true }, () => {
-          server.close((error) => error ? reject(error) : resolve())
-        })
+    const timer = setTimeout(() => {
+      try {
+        server.close(() => undefined)
+      } catch {
+        // The diagnostic is already complete if the probe never reached listening state.
+      }
+      finish({
+        status: 'occupied-after-owned-tree-exit',
+        port,
+        detail: 'listener observation timed out',
       })
-      return
-    } catch (error) {
-      lastError = error
-      await delay(100)
-    }
-  }
-  throw new Error(`E2E listener port ${port} was not released: ${lastError?.message ?? 'timeout'}`)
+    }, timeoutMs)
+    server.once('error', (error) => finish({
+      status: 'occupied-after-owned-tree-exit',
+      port,
+      detail: error instanceof Error ? error.message : String(error),
+    }))
+    server.listen({ host: '0.0.0.0', port, exclusive: true }, () => {
+      server.close((error) => finish(error
+        ? {
+            status: 'occupied-after-owned-tree-exit',
+            port,
+            detail: error.message,
+          }
+        : { status: 'available', port, detail: null }))
+    })
+  })
 }
 
 export function createElectronE2ESession(prepared, processController) {
@@ -95,28 +65,19 @@ export function createElectronE2ESession(prepared, processController) {
   const cleanup = () => {
     if (cleanupPromise) return cleanupPromise
     cleanupPromise = (async () => {
-      let safeToDisposeRoot = false
-      try {
-        try {
-          await processController.closeGracefully()
-        } catch {
-          // The targeted fallback below remains authoritative when graceful close fails.
-        }
-        const exited = await processController.waitForExit(5000)
-        if (!exited && processController.pid) {
-          await terminateOwnedProcessTree(processController.pid, true)
-          const forcedExit = await processController.waitForExit(3000)
-          if (!forcedExit && processController.isRunning()) {
-            throw new Error(`Owned Electron process tree ${processController.pid} did not exit`)
-          }
-        }
-        await waitForPortRelease(prepared.port, 5000)
-        safeToDisposeRoot = true
-      } finally {
-        if (safeToDisposeRoot) {
-          await prepared.disposeOwnedDataRoot()
-        }
+      const processTreeCompletion = await processController.closeAndConfirmTree({
+        gracefulTimeoutMs: 5000,
+        forceTimeoutMs: 3000,
+      })
+      if (processTreeCompletion?.status !== 'complete') {
+        throw new Error(
+          `Owned Electron process tree completion was not affirmative: ${processController.processTreeIdentity ?? 'unknown identity'}`,
+        )
       }
+
+      await prepared.disposeOwnedDataRoot()
+      const portObservation = await observeSelectedPort(prepared.port)
+      return Object.freeze({ processTreeCompletion, portObservation })
     })()
     return cleanupPromise
   }

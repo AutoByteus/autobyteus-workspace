@@ -6,7 +6,7 @@ import net from 'node:net'
 import os from 'node:os'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { buildCredentialSafeElectronEnv } from './electronE2EEnvironment.mjs'
+import { buildElectronE2ELaunchEnvironment } from './electronE2EEnvironment.mjs'
 
 const moduleDir = path.dirname(fileURLToPath(import.meta.url))
 const defaultWebRoot = path.resolve(moduleDir, '..', '..')
@@ -30,14 +30,10 @@ function runCommand(command, args, cwd) {
 
 function loadCompiledLaunchBoundaries(webRoot) {
   const safetyPath = path.join(webRoot, 'dist', 'electron', 'launch-profile', 'e2eDataRootSafety.js')
-  const environmentPath = path.join(webRoot, 'dist', 'electron', 'launch-profile', 'e2eLaunchEnvironment.js')
-  if (!fsSync.existsSync(safetyPath) || !fsSync.existsSync(environmentPath)) {
+  if (!fsSync.existsSync(safetyPath)) {
     throw new Error('Compiled Electron launch-profile boundaries are missing; build or transpile this worktree first')
   }
-  return {
-    safety: require(safetyPath),
-    environmentPolicy: require(environmentPath),
-  }
+  return { safety: require(safetyPath) }
 }
 
 function defaultProtectedPaths(sourceEnv, platform) {
@@ -174,7 +170,7 @@ export async function prepareElectronE2ELaunch(options = {}) {
   if (options.build !== false) {
     await runCommand(options.packageManager ?? 'pnpm', ['build:electron'], webRoot)
   }
-  const { safety, environmentPolicy } = loadCompiledLaunchBoundaries(webRoot)
+  const { safety } = loadCompiledLaunchBoundaries(webRoot)
   const platform = options.platform ?? process.platform
   const arch = options.arch ?? process.arch
   const sourceEnv = options.sourceEnv ?? process.env
@@ -194,12 +190,10 @@ export async function prepareElectronE2ELaunch(options = {}) {
   const dataRoot = safety.getResolvedSafeE2EDataRootPath(safeRoot)
 
   try {
-    const env = buildCredentialSafeElectronEnv({
+    const env = buildElectronE2ELaunchEnvironment({
       sourceEnv,
       launch: { port, dataRoot },
       extraEnv: options.extraEnv,
-      platform,
-      isDeniedKey: environmentPolicy.isDeniedE2EEnvironmentKey,
     })
     const clientBaseUrl = `http://127.0.0.1:${port}`
     let state = 'prepared'

@@ -1,22 +1,23 @@
 import { createElectronE2ESession } from './electronE2ESession.mjs'
+import { createOwnedElectronProcessTreeController } from './ownedElectronProcessTree.mjs'
 
-function waitForExit(child, timeoutMs) {
-  if (!child || child.exitCode !== null || child.signalCode !== null) return Promise.resolve(true)
-  return new Promise((resolve) => {
-    const onExit = () => {
-      clearTimeout(timer)
-      resolve(true)
-    }
-    const timer = setTimeout(() => {
-      child.removeListener('exit', onExit)
-      resolve(false)
-    }, timeoutMs)
-    child.once('exit', onExit)
-  })
+function attachCleanupError(primaryError, cleanupError) {
+  if (primaryError && typeof primaryError === 'object' && Object.isExtensible(primaryError)) {
+    Object.defineProperty(primaryError, 'cleanupError', {
+      configurable: true,
+      value: cleanupError,
+    })
+  }
 }
 
-export async function launchPreparedElectronWithPlaywright(preparedLaunch, electronLauncher) {
+export async function launchPreparedElectronWithPlaywright(
+  preparedLaunch,
+  electronLauncher,
+  dependencies = {},
+) {
   const prepared = preparedLaunch.claim('Playwright adapter')
+  const createProcessController = dependencies.createProcessController
+    ?? createOwnedElectronProcessTreeController
   let electronApplication = null
   let controller = null
   try {
@@ -26,34 +27,36 @@ export async function launchPreparedElectronWithPlaywright(preparedLaunch, elect
       env: prepared.env,
     })
     const child = electronApplication.process()
-    controller = Object.freeze({
-      pid: child?.pid,
+    // Installed Playwright launches this PID as the POSIX process-group leader and
+    // uses a targeted Windows tree. The controller verifies that whole identity.
+    controller = await createProcessController({
+      rootProcess: child,
+      requestGracefulClose: () => electronApplication.close(),
+    })
+    const session = createElectronE2ESession(prepared, controller)
+    return Object.freeze({
+      ...session,
       electronApplication,
       firstWindow: (...args) => electronApplication.firstWindow(...args),
-      isRunning: () => !!child && child.exitCode === null && child.signalCode === null,
-      waitForExit: (timeoutMs) => waitForExit(child, timeoutMs),
-      closeGracefully: async () => electronApplication.close(),
-      outputSummary: () => '',
     })
-    return Object.freeze({
-      ...createElectronE2ESession(prepared, controller),
-      electronApplication,
-      firstWindow: controller.firstWindow,
-    })
-  } catch (error) {
-    if (electronApplication) {
-      const child = electronApplication.process()
-      const failedLaunchController = controller ?? Object.freeze({
-        pid: child?.pid,
-        isRunning: () => !!child && child.exitCode === null && child.signalCode === null,
-        waitForExit: (timeoutMs) => waitForExit(child, timeoutMs),
-        closeGracefully: async () => electronApplication.close(),
-        outputSummary: () => '',
-      })
-      await createElectronE2ESession(prepared, failedLaunchController).cleanup()
+  } catch (primaryError) {
+    try {
+      if (electronApplication) {
+        if (!controller) {
+          controller = await createProcessController({
+            rootProcess: electronApplication.process(),
+            requestGracefulClose: () => electronApplication.close(),
+          })
+        }
+        await createElectronE2ESession(prepared, controller).cleanup()
+      } else {
+        // playwright-core@1.58.2 rejects launch only after a no-PID failure cleanup
+        // or after force-killing and waiting for its detached process group.
+        if (prepared.ownsDataRoot) await prepared.disposeOwnedDataRoot()
+      }
+    } catch (cleanupError) {
+      attachCleanupError(primaryError, cleanupError)
     }
-    // If Playwright rejects without returning an application/process handle, retain an
-    // owned root rather than deleting storage that an unobservable child might still use.
-    throw error
+    throw primaryError
   }
 }

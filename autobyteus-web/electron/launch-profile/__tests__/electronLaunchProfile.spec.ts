@@ -3,7 +3,6 @@ import * as os from 'os'
 import * as path from 'path'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { PRODUCTION_EMBEDDED_SERVER_PORT } from '../../../shared/embeddedServerClientEndpoint'
-import { scrubE2ELaunchEnvironment } from '../e2eLaunchEnvironment'
 import { resolveElectronLaunchProfile } from '../electronLaunchProfile'
 import { applyElectronLaunchProfilePaths } from '../electronLaunchProfilePaths'
 
@@ -83,27 +82,5 @@ describe('Electron launch profile', () => {
     expect(setPath).toHaveBeenCalledWith('userData', plan?.userData)
     expect(setPath).toHaveBeenCalledWith('sessionData', plan?.sessionData)
     expect(setAppLogsPath).toHaveBeenCalledWith(plan?.logs)
-    expect(fs.realpathSync(plan!.backendConfig).startsWith(fs.realpathSync(selected))).toBe(true)
-  })
-
-  it('scrubs credentials, unsafe switches, and resolved launch keys before imports', () => {
-    const env: NodeJS.ProcessEnv = {
-      PATH: '/bin',
-      OPENAI_API_KEY: 'secret',
-      custom_TOKEN: 'secret',
-      NODE_OPTIONS: '--require unsafe',
-      AUTOBYTEUS_ELECTRON_LAUNCH_PROFILE: 'e2e',
-      AUTOBYTEUS_ELECTRON_SERVER_PORT: '31003',
-      AUTOBYTEUS_ELECTRON_DATA_ROOT: '/tmp/example',
-      AUTOBYTEUS_E2E_FIXTURE_ID: 'fixture-1',
-    }
-    const snapshot = scrubE2ELaunchEnvironment(env, 'linux')
-    expect(snapshot.PATH).toBe('/bin')
-    expect(snapshot.AUTOBYTEUS_E2E_FIXTURE_ID).toBe('fixture-1')
-    expect(snapshot.OPENAI_API_KEY).toBeUndefined()
-    expect(snapshot.custom_TOKEN).toBeUndefined()
-    expect(snapshot.NODE_OPTIONS).toBeUndefined()
-    expect(snapshot.AUTOBYTEUS_ELECTRON_LAUNCH_PROFILE).toBeUndefined()
-    expect(env.OPENAI_API_KEY).toBeUndefined()
   })
 })
