@@ -1,0 +1,22 @@
+[frontend] 
+> autobyteus@1.4.52 dev /Users/normy/autobyteus_org/autobyteus-worktrees/app-data-migration-summary-log-redesign/autobyteus-web
+> nuxt dev --host 0.0.0.0 --host 127.0.0.1 --port 59861
+
+[frontend] │
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+[frontend] 
+  ➜ Local:    http://127.0.0.1:59861/
+  ➜ Network:  use --host to expose
+
+[frontend] isElectronBuild false
+[frontend] [Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+[frontend] ✔ Vite client built in 44ms
+[frontend] 
+ WARN  Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+[frontend] ✔ Vite server built in 637ms
+[frontend] [nitro] ✔ Nuxt Nitro server built in 532ms
+[frontend] ℹ Vite client warmed up in 1ms
+AE2E_BROWSER_PASS {"recordCount":16,"displayedMigrationId":"20260727_custom_provider_v1_secret_migration","summary":"Scanned 0; migrated 0; skipped 1; failed 0.","logPath":"/Users/normy/autobyteus_org/autobyteus-worktrees/app-data-migration-summary-log-redesign/autobyteus-server-ts/tests/.tmp/api-e2e-browser-48232-1787258783845/logs/app-data-migrations/20260727_custom_provider_v1_secret_migration-2026-08-20T20-46-26-022Z.log"}

@@ -113,4 +113,14 @@ describe('ServerMigrationsManager', () => {
       '[data-testid="app-data-migration-restart-guidance-startup-only-failed"]',
     ).text()).toBe('此迁移只能在启动时重试。请重启 AutoByteus 后再试。')
   })
+
+  it('renders the stored summary string without detail expansion', async () => {
+    const record = createRecord('completed', AppDataMigrationRecoveryAction.None)
+    record.summary = 'Scanned 158025; migrated 1283; skipped 17; failed 2.'
+    const { wrapper } = mountManager([record], getCatalog('en'))
+    await flushPromises()
+
+    expect(wrapper.text()).toContain(record.summary)
+    expect(wrapper.find('details').exists()).toBe(false)
+  })
 })

@@ -13,7 +13,7 @@ type RawMigrationRecord = {
   attempts: number;
   started_at: Date | string | null;
   completed_at: Date | string | null;
-  summary_json: string | null;
+  summary: string | null;
   error_message: string | null;
   log_path: string | null;
 };
@@ -30,7 +30,7 @@ const toRecord = (row: RawMigrationRecord): AppDataMigrationRecordSnapshot => ({
   attempts: Number(row.attempts ?? 0),
   startedAt: toDate(row.started_at),
   completedAt: toDate(row.completed_at),
-  summaryJson: row.summary_json ?? null,
+  summary: row.summary ?? null,
   errorMessage: row.error_message ?? null,
   logPath: row.log_path ?? null,
 });
@@ -49,7 +49,7 @@ export class AppDataMigrationRecordRepository implements AppDataMigrationRecordR
 
   private async queryRecordById(migrationId: string): Promise<AppDataMigrationRecordSnapshot | null> {
     const rows = await this.client.$queryRawUnsafe<RawMigrationRecord[]>(
-      `SELECT migration_id, display_name, status, attempts, started_at, completed_at, summary_json, error_message, log_path
+      `SELECT migration_id, display_name, status, attempts, started_at, completed_at, summary, error_message, log_path
          FROM app_data_migration_records
         WHERE migration_id = ?
         LIMIT 1`,
@@ -64,7 +64,7 @@ export class AppDataMigrationRecordRepository implements AppDataMigrationRecordR
 
   async listRecords(): Promise<AppDataMigrationRecordSnapshot[]> {
     const rows = await this.client.$queryRawUnsafe<RawMigrationRecord[]>(
-      `SELECT migration_id, display_name, status, attempts, started_at, completed_at, summary_json, error_message, log_path
+      `SELECT migration_id, display_name, status, attempts, started_at, completed_at, summary, error_message, log_path
          FROM app_data_migration_records
         ORDER BY migration_id ASC`,
     );
@@ -78,7 +78,7 @@ export class AppDataMigrationRecordRepository implements AppDataMigrationRecordR
   }): Promise<AppDataMigrationRecordSnapshot> {
     await this.client.$executeRawUnsafe(
       `INSERT INTO app_data_migration_records
-         (migration_id, display_name, status, attempts, started_at, completed_at, summary_json, error_message, log_path, updated_at)
+         (migration_id, display_name, status, attempts, started_at, completed_at, summary, error_message, log_path, updated_at)
        VALUES (?, ?, 'RUNNING', 1, ?, NULL, NULL, NULL, NULL, CURRENT_TIMESTAMP)
        ON CONFLICT(migration_id) DO UPDATE SET
          display_name = excluded.display_name,
@@ -104,18 +104,18 @@ export class AppDataMigrationRecordRepository implements AppDataMigrationRecordR
     displayName: string;
     status: Exclude<AppDataMigrationStatus, "NOT_RUN" | "RUNNING">;
     completedAt: Date;
-    summaryJson: string;
+    summary: string;
     errorMessage: string | null;
     logPath: string | null;
   }): Promise<AppDataMigrationRecordSnapshot> {
     await this.client.$executeRawUnsafe(
       `UPDATE app_data_migration_records
-          SET display_name = ?, status = ?, completed_at = ?, summary_json = ?, error_message = ?, log_path = ?, updated_at = CURRENT_TIMESTAMP
+          SET display_name = ?, status = ?, completed_at = ?, summary = ?, error_message = ?, log_path = ?, updated_at = CURRENT_TIMESTAMP
         WHERE migration_id = ?`,
       input.displayName,
       input.status,
       input.completedAt,
-      input.summaryJson,
+      input.summary,
       input.errorMessage,
       input.logPath,
       input.migrationId,
@@ -131,7 +131,7 @@ export class AppDataMigrationRecordRepository implements AppDataMigrationRecordR
     migrationId: string;
     displayName: string;
     completedAt: Date;
-    summaryJson: string;
+    summary: string;
     errorMessage: string;
     logPath: string | null;
   }): Promise<AppDataMigrationRecordSnapshot> {
@@ -140,7 +140,7 @@ export class AppDataMigrationRecordRepository implements AppDataMigrationRecordR
       displayName: input.displayName,
       status: "FAILED",
       completedAt: input.completedAt,
-      summaryJson: input.summaryJson,
+      summary: input.summary,
       errorMessage: input.errorMessage,
       logPath: input.logPath,
     });

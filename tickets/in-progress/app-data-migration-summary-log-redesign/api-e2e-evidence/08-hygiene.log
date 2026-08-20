@@ -1,0 +1,66 @@
+$ git diff --check
+
+$ rg -n "summaryJson|summary_json" current app-data runtime / GraphQL / web paths
+PASS: no current app-data runtime/API/web legacy summary field hit
+
+$ rg -n "summaryJson|summary_json|summary\\?\\.details|summary\\.details" updated E2E paths
+autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:125:      `ALTER TABLE app_data_migration_records RENAME COLUMN summary TO summary_json`,
+autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:175:        summary_json, error_message, log_path
+autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:231:      : "summary_json";
+autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:692:    expect(columns.map(({ name }) => name)).not.toContain("summary_json");
+PASS: remaining summary_json hits are isolated released-schema fixture/transition assertions in the production-upgrade E2E; no rich API summary assertion remains.
+$ git diff --check
+
+$ git status --short
+ M autobyteus-server-ts/prisma/schema.prisma
+ M autobyteus-server-ts/src/api/graphql/types/app-data-migrations.ts
+ M autobyteus-server-ts/src/app-data-migrations/app-data-migration-runner.ts
+ M autobyteus-server-ts/src/app-data-migrations/domain/app-data-migration-types.ts
+ M autobyteus-server-ts/src/app-data-migrations/repositories/app-data-migration-record-repository.ts
+ M autobyteus-server-ts/src/server-runtime.ts
+ M autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/secret-management/custom-provider-readable-id-startup-migration.e2e.test.ts
+ M autobyteus-server-ts/tests/unit/api/graphql/types/app-data-migrations.test.ts
+ M autobyteus-server-ts/tests/unit/app-data-migrations/app-data-migration-runner.test.ts
+ M autobyteus-server-ts/tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts
+ M autobyteus-server-ts/tests/unit/server-runtime-app-data-migration-gate.test.ts
+ M autobyteus-web/components/settings/ServerMigrationsManager.vue
+ M autobyteus-web/components/settings/__tests__/ServerMigrationsManager.spec.ts
+ M autobyteus-web/generated/graphql.ts
+ M autobyteus-web/localization/messages/en/settings.ts
+ M autobyteus-web/localization/messages/zh-CN/settings.ts
+ M autobyteus-web/stores/appDataMigrationsStore.ts
+?? autobyteus-server-ts/prisma/migrations/20260820090000_redesign_app_data_migration_summary/
+?? autobyteus-server-ts/src/app-data-migrations/domain/app-data-migration-summary-formatter.ts
+?? autobyteus-server-ts/tests/integration/app-data-migrations/
+?? autobyteus-server-ts/tests/unit/app-data-migrations/app-data-migration-record-repository.test.ts
+?? autobyteus-server-ts/tests/unit/app-data-migrations/app-data-migration-summary-formatter.test.ts
+?? tickets/in-progress/app-data-migration-summary-log-redesign/
+
+$ git diff --stat
+ autobyteus-server-ts/prisma/schema.prisma          |   2 +-
+ .../src/api/graphql/types/app-data-migrations.ts   |   5 +-
+ .../app-data-migration-runner.ts                   |  26 +--
+ .../domain/app-data-migration-types.ts             |   7 +-
+ .../app-data-migration-record-repository.ts        |  20 +-
+ autobyteus-server-ts/src/server-runtime.ts         |   1 -
+ .../team-run-v1-production-upgrade.e2e.test.ts     | 205 +++++++++++++++------
+ ...vider-readable-id-startup-migration.e2e.test.ts | 101 ++++++----
+ .../api/graphql/types/app-data-migrations.test.ts  |   7 +-
+ .../app-data-migration-runner.test.ts              | 109 +++++++++--
+ ...-working-context-snapshots-v5-migration.test.ts |   8 +-
+ .../server-runtime-app-data-migration-gate.test.ts |   2 +-
+ .../settings/ServerMigrationsManager.vue           |  20 +-
+ .../__tests__/ServerMigrationsManager.spec.ts      |  10 +
+ autobyteus-web/generated/graphql.ts                |   6 +-
+ .../localization/messages/en/settings.ts           |   4 +-
+ .../localization/messages/zh-CN/settings.ts        |   4 +-
+ autobyteus-web/stores/appDataMigrationsStore.ts    |  16 +-
+ 18 files changed, 361 insertions(+), 192 deletions(-)
+
+$ required artifact existence
+OK tickets/in-progress/app-data-migration-summary-log-redesign/api-e2e-coverage-investigation.md
+OK tickets/in-progress/app-data-migration-summary-log-redesign/api-e2e-execution-coverage-report.md
+OK tickets/in-progress/app-data-migration-summary-log-redesign/api-e2e-revision-record.md
+OK autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts
+OK autobyteus-server-ts/tests/e2e/secret-management/custom-provider-readable-id-startup-migration.e2e.test.ts

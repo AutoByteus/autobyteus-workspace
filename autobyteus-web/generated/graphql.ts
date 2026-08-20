@@ -279,7 +279,7 @@ export type AppDataMigrationRecordObject = {
   requiredOnStartup: Scalars['Boolean']['output'];
   startedAt?: Maybe<Scalars['DateTime']['output']>;
   status: AppDataMigrationStatus;
-  summary?: Maybe<Scalars['JSON']['output']>;
+  summary?: Maybe<Scalars['String']['output']>;
 };
 
 export enum AppDataMigrationRecoveryAction {
@@ -2985,7 +2985,7 @@ export type RunAppDataMigrationMutationVariables = Exact<{
 }>;
 
 
-export type RunAppDataMigrationMutation = { __typename?: 'Mutation', runAppDataMigration: { __typename?: 'AppDataMigrationMutationResult', success: boolean, message: string, migration?: { __typename?: 'AppDataMigrationRecordObject', migrationId: string, displayName: string, description: string, status: AppDataMigrationStatus, requiredOnStartup: boolean, recoveryAction: AppDataMigrationRecoveryAction, canRetry: boolean, attempts: number, startedAt?: any | null, completedAt?: any | null, summary?: any | null, errorMessage?: string | null, logPath?: string | null } | null } };
+export type RunAppDataMigrationMutation = { __typename?: 'Mutation', runAppDataMigration: { __typename?: 'AppDataMigrationMutationResult', success: boolean, message: string, migration?: { __typename?: 'AppDataMigrationRecordObject', migrationId: string, displayName: string, description: string, status: AppDataMigrationStatus, requiredOnStartup: boolean, recoveryAction: AppDataMigrationRecoveryAction, canRetry: boolean, attempts: number, startedAt?: any | null, completedAt?: any | null, summary?: string | null, errorMessage?: string | null, logPath?: string | null } | null } };
 
 export type SetApplicationsEnabledMutationVariables = Exact<{
   enabled: Scalars['Boolean']['input'];
@@ -3326,7 +3326,7 @@ export type GetAgentTeamDefinitionsQuery = { __typename?: 'Query', agentTeamDefi
 export type GetAppDataMigrationsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAppDataMigrationsQuery = { __typename?: 'Query', getAppDataMigrations: Array<{ __typename?: 'AppDataMigrationRecordObject', migrationId: string, displayName: string, description: string, status: AppDataMigrationStatus, requiredOnStartup: boolean, recoveryAction: AppDataMigrationRecoveryAction, canRetry: boolean, attempts: number, startedAt?: any | null, completedAt?: any | null, summary?: any | null, errorMessage?: string | null, logPath?: string | null }> };
+export type GetAppDataMigrationsQuery = { __typename?: 'Query', getAppDataMigrations: Array<{ __typename?: 'AppDataMigrationRecordObject', migrationId: string, displayName: string, description: string, status: AppDataMigrationStatus, requiredOnStartup: boolean, recoveryAction: AppDataMigrationRecoveryAction, canRetry: boolean, attempts: number, startedAt?: any | null, completedAt?: any | null, summary?: string | null, errorMessage?: string | null, logPath?: string | null }> };
 
 export type ApplicationsCapabilityFieldsFragment = { __typename?: 'ApplicationsCapability', enabled: boolean, scope: ApplicationsCapabilityScope, settingKey: string, source: ApplicationsCapabilitySource };
 

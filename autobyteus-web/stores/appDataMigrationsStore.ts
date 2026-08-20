@@ -12,20 +12,6 @@ export type AppDataMigrationStatus =
   | 'FAILED'
   | 'SUCCEEDED_WITH_WARNINGS'
 
-export interface AppDataMigrationSummary {
-  scannedCount: number
-  migratedCount: number
-  skippedCount: number
-  failedCount: number
-  details: Array<{
-    itemId: string
-    filePath?: string | null
-    status: string
-    message: string
-    backupPath?: string | null
-  }>
-}
-
 export interface AppDataMigrationRecord {
   migrationId: string
   displayName: string
@@ -37,7 +23,7 @@ export interface AppDataMigrationRecord {
   attempts: number
   startedAt: string | null
   completedAt: string | null
-  summary: AppDataMigrationSummary | null
+  summary: string | null
   errorMessage: string | null
   logPath: string | null
 }

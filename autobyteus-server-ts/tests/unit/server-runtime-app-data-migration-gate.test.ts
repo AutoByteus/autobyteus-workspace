@@ -250,7 +250,7 @@ describe("startConfiguredServer required app-data migration gates", () => {
       status: "SUCCEEDED_WITH_WARNINGS",
       displayName: "TeamRun execution-tree V1 migration",
       attempts: 1,
-      summary: { failedCount: 1 },
+      summary: "Scanned 1; migrated 0; skipped 0; failed 1.",
       errorMessage: "identity mismatch",
       logPath: "/tmp/team-run-v1-warning.log",
     }, readableSuccess]);

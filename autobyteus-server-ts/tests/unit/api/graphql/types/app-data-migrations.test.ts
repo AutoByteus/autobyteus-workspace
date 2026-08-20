@@ -31,8 +31,7 @@ describe("AppDataMigrationResolver", () => {
       attempts: 1,
       startedAt: null,
       completedAt: new Date("2026-08-20T10:00:00.000Z"),
-      summaryJson: null,
-      summary: null,
+      summary: "Scanned 1; migrated 0; skipped 0; failed 1.",
       errorMessage: "retry at startup",
       logPath: null,
     }]);
@@ -45,10 +44,14 @@ describe("AppDataMigrationResolver", () => {
     expect(recordType && "getFields" in recordType
       ? recordType.getFields().recoveryAction?.type.toString()
       : null).toBe("AppDataMigrationRecoveryAction!");
+    expect(recordType && "getFields" in recordType
+      ? recordType.getFields().summary?.type.toString()
+      : null).toBe("String");
     await expect(new AppDataMigrationResolver().getAppDataMigrations()).resolves.toMatchObject([{
       migrationId: "startup-only-failed",
       recoveryAction: AppDataMigrationRecoveryAction.RESTART_TO_RETRY,
       canRetry: false,
+      summary: "Scanned 1; migrated 0; skipped 0; failed 1.",
     }]);
     expect(schema.getType("AppDataMigrationRecoveryAction")?.toString())
       .toBe("AppDataMigrationRecoveryAction");

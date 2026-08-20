@@ -170,7 +170,7 @@ class InMemoryMigrationRepository implements AppDataMigrationRecordRepositoryLik
       attempts: (previous?.attempts ?? 0) + 1,
       startedAt: input.startedAt,
       completedAt: null,
-      summaryJson: null,
+      summary: null,
       errorMessage: null,
       logPath: null,
     };
@@ -182,7 +182,7 @@ class InMemoryMigrationRepository implements AppDataMigrationRecordRepositoryLik
     displayName: string;
     status: "SUCCEEDED" | "FAILED" | "SUCCEEDED_WITH_WARNINGS";
     completedAt: Date;
-    summaryJson: string;
+    summary: string;
     errorMessage: string | null;
     logPath: string | null;
   }) {
@@ -194,7 +194,7 @@ class InMemoryMigrationRepository implements AppDataMigrationRecordRepositoryLik
       attempts: previous?.attempts ?? 1,
       startedAt: previous?.startedAt ?? null,
       completedAt: input.completedAt,
-      summaryJson: input.summaryJson,
+      summary: input.summary,
       errorMessage: input.errorMessage,
       logPath: input.logPath,
     };
@@ -205,7 +205,7 @@ class InMemoryMigrationRepository implements AppDataMigrationRecordRepositoryLik
     migrationId: string;
     displayName: string;
     completedAt: Date;
-    summaryJson: string;
+    summary: string;
     errorMessage: string;
     logPath: string | null;
   }) {

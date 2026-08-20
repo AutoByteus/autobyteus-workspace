@@ -61,7 +61,7 @@ export interface AppDataMigrationRecordSnapshot {
   attempts: number;
   startedAt: Date | null;
   completedAt: Date | null;
-  summaryJson: string | null;
+  summary: string | null;
   errorMessage: string | null;
   logPath: string | null;
 }
@@ -71,7 +71,6 @@ export interface AppDataMigrationStatusSnapshot extends AppDataMigrationRecordSn
   requiredOnStartup: boolean;
   recoveryAction: AppDataMigrationRecoveryAction;
   canRetry: boolean;
-  summary: AppDataMigrationSummary | null;
 }
 
 export interface AppDataMigrationRecordRepositoryLike {
@@ -87,7 +86,7 @@ export interface AppDataMigrationRecordRepositoryLike {
     displayName: string;
     status: Exclude<AppDataMigrationStatus, "NOT_RUN" | "RUNNING">;
     completedAt: Date;
-    summaryJson: string;
+    summary: string;
     errorMessage: string | null;
     logPath: string | null;
   }): Promise<AppDataMigrationRecordSnapshot>;
@@ -95,7 +94,7 @@ export interface AppDataMigrationRecordRepositoryLike {
     migrationId: string;
     displayName: string;
     completedAt: Date;
-    summaryJson: string;
+    summary: string;
     errorMessage: string;
     logPath: string | null;
   }): Promise<AppDataMigrationRecordSnapshot>;
