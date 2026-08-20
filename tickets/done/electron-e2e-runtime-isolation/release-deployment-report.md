@@ -2,22 +2,23 @@
 
 ## Release / Publication / Deployment Scope
 
-Prepare the integrated, review-passed Electron isolation candidate and durable
-documentation for explicit user verification. No release, publication, version
-bump, tag, or deployment was requested for this delivery round. Repository
-finalization is explicitly held until user verification.
+Prepare and finalize the integrated, review-passed Electron isolation candidate
+and durable documentation. After finalization, the user requested a fresh
+personal-worktree Electron build followed by full ticket-worktree/branch
+cleanup. No release, publication, version bump, tag, or deployment was requested.
 
 ## Handoff Summary
 
 - Handoff summary artifact:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/tickets/done/electron-e2e-runtime-isolation/handoff-summary.md`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/electron-e2e-runtime-isolation/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Delivery revision record:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/tickets/done/electron-e2e-runtime-isolation/delivery-revision-record.md`
-- Current delivery revision ID: `DR-005`
-- Notes: The local personal macOS arm64 package was explicitly user-verified;
-  the ticket was archived and repository finalization to `origin/personal`
-  completed. Release, publication, and deployment remained out of scope.
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/electron-e2e-runtime-isolation/delivery-revision-record.md`
+- Current delivery revision ID: `DR-006`
+- Notes: Repository finalization to `origin/personal` completed. A replacement
+  personal macOS arm64 package was then built in the main worktree and the old
+  ticket worktree plus local/remote ticket branches were removed. Release,
+  publication, and deployment remained out of scope.
 
 ## Initial Delivery Integration Refresh
 
@@ -39,7 +40,7 @@ finalization is explicitly held until user verification.
 - Delivery edits started only after integrated state was current: `Yes`
 - Handoff state current with latest tracked remote base: `Yes`
 - Evidence:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/tickets/done/electron-e2e-runtime-isolation/delivery-evidence/initial-base-refresh.txt`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/electron-e2e-runtime-isolation/delivery-evidence/initial-base-refresh.txt`
 - Blocker: N/A.
 
 ## User Verification
@@ -51,7 +52,7 @@ finalization is explicitly held until user verification.
   the exact executable hash, parent/child process identity, port `29695`
   listener, HTTP 200 `/rest/health`, and zero fatal-pattern matches in the final
   500 server-log lines. Evidence:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/tickets/done/electron-e2e-runtime-isolation/delivery-evidence/user-verification-and-final-health.txt`.
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/electron-e2e-runtime-isolation/delivery-evidence/user-verification-and-final-health.txt`.
 - Renewed verification required after later re-integration: `No`; the mandatory
   final `git fetch origin personal` left the target at the same verified base.
 - Renewed verification received: `Not needed`
@@ -60,19 +61,19 @@ finalization is explicitly held until user verification.
 ## Docs Sync Result
 
 - Docs sync artifact:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/tickets/done/electron-e2e-runtime-isolation/docs-sync-report.md`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/electron-e2e-runtime-isolation/docs-sync-report.md`
 - Docs sync result: `Updated`
 - Docs updated:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/README.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/README.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/docs/electron_packaging.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/README.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/README.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/electron_packaging.md`
 - No-impact rationale: N/A; material documentation impact existed.
 
 ## Ticket State Transition
 
 - Ticket moved to `tickets/done/<ticket-name>`: `Yes`
 - Archived ticket path:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/tickets/done/electron-e2e-runtime-isolation`.
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/electron-e2e-runtime-isolation`.
 
 ## Version / Tag / Release Commit
 
@@ -81,19 +82,25 @@ bump, release commit, or tag was created.
 
 ## Local Electron Test Package
 
-- Applicable: `Yes — user-verification build only`
+- Applicable: `Yes — local user build only`
 - Build report:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/tickets/done/electron-e2e-runtime-isolation/electron-test-build-report.md`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/electron-e2e-runtime-isolation/electron-test-build-report.md`
 - Command: README-supported `pnpm build:electron:mac` with
-  `AUTOBYTEUS_BUILD_FLAVOR=personal`, `NO_TIMESTAMP=1`, empty
-  `APPLE_TEAM_ID`, and verbose electron-builder logging.
+  `AUTOBYTEUS_BUILD_FLAVOR=personal`, `NO_TIMESTAMP=1`, and empty
+  `APPLE_TEAM_ID` from the synchronized main `personal` worktree.
 - Result: `Pass`, exit 0.
+- Source commit: `42e38d42f11350aaaea52995dee3c704a8439297`.
 - Recommended artifact:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.dmg`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.dmg`
 - Integrity: `hdiutil verify` Pass; SHA-256
-  `f682d4599913b1242aed599a9ad300fc189e2725fcc79467732fee46ec290f87`.
-- Exact-artifact smoke: Pass on isolated port `60984`; cleanup passed and the
-  ordinary listener at `29695` remained unchanged.
+  `e1757b3b2331d146e13245bf00d4007915c20f29906141fb9290f157770bc1e6`.
+- ZIP SHA-256:
+  `87de1775ef27c9686017b510c8b8f90fb808665e36ae4024275f8d77889ad4bd`.
+- Main executable SHA-256:
+  `c0bf182389ea930585e3b0bf5c4f16529461e02bf3be751cb364d0e25f2257e0`,
+  identical to the reviewed/tested candidate.
+- Replacement launch: Not performed; the build was prepared for the user's
+  manual run after old-instance shutdown and worktree cleanup.
 - Signing/notarization: Local unsigned/ad-hoc; not notarized; not a release.
 - Command-doc correction: Removed an unsupported standalone `--` separator from
   thin E2E launcher examples after a pre-launch CLI rejection; corrected command
@@ -102,7 +109,7 @@ bump, release commit, or tag was created.
 ## Repository Finalization
 
 - Bootstrap context source:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/tickets/done/electron-e2e-runtime-isolation/investigation-notes.md`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/electron-e2e-runtime-isolation/investigation-notes.md`
 - Ticket branch: `codex/electron-e2e-runtime-isolation`
 - Ticket branch commit result: `Completed` at
   `6ac051d1eb0b6aa1e322bc623be9293cd477054b`.
@@ -140,22 +147,23 @@ bump, release commit, or tag was created.
 
 - Dedicated ticket worktree path:
   `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation`
-- Worktree cleanup result: `Deferred`; the user-verified Electron PID `57441`
-  is still executing the ignored packaged artifact from this worktree, and the
-  user explicitly required finalization not to stop it.
-- Worktree prune result: `Deferred with worktree removal.`
-- Local ticket branch cleanup result: `Deferred while its worktree remains.`
-- Remote branch cleanup result: `Deferred with ticket-branch cleanup.`
-- Blocker: Safe cleanup requires the user to close the running application
-  first. Repository finalization does not require stopping it.
+- Worktree cleanup result: `Completed`. After the replacement build passed, the
+  old worktree application exited gracefully through AppleScript quit. Git
+  removed the worktree registration; exact-path cleanup removed the remaining
+  ignored/generated files and a Finder-created `.DS_Store` residue.
+- Worktree prune result: `Not needed`; the registration was already absent.
+- Local ticket branch cleanup result: `Completed` with `git branch -d`.
+- Remote branch cleanup result: `Completed` with `git push origin --delete`.
+- Blocker: N/A.
+- Evidence:
+  `delivery-evidence/dr-006-old-app-shutdown-and-cleanup.log`.
 
 ## Escalation / Reroute
 
 - Classification: N/A
 - Recommended recipient: N/A
-- Why final handoff could not complete: N/A; repository finalization completed.
-  Only post-finalization cleanup is intentionally deferred to protect the
-  running application.
+- Why final handoff could not complete: N/A; repository finalization and
+  post-finalization cleanup completed.
 
 ## Release Notes Summary
 
@@ -196,14 +204,21 @@ None. No deployment or publication is in scope.
   and the bounded server-log scan found no fatal-pattern match. See
   `delivery-evidence/user-verification-and-final-health.txt`.
 - Delivery docs/static checks: recorded in
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/tickets/done/electron-e2e-runtime-isolation/delivery-evidence/docs-and-handoff-checks.txt`.
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/electron-e2e-runtime-isolation/delivery-evidence/docs-and-handoff-checks.txt`.
 - Root README discovery/static checks: Pass; recorded in
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/tickets/done/electron-e2e-runtime-isolation/delivery-evidence/dr-003-root-readme-checks.log`.
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/electron-e2e-runtime-isolation/delivery-evidence/dr-003-root-readme-checks.log`.
 - Real supported Windows CIM/`taskkill`: `Not Tested`; deterministic contracts only.
 - Broad Nuxt baseline: three established unrelated failures remain; focused
   changed-boundary coverage passed 45/45.
 - README-grounded personal macOS arm64 package: Pass; artifact verification and
   exact-artifact isolated smoke passed. See `electron-test-build-report.md`.
+- DR-006 main-personal replacement package: Build Pass, `hdiutil verify` Pass,
+  and executable hash identical to the reviewed candidate. The replacement was
+  not launched by delivery. See `delivery-evidence/dr-006-personal-build.log`
+  and `delivery-evidence/dr-006-personal-artifact-verification.log`.
+- DR-006 ticket cleanup: Pass; old exact PIDs exited gracefully, port `29695`
+  became free, worktree path/registration disappeared, and local/remote ticket
+  branches were deleted.
 
 ## Rollback Criteria
 
@@ -223,11 +238,9 @@ Reroute or roll back before finalization if verification shows any of the follow
 
 ## Final Status
 
-`Pass — explicit user verification received, ticket archived, and repository
-finalization completed on origin/personal.` Documentation is synchronized. The
+`Pass — repository finalized on origin/personal; replacement personal-worktree
+Electron package built and verified; ticket worktree and branches cleaned.` The
 local package is unsigned, unnotarized, and not published; no release or
-deployment was performed. The running application was not stopped, so ticket
-worktree and branch cleanup are deferred. Residuals remain explicit: real
-Windows host behavior is not tested, the E2E renderer updater notice is
-non-blocking with no updater side effects, and three broad Nuxt failures are
-unrelated repository baseline.
+deployment was performed. Residuals remain explicit: real Windows host behavior
+is not tested, the E2E renderer updater notice is non-blocking with no updater
+side effects, and three broad Nuxt failures are unrelated repository baseline.

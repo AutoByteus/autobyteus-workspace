@@ -9,6 +9,7 @@
 | `DR-003` | User asked whether the root README exposes the Electron setup for future API/E2E engineers | `DR-002 — Pass / awaiting verification` | `Pass — root-workspace Electron test discovery and setup synchronized; finalization held` | `README.md`, `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/dr-003-root-readme-checks.log` |
 | `DR-004` | Explicit user completion/finalization authorization after a healthy read-only running-app/server-log observation | `DR-003 — Pass / awaiting verification` | `Pass — verification accepted, final base unchanged, ticket archived, repository finalization authorized` | `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/final-base-refresh.txt`, `delivery-evidence/user-verification-and-final-health.txt` |
 | `DR-005` | Completed ticket-branch push and target-branch merge/push | `DR-004 — Pass / finalization authorized` | `Pass — repository finalized to origin/personal; no release; running-app cleanup deferred` | `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/repository-finalization.txt` |
+| `DR-006` | User requested latest-personal replacement build followed by full ticket-worktree cleanup | `DR-005 — Pass / cleanup deferred` | `Pass — replacement package verified in main personal worktree; old app closed gracefully; worktree and branches cleaned` | `electron-test-build-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/dr-006-*` |
 
 ## Revision Entries
 
@@ -199,3 +200,33 @@
   `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/electron-e2e-runtime-isolation/delivery-evidence/repository-finalization.txt`.
 - Remaining residuals: DR-001 bounded Windows/updater/broad-Nuxt residuals are
   unchanged and remain explicit rather than inferred passes.
+
+### DR-006 — Main-personal replacement build and full cleanup
+
+- Delivery round and trigger: The user requested that the main `personal`
+  worktree be made current, Electron be rebuilt there for subsequent manual use,
+  and the completed ticket worktree be cleaned.
+- Prior authoritative result: `DR-005 — repository finalized to
+  origin/personal; ticket cleanup deferred to preserve the running app.`
+- Current authoritative result: `Pass — personal matched origin/personal at
+  build start, a host-native personal macOS arm64 package built with exit 0,
+  DMG verification passed, and the main executable hash exactly matched the
+  reviewed candidate.`
+- Replacement artifacts: DMG, ZIP, and unpacked `AutoByteus.app` now reside
+  under
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/`.
+- Shutdown result: After replacement verification, bundle-aware AppleScript
+  quit gracefully ended old Electron PID `57441` and embedded backend PID
+  `58045`; port `29695` became free. No second production instance was launched.
+- Cleanup result: Git removed the worktree registration but initially left
+  ignored/generated residue. Exact-path cleanup removed that residue and a
+  Finder-created `.DS_Store` race. The worktree path/registration and both the
+  local and remote `codex/electron-e2e-runtime-isolation` branches are absent.
+- Release/deployment result: `Not required / not performed`.
+- Evidence: `delivery-evidence/dr-006-personal-build.log`,
+  `delivery-evidence/dr-006-personal-artifact-verification.log`, and
+  `delivery-evidence/dr-006-old-app-shutdown-and-cleanup.log`.
+- Remaining residuals: DR-001 bounded Windows/updater/broad-Nuxt residuals
+  remain unchanged. The replacement build was integrity-verified but not
+  separately launched by delivery; its executable hash matches the already
+  reviewed and executed candidate.

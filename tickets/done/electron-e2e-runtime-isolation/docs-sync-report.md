@@ -10,7 +10,7 @@
 - Integrated base reference used for docs sync: `origin/personal` at
   `1b2e9b94d1de3b7f38aa2803082e0166a469a978`, refreshed on 2026-08-20.
 - Post-integration verification reference:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/tickets/done/electron-e2e-runtime-isolation/delivery-evidence/initial-base-refresh.txt`.
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/electron-e2e-runtime-isolation/delivery-evidence/initial-base-refresh.txt`.
   The ticket branch is 3 commits ahead and 0 behind; no base commit was
   integrated, so an executable rerun was not required.
 
@@ -35,11 +35,11 @@
 
 | Doc Path | Why It Was Reviewed | Result (`Updated`/`No change`/`Needs follow-up`) | Notes |
 | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/README.md` | Root-workspace setup and test discoverability for contributors and API/E2E engineers. | `Updated` | Adds the default build-and-launch commands, exact-artifact reuse and durable-probe examples, thin-CLI argument rule, inherited `ELECTRON_RUN_AS_NODE` caveat, and links to the authoritative frontend/package guidance. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/README.md` | Contributor build/test commands, internal-server defaults, and packaged Electron usage. | `Updated` | Adds production-versus-E2E endpoint/path guidance, thin direct/Playwright commands, the durable isolation-probe command, caller-environment preservation, and cleanup rules. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/docs/electron_packaging.md` | Canonical Electron packaging, runtime, state-path, updater, and lifecycle documentation. | `Updated` | Replaces unconditional fixed-port/path guidance with the final launch-profile contract and documents exact profile inputs and ownership boundaries. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/docs/github-actions-tag-build.md` | Release artifact naming and platform packaging. | `No change` | Current release workflow and flavor-aware artifact names already match `build/scripts/build.ts`; E2E adds no alternate product, app ID, artifact name, or release channel. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/ARCHITECTURE.md` | High-level Electron/browser ownership and test strategy. | `No change` | The durable implementation detail belongs in the Electron packaging chapter and README command guide; no high-level subsystem boundary changed beyond that documented chapter. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/README.md` | Root-workspace setup and test discoverability for contributors and API/E2E engineers. | `Updated` | Adds the default build-and-launch commands, exact-artifact reuse and durable-probe examples, thin-CLI argument rule, inherited `ELECTRON_RUN_AS_NODE` caveat, and links to the authoritative frontend/package guidance. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/README.md` | Contributor build/test commands, internal-server defaults, and packaged Electron usage. | `Updated` | Adds production-versus-E2E endpoint/path guidance, thin direct/Playwright commands, the durable isolation-probe command, caller-environment preservation, and cleanup rules. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/electron_packaging.md` | Canonical Electron packaging, runtime, state-path, updater, and lifecycle documentation. | `Updated` | Replaces unconditional fixed-port/path guidance with the final launch-profile contract and documents exact profile inputs and ownership boundaries. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/github-actions-tag-build.md` | Release artifact naming and platform packaging. | `No change` | Current release workflow and flavor-aware artifact names already match `build/scripts/build.ts`; E2E adds no alternate product, app ID, artifact name, or release channel. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/ARCHITECTURE.md` | High-level Electron/browser ownership and test strategy. | `No change` | The durable implementation detail belongs in the Electron packaging chapter and README command guide; no high-level subsystem boundary changed beyond that documented chapter. |
 
 ## Docs Updated
 
@@ -76,10 +76,10 @@ the three affected project docs were updated.
 ## Delivery Continuation
 
 - Result: `Pass`
-- Next delivery action: Explicit user verification was received after this docs
-  sync. The ticket is now archived under `tickets/done`; finalize the repository
-  without release/deployment, while retaining the ticket worktree until the
-  user closes the running delivery-built application.
+- Next delivery action: Completed. Repository finalization occurred without
+  release/deployment. A replacement Electron package was subsequently built in
+  the main personal worktree, the old application exited gracefully, and the
+  ticket worktree plus branches were cleaned under `DR-006`.
 - Notes: Documentation preserves the bounded real-Windows and E2E updater-notice
   residuals; neither is converted into an inferred pass.
 

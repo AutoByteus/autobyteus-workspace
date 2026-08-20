@@ -135,3 +135,44 @@ provisioning.
 
 `Pass — personal-flavor macOS arm64 Electron artifacts are ready for user
 testing; explicit user verification and repository finalization remain pending.`
+
+## DR-006 — Current Main-Personal Replacement Build
+
+After repository finalization, the user asked for the main personal worktree to
+be synchronized, rebuilt, and retained as the runnable source before deleting
+the ticket worktree.
+
+- Source worktree:
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
+- Source branch/commit: `personal` at
+  `42e38d42f11350aaaea52995dee3c704a8439297`, equal to `origin/personal` at
+  build start.
+- Command:
+  `AUTOBYTEUS_BUILD_FLAVOR=personal NO_TIMESTAMP=1 APPLE_TEAM_ID= pnpm build:electron:mac`
+- Result: `Pass`, exit 0.
+- Current DMG:
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.dmg`
+  — SHA-256
+  `e1757b3b2331d146e13245bf00d4007915c20f29906141fb9290f157770bc1e6`.
+- Current ZIP:
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.zip`
+  — SHA-256
+  `87de1775ef27c9686017b510c8b8f90fb808665e36ae4024275f8d77889ad4bd`.
+- Current app:
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`.
+- Main executable SHA-256:
+  `c0bf182389ea930585e3b0bf5c4f16529461e02bf3be751cb364d0e25f2257e0`,
+  identical to the reviewed/API-E2E candidate.
+- Verification: `hdiutil verify` Pass; bundle ID `com.autobyteus.app`, version
+  `1.4.52`, and architecture `arm64`.
+- Launch decision: Delivery did not launch a second production instance. The
+  old app was closed only after this replacement passed; the user can now run
+  the app from the current main-worktree path above.
+- Cleanup: The old ticket worktree, its registration, and its local and remote
+  branches were removed.
+- Evidence: `delivery-evidence/dr-006-personal-build.log`,
+  `delivery-evidence/dr-006-personal-artifact-verification.log`, and
+  `delivery-evidence/dr-006-old-app-shutdown-and-cleanup.log`.
+
+Current status: `Pass — replacement package ready in the main personal
+worktree; ticket worktree/branch cleanup completed; no release performed.`

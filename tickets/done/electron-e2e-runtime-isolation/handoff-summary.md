@@ -4,9 +4,9 @@
 
 - Ticket: `electron-e2e-runtime-isolation`
 - Date: `2026-08-20`
-- Current Status: `Repository finalized to origin/personal; no release performed; running-app cleanup deferred`
-- Current delivery revision: `DR-005`
-- Ticket branch: `codex/electron-e2e-runtime-isolation`
+- Current Status: `Repository finalized; replacement personal build ready; ticket worktree and branches cleaned`
+- Current delivery revision: `DR-006`
+- Ticket branch: `codex/electron-e2e-runtime-isolation` (`deleted after merge`)
 - Finalization target: `origin/personal`
 
 ## Delivered Scope
@@ -46,17 +46,17 @@
 - Post-integration executable rerun: Not required because no new base commit was
   integrated. Upstream exact-artifact/API/E2E evidence remains authoritative.
 - Integration evidence:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/tickets/done/electron-e2e-runtime-isolation/delivery-evidence/initial-base-refresh.txt`.
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/electron-e2e-runtime-isolation/delivery-evidence/initial-base-refresh.txt`.
 
 ## Documentation Sync
 
 - Result: `Pass / Updated`.
 - Report:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/tickets/done/electron-e2e-runtime-isolation/docs-sync-report.md`.
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/electron-e2e-runtime-isolation/docs-sync-report.md`.
 - Updated:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/README.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/README.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/docs/electron_packaging.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/README.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/README.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/electron_packaging.md`
 - The root README now gives future API/E2E engineers a concise setup and
   command entry point into the detailed frontend guidance. Durable docs replace
   unconditional fixed-port/path guidance with the production-versus-E2E
@@ -66,20 +66,23 @@
 ## Local Electron Test Package
 
 - Build report:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/tickets/done/electron-e2e-runtime-isolation/electron-test-build-report.md`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/electron-e2e-runtime-isolation/electron-test-build-report.md`
 - Build result: `Pass` using the README-supported host-native macOS command with
   `AUTOBYTEUS_BUILD_FLAVOR=personal` and local no-signing/no-timestamp settings.
 - Recommended DMG:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.dmg`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.dmg`
 - DMG SHA-256:
-  `f682d4599913b1242aed599a9ad300fc189e2725fcc79467732fee46ec290f87`
+  `e1757b3b2331d146e13245bf00d4007915c20f29906141fb9290f157770bc1e6`
 - ZIP:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.zip`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.zip`
 - ZIP SHA-256:
-  `4fc6633ae23fd0b92197be7a520cac9264399d756b3527c493669d1517a79a74`
+  `87de1775ef27c9686017b510c8b8f90fb808665e36ae4024275f8d77889ad4bd`
 - `hdiutil verify`: Pass.
-- Newly built exact-artifact isolated launch: Pass on selected port `60984`;
-  owned process/root cleanup passed and the ordinary `29695` listener remained.
+- Replacement source: Latest synchronized `personal` commit
+  `42e38d42f11350aaaea52995dee3c704a8439297` before the DR-006 documentation
+  record. Its executable SHA-256 is identical to the reviewed/tested candidate.
+- Replacement launch: Left for the user's manual run; delivery did not launch a
+  second production instance while the old worktree app owned port `29695`.
 - Signing: Local unsigned/ad-hoc and unnotarized test package; macOS may require
   right-click **Open** confirmation.
 
@@ -91,7 +94,7 @@
 - API/E2E: `API-REV-001` Pass at `96.7%` final confidence.
 - Durable test-code review: `CRR-004` Pass, no findings.
 - Exact packaged artifact:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus`,
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus`,
   SHA-256
   `c0bf182389ea930585e3b0bf5c4f16529461e02bf3be751cb364d0e25f2257e0`.
 - Packaged scenarios `E2E-PKG-001..005`: Pass against that exact artifact.
@@ -119,7 +122,7 @@
   crash pattern matches, and both processes remained present. No process was
   stopped and no second E2E instance was launched.
 - Evidence:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/tickets/done/electron-e2e-runtime-isolation/delivery-evidence/user-verification-and-final-health.txt`.
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/electron-e2e-runtime-isolation/delivery-evidence/user-verification-and-final-health.txt`.
 - Final tracked-base refresh: `origin/personal` remained at
   `1b2e9b94d1de3b7f38aa2803082e0166a469a978`; no new integration or renewed
   user verification was required. Evidence: `delivery-evidence/final-base-refresh.txt`.
@@ -144,7 +147,7 @@
 
 - Explicit user completion/verification received: `Yes`.
 - Ticket archived at:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/tickets/done/electron-e2e-runtime-isolation`.
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/electron-e2e-runtime-isolation`.
 - Finalization scope: Commit and push the ticket branch, merge it into
   `origin/personal`, and push `personal`; no release, publication, tag, version
   bump, or deployment.
@@ -153,33 +156,41 @@
   `origin/codex/electron-e2e-runtime-isolation`; merge commit
   `f1f3da12b698341954b4def4606647ba44df4c16` was pushed to
   `origin/personal`.
-- Running-app constraint: Do not stop PID `57441` or remove its ticket worktree
-  while it is executing from the ignored `electron-dist` artifact there.
-- Cleanup result: Worktree/local/remote ticket-branch cleanup is intentionally
-  deferred until the user closes the running app. This does not block the
-  completed target-branch finalization.
+- Replacement build: Completed and verified in the main `personal` worktree
+  before cleanup. The executable hash matches the reviewed candidate and the
+  DMG passed `hdiutil verify`.
+- Old application shutdown: User-requested cleanup authorized replacement of
+  the old worktree runtime. Bundle-aware AppleScript quit stopped Electron PID
+  `57441` and embedded backend PID `58045` gracefully; port `29695` became free.
+- Cleanup result: `Completed`. The ticket worktree path and registration were
+  removed, and both the local and remote ticket branches were deleted. The
+  initial Git removal left ignored/generated residue; exact-path cleanup removed
+  that residue and a Finder-created `.DS_Store` race without touching the main
+  worktree.
+- Current app location for manual use:
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`.
 
 ## Authoritative Artifacts
 
 - Requirements:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/tickets/done/electron-e2e-runtime-isolation/requirements.md`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/electron-e2e-runtime-isolation/requirements.md`
 - Investigation:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/tickets/done/electron-e2e-runtime-isolation/investigation-notes.md`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/electron-e2e-runtime-isolation/investigation-notes.md`
 - Design:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/tickets/done/electron-e2e-runtime-isolation/design-spec.md`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/electron-e2e-runtime-isolation/design-spec.md`
 - Architecture review:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/tickets/done/electron-e2e-runtime-isolation/design-review-report.md`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/electron-e2e-runtime-isolation/design-review-report.md`
 - Implementation handoff:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/tickets/done/electron-e2e-runtime-isolation/implementation-handoff.md`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/electron-e2e-runtime-isolation/implementation-handoff.md`
 - Source review:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/tickets/done/electron-e2e-runtime-isolation/code-review-report.md`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/electron-e2e-runtime-isolation/code-review-report.md`
 - Coverage investigation:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/tickets/done/electron-e2e-runtime-isolation/api-e2e-coverage-investigation.md`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/electron-e2e-runtime-isolation/api-e2e-coverage-investigation.md`
 - API/E2E execution:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/tickets/done/electron-e2e-runtime-isolation/api-e2e-execution-coverage-report.md`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/electron-e2e-runtime-isolation/api-e2e-execution-coverage-report.md`
 - Proportional test review:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/tickets/done/electron-e2e-runtime-isolation/api-e2e-test-review-report.md`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/electron-e2e-runtime-isolation/api-e2e-test-review-report.md`
 - Delivery report:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/tickets/done/electron-e2e-runtime-isolation/release-deployment-report.md`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/electron-e2e-runtime-isolation/release-deployment-report.md`
 - Delivery revision record:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-e2e-runtime-isolation/tickets/done/electron-e2e-runtime-isolation/delivery-revision-record.md`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/electron-e2e-runtime-isolation/delivery-revision-record.md`
