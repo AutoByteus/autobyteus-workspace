@@ -1,0 +1,746 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AutoByteus Task Timeline Prototype</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --border: #e2e8f0;
+      --border-soft: #eef2f7;
+      --ink: #172033;
+      --muted: #687386;
+      --muted-2: #8d97a8;
+      --blue: #2563eb;
+      --blue-soft: #eff6ff;
+      --blue-line: #93c5fd;
+      --green: #16835b;
+      --green-soft: #ecfdf5;
+      --amber: #a76008;
+      --amber-soft: #fff8e8;
+      --red: #b33939;
+      --red-soft: #fff1f2;
+      --sidebar-width: 720px;
+      --task-nav-width: 248px;
+      font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body { height: 100%; }
+
+    body {
+      margin: 0;
+      min-width: 980px;
+      background: #dfe3e8;
+      color: var(--ink);
+      overflow: hidden;
+    }
+
+    button { font: inherit; }
+
+    button:focus-visible {
+      outline: 2px solid #4f7cff;
+      outline-offset: -2px;
+    }
+
+    .app-window {
+      height: 100vh;
+      background: white;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .titlebar {
+      height: 42px;
+      flex: 0 0 42px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid #d8dde5;
+      padding: 0 13px;
+      font-size: 15px;
+      font-weight: 700;
+      color: #4b5360;
+      box-shadow: 0 1px 6px rgb(15 23 42 / 8%);
+      z-index: 4;
+    }
+
+    .traffic { display: flex; gap: 10px; margin-right: 8px; }
+    .traffic i { width: 18px; height: 18px; border-radius: 50%; display: block; }
+    .traffic i:nth-child(1) { background: #ff5f57; }
+    .traffic i:nth-child(2) { background: #ffbd2e; }
+    .traffic i:nth-child(3) { background: #28c840; }
+
+    .shell { min-height: 0; flex: 1; display: flex; }
+
+    .workspace-nav {
+      width: 292px;
+      flex: 0 0 292px;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid #ccd3dd;
+      color: #515967;
+      background: #fff;
+    }
+
+    .global-links { padding: 18px 14px 11px; border-bottom: 1px solid #dfe4ea; }
+    .global-link {
+      height: 40px;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 0 10px;
+      border-radius: 7px;
+      font-size: 14px;
+      font-weight: 650;
+    }
+    .global-link svg { width: 17px; height: 17px; stroke: #5e6673; }
+
+    .workspaces { min-height: 0; flex: 1; padding: 14px 10px; overflow: hidden; }
+    .workspaces-title { display: flex; justify-content: space-between; font-size: 14px; font-weight: 750; margin: 0 2px 14px; }
+    .section-label { padding: 0 10px 8px; color: #9aa2ae; font-size: 10px; font-weight: 800; letter-spacing: .08em; }
+    .tree-row { height: 36px; display: flex; align-items: center; gap: 8px; padding: 0 8px; border-radius: 7px; font-size: 13px; white-space: nowrap; }
+    .tree-row.selected { background: #eef2ff; color: #3047a3; }
+    .tree-row.indent { margin-left: 19px; }
+    .tree-row.indent-2 { margin-left: 37px; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: #94a3b8; flex: 0 0 auto; }
+    .dot.blue { background: #3b82f6; }
+    .dot.green { background: #22c55e; }
+    .avatar { width: 23px; height: 23px; border-radius: 50%; background: #e5e7eb; color: #6b7280; display: grid; place-items: center; font-size: 10px; font-weight: 700; }
+    .tree-label { overflow: hidden; text-overflow: ellipsis; }
+    .tree-time { margin-left: auto; color: #9aa2ae; font-size: 11px; }
+    .settings { height: 50px; display: flex; align-items: center; gap: 10px; padding: 0 20px; border-top: 1px solid #dfe4ea; font-size: 14px; font-weight: 650; }
+
+    .conversation {
+      min-width: 260px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid #d6dce5;
+      background: #fff;
+    }
+
+    .conversation-header {
+      height: 61px;
+      flex: 0 0 61px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 18px;
+      border-bottom: 1px solid #dfe4ea;
+    }
+    .agent-avatar { width: 38px; height: 38px; border-radius: 10px; background: #f0f4f8; display: grid; place-items: center; color: #526174; font-weight: 700; }
+    .agent-name { font-size: 16px; font-weight: 750; }
+    .offline { display: flex; align-items: center; gap: 8px; color: #747b85; font-size: 14px; font-weight: 600; }
+    .offline::before { content: ""; width: 12px; height: 12px; border-radius: 50%; background: #9ca3af; }
+    .conversation-space { flex: 1; }
+    .composer {
+      height: 126px;
+      margin: 0 16px 16px;
+      border: 1.5px solid #8db6ff;
+      border-radius: 12px;
+      box-shadow: 0 0 0 3px rgb(59 130 246 / 10%);
+      color: #989faa;
+    }
+    .composer-top { height: 45px; display: flex; align-items: center; padding: 0 15px; border-bottom: 1px solid #e5e7eb; font-size: 12px; }
+    .composer-body { padding: 18px 15px; font-size: 15px; }
+
+    .team-panel {
+      width: var(--sidebar-width);
+      flex: 0 0 var(--sidebar-width);
+      min-width: 540px;
+      display: flex;
+      flex-direction: column;
+      background: #fff;
+      overflow: hidden;
+    }
+
+    .panel-tabs {
+      height: 61px;
+      flex: 0 0 61px;
+      display: flex;
+      align-items: stretch;
+      border-bottom: 1px solid #dfe4ea;
+      padding-left: 12px;
+    }
+    .panel-tab {
+      position: relative;
+      border: 0;
+      background: transparent;
+      padding: 0 18px;
+      color: #646b75;
+      font-weight: 700;
+      font-size: 15px;
+    }
+    .panel-tab.active { color: #2f5fe7; }
+    .panel-tab.active::after { content: ""; height: 2px; background: #3d6ef0; position: absolute; left: 9px; right: 9px; bottom: 0; border-radius: 2px 2px 0 0; }
+
+    .accordion-header {
+      height: 43px;
+      flex: 0 0 43px;
+      width: 100%;
+      border: 0;
+      border-bottom: 1px solid var(--border);
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 13px;
+      color: #222936;
+      cursor: default;
+    }
+    .accordion-title { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 800; letter-spacing: .04em; }
+    .chevron { width: 15px; height: 15px; color: #778190; }
+    .chevron.closed { transform: rotate(-90deg); }
+    .count { color: #6b7280; font-size: 12px; font-weight: 600; }
+
+    .tasks-section { min-height: 0; flex: 1; display: flex; flex-direction: column; }
+    .tasks-section.collapsed { flex: 0 0 auto; }
+    .tasks-split { min-height: 0; flex: 1; display: flex; overflow: hidden; }
+
+    .task-navigator {
+      width: var(--task-nav-width);
+      flex: 0 0 var(--task-nav-width);
+      min-width: 168px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      background: #fff;
+      scrollbar-width: thin;
+    }
+
+    .resize-handle {
+      width: 4px;
+      flex: 0 0 4px;
+      cursor: col-resize;
+      background: #f1f5f9;
+      border-left: 1px solid #e5eaf0;
+      border-right: 1px solid #e5eaf0;
+    }
+    .resize-handle:hover, .resize-handle.dragging { background: #bfdbfe; }
+
+    .task-group { border-left: 2px solid transparent; border-bottom: 1px solid var(--border-soft); }
+    .task-group.active { border-left-color: var(--blue); background: linear-gradient(90deg, #f4f8ff 0, #fff 86%); }
+
+    .task-root {
+      width: 100%;
+      border: 0;
+      background: transparent;
+      padding: 12px 12px 9px 11px;
+      text-align: left;
+      cursor: pointer;
+    }
+    .task-root:hover { background: #f8fafc; }
+    .task-heading { display: flex; align-items: flex-start; }
+    .task-copy { min-width: 0; flex: 1; }
+    .task-title { color: #293244; font-size: 14px; font-weight: 650; line-height: 20px; }
+    .task-meta { margin-top: 7px; display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+    .task-direction { display: block; margin-top: 6px; overflow: hidden; color: #7a8494; font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      border-radius: 999px;
+      padding: 3px 7px;
+      font-size: 10px;
+      font-weight: 750;
+      line-height: 1;
+      border: 1px solid transparent;
+    }
+    .status.accepted { color: var(--green); background: var(--green-soft); border-color: #bbf7d0; }
+    .status.review { color: var(--amber); background: var(--amber-soft); border-color: #fde2a7; }
+    .status.revision { color: #9a4b16; background: #fff7ed; border-color: #fed7aa; }
+    .status.progress { color: #2455c4; background: #eff6ff; border-color: #bfdbfe; }
+    .status-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+    .task-time { color: #98a1af; font-size: 10px; }
+
+    .timeline { position: relative; padding: 0 8px 10px 27px; }
+    .timeline::before { content: ""; position: absolute; top: 4px; bottom: 18px; left: 17px; width: 1px; background: #d9e0e8; }
+
+    .timeline-item { position: relative; }
+    .timeline-node {
+      position: absolute;
+      z-index: 1;
+      left: -16px;
+      top: 13px;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #fff;
+      border: 2px solid #aab4c2;
+    }
+    .timeline-item[data-kind="revision"] .timeline-node { border-color: #e29a42; }
+    .timeline-item[data-kind="accepted"] .timeline-node { border-color: #2da26f; background: #2da26f; }
+    .timeline-item[data-kind="submission"] .timeline-node { border-color: #6489e8; }
+
+    .event-row {
+      width: 100%;
+      border: 0;
+      border-radius: 7px;
+      background: transparent;
+      padding: 8px 8px;
+      text-align: left;
+      cursor: pointer;
+      color: #455064;
+    }
+    .event-row:hover { background: #f5f7fa; }
+    .event-row.selected { background: #eaf2ff; box-shadow: inset 0 0 0 1px #c8dcff; }
+    .event-top { display: flex; align-items: flex-start; gap: 6px; min-width: 0; }
+    .event-icon { width: 14px; height: 14px; flex: 0 0 14px; color: #6b82b4; }
+    .timeline-item[data-kind="revision"] .event-icon { color: #b76819; }
+    .timeline-item[data-kind="accepted"] .event-icon { color: #15805a; }
+    .event-main { min-width: 0; flex: 1; }
+    .event-heading { display: flex; align-items: baseline; gap: 5px; min-width: 0; }
+    .event-label { min-width: 0; flex: 1; color: #374151; font-size: 11px; font-weight: 740; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .event-time { flex: 0 0 auto; color: #98a1af; font-size: 9px; }
+    .event-direction { margin-top: 3px; color: #8a94a3; font-size: 9.5px; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .event-preview { margin-top: 3px; color: #6f7a8c; font-size: 10.5px; line-height: 1.35; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    .references { padding: 0 8px 4px 19px; display: grid; gap: 2px; }
+    .root-references { padding: 0 12px 8px 34px; }
+    .reference-row {
+      width: 100%;
+      height: 28px;
+      border: 0;
+      border-radius: 5px;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 0 7px;
+      text-align: left;
+      color: #687386;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    .reference-row:hover { background: #f8fafc; }
+    .reference-row.selected { color: #1d58bd; background: #fff; box-shadow: 0 1px 4px rgb(15 23 42 / 10%), inset 0 0 0 1px #dbeafe; }
+    .file-icon { width: 13px; height: 13px; flex: 0 0 13px; color: currentColor; }
+    .reference-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    .task-detail { min-width: 0; flex: 1; overflow-y: auto; background: #fff; }
+    .detail-inner { min-height: 100%; padding: 16px 16px 36px; }
+    .detail-title-row { display: flex; align-items: center; gap: 8px; }
+    .detail-title-row svg { width: 18px; height: 18px; flex: 0 0 18px; color: #64748b; }
+    .detail-title { margin: 0; color: #1e293b; font-size: 18px; line-height: 1.3; font-weight: 720; letter-spacing: -.015em; }
+    .detail-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding-bottom: 19px; border-bottom: 1px solid var(--border-soft); color: #7a8493; font-size: 11px; }
+    .meta-separator { width: 3px; height: 3px; border-radius: 50%; background: #c3c9d2; }
+    .direction { color: #566274; font-weight: 620; }
+    .detail-body { color: #3e4a5e; font-size: 15px; line-height: 24px; padding-top: 18px; }
+    .detail-body p { margin: 0 0 13px; }
+    .detail-body h3 { margin: 22px 0 8px; color: #273247; font-size: 13px; }
+    .detail-body ul { margin: 8px 0 15px; padding-left: 20px; }
+    .detail-body li { margin: 5px 0; }
+    .detail-body code { border: 1px solid #e5e7eb; border-radius: 4px; padding: 1px 4px; background: #f8fafc; color: #3f4d63; font-size: 11px; }
+    .file-viewer { min-height: 100%; display: flex; flex-direction: column; background: #fff; }
+    .file-viewer.maximized { position: fixed; inset: 0; z-index: 120; height: 100vh; min-height: 100vh; box-shadow: 0 10px 35px rgb(15 23 42 / 20%); }
+    .file-header { min-height: 45px; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 12px; border-bottom: 1px solid #f1f5f9; background: #fff; }
+    .file-identity { min-width: 0; flex: 1; }
+    .file-title { overflow: hidden; color: #1f2937; font-size: 12px; font-weight: 650; text-overflow: ellipsis; white-space: nowrap; }
+    .file-path { margin-top: 2px; overflow: hidden; color: #6b7280; font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
+    .viewer-actions { margin-left: 8px; display: flex; align-items: center; gap: 4px; }
+    .viewer-action-group { display: flex; align-items: center; gap: 4px; border-left: 1px solid #e5e7eb; padding-left: 8px; }
+    .viewer-icon-button { width: 28px; height: 28px; border: 0; border-radius: 6px; background: transparent; display: grid; place-items: center; color: #9ca3af; cursor: pointer; transition: background .16s ease, color .16s ease; }
+    .viewer-icon-button:hover { background: #f3f4f6; color: #374151; }
+    .viewer-icon-button.active { background: #eff6ff; color: #2563eb; }
+    .viewer-icon-button.maximize:hover { background: #eff6ff; color: #2563eb; }
+    .viewer-icon-button svg { width: 16px; height: 16px; }
+    .file-content { flex: 1; padding: 24px 25px; color: #3e4a5e; font-size: 12px; line-height: 1.65; overflow: auto; }
+    .file-content h1 { margin: 0 0 18px; color: #243046; font-size: 19px; }
+    .file-content h2 { margin: 21px 0 9px; color: #2e3a50; font-size: 14px; }
+    .file-content h3 { margin: 18px 0 8px; color: #334155; font-size: 12px; }
+    .file-content p { margin: 0 0 12px; }
+    .file-content ul, .file-content ol { margin: 8px 0 14px; padding-left: 22px; }
+    .file-content li { margin: 4px 0; }
+    .file-content code { border-radius: 4px; background: #f1f5f9; padding: 1px 4px; font: 10px ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .file-content pre { margin: 0; white-space: pre-wrap; font: 11px/1.65 ui-monospace, SFMono-Regular, Menlo, monospace; color: #334155; }
+
+    .empty-detail { height: 100%; display: grid; place-items: center; padding: 30px; color: #9aa3b0; text-align: center; font-size: 12px; }
+    .hidden { display: none !important; }
+
+    @media (max-width: 1250px) {
+      .workspace-nav { width: 230px; flex-basis: 230px; }
+      .team-panel { width: 650px; flex-basis: 650px; }
+    }
+
+    @media (max-width: 1080px) {
+      .workspace-nav { display: none; }
+      .team-panel { width: 690px; flex-basis: 690px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-window">
+    <header class="titlebar">
+      <span class="traffic" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span>autobyteus</span>
+    </header>
+
+    <div class="shell">
+      <aside class="workspace-nav" aria-label="Workspace navigation">
+        <div class="global-links">
+          <div class="global-link"><span>♧</span> Agents</div>
+          <div class="global-link"><span>♧</span> Agent Teams</div>
+          <div class="global-link"><span>▦</span> Applications</div>
+          <div class="global-link"><span>✧</span> Skills</div>
+          <div class="global-link"><span>◉</span> Memory</div>
+          <div class="global-link"><span>⌘</span> Nodes</div>
+        </div>
+        <div class="workspaces">
+          <div class="workspaces-title"><span>Workspaces</span><span>＋</span></div>
+          <div class="section-label">TEAMS</div>
+          <div class="tree-row"><span>⌄</span><span class="dot blue"></span><span class="avatar">SE</span><strong class="tree-label">Software Engineering Team</strong></div>
+          <div class="tree-row indent"><span>⌄</span><span class="dot blue"></span><strong class="tree-label">Task UI discussion</strong><span class="tree-time">now</span></div>
+          <div class="tree-row indent-2 selected"><span class="dot"></span><span class="avatar">S</span><span class="tree-label">solution_designer</span><span class="tree-time">now</span></div>
+          <div class="tree-row indent-2"><span class="dot"></span><span class="avatar">A</span><span class="tree-label">architecture_reviewer</span><span class="tree-time">now</span></div>
+          <div class="tree-row indent-2"><span class="dot green"></span><span class="avatar">I</span><span class="tree-label">implementation_engineer</span><span class="tree-time">now</span></div>
+          <div class="tree-row indent-2"><span class="dot"></span><span class="avatar">C</span><span class="tree-label">code_reviewer</span><span class="tree-time">now</span></div>
+        </div>
+        <div class="settings">⚙ <span>Settings</span></div>
+      </aside>
+
+      <main class="conversation" aria-label="Agent conversation">
+        <div class="conversation-header">
+          <span class="agent-avatar">S</span>
+          <span class="agent-name">solution_designer</span>
+          <span class="offline">Offline</span>
+        </div>
+        <div class="conversation-space"></div>
+        <div class="composer" aria-hidden="true">
+          <div class="composer-top"><strong style="color:#4b5563">Context Files (0)</strong>&nbsp; (drag, paste, or upload)</div>
+          <div class="composer-body">Type a message…</div>
+        </div>
+      </main>
+
+      <aside class="team-panel" aria-label="Team panel">
+        <nav class="panel-tabs" aria-label="Workspace tools">
+          <button class="panel-tab">Files</button>
+          <button class="panel-tab active" aria-current="page">Team</button>
+          <button class="panel-tab">Terminal</button>
+          <button class="panel-tab">Activity</button>
+        </nav>
+
+        <button class="accordion-header" type="button" aria-expanded="false">
+          <span class="accordion-title">
+            <svg class="chevron closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+            Messages
+          </span>
+          <span class="count">3 Messages</span>
+        </button>
+
+        <section class="tasks-section" id="tasksSection" aria-label="Delegated tasks">
+          <button class="accordion-header" id="tasksHeader" type="button" aria-expanded="true">
+            <span class="accordion-title">
+              <svg class="chevron" id="tasksChevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+              Tasks
+            </span>
+            <span class="count">2 tasks</span>
+          </button>
+
+          <div class="tasks-split" id="tasksSplit">
+            <aside class="task-navigator" id="taskNavigator" aria-label="Task timelines"></aside>
+            <div class="resize-handle" id="resizeHandle" role="separator" aria-label="Resize task timeline" aria-orientation="vertical"></div>
+            <main class="task-detail" id="taskDetail" aria-live="polite"></main>
+          </div>
+        </section>
+      </aside>
+    </div>
+  </div>
+
+  <script>
+    const icon = (name, className = '') => {
+      const paths = {
+        file: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/>',
+        task: '<rect width="16" height="18" x="4" y="3" rx="2"/><path d="M9 3V1h6v2M8 10h8M8 14h5"/>',
+        submit: '<path d="m7 17 10-10M7 7h10v10"/>',
+        revision: '<path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 6 6v4"/>',
+        accepted: '<path d="m5 12 4 4L19 6"/>',
+        interrupted: '<path d="M12 9v4M12 17h.01"/><path d="M10.3 3.7 2.6 17a2 2 0 0 0 1.7 3h15.4a2 2 0 0 0 1.7-3L13.7 3.7a2 2 0 0 0-3.4 0Z"/>',
+        edit: '<path d="m15.2 5.2 3.6 3.6M9 15l3.8-.8 6.7-6.7A2.5 2.5 0 0 0 16 4l-6.8 6.8L9 15Z"/><path d="M19 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h6"/>',
+        eye: '<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/>',
+        maximize: '<path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M8 21H5a2 2 0 0 1-2-2v-3M16 21h3a2 2 0 0 0 2-2v-3"/>',
+        restore: '<path d="M8 3v3a2 2 0 0 1-2 2H3M16 3v3a2 2 0 0 0 2 2h3M8 21v-3a2 2 0 0 0-2-2H3M16 21v-3a2 2 0 0 1 2-2h3"/>'
+      };
+      return `<svg class="${className}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths[name] || paths.task}</svg>`;
+    };
+
+    const tasks = [
+      {
+        id: 'task-ui',
+        title: 'Improve delegated task display',
+        status: 'Accepted',
+        statusClass: 'accepted',
+        time: '11:18',
+        root: {
+          id: 'task-ui-root', kind: 'task', label: 'Task assigned', detailLabel: 'Task assigned', time: '10:10',
+          direction: 'solution_designer → architecture_reviewer',
+          content: `<p>Analyze the current frontend task display and propose a clearer UI for delegated work.</p><p>Keep the existing task description and reference-file preview behavior. Add submitted results, review feedback, revision cycles, and the final accepted state in a way that is easy to follow.</p><h3>Important constraints</h3><ul><li>Do not change Messages.</li><li>Keep the complete task timeline on the left.</li><li>Use the right side only for the selected detail or file preview.</li><li>Remove Technical details entirely.</li></ul>`,
+          refs: [{ id: 'screenshot', name: 'current-task-layout.png', path: 'reference_files/current-task-layout.png', type: 'PNG image', content: 'Screenshot preview placeholder' }]
+        },
+        events: [
+          {
+            id: 'ui-submit-1', kind: 'submission', label: 'Result submitted · Result 1', detailLabel: 'Result submitted · Result 1', time: '10:28',
+            direction: 'architecture_reviewer → solution_designer', preview: 'Initial task timeline proposal is ready…',
+            content: `<p>I reviewed the current task components and prepared the first interaction proposal.</p><p>The task description remains the root row. Results and review feedback are added beneath it as selectable timeline items.</p><h3>Included</h3><ul><li>Left-side lifecycle timeline</li><li>Right-side selected detail</li><li>References owned by each task update</li></ul>`,
+            refs: [{ id: 'ui-spec-v1', name: 'ui-ux-spec-v1.md', path: 'tickets/in-progress/team-task-conversation-ui/ui-ux-spec-v1.md', type: 'Markdown', content: '# Task UI proposal\n\nThe task timeline stays in the left navigator.\n\n## Interaction\n- Select a result to read its full content on the right.\n- Select a file to preview it on the right.\n- The timeline never moves.' }]
+          },
+          {
+            id: 'ui-review-1', kind: 'revision', label: 'Revision requested · Result 1', detailLabel: 'Revision requested for Result 1', time: '10:42',
+            direction: 'solution_designer → architecture_reviewer', preview: 'Keep the complete timeline on the left…',
+            content: `<p>Please keep the complete task timeline in the <strong>left pane</strong>.</p><p>When a timeline item is selected, only its detailed content should appear on the right. The right pane must not become another timeline.</p>`,
+            refs: [{ id: 'ui-feedback', name: 'review-feedback.md', path: 'tickets/in-progress/team-task-conversation-ui/review-feedback.md', type: 'Markdown', content: '# Review feedback\n\nKeep the entire task timeline on the left.\n\nThe right pane is reserved for the selected item detail or reference-file preview.' }]
+          },
+          {
+            id: 'ui-submit-2', kind: 'submission', label: 'Revised result submitted · Result 2', detailLabel: 'Revised result submitted · Result 2', time: '11:06',
+            direction: 'architecture_reviewer → solution_designer', preview: 'Pane ownership is now explicit…',
+            content: `<p>The proposal now makes pane ownership explicit:</p><ul><li><strong>Left:</strong> the complete task timeline and all navigation.</li><li><strong>Right:</strong> one selected task, result, review, or reference preview.</li></ul><p>No technical metadata is shown.</p>`,
+            refs: [{ id: 'ui-spec-v2', name: 'ui-ux-spec.md', path: 'tickets/in-progress/team-task-conversation-ui/ui-ux-spec.md', type: 'Markdown', content: '# Revised UI/UX specification\n\n## Pane ownership\n- Left: complete persistent timeline.\n- Right: selected detail or file preview only.\n\n## Removed\n- Technical details\n- IDs\n- Routing JSON' }]
+          },
+          {
+            id: 'ui-accepted', kind: 'accepted', label: 'Result 2 accepted', detailLabel: 'Result 2 accepted', time: '11:18',
+            direction: 'solution_designer → architecture_reviewer', preview: 'Accepted — ready for the next stage.',
+            content: `<p>Result accepted.</p>`,
+            refs: []
+          }
+        ]
+      },
+      {
+        id: 'task-keyboard',
+        title: 'Add keyboard navigation coverage',
+        status: 'Awaiting review',
+        statusClass: 'review',
+        time: '13:20',
+        root: {
+          id: 'task-keyboard-root', kind: 'task', label: 'Task assigned', detailLabel: 'Task assigned', time: '12:45',
+          direction: 'solution_designer → api_e2e_engineer',
+          content: `<p>Check that every task, result, review, and reference row can be reached and activated from the keyboard.</p><p>Focus indication must remain visible, and status cannot rely on color alone.</p>`,
+          refs: [{ id: 'keyboard-req', name: 'accessibility-requirements.md', path: 'reference_files/accessibility-requirements.md', type: 'Markdown', content: '# Accessibility requirements\n\n- Every timeline item is keyboard reachable.\n- Enter and Space activate the selected row.\n- Focus is visible.\n- Status includes readable text.' }]
+        },
+        events: [
+          {
+            id: 'keyboard-submit', kind: 'submission', label: 'Result submitted · Result 1', detailLabel: 'Result submitted · Result 1', time: '13:20',
+            direction: 'api_e2e_engineer → solution_designer', preview: 'Keyboard scenarios and expected behavior…',
+            content: `<p>Keyboard coverage scenarios are prepared for the two-pane task interaction.</p><ul><li>Tab through task and lifecycle rows.</li><li>Open a reference and return to its owning row.</li><li>Verify that selection updates only the right pane.</li></ul>`,
+            refs: [{ id: 'keyboard-report', name: 'keyboard-scenarios.md', path: 'reference_files/keyboard-scenarios.md', type: 'Markdown', content: '# Keyboard scenarios\n\n1. Focus the task root.\n2. Activate a result row.\n3. Verify its detail on the right.\n4. Activate an owned reference.\n5. Return to the result row.' }]
+          }
+        ]
+      }
+    ];
+
+    let selection = { itemId: 'task-ui-root', refId: null };
+    let fileViewMode = 'preview';
+    let fileMaximized = false;
+
+    const allItems = () => tasks.flatMap(task => [{ task, item: task.root }, ...task.events.map(item => ({ task, item }))]);
+    const findItem = id => allItems().find(candidate => candidate.item.id === id);
+    const findRef = refId => {
+      for (const candidate of allItems()) {
+        const ref = (candidate.item.refs || []).find(file => file.id === refId);
+        if (ref) return { ...candidate, ref };
+      }
+      return null;
+    };
+
+    const statusMarkup = task => `<span class="status ${task.statusClass}"><span class="status-dot"></span>${task.status}</span><span class="task-time">Updated ${task.time}</span>`;
+
+    function renderReferences(task, item, root = false) {
+      if (!item.refs || !item.refs.length) return '';
+      return `<div class="references ${root ? 'root-references' : ''}">${item.refs.map(file => `
+        <button class="reference-row ${selection.refId === file.id ? 'selected' : ''}" type="button" data-ref-id="${file.id}" data-item-id="${item.id}" title="${file.path || file.name}" aria-label="Open reference ${file.name}">
+          ${icon('file', 'file-icon')}<span class="reference-name">${file.name}</span>
+        </button>`).join('')}</div>`;
+    }
+
+    function renderNavigator() {
+      const navigator = document.getElementById('taskNavigator');
+      navigator.innerHTML = tasks.map(task => {
+        const active = findItem(selection.itemId)?.task.id === task.id || findRef(selection.refId)?.task.id === task.id;
+        return `<article class="task-group ${active ? 'active' : ''}" data-task-id="${task.id}">
+          <button class="task-root" type="button" data-item-id="${task.root.id}" aria-current="${selection.itemId === task.root.id && !selection.refId ? 'true' : 'false'}" aria-label="Task: ${task.title}. Status: ${task.status}. Updated ${task.time}" title="${task.title}">
+            <span class="task-heading">
+              <span class="task-copy">
+                <span class="task-title">${task.title}</span>
+                <span class="task-meta">${statusMarkup(task)}</span>
+                <span class="task-direction">${task.root.direction}</span>
+              </span>
+            </span>
+          </button>
+          ${renderReferences(task, task.root, true)}
+          <div class="timeline">
+            ${task.events.map(item => `<div class="timeline-item" data-kind="${item.kind}">
+              <span class="timeline-node"></span>
+              <button class="event-row ${selection.itemId === item.id && !selection.refId ? 'selected' : ''}" type="button" data-item-id="${item.id}" aria-current="${selection.itemId === item.id && !selection.refId ? 'true' : 'false'}" aria-label="${item.label}. ${item.direction}. ${item.time}. ${item.preview}" title="${item.label} — ${item.preview}">
+                <span class="event-top">${icon(item.kind, 'event-icon')}<span class="event-main"><span class="event-heading"><span class="event-label">${item.label}</span><span class="event-time">${item.time}</span></span><span class="event-direction">${item.direction}</span><span class="event-preview">${item.preview}</span></span></span>
+              </button>
+              ${renderReferences(task, item)}
+            </div>`).join('')}
+          </div>
+        </article>`;
+      }).join('');
+
+      navigator.querySelectorAll('[data-item-id]:not([data-ref-id])').forEach(button => {
+        button.addEventListener('click', () => selectItem(button.dataset.itemId));
+      });
+      navigator.querySelectorAll('[data-ref-id]').forEach(button => {
+        button.addEventListener('click', event => {
+          event.stopPropagation();
+          selectReference(button.dataset.itemId, button.dataset.refId);
+        });
+      });
+    }
+
+    function renderDetail() {
+      const detail = document.getElementById('taskDetail');
+      if (selection.refId) {
+        const selected = findRef(selection.refId);
+        if (!selected) return;
+        const supportsPreview = selected.ref.type === 'Markdown';
+        detail.innerHTML = `<div class="file-viewer ${fileMaximized ? 'maximized' : ''}">
+          <header class="file-header">
+            <div class="file-identity">
+              <div class="file-title">${selected.ref.name}</div>
+              <div class="file-path">${selected.ref.path || selected.ref.name}</div>
+            </div>
+            <div class="viewer-actions">
+              ${supportsPreview ? `<div class="viewer-action-group">
+                <button class="viewer-icon-button ${fileViewMode === 'raw' ? 'active' : ''}" type="button" data-view-mode="raw" title="Raw" aria-label="Raw">${icon('edit')}</button>
+                <button class="viewer-icon-button ${fileViewMode === 'preview' ? 'active' : ''}" type="button" data-view-mode="preview" title="Preview" aria-label="Preview">${icon('eye')}</button>
+              </div>` : ''}
+              <div class="viewer-action-group">
+                <button class="viewer-icon-button maximize" type="button" data-maximize title="${fileMaximized ? 'Restore view' : 'Maximize view'}" aria-label="${fileMaximized ? 'Restore view' : 'Maximize view'}">${icon(fileMaximized ? 'restore' : 'maximize')}</button>
+              </div>
+            </div>
+          </header>
+          <div class="file-content">${selected.ref.type === 'PNG image'
+            ? `<div style="height:100%;min-height:360px;border:1px solid #e2e8f0;border-radius:10px;background:linear-gradient(135deg,#f8fafc,#eef2f7);display:grid;place-items:center;text-align:center;color:#94a3b8"><div>${icon('file', 'file-icon')}<p>Image preview</p><strong style="color:#64748b">${selected.ref.name}</strong></div></div>`
+            : fileViewMode === 'preview' ? `<div class="rendered-markdown">${renderMarkdown(selected.ref.content)}</div>` : `<pre>${escapeHtml(selected.ref.content)}</pre>`}
+          </div>
+        </div>`;
+        detail.querySelectorAll('[data-view-mode]').forEach(button => {
+          button.addEventListener('click', () => {
+            fileViewMode = button.dataset.viewMode;
+            renderDetail();
+          });
+        });
+        detail.querySelector('[data-maximize]')?.addEventListener('click', () => {
+          fileMaximized = !fileMaximized;
+          renderDetail();
+        });
+        return;
+      }
+
+      const selected = findItem(selection.itemId);
+      if (!selected) {
+        detail.innerHTML = '<div class="empty-detail">Select a task timeline item to view its details.</div>';
+        return;
+      }
+      const { task, item } = selected;
+      detail.innerHTML = `<article class="detail-inner">
+        <div class="detail-title-row">${icon(item.kind)}<h1 class="detail-title">${item.detailLabel || item.label}</h1></div>
+        <div class="detail-meta">
+          <span class="direction">${item.direction}</span><span class="meta-separator"></span><span>Aug 20, ${item.time}</span>
+          ${item.kind === 'task' ? `<span class="meta-separator"></span>${statusMarkup(task)}` : ''}
+        </div>
+        <div class="detail-body">${item.content}</div>
+      </article>`;
+    }
+
+    function escapeHtml(value) {
+      return value.replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[char]));
+    }
+
+    function renderMarkdown(value) {
+      const lines = value.split('\n');
+      let html = '';
+      let list = null;
+      const closeList = () => {
+        if (list) html += `</${list}>`;
+        list = null;
+      };
+      const inline = text => escapeHtml(text)
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/`(.+?)`/g, '<code>$1</code>');
+
+      for (const line of lines) {
+        const heading = line.match(/^(#{1,3})\s+(.+)$/);
+        const ordered = line.match(/^\d+\.\s+(.+)$/);
+        const unordered = line.match(/^[-*]\s+(.+)$/);
+        if (heading) {
+          closeList();
+          const level = heading[1].length;
+          html += `<h${level}>${inline(heading[2])}</h${level}>`;
+        } else if (ordered) {
+          if (list !== 'ol') { closeList(); list = 'ol'; html += '<ol>'; }
+          html += `<li>${inline(ordered[1])}</li>`;
+        } else if (unordered) {
+          if (list !== 'ul') { closeList(); list = 'ul'; html += '<ul>'; }
+          html += `<li>${inline(unordered[1])}</li>`;
+        } else if (!line.trim()) {
+          closeList();
+        } else {
+          closeList();
+          html += `<p>${inline(line)}</p>`;
+        }
+      }
+      closeList();
+      return html;
+    }
+
+    function selectItem(itemId) {
+      selection = { itemId, refId: null };
+      fileMaximized = false;
+      renderNavigator();
+      renderDetail();
+    }
+
+    function selectReference(itemId, refId) {
+      selection = { itemId, refId };
+      fileViewMode = findRef(refId)?.ref.type === 'Markdown' ? 'preview' : 'raw';
+      fileMaximized = false;
+      renderNavigator();
+      renderDetail();
+    }
+
+    const handle = document.getElementById('resizeHandle');
+    const split = document.getElementById('tasksSplit');
+    let dragging = false;
+    handle.addEventListener('pointerdown', event => {
+      dragging = true;
+      handle.classList.add('dragging');
+      handle.setPointerCapture(event.pointerId);
+    });
+    handle.addEventListener('pointermove', event => {
+      if (!dragging) return;
+      const rect = split.getBoundingClientRect();
+      const next = Math.max(168, Math.min(360, event.clientX - rect.left));
+      document.documentElement.style.setProperty('--task-nav-width', `${next}px`);
+    });
+    handle.addEventListener('pointerup', () => {
+      dragging = false;
+      handle.classList.remove('dragging');
+    });
+
+    window.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && fileMaximized) {
+        fileMaximized = false;
+        renderDetail();
+      }
+    });
+
+    let tasksCollapsed = false;
+    document.getElementById('tasksHeader').addEventListener('click', () => {
+      tasksCollapsed = !tasksCollapsed;
+      document.getElementById('tasksHeader').setAttribute('aria-expanded', String(!tasksCollapsed));
+      document.getElementById('tasksChevron').classList.toggle('closed', tasksCollapsed);
+      document.getElementById('tasksSplit').classList.toggle('hidden', tasksCollapsed);
+      document.getElementById('tasksSection').classList.toggle('collapsed', tasksCollapsed);
+    });
+
+    renderNavigator();
+    renderDetail();
+  </script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+# DR-001 docs and handoff audit
+
+Recorded: 2026-08-20T18:16:15+02:00
+
+## Git diff check
+PASS: git diff --check
+
+## Required delivery artifacts
+PASS: tickets/in-progress/team-task-conversation-ui/docs-sync-report.md exists and is non-empty
+PASS: tickets/in-progress/team-task-conversation-ui/handoff-summary.md exists and is non-empty
+PASS: tickets/in-progress/team-task-conversation-ui/release-deployment-report.md exists and is non-empty
+PASS: tickets/in-progress/team-task-conversation-ui/delivery-revision-record.md exists and is non-empty
+
+## Required DR-001 markers
+tickets/in-progress/team-task-conversation-ui/docs-sync-report.md:9:- Bootstrap base reference: `origin/personal` at
+tickets/in-progress/team-task-conversation-ui/docs-sync-report.md:11:- Integrated base reference used for docs sync: `origin/personal` at
+tickets/in-progress/team-task-conversation-ui/docs-sync-report.md:12:  `3b81b5ebdc4c5eae64e221aff9c578adc7e7fb74`, fetched on 2026-08-20 and merged
+tickets/in-progress/team-task-conversation-ui/docs-sync-report.md:14:  `002c83c418dec05c428b2e53ed4161c8d2192621`.
+tickets/in-progress/team-task-conversation-ui/delivery-revision-record.md:7:| `DR-001` | `CRR-002` implementation source Pass, `API-REV-001` Pass at 96.9%, and `CRR-003` proportional durable test review Pass | N/A | `Pass — latest base integrated, post-integration checks passed, docs synchronized, handoff ready; finalization held for user verification` | `autobyteus-web/docs/agent_execution_architecture.md`, `autobyteus-web/docs/settings.md`, `autobyteus-web/docs/agent_artifacts.md`, `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/` |
+tickets/in-progress/team-task-conversation-ui/delivery-revision-record.md:11:### DR-001 — Integrated Team Task Conversation delivery baseline
+tickets/in-progress/team-task-conversation-ui/delivery-revision-record.md:23:- Current authoritative result: `Pass — delivery fetched origin/personal at
+tickets/in-progress/team-task-conversation-ui/delivery-revision-record.md:24:  3b81b5ebdc4c5eae64e221aff9c578adc7e7fb74, checkpointed the reviewed
+tickets/in-progress/team-task-conversation-ui/delivery-revision-record.md:26:  integrated head 002c83c418dec05c428b2e53ed4161c8d2192621. The durable browser
+tickets/in-progress/team-task-conversation-ui/delivery-revision-record.md:30:- Bootstrap and integration: Bootstrap `origin/personal` was
+tickets/in-progress/team-task-conversation-ui/delivery-revision-record.md:34:  `002c83c418dec05c428b2e53ed4161c8d2192621`; the branch is 6 ahead / 0
+tickets/in-progress/team-task-conversation-ui/delivery-revision-record.md:48:  — `Ready for explicit user verification`.
+tickets/in-progress/team-task-conversation-ui/delivery-revision-record.md:63:- Why this baseline was recorded: Establish the mandatory `DR-001` authority for
+tickets/in-progress/team-task-conversation-ui/delivery-revision-record.md:68:  explicitly confirms completion. Delivery then refreshes `origin/personal`
+tickets/in-progress/team-task-conversation-ui/release-deployment-report.md:9:explicit user verification.
+tickets/in-progress/team-task-conversation-ui/release-deployment-report.md:18:- Current delivery revision ID: `DR-001`
+tickets/in-progress/team-task-conversation-ui/release-deployment-report.md:19:- Notes: Integrated handoff is ready for explicit user verification; all
+tickets/in-progress/team-task-conversation-ui/release-deployment-report.md:24:- Bootstrap base reference: `origin/personal` at
+tickets/in-progress/team-task-conversation-ui/release-deployment-report.md:26:- Latest tracked remote base reference checked: `origin/personal` at
+tickets/in-progress/team-task-conversation-ui/release-deployment-report.md:27:  `3b81b5ebdc4c5eae64e221aff9c578adc7e7fb74` after
+tickets/in-progress/team-task-conversation-ui/release-deployment-report.md:36:  `002c83c418dec05c428b2e53ed4161c8d2192621`.
+tickets/in-progress/team-task-conversation-ui/release-deployment-report.md:54:  required only if `origin/personal` advances and materially changes the
+tickets/in-progress/team-task-conversation-ui/release-deployment-report.md:74:- Archived ticket path: N/A; explicit user verification is required first.
+tickets/in-progress/team-task-conversation-ui/release-deployment-report.md:157:- Delivery integration: `origin/personal` advanced from bootstrap
+tickets/in-progress/team-task-conversation-ui/release-deployment-report.md:168:  local ticket branch; `origin/personal` remains unchanged.
+tickets/in-progress/team-task-conversation-ui/release-deployment-report.md:177:`Pass — integrated handoff ready for explicit user verification; repository
+tickets/in-progress/team-task-conversation-ui/handoff-summary.md:7:- Current Status: `Integrated and documented; ready for explicit user verification; repository finalization held`
+tickets/in-progress/team-task-conversation-ui/handoff-summary.md:8:- Current delivery revision: `DR-001`
+tickets/in-progress/team-task-conversation-ui/handoff-summary.md:10:- Finalization target: `origin/personal`
+tickets/in-progress/team-task-conversation-ui/handoff-summary.md:39:- Bootstrap base: `origin/personal` at
+tickets/in-progress/team-task-conversation-ui/handoff-summary.md:44:  `origin/personal` at `3b81b5ebdc4c5eae64e221aff9c578adc7e7fb74`.
+tickets/in-progress/team-task-conversation-ui/handoff-summary.md:49:- Integration method: Merge, using `git merge --no-edit origin/personal`.
+tickets/in-progress/team-task-conversation-ui/handoff-summary.md:51:  `002c83c418dec05c428b2e53ed4161c8d2192621`; merge completed without conflict.
+tickets/in-progress/team-task-conversation-ui/handoff-summary.md:53:  `origin/personal` is an ancestor of the ticket head.
+tickets/in-progress/team-task-conversation-ui/handoff-summary.md:126:  uncommitted pending explicit user verification.
+tickets/in-progress/team-task-conversation-ui/handoff-summary.md:134:  ticket branch; `origin/personal` is unchanged.
+
+## Long-lived stale-behavior audit
+PASS: obsolete assignment-only/Technical-details guidance is absent
+
+## Integrated-state ancestry
+HEAD=002c83c418dec05c428b2e53ed4161c8d2192621
+origin/personal=3b81b5ebdc4c5eae64e221aff9c578adc7e7fb74
+PASS: origin/personal is an ancestor of HEAD
+divergence=6	0 (ahead behind)
+
+## Working-tree hold
+## codex/team-task-conversation-ui-design...origin/personal [ahead 6]
+ M autobyteus-web/docs/agent_artifacts.md
+ M autobyteus-web/docs/agent_execution_architecture.md
+ M autobyteus-web/docs/settings.md
+?? tickets/in-progress/team-task-conversation-ui/delivery-evidence/
+?? tickets/in-progress/team-task-conversation-ui/delivery-revision-record.md
+?? tickets/in-progress/team-task-conversation-ui/docs-sync-report.md
+?? tickets/in-progress/team-task-conversation-ui/handoff-summary.md
+?? tickets/in-progress/team-task-conversation-ui/release-deployment-report.md
+PASS: ticket remains in progress and delivery-owned edits are uncommitted for verification hold

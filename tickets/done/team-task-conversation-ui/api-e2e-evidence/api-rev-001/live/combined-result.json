@@ -1,0 +1,158 @@
+{
+  "schemaVersion": 1,
+  "result": "Pass",
+  "teamRunId": "nested_classroom_test_team_78ad44fb026f489fa6f35d1cff5839be",
+  "providerRuntime": "autobyteus",
+  "model": "gpt-5.6-luna",
+  "scenarios": {
+    "API-TASK-LIVE-001-launch": {
+      "result": "Pass",
+      "durationMs": 1670,
+      "teamRunId": "nested_classroom_test_team_78ad44fb026f489fa6f35d1cff5839be",
+      "runtime": "autobyteus",
+      "model": "gpt-5.6-luna",
+      "autoExecuteTools": true,
+      "requestedWorkspacePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/in-progress/team-task-conversation-ui/api-e2e-evidence/api-rev-001/live/workspace/nested-classroom-live",
+      "effectiveWorkspacePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/autobyteus-server-ts/tests/.tmp/api-rev-001-team-task-live/temp_workspace"
+    },
+    "API-TASK-LIVE-001-revision-cycle": {
+      "result": "Pass",
+      "durationMs": 18951,
+      "taskId": "task_38b40d9ef02e4c7fafa5e0bd06e4d92c",
+      "observedStatuses": [
+        "active",
+        "awaiting_review",
+        "accepted"
+      ],
+      "observedTaskUi": true,
+      "observedAwaitingReview": true,
+      "observedTaskCoordinatorFocus": false,
+      "updateKinds": [
+        "submission:",
+        "review:request_revision",
+        "submission:",
+        "review:accept"
+      ],
+      "lifecycleLabels": [
+        "Result submitted · Result 1",
+        "Revision requested · Result 1",
+        "Revised result submitted · Result 2",
+        "Result 2 accepted"
+      ]
+    },
+    "API-TASK-LIVE-001-exact-reference-route": {
+      "result": "Pass",
+      "durationMs": 459,
+      "exactRequests": 4,
+      "referenceIds": [
+        "ca905e4d93f01dabaf37601864bd1617688a373fe2bfedcaeb616844b290d2f1",
+        "21b4548c7cacad6eb5ef68aec707a536623ab9c69aa34ee61a5cc978362921f8",
+        "4508720e858e5c68500780d78bbd2d6545465279c2bf0690004c32ad1352bdf4"
+      ],
+      "maximizeEscapeRestore": true,
+      "reselectRefresh": true
+    },
+    "API-TASK-MESSAGES-006-live-no-change": {
+      "result": "Pass",
+      "durationMs": 1895,
+      "communicationCount": 1,
+      "uiApiCountParity": true,
+      "ordinaryExactCount": 1,
+      "taskRowsRemainSeparate": true
+    },
+    "API-TASK-INTERRUPT-002": {
+      "result": "Pass",
+      "durationMs": 140741,
+      "taskId": "task_1a5edee40531487898489a5b795a696f",
+      "statusBefore": "active",
+      "statusAfter": "interrupted",
+      "finalUpdateKind": "interruption",
+      "termination": {
+        "success": true,
+        "message": "Agent team run terminated successfully."
+      }
+    },
+    "API-TASK-RESTORE-003-focus-i18n-no-tech": {
+      "result": "Pass",
+      "restoredTasks": 2,
+      "restoredLifecycleRows": 5,
+      "teacherTasks": 2,
+      "unrelatedStudentTasks": 0,
+      "englishLabels": [
+        "Result submitted · Result 1",
+        "Revision requested · Result 1",
+        "Revised result submitted · Result 2",
+        "Result 2 accepted"
+      ],
+      "chineseLabels": [
+        "已提交结果 · 结果 1",
+        "已请求修订 · 结果 1",
+        "已提交修订结果 · 结果 2",
+        "结果 2 已接受"
+      ],
+      "technicalDetailsAbsent": true,
+      "rightPaneNavigationAbsent": true,
+      "historyIsActive": false
+    }
+  },
+  "mainRunHarnessDelta": {
+    "originalResult": "Fail",
+    "originalRestoreFailure": {
+      "result": "Fail",
+      "durationMs": 120569,
+      "message": "locator.waitFor: Timeout 120000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-test=\"workspace-row\"]').filter({ hasText: 'temp_workspace' }).first() to be visible\u001b[22m\n"
+    },
+    "classification": "Temporary harness locator used the physical basename temp_workspace while the UI label is Temp Workspace; no product behavior failed.",
+    "resolution": "Targeted fresh-context restored journey used the visible Temp Workspace label and passed all restore/focus/localization/no-technical assertions.",
+    "targetedRerunResultPath": "tickets/in-progress/team-task-conversation-ui/api-e2e-evidence/api-rev-001/live/restore-result.json"
+  },
+  "termination": {
+    "success": true,
+    "message": "Agent team run terminated successfully."
+  },
+  "referenceNetworkRequests": [
+    {
+      "at": "2026-08-20T15:50:54.995Z",
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:60321/rest/team-runs/nested_classroom_test_team_78ad44fb026f489fa6f35d1cff5839be/task-delegations/task_38b40d9ef02e4c7fafa5e0bd06e4d92c/references/ca905e4d93f01dabaf37601864bd1617688a373fe2bfedcaeb616844b290d2f1/content"
+    },
+    {
+      "at": "2026-08-20T15:50:55.077Z",
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:60321/rest/team-runs/nested_classroom_test_team_78ad44fb026f489fa6f35d1cff5839be/task-delegations/task_38b40d9ef02e4c7fafa5e0bd06e4d92c/references/21b4548c7cacad6eb5ef68aec707a536623ab9c69aa34ee61a5cc978362921f8/content"
+    },
+    {
+      "at": "2026-08-20T15:50:55.111Z",
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:60321/rest/team-runs/nested_classroom_test_team_78ad44fb026f489fa6f35d1cff5839be/task-delegations/task_38b40d9ef02e4c7fafa5e0bd06e4d92c/references/21b4548c7cacad6eb5ef68aec707a536623ab9c69aa34ee61a5cc978362921f8/content"
+    },
+    {
+      "at": "2026-08-20T15:50:55.211Z",
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:60321/rest/team-runs/nested_classroom_test_team_78ad44fb026f489fa6f35d1cff5839be/task-delegations/task_38b40d9ef02e4c7fafa5e0bd06e4d92c/references/4508720e858e5c68500780d78bbd2d6545465279c2bf0690004c32ad1352bdf4/content"
+    },
+    {
+      "at": "2026-08-20T15:50:55.494Z",
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:60321/rest/team-runs/nested_classroom_test_team_78ad44fb026f489fa6f35d1cff5839be/task-delegations/task_38b40d9ef02e4c7fafa5e0bd06e4d92c/references/4508720e858e5c68500780d78bbd2d6545465279c2bf0690004c32ad1352bdf4/content"
+    },
+    {
+      "at": "2026-08-20T15:53:16.650Z",
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:60321/rest/team-runs/nested_classroom_test_team_78ad44fb026f489fa6f35d1cff5839be/task-delegations/task_38b40d9ef02e4c7fafa5e0bd06e4d92c/references/4508720e858e5c68500780d78bbd2d6545465279c2bf0690004c32ad1352bdf4/content"
+    },
+    {
+      "at": "2026-08-20T15:53:16.954Z",
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:60321/rest/team-runs/nested_classroom_test_team_78ad44fb026f489fa6f35d1cff5839be/task-delegations/task_38b40d9ef02e4c7fafa5e0bd06e4d92c/references/4508720e858e5c68500780d78bbd2d6545465279c2bf0690004c32ad1352bdf4/content"
+    }
+  ],
+  "completedAt": "2026-08-20T15:57:29.011Z"
+}

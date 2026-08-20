@@ -1,0 +1,44 @@
+DR-004 repository finalization and cleanup evidence
+Date: 2026-08-20
+Finalization target: origin/personal
+Release scope: none (user explicitly requested no release)
+
+Ticket branch commit:
+  ff5b38544520607e9d22ea5f572c583d32849f1f
+  chore(delivery): finalize team task conversation UI
+Ticket branch push:
+  created origin/codex/team-task-conversation-ui-design at ff5b38544520607e9d22ea5f572c583d32849f1f
+
+Target refresh before merge:
+  local personal: 3b81b5ebdc4c5eae64e221aff9c578adc7e7fb74
+  origin/personal: 3b81b5ebdc4c5eae64e221aff9c578adc7e7fb74
+  git pull --ff-only origin personal: Already up to date
+
+Target merge and push:
+  merge method: git merge --no-ff codex/team-task-conversation-ui-design
+  merge commit: 4f586f2e7fe3a6034063b1f44bf41a8c7797549c
+  push: origin/personal advanced 3b81b5ebd..4f586f2e7
+
+Application cleanup:
+  exact ticket executable main PID observed before shutdown: 99725
+  exact packaged backend PID observed before shutdown: 490
+  backend listener before shutdown: TCP *:29695
+  action: TERM sent to exact ticket-worktree main Electron PID
+  follow-up audit: no exact ticket executable process; no TCP 29695 listener
+
+Worktree and branch cleanup:
+  git worktree remove --force removed the registered worktree and contents, then
+  reported the directory non-empty because Finder recreated .DS_Store
+  residual .DS_Store and empty directory removed safely
+  git worktree prune: completed
+  dedicated worktree present after cleanup: no
+  local codex/team-task-conversation-ui-design present after cleanup: no
+  remote codex/team-task-conversation-ui-design present after cleanup: no
+
+Release/deployment:
+  version bump: not performed
+  release commit/tag/publication/deployment: not performed
+  release notes: not required
+
+Unrelated main-workspace state:
+  untracked .article-work/ remained untouched

@@ -413,21 +413,41 @@ source. Opening or reloading active and historical team runs hydrates records vi
 `getTaskDelegationRecords(teamRunId)`, and live task-delegation websocket events
 schedule a debounced records refresh.
 
-Inside that section, `TeamDelegatedTaskNavigator` renders task-content
-navigation only: clean text task summaries without a leading status dot or
-visible status label, task-owned reference rows with visible selected state and
-no separate visible `References` heading, and collapsed Technical details for
-task type, task id, execution run id, target metadata, and raw task arguments.
-Summary and reference clicks update only the section-local task/reference detail
-selection; they must not focus the center conversation/composer, replace it with
-a task team card, or repeat the Workspaces execution hierarchy. It must not
-render responsible actor/member hierarchy rows, `Focus agent` / `Focus team`
-controls, approval controls, leading summary status dots, or visible summary
-status copy such as `ACTIVE` / `RUNNING`.
-`TeamDelegatedTaskDetailPane` is content/reference-only: it renders the selected
-task body or selected task-owned reference preview and intentionally does not
-duplicate the actor/team heading, status chip, waiting notice, focus controls,
-actor/member roster, reference list, or Technical details in the right pane.
+Inside that section, `deriveDelegatedTaskEntries(...)` projects every current-
+schema task record into one ordered conversation: the assignment root followed
+by every submission, review, and interruption in the record's durable update
+order. Submission ordinals and review-to-submission linkage are derived from the
+strict record instead of inferred from display text. A task-Team submission is
+attributed to the readable task Team because the record does not identify a
+more specific submitting member; the UI must not invent one.
+
+`TeamDelegatedTaskNavigator` keeps that complete conversation on the left. The
+assignment row shows its description, readable delegator-to-assignee direction,
+last-activity time, and one human lifecycle badge: In progress, Awaiting review,
+Revision requested, Accepted, or Interrupted. Each update appears exactly once
+below the assignment as a selectable message-style row with a localized event
+label, result ordinal when applicable, readable direction or system attribution,
+timestamp, content preview, and only that item's reference rows. Assignment and
+update references have visible selected state and no separate visible
+`References` heading.
+
+Assignment, update, and reference clicks update only exact section-local
+selection keys. A live full-record replacement retains the selected item or
+reference while its stable identity still exists; otherwise selection falls
+back to that task's assignment. These actions must not focus the center
+conversation/composer, replace it with a task team card, or repeat the Workspaces
+execution hierarchy. The Tasks UI does not render raw task/run ids, routing JSON,
+target-kind metadata, raw arguments, a Technical details disclosure, responsible
+actor/member hierarchy rows, `Focus agent` / `Focus team` controls, or approval
+controls. Exact ids remain internal selection and reference-routing keys only.
+
+`TeamDelegatedTaskDetailPane` renders exactly one selected assignment/update
+detail or one selected task-owned reference preview. Item detail uses a readable
+localized title, direction, timestamp, Markdown content, and the assignment's
+current human status when the assignment is selected. The right pane does not
+duplicate the lifecycle timeline, reference navigation, actor roster, focus
+controls, or removed technical metadata. Messages remains an independent,
+unchanged message-owned surface.
 
 The global Workspaces/run-history tree remains the navigation and execution-focus
 surface for workspaces, runs, teams, durable members, and live transient
@@ -447,8 +467,8 @@ the explicit disclosure control remains a stopped toggle-only target.
 Workspaces must not render delegated-task summary blocks, task reference rows,
 raw task arguments, approval controls, or delegated-task Technical details.
 Tasks is not an approval action surface: pending approval can appear only as
-non-actionable task context or technical metadata there, and Activity remains
-the owner for Approve/Deny controls and approval command routing. Task reference
+non-actionable human task context there, and Activity remains the owner for
+Approve/Deny controls and approval command routing. Task reference
 files come from persisted task-delegation records and open in the Tasks right
 pane through the task-owned reference route; Messages remains message-owned and
 its content/reference UX is not routed through task identity.

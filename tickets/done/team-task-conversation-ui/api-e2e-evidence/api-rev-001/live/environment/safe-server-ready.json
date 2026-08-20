@@ -1,0 +1,11 @@
+{
+  "status": "READY",
+  "pid": 25379,
+  "serverUrl": "http://127.0.0.1:60321",
+  "runtimeRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/autobyteus-server-ts/tests/.tmp/api-rev-001-team-task-live",
+  "runtimeEnvironmentPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/autobyteus-server-ts/tests/.tmp/api-rev-001-team-task-live/.env",
+  "databasePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/autobyteus-server-ts/db/api-rev-001-team-task-live.db",
+  "packageRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/in-progress/team-task-conversation-ui/api-e2e-evidence/api-rev-001/live/fixture-root",
+  "lsofExactDisposableTarget": true,
+  "lsofOperationalTarget": false
+}

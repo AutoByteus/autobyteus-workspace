@@ -1,0 +1,65 @@
+{
+  "teams": [
+    {
+      "id": "nested-classroom-test",
+      "name": "Nested Classroom Test Team",
+      "coordinatorMemberName": "Teacher",
+      "nodes": [
+        {
+          "memberName": "Teacher",
+          "ref": "teacher",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "StudentStudyGroup",
+          "ref": "student-study-group",
+          "refType": "AGENT_TEAM",
+          "refScope": "TEAM_LOCAL"
+        }
+      ]
+    },
+    {
+      "id": "team-local-team:nested-classroom-test:student-study-group",
+      "name": "Student Study Group",
+      "coordinatorMemberName": "student_one",
+      "nodes": [
+        {
+          "memberName": "student_one",
+          "ref": "student-one",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "student_two",
+          "ref": "student-two",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        }
+      ]
+    }
+  ],
+  "runtimes": [
+    {
+      "runtimeKind": "autobyteus",
+      "enabled": true,
+      "reason": null
+    },
+    {
+      "runtimeKind": "codex_app_server",
+      "enabled": true,
+      "reason": null
+    },
+    {
+      "runtimeKind": "claude_agent_sdk",
+      "enabled": true,
+      "reason": null
+    }
+  ],
+  "selectedModel": {
+    "modelIdentifier": "gpt-5.6-luna",
+    "name": "gpt-5.6-luna",
+    "providerType": "OPENAI",
+    "runtime": "api"
+  }
+}
