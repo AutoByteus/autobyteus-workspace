@@ -11,31 +11,34 @@
 - Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/in-progress/team-task-conversation-ui/solution-revision-record.md`
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/in-progress/team-task-conversation-ui/design-review-report.md`
 - Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/in-progress/team-task-conversation-ui/architecture-review-revision-record.md`
-- Triggering rework report, revision record, or evidence, when applicable: N/A — initial architecture review passed without findings.
+- Triggering rework report, revision record, or evidence, when applicable:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/in-progress/team-task-conversation-ui/code-review-report.md` (`CR-001`)
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/in-progress/team-task-conversation-ui/code-review-revision-record.md` (`CRR-001`)
 
 ## Current Implementation Summary
 
-The frontend now derives one tight task-conversation presentation per authoritative task record. Each entry contains the preserved root assignment plus every ordered submission, review, and interruption with stable item identity, human direction, result ordinal/revision semantics, owned references, display status, and last activity. The left navigator renders that complete task-owned lifecycle and all navigation; the right pane renders only the selected item detail or the unchanged task reference viewer. The technical disclosure/builder/model fields are deleted, and Messages production source is unchanged.
+The frontend now derives one tight task-conversation presentation per authoritative task record. Each entry contains the preserved root assignment plus every ordered submission, review, and interruption with stable item identity, human direction, result ordinal/revision semantics, owned references, display status, and last activity. The left navigator renders that complete task-owned lifecycle and all navigation; the right pane renders only the selected item detail or the unchanged task reference viewer. The technical disclosure/builder/model fields and the obsolete assignment-description fallback catalog/test residue are deleted, and Messages production source is unchanged.
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/tickets/in-progress/team-task-conversation-ui/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002`
 - Related solution revision IDs: `SR-003`, `SR-004`, `SR-005`
 - Related architecture-review revision IDs: `ARCH-REV-001`
-- Related code-review revision IDs: N/A
+- Related code-review revision IDs: `CRR-001`
 - Related API/E2E revision IDs: N/A
 - Related delivery revision IDs: N/A
-- Triggering finding IDs: N/A
+- Triggering finding IDs: `CR-001`
+- Source commits: initial implementation `d8bf1a6cd`; `CR-001` local fix `a5a44cf09`
 
 ## Reviewed Behavior Implementation Trace
 
 | Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
 | --- | --- | --- | --- |
 | `BEH-001` | Preserve the task root/references and add meaningful status plus nested lifecycle rows. | `TeamExecutionViewState.listTaskHistoryRows()` → `deriveDelegatedTaskEntries()` → `TeamDelegatedTaskNavigator.vue` / `TeamDelegatedTaskLifecycleRow.vue` | Root description/reference placement remains; task status, activity, participants, and ordered updates are visible. |
-| `BEH-002` | Keep all navigation on the left and show exactly one selected item detail on the right. | `TeamDelegatedTaskNavigator.vue` → exact item locator → `TeamDelegatedTasksSection.vue` → `TeamDelegatedTaskDetailPane.vue` → `TeamDelegatedTaskItemDetail.vue` | Initial selection is the first task root; task/update selection changes only the right detail. |
+| `BEH-002` | Keep all navigation on the left and show exactly one selected item detail on the right. | `TeamDelegatedTaskNavigator.vue` → exact item locator → `TeamDelegatedTasksSection.vue` → `TeamDelegatedTaskDetailPane.vue` → `TeamDelegatedTaskItemDetail.vue` | Initial selection is the first task root; task/update selection changes only the right detail. Strict assignment content has no obsolete description fallback after `IR-002`. |
 | `BEH-003` | Project every durable update once and in recorded order for live/restored records. | `teamDelegatedTaskEntries.ts` walks the current DTO update array once, derives stable keys/ordinals/linkage/revised state, and maps without sorting task groups. | Focused filtering and view-supplied task order remain; current-state replacement reactively reprojects one authoritative record. |
 | `BEH-004` | Keep initial references and expose update-owned references through the existing preview. | Owning lifecycle item → exact reference locator → section resolution → unchanged `TeamTaskReferenceViewer.vue` | References render only beneath their owning left item; reselection refresh and owner return are preserved. |
-| `BEH-005` | Remove Technical details, raw JSON, IDs, and routing metadata. | Deleted `teamDelegatedTaskTechnicalDetails.ts`; removed navigator disclosure, loose entry fields, technical locale keys, and stale mocks/assertions. | IDs remain only in internal entry/item/reference identity and viewer routing. |
+| `BEH-005` | Remove Technical details, raw JSON, IDs, and routing metadata. | Deleted `teamDelegatedTaskTechnicalDetails.ts`; removed navigator disclosure, loose entry fields, technical locale keys, stale mocks/assertions, and the unreachable assignment-description fallback locale/test residue. | IDs remain only in internal entry/item/reference identity and viewer routing. `CR-001` is addressed by `IR-002`. |
 | `BEH-006` | Leave Messages completely unchanged. | Task-only utility/components/localization paths; no diff to `TeamCommunicationPanel.vue`, `utils/teamCommunication/*`, or message types. | Messages production source and behavior are unchanged. |
 
 ## Key Files Or Areas
@@ -80,7 +83,7 @@ The frontend now derives one tight task-conversation presentation per authoritat
 - Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): `Yes`
 - Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`
 - Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`
-- Notes: All changed source files remain below 500 effective non-empty lines; no changed source delta exceeds the 220-line split signal. Technical fields, disclosure, raw builder, locale keys, and file were removed rather than hidden or wrapped.
+- Notes: All changed source files remain below 500 effective non-empty lines; no changed source delta exceeds the 220-line split signal. Technical fields, disclosure, raw builder, obsolete assignment fallback copy, locale keys, and file were removed rather than hidden or wrapped.
 
 ## Persisted Data Transition Check (When Applicable)
 
@@ -99,7 +102,7 @@ The frontend now derives one tight task-conversation presentation per authoritat
 
 ## Local Implementation Checks Run
 
-- `pnpm test:nuxt utils/__tests__/teamDelegatedTaskEntries.spec.ts components/workspace/team/__tests__/TeamDelegatedTaskNavigator.spec.ts components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts components/workspace/team/__tests__/TeamDelegatedTaskItemDetail.spec.ts components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts components/workspace/team/__tests__/TeamOverviewPanel.spec.ts localization/messages/__tests__/teamTaskLifecycleCatalog.spec.ts --run` — passed, 7 files / 31 tests.
+- `pnpm test:nuxt utils/__tests__/teamDelegatedTaskEntries.spec.ts components/workspace/team/__tests__/TeamDelegatedTaskNavigator.spec.ts components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts components/workspace/team/__tests__/TeamDelegatedTaskItemDetail.spec.ts components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts components/workspace/team/__tests__/TeamOverviewPanel.spec.ts localization/messages/__tests__/teamTaskLifecycleCatalog.spec.ts --run` — passed, 7 files / 31 tests for the initial implementation and passed again after the `IR-002` cleanup.
 - `pnpm guard:web-boundary` — passed.
 - `pnpm guard:localization-boundary` — passed.
 - `pnpm audit:localization-literals` — passed with zero unresolved findings.
