@@ -1,0 +1,12 @@
+=== process/port audit before final cleanup ===
+2026-08-20T15:59:08Z
+-- port 60321 --
+-- port 31321 --
+-- possible owned commands --
+-- db/runtime presence --
+PRESENT /Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/autobyteus-server-ts/db/api-rev-001-team-task-live.db
+PRESENT /Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/autobyteus-server-ts/db/api-rev-001-team-task-live.db.secret.key
+ABSENT /Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/autobyteus-server-ts/db/api-rev-001-team-task-live.db-wal
+ABSENT /Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/autobyteus-server-ts/db/api-rev-001-team-task-live.db-shm
+ABSENT /Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/autobyteus-server-ts/db/api-rev-001-team-task-live.db-journal
+PRESENT /Users/normy/autobyteus_org/autobyteus-worktrees/team-task-conversation-ui-design/autobyteus-server-ts/tests/.tmp/api-rev-001-team-task-live

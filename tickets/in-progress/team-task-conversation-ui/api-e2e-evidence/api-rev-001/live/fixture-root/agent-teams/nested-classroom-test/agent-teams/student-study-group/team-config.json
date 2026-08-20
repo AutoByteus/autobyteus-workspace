@@ -1,0 +1,34 @@
+{
+  "coordinatorMemberName": "student_one",
+  "avatarUrl": null,
+  "members": [
+    {
+      "memberName": "student_one",
+      "ref": "student-one",
+      "refType": "agent",
+      "refScope": "team_local"
+    },
+    {
+      "memberName": "student_two",
+      "ref": "student-two",
+      "refType": "agent",
+      "refScope": "team_local"
+    }
+  ],
+  "handoffs": [
+    {
+      "from": "/student_one",
+      "to": "/student_two",
+      "rules": [
+        "When the nested coordinator needs ordinary teammate help while completing a delegated classroom task."
+      ]
+    },
+    {
+      "from": "/student_two",
+      "to": "/student_one",
+      "rules": [
+        "When the supporting student has prepared an ordinary discussion response for the nested coordinator."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "toolNames": [
+    "send_message_to",
+    "run_bash"
+  ],
+  "skillNames": [],
+  "inputProcessorNames": [],
+  "llmResponseProcessorNames": [],
+  "systemPromptProcessorNames": [],
+  "toolExecutionResultProcessorNames": [],
+  "toolInvocationPreprocessorNames": [],
+  "lifecycleProcessorNames": [],
+  "avatarUrl": null,
+  "defaultLaunchConfig": null
+}
