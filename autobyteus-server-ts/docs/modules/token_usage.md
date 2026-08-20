@@ -79,6 +79,13 @@ pipeline processes each token event in this order:
    transaction, upserts the one current row, and returns the authoritative
    per-event contribution plus `run_summary_after_event`.
 
+`run_summary_after_event` is the complete cumulative current-record projection
+after the successful fold, not another live delta. Standalone and Team
+websocket paths preserve that snapshot through their strict transport
+contracts. A persistence-unavailable event or a snapshot that cannot be
+projected safely carries no public cumulative summary; consumers must keep or
+load the current GraphQL record instead of fabricating a complete cache entry.
+
 Persistence is not detached with `setImmediate`; a completed pipeline transform
 has completed its token fold. A failed fold is logged and the live event still
 continues with `token_usage_persistence_unavailable`. If the BigInt record was
@@ -318,9 +325,21 @@ instead of exposing partial history.
 
 The frontend treats token usage as display-only state:
 
-- live `TOKEN_USAGE_UPDATED` events update `tokenUsageMeterStore` using the
-  authoritative contribution returned by the persistence fold;
-- focus/reopen paths hydrate from current-record GraphQL summaries;
+- standalone and Team-member caches accept only complete record-backed
+  summaries from current-record GraphQL or the post-persist
+  `run_summary_after_event` snapshot;
+- missing, malformed, unsafe, or identity-mismatched live snapshots do not mark
+  an individual cache hydrated, so focus/reopen paths still load the current
+  GraphQL record;
+- individual snapshots are keyed by exact run identity (and exact root-Team/run
+  identity for Team members), while `usageReportCount` provides the monotonic
+  generation used to reject equal or older GraphQL/live arrivals;
+- Team aggregates remain backend-owned. Before hydration, persisted Team events
+  may form a `live_partial` total; after hydration, a new event marks the total
+  `refresh_required` rather than blindly extending a possibly inclusive
+  GraphQL result. A single-flight GraphQL refresh repeats sequentially until no
+  event arrived during the request, and only that stable response becomes
+  `record_backed`;
 - Token Meter renders latest prompt, lifetime gross input/output, component
   breakdown, estimated cost/status, pricing explanation, context pressure, and
   report count without recomputing accounting or prices;
@@ -343,6 +362,9 @@ remain explicit.
 - Deterministic unit/integration/E2E coverage owns current fold, repository,
   migration, readiness, restore, GraphQL, pricing, frontend component, and
   lifecycle contracts.
+- Built-process restart coverage proves that existing current rows remain
+  directly usable through run, Team, and member GraphQL reads without a data
+  migration, rewritten row identity, or duplicate fold.
 - Built-server coverage exercises released-row upgrade/relaunch, degraded new
   work, retry, overlap rejection, rollback, empty-source relaunch, and critical
   current-schema failure.
