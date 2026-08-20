@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { BaseServerManager } from '../baseServerManager'
-import { ServerStatus } from '../serverStatusEnum'
+import { ServerStatus } from '../../../types/serverStatus'
 import { ServerStatusManager } from '../serverStatusManager'
 
 const { mockScopedLogger } = vi.hoisted(() => {
@@ -25,6 +25,7 @@ type FakeManager = EventEmitter & {
   stopServer: ReturnType<typeof vi.fn>
   isRunning: ReturnType<typeof vi.fn>
   getServerUrls: ReturnType<typeof vi.fn>
+  getServerBaseUrl: ReturnType<typeof vi.fn>
 }
 
 const createManager = (): FakeManager => Object.assign(new EventEmitter(), {
@@ -32,6 +33,7 @@ const createManager = (): FakeManager => Object.assign(new EventEmitter(), {
   stopServer: vi.fn(async () => undefined),
   isRunning: vi.fn(() => false),
   getServerUrls: vi.fn(() => ({ health: 'http://127.0.0.1:8000/rest/health' })),
+  getServerBaseUrl: vi.fn(() => 'http://127.0.0.1:8000'),
 })
 
 describe('ServerStatusManager', () => {
@@ -54,6 +56,7 @@ describe('ServerStatusManager', () => {
 
     expect(statuses.filter((status) => status.status === ServerStatus.ERROR)).toEqual([{
       status: ServerStatus.ERROR,
+      baseUrl: 'http://127.0.0.1:8000',
       urls: { health: 'http://127.0.0.1:8000/rest/health' },
       message: detailedError.message,
       healthCheckStatus: '',

@@ -4,10 +4,8 @@ import { logger } from '../logger'
 
 const BASH_PATH = '/bin/bash'
 const ZSH_PATH = '/bin/zsh'
-let cachedLoginPath: string | null | undefined
-
-function pickLoginShell(): string | null {
-  const shell = (process.env.SHELL || '').toLowerCase()
+function pickLoginShell(env: NodeJS.ProcessEnv): string | null {
+  const shell = (env.SHELL || '').toLowerCase()
   if (shell.includes('zsh') && fs.existsSync(ZSH_PATH)) {
     return ZSH_PATH
   }
@@ -27,16 +25,11 @@ function pickLoginShell(): string | null {
  * Get PATH from the user's login shell (zsh or bash).
  * This helps GUI-launched Electron apps inherit user PATH on macOS/Linux.
  */
-export function getLoginShellPath(): string | null {
-  if (cachedLoginPath !== undefined) {
-    return cachedLoginPath
-  }
-
-  const shellPath = pickLoginShell()
+export function getLoginShellPath(env: NodeJS.ProcessEnv = process.env): string | null {
+  const shellPath = pickLoginShell(env)
   if (!shellPath) {
     logger.warn('No supported login shell found; skipping PATH enrichment')
-    cachedLoginPath = null
-    return cachedLoginPath
+    return null
   }
 
   const isZsh = shellPath === ZSH_PATH
@@ -46,24 +39,20 @@ export function getLoginShellPath(): string | null {
 
   try {
     const output = execFileSync(shellPath, ['-lc', script], {
-      env: process.env,
+      env,
       encoding: 'utf8'
     })
 
     const pathValue = output.trim()
     if (!pathValue) {
       logger.warn('Login shell PATH was empty; falling back to process.env.PATH')
-      cachedLoginPath = null
-      return cachedLoginPath
+      return null
     }
 
     logger.info(`Loaded PATH from ${isZsh ? 'zsh' : 'bash'} login shell`)
-    logger.info(`Login shell PATH: ${pathValue}`)
-    cachedLoginPath = pathValue
-    return cachedLoginPath
+    return pathValue
   } catch (error) {
     logger.warn(`Failed to load PATH from login shell: ${error}`)
-    cachedLoginPath = null
-    return cachedLoginPath
+    return null
   }
 }

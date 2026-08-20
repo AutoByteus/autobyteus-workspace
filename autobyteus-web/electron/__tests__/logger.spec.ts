@@ -2,7 +2,7 @@ import * as fs from 'fs/promises'
 import * as os from 'os'
 import * as path from 'path'
 import { afterEach, describe, expect, it } from 'vitest'
-import { createElectronLogger } from '../logger'
+import { createElectronLogger, logger } from '../logger'
 
 const waitForFlush = async (): Promise<void> => {
   await new Promise<void>((resolve) => setTimeout(resolve, 30))
@@ -13,6 +13,12 @@ describe('electron logger', () => {
 
   afterEach(async () => {
     await Promise.all(cleanupPaths.splice(0).map((targetPath) => fs.rm(targetPath, { recursive: true, force: true })))
+  })
+
+  it('performs no default file initialization and fails clearly before configuration', () => {
+    expect(() => logger.info('too early')).toThrow(
+      'Electron logger used before configureElectronLogger()',
+    )
   })
 
   it('suppresses debug logs by default while still writing info logs', async () => {

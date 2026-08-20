@@ -1,10 +1,20 @@
 import * as fsSync from 'fs'
 import * as os from 'os'
 import * as path from 'path'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { ensureEmbeddedNode, loadNodeRegistrySnapshot } from '../nodeRegistryStore'
 import { EMBEDDED_NODE_ID, type NodeRegistrySnapshot } from '../nodeRegistryTypes'
-import { INTERNAL_SERVER_BASE_URL } from '../../shared/embeddedServerConfig'
+import { PRODUCTION_EMBEDDED_SERVER_BASE_URL } from '../../shared/embeddedServerClientEndpoint'
+
+vi.mock('../logger', () => {
+  const logger = {
+    child: vi.fn(() => logger),
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+  }
+  return { logger }
+})
 
 describe('nodeRegistryStore', () => {
   it('adds the embedded node with the canonical loopback base URL when missing', () => {
@@ -23,11 +33,11 @@ describe('nodeRegistryStore', () => {
       ],
     }
 
-    const nextSnapshot = ensureEmbeddedNode(snapshot)
+    const nextSnapshot = ensureEmbeddedNode(snapshot, PRODUCTION_EMBEDDED_SERVER_BASE_URL)
 
     expect(nextSnapshot.version).toBe(3)
     expect(nextSnapshot.nodes[0]?.id).toBe(EMBEDDED_NODE_ID)
-    expect(nextSnapshot.nodes[0]?.baseUrl).toBe(INTERNAL_SERVER_BASE_URL)
+    expect(nextSnapshot.nodes[0]?.baseUrl).toBe(PRODUCTION_EMBEDDED_SERVER_BASE_URL)
   })
 
   it('rewrites stale embedded node base URLs to the canonical loopback value', () => {
@@ -46,10 +56,10 @@ describe('nodeRegistryStore', () => {
       ],
     }
 
-    const nextSnapshot = ensureEmbeddedNode(snapshot)
+    const nextSnapshot = ensureEmbeddedNode(snapshot, PRODUCTION_EMBEDDED_SERVER_BASE_URL)
 
     expect(nextSnapshot.version).toBe(8)
-    expect(nextSnapshot.nodes[0]?.baseUrl).toBe(INTERNAL_SERVER_BASE_URL)
+    expect(nextSnapshot.nodes[0]?.baseUrl).toBe(PRODUCTION_EMBEDDED_SERVER_BASE_URL)
     expect(nextSnapshot.nodes[0]?.updatedAt).not.toBe(snapshot.nodes[0]?.updatedAt)
   })
 
@@ -60,7 +70,7 @@ describe('nodeRegistryStore', () => {
         {
           id: EMBEDDED_NODE_ID,
           name: 'Embedded Node',
-          baseUrl: INTERNAL_SERVER_BASE_URL,
+          baseUrl: PRODUCTION_EMBEDDED_SERVER_BASE_URL,
           nodeType: 'embedded',
           isSystem: true,
           createdAt: '2026-03-31T09:00:00.000Z',
@@ -69,7 +79,7 @@ describe('nodeRegistryStore', () => {
       ],
     }
 
-    expect(ensureEmbeddedNode(snapshot)).toBe(snapshot)
+    expect(ensureEmbeddedNode(snapshot, PRODUCTION_EMBEDDED_SERVER_BASE_URL)).toBe(snapshot)
   })
 
   it('drops legacy persisted browser pairing state while loading nodes', () => {
@@ -80,7 +90,7 @@ describe('nodeRegistryStore', () => {
       'utf8',
     )
 
-    const nextSnapshot = loadNodeRegistrySnapshot(userDataPath)
+    const nextSnapshot = loadNodeRegistrySnapshot(userDataPath, PRODUCTION_EMBEDDED_SERVER_BASE_URL)
 
     expect(nextSnapshot.nodes[1]?.id).toBe('remote-1')
     expect(nextSnapshot.nodes[1]).not.toHaveProperty('browserPairing')
@@ -94,7 +104,7 @@ function loadSnapshotWithLegacyBrowserPairing(): NodeRegistrySnapshot {
       {
         id: EMBEDDED_NODE_ID,
         name: 'Embedded Node',
-        baseUrl: INTERNAL_SERVER_BASE_URL,
+        baseUrl: PRODUCTION_EMBEDDED_SERVER_BASE_URL,
         nodeType: 'embedded',
         isSystem: true,
         createdAt: '2026-03-31T09:00:00.000Z',

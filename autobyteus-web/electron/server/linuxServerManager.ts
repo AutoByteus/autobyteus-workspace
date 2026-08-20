@@ -2,11 +2,9 @@ import { spawn } from 'child_process'
 import * as path from 'path'
 import * as fs from 'fs'
 import isDev from 'electron-is-dev'
-import { StdioOptions } from 'child_process'
+import type { StdioOptions } from 'child_process'
 import { BaseServerManager } from './baseServerManager'
 import { logger } from '../logger'
-import { getLoginShellPath } from '../utils/shellEnv'
-import { INTERNAL_SERVER_BASE_URL } from '../../shared/embeddedServerConfig'
 import { buildServerRuntimeEnv } from './serverRuntimeEnv'
 
 export class LinuxServerManager extends BaseServerManager {
@@ -29,20 +27,14 @@ export class LinuxServerManager extends BaseServerManager {
       throw new Error(`Server entrypoint not found at: ${serverEntry}`)
     }
     
-    const publicServerUrl = INTERNAL_SERVER_BASE_URL
-    
-    const loginShellPath = getLoginShellPath()
-    if (loginShellPath) {
-      logger.info('Using PATH from login shell')
-    }
-
+    const publicServerUrl = this.serverUrl
+    const baseEnvironment = this.getBaseEnvironment()
     const env = {
-      ...process.env,
-      ...(loginShellPath ? { PATH: loginShellPath } : {}),
+      ...baseEnvironment,
       ELECTRON_RUN_AS_NODE: '1',
       PORT: this.serverPort.toString(),
       SERVER_PORT: this.serverPort.toString(),
-      ...buildServerRuntimeEnv(this.appDataDir, publicServerUrl, process.env, this.getRuntimeEnvOverrides())
+      ...buildServerRuntimeEnv(this.appDataDir, publicServerUrl, baseEnvironment, this.getRuntimeEnvOverrides())
     }
     const options = {
       cwd: this.serverDir,

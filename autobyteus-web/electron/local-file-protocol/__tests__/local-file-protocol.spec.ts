@@ -33,10 +33,8 @@ vi.mock('../../logger', () => ({
   },
 }));
 
-import {
-  installLocalFileProtocol,
-  registerLocalFileProtocolScheme,
-} from '../local-file-protocol';
+import { installLocalFileProtocol } from '../local-file-protocol';
+import { registerLocalFileProtocolScheme } from '../register-local-file-scheme';
 
 const createFrame = (kind = 'main-frame'): WebFrameMain => ({
   kind,

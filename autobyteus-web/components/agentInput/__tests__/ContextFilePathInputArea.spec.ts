@@ -50,6 +50,9 @@ const contextFileUploadStoreMock = reactive({
 
 const windowNodeContextStoreMock = reactive({
   isEmbeddedWindow: true,
+  initialized: true,
+  nodeBaseUrl: 'http://127.0.0.1:31000',
+  getBoundEndpoints: () => ({ rest: 'http://127.0.0.1:31000/rest' }),
 });
 
 const fileExplorerStoreMock = reactive({
