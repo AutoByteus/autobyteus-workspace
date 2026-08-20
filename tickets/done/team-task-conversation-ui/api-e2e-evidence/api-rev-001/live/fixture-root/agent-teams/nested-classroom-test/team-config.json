@@ -1,0 +1,34 @@
+{
+  "coordinatorMemberName": "Teacher",
+  "avatarUrl": null,
+  "members": [
+    {
+      "memberName": "Teacher",
+      "ref": "teacher",
+      "refType": "agent",
+      "refScope": "team_local"
+    },
+    {
+      "memberName": "StudentStudyGroup",
+      "ref": "student-study-group",
+      "refType": "agent_team",
+      "refScope": "team_local"
+    }
+  ],
+  "handoffs": [
+    {
+      "from": "/Teacher",
+      "to": "/StudentStudyGroup",
+      "rules": [
+        "When a bounded classroom task is ready to be delegated to the nested student study group."
+      ]
+    },
+    {
+      "from": "/StudentStudyGroup/student_one",
+      "to": "/Teacher",
+      "rules": [
+        "When the nested team has completed the delegated task and its coordinator must submit the result for teacher review through the task lifecycle."
+      ]
+    }
+  ]
+}

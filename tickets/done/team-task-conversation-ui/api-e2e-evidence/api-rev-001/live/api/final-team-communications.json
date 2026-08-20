@@ -1,0 +1,20 @@
+[
+  {
+    "messageId": "teammsg_5oe-VEevmrSCeoymS4cZe7zGzaA5xxsB",
+    "senderAgentRunId": "test_teacher_619ff8275c3d48458bd9820830f65e35",
+    "receiverAgentRunId": "student_two_0f0fedfd029b464c81c6117994286058",
+    "content": "Ordinary classroom note after accepted task.",
+    "messageType": "ordinary",
+    "createdAt": "2026-08-20T15:50:56.523Z",
+    "referenceFiles": []
+  },
+  {
+    "messageId": "teammsg_DH2XwETom526mrWMk65XwRFb3vTXM5e4",
+    "senderAgentRunId": "student_two_0f0fedfd029b464c81c6117994286058",
+    "receiverAgentRunId": "student_one_37fc41171c6e42c3b4eee4de07034d0a",
+    "content": "Teacher sent an ordinary classroom note after the accepted task; no action requested.",
+    "messageType": "status_update",
+    "createdAt": "2026-08-20T15:50:58.871Z",
+    "referenceFiles": []
+  }
+]

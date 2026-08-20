@@ -1,0 +1,7 @@
+# DR-002 isolated launch cleanup audit
+Recorded: 2026-08-20T18:27:31+02:00
+port=50665
+data_root=/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-5vcw4s
+PASS: preparation-owned data root removed
+PASS: isolated port has no listener
+PASS: built executable has no remaining process

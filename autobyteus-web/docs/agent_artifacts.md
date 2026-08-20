@@ -163,20 +163,24 @@ Rules:
   events can schedule a records refresh and active execution nodes can enrich
   display, but the Tasks UI does not parse Team Communication messages, raw
   Markdown/prose, or transient projection nodes for durable reference paths.
-- The left Tasks navigator shows a clean task-summary row followed by any
-  task-owned reference rows; it does not duplicate the Workspaces execution
-  hierarchy, status dot/status label, actor/member rows, or a separate visible
-  `References` heading. Reference rows use the shared file presentation, a
-  visible selected state, and enough spacing to read as task-owned navigation
-  rather than raw metadata. Selecting a reference updates the section-local
-  task/reference selection and switches the right detail pane from task body to
-  file preview. Selecting the task summary clears the selected reference and
-  shows the task body again.
+- The left Tasks navigator is one task-owned conversation. It starts with the
+  assignment and its references, then renders every submission, review, and
+  interruption once in durable record order. Each lifecycle row has a human
+  event label, readable participants or system attribution, timestamp, content
+  preview, and its own reference rows. The assignment also shows the current
+  human task status and last-activity time. The navigator does not duplicate
+  the Workspaces execution hierarchy, actor/member rows, or a separate visible
+  `References` heading.
+- Reference rows use the shared file presentation and a visible selected state.
+  Selecting an assignment or update shows only that item's Markdown detail on
+  the right. Selecting one of its references switches the right pane to the
+  existing file preview; reselecting the owning item returns to its content.
+  The right pane never duplicates the lifecycle or reference navigation.
 - Reference content opens by task-owned identity:
   `/team-runs/:teamRunId/task-delegations/:taskId/references/:referenceId/content`.
-- Primary visible Tasks UI hides raw task ids and task-kind badges; those values
-  belong in the collapsed Technical details block in the left navigator, not in
-  the main summary/reference rows or right detail body.
+- Raw task/run ids, task-kind and target metadata, routing JSON, raw arguments,
+  and the former Technical details disclosure are absent from the Tasks UI.
+  Exact ids remain internal selection and reference-routing keys only.
 - Tasks is task-content navigation and readback oriented. It never owns
   Approve/Deny controls, approval command target construction, execution focus
   controls, or visible execution-status summary markers; pending approval remains
@@ -213,8 +217,8 @@ flowchart LR
   Y --> YA[GraphQL: getTaskDelegationRecords]
   YA --> YB[taskDelegationStore]
   YB --> Z[Team tab: Tasks section]
-  Z --> ZA[TeamDelegatedTaskNavigator reference rows]
-  Z --> AA[TeamDelegatedTaskDetailPane]
+  Z --> ZA[TeamDelegatedTaskNavigator assignment, update, and reference rows]
+  Z --> AA[TeamDelegatedTaskDetailPane selected item or reference]
   AA --> AB[TeamTaskReferenceViewer]
   AB --> AC[TeamReferenceFileViewer]
   AC --> AD[REST: task reference content route]
@@ -240,8 +244,9 @@ flowchart LR
 | Task Delegation store | `autobyteus-web/stores/taskDelegationStore.ts` | Owns hydrated persisted task-delegation records keyed by root team run. |
 | Task Delegation hydration | `autobyteus-web/services/runHydration/taskDelegationHydrationService.ts` | Loads `getTaskDelegationRecords(teamRunId)` for live and historical team runs and supports event-triggered refresh. |
 | Team Tasks section | `autobyteus-web/components/workspace/team/TeamDelegatedTasksSection.vue` | Owns the Team-tab Tasks split layout, section-local selected task/reference state, left-pane resizing, and empty state; it does not own actor/member focus emits. |
-| Team Tasks navigator | `autobyteus-web/components/workspace/team/TeamDelegatedTaskNavigator.vue` | Renders compact task navigator items in the order clean task summary, task-owned reference rows, and collapsed technical metadata; execution status/hierarchy stays in Workspaces. |
-| Team delegated-task detail pane | `autobyteus-web/components/workspace/team/TeamDelegatedTaskDetailPane.vue` | Renders only the selected task body or selected task-owned reference preview; focus controls, actor/member rows, status/waiting copy, reference rows, and Technical details stay in the left Tasks navigator or Activity surface. |
+| Team Tasks lifecycle projector | `autobyteus-web/utils/teamDelegatedTaskEntries.ts` | Projects strict task records into an ordered assignment/submission/review/interruption conversation with stable item/reference locators, readable participants, result ordinals, current human task status, and item-owned references. |
+| Team Tasks navigator | `autobyteus-web/components/workspace/team/TeamDelegatedTaskNavigator.vue`, `TeamDelegatedTaskLifecycleRow.vue` | Renders the assignment, current human task status, every durable lifecycle update, and each item's reference rows as the complete left-side navigation. It renders no raw ids, routing JSON, execution hierarchy, or Technical details. |
+| Team delegated-task detail pane | `autobyteus-web/components/workspace/team/TeamDelegatedTaskDetailPane.vue`, `TeamDelegatedTaskItemDetail.vue` | Renders exactly one selected assignment/update Markdown detail or selected task-owned reference preview without duplicating the left lifecycle/reference navigation. |
 | Task reference route wrapper | `autobyteus-web/components/workspace/team/TeamTaskReferenceViewer.vue` | Builds the task-owned content route from `teamRunId + taskId + referenceId` for the selected right-side reference preview. |
 | Task reference preview shell | `autobyteus-web/components/workspace/team/TeamReferenceFileViewer.vue` | Route-agnostic read-only Team reference shell used for task references; delegates raw/preview/media/PDF/CSV/Excel rendering to `FileViewer`. |
 | Generic Team reference type/presentation | `autobyteus-web/types/teamReferenceFile.ts`, `autobyteus-web/utils/teamReferences/*` | Shared task-reference file model and file-type/name/icon presentation for the Tasks surface. |

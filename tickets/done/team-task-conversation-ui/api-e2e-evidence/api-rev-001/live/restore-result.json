@@ -1,0 +1,28 @@
+{
+  "startedAt": "2026-08-20T15:56:13.742Z",
+  "teamRunId": "nested_classroom_test_team_78ad44fb026f489fa6f35d1cff5839be",
+  "result": "Pass",
+  "consoleEvents": [],
+  "restoredTasks": 2,
+  "restoredLifecycleRows": 5,
+  "teacherTasks": 2,
+  "unrelatedStudentTasks": 0,
+  "englishLabels": [
+    "Result submitted · Result 1",
+    "Revision requested · Result 1",
+    "Revised result submitted · Result 2",
+    "Result 2 accepted"
+  ],
+  "chineseLabels": [
+    "已提交结果 · 结果 1",
+    "已请求修订 · 结果 1",
+    "已提交修订结果 · 结果 2",
+    "结果 2 已接受"
+  ],
+  "technicalDetailsAbsent": true,
+  "rightPaneNavigationAbsent": true,
+  "historyIsActive": false,
+  "browserContextCleanup": "closed",
+  "browserCleanup": "closed",
+  "completedAt": "2026-08-20T15:56:35.651Z"
+}
