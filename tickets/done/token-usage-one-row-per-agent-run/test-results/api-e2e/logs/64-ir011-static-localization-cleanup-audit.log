@@ -1,0 +1,75 @@
+=== server build TypeScript ===
+=== localization boundary ===
+
+> autobyteus@1.4.52 guard:localization-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+
+[guard:localization-boundary] Passed.
+=== localization literal audit ===
+
+> autobyteus@1.4.52 audit:localization-literals /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web
+> node ./scripts/audit-localization-literals.mjs
+
+[audit:localization-literals] Passed with zero unresolved findings.
+(node:58089) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/localization/audit/migrationScopes.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+=== recovery transport paths ===
+autobyteus-web/components/settings/ServerMigrationsManager.vue:101:                  v-if="migration.recoveryAction === 'RESTART_TO_RETRY'"
+autobyteus-web/components/settings/ServerMigrationsManager.vue:105:                  {{ $t('settings.components.settings.ServerMigrationsManager.restartToRetry') }}
+autobyteus-web/graphql/queries/app_data_migrations_queries.ts:11:      recoveryAction
+autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:28:  recoveryAction: "MANUAL_RETRY" | "RESTART_TO_RETRY" | "NONE";
+autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:427:        migrationId status recoveryAction canRetry attempts summary errorMessage logPath
+autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:459:    recoveryAction: "NONE",
+autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:941:      recoveryAction: "RESTART_TO_RETRY",
+autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:988:      recoveryAction: "NONE",
+autobyteus-server-ts/src/api/graphql/types/app-data-migrations.ts:59:  recoveryAction!: AppDataMigrationRecoveryAction;
+autobyteus-server-ts/src/api/graphql/types/app-data-migrations.ts:89:  recoveryAction: snapshot.recoveryAction,
+autobyteus-server-ts/tests/unit/app-data-migrations/app-data-migration-runner.test.ts:208:        recoveryAction: AppDataMigrationRecoveryAction.MANUAL_RETRY,
+autobyteus-server-ts/tests/unit/app-data-migrations/app-data-migration-runner.test.ts:277:      (await runner.listStatuses()).map(({ migrationId, recoveryAction, canRetry }) => [
+autobyteus-server-ts/tests/unit/app-data-migrations/app-data-migration-runner.test.ts:279:        { recoveryAction, canRetry },
+autobyteus-server-ts/tests/unit/app-data-migrations/app-data-migration-runner.test.ts:284:      recoveryAction: AppDataMigrationRecoveryAction.MANUAL_RETRY,
+autobyteus-server-ts/tests/unit/app-data-migrations/app-data-migration-runner.test.ts:288:      recoveryAction: AppDataMigrationRecoveryAction.RESTART_TO_RETRY,
+autobyteus-server-ts/tests/unit/app-data-migrations/app-data-migration-runner.test.ts:292:      recoveryAction: AppDataMigrationRecoveryAction.NONE,
+autobyteus-server-ts/tests/unit/app-data-migrations/app-data-migration-runner.test.ts:327:      recoveryAction: AppDataMigrationRecoveryAction.RESTART_TO_RETRY,
+autobyteus-server-ts/tests/unit/app-data-migrations/app-data-migration-runner.test.ts:337:        recoveryAction: AppDataMigrationRecoveryAction.NONE,
+autobyteus-server-ts/tests/unit/app-data-migrations/app-data-migration-runner.test.ts:373:        recoveryAction: AppDataMigrationRecoveryAction.RESTART_TO_RETRY,
+autobyteus-server-ts/tests/unit/app-data-migrations/app-data-migration-runner.test.ts:382:        recoveryAction: AppDataMigrationRecoveryAction.NONE,
+autobyteus-server-ts/tests/unit/app-data-migrations/app-data-migration-runner.test.ts:417:      recoveryAction: AppDataMigrationRecoveryAction.NONE,
+autobyteus-server-ts/tests/unit/app-data-migrations/app-data-migration-runner.test.ts:646:        recoveryAction: AppDataMigrationRecoveryAction.MANUAL_RETRY,
+autobyteus-web/stores/appDataMigrationsStore.ts:35:  recoveryAction: AppDataMigrationRecoveryAction
+autobyteus-server-ts/tests/unit/api/graphql/types/app-data-migrations.test.ts:29:      recoveryAction: AppDataMigrationRecoveryAction.RESTART_TO_RETRY,
+autobyteus-server-ts/tests/unit/api/graphql/types/app-data-migrations.test.ts:46:      ? recordType.getFields().recoveryAction?.type.toString()
+autobyteus-server-ts/tests/unit/api/graphql/types/app-data-migrations.test.ts:50:      recoveryAction: AppDataMigrationRecoveryAction.RESTART_TO_RETRY,
+autobyteus-web/localization/messages/en/settings.ts:622:  'settings.components.settings.ServerMigrationsManager.restartToRetry': 'This migration can only be retried during startup. Restart AutoByteus to try again.',
+autobyteus-web/localization/messages/zh-CN/settings.ts:622:  'settings.components.settings.ServerMigrationsManager.restartToRetry': '此迁移只能在启动时重试。请重启 AutoByteus 后再试。',
+autobyteus-web/generated/graphql.ts:278:  recoveryAction: AppDataMigrationRecoveryAction;
+autobyteus-web/generated/graphql.ts:288:  RestartToRetry = 'RESTART_TO_RETRY'
+autobyteus-web/generated/graphql.ts:2988:export type RunAppDataMigrationMutation = { __typename?: 'Mutation', runAppDataMigration: { __typename?: 'AppDataMigrationMutationResult', success: boolean, message: string, migration?: { __typename?: 'AppDataMigrationRecordObject', migrationId: string, displayName: string, description: string, status: AppDataMigrationStatus, requiredOnStartup: boolean, recoveryAction: AppDataMigrationRecoveryAction, canRetry: boolean, attempts: number, startedAt?: any | null, completedAt?: any | null, summary?: any | null, errorMessage?: string | null, logPath?: string | null } | null } };
+autobyteus-web/generated/graphql.ts:3329:export type GetAppDataMigrationsQuery = { __typename?: 'Query', getAppDataMigrations: Array<{ __typename?: 'AppDataMigrationRecordObject', migrationId: string, displayName: string, description: string, status: AppDataMigrationStatus, requiredOnStartup: boolean, recoveryAction: AppDataMigrationRecoveryAction, canRetry: boolean, attempts: number, startedAt?: any | null, completedAt?: any | null, summary?: any | null, errorMessage?: string | null, logPath?: string | null }> };
+autobyteus-web/generated/graphql.ts:5164:      recoveryAction
+autobyteus-web/generated/graphql.ts:6783:    recoveryAction
+autobyteus-server-ts/src/app-data-migrations/domain/app-data-migration-types.ts:10:  RESTART_TO_RETRY = "RESTART_TO_RETRY",
+autobyteus-server-ts/src/app-data-migrations/domain/app-data-migration-types.ts:72:  recoveryAction: AppDataMigrationRecoveryAction;
+autobyteus-server-ts/src/app-data-migrations/app-data-migration-runner.ts:182:      ? AppDataMigrationRecoveryAction.RESTART_TO_RETRY
+autobyteus-server-ts/src/app-data-migrations/app-data-migration-runner.ts:228:    const recoveryAction = this.classifyRecoveryAction(definition, record);
+autobyteus-server-ts/src/app-data-migrations/app-data-migration-runner.ts:242:      recoveryAction,
+autobyteus-server-ts/src/app-data-migrations/app-data-migration-runner.ts:243:      canRetry: recoveryAction === AppDataMigrationRecoveryAction.MANUAL_RETRY,
+=== withdrawn audit source/test identifiers: expect no output ===
+PASS: no withdrawn audit identifiers in current source/test/web trees
+=== emitted production build residue: expect no output ===
+PASS: no withdrawn audit identifiers in rebuilt server dist
+=== exact deleted paths ===
+PASS absent: autobyteus-server-ts/src/app-data-migrations/repositories/app-data-migration-summary-projection.ts
+PASS absent: autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-migration-audit-compaction-v1
+PASS absent: autobyteus-server-ts/tests/helpers/app-data-migration-audit-fixtures.ts
+PASS absent: autobyteus-server-ts/tests/unit/app-data-migrations/app-data-migration-record-repository-bounds.test.ts
+PASS absent: autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-migration-audit-compaction-v1.test.ts
+PASS absent: autobyteus-server-ts/tests/e2e/app-data-migrations/token-usage-migration-audit-compaction-startup.e2e.test.ts
+=== disabled/focused tests: expect no output ===
+PASS: no .only/.skip in changed durable coverage
+=== worktree diff check ===
+=== owned runtime/database residue ===
+PASS: no API/E2E-owned database residue
+PASS: no API/E2E-owned runtime residue

@@ -1,0 +1,6 @@
+migrationId=20260819_token_usage_run_records_v1
+displayName=Token usage one-row run records V1
+statusSummary={"scannedCount":0,"migratedCount":0,"skippedCount":0,"failedCount":1}
+error=Legacy token usage field 'source_reported_input_tokens' is outside JavaScript SafeInt.
+details=
+{"itemId":"token-usage-run-records-v1:failure","status":"FAILED","message":"Legacy token usage field 'source_reported_input_tokens' is outside JavaScript SafeInt."}

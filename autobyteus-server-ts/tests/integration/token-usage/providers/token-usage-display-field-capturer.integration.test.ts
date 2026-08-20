@@ -50,7 +50,7 @@ describe("TokenUsageDisplayFieldCapturer", () => {
       agent_name: "Historical Agent",
       run_summary: "Summarize captured costs",
       run_created_at: "2026-06-29T10:00:00.000Z",
-      member_name: null,
+      member_display_name: null,
     });
   });
 
@@ -70,28 +70,14 @@ describe("TokenUsageDisplayFieldCapturer", () => {
           terminatedAt: null,
         })),
       } as never,
-      teamMetadata: {
-        readMetadata: vi.fn(async () => ({
-          teamRunId: "team-run",
-          teamDefinitionId: "team-def",
-          teamDefinitionName: "Metadata Team",
-          coordinatorMemberRouteKey: "designer",
-          createdAt: "2026-06-29T08:00:00.000Z",
-          memberTree: [{
-            memberKind: "agent",
-            memberRouteKey: "designer",
-            memberPath: ["designer"],
-            memberName: "Solution Designer",
-            memberRunId: "member-run",
-            runtimeKind: "codex_app_server",
-            platformAgentRunId: null,
-            agentDefinitionId: "solution-designer",
-            llmModelIdentifier: "gpt-test",
-            autoExecuteTools: false,
-            skillAccessMode: "all" as never,
-            llmConfig: null,
-            workspaceRootPath: "/workspace/ignored",
-          }],
+      executionTreeLocation: {
+        findAgent: vi.fn(async () => ({
+          rootTeamRunId: "team-run",
+          memberAddress: "/designer",
+          tree: {
+            createdAt: "2026-06-29T08:00:00.000Z",
+            rootTeam: { teamDefinitionName: "Metadata Team" },
+          },
         })),
       } as never,
     });
@@ -99,8 +85,6 @@ describe("TokenUsageDisplayFieldCapturer", () => {
     const captured = await capturer.capture(buildEvent({
       run_id: "member-run",
       root_team_run_id: "team-run",
-      member_agent_run_id: "member-run",
-      member_route_key: "designer",
     }));
 
     expect(captured).toMatchObject({
@@ -108,7 +92,7 @@ describe("TokenUsageDisplayFieldCapturer", () => {
       agent_name: null,
       run_summary: "Team summary",
       run_created_at: "2026-06-29T09:00:00.000Z",
-      member_name: "Solution Designer",
+      member_display_name: "/designer",
     });
   });
 

@@ -1,0 +1,35 @@
+=== canonical latest result markers ===
+tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-execution-coverage-report.md:12:- Final validation confidence: `97.6%`.
+tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-execution-coverage-report.md:534:## Latest Authoritative Result — API-REV-006
+tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-execution-coverage-report.md:537:- Final validation confidence: `97.6%`.
+tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-coverage-investigation.md:14:- Current API/E2E Revision: `API-REV-006` Pass at 97.6%
+14:| API-REV-006 | `code_reviewer` / CRR-014 / round 6 | SR-009; ARCH-REV-009; IR-008–IR-009; CRR-014; DR-006 | Pass / 97.4% | Pass / 97.6% |
+158:### API-REV-006 — Bounded terminal audit reads and reachable startup compaction pass
+=== required durable paths ===
+autobyteus-server-ts/tests/helpers/app-data-migration-audit-fixtures.ts
+autobyteus-server-ts/tests/unit/app-data-migrations/app-data-migration-record-repository-bounds.test.ts
+autobyteus-server-ts/tests/unit/app-data-migrations/app-data-migration-runner.test.ts
+autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-migration-audit-compaction-v1.test.ts
+autobyteus-web/components/settings/__tests__/ServerMigrationsManager.spec.ts
+autobyteus-server-ts/tests/e2e/app-data-migrations/token-usage-migration-audit-compaction-startup.e2e.test.ts
+=== evidence logs ===
+tickets/in-progress/token-usage-one-row-per-agent-run/test-results/api-e2e/logs/44-ir009-server-build.log
+tickets/in-progress/token-usage-one-row-per-agent-run/test-results/api-e2e/logs/45-ir009-built-server-audit-compaction-e2e.log
+tickets/in-progress/token-usage-one-row-per-agent-run/test-results/api-e2e/logs/46-ir009-built-server-audit-compaction-e2e-rerun.log
+tickets/in-progress/token-usage-one-row-per-agent-run/test-results/api-e2e/logs/47-ir009-bounds-runner-compactor-suite.log
+tickets/in-progress/token-usage-one-row-per-agent-run/test-results/api-e2e/logs/48-ir009-settings-store-suite.log
+tickets/in-progress/token-usage-one-row-per-agent-run/test-results/api-e2e/logs/49-ir009-nuxt-production-build.log
+tickets/in-progress/token-usage-one-row-per-agent-run/test-results/api-e2e/logs/50-ir009-final-audit-compaction-suite.log
+tickets/in-progress/token-usage-one-row-per-agent-run/test-results/api-e2e/logs/51-ir009-ts-static-cleanup.log
+=== diff and cleanup ===
+PASS: no owned runtime/database/process residue
+=== current durable status ===
+ M autobyteus-server-ts/tests/unit/app-data-migrations/app-data-migration-runner.test.ts
+ M tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-coverage-investigation.md
+ M tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-execution-coverage-report.md
+ M tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-revision-record.md
+?? autobyteus-server-ts/tests/e2e/app-data-migrations/token-usage-migration-audit-compaction-startup.e2e.test.ts
+?? autobyteus-server-ts/tests/helpers/app-data-migration-audit-fixtures.ts
+?? autobyteus-server-ts/tests/unit/app-data-migrations/app-data-migration-record-repository-bounds.test.ts
+?? autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-migration-audit-compaction-v1.test.ts
+?? autobyteus-web/components/settings/__tests__/ServerMigrationsManager.spec.ts

@@ -59,8 +59,12 @@ export class TokenCostCalculator {
   constructor(private readonly priceProvider = new TokenPriceConfigProvider()) {}
 
   async enrichCost(payload: TokenUsageUpdatedPayload): Promise<TokenUsageUpdatedPayload> {
-    const policy = await this.priceProvider.resolvePolicy(payload);
+    const policy = await this.resolvePolicy(payload);
     return this.applyPolicy(payload, policy);
+  }
+
+  resolvePolicy(payload: TokenUsageUpdatedPayload): Promise<ResolvedTokenPricingPolicy> {
+    return this.priceProvider.resolvePolicy(payload);
   }
 
   applyPolicy(payload: TokenUsageUpdatedPayload, policy: ResolvedTokenPricingPolicy): TokenUsageUpdatedPayload {

@@ -9,7 +9,7 @@ import {
   type TeamExecutionAddress,
 } from "../../legacy/team-execution-address.js";
 import type { AppDataMigrationItemDetail } from "../../domain/app-data-migration-types.js";
-import type { TokenUsageTeamRunV1EvidenceRow } from "../../../token-usage/repositories/sql/token-usage-team-run-v1-migration-repository.js";
+import type { TokenUsageTeamRunV1EvidenceRow } from "./token-usage-team-run-v1-migration-repository.js";
 import type {
   TokenUsageTaskTeamRunIndex,
   TokenUsageTaskTeamRunIndexEntry,

@@ -1,0 +1,34 @@
+
+> autobyteus@1.4.52 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/settings/__tests__/ServerMigrationsManager.spec.ts stores/__tests__/appDataMigrationsStore.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-web
+
+stderr | components/settings/__tests__/ServerMigrationsManager.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/appDataMigrationsStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/settings/__tests__/ServerMigrationsManager.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/appDataMigrationsStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/appDataMigrationsStore.spec.ts (2 tests) 4ms
+ ✓ components/settings/__tests__/ServerMigrationsManager.spec.ts (2 tests) 42ms
+
+ Test Files  2 passed (2)
+      Tests  4 passed (4)
+   Start at  08:16:49
+   Duration  6.47s (transform 3.21s, setup 10.29s, collect 244ms, tests 46ms, environment 482ms, prepare 319ms)
+

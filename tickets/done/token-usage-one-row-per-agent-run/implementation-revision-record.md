@@ -1,0 +1,291 @@
+# Implementation Revision Record
+
+The current code and `implementation-handoff.md` are authoritative. This record identifies the implementation baseline and later deltas without replacing source review.
+
+## Revision Index
+
+| Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
+| --- | --- | --- | --- | --- | --- |
+| IR-001 | `/architecture_reviewer`; `design-review-report.md`; round 6 | N/A | `Initial Baseline` | `SR-006`, `ARCH-REV-006`; `CRR`/`API-REV`/`DR`: N/A | Current one-row runtime, bounded repairs, forward-only consolidation/readiness lifecycle, and UI semantics implemented; ready for source review. |
+| IR-002 | `/code_reviewer`; `code-review-report.md`; round 1 | `CR-001`, `CR-002`, `CR-003` | `Local Fix` | `SR-006`, `ARCH-REV-006`, `CRR-001`; `API-REV`/`DR`: N/A | BigInt commit/public projection ordering fixed, pricing ownership extracted, and task delegation structurally reduced; ready for source re-review. |
+| IR-003 | `/code_reviewer`; `code-review-report.md`; failure-origin round `CRR-003` | `CR-004` / `APIE2E-F001` | `Local Fix` | `SR-006`, `ARCH-REV-006`, `CRR-003`, `API-REV-001`; `DR`: N/A | Shared mixed-currency pricing semantics corrected for live, migration, and aggregate read paths; ready for source re-review. |
+| IR-004 | `/code_reviewer`; `code-review-report.md`; failure-origin round `CRR-005` | `CR-005` / `APIE2E-F002` | `Local Fix` | `SR-006`, `ARCH-REV-006`, `CRR-005`, `API-REV-002`; `DR`: N/A | Empty-record cache sentinel removed from semantic reduction; current, migration, persisted, and public-summary regressions pass; ready for source re-review. |
+| IR-005 | `/code_reviewer`; `code-review-report.md`; full source round `CRR-006` | `CR-006` | `Local Fix` | `SR-006`, `ARCH-REV-006`, `CRR-006`, `API-REV-002`; `DR`: N/A | Released non-local unknown-input meaning restored inside consolidation, independently validated, and proven through direct-upgrade SQLite/current-summary coverage; ready for source re-review. |
+| IR-006 | `/delivery_engineer`; `delivery-integration-blocker.md`; `DR-002` | Latest-base TeamRun restore conflict | `Local Fix` | `SR-006`, `ARCH-REV-006`, `CRR-008`, `API-REV-003`, `DR-002` | Latest `origin/personal` integrated; managed/offline lifecycle and token restore readiness compose in the correct order; focused integrated checks pass; ready for source re-review. |
+| IR-007 | `/delivery_engineer` / user-directed design re-entry; `delivery-rework-record.md`; `DR-004` | `MP-004`, `DS-009` | `Local Fix` | `SR-007`, `ARCH-REV-007`; prior `CRR-010`, `API-REV-004`; `DR-004` | Nullable SQLite JSON scalars now use deterministic tagged-text transport and strict migration-only decoding; exact leading-NULL and rollback/retry coverage passes; ready for source re-review. |
+| IR-008 | `/architecture_reviewer`; `design-review-report.md`; `ARCH-REV-009` after `DR-006` | `AR-005`, `MP-005`, `DS-010`, `DS-011` | `Local Fix` under reviewed design refinement | `SR-009`, `ARCH-REV-009`; prior `CRR-012`, `API-REV-005`; `DR-006`, `DR-005` | Current migration-status reads are SQL-bounded and the registered startup-only, non-gating terminal-audit compactor preserves outcome facts while compacting only supported two-ID evidence; focused real SQLite/Prisma runner coverage passes; ready for source review. |
+| IR-009 | `/code_reviewer`; `code-review-report.md`; `CRR-013` | `CR-007` | `Local Fix` | `SR-009`, `ARCH-REV-009`, `CRR-013`; prior `API-REV-005`; `DR-006`, `DR-005` | Public manual-retry capability now respects startup-only execution policy, Settings disables the impossible action, and automatic failed/stale-startup retry plus terminal-warning skip remain intact; ready for source re-review. |
+| IR-010 | `/architecture_reviewer`; `design-review-report.md`; `ARCH-REV-010` after `CRR-017` | `CR-008` / `MP-CR-007`; historical `AR-005` / `MP-005` and `CR-007` made moot | `Local Fix` under user-directed reviewed rescope | `SR-010`, `ARCH-REV-010`, `CRR-017`; prior `API-REV-007`, `DR-007`; restored baseline `CRR-012`, `API-REV-005`, `DR-005` | Withdrawn audit projection/compactor/runtime/test/docs expansion removed completely; current product source/tests match SR-007 and focused checks pass; ready for source re-review. |
+| IR-011 | `/architecture_reviewer`; `design-review-report.md`; `ARCH-REV-012` after `CRR-018` / `CR-009` | `AR-006`, `CR-009`, `MP-CR-008`, `DS-012` | `Local Fix` under reviewed design completion | `SR-012`, `ARCH-REV-012`, `CRR-018`; prior `API-REV-005`; `DR-007` withdrawn | Runner-owned recovery enum now distinguishes manual, restart, and no action; GraphQL/client/store carry it directly and Settings renders exact localized restart guidance with disabled/no-dispatch retry; focused checks pass and the package is ready for source re-review. |
+
+## Revision Entries
+
+### IR-001 — Current one-row runtime and forward-only migration baseline
+
+- Triggering role, report path, and round: `/architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/design-review-report.md`; round 6.
+- Triggering finding IDs: `N/A`; historical `AR-001`–`AR-004` remain resolved in the superseding lifecycle.
+- Classification: `Initial Baseline`.
+- Prior authoritative result: `N/A`.
+- Current authoritative result: Implementation complete and ready for `/code_reviewer`.
+- Related solution revision IDs: `SR-006`.
+- Related architecture-review revision IDs: `ARCH-REV-006`.
+- Related code-review revision IDs: `N/A`.
+- Related API/E2E revision IDs: `N/A`.
+- Related delivery revision IDs: `N/A`.
+- Why this baseline is recorded: The reviewed solution replaces append-only token-event storage with one cumulative current row per canonical run and requires bounded historical repairs, migration-only legacy knowledge, disjoint atomic consolidation, restore/history gating, current-schema failure classification, and truthful run-created/lifetime-total UI semantics.
+- Approved behavior or requirement IDs affected: `BEH-001`–`BEH-006`; `REQ-001`–`REQ-026`; `AC-001`–`AC-025`.
+- Implementation delta:
+  - Added the current BigInt run-record schema, domain, fold, codecs, repository, accumulator, store, aggregation, and awaited persistence path.
+  - Replaced event-array runtime summaries and removed detached ledger append/list ownership.
+  - Repaired both unchanged-ID 20260730 migrations with bounded keyset/CAS/scalar execution.
+  - Added migration-only legacy consolidation with scalar set-disjointness preflight, deterministic bounded folding, target validation, and atomic cleanup.
+  - Added current-schema readiness, degraded history/restore gates across all run kinds, startup-only manual execution policy, and typed fatal/degraded errors.
+  - Updated GraphQL/statistics and Settings UI period/error semantics; removed obsolete runtime adapters and tests.
+- Changed files or areas: `autobyteus-server-ts/prisma/`; current `src/token-usage/`; event persistence; standalone/team/task lifecycle services; app-data migration registry/runner and token migration folders; startup/runtime; GraphQL token statistics; `autobyteus-web` token statistics component/localization/tests.
+- Local validation and result: Prisma format/generate passed; server TypeScript build check passed; focused server suite passed 13 files/64 tests; real temporary SQLite current-fold, consolidation commit/overlap/rollback, codec validation, and schema-readiness smokes passed; Nuxt prepare, four component tests, and localization guards passed. Nuxt typecheck was blocked before diagnostics by the installed `vue-tsc`/TypeScript package export mismatch.
+- Next recipient or routing: `/code_reviewer`.
+- Remaining limitations or risks: released-scale long-transaction resource/timeout evidence, downstream stale integration/E2E coverage maintenance, full browser visual verification, BigInt/SafeInt system behavior, all-run-kind system restore gates, >8-series durable behavior, and SQLite freelist evidence remain downstream work. Physical source-contract removal, file shrinking, and durable convention/doc promotion remain intentionally deferred to their approved stages.
+
+### IR-002 — Source-review boundary and structure corrections
+
+- Triggering role, report path, and round: `/code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/code-review-report.md`; round 1 / `CRR-001`.
+- Triggering finding IDs: `CR-001`, `CR-002`, `CR-003`.
+- Classification: `Local Fix`.
+- Prior authoritative result: `IR-001` implemented the reviewed mechanics, but source review failed on one write-boundary correctness defect and two structural defects.
+- Current authoritative result: All three local findings are addressed; the cumulative implementation is ready for `/code_reviewer` re-review.
+- Related solution revision IDs: `SR-006`.
+- Related architecture-review revision IDs: `ARCH-REV-006`.
+- Related code-review revision IDs: `CRR-001`.
+- Related API/E2E revision IDs: `N/A`.
+- Related delivery revision IDs: `N/A`.
+- Why this implementation revision is recorded: `CRR-001` found that public SafeInt mapping could reject inside the transaction and roll back exact BigInt state, pricing-summary policy had no focused owner, and compressed imports masked task-delegation file-size pressure.
+- Approved behavior or requirement IDs affected: `BEH-001`, `BEH-002`; `REQ-001`, `REQ-004`, `REQ-006`, `REQ-008`, `REQ-010`; `AC-001`, `AC-003`, `AC-006`. `CR-002`/`CR-003` affect reviewed ownership and implementation guardrails without changing product behavior.
+- Implementation delta:
+  - `TokenUsageRunAccumulator` now completes the repository transaction and receives the exact persisted record before building the public/live summary. `TokenUsageSafeIntegerExceededError` preserves explicit checked narrowing; the event transformer uses a truthful `token_usage_public_summary_unavailable` disposition rather than `token_usage_persistence_unavailable` for this post-commit failure.
+  - Pricing-summary empty/build/merge policy moved from `token-usage-run-record-state.ts` into focused `token-usage-pricing-summary.ts`; record state fell from 239 to 174 effective lines and aggregate dependencies now point to the pricing owner.
+  - Task delegation imports were restored to readable form. The service host/activation contract and task-record/assignee resolution moved to focused owners; the normally formatted service is 486 effective lines instead of the cosmetic 497-line result reviewed in `CRR-001`.
+- Changed files or areas: token run accumulator/aggregate/persistence transformer and focused tests; token pricing/run-record projection files; task-delegation service plus new service-contract and record-resolver files.
+- Local validation and result: server TypeScript build check passed; focused suite passed 15 files/74 tests. The added real Prisma/SQLite regression proves `9007199254740992n` and revision/report advancement are committed before the public summary rejects. Transformer coverage proves the typed post-commit failure is not mislabeled as persistence failure. Task-delegation invariant tests pass; dependency and effective-line audits pass; `git diff --check` passes.
+- Next recipient or routing: `/code_reviewer`.
+- Remaining limitations or risks: unchanged from `IR-001` except that the implementation-level SafeInt persistence boundary now has durable SQLite evidence. Actual GraphQL/live-client behavior, released-scale consolidation, broader coverage maintenance, all-run-kind system gates, >8-series repository evidence, freelist measurement, browser validation, Nuxt typecheck incompatibility, and delivery-owned documentation remain downstream work.
+
+### IR-003 — Mixed-currency pricing invariant correction
+
+- Triggering role, report path, and round: `/code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/code-review-report.md`; focused failure-origin review `CRR-003` of `API-REV-001` / `APIE2E-F001`.
+- Triggering finding IDs: `CR-004` / `APIE2E-F001`.
+- Classification: `Local Fix`.
+- Prior authoritative result: `IR-002` passed source review in `CRR-002`, but API/E2E exposed a supported mixed-currency pricing-semantics regression and `CRR-003` superseded the pass.
+- Current authoritative result: `CR-004` is addressed at the shared pricing owner; the cumulative implementation is ready for `/code_reviewer` re-review.
+- Related solution revision IDs: `SR-006`.
+- Related architecture-review revision IDs: `ARCH-REV-006`.
+- Related code-review revision IDs: `CRR-003`.
+- Related API/E2E revision IDs: `API-REV-001`.
+- Related delivery revision IDs: `N/A`.
+- Why this implementation revision is recorded: Current pricing merge independently combined currency, cost status, and numeric unit prices. A supported USD/CNY run therefore reported null currency/cost but falsely retained `estimated` status and a single price with no currency.
+- Approved behavior or requirement IDs affected: `BEH-002`, `BEH-005`; `REQ-006`, `REQ-010`, `REQ-017`–`REQ-019`; `AC-008`, `AC-016`–`AC-018`; `MP-CR-002`.
+- Implementation delta:
+  - `token-usage-pricing-summary.ts` now applies one post-merge mixed-currency invariant: `apiCostStatuses` becomes mixed, each non-not-applicable unit-price summary becomes mixed/null, and zero-use not-applicable summaries remain unchanged.
+  - Because current record mutation, legacy migration fold, and current aggregate read all use this owner, live and migrated records share the rule. Aggregate read also canonicalizes previously stored inconsistent pricing summaries by merging them through the owner.
+  - Added implementation-owned focused owner/aggregate unit coverage; the API/E2E-owned current-store reproducer and its other durable coverage files were not edited.
+- Changed files or areas: `autobyteus-server-ts/src/token-usage/projections/token-usage-pricing-summary.ts`; `autobyteus-server-ts/tests/unit/token-usage/projections/token-usage-pricing-summary.test.ts`; current handoff/revision artifacts.
+- Local validation and result: server TypeScript build check passed; focused implementation suite passed 16 files/76 tests. Owner coverage verifies equal numeric USD/CNY relevant prices become mixed/null with not-applicable preservation. Fold/aggregate coverage verifies persisted state uses mixed status and aggregate reads canonicalize an inconsistent mixed-currency record. Static shared-owner trace and `git diff --check` pass. The API/E2E reproducer was intentionally left for `/api_e2e_engineer` after source re-pass.
+- Next recipient or routing: `/code_reviewer`.
+- Remaining limitations or risks: `API-REV-001` remains stopped and must rerun `APIE2E-F001` plus its unfinished scale/lifecycle/API/browser plan. Six API/E2E-owned durable coverage changes still require successful execution and proportional code review. Other recorded released-scale, restore-topology, >8-series, freelist, browser, Nuxt typecheck, and delivery-documentation risks remain.
+
+### IR-004 — First admitted cache-state reduction correction
+
+- Triggering role, report path, and round: `/code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/code-review-report.md`; focused failure-origin review `CRR-005` of `API-REV-002` / `APIE2E-F002`.
+- Triggering finding IDs: `CR-005` / `APIE2E-F002`.
+- Classification: `Local Fix`.
+- Prior authoritative result: `IR-003` passed source review in `CRR-004` and `APIE2E-F001` passed its API/E2E recheck, but API/E2E then exposed a supported local-provider cache-state regression and `CRR-005` superseded the pass.
+- Current authoritative result: `CR-005` is addressed in the shared record-state reducer; the cumulative implementation is ready for `/code_reviewer` re-review.
+- Related solution revision IDs: `SR-006`.
+- Related architecture-review revision IDs: `ARCH-REV-006`.
+- Related code-review revision IDs: `CRR-005`.
+- Related API/E2E revision IDs: `API-REV-002`.
+- Related delivery revision IDs: `N/A`.
+- Why this implementation revision is recorded: `createEmptyRunRecord` requires a schema-valid `unknown` cache-state placeholder before any report is admitted, but contribution mutation reduced that placeholder as if it were an observation. The first supported OLLAMA/local `unsupported_or_local` fact therefore persisted and surfaced as `unknown`; migration folding shared the same defect.
+- Approved behavior or requirement IDs affected: `BEH-001`, `BEH-002`, `BEH-005`; `REQ-006`, `REQ-010`; `MP-CR-003`.
+- Implementation delta:
+  - `token-usage-run-record-state.ts` now uses `usageReportCount` to distinguish the zero-record placeholder from admitted facts. The first counted contribution installs its cache state directly; later counted contributions retain the existing substantive `summarizeCacheState` policy, including real `unknown` observations.
+  - Added current-fold and `LegacyTokenUsageRunFold` coverage for the first explicit local state, repeated local state, local plus unknown, unknown plus positive, local plus zero-reported, and a real single unknown observation.
+  - Added a real Prisma/SQLite accumulator regression using the local-no-API-bill pricing path. It verifies the stored record, authoritative event payload, and public `run_summary_after_event` all retain `unsupported_or_local`.
+  - The API/E2E-owned GraphQL reproducer and its other durable maintenance files were not edited.
+- Changed files or areas: `autobyteus-server-ts/src/token-usage/projections/token-usage-run-record-state.ts`; `autobyteus-server-ts/tests/unit/token-usage/projections/token-usage-run-fold.test.ts`; `autobyteus-server-ts/tests/unit/app-data-migrations/legacy-token-usage-run-fold.test.ts`; `autobyteus-server-ts/tests/unit/token-usage/services/token-usage-run-accumulator.test.ts`; current handoff/revision artifacts.
+- Local validation and result: server TypeScript build check passed. The focused defect suite passed 3 files/17 tests. The broader implementation-scoped suite passed 18 files/91 tests, including current/migration cache semantics, real persistence/public summary, pricing, SafeInt, fold bounds, migration runner/repairs, restore gates, event lifecycle, schema/bootstrap, TeamRun migration, and allocator behavior. `git diff --check` and the changed-source line audit pass; `token-usage-run-record-state.ts` remains 182 effective lines.
+- Next recipient or routing: `/code_reviewer`.
+- Remaining limitations or risks: `API-REV-002` remains stopped and must recheck `APIE2E-F002`, finish its two stale GraphQL assertions and source-shaping coverage maintenance, and complete the scale/lifecycle/API/live/browser plan. Its 13 API/E2E-owned durable changes still require successful final execution and proportional review. Other recorded released-scale, restore-topology, freelist, live SafeInt, browser, Nuxt typecheck, and delivery-documentation risks remain.
+
+### IR-005 — Released unknown-input consolidation normalization
+
+- Triggering role, report path, and round: `/code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/code-review-report.md`; full source re-review `CRR-006` of `IR-004`.
+- Triggering finding IDs: `CR-006`; related reachable premise `MP-CR-004`.
+- Classification: `Local Fix`.
+- Prior authoritative result: `CRR-006` confirmed `CR-005` resolved and independently reproduced the local `APIE2E-F002` assertion as passing, but failed the full implementation because consolidation did not preserve the released reader's non-local unknown-input meaning.
+- Current authoritative result: `CR-006` is addressed entirely inside the registered consolidation boundary; the cumulative implementation is ready for `/code_reviewer` re-review.
+- Related solution revision IDs: `SR-006`.
+- Related architecture-review revision IDs: `ARCH-REV-006`.
+- Related code-review revision IDs: `CRR-006`.
+- Related API/E2E revision IDs: `API-REV-002`.
+- Related delivery revision IDs: `N/A`.
+- Why this implementation revision is recorded: The released 20260624 ledger stored input/cache components and costs before 20260625 defaulted `input_token_semantic` and `cache_state` to `unknown`. The released reader normalized such non-local rows to uncertain component/input-cost facts, but the new migration mapper copied raw fields and could validate then delete an overconfident transformation.
+- Approved behavior or requirement IDs affected: `BEH-002`, `BEH-005`; `REQ-006`, `REQ-010`, `REQ-017`–`REQ-021`; `AC-007`; `MP-CR-004`.
+- Implementation delta:
+  - `legacy-token-usage-row.ts` now reproduces the released semantic before folding: non-local unknown input nulls standard/cache token components and input/cache costs, forces cache state `unknown`, keeps output and reasoning costs, sets total cost to the output cost, forces `partial_price_missing`, sets the released missing reason, and merges the semantic missing dimensions. Either released local-no-API-bill status bypasses that normalization.
+  - Missing-price dimension JSON is constrained to 4 KiB, 32 distinct values, and 96 characters per value; the legacy fold also rejects a cross-row union above 32 rather than persisting unbounded explanation state.
+  - `legacy-token-usage-consolidation-repository.ts` applies the same released normalization independently in scalar token/cost validation SQL, so destructive cleanup cannot validate raw overconfident facts against a normalized target. Target round-trip validation remains exact except for the already-approved `1e-9` finite-cost tolerance needed for normal SQLite float representation.
+  - Added a real direct/skip-version SQLite fixture that inserts a 20260624 pre-component row, applies the released schema migrations that default it to unknown, adds a representative later unknown row and a local exception row, then runs the real consolidation transaction. It verifies normalized current storage/public summary, source cleanup, local preservation, output-only cost, partial status, unit-price semantics, and merged dimensions.
+  - The current runtime and the 13 API/E2E-owned durable files were not edited. The historical-unknown API/E2E case remains for its owner to retarget from current observation ingestion to migration/current-record output.
+- Changed files or areas: `autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-run-records-v1/legacy-token-usage-row.ts`; `.../legacy-token-usage-run-fold.ts`; `.../legacy-token-usage-consolidation-repository.ts`; `autobyteus-server-ts/tests/unit/app-data-migrations/legacy-token-usage-run-fold.test.ts`; new `.../token-usage-run-records-v1-app-data-migration.test.ts`; current handoff/revision artifacts.
+- Local validation and result: server TypeScript build check passed. Focused migration tests passed 2 files/9 tests. The broader implementation-scoped suite passed 19 files/94 tests. The direct-upgrade fixture proves three released rows become two current rows, validates exact normalized token facts and tolerant finite costs, exposes the unknown run truthfully through the current summary, preserves the local exception, and empties the source atomically. Static review confirms no legacy import/query outside `src/app-data-migrations`; `git diff --check`, trailing-space, and effective-line audits pass.
+- Next recipient or routing: `/code_reviewer`.
+- Remaining limitations or risks: `API-REV-002` remains stopped. API/E2E must retarget and rerun its historical-unknown scenario through migration/current records, finish two other stale GraphQL assertions and source-shaping coverage maintenance, then complete released-scale, lifecycle/restore, overlap/retry, freelist, live SafeInt, API, and browser execution. The 13 API/E2E-owned durable changes still require successful final execution and proportional review. Nuxt typecheck compatibility and delivery-owned documentation remain outstanding.
+
+### IR-006 — Latest-base managed-run and token-readiness integration
+
+- Triggering role, report path, and round: `/delivery_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/delivery-integration-blocker.md`; delivery re-entry `DR-002`.
+- Triggering finding IDs: no separate finding ID; `DR-002` latest-base integration conflict in `TeamRunService.restoreTeamRun(...)`.
+- Classification: `Local Fix`.
+- Prior authoritative result: `CRR-008` passed the `API-REV-003` durable coverage delta and `DR-001` prepared a complete reviewed, executable, docs-synchronized candidate. `DR-002` then found `origin/personal` eight commits ahead and stopped its merge with one implementation-owned conflict before the requested Electron build.
+- Current authoritative result: The latest-base merge is conflict-free and complete. The integrated source and implementation-owned durable tests are ready for `/code_reviewer`; Electron packaging remains delivery-owned and has not started.
+- Related solution revision IDs: `SR-006`.
+- Related architecture-review revision IDs: `ARCH-REV-006`.
+- Related code-review revision IDs: `CRR-008`.
+- Related API/E2E revision IDs: `API-REV-003`.
+- Related delivery revision IDs: `DR-002`.
+- Why this implementation revision is recorded: Latest base replaced the active-only root guard with the offline-delete lifecycle's broader managed-run guard, while the token ticket requires every truly restored pre-existing run to pass migration readiness before provider construction. The clean task-delegation auto-merge also combined the ticket's current-schema admission gate with the latest base's terminated-run cleanup contract.
+- Approved behavior or requirement IDs affected: token `BEH-001`, `BEH-005`, `BEH-006`; `REQ-003`, `REQ-005`, `REQ-018`–`REQ-019`, `REQ-023`–`REQ-026`; `AC-004`, `AC-016`, `AC-018`–`AC-019`, `AC-022`–`AC-025`. Latest-base managed/offline TeamRun lifecycle behavior is preserved independently.
+- Implementation delta:
+  - Merged `origin/personal@1f5663ddb86e478d0b4ffdd878d57dee72d67b4b` into the protected `DR-001` candidate checkpoint `b68170cf608364bbcd264dde198ad83e030a3bb2`.
+  - `TeamRunService.restoreTeamRun(...)` now rejects any already managed root first, including an offline managed root, then asserts pre-existing-run token readiness immediately before delegating to `AgentTeamRunManager.restoreTeamRun(...)`. Managed roots therefore are not spuriously restored, while unmanaged persisted roots cannot construct providers during incomplete token consolidation.
+  - Reviewed the clean `TaskDelegationService` merge: `assertCurrentSchemaReady()` remains before task-run allocation/materialization, and successful settlement uses the latest `TeamRunResolver.unregisterTerminated()` lifecycle contract.
+  - Added focused TeamRun service regressions for current-schema admission before construction and managed/offline rejection before restore-readiness consultation. Updated the implementation-owned task-delegation invariant harness from the retired `unregisterInactive` mock name to the current `unregisterTerminated` contract exposed by latest base.
+- Changed files or areas: `autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts`; integrated `.../task-delegation/task-delegation-service.ts`; `autobyteus-server-ts/tests/unit/agent-team-execution/team-run-service.test.ts`; `.../task-delegation-current-invariants.test.ts`; current implementation handoff/revision artifacts. The other latest-base paths are the already-reviewed offline-delete feature integrated unchanged from `origin/personal`.
+- Local validation and result: server build TypeScript check passed. Focused integrated Vitest passed 6 files / 34 tests, covering current-schema admission, pre-existing restore gating before manager/provider construction, managed/offline roots, active/managed resolution, exact-ID delete/restore serialization, task-delegation activation/settlement, and root termination. The first focused run exposed only the stale implementation-owned `unregisterInactive` test double; after matching latest base's `unregisterTerminated` contract, the exact rerun passed.
+- Next recipient or routing: `/code_reviewer`; if integrated executable coverage is required after source review, route through `/api_e2e_engineer` before delivery. Otherwise return to `/delivery_engineer` for latest-base confirmation and the user-requested Electron README/build/integrity verification.
+- Remaining limitations or risks: Electron packaging has deliberately not started. The integrated state still carries the previously recorded independent Nuxt `vue-tsc`/TypeScript typecheck incompatibility and the `API-REV-003` external-provider opt-in exclusions. The latest-base merge imports a broad, separately reviewed offline-delete change; this implementation round validated the direct source intersections rather than rerunning that feature's complete prior API/E2E/browser matrix.
+
+### IR-007 — Deterministic nullable Prisma/SQLite scalar transport
+
+- Triggering role, report path, and round: `/delivery_engineer` plus user-directed solution/design re-entry; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/delivery-rework-record.md`; `DR-004`, then reviewed `SR-007` / `ARCH-REV-007`.
+- Triggering finding IDs: no new architecture finding ID; reachable premise `MP-004` and approved design slice `DS-009`.
+- Classification: `Local Fix` under a user-requested reviewed design refinement.
+- Prior authoritative result: `CRR-010` passed the focused post-merge durable coverage, and delivery built the `DR-003` Electron candidate. Explicit user verification then failed because the registered consolidation rejected healthy legacy source values before import. `DR-004` stopped finalization; exact safe-backup reproduction showed that four leading `NULL` computed results made later SQLite integers arrive from Prisma as decimal strings under the former bare projection.
+- Current authoritative result: DS-009 is implemented entirely inside the registered consolidation boundary and passes implementation-scoped real Prisma/SQLite and decoder coverage. The cumulative implementation is ready for `/code_reviewer`; the failed Electron package remains unaccepted.
+- Related solution revision IDs: `SR-007`.
+- Related architecture-review revision IDs: `ARCH-REV-007`.
+- Related code-review revision IDs: `CRR-010` (prior baseline).
+- Related API/E2E revision IDs: `API-REV-004` (prior baseline).
+- Related delivery revision IDs: `DR-004`, `DR-003`.
+- Why this implementation revision is recorded: A TypeScript `$queryRaw` generic was incorrectly treated as a runtime representation contract. For the first production ordered run, Prisma inferred later non-null values in a nullable `json_extract` result column as strings, so the former `number | bigint` decoder falsely reported that valid values `28826658` and `28987545` were outside SafeInt.
+- Approved behavior or requirement IDs affected: `BEH-005`; `REQ-017`–`REQ-020`, `REQ-023`–`REQ-027`; `AC-016`–`AC-020`, `AC-022`–`AC-026`; `DS-009`; `MP-004`.
+- Implementation delta:
+  - `LegacyTokenUsageConsolidationRepository` now generates all 15 cumulative-source projections from the closed shared field list. Every JSON path is a bound query value and every alias derives only from the closed field name. Each scalar crosses Prisma as `NULL` or `json_type(...) || ':' || CAST(json_extract(...) AS TEXT)`, eliminating result-order inference from the migration contract.
+  - `LegacyTokenUsageLedgerRow` models those derived values as untrusted string-or-null transport. The migration-only decoder distinguishes invalid tagged transport, unsupported JSON source type, noncanonical/nonnegative integer grammar, and SafeInt overflow. It admits only `integer:(0|[1-9][0-9]*)`, parses exact digits through `BigInt`, checks `<= Number.MAX_SAFE_INTEGER`, and then supplies the exact BigInt checkpoint fact to the legacy fold.
+  - No broad `Number`, `parseInt`, untagged decimal-string acceptance, integer cast normalization, runtime legacy reader, schema/API/GraphQL change, or production-database operation was added.
+  - Added a disposable actual Prisma/SQLite transaction fixture with one ordered six-row run: the first four cumulative-source results are `NULL`, followed in the same batch by JSON integers `28826658` and `28987545`. It verifies exact tagged transport, six admitted reports, one current record, exact totals/latest checkpoint, validated cleanup, and an empty source.
+  - Added real-adapter rejection/rollback/retry cases for JSON real, text, boolean, array, object, negative integer, and `9007199254740992`. Added focused decoder-boundary cases for untagged/malformed tags, signed/leading-zero/fractional/exponent/whitespace/noncanonical forms, wrong types, zero, maximum SafeInt, and first overflow.
+- Changed files or areas: `autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-run-records-v1/legacy-token-usage-consolidation-repository.ts`; `.../legacy-token-usage-row.ts`; new `autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts`; new `.../legacy-token-usage-source-decoder.test.ts`; current implementation handoff/revision artifacts.
+- Local validation and result: server TypeScript build check passed. Focused DS-009 coverage passed 2 files / 32 tests. The migration regression selection passed 4 files / 43 tests, including released unknown-input transformation, cleanup rollback/retry/freelist, and legacy fold semantics. Every rejected real-adapter case preserved all source rows, left the target empty, and produced the same bounded reason on ordinary retry. Static checks confirm closed/parameterized query construction, no current-runtime legacy dependency, source files below 500 effective lines, and clean diff whitespace.
+- Next recipient or routing: `/code_reviewer`; on source pass, `/api_e2e_engineer` must refresh coverage investigation/execution for DS-009, then return both new durable test files for proportional code review before `/delivery_engineer` rebuilds Electron and requests renewed explicit user verification.
+- Remaining limitations or risks: the implementation fixture is production-shaped and exercises the actual repository/transaction, but it does not access or mutate the user's live database. The prior released-scale/lifecycle/API/browser evidence predates DS-009 and may be reused only after API/E2E investigates proportional impact. The failed `DR-003` package is not acceptance evidence. The independent Nuxt `vue-tsc`/TypeScript incompatibility and external-provider opt-in exclusions remain unchanged.
+
+### IR-008 — Bounded migration-status envelope and terminal audit compaction
+
+- Triggering role, report path, and round: `/architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/design-review-report.md`; `ARCH-REV-009`, following `/delivery_engineer` `DR-006` and the upstream SR-008/SR-009 refinement.
+- Triggering finding IDs: `AR-005` / `MP-005` (resolved by the reviewed production scheduler); approved `DS-010` and `DS-011`; reachable `DR-006` terminal-audit residual.
+- Classification: `Local Fix` under a reviewed design refinement.
+- Prior authoritative result: `CRR-011`, `API-REV-005`, and `CRR-012` passed the DS-009 implementation and durable coverage. `DR-005` produced a corrected package, and `DR-006` reported successful live token consolidation plus a separate reachable 31 MB migration-status response from two already-terminal released summaries. Prior passes do not cover SR-009.
+- Current authoritative result: DS-010 and DS-011 are implemented on the current shared worktree with focused implementation checks passing. The cumulative package is ready for `/code_reviewer`; API/E2E, proportional durable-test review, delivery rebuild, and renewed verification remain required.
+- Related solution revision IDs: `SR-009` (current; preserves the SR-007 token mechanics).
+- Related architecture-review revision IDs: `ARCH-REV-009`.
+- Related code-review revision IDs: `CRR-012` (prior baseline only).
+- Related API/E2E revision IDs: `API-REV-005` (prior baseline only).
+- Related delivery revision IDs: `DR-006`, `DR-005`.
+- Why this implementation revision is recorded: already-`SUCCEEDED` released 20260730 records are correctly skipped by same-ID retry but can retain row-linear multi-megabyte audit bodies. Current scheduling/API reads formerly materialized those bodies in Node. SR-009 requires the current repository to bound every read first and makes a separate closed-source compactor reachable through ordinary startup without making audit cleanup a token prerequisite or fatal gate.
+- Approved behavior or requirement IDs affected: `BEH-004`; `REQ-014`, `REQ-025`, `REQ-028`; `AC-014`, `AC-024`, `AC-027`; `DS-010`, `DS-011`; `AR-005` / `MP-005`.
+- Implementation delta:
+  - Added a migration-ID-agnostic SQL summary projection shared by `AppDataMigrationRecordRepository.getRecord()` and `listRecords()`. It uses SQLite BLOB byte length and ordered scalar JSON shape/SafeInt checks before result materialization. An exact valid summary at or under 64 KiB passes through; a valid oversized summary becomes exact aggregate counts plus one deterministic omitted-detail marker; malformed/unsupported source becomes four explicit zero placeholders plus one counts-unavailable marker; absent summaries remain absent. The projected result is byte-checked again and reads never write.
+  - Added `20260819_token_usage_migration_audit_compaction_v1`, registered after the two source-shaping definitions and before consolidation with `requiredOnStartup=true` and `executionPolicy="STARTUP_ONLY"`. It is absent from consolidation prerequisites and ServerRuntime fatal-status checks, so only ordinary `runPending()` schedules it and its failure does not change token readiness/global health.
+  - Added a closed two-ID scalar repository that never selects original detail arrays, strictly converts SQL text scalars through exact BigInt/SafeInt checks, preserves the terminal ID/display/status/attempt/start/completion/error/count tuple, transactionally updates only `summary_json`, and validates the exact bounded replacement before commit.
+  - Added an owned-log adapter that accepts only an existing regular file resolving inside the configured migration-log root, replaces oversized content through a same-directory temporary sibling plus rename, leaves missing logs as no-ops, and returns bounded warnings for outside/nonregular/unrewritable paths without embedding source content or paths.
+  - The orchestrator emits at most two fixed-shape details. Valid row-linear summaries/logs compact once; unsupported source remains untouched with terminal `SUCCEEDED_WITH_WARNINGS`; repository/database validation errors throw so the runner records `FAILED`; already-bounded portions are no-ops on retry. No token table, business migration execute path, runner API, manual orchestrator, or live profile is touched.
+  - Added disposable actual Prisma/SQLite fixtures for SQL-bounded `getRecord/listRecords`, no write-on-read, instrumented `listStatuses/runPending`, both released terminal records with 100,001 details and >10 MiB summaries/logs, exact tuple/count preservation, source/compactor <=64 KiB evidence, token-table immutability, both partial-progression retry paths, terminal-warning skip, malformed/wrong-shape inputs, missing/outside/nonregular/unwritable logs, registry order, prerequisite absence, and explicit fatal-gate absence.
+- Changed files or areas: `autobyteus-server-ts/src/app-data-migrations/repositories/app-data-migration-summary-projection.ts`; `.../app-data-migration-record-repository.ts`; `src/app-data-migrations/migrations/token-usage-migration-audit-compaction-v1/*`; `src/app-data-migrations/app-data-migration-registry.ts`; new `tests/helpers/app-data-migration-audit-fixtures.ts`; new repository-bound and compactor Vitest files; current implementation handoff/revision artifacts.
+- Local validation and result: server build TypeScript check passed. Focused DS-010/DS-011 selection passed 3 files / 30 tests. The actual released-scale fixture proves >100,000 details and >10 MiB bodies/logs compact through the registry/repository/ordinary `runPending()` path while every enumerated summary remains <=64 KiB. Retry, warning, path, no-write-on-read, tuple, token-immutability, registration, prerequisite, and fatal-gate assertions pass. `git diff --check` and source effective-line audits pass; all changed source files are <=195 effective lines. A broad app-data-migration diagnostic passed 28 files / 167 tests and reproduced 3 unrelated latest-base stale-test failures in isolation; normal `tsconfig.json` remains blocked by its repository-wide `rootDir`/tests configuration, while `tsconfig.build.json` is clean.
+- Next recipient or routing: `/code_reviewer`; on pass, `/api_e2e_engineer` must investigate/execute AC-027, including the exact frontend `GetAppDataMigrations` document and actual startup runner path. Durable coverage changes return for proportional review before `/delivery_engineer` refreshes, rebuilds, and requests renewed verification.
+- Remaining limitations or risks: implementation did not access or mutate the live database. The exact frontend document and full API response bound are downstream-owned and not claimed here. The two unrelated existing unit-test failures and repository test-typecheck configuration remain visible but outside this implementation delta. Current live token consolidation remains valid and must not be rerun or manually edited; only the reviewed audit compactor may transform the two supported terminal audit records on a later ordinary startup.
+
+### IR-009 — Execution-policy-aware manual retry capability
+
+- Triggering role, report path, and round: `/code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/code-review-report.md`; `CRR-013`.
+- Triggering finding IDs: `CR-007`.
+- Classification: `Local Fix`.
+- Prior authoritative result: `CRR-013` failed IR-008 because the new startup-only compactor could legitimately finish `SUCCEEDED_WITH_WARNINGS`, while the runner's status-only `canRetry=true` enabled a Settings action that `runMigration()` was guaranteed to reject and that later `runPending()` would never execute.
+- Current authoritative result: `CR-007` is addressed at the runner's public status boundary and verified through the existing Settings action; the cumulative package is ready for `/code_reviewer` source re-review.
+- Related solution revision IDs: `SR-009`.
+- Related architecture-review revision IDs: `ARCH-REV-009`.
+- Related code-review revision IDs: `CRR-013`.
+- Related API/E2E revision IDs: `API-REV-005` (prior baseline only; SR-009 remains uncovered).
+- Related delivery revision IDs: `DR-006`, `DR-005`.
+- Why this implementation revision is recorded: public `canRetry` is consumed as the manual Settings command capability, not as a claim that some future scheduler might retry. A startup-only definition has no manually executable state even when its failed/stale nonterminal record remains eligible for automatic retry on a later ordinary startup.
+- Approved behavior or requirement IDs affected: `BEH-004`; `REQ-014`, `REQ-025`, `REQ-028`; `AC-027`; `DS-011`; `MP-CR-006`.
+- Implementation delta:
+  - `AppDataMigrationRunner.toStatusSnapshot()` now derives `canRetry` from both status and `executionPolicy`. Every `STARTUP_ONLY` snapshot returns `canRetry=false`; default/`ANYTIME` definitions preserve existing manual retry for `NOT_RUN`, `FAILED`, and `SUCCEEDED_WITH_WARNINGS`.
+  - `runPending()` scheduling is unchanged. A startup-only `FAILED` record and stale `RUNNING` record still begin a later startup attempt; a terminal `SUCCEEDED_WITH_WARNINGS` record remains skipped; `runMigration()` continues to reject startup-only manual execution.
+  - The existing `ServerMigrationsManager` already disables and suppresses dispatch when `canRetry=false`; a new mounted component regression proves that exact interaction while retaining an enabled manually executable warning row.
+  - The actual registered compactor warning test now asserts `canRetry=false` both when the warning is first persisted and when the next ordinary startup skips it.
+- Changed files or areas: `autobyteus-server-ts/src/app-data-migrations/app-data-migration-runner.ts`; `autobyteus-server-ts/tests/unit/app-data-migrations/app-data-migration-runner.test.ts`; `autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-migration-audit-compaction-v1.test.ts`; new `autobyteus-web/components/settings/__tests__/ServerMigrationsManager.spec.ts`; current implementation handoff/revision artifacts.
+- Local validation and result: server build TypeScript check passed. Focused server status/repository/compactor coverage passed 3 files / 33 tests. Focused Settings/store rendering and interaction coverage passed 2 files / 3 tests. `git diff --check` passed. The changed runner is 249 effective non-empty lines, below the 500-line hard limit, with only a focused predicate/use production delta.
+- Next recipient or routing: `/code_reviewer`; do not resume API/E2E until source re-review passes. On pass, `/api_e2e_engineer` must cover the exact frontend document/startup path and return any durable coverage change for proportional review before delivery.
+- Remaining limitations or risks: the exact GraphQL/frontend/Electron integration remains downstream-owned; implementation only mounted the existing component against the corrected public capability. No live database was accessed or mutated. The prior SR-009 downstream gaps, unrelated broad app-data test failures, repository test-typecheck limitation, and required delivery rebuild/renewed user verification remain unchanged.
+
+### IR-010 — Restore the SR-007 token boundary and remove audit expansion
+
+- Triggering role, report path, and round: `/architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/design-review-report.md`; `ARCH-REV-010`, following user-directed `SR-010` and the `CRR-017` / `CR-008` design-impact audit.
+- Triggering finding IDs: `CR-008` / `MP-CR-007`; historical `AR-005` / `MP-005` and `CR-007` are made moot by removal.
+- Classification: `Local Fix` under a user-directed reviewed rescope.
+- Prior authoritative result: `CRR-014`, `API-REV-007`, `CRR-016`, and `DR-007` had passed/built the SR-009 audit expansion, but `CRR-017` established a design impact and the user superseded that scope. SR-010 withdraws `REQ-028`, `AC-027`, `DS-010`, and `DS-011` entirely and accepts the existing large audit summaries/status response/logs as an untouched residual.
+- Current authoritative result: current product source and relevant durable tests are restored byte-for-byte to the reviewed/live-verified SR-007 checkpoint; audit-only durable documentation claims are removed; the cumulative implementation is ready for `/code_reviewer` source re-review.
+- Related solution revision IDs: `SR-010` (current; restores `SR-007`).
+- Related architecture-review revision IDs: `ARCH-REV-010`.
+- Related code-review revision IDs: `CRR-017` (trigger); `CRR-012` (restored SR-007/DS-009 passed baseline).
+- Related API/E2E revision IDs: `API-REV-007` (withdrawn scope); `API-REV-005` (restored baseline).
+- Related delivery revision IDs: `DR-007` (superseded package), `DR-006`, `DR-005`.
+- Why this implementation revision is recorded: the audit summary projection, at-rest compactor, historical-log replacement, policy-aware retry adjustment, and audit-specific coverage were a later framework expansion explicitly withdrawn from this token ticket. Clean removal is safer and clearer than leaving partial generic projection, dormant registration, compatibility behavior, or stale assertions.
+- Approved behavior or requirement IDs affected: current `BEH-004`; `REQ-012`–`REQ-016`, `REQ-022`, `REQ-024`–`REQ-027`; `AC-011`–`AC-015`, `AC-021`, `AC-023`–`AC-026`; `SR-010`; restored `DS-001`–`DS-009`. Withdrawn `REQ-028`, `AC-027`, `DS-010`, and `DS-011` no longer govern current code.
+- Implementation delta:
+  - Restored `app-data-migration-registry.ts`, `app-data-migration-runner.ts`, `app-data-migration-record-repository.ts`, and the runner unit suite exactly to the SR-007 checkpoint.
+  - Deleted `app-data-migration-summary-projection.ts`, the complete `token-usage-migration-audit-compaction-v1/` source owner, its actual-startup E2E, shared audit fixture, repository/compactor unit suites, and the audit-only Server Migrations component test.
+  - Removed audit-only README and durable production-migration-convention additions while retaining the already-reviewed DS-009 deterministic ORM/SQLite transport guidance.
+  - Did not add a replacement summary reader/writer, log handler, startup branch, compatibility shim, or partial compactor. No schema, dependency, token runtime, consolidation, GraphQL, or current UI implementation changed.
+  - Did not open, read, copy, query, or mutate the user's live database or any live/fixture audit record. No `summary_json`, `log_path`, or historical migration-log file was changed.
+- Changed files or areas: restored app-data registry/runner/record repository and runner unit test; deleted audit projection/compactor/E2E/helper/unit/UI test files; `autobyteus-server-ts/README.md` and `docs/design/production_data_migration_conventions.md` reconciled to their non-audit authority; current implementation handoff/revision artifacts.
+- Local validation and result: server no-emit TypeScript and clean `build:full` passed, including the sanitized built-module/bootstrap smoke. Restored runner plus DS-009 migration regression selection passed 5 files / 58 tests. Static checks prove current product source/relevant tests match the SR-007 checkpoint, withdrawn audit identifiers/files/claims and stale emitted modules are absent, and `git diff --check` passes. No production or fixture audit data was touched.
+- Next recipient or routing: `/code_reviewer`; do not advance to API/E2E until source re-review passes. On pass, `/api_e2e_engineer` must remove/retarget audit-only durable coverage and proportionately revalidate SR-007/removal/nonmutation before delivery rebuilds.
+- Remaining limitations or risks: the two roughly 14 MiB terminal summaries and roughly 31 MiB current status response remain deliberately large and unchanged, as do their historical log paths/files. `API-REV-007` and `DR-007` are not current acceptance evidence. Downstream must rebuild and reverify without treating audit compaction or response-size reduction as an acceptance condition. The independent Nuxt typecheck limitation and external-provider opt-in exclusions remain unchanged.
+
+### IR-011 — Truthful migration recovery action and restart guidance
+
+- Triggering role, report path, and round: `/architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/design-review-report.md`; `ARCH-REV-012`, following `CRR-018` / `CR-009`, the superseded SR-011 intermediate, and the user-approved SR-012 completion.
+- Triggering finding IDs: `AR-006` (resolved by the reviewed DS-012 design); `CR-009` / `MP-CR-008` (reachable false-manual-action path).
+- Classification: `Local Fix` under a reviewed design completion.
+- Prior authoritative result: `IR-010` correctly removed all withdrawn audit projection/compaction/log behavior, but `CRR-018` found that the retained startup-only token consolidation could still publish `canRetry=true` while `runMigration()` rejects it. The already implemented policy-aware boolean corrected the false manual action, but the UI had no truthful way to explain that ordinary restart is the supported executor.
+- Current authoritative result: DS-012 is implemented without reopening audit scope or changing token/migration persistence. Focused backend, GraphQL schema/mapping, generated client/store, localization, and mounted Settings checks pass; the cumulative package is ready for `/code_reviewer` source re-review.
+- Related solution revision IDs: `SR-012` (current); `SR-010` (preserved audit removal); `SR-007` (preserved token baseline).
+- Related architecture-review revision IDs: `ARCH-REV-012`; `ARCH-REV-010`; `ARCH-REV-007`.
+- Related code-review revision IDs: `CRR-018` (trigger); `CRR-012` (passed restored token/DS-009 baseline).
+- Related API/E2E revision IDs: `API-REV-005` (prior token/DS-009 baseline only); `API-REV-007` is withdrawn audit evidence and does not cover DS-012.
+- Related delivery revision IDs: `DR-007` (withdrawn package); `DR-005` (live-verified token baseline).
+- Why this implementation revision is recorded: automatic startup scheduling and manual command capability are distinct, but a disabled action alone does not explain the supported recovery. The runner must publish one closed action from the same definition/status/staleness facts that govern its entrypoints, and Settings must render that meaning without reconstructing scheduling policy.
+- Approved behavior or requirement IDs affected: `BEH-005`, `BEH-006`; `REQ-019`, `REQ-025`; `AC-017`; `DS-012`; `AR-006`; `CR-009`; `MP-CR-008`.
+- Implementation delta:
+  - Added the nonpersisted `AppDataMigrationRecoveryAction` enum (`MANUAL_RETRY`, `RESTART_TO_RETRY`, `NONE`) to the generic status snapshot. `AppDataMigrationRunner` is the sole classifier: executable `ANYTIME` retry states including stale `RUNNING` map to manual; required `STARTUP_ONLY` not-run/failed/stale-running states map to restart; unscheduled startup-only, active running, success, and startup-only warning states map to none. `canRetry` is derived exactly from `MANUAL_RETRY`.
+  - Kept `runPending()` scheduling and terminal skip behavior unchanged. Kept direct `runMigration()` startup-only rejection unchanged. No migration record, schema, summary, log, token table, or execution state was added or mutated by the projection.
+  - Registered the closed enum in GraphQL, mapped the runner value directly, added it to both current migration documents, regenerated/verified the generated client against the actual built schema, and typed the Pinia record with the generated enum without reclassification.
+  - Settings uses only the enum to select restart guidance and the derived boolean to enable/guard manual dispatch. `RESTART_TO_RETRY` renders the exact reviewed English or Simplified Chinese sentence under the disabled action and dispatches no mutation; `MANUAL_RETRY` retains the enabled command; `NONE` renders no recovery instruction.
+  - Reused and strengthened the prior runner retry coverage rather than rebuilding startup mechanics: added the complete policy/scheduling/status/staleness matrix, failed/stale next-startup execution, terminal warning skip, direct-call defense, GraphQL enum/schema mapping, store transport, and current mounted Settings/localization interactions.
+- Changed files or areas: `autobyteus-server-ts/src/app-data-migrations/domain/app-data-migration-types.ts`; `.../app-data-migration-runner.ts`; `src/api/graphql/types/app-data-migrations.ts`; runner and GraphQL unit tests; web migration query/mutation/generated client/store; `ServerMigrationsManager.vue`; English/Chinese settings catalogs; mounted component and store tests; current implementation artifacts.
+- Local validation and result: backend runner/GraphQL selection passed 2 files / 20 tests; frontend Settings/store selection passed 2 files / 4 tests; server `tsconfig.build` no-emit and full clean build/sanitized bootstrap passed; built-schema inspection and web codegen confirmed `AppDataMigrationRecoveryAction!` and both operation fields; localization boundary/literal audits and `git diff --check` passed; changed production source files remain below 500 effective lines. Normal server `tsconfig.json` and Nuxt typecheck retain their already-recorded repository/toolchain blockers before useful project diagnostics.
+- Next recipient or routing: `/code_reviewer`; after source pass, `/api_e2e_engineer` must proportionately execute the actual GraphQL/current Settings/ordinary-restart path and preserve SR-010 removal/nonmutation before delivery rebuild and renewed user verification.
+- Remaining limitations or risks: implementation mounted and interacted with the current Settings component but did not run a full browser/Electron viewport. Actual GraphQL network transport, ordinary packaged restart, and Electron rendering remain downstream-owned. The accepted approximately 31 MiB status response and historical summary/log residual remain untouched. No live profile/database was accessed or mutated.

@@ -30,7 +30,7 @@ const asRecord = (value: unknown): Record<string, unknown> | null =>
     : null;
 
 export const asCumulativeSnapshotTokenValue = (value: unknown): number | null =>
-  typeof value === "number" && Number.isFinite(value) && value >= 0 ? Math.trunc(value) : null;
+  typeof value === "number" && Number.isSafeInteger(value) && value >= 0 ? value : null;
 
 export const cumulativeSnapshotTokensFromPayload = (
   payload: TokenUsageUpdatedPayload,

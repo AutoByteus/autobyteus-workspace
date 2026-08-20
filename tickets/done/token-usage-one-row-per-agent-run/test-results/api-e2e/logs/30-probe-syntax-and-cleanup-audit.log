@@ -1,0 +1,7 @@
+$ node --check browser/scale probes
+$ owned-process audit
+PASS: no owned probe/server process remains
+$ owned browser/scale database/runtime audit
+PASS: no owned browser/scale database or runtime remains
+$ result-artifact footprint
+720K	tickets/in-progress/token-usage-one-row-per-agent-run/test-results/api-e2e

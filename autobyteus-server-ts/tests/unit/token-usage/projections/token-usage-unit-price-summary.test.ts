@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 import type { TokenUsageUpdatedPayload } from "../../../../src/agent-execution/domain/agent-run-token-usage.js";
-import { buildTokenUsageCostSummaryAggregate } from "../../../../src/token-usage/projections/token-usage-cost-summary-aggregate.js";
+import {
+  mergeTokenUsagePricingSummaries,
+  pricingSummaryFromPayload,
+} from "../../../../src/token-usage/projections/token-usage-pricing-summary.js";
 
 const buildEvent = (overrides: Partial<TokenUsageUpdatedPayload> = {}): TokenUsageUpdatedPayload => ({
   usage_event_id: overrides.usage_event_id ?? "event-1",
@@ -91,13 +94,13 @@ const buildEvent = (overrides: Partial<TokenUsageUpdatedPayload> = {}): TokenUsa
 
 describe("token usage unit-price summary projection", () => {
   it("summarizes single component unit prices and ignores zero-token price churn", () => {
-    const aggregate = buildTokenUsageCostSummaryAggregate([
-      buildEvent({
+    const summary = mergeTokenUsagePricingSummaries(
+      pricingSummaryFromPayload(buildEvent({
         cache_read_input_tokens: 40,
         cache_state: "positive",
         reasoning_output_tokens: 7,
-      }),
-      buildEvent({
+      })),
+      pricingSummaryFromPayload(buildEvent({
         usage_event_id: "zero-token-event",
         idempotency_key: "zero-token-key",
         accounting_input_tokens: 0,
@@ -113,65 +116,61 @@ describe("token usage unit-price summary projection", () => {
         input_price_per_million: 999,
         output_price_per_million: 999,
         pricing_policy_key: "catalog:openai:different-zero-token-policy",
-      }),
-    ]);
+      })),
+    );
 
-    expect(aggregate.unit_prices.standard_input).toEqual({ status: "single", price_per_million: 5 });
-    expect(aggregate.unit_prices.cache_read_input).toEqual({ status: "single", price_per_million: 0.5 });
-    expect(aggregate.unit_prices.output).toEqual({ status: "single", price_per_million: 30 });
-    expect(aggregate.unit_prices.reasoning_output).toEqual({ status: "single", price_per_million: 30 });
-    expect(aggregate.unit_prices.cache_creation_input).toEqual({ status: "not_applicable", price_per_million: null });
+    expect(summary.unitPrices.standard_input).toEqual({ status: "single", price_per_million: 5 });
+    expect(summary.unitPrices.cache_read_input).toEqual({ status: "single", price_per_million: 0.5 });
+    expect(summary.unitPrices.output).toEqual({ status: "single", price_per_million: 30 });
+    expect(summary.unitPrices.reasoning_output).toEqual({ status: "single", price_per_million: 30 });
+    expect(summary.unitPrices.cache_creation_input).toEqual({ status: "not_applicable", price_per_million: null });
   });
 
   it("marks component-relevant differing positive-token prices as mixed", () => {
-    const aggregate = buildTokenUsageCostSummaryAggregate([
-      buildEvent({ usage_event_id: "input-5", idempotency_key: "input-5-key", standard_input_tokens: 100, input_price_per_million: 5 }),
-      buildEvent({ usage_event_id: "input-6", idempotency_key: "input-6-key", standard_input_tokens: 50, input_price_per_million: 6 }),
-    ]);
+    const summary = mergeTokenUsagePricingSummaries(
+      pricingSummaryFromPayload(buildEvent({ usage_event_id: "input-5", idempotency_key: "input-5-key", standard_input_tokens: 100, input_price_per_million: 5 })),
+      pricingSummaryFromPayload(buildEvent({ usage_event_id: "input-6", idempotency_key: "input-6-key", standard_input_tokens: 50, input_price_per_million: 6 })),
+    );
 
-    expect(aggregate.unit_prices.standard_input).toEqual({ status: "mixed", price_per_million: null });
-    expect(aggregate.unit_prices.output).toEqual({ status: "single", price_per_million: 30 });
+    expect(summary.unitPrices.standard_input).toEqual({ status: "mixed", price_per_million: null });
+    expect(summary.unitPrices.output).toEqual({ status: "single", price_per_million: 30 });
   });
 
   it("distinguishes missing, partial-missing, and local/no-bill component prices", () => {
-    const missingAggregate = buildTokenUsageCostSummaryAggregate([
-      buildEvent({
+    const missing = pricingSummaryFromPayload(buildEvent({
         input_price_per_million: null,
         api_cost_status: "partial_price_missing",
         missing_price_dimensions: ["standard_input_price"],
-      }),
-    ]);
-    const partialAggregate = buildTokenUsageCostSummaryAggregate([
-      buildEvent({ usage_event_id: "priced", idempotency_key: "priced-key", input_price_per_million: 5 }),
-      buildEvent({
+      }));
+    const partial = mergeTokenUsagePricingSummaries(
+      pricingSummaryFromPayload(buildEvent({ usage_event_id: "priced", idempotency_key: "priced-key", input_price_per_million: 5 })),
+      pricingSummaryFromPayload(buildEvent({
         usage_event_id: "missing",
         idempotency_key: "missing-key",
         input_price_per_million: null,
         api_cost_status: "partial_price_missing",
         missing_price_dimensions: ["standard_input_price"],
-      }),
-    ]);
-    const localAggregate = buildTokenUsageCostSummaryAggregate([
-      buildEvent({
+      })),
+    );
+    const local = pricingSummaryFromPayload(buildEvent({
         pricing_status: "local_no_api_bill",
         api_cost_status: "local_no_api_bill",
         currency: null,
         input_price_per_million: null,
         output_price_per_million: null,
-      }),
-    ]);
+      }));
 
-    expect(missingAggregate.unit_prices.standard_input).toEqual({ status: "missing", price_per_million: null });
-    expect(partialAggregate.unit_prices.standard_input).toEqual({ status: "partial_missing", price_per_million: 5 });
-    expect(localAggregate.unit_prices.standard_input).toEqual({ status: "local_no_api_bill", price_per_million: null });
+    expect(missing.unitPrices.standard_input).toEqual({ status: "missing", price_per_million: null });
+    expect(partial.unitPrices.standard_input).toEqual({ status: "partial_missing", price_per_million: 5 });
+    expect(local.unitPrices.standard_input).toEqual({ status: "local_no_api_bill", price_per_million: null });
   });
 
   it("uses stable price comparison tolerance for equivalent decimal prices", () => {
-    const aggregate = buildTokenUsageCostSummaryAggregate([
-      buildEvent({ usage_event_id: "input-a", idempotency_key: "input-a-key", input_price_per_million: 5 }),
-      buildEvent({ usage_event_id: "input-b", idempotency_key: "input-b-key", input_price_per_million: 5.0000000001 }),
-    ]);
+    const summary = mergeTokenUsagePricingSummaries(
+      pricingSummaryFromPayload(buildEvent({ usage_event_id: "input-a", idempotency_key: "input-a-key", input_price_per_million: 5 })),
+      pricingSummaryFromPayload(buildEvent({ usage_event_id: "input-b", idempotency_key: "input-b-key", input_price_per_million: 5.0000000001 })),
+    );
 
-    expect(aggregate.unit_prices.standard_input).toEqual({ status: "single", price_per_million: 5 });
+    expect(summary.unitPrices.standard_input).toEqual({ status: "single", price_per_million: 5 });
   });
 });

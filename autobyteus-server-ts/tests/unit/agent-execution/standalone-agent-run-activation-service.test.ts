@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-metadata-types.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { StandaloneAgentRunActivationService } from "../../../src/agent-execution/services/standalone-agent-run-activation-service.js";
+import { configureTokenUsageMigrationReadiness } from "../../../src/token-usage/providers/token-usage-migration-readiness.js";
 
 const RUN_ID = "standalone-run-1";
 const CLAUDE_SESSION_ID = "22222222-2222-4222-8222-222222222222";
@@ -79,6 +80,25 @@ const harness = (input: {
 };
 
 describe("StandaloneAgentRunActivationService", () => {
+  it("rejects a pre-existing run before any provider candidate is constructed while history is degraded", async () => {
+    configureTokenUsageMigrationReadiness({
+      kind: "CURRENT_SCHEMA_DEGRADED",
+      migrationStatus: "FAILED",
+      logPath: "/tmp/token-migration.log",
+    });
+    try {
+      const started = metadata({ platformAgentRunId: CLAUDE_SESSION_ID, startedAt: "2026-08-17T20:05:00.000Z" });
+      const current = harness({ metadataStates: [{ kind: "present", metadata: started }] });
+      await expect(current.service.restorePersistedRun(RUN_ID)).rejects.toMatchObject({
+        code: "TOKEN_USAGE_EXISTING_RUN_RESTORE_MIGRATION_REQUIRED",
+      });
+      expect(current.agentRunManager.prepareRestoreAgentRunFromPlatformState).not.toHaveBeenCalled();
+      expect(current.workspaceManager.ensureWorkspaceByRootPath).not.toHaveBeenCalled();
+    } finally {
+      configureTokenUsageMigrationReadiness({ kind: "READY" });
+    }
+  });
+
   it("shares one prepared activation and durably records the provider UUID before publication", async () => {
     const order: string[] = [];
     const prepared = metadata();

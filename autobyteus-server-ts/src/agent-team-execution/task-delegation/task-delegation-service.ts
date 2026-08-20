@@ -1,44 +1,72 @@
 import { randomUUID } from "node:crypto";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { SenderType } from "autobyteus-ts/agent/sender-type.js";
-import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import { AgentRunIdentityAllocator } from "../../agent-execution/services/agent-run-identity-allocator.js";
+import { TokenUsageMigrationReadiness } from "../../token-usage/providers/token-usage-migration-readiness.js";
+import type { TeamMemberExecutionIdentity } from "../domain/team-member-execution-identity.js";
+import type { TeamRunExecutionTreeSnapshot } from "../domain/team-run-execution-tree.js";
+import { TeamRunEventSourceType, type TeamRunEvent } from "../domain/team-run-event.js";
 import type { ResolvedTeamRecipient } from "../services/resolved-team-recipient.js";
 import { TeamExecutionScopeResolver } from "../services/team-execution-scope-resolver.js";
-import type { TeamExecutionIndex } from "../services/team-execution-index.js";
-import type { TeamRunResolver } from "../services/team-run-resolver.js";
-import {
-  TeamRunPersistenceFinalizationIndeterminateError,
-  type PreparedTaskMutationCommit, type PreparedTaskSettlementCommit,
-  type TaskMutationCommitResult, type TaskSettlementCommitResult,
-} from "../services/team-run-persistence-contract.js";
 import {
   addTaskExecutionToTree,
   adoptAgentPlatformBindingInTree,
   settleTaskExecutionInTree,
 } from "../services/team-run-execution-tree-mutator.js";
-import type { TeamMemberExecutionIdentity } from "../domain/team-member-execution-identity.js";
-import type { TeamRunExecutionTreeSnapshot } from "../domain/team-run-execution-tree.js";
-import type { TeamRun } from "../domain/team-run.js";
-import type { TeamRunAgentNode, TeamRunAgentTeamNode, TeamRunConfig } from "../domain/team-run-config.js";
-import { TeamRunEventSourceType, type TeamRunEvent } from "../domain/team-run-event.js";
+import {
+  TeamRunPersistenceFinalizationIndeterminateError,
+  type PreparedTaskMutationCommit,
+  type TaskMutationCommitResult,
+} from "../services/team-run-persistence-contract.js";
 import { validateTaskDelegationRecordsV1Payload } from "./records/task-delegation-records-v1-schema.js";
-import type { TaskDelegationRecordV1, TaskDelegationRecordsSnapshot, TaskExecutionReference, TaskReview, TaskSubmission } from "./task-delegation-record-v1.js";
 import { TaskDelegationCommandQueue } from "./task-delegation-command-queue.js";
-import { taskActivatedEvent, taskReviewedEvent, taskSettledEvent, taskSubmittedEvent } from "./task-delegation-event-factory.js";
-import { buildTaskAssigneeWorkPacket, optionalTaskString, requireTaskString, validateTaskReferenceFiles } from "./task-delegation-input.js";
+import {
+  taskActivatedEvent,
+  taskReviewedEvent,
+  taskSettledEvent,
+  taskSubmittedEvent,
+} from "./task-delegation-event-factory.js";
+import {
+  findTaskConfigNode,
+  requirePreparedTaskTeamNode,
+  sameTaskExecutionBinding,
+  taskErrorMessage,
+} from "./task-delegation-execution-resolution.js";
+import {
+  buildTaskAssigneeWorkPacket,
+  optionalTaskString,
+  requireTaskString,
+  validateTaskReferenceFiles,
+} from "./task-delegation-input.js";
 import { hasOpenChildTask, orderTasksDeepestFirst } from "./task-delegation-ownership.js";
-import { projectTaskAgentExecution, projectTaskTeamExecution } from "./task-execution-tree-projection.js";
-import { TaskTeamRunIdentityFactory } from "./task-team-run-identity-factory.js";
-import { findTaskConfigNode, requirePreparedTaskTeamNode, sameTaskExecutionBinding, taskErrorMessage } from "./task-delegation-execution-resolution.js";
 import {
   TaskDelegationError,
-  type DelegateTaskInput, type DelegateTaskResult, type ReviewTaskResultInput,
-  type ReviewTaskResultResult, type SubmitTaskResultInput, type SubmitTaskResultResult,
+  type DelegateTaskInput,
+  type DelegateTaskResult,
+  type ReviewTaskResultInput,
+  type ReviewTaskResultResult,
+  type SubmitTaskResultInput,
+  type SubmitTaskResultResult,
   type TaskDelegationContext,
 } from "./task-delegation-record.js";
-
-type MutableState = { tree: TeamRunExecutionTreeSnapshot; tasks: TaskDelegationRecordsSnapshot };
+import type {
+  TaskDelegationRecordV1,
+  TaskDelegationRecordsSnapshot,
+  TaskExecutionReference,
+  TaskReview,
+  TaskSubmission,
+} from "./task-delegation-record-v1.js";
+import {
+  findAssignedTask,
+  requireTask,
+  taskAssigneeAgentRunId,
+} from "./task-delegation-record-resolver.js";
+import type {
+  TaskDelegationActivationInput,
+  TaskDelegationServiceOptions,
+} from "./task-delegation-service-contract.js";
+import { projectTaskAgentExecution, projectTaskTeamExecution } from "./task-execution-tree-projection.js";
+import { TaskTeamRunIdentityFactory } from "./task-team-run-identity-factory.js";
 
 /** One root-scoped task lifecycle owner and sole task command FIFO. */
 export class TaskDelegationService {
@@ -49,29 +77,13 @@ export class TaskDelegationService {
   private settlementSweepScheduled = false;
   private readonly agentIds: Pick<AgentRunIdentityAllocator, "allocateForAgentDefinition">;
   private readonly taskTeams: TaskTeamRunIdentityFactory;
+  private readonly tokenUsageReadiness: Pick<TokenUsageMigrationReadiness, "assertCurrentSchemaReady">;
 
-  constructor(private readonly options: {
-    rootTeamRunId: string;
-    config: TeamRunConfig;
-    initialTasks: TaskDelegationRecordsSnapshot;
-    getTree(): TeamRunExecutionTreeSnapshot;
-    getIndex(): TeamExecutionIndex;
-    isRootOpen(): boolean;
-    authorize(identity: TeamMemberExecutionIdentity): void;
-    requireTeamRun(teamRunId: string): Promise<TeamRun>;
-    teamRunResolver: TeamRunResolver;
-    commitTaskMutation(command: PreparedTaskMutationCommit): Promise<TaskMutationCommitResult>;
-    commitTaskSettlement(command: PreparedTaskSettlementCommit): Promise<TaskSettlementCommitResult>;
-    enterLifecycleFailStop(): void;
-    replaceState(state: MutableState): void;
-    publish(event: TeamRunEvent): void;
-    deliverSystemMessage(agentRunId: string, message: AgentInputUserMessage): Promise<AgentOperationResult>;
-    agentRunIdentityAllocator?: Pick<AgentRunIdentityAllocator, "allocateForAgentDefinition">;
-    taskTeamRunIdentityFactory?: TaskTeamRunIdentityFactory;
-  }) {
+  constructor(private readonly options: TaskDelegationServiceOptions) {
     this.currentTasks = validateTaskDelegationRecordsV1Payload(options.initialTasks, options.rootTeamRunId);
     this.agentIds = options.agentRunIdentityAllocator ?? AgentRunIdentityAllocator.getInstance();
     this.taskTeams = options.taskTeamRunIdentityFactory ?? new TaskTeamRunIdentityFactory(this.agentIds);
+    this.tokenUsageReadiness = options.tokenUsageMigrationReadiness ?? new TokenUsageMigrationReadiness();
   }
 
   getSnapshot(): TaskDelegationRecordsSnapshot { return this.currentTasks; }
@@ -116,6 +128,7 @@ export class TaskDelegationService {
 
   async delegateTask(context: TaskDelegationContext, input: DelegateTaskInput, placement: ResolvedTeamRecipient): Promise<DelegateTaskResult> {
     this.assertExternal(context.identity);
+    this.tokenUsageReadiness.assertCurrentSchemaReady();
     const description = requireTaskString(input.description, "description");
     const referenceFiles = await validateTaskReferenceFiles(input.reference_files ?? []);
     const taskId = `task_${randomUUID().replace(/-/g, "")}`;
@@ -222,17 +235,7 @@ export class TaskDelegationService {
     });
   }
 
-  private async activateAtHead(input: {
-    context: TaskDelegationContext;
-    placement: ResolvedTeamRecipient;
-    taskId: string;
-    description: string;
-    referenceFiles: readonly string[];
-    startedAt: string;
-    hostTeamRunId: string;
-    prepared: import("../domain/prepared-task-execution.js").PreparedTaskExecution;
-    reservation: import("../services/team-run-resolver.js").TeamRunRegistrationReservation | null;
-  }): Promise<DelegateTaskResult> {
+  private async activateAtHead(input: TaskDelegationActivationInput): Promise<DelegateTaskResult> {
     try {
       this.assertExternal(input.context.identity);
       if (this.currentTasks.records.some((record) => record.taskId === input.taskId)) throw new Error(`Task '${input.taskId}' already exists.`);
@@ -324,7 +327,12 @@ export class TaskDelegationService {
 
   private async submitAtHead(identity: TeamMemberExecutionIdentity, message: string, referenceFiles: readonly string[]): Promise<SubmitTaskResultResult> {
     this.options.authorize(identity);
-    const task = this.findAssignedTask(identity.agentRunId);
+    const task = findAssignedTask(
+      this.currentTasks.records,
+      this.options.getIndex(),
+      this.options.config,
+      identity.agentRunId,
+    );
     if (!task || task.status !== "active") throw new TaskDelegationError("TASK_NOT_ACTIVE", "The caller has no active assigned task.");
     const submission: TaskSubmission = Object.freeze({
       submissionId: `submission_${randomUUID().replace(/-/g, "")}`,
@@ -346,7 +354,7 @@ export class TaskDelegationService {
     referenceFiles: readonly string[],
   ): Promise<ReviewTaskResultResult> {
     this.options.authorize(identity);
-    const task = this.requireTask(taskId);
+    const task = requireTask(this.currentTasks.records, taskId);
     if (task.delegatorAgentRunId !== identity.agentRunId) throw new TaskDelegationError("DELEGATOR_NOT_AUTHORIZED", `AgentRun '${identity.agentRunId}' is not the delegator for '${taskId}'.`);
     if (task.status !== "awaiting_review") throw new TaskDelegationError("TASK_NOT_AWAITING_REVIEW", `Task '${taskId}' is not awaiting review.`);
     const submission = [...task.updates].reverse().find((update): update is TaskSubmission => "submissionId" in update);
@@ -362,7 +370,7 @@ export class TaskDelegationService {
     const status = decision === "accept" ? "accepted" as const : "active" as const;
     const next = Object.freeze({ ...task, status, updates: Object.freeze([...task.updates, review]) });
     await this.commitRecordTransition(task, next, taskReviewedEvent(next, review));
-    const targetAgentRunId = this.assigneeAgentRunId(next);
+    const targetAgentRunId = taskAssigneeAgentRunId(next, this.options.getIndex(), this.options.config);
     const warning = decision === "request_revision"
       ? await this.notify(targetAgentRunId, `Task ${taskId} revision requested:\n${comment}`)
       : null;
@@ -391,7 +399,7 @@ export class TaskDelegationService {
   }
 
   private async interruptAtHead(taskId: string, reason: string): Promise<void> {
-    const task = this.requireTask(taskId);
+    const task = requireTask(this.currentTasks.records, taskId);
     if (task.status === "accepted" || task.status === "interrupted") return;
     const now = new Date().toISOString();
     const interruption = Object.freeze({ interruptionId: `interrupt_${randomUUID().replace(/-/g, "")}`, reason, createdAt: now });
@@ -401,7 +409,7 @@ export class TaskDelegationService {
   }
 
   private async settleAtHead(taskId: string): Promise<boolean> {
-    const task = this.requireTask(taskId);
+    const task = requireTask(this.currentTasks.records, taskId);
     if (task.status !== "accepted" && task.status !== "interrupted") throw new TaskDelegationError("TASK_NOT_SETTLEABLE", `Task '${taskId}' is not terminal.`);
     const indexed = this.options.getIndex().getTaskExecution(task.taskExecution);
     if (!indexed || indexed.source.settledAt) return true;
@@ -478,33 +486,6 @@ export class TaskDelegationService {
         });
       }
     });
-  }
-
-  private findAssignedTask(agentRunId: string): TaskDelegationRecordV1 | null {
-    const matches = this.currentTasks.records.filter((task) => this.assigneeAgentRunId(task) === agentRunId && task.status !== "accepted" && task.status !== "interrupted");
-    if (matches.length > 1) throw new TaskDelegationError("TASK_CONTEXT_AMBIGUOUS", `AgentRun '${agentRunId}' owns multiple open tasks.`);
-    return matches[0] ?? null;
-  }
-
-  private assigneeAgentRunId(task: TaskDelegationRecordV1): string {
-    if ("agentRunId" in task.taskExecution) return task.taskExecution.agentRunId;
-    const team = this.options.getIndex().requireTeam(task.taskExecution.teamRunId);
-    const coordinatorAddress = this.configuredCoordinator(task.recipientAddress);
-    const coordinator = this.options.getIndex().listDirectAgentExecutions(team.teamRunId).find((agent) => agent.address === coordinatorAddress);
-    if (!coordinator) throw new Error(`Task TeamRun '${team.teamRunId}' has no coordinator AgentRun.`);
-    return coordinator.agentRunId;
-  }
-
-  private configuredCoordinator(address: string) {
-    const source = findTaskConfigNode(this.options.config.rootTeam, address);
-    if (!source || source.kind !== "agent_team") throw new Error(`Configured Team '${address}' was not found.`);
-    return source.coordinatorAddress;
-  }
-
-  private requireTask(taskId: string): TaskDelegationRecordV1 {
-    const task = this.currentTasks.records.find((record) => record.taskId === taskId);
-    if (!task) throw new TaskDelegationError("TASK_NOT_FOUND", `Task '${taskId}' was not found.`);
-    return task;
   }
 
   private assertExternal(identity: TeamMemberExecutionIdentity): void {

@@ -1,0 +1,116 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+
+stdout | tests/unit/app-data-migrations/token-usage-migration-audit-compaction-v1.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:80290) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/app-data-migrations/token-usage-migration-audit-compaction-v1.test.ts > TokenUsageMigrationAuditCompactionV1 > runs through registry runPending and compacts 100,000+ detail summaries and >10 MiB owned logs 416ms
+ ✓ tests/unit/app-data-migrations/token-usage-migration-audit-compaction-v1.test.ts > TokenUsageMigrationAuditCompactionV1 > retries after the log compacted but the database summary update failed 41ms
+ ✓ tests/unit/app-data-migrations/token-usage-migration-audit-compaction-v1.test.ts > TokenUsageMigrationAuditCompactionV1 > retries an already-compacted source after terminal compactor-status persistence fails 33ms
+stdout | tests/unit/app-data-migrations/token-usage-migration-audit-compaction-v1.test.ts > TokenUsageMigrationAuditCompactionV1 > is registered between source shaping and consolidation without becoming a prerequisite or fatal gate
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts
+
+ ✓ tests/unit/app-data-migrations/token-usage-migration-audit-compaction-v1.test.ts > TokenUsageMigrationAuditCompactionV1 > preserves unsupported summaries as bounded terminal warnings and skips them later 38ms
+ ✓ tests/unit/app-data-migrations/token-usage-migration-audit-compaction-v1.test.ts > TokenUsageMigrationAuditCompactionV1 > preserves wrong count shape with a warning 18ms
+ ✓ tests/unit/app-data-migrations/token-usage-migration-audit-compaction-v1.test.ts > TokenUsageMigrationAuditCompactionV1 > preserves wrong details shape with a warning 16ms
+ ✓ tests/unit/app-data-migrations/token-usage-migration-audit-compaction-v1.test.ts > TokenUsageMigrationAuditCompactionV1 > treats a missing owned log as a no-op and an outside log as a preserved warning 17ms
+ ✓ tests/unit/app-data-migrations/token-usage-migration-audit-compaction-v1.test.ts > TokenUsageMigrationAuditCompactionV1 > returns bounded warnings for non-regular and unwritable owned logs without replacing them 9ms
+ ✓ tests/unit/app-data-migrations/token-usage-migration-audit-compaction-v1.test.ts > TokenUsageMigrationAuditCompactionV1 > is registered between source shaping and consolidation without becoming a prerequisite or fatal gate 4ms
+
+ Test Files  1 passed (1)
+      Tests  9 passed (9)
+   Start at  19:32:56
+   Duration  7.51s (transform 4.28s, setup 24ms, import 6.17s, tests 594ms, environment 0ms)
+

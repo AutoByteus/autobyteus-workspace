@@ -5,6 +5,7 @@ import { TeamRunService } from "../../../src/agent-team-execution/services/team-
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { TeamRunEventSourceType, type TeamRunEvent } from "../../../src/agent-team-execution/domain/team-run-event.js";
 import { createTeamAgentExecutionBinding } from "../../../src/agent-team-execution/domain/team-agent-execution-binding.js";
+import { configureTokenUsageMigrationReadiness } from "../../../src/token-usage/providers/token-usage-migration-readiness.js";
 
 const rootDefinition = {
   name: "Support Team",
@@ -32,12 +33,17 @@ const launchConfig = (
 const createSubject = (
   activeRun: unknown = null,
   definitions: Map<string, unknown> = new Map([["team-def-1", rootDefinition]]),
+  tokenUsageReadiness?: {
+    assertCurrentSchemaReady(): void;
+    assertExistingRunRestoreReady(): void;
+  },
+  managedRun: unknown = activeRun,
 ) => {
   const executionTree = { schemaVersion: 1, rootTeam: { teamRunId: "team-mixed-1" } };
   const agentTeamRunManager = {
     getActiveTeamRun: vi.fn().mockReturnValue(activeRun),
-    getManagedTeamRun: vi.fn().mockReturnValue(activeRun),
-    hasManagedTeamRun: vi.fn().mockReturnValue(Boolean(activeRun)),
+    getManagedTeamRun: vi.fn().mockReturnValue(managedRun),
+    hasManagedTeamRun: vi.fn().mockReturnValue(Boolean(managedRun)),
     createTeamRun: vi.fn(async ({ config }) => ({
       teamRunId: config.rootTeam.teamRunId,
       config,
@@ -73,6 +79,7 @@ const createSubject = (
     workspaceManager,
     memoryDir: "/tmp/team-run-service-current-test",
     agentRunIdentityAllocator,
+    tokenUsageReadiness,
   });
   return {
     service,
@@ -81,6 +88,62 @@ const createSubject = (
 };
 
 describe("TeamRunService current root lifecycle", () => {
+  it("rejects current-schema admission before constructing a new team run", async () => {
+    const tokenUsageReadiness = {
+      assertCurrentSchemaReady: vi.fn(() => {
+        throw new Error("TOKEN_USAGE_CURRENT_SCHEMA_REQUIRED");
+      }),
+      assertExistingRunRestoreReady: vi.fn(),
+    };
+    const { service, mocks } = createSubject(null, undefined, tokenUsageReadiness);
+
+    await expect(service.createTeamRun({
+      teamDefinitionId: "team-def-1",
+      teamRunId: "team-new-1",
+      memberConfigs: [launchConfig("/Coordinator")],
+    })).rejects.toThrow("TOKEN_USAGE_CURRENT_SCHEMA_REQUIRED");
+
+    expect(tokenUsageReadiness.assertCurrentSchemaReady).toHaveBeenCalledOnce();
+    expect(mocks.workspaceManager.ensureWorkspaceByRootPath).not.toHaveBeenCalled();
+    expect(mocks.agentTeamRunManager.createTeamRun).not.toHaveBeenCalled();
+  });
+
+  it("rejects a managed offline run before consulting pre-existing-run readiness", async () => {
+    const managedRun = { teamRunId: "team-offline-1" };
+    const tokenUsageReadiness = {
+      assertCurrentSchemaReady: vi.fn(),
+      assertExistingRunRestoreReady: vi.fn(() => {
+        throw new Error("TOKEN_USAGE_EXISTING_RUN_RESTORE_MIGRATION_REQUIRED");
+      }),
+    };
+    const { service, mocks } = createSubject(null, undefined, tokenUsageReadiness, managedRun);
+
+    await expect(service.restoreTeamRun("team-offline-1")).rejects.toThrow(
+      "Team run 'team-offline-1' is already managed and cannot be restored.",
+    );
+
+    expect(mocks.agentTeamRunManager.hasManagedTeamRun).toHaveBeenCalledWith("team-offline-1");
+    expect(tokenUsageReadiness.assertExistingRunRestoreReady).not.toHaveBeenCalled();
+    expect(mocks.agentTeamRunManager.restoreTeamRun).not.toHaveBeenCalled();
+  });
+
+  it("blocks root, nested, delegated, and task-team restoration before the team backend constructs providers", async () => {
+    configureTokenUsageMigrationReadiness({
+      kind: "CURRENT_SCHEMA_DEGRADED",
+      migrationStatus: "FAILED",
+      logPath: null,
+    });
+    try {
+      const { service, mocks } = createSubject();
+      await expect(service.restoreTeamRun("team-with-nested-and-task-runs")).rejects.toMatchObject({
+        code: "TOKEN_USAGE_EXISTING_RUN_RESTORE_MIGRATION_REQUIRED",
+      });
+      expect(mocks.agentTeamRunManager.restoreTeamRun).not.toHaveBeenCalled();
+    } finally {
+      configureTokenUsageMigrationReadiness({ kind: "READY" });
+    }
+  });
+
   it("returns an active RootTeamRun without attempting restore", async () => {
     const activeRun = { teamRunId: "team-1" };
     const { service, mocks } = createSubject(activeRun);

@@ -1,0 +1,38 @@
+== server TypeScript build config check ==
+
+== git diff check ==
+
+== merge ancestry ==
+cbbedd6ea0e6d466a3e3741c7216f03887b0182e
+latest-base-ancestor=yes
+0	2
+
+== temporary probe absence ==
+temporary-probe=absent
+
+== run-specific database residue ==
+run-specific-db-residue=none
+
+== owned Node-process residue ==
+owned-process-residue=none
+
+== repository status ==
+ M autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-current-invariants.test.ts
+ M tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-coverage-investigation.md
+ M tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-execution-coverage-report.md
+ M tickets/in-progress/token-usage-one-row-per-agent-run/api-e2e-revision-record.md
+ M tickets/in-progress/token-usage-one-row-per-agent-run/code-review-report.md
+ M tickets/in-progress/token-usage-one-row-per-agent-run/code-review-revision-record.md
+ M tickets/in-progress/token-usage-one-row-per-agent-run/delivery-revision-record.md
+ M tickets/in-progress/token-usage-one-row-per-agent-run/docs-sync-report.md
+ M tickets/in-progress/token-usage-one-row-per-agent-run/handoff-summary.md
+ M tickets/in-progress/token-usage-one-row-per-agent-run/release-deployment-report.md
+?? tickets/in-progress/token-usage-one-row-per-agent-run/delivery-evidence/04-reentry-integration-conflict-dr002.log
+?? tickets/in-progress/token-usage-one-row-per-agent-run/delivery-integration-blocker.md
+?? tickets/in-progress/token-usage-one-row-per-agent-run/test-results/api-e2e/logs/31-ir006-integrated-server-build.log
+?? tickets/in-progress/token-usage-one-row-per-agent-run/test-results/api-e2e/logs/32-ir006-built-server-restore-retry.log
+?? tickets/in-progress/token-usage-one-row-per-agent-run/test-results/api-e2e/logs/33-ir006-managed-offline-graphql-delete.log
+?? tickets/in-progress/token-usage-one-row-per-agent-run/test-results/api-e2e/logs/34-ir006-managed-offline-graphql-delete-pass.log
+?? tickets/in-progress/token-usage-one-row-per-agent-run/test-results/api-e2e/logs/35-ir006-task-admission-settlement.log
+?? tickets/in-progress/token-usage-one-row-per-agent-run/test-results/api-e2e/logs/36-ir006-final-integrated-focused-suite.log
+?? tickets/in-progress/token-usage-one-row-per-agent-run/test-results/api-e2e/logs/37-ir006-ts-diff-cleanup.log

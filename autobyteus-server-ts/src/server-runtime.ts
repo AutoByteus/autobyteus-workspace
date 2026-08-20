@@ -54,6 +54,11 @@ import { stopDefaultAgentRunEventPipeline } from "./agent-execution/events/defau
 import { configureFileToolDeniedPaths } from "autobyteus-ts/tools/file/workspace-path-utils.js";
 import { TeamRunV1PackageCatalog } from "./run-history/services/team-run-v1-package-catalog.js";
 import { exitWithEmbeddedServerPlatformFatal } from "./startup/embedded-server-platform-fatal.js";
+import { assertTokenUsageCurrentSchema } from "./startup/token-usage-current-schema-readiness.js";
+import {
+  TOKEN_USAGE_RUN_RECORDS_V1_MIGRATION_ID,
+  configureTokenUsageMigrationReadiness,
+} from "./token-usage/providers/token-usage-migration-readiness.js";
 
 const logger = createServerLogger("server.runtime");
 
@@ -206,6 +211,26 @@ export async function startConfiguredServer(options: ServerOptions): Promise<voi
     });
   }
   try {
+    await assertTokenUsageCurrentSchema();
+    configureTokenUsageMigrationReadiness({
+      kind: "CURRENT_SCHEMA_DEGRADED",
+      migrationStatus: "NOT_RUN",
+      logPath: null,
+    });
+  } catch (error) {
+    const summary = `Required current token-usage schema is unavailable: ${String(error)}`;
+    logger.error(summary);
+    configureTokenUsageMigrationReadiness({
+      kind: "CRITICAL_CURRENT_SCHEMA_FAILURE",
+      reason: summary,
+    });
+    exitWithEmbeddedServerPlatformFatal({
+      code: "TOKEN_USAGE_CURRENT_SCHEMA_INVALID",
+      summary,
+      logPath: serverLogPath,
+    });
+  }
+  try {
     await getSecretVaultRuntime().initialize(databaseLocation);
   } catch (error) {
     const summary = `Failed to initialize secret vault: ${String(error)}`;
@@ -219,6 +244,18 @@ export async function startConfiguredServer(options: ServerOptions): Promise<voi
 
   try {
     const statuses = await getAppDataMigrationRunner().runPending();
+    const tokenUsageStatus = statuses.find(
+      (status) => status.migrationId === TOKEN_USAGE_RUN_RECORDS_V1_MIGRATION_ID,
+    );
+    configureTokenUsageMigrationReadiness(
+      tokenUsageStatus?.status === "SUCCEEDED" || tokenUsageStatus?.status === "SUCCEEDED_WITH_WARNINGS"
+        ? { kind: "READY" }
+        : {
+            kind: "CURRENT_SCHEMA_DEGRADED",
+            migrationStatus: tokenUsageStatus?.status ?? "MISSING",
+            logPath: tokenUsageStatus?.logPath ?? null,
+          },
+    );
     await new TeamRunV1PackageCatalog(appConfigProvider.config.getMemoryDir()).rebuild();
     const teamRunV1Status = statuses.find(
       (status) => status.migrationId === TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID,

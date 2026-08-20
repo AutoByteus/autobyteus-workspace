@@ -2,9 +2,13 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createTokenUsageUpdatedPayload } from "../../../../src/agent-execution/domain/agent-run-token-usage.js";
 import { TokenUsageStatisticsProvider } from "../../../../src/token-usage/providers/statistics-provider.js";
 import type { TokenUsageUpdatedPayload } from "../../../../src/agent-execution/domain/agent-run-token-usage.js";
+import {
+  applyTokenUsageContribution,
+  createEmptyRunRecord,
+} from "../../../../src/token-usage/projections/token-usage-run-record-state.js";
 
 const mockStore = {
-  listEventsInPeriod: vi.fn(),
+  listRunsCreatedInRange: vi.fn(),
 };
 
 const buildEvent = (input: {
@@ -32,9 +36,9 @@ const buildEvent = (input: {
   runCreatedAt?: string | null;
   memberDisplayName?: string | null;
   taskId?: string | null;
-}): TokenUsageUpdatedPayload => {
+}) => {
   const runId = input.runId ?? `stats_${input.model ?? "unknown"}`;
-  return {
+  const payload: TokenUsageUpdatedPayload = {
     ...createTokenUsageUpdatedPayload({
       runId,
       payload: {
@@ -81,31 +85,43 @@ const buildEvent = (input: {
     api_cost_status: input.status,
     currency: input.currency ?? null,
   };
+  const marker = {
+    observedAt: payload.observed_at,
+    generation: 1,
+    ordinal: 1n,
+  } as const;
+  return applyTokenUsageContribution({
+    record: createEmptyRunRecord(payload, marker),
+    payload,
+    marker,
+    incrementReport: true,
+    incrementRevision: true,
+  });
 };
 
 const provider = () => new TokenUsageStatisticsProvider(mockStore as never);
 
 describe("TokenUsageStatisticsProvider", () => {
   beforeEach(() => {
-    mockStore.listEventsInPeriod.mockReset();
+    mockStore.listRunsCreatedInRange.mockReset();
   });
 
-  it("gets nullable total cost via ledger events without turning missing price into zero", async () => {
+  it("gets nullable total cost from current run records without turning missing price into zero", async () => {
     const start = new Date("2023-01-01T00:00:00.000Z");
     const end = new Date("2023-01-02T00:00:00.000Z");
-    mockStore.listEventsInPeriod.mockResolvedValue([
+    mockStore.listRunsCreatedInRange.mockResolvedValue([
       buildEvent({ model: "unknown-model", inputTokens: 10, outputTokens: 5, inputCost: null, outputCost: null, totalCost: null, status: "price_missing" }),
     ]);
 
     const totalCost = await provider().getTotalCost(start, end);
 
-    expect(mockStore.listEventsInPeriod).toHaveBeenCalledWith(start, end);
+    expect(mockStore.listRunsCreatedInRange).toHaveBeenCalledWith(start, end);
     expect(totalCost).toBeNull();
   });
 
   it("aggregates diagnostics per runtime/model pair with mixed price status", async () => {
     const now = new Date();
-    mockStore.listEventsInPeriod.mockResolvedValue([
+    mockStore.listRunsCreatedInRange.mockResolvedValue([
       buildEvent({ model: "gpt-test", runtimeKind: "codex_app_server", inputTokens: 10, outputTokens: 0, inputCost: 1.0, outputCost: 0, totalCost: 1.0, reasoningTokens: 3, reasoningCost: 0.3, status: "estimated", currency: "USD" }),
       buildEvent({ model: "gpt-test", runtimeKind: "autobyteus", inputTokens: 0, outputTokens: 5, inputCost: null, outputCost: null, totalCost: null, status: "price_missing" }),
       buildEvent({ model: null, runtimeKind: "codex_app_server", inputTokens: 0, outputTokens: 20, inputCost: null, outputCost: null, totalCost: null, status: "price_missing" }),
@@ -138,7 +154,7 @@ describe("TokenUsageStatisticsProvider", () => {
     const customProviderStore = {
       listProviders: vi.fn().mockResolvedValue([{ id: "provider_A", name: "renamed_provider" }]),
     };
-    mockStore.listEventsInPeriod.mockResolvedValue([
+    mockStore.listRunsCreatedInRange.mockResolvedValue([
       buildEvent({
         model: "openai-compatible:provider_A:qwen3.8-max-preview",
         modelProvider: "OPENAI_COMPATIBLE",
@@ -170,7 +186,7 @@ describe("TokenUsageStatisticsProvider", () => {
     const customProviderStore = {
       listProviders: vi.fn().mockResolvedValue([{ id: "provider_A", name: "renamed_provider" }]),
     };
-    mockStore.listEventsInPeriod.mockResolvedValue([
+    mockStore.listRunsCreatedInRange.mockResolvedValue([
       buildEvent({
         model: "openai-compatible:provider_A:qwen3.8-max-preview",
         modelProvider: "OPENAI_COMPATIBLE",
@@ -200,9 +216,9 @@ describe("TokenUsageStatisticsProvider", () => {
     const now = new Date();
     const start = new Date(now.getTime() - 1_000);
     const end = new Date(now.getTime() + 1_000);
-    mockStore.listEventsInPeriod.mockResolvedValue([
-      buildEvent({ model: "glm-direct", inputTokens: 100, outputTokens: 10, inputCost: 0.001, outputCost: 0.002, totalCost: 0.003, reasoningTokens: 1, reasoningCost: 0.0002, status: "estimated", currency: "USD" }),
-      buildEvent({ model: "glm-direct", inputTokens: 200, outputTokens: 20, inputCost: 0.02, outputCost: 0.04, totalCost: 0.06, reasoningTokens: 2, reasoningCost: 0.004, status: "estimated", currency: "CNY" }),
+    mockStore.listRunsCreatedInRange.mockResolvedValue([
+      buildEvent({ runId: "glm-direct-usd", model: "glm-direct", inputTokens: 100, outputTokens: 10, inputCost: 0.001, outputCost: 0.002, totalCost: 0.003, reasoningTokens: 1, reasoningCost: 0.0002, status: "estimated", currency: "USD" }),
+      buildEvent({ runId: "glm-direct-cny", model: "glm-direct", inputTokens: 200, outputTokens: 20, inputCost: 0.02, outputCost: 0.04, totalCost: 0.06, reasoningTokens: 2, reasoningCost: 0.004, status: "estimated", currency: "CNY" }),
     ]);
 
     await expect(provider().getTotalCost(start, end)).resolves.toBeNull();
@@ -219,7 +235,7 @@ describe("TokenUsageStatisticsProvider", () => {
 
   it("preserves partial-price-missing statistics instead of coercing missing dimensions to zero", async () => {
     const now = new Date();
-    mockStore.listEventsInPeriod.mockResolvedValue([
+    mockStore.listRunsCreatedInRange.mockResolvedValue([
       buildEvent({ model: "gpt-cache-partial", inputTokens: 1000, outputTokens: 200, inputCost: 0.0012, outputCost: 0.002, totalCost: 0.0032, status: "partial_price_missing", currency: "USD" }),
     ]);
 
@@ -234,7 +250,7 @@ describe("TokenUsageStatisticsProvider", () => {
   });
 
   it("groups task statistics by team run and standalone run without duplicating team members", async () => {
-    mockStore.listEventsInPeriod.mockResolvedValue([
+    mockStore.listRunsCreatedInRange.mockResolvedValue([
       buildEvent({
         runId: "member-a",
         rootTeamRunId: "team-new",
@@ -316,7 +332,7 @@ describe("TokenUsageStatisticsProvider", () => {
   });
 
   it("keeps expanded team rows usage-derived and omits no-usage roster members", async () => {
-    mockStore.listEventsInPeriod.mockResolvedValue([
+    mockStore.listRunsCreatedInRange.mockResolvedValue([
       buildEvent({
         runId: "member-designer",
         rootTeamRunId: "team-usage",
@@ -374,7 +390,7 @@ describe("TokenUsageStatisticsProvider", () => {
   });
 
   it("keeps task-related usage grouped by exact AgentRun ID while Team topology stays execution-tree-owned", async () => {
-    mockStore.listEventsInPeriod.mockResolvedValue([
+    mockStore.listRunsCreatedInRange.mockResolvedValue([
       buildEvent({
         runId: "student-one-run",
         rootTeamRunId: "nested-classroom-root",

@@ -1,0 +1,58 @@
+timestamp=2026-08-19T13:25:00Z
+head=11b861de677200fe7441ed189934f7776804c04d
+base=1f5663ddb86e478d0b4ffdd878d57dee72d67b4b
+
+$ git diff --check
+result=pass
+
+$ required DR-004 artifacts
+present=/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/delivery-rework-record.md
+present=/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/delivery-revision-record.md
+present=/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/handoff-summary.md
+present=/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/release-deployment-report.md
+present=/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/docs-sync-report.md
+present=/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/delivery-evidence/10-user-verification-failure-dr004.log
+present=/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/delivery-evidence/11-production-migration-failure-dr004.log
+7:| `DR-004` | Explicit user verification of the DR-003 personal macOS ARM64 Electron package | `DR-003` Pass at package-build/integrity checkpoint, awaiting user test | Failed / Blocked — live production-shaped migration failed three times before scanning with a contradictory SafeInt decode error; route `Local Fix` to implementation | `delivery-rework-record.md`, `delivery-evidence/10-*`, `delivery-evidence/11-*`, `handoff-summary.md`, `release-deployment-report.md`, `docs-sync-report.md` |
+14:### DR-004 — User verification fails on production-shaped migration decoding
+97:- Supersession note: DR-004 user verification failed. DR-003 remains only the
+7:- State: `Blocked — explicit user verification failed`
+6:- Explicit user verification: `Failed`
+6:- Result: `Blocked — user verification exposed a runtime implementation defect`
+result=pass
+
+$ copied source-log integrity
+f13526cd1c30f0e871085f2508f97ce9c39d5a5bc56dbe9916feb70cc07d03fb  /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/tickets/in-progress/token-usage-one-row-per-agent-run/delivery-evidence/11-production-migration-failure-dr004.log
+f13526cd1c30f0e871085f2508f97ce9c39d5a5bc56dbe9916feb70cc07d03fb  /Users/normy/.autobyteus/server-data/logs/app-data-migrations/20260819_token_usage_run_records_v1-2026-08-19T13-08-18-307Z.log
+result=pass
+
+$ hold state
+classification=Local Fix
+recipient=/implementation_engineer
+user_verification=failed
+production_db_touched_by_delivery=no
+push=no
+archive=no
+merge=no
+release=no
+deployment=no
+cleanup=no
+
+$ git status
+## codex/token-usage-one-row-per-agent-run...origin/personal [ahead 3]
+ M tickets/in-progress/token-usage-one-row-per-agent-run/delivery-integration-blocker.md
+ M tickets/in-progress/token-usage-one-row-per-agent-run/delivery-revision-record.md
+ M tickets/in-progress/token-usage-one-row-per-agent-run/docs-sync-report.md
+ M tickets/in-progress/token-usage-one-row-per-agent-run/handoff-summary.md
+ M tickets/in-progress/token-usage-one-row-per-agent-run/release-deployment-report.md
+?? tickets/in-progress/token-usage-one-row-per-agent-run/delivery-evidence/05-electron-readme-preflight-dr003.log
+?? tickets/in-progress/token-usage-one-row-per-agent-run/delivery-evidence/06-electron-build-macos-arm64-dr003.log
+?? tickets/in-progress/token-usage-one-row-per-agent-run/delivery-evidence/07-electron-package-integrity-dr003.log
+?? tickets/in-progress/token-usage-one-row-per-agent-run/delivery-evidence/08-final-base-and-docs-audit-dr003.log
+?? tickets/in-progress/token-usage-one-row-per-agent-run/delivery-evidence/09-final-handoff-audit-dr003.log
+?? tickets/in-progress/token-usage-one-row-per-agent-run/delivery-evidence/10-user-verification-failure-dr004.log
+?? tickets/in-progress/token-usage-one-row-per-agent-run/delivery-evidence/11-production-migration-failure-dr004.log
+?? tickets/in-progress/token-usage-one-row-per-agent-run/delivery-evidence/12-delivery-rework-audit-dr004.log
+?? tickets/in-progress/token-usage-one-row-per-agent-run/delivery-rework-record.md
+
+overall_result=pass; route-required

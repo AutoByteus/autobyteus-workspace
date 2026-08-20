@@ -19,7 +19,8 @@ import { ServerMessageType } from "../../../src/services/agent-streaming/models.
 import { TokenCostCalculator } from "../../../src/token-usage/pricing/token-cost-calculator.js";
 import { TokenUsageComponentBasisResolver } from "../../../src/token-usage/projections/token-usage-component-basis-resolver.js";
 import { TokenUsageSnapshotDeltaNormalizer } from "../../../src/token-usage/projections/token-usage-snapshot-delta-normalizer.js";
-import { TokenUsageLedgerStore } from "../../../src/token-usage/providers/token-usage-ledger-store.js";
+import { createCurrentTokenUsageTestHarness } from "../../helpers/token-usage-run-record-fixtures.js";
+import { configureTokenUsageMigrationReadiness } from "../../../src/token-usage/providers/token-usage-migration-readiness.js";
 
 type UnitPrice = {
   status: string;
@@ -50,7 +51,7 @@ type Summary = {
   };
 };
 
-const store = new TokenUsageLedgerStore();
+const { store } = createCurrentTokenUsageTestHarness(rootPrismaClient);
 const createdRunIds = new Set<string>();
 
 describe("GPT-5.6 token usage accounting and GraphQL convergence", () => {
@@ -60,6 +61,7 @@ describe("GPT-5.6 token usage accounting and GraphQL convergence", () => {
   beforeAll(async () => {
     await shutdownPrisma();
     await initializePrisma({ datasourceUrl: process.env.DATABASE_URL });
+    configureTokenUsageMigrationReadiness({ kind: "READY" });
     LLMFactory.resetForTests();
     (LLMFactory as unknown as { initialized: boolean }).initialized = true;
     for (const modelId of ["gpt-5.6-sol", "gpt-5.6-terra", "gpt-5.6-luna"]) {
@@ -78,7 +80,7 @@ describe("GPT-5.6 token usage accounting and GraphQL convergence", () => {
   afterAll(async () => {
     const runIds = Array.from(createdRunIds);
     if (runIds.length > 0) {
-      await rootPrismaClient.tokenUsageLedgerEvent.deleteMany({ where: { runId: { in: runIds } } });
+      await rootPrismaClient.tokenUsageRunRecord.deleteMany({ where: { runId: { in: runIds } } });
     }
     createdRunIds.clear();
     await shutdownPrisma();
@@ -275,7 +277,7 @@ describe("GPT-5.6 token usage accounting and GraphQL convergence", () => {
     expect(liveMessage.payload.estimated_api_input_cost).toBeCloseTo(testCase.costs.input, 12);
     expect(liveMessage.payload.estimated_api_total_cost).toBeCloseTo(testCase.costs.total, 12);
 
-    await store.appendTokenUsageEvent(priced);
+    await store.recordObservation(priced);
     const hydrated = await execSummary(runId);
     expect(hydrated).toMatchObject({
       runId,

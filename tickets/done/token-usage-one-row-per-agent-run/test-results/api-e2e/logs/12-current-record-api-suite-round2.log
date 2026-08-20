@@ -1,0 +1,401 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+
+stdout | tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:33875) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts > token usage ledger GraphQL projections
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts > token usage ledger GraphQL projections > returns expanded run/team/member summaries and settings statistics from ledger accounting fields
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts
+
+ ✓ tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts > token usage ledger GraphQL projections > returns expanded run/team/member summaries and settings statistics from ledger accounting fields 87ms
+ ✓ tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts > token usage ledger GraphQL projections > returns null aggregate costs and mixed status for mixed-currency GraphQL summaries and statistics 20ms
+ × tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts > token usage ledger GraphQL projections > returns run-owned task statistics rows and runtime/model diagnostics without double counting team members 61ms
+   → expected { …(13) } to match object { rowKind: 'TEAM_RUN', …(8) }
+(18 matching properties omitted from actual)
+ × tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts > token usage ledger GraphQL projections > exposes provider-aware model and task fields through the live GraphQL schema 36ms
+   → expected [ Array(4) ] to deeply equal ArrayContaining{…}
+stdout | tests/e2e/token-usage/token-usage-ledger-provider-semantics.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:34190) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/token-usage/token-usage-ledger-provider-semantics.e2e.test.ts > token usage ledger GraphQL provider semantics
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/e2e/token-usage/token-usage-ledger-provider-semantics.e2e.test.ts > token usage ledger GraphQL provider semantics
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-token-usage-graphql-7yFQS2
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-token-usage-graphql-7yFQS2/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-token-usage-graphql-7yFQS2/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-token-usage-graphql-7yFQS2/.env -- tip: 🛡️ auth for agents: https://vestauth.com
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-token-usage-graphql-7yFQS2
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-token-usage-graphql-7yFQS2/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-token-usage-graphql-7yFQS2/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-token-usage-graphql-7yFQS2/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-token-usage-graphql-7yFQS2/memory
+============================================================
+AppConfig initialization completed successfully
+
+ × tests/e2e/token-usage/token-usage-ledger-provider-semantics.e2e.test.ts > token usage ledger GraphQL provider semantics > surfaces provider-specific semantics, local no-bill, custom missing price, and historical unknown rows 47ms
+   → expected { grossInputTokens: 40, …(5) } to match object { grossInputTokens: 40, …(5) }
+ ✓ tests/e2e/token-usage/token-usage-ledger-provider-semantics.e2e.test.ts > token usage ledger GraphQL provider semantics > serializes safe-integer token aggregates above the GraphQL Int range 17ms
+stdout | tests/e2e/token-usage/token-usage-unit-prices-graphql.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:34195) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/token-usage/token-usage-unit-prices-graphql.e2e.test.ts > token usage unit-price GraphQL hydration
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/e2e/token-usage/token-usage-unit-prices-graphql.e2e.test.ts > token usage unit-price GraphQL hydration > exposes display-safe unit prices on hydrated run, team, member, and aggregate statistics summaries
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts
+
+ ✓ tests/e2e/token-usage/token-usage-unit-prices-graphql.e2e.test.ts > token usage unit-price GraphQL hydration > exposes display-safe unit prices on hydrated run, team, member, and aggregate statistics summaries 53ms
+stdout | tests/unit/agent-execution/events/token-usage-event-enrichment-transformer.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/events/token-usage-event-enrichment-transformer.test.ts > TokenUsageEventEnrichmentTransformer > replaces a raw token usage event with one enriched event carrying canonical team identity, deltas, and cost 5ms
+ ✓ tests/unit/agent-execution/events/token-usage-event-enrichment-transformer.test.ts > TokenUsageEventEnrichmentTransformer > preserves cumulative source counters and defers missing provider deltas to the durable fold 1ms
+stdout | tests/e2e/token-usage/gpt56-token-usage-accounting-graphql.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:34198) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/token-usage/gpt56-token-usage-accounting-graphql.e2e.test.ts > GPT-5.6 token usage accounting and GraphQL convergence
+prisma:info Starting a sqlite pool with 21 connections.
+
+ ✓ tests/e2e/token-usage/gpt56-token-usage-accounting-graphql.e2e.test.ts > GPT-5.6 token usage accounting and GraphQL convergence > preserves exact generic components and costs for 'gpt-5.6-sol' through the 'standard <=272K tier' 19ms
+ ✓ tests/e2e/token-usage/gpt56-token-usage-accounting-graphql.e2e.test.ts > GPT-5.6 token usage accounting and GraphQL convergence > preserves exact generic components and costs for 'gpt-5.6-sol' through the 'long-context >272K tier' 7ms
+ ✓ tests/e2e/token-usage/gpt56-token-usage-accounting-graphql.e2e.test.ts > GPT-5.6 token usage accounting and GraphQL convergence > preserves exact generic components and costs for 'gpt-5.6-terra' through the 'standard <=272K tier' 7ms
+ ✓ tests/e2e/token-usage/gpt56-token-usage-accounting-graphql.e2e.test.ts > GPT-5.6 token usage accounting and GraphQL convergence > preserves exact generic components and costs for 'gpt-5.6-terra' through the 'long-context >272K tier' 6ms
+ ✓ tests/e2e/token-usage/gpt56-token-usage-accounting-graphql.e2e.test.ts > GPT-5.6 token usage accounting and GraphQL convergence > preserves exact generic components and costs for 'gpt-5.6-luna' through the 'standard <=272K tier' 7ms
+ ✓ tests/e2e/token-usage/gpt56-token-usage-accounting-graphql.e2e.test.ts > GPT-5.6 token usage accounting and GraphQL convergence > preserves exact generic components and costs for 'gpt-5.6-luna' through the 'long-context >272K tier' 6ms
+stdout | tests/integration/token-usage/providers/statistics-provider.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:34200) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/token-usage/providers/statistics-provider.integration.test.ts > TokenUsageStatisticsProvider > gets nullable total cost from current run records without turning missing price into zero
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-one-row-per-agent-run/autobyteus-server-ts
+
+ ✓ tests/integration/token-usage/providers/statistics-provider.integration.test.ts > TokenUsageStatisticsProvider > gets nullable total cost from current run records without turning missing price into zero 5ms
+ ✓ tests/integration/token-usage/providers/statistics-provider.integration.test.ts > TokenUsageStatisticsProvider > aggregates diagnostics per runtime/model pair with mixed price status 3ms
+ ✓ tests/integration/token-usage/providers/statistics-provider.integration.test.ts > TokenUsageStatisticsProvider > loads legacy custom provider names once and keeps the raw model identifier separate from display 1ms
+ ✓ tests/integration/token-usage/providers/statistics-provider.integration.test.ts > TokenUsageStatisticsProvider > prefers the persisted provider snapshot without reading the current provider map 1ms
+ ✓ tests/integration/token-usage/providers/statistics-provider.integration.test.ts > TokenUsageStatisticsProvider > returns null aggregate cost and mixed status for mixed currencies 1ms
+ ✓ tests/integration/token-usage/providers/statistics-provider.integration.test.ts > TokenUsageStatisticsProvider > preserves partial-price-missing statistics instead of coercing missing dimensions to zero 1ms
+ ✓ tests/integration/token-usage/providers/statistics-provider.integration.test.ts > TokenUsageStatisticsProvider > groups task statistics by team run and standalone run without duplicating team members 2ms
+ ✓ tests/integration/token-usage/providers/statistics-provider.integration.test.ts > TokenUsageStatisticsProvider > keeps expanded team rows usage-derived and omits no-usage roster members 1ms
+ ✓ tests/integration/token-usage/providers/statistics-provider.integration.test.ts > TokenUsageStatisticsProvider > keeps task-related usage grouped by exact AgentRun ID while Team topology stays execution-tree-owned 1ms
+stdout | tests/integration/token-usage/providers/token-usage-display-field-capturer.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:34202) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/integration/token-usage/providers/token-usage-display-field-capturer.integration.test.ts > TokenUsageDisplayFieldCapturer > captures standalone agent display fields from run history sources 4ms
+ ✓ tests/integration/token-usage/providers/token-usage-display-field-capturer.integration.test.ts > TokenUsageDisplayFieldCapturer > captures team and member names from team history metadata without producing roster rows 1ms
+ ✓ tests/integration/token-usage/providers/token-usage-display-field-capturer.integration.test.ts > TokenUsageDisplayFieldCapturer > preserves imported display fields over currently available metadata 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts > token usage ledger GraphQL projections > returns run-owned task statistics rows and runtime/model diagnostics without double counting team members
+AssertionError: expected { …(13) } to match object { rowKind: 'TEAM_RUN', …(8) }
+(18 matching properties omitted from actual)
+
+- Expected
++ Received
+
+@@ -7,10 +7,9 @@
+    ],
+    "rootTeamRunId": "graphql-task-team-newer-887e80ce-cb96-4523-ab79-f674b4933e1f",
+    "rowKind": "TEAM_RUN",
+    "runId": null,
+    "runtimeKinds": [
+-     "autobyteus",
+-     "codex_app_server",
++     "Mixed",
+    ],
+    "summary": "Ship task statistics",
+  }
+
+ ❯ tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts:816:23
+    814| 
+    815|     const newerTeam = rows[0]!;
+    816|     expect(newerTeam).toMatchObject({
+       |                       ^
+    817|       rowKind: 'TEAM_RUN',
+    818|       runId: null,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts > token usage ledger GraphQL projections > exposes provider-aware model and task fields through the live GraphQL schema
+AssertionError: expected [ Array(4) ] to deeply equal ArrayContaining{…}
+
+- Expected
++ Received
+
+- ArrayContaining [
+-   ObjectContaining {
+-     "inputTokens": 130,
++ [
++   {
++     "inputTokens": 240,
++     "llmModel": "Mixed",
++     "modelDisplayName": "Mixed",
++     "outputTokens": 24,
++     "runtimeKind": "Mixed",
++     "totalCost": 2.64,
++   },
++   {
++     "inputTokens": 30,
+      "llmModel": "openai-compatible:provider_4edfd7be-2a7a-4aad-b334-bd5ca4930a18:qwen3.8-max-preview",
+      "modelDisplayName": "alibaba_cloud:qwen3.8-max-preview",
+-     "outputTokens": 13,
++     "outputTokens": 3,
+      "runtimeKind": "autobyteus",
+-     "totalCost": NumberCloseTo 1.43 (10 digits),
++     "totalCost": 0.33,
+    },
+-   ObjectContaining {
++   {
++     "inputTokens": 20,
+      "llmModel": "deepseek-v4-flash",
+      "modelDisplayName": "DeepSeek:deepseek-v4-flash",
++     "outputTokens": 2,
+      "runtimeKind": "autobyteus",
++     "totalCost": 0.22,
+    },
+-   ObjectContaining {
+-     "llmModel": "gpt-5.6-luna",
+-     "modelDisplayName": "gpt-5.6-luna",
++   {
++     "inputTokens": 10,
++     "llmModel": "openai-compatible:provider_4edfd7be-2a7a-4aad-b334-bd5ca4930a18:qwen3.8-max-preview",
++     "modelDisplayName": "openai-compatible:provider_4edfd7be-2a7a-4aad-b334-bd5ca4930a18:qwen3.8-max-preview",
++     "outputTokens": 1,
+      "runtimeKind": "codex_app_server",
++     "totalCost": 0.11,
+    },
+  ]
+
+ ❯ tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts:1161:46
+    1159|       }>(query, { start: new Date(start), end: new Date(end) });
+    1160| 
+    1161|       expect(result.usageStatisticsInPeriod).toEqual(expect.arrayConta…
+       |                                              ^
+    1162|         expect.objectContaining({
+    1163|           runtimeKind: 'autobyteus',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  tests/e2e/token-usage/token-usage-ledger-provider-semantics.e2e.test.ts > token usage ledger GraphQL provider semantics > surfaces provider-specific semantics, local no-bill, custom missing price, and historical unknown rows
+AssertionError: expected { grossInputTokens: 40, …(5) } to match object { grossInputTokens: 40, …(5) }
+
+- Expected
++ Received
+
+  {
+    "apiCostStatus": "local_no_api_bill",
+-   "cacheState": "unsupported_or_local",
++   "cacheState": "unknown",
+    "currency": null,
+    "estimatedApiTotalCost": 0,
+    "grossInputTokens": 40,
+    "latestModelProvider": "OLLAMA",
+  }
+
+ ❯ tests/e2e/token-usage/token-usage-ledger-provider-semantics.e2e.test.ts:323:26
+    321|       latestModelProvider: 'OPENAI_COMPATIBLE',
+    322|     });
+    323|     expect(result.local).toMatchObject({
+       |                          ^
+    324|       grossInputTokens: 40,
+    325|       estimatedApiTotalCost: 0,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  2 failed | 5 passed (7)
+      Tests  3 failed | 24 passed (27)
+   Start at  10:49:52
+   Duration  14.59s (transform 4.40s, setup 45ms, import 12.50s, tests 735ms, environment 1ms)
+

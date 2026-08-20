@@ -12,7 +12,6 @@ import {
   PrismaTokenUsageCustomProviderModelValueBackfillDatabase,
   TOKEN_USAGE_CUSTOM_PROVIDER_MODEL_VALUE_BACKFILL_MIGRATION_ID,
   TokenUsageCustomProviderModelValueBackfillMigration,
-  type RawTokenUsageCustomProviderModelValueRow,
   type TokenUsageCustomProviderModelValueBackfillDatabase,
 } from '../../../src/app-data-migrations/migrations/token-usage-custom-provider-model-value-backfill-migration.js';
 import type {
@@ -27,29 +26,34 @@ let logsRoot: string;
 type DatabaseLike = TokenUsageCustomProviderModelValueBackfillDatabase;
 
 class CountingDatabase implements DatabaseLike {
-  listCalls = 0;
-  updateCalls = 0;
+  candidateBatchCalls = 0;
+  applyBatchCalls = 0;
+  attemptedUpdateRows = 0;
   failingId: number | null = null;
 
   constructor(private readonly delegate: DatabaseLike) {}
 
-  async listTokenUsageLedgerRows(): Promise<RawTokenUsageCustomProviderModelValueRow[]> {
-    this.listCalls += 1;
-    return this.delegate.listTokenUsageLedgerRows();
+  listCandidateBatch(
+    afterId: number,
+    limit: number,
+  ): ReturnType<DatabaseLike['listCandidateBatch']> {
+    this.candidateBatchCalls += 1;
+    return this.delegate.listCandidateBatch(afterId, limit);
   }
 
-  async countTokenUsageLedgerRows(): Promise<number> {
-    return this.delegate.countTokenUsageLedgerRows();
+  countRows(): ReturnType<DatabaseLike['countRows']> {
+    return this.delegate.countRows();
   }
 
-  async updateTokenUsageModelValue(input: {
-    id: number;
-    expectedModelValue: string;
-    nextModelValue: string;
-  }): Promise<number | void> {
-    this.updateCalls += 1;
-    if (this.failingId === input.id) throw new Error('synthetic update failure');
-    return this.delegate.updateTokenUsageModelValue(input);
+  applyBatch(
+    updates: Parameters<DatabaseLike['applyBatch']>[0],
+  ): ReturnType<DatabaseLike['applyBatch']> {
+    this.applyBatchCalls += 1;
+    this.attemptedUpdateRows += updates.length;
+    if (updates.some(({ id }) => this.failingId === id)) {
+      return Promise.reject(new Error('synthetic update failure'));
+    }
+    return this.delegate.applyBatch(updates);
   }
 }
 
@@ -177,7 +181,7 @@ describe('token usage custom-provider model-value backfill startup e2e', () => {
       expect.objectContaining({ migrationId: siblingId, status: 'SUCCEEDED' }),
     ]));
     expect(siblingExecutions).toBe(1);
-    expect(database.listCalls).toBe(2);
+    expect(database.candidateBatchCalls).toBe(1);
     expect(await rootPrismaClient.tokenUsageLedgerEvent.findUnique({ where: { id: rowId } })).toMatchObject({
       modelIdentifier: rawModel,
       modelValue: 'org/model:tag',
@@ -188,15 +192,16 @@ describe('token usage custom-provider model-value backfill startup e2e', () => {
       status: 'SUCCEEDED_WITH_WARNINGS',
       attempts: 1,
     });
-    expect(database.listCalls).toBe(2);
+    expect(database.candidateBatchCalls).toBe(1);
     expect(siblingExecutions).toBe(1);
 
     const explicitRetry = await runner.runMigration(TOKEN_USAGE_CUSTOM_PROVIDER_MODEL_VALUE_BACKFILL_MIGRATION_ID);
     expect(explicitRetry).toMatchObject({ status: 'SUCCEEDED_WITH_WARNINGS', attempts: 2 });
-    expect(database.listCalls).toBe(4);
+    expect(database.candidateBatchCalls).toBe(2);
+    expect(database.applyBatchCalls).toBe(2);
   });
 
-  it('blocks startup after a failed row, durably retries only the unresolved row, and records attempts', async () => {
+  it('records a failed atomic batch, continues sibling startup work, and retries the whole batch', async () => {
     const providerId = `provider_${randomUUID()}`;
     const rawModel = `openai-compatible:${providerId}:org/model:tag`;
     const runId = `migration-failure-${randomUUID()}`;
@@ -229,9 +234,9 @@ describe('token usage custom-provider model-value backfill startup e2e', () => {
       orderBy: { id: 'asc' },
       select: { id: true, modelIdentifier: true, modelValue: true },
     })).toEqual([
-      { id: rowIds[0], modelIdentifier: rawModel, modelValue: 'org/model:tag' },
+      { id: rowIds[0], modelIdentifier: rawModel, modelValue: rawModel },
       { id: rowIds[1], modelIdentifier: `${rawModel}-two`, modelValue: `${rawModel}-two` },
-      { id: rowIds[2], modelIdentifier: `${rawModel}-three`, modelValue: 'org/model:tag-three' },
+      { id: rowIds[2], modelIdentifier: `${rawModel}-three`, modelValue: `${rawModel}-three` },
     ]);
 
     database.failingId = null;
@@ -241,6 +246,9 @@ describe('token usage custom-provider model-value backfill startup e2e', () => {
       attempts: 2,
     });
     expect(siblingExecutions).toBe(1);
+    expect(database.candidateBatchCalls).toBe(2);
+    expect(database.applyBatchCalls).toBe(2);
+    expect(database.attemptedUpdateRows).toBe(6);
     expect(await rootPrismaClient.tokenUsageLedgerEvent.findMany({
       where: { id: { in: rowIds } },
       orderBy: { id: 'asc' },

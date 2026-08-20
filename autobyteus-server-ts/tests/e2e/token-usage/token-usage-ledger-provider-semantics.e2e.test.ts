@@ -10,10 +10,13 @@ import { initializePrisma, rootPrismaClient, shutdownPrisma } from 'repository_p
 import { buildGraphqlSchema } from '../../../src/api/graphql/schema.js';
 import { appConfigProvider } from '../../../src/config/app-config-provider.js';
 import { createTokenUsageUpdatedPayload } from '../../../src/agent-execution/domain/agent-run-token-usage.js';
-import { TokenUsageLedgerStore } from '../../../src/token-usage/providers/token-usage-ledger-store.js';
+import { createCurrentTokenUsageTestHarness } from '../../helpers/token-usage-run-record-fixtures.js';
+import { configureTokenUsageMigrationReadiness } from '../../../src/token-usage/providers/token-usage-migration-readiness.js';
+import { TokenUsageRunRecordsV1AppDataMigration } from '../../../src/app-data-migrations/migrations/token-usage-run-records-v1/token-usage-run-records-v1-app-data-migration.js';
+import { LegacyTokenUsageConsolidationRepository } from '../../../src/app-data-migrations/migrations/token-usage-run-records-v1/legacy-token-usage-consolidation-repository.js';
 import type { TokenUsageUpdatedPayload } from '../../../src/agent-execution/domain/agent-run-token-usage.js';
 
-const store = new TokenUsageLedgerStore();
+const { store } = createCurrentTokenUsageTestHarness(rootPrismaClient);
 const createdRunIds = new Set<string>();
 
 const buildEvent = (input: {
@@ -103,6 +106,7 @@ describe('token usage ledger GraphQL provider semantics', () => {
   beforeAll(async () => {
     await shutdownPrisma();
     await initializePrisma({ datasourceUrl: process.env.DATABASE_URL });
+    configureTokenUsageMigrationReadiness({ kind: 'READY' });
     appDataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'autobyteus-token-usage-graphql-'));
     fs.writeFileSync(
       path.join(appDataDir, '.env'),
@@ -128,7 +132,7 @@ describe('token usage ledger GraphQL provider semantics', () => {
   afterAll(async () => {
     const runIds = Array.from(createdRunIds);
     if (runIds.length > 0) {
-      await rootPrismaClient.tokenUsageLedgerEvent.deleteMany({ where: { runId: { in: runIds } } });
+      await rootPrismaClient.tokenUsageRunRecord.deleteMany({ where: { runId: { in: runIds } } });
     }
     createdRunIds.clear();
     appConfigProvider.resetForTests();
@@ -144,14 +148,14 @@ describe('token usage ledger GraphQL provider semantics', () => {
     return result.data as T;
   };
 
-  it('surfaces provider-specific semantics, local no-bill, custom missing price, and historical unknown rows', async () => {
+  it('surfaces current provider/local semantics and a historical unknown row after real consolidation', async () => {
     const suffix = randomUUID();
     const anthropicRunId = `graphql-anthropic-${suffix}`;
     const customRunId = `graphql-custom-${suffix}`;
     const localRunId = `graphql-local-${suffix}`;
     const unknownRunId = `graphql-unknown-${suffix}`;
 
-    await store.appendTokenUsageEvent(buildEvent({
+    await store.recordObservation(buildEvent({
       runId: anthropicRunId,
       observedAt: '2026-06-24T11:01:00.000Z',
       inputTokenSemantic: 'base_excludes_cache',
@@ -171,7 +175,7 @@ describe('token usage ledger GraphQL provider semantics', () => {
       model: 'claude-sonnet-4-6',
       pricingPolicyKey: 'catalog:anthropic:claude-sonnet-4-6',
     }));
-    await store.appendTokenUsageEvent(buildEvent({
+    await store.recordObservation(buildEvent({
       runId: anthropicRunId,
       observedAt: '2026-06-24T11:02:00.000Z',
       inputTokenSemantic: 'base_excludes_cache',
@@ -193,7 +197,7 @@ describe('token usage ledger GraphQL provider semantics', () => {
       model: 'claude-sonnet-4-6',
       pricingPolicyKey: 'catalog:anthropic:claude-sonnet-4-6',
     }));
-    await store.appendTokenUsageEvent(buildEvent({
+    await store.recordObservation(buildEvent({
       runId: customRunId,
       observedAt: '2026-06-24T11:03:00.000Z',
       grossInputTokens: 80,
@@ -207,7 +211,7 @@ describe('token usage ledger GraphQL provider semantics', () => {
       ingestionKind: 'autobyteus_llm_phase',
       missingPriceDimensions: ['custom_endpoint_pricing'],
     }));
-    await store.appendTokenUsageEvent(buildEvent({
+    await store.recordObservation(buildEvent({
       runId: localRunId,
       observedAt: '2026-06-24T11:04:00.000Z',
       grossInputTokens: 40,
@@ -223,22 +227,57 @@ describe('token usage ledger GraphQL provider semantics', () => {
       runtimeKind: 'autobyteus',
       ingestionKind: 'autobyteus_llm_phase',
     }));
-    await store.appendTokenUsageEvent(buildEvent({
-      runId: unknownRunId,
-      observedAt: '2026-06-24T11:05:00.000Z',
-      inputTokenSemantic: 'unknown',
-      grossInputTokens: 1_000,
-      standardInputTokens: 200,
-      cacheReadTokens: 800,
-      outputTokens: 20,
-      inputCost: 0.01,
-      standardInputCost: 0.002,
-      cacheReadInputCost: 0.008,
-      outputCost: 0.004,
-      totalCost: 0.014,
-      status: 'estimated',
-      model: 'legacy-unknown',
-    }));
+    createdRunIds.add(unknownRunId);
+    await rootPrismaClient.tokenUsageLedgerEvent.create({
+      data: {
+        usageEventId: `graphql-provider-legacy-${suffix}`,
+        idempotencyKey: `graphql-provider-legacy:${suffix}`,
+        observedAt: new Date('2026-06-24T11:05:00.000Z'),
+        runId: unknownRunId,
+        runtimeKind: 'codex_app_server',
+        ingestionKind: 'codex_thread_token_usage',
+        usageScope: 'per_turn',
+        inputTokenSemantic: 'unknown',
+        modelProvider: 'OPENAI',
+        modelIdentifier: 'legacy-unknown',
+        reportedInputTokens: 1_000,
+        reportedOutputTokens: 20,
+        reportedTotalTokens: 1_020,
+        accountingInputTokens: 1_000,
+        accountingOutputTokens: 20,
+        accountingTotalTokens: 1_020,
+        standardInputTokens: 200,
+        cacheMissInputTokens: 200,
+        cacheReadInputTokens: 800,
+        cacheCreationInputTokens: 0,
+        cacheCreation5mInputTokens: 0,
+        cacheCreation1hInputTokens: 0,
+        cacheState: 'positive',
+        billableInputTokens: 1_000,
+        billableOutputTokens: 20,
+        currency: 'USD',
+        inputPricePerMillion: 10,
+        outputPricePerMillion: 20,
+        cachedInputReadPricePerMillion: 5,
+        pricingStatus: 'trusted',
+        missingPriceDimensionsJson: '[]',
+        estimatedApiInputCost: 0.01,
+        estimatedApiStandardInputCost: 0.002,
+        estimatedApiCacheReadInputCost: 0.008,
+        estimatedApiOutputCost: 0.004,
+        estimatedApiTotalCost: 0.014,
+        apiCostStatus: 'estimated',
+      },
+    });
+    const migration = new TokenUsageRunRecordsV1AppDataMigration(
+      new LegacyTokenUsageConsolidationRepository(rootPrismaClient),
+    );
+    await expect(migration.execute()).resolves.toMatchObject({
+      status: 'SUCCEEDED',
+      summary: { scannedCount: 1, migratedCount: 1, failedCount: 0 },
+      errorMessage: null,
+    });
+    await expect(rootPrismaClient.tokenUsageLedgerEvent.count()).resolves.toBe(0);
 
     const query = `
       query ProviderSemantics($anthropicRunId: String!, $customRunId: String!, $localRunId: String!, $unknownRunId: String!) {
@@ -350,7 +389,7 @@ describe('token usage ledger GraphQL provider semantics', () => {
     const expectedOutputTokens = 30;
     const expectedTotalTokens = expectedInputTokens + expectedOutputTokens;
 
-    await store.appendTokenUsageEvent(buildEvent({
+    await store.recordObservation(buildEvent({
       runId,
       observedAt: '2026-06-25T11:01:00.000Z',
       grossInputTokens: firstEventInputTokens,
@@ -360,7 +399,7 @@ describe('token usage ledger GraphQL provider semantics', () => {
       model: `safe-int-${suffix}`,
       runtimeKind: 'safe-int-runtime',
     }));
-    await store.appendTokenUsageEvent(buildEvent({
+    await store.recordObservation(buildEvent({
       runId,
       observedAt: '2026-06-25T11:02:00.000Z',
       grossInputTokens: secondEventInputTokens,
@@ -456,6 +495,53 @@ describe('token usage ledger GraphQL provider semantics', () => {
       totalTokens: expectedTotalTokens,
       usageReportCount: 2,
     });
+  });
+
+  it('commits an unsafe aggregate exactly and rejects the live GraphQL projection without rounding', async () => {
+    const suffix = randomUUID();
+    const runId = `graphql-unsafe-int-${suffix}`;
+    await store.recordObservation(buildEvent({
+      runId,
+      observedAt: '2026-06-25T12:01:00.000Z',
+      grossInputTokens: Number.MAX_SAFE_INTEGER,
+      outputTokens: 0,
+      totalCost: null,
+      status: 'price_missing',
+      model: `unsafe-int-${suffix}`,
+      runtimeKind: 'unsafe-int-runtime',
+    }));
+
+    await expect(store.recordObservation(buildEvent({
+      runId,
+      observedAt: '2026-06-25T12:02:00.000Z',
+      grossInputTokens: 1,
+      outputTokens: 0,
+      totalCost: null,
+      status: 'price_missing',
+      model: `unsafe-int-${suffix}`,
+      runtimeKind: 'unsafe-int-runtime',
+    }))).rejects.toMatchObject({
+      name: 'TokenUsageSafeIntegerExceededError',
+      code: 'TOKEN_USAGE_SAFE_INTEGER_EXCEEDED',
+      field: 'accounting_input_tokens',
+    });
+
+    const committed = await rootPrismaClient.tokenUsageRunRecord.findUnique({ where: { runId } });
+    expect(committed).toMatchObject({
+      accountingInputTokens: 9_007_199_254_740_992n,
+      revision: 2n,
+      usageReportCount: 2n,
+    });
+
+    const result = await graphql({
+      schema,
+      source: `query UnsafeIntegerTokenUsage($runId: String!) {
+        getAgentRunTokenUsageSummary(runId: $runId) { grossInputTokens usageReportCount }
+      }`,
+      variableValues: { runId },
+    });
+    expect(result.data).toBeNull();
+    expect(result.errors?.[0]?.message).toBe('TOKEN_USAGE_SAFE_INTEGER_EXCEEDED:accounting_input_tokens');
   });
 
 });

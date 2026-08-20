@@ -2,6 +2,7 @@ import { Arg, Field, Mutation, ObjectType, Query, Resolver, registerEnumType } f
 import { GraphQLJSON } from "graphql-scalars";
 import {
   AppDataMigrationDuplicateRunError,
+  AppDataMigrationRecoveryAction,
   type AppDataMigrationStatus,
 } from "../../../app-data-migrations/domain/app-data-migration-types.js";
 import { getAppDataMigrationRunner } from "../../../app-data-migrations/app-data-migration-runner.js";
@@ -16,6 +17,10 @@ export enum AppDataMigrationStatusEnum {
 
 registerEnumType(AppDataMigrationStatusEnum, {
   name: "AppDataMigrationStatus",
+});
+
+registerEnumType(AppDataMigrationRecoveryAction, {
+  name: "AppDataMigrationRecoveryAction",
 });
 
 @ObjectType()
@@ -50,6 +55,9 @@ class AppDataMigrationRecordObject {
   @Field(() => Boolean)
   canRetry!: boolean;
 
+  @Field(() => AppDataMigrationRecoveryAction)
+  recoveryAction!: AppDataMigrationRecoveryAction;
+
   @Field(() => Number)
   attempts!: number;
 
@@ -78,6 +86,7 @@ const toRecordObject = (snapshot: Awaited<ReturnType<ReturnType<typeof getAppDat
   description: snapshot.description,
   status: toStatusEnum(snapshot.status),
   requiredOnStartup: snapshot.requiredOnStartup,
+  recoveryAction: snapshot.recoveryAction,
   canRetry: snapshot.canRetry,
   attempts: snapshot.attempts,
   startedAt: snapshot.startedAt,

@@ -16,6 +16,7 @@ const mocks = vi.hoisted(() => {
     app,
     fastify: vi.fn(() => app),
     initializePrisma: vi.fn(async () => undefined),
+    assertTokenUsageCurrentSchema: vi.fn(async () => undefined),
     runDatabaseMigrations: vi.fn(),
     runPending: vi.fn(),
     bootstrapBuiltInAgents: vi.fn(),
@@ -44,6 +45,9 @@ vi.mock("repository_prisma", async (importOriginal) => ({
 }));
 vi.mock("../../src/startup/migrations.js", () => ({
   runMigrations: mocks.runDatabaseMigrations,
+}));
+vi.mock("../../src/startup/token-usage-current-schema-readiness.js", () => ({
+  assertTokenUsageCurrentSchema: mocks.assertTokenUsageCurrentSchema,
 }));
 vi.mock("../../src/startup/background-runner.js", () => ({
   scheduleBackgroundTasks: mocks.scheduleBackgroundTasks,
@@ -297,6 +301,34 @@ describe("startConfiguredServer required app-data migration gates", () => {
       expect(writeSync).toHaveBeenCalledWith(
         process.stderr.fd,
         expect.stringContaining('"logPath":"/tmp/server-runtime-gate/logs/server.log"'),
+        null,
+        "utf8",
+      );
+    } finally {
+      writeSync.mockRestore();
+    }
+  });
+
+  it("emits a current-schema fatal before app-data migrations when the required token table is invalid", async () => {
+    mocks.assertTokenUsageCurrentSchema.mockRejectedValueOnce(new Error(
+      "TOKEN_USAGE_CURRENT_SCHEMA_RUN_ID_UNIQUE_CONSTRAINT_MISSING",
+    ));
+    const writeSync = vi.spyOn(fs, "writeSync").mockImplementation(() => 0);
+    try {
+      await expectControlledExit();
+      expectStartupBlocked();
+      expect(mocks.runPending).not.toHaveBeenCalled();
+      expect(writeSync).toHaveBeenCalledWith(
+        process.stderr.fd,
+        expect.stringContaining(
+          '"code":"TOKEN_USAGE_CURRENT_SCHEMA_INVALID"',
+        ),
+        null,
+        "utf8",
+      );
+      expect(writeSync).toHaveBeenCalledWith(
+        process.stderr.fd,
+        expect.stringContaining("TOKEN_USAGE_CURRENT_SCHEMA_RUN_ID_UNIQUE_CONSTRAINT_MISSING"),
         null,
         "utf8",
       );

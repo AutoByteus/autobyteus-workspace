@@ -7,10 +7,11 @@ import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { initializePrisma, rootPrismaClient, shutdownPrisma } from "repository_prisma";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { createTokenUsageUpdatedPayload } from "../../../src/agent-execution/domain/agent-run-token-usage.js";
-import { TokenUsageLedgerStore } from "../../../src/token-usage/providers/token-usage-ledger-store.js";
+import { createCurrentTokenUsageTestHarness } from "../../helpers/token-usage-run-record-fixtures.js";
+import { configureTokenUsageMigrationReadiness } from "../../../src/token-usage/providers/token-usage-migration-readiness.js";
 import type { TokenUsageUpdatedPayload } from "../../../src/agent-execution/domain/agent-run-token-usage.js";
 
-const store = new TokenUsageLedgerStore();
+const { store } = createCurrentTokenUsageTestHarness(rootPrismaClient);
 const createdRunIds = new Set<string>();
 
 type UnitPriceSummary = {
@@ -185,6 +186,7 @@ describe("token usage unit-price GraphQL hydration", () => {
   beforeAll(async () => {
     await shutdownPrisma();
     await initializePrisma({ datasourceUrl: process.env.DATABASE_URL });
+    configureTokenUsageMigrationReadiness({ kind: "READY" });
     schema = await buildGraphqlSchema();
     const require = createRequire(import.meta.url);
     const typeGraphqlRoot = path.dirname(require.resolve("type-graphql"));
@@ -196,7 +198,7 @@ describe("token usage unit-price GraphQL hydration", () => {
   afterAll(async () => {
     const runIds = Array.from(createdRunIds);
     if (runIds.length > 0) {
-      await rootPrismaClient.tokenUsageLedgerEvent.deleteMany({ where: { runId: { in: runIds } } });
+      await rootPrismaClient.tokenUsageRunRecord.deleteMany({ where: { runId: { in: runIds } } });
     }
     createdRunIds.clear();
     await shutdownPrisma();
@@ -225,7 +227,7 @@ describe("token usage unit-price GraphQL hydration", () => {
     const partialModel = `gpt-unit-partial-${suffix}`;
     const localModel = `local-unit-${suffix}`;
 
-    await store.appendTokenUsageEvent(buildEvent({
+    await store.recordObservation(buildEvent({
       runId: singleRunId,
       observedAt: "2042-07-02T09:01:00.000Z",
       grossInputTokens: 120,
@@ -239,7 +241,7 @@ describe("token usage unit-price GraphQL hydration", () => {
       model: singleModel,
       pricingPolicyKey: `catalog:openai:${singleModel}:primary`,
     }));
-    await store.appendTokenUsageEvent(buildEvent({
+    await store.recordObservation(buildEvent({
       runId: singleRunId,
       observedAt: "2042-07-02T09:02:00.000Z",
       grossInputTokens: 0,
@@ -256,7 +258,7 @@ describe("token usage unit-price GraphQL hydration", () => {
       pricingPolicyKey: `catalog:openai:${singleModel}:zero-token-churn`,
     }));
 
-    await store.appendTokenUsageEvent(buildEvent({
+    await store.recordObservation(buildEvent({
       runId: memberOneRunId,
       rootTeamRunId: teamRunId,
       observedAt: "2042-07-02T09:10:00.000Z",
@@ -270,7 +272,7 @@ describe("token usage unit-price GraphQL hydration", () => {
       teamName: "Unit Price Team",
       memberName: "Designer",
     }));
-    await store.appendTokenUsageEvent(buildEvent({
+    await store.recordObservation(buildEvent({
       runId: memberTwoRunId,
       rootTeamRunId: teamRunId,
       observedAt: "2042-07-02T09:11:00.000Z",
@@ -285,7 +287,7 @@ describe("token usage unit-price GraphQL hydration", () => {
       memberName: "Builder",
     }));
 
-    await store.appendTokenUsageEvent(buildEvent({
+    await store.recordObservation(buildEvent({
       runId: partialRunId,
       observedAt: "2042-07-02T09:20:00.000Z",
       grossInputTokens: 50,
@@ -297,7 +299,7 @@ describe("token usage unit-price GraphQL hydration", () => {
       outputPricePerMillion: null,
       missingPriceDimensions: ["standard_input_price"],
     }));
-    await store.appendTokenUsageEvent(buildEvent({
+    await store.recordObservation(buildEvent({
       runId: partialRunId,
       observedAt: "2042-07-02T09:21:00.000Z",
       grossInputTokens: 25,
@@ -310,7 +312,7 @@ describe("token usage unit-price GraphQL hydration", () => {
       missingPriceDimensions: ["standard_input_price"],
     }));
 
-    await store.appendTokenUsageEvent(buildEvent({
+    await store.recordObservation(buildEvent({
       runId: localRunId,
       observedAt: "2042-07-02T09:30:00.000Z",
       grossInputTokens: 40,

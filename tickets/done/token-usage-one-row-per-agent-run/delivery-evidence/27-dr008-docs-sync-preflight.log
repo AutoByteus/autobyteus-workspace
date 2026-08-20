@@ -1,0 +1,43 @@
+started_at=2026-08-20T06:27:07Z
+head=d4ec609132cf075d513c9754269e76ff267a43d4
+base=1f5663ddb86e478d0b4ffdd878d57dee72d67b4b
+divergence=0	6
+integration_method=fetch origin personal; base unchanged; no merge required
+post_integration_rerun=not required because zero new base commits were integrated and API-REV-008/CRR-020 validate current reviewed state
+
+$ git diff --check -- durable docs
+result=pass
+
+$ durable documentation marker audit
+152:## Startup Scheduling And Public Recovery Actions
+autobyteus-server-ts/README.md:193:  The runner publishes `MANUAL_RETRY`, `RESTART_TO_RETRY`, or `NONE`; derive
+autobyteus-server-ts/README.md:198:  `RESTART_TO_RETRY`, but must not infer migration policy or dispatch a manual
+autobyteus-server-ts/docs/design/production_data_migration_conventions.md:159:- `RESTART_TO_RETRY` when an ordinary later startup is the supported executor;
+autobyteus-server-ts/docs/design/production_data_migration_conventions.md:165:`RESTART_TO_RETRY` only when the ordinary startup runner will actually select
+autobyteus-server-ts/docs/design/production_data_migration_conventions.md:172:`RESTART_TO_RETRY`, but it must dispatch no manual mutation. The UI must not
+autobyteus-web/docs/settings.md:121:- `RESTART_TO_RETRY`: Retry stays disabled, no mutation is dispatched, and the
+126:The restart-only guidance is available in English and zh-CN. It describes the
+result=pass
+
+$ relative Markdown link existence audit for edited durable docs
+relative_links=pass
+
+$ withdrawn audit claim audit
+withdrawn_audit_claims=absent
+
+$ intentionally removed durable audit-only path absence
+absent=autobyteus-server-ts/tests/e2e/app-data-migrations/token-usage-migration-audit-compaction-startup.e2e.test.ts
+absent=autobyteus-server-ts/tests/helpers/app-data-migration-audit-fixtures.ts
+absent=autobyteus-server-ts/tests/unit/app-data-migrations/app-data-migration-record-repository-bounds.test.ts
+absent=autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-migration-audit-compaction-v1.test.ts
+result=pass
+
+$ current recovery contract source markers
+autobyteus-server-ts/src/app-data-migrations/app-data-migration-runner.ts:182:      ? AppDataMigrationRecoveryAction.RESTART_TO_RETRY
+autobyteus-server-ts/src/app-data-migrations/domain/app-data-migration-types.ts:10:  RESTART_TO_RETRY = "RESTART_TO_RETRY",
+autobyteus-web/components/settings/ServerMigrationsManager.vue:101:                  v-if="migration.recoveryAction === 'RESTART_TO_RETRY'"
+autobyteus-web/stores/__tests__/appDataMigrationsStore.spec.ts:42:            recoveryAction: 'RESTART_TO_RETRY',
+autobyteus-web/stores/__tests__/appDataMigrationsStore.spec.ts:59:    expect(store.migrations[0]?.recoveryAction).toBe('RESTART_TO_RETRY')
+result=pass
+completed_at=2026-08-20T06:27:07Z
+overall_result=pass
