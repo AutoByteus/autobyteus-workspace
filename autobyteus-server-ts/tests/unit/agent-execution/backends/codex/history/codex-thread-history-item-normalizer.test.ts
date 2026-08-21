@@ -2,6 +2,50 @@ import { describe, expect, it } from "vitest";
 import { normalizeCodexThreadHistoryItem } from "../../../../../../src/agent-execution/backends/codex/history/codex-thread-history-item-normalizer.js";
 
 describe("codex-thread-history-item-normalizer", () => {
+  it("projects command and cwd from native command history", () => {
+    const normalized = normalizeCodexThreadHistoryItem({
+      item: {
+        type: "commandExecution",
+        id: "command-history-1",
+        command: "/bin/bash -lc pwd",
+        cwd: "/workspace/nested",
+        status: "completed",
+        aggregatedOutput: "/workspace/nested\n",
+        exitCode: 0,
+      },
+      turnIndex: 0,
+      itemIndex: 0,
+    });
+
+    expect(normalized).toMatchObject({
+      family: "command_execution",
+      invocationId: "command-history-1",
+      toolName: "run_bash",
+      toolArgs: {
+        command: "/bin/bash -lc pwd",
+        cwd: "/workspace/nested",
+      },
+      status: "success",
+    });
+  });
+
+  it("does not invent cwd for command history that omits it", () => {
+    const normalized = normalizeCodexThreadHistoryItem({
+      item: {
+        type: "commandExecution",
+        id: "command-history-without-cwd",
+        command: "pwd",
+        status: "completed",
+        aggregatedOutput: "/workspace\n",
+        exitCode: 0,
+      },
+      turnIndex: 0,
+      itemIndex: 1,
+    });
+
+    expect(normalized?.toolArgs).toEqual({ command: "pwd" });
+  });
+
   it("keeps Agent Tools MCP send_message_to canonical in history tool traces", () => {
     const normalized = normalizeCodexThreadHistoryItem({
       item: {

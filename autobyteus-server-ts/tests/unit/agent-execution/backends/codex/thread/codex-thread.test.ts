@@ -800,6 +800,7 @@ describe("CodexThread approval identity", () => {
       itemId: "item-terminal-1",
       approvalId: "approval-1",
       command: "pwd",
+      cwd: "/tmp/codex-thread-unit/nested",
     });
 
     expect(client.respondError).not.toHaveBeenCalled();
@@ -821,6 +822,8 @@ describe("CodexThread approval identity", () => {
           invocation_id: "item-terminal-1",
           itemId: "item-terminal-1",
           approvalId: "approval-1",
+          command: "pwd",
+          cwd: "/tmp/codex-thread-unit/nested",
         }),
       }),
     );

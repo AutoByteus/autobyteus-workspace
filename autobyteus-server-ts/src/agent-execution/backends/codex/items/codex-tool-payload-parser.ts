@@ -142,6 +142,13 @@ export class CodexToolPayloadParser {
       if (commandValue) {
         mergedArguments.command = commandValue;
       }
+      const cwdValue =
+        asString(mergedArguments.cwd) ??
+        asString(payload.cwd) ??
+        asString(item.cwd);
+      if (cwdValue) {
+        mergedArguments.cwd = cwdValue;
+      }
       return this.sanitizeRecord(mergedArguments);
     }
 
