@@ -3,16 +3,16 @@
 ## Release / Publication / Deployment Scope
 
 - Ticket: `app-data-migration-summary-log-redesign`.
-- Current delivery revision: `DR-004`.
-- Current status: `Pass — repository finalization remains complete; a later
-  user-requested local server Docker refresh from latest personal completed and
-  passed rollout checks; no versioned release was performed.`
-- Explicit user instruction: Finalize the task; do not release a new version.
-- Release/publication: Not applicable. No version bump, tag, registry push, or
-  package publication was performed.
-- Local deployment: Applicable after finalization by later explicit request;
-  `autobyteus-server:latest` was rebuilt and the existing local Compose service
-  was replaced while retaining its persistent state and ports.
+- Current delivery revision: `DR-006`.
+- Current status: `Pass — v1.4.53 is released across all five publication
+  workflows; the earlier local test Docker was subsequently destroyed while its
+  four named volumes were retained.`
+- User-instruction chronology: The initial finalization instruction declined a
+  release; the user later explicitly requested a new product version after
+  testing, then requested destruction of the local test Docker.
+- Release/publication: `Completed — v1.4.53`.
+- Local deployment: The DR-004 test deployment passed and was later removed
+  under DR-006. Its persistent named volumes remain.
 
 ## Handoff Summary
 
@@ -21,7 +21,7 @@
 - Handoff summary status: `Updated`
 - Delivery revision record:
   `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/delivery-revision-record.md`
-- Current delivery revision ID: `DR-004`
+- Current delivery revision ID: `DR-006`
 
 ## Delivery Integration Refreshes
 
@@ -86,10 +86,15 @@
 
 ## Version / Tag / Release Commit
 
-- Version bump: `Not performed — explicitly declined by the user.`
-- Tag/release commit: `Not performed.`
-- Release notes: `Not required`; no release/publication/deployment is in scope.
-- Application version remains `1.4.52`.
+- Version bump: `1.4.52 -> 1.4.53` for desktop and Messaging Gateway.
+- Release commit:
+  `6ceaf2ec5349752d0afb6d9be3326833451a4aca`.
+- Tag: annotated `v1.4.53`, pushed once through the canonical helper.
+- Release notes:
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/release-notes.md`.
+- GitHub Release:
+  `https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.53`.
+- Current application release version: `1.4.53`.
 
 ## Repository Finalization
 
@@ -128,25 +133,38 @@
 
 ## Release / Publication / Deployment
 
-- Versioned release/publication applicable: `No`
-- Local test deployment applicable: `Yes`, by explicit post-finalization user
-  request.
+- Versioned release/publication applicable: `Yes`, by later explicit user
+  instruction superseding the earlier no-release decision.
 - Method:
-  `./docker-start.sh up -p electron-agent-input-controls-regression-dr005 --build-local`
-  from the latest local/remote `personal` revision
-  `122adc91c184a75541489eea670ac29fcb43f4ab`.
-- Result: `Pass` — built local `linux/arm64` image
-  `sha256:52bff101c67dd5ce08619fffce88af61b614e6023a65e9e8d4e05979c3b39ed0`,
-  force-recreated the existing service as container
-  `40bd2fa7d61c658a05ed0d9a3dc530907c88c5a88bc9389af89b513d094dc326`,
-  retained all four named volumes and ports, and passed backend/noVNC checks.
-- Superseded state: old container `0ec4a7e360ec` and old image
-  `sha256:6d8e9f250b9c` were removed.
-- Release notes handoff: `Not required`; nothing was published.
-- User instruction: Build/deploy locally from latest personal while continuing
-  to avoid a new versioned release.
-- Evidence:
-  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/delivery-evidence/dr-004-latest-personal-server-docker-build.log`.
+  `pnpm release 1.4.53 --release-notes tickets/done/app-data-migration-summary-log-redesign/release-notes.md`.
+- Result: `Pass`.
+- Five tag-triggered workflow results:
+  - Desktop Release `32451160615`: success.
+  - Server Docker Release `32451160682`: success.
+  - Android APK Release `32451160827`: success.
+  - iOS App Store Connect Release `32451160651`: success.
+  - Messaging Gateway Release `32451160597`: success.
+- GitHub Release: public, non-draft, non-prerelease, exact release commit, 21
+  uploaded non-empty assets for desktop platforms, Android, updater metadata,
+  and Messaging Gateway.
+- Server Docker: `autobyteus/autobyteus-server:1.4.53` and `:latest` share OCI
+  index `sha256:99c05052971f3845a3b127526501faed47578d9d03f42dd7ec6040d59788e179`
+  for `linux/amd64` and `linux/arm64`.
+- iOS: archive and App Store Connect upload job passed; later Apple processing
+  and review remain external.
+- Manual-dispatch duplicate: `Not performed`.
+- Evidence: `delivery-evidence/dr-005-*`.
+
+## Local Test Docker Cleanup
+
+- Result: `Pass` under `DR-006`.
+- Removed: local container `40bd2fa7d61c`, local image
+  `sha256:52bff101c67d`, and its Compose network.
+- Released ports: `52704`, `52705`, `52706`, `52707`.
+- Retained: all four named volumes holding server data, workspace, root-home,
+  and Chromium-profile state.
+- Published `1.4.53` Docker Hub tags are unaffected.
+- Evidence: `delivery-evidence/dr-006-local-docker-destroy.log`.
 
 ## Environment Or Persisted-Data Transition Notes
 
@@ -174,6 +192,11 @@
 | Current actual-startup E2E | Initial host-tool failure; `RUST_LOG=info` rerun Pass 4/4 | `delivery-evidence/dr-002-post-second-integration-team-run-upgrade-e2e*.log` |
 | Current Settings/store tests | Pass 5/5 | `delivery-evidence/dr-002-post-second-integration-web-focused.log` |
 | Latest-personal local server Docker build and rollout | Pass; backend and noVNC healthy, restart count 0 | `delivery-evidence/dr-004-latest-personal-server-docker-build.log` |
+| Repository checkout-safety gate | Initial Fail on 57 long evidence paths; repaired with content-preserving moves/maps; final Pass | `delivery-evidence/dr-005-release-preflight.log`, commit `1ee4af48b` |
+| v1.4.53 tag workflows | Pass; 5/5 completed successfully | `delivery-evidence/dr-005-workflows.json` |
+| GitHub Release/assets | Pass; public stable release with 21 uploaded non-empty assets | `delivery-evidence/dr-005-github-release.json` |
+| Server Docker publication | Pass; version/latest identical dual-architecture OCI index | `delivery-evidence/dr-005-server-docker-manifest.json` |
+| Local test Docker destruction | Pass; container/image/network removed, volumes retained | `delivery-evidence/dr-006-local-docker-destroy.log` |
 
 ## Known Residuals
 
@@ -201,6 +224,6 @@
 ## Final Status
 
 `Pass — user accepted; ticket archived, committed and pushed; personal merged
-and pushed; ticket worktree/branches cleaned; later local server Docker refresh
-from latest personal built and rolled out successfully; no tag, registry
-publication, versioned release, or version change performed.`
+and pushed; ticket worktree/branches cleaned; v1.4.53 committed, tagged,
+published, and verified across all five release workflows; the local test Docker
+was then removed while its named volumes were retained.`
