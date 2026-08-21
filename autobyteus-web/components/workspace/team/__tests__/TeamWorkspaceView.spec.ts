@@ -121,7 +121,7 @@ describe('TeamWorkspaceView current aggregate', () => {
       autoExecuteTools: true, skillAccessMode: 'PRELOADED_ONLY', isLocked: true,
       llmConfig: { reasoning_effort: 'xhigh', nested: { values: ['xhigh'] } },
       memberOverrides: { '/Professor': {
-        agentDefinitionId: 'agent-professor-def', llmModelIdentifier: 'gpt-5.3-codex',
+        llmModelIdentifier: 'gpt-5.3-codex',
         llmConfig: { reasoning_effort: 'medium', nested: { values: ['medium'] } },
       } },
     } });

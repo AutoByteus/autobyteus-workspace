@@ -39,7 +39,6 @@
         :member-name="node.displayName"
         :member-address="node.address"
         :member-breadcrumb="node.address.split('/').filter(Boolean).join(' / ')"
-        :agent-definition-id="node.agentDefinitionId"
         :override="config.memberOverrides[node.address]"
         :global-runtime-kind="globalRuntimeKind"
         :global-llm-model="globalLlmModel"

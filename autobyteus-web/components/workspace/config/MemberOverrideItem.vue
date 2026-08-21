@@ -123,7 +123,6 @@ const props = defineProps<{
   memberName: string
   memberAddress: string
   memberBreadcrumb?: string
-  agentDefinitionId: string
   override: MemberConfigOverride | undefined
   globalRuntimeKind: string
   globalLlmModel: string
@@ -266,9 +265,7 @@ const buildOverride = (input: {
   autoExecuteTools?: boolean
   llmConfig?: Record<string, unknown> | null
 }): MemberConfigOverride | null => {
-  const override: MemberConfigOverride = {
-    agentDefinitionId: props.agentDefinitionId,
-  }
+  const override: MemberConfigOverride = {}
 
   if (input.runtimeKind) {
     override.runtimeKind = input.runtimeKind

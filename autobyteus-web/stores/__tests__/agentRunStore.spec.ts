@@ -153,10 +153,17 @@ describe('agentRunStore', () => {
                 agentDefinitionId: 'def-1',
                 agentDefinitionName: 'Test Agent',
                 workspaceId: 'ws-1',
-                llmModelIdentifier: 'gpt-4',
-                runtimeKind: 'autobyteus',
-                autoExecuteTools: false,
-                skillAccessMode: 'PRELOADED_ONLY',
+                workspaceMetadata: {
+                    workspaceId: 'ws-1',
+                    workspaceRootPath: '/tmp/edited-workspace',
+                    displayName: 'edited-workspace',
+                    kind: 'filesystem',
+                },
+                llmModelIdentifier: 'edited-model',
+                runtimeKind: 'codex_app_server',
+                autoExecuteTools: true,
+                skillAccessMode: 'NONE',
+                llmConfig: { reasoning: { effort: 'xhigh' } },
                 isLocked: false,
             },
             state: {
@@ -203,15 +210,23 @@ describe('agentRunStore', () => {
         expect(mockAgentContext.state.conversation.messages).toHaveLength(1);
         expect(mockAgentContext.state.conversation.messages[0].text).toBe('do something');
         
-        // 2. Should prepare an identity without starting/restoring runtime on the frontend
+        // 2. Should prepare the exact edited launch configuration without starting/restoring runtime on the frontend
         expect(mutateMock).toHaveBeenCalledWith(
           expect.objectContaining({
             mutation: PrepareAgentRun,
-            variables: expect.objectContaining({
-              input: expect.objectContaining({
-                runtimeKind: 'autobyteus',
-              }),
-            }),
+            variables: {
+              input: {
+                agentDefinitionId: 'def-1',
+                workspaceId: 'ws-1',
+                workspaceRootPath: '/tmp/edited-workspace',
+                llmModelIdentifier: 'edited-model',
+                autoExecuteTools: true,
+                llmConfig: { reasoning: { effort: 'xhigh' } },
+                skillAccessMode: 'NONE',
+                runtimeKind: 'codex_app_server',
+                initialSummary: 'do something',
+              },
+            },
           }),
         );
         

@@ -3,23 +3,14 @@ import {
   type AgentRuntimeKind,
 } from '~/types/agent/AgentRunConfig'
 import type { MemberConfigOverride } from '~/types/agent/TeamRunConfig'
-import { normalizeModelIdentifier, normalizeRuntimeKind } from '~/composables/useDefinitionLaunchDefaults'
+import {
+  normalizeModelConfig,
+  normalizeModelIdentifier,
+  normalizeRuntimeKind,
+} from '~/composables/useDefinitionLaunchDefaults'
 
 const hasOwn = <T extends object>(value: T, key: PropertyKey): boolean =>
   Object.prototype.hasOwnProperty.call(value, key)
-
-const normalizeModelConfig = (
-  config: Record<string, unknown> | null | undefined,
-): Record<string, unknown> | null => {
-  if (!config || typeof config !== 'object' || Array.isArray(config)) {
-    return null
-  }
-
-  return Object.fromEntries(
-    Object.entries(config)
-      .sort(([left], [right]) => left.localeCompare(right)),
-  )
-}
 
 const modelConfigKey = (config: Record<string, unknown> | null | undefined): string =>
   JSON.stringify(normalizeModelConfig(config) ?? null)
