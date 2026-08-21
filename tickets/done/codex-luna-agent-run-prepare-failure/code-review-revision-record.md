@@ -4,16 +4,16 @@
 
 | Revision ID | Canonical Review Report | Entry Point / Trigger | Prior Result | Current Result | Affected Finding IDs |
 | --- | --- | --- | --- | --- | --- |
-| CRR-001 | `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/tickets/in-progress/codex-luna-agent-run-prepare-failure/code-review-report.md` | Implementation Review / `IR-001` | N/A | Pass | None |
-| CRR-002 | `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/tickets/in-progress/codex-luna-agent-run-prepare-failure/api-e2e-test-review-report.md` | Successful API/E2E Test-Code Review / `API-REV-001` | Implementation Review Pass | Test-Code Review Pass | None |
+| CRR-001 | `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/tickets/done/codex-luna-agent-run-prepare-failure/code-review-report.md` | Implementation Review / `IR-001` | N/A | Pass | None |
+| CRR-002 | `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/tickets/done/codex-luna-agent-run-prepare-failure/api-e2e-test-review-report.md` | Successful API/E2E Test-Code Review / `API-REV-001` | Implementation Review Pass | Test-Code Review Pass | None |
 
 ## Revision Entries
 
 ### CRR-001 — Initial shared workspace-skill reconciliation source review
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/tickets/in-progress/codex-luna-agent-run-prepare-failure/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/tickets/done/codex-luna-agent-run-prepare-failure/code-review-report.md`
 - Review entry point and round: `Implementation Review`, Round 1
-- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/tickets/in-progress/codex-luna-agent-run-prepare-failure/implementation-handoff.md`; `IR-001`; no implementation finding IDs
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/tickets/done/codex-luna-agent-run-prepare-failure/implementation-handoff.md`; `IR-001`; no implementation finding IDs
 - Relevant solution revision IDs: `SR-001`, `SR-002`
 - Relevant architecture-review revision IDs: `ARCH-REV-001`, `ARCH-REV-002`
 - Relevant implementation revision IDs: `IR-001`
@@ -34,9 +34,9 @@ None.
 
 ### CRR-002 — Proportional review of successful API/E2E durable-test changes
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/tickets/in-progress/codex-luna-agent-run-prepare-failure/api-e2e-test-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/tickets/done/codex-luna-agent-run-prepare-failure/api-e2e-test-review-report.md`
 - Review entry point and round: `Successful API/E2E Test-Code Review`, Round 1
-- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/tickets/in-progress/codex-luna-agent-run-prepare-failure/api-e2e-execution-coverage-report.md`; `API-SC-001`, `API-SC-003`; no test-review finding IDs
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/tickets/done/codex-luna-agent-run-prepare-failure/api-e2e-execution-coverage-report.md`; `API-SC-001`, `API-SC-003`; no test-review finding IDs
 - Relevant solution revision IDs: `SR-001`, `SR-002`
 - Relevant architecture-review revision IDs: `ARCH-REV-001`, `ARCH-REV-002`
 - Relevant implementation revision IDs: `IR-001`

@@ -1,6 +1,6 @@
 # Architecture Review Revision Record
 
-The latest `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/tickets/in-progress/codex-luna-agent-run-prepare-failure/design-review-report.md` remains authoritative. This record retains the concise architecture-review baseline and later deltas.
+The latest `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/tickets/done/codex-luna-agent-run-prepare-failure/design-review-report.md` remains authoritative. This record retains the concise architecture-review baseline and later deltas.
 
 ## Revision Index
 
@@ -13,7 +13,7 @@ The latest `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-ru
 
 ### ARCH-REV-001 — Reconciliation and holder lifecycle need completion
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/tickets/in-progress/codex-luna-agent-run-prepare-failure/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/tickets/done/codex-luna-agent-run-prepare-failure/design-review-report.md`
 - Review round and trigger: Round 1; initial architecture review of the user-approved link-only repair baseline.
 - Triggering role, report path, and finding IDs: Solution designer initial package; no prior report or finding IDs.
 - Relevant solution revision IDs: `SR-001`
@@ -32,9 +32,9 @@ None.
 
 ### ARCH-REV-002 — Discovery and holder lifecycles verified complete
 
-- Canonical design review report: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/tickets/in-progress/codex-luna-agent-run-prepare-failure/design-review-report.md
+- Canonical design review report: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/tickets/done/codex-luna-agent-run-prepare-failure/design-review-report.md
 - Review round and trigger: Round 2; solution revision SR-002 resolving the three Round 1 Design Impact findings under the unchanged approved requirements.
-- Triggering role, report path, and finding IDs: /solution_designer; /Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/tickets/in-progress/codex-luna-agent-run-prepare-failure/solution-revision-record.md; DI-001, DI-002, DI-003.
+- Triggering role, report path, and finding IDs: /solution_designer; /Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/tickets/done/codex-luna-agent-run-prepare-failure/solution-revision-record.md; DI-001, DI-002, DI-003.
 - Relevant solution revision IDs: SR-001, SR-002
 - Prior authoritative decision: Fail
 - Current authoritative decision: Pass

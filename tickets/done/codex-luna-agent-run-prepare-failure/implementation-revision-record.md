@@ -12,7 +12,7 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 
 ### IR-001 — Shared workspace-skill reconciliation baseline
 
-- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/tickets/in-progress/codex-luna-agent-run-prepare-failure/design-review-report.md`; Round 2 / `ARCH-REV-002` Pass.
+- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/tickets/done/codex-luna-agent-run-prepare-failure/design-review-report.md`; Round 2 / `ARCH-REV-002` Pass.
 - Triggering finding IDs: `N/A` for the initial baseline. Round 1 `DI-001`–`DI-003` were already resolved by reviewed solution revision `SR-002`.
 - Classification: `Initial Baseline`
 - Prior authoritative result: `N/A`

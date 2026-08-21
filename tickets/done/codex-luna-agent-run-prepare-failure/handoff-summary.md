@@ -8,8 +8,9 @@
 - Delivery safety checkpoint: `944f46a5066a4b58c42a676cbe4c9925826b5816`
 - Latest tracked base checked: `origin/personal` at `a80105ada35455ec14fd5b9f75045799449db13e`
 - Integration method/result: `Merge / Pass`, merge commit `13e926358e7b83ff484644b62e4aecf1c6361296`; no conflicts; post-integration checks passed.
-- Delivery revision: `DR-002`
-- Current state: Integrated, documented, and packaged as a verified unsigned local macOS ARM64 DMG for explicit user testing. Repository finalization, archival, push, target merge, release, deployment, and cleanup remain intentionally held.
+- Finalization refresh: `origin/personal` remained `a80105ada35455ec14fd5b9f75045799449db13e` after explicit user acceptance; the branch is zero behind, so no re-integration or renewed verification was required.
+- Delivery revision: `DR-003`
+- Current state: User accepted the tested candidate and authorized a new release. Curated release notes are ready for patch release `1.4.54`; archival, repository finalization, release publication, rollout verification, and cleanup are in progress.
 
 ## Delivered Behavior
 
@@ -62,7 +63,7 @@ Long-lived docs updated:
 - `autobyteus-server-ts/docs/modules/agent_execution.md`
 - `autobyteus-server-ts/docs/modules/agent_packages.md`
 
-Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/tickets/in-progress/codex-luna-agent-run-prepare-failure/docs-sync-report.md`
+Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/tickets/done/codex-luna-agent-run-prepare-failure/docs-sync-report.md`
 
 Persisted-data decision: `Directly Usable — No Migration`. This is on-demand filesystem reconciliation at provider workspace paths; no database/schema or bulk background migration changed.
 
@@ -96,13 +97,16 @@ Persisted-data decision: `Directly Usable — No Migration`. This is on-demand f
 - The shared materializer is near the review file-size growth limit; future behavior expansion should preserve or improve its cohesion rather than adding unrelated policy.
 - No critical acceptance criterion remains unproven.
 
-## User Verification And Finalization Hold
+## User Verification And Finalization
 
-- Explicit verification/completion for this ticket received: `No`.
-- Ticket remains at `tickets/in-progress/codex-luna-agent-run-prepare-failure`.
-- No delivery finalization commit, ticket-branch push, merge into `personal`, version bump, tag, release, publication, deployment, or worktree/branch cleanup has occurred.
-- After explicit verification, delivery will refresh `origin/personal` again. If it advanced and materially changes the verified state, delivery will re-integrate, rerun the required checks, update this handoff, and request renewed verification before finalization.
+- Explicit verification/completion for this ticket received: `Yes` — the user stated that the task is done and requested finalization and a new version.
+- Mandatory post-acceptance refresh: `Pass` — `origin/personal` did not advance beyond the accepted build state; evidence is in `delivery-finalization-refresh.log`.
+- Renewed verification required: `No` — no base commits or effective behavior changed.
+- Release version: `1.4.54`, selected as the next unused patch after synchronized version/latest normal release `1.4.53`; local and remote `v1.4.54` were confirmed absent.
+- Release notes: `release-notes.md`.
+- Ticket state: Archived at `tickets/done/codex-luna-agent-run-prepare-failure` for the final ticket-branch commit.
+- Remaining work: Push the ticket branch, merge and push `personal`, use the documented release helper, verify all required workflows and published artifacts, record final evidence, and clean up the ticket worktree/branches.
 
 ## Current Status
 
-`DR-002 Pass — verified local macOS ARM64 DMG ready for user testing; repository finalization is held pending explicit user acceptance.`
+`DR-003 Pass — explicit user acceptance and the final remote refresh are complete; archival, repository finalization, and release v1.4.54 are authorized and in progress.`

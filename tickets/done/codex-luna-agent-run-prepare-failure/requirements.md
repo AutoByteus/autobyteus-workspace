@@ -35,8 +35,8 @@ The reported Daily Assistant + Codex + `gpt-5.6-luna` failure is the reproducing
 
 | Artifact Path | Type / Purpose | Related Requirement IDs | Related Acceptance-Criteria IDs | Status / Approval | Relationship To Requirements |
 | --- | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/tickets/in-progress/codex-luna-agent-run-prepare-failure/evidence/full-stack-reproduction/experiment-report.md` | Evidence: isolated production reproduction and A/B controls | FR-001, FR-002, FR-004, FR-005, FR-007 | AC-001, AC-004, AC-005, AC-010 | Complete; approval N/A (evidence only) | Establishes the exact failure, causal stale-link variable, successful control, and missing-skill baseline. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/tickets/in-progress/codex-luna-agent-run-prepare-failure/evidence/reported-ui-error.png` | Evidence: reported Electron UI state | FR-004 | AC-004 | Complete; approval N/A (evidence only) | Confirms the user-visible generic preparation failure that motivated the diagnostic requirement. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/tickets/done/codex-luna-agent-run-prepare-failure/evidence/full-stack-reproduction/experiment-report.md` | Evidence: isolated production reproduction and A/B controls | FR-001, FR-002, FR-004, FR-005, FR-007 | AC-001, AC-004, AC-005, AC-010 | Complete; approval N/A (evidence only) | Establishes the exact failure, causal stale-link variable, successful control, and missing-skill baseline. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/tickets/done/codex-luna-agent-run-prepare-failure/evidence/reported-ui-error.png` | Evidence: reported Electron UI state | FR-004 | AC-004 | Complete; approval N/A (evidence only) | Confirms the user-visible generic preparation failure that motivated the diagnostic requirement. |
 
 ## Design Health Assessment (Mandatory)
 
