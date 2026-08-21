@@ -3,9 +3,9 @@
 ## Summary Meta
 
 - Ticket: `event-monitor-history-transparency`
-- Date: `2026-08-20`
-- Current status: `Integrated, documented, packaged for local macOS ARM64 testing, and checked; awaiting explicit user verification before finalization`
-- Current delivery revision: `DR-002`
+- Date: `2026-08-21`
+- Current status: `User verified; advanced personal base re-integrated and checked without material handoff change; ticket archived and repository finalization in progress`
+- Current delivery revision: `DR-003`
 - Ticket branch: `codex/event-monitor-history-transparency`
 - Finalization target: `origin/personal`
 - Release/publication/deployment scope: `Not requested / not required`
@@ -66,13 +66,13 @@
 - Delivery-owned documentation and handoff edits began only after the merge and
   post-integration executable check.
 - Evidence:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/delivery-evidence/dr-001-initial-integration-refresh.log`.
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/done/event-monitor-history-transparency/delivery-evidence/dr-001-initial-integration-refresh.log`.
 
 ## Documentation Sync
 
 - Result: `Pass / Updated`.
 - Report:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/docs-sync-report.md`.
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/done/event-monitor-history-transparency/docs-sync-report.md`.
 - Updated long-lived docs:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/autobyteus-ts/docs/agent_memory_design.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/autobyteus-ts/docs/agent_memory_design_nodejs.md`
@@ -85,6 +85,23 @@
 - The docs now distinguish exact AutoByteus-owned handoff content from
   provider-hidden/effective context, active normal history from explicit archive
   inspection, and Activity projection from Event Monitor policy.
+
+## Post-Verification Refresh
+
+- User acceptance: received on 2026-08-21 — candidate verified working;
+  finalization authorized; no new version/release requested.
+- Refreshed target: `origin/personal` at
+  `dbd00e789cf9e2ae7aaa995b60a181d5e6c3bf91`, nine commits beyond the verified
+  handoff base.
+- Protected delivery checkpoint:
+  `5e1a1175db5f08fccc5b9810a04d43f67217197f`.
+- Integrated head: `42223103ef1d3c4c03db8d8e179e72a13f031f96`,
+  4 ahead / 0 behind the checked target.
+- Conflict handling: three generated contract source maps were regenerated from
+  the cleanly merged TypeScript source; contract build and 2 tests passed.
+- Rechecks: 13 focused server files / 86 tests and 8 focused web files / 80
+  tests passed.
+- Material user-facing change: `No`; renewed user verification required: `No`.
 
 ## Verification Summary
 
@@ -107,15 +124,17 @@
     restart/rotation journeys.
 - Delivery post-integration focused web regression: Pass — 8 files / 80 tests.
 - Post-integration evidence:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/delivery-evidence/dr-001-post-integration-focused-web.log`.
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/done/event-monitor-history-transparency/delivery-evidence/dr-001-post-integration-focused-web.log`.
 - README-grounded local Electron packaging: Pass — macOS ARM64 version `1.4.52`
   DMG/ZIP built, terminal-native runtime and package integrity verified, and the
   exact packaged app reached health plus a first Playwright window under an
   isolated temporary root and non-default port.
 - Electron test build report:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/electron-test-build-report.md`.
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/done/event-monitor-history-transparency/electron-test-build-report.md`.
 - DR-002 final package/handoff audit: Pass — tracked build mutation absent,
   generated artifacts ignored, cleanup confirmed, and finalization hold intact.
+- User hands-on verification: Pass — the user reported the candidate working.
+- Post-verification re-integration: Pass — contract 2/2, server 86/86, web 80/80.
 - Persisted-data decision: `Directly Usable — No Migration`; existing rows stay
   readable and the production rotation/restart path proved active-only absence
   without archive loss.
@@ -137,6 +156,8 @@
   handoff. Quit the existing app before a normal DMG launch, or use the
   repository's `test:e2e:electron --skip-build ... --hold-ms` isolated launcher
   documented in the build report.
+- User verification result: `Working / accepted`. No replacement build or new
+  version was requested.
 
 ## Suggested User Verification
 
@@ -155,19 +176,18 @@
    restart: Activity should omit the rotated row, while Memory Inspector can
    explicitly select the completed raw-trace segment containing it.
 
-## User Verification Hold
+## User Verification And Finalization Authorization
 
-- Explicit completion/verification received: `No`.
-- Ticket remains at:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency`.
-- No ticket-branch push, target-branch merge/push, ticket archival, version bump,
-  tag, release, publication, deployment, worktree removal, or branch cleanup has
-  been performed.
-- Required next signal: the user explicitly confirms the integrated handoff is
-  verified/complete and authorizes finalization.
-- After that signal, delivery must fetch `origin/personal` again. If it advanced,
-  the branch must be brought current and rechecked; materially changed handoff
-  state requires renewed user verification before final merge.
+- Explicit completion/verification received: `Yes` on 2026-08-21.
+- User result: `Working`.
+- Finalization authorization: `Yes`.
+- New version/release authorization: `No`; user explicitly said none is needed.
+- The mandatory final target refresh, re-integration, and relevant checks are
+  complete. The integrated handoff did not materially change, so renewed
+  verification is not required.
+- Required delivery action: complete the ticket-branch-to-`personal`
+  commit/push/merge/push and cleanup sequence only. The archive transition is
+  complete; repository operations remain in progress.
 
 ## Bounded Residual Risks
 
@@ -191,10 +211,10 @@
 
 ## Repository / Release State
 
-- Repository finalization: `Held for explicit user verification`.
+- Repository finalization: `Authorized / in progress`.
 - Finalization target: `personal` on remote `origin`.
 - Version/tag/release commit: `Not performed`.
-- Release/publication/deployment: `Not applicable`.
+- Release/publication/deployment: `Not applicable; explicitly declined`.
 - Local Electron test package: `Built and verified; not released or deployed`.
 - Release notes: `Not required`.
 - Rollback visibility: before target finalization, discard the local ticket
@@ -204,33 +224,33 @@
 ## Authoritative Artifact Package
 
 - Requirements:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/requirements.md`
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/done/event-monitor-history-transparency/requirements.md`
 - Investigation:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/investigation-notes.md`
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/done/event-monitor-history-transparency/investigation-notes.md`
 - Design:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/design-spec.md`
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/done/event-monitor-history-transparency/design-spec.md`
 - Supplemental UX/schema/migration artifacts:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/system-prompt-activity-ux-spec.md`;
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/system-instruction-raw-trace-schema.md`;
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/activity-transparency-ux-spec.md`;
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/data-migration-conventions-audit.md`
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/done/event-monitor-history-transparency/system-prompt-activity-ux-spec.md`;
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/done/event-monitor-history-transparency/system-instruction-raw-trace-schema.md`;
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/done/event-monitor-history-transparency/activity-transparency-ux-spec.md`;
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/done/event-monitor-history-transparency/data-migration-conventions-audit.md`
 - Design review:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/design-review-report.md`
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/done/event-monitor-history-transparency/design-review-report.md`
 - Implementation handoff:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/implementation-handoff.md`
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/done/event-monitor-history-transparency/implementation-handoff.md`
 - Source review:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/code-review-report.md`
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/done/event-monitor-history-transparency/code-review-report.md`
 - API/E2E coverage investigation:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/api-e2e-coverage-investigation.md`
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/done/event-monitor-history-transparency/api-e2e-coverage-investigation.md`
 - API/E2E execution:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/api-e2e-execution-coverage-report.md`
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/done/event-monitor-history-transparency/api-e2e-execution-coverage-report.md`
 - Proportional test review:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/api-e2e-test-review-report.md`
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/done/event-monitor-history-transparency/api-e2e-test-review-report.md`
 - Docs sync:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/docs-sync-report.md`
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/done/event-monitor-history-transparency/docs-sync-report.md`
 - Delivery report:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/release-deployment-report.md`
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/done/event-monitor-history-transparency/release-deployment-report.md`
 - Electron test build report:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/electron-test-build-report.md`
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/done/event-monitor-history-transparency/electron-test-build-report.md`
 - Delivery revision record:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/delivery-revision-record.md`
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/done/event-monitor-history-transparency/delivery-revision-record.md`

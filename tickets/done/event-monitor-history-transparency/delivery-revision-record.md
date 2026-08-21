@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- |
 | `DR-001` | `CRR-002` source Pass at `95/100`, `API-REV-001` Pass at `98%`, and `CRR-003` proportional durable test review Pass | N/A | `Pass — latest base integrated, post-integration checks passed, docs synchronized, handoff ready; finalization held for user verification` | Eight long-lived memory/run-history/streaming/prompt/web docs; `docs-sync-report.md`; `handoff-summary.md`; `release-deployment-report.md`; `delivery-evidence/` |
 | `DR-002` | User requested a README-grounded Electron build for hands-on testing | `DR-001` Pass; verification pending | `Pass — macOS ARM64 1.4.52 DMG/ZIP built, integrity and terminal runtime verified, isolated packaged launch passed; finalization still held for user verification` | `electron-test-build-report.md`; `handoff-summary.md`; `docs-sync-report.md`; `release-deployment-report.md`; DR-002 evidence logs |
+| `DR-003` | User verified the package working and authorized finalization without a new release | `DR-002` Pass; verification pending | `Pass — acceptance recorded, advanced personal base re-integrated, generated contract conflicts resolved from merged source, focused checks passed, no material handoff change; archive/finalization authorized` | `delivery-revision-record.md`; `handoff-summary.md`; `docs-sync-report.md`; `electron-test-build-report.md`; `release-deployment-report.md`; DR-003 evidence logs |
 
 ## Revision Entries
 
@@ -17,9 +18,9 @@
   at least `97%`, and proportional durable test-code review `CRR-003` passed all
   six changed runner/test paths with no findings and no removed coverage.
 - Triggering upstream reports:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/code-review-report.md`;
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/api-e2e-execution-coverage-report.md`;
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/api-e2e-test-review-report.md`.
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/done/event-monitor-history-transparency/code-review-report.md`;
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/done/event-monitor-history-transparency/api-e2e-execution-coverage-report.md`;
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/done/event-monitor-history-transparency/api-e2e-test-review-report.md`.
 - Prior authoritative delivery result: `N/A`; no earlier delivery result is
   inferred from the previously missing record.
 - Current authoritative result: `Pass — delivery fetched origin/personal at
@@ -38,17 +39,17 @@
   behind after integration and contains the checked base.
 - Post-integration verification: The exact eight-file Nuxt Activity, mobile,
   streaming, parser, hydration, and store command passed 80/80 tests. Evidence:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/delivery-evidence/dr-001-post-integration-focused-web.log`.
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/done/event-monitor-history-transparency/delivery-evidence/dr-001-post-integration-focused-web.log`.
 - Integration evidence:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/delivery-evidence/dr-001-initial-integration-refresh.log`.
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/done/event-monitor-history-transparency/delivery-evidence/dr-001-initial-integration-refresh.log`.
 - Docs sync report:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/docs-sync-report.md`
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/done/event-monitor-history-transparency/docs-sync-report.md`
   — `Updated / Pass`.
 - Handoff summary:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/handoff-summary.md`
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/done/event-monitor-history-transparency/handoff-summary.md`
   — `Ready for explicit user verification`.
 - Release/publication/deployment report:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/release-deployment-report.md`
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/done/event-monitor-history-transparency/release-deployment-report.md`
   — repository finalization held; release/deployment not required.
 - Docs delta: Updated the core memory design pair, server Agent Memory, Run
   History, Agent Streaming, Prompt Engineering, frontend Agent Execution
@@ -124,12 +125,12 @@
   isolation verification path used; delivery artifacts were updated for this
   requested local build.
 - Build report:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/electron-test-build-report.md`.
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/done/event-monitor-history-transparency/electron-test-build-report.md`.
 - Evidence:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/delivery-evidence/dr-002-electron-build-macos-arm64.log`;
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/delivery-evidence/dr-002-electron-package-integrity.log`;
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/delivery-evidence/dr-002-isolated-electron-launch-smoke.log`;
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/delivery-evidence/dr-002-final-package-handoff-audit.log`.
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/done/event-monitor-history-transparency/delivery-evidence/dr-002-electron-build-macos-arm64.log`;
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/done/event-monitor-history-transparency/delivery-evidence/dr-002-electron-package-integrity.log`;
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/done/event-monitor-history-transparency/delivery-evidence/dr-002-isolated-electron-launch-smoke.log`;
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/done/event-monitor-history-transparency/delivery-evidence/dr-002-final-package-handoff-audit.log`.
 - User verification/finalization state: Still pending. The generated local test
   package is ready for the requested hands-on check, but the ticket remains in
   progress and all push/merge/archive/release/cleanup actions remain held.
@@ -140,3 +141,56 @@
 - Remaining risk: This local package is not Developer-ID signed or notarized and
   may require Gatekeeper's explicit **Open** action. Approved product residual
   boundaries from DR-001 otherwise remain unchanged.
+
+### DR-003 — User acceptance and final integration refresh
+
+- Delivery round and trigger: On 2026-08-21 the user explicitly reported the
+  Electron candidate was verified and working, authorized finalization, and
+  stated that no new version/release was needed.
+- Prior authoritative result: `DR-002` Pass with the local macOS ARM64 `1.4.52`
+  package ready and repository finalization held for user verification.
+- Current authoritative result: `Pass — user acceptance recorded; the advanced
+  finalization target was merged into the protected ticket state; relevant
+  contract, server, and web regressions passed; no material user-facing handoff
+  change occurred and renewed verification is not required.`
+- Mandatory target refresh: The post-acceptance fetch resolved
+  `origin/personal` to `dbd00e789cf9e2ae7aaa995b60a181d5e6c3bf91`, nine commits
+  beyond the base of the verified handoff. Before integration, delivery-owned
+  edits were protected at checkpoint
+  `5e1a1175db5f08fccc5b9810a04d43f67217197f`.
+- Re-integration: `git merge --no-edit origin/personal` produced three conflicts,
+  all in generated `autobyteus-team-stream-contracts/dist/*.map` files. The
+  TypeScript source merged cleanly and preserved both
+  `SYSTEM_INSTRUCTIONS_SUPPLIED` and the incoming token-usage additions. The
+  generated distribution was rebuilt from that merged source, conflict markers
+  were absent, and the contract package build plus 2 tests passed. Integrated
+  head: `42223103ef1d3c4c03db8d8e179e72a13f031f96`, 4 ahead / 0
+  behind the checked base.
+- Post-integration checks: 13 focused server files / 86 tests passed, including
+  all prior system-instruction provider/transport/projection coverage and the
+  incoming Team token-usage transport test; the exact eight-file web suite
+  passed 80/80 tests. No visible System instructions Activity behavior, scope,
+  data contract, or verification guidance changed.
+- Docs re-entry: `Pass / no additional change`. Incoming token-usage material
+  auto-merged into the shared frontend execution architecture without
+  contradicting the DR-001 System instructions contract. The eight delivery-
+  updated long-lived docs remain authoritative.
+- User verification state: `Received / Pass`. The accepted local package remains
+  a historical verification aid; it is not a release artifact and is not rebuilt
+  because the user expressly requested no new version/release.
+- Release/deployment state: `Not applicable / not performed` per explicit user
+  direction. No version bump, release commit, tag, notarization, publication, or
+  deployment is authorized.
+- Evidence:
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/done/event-monitor-history-transparency/delivery-evidence/dr-003-post-verification-base-refresh.log`;
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/done/event-monitor-history-transparency/delivery-evidence/dr-003-contract-merge-resolution.log`;
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/done/event-monitor-history-transparency/delivery-evidence/dr-003-post-integration-regression.log`;
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/done/event-monitor-history-transparency/delivery-evidence/dr-003-pre-archive-audit.log`.
+- Next action: Archive the ticket, commit and push the ticket branch, update and
+  merge it into `personal`, push `personal`, clean the dedicated worktree and
+  ticket branches, and record the exact finalization result. No release step
+  follows.
+- Remaining risks: The approved DR-001 product boundaries remain unchanged.
+  The final integrated state includes unrelated accepted token-usage work from
+  the target branch; focused coexistence checks passed. No delivery blocker is
+  open.

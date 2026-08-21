@@ -907,3 +907,17 @@ contract_build_and_test=PASS (2 tests)
 conflict_markers=none
 unmerged_paths=0
 evidence=delivery-evidence/dr-003-contract-merge-resolution.log
+
+## Completed integrated state
+integrated_head=42223103ef1d3c4c03db8d8e179e72a13f031f96
+checked_base=dbd00e789cf9e2ae7aaa995b60a181d5e6c3bf91
+ahead=4
+behind=0
+base_is_ancestor=yes
+contract_build_tests=PASS_2_OF_2
+server_recheck=PASS_86_OF_86
+web_recheck=PASS_80_OF_80
+material_user_facing_change=no
+renewed_user_verification_required=no
+user_verification=PASS_WORKING
+release_requested=no

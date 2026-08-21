@@ -35,7 +35,7 @@
   server preparation, Electron Nuxt generation, Electron transpilation, and
   macOS package build completed.
 - Build evidence:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/delivery-evidence/dr-002-electron-build-macos-arm64.log`.
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/done/event-monitor-history-transparency/delivery-evidence/dr-002-electron-build-macos-arm64.log`.
 
 ## Test Artifacts
 
@@ -60,7 +60,7 @@ release assets or committed source.
 - DMG: `hdiutil verify` Pass; checksum valid.
 - ZIP: `unzip -tq` Pass; no compressed-data errors.
 - Package integrity evidence:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/delivery-evidence/dr-002-electron-package-integrity.log`.
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/done/event-monitor-history-transparency/delivery-evidence/dr-002-electron-package-integrity.log`.
 
 ## Isolated Launch Smoke
 
@@ -74,12 +74,12 @@ release assets or committed source.
 - The unrelated pre-existing AutoByteus listener (PID `78020`) on production
   port `29695` was observed before and after only and was not touched.
 - Evidence:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/delivery-evidence/dr-002-isolated-electron-launch-smoke.log`.
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/done/event-monitor-history-transparency/delivery-evidence/dr-002-isolated-electron-launch-smoke.log`.
 - Final package/handoff audit: `Pass`; no tracked build mutation, generated
   packages remain ignored, required artifacts and cross-links exist, the branch
   still contains the checked base at 2 ahead / 0 behind, and finalization is
   still held. Evidence:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/delivery-evidence/dr-002-final-package-handoff-audit.log`.
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/done/event-monitor-history-transparency/delivery-evidence/dr-002-final-package-handoff-audit.log`.
 
 ## Signing Boundary And Local Test Guidance
 
@@ -111,8 +111,13 @@ release assets or committed source.
 
 ## Delivery State
 
-- Delivery revision: `DR-002`.
-- User verification: pending hands-on testing.
-- Repository finalization remains held. No ticket archival, final delivery
-  commit, branch push, target merge/push, tag, release, publication, deployment,
-  worktree removal, or branch cleanup has occurred.
+- Delivery revision: `DR-003`.
+- User verification: `Pass` — on 2026-08-21 the user reported the candidate was
+  working and authorized finalization.
+- The accepted artifact was built from the DR-002 handoff source. The later
+  target refresh added unrelated accepted token-usage work; contract, server,
+  and web coexistence checks passed with no material System instructions UI
+  change. The user requested no new version/release, so no replacement package
+  is produced.
+- Repository finalization is authorized and in progress. Version bump, tag,
+  release, publication, and deployment remain out of scope.
