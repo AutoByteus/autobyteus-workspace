@@ -1,0 +1,11 @@
+{
+  "name": "Error",
+  "message": "Workspace skill path collision for Codex skill 'shell-first-operating-practice': workspace skill path '/tmp/autobyteus-skill-bootstrap-repro.KknVzE/temp_workspace/.codex/skills/shell-first-operating-practice' already points to '/Users/normy/autobyteus_org/autobyteus-agents/agents/daily-assistant/skills/shell-first-operating-practice' instead of '/Users/normy/autobyteus_org/autobyteus-skills/shell-first-operating-practice'.",
+  "stack": [
+    "Error: Workspace skill path collision for Codex skill 'shell-first-operating-practice': workspace skill path '/tmp/autobyteus-skill-bootstrap-repro.KknVzE/temp_workspace/.codex/skills/shell-first-operating-practice' already points to '/Users/normy/autobyteus_org/autobyteus-agents/agents/daily-assistant/skills/shell-first-operating-practice' instead of '/Users/normy/autobyteus_org/autobyteus-skills/shell-first-operating-practice'.",
+    "    at CodexWorkspaceSkillMaterializer.ensureMaterializedSkillBundle (file:///Applications/AutoByteus.app/Contents/Resources/server/dist/agent-execution/backends/codex/codex-workspace-skill-materializer.js:134:19)",
+    "    at async CodexWorkspaceSkillMaterializer.acquireMaterializedSkill (file:///Applications/AutoByteus.app/Contents/Resources/server/dist/agent-execution/backends/codex/codex-workspace-skill-materializer.js:101:28)",
+    "    at async CodexWorkspaceSkillMaterializer.materializeConfiguredCodexWorkspaceSkills (file:///Applications/AutoByteus.app/Contents/Resources/server/dist/agent-execution/backends/codex/codex-workspace-skill-materializer.js:85:37)",
+    "    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/[eval1]:7:3"
+  ]
+}

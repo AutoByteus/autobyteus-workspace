@@ -1,0 +1,11 @@
+206:Agent websocket attached for run daily_assistant_ae4c8ad28c2843dc942dc9124e8426c8
+207:Created agent session 90586ac9-cadd-4669-b7d9-b64be376d098 for run daily_assistant_ae4c8ad28c2843dc942dc9124e8426c8
+208:Agent WebSocket connected: session=90586ac9-cadd-4669-b7d9-b64be376d098, run=daily_assistant_ae4c8ad28c2843dc942dc9124e8426c8
+213:SEND_MESSAGE command not accepted for agent run daily_assistant_ae4c8ad28c2843dc942dc9124e8426c8: [ACTIVATION_FAILED] Failed to prepare agent run 'daily_assistant_ae4c8ad28c2843dc942dc9124e8426c8'.
+217:Agent websocket attached for run daily_assistant_646d31fee5e04a349ac9c9f7f54ff0a8
+218:Created agent session 353f1e0e-03ce-434d-aade-f2aa5317e1df for run daily_assistant_646d31fee5e04a349ac9c9f7f54ff0a8
+219:Agent WebSocket connected: session=353f1e0e-03ce-434d-aade-f2aa5317e1df, run=daily_assistant_646d31fee5e04a349ac9c9f7f54ff0a8
+331:Agent websocket attached for run daily_assistant_3295ad24633341dbbf0e5addfebd3b32
+332:Created agent session 9498d095-1050-4efb-9e5b-b7b07e7a5b93 for run daily_assistant_3295ad24633341dbbf0e5addfebd3b32
+333:Agent WebSocket connected: session=9498d095-1050-4efb-9e5b-b7b07e7a5b93, run=daily_assistant_3295ad24633341dbbf0e5addfebd3b32
+335:Skill 'shell-first-operating-practice' defined in agent definition 'Daily Assistant' could not be resolved. Skipping.

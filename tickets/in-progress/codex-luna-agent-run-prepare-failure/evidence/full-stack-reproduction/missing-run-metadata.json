@@ -1,0 +1,16 @@
+{
+  "runId": "daily_assistant_3295ad24633341dbbf0e5addfebd3b32",
+  "agentDefinitionId": "daily-assistant",
+  "workspaceRootPath": "/tmp/autobyteus-skill-bootstrap-repro.KknVzE/temp_workspace",
+  "memoryDir": "/tmp/autobyteus-skill-bootstrap-repro.KknVzE/memory/agents/daily_assistant_3295ad24633341dbbf0e5addfebd3b32",
+  "llmModelIdentifier": "gpt-5.6-luna",
+  "llmConfig": null,
+  "autoExecuteTools": true,
+  "skillAccessMode": "PRELOADED_ONLY",
+  "runtimeKind": "codex_app_server",
+  "platformAgentRunId": "01a02441-c4b6-7fc0-8838-a41f7a0fce3d",
+  "preparedAt": "2026-08-21T12:17:54.306Z",
+  "preparedExpiresAt": "2026-08-22T12:17:54.306Z",
+  "startedAt": "2026-08-21T12:18:05.315Z",
+  "applicationExecutionContext": null
+}
