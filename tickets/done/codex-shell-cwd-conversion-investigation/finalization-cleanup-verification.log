@@ -1,0 +1,34 @@
+# Repository Finalization And Cleanup Verification
+
+date=2026-08-21
+user_acceptance=The current ticket is done; finalize without a release.
+bootstrap_and_verified_base=a098b205ca990bf86b5e452950a49fc5dc39c8d1
+post_acceptance_origin_personal=a098b205ca990bf86b5e452950a49fc5dc39c8d1
+target_advanced_after_verification=no
+renewed_verification_required=no
+
+ticket_archive=tickets/done/codex-shell-cwd-conversion-investigation
+ticket_branch=codex/codex-shell-cwd-conversion-investigation
+ticket_branch_commit=30eeb28c909622f7d182a6c1304cb9a0a49a571d
+ticket_branch_push=pass
+
+finalization_target=personal
+target_update=pass_already_current
+merge_commit=44b13529818b0319b5cda142d8d07330556ac441
+merge_push_to_origin_personal=pass
+
+post_merge_focused_tests=pass_3_files_70_tests
+post_merge_production_typescript=pass
+post_merge_evidence=tickets/done/codex-shell-cwd-conversion-investigation/post-merge-finalization-validation.log
+
+dedicated_worktree_removed=yes
+worktree_prune=pass
+local_ticket_branch_removed=yes
+remote_ticket_branch_removed=yes
+ticket_worktree_registry_entry_absent=yes
+
+release_or_deployment_applicable=no
+version_bump_or_tag_created=no
+release_notes_required=no
+
+result=pass

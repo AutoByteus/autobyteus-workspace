@@ -1,0 +1,96 @@
+# Local Electron Build Verification — macOS ARM64
+
+timestamp=2026-08-21T13:28:10+0200
+app=autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+dmg=autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.53.dmg
+zip=autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.53.zip
+
+$ test required artifacts
+PASS: app, DMG, ZIP, and updater metadata exist.
+
+$ file app executable
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus: Mach-O 64-bit executable arm64
+PASS: packaged Electron executable is ARM64.
+
+$ read bundle metadata
+com.autobyteus.app
+1.4.53
+PASS: bundle identity/version match the local personal build.
+
+$ verify packaged Codex CWD projection fix is present
+116:            const cwdValue = asString(mergedArguments.cwd) ??
+117:                asString(payload.cwd) ??
+120:                mergedArguments.cwd = cwdValue;
+PASS: packaged backend contains the corrected canonical CWD projection.
+
+$ verify staged packaged terminal runtime
+[terminal-runtime] node-pty root: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-shell-cwd-conversion-investigation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-shell-cwd-conversion-investigation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-shell-cwd-conversion-investigation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+
+$ verify packaged terminal spawn through Electron Node runtime
+[terminal-runtime] node-pty root: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-shell-cwd-conversion-investigation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-shell-cwd-conversion-investigation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-shell-cwd-conversion-investigation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] ok: node-pty spawn probe
+
+$ hdiutil verify DMG
+Prüfsumme für Protective Master Boot Record (MBR : 0) berechnen …
+Protective Master Boot Record (MBR :: Die überprüfte CRC32-Prüfsumme ist $A56D0ABC
+Prüfsumme für GPT Header (Primary GPT Header : 1) berechnen …
+ GPT Header (Primary GPT Header : 1): Die überprüfte CRC32-Prüfsumme ist $FC17B60E
+Prüfsumme für GPT Partition Data (Primary GPT Table : 2) berechnen …
+GPT Partition Data (Primary GPT Tabl: Die überprüfte CRC32-Prüfsumme ist $D2E7332B
+Prüfsumme für  (Apple_Free : 3) berechnen …
+                    (Apple_Free : 3): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für disk image (Apple_APFS : 4) berechnen …
+         disk image (Apple_APFS : 4): Die überprüfte CRC32-Prüfsumme ist $63381F7B
+Prüfsumme für GPT Partition Data (Backup GPT Table : 5) berechnen …
+GPT Partition Data (Backup GPT Table: Die überprüfte CRC32-Prüfsumme ist $D2E7332B
+Prüfsumme für GPT Header (Backup GPT Header : 6) berechnen …
+  GPT Header (Backup GPT Header : 6): Die überprüfte CRC32-Prüfsumme ist $1DE8E2E2
+Die überprüfte CRC32-Prüfsumme ist $B6E3F4B5
+hdiutil: verify: checksum of "autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.53.dmg" is VALID
+
+$ unzip -tq ZIP
+No errors detected in compressed data of autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.53.zip.
+PASS: ZIP integrity verified.
+
+$ SHA-256
+0220018c48c5ced1b0409d2cd8610ad83423db8520e77aebe370a31cd6a41db2  autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.53.dmg
+a42603c13ba5cc4c8da38bbea258da542f41af7f86e1c7b7e212c199d7b24290  autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.53.zip
+60762d7dde98a0cf796a915012e8b57a07acfe4b634b2b96b241211f306b1cee  autobyteus-web/electron-dist/latest-mac.yml
+
+$ signing status (expected unsigned local verification build)
+Executable=/Users/normy/autobyteus_org/autobyteus-worktrees/codex-shell-cwd-conversion-investigation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+Identifier=Electron
+Format=app bundle with Mach-O thin (arm64)
+CodeDirectory v=20400 size=392 flags=0x20002(adhoc,linker-signed) hashes=9+0 location=embedded
+VersionPlatform=1
+VersionMin=786432
+VersionSDK=1704448
+Hash type=sha256 size=32
+CandidateCDHash sha256=183bce38eb383b21f21c2cdedcf6cd8781b11cdd
+CandidateCDHashFull sha256=183bce38eb383b21f21c2cdedcf6cd8781b11cdd090f942c4eacd6c09b1112f7
+Hash choices=sha256
+CMSDigest=183bce38eb383b21f21c2cdedcf6cd8781b11cdd090f942c4eacd6c09b1112f7
+CMSDigestType=2
+Executable Segment base=0
+Executable Segment limit=16384
+Executable Segment flags=0x1
+Page size=4096
+CDHash=183bce38eb383b21f21c2cdedcf6cd8781b11cdd
+Signature=adhoc
+Info.plist=not bound
+TeamIdentifier=not set
+Sealed Resources=none
+Internal requirements=none
+
+result=pass
+
+# DR-002 handoff artifact validation
+$ git diff --check
+PASS: tracked diff hygiene.
+$ verify current delivery markers
+PASS: delivery revision, handoff, and release/deployment report are synchronized.
+handoff_artifact_validation=pass

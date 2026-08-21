@@ -232,6 +232,16 @@ terminal supplies a non-empty name, it must match the canonical lifecycle name;
 a conflict is logged and skipped without completion. A name-omitting terminal
 uses the matched lifecycle name.
 
+Codex command projection preserves the stable App Server working-directory
+fact. A `commandExecution` item is normalized to canonical `run_bash`
+arguments with its exact `command` and, when supplied, its exact item `cwd`.
+The corresponding command-approval request uses the request's top-level
+`command` and `cwd`. The raw model-facing `workdir` field is not a canonical
+projection source, and the server does not execute or reroute the normalized
+`run_bash` call. Consequently, new local tool-call traces naturally retain
+`cwd` inside their existing arguments object, while older command-only traces
+remain directly readable and are not backfilled.
+
 Call timing follows provider argument readiness. Ordinary Codex command, file,
 dynamic, and MCP starts with explicit argument objects are written early. A
 hosted `webSearch` placeholder start omits `arguments` and creates no raw tool
@@ -436,7 +446,8 @@ diagnostics and protocol investigation:
   names when applicable, or server-qualified names for other MCP servers when
   available.
 - `webSearch` -> `search_web`.
-- `commandExecution` -> `run_bash`.
+- `commandExecution` -> `run_bash`, preserving stable `command` and `cwd`
+  fields as canonical tool arguments when present.
 - `fileChange` -> `edit_file`.
 
 Those runtime-native rows are not the normal UI display authority. Missing
@@ -454,6 +465,10 @@ conversation is being applied.
 ## Event-Normalization Rules
 
 - Raw Codex event interpretation stays inside `src/agent-execution/backends/codex/events/`.
+- Stable `commandExecution` start/completion items and command-approval
+  requests normalize to `run_bash` with exact canonical `command` and `cwd`
+  arguments when supplied. Missing `cwd` remains absent; raw model-facing
+  `workdir` is not promoted, and normalization never executes the command.
 - Completed Codex reasoning snapshots are grouped under one allocator-owned
   logical segment id per active turn. A real ordered boundary emits exactly one
   status-neutral `SEGMENT_END(reasoning)` for that id before the boundary's own

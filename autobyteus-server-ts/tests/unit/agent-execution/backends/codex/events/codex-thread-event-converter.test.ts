@@ -27,6 +27,105 @@ const expectNoAgentToolsSecrets = (
 };
 
 describe("CodexThreadEventConverter through CodexThread", () => {
+  it("projects command cwd on live execution start", () => {
+    const converter = createCodexThreadEventHarness("run-1");
+
+    const converted = converter.emitThroughThread({
+      method: CodexThreadEventName.ITEM_STARTED,
+      params: {
+        turnId: "turn-command-start",
+        item: {
+          id: "tool-command-start",
+          type: "commandExecution",
+          command: "/bin/bash -lc pwd",
+          cwd: "/workspace/nested",
+          status: "inProgress",
+        },
+      },
+    });
+
+    const started = converted.find(
+      (runtimeEvent) => runtimeEvent.eventType === AgentRunEventType.TOOL_EXECUTION_STARTED,
+    );
+    expect(started).toMatchObject({
+      eventType: AgentRunEventType.TOOL_EXECUTION_STARTED,
+      payload: {
+        invocation_id: "tool-command-start",
+        turnId: "turn-command-start",
+        tool_name: "run_bash",
+        arguments: {
+          command: "/bin/bash -lc pwd",
+          cwd: "/workspace/nested",
+        },
+      },
+    });
+  });
+
+  it("projects command cwd on live execution completion", () => {
+    const converter = createCodexThreadEventHarness("run-1");
+
+    const converted = converter.emitThroughThread({
+      method: CodexThreadEventName.ITEM_COMPLETED,
+      params: {
+        turnId: "turn-command-complete",
+        item: {
+          id: "tool-command-complete",
+          type: "commandExecution",
+          command: "/bin/bash -lc pwd",
+          cwd: "/workspace/nested",
+          status: "completed",
+          aggregatedOutput: "/workspace/nested\n",
+        },
+      },
+    });
+
+    const terminal = converted.find(
+      (runtimeEvent) => runtimeEvent.eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+    );
+    expect(terminal).toMatchObject({
+      eventType: AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+      payload: {
+        invocation_id: "tool-command-complete",
+        turn_id: "turn-command-complete",
+        tool_name: "run_bash",
+        arguments: {
+          command: "/bin/bash -lc pwd",
+          cwd: "/workspace/nested",
+        },
+        result: "/workspace/nested\n",
+      },
+    });
+  });
+
+  it("projects top-level command cwd on approval requests", () => {
+    const converter = createCodexThreadEventHarness("run-1");
+
+    const converted = converter.emitThroughThread({
+      method: CodexThreadEventName.ITEM_COMMAND_EXECUTION_REQUEST_APPROVAL,
+      params: {
+        itemId: "tool-command-approval",
+        approvalId: "approval-command-1",
+        command: "pnpm test",
+        cwd: "/repo/package",
+      },
+    });
+
+    const approval = converted.find(
+      (runtimeEvent) => runtimeEvent.eventType === AgentRunEventType.TOOL_APPROVAL_REQUESTED,
+    );
+    expect(approval).toMatchObject({
+      eventType: AgentRunEventType.TOOL_APPROVAL_REQUESTED,
+      payload: {
+        invocation_id: "tool-command-approval",
+        tool_name: "run_bash",
+        arguments: {
+          command: "pnpm test",
+          cwd: "/repo/package",
+        },
+      },
+    });
+  });
+
   it("projects authoritative command arguments for a result-first completed command", () => {
     const converter = createCodexThreadEventHarness("run-1");
 
