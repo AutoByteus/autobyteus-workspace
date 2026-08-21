@@ -1,0 +1,26 @@
+# DR-005 final main-build/handoff audit
+utc_started=2026-08-21T04:38:34Z
+branch=personal
+product_source_head=3e946ba3fe61eac2af98fce2a27cfff84ea80328
+product_source_origin_personal=3e946ba3fe61eac2af98fce2a27cfff84ea80328
+divergence=0/0
+latest_source_check=PASS
+git_diff_check=PASS
+artifact_presence=PASS
+dmg_sha256=a829f505395c18ecde19af7337bc578b1e92314cda2c1a17a221636782e3647f
+zip_sha256=a7aaaeb8eb36881db9b145165127a6df7d67a90109d0634649ce628cbdb689f3
+artifact_hashes=PASS
+build_integrity_smoke_evidence=PASS
+package_outputs_ignored=PASS
+root_package_process_cleanup=PASS
+ticket_worktree_and_branches_absent=PASS
+authoritative_delivery_artifacts=PASS
+unexpected_status_paths=NONE
+unrelated_article_work_preserved=yes
+version_bump=NOT_PERFORMED
+tag=NOT_PERFORMED
+release=NOT_PERFORMED
+publication=NOT_PERFORMED
+deployment=NOT_PERFORMED
+audit_result=PASS
+utc_finished=2026-08-21T04:38:42Z

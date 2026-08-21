@@ -1,0 +1,46 @@
+# DR-004 repository finalization and cleanup
+utc=2026-08-21T04:17:05Z
+user_verification=PASS_WORKING
+release_requested=no
+final_ticket_commit=8fc65b93f343c1e9f166b509f3740f872df32f6f
+ticket_branch_push=PASS
+target_base_before_merge=dbd00e789cf9e2ae7aaa995b60a181d5e6c3bf91
+target_merge_commit=6c5e0777f60ade0583b3111ff61420bd9ee5850d
+target_merge_parents=dbd00e789cf9e2ae7aaa995b60a181d5e6c3bf91 8fc65b93f343c1e9f166b509f3740f872df32f6f
+target_tree_matches_ticket_commit=yes
+target_push=PASS
+origin_personal=6c5e0777f60ade0583b3111ff61420bd9ee5850d
+accepted_candidate_main_shutdown=GRACEFUL
+accepted_candidate_nested_processes=STOPPED_WITH_OWNED_TREE
+user_data_deleted=no
+port_29695_after_shutdown=clear
+ticket_worktree_cleanup=PASS
+worktree_prune=PASS
+local_ticket_branch_cleanup=PASS
+remote_ticket_branch_cleanup=PASS
+unrelated_root_article_work=preserved
+local_ticket_electron_artifacts=retired_with_dedicated_worktree
+version_bump=NOT_PERFORMED
+tag=NOT_PERFORMED
+release=NOT_PERFORMED
+publication=NOT_PERFORMED
+deployment=NOT_PERFORMED
+
+## Exact candidate shutdown transcript
+# Exact accepted-candidate application shutdown
+utc_started=2026-08-21T04:14:55Z
+bundle=/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+root_pid=79548
+root_identity=PASS_EXACT_BUNDLE
+process_group_members_before:
+79548     1 79548 /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+79549 79548 79548 /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper --type=gpu-process --user-data-dir=/Users/normy/Library/Application Support/autobyteus --gpu-preferences=SAAAAAAAAAAgAQAEAAAAAAAAAAAAAGAAAwAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAQAAAAAAAAABAAAAAAAAAACAAAAAAAAAAIAAAAAAAAAA== --shared-files --field-trial-handle=1718379636,r,14502022317452659158,10393491005778847399,262144 --enable-features=PdfUseShowSaveFilePicker,ScreenCaptureKitPickerScreen,ScreenCaptureKitStreamPickerSonoma --disable-features=DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TimeoutHangingVideoCaptureStarts,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=1935764596,r,1548794294468955343,11877858406730110677,4 --trace-process-track-uuid=3190708988185955192 --seatbelt-client=31
+79550 79548 79548 /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper --type=utility --utility-sub-type=network.mojom.NetworkService --lang=de --service-sandbox-type=network --user-data-dir=/Users/normy/Library/Application Support/autobyteus --standard-schemes=local-file --cors-schemes=local-file --fetch-schemes=local-file --streaming-schemes=local-file --shared-files --field-trial-handle=1718379636,r,14502022317452659158,10393491005778847399,262144 --enable-features=PdfUseShowSaveFilePicker,ScreenCaptureKitPickerScreen,ScreenCaptureKitStreamPickerSonoma --disable-features=DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TimeoutHangingVideoCaptureStarts,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=1935764596,r,1548794294468955343,11877858406730110677,4 --trace-process-track-uuid=3190708989122997041 --seatbelt-client=31
+79551 79548 79548 /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Renderer).app/Contents/MacOS/AutoByteus Helper (Renderer) --type=renderer --user-data-dir=/Users/normy/Library/Application Support/autobyteus --standard-schemes=local-file --cors-schemes=local-file --fetch-schemes=local-file --streaming-schemes=local-file --app-path=/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar --enable-sandbox --lang=de --num-raster-threads=4 --enable-zero-copy --enable-gpu-memory-buffer-compositor-resources --enable-main-frame-before-activation --renderer-client-id=4 --time-ticks-at-unix-epoch=-1785091481903923 --launch-time-ticks=2191805663008 --shared-files --field-trial-handle=1718379636,r,14502022317452659158,10393491005778847399,262144 --enable-features=PdfUseShowSaveFilePicker,ScreenCaptureKitPickerScreen,ScreenCaptureKitStreamPickerSonoma --disable-features=DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TimeoutHangingVideoCaptureStarts,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=1935764596,r,1548794294468955343,11877858406730110677,4 --trace-process-track-uuid=3190708990060038890 --seatbelt-client=59
+80152 79548 79548 /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/app.js --port 29695 --data-dir /Users/normy/.autobyteus/server-data
+80244 79548 79548 /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper --type=utility --utility-sub-type=audio.mojom.AudioService --lang=de --service-sandbox-type=audio --message-loop-type-ui --user-data-dir=/Users/normy/Library/Application Support/autobyteus --standard-schemes=local-file --cors-schemes=local-file --fetch-schemes=local-file --streaming-schemes=local-file --shared-files --field-trial-handle=1718379636,r,14502022317452659158,10393491005778847399,262144 --enable-features=PdfUseShowSaveFilePicker,ScreenCaptureKitPickerScreen,ScreenCaptureKitStreamPickerSonoma --disable-features=DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TimeoutHangingVideoCaptureStarts,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=1935764596,r,1548794294468955343,11877858406730110677,4 --trace-process-track-uuid=3190708990997080739 --seatbelt-client=62
+80245 79548 79548 /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper --type=utility --utility-sub-type=video_capture.mojom.VideoCaptureService --lang=de --service-sandbox-type=none --message-loop-type-ui --user-data-dir=/Users/normy/Library/Application Support/autobyteus --standard-schemes=local-file --cors-schemes=local-file --fetch-schemes=local-file --streaming-schemes=local-file --shared-files --field-trial-handle=1718379636,r,14502022317452659158,10393491005778847399,262144 --enable-features=PdfUseShowSaveFilePicker,ScreenCaptureKitPickerScreen,ScreenCaptureKitStreamPickerSonoma --disable-features=DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TimeoutHangingVideoCaptureStarts,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=1935764596,r,1548794294468955343,11877858406730110677,4 --trace-process-track-uuid=3190708991934122588
+80534 80152 79548 codex app-server
+82410 80152 79548 codex app-server
+process_group_note=nested_codex_app_servers_are_children_of_candidate_backend_in_same_owned_group
+main_shutdown=GRACEFUL

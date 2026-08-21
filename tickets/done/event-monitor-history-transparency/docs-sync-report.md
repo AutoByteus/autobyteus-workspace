@@ -16,10 +16,10 @@
   `50a0f302313140947c2d12de7827b55428f8779a` after safety checkpoint
   `f4f692dc04fec35d5113f0ce17fea9036138a93f`.
 - Post-integration verification reference:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/done/event-monitor-history-transparency/delivery-evidence/dr-001-post-integration-focused-web.log`.
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-history-transparency/delivery-evidence/dr-001-post-integration-focused-web.log`.
   The exact eight-file focused Nuxt suite passed 8 files / 80 tests on the
   integrated state. Integration details are in
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/done/event-monitor-history-transparency/delivery-evidence/dr-001-initial-integration-refresh.log`.
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-history-transparency/delivery-evidence/dr-001-initial-integration-refresh.log`.
 
 ## Why Docs Were Updated
 
@@ -42,18 +42,18 @@
 
 | Doc Path | Why It Was Reviewed | Result (`Updated`/`No change`/`Needs follow-up`) | Notes |
 | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/autobyteus-ts/docs/agent_memory_design.md` | Canonical core memory, raw trace, rotation, and external-runtime boundary. | `Updated` | Documents the strict five-field run-scoped row, exact-content folding, Native capture timing, cross-runtime storage contract, active-only behavior, and compaction membership rule; retains the implementation rename to `archiveCompactedRawTraces(...)`. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/autobyteus-ts/docs/agent_memory_design_nodejs.md` | TypeScript-specific mirror of the core memory design. | `Updated` | Kept semantically synchronized with the canonical memory design. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/autobyteus-server-ts/docs/modules/agent_memory.md` | Canonical server memory layout, normalization, GraphQL Memory view, rotation, and run-history relationship. | `Updated` | Adds run scope and nullable turn/sequence semantics, explicit archive behavior, and replaces stale complete-corpus/runtime-native normal-history guidance with active local replay. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/autobyteus-server-ts/docs/modules/run_history.md` | Canonical replay, Event Monitor, Activity, cursor, and archive boundaries. | `Updated` | Records active-only input, system-only Activity projection, Event Monitor-compatible selection, and explicit archive/evidence-only complete-corpus behavior. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/autobyteus-server-ts/docs/modules/agent_streaming.md` | Canonical standalone/Team event transport and supported diagnostics. | `Updated` | Documents the exact semantic payload, Native/Codex staged publication, Claude cleanup, Team routing, accumulator no-op, and content-safe debug contract. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/autobyteus-server-ts/docs/modules/prompt_engineering.md` | Canonical runtime instruction composition and provider handoff ownership. | `Updated` | Adds exact Native/Claude/Codex capture boundaries and expressly excludes provider-hidden/effective context and historical reconstruction. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/autobyteus-web/docs/agent_execution_architecture.md` | Canonical Activity, stream dispatch, hydration, Event Monitor, desktop/mobile presentation, and accessibility behavior. | `Updated` | Adds the System instruction Activity contract, handler/dispatch ownership, exact disclosure semantics, bounds, and active-only absence behavior. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/autobyteus-web/docs/memory.md` | User-facing Memory Inspector and raw-trace representation. | `Updated` | Documents `scope: "run"`, nullable turn/sequence, exact trace content/identity, direct-use existing data, and explicit archived-row inspection. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/autobyteus-server-ts/docs/design/production_data_migration_conventions.md` | Governing durable migration decision and operational safety rules. | `No change` | The additive direct-use/no-migration decision conforms to the existing canonical conventions; the ticket audit already records the evidence. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/autobyteus-server-ts/README.md` | Server setup, build, E2E, app-data migration, and operator commands. | `No change` | No new setup, environment variable, operator action, migration command, or recovery procedure is introduced. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/autobyteus-web/README.md` | Frontend setup, build, testing, and user-facing documentation catalog. | `No change` | Existing execution and memory chapters remain the correct detailed owners; no setup or packaging instruction changed. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/autobyteus-team-stream-contracts/README.md` | Package-level discoverability for Team DTOs. | `No change` | The package README is intentionally minimal; the strict payload and routing contract is authoritatively documented in server Agent Streaming and frontend execution architecture. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-ts/docs/agent_memory_design.md` | Canonical core memory, raw trace, rotation, and external-runtime boundary. | `Updated` | Documents the strict five-field run-scoped row, exact-content folding, Native capture timing, cross-runtime storage contract, active-only behavior, and compaction membership rule; retains the implementation rename to `archiveCompactedRawTraces(...)`. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-ts/docs/agent_memory_design_nodejs.md` | TypeScript-specific mirror of the core memory design. | `Updated` | Kept semantically synchronized with the canonical memory design. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/docs/modules/agent_memory.md` | Canonical server memory layout, normalization, GraphQL Memory view, rotation, and run-history relationship. | `Updated` | Adds run scope and nullable turn/sequence semantics, explicit archive behavior, and replaces stale complete-corpus/runtime-native normal-history guidance with active local replay. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/docs/modules/run_history.md` | Canonical replay, Event Monitor, Activity, cursor, and archive boundaries. | `Updated` | Records active-only input, system-only Activity projection, Event Monitor-compatible selection, and explicit archive/evidence-only complete-corpus behavior. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/docs/modules/agent_streaming.md` | Canonical standalone/Team event transport and supported diagnostics. | `Updated` | Documents the exact semantic payload, Native/Codex staged publication, Claude cleanup, Team routing, accumulator no-op, and content-safe debug contract. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/docs/modules/prompt_engineering.md` | Canonical runtime instruction composition and provider handoff ownership. | `Updated` | Adds exact Native/Claude/Codex capture boundaries and expressly excludes provider-hidden/effective context and historical reconstruction. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/agent_execution_architecture.md` | Canonical Activity, stream dispatch, hydration, Event Monitor, desktop/mobile presentation, and accessibility behavior. | `Updated` | Adds the System instruction Activity contract, handler/dispatch ownership, exact disclosure semantics, bounds, and active-only absence behavior. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/memory.md` | User-facing Memory Inspector and raw-trace representation. | `Updated` | Documents `scope: "run"`, nullable turn/sequence, exact trace content/identity, direct-use existing data, and explicit archived-row inspection. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/docs/design/production_data_migration_conventions.md` | Governing durable migration decision and operational safety rules. | `No change` | The additive direct-use/no-migration decision conforms to the existing canonical conventions; the ticket audit already records the evidence. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/README.md` | Server setup, build, E2E, app-data migration, and operator commands. | `No change` | No new setup, environment variable, operator action, migration command, or recovery procedure is introduced. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/README.md` | Frontend setup, build, testing, and user-facing documentation catalog. | `No change` | Existing execution and memory chapters remain the correct detailed owners; no setup or packaging instruction changed. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-team-stream-contracts/README.md` | Package-level discoverability for Team DTOs. | `No change` | The package README is intentionally minimal; the strict payload and routing contract is authoritatively documented in server Agent Streaming and frontend execution architecture. |
 
 ## Docs Updated
 
@@ -96,16 +96,15 @@ it against the integrated and post-integration-checked state.
 
 ## Delivery Continuation
 
-- Result: `Pass`
-- Next delivery action: User verification is now complete. Archive the ticket,
-  finalize the ticket branch into `personal`, and clean the ticket worktree and
-  branches. Do not version, tag, release, publish, or deploy.
-- Notes: Release notes are not required because no release, publication, or
-  deployment scope has been requested. A later user request produced a local
-  Electron test package under `DR-002`; the documented command and isolation
-  contract remained accurate and required no long-lived doc edit. If
-  finalization is later authorized, delivery must fetch `origin/personal` again
-  and re-integrate/recheck if the target has advanced.
+- Result: `Pass / complete`.
+- Repository finalization: completed under `DR-004`; archived ticket,
+  ticket-branch push, merge/push to `personal`, and safe worktree/branch cleanup
+  are recorded in the delivery report.
+- Main-personal build: completed under `DR-005`; the latest product source was
+  packaged and verified without changing long-lived product behavior or
+  documentation.
+- Release boundary: no version, tag, release, publication, notarization, or
+  deployment was requested or performed.
 
 ## DR-002 Documentation Re-entry
 
@@ -149,3 +148,44 @@ it against the integrated and post-integration-checked state.
 - Classification: N/A
 - Recommended recipient: N/A
 - Why docs could not be finalized truthfully: N/A
+
+## DR-004 Repository-Finalization Documentation Re-entry
+
+- Trigger: user-authorized ticket archival, ticket-branch/target finalization,
+  and cleanup.
+- Result: `No additional long-lived product-doc change / Pass`.
+- Rationale: finalization changed repository/ticket state only. It did not alter
+  runtime behavior, configuration, setup, migration, recovery, or user-facing
+  contracts.
+- Delivery records updated: `delivery-revision-record.md`,
+  `handoff-summary.md`, `release-deployment-report.md`, and DR-004 cleanup
+  evidence.
+- Canonical archived artifact root:
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-history-transparency`.
+
+## DR-005 Main-Personal Build Documentation Re-entry
+
+- Trigger: user requested a fresh Electron build from the latest main
+  `personal` branch after finalization.
+- Checked product source: the initial `6c5e0777f60ade0583b3111ff61420bd9ee5850d`
+  package was superseded after `personal` advanced with product changes. The
+  authoritative build used
+  `3e946ba3fe61eac2af98fce2a27cfff84ea80328`, matching `origin/personal`
+  before the rebuild and after package verification.
+- Result: `No additional long-lived product-doc change / Pass`.
+- Rationale: the documented local ARM64 packaging and isolated-launch methods
+  remained accurate. Packaging produced ignored local outputs only and did not
+  introduce a new setup, environment, runtime, migration, recovery, release, or
+  deployment contract.
+- Delivery-only records updated: `electron-test-build-report.md`,
+  `delivery-revision-record.md`, `handoff-summary.md`,
+  `release-deployment-report.md`, and DR-005 evidence logs.
+- Diagnostic note: the Codex host exports `RUST_LOG=warn`; final isolated
+  verification removed that host-only variable and `ELECTRON_RUN_AS_NODE`.
+  This operational evidence belongs in the build/handoff records, not in
+  long-lived product documentation.
+
+## Final Docs-Sync Status
+
+`Pass — durable product docs remain synchronized with the finalized product
+state; finalization and local packaging required delivery-record updates only.`

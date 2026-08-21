@@ -1,0 +1,31 @@
+# DR-005 final main-personal prebuild refresh
+utc_started=2026-08-21T04:30:47Z
+user_request=after_finalization_make_main_personal_latest_and_build_electron
+branch=personal
+head=3e946ba3fe61eac2af98fce2a27cfff84ea80328
+origin_personal=3e946ba3fe61eac2af98fce2a27cfff84ea80328
+divergence=0/0
+prior_build_source=6c5e0777f60ade0583b3111ff61420bd9ee5850d
+prior_build_superseded_because_target_advanced=yes
+latest_product_source=3e946ba3fe61eac2af98fce2a27cfff84ea80328
+
+## Preserved unrelated/delivery state
+ M tickets/done/event-monitor-history-transparency/delivery-revision-record.md
+ M tickets/done/event-monitor-history-transparency/docs-sync-report.md
+ M tickets/done/event-monitor-history-transparency/electron-test-build-report.md
+ M tickets/done/event-monitor-history-transparency/handoff-summary.md
+ M tickets/done/event-monitor-history-transparency/release-deployment-report.md
+?? .article-work/
+?? tickets/done/event-monitor-history-transparency/delivery-evidence/dr-004-repository-finalization-cleanup.log
+?? tickets/done/event-monitor-history-transparency/delivery-evidence/dr-005-main-personal-electron-build.log
+?? tickets/done/event-monitor-history-transparency/delivery-evidence/dr-005-main-personal-isolated-launch-smoke.log
+?? tickets/done/event-monitor-history-transparency/delivery-evidence/dr-005-main-personal-launch-diagnostic.log
+?? tickets/done/event-monitor-history-transparency/delivery-evidence/dr-005-main-personal-package-integrity.log
+?? tickets/done/event-monitor-history-transparency/delivery-evidence/dr-005-main-personal-prebuild-refresh.log
+
+## Process audit
+root_bundle_process=none
+version=1.4.52
+platform=Darwin-arm64
+prior_output_removed=yes
+utc_finished=2026-08-21T04:30:51Z

@@ -1,0 +1,116 @@
+diag_root=/tmp/autobyteus-e2e-dr005-diag.vDJEP0
+diag_port=50515
+
+> autobyteus@1.4.52 test:e2e:electron /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web
+> node scripts/run-electron-e2e.mjs --skip-build --adapter direct --executable /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus --port 50515 --data-root /tmp/autobyteus-e2e-dr005-diag.vDJEP0 --hold-ms 0
+
+[electron-e2e] Electron E2E process exited before readiness
+Recent output:
+/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/app.js --port 50515 --data-dir /private/tmp/autobyteus-e2e-dr005-diag.vDJEP0/server-data
+[2026-08-21T04:24:45.792Z] [INFO] [electron] Server process spawned with PID: 24913
+[2026-08-21T04:24:45.907Z] [INFO] [electron.embedded-server.stdout] Platform detection: Windows=false
+[2026-08-21T04:24:45.907Z] [INFO] [electron.embedded-server.stdout] App root directory: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+[2026-08-21T04:24:45.907Z] [INFO] [electron.embedded-server.stdout] App data directory: /private/tmp/autobyteus-e2e-dr005-diag.vDJEP0/server-data
+[2026-08-21T04:24:45.908Z] [INFO] [electron.embedded-server.stdout] AppConfig instance created.
+[2026-08-21T04:24:45.908Z] [INFO] [electron.embedded-server.stdout] Config file path: /private/tmp/autobyteus-e2e-dr005-diag.vDJEP0/server-data/.env
+[2026-08-21T04:24:45.908Z] [INFO] [electron.embedded-server.stdout] Loading environment from: /private/tmp/autobyteus-e2e-dr005-diag.vDJEP0/server-data/.env
+[2026-08-21T04:24:45.908Z] [INFO] [electron.embedded-server.stdout] [dotenv@17.3.1] injecting env (2) from ../../../../../../../../../../../private/tmp/autobyteus-e2e-dr005-diag.vDJEP0/server-data/.env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+[2026-08-21T04:24:45.908Z] [INFO] [electron.embedded-server.stdout] Environment variables loaded successfully
+[2026-08-21T04:24:45.908Z] [INFO] [electron.embedded-server.stdout] Server public base URL configured to: http://127.0.0.1:50515
+[2026-08-21T04:24:45.909Z] [INFO] [electron.embedded-server.stdout] === Starting logging configuration ===
+[2026-08-21T04:24:45.909Z] [INFO] [electron.embedded-server.stdout] Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/logging_config.ini
+[2026-08-21T04:24:45.909Z] [INFO] [electron.embedded-server.stdout] ============================================================
+[2026-08-21T04:24:45.909Z] [INFO] [electron.embedded-server.stdout] SERVER PUBLIC URL: http://127.0.0.1:50515
+[2026-08-21T04:24:45.909Z] [INFO] [electron.embedded-server.stdout] APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+[2026-08-21T04:24:45.909Z] [INFO] [electron.embedded-server.stdout] APP DATA DIRECTORY: /private/tmp/autobyteus-e2e-dr005-diag.vDJEP0/server-data
+[2026-08-21T04:24:45.909Z] [INFO] [electron.embedded-server.stdout] DB DIRECTORY: /private/tmp/autobyteus-e2e-dr005-diag.vDJEP0/server-data/db
+[2026-08-21T04:24:45.909Z] [INFO] [electron.embedded-server.stdout] LOGS DIRECTORY: /private/tmp/autobyteus-e2e-dr005-diag.vDJEP0/server-data/logs
+[2026-08-21T04:24:45.909Z] [INFO] [electron.embedded-server.stdout] DOWNLOAD DIRECTORY: /private/tmp/autobyteus-e2e-dr005-diag.vDJEP0/server-data/download
+[2026-08-21T04:24:45.909Z] [INFO] [electron.embedded-server.stdout] MEMORY DIRECTORY: /private/tmp/autobyteus-e2e-dr005-diag.vDJEP0/server-data/memory
+[2026-08-21T04:24:45.909Z] [INFO] [electron.embedded-server.stdout] ============================================================
+[2026-08-21T04:24:45.909Z] [INFO] [electron.embedded-server.stdout] AppConfig initialization completed successfully
+[2026-08-21T04:24:47.004Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_file'
+[2026-08-21T04:24:47.004Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'write_file'
+[2026-08-21T04:24:47.004Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'edit_file'
+[2026-08-21T04:24:47.004Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'run_bash'
+[2026-08-21T04:24:47.004Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'start_background_process'
+[2026-08-21T04:24:47.005Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_background_processes'
+[2026-08-21T04:24:47.005Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_process_output'
+[2026-08-21T04:24:47.005Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'stop_background_process'
+[2026-08-21T04:24:47.005Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'search_web'
+[2026-08-21T04:24:47.005Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_media_file'
+[2026-08-21T04:24:47.005Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'download_media'
+[2026-08-21T04:24:47.005Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_url'
+[2026-08-21T04:24:47.005Z] [INFO] [electron.embedded-server.stdout] AgentFactory (Singleton) initialized.
+[2026-08-21T04:24:47.114Z] [INFO] [electron.embedded-server.stdout] Running Prisma migrations...
+[2026-08-21T04:24:47.116Z] [INFO] [electron.embedded-server.stdout] Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+[2026-08-21T04:24:47.368Z] [INFO] [electron.embedded-server.stdout] Prisma schema loaded from prisma/schema.prisma
+[2026-08-21T04:24:47.372Z] [INFO] [electron.embedded-server.stdout] Datasource "db": SQLite database "production.db" at "file:/private/tmp/autobyteus-e2e-dr005-diag.vDJEP0/server-data/db/production.db"
+[2026-08-21T04:24:47.392Z] [ERROR] [electron.embedded-server.stderr] Error: Schema engine error:
+[2026-08-21T04:24:47.401Z] [ERROR] [electron.embedded-server.stderr] Error running database migrations: Error: Command failed: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/prisma/build/index.js migrate deploy --schema /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/prisma/schema.prisma
+[2026-08-21T04:24:47.402Z] [ERROR] [electron.embedded-server.stderr] [2026-08-21T04:24:47.401Z] [ERROR] [server.runtime] Failed to run database migrations: Error: Command failed: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/prisma/build/index.js migrate deploy --schema /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/prisma/schema.prisma
+[2026-08-21T04:24:47.402Z] [ERROR] [electron.embedded-server.stderr] {"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"DATABASE_MIGRATION_FAILED","summary":"Failed to run database migrations: Error: Command failed: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/prisma/build/index.js migrate deploy --schema /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/prisma/schema.prisma","logPath":"/private/tmp/autobyteus-e2e-dr005-diag.vDJEP0/server-data/logs/server.log"}
+[2026-08-21T04:24:47.402Z] [ERROR] [electron] ServerStatusManager: Server error: Error: Server startup failed [DATABASE_MIGRATION_FAILED]: Failed to run database migrations: Error: Command failed: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/prisma/build/index.js migrate deploy --schema /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/prisma/schema.prisma Server log: /private/tmp/autobyteus-e2e-dr005-diag.vDJEP0/server-data/logs/server.log
+    at platformFatalError (/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/electron/server/embeddedServerPlatformFatal.js:54:39)
+    at capturePlatformFatal (/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/electron/server/baseServerManager.js:285:106)
+    at drainCompletedLines (/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/electron/server/serverOutputLogging.js:94:21)
+    at Object.pushChunk (/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/electron/server/serverOutputLogging.js:100:13)
+    at Socket.<anonymous> (/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/electron/server/baseServerManager.js:295:29)
+    at Socket.emit (node:events:509:28)
+    at addChunk (node:internal/streams/readable:563:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:514:3)
+    at Readable.push (node:internal/streams/readable:394:5)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:189:23)
+[2026-08-21T04:24:47.402Z] [INFO] [electron] ServerStatusManager: Emitting status change: error
+[2026-08-21T04:24:47.402Z] [ERROR] [electron.server.base-server-manager] Failed to start server: Error: Server startup failed [DATABASE_MIGRATION_FAILED]: Failed to run database migrations: Error: Command failed: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/prisma/build/index.js migrate deploy --schema /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/prisma/schema.prisma Server log: /private/tmp/autobyteus-e2e-dr005-diag.vDJEP0/server-data/logs/server.log
+    at platformFatalError (/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/electron/server/embeddedServerPlatformFatal.js:54:39)
+    at capturePlatformFatal (/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/electron/server/baseServerManager.js:285:106)
+    at drainCompletedLines (/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/electron/server/serverOutputLogging.js:94:21)
+    at Object.pushChunk (/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/electron/server/serverOutputLogging.js:100:13)
+    at Socket.<anonymous> (/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/electron/server/baseServerManager.js:295:29)
+    at Socket.emit (node:events:509:28)
+    at addChunk (node:internal/streams/readable:563:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:514:3)
+    at Readable.push (node:internal/streams/readable:394:5)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:189:23)
+[2026-08-21T04:24:47.402Z] [ERROR] [electron] ServerStatusManager: Server initialization failed: Error: Server startup failed [DATABASE_MIGRATION_FAILED]: Failed to run database migrations: Error: Command failed: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/prisma/build/index.js migrate deploy --schema /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/prisma/schema.prisma Server log: /private/tmp/autobyteus-e2e-dr005-diag.vDJEP0/server-data/logs/server.log
+    at platformFatalError (/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/electron/server/embeddedServerPlatformFatal.js:54:39)
+    at capturePlatformFatal (/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/electron/server/baseServerManager.js:285:106)
+    at drainCompletedLines (/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/electron/server/serverOutputLogging.js:94:21)
+    at Object.pushChunk (/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/electron/server/serverOutputLogging.js:100:13)
+    at Socket.<anonymous> (/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/electron/server/baseServerManager.js:295:29)
+    at Socket.emit (node:events:509:28)
+    at addChunk (node:internal/streams/readable:563:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:514:3)
+    at Readable.push (node:internal/streams/readable:394:5)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:189:23)
+[2026-08-21T04:24:47.402Z] [INFO] [electron.server.base-server-manager] Stopping server...
+[2026-08-21T04:24:47.402Z] [INFO] [electron.server.base-server-manager] Sending SIGTERM signal for graceful shutdown
+[2026-08-21T04:24:47.411Z] [INFO] [electron.server.base-server-manager] Server process exited with code 1
+[2026-08-21T04:24:47.411Z] [INFO] [electron.server.base-server-manager] Server process closed
+[electron-bootstrap] Startup failed: Server startup failed [DATABASE_MIGRATION_FAILED]: Failed to run database migrations: Error: Command failed: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/prisma/build/index.js migrate deploy --schema /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/prisma/schema.prisma Server log: /private/tmp/autobyteus-e2e-dr005-diag.vDJEP0/server-data/logs/server.log
+
+ ELIFECYCLE  Command failed with exit code 1.
+launch_exit_code=1
+== diagnostic files ==
+/tmp/autobyteus-e2e-dr005-diag.vDJEP0/server-data/logs/server.log
+/tmp/autobyteus-e2e-dr005-diag.vDJEP0/server-data/.env
+/tmp/autobyteus-e2e-dr005-diag.vDJEP0/logs/app.log
+/tmp/autobyteus-e2e-dr005-diag.vDJEP0/electron/session-data/Preferences
+/tmp/autobyteus-e2e-dr005-diag.vDJEP0/electron/session-data/Shared Dictionary/db-journal
+/tmp/autobyteus-e2e-dr005-diag.vDJEP0/electron/session-data/Shared Dictionary/db
+/tmp/autobyteus-e2e-dr005-diag.vDJEP0/electron/session-data/Network Persistent State
+/tmp/autobyteus-e2e-dr005-diag.vDJEP0/electron/session-data/Local State
+/tmp/autobyteus-e2e-dr005-diag.vDJEP0/electron/session-data/Trust Tokens-journal
+/tmp/autobyteus-e2e-dr005-diag.vDJEP0/electron/session-data/Trust Tokens
+/tmp/autobyteus-e2e-dr005-diag.vDJEP0/electron/user-data/node-registry.v1.json
+== server log ==
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+Error running database migrations: Error: Command failed: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/prisma/build/index.js migrate deploy --schema /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/prisma/schema.prisma
+[2026-08-21T04:24:47.401Z] [ERROR] [server.runtime] Failed to run database migrations: Error: Command failed: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/prisma/build/index.js migrate deploy --schema /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/prisma/schema.prisma
+== db directory ==
+total 0
+drwxr-xr-x@ 2 normy  wheel   64 Aug 21 06:24 .
+drwx------@ 7 normy  wheel  224 Aug 21 06:24 ..
+diagnostic_root_retained=/tmp/autobyteus-e2e-dr005-diag.vDJEP0

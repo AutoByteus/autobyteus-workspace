@@ -1,0 +1,21 @@
+# DR-005 final latest-main isolated Playwright smoke
+utc_started=2026-08-21T04:37:14Z
+source_head=3e946ba3fe61eac2af98fce2a27cfff84ea80328
+source_origin_personal=3e946ba3fe61eac2af98fce2a27cfff84ea80328
+executable=/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+port=50960
+environment_boundary=ELECTRON_RUN_AS_NODE and inherited RUST_LOG unset
+command=env -u ELECTRON_RUN_AS_NODE -u RUST_LOG pnpm test:e2e:electron --skip-build --adapter playwright --executable <app> --port 50960 --hold-ms 3000
+
+> autobyteus@1.4.52 test:e2e:electron /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web
+> node scripts/run-electron-e2e.mjs --skip-build --adapter playwright --executable /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus --port 50960 --hold-ms 3000
+
+{"type":"electron-e2e-ready","executablePath":"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus","port":50960,"dataRoot":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-oKPKD6","ownsDataRoot":true,"clientBaseUrl":"http://127.0.0.1:50960","healthUrl":"http://127.0.0.1:50960/rest/health"}
+smoke_command_exit_code=0
+reported_data_root=/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-oKPKD6
+owned_data_root_cleanup=PASS
+post_smoke_port_clear=PASS
+owned_app_process_cleanup=PASS
+utc_finished=2026-08-21T04:37:22Z
+final_smoke_result=PASS
+exit_code=0
