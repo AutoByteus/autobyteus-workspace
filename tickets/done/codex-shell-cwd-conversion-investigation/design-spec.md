@@ -40,7 +40,7 @@ This keeps explicit canonical arguments authoritative when present, then support
 
 | Artifact Path | Purpose | Related Requirement / Acceptance-Criteria IDs (When Applicable) | Relationship To This Design | Status / Approval Applicability |
 | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-shell-cwd-conversion-investigation/tickets/in-progress/codex-shell-cwd-conversion-investigation/codex-cwd-probe-evidence.md` | Exact generated contracts, live raw/stable frames, controlled conversion output, and root-cause evidence | REQ-001–REQ-005; AC-001–AC-006 | Establishes the authoritative source field and proves the correction is projection-only. | Complete; approval N/A (evidence only) |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-shell-cwd-conversion-investigation/tickets/done/codex-shell-cwd-conversion-investigation/codex-cwd-probe-evidence.md` | Exact generated contracts, live raw/stable frames, controlled conversion output, and root-cause evidence | REQ-001–REQ-005; AC-001–AC-006 | Establishes the authoritative source field and proves the correction is projection-only. | Complete; approval N/A (evidence only) |
 
 ## Task Design Health Assessment (Mandatory)
 

@@ -12,7 +12,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 
 ### IR-001 — Preserve stable Codex command CWD across canonical projections
 
-- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-shell-cwd-conversion-investigation/tickets/in-progress/codex-shell-cwd-conversion-investigation/design-review-report.md`; Round 1 / `ARCH-REV-001` Pass.
+- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-shell-cwd-conversion-investigation/tickets/done/codex-shell-cwd-conversion-investigation/design-review-report.md`; Round 1 / `ARCH-REV-001` Pass.
 - Triggering finding IDs: `N/A`
 - Classification: `Initial Baseline`
 - Prior authoritative result: `N/A`

@@ -32,7 +32,7 @@ See the evidence supplement: [`codex-cwd-probe-evidence.md`](./codex-cwd-probe-e
 
 | Artifact Path | Type / Purpose | Related Requirement IDs | Related Acceptance-Criteria IDs | Status / Approval | Relationship To Requirements |
 | --- | --- | --- | --- | --- | --- |
-| `tickets/in-progress/codex-shell-cwd-conversion-investigation/codex-cwd-probe-evidence.md` | Evidence supplement containing exact generated contracts, live raw frames, controlled conversion output, and root-cause trace | REQ-001–REQ-005 | AC-001–AC-006 | Complete; approval N/A (evidence only) | Supports the confirmed current behavior and source selection; does not define intended behavior. |
+| `tickets/done/codex-shell-cwd-conversion-investigation/codex-cwd-probe-evidence.md` | Evidence supplement containing exact generated contracts, live raw frames, controlled conversion output, and root-cause trace | REQ-001–REQ-005 | AC-001–AC-006 | Complete; approval N/A (evidence only) | Supports the confirmed current behavior and source selection; does not define intended behavior. |
 
 ## Design Health Assessment (Mandatory)
 

@@ -1,0 +1,133 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/codex-shell-cwd-conversion-investigation/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/codex-shell-cwd-conversion-investigation/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+
+stdout | tests/.tmp/codex-cwd-api-e2e.probe.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:37715) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/.tmp/codex-cwd-api-e2e.probe.test.ts > temporary live Codex command CWD projection probe > correlates approval, execution, native history, new trace persistence, and old trace readability
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-shell-cwd-conversion-investigation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-shell-cwd-conversion-investigation/autobyteus-server-ts
+AgentRunManager initialized.
+
+stdout | tests/.tmp/codex-cwd-api-e2e.probe.test.ts > temporary live Codex command CWD projection probe > correlates approval, execution, native history, new trace persistence, and old trace readability
+Published codex_app_server agent run 'run-codex-cwd-api-e2e-ca2e472d-82c4-48d8-9fea-6aadfc313ee4'.
+
+stdout | tests/.tmp/codex-cwd-api-e2e.probe.test.ts > temporary live Codex command CWD projection probe > correlates approval, execution, native history, new trace persistence, and old trace readability
+Discovering Ollama models from host: http://127.0.0.1:11434
+
+stderr | tests/.tmp/codex-cwd-api-e2e.probe.test.ts > temporary live Codex command CWD projection probe > correlates approval, execution, native history, new trace persistence, and old trace readability
+Could not connect to Ollama server at http://127.0.0.1:11434. Ensure it's running. fetch failed
+
+stdout | tests/.tmp/codex-cwd-api-e2e.probe.test.ts > temporary live Codex command CWD projection probe > correlates approval, execution, native history, new trace persistence, and old trace readability
+Discovering LM Studio models from host: http://127.0.0.1:1234
+
+stdout | tests/.tmp/codex-cwd-api-e2e.probe.test.ts > temporary live Codex command CWD projection probe > correlates approval, execution, native history, new trace persistence, and old trace readability
+Finished LM Studio discovery. Total models registered: 15
+
+stdout | tests/.tmp/codex-cwd-api-e2e.probe.test.ts > temporary live Codex command CWD projection probe > correlates approval, execution, native history, new trace persistence, and old trace readability
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/.tmp/codex-cwd-api-e2e.probe.test.ts > temporary live Codex command CWD projection probe > correlates approval, execution, native history, new trace persistence, and old trace readability
+[codex-cwd-api-e2e-evidence] {"codexVersion":"codex-cli 0.149.0","modelIdentifier":"gpt-5.4-mini","runId":"run-codex-cwd-api-e2e-ca2e472d-82c4-48d8-9fea-6aadfc313ee4","nativeThreadId":"01a023db-8dee-7880-ad81-68627b57f2c5","targetDir":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-cwd-api-e2e-workspace-6QTKsJ/nested-target","realTargetDir":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-cwd-api-e2e-workspace-6QTKsJ/nested-target","approval":{"method":"item/commandExecution/requestApproval","invocationId":"call_kSH5XaOvpDWEf9r0c4gunAw8","command":"/bin/bash -lc 'pwd > cwd-proof.txt'","cwd":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-cwd-api-e2e-workspace-6QTKsJ/nested-target","canonicalArguments":{"command":"/bin/bash -lc 'pwd > cwd-proof.txt'","cwd":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-cwd-api-e2e-workspace-6QTKsJ/nested-target"}},"start":{"nativeCommand":"/bin/bash -lc 'pwd > cwd-proof.txt'","nativeCwd":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-cwd-api-e2e-workspace-6QTKsJ/nested-target","canonicalArguments":{"command":"/bin/bash -lc 'pwd > cwd-proof.txt'","cwd":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-cwd-api-e2e-workspace-6QTKsJ/nested-target"}},"completion":{"nativeCommand":"/bin/bash -lc 'pwd > cwd-proof.txt'","nativeCwd":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-cwd-api-e2e-workspace-6QTKsJ/nested-target","canonicalArguments":{"command":"/bin/bash -lc 'pwd > cwd-proof.txt'","cwd":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-cwd-api-e2e-workspace-6QTKsJ/nested-target"},"exitCode":0,"proofFileContent":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-cwd-api-e2e-workspace-6QTKsJ/nested-target"},"nativeHistoryToolArgs":{"command":"/bin/bash -lc 'pwd > cwd-proof.txt'","cwd":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-cwd-api-e2e-workspace-6QTKsJ/nested-target"},"nativeThreadReadCommandExecutionCount":0,"nativeHistoryNormalizationSource":"live completed commandExecution","persistedToolArgs":{"command":"/bin/bash -lc 'pwd > cwd-proof.txt'","cwd":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-cwd-api-e2e-workspace-6QTKsJ/nested-target"},"legacyTraceToolArgs":{"command":"pwd"},"legacyTraceBytesUnchanged":true}
+
+ ✓ tests/.tmp/codex-cwd-api-e2e.probe.test.ts (1 test) 6769ms
+     ✓ correlates approval, execution, native history, new trace persistence, and old trace readability  6768ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  12:26:22
+   Duration  10.70s (transform 2.57s, setup 14ms, import 3.49s, tests 6.77s, environment 0ms)

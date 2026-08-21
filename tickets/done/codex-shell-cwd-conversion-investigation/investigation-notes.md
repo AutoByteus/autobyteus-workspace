@@ -22,7 +22,7 @@ The user suspected that Codex supports a current-working-directory argument on i
 
 - Project Type (`Git`):
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-shell-cwd-conversion-investigation`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-shell-cwd-conversion-investigation/tickets/in-progress/codex-shell-cwd-conversion-investigation`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-shell-cwd-conversion-investigation/tickets/done/codex-shell-cwd-conversion-investigation`
 - Current Branch: `codex/codex-shell-cwd-conversion-investigation`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-shell-cwd-conversion-investigation`
 - Bootstrap Base Branch: `origin/personal` at `a098b205ca990bf86b5e452950a49fc5dc39c8d1`
@@ -37,7 +37,7 @@ The user suspected that Codex supports a current-working-directory argument on i
 
 | Artifact Path | Purpose And Scope | Evidence, Context, Or Decision Captured | Core Artifact(s) Supported | Related Requirement / Acceptance-Criteria IDs | Status | Approval Applicability / State | Follow-Up Needed |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-shell-cwd-conversion-investigation/tickets/in-progress/codex-shell-cwd-conversion-investigation/codex-cwd-probe-evidence.md` | Focused evidence supplement for the exact native call, stable app-server item, current conversion output, and verdict | Generated `0.149.0` protocol excerpts; live raw frames; disposable live/history conversion outputs; execution-ownership distinction | Requirements, investigation notes; later design spec | REQ-001–REQ-005; AC-001–AC-006 | Complete | N/A — evidence only | Keep aligned if later investigation changes the verdict. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-shell-cwd-conversion-investigation/tickets/done/codex-shell-cwd-conversion-investigation/codex-cwd-probe-evidence.md` | Focused evidence supplement for the exact native call, stable app-server item, current conversion output, and verdict | Generated `0.149.0` protocol excerpts; live raw frames; disposable live/history conversion outputs; execution-ownership distinction | Requirements, investigation notes; later design spec | REQ-001–REQ-005; AC-001–AC-006 | Complete | N/A — evidence only | Keep aligned if later investigation changes the verdict. |
 
 ## Source Log
 

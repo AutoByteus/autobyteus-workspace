@@ -1,0 +1,45 @@
+Delivery documentation validation
+Date: 2026-08-21
+Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-shell-cwd-conversion-investigation
+
+Command: git diff --check
+Result: PASS
+
+Command: verify delivery and long-lived documentation files exist and are non-empty
+PASS autobyteus-server-ts/docs/modules/codex_integration.md
+PASS autobyteus-server-ts/docs/design/codex_raw_event_mapping.md
+PASS tickets/done/codex-shell-cwd-conversion-investigation/docs-sync-report.md
+PASS tickets/done/codex-shell-cwd-conversion-investigation/handoff-summary.md
+PASS tickets/done/codex-shell-cwd-conversion-investigation/release-deployment-report.md
+PASS tickets/done/codex-shell-cwd-conversion-investigation/delivery-revision-record.md
+PASS tickets/done/codex-shell-cwd-conversion-investigation/delivery-integrated-state-refresh.log
+
+Command: reject trailing horizontal whitespace in synchronized documentation artifacts
+Result: PASS
+
+Command: verify durable contract markers
+PASS autobyteus-server-ts/docs/modules/codex_integration.md :: raw model-facing `workdir` field is not a canonical
+PASS autobyteus-server-ts/docs/modules/codex_integration.md :: older command-only traces
+PASS autobyteus-server-ts/docs/design/codex_raw_event_mapping.md :: ## Command Execution CWD Projection
+PASS autobyteus-server-ts/docs/design/codex_raw_event_mapping.md :: Missing `cwd` remains missing
+PASS tickets/done/codex-shell-cwd-conversion-investigation/delivery-revision-record.md :: DR-001
+
+Command: git status --short --branch
+## codex/codex-shell-cwd-conversion-investigation...origin/personal [ahead 2]
+ M autobyteus-server-ts/docs/design/codex_raw_event_mapping.md
+ M autobyteus-server-ts/docs/modules/codex_integration.md
+?? tickets/done/codex-shell-cwd-conversion-investigation/api-e2e-coverage-investigation.md
+?? tickets/done/codex-shell-cwd-conversion-investigation/api-e2e-evidence/
+?? tickets/done/codex-shell-cwd-conversion-investigation/api-e2e-execution-coverage-report.md
+?? tickets/done/codex-shell-cwd-conversion-investigation/api-e2e-revision-record.md
+?? tickets/done/codex-shell-cwd-conversion-investigation/api-e2e-test-review-report.md
+?? tickets/done/codex-shell-cwd-conversion-investigation/code-review-report.md
+?? tickets/done/codex-shell-cwd-conversion-investigation/code-review-revision-record.md
+?? tickets/done/codex-shell-cwd-conversion-investigation/delivery-integrated-state-refresh.log
+?? tickets/done/codex-shell-cwd-conversion-investigation/delivery-revision-record.md
+?? tickets/done/codex-shell-cwd-conversion-investigation/docs-sync-report.md
+?? tickets/done/codex-shell-cwd-conversion-investigation/docs-sync-validation.log
+?? tickets/done/codex-shell-cwd-conversion-investigation/handoff-summary.md
+?? tickets/done/codex-shell-cwd-conversion-investigation/release-deployment-report.md
+
+Overall result: PASS
