@@ -1,0 +1,115 @@
+Delivery revision: DR-002
+Recorded at: 2026-08-21T04:26:48Z
+User accepted: Yes
+Release/version requested: No
+
+== archive state ==
+PASS done path exists and in-progress path is absent
+
+== integrated target state ==
+branch=codex/app-data-migration-summary-log-redesign
+HEAD=f8997b1768a524c78702f14d1ac8a52999552a8a
+origin/personal=6c5e0777f60ade0583b3111ff61420bd9ee5850d
+merge-base=6c5e0777f60ade0583b3111ff61420bd9ee5850d
+ahead-behind=4	0
+PASS target is fully integrated
+
+== current authority ==
+tickets/done/app-data-migration-summary-log-redesign/release-deployment-report.md:38:- API/E2E authority: `API-REV-002 — Pass / 97.9%`.
+tickets/done/app-data-migration-summary-log-redesign/release-deployment-report.md:39:- Round-2 code-review intake: `CRR-003 — Not Applicable` for durable test code;
+tickets/done/app-data-migration-summary-log-redesign/release-deployment-report.md:74:- API-REV-002/CRR-003 and the second base integration required no additional
+tickets/done/app-data-migration-summary-log-redesign/release-deployment-report.md:111:- Durable test-code delta in round 2: None; `CRR-003` is `Not Applicable` and
+tickets/done/app-data-migration-summary-log-redesign/release-deployment-report.md:123:- User instruction: No new version/release.
+tickets/done/app-data-migration-summary-log-redesign/release-deployment-report.md:145:| API/E2E packaged supplement | Pass / 97.9% with disclosed default-entry residual | `api-e2e-evidence/10-*`, `api-e2e-execution-coverage-report.md` |
+tickets/done/app-data-migration-summary-log-redesign/release-deployment-report.md:146:| Round-2 review intake | Not Applicable; no durable test delta | `api-e2e-test-review-report.md`, `code-review-revision-record.md` (`CRR-003`) |
+tickets/done/app-data-migration-summary-log-redesign/release-deployment-report.md:153:- `AE2E-ELECTRON-DEFAULT-ENTRY` remains an existing packaging-entrypoint mismatch.
+tickets/done/app-data-migration-summary-log-redesign/handoff-summary.md:57:- Current API/E2E: `API-REV-002` — Pass at `97.9%` after the
+tickets/done/app-data-migration-summary-log-redesign/handoff-summary.md:59:- Current round-2 code-review intake: `CRR-003` — durable test-code review
+tickets/done/app-data-migration-summary-log-redesign/handoff-summary.md:60:  `Not Applicable`; no repository-resident durable coverage changed and the
+tickets/done/app-data-migration-summary-log-redesign/handoff-summary.md:85:  `AE2E-ELECTRON-DEFAULT-ENTRY` and is not relabeled as passing.
+tickets/done/app-data-migration-summary-log-redesign/handoff-summary.md:91:After API-REV-002/CRR-003, delivery checkpointed the package in `4802e63ba` and
+tickets/done/app-data-migration-summary-log-redesign/handoff-summary.md:147:API-REV-002/CRR-003 introduced no product/runtime contract delta requiring a
+tickets/done/app-data-migration-summary-log-redesign/handoff-summary.md:153:- `AE2E-ELECTRON-DEFAULT-ENTRY`: the README-default packaged command selects
+tickets/done/app-data-migration-summary-log-redesign/handoff-summary.md:167:- User status: `Accepted / complete`.
+tickets/done/app-data-migration-summary-log-redesign/handoff-summary.md:168:- Release instruction: `No new version; no release, tag, publication, or
+tickets/done/app-data-migration-summary-log-redesign/delivery-revision-record.md:12:| `DR-002` | `/code_reviewer` `CRR-003` intake after packaged `API-REV-002`, followed by explicit user acceptance | `DR-001 — integrated handoff awaiting verification` | `Pass — packaged supplement recorded, later target integrated and checked, user accepted, ticket archived, finalization authorized; no release` | All delivery reports, `delivery-evidence/dr-002-*`, archived ticket package |
+tickets/done/app-data-migration-summary-log-redesign/delivery-revision-record.md:83:- Delivery round and trigger: `/code_reviewer` returned `API-REV-002 — Pass /
+tickets/done/app-data-migration-summary-log-redesign/delivery-revision-record.md:84:  97.9%` under `CRR-003`. Round 2 changed no durable test code, so its
+tickets/done/app-data-migration-summary-log-redesign/delivery-revision-record.md:85:  proportional test-code result is `Not Applicable`; implementation source
+tickets/done/app-data-migration-summary-log-redesign/delivery-revision-record.md:142:  - `AE2E-ELECTRON-DEFAULT-ENTRY`, the earlier unrelated aggregate E2E failures,
+tickets/done/app-data-migration-summary-log-redesign/api-e2e-test-review-report.md:6:- Trigger: `/api_e2e_engineer` completed supplemental packaged Electron API/E2E round 2 at `Pass / 97.9%` after the user's explicit packaged-check request.
+tickets/done/app-data-migration-summary-log-redesign/api-e2e-test-review-report.md:15:- Current Code Review Revision ID: `CRR-003`
+tickets/done/app-data-migration-summary-log-redesign/api-e2e-test-review-report.md:18:- API/E2E Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/api-e2e-revision-record.md` (`API-REV-002`)
+tickets/done/app-data-migration-summary-log-redesign/api-e2e-test-review-report.md:21:- Final Validation Confidence: `97.9%`
+tickets/done/app-data-migration-summary-log-redesign/api-e2e-test-review-report.md:30:| None | N/A | `AE2E-ELECTRON-DEFAULT-ENTRY`, `AE2E-ELECTRON-001` | N/A | Round 2 executed existing repository scripts/launcher and changed only API/E2E reports and execution evidence. Round-1 durable E2E files remain unchanged since their `CRR-002` review. |
+tickets/done/app-data-migration-summary-log-redesign/api-e2e-test-review-report.md:33:- Review result when no durable test file changed: `Not Applicable`
+tickets/done/app-data-migration-summary-log-redesign/api-e2e-test-review-report.md:45:| Added, updated, and removed coverage agrees with the coverage investigation and execution evidence | N/A | `API-REV-002`, the investigation, execution report, worktree status, and round-2 hygiene evidence consistently record no durable coverage change. |
+tickets/done/app-data-migration-summary-log-redesign/api-e2e-test-review-report.md:53:- Result: `Not Applicable`
+tickets/done/app-data-migration-summary-log-redesign/api-e2e-test-review-report.md:57:- Notes: The implementation source report and scorecard were not reopened. The exact README-default packaged command's existing host-target mismatch remains explicitly disclosed as `AE2E-ELECTRON-DEFAULT-ENTRY`; the explicit macOS build and unchanged isolated Playwright launcher passed. This round-2 result addresses only the absence of durable test-code changes and does not relabel that tooling residual as a pass.
+tickets/done/app-data-migration-summary-log-redesign/api-e2e-execution-coverage-report.md:20:- Current API/E2E Revision ID: `API-REV-002`
+tickets/done/app-data-migration-summary-log-redesign/api-e2e-execution-coverage-report.md:55:| `AE2E-ELECTRON-DEFAULT-ENTRY` | Supplemental packaging confidence | README default packaged build entrypoint | `test:e2e:electron --adapter playwright` | Temporary / Desktop | Fail before launch — current `build:electron` reaches the build tool's `ALL` default and rejects Linux packaging on Darwin | `api-e2e-evidence/10-packaged-electron-playwright.log` |
+tickets/done/app-data-migration-summary-log-redesign/api-e2e-execution-coverage-report.md:81:- Overall final confidence: `97.9%` (`685 / 7`)
+tickets/done/app-data-migration-summary-log-redesign/api-e2e-execution-coverage-report.md:153:- Added or updated paths attached for proportional test-code review: Round 2 `Not Applicable`; no durable test changed. Round 1 `Yes` and review completed.
+tickets/done/app-data-migration-summary-log-redesign/api-e2e-execution-coverage-report.md:195:| Pass | `AE2E-UNIT-001`, `AE2E-MIG-001`, `AE2E-001`, `AE2E-002`, `AE2E-003`, `AE2E-WEB-001`, `AE2E-BROWSER-001`, `AE2E-ELECTRON-001` | All critical ticket requirements plus host-native packaged Electron build/readiness/first-window evidence pass; final confidence 97.9%. |
+tickets/done/app-data-migration-summary-log-redesign/api-e2e-execution-coverage-report.md:196:| Fail — existing packaging-tooling residual | `AE2E-ELECTRON-DEFAULT-ENTRY` | README default command fails before launch because `build:electron` reaches an `ALL` target on Darwin. Explicit `build:electron:mac` plus the same `--skip-build` Playwright launcher passes. |
+tickets/done/app-data-migration-summary-log-redesign/api-e2e-execution-coverage-report.md:223:`/code_reviewer` for round-2 intake and routing. No durable coverage changed in round 2, so proportional test-code review is `Not Applicable`; round-1 durable coverage already passed `CRR-002`. The implementation scorecard should not be reopened.
+tickets/done/app-data-migration-summary-log-redesign/api-e2e-execution-coverage-report.md:235:- Final validation confidence: `97.9%`
+tickets/done/app-data-migration-summary-log-redesign/api-e2e-execution-coverage-report.md:240:- Required next recipient: `/code_reviewer` for round-2 intake; durable-test review `Not Applicable` this round.
+tickets/done/app-data-migration-summary-log-redesign/code-review-revision-record.md:9:| `CRR-003` | `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/api-e2e-test-review-report.md` | Proportional test-code review round 2; `/api_e2e_engineer` API-REV-002 packaged Electron supplement with no durable coverage change | `Pass` (`CRR-002`) | `Not Applicable` | None |
+tickets/done/app-data-migration-summary-log-redesign/code-review-revision-record.md:59:### CRR-003 — Packaged Electron supplement with no durable test delta
+tickets/done/app-data-migration-summary-log-redesign/code-review-revision-record.md:63:- Triggering role, report path, and finding or scenario IDs: `/api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/api-e2e-execution-coverage-report.md`; `AE2E-ELECTRON-DEFAULT-ENTRY`, `AE2E-ELECTRON-001`
+tickets/done/app-data-migration-summary-log-redesign/code-review-revision-record.md:67:- Relevant API/E2E revision IDs: `API-REV-002`
+tickets/done/app-data-migration-summary-log-redesign/code-review-revision-record.md:70:- Current authoritative result: `Not Applicable`
+tickets/done/app-data-migration-summary-log-redesign/code-review-revision-record.md:78:- Material score or classification changes: No implementation scorecard was reopened. The separate proportional test-code result is `Not Applicable`; classification `N/A`.
+tickets/done/app-data-migration-summary-log-redesign/code-review-revision-record.md:80:- Remaining risks or uncertainty: The exact README-default packaged command retains the disclosed existing host-target mismatch (`AE2E-ELECTRON-DEFAULT-ENTRY`). The explicit macOS package build and unchanged isolated launcher passed, including first-window/backend readiness and cleanup. Other previously disclosed broad-suite and approved product residuals remain unchanged.
+
+== final checks ==
+ ❯ prepareReleasedSummarySchema tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:120:3
+ ❯ seedScenario tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:416:3
+ ❯ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:1101:28
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed (4)
+   Start at  06:22:52
+   Duration  9.08s (transform 5.04s, setup 33ms, import 7.13s, tests 1.00s, environment 0ms)
+
+
+ ✓ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts (4 tests) 14668ms
+     ✓ migrates the exact supported cohort, serves history and new work, and remains immutable on relaunch  4579ms
+     ✓ isolates mixed root, token, and history warnings while keeping health, history, new work, and relaunch available  3602ms
+     ✓ keeps the server healthy after failed consolidation, admits a new current run, and imports disjoint legacy rows on restart retry  4037ms
+     ✓ rejects a legacy/current run-ID overlap before source cleanup while preserving both stores  2449ms
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Start at  06:23:08
+   Duration  19.05s (transform 2.72s, setup 16ms, import 3.88s, tests 14.67s, environment 0ms)
+
+stdout | stores/__tests__/appDataMigrationsStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/appDataMigrationsStore.spec.ts (2 tests) 5ms
+ ✓ components/settings/__tests__/ServerMigrationsManager.spec.ts (3 tests) 41ms
+
+ Test Files  2 passed (2)
+      Tests  5 passed (5)
+   Start at  06:23:39
+   Duration  6.02s (transform 3.19s, setup 10.19s, collect 333ms, tests 46ms, environment 462ms, prepare 286ms)
+
+2:  "result": "PassWithDisclosedToolingResidual",
+12:    "buildResult": "Pass",
+14:    "launchResult": "Pass",
+37:    "ownedDataRootRemoved": true,
+
+== final archive references ==
+PASS no stale ticket-worktree or in-progress absolute path in Markdown artifacts
+
+== hygiene ==
+PASS git diff --check
+PASS canonical delivery artifacts are nonempty
+
+AUDIT RESULT: PASS

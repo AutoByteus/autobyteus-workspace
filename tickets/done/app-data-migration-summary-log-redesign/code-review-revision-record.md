@@ -4,17 +4,17 @@
 
 | Revision ID | Canonical Review Report | Entry Point / Trigger | Prior Result | Current Result | Affected Finding IDs |
 | --- | --- | --- | --- | --- | --- |
-| `CRR-001` | `/Users/normy/autobyteus_org/autobyteus-worktrees/app-data-migration-summary-log-redesign/tickets/in-progress/app-data-migration-summary-log-redesign/code-review-report.md` | Implementation review round 1; `/implementation_engineer` IR-001 handoff | `N/A` | `Pass` | None |
-| `CRR-002` | `/Users/normy/autobyteus_org/autobyteus-worktrees/app-data-migration-summary-log-redesign/tickets/in-progress/app-data-migration-summary-log-redesign/api-e2e-test-review-report.md` | Proportional test-code review round 1; `/api_e2e_engineer` API-REV-001 pass with two updated durable E2Es | `Pass` (`CRR-001`) | `Pass` | None |
-| `CRR-003` | `/Users/normy/autobyteus_org/autobyteus-worktrees/app-data-migration-summary-log-redesign/tickets/in-progress/app-data-migration-summary-log-redesign/api-e2e-test-review-report.md` | Proportional test-code review round 2; `/api_e2e_engineer` API-REV-002 packaged Electron supplement with no durable coverage change | `Pass` (`CRR-002`) | `Not Applicable` | None |
+| `CRR-001` | `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/code-review-report.md` | Implementation review round 1; `/implementation_engineer` IR-001 handoff | `N/A` | `Pass` | None |
+| `CRR-002` | `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/api-e2e-test-review-report.md` | Proportional test-code review round 1; `/api_e2e_engineer` API-REV-001 pass with two updated durable E2Es | `Pass` (`CRR-001`) | `Pass` | None |
+| `CRR-003` | `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/api-e2e-test-review-report.md` | Proportional test-code review round 2; `/api_e2e_engineer` API-REV-002 packaged Electron supplement with no durable coverage change | `Pass` (`CRR-002`) | `Not Applicable` | None |
 
 ## Revision Entries
 
 ### CRR-001 — Initial implementation-source pass
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/app-data-migration-summary-log-redesign/tickets/in-progress/app-data-migration-summary-log-redesign/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/code-review-report.md`
 - Review entry point and round: `Implementation Review`, round 1
-- Triggering role, report path, and finding or scenario IDs: `/implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/app-data-migration-summary-log-redesign/tickets/in-progress/app-data-migration-summary-log-redesign/implementation-handoff.md`; finding/scenario IDs `N/A`
+- Triggering role, report path, and finding or scenario IDs: `/implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/implementation-handoff.md`; finding/scenario IDs `N/A`
 - Relevant solution revision IDs: `SR-004`, `SR-005`, `SR-006`
 - Relevant architecture-review revision IDs: `ARCH-REV-002`
 - Relevant implementation revision IDs: `IR-001`
@@ -35,9 +35,9 @@ None.
 
 ### CRR-002 — Proportional durable E2E review pass
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/app-data-migration-summary-log-redesign/tickets/in-progress/app-data-migration-summary-log-redesign/api-e2e-test-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/api-e2e-test-review-report.md`
 - Review entry point and round: `Successful API/E2E Test-Code Review`, round 1
-- Triggering role, report path, and finding or scenario IDs: `/api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/app-data-migration-summary-log-redesign/tickets/in-progress/app-data-migration-summary-log-redesign/api-e2e-execution-coverage-report.md`; `AE2E-001`, `AE2E-002`, `AE2E-003`
+- Triggering role, report path, and finding or scenario IDs: `/api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/api-e2e-execution-coverage-report.md`; `AE2E-001`, `AE2E-002`, `AE2E-003`
 - Relevant solution revision IDs: `SR-004`, `SR-005`, `SR-006`
 - Relevant architecture-review revision IDs: `ARCH-REV-002`
 - Relevant implementation revision IDs: `IR-001`
@@ -58,9 +58,9 @@ None.
 
 ### CRR-003 — Packaged Electron supplement with no durable test delta
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/app-data-migration-summary-log-redesign/tickets/in-progress/app-data-migration-summary-log-redesign/api-e2e-test-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/api-e2e-test-review-report.md`
 - Review entry point and round: `Successful API/E2E Test-Code Review`, round 2
-- Triggering role, report path, and finding or scenario IDs: `/api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/app-data-migration-summary-log-redesign/tickets/in-progress/app-data-migration-summary-log-redesign/api-e2e-execution-coverage-report.md`; `AE2E-ELECTRON-DEFAULT-ENTRY`, `AE2E-ELECTRON-001`
+- Triggering role, report path, and finding or scenario IDs: `/api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/api-e2e-execution-coverage-report.md`; `AE2E-ELECTRON-DEFAULT-ENTRY`, `AE2E-ELECTRON-001`
 - Relevant solution revision IDs: `SR-004`, `SR-005`, `SR-006`
 - Relevant architecture-review revision IDs: `ARCH-REV-002`
 - Relevant implementation revision IDs: `IR-001`

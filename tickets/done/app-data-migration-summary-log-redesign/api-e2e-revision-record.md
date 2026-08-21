@@ -11,7 +11,7 @@
 
 ### API-REV-001 — String-only summary contract baseline and released-upgrade proof
 
-- Triggering role, report path, and round: `/code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/app-data-migration-summary-log-redesign/tickets/in-progress/app-data-migration-summary-log-redesign/code-review-report.md`; round 1.
+- Triggering role, report path, and round: `/code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/code-review-report.md`; round 1.
 - Triggering finding or scenario IDs: `CRR-001` implementation pass and explicit stale rich-summary coverage signal; `AE2E-001`, `AE2E-002`, `AE2E-003`, `AE2E-MIG-001`, `AE2E-BROWSER-001`.
 - Related solution, architecture-review, implementation, code-review, or delivery revision IDs: `SR-006`, `ARCH-REV-002`, `IR-001`, `CRR-001`; delivery `N/A`.
 - Why this baseline or coverage/execution revision was recorded: First completed API/E2E validation result. It establishes authoritative evidence that released `summary_json` data is transactionally migrated and current runtime/API/UI use only the canonical scalar summary while attempt logs retain diagnostics.
@@ -37,7 +37,7 @@
 
 ### API-REV-002 — Integrated packaged Electron build and launch supplement
 
-- Triggering role, report path, and round: Explicit user request on 2026-08-21 after delivery baseline `DR-001`; canonical execution report `/Users/normy/autobyteus_org/autobyteus-worktrees/app-data-migration-summary-log-redesign/tickets/in-progress/app-data-migration-summary-log-redesign/api-e2e-execution-coverage-report.md`; round 2.
+- Triggering role, report path, and round: Explicit user request on 2026-08-21 after delivery baseline `DR-001`; canonical execution report `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/api-e2e-execution-coverage-report.md`; round 2.
 - Triggering finding or scenario IDs: User requested the README-documented packaged check; `AE2E-ELECTRON-DEFAULT-ENTRY`, `AE2E-ELECTRON-001`.
 - Related solution, architecture-review, implementation, code-review, or delivery revision IDs: `SR-006`, `ARCH-REV-002`, `IR-001`, `CRR-001`, `CRR-002`, `API-REV-001`, `DR-001`.
 - Why this baseline or coverage/execution revision was recorded: Preserve the new packaged desktop evidence and the exact default-command failure without rewriting round-1 history.

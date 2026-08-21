@@ -12,7 +12,7 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 
 ### IR-001 — Concise persisted migration summary baseline
 
-- Triggering role, report path, and round: `/architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/app-data-migration-summary-log-redesign/tickets/in-progress/app-data-migration-summary-log-redesign/design-review-report.md`; architecture review round 2.
+- Triggering role, report path, and round: `/architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/design-review-report.md`; architecture review round 2.
 - Triggering finding IDs: `N/A`. Prior architecture finding `AR-DI-001` was resolved upstream by `SR-006` and verified resolved in `ARCH-REV-002` before implementation began.
 - Classification: `Initial Baseline`.
 - Prior authoritative result: `N/A`.

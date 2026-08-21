@@ -20,10 +20,10 @@ The user identified the migration outcome model as an independent design problem
 ## Environment Discovery / Bootstrap Context
 
 - Project Type (`Git`): Git super-repository with component directories.
-- Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/app-data-migration-summary-log-redesign`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/app-data-migration-summary-log-redesign/tickets/in-progress/app-data-migration-summary-log-redesign`
+- Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign`
 - Current Branch: `codex/app-data-migration-summary-log-redesign`
-- Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/app-data-migration-summary-log-redesign`
+- Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
 - Bootstrap Base Branch: `origin/personal`
 - Remote Refresh Result: Initial bootstrap fetch resolved `origin/personal` to `1f5663ddb86e478d0b4ffdd878d57dee72d67b4b`. Before approved design work, `origin/personal` had advanced; a second fetch and clean fast-forward reset updated this dedicated task branch to `3b81b5ebdc4c5eae64e221aff9c578adc7e7fb74`.
 - Task Branch: `codex/app-data-migration-summary-log-redesign`

@@ -11,7 +11,7 @@
 
 ### ARCH-REV-001 — Initial runtime-spine correction baseline
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/app-data-migration-summary-log-redesign/tickets/in-progress/app-data-migration-summary-log-redesign/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/design-review-report.md`
 - Review round and trigger: Round 1; `/solution_designer` handed off the user-approved SR-005 simplified persistence package.
 - Triggering role, report path, and finding IDs: `/solution_designer`; no prior design-review report; finding ID `AR-DI-001`.
 - Relevant solution revision IDs: `SR-004`, `SR-005`; `SR-001`–`SR-003` were reviewed as superseded history.
@@ -30,9 +30,9 @@ None.
 
 ### ARCH-REV-002 — Complete-spine and convention-conformance pass
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/app-data-migration-summary-log-redesign/tickets/in-progress/app-data-migration-summary-log-redesign/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/design-review-report.md`
 - Review round and trigger: Round 2; `/solution_designer` requested re-review after SR-006 corrected `AR-DI-001` and added an explicit clause-by-clause map to the canonical production data-migration convention.
-- Triggering role, report path, and finding IDs: `/solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/app-data-migration-summary-log-redesign/tickets/in-progress/app-data-migration-summary-log-redesign/solution-revision-record.md`; prior finding `AR-DI-001`.
+- Triggering role, report path, and finding IDs: `/solution_designer`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/solution-revision-record.md`; prior finding `AR-DI-001`.
 - Relevant solution revision IDs: `SR-006`
 - Prior authoritative decision: `Fail`
 - Current authoritative decision: `Pass`
