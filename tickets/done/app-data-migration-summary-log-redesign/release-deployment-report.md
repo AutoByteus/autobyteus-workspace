@@ -3,12 +3,16 @@
 ## Release / Publication / Deployment Scope
 
 - Ticket: `app-data-migration-summary-log-redesign`.
-- Current delivery revision: `DR-003`.
-- Current status: `Pass — user accepted; ticket archived, committed, pushed,
-  merged and pushed to personal; cleanup complete; no release performed.`
+- Current delivery revision: `DR-004`.
+- Current status: `Pass — repository finalization remains complete; a later
+  user-requested local server Docker refresh from latest personal completed and
+  passed rollout checks; no versioned release was performed.`
 - Explicit user instruction: Finalize the task; do not release a new version.
-- Release/publication/deployment: Not applicable. No version bump, tag,
-  package publication, deployment, or rollout will be performed.
+- Release/publication: Not applicable. No version bump, tag, registry push, or
+  package publication was performed.
+- Local deployment: Applicable after finalization by later explicit request;
+  `autobyteus-server:latest` was rebuilt and the existing local Compose service
+  was replaced while retaining its persistent state and ports.
 
 ## Handoff Summary
 
@@ -17,7 +21,7 @@
 - Handoff summary status: `Updated`
 - Delivery revision record:
   `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/delivery-revision-record.md`
-- Current delivery revision ID: `DR-002`
+- Current delivery revision ID: `DR-004`
 
 ## Delivery Integration Refreshes
 
@@ -124,11 +128,25 @@
 
 ## Release / Publication / Deployment
 
-- Applicable: `No`
-- Method: N/A.
-- Result: `Not required`
-- Release notes handoff: `Not required`
-- User instruction: No new version/release.
+- Versioned release/publication applicable: `No`
+- Local test deployment applicable: `Yes`, by explicit post-finalization user
+  request.
+- Method:
+  `./docker-start.sh up -p electron-agent-input-controls-regression-dr005 --build-local`
+  from the latest local/remote `personal` revision
+  `122adc91c184a75541489eea670ac29fcb43f4ab`.
+- Result: `Pass` — built local `linux/arm64` image
+  `sha256:52bff101c67dd5ce08619fffce88af61b614e6023a65e9e8d4e05979c3b39ed0`,
+  force-recreated the existing service as container
+  `40bd2fa7d61c658a05ed0d9a3dc530907c88c5a88bc9389af89b513d094dc326`,
+  retained all four named volumes and ports, and passed backend/noVNC checks.
+- Superseded state: old container `0ec4a7e360ec` and old image
+  `sha256:6d8e9f250b9c` were removed.
+- Release notes handoff: `Not required`; nothing was published.
+- User instruction: Build/deploy locally from latest personal while continuing
+  to avoid a new versioned release.
+- Evidence:
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/delivery-evidence/dr-004-latest-personal-server-docker-build.log`.
 
 ## Environment Or Persisted-Data Transition Notes
 
@@ -155,6 +173,7 @@
 | Second target integration | Pass; six commits, no conflicts | `delivery-evidence/dr-002-user-acceptance-final-refresh.log` |
 | Current actual-startup E2E | Initial host-tool failure; `RUST_LOG=info` rerun Pass 4/4 | `delivery-evidence/dr-002-post-second-integration-team-run-upgrade-e2e*.log` |
 | Current Settings/store tests | Pass 5/5 | `delivery-evidence/dr-002-post-second-integration-web-focused.log` |
+| Latest-personal local server Docker build and rollout | Pass; backend and noVNC healthy, restart count 0 | `delivery-evidence/dr-004-latest-personal-server-docker-build.log` |
 
 ## Known Residuals
 
@@ -182,5 +201,6 @@
 ## Final Status
 
 `Pass — user accepted; ticket archived, committed and pushed; personal merged
-and pushed; ticket worktree/branches cleaned; no release, deployment, tag, or
-version change performed.`
+and pushed; ticket worktree/branches cleaned; later local server Docker refresh
+from latest personal built and rolled out successfully; no tag, registry
+publication, versioned release, or version change performed.`

@@ -11,6 +11,7 @@ initial completed delivery-stage result and will retain later delivery deltas.
 | `DR-001` | `/code_reviewer` handoff after `CRR-002` proportional durable-test pass | `N/A` | `Pass — latest base integrated, post-integration checks passed, docs synchronized, user handoff ready; finalization held` | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/dr-001-*`, three long-lived docs |
 | `DR-002` | `/code_reviewer` `CRR-003` intake after packaged `API-REV-002`, followed by explicit user acceptance | `DR-001 — integrated handoff awaiting verification` | `Pass — packaged supplement recorded, later target integrated and checked, user accepted, ticket archived, finalization authorized; no release` | All delivery reports, `delivery-evidence/dr-002-*`, archived ticket package |
 | `DR-003` | User-authorized repository finalization | `DR-002 — accepted and archived; finalization authorized` | `Pass — ticket pushed, merged and pushed to personal; worktree/branches cleaned; no release` | All delivery reports, `delivery-evidence/dr-003-repository-finalization-cleanup.log` |
+| `DR-004` | User-requested post-finalization local server Docker refresh | `DR-003 — repository finalized; no release` | `Pass — latest personal source built locally, old container/image replaced, persistent volumes and ports retained, rollout healthy; no release` | `release-deployment-report.md`, `handoff-summary.md`, `delivery-evidence/dr-004-latest-personal-server-docker-build.log` |
 
 ## Revision Entries
 
@@ -185,3 +186,59 @@ initial completed delivery-stage result and will retain later delivery deltas.
   aggregate server E2E failures, local unqualified Prisma host behavior,
   attempt-log cardinality, and no immediate SQLite `VACUUM` remain bounded.
 - Final action: None. Ticket delivery is complete.
+
+### DR-004 — Latest-personal local server Docker refresh
+
+- Delivery round and trigger: After repository finalization, the user requested
+  a fresh locally built server Docker from the newest `personal` state, removal
+  of the two-day-old container/image, reuse of its configuration and volumes
+  where possible, and no new versioned release.
+- Prior authoritative result: `DR-003 — repository finalized, cleanup complete,
+  and no release performed.`
+- Current authoritative result: `Pass — delivery fetched origin/personal,
+  confirmed local personal and origin/personal at
+  122adc91c184a75541489eea670ac29fcb43f4ab, built
+  autobyteus-server:latest for linux/arm64, force-recreated the existing Compose
+  service with the same project/runtime state, verified the backend and noVNC,
+  and deleted the superseded container and image.`
+- Build and replacement:
+  - Command:
+    `./docker-start.sh up -p electron-agent-input-controls-regression-dr005 --build-local`
+    from `autobyteus-server-ts/docker`.
+  - Old container:
+    `0ec4a7e360ecda2410bf1aa3b8d7b952edd21bb464dddf82295b75b030b3431e`
+    — removed.
+  - Old image:
+    `sha256:6d8e9f250b9ce094142970e2e7a0c1b31ccb574990b3369a03fec28d429a4efa`
+    — removed.
+  - New container:
+    `40bd2fa7d61c658a05ed0d9a3dc530907c88c5a88bc9389af89b513d094dc326`.
+  - New image:
+    `sha256:52bff101c67dd5ce08619fffce88af61b614e6023a65e9e8d4e05979c3b39ed0`,
+    tagged `autobyteus-server:latest`.
+- Configuration continuity:
+  - Compose project and container name remain
+    `electron-agent-input-controls-regression-dr005` /
+    `electron-agent-input-controls-regression-dr005-autobyteus-server-1`.
+  - Existing named volumes were retained for server data, workspace, root home,
+    and Chromium profile.
+  - Existing host ports were retained: backend `52704`, VNC `52705`, noVNC
+    `52706`, Chrome debug `52707`.
+  - Restart policy remains `unless-stopped`.
+- Rollout verification:
+  - `GET http://127.0.0.1:52704/rest/health` returned HTTP success with
+    `{"status":"ok","message":"Server is running"}`.
+  - `GET http://127.0.0.1:52706/` returned HTTP success.
+  - Container state was `running` with restart count `0`; its image ID matched
+    the newly tagged image ID.
+  - Evidence:
+    `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/delivery-evidence/dr-004-latest-personal-server-docker-build.log`.
+- Release/publication result: `Not performed`. This is a local test deployment,
+  not a versioned release or publication. Application version remains `1.4.52`.
+- Rollback: The old image was intentionally deleted at user request. The four
+  retained named volumes preserve the prior persistent state, but reverting the
+  executable now requires rebuilding a selected older revision or pulling a
+  known prior published image.
+- Remaining blockers or risks: No rollout blocker. The local image was built for
+  the current Docker host architecture (`linux/arm64`) and was not pushed to a
+  registry or validated as a multi-architecture release image.

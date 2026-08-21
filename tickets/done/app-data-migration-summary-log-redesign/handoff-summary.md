@@ -180,3 +180,24 @@ three ticket-owned documentation sections.
 - Packaged artifacts: The ignored local Electron package output was removed
   with the dedicated worktree. It was supplemental test evidence, not a
   published or retained release deliverable.
+
+## Post-Finalization Local Docker Result
+
+- Later user request: Rebuild the local server Docker from the newest
+  `personal`, remove the old container/image, preserve its configuration and
+  persistent state where possible, and do not release a new version.
+- Source authority: local `personal` and `origin/personal` both resolved to
+  `122adc91c184a75541489eea670ac29fcb43f4ab` before build.
+- Result: `Pass` — local `autobyteus-server:latest` rebuilt for `linux/arm64`
+  and the existing Compose service was force-recreated.
+- Continuity: The four named volumes, host ports `52704`-`52707`, Compose
+  project, and `unless-stopped` restart policy were retained.
+- New runtime: container `40bd2fa7d61c` on image
+  `sha256:52bff101c67d`; backend `/rest/health` and noVNC HTTP checks passed,
+  with restart count `0`.
+- Superseded runtime: container `0ec4a7e360ec` and image
+  `sha256:6d8e9f250b9c` were removed.
+- Publication status: Local test deployment only. No registry push, tag,
+  release, or version change occurred; version remains `1.4.52`.
+- Evidence:
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/delivery-evidence/dr-004-latest-personal-server-docker-build.log`.
