@@ -1,0 +1,39 @@
+$ git diff --check
+$ packaged evidence checks
+5:{"type":"electron-e2e-ready","executablePath":"/Users/normy/autobyteus_org/autobyteus-worktrees/app-data-migration-summary-log-redesign/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus","port":49629,"dataRoot":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-vsutRR","ownsDataRoot":true,"clientBaseUrl":"http://127.0.0.1:49629","healthUrl":"http://127.0.0.1:49629/rest/health"}
+696:Build completed: [
+$ API revision index
+tickets/in-progress/app-data-migration-summary-log-redesign/api-e2e-coverage-investigation.md:18:- API/E2E Revision Record (created after the first completed result): `/Users/normy/autobyteus_org/autobyteus-worktrees/app-data-migration-summary-log-redesign/tickets/in-progress/app-data-migration-summary-log-redesign/api-e2e-revision-record.md` (to be created with `API-REV-001` after execution)
+tickets/in-progress/app-data-migration-summary-log-redesign/api-e2e-coverage-investigation.md:19:- Current API/E2E Revision ID: `API-REV-001`; round 2 will append `API-REV-002` after completion.
+tickets/in-progress/app-data-migration-summary-log-redesign/api-e2e-coverage-investigation.md:22:- Prior Investigation Reviewed: Round 1 in this file, plus `/Users/normy/autobyteus_org/autobyteus-worktrees/app-data-migration-summary-log-redesign/tickets/in-progress/app-data-migration-summary-log-redesign/api-e2e-execution-coverage-report.md` and `API-REV-001`.
+tickets/in-progress/app-data-migration-summary-log-redesign/api-e2e-coverage-investigation.md:228:- Overall final confidence: `97.9%` (`685 / 7`)
+tickets/in-progress/app-data-migration-summary-log-redesign/api-e2e-coverage-investigation.md:252:- Prior authoritative result: `API-REV-001 — Pass / 97.7%`.
+tickets/in-progress/app-data-migration-summary-log-redesign/api-e2e-revision-record.md:7:| `API-REV-001` | `/code_reviewer`; `code-review-report.md`; API/E2E round 1 | `SR-006`, `ARCH-REV-002`, `IR-001`, `CRR-001` | `N/A` | `Pass / 97.7%` |
+tickets/in-progress/app-data-migration-summary-log-redesign/api-e2e-revision-record.md:8:| `API-REV-002` | Explicit user request; packaged Electron supplemental round 2 after `DR-001` | `API-REV-001`, `CRR-002`, `DR-001` | `Pass / 97.7%` | `Pass / 97.9%` |
+tickets/in-progress/app-data-migration-summary-log-redesign/api-e2e-revision-record.md:12:### API-REV-001 — String-only summary contract baseline and released-upgrade proof
+tickets/in-progress/app-data-migration-summary-log-redesign/api-e2e-revision-record.md:38:### API-REV-002 — Integrated packaged Electron build and launch supplement
+tickets/in-progress/app-data-migration-summary-log-redesign/api-e2e-revision-record.md:42:- Related solution, architecture-review, implementation, code-review, or delivery revision IDs: `SR-006`, `ARCH-REV-002`, `IR-001`, `CRR-001`, `CRR-002`, `API-REV-001`, `DR-001`.
+tickets/in-progress/app-data-migration-summary-log-redesign/api-e2e-revision-record.md:55:- Prior result and confidence: `Pass / 97.7%` (`API-REV-001`).
+tickets/in-progress/app-data-migration-summary-log-redesign/api-e2e-revision-record.md:58:- Recommended recipient: `/code_reviewer` for round-2 intake and `Not Applicable` durable-test review, then `/delivery_engineer` to refresh the held user handoff with `API-REV-002` evidence.
+tickets/in-progress/app-data-migration-summary-log-redesign/api-e2e-execution-coverage-report.md:20:- Current API/E2E Revision ID: `API-REV-002`
+tickets/in-progress/app-data-migration-summary-log-redesign/api-e2e-execution-coverage-report.md:23:- Prior Round Reviewed: Round 1 in this report and `API-REV-001`; its durable E2E edits subsequently passed proportional review at `CRR-002`.
+tickets/in-progress/app-data-migration-summary-log-redesign/api-e2e-execution-coverage-report.md:81:- Overall final confidence: `97.9%` (`685 / 7`)
+tickets/in-progress/app-data-migration-summary-log-redesign/api-e2e-execution-coverage-report.md:235:- Final validation confidence: `97.9%`
+$ status
+ M autobyteus-server-ts/docs/ARCHITECTURE.md
+ M autobyteus-server-ts/docs/design/production_data_migration_conventions.md
+ M autobyteus-web/docs/settings.md
+ M tickets/in-progress/app-data-migration-summary-log-redesign/api-e2e-coverage-investigation.md
+ M tickets/in-progress/app-data-migration-summary-log-redesign/api-e2e-execution-coverage-report.md
+ M tickets/in-progress/app-data-migration-summary-log-redesign/api-e2e-revision-record.md
+?? tickets/in-progress/app-data-migration-summary-log-redesign/api-e2e-evidence/10-packaged-electron-playwright.log
+?? tickets/in-progress/app-data-migration-summary-log-redesign/api-e2e-evidence/10-packaged-electron-result.json
+?? tickets/in-progress/app-data-migration-summary-log-redesign/api-e2e-evidence/10b-packaged-electron-mac-build.log
+?? tickets/in-progress/app-data-migration-summary-log-redesign/api-e2e-evidence/10c-packaged-electron-playwright-skip-build.log
+?? tickets/in-progress/app-data-migration-summary-log-redesign/api-e2e-evidence/10d-packaged-electron-cleanup.log
+?? tickets/in-progress/app-data-migration-summary-log-redesign/api-e2e-evidence/10e-round2-hygiene.log
+?? tickets/in-progress/app-data-migration-summary-log-redesign/delivery-evidence/
+?? tickets/in-progress/app-data-migration-summary-log-redesign/delivery-revision-record.md
+?? tickets/in-progress/app-data-migration-summary-log-redesign/docs-sync-report.md
+?? tickets/in-progress/app-data-migration-summary-log-redesign/handoff-summary.md
+?? tickets/in-progress/app-data-migration-summary-log-redesign/release-deployment-report.md

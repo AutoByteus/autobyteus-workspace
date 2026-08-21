@@ -1,0 +1,31 @@
+Delivery revision: DR-001
+Recorded at: 2026-08-20T20:56:03Z
+Command: git fetch origin personal
+Bootstrap reviewed base: 3b81b5ebdc4c5eae64e221aff9c578adc7e7fb74
+Latest tracked remote base: dbd00e789cf9e2ae7aaa995b60a181d5e6c3bf91
+Pre-integration ahead/behind: 0 19
+Checkpoint command: git add -A && git commit -m "chore(delivery): checkpoint reviewed migration summary package"
+Checkpoint commit: dbe11ffd8bd9f74de7c4baf14a41ca06b26095b8
+Integration command: git merge --no-edit origin/personal
+Integration method/result: merge/completed without conflicts
+Integrated HEAD: 6c45846863c4980e9c5ecc6dba915be10205b808
+Merge base with origin/personal: dbd00e789cf9e2ae7aaa995b60a181d5e6c3bf91
+Current ahead/behind: 2	0
+
+Integrated commits (reviewed base..tracked remote base):
+dbd00e789 docs(delivery): record token statistics finalization
+4350f6bb1 chore(delivery): finalize token statistics persistence
+0ce9d17b7 fix exact token summary projection
+d057fb7ab chore(delivery): checkpoint user-test package handoff
+fc5ce18bc docs(delivery): record main personal Electron build
+fbb60fe37 docs(delivery): record team task conversation finalization
+ff5b38544 chore(delivery): finalize team task conversation UI
+08b481a71 chore(delivery): checkpoint reviewed coverage package
+1fafdf3a7 chore(delivery): checkpoint reviewed test evidence
+3566a9567 test(web): add task conversation browser coverage
+ec173d01b fix token usage persistence readiness
+47047a041 docs(implementation): record CR-001 local fix
+a5a44cf09 fix(web): remove obsolete task description fallback
+d8bf1a6cd feat(web): show delegated task lifecycle conversations
+
+Status immediately after merge: clean (ticket branch ahead 2 of origin/personal).

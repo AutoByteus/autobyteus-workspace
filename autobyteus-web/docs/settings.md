@@ -111,6 +111,22 @@ inherits its blank runtime/model launch fields from the parent run. The card
 stacks navigation/content and uses full-width controls on narrow screens while
 retaining the desktop sidebar row.
 
+## Server Migrations: Status Evidence
+
+Settings -> Server Migrations consumes the server-owned migration-record
+projection. A completed attempt exposes one nullable plain-text summary in the
+canonical form `Scanned N; migrated N; skipped N; failed N.` together with its
+status, attempt/timing metadata, concise error, and detailed-log path. A record
+with no terminal attempt may have no summary.
+
+The table renders that summary as opaque text; it does not parse counts, accept
+the released `summary_json` shape, or expose expandable item details. The
+runner's per-attempt filesystem log remains the detailed evidence destination:
+it contains the four counts and every item diagnostic returned by the
+migration definition, while the database, GraphQL response, store, and Settings
+table stay independent of source cardinality. The displayed `logPath` is a
+reference only; the frontend does not read or validate historical log files.
+
 ## Server Migrations: Recovery Actions
 
 Settings -> Server Migrations renders recovery policy supplied by the server;

@@ -13,14 +13,14 @@
 - Implementation Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/app-data-migration-summary-log-redesign/tickets/in-progress/app-data-migration-summary-log-redesign/implementation-revision-record.md`
 - Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/app-data-migration-summary-log-redesign/tickets/in-progress/app-data-migration-summary-log-redesign/code-review-report.md`
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/app-data-migration-summary-log-redesign/tickets/in-progress/app-data-migration-summary-log-redesign/code-review-revision-record.md`
-- Delivery Revision Record (delivery re-entry only): `N/A`
-- Relevant Delivery Revision IDs: `N/A`
-- API/E2E Revision Record (created after the first completed result): `/Users/normy/autobyteus_org/autobyteus-worktrees/app-data-migration-summary-log-redesign/tickets/in-progress/app-data-migration-summary-log-redesign/api-e2e-revision-record.md` (to be created with `API-REV-001` after execution)
-- Current API/E2E Revision ID: `N/A`
-- Current Investigation Round: `1`
-- Trigger: `/code_reviewer` implementation-source pass `CRR-001`, with an explicit stale-coverage signal for the TeamRun production-upgrade E2E.
-- Prior Investigation Reviewed: `N/A`; no prior API/E2E investigation or result exists.
-- Latest Authoritative Investigation: This file, round 1.
+- Delivery Revision Record (delivery re-entry only): `/Users/normy/autobyteus_org/autobyteus-worktrees/app-data-migration-summary-log-redesign/tickets/in-progress/app-data-migration-summary-log-redesign/delivery-revision-record.md`
+- Relevant Delivery Revision IDs: `DR-001`; round 2 executes against its integrated current-base worktree while finalization is held for user verification.
+- API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/app-data-migration-summary-log-redesign/tickets/in-progress/app-data-migration-summary-log-redesign/api-e2e-revision-record.md`
+- Current API/E2E Revision ID: `API-REV-002`
+- Current Investigation Round: `2`
+- Trigger: Explicit user request on 2026-08-21 to add the README-documented packaged Electron check after the completed round-1 browser/API/E2E pass.
+- Prior Investigation Reviewed: Round 1 in this file, plus `/Users/normy/autobyteus_org/autobyteus-worktrees/app-data-migration-summary-log-redesign/tickets/in-progress/app-data-migration-summary-log-redesign/api-e2e-execution-coverage-report.md` and `API-REV-001`.
+- Latest Authoritative Investigation: This file, round 2.
 
 ## Current Requirement And Design Basis
 
@@ -184,10 +184,10 @@ No file or operational scenario should be removed. Only obsolete rich database/A
 - Relevant README or development instructions: `autobyteus-web/AGENTS.md`, `autobyteus-web/README.md`, root `README.md` Local full-stack development.
 - Web-equivalent behavior: Settings -> Server Settings -> Migrations query/render/status/error/log/retry presentation.
 - Shell-specific or lifecycle behavior: None changed.
-- Chosen validation approach and why it fits the project: Browser against the project development/runtime path; it directly proves the changed renderer/backend contract without unnecessary packaged Electron execution.
+- Chosen validation approach and why it fits the project: Round 1 used the browser to prove the changed renderer/backend contract. At the user's explicit request, round 2 supplemented it with the repository's host-native packaged Electron Playwright launcher.
 - Server/frontend setup when browser validation is used: Owned isolated backend database/data root plus Nuxt development or preview server on verified free loopback ports.
 - Effect on any already-running desktop application: `None`; no production profile or existing process will be used or stopped.
-- Behavior not directly proven and confidence consequence: Electron window/preload/packaging remains out of scope and does not reduce confidence for this web-equivalent-only change.
+- Behavior not directly proven and confidence consequence: Round 2 directly proved package creation, main/preload/renderer inclusion, bundled-backend readiness, and first-window creation. The packaged smoke does not itself navigate the Migrations table, so the round-1 live browser assertions remain the direct ticket-specific UI evidence.
 
 ## Live Environment And Fixture Plan
 
@@ -213,29 +213,29 @@ No file or operational scenario should be removed. Only obsolete rich database/A
 - Nuxt emitted transient `#app-manifest` pre-transform diagnostics while rebuilding development artifacts after the preceding production build, but completed client/server/Nitro startup and rendered the target route. The rerun remains responsible for a clean semantic result rather than treating startup noise as a pass.
 - Corrected rerun: `Pass`. Chrome/Playwright exercised the actual Nuxt development route against the owned built server on free ports. All 16 GraphQL summaries were strings matching the canonical format; exact summary, migration ID, and log path were visible; Refresh returned 200; no details control, target request failure, or browser-console warning/error occurred. Screenshot and structured evidence were retained, while browser, frontend, backend, runtime, database, key, and listeners were cleaned.
 
-## Final Confidence After Broader Validation
+## Final Confidence After Round 2 Supplemental Validation
 
 | Confidence Category | Post-Repository | Final | Evidence Gained / Residual Uncertainty |
 | --- | --- | --- | --- |
 | Requirement and acceptance-criteria proof | 98% | 98% | Browser confirms the already-direct API/UI acceptance mapping; only approved residual storage characteristics remain. |
 | Changed-boundary execution directness | 98% | 98% | Material backend boundaries were already actual-process; browser now also consumes their output directly. |
 | Cross-boundary integration realism and mock gap | 94% | 98% | Actual built server -> GraphQL -> Nuxt proxy/Apollo/store -> rendered DOM and Refresh eliminates the material mock gap. |
-| Environment, configuration, identity, and fixture fidelity | 97% | 97% | Owned free-port SQLite/runtime and normal Nuxt development configuration were used and cleaned; no user profile or external identity is applicable. |
+| Environment, configuration, identity, and fixture fidelity | 97% | 97% | Browser resources and packaged-launch E2E profile both used owned roots/free ports and cleaned successfully. The advertised default package-build entrypoint currently targets `ALL` rather than the host and remains a disclosed tooling residual. |
 | Failure, edge-case, lifecycle, and recovery evidence | 98% | 98% | Browser success does not change the already-strong rollback/retry/relaunch evidence; unrelated broad-suite failures remain disclosed. |
-| User-surface, browser, and desktop-shell confidence | 90% | 98% | Semantic browser assertions and screenshot directly prove the web-equivalent Settings journey; Electron shell remains genuinely unaffected. |
-| Durable regression coverage quality and relevance | 97% | 97% | Durable coverage is unchanged by the temporary browser probe and awaits proportional review. |
+| User-surface, browser, and desktop-shell confidence | 90% | 99% | Semantic browser assertions prove the Settings journey; the host-native package then built and its packaged first Electron window and bundled backend became ready through Playwright. |
+| Durable regression coverage quality and relevance | 97% | 97% | No durable coverage changed in round 2; the round-1 durable E2E edits already passed proportional review at `CRR-002`. |
 
-- Overall final confidence: `97.7%` (`684 / 7`)
+- Overall final confidence: `97.9%` (`685 / 7`)
 - Critical acceptance criteria directly proven: `Yes`
 - Final applicable category below `90%`: `No`
 - Default `95%` confidence target met: `Yes`
-- Final residuals: The broad deterministic server command still reports four unrelated current-base failures; attempt logs may remain cardinality-sized; SQLite physical files do not immediately shrink without `VACUUM`. None contradicts a ticket acceptance criterion.
+- Final residuals: The default packaged E2E command does not currently perform its promised host-native build because `build:electron` reaches an `ALL` target; the explicit macOS build plus `--skip-build` launcher passes. The broad deterministic server command still reports four unrelated current-base failures; attempt logs may remain cardinality-sized; SQLite physical files do not immediately shrink without `VACUUM`. None contradicts a ticket acceptance criterion.
 
 ## Not Tested / Infeasible / Deferred
 
 | Behavior / Boundary | Reason | Risk | Required Follow-Up Or Escalation |
 | --- | --- | --- | --- |
-| Actual packaged Electron shell | No shell-specific code or contract changed; browser proves the relevant renderer path | Negligible | None |
+| Packaged Electron navigation to the Migrations table | The checked-in packaged smoke validates readiness and first-window creation but does not expose a journey hook for route/DOM assertions | Bounded; the same Settings surface passed against a live backend in Chrome | Retain browser evidence; a future durable packaged journey could extend the launcher if shell-specific UI proof becomes required |
 | External provider live E2E | No external integration is changed and deterministic fixtures prove the boundary | None for this ticket | None |
 | User production profile/database | Automated migration proof against live user data is forbidden | None; synthetic released fixture is the correct evidence | None |
 | Immediate SQLite file shrink | Explicitly outside approved scope; no `VACUUM` | Physical file may not shrink immediately | Preserve as documented residual |
@@ -247,12 +247,31 @@ No file or operational scenario should be removed. Only obsolete rich database/A
 | Custom-provider E2E read an intentionally consumed legacy token event after startup consolidation | `Local Fix` (durable coverage) | `04b-custom-provider-startup-e2e.log`; current base and the passing TeamRun consolidation scenarios prove the target is `TokenUsageRunRecord` | API/E2E engineer corrected the test locally; no upstream reroute |
 | Initial live-browser probe expected a non-catalog heading literal after already finding the exact live summary | `Local Fix` (temporary probe) | `09-settings-live-browser.log`; `autobyteus-web/localization/messages/en/settings.ts` defines `App Data Migrations` | API/E2E engineer corrects the ticket-local probe and reruns; no upstream reroute |
 
+## Round 2 Packaged Electron Supplemental Investigation
+
+- Prior authoritative result: `API-REV-001 — Pass / 97.7%`.
+- New requested evidence: Build and launch the current-worktree host-native packaged Electron application through the repository's documented isolated Playwright adapter.
+- Instruction basis: Root `README.md` **Packaged Electron API/E2E testing**, `autobyteus-web/README.md` **Packaged Electron E2E Launches**, `autobyteus-web/docs/electron_packaging.md` **Packaged E2E Launch Profile**, and `autobyteus-web/package.json` script `test:e2e:electron`.
+- Exact planned command and working directory: `env -u ELECTRON_RUN_AS_NODE pnpm test:e2e:electron --adapter playwright` from `autobyteus-web`.
+- Coverage classification: `Use Temporary Executable Probe Only`; no repository-resident durable test edit is required. The checked-in launcher is already the durable mechanism.
+- Direct evidence expected: `build:electron` produces the current host package; the launcher selects a safe free non-production port and owned temporary data root; the packaged main process starts its bundled backend under the explicit E2E profile; readiness succeeds; Playwright observes the first Electron window; cleanup confirms the owned process tree and temporary root are gone.
+- Confidence value: This is materially more end-to-end for packaging, Electron main-process startup, embedded-server routing, and packaged renderer creation than the browser journey. It does **not** replace `AE2E-BROWSER-001` for the ticket-specific Settings summary assertions because `run-electron-e2e.mjs` only waits for readiness and the first window; it does not navigate or assert the Migrations table.
+- Safety: The launcher owns its selected process tree/root, rejects production port `29695` and unsafe roots, disables updater side effects in E2E mode, and must not affect any already-running desktop application.
+- Durable coverage changes planned: `None`.
+- Execution status: First documented-command attempt `Fail before packaging/launch`. Guards, server preparation, mobile generation, Electron renderer/main/preload generation, and native-module rebuild passed, but `pnpm build:electron` invoked `node build/dist/build.js` without a host flag. The build script defaults that invocation to `ALL`, calls the Linux target first, and correctly rejects Linux packaging on the current Darwin/arm64 host. Therefore no package was launched. Evidence: `api-e2e-evidence/10-packaged-electron-playwright.log`.
+- Preliminary classification: `Local Fix / existing packaging-launcher configuration mismatch`, outside the ticket implementation. The README and `prepareElectronE2ELaunch()` promise a host-native default build, while the current default `build:electron` script reaches the build tool's `ALL` default. This is not evidence against the migration-summary change.
+- Safe continuation plan recorded before retry: Use the repository's explicit host script `env -u ELECTRON_RUN_AS_NODE pnpm build:electron:mac`, then run the same packaged launcher as `env -u ELECTRON_RUN_AS_NODE pnpm test:e2e:electron --skip-build --adapter playwright`. This preserves the intended exact current-worktree artifact, isolated E2E launch profile, readiness, first-window, and cleanup checks while avoiding unsupported cross-platform packaging. The default-command mismatch remains a disclosed residual even if the host-specific retry passes.
+- Host-specific build result: `Pass`. Boundary/localization guards and literal audit passed; server and bootstrap smoke passed; bundled server deployment, Prisma generation, Electron native-module rebuild, Electron renderer/main/preload generation, and unsigned Darwin/arm64 DMG/ZIP packaging completed. Evidence: `api-e2e-evidence/10b-packaged-electron-mac-build.log`.
+- Packaged launch result: `Pass`. Playwright launched `/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus`; the bundled server became healthy at `http://127.0.0.1:49629/rest/health`; the first Electron window was observed; the launcher returned `electron-e2e-ready`. Evidence: `api-e2e-evidence/10c-packaged-electron-playwright-skip-build.log` and `10-packaged-electron-result.json`.
+- Cleanup result: `Pass`. The owned temporary root was removed, port 49629 had no listener, and no matching packaged process remained. Packaged build artifacts were intentionally retained. Evidence: `api-e2e-evidence/10d-packaged-electron-cleanup.log`.
+- Round 2 result: `Pass with disclosed existing tooling residual`; no ticket requirement failed and no durable coverage changed. Final confidence: `97.9%`.
+
 ## Investigation Decision
 
 - Proceed To API/E2E Execution: `Yes`
-- Repository-Resident Durable Coverage Will Be Added / Updated / Removed: `Yes` — update two existing E2E files; no new file or removal planned.
+- Repository-Resident Durable Coverage Will Be Added / Updated / Removed: Round 1 `Yes` — two updated E2E files already reviewed at `CRR-002`; round 2 `No`.
 - Post-repository confidence: `96.0%`
-- Broader validation decision: `Required — Browser`; completed `Pass` with final confidence `97.7%`.
+- Broader validation decision: Round 1 required browser and passed; round 2 user-requested packaged Electron supplement passed through the explicit host build and isolated Playwright launch. Final confidence `97.9%`.
 - Reroute Required Before Validation Execution: `No`
 - Recommended Recipient If Reroute Required: `N/A`
-- Notes: Coverage decisions were recorded before any durable test edit. The final API/E2E result is `Pass`; the two durable E2E edits return through `/code_reviewer` for proportional test-code review before delivery.
+- Notes: Latest API/E2E result is `Pass with disclosed existing tooling residual`. No durable coverage changed in round 2. The cumulative package returns through `/code_reviewer`, which may record the round-2 durable-test review as `Not Applicable`, before delivery resumes.

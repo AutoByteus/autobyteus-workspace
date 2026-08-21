@@ -149,6 +149,40 @@ valid values in the same ordered batch. Cover admitted and rejected source
 types and ranges through a real disposable database plus the production
 ORM/driver. Never use or mutate a user's live database for automated coverage.
 
+## Record Summary And Attempt-Log Boundary
+
+`app_data_migration_records` is compact product-visible status and audit
+evidence, not a second diagnostic log. Its nullable `summary` field contains
+only the runner-formatted terminal sentence:
+
+`Scanned N; migrated N; skipped N; failed N.`
+
+The runner constructs that sentence from the four aggregate counts returned by
+the definition. It persists status, attempts, timestamps, a concise terminal
+error, and the attempt's `log_path` as separate fields. A thrown definition
+uses the existing zero-count summary and records the exception message
+separately. Current repositories, GraphQL types, and clients treat `summary` as
+opaque text; they must not parse it back into domain data or add separate
+persisted count fields.
+
+Migration definitions may continue returning item details for the existing
+attempt-log writer. The referenced filesystem log owns the full count/detail
+representation; item arrays, serialized source rows, and exception dumps must
+not be copied into `summary`, another database status field, the status API, or
+the Settings UI. The structural separation, rather than an arbitrary character
+limit, keeps database and API outcome size independent of source cardinality.
+The current detail-bearing log format can itself grow with migration
+cardinality; retention, sampling, compaction, and historical-log repair remain
+separate scopes rather than implicit runner behavior.
+
+Released `summary_json` records are transitioned by timestamped Prisma
+migration `20260820090000_redesign_app_data_migration_summary`. The SQLite
+transaction validates the four known non-negative integer fields, constructs
+the canonical sentence inside SQLite, and renames the column to `summary`
+before current repositories start. Other record metadata and `log_path` remain
+unchanged, historical filesystem logs are neither read nor rewritten, and no
+legacy JSON decoder exists in current runtime code.
+
 ## Startup Scheduling And Public Recovery Actions
 
 Automatic startup scheduling and public recovery capability are separate
@@ -292,6 +326,10 @@ a separately approved reachable contract.
   names, with startup-only work distinguished from manual retry?
 - Does the UI consume server-owned recovery policy without inferring it or
   dispatching a disabled action?
+- Does the database/API status record contain only the canonical opaque summary
+  while full item diagnostics remain in the referenced attempt log?
+- Is released `summary_json` knowledge confined to the timestamped schema
+  migration, with no current-runtime decoder or summary parser?
 - Is every warning based on an independently valid current result?
 - Are capability-scoped and critical failures classified by actual current
   owners rather than by a blanket startup rule?

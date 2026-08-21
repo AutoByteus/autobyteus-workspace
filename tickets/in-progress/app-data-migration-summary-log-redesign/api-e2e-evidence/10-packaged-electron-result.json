@@ -1,0 +1,51 @@
+{
+  "result": "PassWithDisclosedToolingResidual",
+  "scenarioId": "AE2E-ELECTRON-001",
+  "requestedCommand": "env -u ELECTRON_RUN_AS_NODE pnpm test:e2e:electron --adapter playwright",
+  "requestedCommandResult": {
+    "result": "FailBeforePackageLaunch",
+    "reason": "build:electron invoked the build tool without a host flag; its ALL default attempted Linux packaging on Darwin/arm64 and was rejected",
+    "evidence": "10-packaged-electron-playwright.log"
+  },
+  "safeHostSpecificContinuation": {
+    "buildCommand": "env -u ELECTRON_RUN_AS_NODE pnpm build:electron:mac",
+    "buildResult": "Pass",
+    "launchCommand": "env -u ELECTRON_RUN_AS_NODE pnpm test:e2e:electron --skip-build --adapter playwright",
+    "launchResult": "Pass",
+    "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/app-data-migration-summary-log-redesign/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "port": 49629,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-vsutRR",
+    "ownsDataRoot": true,
+    "clientBaseUrl": "http://127.0.0.1:49629",
+    "healthUrl": "http://127.0.0.1:49629/rest/health",
+    "firstWindowObservedByPlaywright": true
+  },
+  "buildEvidence": {
+    "webBoundaryGuard": "Pass",
+    "localizationBoundaryGuard": "Pass",
+    "localizationLiteralAudit": "Pass",
+    "serverBuildAndBootstrapSmoke": "Pass",
+    "bundledServerDeployment": "Pass",
+    "prismaClientGeneration": "Pass",
+    "electronNativeModuleRebuild": "Pass",
+    "electronRendererMainPreloadBuild": "Pass",
+    "darwinArm64Packaging": "Pass",
+    "dmgAndZipArtifacts": "Pass",
+    "codeSigning": "Skipped by build configuration (identity null)"
+  },
+  "cleanup": {
+    "ownedDataRootRemoved": true,
+    "selectedPortListenerRemoved": true,
+    "packagedProcessTreeRemoved": true,
+    "packagedBuildArtifactsRetained": true
+  },
+  "scope": {
+    "proves": [
+      "host-native packaged Electron build",
+      "bundled server startup and health under isolated E2E profile",
+      "packaged Electron first-window creation through Playwright",
+      "owned process-tree and data-root cleanup"
+    ],
+    "doesNotReplace": "AE2E-BROWSER-001 ticket-specific Settings Migrations DOM assertions"
+  }
+}

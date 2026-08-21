@@ -2,48 +2,47 @@
 
 ## Review Meta
 
-- Review Round: `1`
-- Trigger: `/api_e2e_engineer` completed API/E2E round 1 at `Pass / 97.7%` and updated two repository-resident durable E2E files.
+- Review Round: `2`
+- Trigger: `/api_e2e_engineer` completed supplemental packaged Electron API/E2E round 2 at `Pass / 97.9%` after the user's explicit packaged-check request.
 - Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/app-data-migration-summary-log-redesign/tickets/in-progress/app-data-migration-summary-log-redesign/requirements.md`
 - Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/app-data-migration-summary-log-redesign/tickets/in-progress/app-data-migration-summary-log-redesign/design-spec.md`
 - Supplemental Task Artifacts Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/app-data-migration-summary-log-redesign/autobyteus-server-ts/docs/design/production_data_migration_conventions.md`
 - Solution Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/app-data-migration-summary-log-redesign/tickets/in-progress/app-data-migration-summary-log-redesign/solution-revision-record.md` (`SR-006`, with `SR-004`/`SR-005` relevant history)
 - Architecture Review Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/app-data-migration-summary-log-redesign/tickets/in-progress/app-data-migration-summary-log-redesign/architecture-review-revision-record.md` (`ARCH-REV-002`)
 - Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/app-data-migration-summary-log-redesign/tickets/in-progress/app-data-migration-summary-log-redesign/implementation-revision-record.md` (`IR-001`)
-- Original Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/app-data-migration-summary-log-redesign/tickets/in-progress/app-data-migration-summary-log-redesign/code-review-report.md` (`Pass`)
+- Original Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/app-data-migration-summary-log-redesign/tickets/in-progress/app-data-migration-summary-log-redesign/code-review-report.md` (`Pass`, unchanged)
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/app-data-migration-summary-log-redesign/tickets/in-progress/app-data-migration-summary-log-redesign/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-002`
+- Current Code Review Revision ID: `CRR-003`
 - Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/app-data-migration-summary-log-redesign/tickets/in-progress/app-data-migration-summary-log-redesign/api-e2e-coverage-investigation.md`
 - Execution Coverage Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/app-data-migration-summary-log-redesign/tickets/in-progress/app-data-migration-summary-log-redesign/api-e2e-execution-coverage-report.md`
-- API/E2E Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/app-data-migration-summary-log-redesign/tickets/in-progress/app-data-migration-summary-log-redesign/api-e2e-revision-record.md` (`API-REV-001`)
-- Delivery Revision Record Reviewed As Context (delivery re-entry only): `N/A`
-- API/E2E Result: `Pass`
-- Final Validation Confidence: `97.7%`
-- Prior unresolved test-review findings rechecked: None; this is the first proportional test-code review.
+- API/E2E Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/app-data-migration-summary-log-redesign/tickets/in-progress/app-data-migration-summary-log-redesign/api-e2e-revision-record.md` (`API-REV-002`)
+- Delivery Revision Record Reviewed As Context (delivery re-entry only): `/Users/normy/autobyteus_org/autobyteus-worktrees/app-data-migration-summary-log-redesign/tickets/in-progress/app-data-migration-summary-log-redesign/delivery-revision-record.md` (`DR-001`)
+- API/E2E Result: `Pass with disclosed existing tooling residual`
+- Final Validation Confidence: `97.9%`
+- Prior unresolved test-review findings rechecked: None. Round-1 durable E2E edits passed proportional review at `CRR-002`.
 
 ## Changed Durable Test Scope
 
-Temporary probes, logs, screenshots, generated coverage, and execution-only artifacts were treated as evidence rather than durable test code.
+Temporary packaged-execution logs/result JSON, retained package artifacts, and the unchanged checked-in Electron launcher are execution evidence, not durable test-code changes in round 2.
 
 | Durable Test Path | Change (`Added`/`Updated`/`Removed`) | Related Scenario / Requirement | Coherent Test Responsibility | Notes |
 | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/app-data-migration-summary-log-redesign/autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts` | Updated | `AE2E-001`, `AE2E-002`; `BEH-001`–`BEH-004`; `AC-001`–`AC-019` | Actual released-ledger startup upgrade, current schema/API/log projection, warnings/failure recovery, relaunch, and existing TeamRun/token lifecycle | Retains the four existing operational scenarios while replacing obsolete rich database/API summary assertions with current scalar-summary and attempt-log proof. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/app-data-migration-summary-log-redesign/autobyteus-server-ts/tests/e2e/secret-management/custom-provider-readable-id-startup-migration.e2e.test.ts` | Updated | `AE2E-003`; `AC-007`, `AC-010`, `AC-011`, `AC-019` | Actual custom-provider startup lifecycle, current GraphQL scalar/log contract, and preserved provider/model identity after token consolidation | Moves detail/count assertions to the referenced attempt log and replaces the stale consumed-event read with the current run-record identity. |
+| None | N/A | `AE2E-ELECTRON-DEFAULT-ENTRY`, `AE2E-ELECTRON-001` | N/A | Round 2 executed existing repository scripts/launcher and changed only API/E2E reports and execution evidence. Round-1 durable E2E files remain unchanged since their `CRR-002` review. |
 
-- No durable test file changed: `No`
-- Review result when no durable test file changed: `N/A`
+- No durable test file changed: `Yes`
+- Review result when no durable test file changed: `Not Applicable`
 
 ## Proportional Test-Code Checks
 
 | Check | Result (`Pass`/`Fail`/`N/A`) | Evidence / Notes |
 | --- | --- | --- |
-| Scenario grouping and names make intent clear | Pass | Each file remains one cohesive actual-startup lifecycle suite with four descriptive scenarios. Updated helpers are named for released-schema preparation, attempt-log reading, summary/log agreement, and transitioned historical evidence. |
-| Assertions prove approved requirements instead of incidental implementation details | Pass | TeamRun coverage proves the released `summary_json` schema becomes current `summary`, the registered migration completes once, rows retain non-summary evidence, legacy large JSON becomes short canonical text, historical log bytes remain unchanged, current GraphQL exposes the string, and current attempt logs retain counts/details. Custom-provider coverage proves the same GraphQL/log split and preserves the existing identity outcome through the current run-record owner. |
-| Fixtures, setup, helpers, and data builders reuse meaningful repetition | Pass | Both suites retain their established owned runtime/server/cleanup helpers. Each centralizes its repeated attempt-log parsing within the file. The small cross-suite overlap is appropriately localized because the suites use different detail shapes and different lifecycle assertions; extracting a new shared E2E layer is not warranted by these two bounded edits. |
-| Test isolation and determinism are appropriate for the exercised boundary | Pass | Test-owned unique runtime/database roots, sanitized environments, production-profile guards, real built servers, explicit server tracking, and `afterEach` cleanup prevent live-profile or cross-test mutation. Fixed semantic fixtures drive assertions; timestamp/random suffixes only allocate unique owned resources. |
-| Large files remain coherent and navigable rather than mixing unrelated scenarios | Pass | The 1,127-line TeamRun file remains a single released-upgrade/relaunch system journey; the 810-line custom-provider file remains a single multiversion startup lifecycle. Both have clear helper regions and four named tests. Test-source size thresholds do not apply. |
-| No stale, duplicated, disabled-without-reason, or compatibility-only tests remain | Pass | No scenario/file was disabled or removed. Rich `summary.details`/count assertions are gone. Remaining `summary_json` references are confined to the intentional released-schema fixture and post-transition absence assertion. The stale post-consolidation `TokenUsageLedgerEvent` read now uses the current `TokenUsageRunRecord`. |
-| Added, updated, and removed coverage agrees with the coverage investigation and execution evidence | Pass | Both files were classified `Needs Update` before editing, no file/scenario was removed, focused reruns pass 4/4 in each file, both pass within the broad run, and the final execution report records the same current-contract assertions and first-run test-only correction. |
+| Scenario grouping and names make intent clear | N/A | No durable test code changed in API/E2E round 2. |
+| Assertions prove approved requirements instead of incidental implementation details | N/A | No durable assertion changed. Packaged execution supplements confidence but does not replace the already-reviewed ticket-specific browser/E2E assertions. |
+| Fixtures, setup, helpers, and data builders reuse meaningful repetition | N/A | Existing checked-in launcher and its owned root/port cleanup were exercised unchanged. |
+| Test isolation and determinism are appropriate for the exercised boundary | N/A | This is not a test-code-change verdict. Execution evidence records a launcher-owned temporary root, free port, first-window readiness, and successful cleanup. |
+| Large files remain coherent and navigable rather than mixing unrelated scenarios | N/A | No durable test file changed; source-size thresholds are not applicable. |
+| No stale, duplicated, disabled-without-reason, or compatibility-only tests remain | N/A | No durable coverage was added, changed, disabled, or removed in round 2. |
+| Added, updated, and removed coverage agrees with the coverage investigation and execution evidence | N/A | `API-REV-002`, the investigation, execution report, worktree status, and round-2 hygiene evidence consistently record no durable coverage change. |
 
 ## Findings
 
@@ -51,10 +50,8 @@ None.
 
 ## Latest Authoritative Result
 
-- Result: `Pass`
-- Changed durable test paths reviewed:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/app-data-migration-summary-log-redesign/autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/app-data-migration-summary-log-redesign/autobyteus-server-ts/tests/e2e/secret-management/custom-provider-readable-id-startup-migration.e2e.test.ts`
+- Result: `Not Applicable`
+- Changed durable test paths reviewed: None in API/E2E round 2.
 - Unresolved finding IDs: None.
 - Recommended Recipient: `/delivery_engineer`
-- Notes: Proportional review is complete without reopening the implementation source report or scorecard. Existing execution evidence was sufficient; the successful E2Es were not rerun by code review. The four unrelated current-base broad-suite failures remain disclosed in the API/E2E report and do not originate in either changed durable test file.
+- Notes: The implementation source report and scorecard were not reopened. The exact README-default packaged command's existing host-target mismatch remains explicitly disclosed as `AE2E-ELECTRON-DEFAULT-ENTRY`; the explicit macOS build and unchanged isolated Playwright launcher passed. This round-2 result addresses only the absence of durable test-code changes and does not relabel that tooling residual as a pass.
