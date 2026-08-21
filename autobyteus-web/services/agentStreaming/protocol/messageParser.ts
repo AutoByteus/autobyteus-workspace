@@ -39,7 +39,15 @@ const validOptionalNullableString = (payload: Record<string, unknown>, key: stri
 
 const validateCanonicalBoundary = (type: string, payload: unknown): void => {
   if (!isRecord(payload)) throw new Error(`${type} payload must be an object`);
-  if (type === 'SEGMENT_START') {
+  if (type === 'SYSTEM_INSTRUCTIONS_SUPPLIED') {
+    if (!exactKeys(payload, ['trace_id', 'content', 'ts'])
+      || Object.keys(payload).length !== 3
+      || typeof payload.trace_id !== 'string' || payload.trace_id.trim().length === 0
+      || typeof payload.content !== 'string'
+      || typeof payload.ts !== 'number' || !Number.isFinite(payload.ts) || payload.ts <= 0) {
+      throw new Error('Invalid canonical SYSTEM_INSTRUCTIONS_SUPPLIED payload');
+    }
+  } else if (type === 'SEGMENT_START') {
     if (!exactKeys(payload, ['id', 'turn_id', 'segment_type', 'metadata']) ||
       !nonEmpty(payload.id) || !nonEmpty(payload.turn_id) || !SEGMENT_TYPES.has(payload.segment_type as string) ||
       !validOptionalMetadata(payload)) {

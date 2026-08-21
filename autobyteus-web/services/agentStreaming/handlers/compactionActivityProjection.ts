@@ -1,5 +1,5 @@
 import type { AgentCompactionStatus, CompactionStatusPhase } from '~/types/agent/AgentRunState';
-import type { CompactionActivity } from '~/stores/agentActivityStore';
+import type { CompactionActivity } from '~/types/activity/RunActivity';
 import type { CompactionStatusPayload } from '../protocol/messageTypes';
 import { getCompactionMessage } from '~/utils/compactionActivityPresentation';
 

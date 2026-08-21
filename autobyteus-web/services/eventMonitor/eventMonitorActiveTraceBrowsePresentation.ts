@@ -1,6 +1,7 @@
 import type { ContextAttachment, UserMessage } from '~/types/conversation';
 import type { MediaSegment, ToolApprovalTarget } from '~/types/segments';
-import type { CompactionActivity, CompactionStatusPhase } from '~/stores/agentActivityStore';
+import type { CompactionActivity } from '~/types/activity/RunActivity';
+import type { CompactionStatusPhase } from '~/types/agent/AgentRunState';
 import type { ToolCardPresentation, ToolCardStatusPresentationKey } from '~/utils/toolCardPresentation';
 import { buildEventMonitorPageToolCardPresentation } from '~/utils/toolCardPresentation';
 import { hydrateContextAttachment } from '~/utils/contextFiles/contextAttachmentModel';

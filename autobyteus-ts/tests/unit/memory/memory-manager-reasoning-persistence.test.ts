@@ -29,7 +29,7 @@ describe('MemoryManager native assistant reasoning persistence', () => {
         'LLMCompleteResponseReceivedEvent',
       );
 
-      const traces = manager.listRawTracesOrdered();
+      const traces = manager.listTurnRawTracesOrdered();
       expect(traces.map(({ traceType, content }) => ({ traceType, content }))).toEqual([
         { traceType: 'reasoning', content: reasoning },
         { traceType: 'assistant', content: '' },
@@ -65,7 +65,7 @@ describe('MemoryManager native assistant reasoning persistence', () => {
         'LlmPhaseInterruptedPartial',
       );
 
-      const traces = manager.listRawTracesOrdered();
+      const traces = manager.listTurnRawTracesOrdered();
       expect(traces.map((trace) => trace.traceType)).toEqual(['reasoning', 'assistant']);
       expect(traces.map((trace) => trace.content)).toEqual(['Private analysis', 'Final answer']);
       expect(traces.map((trace) => trace.seq)).toEqual([1, 2]);
@@ -96,7 +96,7 @@ describe('MemoryManager native assistant reasoning persistence', () => {
         'LLMCompleteResponseReceivedEvent',
       );
 
-      const traces = manager.listRawTracesOrdered();
+      const traces = manager.listTurnRawTracesOrdered();
       expect(traces.map((trace) => trace.traceType)).toEqual(['reasoning', 'assistant', 'tool_call']);
       expect(traces.map((trace) => trace.seq)).toEqual([1, 2, 3]);
       expect(traces.map((trace) => trace.content)).toEqual([

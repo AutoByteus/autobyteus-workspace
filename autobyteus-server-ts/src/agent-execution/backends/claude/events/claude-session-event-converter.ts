@@ -23,6 +23,7 @@ import {
   isMcpWireToolName,
 } from "../../../../agent-tools/mcp/mcp-tool-source.js";
 import { ClaudeSessionEventName } from "./claude-session-event-name.js";
+import { parseSystemInstructionsSuppliedPayload } from "../../../domain/system-instructions-supplied-event.js";
 import { isAgentSegmentType } from "../../../domain/agent-segment.js";
 import { RuntimeKind } from "../../../../runtime-management/runtime-kind-enum.js";
 import {
@@ -216,6 +217,18 @@ export class ClaudeSessionEventConverter {
     const turnId = resolveTurnId(payload);
 
     switch (claudeEventName) {
+      case ClaudeSessionEventName.SYSTEM_INSTRUCTIONS_SUPPLIED: {
+        const systemPayload = parseSystemInstructionsSuppliedPayload(payload);
+        if (!systemPayload) {
+          throw new Error('Claude system instruction event has an invalid payload.');
+        }
+        return [{
+          eventType: AgentRunEventType.SYSTEM_INSTRUCTIONS_SUPPLIED,
+          runId: this.runId,
+          payload: systemPayload,
+          statusHint: null,
+        }];
+      }
       case ClaudeSessionEventName.TURN_STARTED:
         return this.createLifecycleEvents(claudeEventName, AgentRunEventType.TURN_STARTED, {
           ...(turnId ? { turnId } : {}),

@@ -311,7 +311,7 @@ describe("recursive Memory Compactor leaf integration", () => {
         const store = new FileMemoryStore(evidence.memoryDir, evidence.runId, {
           agentRootSubdir: "",
         });
-        const userTraces = store.listRawTraceCorpusOrdered()
+        const userTraces = store.listTurnRawTraceCorpusOrdered()
           .filter(({ traceType }) => traceType === "user");
         expect(userTraces).toHaveLength(1);
         expect(userTraces[0]!.content.length).toBeGreaterThan(500_000);

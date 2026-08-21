@@ -1,0 +1,6 @@
+migrationId=20260730_token_usage_provider_name_snapshot_backfill
+displayName=Token usage provider-name snapshot backfill
+statusSummary={"scannedCount":0,"migratedCount":0,"skippedCount":0,"failedCount":0}
+error=
+details=
+{"itemId":"token-usage-provider-name:summary","status":"SKIPPED","message":"rows=0; migrated=0; reasons={}"}

@@ -90,7 +90,7 @@
 import { computed, getCurrentInstance, nextTick, onBeforeUnmount, onMounted, onUpdated, ref, watch } from 'vue';
 import { Icon } from '@iconify/vue';
 import type { Conversation } from '~/types/conversation';
-import type { CompactionActivity } from '~/stores/agentActivityStore';
+import type { CompactionActivity } from '~/types/activity/RunActivity';
 import UserMessage from '~/components/conversation/UserMessage.vue';
 import AIMessage from '~/components/conversation/AIMessage.vue';
 import CompactionStatusRow from '~/components/workspace/agent/CompactionStatusRow.vue';

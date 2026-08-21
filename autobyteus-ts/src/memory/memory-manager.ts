@@ -8,6 +8,7 @@ import { RawTraceItem, type RawTraceItemOptions } from './models/raw-trace-item.
 import { toolCallIdentityKey } from './models/tool-call-identity.js';
 import { MemoryType } from './models/memory-types.js';
 import { MemoryStore } from './store/base-store.js';
+import type { SystemInstructionCaptureResult } from './models/system-instruction-trace.js';
 import type { CompactionLineageStore } from './lineage/compaction-lineage-store.js';
 import type { CompactionLineageScope } from './lineage/compaction-lineage-scope.js';
 import { TurnTracker } from './turn-tracker.js';
@@ -126,7 +127,7 @@ export class MemoryManager {
       getContext: () => this.workingContextController.getContext(),
       installContext: (context) => this.workingContextController.install(context),
     });
-    this.toolLifecycleState = new ToolTraceLifecycleState(this.store.listRawTraceCorpusOrdered());
+    this.toolLifecycleState = new ToolTraceLifecycleState(this.store.listTurnRawTraceCorpusOrdered());
     this.llmRequestRecovery = new LlmRequestRecoveryBoundary({
       getWorkingContext: () => this.workingContextController.getContext(),
       setWorkingContext: (workingContext) => this.workingContextController.install(workingContext),
@@ -233,7 +234,7 @@ export class MemoryManager {
           })
         : new Message(MessageRole.USER, { content: String(input) });
     const rawTraceIds = options.rawTraceIds ?? findRecentRawTraceIds(
-      this.listRawTracesOrdered(),
+      this.listTurnRawTracesOrdered(),
       options.turnId,
       'user',
       message.content,
@@ -472,7 +473,7 @@ export class MemoryManager {
         )
       : null;
     const boundaryContent = fenceTurnId
-      ? getOperationBoundaryNoteContent(this.listRawTracesOrdered(), fenceTurnId)
+      ? getOperationBoundaryNoteContent(this.listTurnRawTracesOrdered(), fenceTurnId)
       : null;
     this.ensureWorkingContextToolProtocolSafeForNextLlm({
       scope: input.fenceIncompleteToolProtocolScope,
@@ -491,12 +492,12 @@ export class MemoryManager {
     }
   }
 
-  listRawTracesOrdered(limit?: number): RawTraceItem[] {
-    return this.store.listRawTracesOrdered(limit);
-  }
+  listTurnRawTracesOrdered(limit?: number): RawTraceItem[] { return this.store.listTurnRawTracesOrdered(limit); }
 
-  listRawTraceCorpusOrdered(limit?: number): RawTraceItem[] {
-    return this.store.listRawTraceCorpusOrdered(limit);
+  listTurnRawTraceCorpusOrdered(limit?: number): RawTraceItem[] { return this.store.listTurnRawTraceCorpusOrdered(limit); }
+
+  recordSystemInstructionSupply(content: string, suppliedAt: number): SystemInstructionCaptureResult {
+    return this.store.recordSystemInstructionSupply(content, suppliedAt);
   }
 
   pruneRawTracesById(traceIds: Iterable<string>, archive = true): void {
@@ -545,7 +546,7 @@ export class MemoryManager {
   }
 
   getToolInteractions(turnId?: string | null) {
-    let rawItems = this.listRawTraceCorpusOrdered();
+    let rawItems = this.listTurnRawTraceCorpusOrdered();
     if (turnId) {
       rawItems = rawItems.filter((item) => item.turnId === turnId);
     }

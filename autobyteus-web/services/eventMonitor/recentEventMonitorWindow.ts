@@ -1,6 +1,6 @@
 import type { AIMessage, Conversation } from '~/types/conversation';
 import type { AIResponseSegment } from '~/types/segments';
-import type { CompactionActivity } from '~/stores/agentActivityStore';
+import type { CompactionActivity } from '~/types/activity/RunActivity';
 import { getStreamSegmentIdentity } from '~/services/agentStreaming/handlers/segmentIdentity';
 import {
   isEventMonitorToolSegment,

@@ -1,0 +1,5 @@
+
+> autobyteus@1.4.52 test:e2e:system-instruction-activity /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/autobyteus-web
+> node tests/e2e/system-instruction-activity-probe.mjs -- --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/system-instruction-browser
+
+System instruction browser probe passed. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/system-instruction-browser/evidence.json

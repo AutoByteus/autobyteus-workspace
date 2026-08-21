@@ -26,6 +26,7 @@ import {
   handleInterAgentMessage,
   handleFileChange,
   handleSystemTaskNotification,
+  handleSystemInstructionsSupplied,
 } from './handlers';
 import { handleBrowserToolExecutionSucceeded } from './browser/browserToolExecutionSucceededHandler';
 import {
@@ -64,6 +65,10 @@ const dispatchToHandler = (
   context: AgentContext,
 ): AgentStreamMutationEffects => {
   switch (message.type) {
+    case 'SYSTEM_INSTRUCTIONS_SUPPLIED':
+      return handleSystemInstructionsSupplied(message.payload, context)
+        ? presentationMutationEffects()
+        : NO_AGENT_STREAM_MUTATION;
     case 'SEGMENT_START': {
       const effect = handleSegmentStart(message.payload, context);
       return conversationResult(effect !== 'NONE', effect);

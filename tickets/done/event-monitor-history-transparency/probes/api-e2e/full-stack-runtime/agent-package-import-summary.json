@@ -1,0 +1,27 @@
+{
+  "status": "PASS",
+  "configuredPackageRoots": [
+    "/Users/normy/autobyteus_org/autobyteus-agents",
+    "/Users/normy/autobyteus_org/autobyteus-private-agents",
+    "/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/classroom-simulation-team"
+  ],
+  "visibleDefinitions": {
+    "dailyAssistant": true,
+    "classroomSimulationTeam": true,
+    "individualAgentCountShownByFrontend": 47
+  },
+  "executed": {
+    "dailyAssistantRunId": "daily_assistant_b2db1fdeebd44afda41fab69f7613554",
+    "classroomTeamRunId": "classroom_simulation_team_9aeed53799ef41209201821393695896",
+    "teamMembers": [
+      "/professor",
+      "/student"
+    ]
+  },
+  "evidence": [
+    "data/.env",
+    "real-frontend-inspection.json",
+    "real-workspace-history-inspection.json",
+    "team-resume.json"
+  ]
+}

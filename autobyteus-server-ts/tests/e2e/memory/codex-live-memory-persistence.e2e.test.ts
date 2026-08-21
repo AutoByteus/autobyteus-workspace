@@ -138,6 +138,9 @@ const fetchCodexModelIdentifier = async (
     process.env.CODEX_MEMORY_E2E_MODEL?.trim(),
     process.env.CODEX_BACKEND_MODEL?.trim(),
     process.env.CODEX_E2E_TOOL_MODEL?.trim(),
+    "gpt-5.6-sol",
+    "gpt-5.6-terra",
+    "gpt-5.6-luna",
     "gpt-5.3-codex-spark",
     "gpt-5.4-mini",
     "gpt-5.3-codex",
@@ -167,6 +170,7 @@ const createCodexFactory = (input: {
     } as never,
     {
       getAgentDefinitionById: async () => ({
+        name: "Codex Live Memory Agent",
         instructions:
           "You are validating live Codex memory persistence. Reply briefly and do not use tools unless explicitly asked.",
         description: "Live Codex memory persistence validation agent.",
@@ -177,8 +181,6 @@ const createCodexFactory = (input: {
     {
       resolveConfiguredSkillsForAgent: () => [],
     } as never,
-    undefined,
-    undefined,
     input.clientManager,
   );
 
@@ -186,7 +188,6 @@ const createCodexFactory = (input: {
     input.threadManager,
     threadBootstrapper,
     new CodexThreadCleanup(undefined, input.clientManager),
-    () => input.runId,
   );
 };
 
@@ -273,8 +274,7 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
       memoryRecorder: recorder,
     });
 
-    const run = await manager.createAgentRun(
-      new AgentRunConfig({
+    const config = new AgentRunConfig({
         runtimeKind: RuntimeKind.CODEX_APP_SERVER,
         agentDefinitionId: "agent-def-codex-live-memory",
         llmModelIdentifier: modelIdentifier,
@@ -285,9 +285,9 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
           reasoning_effort: process.env.CODEX_MEMORY_E2E_REASONING_EFFORT?.trim() || "low",
         },
         skillAccessMode: SkillAccessMode.NONE,
-      }),
-      runId,
-    );
+      });
+    const candidate = await manager.prepareNewAgentRun({ runId, config });
+    const run = candidate.commitPublication();
     createdRunIds.add(run.runId);
     expect(run.runId).toBe(runId);
 
@@ -342,11 +342,29 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
       expect(fs.existsSync(path.join(memoryDir, "raw_traces_archive.jsonl"))).toBe(false);
 
       const rawTraces = await readJsonl(rawTracePath);
+      const systemInstructionTraces = rawTraces.filter(
+        (trace) => trace.trace_type === "system_instruction",
+      );
+      expect(systemInstructionTraces).toHaveLength(1);
+      expect(Object.keys(systemInstructionTraces[0]!).sort()).toEqual([
+        "content",
+        "id",
+        "source_event",
+        "trace_type",
+        "ts",
+      ]);
+      expect(systemInstructionTraces[0]).toMatchObject({
+        id: expect.stringMatching(/^rt_/),
+        ts: expect.any(Number),
+        trace_type: "system_instruction",
+        content: expect.stringContaining("You are validating live Codex memory persistence."),
+        source_event: "SYSTEM_INSTRUCTIONS_SUPPLIED",
+      });
       expect(rawTraces.map((trace) => trace.trace_type)).toContain("user");
       expect(rawTraces.map((trace) => trace.trace_type)).toContain("assistant");
       expect(rawTraces.some((trace) => String(trace.content ?? "").includes(responseToken))).toBe(true);
       expect(
-        rawTraces.every(
+        rawTraces.filter((trace) => trace.trace_type !== "system_instruction").every(
           (trace) =>
             typeof trace.turn_id === "string" &&
             trace.turn_id.length > 0 &&
@@ -453,8 +471,7 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
       publishedArtifactRelayService: createNoopSidecar() as never,
       memoryRecorder: recorder,
     });
-    const run = await manager.createAgentRun(
-      new AgentRunConfig({
+    const config = new AgentRunConfig({
         runtimeKind: RuntimeKind.CODEX_APP_SERVER,
         agentDefinitionId: "agent-def-codex-live-steer-memory",
         llmModelIdentifier: modelIdentifier,
@@ -463,9 +480,9 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
         memoryDir,
         llmConfig: { reasoning_effort: "medium" },
         skillAccessMode: SkillAccessMode.NONE,
-      }),
-      runId,
-    );
+      });
+    const candidate = await manager.prepareNewAgentRun({ runId, config });
+    const run = candidate.commitPublication();
     createdRunIds.add(run.runId);
 
     const thread = threadManager.getThread(run.runId);

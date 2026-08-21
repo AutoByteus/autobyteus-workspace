@@ -77,6 +77,24 @@ const messages = {
     "New - {{name}}",
   "workspace.components.progress.CompactionActivityItem.memory_compaction":
     "Memory compaction",
+  "workspace.components.progress.SystemInstructionActivityItem.title":
+    "System instructions",
+  "workspace.components.progress.SystemInstructionActivityItem.available":
+    "Available",
+  "workspace.components.progress.SystemInstructionActivityItem.character_count":
+    "{{count}} characters",
+  "workspace.components.progress.SystemInstructionActivityItem.captured_at":
+    "Captured {{time}}",
+  "workspace.components.progress.SystemInstructionActivityItem.aria_label":
+    "{{title}}. {{source}}. {{availability}}. Captured {{time}}. {{count}} characters.",
+  "workspace.components.progress.SystemInstructionActivityItem.source.native":
+    "AutoByteus-supplied · Native configured system prompt",
+  "workspace.components.progress.SystemInstructionActivityItem.source.claude":
+    "AutoByteus-supplied · Claude SDK systemPrompt",
+  "workspace.components.progress.SystemInstructionActivityItem.source.codex":
+    "AutoByteus-supplied · Codex baseInstructions",
+  "workspace.components.progress.SystemInstructionActivityItem.source.unknown":
+    "AutoByteus-supplied system instructions",
   "workspace.components.workspace.running.AgentLibraryPanel.agentsHeading":
     "Agents",
   "workspace.components.workspace.running.AgentLibraryPanel.teamsHeading":

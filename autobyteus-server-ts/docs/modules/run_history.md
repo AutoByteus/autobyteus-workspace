@@ -365,8 +365,8 @@ used by reopen/hydration.
 Local replay normalization model:
 
 ```text
-standalone run metadata -> memoryDir/runId -> raw trace corpus -> historical replay events -> replay bundle
-team member metadata -> member memoryDir -> raw trace corpus -> historical replay events -> replay bundle
+standalone run metadata -> memoryDir/runId -> active raw traces -> historical replay events -> replay bundle
+team member metadata -> member memoryDir -> active raw traces -> historical replay events -> replay bundle
 ```
 
 - `AgentRunViewProjectionService` owns the normal UI source policy and always
@@ -376,16 +376,25 @@ team member metadata -> member memoryDir -> raw trace corpus -> historical repla
 - `TeamMemberRunViewProjectionService` resolves team/member metadata, including
   the member memory directory, then delegates to `AgentRunViewProjectionService`
   so team members use the same local replay display path as standalone runs.
-- `LocalMemoryRunViewProjectionProvider` reads the complete raw-trace corpus
-  from the declared run or team-member memory directory (complete archive
-  segments plus active records). Explicit `memoryDir` basenames keep local run
+- `LocalMemoryRunViewProjectionProvider` reads only `raw_traces_active.jsonl`
+  from the declared run or team-member memory directory. Explicit `memoryDir`
+  basenames keep local run
   ids aligned with storage, so a team-member replay reads `<agentRunId>` inside
   the resolved root-hierarchical team directory, such as
   `memory/agent_teams/<rootTeamRunId>/<...ancestorTeamRunIds>/...`, rather than
   confusing runtime-native ids with local storage ids. Provider-boundary marker traces are provenance and
   are ignored as conversation/activity content by the historical replay
   transformer.
-- Tool projection first builds physical lifecycle groups across that complete
+- A strict run-scoped `system_instruction` row becomes only a
+  `system_instruction` Activity entry using its raw trace ID, exact content, and
+  timestamp. It has no turn group and is excluded before every Event Monitor
+  latest-window, count, cursor, generation, and earlier-page policy. Activity
+  still keeps the row in chronological order within the same active-file
+  horizon: if fewer than 100 Event Monitor-compatible events exist, all active
+  Activity events are eligible; otherwise the Activity slice begins at the
+  oldest selected Event Monitor-compatible event. No separate prompt pin or
+  archive scan is performed.
+- Tool projection first builds physical lifecycle groups across that active
   corpus using compound `(turn_id, tool_call_id)` identity. A current call row
   owns canonical name/arguments; its separate minimal result row repeats the
   verified canonical name, owns terminal result/error, and omits arguments. The
@@ -537,11 +546,13 @@ Runtime-native diagnostic utilities:
 This section describes raw-trace rotation segments and is separate from the
 history-row visibility archive flag documented above.
 
-Native AutoByteus compaction rotates compacted raw traces into complete `native_compaction` entries. Codex and Claude provider-boundary handling may rotate settled active raw traces before a normalized, rotation-eligible provider boundary marker into complete `provider_compaction_boundary` entries. New rotated segments are direct run-directory files named `raw_traces_<zero-padded-index>.jsonl` and indexed by `raw_traces_manifest.json`. Complete-corpus run-history and memory-view reads include only complete rotated segments plus active records, dedupe by raw trace id, and ignore pending manifest entries. Memory Inspector file-selector reads list only active plus complete segment files and return records from the selected file instead of an implicit merged corpus.
+Native AutoByteus compaction rotates compacted raw traces into complete `native_compaction` entries. Codex and Claude provider-boundary handling may rotate settled active raw traces before a normalized, rotation-eligible provider boundary marker into complete `provider_compaction_boundary` entries. New rotated segments are direct run-directory files named `raw_traces_<zero-padded-index>.jsonl` and indexed by `raw_traces_manifest.json`. Normal run-history and Event Monitor projection remain active-file-only. Explicit complete-corpus memory/evidence reads include only complete rotated segments plus active records, dedupe by raw trace id, and ignore pending manifest entries. Memory Inspector file-selector reads list only active plus complete segment files and return records from the selected file instead of an implicit merged corpus.
 
 Cross-file tool pairs are expected: a call can be rotated before its result is
-written. Complete-corpus logical projection correlates that pair without copying
-the call into the active file or exposing two activities. Native compaction
+written. Explicit complete-corpus logical inspection/evidence can correlate that
+pair without copying the call into the active file. Normal run-history honestly
+projects only the evidence still active and never merges an archive to recover a
+missing Activity. Native compaction
 eligibility/pruning remains active-only; archive-only raw ids must not leak into
 active removal decisions.
 

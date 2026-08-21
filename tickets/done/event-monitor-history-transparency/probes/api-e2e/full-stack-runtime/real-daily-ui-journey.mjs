@@ -1,0 +1,11 @@
+import {createRequire} from 'node:module'; import fs from 'node:fs/promises'; import path from 'node:path';
+const dir=new URL('.',import.meta.url).pathname; const require=createRequire(new URL('../../../../../../autobyteus-web/package.json',import.meta.url)); const {chromium}=require('playwright-core');
+const browser=await chromium.launch({headless:true,executablePath:'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'}); const ctx=await browser.newContext({viewport:{width:1280,height:900}}); const page=await ctx.newPage(); const logs=[],errors=[],failed=[];
+page.on('console',m=>logs.push({type:m.type(),text:m.text()})); page.on('pageerror',e=>errors.push(String(e))); page.on('requestfailed',r=>failed.push({url:r.url(),error:r.failure()?.errorText}));
+await page.goto('http://127.0.0.1:54588/agents',{waitUntil:'domcontentloaded',timeout:90000}); await page.waitForTimeout(8000);
+await page.getByRole('button',{name:'workspace',exact:true}).click(); await page.waitForTimeout(3000);
+const daily=page.getByRole('button',{name:/Daily Assistant/}).first(); console.log('daily button count',await page.getByRole('button',{name:/Daily Assistant/}).count(),await daily.innerText()); await daily.click(); await page.waitForTimeout(3000);
+console.log('after daily click url',page.url()); console.log((await page.locator('body').innerText()).slice(0,6000));
+const btns=await page.locator('button').evaluateAll(bs=>bs.map((b,i)=>({i,text:b.innerText,aria:b.getAttribute('aria-label'),title:b.getAttribute('title'),expanded:b.getAttribute('aria-expanded'),controls:b.getAttribute('aria-controls')})).filter(x=>x.text||x.aria||x.title)); console.log(JSON.stringify(btns.slice(0,60),null,2));
+await page.screenshot({path:path.join(dir,'daily-history-expanded.png'),fullPage:true});
+await fs.writeFile(path.join(dir,'daily-history-expanded.json'),JSON.stringify({url:page.url(),bodyText:await page.locator('body').innerText(),buttons:btns,logs,errors,failed},null,2)+'\n'); await browser.close();

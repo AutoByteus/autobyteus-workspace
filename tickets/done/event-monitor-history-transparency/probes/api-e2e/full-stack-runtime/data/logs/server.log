@@ -1,0 +1,816 @@
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Database migrations completed successfully.
+prisma:info Starting a sqlite pool with 21 connections.
+[2026-08-20T18:44:42.064Z] [WARN] [server.runtime] TeamRun V1 migration did not report clean success; startup continues with strict current-package admission: {"migrationId":"20260814_team_run_execution_tree_v1","displayName":"TeamRun execution-tree V1 migration","status":"SUCCEEDED_WITH_WARNINGS","attempts":1,"failedCount":9,"errorMessage":"9 TeamRun V1 migration warning item(s) were isolated; startup may continue.","logPath":"/Users/normy/.autobyteus/server-data/logs/app-data-migrations/20260814_team_run_execution_tree_v1-2026-08-18T10-13-17-785Z.log"}
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 20 predefined settings
+Populating agent definition cache for the first time...
+Agent definition cache populated with 49 items.
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+[2026-08-20T18:44:42.144Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+{"level":30,"time":1787251482222,"pid":63810,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:54587"}
+[2026-08-20T18:44:42.222Z] [INFO] [server.runtime] Server listening on 127.0.0.1:54587
+[2026-08-20T18:44:42.223Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:54587
+Creating temp workspace at: /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/data/temp_workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/data/temp_workspace.
+Initialized TempWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Scheduling non-critical startup tasks to run in the background...
+Background cache pre-loading process has started.
+CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.
+AutobyteusModelCatalog initialized.
+CachedAudioModelProvider initialized.
+AudioModelService initialized.
+CachedImageModelProvider initialized.
+ImageModelService initialized.
+CachedVideoModelProvider initialized.
+VideoModelService initialized.
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Loading workspace packages to trigger registration...
+Loading agent tool definitions...
+Running MCP tool registration background task...
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Loading and registering all MCP server configurations from file...
+Populating MCP server config cache for the first time...
+Background task 'Agent Customizations' completed successfully.
+Background task 'Memory Sync Worker' completed successfully.
+Pre-loaded 49 agent definitions into cache.
+[2026-08-20T18:44:42.252Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Loaded tool group: Media Tools
+Successfully loaded workspace packages.
+Background task 'Workspaces' completed successfully.
+Successfully registered tool definition: 'publish_artifacts'
+Loaded tool group: Published Artifact Tools
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+Loaded tool group: Browser Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Loaded tool group: Task Delegation Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Loaded tool group: Agent Communication Tools
+Background task 'Agent Tools' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+[2026-08-20T18:44:42.299Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 31 items.
+Pre-loaded 31 agent team definitions into cache.
+Pre-loaded 0 MCP server configs into cache.
+Populating LLM models cache for the first time...
+Fetching list of available LLM models from LLMFactory...
+Discovering Autobyteus models from host: https://localhost:51739
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Discovering Autobyteus models from host: https://localhost:51740
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+AUTOBYTEUS_LLM_DISCOVERY_REMOTE_FAILED
+Discovering Autobyteus models from host: https://192.168.2.142:51739
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+[2026-08-20T18:44:53.872Z] [INFO] [server.runtime] Received SIGINT. Shutting down server...
+[2026-08-20T18:44:54.106Z] [INFO] [server.runtime] Server closed cleanly.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Database migrations completed successfully.
+prisma:info Starting a sqlite pool with 21 connections.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 20 predefined settings
+Populating agent definition cache for the first time...
+Agent definition cache populated with 49 items.
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+[2026-08-20T18:45:01.317Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+{"level":30,"time":1787251501397,"pid":64518,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:54587"}
+[2026-08-20T18:45:01.397Z] [INFO] [server.runtime] Server listening on 127.0.0.1:54587
+[2026-08-20T18:45:01.398Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:54587
+Creating temp workspace at: /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/data/temp_workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/data/temp_workspace.
+Initialized TempWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Scheduling non-critical startup tasks to run in the background...
+Background cache pre-loading process has started.
+CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.
+AutobyteusModelCatalog initialized.
+CachedAudioModelProvider initialized.
+AudioModelService initialized.
+CachedImageModelProvider initialized.
+ImageModelService initialized.
+CachedVideoModelProvider initialized.
+VideoModelService initialized.
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Loading workspace packages to trigger registration...
+Loading agent tool definitions...
+Running MCP tool registration background task...
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Loading and registering all MCP server configurations from file...
+Populating MCP server config cache for the first time...
+Background task 'Agent Customizations' completed successfully.
+Background task 'Memory Sync Worker' completed successfully.
+Pre-loaded 49 agent definitions into cache.
+[2026-08-20T18:45:01.428Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Loaded tool group: Media Tools
+Successfully loaded workspace packages.
+Background task 'Workspaces' completed successfully.
+Successfully registered tool definition: 'publish_artifacts'
+Loaded tool group: Published Artifact Tools
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+Loaded tool group: Browser Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Loaded tool group: Task Delegation Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Loaded tool group: Agent Communication Tools
+Background task 'Agent Tools' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+[2026-08-20T18:45:01.467Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 31 items.
+Pre-loaded 31 agent team definitions into cache.
+Pre-loaded 0 MCP server configs into cache.
+Populating LLM models cache for the first time...
+Fetching list of available LLM models from LLMFactory...
+AUTOBYTEUS_LLM_DISCOVERY_FAILED
+Discovering Ollama models from host: http://127.0.0.1:11434
+Could not connect to Ollama server at http://127.0.0.1:11434. Ensure it's running. fetch failed
+Discovering LM Studio models from host: http://127.0.0.1:1234
+Finished LM Studio discovery. Total models registered: 15
+Successfully fetched 46 models from LLMFactory.
+LLM models cache populated with 46 items.
+Pre-loaded 46 LLM models into cache.
+Populating Image models cache for the first time...
+Fetching list of available Image models from ImageClientFactory...
+AUTOBYTEUS_IMAGE_DISCOVERY_FAILED
+Successfully fetched 7 image models from ImageClientFactory.
+Image models by provider: OPENAI=2, GEMINI=5
+Image models by runtime: api=7
+Image models cache populated with 7 items.
+Pre-loaded 7 image models into cache.
+Populating Audio models cache for the first time...
+Fetching list of available Audio models from AudioClientFactory...
+AUTOBYTEUS_AUDIO_DISCOVERY_FAILED
+Successfully fetched 4 audio models from AudioClientFactory.
+Audio models by provider: OPENAI=1, GEMINI=3
+Audio models by runtime: api=4
+Audio models cache populated with 4 items.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Added new custom server setting: AUTOBYTEUS_AGENT_PACKAGE_ROOTS
+Server setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+Populating agent definition cache for the first time...
+Agent definition cache populated with 51 items.
+[2026-08-20T18:45:17.910Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-08-20T18:45:17.923Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 31 items.
+{"level":30,"time":1787251541826,"pid":64518,"hostname":"MacBookPro","reqId":"req-3","err":{"type":"GraphQLError","message":"Graphql validation error","stack":"FastifyError: Graphql validation error\n    at Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:473:21)\n    at _Reply.graphql (/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:232:16)\n    at executeQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:231:18)\n    at executeRegularQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\n    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:388:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)","extensions":{}},"msg":"Graphql validation error"}
+{"level":30,"time":1787251566974,"pid":64518,"hostname":"MacBookPro","reqId":"req-6","err":{"type":"GraphQLError","message":"Graphql validation error","stack":"FastifyError: Graphql validation error\n    at Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:517:21)\n    at _Reply.graphql (/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:232:16)\n    at executeQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:231:18)\n    at executeRegularQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\n    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:388:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)","extensions":{}},"msg":"Graphql validation error"}
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/workspace.
+Created and registered workspace ID: agent_ws_de7f381d55d90b4161476f36fa795f95e5209d0903b79e9eeb3a74d93c2ad3de
+Error creating agent team run: Error: Launch settings for '/professor' reference the wrong Agent definition.
+[2026-08-20T18:47:13.788Z] [INFO] [server.runtime] Received SIGINT. Shutting down server...
+[2026-08-20T18:47:13.803Z] [INFO] [server.runtime] Server closed cleanly.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Database migrations completed successfully.
+prisma:info Starting a sqlite pool with 21 connections.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 20 predefined settings
+Populating agent definition cache for the first time...
+Agent definition cache populated with 49 items.
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+[2026-08-20T18:48:21.096Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+{"level":30,"time":1787251701180,"pid":77068,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:54587"}
+[2026-08-20T18:48:21.180Z] [INFO] [server.runtime] Server listening on 127.0.0.1:54587
+[2026-08-20T18:48:21.181Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:54587
+Creating temp workspace at: /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/data/temp_workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/data/temp_workspace.
+Initialized TempWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Scheduling non-critical startup tasks to run in the background...
+Background cache pre-loading process has started.
+CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.
+AutobyteusModelCatalog initialized.
+CachedAudioModelProvider initialized.
+AudioModelService initialized.
+CachedImageModelProvider initialized.
+ImageModelService initialized.
+CachedVideoModelProvider initialized.
+VideoModelService initialized.
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Loading workspace packages to trigger registration...
+Loading agent tool definitions...
+Running MCP tool registration background task...
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Loading and registering all MCP server configurations from file...
+Populating MCP server config cache for the first time...
+Background task 'Agent Customizations' completed successfully.
+Background task 'Memory Sync Worker' completed successfully.
+Pre-loaded 49 agent definitions into cache.
+[2026-08-20T18:48:21.206Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Loaded tool group: Media Tools
+Successfully loaded workspace packages.
+Background task 'Workspaces' completed successfully.
+Successfully registered tool definition: 'publish_artifacts'
+Loaded tool group: Published Artifact Tools
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+Loaded tool group: Browser Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Loaded tool group: Task Delegation Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Loaded tool group: Agent Communication Tools
+Background task 'Agent Tools' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+[2026-08-20T18:48:21.254Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 31 items.
+Pre-loaded 31 agent team definitions into cache.
+Pre-loaded 0 MCP server configs into cache.
+Populating LLM models cache for the first time...
+Fetching list of available LLM models from LLMFactory...
+Discovering Autobyteus models from host: https://localhost:51739
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Discovering Autobyteus models from host: https://localhost:51740
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+AUTOBYTEUS_LLM_DISCOVERY_REMOTE_FAILED
+Discovering Autobyteus models from host: https://192.168.2.142:51739
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/workspace.
+Created and registered workspace ID: agent_ws_de7f381d55d90b4161476f36fa795f95e5209d0903b79e9eeb3a74d93c2ad3de
+[2026-08-20T18:49:37.044Z] [INFO] [server.runtime] Received SIGINT. Shutting down server...
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Database migrations completed successfully.
+prisma:info Starting a sqlite pool with 21 connections.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 20 predefined settings
+Populating agent definition cache for the first time...
+Agent definition cache populated with 49 items.
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+[2026-08-20T18:49:59.022Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+{"level":30,"time":1787251799103,"pid":81668,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:54587"}
+[2026-08-20T18:49:59.103Z] [INFO] [server.runtime] Server listening on 127.0.0.1:54587
+[2026-08-20T18:49:59.104Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:54587
+Creating temp workspace at: /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/data/temp_workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/data/temp_workspace.
+Initialized TempWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Scheduling non-critical startup tasks to run in the background...
+Background cache pre-loading process has started.
+CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.
+AutobyteusModelCatalog initialized.
+CachedAudioModelProvider initialized.
+AudioModelService initialized.
+CachedImageModelProvider initialized.
+ImageModelService initialized.
+CachedVideoModelProvider initialized.
+VideoModelService initialized.
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Loading workspace packages to trigger registration...
+Loading agent tool definitions...
+Running MCP tool registration background task...
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Loading and registering all MCP server configurations from file...
+Populating MCP server config cache for the first time...
+Background task 'Agent Customizations' completed successfully.
+Background task 'Memory Sync Worker' completed successfully.
+Pre-loaded 49 agent definitions into cache.
+[2026-08-20T18:49:59.132Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Loaded tool group: Media Tools
+Successfully loaded workspace packages.
+Background task 'Workspaces' completed successfully.
+Successfully registered tool definition: 'publish_artifacts'
+Loaded tool group: Published Artifact Tools
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+Loaded tool group: Browser Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Loaded tool group: Task Delegation Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Loaded tool group: Agent Communication Tools
+Background task 'Agent Tools' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+[2026-08-20T18:49:59.208Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 31 items.
+Pre-loaded 31 agent team definitions into cache.
+Pre-loaded 0 MCP server configs into cache.
+Populating LLM models cache for the first time...
+Fetching list of available LLM models from LLMFactory...
+Discovering Autobyteus models from host: https://localhost:51739
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Discovering Autobyteus models from host: https://localhost:51740
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+AUTOBYTEUS_LLM_DISCOVERY_REMOTE_FAILED
+Discovering Autobyteus models from host: https://192.168.2.142:51739
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/workspace.
+Created and registered workspace ID: agent_ws_de7f381d55d90b4161476f36fa795f95e5209d0903b79e9eeb3a74d93c2ad3de
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/workspace.
+Reusing registered workspace ID: agent_ws_de7f381d55d90b4161476f36fa795f95e5209d0903b79e9eeb3a74d93c2ad3de
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/workspace.
+Reusing registered workspace ID: agent_ws_de7f381d55d90b4161476f36fa795f95e5209d0903b79e9eeb3a74d93c2ad3de
+Agent websocket attached for run daily_assistant_b2db1fdeebd44afda41fab69f7613554
+Created agent session 349a1650-9a9f-48c9-be38-45263894922d for run daily_assistant_b2db1fdeebd44afda41fab69f7613554
+Agent WebSocket connected: session=349a1650-9a9f-48c9-be38-45263894922d, run=daily_assistant_b2db1fdeebd44afda41fab69f7613554
+Discovering Ollama models from host: http://127.0.0.1:11434
+Could not connect to Ollama server at http://127.0.0.1:11434. Ensure it's running. fetch failed
+Discovering LM Studio models from host: http://127.0.0.1:1234
+Finished LM Studio discovery. Total models registered: 15
+Closed agent session 349a1650-9a9f-48c9-be38-45263894922d
+Agent WebSocket disconnected: 349a1650-9a9f-48c9-be38-45263894922d
+Agent team websocket attached for team run classroom_simulation_team_9aeed53799ef41209201821393695896
+Created agent session 15994c97-6822-4c1e-ab11-14539cbbfe5b for run classroom_simulation_team_9aeed53799ef41209201821393695896
+Agent Team WebSocket connected: session=15994c97-6822-4c1e-ab11-14539cbbfe5b, run=classroom_simulation_team_9aeed53799ef41209201821393695896
+Error handling team message for 15994c97-6822-4c1e-ab11-14539cbbfe5b: [
+  {
+    "expected": "string",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_run_id"
+    ],
+    "message": "Invalid input: expected string, received undefined"
+  },
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "target_member_route_key"
+    ],
+    "path": [
+      "payload"
+    ],
+    "message": "Unrecognized key: \"target_member_route_key\""
+  }
+]
+AUTOBYTEUS_LLM_DISCOVERY_REMOTE_FAILED
+Successfully fetched 83 models from LLMFactory.
+LLM models cache populated with 83 items.
+Pre-loaded 83 LLM models into cache.
+Populating Image models cache for the first time...
+Fetching list of available Image models from ImageClientFactory...
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+AUTOBYTEUS_IMAGE_DISCOVERY_REMOTE_FAILED
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Closed agent session 15994c97-6822-4c1e-ab11-14539cbbfe5b
+{"level":30,"time":1787251917002,"pid":81668,"hostname":"MacBookPro","reqId":"req-p","err":{"type":"GraphQLError","message":"Graphql validation error","stack":"FastifyError: Graphql validation error\n    at Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:473:21)\n    at _Reply.graphql (/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:232:16)\n    at executeQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:231:18)\n    at executeRegularQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\n    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:388:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)","extensions":{}},"msg":"Graphql validation error"}
+{"level":40,"time":1787251917002,"pid":81668,"hostname":"MacBookPro","reqId":"req-p","method":"POST","url":"/graphql","statusCode":400,"elapsedMs":2.731874942779541,"msg":"http request completed"}
+{"level":30,"time":1787251923173,"pid":81668,"hostname":"MacBookPro","reqId":"req-q","err":{"type":"GraphQLError","message":"Graphql validation error","stack":"FastifyError: Graphql validation error\n    at Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:430:21)\n    at _Reply.graphql (/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:232:16)\n    at executeQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:231:18)\n    at executeRegularQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\n    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:388:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)","extensions":{}},"msg":"Graphql validation error"}
+{"level":40,"time":1787251923174,"pid":81668,"hostname":"MacBookPro","reqId":"req-q","method":"POST","url":"/graphql","statusCode":400,"elapsedMs":0.9442501068115234,"msg":"http request completed"}
+Agent team websocket attached for team run classroom_simulation_team_9aeed53799ef41209201821393695896
+Created agent session f3ef91a0-6622-4051-8c6c-657656958d6c for run classroom_simulation_team_9aeed53799ef41209201821393695896
+Agent Team WebSocket connected: session=f3ef91a0-6622-4051-8c6c-657656958d6c, run=classroom_simulation_team_9aeed53799ef41209201821393695896
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/workspace.
+Reusing registered workspace ID: agent_ws_de7f381d55d90b4161476f36fa795f95e5209d0903b79e9eeb3a74d93c2ad3de
+AUTOBYTEUS_IMAGE_DISCOVERY_REMOTE_FAILED
+Successfully fetched 13 image models from ImageClientFactory.
+Image models by provider: OPENAI=2, GEMINI=5, AUTOBYTEUS=6
+Image models by runtime: api=7, autobyteus=6
+Image models cache populated with 13 items.
+Pre-loaded 13 image models into cache.
+Populating Audio models cache for the first time...
+Fetching list of available Audio models from AudioClientFactory...
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+AUTOBYTEUS_AUDIO_DISCOVERY_REMOTE_FAILED
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/workspace.
+Reusing registered workspace ID: agent_ws_de7f381d55d90b4161476f36fa795f95e5209d0903b79e9eeb3a74d93c2ad3de
+Closed agent session f3ef91a0-6622-4051-8c6c-657656958d6c
+{"level":30,"time":1787252022158,"pid":81668,"hostname":"MacBookPro","reqId":"req-13","err":{"type":"GraphQLError","message":"Graphql validation error","stack":"FastifyError: Graphql validation error\n    at Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:473:21)\n    at _Reply.graphql (/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:232:16)\n    at executeQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:231:18)\n    at executeRegularQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\n    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:388:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)","extensions":{}},"msg":"Graphql validation error"}
+{"level":30,"time":1787252022159,"pid":81668,"hostname":"MacBookPro","reqId":"req-14","err":{"type":"GraphQLError","message":"Graphql validation error","stack":"FastifyError: Graphql validation error\n    at Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:430:21)\n    at _Reply.graphql (/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:232:16)\n    at executeQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:231:18)\n    at executeRegularQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\n    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:388:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)","extensions":{}},"msg":"Graphql validation error"}
+AUTOBYTEUS_AUDIO_DISCOVERY_REMOTE_FAILED
+Successfully fetched 8 audio models from AudioClientFactory.
+Audio models by provider: OPENAI=1, GEMINI=3, AUTOBYTEUS=4
+Audio models by runtime: api=4, autobyteus=4
+Audio models cache populated with 8 items.
+Pre-loaded 8 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Agent websocket attached for run daily_assistant_b2db1fdeebd44afda41fab69f7613554
+Created agent session d1c3e057-bf46-4101-ae52-94a4498df92c for run daily_assistant_b2db1fdeebd44afda41fab69f7613554
+Agent WebSocket connected: session=d1c3e057-bf46-4101-ae52-94a4498df92c, run=daily_assistant_b2db1fdeebd44afda41fab69f7613554
+Closed agent session d1c3e057-bf46-4101-ae52-94a4498df92c
+Agent WebSocket disconnected: d1c3e057-bf46-4101-ae52-94a4498df92c
+Agent websocket attached for run daily_assistant_b2db1fdeebd44afda41fab69f7613554
+Created agent session f3954899-7897-427a-9f01-637d1713d50f for run daily_assistant_b2db1fdeebd44afda41fab69f7613554
+Agent WebSocket connected: session=f3954899-7897-427a-9f01-637d1713d50f, run=daily_assistant_b2db1fdeebd44afda41fab69f7613554
+Closed agent session f3954899-7897-427a-9f01-637d1713d50f
+Agent WebSocket disconnected: f3954899-7897-427a-9f01-637d1713d50f
+Agent websocket attached for run daily_assistant_b2db1fdeebd44afda41fab69f7613554
+Created agent session e09382fc-8767-4ff2-9f52-a52512c460a5 for run daily_assistant_b2db1fdeebd44afda41fab69f7613554
+Agent WebSocket connected: session=e09382fc-8767-4ff2-9f52-a52512c460a5, run=daily_assistant_b2db1fdeebd44afda41fab69f7613554
+Closed agent session e09382fc-8767-4ff2-9f52-a52512c460a5
+Agent WebSocket disconnected: e09382fc-8767-4ff2-9f52-a52512c460a5
+Agent websocket attached for run daily_assistant_b2db1fdeebd44afda41fab69f7613554
+Created agent session dbe6fbb4-27dd-4b10-80b3-9e102444acab for run daily_assistant_b2db1fdeebd44afda41fab69f7613554
+Agent WebSocket connected: session=dbe6fbb4-27dd-4b10-80b3-9e102444acab, run=daily_assistant_b2db1fdeebd44afda41fab69f7613554
+Closed agent session dbe6fbb4-27dd-4b10-80b3-9e102444acab
+Agent WebSocket disconnected: dbe6fbb4-27dd-4b10-80b3-9e102444acab
+Agent websocket attached for run daily_assistant_b2db1fdeebd44afda41fab69f7613554
+Created agent session d6ee162d-ba48-4b89-a639-a9d44cd229f4 for run daily_assistant_b2db1fdeebd44afda41fab69f7613554
+Agent WebSocket connected: session=d6ee162d-ba48-4b89-a639-a9d44cd229f4, run=daily_assistant_b2db1fdeebd44afda41fab69f7613554
+Closed agent session d6ee162d-ba48-4b89-a639-a9d44cd229f4
+Agent WebSocket disconnected: d6ee162d-ba48-4b89-a639-a9d44cd229f4
+Agent websocket attached for run daily_assistant_b2db1fdeebd44afda41fab69f7613554
+Created agent session 15a93d8c-724b-4bee-bcf7-41d3c4a2e84b for run daily_assistant_b2db1fdeebd44afda41fab69f7613554
+Agent WebSocket connected: session=15a93d8c-724b-4bee-bcf7-41d3c4a2e84b, run=daily_assistant_b2db1fdeebd44afda41fab69f7613554
+Closed agent session 15a93d8c-724b-4bee-bcf7-41d3c4a2e84b
+Agent WebSocket disconnected: 15a93d8c-724b-4bee-bcf7-41d3c4a2e84b
+Agent websocket attached for run daily_assistant_b2db1fdeebd44afda41fab69f7613554
+Created agent session ace02e83-8b16-4ac6-8162-6000fdcb7a10 for run daily_assistant_b2db1fdeebd44afda41fab69f7613554
+Agent WebSocket connected: session=ace02e83-8b16-4ac6-8162-6000fdcb7a10, run=daily_assistant_b2db1fdeebd44afda41fab69f7613554
+Closed agent session ace02e83-8b16-4ac6-8162-6000fdcb7a10
+Agent WebSocket disconnected: ace02e83-8b16-4ac6-8162-6000fdcb7a10
+Agent websocket attached for run daily_assistant_b2db1fdeebd44afda41fab69f7613554
+Created agent session 1e7e35a4-a52d-4f40-b434-1e4262db7c31 for run daily_assistant_b2db1fdeebd44afda41fab69f7613554
+Agent WebSocket connected: session=1e7e35a4-a52d-4f40-b434-1e4262db7c31, run=daily_assistant_b2db1fdeebd44afda41fab69f7613554
+Closed agent session 1e7e35a4-a52d-4f40-b434-1e4262db7c31
+Agent WebSocket disconnected: 1e7e35a4-a52d-4f40-b434-1e4262db7c31
+Agent team websocket attached for team run classroom_simulation_team_9aeed53799ef41209201821393695896
+Created agent session 4a8e1528-3069-4e7b-911a-d84e8f6e6b27 for run classroom_simulation_team_9aeed53799ef41209201821393695896
+Agent Team WebSocket connected: session=4a8e1528-3069-4e7b-911a-d84e8f6e6b27, run=classroom_simulation_team_9aeed53799ef41209201821393695896
+Closed agent session 4a8e1528-3069-4e7b-911a-d84e8f6e6b27
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/workspace.
+Reusing registered workspace ID: agent_ws_de7f381d55d90b4161476f36fa795f95e5209d0903b79e9eeb3a74d93c2ad3de
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/workspace.
+Reusing registered workspace ID: agent_ws_de7f381d55d90b4161476f36fa795f95e5209d0903b79e9eeb3a74d93c2ad3de
+MediaStorageService initialized. Media root: /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/data/media
+AgentRuntimeState initialized for agent_id 'daily_assistant_df9bcae1eaf64ddaafaa9af596ba2843'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'daily_assistant_df9bcae1eaf64ddaafaa9af596ba2843': LLM instance 'OpenAILLM' and 22 tools prepared and stored in state.
+AgentContext composed for agent_id 'daily_assistant_df9bcae1eaf64ddaafaa9af596ba2843'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'daily_assistant_df9bcae1eaf64ddaafaa9af596ba2843' with config: 'Daily Assistant'.
+AgentWorker initialized for agent_id 'daily_assistant_df9bcae1eaf64ddaafaa9af596ba2843'.
+Registered AgentContext for agent_id 'daily_assistant_df9bcae1eaf64ddaafaa9af596ba2843'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'daily_assistant_df9bcae1eaf64ddaafaa9af596ba2843'. Context registered.
+Agent facade initialized for agent_id 'daily_assistant_df9bcae1eaf64ddaafaa9af596ba2843'.
+Agent 'daily_assistant_df9bcae1eaf64ddaafaa9af596ba2843' created and stored successfully.
+Agent 'daily_assistant_df9bcae1eaf64ddaafaa9af596ba2843' requesting runtime to start.
+AgentRuntime for 'daily_assistant_df9bcae1eaf64ddaafaa9af596ba2843': Starting worker.
+AgentWorker 'daily_assistant_df9bcae1eaf64ddaafaa9af596ba2843': Starting...
+AgentWorker 'daily_assistant_df9bcae1eaf64ddaafaa9af596ba2843' asyncRun(): Starting.
+Agent 'daily_assistant_df9bcae1eaf64ddaafaa9af596ba2843': Runtime init completed (event store initialized).
+Agent 'daily_assistant_df9bcae1eaf64ddaafaa9af596ba2843': Runtime init completed (status deriver initialized).
+Agent 'daily_assistant_df9bcae1eaf64ddaafaa9af596ba2843': Runtime init completed (AgentEventInbox initialized).
+Agent 'daily_assistant_df9bcae1eaf64ddaafaa9af596ba2843': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'daily_assistant_df9bcae1eaf64ddaafaa9af596ba2843' to become idle (timeout: 30s)...
+AgentEventStream (ID: 7da603f8-e5aa-4fa1-8d2e-e0ede0c8a545) initialized for agent_id 'daily_assistant_df9bcae1eaf64ddaafaa9af596ba2843'. Subscribed to notifier.
+Agent 'daily_assistant_df9bcae1eaf64ddaafaa9af596ba2843': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: c6d10f38-a00d-4f70-bddb-efcab0e00649, AgentID: daily_assistant_df9bcae1eaf64ddaafaa9af596ba2843) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'daily_assistant_df9bcae1eaf64ddaafaa9af596ba2843': Bootstrapper starting direct lifecycle execution.
+Agent 'daily_assistant_df9bcae1eaf64ddaafaa9af596ba2843': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'daily_assistant_df9bcae1eaf64ddaafaa9af596ba2843': Executing McpServerPrewarmingStep.
+Agent 'daily_assistant_df9bcae1eaf64ddaafaa9af596ba2843': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'daily_assistant_df9bcae1eaf64ddaafaa9af596ba2843': Executing SystemPromptProcessingStep.
+Agent 'daily_assistant_df9bcae1eaf64ddaafaa9af596ba2843': Skill access mode is NONE. Skipping skill catalog.
+Agent 'daily_assistant_df9bcae1eaf64ddaafaa9af596ba2843': Final processed system prompt configured and captured. Trace ID: rt_1787252782369_d92e9498-cb81-48c9-bee6-2438ba76fbdb. Final length: 2914.
+Agent 'daily_assistant_df9bcae1eaf64ddaafaa9af596ba2843': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: c6d10f38-a00d-4f70-bddb-efcab0e00649, AgentID: daily_assistant_df9bcae1eaf64ddaafaa9af596ba2843) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'daily_assistant_df9bcae1eaf64ddaafaa9af596ba2843' initialized successfully. Entering main event scheduler loop.
+Agent 'daily_assistant_df9bcae1eaf64ddaafaa9af596ba2843' has become idle.
+AgentEventStream (ID: 7da603f8-e5aa-4fa1-8d2e-e0ede0c8a545) for 'daily_assistant_df9bcae1eaf64ddaafaa9af596ba2843': close() called. Unsubscribing all listeners and signaling.
+AgentEventStream (ID: 8344302b-20fd-4e3a-8b41-07a249748078) initialized for agent_id 'daily_assistant_df9bcae1eaf64ddaafaa9af596ba2843'. Subscribed to notifier.
+Agent websocket attached for run daily_assistant_df9bcae1eaf64ddaafaa9af596ba2843
+Created agent session a633ae46-d7b2-49bd-b817-e4408f3d1545 for run daily_assistant_df9bcae1eaf64ddaafaa9af596ba2843
+Agent WebSocket connected: session=a633ae46-d7b2-49bd-b817-e4408f3d1545, run=daily_assistant_df9bcae1eaf64ddaafaa9af596ba2843
+AgentExternalEventNotifier (NotifierID: c6d10f38-a00d-4f70-bddb-efcab0e00649, AgentID: daily_assistant_df9bcae1eaf64ddaafaa9af596ba2843) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c6d10f38-a00d-4f70-bddb-efcab0e00649, AgentID: daily_assistant_df9bcae1eaf64ddaafaa9af596ba2843) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'daily_assistant_df9bcae1eaf64ddaafaa9af596ba2843': UserInputContextBuildingProcessor completed. Final content length: 79
+AgentExternalEventNotifier (NotifierID: c6d10f38-a00d-4f70-bddb-efcab0e00649, AgentID: daily_assistant_df9bcae1eaf64ddaafaa9af596ba2843) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c6d10f38-a00d-4f70-bddb-efcab0e00649, AgentID: daily_assistant_df9bcae1eaf64ddaafaa9af596ba2843) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'daily_assistant_df9bcae1eaf64ddaafaa9af596ba2843',
+  prompt_tokens: 5460,
+  effective_total_context_tokens: 1050000,
+  context_derived_input_cap_tokens: 922000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 922000,
+  reserved_output_tokens: 128000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 921744,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 737395,
+  trigger_headroom_tokens: 73740,
+  quality_retention_cap_tokens: 322610,
+  post_compaction_target_tokens: 322610,
+  budget_key: '921744:737395:322610:73740:322610',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+AgentExternalEventNotifier (NotifierID: c6d10f38-a00d-4f70-bddb-efcab0e00649, AgentID: daily_assistant_df9bcae1eaf64ddaafaa9af596ba2843) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'daily_assistant_df9bcae1eaf64ddaafaa9af596ba2843': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+AgentExternalEventNotifier (NotifierID: c6d10f38-a00d-4f70-bddb-efcab0e00649, AgentID: daily_assistant_df9bcae1eaf64ddaafaa9af596ba2843) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c6d10f38-a00d-4f70-bddb-efcab0e00649, AgentID: daily_assistant_df9bcae1eaf64ddaafaa9af596ba2843) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c6d10f38-a00d-4f70-bddb-efcab0e00649, AgentID: daily_assistant_df9bcae1eaf64ddaafaa9af596ba2843) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Closed agent session a633ae46-d7b2-49bd-b817-e4408f3d1545
+Agent WebSocket disconnected: a633ae46-d7b2-49bd-b817-e4408f3d1545
+{"level":30,"time":1787252785524,"pid":81668,"hostname":"MacBookPro","reqId":"req-ac","err":{"type":"GraphQLError","message":"Graphql validation error","stack":"FastifyError: Graphql validation error\n    at Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:473:21)\n    at _Reply.graphql (/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:232:16)\n    at executeQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:231:18)\n    at executeRegularQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\n    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:388:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)","extensions":{}},"msg":"Graphql validation error"}
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/workspace.
+Reusing registered workspace ID: agent_ws_de7f381d55d90b4161476f36fa795f95e5209d0903b79e9eeb3a74d93c2ad3de
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/workspace.
+Reusing registered workspace ID: agent_ws_de7f381d55d90b4161476f36fa795f95e5209d0903b79e9eeb3a74d93c2ad3de
+MediaStorageService initialized. Media root: /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/data/media
+AgentRuntimeState initialized for agent_id 'daily_assistant_a86dc9f2ee534d1caef2e94b3e6f8ff8'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'daily_assistant_a86dc9f2ee534d1caef2e94b3e6f8ff8': LLM instance 'OpenAILLM' and 22 tools prepared and stored in state.
+AgentContext composed for agent_id 'daily_assistant_a86dc9f2ee534d1caef2e94b3e6f8ff8'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'daily_assistant_a86dc9f2ee534d1caef2e94b3e6f8ff8' with config: 'Daily Assistant'.
+AgentWorker initialized for agent_id 'daily_assistant_a86dc9f2ee534d1caef2e94b3e6f8ff8'.
+Registered AgentContext for agent_id 'daily_assistant_a86dc9f2ee534d1caef2e94b3e6f8ff8'. Total registered contexts: 2
+AgentRuntime initialized for agent_id 'daily_assistant_a86dc9f2ee534d1caef2e94b3e6f8ff8'. Context registered.
+Agent facade initialized for agent_id 'daily_assistant_a86dc9f2ee534d1caef2e94b3e6f8ff8'.
+Agent 'daily_assistant_a86dc9f2ee534d1caef2e94b3e6f8ff8' created and stored successfully.
+Agent 'daily_assistant_a86dc9f2ee534d1caef2e94b3e6f8ff8' requesting runtime to start.
+AgentRuntime for 'daily_assistant_a86dc9f2ee534d1caef2e94b3e6f8ff8': Starting worker.
+AgentWorker 'daily_assistant_a86dc9f2ee534d1caef2e94b3e6f8ff8': Starting...
+AgentWorker 'daily_assistant_a86dc9f2ee534d1caef2e94b3e6f8ff8' asyncRun(): Starting.
+Agent 'daily_assistant_a86dc9f2ee534d1caef2e94b3e6f8ff8': Runtime init completed (event store initialized).
+Agent 'daily_assistant_a86dc9f2ee534d1caef2e94b3e6f8ff8': Runtime init completed (status deriver initialized).
+Agent 'daily_assistant_a86dc9f2ee534d1caef2e94b3e6f8ff8': Runtime init completed (AgentEventInbox initialized).
+Agent 'daily_assistant_a86dc9f2ee534d1caef2e94b3e6f8ff8': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'daily_assistant_a86dc9f2ee534d1caef2e94b3e6f8ff8' to become idle (timeout: 30s)...
+AgentEventStream (ID: b14e9a84-5097-4be7-b52e-1eddf9c6f515) initialized for agent_id 'daily_assistant_a86dc9f2ee534d1caef2e94b3e6f8ff8'. Subscribed to notifier.
+Agent 'daily_assistant_a86dc9f2ee534d1caef2e94b3e6f8ff8': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: d9f2e5b2-41aa-4cd5-93f2-47eb8bfda136, AgentID: daily_assistant_a86dc9f2ee534d1caef2e94b3e6f8ff8) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'daily_assistant_a86dc9f2ee534d1caef2e94b3e6f8ff8': Bootstrapper starting direct lifecycle execution.
+Agent 'daily_assistant_a86dc9f2ee534d1caef2e94b3e6f8ff8': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'daily_assistant_a86dc9f2ee534d1caef2e94b3e6f8ff8': Executing McpServerPrewarmingStep.
+Agent 'daily_assistant_a86dc9f2ee534d1caef2e94b3e6f8ff8': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'daily_assistant_a86dc9f2ee534d1caef2e94b3e6f8ff8': Executing SystemPromptProcessingStep.
+Agent 'daily_assistant_a86dc9f2ee534d1caef2e94b3e6f8ff8': Skill access mode is NONE. Skipping skill catalog.
+Agent 'daily_assistant_a86dc9f2ee534d1caef2e94b3e6f8ff8': Final processed system prompt configured and captured. Trace ID: rt_1787252793391_2d26c553-2501-4fb1-9fbc-87141a4b4bc3. Final length: 2914.
+Agent 'daily_assistant_a86dc9f2ee534d1caef2e94b3e6f8ff8': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: d9f2e5b2-41aa-4cd5-93f2-47eb8bfda136, AgentID: daily_assistant_a86dc9f2ee534d1caef2e94b3e6f8ff8) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'daily_assistant_a86dc9f2ee534d1caef2e94b3e6f8ff8' initialized successfully. Entering main event scheduler loop.
+Agent 'daily_assistant_a86dc9f2ee534d1caef2e94b3e6f8ff8' has become idle.
+AgentEventStream (ID: b14e9a84-5097-4be7-b52e-1eddf9c6f515) for 'daily_assistant_a86dc9f2ee534d1caef2e94b3e6f8ff8': close() called. Unsubscribing all listeners and signaling.
+AgentEventStream (ID: 4b159654-6fb9-4d84-9667-d6f59658f940) initialized for agent_id 'daily_assistant_a86dc9f2ee534d1caef2e94b3e6f8ff8'. Subscribed to notifier.
+Agent websocket attached for run daily_assistant_a86dc9f2ee534d1caef2e94b3e6f8ff8
+Created agent session 6ef58ff7-f1d3-4ce5-993a-82f8b9bea100 for run daily_assistant_a86dc9f2ee534d1caef2e94b3e6f8ff8
+Agent WebSocket connected: session=6ef58ff7-f1d3-4ce5-993a-82f8b9bea100, run=daily_assistant_a86dc9f2ee534d1caef2e94b3e6f8ff8
+AgentExternalEventNotifier (NotifierID: d9f2e5b2-41aa-4cd5-93f2-47eb8bfda136, AgentID: daily_assistant_a86dc9f2ee534d1caef2e94b3e6f8ff8) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: d9f2e5b2-41aa-4cd5-93f2-47eb8bfda136, AgentID: daily_assistant_a86dc9f2ee534d1caef2e94b3e6f8ff8) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'daily_assistant_a86dc9f2ee534d1caef2e94b3e6f8ff8': UserInputContextBuildingProcessor completed. Final content length: 79
+AgentExternalEventNotifier (NotifierID: d9f2e5b2-41aa-4cd5-93f2-47eb8bfda136, AgentID: daily_assistant_a86dc9f2ee534d1caef2e94b3e6f8ff8) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: d9f2e5b2-41aa-4cd5-93f2-47eb8bfda136, AgentID: daily_assistant_a86dc9f2ee534d1caef2e94b3e6f8ff8) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'daily_assistant_a86dc9f2ee534d1caef2e94b3e6f8ff8',
+  prompt_tokens: 5460,
+  effective_total_context_tokens: 1050000,
+  context_derived_input_cap_tokens: 922000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 922000,
+  reserved_output_tokens: 128000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 921744,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 737395,
+  trigger_headroom_tokens: 73740,
+  quality_retention_cap_tokens: 322610,
+  post_compaction_target_tokens: 322610,
+  budget_key: '921744:737395:322610:73740:322610',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+AgentExternalEventNotifier (NotifierID: d9f2e5b2-41aa-4cd5-93f2-47eb8bfda136, AgentID: daily_assistant_a86dc9f2ee534d1caef2e94b3e6f8ff8) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'daily_assistant_a86dc9f2ee534d1caef2e94b3e6f8ff8': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+AgentExternalEventNotifier (NotifierID: d9f2e5b2-41aa-4cd5-93f2-47eb8bfda136, AgentID: daily_assistant_a86dc9f2ee534d1caef2e94b3e6f8ff8) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: d9f2e5b2-41aa-4cd5-93f2-47eb8bfda136, AgentID: daily_assistant_a86dc9f2ee534d1caef2e94b3e6f8ff8) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: d9f2e5b2-41aa-4cd5-93f2-47eb8bfda136, AgentID: daily_assistant_a86dc9f2ee534d1caef2e94b3e6f8ff8) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Closed agent session 6ef58ff7-f1d3-4ce5-993a-82f8b9bea100
+Agent WebSocket disconnected: 6ef58ff7-f1d3-4ce5-993a-82f8b9bea100
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/data/memory/agents/daily_assistant_a86dc9f2ee534d1caef2e94b3e6f8ff8/raw_traces_manifest.json
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/workspace.
+Reusing registered workspace ID: agent_ws_de7f381d55d90b4161476f36fa795f95e5209d0903b79e9eeb3a74d93c2ad3de
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/workspace.
+Reusing registered workspace ID: agent_ws_de7f381d55d90b4161476f36fa795f95e5209d0903b79e9eeb3a74d93c2ad3de
+Agent websocket attached for run daily_assistant_e7ab5c86085e4ff89ca1ebe9eed52adf
+Created agent session 806629e3-e4cc-4e1f-ba72-411caa25312d for run daily_assistant_e7ab5c86085e4ff89ca1ebe9eed52adf
+Agent WebSocket connected: session=806629e3-e4cc-4e1f-ba72-411caa25312d, run=daily_assistant_e7ab5c86085e4ff89ca1ebe9eed52adf
+Closed agent session 806629e3-e4cc-4e1f-ba72-411caa25312d
+Agent WebSocket disconnected: 806629e3-e4cc-4e1f-ba72-411caa25312d
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/data/memory/agents/daily_assistant_e7ab5c86085e4ff89ca1ebe9eed52adf/raw_traces_manifest.json
+[2026-08-20T19:07:09.534Z] [INFO] [server.runtime] Received SIGINT. Shutting down server...
+[2026-08-20T19:07:09.579Z] [INFO] [server.runtime] Server closed cleanly.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Database migrations completed successfully.
+prisma:info Starting a sqlite pool with 21 connections.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 20 predefined settings
+Populating agent definition cache for the first time...
+Agent definition cache populated with 49 items.
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+[2026-08-20T19:07:34.793Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+{"level":30,"time":1787252854869,"pid":26136,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:54587"}
+[2026-08-20T19:07:34.869Z] [INFO] [server.runtime] Server listening on 127.0.0.1:54587
+[2026-08-20T19:07:34.871Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:54587
+Creating temp workspace at: /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/data/temp_workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/data/temp_workspace.
+Initialized TempWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Scheduling non-critical startup tasks to run in the background...
+Background cache pre-loading process has started.
+CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.
+AutobyteusModelCatalog initialized.
+CachedAudioModelProvider initialized.
+AudioModelService initialized.
+CachedImageModelProvider initialized.
+ImageModelService initialized.
+CachedVideoModelProvider initialized.
+VideoModelService initialized.
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Loading workspace packages to trigger registration...
+Loading agent tool definitions...
+Running MCP tool registration background task...
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Loading and registering all MCP server configurations from file...
+Populating MCP server config cache for the first time...
+Background task 'Agent Customizations' completed successfully.
+Background task 'Memory Sync Worker' completed successfully.
+Pre-loaded 49 agent definitions into cache.
+[2026-08-20T19:07:34.900Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Loaded tool group: Media Tools
+Successfully loaded workspace packages.
+Background task 'Workspaces' completed successfully.
+Successfully registered tool definition: 'publish_artifacts'
+Loaded tool group: Published Artifact Tools
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+Loaded tool group: Browser Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Loaded tool group: Task Delegation Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Loaded tool group: Agent Communication Tools
+Background task 'Agent Tools' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+[2026-08-20T19:07:34.942Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 31 items.
+Pre-loaded 31 agent team definitions into cache.
+Pre-loaded 0 MCP server configs into cache.
+Populating LLM models cache for the first time...
+Fetching list of available LLM models from LLMFactory...
+Discovering Autobyteus models from host: https://localhost:51739
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Discovering Autobyteus models from host: https://localhost:51740
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+AUTOBYTEUS_LLM_DISCOVERY_REMOTE_FAILED
+Discovering Autobyteus models from host: https://192.168.2.142:51739
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+AUTOBYTEUS_LLM_DISCOVERY_REMOTE_FAILED
+Discovering Ollama models from host: http://127.0.0.1:11434
+Could not connect to Ollama server at http://127.0.0.1:11434. Ensure it's running. fetch failed
+Discovering LM Studio models from host: http://127.0.0.1:1234
+Finished LM Studio discovery. Total models registered: 15
+Successfully fetched 83 models from LLMFactory.
+LLM models cache populated with 83 items.
+Pre-loaded 83 LLM models into cache.
+Populating Image models cache for the first time...
+Fetching list of available Image models from ImageClientFactory...
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+AUTOBYTEUS_IMAGE_DISCOVERY_REMOTE_FAILED
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+[2026-08-20T19:09:43.730Z] [INFO] [server.runtime] Received SIGINT. Shutting down server...

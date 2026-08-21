@@ -1,0 +1,22 @@
+[
+  {
+    "teamRunId": "classroom_simulation_team_9aeed53799ef41209201821393695896",
+    "teamDefinitionId": "classroom-simulation-team",
+    "teamDefinitionName": "Classroom Simulation Team",
+    "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/workspace",
+    "summary": "Run one file-backed classroom round. Ask /student to solve 17 + 25 and explain the addition brief...",
+    "createdAt": "2026-08-20T18:50:26.447Z",
+    "archivedAt": null,
+    "terminatedAt": null
+  },
+  {
+    "teamRunId": "classroom_simulation_team_16e704e5c1cb455885e01290f7ba76cf",
+    "teamDefinitionId": "classroom-simulation-team",
+    "teamDefinitionName": "Classroom Simulation Team",
+    "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/workspace",
+    "summary": "",
+    "createdAt": "2026-08-20T18:48:43.441Z",
+    "archivedAt": null,
+    "terminatedAt": null
+  }
+]

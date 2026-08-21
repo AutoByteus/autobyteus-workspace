@@ -1,8 +1,8 @@
-import type { HistoricalReplayEvent } from "../historical-replay-event-types.js";
+import type { EventMonitorReplayEvent } from "../historical-replay-event-types.js";
 import type { RunProjectionConversationEntry } from "../run-projection-types.js";
 
 export const buildRunProjectionConversation = (
-  events: HistoricalReplayEvent[],
+  events: EventMonitorReplayEvent[],
 ): RunProjectionConversationEntry[] =>
   events.flatMap((event) => {
     if (event.kind === "message") {

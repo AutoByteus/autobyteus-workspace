@@ -190,7 +190,7 @@ export class MigrateNativeWorkingContextSnapshotsV5Migration
   }
 
   private loadActiveReferenceFacts(memoryDir: string): NativeSnapshotReferenceFact[] {
-    return new RunMemoryFileStore(memoryDir).listRawTracesOrdered().map((trace) => ({
+    return new RunMemoryFileStore(memoryDir).listTurnRawTracesOrdered().map((trace) => ({
       id: trace.id,
       turnId: trace.turnId,
       seq: trace.seq,

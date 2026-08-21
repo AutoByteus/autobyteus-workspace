@@ -228,7 +228,7 @@ describe('PendingCompactionExecutor', () => {
     )).toBe(beforeSnapshot);
     expect(harness.lineageStore.list()).toEqual([]);
     expect(harness.store.readArchiveRawTraces()).toEqual([]);
-    expect(harness.store.listRawTracesOrdered().map(({ id }) => id)).toEqual(['raw-1']);
+    expect(harness.store.listTurnRawTracesOrdered().map(({ id }) => id)).toEqual(['raw-1']);
 
     await expect(executor.executeIfAuthorized({ turnId: 'turn-retry', turnOrigin: 'user' }))
       .resolves.toBe(true);
@@ -273,7 +273,7 @@ describe('PendingCompactionExecutor', () => {
     expect(harness.manager.getPendingCompactionGate().kind).toBe('awaiting_user_retry');
     expect(harness.lineageStore.list()).toEqual([]);
     expect(harness.store.readArchiveRawTraces()).toEqual([]);
-    expect(harness.store.listRawTracesOrdered().map(({ id }) => id)).toEqual(['raw-1']);
+    expect(harness.store.listTurnRawTracesOrdered().map(({ id }) => id)).toEqual(['raw-1']);
     expect(reporter.emitStatus.mock.calls.map(([payload]) => payload.phase))
       .toEqual(['started', 'failed']);
   });

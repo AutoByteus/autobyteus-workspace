@@ -93,6 +93,15 @@ The frontend initially loads working/episodic/semantic data without raw traces. 
 
 When raw traces are requested with archive inclusion enabled without file-selector mode, the backend can still merge complete archive segments plus active traces for non-inspector callers. In both selected-file and merged-corpus modes it exposes provenance fields such as persisted trace `id`, `traceType`, `sourceEvent`, `turnId`, `seq`, timestamp, media fields, and tool payload fields. The current UI displays one selected file at a time with the normalized trace type, content, sequence, tool/media details, file selector, limit control, and loading/empty states.
 
+`MemoryTraceEvent.scope` distinguishes ordinary `turn` traces from the current
+run-scoped instruction trace. A valid instruction row appears with
+`scope: "run"`, `traceType: "system_instruction"`,
+`sourceEvent: "SYSTEM_INSTRUCTIONS_SUPPLIED"`, the exact captured content and
+persisted ID/timestamp, and `turnId: null` / `seq: null`. The Raw Traces UI must
+not fabricate turn grouping or sequence for it. Malformed system rows are
+omitted by backend normalization instead of being rendered through the generic
+turn shape.
+
 ## Storage Source
 
 Storage is server-owned and identity-opaque:
@@ -111,6 +120,13 @@ raw-trace-only server recording: active raw traces and optional complete rotated
 segments drive normal history replay and remain inspectable in the Raw Traces
 tab; provider thread/session state owns continuation. New external activity does
 not create or update `working_context_snapshot.json`.
+
+Native, Codex, and Claude can each persist the exact AutoByteus-owned runtime
+instruction handoff as the same strict run-scoped raw row. Existing runs are
+directly usable without migration: absence means no instruction evidence was
+recorded, not that the UI should reconstruct it from the current agent, Team, or
+skill definition. Provider-owned hidden/effective instructions are outside this
+record.
 
 A required startup cleanup removes duplicate external snapshots only when
 current standalone or team-member metadata classifies the exact location as
@@ -174,6 +190,12 @@ deletes, deltas, analytics indexes, or runnable restore state.
 ## Archive / Boundary Notes
 
 The Raw Traces tab defaults to one selected raw-trace file at a time: active `raw_traces_active.jsonl` first when present, then complete segmented archive files as selectable options. It does not show a merged "all files" view by default. Backend memory-view callers that explicitly request archive inclusion without file-selector mode can still receive a merged corpus of complete segments plus active rows. Provider compaction-boundary markers are storage provenance: they may appear as `provider_compaction_boundary` raw traces, but they do not mean the external runtime's memory was injected, retrieved, or semantically compacted by AutoByteus.
+
+Normal Activity and Event Monitor hydration are active-file-only. A rotated
+`system_instruction` row therefore remains explicitly inspectable by selecting
+its completed raw-trace segment here, but it is not silently reintroduced into
+Activity; Event Monitor excludes this run-scoped kind in both active-window and
+earlier-page policy.
 
 Segmented archives are not a retention/compression feature. They preserve analyzability while keeping active raw traces smaller after native compaction or provider-boundary rotation.
 

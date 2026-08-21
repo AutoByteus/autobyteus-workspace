@@ -103,10 +103,10 @@ describe('read_media_file continuation flow (integration)', () => {
     );
 
     const toolResultTraces = memoryManager
-      .listRawTracesOrdered()
+      .listTurnRawTracesOrdered()
       .filter((trace) => trace.traceType === 'tool_result');
     expect(toolResultTraces).toHaveLength(2);
-    expect(memoryManager.listRawTracesOrdered().some(
+    expect(memoryManager.listTurnRawTracesOrdered().some(
       ({ traceType }) => traceType === 'tool_continuation',
     )).toBe(false);
 

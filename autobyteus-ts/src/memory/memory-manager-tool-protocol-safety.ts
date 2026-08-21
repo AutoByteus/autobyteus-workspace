@@ -26,8 +26,8 @@ type AppendRawTraceLikeInput = Omit<RawTraceItemOptions, 'id' | 'ts' | 'seq'> &
 type MemoryManagerToolProtocolSafetyBoundary = {
   getWorkingContextMessages(): Message[];
   replaceWorkingContext(workingContext: WorkingContext): void;
-  listRawTracesOrdered(limit?: number): RawTraceItem[];
-  listRawTraceCorpusOrdered(limit?: number): RawTraceItem[];
+  listTurnRawTracesOrdered(limit?: number): RawTraceItem[];
+  listTurnRawTraceCorpusOrdered(limit?: number): RawTraceItem[];
   appendRawTrace(input: AppendRawTraceLikeInput): RawTraceItem;
   persistWorkingContextSnapshot(): void;
 };
@@ -40,8 +40,8 @@ export function ensureMemoryManagerWorkingContextToolProtocolSafe(
   input: MemoryManagerToolProtocolSafetyInput = {},
 ): WorkingContextToolProtocolRepairResult {
   const rawTraces = input.rawTraceScope === 'active'
-    ? memoryManager.listRawTracesOrdered()
-    : memoryManager.listRawTraceCorpusOrdered();
+    ? memoryManager.listTurnRawTracesOrdered()
+    : memoryManager.listTurnRawTraceCorpusOrdered();
   const interactions = buildToolInteractions(rawTraces);
   const result = repairWorkingContextToolProtocol(
     memoryManager.getWorkingContextMessages(),
@@ -85,8 +85,8 @@ export function ensureMemoryManagerWorkingContextToolProtocolSafe(
   }
 
   const committedRawTraces = input.rawTraceScope === 'active'
-    ? memoryManager.listRawTracesOrdered()
-    : memoryManager.listRawTraceCorpusOrdered();
+    ? memoryManager.listTurnRawTracesOrdered()
+    : memoryManager.listTurnRawTraceCorpusOrdered();
   const committedInteractions = buildToolInteractions(committedRawTraces);
   const converged = repairWorkingContextToolProtocol(
     memoryManager.getWorkingContextMessages(),

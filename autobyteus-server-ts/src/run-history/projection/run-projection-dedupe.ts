@@ -142,6 +142,9 @@ export const dedupeRunProjectionConversationEntries = (
 };
 
 const explicitActivityKey = (entry: RunProjectionActivityEntry): string => {
+  if (entry.kind === "system_instruction") {
+    return `${entry.kind}\0${entry.activityId}`;
+  }
   if (entry.kind === "compaction") {
     return [
       entry.kind,
@@ -159,6 +162,9 @@ const explicitActivityKey = (entry: RunProjectionActivityEntry): string => {
 };
 
 const activityRichnessScore = (entry: RunProjectionActivityEntry): number => {
+  if (entry.kind === "system_instruction") {
+    return [normalizeTs(entry.ts), entry.content].filter(hasValue).length;
+  }
   if (entry.kind === "compaction") {
     return [
       normalizeTs(entry.ts),
@@ -192,6 +198,12 @@ const mergeActivityEntry = (
   current: RunProjectionActivityEntry,
   incoming: RunProjectionActivityEntry,
 ): RunProjectionActivityEntry => {
+  if (current.kind === "system_instruction" && incoming.kind === "system_instruction") {
+    if (current.content !== incoming.content || current.ts !== incoming.ts) {
+      console.warn(`[RunProjectionDedupe] rejected conflicting system instruction activity '${current.activityId}'.`);
+    }
+    return current;
+  }
   if (current.kind === "compaction" && incoming.kind === "compaction") {
     const currentTs = normalizeTs(current.ts);
     const incomingTs = normalizeTs(incoming.ts);

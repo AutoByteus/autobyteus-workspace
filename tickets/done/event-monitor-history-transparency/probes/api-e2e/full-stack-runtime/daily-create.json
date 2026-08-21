@@ -1,0 +1,9 @@
+{
+  "data": {
+    "createAgentRun": {
+      "success": true,
+      "message": "Agent run created successfully.",
+      "runId": "daily_assistant_b2db1fdeebd44afda41fab69f7613554"
+    }
+  }
+}

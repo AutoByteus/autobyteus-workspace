@@ -1,0 +1,193 @@
+{
+  "data": {
+    "getRunProjection": {
+      "runId": "daily_assistant_b2db1fdeebd44afda41fab69f7613554",
+      "summary": "Use the open_tab tool exactly once to open http://127.0.0.1:54588/ and wait for domcontentloaded....",
+      "lastActivityAt": "2026-08-20T18:51:07.492Z",
+      "conversation": [
+        {
+          "kind": "message",
+          "role": "user",
+          "content": "Use the open_tab tool exactly once to open http://127.0.0.1:54588/ and wait for domcontentloaded. Do not use any other tool. After open_tab succeeds, reply with exactly DAILY_ASSISTANT_FRONTEND_OPEN_OK and nothing else.",
+          "media": null,
+          "ts": 1787251858.249
+        },
+        {
+          "kind": "reasoning",
+          "role": null,
+          "content": "**Inspecting tool availability and constraints****Planning dynamic open_tab invocation**",
+          "media": null,
+          "ts": 1787251865.019
+        },
+        {
+          "kind": "tool_call",
+          "invocationId": "exec-da2ad216-c288-4f5a-a8db-f398ad618580",
+          "role": null,
+          "content": "",
+          "toolName": "open_tab",
+          "toolArgs": {
+            "url": "http://127.0.0.1:54588/",
+            "wait_until": "domcontentloaded"
+          },
+          "toolResult": {
+            "tab_id": "api-e2e-tab-1",
+            "status": "opened",
+            "url": "http://127.0.0.1:54588/",
+            "title": ""
+          },
+          "toolError": null,
+          "media": null,
+          "ts": 1787251866.116
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "content": "DAILY_ASSISTANT_FRONTEND_OPEN_OK",
+          "media": null,
+          "ts": 1787251867.492
+        }
+      ],
+      "activities": [
+        {
+          "kind": "system_instruction",
+          "activityId": "rt_1787251810663_362d0acc-f8bc-4b0d-b337-9a47327f16ec",
+          "content": "## Agent Identity\n\n- Name: Daily Assistant\n- Description: General Agent\n\n### Responsibilities and Boundaries\n\nYou are Daily Assistant.\n\nUse the attached `shell-first-operating-practice` skill as the authoritative operating practice for task execution. It owns the reusable task loop, shell-first system operation, planning, safety, verification, and reporting behavior.",
+          "ts": 1787251810.663
+        },
+        {
+          "kind": "tool",
+          "invocationId": "exec-da2ad216-c288-4f5a-a8db-f398ad618580",
+          "toolName": "open_tab",
+          "type": "tool_call",
+          "status": "success",
+          "contextText": "open_tab",
+          "arguments": {
+            "url": "http://127.0.0.1:54588/",
+            "wait_until": "domcontentloaded"
+          },
+          "logs": [],
+          "result": {
+            "tab_id": "api-e2e-tab-1",
+            "status": "opened",
+            "url": "http://127.0.0.1:54588/",
+            "title": ""
+          },
+          "error": null,
+          "ts": 1787251866.116,
+          "detailLevel": "source_limited"
+        }
+      ]
+    },
+    "getAgentRunMemoryView": {
+      "runId": "daily_assistant_b2db1fdeebd44afda41fab69f7613554",
+      "selectedRawTraceFileName": "raw_traces_active.jsonl",
+      "rawTraceFiles": [
+        {
+          "fileName": "raw_traces_active.jsonl",
+          "kind": "active",
+          "recordCount": 6
+        }
+      ],
+      "rawTraces": [
+        {
+          "scope": "run",
+          "id": "rt_1787251810663_362d0acc-f8bc-4b0d-b337-9a47327f16ec",
+          "traceType": "system_instruction",
+          "sourceEvent": "SYSTEM_INSTRUCTIONS_SUPPLIED",
+          "content": "## Agent Identity\n\n- Name: Daily Assistant\n- Description: General Agent\n\n### Responsibilities and Boundaries\n\nYou are Daily Assistant.\n\nUse the attached `shell-first-operating-practice` skill as the authoritative operating practice for task execution. It owns the reusable task loop, shell-first system operation, planning, safety, verification, and reporting behavior.",
+          "toolName": null,
+          "toolCallId": null,
+          "toolArgs": null,
+          "toolResult": null,
+          "toolError": null,
+          "turnId": null,
+          "seq": null,
+          "ts": 1787251810.663
+        },
+        {
+          "scope": "turn",
+          "id": "rt_1787251858250_abaa2d27-73ea-4288-be45-da80e05e04e6",
+          "traceType": "user",
+          "sourceEvent": "AgentRun.postUserMessage",
+          "content": "Use the open_tab tool exactly once to open http://127.0.0.1:54588/ and wait for domcontentloaded. Do not use any other tool. After open_tab succeeds, reply with exactly DAILY_ASSISTANT_FRONTEND_OPEN_OK and nothing else.",
+          "toolName": null,
+          "toolCallId": null,
+          "toolArgs": null,
+          "toolResult": null,
+          "toolError": null,
+          "turnId": "01a02083-1b34-7ea2-afda-6de10340b8c2",
+          "seq": 1,
+          "ts": 1787251858.249
+        },
+        {
+          "scope": "turn",
+          "id": "rt_1787251865019_94c936fa-92b9-4485-8936-2e5b0eea6bd1",
+          "traceType": "reasoning",
+          "sourceEvent": "SEGMENT_END",
+          "content": "**Inspecting tool availability and constraints****Planning dynamic open_tab invocation**",
+          "toolName": null,
+          "toolCallId": null,
+          "toolArgs": null,
+          "toolResult": null,
+          "toolError": null,
+          "turnId": "01a02083-1b34-7ea2-afda-6de10340b8c2",
+          "seq": 2,
+          "ts": 1787251865.019
+        },
+        {
+          "scope": "turn",
+          "id": "rt_1787251865020_8209e973-6604-4a90-8e01-3e5569eccb26",
+          "traceType": "tool_call",
+          "sourceEvent": "TOOL_EXECUTION_STARTED",
+          "content": "",
+          "toolName": "open_tab",
+          "toolCallId": "exec-da2ad216-c288-4f5a-a8db-f398ad618580",
+          "toolArgs": {
+            "url": "http://127.0.0.1:54588/",
+            "wait_until": "domcontentloaded"
+          },
+          "toolResult": null,
+          "toolError": null,
+          "turnId": "01a02083-1b34-7ea2-afda-6de10340b8c2",
+          "seq": 3,
+          "ts": 1787251865.02
+        },
+        {
+          "scope": "turn",
+          "id": "rt_1787251866116_f23a5e6e-34fb-4b9a-af95-20c6d9b127f7",
+          "traceType": "tool_result",
+          "sourceEvent": "TOOL_EXECUTION_SUCCEEDED",
+          "content": "",
+          "toolName": "open_tab",
+          "toolCallId": "exec-da2ad216-c288-4f5a-a8db-f398ad618580",
+          "toolArgs": null,
+          "toolResult": {
+            "tab_id": "api-e2e-tab-1",
+            "status": "opened",
+            "url": "http://127.0.0.1:54588/",
+            "title": ""
+          },
+          "toolError": null,
+          "turnId": "01a02083-1b34-7ea2-afda-6de10340b8c2",
+          "seq": 4,
+          "ts": 1787251866.116
+        },
+        {
+          "scope": "turn",
+          "id": "rt_1787251867492_109d1816-53f4-425c-9a30-7f45688819c5",
+          "traceType": "assistant",
+          "sourceEvent": "SEGMENT_END",
+          "content": "DAILY_ASSISTANT_FRONTEND_OPEN_OK",
+          "toolName": null,
+          "toolCallId": null,
+          "toolArgs": null,
+          "toolResult": null,
+          "toolError": null,
+          "turnId": "01a02083-1b34-7ea2-afda-6de10340b8c2",
+          "seq": 5,
+          "ts": 1787251867.492
+        }
+      ]
+    }
+  }
+}

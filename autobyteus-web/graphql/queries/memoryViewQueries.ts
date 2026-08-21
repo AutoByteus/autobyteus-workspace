@@ -45,6 +45,7 @@ export const GET_AGENT_RUN_MEMORY_VIEW = gql`
       }
       selectedRawTraceFileName
       rawTraces {
+        scope
         id
         traceType
         sourceEvent
@@ -110,6 +111,7 @@ export const GET_TEAM_MEMBER_RUN_MEMORY_VIEW = gql`
       }
       selectedRawTraceFileName
       rawTraces {
+        scope
         id
         traceType
         sourceEvent

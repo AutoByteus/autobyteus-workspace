@@ -1,0 +1,18 @@
+{
+  "runId": "daily_assistant_b2db1fdeebd44afda41fab69f7613554",
+  "agentDefinitionId": "daily-assistant",
+  "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/workspace",
+  "memoryDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/data/memory/agents/daily_assistant_b2db1fdeebd44afda41fab69f7613554",
+  "llmModelIdentifier": "gpt-5.6-sol",
+  "llmConfig": {
+    "reasoning_effort": "low"
+  },
+  "autoExecuteTools": true,
+  "skillAccessMode": "NONE",
+  "runtimeKind": "codex_app_server",
+  "platformAgentRunId": "01a02082-6171-7540-b38e-b18e39aea285",
+  "preparedAt": "2026-08-20T18:50:10.564Z",
+  "preparedExpiresAt": "2026-08-21T18:50:10.564Z",
+  "startedAt": "2026-08-20T18:50:10.845Z",
+  "applicationExecutionContext": null
+}

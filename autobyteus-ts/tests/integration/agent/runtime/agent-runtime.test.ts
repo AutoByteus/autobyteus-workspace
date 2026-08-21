@@ -466,7 +466,7 @@ class InMemoryStore extends MemoryStore {
     return typeof limit === 'number' ? filtered.slice(-limit) : filtered;
   }
 
-  listRawTracesOrdered(limit?: number): any[] {
+  listTurnRawTracesOrdered(limit?: number): any[] {
     return this.list(MemoryType.RAW_TRACE, limit);
   }
 
@@ -795,7 +795,7 @@ describe('Agent runtime integration', () => {
       firstLlm.unblockFirstResponse();
 
       const firstManager = firstAgent.context.memoryManager!;
-      const trustedBoundary = firstManager.listRawTracesOrdered().find((item) =>
+      const trustedBoundary = firstManager.listTurnRawTracesOrdered().find((item) =>
         item.traceType === 'operation_boundary'
         && item.sourceEvent === 'AgentTurnInterruptedEvent'
         && item.content?.includes('required-reset-test'));
@@ -950,7 +950,7 @@ describe('Agent runtime integration', () => {
       expect(nextMessages.some((message) => message.tool_payload)).toBe(false);
       expect(nextMessages.some((message) => message.content === 'after stream interrupt')).toBe(true);
 
-      const rawTraces = context.memoryManager?.listRawTracesOrdered() ?? [];
+      const rawTraces = context.memoryManager?.listTurnRawTracesOrdered() ?? [];
       expect(rawTraces.some((item) =>
         item.traceType === 'assistant' &&
         item.sourceEvent === 'LlmPhaseInterruptedPartial' &&

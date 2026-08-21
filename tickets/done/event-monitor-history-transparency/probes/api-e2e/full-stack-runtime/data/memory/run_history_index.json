@@ -1,0 +1,42 @@
+[
+  {
+    "runId": "daily_assistant_e7ab5c86085e4ff89ca1ebe9eed52adf",
+    "agentDefinitionId": "daily-assistant",
+    "agentName": "Daily Assistant",
+    "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/workspace",
+    "summary": "Reply with exactly CLAUDE_RUNTIME_SYSTEM_OK and nothing else. Do not use tools.",
+    "createdAt": "2026-08-20T19:06:35.305Z",
+    "archivedAt": null,
+    "terminatedAt": null
+  },
+  {
+    "runId": "daily_assistant_a86dc9f2ee534d1caef2e94b3e6f8ff8",
+    "agentDefinitionId": "daily-assistant",
+    "agentName": "Daily Assistant",
+    "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/workspace",
+    "summary": "Reply with exactly NATIVE_RUNTIME_SYSTEM_OK and nothing else. Do not use tools.",
+    "createdAt": "2026-08-20T19:06:33.364Z",
+    "archivedAt": null,
+    "terminatedAt": null
+  },
+  {
+    "runId": "daily_assistant_df9bcae1eaf64ddaafaa9af596ba2843",
+    "agentDefinitionId": "daily-assistant",
+    "agentName": "Daily Assistant",
+    "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/workspace",
+    "summary": "Reply with exactly NATIVE_RUNTIME_SYSTEM_OK and nothing else. Do not use tools.",
+    "createdAt": "2026-08-20T19:06:22.324Z",
+    "archivedAt": null,
+    "terminatedAt": null
+  },
+  {
+    "runId": "daily_assistant_b2db1fdeebd44afda41fab69f7613554",
+    "agentDefinitionId": "daily-assistant",
+    "agentName": "Daily Assistant",
+    "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/workspace",
+    "summary": "Use the open_tab tool exactly once to open http://127.0.0.1:54588/ and wait for domcontentloaded....",
+    "createdAt": "2026-08-20T18:50:10.564Z",
+    "archivedAt": null,
+    "terminatedAt": null
+  }
+]

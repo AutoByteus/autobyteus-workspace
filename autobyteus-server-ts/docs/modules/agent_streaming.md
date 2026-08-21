@@ -51,6 +51,17 @@ This state is live-only. Restore and history replay do not reconstruct or resume
 partial segments. Consumers must not synthesize turns, IDs, types, missing
 starts, end text, or provider-specific aliases.
 
+Instruction transparency is a separate run-scoped semantic event, not a
+segment. After a newly created strict raw trace is committed, Native, Claude,
+and Codex normalize it to
+`SYSTEM_INSTRUCTIONS_SUPPLIED { trace_id, content, ts }` with `statusHint: null`.
+Native and Codex stage the newly created fact until the `AgentRun` listener is
+bound, then publish it once before the first backend input. Claude publishes
+after the SDK query is usable and persistence succeeds; a persistence failure
+closes that query and emits no event. Reusing an unchanged active capture emits
+no duplicate event. The runtime memory accumulator ignores this already-
+persisted event so the WebSocket pipeline cannot write a second raw row.
+
 ## Team Stream Contract
 
 The Team transport uses strict DTOs from `@autobyteus/team-stream-contracts`.
@@ -88,6 +99,12 @@ turn and ID without repeating type. `ERROR` carries required nullable
 `error_scope`, `error_effect`, and `turn_id` evidence. Turn/runtime diagnostics
 remain visible and non-terminal; only explicit terminal evidence can settle
 lifecycle.
+
+For `SYSTEM_INSTRUCTIONS_SUPPLIED`, Team transport preserves the exact common
+`trace_id`, `content`, and `ts` payload and adds only the existing Team routing
+envelope. The browser Team adapter removes that routing before using the same
+common Activity handler as a standalone run. There is no Team-specific prompt
+shape, redacted-content variant, turn identity, or compatibility alias.
 
 ## Commands And Connection
 
@@ -161,6 +178,11 @@ unthrottled.
 - `RuntimeMemoryEventAccumulator` and run-history projection consume admitted
   canonical segment events and preserve tool/reasoning ordering without segment
   fallback.
+- `SYSTEM_INSTRUCTIONS_SUPPLIED` is admitted directly to Activity by raw trace
+  ID. It does not alter conversation, Event Monitor, lifecycle, or runtime
+  status. Supported server/browser streaming debug modes log only its type,
+  trace ID, timestamp, and derived Unicode code-point length; they must never
+  serialize the instruction body to diagnostic output.
 - `FILE_CHANGE`, Team Communication, task delegation, external messages,
   application events, and token usage retain their own canonical identities and
   do not become segment-lifecycle authorities.

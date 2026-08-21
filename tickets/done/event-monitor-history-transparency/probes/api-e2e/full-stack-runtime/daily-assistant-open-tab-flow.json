@@ -1,0 +1,242 @@
+{
+  "id": "daily-assistant-open-tab-flow",
+  "result": "Pass",
+  "socketUrl": "ws://127.0.0.1:54587/ws/agent/daily_assistant_b2db1fdeebd44afda41fab69f7613554",
+  "messageId": "api-e2e-5e23e7af-82ad-482e-8e21-b90313ed6293",
+  "token": "DAILY_ASSISTANT_FRONTEND_OPEN_OK",
+  "runningSeen": true,
+  "tokenSeen": true,
+  "openTabSucceeded": true,
+  "messageCount": 21,
+  "messageTypeCounts": {
+    "CONNECTED": 1,
+    "AGENT_STATUS": 4,
+    "AGENT_COMMAND_ACK": 1,
+    "SYSTEM_INSTRUCTIONS_SUPPLIED": 1,
+    "TURN_STARTED": 1,
+    "SEGMENT_START": 3,
+    "SEGMENT_CONTENT": 2,
+    "SEGMENT_END": 3,
+    "TOOL_EXECUTION_STARTED": 1,
+    "TOOL_EXECUTION_SUCCEEDED": 1,
+    "TOKEN_USAGE_UPDATED": 2,
+    "TURN_COMPLETED": 1
+  },
+  "systemInstructionEvents": [
+    {
+      "type": "SYSTEM_INSTRUCTIONS_SUPPLIED",
+      "agentName": null,
+      "memberAddress": null,
+      "status": null,
+      "segmentType": null,
+      "toolName": null,
+      "invocationId": null,
+      "rawTraceId": null,
+      "contentLength": 369,
+      "contentSha256": "c3a8251d7ab807a070760223593690152a6faf5cff2160c2d7056e2f3fde09fe"
+    }
+  ],
+  "summaries": [
+    {
+      "type": "CONNECTED",
+      "agentName": null,
+      "memberAddress": null,
+      "status": null,
+      "segmentType": null,
+      "toolName": null,
+      "invocationId": null
+    },
+    {
+      "type": "AGENT_STATUS",
+      "agentName": null,
+      "memberAddress": null,
+      "status": "idle",
+      "segmentType": null,
+      "toolName": null,
+      "invocationId": null
+    },
+    {
+      "type": "AGENT_STATUS",
+      "agentName": null,
+      "memberAddress": null,
+      "status": "initializing",
+      "segmentType": null,
+      "toolName": null,
+      "invocationId": null
+    },
+    {
+      "type": "AGENT_COMMAND_ACK",
+      "agentName": null,
+      "memberAddress": null,
+      "status": {
+        "status": "initializing",
+        "agent_id": "daily_assistant_b2db1fdeebd44afda41fab69f7613554"
+      },
+      "segmentType": null,
+      "toolName": null,
+      "invocationId": null
+    },
+    {
+      "type": "SYSTEM_INSTRUCTIONS_SUPPLIED",
+      "agentName": null,
+      "memberAddress": null,
+      "status": null,
+      "segmentType": null,
+      "toolName": null,
+      "invocationId": null,
+      "rawTraceId": null,
+      "contentLength": 369,
+      "contentSha256": "c3a8251d7ab807a070760223593690152a6faf5cff2160c2d7056e2f3fde09fe"
+    },
+    {
+      "type": "AGENT_STATUS",
+      "agentName": null,
+      "memberAddress": null,
+      "status": "running",
+      "segmentType": null,
+      "toolName": null,
+      "invocationId": null
+    },
+    {
+      "type": "TURN_STARTED",
+      "agentName": null,
+      "memberAddress": null,
+      "status": null,
+      "segmentType": null,
+      "toolName": null,
+      "invocationId": null
+    },
+    {
+      "type": "SEGMENT_START",
+      "agentName": null,
+      "memberAddress": null,
+      "status": null,
+      "segmentType": "reasoning",
+      "toolName": null,
+      "invocationId": "reasoning-block:e6f1bf57-5ad5-4f6a-948f-abf7dc014ca0:1"
+    },
+    {
+      "type": "SEGMENT_CONTENT",
+      "agentName": null,
+      "memberAddress": null,
+      "status": null,
+      "segmentType": "reasoning",
+      "toolName": null,
+      "invocationId": "reasoning-block:e6f1bf57-5ad5-4f6a-948f-abf7dc014ca0:1",
+      "textLength": 88,
+      "textSha256": "1e6d9ce9212c822498ec70639c1d018af04dcc5e12f25c00b7d56e6ea8b3525d",
+      "tokenPreview": "**Inspecting tool availability and constraints****Planning dynamic open_tab invocation**"
+    },
+    {
+      "type": "SEGMENT_END",
+      "agentName": null,
+      "memberAddress": null,
+      "status": null,
+      "segmentType": null,
+      "toolName": null,
+      "invocationId": "reasoning-block:e6f1bf57-5ad5-4f6a-948f-abf7dc014ca0:1"
+    },
+    {
+      "type": "SEGMENT_START",
+      "agentName": null,
+      "memberAddress": null,
+      "status": null,
+      "segmentType": "tool_call",
+      "toolName": "open_tab",
+      "invocationId": "exec-da2ad216-c288-4f5a-a8db-f398ad618580"
+    },
+    {
+      "type": "TOOL_EXECUTION_STARTED",
+      "agentName": null,
+      "memberAddress": null,
+      "status": null,
+      "segmentType": null,
+      "toolName": "open_tab",
+      "invocationId": "exec-da2ad216-c288-4f5a-a8db-f398ad618580"
+    },
+    {
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "agentName": null,
+      "memberAddress": null,
+      "status": null,
+      "segmentType": null,
+      "toolName": "open_tab",
+      "invocationId": "exec-da2ad216-c288-4f5a-a8db-f398ad618580"
+    },
+    {
+      "type": "SEGMENT_END",
+      "agentName": null,
+      "memberAddress": null,
+      "status": null,
+      "segmentType": null,
+      "toolName": "open_tab",
+      "invocationId": "exec-da2ad216-c288-4f5a-a8db-f398ad618580"
+    },
+    {
+      "type": "TOKEN_USAGE_UPDATED",
+      "agentName": "Daily Assistant",
+      "memberAddress": null,
+      "status": null,
+      "segmentType": null,
+      "toolName": null,
+      "invocationId": null
+    },
+    {
+      "type": "SEGMENT_START",
+      "agentName": null,
+      "memberAddress": null,
+      "status": null,
+      "segmentType": "text",
+      "toolName": null,
+      "invocationId": "msg_07a98d86ce964113016a874c9b4d4487d0baa56146d4dda3e1"
+    },
+    {
+      "type": "SEGMENT_CONTENT",
+      "agentName": null,
+      "memberAddress": null,
+      "status": null,
+      "segmentType": "text",
+      "toolName": null,
+      "invocationId": "msg_07a98d86ce964113016a874c9b4d4487d0baa56146d4dda3e1",
+      "textLength": 32,
+      "textSha256": "db879b51385f19596d1a528bca07b7be2bb247004e65b0c6ec9628bc10e10f89",
+      "tokenPreview": "DAILY_ASSISTANT_FRONTEND_OPEN_OK"
+    },
+    {
+      "type": "SEGMENT_END",
+      "agentName": null,
+      "memberAddress": null,
+      "status": null,
+      "segmentType": null,
+      "toolName": null,
+      "invocationId": "msg_07a98d86ce964113016a874c9b4d4487d0baa56146d4dda3e1"
+    },
+    {
+      "type": "TOKEN_USAGE_UPDATED",
+      "agentName": "Daily Assistant",
+      "memberAddress": null,
+      "status": null,
+      "segmentType": null,
+      "toolName": null,
+      "invocationId": null
+    },
+    {
+      "type": "TURN_COMPLETED",
+      "agentName": null,
+      "memberAddress": null,
+      "status": null,
+      "segmentType": null,
+      "toolName": null,
+      "invocationId": null
+    },
+    {
+      "type": "AGENT_STATUS",
+      "agentName": null,
+      "memberAddress": null,
+      "status": "idle",
+      "segmentType": null,
+      "toolName": null,
+      "invocationId": null
+    }
+  ]
+}

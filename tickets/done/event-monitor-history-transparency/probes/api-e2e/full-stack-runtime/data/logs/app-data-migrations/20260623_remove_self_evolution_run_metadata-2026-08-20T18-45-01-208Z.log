@@ -1,0 +1,5 @@
+migrationId=20260623_remove_self_evolution_run_metadata
+displayName=Remove self-evolution run metadata migration
+statusSummary={"scannedCount":0,"migratedCount":0,"skippedCount":0,"failedCount":0}
+error=
+details=

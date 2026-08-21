@@ -33,6 +33,7 @@ export const teamExecutionViewSnapshotPayloadSchema = z.object({
 }).strict();
 
 export const teamStreamServerMessageSchema = z.discriminatedUnion("type", [
+  message("SYSTEM_INSTRUCTIONS_SUPPLIED", teamAgentPayloadSchemas.SYSTEM_INSTRUCTIONS_SUPPLIED),
   message("TURN_STARTED", teamAgentPayloadSchemas.TURN_STARTED),
   message("TURN_COMPLETED", teamAgentPayloadSchemas.TURN_COMPLETED),
   message("TURN_INTERRUPTED", teamAgentPayloadSchemas.TURN_INTERRUPTED),

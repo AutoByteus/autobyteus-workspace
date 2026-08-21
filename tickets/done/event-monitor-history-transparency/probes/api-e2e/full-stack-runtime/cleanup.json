@@ -1,0 +1,23 @@
+{
+  "status": "PASS",
+  "ownedPorts": [
+    54587,
+    54588,
+    54589
+  ],
+  "listenersRemaining": 0,
+  "browserContexts": "closed",
+  "backend": "terminated",
+  "frontend": "terminated",
+  "browserBridge": "terminated",
+  "removedSensitivePaths": [
+    "tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/data/db/production.db",
+    "tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/data/db/production.db.secret.key"
+  ],
+  "preservedDisposableFixtures": [
+    "tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/data/memory",
+    "tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/persisted-fixtures",
+    "tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/workspace/classroom-runs/addition-17-plus-25"
+  ],
+  "note": "Encrypted imported-secret database and its adjacent decryption key were deleted; raw trace and classroom fixtures were preserved."
+}

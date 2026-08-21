@@ -30,6 +30,7 @@ import { ClaudeAgentToolsMcpSessionState } from "../agent-tools-mcp/claude-agent
 import type { ClaudeSessionDependencies, ClaudeSessionStateInput } from "./claude-session-state-input.js";
 
 import { dispatchRuntimeEvent } from "../../shared/runtime-event-dispatch.js";
+import { captureClaudeSystemInstructions } from "./claude-system-instruction-capture.js";
 
 type ClaudeSessionTurnExecutionInput = { turnId: string; content: string; abortController: AbortController };
 type ClaudeSessionStatus = "OFFLINE" | "IDLE" | "RUNNING" | "ERROR";
@@ -412,6 +413,7 @@ export class ClaudeSession {
       emitEvent: (event) => this.emitRuntimeEvent(event),
     });
     try {
+      const suppliedAt = Date.now() / 1000;
       query = await this.dependencies.sdkClient.startQueryTurn({
         prompt: options.content,
         systemPrompt: this.runContext.runtimeContext.carpenterSystemPrompt,
@@ -435,11 +437,18 @@ export class ClaudeSession {
             toolOptions,
           ),
       });
-      this.providerSessionLifecycle.noteQueryOpened(sessionBinding);
-      queryOpened = true;
       if (activeTurn) {
         activeTurn.query = query;
       }
+      captureClaudeSystemInstructions({
+        service: this.dependencies.systemInstructionCaptureService,
+        memoryDir: this.runContext.config.memoryDir,
+        content: this.runContext.runtimeContext.carpenterSystemPrompt,
+        suppliedAt,
+        emitEvent: (event) => this.emitRuntimeEvent(event),
+      });
+      this.providerSessionLifecycle.noteQueryOpened(sessionBinding);
+      queryOpened = true;
       this.dependencies.activeQueriesByRunId.set(this.runId, query);
       if (isClaudeActiveTurnInterrupted(activeTurn, options.abortController)) {
         return;

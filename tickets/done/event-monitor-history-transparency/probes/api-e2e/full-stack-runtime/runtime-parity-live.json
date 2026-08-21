@@ -1,0 +1,90 @@
+{
+  "startedAt": "2026-08-20T19:06:33.347Z",
+  "scenarios": {
+    "native": {
+      "runId": "daily_assistant_a86dc9f2ee534d1caef2e94b3e6f8ff8",
+      "runtimeKind": "autobyteus",
+      "model": "gpt-5.6-luna",
+      "assistantToken": "NATIVE_RUNTIME_SYSTEM_OK",
+      "wireMessageCount": 14,
+      "wireMessageTypeCounts": {
+        "CONNECTED": 1,
+        "AGENT_STATUS": 4,
+        "AGENT_COMMAND_ACK": 1,
+        "SYSTEM_INSTRUCTIONS_SUPPLIED": 1,
+        "TURN_STARTED": 1,
+        "SEGMENT_START": 1,
+        "SEGMENT_CONTENT": 1,
+        "SEGMENT_END": 1,
+        "TOKEN_USAGE_UPDATED": 1,
+        "ASSISTANT_COMPLETE": 1,
+        "TURN_COMPLETED": 1
+      },
+      "raw": {
+        "id": "rt_1787252793391_2d26c553-2501-4fb1-9fbc-87141a4b4bc3",
+        "keys": [
+          "id",
+          "ts",
+          "trace_type",
+          "content",
+          "source_event"
+        ],
+        "sourceEvent": "SYSTEM_INSTRUCTIONS_SUPPLIED",
+        "contentLength": 2914,
+        "contentSha256": "89d9f2ef0ad5e057f6bf9fd5e00e3954c0a86269dd1110b4c8e23275d9a12bd6"
+      },
+      "parity": {
+        "wireRawProjectionMemoryIdAndContent": true
+      },
+      "memoryScope": {
+        "scope": "run",
+        "turnId": null,
+        "seq": null
+      },
+      "eventMonitorSystemEventAbsent": true
+    },
+    "claude": {
+      "runId": "daily_assistant_e7ab5c86085e4ff89ca1ebe9eed52adf",
+      "runtimeKind": "claude_agent_sdk",
+      "model": "sonnet",
+      "assistantToken": "CLAUDE_RUNTIME_SYSTEM_OK",
+      "wireMessageCount": 13,
+      "wireMessageTypeCounts": {
+        "CONNECTED": 1,
+        "AGENT_STATUS": 4,
+        "AGENT_COMMAND_ACK": 1,
+        "TURN_STARTED": 1,
+        "SYSTEM_INSTRUCTIONS_SUPPLIED": 1,
+        "SEGMENT_START": 1,
+        "SEGMENT_CONTENT": 1,
+        "SEGMENT_END": 1,
+        "TOKEN_USAGE_UPDATED": 1,
+        "TURN_COMPLETED": 1
+      },
+      "raw": {
+        "id": "rt_1787252795463_bad019c8-5746-4e40-b2b5-9f61d361edd2",
+        "keys": [
+          "id",
+          "ts",
+          "trace_type",
+          "content",
+          "source_event"
+        ],
+        "sourceEvent": "SYSTEM_INSTRUCTIONS_SUPPLIED",
+        "contentLength": 369,
+        "contentSha256": "c3a8251d7ab807a070760223593690152a6faf5cff2160c2d7056e2f3fde09fe"
+      },
+      "parity": {
+        "wireRawProjectionMemoryIdAndContent": true
+      },
+      "memoryScope": {
+        "scope": "run",
+        "turnId": null,
+        "seq": null
+      },
+      "eventMonitorSystemEventAbsent": true
+    }
+  },
+  "finishedAt": "2026-08-20T19:06:38.235Z",
+  "result": "Pass"
+}

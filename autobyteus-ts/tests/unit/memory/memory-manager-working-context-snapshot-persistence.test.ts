@@ -86,7 +86,7 @@ describe('MemoryManager working context snapshot persistence', () => {
       const { workingContext } = WorkingContextSnapshotSerializer.deserialize(persisted);
       const messages = workingContext.buildMessages();
       expect(messages).toHaveLength(2);
-      const rawTraces = manager.listRawTracesOrdered();
+      const rawTraces = manager.listTurnRawTracesOrdered();
       expect(rawTraces.map((trace) => trace.traceType)).toEqual([
         'reasoning', 'assistant', 'tool_call', 'tool_result',
       ]);

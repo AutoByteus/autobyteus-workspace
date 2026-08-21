@@ -1,0 +1,29 @@
+# DR-003 pre-archive audit
+utc=2026-08-21T04:11:40Z
+user_verification=PASS_WORKING
+finalization_authorized=yes
+release_requested=no
+branch=codex/event-monitor-history-transparency
+head=42223103ef1d3c4c03db8d8e179e72a13f031f96
+checked_base=dbd00e789cf9e2ae7aaa995b60a181d5e6c3bf91
+ahead=4
+behind=0
+base_is_ancestor=yes
+contract_test=PASS_2_OF_2
+server_recheck=PASS_86_OF_86
+web_recheck=PASS_80_OF_80
+material_user_facing_change=no
+renewed_verification_required=no
+git_diff_check=PASS
+post_integration_source_mutation=none
+archive_destination_available=yes
+release_version_tag_deployment=NOT_PERFORMED
+
+## Pending delivery artifact changes
+tickets/in-progress/event-monitor-history-transparency/delivery-evidence/dr-003-post-verification-base-refresh.log
+tickets/in-progress/event-monitor-history-transparency/delivery-revision-record.md
+tickets/in-progress/event-monitor-history-transparency/docs-sync-report.md
+tickets/in-progress/event-monitor-history-transparency/electron-test-build-report.md
+tickets/in-progress/event-monitor-history-transparency/handoff-summary.md
+tickets/in-progress/event-monitor-history-transparency/release-deployment-report.md
+tickets/in-progress/event-monitor-history-transparency/delivery-evidence/dr-003-post-integration-regression.log

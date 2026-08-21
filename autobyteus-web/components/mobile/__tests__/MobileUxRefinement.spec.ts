@@ -10,11 +10,8 @@ import MobileFiles from "../MobileFiles.vue";
 import MobileHome from "../MobileHome.vue";
 import MobileRuns from "../MobileRuns.vue";
 import MobileRunSetup from "../MobileRunSetup.vue";
-import {
-  useAgentActivityStore,
-  type CompactionActivity,
-  type ToolActivity,
-} from "~/stores/agentActivityStore";
+import { useAgentActivityStore } from "~/stores/agentActivityStore";
+import type { CompactionActivity, ToolActivity } from "~/types/activity/RunActivity";
 import { useAgentContextsStore } from "~/stores/agentContextsStore";
 import { useAgentRunConfigStore } from "~/stores/agentRunConfigStore";
 import { useAgentDefinitionStore } from "~/stores/agentDefinitionStore";

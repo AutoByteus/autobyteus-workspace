@@ -36,7 +36,9 @@ Canonical active memory file names are imported from `autobyteus-ts/memory/store
 
 Common files/directories:
 
-- `raw_traces_active.jsonl` — active ordered original raw trace records.
+- `raw_traces_active.jsonl` — active ordered original raw trace records,
+  including strict run-scoped `system_instruction` rows when the exact runtime
+  handoff was captured.
 - `raw_traces_manifest.json` — completed raw-trace archive descriptors owned by `RawTraceArchiveManager`.
 - `raw_traces_<zero-padded-index>.jsonl` — immutable raw-trace archives, including one exact-new-activity archive per successful native compaction.
 - `episodic.jsonl` and `semantic.jsonl` — immutable native compacted output rows.
@@ -466,12 +468,22 @@ The older flat snapshot queries (`listRunMemorySnapshots` and `listTeamRunMemory
 
 Raw traces preserve provenance needed by future analyzers:
 
+- `scope`, which is `turn` for ordinary trace rows and `run` for the strict
+  system-instruction row
 - `id`
-- `turn_id` / GraphQL `turnId`
-- `seq`
-- `trace_type` / GraphQL `traceType`, including `provider_compaction_boundary` markers
+- `turn_id` / GraphQL `turnId` and `seq`, both nullable only for run-scoped rows
+- `trace_type` / GraphQL `traceType`, including `system_instruction` and
+  `provider_compaction_boundary` markers
 - `source_event` / GraphQL `sourceEvent`
 - `content`, `media`, tool identity, tool args/result/error, correlation id, and timestamp fields when present
+
+The current run-scoped instruction row has exactly five persisted keys:
+`id`, `ts`, `trace_type: "system_instruction"`, the exact `content` handed to
+the runtime, and `source_event: "SYSTEM_INSTRUCTIONS_SUPPLIED"`. It has no turn
+identity or sequence. Normalization exposes it as `scope: "run"`, with GraphQL
+`turnId: null` and `seq: null`. A malformed row is omitted rather than widened
+into the ordinary turn model. Existing rows are not rewritten and no historical
+instruction is inferred from current agent/team definitions.
 
 The inspector exposes physical rows. For current writes, the canonical name
 appears on both `tool_call` and `tool_result`; arguments remain call-only, while
@@ -499,6 +511,11 @@ When archive inclusion is requested without file-selector mode, readers retain t
 Current archive/rotation behavior:
 
 - Native AutoByteus compaction rotates exactly the selected active raw traces into `native_compaction` segments. The store derives a retry-stable `native_compaction_selection:<sha256>` boundary key from the JSON encoding of sorted selected trace IDs; the archive manager independently owns manifest completion and the rotated filename.
+- Run-scoped system-instruction rows are never members of the turn-scoped
+  compaction selection. When they physically precede the last selected turn
+  record, they rotate with that completed segment so active-file Activity and
+  raw inspection remain truthful. Normal Activity does not read the rotated
+  copy; the Memory Inspector can still select its completed segment explicitly.
 - Codex/Claude provider-boundary rotation moves settled active raw traces before an eligible boundary marker into `provider_compaction_boundary` segments.
 - New rotated segment files live directly beside `raw_traces_active.jsonl` as `raw_traces_<zero-padded-index>.jsonl`, for example `raw_traces_000001.jsonl`; boundary identity remains in the manifest `boundary_key`, not in the filename.
 - New writes use `raw_traces_manifest.json` and never create `raw_traces_archive_manifest.json` or `raw_traces_archive/`.
@@ -538,7 +555,14 @@ Provider-boundary handling must not create Codex/Claude semantic or episodic mem
 
 Run-history remains the owner of conversation/activity replay DTOs. Agent-memory may read run-history metadata/catalog rows to enrich explorer display names, summaries, workspace paths, timestamps, and grouping IDs, but stored memory remains the source of truth for inclusion in the Memory UI.
 
-When runtime-native Codex or Claude history cannot be read, the local-memory projection fallback can build a replay bundle from the complete raw-trace corpus using the explicit persisted `memoryDir` basename as the local run/member id. Provider-boundary markers are provenance and are not converted into user-visible conversation/activity items.
+Normal standalone and Team-member display always uses local-memory projection
+from the active raw-trace file, with the explicit persisted `memoryDir` basename
+as the local run/member ID. Runtime-native Codex/Claude history is diagnostic
+only and is not a normal fallback. Provider-boundary markers remain provenance
+and are not converted into user-visible conversation/activity items. A valid
+run-scoped system-instruction trace projects only to Activity; it is excluded
+from Event Monitor conversation/count/cursor policy and normal display never
+opens a rotated segment to recover it.
 
 Run-history and work-trace projection build one logical interaction from the
 physical call/result pair. New minimal results carry the verified canonical name

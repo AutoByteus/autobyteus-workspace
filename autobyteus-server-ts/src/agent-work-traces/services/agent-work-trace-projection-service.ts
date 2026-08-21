@@ -6,7 +6,7 @@ import { AgentWorkTraceSourceReader } from "./agent-work-trace-source-reader.js"
 import { AgentWorkTraceStore } from "./agent-work-trace-store.js";
 import { buildToolInteractions } from "autobyteus-ts/memory/tool-interaction-builder.js";
 import { toolCallIdentityKey } from "autobyteus-ts/memory/models/tool-call-identity.js";
-import type { MemoryTraceEvent } from "../../agent-memory/domain/models.js";
+import type { MemoryTraceEvent, MemoryTurnTraceEvent } from "../../agent-memory/domain/models.js";
 import type { AgentWorkTraceSource } from "../domain/work-traces.js";
 
 const normalizeTargetDisplayName = (value: string | null | undefined): string | null => {
@@ -63,10 +63,11 @@ export class AgentWorkTraceProjectionService {
   }
 
   private buildToolProjections(sources: AgentWorkTraceSource[]): Map<string, AgentWorkTraceToolProjection> {
-    const recordsById = new Map<string, MemoryTraceEvent>();
+    const recordsById = new Map<string, MemoryTurnTraceEvent>();
     const sourceIdByTraceId = new Map<string, string>();
     for (const source of sources) {
       for (const record of source.records) {
+        if (record.scope !== "turn") continue;
         if (!record.id || (recordsById.has(record.id) && source.kind !== "active")) continue;
         recordsById.set(record.id, record);
         sourceIdByTraceId.set(record.id, source.sourceId);

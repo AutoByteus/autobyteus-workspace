@@ -107,7 +107,7 @@ describe('RunMemoryFileStore', () => {
 
     expect(store.getRawTracesPath()).toBe(path.join(memoryDir, RAW_TRACES_ACTIVE_MEMORY_FILE_NAME));
     expect(store.getWorkingContextSnapshotPath()).toBe(path.join(memoryDir, WORKING_CONTEXT_SNAPSHOT_FILE_NAME));
-    expect(store.listRawTracesOrdered()).toEqual([
+    expect(store.listTurnRawTracesOrdered()).toEqual([
       expect.objectContaining({ id: 'rt-1', traceType: 'user', content: 'hello' }),
     ]);
     expect(store.readWorkingContextSnapshot()).toMatchObject({ agent_id: 'agent-1' });
@@ -139,7 +139,7 @@ describe('RunMemoryFileStore', () => {
     store.pruneRawTracesById(['rt-remove']);
 
     expect(store.listRawTraceDicts().map((trace) => trace.id)).toEqual(['rt-keep']);
-    expect(store.listArchiveRawTracesOrdered()).toEqual([
+    expect(store.listArchiveTurnRawTracesOrdered()).toEqual([
       expect.objectContaining({ id: 'rt-remove', traceType: 'user' }),
     ]);
     const manifest = store.readRawTraceArchiveManifest();
@@ -155,8 +155,8 @@ describe('RunMemoryFileStore', () => {
     const store = await makeNativeSelectionStore();
     const reversedInputStore = await makeNativeSelectionStore();
 
-    expect(store.archiveExactRawTraces(['rt-selected-b', 'rt-selected-a'])).toBeUndefined();
-    expect(reversedInputStore.archiveExactRawTraces(['rt-selected-a', 'rt-selected-b']))
+    expect(store.archiveCompactedRawTraces(['rt-selected-b', 'rt-selected-a'])).toBeUndefined();
+    expect(reversedInputStore.archiveCompactedRawTraces(['rt-selected-a', 'rt-selected-b']))
       .toBeUndefined();
 
     const selectionDigest = createHash('sha256')
@@ -184,7 +184,7 @@ describe('RunMemoryFileStore', () => {
     const store = await makeNativeSelectionStore();
     const activeBefore = store.listRawTraceDicts();
 
-    expect(() => store.archiveExactRawTraces(['rt-selected-a', 'rt-missing']))
+    expect(() => store.archiveCompactedRawTraces(['rt-selected-a', 'rt-missing']))
       .toThrow('Selected raw traces are missing from active storage: rt-missing.');
 
     expect(store.listRawTraceDicts()).toEqual(activeBefore);

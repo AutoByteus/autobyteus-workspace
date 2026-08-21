@@ -34,6 +34,7 @@ import {
   CodexPendingMcpToolCallRegistry,
   type CodexPendingMcpToolCall,
 } from "./codex-pending-mcp-tool-call-registry.js";
+import type { SystemInstructionTraceRecord } from "autobyteus-ts";
 
 export type { CodexPendingMcpToolCall } from "./codex-pending-mcp-tool-call-registry.js";
 
@@ -82,6 +83,7 @@ export class CodexThread {
   readonly listeners: Set<(message: CodexThreadEventMessage) => void>;
   readonly unbindHandlers: Array<() => void>;
   lastTerminalTurnId: string | null;
+  private pendingSystemInstructionCapture: SystemInstructionTraceRecord | null = null;
 
   constructor(input: {
     runContext: CodexRunContext;
@@ -140,6 +142,10 @@ export class CodexThread {
   getPlatformAgentRunId(): string {
     return this.threadId;
   }
+
+  takePendingSystemInstructionCapture(): SystemInstructionTraceRecord | null { const capture = this.pendingSystemInstructionCapture; this.pendingSystemInstructionCapture = null; return capture; }
+
+  setPendingSystemInstructionCapture(trace: SystemInstructionTraceRecord): void { this.pendingSystemInstructionCapture = trace; }
 
   markStartupReady(): void {
     this.startup.resolveReady();

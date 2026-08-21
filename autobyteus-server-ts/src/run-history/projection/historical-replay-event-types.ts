@@ -69,8 +69,26 @@ export interface HistoricalReplayCompactionEvent {
   detailLevel: RunProjectionSourceDetailLevel;
 }
 
+export interface HistoricalReplaySystemInstructionEvent {
+  eventId: string;
+  kind: "system_instruction";
+  activityId: string;
+  content: string;
+  ts: number;
+}
+
 export type HistoricalReplayEvent =
   | HistoricalReplayMessageEvent
   | HistoricalReplayReasoningEvent
   | HistoricalReplayToolEvent
-  | HistoricalReplayCompactionEvent;
+  | HistoricalReplayCompactionEvent
+  | HistoricalReplaySystemInstructionEvent;
+
+export type EventMonitorReplayEvent = Exclude<
+  HistoricalReplayEvent,
+  HistoricalReplaySystemInstructionEvent
+>;
+
+export const isEventMonitorReplayEvent = (
+  event: HistoricalReplayEvent,
+): event is EventMonitorReplayEvent => event.kind !== "system_instruction";

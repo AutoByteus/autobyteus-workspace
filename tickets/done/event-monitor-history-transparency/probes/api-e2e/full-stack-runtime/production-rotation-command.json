@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "runId": "daily_assistant_df9bcae1eaf64ddaafaa9af596ba2843",
+  "api": "RunMemoryFileStore.archiveCompactedRawTraces",
+  "selectedTurnTraceCount": 2,
+  "activeBeforeCount": 3,
+  "activeAfterCount": 0,
+  "systemBeforeCount": 1,
+  "systemAfterCount": 0,
+  "archiveSegments": [
+    {
+      "file_name": "raw_traces_000001.jsonl",
+      "status": "complete",
+      "record_count": 3,
+      "boundary_type": "native_compaction"
+    }
+  ]
+}

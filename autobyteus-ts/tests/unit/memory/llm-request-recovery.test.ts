@@ -60,11 +60,11 @@ describe('LLM request recovery boundary', () => {
     ]);
     expect(manager.getPendingCompactionRequest()).toBeNull();
     expect(manager.hasPendingCompaction()).toBe(false);
-    expect(manager.listRawTracesOrdered().map((trace) => trace.traceType)).toEqual([
+    expect(manager.listTurnRawTracesOrdered().map((trace) => trace.traceType)).toEqual([
       'user',
       'llm_request_recovery',
     ]);
-    expect(manager.listRawTracesOrdered().at(-1)?.content).toContain('synthetic provider failure');
+    expect(manager.listTurnRawTracesOrdered().at(-1)?.content).toContain('synthetic provider failure');
   });
 
   it('settles each captured request exactly once for either restore or commit', async () => {
@@ -98,7 +98,7 @@ describe('LLM request recovery boundary', () => {
       sourceEvent: 'test.restore-after-commit',
       reason: 'must not restore',
     })).toThrow(`Unknown or already-settled LLM request recovery snapshot '${committed.snapshotId}'.`);
-    expect(manager.listRawTracesOrdered().filter(({ traceType }) =>
+    expect(manager.listTurnRawTracesOrdered().filter(({ traceType }) =>
       traceType === 'llm_request_recovery'
     )).toHaveLength(1);
   });

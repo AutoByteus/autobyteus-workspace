@@ -177,6 +177,15 @@ export declare const teamExecutionViewSnapshotPayloadSchema: z.ZodObject<{
     }, z.core.$strict>>;
 }, z.core.$strict>;
 export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.ZodObject<{
+    type: z.ZodLiteral<"SYSTEM_INSTRUCTIONS_SUPPLIED">;
+    payload: z.ZodObject<{
+        change_sequence: z.ZodNumber;
+        agent_run_id: z.ZodString;
+        trace_id: z.ZodString;
+        content: z.ZodString;
+        ts: z.ZodNumber;
+    }, z.core.$strict>;
+}, z.core.$strict>, z.ZodObject<{
     type: z.ZodLiteral<"TURN_STARTED">;
     payload: z.ZodObject<{
         change_sequence: z.ZodNumber;

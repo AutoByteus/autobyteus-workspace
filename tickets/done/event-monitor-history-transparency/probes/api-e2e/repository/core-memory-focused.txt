@@ -1,0 +1,28 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/autobyteus-ts
+
+stdout | tests/unit/agent/bootstrap-steps/system-prompt-processing-step.test.ts > SystemPromptProcessingStep > persists the exact configured prompt after handoff and stages the committed raw identity
+SystemPromptProcessingStep initialized.
+Agent 'agent-system': Executing SystemPromptProcessingStep.
+Agent 'agent-system': Retrieved base system prompt.
+Agent 'agent-system': No configured skills. Skipping skill catalog.
+Agent 'agent-system': Final processed system prompt configured and captured. Trace ID: system-raw. Final length: 21.
+
+stdout | tests/unit/agent/bootstrap-steps/system-prompt-processing-step.test.ts > SystemPromptProcessingStep > rejects placeholder-shaped metadata from a real configured skill before state or LLM mutation
+SystemPromptProcessingStep initialized.
+Agent 'agent-1': Executing SystemPromptProcessingStep.
+Agent 'agent-1': Retrieved base system prompt.
+Agent 'agent-1': Added 1 configured skill catalog entries with paths. mode='PRELOADED_ONLY'.
+
+stderr | tests/unit/agent/bootstrap-steps/system-prompt-processing-step.test.ts > SystemPromptProcessingStep > rejects placeholder-shaped metadata from a real configured skill before state or LLM mutation
+Agent 'agent-1': Critical failure during system prompt processing step: Error: Final provider instruction contains an unresolved documentation placeholder.
+
+ ✓ tests/unit/agent/bootstrap-steps/system-prompt-processing-step.test.ts (2 tests) 6ms
+ ✓ tests/unit/memory/system-instruction-trace.test.ts (2 tests) 9ms
+ ✓ tests/unit/memory/run-memory-file-store.test.ts (7 tests) 21ms
+
+ Test Files  3 passed (3)
+      Tests  11 passed (11)
+   Start at  21:09:18
+   Duration  269ms (transform 296ms, setup 53ms, import 367ms, tests 36ms, environment 0ms)
+

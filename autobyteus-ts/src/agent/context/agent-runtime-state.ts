@@ -9,6 +9,7 @@ import { BaseLLM } from '../../llm/base.js';
 import type { BaseTool } from '../../tools/base-tool.js';
 import type { MemoryManager } from '../../memory/memory-manager.js';
 import type { WorkingContextSnapshotBootstrapOptions } from '../../memory/restore/working-context-snapshot-bootstrapper.js';
+import type { SystemInstructionTraceRecord } from '../../memory/models/system-instruction-trace.js';
 import {
   normalizeToolApprovalInvocationId,
   normalizeToolApprovalTurnId,
@@ -39,6 +40,13 @@ export class AgentRuntimeState {
   memoryManager: MemoryManager | null = null;
   restoreOptions: WorkingContextSnapshotBootstrapOptions | null = null;
   processedSystemPrompt: string | null = null;
+  pendingSystemInstructionCapture: SystemInstructionTraceRecord | null = null;
+
+  takePendingSystemInstructionCapture(): SystemInstructionTraceRecord | null {
+    const capture = this.pendingSystemInstructionCapture;
+    this.pendingSystemInstructionCapture = null;
+    return capture;
+  }
   statusManagerRef: AgentStatusManager | null = null;
 
   constructor(
