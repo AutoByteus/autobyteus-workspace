@@ -54,7 +54,6 @@ describe('useDefinitionLaunchDefaults editable seeds', () => {
       },
       memberOverrides: {
         Reviewer: {
-          agentDefinitionId: 'agent-reviewer',
           llmModelIdentifier: 'gpt-5.3-codex',
           llmConfig: {
             reasoning_effort: 'medium',

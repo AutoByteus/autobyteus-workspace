@@ -302,6 +302,7 @@ describe('TeamRunConfigForm', () => {
     expect(panel.attributes('id')).toBe('team-member-overrides-panel')
     expect(panel.attributes('style')).toContain('display: none')
     expect(chevron.classes()).toContain('-rotate-90')
+    expect(wrapper.find('[data-test="team-member-overrides-count"]').exists()).toBe(false)
 
     await toggle.trigger('click')
 
@@ -315,7 +316,6 @@ describe('TeamRunConfigForm', () => {
       autoExecuteTools: true,
       memberOverrides: {
         'Member B': {
-          agentDefinitionId: 'agent-b',
           autoExecuteTools: false,
         },
       },
@@ -348,7 +348,6 @@ describe('TeamRunConfigForm', () => {
     const { wrapper } = buildWrapper({
       memberOverrides: {
         'Member B': {
-          agentDefinitionId: 'agent-b',
           runtimeKind: 'claude_agent_sdk',
         },
       },
@@ -459,11 +458,9 @@ describe('TeamRunConfigForm', () => {
       llmConfig: { reasoning_effort: 'high' },
       memberOverrides: {
         'Member A': {
-          agentDefinitionId: 'agent-a',
           llmConfig: { reasoning_effort: 'xhigh' },
         },
         'Member B': {
-          agentDefinitionId: 'agent-b',
           autoExecuteTools: true,
           llmConfig: { reasoning_effort: 'medium' },
         },
@@ -489,11 +486,9 @@ describe('TeamRunConfigForm', () => {
       llmConfig: { thinking_level: 5 },
       memberOverrides: {
         'Member A': {
-          agentDefinitionId: 'agent-a',
           llmConfig: { thinking_level: 3 },
         },
         'Member B': {
-          agentDefinitionId: 'agent-b',
           llmModelIdentifier: 'gpt-5.4',
           llmConfig: { thinking_level: 4 },
         },
@@ -537,14 +532,12 @@ describe('TeamRunConfigForm', () => {
     expect(itemTexts[1].props('memberAddress')).toBe('/BuildSquad/qa_specialist')
 
     itemTexts[0].vm.$emit('update:override', '/BuildSquad/review_lead', {
-      agentDefinitionId: 'agent-review',
       runtimeKind: 'codex_app_server',
     })
     expect(emittedConfigEdits(wrapper)).toContainEqual({
       kind: 'set_member_override',
       memberAddress: '/BuildSquad/review_lead',
       override: {
-        agentDefinitionId: 'agent-review',
         runtimeKind: 'codex_app_server',
       },
     })
@@ -578,7 +571,6 @@ describe('TeamRunConfigForm', () => {
     expect(wrapper.text()).toContain('Selected team run configuration read only')
 
     items[0].vm.$emit('update:override', 'Member A', {
-      agentDefinitionId: 'agent-a',
       llmModelIdentifier: 'changed-model',
     })
     expect(config.memberOverrides).toEqual({})

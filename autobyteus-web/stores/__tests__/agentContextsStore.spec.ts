@@ -5,6 +5,7 @@ import { useAgentRunConfigStore } from '../agentRunConfigStore';
 import { useAgentSelectionStore } from '../agentSelectionStore';
 import type { AgentDefinition } from '../agentDefinitionStore';
 import { AgentStatus } from '~/types/agent/AgentStatus';
+import type { AgentRunConfig } from '~/types/agent/AgentRunConfig';
 
 // Mock AgentDefinition
 const mockAgentDef: AgentDefinition = {
@@ -35,19 +36,44 @@ describe('agentContextsStore', () => {
     });
 
     describe('createRunFromTemplate', () => {
-        it('should create an runContext from run config template', () => {
+        it('copies every edited existing-run launch field into an independent temporary context', () => {
             const store = useAgentContextsStore();
             const configStore = useAgentRunConfigStore();
             const selectionStore = useAgentSelectionStore();
 
-            // Setup template
-            configStore.setTemplate(mockAgentDef);
-            configStore.updateAgentConfig({
-                llmModelIdentifier: 'gpt-4',
-                workspaceId: 'ws-1',
-                autoExecuteTools: true,
+            const sourceConfig: AgentRunConfig = {
+                agentDefinitionId: 'def-1',
+                agentDefinitionName: 'TestAgent',
+                agentAvatarUrl: '/rest/files/images/test-agent.png',
+                llmModelIdentifier: 'source-model',
+                runtimeKind: 'autobyteus',
+                workspaceId: 'source-workspace',
+                workspaceMetadata: {
+                    workspaceId: 'source-workspace',
+                    workspaceRootPath: '/tmp/source-workspace',
+                    displayName: 'source-workspace',
+                    kind: 'filesystem',
+                },
+                autoExecuteTools: false,
                 skillAccessMode: 'PRELOADED_ONLY',
-                llmConfig: { reasoning_effort: 'high' },
+                llmConfig: { reasoning_effort: 'low' },
+                isLocked: true,
+            };
+            const sourceSnapshot = structuredClone(sourceConfig);
+            configStore.setAgentConfig(sourceConfig);
+            configStore.updateAgentConfig({
+                llmModelIdentifier: 'edited-model',
+                runtimeKind: 'codex_app_server',
+                workspaceId: 'ws-1',
+                workspaceMetadata: {
+                    workspaceId: 'ws-1',
+                    workspaceRootPath: '/tmp/edited-workspace',
+                    displayName: 'edited-workspace',
+                    kind: 'filesystem',
+                },
+                autoExecuteTools: true,
+                skillAccessMode: 'NONE',
+                llmConfig: { reasoning: { effort: 'xhigh' } },
             });
 
             // Create runContext
@@ -62,12 +88,20 @@ describe('agentContextsStore', () => {
             expect(runContext?.config.agentDefinitionId).toBe('def-1');
             expect(runContext?.config.agentDefinitionName).toBe('TestAgent');
             expect(runContext?.config.agentAvatarUrl).toBe('/rest/files/images/test-agent.png');
-            expect(runContext?.config.llmModelIdentifier).toBe('gpt-4');
+            expect(runContext?.config.llmModelIdentifier).toBe('edited-model');
+            expect(runContext?.config.runtimeKind).toBe('codex_app_server');
             expect(runContext?.config.workspaceId).toBe('ws-1');
+            expect(runContext?.config.workspaceMetadata).toEqual({
+                workspaceId: 'ws-1',
+                workspaceRootPath: '/tmp/edited-workspace',
+                displayName: 'edited-workspace',
+                kind: 'filesystem',
+            });
             expect(runContext?.config.autoExecuteTools).toBe(true);
-            expect(runContext?.config.skillAccessMode).toBe('PRELOADED_ONLY');
-            expect(runContext?.config.llmConfig).toEqual({ reasoning_effort: 'high' });
+            expect(runContext?.config.skillAccessMode).toBe('NONE');
+            expect(runContext?.config.llmConfig).toEqual({ reasoning: { effort: 'xhigh' } });
             expect(runContext?.config.isLocked).toBe(false);
+            expect(sourceConfig).toEqual(sourceSnapshot);
 
             // Verify selection was updated
             expect(selectionStore.selectedRunId).toBe(runId);

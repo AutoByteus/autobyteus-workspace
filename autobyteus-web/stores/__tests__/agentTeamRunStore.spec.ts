@@ -209,12 +209,10 @@ const configureSelectedNestedLaunchDraft = (): Readonly<{
     skillAccessMode: 'NONE',
     memberOverrides: {
       '/BuildSquad/review_lead': {
-        agentDefinitionId: 'review-definition',
         runtimeKind: 'claude_agent_sdk',
         llmModelIdentifier: 'claude-sonnet',
       },
       '/BuildSquad/implementer': {
-        agentDefinitionId: 'impl-definition',
         runtimeKind: 'autobyteus',
         llmModelIdentifier: 'gpt-5.6-luna',
       },
