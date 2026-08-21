@@ -1,0 +1,1531 @@
+{
+  "startedAt": "2026-08-21T06:56:40.357Z",
+  "developmentCommit": "bb3e5161a73ae78bea2bcaba00700e3d849a550a",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "repoRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/quick-launch-config-override",
+  "serverDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/quick-launch-config-override/autobyteus-server-ts",
+  "webDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/quick-launch-config-override/autobyteus-web",
+  "fixturePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/quick-launch-config-override/tickets/in-progress/quick-launch-config-override/api-e2e-evidence/fixtures/quick-launch-config.page.vue",
+  "routePath": "/api-e2e-quick-launch-config",
+  "environment": {
+    "backendPort": 55144,
+    "frontendPort": 55145,
+    "backendUrl": "http://127.0.0.1:55144",
+    "frontendUrl": "http://127.0.0.1:55145",
+    "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-data-0mGFD2",
+    "workspaceRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin",
+    "databasePath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-data-0mGFD2/db/api-e2e.db",
+    "memoryDir": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-data-0mGFD2/memory"
+  },
+  "fixtures": {
+    "unique": "900f8e2f1a13",
+    "memberNames": [
+      "lead",
+      "peer",
+      "runtime_only",
+      "model_only",
+      "config_only",
+      "auto_only"
+    ],
+    "agentIds": {
+      "lead": "quick-launch-lead-900f8e2f1a13",
+      "peer": "quick-launch-peer-900f8e2f1a13",
+      "runtime_only": "quick-launch-runtime-only-900f8e2f1a13",
+      "model_only": "quick-launch-model-only-900f8e2f1a13",
+      "config_only": "quick-launch-config-only-900f8e2f1a13",
+      "auto_only": "quick-launch-auto-only-900f8e2f1a13"
+    },
+    "teamDefinitionId": "quick-launch-team-900f8e2f1a13",
+    "uniformSourceRunId": "quick_launch_team_900f8e2f1a13_e8f2d1e4fa104f1d94566ef5b5b4b273",
+    "heterogeneousSourceRunId": "quick_launch_team_900f8e2f1a13_7aaba33d7ed042f9b23836e6a689700c",
+    "uniformConfigs": [
+      {
+        "memberAddress": "/lead",
+        "agentDefinitionId": "quick-launch-lead-900f8e2f1a13",
+        "runtimeKind": "codex_app_server",
+        "llmModelIdentifier": "old-global-model",
+        "llmConfig": {
+          "reasoning": {
+            "effort": "low",
+            "flags": {
+              "plan": true,
+              "search": false
+            }
+          }
+        },
+        "autoExecuteTools": false,
+        "skillAccessMode": "NONE",
+        "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin"
+      },
+      {
+        "memberAddress": "/peer",
+        "agentDefinitionId": "quick-launch-peer-900f8e2f1a13",
+        "runtimeKind": "codex_app_server",
+        "llmModelIdentifier": "old-global-model",
+        "llmConfig": {
+          "reasoning": {
+            "effort": "low",
+            "flags": {
+              "plan": true,
+              "search": false
+            }
+          }
+        },
+        "autoExecuteTools": false,
+        "skillAccessMode": "NONE",
+        "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin"
+      },
+      {
+        "memberAddress": "/runtime_only",
+        "agentDefinitionId": "quick-launch-runtime-only-900f8e2f1a13",
+        "runtimeKind": "codex_app_server",
+        "llmModelIdentifier": "old-global-model",
+        "llmConfig": {
+          "reasoning": {
+            "effort": "low",
+            "flags": {
+              "plan": true,
+              "search": false
+            }
+          }
+        },
+        "autoExecuteTools": false,
+        "skillAccessMode": "NONE",
+        "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin"
+      },
+      {
+        "memberAddress": "/model_only",
+        "agentDefinitionId": "quick-launch-model-only-900f8e2f1a13",
+        "runtimeKind": "codex_app_server",
+        "llmModelIdentifier": "old-global-model",
+        "llmConfig": {
+          "reasoning": {
+            "effort": "low",
+            "flags": {
+              "plan": true,
+              "search": false
+            }
+          }
+        },
+        "autoExecuteTools": false,
+        "skillAccessMode": "NONE",
+        "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin"
+      },
+      {
+        "memberAddress": "/config_only",
+        "agentDefinitionId": "quick-launch-config-only-900f8e2f1a13",
+        "runtimeKind": "codex_app_server",
+        "llmModelIdentifier": "old-global-model",
+        "llmConfig": {
+          "reasoning": {
+            "effort": "low",
+            "flags": {
+              "plan": true,
+              "search": false
+            }
+          }
+        },
+        "autoExecuteTools": false,
+        "skillAccessMode": "NONE",
+        "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin"
+      },
+      {
+        "memberAddress": "/auto_only",
+        "agentDefinitionId": "quick-launch-auto-only-900f8e2f1a13",
+        "runtimeKind": "codex_app_server",
+        "llmModelIdentifier": "old-global-model",
+        "llmConfig": {
+          "reasoning": {
+            "effort": "low",
+            "flags": {
+              "plan": true,
+              "search": false
+            }
+          }
+        },
+        "autoExecuteTools": false,
+        "skillAccessMode": "NONE",
+        "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin"
+      }
+    ],
+    "heterogeneousConfigs": [
+      {
+        "memberAddress": "/lead",
+        "agentDefinitionId": "quick-launch-lead-900f8e2f1a13",
+        "runtimeKind": "codex_app_server",
+        "llmModelIdentifier": "old-global-model",
+        "llmConfig": {
+          "reasoning": {
+            "effort": "low",
+            "flags": {
+              "plan": true,
+              "search": false
+            }
+          }
+        },
+        "autoExecuteTools": false,
+        "skillAccessMode": "NONE",
+        "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin"
+      },
+      {
+        "memberAddress": "/peer",
+        "agentDefinitionId": "quick-launch-peer-900f8e2f1a13",
+        "runtimeKind": "codex_app_server",
+        "llmModelIdentifier": "old-global-model",
+        "llmConfig": {
+          "reasoning": {
+            "effort": "low",
+            "flags": {
+              "plan": true,
+              "search": false
+            }
+          }
+        },
+        "autoExecuteTools": false,
+        "skillAccessMode": "NONE",
+        "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin"
+      },
+      {
+        "memberAddress": "/runtime_only",
+        "agentDefinitionId": "quick-launch-runtime-only-900f8e2f1a13",
+        "runtimeKind": "claude_agent_sdk",
+        "llmModelIdentifier": "old-global-model",
+        "llmConfig": {
+          "reasoning": {
+            "effort": "low",
+            "flags": {
+              "plan": true,
+              "search": false
+            }
+          }
+        },
+        "autoExecuteTools": false,
+        "skillAccessMode": "NONE",
+        "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin"
+      },
+      {
+        "memberAddress": "/model_only",
+        "agentDefinitionId": "quick-launch-model-only-900f8e2f1a13",
+        "runtimeKind": "codex_app_server",
+        "llmModelIdentifier": "member-model",
+        "llmConfig": {
+          "reasoning": {
+            "effort": "low",
+            "flags": {
+              "plan": true,
+              "search": false
+            }
+          }
+        },
+        "autoExecuteTools": false,
+        "skillAccessMode": "NONE",
+        "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin"
+      },
+      {
+        "memberAddress": "/config_only",
+        "agentDefinitionId": "quick-launch-config-only-900f8e2f1a13",
+        "runtimeKind": "codex_app_server",
+        "llmModelIdentifier": "old-global-model",
+        "llmConfig": {
+          "reasoning": {
+            "effort": "high",
+            "flags": {
+              "plan": false,
+              "search": true
+            }
+          }
+        },
+        "autoExecuteTools": false,
+        "skillAccessMode": "NONE",
+        "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin"
+      },
+      {
+        "memberAddress": "/auto_only",
+        "agentDefinitionId": "quick-launch-auto-only-900f8e2f1a13",
+        "runtimeKind": "codex_app_server",
+        "llmModelIdentifier": "old-global-model",
+        "llmConfig": {
+          "reasoning": {
+            "effort": "low",
+            "flags": {
+              "plan": true,
+              "search": false
+            }
+          }
+        },
+        "autoExecuteTools": true,
+        "skillAccessMode": "NONE",
+        "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin"
+      }
+    ]
+  },
+  "scenarios": {
+    "QL-E2E-001": {
+      "description": "Uniform schema-v1 projection renders no overrides and global runtime/model/config/auto edits reach every submitted record",
+      "result": "Pass",
+      "startedAt": "2026-08-21T06:57:03.259Z",
+      "details": {
+        "badgeCount": 0,
+        "initialConfig": {
+          "teamDefinitionId": "quick-launch-team-900f8e2f1a13",
+          "teamDefinitionName": "quick_launch_team_900f8e2f1a13",
+          "runtimeKind": "codex_app_server",
+          "workspaceId": "probe:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin",
+          "workspaceMetadata": {
+            "workspaceId": "probe:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin",
+            "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin",
+            "displayName": "quick-launch-api-e2e-workspace-OSJmin",
+            "kind": "filesystem"
+          },
+          "llmModelIdentifier": "old-global-model",
+          "llmConfig": {
+            "reasoning": {
+              "effort": "low",
+              "flags": {
+                "plan": true,
+                "search": false
+              }
+            }
+          },
+          "autoExecuteTools": false,
+          "skillAccessMode": "NONE",
+          "memberOverrides": {},
+          "isLocked": true
+        },
+        "launched": {
+          "rootTeamRunId": "quick_launch_team_900f8e2f1a13_9e9848cb4bc240beb84cfe9eedab6ff5",
+          "focusedAgentRunId": "quick_launch_lead_900f8e2f1a13_d06ce0c7e561400b966c93abcd2a554d",
+          "submittedRecords": [
+            {
+              "displayName": "lead",
+              "memberAddress": "/lead",
+              "agentDefinitionId": "quick-launch-lead-900f8e2f1a13",
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "new-uniform-model",
+              "llmConfig": {
+                "reasoning": {
+                  "effort": "xhigh",
+                  "flags": {
+                    "plan": false,
+                    "search": true
+                  }
+                },
+                "service_tier": "fast"
+              },
+              "autoExecuteTools": true,
+              "skillAccessMode": "NONE",
+              "workspaceId": "probe:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin",
+              "workspaceMetadata": {
+                "workspaceId": "probe:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin",
+                "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin",
+                "displayName": "quick-launch-api-e2e-workspace-OSJmin",
+                "kind": "filesystem"
+              },
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin"
+            },
+            {
+              "displayName": "peer",
+              "memberAddress": "/peer",
+              "agentDefinitionId": "quick-launch-peer-900f8e2f1a13",
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "new-uniform-model",
+              "llmConfig": {
+                "reasoning": {
+                  "effort": "xhigh",
+                  "flags": {
+                    "plan": false,
+                    "search": true
+                  }
+                },
+                "service_tier": "fast"
+              },
+              "autoExecuteTools": true,
+              "skillAccessMode": "NONE",
+              "workspaceId": "probe:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin",
+              "workspaceMetadata": {
+                "workspaceId": "probe:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin",
+                "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin",
+                "displayName": "quick-launch-api-e2e-workspace-OSJmin",
+                "kind": "filesystem"
+              },
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin"
+            },
+            {
+              "displayName": "runtime_only",
+              "memberAddress": "/runtime_only",
+              "agentDefinitionId": "quick-launch-runtime-only-900f8e2f1a13",
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "new-uniform-model",
+              "llmConfig": {
+                "reasoning": {
+                  "effort": "xhigh",
+                  "flags": {
+                    "plan": false,
+                    "search": true
+                  }
+                },
+                "service_tier": "fast"
+              },
+              "autoExecuteTools": true,
+              "skillAccessMode": "NONE",
+              "workspaceId": "probe:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin",
+              "workspaceMetadata": {
+                "workspaceId": "probe:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin",
+                "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin",
+                "displayName": "quick-launch-api-e2e-workspace-OSJmin",
+                "kind": "filesystem"
+              },
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin"
+            },
+            {
+              "displayName": "model_only",
+              "memberAddress": "/model_only",
+              "agentDefinitionId": "quick-launch-model-only-900f8e2f1a13",
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "new-uniform-model",
+              "llmConfig": {
+                "reasoning": {
+                  "effort": "xhigh",
+                  "flags": {
+                    "plan": false,
+                    "search": true
+                  }
+                },
+                "service_tier": "fast"
+              },
+              "autoExecuteTools": true,
+              "skillAccessMode": "NONE",
+              "workspaceId": "probe:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin",
+              "workspaceMetadata": {
+                "workspaceId": "probe:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin",
+                "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin",
+                "displayName": "quick-launch-api-e2e-workspace-OSJmin",
+                "kind": "filesystem"
+              },
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin"
+            },
+            {
+              "displayName": "config_only",
+              "memberAddress": "/config_only",
+              "agentDefinitionId": "quick-launch-config-only-900f8e2f1a13",
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "new-uniform-model",
+              "llmConfig": {
+                "reasoning": {
+                  "effort": "xhigh",
+                  "flags": {
+                    "plan": false,
+                    "search": true
+                  }
+                },
+                "service_tier": "fast"
+              },
+              "autoExecuteTools": true,
+              "skillAccessMode": "NONE",
+              "workspaceId": "probe:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin",
+              "workspaceMetadata": {
+                "workspaceId": "probe:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin",
+                "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin",
+                "displayName": "quick-launch-api-e2e-workspace-OSJmin",
+                "kind": "filesystem"
+              },
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin"
+            },
+            {
+              "displayName": "auto_only",
+              "memberAddress": "/auto_only",
+              "agentDefinitionId": "quick-launch-auto-only-900f8e2f1a13",
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "new-uniform-model",
+              "llmConfig": {
+                "reasoning": {
+                  "effort": "xhigh",
+                  "flags": {
+                    "plan": false,
+                    "search": true
+                  }
+                },
+                "service_tier": "fast"
+              },
+              "autoExecuteTools": true,
+              "skillAccessMode": "NONE",
+              "workspaceId": "probe:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin",
+              "workspaceMetadata": {
+                "workspaceId": "probe:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin",
+                "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin",
+                "displayName": "quick-launch-api-e2e-workspace-OSJmin",
+                "kind": "filesystem"
+              },
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin"
+            }
+          ],
+          "hydratedConfig": {
+            "teamDefinitionId": "quick-launch-team-900f8e2f1a13",
+            "teamDefinitionName": "quick_launch_team_900f8e2f1a13",
+            "runtimeKind": "autobyteus",
+            "workspaceId": "temp_ws_default",
+            "workspaceMetadata": {
+              "workspaceId": "temp_ws_default",
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin",
+              "displayName": "Temp Workspace",
+              "kind": "temp"
+            },
+            "llmModelIdentifier": "new-uniform-model",
+            "llmConfig": {
+              "reasoning": {
+                "effort": "xhigh",
+                "flags": {
+                  "plan": false,
+                  "search": true
+                }
+              },
+              "service_tier": "fast"
+            },
+            "autoExecuteTools": true,
+            "skillAccessMode": "NONE",
+            "memberOverrides": {},
+            "isLocked": true
+          },
+          "hydratedRecords": [
+            {
+              "displayName": "lead",
+              "memberAddress": "/lead",
+              "agentDefinitionId": "quick-launch-lead-900f8e2f1a13",
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "new-uniform-model",
+              "llmConfig": {
+                "reasoning": {
+                  "effort": "xhigh",
+                  "flags": {
+                    "plan": false,
+                    "search": true
+                  }
+                },
+                "service_tier": "fast"
+              },
+              "autoExecuteTools": true,
+              "skillAccessMode": "NONE",
+              "workspaceId": "temp_ws_default",
+              "workspaceMetadata": {
+                "workspaceId": "temp_ws_default",
+                "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin",
+                "displayName": "Temp Workspace",
+                "kind": "temp"
+              },
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin"
+            },
+            {
+              "displayName": "peer",
+              "memberAddress": "/peer",
+              "agentDefinitionId": "quick-launch-peer-900f8e2f1a13",
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "new-uniform-model",
+              "llmConfig": {
+                "reasoning": {
+                  "effort": "xhigh",
+                  "flags": {
+                    "plan": false,
+                    "search": true
+                  }
+                },
+                "service_tier": "fast"
+              },
+              "autoExecuteTools": true,
+              "skillAccessMode": "NONE",
+              "workspaceId": "temp_ws_default",
+              "workspaceMetadata": {
+                "workspaceId": "temp_ws_default",
+                "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin",
+                "displayName": "Temp Workspace",
+                "kind": "temp"
+              },
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin"
+            },
+            {
+              "displayName": "runtime_only",
+              "memberAddress": "/runtime_only",
+              "agentDefinitionId": "quick-launch-runtime-only-900f8e2f1a13",
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "new-uniform-model",
+              "llmConfig": {
+                "reasoning": {
+                  "effort": "xhigh",
+                  "flags": {
+                    "plan": false,
+                    "search": true
+                  }
+                },
+                "service_tier": "fast"
+              },
+              "autoExecuteTools": true,
+              "skillAccessMode": "NONE",
+              "workspaceId": "temp_ws_default",
+              "workspaceMetadata": {
+                "workspaceId": "temp_ws_default",
+                "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin",
+                "displayName": "Temp Workspace",
+                "kind": "temp"
+              },
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin"
+            },
+            {
+              "displayName": "model_only",
+              "memberAddress": "/model_only",
+              "agentDefinitionId": "quick-launch-model-only-900f8e2f1a13",
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "new-uniform-model",
+              "llmConfig": {
+                "reasoning": {
+                  "effort": "xhigh",
+                  "flags": {
+                    "plan": false,
+                    "search": true
+                  }
+                },
+                "service_tier": "fast"
+              },
+              "autoExecuteTools": true,
+              "skillAccessMode": "NONE",
+              "workspaceId": "temp_ws_default",
+              "workspaceMetadata": {
+                "workspaceId": "temp_ws_default",
+                "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin",
+                "displayName": "Temp Workspace",
+                "kind": "temp"
+              },
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin"
+            },
+            {
+              "displayName": "config_only",
+              "memberAddress": "/config_only",
+              "agentDefinitionId": "quick-launch-config-only-900f8e2f1a13",
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "new-uniform-model",
+              "llmConfig": {
+                "reasoning": {
+                  "effort": "xhigh",
+                  "flags": {
+                    "plan": false,
+                    "search": true
+                  }
+                },
+                "service_tier": "fast"
+              },
+              "autoExecuteTools": true,
+              "skillAccessMode": "NONE",
+              "workspaceId": "temp_ws_default",
+              "workspaceMetadata": {
+                "workspaceId": "temp_ws_default",
+                "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin",
+                "displayName": "Temp Workspace",
+                "kind": "temp"
+              },
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin"
+            },
+            {
+              "displayName": "auto_only",
+              "memberAddress": "/auto_only",
+              "agentDefinitionId": "quick-launch-auto-only-900f8e2f1a13",
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "new-uniform-model",
+              "llmConfig": {
+                "reasoning": {
+                  "effort": "xhigh",
+                  "flags": {
+                    "plan": false,
+                    "search": true
+                  }
+                },
+                "service_tier": "fast"
+              },
+              "autoExecuteTools": true,
+              "skillAccessMode": "NONE",
+              "workspaceId": "temp_ws_default",
+              "workspaceMetadata": {
+                "workspaceId": "temp_ws_default",
+                "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin",
+                "displayName": "Temp Workspace",
+                "kind": "temp"
+              },
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin"
+            }
+          ],
+          "hydratedTree": {
+            "schema_version": 1,
+            "created_at": "2026-08-21T06:57:03.418Z",
+            "archived_at": null,
+            "application_binding": null,
+            "handoffs": [],
+            "root_team": {
+              "team_definition_id": "quick-launch-team-900f8e2f1a13",
+              "team_definition_name": "quick_launch_team_900f8e2f1a13",
+              "team_run_id": "quick_launch_team_900f8e2f1a13_9e9848cb4bc240beb84cfe9eedab6ff5",
+              "coordinator_address": "/lead",
+              "members": [
+                {
+                  "kind": "configured_agent",
+                  "address": "/lead",
+                  "agent_definition_id": "quick-launch-lead-900f8e2f1a13",
+                  "role": null,
+                  "description": null,
+                  "agent_run_id": "quick_launch_lead_900f8e2f1a13_d06ce0c7e561400b966c93abcd2a554d",
+                  "platform_agent_run_id": null,
+                  "launch_configuration": {
+                    "runtime_kind": "AUTOBYTEUS",
+                    "llm_model_identifier": "new-uniform-model",
+                    "llm_config": {
+                      "reasoning": {
+                        "effort": "xhigh",
+                        "flags": {
+                          "plan": false,
+                          "search": true
+                        }
+                      },
+                      "service_tier": "fast"
+                    },
+                    "auto_execute_tools": true,
+                    "skill_access_mode": "NONE",
+                    "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin"
+                  }
+                },
+                {
+                  "kind": "configured_agent",
+                  "address": "/peer",
+                  "agent_definition_id": "quick-launch-peer-900f8e2f1a13",
+                  "role": null,
+                  "description": null,
+                  "agent_run_id": "quick_launch_peer_900f8e2f1a13_5ab40149ad6c4791b4fa2ab856e1985c",
+                  "platform_agent_run_id": null,
+                  "launch_configuration": {
+                    "runtime_kind": "AUTOBYTEUS",
+                    "llm_model_identifier": "new-uniform-model",
+                    "llm_config": {
+                      "reasoning": {
+                        "effort": "xhigh",
+                        "flags": {
+                          "plan": false,
+                          "search": true
+                        }
+                      },
+                      "service_tier": "fast"
+                    },
+                    "auto_execute_tools": true,
+                    "skill_access_mode": "NONE",
+                    "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin"
+                  }
+                },
+                {
+                  "kind": "configured_agent",
+                  "address": "/runtime_only",
+                  "agent_definition_id": "quick-launch-runtime-only-900f8e2f1a13",
+                  "role": null,
+                  "description": null,
+                  "agent_run_id": "quick_launch_runtime_only_900f8e2f1a13_38e9c4e9bd034455aadf152be27a6292",
+                  "platform_agent_run_id": null,
+                  "launch_configuration": {
+                    "runtime_kind": "AUTOBYTEUS",
+                    "llm_model_identifier": "new-uniform-model",
+                    "llm_config": {
+                      "reasoning": {
+                        "effort": "xhigh",
+                        "flags": {
+                          "plan": false,
+                          "search": true
+                        }
+                      },
+                      "service_tier": "fast"
+                    },
+                    "auto_execute_tools": true,
+                    "skill_access_mode": "NONE",
+                    "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin"
+                  }
+                },
+                {
+                  "kind": "configured_agent",
+                  "address": "/model_only",
+                  "agent_definition_id": "quick-launch-model-only-900f8e2f1a13",
+                  "role": null,
+                  "description": null,
+                  "agent_run_id": "quick_launch_model_only_900f8e2f1a13_54728108d09343fc8c7e50aa252731eb",
+                  "platform_agent_run_id": null,
+                  "launch_configuration": {
+                    "runtime_kind": "AUTOBYTEUS",
+                    "llm_model_identifier": "new-uniform-model",
+                    "llm_config": {
+                      "reasoning": {
+                        "effort": "xhigh",
+                        "flags": {
+                          "plan": false,
+                          "search": true
+                        }
+                      },
+                      "service_tier": "fast"
+                    },
+                    "auto_execute_tools": true,
+                    "skill_access_mode": "NONE",
+                    "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin"
+                  }
+                },
+                {
+                  "kind": "configured_agent",
+                  "address": "/config_only",
+                  "agent_definition_id": "quick-launch-config-only-900f8e2f1a13",
+                  "role": null,
+                  "description": null,
+                  "agent_run_id": "quick_launch_config_only_900f8e2f1a13_9803a4462ec04acea0a6b2c0aef6a6ed",
+                  "platform_agent_run_id": null,
+                  "launch_configuration": {
+                    "runtime_kind": "AUTOBYTEUS",
+                    "llm_model_identifier": "new-uniform-model",
+                    "llm_config": {
+                      "reasoning": {
+                        "effort": "xhigh",
+                        "flags": {
+                          "plan": false,
+                          "search": true
+                        }
+                      },
+                      "service_tier": "fast"
+                    },
+                    "auto_execute_tools": true,
+                    "skill_access_mode": "NONE",
+                    "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin"
+                  }
+                },
+                {
+                  "kind": "configured_agent",
+                  "address": "/auto_only",
+                  "agent_definition_id": "quick-launch-auto-only-900f8e2f1a13",
+                  "role": null,
+                  "description": null,
+                  "agent_run_id": "quick_launch_auto_only_900f8e2f1a13_edea3dc3b2b8429595cd6a688089064e",
+                  "platform_agent_run_id": null,
+                  "launch_configuration": {
+                    "runtime_kind": "AUTOBYTEUS",
+                    "llm_model_identifier": "new-uniform-model",
+                    "llm_config": {
+                      "reasoning": {
+                        "effort": "xhigh",
+                        "flags": {
+                          "plan": false,
+                          "search": true
+                        }
+                      },
+                      "service_tier": "fast"
+                    },
+                    "auto_execute_tools": true,
+                    "skill_access_mode": "NONE",
+                    "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin"
+                  }
+                }
+              ],
+              "task_executions": []
+            }
+          },
+          "rootActive": true
+        }
+      }
+    },
+    "QL-E2E-002": {
+      "description": "Heterogeneous schema-v1 projection renders four genuine field deltas, no-edit materialization preserves effects, and a global config edit keeps genuine differences",
+      "result": "Fail",
+      "startedAt": "2026-08-21T06:57:03.495Z",
+      "failure": {
+        "id": "QL-E2E-002",
+        "description": "Heterogeneous schema-v1 projection renders four genuine field deltas, no-edit materialization preserves effects, and a global config edit keeps genuine differences",
+        "message": "page.evaluate: Error: /model_only model member-model is unavailable for Codex App Server.\n    at Proxy.launchDraft (http://127.0.0.1:55145/_nuxt/stores/agentTeamRunStore.ts:306:41)\n    at Proxy.wrappedAction (http://127.0.0.1:55145/_nuxt/node_modules/.cache/vite/client/deps/pinia.js?v=e18176b0:1067:18)\n    at store.<computed> (http://127.0.0.1:55145/_nuxt/node_modules/.cache/vite/client/deps/pinia.js?v=e18176b0:745:44)\n    at launchCurrent (http://127.0.0.1:55145/_nuxt/pages/api-e2e-quick-launch-config.vue:97:39)\n    at Object.launchHeterogeneous (http://127.0.0.1:55145/_nuxt/pages/api-e2e-quick-launch-config.vue:122:34)\n    at eval (eval at evaluate (:290:30), <anonymous>:2:33)\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)",
+        "stack": "page.evaluate: Error: /model_only model member-model is unavailable for Codex App Server.\n    at Proxy.launchDraft (http://127.0.0.1:55145/_nuxt/stores/agentTeamRunStore.ts:306:41)\n    at Proxy.wrappedAction (http://127.0.0.1:55145/_nuxt/node_modules/.cache/vite/client/deps/pinia.js?v=e18176b0:1067:18)\n    at store.<computed> (http://127.0.0.1:55145/_nuxt/node_modules/.cache/vite/client/deps/pinia.js?v=e18176b0:745:44)\n    at launchCurrent (http://127.0.0.1:55145/_nuxt/pages/api-e2e-quick-launch-config.vue:97:39)\n    at Object.launchHeterogeneous (http://127.0.0.1:55145/_nuxt/pages/api-e2e-quick-launch-config.vue:122:34)\n    at eval (eval at evaluate (:290:30), <anonymous>:2:33)\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/quick-launch-config-override/tickets/in-progress/quick-launch-config-override/api-e2e-evidence/quick-launch-browser-probe.mjs:482:33\n    at async runScenario (/Users/normy/autobyteus_org/autobyteus-worktrees/quick-launch-config-override/tickets/in-progress/quick-launch-config-override/api-e2e-evidence/quick-launch-browser-probe.mjs:163:21)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/quick-launch-config-override/tickets/in-progress/quick-launch-config-override/api-e2e-evidence/quick-launch-browser-probe.mjs:468:3"
+      }
+    }
+  },
+  "graphqlRequests": [
+    {
+      "operation": "CreateAgentTeamRun",
+      "variables": {
+        "input": {
+          "teamDefinitionId": "quick-launch-team-900f8e2f1a13",
+          "memberConfigs": [
+            {
+              "memberAddress": "/lead",
+              "agentDefinitionId": "quick-launch-lead-900f8e2f1a13",
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "new-uniform-model",
+              "llmConfig": {
+                "reasoning": {
+                  "effort": "xhigh",
+                  "flags": {
+                    "plan": false,
+                    "search": true
+                  }
+                },
+                "service_tier": "fast"
+              },
+              "autoExecuteTools": true,
+              "skillAccessMode": "NONE",
+              "workspaceId": "probe:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin",
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin"
+            },
+            {
+              "memberAddress": "/peer",
+              "agentDefinitionId": "quick-launch-peer-900f8e2f1a13",
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "new-uniform-model",
+              "llmConfig": {
+                "reasoning": {
+                  "effort": "xhigh",
+                  "flags": {
+                    "plan": false,
+                    "search": true
+                  }
+                },
+                "service_tier": "fast"
+              },
+              "autoExecuteTools": true,
+              "skillAccessMode": "NONE",
+              "workspaceId": "probe:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin",
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin"
+            },
+            {
+              "memberAddress": "/runtime_only",
+              "agentDefinitionId": "quick-launch-runtime-only-900f8e2f1a13",
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "new-uniform-model",
+              "llmConfig": {
+                "reasoning": {
+                  "effort": "xhigh",
+                  "flags": {
+                    "plan": false,
+                    "search": true
+                  }
+                },
+                "service_tier": "fast"
+              },
+              "autoExecuteTools": true,
+              "skillAccessMode": "NONE",
+              "workspaceId": "probe:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin",
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin"
+            },
+            {
+              "memberAddress": "/model_only",
+              "agentDefinitionId": "quick-launch-model-only-900f8e2f1a13",
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "new-uniform-model",
+              "llmConfig": {
+                "reasoning": {
+                  "effort": "xhigh",
+                  "flags": {
+                    "plan": false,
+                    "search": true
+                  }
+                },
+                "service_tier": "fast"
+              },
+              "autoExecuteTools": true,
+              "skillAccessMode": "NONE",
+              "workspaceId": "probe:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin",
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin"
+            },
+            {
+              "memberAddress": "/config_only",
+              "agentDefinitionId": "quick-launch-config-only-900f8e2f1a13",
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "new-uniform-model",
+              "llmConfig": {
+                "reasoning": {
+                  "effort": "xhigh",
+                  "flags": {
+                    "plan": false,
+                    "search": true
+                  }
+                },
+                "service_tier": "fast"
+              },
+              "autoExecuteTools": true,
+              "skillAccessMode": "NONE",
+              "workspaceId": "probe:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin",
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin"
+            },
+            {
+              "memberAddress": "/auto_only",
+              "agentDefinitionId": "quick-launch-auto-only-900f8e2f1a13",
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "new-uniform-model",
+              "llmConfig": {
+                "reasoning": {
+                  "effort": "xhigh",
+                  "flags": {
+                    "plan": false,
+                    "search": true
+                  }
+                },
+                "service_tier": "fast"
+              },
+              "autoExecuteTools": true,
+              "skillAccessMode": "NONE",
+              "workspaceId": "probe:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin",
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "browserEvents": [
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Checking server health at /rest/health"
+    }
+  ],
+  "fileEvidence": {
+    "sourceBefore": {
+      "uniform": {
+        "file": {
+          "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-data-0mGFD2/memory/agent_teams/quick_launch_team_900f8e2f1a13_e8f2d1e4fa104f1d94566ef5b5b4b273/team_run_execution_tree.json",
+          "sha256": "5bcba086e851c96225634ba9a3f19c49a15dd47facd4ad93b886d1ff97aacfd9",
+          "bytes": 5442,
+          "mtimeMs": 1787295403123.7551,
+          "mode": 420
+        },
+        "resume": {
+          "teamRunId": "quick_launch_team_900f8e2f1a13_e8f2d1e4fa104f1d94566ef5b5b4b273",
+          "isActive": false,
+          "executionTree": {
+            "schema_version": 1,
+            "created_at": "2026-08-21T06:56:43.121Z",
+            "archived_at": null,
+            "application_binding": null,
+            "handoffs": [],
+            "root_team": {
+              "team_definition_id": "quick-launch-team-900f8e2f1a13",
+              "team_definition_name": "quick_launch_team_900f8e2f1a13",
+              "team_run_id": "quick_launch_team_900f8e2f1a13_e8f2d1e4fa104f1d94566ef5b5b4b273",
+              "coordinator_address": "/lead",
+              "members": [
+                {
+                  "kind": "configured_agent",
+                  "address": "/lead",
+                  "agent_definition_id": "quick-launch-lead-900f8e2f1a13",
+                  "role": null,
+                  "description": null,
+                  "agent_run_id": "quick_launch_lead_900f8e2f1a13_371095484171445c8d81839fa44fe7ca",
+                  "platform_agent_run_id": null,
+                  "launch_configuration": {
+                    "runtime_kind": "CODEX",
+                    "llm_model_identifier": "old-global-model",
+                    "llm_config": {
+                      "reasoning": {
+                        "effort": "low",
+                        "flags": {
+                          "plan": true,
+                          "search": false
+                        }
+                      }
+                    },
+                    "auto_execute_tools": false,
+                    "skill_access_mode": "NONE",
+                    "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin"
+                  }
+                },
+                {
+                  "kind": "configured_agent",
+                  "address": "/peer",
+                  "agent_definition_id": "quick-launch-peer-900f8e2f1a13",
+                  "role": null,
+                  "description": null,
+                  "agent_run_id": "quick_launch_peer_900f8e2f1a13_014a984c0f8c48bd9b91264f797cf036",
+                  "platform_agent_run_id": null,
+                  "launch_configuration": {
+                    "runtime_kind": "CODEX",
+                    "llm_model_identifier": "old-global-model",
+                    "llm_config": {
+                      "reasoning": {
+                        "effort": "low",
+                        "flags": {
+                          "plan": true,
+                          "search": false
+                        }
+                      }
+                    },
+                    "auto_execute_tools": false,
+                    "skill_access_mode": "NONE",
+                    "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin"
+                  }
+                },
+                {
+                  "kind": "configured_agent",
+                  "address": "/runtime_only",
+                  "agent_definition_id": "quick-launch-runtime-only-900f8e2f1a13",
+                  "role": null,
+                  "description": null,
+                  "agent_run_id": "quick_launch_runtime_only_900f8e2f1a13_0bd3b758468f4af48d928b4eea8b815e",
+                  "platform_agent_run_id": null,
+                  "launch_configuration": {
+                    "runtime_kind": "CODEX",
+                    "llm_model_identifier": "old-global-model",
+                    "llm_config": {
+                      "reasoning": {
+                        "effort": "low",
+                        "flags": {
+                          "plan": true,
+                          "search": false
+                        }
+                      }
+                    },
+                    "auto_execute_tools": false,
+                    "skill_access_mode": "NONE",
+                    "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin"
+                  }
+                },
+                {
+                  "kind": "configured_agent",
+                  "address": "/model_only",
+                  "agent_definition_id": "quick-launch-model-only-900f8e2f1a13",
+                  "role": null,
+                  "description": null,
+                  "agent_run_id": "quick_launch_model_only_900f8e2f1a13_3e6bfba8805b43029f198cac5243b383",
+                  "platform_agent_run_id": null,
+                  "launch_configuration": {
+                    "runtime_kind": "CODEX",
+                    "llm_model_identifier": "old-global-model",
+                    "llm_config": {
+                      "reasoning": {
+                        "effort": "low",
+                        "flags": {
+                          "plan": true,
+                          "search": false
+                        }
+                      }
+                    },
+                    "auto_execute_tools": false,
+                    "skill_access_mode": "NONE",
+                    "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin"
+                  }
+                },
+                {
+                  "kind": "configured_agent",
+                  "address": "/config_only",
+                  "agent_definition_id": "quick-launch-config-only-900f8e2f1a13",
+                  "role": null,
+                  "description": null,
+                  "agent_run_id": "quick_launch_config_only_900f8e2f1a13_b8787c3855b948b4a92366a421db5753",
+                  "platform_agent_run_id": null,
+                  "launch_configuration": {
+                    "runtime_kind": "CODEX",
+                    "llm_model_identifier": "old-global-model",
+                    "llm_config": {
+                      "reasoning": {
+                        "effort": "low",
+                        "flags": {
+                          "plan": true,
+                          "search": false
+                        }
+                      }
+                    },
+                    "auto_execute_tools": false,
+                    "skill_access_mode": "NONE",
+                    "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin"
+                  }
+                },
+                {
+                  "kind": "configured_agent",
+                  "address": "/auto_only",
+                  "agent_definition_id": "quick-launch-auto-only-900f8e2f1a13",
+                  "role": null,
+                  "description": null,
+                  "agent_run_id": "quick_launch_auto_only_900f8e2f1a13_32fb3042bb1442a38bf8f0c9e9bee057",
+                  "platform_agent_run_id": null,
+                  "launch_configuration": {
+                    "runtime_kind": "CODEX",
+                    "llm_model_identifier": "old-global-model",
+                    "llm_config": {
+                      "reasoning": {
+                        "effort": "low",
+                        "flags": {
+                          "plan": true,
+                          "search": false
+                        }
+                      }
+                    },
+                    "auto_execute_tools": false,
+                    "skill_access_mode": "NONE",
+                    "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin"
+                  }
+                }
+              ],
+              "task_executions": []
+            }
+          }
+        }
+      },
+      "heterogeneous": {
+        "file": {
+          "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-data-0mGFD2/memory/agent_teams/quick_launch_team_900f8e2f1a13_7aaba33d7ed042f9b23836e6a689700c/team_run_execution_tree.json",
+          "sha256": "03f3a2f9526bc9bcdbc026d86eac96b082123d594c73bcba2ffd4a06cfb8598f",
+          "bytes": 5439,
+          "mtimeMs": 1787295403208.3538,
+          "mode": 420
+        },
+        "resume": {
+          "teamRunId": "quick_launch_team_900f8e2f1a13_7aaba33d7ed042f9b23836e6a689700c",
+          "isActive": false,
+          "executionTree": {
+            "schema_version": 1,
+            "created_at": "2026-08-21T06:56:43.207Z",
+            "archived_at": null,
+            "application_binding": null,
+            "handoffs": [],
+            "root_team": {
+              "team_definition_id": "quick-launch-team-900f8e2f1a13",
+              "team_definition_name": "quick_launch_team_900f8e2f1a13",
+              "team_run_id": "quick_launch_team_900f8e2f1a13_7aaba33d7ed042f9b23836e6a689700c",
+              "coordinator_address": "/lead",
+              "members": [
+                {
+                  "kind": "configured_agent",
+                  "address": "/lead",
+                  "agent_definition_id": "quick-launch-lead-900f8e2f1a13",
+                  "role": null,
+                  "description": null,
+                  "agent_run_id": "quick_launch_lead_900f8e2f1a13_e269635d71384ef9a0981ae62421bbbb",
+                  "platform_agent_run_id": null,
+                  "launch_configuration": {
+                    "runtime_kind": "CODEX",
+                    "llm_model_identifier": "old-global-model",
+                    "llm_config": {
+                      "reasoning": {
+                        "effort": "low",
+                        "flags": {
+                          "plan": true,
+                          "search": false
+                        }
+                      }
+                    },
+                    "auto_execute_tools": false,
+                    "skill_access_mode": "NONE",
+                    "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin"
+                  }
+                },
+                {
+                  "kind": "configured_agent",
+                  "address": "/peer",
+                  "agent_definition_id": "quick-launch-peer-900f8e2f1a13",
+                  "role": null,
+                  "description": null,
+                  "agent_run_id": "quick_launch_peer_900f8e2f1a13_bbff26fc28ed43468bed981f5b0087e8",
+                  "platform_agent_run_id": null,
+                  "launch_configuration": {
+                    "runtime_kind": "CODEX",
+                    "llm_model_identifier": "old-global-model",
+                    "llm_config": {
+                      "reasoning": {
+                        "effort": "low",
+                        "flags": {
+                          "plan": true,
+                          "search": false
+                        }
+                      }
+                    },
+                    "auto_execute_tools": false,
+                    "skill_access_mode": "NONE",
+                    "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin"
+                  }
+                },
+                {
+                  "kind": "configured_agent",
+                  "address": "/runtime_only",
+                  "agent_definition_id": "quick-launch-runtime-only-900f8e2f1a13",
+                  "role": null,
+                  "description": null,
+                  "agent_run_id": "quick_launch_runtime_only_900f8e2f1a13_90a4abf9275c45edaefda5ad28e6fecb",
+                  "platform_agent_run_id": null,
+                  "launch_configuration": {
+                    "runtime_kind": "CLAUDE",
+                    "llm_model_identifier": "old-global-model",
+                    "llm_config": {
+                      "reasoning": {
+                        "effort": "low",
+                        "flags": {
+                          "plan": true,
+                          "search": false
+                        }
+                      }
+                    },
+                    "auto_execute_tools": false,
+                    "skill_access_mode": "NONE",
+                    "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin"
+                  }
+                },
+                {
+                  "kind": "configured_agent",
+                  "address": "/model_only",
+                  "agent_definition_id": "quick-launch-model-only-900f8e2f1a13",
+                  "role": null,
+                  "description": null,
+                  "agent_run_id": "quick_launch_model_only_900f8e2f1a13_42cb18e639894830abafb20b4ac57a5c",
+                  "platform_agent_run_id": null,
+                  "launch_configuration": {
+                    "runtime_kind": "CODEX",
+                    "llm_model_identifier": "member-model",
+                    "llm_config": {
+                      "reasoning": {
+                        "effort": "low",
+                        "flags": {
+                          "plan": true,
+                          "search": false
+                        }
+                      }
+                    },
+                    "auto_execute_tools": false,
+                    "skill_access_mode": "NONE",
+                    "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin"
+                  }
+                },
+                {
+                  "kind": "configured_agent",
+                  "address": "/config_only",
+                  "agent_definition_id": "quick-launch-config-only-900f8e2f1a13",
+                  "role": null,
+                  "description": null,
+                  "agent_run_id": "quick_launch_config_only_900f8e2f1a13_14a20b45af844b6a8581220b588d386f",
+                  "platform_agent_run_id": null,
+                  "launch_configuration": {
+                    "runtime_kind": "CODEX",
+                    "llm_model_identifier": "old-global-model",
+                    "llm_config": {
+                      "reasoning": {
+                        "effort": "high",
+                        "flags": {
+                          "plan": false,
+                          "search": true
+                        }
+                      }
+                    },
+                    "auto_execute_tools": false,
+                    "skill_access_mode": "NONE",
+                    "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin"
+                  }
+                },
+                {
+                  "kind": "configured_agent",
+                  "address": "/auto_only",
+                  "agent_definition_id": "quick-launch-auto-only-900f8e2f1a13",
+                  "role": null,
+                  "description": null,
+                  "agent_run_id": "quick_launch_auto_only_900f8e2f1a13_3cde0d755276425dbdb217a0c39c70c6",
+                  "platform_agent_run_id": null,
+                  "launch_configuration": {
+                    "runtime_kind": "CODEX",
+                    "llm_model_identifier": "old-global-model",
+                    "llm_config": {
+                      "reasoning": {
+                        "effort": "low",
+                        "flags": {
+                          "plan": true,
+                          "search": false
+                        }
+                      }
+                    },
+                    "auto_execute_tools": true,
+                    "skill_access_mode": "NONE",
+                    "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin"
+                  }
+                }
+              ],
+              "task_executions": []
+            }
+          }
+        }
+      }
+    },
+    "definitionsBefore": [
+      {
+        "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-data-0mGFD2/agent-teams/quick-launch-team-900f8e2f1a13",
+        "entries": [
+          {
+            "path": "team-config.json",
+            "sha256": "7c850235b604e9d95d3918c79a7b83cb4efd3a279e6fe0aa397e95399a74131e",
+            "bytes": 1025
+          },
+          {
+            "path": "team.md",
+            "sha256": "9acc2a90c4fc5be2c5c2b5ffa19a3a2670e7cdd62a1622f56e4b284a898c4524",
+            "bytes": 156
+          }
+        ],
+        "sha256": "bfd553c8381ce8ba5fec4140e53c7417ae448f7654ae3ab7e5143d879fe936a0"
+      },
+      {
+        "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-data-0mGFD2/agents/quick-launch-lead-900f8e2f1a13",
+        "entries": [
+          {
+            "path": "agent-config.json",
+            "sha256": "d5f3bd9134194478cdd73a09782e1c5a7b3a900b2a40ac54b043a9832413c2fd",
+            "bytes": 275
+          },
+          {
+            "path": "agent.md",
+            "sha256": "40ba643ba4e0ce7b8f4f730ebfb2d688d5659f58c40ea1d29a28adb1fbb4906d",
+            "bytes": 175
+          }
+        ],
+        "sha256": "b61179d823dadd4716b635ddd23bf6f506b6c240cc62545801f1a3c971cdad6c"
+      },
+      {
+        "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-data-0mGFD2/agents/quick-launch-peer-900f8e2f1a13",
+        "entries": [
+          {
+            "path": "agent-config.json",
+            "sha256": "d5f3bd9134194478cdd73a09782e1c5a7b3a900b2a40ac54b043a9832413c2fd",
+            "bytes": 275
+          },
+          {
+            "path": "agent.md",
+            "sha256": "c81d8739e813e1b2b6a705a390fe9dbad4145fa4a2b9dad59f6aafe9afe5697a",
+            "bytes": 175
+          }
+        ],
+        "sha256": "7e738326e2275b67a1e2f0727ee32d7e848da9fdcc5d0f8c5ebc0f3c91a5c600"
+      },
+      {
+        "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-data-0mGFD2/agents/quick-launch-runtime-only-900f8e2f1a13",
+        "entries": [
+          {
+            "path": "agent-config.json",
+            "sha256": "d5f3bd9134194478cdd73a09782e1c5a7b3a900b2a40ac54b043a9832413c2fd",
+            "bytes": 275
+          },
+          {
+            "path": "agent.md",
+            "sha256": "a999bd9dfefe342c04205eeb26ce4b0bd173844a1cc610ef07a8c7ed32b7ec7f",
+            "bytes": 191
+          }
+        ],
+        "sha256": "28a0e64b1cb08bc3653c754c98bdb159142b17baae2168eb5ad700fb759c3337"
+      },
+      {
+        "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-data-0mGFD2/agents/quick-launch-model-only-900f8e2f1a13",
+        "entries": [
+          {
+            "path": "agent-config.json",
+            "sha256": "d5f3bd9134194478cdd73a09782e1c5a7b3a900b2a40ac54b043a9832413c2fd",
+            "bytes": 275
+          },
+          {
+            "path": "agent.md",
+            "sha256": "64d15428bea9cb9bb293a7f7e697c8051fc0995edfb0c8dd166f34150e22e9b9",
+            "bytes": 187
+          }
+        ],
+        "sha256": "53daf3f937211da94cce076123187090dd74a0c07f37b1ca2ab59ff580af215c"
+      },
+      {
+        "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-data-0mGFD2/agents/quick-launch-config-only-900f8e2f1a13",
+        "entries": [
+          {
+            "path": "agent-config.json",
+            "sha256": "d5f3bd9134194478cdd73a09782e1c5a7b3a900b2a40ac54b043a9832413c2fd",
+            "bytes": 275
+          },
+          {
+            "path": "agent.md",
+            "sha256": "4794963416d2026dfb802fe57fcc3f5244ca9c34dfcb23a7ec6c2ee5c0f9d0f2",
+            "bytes": 189
+          }
+        ],
+        "sha256": "c3f98f1f5b17d964ffa6e9e47cc87fc69090da83b596def470c7749f1d3faaa7"
+      },
+      {
+        "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-data-0mGFD2/agents/quick-launch-auto-only-900f8e2f1a13",
+        "entries": [
+          {
+            "path": "agent-config.json",
+            "sha256": "d5f3bd9134194478cdd73a09782e1c5a7b3a900b2a40ac54b043a9832413c2fd",
+            "bytes": 275
+          },
+          {
+            "path": "agent.md",
+            "sha256": "2ffd8e003cbf2add2a845527bc9554b80750e866b861c473a13239cbbc4c4bc6",
+            "bytes": 185
+          }
+        ],
+        "sha256": "93e8be8ec19bb218e54c54356c7ac7d39dbf123176e3bd4992c13ab97c83b6f6"
+      }
+    ]
+  },
+  "cleanup": {
+    "browser": {
+      "result": "closed"
+    },
+    "nuxt": {
+      "label": "nuxt",
+      "pid": 70691,
+      "initialExitCode": null,
+      "initialSignal": null,
+      "finalExitCode": null,
+      "finalSignal": "SIGTERM",
+      "result": "stopped"
+    },
+    "backend": {
+      "label": "backend",
+      "pid": 70663,
+      "initialExitCode": null,
+      "initialSignal": null,
+      "finalExitCode": 0,
+      "finalSignal": null,
+      "result": "stopped"
+    },
+    "fixtureRoute": {
+      "result": "removed",
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/quick-launch-config-override/autobyteus-web/pages/api-e2e-quick-launch-config.vue"
+    },
+    "dataRoot": {
+      "result": "removed",
+      "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-data-0mGFD2"
+    },
+    "workspaceRoot": {
+      "result": "removed",
+      "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-workspace-OSJmin"
+    }
+  },
+  "failures": [
+    {
+      "id": "QL-E2E-002",
+      "description": "Heterogeneous schema-v1 projection renders four genuine field deltas, no-edit materialization preserves effects, and a global config edit keeps genuine differences",
+      "message": "page.evaluate: Error: /model_only model member-model is unavailable for Codex App Server.\n    at Proxy.launchDraft (http://127.0.0.1:55145/_nuxt/stores/agentTeamRunStore.ts:306:41)\n    at Proxy.wrappedAction (http://127.0.0.1:55145/_nuxt/node_modules/.cache/vite/client/deps/pinia.js?v=e18176b0:1067:18)\n    at store.<computed> (http://127.0.0.1:55145/_nuxt/node_modules/.cache/vite/client/deps/pinia.js?v=e18176b0:745:44)\n    at launchCurrent (http://127.0.0.1:55145/_nuxt/pages/api-e2e-quick-launch-config.vue:97:39)\n    at Object.launchHeterogeneous (http://127.0.0.1:55145/_nuxt/pages/api-e2e-quick-launch-config.vue:122:34)\n    at eval (eval at evaluate (:290:30), <anonymous>:2:33)\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)",
+      "stack": "page.evaluate: Error: /model_only model member-model is unavailable for Codex App Server.\n    at Proxy.launchDraft (http://127.0.0.1:55145/_nuxt/stores/agentTeamRunStore.ts:306:41)\n    at Proxy.wrappedAction (http://127.0.0.1:55145/_nuxt/node_modules/.cache/vite/client/deps/pinia.js?v=e18176b0:1067:18)\n    at store.<computed> (http://127.0.0.1:55145/_nuxt/node_modules/.cache/vite/client/deps/pinia.js?v=e18176b0:745:44)\n    at launchCurrent (http://127.0.0.1:55145/_nuxt/pages/api-e2e-quick-launch-config.vue:97:39)\n    at Object.launchHeterogeneous (http://127.0.0.1:55145/_nuxt/pages/api-e2e-quick-launch-config.vue:122:34)\n    at eval (eval at evaluate (:290:30), <anonymous>:2:33)\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/quick-launch-config-override/tickets/in-progress/quick-launch-config-override/api-e2e-evidence/quick-launch-browser-probe.mjs:482:33\n    at async runScenario (/Users/normy/autobyteus_org/autobyteus-worktrees/quick-launch-config-override/tickets/in-progress/quick-launch-config-override/api-e2e-evidence/quick-launch-browser-probe.mjs:163:21)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/quick-launch-config-override/tickets/in-progress/quick-launch-config-override/api-e2e-evidence/quick-launch-browser-probe.mjs:468:3"
+    },
+    {
+      "id": "PROBE_FATAL",
+      "message": "page.evaluate: Error: /model_only model member-model is unavailable for Codex App Server.\n    at Proxy.launchDraft (http://127.0.0.1:55145/_nuxt/stores/agentTeamRunStore.ts:306:41)\n    at Proxy.wrappedAction (http://127.0.0.1:55145/_nuxt/node_modules/.cache/vite/client/deps/pinia.js?v=e18176b0:1067:18)\n    at store.<computed> (http://127.0.0.1:55145/_nuxt/node_modules/.cache/vite/client/deps/pinia.js?v=e18176b0:745:44)\n    at launchCurrent (http://127.0.0.1:55145/_nuxt/pages/api-e2e-quick-launch-config.vue:97:39)\n    at Object.launchHeterogeneous (http://127.0.0.1:55145/_nuxt/pages/api-e2e-quick-launch-config.vue:122:34)\n    at eval (eval at evaluate (:290:30), <anonymous>:2:33)\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)",
+      "stack": "page.evaluate: Error: /model_only model member-model is unavailable for Codex App Server.\n    at Proxy.launchDraft (http://127.0.0.1:55145/_nuxt/stores/agentTeamRunStore.ts:306:41)\n    at Proxy.wrappedAction (http://127.0.0.1:55145/_nuxt/node_modules/.cache/vite/client/deps/pinia.js?v=e18176b0:1067:18)\n    at store.<computed> (http://127.0.0.1:55145/_nuxt/node_modules/.cache/vite/client/deps/pinia.js?v=e18176b0:745:44)\n    at launchCurrent (http://127.0.0.1:55145/_nuxt/pages/api-e2e-quick-launch-config.vue:97:39)\n    at Object.launchHeterogeneous (http://127.0.0.1:55145/_nuxt/pages/api-e2e-quick-launch-config.vue:122:34)\n    at eval (eval at evaluate (:290:30), <anonymous>:2:33)\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/quick-launch-config-override/tickets/in-progress/quick-launch-config-override/api-e2e-evidence/quick-launch-browser-probe.mjs:482:33\n    at async runScenario (/Users/normy/autobyteus_org/autobyteus-worktrees/quick-launch-config-override/tickets/in-progress/quick-launch-config-override/api-e2e-evidence/quick-launch-browser-probe.mjs:163:21)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/quick-launch-config-override/tickets/in-progress/quick-launch-config-override/api-e2e-evidence/quick-launch-browser-probe.mjs:468:3"
+    }
+  ],
+  "result": "Fail",
+  "finishedAt": "2026-08-21T06:57:04.053Z"
+}

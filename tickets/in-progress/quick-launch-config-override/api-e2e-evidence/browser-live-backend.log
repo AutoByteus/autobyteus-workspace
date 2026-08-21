@@ -1,0 +1,148 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/quick-launch-config-override/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-data-ix6jBf
+AppConfig instance created.
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-data-ix6jBf/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-data-ix6jBf/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-data-ix6jBf/.env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:55233
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/quick-launch-config-override/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:55233
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/quick-launch-config-override/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-data-ix6jBf
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-data-ix6jBf/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-data-ix6jBf/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-data-ix6jBf/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-data-ix6jBf/memory
+============================================================
+AppConfig initialization completed successfully
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "api-e2e.db" at "file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-data-ix6jBf/db/api-e2e.db"
+
+SQLite database api-e2e.db created at file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-data-ix6jBf/db/api-e2e.db
+
+23 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+
+All migrations have been successfully applied.
+(node:71727) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Overwriting existing tool definition for name: 'search_web'
+AgentRunManager initialized.
+AUTOBYTEUS_LLM_DISCOVERY_FAILED
+Could not connect to Ollama server at http://127.0.0.1:11434. Ensure it's running. fetch failed
+AUTOBYTEUS_IMAGE_DISCOVERY_FAILED
+AUTOBYTEUS_AUDIO_DISCOVERY_FAILED
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-data-ix6jBf/memory/agent_teams/quick_launch_team_95e834c136be_abbf0ccd8eed476ea95d295aa528b5db/quick_launch_lead_95e834c136be_cdf6ce9bdd334a63b2377a139a73a6b5/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-data-ix6jBf/memory/agent_teams/quick_launch_team_95e834c136be_abbf0ccd8eed476ea95d295aa528b5db/quick_launch_peer_95e834c136be_6e8b7ce2c31a41868ea1f8e40c4567cb/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-data-ix6jBf/memory/agent_teams/quick_launch_team_95e834c136be_abbf0ccd8eed476ea95d295aa528b5db/quick_launch_model_only_95e834c136be_f724642d38f34e8f9a582987376f84cb/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-data-ix6jBf/memory/agent_teams/quick_launch_team_95e834c136be_abbf0ccd8eed476ea95d295aa528b5db/quick_launch_runtime_only_95e834c136be_905d2e3f17a340a6884bd347884435d4/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-data-ix6jBf/memory/agent_teams/quick_launch_team_95e834c136be_abbf0ccd8eed476ea95d295aa528b5db/quick_launch_config_only_95e834c136be_65a3b4c7c62c4bc9961caf27972889b4/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-data-ix6jBf/memory/agent_teams/quick_launch_team_95e834c136be_a41b6c9d86644a79b65373df76e4ae52/quick_launch_lead_95e834c136be_1befc0f212b64734a4c6cc22bf58d92b/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-data-ix6jBf/memory/agent_teams/quick_launch_team_95e834c136be_a41b6c9d86644a79b65373df76e4ae52/quick_launch_peer_95e834c136be_c4f5482c3a454d8c9051a99b506bd626/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-data-ix6jBf/memory/agent_teams/quick_launch_team_95e834c136be_a41b6c9d86644a79b65373df76e4ae52/quick_launch_runtime_only_95e834c136be_1f35105354f04a3ebe3153308f204b76/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-data-ix6jBf/memory/agent_teams/quick_launch_team_95e834c136be_abbf0ccd8eed476ea95d295aa528b5db/quick_launch_auto_only_95e834c136be_217c0addd4414b3aa2851f2a865a482b/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-data-ix6jBf/memory/agent_teams/quick_launch_team_95e834c136be_a41b6c9d86644a79b65373df76e4ae52/quick_launch_model_only_95e834c136be_751e38cdadbd4305a9e3ca7ebe7a0d62/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-data-ix6jBf/memory/agent_teams/quick_launch_team_95e834c136be_a41b6c9d86644a79b65373df76e4ae52/quick_launch_config_only_95e834c136be_8ff67c62e6f345c4bbba4ce1f3dc6806/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-data-ix6jBf/memory/agent_teams/quick_launch_team_95e834c136be_a41b6c9d86644a79b65373df76e4ae52/quick_launch_auto_only_95e834c136be_4626b9c5205f44f891dcc0d7be55dad7/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-data-ix6jBf/memory/agent_teams/quick_launch_team_95e834c136be_08d33f1b3b7e4a3aa5d073a0ee2f64ce/quick_launch_lead_95e834c136be_0eac6b820564443bb63622a12ecf85c2/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-data-ix6jBf/memory/agent_teams/quick_launch_team_95e834c136be_08d33f1b3b7e4a3aa5d073a0ee2f64ce/quick_launch_peer_95e834c136be_ef8a601a0c5544f7ac36a5441612707e/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-data-ix6jBf/memory/agent_teams/quick_launch_team_95e834c136be_08d33f1b3b7e4a3aa5d073a0ee2f64ce/quick_launch_runtime_only_95e834c136be_fc057bcc23d24942827ded3738406f16/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-data-ix6jBf/memory/agent_teams/quick_launch_team_95e834c136be_08d33f1b3b7e4a3aa5d073a0ee2f64ce/quick_launch_model_only_95e834c136be_a096d9a334d646a49892320c7cb2dea9/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-data-ix6jBf/memory/agent_teams/quick_launch_team_95e834c136be_08d33f1b3b7e4a3aa5d073a0ee2f64ce/quick_launch_config_only_95e834c136be_4ad7901b51c947afa296a18c68939a84/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-data-ix6jBf/memory/agent_teams/quick_launch_team_95e834c136be_08d33f1b3b7e4a3aa5d073a0ee2f64ce/quick_launch_auto_only_95e834c136be_99e849a964df43c5a844cc7014abc5f2/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-data-ix6jBf/memory/agent_teams/quick_launch_team_95e834c136be_784db4eaf51941b587f5071b09bf75df/quick_launch_lead_95e834c136be_b8dc09b20c6f4ee5ad6bfde8508c218c/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-data-ix6jBf/memory/agent_teams/quick_launch_team_95e834c136be_784db4eaf51941b587f5071b09bf75df/quick_launch_peer_95e834c136be_a8b8ccf5ad08479ab208632af14b580c/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-data-ix6jBf/memory/agent_teams/quick_launch_team_95e834c136be_784db4eaf51941b587f5071b09bf75df/quick_launch_runtime_only_95e834c136be_a0fe137d3c154cefbedfc710dde7eb50/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-data-ix6jBf/memory/agent_teams/quick_launch_team_95e834c136be_784db4eaf51941b587f5071b09bf75df/quick_launch_model_only_95e834c136be_898c5623f09a42109b3a6a37720fadaa/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-data-ix6jBf/memory/agent_teams/quick_launch_team_95e834c136be_784db4eaf51941b587f5071b09bf75df/quick_launch_config_only_95e834c136be_0376df577adc43eb80c05fbfc7bc4cbf/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/quick-launch-api-e2e-data-ix6jBf/memory/agent_teams/quick_launch_team_95e834c136be_784db4eaf51941b587f5071b09bf75df/quick_launch_auto_only_95e834c136be_905272bd4ada4afcbc2404a1051423c9/raw_traces_active.jsonl
