@@ -2,8 +2,8 @@ import type { ClaudeSessionToolUseCoordinator } from "./claude-session-tool-use-
 import type { ClaudeSession } from "./claude-session.js";
 import {
   getClaudeWorkspaceSkillMaterializer,
-  type ClaudeWorkspaceSkillMaterializer,
 } from "../claude-workspace-skill-materializer.js";
+import type { WorkspaceSkillMaterializer } from "../../shared/workspace-skill-materializer.js";
 import type { ClaudeSdkQueryLike } from "../../../../runtime-management/claude/client/claude-sdk-client.js";
 
 export type ClaudeSessionCleanupTarget = {
@@ -16,7 +16,7 @@ export type ClaudeSessionCleanupTarget = {
 export class ClaudeSessionCleanup {
   constructor(
     private readonly toolUseCoordinator: ClaudeSessionToolUseCoordinator,
-    private readonly workspaceSkillMaterializer: ClaudeWorkspaceSkillMaterializer = getClaudeWorkspaceSkillMaterializer(),
+    private readonly workspaceSkillMaterializer: WorkspaceSkillMaterializer = getClaudeWorkspaceSkillMaterializer(),
   ) {}
 
   async cleanupSessionResources(input: ClaudeSessionCleanupTarget): Promise<void> {
@@ -28,7 +28,7 @@ export class ClaudeSessionCleanup {
     // Let any resumed canUseTool callbacks flush their deny response before the SDK transport closes.
     await Promise.resolve();
     input.session.clearRuntimeListeners();
-    await this.workspaceSkillMaterializer.cleanupMaterializedClaudeWorkspaceSkills(
+    await this.workspaceSkillMaterializer.cleanupMaterializedWorkspaceSkills(
       input.session.runContext.runtimeContext.materializedConfiguredSkills,
     );
     const query = input.activeQueriesByRunId.get(input.runId);

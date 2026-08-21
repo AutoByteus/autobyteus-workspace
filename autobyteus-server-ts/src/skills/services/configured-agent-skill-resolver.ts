@@ -5,6 +5,7 @@ import type {
   AgentDefinitionSourceInfo,
 } from "../../agent-definition/domain/models.js";
 import { Skill } from "../domain/models.js";
+import type { ConfiguredAgentSkillBinding } from "../domain/configured-agent-skill-binding.js";
 import { SkillLoader } from "../loader.js";
 import { isSkillDirectory } from "./skill-discovery.js";
 
@@ -39,7 +40,9 @@ export class ConfiguredAgentSkillResolver {
     this.logger = options.logger;
   }
 
-  resolveForAgent(agentDefinition: AgentDefinition | null | undefined): Skill[] {
+  resolveForAgent(
+    agentDefinition: AgentDefinition | null | undefined,
+  ): ConfiguredAgentSkillBinding[] {
     if (!agentDefinition) {
       return [];
     }
@@ -50,8 +53,8 @@ export class ConfiguredAgentSkillResolver {
     });
   }
 
-  resolve(input: ResolveInput): Skill[] {
-    const skills: Skill[] = [];
+  resolve(input: ResolveInput): ConfiguredAgentSkillBinding[] {
+    const bindings: ConfiguredAgentSkillBinding[] = [];
     for (const rawSkillName of input.skillNames) {
       const configuredName = this.validateConfiguredSkillName(rawSkillName, input.agentLabel);
       if (!configuredName) {
@@ -64,15 +67,16 @@ export class ConfiguredAgentSkillResolver {
 
       if (!skill) {
         this.logger.warn(
-          `Skill '${configuredName}' defined in agent definition '${input.agentLabel ?? "unknown"}' could not be resolved. Skipping.`,
+          `Skill '${configuredName}' defined in agent definition '${input.agentLabel ?? "unknown"}' could not be resolved. Recording an unresolved binding for workspace reconciliation.`,
         );
+        bindings.push({ kind: "unresolved", name: configuredName });
         continue;
       }
 
-      skills.push(skill);
+      bindings.push({ kind: "resolved", skill });
     }
 
-    return skills;
+    return bindings;
   }
 
   private validateConfiguredSkillName(

@@ -201,7 +201,7 @@ const createFactory = (input: {
       }),
     } as any,
     {
-      resolveConfiguredSkillsForAgent: () => [],
+      resolveConfiguredSkillBindingsForAgent: () => [],
     } as any,
     input.defaultBootstrapStrategy,
   );

@@ -429,6 +429,28 @@ describe("SkillService", () => {
     expect(resolved[0]?.rootPath).toBe(path.resolve(path.join(skillsDir, "global_skill")));
   });
 
+  it("preserves safe unresolved configured bindings in order while omitting unsafe names", () => {
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    writeSkill(skillsDir, "global_skill", "Global skill", "Global content");
+    const definition = new AgentDefinition({
+      id: "writer",
+      name: "Writer",
+      description: "Writes",
+      instructions: "",
+      skillNames: ["global_skill", "missing-safe", "../unsafe", "also-missing"],
+    });
+
+    const bindings = service.resolveConfiguredSkillBindingsForAgent(definition);
+
+    expect(bindings).toHaveLength(3);
+    expect(bindings[0]).toMatchObject({ kind: "resolved", skill: { name: "global_skill" } });
+    expect(bindings[1]).toEqual({ kind: "unresolved", name: "missing-safe" });
+    expect(bindings[2]).toEqual({ kind: "unresolved", name: "also-missing" });
+    expect(service.resolveConfiguredSkillsForAgent(definition).map((skill) => skill.name)).toEqual(["global_skill"]);
+    expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining("Recording an unresolved binding"));
+    expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining("Skipping unsafe configured skill name"));
+  });
+
   it("skips unsafe configured skill names before contextual path construction", () => {
     const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => undefined);
     const agentDir = path.join(tempRoot, "package-root", "agents", "writer");

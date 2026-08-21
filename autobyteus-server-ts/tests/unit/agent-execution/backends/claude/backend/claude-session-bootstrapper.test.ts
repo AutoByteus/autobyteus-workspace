@@ -5,6 +5,8 @@ import { AgentRunContext } from "../../../../../../src/agent-execution/domain/ag
 import { ClaudeSessionBootstrapper } from "../../../../../../src/agent-execution/backends/claude/backend/claude-session-bootstrapper.js";
 import { MemberTeamContext } from "../../../../../../src/agent-team-execution/domain/member-team-context.js";
 import { RuntimeKind } from "../../../../../../src/runtime-management/runtime-kind-enum.js";
+import { Skill } from "../../../../../../src/skills/domain/models.js";
+import type { ConfiguredAgentSkillBinding } from "../../../../../../src/skills/domain/configured-agent-skill-binding.js";
 import { testMemberTeamContext } from "../../../../../fixtures/current-team-run-fixtures.js";
 
 const WORKING_DIRECTORY = "/tmp/claude-bootstrapper-workspace";
@@ -24,6 +26,7 @@ const createMemberTeamContext = () =>
 const createRunContext = (input: {
   autoExecuteTools: boolean;
   memberTeamContext?: MemberTeamContext | null;
+  skillAccessMode?: SkillAccessMode;
 }) =>
   new AgentRunContext({
     runId: input.memberTeamContext?.agentRunId ?? "run-claude-standalone",
@@ -33,32 +36,35 @@ const createRunContext = (input: {
       llmModelIdentifier: "haiku",
       autoExecuteTools: input.autoExecuteTools,
       workspaceId: "workspace-claude",
-      skillAccessMode: SkillAccessMode.NONE,
+      skillAccessMode: input.skillAccessMode ?? SkillAccessMode.NONE,
       memberTeamContext: input.memberTeamContext ?? null,
     }),
     runtimeContext: null,
   });
 
-const createBootstrapper = () =>
-  new ClaudeSessionBootstrapper(
+const createBootstrapper = (bindings: ConfiguredAgentSkillBinding[] = []) => {
+  const workspaceSkillMaterializer = { materializeConfiguredWorkspaceSkills: vi.fn(async () => []) };
+  const bootstrapper = new ClaudeSessionBootstrapper(
     { resolveWorkingDirectory: vi.fn(async () => WORKING_DIRECTORY) } as any,
-    { materializeConfiguredClaudeWorkspaceSkills: vi.fn(async () => []) } as any,
+    workspaceSkillMaterializer as any,
     {
       getAgentDefinitionById: vi.fn(async () => ({
         name: "Professor agent",
         instructions: "Teach the class.",
         description: "Professor",
-        skillNames: [],
+        skillNames: bindings.map((binding) => binding.kind === "resolved" ? binding.skill.name : binding.name),
         toolNames: [],
       })),
     } as any,
-    { resolveConfiguredSkillsForAgent: vi.fn(() => []) } as any,
+    { resolveConfiguredSkillBindingsForAgent: vi.fn(() => bindings) } as any,
   );
+  return { bootstrapper, workspaceSkillMaterializer };
+};
 
 describe("ClaudeSessionBootstrapper", () => {
   it("keeps team autoExecuteTools as AutoByteus approval state while using default provider permission mode", async () => {
     const memberTeamContext = createMemberTeamContext();
-    const bootstrapper = createBootstrapper();
+    const { bootstrapper } = createBootstrapper();
 
     const runContext = await bootstrapper.bootstrapForCreate(
       createRunContext({
@@ -82,5 +88,34 @@ describe("ClaudeSessionBootstrapper", () => {
     expect(runContext.runtimeContext.carpenterSystemPrompt).not.toContain("## Working Environment");
     expect(runContext.runtimeContext.carpenterSystemPrompt).not.toContain("## Bash Operating Practice");
     expect(runContext.runtimeContext.carpenterSystemPrompt).not.toContain("## File And Directory Practice");
+  });
+
+  it("maps resolved and unresolved bindings to shared reconciliation requests in order", async () => {
+    const skill = new Skill({
+      name: "claude-skill",
+      description: "test",
+      content: "# Claude skill",
+      rootPath: "/tmp/claude-skill",
+    });
+    const { bootstrapper, workspaceSkillMaterializer } = createBootstrapper([
+      { kind: "resolved", skill },
+      { kind: "unresolved", name: "missing-skill" },
+    ]);
+
+    const runContext = await bootstrapper.bootstrapForCreate(createRunContext({
+      autoExecuteTools: false,
+      skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
+    }));
+
+    expect(workspaceSkillMaterializer.materializeConfiguredWorkspaceSkills).toHaveBeenCalledWith({
+      runId: "run-claude-standalone",
+      workingDirectory: WORKING_DIRECTORY,
+      requests: [
+        { kind: "expose-resolved", skill },
+        { kind: "reconcile-unresolved", name: "missing-skill" },
+      ],
+      skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
+    });
+    expect(runContext.runtimeContext.configuredSkills).toEqual([skill]);
   });
 });

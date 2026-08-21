@@ -8,15 +8,12 @@ import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.j
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
 import { CodexThreadBootstrapper } from "../../../src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.js";
-import {
-  DefaultCodexThreadBootstrapStrategy,
-  type CodexThreadBootstrapStrategy,
-} from "../../../src/agent-execution/backends/codex/backend/codex-thread-bootstrap-strategy.js";
 import { CodexAppServerClient } from "../../../src/runtime-management/codex/client/codex-app-server-client.js";
 import { CodexAppServerClientManager } from "../../../src/runtime-management/codex/client/codex-app-server-client-manager.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { Skill } from "../../../src/skills/domain/models.js";
-import { CodexWorkspaceSkillMaterializer } from "../../../src/agent-execution/backends/codex/codex-workspace-skill-materializer.js";
+import { CODEX_WORKSPACE_SKILL_MATERIALIZATION_PROFILE } from "../../../src/agent-execution/backends/codex/codex-workspace-skill-materializer.js";
+import { WorkspaceSkillMaterializer } from "../../../src/agent-execution/backends/shared/workspace-skill-materializer.js";
 import type { CodexWorkspaceResolver } from "../../../src/agent-execution/backends/codex/codex-workspace-resolver.js";
 import type { AgentDefinitionService } from "../../../src/agent-definition/services/agent-definition-service.js";
 import type { SkillService } from "../../../src/skills/services/skill-service.js";
@@ -218,7 +215,7 @@ const createBootstrapper = (input: {
   workspaceRoot: string;
   configuredSkills: Skill[];
   clientManager: CodexAppServerClientManager;
-  materializer: CodexWorkspaceSkillMaterializer;
+  materializer: WorkspaceSkillMaterializer;
 }) => {
   const workspaceResolver = {
     resolveWorkingDirectory: async () => input.workspaceRoot,
@@ -232,22 +229,14 @@ const createBootstrapper = (input: {
     }),
   } as unknown as AgentDefinitionService;
   const skillService = {
-    resolveConfiguredSkillsForAgent: () => input.configuredSkills,
+    resolveConfiguredSkillBindingsForAgent: () =>
+      input.configuredSkills.map((skill) => ({ kind: "resolved" as const, skill })),
   } as unknown as SkillService;
-  const teamStrategy = {
-    appliesTo: () => false,
-    prepare: async () => {
-      throw new Error("team strategy should not be used in this test");
-    },
-  } as CodexThreadBootstrapStrategy;
-
   return new CodexThreadBootstrapper(
     input.materializer,
     workspaceResolver,
     agentDefinitionService,
     skillService,
-    new DefaultCodexThreadBootstrapStrategy(),
-    teamStrategy,
     input.clientManager,
   );
 };
@@ -310,7 +299,7 @@ describeCodexBootstrapperIntegration(
           ),
         );
 
-        const materializer = new CodexWorkspaceSkillMaterializer();
+        const materializer = new WorkspaceSkillMaterializer(CODEX_WORKSPACE_SKILL_MATERIALIZATION_PROFILE);
         const bootstrapper = createBootstrapper({
           workspaceRoot,
           configuredSkills: [configuredSkill],
@@ -348,7 +337,7 @@ describeCodexBootstrapperIntegration(
               requestTimeoutMs: 30_000,
             }),
         });
-        const materializer = new CodexWorkspaceSkillMaterializer();
+        const materializer = new WorkspaceSkillMaterializer(CODEX_WORKSPACE_SKILL_MATERIALIZATION_PROFILE);
         const bootstrapper = createBootstrapper({
           workspaceRoot,
           configuredSkills: [configuredSkill],
@@ -415,7 +404,7 @@ describeCodexBootstrapperIntegration(
 
         await clientManager.close();
         clientManager = null;
-        await materializer.cleanupMaterializedCodexWorkspaceSkills(
+        await materializer.cleanupMaterializedWorkspaceSkills(
           runContext.runtimeContext.materializedConfiguredSkills,
         );
         await expect(fs.stat(descriptor.materializedRootPath)).rejects.toThrow();

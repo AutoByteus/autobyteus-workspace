@@ -17,6 +17,10 @@ import {
   searchDirectoryRecursive,
 } from "./skill-discovery.js";
 import { ConfiguredAgentSkillResolver } from "./configured-agent-skill-resolver.js";
+import {
+  collectResolvedConfiguredSkills,
+  type ConfiguredAgentSkillBinding,
+} from "../domain/configured-agent-skill-binding.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -207,6 +211,14 @@ export class SkillService {
   }
 
   resolveConfiguredSkillsForAgent(agentDefinition: AgentDefinition | null | undefined): Skill[] {
+    return collectResolvedConfiguredSkills(
+      this.resolveConfiguredSkillBindingsForAgent(agentDefinition),
+    );
+  }
+
+  resolveConfiguredSkillBindingsForAgent(
+    agentDefinition: AgentDefinition | null | undefined,
+  ): ConfiguredAgentSkillBinding[] {
     const resolver = new ConfiguredAgentSkillResolver({
       loader: this.loader,
       isReadonlyPath: this.isReadonlyPath.bind(this),
