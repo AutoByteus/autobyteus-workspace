@@ -1,0 +1,39 @@
+DR-001 initial delivery integration refresh
+Date: 2026-08-20
+
+Recorded bootstrap base
+- ref: origin/personal
+- revision: 1b2e9b94d1de3b7f38aa2803082e0166a469a978
+
+Pre-refresh reviewed candidate
+- branch: codex/token-statistics-persistence
+- implementation revision: ec173d01be545d5df5ddecdf84b6d09393c0b62b
+- divergence before fetch/checkpoint: 1 ahead / 8 behind origin/personal
+- untracked reviewed state: CRR/API artifacts, API/E2E evidence and probes, and the durable restart E2E
+
+Refresh and safety actions
+1. git fetch origin personal
+   - latest tracked base: 3b81b5ebdc4c5eae64e221aff9c578adc7e7fb74
+   - base movement since bootstrap: 8 commits
+2. checkpointed the reviewed untracked package before integration
+   - commit: 08b481a715503f8fa43b5ea206a4bd48d1101d0a
+   - subject: chore(delivery): checkpoint reviewed coverage package
+3. git merge --no-edit origin/personal
+   - result: completed without conflict using ort
+   - merge commit: f0ddf442569b6bd9eecd590516506bc0bccd9bbc
+   - parents: 08b481a715503f8fa43b5ea206a4bd48d1101d0a 3b81b5ebdc4c5eae64e221aff9c578adc7e7fb74
+   - final divergence at integration checkpoint: 3 ahead / 0 behind origin/personal
+
+Base-impact assessment
+- fork/merge base: 1b2e9b94d1de3b7f38aa2803082e0166a469a978
+- git diff --name-status <merge-base>..origin/personal filtered for token/usage/team-stream-contracts returned no matches.
+- The eight base commits are the Electron runtime-isolation/finalization series; the merge introduced no conflict and did not change the ticket-owned token-usage paths.
+
+Required post-integration executable check
+- command: pnpm --filter autobyteus exec vitest run stores/__tests__/tokenUsageMeterStore.spec.ts components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts
+- result: Pass; 2 files / 20 tests; exit 0
+- evidence: tickets/token-statistics-persistence/delivery-evidence/dr-001-post-integration-web-focused.log
+
+Integrated-state decision
+- Result: Pass
+- Delivery-owned docs and handoff edits began only after the latest tracked base was integrated and the relevant focused executable check passed.

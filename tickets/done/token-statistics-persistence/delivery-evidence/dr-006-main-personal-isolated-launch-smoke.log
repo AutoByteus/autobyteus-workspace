@@ -1,0 +1,14 @@
+DR-006 finalized main personal exact-artifact isolated launch smoke
+UTC 2026-08-20T19:59:48Z
+source_head=c57bf44b01a4f322f3241de86954e237cad58911
+executable=/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+command=env -u ELECTRON_RUN_AS_NODE RUST_LOG=info pnpm test:e2e:electron --skip-build --adapter direct --executable <main-personal-executable>
+
+
+> autobyteus@1.4.52 test:e2e:electron /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web
+> node scripts/run-electron-e2e.mjs --skip-build --adapter direct --executable /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+
+{"type":"electron-e2e-ready","executablePath":"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus","port":58285,"dataRoot":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-7efwc5","ownsDataRoot":true,"clientBaseUrl":"http://127.0.0.1:58285","healthUrl":"http://127.0.0.1:58285/rest/health"}
+
+smoke_exit_code=0
+UTC 2026-08-20T19:59:57Z

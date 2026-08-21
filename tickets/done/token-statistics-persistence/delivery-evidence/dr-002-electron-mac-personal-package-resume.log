@@ -1,0 +1,47 @@
+$ AUTOBYTEUS_BUILD_FLAVOR=personal NO_TIMESTAMP=1 APPLE_TEAM_ID= node build/dist/build.js --mac
+Reason: resume the README build at its packaging entry point after the conversation interruption ended the wrapper after DMG/ZIP block-map generation.
+started_utc=2026-08-20T16:43:01Z
+Building with environment: production
+Using environment file: .env.production
+Resolved build flavor: personal
+Artifact base name: AutoByteus_personal
+Requested architecture: AUTO
+Updater publish config: [{"provider":"github","owner":"AutoByteus","repo":"autobyteus-workspace"}]
+Generating application icons...
+Generating 16x16 PNG icon...
+Generating 32x32 PNG icon...
+Generating 48x48 PNG icon...
+Generating 64x64 PNG icon...
+Generating 128x128 PNG icon...
+Generating 256x256 PNG icon...
+Generating 512x512 PNG icon...
+Generating 1024x1024 PNG icon...
+Generating Windows ICO icon...
+Generating macOS ICNS icon...
+Icon generation completed successfully
+Starting electron-builder...
+  • electron-builder  version=25.1.8 os=25.5.0
+  • @electron/rebuild already used by electron-builder, please consider to remove excess dependency from devDependencies
+
+To ensure your native dependencies are always matched electron version, simply add script `"postinstall": "electron-builder install-app-deps" to your `package.json`
+  • executing @electron/rebuild  electronVersion=42.4.1 arch=arm64 buildFromSource=false appDir=./
+  • installing native dependencies  arch=arm64
+  • completed installing native dependencies
+  • packaging       platform=darwin arch=arm64 electron=42.4.1 appOutDir=electron-dist/mac-arm64
+
+Normalizing packaged terminal native resources...
+  Normalized execute bits on 3 node-pty spawn-helper file(s)
+  • skipped macOS code signing  reason=identity explicitly is set to null
+  • building        target=DMG arch=arm64 file=electron-dist/AutoByteus_personal_macos-arm64-1.4.52.dmg
+  • building        target=macOS zip arch=arm64 file=electron-dist/AutoByteus_personal_macos-arm64-1.4.52.zip
+  • Detected arm64 process, HFS+ is unavailable. Creating dmg with APFS - supports Mac OSX 10.12+
+  • building block map  blockMapFile=electron-dist/AutoByteus_personal_macos-arm64-1.4.52.dmg.blockmap
+  • building block map  blockMapFile=electron-dist/AutoByteus_personal_macos-arm64-1.4.52.zip.blockmap
+Build completed: [
+  '/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.dmg.blockmap',
+  '/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.dmg',
+  '/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.zip.blockmap',
+  '/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.52.zip'
+]
+finished_utc=2026-08-20T16:47:52Z
+exit_code=0

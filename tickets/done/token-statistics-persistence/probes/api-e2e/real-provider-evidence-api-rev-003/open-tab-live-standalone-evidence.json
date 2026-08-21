@@ -1,0 +1,116 @@
+{
+  "capturedAt": "2026-08-20T19:14:22.496573+00:00",
+  "endpoint": "http://127.0.0.1:55972/graphql",
+  "runId": "daily_assistant_3fdb03d270f94beda230b7f7defce931",
+  "workspace": {
+    "root": "/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/autobyteus-server-ts/tests/.tmp/api-rev-003-real-20260820T210418-16128/temp_workspace",
+    "name": "temp_workspace"
+  },
+  "history": {
+    "runId": "daily_assistant_3fdb03d270f94beda230b7f7defce931",
+    "summary": "Reply with exactly: standalone token check complete.",
+    "createdAt": "2026-08-20T19:13:24.739Z",
+    "status": "idle",
+    "isActive": true
+  },
+  "httpStatus": 200,
+  "data": {
+    "summary": {
+      "runId": "daily_assistant_3fdb03d270f94beda230b7f7defce931",
+      "rootTeamRunId": null,
+      "grossInputTokens": 6114,
+      "standardInputTokens": 6114,
+      "cacheMissInputTokens": 6114,
+      "cacheReadInputTokens": 0,
+      "cacheCreationInputTokens": 0,
+      "outputTokens": 23,
+      "reasoningOutputTokens": 16,
+      "billableOutputTokens": 23,
+      "totalTokens": 6137,
+      "estimatedApiInputCost": 0.00085596,
+      "estimatedApiOutputCost": 6.440000000000001e-06,
+      "estimatedApiTotalCost": 0.0008624,
+      "currency": "USD",
+      "apiCostStatus": "estimated",
+      "missingPriceDimensions": [],
+      "latestPromptTokens": 6114,
+      "effectiveContextWindowTokens": 1000000,
+      "contextWindowUsagePercent": 0.6113999999999999,
+      "latestModelProvider": "DEEPSEEK",
+      "latestModelIdentifier": "deepseek-v4-flash",
+      "latestRuntimeKind": "autobyteus",
+      "usageReportCount": 1,
+      "updatedAt": "2026-08-20T19:13:26.527Z",
+      "unitPrices": {
+        "standardInput": {
+          "status": "single",
+          "pricePerMillion": 0.14
+        },
+        "cacheReadInput": {
+          "status": "not_applicable",
+          "pricePerMillion": null
+        },
+        "output": {
+          "status": "single",
+          "pricePerMillion": 0.28
+        },
+        "reasoningOutput": {
+          "status": "single",
+          "pricePerMillion": 0.28
+        }
+      }
+    },
+    "resume": {
+      "runId": "daily_assistant_3fdb03d270f94beda230b7f7defce931",
+      "isActive": true,
+      "metadataConfig": {
+        "agentDefinitionId": "daily-assistant",
+        "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/autobyteus-server-ts/tests/.tmp/api-rev-003-real-20260820T210418-16128/temp_workspace",
+        "llmModelIdentifier": "deepseek-v4-flash",
+        "autoExecuteTools": true,
+        "skillAccessMode": "PRELOADED_ONLY",
+        "runtimeKind": "autobyteus",
+        "runtimeReference": {
+          "runtimeKind": "autobyteus",
+          "sessionId": null
+        }
+      }
+    },
+    "projection": {
+      "runId": "daily_assistant_3fdb03d270f94beda230b7f7defce931",
+      "summary": "Reply with exactly: standalone token check complete.",
+      "lastActivityAt": "2026-08-20T19:13:26.527Z",
+      "conversation": [
+        {
+          "kind": "message",
+          "role": "user",
+          "content": "Reply with exactly: standalone token check complete.",
+          "media": null,
+          "ts": 1787253204.869
+        },
+        {
+          "kind": "reasoning",
+          "role": null,
+          "content": "The user wants me to reply with exactly: \"standalone token check complete.\"",
+          "media": null,
+          "ts": 1787253206.527
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "content": "standalone token check complete.",
+          "media": null,
+          "ts": 1787253206.527
+        }
+      ],
+      "activities": [],
+      "hasEarlierActiveTraceEvents": false
+    }
+  },
+  "browserAssertions": {
+    "responsePresent": true,
+    "rejectedTokenUsageUpdatedCount": 0,
+    "observedRuntimeKindsCount": 0,
+    "anErrorOccurredCount": 0
+  }
+}

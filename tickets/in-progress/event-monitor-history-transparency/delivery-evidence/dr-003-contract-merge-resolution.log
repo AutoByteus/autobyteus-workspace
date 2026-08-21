@@ -1,0 +1,40 @@
+# DR-003 generated contract conflict resolution
+utc_started=2026-08-21T04:07:49Z
+conflict_scope=three generated source-map files
+resolution=regenerate dist from cleanly merged TypeScript source
+command=pnpm --filter @autobyteus/team-stream-contracts test
+
+> @autobyteus/team-stream-contracts@0.1.0 test /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/autobyteus-team-stream-contracts
+> pnpm build && node --test tests/*.test.mjs
+
+
+> @autobyteus/team-stream-contracts@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/autobyteus-team-stream-contracts
+> tsc -p tsconfig.build.json
+
+TAP version 13
+# Subtest: validates and preserves the exact cumulative summary on a team token event
+ok 1 - validates and preserves the exact cumulative summary on a team token event
+  ---
+  duration_ms: 3.10625
+  type: 'test'
+  ...
+# Subtest: requires a non-negative safe-integer report generation
+ok 2 - requires a non-negative safe-integer report generation
+  ---
+  duration_ms: 0.569708
+  type: 'test'
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 124.148917
+contract_test_exit_code=0
+conflict_marker_check=PASS
+unmerged_paths_remaining=0
+result=PASS
+utc_finished=2026-08-21T04:07:52Z

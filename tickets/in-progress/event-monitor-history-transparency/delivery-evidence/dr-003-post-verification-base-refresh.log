@@ -866,3 +866,44 @@ HEAD a13af34ee506bf5971e5f512e91c87ee3175fb82
 branch refs/heads/codex/token-statistics-custom-provider-model
 
 utc_finished=2026-08-21T04:06:48Z
+
+## Protected delivery state
+checkpoint_commit=5e1a1175db5f08fccc5b9810a04d43f67217197f
+checkpoint_subject=chore(delivery): checkpoint verified Electron handoff
+
+## Incoming base commits
+ec173d01b fix token usage persistence readiness
+08b481a71 chore(delivery): checkpoint reviewed coverage package
+f0ddf4425 Merge remote-tracking branch 'origin/personal' into codex/token-statistics-persistence
+d057fb7ab chore(delivery): checkpoint user-test package handoff
+6076fb2d0 Merge remote-tracking branch 'origin/personal' into codex/token-statistics-persistence
+0ce9d17b7 fix exact token summary projection
+4350f6bb1 chore(delivery): finalize token statistics persistence
+c57bf44b0 Merge branch 'codex/token-statistics-persistence' into personal
+dbd00e789 docs(delivery): record token statistics finalization
+
+## Merge latest base
+Auto-merging autobyteus-server-ts/src/agent-team-execution/domain/team-agent-event.ts
+Auto-merging autobyteus-server-ts/src/agent-team-execution/services/team-agent-event-adapter.ts
+Auto-merging autobyteus-server-ts/src/services/agent-streaming/team-agent-event-websocket-projector.ts
+Auto-merging autobyteus-team-stream-contracts/dist/team-agent-message-dtos.d.ts
+Auto-merging autobyteus-team-stream-contracts/dist/team-agent-message-dtos.d.ts.map
+CONFLICT (content): Merge conflict in autobyteus-team-stream-contracts/dist/team-agent-message-dtos.d.ts.map
+Auto-merging autobyteus-team-stream-contracts/dist/team-agent-message-dtos.js
+Auto-merging autobyteus-team-stream-contracts/dist/team-agent-message-dtos.js.map
+CONFLICT (content): Merge conflict in autobyteus-team-stream-contracts/dist/team-agent-message-dtos.js.map
+Auto-merging autobyteus-team-stream-contracts/dist/team-stream-server-message.d.ts
+Auto-merging autobyteus-team-stream-contracts/dist/team-stream-server-message.d.ts.map
+CONFLICT (content): Merge conflict in autobyteus-team-stream-contracts/dist/team-stream-server-message.d.ts.map
+Auto-merging autobyteus-team-stream-contracts/src/team-agent-message-dtos.ts
+Auto-merging autobyteus-web/docs/agent_execution_architecture.md
+Automatic merge failed; fix conflicts and then commit the result.
+
+## Conflict resolution
+conflicts=three generated autobyteus-team-stream-contracts source-map files
+source_merge=clean
+resolution=regenerated dist from merged TypeScript source
+contract_build_and_test=PASS (2 tests)
+conflict_markers=none
+unmerged_paths=0
+evidence=delivery-evidence/dr-003-contract-merge-resolution.log

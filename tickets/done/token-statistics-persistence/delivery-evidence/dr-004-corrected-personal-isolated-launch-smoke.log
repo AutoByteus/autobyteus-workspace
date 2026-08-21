@@ -1,0 +1,9 @@
+command=env -u ELECTRON_RUN_AS_NODE RUST_LOG=info pnpm test:e2e:electron --skip-build --adapter direct --executable /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+timestamp_utc=2026-08-20T19:39:10Z
+head=0ce9d17b75195b0142abadc4593f6fea47893be0
+
+> autobyteus@1.4.52 test:e2e:electron /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/autobyteus-web
+> node scripts/run-electron-e2e.mjs --skip-build --adapter direct --executable /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+
+{"type":"electron-e2e-ready","executablePath":"/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus","port":57579,"dataRoot":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-7uO3cH","ownsDataRoot":true,"clientBaseUrl":"http://127.0.0.1:57579","healthUrl":"http://127.0.0.1:57579/rest/health"}
+exit_code=0

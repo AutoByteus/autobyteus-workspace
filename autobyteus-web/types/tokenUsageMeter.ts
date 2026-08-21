@@ -1,4 +1,7 @@
-import type { TeamStreamServerMessage } from '@autobyteus/team-stream-contracts';
+import type {
+  TeamStreamServerMessage,
+  TokenUsageRunSummaryDto,
+} from '@autobyteus/team-stream-contracts';
 
 export type TokenUsageApiCostStatus = 'estimated' | 'price_missing' | 'partial_price_missing' | 'mixed' | 'local_no_api_bill';
 export type TokenUsageCacheState = 'positive' | 'zero_reported' | 'not_reported' | 'unsupported_or_local' | 'unknown';
@@ -70,6 +73,7 @@ export interface TokenUsageUpdatedPayload {
   latest_prompt_tokens?: number | null;
   effective_context_window_tokens?: number | null;
   context_window_usage_percent?: number | null;
+  run_summary_after_event: TokenUsageRunSummaryDto | null;
   quality_flags?: string[];
 }
 

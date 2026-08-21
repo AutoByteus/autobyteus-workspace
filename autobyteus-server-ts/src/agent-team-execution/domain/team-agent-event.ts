@@ -8,6 +8,7 @@ import type {
   AgentRunFileChangeSourceTool,
   AgentRunFileChangeStatus,
 } from "../../agent-execution/domain/agent-run-file-change.js";
+import type { TokenUsageRunSummaryPayload } from "../../agent-execution/domain/agent-run-token-usage.js";
 
 type Correlated<T extends string, D> = Readonly<{
   eventType: T;
@@ -68,6 +69,7 @@ export type TeamTokenUsageDetails = Readonly<{
   latestPromptTokens: number | null;
   effectiveContextWindowTokens: number | null;
   contextWindowUsagePercent: number | null;
+  runSummaryAfterEvent: TokenUsageRunSummaryPayload | null;
   qualityFlags: readonly string[];
 }>;
 

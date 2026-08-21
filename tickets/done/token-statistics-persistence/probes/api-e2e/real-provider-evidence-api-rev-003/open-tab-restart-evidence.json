@@ -1,0 +1,404 @@
+{
+  "capturedAt": "2026-08-20T19:17:01.878522+00:00",
+  "endpoint": "http://127.0.0.1:55972/graphql",
+  "variables": {
+    "teamRunId": "classroom_simulation_team_144e2d75dae14478adca5a554302a82b",
+    "professorRunId": "professor_516d09ab235048e7b3e0c1692b32a9fc",
+    "studentRunId": "student_2f80fa9ec98e4564b70e4cf74c92c29f",
+    "standaloneRunId": "daily_assistant_3fdb03d270f94beda230b7f7defce931"
+  },
+  "httpStatus": 200,
+  "data": {
+    "resume": {
+      "teamRunId": "classroom_simulation_team_144e2d75dae14478adca5a554302a82b",
+      "isActive": true,
+      "executionTree": {
+        "schema_version": 1,
+        "created_at": "2026-08-20T19:09:51.911Z",
+        "archived_at": null,
+        "application_binding": null,
+        "handoffs": [
+          {
+            "from": "/professor",
+            "to": "/student",
+            "rules": [
+              "When the professor gives the student a question or problem to solve, including a math problem, conceptual question, quiz item, or challenge, and expects an answer or worked reasoning.",
+              "When the professor assigns homework, an exercise, project, reading, writing, experiment, practice task, or other work that requires the student to produce a result.",
+              "When the professor requests student participation such as an explanation, reflection, example, interpretation, correction, revision, or follow-up response.",
+              "When the professor asks the student to clarify understanding, inspect feedback, retry an answer, or resolve a misunderstanding before the lesson can continue."
+            ]
+          },
+          {
+            "from": "/student",
+            "to": "/professor",
+            "rules": [
+              "When the student has completed or attempted assigned work and has an answer, solution, explanation, reflection, or other result for the professor to review.",
+              "When the student has a question, needs clarification, identifies a misunderstanding, or requests an example or hint from the professor.",
+              "When the student cannot complete the assignment, encounters a blocker, or needs to report what was tried and what is needed next."
+            ]
+          }
+        ],
+        "root_team": {
+          "team_definition_id": "classroom-simulation-team",
+          "team_definition_name": "Classroom Simulation Team",
+          "team_run_id": "classroom_simulation_team_144e2d75dae14478adca5a554302a82b",
+          "coordinator_address": "/professor",
+          "members": [
+            {
+              "kind": "configured_agent",
+              "address": "/professor",
+              "agent_definition_id": "team-local-agent:classroom-simulation-team:professor",
+              "role": null,
+              "description": null,
+              "agent_run_id": "professor_516d09ab235048e7b3e0c1692b32a9fc",
+              "platform_agent_run_id": null,
+              "launch_configuration": {
+                "runtime_kind": "AUTOBYTEUS",
+                "llm_model_identifier": "deepseek-v4-flash",
+                "llm_config": null,
+                "auto_execute_tools": true,
+                "skill_access_mode": "PRELOADED_ONLY",
+                "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/autobyteus-server-ts/tests/.tmp/api-rev-003-real-20260820T210418-16128/temp_workspace"
+              }
+            },
+            {
+              "kind": "configured_agent",
+              "address": "/student",
+              "agent_definition_id": "team-local-agent:classroom-simulation-team:student",
+              "role": null,
+              "description": null,
+              "agent_run_id": "student_2f80fa9ec98e4564b70e4cf74c92c29f",
+              "platform_agent_run_id": "01a02094-c82f-7de0-9d5b-8ef3c8c1d46d",
+              "launch_configuration": {
+                "runtime_kind": "CODEX",
+                "llm_model_identifier": "gpt-5.6-luna",
+                "llm_config": null,
+                "auto_execute_tools": true,
+                "skill_access_mode": "PRELOADED_ONLY",
+                "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/autobyteus-server-ts/tests/.tmp/api-rev-003-real-20260820T210418-16128/temp_workspace"
+              }
+            }
+          ],
+          "task_executions": []
+        }
+      }
+    },
+    "professor": {
+      "runId": "professor_516d09ab235048e7b3e0c1692b32a9fc",
+      "rootTeamRunId": "classroom_simulation_team_144e2d75dae14478adca5a554302a82b",
+      "grossInputTokens": 49892,
+      "standardInputTokens": 4324,
+      "cacheMissInputTokens": 4324,
+      "cacheReadInputTokens": 45568,
+      "cacheCreationInputTokens": 0,
+      "cacheCreation5mInputTokens": 0,
+      "cacheCreation1hInputTokens": 0,
+      "outputTokens": 2240,
+      "reasoningOutputTokens": 849,
+      "billableOutputTokens": 2240,
+      "totalTokens": 52132,
+      "cacheReadInputTokenRate": 0.9133327988455063,
+      "standardInputTokenRate": 0.08666720115449371,
+      "cacheCreationInputTokenRate": 0,
+      "cacheState": "positive",
+      "estimatedApiInputCost": 0.0007329503999999998,
+      "estimatedApiOutputCost": 0.0006272,
+      "estimatedApiTotalCost": 0.0013601504,
+      "currency": "USD",
+      "apiCostStatus": "estimated",
+      "missingPriceDimensions": [],
+      "latestPromptTokens": 8412,
+      "effectiveContextWindowTokens": 1000000,
+      "contextWindowUsagePercent": 0.8412,
+      "latestModelProvider": "DEEPSEEK",
+      "latestModelIdentifier": "deepseek-v4-flash",
+      "latestRuntimeKind": "autobyteus",
+      "usageReportCount": 7,
+      "updatedAt": "2026-08-20T19:10:43.122Z",
+      "unitPrices": {
+        "standardInput": {
+          "status": "single",
+          "pricePerMillion": 0.14
+        },
+        "cacheReadInput": {
+          "status": "single",
+          "pricePerMillion": 0.0028
+        },
+        "cacheCreationInput": {
+          "status": "not_applicable",
+          "pricePerMillion": null
+        },
+        "cacheCreation5mInput": {
+          "status": "not_applicable",
+          "pricePerMillion": null
+        },
+        "cacheCreation1hInput": {
+          "status": "not_applicable",
+          "pricePerMillion": null
+        },
+        "output": {
+          "status": "single",
+          "pricePerMillion": 0.28
+        },
+        "reasoningOutput": {
+          "status": "single",
+          "pricePerMillion": 0.28
+        }
+      }
+    },
+    "student": {
+      "runId": "student_2f80fa9ec98e4564b70e4cf74c92c29f",
+      "rootTeamRunId": "classroom_simulation_team_144e2d75dae14478adca5a554302a82b",
+      "grossInputTokens": 83451,
+      "standardInputTokens": 11259,
+      "cacheMissInputTokens": 11259,
+      "cacheReadInputTokens": 72192,
+      "cacheCreationInputTokens": 0,
+      "cacheCreation5mInputTokens": 0,
+      "cacheCreation1hInputTokens": 0,
+      "outputTokens": 780,
+      "reasoningOutputTokens": 111,
+      "billableOutputTokens": 780,
+      "totalTokens": 84231,
+      "cacheReadInputTokenRate": 0.8650825035050509,
+      "standardInputTokenRate": 0.13491749649494914,
+      "cacheCreationInputTokenRate": 0,
+      "cacheState": "positive",
+      "estimatedApiInputCost": 0.00369564,
+      "estimatedApiOutputCost": 0.000936,
+      "estimatedApiTotalCost": 0.004631639999999999,
+      "currency": "USD",
+      "apiCostStatus": "estimated",
+      "missingPriceDimensions": [],
+      "latestPromptTokens": 14763,
+      "effectiveContextWindowTokens": 258400,
+      "contextWindowUsagePercent": 5.713235294117647,
+      "latestModelProvider": "OPENAI",
+      "latestModelIdentifier": "gpt-5.6-luna",
+      "latestRuntimeKind": "codex_app_server",
+      "usageReportCount": 6,
+      "updatedAt": "2026-08-20T19:10:39.776Z",
+      "unitPrices": {
+        "standardInput": {
+          "status": "single",
+          "pricePerMillion": 0.2
+        },
+        "cacheReadInput": {
+          "status": "single",
+          "pricePerMillion": 0.02
+        },
+        "cacheCreationInput": {
+          "status": "not_applicable",
+          "pricePerMillion": null
+        },
+        "cacheCreation5mInput": {
+          "status": "not_applicable",
+          "pricePerMillion": null
+        },
+        "cacheCreation1hInput": {
+          "status": "not_applicable",
+          "pricePerMillion": null
+        },
+        "output": {
+          "status": "single",
+          "pricePerMillion": 1.2
+        },
+        "reasoningOutput": {
+          "status": "single",
+          "pricePerMillion": 1.2
+        }
+      }
+    },
+    "team": {
+      "runId": "classroom_simulation_team_144e2d75dae14478adca5a554302a82b",
+      "rootTeamRunId": "classroom_simulation_team_144e2d75dae14478adca5a554302a82b",
+      "grossInputTokens": 133343,
+      "standardInputTokens": 15583,
+      "cacheMissInputTokens": 15583,
+      "cacheReadInputTokens": 117760,
+      "cacheCreationInputTokens": 0,
+      "cacheCreation5mInputTokens": 0,
+      "cacheCreation1hInputTokens": 0,
+      "outputTokens": 3020,
+      "reasoningOutputTokens": 960,
+      "billableOutputTokens": 3020,
+      "totalTokens": 136363,
+      "cacheReadInputTokenRate": 0.8831359726419834,
+      "standardInputTokenRate": 0.11686402735801654,
+      "cacheCreationInputTokenRate": 0,
+      "cacheState": "positive",
+      "estimatedApiInputCost": 0.0044285904,
+      "estimatedApiOutputCost": 0.0015631999999999998,
+      "estimatedApiTotalCost": 0.0059917904,
+      "currency": "USD",
+      "apiCostStatus": "estimated",
+      "missingPriceDimensions": [],
+      "latestPromptTokens": 8412,
+      "effectiveContextWindowTokens": 1000000,
+      "contextWindowUsagePercent": 0.8412,
+      "latestModelProvider": "DEEPSEEK",
+      "latestModelIdentifier": "deepseek-v4-flash",
+      "latestRuntimeKind": "autobyteus",
+      "usageReportCount": 13,
+      "updatedAt": "2026-08-20T19:10:43.122Z",
+      "unitPrices": {
+        "standardInput": {
+          "status": "mixed",
+          "pricePerMillion": null
+        },
+        "cacheReadInput": {
+          "status": "mixed",
+          "pricePerMillion": null
+        },
+        "cacheCreationInput": {
+          "status": "not_applicable",
+          "pricePerMillion": null
+        },
+        "cacheCreation5mInput": {
+          "status": "not_applicable",
+          "pricePerMillion": null
+        },
+        "cacheCreation1hInput": {
+          "status": "not_applicable",
+          "pricePerMillion": null
+        },
+        "output": {
+          "status": "mixed",
+          "pricePerMillion": null
+        },
+        "reasoningOutput": {
+          "status": "mixed",
+          "pricePerMillion": null
+        }
+      }
+    },
+    "standalone": {
+      "runId": "daily_assistant_3fdb03d270f94beda230b7f7defce931",
+      "rootTeamRunId": null,
+      "grossInputTokens": 6114,
+      "standardInputTokens": 6114,
+      "cacheMissInputTokens": 6114,
+      "cacheReadInputTokens": 0,
+      "cacheCreationInputTokens": 0,
+      "cacheCreation5mInputTokens": 0,
+      "cacheCreation1hInputTokens": 0,
+      "outputTokens": 23,
+      "reasoningOutputTokens": 16,
+      "billableOutputTokens": 23,
+      "totalTokens": 6137,
+      "cacheReadInputTokenRate": 0,
+      "standardInputTokenRate": 1,
+      "cacheCreationInputTokenRate": 0,
+      "cacheState": "zero_reported",
+      "estimatedApiInputCost": 0.00085596,
+      "estimatedApiOutputCost": 6.440000000000001e-06,
+      "estimatedApiTotalCost": 0.0008624,
+      "currency": "USD",
+      "apiCostStatus": "estimated",
+      "missingPriceDimensions": [],
+      "latestPromptTokens": 6114,
+      "effectiveContextWindowTokens": 1000000,
+      "contextWindowUsagePercent": 0.6113999999999999,
+      "latestModelProvider": "DEEPSEEK",
+      "latestModelIdentifier": "deepseek-v4-flash",
+      "latestRuntimeKind": "autobyteus",
+      "usageReportCount": 1,
+      "updatedAt": "2026-08-20T19:13:26.527Z",
+      "unitPrices": {
+        "standardInput": {
+          "status": "single",
+          "pricePerMillion": 0.14
+        },
+        "cacheReadInput": {
+          "status": "not_applicable",
+          "pricePerMillion": null
+        },
+        "cacheCreationInput": {
+          "status": "not_applicable",
+          "pricePerMillion": null
+        },
+        "cacheCreation5mInput": {
+          "status": "not_applicable",
+          "pricePerMillion": null
+        },
+        "cacheCreation1hInput": {
+          "status": "not_applicable",
+          "pricePerMillion": null
+        },
+        "output": {
+          "status": "single",
+          "pricePerMillion": 0.28
+        },
+        "reasoningOutput": {
+          "status": "single",
+          "pricePerMillion": 0.28
+        }
+      }
+    },
+    "standaloneResume": {
+      "runId": "daily_assistant_3fdb03d270f94beda230b7f7defce931",
+      "isActive": false,
+      "metadataConfig": {
+        "agentDefinitionId": "daily-assistant",
+        "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/autobyteus-server-ts/tests/.tmp/api-rev-003-real-20260820T210418-16128/temp_workspace",
+        "llmModelIdentifier": "deepseek-v4-flash",
+        "autoExecuteTools": true,
+        "skillAccessMode": "PRELOADED_ONLY",
+        "runtimeKind": "autobyteus"
+      }
+    },
+    "messages": [
+      {
+        "messageId": "teammsg_Eaq4CKb5MXOU7Eo8W24kkbMYODeqzG8r",
+        "senderAgentRunId": "professor_516d09ab235048e7b3e0c1692b32a9fc",
+        "receiverAgentRunId": "student_2f80fa9ec98e4564b70e4cf74c92c29f",
+        "content": "Hi student \u2014 here's a quick warm-up check. Please read the assignment file at /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/autobyteus-server-ts/tests/.tmp/api-rev-003-real-20260820T210418-16128/temp_workspace/classroom-runs/addition-demo/homework.md, calculate 17 + 25, write your answer (the number plus a one-sentence explanation) to student-answer.md in that same folder, and send it back to /professor via send_message_to.",
+        "messageType": "assignment",
+        "createdAt": "2026-08-20T19:10:16.460Z",
+        "referenceFiles": [
+          {
+            "referenceId": "b1b586aab2bf97f6efdd0e4f8bbb302a637c0e1d177b38071cca70f7bed66e1f",
+            "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/autobyteus-server-ts/tests/.tmp/api-rev-003-real-20260820T210418-16128/temp_workspace/classroom-runs/addition-demo/homework.md",
+            "type": "file",
+            "createdAt": "2026-08-20T19:10:16.460Z",
+            "updatedAt": "2026-08-20T19:10:16.460Z"
+          }
+        ]
+      },
+      {
+        "messageId": "teammsg_-4mxKEHyEN35_blttntdp1B7bXJ-RcNN",
+        "senderAgentRunId": "student_2f80fa9ec98e4564b70e4cf74c92c29f",
+        "receiverAgentRunId": "professor_516d09ab235048e7b3e0c1692b32a9fc",
+        "content": "I completed the warm-up. The answer is in /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/autobyteus-server-ts/tests/.tmp/api-rev-003-real-20260820T210418-16128/temp_workspace/classroom-runs/addition-demo/student-answer.md.",
+        "messageType": "answer",
+        "createdAt": "2026-08-20T19:10:38.260Z",
+        "referenceFiles": [
+          {
+            "referenceId": "32c1b641a88acdc624124b905ebe0037bc2665885961380765d7fc528431632d",
+            "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-persistence/autobyteus-server-ts/tests/.tmp/api-rev-003-real-20260820T210418-16128/temp_workspace/classroom-runs/addition-demo/student-answer.md",
+            "type": "file",
+            "createdAt": "2026-08-20T19:10:38.260Z",
+            "updatedAt": "2026-08-20T19:10:38.260Z"
+          }
+        ]
+      }
+    ]
+  },
+  "exactRestartChecks": {
+    "professorSummaryExact": true,
+    "studentSummaryExact": true,
+    "teamSummaryExact": true,
+    "messagesExact": true,
+    "standaloneInactive": true,
+    "teamModelBindingsExact": true,
+    "browserRejectedTokenUsageUpdatedCountZero": true,
+    "browserAnErrorOccurredCountZero": true,
+    "browserAnswer42Restored": true,
+    "standaloneSummaryExactOnAllPreCapturedFields": true,
+    "teamResumeConfigReadableAfterFreshOpenTab": true
+  },
+  "observations": {
+    "teamResumeIsActiveAfterFreshHistoryOpen": true,
+    "explanation": "The fresh UI history-open coordinator reopened the terminated Team package, so resume configuration is active while both members remain Offline; persisted totals/messages were unchanged. Standalone remained terminated and its summary remained directly readable."
+  }
+}

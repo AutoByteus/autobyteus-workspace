@@ -1,0 +1,2 @@
+===== RUN: pnpm --filter autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit =====
+===== EXIT: 0 =====

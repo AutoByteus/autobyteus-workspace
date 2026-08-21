@@ -1,0 +1,18 @@
+DR-002 pre-build latest-base refresh
+checked_utc=2026-08-20T16:24:02Z
+pre_fetch_origin_personal=3b81b5ebdc4c5eae64e221aff9c578adc7e7fb74
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+post_fetch_origin_personal=3b81b5ebdc4c5eae64e221aff9c578adc7e7fb74
+head=f0ddf442569b6bd9eecd590516506bc0bccd9bbc
+merge_base=3b81b5ebdc4c5eae64e221aff9c578adc7e7fb74
+divergence=3	0
+## codex/token-statistics-persistence...origin/personal [ahead 3]
+ M autobyteus-server-ts/docs/modules/token_usage.md
+ M autobyteus-web/docs/agent_execution_architecture.md
+ M autobyteus-web/docs/settings.md
+?? tickets/token-statistics-persistence/delivery-evidence/
+?? tickets/token-statistics-persistence/delivery-revision-record.md
+?? tickets/token-statistics-persistence/docs-sync-report.md
+?? tickets/token-statistics-persistence/handoff-summary.md
+?? tickets/token-statistics-persistence/release-deployment-report.md

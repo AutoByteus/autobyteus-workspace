@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { finiteNumberSchema, jsonValueSchema, nonEmptyStringSchema, nullableFiniteNumberSchema, nullableNonEmptyStringSchema, } from "./schema-helpers.js";
 import { teamMemberExecutionIdentityDtoSchema } from "./team-execution-view-dtos.js";
+import { tokenUsageRunSummaryDtoSchema } from "./token-usage-run-summary-dto.js";
 const turnId = nullableNonEmptyStringSchema;
 export const teamAgentSegmentTypeSchema = z.enum([
     "text",
@@ -70,6 +71,7 @@ const tokenUsageDetails = {
     latest_prompt_tokens: nullableFiniteNumberSchema,
     effective_context_window_tokens: nullableFiniteNumberSchema,
     context_window_usage_percent: nullableFiniteNumberSchema,
+    run_summary_after_event: tokenUsageRunSummaryDtoSchema.nullable(),
     quality_flags: z.array(nonEmptyStringSchema),
 };
 const compactionDetails = {
