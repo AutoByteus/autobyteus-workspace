@@ -1,0 +1,70 @@
+# Delivery Pre-Verification Validation
+timestamp=2026-08-21T18:23:45Z
+branch=codex/codex-luna-agent-run-prepare-failure
+head=13e926358e7b83ff484644b62e4aecf1c6361296
+base=a80105ada35455ec14fd5b9f75045799449db13e
+ahead_behind=4	0
+delivery_revision=DR-002
+
+## Tracked diff hygiene
+tracked_diff_check_exit=0
+
+## Delivery artifact presence and text hygiene
+present=tickets/in-progress/codex-luna-agent-run-prepare-failure/delivery-integrated-state-refresh.log
+present=tickets/in-progress/codex-luna-agent-run-prepare-failure/post-integration-validation.log
+present=tickets/in-progress/codex-luna-agent-run-prepare-failure/docs-sync-report.md
+present=tickets/in-progress/codex-luna-agent-run-prepare-failure/docs-sync-validation.log
+present=tickets/in-progress/codex-luna-agent-run-prepare-failure/electron-build-verification-macos-arm64.log
+present=tickets/in-progress/codex-luna-agent-run-prepare-failure/handoff-summary.md
+present=tickets/in-progress/codex-luna-agent-run-prepare-failure/release-deployment-report.md
+present=tickets/in-progress/codex-luna-agent-run-prepare-failure/delivery-revision-record.md
+artifact_text_result=pass
+artifact_text_exit=0
+build_log_presence_exit=0
+
+## Electron artifact and digest checks
+autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.53.dmg: OK
+autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.53.zip: OK
+package_presence_exit=0
+digest_check_exit=0
+build_marker_exit=0
+package_verification_marker_exit=0
+
+## Required delivery markers
+tickets/in-progress/codex-luna-agent-run-prepare-failure/handoff-summary.md:11:- Delivery revision: `DR-002`
+tickets/in-progress/codex-luna-agent-run-prepare-failure/handoff-summary.md:108:`DR-002 Pass — verified local macOS ARM64 DMG ready for user testing; repository finalization is held pending explicit user acceptance.`
+tickets/in-progress/codex-luna-agent-run-prepare-failure/release-deployment-report.md:12:- Current delivery revision ID: `DR-002`
+tickets/in-progress/codex-luna-agent-run-prepare-failure/release-deployment-report.md:124:`DR-002 Pass — initial delivery preparation plus the verified local macOS ARM64 DMG are complete. Repository finalization is intentionally held pending explicit user verification; no release or deployment is in scope.`
+tickets/in-progress/codex-luna-agent-run-prepare-failure/delivery-revision-record.md:8:| `DR-002` | User requested a README-guided Electron build for manual testing | `DR-001 Pass` with repository finalization held | Pass — unsigned local macOS ARM64 DMG/ZIP version 1.4.53 built and verified; user-test path recorded; repository finalization still held | `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/tickets/in-progress/codex-luna-agent-run-prepare-failure/electron-build-macos-arm64.log`; `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/tickets/in-progress/codex-luna-agent-run-prepare-failure/electron-build-verification-macos-arm64.log`; `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/tickets/in-progress/codex-luna-agent-run-prepare-failure/handoff-summary.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/tickets/in-progress/codex-luna-agent-run-prepare-failure/release-deployment-report.md` |
+tickets/in-progress/codex-luna-agent-run-prepare-failure/delivery-revision-record.md:28:### DR-002 — Local Electron build for user verification
+tickets/in-progress/codex-luna-agent-run-prepare-failure/delivery-revision-record.md:41:- Current authoritative result: `DR-002 Pass` — local Electron package ready for user testing. Repository finalization remains intentionally held pending the user's explicit completion/verification signal.
+101:- Explicit verification/completion for this ticket received: `No`.
+tickets/in-progress/codex-luna-agent-run-prepare-failure/release-deployment-report.md:124:`DR-002 Pass — initial delivery preparation plus the verified local macOS ARM64 DMG are complete. Repository finalization is intentionally held pending explicit user verification; no release or deployment is in scope.`
+tickets/in-progress/codex-luna-agent-run-prepare-failure/handoff-summary.md:12:- Current state: Integrated, documented, and packaged as a verified unsigned local macOS ARM64 DMG for explicit user testing. Repository finalization, archival, push, target merge, release, deployment, and cleanup remain intentionally held.
+tickets/in-progress/codex-luna-agent-run-prepare-failure/handoff-summary.md:108:`DR-002 Pass — verified local macOS ARM64 DMG ready for user testing; repository finalization is held pending explicit user acceptance.`
+tickets/in-progress/codex-luna-agent-run-prepare-failure/docs-sync-validation.log:35:result=PASS
+tickets/in-progress/codex-luna-agent-run-prepare-failure/electron-build-verification-macos-arm64.log:109:result=PASS
+151:tsc_exit=0
+304:corrected_focused_exit=0
+required_marker_exit=0
+
+## Ticket state and index
+ticket_state_exit=0
+
+## Working-tree scope
+ M autobyteus-server-ts/docs/modules/agent_execution.md
+ M autobyteus-server-ts/docs/modules/agent_packages.md
+ M autobyteus-server-ts/docs/modules/codex_integration.md
+ M autobyteus-server-ts/docs/modules/skills.md
+?? tickets/in-progress/codex-luna-agent-run-prepare-failure/delivery-integrated-state-refresh.log
+?? tickets/in-progress/codex-luna-agent-run-prepare-failure/delivery-pre-verification-validation.log
+?? tickets/in-progress/codex-luna-agent-run-prepare-failure/delivery-revision-record.md
+?? tickets/in-progress/codex-luna-agent-run-prepare-failure/docs-sync-report.md
+?? tickets/in-progress/codex-luna-agent-run-prepare-failure/docs-sync-validation.log
+?? tickets/in-progress/codex-luna-agent-run-prepare-failure/electron-build-macos-arm64.log
+?? tickets/in-progress/codex-luna-agent-run-prepare-failure/electron-build-verification-macos-arm64.log
+?? tickets/in-progress/codex-luna-agent-run-prepare-failure/handoff-summary.md
+?? tickets/in-progress/codex-luna-agent-run-prepare-failure/post-integration-validation.log
+?? tickets/in-progress/codex-luna-agent-run-prepare-failure/release-deployment-report.md
+
+result=PASS

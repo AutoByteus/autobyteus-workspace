@@ -102,11 +102,13 @@ Supported package layouts:
   `agent-teams/<team-id>/skills/<skill-name>/SKILL.md`
 
 `agent-config.json.skillNames` stores the logical names. At runtime,
-`SkillService.resolveConfiguredSkillsForAgent(...)` resolves those names from
-the current agent's source folder first, then from the owning team folder for
-team-local agents, then from configured global skill directories as a fallback.
-A contextual candidate's `SKILL.md` frontmatter `name` must match the configured
-name, and unsafe path-like names are skipped.
+`SkillService.resolveConfiguredSkillBindingsForAgent(...)` resolves those names
+from the current agent's source folder first, then from the owning team folder
+for team-local agents, then from configured global skill directories as a
+fallback. A contextual candidate's `SKILL.md` frontmatter `name` must match the
+configured name, and unsafe path-like names are skipped. Safe unavailable names
+remain unresolved bindings for provider workspace-path reconciliation; the
+resolved-only projection remains available to native consumers.
 
 The GraphQL `skills` catalog also scans available package definition roots and
 returns bundled package skills as standalone catalog rows. Duplicate skill names
@@ -115,11 +117,15 @@ package roots, and later package duplicates are skipped. Package authors should
 choose unique logical skill names instead of relying on collision
 disambiguation.
 
-Runtime-specific consumers receive resolved paths. Codex materializes imported
-package-private canonical skill roots into `.codex/skills/<skillName>` symlinks
-that target the package source directories under `skills/<skill-name>`. Native
-AutoByteus receives the same exact resolved roots through `AgentConfig.skills`.
-Runtime resolution does not use the package-wide catalog scan as its fallback,
+Runtime-specific consumers receive contextual bindings or their resolved-only
+projection. Codex materializes imported package-private canonical skill roots
+into `.codex/skills/<skillName>` symlinks that target the package source
+directories under `skills/<skill-name>`; Claude uses the equivalent
+`.claude/skills` root. Their shared materializer safely repairs broken runtime
+links or removes a broken link when its optional source no longer resolves, but
+never overwrites live different-target or non-symlink content. Native AutoByteus
+receives the same exact resolved roots through `AgentConfig.skills`. Runtime
+resolution does not use the package-wide catalog scan as its fallback,
 preserving the owning agent/team context for package-contained skills.
 
 ## Failure And Rollback Rules
