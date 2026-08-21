@@ -6,7 +6,7 @@
 - Trigger: `CRR-002` recorded the post-API/E2E proportional durable-test review as `Not Applicable` after `API-REV-001` passed at 98% final validation confidence with no API/E2E-owned durable coverage delta.
 - Bootstrap base reference: `origin/personal` at `a098b205ca990bf86b5e452950a49fc5dc39c8d1`
 - Integrated base reference used for docs sync: refreshed `origin/personal` at `a098b205ca990bf86b5e452950a49fc5dc39c8d1`; the ticket branch was already current and no base commit required integration.
-- Post-integration verification reference: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-shell-cwd-conversion-investigation/tickets/done/codex-shell-cwd-conversion-investigation/delivery-integrated-state-refresh.log`
+- Post-integration verification reference: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-shell-cwd-conversion-investigation/delivery-integrated-state-refresh.log`
 
 ## Why Docs Were Updated
 
@@ -17,18 +17,18 @@
 
 | Doc Path | Why It Was Reviewed | Result (`Updated`/`No change`/`Needs follow-up`) | Notes |
 | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-shell-cwd-conversion-investigation/autobyteus-server-ts/docs/modules/codex_integration.md` | Canonical Codex runtime, normalized event, memory, and native-history contract | `Updated` | Records exact stable `command`/`cwd` promotion, the raw `workdir` exclusion, Codex-owned execution, future trace persistence, and old-trace direct readability. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-shell-cwd-conversion-investigation/autobyteus-server-ts/docs/design/codex_raw_event_mapping.md` | Authoritative raw-to-canonical mapping and audit table | `Updated` | Adds the live/approval/history CWD mapping, non-fabrication boundary, persistence compatibility, and owner paths. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-shell-cwd-conversion-investigation/autobyteus-server-ts/docs/modules/agent_execution.md` | Generic server-owned recorder and projection ownership | `No change` | The generic document already states that accepted normalized runtime events feed server-owned local memory; no provider-field mapping belongs there. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-shell-cwd-conversion-investigation/README.md` | Workspace-level runtime/testing guidance | `No change` | Existing Codex E2E gating and external-capability reporting remain accurate; the internal field projection does not alter setup or commands. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-shell-cwd-conversion-investigation/autobyteus-server-ts/README.md` | Server-specific execution and validation guidance | `No change` | No user setup, environment variable, public API, or test invocation changed. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/docs/modules/codex_integration.md` | Canonical Codex runtime, normalized event, memory, and native-history contract | `Updated` | Records exact stable `command`/`cwd` promotion, the raw `workdir` exclusion, Codex-owned execution, future trace persistence, and old-trace direct readability. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/docs/design/codex_raw_event_mapping.md` | Authoritative raw-to-canonical mapping and audit table | `Updated` | Adds the live/approval/history CWD mapping, non-fabrication boundary, persistence compatibility, and owner paths. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/docs/modules/agent_execution.md` | Generic server-owned recorder and projection ownership | `No change` | The generic document already states that accepted normalized runtime events feed server-owned local memory; no provider-field mapping belongs there. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/README.md` | Workspace-level runtime/testing guidance | `No change` | Existing Codex E2E gating and external-capability reporting remain accurate; the internal field projection does not alter setup or commands. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/README.md` | Server-specific execution and validation guidance | `No change` | No user setup, environment variable, public API, or test invocation changed. |
 
 ## Docs Updated
 
 | Doc Path | Type Of Update | What Changed | Why |
 | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-shell-cwd-conversion-investigation/autobyteus-server-ts/docs/modules/codex_integration.md` | Durable integration/runtime contract | Documented stable item/request `command` and `cwd` projection, exclusion of raw model `workdir`, projection-only execution ownership, future trace enrichment, and unchanged old-trace readability. | Keep the high-level Codex integration authority aligned with final behavior. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-shell-cwd-conversion-investigation/autobyteus-server-ts/docs/design/codex_raw_event_mapping.md` | Durable mapping/audit contract | Added a command-CWD projection section and made the live, approval, and diagnostic history audit rows explicit about exact CWD preservation and non-fabrication. | Make the corrected shared parser boundary discoverable to future event/history maintainers. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/docs/modules/codex_integration.md` | Durable integration/runtime contract | Documented stable item/request `command` and `cwd` projection, exclusion of raw model `workdir`, projection-only execution ownership, future trace enrichment, and unchanged old-trace readability. | Keep the high-level Codex integration authority aligned with final behavior. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/docs/design/codex_raw_event_mapping.md` | Durable mapping/audit contract | Added a command-CWD projection section and made the live, approval, and diagnostic history audit rows explicit about exact CWD preservation and non-fabrication. | Make the corrected shared parser boundary discoverable to future event/history maintainers. |
 
 ## Durable Design / Runtime Knowledge Promoted
 
@@ -52,8 +52,8 @@
 ## Delivery Continuation
 
 - Result: `Pass`
-- Next delivery action: Present the integrated, documented, and validated candidate for explicit user verification. Keep ticket archival, branch push/merge, release/publication/deployment, and cleanup on hold until the user authorizes completion.
-- Notes: The latest tracked base did not advance, so no base-triggered executable rerun was needed. Documentation validation and diff hygiene are captured in `docs-sync-validation.log`.
+- Next delivery action: Complete. The user verified the candidate; the ticket was archived, merged and pushed to `personal`, and cleaned up without a release.
+- Notes: The tracked base did not advance before either handoff or finalization. Post-merge focused tests and production TypeScript passed; finalization details are authoritative in `delivery-revision-record.md` (`DR-003`) and `release-deployment-report.md`.
 
 ## Blocked Or Escalated Follow-Up (Use Only If Docs Sync Cannot Complete)
 
