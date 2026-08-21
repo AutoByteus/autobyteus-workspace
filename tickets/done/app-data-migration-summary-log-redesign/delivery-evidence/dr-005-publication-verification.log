@@ -1,0 +1,18 @@
+Publication verification started: 2026-08-21T07:13:47Z
+Tag, remote dereference, and origin/personal release commit: PASS
+Managed messaging release manifest matches release tag v1.4.53.
+Tagged package versions and managed messaging manifest: PASS
+Five tag-triggered release workflows: PASS
+GitHub Release publication and exact 21-asset set: PASS
+Curated release notes body: PASS
+
+Publication verification retry continued: 2026-08-21T07:14:20Z
+Published updater metadata and messaging release manifest: PASS
+Published Docker tags 1.4.53/latest share linux/amd64+linux/arm64 index bytes (manifest SHA-256 99c05052971f3845a3b127526501faed47578d9d03f42dd7ec6040d59788e179): PASS
+Repository artifact hygiene check passed.
+Tracked files scanned: 23707
+Path-length threshold: 200
+Longest tracked path: 199 chars: tickets/done/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/data/logs/app-data-migrations/20260731_remove_external_runtime_working_context_snapshots-2026-08-20T18-45-01-177Z.log
+Release-tag repository artifact hygiene: PASS
+Publication verification completed: 2026-08-21T07:14:25Z
+RELEASE_PUBLICATION_VERIFY=PASS

@@ -1,0 +1,16 @@
+v1.4.53 release preflight
+Initial source: personal/origin-personal at 49a02eb4bc13c687e6967f11eab318e1134d41b8
+Release notes preparation commit: f158f10d6d7537b4762f69017c84e36692558b41
+Initial artifact hygiene result: FAIL — 57 tracked evidence paths exceeded 200 characters.
+Resolution: moved 57 evidence files without content changes; three path maps retain original/new paths and SHA-256 checks.
+Release hygiene commit: 1ee4af48ba31b5825c1980e131000ab8e021790d
+Repository artifact hygiene check passed.
+Tracked files scanned: 23707
+Path-length threshold: 200
+Longest tracked path: 199 chars: tickets/done/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/data/logs/app-data-migrations/20260731_remove_external_runtime_working_context_snapshots-2026-08-20T18-45-01-177Z.log
+Desktop version before release: 1.4.52
+Gateway version before release: 1.4.52
+Next version/tag: 1.4.53 / v1.4.53; local and remote tag were absent before release.
+All 20 secret names referenced by the five release workflows were repository-visible.
+GitHub authentication: active account available with repo/workflow scopes.
+Release preflight final result: PASS
