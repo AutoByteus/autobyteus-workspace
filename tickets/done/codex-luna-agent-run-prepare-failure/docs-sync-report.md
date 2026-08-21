@@ -6,7 +6,7 @@
 - Trigger: `API-REV-001 Pass` at 97% final validation confidence and `CRR-002 Pass` with no proportional durable-test findings.
 - Bootstrap base reference: `origin/personal` at `a098b205ca990bf86b5e452950a49fc5dc39c8d1`
 - Integrated base reference used for docs sync: `origin/personal` at `a80105ada35455ec14fd5b9f75045799449db13e`, merged into ticket HEAD `13e926358e7b83ff484644b62e4aecf1c6361296`
-- Post-integration verification reference: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/tickets/done/codex-luna-agent-run-prepare-failure/post-integration-validation.log`
+- Post-integration verification reference: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-luna-agent-run-prepare-failure/post-integration-validation.log`
 
 ## Why Docs Were Updated
 

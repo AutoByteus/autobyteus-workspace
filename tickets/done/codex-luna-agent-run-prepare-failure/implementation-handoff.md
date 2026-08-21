@@ -2,16 +2,16 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/tickets/done/codex-luna-agent-run-prepare-failure/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/tickets/done/codex-luna-agent-run-prepare-failure/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/tickets/done/codex-luna-agent-run-prepare-failure/design-spec.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-luna-agent-run-prepare-failure/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-luna-agent-run-prepare-failure/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-luna-agent-run-prepare-failure/design-spec.md`
 - Supplemental task artifacts:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/tickets/done/codex-luna-agent-run-prepare-failure/evidence/full-stack-reproduction/experiment-report.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/tickets/done/codex-luna-agent-run-prepare-failure/evidence/full-stack-reproduction/`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/tickets/done/codex-luna-agent-run-prepare-failure/evidence/reported-ui-error.png`
-- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/tickets/done/codex-luna-agent-run-prepare-failure/solution-revision-record.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/tickets/done/codex-luna-agent-run-prepare-failure/design-review-report.md`
-- Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/tickets/done/codex-luna-agent-run-prepare-failure/architecture-review-revision-record.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-luna-agent-run-prepare-failure/evidence/full-stack-reproduction/experiment-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-luna-agent-run-prepare-failure/evidence/full-stack-reproduction/`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-luna-agent-run-prepare-failure/evidence/reported-ui-error.png`
+- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-luna-agent-run-prepare-failure/solution-revision-record.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-luna-agent-run-prepare-failure/design-review-report.md`
+- Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-luna-agent-run-prepare-failure/architecture-review-revision-record.md`
 - Triggering rework report, revision record, or evidence: `ARCH-REV-002` is the authoritative pass; its retained Round 1 findings `DI-001`–`DI-003` were incorporated into `SR-002` before implementation.
 
 ## Current Implementation Summary
@@ -19,7 +19,7 @@
 The implementation replaces duplicated Codex/Claude workspace-skill materializers with one profile-driven shared owner, carries safe unresolved configured identities through the SkillService boundary, reconciles every Codex binding instead of filtering discovered names, and adds path-keyed acquisition/release phases plus call-scoped rollback. Broken symlinks are rechecked and mutated link-only; missing or unavailable sources degrade with structured warnings; live symlinks and non-symlink content remain fatal and untouched. Agent-run preparation now logs the original unexpected error object before cleanup and generic wrapping. Runtime/model and user-safe error contracts are unchanged.
 
 - Implementation cycle: `Initial`
-- Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/tickets/done/codex-luna-agent-run-prepare-failure/implementation-revision-record.md`
+- Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-luna-agent-run-prepare-failure/implementation-revision-record.md`
 - Current implementation revision ID: `IR-001`
 - Related solution revision IDs: `SR-001`, `SR-002`
 - Related architecture-review revision IDs: `ARCH-REV-001`, `ARCH-REV-002`

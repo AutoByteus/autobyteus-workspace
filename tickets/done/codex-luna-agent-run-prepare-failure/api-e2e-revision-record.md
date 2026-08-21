@@ -10,7 +10,7 @@
 
 ### API-REV-001 — Live stale-link reconciliation and activation-surface baseline
 
-- Triggering role/report/round: `/code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/tickets/done/codex-luna-agent-run-prepare-failure/code-review-report.md`; round 1.
+- Triggering role/report/round: `/code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-luna-agent-run-prepare-failure/code-review-report.md`; round 1.
 - Triggering scenarios: API-SC-001 through API-SC-009.
 - Related upstream revision IDs: SR-001, SR-002, ARCH-REV-001, ARCH-REV-002, IR-001, CRR-001.
 - Why recorded: first completed API/E2E result for implementation commit `902bd4d2e`.

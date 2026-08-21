@@ -1,0 +1,323 @@
+# Repository finalization and post-merge validation
+timestamp_utc=2026-08-21T19:27:36Z
+personal_head_before=a80105ada35455ec14fd5b9f75045799449db13e
+origin_personal_before_fetch=a80105ada35455ec14fd5b9f75045799449db13e
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+origin_personal_after_fetch=a80105ada35455ec14fd5b9f75045799449db13e
+Already up to date.
+personal_after_ff=a80105ada35455ec14fd5b9f75045799449db13e
+Merge made by the 'ort' strategy.
+ .../docs/modules/agent_execution.md                |  21 +-
+ .../docs/modules/agent_packages.md                 |  26 +-
+ .../docs/modules/codex_integration.md              |  40 +-
+ autobyteus-server-ts/docs/modules/skills.md        |  60 ++-
+ .../claude/backend/claude-agent-run-context.ts     |   6 +-
+ .../claude/backend/claude-session-bootstrapper.ts  |  26 +-
+ .../claude/claude-workspace-skill-materializer.ts  | 255 +---------
+ .../claude/session/claude-session-cleanup.ts       |   6 +-
+ .../codex/backend/codex-agent-run-context.ts       |   6 +-
+ .../codex/backend/codex-thread-bootstrapper.ts     |  63 ++-
+ .../backends/codex/backend/codex-thread-cleanup.ts |  18 +-
+ .../codex/codex-workspace-skill-materializer.ts    | 258 +---------
+ .../shared/workspace-skill-materializer.ts         | 545 +++++++++++++++++++++
+ .../agent-execution/services/agent-run-manager.ts  |   6 +
+ .../domain/configured-agent-skill-binding.ts       |  12 +
+ .../services/configured-agent-skill-resolver.ts    |  16 +-
+ .../src/skills/services/skill-service.ts           |  12 +
+ .../agent-package-private-skills.e2e.test.ts       |  17 +-
+ ...e-agent-run-backend-factory.integration.test.ts |   4 +-
+ ...x-agent-run-backend-factory.integration.test.ts |   2 +-
+ .../codex-thread-bootstrapper.integration.test.ts  | 118 ++++-
+ .../agent/agent-websocket.integration.test.ts      |  30 +-
+ .../unit/agent-execution/agent-run-manager.test.ts |  11 +-
+ .../backend/claude-session-bootstrapper.test.ts    |  49 +-
+ .../claude-workspace-skill-materializer.test.ts    | 222 +--------
+ .../backend/codex-thread-bootstrapper.test.ts      |  92 +++-
+ .../codex-workspace-skill-materializer.test.ts     | 310 +-----------
+ .../shared/workspace-skill-materializer.test.ts    | 365 ++++++++++++++
+ .../unit/skills/services/skill-service.test.ts     |  22 +
+ .../api-e2e-coverage-investigation.md              | 211 ++++++++
+ .../api-e2e-execution-coverage-report.md           | 212 ++++++++
+ .../api-e2e-revision-record.md                     |  30 ++
+ .../api-e2e-test-review-report.md                  |  60 +++
+ .../architecture-review-revision-record.md         |  54 ++
+ .../code-review-report.md                          | 185 +++++++
+ .../code-review-revision-record.md                 |  56 +++
+ .../delivery-finalization-refresh.log              |  24 +
+ .../delivery-integrated-state-refresh.log          |  79 +++
+ .../delivery-pre-verification-validation.log       |  70 +++
+ .../delivery-revision-record.md                    |  55 +++
+ .../design-review-report.md                        | 267 ++++++++++
+ .../design-spec.md                                 | 465 ++++++++++++++++++
+ .../docs-sync-report.md                            |  57 +++
+ .../docs-sync-validation.log                       |  35 ++
+ .../electron-build-macos-arm64.log                 | Bin 0 -> 13174977 bytes
+ .../electron-build-verification-macos-arm64.log    | 109 +++++
+ .../api-e2e/00-new-live-scenario-rerun.txt         | 117 +++++
+ .../evidence/api-e2e/00-new-live-scenario.txt      | 142 ++++++
+ .../evidence/api-e2e/01-focused-vitest-rerun.txt   | 222 +++++++++
+ .../evidence/api-e2e/01-focused-vitest.txt         | 204 ++++++++
+ .../api-e2e/02-package-skills-e2e-focused.txt      | 148 ++++++
+ .../evidence/api-e2e/02-package-skills-e2e.txt     | 302 ++++++++++++
+ .../api-e2e/03-agent-websocket-focused.txt         | 120 +++++
+ .../api-e2e/03-agent-websocket-generic-focused.txt | 120 +++++
+ .../evidence/api-e2e/03-agent-websocket-rerun.txt  | 240 +++++++++
+ .../evidence/api-e2e/03-agent-websocket.txt        | 306 ++++++++++++
+ .../evidence/api-e2e/04-live-codex.txt             | 129 +++++
+ .../evidence/api-e2e/05-production-tsc.txt         |   1 +
+ .../evidence/api-e2e/06-claude-parity-probe.txt    |  98 ++++
+ .../evidence/api-e2e/07-hygiene-cleanup.txt        |   4 +
+ .../evidence/api-e2e/08-final-changed-tests.txt    | 148 ++++++
+ .../01-import-agent-package.json                   |   1 +
+ .../02-daily-assistant-definition.json             |   1 +
+ .../03-prepare-stale-link.json                     |   1 +
+ .../04-stale-link-websocket.jsonl                  |   6 +
+ .../05-exact-materializer-error.json               |  11 +
+ .../06-prepare-control.json                        |   1 +
+ .../07-control-websocket.jsonl                     |   5 +
+ .../08-terminate-control.json                      |   1 +
+ .../09-prepare-missing-skill.json                  |   1 +
+ .../10-missing-skill-websocket.jsonl               |   5 +
+ .../11-terminate-missing-skill.json                |   1 +
+ .../12-server-log-excerpt.txt                      |  31 ++
+ .../12-server-log-key-lines.txt                    |  11 +
+ .../evidence/full-stack-reproduction/cleanup.txt   |   1 +
+ .../full-stack-reproduction/control-run-id.txt     |   1 +
+ .../control-run-metadata.json                      |  16 +
+ .../full-stack-reproduction/experiment-report.md   |  89 ++++
+ .../missing-run-metadata.json                      |  16 +
+ .../missing-skill-run-id.txt                       |   1 +
+ .../full-stack-reproduction/stale-run-id.txt       |   1 +
+ .../stale-run-metadata.json                        |  16 +
+ .../evidence/reported-ui-error.png                 | Bin 0 -> 402410 bytes
+ .../handoff-summary.md                             | 112 +++++
+ .../implementation-handoff.md                      | 130 +++++
+ .../implementation-revision-record.md              |  31 ++
+ .../investigation-notes.md                         | 206 ++++++++
+ .../post-integration-validation.log                | 304 ++++++++++++
+ .../release-deployment-report.md                   | 134 +++++
+ .../release-notes.md                               |   8 +
+ .../requirements.md                                | 185 +++++++
+ .../solution-revision-record.md                    |  53 ++
+ 92 files changed, 7135 insertions(+), 1133 deletions(-)
+ create mode 100644 autobyteus-server-ts/src/agent-execution/backends/shared/workspace-skill-materializer.ts
+ create mode 100644 autobyteus-server-ts/src/skills/domain/configured-agent-skill-binding.ts
+ create mode 100644 autobyteus-server-ts/tests/unit/agent-execution/backends/shared/workspace-skill-materializer.test.ts
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/api-e2e-coverage-investigation.md
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/api-e2e-execution-coverage-report.md
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/api-e2e-revision-record.md
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/api-e2e-test-review-report.md
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/architecture-review-revision-record.md
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/code-review-report.md
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/code-review-revision-record.md
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/delivery-finalization-refresh.log
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/delivery-integrated-state-refresh.log
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/delivery-pre-verification-validation.log
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/delivery-revision-record.md
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/design-review-report.md
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/design-spec.md
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/docs-sync-report.md
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/docs-sync-validation.log
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/electron-build-macos-arm64.log
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/electron-build-verification-macos-arm64.log
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/evidence/api-e2e/00-new-live-scenario-rerun.txt
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/evidence/api-e2e/00-new-live-scenario.txt
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/evidence/api-e2e/01-focused-vitest-rerun.txt
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/evidence/api-e2e/01-focused-vitest.txt
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/evidence/api-e2e/02-package-skills-e2e-focused.txt
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/evidence/api-e2e/02-package-skills-e2e.txt
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/evidence/api-e2e/03-agent-websocket-focused.txt
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/evidence/api-e2e/03-agent-websocket-generic-focused.txt
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/evidence/api-e2e/03-agent-websocket-rerun.txt
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/evidence/api-e2e/03-agent-websocket.txt
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/evidence/api-e2e/04-live-codex.txt
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/evidence/api-e2e/05-production-tsc.txt
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/evidence/api-e2e/06-claude-parity-probe.txt
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/evidence/api-e2e/07-hygiene-cleanup.txt
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/evidence/api-e2e/08-final-changed-tests.txt
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/evidence/full-stack-reproduction/01-import-agent-package.json
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/evidence/full-stack-reproduction/02-daily-assistant-definition.json
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/evidence/full-stack-reproduction/03-prepare-stale-link.json
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/evidence/full-stack-reproduction/04-stale-link-websocket.jsonl
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/evidence/full-stack-reproduction/05-exact-materializer-error.json
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/evidence/full-stack-reproduction/06-prepare-control.json
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/evidence/full-stack-reproduction/07-control-websocket.jsonl
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/evidence/full-stack-reproduction/08-terminate-control.json
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/evidence/full-stack-reproduction/09-prepare-missing-skill.json
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/evidence/full-stack-reproduction/10-missing-skill-websocket.jsonl
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/evidence/full-stack-reproduction/11-terminate-missing-skill.json
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/evidence/full-stack-reproduction/12-server-log-excerpt.txt
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/evidence/full-stack-reproduction/12-server-log-key-lines.txt
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/evidence/full-stack-reproduction/cleanup.txt
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/evidence/full-stack-reproduction/control-run-id.txt
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/evidence/full-stack-reproduction/control-run-metadata.json
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/evidence/full-stack-reproduction/experiment-report.md
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/evidence/full-stack-reproduction/missing-run-metadata.json
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/evidence/full-stack-reproduction/missing-skill-run-id.txt
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/evidence/full-stack-reproduction/stale-run-id.txt
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/evidence/full-stack-reproduction/stale-run-metadata.json
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/evidence/reported-ui-error.png
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/handoff-summary.md
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/implementation-handoff.md
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/implementation-revision-record.md
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/investigation-notes.md
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/post-integration-validation.log
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/release-deployment-report.md
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/release-notes.md
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/requirements.md
+ create mode 100644 tickets/done/codex-luna-agent-run-prepare-failure/solution-revision-record.md
+personal_merge_head=577a3c81021cd4a63fda3dbf334cbbd9da7cbd2c
+ticket_head=ee32b64193d54ec173acb8885eb8f799b2fd30b3
+ticket_is_ancestor=yes
+--- focused changed tests ---
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:19152) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > publishes error status and failed ACK when prepared activation fails
+Agent websocket attached for run agent-e2e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > publishes error status and failed ACK when prepared activation fails
+Created agent session a9edaa00-19ca-4c72-a985-ca27c4f2fb11 for run agent-e2e
+Agent WebSocket connected: session=a9edaa00-19ca-4c72-a985-ca27c4f2fb11, run=agent-e2e
+
+stderr | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > publishes error status and failed ACK when prepared activation fails
+SEND_MESSAGE command not accepted for agent run agent-e2e: [ACTIVATION_FAILED] Failed to prepare agent run 'agent-e2e'.
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts
+Closed agent session a9edaa00-19ca-4c72-a985-ca27c4f2fb11
+Agent WebSocket disconnected: a9edaa00-19ca-4c72-a985-ca27c4f2fb11
+
+ ✓ tests/integration/agent/agent-websocket.integration.test.ts (8 tests | 7 skipped) 34ms
+stdout | tests/integration/agent-execution/codex-thread-bootstrapper.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:19157) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stderr | tests/integration/agent-execution/codex-thread-bootstrapper.integration.test.ts > CodexThreadBootstrapper integration (live skill discovery) > repairs a broken canonical link when live Codex discovery already exposes the configured logical name
+[CodexAppServerClient] stderr: 2026-08-21T19:27:45.856129Z ERROR codex_app_server: Project-local config, hooks, and exec policies are disabled in the following folders until the project is trusted, but skills still load.
+    1. /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-bootstrapper-live-stale-link-ITRgDH/.codex
+       To load project-local config, hooks, and exec policies, add /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-bootstrapper-live-stale-link-ITRgDH as a trusted project in /Users/normy/.codex/config.toml.
+
+stdout | tests/integration/agent-execution/codex-thread-bootstrapper.integration.test.ts > CodexThreadBootstrapper integration (live skill discovery) > repairs a broken canonical link when live Codex discovery already exposes the configured logical name
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts
+
+ ✓ tests/integration/agent-execution/codex-thread-bootstrapper.integration.test.ts (3 tests | 2 skipped) 157ms
+
+ Test Files  2 passed (2)
+      Tests  2 passed | 9 skipped (11)
+   Start at  21:27:39
+   Duration  6.79s (transform 3.27s, setup 20ms, import 5.87s, tests 191ms, environment 0ms)
+
+--- production TypeScript ---
+validation_result=pass

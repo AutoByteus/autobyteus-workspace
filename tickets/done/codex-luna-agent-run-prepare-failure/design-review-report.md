@@ -2,17 +2,17 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/tickets/done/codex-luna-agent-run-prepare-failure/requirements.md
-- Upstream Investigation Notes: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/tickets/done/codex-luna-agent-run-prepare-failure/investigation-notes.md
-- Reviewed Design Spec: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/tickets/done/codex-luna-agent-run-prepare-failure/design-spec.md
+- Upstream Requirements Doc: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-luna-agent-run-prepare-failure/requirements.md
+- Upstream Investigation Notes: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-luna-agent-run-prepare-failure/investigation-notes.md
+- Reviewed Design Spec: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-luna-agent-run-prepare-failure/design-spec.md
 - Supplemental Task Artifacts Reviewed:
-  - /Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/tickets/done/codex-luna-agent-run-prepare-failure/evidence/full-stack-reproduction/experiment-report.md
-  - /Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/tickets/done/codex-luna-agent-run-prepare-failure/evidence/full-stack-reproduction/
-  - /Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/tickets/done/codex-luna-agent-run-prepare-failure/evidence/reported-ui-error.png
+  - /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-luna-agent-run-prepare-failure/evidence/full-stack-reproduction/experiment-report.md
+  - /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-luna-agent-run-prepare-failure/evidence/full-stack-reproduction/
+  - /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-luna-agent-run-prepare-failure/evidence/reported-ui-error.png
   - Round 1 state of this canonical report and the architecture revision record, which supplied DI-001–DI-003 / PREM-001–PREM-003 to SR-002
-- Solution Revision Record Reviewed: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/tickets/done/codex-luna-agent-run-prepare-failure/solution-revision-record.md
+- Solution Revision Record Reviewed: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-luna-agent-run-prepare-failure/solution-revision-record.md
 - Relevant Solution Revision IDs: SR-001, SR-002
-- Architecture Review Revision Record: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/tickets/done/codex-luna-agent-run-prepare-failure/architecture-review-revision-record.md
+- Architecture Review Revision Record: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-luna-agent-run-prepare-failure/architecture-review-revision-record.md
 - Current Architecture Review Revision ID: ARCH-REV-002
 - Current Review Round: 2
 - Trigger: Re-review of SR-002, which claims resolution of Round 1 findings DI-001–DI-003 without changing the approved requirements.
