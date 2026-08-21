@@ -1,6 +1,6 @@
 import { Buffer } from "node:buffer";
 import type { RawTraceMedia } from "autobyteus-ts/memory/models/raw-trace-item.js";
-import type { HistoricalReplayEvent, HistoricalReplayToolEvent } from "./historical-replay-event-types.js";
+import type { EventMonitorReplayEvent, HistoricalReplayToolEvent } from "./historical-replay-event-types.js";
 import type {
   EventMonitorActiveTraceAttachment,
   EventMonitorActiveTracePageEvent,
@@ -86,7 +86,7 @@ const userAttachments = (eventId: string, media: RawTraceMedia | null): EventMon
 };
 
 export const buildEventMonitorActiveTracePageEvent = (
-  event: HistoricalReplayEvent,
+  event: EventMonitorReplayEvent,
 ): EventMonitorActiveTracePageEvent => {
   const visuals: EventMonitorActiveTracePageVisual[] = [];
   if (event.kind === "message") {
@@ -137,5 +137,5 @@ export const buildEventMonitorActiveTracePageEvent = (
 };
 
 export const buildEventMonitorActiveTracePageEvents = (
-  events: readonly HistoricalReplayEvent[],
+  events: readonly EventMonitorReplayEvent[],
 ): EventMonitorActiveTracePageEvent[] => events.map(buildEventMonitorActiveTracePageEvent);

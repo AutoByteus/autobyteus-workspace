@@ -24,6 +24,7 @@ export class MemoryViewConverter {
 
   private static toGraphqlTrace(domainTrace: DomainMemoryTraceEvent): GraphqlMemoryTraceEvent {
     return {
+      scope: domainTrace.scope,
       id: domainTrace.id ?? null,
       traceType: domainTrace.traceType,
       sourceEvent: domainTrace.sourceEvent ?? null,

@@ -94,7 +94,7 @@ describe('incomplete native Tool protocol restore boundary (API/E2E)', () => {
       );
       expect(WorkingContextSnapshotSerializer.validate(snapshotStore.read(agentId)!)).toBe(true);
 
-      const repairedRawTraces = store.listRawTracesOrdered();
+      const repairedRawTraces = store.listTurnRawTracesOrdered();
       const terminalResults = repairedRawTraces.filter((trace) =>
         trace.traceType === 'tool_result' && trace.toolCallId === 'call_resume_missing'
       );
@@ -114,7 +114,7 @@ describe('incomplete native Tool protocol restore boundary (API/E2E)', () => {
         'System prompt',
         new WorkingContextSnapshotBootstrapOptions(),
       );
-      expect(store.listRawTracesOrdered().filter((trace) =>
+      expect(store.listTurnRawTracesOrdered().filter((trace) =>
         trace.traceType === 'tool_result' && trace.toolCallId === 'call_resume_missing'
       )).toHaveLength(1);
       expect(WorkingContextSnapshotSerializer.validate(snapshotStore.read(agentId)!)).toBe(true);

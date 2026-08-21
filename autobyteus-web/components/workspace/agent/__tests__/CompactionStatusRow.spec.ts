@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils';
 import { describe, expect, it } from 'vitest';
-import type { CompactionActivity } from '~/stores/agentActivityStore';
+import type { CompactionActivity } from '~/types/activity/RunActivity';
 import CompactionStatusRow from '../CompactionStatusRow.vue';
 
 const iconStub = {

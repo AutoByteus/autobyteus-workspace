@@ -74,7 +74,7 @@ const makeHarness = (failAt: CommitStep | null = null) => {
     if (step === failAt) throw failure;
   };
   const store = {
-    archiveExactRawTraces: vi.fn(() => visit('archive')),
+    archiveCompactedRawTraces: vi.fn(() => visit('archive')),
     add: vi.fn(() => visit('add-outputs')),
     findEpisodicItemsByIds: vi.fn(() => {
       visit('verify-episodes');
@@ -121,7 +121,7 @@ describe('AcceptedCompactionCommitter', () => {
     expect(harness.committer.commit(accepted, harness.hooks)).toBeUndefined();
 
     expect(harness.calls).toEqual(COMMIT_STEPS);
-    expect(harness.store.archiveExactRawTraces).toHaveBeenCalledWith(['raw-1']);
+    expect(harness.store.archiveCompactedRawTraces).toHaveBeenCalledWith(['raw-1']);
     expect(harness.store.add).toHaveBeenCalledWith([
       ...accepted.episodicItems,
       ...accepted.semanticItems,

@@ -1,0 +1,5 @@
+{
+  "runId": "daily_assistant_e7ab5c86085e4ff89ca1ebe9eed52adf",
+  "runtime": "claude_agent_sdk",
+  "model": "sonnet"
+}

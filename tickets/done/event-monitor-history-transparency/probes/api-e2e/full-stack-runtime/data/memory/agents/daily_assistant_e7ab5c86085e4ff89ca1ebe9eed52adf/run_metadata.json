@@ -1,0 +1,16 @@
+{
+  "runId": "daily_assistant_e7ab5c86085e4ff89ca1ebe9eed52adf",
+  "agentDefinitionId": "daily-assistant",
+  "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/workspace",
+  "memoryDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/data/memory/agents/daily_assistant_e7ab5c86085e4ff89ca1ebe9eed52adf",
+  "llmModelIdentifier": "sonnet",
+  "llmConfig": null,
+  "autoExecuteTools": true,
+  "skillAccessMode": "NONE",
+  "runtimeKind": "claude_agent_sdk",
+  "platformAgentRunId": "c42b4130-0134-4cd6-864c-d945b2bc1ce0",
+  "preparedAt": "2026-08-20T19:06:35.305Z",
+  "preparedExpiresAt": "2026-08-21T19:06:35.305Z",
+  "startedAt": "2026-08-20T19:06:35.339Z",
+  "applicationExecutionContext": null
+}

@@ -42,7 +42,7 @@ const createSequencer = (
   };
 };
 
-const readTraces = (memoryDir: string) => new RunMemoryFileStore(memoryDir).listRawTracesOrdered();
+const readTraces = (memoryDir: string) => new RunMemoryFileStore(memoryDir).listTurnRawTracesOrdered();
 const readTraceDicts = (memoryDir: string) => new RunMemoryFileStore(memoryDir).listRawTraceDicts();
 
 describe("RuntimeToolTraceSequencer", () => {

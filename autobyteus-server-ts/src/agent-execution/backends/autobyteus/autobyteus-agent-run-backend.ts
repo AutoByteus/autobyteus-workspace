@@ -11,6 +11,8 @@ import type {
 } from "../../input/agent-run-input-contract.js";
 import { AutoByteusStreamEventConverter } from "./events/autobyteus-stream-event-converter.js";
 import { projectAutoByteusAgentLifecycleSnapshot } from "./events/autobyteus-status-projector.js";
+import type { SystemInstructionTraceRecord } from "autobyteus-ts";
+import { PendingSystemInstructionEvent } from "../../events/pending-system-instruction-event.js";
 
 export type AutoByteusAgentLike = {
   agentId: string;
@@ -52,6 +54,7 @@ export type AutoByteusAgentLike = {
 type AutoByteusAgentRunBackendOptions = {
   isActive: () => boolean;
   removeAgent: (runId: string) => Promise<boolean>;
+  pendingSystemInstructionCapture?: SystemInstructionTraceRecord | null;
 };
 
 const buildRunNotFoundResult = (runId: string): AgentOperationResult => ({
@@ -77,6 +80,7 @@ export class AutoByteusAgentRunBackend implements AgentRunBackend {
   private isStreamClosed = true;
   private lifecycleState: "active" | "terminating" | "terminated" = "active";
   private terminationPromise: Promise<AgentOperationResult> | null = null;
+  private readonly pendingSystemInstructionEvent: PendingSystemInstructionEvent;
 
   constructor(
     context: AgentRunContext<RuntimeAgentRunContext>,
@@ -86,6 +90,9 @@ export class AutoByteusAgentRunBackend implements AgentRunBackend {
     this.context = context;
     this.runId = agent.agentId;
     this.eventConverter = new AutoByteusStreamEventConverter(this.runId);
+    this.pendingSystemInstructionEvent = new PendingSystemInstructionEvent(
+      options.pendingSystemInstructionCapture,
+    );
   }
 
   getContext(): AgentRunContext<RuntimeAgentRunContext> {
@@ -140,6 +147,7 @@ export class AutoByteusAgentRunBackend implements AgentRunBackend {
       };
     }
     try {
+      await this.pendingSystemInstructionEvent.publishOnce(this.runId, this.sourceListeners);
       await this.agent.postUserMessage(dispatch.message);
       return {
         forwarded: true,

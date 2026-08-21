@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import type { HistoricalReplayEvent } from "./historical-replay-event-types.js";
+import type { EventMonitorReplayEvent } from "./historical-replay-event-types.js";
 
 export const ACTIVE_TRACE_EARLIER_PAGE_SIZE = 50;
 export const ACTIVE_TRACE_LATEST_WINDOW_SIZE = 100;
@@ -12,7 +12,7 @@ type CursorPayload = {
 };
 
 export type ActiveTracePageSelection = {
-  events: HistoricalReplayEvent[];
+  events: EventMonitorReplayEvent[];
   beforeCursor: string | null;
   hasEarlier: boolean;
   loadedEarlierCount: number;
@@ -59,7 +59,7 @@ const decodeCursor = (cursor: string): CursorPayload => {
 };
 
 const cursorForIndex = (
-  events: readonly HistoricalReplayEvent[], index: number, subjectFingerprint: string, activeGeneration: string,
+  events: readonly EventMonitorReplayEvent[], index: number, subjectFingerprint: string, activeGeneration: string,
 ): string | null => {
   const anchor = events[index];
   return index > 0 && anchor ? encodeCursor({
@@ -68,7 +68,7 @@ const cursorForIndex = (
 };
 
 export const selectActiveTraceEventPage = (input: {
-  events: readonly HistoricalReplayEvent[];
+  events: readonly EventMonitorReplayEvent[];
   beforeCursor?: string | null;
   subjectFingerprint: string;
   activeGeneration: string;

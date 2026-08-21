@@ -29,6 +29,7 @@ describe('runProjectionActivityHydration', () => {
 
     hydrateActivitiesFromProjection(runId, [
       {
+        kind: 'tool',
         invocationId: 'history-1',
         toolName: 'run_bash',
         status: 'success',
@@ -60,12 +61,14 @@ describe('runProjectionActivityHydration', () => {
 
     hydrateActivitiesFromProjection(runId, [
       {
+        kind: 'tool',
         invocationId: '',
         toolName: 'broken',
         status: 'parsed',
         contextText: 'broken',
       },
       {
+        kind: 'tool',
         invocationId: 'history-2',
         toolName: 'edit_file',
         status: 'parsed',
@@ -83,6 +86,28 @@ describe('runProjectionActivityHydration', () => {
         type: 'edit_file',
       }),
     );
+  });
+
+  it('hydrates exact system content and omits only malformed system rows', () => {
+    const store = useAgentActivityStore();
+    const runId = 'run-system';
+
+    hydrateActivitiesFromProjection(runId, [
+      { kind: 'system_instruction', activityId: 'bad', content: 'bad', ts: 0 },
+      { kind: 'system_instruction', activityId: 'raw-system', content: '  exact\ntext  ', ts: 40 },
+      {
+        kind: 'tool', invocationId: 'tool-after-bad', toolName: 'read_file',
+        status: 'success', contextText: 'README.md', ts: 41,
+      },
+    ]);
+
+    expect(store.getActivities(runId)).toEqual([
+      {
+        kind: 'system_instruction', activityId: 'raw-system', content: '  exact\ntext  ',
+        timestamp: new Date(40_000),
+      },
+      expect.objectContaining({ kind: 'tool', activityId: 'tool-after-bad' }),
+    ]);
   });
 
   it('hydrates durable compaction projection rows without fabricating tool data', () => {

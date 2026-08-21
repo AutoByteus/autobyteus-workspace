@@ -1,0 +1,324 @@
+{
+  "url": "http://127.0.0.1:54588/workspace",
+  "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nworkspace\nDA\nDaily Assistant\n(1)\nUse the open_tab tool exactly once to open http://127.0.0.1:54588/ and wait for domcontentloaded. Do not use any other tool. After open_tab succeeds, reply with exactly DAILY_ASSISTANT_FRONTEND_OPEN_OK and nothing else.\n7m\nTEAMS\nCS\nClassroom Simulation Team\n(2)\nSettings\nDA\nDaily Assistant - 3554\nIdle\nYou\nUse the open_tab tool exactly once to open http://127.0.0.1:54588/ and wait for domcontentloaded. Do not use any other tool. After open_tab succeeds, reply with exactly DAILY_ASSISTANT_FRONTEND_OPEN_OK and nothing else.\nDA\nDaily Assistant\nThinking\nopen_tab\n· http://127.0.0.1:54588/\n\nDAILY_ASSISTANT_FRONTEND_OPEN_OK\n\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nTo-Do\n0 Tasks\nActivity\n2 Events\nSystem instructions\nAutoByteus-supplied · Codex baseInstructions\nCaptured 20.08.2026, 20:50:10 · 369 characters\nAVAILABLE\nopen_tab\n#exec-d\nSUCCESS\nArguments\nResult",
+  "buttons": [
+    {
+      "i": 0,
+      "text": "Agents",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 1,
+      "text": "",
+      "aria": null,
+      "title": "Collapse left panel",
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 2,
+      "text": "Agent Teams",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 3,
+      "text": "Applications",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 4,
+      "text": "Skills",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 5,
+      "text": "Memory",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 6,
+      "text": "Nodes",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 7,
+      "text": "",
+      "aria": null,
+      "title": "Add workspace",
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 8,
+      "text": "Temp Workspace",
+      "aria": null,
+      "title": null,
+      "expanded": "false",
+      "controls": null
+    },
+    {
+      "i": 9,
+      "text": "workspace",
+      "aria": null,
+      "title": null,
+      "expanded": "true",
+      "controls": null
+    },
+    {
+      "i": 10,
+      "text": "",
+      "aria": "Remove from Workspaces",
+      "title": "Remove from Workspaces",
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 11,
+      "text": "DA\nDaily Assistant\n(1)",
+      "aria": null,
+      "title": null,
+      "expanded": "true",
+      "controls": null
+    },
+    {
+      "i": 12,
+      "text": "",
+      "aria": null,
+      "title": "New run with this agent",
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 13,
+      "text": "Use the open_tab tool exactly once to open http://127.0.0.1:54588/ and wait for domcontentloaded. Do not use any other tool. After open_tab succeeds, reply with exactly DAILY_ASSISTANT_FRONTEND_OPEN_OK and nothing else.\n7m",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 14,
+      "text": "",
+      "aria": null,
+      "title": "Terminate run",
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 15,
+      "text": "CS\nClassroom Simulation Team\n(2)",
+      "aria": null,
+      "title": null,
+      "expanded": "false",
+      "controls": null
+    },
+    {
+      "i": 16,
+      "text": "Settings",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 17,
+      "text": "",
+      "aria": "Edit Config",
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 18,
+      "text": "",
+      "aria": "New Agent",
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 19,
+      "text": "Thinking",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 20,
+      "text": "",
+      "aria": "Upload files",
+      "title": "Upload files",
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 21,
+      "text": "",
+      "aria": null,
+      "title": "Send message",
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 22,
+      "text": "Files",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 23,
+      "text": "Terminal",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 24,
+      "text": "Activity",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 25,
+      "text": "Token",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 26,
+      "text": "Artifacts",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 27,
+      "text": "VNC Viewer",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 28,
+      "text": "",
+      "aria": null,
+      "title": "Toggle Sidebar",
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 29,
+      "text": "System instructions\nAutoByteus-supplied · Codex baseInstructions\nCaptured 20.08.2026, 20:50:10 · 369 characters\nAVAILABLE",
+      "aria": "System instructions. AutoByteus-supplied · Codex baseInstructions. Available. Captured 20.08.2026, 20:50:10. 369 characters.",
+      "title": null,
+      "expanded": "false",
+      "controls": "system-instruction-content-rt_1787251810663_362d0acc-f8bc-4b0d-b337-9a47327f16ec"
+    }
+  ],
+  "relevantButtons": [
+    {
+      "i": 5,
+      "text": "Memory",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 13,
+      "text": "Use the open_tab tool exactly once to open http://127.0.0.1:54588/ and wait for domcontentloaded. Do not use any other tool. After open_tab succeeds, reply with exactly DAILY_ASSISTANT_FRONTEND_OPEN_OK and nothing else.\n7m",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 24,
+      "text": "Activity",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 29,
+      "text": "System instructions\nAutoByteus-supplied · Codex baseInstructions\nCaptured 20.08.2026, 20:50:10 · 369 characters\nAVAILABLE",
+      "aria": "System instructions. AutoByteus-supplied · Codex baseInstructions. Available. Captured 20.08.2026, 20:50:10. 369 characters.",
+      "title": null,
+      "expanded": "false",
+      "controls": "system-instruction-content-rt_1787251810663_362d0acc-f8bc-4b0d-b337-9a47327f16ec"
+    }
+  ],
+  "logs": [
+    {
+      "type": "debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "type": "log",
+      "text": "serverStore: Checking server health at /rest/health"
+    },
+    {
+      "type": "log",
+      "text": "Download the Apollo DevTools for a better development experience: %s https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm"
+    },
+    {
+      "type": "log",
+      "text": "Agent WebSocket connected"
+    },
+    {
+      "type": "log",
+      "text": "Workspace.vue: Mounted. Fetching server settings and loading profiles..."
+    }
+  ],
+  "errors": [],
+  "failed": []
+}

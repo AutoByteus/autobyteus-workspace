@@ -45,7 +45,7 @@ export class ChannelTurnReplyRecoveryService {
     const traces = this.readRawTraces(memoryDir, agentRunId);
     return mergeAssistantTraceText(
       traces.filter(
-        (trace) => trace.traceType === "assistant" && trace.turnId === turnId &&
+        (trace) => trace.scope === "turn" && trace.traceType === "assistant" && trace.turnId === turnId &&
           typeof trace.content === "string" && trace.content.length > 0,
       ),
     );

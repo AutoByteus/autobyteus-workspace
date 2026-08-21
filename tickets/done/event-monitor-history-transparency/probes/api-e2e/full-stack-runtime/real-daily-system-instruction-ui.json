@@ -1,0 +1,56 @@
+{
+  "status": "PASS",
+  "runId": "daily_assistant_b2db1fdeebd44afda41fab69f7613554",
+  "raw": {
+    "id": "rt_1787251810663_362d0acc-f8bc-4b0d-b337-9a47327f16ec",
+    "keys": [
+      "id",
+      "ts",
+      "trace_type",
+      "content",
+      "source_event"
+    ],
+    "sourceEvent": "SYSTEM_INSTRUCTIONS_SUPPLIED",
+    "contentLength": 369,
+    "contentSha256": "c3a8251d7ab807a070760223593690152a6faf5cff2160c2d7056e2f3fde09fe"
+  },
+  "parity": {
+    "websocketEventContentSha256": "c3a8251d7ab807a070760223593690152a6faf5cff2160c2d7056e2f3fde09fe",
+    "projectionActivityId": "rt_1787251810663_362d0acc-f8bc-4b0d-b337-9a47327f16ec",
+    "memoryTraceId": "rt_1787251810663_362d0acc-f8bc-4b0d-b337-9a47327f16ec",
+    "domControlsId": "system-instruction-content-rt_1787251810663_362d0acc-f8bc-4b0d-b337-9a47327f16ec",
+    "contentEqualRawProjectionMemoryDom": true
+  },
+  "ui": {
+    "collapsedByDefault": true,
+    "keyboardExpandedWith": [
+      "Enter",
+      "Space"
+    ],
+    "regionRole": "region",
+    "regionAriaLabelledBy": "system-instruction-title-rt_1787251810663_362d0acc-f8bc-4b0d-b337-9a47327f16ec",
+    "selectionLength": 369,
+    "style": {
+      "whiteSpace": "pre-wrap",
+      "overflowWrap": "anywhere",
+      "overflowX": "auto"
+    },
+    "desktop": {
+      "clientWidth": 1280,
+      "scrollWidth": 1280
+    },
+    "mobile": {
+      "clientWidth": 390,
+      "scrollWidth": 390,
+      "systemButtonCount": 1,
+      "activityDrawerVisible": true
+    },
+    "eventMonitorHasNormalUserToolAssistantFlow": true,
+    "systemInstructionLabelCountBeforeExpand": 1
+  },
+  "console": {
+    "errors": [],
+    "failed": [],
+    "errorLogs": []
+  }
+}

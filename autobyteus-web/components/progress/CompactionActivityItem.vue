@@ -35,7 +35,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { Icon } from '@iconify/vue';
-import type { CompactionActivity } from '~/stores/agentActivityStore';
+import type { CompactionActivity } from '~/types/activity/RunActivity';
 import { getCompactionPhasePresentation } from '~/utils/compactionActivityPresentation';
 
 const props = defineProps<{

@@ -1,0 +1,6 @@
+migrationId=20260819_token_usage_run_records_v1
+displayName=Token usage one-row run records V1
+statusSummary={"scannedCount":0,"migratedCount":0,"skippedCount":0,"failedCount":0}
+error=
+details=
+{"itemId":"token-usage-run-records-v1:summary","status":"MIGRATED","message":"Legacy token usage source was already empty; current state was retained."}

@@ -205,7 +205,7 @@ describe("memory layout and projection integration", () => {
 
     expect(projection.runId).toBe(runId);
     expect(runStore.readRawTraceArchiveManifest().segments).toHaveLength(1);
-    expect(runStore.listRawTracesOrdered().map((trace) => trace.id)).toEqual([
+    expect(runStore.listTurnRawTracesOrdered().map((trace) => trace.id)).toEqual([
       "rt-boundary",
       "rt-active-assistant",
     ]);

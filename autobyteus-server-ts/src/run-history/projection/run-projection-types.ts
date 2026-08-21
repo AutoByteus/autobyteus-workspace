@@ -87,9 +87,17 @@ export interface RunProjectionCompactionActivityEntry {
   detailLevel?: RunProjectionSourceDetailLevel | null;
 }
 
+export interface RunProjectionSystemInstructionActivityEntry {
+  kind: "system_instruction";
+  activityId: string;
+  content: string;
+  ts: number;
+}
+
 export type RunProjectionActivityEntry =
   | RunProjectionToolActivityEntry
-  | RunProjectionCompactionActivityEntry;
+  | RunProjectionCompactionActivityEntry
+  | RunProjectionSystemInstructionActivityEntry;
 
 export interface RunProjectionSourceDescriptor {
   runId: string;

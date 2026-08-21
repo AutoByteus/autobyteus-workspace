@@ -16,6 +16,10 @@ import { resolveThreadId } from "./codex-thread-id-resolver.js";
 import { createCodexThreadStartupGate } from "./codex-thread-startup-gate.js";
 import { CodexThread } from "./codex-thread.js";
 import type { CodexThreadConfig } from "./codex-thread-config.js";
+import {
+  getSystemInstructionCaptureService,
+  type SystemInstructionCaptureService,
+} from "../../../../agent-memory/services/system-instruction-capture-service.js";
 
 export class CodexThreadManager {
   private readonly runContexts = new Map<string, CodexRunContext>();
@@ -23,15 +27,18 @@ export class CodexThreadManager {
   private readonly clientManager: CodexAppServerClientManager;
   private readonly threadCleanup: CodexThreadCleanup;
   private readonly clientThreadRouter: CodexClientThreadRouter;
+  private readonly systemInstructionCaptureService: SystemInstructionCaptureService;
 
   constructor(
     clientManager: CodexAppServerClientManager = getCodexAppServerClientManager(),
     threadCleanup: CodexThreadCleanup = getCodexThreadCleanup(),
     clientThreadRouter: CodexClientThreadRouter = getCodexClientThreadRouter(),
+    systemInstructionCaptureService: SystemInstructionCaptureService = getSystemInstructionCaptureService(),
   ) {
     this.clientManager = clientManager;
     this.threadCleanup = threadCleanup;
     this.clientThreadRouter = clientThreadRouter;
+    this.systemInstructionCaptureService = systemInstructionCaptureService;
   }
 
   async createThread(
@@ -113,6 +120,7 @@ export class CodexThreadManager {
     });
     thread.addUnbindHandler(unbind);
     try {
+      const suppliedAt = Date.now() / 1000;
       const threadId = resumeThreadId
         ? await this.resumeRemoteThread(
             client,
@@ -128,6 +136,16 @@ export class CodexThreadManager {
       }
       runContext.runtimeContext.threadId = threadId;
       runContext.runtimeContext.activeTurnId = null;
+      if (typeof config.baseInstructions === "string") {
+        const capture = this.systemInstructionCaptureService.capture({
+          memoryDir: runContext.config.memoryDir ?? "",
+          content: config.baseInstructions,
+          suppliedAt,
+        });
+        if (capture.created) {
+          thread.setPendingSystemInstructionCapture(capture.trace);
+        }
+      }
       thread.markStartupReady();
       return thread;
     } catch (error) {

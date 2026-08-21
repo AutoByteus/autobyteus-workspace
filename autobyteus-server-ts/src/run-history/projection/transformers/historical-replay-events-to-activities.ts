@@ -7,6 +7,15 @@ export const buildRunProjectionActivities = (
   const activities: RunProjectionActivityEntry[] = [];
 
   for (const event of events) {
+    if (event.kind === "system_instruction") {
+      activities.push({
+        kind: "system_instruction",
+        activityId: event.activityId,
+        content: event.content,
+        ts: event.ts,
+      });
+      continue;
+    }
     if (event.kind === "tool") {
       activities.push({
         kind: "tool",

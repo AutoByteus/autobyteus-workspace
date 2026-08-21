@@ -1,4 +1,8 @@
-import type { MemoryTraceEvent } from "../domain/models.js";
+import {
+  parseSystemInstructionTraceRecord,
+  SYSTEM_INSTRUCTION_TRACE_TYPE,
+} from "autobyteus-ts";
+import type { MemoryTraceEvent, MemoryTurnTraceEvent } from "../domain/models.js";
 import type { RawTraceMedia } from "autobyteus-ts/memory/models/raw-trace-item.js";
 
 export type RawTraceRecord = Record<string, unknown>;
@@ -30,30 +34,11 @@ const toRawTraceMedia = (value: unknown): RawTraceMedia | null => {
   return Object.keys(media).length ? media : null;
 };
 
-const traceId = (item: RawTraceRecord): string =>
-  asString(item["id"]) ?? "";
-
 const traceTs = (item: RawTraceRecord): number =>
   asFiniteNumber(item["ts"]) ?? 0;
 
 const traceSeq = (item: RawTraceRecord): number =>
   asFiniteNumber(item["seq"]) ?? 0;
-
-export const compareRawTraceRecords = (a: RawTraceRecord, b: RawTraceRecord): number => {
-  const tsDiff = traceTs(a) - traceTs(b);
-  if (tsDiff !== 0) return tsDiff;
-
-  const turnDiff = (asString(a["turn_id"]) ?? "").localeCompare(asString(b["turn_id"]) ?? "");
-  if (turnDiff !== 0) return turnDiff;
-
-  const seqDiff = traceSeq(a) - traceSeq(b);
-  if (seqDiff !== 0) return seqDiff;
-
-  return traceId(a).localeCompare(traceId(b));
-};
-
-export const sortRawTraceRecords = (records: RawTraceRecord[]): RawTraceRecord[] =>
-  [...records].sort(compareRawTraceRecords);
 
 export const applyRawTraceLimit = <T>(items: T[], limit?: number | null): T[] => {
   if (!limit || limit <= 0) {
@@ -62,8 +47,9 @@ export const applyRawTraceLimit = <T>(items: T[], limit?: number | null): T[] =>
   return items.slice(-limit);
 };
 
-export const toMemoryTraceEvent = (trace: RawTraceRecord): MemoryTraceEvent => {
-  const event: MemoryTraceEvent = {
+export const toMemoryTraceEvent = (trace: RawTraceRecord): MemoryTurnTraceEvent => {
+  const event: MemoryTurnTraceEvent = {
+    scope: "turn",
     id: asString(trace["id"]),
     traceType: asString(trace["trace_type"]) ?? "",
     sourceEvent: asString(trace["source_event"]),
@@ -88,5 +74,46 @@ export const toMemoryTraceEvent = (trace: RawTraceRecord): MemoryTraceEvent => {
 export const normalizeRawTraceRecords = (
   records: RawTraceRecord[],
   limit?: number | null,
-): MemoryTraceEvent[] =>
-  applyRawTraceLimit(sortRawTraceRecords(records), limit).map((trace) => toMemoryTraceEvent(trace));
+): MemoryTraceEvent[] => {
+  const normalizedWithOrdinal: Array<{ event: MemoryTraceEvent; ordinal: number }> = [];
+  for (const [ordinal, record] of records.entries()) {
+    if (record.trace_type !== SYSTEM_INSTRUCTION_TRACE_TYPE) {
+      normalizedWithOrdinal.push({ event: toMemoryTraceEvent(record), ordinal });
+      continue;
+    }
+    const parsed = parseSystemInstructionTraceRecord(record);
+    if (!parsed) {
+      console.warn('[RawTraceRecordNormalizer] omitted malformed system instruction trace row.');
+      continue;
+    }
+    normalizedWithOrdinal.push({
+      event: {
+        scope: "run",
+        id: parsed.id,
+        traceType: parsed.trace_type,
+        sourceEvent: parsed.source_event,
+        content: parsed.content,
+        turnId: null,
+        seq: null,
+        ts: parsed.ts,
+      },
+      ordinal,
+    });
+  }
+
+  const runScopedTimestamps = new Set(normalizedWithOrdinal.flatMap(({ event }) => (
+    event.scope === "run" ? [event.ts] : []
+  )));
+  const normalized = normalizedWithOrdinal.sort((leftEntry, rightEntry) => {
+    const left = leftEntry.event;
+    const right = rightEntry.event;
+    if (left.ts !== right.ts) return left.ts - right.ts;
+    if (runScopedTimestamps.has(left.ts)) return leftEntry.ordinal - rightEntry.ordinal;
+    if (left.scope === "run" || right.scope === "run") return leftEntry.ordinal - rightEntry.ordinal;
+    const turnDiff = left.turnId.localeCompare(right.turnId);
+    if (turnDiff !== 0) return turnDiff;
+    if (left.seq !== right.seq) return left.seq - right.seq;
+    return (left.id ?? "").localeCompare(right.id ?? "");
+  }).map(({ event }) => event);
+  return applyRawTraceLimit(normalized, limit);
+};

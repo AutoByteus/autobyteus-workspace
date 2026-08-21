@@ -36,20 +36,14 @@
       <div v-if="activities.length === 0" class="p-8 text-center text-gray-700 text-sm">{{ $t('workspace.components.progress.ActivityFeed.no_activity_history_yet') }}</div>
       
       <div v-else>
-        <template v-for="activity in activities" :key="activity.activityId">
-          <ToolActivityItem
-            v-if="activity.kind === 'tool'"
-            :activity="activity"
-            :isHighlighted="activity.activityId === highlightedId"
-            :ref="(el) => setItemRef(activity.activityId, el)"
-          />
-          <CompactionActivityItem
-            v-else
-            :activity="activity"
-            :isHighlighted="activity.activityId === highlightedId"
-            :ref="(el) => setItemRef(activity.activityId, el)"
-          />
-        </template>
+        <RunActivityItem
+          v-for="activity in activities"
+          :key="activity.activityId"
+          :activity="activity"
+          :runtime-kind="runtimeKind"
+          :is-highlighted="activity.activityId === highlightedId"
+          :ref="(el) => setItemRef(activity.activityId, el)"
+        />
       </div>
     </div>
   </div>
@@ -59,8 +53,7 @@
 import { computed, ref, watch, nextTick } from 'vue';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
 import { useActiveContextStore } from '~/stores/activeContextStore';
-import ToolActivityItem from './ToolActivityItem.vue';
-import CompactionActivityItem from './CompactionActivityItem.vue';
+import RunActivityItem from './RunActivityItem.vue';
 
 const props = defineProps<{
   collapsed?: boolean;
@@ -74,6 +67,7 @@ const activityStore = useAgentActivityStore();
 const activeContext = useActiveContextStore();
 
 const currentAgentRunId = computed(() => activeContext.activeAgentContext?.state.runId ?? '');
+const runtimeKind = computed(() => activeContext.activeAgentContext?.config.runtimeKind ?? null);
 
 const activities = computed(() => {
   if (!currentAgentRunId.value) return [];

@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils';
 import { describe, expect, it } from 'vitest';
-import type { ToolActivity } from '~/stores/agentActivityStore';
+import type { ToolActivity } from '~/types/activity/RunActivity';
 import ToolActivityItem from '../ToolActivityItem.vue';
 
 const IconStub = {

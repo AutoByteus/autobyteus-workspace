@@ -122,6 +122,11 @@ const toolCore = {
 };
 
 export const teamAgentPayloadSchemas = {
+  SYSTEM_INSTRUCTIONS_SUPPLIED: withExecution({
+    trace_id: nonEmptyStringSchema,
+    content: z.string(),
+    ts: finiteNumberSchema.refine((value) => value > 0, "ts must be positive"),
+  }),
   TURN_STARTED: withExecution({ turn_id: turnId }),
   TURN_COMPLETED: withExecution({ turn_id: turnId, reason: nullableNonEmptyStringSchema }),
   TURN_INTERRUPTED: withExecution({ turn_id: turnId, reason: nullableNonEmptyStringSchema }),

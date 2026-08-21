@@ -1,0 +1,31 @@
+{
+  "status": "PASS",
+  "runId": "daily_assistant_df9bcae1eaf64ddaafaa9af596ba2843",
+  "productionRotationApi": "RunMemoryFileStore.archiveCompactedRawTraces",
+  "serverRestartedAfterRotation": true,
+  "activeProjectionSystemActivityCount": 0,
+  "activeMemorySystemTraceCount": 0,
+  "activeEventMonitorContainsArchivedSystemId": false,
+  "rawTraceFiles": [
+    {
+      "fileName": "raw_traces_active.jsonl",
+      "kind": "active",
+      "recordCount": 0,
+      "segmentIndex": null
+    },
+    {
+      "fileName": "raw_traces_000001.jsonl",
+      "kind": "segment",
+      "recordCount": 3,
+      "segmentIndex": 1
+    }
+  ],
+  "explicitArchiveRead": {
+    "selectedRawTraceFileName": "raw_traces_000001.jsonl",
+    "systemTraceCount": 1,
+    "systemTraceId": "rt_1787252782369_d92e9498-cb81-48c9-bee6-2438ba76fbdb",
+    "contentLength": 2914,
+    "contentSha256": "89d9f2ef0ad5e057f6bf9fd5e00e3954c0a86269dd1110b4c8e23275d9a12bd6"
+  },
+  "conclusion": "Normal post-restart projection and Memory Inspector active view did not scan the archive; explicit archive selection still exposes the preserved row."
+}

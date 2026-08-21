@@ -43,7 +43,7 @@
       >
         <div class="flex items-center justify-between text-xs text-gray-500">
           <span class="font-semibold">{{ trace.traceType }}</span>
-          <span>#{{ trace.seq }}</span>
+          <span>{{ trace.scope === 'run' ? $t('memory.components.memory.RawTracesTab.run_scope') : `#${trace.seq}` }}</span>
         </div>
         <div class="mt-2 text-sm text-gray-800 whitespace-pre-wrap">
           {{ trace.content || '(no content)' }}

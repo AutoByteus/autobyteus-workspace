@@ -4,6 +4,13 @@ import path from 'node:path';
 
 import { MemoryType, MemoryItem } from '../models/memory-types.js';
 import { RawTraceItem } from '../models/raw-trace-item.js';
+import {
+  parseSystemInstructionTraceRecord,
+  SYSTEM_INSTRUCTION_TRACE_TYPE,
+  SYSTEM_INSTRUCTIONS_SUPPLIED_SOURCE_EVENT,
+  type SystemInstructionCaptureResult,
+  type SystemInstructionTraceRecord,
+} from '../models/system-instruction-trace.js';
 import { EpisodicItem } from '../models/episodic-item.js';
 import { SemanticItem } from '../models/semantic-item.js';
 import { WorkingContext } from '../working-context.js';
@@ -157,17 +164,53 @@ export class RunMemoryFileStore {
     this.add([item]);
   }
 
+  recordSystemInstructionSupply(content: string, suppliedAt: number): SystemInstructionCaptureResult {
+    if (typeof content !== 'string') {
+      throw new Error('System instruction content must be a string.');
+    }
+    if (!Number.isFinite(suppliedAt) || suppliedAt <= 0) {
+      throw new Error('System instruction suppliedAt must be a positive finite epoch timestamp.');
+    }
+
+    const activeRecords = this.listRawTraceDicts();
+    for (let index = activeRecords.length - 1; index >= 0; index -= 1) {
+      const existing = parseSystemInstructionTraceRecord(activeRecords[index]!);
+      if (!existing) continue;
+      if (existing.content === content) {
+        return { trace: existing, created: false };
+      }
+      break;
+    }
+
+    const trace: SystemInstructionTraceRecord = {
+      id: `rt_${Math.trunc(suppliedAt * 1000)}_${crypto.randomUUID()}`,
+      ts: suppliedAt,
+      trace_type: SYSTEM_INSTRUCTION_TRACE_TYPE,
+      content,
+      source_event: SYSTEM_INSTRUCTIONS_SUPPLIED_SOURCE_EVENT,
+    };
+    fs.mkdirSync(path.dirname(this.getRawTracesPath()), { recursive: true });
+    fs.appendFileSync(this.getRawTracesPath(), `${JSON.stringify(trace)}\n`, 'utf-8');
+    return { trace, created: true };
+  }
+
   readMemoryDicts(memoryType: MemoryType, limit?: number): Record<string, unknown>[] {
     const records = readJsonl(this.getFilePath(memoryType));
     return typeof limit === 'number' ? records.slice(-limit) : records;
   }
 
-  listRawTracesOrdered(limit?: number): RawTraceItem[] {
-    return this.readMemoryDicts(MemoryType.RAW_TRACE, limit).map((record) => RawTraceItem.fromDict(record));
+  listTurnRawTracesOrdered(limit?: number): RawTraceItem[] {
+    const records = this.readMemoryDicts(MemoryType.RAW_TRACE)
+      .filter((record) => record.trace_type !== SYSTEM_INSTRUCTION_TRACE_TYPE);
+    const selected = typeof limit === 'number' ? records.slice(-limit) : records;
+    return selected.map((record) => RawTraceItem.fromDict(record));
   }
 
-  listRawTraceCorpusOrdered(limit?: number): RawTraceItem[] {
-    return this.readCompleteRawTraceCorpusDicts(limit).map((record) => RawTraceItem.fromDict(record));
+  listTurnRawTraceCorpusOrdered(limit?: number): RawTraceItem[] {
+    const records = this.readCompleteRawTraceCorpusDicts()
+      .filter((record) => record.trace_type !== SYSTEM_INSTRUCTION_TRACE_TYPE);
+    const selected = typeof limit === 'number' ? records.slice(-limit) : records;
+    return selected.map((record) => RawTraceItem.fromDict(record));
   }
 
   listRawTraceDicts(): Record<string, unknown>[] {
@@ -222,8 +265,10 @@ export class RunMemoryFileStore {
     return this.archiveManager.readCompleteSegmentRawTraceDictsByFileName(fileName);
   }
 
-  listArchiveRawTracesOrdered(): RawTraceItem[] {
-    return this.readCompleteArchiveRawTraceDicts().map((record) => RawTraceItem.fromDict(record));
+  listArchiveTurnRawTracesOrdered(): RawTraceItem[] {
+    return this.readCompleteArchiveRawTraceDicts()
+      .filter((record) => record.trace_type !== SYSTEM_INSTRUCTION_TRACE_TYPE)
+      .map((record) => RawTraceItem.fromDict(record));
   }
 
   readCompleteRawTraceCorpusDicts(limit?: number): Record<string, unknown>[] {
@@ -300,8 +345,8 @@ export class RunMemoryFileStore {
     writeJsonl(this.getRawTracesPath(), keep);
   }
 
-  archiveExactRawTraces(traceIds: readonly string[]): void {
-    const ids = traceIds.map((id) => id.trim()).filter(Boolean);
+  archiveCompactedRawTraces(selectedTurnTraceIds: readonly string[]): void {
+    const ids = selectedTurnTraceIds.map((id) => id.trim()).filter(Boolean);
     if (!ids.length || new Set(ids).size !== ids.length) {
       throw new Error('Exact raw-trace archive requires unique non-empty selected IDs.');
     }
@@ -317,13 +362,25 @@ export class RunMemoryFileStore {
     if (missing.length) {
       throw new Error(`Selected raw traces are missing from active storage: ${missing.join(', ')}.`);
     }
-    const selected = active.filter((record) => ids.includes(traceId(record) ?? ''));
-    if (selected.length !== ids.length) {
+    const selectedTurnRecords = active.filter((record) => ids.includes(traceId(record) ?? ''));
+    if (selectedTurnRecords.length !== ids.length) {
       throw new Error('Exact raw-trace archive membership validation failed.');
     }
+    if (selectedTurnRecords.some((record) => record.trace_type === SYSTEM_INSTRUCTION_TRACE_TYPE)) {
+      throw new Error('Compaction selection must contain turn-scoped raw traces only.');
+    }
+    const lastSelectedPhysicalIndex = active.reduce(
+      (latest, record, index) => ids.includes(traceId(record) ?? '') ? index : latest,
+      -1,
+    );
+    const selected = active.filter((record, index) =>
+      ids.includes(traceId(record) ?? '')
+      || index <= lastSelectedPhysicalIndex && record.trace_type === SYSTEM_INSTRUCTION_TRACE_TYPE,
+    );
+    const selectedIds = new Set(selected.map((record) => traceId(record)).filter((id): id is string => Boolean(id)));
     const result = this.archiveAndRewriteActive(
       selected,
-      active.filter((record) => !ids.includes(traceId(record) ?? '')),
+      active.filter((record) => !selectedIds.has(traceId(record) ?? '')),
       {
         boundaryType: 'native_compaction',
         boundaryKey: nativeCompactionSelectionBoundaryKey(ids),

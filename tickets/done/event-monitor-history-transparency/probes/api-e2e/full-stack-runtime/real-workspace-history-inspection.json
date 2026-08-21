@@ -1,0 +1,962 @@
+{
+  "url": "http://127.0.0.1:54588/agents",
+  "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nworkspace\nDA\nDaily Assistant\n(1)\nTEAMS\nCS\nClassroom Simulation Team\n(2)\nSettings\nReload\nCreate Agent\nFeatured agents\nDA\nDaily Assistant\n\nGeneral Agent\n\nTools 20\nrun_bash\nread_url\nsearch_web\n+17\nSkills 0\nNone\nRun\nView Details\n→\nCO\nCodex\n\nCodex\n\nTools 15\nclose_tab\ndom_snapshot\nlist_tabs\n+12\nSkills 1\nsoftware-engineering-workflow-skill\nRun\nView Details\n→\nIndividual agents\n47 agents\nAU\nAudioGenerator\n\nAn AI agent that converts text scripts into high-quality spoken audio.\n\nTools 1\nGenerateSpeech\nSkills 0\nNone\nRun\nView Details\n→\nAU\nAudioTranscriber\n\nTranscribes audio recordings into one timestamped Markdown transcript file.\n\nTools 3\nrun_bash\nwrite_file\nread_media_file\nSkills 1\naudio-transcriber\nRun\nView Details\n→\nCS\nChapter Slide Planner\n\nPlans chapter-level teaching slides as a structured raw JSON package.\n\nTools 2\nwrite_file\nassign_task_to\nSkills 0\nNone\nRun\nView Details\n→\nCC\nChemistry Concept Visualizer\n\nChemistry Concept Visualizer\n\nTools 1\nFileWriter\nSkills 0\nNone\nRun\nView Details\n→\nCH\nChemistry homework grader\n\nChemistry homework grader\n\nTools 0\nNone\nSkills 0\nNone\nRun\nView Details\n→\nCT\nChemistry Teacher Germany\n\nChemistry Teacher Germany\n\nTools 4\nFileWriter\nread_pdf_pages\npdf_metadata\n+1\nSkills 0\nNone\nRun\nView Details\n→\nCS\nCinematic Storybook Director\n\nCinematic Storybook Director\n\nTools 1\nwrite_file\nSkills 0\nNone\nRun\nView Details\n→\nCO\nClara’s Ocean Friends Story Creator\n\nClara’s Ocean Friends Story Creator\n\nTools 0\nNone\nSkills 0\nNone\nRun\nView Details\n→\nCA\ncoding agent\n\ncoding agent\n\nTools 4\npatch_file\nread_file\nwrite_file\n+1\nSkills 0\nNone\nRun\nView Details\n→\nDM\ndatabase manager\n\ndsb\n\nTools 10\nread_query\nwrite_query\ncreate_table\n+7\nSkills 0\nNone\nRun\nView Details\n→\nDW\nDictionary Word Audio\n\nGenerates dictionary-style audio clips for individual words by creating one clear paused speech recording and cutting it into per-word files.\n\nTools 5\ngenerate_speech\nget_media_duration\nrun_bash\n+2\nSkills 1\ndictionary-word-audio\nRun\nView Details\n→\nGR\nGemini RPA PPT designer\n\nPPT Designer\n\nTools 2\ngenerate_image\nedit_image\nSkills 0\nNone\nRun\nView Details\n→\nID\nImage Designer\n\nImage Designer\n\nTools 2\nedit_image\ngenerate_image\nSkills 0\nNone\nRun\nView Details\n→\nIC\nInfographics Creator\n\nInfographics Creator\n\nTools 0\nNone\nSkills 0\nNone\nRun\nView Details\n→\nKI\nKid_Story_Teller\n\nKid_Story_Teller\n\nTools 3\nwrite_file\ngenerate_image\ngenerate_speech\nSkills 0\nNone\nRun\nView Details\n→\nMT\nMCP Tool Manager\n\nAn agent designed to manage Model Context Protocol (MCP) server configurations and discover their tools.\n\nTools 6\nApplyMcpServerConfigurations\nDeleteMcpServerConfiguration\nDiscoverMcpServerTools\n+3\nSkills 0\nNone\nRun\nView Details\n→\nME\nMedia Editor\n\nMedia Editor\n\nTools 35\nedit_image\ngenerate_image\ngenerate_speech\n+32\nSkills 0\nNone\nRun\nView Details\n→\nMC\nMemory Compactor\n\nSummarizes the conversation history of a target agent so the target agent can continue later.\n\nTools 0\nNone\nSkills 0\nNone\nRun\nView Details\n→\nNI\nniuzhirui_production_db_manager\n\nniuzhirui_production_db_manager\n\nTools 10\nread_query\nwrite_query\ncreate_table\n+7\nSkills 0\nNone\nRun\nView Details\n→\nPC\nPPT Creator\n\nPPT Creator\n\nTools 4\ngenerate_image\ncreate_ppt_from_images\nreplace_slide_with_image\n+1\nSkills 0\nNone\nRun\nView Details\n→\nPD\nPPT Designer\n\nDesigns narrative-first slide decks using the bundled ppt-designer skill.\n\nTools 2\ngenerate_image\nedit_image\nSkills 1\nppt-designer\nRun\nView Details\n→\nPD\nPresentation Designer\n\nPresentation Designer\n\nTools 5\ngenerate_image\ncreate_ppt_from_images\nrun_bash\n+2\nSkills 1\npresentation-designer\nRun\nView Details\n→\nPP\nProduct Prototyper\n\nBuilds and evolves runnable product prototypes with precise requirements, realistic mocked behavior, and a deliberate visual-quality gate.\n\nTools 16\nedit_file\nread_file\nwrite_file\n+13\nSkills 1\nproduct-prototyping\nRun\nView Details\n→\nPM\nproject manager\n\ndemo project manager\n\nTools 2\nCreateTask\nCreateTasks\nSkills 0\nNone\nRun\nView Details\n→\nPG\nprompt generator\n\nprompt generator\n\nTools 0\nNone\nSkills 0\nNone\nRun\nView Details\n→\nPM\nprompt manager\n\nprompt manager\n\nTools 8\nactivate_prompt\ncreate_prompt\ndelete_prompt\n+5\nSkills 0\nNone\nRun\nView Details\n→\nPU\nPublisher\n\nPublisher on wechat, xiaohongshu, tiktok and youtube short\n\nTools 0\nNone\nSkills 0\nNone\nRun\nView Details\n→\nRE\nReflectionCards\n\nReflectionCards\n\nTools 3\nwrite_file\ngenerate_image\ngenerate_speech\nSkills 0\nNone\nRun\nView Details\n→\nRS\nReflective Storyteller\n\nReflective Storyteller\n\nTools 3\nwrite_file\ngenerate_image\ngenerate_speech\nSkills 0\nNone\nRun\nView Details\n→\nRE\nrequirement\n\nnks\n\nTools 0\nNone\nSkills 0\nNone\nRun\nView Details\n→\nRE\nrequirement engineer\n\nrequirement engineer\n\nTools 0\nNone\nSkills 0\nNone\nRun\nView Details\n→\nRE\nresearch engineer\n\nStandalone research engineer that owns investigation, source discovery, continuous notes, implementation when needed, validation, analysis, and next-loop decisions.\n\nTools 17\nedit_file\nread_file\nwrite_file\n+14\nSkills 1\nresearch-engineer\nRun\nView Details\n→\nRD\nResume Designer\n\nCreates frontend-based resume packages from user input or supplied resume sources, renders them, and exports print-ready PDFs.\n\nTools 16\nedit_file\nread_file\nwrite_file\n+13\nSkills 1\nresume-designer\nRun\nView Details\n→\nRS\nRetrospective Skill Improver\n\nImproves configured durable skill packages from target run work-trace evidence.\n\nTools 2\nrun_bash\nsend_message_to\nSkills 1\nretrospective-skill-improver\nRun\nView Details\n→\nSO\nSkill Optimizer\n\nReviews and improves existing skills for structure, grounding, clarity, consistency, and economy while preserving intended behavior.\n\nTools 4\nedit_file\nread_file\nwrite_file\n+1\nSkills 2\nskill-optimizer\nshell-first-operating-practice\nRun\nView Details\n→\nSL\nSlideImageGenerator\n\nSlideImageGenerator\n\nTools 3\nsend_message_to\nread_file\nwrite_file\nSkills 0\nNone\nRun\nView Details\n→\nSL\nSlideNarrator\n\nSlideNarrator\n\nTools 3\nread_file\nwrite_file\nassign_task_to\nSkills 0\nNone\nRun\nView Details\n→\nsoftware architect\n\nRyan is senior software architect\n\nTools 0\nNone\nSkills 0\nNone\nRun\nView Details\n→\nSoftware Developer\n\nSoftware Developer\n\nTools 4\nedit_file\nread_file\nwrite_file\n+1\nSkills 1\nsoftware-engineering-workflow-skill\nRun\nView Details\n→\nST\nSoftware Tutorial Video Maker\n\nTurns supplied software screenshots and rough teaching notes into a short narrated tutorial video package using TTS narration and ffmpeg.\n\nTools 4\nread_file\nwrite_file\nrun_bash\n+1\nSkills 1\nsoftware-tutorial-video-maker\nRun\nView Details\n→\nTU\nTutorialVideoCreator\n\nAn agent that transforms a series of screenshots into a polished tutorial video. It analyzes and orders the images, writes a script, generates a voiceover, and compiles everything into a final video file.\n\nTools 7\nFileWriter\nBashExecutor\nGenerateSpeech\n+4\nSkills 0\nNone\nRun\nView Details\n→\nVS\nvideo subtitle burn in engineer\n\nOwns subtitle generation for existing recordings by normalizing media, transcribing audio, saving timestamped transcript artifacts, generating subtitle files, and producing subtitled videos.\n\nTools 4\nread_file\nwrite_file\nrun_bash\n+1\nSkills 1\nvideo-subtitle-burn-in\nRun\nView Details\n→\nVB\nVisual Book Storyteller\n\nVisual Book Storyteller\n\nTools 4\ngenerate_image\ngenerate_speech\nwrite_file\n+1\nSkills 0\nNone\nRun\nView Details\n→\nVD\nVisual Dialogue Weaver\n\nVisual Dialogue Weaver\n\nTools 4\nwrite_file\nread_media_file\ngenerate_speech\n+1\nSkills 0\nNone\nRun\nView Details\n→\nVI\nVisualStoryteller\n\nThis agent writes stories by breaking them down into scenes. For each scene, it provides a narrative description and a detailed prompt for an accompanying image. It does not use any tools.\n\nTools 3\ngenerate_image\ngenerate_speech\nwrite_file\nSkills 0\nNone\nRun\nView Details\n→\nWO\nWeChat Official Account Article Writer\n\nWeChat Official Account Article Writer\n\nTools 1\nwrite_file\nSkills 0\nNone\nRun\nView Details\n→\nWL\nWeixin Linux desktop operator\n\nSafely operates the Ubuntu desktop Weixin client for verified group messaging, link sharing, image sharing, and setup checks after explicit user approval.\n\nTools 13\nclose_tab\ndom_snapshot\nlist_tabs\n+10\nSkills 1\nweixin-linux-desktop-operator\nRun\nView Details\n→",
+  "buttons": [
+    {
+      "i": 0,
+      "text": "Agents",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 1,
+      "text": "",
+      "aria": null,
+      "title": "Collapse left panel",
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 2,
+      "text": "Agent Teams",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 3,
+      "text": "Applications",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 4,
+      "text": "Skills",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 5,
+      "text": "Memory",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 6,
+      "text": "Nodes",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 7,
+      "text": "",
+      "aria": null,
+      "title": "Add workspace",
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 8,
+      "text": "Temp Workspace",
+      "aria": null,
+      "title": null,
+      "expanded": "false",
+      "controls": null
+    },
+    {
+      "i": 9,
+      "text": "workspace",
+      "aria": null,
+      "title": null,
+      "expanded": "true",
+      "controls": null
+    },
+    {
+      "i": 10,
+      "text": "",
+      "aria": "Remove from Workspaces",
+      "title": "Remove from Workspaces",
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 11,
+      "text": "DA\nDaily Assistant\n(1)",
+      "aria": null,
+      "title": null,
+      "expanded": "false",
+      "controls": null
+    },
+    {
+      "i": 12,
+      "text": "",
+      "aria": null,
+      "title": "New run with this agent",
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 13,
+      "text": "CS\nClassroom Simulation Team\n(2)",
+      "aria": null,
+      "title": null,
+      "expanded": "false",
+      "controls": null
+    },
+    {
+      "i": 14,
+      "text": "Settings",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 15,
+      "text": "Reload",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 16,
+      "text": "Create Agent",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 17,
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 18,
+      "text": "View Details\n→",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 19,
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 20,
+      "text": "View Details\n→",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 21,
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 22,
+      "text": "View Details\n→",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 23,
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 24,
+      "text": "View Details\n→",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 25,
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 26,
+      "text": "View Details\n→",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 27,
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 28,
+      "text": "View Details\n→",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 29,
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 30,
+      "text": "View Details\n→",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 31,
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 32,
+      "text": "View Details\n→",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 33,
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 34,
+      "text": "View Details\n→",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 35,
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 36,
+      "text": "View Details\n→",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 37,
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 38,
+      "text": "View Details\n→",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 39,
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 40,
+      "text": "View Details\n→",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 41,
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 42,
+      "text": "View Details\n→",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 43,
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 44,
+      "text": "View Details\n→",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 45,
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 46,
+      "text": "View Details\n→",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 47,
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 48,
+      "text": "View Details\n→",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 49,
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 50,
+      "text": "View Details\n→",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 51,
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 52,
+      "text": "View Details\n→",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 53,
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 54,
+      "text": "View Details\n→",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 55,
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 56,
+      "text": "View Details\n→",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 57,
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 58,
+      "text": "View Details\n→",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 59,
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 60,
+      "text": "View Details\n→",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 61,
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 62,
+      "text": "View Details\n→",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 63,
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 64,
+      "text": "View Details\n→",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 65,
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 66,
+      "text": "View Details\n→",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 67,
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 68,
+      "text": "View Details\n→",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 69,
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 70,
+      "text": "View Details\n→",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 71,
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 72,
+      "text": "View Details\n→",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 73,
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 74,
+      "text": "View Details\n→",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 75,
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 76,
+      "text": "View Details\n→",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 77,
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 78,
+      "text": "View Details\n→",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 79,
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 80,
+      "text": "View Details\n→",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 81,
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 82,
+      "text": "View Details\n→",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 83,
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 84,
+      "text": "View Details\n→",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 85,
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 86,
+      "text": "View Details\n→",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 87,
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 88,
+      "text": "View Details\n→",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 89,
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 90,
+      "text": "View Details\n→",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 91,
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 92,
+      "text": "View Details\n→",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 93,
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 94,
+      "text": "View Details\n→",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 95,
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 96,
+      "text": "View Details\n→",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 97,
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 98,
+      "text": "View Details\n→",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 99,
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 100,
+      "text": "View Details\n→",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 101,
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 102,
+      "text": "View Details\n→",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 103,
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 104,
+      "text": "View Details\n→",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 105,
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 106,
+      "text": "View Details\n→",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 107,
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 108,
+      "text": "View Details\n→",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 109,
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 110,
+      "text": "View Details\n→",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 111,
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 112,
+      "text": "View Details\n→",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 113,
+      "text": "Run",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    },
+    {
+      "i": 114,
+      "text": "View Details\n→",
+      "aria": null,
+      "title": null,
+      "expanded": null,
+      "controls": null
+    }
+  ],
+  "logs": [
+    {
+      "type": "debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "type": "log",
+      "text": "serverStore: Checking server health at /rest/health"
+    },
+    {
+      "type": "log",
+      "text": "Download the Apollo DevTools for a better development experience: %s https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm"
+    }
+  ],
+  "errors": [],
+  "failed": []
+}

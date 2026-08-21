@@ -1,5 +1,5 @@
 import type { CompactionStatusPhase } from '~/types/agent/AgentRunState';
-import type { CompactionActivity } from '~/stores/agentActivityStore';
+import type { CompactionActivity } from '~/types/activity/RunActivity';
 
 export type CompactionTone = 'amber' | 'blue' | 'emerald' | 'red';
 

@@ -842,7 +842,7 @@ describe("RuntimeMemoryEventAccumulator", () => {
     }));
 
     const store = new RunMemoryFileStore(memoryDir);
-    const active = store.listRawTracesOrdered();
+    const active = store.listTurnRawTracesOrdered();
     expect(active.map((trace) => trace.traceType)).toEqual(["provider_compaction_boundary"]);
     expect(active[0]).toMatchObject({
       content: "Provider-owned context compaction boundary: codex/codex.thread_compacted",
@@ -923,7 +923,7 @@ describe("RuntimeMemoryEventAccumulator", () => {
 
     const store = new RunMemoryFileStore(memoryDir);
     expect(store.readRawTraceArchiveManifest().segments).toHaveLength(1);
-    expect(store.listRawTracesOrdered().map((trace) => [trace.traceType, trace.content])).toEqual([
+    expect(store.listTurnRawTracesOrdered().map((trace) => [trace.traceType, trace.content])).toEqual([
       ["provider_compaction_boundary", "Provider-owned context compaction boundary: codex/codex.thread_compacted"],
       ["assistant", "after boundary"],
     ]);
@@ -985,7 +985,7 @@ describe("RuntimeMemoryEventAccumulator", () => {
     }));
 
     const store = new RunMemoryFileStore(memoryDir);
-    expect(store.listRawTracesOrdered().map((trace) => [trace.traceType, trace.content])).toEqual([
+    expect(store.listTurnRawTracesOrdered().map((trace) => [trace.traceType, trace.content])).toEqual([
       ["provider_compaction_boundary", "Provider-owned context compaction boundary: codex/codex.thread_compacted"],
     ]);
     expect(store.readRawTraceArchiveManifest().segments).toHaveLength(1);

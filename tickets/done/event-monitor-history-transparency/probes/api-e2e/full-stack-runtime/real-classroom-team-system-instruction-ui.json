@@ -1,0 +1,43 @@
+{
+  "status": "PASS",
+  "teamRunId": "classroom_simulation_team_9aeed53799ef41209201821393695896",
+  "members": {
+    "professor": {
+      "runId": "professor_df65139b684c4081ac277084b45a8158",
+      "rawId": "rt_1787251946285_8903ca54-1026-4a2d-b38e-4c31e5ee4c4c",
+      "contentLength": 11718,
+      "contentSha256": "5c54500486d3992ee84442bce99704703e795d662c742c386547b6bbc50d2d8b",
+      "projectionMemoryRawIdAndContentParity": true
+    },
+    "student": {
+      "runId": "student_9f931f0cbadd4f6fa7e042b76d97f91d",
+      "rawId": "rt_1787251976871_dd0d3100-5b3b-4124-83bb-52b9771d104a",
+      "contentLength": 11415,
+      "contentSha256": "95bb4dbb9f5f5ee09c968266f7ae73fab268d549f11ac8150123c2b300033ea3",
+      "projectionMemoryRawIdAndContentParity": true
+    }
+  },
+  "classroom": {
+    "professorToStudentMessage": true,
+    "studentToProfessorMessage": true,
+    "professorExactCompletion": true,
+    "persistedAnswerPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/workspace/classroom-runs/addition-17-plus-25/student-answer.md",
+    "persistedAnswerSha256": "9f1e6bcda2cfd976f8a1f084a9aea9588b07039739c478995aa9dd70ef65c71f"
+  },
+  "ui": {
+    "focusedProfessorSystemCardCollapsedByDefault": true,
+    "keyboardExpandedWith": "Enter",
+    "domControlsId": "system-instruction-content-rt_1787251946285_8903ca54-1026-4a2d-b38e-4c31e5ee4c4c",
+    "exactContentEqualRaw": true,
+    "metrics": {
+      "clientWidth": 1280,
+      "scrollWidth": 1280
+    },
+    "eventMonitorHasClassroomConversationAndTools": true
+  },
+  "console": {
+    "errors": [],
+    "failed": [],
+    "errorLogs": []
+  }
+}

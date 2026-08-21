@@ -6,6 +6,7 @@ import { RawTraceItem } from '../models/raw-trace-item.js';
 import { EpisodicItem } from '../models/episodic-item.js';
 import { SemanticItem } from '../models/semantic-item.js';
 import { RunMemoryFileStore } from './run-memory-file-store.js';
+import type { SystemInstructionCaptureResult } from '../models/system-instruction-trace.js';
 
 export class FileMemoryStore extends MemoryStore {
   baseDir: string;
@@ -38,12 +39,12 @@ export class FileMemoryStore extends MemoryStore {
     return typeof limit === 'number' ? items.slice(-limit) : items;
   }
 
-  listRawTracesOrdered(limit?: number): RawTraceItem[] {
-    return this.runStore.listRawTracesOrdered(limit);
+  listTurnRawTracesOrdered(limit?: number): RawTraceItem[] {
+    return this.runStore.listTurnRawTracesOrdered(limit);
   }
 
-  override listRawTraceCorpusOrdered(limit?: number): RawTraceItem[] {
-    return this.runStore.listRawTraceCorpusOrdered(limit);
+  override listTurnRawTraceCorpusOrdered(limit?: number): RawTraceItem[] {
+    return this.runStore.listTurnRawTraceCorpusOrdered(limit);
   }
 
   listRawTraceDicts(): Record<string, unknown>[] {
@@ -65,8 +66,12 @@ export class FileMemoryStore extends MemoryStore {
     return this.runStore.hasMemoryArtifactIds(input);
   }
 
-  override archiveExactRawTraces(traceIds: readonly string[]): void {
-    this.runStore.archiveExactRawTraces(traceIds);
+  override archiveCompactedRawTraces(traceIds: readonly string[]): void {
+    this.runStore.archiveCompactedRawTraces(traceIds);
+  }
+
+  override recordSystemInstructionSupply(content: string, suppliedAt: number): SystemInstructionCaptureResult {
+    return this.runStore.recordSystemInstructionSupply(content, suppliedAt);
   }
 
   readArchiveRawTraces(): Record<string, unknown>[] {

@@ -1,12 +1,13 @@
 import { nextTick, reactive, ref } from 'vue';
 import { mount } from '@vue/test-utils';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { RunActivity } from '~/stores/agentActivityStore';
+import type { RunActivity } from '~/types/activity/RunActivity';
 
 const highlightedId = ref<string | null>(null);
 const activities = ref<RunActivity[]>([]);
 const activeContextStoreMock = reactive({
   activeAgentContext: {
+    config: { runtimeKind: 'autobyteus' },
     state: {
       runId: 'run-1',
     },

@@ -77,6 +77,24 @@ const messages = {
     "新建 - {{name}}",
   "workspace.components.progress.CompactionActivityItem.memory_compaction":
     "记忆压缩",
+  "workspace.components.progress.SystemInstructionActivityItem.title":
+    "系统指令",
+  "workspace.components.progress.SystemInstructionActivityItem.available":
+    "可用",
+  "workspace.components.progress.SystemInstructionActivityItem.character_count":
+    "{{count}} 个字符",
+  "workspace.components.progress.SystemInstructionActivityItem.captured_at":
+    "捕获于 {{time}}",
+  "workspace.components.progress.SystemInstructionActivityItem.aria_label":
+    "{{title}}。{{source}}。{{availability}}。捕获于 {{time}}。{{count}} 个字符。",
+  "workspace.components.progress.SystemInstructionActivityItem.source.native":
+    "由 AutoByteus 提供 · Native 已配置系统提示词",
+  "workspace.components.progress.SystemInstructionActivityItem.source.claude":
+    "由 AutoByteus 提供 · Claude SDK systemPrompt",
+  "workspace.components.progress.SystemInstructionActivityItem.source.codex":
+    "由 AutoByteus 提供 · Codex baseInstructions",
+  "workspace.components.progress.SystemInstructionActivityItem.source.unknown":
+    "由 AutoByteus 提供的系统指令",
   "workspace.components.workspace.running.AgentLibraryPanel.agentsHeading":
     "智能体",
   "workspace.components.workspace.running.AgentLibraryPanel.teamsHeading":

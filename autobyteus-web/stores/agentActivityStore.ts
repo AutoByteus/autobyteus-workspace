@@ -1,65 +1,17 @@
 import { defineStore } from 'pinia';
 import type { ToolApprovalTarget, ToolInvocationStatus } from '~/types/segments';
-import type { CompactionStatusPhase } from '~/types/agent/AgentRunState';
 import { isPlaceholderToolName } from '~/utils/toolNamePlaceholders';
 import { canTransitionToolInvocationStatus } from '~/utils/toolInvocationStatus';
 import {
-  RECENT_EVENT_MONITOR_VISUAL_LIMIT,
-} from '~/services/eventMonitor/recentEventMonitorWindow';
-import { isRecentEventMonitorActivityComplete } from '~/services/eventMonitor/recentEventMonitorCompletion';
-
-export type ToolActivityType = 'tool_call' | 'write_file' | 'terminal_command' | 'edit_file';
-
-export interface ToolActivity {
-  kind: 'tool';
-  activityId: string;
-  invocationId: string;
-  toolName: string;
-  type: ToolActivityType;
-  status: ToolInvocationStatus;
-  contextText: string;
-  arguments: Record<string, any>;
-  approvalTarget?: ToolApprovalTarget | null;
-  logs: string[];
-  result: any | null;
-  error: string | null;
-  timestamp: Date;
-}
-
-export interface CompactionActivity {
-  kind: 'compaction';
-  activityId: string;
-  phase: CompactionStatusPhase;
-  message: string;
-  turnId?: string | null;
-  compactionOperationId?: string | null;
-  requestedTurnId?: string | null;
-  executionTurnId?: string | null;
-  selectedBlockCount?: number | null;
-  compactedBlockCount?: number | null;
-  rawTraceCount?: number | null;
-  semanticFactCount?: number | null;
-  compactionAgentDefinitionId?: string | null;
-  compactionAgentName?: string | null;
-  compactionRuntimeKind?: string | null;
-  compactionModelIdentifier?: string | null;
-  compactionRunId?: string | null;
-  compactionTaskId?: string | null;
-  provider?: string | null;
-  sourceSurface?: string | null;
-  boundaryKey?: string | null;
-  providerEventId?: string | null;
-  providerSessionId?: string | null;
-  trigger?: string | null;
-  preTokens?: number | null;
-  rotationEligible?: boolean | null;
-  errorMessage?: string | null;
-  timestamp: Date;
-  updatedAt: Date;
-  centerTimelineTimestamp?: Date | null;
-}
-
-export type RunActivity = ToolActivity | CompactionActivity;
+  isRunActivityComplete,
+  RUN_ACTIVITY_WINDOW_LIMIT,
+} from '~/services/activity/runActivityWindowPolicy';
+import type {
+  CompactionActivity,
+  RunActivity,
+  SystemInstructionActivity,
+  ToolActivity,
+} from '~/types/activity/RunActivity';
 
 interface AgentActivities {
   activities: RunActivity[];
@@ -144,7 +96,7 @@ export const useAgentActivityStore = defineStore('agentActivity', {
     },
 
     _enforceRecentWindow(agentState: AgentActivities): boolean {
-      let overflow = agentState.activities.length - RECENT_EVENT_MONITOR_VISUAL_LIMIT;
+      let overflow = agentState.activities.length - RUN_ACTIVITY_WINDOW_LIMIT;
       if (overflow <= 0) {
         this._updateAwaitingFlag(agentState);
         return false;
@@ -152,7 +104,7 @@ export const useAgentActivityStore = defineStore('agentActivity', {
       const removedIds = new Set<string>();
       for (const activity of agentState.activities) {
         if (overflow === 0) break;
-        if (!isRecentEventMonitorActivityComplete(activity)) continue;
+        if (!isRunActivityComplete(activity)) continue;
         removedIds.add(activity.activityId);
         overflow -= 1;
       }
@@ -220,6 +172,28 @@ export const useAgentActivityStore = defineStore('agentActivity', {
       if (changed) Object.assign(existing, patch);
       this._enforceRecentWindow(state);
       return changed;
+    },
+
+    upsertSystemInstructionActivity(runId: string, activity: SystemInstructionActivity): boolean {
+      if (!isValidActivityId(activity.activityId)
+        || !(activity.timestamp instanceof Date)
+        || !Number.isFinite(activity.timestamp.getTime())) {
+        console.warn('[agentActivityStore] Dropping invalid system instruction activity.');
+        return false;
+      }
+      const state = this._ensureRunState(runId);
+      const existing = state.activities.find((item) => item.activityId === activity.activityId);
+      if (!existing) {
+        state.activities.push(activity);
+        this._enforceRecentWindow(state);
+        return true;
+      }
+      if (existing.kind !== 'system_instruction'
+        || existing.content !== activity.content
+        || existing.timestamp.getTime() !== activity.timestamp.getTime()) {
+        console.warn(`[agentActivityStore] Rejected conflicting activity ID '${activity.activityId}'.`);
+      }
+      return false;
     },
 
     updateToolActivityStatus(

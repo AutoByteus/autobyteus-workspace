@@ -99,6 +99,7 @@ export interface MemoryMessage {
 }
 
 export interface MemoryTraceEvent {
+  scope: 'run' | 'turn';
   id?: string | null;
   traceType: string;
   sourceEvent?: string | null;
@@ -109,8 +110,8 @@ export interface MemoryTraceEvent {
   toolResult?: unknown | null;
   toolError?: string | null;
   media?: Record<string, string[]> | null;
-  turnId: string;
-  seq: number;
+  turnId: string | null;
+  seq: number | null;
   ts: number;
 }
 

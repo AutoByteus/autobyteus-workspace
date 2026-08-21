@@ -1,0 +1,29 @@
+# DR-002 isolated packaged Electron launch smoke
+utc_started=2026-08-20T19:42:00Z
+source_head=50a0f302313140947c2d12de7827b55428f8779a
+executable=/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+adapter=playwright
+isolated_port=57715
+production_port=29695
+
+## Production listener before (observation only; not owned or touched)
+COMMAND     PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+AutoByteu 78020 normy   26u  IPv4 0x8fc35ad3be91eb49      0t0  TCP *:29695 (LISTEN)
+
+## Packaged launch
+
+> autobyteus@1.4.52 test:e2e:electron /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/autobyteus-web
+> node scripts/run-electron-e2e.mjs --skip-build --adapter playwright --executable /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus --port 57715 --hold-ms 3000
+
+{"type":"electron-e2e-ready","executablePath":"/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus","port":57715,"dataRoot":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-O1ja3w","ownsDataRoot":true,"clientBaseUrl":"http://127.0.0.1:57715","healthUrl":"http://127.0.0.1:57715/rest/health"}
+launch_exit_code=0
+
+## Isolated listener after cleanup
+isolated_port_cleanup=CLEAR
+
+## Production listener after (observation only; not owned or touched)
+COMMAND     PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+AutoByteu 78020 normy   26u  IPv4 0x8fc35ad3be91eb49      0t0  TCP *:29695 (LISTEN)
+
+utc_finished=2026-08-20T19:42:10Z
+smoke_result=PASS

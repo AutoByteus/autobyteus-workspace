@@ -511,9 +511,11 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
     context: AgentRunContext<RuntimeAgentRunContext>,
     agent: AutoByteusRuntimeAgentLike,
   ): AutoByteusAgentRunBackend {
+    const pendingSystemInstructionCapture = agent.context?.state.takePendingSystemInstructionCapture() ?? null;
     return new AutoByteusAgentRunBackend(context, agent, {
       isActive: () => this.resolveAutoByteusAgent(agent.agentId) !== null,
       removeAgent: async (runId: string) => this.agentFactory.removeAgent(runId),
+      pendingSystemInstructionCapture,
     });
   }
   private resolveAutoByteusAgent(runId: string): AutoByteusRuntimeAgentLike | null {

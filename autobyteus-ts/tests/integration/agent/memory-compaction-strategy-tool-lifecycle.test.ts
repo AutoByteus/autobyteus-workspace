@@ -339,7 +339,7 @@ describe('structured strategy tool-safe lifecycle', () => {
         role: 'tool',
         tool_call_id: 'call-lookup-1',
       });
-      const traceCorpus = manager.listRawTraceCorpusOrdered();
+      const traceCorpus = manager.listTurnRawTraceCorpusOrdered();
       expect(traceCorpus.filter(({ traceType }) => traceType === 'tool_call')).toHaveLength(1);
       expect(traceCorpus.filter(({ traceType }) => traceType === 'tool_result')).toHaveLength(1);
       expect(traceCorpus.some(({ traceType }) => traceType === 'tool_continuation')).toBe(false);

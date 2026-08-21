@@ -2,7 +2,7 @@ import { createToolCallIdentity, toolCallIdentityKey } from "autobyteus-ts/memor
 import { ToolInteraction, ToolInteractionStatus } from "autobyteus-ts/memory/models/tool-interaction.js";
 import { buildToolInteractions } from "autobyteus-ts/memory/tool-interaction-builder.js";
 import type { ToolCallContext } from "autobyteus-ts/memory/tool-trace-lifecycle-index.js";
-import type { MemoryTraceEvent } from "../../../agent-memory/domain/models.js";
+import type { MemoryTraceEvent, MemoryTurnTraceEvent } from "../../../agent-memory/domain/models.js";
 import type { HistoricalReplayEvent, HistoricalReplayToolEvent } from "../historical-replay-event-types.js";
 import {
   buildReplayTurnGroupId,
@@ -42,7 +42,7 @@ const resolveProviderSessionId = (details: Record<string, unknown> | null): stri
   asString(details?.provider_thread_id) ?? asString(details?.providerThreadId);
 
 const resolveCompactionActivityId = (
-  trace: MemoryTraceEvent,
+  trace: MemoryTurnTraceEvent,
   details: Record<string, unknown> | null,
   boundaryKey: string,
 ): string => {
@@ -74,8 +74,8 @@ const resolveContextText = (toolName: string | null, toolArgs: Record<string, un
 
 const createToolEvent = (
   interaction: ToolInteraction,
-  anchor: MemoryTraceEvent,
-  terminal: MemoryTraceEvent | null,
+  anchor: MemoryTurnTraceEvent,
+  terminal: MemoryTurnTraceEvent | null,
   identity: { eventId: string; turnGroupId: string },
 ): HistoricalReplayToolEvent => {
   const toolName = interaction.toolName?.trim() || "tool";
@@ -102,7 +102,7 @@ const createToolEvent = (
 };
 
 const createCompactionEvent = (
-  trace: MemoryTraceEvent,
+  trace: MemoryTurnTraceEvent,
   identity: { eventId: string; turnGroupId: string },
 ): HistoricalReplayEvent => {
   const details = asRecord(trace.toolResult);
@@ -137,7 +137,7 @@ const createCompactionEvent = (
 export type HistoricalReplayBuildOptions = {
   callContextByIdentity?: ReadonlyMap<string, ToolCallContext>;
   interactionByIdentity?: ReadonlyMap<string, ToolInteraction>;
-  traceById?: ReadonlyMap<string, MemoryTraceEvent>;
+  traceById?: ReadonlyMap<string, MemoryTurnTraceEvent>;
   includedToolIdentityKeys?: ReadonlySet<string>;
 };
 
@@ -145,20 +145,33 @@ export const buildHistoricalReplayEvents = (
   rawTraces: MemoryTraceEvent[],
   options: HistoricalReplayBuildOptions = {},
 ): HistoricalReplayEvent[] => {
+  const turnTraces = rawTraces.filter(
+    (trace): trace is MemoryTurnTraceEvent => trace.scope !== "run",
+  );
   const interactionByIdentity = options.interactionByIdentity ?? new Map(
-    buildToolInteractions(rawTraces, options).map((interaction) => [
+    buildToolInteractions(turnTraces, options).map((interaction) => [
       toolCallIdentityKey({ turnId: interaction.turnId!, toolCallId: interaction.toolCallId }),
       interaction,
     ]),
   );
   const traceById = options.traceById ?? new Map(
-    rawTraces.flatMap((trace) => trace.id ? [[trace.id, trace] as const] : []),
+    turnTraces.flatMap((trace) => trace.id ? [[trace.id, trace] as const] : []),
   );
   const emittedToolIdentities = new Set<string>();
   const events: HistoricalReplayEvent[] = [];
   const nextLegacyOccurrence = createLegacyOccurrenceAllocator();
 
   for (const trace of rawTraces) {
+    if (trace.scope === "run") {
+      events.push({
+        eventId: trace.id,
+        kind: "system_instruction",
+        activityId: trace.id,
+        content: trace.content,
+        ts: trace.ts,
+      });
+      continue;
+    }
     if (trace.traceType === "user" || trace.traceType === "assistant") {
       events.push({
         ...resolveTraceReplayIdentity(trace, nextLegacyOccurrence),

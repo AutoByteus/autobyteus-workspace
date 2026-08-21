@@ -246,7 +246,7 @@ describe('LlmPhase unified streaming setup', () => {
         logicalConversationId: 'agent_no_tools',
       });
       expect(llm.streamCaptures[0].kwargs).not.toHaveProperty('tools');
-      expect(memoryManager.listRawTracesOrdered().some(({ traceType }) =>
+      expect(memoryManager.listTurnRawTracesOrdered().some(({ traceType }) =>
         traceType === 'tool_call' || traceType === 'tool_result'
       )).toBe(false);
     } finally {
@@ -317,7 +317,7 @@ describe('LlmPhase successful retained-outcome recovery settlement', () => {
           arguments: { path: '/tmp/context.txt' },
         }),
       ]);
-      expect(memoryManager.listRawTracesOrdered()).toEqual(expect.arrayContaining([
+      expect(memoryManager.listTurnRawTracesOrdered()).toEqual(expect.arrayContaining([
         expect.objectContaining({
           traceType: 'tool_call',
           toolCallId: 'call_recovery_tool',
@@ -384,7 +384,7 @@ describe('LlmPhase successful retained-outcome recovery settlement', () => {
         }),
       ]));
       expect(retained.some((message) => message.content === 'must not be retained')).toBe(false);
-      expect(memoryManager.listRawTracesOrdered()).toEqual(expect.arrayContaining([
+      expect(memoryManager.listTurnRawTracesOrdered()).toEqual(expect.arrayContaining([
         expect.objectContaining({
           traceType: 'assistant',
           sourceEvent: 'LlmPhaseInterruptedPartial',

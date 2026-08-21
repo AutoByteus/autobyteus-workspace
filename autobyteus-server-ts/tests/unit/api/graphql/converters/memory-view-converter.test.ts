@@ -17,16 +17,9 @@ describe("MemoryViewConverter", () => {
       ],
       episodic: [{ episode: "a" }],
       semantic: [{ fact: "b" }],
-      conversation: [
-        {
-          kind: "message",
-          role: "user",
-          content: "hello",
-          ts: 1,
-        },
-      ],
       rawTraces: [
         {
+          scope: "turn",
           traceType: "user",
           content: "hello",
           toolName: null,
@@ -37,6 +30,16 @@ describe("MemoryViewConverter", () => {
           turnId: "t1",
           seq: 1,
           ts: 1,
+        },
+        {
+          scope: "run",
+          id: "raw-system-id",
+          traceType: "system_instruction",
+          sourceEvent: "SYSTEM_INSTRUCTIONS_SUPPLIED",
+          content: " exact prompt ",
+          turnId: null,
+          seq: null,
+          ts: 2,
         },
       ],
       rawTraceFiles: [
@@ -56,6 +59,13 @@ describe("MemoryViewConverter", () => {
     expect(gql.runId).toBe("agent-1");
     expect(gql.workingContext?.[0]?.role).toBe("user");
     expect(gql.rawTraces?.[0]?.turnId).toBe("t1");
+    expect(gql.rawTraces?.[1]).toEqual(expect.objectContaining({
+      scope: "run",
+      id: "raw-system-id",
+      turnId: null,
+      seq: null,
+      content: " exact prompt ",
+    }));
     expect(gql.rawTraceFiles?.[0]?.fileName).toBe("raw_traces_active.jsonl");
     expect(gql.selectedRawTraceFileName).toBe("raw_traces_active.jsonl");
   });
