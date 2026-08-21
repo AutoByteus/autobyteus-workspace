@@ -209,8 +209,9 @@ three ticket-owned documentation sections.
   version after testing, superseding the earlier no-release instruction.
 - Release commit/tag:
   `6ceaf2ec5349752d0afb6d9be3326833451a4aca` / `v1.4.53`.
-- Canonical release command ran exactly once; no duplicate manual dispatch was
-  triggered.
+- Canonical release command ran exactly once; no duplicate default-image manual
+  dispatch was triggered. The later manual dispatch published only the separate
+  zh variant recorded below.
 - Desktop, Server Docker, Android, iOS App Store Connect, and Messaging Gateway
   tag workflows all completed successfully.
 - Stable GitHub Release:
@@ -232,3 +233,21 @@ three ticket-owned documentation sections.
 - The published Docker Hub `1.4.53` and `latest` images are unaffected.
 - Evidence:
   `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/delivery-evidence/dr-006-local-docker-destroy.log`.
+
+## Manual zh Server Docker Publication
+
+- Later user request: Trigger the separately manual Chinese runtime server
+  Docker build for the completed `v1.4.53` release.
+- Workflow result: `Server Docker Release` manual run `32458399771` completed
+  successfully:
+  `https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32458399771`.
+- Dispatch inputs: `release_tag=v1.4.53`, `release_ref=v1.4.53`, and
+  `publish_zh=true` with the default image repository.
+- Published tags: `autobyteus/autobyteus-server:1.4.53-zh` and `latest-zh`.
+- Verification: Both tags resolve to OCI index
+  `sha256:32d22154af0243f2a3a84d030499e226ec3f2527e0f2c37a53cece00b32a67c2`
+  with `linux/amd64` and `linux/arm64` manifests.
+- Scope: This published the zh images only. It did not modify the default image
+  tags or restart any deployed runtime.
+- Evidence:
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/delivery-evidence/dr-007-zh-server-docker-publication.log`.

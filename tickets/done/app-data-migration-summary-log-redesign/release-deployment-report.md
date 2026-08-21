@@ -3,10 +3,11 @@
 ## Release / Publication / Deployment Scope
 
 - Ticket: `app-data-migration-summary-log-redesign`.
-- Current delivery revision: `DR-006`.
-- Current status: `Pass — v1.4.53 is released across all five publication
-  workflows; the earlier local test Docker was subsequently destroyed while its
-  four named volumes were retained.`
+- Current delivery revision: `DR-007`.
+- Current status: `Pass — v1.4.53 is released across all five tag publication
+  workflows, its separately dispatched zh server Docker variant is published,
+  and the earlier local test Docker was destroyed while its four named volumes
+  were retained.`
 - User-instruction chronology: The initial finalization instruction declined a
   release; the user later explicitly requested a new product version after
   testing, then requested destruction of the local test Docker.
@@ -21,7 +22,7 @@
 - Handoff summary status: `Updated`
 - Delivery revision record:
   `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/delivery-revision-record.md`
-- Current delivery revision ID: `DR-006`
+- Current delivery revision ID: `DR-007`
 
 ## Delivery Integration Refreshes
 
@@ -150,9 +151,15 @@
 - Server Docker: `autobyteus/autobyteus-server:1.4.53` and `:latest` share OCI
   index `sha256:99c05052971f3845a3b127526501faed47578d9d03f42dd7ec6040d59788e179`
   for `linux/amd64` and `linux/arm64`.
+- Separately dispatched zh Server Docker run `32458399771`: `success`.
+  `autobyteus/autobyteus-server:1.4.53-zh` and `:latest-zh` share OCI index
+  `sha256:32d22154af0243f2a3a84d030499e226ec3f2527e0f2c37a53cece00b32a67c2`
+  for `linux/amd64` and `linux/arm64`; the zh-only run did not rebuild the
+  default tags.
 - iOS: archive and App Store Connect upload job passed; later Apple processing
   and review remain external.
-- Manual-dispatch duplicate: `Not performed`.
+- Duplicate default-image manual dispatch: `Not performed`; the later DR-007
+  manual run intentionally published only the separate zh variant.
 - Evidence: `delivery-evidence/dr-005-*`.
 
 ## Local Test Docker Cleanup
@@ -197,6 +204,7 @@
 | GitHub Release/assets | Pass; public stable release with 21 uploaded non-empty assets | `delivery-evidence/dr-005-github-release.json` |
 | Server Docker publication | Pass; version/latest identical dual-architecture OCI index | `delivery-evidence/dr-005-server-docker-manifest.json` |
 | Local test Docker destruction | Pass; container/image/network removed, volumes retained | `delivery-evidence/dr-006-local-docker-destroy.log` |
+| Manual v1.4.53 zh Server Docker publication | Pass; workflow `32458399771`, version/latest zh tags share the verified dual-architecture OCI index | `delivery-evidence/dr-007-zh-server-docker-*` |
 
 ## Known Residuals
 
@@ -225,5 +233,6 @@
 
 `Pass — user accepted; ticket archived, committed and pushed; personal merged
 and pushed; ticket worktree/branches cleaned; v1.4.53 committed, tagged,
-published, and verified across all five release workflows; the local test Docker
-was then removed while its named volumes were retained.`
+published, and verified across all five tag release workflows; the manual zh
+server Docker variant was subsequently published and verified; the local test
+Docker was removed while its named volumes were retained.`

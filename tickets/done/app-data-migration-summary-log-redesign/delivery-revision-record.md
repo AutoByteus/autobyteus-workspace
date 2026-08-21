@@ -14,6 +14,7 @@ initial completed delivery-stage result and will retain later delivery deltas.
 | `DR-004` | User-requested post-finalization local server Docker refresh | `DR-003 — repository finalized; no release` | `Pass — latest personal source built locally, old container/image replaced, persistent volumes and ports retained, rollout healthy; no release` | `release-deployment-report.md`, `handoff-summary.md`, `delivery-evidence/dr-004-latest-personal-server-docker-build.log` |
 | `DR-005` | User superseded the earlier no-release decision and explicitly requested a product release | `DR-004 — finalized product plus healthy local test Docker; no release` | `Pass — v1.4.53 committed, tagged, published, and verified across Desktop, Server Docker, Android, iOS, and Messaging Gateway` | `release-notes.md`, all delivery reports, `delivery-evidence/dr-005-*`, `.github/release-notes/release-notes.md` |
 | `DR-006` | User requested destruction of the completed local test Docker | `DR-005 — v1.4.53 released; local test Docker still present` | `Pass — local test container/image removed, ports released, all four named volumes retained` | `release-deployment-report.md`, `handoff-summary.md`, `delivery-evidence/dr-006-local-docker-destroy.log` |
+| `DR-007` | User requested the separately dispatched `zh` server Docker build for the completed release | `DR-006 — v1.4.53 released and local test Docker removed; zh runtime variant not yet published for this version` | `Pass — manual zh-only workflow completed and published matching dual-architecture 1.4.53-zh/latest-zh indexes` | `release-deployment-report.md`, `handoff-summary.md`, `delivery-evidence/dr-007-*` |
 
 ## Revision Entries
 
@@ -275,8 +276,8 @@ initial completed delivery-stage result and will retain later delivery deltas.
     `pnpm release 1.4.53 --release-notes tickets/done/app-data-migration-summary-log-redesign/release-notes.md`.
   - Release commit:
     `6ceaf2ec5349752d0afb6d9be3326833451a4aca`.
-  - Annotated tag: `v1.4.53`, pushed once; no manual-dispatch duplicate was
-    created.
+  - Annotated tag: `v1.4.53`, pushed once; no duplicate manual dispatch of the
+    default release was created.
   - `autobyteus-web` and `autobyteus-message-gateway` versions are `1.4.53`;
     the managed messaging manifest targets `v1.4.53`.
 - Publication and rollout:
@@ -346,3 +347,42 @@ initial completed delivery-stage result and will retain later delivery deltas.
   `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/delivery-evidence/dr-006-local-docker-destroy.log`.
 - Remaining blockers or risks: None. The retained volumes continue to consume
   local Docker storage and intentionally preserve recoverable user state.
+
+### DR-007 — Manual zh server Docker publication
+
+- Delivery round and trigger: After the normal `v1.4.53` release and local test
+  Docker cleanup, the user recalled that the Chinese runtime server image is a
+  separate manual build and explicitly requested its GitHub pipeline.
+- Prior authoritative result: `DR-006 — default v1.4.53 publication complete;
+  local test container/image removed; persistent local volumes retained.`
+- Current authoritative result: `Pass — the Server Docker Release workflow was
+  dispatched once with release_tag/release_ref v1.4.53 and publish_zh enabled,
+  completed successfully, and published the two intended zh-only tags.`
+- Execution:
+  - Workflow: `Server Docker Release` / `workflow_dispatch`.
+  - Run: `32458399771` — `success`.
+  - Run URL:
+    `https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32458399771`.
+  - Inputs: `release_tag=v1.4.53`, `release_ref=v1.4.53`,
+    `publish_zh=true`; no image-name override.
+  - Checkout/release source: annotated tag `v1.4.53`, release commit
+    `6ceaf2ec5349752d0afb6d9be3326833451a4aca`.
+  - The default-image build step was skipped as intended; the zh multi-arch
+    build-and-push step passed.
+- Publication verification:
+  - `autobyteus/autobyteus-server:1.4.53-zh` and `:latest-zh` both resolve to
+    OCI index
+    `sha256:32d22154af0243f2a3a84d030499e226ec3f2527e0f2c37a53cece00b32a67c2`.
+  - Both tags contain `linux/amd64` and `linux/arm64` image manifests.
+  - This zh-only dispatch did not rebuild or replace the default `1.4.53` and
+    `latest` tags.
+- Evidence:
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/delivery-evidence/dr-007-zh-server-docker-workflow.json`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/delivery-evidence/dr-007-zh-server-docker-publication.log`
+- Rollback visibility: Published release tags are immutable delivery outputs and
+  should not be rewritten. Correct a defective zh image with a later patch
+  release; operators can remain on the default tags if the zh runtime is not
+  required.
+- Remaining blockers or risks: None for publication. Runtime adoption remains
+  operator-controlled; this action published the images but did not restart or
+  replace any deployed server.
