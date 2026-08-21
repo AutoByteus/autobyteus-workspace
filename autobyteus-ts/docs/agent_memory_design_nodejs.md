@@ -488,8 +488,33 @@ Raw traces remain original activity evidence. Successful native compaction may
 move selected settled records from active storage to one completed archive
 without changing their identity/content.
 
+The exact AutoByteus-owned instruction string supplied to a runtime is recorded
+as a run-scoped `system_instruction` raw trace. Its persisted schema is closed
+to exactly `id`, `ts`, `trace_type: "system_instruction"`, `content`, and
+`source_event: "SYSTEM_INSTRUCTIONS_SUPPLIED"`; it deliberately has no
+`turn_id` or `seq`. Native capture happens only after the final prompt has been
+successfully configured, including the terminal configured-skills catalog.
+Server adapters apply the same storage contract to the exact Claude SDK
+`options.systemPrompt` and Codex thread `baseInstructions` handoff strings.
+Provider-owned hidden or subsequently effective context is not observable and
+must not be reconstructed or labeled as captured.
+
+`recordSystemInstructionSupply(...)` compares the new content with the latest
+valid active system-instruction row. Exact equality reuses that row without a
+new write or live fact; changed content appends a new row. This is active-file
+folding, not a historical backfill, retry ledger, or definition lookup. Existing
+runs remain directly readable: absence means the instructions were not
+recorded, and malformed system-instruction rows are omitted rather than coerced
+into turn traces.
+
 Event Monitor and normal active-history paging remain active-raw views; archived
 records are accessed only by evidence projection or explicit inspection paths.
+System-instruction rows participate in physical rotation with the active raw
+evidence preceding a native compaction boundary, but they are never selected as
+turn-scoped compaction input. Once rotated, they honestly disappear from normal
+Activity hydration; explicit raw-trace archive inspection remains available.
+Event Monitor conversation/count/cursor policy excludes the run-scoped row,
+while Activity may render it inside the same bounded active-file horizon.
 
 Codex and Claude use server raw-trace-only memory recording. They share the
 native raw-trace and rotation primitives but do not construct, load, or persist

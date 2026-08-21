@@ -1,0 +1,868 @@
+# DR-003 post-user-verification base refresh
+utc_started=2026-08-21T04:06:45Z
+user_signal=verified_working_finalize_no_new_release
+branch=codex/event-monitor-history-transparency
+head_before=50a0f302313140947c2d12de7827b55428f8779a
+base_before=dbd00e789cf9e2ae7aaa995b60a181d5e6c3bf91
+
+## Status before fetch
+ M autobyteus-server-ts/docs/modules/agent_memory.md
+ M autobyteus-server-ts/docs/modules/agent_streaming.md
+ M autobyteus-server-ts/docs/modules/prompt_engineering.md
+ M autobyteus-server-ts/docs/modules/run_history.md
+ M autobyteus-ts/docs/agent_memory_design.md
+ M autobyteus-ts/docs/agent_memory_design_nodejs.md
+ M autobyteus-web/docs/agent_execution_architecture.md
+ M autobyteus-web/docs/memory.md
+?? tickets/in-progress/event-monitor-history-transparency/delivery-evidence/dr-001-docs-handoff-audit.log
+?? tickets/in-progress/event-monitor-history-transparency/delivery-evidence/dr-001-initial-integration-refresh.log
+?? tickets/in-progress/event-monitor-history-transparency/delivery-evidence/dr-001-post-integration-focused-web.log
+?? tickets/in-progress/event-monitor-history-transparency/delivery-evidence/dr-002-electron-build-macos-arm64.log
+?? tickets/in-progress/event-monitor-history-transparency/delivery-evidence/dr-002-electron-package-integrity.log
+?? tickets/in-progress/event-monitor-history-transparency/delivery-evidence/dr-002-final-package-handoff-audit.log
+?? tickets/in-progress/event-monitor-history-transparency/delivery-evidence/dr-002-isolated-electron-launch-smoke.log
+?? tickets/in-progress/event-monitor-history-transparency/delivery-evidence/dr-003-post-verification-base-refresh.log
+?? tickets/in-progress/event-monitor-history-transparency/delivery-revision-record.md
+?? tickets/in-progress/event-monitor-history-transparency/docs-sync-report.md
+?? tickets/in-progress/event-monitor-history-transparency/electron-test-build-report.md
+?? tickets/in-progress/event-monitor-history-transparency/handoff-summary.md
+?? tickets/in-progress/event-monitor-history-transparency/release-deployment-report.md
+
+## Fetch
+
+base_after=dbd00e789cf9e2ae7aaa995b60a181d5e6c3bf91
+head_after_fetch=50a0f302313140947c2d12de7827b55428f8779a
+ahead=2
+behind=9
+base_is_ancestor=no
+
+## Worktree topology
+worktree /Users/normy/autobyteus_org/autobyteus-workspace-superrepo
+HEAD dbd00e789cf9e2ae7aaa995b60a181d5e6c3bf91
+branch refs/heads/personal
+
+worktree /Users/normy/autobyteus_org/autobyteus-workspace-superrepo-codex-reopen-run-config
+HEAD 2f0a2d94f4b5dd6a26f1c90ae987e8d16f8ed87b
+branch refs/heads/codex/reopen-run-config
+
+worktree /Users/normy/autobyteus_org/autobyteus-workspace-superrepo-mcp-http-codex-tool-exposure
+HEAD 79857c513dd6d6e25c4b7761cb5aa0d3a805c227
+branch refs/heads/codex/mcp-http-codex-tool-exposure
+
+worktree /Users/normy/autobyteus_org/autobyteus-workspace-superrepo-raw-trace-usefulness-analysis
+HEAD fbd7b6764bd43751956d69ffe22b943d06188444
+branch refs/heads/codex/raw-trace-usefulness-analysis
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction
+HEAD b2aa635d2b9c6e22f28ac9de4e3ba46bb980466a
+branch refs/heads/codex/agent-based-compaction
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle
+HEAD 34f3fe97a281a9b85e02409bd753ad132df13d20
+detached
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis
+HEAD 8b5b4b00df0da313ddd29881dea1d98ca05e32cc
+branch refs/heads/codex/agent-package-multiple-skills-analysis
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-id-global-allocation-refactor
+HEAD 0e68304db566e0ec2575153fc1b5e7d4c1e047fd
+branch refs/heads/codex/agent-run-id-global-allocation-refactor
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/agent-self-evolving-feature
+HEAD 66bdc6d7f6fdcda2b11d39e9f3b7db18478cd723
+branch refs/heads/codex/agent-self-evolving-feature
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/agent-skill-runtime-support-investigation
+HEAD f2d8074eca1ab2d4df4e3545fbafa268b23be65d
+branch refs/heads/codex/agent-skill-runtime-support-investigation
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis
+HEAD 953992ea54de061aa80273fe81653e16691431de
+branch refs/heads/codex/agent-status-event-analysis
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible-manual-test
+HEAD d8ce4d8678637c2259a15a3950d9caaac6a7e05e
+detached
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-mcp-runtime-regression
+HEAD 515ed72a82d552fefb6f1356a671bf213bec0cbe
+branch refs/heads/codex/agent-team-mcp-runtime-regression
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-released-history-migration-recovery
+HEAD 2b0f8ea99296bb3f983c497d1f5c00a4d839f404
+branch refs/heads/codex/agent-team-released-history-migration-recovery
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-real-sse
+HEAD c572fcd686513045f53c01c34f3198dd565fd8a4
+branch refs/heads/codex/agent-tools-mcp-real-sse
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/agent-web-preview-tools
+HEAD 688b5e732a4cc763ffc50ac7981d544e26cd5da7
+branch refs/heads/codex/agent-web-preview-tools
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/agy-runtime-support
+HEAD c3cc4d0d49db1146c18a3c251518041ee233c512
+branch refs/heads/codex/agy-runtime-support
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/analyse-memory-layout-duplication
+HEAD 39cae4a0060cc38427955062ff5561a74952eca9
+branch refs/heads/codex/analyse-memory-layout-duplication
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-cli-runtime
+HEAD 97ea4ae2055510bcfc657624e3f9b2c5c6048227
+branch refs/heads/codex/antigravity-cli-runtime
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-cli-runtime-refresh
+HEAD 9e22168b11d1b7cd392a8dad40613775bd221a4a
+branch refs/heads/codex/antigravity-cli-runtime-refresh
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/app-data-migration-summary-log-redesign
+HEAD 6c45846863c4980e9c5ecc6dba915be10205b808
+branch refs/heads/codex/app-data-migration-summary-log-redesign
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/app-store-privacy-policy
+HEAD 5bd29cfb7b5e36dd712026ce7a5158bf10879cc3
+branch refs/heads/codex/app-store-privacy-policy
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/app-store-publishing-pipeline-investigation
+HEAD 167584a056b8a81b066e10a435fb81d7e75f7b4b
+branch refs/heads/codex/app-store-publishing-pipeline-investigation
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/application-execution-resource-naming
+HEAD 263e89c595f6942e7e826daf19cea9a9fd254459
+branch refs/heads/codex/application-execution-resource-naming
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/application-runtime-streaming
+HEAD 4df1f718038b629dbbc1c5673a35402603201b48
+branch refs/heads/codex/application-runtime-streaming
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/artifact-edit-file-external-path-view-bug
+HEAD 544f32c488e7d37d1d730ed309d3f4e16d186f0e
+branch refs/heads/codex/artifact-edit-file-external-path-view-bug
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/artifact-tab-missing-reference-files
+HEAD 1bed2087bc583add5f07d61a1e7fd61da28a4a2a
+branch refs/heads/codex/artifact-tab-missing-reference-files
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/artifacts-tab-resizer-disappears
+HEAD ea1892dbbe6cb12118bdb6d91cfc63564f12c4e7
+branch refs/heads/codex/artifacts-tab-resizer-disappears
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance
+HEAD d8fc4bf5a00c69720366db679a0c0e95d97cc0f9
+branch refs/heads/codex/autobyteus-runtime-streaming-ui-performance
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-agent-memory-compaction-investigation
+HEAD b2d5c4d1afb899d79cb8a7a7ac9220c711071e67
+branch refs/heads/codex/autobyteus-ts-agent-memory-compaction-investigation
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-bash-html-corruption
+HEAD 9426b1f022247bf7fe56b21cab6cb8c30d57e785
+branch refs/heads/codex/autobyteus-ts-bash-html-corruption
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-custom-openai-compatible-endpoint-support
+HEAD 7e042bd9802855907a7c742e7d27929b7c87e0cd
+branch refs/heads/codex/autobyteus-ts-custom-openai-compatible-endpoint-support
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-google-genai-tts-upgrade
+HEAD 63077fc7c7640e7743f82d8522ec58c725219ea7
+branch refs/heads/codex/autobyteus-ts-google-genai-tts-upgrade
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/autonomous-scheduled-agent-runs
+HEAD a712b4b673ebc983b55a33846c34f73512ce78c8
+branch refs/heads/codex/autonomous-scheduled-agent-runs
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/backend-flat-application-folders-analysis
+HEAD 4f58a9f8466b1d2dcf539528bd5ce8ef5c4fc5f2
+branch refs/heads/codex/backend-flat-application-folders-analysis
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design
+HEAD ff17d2bb051724375e7ee6b227ea71dfafe2ccd0
+branch refs/heads/codex/centralized-memory-provider-design
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/check-codex-app-server-env
+HEAD fd2bc6125c6e1a7bfdcf86c8ead2e8d00109f508
+branch refs/heads/codex/check-codex-app-server-env
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings
+HEAD 6aaa3721533f331e467d5e0ac36543e6f579b06d
+branch refs/heads/codex/claude-agent-sdk-custom-settings
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-runtime-support
+HEAD c21a968213019ec9ab740b7a6497e83d60133e4c
+branch refs/heads/codex/claude-agent-sdk-runtime-support
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-runtime-workflow
+HEAD 4d9853ab95e0147a23ed362638f6b2ab01601ceb
+branch refs/heads/codex/claude-agent-sdk-runtime-workflow
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/claude-code-cli-runtime-support
+HEAD c3cc4d0d49db1146c18a3c251518041ee233c512
+branch refs/heads/codex/claude-code-cli-runtime-support
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts
+HEAD 8593442d843a799190c75c66d247b97f6456fa95
+branch refs/heads/codex/claude-read-artifacts
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-interrupt-followup-ebadf
+HEAD 1a326f858a0623e3f462f62a274e9664772c17e9
+branch refs/heads/codex/claude-sdk-interrupt-followup-ebadf
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-interrupt-resume-session
+HEAD be0a814a67144c47f5871ed7950ed33556088a4f
+branch refs/heads/codex/claude-sdk-interrupt-resume-session
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-partial-messages-streaming-restart
+HEAD 50455091499b0d5c676016bf31a1ca1bbd01337f
+branch refs/heads/codex/claude-sdk-partial-messages-streaming-restart
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity
+HEAD d132acaf066431bd9bfa938e66509468af7b446d
+branch refs/heads/codex/claude-sdk-tool-arguments-activity
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-workspace-path
+HEAD 9fa76564216a4e93937313f65b768fabc5d5d01a
+branch refs/heads/codex/simplify-agent-workspace-to-path-string
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/codex-clarify-agent-definition-id-vs-run-id
+HEAD 12ba48c941fc150d416ca822a79e543cb86d36e0
+branch refs/heads/codex/clarify-agent-definition-id-vs-run-id
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls
+HEAD 389e72e9cf82883e59aa7eed6c96a506b579d567
+branch refs/heads/codex/codex-history-reload-toolcalls
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/codex-mcp-result-circular-rendering
+HEAD 46acf801847780d936796f3adf493e5ac2378700
+branch refs/heads/codex/codex-mcp-result-circular-rendering
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/codex-mental-health-assessment-frontend
+HEAD 396366dca44625da8be76cf4d8eadc5dd598a8e8
+branch refs/heads/codex/mental-health-assessment-frontend
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-cache-token-cost
+HEAD 0a332ab69f460d3064808cc885a4038112a5c8fa
+branch refs/heads/codex/codex-runtime-cache-token-cost
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix-electron-test
+HEAD 434c67e8b98efff84f0303c66d715faee82c5fca
+branch refs/heads/delivery/codex-runtime-thread-resume-fix-electron-test
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/codex-team-runtime
+HEAD f93a3cf1f613d1bdc1dd07537dbbc4ef1b4ab23b
+branch refs/heads/codex/codex-run-history-e2e-artifact-leakage
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering
+HEAD 76484e4d2d63ed70cec7ca6443f91d5ae96ed036
+branch refs/heads/codex/compaction-frontier-llm-rendering
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/compression-current-behavior
+HEAD 4391c29389e23adf4866908e47dc49f3ef492f10
+branch refs/heads/codex/compression-current-behavior
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-first-load-models-401
+HEAD a3beeec29a701e6731d985f76d083a12bd82478f
+branch refs/heads/codex/custom-provider-first-load-models-401
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata
+HEAD 6cbfc9fbc1c492eac86c2f2bf53470f2a0e49a21
+branch refs/heads/codex/custom-provider-model-context-metadata
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error-delivery-records
+HEAD ea6d6b011035d71dc9594d61ad035470985fca8e
+detached
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/desktop-invalid-package-agent-definitions
+HEAD d1023e2fde102bf96eea659911ee36a855fe2254
+branch refs/heads/codex/desktop-invalid-package-agent-definitions
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer
+HEAD de6a1c1583518361771e6fe86a5373a9411e2b63
+branch refs/heads/codex/diagram-zoom-viewer
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/docker-browser-link-open-fix
+HEAD 03d7880b45afd2b032de6e842e41429fad0a2cb0
+branch refs/heads/codex/docker-browser-link-open-fix
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/docker-guide-command-hotfix
+HEAD 0cc92171e12938e07d5c476cb3889fe8f47f1b0b
+branch refs/heads/codex/docker-guide-command-hotfix
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/dynamic-mcp-tool-exposure-investigation
+HEAD 7d6d6f4b47180ef34bed3e4d6493346ddd9eb16b
+branch refs/heads/codex/dynamic-mcp-tool-exposure-investigation
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/edit-file-tool-success-mapping
+HEAD ecd466ff87bb2b8c71b02ab25a7b5433f7bbb686
+branch refs/heads/codex/edit-file-tool-success-mapping
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/electron-agent-prompt-file-resolution
+HEAD 9762a12dfa0eeb82ffd6b17559edff8b29d26b95
+branch refs/heads/codex/electron-agent-prompt-file-resolution
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/electron-language-settings
+HEAD 7546f39de3c55ebe01615107a304da76c3d28766
+branch refs/heads/codex/electron-language-settings
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/electron-llm-422-analysis
+HEAD cb33bb0856df5543a5f37c82556b951209708e89
+branch refs/heads/codex/electron-llm-422-analysis
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview
+HEAD 9855e3e8d1adab04780811e6f63eea876e2e90db
+branch refs/heads/codex/event-monitor-absolute-path-file-preview
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-cross-compaction-earlier-browsing
+HEAD acb8985930ccce49b632cdca22b92f5b237e35bf
+branch refs/heads/codex/event-monitor-cross-compaction-earlier-browsing
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-file-uri-internal-preview
+HEAD 6d8c494e31c9c9ed11e38c2e1539fa8f50a90ac5
+branch refs/heads/codex/event-monitor-file-uri-internal-preview
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency
+HEAD 50a0f302313140947c2d12de7827b55428f8779a
+branch refs/heads/codex/event-monitor-history-transparency
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview
+HEAD 5c08df946ee1329b9d9447e28023bb57fe47c029
+branch refs/heads/codex/event-monitor-html-file-preview
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-mermaid-error-layout-overflow
+HEAD 92256401e6c1395aa2529b93d30dfcb7557d55f8
+branch refs/heads/codex/event-monitor-mermaid-error-layout-overflow
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-receipt-state-machine
+HEAD e9a11a3f4edd885e5759e7dc83e2fef35929e954
+branch refs/heads/codex/external-channel-receipt-state-machine
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/external-messaging-agent-participant-redesign
+HEAD 023f4f550b07f27dbf388d55234a10b8eae0e0c7
+branch refs/heads/codex/external-messaging-agent-participant-redesign
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification
+HEAD 1942efdcdccc6a4b01c2b92e27f23f02fc11762b
+branch refs/heads/codex/external-runtime-memory-recording-simplification
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/external-turn-reply-aggregation
+HEAD 0158b9324834cbdbb3c97a452a8f218387c91d56
+branch refs/heads/codex/external-turn-reply-aggregation
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/featured-default-assistant
+HEAD 327d9433d8fdd1399f59cbd515bce0a0ab160159
+branch refs/heads/codex/featured-default-assistant
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-move-stale-children
+HEAD 719386da0289a98f60350eb393db20dca06b6619
+branch refs/heads/codex/file-explorer-move-stale-children
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-watcher-fd-usage
+HEAD 5875b06d87d3c92b80c0dfa3675eea844324cb7c
+branch refs/heads/codex/file-explorer-watcher-fd-usage
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root
+HEAD 40c7f342c31e38d8c7fc55c76f036e637264264e
+branch refs/heads/codex/file-tool-authorized-root
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/finalize-diagram-zoom-viewer-v1.4.20
+HEAD e60561506d058fd00677e23c945e408317903a81
+branch refs/heads/delivery/diagram-zoom-viewer-finalize-v1.4.20
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/flutter-mobile-consolidation-feasibility
+HEAD 79857c513dd6d6e25c4b7761cb5aa0d3a805c227
+branch refs/heads/codex/flutter-mobile-consolidation-feasibility
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/focused-agent-interrupt-routing
+HEAD c71a879ba6a4368fdd24c7fda5ef06bb5ee13b86
+branch refs/heads/codex/focused-agent-interrupt-routing
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/frontend-file-explorer-context-menu
+HEAD 868478503205a4e0fea98a628582ddd1c0ab1772
+branch refs/heads/codex/frontend-file-explorer-context-menu
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-rpa-thinking-level-options
+HEAD eb78ce75bbe497296eb47953936c8f262a7ec189
+branch refs/heads/codex/gemini-rpa-thinking-level-options
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/general-chat-entry
+HEAD 11865cf854d420bef55d02cf941980dd47459462
+branch refs/heads/codex/general-chat-entry
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/generalized-agent-communication-router
+HEAD 29ebe384e621643033bf416e910ae4f42b757301
+branch refs/heads/codex/generalized-agent-communication-router
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/generate-media-artifact-regression-analysis
+HEAD b6802dc87b9a7079dbf1d2baac7cafb780066f1a
+branch refs/heads/codex/generate-media-artifact-regression-analysis
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/github-agent-package-import-finalize
+HEAD 0a02ba65a05905596dc100691800ed0b86298bdf
+detached
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/gpt4o-tts-generation-config-schema
+HEAD 70984d2a89eb1a7dc6de026e0095f516eb2de1a9
+branch refs/heads/codex/gpt4o-tts-generation-config-schema
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/historical-run-config-readonly
+HEAD 0ee19d1c14c1b112dd7dc28680f551bcdd861d6a
+branch refs/heads/codex/historical-run-config-readonly
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/idle-run-model-update
+HEAD 54890a07f74e941a7a12b6daaa26364f4c927b72
+branch refs/heads/codex/idle-run-model-update-pre-refresh-20260819
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/idle-run-model-update-current
+HEAD 1b2e9b94d1de3b7f38aa2803082e0166a469a978
+branch refs/heads/codex/idle-run-model-update-v2
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/idle-run-model-update-refresh
+HEAD 0194fb4fffa69037a46aeace491024fdf816dde7
+branch refs/heads/codex/idle-run-model-update
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/image-edit-rpa-input-fix
+HEAD 29ebe384e621643033bf416e910ae4f42b757301
+branch refs/heads/codex/image-edit-rpa-input-fix
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/incomplete-tool-call-resume-recovery
+HEAD 2a13b4b57b93547c7dcb5986cd5cc846b8cce55c
+branch refs/heads/codex/incomplete-tool-call-resume-recovery
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/independent-agent-instruction-codex-runtime
+HEAD 814a80bb65f56c9fb8b28cdb0b50c1ee29744c13
+branch refs/heads/codex/independent-agent-instruction-codex-runtime
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/interagent-message-interrupt-ui
+HEAD 1bed2087bc583add5f07d61a1e7fd61da28a4a2a
+branch refs/heads/codex/interagent-message-interrupt-ui
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/investigate-electron-update-regression
+HEAD 03d7880b45afd2b032de6e842e41429fad0a2cb0
+branch refs/heads/codex/investigate-electron-update-regression
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/investigate-ios-build-pipeline-failure
+HEAD 517d6f5b7338f5f01af390af90eaa58202ec71c3
+branch refs/heads/codex/investigate-ios-build-pipeline-failure
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/kimi-highspeed-model-bug
+HEAD e8fe36fa18f7c750d5b7fe61533b88754ab8ac5f
+branch refs/heads/codex/kimi-highspeed-model-bug
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/kimi-tool-stream-visibility
+HEAD 565ebb352675b346270d6f08287c2517f4127c44
+branch refs/heads/codex/kimi-tool-stream-visibility
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/live-run-stream-reconnect-after-reload
+HEAD 76eeed2e473bf72e51bb1e0cce495ec7a047d6d1
+branch refs/heads/codex/live-run-stream-reconnect-after-reload
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/llm-image-url-message-history-fix
+HEAD 00631e7a091f3202eb31fd7b03161a24b8730ccd
+branch refs/heads/codex/llm-image-url-message-history-fix
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/llm-runtime-compaction-top-layer-e2e
+HEAD f72781601d3a1bc84b84c7f3ff2e4107925bb2c7
+branch refs/heads/codex/llm-runtime-compaction-top-layer-e2e
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/mac-arm64-updater-signing
+HEAD 08eb3dd2fd8204bcaca41890052d11b075e9a961
+branch refs/heads/codex/mac-arm64-updater-signing
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-gateway-token-generation
+HEAD fd2bc6125c6e1a7bfdcf86c8ead2e8d00109f508
+branch refs/heads/codex/mcp-gateway-token-generation
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-preview-timeout-analysis
+HEAD f8a0fe6a457659d8f0e221ff3405a364560e8b01
+branch refs/heads/codex/mcp-preview-timeout-analysis
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-server-json-view-validation
+HEAD fd2bc6125c6e1a7bfdcf86c8ead2e8d00109f508
+branch refs/heads/codex/mcp-server-json-view-validation
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-tickets
+HEAD 97ea4ae2055510bcfc657624e3f9b2c5c6048227
+branch refs/heads/codex/mcp-tickets
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-tool-name-overlap-analysis
+HEAD fd2bc6125c6e1a7bfdcf86c8ead2e8d00109f508
+branch refs/heads/codex/mcp-tool-name-overlap-analysis
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/media-generation-cost-analysis
+HEAD 06e0985b5f6e05e812751280a07d82d35eb8c112
+branch refs/heads/codex/media-generation-cost-analysis
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/memory-compaction-file-backed-redesign
+HEAD 48537ace4fdc67b0baa8c48ffc886eec7697b4cf
+branch refs/heads/codex/memory-compaction-file-backed-redesign
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/memory-sync-transparency-design
+HEAD e0cc8a3b811761085d4c687df9e54ac14b3db37b
+branch refs/heads/codex/memory-sync-transparency-design
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/messaging-delivery-robustness
+HEAD a3da1a6840f8d5d971ef6e6c83eabe00a871da68
+branch refs/heads/codex/message-delivery-robustness
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/messaging-gateway-404-install-start
+HEAD 5996e5d3b113e878e60a4190074bd9236d62669c
+branch refs/heads/codex/messaging-gateway-404-install-start
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/messaging-gateway-desktop-distribution
+HEAD 1102923924a33cf40341964e6664ee5d26c21f3e
+branch refs/heads/codex/messaging-gateway-distribution-analysis
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/messaging-gateway-release-hotfix
+HEAD 92473e0593cb887b5535eb75e0b61dddd386f3f9
+branch refs/heads/codex/messaging-gateway-release-hotfix
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/messaging-runtime-visibility
+HEAD 46b172d0ddfbce9318e874ba1c8479b059a1ca47
+branch refs/heads/codex/messaging-runtime-visibility
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis
+HEAD 68f8fad21a9a1a6645ad443fc480b824fc2ebe65
+branch refs/heads/codex/mixed-team-manager-simplification-analysis
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-artifacts-tab
+HEAD 56c6d4bfa27ced68678e4d21dccd4acbcb31aa76
+branch refs/heads/codex/mobile-artifacts-tab
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-client-tailscale-feasibility
+HEAD 97871321ea03d34b0cb981715f81ee440e2fff40
+branch refs/heads/codex/mobile-client-tailscale-feasibility
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification
+HEAD 7ac8d7adf71c71a8f7580a1c86ad9a43fba88190
+branch refs/heads/codex/mobile-ux-simplification
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-vnc-viewer-investigation
+HEAD aef6e851040034bb5b0a613fcb5341f7f73393c0
+branch refs/heads/codex/mobile-vnc-viewer-investigation
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/move-tools-to-home-menu
+HEAD a9a02c416a81aff12fd5bc37d47fe2301db6469b
+branch refs/heads/codex/move-tools-to-home-menu
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/multi-agent-team-bootstrap-analysis
+HEAD d8a341e9b5d73b73c79ef8589566870e257df2db
+branch refs/heads/codex/multi-agent-team-bootstrap-analysis
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/multi-provider-secret-vault
+HEAD d0bcd0dab2263fa284cf07de8d98214e5d19af73
+branch refs/heads/codex/multi-provider-secret-vault
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/native-agent-org-graph-analysis
+HEAD 8b8ae4c304928b391bdd5466b2262f87d43cf272
+branch refs/heads/codex/native-agent-org-graph-analysis
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/new-team-focused-member-message-routing
+HEAD 1277e37d9707cf78f9bf9392344b37c255695068
+branch refs/heads/codex/new-team-focused-member-message-routing
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/ollama-api-image-input
+HEAD 7f6396afadd44a9a3d19652eee39e2bd18c4b81b
+branch refs/heads/codex/ollama-api-image-input
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/personal-codex-baseline
+HEAD 7546f39de3c55ebe01615107a304da76c3d28766
+branch refs/heads/codex/codex-live-websocket-stabilization
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/personal-electron-build
+HEAD 8b43ee5be10ad30d581afa5e9c890a821ceffbe1
+detached
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/personal-finalize-team-agent-instruction-composition-20260309
+HEAD 50455091499b0d5c676016bf31a1ca1bbd01337f
+branch refs/heads/codex/personal-finalize-team-agent-instruction-composition-20260309
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/personal-release-notes-finalize
+HEAD 41ee2405f4f0ce7a7efd382eb51c7ecc15b978d0
+branch refs/heads/codex/personal-release-notes-finalize
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/personal-release-server-docker-desktop-only-analysis
+HEAD 2f545609568b7cb369e4b4b086fa9268cb7fd3e8
+branch refs/heads/codex/personal-release-server-docker-desktop-only-analysis
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/provider-native-tool-history-rendering/autobyteus-ts
+HEAD d3d7980caeaaf514e2e7f3f7f3bdf44d06424bcf
+branch refs/heads/codex/provider-native-tool-history-rendering
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/publish-artifacts-plural-refactor
+HEAD 7ec850f4ed288c2cca10985dea89fc99b4a53c28
+branch refs/heads/codex/publish-artifacts-plural-refactor
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/qwen-multi-billing-endpoint-support
+HEAD 2a7271c9d78b71b919f7dbfa3b8f97f61c3a2e2b
+branch refs/heads/codex/qwen-multi-billing-endpoint-support
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/read-media-file-investigation
+HEAD 2e3fe9e34c6770469735b26dfc248b7b2ceeefd4
+branch refs/heads/codex/read-media-file-investigation
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/release-diagram-zoom-viewer-v1.4.20
+HEAD bda6615a754c8fe913fb2650d7bdae9c4e1ed013
+branch refs/heads/release/diagram-zoom-viewer-v1.4.20
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/release-notes-workflow
+HEAD 56beeb001c7229c09bbbd55ca638551011cee8f2
+branch refs/heads/codex/release-notes-workflow
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/release-server-dockerhub-publish
+HEAD 1102923924a33cf40341964e6664ee5d26c21f3e
+branch refs/heads/codex/personal-merge-release-server-dockerhub-publish
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-telegram-agent-delivery
+HEAD ebbfbdab6ad62cceaea08dd0947e56af624d6220
+branch refs/heads/codex/remote-node-telegram-agent-delivery
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/remove-default-delegate-task
+HEAD 54890a07f74e941a7a12b6daaa26364f4c927b72
+branch refs/heads/codex/remove-default-delegate-task
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/remove-media-output-path-restriction
+HEAD 3adb737a98389d11c08b4bde7556a8c8059d0c2d
+branch refs/heads/codex/remove-media-output-path-restriction
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team
+HEAD da1a711f8969657ee4d3f7f56f2eea738858acd0
+branch refs/heads/codex/remove-native-autobyteus-agent-team
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/remove-todo-list-tools
+HEAD 2a7271c9d78b71b919f7dbfa3b8f97f61c3a2e2b
+detached
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/restore-focused-progressive-markdown
+HEAD d64914d2796e1522700f9eba34c073ccfb4d739d
+branch refs/heads/codex/restore-focused-progressive-markdown
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/resume-run-reasoning-effort
+HEAD 63077fc7c7640e7743f82d8522ec58c725219ea7
+branch refs/heads/codex/resume-run-reasoning-effort
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/revert-session-discovery-ui
+HEAD 0156b2b5cfc822e2916072452542d557a2f30276
+branch refs/heads/codex/revert-session-discovery-ui
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/run-bash-posix-spawn-failure
+HEAD 320f9af68e0c148986e4d2fda1f11cdbbca2b395
+branch refs/heads/codex/run-bash-posix-spawn-failure
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/run-history-index-consistency
+HEAD 99f7120b6ec3641bb0972874207aca327e72a6ac
+branch refs/heads/codex/run-history-index-consistency
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/run-history-worktree-live-stream-loss
+HEAD 666ef0d08e46c0e4b03d2c64eb61d3f2efb43cfb
+branch refs/heads/codex/run-history-worktree-live-stream-loss
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-decoupling-refactor
+HEAD 5f8fcfa9be88ebf586ca4b0fef1bd1400c5daf97
+branch refs/heads/codex/runtime-decoupling-refactor
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality
+HEAD 8ce265a9c245c2d437b892362b3a88838e17d19f
+branch refs/heads/codex/runtime-interrupt-functionality
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-model-identifier-dropdown
+HEAD 87d99ddc607fa30aa046c47151cec7b5639c2399
+branch refs/heads/codex/runtime-model-identifier-dropdown
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup
+HEAD 184f813b839ebb038a78b8d9371c7d89442a3a5b
+branch refs/heads/codex/runtime-streaming-performance-followup
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-termination-separation-of-concerns
+HEAD 46ee7b004d42980c013a6def71687657b7b316f5
+branch refs/heads/codex/runtime-termination-separation-of-concerns
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning-user-build-20260727
+HEAD 3877b39bdcad2e8c88bb9f86d190308aaf034829
+detached
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/self-evolve-agent-subject-naming
+HEAD 993214b5537a9357bd6e3ce0254f15e8df38d83c
+branch refs/heads/codex/self-evolve-agent-subject-naming
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/send-message-to-all-duplicate-ui
+HEAD bad2d71829032b82f1dd9f3d08496d9ae85b1f0a
+branch refs/heads/codex/send-message-to-all-duplicate-ui
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/send-message-user-target
+HEAD d645926cdae5aad11e678d4c73ad2aeb2971b76c
+branch refs/heads/codex/send-message-user-target
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/server-docker-codex-claude-cli
+HEAD a743237de6024e310b73a75825d2ab7deff7fa36
+branch refs/heads/codex/server-docker-codex-claude-cli
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/server-docker-desktop-only-analysis
+HEAD 220cd8b9c17d0f767d9d4b9ddcfbdf689efc252d
+branch refs/heads/codex/server-docker-desktop-only-analysis
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/server-read-page-necessity-analysis
+HEAD 990d12374147a5128a912da3ec0e4782a7389bd5
+branch refs/heads/codex/server-read-page-necessity-analysis
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/server-settings-basics-applications-card-toggle
+HEAD cd72f52b667bd7699757437016586be318db9d79
+branch refs/heads/codex/server-settings-basics-applications-card-toggle
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/server-settings-basics-runtime-controls
+HEAD ff918464045be411c53be89bcff5592f8aeb0d8a
+branch refs/heads/codex/server-settings-basics-runtime-controls
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/shared-context-filesystem
+HEAD dd62965cbc55abc9b576d3cd95be4ae89ea45e34
+branch refs/heads/codex/shared-context-filesystem
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/shared-work-trace-projection
+HEAD be4260235f832bc7b34920079bb9f26aadc9e16b
+branch refs/heads/codex/shared-work-trace-projection
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/shooting-jet-html
+HEAD 88bd4da5c296c9b5223cb716eb4c9458b8d723ae
+branch refs/heads/codex/shooting-jet-html
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/solution-engineering-ticket-app
+HEAD 4f5db14dea313f5df42fd0d8c7cbdc8310b7e021
+branch refs/heads/codex/solution-engineering-ticket-app
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/status-dot-contrast-analysis
+HEAD 75a42b9ccca76bcdb8e224a00c5950e9a108bc2e
+branch refs/heads/codex/status-dot-contrast-analysis
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/status-lifecycle-hardening
+HEAD 76934cf1cebb63dcef64ceebfc5dee368d84b40f
+branch refs/heads/codex/status-lifecycle-hardening
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/streamable-mcp-runtime-tools
+HEAD f2c3499f956df481642df0335c3da3189a64de46
+branch refs/heads/codex/streamable-mcp-runtime-tools
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-team-memory-location
+HEAD b3a2b15393bbf16fefccce9174b982a641bd42dc
+branch refs/heads/codex/task-agent-team-memory-location
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/task-delegation-tool-io-shape
+HEAD 7884db630d37f60a498ea8a694e1313fa24c9338
+branch refs/heads/codex/task-delegation-tool-io-shape
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/task-status-dotted-border
+HEAD a64ee085aba28df22112f40a996e382a0e84a210
+branch refs/heads/codex/task-status-dotted-border
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/task-team-focused-member-messages
+HEAD 325efa93a7a62569c9e46d75644a4414fd36d8db
+branch refs/heads/codex/task-team-focused-member-messages
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/team-agent-instruction-composition
+HEAD 7c0a7a759226edb17547583107ec9e3213cf041b
+branch refs/heads/codex/team-agent-instruction-composition
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/team-context-files-ui-disappear
+HEAD 71bdabc263ad5e03035bd55fcc72a1063d898b36
+branch refs/heads/codex/team-context-files-ui-disappear
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/team-run-config-ui-retune
+HEAD 1730b47da7d4d1ec12fe36d525825b80b8635c85
+branch refs/heads/codex/team-run-config-ui-retune
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/team-run-expanded-team-view
+HEAD ea1892dbbe6cb12118bdb6d91cfc63564f12c4e7
+branch refs/heads/codex/team-run-expanded-team-view
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/team-run-offline-delete-action
+HEAD f14a068469b33b71c3fa55e437ae121e57742075
+branch refs/heads/codex/team-run-offline-delete-action
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/team-runtime-interrupt-ui
+HEAD 00631e7a091f3202eb31fd7b03161a24b8730ccd
+branch refs/heads/codex/team-runtime-interrupt-ui
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/team-tasks-auto-open
+HEAD d8ab91ae6342f1d054e407adad88008988e0dbc3
+branch refs/heads/codex/team-tasks-auto-open
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/telegram-streaming-support
+HEAD d9a10b1f3ea59d9a8b46ac7ad39dcbe0ae50ac2f
+branch refs/heads/codex/telegram-streaming-support
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/terminal-slow-after-files
+HEAD e4bc6dfe6657f77bad1997589f0d556cafb3d86b
+branch refs/heads/codex/terminal-slow-after-files
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake
+HEAD c7b37c31cfff1a1a2a7238ab91170172775d86c1
+branch refs/heads/codex/terminal-unicode-mojibake
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-input-clarity
+HEAD e0c34e46c9c4880948998ea6566729e9ffcc3790
+branch refs/heads/codex/token-meter-input-clarity
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-team-member-focus
+HEAD 63df9f65d96cf407467ffb91823930cf03077616
+branch refs/heads/codex/token-meter-team-member-focus
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-remove-header
+HEAD 4331f1013cbefbf6409d6c45b269ee31ca9da562
+branch refs/heads/codex/token-statistics-remove-header
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux
+HEAD 853f2589930e064a052db4c9bf758efdfad00ed2
+branch refs/heads/codex/token-statistics-table-ux
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-ledger-drop-legacy-path-columns
+HEAD a64ee085aba28df22112f40a996e382a0e84a210
+branch refs/heads/codex/token-usage-ledger-drop-legacy-path-columns
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-pricing-ui
+HEAD 1f80dc4f0bf3b808a95344c8c543c856b6fd1ac0
+branch refs/heads/codex/token-usage-pricing-ui
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis
+HEAD 7b76653f01a254a5bd0e091cca758debe193df96
+branch refs/heads/codex/token-usage-transparency-analysis
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis
+HEAD c558f174e6aa02084e746f78a87b2824307f0fa1
+branch refs/heads/codex/universal-application-framework-proposal-analysis
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/v1-3-46-release-artifact-hygiene
+HEAD 377183361f1bb016133427e9525436f046335c7f
+branch refs/heads/codex/v1-3-46-release-artifact-hygiene
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/voice-input-audio-source-selection-wt
+HEAD ad7e12d06357ab9691a346a80288521243899ae6
+branch refs/heads/codex/voice-input-audio-source-selection
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/voice-input-bilingual-runtime
+HEAD 7c08c09a1a79bd31e0ac3370e1f8201ef5d5470f
+branch refs/heads/codex/voice-input-bilingual-runtime
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/voice-input-mac-recording
+HEAD 1e63398d60b8cfae33c19f184564e39a832d0265
+branch refs/heads/codex/voice-input-mac-recording
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/voice-input-personal-analysis
+HEAD d1f6b528aad540d8ad01c173a852559f2450394d
+branch refs/heads/codex/voice-input-feasibility-analysis
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/voice-input-runtime-reliability
+HEAD 4b29481d5b6eaea64aebb20abcb5e4d784ea1178
+branch refs/heads/codex/voice-input-runtime-reliability
+
+worktree /Users/normy/autobyteus_org/autobyteus-worktrees/voice-input-transcription-architecture
+HEAD b02a6a78c74c3d65c78e9fd7144d3b956a639ca7
+branch refs/heads/codex/voice-input-transcription-architecture
+
+worktree /Users/normy/autobyteus_worktrees/codex-fruit-website
+HEAD 44131e709d399072c332117e2a0d6acf71be6515
+branch refs/heads/codex/fruit-website
+
+worktree /Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model
+HEAD a13af34ee506bf5971e5f512e91c87ee3175fb82
+branch refs/heads/codex/token-statistics-custom-provider-model
+
+utc_finished=2026-08-21T04:06:48Z

@@ -1,0 +1,39 @@
+# DR-001 initial delivery integration refresh
+date=2026-08-20
+remote=origin
+ticket_branch=codex/event-monitor-history-transparency
+tracked_upstream=origin/personal
+recorded_bootstrap_base=1f5663ddb86e478d0b4ffdd878d57dee72d67b4b
+reviewed_worktree_head_before_checkpoint=3b81b5ebdc4c5eae64e221aff9c578adc7e7fb74
+fetch_command=git fetch origin --prune
+latest_tracked_base=fc5ce18bc202012280dcbf5b4bcd6c5c52948ad6
+base_commits_ahead_of_reviewed_head=10
+candidate_uncommitted_status_paths_before_checkpoint=149
+checkpoint_commit=f4f692dc04fec35d5113f0ce17fea9036138a93f
+checkpoint_subject=chore(delivery): checkpoint reviewed event monitor transparency
+integration_command=git merge --no-edit origin/personal
+integration_method=merge
+integration_result=completed_without_conflict
+integrated_head=50a0f302313140947c2d12de7827b55428f8779a
+current_head=50a0f302313140947c2d12de7827b55428f8779a
+current_base=fc5ce18bc202012280dcbf5b4bcd6c5c52948ad6
+ahead_behind_head_vs_base=2/0
+base_is_ancestor_of_head=yes
+post_integration_check=delivery-evidence/dr-001-post-integration-focused-web.log
+post_integration_check_result=pass_8_files_80_tests
+delivery_edits_started_after_integration=yes
+user_verification_received=no
+repository_finalization_performed=no
+push_or_target_merge_performed=no
+
+base_commits_integrated:
+fc5ce18bc202012280dcbf5b4bcd6c5c52948ad6 docs(delivery): record main personal Electron build
+fbb60fe37ba3f7a90f5561a940a87a45c9c90b3b docs(delivery): record team task conversation finalization
+4f586f2e7fe3a6034063b1f44bf41a8c7797549c Merge branch 'codex/team-task-conversation-ui-design' into personal
+ff5b38544520607e9d22ea5f572c583d32849f1f chore(delivery): finalize team task conversation UI
+002c83c418dec05c428b2e53ed4161c8d2192621 Merge remote-tracking branch 'origin/personal' into codex/team-task-conversation-ui-design
+1fafdf3a7f5f31f33b2628e46a4f958403d43ae3 chore(delivery): checkpoint reviewed test evidence
+3566a956752799e0a0c9e60f91c5dc3c3d3bb3f5 test(web): add task conversation browser coverage
+47047a04126d240ef7e2ab012f8de9fba8686d3e docs(implementation): record CR-001 local fix
+a5a44cf09f5dd02e354b71af80cab045661034ac fix(web): remove obsolete task description fallback
+d8bf1a6cdcd3eaf7f8ff523a7665851cd7fc7859 feat(web): show delegated task lifecycle conversations

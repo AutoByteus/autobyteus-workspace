@@ -282,6 +282,34 @@ rewording:
 Claude user turns remain user/context-file content; stable Carpenter instructions
 are not rebuilt as XML inside every user message.
 
+## Runtime Instruction Transparency
+
+The product records the exact AutoByteus-owned string at the final runtime
+handoff boundary, not a reconstruction from current definitions:
+
+- Native records the processed prompt only after
+  `configureSystemPrompt(...)` succeeds, including the appended configured-skill
+  catalog.
+- Codex records the exact `baseInstructions` supplied to a successful
+  thread start or resume after the thread ID is valid.
+- Claude records the exact SDK `options.systemPrompt` after the query has
+  started successfully and before output iteration.
+
+The record is a strict run-scoped `system_instruction` raw trace and the matching
+live fact is `SYSTEM_INSTRUCTIONS_SUPPLIED { trace_id, content, ts }`. Exact
+content is intentionally available to users already authorized to inspect the
+selected run through Activity and Memory Inspector. The implementation does not
+capture provider-owned hidden prompts, injected provider context, or the final
+effective context after provider processing; runtime labels must describe only
+the AutoByteus-owned handoff string.
+
+Capture is first-change-only within active raw storage. An unchanged latest
+valid value reuses the existing trace without a second live event, while changed
+content appends a new trace. Failed configuration/query/thread setup writes and
+publishes nothing. Existing runs are not backfilled, absence is displayed as no
+recorded Activity, and archived instruction rows are available only through
+explicit raw-trace inspection rather than normal Activity or Event Monitor.
+
 ## Historical And Failure Boundaries
 
 - Historical native working-context snapshots remain exact and may retain the

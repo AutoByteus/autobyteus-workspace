@@ -388,6 +388,31 @@ Archived segments and manifests remain unchanged and directly usable by their
 own storage lifecycle. The Event Monitor never pages into those archives; its
 explicit earlier-browsing path is bounded to the current active trace.
 
+### System Instruction Activity
+
+Activity also exposes one run-scoped `system_instruction` variant for each
+strict captured `SYSTEM_INSTRUCTIONS_SUPPLIED` fact. Live standalone and Team
+streams both use the raw trace ID as `activityId`; history hydration reuses the
+same persisted ID, exact content, and timestamp. The row is not a chat message,
+turn, tool, compaction phase, status change, or Event Monitor visual.
+
+`SystemInstructionActivityItem.vue` renders a collapsed **System instructions**
+summary with runtime-aware source copy, capture time, Unicode code-point count,
+and an `Available` status. Its button exposes `aria-expanded` and
+`aria-controls`; expansion shows the exact selectable text in a labeled,
+keyboard-focusable, pre-wrapped, bounded scrolling region. Desktop and mobile
+dispatch through their shared discriminated `RunActivity` contract and retain
+the same content/identity semantics.
+
+The row follows the existing Activity bounds: at most 100 activities are kept,
+and mobile presents the existing first-ten window. It is not pinned. Normal
+reopen reads only active raw traces, so rotation or compaction can make the row
+honestly disappear; archives remain Memory Inspector evidence rather than an
+Activity fallback. Missing or malformed rows produce no placeholder, current-
+definition reconstruction, or legacy compatibility entry. Source labels refer
+only to the captured AutoByteus-owned Native prompt, Claude SDK system prompt,
+or Codex base instructions—not provider-hidden/effective context.
+
 Native AutoByteus memory ingestion persists every non-empty completed reasoning
 value as a distinct replay-authoritative `reasoning` raw trace immediately
 before its ordinary assistant trace. The pair shares turn, source-event, and
@@ -962,6 +987,7 @@ Incoming events are routed based on their `type`:
 | `AGENT_COMMAND_ACK`       | command-specific correlation before generic dispatch | Handles the discriminated `SEND_MESSAGE` and `INTERRUPT_GENERATION` arms separately. Send acknowledgements preserve their status/error behavior. Interrupt acknowledgements must match command id plus exact standalone/team-member target; accepted only clears pending correlation, while rejected/failed invoke one store-owned localized toast without lifecycle or transcript mutation. |
 | `TEAM_RUN_LIFECYCLE`      | `teamHandler.handleTeamRunLifecycle`                | Validates `team_run_id` and updates only root `AgentTeamContext.isActive`; subscription and exact member status remain independent. |
 | `COMPACTION_STATUS`       | `agentStatusHandler.handleCompactionStatus`        | Normalizes compaction lifecycle payloads into latest run state plus `kind: 'compaction'` activity rows (`requested`, `started`, `completed`, `failed`). |
+| `SYSTEM_INSTRUCTIONS_SUPPLIED` | `systemInstructionActivityHandler.handleSystemInstructionsSupplied` | Upserts one completed `kind: 'system_instruction'` Activity row by raw trace ID without mutating conversation, Event Monitor, or lifecycle. |
 | `ASSISTANT_COMPLETE`      | `agentStatusHandler.handleAssistantComplete`       | Legacy completion signal that still marks the current AI message complete. |
 | `ERROR`                   | `agentStatusHandler.handleError`                   | Surfaces unrecoverable agent/runtime errors into the conversation and terminalizes still-open tool-like rows as errors. |
 | `TOOL_APPROVAL_REQUESTED` | `toolLifecycleHandler.handleToolApprovalRequested` | Sets segment status to `awaiting-approval`; task-agent approval payloads retain concrete task-agent run id and logical member route/path, while task-team scoped approvals retain task-team run id plus relative child selector for card-level approve/deny routing. |
@@ -1058,6 +1084,16 @@ for that evidence-free case.
 - Treats backend/provider invocation ids as opaque identity tokens for distinct tool calls. Colon suffixes are never stripped or aliased by frontend projection: provider-generated ordinals such as `run_bash:0`, `run_bash:1`, semantic-looking suffixes such as `call_1:write_file`, and approval metadata suffixes such as `call_1:approval-1` are distinct ids unless the backend emits the same canonical id on every related event. Producer adapters must keep approval ids and other provider metadata out of public `invocation_id`.
 - Skips placeholder or missing generic tool names to avoid noisy blank Activity rows.
 
+#### `systemInstructionActivityHandler.ts`
+
+- Accepts only the parsed strict `{ trace_id, content, ts }` semantic payload.
+- Uses `trace_id` as the stable Activity identity and converts the epoch seconds
+  to the shared `Date` timestamp.
+- Upserts through `AgentActivityStore` for both standalone and Team-adapted
+  messages; no runtime-specific UI or duplicate transport shape is introduced.
+- Reports only an Activity mutation. It does not create conversation content,
+  Event Monitor work, run-history activity, or lifecycle/status effects.
+
 ### Sidecar Store Pattern
 
 A key architectural pattern is the **Sidecar Store Pattern** for runtime data. Instead of keeping all state in a monolithic `AgentContext` (which is optimized for Chat UI), distinct data streams are routed to dedicated stores:
@@ -1075,8 +1111,8 @@ A key architectural pattern is the **Sidecar Store Pattern** for runtime data. I
     - Opens reference content by persisted message identity (`teamRunId + messageId + referenceId`) through `/team-runs/:teamRunId/team-communication/messages/:messageId/references/:referenceId/content`.
     - Does not parse chat text in the frontend and does not make raw paths in `InterAgentMessageSegment` clickable.
 3.  **Activity (`AgentActivityStore`)**:
-    - Tracks run activities as a discriminated `RunActivity` history. Tool calls, file writes, and terminal commands are `kind: 'tool'`; compaction lifecycle/boundary rows are `kind: 'compaction'`.
-    - Is updated through shared tool Activity projection from eligible live transcript segment events and lifecycle events, and through `compactionActivityProjection.ts` for live `COMPACTION_STATUS` payloads.
+    - Tracks run activities as a discriminated `RunActivity` history. Tool calls, file writes, and terminal commands are `kind: 'tool'`; compaction lifecycle/boundary rows are `kind: 'compaction'`; exact run-scoped instruction captures are `kind: 'system_instruction'`.
+    - Is updated through shared tool Activity projection from eligible live transcript segment events and lifecycle events, through `compactionActivityProjection.ts` for live `COMPACTION_STATUS` payloads, and through `systemInstructionActivityHandler.ts` for live/replayed exact instruction facts.
     - Segment events provide immediate pending tool visibility and metadata hydration; lifecycle events provide approval/execution/terminal status, result/error, logs, and additional argument hydration. Tool mutations are constrained to `kind: 'tool'` rows.
     - Tool display names and statuses are backend-provided canonical values. Runtime-specific transport names such as Agent Tools MCP-prefixed Claude/Codex tool names must be normalized before streaming; frontend Activity and conversation components should render `toolName` and lifecycle state directly instead of stripping provider prefixes or inferring execution from presentation-only segments.
     - Powers the right-side Progress/Activity feed UI and the mobile run Activity list.

@@ -1,0 +1,50 @@
+# DR-001 docs and handoff audit
+utc_started=2026-08-20T19:27:40Z
+head=50a0f302313140947c2d12de7827b55428f8779a
+base=fc5ce18bc202012280dcbf5b4bcd6c5c52948ad6
+ahead_behind=2/0
+base_is_ancestor=yes
+command=git diff --check
+git_diff_check=pass
+required_artifacts:
+present=/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/requirements.md
+present=/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/investigation-notes.md
+present=/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/design-spec.md
+present=/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/design-review-report.md
+present=/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/implementation-handoff.md
+present=/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/code-review-report.md
+present=/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/api-e2e-coverage-investigation.md
+present=/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/api-e2e-execution-coverage-report.md
+present=/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/api-e2e-test-review-report.md
+present=/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/docs-sync-report.md
+present=/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/handoff-summary.md
+present=/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/release-deployment-report.md
+present=/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/tickets/in-progress/event-monitor-history-transparency/delivery-revision-record.md
+updated_long_lived_docs:
+present=/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/autobyteus-ts/docs/agent_memory_design.md
+present=/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/autobyteus-ts/docs/agent_memory_design_nodejs.md
+present=/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/autobyteus-server-ts/docs/modules/agent_memory.md
+present=/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/autobyteus-server-ts/docs/modules/run_history.md
+present=/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/autobyteus-server-ts/docs/modules/agent_streaming.md
+present=/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/autobyteus-server-ts/docs/modules/prompt_engineering.md
+present=/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/autobyteus-web/docs/agent_execution_architecture.md
+present=/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-history-transparency/autobyteus-web/docs/memory.md
+core_memory_doc_body_parity=pass
+durable_instruction_contract_presence=pass
+verification_hold_and_release_scope=pass
+status_summary:
+ M autobyteus-server-ts/docs/modules/agent_memory.md
+ M autobyteus-server-ts/docs/modules/agent_streaming.md
+ M autobyteus-server-ts/docs/modules/prompt_engineering.md
+ M autobyteus-server-ts/docs/modules/run_history.md
+ M autobyteus-ts/docs/agent_memory_design.md
+ M autobyteus-ts/docs/agent_memory_design_nodejs.md
+ M autobyteus-web/docs/agent_execution_architecture.md
+ M autobyteus-web/docs/memory.md
+?? tickets/in-progress/event-monitor-history-transparency/delivery-evidence/
+?? tickets/in-progress/event-monitor-history-transparency/delivery-revision-record.md
+?? tickets/in-progress/event-monitor-history-transparency/docs-sync-report.md
+?? tickets/in-progress/event-monitor-history-transparency/handoff-summary.md
+?? tickets/in-progress/event-monitor-history-transparency/release-deployment-report.md
+utc_finished=2026-08-20T19:27:41Z
+result=PASS
