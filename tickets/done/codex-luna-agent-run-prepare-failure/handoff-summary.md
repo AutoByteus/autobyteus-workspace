@@ -10,8 +10,10 @@
 - Integration method/result: `Merge / Pass`, merge commit `13e926358e7b83ff484644b62e4aecf1c6361296`; no conflicts; post-integration checks passed.
 - Finalization refresh: `origin/personal` remained `a80105ada35455ec14fd5b9f75045799449db13e` after explicit user acceptance; the branch is zero behind, so no re-integration or renewed verification was required.
 - Repository finalization: `Pass` — archived ticket commit `ee32b64193d54ec173acb8885eb8f799b2fd30b3` was pushed; merge commit `577a3c81021cd4a63fda3dbf334cbbd9da7cbd2c` was executable-checked and pushed to `origin/personal`.
-- Delivery revision: `DR-004`
-- Current state: User accepted the tested candidate, repository finalization is complete, and curated release notes are ready for patch release `1.4.54`. Release publication, rollout verification, and cleanup are in progress.
+- Release: `Pass` — release commit/tag `8a2aff8c05dc70dd5dae6e3636cd8b9b27ca7e34` / `v1.4.54`; all five tag workflows succeeded; GitHub assets/metadata and multi-architecture Docker publication were verified.
+- Cleanup: `Pass` — dedicated worktree and local/remote ticket branches were removed; pre-existing untracked `.article-work/` was preserved and restored.
+- Delivery revision: `DR-005`
+- Current state: Finalized, published, rollout-verified, and cleaned up.
 
 ## Delivered Behavior
 
@@ -52,6 +54,8 @@ No production source changed during API/E2E.
 | Post-integration executable checks | `Pass` — 2 selected changed cases plus production TypeScript | `post-integration-validation.log` |
 | Docs sync and validation | `Pass` | `docs-sync-report.md`; `docs-sync-validation.log` |
 | Delivery pre-verification hygiene/state | `Pass` | `delivery-pre-verification-validation.log` |
+| Repository finalization | `Pass` — target merge, selected 2/2 cases, TypeScript, and target push | `repository-finalization-validation.log` |
+| Release and rollout | `Pass` — all five workflows; 21 assets; updater/messaging metadata; Docker version/latest multi-arch parity | `release-v1.4.54-execution.log`; `release-v1.4.54-workflows.log`; `release-v1.4.54-rollout-verification.log` |
 
 The live boundary used authenticated `codex-cli 0.149.0` and proved the exact discoverable logical-name plus broken canonical-link topology, `gpt-5.6-luna` pass-through, source preservation, actionable repair warning, link-only cleanup, and a successful real Codex start. The WebSocket case proved the public generic error excludes the private cause.
 
@@ -80,7 +84,7 @@ Persisted-data decision: `Directly Usable — No Migration`. This is on-demand f
 - ZIP SHA-256: `51c719945c6a25a9e2b4c2b603781660f7e33a8fb2572aa3a9de932e06a70c69`
 - Signing scope: Apple Developer ID signing, timestamping, notarization, publication, and deployment were intentionally disabled. The local executable has only an ad-hoc/linker signature, so macOS may require the normal local unsigned-app override on first open.
 - Evidence: `electron-build-macos-arm64.log`; `electron-build-verification-macos-arm64.log`.
-- Artifact lifecycle: `electron-dist/` is ignored and local-only. The DMG/ZIP/app will be removed when this dedicated worktree is cleaned up after repository finalization, so complete testing before authorizing cleanup.
+- Artifact lifecycle: `electron-dist/` was ignored and local-only. The version `1.4.53` DMG/ZIP/app were removed with the dedicated worktree after acceptance and release verification. The published replacement is [AutoByteus_personal_macos-arm64-1.4.54.dmg](https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.54/AutoByteus_personal_macos-arm64-1.4.54.dmg).
 
 ## Suggested User Verification
 
@@ -103,11 +107,11 @@ Persisted-data decision: `Directly Usable — No Migration`. This is on-demand f
 - Explicit verification/completion for this ticket received: `Yes` — the user stated that the task is done and requested finalization and a new version.
 - Mandatory post-acceptance refresh: `Pass` — `origin/personal` did not advance beyond the accepted build state; evidence is in `delivery-finalization-refresh.log`.
 - Renewed verification required: `No` — no base commits or effective behavior changed.
-- Release version: `1.4.54`, selected as the next unused patch after synchronized version/latest normal release `1.4.53`; local and remote `v1.4.54` were confirmed absent.
+- Release version: `1.4.54`, selected as the next unused patch after `1.4.53` and published as stable [v1.4.54](https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.54).
 - Release notes: `release-notes.md`.
 - Ticket state: Archived and finalized at `tickets/done/codex-luna-agent-run-prepare-failure`.
-- Remaining work: Use the documented release helper, verify all required workflows and published artifacts, record final rollout evidence, and clean up the ticket worktree/branches.
+- Remaining work: None within the authorized delivery scope. Final public App Store review/approval remains an external Apple-console operation and is not claimed here.
 
 ## Current Status
 
-`DR-004 Pass — repository finalization and post-merge validation are complete; release v1.4.54 is authorized and in progress.`
+`DR-005 Pass — repository finalization, stable v1.4.54 publication, five-workflow rollout verification, and ticket-resource cleanup are complete.`

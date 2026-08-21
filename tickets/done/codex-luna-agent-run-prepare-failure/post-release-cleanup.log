@@ -1,0 +1,21 @@
+# Post-release cleanup verification
+timestamp_utc=2026-08-21T20:05:18Z
+release=v1.4.54
+remote_ticket_before_cleanup=ee32b64193d54ec173acb8885eb8f799b2fd30b3
+worktree_remove_result=pass
+worktree_prune_result=pass
+local_ticket_branch_delete_result=pass
+remote_ticket_branch_delete_result=pass
+worktree_exists_after=no
+local_ticket_branch_after=0
+remote_ticket_branch_after=0
+worktree_registry_after=0
+personal_head=8a2aff8c05dc70dd5dae6e3636cd8b9b27ca7e34
+origin_personal=8a2aff8c05dc70dd5dae6e3636cd8b9b27ca7e34
+tag_commit=8a2aff8c05dc70dd5dae6e3636cd8b9b27ca7e34
+origin_tag_commit=8a2aff8c05dc70dd5dae6e3636cd8b9b27ca7e34
+preserved_unrelated_stash=stash@{0}: On personal: delivery-v1.4.54-preserve-untracked-article-work
+cleanup_result=pass
+article_work_restore_result=pass
+article_work_restored=yes
+release_commit_exclusion_check=0 tracked paths

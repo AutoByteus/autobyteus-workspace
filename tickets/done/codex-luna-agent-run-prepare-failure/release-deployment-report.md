@@ -1,135 +1,101 @@
 # Delivery / Release / Deployment Report
 
-## Release / Publication / Deployment Scope
+## Scope And Result
 
-The user explicitly accepted the tested ticket and requested finalization plus a new version. Repository finalization into `personal` and the documented five-workflow release for patch version `1.4.54` are in scope. No persisted-data migration is required.
+The user explicitly accepted the tested ticket and requested repository finalization plus a new version on 2026-08-21. Delivery finalized the ticket and published stable release `v1.4.54`, the next unused patch after `v1.4.53`.
 
-## Handoff Summary
-
-- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-luna-agent-run-prepare-failure/handoff-summary.md`
-- Handoff summary status: `Updated`
-- Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-luna-agent-run-prepare-failure/delivery-revision-record.md`
-- Current delivery revision ID: `DR-004`
-- Notes: User acceptance, mandatory final refresh, archival, ticket-branch push, merge/push to `personal`, post-merge validation, next-version selection, and curated release notes are complete. Release execution is in progress.
-
-## Initial Delivery Integration Refresh
-
-- Bootstrap base reference: `origin/personal` at `a098b205ca990bf86b5e452950a49fc5dc39c8d1`
-- Latest tracked remote base reference checked: `origin/personal` at `a80105ada35455ec14fd5b9f75045799449db13e`
-- Base advanced since bootstrap or previous refresh: `Yes` — five commits during initial delivery; `No` after user acceptance
-- New base commits integrated into the ticket branch: `Yes` during initial delivery; none required after acceptance
-- Local checkpoint commit result: `Completed` — `944f46a5066a4b58c42a676cbe4c9925826b5816`
-- Integration method: `Merge`
-- Integration result: `Completed` — merge commit `13e926358e7b83ff484644b62e4aecf1c6361296`, no conflicts
-- Post-integration executable checks rerun: `Yes` after the initial five-commit integration; `No` after acceptance
-- Post-integration verification result: `Passed` — both changed selected integration cases and production TypeScript
-- No-rerun rationale: The post-acceptance fetch found `origin/personal` unchanged at the exact revision already merged, executable-checked, and used for the user-accepted Electron package.
-- Delivery edits started only after integrated state was current: `Yes`
-- Handoff state current with latest tracked remote base: `Yes`
-- Blocker: None
-
-## User Verification
-
-- Initial explicit user completion/verification received: `Yes`
-- Initial verification / acceptance reference: User message: “the task is done. lets finalize and release a new version thanks a lot.”
-- Renewed verification required after later re-integration: `No`
-- Renewed verification received: `Not needed`
-- Renewed verification / acceptance reference: N/A; the target did not advance after acceptance.
-
-## Docs Sync Result
-
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-luna-agent-run-prepare-failure/docs-sync-report.md`
-- Docs sync result: `Updated`
-- Docs updated: `autobyteus-server-ts/docs/modules/skills.md`; `codex_integration.md`; `agent_execution.md`; `agent_packages.md`
-- No-impact rationale: N/A
-
-## Ticket State Transition
-
-- Ticket moved to `tickets/done/codex-luna-agent-run-prepare-failure`: `Yes` — staged for the final ticket-branch commit
-- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-luna-agent-run-prepare-failure`
-
-## Version / Tag / Release Commit
-
-- Current synchronized web/gateway version: `1.4.53`
-- Latest normal release: `v1.4.53`
-- Next unused patch: `1.4.54`
-- Local and remote `v1.4.54` availability check: `Absent / available`
-- Planned release commit: `chore(release): bump workspace release version to 1.4.54`
-- Planned annotated tag: `v1.4.54`
+Overall result: `Pass — repository finalized, release published, all five tag workflows successful, rollout metadata/assets and multi-architecture Docker tags verified, and ticket-specific worktree/branches cleaned up.`
 
 ## Repository Finalization
 
-- Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-luna-agent-run-prepare-failure/investigation-notes.md`
-- Ticket branch: `codex/codex-luna-agent-run-prepare-failure`
-- Ticket branch commit result: `Completed` — archival/finalization commit `ee32b64193d54ec173acb8885eb8f799b2fd30b3`
-- Ticket branch push result: `Completed` — remote ticket branch verified at `ee32b64193d54ec173acb8885eb8f799b2fd30b3`
-- Finalization target remote: `origin`
-- Finalization target branch: `personal`
-- Target advanced after verification / acceptance: `No`
-- Delivery-owned edits protected before re-integration: `Completed` — `cc43e144060b5cef224394f90c6553ce090c3e6f`
-- Re-integration before final merge result: `Not needed`
-- Target branch update result: `Completed` — fetched and confirmed already current at `a80105ada35455ec14fd5b9f75045799449db13e`
-- Merge into target result: `Completed` — merge commit `577a3c81021cd4a63fda3dbf334cbbd9da7cbd2c`, no conflicts; focused 2/2 integration cases and production TypeScript passed
-- Push target branch result: `Completed` — `origin/personal` verified at `577a3c81021cd4a63fda3dbf334cbbd9da7cbd2c`
-- Repository finalization status: `Completed`
-- Blocker: None
+- Post-acceptance refresh: `Pass`. `origin/personal` remained `a80105ada35455ec14fd5b9f75045799449db13e`, the exact base already merged, executable-checked, and used for the accepted Electron package. No re-integration or renewed verification was required.
+- Archived ticket path: `tickets/done/codex-luna-agent-run-prepare-failure/`.
+- Final ticket commit: `ee32b64193d54ec173acb8885eb8f799b2fd30b3` (`docs(delivery): finalize luna skill-link repair`).
+- Ticket branch push: completed before target integration.
+- Target branch: `personal`.
+- Target merge commit: `577a3c81021cd4a63fda3dbf334cbbd9da7cbd2c` (`Merge codex luna skill-link repair`).
+- Post-merge verification: selected changed integration cases passed 2/2 in two files; production TypeScript passed.
+- Finalization evidence commit: `0fa1f49c409050eb9e2ee3537d0ddd535251e022`.
+- Target pushes: completed and verified on `origin/personal`.
+- Artifact-hygiene gate: `Pass` before the final ticket commit and target push.
+- Evidence: `delivery-finalization-refresh.log` and `repository-finalization-validation.log`.
 
-## Release / Publication / Deployment
+The accepted implementation evidence remains `CRR-001 Pass` at 9.5/10 (95.2/100), `API-REV-001 Pass` at 97% final validation confidence (96.6% calculated), and `CRR-002 Pass` with no proportional durable-test findings.
 
-- Applicable: `Yes`
-- Method: `Release Script`
-- Method reference / command: `pnpm release 1.4.54 -- --release-notes tickets/done/codex-luna-agent-run-prepare-failure/release-notes.md`
-- Release/publication/deployment result: `In progress`
-- Release notes handoff result: `Prepared`
-- Blocker: None
+## Release Preparation And Execution
 
-## Post-Finalization Cleanup
+- Documented command: `pnpm release 1.4.54 -- --release-notes tickets/done/codex-luna-agent-run-prepare-failure/release-notes.md`.
+- Release commit/tag target: `8a2aff8c05dc70dd5dae6e3636cd8b9b27ca7e34` / `v1.4.54`.
+- `autobyteus-web/package.json`: `1.4.53` -> `1.4.54`.
+- `autobyteus-message-gateway/package.json`: `1.4.53` -> `1.4.54`.
+- Managed messaging release manifest: synchronized to `v1.4.54` / artifact version `1.4.54`.
+- Curated GitHub release notes: synchronized from ticket `release-notes.md`.
+- Branch and tag pushes: `Pass`; local, remote, and release target commits match.
+- Manual dispatch: not run; the canonical tag push started exactly one set of release workflows.
+- Execution evidence: `release-v1.4.54-execution.log` ending `release_helper_result=pass`.
 
-- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure`
-- Worktree cleanup result: Pending release completion
-- Worktree prune result: Pending release completion
-- Local ticket branch cleanup result: Pending release completion
-- Remote branch cleanup result: Pending release completion
-- Blocker: Cleanup must follow successful repository finalization and release verification.
+## Workflow Results
 
-## Release Notes Summary
+All five tag-triggered workflows completed successfully:
 
-- Release notes artifact created before verification / acceptance: `No` — release was not yet requested
-- Archived release notes artifact used for release/publication: Pending release helper execution
-- Release notes status: `Updated`
+| Workflow | Run | Required publish result |
+| --- | --- | --- |
+| Desktop Release | [32518756836](https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32518756836) | macOS ARM64/x64, Linux x64/ARM64, Windows x64 build and GitHub publication jobs succeeded |
+| Android APK Release | [32518756896](https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32518756896) | signed release APK build and GitHub publication succeeded |
+| iOS App Store Connect Release | [32518756823](https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32518756823) | build/test, publish-secret validation, archive, and App Store Connect upload succeeded |
+| Release Messaging Gateway | [32518756861](https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32518756861) | runtime package build and GitHub publication succeeded |
+| Server Docker Release | [32518756788](https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32518756788) | multi-architecture image build/push succeeded |
 
-## Deployment Steps
+The successful iOS upload reaches App Store Connect/TestFlight. Final public App Store review, listing, approval, and release remain external Apple-console operations and are not represented as completed here.
 
-1. Archive the accepted ticket and commit/push its ticket branch.
-2. Update `personal` from `origin/personal`, merge the ticket branch, validate the merge, and push `personal`.
-3. Run the documented release helper for `1.4.54` using the archived curated release notes.
-4. Monitor desktop, Android, iOS, messaging-gateway, and server-Docker workflows triggered by `v1.4.54`.
-5. Verify the GitHub release metadata/assets and server container publication, then record immutable run/release evidence.
-6. Remove the dedicated ticket worktree and local/remote ticket branches only after the release is verified.
+Workflow monitoring evidence: `release-v1.4.54-workflows.log` ending `workflow_result=pass`.
 
-## Environment Or Persisted-Data Transition Notes
+## Publication And Rollout Verification
 
-- Approved persisted-data decision: `Directly Usable — No Migration`
-- Delivery action required: `None`
-- Result and evidence: The implementation reconciles provider workspace symlinks on demand during bootstrap. No database schema or persisted record contract changed. See `requirements.md`, `design-spec.md`, and `api-e2e-execution-coverage-report.md`.
-- Migration completion, validation, recovery, and rollout evidence, only when `Migration Required`: N/A
+- Stable GitHub release: [v1.4.54](https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.54).
+- Release state: published, non-draft, non-prerelease.
+- Published at: `2026-08-21T19:32:34Z`.
+- Target commit: `8a2aff8c05dc70dd5dae6e3636cd8b9b27ca7e34`.
+- Curated release body: exact semantic match to the archived ticket notes.
+- Published assets: 21.
+- Desktop binaries: macOS ARM64/x64 DMG+ZIP+blockmaps, Linux x64/ARM64 AppImages, and Windows x64 installer.
+- Updater metadata: `latest-mac.yml`, `latest-linux.yml`, `latest-linux-arm64.yml`, and `latest.yml`; downloaded copies all declare version `1.4.54`.
+- Android: `AutoByteus_personal_android-1.4.54-release.apk` plus SHA-256 sidecar.
+- Managed messaging: runtime tarball, metadata, SHA-256 sidecar, and `release-manifest.json`; downloaded metadata/manifests declare `1.4.54` / `v1.4.54`.
+- Primary Apple Silicon DMG: [AutoByteus_personal_macos-arm64-1.4.54.dmg](https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.54/AutoByteus_personal_macos-arm64-1.4.54.dmg), 497,285,066 bytes.
+- Docker Hub: `autobyteus/autobyteus-server:1.4.54` and `:latest` both resolve OCI index digest `sha256:13557c02722cfb03ec9d6177db445234a0fde1686057d6cd97b1659c09e6f65f`, containing `linux/amd64` and `linux/arm64` manifests.
+- Detailed evidence: `release-v1.4.54-rollout-verification.log` ending `ROLLOUT VERIFICATION RESULT: PASS`.
 
-## Verification Checks
+The unsigned local `DR-002` version `1.4.53` DMG was a user-test artifact only and was not published. Release assets were rebuilt by the tag workflows under their configured signing, architecture, updater, and package-validation gates.
 
-- Latest-base initial fetch/merge: Pass.
-- Corrected focused post-integration execution with `RUN_CODEX_E2E=1`: Pass — 2 selected tests in 2 files.
-- `pnpm exec tsc -p tsconfig.build.json --noEmit`: Pass.
-- Long-lived docs link/owner/diff hygiene: Pass.
-- README-guided local Electron build and package verification: Pass — unsigned macOS ARM64 DMG/ZIP, version `1.4.53`.
-- Post-acceptance target refresh: Pass — `origin/personal` unchanged; no behavior delta and no rerun needed.
-- Post-merge target verification: Pass — the selected two changed integration cases and production TypeScript passed on merge commit `577a3c81021cd4a63fda3dbf334cbbd9da7cbd2c`; `origin/personal` matches.
-- Release version/tag availability: Pass — synchronized `1.4.53`, latest normal release `v1.4.53`, and `v1.4.54` absent locally/remotely.
-- Evidence: `delivery-integrated-state-refresh.log`, `post-integration-validation.log`, `docs-sync-validation.log`, `delivery-pre-verification-validation.log`, `electron-build-macos-arm64.log`, `electron-build-verification-macos-arm64.log`, and `delivery-finalization-refresh.log`.
+## Documentation And Migration
 
-## Rollback Criteria
+- Four durable module docs for skills, Codex integration, agent execution, and agent packages are finalized on `personal`.
+- No additional long-lived documentation change was required solely for the version bump.
+- Existing persisted data remains `Directly Usable — No Migration`.
+- Curated functional release notes are stored at `tickets/done/codex-luna-agent-run-prepare-failure/release-notes.md` and `.github/release-notes/release-notes.md` in the tagged revision.
 
-Stop finalization/release for any target advancement not integrated and checked, broken-link repair regression, target traversal/deletion, unsafe collision overwrite/trust, optional-skill startup regression, model drift, private-cause leakage, failed final executable check, version/manifest mismatch, failed required release workflow, missing release assets, or container tag/digest publication failure. No data rollback migration is required.
+## Cleanup
+
+- Dedicated ticket worktree: removed and pruned.
+- Local ticket branch `codex/codex-luna-agent-run-prepare-failure`: deleted after merge and release verification.
+- Remote ticket branch: deleted after release verification.
+- Generated local `DR-002` Electron package: removed with the dedicated ticket worktree.
+- Temporary downloaded rollout metadata: retained only under `/tmp`, outside the repository.
+- Pre-existing untracked `.article-work/`: preserved outside release commits and restored unchanged after release execution.
+- Evidence: `post-release-cleanup.log` ending `cleanup_result=pass` plus restoration confirmation.
+
+Cleanup result: `Pass`.
+
+## Rollback And Residuals
+
+- Repository rollback point: merge parent before `577a3c810`; the immutable release/tag point is `8a2aff8c0`.
+- Desktop/mobile rollback: retain or reinstall the prior stable GitHub release if needed; no rollback was requested or executed.
+- Server rollback: pin the prior immutable version tag instead of `latest` if rollback is required.
+- No database or persisted-data rollback migration is needed.
+- Broader validation retains one unrelated AutoByteus compaction-runner fixture failure and two unrelated WebSocket inactive-restore/busy fixture failures; the final selected changed cases pass.
+- No packaged pixel rerun or live Claude inference turn was required because those boundaries did not change.
 
 ## Final Status
 
-`DR-004 Pass — repository finalization is complete and verified on origin/personal. Publication and rollout verification for v1.4.54 are in progress.`
+`DR-005 Pass — codex-luna-agent-run-prepare-failure is archived and merged to personal; v1.4.54 is published with successful desktop, Android, iOS/App Store Connect, messaging-gateway, and Docker workflows; publication assets/metadata and multi-architecture Docker tags are verified; cleanup is complete.`
