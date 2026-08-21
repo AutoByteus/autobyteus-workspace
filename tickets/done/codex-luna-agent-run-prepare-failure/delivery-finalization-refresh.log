@@ -1,0 +1,24 @@
+# Finalization refresh evidence
+timestamp_utc=2026-08-21T19:24:09Z
+user_acceptance=explicit completion and new-version release authorization received
+ticket_branch=codex/codex-luna-agent-run-prepare-failure
+ticket_head=cc43e144060b5cef224394f90c6553ce090c3e6f
+origin_personal_before_fetch=a80105ada35455ec14fd5b9f75045799449db13e
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+origin_personal_after_fetch=a80105ada35455ec14fd5b9f75045799449db13e
+origin_personal_vs_ticket_left_right=0	5
+merge_base=a80105ada35455ec14fd5b9f75045799449db13e
+remote_base_advanced_since_user_verified_build=no
+reintegration_required=no
+rerun_required=no
+rerun_rationale=origin/personal remains a80105ada35455ec14fd5b9f75045799449db13e, already merged and validated before the exact user-accepted Electron build
+web_version=1.4.53
+gateway_version=1.4.53
+latest_semver_release_tag=v1.4.53
+next_patch_version=1.4.54
+release_tag_availability:
+local v1.4.54 absent
+remote v1.4.54 absent
+latest_github_release:
+{"isDraft":false,"isPrerelease":false,"publishedAt":"2026-08-21T05:39:02Z","tagName":"v1.4.53","targetCommitish":"6ceaf2ec5349752d0afb6d9be3326833451a4aca","url":"https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.53"}

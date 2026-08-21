@@ -1,0 +1,4 @@
+$ git diff --check
+$ test ! -e autobyteus-server-ts/tests/.tmp/api-e2e-claude-stale-link-probe.test.ts
+temporary probe removed: yes
+$ git diff --numstat -- production source paths

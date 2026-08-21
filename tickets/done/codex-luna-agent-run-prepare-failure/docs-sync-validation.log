@@ -1,0 +1,35 @@
+# Docs Sync Validation
+timestamp=2026-08-21T18:03:18Z
+head=13e926358e7b83ff484644b62e4aecf1c6361296
+base=a80105ada35455ec14fd5b9f75045799449db13e
+
+## git diff --check
+diff_check_exit=0
+
+## Modified long-lived docs
+present=autobyteus-server-ts/docs/modules/skills.md
+present=autobyteus-server-ts/docs/modules/codex_integration.md
+present=autobyteus-server-ts/docs/modules/agent_execution.md
+present=autobyteus-server-ts/docs/modules/agent_packages.md
+doc_file_exit=0
+
+## Relative Markdown link targets
+relative_links_checked=2
+relative_link_result=pass
+link_check_exit=0
+
+## Canonical terms and owners
+autobyteus-server-ts/docs/modules/codex_integration.md:331:`SkillService.resolveConfiguredSkillBindingsForAgent(...)`. Each safe configured
+autobyteus-server-ts/docs/modules/codex_integration.md:355:- A broken workspace symlink is rechecked and repaired link-only to the current
+autobyteus-server-ts/docs/modules/codex_integration.md:376:`CodexThreadBootstrapper` and shared `WorkspaceSkillMaterializer`: imported
+autobyteus-server-ts/docs/modules/agent_packages.md:105:`SkillService.resolveConfiguredSkillBindingsForAgent(...)` resolves those names
+autobyteus-server-ts/docs/modules/agent_execution.md:62:`resolveConfiguredSkillBindingsForAgent(agentDefinition)`, which preserves safe
+autobyteus-server-ts/docs/modules/agent_execution.md:187:the run ID, runtime kind, and original error object before failed-candidate
+autobyteus-server-ts/docs/modules/skills.md:78:`SkillService.resolveConfiguredSkillBindingsForAgent(agentDefinition)` keeps
+autobyteus-server-ts/docs/modules/skills.md:156:Codex and Claude use one profile-driven `WorkspaceSkillMaterializer` policy,
+autobyteus-server-ts/docs/modules/skills.md:171:- a broken symlink is rechecked and only the link itself is unlinked; it is
+term_check_exit=0
+
+## Production owner paths
+owner_path_exit=0
+result=PASS

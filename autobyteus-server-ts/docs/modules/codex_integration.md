@@ -328,19 +328,22 @@ Team runtime:
 ## Skills
 
 Configured runtime skills are first resolved by
-`SkillService.resolveConfiguredSkillsForAgent(...)`, so Codex receives the same
-context-aware `Skill[]` shape as the other runtime bootstraps. That resolver can
-return package-private agent skills, owning-team shared skills for team-local
+`SkillService.resolveConfiguredSkillBindingsForAgent(...)`. Each safe configured
+name remains in order as either a resolved contextual `Skill` or an unresolved
+name that still requires stale-path reconciliation. Resolved bindings can point
+at package-private agent skills, owning-team shared skills for team-local
 members, or configured global skill-directory fallback skills. Package skills
 may also appear in the normal Skills catalog for browsing, but Codex
-materialization uses the already-resolved runtime skill roots rather than a
-package-wide catalog lookup.
+materialization uses the contextual binding rather than a package-wide catalog
+lookup.
 
-The resolved skills are then preflighted against Codex `skills/list` for the run
-working directory.
+Bindings with a resolved skill are then preflighted against Codex `skills/list`
+for the run working directory; unresolved safe names still reach workspace-path
+reconciliation.
 
 - If Codex already discovers an enabled skill with the logical `name`,
-  AutoByteus reuses it and does not materialize another workspace entry.
+  AutoByteus does not create a missing workspace entry, but it still reconciles
+  an existing broken canonical path for that configured name.
 - If the resolved skill name is not discoverable, AutoByteus materializes a
   runtime-owned whole-directory symlink into the run workspace at
   `.codex/skills/<sanitized-skill-name>`.
@@ -349,6 +352,14 @@ working directory.
   `agents/<agent-id>/skills/<skill-name>` package skill root.
 - If the discovery probe fails, AutoByteus falls back to the runtime-owned
   workspace symlink path instead of blocking bootstrap.
+- A broken workspace symlink is rechecked and repaired link-only to the current
+  resolved source. If the configured name is safe but no source now resolves,
+  only the broken link is removed and the optional skill is warned about and
+  omitted.
+- Live different-target symlinks and non-symlink files/directories remain fatal,
+  non-destructive collisions. Same-source links are reusable, and runtime-owned
+  links are removed only after the final holder releases them and the link still
+  targets the owned source.
 - The runtime-owned workspace path is an intuitive
   `.codex/skills/<sanitized-skill-name>` directory symlink to the original source
   root. AutoByteus does not add the old hash suffix, does not generate
@@ -356,20 +367,23 @@ working directory.
   tree.
 - Team-shared relative links continue to work because Codex resolves through the
   source root, so no mirrored `.codex/shared/...` path is created.
-- Duplicate skill names are product-excluded for this ticket. Codex has no
-  source-aware duplicate-name preflight or materializer behavior here; it uses
-  the normal resolved `Skill.rootPath` plus logical `Skill.name` path.
+- Duplicate configured skill names remain product-excluded. Codex does not
+  disambiguate them during provider discovery; the shared materializer keys the
+  canonical path and fails closed if callers attempt to acquire that path from
+  different sources.
 
 Durable E2E coverage exercises the runtime boundary with the real
-`CodexThreadBootstrapper` and `CodexWorkspaceSkillMaterializer`: imported
+`CodexThreadBootstrapper` and shared `WorkspaceSkillMaterializer`: imported
 shared-agent canonical single-skill and multi-skill package layouts resolve into
 `.codex/skills/<skill-name>` symlinks that point at the exact package source
-roots and expose the expected `SKILL.md` content to Codex.
+roots, while live Codex coverage also proves a discoverable logical name with a
+broken canonical link is repaired and started with the selected model unchanged.
 
 Relevant owners:
 
 - `src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts`
 - `src/agent-execution/backends/codex/codex-workspace-skill-materializer.ts`
+- `src/agent-execution/backends/shared/workspace-skill-materializer.ts`
 - `src/skills/services/configured-agent-skill-resolver.ts`
 
 This keeps Codex skill loading aligned with the Codex filesystem contract instead of injecting skill content into prompts at the server boundary.

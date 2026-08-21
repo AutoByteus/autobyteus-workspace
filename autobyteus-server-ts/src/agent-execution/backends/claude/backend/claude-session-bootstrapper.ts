@@ -11,8 +11,11 @@ import {
 } from "../claude-workspace-resolver.js";
 import {
   getClaudeWorkspaceSkillMaterializer,
-  type ClaudeWorkspaceSkillMaterializer,
 } from "../claude-workspace-skill-materializer.js";
+import type { WorkspaceSkillMaterializer } from "../../shared/workspace-skill-materializer.js";
+import {
+  collectResolvedConfiguredSkills,
+} from "../../../../skills/domain/configured-agent-skill-binding.js";
 import {
   buildClaudeSessionConfig,
   DEFAULT_CLAUDE_PERMISSION_MODE,
@@ -23,13 +26,13 @@ import { composeSharedCarpenterPrompt } from "../../../prompt/carpenter-prompt-c
 
 export class ClaudeSessionBootstrapper {
   private readonly workspaceResolver: ClaudeWorkspaceResolver;
-  private readonly workspaceSkillMaterializer: ClaudeWorkspaceSkillMaterializer;
+  private readonly workspaceSkillMaterializer: WorkspaceSkillMaterializer;
   private readonly agentDefinitionService: AgentDefinitionService;
   private readonly skillService: SkillService;
 
   constructor(
     workspaceResolver: ClaudeWorkspaceResolver = getClaudeWorkspaceResolver(),
-    workspaceSkillMaterializer: ClaudeWorkspaceSkillMaterializer = getClaudeWorkspaceSkillMaterializer(),
+    workspaceSkillMaterializer: WorkspaceSkillMaterializer = getClaudeWorkspaceSkillMaterializer(),
     agentDefinitionService: AgentDefinitionService = AgentDefinitionService.getInstance(),
     skillService: SkillService = SkillService.getInstance(),
   ) {
@@ -64,21 +67,30 @@ export class ClaudeSessionBootstrapper {
     if (!agentDefinition) {
       throw new Error(`Agent definition '${runContext.config.agentDefinitionId}' was not found.`);
     }
-    const configuredSkills = this.skillService.resolveConfiguredSkillsForAgent(agentDefinition);
+    const configuredSkillBindings =
+      this.skillService.resolveConfiguredSkillBindingsForAgent(agentDefinition);
+    const configuredSkills = collectResolvedConfiguredSkills(configuredSkillBindings);
     const runtimeToolExposure = resolveRuntimeAgentToolExposure(
       agentDefinition,
       runContext.config.memberTeamContext,
     );
     const skillAccessMode = resolveSkillAccessMode(
       runContext.config.skillAccessMode ?? null,
-      configuredSkills.length,
+      configuredSkillBindings.length,
     );
     const exposedConfiguredSkills =
       skillAccessMode === SkillAccessMode.NONE ? [] : configuredSkills;
     const materializedConfiguredSkills =
-      await this.workspaceSkillMaterializer.materializeConfiguredClaudeWorkspaceSkills({
+      await this.workspaceSkillMaterializer.materializeConfiguredWorkspaceSkills({
+        runId: runContext.runId,
         workingDirectory,
-        configuredSkills: exposedConfiguredSkills,
+        requests: skillAccessMode === SkillAccessMode.NONE
+          ? []
+          : configuredSkillBindings.map((binding) =>
+              binding.kind === "resolved"
+                ? { kind: "expose-resolved", skill: binding.skill }
+                : { kind: "reconcile-unresolved", name: binding.name }
+            ),
         skillAccessMode,
       });
     const carpenterSystemPrompt = composeSharedCarpenterPrompt({

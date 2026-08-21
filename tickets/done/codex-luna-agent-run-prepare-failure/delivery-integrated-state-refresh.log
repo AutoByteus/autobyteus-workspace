@@ -1,0 +1,79 @@
+# Delivery Integrated-State Refresh
+
+- Ticket: `codex-luna-agent-run-prepare-failure`
+- Delivery date: `2026-08-21`
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure`
+- Ticket branch: `codex/codex-luna-agent-run-prepare-failure`
+- Recorded bootstrap base: `origin/personal` at `a098b205ca990bf86b5e452950a49fc5dc39c8d1`
+- Reviewed candidate HEAD before preserving API/E2E working-state changes: `72086b52c071273dbff49ce0a31f7ab94b4e96d3`
+
+## Remote Refresh
+
+Command:
+
+```text
+git fetch origin personal --prune
+```
+
+Result:
+
+- Latest tracked remote base: `origin/personal` at `a80105ada35455ec14fd5b9f75045799449db13e`
+- Pre-integration relation: ticket state was 2 commits ahead and 5 commits behind.
+- Base advancement since bootstrap: `Yes` — five commits advanced the base.
+
+## Candidate Preservation
+
+The reviewed API/E2E state contained two uncommitted durable integration-test updates plus the API/E2E and proportional review artifacts. To prevent loss during integration, delivery created local checkpoint commit:
+
+- Commit: `944f46a5066a4b58c42a676cbe4c9925826b5816`
+- Subject: `chore(delivery): checkpoint luna launch repair validation`
+- Scope: the two CRR-002-reviewed durable test files and the complete API/E2E/review artifact package.
+
+This is a delivery-safety checkpoint, not repository finalization.
+
+## Integration
+
+Command:
+
+```text
+git merge --no-edit origin/personal
+```
+
+Result:
+
+- Method: `Merge`
+- Merge commit: `13e926358e7b83ff484644b62e4aecf1c6361296`
+- Conflicts: `None`
+- Integrated base revision: `a80105ada35455ec14fd5b9f75045799449db13e`
+- Immediate post-merge relation: ticket branch 4 commits ahead and 0 behind `origin/personal`.
+- Effective ticket behavior changed by integration: `No observed change`; the merge touched separate completed Codex command-CWD paths and archived ticket artifacts, and the ticket-specific post-integration checks passed.
+
+## Post-Integration Verification
+
+Working directory: `autobyteus-server-ts`
+
+1. Initial focused invocation omitted the live-test opt-in, so the live Codex file was skipped while the WebSocket case passed. This non-authoritative invocation is retained transparently in the log.
+2. Corrected authoritative focused invocation:
+
+```text
+RUN_CODEX_E2E=1 pnpm exec vitest run \
+  tests/integration/agent-execution/codex-thread-bootstrapper.integration.test.ts \
+  tests/integration/agent/agent-websocket.integration.test.ts \
+  -t '(repairs a broken canonical link when live Codex discovery already exposes the configured logical name|publishes error status and failed ACK when prepared activation fails)'
+```
+
+Result: `Pass` — 2 files passed; 2 selected tests passed; 9 tests skipped by selection.
+
+3. Production TypeScript:
+
+```text
+pnpm exec tsc -p tsconfig.build.json --noEmit
+```
+
+Result: `Pass` — exit code 0.
+
+Raw evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/tickets/in-progress/codex-luna-agent-run-prepare-failure/post-integration-validation.log`
+
+## Integrated-State Decision
+
+`Pass` — the latest tracked base was merged without conflict, the reviewed candidate was preserved, the affected real-Codex and WebSocket cases passed on the integrated head, and the production TypeScript graph remained valid. Delivery documentation work may proceed against this state.

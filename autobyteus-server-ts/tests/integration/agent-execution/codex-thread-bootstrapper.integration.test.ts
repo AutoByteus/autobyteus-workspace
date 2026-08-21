@@ -3,20 +3,17 @@ import os from "node:os";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
 import { spawnSync } from "node:child_process";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
 import { CodexThreadBootstrapper } from "../../../src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.js";
-import {
-  DefaultCodexThreadBootstrapStrategy,
-  type CodexThreadBootstrapStrategy,
-} from "../../../src/agent-execution/backends/codex/backend/codex-thread-bootstrap-strategy.js";
 import { CodexAppServerClient } from "../../../src/runtime-management/codex/client/codex-app-server-client.js";
 import { CodexAppServerClientManager } from "../../../src/runtime-management/codex/client/codex-app-server-client-manager.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { Skill } from "../../../src/skills/domain/models.js";
-import { CodexWorkspaceSkillMaterializer } from "../../../src/agent-execution/backends/codex/codex-workspace-skill-materializer.js";
+import { CODEX_WORKSPACE_SKILL_MATERIALIZATION_PROFILE } from "../../../src/agent-execution/backends/codex/codex-workspace-skill-materializer.js";
+import { WorkspaceSkillMaterializer } from "../../../src/agent-execution/backends/shared/workspace-skill-materializer.js";
 import type { CodexWorkspaceResolver } from "../../../src/agent-execution/backends/codex/codex-workspace-resolver.js";
 import type { AgentDefinitionService } from "../../../src/agent-definition/services/agent-definition-service.js";
 import type { SkillService } from "../../../src/skills/services/skill-service.js";
@@ -43,13 +40,13 @@ const asObjectRecord = (value: unknown): Record<string, unknown> | null =>
 const createTempDir = async (label: string): Promise<string> =>
   fs.mkdtemp(path.join(os.tmpdir(), `${label}-`));
 
-const createRunContext = () =>
+const createRunContext = (llmModelIdentifier = "gpt-5.4-mini") =>
   new AgentRunContext({
     runId: `run-${randomUUID()}`,
     config: new AgentRunConfig({
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
       agentDefinitionId: "agent-def",
-      llmModelIdentifier: "gpt-5.4-mini",
+      llmModelIdentifier,
       autoExecuteTools: false,
       workspaceId: "workspace-id",
       llmConfig: null,
@@ -218,13 +215,14 @@ const createBootstrapper = (input: {
   workspaceRoot: string;
   configuredSkills: Skill[];
   clientManager: CodexAppServerClientManager;
-  materializer: CodexWorkspaceSkillMaterializer;
+  materializer: WorkspaceSkillMaterializer;
 }) => {
   const workspaceResolver = {
     resolveWorkingDirectory: async () => input.workspaceRoot,
   } as unknown as CodexWorkspaceResolver;
   const agentDefinitionService = {
     getAgentDefinitionById: async () => ({
+      name: "Live Codex bootstrapper fixture",
       skillNames: input.configuredSkills.map((skill) => skill.name),
       toolNames: [],
       instructions: null,
@@ -232,22 +230,14 @@ const createBootstrapper = (input: {
     }),
   } as unknown as AgentDefinitionService;
   const skillService = {
-    resolveConfiguredSkillsForAgent: () => input.configuredSkills,
+    resolveConfiguredSkillBindingsForAgent: () =>
+      input.configuredSkills.map((skill) => ({ kind: "resolved" as const, skill })),
   } as unknown as SkillService;
-  const teamStrategy = {
-    appliesTo: () => false,
-    prepare: async () => {
-      throw new Error("team strategy should not be used in this test");
-    },
-  } as CodexThreadBootstrapStrategy;
-
   return new CodexThreadBootstrapper(
     input.materializer,
     workspaceResolver,
     agentDefinitionService,
     skillService,
-    new DefaultCodexThreadBootstrapStrategy(),
-    teamStrategy,
     input.clientManager,
   );
 };
@@ -259,6 +249,7 @@ describeCodexBootstrapperIntegration(
     let clientManager: CodexAppServerClientManager | null = null;
 
     afterEach(async () => {
+      vi.restoreAllMocks();
       if (clientManager) {
         await clientManager.close();
         clientManager = null;
@@ -310,7 +301,7 @@ describeCodexBootstrapperIntegration(
           ),
         );
 
-        const materializer = new CodexWorkspaceSkillMaterializer();
+        const materializer = new WorkspaceSkillMaterializer(CODEX_WORKSPACE_SKILL_MATERIALIZATION_PROFILE);
         const bootstrapper = createBootstrapper({
           workspaceRoot,
           configuredSkills: [configuredSkill],
@@ -325,6 +316,89 @@ describeCodexBootstrapperIntegration(
           path.join(workspaceRoot, ".codex", "skills"),
         );
         expect(workspaceSkillEntries).toEqual([folderName]);
+      },
+      60_000,
+    );
+
+    it(
+      "repairs a broken canonical link when live Codex discovery already exposes the configured logical name",
+      async () => {
+        const workspaceRoot = await createTempDir("codex-bootstrapper-live-stale-link");
+        cleanupRoots.add(workspaceRoot);
+        const skillName = `live_stale_skill_${randomUUID().replace(/-/g, "_").slice(0, 12)}`;
+        const folderName = `fixture-${randomUUID().replace(/-/g, "").slice(0, 10)}`;
+        const discoverableSkillRoot = await createRepoCodexSkillBundle({
+          workspaceRoot,
+          folderName,
+          skillName,
+        });
+        const configuredSkillFixture = await createConfiguredSkillFixture(skillName);
+        const configuredSkill = configuredSkillFixture.skill;
+        cleanupRoots.add(configuredSkillFixture.cleanupRoot);
+
+        const staleTargetRoot = path.join(workspaceRoot, "deleted-old-agent-skill");
+        const canonicalLinkPath = path.join(workspaceRoot, ".codex", "skills", skillName);
+        await fs.symlink(staleTargetRoot, canonicalLinkPath);
+        await expect(fs.stat(canonicalLinkPath)).rejects.toMatchObject({ code: "ENOENT" });
+
+        clientManager = new CodexAppServerClientManager({
+          createClient: (cwd) =>
+            new CodexAppServerClient({
+              command: "codex",
+              args: ["app-server"],
+              cwd,
+              requestTimeoutMs: 30_000,
+            }),
+        });
+        const listedBeforeRepair = await listSkills(clientManager, workspaceRoot);
+        expect(listedBeforeRepair).toEqual(
+          expect.arrayContaining([
+            expect.objectContaining({ name: skillName, scope: "repo", enabled: true }),
+          ]),
+        );
+
+        const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+        const materializer = new WorkspaceSkillMaterializer(
+          CODEX_WORKSPACE_SKILL_MATERIALIZATION_PROFILE,
+        );
+        const bootstrapper = createBootstrapper({
+          workspaceRoot,
+          configuredSkills: [configuredSkill],
+          clientManager,
+          materializer,
+        });
+
+        const runContext = await bootstrapper.bootstrapForCreate(
+          createRunContext("gpt-5.6-luna"),
+        );
+
+        expect(runContext.runtimeContext.codexThreadConfig.model).toBe("gpt-5.6-luna");
+        expect(runContext.runtimeContext.materializedConfiguredSkills).toHaveLength(1);
+        const [descriptor] = runContext.runtimeContext.materializedConfiguredSkills;
+        expect(descriptor).toMatchObject({
+          name: skillName,
+          sourceRootPath: path.resolve(configuredSkill.rootPath),
+          materializedRootPath: canonicalLinkPath,
+        });
+        expect((await fs.lstat(canonicalLinkPath)).isSymbolicLink()).toBe(true);
+        expect(await fs.readlink(canonicalLinkPath)).toBe(
+          path.resolve(configuredSkill.rootPath),
+        );
+        await expect(fs.stat(path.join(canonicalLinkPath, "SKILL.md"))).resolves.toBeTruthy();
+        await expect(fs.stat(path.join(configuredSkill.rootPath, "SKILL.md"))).resolves.toBeTruthy();
+        await expect(fs.stat(path.join(discoverableSkillRoot, "SKILL.md"))).resolves.toBeTruthy();
+        expect(warnSpy).toHaveBeenCalledWith(
+          expect.stringContaining("disposition='repaired'"),
+        );
+
+        await clientManager.close();
+        clientManager = null;
+        await materializer.cleanupMaterializedWorkspaceSkills(
+          runContext.runtimeContext.materializedConfiguredSkills,
+        );
+        await expect(fs.lstat(canonicalLinkPath)).rejects.toMatchObject({ code: "ENOENT" });
+        await expect(fs.stat(configuredSkill.rootPath)).resolves.toBeTruthy();
+        await expect(fs.stat(discoverableSkillRoot)).resolves.toBeTruthy();
       },
       60_000,
     );
@@ -348,7 +422,7 @@ describeCodexBootstrapperIntegration(
               requestTimeoutMs: 30_000,
             }),
         });
-        const materializer = new CodexWorkspaceSkillMaterializer();
+        const materializer = new WorkspaceSkillMaterializer(CODEX_WORKSPACE_SKILL_MATERIALIZATION_PROFILE);
         const bootstrapper = createBootstrapper({
           workspaceRoot,
           configuredSkills: [configuredSkill],
@@ -415,7 +489,7 @@ describeCodexBootstrapperIntegration(
 
         await clientManager.close();
         clientManager = null;
-        await materializer.cleanupMaterializedCodexWorkspaceSkills(
+        await materializer.cleanupMaterializedWorkspaceSkills(
           runContext.runtimeContext.materializedConfiguredSkills,
         );
         await expect(fs.stat(descriptor.materializedRootPath)).rejects.toThrow();

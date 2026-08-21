@@ -2,7 +2,7 @@ import type { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-m
 import type { Skill } from "../../../../skills/domain/models.js";
 import type { ClaudeSessionConfig } from "../session/claude-session-config.js";
 import type { AgentRunContext as SharedAgentRunContext } from "../../../domain/agent-run-context.js";
-import type { MaterializedClaudeWorkspaceSkill } from "../claude-workspace-skill-materializer.js";
+import type { MaterializedWorkspaceSkill } from "../../shared/workspace-skill-materializer.js";
 import type { RuntimeAgentToolExposure } from "../../../shared/runtime-agent-tool-exposure.js";
 
 export class ClaudeAgentRunContext {
@@ -10,7 +10,7 @@ export class ClaudeAgentRunContext {
   readonly carpenterSystemPrompt: string;
   readonly runtimeToolExposure: RuntimeAgentToolExposure;
   readonly configuredSkills: Skill[];
-  readonly materializedConfiguredSkills: MaterializedClaudeWorkspaceSkill[];
+  readonly materializedConfiguredSkills: MaterializedWorkspaceSkill[];
   readonly skillAccessMode: SkillAccessMode | null;
   readonly sessionId: string | null;
   hasCompletedTurn: boolean;
@@ -21,7 +21,7 @@ export class ClaudeAgentRunContext {
     carpenterSystemPrompt: string;
     runtimeToolExposure: RuntimeAgentToolExposure;
     configuredSkills?: Skill[] | null;
-    materializedConfiguredSkills?: MaterializedClaudeWorkspaceSkill[] | null;
+    materializedConfiguredSkills?: MaterializedWorkspaceSkill[] | null;
     skillAccessMode?: SkillAccessMode | null;
     sessionId?: string | null;
     hasCompletedTurn?: boolean;

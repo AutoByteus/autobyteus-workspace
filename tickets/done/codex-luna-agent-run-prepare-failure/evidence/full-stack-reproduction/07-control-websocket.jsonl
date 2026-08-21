@@ -1,0 +1,5 @@
+{"type":"SOCKET_OPEN"}
+{"type":"CONNECTED","payload":{"agent_id":"daily_assistant_646d31fee5e04a349ac9c9f7f54ff0a8","session_id":"353f1e0e-03ce-434d-aade-f2aa5317e1df"}}
+{"type":"AGENT_STATUS","payload":{"status":"offline","agent_id":"daily_assistant_646d31fee5e04a349ac9c9f7f54ff0a8"}}
+{"type":"AGENT_STATUS","payload":{"status":"initializing","agent_id":"daily_assistant_646d31fee5e04a349ac9c9f7f54ff0a8"}}
+{"type":"AGENT_COMMAND_ACK","payload":{"command_type":"SEND_MESSAGE","run_id":"daily_assistant_646d31fee5e04a349ac9c9f7f54ff0a8","message_id":"fullstack-control-1","dedupe_key":"agent_run_input:daily_assistant_646d31fee5e04a349ac9c9f7f54ff0a8:fullstack-control-1","state":"accepted","accepted":true,"duplicate":false,"status":{"status":"initializing","agent_id":"daily_assistant_646d31fee5e04a349ac9c9f7f54ff0a8"}}}

@@ -1,0 +1,31 @@
+[2026-08-21T12:15:12.785Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-08-21T12:15:12.794Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 18 items.
+Resolved configured temp workspace root to TempWorkspace.
+Agent websocket attached for run daily_assistant_ae4c8ad28c2843dc942dc9124e8426c8
+Created agent session 90586ac9-cadd-4669-b7d9-b64be376d098 for run daily_assistant_ae4c8ad28c2843dc942dc9124e8426c8
+Agent WebSocket connected: session=90586ac9-cadd-4669-b7d9-b64be376d098, run=daily_assistant_ae4c8ad28c2843dc942dc9124e8426c8
+Resolved configured temp workspace root to TempWorkspace.
+[CodexAppServerClient] stderr: [2m2026-08-21T12:15:37.733071Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Project-local config, hooks, and exec policies are disabled in the following folders until the project is trusted, but skills still load.
+    1. /private/tmp/autobyteus-skill-bootstrap-repro.KknVzE/temp_workspace/.codex
+       To load project-local config, hooks, and exec policies, add /private/tmp/autobyteus-skill-bootstrap-repro.KknVzE/temp_workspace as a trusted project in /Users/normy/.codex/config.toml.
+SEND_MESSAGE command not accepted for agent run daily_assistant_ae4c8ad28c2843dc942dc9124e8426c8: [ACTIVATION_FAILED] Failed to prepare agent run 'daily_assistant_ae4c8ad28c2843dc942dc9124e8426c8'.
+Closed agent session 90586ac9-cadd-4669-b7d9-b64be376d098
+Agent WebSocket disconnected: 90586ac9-cadd-4669-b7d9-b64be376d098
+Resolved configured temp workspace root to TempWorkspace.
+Agent websocket attached for run daily_assistant_646d31fee5e04a349ac9c9f7f54ff0a8
+Created agent session 353f1e0e-03ce-434d-aade-f2aa5317e1df for run daily_assistant_646d31fee5e04a349ac9c9f7f54ff0a8
+Agent WebSocket connected: session=353f1e0e-03ce-434d-aade-f2aa5317e1df, run=daily_assistant_646d31fee5e04a349ac9c9f7f54ff0a8
+Resolved configured temp workspace root to TempWorkspace.
+[CodexAppServerClient] stderr: [2m2026-08-21T12:16:47.989846Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Project-local config, hooks, and exec policies are disabled in the following folders until the project is trusted, but skills still load.
+    1. /private/tmp/autobyteus-skill-bootstrap-repro.KknVzE/temp_workspace/.codex
+--
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Resolved configured temp workspace root to TempWorkspace.
+Agent websocket attached for run daily_assistant_3295ad24633341dbbf0e5addfebd3b32
+Created agent session 9498d095-1050-4efb-9e5b-b7b07e7a5b93 for run daily_assistant_3295ad24633341dbbf0e5addfebd3b32
+Agent WebSocket connected: session=9498d095-1050-4efb-9e5b-b7b07e7a5b93, run=daily_assistant_3295ad24633341dbbf0e5addfebd3b32
+Resolved configured temp workspace root to TempWorkspace.
+Skill 'shell-first-operating-practice' defined in agent definition 'Daily Assistant' could not be resolved. Skipping.
+Closed agent session 9498d095-1050-4efb-9e5b-b7b07e7a5b93
+Agent WebSocket disconnected: 9498d095-1050-4efb-9e5b-b7b07e7a5b93

@@ -72,9 +72,15 @@ advertised path can still observe current file contents.
 ## Configured Agent Skill Resolution
 
 `agent-config.json.skillNames` is an ordered list of logical skill names. Runtime
-bootstrap paths must resolve that list through
-`SkillService.resolveConfiguredSkillsForAgent(agentDefinition)` rather than
-calling the global catalog APIs directly.
+bootstrap paths must resolve that list through the contextual configured-skill
+resolver rather than calling the global catalog APIs directly.
+
+`SkillService.resolveConfiguredSkillBindingsForAgent(agentDefinition)` keeps
+one ordered result for every safe configured name: a `resolved` binding carries
+the current `Skill`, while an `unresolved` binding preserves the validated
+logical name for runtime workspace reconciliation. Consumers that need only
+available skills use the resolved-only
+`resolveConfiguredSkillsForAgent(agentDefinition)` projection.
 
 The contextual resolver uses source metadata attached by the agent-definition
 providers:
@@ -95,8 +101,10 @@ For each configured skill name, resolution proceeds in this order:
 Contextual candidates must contain `SKILL.md`, and that file's frontmatter
 `name` must exactly match the configured skill name. Unsafe configured names
 such as absolute paths, path separators, empty names, or `..` traversal are
-skipped with a warning. Missing or invalid configured skills are skipped rather
-than blocking bootstrap.
+skipped with a warning and never become filesystem paths. Safe names whose
+current source is missing or invalid remain `unresolved` bindings so Codex and
+Claude can remove a stale broken runtime link before warning and omitting the
+skill. Missing or invalid configured skills remain non-blocking.
 
 This lets an imported package carry private skill content beside its agent or
 team while preserving source-context-first runtime resolution. Runtime fallback
@@ -109,8 +117,11 @@ context before global fallback.
 
 ## Runtime Consumption
 
-Runtime bootstraps consume the resolved `Skill[]` records, not a package-wide
-private skill scan.
+Runtime bootstraps consume contextual configured-skill results, not a
+package-wide private skill scan. Native AutoByteus uses the resolved `Skill[]`
+projection. Codex and Claude use the complete ordered binding projection so
+their provider workspace paths can be reconciled even when an optional skill no
+longer has a source.
 
 ### Native AutoByteus
 
@@ -142,11 +153,36 @@ name remains inert and does not recreate a compatibility tool.
 
 ### Codex and Claude
 
-Codex materializes unresolved-by-native-Codex entries as
-`.codex/skills/<skillName>` directory symlinks whose targets are the exact
-resolved `Skill.rootPath` package roots. Claude and Codex continue to use their
-provider-specific bootstrap/materialization paths; the native catalog-only
-processor does not replace those paths.
+Codex and Claude use one profile-driven `WorkspaceSkillMaterializer` policy,
+with provider-specific roots at `.codex/skills/<sanitized-skill-name>` and
+`.claude/skills/<sanitized-skill-name>`. A resolved link targets the exact
+contextual `Skill.rootPath`; no package-wide catalog lookup or source-tree copy
+is performed.
+
+Codex first asks `skills/list` which logical names the provider already
+discovers. A discoverable name does not bypass reconciliation: a missing
+AutoByteus workspace path remains absent, while a broken AutoByteus workspace
+symlink is repaired to the current resolved source. Claude exposes every
+resolved binding through its conventional workspace path. If provider discovery
+fails, Codex falls back to resolved workspace-link exposure.
+
+The shared path-state policy is deliberately narrow and non-destructive:
+
+- a broken symlink is rechecked and only the link itself is unlinked; it is
+  recreated when a valid current source exists, or removed and omitted when the
+  safe configured name is unresolved;
+- a missing or newly unavailable optional source is warned about and omitted;
+- a same-source runtime link is reused, with path-keyed holder tracking and
+  guarded cleanup after the final owner releases it;
+- a live different-target symlink, file, directory, or other non-symlink path is
+  a fatal collision and is never overwritten or trusted; and
+- batch failure rolls back links acquired by that invocation without replacing
+  the original failure.
+
+Warnings include the runtime, run, skill, path, relevant old/current target, and
+repair/skip disposition. Claude and Codex continue to use their
+provider-specific bootstrap paths; the native catalog-only processor does not
+replace those paths.
 
 ### Access modes and historical context
 

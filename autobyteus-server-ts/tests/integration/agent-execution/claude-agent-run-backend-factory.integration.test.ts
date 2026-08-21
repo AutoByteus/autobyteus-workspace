@@ -167,7 +167,7 @@ const buildBootstrapper = (
       resolveWorkingDirectory: async () => workspaceRoot,
     } as any,
     {
-      materializeConfiguredClaudeWorkspaceSkills: async () => [],
+      materializeConfiguredWorkspaceSkills: async () => [],
     } as any,
     {
       getAgentDefinitionById: async () => ({
@@ -178,7 +178,7 @@ const buildBootstrapper = (
       }),
     } as any,
     {
-      resolveConfiguredSkillsForAgent: () => [],
+      resolveConfiguredSkillBindingsForAgent: () => [],
     } as any,
   );
 

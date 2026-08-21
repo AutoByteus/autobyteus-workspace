@@ -5,6 +5,7 @@ import WebSocket from "ws";
 import { AgentInputUserMessage } from "autobyteus-ts";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentRunEventType, type AgentRunEvent } from "../../../src/agent-execution/domain/agent-run-event.js";
+import { AgentCreationError } from "../../../src/agent-execution/errors.js";
 import { AgentRunCommandCoordinator } from "../../../src/agent-execution/services/agent-run-command-coordinator.js";
 import { AgentRunCommandRegistry } from "../../../src/agent-execution/services/agent-run-command-registry.js";
 import { AgentRunCommandStatusOverlayStore } from "../../../src/agent-execution/services/agent-run-command-status-overlay-store.js";
@@ -230,11 +231,26 @@ const startAgentWsHarness = async (options: {
     activeRuns.set(runId, activated);
     return activated;
   });
+  const resolveCommandReadyAgentRun = vi.fn(async (runId: string) => {
+    const activeRun = activeRuns.get(runId);
+    if (activeRun) {
+      return activeRun;
+    }
+    const metadata = metadataByRunId.get(runId);
+    if (!metadata) {
+      throw new Error(`Agent run '${runId}' was not found.`);
+    }
+    if (metadata.activationState === "PREPARED") {
+      return activatePreparedRun(runId);
+    }
+    return (await restoreAgentRun(runId)).run;
+  });
   const agentRunService = {
     getAgentRun: vi.fn((runId: string) => activeRuns.get(runId) ?? null),
     getRunMetadata: vi.fn(async (runId: string) => metadataByRunId.get(runId) ?? null),
     restoreAgentRun,
     activatePreparedRun,
+    resolveCommandReadyAgentRun,
     recordRunActivity: vi.fn(async (run: { runId: string }, activity: { summary?: string | null }) => {
       recordActivities.push({ runId: run.runId, summary: activity.summary });
     }),
@@ -529,6 +545,9 @@ describe("Agent websocket backend-owned command lifecycle integration", () => {
 
   it("publishes error status and failed ACK when prepared activation fails", async () => {
     const runId = "agent-e2e";
+    const privateFailure = new Error("private stale-link target diagnostic");
+    const genericFailure = new AgentCreationError(`Failed to prepare agent run '${runId}'.`);
+    genericFailure.cause = privateFailure;
     const metadata = buildMetadata(runId, {
       activationState: "PREPARED",
       platformAgentRunId: null,
@@ -536,7 +555,7 @@ describe("Agent websocket backend-owned command lifecycle integration", () => {
       preparedExpiresAt: "2026-05-19T00:00:00.000Z",
     });
     const activatePreparedRun = vi.fn(async () => {
-      throw new Error("activation exploded");
+      throw genericFailure;
     });
     const harness = await startAgentWsHarness({ runId, metadata, activatePreparedRun });
     const socket = new WebSocket(`${harness.baseUrl}/ws/agent/${runId}`);
@@ -557,7 +576,11 @@ describe("Agent websocket backend-owned command lifecycle integration", () => {
         (message) => message.type === "AGENT_STATUS" && message.payload.status === "error",
         2,
       );
-      expect(errorStatus.payload).toMatchObject({ status: "error", agent_id: runId, error_message: "activation exploded" });
+      expect(errorStatus.payload).toMatchObject({
+        status: "error",
+        agent_id: runId,
+        error_message: `Failed to prepare agent run '${runId}'.`,
+      });
       const ack = await waitForMessageMatching(
         messages,
         (message) => message.type === "AGENT_COMMAND_ACK" && message.payload.message_id === "msg-fail-1",
@@ -568,9 +591,10 @@ describe("Agent websocket backend-owned command lifecycle integration", () => {
         accepted: false,
         duplicate: false,
         code: "ACTIVATION_FAILED",
-        message: "activation exploded",
+        message: `Failed to prepare agent run '${runId}'.`,
         status: { status: "error", agent_id: runId },
       });
+      expect(JSON.stringify(messages)).not.toContain(privateFailure.message);
     } finally {
       socket.close();
       await harness.app.close();

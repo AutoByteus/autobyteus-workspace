@@ -1,0 +1,109 @@
+# Local Electron Build Verification — macOS ARM64
+
+timestamp=2026-08-21T18:20:59Z
+worktree=/Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure
+head=13e926358e7b83ff484644b62e4aecf1c6361296
+app=/Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+dmg=/Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.53.dmg
+zip=/Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.53.zip
+
+$ test required artifacts
+artifacts_exit=0
+
+$ file app executable
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus: Mach-O 64-bit executable arm64
+architecture_exit=0
+architecture_match_exit=0
+
+$ read bundle metadata
+bundle_id=com.autobyteus.app
+bundle_version=1.4.53
+metadata_exit=0
+
+$ verify packaged workspace-skill reconciliation and diagnostic fix markers
+150:            if (state.kind === "broken-symlink") {
+219:            if (state.kind === "broken-symlink") {
+228:                    disposition: "removed-and-skipped",
+299:                    kind: "broken-symlink",
+405:        return new Error(`Workspace skill path collision for ${this.profile.runtimeLabel} skill '${skillName}': path '${materializedRootPath}' is being materialized from '${existingSource}' instead of '${requestedSource}'.`);
+412:                : state.kind === "broken-symlink"
+417:        return new Error(`Workspace skill path collision for ${this.profile.runtimeLabel} skill '${skillName}': path '${materializedRootPath}' ${detail}.`);
+220:                    return { kind: "reconcile-unresolved", name: binding.name };
+224:                    ? { kind: "reconcile-discoverable", skill: binding.skill }
+232:                : { kind: "reconcile-unresolved", name: binding.name });
+151:                logger.error(`Unexpected failure while preparing agent run '${input.runId}' for runtime '${input.runtimeKind}'.`, error);
+materializer_marker_exit=0
+bootstrapper_marker_exit=0
+diagnostic_marker_exit=0
+
+$ verify staged packaged terminal runtime
+[terminal-runtime] node-pty root: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+terminal_static_exit=0
+
+$ verify packaged terminal spawn through Electron Node runtime
+[terminal-runtime] node-pty root: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] ok: node-pty spawn probe
+terminal_spawn_exit=0
+
+$ hdiutil verify DMG
+Prüfsumme für Protective Master Boot Record (MBR : 0) berechnen …
+Protective Master Boot Record (MBR :: Die überprüfte CRC32-Prüfsumme ist $DE73C18E
+Prüfsumme für GPT Header (Primary GPT Header : 1) berechnen …
+ GPT Header (Primary GPT Header : 1): Die überprüfte CRC32-Prüfsumme ist $C75D2BF5
+Prüfsumme für GPT Partition Data (Primary GPT Table : 2) berechnen …
+GPT Partition Data (Primary GPT Tabl: Die überprüfte CRC32-Prüfsumme ist $8B927515
+Prüfsumme für  (Apple_Free : 3) berechnen …
+                    (Apple_Free : 3): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für disk image (Apple_APFS : 4) berechnen …
+         disk image (Apple_APFS : 4): Die überprüfte CRC32-Prüfsumme ist $0B131AC1
+Prüfsumme für  (Apple_Free : 5) berechnen …
+                    (Apple_Free : 5): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für GPT Partition Data (Backup GPT Table : 6) berechnen …
+GPT Partition Data (Backup GPT Table: Die überprüfte CRC32-Prüfsumme ist $8B927515
+Prüfsumme für GPT Header (Backup GPT Header : 7) berechnen …
+  GPT Header (Backup GPT Header : 7): Die überprüfte CRC32-Prüfsumme ist $DA3B5C1F
+Die überprüfte CRC32-Prüfsumme ist $4B90DDE8
+hdiutil: verify: checksum of "autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.53.dmg" is VALID
+dmg_verify_exit=0
+
+$ unzip -tq ZIP
+No errors detected in compressed data of autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.53.zip.
+zip_verify_exit=0
+
+$ SHA-256
+7a0a75536ae3c77b5bbcd9100769fd25e4b6ec238901e959a72c2d4f8648a7f4  autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.53.dmg
+51c719945c6a25a9e2b4c2b603781660f7e33a8fb2572aa3a9de932e06a70c69  autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.53.zip
+cbf4484deaebc7d34409f41c274d627bf0a1a7cf5b3b7914c4abe29cbe527a58  autobyteus-web/electron-dist/latest-mac.yml
+hash_exit=0
+
+$ signing status (expected unsigned local verification build)
+Executable=/Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+Identifier=Electron
+Format=app bundle with Mach-O thin (arm64)
+CodeDirectory v=20400 size=392 flags=0x20002(adhoc,linker-signed) hashes=9+0 location=embedded
+VersionPlatform=1
+VersionMin=786432
+VersionSDK=1704448
+Hash type=sha256 size=32
+CandidateCDHash sha256=183bce38eb383b21f21c2cdedcf6cd8781b11cdd
+CandidateCDHashFull sha256=183bce38eb383b21f21c2cdedcf6cd8781b11cdd090f942c4eacd6c09b1112f7
+Hash choices=sha256
+CMSDigest=183bce38eb383b21f21c2cdedcf6cd8781b11cdd090f942c4eacd6c09b1112f7
+CMSDigestType=2
+Executable Segment base=0
+Executable Segment limit=16384
+Executable Segment flags=0x1
+Page size=4096
+CDHash=183bce38eb383b21f21c2cdedcf6cd8781b11cdd
+Signature=adhoc
+Info.plist=not bound
+TeamIdentifier=not set
+Sealed Resources=none
+Internal requirements=none
+signing_inspection_exit=0
+
+result=PASS

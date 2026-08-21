@@ -9,9 +9,12 @@ import { AgentDefinitionService } from "../../../../agent-definition/services/ag
 import { SkillService } from "../../../../skills/services/skill-service.js";
 import {
   getCodexWorkspaceSkillMaterializer,
-  type CodexWorkspaceSkillMaterializer,
-  type MaterializedCodexWorkspaceSkill,
 } from "../codex-workspace-skill-materializer.js";
+import type {
+  MaterializedWorkspaceSkill,
+  WorkspaceSkillMaterializer,
+  WorkspaceSkillReconciliationRequest,
+} from "../../shared/workspace-skill-materializer.js";
 import {
   getCodexWorkspaceResolver,
   type CodexWorkspaceResolver,
@@ -21,7 +24,7 @@ import {
   resolveCodexSessionReasoningEffort,
   resolveCodexSessionServiceTier,
 } from "../codex-app-server-model-normalizer.js";
-import type { Skill } from "../../../../skills/domain/models.js";
+import type { ConfiguredAgentSkillBinding } from "../../../../skills/domain/configured-agent-skill-binding.js";
 import {
   buildCodexThreadConfig,
   CodexApprovalPolicy,
@@ -171,7 +174,7 @@ export const resolveDefaultModel = (): string | null => {
 };
 
 export class CodexThreadBootstrapper {
-  private readonly workspaceSkillMaterializer: CodexWorkspaceSkillMaterializer;
+  private readonly workspaceSkillMaterializer: WorkspaceSkillMaterializer;
   private readonly workspaceResolver: CodexWorkspaceResolver;
   private readonly agentDefinitionService: AgentDefinitionService;
   private readonly skillService: SkillService;
@@ -179,7 +182,7 @@ export class CodexThreadBootstrapper {
   private readonly agentToolMcpSessionService: AgentToolMcpSessionService;
 
   constructor(
-    workspaceSkillMaterializer: CodexWorkspaceSkillMaterializer = getCodexWorkspaceSkillMaterializer(),
+    workspaceSkillMaterializer: WorkspaceSkillMaterializer = getCodexWorkspaceSkillMaterializer(),
     workspaceResolver: CodexWorkspaceResolver = getCodexWorkspaceResolver(),
     agentDefinitionService: AgentDefinitionService = AgentDefinitionService.getInstance(),
     skillService: SkillService = SkillService.getInstance(),
@@ -219,14 +222,15 @@ export class CodexThreadBootstrapper {
     if (!agentDefinition) {
       throw new Error(`Agent definition '${runContext.config.agentDefinitionId}' was not found.`);
     }
-    const configuredSkills = this.skillService.resolveConfiguredSkillsForAgent(agentDefinition);
+    const configuredSkillBindings =
+      this.skillService.resolveConfiguredSkillBindingsForAgent(agentDefinition);
     const runtimeToolExposure = resolveRuntimeAgentToolExposure(
       agentDefinition,
       runContext.config.memberTeamContext,
     );
     const skillAccessMode = resolveSkillAccessMode(
       runContext.config.skillAccessMode ?? null,
-      configuredSkills.length,
+      configuredSkillBindings.length,
     );
     const carpenterSystemPrompt = composeSharedCarpenterPrompt({
       agentDefinition,
@@ -246,8 +250,9 @@ export class CodexThreadBootstrapper {
       dynamicToolRegistrations,
     });
     const materializedConfiguredSkills = await this.prepareWorkspaceSkills({
+      runId: runContext.runId,
       workingDirectory,
-      configuredSkills: skillAccessMode === SkillAccessMode.NONE ? [] : configuredSkills,
+      configuredSkillBindings,
       skillAccessMode,
     });
 
@@ -327,28 +332,28 @@ export class CodexThreadBootstrapper {
   }
 
   private async prepareWorkspaceSkills(input: {
+    runId: string;
     workingDirectory: string;
-    configuredSkills: Skill[];
+    configuredSkillBindings: ConfiguredAgentSkillBinding[];
     skillAccessMode: SkillAccessMode;
-  }): Promise<MaterializedCodexWorkspaceSkill[]> {
-    const filteredConfiguredSkills = await this.filterConfiguredSkillsForMaterialization(
-      input,
-    );
-    return this.workspaceSkillMaterializer.materializeConfiguredCodexWorkspaceSkills({
+  }): Promise<MaterializedWorkspaceSkill[]> {
+    const requests = await this.planWorkspaceSkillRequests(input);
+    return this.workspaceSkillMaterializer.materializeConfiguredWorkspaceSkills({
+      runId: input.runId,
       workingDirectory: input.workingDirectory,
-      configuredSkills: filteredConfiguredSkills,
+      requests,
       skillAccessMode: input.skillAccessMode,
     });
   }
 
-  private async filterConfiguredSkillsForMaterialization(input: {
+  private async planWorkspaceSkillRequests(input: {
     workingDirectory: string;
-    configuredSkills: Skill[];
+    configuredSkillBindings: ConfiguredAgentSkillBinding[];
     skillAccessMode: SkillAccessMode;
-  }): Promise<Skill[]> {
+  }): Promise<WorkspaceSkillReconciliationRequest[]> {
     if (
       input.skillAccessMode === SkillAccessMode.NONE ||
-      input.configuredSkills.length === 0
+      input.configuredSkillBindings.length === 0
     ) {
       return [];
     }
@@ -361,18 +366,24 @@ export class CodexThreadBootstrapper {
         forceReload: true,
       });
       const discoverableSkillNames = collectDiscoverableSkillNames(response);
-      if (discoverableSkillNames.size === 0) {
-        return input.configuredSkills;
-      }
-      return input.configuredSkills.filter((skill) => {
-        const skillName = asTrimmedString(skill.name);
-        return !skillName || !discoverableSkillNames.has(skillName);
+      return input.configuredSkillBindings.map((binding) => {
+        if (binding.kind === "unresolved") {
+          return { kind: "reconcile-unresolved", name: binding.name };
+        }
+        const skillName = asTrimmedString(binding.skill.name);
+        return skillName && discoverableSkillNames.has(skillName)
+          ? { kind: "reconcile-discoverable", skill: binding.skill }
+          : { kind: "expose-resolved", skill: binding.skill };
       });
     } catch (error) {
       logger.warn(
         `Failed to preflight discoverable Codex skills for '${input.workingDirectory}'; falling back to workspace materialization: ${String(error)}`,
       );
-      return input.configuredSkills;
+      return input.configuredSkillBindings.map((binding) =>
+        binding.kind === "resolved"
+          ? { kind: "expose-resolved", skill: binding.skill }
+          : { kind: "reconcile-unresolved", name: binding.name }
+      );
     } finally {
       if (client) {
         await this.clientManager.releaseClient(input.workingDirectory).catch((error) => {
